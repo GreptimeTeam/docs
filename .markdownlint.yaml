@@ -1,1 +1,7 @@
 default: true
+
+MD013:
+  code_blocks: false
+
+first-line-h1: false
+no-alt-text: false

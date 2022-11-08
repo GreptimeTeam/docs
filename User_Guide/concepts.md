@@ -18,13 +18,13 @@ To understand how GreptimeDB manages and serves its data, you need to know about
 ### Catalog
 TODO
 ### Database
-Similar to relational databases, database is the minimal unit of data container, within which data can be managed and computed. 
+Similar to relational databases, database is the minimal unit of data container, within which data can be managed and computed.
 ### Table
 Table in GreptimeDB is similar to it's in traditional relational database except it requires a timestamp column. The table holds a set of data that shares a common schema. It can either be created from SQL CREATE TABLE, or inferred from the input data structure (the auto-schema feature). In distributed deployment, a table can be split into multiple partitions that sit on different datanodes.
 Table Region
 Each partition of distributed table is called a region. A region may contain a sequence of continuous data, depending on the partition algorithm. Region information is managed by Meta. It's completely transparent to query users.
 ### Data Types
-Data in GreptimeDB is strongly typed, in order to maximum its efficiency and performance. Auto-schema provides some flexibility when creating a table, but once the table is created, a column of data must share common data type. 
+Data in GreptimeDB is strongly typed, in order to maximum its efficiency and performance. Auto-schema provides some flexibility when creating a table, but once the table is created, a column of data must share common data type.
 Current provided data type includes:
 - Boolean
 - Integers (8-bit, 16-bit, 32-bit and 64-bit)
@@ -37,7 +37,7 @@ There are new types in upcoming releases:
 - Compound type like List
 - Geometry
 ## APIs
-GreptimeDB provides multiple types of APIs to fit itself into your existing data stack. Currently, we have these approaches to access the database: 
+GreptimeDB provides multiple types of APIs to fit itself into your existing data stack. Currently, we have these approaches to access the database:
 - Database protocols: MySQL and PostgreSQL wire protocols are supported, use standard mysql and psql client, or their connectors of many programming languages
 - HTTP RESTful APIs
 - Prometheus remote read/write endpoints
