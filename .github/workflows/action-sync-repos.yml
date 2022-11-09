@@ -8,12 +8,12 @@ jobs:
       - name: Checkout source repository
         uses: actions/checkout@v2
         with:
-          path: source-repo
+          path: docs
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
           repository: GreptimeTeam/website.git
-          path: dev
+          path: docs
           token: ${{ secrets.API_TOKEN_GITHUB }}
       - name: Sync the repo
         id: sync
