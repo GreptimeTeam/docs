@@ -2,4 +2,3 @@ default: true
 
 line-length: false
 first-line-h1: false
-no-alt-text: false
