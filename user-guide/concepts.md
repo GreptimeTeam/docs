@@ -5,8 +5,8 @@ scalability, analytical capabilities and efficiency. It's designed to work on
 infrastructure of cloud era, and benefits from its elasticity and commodity
 storage.
 
-The core developers of Greptime DB have been building time-series data platform
-for years. Based on their best-practices, Greptime DB is born to give you:
+The core developers of GreptimeDB have been building time-series data platform
+for years. Based on their best-practices, GreptimeDB is born to give you:
 
 - A standalone binary that scales to highly-available distributed cluster, with
   transparent experience from user's perspective
@@ -21,7 +21,7 @@ for years. Based on their best-practices, Greptime DB is born to give you:
 ## Components
 
 In order to form a robust database cluster and keep complexity at an acceptable
-level, there are three main components in Greptime DB architecture: Datanode,
+level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Meta.
 
 - **Datanodes** hold regions of tables and data in Grpetime DB cluster. It
@@ -30,9 +30,9 @@ Frontend and Meta.
   DB standalone mode, for local development.
 - **Frontend** is a stateless component that can scale to as many as needed. It
   accepts incoming request, authenticates it, translates it from various
-  protocols into Greptime DB's internal one, and forward to certain datanodes
+  protocols into GreptimeDB's internal one, and forward to certain datanodes
   under guidance from *Meta*.
-- **Meta** is the central command of Greptime DB cluster. In typical deployment,
+- **Meta** is the central command of GreptimeDB cluster. In typical deployment,
   at least three nodes is required to setup a reliable meta mini-cluster. *Meta*
   manages database and table information, including how data spread across the
   cluster and where to route requests to. It also keeps monitoring availability
@@ -41,8 +41,8 @@ Frontend and Meta.
 
 ## Objects
 
-To understand how Greptime DB manages and serves its data, you need to know
-about these building blocks of Greptime DB.
+To understand how GreptimeDB manages and serves its data, you need to know
+about these building blocks of GreptimeDB.
 
 ### Database
 
@@ -51,7 +51,7 @@ within which data can be managed and computed.
 
 ### Table
 
-Table in Greptime DB is similar to it's in traditional relational database
+Table in GreptimeDB is similar to it's in traditional relational database
 except it requires a timestamp column. The table holds a set of data that shares
 a common schema. It can either be created from SQL CREATE TABLE, or inferred
 from the input data structure (the auto-schema feature). In distributed
@@ -66,7 +66,7 @@ information is managed by Meta. It's completely transparent to query users.
 
 ### Data Types
 
-Data in Greptime DB is strongly typed, in order to maximum its efficiency and
+Data in GreptimeDB is strongly typed, in order to maximum its efficiency and
 performance. Auto-schema provides some flexibility when creating a table, but
 once the table is created, a column of data must share common data type.
 
@@ -87,7 +87,7 @@ There are new types in upcoming releases:
 
 ## APIs
 
-Greptime DB provides multiple types of APIs to fit itself into your existing
+GreptimeDB provides multiple types of APIs to fit itself into your existing
 data stack. Currently, we have these approaches to access the database:
 
 - Database protocols: MySQL and PostgreSQL wire protocols are supported, use
@@ -102,5 +102,5 @@ data stack. Currently, we have these approaches to access the database:
 ## What's Next
 
 - See next chapters to [create a table] and [ingest data] into it
-- See our [developer guides] for more information about Greptime DB's components
+- See our [developer guides] for more information about GreptimeDB's components
 - Learn [how to contribute] to our code and docs
