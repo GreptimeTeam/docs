@@ -1,4 +1,4 @@
-# Create a time-series table
+# Create a Time-Series Table
 
 To get started, create a time-series table to save the data collected from hosts.
 

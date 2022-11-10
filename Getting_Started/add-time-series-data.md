@@ -9,7 +9,7 @@ After creating the table, you can populate it in two ways:
 
 [1]: https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/
 
-## INSERT statement
+## `INSERT` Statement
 
 Using the `INSERT` statement is an easy way to add data to your table.
 
@@ -27,7 +27,7 @@ For more information about the `INSERT` statement, please refer to the SQL refer
 
 > Note: Please start the frontend instance to use the InfluxDB protocol to write data.
 
-## InfluxDB write
+## InfluxDB Line Protocol
 
 GreptimeDB supports HTTP InfluxDB line protocol. For more information, please refer to the Configuration reference.
 

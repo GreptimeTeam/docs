@@ -32,12 +32,12 @@ def system_status(hosts, idcs, cpus, memories, disks):
 
 The above piece of code evaluates the host status based on the cpu/memory/disk usage. Arguments comes from querying data from `system_metrics` specified by parameter `sql` in `@coprocessor` annotation(here is = `"SELECT * FROM system_metrics"`). The query result is assigned to each positional argument with corresponding names in `args=[...]`, then the function return three variable, which is convert back into three column `returns = ["host", "idc", "status"]`.
 
-## Submit the python script to GreptimeDB
+## Submit the Python Script to GreptimeDB
 
 You can submit the file to GreptimeDB with a script name so you can refer to it by this name(`system_status`)later and execute it:
 
 ``` shell
-pythonshel
+curl  --data-binary "@system_status.py" -XPOST "http://localhost:3000/v1/scripts?name=system_status"
 ```
 
 Run the script:
