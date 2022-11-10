@@ -97,7 +97,6 @@ mysql> select * from system_metrics;
 > statements. Also, only one database is used, you cannot create database or use
 > "use database" to switch them.
 
-
 ## gRPC
 
 GreptimeDB has a custom protocol exposed via gRPC. The following document will
@@ -109,7 +108,7 @@ service.
 > You can find our officially supported Java SDK
 > [here](https://greptime.feishu.cn/wiki/wikcnRFXMUy1TGUAIDsojtAcsOb).
 
-### Creating Table
+### Creating Table with gRPC
 
 GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
 Let's create a table called `hello_greptime`:
@@ -177,7 +176,7 @@ gRPC service will return:
 }
 ```
 
-### Inserting Data
+### Inserting Data with gRPC
 
 Inserts some data:
 
