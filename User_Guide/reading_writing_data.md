@@ -1,18 +1,37 @@
 # Reading/Writing Data
+
 ::: warning
 TODO: Insert references to related documents at all "(x)".
 :::
 
-You can read from or write into GreptimeDB using various protocols. 
-![](../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
-This document will focus on two main protocols, SQL and gRPC, to illustrate reading and writing in GreptimeDB. Other supported protocols can be found here, for detailed ways of how to do it.
-Note that writing data in a specific protocol does not mean that reading data has to be with the same protocol. For example, you can write data through Prometheus endpoint while using MySQL client to read them.
+You can read from or write into GreptimeDB using various protocols.
+
+![protocols](../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
+
+This document will focus on two main protocols, SQL and gRPC, to illustrate
+reading and writing in GreptimeDB. Other supported protocols can be found here,
+for detailed ways of how to do it.
+
+Note that writing data in a specific protocol does not mean that reading data
+has to be with the same protocol. For example, you can write data through
+Prometheus endpoint while using MySQL client to read them.
+
 ## SQL
-GreptimeDB supports executing standard SQL. You can use either MySQL or PostgreSQL's wire protocol to read from or write into GreptimeDB, through all kinds of their client tools or connectors. The following guide will use standard MySQL cli to demonstrate how to do it.
+
+GreptimeDB supports executing standard SQL. You can use either MySQL or
+PostgreSQL's wire protocol to read from or write into GreptimeDB, through all
+kinds of their client tools or connectors. The following guide will use standard
+MySQL cli to demonstrate how to do it.
+
 ### Connecting to GreptimeDB
-Start GreptimeDB (x). GreptimeDB will listen to 127.0.0.1:3306 for MySQL connections by default, but you can also configure it (x).
-Open your favorite terminal, type mysql -h 127.0.0.1 -P 3306, and we are connected to GreptimeDB.
+
+Start GreptimeDB (x). GreptimeDB will listen to 127.0.0.1:3306 for MySQL
+connections by default, but you can also configure it (x).
+Open your favorite terminal, type mysql -h 127.0.0.1 -P 3306, and we are
+connected to GreptimeDB.
+
 ### Creating Table
+
 First, we need to create a table. Take the example SQL in "Getting Started" guide:
 
 ```SQL
@@ -30,6 +49,7 @@ Query OK, 1 row affected (0.01 sec)
 ```
 
 A table named `system_metrics` was created. You can use `show tables` to see it:
+
 ```SQL
 mysql> show tables;
 +----------------+
@@ -43,7 +63,10 @@ mysql> show tables;
 ```
 
 ### Inserting Data
-Let's insert some testing data. We can just use the `INSERT INTO` SQL statements:
+
+Let's insert some testing data. We can just use the `INSERT INTO` SQL
+statements:
+
 ```SQL
 mysql> INSERT INTO system_metrics
     -> VALUES
@@ -55,7 +78,9 @@ Then we are good to query it!
 ```
 
 ### Querying Data
+
 Let's use `SELECT` to query data:
+
 ```SQL
 mysql> select * from system_metrics;
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -68,15 +93,26 @@ mysql> select * from system_metrics;
 3 rows in set (0.01 sec)
 ```
 
-> Note that currently GreptimeDB does not support MySQL's prepared statements. Also, only one database is used, you cannot create database or use "use database" to switch them.
+> Note that currently GreptimeDB does not support MySQL's prepared
+> statements. Also, only one database is used, you cannot create database or use
+> "use database" to switch them.
+
 
 ## gRPC
-GreptimeDB has a custom protocol exposed via gRPC. The following document will use the gRPC command-line tool "[grpcurl](https://github.com/fullstorydev/grpcurl)" to illustrate readings and writings, but you can use any gRPC tools or SDKs to talk to GreptimeDB's gRPC service.
-> You can find our officially supported Java SDK [here](https://greptime.feishu.cn/wiki/wikcnRFXMUy1TGUAIDsojtAcsOb).
+
+GreptimeDB has a custom protocol exposed via gRPC. The following document will
+use the gRPC command-line tool
+"[grpcurl](https://github.com/fullstorydev/grpcurl)" to illustrate readings and
+writings, but you can use any gRPC tools or SDKs to talk to GreptimeDB's gRPC
+service.
+
+> You can find our officially supported Java SDK
+> [here](https://greptime.feishu.cn/wiki/wikcnRFXMUy1TGUAIDsojtAcsOb).
 
 ### Creating Table
+
 GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
-Let's create a table called "`hello_greptime`":
+Let's create a table called `hello_greptime`:
 
 ```shell
 ~ % grpcurl -plaintext -d '
@@ -117,7 +153,9 @@ Let's create a table called "`hello_greptime`":
 }
 ' 127.0.0.1:3001 greptime.v1.Greptime/Batch
 ```
-Our newly created table has 3 columns. If created successfully, GreptimeDB's gRPC service will return:
+
+Our newly created table has 3 columns. If created successfully, GreptimeDB's
+gRPC service will return:
 
 ```shell
 {
@@ -138,7 +176,9 @@ Our newly created table has 3 columns. If created successfully, GreptimeDB's gRP
   "databases": [{}]
 }
 ```
+
 ### Inserting Data
+
 Inserts some data:
 
 ```shell
@@ -185,9 +225,12 @@ Inserts some data:
 ' 127.0.0.1:3001 greptime.v1.Greptime/Batch
 ```
 
-We are using SQL to insert data here, because it's much clearer for illustrating purpose. However, we recommend using the following method if you are using SDK:
+We are using SQL to insert data here, because it's much clearer for illustrating
+purpose. However, we recommend using the following method if you are using SDK:
 
-- Assemble the `InsertBatch` message with the data you want to insert. `InsertBatch` message format is:
+Assemble the `InsertBatch` message with the data you want to
+insert. `InsertBatch` message format is:
+
 ```
 message InsertBatch {
   repeated Column columns = 1;
@@ -270,5 +313,7 @@ enum ColumnDataType {
   TIMESTAMP = 15;
 }
 ```
-- Serialize InsertBatch message to bytes.
-- Use InsertBatch bytes in InsertExpr.
+
+Serialize InsertBatch message to bytes.
+
+Use InsertBatch bytes in InsertExpr.
