@@ -30,7 +30,7 @@ This means take column `cpu` of type f32, `mem` column of type f64, return a nul
 - Pythonic list comprehension: you can use this pythonic list operation, or index a column(A `vector`) using boolean `vector`, or even use logic operator on two boolean `vector`s:
 
 ```python
-[a<2 for a in cpu]
+[a < 2 for a in cpu]
 # index `cpu` using boolean vector `cpu<0.7`
 b = cpu[cpu < 0.7]
 # rich compare and then `and` two boolean vector

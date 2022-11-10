@@ -13,11 +13,11 @@ $ mysql -h 127.0.0.1 -P 4202
 mysql>
 ```
 
-### Creating a table
+### Creating a Table
 
 In this example, we are going to create a table named `monitor`
 
-``` sql
+``` shell
 mysql> CREATE TABLE monitor (
     ->   host STRING,
     ->   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +60,7 @@ mysql> show tables;
 Notice: `script` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
-``` sql
+``` shell
 mysql> show tables like monitor;
 +---------+
 | Tables  |
@@ -70,7 +70,7 @@ mysql> show tables like monitor;
 1 row in set (0.00 sec)
 ```
 
-### Alter table
+### Alter Table
 
 You can alter the schema of existing tables just like in MySQL database
 
@@ -89,7 +89,7 @@ and is listening for incoming gRPC requests on `127.0.0.1:4200`
 
 ### Create a table
 
-``` json
+``` shell
 $ grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },

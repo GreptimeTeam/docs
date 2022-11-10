@@ -13,7 +13,7 @@ illustrate reading and writing in GreptimeDB. The list of other
 supported protocols can be found here, for detailed ways of how to do it.
 
 Note that writing data in a specific protocol does not mean that you
-have to read data with the same protocal. For example, you can write
+have to read data with the same protocol. For example, you can write
 data through Prometheus endpoint while using MySQL client to read them.
 
 ## SQL
@@ -275,7 +275,7 @@ The result of the insert request is simple:
 
 You can wrap the SQL in our gRPC query request like this:
 
-``` json
+``` shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -330,7 +330,7 @@ in `select.proto` file to `import "column.proto"`(Because protoc's
 "decode" can not find the imported proto files in that way)
 1. Submit your gRPC request
 
-``` json
+``` shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -357,7 +357,7 @@ grpcurl -plaintext -d '
 
 The decoded result looks like this:
 
-``` json
+```text
 columns {
   column_name: "c1"
   semantic_type: FIELD
