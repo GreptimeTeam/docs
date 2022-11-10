@@ -57,4 +57,4 @@ final output of the table scan node.
 
 The following picture summarized the above procedure of the distributed query execution:
 
-![Distributed Querying](../distributed-querying.png)
+![Distributed Querying](../../public/distributed-querying.png)

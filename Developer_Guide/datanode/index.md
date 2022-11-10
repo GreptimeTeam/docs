@@ -6,7 +6,7 @@
 nstand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Meta` to form a
 distributed database service, as the following picture shows:
 
-![Datanode](../../public/datanode.pnd)
+![Datanode](../../public/datanode.png)
 
 ## Components
 
