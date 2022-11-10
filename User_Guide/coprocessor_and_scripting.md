@@ -32,7 +32,7 @@ This means take column `cpu` of type f32, `mem` column of type f64, return a nul
 ```python
 [a<2 for a in cpu]
 # index `cpu` using boolean vector `cpu<0.7`
-b = cpu[cpu<0.7]
+b = cpu[cpu < 0.7]
 # rich compare and then `and` two boolean vector
 c = (cpu < 0.7) & (mem < 0.5)
 ```
