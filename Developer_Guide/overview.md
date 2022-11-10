@@ -3,6 +3,7 @@
 ## Architecture
 
 `GreptimeDB` consists of the following key components:
+
 - `Frontend` that exposes read and write service in various protocols, forwards requests to
 `Datanode`.
 - `Datanode` is responsible for storing data to persistent storage such as local disk, S3.
