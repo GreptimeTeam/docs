@@ -25,11 +25,11 @@ Through the above statement, we have inserted three rows into the `system_metric
 
 For more information about the `INSERT` statement, please refer to the SQL reference document.
 
-> Note: Please start the frontend instance to use the InfluxDB protocol to write data.
-
 ## InfluxDB Line Protocol
 
 GreptimeDB supports HTTP InfluxDB line protocol. For more information, please refer to the Configuration reference.
+
+> Note: Please start the frontend instance to use the InfluxDB protocol to write data.
 
 You can write data via /influxdb/write API:
 
