@@ -1,6 +1,7 @@
 # Add time-series data
 
 ## Introduction
+
 After creating the table, you can populate it in two ways:
 
 - `INSERT` statement
@@ -9,6 +10,7 @@ After creating the table, you can populate it in two ways:
 [1]: https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/
 
 ## INSERT statement
+
 Using the `INSERT` statement is an easy way to add data to your table.
 
 ``` sql
@@ -19,13 +21,16 @@ VALUES
     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797450)
 ```
 
-Through the above statement, we have inserted three rows into the `system_metrics` table. <br>
+Through the above statement, we have inserted three rows into the `system_metrics` table.
+
 For more information about the `INSERT` statement, please refer to the SQL reference document.
 
 > Note: Please start the frontend instance to use the InfluxDB protocol to write data.
 
 ## InfluxDB write
-GreptimeDB supports HTTP InfluxDB line protocol. For more information, please refer to the Configuration reference.<br>
+
+GreptimeDB supports HTTP InfluxDB line protocol. For more information, please refer to the Configuration reference.
+
 You can write data via /influxdb/write API:
 
 ``` shell

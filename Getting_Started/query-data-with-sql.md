@@ -1,4 +1,5 @@
 # Query Data with SQL
+
 ## Introduction
 
 GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `system_metrics` so you can get familiar with using SQL alongside GreptimeDB functions.
@@ -7,6 +8,7 @@ To select all the data from the `system_metrics` table, use the `SELECT` stateme
 ``` sql
 SELECT * FROM system_metrics;
 ```
+
 The query result  looks like the following:
 
 ```
@@ -24,6 +26,7 @@ You can use the `count()` function to get the number of all rows in the table:
 ``` sql
 SELECT count(*) FROM system_metrics;
 ```
+
 ```
 +-----------------+
 | COUNT(UInt8(1)) |
@@ -31,6 +34,7 @@ SELECT count(*) FROM system_metrics;
 |               3 |
 +-----------------+
 ```
+
 The `avg()` function returns the average value of a certain field:
 
 ``` sql
@@ -44,12 +48,14 @@ SELECT avg(cpu_util) FROM system_metrics;
 |            47.29999999999999 |
 +------------------------------+
 ```
+
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
 The average memory usage grouped by idc:
 
 ```sql
 SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 ```
+
 ```
 +-------+---------------------------------+
 | idc   | AVG(system_metrics.memory_util) |

@@ -2,6 +2,7 @@
 
 After you've installed GreptimeDB and started an instance or cluster, let's
 explore it's features. In this tutorial, you will learn how to:
+
 - [Create a time-series table][1]
 - [Add time-series data][2]
 - [Query Data with SQL][3]

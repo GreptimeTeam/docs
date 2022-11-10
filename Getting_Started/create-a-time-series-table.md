@@ -1,5 +1,7 @@
 # Create a time-series table
-To get started, create a time-series table to save the data collected from hosts.<br>
+
+To get started, create a time-series table to save the data collected from hosts.
+
 Let's start by creating the `system_metrics` table:
 
 ``` sql
@@ -14,10 +16,13 @@ CREATE TABLE system_metrics (
     TIME INDEX(ts)
 );
 ```
-You can execute this statement via MySQL or PostgreSQL command line.<br>
+
+You can execute this statement via MySQL or PostgreSQL command line.
+
 For more information about how to create tables, please refer to the SQL reference document.
 
 ## Table details
+
 `system_metrics`: contains system resource metrics, including CPU/memory/disk usage
 scraped every 5 seconds.
 
@@ -31,4 +36,5 @@ scraped every 5 seconds.
 | ts           | timestamp | Timestamp column incrementing          |
 
 ## TODO
+
 - Link to sql reference and time-series table concept
