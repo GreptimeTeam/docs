@@ -64,7 +64,7 @@ mysql> show tables;
 3 rows in set (0.00 sec)
 ```
 
-### Inserting Data
+### Inserting Data with SQL
 
 Let's insert some testing data. You can use the `INSERT INTO` SQL
 statements:
@@ -79,7 +79,7 @@ Query OK, 3 rows affected (0.01 sec)
 Then we are good to query it!
 ```
 
-### Querying Data
+### Querying Data with SQL
 
 You can use the `SELECT` statement to query data:
 
@@ -271,7 +271,7 @@ The result of the insert request is simple:
 }
 ```
 
-### Querying Data
+### Querying Data with gRPC
 
 You can wrap the SQL in our gRPC query request like this:
 

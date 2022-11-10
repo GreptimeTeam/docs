@@ -28,7 +28,7 @@ mysql> CREATE TABLE monitor (
 Query OK, 1 row affected (0.03 sec)
 ```
 
-#### `CREATE TABLE` syntax:
+#### `CREATE TABLE` syntax
 
 - Timestamp column: GreptimeDB is a time-series database system, a time-series column must
 be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
@@ -37,7 +37,8 @@ data type for the time-series column, the inserted value of that column will be
 automatically converted to a timestamp in milliseconds.
 - Primary key: primary key is used to uniquely define a series of data, which is similar
 to tags in other time-series systems like [InfluxDB][1].
-[1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
+
+[1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
 > TBD:  Creating table in distributed mode.
 
@@ -82,7 +83,6 @@ Notice: currently only adding columns to tables is allowed, deleting columns and
 column definition will soon be supported.
 
 ## gRPC
-
 
 GreptimeDB now supports gRPC API to create tables. Assume that GreptimeDB instance has been started
 and is listening for incoming gRPC requests on `127.0.0.1:4200`
