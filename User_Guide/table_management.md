@@ -42,7 +42,7 @@ to tags in other time-series systems like [InfluxDB][1].
 
 > TBD:  Creating table in distributed mode.
 
-### List existing tables
+### List Existing Tables
 
 You can use `show tables` statement to list existing tables
 
