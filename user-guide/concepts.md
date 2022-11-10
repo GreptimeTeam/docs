@@ -25,19 +25,19 @@ level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Meta.
 
 - **Datanodes** hold regions of tables and data in Grpetime DB cluster. It
-  accepts read and write request sent from *Frontend*, and processes it against
-  its data. A single-instance datanode deployment can also be used as Greptime
-  DB standalone mode, for local development.
+  accepts read and write request sent from *Frontend*, and executes it against
+  its data. A single-instance *Datanode* deployment can also be used as
+  GreptimeDB standalone mode, for local development.
 - **Frontend** is a stateless component that can scale to as many as needed. It
   accepts incoming request, authenticates it, translates it from various
-  protocols into GreptimeDB's internal one, and forward to certain datanodes
-  under guidance from *Meta*.
+  protocols into GreptimeDB cluster's internal one, and forward to certain
+  *Datanode*s under guidance from *Meta*.
 - **Meta** is the central command of GreptimeDB cluster. In typical deployment,
-  at least three nodes is required to setup a reliable meta mini-cluster. *Meta*
-  manages database and table information, including how data spread across the
-  cluster and where to route requests to. It also keeps monitoring availability
-  and performance of datanodes, to ensure its routing table is valid and
-  up-to-date.
+  at least three nodes is required to setup a reliable *Meta*
+  mini-cluster. *Meta*  manages database and table information, including how
+  data spread across the cluster and where to route requests to. It also keeps
+  monitoring availability and performance of *Datanode*s, to ensure its routing
+  table is valid and up-to-date.
 
 ## Objects
 
@@ -46,14 +46,14 @@ about these building blocks of GreptimeDB.
 
 ### Database
 
-Similar to relational databases, database is the minimal unit of data container,
-within which data can be managed and computed.
+Similar to *database* in relational databases, database is the minimal unit of
+data container, within which data can be managed and computed.
 
 ### Table
 
 Table in GreptimeDB is similar to it's in traditional relational database
 except it requires a timestamp column. The table holds a set of data that shares
-a common schema. It can either be created from SQL CREATE TABLE, or inferred
+a common schema. It can either be created from SQL `CREATE TABLE`, or inferred
 from the input data structure (the auto-schema feature). In distributed
 deployment, a table can be split into multiple partitions that sit on different
 datanodes.
@@ -62,15 +62,16 @@ datanodes.
 
 Each partition of distributed table is called a region. A region may contain a
 sequence of continuous data, depending on the partition algorithm. Region
-information is managed by Meta. It's completely transparent to query users.
+information is managed by Meta. It's completely transparent to users who send
+the query.
 
 ### Data Types
 
-Data in GreptimeDB is strongly typed, in order to maximum its efficiency and
-performance. Auto-schema provides some flexibility when creating a table, but
-once the table is created, a column of data must share common data type.
+Data in GreptimeDB is strongly typed. Auto-schema feature provides some
+flexibility when creating a table. Once the table is created, data of the same
+column must share common data type.
 
-Current provided data type includes:
+Currently, we have these data types built-in:
 
 - Boolean
 - Integers (8-bit, 16-bit, 32-bit and 64-bit)
