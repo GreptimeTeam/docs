@@ -1,4 +1,4 @@
-# gtctl
+# `gtctl`
 
 ## What's gtctl
 
@@ -14,7 +14,7 @@ You can use [kind][2] to create your own test `Kubernetes` cluster:
 kind create cluster
 ```
 
-### 2\. Install `gtctl` by following script
+### 2\. Install `gtctl`
 
 For now, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64` achitecture.
 
