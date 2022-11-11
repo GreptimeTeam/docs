@@ -67,7 +67,7 @@ For the first version of MetaSrv, we chose Etcd as the consensus algorithm  comp
 
 ## Heartbeat Management
 
-The main means of communication between Datanode and MetaSrv is Heartbeat Request/Response Stream, and I even want this to be the only way to communicate, this idea is inspired by the design of [TiKV PD](https://github.com/tikv/pd) and my practical experience in [RheaKV](https://github.com/sofastack/sofa-jraft/tree/master/jraft-rheakv/rheakv-pd). Request sends its state, while MetaSrv sends different types of scheduling instructions via Heartbeat Response.
+The primary means of communication between Datanode and MetaSrv is the Heartbeat Request/Response Stream, and we want this to be the only way to communicate. This idea is inspired by the design of [TiKV PD](https://github.com/tikv/pd), and we have practical experience in [RheaKV](https://github.com/sofastack/sofa-jraft/tree/master/jraft-rheakv/rheakv-pd). The request sends its state, while MetaSrv sends different scheduling instructions via Heartbeat Response.
 
 A heartbeat will probably carry the data listed below, but this is not the final design, and we are still discussing and exploring exactly which data should be collected most.
 
