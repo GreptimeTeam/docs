@@ -6,7 +6,7 @@
 - Request-Router, so the Frontend knows where the data should be written to and read.
 - Load balancing for Datanode, such as who should handle new table creation requests, or more precisely, resource allocation decisions.
 - Election & High Availability, GreptimeDB is designed as a Leader-Follower architecture, only Leader nodes can write, Follower nodes can provide read, the number of Follower nodes is usually >= 1, Follower nodes need to be able to switch to Leader quickly when Leader is not available.
-- Statistical data collection (reported via Heartbeats on each node), such as CPU, Load, number of Tables on the node, average/peak data read/write size, etc., which can be used as the basis for distributed scheduling.
+- Statistical data collection (reported via Heartbeats on each node), such as CPU, Load, number of Tables on the node, average/peak data read/write size, etc., can be used as the basis for distributed scheduling.
 
 ## How the Frontend interacts with MetaSrv
 
