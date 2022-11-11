@@ -1,8 +1,8 @@
-# Data persistence and indexing
+# Data Persistence and Indexing
 
 Similar to all LSMT-like storage engines, data in MemTables is persisted to durable storage like the local disk file system or object storage service. GreptimeDB adopts [Apache Parquet][1] as its persistent file format.
 
-## SST file format
+## SST File Format
 
 Parquet is an open source columnar format that provides fast data query and has already been adopted by many projects like Delta Lake.
 
@@ -14,11 +14,11 @@ Second, data of the same column tends to be homogeneous. That can help compressi
 
 ![Parquet file format](../../public/parquet-file-format.png)
 
-## Data persistence
+## Data Persistence
 
 When the size of data buffered in MemTable reaches a threshold, the MemTable will be flushed to a SST file.
 
-## Indexing data in SST files
+## Indexing Data in SST Files
 
 Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which can be used for pruning and skipping.
 
@@ -28,7 +28,7 @@ For example, in the above Parquet file, if we want to filter row where `name` fi
 
 Besides Parquet's built-in statistics, we are working on supporting a separate index file that can utilize some time-series specific indexing techniques to improve scan performance.
 
-## Unified data access layer: OpenDAL
+## Unified Data Access Layer: OpenDAL
 
 GreptimeDB uses [OpenDAL][2] to provide a unified data access layer, thus the storage engine does not need to interact with different storage APIs, thus data can be migrated to cloud-based storage like AWS S3 seamlessly.
 
