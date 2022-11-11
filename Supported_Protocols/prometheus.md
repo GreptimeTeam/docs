@@ -34,7 +34,7 @@ remote_read:
 - url: http://localhost:4000/v1/prometheus/read?db=prometheus
 ```
 
-## Prometheus metrics in GreptimeDB
+## Prometheus Metrics in GreptimeDB
 
 When the metrics are written into GreptimeDB by remote write endpoint, they will be transformed as
 follows:
@@ -49,7 +49,7 @@ follows:
  A primary key with all label columns will be created automatically. When a new label is added, it
  will be added into primary key automatically too.
 
-### Example: Prometheus metrics in GreptimeDB table
+### Example: Prometheus metrics in GreptimeDB Table
 
 ```text
 prometheus_remote_storage_samples_total{instance="localhost:9090", job="prometheus",

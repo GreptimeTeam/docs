@@ -16,7 +16,7 @@ Available API:
 
 All these APIs are under the parent resource /v1,  which specifies the current HTTP API version.
 
-## /SQL
+## `/sql`
 
 `/sql` executes SQL statements and returns results.
 
@@ -148,7 +148,7 @@ Query data:
 }
 ```
 
-## /scripts and /run-script
+## `/scripts` and `/run-script`
 
 `/scripts` submits a Python script into GreptimeDB.
 
