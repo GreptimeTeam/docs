@@ -24,3 +24,12 @@ developer-guide:
     - data-persistence-indexing
     - wal
   - python-coprocessor
+supported-protocols:
+  - overview
+  - http_api
+  - grpc
+  - mysql
+  - postgresql
+  - opentsdb
+  - influxdb
+  - prometheus
