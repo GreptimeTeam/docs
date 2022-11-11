@@ -1,4 +1,4 @@
-# Add time-series data
+# Add Time-Series Data
 
 ## Introduction
 
