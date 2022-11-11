@@ -9,7 +9,7 @@ The GreptimeDB operator abstract the model of maintaining the high aviable Grept
 can create you own cluster as easy as possible:
 
 ```shell
-$ cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: greptime.io/v1alpha1kind: GreptimeDBClustermetadata:
   name: basicspec:
   base:
@@ -28,7 +28,7 @@ apiVersion: greptime.io/v1alpha1kind: GreptimeDBClustermetadata:
 You can use [kind][4] to create your own test `Kubernetes` cluster:
 
 ``` shell
-$ kind create cluster
+kind create cluster
 ```
 
 ### 2\. Use Helm to install GreptimeDB `Operator`
@@ -37,9 +37,9 @@ Make sure you already install [Helm][5].  Use the following commands to install
 `greptimedb-operator` in default namespace:
 
 ```shell
-$ helm repo add gt https://greptimeteam.github.io/helm-charts/
-$ helm repo update
-$ helm install gtcloud greptimedb-operator -n default
+helm repo add gt https://greptimeteam.github.io/helm-charts/
+helm repo update
+helm install gtcloud greptimedb-operator -n default
 ```
 
 The maintained Helm charts is in [helm-charts][6].
@@ -47,19 +47,19 @@ The maintained Helm charts is in [helm-charts][6].
 ### 3\. Create your own GreptimeDB cluster
 
 ```shell
-$ helm install mydb greptimedb -n default
+helm install mydb greptimedb -n default
 ```
 
 After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
 
 ```shell
-$ kubectl port-forward svc/mydb-frontend 3306:3306 > connections.out &
+kubectl port-forward svc/mydb-frontend 3306:3306 > connections.out &
 ```
 
 Use `mysql` to connect GreptimeDB:
 
 ```shell
-$ mysql -h 127.0.0.1 -P 3306
+mysql -h 127.0.0.1 -P 3306
 ```
 
 [1]: <https://github.com/GreptimeTeam/greptimedb-operator>
