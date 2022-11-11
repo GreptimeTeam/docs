@@ -12,6 +12,22 @@
 
 First, the routing table in Request-Router will be roughly the following structure (note that this is only the logical structure, the actual storage structure will vary, for example, endpoints may have dictionary compression).
 
+```
+  table_A
+      table_name
+      table_schema // for physical plan
+      regions
+        region_1
+          mutate_endpoint
+          select_endpoint_1, select_endpoint_2
+        region_2
+          mutate_endpoint
+          select_endpoint_1, select_endpoint_2, select_endpoint_3
+        region_xxx
+   table_B
+      ...
+```
+
 ### Create Table
 
 1. The Frontend sends `CREATE TABLE` requests to MetaSrv.
