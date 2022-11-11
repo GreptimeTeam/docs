@@ -2,8 +2,8 @@
 
 - Use relative path for internal link
 - Append your page to `summary.yml`
-- Use `-` over `_` in file names
-- Commit source files of images
+- Use `-` and lowercase in file names
+- Commit source files of images to `_internal/image_sources`
 
 ## PR Title Check
 
