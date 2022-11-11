@@ -45,7 +45,7 @@ First, the routing table in Request-Router will be roughly the following structu
 
 1. As with `Insert`, the Frontend first fetches the route table from the local cache.
 2. Unlike `Insert`, for `Select`, the Frontend needs to extract the read-only node (follower) from the route table. Then dispatch the request to the leader or follower node depending on the priority.
-3. The distributed query engine in Frontend distributes multiple sub-query tasks based on the routing information and aggregates the query results.
+3. The distributed query engine in the Frontend distributes multiple sub-query tasks based on the routing information and aggregates the query results.
 
 ## MetaSrv Architecture
 
