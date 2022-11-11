@@ -59,7 +59,7 @@ As you can see, MetaSrv has a dependency on distributed consensus because:
 2. Second, MetaSrv must provide an election API for Datanode to elect "write" and "read-only" nodes and help Datanode achieve high availability.
 3. Finally, `Metadata`, `Schema` and other data are also stored on MetaSrv, which needs to be highly reliable and strongly consistent, and consensus-based algorithms are a better way to store them.
 
-For the first version of MetaSrv, we chose Etcd as the consensus algorithm  component(MetaSrv was designed consider adapting different implementations and even creating a new wheel ) for the following main reasons:
+For the first version of MetaSrv, we chose Etcd as the consensus algorithm  component (MetaSrv was designed to consider adapting different implementations and even creating a new wheel ) mainly for the following reasons:
 
 1. Etcd provides exactly the API we need, `Watch`, `Election`, `KV`, etc., which fits the needs perfectly.
 2. We only do two things with distributed consensus, elections (using the `Watch` mechanism) and storing a small amount of metadata, neither of which essentially requires us to customize our own state machine, nor do we need to customize our own state machine based on raft; the small amount of data also does not require multi-raft-group support.
