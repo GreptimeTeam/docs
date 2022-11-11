@@ -3,8 +3,11 @@
 ## Introduction
 
 The GreptimeDB HTTP API is based on standard HTTP protocol and is easy to work with off-the-shelf HTTP clients.
+
 The GreptimeDB dashboard is a web console based on HTTP API.
+
 Available API:
+
 - /sql
 - /scripts and /run-script
 - /opentsdb to support OpenTSDB protocol
@@ -102,6 +105,7 @@ Insert data:
 ```
 
 Query data:
+
 ```shell
  curl -v -XPOST -G http://localhost:3000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
@@ -264,7 +268,7 @@ curl -XPOST -G "http://localhost:3000/v1/run-script?name=square"
 }
 ```
 
-### Parameters and Result
+### Parameters and Result for Python scripts
 
 `/scripts` accepts a query parameter name for naming the script and processes the POST method body as the script file content.
 

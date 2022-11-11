@@ -58,11 +58,11 @@ remote_name="648f0c", url="http://localhost:4000/v1/prometheus/write"} 500
 
 This example will be transformed as a row in the table `prometheus_remote_storage_samples_total`：
 
-| Column             | Value                                     | Column  Data  Type |
-|:-------------------|:------------------------------------------|:-------------------|
-| instance           | localhost:9090                            | String             |
-| job                | prometheus                                | String             |
-| remote\_name       | 648f0c                                    | String             |
-| url                | http://localhost:4000/v1/prometheus/write | String             |
-| `greptime\_value`  | 500                                       | Double             |
-| greptime_timestamp | The sample's unix timestamp               | Timestamp          |
+| Column             | Value                                       | Column  Data  Type |
+|:-------------------|:--------------------------------------------|:-------------------|
+| instance           | localhost:9090                              | String             |
+| job                | prometheus                                  | String             |
+| remote\_name       | 648f0c                                      | String             |
+| url                | <http://localhost:4000/v1/prometheus/write> | String             |
+| `greptime\_value`  | 500                                         | Double             |
+| greptime_timestamp | The sample's unix timestamp                 | Timestamp          |
