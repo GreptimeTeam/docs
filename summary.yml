@@ -15,7 +15,7 @@ developer-guide:
   - frontend:
     - table-sharding
     - distributed-querying
-  - datanode
+  - datanode:
     - storage-engine
     - query-engine
     - data-persistence-indexing
