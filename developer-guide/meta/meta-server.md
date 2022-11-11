@@ -17,7 +17,7 @@ First, the routing table in Request-Router will be roughly the following structu
 1. The Frontend sends `CREATE TABLE` requests to MetaSrv.
 2. Plan the number of Regions according to the partition rules contained in the request.
 3. Check the global view of resources available to Datanodes (collected by Heartbeats) and assign one node  to each region.
-4. Frontend is responsible for creating the table and storing the `Schema` to MetaSrv after successful creation.
+4. The Frontend is responsible for creating the table and storing the `Schema` to MetaSrv after successful creation.
 
 ### Insert
 
