@@ -16,7 +16,7 @@ This is helpful when troubleshooting complex issues
 
 ## Data Ingestion Process
 
-![Data Ingestion Process](../public/data_ingest_process.png)
+![Data Ingestion Process](../public/data-ingest-process.png)
 
 GreptimeDB supports automatic create table based on the first writing of data.
 Users can also create tables manually. For more details, please refer to [Table Management][1].
@@ -31,7 +31,7 @@ CREATE TABLE monitor (
 PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 ```
 
-[1]: /table_management.md
+[1]: /table-management.md
 
 ### Write API
 
@@ -64,7 +64,7 @@ WriteRows rows = WriteRows.newBuilder(TableName.with("db_name", "monitor")) //
 
 ## Data Query Process
 
-![Data Query Process](../public/data_query_process.png)
+![Data Query Process](../public/data-query-process.png)
 
 ### Query API
 
