@@ -143,7 +143,7 @@ message ReplicaStat {
 
 ## Central Nervous System (CNS)
 
-I envision it as an algorithmic system that relies on real-time and historical heartbeat data from each node to make some smarter scheduling decisions and send them to MetaSrv's Autoadmin unit, which distributes the scheduling decisions, either by the Datanode itself or more likely by the PaaS platform.
+We are to build an algorithmic system, which relies on real-time and historical heartbeat data from each node, should make some smarter scheduling decisions and send them to MetaSrv's Autoadmin unit, which distributes the scheduling decisions, either by the Datanode itself or more likely by the PaaS platform.
 
 ## Abstraction of Workloads
 
