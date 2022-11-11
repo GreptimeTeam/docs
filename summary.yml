@@ -1,4 +1,5 @@
 getting-started:
+  - overview
   - create-a-time-series-table
   - add-time-series-data
   - query-data-with-sql
@@ -13,9 +14,11 @@ user-guide:
 developer-guide:
   - get-started
   - frontend:
+    - overview
     - table-sharding
     - distributed-querying
   - datanode:
+    - overview
     - storage-engine
     - query-engine
     - data-persistence-indexing
