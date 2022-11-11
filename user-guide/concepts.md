@@ -34,7 +34,7 @@ Frontend and Meta.
   *Datanode*s under guidance from *Meta*.
 - **Meta** is the central command of GreptimeDB cluster. In typical deployment,
   at least three nodes is required to setup a reliable *Meta*
-  mini-cluster. *Meta*  manages database and table information, including how
+  mini-cluster. *Meta* manages database and table information, including how
   data spread across the cluster and where to route requests to. It also keeps
   monitoring availability and performance of *Datanode*s, to ensure its routing
   table is valid and up-to-date.
@@ -98,7 +98,7 @@ data stack. Currently, we have these approaches to access the database:
 - Prometheus remote read/write endpoints
 - Influxdb line protocol compatible API over HTTP
 - OpenTSDB compatible API over TCP and HTTP
-- GRPC endpoints
+- gRPC endpoints
 
 ## What's Next
 
