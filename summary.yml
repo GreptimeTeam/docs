@@ -11,7 +11,7 @@ user-guide:
   - coprocessor-and-scripting
   - java-sdk
 developer-guide:
-  - get_started
+  - get-started
   - frontend:
     - table-sharding
     - distributed-querying
