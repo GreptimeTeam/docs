@@ -12,7 +12,7 @@ jobs:
       PARENT_REPOSITORY: 'GreptimeTeam/Website'
       CHECKOUT_BRANCH: 'dev'
       PR_AGAINST_BRANCH: 'dev'
-      OWNER: 'org'
+      OWNER: 'GreptimeTeam'
 
     steps:
       - name: Checkout Code
