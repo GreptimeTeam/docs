@@ -55,7 +55,7 @@ First, the routing table in Request-Router will be roughly the following structu
 
 As can be seen from the above figure, MetaSrv has a dependency on distributed consensus because:
 
-1. First of all, MetaSrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single meta node to receive heartbeats, which makes it easy to do some calculations or scheduling based on global information accurately and quickly. As for how the Datanode connects to the leader, this is the responsibility of MetaClient (using redirect, Heartbeat requests will be a gRPC stream and using redirect will be less error-prone than forward), which is transparent to the Datanode.
+1. First of all, MetaSrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single meta node to receive heartbeats, which makes it easy to do some calculations or scheduling based on global information accurately and quickly. As for how the Datanode connects to the leader, this is the responsibility of MetaClient (using a redirect, Heartbeat requests will be a gRPC stream, and using redirect will be less error-prone than forwarding), which is transparent to the Datanode.
 2. Second, MetaSrv must provide an election API for Datanode to elect "write" and "read-only" nodes and help Datanode achieve high availability.
 3. Finally, `Metadata`, `Schema` and other data are also stored on MetaSrv, which needs to be highly reliable and strongly consistent, and consensus-based algorithms are a better way to store them.
 
