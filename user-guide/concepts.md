@@ -30,7 +30,7 @@ Frontend and Meta.
   GreptimeDB standalone mode, for local development.
 - **Frontend** is a stateless component that can scale to as many as needed. It
   accepts incoming request, authenticates it, translates it from various
-  protocols into GreptimeDB cluster's internal one, and forward to certain
+  protocols into GreptimeDB cluster's internal one, and forwards to certain
   *Datanode*s under guidance from *Meta*.
 - **Meta** is the central command of GreptimeDB cluster. In typical deployment,
   at least three nodes is required to setup a reliable *Meta*
