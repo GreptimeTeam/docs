@@ -2,4 +2,4 @@
 
 # Docs
 
-[Getting started](./Getting_Started/index.md)
+[Getting started](./getting-started/index.md)

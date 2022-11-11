@@ -1,7 +1,23 @@
-User_Guide:
+getting-started:
+  - create-a-time-series-table
+  - add-time-series-data
+  - query-data-with-sql
+  - visualize-data
+  - process-data-with-python
+user-guide:
   - concepts
-  - reading_writing_data
-  - table_management
-  - Coprocessor and scripting
-Developer_Guide:
-  - frontend
+  - reading-writing-data
+  - table-management
+  - coprocessor-and-scripting
+  - java-sdk
+developer-guide:
+  - get_started
+  - frontend:
+    - table-sharding
+    - distributed-querying
+  - datanode
+    - storage-engine
+    - query-engine
+    - data-persistence-indexing
+    - wal
+  - python-coprocessor
