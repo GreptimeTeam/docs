@@ -3,13 +3,18 @@ name: Website Sync
 on:
   push:
     branches: [main]
+    paths:
+      - summary.yml
+      - "**.md"
+      - public/**
+      - .github/workflows/sync.yml
 
 jobs:
   build:
     name: Submodule update
     runs-on: ubuntu-latest
     env:
-      PARENT_REPOSITORY: 'GreptimeTeam/Website'
+      PARENT_REPOSITORY: 'GreptimeTeam/website'
       CHECKOUT_BRANCH: 'dev'
       PR_AGAINST_BRANCH: 'dev'
       OWNER: 'GreptimeTeam'
