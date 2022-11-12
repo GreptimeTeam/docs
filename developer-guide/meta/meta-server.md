@@ -151,4 +151,4 @@ The level of workload abstraction determines the efficiency and quality of the s
 
 DynamoDB defines RCUs & WCUs (Read Capacity Units / Write Capacity Units), which is explained as: an RCU is a read request of 4KB data, and a WCU is a write request of 1KB data, when using RCUs and WCUs to describe the workload, the measurability of performance is When using RCU and WCU to describe workloads, performance measurability is relatively easier to do and resource preallocation is more informative, because different hardware capabilities can be simply abstracted as a combination of RCU and WCU.
 
-However, GreptimeDB still faces a more complex situation than DynamoDB, especially RCU does not describe GreptimeDB's read workload well, because RCU does not contain read requests that require a lot of computation. We are exploring this part.
+However, GreptimeDB still faces a more complex situation than DynamoDB, in particular, RCU doesn't fit to describe GreptimeDB's read workloads which require a lot of computation. We are working on that.
