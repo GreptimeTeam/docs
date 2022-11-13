@@ -2,60 +2,52 @@
 
 ## Introduction
 
-GreptimeDB's query engine is heavily dependent on [Apache DataFusion][1] (subproject under [Apache
-Arrow][2]), a brilliant query engine in Rust. It provides a set of well functional components from
-logical plan, physical plan and the execution runtime. Our query engine is generally built on top
-of it. Here is how each component is orchestrated and their positions during an execution procedure.
+GreptimeDB's query engine is built on [Apache DataFusion][1] (subproject under [Apache
+Arrow][2]), a brilliant query engine written in Rust. It provides a set of well functional components from
+logical plan, physical plan and the execution runtime. Below explains how each component is orchestrated and their positions during execution.
 
 ![Execution Procedure](../../public/execution-procedure.png)
 
-The entry point is logical plan, which is used as the general intermediate representation of a
-query or execution logic etc. Two noticeable sources of logical plan are from the user query, like
-SQL through SQL parser and planner. Or from the Frontend's distributed query, this part will be
-detailed in the following section.
+The entry point is the logical plan, which is used as the general intermediate representation of a
+query or execution logic etc. Two noticeable sources of logical plan are from: 1. the user query, like
+SQL through SQL parser and planner; 2. the Frontend's distributed query, which is explained in details in the following section.
 
-Next is physical plan, or in some code called execution plan. Unlike logical plan which is a big
-enumeration containing all the logical plan variants (except the special extension plan node),
-physical plan is in fact a trait that defines a group of methods that will be invoked during
-execution. All the data processing logic is encapsulated in corresponding structures that
-implemented the trait. They are the actual operations that will be performed on the data, like
+Next is the physical plan, or the execution plan. Unlike the logical plan which is a big
+enumeration containing all the logical plan variants (except the special extension plan node), the
+physical plan is in fact a trait that defines a group of methods invoked during
+execution. All data processing logics are packed in corresponding structures that
+implement the trait. They are the actual operations performed on the data, like
 aggregator MIN or AVG, and table scan SELECT ... FROM.
 
-Optimization phase, which transforms both logical and physical plans to achieve a better execution
-performance, is now all based on rules, or in other words "Rule Based Optimization". Some of the
-rules are DataFusion native and others are for our scenarios. In the future, we plan to add more
-rules and leverage the data statistics to perform cost based optimization or CBO.
+The optimization phase which improves execution performanc by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
+rules and leverage the data statistics for Cost Based Optimization/CBO.
 
 The last phase "execute" is a verb, stands for the procedure that reads data from storage, performs
-calculations and generates the expected result. It's more abstract than previous concepts, but just
-simply image it as executing a rust async function. And it's indeed a future (stream).
+calculations and generates the expected results. Although it's more abstract than previously mentioned cencepts, you can just
+simply imagine it as executing a Rust async function. And it's indeed a future (stream).
 
-To see how your SQL will be represented in logical or physical plan, EXPLAIN [VERBOSE] <SQL> is
-very useful.
+EXPLAIN [VERBOSE] <SQL> is very useful if you want to see how your SQL is represented in the logical or physical plan. 
 
 ## Data Representation
 
-GreptimeDB uses [Apache Arrow][2] as the in-memory data representation. It's column-oriented and
-cross-planform format, and also contains lots of high-performance data operators. These features
-make it convenient to share data in many different environments, and implement calculation logic
-easily.
+GreptimeDB uses [Apache Arrow][2] as the in-memory data representation. It's column-oriented, in
+cross-planform format, and also contains many high-performance data operators. These features
+make it easy to share data in many different environments and implement calculation logic.
 
 ## Indexing
 
-In time series data, there are two important dimensions timestamp column and tag columns (or like
-primary key in a general relational database). GreptimeDB groups data in time buckets, so it's easy
+In time series data, there are two important dimensions: timestamp and tag columns (or like
+primary key in a general relational database). GreptimeDB groups data in time buckets, so it's efficient
 to locate and extract data within the expected time range at a very low cost. And from the other
-data columns, the mainly used persist file format [Apache Parquet][3] in GreptimeDB helps a lot. It
-provides multi- level indices and filters that make it easy to prune data during querying. And we
-plan to utilize this feature more in depth, as well as develop our separated index to handle the
-more complex use cases in the future.
+data columns, the mainly used persist file format [Apache Parquet][3] in GreptimeDB helps a lot -- it
+provides multi-level indices and filters that make it easy to prune data during querying. In the future, we
+will make more use of this feature, and develop our separated index to handle more complex use cases.
 
 ## Statistics[WIP]
 
 ## Extensibility
 
-Extending operations in GreptimeDB is extremely simple. It now supports two ways to do this. One
-marvellous way is via the [Python Coprocessor][4] interface, or you can implement your operator like
+Extending operations in GreptimeDB is extremely simple. There are two ways to do it: 1. via the [Python Coprocessor][4] interface; 2. implement your operator like
 [this][5].
 
 ## Distributed Execution
