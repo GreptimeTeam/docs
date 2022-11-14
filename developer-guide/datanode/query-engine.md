@@ -17,7 +17,7 @@ enumeration containing all the logical plan variants (except the special extensi
 physical plan is in fact a trait that defines a group of methods invoked during
 execution. All data processing logics are packed in corresponding structures that
 implement the trait. They are the actual operations performed on the data, like
-aggregator MIN or AVG, and table scan SELECT ... FROM.
+aggregator `MIN` or `AVG`, and table scan `SELECT ... FROM`.
 
 The optimization phase which improves execution performanc by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
 rules and leverage the data statistics for Cost Based Optimization/CBO.
@@ -26,7 +26,7 @@ The last phase "execute" is a verb, stands for the procedure that reads data fro
 calculations and generates the expected results. Although it's more abstract than previously mentioned cencepts, you can just
 simply imagine it as executing a Rust async function. And it's indeed a future (stream).
 
-EXPLAIN [VERBOSE] <SQL> is very useful if you want to see how your SQL is represented in the logical or physical plan. 
+`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan. 
 
 ## Data Representation
 
@@ -43,7 +43,6 @@ data columns, the mainly used persist file format [Apache Parquet][3] in Greptim
 provides multi-level indices and filters that make it easy to prune data during querying. In the future, we
 will make more use of this feature, and develop our separated index to handle more complex use cases.
 
-## Statistics[WIP]
 
 ## Extensibility
 
