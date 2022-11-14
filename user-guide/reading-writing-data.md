@@ -34,7 +34,7 @@ connected to GreptimeDB.
 ### Creating Table
 
 First, you need to create a table. Take the SQL
-in [Getting Started](../Getting_Started/index.md) guide as example:
+in [Getting Started](../getting-started/overview.md) guide as example:
 
 ```SQL
 mysql> CREATE TABLE system_metrics (
@@ -107,7 +107,7 @@ to illustrate readings and writings. You can use any gRPC tools or SDKs to talk
 to GreptimeDB's gRPC service.
 
 > You can find Greptime's officially supported Java SDK
-> [here](/java_sdk.md).
+> [here](./java-sdk.md).
 
 ### Creating Table with gRPC
 

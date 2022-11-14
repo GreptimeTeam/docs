@@ -20,6 +20,6 @@ flow through the `frontend` cluster and how they are processed.
 - [Table Sharding][2]
 - [Distributed Querying][3]
 
-[1]: <../../supported_protocols/index.md>
-[2]: </table_sharding.md>
-[3]: </distributed_querying.md>
+[1]: <../../user-guide/supported-protocols/overview.md>
+[2]: <./table-sharding.md>
+[3]: <./distributed-querying.md>
