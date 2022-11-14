@@ -281,8 +281,8 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 ## OpenAPI docs
 
 A [OAS](https://swagger.io/specification/) compatible OpenAPI specification is
-available at `http://localhost:4000/v1/private/api.json`. And a [Redoc UI] is
-also provided at `http://localhost:4000/v1/private/docs`
+available at `http://localhost:4000/v1/private/api.json`. And a Redoc UI is also
+provided at `http://localhost:4000/v1/private/docs`
 
 ## Result codes table
 
