@@ -1,20 +1,20 @@
 # Concepts
 
-GreptimeDB is an open-source time-series database with special focus on
+GreptimeDB is an open-source time-series database with a special focus on
 scalability, analytical capabilities and efficiency. It's designed to work on
-infrastructure of cloud era, and benefits from its elasticity and commodity
-storage.
+infrastructure of the cloud era, and users benefit from its elasticity and
+commodity storage.
 
-The core developers of GreptimeDB have been building time-series data platform
-for years. Based on their best-practices, GreptimeDB is born to bring you:
+Our core developers have been building time-series data platform for
+years. Based on their best-practices, GreptimeDB is born to bring you:
 
 - [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases)
-  that scales to highly-available distributed cluster, with transparent
-  experience from user's perspective
-- Columnar data layout optimised for time-series, compacted, compressed, stored
-  on various storage backends
+  that scales to highly-available distributed cluster, providing a transparent
+  expierence for cluster users
+- Optimized columnar layout for handling time-series data; compacted,
+  compressed, stored on various storage backends
 - Flexible index options, tackling high cardinality issues down
-- Distributed parallel query execution, leveraging elastic computing resource
+- Distributed, parallel query execution, leveraging elastic computing resource
 - Native SQL, and Python scripting for advanced analytical scenarios
 - Widely adopted database protocols and APIs
 - Extensible table engine architecture for extensive workloads
@@ -26,7 +26,7 @@ level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Meta.
 
 - [**Datanodes**](../developer-guide/datanode/overview.md) hold regions of
-  tables and data in Grpetime DB cluster. It accepts read and write request sent
+  tables and data in Greptime DB cluster. It accepts read and write request sent
   from *Frontend*, and executes it against its data. A single-instance
   *Datanode* deployment can also be used as GreptimeDB standalone mode, for
   local development.
@@ -54,7 +54,7 @@ data container, within which data can be managed and computed.
 
 ### Table
 
-Table in GreptimeDB is similar to it's in traditional relational database except
+Table in GreptimeDB is similar to it in traditional relational database except
 it requires a timestamp column. The table holds a set of data that shares a
 common schema. It can either be created from SQL `CREATE TABLE`, or inferred
 from the input data structure (the auto-schema feature). In distributed
@@ -82,7 +82,7 @@ Currently, we have these data types built-in:
 - Float numbers (32-bit and 64-bit)
 - Bytes
 - String
-- Date, datatime and timestamp
+- Date, datetime and timestamp
 
 There are new types in upcoming releases:
 
