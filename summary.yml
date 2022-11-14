@@ -10,6 +10,15 @@
   - table-management
   - coprocessor-and-scripting
   - java-sdk
+  - supported-protocols:
+    - overview
+    - http-api
+    - grpc
+    - mysql
+    - postgresql
+    - opentsdb
+    - influxdb
+    - prometheus
 - developer-guide:
   - get-started
   - frontend:
@@ -23,12 +32,3 @@
     - data-persistence-indexing
     - wal
     - python-coprocessor
-- supported-protocols:
-  - overview
-  - http-api
-  - grpc
-  - mysql
-  - postgresql
-  - opentsdb
-  - influxdb
-  - prometheus
