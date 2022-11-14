@@ -22,7 +22,7 @@ Please follow the settings in [Prometheus configuration][1] (`prometheus.yml`):
 - `remote_write`
 - `remote_read`
 
-[1]: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file>
+[1]: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file
 
 The configured URLs must be accessible by your running Prometheus servers. For example:
 
@@ -42,8 +42,8 @@ follows:
 | Sample Metrics | In GreptimeDB                | GreptimeDB Data Types |
 |:---------------|:-----------------------------|:----------------------|
 | Name           | Table (Auto-created) Name    | String                |
-| Value          | Column (greptime\_value)     | Double                |
-| Timestamp      | Column (greptime\_timestamp) | Timestamp             |
+| Value          | Column (greptime_value)     | Double                |
+| Timestamp      | Column (greptime_timestamp) | Timestamp             |
 | Label          | Column                       | String                |
 
  A primary key with all label columns will be created automatically. When a new label is added, it
@@ -62,7 +62,7 @@ This example will be transformed as a row in the table `prometheus_remote_storag
 |:-------------------|:--------------------------------------------|:-------------------|
 | instance           | localhost:9090                              | String             |
 | job                | prometheus                                  | String             |
-| remote\_name       | 648f0c                                      | String             |
+| remote_name        | 648f0c                                      | String             |
 | url                | <http://localhost:4000/v1/prometheus/write> | String             |
-| `greptime\_value`  | 500                                         | Double             |
+| greptime_value     | 500                                         | Double             |
 | greptime_timestamp | The sample's unix timestamp                 | Timestamp          |

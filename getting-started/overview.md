@@ -11,8 +11,8 @@ explore it's features. In this tutorial, you will learn how to:
 
 As an example, we will create a time-series table to store system metrics from hosts in IDC.
 
-[1]: /create-a-time-series-table.md
-[2]: /add-time-series-data.md
-[3]: /query-data-with-sql.md
-[4]: /process-data-with-python.md
-[5]: /visualize-data.md
+[1]: ./create-a-time-series-table.md
+[2]: ./add-time-series-data.md
+[3]: ./query-data-with-sql.md
+[4]: ./process-data-with-python.md
+[5]: ./visualize-data.md

@@ -11,7 +11,7 @@ into GreptimeDB.
 In GreptimeDB, OpenTSDB line protocol is handled only in [Frontend][1], so you have to
 start [Frontend][1] first.
 
-[1]: <../Developer_Guide/frontend/index.md>
+[1]: ../../developer-guide/frontend/overview.md
 
 ## Telnet
 
