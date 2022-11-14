@@ -5,8 +5,8 @@
 The GreptimeDB [Operator][1] manages GreptimeDB clusters on [Kubernetes][2] by using [Operator
 pattern][3].
 
-The GreptimeDB operator abstract the model of maintaining the high aviable GreptimeDB cluster, you
-can create you own cluster as easy as possible:
+The GreptimeDB operator abstracts the model of maintaining the highly available GreptimeDB cluster. You
+can create your own cluster as easily as possible:
 
 ```shell
 cat <<EOF | kubectl apply -f -
@@ -21,7 +21,7 @@ apiVersion: greptime.io/v1alpha1kind: GreptimeDBClustermetadata:
     replicas: 3
 ```
 
-## Get Started with GreptimeDB `Operator` on `Kubernetes`
+## Getting Started with GreptimeDB `Operator` on `Kubernetes`
 
 ### 1\. Create a test `Kubernetes` cluster
 
@@ -33,8 +33,8 @@ kind create cluster
 
 ### 2\. Use Helm to install GreptimeDB `Operator`
 
-Make sure you already install [Helm][5].  Use the following commands to install
-`greptimedb-operator` in default namespace:
+Make sure you have already installed [Helm][5].  Use the following commands to install
+`greptimedb-operator` in the default namespace:
 
 ```shell
 helm repo add gt https://greptimeteam.github.io/helm-charts/
@@ -42,7 +42,7 @@ helm repo update
 helm install gtcloud greptimedb-operator -n default
 ```
 
-The maintained Helm charts is in [helm-charts][6].
+The maintained Helm charts are in [helm-charts][6].
 
 ### 3\. Create your own GreptimeDB cluster
 
