@@ -10,7 +10,7 @@ This article will show how to manually build a distributed GreptimeDB locally.
     git clone https://github.com/GreptimeTeam/greptimedb.git
     ```
 
-2. Start etcd. etcd is a default backend for Mata.
+2. Start etcd. etcd is a default backend for Meta.
 
 3. Start one Meta instance.
 
