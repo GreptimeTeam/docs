@@ -40,15 +40,15 @@ export default (async () => ({
     nav: [
       {
         text: 'Getting Started',
-        link: '/Getting-Started/Overview',
+        link: '/getting-started/overview',
       },
       {
         text: 'User Guide',
-        link: '/User-Guide/Concepts',
+        link: '/user-guide/concepts',
       },
       {
         text: 'Developer Guide',
-        link: '/Developer-Guide/Get-Started',
+        link: '/developer-guide/get-started',
       },
     ],
   },
@@ -70,9 +70,11 @@ async function makeSidebar() {
         items: content.map((item) => makeSidebarItem(item, `${path}/${title}`)),
       }
     } else {
+      let link = `${path}/${items}`.toLocaleLowerCase()
+      let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
       return {
-        text: items.replace(/-/g, ' '),
-        link: `${path}/${items}`,
+        text: file.split('\n')[0].replace('# ', ''),
+        link,
       }
     }
   }
