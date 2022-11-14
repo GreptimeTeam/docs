@@ -14,7 +14,7 @@ GreptimeDB supports inserting InfluxDB metrics via HTTP endpoints. We use the re
 
 The HTTP endpoint in GreptimeDB for handling metrics is `/influxdb/write`
 
-> Remember to prefix the path with GreptimeDB's http API version, `v1`
+> Note that remembers to prefix the path with GreptimeDB's HTTP API version, `v1`
 
 ### A Simple Example
 
