@@ -26,7 +26,7 @@ The last phase "execute" is a verb, stands for the procedure that reads data fro
 calculations and generates the expected results. Although it's more abstract than previously mentioned cencepts, you can just
 simply imagine it as executing a Rust async function. And it's indeed a future (stream).
 
-`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan. 
+`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan.
 
 ## Data Representation
 
@@ -51,10 +51,11 @@ Extending operations in GreptimeDB is extremely simple. There are two ways to do
 
 ## Distributed Execution
 
-Covered in Clustering & Sharding, #Distributed Querying.
+Covered in Clustering & Sharding, [Distributed Querying][6].
 
 [1]: <https://github.com/apache/arrow-datafusion>
 [2]: <https://arrow.apache.org/>
 [3]: <https://parquet.apache.org>
 [4]: <../python-coprocessor.md>
 [5]: <https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/how-to/how-to-write-aggregate-function.md>
+[6]: <../frontend/distributed-querying.md>
