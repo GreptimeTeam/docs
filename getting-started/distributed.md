@@ -64,7 +64,7 @@ You can follow the steps to use `SQL` to play with distributed insertions and qu
     engine=mito;
     ```
 
-    The result  looks like the following:
+    The result looks like the following:
 
     ```shell
     mysql> CREATE TABLE dist_table(
