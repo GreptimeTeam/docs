@@ -13,9 +13,11 @@
 - developer-guide:
   - get-started
   - frontend:
+    - overview
     - table-sharding
     - distributed-querying
   - datanode:
+    - overview
     - storage-engine
     - query-engine
     - data-persistence-indexing
