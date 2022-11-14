@@ -2,7 +2,7 @@
 
 ## What's gtctl
 
-[gtctl][1](g-t-control) is a command-line tool for managing GreptimeDB cluster. `gtctl` is the All-in-One binary that integrates multiple operations of GreptimeDB cluster.
+[gtctl][1], g-t-control, is a command-line tool for managing the GreptimeDB clusters. gtctl is the all-in-one binary that integrates with multiple operations of GreptimeDB clusters.
 
 ## Get Started with gtctl on Kubernetes
 
@@ -16,7 +16,7 @@ kind create cluster
 
 ### 2\. Install `gtctl`
 
-For now, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64` achitecture.
+Currently, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64`.
 
 ```shell
 curl -L https://github.com/greptimeteam/gtctl/blob/main/hack/install.sh | sh
@@ -28,10 +28,10 @@ curl -L https://github.com/greptimeteam/gtctl/blob/main/hack/install.sh | sh
 gtctl create cluster mydb -n default
 ```
 
-After the installation, the `gtctl` will create:
+After the installation is completed, `gtctl` creates the followings:
 
 - `etcd` cluster
-- `frontend` instances(default replicas is 1)
+- `frontend` instances (default replicas is 1)
 - `datanode` instances(default replicas is 3)
 - `metasrv` service(default replicas is 1)
 
