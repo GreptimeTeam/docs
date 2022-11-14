@@ -1,4 +1,5 @@
 - getting-started:
+  - overview
   - create-a-time-series-table
   - add-time-series-data
   - query-data-with-sql
