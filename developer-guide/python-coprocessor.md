@@ -18,4 +18,4 @@ parameters, or a constant(which is extends to the same length of input arguments
 We are using a experimental python [interpreter](https://github.com/RustPython/RustPython) to run
 the coprocessor script, it support python 3.10 grammar, but not C API, so no numpy or pandas, but
 you can still use all the very pythonic syntax(see [User Guide/Coprocessor and
-scripting](../User_Guide/coprocessor_and_scripting.md) for more!)
+scripting](../user-guide/coprocessor-and-scripting.md) for more!)

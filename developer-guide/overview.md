@@ -39,7 +39,7 @@ backend.
 
 ## How it works
 
-![Interactions between components](../public/how-it-works.md)
+![Interactions between components](../public/how-it-works.png)
 
 Before diving into each component, let's take a high level view of how the database works.
 
@@ -63,8 +63,6 @@ For more details on each component, see the following guides:
 
 - [frontend][1]
 - [datanode][2]
-- [meta][3]
 
-[1]: </frontend/index.md>
-[2]: </datanode/index.md>
-[3]: </meta.md>
+[1]: <./frontend/overview.md>
+[2]: <./datanode/overview.md>

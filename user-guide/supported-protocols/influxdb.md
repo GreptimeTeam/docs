@@ -4,13 +4,13 @@ GreptimeDB supports Influxdb's line protocol. You can use http post to insert me
 
 Currently in GreptimeDB, InfluxDB line protocol is handled only in [Frontend][1]. So you also have to start [Frontend][1].
 
-[1]: <../Developer_Guide/frontend/index.md>
+[1]: ../../developer-guide/frontend/overview.md
 
 ## HTTP
 
 GreptimeDB supports inserting InfluxDB metrics via HTTP endpoints. We use the request format described in [InfluxDB line protocol][2].
 
-[2]: <https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/>
+[2]: https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/
 
 The http endpoint in GreptimeDB for handling metrics is `/influxdb/write`
 
@@ -27,7 +27,7 @@ cd greptimedb
 
 2\. Start [Datanode][3].
 
-[3]: <../Developer_Guide/datanode/index.md>
+[3]: ../../developer-guide/datanode/overview.md
 
 ```shell
 cargo run -- datanode start

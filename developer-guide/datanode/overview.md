@@ -42,7 +42,7 @@ WAL.
 - [Write-Ahead Logging][2]
 - [Data persistence and indexing][4]
 
-[1]: </storage_engine.md>
-[2]: </wal.md>
-[3]: </query_engine.md>
-[4]: </data_persisitence_indexing.md>
+[1]: ./storage-engine.md
+[2]: ./wal.md
+[3]: ./query-engine.md
+[4]: ./data-persistence-indexing.md
