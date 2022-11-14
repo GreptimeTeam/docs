@@ -31,7 +31,7 @@ def system_status(hosts, idcs, cpus, memories, disks):
 ```
 
 The above piece of code evaluates the host status based on the cpu/memory/disk usage. 
-Arguments come from the querying data from `system_metrics` specified by parameter `sql` in `@coprocessor` annotation (here: ` = "SELECT * FROM system_metrics"`). The query result is assigned to each positional argument with corresponding names in `args=[...]`. The function returns three variables, which are converted back into three columns `returns = ["host", "idc", "status"]`.
+Arguments come from the querying data from `system_metrics` specified by parameter `sql` in `@coprocessor` annotation (here it's `"SELECT * FROM system_metrics"`). The query result is assigned to each positional argument with corresponding names in `args=[...]`. The function returns three variables, which are converted back into three columns `returns = ["host", "idc", "status"]`.
 
 ## Submit the Python Script to GreptimeDB
 
