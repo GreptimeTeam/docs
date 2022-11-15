@@ -66,3 +66,4 @@ For more details on each component, see the following guides:
 
 [1]: frontend/overview.md
 [2]: datanode/overview.md
+[3]: meta/overview.md

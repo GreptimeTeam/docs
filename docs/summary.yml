@@ -35,7 +35,7 @@
     - wal
     - python-coprocessor
   - Meta:
-    - meta-server
+    - overview
 - Installation:
   - Kubernetes:
     - index
