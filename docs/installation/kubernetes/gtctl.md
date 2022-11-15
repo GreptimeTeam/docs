@@ -10,7 +10,7 @@
 
 You can use [kind][2] to create your own test `Kubernetes` cluster:
 
-```shell
+```console
 kind create cluster
 ```
 
@@ -18,13 +18,13 @@ kind create cluster
 
 Currently, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64`.
 
-```shell
+```console
 curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
 ### 3\. Create your own GreptimeDB cluster
 
-```shell
+```console
 gtctl create cluster mydb -n default
 ```
 
@@ -37,19 +37,19 @@ After the installation is completed, `gtctl` creates the followings:
 
 You can use `kubectl port-forward` command to forward frontend requests:
 
-```shell
+```console
 kubectl port-forward svc/mydb-frontend 3306:3306 > connections.out &
 ```
 
 Use your `mysql` client to connect your cluster:
 
-```shell
+```console
 mysql -h 127.0.0.1 -P 3306
 ```
 
 ### 4\. Delete your own GreptimeDB cluster
 
-```shell
+```console
 gtctl delete cluster mydb
 ```
 
