@@ -41,4 +41,4 @@
     - wal
     - python-coprocessor
   - Meta:
-    - meta-server
+    - overview
