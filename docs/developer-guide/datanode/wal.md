@@ -17,8 +17,6 @@ in-memory state.
 
 ![WAL in Datanode](../../public/wal.png)
 
-> NOTE: IMAGE IS MISSING
-
 ## Namespace
 
 Namespace of WAL is used to separate entries from different tables (different regions). Append and
