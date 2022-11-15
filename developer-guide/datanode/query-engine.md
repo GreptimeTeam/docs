@@ -51,7 +51,7 @@ Extending operations in GreptimeDB is extremely simple. There are two ways to do
 
 ## Distributed Execution
 
-Covered in Clustering & Sharding, [Distributed Querying][6].
+Covered in [Distributed Querying][6].
 
 [1]: <https://github.com/apache/arrow-datafusion>
 [2]: <https://arrow.apache.org/>
