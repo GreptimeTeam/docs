@@ -4,7 +4,7 @@
 
 # GreptimeDB Documentation
 
-This directory contains all the source content published at [docs.greptime.com][1]
+This directory contains sources of all content published at [docs.greptime.com][1]
 
 [1]: https://docs.greptime.com
 
@@ -12,7 +12,7 @@ This directory contains all the source content published at [docs.greptime.com][
 
 ## Getting Started
 
-This section helps you to walk through the quickest way to get started with GreptimeDB.
+This section provides the quickest ways to get started with GreptimeDB.
 
 - [Overview][2]
 - [Create a time series table][3]
@@ -23,7 +23,7 @@ This section helps you to walk through the quickest way to get started with Grep
 
 ## User Guide
 
-This section explains how to build an application using Greptime and how to handle common problems.
+This section explains how to build an application using GreptimeDB and how to handle common problems.
 
 - [Concepts][8]
 - [Reading/Writing data][9]
@@ -60,7 +60,7 @@ This section explains how GreptimeDB works and helps you to get involved in Grep
 
 # Contributing
 
-Thanks a lot for considering contributing to GreptimeDB. We believe people like you would make
+Thanks a lot for considering contributing to GreptimeDB. People like you would make
 GreptimeDB a great product.
 
 Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
