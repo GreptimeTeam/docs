@@ -1,11 +1,11 @@
 # Pre-built Binaries
 
-You can always try out GreptimeDB with our test builds. The build will be
+You can try out GreptimeDB with our test builds.
 released on
 [Github](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.1.0-alpha.3)
 and [Docker hub](https://hub.docker.com/r/greptime/greptimedb). Note that
-GreptimeDB is in heavy development.
-So these binaries are not suitable for production usage at the moment.
+GreptimeDB is currently under intense development.
+So these binaries are not ready to be used under production environment at the moment.
 
 ## Local Install
 
