@@ -19,7 +19,7 @@ enumeration containing all the logical plan variants (except the special extensi
 physical plan is in fact a trait that defines a group of methods that will be invoked during
 execution. All the data processing logic is encapsulated in corresponding structures that
 implemented the trait. They are the actual operations that will be performed on the data, like
-aggregator MIN or AVG, and table scan SELECT ... FROM.
+aggregator `MIN` or `AVG`, and table scan `SELECT ... FROM`.
 
 Optimization phase, which transforms both logical and physical plans to achieve a better execution
 performance, is now all based on rules, or in other words "Rule Based Optimization". Some of the
@@ -30,7 +30,7 @@ The last phase "execute" is a verb, stands for the procedure that reads data fro
 calculations and generates the expected result. It's more abstract than previous concepts, but just
 simply image it as executing a rust async function. And it's indeed a future (stream).
 
-To see how your SQL will be represented in logical or physical plan, EXPLAIN [VERBOSE] \<SQL\> is
+To see how your SQL will be represented in logical or physical plan, `EXPLAIN [VERBOSE] \<SQL\>` is
 very useful.
 
 ## Data Representation
@@ -46,11 +46,9 @@ In time series data, there are two important dimensions timestamp column and tag
 primary key in a general relational database). GreptimeDB groups data in time buckets, so it's easy
 to locate and extract data within the expected time range at a very low cost. And from the other
 data columns, the mainly used persist file format [Apache Parquet][3] in GreptimeDB helps a lot. It
-provides multi- level indices and filters that make it easy to prune data during querying. And we
+provides multi-level indices and filters that make it easy to prune data during querying. And we
 plan to utilize this feature more in depth, as well as develop our separated index to handle the
 more complex use cases in the future.
-
-## Statistics[WIP]
 
 ## Extensibility
 
