@@ -39,16 +39,12 @@ export default (async () => ({
     sidebar: await makeSidebar(),
     nav: [
       {
-        text: 'Getting Started',
-        link: '/getting-started/overview',
+        text: 'Home',
+        link: 'https://greptime.com/',
       },
       {
-        text: 'User Guide',
-        link: '/user-guide/concepts',
-      },
-      {
-        text: 'Developer Guide',
-        link: '/developer-guide/get-started',
+        text: 'Blogs',
+        link: 'https://greptime.com/blogs',
       },
     ],
   },
