@@ -41,7 +41,7 @@ function toggle() {
   <section class="VPSidebarGroup" :class="{ collapsible, collapsed, 'no-title': !text }">
     <div v-if="text" class="title" :role="collapsible ? 'button' : undefined" @click="toggle">
       <h2 class="title-text">
-        <a :href="/overview/i.test(items.find((item) => item?.link?.split('/').pop()))?.link">{{ text }} </a>
+        <a :href="items.find((item) => /overview/i.test(item?.link?.split('/').pop()))?.link">{{ text }} </a>
       </h2>
       <div class="action">
         <VPIconMinusSquare class="icon minus" />

@@ -12,7 +12,7 @@ const maxDepth = computed<number>(() => frontmatter.value.sidebarDepth || Infini
 const closeSideBar = inject('close-sidebar') as () => void
 
 const getLink = (item) => {
-  return item.link || /overview/i.test(item?.items?.find((item) => item?.link?.split('/').pop()))?.link
+  return item.link || item?.items?.find((item) => /overview/i.test(item?.link?.split('/').pop()))?.link
 }
 </script>
 

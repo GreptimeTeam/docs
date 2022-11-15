@@ -66,7 +66,6 @@ async function makeSidebar() {
 
       return {
         text: title.replace(/-/g, ' '),
-        collapsible: true,
         items: content.map((item) => makeSidebarItem(item, `${path}/${title}`)),
       }
     } else {
