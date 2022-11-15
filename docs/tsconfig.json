@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "vueCompilerOptions": {
+    "experimentalDisableTemplateSupport": true
+  },
+  "include": ["./*.ts", "./.vitepress/**/*.vue","./.vitepress/**/*.ts", "./.vitepress/**/*.ts"]
+}
