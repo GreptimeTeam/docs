@@ -1,8 +1,8 @@
 # InfluxDB
 
-GreptimeDB supports Influxdb line protocol. You can use HTTP Post to insert metrics into GreptimeDB.
+GreptimeDB supports Influxdb's line protocol. You can use http post to insert metrics into GreptimeDB.
 
-In GreptimeDB, InfluxDB line protocol is handled only in [Frontend][1], so you have to start [Frontend][1].
+Currently in GreptimeDB, InfluxDB line protocol is handled only in [Frontend][1]. So you also have to start [Frontend][1].
 
 [1]: ../../developer-guide/frontend/overview.md
 
@@ -12,9 +12,9 @@ GreptimeDB supports inserting InfluxDB metrics via HTTP endpoints. We use the re
 
 [2]: https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/
 
-The HTTP endpoint in GreptimeDB for handling metrics is `/influxdb/write`
+The http endpoint in GreptimeDB for handling metrics is `/influxdb/write`.
 
-> Note that remembers to prefix the path with GreptimeDB's HTTP API version, `v1`
+> Note: remember to prefix the path with GreptimeDB's http API version, `v1`
 
 ## Create a databse
 
