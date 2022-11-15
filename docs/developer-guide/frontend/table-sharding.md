@@ -2,10 +2,7 @@
 
 ## Introduction
 
-Clustering and sharding are essential to ensure a distributed database, like Greptime DB, is highly
-scalable and available. While this document mainly talks about Sharding, that is, how data is
-distributed and queried across GreptimeDB clusters, you can find more details on Clustering here
-[insert links to the article] since it is closely related to Fault Tolerance.
+The sharding of stored data is essential to any distributed database. This document will describe how table's data in GreptimeDB is being sharded, and distributed.
 
 ## Partition
 

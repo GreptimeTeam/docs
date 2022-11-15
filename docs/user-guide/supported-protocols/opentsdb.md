@@ -8,14 +8,9 @@ into GreptimeDB.
 > GreptimeDB does not support OpenTSDB's reading data API, you can use other protocols like SQL to
 > query metrics.
 
-In GreptimeDB, OpenTSDB line protocol is handled only in [Frontend][1], so you have to
-start [Frontend][1] first.
-
-[1]: ../../developer-guide/frontend/overview.md
-
 ## Telnet
 
-The `Frontend` is listening on port `4242` by default to receive metrics via `telnet`. You can open
+The GreptimeDB is listening on port `4242` by default to receive metrics via `telnet`. You can open
 your favorite terminal and type `telnet 127.0.0.1 4242` to connect to GreptimeDB.
 
 GreptimeDB fully supports Opentsdb's "put" command format:
@@ -76,7 +71,7 @@ The HTTP endpoint in GreptimeDB for handling metrics is `/opentsdb/api/put`
 
 > Note: remember to prefix the path with GreptimeDB's http API version, `v1`.
 
-Starting `Frontend`, the HTTP server is listening on port `4000` by default.
+Starting GreptimeDB, the HTTP server is listening on port `4000` by default.
 
 Use curl to insert one metric point:
 

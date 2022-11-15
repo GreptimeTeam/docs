@@ -72,8 +72,9 @@ mysql> INSERT INTO system_metrics
     ->     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
     ->     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
 Query OK, 3 rows affected (0.01 sec)
-Then we are good to query it!
 ```
+
+Then we are good to query it!
 
 ### Querying Data with SQL
 
