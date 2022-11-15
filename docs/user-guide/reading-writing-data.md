@@ -1,9 +1,5 @@
 # Reading/Writing Data
 
-::: warning
-TODO: Insert references to related documents at all "(x)".
-:::
-
 You can read from or write into GreptimeDB using various protocols.
 
 ![protocols](../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
@@ -26,8 +22,8 @@ The following guide uses standard MySQL clients to demonstrate how to do it.
 
 ### Connecting to GreptimeDB
 
-Start GreptimeDB (x). GreptimeDB will listen to `127.0.0.1:3306` for MySQL
-connections by default, but you can also configure it (x).
+Start GreptimeDB ([Getting Started](../getting-started/overview.md)). GreptimeDB will listen to `127.0.0.1:3306` for MySQL
+connections by default.
 Open your favorite terminal, type `mysql -h 127.0.0.1 -P 3306`, and you are
 connected to GreptimeDB.
 
@@ -76,8 +72,9 @@ mysql> INSERT INTO system_metrics
     ->     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
     ->     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
 Query OK, 3 rows affected (0.01 sec)
-Then we are good to query it!
 ```
+
+Then we are good to query it!
 
 ### Querying Data with SQL
 
