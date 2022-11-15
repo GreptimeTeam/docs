@@ -1,17 +1,17 @@
-- getting-started:
+- Getting-Started:
   - overview
   - create-a-time-series-table
   - add-time-series-data
   - query-data-with-sql
   - visualize-data
   - process-data-with-python
-- user-guide:
+- User-Guide:
   - concepts
   - reading-writing-data
   - table-management
   - coprocessor-and-scripting
   - java-sdk
-  - supported-protocols:
+  - Supported-Protocols:
     - overview
     - http-api
     - grpc
@@ -20,24 +20,24 @@
     - opentsdb
     - influxdb
     - prometheus
-- developer-guide:
+- Developer-Guide:
   - overview
   - get-started
-  - frontend:
+  - Frontend:
     - overview
     - table-sharding
     - distributed-querying
-  - datanode:
+  - Datanode:
     - overview
     - storage-engine
     - query-engine
     - data-persistence-indexing
     - wal
     - python-coprocessor
-  - meta:
+  - Meta:
     - meta-server
-- installation:
-  - kubernetes:
+- Installation:
+  - Kubernetes:
     - index
     - gtctl
     - operator
