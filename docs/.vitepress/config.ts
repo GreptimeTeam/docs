@@ -48,6 +48,7 @@ export default (async () => ({
       },
     ],
   },
+  cleanUrls: 'without-subfolders',
 }))()
 
 async function makeSidebar() {
