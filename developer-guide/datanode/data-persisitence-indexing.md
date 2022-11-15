@@ -24,7 +24,7 @@ Apache Parquet file format provides inherent statistics in headers of column chu
 
 ![Column chunk header](../../public/column-chunk-header.png)
 
-For example, in the above Parquet file, if you want to filter row where `name` = `Emily`, we can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
+For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
 
 Besides Parquet's built-in statistics, our team is working on supporting a separate index file that utilizes some time-series specific indexing techniques to improve scanning performance.
 
