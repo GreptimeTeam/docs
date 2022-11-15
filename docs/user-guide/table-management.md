@@ -9,7 +9,7 @@ GreptimeDB provides table management functionality on both MySQL and gRPC protoc
 You can use standard MySQL client to connect to a running GreptimeDB instance.
 
 ``` bash
-$ mysql -h 127.0.0.1 -P 4202
+$ mysql -h 127.0.0.1 -P 4002
 mysql>
 ```
 
