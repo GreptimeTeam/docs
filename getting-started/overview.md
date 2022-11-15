@@ -1,7 +1,7 @@
 # Getting Started
 
-After you've installed GreptimeDB and started an instance or cluster, let's
-explore it's features. In this tutorial, you will learn how to:
+After installing GreptimeDB, let's start an instance or cluster to explore its features. 
+In this tutorial, you will learn how to:
 
 - [Create a time-series table][1]
 - [Add time-series data][2]
@@ -9,7 +9,7 @@ explore it's features. In this tutorial, you will learn how to:
 - [Process Data with Python][4]
 - [Visualize data][5]
 
-As an example, we will create a time-series table to store system metrics from hosts in IDC.
+We create a time-series table to store system metrics from hosts in IDC as an example.
 
 [1]: ./create-a-time-series-table.md
 [2]: ./add-time-series-data.md
