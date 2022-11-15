@@ -12,13 +12,13 @@ const maxDepth = computed<number>(() => frontmatter.value.sidebarDepth || Infini
 const closeSideBar = inject('close-sidebar') as () => void
 
 const getLink = (item) => {
-  return item.link || item?.items?.find((item) => item?.link?.split('/').pop() === 'index')?.link
+  return item.link || /overview/i.test(item?.items?.find((item) => item?.link?.split('/').pop()))?.link
 }
 </script>
 
 <template>
   <VPLink
-    v-if="!/index/.test(item.link)"
+    v-if="!/overview/i.test(item.link)"
     class="link"
     :class="{ active: isActive(page.relativePath, getLink(item), true) }"
     :style="{ paddingLeft: 16 * (depth - 1) + 'px' }"
