@@ -17,7 +17,7 @@ CREATE TABLE system_metrics (
 );
 ```
 
-You can execute this statement via MySQL or PostgreSQL command line.
+You can execute this statement via [MySQL](../user-guide/supported-protocols/mysql.md) or [PostgreSQL](../user-guide/supported-protocols/postgresql.md) command line.
 
 For more information about how to create tables, please refer to the SQL reference document.
 

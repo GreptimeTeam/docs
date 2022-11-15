@@ -25,13 +25,13 @@ For more information about SQL, please refer to the SQL reference document.
 For example:
 
 ``` shell
-curl -G  http://localhost:3000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
+curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
 `/sql` also supports POST method:
 
 ``` shell
-curl  -XPOST -G  http://localhost:3000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
+curl  -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
 The returned JSON result is shown  below:
@@ -87,7 +87,7 @@ The API Result contains:
 Create table via SQL:
 
 ```shell
-curl  -v -XPOST -G  http://localhost:3000/v1/sql  --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
+curl  -v -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
 ```
 
 ```json
@@ -97,7 +97,7 @@ curl  -v -XPOST -G  http://localhost:3000/v1/sql  --data-urlencode "sql=CREATE T
 Insert data:
 
 ```shell
- curl  -v -XPOST -G http://localhost:3000/v1/sql  --data-urlencode "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
+ curl  -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
 ```
 
 ```json
@@ -107,7 +107,7 @@ Insert data:
 Query data:
 
 ```shell
- curl -v -XPOST -G http://localhost:3000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
+ curl -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
 
 ```
@@ -166,7 +166,7 @@ Submits it to database:
 
 ```
 curl --data-binary @test.py -XPOST \
-      "http://localhost:3000/v1/scripts?name=square"
+      "http://localhost:4000/v1/scripts?name=square"
 ```
 
 ```
@@ -176,7 +176,7 @@ curl --data-binary @test.py -XPOST \
 The python script is inserted into the `scripts` table and compiled automatically:
 
 ```shell
-curl -G  http://localhost:3000/v1/sql  --data-urlencode "sql=select * from scripts"
+curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scripts"
 ```
 
 ```json
@@ -230,7 +230,7 @@ curl -G  http://localhost:3000/v1/sql  --data-urlencode "sql=select * from scrip
 You can also execute the script via `/run-script`:
 
 ```shell
-curl -XPOST -G "http://localhost:3000/v1/run-script?name=square"
+curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 ```
 
 ```json
