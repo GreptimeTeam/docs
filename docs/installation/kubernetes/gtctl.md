@@ -24,7 +24,7 @@ curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/instal
 
 ### 3\. Create your own GreptimeDB cluster
 
-```shel
+```shell
 gtctl create cluster mydb -n default
 ```
 
