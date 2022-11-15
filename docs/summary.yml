@@ -44,8 +44,8 @@
   - Meta:
     - overview
 - Reference:
-  - command-line:
-  - configuration:
-  - data-types:
-  - sql:
-  - functions:
+  - command-line
+  - configuration
+  - data-types
+  - sql
+  - functions
