@@ -15,7 +15,7 @@ file, the operation can be further applied to MemTable.
 When the Datanode restarts, operation entries in WAL are replayed to reconstruct the correct
 in-memory state.
 
-![WAL in Datanode]()
+![WAL in Datanode](../../public/wal.png)
 
 > NOTE: IMAGE IS MISSING
 
