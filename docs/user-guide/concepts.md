@@ -35,7 +35,7 @@ Frontend and Meta.
   authenticates it, translates it from various protocols into GreptimeDB
   cluster's internal one, and forwards to certain *Datanode*s under guidance
   from *Meta*.
-- [**Meta**](../developer-guide/meta/overview.md) is the central command of
+- [**Meta**](../developer-guide/meta/meta-server.md) is the central command of
   GreptimeDB cluster. In typical deployment, at least three nodes is required to
   setup a reliable *Meta* mini-cluster. *Meta* manages database and table
   information, including how data spread across the cluster and where to route

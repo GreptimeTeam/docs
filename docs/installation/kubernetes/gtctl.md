@@ -19,12 +19,12 @@ kind create cluster
 Currently, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64`.
 
 ```shell
-curl -L https://github.com/greptimeteam/gtctl/blob/main/hack/install.sh | sh
+curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
 ### 3\. Create your own GreptimeDB cluster
 
-```shel
+```shell
 gtctl create cluster mydb -n default
 ```
 

@@ -1,38 +1,43 @@
 - Getting-Started:
-  - Overview
-  - Create-a-Time-Series-Table
-  - Add-Time-Series-Data
-  - Query-Data-with-SQL
-  - Visualize-Data
-  - Process-Data-with-Python
+  - overview
+  - create-a-time-series-table
+  - add-time-series-data
+  - query-data-with-sql
+  - visualize-data
+  - process-data-with-python
 - User-Guide:
-  - Concepts
-  - Reading-Writing-Data
-  - Table-Management
-  - Coprocessor-and-Scripting
-  - Java-SDK
+  - concepts
+  - reading-writing-data
+  - table-management
+  - coprocessor-and-scripting
+  - java-sdk
   - Supported-Protocols:
-    - Overview
-    - HTTP-API
-    - gRPC
-    - MySQL
-    - PostgreSQL
-    - OpenTSDB
-    - InfluxDB
-    - Prometheus
+    - overview
+    - http-api
+    - grpc
+    - mysql
+    - postgresql
+    - opentsdb
+    - influxdb
+    - prometheus
 - Developer-Guide:
-  - Overview
-  - Get-Started
+  - overview
+  - get-started
   - Frontend:
-    - Overview
-    - Table-Sharding
-    - Distributed-Querying
+    - overview
+    - table-sharding
+    - distributed-querying
   - Datanode:
-    - Overview
-    - Storage-Engine
-    - Query-Engine
-    - Data-Persistence-Indexing
-    - WAL
-    - Python-Coprocessor
+    - overview
+    - storage-engine
+    - query-engine
+    - data-persistence-indexing
+    - wal
+    - python-coprocessor
   - Meta:
-    - Meta-Server
+    - meta-server
+- Installation:
+  - Kubernetes:
+    - index
+    - operator
+    - gtctl
