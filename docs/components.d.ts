@@ -7,25 +7,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Author: typeof import('./.vitepress/theme/components/Blog/Article/Author.vue')['default']
-    Banner: typeof import('./.vitepress/theme/components/Home/Banner.vue')['default']
-    Blog: typeof import('./.vitepress/theme/components/Blog/index.vue')['default']
-    BlogArticle: typeof import('./.vitepress/theme/components/Blog/BlogArticle.vue')['default']
-    BlogBanner: typeof import('./.vitepress/theme/components/Blog/BlogBanner.vue')['default']
-    BlogCard: typeof import('./.vitepress/theme/components/Blog/BlogCard.vue')['default']
-    BlogCardList: typeof import('./.vitepress/theme/components/Blog/BlogCardList.vue')['default']
-    BlogContent: typeof import('./.vitepress/theme/components/Blog/BlogContent.vue')['default']
-    Cover: typeof import('./.vitepress/theme/components/Blog/Article/Cover.vue')['default']
     CustomContent: typeof import('./.vitepress/theme/components/CustomContent.vue')['default']
-    Domain: typeof import('./.vitepress/theme/components/Home/Domain.vue')['default']
-    Features: typeof import('./.vitepress/theme/components/Home/Features.vue')['default']
     Footer: typeof import('./.vitepress/theme/components/Footer.vue')['default']
     Header: typeof import('./.vitepress/theme/components/Header.vue')['default']
-    Home: typeof import('./.vitepress/theme/components/Home/index.vue')['default']
-    How: typeof import('./.vitepress/theme/components/Home/How.vue')['default']
     Layout: typeof import('./.vitepress/theme/components/Layout.vue')['default']
-    Subscribe: typeof import('./.vitepress/theme/components/Home/Subscribe.vue')['default']
-    What: typeof import('./.vitepress/theme/components/Home/What.vue')['default']
-    Why: typeof import('./.vitepress/theme/components/Home/Why.vue')['default']
   }
 }

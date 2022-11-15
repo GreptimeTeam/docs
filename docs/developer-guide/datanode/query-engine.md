@@ -62,8 +62,8 @@ marvellous way is via the [Python Coprocessor][4] interface, or you can implemen
 
 Covered in Clustering & Sharding, #Distributed Querying.
 
-[1]: <https://github.com/apache/arrow-datafusion>
-[2]: <https://arrow.apache.org/>
-[3]: <https://parquet.apache.org>
-[4]: <../python-coprocessor.md>
-[5]: <https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/how-to/how-to-write-aggregate-function.md>
+[1]: https://github.com/apache/arrow-datafusion
+[2]: https://arrow.apache.org/
+[3]: https://parquet.apache.org
+[4]: python-coprocessor.md
+[5]: https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/how-to/how-to-write-aggregate-function.md

@@ -64,5 +64,5 @@ For more details on each component, see the following guides:
 - [frontend][1]
 - [datanode][2]
 
-[1]: <./frontend/overview.md>
-[2]: <./datanode/overview.md>
+[1]: frontend/overview.md
+[2]: datanode/overview.md
