@@ -1,5 +1,5 @@
 default: true
 
 line-length: false
-first-line-h1: false
 fenced-code-language: false
+no-inline-html: false
