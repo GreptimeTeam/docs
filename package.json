@@ -1,0 +1,77 @@
+{
+  "name": "Greptime-Docs",
+  "description": "Docs of Greptime",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "@docsearch/css": "^3.3.0",
+    "@vueuse/core": "^9.4.0",
+    "algoliasearch": "^4.14.2",
+    "body-scroll-lock": "^4.0.0-beta.0",
+    "cross-spawn": "^7.0.3",
+    "csstype": "^2.6.20",
+    "dayjs": "^1.11.5",
+    "esbuild": "^0.14.54",
+    "estree-walker": "^2.0.2",
+    "fs-extra": "^10.1.0",
+    "git-date-extractor": "^4.0.1",
+    "globby": "11.0.4",
+    "gray-matter": "^4.0.3",
+    "has": "^1.0.3",
+    "is-core-module": "^2.10.0",
+    "js-yaml": "^4.1.0",
+    "jsonc-parser": "^3.1.0",
+    "magic-string": "^0.25.9",
+    "markdown-it": "^13.0.1",
+    "md5": "^2.3.0",
+    "nanoid": "^3.3.4",
+    "path-parse": "^1.0.7",
+    "picocolors": "^1.0.0",
+    "postcss": "^8.4.16",
+    "preact": "^10.10.2",
+    "pug": "^3.0.2",
+    "resolve": "^1.22.1",
+    "rollup": "^2.77.2",
+    "shiki": "^0.10.1",
+    "simple-git": "^3.14.1",
+    "source-map": "^0.6.1",
+    "source-map-js": "^1.0.2",
+    "sourcemap-codec": "^1.4.8",
+    "stylus": "^0.59.0",
+    "supports-preserve-symlinks-flag": "^1.0.0",
+    "update": "^0.7.4",
+    "vite": "^2.9.14",
+    "vscode-oniguruma": "^1.6.2",
+    "vscode-textmate": "^5.2.0",
+    "vue-demi": "^0.13.6"
+  },
+  "devDependencies": {
+    "unplugin-auto-import": "^0.11.2",
+    "unplugin-vue-components": "^0.22.4",
+    "vitepress": "^1.0.0-alpha.27",
+    "vue": "^3.2.37"
+  },
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "serve": "vitepress serve docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrepTimeTeam/docs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrepTimeTeam/docs/issues"
+  },
+  "homepage": "https://github.com/GrepTimeTeam/docs#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  }
+}
