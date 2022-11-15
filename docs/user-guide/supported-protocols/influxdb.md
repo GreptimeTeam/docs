@@ -25,21 +25,15 @@ git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
 ```
 
-2\. Start [Datanode][3].
+2\. Start GreptimeDB in [standalone mode][3].
 
 [3]: ../../developer-guide/datanode/overview.md
 
 ```shell
-cargo run -- datanode start
+cargo run -- standalone start
 ```
 
-3\. Start `Frontend`, the HTTP server is listening on port `4000` by default.
-
-```shell
-cargo run -- frontend start
-```
-
-4\. Use `curl` to insert metrics.
+3\. Use `curl` to insert metrics.
 
 ```shell
 curl -i -XPOST "127.0.0.1:4000/v1/influxdb/write?db=first_db" --data-binary 'monitor,host=host1 cpu=66.6,memory=1024 1663840496100023100
@@ -48,7 +42,7 @@ monitor,host=host3 cpu=66.8,memory=1026 1663840496300003400
 monitor,host=host4 cpu=66.9,memory=1027 1663840496400340000'
 ```
 
-5\. We can always query the metrics with SQL:
+4\. We can always query the metrics with SQL:
 
 ```text
 mysql> SELECT * FROM monitor;

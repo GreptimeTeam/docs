@@ -24,12 +24,12 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 
 ## Compile and Run
 
-In just a few commands!
+Start GreptimeDB standalone instance in just a few commands!
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
-cargo run -- datanode start
+cargo run -- standalone start
 ```
 
 Next, you can choose the protocol you like to interact with in GreptimeDB.
