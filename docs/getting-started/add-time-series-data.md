@@ -18,7 +18,7 @@ INSERT INTO system_metrics
 VALUES
     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797450),
     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797450),
-    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797450)
+    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797450);
 ```
 
 Through the above statement, we have inserted three rows into the `system_metrics` table.
