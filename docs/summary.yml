@@ -39,5 +39,5 @@
 - Installation:
   - Kubernetes:
     - index
-    - gtctl
     - operator
+    - gtctl
