@@ -13,7 +13,7 @@ const { theme, page, frontmatter } = useData()
 
 const editLink = useEditLink()
 const control = usePrevNext()
-const {	relativePath } = page.value
+const { relativePath } = page.value
 const isBlogs = isBlog(relativePath)
 
 const hasEditLink = computed(() => {
@@ -136,11 +136,11 @@ const showFooter = computed(() => {
 	padding: 11px 16px 13px;
 	width: 100%;
 	height: 100%;
-	transition: border-color 0.25s;
+	transition: background 0.35s;
 }
 
 .pager-link:hover {
-	border-color: var(--vp-c-brand);
+	background: var(--color-code-bg);
 }
 
 .pager-link:hover .title {
@@ -157,7 +157,7 @@ const showFooter = computed(() => {
 	line-height: 20px;
 	font-size: 12px;
 	font-weight: 500;
-	color: var(--vp-c-text-2);
+	color: var(--color-desc-text);
 }
 
 .title {
