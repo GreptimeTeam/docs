@@ -39,7 +39,7 @@ The returned JSON result is shown  below:
 ``` json
 {
   "code": 0,
-  "output": {
+  "output": [{
     "records": {
       "schema": {
         "column_schemas": [
@@ -67,7 +67,8 @@ The returned JSON result is shown  below:
         ]
       ]
     }
-  }
+  }],
+  "execution_time_ms": 2
 }
 ```
 
@@ -91,7 +92,7 @@ curl  -v -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE T
 ```
 
 ```json
-{"code":0,"output":{"affectedrows":1}}
+{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
 ```
 
 Insert data:
@@ -101,19 +102,19 @@ Insert data:
 ```
 
 ```json
-{"code":0,"output":{"affectedrows":2}}
+{"code":0,"output":[{"affectedrows":2}],"execution_time_ms":6}
 ```
 
 Query data:
 
 ```shell
- curl -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
+ curl -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
 
 ```
 {
   "code": 0,
-  "output": {
+  "output": [{
     "records": {
       "schema": {
         "column_schemas": [
@@ -144,7 +145,8 @@ Query data:
         ]
       ]
     }
-  }
+  }],
+  "execution_time_ms": 7
 }
 ```
 
@@ -182,7 +184,7 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
 ```json
 {
   "code": 0,
-  "output": {
+  "output": [{
     "records": {
       "schema": {
         "column_schemas": [
@@ -223,7 +225,8 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
         ]
       ]
     }
-  }
+  }],
+  "execution_time_ms": 4
 }
 ```
 
@@ -236,7 +239,7 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 ```json
 {
   "code": 0,
-  "output": {
+  "output": [{
     "records": {
       "schema": {
         "column_schemas": [
@@ -264,7 +267,8 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
         ]
       ]
     }
-  }
+  }],
+  "execution_time_ms": 8
 }
 ```
 
@@ -273,6 +277,12 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 `/scripts` accepts a query parameter name for naming the script and processes the POST method body as the script file content.
 
 `/run-script` runs the compiled script and returns the output which is the same as the query result in /sql API.
+
+## OpenAPI docs
+
+An [OAS](https://swagger.io/specification/) compatible OpenAPI specification is
+available at `http://localhost:4000/v1/private/api.json`. We also provided Redoc
+UI at `http://localhost:4000/v1/private/docs` for convenience.
 
 ## Result codes table
 
