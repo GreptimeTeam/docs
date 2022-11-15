@@ -10,14 +10,21 @@ can create your own cluster as easily as possible:
 
 ```shell
 cat <<EOF | kubectl apply -f -
-apiVersion: greptime.io/v1alpha1kind: GreptimeDBClustermetadata:
-  name: basicspec:
+apiVersion: greptime.io/v1alpha1
+kind: GreptimeDBCluster
+metadata:
+  name: basic
+spec:
   base:
     main:
-      image: greptime/greptimedbfrontend:
-    replicas: 1meta:
-    replicas: 1etcdEndpoints:
-      - "etcd.default:2379"datanode:
+      image: greptime/greptimedb
+  frontend:
+    replicas: 1
+  meta:
+    replicas: 1
+    etcdEndpoints:
+      - "etcd.default:2379"
+  datanode:
     replicas: 3
 EOF
 ```
