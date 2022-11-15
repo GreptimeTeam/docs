@@ -10,6 +10,12 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 # Table of Contents
 
+## Installation
+
+This section covers instructions to deploy GreptimeDB in standalone mode or distributed mode.
+
+- [Overview][18]
+
 ## Getting Started
 
 This section provides the quickest ways to get started with GreptimeDB.
@@ -57,6 +63,7 @@ This section illustrates how GreptimeDB works and helps you to get involved in G
 [15]: ./docs/developer-guide/frontend/overview.md
 [16]: ./docs/developer-guide/datanode/overview.md
 [17]: ./docs/developer-guide/meta/overview.md
+[18]: ./docs/installation/overview.md
 
 # Contributing
 
