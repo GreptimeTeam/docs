@@ -27,7 +27,7 @@ For more information about the `INSERT` statement, please refer to the SQL refer
 
 ## InfluxDB Line Protocol
 
-GreptimeDB supports HTTP InfluxDB line protocol. For more information, please refer to the Configuration reference.
+GreptimeDB supports HTTP [InfluxDB line protocol](../user-guide/supported-protocols/influxdb.md). For more information, please refer to the Configuration reference.
 
 > Note: Please start the frontend instance to use the InfluxDB protocol to write data.
 

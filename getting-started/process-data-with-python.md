@@ -38,13 +38,13 @@ Arguments come from the querying data from `system_metrics` specified by paramet
 You can submit the file to GreptimeDB with a script name(`system_status`) so you can refer to it later by this name and execute it:
 
 ``` shell
-curl  --data-binary "@system_status.py" -XPOST "http://localhost:3000/v1/scripts?name=system_status"
+curl  --data-binary "@system_status.py" -XPOST "http://localhost:4000/v1/scripts?name=system_status"
 ```
 
 Run the script:
 
 ```shell
-curl  -XPOST "http://localhost:3000/v1/run-script?name=system_status"
+curl  -XPOST "http://localhost:4000/v1/run-script?name=system_status"
 ```
 
 Getting the results in `json` format:
@@ -91,3 +91,7 @@ Getting the results in `json` format:
    }
 }
 ```
+
+
+
+> Note: Python coprocessor is only supported in standalone mode right now.We will support it in distributed mode in future.
