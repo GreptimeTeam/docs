@@ -9,8 +9,8 @@ scalability, analytical capabilities and efficiency. It's designed to work on
 infrastructure of the cloud era, and users benefits from its elasticity and commodity
 storage.
 
-These pages cover core concepts of GreptimeDB, including setup steps, usage guides and architecture
-designs.
+These pages cover core concepts of GreptimeDB, including  installation guide, setup steps, usage
+guides and architecture designs.
 
 - [Getting Started][1]: This section is helpful if you are new to GreptimeDB and want to start
 using it quickly.
