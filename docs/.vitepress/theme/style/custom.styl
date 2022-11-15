@@ -1,0 +1,89 @@
+body {
+  line-height: initial;
+}
+
+.VPContent.is-home {
+  background: var(--color-dark-primary);
+  color: var(--color-dark-text);
+
+  .inner-content .row .item .title {
+    line-height: 40px;
+  }
+}
+
+.VPNav.no-sidebar, .VPNav {
+  background: var(--color-navbar-primary) !important;
+}
+
+.aside-curtain {
+  display: none;
+}
+
+.VPNavBar {
+  border-bottom: none !important;
+}
+
+.VPHome {
+  padding-bottom: 0 !important;
+  position: relative;
+  top: -80px;
+  margin-bottom: -80px;
+}
+
+.VPNavBarHamburger {
+  display: none !important;
+}
+
+.VPNavBarTitle, .dark .VPNavBar.has-sidebar .content {
+  background-color: transparent !important;
+}
+
+.VPNavBarTitle.has-sidebar {
+  margin-right: 0 !important;
+  width: auto !important;
+  color: transparent !important;
+  border-bottom: none;
+}
+
+.VPNavBar.has-sidebar {
+  background: var(--color-navbar-primary);
+  -webkit-backdrop-filter: saturate(50%) blur(8px);
+}
+
+.VPNavBar.has-sidebar .content {
+  background: var(--color-navbar-primary) !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (min-width: 960px) {
+  .VPSidebar {
+    margin-top: 72px;
+    padding-top: 0 !important;
+  }
+}
+
+.VPSidebar {
+  background-color: var(--color-sidebar-primary) !important;
+  border-right: 1px solid var(--vp-c-divider-light);
+}
+
+.VPNav.has-sidebar {
+  border-bottom: 1px solid var(--vp-c-divider-light);
+}
+
+@media (min-width: 960px) {
+  .VPBackdrop {
+    display: none;
+  }
+}
+
+.VPNavBarMenu .VPLink {
+  color: var(--color-dark-text);
+}
+
+.VPDocFooter .VPLastUpdated {
+  font-size: 16px;
+  color: var(--color-p-text);
+  line-height: 30px;
+  opacity: 0.6;
+}
