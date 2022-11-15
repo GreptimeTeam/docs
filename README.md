@@ -34,7 +34,7 @@ This section explains how to build an application using GreptimeDB and how to ha
 
 ## Developer Guide
 
-This section explains how GreptimeDB works and helps you to get involved in GreptimeDB development.
+This section illustrates how GreptimeDB works and helps you to get involved in GreptimeDB development.
 
   - [Overview][14]
   - [Frontend][15]
