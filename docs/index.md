@@ -1,8 +1,8 @@
-<p align="center">
-    <img src="./public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
-</p>
-
 # Introduction
+
+<p align="center">
+    <img src="./public/logo-text-tinted.png" alt="GreptimeDB Logo" width="400px">
+</p>
 
 GreptimeDB is an open-source time-series database with a special focus on
 scalability, analytical capabilities and efficiency. It's designed to work on
