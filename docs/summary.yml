@@ -1,3 +1,10 @@
+- Installation:
+  - build-from-source
+  - download-pre-built
+  - Kubernetes:
+    - index
+    - operator
+    - gtctl
 - Getting-Started:
   - overview
   - create-a-time-series-table
@@ -35,9 +42,4 @@
     - wal
     - python-coprocessor
   - Meta:
-    - overview
-- Installation:
-  - Kubernetes:
-    - index
-    - operator
-    - gtctl
+    - meta-server
