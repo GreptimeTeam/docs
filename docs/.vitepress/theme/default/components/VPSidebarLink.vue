@@ -10,16 +10,20 @@ withDefaults(defineProps<{ item: DefaultTheme.SidebarItem; depth?: number }>(), 
 const { page, frontmatter } = useData()
 const maxDepth = computed<number>(() => frontmatter.value.sidebarDepth || Infinity)
 const closeSideBar = inject('close-sidebar') as () => void
+
+const getLink = (item) => {
+  return item.link || item?.items?.find((item) => item?.link?.split('/').pop() === 'index')?.link
+}
 </script>
 
 <template>
   <VPLink
+    v-if="!/index/.test(item.link)"
     class="link"
-    :class="{ active: isActive(page.relativePath, item.link, true) }"
+    :class="{ active: isActive(page.relativePath, getLink(item), true) }"
     :style="{ paddingLeft: 16 * (depth - 1) + 'px' }"
-    :href="item.link"
-    @click="closeSideBar"
-  >
+    :href="getLink(item)"
+    @click="closeSideBar">
     <span class="link-text" :class="{ light: depth > 1 }">{{ item.text }}</span>
   </VPLink>
   <template v-if="'items' in item && depth < maxDepth" v-for="child in item.items" :key="child.link">

@@ -22,7 +22,7 @@ watchEffect(() => {
 const { page } = useData()
 watchEffect(() => {
   if (
-    props.items.some(item => {
+    props.items.some((item) => {
       return isActive(page.value.relativePath, item.link)
     })
   ) {
@@ -40,13 +40,14 @@ function toggle() {
 <template>
   <section class="VPSidebarGroup" :class="{ collapsible, collapsed, 'no-title': !text }">
     <div v-if="text" class="title" :role="collapsible ? 'button' : undefined" @click="toggle">
-      <h2 class="title-text">{{ text }}</h2>
+      <h2 class="title-text">
+        <a :href="items.find((item) => item?.link?.split('/').pop() === 'index')?.link">{{ text }} </a>
+      </h2>
       <div class="action">
         <VPIconMinusSquare class="icon minus" />
         <VPIconPlusSquare class="icon plus" />
       </div>
     </div>
-
     <div class="items">
       <template v-for="item in items" :key="item.link">
         <VPSidebarLink :item="item" />
