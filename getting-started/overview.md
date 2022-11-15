@@ -1,6 +1,6 @@
 # Getting Started
 
-After installing GreptimeDB, let's start an instance or cluster to explore its features. 
+After installing GreptimeDB, let's start an instance or cluster to explore its features.
 In this tutorial, you will learn how to:
 
 - [Create a time-series table][1]
