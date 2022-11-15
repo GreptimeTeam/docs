@@ -1,4 +1,3 @@
-![logo](./public/logo.png)
-
 # Docs
 
+![logo](./public/logo.png)
