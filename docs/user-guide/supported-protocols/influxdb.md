@@ -50,6 +50,6 @@ mysql> SELECT * FROM influxdb.monitor;
 
 The `/influxdb/write` supports query params including:
 * `db` specify which db to write, `public` by default.
-* `precision`, precision of timestamps in the line protocol, Accepts `ns` (nanoseconds), `us`(microseconds), `ms` (milliseconds) and `s` (seconds), nanoseconds by default.
+* `precision`, precision of timestamps in the line protocol. Accepts `ns` (nanoseconds), `us`(microseconds), `ms` (milliseconds) and `s` (seconds), nanoseconds by default.
 
 For more information about the line protocol, please refer to the [InfluxDB line protocol tutorial](https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/).
