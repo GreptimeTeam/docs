@@ -38,7 +38,7 @@ Make sure you have already installed [Helm][5].  Use the following commands to i
 `greptimedb-operator` in the default namespace:
 
 ```shell
-helm repo add gt https://greptimeteam.github.io/helm-charts/
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 helm install gtcloud greptime/greptimedb-operator -n default --devel
 ```
