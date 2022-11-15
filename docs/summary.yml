@@ -2,7 +2,7 @@
   - build-from-source
   - download-pre-built
   - Kubernetes:
-    - index
+    - overview
     - operator
     - gtctl
 - Getting-Started:
