@@ -111,7 +111,7 @@ Query data:
  curl -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
 
-```
+```json
 {
   "code": 0,
   "output": [{
@@ -166,12 +166,12 @@ def square(number):
 
 Submits it to database:
 
-```
+```shell
 curl --data-binary @test.py -XPOST \
       "http://localhost:4000/v1/scripts?name=square"
 ```
 
-```
+```json
 {"code":0}
 ```
 

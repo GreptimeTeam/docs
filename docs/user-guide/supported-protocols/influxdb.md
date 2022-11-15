@@ -35,7 +35,7 @@ monitor,host=host4 cpu=66.9,memory=1027 1663840496400340000'
 
 We can always query the metrics with SQL:
 
-```text
+```sql
 mysql> SELECT * FROM influxdb.monitor;
 +-------+------+--------+---------------------+
 | host  | cpu  | memory | ts                  |

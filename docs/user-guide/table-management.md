@@ -17,7 +17,7 @@ mysql>
 
 In this example, we are going to create a table named `monitor`
 
-``` shell
+``` sql
 mysql> CREATE TABLE monitor (
     ->   host STRING,
     ->   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -46,7 +46,7 @@ to tags in other time-series systems like [InfluxDB][1].
 
 You can use `show tables` statement to list existing tables
 
-``` shell
+``` sql
 mysql> show tables;
 +------------+
 | Tables     |
@@ -60,7 +60,7 @@ mysql> show tables;
 Notice: `script` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
-``` shell
+``` sql
 mysql> show tables like monitor;
 +---------+
 | Tables  |

@@ -232,7 +232,7 @@ insert
 
 The result of the insert request is simple:
 
-```
+```json
 {
   "admins": [{}],
   "databases": [
@@ -354,7 +354,7 @@ grpcurl -plaintext -d '
 
 The decoded result looks like this:
 
-```text
+```
 columns {
   column_name: "c1"
   semantic_type: FIELD

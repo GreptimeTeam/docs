@@ -73,7 +73,7 @@ The primary means of communication between Datanode and MetaSrv is the Heartbeat
 
 A heartbeat will probably carry the data listed below, but this is not the final design, and we are still discussing and exploring exactly which data should be collected most.
 
-```
+```proto
 service Heartbeat {
   // Heartbeat, there may be many contents of the heartbeat, such as:
   // 1. Metadata to be registered to meta server and discoverable by other nodes.
