@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     CustomContent: typeof import('./.vitepress/theme/components/CustomContent.vue')['default']
+    Footer: typeof import('./.vitepress/theme/components/Footer.vue')['default']
     Header: typeof import('./.vitepress/theme/components/Header.vue')['default']
     Layout: typeof import('./.vitepress/theme/components/Layout.vue')['default']
   }
