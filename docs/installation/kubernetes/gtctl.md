@@ -25,7 +25,7 @@ curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/instal
 ### 3\. Create your own GreptimeDB cluster
 
 ```shell
-gtctl create cluster mydb -n default
+gtctl cluster create mydb -n default
 ```
 
 After the installation is completed, `gtctl` creates the followings:
@@ -50,7 +50,7 @@ mysql -h 127.0.0.1 -P 3306
 ### 4\. Delete your own GreptimeDB cluster
 
 ```shell
-gtctl delete cluster mydb
+gtctl cluster delete mydb --tear-down-etcd
 ```
 
 [1]: <https://github.com/GreptimeTeam/gtctl>
