@@ -9,7 +9,7 @@ All sample configuration files are in project's [config](https://github.com/Grep
 
 ## Specify configuration file
 
-You can specify configuration file by command line arg `-c [file_path]`, for eaxmple:
+You can specify the configuration file by using the command line arg `-c [file_path]`, for example:
 
 ```sh
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
