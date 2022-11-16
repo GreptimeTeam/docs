@@ -1,26 +1,26 @@
 # Distributed Getting Start
 
-This article will show how to manually build a distributed GreptimeDB locally.
+This guide shows how to manually build and start a distributed GreptimeDB locally.
 
 ## Built From Source
 
-1. Get source
+1. Get GreptimeDB source code from Github:
 
     ```shell
     git clone https://github.com/GreptimeTeam/greptimedb.git
     ```
 
-2. Start etcd. etcd is a default backend for Meta. How to install and start etcd, please see [etcd](https://etcd.io/docs/v3.5/quickstart/).
+2. Start [`etcd`](https://etcd.io/docs/v3.5/quickstart/). `etcd` is the default backend for `Meta`.
 
-3. Start one Meta instance.
+3. Start one `Meta` instance.
 
     ```shell
     cargo run -- metasrv start
     ```
 
-    > If you are not using the default address of etcd (127.0.0.1:2379), you can set the address of etcd by option --store-addr.
+    > Use the option `--store-addr` to tell `Meta` the `etcd` address, if you are not using the default one (127.0.0.1:2379).
 
-4. Start three DataNode instances. In distributed mode, you need to specify node-id for startting DataNode. `node-id` needs to be globally unique.
+4. Start three `DataNode` instances. In distributed mode, each `Datanode` must be specified with a globally unique `node-id`.
 
     ```shell
     cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1 
@@ -28,7 +28,7 @@ This article will show how to manually build a distributed GreptimeDB locally.
     cargo run -- datanode start --rpc-addr=0.0.0.0:4300 --mysql-addr=0.0.0.0:4302 --metasrv-addr=0.0.0.0:3002 --node-id=3
     ```
 
-5. Start one Frontend instance. By default, protocols such as `MySQL` are exposed.
+5. Start one `Frontend` instance. Distributed reads and writes are all went through it.
 
     ```shell
     cargo run -- frontend start --metasrv-addr=0.0.0.0:3002
@@ -38,18 +38,17 @@ This article will show how to manually build a distributed GreptimeDB locally.
 
 ### SQL
 
-You can follow the steps to use `SQL` to play with distributed insertions and queries:
+You can follow the steps to use SQL to play with distributed insertions and queries:
 
-1. Use `MySQL cli` to connect to Frontend.
+1. Use MySQL cli to connect to Frontend.
 
     ```shell
     mysql -h 127.0.0.1 -P 4002
     ```
 
-2. Create a table via `CREATE` statement.
+2. Create a distributed table via `CREATE` statement.
 
-    ```shell
-    # create statement
+    ```SQL
     CREATE TABLE dist_table(
         ts TIMESTAMP DEFAULT current_timestamp(),
         n INT,
@@ -81,11 +80,12 @@ You can follow the steps to use `SQL` to play with distributed insertions and qu
         -> engine=mito;
     Query OK, 3 rows affected (0.09 sec)
     ```
+   
+   The `dist_table` is distributed among the `Datanode`s. You can refer to ["Table Sharding"](https://docs.greptime.com/developer-guide/frontend/table-sharding) for more details.
 
 3. Insert some data via `INSERT` statement.
 
-    ```shell
-    # insert statement
+    ```SQL
     INSERT INTO dist_table(n, row_id) VALUES (1, 1);
     INSERT INTO dist_table(n, row_id) VALUES (2, 2);
     INSERT INTO dist_table(n, row_id) VALUES (3, 3);
@@ -154,4 +154,8 @@ You can follow the steps to use `SQL` to play with distributed insertions and qu
     1 row in set (0.03 sec)
     ```
 
-You can also use `MySQL cli` to directly connect to the Datanodes, to see how data is distributed. In this way, you can verify that the queries from Frontend are actually been executed distributed.
+    You can also use MySQL cli to directly connect to the `Datanode`s, to see how data is distributed. In this way, you can verify that the queries from `Frontend` are actually been executed distributed. For more details about distributed querying, please see [this](https://docs.greptime.com/developer-guide/frontend/distributed-querying) document.
+
+### Other Protocols
+
+`Frontend` also supports distribute read and write other protocols, you can follow our ["Supported Protocols"](https://docs.greptime.com/user-guide/supported-protocols/overview) documents for detailed examples.
