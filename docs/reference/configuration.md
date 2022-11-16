@@ -4,7 +4,7 @@ This page describes methods for configuring GreptimeDB server settings. Configur
 
 When a parameter is absent in the configuration file, then the default value is used.
 
-All sample configuration files are in project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
+All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
 
 
 ## Specify configuration file
