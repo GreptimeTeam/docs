@@ -202,9 +202,9 @@ store_addr = '127.0.0.1:2379'
 datanode_lease_secs = 30
 ```
 
-| Key                 | Type    | Description                                                                                                             |   |
-|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------|---|
-| bind_addr           | String  | The bind address of metasrv, '127.0.0.1:3002' by default.                                                                 |   |
-| server_addr         | String  | The communication server address for frontend and datanode to connect metasrv,  '127.0.0.1:3002' by default for localhost |   |
-| store_addr          | String  | Etcd server address, '127.0.0.1:2379' by default                                                                        |   |
-| datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |   |
+| Key                 | Type    | Description                                                                                                             |
+|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------|
+| bind_addr           | String  | The bind address of metasrv, '127.0.0.1:3002' by default.                                                                 |
+| server_addr         | String  | The communication server address for frontend and datanode to connect metasrv,  '127.0.0.1:3002' by default for localhost |
+| store_addr          | String  | Etcd server address, '127.0.0.1:2379' by default                                                                        |
+| datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |
