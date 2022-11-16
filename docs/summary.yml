@@ -12,6 +12,7 @@
   - query-data-with-sql
   - visualize-data
   - process-data-with-python
+  - distributed
 - User-Guide:
   - concepts
   - reading-writing-data
