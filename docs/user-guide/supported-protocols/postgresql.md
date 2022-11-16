@@ -2,8 +2,8 @@
 
 ## Using psql
 
-Currently we have PostgreSQL [simple query subprotocol] supported on GreptimeDB. You can connect to
-GreptimeDB with standard `psql` client:
+Currently we have PostgreSQL simple query subprotocol supported on
+GreptimeDB. You can connect to GreptimeDB with standard `psql` client:
 
 ```shell
 psql -h 127.0.0.1 -p 4003
@@ -14,7 +14,7 @@ When running in standalone mode, the default port of PostgreSQL protocol is
 
 ## Using database connectors
 
-Due to incomplete implementation of extended query mode. When using database
+Due to incomplete implementation of extended query mode, when using database
 connectors, you need to add url parameter `preferQueryMode=simple` for now.
 
 Java example:
