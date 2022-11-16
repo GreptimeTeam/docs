@@ -1,7 +1,6 @@
 # Prometheus
 
 GreptimeDB supports both of Prometheus's remote Read and Write endpoints:
-Suggestion:
 
 - `/v1/prometheus/write` for remote write
 - `/v1/prometheus/read` for remote read
