@@ -2,7 +2,7 @@
 
 This page describes methods for configuring GreptimeDB server settings. Configuration can be set in TOML file.
 
-The system assigns a default value for missing parameters in the configuration file. 
+The system assigns a default value for missing parameters in the configuration file.
 
 All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
 
@@ -69,7 +69,7 @@ All of these options are optional, the default values are listed above. If you w
 | postgres_options   |              |         | PostgresSQL server options                                                      |
 |                    | addr         | String  | Server address, '0.0.0.0:4003' by default                                       |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
-|                    | check_pwd    | boolean | Wheter to check password, it's not supported right now, always false.           |
+|                    | check_pwd    | boolean | Whether to check password, it's not supported right now, always false.           |
 
 ### Node options
 
