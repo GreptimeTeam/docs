@@ -8,13 +8,13 @@ The GreptimeDB dashboard is a web console based on HTTP API.
 
 Available API:
 
-- /sql
-- /scripts and /run-script
-- /opentsdb to support OpenTSDB protocol
-- /influxdb to support InfluxDB line protocol
-- /prometheus to support Prometheus Endpoints
+- `/sql`
+- `/scripts` and `/run-script`
+- `/opentsdb` to support OpenTSDB protocol
+- `/influxdb` to support InfluxDB line protocol
+- `/prometheus` to support Prometheus Endpoints
 
-All these APIs are under the parent resource /v1,  which specifies the current HTTP API version.
+All these APIs are under the parent resource `/v1`,  which specifies the current HTTP API version.
 
 ## `/sql`
 
