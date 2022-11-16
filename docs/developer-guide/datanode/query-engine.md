@@ -19,7 +19,7 @@ execution. All data processing logics are packed in corresponding structures tha
 implement the trait. They are the actual operations performed on the data, like
 aggregator `MIN` or `AVG`, and table scan `SELECT ... FROM`.
 
-The optimization phase which improves execution performanc by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
+The optimization phase which improves execution performance by transforming both logical and physical plans, is now all based on rules. It is also called, "Rule Based Optimization". Some of the rules are DataFusion native and others are customized in Greptime DB. In the future, we plan to add more
 rules and leverage the data statistics for Cost Based Optimization/CBO.
 
 The last phase "execute" is a verb, stands for the procedure that reads data from storage, performs
