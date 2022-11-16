@@ -61,13 +61,13 @@ helm install mydb greptime/greptimedb -n default --devel
 After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
 
 ```shell
-kubectl port-forward svc/mydb-frontend 3306:3306 > connections.out &
+kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
 Use `mysql` to connect GreptimeDB:
 
 ```shell
-mysql -h 127.0.0.1 -P 3306
+mysql -h 127.0.0.1 -P 4002
 ```
 
 ### 4\. Destroy GreptimeDB cluster

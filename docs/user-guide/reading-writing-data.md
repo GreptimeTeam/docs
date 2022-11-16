@@ -22,8 +22,8 @@ The following guide uses standard MySQL clients to demonstrate how to do it.
 
 ### Connecting to GreptimeDB
 
-Start GreptimeDB ([Getting Started](../getting-started/overview.md)). GreptimeDB will listen to `127.0.0.1:4002` for MySQL
-connections by default.
+Start GreptimeDB ([Installation](../installation/overview.md)). GreptimeDB will listen to `127.0.0.1:4002` for MySQL connections by default.
+
 Open your favorite terminal, type `mysql -h 127.0.0.1 -P 4002`, and you are
 connected to GreptimeDB.
 
