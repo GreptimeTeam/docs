@@ -97,7 +97,7 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 
 ## Standalone
 
-When you start the GreptimeDB in standalone mode, you can configure it as below:
+When you use GreptimeDB in the standalone mode, you can configure it as below:
 
 ```toml
 node_id = 0
