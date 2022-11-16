@@ -3,7 +3,7 @@
 The command line `greptime` in pre-built binary can start/stop GreptimeDB and pass configuration options.
 
 
-`help` lists all commands and options of the `greptime`.
+`help` lists all commands and options of `greptime`.
 
 ```sh
 $ greptime help
