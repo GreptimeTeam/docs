@@ -2,7 +2,7 @@
 
 This page describes methods for configuring GreptimeDB server settings. Configuration can be set in TOML file.
 
-When a parameter is absent in the configuration file, then the default value is used.
+The system assigns a default value for missing parameters in the configuration file. 
 
 All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
 
