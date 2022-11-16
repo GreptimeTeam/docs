@@ -6,24 +6,34 @@ Currently we have PostgreSQL [simple query subprotocol] supported on GreptimeDB.
 GreptimeDB with standard `psql` client:
 
 ```shell
-psql -h 127.0.0.1 -p 5432
+psql -h 127.0.0.1 -p 4003
 ```
 
-When running in standalone mode, the default port of PostgreSQL protocol is `5432`. While it's
+When running in standalone mode, the default port of PostgreSQL protocol is
 `4003`.
 
 ## Using database connectors
 
-When using database connectors, you need to add url parameter `preferQueryMode=simple` for now.
+Due to incomplete implementation of extended query mode. When using database
+connectors, you need to add url parameter `preferQueryMode=simple` for now.
 
-Java example
+Java example:
 
 ```java
 String url = "jdbc:postgresql://localhost/test?preferQueryMode=simple";
 Connection conn = DriverManager.getConnection(url);
 ```
 
-Python example[WIP]
+Python: use [psycopg2](https://www.psycopg.org/docs/) with `autocommit`
+enabled.
+
+```python
+import psycopg2
+
+conn = psycopg2.connect("host=127.0.0.1 port=4003")
+conn.set_session(autocommit=True)
+
+```
 
 ## Upcoming features
 
