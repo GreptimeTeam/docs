@@ -45,7 +45,7 @@ runtime_size = 2
 check_pwd = false
 ```
 
-All these options are optional, the default values are list as above. If you want to disable some options such as disabling OpenTSDB protocol support, you can just remove the `prometheus_options` or set it's `enable` value to be `false`.
+All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.
 
 
 ### Protocol options
