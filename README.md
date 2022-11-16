@@ -12,13 +12,13 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 ## Installation
 
-This section covers instructions to deploy GreptimeDB in standalone mode or distributed mode.
+Provides instructions on how to deploy GreptimeDB in either standalone or distributed mode
 
 - [Overview][18]
 
 ## Getting Started
 
-This section provides the quickest ways to get started with GreptimeDB.
+If you are new to Greptime DB, documents below will help you quickly get started
 
 - [Overview][2]
 - [Create a time series table][3]
@@ -29,7 +29,7 @@ This section provides the quickest ways to get started with GreptimeDB.
 
 ## User Guide
 
-This section explains how to build an application using GreptimeDB and how to handle common problems.
+Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
 - [Concepts][8]
 - [Reading/Writing data][9]
@@ -40,7 +40,7 @@ This section explains how to build an application using GreptimeDB and how to ha
 
 ## Developer Guide
 
-This section illustrates how GreptimeDB works and helps you to get involved in GreptimeDB development.
+Illustartes in detail how GreptimeDB works and helps you get involved in the development as a contributor
 
   - [Overview][14]
   - [Frontend][15]
