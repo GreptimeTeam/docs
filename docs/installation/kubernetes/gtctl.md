@@ -38,13 +38,13 @@ After the installation is completed, `gtctl` creates the followings:
 You can use `kubectl port-forward` command to forward frontend requests:
 
 ```shell
-kubectl port-forward svc/mydb-frontend 3306:3306 > connections.out &
+kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
 Use your `mysql` client to connect your cluster:
 
 ```shell
-mysql -h 127.0.0.1 -P 3306
+mysql -h 127.0.0.1 -P 4002
 ```
 
 ### 4\. Delete your own GreptimeDB cluster
