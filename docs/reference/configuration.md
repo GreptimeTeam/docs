@@ -150,7 +150,7 @@ datanode_rpc_addr = '127.0.0.1:3001'
 http_addr = '127.0.0.1:4000'
 
 [meta_client_opts]
-metasrv_addr = "1.1.1.1:3002"
+metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
 tcp_nodelay = false
@@ -160,7 +160,7 @@ The `datanode_rpc_addr` is not used in `distributed` mode, you can leave it in d
 
 The `meta_client_opts` configure the metasrv client confugrations, incuding:
 
-* `metasrv_addr`, metasrv address.
+* `metasrv_addrs`, metasrv address list
 * `timeout_millis`, operation timeout in milliseconds, 3000 by default.
 * `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
 
@@ -183,7 +183,7 @@ type = 'File'
 data_dir = '/tmp/greptimedb/data/'
 
 [meta_client_opts]
-metasrv_addr = "1.1.1.1:3002"
+metasrv_addrs = ["1.1.1.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
 tcp_nodelay = false
