@@ -16,6 +16,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
   - Compile the source code
 - Protobuf ([guide][2])
   - Compile the proto file
+  - Note that the version need to >= 3.15. You can check it with `protoc --version`
 - Git (optional)
   - Clone the source from
 
