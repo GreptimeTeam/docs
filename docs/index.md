@@ -4,23 +4,22 @@
     <img src="./public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
-GreptimeDB is an open-source time-series database with a special focus on
-scalability, analytical capabilities and efficiency. It's designed to work on
-infrastructure of the cloud era, and users benefits from its elasticity and commodity
+GreptimeDB is an open-source time-series database with a special focus on improving
+scalability, analytical capabilities, and efficiency. It's designed to work on
+infrastructure of the cloud era and benefits users from its elasticity and commodity
 storage.
 
-These pages cover core concepts of GreptimeDB, including  installation guide, setup steps, usage
-guides and architecture designs.
+Before getting started, please read the important documents below, including how to set up, fundamental concepts, architectural designs, and tutorials:
 
-- [Getting Started][1]: This section is helpful if you are new to GreptimeDB and want to start
-using it quickly.
+- [Installation][1]: how to deploy GreptimeDB in either standalone or distributed mode
 
-- [User Guide][2]: This section is written for application developers, and explains key concepts of
-GreptimeDB and how to build an application using GreptimeDB.
+- [Getting Started][2]: provides an overall introduction if you are new to Greptime DB
 
-- [Developer Guide][3]: This part contains design documentation for those who wish to understand
-how the code works and want to get involved in GreptimeDB development.
+- [User Guide][3]: for application developers to use GreptimeDB or build a custom integration
 
-[1]: ./getting-started/overview.md
-[2]: ./user-guide/concepts.md
-[3]: ./developer-guide/overview.md
+- [Developer Guide][4]: for developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor
+
+[1]: ./installation/overview.md
+[2]: ./getting-started/overview.md
+[3]: ./user-guide/concepts.md
+[4]: ./developer-guide/overview.md

@@ -1,3 +1,10 @@
+- Installation:
+  - overview
+  - download-pre-built
+  - Kubernetes:
+    - overview
+    - operator
+    - gtctl
 - Getting-Started:
   - overview
   - create-a-time-series-table
@@ -5,6 +12,7 @@
   - query-data-with-sql
   - visualize-data
   - process-data-with-python
+  - distributed
 - User-Guide:
   - concepts
   - reading-writing-data
@@ -36,8 +44,9 @@
     - python-coprocessor
   - Meta:
     - overview
-- Installation:
-  - Kubernetes:
-    - index
-    - operator
-    - gtctl
+- Reference:
+  - command-lines
+  - configuration
+  - data-types
+  - sql
+  - functions

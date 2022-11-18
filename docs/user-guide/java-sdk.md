@@ -122,7 +122,7 @@ QueryRequest request = QueryRequest.newBuilder() //
 | defaultRpcTimeout       | Default RPC timeout . Each request can specify timeout individually . If not specified, then this value will be used, The default is 10s.                                       |
 | maxInboundMessageSize   | Sets the maximum message size allowed to be received on a channel.                                                                                                              |
 | flowControlWindow       | http2.0 based flow control, default 64M                                                                                                                                         |
-| idleTimeoutSeconds      | Set the duration(default 5 min) without ongoing RPCs before going to idle mode.In idle mode the channel shuts down all connections.                                         |
+| idleTimeoutSeconds      | Set the duration(default 5 min) without ongoing RPCs before going to idle mode. In idle mode the channel shuts down all connections.                                         |
 | keepAliveTimeSeconds    | Sets the time without read activity before sending a keep-alive ping.                                                                                                           |
 | keepAliveTimeoutSeconds | Sets the time waiting for read activity after sending a keep-alive ping.If the time expires without any read activity on the connection, the connection is considered dead. |
 | keepAliveWithoutCalls   | Sets whether keep-alive will be performed when there are no outstanding RPC on a connection.                                                                                    |
