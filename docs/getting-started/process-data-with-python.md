@@ -36,13 +36,13 @@ The above piece of code evaluates the host status based on the cpu/memory/disk u
 
 You can submit the file to GreptimeDB with a script name so you can refer to it by this name(`system_status`)later and execute it:
 
-``` shell
+``` console
 curl  --data-binary "@system_status.py" -XPOST "http://localhost:4000/v1/scripts?name=system_status"
 ```
 
 Run the script:
 
-```shell
+```console
 curl  -XPOST "http://localhost:4000/v1/run-script?name=system_status"
 ```
 

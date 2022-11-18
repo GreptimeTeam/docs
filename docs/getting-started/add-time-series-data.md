@@ -33,7 +33,7 @@ GreptimeDB supports HTTP InfluxDB line protocol. For more information, please re
 
 You can write data via /influxdb/write API:
 
-``` shell
+``` console
 curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" \
 --data-binary \
 'system_metrics,host=host1,idc=idc_a cpu_util=11.8,memory_util=10.3,disk_util=10.3 1667446797450

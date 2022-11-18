@@ -24,13 +24,13 @@ For more information about SQL, please refer to the SQL reference document.
 
 For example:
 
-``` shell
+``` console
 curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
 `/sql` also supports POST method:
 
-``` shell
+``` console
 curl  -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
@@ -87,7 +87,7 @@ The API Result contains:
 
 Create table via SQL:
 
-```shell
+```console
 curl  -v -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
 ```
 
@@ -97,7 +97,7 @@ curl  -v -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE T
 
 Insert data:
 
-```shell
+```console
  curl  -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
 ```
 
@@ -107,7 +107,7 @@ Insert data:
 
 Query data:
 
-```shell
+```console
  curl -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
 
@@ -166,7 +166,7 @@ def square(number):
 
 Submits it to database:
 
-```shell
+```console
 curl --data-binary @test.py -XPOST \
       "http://localhost:4000/v1/scripts?name=square"
 ```
@@ -177,7 +177,7 @@ curl --data-binary @test.py -XPOST \
 
 The python script is inserted into the `scripts` table and compiled automatically:
 
-```shell
+```console
 curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scripts"
 ```
 
@@ -232,7 +232,7 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
 
 You can also execute the script via `/run-script`:
 
-```shell
+```console
 curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 ```
 

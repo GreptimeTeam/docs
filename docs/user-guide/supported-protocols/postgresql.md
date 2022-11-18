@@ -5,7 +5,7 @@
 Currently we have PostgreSQL simple query subprotocol supported on
 GreptimeDB. You can connect to GreptimeDB with standard `psql` client:
 
-```shell
+```console
 psql -h 127.0.0.1 -p 4003
 ```
 

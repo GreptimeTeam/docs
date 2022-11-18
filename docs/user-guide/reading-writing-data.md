@@ -284,7 +284,7 @@ The result of the insert request is simple:
 
 You can wrap the SQL in our gRPC query request like this:
 
-``` shell
+``` console
 grpcurl -plaintext -d '
 {
   "header": {

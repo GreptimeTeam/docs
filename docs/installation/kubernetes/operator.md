@@ -8,7 +8,7 @@ pattern][3].
 The GreptimeDB operator abstracts the model of maintaining the highly available GreptimeDB cluster. You
 can create your own cluster as easily as possible:
 
-```shell
+```console
 cat <<EOF | kubectl apply -f -
 apiVersion: greptime.io/v1alpha1
 kind: GreptimeDBCluster
@@ -35,7 +35,7 @@ EOF
 
 You can use [kind][4] to create your own test  Kubernetes cluster:
 
-``` shell
+``` console
 kind create cluster
 ```
 
@@ -44,7 +44,7 @@ kind create cluster
 Make sure you have already installed [Helm][5].  Use the following commands to install
 `greptimedb-operator` in the default namespace:
 
-```shell
+```console
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 helm install gtcloud greptime/greptimedb-operator -n default --devel
@@ -54,19 +54,19 @@ The maintained Helm charts are in [helm-charts][6].
 
 ### 3\. Create your own GreptimeDB cluster
 
-```shell
+```console
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
 After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
 
-```shell
+```console
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
 Use `mysql` to connect GreptimeDB:
 
-```shell
+```console
 mysql -h 127.0.0.1 -P 4002
 ```
 
@@ -74,7 +74,7 @@ mysql -h 127.0.0.1 -P 4002
 
 You can use the following commands to uninstall operator and cluster:
 
-```shell
+```console
 # Uninstall the cluster.
 helm uninstall mydb
 

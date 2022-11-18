@@ -19,7 +19,7 @@ GreptimeDB fully supports Opentsdb's "put" command format:
 
 You can use `put`  to insert metrics:
 
-```shell
+```console
 ~ % telnet 127.0.0.1 4242
 Trying 127.0.0.1...
 Connected to localhost.
@@ -75,7 +75,7 @@ Starting GreptimeDB, the HTTP server is listening on port `4000` by default.
 
 Use curl to insert one metric point:
 
-```shell
+```console
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 {
     "metric": "sys.cpu.nice",
@@ -91,7 +91,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 
 Or insert multiple metric points:
 
-```shell
+```console
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 [
     {
