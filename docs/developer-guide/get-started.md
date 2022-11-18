@@ -12,6 +12,9 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 
 ### Build Dependencies
 
+- Git (optional)
+  - Clone the source from
+- C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
 - Rust ([guide][1])
   - Compile the source code
 - Protobuf ([guide][2])
@@ -20,7 +23,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 - Git (optional)
   - Clone the source from
 
-[1]: <https://www.rust-lang.org/learn/get-started>
+[1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>
 
 ## Compile and Run
