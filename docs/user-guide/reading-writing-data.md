@@ -32,19 +32,6 @@ connected to GreptimeDB.
 First, you need to create a table. Take the SQL
 in [Getting Started](../getting-started/overview.md) guide as example:
 
-```sql
-CREATE TABLE system_metrics (
-    host STRING,
-    idc STRING,
-    cpu_util DOUBLE,
-    memory_util DOUBLE,
-    disk_util DOUBLE,
-    ts TIMESTAMP,
-    PRIMARY KEY(host, idc),
-    TIME INDEX(ts)
-);
-```
-
 ```SQL
 CREATE TABLE system_metrics (
      host STRING,
@@ -58,7 +45,7 @@ CREATE TABLE system_metrics (
 );
 ```
 
-```text
+```sql
 Query OK, 1 row affected (0.01 sec)
 ```
 
@@ -68,7 +55,7 @@ A table named `system_metrics` was created. You can use `show tables` to view it
 show tables;
 ```
 
-```SQL
+```sql
 +----------------+
 | Tables         |
 +----------------+
@@ -92,15 +79,7 @@ VALUES
     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
 ```
 
-```SQL
-INSERT INTO system_metrics
- VALUES
-     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
-     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
-     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
-```
-
-```text
+```sql
 Query OK, 3 rows affected (0.01 sec)
 ```
 
@@ -114,11 +93,7 @@ You can use the `SELECT` statement to query data:
 select * from system_metrics;
 ```
 
-```SQL
-select * from system_metrics;
-```
-
-```text
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -148,7 +123,7 @@ to GreptimeDB's gRPC service.
 GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
 Let's create a table called `hello_greptime`:
 
-```shell
+```console
 grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },
@@ -215,7 +190,7 @@ gRPC service will return:
 
 Insert data:
 
-```shell
+```console
 grpcurl -plaintext -d '
 {
   "header": {
@@ -364,7 +339,7 @@ in `select.proto` file to `import "column.proto"`(Because protoc's
 "decode" can not find the imported proto files in that way)
 1. Submit your gRPC request
 
-```shell
+```console
 grpcurl -plaintext -d '
 {
   "header": {
