@@ -23,8 +23,14 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 4. Start three `DataNode` instances. In distributed mode, each `Datanode` must be specified with a globally unique `node-id`.
 
     ```shell
-    cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1 
+    cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1
+    ```
+
+    ```shell
     cargo run -- datanode start --rpc-addr=0.0.0.0:4200 --mysql-addr=0.0.0.0:4202 --metasrv-addr=0.0.0.0:3002 --node-id=2
+    ```
+
+    ```shell
     cargo run -- datanode start --rpc-addr=0.0.0.0:4300 --mysql-addr=0.0.0.0:4302 --metasrv-addr=0.0.0.0:3002 --node-id=3
     ```
 
@@ -80,7 +86,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
         -> engine=mito;
     Query OK, 3 rows affected (0.09 sec)
     ```
-   
+
    The `dist_table` is distributed among the `Datanode`s. You can refer to ["Table Sharding"](https://docs.greptime.com/developer-guide/frontend/table-sharding) for more details.
 
 3. Insert some data via `INSERT` statement.

@@ -103,7 +103,7 @@ When you use GreptimeDB in the standalone mode, you can configure it as below:
 node_id = 0
 mode = 'standalone'
 http_addr = '127.0.0.1:4000'
-datanode_mysql_addr = "127.0.0.1:3306"
+datanode_mysql_addr = "127.0.0.1:4406"
 datanode_mysql_runtime_size = 4
 wal_dir = "/tmp/greptimedb/wal/"
 
@@ -175,7 +175,7 @@ mode = "distributed"
 rpc_addr = '127.0.0.1:3001'
 wal_dir = '/tmp/greptimedb/wal'
 rpc_runtime_size = 8
-mysql_addr = '127.0.0.1:3306'
+mysql_addr = '127.0.0.1:4406'
 mysql_runtime_size = 4
 
 [storage]
