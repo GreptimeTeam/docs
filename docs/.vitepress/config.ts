@@ -37,6 +37,12 @@ export default (async () => ({
     copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
     email: 'marketing@greptime.com',
     sidebar: await makeSidebar(),
+    socialLinks: [
+      {
+        icon: 'github',
+        link: 'https://github.com/GreptimeTeam/docs',
+      },
+    ],
     nav: [
       {
         text: 'Home',

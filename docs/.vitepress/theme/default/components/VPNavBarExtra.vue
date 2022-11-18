@@ -50,7 +50,7 @@ const hasExtraContent = computed(() => theme.value.localeLinks || site.value.app
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 960px) {
   .VPNavBarExtra {
     display: none;
   }
