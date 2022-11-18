@@ -180,7 +180,7 @@ the status information (display) of the node and the metrics.
 
 ### How
 
-``` shell
+```shell
 kill -s SIGUSR2 pid
 ```
 

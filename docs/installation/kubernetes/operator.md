@@ -35,7 +35,7 @@ EOF
 
 You can use [kind][4] to create your own test  Kubernetes cluster:
 
-``` shell
+```shell
 kind create cluster
 ```
 
