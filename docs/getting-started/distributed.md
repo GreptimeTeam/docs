@@ -6,7 +6,7 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 
 1. Get GreptimeDB source code from Github:
 
-    ```console
+    ```shell
     git clone https://github.com/GreptimeTeam/greptimedb.git
     ```
 
@@ -14,7 +14,7 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 
 3. Start one `Meta` instance.
 
-    ```console
+    ```shell
     cargo run -- metasrv start
     ```
 
@@ -22,7 +22,7 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 
 4. Start three `DataNode` instances. In distributed mode, each `Datanode` must be specified with a globally unique `node-id`.
 
-    ```console
+    ```shell
     cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1 
     cargo run -- datanode start --rpc-addr=0.0.0.0:4200 --mysql-addr=0.0.0.0:4202 --metasrv-addr=0.0.0.0:3002 --node-id=2
     cargo run -- datanode start --rpc-addr=0.0.0.0:4300 --mysql-addr=0.0.0.0:4302 --metasrv-addr=0.0.0.0:3002 --node-id=3
@@ -30,7 +30,7 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 
 5. Start one `Frontend` instance. Distributed reads and writes are all went through it.
 
-    ```console
+    ```shell
     cargo run -- frontend start --metasrv-addr=0.0.0.0:3002
     ```
 
@@ -42,7 +42,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
 
 1. Use MySQL cli to connect to Frontend.
 
-    ```console
+    ```shell
     mysql -h 127.0.0.1 -P 4002
     ```
 
@@ -65,7 +65,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
 
     The result looks like the following:
 
-    ```console
+    ```shell
     mysql> CREATE TABLE dist_table(
         ->     ts TIMESTAMP DEFAULT current_timestamp(),
         ->     n INT,

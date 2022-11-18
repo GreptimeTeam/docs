@@ -123,7 +123,7 @@ to GreptimeDB's gRPC service.
 GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
 Let's create a table called `hello_greptime`:
 
-```console
+```shell
 grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },
@@ -190,7 +190,7 @@ gRPC service will return:
 
 Insert data:
 
-```console
+```shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -284,7 +284,7 @@ The result of the insert request is simple:
 
 You can wrap the SQL in our gRPC query request like this:
 
-``` console
+```shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -339,7 +339,7 @@ in `select.proto` file to `import "column.proto"`(Because protoc's
 "decode" can not find the imported proto files in that way)
 1. Submit your gRPC request
 
-```console
+```shell
 grpcurl -plaintext -d '
 {
   "header": {

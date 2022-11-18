@@ -96,7 +96,7 @@ and is listening for incoming gRPC requests on `127.0.0.1:4200`
 
 ### Create a table
 
-``` console
+```shell
 $ grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },

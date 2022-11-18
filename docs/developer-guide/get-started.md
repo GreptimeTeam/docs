@@ -26,7 +26,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 
 Start GreptimeDB standalone instance in just a few commands!
 
-```console
+```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
 cargo run -- standalone start
@@ -36,7 +36,7 @@ Next, you can choose the protocol you like to interact with in GreptimeDB.
 
 Or if you just want to build the server without running it:
 
-```console
+```shell
 cargo build # --release
 ```
 
@@ -46,7 +46,7 @@ The artifacts can be found under `$REPO/target/debug` or `$REPO/target/release`,
 
 GreptimeDB is well-tested, the entire unit test suite is shipped with source code. To test them, run
 
-```console
+```shell
 cargo test --workspace
 ```
 

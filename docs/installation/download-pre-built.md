@@ -11,14 +11,14 @@ So these binaries are not ready to be used under production environment at the m
 
 For Linux and MacOS users, you can download latest build of GreptimeDB using:
 
-```console
+```shell
 curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/scripts/install.sh | sh
 ./greptime standalone start
 ```
 
 ## Docker
 
-```console
+```shell
 docker pull greptime/greptimedb
 docker run -p 4002:4002 -v "$(pwd):/tmp/greptimedb" greptime/greptimedb standalone start
 ```

@@ -26,7 +26,7 @@ CREATE DATABASE influxdb;
 
 Use `curl` to insert metrics:
 
-```console
+```shell
 curl -i -XPOST "127.0.0.1:4000/v1/influxdb/write?db=influxdb" --data-binary 'monitor,host=host1 cpu=66.6,memory=1024 1663840496100023100
 monitor,host=host2 cpu=66.7,memory=1025 1663840496200010300
 monitor,host=host3 cpu=66.8,memory=1026 1663840496300003400
