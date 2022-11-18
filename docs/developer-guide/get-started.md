@@ -14,7 +14,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 
 - Git (optional)
   - Clone the source from
-- C/C++ Toolchain: provides basic tools for compiling and linking. This is available as build-essential on ubuntu and similar name on other platforms.
+- C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
 - Rust ([guide][1])
   - Compile the source code
 - Protobuf ([guide][2])
