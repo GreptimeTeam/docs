@@ -32,24 +32,30 @@ connected to GreptimeDB.
 First, you need to create a table. Take the SQL
 in [Getting Started](../getting-started/overview.md) guide as example:
 
+```sql
+CREATE TABLE system_metrics (
+    host STRING,
+    idc STRING,
+    cpu_util DOUBLE,
+    memory_util DOUBLE,
+    disk_util DOUBLE,
+    ts TIMESTAMP,
+    PRIMARY KEY(host, idc),
+    TIME INDEX(ts)
+);
+```
+
 ```SQL
-mysql> CREATE TABLE system_metrics (
-    ->     host STRING,
-    ->     idc STRING,
-    ->     cpu_util DOUBLE,
-    ->     memory_util DOUBLE,
-    ->     disk_util DOUBLE,
-    ->     ts TIMESTAMP,
-    ->     PRIMARY KEY(host, idc),
-    ->     TIME INDEX(ts)
-    -> );
 Query OK, 1 row affected (0.01 sec)
 ```
 
 A table named `system_metrics` was created. You can use `show tables` to view it:
 
+```sql
+show tables;
+```
+
 ```SQL
-mysql> show tables;
 +----------------+
 | Tables         |
 +----------------+
@@ -65,12 +71,15 @@ mysql> show tables;
 Let's insert some testing data. You can use the `INSERT INTO` SQL
 statements:
 
+```sql
+INSERT INTO system_metrics
+VALUES
+    ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
+    ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
+    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
+```
+
 ```SQL
-mysql> INSERT INTO system_metrics
-    -> VALUES
-    ->     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
-    ->     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
-    ->     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
 Query OK, 3 rows affected (0.01 sec)
 ```
 
@@ -80,8 +89,11 @@ Then we are good to query it!
 
 You can use the `SELECT` statement to query data:
 
+```sql
+select * from system_metrics;
+```
+
 ```SQL
-mysql> select * from system_metrics;
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+

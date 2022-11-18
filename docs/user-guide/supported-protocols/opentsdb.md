@@ -119,7 +119,10 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 You can always query the metrics with SQL:
 
 ```sql
-mysql> select * from 'sys.cpu.nice' order by greptime_timestamp;
+select * from 'sys.cpu.nice' order by greptime_timestamp;
+```
+
+```sql
 +---------------------+----------------+------+-------+
 | greptime_timestamp  | greptime_value | dc   | host  |
 +---------------------+----------------+------+-------+

@@ -17,14 +17,17 @@ mysql>
 
 In this example, we are going to create a table named `monitor`
 
+```sql
+CREATE TABLE monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  cpu DOUBLE DEFAULT 0,
+  memory DOUBLE,
+  TIME INDEX (ts),
+  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
+```
+
 ``` sql
-mysql> CREATE TABLE monitor (
-    ->   host STRING,
-    ->   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ->   cpu DOUBLE DEFAULT 0,
-    ->   memory DOUBLE,
-    ->   TIME INDEX (ts),
-    ->   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 Query OK, 1 row affected (0.03 sec)
 ```
 
@@ -47,7 +50,9 @@ to tags in other time-series systems like [InfluxDB][1].
 You can use `show tables` statement to list existing tables
 
 ``` sql
-mysql> show tables;
+show tables;
+```
+``` sql
 +------------+
 | Tables     |
 +------------+
@@ -61,7 +66,9 @@ Notice: `script` table is a built-in table that holds User-Defined Functions (UD
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
 ``` sql
-mysql> show tables like monitor;
+show tables like monitor;
+```
+``` sql
 +---------+
 | Tables  |
 +---------+
