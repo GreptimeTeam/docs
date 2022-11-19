@@ -3,7 +3,7 @@
 ## Introduction
 
 `Datanode` is mainly responsible for storing the actual data for GreptimeDB. `Datanode` itself is a
-nstand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Meta` to form a
+stand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Meta` to form a
 distributed database service, as the following picture shows:
 
 ![Datanode](../../public/datanode.png)
