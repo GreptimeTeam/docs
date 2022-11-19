@@ -20,18 +20,18 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
 
     > Use the option `--store-addr` to tell `Meta` the `etcd` address, if you are not using the default one (127.0.0.1:2379).
 
-4. Start three `DataNode` instances. In distributed mode, each `Datanode` must be specified with a globally unique `node-id`.
+4. Start three `DataNode` instances. In distributed mode, each `Datanode` must be specified with a globally unique `node-id`. Also don't forget to assign two unique `data-dir` and `wal-dir` for each `Datanode` instance.
 
     ```shell
-    cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1
+    cargo run -- datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1 --data-dir=/tmp/greptimedb/1/data --wal-dir=/tmp/greptimedb/1/wal
     ```
 
     ```shell
-    cargo run -- datanode start --rpc-addr=0.0.0.0:4200 --mysql-addr=0.0.0.0:4202 --metasrv-addr=0.0.0.0:3002 --node-id=2
+    cargo run -- datanode start --rpc-addr=0.0.0.0:4200 --mysql-addr=0.0.0.0:4202 --metasrv-addr=0.0.0.0:3002 --node-id=2 --data-dir=/tmp/greptimedb/2/data --wal-dir=/tmp/greptimedb/2/wal
     ```
 
     ```shell
-    cargo run -- datanode start --rpc-addr=0.0.0.0:4300 --mysql-addr=0.0.0.0:4302 --metasrv-addr=0.0.0.0:3002 --node-id=3
+    cargo run -- datanode start --rpc-addr=0.0.0.0:4300 --mysql-addr=0.0.0.0:4302 --metasrv-addr=0.0.0.0:3002 --node-id=3 --data-dir=/tmp/greptimedb/3/data --wal-dir=/tmp/greptimedb/3/wal
     ```
 
 5. Start one `Frontend` instance. Distributed reads and writes are all went through it.
