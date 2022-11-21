@@ -90,8 +90,6 @@ to tags in other time-series systems like [InfluxDB][1].
 
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
-> TBD:  Creating table in distributed mode.
-
 
 #### Creating a table in other database
 
