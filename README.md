@@ -10,9 +10,15 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 # Table of Contents
 
+## Installation
+
+Provides instructions on how to deploy GreptimeDB in either standalone or distributed mode
+
+- [Overview][18]
+
 ## Getting Started
 
-This section provides the quickest ways to get started with GreptimeDB.
+If you are new to Greptime DB, documents below will help you quickly get started
 
 - [Overview][2]
 - [Create a time series table][3]
@@ -23,7 +29,7 @@ This section provides the quickest ways to get started with GreptimeDB.
 
 ## User Guide
 
-This section explains how to build an application using GreptimeDB and how to handle common problems.
+Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
 - [Concepts][8]
 - [Reading/Writing data][9]
@@ -34,29 +40,30 @@ This section explains how to build an application using GreptimeDB and how to ha
 
 ## Developer Guide
 
-This section explains how GreptimeDB works and helps you to get involved in GreptimeDB development.
+Illustartes in detail how GreptimeDB works and helps you get involved in the development as a contributor
 
   - [Overview][14]
   - [Frontend][15]
   - [Datanode][16]
   - [Meta][17]
 
-[2]: ./getting-started/overview.md
-[3]: ./getting-started/create-a-time-series-table.md
-[4]: ./getting-started/add-time-series-data.md
-[5]: ./getting-started/query-data-with-sql.md
-[6]: ./getting-started/visualize-data.md
-[7]: ./getting-started/process-data-with-python.md
-[8]: ./user-guide/concepts.md
-[9]: ./user-guide/reading-writing-data.md
-[10]: ./user-guide/table-management.md
-[11]: ./user-guide/coprocessor-and-scripting.md
-[12]: ./user-guide/java-sdk.md
-[13]: ./user-guide/supported-protocols/overview.md
-[14]: ./developer-guide/overview.md
-[15]: ./developer-guide/frontend/overview.md
-[16]: ./developer-guide/datanode/overview.md
-[17]: ./developer-guide/meta/meta-server.md
+[2]: ./docs/getting-started/overview.md
+[3]: ./docs/getting-started/create-a-time-series-table.md
+[4]: ./docs/getting-started/add-time-series-data.md
+[5]: ./docs/getting-started/query-data-with-sql.md
+[6]: ./docs/getting-started/visualize-data.md
+[7]: ./docs/getting-started/process-data-with-python.md
+[8]: ./docs/user-guide/concepts.md
+[9]: ./docs/user-guide/reading-writing-data.md
+[10]: ./docs/user-guide/table-management.md
+[11]: ./docs/user-guide/coprocessor-and-scripting.md
+[12]: ./docs/user-guide/java-sdk.md
+[13]: ./docs/user-guide/supported-protocols/overview.md
+[14]: ./docs/developer-guide/overview.md
+[15]: ./docs/developer-guide/frontend/overview.md
+[16]: ./docs/developer-guide/datanode/overview.md
+[17]: ./docs/developer-guide/meta/overview.md
+[18]: ./docs/installation/overview.md
 
 # Contributing
 

@@ -1,6 +1,6 @@
 # Getting Started
 
-After GreptimeDB is successfully installed, you can explore more features by creating an instance or a cluster In this tutorial, you will learn how to:
+After GreptimeDB is successfully [installed](../installation/overview.md), you can explore more features by creating an instance or a cluster In this tutorial, you will learn how to:
 
 - [Create a time-series table][1]
 - [Add time-series data][2]

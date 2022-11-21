@@ -8,13 +8,13 @@ The GreptimeDB dashboard is a web console based on HTTP API.
 
 Available API:
 
-- /sql
-- /scripts and /run-script
-- /opentsdb to support OpenTSDB protocol
-- /influxdb to support InfluxDB line protocol
-- /prometheus to support Prometheus Endpoints
+- `/sql`
+- `/scripts` and `/run-script`
+- `/opentsdb` to support OpenTSDB protocol
+- `/influxdb` to support InfluxDB line protocol
+- `/prometheus` to support Prometheus Endpoints
 
-All these APIs are under the parent resource /v1,  which specifies the current HTTP API version.
+All these APIs are under the parent resource `/v1`,  which specifies the current HTTP API version.
 
 ## `/sql`
 
@@ -24,13 +24,13 @@ For more information about SQL, please refer to the SQL reference document.
 
 For example:
 
-``` shell
+```shell
 curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
 `/sql` also supports POST method:
 
-``` shell
+```shell
 curl  -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
 ```
 
@@ -111,7 +111,7 @@ Query data:
  curl -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=SELECT * from HTTP_API_TEST"
 ```
 
-```
+```json
 {
   "code": 0,
   "output": [{
@@ -166,12 +166,12 @@ def square(number):
 
 Submits it to database:
 
-```
+```shell
 curl --data-binary @test.py -XPOST \
       "http://localhost:4000/v1/scripts?name=square"
 ```
 
-```
+```json
 {"code":0}
 ```
 

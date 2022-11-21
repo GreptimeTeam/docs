@@ -22,8 +22,8 @@ The following guide uses standard MySQL clients to demonstrate how to do it.
 
 ### Connecting to GreptimeDB
 
-Start GreptimeDB ([Getting Started](../getting-started/overview.md)). GreptimeDB will listen to `127.0.0.1:4002` for MySQL
-connections by default.
+Start GreptimeDB ([Installation](../installation/overview.md)). GreptimeDB will listen to `127.0.0.1:4002` for MySQL connections by default.
+
 Open your favorite terminal, type `mysql -h 127.0.0.1 -P 4002`, and you are
 connected to GreptimeDB.
 
@@ -33,23 +33,29 @@ First, you need to create a table. Take the SQL
 in [Getting Started](../getting-started/overview.md) guide as example:
 
 ```SQL
-mysql> CREATE TABLE system_metrics (
-    ->     host STRING,
-    ->     idc STRING,
-    ->     cpu_util DOUBLE,
-    ->     memory_util DOUBLE,
-    ->     disk_util DOUBLE,
-    ->     ts TIMESTAMP,
-    ->     PRIMARY KEY(host, idc),
-    ->     TIME INDEX(ts)
-    -> );
+CREATE TABLE system_metrics (
+     host STRING,
+     idc STRING,
+     cpu_util DOUBLE,
+     memory_util DOUBLE,
+     disk_util DOUBLE,
+     ts TIMESTAMP,
+     PRIMARY KEY(host, idc),
+     TIME INDEX(ts)
+);
+```
+
+```sql
 Query OK, 1 row affected (0.01 sec)
 ```
 
 A table named `system_metrics` was created. You can use `show tables` to view it:
 
-```SQL
-mysql> show tables;
+```sql
+show tables;
+```
+
+```sql
 +----------------+
 | Tables         |
 +----------------+
@@ -65,12 +71,15 @@ mysql> show tables;
 Let's insert some testing data. You can use the `INSERT INTO` SQL
 statements:
 
-```SQL
-mysql> INSERT INTO system_metrics
-    -> VALUES
-    ->     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
-    ->     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
-    ->     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
+```sql
+INSERT INTO system_metrics
+VALUES
+    ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
+    ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
+    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
+```
+
+```sql
 Query OK, 3 rows affected (0.01 sec)
 ```
 
@@ -80,8 +89,11 @@ Then we are good to query it!
 
 You can use the `SELECT` statement to query data:
 
-```SQL
-mysql> select * from system_metrics;
+```sql
+select * from system_metrics;
+```
+
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -112,7 +124,7 @@ GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
 Let's create a table called `hello_greptime`:
 
 ```shell
-~ % grpcurl -plaintext -d '
+grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },
   "admins": [
@@ -154,7 +166,7 @@ Let's create a table called `hello_greptime`:
 Our newly created table has 3 columns. If created successfully, GreptimeDB's
 gRPC service will return:
 
-```shell
+```json
 {
   "admins": [
     {
@@ -179,7 +191,7 @@ gRPC service will return:
 Insert data:
 
 ```shell
-~ % grpcurl -plaintext -d '
+grpcurl -plaintext -d '
 {
   "header": {
     "tenant": "0"
@@ -232,7 +244,7 @@ insert
 
 The result of the insert request is simple:
 
-```
+```json
 {
   "admins": [{}],
   "databases": [
@@ -272,7 +284,7 @@ The result of the insert request is simple:
 
 You can wrap the SQL in our gRPC query request like this:
 
-``` shell
+```shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -327,7 +339,7 @@ in `select.proto` file to `import "column.proto"`(Because protoc's
 "decode" can not find the imported proto files in that way)
 1. Submit your gRPC request
 
-``` shell
+```shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -354,7 +366,7 @@ grpcurl -plaintext -d '
 
 The decoded result looks like this:
 
-```text
+```
 columns {
   column_name: "c1"
   semantic_type: FIELD

@@ -8,7 +8,7 @@ also brings durability-related issues, especially when the Datanode crashes unex
 to all LSMT-like storage engines, GreptimeDB uses a write-ahead log (WAL) to ensure data durability
 and is safe from crashing.
 
-WAL is an append-only file group. All INSERT, UPDATE and DELETE operations are transformed into
+WAL is an append-only file group. All `INSERT`, `UPDATE` and `DELETE` operations are transformed into
 operation entries and then appended to WAL. Once operation entries are persisted to the underlying
 file, the operation can be further applied to MemTable.
 

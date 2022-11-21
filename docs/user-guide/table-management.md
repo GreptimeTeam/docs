@@ -9,7 +9,7 @@ GreptimeDB provides table management functionality on both MySQL and gRPC protoc
 You can use standard MySQL client to connect to a running GreptimeDB instance.
 
 ``` bash
-$ mysql -h 127.0.0.1 -P 4202
+$ mysql -h 127.0.0.1 -P 4002
 mysql>
 ```
 
@@ -17,14 +17,17 @@ mysql>
 
 In this example, we are going to create a table named `monitor`
 
-``` shell
-mysql> CREATE TABLE monitor (
-    ->   host STRING,
-    ->   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ->   cpu DOUBLE DEFAULT 0,
-    ->   memory DOUBLE,
-    ->   TIME INDEX (ts),
-    ->   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
+```sql
+CREATE TABLE monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  cpu DOUBLE DEFAULT 0,
+  memory DOUBLE,
+  TIME INDEX (ts),
+  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
+```
+
+``` sql
 Query OK, 1 row affected (0.03 sec)
 ```
 
@@ -46,8 +49,10 @@ to tags in other time-series systems like [InfluxDB][1].
 
 You can use `show tables` statement to list existing tables
 
-``` shell
-mysql> show tables;
+``` sql
+show tables;
+```
+``` sql
 +------------+
 | Tables     |
 +------------+
@@ -60,8 +65,10 @@ mysql> show tables;
 Notice: `script` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
-``` shell
-mysql> show tables like monitor;
+``` sql
+show tables like monitor;
+```
+``` sql
 +---------+
 | Tables  |
 +---------+
@@ -89,7 +96,7 @@ and is listening for incoming gRPC requests on `127.0.0.1:4200`
 
 ### Create a table
 
-``` shell
+```shell
 $ grpcurl -plaintext -d '
 {
   "header": { "tenant": "0" },

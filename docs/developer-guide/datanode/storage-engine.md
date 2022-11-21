@@ -22,7 +22,7 @@ The architecture is the same as a traditional LSMT engine:
   implements the `Log Store` API.
 - Memtables:
   - Data is written into the `active memtable`, aka `mutable memtable` first.
-  - When a `mutable memtable` is full, it will change to a `read-only memtable`, aka `immutable memtable`.
+  - When a `mutable memtable` is full, it will be changed to a `read-only memtable`, aka `immutable memtable`.
 - SST
   - The full name of SST, aka SSTable is `Sorted String Table`.
   - `Immutable memtable` is flushed to persistent storage and produces an SST file.

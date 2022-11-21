@@ -1,7 +1,6 @@
 # Prometheus
 
 GreptimeDB supports both of Prometheus's remote Read and Write endpoints:
-Suggestion:
 
 - `/v1/prometheus/write` for remote write
 - `/v1/prometheus/read` for remote read
@@ -26,7 +25,7 @@ Please follow the settings in [Prometheus configuration][1] (`prometheus.yml`):
 
 The configured URLs must be accessible by your running Prometheus servers. For example:
 
-```
+```yaml
 remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=prometheus
 

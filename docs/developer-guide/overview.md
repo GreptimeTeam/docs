@@ -22,7 +22,7 @@ relational databases. A `region` could be replicated on multiple `datanode` and 
 replicas is writable and can serve write requests, while any replica can serve read requests.
 - A `datanode` stores and serves `region` to frontends. One `datanode` can serve multiple `regions`
 and one `region` can be served by multiple `datanodes`.
-- The `meta` server stores the metadata of the cluster, such as tables, `datanodes`, `regions` of ach
+- The `meta` server stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
 table, etc. It also coordinates frontends and `datanodes`.
 - Each `datanode` or frontend has a remote catalog implementation, which fetches the metadata from
 meta, tells which `region` of a `table` is served by which `datanode`.
@@ -63,6 +63,8 @@ For more details on each component, see the following guides:
 
 - [frontend][1]
 - [datanode][2]
+- [meta][3]
 
 [1]: frontend/overview.md
 [2]: datanode/overview.md
+[3]: meta/overview.md
