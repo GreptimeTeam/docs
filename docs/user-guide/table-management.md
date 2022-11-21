@@ -13,6 +13,53 @@ $ mysql -h 127.0.0.1 -P 4002
 mysql>
 ```
 
+[PostgreSQL client](./supported-protocols/postgresql.md) is supported too.
+
+
+### Creating a database
+
+The default database is `public`, you can create a database:
+
+```sql
+CREATE DATABASE test;
+```
+
+```sql
+Query OK, 1 row affected (0.05 sec)
+```
+
+### List Existing Databases
+
+```sql
+SHOW DATABASES;
+```
+
+
+```sql
++---------+
+| Schemas |
++---------+
+| test    |
+| public  |
++---------+
+2 rows in set (0.00 sec)
+```
+
+Using `like` syntax:
+
+```sql
+SHOW DATABASES LIKE 'p%';
+```
+
+```sql
++---------+
+| Schemas |
++---------+
+| public  |
++---------+
+1 row in set (0.00 sec)
+```
+
 ### Creating a Table
 
 In this example, we are going to create a table named `monitor`
@@ -45,6 +92,26 @@ to tags in other time-series systems like [InfluxDB][1].
 
 > TBD:  Creating table in distributed mode.
 
+
+#### Creating a table in other database
+
+GreptimeDB doesn's support `USE [DATABASE]` statement right now, so we must use `[database].[table]` as the table name to create or manipulate a table in other database:
+
+```sql
+CREATE TABLE test.monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  cpu DOUBLE DEFAULT 0,
+  memory DOUBLE,
+  TIME INDEX (ts),
+  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
+```
+
+``` sql
+Query OK, 1 row affected (0.03 sec)
+```
+
+
 ### List Existing Tables
 
 You can use `show tables` statement to list existing tables
@@ -76,6 +143,44 @@ show tables like monitor;
 +---------+
 1 row in set (0.00 sec)
 ```
+
+
+Listing Tables in other database:
+
+```sql
+SHOW TABLES FROM test;
+```
+
+
+```sql
++---------+
+| Tables  |
++---------+
+| monitor |
++---------+
+1 row in set (0.01 sec)
+```
+
+### Describe Table
+
+Showing the table information in detail:
+
+```sql
+DESC TABLE monitor;
+```
+
+```sql
++--------+-----------+------+---------------------+---------------+
+| Field  | Type      | Null | Default             | Semantic Type |
++--------+-----------+------+---------------------+---------------+
+| host   | String    | NO   |                     | PRIMARY KEY   |
+| ts     | Timestamp | NO   | current_timestamp() | TIME INDEX    |
+| cpu    | Float64   | NO   | 0                   | VALUE         |
+| memory | Float64   | NO   |                     | VALUE         |
++--------+-----------+------+---------------------+---------------+
+4 rows in set (0.01 sec)
+```
+
 
 ### Alter Table
 
