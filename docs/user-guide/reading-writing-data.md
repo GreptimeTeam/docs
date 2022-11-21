@@ -45,7 +45,7 @@ CREATE TABLE system_metrics (
 );
 ```
 
-```text
+```sql
 Query OK, 1 row affected (0.01 sec)
 ```
 
@@ -55,7 +55,7 @@ A table named `system_metrics` was created. You can use `show tables` to view it
 show tables;
 ```
 
-```text
+```sql
 +----------------+
 | Tables         |
 +----------------+
@@ -71,15 +71,15 @@ show tables;
 Let's insert some testing data. You can use the `INSERT INTO` SQL
 statements:
 
-```SQL
+```sql
 INSERT INTO system_metrics
- VALUES
-     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
-     ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
-     ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
+VALUES
+    ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797460),
+    ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797461),
+    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797462);
 ```
 
-```text
+```sql
 Query OK, 3 rows affected (0.01 sec)
 ```
 
@@ -89,11 +89,11 @@ Then we are good to query it!
 
 You can use the `SELECT` statement to query data:
 
-```SQL
+```sql
 select * from system_metrics;
 ```
 
-```text
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -284,7 +284,7 @@ The result of the insert request is simple:
 
 You can wrap the SQL in our gRPC query request like this:
 
-``` shell
+```shell
 grpcurl -plaintext -d '
 {
   "header": {
@@ -366,7 +366,7 @@ grpcurl -plaintext -d '
 
 The decoded result looks like this:
 
-```text
+```
 columns {
   column_name: "c1"
   semantic_type: FIELD

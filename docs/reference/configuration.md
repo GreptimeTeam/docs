@@ -173,7 +173,7 @@ mode = "distributed"
 rpc_addr = '127.0.0.1:3001'
 wal_dir = '/tmp/greptimedb/wal'
 rpc_runtime_size = 8
-mysql_addr = '127.0.0.1:3306'
+mysql_addr = '127.0.0.1:4406'
 mysql_runtime_size = 4
 
 [storage]
@@ -181,7 +181,7 @@ type = 'File'
 data_dir = '/tmp/greptimedb/data/'
 
 [meta_client_opts]
-metasrv_addrs = ["1.1.1.1:3002"]
+metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
 tcp_nodelay = false
