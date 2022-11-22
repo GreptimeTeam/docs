@@ -58,28 +58,28 @@ export default (async () => ({
 }))()
 
 async function makeSidebar() {
-  const summary = YAML.load(fs.readFileSync('docs/summary.yml'), 'utf8')
+	const summary = YAML.load(fs.readFileSync('docs/summary.yml'), 'utf8')
 
-  function makeSidebarItem(items, path) {
-    if (Array.isArray(items)) {
-      return items.map((item) => makeSidebarItem(item, path))
-    } else if (typeof items === 'object') {
-      let title = Object.keys(items)[0]
-      let content = Object.values(items)[0]
+	function makeSidebarItem(items, path) {
+		if (Array.isArray(items)) {
+			return items.map((item) => makeSidebarItem(item, path))
+		} else if (typeof items === 'object') {
+			let title = Object.keys(items)[0]
+			let content = Object.values(items)[0]
 
-      return {
-        text: title.replace(/-/g, ' '),
-        items: content.map((item) => makeSidebarItem(item, `${path}/${title}`)),
-      }
-    } else {
-      let link = `${path}/${items}`.toLocaleLowerCase()
-      let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
-      return {
-        text: file.split('\n')[0].replace('# ', ''),
-        link,
-      }
-    }
-  }
+			return {
+				text: title.replace(/-/g, ' '),
+				items: content.map((item) => makeSidebarItem(item, `${path}/${title}`)),
+			}
+		} else {
+			let link = `${path}/${items}`.toLocaleLowerCase()
+			let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
+			return {
+				text: file.split('\n')[0].replace('# ', ''),
+				link,
+			}
+		}
+	}
 
-  return makeSidebarItem(summary, '')
+	return makeSidebarItem(summary, '')
 }
