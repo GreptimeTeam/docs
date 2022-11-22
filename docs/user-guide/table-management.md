@@ -161,7 +161,7 @@ SHOW TABLES FROM test;
 
 ### Describe Table
 
-Showing the table information in detail:
+Show table information in detail:
 
 ```sql
 DESC TABLE monitor;
