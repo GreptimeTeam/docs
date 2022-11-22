@@ -93,7 +93,7 @@ to tags in other time-series systems like [InfluxDB][1].
 
 #### Creating a table in other database
 
-GreptimeDB doesn's support `USE [DATABASE]` statement right now, so we must use `[database].[table]` as the table name to create or manipulate a table in other database:
+GreptimeDB doesn't support `USE [DATABASE]` statement right now, so you must use `[database].[table]` as the table name to create or manipulate a table in other databases:
 
 ```sql
 CREATE TABLE test.monitor (
