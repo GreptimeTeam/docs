@@ -143,7 +143,7 @@ show tables like monitor;
 ```
 
 
-Listing Tables in other database:
+List tables in other databases:
 
 ```sql
 SHOW TABLES FROM test;
