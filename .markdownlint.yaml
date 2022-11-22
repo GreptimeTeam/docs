@@ -2,3 +2,4 @@ default: true
 
 line-length: false
 fenced-code-language: false
+no-inline-html: false
