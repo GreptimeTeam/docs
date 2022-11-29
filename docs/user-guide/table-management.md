@@ -185,12 +185,23 @@ DESC TABLE monitor;
 You can alter the schema of existing tables just like in MySQL database
 
 ``` sql
-mysql> alter table monitor add column label varchar null;
+alter table monitor add label varchar;
+```
+
+```sql
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-Notice: currently only adding columns to tables is allowed, deleting columns and altering
-column definition will soon be supported.
+``` sql
+alter table monitor drop column label;
+```
+
+```sql
+Query OK, 0 rows affected (0.03 sec)
+```
+
+
+Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
 
 ## gRPC
 
