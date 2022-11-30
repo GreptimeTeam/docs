@@ -49,7 +49,7 @@
     "vue-demi": "^0.13.6"
   },
   "devDependencies": {
-    "unplugin-auto-import": "^0.11.2",
+    "unplugin-auto-import": "^0.12.0",
     "unplugin-vue-components": "^0.22.4",
     "vitepress": "^1.0.0-alpha.27",
     "vue": "^3.2.37"
