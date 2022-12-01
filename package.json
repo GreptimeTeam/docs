@@ -16,7 +16,7 @@
     "dayjs": "^1.11.5",
     "esbuild": "^0.14.54",
     "estree-walker": "^2.0.2",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "git-date-extractor": "^4.0.1",
     "globby": "11.0.4",
     "gray-matter": "^4.0.3",
