@@ -19,7 +19,10 @@ Before getting started, please read the important documents below, including how
 
 - [Developer Guide][4]: for developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor
 
+- [Roadmap][5]: presents the latest and previous GreptimeDB roadmaps
+
 [1]: ./installation/overview.md
 [2]: ./getting-started/overview.md
 [3]: ./user-guide/concepts.md
 [4]: ./developer-guide/overview.md
+[5]: ./roadmap/overview.md
