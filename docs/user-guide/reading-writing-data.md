@@ -120,7 +120,7 @@ to GreptimeDB's gRPC service.
 
 ### Creating Table with gRPC
 
-GreptimeDB's gRPC service is listening on `127.0.0.1:3001` by default.
+GreptimeDB's gRPC service is listening on `127.0.0.1:4001` by default.
 Let's create a table called `hello_greptime`:
 
 ```shell
@@ -160,7 +160,7 @@ grpcurl -plaintext -d '
     }
   ]
 }
-' 127.0.0.1:3001 greptime.v1.Greptime/Batch
+' 127.0.0.1:4001 greptime.v1.Greptime/Batch
 ```
 
 Our newly created table has 3 columns. If created successfully, GreptimeDB's
@@ -205,42 +205,43 @@ grpcurl -plaintext -d '
             "version": 1
           },
           "insert": {
+            "schema_name": "public",
             "table_name": "hello_greptime",
-            "sql": "INSERT INTO hello_greptime VALUES (1, \"a\", 1667446797460)"
-          }
-        },
-        {
-          "header": {
-            "version": 1
-          },
-          "insert": {
-            "table_name": "hello_greptime",
-            "sql": "INSERT INTO hello_greptime VALUES (2, \"b\", 1667446797461)"
-          }
-        },
-        {
-          "header": {
-            "version": 1
-          },
-          "insert": {
-            "table_name": "hello_greptime",
-            "sql": "INSERT INTO hello_greptime VALUES (3, \"c\", 1667446797462)"
+            "columns": [
+                {
+                  "column_name": "c1",
+                  "semantic_type": 0,
+                  "values": {
+                    "i32_values": [1, 2, 3, 4]
+                  },
+                  "datatype": 3
+                },
+                {
+                  "column_name": "c2",
+                  "semantic_type": 0,
+                  "values": {
+                    "string_values": ["a", "b", "c", "d"]
+                  },
+                  "datatype": 12
+                },
+                {
+                  "column_name": "ts",
+                  "semantic_type": 2,
+                  "values": {
+                    "ts_millis_values": [1669272835100, 1669272835200, 1669272835300, 1669272835400]
+                  },
+                  "datatype": 15
+                }
+            ],
+            "row_count": 4,
+            "region_number": 1
           }
         }
       ]
     }
   ]
-}
-' 127.0.0.1:3001 greptime.v1.Greptime/Batch
+}' 127.0.0.1:4001 greptime.v1.Greptime/Batch
 ```
-
-You are using SQL to insert data here, because it's much clearer for illustrating
-purpose. However, we recommend using the following methods if you are using SDK:
-
-1. Assemble the `InsertBatch` message with the data you want to
-insert
-1. Serialize `InsertBatch` message to bytes
-1. Use `InsertBatch` bytes in `InsertExpr`
 
 The result of the insert request is simple:
 
@@ -255,23 +256,7 @@ The result of the insert request is simple:
             "version": 1
           },
           "mutate": {
-            "success": 1
-          }
-        },
-        {
-          "header": {
-            "version": 1
-          },
-          "mutate": {
-            "success": 1
-          }
-        },
-        {
-          "header": {
-            "version": 1
-          },
-          "mutate": {
-            "success": 1
+            "success": 4
           }
         }
       ]
@@ -306,7 +291,7 @@ grpcurl -plaintext -d '
     }
   ]
 }
-' 127.0.0.1:3001 greptime.v1.Greptime/Batch
+' 127.0.0.1:4001 greptime.v1.Greptime/Batch
 ```
 
 The returned result would be raw bytes of `SelectResult` message:
@@ -361,7 +346,7 @@ grpcurl -plaintext -d '
     }
   ]
 }
-' 127.0.0.1:3001 greptime.v1.Greptime/Batch | jq '.databases[0].results[0].select.rawData' | xargs | base64 --decode | protoc --proto_path=. --decode greptime.v1.codec.SelectResult select.proto
+' 127.0.0.1:4001 greptime.v1.Greptime/Batch | jq '.databases[0].results[0].select.rawData' | xargs | base64 --decode | protoc --proto_path=. --decode greptime.v1.codec.SelectResult select.proto
 ```
 
 The decoded result looks like this:

@@ -4,15 +4,15 @@
 
 ## What's in MetaSrv
 
-- Responsible for storing metadata (Catalog, Schema, Table, Region, etc.)
+- Store metadata (Catalog, Schema, Table, Region, etc.)
 - Request-Router. It tells the Frontend where to write and read data.
-- Load balancing for Datanode, such as who should handle new table creation requests, or more precisely, resource allocation decisions.
-- Election & High Availability, GreptimeDB is designed as a Leader-Follower architecture, only Leader nodes can write, Follower nodes can provide read, the number of Follower nodes is usually >= 1, Follower nodes need to be able to switch to Leader quickly when Leader is not available.
+- Load balancing for Datanode, determines who should handle new table creation requests, more precisely, it makes resource allocation decisions.
+- Election & High Availability, GreptimeDB is designed in a Leader-Follower architecture, only Leader nodes can write while Follower nodes can read, the number of Follower nodes is usually >= 1, and Follower nodes need to be able to switch to Leader quickly when Leader is not available.
 - Statistical data collection (reported via Heartbeats on each node), such as CPU, Load, number of Tables on the node, average/peak data read/write size, etc., can be used as the basis for distributed scheduling.
 
 ## How the Frontend interacts with MetaSrv
 
-First, the routing table in Request-Router will be roughly the following structure (note that this is only the logical structure, the actual storage structure will vary, for example, endpoints may have dictionary compression).
+First, the routing table in Request-Router is in the following structure (note that this is only the logical structure, the actual storage structure varies, for example, endpoints may have dictionary compression).
 
 ```
   table_A
@@ -34,19 +34,19 @@ First, the routing table in Request-Router will be roughly the following structu
 
 1. The Frontend sends `CREATE TABLE` requests to MetaSrv.
 2. Plan the number of Regions according to the partition rules contained in the request.
-3. Check the global view of resources available to Datanodes (collected by Heartbeats) and assign one node  to each region.
-4. The Frontend is responsible for creating the table and storing the `Schema` to MetaSrv after successful creation.
+3. Check the global view of resources available to Datanodes (collected by Heartbeats) and assign one node to each region.
+4. The Frontend creates the table and stores the `Schema` to MetaSrv after successful creation.
 
 ### Insert
 
-1. The Frontend fetches the routes of the specified table from MetaSrv. Note that the smallest routing unit is the route of the table (several regions), i.e. it contains the addresses of all regions of this table.
-2. A best practice is that the Frontend first fetches from its local cache and follows the route request to the Datanode. If the route is no longer valid, then Datanode is obliged to return an `Invalid Route` error, and the Frontend re-fetches the latest data from MetaSrv and updates its cache. Route information does not change frequently, so Frontend uses the Lazy policy to maintain the cache is sufficient.
+1. The Frontend fetches the routes of the specified table from MetaSrv. Note that the smallest routing unit is the route of the table (several regions), i.e., it contains the addresses of all regions of this table.
+2. The best practice is that the Frontend first fetches from its local cache and follows the route request to the Datanode. If the route is no longer valid, then Datanode is obliged to return an `Invalid Route` error, and the Frontend re-fetches the latest data from MetaSrv and updates its cache. Route information does not change frequently, thus, it's sufficient for Frontend uses the Lazy policy to maintain the cache.
 3. The Frontend processes a batch of writes that may contain multiple tables and multiple regions, so the Frontend needs to split user requests based on the 'route table'.
 
 ### Select
 
 1. As with `Insert`, the Frontend first fetches the route table from the local cache.
-2. Unlike `Insert`, for `Select`, the Frontend needs to extract the read-only node (follower) from the route table. Then dispatch the request to the leader or follower node depending on the priority.
+2. Unlike `Insert`, for `Select`, the Frontend needs to extract the read-only node (follower) from the route table, then dispatch the request to the leader or follower node depending on the priority.
 3. The distributed query engine in the Frontend distributes multiple sub-query tasks based on the routing information and aggregates the query results.
 
 ## MetaSrv Architecture
@@ -57,21 +57,21 @@ First, the routing table in Request-Router will be roughly the following structu
 
 As you can see, MetaSrv has a dependency on distributed consensus because:
 
-1. First of all, MetaSrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single meta node to receive heartbeats, which makes it easy to do some calculations or scheduling based on global information accurately and quickly. As for how the Datanode connects to the leader, this is the responsibility of MetaClient (using a redirect, Heartbeat requests will be a gRPC stream, and using redirect will be less error-prone than forwarding), which is transparent to the Datanode.
+1. First, MetaSrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single meta node to receive heartbeats, which makes it easy to do some calculations or scheduling accurately and quickly based on global information. As for how the Datanode connects to the leader, this is for MetaClient to decide (using a redirect, Heartbeat requests becomes a gRPC stream, and using redirect will be less error-prone than forwarding), and it is transparent to the Datanode.
 2. Second, MetaSrv must provide an election API for Datanode to elect "write" and "read-only" nodes and help Datanode achieve high availability.
-3. Finally, `Metadata`, `Schema` and other data are also stored on MetaSrv, which needs to be highly reliable and strongly consistent, and consensus-based algorithms are a better way to store them.
+3. Finally, `Metadata`, `Schema` and other data also need to be stored on MetaSrv reliablely and consistently, and consensus-based algorithms is a better way to store them.
 
-For the first version of MetaSrv, we chose Etcd as the consensus algorithm component (MetaSrv was designed to consider adapting different implementations and even creating a new wheel ) mainly for the following reasons:
+For the first version of MetaSrv, we choose Etcd as the consensus algorithm component (MetaSrv is designed to consider adapting different implementations and even creating a new wheel) for the following reasons:
 
-1. Etcd provides exactly the API we need, `Watch`, `Election`, `KV`, etc., which fits the needs perfectly.
-2. We only do two things with distributed consensus, elections (using the `Watch` mechanism) and storing a small amount of metadata, neither of which essentially requires us to customize our own state machine, nor do we need to customize our own state machine based on raft; the small amount of data also does not require multi-raft-group support.
-3. The initial version of MetaSrv uses Etcd, which allows us to focus on the capabilities of MetaSrv and not consume extra effort on distributed consensus algorithms, which facilitates better design of the system (avoiding coupling with consensus algorithms) and rapid development in the beginning, and allows easy access to good consensus algorithm implementations in the future through good architectural design.
+1. Etcd provides exactly the API we need, such as `Watch`, `Election`, `KV`, etc.
+2. We only perform two tasks with distributed consensus: elections (using the `Watch` mechanism) and storing (a small amount of metadata), and neither of them requires us to customize our own state machine, nor do we need to customize our own state machine based on raft; the small amount of data also does not require multi-raft-group support.
+3. The initial version of MetaSrv uses Etcd, which allows us to focus on the capabilities of MetaSrv and not spend too much effort on distributed consensus algorithms, which improves the design of the system (avoiding coupling with consensus algorithms) and helps with rapid development at the beginning, as well as allows easy access to good consensus algorithm implementations in the future through good architectural designs.
 
 ## Heartbeat Management
 
 The primary means of communication between Datanode and MetaSrv is the Heartbeat Request/Response Stream, and we want this to be the only way to communicate. This idea is inspired by the design of [TiKV PD](https://github.com/tikv/pd), and we have practical experience in [RheaKV](https://github.com/sofastack/sofa-jraft/tree/master/jraft-rheakv/rheakv-pd). The request sends its state, while MetaSrv sends different scheduling instructions via Heartbeat Response.
 
-A heartbeat will probably carry the data listed below, but this is not the final design, and we are still discussing and exploring exactly which data should be collected most.
+A heartbeat will probably carry the data listed below, but this is not the final design, and we are still discussing and exploring exactly which data should be mostly collected.
 
 ```
 service Heartbeat {

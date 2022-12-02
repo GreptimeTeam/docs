@@ -6,11 +6,7 @@ const { theme } = useData()
 </script>
 
 <template>
-  <VPSocialLinks
-    v-if="theme.socialLinks"
-    class="VPNavBarSocialLinks"
-    :links="theme.socialLinks"
-  />
+  <VPSocialLinks v-if="theme.socialLinks" class="VPNavBarSocialLinks" :links="theme.socialLinks" />
 </template>
 
 <style scoped>
@@ -18,7 +14,7 @@ const { theme } = useData()
   display: none;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 960px) {
   .VPNavBarSocialLinks {
     display: flex;
     align-items: center;
