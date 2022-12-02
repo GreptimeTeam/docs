@@ -1,0 +1,19 @@
+{
+  "printWidth": 150,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": true,
+  "proseWrap": "preserve",
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "disableLanguages": [],
+  "endOfLine": "auto",
+  "eslintIntegration": false,
+  "htmlWhitespaceSensitivity": "ignore",
+  "ignorePath": ".prettierignore",
+  "requireConfig": false,
+  "stylelintIntegration": false,
+  "trailingComma": "es5",
+  "tslintIntegration": false
+}

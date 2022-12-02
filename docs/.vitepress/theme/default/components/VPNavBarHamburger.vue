@@ -48,19 +48,40 @@ defineEmits<{
   overflow: hidden;
 }
 
-.VPNavBarHamburger:hover .top    { top: 0; left: 0; transform: translateX(4px); }
-.VPNavBarHamburger:hover .middle { top: 6px; left: 0; transform: translateX(0); }
-.VPNavBarHamburger:hover .bottom { top: 12px; left: 0; transform: translateX(8px); }
+.VPNavBarHamburger:hover .top {
+  top: 0;
+  left: 0;
+  transform: translateX(4px);
+}
+.VPNavBarHamburger:hover .middle {
+  top: 6px;
+  left: 0;
+  transform: translateX(0);
+}
+.VPNavBarHamburger:hover .bottom {
+  top: 12px;
+  left: 0;
+  transform: translateX(8px);
+}
 
-.VPNavBarHamburger.active .top    { top: 6px; transform: translateX(0) rotate(225deg); }
-.VPNavBarHamburger.active .middle { top: 6px; transform: translateX(16px); }
-.VPNavBarHamburger.active .bottom { top: 6px; transform: translateX(0) rotate(135deg); }
+.VPNavBarHamburger.active .top {
+  top: 6px;
+  transform: translateX(0) rotate(225deg);
+}
+.VPNavBarHamburger.active .middle {
+  top: 6px;
+  transform: translateX(16px);
+}
+.VPNavBarHamburger.active .bottom {
+  top: 6px;
+  transform: translateX(0) rotate(135deg);
+}
 
 .VPNavBarHamburger.active:hover .top,
 .VPNavBarHamburger.active:hover .middle,
 .VPNavBarHamburger.active:hover .bottom {
   background-color: var(--vp-c-text-2);
-  transition: top .25s, background-color .25s, transform .25s;
+  transition: top 0.25s, background-color 0.25s, transform 0.25s;
 }
 
 .top,
@@ -69,11 +90,23 @@ defineEmits<{
   position: absolute;
   width: 16px;
   height: 2px;
-  background-color: var(--vp-c-text-1);
-  transition: top .25s, background-color .5s, transform .25s;
+  background-color: var(--vp-c-text-dark-1);
+  transition: top 0.25s, background-color 0.5s, transform 0.25s;
 }
 
-.top    { top: 0; left: 0; transform: translateX(0); }
-.middle { top: 6px; left: 0; transform: translateX(8px); }
-.bottom { top: 12px; left: 0; transform: translateX(4px); }
+.top {
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+}
+.middle {
+  top: 6px;
+  left: 0;
+  transform: translateX(8px);
+}
+.bottom {
+  top: 12px;
+  left: 0;
+  transform: translateX(4px);
+}
 </style>
