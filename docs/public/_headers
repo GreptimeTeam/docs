@@ -1,2 +1,2 @@
 /*
-  Content-Security-Policy: frame-ancestors 'self' https://docs.greptime.com/*;
+  Content-Security-Policy: frame-ancestors 'self' https://greptime.com/*;
