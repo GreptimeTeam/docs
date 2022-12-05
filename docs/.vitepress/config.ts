@@ -62,14 +62,14 @@ async function makeSidebar() {
 
   function makeSidebarItem(items, path) {
     if (Array.isArray(items)) {
-      return items.map((item) => makeSidebarItem(item, path))
+      return items.map(item => makeSidebarItem(item, path))
     } else if (typeof items === 'object') {
       let title = Object.keys(items)[0]
       let content = Object.values(items)[0]
 
       return {
         text: title.replace(/-/g, ' '),
-        items: content.map((item) => makeSidebarItem(item, `${path}/${title}`)),
+        items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
       }
     } else {
       let link = `${path}/${items}`.toLocaleLowerCase()
