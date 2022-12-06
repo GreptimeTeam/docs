@@ -46,8 +46,8 @@
     - overview
   - Tests:
     - overview
-    - unit-test
-    - integration-test
+    - unit testing
+    - integration testing
     - sqlness-test
 - Reference:
   - command-lines
