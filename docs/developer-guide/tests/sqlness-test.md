@@ -29,7 +29,7 @@ The root dir of input cases is `tests/cases`. It contains several sub-directorie
 modes. E.g., `standalone/` contains all the tests to run under `greptimedb standalone start` mode.
 
 Under the first level of sub-directory (e.g. the `cases/standalone`), you can organize your cases as you like.
-Sqlness will walk through every file recursively and run them.
+Sqlness walks through every file recursively and runs them.
 
 ## Run the test
 Unlike other tests, this harness is in a binary target form. You can run it with
