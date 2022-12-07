@@ -44,6 +44,11 @@
     - python-coprocessor
   - Meta:
     - overview
+  - Tests:
+    - overview
+    - unit-test
+    - integration-test
+    - sqlness-test
 - Reference:
   - command-lines
   - configuration
