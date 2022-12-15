@@ -6,7 +6,7 @@ Currently we have PostgreSQL simple query subprotocol supported on
 GreptimeDB. You can connect to GreptimeDB with standard `psql` client:
 
 ```shell
-psql -h 127.0.0.1 -p 4003
+psql -h 127.0.0.1 -p 4003 -d public
 ```
 
 When running in standalone mode, the default port of PostgreSQL protocol is
@@ -20,7 +20,7 @@ connectors, you need to add url parameter `preferQueryMode=simple` for now.
 Java example:
 
 ```java
-String url = "jdbc:postgresql://localhost/test?preferQueryMode=simple";
+String url = "jdbc:postgresql://localhost:4003/public?preferQueryMode=simple";
 Connection conn = DriverManager.getConnection(url);
 ```
 
@@ -30,7 +30,7 @@ enabled.
 ```python
 import psycopg2
 
-conn = psycopg2.connect("host=127.0.0.1 port=4003")
+conn = psycopg2.connect("host=127.0.0.1 port=4003 dbname=public")
 conn.set_session(autocommit=True)
 
 ```
