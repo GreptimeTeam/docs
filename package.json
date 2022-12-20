@@ -43,7 +43,7 @@
     "stylus": "^0.59.0",
     "supports-preserve-symlinks-flag": "^1.0.0",
     "update": "^0.7.4",
-    "vite": "^3.2.5",
+    "vite": "^4.0.2",
     "vscode-oniguruma": "^1.7.0",
     "vscode-textmate": "^8.0.0",
     "vue-demi": "^0.13.6"
