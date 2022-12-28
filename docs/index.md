@@ -28,4 +28,4 @@ Before getting started, please read the important documents below, including how
 [3]: ./user-guide/concepts.md
 [4]: ./developer-guide/overview.md
 [5]: ./roadmap/overview.md
-[6]: ./FAQ-and-others/FAQ.md 
+[6]: ./FAQ-and-others/FAQ.md
