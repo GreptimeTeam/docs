@@ -12,7 +12,7 @@ Common use cases for time-series database include but are not limited to the fol
 GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
 
 ## How is the performance of GreptimeDB when used for non-time-series DB tables?
-GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain ( time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
+GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain (time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
 
 ## Does GreptimeDB have a Golang driver?
 
