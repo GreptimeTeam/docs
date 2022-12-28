@@ -1,5 +1,19 @@
 # Frequently Asked Questions
 
+## What would be the use cases for a time-series database?
+
+Common use cases for time-series database include but are not limited to the following four scenarios:
+1. Monitor applications and infrastructure
+2. Store and access IoT data
+3. Process self-driving vehicle data
+4. Understand financial trends
+
+## How is GreptimeDB's performance compared to other solutions?
+GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
+
+## How is the performance of GreptimeDB when used for non-time-series DB tables?
+GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain ( time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
+
 ## Does GreptimeDB have a Golang driver?
 
 Our Golang SDK is on the to-do list, please subscribe our newsletter to get the latest feature update!
@@ -23,11 +37,6 @@ plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config Gr
 
 GreptimeDB is focused on time-series data (or metrics) right now. It may support log and tracing storage in the future.
 
-## How is GreptimeDB's performance compared to other solutions?
-GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
-## How is the performance of GreptimeDB when used for non-time-series DB tables?
-GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain ( time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
-
 ## When will GreptimeDB release its first GA version?
 The current version is not at the production level yet and there is a milestone for our future development. 
 You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/milestone/2).
@@ -37,10 +46,3 @@ You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/mi
 Yes, we open sourced the dashboard for users to query and visualize their data.
 Please check out our initial version on [GitHub Repo](https://github.com/GreptimeTeam/dashboard). 
 
-## What would be the use cases for a time-series database?
-
-Common use cases for time-series database include but are not limited to the following four scenarios:
-1. Monitor applications and infrastructure
-2. Store and access IoT data
-3. Process self-driving vehicle data
-4. Understand financial trends
