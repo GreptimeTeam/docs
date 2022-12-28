@@ -21,8 +21,11 @@ Before getting started, please read the important documents below, including how
 
 - [Roadmap][5]: presents the latest and previous GreptimeDB roadmaps
 
+- [FAQ][6]: presents the most frequently asked questions
+
 [1]: ./installation/overview.md
 [2]: ./getting-started/overview.md
 [3]: ./user-guide/concepts.md
 [4]: ./developer-guide/overview.md
 [5]: ./roadmap/overview.md
+[6]: ./faq-and-others/faq.md
