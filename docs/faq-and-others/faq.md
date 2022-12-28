@@ -1,3 +1,5 @@
+# Frequently Asked Questions
+
 ## Does GreptimeDB have a Golang driver?
 
 Our Golang SDK is on the to-do list, please subscribe our newsletter to get the latest feature update!
@@ -5,14 +7,13 @@ Currently, we support MySQL protocol, you can check it out on the [user guide](h
 
 HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information. 
 
-<br/>
+
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
 We plan to implement PromQL natively in GreptimeDB. 
 For details, you can check our progress under [this issue](https://github.com/GreptimeTeam/greptimedb/issues/596).
 
-<br/>
 
 ## Is GreptimeDB compatible with Grafana?
 
@@ -21,21 +22,19 @@ Yes, It's compatible with Grafana.
 GreptimeDB supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
 plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data. We also plan to implement PromQL natively.
 
-<br/>
+
 
 ## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
 GreptimeDB is focused on time-series data (or metrics) right now. It may support log and tracing storage in the future.
 
-<br/>
 
 ***
-<br/>
+
 
 ## How is GreptimeDB's performance compared to other solutions?
 GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
 
-<br/>
 
 ## How is the performance of GreptimeDB when used for non-time-series DB tables?
 GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain ( time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
@@ -50,7 +49,7 @@ The current version is not at the production level yet and there is a milestone 
 
 You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/milestone/2).
 
-<br/>
+
 
 ## Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
 
