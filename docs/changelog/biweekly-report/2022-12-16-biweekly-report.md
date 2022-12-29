@@ -1,4 +1,4 @@
-# Biweekly Report (Nov.24 - Dec.9) – Allowing S3 Storage
+# 2022.11.24 ~ 2022.12.9 —— Allowing S3 Storage
 
 December 15, 2022 · 6 min read
 

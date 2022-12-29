@@ -1,6 +1,8 @@
-# Have a Grep Time, Making the Most of 2023
+# Roadmap 
+## Have a Grep Time, Making the Most of 2023
 
 ![roadmap 2023](../public/roadmap-2023.png)
+
 
 GreptimeDB set off in April 2022 and had just open-sourced on Nov. 15th, 2022. Many of our ideas are still on their way, yet to be polished.
 As we work towards GreptimeDB 2023, it's natural to ask what's next. This roadmap presents goals our team is working on and concepts we have for our shared community.
