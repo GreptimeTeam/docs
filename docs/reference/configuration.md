@@ -90,10 +90,33 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 |---------|----------|--------|-----------------------------------------------------|
 |         | wal_dir  | String | Write-ahead log directory, "/tmp/greptimedb/wal"    |
 | storage |          |        | Storage engine options                              |
-|         | type     | String | Storage engine type, Only supports 'File' right now |
+|         | type     | String | Storage engine type, Only supports 'File' or 'S3' right now |
+| File    |          |        | File storage options, valid when type='file'        |
 |         | data_dir | String | Data directory, "/tmp/greptimedb/data" by default   |
+| S3      |          |        | S3 storage options, valid when type='S3'            |
+|         | bucket   | String | The s3 bucket name                                  |
+|         | root     | String | The root path in s3 bucket                          |
+|         | access_key_id     | String | The s3 acccess key id                      |
+|         | secret_access_key | String | The s3 secret acccess key                  |
 
+A file sample configuration:
 
+```toml
+[storage]
+type = 'File'
+data_dir = '/tmp/greptimedb/data/'
+```
+
+A s3 sample configuration:
+
+```toml
+[storage]
+type = 'S3'
+bucket = 'test_greptimedb'
+root = '/greptimedb'
+access_key_id = '<access key id>'
+secret_access_key = '<secret access key>'
+```
 
 ## Standalone
 
