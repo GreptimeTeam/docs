@@ -6,7 +6,7 @@ December 15, 2022 · 6 min read
 
 ## Introduction
 
-It's only been three weeks and the community has already received lots of attention and powerful support from developers scattered around the world. Their talent and passion took us by surprise and strengthened our belief in open source.
+It's only been three weeks and the community has already received lots of attentions and powerful support from developers around the world. Their talent and passion took us by surprise and strengthened our belief in open source.
 
 *Biweekly Reports* will be a series of quick reports that update our progress regularly. We hope, in this way, members and friends could understand what the project is doing and how they would participate in the GreptimeDB community.
 
@@ -22,7 +22,7 @@ Join us at [github.com](https://github.com/GreptimeTeam/greptimedb)
 
 [@lizhemingi](https://github.com/lizhemingi) [@morigs](https://github.com/morigs) [@SSebo](https://github.com/SSebo) [@Xuanwo](https://github.com/Xuanwo)
 
-A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's keep up the good work!
+A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's keep up with the wonderful work!
 
 Join us at [github.com](https://github.com/GreptimeTeam/greptimedb)
 
@@ -57,8 +57,8 @@ ts TIMESTAMP TIME INDEX,
 
 By doing so, it
 
-- need not to write `NOT NULL`, this is implied by `TIME INDEX` keywords
-- need not to specify `TIME INDEX` in another line
+- does not need to write `NOT NULL`, this is implied by `TIME INDEX` keywords
+- does not need to specify `TIME INDEX` in another line
 
 GreptimeDB now supports both of these two grammar rules. Users can choose one of them according to their preference.
 
@@ -103,7 +103,7 @@ GreptimeDB now supports syntax like `DESC[RIBE] TABLE <name>;` to describe the s
 
 [Have a Grep Time, Making the Most of 2023 - GreptimeDB Roadmap for Next Year | Greptime Blog](https://greptime.com/blogs/2022-11-29-have-a-grep-time-making-the-most-of-2023.html)
 
-This roadmap presents goals our team is working on and concepts we have for our shared community. It gives people a sense of what to expect in GreptimeDB over the next 6 months. Furthermore, it helps provide "starting points" for how to get involved, and a sense of what kind of projects we are looking for.
+This roadmap presents goals our team is working on and concepts we have for our shared community. It gives people a sense of what to expect in GreptimeDB over the next 6 months. Furthermore, it provides a "starting points" for how to get involved, and a sense of what kind of projects we are looking for.
 
 [This Time, for Real: GreptimeDB is now open source | Greptime Blog](https://greptime.com/blogs/2022-11-15-this-time-for-real.html)
 
