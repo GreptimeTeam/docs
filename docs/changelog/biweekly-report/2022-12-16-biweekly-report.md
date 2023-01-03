@@ -69,10 +69,10 @@ Link:  https://github.com/GreptimeTeam/greptimedb/issues/602
 Issue description:
 
 Add system tables for inner metrics.
-It's good to have a metrics table like the one in [Databend](https://databend.rs/doc/sql-reference/system-tables/system-metrics) or [ClickHouse](https://clickhouse.com/docs/en/operations/system-tables/metrics/). Users can easily "select" on the metrics table to see DB's important running status. With the metrics table, we can integrate other visualization tools or dashboards that support SQL like Grafana, to export some meaningful time series data.
+It's good to have a metrics table like the one in [Databend](https://databend.rs/doc/sql-reference/system-tables/system-metrics) or [ClickHouse](https://clickhouse.com/docs/en/operations/system-tables/metrics/). Users can easily "select" on the metrics table to see DB's important running status. We are also working on the integration of the metrics table with other visualization tools (like Grafana) or dashboards that support SQL to enable users to interact efficiently and find more insights from their time series data.  
 1. In datanode, create a new table called `metrics`, with a schema including at least `metric`, `value`, and `description`, and also feel free to add other columns when necessary. Register it into the default catalog as our `ScriptsTable` does.
 2. Implement "select" for the metrics table. Instead of actually storing the metrics, call the `render()` method of `PROMETHEUS_HANDLE`, and parse the result (Prometheus lines) as table output.
-3. In frontend, create the same metrics table as well. Unlike `DistTable`, the metrics table does not do distributed queries.
+3. In frontend, create the same metrics table as well. Unlike `DistTable`, the metrics table cannot execute distributed queries.
 
 ## Highlights of Recent PR
 
