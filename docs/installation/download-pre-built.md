@@ -22,3 +22,8 @@ curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/script
 docker pull greptime/greptimedb
 docker run -p 4002:4002 -v "$(pwd):/tmp/greptimedb" greptime/greptimedb standalone start
 ```
+
+## Next Steps
+
+Now you have greptimedb up and running locally, check our [Getting
+Started](../getting-started/overview.md) guide to create your first table.
