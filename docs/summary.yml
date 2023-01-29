@@ -28,6 +28,7 @@
     - opentsdb
     - influxdb
     - prometheus
+  - promql
 - Developer-Guide:
   - overview
   - get-started
