@@ -32,7 +32,9 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 Both instant and range selector are supported. The only unsupported exception is the label matching on metric name, e.g.: `__name__!="request_count"` (but the equal-matching case is supported: `__name__="request_count"`). Time duration and offset are supported, but `@` modifier is not supported yet.
 
-### Binary Operators
+### Binary 
+
+*Pure literal binary-expr like `1+1` is not supported yet. `promql-parser` has some issues about grammar conflict between binary-expr and unary-expr.*
 
 - Supported:
     | Operator | Example  |
@@ -48,7 +50,6 @@ Both instant and range selector are supported. The only unsupported exception is
     | lss      | `a < b`  |
     | gte      | `a >= b` |
     | lte      | `a <= b` |
-
 
 - Unsupported:
     | Operator | Progress |
