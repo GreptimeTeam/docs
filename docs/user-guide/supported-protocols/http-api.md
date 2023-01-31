@@ -301,5 +301,12 @@ UI at `http://localhost:4000/v1/private/docs` for convenience.
 | 4001 | Table not found                                     |
 | 4002 | Column not found                                    |
 | 4003 | Column already exists                               |
+| 4004 | Database not found                                  |
 | 5000 | Storage is temporarily unable to handle the request |
 | 6000 | Runtime resources exhausted                         |
+| 7000 | User not found                                      |
+| 7001 | Unsupported password type                           |
+| 7002 | Username and password does not match                |
+| 7003 | Http authorization header not found                 |
+| 7004 | Invalid http authorization header                   |
+| 7005 | Illegal request to connect catalog-schema           |
