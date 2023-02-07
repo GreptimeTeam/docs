@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "unplugin-auto-import": "^0.13.0",
-    "unplugin-vue-components": "^0.22.12",
+    "unplugin-vue-components": "^0.23.0",
     "vitepress": "^1.0.0-alpha.36",
     "vue": "^3.2.37"
   },
