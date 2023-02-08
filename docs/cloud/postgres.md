@@ -1,7 +1,9 @@
 # Postgresql
 
-GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 protocol. Most standard
-clients and drivers are compatible.
+GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 wire protocol. Most
+standard clients and drivers are compatible at wire protocol level. Note that we
+don't use Postgres' SQL dialect in GreptimeDB, so there can be some statements
+that are unsupported.
 
 The connection is encrypted with TLS.
 
