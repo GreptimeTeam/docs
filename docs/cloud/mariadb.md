@@ -11,5 +11,5 @@ MySQL protocol.
 Connect to GreptimeCloud service instance using `mysql` cli.
 
 ```
-mysql --ssl -u <user> -p -h <host> -P <port> -A <dbname>
+mysql --ssl -u <user> -p -h <host> -P 4002 -A <dbname>
 ```

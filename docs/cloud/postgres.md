@@ -12,5 +12,5 @@ The connection is encrypted with TLS.
 The default cli tool bundled with PostgreSQL.
 
 ```
-psql -h <host> -p <port> -U <user> -d <dbname> -W
+psql -h <host> -p 4003 -U <user> -d <dbname> -W
 ```
