@@ -53,6 +53,7 @@ export default (async () => ({
         link: 'https://greptime.com/blogs',
       },
     ],
+    outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
 }))()
