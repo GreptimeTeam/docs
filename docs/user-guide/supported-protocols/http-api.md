@@ -168,7 +168,7 @@ Submits it to database:
 
 ```shell
 curl --data-binary @test.py -XPOST \
-      "http://localhost:4000/v1/scripts?name=square"
+      "http://localhost:4000/v1/scripts?schema=default&name=square"
 ```
 
 ```json
@@ -189,6 +189,10 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
       "schema": {
         "column_schemas": [
           {
+            "name": "schema",
+            "data_type": "String"
+          },
+          {
             "name": "name",
             "data_type": "String"
           },
@@ -202,26 +206,27 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
           },
           {
             "name": "timestamp",
-            "data_type": "Timestamp"
+            "data_type": "TimestampMillisecond"
           },
           {
             "name": "gmt_created",
-            "data_type": "Timestamp"
+            "data_type": "TimestampMillisecond"
           },
           {
             "name": "gmt_modified",
-            "data_type": "Timestamp"
+            "data_type": "TimestampMillisecond"
           }
         ]
       },
       "rows": [
         [
+          "default",
           "square",
           "@coprocessor(args = [\"number\"],\n             returns = [ \"number\" ],\n             sql = \"select number from numbers\")\ndef square(number):\n    return number * 2\n",
           "python",
           0,
-          1667803482357,
-          1667803482357
+          1676032587204,
+          1676032587204
         ]
       ]
     }
@@ -233,7 +238,7 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
 You can also execute the script via `/run-script`:
 
 ```shell
-curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
+curl -XPOST -G "http://localhost:4000/v1/run-script?schema=default&name=square"
 ```
 
 ```json
@@ -274,7 +279,7 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?name=square"
 
 ### Parameters and Result for Python scripts
 
-`/scripts` accepts a query parameter name for naming the script and processes the POST method body as the script file content.
+`/scripts` accepts query parameters schema and name for naming the script and processes the POST method body as the script file content.
 
 `/run-script` runs the compiled script and returns the output which is the same as the query result in /sql API.
 
