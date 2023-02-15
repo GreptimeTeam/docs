@@ -35,7 +35,7 @@
     "pug": "^3.0.2",
     "resolve": "^1.22.1",
     "rollup": "^3.10.1",
-    "shiki": "^0.12.1",
+    "shiki": "^0.14.1",
     "simple-git": "^3.16.0",
     "source-map": "^0.7.4",
     "source-map-js": "^1.0.2",
