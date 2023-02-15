@@ -27,7 +27,7 @@
     "magic-string": "^0.27.0",
     "markdown-it": "^13.0.1",
     "md5": "^2.3.0",
-    "nanoid": "^4.0.0",
+    "nanoid": "^4.0.1",
     "path-parse": "^1.0.7",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.21",
