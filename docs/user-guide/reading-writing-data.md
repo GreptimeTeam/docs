@@ -110,4 +110,4 @@ select * from system_metrics;
 
 ## gRPC
 
-GreptimeDB has built its gRPC service on top of [Arrow Flight RPC](https://arrow.apache.org/docs/format/Flight.html). You can find our officially supported Java SDK [here](./java-sdk.md). Other languages' SDKs are under development.
+GreptimeDB has developed its gRPC service using Arrow Flight RPC, as described in the [Apache Arrow Flight documentation](https://arrow.apache.org/docs/format/Flight.html). For those interested in using our service with Java, we offer an officially supported SDK, which can be found at [./java-sdk.md](https://chat.openai.com/java-sdk.md). Currently, we are actively working on developing SDKs for other programming languages.
