@@ -168,7 +168,7 @@ Submits it to database:
 
 ```shell
 curl --data-binary @test.py -XPOST \
-      "http://localhost:4000/v1/scripts?schema=default&name=square"
+      "http://localhost:4000/v1/scripts?db=default&name=square"
 ```
 
 ```json
@@ -238,7 +238,7 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from scrip
 You can also execute the script via `/run-script`:
 
 ```shell
-curl -XPOST -G "http://localhost:4000/v1/run-script?schema=default&name=square"
+curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 ```
 
 ```json
