@@ -2,7 +2,8 @@
 
 ## Introduction
 
-GreptimeDB provides table management functionality on both MySQL and gRPC protocol.
+GreptimeDB provides table management functionalities via SQL. The following guide
+uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
 ## MySQL
 
@@ -202,79 +203,3 @@ Query OK, 0 rows affected (0.03 sec)
 
 
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
-
-## gRPC
-
-GreptimeDB now supports gRPC API to create tables. Assume that GreptimeDB instance has been started
-and is listening for incoming gRPC requests on `127.0.0.1:4200`
-
-### Create a table
-
-```shell
-$ grpcurl -plaintext -d '
-{
-  "header": { "tenant": "0" },
-  "admins": [
-    {
-      "name": "greptime",
-      "exprs": [
-        {
-          "header": { "version": 1 },
-          "create": {
-            "table_name": "hello_greptime",
-            "column_defs": [
-              {
-                "name": "c1",
-                "datatype": 3,
-                "is_nullable": false
-              },
-              {
-                "name": "c2",
-                "datatype": 12,
-                "is_nullable": true
-              },
-              {
-                "name": "ts",
-                "datatype": 15,
-                "is_nullable": false
-              }
-            ],
-            "time_index": "ts",
-            "create_if_not_exists": true,
-            "table_options": {
-              "region_id": "0"
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
-' 127.0.0.1:4200 greptime.v1.Greptime/Batch
-```
-
-If the table is created, GreptimeDB will respond like
-
-``` json
-{
-  "admins": [
-    {
-      "results": [
-        {
-          "header": {
-            "version": 1
-          },
-          "mutate": {
-            "success": 1
-          }
-        }
-      ]
-    }
-  ],
-  "databases": [{}]
-}
-```
-
-### List existing table
-
-gRPC API currently does not support listing tables yet.
