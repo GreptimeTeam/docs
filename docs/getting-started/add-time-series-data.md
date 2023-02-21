@@ -2,12 +2,14 @@
 
 ## Introduction
 
-After creating the table, you can populate it in two ways:
+After creating the table, you can populate it in various ways:
 
 - `INSERT` statement
 - [InfluxDB line protocol][1]
+- [OpenTSDB line protocol][2]
 
 [1]: https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/
+[2]: http://opentsdb.net/docs/build/html/user_guide/writing/index.html
 
 ## `INSERT` Statement
 
@@ -40,3 +42,8 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
  system_metrics,host=host2,idc=idc_a cpu_util=80.1,memory_util=70.3,disk_util=90.0 1667446797450
  system_metrics,host=host1,idc=idc_b cpu_util=50.0,memory_util=66.7,disk_util=40.6 1667446797450'
 ```
+
+## OpenTSDB Line Protocol
+
+GreptimeDB supports ingesting OpenTSDB lines via Telnet or HTTP API, please refer to
+our [user guide](../user-guide/supported-protocols/opentsdb.md) for more details.
