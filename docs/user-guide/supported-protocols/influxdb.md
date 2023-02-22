@@ -52,7 +52,35 @@ SELECT * FROM influxdb.monitor;
 ```
 
 The `/influxdb/write` supports query params including:
+
 * `db` specify which db to write, `public` by default.
 * `precision`, precision of timestamps in the line protocol. Accepts `ns` (nanoseconds), `us`(microseconds), `ms` (milliseconds) and `s` (seconds), nanoseconds by default.
+
+## PING
+
+GreptimeDB also simply support InfluxDB `ping` and `health` API.
+
+Use `curl` to request `ping` API.
+
+```shell
+curl -i "127.0.0.1:4000/v1/influxdb/ping"
+```
+
+```shell
+HTTP/1.1 204 No Content
+date: Wed, 22 Feb 2023 02:29:44 GMT
+```
+
+Use `curl` to request `health` API.
+
+```shell
+curl -i "127.0.0.1:4000/v1/influxdb/health"
+```
+
+```shell
+HTTP/1.1 200 OK
+content-length: 0
+date: Wed, 22 Feb 2023 02:30:46 GMT
+```
 
 For more information about the line protocol, please refer to the [InfluxDB line protocol tutorial](https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/).
