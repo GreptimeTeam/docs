@@ -44,6 +44,7 @@
     - python-coprocessor
   - Meta:
     - overview
+    - dist-lock
   - Tests:
     - overview
     - unit-test
