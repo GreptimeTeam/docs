@@ -1,3 +1,21 @@
 # SQL
 
-TODO
+* [INSERT](./sql/insert.md)
+* [CAST](./sql/cast.md)
+* [COPY](./sql/copy.md)
+* [SELECT](./sql/select.md)
+* [DISTINCT](./sql/distinct.md)
+* [WHERE](./sql/where.md)
+* [ORDER BY](./sql/order_by.md)
+* [GROUP BY](./sql/group_by.md)
+* [LIMIT](./sql/limit.md)
+* [JOIN](./sql/join.md)
+* [Functions](./sql/functions.md)
+* [DELETE](./sql/delete.md)
+* [SHOW](./sql/show.md)
+* [TQL](./sql/tql.md)
+* [CREATE](./sql/create.md)
+* [ALTER](./sql/alter.md)
+* [EXPLAINX](./sql/explain.md)
+* [DROP TABLE](./sql/drop_table.md)
+* [ANSI Compatibility](./sql/compibility.md)
