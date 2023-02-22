@@ -15,7 +15,6 @@ Available API:
 
 All these APIs are under the parent resource `/admin`.
 
-
 The following sections assume your meta instance is running on localhost port 3002.
 
 ## /health HTTP endpoint  
@@ -30,9 +29,15 @@ curl -X GET http://localhost:3002/admin/health
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET http://localhost:3002/admin/health
+```
 
+#### Response
+
+```json
 OK
 ```
 
@@ -48,9 +53,15 @@ curl -X GET http://localhost:3002/admin/leader
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET http://localhost:3002/admin/leader
+```
 
+#### Response
+
+```json
 127.0.0.1:3002
 ```
 
@@ -66,10 +77,16 @@ curl -X GET http://localhost:3002/admin/catalogs
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET http://localhost:3002/admin/catalogs
+```
 
-["-greptime"]
+#### Response
+
+```json
+["greptime"]
 ```
 
 ## /schemas HTTP endpoint
@@ -89,10 +106,16 @@ curl -X GET http://localhost:3002/admin/schemas
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET 'http://localhost:3002/admin/schemas?catalog_name=greptime'
+```
 
-["-public"]
+#### Response
+
+```json
+["public"]
 ```
 
 ## /tables HTTP endpoint
@@ -114,10 +137,16 @@ curl -X GET http://localhost:3002/admin/tables
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET `http://localhost:3002/admin/tables?catalog_name=greptime&schema_name=public`
+```
 
-["-dist_table"]
+#### Response
+
+```json
+["dist_table"]
 ```
 
 ## /heartbeat HTTP endpoint
@@ -140,9 +169,15 @@ curl -X GET http://localhost:3002/admin/heartbeat
 
 ### Examples
 
+#### Request
+
 ```bash
 curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
+```
 
+#### Response
+
+```json
 [
 	[{
 		"timestamp_millis": 1677049348651,
