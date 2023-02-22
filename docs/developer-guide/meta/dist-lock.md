@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Meta provides the ability to distribute locks externally via gRPC.
+Meta provides the ability to distribute lock externally via gRPC.
 
 ## How to use
 
@@ -42,8 +42,16 @@ You can find the proto definition [here][3].
 
 [3]: https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/lock.proto
 
+Pay attention to the following points
+
+1. If the expiration time of distribute lock is exceeded and currently holds the lock, the lock is automatically released.
+2. Distributed lock need to set a reasonable expiration time, default: 10 seconds.
+3. The expiration time of the distributed lock should be shorter than the timeout of the Grpc channel. Otherwise it may cause gRPC timeout error, causing lock failure.
+
 ## Detailed design
 
-The current implementation of distributed lock is based on etcd. And we define `Lock` trait, `EtcdLock` is one of the implementations.
+The current implementation of distributed lock is based on [etcd][4]. And we define `Lock` trait, `EtcdLock` is one of the implementations.
+
+[4]: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
 
 Since the state of the distributed lock is maintained by etcd, both meta leader and follower nodes can provide the Lock's Grpc service.
