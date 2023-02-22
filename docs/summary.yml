@@ -44,6 +44,7 @@
     - python-coprocessor
   - Meta:
     - overview
+    - admin-api
   - Tests:
     - overview
     - unit-test
