@@ -56,7 +56,7 @@ The table constraints contain the following:
 *  `TIME INDEX` to specify the time index column. And it always has one and only one column.
 *  `PRIMARY KEY` to specify the table's primary key column. And it can't include the time index column but always implicitly add the time index column to the end of keys.
 
-The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented and returns an error otherwise.
+The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented,otherwise returns an error.
 
 ### Table options
 After the keyword `WITH` is a list of the table options. The valid options contain the following:
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ### Column options
 
 The GreptimeDB supports the following column options:
-| Option  | Description  | Value |
+| Option  | Description |
 |---|---|
 | NULL  | The column value can be `null`.  |
 |  NOT NULL | The column value can't be `null`. |
