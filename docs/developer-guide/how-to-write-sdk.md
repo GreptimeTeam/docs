@@ -1,6 +1,6 @@
 # How to write a gRPC SDK for GreptimeDB
 
-GreptimeDB build its own gRPC interface on top of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you are curious about how to write a gRPC SDK for GreptimeDB in your favorite programming language, read on!
+GreptimeDB builds its gRPC interface on top of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for GreptimeDB in a programming language you are familiar with, read on!
 
 > Currently, we have only gRPC SDK written in Java, you can find more details [here](../user-guide/java-sdk.md).
 
