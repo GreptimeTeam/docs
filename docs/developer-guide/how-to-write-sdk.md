@@ -24,7 +24,7 @@ message Ticket {
 }
 ```
 
-It's a little complicated to handle GreptimeDB responses. `DoGet` returns a stream of `FlightData`. The definition of `FlightData` is:
+Handling GreptimeDB responses is a little complicated. `DoGet` returns a stream of `FlightData` and the definition of `FlightData` is:
 
 ```protobuf
 message FlightData {
