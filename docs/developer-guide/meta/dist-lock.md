@@ -42,7 +42,7 @@ You can find the proto definition [here][3].
 
 [3]: https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/lock.proto
 
-Pay attention to the following points
+Pay attention to the following points:
 
 1. If the expiration time of distribute lock is exceeded and currently holds the lock, the lock is automatically released.
 2. Distributed lock need to set a reasonable expiration time, default: 10 seconds.
