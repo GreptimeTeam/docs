@@ -4,7 +4,7 @@ The `TQL` keyword executes TQL language in SQL. The TQL is Telemetry Query Langu
 ## Syntax
 
 ```sql
-TQL { EVAL | EVALUATE} (start, end, step) expr 
+TQL [EVAL | EVALUATE] (start, end, step) expr 
 ```
 
 The `start`, `end` and `step` are the query parameters just like [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/):
