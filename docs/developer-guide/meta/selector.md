@@ -6,7 +6,7 @@ What is the `Selector`? As the name suggests, it is a selector that selects some
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
 
-There is a typical usage scenario in meta. When a create table request is sent to meta, meta will create a routing table. (Here we do not describe the detail of creating tables)  When creating a routing table, it needs to select the appropriate `datanode` list.
+There is a usage scenario in meta. When a request to create table is sent to meta, meta will create a routing table. (The details of table creation will not be described here) Meta needs to select the appropriate `datanode` list when creating a routing table.
 
 ## Selector Type
 
