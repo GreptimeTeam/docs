@@ -98,9 +98,6 @@ QueryRequest request = QueryRequest.newBuilder() //
 | greptimedb.signal.out\_dir                     | Signal handler can output to the specified directory, default is the process start directory.                                                                      |
 | greptimedb.available\_cpus                     | Specify the number of available cpus, the default is to use the full number of cpus of the current environment.                                                    |
 | greptimedb.reporter.period\_minutes            | Metrics reporter timed output period, default 30 minutes.                                                                                                          |
-| greptimedb.grpc.conn.failures.reset\_threshold | Threshold for gRPC connection reset, default 3                                                                                                                     |
-| greptimedb.grpc.pool.core\_workers             | gRPC business thread pool core workers number                                                                                                                      |
-| greptimedb.grpc.pool.maximum\_works            | Maximum number of workers in the gRPC business thread pool                                                                                                         |
 | greptimedb.read.write.rw_logging               | Whether to print logs for each read/write operation, default off.                                                                                                  |
 
 ### GreptimeDBOptions
@@ -113,65 +110,6 @@ QueryRequest request = QueryRequest.newBuilder() //
 | rpcOptions     | Configuration options for RPC component, please refer to `RpcOptions` for details.                                                                                                                                                                                                                                                            |
 | routerOptions  | Configuration options for the routing table component, please refer to `RouterOptions` for details.                                                                                                                                                                                                                                           |
 | writeOptions   | Configuration options for the write component, please refer to `WriteOptions` for details.                                                                                                                                                                                                                                                    |
-| queryOptions   | Configuration options for the query component, please refer to `QueryOptions` for details.                                                                                                                                                                                                                                                                                                                                              |
-
-### RpcOptions
-
-| Name                    | Description                                                                                                                                                                     |
-|:------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| defaultRpcTimeout       | Default RPC timeout . Each request can specify timeout individually . If not specified, then this value will be used, The default is 10s.                                       |
-| maxInboundMessageSize   | Sets the maximum message size allowed to be received on a channel.                                                                                                              |
-| flowControlWindow       | http2.0 based flow control, default 64M                                                                                                                                         |
-| idleTimeoutSeconds      | Set the duration(default 5 min) without ongoing RPCs before going to idle mode. In idle mode the channel shuts down all connections.                                         |
-| keepAliveTimeSeconds    | Sets the time without read activity before sending a keep-alive ping.                                                                                                           |
-| keepAliveTimeoutSeconds | Sets the time waiting for read activity after sending a keep-alive ping.If the time expires without any read activity on the connection, the connection is considered dead. |
-| keepAliveWithoutCalls   | Sets whether keep-alive will be performed when there are no outstanding RPC on a connection.                                                                                    |
-| limitKind               | Request limiter type, supports Vegas and Gradient, default is Gradient                                                                                                          |
-| initialLimit            | Initial limit used by the limiter                                                                                                                                               |
-| maxLimit                | Maximum allowable concurrency.  Any estimated concurrency will be capped at this value                                                                                          |
-| smoothing               | Smoothing factor to limit how aggressively the estimated limit can shrink when queuing has been detected.                                                                       |
-| blockOnLimit            | When set to true, new calls to the channel will block when the limit has been reached instead of failing fast with an UNAVAILABLE status. Default false.                        |
-
-## Limit Policy
-
-GreptimeDBClient provides an adaptive limiter at the gRPC layer based on TCP Vegas and the Gradient
-Concurrency-limits algorithm.
-
-### Vegas
-
-Vegas is a congestion control algorithm that actively adjusts the cwnd. The main idea is to set
-two thresholds, alpha and beta, and then adjust the cwnd by calculating the difference (diff)
-between the target rate (Expected) and the actual rate (Actual), and then comparing the diff
-with alpha and beta.
-
-The core algorithm logic is as follows:
-
-``` java
-diff = cwnd*(1-baseRTT/RTT)
-if (diff < alpha)
-    set: cwnd = cwnd + 1
-else if (diff >= beta)
-    set: cwnd = cwnd - 1
-else
-    set: cwnd = cwnd
-```
-
-### Gradient Concurrency-limits
-
-Concurrent limit algorithm that adjusts the limit based on the gradient
-of change in the current average RTT and the long-term exponentially smoothed
-average RTT. Unlike traditional congestion control algorithms, the average value
-is used instead of the minimum value.
-
-The core algorithm logic is as follows:
-
-``` java
-gradient = max(0.5, min(1.0, longtermRtt / currentRtt));
-
-newLimit = gradient * currentLimit + queueSize;
-
-newLimit = currentLimit * (1 - smoothing) + newLimit * smoothing
-```
 
 ## Metrics&Display
 
@@ -198,21 +136,10 @@ current client
 
 | Name                                                            | Description                                                                                                                    |
 |:----------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
-| req\_bytes [counter]                                            | RPC requests total bytes statistics                                                                                            |
-| resp\_bytes [counter]                                           | RPC responses total bytes statistics                                                                                           |
-| req\_qps\_${rpc\_method} [meter]                                | QPS statistics of RPC requests, separate for each RPC method.                                                                  |
-| req\_serialized\_bytes\_${rpc\_method} [histogram]              | Size statistics per RPC request after serialization. The granularity is RPC method.                                            |
-| resp\_serialized\_bytes\_${rpc\_method} [histogram]             | Size statistics per RPC response after serialization. The granularity is RPC method.                                           |
-| req\_rt\_${rpc\_method} [timer]                                 | Request RT. The granularity is RPC method.                                                                                     |
-| req\_rt\_${rpc\_method}\_${address}  [timer]                    | Request RT. The granularity is RPC method + Server address.                                                                    |
-| req\_failed\_${rpc\_method} [meter]                             | Request Failure Statistics. The granularity is RPC method.                                                                     |
-| req\_failed\_${rpc\_method}\_${address} [meter]                 | Request Failure Statistics. The granularity is RPC method + Server address.                                                    |
 | thread\_pool.${thread\_pool\_name} [timer]                      | Thread pool execution task time statistics.                                                                                    |
 | scheduled\_thread\_pool.${schedule\_thread\_pool\_name} [timer] | Schedule thread pool execution task time statistics.                                                                           |
 | async\_write\_pool.time [timer]                                 | Asynchronous pool time statistics for asynchronous write tasks in SDK, this is important and it is recommended to focus on it. |
 | async\_read\_pool.time [timer]                                  | Asynchronous pool time statistics for asynchronous read tasks in SDK, this is important and it is recommended to focus on it.  |
-| connection\_counter [counter]                                   | Number of connections established between SDK and server.                                                                      |
-| connection\_failure [meter]                                     | Statistics of failed connections between SDK and server.                                                                       |
 | write\_rows\_success\_num [histogram]                           | Statistics on the number of successful writes.                                                                                 |
 | write\_rows\_failure\_num [histogram]                           | Statistics on the number of data entries that failed to write.                                                                 |
 | write\_failure\_num [meter]                                     | Statistics on the number of failed writes.                                                                                     |
@@ -247,18 +174,12 @@ the log output, including:
  -       [3] `kill -s SIGUSR2 $pid`
  -       [4] `rm rw_logging.sig`
  -
- -     How to open or close rpc limiter(The second execution means close):
- -       [1] `cd /Users/xxx/xxx`
- -       [2] `touch rpc_limit.sig`
- -       [3] `kill -s SIGUSR2 $pid`
- -       [4] `rm rpc_limit.sig`
- -
  -     How to get metrics and display info:
  -       [1] `cd /Users/xxx/xxx`
  -       [2] `rm *.sig`
  -       [3] `kill -s SIGUSR2 $pid`
  -
  -     The file signals that is currently open:
- -       rpc_limit.sig
+ -       rw_logging.sig
  -
 ```
