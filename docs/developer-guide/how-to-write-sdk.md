@@ -10,7 +10,7 @@ Then check your programming language to see whether Arrow Flight RPC officially 
 
 Now focus on the `DoGet` method of Arrow Flight gRPC service, which all GreptimeDB requests are handled in it.
 
-The `DoGet` method is defined like this:
+The `DoGet` method is defined as follow:
 
 ```protobuf
   rpc DoGet(Ticket) returns (stream FlightData) {}
