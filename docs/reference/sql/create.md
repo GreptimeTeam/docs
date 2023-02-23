@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ### Column options
 
 The GreptimeDB supports the following column options:
+
 | Option  | Description |
 |---|---|
 | NULL  | The column value can be `null`.  |
