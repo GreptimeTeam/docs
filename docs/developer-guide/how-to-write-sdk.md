@@ -6,7 +6,7 @@ GreptimeDB builds its gRPC interface on top of [Apache Arrow Flight](https://arr
 
 First, you can find our protobuf definitions for GreptimeDB requests and responses in this [repo](https://github.com/GreptimeTeam/greptime-proto#for-sdk-developers). The section named "For SDK developers" in the README of that repo is worth reading. 
 
-Then check the programming language you are using, to see whether Arrow Flight RPC officially supports it. Currently, it supports C++, Java, Go, C# and Rust. It might add more language supports in the meantime, so stay tuned with its [Implementation Status](https://arrow.apache.org/docs/status.html#flight-rpc). If you can't find the language you are using on it, you have to write a client from sketch (starting from Arrow Flight's raw gRPC service protobuf [definition](https://arrow.apache.org/docs/format/Flight.html#protocol-buffer-definitions)).
+Then check your programming language to see whether Arrow Flight RPC officially supports it. Currently, it supports C++, Java, Go, C# and Rust and might add more supported languages, so stay tuned with its [Implementation Status](https://arrow.apache.org/docs/status.html#flight-rpc). If you can't find the language you are using, you have to write a client from sketch (starting from Arrow Flight's raw gRPC service protobuf [definition](https://arrow.apache.org/docs/format/Flight.html#protocol-buffer-definitions)).
 
 Now focus on the `DoGet` method of Arrow Flight gRPC service, currently all GreptimeDB requests are handled in it.
 
