@@ -55,7 +55,7 @@ message FlightData {
 }
 ```
 
-Specifically the fields are:
+The fields are specified as follow:
 
 - `flight_descriptor` can be ignored here.
 - `data_header` must be first deserialized to `Message` (see its definition [here](https://github.com/apache/arrow/blob/master/format/Message.fbs#L134)) using [FlatBuffer](https://github.com/google/flatbuffers). The `Message`'s header type decides how the following two fields are interpreted.
