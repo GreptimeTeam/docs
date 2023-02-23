@@ -20,29 +20,44 @@ greptime [standalone | frontend | datanode | metasrv]  start -c config/standalon
 Common protocol configurations in `frontend` and `standalone` sub command:
 
 ```toml
+[http_options]
+addr = "127.0.0.1:4000"
+timeout = "30s"
+
 [grpc_options]
-addr = '127.0.0.1:4001'
+addr = "127.0.0.1:4001"
 runtime_size = 8
 
 [mysql_options]
-addr = '127.0.0.1:4002'
+addr = "127.0.0.1:4002"
+runtime_size = 2
+
+[mysql_options.tls]
+mode = "disable"
+cert_path = ""
+key_path = ""
+
+[postgres_options]
+addr = "127.0.0.1:4003"
+runtime_size = 2
+
+[postgres_options.tls]
+mode = "disable"
+cert_path = ""
+key_path = ""
+
+[opentsdb_options]
+addr = "127.0.0.1:4242"
 runtime_size = 2
 
 [influxdb_options]
 enable = true
 
-[opentsdb_options]
-addr = "127.0.0.1:4242"
-enable = true
-runtime_size = 2
-
 [prometheus_options]
 enable = true
 
-[postgres_options]
-addr = '127.0.0.1:4003'
-runtime_size = 2
-check_pwd = false
+[promql_options]
+addr = "127.0.0.1:4004"
 ```
 
 All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.
@@ -52,24 +67,27 @@ All of these options are optional, the default values are listed above. If you w
 
 | Option             | Key          | Type    | Description                                                                     |
 |--------------------|--------------|---------|---------------------------------------------------------------------------------|
+| http_options       |              |         | HTTP server options                                                             |
+|                    | addr         | String  | Server address, "127.0.0.1:4000" by default                                     |
+|                    | timeout      | String  | HTTP request timeout, 30s by default                                            |
 | grpc_options       |              |         | gRPC server options                                                             |
-|                    | addr         | String  | Server address, "127.0.0.1:4001" by default                                       |
+|                    | addr         | String  | Server address, "127.0.0.1:4001" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 8 by default                               |
 | mysql_options      |              |         | MySQL server options                                                            |
-|                    | add          | String  | Server address, "127.0.0.1:4002" by default                                       |
+|                    | add          | String  | Server address, "127.0.0.1:4002" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 | influxdb_options   |              |         |                                                                                 |
 |                    | enable       | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
 | opentsdb_options   |              |         | OpenTSDB Protocol options                                                       |
 |                    | enable       | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                |
-|                    | addr         | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                   |
+|                    | addr         | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 | prometheus_options |              |         | Prometheus protocol options                                                     |
 |                    | enable       | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
 | postgres_options   |              |         | PostgresSQL server options                                                      |
-|                    | addr         | String  | Server address, '127.0.0.1:4003' by default                                       |
+|                    | addr         | String  | Server address, '127.0.0.1:4003' by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
-|                    | check_pwd    | boolean | Whether to check password, it's not supported right now, always false.           |
+|                    | check_pwd    | boolean | Whether to check password, it's not supported right now, always false.          |
 
 ### Node options
 
@@ -80,15 +98,13 @@ There are also some node options in common:
 |--------|-----------|---------|------------------------------------------------------------------------------------|
 |        | node_id   | Integer | The datanode identifier, set it 0 in standalone mode, otherwise should be different|
 |        | mode      | String  | Node running mode, includes 'standalone' or 'distributed'                          |
-|        | http_addr | String  | HTTP API server address, '127.0.0.1:4000' by default                                 |
 
 ### Storage option
 
-The `storage` options are valid in datanode and standalone mode, which specify the WAL and database data directories and other storage related options.
+The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage related options.
 
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|
-|         | wal_dir  | String | Write-ahead log directory, "/tmp/greptimedb/wal"    |
 | storage |          |        | Storage engine options                              |
 |         | type     | String | Storage engine type, Only supports 'File' or 'S3' right now |
 | File    |          |        | File storage options, valid when type='file'        |
@@ -125,8 +141,18 @@ When you use GreptimeDB in the standalone mode, you can configure it as below:
 ```toml
 node_id = 0
 mode = 'standalone'
-http_addr = '127.0.0.1:4000'
-wal_dir = "/tmp/greptimedb/wal/"
+
+[http_options]
+addr = '127.0.0.1:4000'
+timeout = "30s"
+
+[wal]
+dir = "/tmp/greptimedb/wal"
+file_size = '1GB'
+purge_interval = '10m'
+purge_threshold = '50GB'
+read_batch_size = 128
+sync_write = false
 
 [storage]
 type = 'File'
@@ -144,7 +170,7 @@ runtime_size = 2
 enable = true
 
 [opentsdb_options]
-addr = "127.0.0.1:4242"
+addr = '127.0.0.1:4242'
 enable = true
 runtime_size = 2
 
@@ -154,12 +180,8 @@ enable = true
 [postgres_options]
 addr = '127.0.0.1:4003'
 runtime_size = 2
-check_pwd = false
 ```
 
-Some specific options for standalone:
-
-* `datanode_mysql_addr` and `datanode_mysql_runtime_size`, to set datanode's MySQL server configurations.
 
 ## Frontend in distributed mode
 
@@ -167,19 +189,19 @@ Configure frontend in distributed mode:
 
 ```toml
 mode = "distributed"
-datanode_rpc_addr = '127.0.0.1:3001'
-http_addr = '127.0.0.1:4000'
 
-[meta_client_opts]
+[http_options]
+addr = '127.0.0.1:4000'
+timeout = "30s"
+
+[meta_client_options]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
 tcp_nodelay = false
 ```
 
-The `datanode_rpc_addr` is not used in `distributed` mode, you can leave it in default value.
-
-The `meta_client_opts` configure the metasrv client confugrations, incuding:
+The `meta_client_options` configure the metasrv client confugrations, incuding:
 
 * `metasrv_addrs`, metasrv address list
 * `timeout_millis`, operation timeout in milliseconds, 3000 by default.
@@ -194,16 +216,23 @@ Configure datanode in distributed mode:
 node_id = 42
 mode = "distributed"
 rpc_addr = '127.0.0.1:3001'
-wal_dir = '/tmp/greptimedb/wal'
 rpc_runtime_size = 8
 mysql_addr = '127.0.0.1:4406'
 mysql_runtime_size = 4
+
+[wal]
+dir = "/tmp/greptimedb/wal"
+file_size = '1GB'
+purge_interval = '10m'
+purge_threshold = '50GB'
+read_batch_size = 128
+sync_write = false
 
 [storage]
 type = 'File'
 data_dir = '/tmp/greptimedb/data/'
 
-[meta_client_opts]
+[meta_client_options]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
