@@ -14,7 +14,7 @@ For example:
 
 ```rust
 async fn do_some_work(meta_client: MetaClient) {
-    let name = "lock_name".as_bytes().to_vec();
+    let name = b"lock_name".to_vec();
     let expire_secs = 60;
 
     let lock_req = LockRequest { name, expire_secs };
