@@ -16,7 +16,7 @@ The `DoGet` method is defined as follow:
   rpc DoGet(Ticket) returns (stream FlightData) {}
 ```
 
-For sending a GreptimeDB request, just encode it into raw bytes, then wrap it into a `Ticket`. `Ticket` is simply a message carries bytes:
+To send a GreptimeDB request, encode it into raw bytes, then wrap it into a `Ticket` which is a protobuf message carrying bytes:
 
 ```protobuf
 message Ticket {
