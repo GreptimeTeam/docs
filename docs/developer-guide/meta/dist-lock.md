@@ -6,7 +6,7 @@ Meta provides the ability to distribute lock externally via gRPC.
 
 ## How to use
 
-A meta client implemented in rust is provided in [meta-client][1] crate.
+A meta client implemented by rust is provided in [meta-client][1] crate.
 
 [1]: https://github.com/GreptimeTeam/greptimedb/tree/develop/src/meta-client
 
