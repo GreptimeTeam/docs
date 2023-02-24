@@ -4,7 +4,7 @@
 
 PromQL is the query language for Prometheus. It is a powerful and flexible language to retrieve data for alerting, graphing, and analysis.
 
-GreptimeDB has reimplemented PromQL in Rust, here is the compatibility list.
+GreptimeDB has reimplemented PromQL ([lexer, parser](https://crates.io/crates/promql-parser) and [engine](https://github.com/GreptimeTeam/greptimedb/tree/develop/src/promql)) entirely in Rust, here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
 
 ## Compatibility List
 
@@ -13,15 +13,15 @@ GreptimeDB has reimplemented PromQL in Rust, here is the compatibility list.
 - Basics
   - [Literal](#literal)
   - [Selector](#selector)
-  - Subquery (unsupport)
+  - Subquery (unsupported)
 - Operators
   - [Binary Operators](#binary-operators)
-  - Vector Matching (unsupport)
+  - Vector Matching (unsupported)
   - [Aggregation Operators](#aggregators)
 - Funtions
   - [Instant Functions](#instant-functions)
   - [Range Functions](#range-functions)
-  - Others (unsupport)
+  - Others (unsupported)
 
 
 ### Literal
@@ -30,11 +30,13 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. The only unsupported exception is the label matching on metric name, e.g.: `{__name__!="request_count}"` (but the equal-matching case is supported: `{__name__="request_count}"`). Time duration and offset are supported, but `@` modifier is not supported yet.
+Both instant and range selector are supported. The only exception is the label matching on metric name, e.g.: `{__name__!="request_count}"` (but the equal-matching case is supported: `{__name__="request_count}"`).
+
+Time duration and offset are supported, but `@` modifier is not supported yet.
 
 ### Binary 
 
-*Pure literal binary-expr like `1+1` is not supported yet. `promql-parser` has some issues about grammar conflict between binary-expr and unary-expr.*
+*Pure literal binary-expr like `1+1` is not supported yet.*
 
 - Supported:
     | Operator | Example  |
@@ -70,13 +72,14 @@ Both instant and range selector are supported. The only unsupported exception is
     | min        | `min by (foo)(metric)`    |
     | max        | `max by (foo)(metric)`    |
     | stddev     | `stddev by (foo)(metric)` |
+    | stdvar     | `stdvar by (foo)(metric)` |
+
 
 - Unsupported:
     | Aggregator   | Progress |
     | :----------- | :------- |
     | count        | TBD      |
     | grouping     | TBD      |
-    | stdvar       | TBD      |
     | topk         | TBD      |
     | bottomk      | TBD      |
     | count_values | TBD      |
@@ -123,9 +126,22 @@ Both instant and range selector are supported. The only unsupported exception is
 ### Range Functions
 
 - Supported:
-    | Function | Example                |
-    | :------- | :--------------------- |
-    | increase | `increase(metric[5m])` |
-    | irate    | `irate(metric[5m])`    |
-    | idelta   | `idelta(metric[5m])`   |
+    | Function           | Example                       |
+    | :----------------- | :---------------------------- |
+    | idelta             | `idelta(metric[5m])`          |
+    | \<aggr\>_over_time | `count_over_time(metric[5m])` |
+
+- Unsupported:
+    | Function         | Example |
+    | :--------------- | :------ |
+    | stddev_over_time | TBD     |
+    | stdvar_over_time | TBD     |
+    | changes          | TBD     |
+    | delta            | TBD     |
+    | rate             | TBD     |
+    | deriv            | TBD     |
+    | increase         | TBD     |
+    | idelta           | TBD     |
+    | irate            | TBD     |
+    | reset            | TBD     |
 
