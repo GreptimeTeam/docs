@@ -2,7 +2,7 @@
 
 ## Introduction
 
-PromQL is the query language for Prometheus. It is a powerful and flexible language that can be used to retrieve data for alerting, graphing, and analysis.
+PromQL is the query language for Prometheus. It is a powerful and flexible language to retrieve data for alerting, graphing, and analysis.
 
 GreptimeDB has reimplemented PromQL in Rust, here is the compatibility list.
 
@@ -30,7 +30,7 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. The only unsupported exception is the label matching on metric name, e.g.: `__name__!="request_count"` (but the equal-matching case is supported: `__name__="request_count"`). Time duration and offset are supported, but `@` modifier is not supported yet.
+Both instant and range selector are supported. The only unsupported exception is the label matching on metric name, e.g.: `{__name__!="request_count}"` (but the equal-matching case is supported: `{__name__="request_count}"`). Time duration and offset are supported, but `@` modifier is not supported yet.
 
 ### Binary 
 
