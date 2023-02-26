@@ -15,7 +15,7 @@
 * [SHOW](./sql/show.md)
 * [TQL](./sql/tql.md)
 * [CREATE](./sql/create.md)
-* [DESCRIBE TABLE](./sql/describe_table.mdd)
+* [DESCRIBE TABLE](./sql/describe_table.md)
 * [ALTER](./sql/alter.md)
 * [EXPLAIN](./sql/explain.md)
 * [DROP TABLE](./sql/drop_table.md)
