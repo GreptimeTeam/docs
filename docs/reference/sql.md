@@ -17,6 +17,6 @@
 * [CREATE](./sql/create.md)
 * [DESCRIBE TABLE](./sql/describe_table.mdd)
 * [ALTER](./sql/alter.md)
-* [EXPLAINX](./sql/explain.md)
+* [EXPLAIN](./sql/explain.md)
 * [DROP TABLE](./sql/drop_table.md)
 * [ANSI Compatibility](./sql/compibility.md)
