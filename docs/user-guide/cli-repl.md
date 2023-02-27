@@ -1,21 +1,21 @@
 # Command Line Tool: REPL
 
-GreptimeDB comes with a simple REPL ("Read-Evaluate-Print-Loop") command line tool for reading or writing data.
+GreptimeDB has a simple REPL ("Read-Evaluate-Print-Loop") command line tool for reading or writing data.
 
-Run the new cli, specify the gRPC address of the GreptimeDB server you want to connect to:
+When running the new cli, you can specify the gRPC address of the GreptimeDB server you want to connect to:
 
 ```shell
 cargo run -- cli attach --grpc-addr=0.0.0.0:4001 
 ```
 
-Wait for the REPL's prompt comes up:
+Wait for the REPL's prompt to come up:
 
 ```text
 Ready for commands. (Hint: try 'help')
 > 
 ```
 
-You can type in the "help" command to see some useful helping messages:
+You can type in the "help" command to see some useful tips:
 
 ```text
 > help
@@ -24,15 +24,15 @@ Available commands (case insensitive):
 - 'help': print this help
 - 'exit' or 'quit': exit the REPL
 - 'use <your database name>': switch to another database/schema context
-- Other typed in text will be treated as SQL.
-  You can enter new line while typing, just remember to end it with ';'.
+- Other typed-in texts will be treated as SQL statements.
+  You can enter new lines while typing; remember to end it with ';'.
 ```
 
-This REPL application has hinting based on your history inputs. You can use "tab" key to complete your inputs when some suggestions pop up. A very useful feature powered by [RustyLine](https://crates.io/crates/rustyline).
+REPL provides "hints" based on your historical inputs. You can use the "tab" key to complete your inputs when some suggestions pop up — a handy feature powered by [RustyLine](https://crates.io/crates/rustyline).
 
-Now go on typing in some SQLs to play with GreptimeDB! Here are some examples:
+To quickly familiarize yourself with GreptimeDB, try below examples:
 
-- Create and use databases, you can see the prompt is prefixed with the database you are currently using:
+- To create or use a database (note: the database name is the current one in-use):
 
 ```text
 > create database foo;
@@ -53,7 +53,7 @@ Cost 4 ms
 Using foo
 [foo] >
 ```
-- Create table. The REPL supports multi-line input (just to remember to end your input in semicolon to make it a valid SQL):
+- To create a table. REPL supports multi-line input (remember to end your input with a semicolon to make it a valid SQL statement):
 ```text
 [foo] > create table t(
   x STRING, 
@@ -61,7 +61,7 @@ Using foo
 Affected Rows: 0
 Cost 12 ms
 ```
-- Insert some data and select them:
+- To insert or select data:
 ```text
 [foo] > insert into t(x, ts) values('hello', 1);
 Affected Rows: 1
