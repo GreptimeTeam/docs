@@ -15,7 +15,7 @@ ORDER BY column1 [ASC | DESC], column2 [ASC | DESC], ...;
 The `ORDER BY` clause can be used with one or more columns. The ASC keyword is used to sort the data 
 in ascending order (default), and the DESC keyword is used to sort the data in descending order.
 
-# Example
+# Examples
 
 Consider the following table named "system_metrics":
 
