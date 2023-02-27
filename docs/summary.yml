@@ -49,6 +49,7 @@
     - unit-test
     - integration-test
     - sqlness-test
+  - how-to-write-sdk
 - Reference:
   - command-lines
   - configuration
