@@ -176,3 +176,27 @@ input {
     color: #191B234C;
   }
 }
+
+.vp-doc [class*='language-'] > button.wrap{
+  position absolute
+  top 8px
+  right 58px
+  z-index 3
+  width 40px
+  height 40px
+  border-radius: 4px
+  background-color: var(--vp-code-block-bg);
+  background-image: var(--vp-icon-paragraph-break);
+  background-position: 50%;
+  background-size: 20px;
+  background-repeat: no-repeat;
+  transition: opacity 0.4s;
+  color #666
+  opacity: 0
+}
+.vp-doc [class*='language-']:hover > button.wrap{
+  opacity: 1
+  &:hover {
+    background-color: var(--vp-code-copy-code-hover-bg);
+  }
+}

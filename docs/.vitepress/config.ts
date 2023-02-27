@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { parse } from 'yaml'
 import YAML from 'js-yaml'
+import wrap from './theme/plugins/wrap'
 
 export default (async () => ({
   title: 'Greptime Docs',
@@ -60,6 +61,11 @@ export default (async () => ({
     outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
+  markdown: {
+    config: md => {
+      md.use(wrap)
+    },
+  },
 }))()
 
 async function makeSidebar() {
