@@ -16,7 +16,7 @@ We keep the path and parameter set the same as Prometheus, so you can use the sa
 
 ## via GreptimeDB's HTTP API
 
-GreptimeDB also exposes an HTTP API for querying with PromQL. It's available on `/`promql` path under the current stable API version `/v1`, in **GreptimeDB HTTP API Port**. For example:
+GreptimeDB also exposes an HTTP API for querying with PromQL. It's available on `/promql` path under the current stable API version `/v1`, in **GreptimeDB HTTP API Port**. For example:
 
 ```shell
 curl --location --request GET 'http://localhost:4000/v1/promql?query=sum(some_metric)&start=1676738180&end=1676738780&step=10s'
