@@ -45,3 +45,31 @@ The result of the above query would be:
 | host1 | idc_c |        66.8 |
 | host1 | idc_b |        66.7 |
 +-------+-------+-------------+
+
+`LIMIT n, m` allows to select the m rows from the result after skipping the first n rows. The `LIMIT m OFFSET n` syntax
+is equivalent.
+
+```sql
+SELECT host, idc, memory_util
+FROM system_metrics
+ORDER BY memory_util DESC
+LIMIT 2 OFFSET 1;
+```
+
+OR
+
+```sql
+SELECT host, idc, memory_util
+FROM system_metrics
+ORDER BY memory_util DESC
+LIMIT 1, 2;
+```
+
+The result of the above query would be:
+
++-------+-------+-------------+
+| host  | idc   | memory_util |
++-------+-------+-------------+
+| host1 | idc_c |        66.8 |
+| host1 | idc_b |        66.7 |
++-------+-------+-------------+
