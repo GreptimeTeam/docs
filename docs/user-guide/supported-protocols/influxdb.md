@@ -58,7 +58,7 @@ The `/influxdb/write` supports query params including:
 
 ## PING
 
-GreptimeDB also simply support InfluxDB `ping` and `health` API.
+Additionally, GreptimeDB also provides support for the `ping` and `health` APIs of InfluxDB.
 
 Use `curl` to request `ping` API.
 
