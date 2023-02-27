@@ -3,16 +3,19 @@ one or more tables.
 
 # Basic SELECT Statement Syntax
 The basic syntax for a SELECT statement is as follows:
+
 ```sql
 SELECT column1, column2, ...
 FROM table_name;
 ```
+
 Here, column1, column2, etc. refer to the names of the columns from which we want to retrieve data,
 and table_name refers to the name of the table from which we want to retrieve the data.
 
 This statement selects all the columns specified in the SELECT clause from the table specified in the
 `FROM` clause. If you want to select all columns from the table, you can use the asterisk (*) wildcard
 character instead of listing individual columns.
+
 ```sql
 SELECT *
 FROM table_name;
@@ -27,9 +30,11 @@ SELECT column1, column2, ..., columnN
 FROM table_name
 WHERE condition;
 ```
+
 Here, the condition is an expression that evaluates to either true or false. Only the rows that satisfy the condition will be included in the result set.
 
 ## Examples of WHERE Clause
+
 ```sql
 -- Select all rows from the system_metrics table where idc is 'idc0'
 SELECT *
@@ -45,15 +50,18 @@ WHERE idc IN ('idc0', 'idc1');
 # Sorting SELECT Statements with ORDER BY Clause
 The `LIMIT` clause is used to limit the number of rows returned by a SELECT statement. The syntax for using
 `LIMIT` clause is as follows:
+
 ```sql
 SELECT column1, column2, ...
 FROM table_name
 LIMIT number_of_rows;
 ```
+
 Here, the number_of_rows parameter specifies the maximum number of rows to return. 
 
 ## Examples of LIMIT Clause
 Here are some examples of using the LIMIT clause:
+
 ```sql
 -- Select the first 10 rows from the system_metrics table
 SELECT *
@@ -63,12 +71,14 @@ LIMIT 10;
 
 # Joining Tables with SELECT Statements
 The JOIN clause is used to combine rows from two or more tables based on a related column between them. The syntax for using JOIN clause is as follows:
+
 ```sql
 SELECT column1, column2, ...
 FROM table1
 JOIN table2
 ON table1.column = table2.column;
 ```
+
 Here, the table1 and table2 are the names of the tables to be joined. The column is the related column between the two tables.
 
 ## Types of JOIN Clauses
@@ -81,6 +91,7 @@ There are several types of JOIN clauses:
 
 ## Examples of JOIN Clauses
 Here are some examples of using JOIN clauses:
+
 ```sql
 -- Select all rows from the system_metrics table and idc_info table where the idc_id matches
 SELECT a.*
@@ -103,14 +114,17 @@ ON a.idc = b.idc_id;
 
 # Grouping SELECT Statements with GROUP BY Clause
 The GROUP BY clause is used to group the rows in a SELECT statement based on one or more columns. The syntax for using GROUP BY clause is as follows:
+
 ```sql
 SELECT column1, column2, ..., aggregate_function(column)
 FROM table_name
 GROUP BY column1, column2, ...;
 ```
+
 Here, the aggregate_function is a function that performs a calculation on a set of values, such as AVG, COUNT, MAX, MIN, or SUM. The column is the column to group the data by.
 
 ## Examples of GROUP BY Clause
+
 ```sql
 -- Select the total number of idc for each idc
 SELECT idc, COUNT(host) as host_mun
