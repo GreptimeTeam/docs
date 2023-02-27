@@ -19,6 +19,7 @@
   - table-management
   - coprocessor-and-scripting
   - java-sdk
+  - cli-repl
   - Supported-Protocols:
     - overview
     - http-api
