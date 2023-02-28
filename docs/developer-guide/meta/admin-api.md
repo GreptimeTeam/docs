@@ -2,9 +2,8 @@
 
 The Admin API provides a simple way to view cluster information, including meta health detection, meta leader query, database metadata query, and datanode heartbeat detection. 
 
-The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is designed to be simple, easy to use and safe.
-
-Available API:
+The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
+Available APIs:
 
 - /health
 - /leader
@@ -15,11 +14,11 @@ Available API:
 
 All these APIs are under the parent resource `/admin`.
 
-The following sections assume your meta instance is running on localhost port 3002.
+In the following sections, we assume that your meta instance is running on localhost port 3002.
 
 ## /health HTTP endpoint  
 
-The `/health` endpoint accepts Get HTTP requests. Use this endpoint to check the health of your meta instance.
+The `/health` endpoint accepts GET HTTP requests and you can use this endpoint to check the health of your meta instance.
 
 ### Definition
 
@@ -43,7 +42,7 @@ OK
 
 ## /leader HTTP endpoint
 
-The `/leader` endpoint accepts Get HTTP requests. Use this endpoint to query the leader's addr of your meta instance.
+The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint to query the leader's addr of your meta instance.
 
 ### Definition
 
@@ -67,7 +66,7 @@ curl -X GET http://localhost:3002/admin/leader
 
 ## /catalogs HTTP endpoint
 
-The `/catalogs` endpoint accepts Get HTTP requests. Use this endpoint to query the all the catalog's name.
+The `/catalogs` endpoint accepts GET HTTP requests and you can use this endpoint to query the all the catalog's name.
 
 ### Definition
 
@@ -91,7 +90,7 @@ curl -X GET http://localhost:3002/admin/catalogs
 
 ## /schemas HTTP endpoint
 
-The `/schemas` endpoint accepts Get HTTP requests. Use this endpoint to query all schemas of a specific catalog.
+The `/schemas` endpoint accepts GET HTTP requests and you can use this endpoint to query all schemas of a specific catalog.
 
 ### Definition
 
@@ -120,9 +119,9 @@ curl -X GET 'http://localhost:3002/admin/schemas?catalog_name=greptime'
 
 ## /tables HTTP endpoint
 
-The `/tables` endpoint accepts Get HTTP requests. Use this endpoint to query all tables of a specific catalog and schema.
+The `/tables` endpoint accepts GET HTTP requests and you can use this endpoint to query all tables of a specific catalog and schema.
 
-Therefore, specify `catalog_name` and `schema_name` in the path is required
+Therefore, it is required to specify `catalog_name` and `schema_name` in the path.
 
 ### Definition
 
@@ -151,7 +150,7 @@ curl -X GET `http://localhost:3002/admin/tables?catalog_name=greptime&schema_nam
 
 ## /heartbeat HTTP endpoint
 
-The `/heartbeat` endpoint accepts Get HTTP requests. Use this endpoint to query the heartbeat of all datanodes.
+The `/heartbeat` endpoint accepts GET HTTP requests and you can use this endpoint to query the heartbeat of all datanodes.
 
 We can also query the heartbeat data of the datanode of the specified addr.
 
