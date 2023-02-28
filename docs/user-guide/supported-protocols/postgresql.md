@@ -1,35 +1,38 @@
 # PostgreSQL
 
-GreptimeDB supports PostgreSQL wire protocol, which allows you to execute queries after connecting DB instances with the standard PostgreSQL client.
-standard PostgreSQL client to connect to DB instances and execute
-queries. Note that when writing SQL queries, GreptimeDB follows MySQL dialect
+GreptimeDB supports PostgreSQL wire protocol, which allows you to execute
+queries after connecting DB instances with standard PostgreSQL clients and
+language drivers.
+
+Note that when writing SQL queries, GreptimeDB follows MySQL dialect
 instead of PostgreSQL.
 
-Both simple and extended query subprotocols are supported, except for those
-like rust-postgres, which is in our backlog.
+Clients relies on parameter type inference, like rust-postgres, is partially
+supported and on our backlog.
 
 ## Using psql
 
-Currently we have PostgreSQL simple query subprotocol supported on
-GreptimeDB. You can connect to GreptimeDB with standard `psql` client:
+Connect to GreptimeDB with standard `psql` client:
 
 ```shell
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-When running in standalone mode, the default port of PostgreSQL protocol is
-`4003`.
+When running GreptimeDB in standalone mode, the default port of PostgreSQL
+protocol is `4003`.
 
-## Using database connectors
+## Using language drivers
 
 ### Java
 
-You can use the Postgres JDBC connector by specifying host, port, dbname. 
-If authentication is enabled, then you can also specify username and password. 
+You can use the Postgres JDBC connector by specifying host, port, dbname.
+If authentication is enabled, then you can also specify username and password.
 
 ```java
 String url = "jdbc:postgresql://localhost:4003/public";
 Connection conn = DriverManager.getConnection(url);
+
+## use standard JDBC API or any framework on `conn`
 ```
 
 ### Python
@@ -43,4 +46,6 @@ import psycopg
 
 conn = psycopg.connect("host=127.0.0.1 port=4003 dbname=public")
 conn.set_session(autocommit=True)
+
+## get cursor from `conn` and execute your query
 ```
