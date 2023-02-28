@@ -45,6 +45,7 @@
     - python-coprocessor
   - Meta:
     - overview
+    - selector
   - Tests:
     - overview
     - unit-test
