@@ -2,31 +2,31 @@
 
 ## Introduction
 
-What is the `Selector`? As the name suggests, it is a selector that selects some from the specified `namespace` and `context`. There is a related trait also named `Selector`. And the definition is [here][0].
+What is the `Selector`? As its name suggests, it allows users to select specific items from a given `namespace` and `context`. There is a related trait, also named `Selector`, whose definition can be found [below][0].
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
 
-There is a usage scenario in meta. When a request to create table is sent to meta, meta will create a routing table. (The details of table creation will not be described here) Meta needs to select the appropriate `datanode` list when creating a routing table.
+There is a specific scenario in `meta` service. When a request to create a table is sent to the `meta` service, it creates a routing table (the details of table creation will not be described here). The `meta` service needs to select the appropriate `datanode` list when creating a routing table.
 
 ## Selector Type
 
-Currently there are two `Selector`s in meta, including `LeasebasedSelector` and `LoadBasedSelector`.
+Currently, there are two types of `Selector` available in the `meta` service: `LeasebasedSelector` and `LoadBasedSelector`.
 
 ### LeasebasedSelector [not recommended]
 
-`LeasebasedSelector` is just a simple implementation of `Selector` and **is not recommended**.
+`LeasebasedSelector` is just a simple implementation of `Selector`, but **it is not recommended**.
 
-It sorts alive `datanode`s according to its lease time, and return the sorted `datanode` list.
+It sorts available `datanode`s according to their lease time, and returns a sorted list of these `datanode`s.
 
 ### LoadBasedSelector
 
-`LoadBasedSelector` is another implementation of `Selector`.
+`LoadBasedSelector` is another implementation of the `Selector`.
 
-It sorts alive `datanode`s according to the load, and return the sorted `datanode` list.
+It sorts available `datanode`s according to the load, and returns a sorted list of these `datanode`s.
 
 ## Configuration
 
-You can configure `Selector` when starting meta. Default: `LeaseBasedSelector`.
+You can configure the `Selector` when starting the `meta` service, with the default being `LeaseBasedSelector`.
 
 For example:
 
