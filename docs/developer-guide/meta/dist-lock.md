@@ -44,7 +44,7 @@ You can find the protocol buffer definition [here][3].
 
 Pay attention to the following points:
 
-1. The distributed lock will be automatically released if it exceeds its expiration time and is still being held
+1. The distributed lock will be automatically released if it exceeds its expiration time and is still being held.
 2. When using distributed locks, you must set a suitable expiration time, default: 10 seconds.
 3. Distributed lock's expiration time should be shorter than the 'gRPC' channel's timeout; otherwise, it may cause a 'gRPC' timeout error, resulting in lock failure.
 
