@@ -152,9 +152,7 @@ curl -X GET `http://localhost:3002/admin/tables?catalog_name=greptime&schema_nam
 
 The `/heartbeat` endpoint accepts GET HTTP requests and you can use this endpoint to query the heartbeat of all datanodes.
 
-We can also query the heartbeat data of the datanode of the specified addr.
-
-specify `addr` in the path is optional. 
+You can also query the heartbeat data of the datanode for a specified `addr`, however, specifying `addr` in the path is optional.
 
 ### Definition
 
