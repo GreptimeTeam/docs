@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Meta provides the ability to distribute lock externally via gRPC.
+`Meta` provides the functionality of distributed locks via gRPC.
 
 ## How to use
 
-A meta client implemented by rust is provided in [meta-client][1] crate.
+The [meta-client][1] crate provides a Rust-based meta client implementation.
 
 [1]: https://github.com/GreptimeTeam/greptimedb/tree/develop/src/meta-client
 
@@ -36,22 +36,22 @@ More examples [here][2].
 
 [2]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-client/examples/lock.rs
 
-For using other languages, since gRPC is cross-language, you can easily implement language-specific client.
+Because gRPC is cross-language, it is easy to implement clients for other programming languages.
 
-You can find the proto definition [here][3].
+You can find the protocol buffer definition [here][3].
 
 [3]: https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/lock.proto
 
 Pay attention to the following points:
 
-1. If the expiration time of distribute lock is exceeded and currently holds the lock, the lock is automatically released.
-2. Distributed lock need to set a reasonable expiration time, default: 10 seconds.
-3. The expiration time of the distributed lock should be shorter than the timeout of the Grpc channel. Otherwise it may cause gRPC timeout error, causing lock failure.
+1. The distributed lock will be automatically released if it exceeds its expiration time and is still being held
+2. When using distributed locks, you must set a suitable expiration time, default: 10 seconds.
+3. Distributed lock's expiration time should be shorter than the 'gRPC' channel's timeout; otherwise, it may cause a 'gRPC' timeout error, resulting in lock failure.
 
 ## Detailed design
 
-The current implementation of distributed lock is based on [etcd][4]. And we define `Lock` trait, `EtcdLock` is one of the implementations.
+The current implementation of distributed lock is based on [etcd][4]. We have defined the `Lock` trait, and `EtcdLock` is one of the available implementations.
 
 [4]: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
 
-Since the state of the distributed lock is maintained by etcd, both meta leader and follower nodes can provide the Lock's Grpc service.
+Since `etcd` maintains the state of the distributed lock, both the `Meta` leader and its follower nodes can provide the Lock's `gRPC` service.
