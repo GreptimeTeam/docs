@@ -1,13 +1,12 @@
 # PostgreSQL
 
-PostgreSQL wire protocol is supported by GreptimeDB, which means you can use
+GreptimeDB supports PostgreSQL wire protocol, which allows you to execute queries after connecting DB instances with the standard PostgreSQL client.
 standard PostgreSQL client to connect to DB instances and execute
 queries. Note that when writing SQL queries, GreptimeDB follows MySQL dialect
 instead of PostgreSQL.
 
 Both simple and extended query subprotocols are supported, except for those
-clients relies on parameter type inference, like rust-postgres, will be
-supported later.
+like rust-postgres, which is in our backlog.
 
 ## Using psql
 
@@ -25,8 +24,8 @@ When running in standalone mode, the default port of PostgreSQL protocol is
 
 ### Java
 
-You can use Postgres JDBC connector by specifying host, port, dbname. Username
-and password are also supported when you have authentication enabled.
+You can use the Postgres JDBC connector by specifying host, port, dbname. 
+If authentication is enabled, then you can also specify username and password. 
 
 ```java
 String url = "jdbc:postgresql://localhost:4003/public";
@@ -35,8 +34,8 @@ Connection conn = DriverManager.getConnection(url);
 
 ### Python
 
-GreptimeDB now works with both [psycopg](https://www.psycopg.org/docs/) and its
-legacy version, psycopg2. When using psycopg, remember to turn on `autocommit`.
+GreptimeDB is compatible with both [psycopg](https://www.psycopg.org/docs/) and
+ psycopg2. When using psycopg, don't forget to turn on `autocommit`.
 
 
 ```python
