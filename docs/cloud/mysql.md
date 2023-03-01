@@ -6,10 +6,18 @@ standard clients and drivers are compatible.
 The connection is encrypted with TLS. `database` is required when connect using
 MySQL protocol.
 
-## `mysql`
+## MySQL CLI
 
-Connect to GreptimeCloud service instance using `mysql` cli.
+Connect to GreptimeCloud service instance using `mysql` CLI.
 
 ```
 mysql --ssl-mode=REQUIRED -u <user> -p -h <host> -P 4002 -A <dbname>
+```
+
+## MariaDB CLI
+
+MariaDB's CLI has slightly different `ssl` option with original MySQL
+
+```
+mysql --ssl -u <user> -p -h <host> -P 4002 -A <dbname>
 ```
