@@ -94,7 +94,7 @@ There are also some node options in common:
 
 | Option | Key                     | Type    | Description                                                                        |
 |--------|-------------------------|---------|------------------------------------------------------------------------------------|
-|        | mode                    | String  | Node running mode, includes "standalone" or "distributed"                          |
+|        | mode                    | String  | Node running mode, includes "standalone" and "distributed"                         |
 |        | enable_memory_catalog   | Boolean | Use in-memory catalog, false by default                                            |
 
 ### Storage option
@@ -198,7 +198,7 @@ connect_timeout_millis = 5000
 tcp_nodelay = false
 ```
 
-The `meta_client_options` configure the metasrv client configuration, incuding:
+The `meta_client_options` configure the metasrv client, incuding:
 
 * `metasrv_addrs`, metasrv address list
 * `timeout_millis`, operation timeout in milliseconds, 3000 by default.
@@ -253,6 +253,6 @@ datanode_lease_secs = 30
 | Key                 | Type    | Description                                                                                                             |
 |---------------------|---------|-------------------------------------------------------------------------------------------------------------------------|
 | bind_addr           | String  | The bind address of metasrv, "127.0.0.1:3002" by default.                                                                 |
-| server_addr         | String  | The communication server address for frontend and datanode to connect metasrv,  "127.0.0.1:3002" by default for localhost |
+| server_addr         | String  | The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost |
 | store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                        |
 | datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |
