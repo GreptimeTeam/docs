@@ -34,7 +34,7 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 - [Concepts][8]
 - [Reading/Writing data][9]
 - [Table management][10]
-- [Coprocessor and scripting][11]
+- [Python Coprocessor][11]
 - [Java SDK][12]
 - [Supported protocols][13]
 
@@ -56,7 +56,7 @@ Illustartes in detail how GreptimeDB works and helps you get involved in the dev
 [8]: ./docs/user-guide/concepts.md
 [9]: ./docs/user-guide/reading-writing-data.md
 [10]: ./docs/user-guide/table-management.md
-[11]: ./docs/user-guide/coprocessor-and-scripting.md
+[11]: ./docs/user-guide/python-coprocessor.md
 [12]: ./docs/user-guide/java-sdk.md
 [13]: ./docs/user-guide/supported-protocols/overview.md
 [14]: ./docs/developer-guide/overview.md
