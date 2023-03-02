@@ -16,22 +16,26 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ## Does GreptimeDB have a Golang driver?
 
-Our Golang SDK is on the to-do list, please subscribe our newsletter to get the latest feature update!
+Our Golang SDK is under development and you can find the repo [here](https://github.com/GreptimeTeam/greptimedb-client-go)
 Currently, we support MySQL protocol, you can check it out on the [user guide](https://docs.greptime.com/user-guide/supported-protocols/mysql ). 
 
 HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information. 
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
-We plan to implement PromQL natively in GreptimeDB. 
-For details, you can check our progress under [this issue](https://github.com/GreptimeTeam/greptimedb/issues/596).
+We have completed the initial implementation of PromQL natively in GreptimeDB and this ability will be released with our version 0.1. 
+Currently, though haven't passed all the official compatibility tests, GreptimeDB is usable for some basic scenarios for PromQL query. 
+
+We plan to pass more than 50% of the test cases in this [compatibility test](https://promlabs.com/promql-compliance-tests/) in version 0.2. For details, you can check our progress under [this issue](https://github.com/GreptimeTeam/greptimedb/issues/596).
 
 ## Is GreptimeDB compatible with Grafana?
 
 Yes, It's compatible with Grafana. 
 
 GreptimeDB supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
-plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data. We also plan to implement PromQL natively.
+plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data. 
+
+Also, we are implementing PromQL natively which is frequently used with Grafana.
 
 ## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
@@ -46,3 +50,5 @@ You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/mi
 Yes, we open sourced the dashboard for users to query and visualize their data.
 Please check out our initial version on [GitHub Repo](https://github.com/GreptimeTeam/dashboard). 
 
+## Does GreptimeDB support ingesting data without defining a schema? Like Prometheus metrics.
+Yes, we can create table automatically while inserting data using TSDB’s protocol (e.g. OpenTSDB, InfluxDB, prometheus)
