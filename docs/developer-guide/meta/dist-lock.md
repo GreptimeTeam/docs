@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Meta` provides the functionality of distributed locks via gRPC.
+`Meta` provides the functionality of distributed locks via `gRPC`.
 
 ## How to use
 
@@ -36,7 +36,7 @@ More examples [here][2].
 
 [2]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-client/examples/lock.rs
 
-Because gRPC is cross-language, it is easy to implement clients for other programming languages.
+Because gRPC works across languages, it is easy to implement clients for other programming languages.
 
 You can find the protocol buffer definition [here][3].
 
