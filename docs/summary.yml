@@ -18,6 +18,7 @@
   - reading-writing-data
   - table-management
   - coprocessor-and-scripting
+  - use-promql
   - java-sdk
   - cli-repl
   - Supported-Protocols:
