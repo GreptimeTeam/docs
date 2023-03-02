@@ -4,10 +4,10 @@ We think the python coprocessor in GreptimeDB is a perfect replacement for store
 
 * [Hello, world](./python-coprocessor/hello.md)
 * [Coprocessor](./python-coprocessor/coprocessor.md)
-* [Input and Output](./python-coprocessor/io.md)
 * [Vector](./python-coprocessor/vector.md)
+* [Input and Output](./python-coprocessor/io.md)
 * [Query Data](./python-coprocessor/query-data.md)
 * [Insert Data](./python-coprocessor/insert-data.md)
-* [Builtin Module](./python-coprocessor/builtin.md)
+* [Builtin Module](./python-coprocessor/builtins.md)
 * [Third-parties Libs](./python-coprocessor/third-parties.md)
 * [FAQ](./python-coprocessor/faq.md)

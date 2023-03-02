@@ -1,43 +1,124 @@
-`vector` is the major datatypes in Coprocessor, it's a vector of values of the same type. Usually it come from extract a column from `RecordBatch`, but you can also construct it from inside python script.
-## Supported operations
-basic arthtmetic operations are supported, including `+`, `-`, `*`, `/`.
+# Vector
 
-basic logic operation `and`, `or`, `not`.
+The vector is the major data type in Coprocessor, it's a vector of values in the same type. Usually, it comes from extracting a column from the query result, but you can also construct it in the python script.
+The vector is like the array type in the programming language, `Array` in Apache [Arrow](https://arrow.apache.org/) or `NDArray` in [NumPy](https://numpy.org/doc/stable/reference/arrays.html).
 
-Basic comparsion operation `>`, `<`, `>=`, `<=`, `==`, `!=`.
+## Vector Types
+The Coprocessor Engine supports the following vector types:
 
-this means for example, you can write a coprocessor function like this(This return a `vector([3.0])`):
+|  Type | Description  | 
+|---|---|
+| `vector[str]`  |  The sting  type |
+| `vector[bool]` | The boolean type |
+|  `vector[u8]`|  The 8-bit unsigned integer type |
+|  `vector[u16]` | The 16-bit unsigned integer  type |
+|  `vector[u32]`|  The 32-bit unsigned integer type |
+|  `vector[u64]` |  The 64-bit unsigned integer type |
+|  `vector[i8]` | The 8-bit signed integer type |
+|  `vector[i16]` | The 16-bit signed integer type |
+|  `vector[i32]` |  The 32-bit signed integer type |
+|  `vector[i64]` | The 64-bit signed integer type |
+|  `vector[f32]` | The 32-bit floating point type |
+|  `vector[f64]` | The 64-bit floating point type |
+|  `vector[none]` | The any type  |
+
+As we see in [Hello, world](./hello.md), we can define the return vector types for the coprocessor if we want to use it as SQL UDF. Otherwise, we can ignore the return vector types declaration:
+
 ```python
-@copr(returns=["value"])
-def fun() -> (vector[f64]):
-    return 1 + 2
+@coprocessor(returns=['msg'])
+def hello():
+   return "hello, GreptimeDB"
 ```
-Or create vector with `vector` function:
+
+The Coprocessor Engine will infer the return vector types by the result. But without the declaration, we can't call it in SQL except by HTTP API.
+
+## Construct a vector
+
+We have already seen the example that extracting vectors from the query result by executing the `sql` attribute in `@coprocessor` in [Coprocessor](./coprocessor.md).
+
+We can create a vector from literals:
 ```python
 @copr(returns=["value"])
-def fun() -> (vector[f64]):
-    return vector([1.0, 2, 3])
+def answer() -> vector[i64]:
+    return 42
 ```
-Or do comparsion with bool array in a numpy manner:
+The result `42` will be wrapped as a one-element vector of `vector[i64]`.
+
+```sql
+mysql> select answer();
++----------+
+| answer() |
++----------+
+|       42 |
++----------+
+1 row in set (0.01 sec)
+```
+
+We can create a vector from a python list:
 ```python
+from greptime import vector
+
 @copr(returns=["value"])
-def fun() -> (vector[bool]):
+def answer() -> (vector[i64]):
+    return vector([42, 43, 44])
+```
+The `greptime` is a built-in module, please refer to [Builtin Modules](./builtins.md).
+In fact, the `vector` function can create a vector from any iterable object in python. But it requires all the element types must be the same, and it chooses the first element's type as its vector type.
+
+## Vector operations
+The vector supports a lot of operations:
+1. Basic arithmetic operators are supported, including `+`, `-`, `*`, `/`.
+2. Basic logic operations are supported, including `and`, `or`, `not`.
+3. Basic comparsion operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
+
+For example, you can plus two vectors directly:
+
+```python
+@copr(args=["n1", "n2"],
+      returns=["value"],
+      sql="select number as n1,number as n2 from numbers limit 5")
+def add_vectors(n1, n2) -> vector[i32]:
+    return n1 + n2
+```
+
+Or do a comparison with a bool array in a Numpy way:
+```python
+from greptime import vector
+
+@copr(returns=["value"])
+def compare() -> vector[bool]:
     # This returns a vector([False, False, True])
-    return vector([1.0, 2, 3]) > 2
+    return vector([1.0, 2.0, 3.0]) > 2.0
 ```
-Compare between two vectors is also supported:
+
+Comparison between two vectors is also supported:
 ```python
+from greptime import vector
+
 @copr(returns=["value"])
-def fun() -> (vector[bool]):
+def compare_vectors() -> vector[bool]:
     # This returns a vector([False, False, True])
-    return vector([1.0, 2, 3]) > vector([1.0, 2, 2])
+    return vector([1.0, 2.0, 3.0]) > vector([1.0, 2.0, 2.0])
 ```
-Using indexed bool array to select elements from a vector is also supported:
+
+Using an indexed bool array to select elements from a vector:
 ```python
+from greptime import vector
+
 @copr(returns=["value"])
-def fun() -> (vector[f64]):
-    a = vector([1.0, 2, 3])
-    a[a>2] = 0
-    # This returns a vector([1.0, 2.0, 0.0])
-    return a
+def select_elements() -> (vector[f64]):
+    a = vector([1.0, 2.0, 3.0])
+    # This returns a vector([2.0, 3.0])
+    return a[a>=2.0]
+```
+
+Of course, we can use list comprehension to construct a new vector:
+```python
+from greptime import vector
+
+@copr(returns=["value"])
+def list_comprehension() -> (vector[f64]):
+    a = vector([1.0, 2.0, 3.0])
+    # This returns a vector([3.0, 4.0])
+    return [x+1 for x in a if a >= 2.0]
 ```
