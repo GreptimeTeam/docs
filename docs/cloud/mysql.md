@@ -11,7 +11,7 @@ MySQL protocol.
 Connect to GreptimeCloud service instance using `mysql` CLI.
 
 ```
-mysql --ssl-mode=REQUIRED -u <user> -p -h <host> -P 4002 -A <dbname>
+mysql --ssl-mode=REQUIRED -u <username> -p -h <host> -P 4002 -A <dbname>
 ```
 
 ## MariaDB CLI
@@ -19,5 +19,5 @@ mysql --ssl-mode=REQUIRED -u <user> -p -h <host> -P 4002 -A <dbname>
 MariaDB's CLI has slightly different `ssl` option with original MySQL
 
 ```
-mysql --ssl -u <user> -p -h <host> -P 4002 -A <dbname>
+mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 ```

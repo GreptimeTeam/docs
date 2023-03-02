@@ -9,6 +9,6 @@ Add this `remote_write` section to your prometheus configuration.
 remote_write:
   - url: https://<host>:4000/v1/prometheus/write?db=<dbname>
     basic_auth:
-      username: <user>
+      username: <username>
       passowrd: #paste your service password
 ```
