@@ -17,6 +17,7 @@
   - concepts
   - reading-writing-data
   - table-management
+  - python-coprocessor
   - coprocessor-and-scripting
   - use-promql
   - java-sdk
