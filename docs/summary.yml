@@ -18,7 +18,9 @@
   - reading-writing-data
   - table-management
   - coprocessor-and-scripting
+  - use-promql
   - java-sdk
+  - cli-repl
   - Supported-Protocols:
     - overview
     - http-api
@@ -45,11 +47,13 @@
   - Meta:
     - overview
     - dist-lock
+    - selector
   - Tests:
     - overview
     - unit-test
     - integration-test
     - sqlness-test
+  - how-to-write-sdk
 - Reference:
   - command-lines
   - configuration

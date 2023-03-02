@@ -9,6 +9,7 @@ The GreptimeDB dashboard is a web console based on HTTP API.
 Available API:
 
 - `/sql`
+- `/promql`
 - `/scripts` and `/run-script`
 - `/opentsdb` to support OpenTSDB protocol
 - `/influxdb` to support InfluxDB line protocol
@@ -149,6 +150,12 @@ Query data:
   "execution_time_ms": 7
 }
 ```
+
+## `/promql`
+
+`/promql` executes PromQL statements and returns corresponding results. For more information about PromQL, please refer to the [PromQL reference document](https://prometheus.io/docs/prometheus/latest/querying/basics/).
+
+You can find details of the interface in the [Use-PromQL](../use-promql.md) document.
 
 ## `/scripts` and `/run-script`
 
@@ -292,7 +299,7 @@ UI at `http://localhost:4000/v1/private/docs` for convenience.
 ## Result codes table
 
 | Code | Description                                         |
-|:-----|:----------------------------------------------------|
+| :--- | :-------------------------------------------------- |
 | 0    | success                                             |
 | 1000 | Unknown error                                       |
 | 1001 | Unsupported operation                               |
