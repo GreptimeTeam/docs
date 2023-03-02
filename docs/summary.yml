@@ -46,6 +46,7 @@
     - python-coprocessor
   - Meta:
     - overview
+    - admin-api
     - dist-lock
     - selector
   - Tests:
