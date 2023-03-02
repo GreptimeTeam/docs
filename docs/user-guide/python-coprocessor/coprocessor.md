@@ -2,12 +2,18 @@ The `@coprocesssor` annotation specifies a python function as a coprocessor in G
 
 The engine allows one and only one function annotated with `@coprocesssor`. We can't have more than one coprocessor in one script.
 
-The annotation has three attributes:
-* `sql`: a SQL string that queries data from the database while executing the coprocessor.
-* `args`:  a string list that specifies the columns extracted from the query result queried by the `sql` attribute.
-* `returns`: a string list specifying the coprocessor's return columns. The Coprocessor Engine uses it to generate the output schema.
+| Parameter | Description | Example |
+| --- | --- | --- |
+| `sql` | Optional parameters. The SQL statement that the coprocessor function will execute that queries data from the database and assign it to input `args`, only useful if you are running this Coprocessor on a table.  | `@copr(sql="select * from cpu", ..)` |
+| `args` | Optional. The columns that the coprocessor function will take as input. | `@copr(args=["cpu", "mem"], ..)` |
+| `returns` | The columns that the coprocessor function will return. The Coprocessor Engine uses it to generate the output schema. | `@copr(returns=["add", "sub", "mul", "div"], ..)` |
+| `backend` | Optional parameters. The backend that the coprocessor function will execute on available options are `rspy` and `pyo3` which corresponding to `RustPython` Backend and `CPython` Backend. Default to use `RustPython` Backend  | `@copr(backend="rspy", ..)` |
 
-Both `sql` and `args` are optional; they must be provided together or both not. The `returns` is required for every coprocessor because the output schema is necessary.
+Both `sql` and `args` are optional; they must be provided together or both not.
+
+The `returns` is required for every coprocessor because the output schema is necessary. 
+
+`backend` is optional because `RustPython` can't support C API and you might want to use `pyo3` backend to use third-party python libraries that only support C API.
 
 # Post-Query Processing
 The coprocessor is helpful when processing a query result before it returns to the user.
