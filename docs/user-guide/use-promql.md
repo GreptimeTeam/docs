@@ -1,4 +1,4 @@
-# Java SDK
+# Use PromQL
 
 ## Introduction
 
