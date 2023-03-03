@@ -1,4 +1,4 @@
-The `CREATE` keyword creates new databases or tables.
+`CREATE` is used to create new databases or tables.
 
 # CREATE DATABASE
 ## Syntax
@@ -7,9 +7,10 @@ Creates a new database:
 CREATE DATABASE [IF NOT EXISTS] db_name
 ```
 
-If  the `db_name` database already exists, GreptimeDB does not create a new database and:
+If the `db_name` database already exists, then GreptimeDB has the following behaviours:
+* Doesn't create a new database.
 * Doesn't return an error when the clause `IF NOT EXISTS` is presented.
-* Otherwise, return an error.
+* Otherwise, returns an error.
 
 ## Examples
 
@@ -29,7 +30,7 @@ CREATE DATABASE IF NOT EXISTS test;
 # CREATE TABLE
 
 ## Syntax
-Creates a new table in the `db` database or the current database if `db` is not presented:
+Creates a new table in the `db` database or the current database in-use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
@@ -48,25 +49,25 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ]
 ```
 
-The table schema is specified by the brackets following the `engine` engine. The table schema is a list of column definitions and table constraints.
-A column definition includes the column `name` and its `type,` then follows the column options such as nullable and default value etc. Please see below.
+The table schema is specified by the brackets following the `engine`. The table schema is a list of column definitions and table constraints.
+A column definition includes the column `name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints
-The table constraints contain the following:
-*  `TIME INDEX` to specify the time index column. And it always has one and only one column.
-*  `PRIMARY KEY` to specify the table's primary key column. And it can't include the time index column but always implicitly add the time index column to the end of keys.
+The table constraints contain the followings:
+*  `TIME INDEX`  specifies the time index column. And it always has one and only one column.
+*  `PRIMARY KEY` specifies the table's primary key column. And it can't include the time index column but always implicitly add the time index column to the end of keys.
 
-The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented,otherwise returns an error.
+The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
 
 ### Table options
-After the keyword `WITH` is a list of the table options. The valid options contain the following:
+Users can add table options by using `WITH`. The valid options contain the followings:
 
 | Option  | Description  | Value |
 |---|---|---|
 | ttl  | The storage time of the table data  |   String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. |
 |  regions | The region number of the table  | Integral value, such as 1, 5, 10 etc. |
 
-For example, creates a table whose storage type is seven days and whose region number is 10:
+For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
@@ -76,7 +77,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 ### Column options
 
-The GreptimeDB supports the following column options:
+GreptimeDB supports the following column options:
 
 | Option  | Description |
 |---|---|

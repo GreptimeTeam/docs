@@ -1,20 +1,18 @@
 # COPY TO
-The command `COPY TO` used to export the contents of a table to a file.
+`COPY TO` is used to export the contents of a table to a file.
+
 The syntax for using `COPY TO` is as follows:
 
 ```sql
 COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 ```
 
-The command starts with the keyword `COPY`, followed by the name of the table you want to export data
-from (tbl in this case). The `TO` keyword specifies the file path and filename to save the exported
-data to ('/xxx/xxx/output.parquet' in this case). The `WITH` keyword is used to provide options for
-the export process, such as the file format.
+The command starts with the keyword `COPY`, followed by the name of the table you want to export data from (`tbl` in this case). 
 
-The `FORMAT` option is used to specify the file format to use for the export. In this case, the format
-is set to Parquet, which is a columnar storage format used for big data processing. Parquet is designed
-to provide efficient compression and encoding of columnar data, making it well-suited for big data
-analytics workloads.
+`TO` specifies the file path and name to save the exported
+data (`/xxx/xxx/output.parquet` in this case). 
+
+`WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics. 
 
 # COPY FROM
 // TODO

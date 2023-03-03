@@ -1,4 +1,4 @@
-The keyword `ALERT` modifies table settings or data:
+`ALERT` can be used to modify any table settings or data within the table:
 * Add/Drop a column
 * Rename a table
 

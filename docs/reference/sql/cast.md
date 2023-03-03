@@ -1,4 +1,4 @@
-The `CAST` is used to convert an expression of one data type to another. 
+`CAST` is used to convert an expression of one data type to another. 
 
 # Syntax
 
@@ -8,8 +8,8 @@ CAST (expression AS data_type)
 
 # Parameters:
 
- - expression: The expression to be converted.
- - data_type: The data type to convert the expression to.
+ - expression: the expression to be converted.
+ - data_type: the data type to convert the expression to.
 
  # Examples
 

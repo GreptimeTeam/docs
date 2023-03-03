@@ -1,4 +1,4 @@
-The `DESCRIBE TABLE [db.]table` describes the table structure in the `db` or the current database when `db` is not specified.
+`DESCRIBE TABLE [db.]table` describes the table structure in the `db` or the current database in-use.
 
 ## Examples
 Describes the table `monitor`:
@@ -17,10 +17,10 @@ DESCRIBE TABLE monitor;
 4 rows in set (0.00 sec)
 ```
 
-It outputs the table structure:
+It produces the table structure:
 
-* `Field` : the column names.
-* `Type`: the column types.
-* `Null`:  `yes` means nullable, otherwise `no`.
-* `Default`: the column default values.
-* `Semantic Type`:  The semantic type of column,  such as `TAG`, `VALUE`,`TIME INDEX` or `PRIMARY KEY`.
+* `Field`: the column names
+* `Type`: the column types
+* `Null`:  `yes` means nullable, otherwise `no`
+* `Default`: default value of the column
+* `Semantic Type`:  the semantic type of column,  such as `TAG`, `VALUE`,`TIME INDEX` or `PRIMARY KEY`.
