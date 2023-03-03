@@ -113,7 +113,7 @@ ON a.idc = b.idc_id;
 ```
 
 # Grouping SELECT Statements with GROUP BY Clause
-The GROUP BY clause is used to group the rows in a SELECT statement based on one or more columns. The syntax for using GROUP BY clause is as follows:
+The `GROUP BY` clause is used to group the rows in a `SELECT` statement based on one or more columns. The syntax for using `GROUP BY` clause is as follows:
 
 ```sql
 SELECT column1, column2, ..., aggregate_function(column)
