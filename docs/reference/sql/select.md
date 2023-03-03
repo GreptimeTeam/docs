@@ -1,4 +1,4 @@
-The `SELECT` statement allows you to sepcify al list of columns and expressions to be selected from
+The `SELECT` statement allows you to specify a list of columns and expressions to be selected from
 one or more tables.
 
 # Basic SELECT Statement Syntax
