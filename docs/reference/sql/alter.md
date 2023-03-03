@@ -1,6 +1,6 @@
 The keyword `ALERT` modifies table settings or data:
 * Add/Drop Columns
-* Rename table
+* Rename a table
 
 # Syntax
 ```sql
