@@ -4,7 +4,7 @@ used to order the data in ascending or descending order based on one or more col
 
 # Syntax
 
-The basic syntax of the ORDER BY clause is as follows:
+The basic syntax of the `ORDER BY` clause is as follows:
 
 ```sql
 SELECT column1, column2, ...
