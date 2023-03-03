@@ -27,7 +27,7 @@ Consider the following table named "system_metrics":
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
 
-To retrieve the top 3 rows by memory_util, we can use the LIMIT clause:
+To retrieve the top 3 rows by `memory_util`, we can use the` LIMIT` clause:
 
 ```sql
 SELECT host, idc, memory_util
