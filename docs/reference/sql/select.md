@@ -60,7 +60,7 @@ LIMIT number_of_rows;
 Here, the number_of_rows parameter specifies the maximum number of rows to return. 
 
 ## Examples of LIMIT Clause
-Here are some examples of using the LIMIT clause:
+Here are some examples of using the `LIMIT` clause:
 
 ```sql
 -- Select the first 10 rows from the system_metrics table
