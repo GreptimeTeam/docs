@@ -6,7 +6,7 @@ The keyword `EXPLAIN` provides the execution plan of a statement.
 EXPLAIN [ANALYZE] SELECT ...
 ```
 
-The `ANALYZE` clause will cause the statement to be actually executed and measure the time spent at each plan node and the total rows it outputs etc.
+The `ANALYZE` clause will execute the statement and measure time spent at each plan node and the total rows of the output etc.
 
 # Examples
 Explains the following query:
