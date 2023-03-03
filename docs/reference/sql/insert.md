@@ -18,7 +18,7 @@ The `VALUES` keyword is followed by a list of values that correspond to the colu
 statement. The values must be in the same order as the columns.
 
 ## Examples
-Here is an example of an INSERT INTO statement that inserts a record into a table named system_metrics:
+Here is an example of an `INSERT INTO` statement that inserts a record into a table named `system_metrics`:
 
 ```sql
 INSERT INTO system_metrics (host, idc, cpu_util, memory_util, disk_util, ts)
