@@ -29,7 +29,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 The removed column can't be retrieved immediately by all subsequent queries.
 
 ## Rename table
-Rename the table:
+Renames the table:
 ```sql
 ALTER TABLE monitor RENAME monitor_new;
 ```
