@@ -12,7 +12,7 @@ VALUES (value1, value2, value3, ...);
 In the above syntax, `table_name` is the name of the table into which you want to insert data,
 and `column1`, `column2`, `column3`, etc. are the names of the columns in the table.
 You can specify the columns in the `INSERT INTO` statement if you want to insert data into specific columns.
-If you do not specify the columns, then the values will be inserted into all the columns in the table.
+If you do not specify the columns, the values will be inserted into all the columns in the table.
 
 The `VALUES` keyword is followed by a list of values that correspond to the columns in the `INSERT INTO`
 statement. The values must be in the same order as the columns.
