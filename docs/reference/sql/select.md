@@ -90,7 +90,7 @@ There are several types of `JOIN` clauses:
 - FULL OUTER JOIN: Returns all the rows from both tables.
 
 ## Examples of JOIN Clauses
-Here are some examples of using JOIN clauses:
+Here are some examples of using `JOIN` clauses:
 
 ```sql
 -- Select all rows from the system_metrics table and idc_info table where the idc_id matches
