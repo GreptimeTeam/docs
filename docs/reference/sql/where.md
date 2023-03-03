@@ -1,4 +1,4 @@
-`WHERE` clause allows to filter the data that is coming from `FROM` clause of `SELECT`.
+`WHERE` clause allows to filter the data by specifying conditions.
 
 # Syntax
 
