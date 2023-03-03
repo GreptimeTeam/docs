@@ -19,8 +19,10 @@ CAST (expression AS data_type)
  SELECT CAST('123' AS INT) ;
  ```
 
+```sql
 +-------------+
 | Utf8("123") |
 +-------------+
 |         123 |
 +-------------+
+```

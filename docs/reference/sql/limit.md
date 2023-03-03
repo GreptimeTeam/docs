@@ -17,6 +17,7 @@ negative, no rows will be returned.
 
 Consider the following table named "system_metrics":
 
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -26,6 +27,7 @@ Consider the following table named "system_metrics":
 | host1 | idc_e |     NULL |        66.7 |      40.6 | 2022-11-03 03:39:57 |
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
+```
 
 To retrieve the top 3 rows by `memory_util`, we can use the` LIMIT` clause:
 
@@ -37,7 +39,7 @@ LIMIT 3;
 ```
 
 The result of the above query would be:
-
+```sql
 +-------+-------+-------------+
 | host  | idc   | memory_util |
 +-------+-------+-------------+
@@ -45,6 +47,7 @@ The result of the above query would be:
 | host1 | idc_c |        66.8 |
 | host1 | idc_b |        66.7 |
 +-------+-------+-------------+
+```
 
 `LIMIT n, m` allows to select the m rows from the result after skipping the first n rows. The `LIMIT m OFFSET n` syntax
 is equivalent.
@@ -66,10 +69,11 @@ LIMIT 1, 2;
 ```
 
 The result of the above query would be:
-
+```sql
 +-------+-------+-------------+
 | host  | idc   | memory_util |
 +-------+-------+-------------+
 | host1 | idc_c |        66.8 |
 | host1 | idc_b |        66.7 |
 +-------+-------+-------------+
+```

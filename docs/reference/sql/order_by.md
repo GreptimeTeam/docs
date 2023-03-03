@@ -19,6 +19,7 @@ in ascending order (default), and the DESC keyword is used to sort the data in d
 
 Consider the following table named "system_metrics":
 
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -28,6 +29,8 @@ Consider the following table named "system_metrics":
 | host1 | idc_e |     NULL |        66.7 |      40.6 | 2022-11-03 03:39:57 |
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
+```sql
+
 
 To sort the data in ascending order based on the "memory_util" column, the following SQL query can be used:
 
@@ -37,7 +40,7 @@ ORDER BY memory_util ASC;
 ```
 
 The result of the above query would be:
-
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -47,6 +50,7 @@ The result of the above query would be:
 | host1 | idc_c |     50.1 |        66.8 |      40.8 | 2022-11-03 03:39:57 |
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
+```
 
 To sort the data in descending order based on the "disk_util" column, the following SQL query can be used:
 
@@ -56,7 +60,7 @@ ORDER BY disk_util DESC;
 ```
 
 The result of the above query would be:
-
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -66,3 +70,4 @@ The result of the above query would be:
 | host1 | idc_e |     NULL |        66.7 |      40.6 | 2022-11-03 03:39:57 |
 | host1 | idc_a |     11.8 |        10.3 |      10.3 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
+```

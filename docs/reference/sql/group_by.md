@@ -18,7 +18,7 @@ function is applied to each group of rows that have the same values in the speci
 # Examples
 
 Consider the following table named "system_metrics":
-
+```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -28,6 +28,7 @@ Consider the following table named "system_metrics":
 | host1 | idc_e |     NULL |        66.7 |      40.6 | 2022-11-03 03:39:57 |
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
+```
 
 To get the avg memory_util for each idc, the following SQL query can be used:
 
@@ -38,7 +39,7 @@ GROUP BY idc;
 ```
 
 The result of the above query would be:
-
+```sql
 +-------+---------------------------------+
 | idc   | AVG(system_metrics.memory_util) |
 +-------+---------------------------------+
@@ -47,3 +48,4 @@ The result of the above query would be:
 | idc_e |                            66.7 |
 | idc_a |                            40.3 |
 +-------+---------------------------------+
+```
