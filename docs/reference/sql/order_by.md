@@ -29,7 +29,7 @@ Consider the following table named "system_metrics":
 | host1 | idc_e |     NULL |        66.7 |      40.6 | 2022-11-03 03:39:57 |
 | host2 | idc_a |     80.1 |        70.3 |        90 | 2022-11-03 03:39:57 |
 +-------+-------+----------+-------------+-----------+---------------------+
-```sql
+```
 
 
 To sort the data in ascending order based on the "memory_util" column, the following SQL query can be used:
