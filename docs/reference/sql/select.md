@@ -22,7 +22,7 @@ FROM table_name;
 ```
 
 # Filtering SELECT Statements with WHERE Clause
-The WHERE clause is used to filter the results of a SELECT statement based on specified criteria. The
+The WHERE clause is used to filter the results of a `SELECT` statement based on a specified condition. The
 syntax for using WHERE clause is as follows:
 
 ```sql
