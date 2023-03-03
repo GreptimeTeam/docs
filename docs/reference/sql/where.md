@@ -1,6 +1,8 @@
+# WHERE
+
 `WHERE` clause allows to filter the data by specifying conditions.
 
-# Syntax
+## Syntax
 
 ```sql
 SELECT *
@@ -12,9 +14,9 @@ If there is a `WHERE` clause, it must contain an expression with the Boolean typ
 an expression with comparison and logical operators. Rows where this expression evaluates to false are
 excluded from further transformations or result.
 
-# Examples
+## Examples
 
-## Logical operators
+### Logical operators
 Supports `AND`, `OR` as logical operators and can assemble conditions using brackets ().
 
 ```sql
@@ -22,7 +24,7 @@ SELECT * FROM system_metrics
 WHERE idc = 'idc0' AND (host = 'host1' OR host = 'host2');
 ```
 
-## Numeric
+### Numeric
 Supports `=`, `!=`, `>`, `>=`, `<`, `<=` as comparison operators.
 
 ```sql
@@ -34,7 +36,7 @@ SELECT * FROM system_metrics WHERE cpu_util < 20.0;
 SELECT * FROM system_metrics WHERE cpu_util <= 20.0;
 ```
 
-## List search
+### List search
 Evaluates match or mismatch against a list of elements.
 
 ### List match

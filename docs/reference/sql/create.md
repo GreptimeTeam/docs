@@ -1,7 +1,9 @@
+# CREATE
+
 `CREATE` is used to create new databases or tables.
 
-# CREATE DATABASE
-## Syntax
+## CREATE DATABASE
+### Syntax
 Creates a new database:
 ```sql
 CREATE DATABASE [IF NOT EXISTS] db_name
@@ -12,7 +14,7 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 * Doesn't return an error when the clause `IF NOT EXISTS` is presented.
 * Otherwise, returns an error.
 
-## Examples
+### Examples
 
 Creates a `test` database:
 ```sql
@@ -27,9 +29,9 @@ Creates it again with `IF NOT EXISTS`:
 CREATE DATABASE IF NOT EXISTS test;
 ```
 
-# CREATE TABLE
+## CREATE TABLE
 
-## Syntax
+### Syntax
 Creates a new table in the `db` database or the current database in-use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name

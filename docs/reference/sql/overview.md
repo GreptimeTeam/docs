@@ -19,4 +19,4 @@
 * [ALTER](./sql/alter.md)
 * [EXPLAIN](./sql/explain.md)
 * [DROP TABLE](./sql/drop_table.md)
-* [ANSI Compatibility](./sql/compibility.md)
+* [ANSI Compatibility](./sql/compatibility.md)

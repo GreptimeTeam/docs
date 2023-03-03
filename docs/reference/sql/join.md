@@ -1,3 +1,5 @@
+# JOIN
+
 `JOIN` is used to combine rows from two or more tables based on a related column between them.
 It allows you to extract data from multiple tables and present it as a single result set.
 
@@ -8,7 +10,7 @@ There are several types of JOIN clauses:
 - RIGHT JOIN: Returns all the rows from the right table and the matching rows from the left table.
 - FULL OUTER JOIN: Returns all the rows from both tables.
 
-## Examples of JOIN Clauses
+## Examples
 Here are some examples of using JOIN clauses:
 
 ```sql

@@ -1,8 +1,9 @@
+# ALTER
 `ALERT` can be used to modify any table settings or data within the table:
 * Add/Drop a column
 * Rename a table
 
-# Syntax
+## Syntax
 ```sql
 ALTER TABLE [db.]table
    [ADD COLUMN name type ... 
@@ -11,8 +12,8 @@ ALTER TABLE [db.]table
    ]
 ```
 
-# Examples
-## Add column
+## Examples
+### Add column
 Adds a new column to the table:
 ```sql
 ALTER TABLE monitor ADD COLUMN load_15 double;
@@ -20,7 +21,7 @@ ALTER TABLE monitor ADD COLUMN load_15 double;
 
 Definition of column is the same as in [CREATE](./create.md).
 
-## Remove column
+### Remove column
 Removes a column from the table:
 ```sql
 ALTER TABLE monitor DROP COLUMN load_15;
@@ -28,7 +29,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 
 The removed column can't be retrieved immediately by all subsequent queries.
 
-## Rename table
+### Rename table
 Renames the table:
 ```sql
 ALTER TABLE monitor RENAME monitor_new;

@@ -1,6 +1,8 @@
+# SHOW
+
 The `SHOW` keyword provides database and table information.
 
-# Examples
+## Examples
 
 Show all databases:
 ```sql

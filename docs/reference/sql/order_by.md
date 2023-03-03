@@ -1,5 +1,6 @@
-The `ORDER BY` clause is
-used to order the data in ascending or descending order based on one or more columns in the 
+# ORDER BY
+
+The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the 
 `SELECT` statement.
 
 # Syntax

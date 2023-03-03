@@ -1,8 +1,10 @@
+# LIMIT
+
 `LIMIT` clause is used to limit the number of rows returned by a query. This clause is particularly
 useful when working with large data sets, as it allows for faster query performance by reducing the
 amount of data that needs to be processed.
 
-# Syntax
+## Syntax
 
 The basic syntax of the `LIMIT` clause is as follows:
 
@@ -12,8 +14,9 @@ FROM table_name
 LIMIT number_of_rows;
 ```
 
-The number_of_rows parameter specifies the maximum number of rows to be returned. If the value of this parameter is
-negative, no rows will be returned.
+The number_of_rows parameter specifies the maximum number of rows to be returned. If the value of this parameter is negative, no rows will be returned.
+
+## Examples
 
 Consider the following table named "system_metrics":
 

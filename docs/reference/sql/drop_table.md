@@ -1,3 +1,5 @@
+# DROP TABLE
+
 `DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.
 
 ## Examples

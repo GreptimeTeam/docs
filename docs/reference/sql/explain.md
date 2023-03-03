@@ -1,6 +1,8 @@
+# EXPLAIN
+
 `EXPLAIN` is used to provide the execution plan of a statement.
 
-# Syntax
+## Syntax
 
 ```sql
 EXPLAIN [ANALYZE] SELECT ...
@@ -8,7 +10,7 @@ EXPLAIN [ANALYZE] SELECT ...
 
 The `ANALYZE` clause will execute the statement and measure time spent at each plan node and the total rows of the output etc.
 
-# Examples
+## Examples
 Explains the following query:
 ```sql
 EXPLAIN SELECT * FROM monitor where host='host1';

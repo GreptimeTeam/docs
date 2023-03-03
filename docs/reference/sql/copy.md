@@ -1,4 +1,5 @@
 # COPY TO
+
 `COPY TO` is used to export the contents of a table to a file.
 
 The syntax for using `COPY TO` is as follows:

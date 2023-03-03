@@ -1,4 +1,6 @@
-# Datafusion Functions
+# Functions
+
+## Datafusion Functions
 Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
 functions in DataFusion. These functions include:
 
@@ -10,4 +12,4 @@ In summary, GreptimeDB supports all SQL aggregate functions and scalar functions
 use these rich built-in functions in GreptimeDB to manipulate and analyze data.
 
 # GreptimeDB Functions
-TODO @dannis
+TODO @dennis

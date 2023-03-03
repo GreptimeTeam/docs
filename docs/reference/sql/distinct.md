@@ -1,3 +1,5 @@
+# DISTINCT
+
 `SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values
 from the output of the query.
 

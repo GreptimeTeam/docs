@@ -1,4 +1,5 @@
-# Inserting data into a table
+# INSERT
+
 The `INSERT INTO` statement is used to insert one or more records into a table in the GreptimeDB.
 
 ## Syntax

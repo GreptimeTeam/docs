@@ -1,3 +1,5 @@
+# DESCRIBE TABLE
+
 `DESCRIBE TABLE [db.]table` describes the table structure in the `db` or the current database in-use.
 
 ## Examples

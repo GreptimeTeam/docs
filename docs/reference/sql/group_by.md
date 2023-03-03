@@ -1,8 +1,10 @@
+# GROUP BY
+
 The `GROUP BY` clause in SQL is used to group rows that have the same values in one or more columns.
 This clause is typically used with aggregate functions such as `COUNT`, `SUM`, `AVG`, etc., to generate
 summary reports.
 
-# Syntax
+## Syntax
 
 The basic syntax of the `GROUP BY` clause is as follows:
 
@@ -15,7 +17,7 @@ GROUP BY column1, column2, ...;
 The `GROUP BY` clause groups the result set based on the columns specified in the clause. The aggregate
 function is applied to each group of rows that have the same values in the specified columns.
 
-# Examples
+## Examples
 
 Consider the following table named "system_metrics":
 ```sql

@@ -1,12 +1,14 @@
+# CAST
+
 `CAST` is used to convert an expression of one data type to another. 
 
-# Syntax
+## Syntax
 
 ```sql
 CAST (expression AS data_type)
 ```
 
-# Parameters:
+## Parameters:
 
  - expression: the expression to be converted.
  - data_type: the data type to convert the expression to.
