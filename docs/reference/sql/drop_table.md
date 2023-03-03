@@ -1,4 +1,4 @@
-The `DROP TABLE [db.]table` drops the table in `db` or the current database when `db` is not specified.
+`DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.
 
 ## Examples
 Drop the table `test` in the current database:
@@ -8,6 +8,6 @@ DROP TABLE test;
 ```sql
 Query OK, 1 row affected (0.01 sec)
 ```
-**Note: The GreptimeDB 0.1 drops the table logically,it doesn't delete the table data actually.We will fix it ASAP.**
+**Note: GreptimeDB V0.1 drops the table at the conceptual level, without actually deleting the content of the table. We will fix it ASAP.**
 
 

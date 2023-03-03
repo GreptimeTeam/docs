@@ -15,7 +15,4 @@ FROM system_metrics
 WHERE host != 'host2';
 ```
 
-The `SELECT DISTINCT` keyword is a simple but powerful feature of GreptimeDB SQL that allows us to easily condense
-our data into a summary of unique values. It can be used on one column or multiple columns, making it very versatile
-for data analysis and reporting. Using "SELECT DISTINCT" is a great way to get an overview of the types of data
-stored in our tables.
+`SELECT DISTINCT` is a simple but powerful command of GreptimeDB SQL that allows users to easily condense the data into a summary of unique values. It can be used on one column or multiple columns, making it very versatile for data analysis and reporting. Using "SELECT DISTINCT" is a great way to get an overview of the types of data stored in the tables.

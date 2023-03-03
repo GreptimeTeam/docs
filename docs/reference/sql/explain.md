@@ -1,4 +1,4 @@
-The keyword `EXPLAIN` provides the execution plan of a statement.
+`EXPLAIN` is used to provide the execution plan of a statement.
 
 # Syntax
 
