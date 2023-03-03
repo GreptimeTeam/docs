@@ -34,4 +34,4 @@ Renames the table:
 ALTER TABLE monitor RENAME monitor_new;
 ```
 
-It just renames the table and doesn't modify the table data at all.
+This command only renames the table; it doesn't modify the data within the table.
