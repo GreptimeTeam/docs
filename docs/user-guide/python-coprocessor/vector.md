@@ -1,6 +1,7 @@
 # Vector
 
 The vector is the major data type in Coprocessor, it's a vector of values in the same type. Usually, it comes from extracting a column from the query result, but you can also construct it in the python script.
+
 The vector is like the array type in the programming language, `Array` in Apache [Arrow](https://arrow.apache.org/) or `NDArray` in [NumPy](https://numpy.org/doc/stable/reference/arrays.html).
 
 ## Vector Types
