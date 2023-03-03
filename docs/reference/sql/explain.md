@@ -25,7 +25,7 @@ EXPLAIN SELECT * FROM monitor where host='host1';
         ExecutionPlan(PlaceHolder)
 ```
 
-The `plan_type`  column indicates the plan's type:`logical_plan` or `physical_plan`.And the `plan` column explains the plan in detail.
+The column `plan_type` indicates whether it's a`logical_plan` or `physical_plan`. And the column `plan` explains the plan in detail.
 
 Explains the execution of the plan by `ANALYZE`:
 ```sql
