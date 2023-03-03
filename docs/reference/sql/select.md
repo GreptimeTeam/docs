@@ -12,7 +12,7 @@ FROM table_name;
 Here, column1, column2, etc. refer to the names of the columns from which we want to retrieve data,
 and table_name refers to the name of the table from which we want to retrieve the data.
 
-This statement selects all the columns specified in the SELECT clause from the table specified in the
+This statement selects all the columns from the table specified in the
 `FROM` clause. If you want to select all columns from the table, you can use the asterisk (*) wildcard
 character instead of listing individual columns.
 
