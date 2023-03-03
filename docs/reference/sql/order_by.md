@@ -1,4 +1,4 @@
-The `ORDER BY` clause in SQL is used to sort the result set of a SELECT statement. This clause is
+The `ORDER BY` clause is
 used to order the data in ascending or descending order based on one or more columns in the 
 `SELECT` statement.
 
