@@ -2,7 +2,7 @@ The `SELECT` statement allows you to specify a list of columns and expressions t
 one or more tables.
 
 # Basic SELECT Statement Syntax
-The basic syntax for a SELECT statement is as follows:
+The basic syntax for a `SELECT` statement is as follows:
 
 ```sql
 SELECT column1, column2, ...
