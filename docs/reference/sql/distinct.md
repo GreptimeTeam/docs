@@ -1,7 +1,7 @@
 `SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values
 from the output of the query.
 
-The basic syntax for a `SELECT DISTINCT` statement is as follows:
+The basic syntax for a `SELECT DISTINCT` statement is as followings:
 
 ```sql
 SELECT DISTINCT idc
