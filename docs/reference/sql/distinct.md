@@ -1,4 +1,4 @@
-`SELECT DISTINCT` indicates that we want to select unique values from a set of data. This keyword will filter the
+`SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values
 results of a query to only return distinct (different) values. 
 
 The basic syntax for a `SELECT DISTINCT` statement is as follows:
