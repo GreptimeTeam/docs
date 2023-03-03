@@ -37,7 +37,7 @@ SELECT * FROM system_metrics WHERE cpu_util <= 20.0;
 ## List search
 Evaluates match or mismatch against a list of elements.
 
-### List List match
+### List match
 ```sql
 SELECT * FROM system_metrics WHERE idc IN ('idc_a', 'idc_b');
 ```
