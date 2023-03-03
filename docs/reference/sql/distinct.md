@@ -1,5 +1,5 @@
 `SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values
-results of a query to only return distinct (different) values. 
+from the output of the query.
 
 The basic syntax for a `SELECT DISTINCT` statement is as follows:
 
