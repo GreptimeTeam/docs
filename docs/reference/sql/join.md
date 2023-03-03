@@ -1,5 +1,5 @@
 `JOIN` is used to combine rows from two or more tables based on a related column between them.
-This allows for the retrieval of data that is spread across multiple tables.
+It allows you to extract data from multiple tables and present it as a single result set.
 
 There are several types of JOIN clauses:
 
