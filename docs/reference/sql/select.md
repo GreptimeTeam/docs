@@ -70,7 +70,7 @@ LIMIT 10;
 ```
 
 # Joining Tables with SELECT Statements
-The JOIN clause is used to combine rows from two or more tables based on a related column between them. The syntax for using JOIN clause is as follows:
+The `JOIN` clause is used to combine rows from two or more tables based on a related column between them. The syntax for using `JOIN` clause is as follows:
 
 ```sql
 SELECT column1, column2, ...
