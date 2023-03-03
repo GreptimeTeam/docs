@@ -82,7 +82,7 @@ ON table1.column = table2.column;
 Here, the table1 and table2 are the names of the tables to be joined. The column is the related column between the two tables.
 
 ## Types of JOIN Clauses
-There are several types of JOIN clauses:
+There are several types of `JOIN` clauses:
 
 - INNER JOIN: Returns only the rows that have matching values in both tables.
 - LEFT JOIN: Returns all the rows from the left table and the matching rows from the right table.
