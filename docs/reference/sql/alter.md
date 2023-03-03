@@ -18,7 +18,7 @@ Adds a new column to the table:
 ALTER TABLE monitor ADD COLUMN load_15 double;
 ```
 
-The column definition is the same as in [CREATE](./create.md).
+Definition of column is the same as in [CREATE](./create.md).
 
 ## Remove column
 Removes a column from the table:
