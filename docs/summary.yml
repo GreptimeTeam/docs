@@ -53,7 +53,7 @@
   - command-lines
   - configuration
   - data-types
-  - sql
+  - sql:
     - overview
     - insert
     - cast
