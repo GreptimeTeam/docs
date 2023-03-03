@@ -81,7 +81,7 @@ INSERT INTO table_name (column1, column2, column3, ...)
 VALUES (value1, DEFAULT, value3, ...);
 ```
 
-The DEFAULT keyword specifies that the default value for that column should be inserted.
+The `DEFAULT` keyword specifies that the default value for that column should be inserted.
 This is useful when you do not want to explicitly specify values for some columns when inserting records.
 It allows the column's default value, as defined in the table schema, to be used instead.
 If no default value is defined for the column, the database's default value will be used (often NULL).
