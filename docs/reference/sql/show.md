@@ -1,4 +1,4 @@
-The `SHOW` keyword  provides  database and table information.
+The `SHOW` keyword provides database and table information.
 
 # Examples
 
