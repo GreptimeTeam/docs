@@ -12,7 +12,7 @@ FROM table_name
 LIMIT number_of_rows;
 ```
 
-The number_of_rows parameter specifies the maximum number of rows to return. If the value of this parameter is
+The number_of_rows parameter specifies the maximum number of rows to be returned. If the value of this parameter is
 negative, no rows will be returned.
 
 Consider the following table named "system_metrics":
