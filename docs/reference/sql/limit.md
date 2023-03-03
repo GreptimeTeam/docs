@@ -4,7 +4,7 @@ amount of data that needs to be processed.
 
 # Syntax
 
-The basic syntax of the LIMIT clause is as follows:
+The basic syntax of the `LIMIT` clause is as follows:
 
 ```sql
 SELECT column1, column2, ...
