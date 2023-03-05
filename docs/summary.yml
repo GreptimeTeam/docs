@@ -59,7 +59,28 @@
   - command-lines
   - configuration
   - data-types
-  - sql
+  - SQL:
+    - overview
+    - insert
+    - cast
+    - copy
+    - select
+    - distinct
+    - where
+    - order_by
+    - group_by
+    - limit
+    - join
+    - functions
+    - delete
+    - show
+    - tql
+    - create
+    - describe_table
+    - alter
+    - explain
+    - drop_table
+    - compatibility
   - functions
 - Changelog:
   - overview
