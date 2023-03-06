@@ -1,126 +1,92 @@
-# 2023.01.16 - 2023.02.05 – Initial Support of PromQL
+# 2023.02.06 - 2023.02.26 – Supports compaction function
 
-Feb 08, 2023 · 6 min read
+March 03, 2023 · 6 min read
 
 ## Summary
 
-Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. Below are some highlights:
-- Add load_based selector in meta
-- Support PromQL to query data natively
-- Support OSS storage
+Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress. Below are some highlights in the past three weeks:
+
+- PromQL compatible (not 100% yet, but will be soon)
+- Supports compaction function
+- Data can be exported to files in Parquet format
+- A simple REPL is provided for development debugging
+- Caching is enabled by default when using object storage
 
 Join us at [GitHub](https://github.com/GreptimeTeam/greptimedb).
 
-## Contributor list: (In alphabetical order)
+## Contributor list: (in alphabetical order)
 
-Congrats on becoming our most active contributors in the past 3 weeks:
+Our community has been super active during the past three weeks, with a total of **20 PRs from 9 contributors successfully being merged** and many more pending to be merged.
+Congrats on becoming our most active contributors from Feb 6 to Feb 26:
 
-[@Mofeng](https://github.com/DiamondMofeng)([#161][1])
+- [@Brian Crant](https://github.com/bcrant) (#184)
+- [@etolbakov](https://github.com/etolbakov) (#966, #973, #1002, #987)
+- [@hezhizhen](https://github.com/hezhizhen) (#949, #1045)
+- [@messense](https://github.com/messense) (#46)
+- [@ShenJunkun](https://github.com/ShenJunkun) (#868, #177)
+- [@WenyXu](https://github.com/WenyXu) (#980, #970, #1089, #1092)
+- [@xl Huang](https://github.com/e1ijah1) (#928, #952)
+- [@Xuanwo](https://github.com/Xuanwo) (#1067, #1057)
+- [@Yun Chen](https://github.com/masonyc) (#957)
+- [@Zheming Li](https://github.com/lizhemingi) (#995)
 
-[@xl Huang](https://github.com/e1ijah1)([#894][2], [#916][3])
+Let's welcome seven new contributors to join our community with their first PRs merged.
 
-[@Yun Chen](https://github.com/masonyc)([#911][4])
+**greptimedb**
+- [@etolbakov](https://github.com/etolbakov) made their first contribution in #966
+- [@hezhizhen](https://github.com/hezhizhen) made their first contribution in #949
+- [@WenyXu](https://github.com/WenyXu) made their first contribution in #980
+- [@ShenJunkun](https://github.com/ShenJunkun) made their first contribution in #868
 
-[@Zheming Li](https://github.com/lizhemingi)([#882][5], [#854][6])
+**promql-parser**
 
-During the past three weeks, there have been a total of 6 PRs merged, with many pending to be merged. Welcome our new contributors [@wanglei4687]() and [@Xieqijun]() onboard!
+- [@messense](https://github.com/messense) made their first contribution in #46
 
-A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together in the new year.
+**docs**
 
+- [@Brian Crant](https://github.com/bcrant) made their first contribution in #184
+- [@ShenJunkun](https://github.com/ShenJunkun) made their first contribution in #177
 
-[1]: https://github.com/GreptimeTeam/docs/pull/161
-[2]: https://github.com/GreptimeTeam/greptimedb/pull/894
-[3]: https://github.com/GreptimeTeam/greptimedb/pull/916
-[4]: https://github.com/GreptimeTeam/greptimedb/pull/911
-[5]: https://github.com/GreptimeTeam/greptimedb/pull/882
-[6]: https://github.com/GreptimeTeam/greptimedb/pull/854
-
-### Issue [#855](https://github.com/GreptimeTeam/greptimedb/issues/855) (Help Wanted)
-
-Issue description: **remove backtrace from `sql::error::Error`**
-
-Most backtraces in `sql::error::Error` are unnecessary, and they affect performance since the parser have to return them when encountering invalid SQL statements.
-
-This issue can be easily fixed by removing the "backtrace" field from those variants listed below.
-
-greptimedb/src/sql/src/error.rs: Line54-Line58
-```Rust
-UnsupportedDefaultValue {
-    column_name: String,
-    expr: Expr,
-    backtrace: Backtrace,
-},
-  ```
-
-greptimedb/src/sql/src/error.rs: Line71-Line83
-  ```Rust
-InvalidTimeIndex { sql: String, backtrace: Backtrace },
-
-#[snafu(display("Invalid SQL, error: {}", msg))]
-InvalidSql { msg: String, backtrace: Backtrace },
-
-#[snafu(display("SQL data type not supported yet: {:?}", t))]
-SqlTypeNotSupported {
-    t: crate::ast::DataType,
-    backtrace: Backtrace,
-},
-
-#[snafu(display("Failed to parse value: {}, {}", msg, backtrace))]
-ParseSqlValue { msg: String, backtrace: Backtrace },
-```
-greptimedb/src/sql/src/error.rs: Line98-Line111
-
-```Rust
-InvalidDatabaseName { name: String, backtrace: Backtrace },
-
-#[snafu(display("Invalid table name: {}", name))]
-InvalidTableName { name: String, backtrace: Backtrace },
-
-#[snafu(display("Invalid default constraint, column: {}, source: {}", column, source))]
-InvalidDefault {
-    column: String,
-    #[snafu(backtrace)]
-    source: datatypes::error::Error,
-},
-
-#[snafu(display("Unsupported ALTER TABLE statement: {}", msg))]
-UnsupportedAlterTableStatement { msg: String, backtrace: Backtrace },
-```
+A big THANK YOU for your generous and brilliant contributions! It is people like you who are making GreptimeDB better everyday. Let's build an open, transparent and warm community together.
 
 
-### Issue [#918](https://github.com/GreptimeTeam/greptimedb/issues/918) (Closed)
 
-Issue description: **Improve data retrieval speed by enabling OpenDAL's CacheLayer by default**
+## What's cooking on DB's develop branch
 
-OpenDAL has a CacheLayer reduces the need to access the underlying storage layer, thereby increasing data retrieval performance. This issue wants to build a caching mechanism by using CacheLayer.
 
-A special thanks to [@e1ijh1](https://github.com/e1ijah1) for swiftly addressing this issue. We will continue to improve our object storage caching mechanism by building upon their contribution, particularly in distributed and serverless modes.
+- [Issue #1042](https://github.com/GreptimeTeam/greptimedb/issues/1042)
 
-## Highlights of Recent PR
+GreptimeDB NOW supports PromQL for basic use cases!
 
-### What's cooking on DB's develop branch
+As the most commonly used query language in cloud-native Observability, PromQL is preliminarily supported in the latest version -- GreptimeDB v0.1, making it easier to integrate with the Prometheus ecosystem. We are constantly improving the compatibility of PromQL in GreptimeDB, and it is expected to reach 50% compatibility in v0.2 and 70% in v0.3.
 
-[#596](https://github.com/GreptimeTeam/greptimedb/issues/596)
+- [Issue #930](https://github.com/GreptimeTeam/greptimedb/issues/930)
 
-Currently, GreptimeDB only supports SQL and gRPC protocols for querying data.
+The table compaction function is enabled.
 
-However, PromQL has become an established standard query language in the field of cloud-native Observability.
+As a storage engine based on the LSM Tree architecture, compaction is essential. Currently, GreptimeDB performs compaction on SST files from various dimensions to improve storage and query efficiency.
 
-We hope to natively support PromQL in GreptimeDB and release GreptimeDB v0.1 later this month, at which time PromQL Beta version will also be ready and we encourage you to give it a try.
+- [PR #1000](https://github.com/GreptimeTeam/greptimedb/pull/1000)
 
-[#874](https://github.com/GreptimeTeam/greptimedb/pull/874)
+Users can export data to files with Parquet format.
 
-**A new load-balancing policy, CREATE TABLE (Multi Region), has been added which supports the selection of available nodes(LoadBasedSelector) based on Load.**
+Parquet is a commonly used file format in columnar storage engines, known for its ability to efficiently and flexibly handle (store, compress, and query) large datasets. By offering this feature, GreptimeDB makes it handy for users to export the data to other columnar databases.
 
-This policy can achieve a relatively more balanced load distribution compared to the default one (LeaseBasedSelector).
+- [PR #1048](https://github.com/GreptimeTeam/greptimedb/pull/1048)
 
-The selector can be specified through the start command, for example:
-```SQL
-cargo run -- metasrv start --selector LoadBased
-```
+There's a simple REPL for development and debugging purposes.
 
-[#911](https://github.com/GreptimeTeam/greptimedb/pull/911)
+Inspired by InfluxDB_IOx, GreptimeDB now offers an easy-to-use interactive interface (REPL) for developers to debug and troubleshoot any issues.
 
-**Aliyun Object Storage Services (OSS) is available**
+- [PR #928](https://github.com/GreptimeTeam/greptimedb/pull/928)
 
-GreptimeDB enables local files and Amazon S3 storage based on OpenDAL, and now OSS is also supported.
+When using S3, OSS, or other object storage methods, caching is enabled by default in GreptimeDB, greatly improving query efficiency.
+
+
+## New things
+
+- We open-sourced [PromQL parser for Rust](https://github.com/GreptimeTeam/promql-parser) with high compatibility with [Prometheus Query Language](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+
+- [GreptimeDB Go Client](https://github.com/GreptimeTeam/greptimedb-client-go) is a work-in-progress to build a GreptimeDB SDK in Go programming language.
+
+- Our team participated in the 2023 Global AI Developer Conference and delivered an open-mic speech on product features, which helped us gain attention and recognition from the developer community and other start-ups.
