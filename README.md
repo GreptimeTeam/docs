@@ -56,7 +56,7 @@ Illustartes in detail how GreptimeDB works and helps you get involved in the dev
 [8]: ./docs/user-guide/concepts.md
 [9]: ./docs/user-guide/reading-writing-data.md
 [10]: ./docs/user-guide/table-management.md
-[11]: ./docs/user-guide/python-coprocessor.md
+[11]: ./docs/user-guide/python-coprocessor/overview.md
 [12]: ./docs/user-guide/java-sdk.md
 [13]: ./docs/user-guide/supported-protocols/overview.md
 [14]: ./docs/developer-guide/overview.md

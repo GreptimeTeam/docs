@@ -1,3 +1,5 @@
+# Builtin modules and functions
+
 We provide a wide range of built-in functions for users to use. The following is a list of built-in functions. Simply write `import greptime` or `from greptime import *` at the beginning of your script to use them.
 # Vector functions
 | Function | Description |

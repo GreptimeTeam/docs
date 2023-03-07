@@ -35,6 +35,4 @@ scraped every 5 seconds.
 | disk\_util   | double    | The percent use of disks               |
 | ts           | timestamp | Timestamp column incrementing          |
 
-## TODO
-
-- Link to sql reference and time-series table concept
+Please refer to [CREATE](/reference/sql/create.md) for more information.
