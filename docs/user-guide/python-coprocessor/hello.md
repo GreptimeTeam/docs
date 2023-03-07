@@ -15,15 +15,15 @@ curl  --data-binary "@hello.py" -XPOST "http://localhost:4000/v1/scripts?name=he
 
 Then call it in SQL:
 ```sql
-select hello() as msg;
+select hello();
 ```
 ```sql
 +-------------------+
-| msg               |
+| hello()           |
 +-------------------+
-| Hello, GreptimeDB |
+| hello, GreptimeDB |
 +-------------------+
-1 row in set (0.01 sec)
+1 row in set (1.77 sec)
 ```
 
 Or call it by  [HTTP API](../supported-protocols/http-api#scripts-and-run-script):
@@ -69,9 +69,9 @@ The `returns` in `@coprocessor`  specifies the return column names by the coproc
         }
 ```
                
-The  `-> vector[str]` part after the argument list specifies the return types of the function. They are always vectors with concrete types. The return types are optional; the Coprocessor Engine can infer them. **But If you want to call the coprocessor in SQL, you must always specify them.**
+The  `-> vector[str]` part after the argument list specifies the return types of the function. They are always vectors with concrete types. The return types are required to generate the output of the coprocessor function.
 
-The function body of `hello` returns a literal string: `"Hello, GreptimeDB"`.The Coprocessor engine will cast it into a  vector of constant string and return it.
+The function body of `hello` returns a literal string: `"Hello, GreptimeDB"`.The Coprocessor engine will cast it into a vector of constant string and return it.
 
 A coprocessor contains three main parts in summary:
 * The `@coprocessor` annotation.

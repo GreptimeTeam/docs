@@ -27,7 +27,7 @@ As we see in [Hello, world](./hello.md), we can define the return vector types f
 
 ```python
 @coprocessor(returns=['msg'])
-def hello():
+def hello() -> vector[str]:
    return "hello, GreptimeDB"
 ```
 
@@ -60,7 +60,7 @@ We can create a vector from a python list:
 from greptime import vector
 
 @copr(returns=["value"])
-def answer() -> (vector[i64]):
+def answer() -> vector[i64]:
     return vector([42, 43, 44])
 ```
 The `greptime` is a built-in module, please refer to [Builtin Modules](./builtins.md).
@@ -73,8 +73,8 @@ The vector supports a lot of operations:
 3. Basic comparison operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
 
 
-> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operation, because Python doesn't support logical operation override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operator have higher precedence than comparison operator, so remember to use a pair of parentheses to make sure the logical operation is what you want.
-i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. Later one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
+> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operation, because Python doesn't support logical operation override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operators have higher precedence than comparison operators, so remember to use a pair of parentheses to make sure the logical operation is what you want.
+> i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. Later one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
 
 
 For example, you can plus two vectors directly:
@@ -95,6 +95,17 @@ from greptime import vector
 def compare() -> vector[bool]:
     # This returns a vector([False, False, True])
     return vector([1.0, 2.0, 3.0]) > 2.0
+```
+
+And using the boolean array indexing:
+```python
+from greptime import vector
+
+@copr(returns=["value"])
+def boolean_array() -> vector[f64]:
+    v = vector([1.0, 2.0, 3.0])
+    # This returns a vector([2.0])
+    return v[(v > 1) & (v< 3)]
 ```
 
 Comparison between two vectors is also supported:
