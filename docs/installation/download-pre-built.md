@@ -19,8 +19,7 @@ curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/script
 ## Docker
 
 ```shell
-docker pull greptime/greptimedb
-docker run -p 4002:4002 -v "$(pwd):/tmp/greptimedb" greptime/greptimedb standalone start
+docker run -p 4000-4004:4000-4004 -p 4242:4242 -v "greptime-vol:/tmp/greptimedb" --name greptime --rm greptime/greptimedb standalone start
 ```
 
 ## Next Steps
