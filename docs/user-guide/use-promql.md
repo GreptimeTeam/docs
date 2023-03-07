@@ -39,7 +39,7 @@ GreptimeDB also extends SQL grammar to support PromQL. You can start with the `T
 TQL [EVAL|EVALUATE] (<START>, <END>, <STEP>) <QUERY>
 ```
 
-`<START>` specifies the query start range and `<END>` specifies the end time. `<STEP>` indentifies the query resolution step width. All of them can either be an unquoted number (represent UNIX timestamp for `<START>` and `<END>`, and duration in seconds for `<STEP>`), or a quoted string (represent an RFC3339 timestamp for `<START>` and `<END>`, and duration in string format for `<STEP>`).
+`<START>` specifies the query start range and `<END>` specifies the end time. `<STEP>` identifies the query resolution step width. All of them can either be an unquoted number (represent UNIX timestamp for `<START>` and `<END>`, and duration in seconds for `<STEP>`), or a quoted string (represent an RFC3339 timestamp for `<START>` and `<END>`, and duration in string format for `<STEP>`).
 
 For example:
 

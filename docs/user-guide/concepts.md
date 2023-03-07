@@ -10,7 +10,7 @@ years. Based on their best-practices, GreptimeDB is born to bring you:
 
 - [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases)
   that scales to highly-available distributed cluster, providing a transparent
-  expierence for cluster users
+  experience for cluster users
 - Optimized columnar layout for handling time-series data; compacted,
   compressed, stored on various storage backends
 - Flexible index options, tackling high cardinality issues down

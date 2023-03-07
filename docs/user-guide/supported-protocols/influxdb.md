@@ -16,7 +16,7 @@ The http endpoint in GreptimeDB for handling metrics is `/influxdb/write`.
 
 > Note: remember to prefix the path with GreptimeDB's http API version, `v1`
 
-## Create a databse
+## Create a database
 
 ```sql
 CREATE DATABASE influxdb;

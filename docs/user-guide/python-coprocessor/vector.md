@@ -69,10 +69,10 @@ In fact, the `vector` function can create a vector from any iterable object in p
 The vector supports a lot of operations:
 1. Basic arithmetic operators are supported, including `+`, `-`, `*`, `/`.
 2. Basic logic operations are supported, including `&`, `|`, `~`.
-3. Basic comparsion operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
+3. Basic comparison operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
 
 
-> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operation, because Python doesn't support logical operation override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise opeartor have higher precedence than comparison operator, so remember to use a pair of parentheses to make sure the logical operation is what you want.
+> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operation, because Python doesn't support logical operation override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operator have higher precedence than comparison operator, so remember to use a pair of parentheses to make sure the logical operation is what you want.
 i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. Later one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
 
 

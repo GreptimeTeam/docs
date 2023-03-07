@@ -54,4 +54,4 @@ cargo test --workspace
 
 ## Docker
 
-We also provide pre-build binary via Docker. It's which is avaliable in dockerhub: <https://hub.docker.com/r/greptime/greptimedb>
+We also provide pre-build binary via Docker. It's which is available in dockerhub: <https://hub.docker.com/r/greptime/greptimedb>

@@ -34,7 +34,7 @@ For example, `string` values are encoded into UTF-8. If all characters are 3-byt
 ### Choose the data type for timestamp column
 
 GreptimeDB allows user to choose `bigint` or `timestamp` for timestamp index column. 
-Both `bigint` and `timestamp` are intepreted as timestamp in millisecond precision. 
+Both `bigint` and `timestamp` are interpreted as timestamp in millisecond precision. 
 
 ```SQL
 # using TIMESTAMP as timestamp column data type
