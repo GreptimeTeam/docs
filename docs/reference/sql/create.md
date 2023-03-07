@@ -66,9 +66,9 @@ Users can add table options by using `WITH`. The valid options contain the follo
 
 | Option  | Description  | Value |
 |---|---|---|
-| `ttl`  | The storage time of the table data  |   String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. |
+| `ttl`  | The storage time of the table data  |   String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d` |
 |  `regions` | The region number of the table  | Integral value, such as 1, 5, 10 etc. |
-| `write_buffer_size` | Memtable size of the table | String value representing a valid size, such as `32MB`, `128MB`, etc. The default value of this option is `32MB`. |
+| `write_buffer_size` | Memtable size of the table | String value representing a valid size, such as `32MB`, `128MB`, etc. The default value of this option is `32MB`. Supported units are: `MB` / `GB`. |
 
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
 ```sql
