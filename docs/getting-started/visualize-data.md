@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Visualization is a very important part of the use of time series data.
+Visualization plays a crucial role in effectively utilizing time series data.
 
 Greptime provides a simple [dashboard](https://github.com/GreptimeTeam/dashboard) to help users take advantage of GreptimeDB's various features.
 
