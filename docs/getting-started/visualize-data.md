@@ -16,4 +16,4 @@ We offer various chart types to choose from based on different scenarios.
 ![line](../public/dashboard-line.jpg)
 ![scatter](../public/dashboard-scatter.jpg)
 
-We will continue to develop and iterate this open source project, and will increase the application of time series data in monitoring, analysis and other fields in the future.
+We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
