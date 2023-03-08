@@ -4,7 +4,7 @@
 
 Visualization plays a crucial role in effectively utilizing time series data.
 
-Greptime provides a simple [dashboard](https://github.com/GreptimeTeam/dashboard) to help users take advantage of GreptimeDB's various features.
+To help users leverage the various features of GreptimeDB, Greptime offers a simple [dashboard](https://github.com/GreptimeTeam/dashboard).
 
 The current version of the dashboard supports MySQL and Python queries, with support for PromQL coming soon. Please stay tuned for updates.
 
