@@ -11,7 +11,7 @@ The current version of the dashboard supports MySQL and Python queries, with sup
 ![](../public/dashboard-select.jpg)
 
 
-For different scenarios, we provide different chart types to choose from.
+We offer various chart types to choose from based on different scenarios.
 
 ![line](../public/dashboard-line.jpg)
 ![scatter](../public/dashboard-scatter.jpg)
