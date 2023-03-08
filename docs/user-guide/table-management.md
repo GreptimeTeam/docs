@@ -88,6 +88,7 @@ data type for the time-series column, the inserted value of that column will be
 automatically converted to a timestamp in milliseconds.
 - Primary key: primary key is used to uniquely define a series of data, which is similar
 to tags in other time-series systems like [InfluxDB][1].
+- Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
