@@ -59,7 +59,7 @@ As you can see, MetaSrv has a dependency on distributed consensus because:
 
 1. First, MetaSrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single meta node to receive heartbeats, which makes it easy to do some calculations or scheduling accurately and quickly based on global information. As for how the Datanode connects to the leader, this is for MetaClient to decide (using a redirect, Heartbeat requests becomes a gRPC stream, and using redirect will be less error-prone than forwarding), and it is transparent to the Datanode.
 2. Second, MetaSrv must provide an election API for Datanode to elect "write" and "read-only" nodes and help Datanode achieve high availability.
-3. Finally, `Metadata`, `Schema` and other data also need to be stored on MetaSrv reliably and consistently, and consensus-based algorithms is a better way to store them.
+3. Finally, `Metadata`, `Schema` and other data must be reliably and consistently stored on MetaSrv. Therefore, consensus-based algorithms are the ideal approach for storing them.
 
 For the first version of MetaSrv, we choose Etcd as the consensus algorithm component (MetaSrv is designed to consider adapting different implementations and even creating a new wheel) for the following reasons:
 
