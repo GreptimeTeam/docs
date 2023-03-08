@@ -37,7 +37,7 @@ We provide a wide range of built-in functions for users to use. The following is
 | `log10(v)` | Calculate the base-10 logarithm of a number `v`. |
 
 # Utility functions & Aggregation functions
-These Functions are bind from `DataFusion`
+These Functions are bound from `DataFusion`
 | Function | Description |
 | :--- | :--- |
 | `random(len)` | Generate a random vector with length `len`. |
