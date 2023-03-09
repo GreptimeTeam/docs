@@ -10,7 +10,7 @@ def func()->vector[f64]:
     return query.sql("select value from table")[0][0]
 ```
 
-2. through DataFrame API: By using `dataframe` API, you can easily query data and do some data analysis. By default `dataframe` holds a DataFrame that's convert from current coprocessor's input data(`RecordBatch`). You can also use `dataframe.from_sql(..)` to query data from database, [but this feature is only availableafter this PR got merged](https://github.com/GreptimeTeam/greptimedb/pull/1036).
+2. through DataFrame API: By using `dataframe` API, you can easily query data and do some data analysis. By default `dataframe` holds a DataFrame that's converted from the current coprocessor's input data(`RecordBatch`). You can also use `dataframe.from_sql(..)` to query data from the database, [but this feature is only available after this PR got merged](https://github.com/GreptimeTeam/greptimedb/pull/1036).
 For example:
 ```python
 @copr(returns=["value"])
