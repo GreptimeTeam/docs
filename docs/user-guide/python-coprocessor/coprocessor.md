@@ -51,7 +51,7 @@ The `normalize0` function behaves as described above. And the `normalize` functi
 
 The ` -> vector[i64]` part specifies the return column types for generating the output schema.
 
-This example also demos how to import the stdlib and define other functions(the `normalize0`) for invoking.
+This example also shows how to import the stdlib and define other functions(the `normalize0`) for invoking.
 The `normalize` coprocessor will be called in streaming. The query result may contain several batches, and the engine will call the coprocessor with each batch.
 And we should remember that the columns extracted from the query result are all vectors. We will cover vectors in the next chapter.
 
