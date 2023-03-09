@@ -55,7 +55,7 @@
     - integration-test
     - sqlness-test
   - How-To:
-    how-to-write-sdk
+    - how-to-write-sdk
 - Reference:
   - command-lines
   - configuration
