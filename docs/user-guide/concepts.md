@@ -74,20 +74,7 @@ Data in GreptimeDB is strongly typed. Auto-schema feature provides some
 flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
-Currently, we have these data types built-in:
-
-- Boolean
-- Integers (8-bit, 16-bit, 32-bit and 64-bit)
-- Unsigned integers (8-bit, 16-bit, 32-bit and 64-bit)
-- Float numbers (32-bit and 64-bit)
-- Bytes
-- String
-- Date, datetime and timestamp
-
-There are new types in upcoming releases:
-
-- Compound type like List
-- Geometry
+Find all the supported data types in [Data Types](../reference/data-types.md).
 
 ## APIs
 

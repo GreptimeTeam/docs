@@ -1,6 +1,6 @@
-# Distributed Getting Start
+# Setup a cluster
 
-This guide shows how to manually build and start a distributed GreptimeDB locally.
+This guide shows how to manually build and start a distributed GreptimeDB cluster locally.
 
 ## Built From Source
 
@@ -10,7 +10,11 @@ This guide shows how to manually build and start a distributed GreptimeDB locall
     git clone https://github.com/GreptimeTeam/greptimedb.git
     ```
 
-2. Start [`etcd`](https://etcd.io/docs/v3.5/quickstart/). `etcd` is the default backend for `Meta`.
+2. [Etcd](https://etcd.io/) is the default backend for `Meta`. Start [`etcd`](https://etcd.io/docs/v3.5/quickstart/). 
+
+    ```shell
+    etcd --data-dir /tmp/etcd/data --wal-dir /tmp/etcd/wal
+    ```
 
 3. Start one `Meta` instance.
 
