@@ -1,7 +1,7 @@
 # Query data
 
 We provide two way for you to easily query data:
-1. through plain SQL by write `query.sql(..)` :this returns a list[list [ PyVector ] ] that's convert from query result.
+1. through plain SQL by writing `query.sql(..)` :this returns a `list[list [ PyVector ] ]` which represents the converted query results.
 For example:
 ```python
 @copr(returns=["value"])
