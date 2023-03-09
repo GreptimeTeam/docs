@@ -12,9 +12,9 @@ This guide shows how to manually build and start a distributed GreptimeDB cluste
 
 2. [Etcd](https://etcd.io/) is the default backend for `Meta`. Start [`etcd`](https://etcd.io/docs/v3.5/quickstart/). 
 
-```sh
-etcd --data-dir /tmp/etcd/data --wal-dir /tmp/etcd/wal
-```
+    ```shell
+    etcd --data-dir /tmp/etcd/data --wal-dir /tmp/etcd/wal
+    ```
 
 3. Start one `Meta` instance.
 
