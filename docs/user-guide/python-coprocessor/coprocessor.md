@@ -11,7 +11,7 @@ The engine allows one and only one function annotated with `@coprocesssor`. We c
 | `returns` | The column names that the coprocessor function will return. The Coprocessor Engine uses it to generate the output schema. | `@copr(returns=["add", "sub", "mul", "div"], ..)` |
 | `backend` | Optional. The coprocessor function will run on available engines like `rspy` and `pyo3`, which are associated with `RustPython` Backend and `CPython` Backend respectively. The default engine is set to `rspy`.  | `@copr(backend="rspy", ..)` |
 
-Both `sql` and `args` are optional; they must be provided together or both not. They are usually used in post-query processing. Please read below.
+Both `sql` and `args` are optional; they must either be provided together or not at all. They are usually used in post-query processing. Please read below.
 
 The `returns` is required for every coprocessor because the output schema is necessary. 
 
