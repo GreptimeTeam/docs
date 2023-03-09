@@ -21,7 +21,7 @@ select hello();
 +-------------------+
 | hello()           |
 +-------------------+
-| hello, GreptimeDB |
+| Hello, GreptimeDB |
 +-------------------+
 1 row in set (1.77 sec)
 ```
