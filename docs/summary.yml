@@ -17,7 +17,17 @@
   - concepts
   - reading-writing-data
   - table-management
-  - coprocessor-and-scripting
+  - Python-Coprocessor:
+    - overview
+    - hello
+    - coprocessor
+    - vector
+    - io
+    - query-data
+    - insert-data
+    - builtins
+    - third-parties
+    - faq
   - use-promql
   - java-sdk
   - cli-repl

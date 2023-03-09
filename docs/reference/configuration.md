@@ -110,8 +110,8 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 | S3      |          |        | S3 storage options, valid when type="S3"            |
 |         | bucket   | String | The s3 bucket name                                  |
 |         | root     | String | The root path in s3 bucket                          |
-|         | access_key_id     | String | The s3 acccess key id                      |
-|         | secret_access_key | String | The s3 secret acccess key                  |
+|         | access_key_id     | String | The s3 access key id                      |
+|         | secret_access_key | String | The s3 secret access key                  |
 
 A file sample configuration:
 
@@ -198,7 +198,7 @@ connect_timeout_millis = 5000
 tcp_nodelay = false
 ```
 
-The `meta_client_options` configure the metasrv client, incuding:
+The `meta_client_options` configure the metasrv client, including:
 
 * `metasrv_addrs`, metasrv address list
 * `timeout_millis`, operation timeout in milliseconds, 3000 by default.
