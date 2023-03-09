@@ -30,7 +30,7 @@ import math
 
 def normalize0(x):
     if x is None or math.isnan(x):
-        return 100
+        return 0
     elif x > 100:
         return 100
     elif x < 0:
