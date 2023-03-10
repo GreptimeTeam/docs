@@ -19,7 +19,7 @@ CREATE TABLE system_metrics (
 
 You can execute this statement via [MySQL](../user-guide/supported-protocols/mysql.md) or [PostgreSQL](../user-guide/supported-protocols/postgresql.md) command line.
 
-For more information about how to create tables, please refer to the SQL reference document.
+For more information about how to create tables, please refer to [CREATE](/reference/sql/create.md) for more information.
 
 ## Table details
 
@@ -35,4 +35,4 @@ scraped every 5 seconds.
 | disk\_util   | double    | The percent use of disks               |
 | ts           | timestamp | Timestamp column incrementing          |
 
-Please refer to [CREATE](/reference/sql/create.md) for more information.
+Greptimedb supports several SQL [data types](/reference/data-types.md).
