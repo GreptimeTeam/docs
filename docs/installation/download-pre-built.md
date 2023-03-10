@@ -13,6 +13,9 @@ For Linux and MacOS users, you can download latest build of GreptimeDB using:
 
 ```shell
 curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/scripts/install.sh | sh
+```
+
+```shell
 ./greptime standalone start
 ```
 
