@@ -32,7 +32,7 @@ curl -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbe
 `/sql` also supports POST method:
 
 ```shell
-curl  -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=select * from numbers limit 5"
+curl http://localhost:4000/v1/sql -d "sql=select * from numbers limit 5"
 ```
 
 The returned JSON result is shown  below:
