@@ -1,6 +1,6 @@
 # Authentication
 
-GreptimeDB has a simple built-in mechanism for authentication, allowing user to config either a fixed account for easy use, or an account file for multiple user accounts.
+GreptimeDB has a simple built-in mechanism for authentication, allowing user to config either a fixed account for handy usage, or an account file for multiple user accounts.
 
 ## Configuration
 
@@ -58,6 +58,8 @@ bob=bbb
 ```
 
 Now user `alice` with password `aaa` and user `bob` with password `bbb` is load into GreptimeDB's memory. You can create a connection to GreptimeDB using these user accounts.
+
+Note: Content of the file is loaded into the database while starting up. Modifying or appending the file won't take effort while the database is up and running.
 
 ## Connecting GreptimeDB with authentication
 
