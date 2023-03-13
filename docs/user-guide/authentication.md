@@ -10,7 +10,7 @@ Authentication happens when a user tries to connect to the database in frontend(
 cargo run -- standalone start --user-provider=static_user_provider:cmd:greptime_user=greptime_pwd
 ```
 
-Now, if you try to connect database without username and password, it would fail. Only with `greptime_user` and `greptime_pwd` then the connection would be established. 
+Now, if you try to connect database without username and password, it would fail. Only connection with username `greptime_user` and password `greptime_pwd` would be allowed to connect to the database.
 
 ```shell
 ❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
