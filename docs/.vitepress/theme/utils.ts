@@ -6,6 +6,7 @@ export const openLink = url => {
 export const isBlog = url => /blogs\//i.test(url)
 
 export const useWrap = () => {
+  if (typeof window === 'undefined') return
   window.addEventListener('click', e => {
     const el = e.target as HTMLElement
     if (el.matches('div[class*="language-"] > button.wrap')) {
