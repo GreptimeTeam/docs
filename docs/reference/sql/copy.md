@@ -32,17 +32,6 @@ FROM { '<path>/[<filename>]' }
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
-[ [ CONNECTION ]
- (
-   [ ENDPOINT = '<uri>' ]
-   [ ACCESS_KEY_ID = '<key_id>' ]
-   [ SECRET_ACCESS_KEY = '<access_key>' ]
-   [ SESSION_TOKEN = '<token>' ]
-   [ REGION = '<region>' ]
-   [ ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
-   ..
- )
-]
 ```
 
 The command starts with the keyword `COPY`, followed by the name of the table you want to import data into.
@@ -51,20 +40,14 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 
 `PATTERN` option can be used with wildcard characters like * to specify multiple input files that 
 match a certain pattern. For example, you can use the following syntax to import all files in the 
-directory "/path/to/folder" with the name who contains `parquet`:
+directory(needs to be an absolute path) "/path/to/folder" with the name who contains `parquet`:
 
 ```sql
-COPY tbl FROM '/path/to/folder/' WITH (PATTERN = '.*parquet.*');
+COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.*');
 ```
 
-`CONNECTION` options are used when importing data from cloud storage services such as AWS S3. These options include:
+Specifically, if you only have one file to import, you can use the following syntax:
 
-- `ENDPOINT` specifies the endpoint URL of the cloud storage service.
-- `ACCESS_KEY_ID` specifies the access key ID required to access the cloud storage service.
-- `SECRET_ACCESS_KEY` specifies the secret access key required to access the cloud storage service.
-- `SESSION_TOKEN` specifies the session token required to access the cloud storage service.
-- `REGION` specifies the region of the cloud storage service.
-- `ENABLE_VIRTUAL_HOST_STYLE` is a Boolean parameter that is used when accessing cloud storage 
-services over a virtual hosted-style endpoint. This parameter should be set to true when 
-accessing cloud storage services over virtual hosted-style endpoints, and to false when accessing
-cloud storage services over path-style endpoints.
+```sql
+COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
+```
