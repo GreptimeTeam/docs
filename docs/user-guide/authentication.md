@@ -160,7 +160,7 @@ Note: replace `greptime_user(username)`, `greptime_pwd(password)` with your conf
 
 ### openTSDB
 
-todo
+Authentication of openTSDB protocol over TCP is not yet supported. If you're using openTSDB over HTTP, please refer to the HTTP api section.
 
 ### PostgreSQL
 
