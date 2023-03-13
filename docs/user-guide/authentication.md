@@ -186,12 +186,13 @@ GreptimeDB works flowlessly as a prometheus backend. As prometheus has built-in 
 ```yaml
 remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=prometheus
-basic_auth:
+- basic_auth:
     username: greptime_user
     password: greptime_pwd
 
 remote_read:
 - url: http://localhost:4000/v1/prometheus/read?db=prometheus
+- basic_auth:
     username: greptime_user
     password: greptime_pwd
 ```
