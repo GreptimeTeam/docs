@@ -286,9 +286,11 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 
 ### Parameters and Result for Python scripts
 
-`/scripts` accepts query parameters schema and name for naming the script and processes the POST method body as the script file content.
+`/scripts` accepts query parameters `db` which specifies the database, and `name` for naming the script and processes the POST method body as the script file content.
 
-`/run-script` runs the compiled script and returns the output which is the same as the query result in /sql API.
+`/run-script` runs the compiled script by`db` and `name`, then returns the output which is the same as the query result in `/sql` API.
+
+`/run-scripts` also receives other query parameters as the user params passed into the coprocessor, refer to [Input and Output](/user-guide/python-coprocessor/io#input).
 
 ## OpenAPI docs
 
