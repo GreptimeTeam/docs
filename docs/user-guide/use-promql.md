@@ -72,6 +72,6 @@ Data in GreptimeDB is organized as tables, which can be thought of as groups of 
 ## Limitations
 
 Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
-- timestamp: `TimestampMillisecond`
+- timestamp: `Timestamp`
 - tag: `String`
 - value: `Double`
