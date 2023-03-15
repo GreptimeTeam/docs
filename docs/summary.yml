@@ -28,9 +28,11 @@
     - builtins
     - third-parties
     - faq
-  - use-promql
   - java-sdk
   - cli-repl
+  - PromQL:
+    - use-promql
+    - promql
   - Supported-Protocols:
     - overview
     - http-api
@@ -40,7 +42,6 @@
     - opentsdb
     - influxdb
     - prometheus
-  - promql
 - Developer-Guide:
   - overview
   - get-started

@@ -75,3 +75,5 @@ Though GreptimeDB supports a rich set of data types, the PromQL implementation i
 - timestamp: `Timestamp`
 - tag: `String`
 - value: `Double`
+
+Currently only a subset of PromQL is supported. You can check the [compliance list](./promql.md) page for detailed information.
