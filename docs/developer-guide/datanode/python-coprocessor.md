@@ -15,12 +15,12 @@ parameters, or a constant(which is extends to the same length of input arguments
 
 ## Two optional backends
 
-## CPython Backend powered by PyO3
+### CPython Backend powered by PyO3
 This Backend is powered by [PyO3](https://pyo3.rs/v0.18.1/), this means you can use your favorite python library (like numpy, pandas, etc.), even using conda to manage your python environment.
 
-But it also comes with some shenanigans, you need to set up correct python shared library, this could a bit tricky, usually you just need to install `python-dev` package, but on macos you need to set up correct soft link to `Library/Frameworks/Python.framework` if you are using homebrew to install python.
+But it also comes with some shenanigans, you need to set up correct python shared library, this could a bit tricky, usually you just need to install `python-dev` package, but on macOS you need to set up correct soft link to `Library/Frameworks/Python.framework` if you are using homebrew to install python.
 
-## Embedded RustPython Interpreter
+### Embedded RustPython Interpreter
 
 A experimental [python interpreter](https://github.com/RustPython/RustPython) to run
 the coprocessor script, it support python 3.10 grammar, but not C API, so no numpy or pandas, but
