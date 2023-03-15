@@ -290,7 +290,7 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 
 `/run-script` runs the compiled script by`db` and `name`, then returns the output which is the same as the query result in `/sql` API.
 
-`/run-scripts` also receives other query parameters as the user params passed into the coprocessor, refer to [Input and Output](/user-guide/python-coprocessor/io#input).
+`/run-script` also receives other query parameters as the user params passed into the coprocessor, refer to [Input and Output](/user-guide/python-coprocessor/io#input).
 
 ## OpenAPI docs
 
