@@ -1,13 +1,14 @@
 # Query data
 
 We provide two way for you to easily query data:
-1. through plain SQL by writing `query.sql(..)` :this returns a `list[list [ PyVector ] ]` which represents the converted query results.
+1. through plain SQL by writing `query().sql(..)` :this returns a `list[list [ PyVector ] ]` which represents the converted query results.
 For example:
 ```python
 @copr(returns=["value"])
 def func()->vector[f64]:
+    from greptime import query
     # assuming value is a f64 column
-    return query.sql("select value from table")[0][0]
+    return query().sql("select value from table")[0][0]
 ```
 
 2. through DataFrame API: By using `dataframe` API, you can easily query data and do some data analysis. By default `dataframe` holds a DataFrame that's converted from the current coprocessor's input data(`RecordBatch`). You can also use `dataframe.from_sql(..)` to query data from the database, [but this feature is only available after this PR got merged](https://github.com/GreptimeTeam/greptimedb/pull/1036).
@@ -15,9 +16,9 @@ For example:
 ```python
 @copr(returns=["value"])
 def func()->vector[f64]:
-    from greptime import col
+    from greptime import col, dataframe
     # assuming value is a f64 column
-    df = dataframe.select(col("value"))
+    df = dataframe().select(col("value"))
     return df.sort().collect()[0][0]
 ```
 
