@@ -40,7 +40,7 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 
 `PATTERN` option can be used with wildcard characters like * to specify multiple input files that 
 match a certain pattern. For example, you can use the following syntax to import all files in the 
-directory(needs to be an absolute path) "/path/to/folder" with the name who contains `parquet`:
+directory(which must be an absolute path) "/path/to/folder" with the filename that contains `parquet`:
 
 ```sql
 COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.*');
