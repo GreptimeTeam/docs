@@ -29,7 +29,10 @@
     - builtins
     - third-parties
     - faq
-  - java-sdk
+  - Java-SDK:
+    - java-sdk
+    - quick-reference
+    - quick-start
   - cli-repl
   - PromQL:
     - use-promql
