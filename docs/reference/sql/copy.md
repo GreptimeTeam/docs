@@ -38,7 +38,7 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 
 `FORMAT` specifies the file format of the imported file. In this example, the format is Parquet.
 
-`PATTERN` option can be used with wildcard characters like * to specify multiple input files that 
+The option `PATTERN` allows the usage of wildcard characters like * to specify multiple input files that 
 match a certain pattern. For example, you can use the following syntax to import all files in the 
 directory(which must be an absolute path) "/path/to/folder" with the filename that contains `parquet`:
 
