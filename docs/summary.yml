@@ -15,6 +15,7 @@
   - distributed
 - User-Guide:
   - concepts
+  - authentication
   - reading-writing-data
   - table-management
   - Python-Coprocessor:
