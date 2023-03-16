@@ -286,7 +286,7 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 
 ### Parameters and Result for Python scripts
 
-`/scripts` accepts query parameters `db` which specifies the database, and `name` for naming the script and processes the POST method body as the script file content.
+`/scripts` accepts query parameters `db` which specifies the database, and `name` which names the script. `/scripts` processes the POST method body as the script file content.
 
 `/run-script` runs the compiled script by `db` and `name`, then returns the output which is the same as the query result in `/sql` API.
 
