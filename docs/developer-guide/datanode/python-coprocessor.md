@@ -16,9 +16,9 @@ parameters, or a constant(which is extends to the same length of input arguments
 ## Two optional backends
 
 ### CPython Backend powered by PyO3
-This backend is powered by [PyO3](https://pyo3.rs/v0.18.1/), which means you can use your favourite python library (like NumPy, Pandas, etc.), even using conda to manage your python environment.
+This backend is powered by [PyO3](https://pyo3.rs/v0.18.1/), enabling the use of your favourite Python libraries (such as NumPy, Pandas, etc.) and allowing Conda to manage your Python environment.
 
-But it also comes with some shenanigans, you need to set up the correct python shared library, this could be a bit tricky, usually,  you just need to install `python-dev` package, but on macOS you need to set up a correct soft link to `Library/Frameworks/Python.framework` if you are using homebrew to install python.
+But using it also involves some complications. You must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package. However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
 
 ### Embedded RustPython Interpreter
 
