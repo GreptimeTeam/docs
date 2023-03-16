@@ -1,4 +1,4 @@
-# PromQL
+# PromQL Compliance List
 
 ## Introduction
 

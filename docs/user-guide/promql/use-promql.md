@@ -12,7 +12,7 @@ GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to 
 
 Prometheus server has a bunch of HTTP APIs (see their [official document](https://prometheus.io/docs/prometheus/latest/querying/api)), and GreptimeDB has implemented the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) interface, which allows you to query the data in a given time range with PromQL.
 
-We keep the setting of the path and parameter the same with that in Prometheus, so you can use the same client to query GreptimeDB.
+We keep the setting of the path and parameter the same as that in Prometheus, so you can use the same client to query GreptimeDB.
 
 ## Via GreptimeDB's HTTP API
 
@@ -29,11 +29,25 @@ The input parameters are similar to the [`range_query`](https://prometheus.io/do
 - `end=<rfc3339 | unix_timestamp>`: end timestamp, inclusive
 - `step=<duration | float>`: query resolution step width in duration format or float number of seconds
 
+Here are some examples for each type of parameter:
+- rfc3339
+  - `2015-07-01T20:11:00Z` (default to seconds resolution)
+  - `2015-07-01T20:11:00.781Z` (with milliseconds resolution)
+  - `2015-07-02T04:11:00+08:00` (with timezone offset)
+- unix timestamp
+  - `1435781460` (default to seconds resolution)
+  - `1435781460.781` (with milliseconds resolution)
+- duration
+  - `1h` (1 hour)
+  - `5d1m` (5 days and 1 minute)
+  - `2` (2 seconds)
+  - `2s` (also 2 seconds)
+
 The result format is the same as `/sql` interface described [here](supported-protocols/http-api.md#sql).
 
 ## Via SQL
 
-GreptimeDB also extends SQL grammar to support PromQL. You can start with the `TQL` (Time-series Query Language) keyword to write parameters and query. The grammar looks like this:
+GreptimeDB also extends SQL grammar to support PromQL. You can start with the `TQL` (Time-series Query Language) keyword to write parameters and queries. The grammar looks like this:
 
 ```sql
 TQL [EVAL|EVALUATE] (<START>, <END>, <STEP>) <QUERY>
@@ -48,3 +62,18 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 ```
 
 You can write the above command in all places that support SQL, including the GreptimeDB HTTP API, SDK, PostgreSQL and MySQL client etc.
+
+## Data Model
+
+Data in GreptimeDB is organized as tables, which can be thought of as groups of columns. There are three types of columns: Time Index, Primiary Key, and non of both. When mapping to Prometheus, Time Index is the timestamp, Primary Key is the tag (or label) and the rest are values. Hence, GreptimeDB can be thought of as a multi-value data model, one table is a group of multiple Prometheus metrics:
+
+![Data Model](../../public/PromQL-multi-value-data-model.png)
+
+## Limitations
+
+Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
+- timestamp: `Timestamp`
+- tag: `String`
+- value: `Double`
+
+Currently only a subset of PromQL is supported. You can check the [compliance list](./promql.md) page for detailed information.
