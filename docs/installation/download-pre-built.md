@@ -10,7 +10,7 @@ For Linux and macOS users, you can download the latest build of the `greptime` b
 curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/scripts/install.sh | sh
 ```
 
-When the download is finished, the binary `greptime` will store in your current directory. 
+When the download is complete, the binary file `greptime` will be stored in your current directory. 
 
 You can run the GreptimeDB in standalone mode:
 
