@@ -1,22 +1,8 @@
-# Java SDK
-
-## Introduction
-
-A Java Client for GreptimeDB, which is compatible with GreptimeDB protocol and lightweight.
-
-## Features
-
-- SPI-based extensible network transport layer; provides the default implementation by using the
-gRPC framework
-- Non-blocking, purely asynchronous API, easy to use
-- Automatically collects various performance metrics by default. Users can then configure them and
-write to local files
-- Users can take in-memory snapshots of critical objects, configure them, and write to local files.
-This is helpful when troubleshooting complex issues
+# Quick Reference
 
 ## Data Ingestion Process
 
-![Data Ingestion Process](../public/data-ingest-process.png)
+![Data Ingestion Process](../../public/data-ingest-process.png)
 
 GreptimeDB supports automatic create table based on the first writing of data.
 Users can also create tables manually. For more details, please refer to [Table Management][1].
@@ -52,19 +38,41 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 | ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server. |
 | Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err.                                                                                           |
 
-## How to build WriteRows
+### How to build WriteRows
 
 ``` java
-WriteRows rows = WriteRows.newBuilder(TableName.with("db_name", "monitor")) //
-    .semanticTypes(SemanticType.Tag, SemanticType.Timestamp, SemanticType.Field, SemanticType.Field) //
-    .dataTypes(ColumnDataType.String, ColumnDataType.Int64, ColumnDataType.Float64, ColumnDataType.Float64) //
-    .columnNames("host", "ts", "cpu", "memory") //
+TableSchema tableSchema = TableSchema.newBuilder(TableName.with("db_name", "monitor"))
+    .semanticTypes(SemanticType.Tag, SemanticType.Timestamp, SemanticType.Field, SemanticType.Field)
+    .dataTypes(ColumnDataType.String, ColumnDataType.Int64, ColumnDataType.Float64, ColumnDataType.Float64)
+    .columnNames("host", "ts", "cpu", "memory")
     .build();
+
+WriteRows rows = WriteRows.newBuilder(tableSchema).build();
+
+rows.insert("127.0.0.1", System.currentTimeMillis(), 0.1, null)
+    .insert("127.0.0.2", System.currentTimeMillis(), 0.3, 0.5)
+    .finish();
+
+CompletableFuture<Result<WriteOk, Err>> writeFuture = greptimeDB.write(rows);
+
+writeFuture.whenComplete((result, throwable) -> {
+    if (throwable != null) {
+        throwable.printStackTrace();
+    } else {
+        System.out.println(result);
+    }
+});
 ```
+
+To begin, we must create a `TableSchema` and then use it to construct a `WriteRows` object. Since the `TableSchema` can be reused, caching it can prevent unnecessary construction.
+
+Once the `WriteRows` object is created, data can be added to it. However, this data is only stored in memory and has not yet been sent to the server. To insert multiple rows efficiently, we use batch insertion. Once all desired data has been added to the `WriteRows`, remember to call its `finish` method before sending it to the server.
+
+After calling the `write` method on our completed `WriteRows`, a future will be returned which allows us to obtain write results through its callback function.
 
 ## Data Query Process
 
-![Data Query Process](../public/data-query-process.png)
+![Data Query Process](../../public/data-query-process.png)
 
 ### Query API
 
@@ -82,9 +90,9 @@ CompletableFuture<Result<QueryOk, Err>> query(QueryRequest req, Context ctx);
 ### How to build QueryRequest
 
 ``` java
-QueryRequest request = QueryRequest.newBuilder() //
+QueryRequest request = QueryRequest.newBuilder()
     .exprType(SelectExprType.Sql) // Currently, only SQL is supported, and more query methods will be supported in the future
-    .ql("SELECT * FROM monitor;") //
+    .ql("SELECT * FROM monitor;")
     .build();
 ```
 
