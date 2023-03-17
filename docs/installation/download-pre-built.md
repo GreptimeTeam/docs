@@ -33,7 +33,7 @@ If you want to use another version of the GreptimeDB image, you can download it 
 
 **Note**:
 
-If the Docker version you are using is lower than [v23.0](https://docs.docker.com/engine/release-notes/23.0/), then you will encounter the problem of insufficient permissions when starting the above command (a [bug](https://github.com/moby/moby/pull/42681) of the old version of Docker Engine).
+If you are using a Docker version lower than [v23.0](https://docs.docker.com/engine/release-notes/23.0/), you may experience problems with insufficient permissions when trying to run the command above, due to a [bug](https://github.com/moby/moby/pull/42681) in the older version of Docker Engine.
 
 You can:
 
