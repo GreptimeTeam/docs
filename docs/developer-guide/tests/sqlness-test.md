@@ -46,5 +46,5 @@ If not, congratulations, the test is passed 🥳!
 cargo run --bin sqlness-runner your_test
 ```
 
-If the second argument was specified, only run cases containing the second argument string in their names.
+If you specify a second argument, only test cases containing the specified string in their names will be executed.
 
