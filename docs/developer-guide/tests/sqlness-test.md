@@ -43,7 +43,7 @@ If not, congratulations, the test is passed 🥳!
 ### Run a specific test
 
 ```shell
-cargo run --bin sqlness-runner your_test
+cargo sqlness your_test
 ```
 
 If you specify a second argument, only test cases containing the specified string in their names will be executed.
