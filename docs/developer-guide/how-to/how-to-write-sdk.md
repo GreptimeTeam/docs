@@ -1,8 +1,36 @@
 # How to write a gRPC SDK for GreptimeDB
 
-GreptimeDB builds its gRPC interface on top of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for GreptimeDB in a programming language you are familiar with, read on!
+There are two gRPC services exposed by GreptimeDB. One is defined by GreptimeDB, the other is built on top
+of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for
+GreptimeDB in a programming language you are familiar with, read on!
 
 > Currently, we only have gRPC SDK written in Java, and you can find more details [here](../user-guide/java-sdk.md).
+
+## `GreptimeDatabase` Service
+
+GreptimeDB defines a custom gRPC service `GreptimeDatabase`. You can find its protobuf
+definitions [here](https://github.com/GreptimeTeam/greptime-proto). It contains two RPC methods:
+
+```protobuf
+service GreptimeDatabase {
+  rpc Handle(GreptimeRequest) returns (GreptimeResponse);
+
+  rpc HandleRequests(stream GreptimeRequest) returns (GreptimeResponse);
+}
+```
+
+The `Handle` method is for unary call: GreptimeDB server replies with a `GreptimeResponse` immediately after received
+and handled a `GreptimeRequest`.
+
+The `HandleRequests` acts in
+a "[Client streaming RPC](https://grpc.io/docs/what-is-grpc/core-concepts/#client-streaming-rpc)" style. It ingests a
+stream of `GreptimeRequest`, and handles them on the fly. After all the requests are handled, it returns a
+summarized `GreptimeResponse`. Through `HandleRequests`, we can achieve a very high throughput of requests handling.
+
+However, currently the `GreptimeDatabase` service can **only** handle insertion requests. For query requests, we need to
+implement the [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) gRPC client as well.
+
+## [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) Service
 
 First, you can find our protobuf definitions for GreptimeDB requests and responses in this [repo](https://github.com/GreptimeTeam/greptime-proto#for-sdk-developers). The section named "For SDK developers" in the README of that repo is worth reading. 
 
