@@ -8,7 +8,7 @@ GreptimeDB in a programming language you are familiar with, read on!
 
 ## `GreptimeDatabase` Service
 
-GreptimeDB defines a custom gRPC service `GreptimeDatabase`. You can find its protobuf
+GreptimeDB defines a custom gRPC service called `GreptimeDatabase`. You can find its protobuf
 definitions [here](https://github.com/GreptimeTeam/greptime-proto). It contains two RPC methods:
 
 ```protobuf
