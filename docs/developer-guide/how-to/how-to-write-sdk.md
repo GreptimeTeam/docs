@@ -20,7 +20,7 @@ service GreptimeDatabase {
 ```
 
 The `Handle` method is for unary call: When a `GreptimeRequest` is received and processed by the GreptimeDB 
-and handled a `GreptimeRequest`.
+server, it responds with a `GreptimeResponse` immediately.
 
 The `HandleRequests` acts in
 a "[Client streaming RPC](https://grpc.io/docs/what-is-grpc/core-concepts/#client-streaming-rpc)" style. It ingests a
