@@ -19,7 +19,7 @@ service GreptimeDatabase {
 }
 ```
 
-The `Handle` method is for unary call: GreptimeDB server replies with a `GreptimeResponse` immediately after received
+The `Handle` method is for unary call: When a `GreptimeRequest` is received and processed by the GreptimeDB 
 and handled a `GreptimeRequest`.
 
 The `HandleRequests` acts in
