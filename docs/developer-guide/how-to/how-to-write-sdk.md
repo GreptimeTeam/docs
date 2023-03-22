@@ -24,7 +24,7 @@ server, it responds with a `GreptimeResponse` immediately.
 
 The `HandleRequests` acts in
 a "[Client streaming RPC](https://grpc.io/docs/what-is-grpc/core-concepts/#client-streaming-rpc)" style. It ingests a
-stream of `GreptimeRequest`, and handles them on the fly. After all the requests are handled, it returns a
+stream of `GreptimeRequest`, and handles them on the fly. After all the requests have been handled, it returns a
 summarized `GreptimeResponse`. Through `HandleRequests`, we can achieve a very high throughput of requests handling.
 
 However, currently the `GreptimeDatabase` service can **only** handle insertion requests. For query requests, we need to
