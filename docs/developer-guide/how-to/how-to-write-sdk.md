@@ -27,7 +27,7 @@ a "[Client streaming RPC](https://grpc.io/docs/what-is-grpc/core-concepts/#clien
 stream of `GreptimeRequest`, and handles them on the fly. After all the requests have been handled, it returns a
 summarized `GreptimeResponse`. Through `HandleRequests`, we can achieve a very high throughput of requests handling.
 
-However, currently the `GreptimeDatabase` service can **only** handle insertion requests. For query requests, we need to
+However, currently the `GreptimeDatabase` service can **only** handle insert requests. For query requests, we need to
 implement the [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) gRPC client as well.
 
 ## [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) Service
