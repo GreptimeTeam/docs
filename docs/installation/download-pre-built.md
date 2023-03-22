@@ -26,7 +26,13 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 docker run -p 4000-4004:4000-4004 \
 -p 4242:4242 -v "greptime-vol:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb standalone start
+greptime/greptimedb standalone start \
+--http-addr 0.0.0.0:4000 \
+--rpc-addr 0.0.0.0:4001 \
+--mysql-addr 0.0.0.0:4002 \
+--postgres-addr 0.0.0.0:4003 \
+--prom-addr 0.0.0.0:4004 \
+--opentsdb-addr 0.0.0.0:4242
 ```
 
 If you want to use another version of the GreptimeDB image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb).
@@ -43,7 +49,13 @@ You can:
    docker run --security-opt seccomp=unconfined -p 4000-4004:4000-4004 \
    -p 4242:4242 -v "greptime-vol:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb standalone start
+   greptime/greptimedb standalone start \
+   --http-addr 0.0.0.0:4000 \
+   --rpc-addr 0.0.0.0:4001 \
+   --mysql-addr 0.0.0.0:4002 \
+   --postgres-addr 0.0.0.0:4003 \
+   --prom-addr 0.0.0.0:4004 \
+   --opentsdb-addr 0.0.0.0:4242
    ```
 
 2. Upgrade the Docker version to v23.0.0 or higher;
