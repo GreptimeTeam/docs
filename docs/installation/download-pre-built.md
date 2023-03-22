@@ -28,7 +28,7 @@ docker run -p 4000-4004:4000-4004 \
 --name greptime --rm \
 greptime/greptimedb standalone start \
 --http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
+--grpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
 --postgres-addr 0.0.0.0:4003 \
 --prom-addr 0.0.0.0:4004 \
@@ -51,7 +51,7 @@ You can:
    --name greptime --rm \
    greptime/greptimedb standalone start \
    --http-addr 0.0.0.0:4000 \
-   --rpc-addr 0.0.0.0:4001 \
+   --grpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003 \
    --prom-addr 0.0.0.0:4004 \
