@@ -10,7 +10,7 @@ This benchmark is based on the data from [New York City Taxi & Limousine Commiss
 You can find the data in [this page](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page). We support all the **Yellow Taxi Trip Records** since 2022-01. For example, to get the data for January 2022, you can run:
 
 ```shell
-curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o  ./benchmarks/data/yellow_tripdata_2022-01.parquet
+curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o ./benchmarks/data/yellow_tripdata_2022-01.parquet
 ```
 
 ## Run benchmark
@@ -18,7 +18,7 @@ curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.pa
 Before running the benchmark, please make sure you have started the GreptimeDB server.
 
 ```shell
-cargo run --release -- datanode start
+cargo run --release --datanode start
 ```
 
 Our benchmark tools is included in the source code. You can run it by:
