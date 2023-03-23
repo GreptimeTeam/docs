@@ -70,6 +70,8 @@
     - unit-test
     - integration-test
     - sqlness-test
+  - Benchmarks:
+    - nyc-taxi
   - How-To:
     - how-to-write-sdk
 - Reference:
