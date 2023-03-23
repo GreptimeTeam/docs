@@ -1,0 +1,29 @@
+{
+  "hash": "73a014bf",
+  "browserHash": "27d1b5d0",
+  "optimized": {
+    "vue": {
+      "src": "../../../../node_modules/.pnpm/vue@3.2.45/node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "0c789599",
+      "needsInterop": false
+    },
+    "body-scroll-lock": {
+      "src": "../../../../node_modules/.pnpm/body-scroll-lock@4.0.0-beta.0/node_modules/body-scroll-lock/lib/bodyScrollLock.esm.js",
+      "file": "body-scroll-lock.js",
+      "fileHash": "7d1ee659",
+      "needsInterop": false
+    },
+    "@vueuse/core": {
+      "src": "../../../../node_modules/.pnpm/@vueuse+core@9.13.0_vue@3.2.45/node_modules/@vueuse/core/index.mjs",
+      "file": "@vueuse_core.js",
+      "fileHash": "ef83c95c",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-GMDR4EMF": {
+      "file": "chunk-GMDR4EMF.js"
+    }
+  }
+}
