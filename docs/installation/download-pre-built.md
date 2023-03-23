@@ -1,6 +1,6 @@
 # Pre-built Binaries
 
-You can try out GreptimeDB with our test builds released on [GitHub](https://github.com/GreptimeTeam/greptimedb/releases) and [Docker hub](https://hub.docker.com/r/greptime/greptimedb). Note that GreptimeDB is currently under intense development. So these binaries are **not ready to be used in the production environment**.
+You can try out GreptimeDB with our test builds released on [GitHub](https://github.com/GreptimeTeam/greptimedb/releases) and [Dockerhub](https://hub.docker.com/r/greptime/greptimedb). Note that GreptimeDB is currently under intense development. So these binaries are **not ready to be used in the production environment**.
 
 ## One-line Installation
 
@@ -24,7 +24,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 
 ```shell
 docker run -p 4000-4004:4000-4004 \
--p 4242:4242 -v "greptime-vol:/tmp/greptimedb" \
+-p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb standalone start \
 --http-addr 0.0.0.0:4000 \
@@ -34,6 +34,8 @@ greptime/greptimedb standalone start \
 --prom-addr 0.0.0.0:4004 \
 --opentsdb-addr 0.0.0.0:4242
 ```
+
+The data will be stored in the `greptimedb/` directory in your current directory.
 
 If you want to use another version of the GreptimeDB image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb).
 
@@ -47,7 +49,7 @@ You can:
 
    ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4004:4000-4004 \
-   -p 4242:4242 -v "greptime-vol:/tmp/greptimedb" \
+   -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
    greptime/greptimedb standalone start \
    --http-addr 0.0.0.0:4000 \
