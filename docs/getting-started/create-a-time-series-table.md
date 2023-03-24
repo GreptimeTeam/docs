@@ -5,7 +5,7 @@ To get started, create a time-series table to save the data collected from hosts
 Let's start by creating the `system_metrics` table:
 
 ``` sql
-CREATE TABLE system_metrics (
+CREATE TABLE IF NOT EXISTS system_metrics (
     host STRING,
     idc STRING,
     cpu_util DOUBLE,
@@ -27,7 +27,7 @@ For more information about how to create tables, please refer to [CREATE](/refer
 scraped every 5 seconds.
 
 | Field        | Type      | Description                            |
-|:-------------|:----------|:---------------------------------------|
+| :----------- | :-------- | :------------------------------------- |
 | host         | string    | The hostname                           |
 | idc          | string    | The idc name where the host belongs to |
 | cpu\_util    | double    | The percent use of CPU                 |
