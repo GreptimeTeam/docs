@@ -17,7 +17,7 @@ def return_vectors() -> (vector[i64], vector[str], vector[f64]):
 
 The return types of function `return_vectors` is `(vector[i64], vector[str], vector[f64])`. 
 
-But we must ensure that all these vectors returned by the function have the same length. Because when they are converted into rows, each row must have all the column values.
+But we must ensure that all these vectors returned by the function have the same length. Because when they are converted into rows, each row must have all the column values presented.
 
 Of course, we can return literal values, and they will be turned into vectors:
 ```python
@@ -62,7 +62,7 @@ def add(**params) -> vector[i64]:
     return int(a) + int(b)
 ```
 
-And then you can pass the `a` and `b` from HTTP API:
+And then pass the `a` and `b` from HTTP API:
 
 ```sh
 curl  -XPOST \
@@ -96,4 +96,4 @@ curl  -XPOST \
 
 We pass `a=42&b=99` as query params into HTTP API, and it returns the result `141`.
 
-The user-defined parameters must be passed by `**kwargs` in the coprocessor, and all their types are strings. We can pass anything we want such as SQL to run in the coprocessor.
+The user-defined parameters must be defined by `**kwargs` in the coprocessor, and all their types are strings. We can pass anything we want such as SQL to run in the coprocessor.

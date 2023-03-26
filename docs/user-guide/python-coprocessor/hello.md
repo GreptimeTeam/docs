@@ -10,7 +10,7 @@ def hello() -> vector[str]:
 
 Save it as `hello.py`, then post it by [HTTP API](../supported-protocols/http-api#scripts-and-run-script):
 ```sh
-curl  --data-binary "@hello.py" -XPOST "http://localhost:4000/v1/scripts?name=hello&db=public"
+curl --data-binary "@hello.py" -XPOST "http://localhost:4000/v1/scripts?name=hello&db=public"
 ```
 
 Then call it in SQL:
@@ -28,7 +28,7 @@ select hello();
 
 Or call it by  [HTTP API](../supported-protocols/http-api#scripts-and-run-script):
 ```sh
-curl  -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
+curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
 ```
 ```json
 {

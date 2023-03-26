@@ -13,10 +13,14 @@ We think the python coprocessor in GreptimeDB is a perfect replacement for store
 * [Third-parties Libs](./third-parties.md)
 * [FAQ](./faq.md)
 
+All the examples can be found in [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples).
+
 # Note:
 The Python coprocessor is currently in its experimental phase, and the API may undergo some changes.
 
-Using it also involves some complications. You must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package(on most Debian-based system). However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
+You can download [pre-built binaries](https://github.com/GreptimeTeam/greptimedb/releases) with PyO3 supported whose file names are postfixed by `pyo3`.
+
+If you have some library link issues,  you must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package(on most Debian-based system). However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
 
 So if you can't run your binary on macOS due to a linking error, you can try to fix it as below:
 1. Open your Python and run the following code to get your python shared library path:
