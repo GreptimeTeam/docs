@@ -33,7 +33,7 @@ high-performance data services based on Arrow data. You can refer to its officia
 
 We offer the following officially supported SDK:
 
-- [Java](../java-sdk)
+- [Java](../java-sdk/java-sdk)
 
 Currently, we are actively working on developing SDKs for other programming languages. If you are interested, you are
 welcome to write a SDK for GreptimeDB. You can start
