@@ -17,3 +17,7 @@ We offer various chart types to choose from based on different scenarios.
 ![scatter](../public/dashboard-scatter.jpg)
 
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
+
+## Embedded Dashboard in GreptimeDB
+
+The Dashboard can be embedded into GreptimeDB's binary. Build GreptimeDB with feature `servers/dashboard` enabled from workspace root. For example, `cargo build --feature servers/dashboard`. The building process will automatically download the distribution of the Dashboard. After the building process succeeded, you can start GreptimeDB normally, and visit the HTTP endpoint `dashboard` to use the Dashboard locally. 
