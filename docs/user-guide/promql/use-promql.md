@@ -43,7 +43,7 @@ Here are some examples for each type of parameter:
   - `2` (2 seconds)
   - `2s` (also 2 seconds)
 
-The result format is the same as `/sql` interface described [here](supported-protocols/http-api.md#sql).
+The result format is the same as `/sql` interface described [here](../supported-protocols/http-api.md#sql).
 
 ## Via SQL
 

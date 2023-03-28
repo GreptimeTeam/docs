@@ -5,7 +5,7 @@ You can read from or write into GreptimeDB using various protocols.
 ![protocols](../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
 
 This document will focus on using SQL to illustrate reading and writing in GreptimeDB. The list of other
-supported protocols can be found [here](./supported-protocols), for detailed ways of how to do it.
+supported protocols can be found [here](./supported-protocols/overview.md), for detailed ways of how to do it.
 
 Note that writing data in a specific protocol does not mean that you
 have to read data with the same protocol. For example, you can write

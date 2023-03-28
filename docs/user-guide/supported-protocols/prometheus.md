@@ -62,6 +62,6 @@ This example will be transformed as a row in the table `prometheus_remote_storag
 | instance           | localhost:9090                              | String             |
 | job                | prometheus                                  | String             |
 | remote_name        | 648f0c                                      | String             |
-| url                | <http://localhost:4000/v1/prometheus/write> | String             |
+| url                | `http://localhost:4000/v1/prometheus/write` | String             |
 | greptime_value     | 500                                         | Double             |
 | greptime_timestamp | The sample's unix timestamp                 | Timestamp          |

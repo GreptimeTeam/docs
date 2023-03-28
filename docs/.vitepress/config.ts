@@ -29,7 +29,7 @@ export default (async () => ({
     root: { label: 'English', lang: 'en-US' },
   },
   lastUpdated: true,
-  ignoreDeadLinks: true,
+  ignoreDeadLinks: false,
   themeConfig: {
     siteTitle: '',
     logo: 'logo-text-tinted.png',
