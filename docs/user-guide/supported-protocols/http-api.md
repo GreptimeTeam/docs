@@ -167,10 +167,10 @@ Save a python script such as `test.py`:
 @coprocessor(args = ["number"],
              returns = [ "number" ],
              sql = "select number from numbers limit 5")
-def square(number):
+def square(number)->vector[i64]:
     return number * 2
 ```
-
+Note that a type annotation for return type is required(this `->vector[i64]`), so database can know in advance what type of data will be returned.
 Submits it to database:
 
 ```shell
