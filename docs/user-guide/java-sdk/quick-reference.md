@@ -17,7 +17,7 @@ CREATE TABLE monitor (
 PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 ```
 
-[1]: ./table-management.md
+[1]: ../table-management.md
 
 ### Write API
 

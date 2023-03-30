@@ -155,7 +155,7 @@ Query data:
 
 `/promql` executes PromQL statements and returns corresponding results. For more information about PromQL, please refer to the [PromQL reference document](https://prometheus.io/docs/prometheus/latest/querying/basics/).
 
-You can find details of the interface in the [Use-PromQL](../use-promql.md) document.
+You can find details of the interface in the [Use-PromQL](../promql/use-promql.md) document.
 
 ## `/scripts` and `/run-script`
 
