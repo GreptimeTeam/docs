@@ -17,7 +17,7 @@ This is helpful when troubleshooting complex issues
 ## Quick Start
 Learn how to establish a connection to GreptimeDB and begin working with data [Quick Start](quick-start.md) section.
 
-## Quicck Reference
+## Quick Reference
 See the [Quick Reference](quick-reference.md) section for the API in the Java SDK.
 
 ## Usage Examples
