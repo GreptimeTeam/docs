@@ -20,4 +20,6 @@ We are committed to the ongoing development and iteration of this open source pr
 
 ## Embedded Dashboard in GreptimeDB
 
-The Dashboard can be embedded into GreptimeDB's binary. Build GreptimeDB with feature `servers/dashboard` enabled from workspace root. For example, `cargo build --feature servers/dashboard`. The building process will automatically download the distribution of the Dashboard. After the building process succeeded, you can start GreptimeDB normally, and visit the HTTP endpoint `dashboard` to use the Dashboard locally. 
+The Dashboard is also embedded into GreptimeDB's binary. Download our pre-built
+binary ([here](../installation/download-pre-built.md)), start GreptimeDB normally, then visit the HTTP
+endpoint `http://localhost:4000/dashboard` to use the Dashboard locally. 
