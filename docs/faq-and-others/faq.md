@@ -52,3 +52,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 
 ## Does GreptimeDB support ingesting data without defining a schema? Like Prometheus metrics.
 Yes, we can create table automatically while inserting data using TSDB’s protocol (e.g. OpenTSDB, InfluxDB, prometheus)
+
+## Are there any retention policy?
+
+We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052).
