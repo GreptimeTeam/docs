@@ -18,10 +18,10 @@ curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.pa
 Before running the benchmark, please make sure you have started the GreptimeDB server.
 
 ```shell
-cargo run --release --datanode start
+cargo run --release standalone start
 ```
 
-Our benchmark tools is included in the source code. You can run it by:
+Our benchmark tools are included in the source code. You can run it by:
 
 ```shell
 cargo run --release --bin nyc-taxi -- --path "./benchmarks/data/"
