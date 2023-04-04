@@ -56,3 +56,11 @@ Yes, we can create table automatically while inserting data using TSDB’s proto
 ## Are there any retention policy?
 
 We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052).
+
+## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
+
+There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to track the PromQL compatibility tests passing rate. It's based on Prometheus's compliance test.
+
+## Where’s the name “Greptime” coming from? 
+Because “grep” is the most useful command line tool on *nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
+
