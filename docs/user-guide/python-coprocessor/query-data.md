@@ -14,10 +14,10 @@ def query_numbers()->vector[f64]:
     return query().sql("select number from numbers limit 10")[0]
 ```
 
-Call it via MySQL client:
+Call it via SQL client:
 
 ```sql
-mysql> select query_numbers();
+SQL > select query_numbers();
 +-----------------+
 | query_numbers() |
 +-----------------+
