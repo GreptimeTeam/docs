@@ -167,10 +167,10 @@ Save a python script such as `test.py`:
 @coprocessor(args = ["number"],
              returns = [ "number" ],
              sql = "select number from numbers limit 5")
-def square(number)->vector[i64]:
+def square(number) -> vector[i64]:
     return number * 2
 ```
-Note that a type annotation for return type is required(this `->vector[i64]`), so database can know in advance what type of data will be returned.
+
 Submits it to database:
 
 ```shell
@@ -284,7 +284,9 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 }
 ```
 
-### Parameters and Result for Python scripts
+For more information about python coprocessor, please refer to [Python Coprocessor](/user-guide/python-coprocessor/overview.md) for more information.
+
+### Parameters and Results for Python scripts
 
 `/scripts` accepts query parameters `db` which specifies the database, and `name` which names the script. `/scripts` processes the POST method body as the script file content.
 
