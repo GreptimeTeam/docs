@@ -132,6 +132,35 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+### Compaction
+
+The `[storage.compaction]` section configures the compaction options of storage engine:
+
+```toml
+[storage.compaction]
+# Max task number that can concurrently run.
+max_inflight_tasks = 4
+# Max files in level 0 to trigger compaction.
+max_files_in_level0 = 8
+# Max task number for SST purge task after compaction.
+max_purge_tasks = 32
+```
+
+### Manifest
+
+The `[storage.manifest]` section configures the region manifest options of storage engine:
+
+```toml
+[storage.manifest]
+# Region checkpoint actions margin.
+# Create a checkpoint every <checkpoint_margin> actions.
+checkpoint_margin = 10
+# Region manifest logs and checkpoints gc execution duration
+gc_duration = '30s'
+# Whether to try creating a manifest checkpoint on region opening
+checkpoint_on_startup = false
+```
+
 ## Standalone
 
 When you use GreptimeDB in the standalone mode, you can configure it as below:
