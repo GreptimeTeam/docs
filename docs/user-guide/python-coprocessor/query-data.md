@@ -36,23 +36,27 @@ mysql> select query_numbers();
 ```
 
 The `sql` function returns a list of columns, and each column is a vector of values.
-In the above example, `sql("select number from numbers limit 10")` returns a list of vectors. And use `[0]` to retrieve the first column vector which is the `number` column.
+
+In the above example, `sql("select number from numbers limit 10")` returns a list of vectors. And use `[0]` to retrieve the first column vector which is the `number` column in `select` SQL.
 
 ## DataFrame
+A DataFrame represents a logical set of rows with the same named columns,  similar to a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) or [Spark DataFrame](https://spark.apache.org/docs/latest/sql-programming-guide.html).
 
+You can create a dataframe from `sql`:
 
-2. through DataFrame API: By using `dataframe` API, you can easily query data and do some data analysis. By default `dataframe` holds a DataFrame that's converted from the current coprocessor's input data(`RecordBatch`). You can also use `dataframe.from_sql(..)` to query data from the database, [but this feature is only available after this PR got merged](https://github.com/GreptimeTeam/greptimedb/pull/1036).
-For example:
 ```python
-@copr(returns=["value"])
-def func()->vector[f64]:
-    from greptime import col, dataframe
-    # assuming value is a f64 column
-    df = dataframe().select(col("value"))
-    return df.sort().collect()[0][0]
+from greptime import PyDataFrame, col
+
+@copr(returns = ["value"])
+def query_numbers() -> vector[f64]:
+    df = PyDataFrame.from_sql("select number from numbers")
+    return df.filter(col('number') <= 5).collect()[0]
 ```
 
-The full DataFrame API is listed below:
+It's the same as `select number from numbers where number <=5`, but uses dataframe API.
+
+In fact, the coprocessor's dataframe API is a wrapper of  Apache Datafusion [DataFrame API](https://arrow.apache.org/datafusion/user-guide/dataframe.html).
+
 ### DataFrame's methods:
 | Method | Description |
 | --- | --- |
@@ -78,3 +82,4 @@ The full DataFrame API is listed below:
 | `sort(ascending: bool, null_first: bool)` | Create a `PyExpr` that represents a sort expression |
 | comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=` | Create `PyExpr` from compare two `PyExpr` |
 | logical operators: `&`, `\|`, `~` | Create `PyExpr` from logical operation between two `PyExpr` |
+
