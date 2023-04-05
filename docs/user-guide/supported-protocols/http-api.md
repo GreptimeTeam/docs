@@ -89,7 +89,7 @@ The API Result contains:
 Create table via SQL:
 
 ```shell
-curl  -v -XPOST -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
+curl -v -XGET -G  http://localhost:4000/v1/sql  --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, \"value\" DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
 ```
 
 ```json
