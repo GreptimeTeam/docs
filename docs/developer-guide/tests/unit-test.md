@@ -9,7 +9,7 @@ Since `GreptimeDB` orchestrates its components in the "workspace" manner, the ta
 The default test runner ships with `cargo` is a bit slow. It's recommended to use
 [`nextest`](https://nexte.st/) to speed up the test procedure. You can install it with
 ```shell
-cargo install nextest
+cargo install cargo-nextest --locked
 ```
 
 And run the tests (here the `--workspace` is not necessary)
