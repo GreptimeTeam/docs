@@ -13,30 +13,17 @@ We think the python coprocessor in GreptimeDB is a perfect replacement for store
 * [Third-parties Libs](./third-parties.md)
 * [FAQ](./faq.md)
 
+All the examples can be found in [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples).
+
 # Note:
 The Python coprocessor is currently in its experimental phase, and the API may undergo some changes.
 
-Using it also involves some complications. You must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package(on most Debian-based system). However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
+You can download [pre-built binaries](https://github.com/GreptimeTeam/greptimedb/releases) with PyO3 supported whose file names are postfixed by `pyo3`.You can just also use RustPython which doesn't require additional setup by download binary files without `pyo3` postfixed.
 
-So if you can't run your binary on macOS due to a linking error, you can try to fix it as below:
-1. Open your Python and run the following code to get your python shared library path:
-```python
-from sysconfig import get_config_var, get_platform
-get_config_var("LIBDIR")
-```
-This should give you something like `'/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib'`.
+If you have some library link issues,  you must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package(on most Debian-based system). However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
+The recommended way is to utilize `conda` for managing your Python environment. Firstly, create a Python environment with the same version of Python demanded by the binary you download. Alternatively, you can employ a docker container and execute the `greptime` binary within it.
+A less recommended way is to manually install the exact version of Python required and set the `LD_LIBRARY_PATH` environment variable to the directory containing the `libpython<VERSION>.so` file. The version number of `<VERSION>` varies according to the version of Python being used.
 
-2. Create a config file named `pyo3.config` in the same directory of your binary, and add the following content:
-```config
-implementation=CPython
-version=3.9
-shared=true
-abi3=false
-lib_name=python3.9
-lib_dir=<Your LIB_DIR get from step 1>
-executable=<You python executable path, could come from `which python`>
-pointer_width=64
-build_flags=
-suppress_build_script_link_lines=false
-```
-You might also need to change the `version` and `lib_name` to correspond with your specific version of Python.
+There is two Backend for Python Coprocessor:
+1. RustPython Interpreter: this is supported without installing any Python library, but it is not as fast as CPython Backend. The Release Binary without `pyo3` in its name uses RustPython Interpreter. While you can still use Python Syntax in RustPython Interpreter,  you can't use any third-parties libs.
+2. CPython Interpreter: this is the most commonly used version of Python. It allows you to use all sorts of third-parties libs, but you need to install the correct Python shared library. Any Release Binary with `pyo3` in its name uses CPython Interpreter.

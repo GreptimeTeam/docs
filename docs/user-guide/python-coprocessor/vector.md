@@ -64,6 +64,19 @@ def answer() -> vector[i64]:
     return vector([42, 43, 44])
 ```
 The `greptime` is a built-in module, please refer to [Builtin Modules](./builtins.md).
+
+```sql
+mysql> select answer();
++----------+
+| answer() |
++----------+
+|       42 |
+|       43 |
+|       44 |
++----------+
+3 rows in set (0.02 sec)
+```
+
 In fact, the `vector` function can create a vector from any iterable object in python. But it requires all the element types must be the same, and it chooses the first element's type as its vector type.
 
 ## Vector operations
@@ -73,8 +86,8 @@ The vector supports a lot of operations:
 3. Basic comparison operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
 
 
-> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operation, because Python doesn't support logical operation override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operators have higher precedence than comparison operators, so remember to use a pair of parentheses to make sure the logical operation is what you want.
-> i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. Later one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
+> Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operator because Python doesn't support logical operator override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operators have higher precedence than comparison operators, so remember to use a pair of parentheses to make sure the result is what you want.
+> i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. The latter one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
 
 
 For example, you can plus two vectors directly:
