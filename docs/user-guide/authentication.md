@@ -7,7 +7,7 @@ GreptimeDB has a simple built-in mechanism for authentication, allowing users to
 Authentication happens when a user tries to connect to the database in the frontend (or standalone if using standalone mode). Use the following command-line arguments to config a user `greptime_user` with the password `greptime_pwd`.
 
 ```shell
-cargo run -- standalone start --user-provider=static_user_provider:cmd:greptime_user=greptime_pwd
+./greptime standalone start --user-provider=static_user_provider:cmd:greptime_user=greptime_pwd
 ```
 
 Now, if you try to connect to the database without a username and password, it would fail. Only the connection with the username `greptime_user` and password `greptime_pwd` would be allowed to connect to the database.
@@ -35,7 +35,7 @@ mysql>
 Like the example above, you can quickly set up a fixed single-user authentication configuration. We will use standalone mode for illustration from now on, but it works both in standalone mode and distributed mode.
 
 ```shell
-cargo run -- standalone start --user-provider=static_user_provider:cmd:<username>=<password>
+./greptime standalone start --user-provider=static_user_provider:cmd:<username>=<password>
 ```
 
 Replace `username` and `password` with your configured username and password, and it's done!
@@ -47,7 +47,7 @@ Single user configuartion is easy to setup and test, but it's not recommanded fo
 Often, one fixed user isn't really much of a help. GreptimeDB also supports passing in a file and loads all users listed within the file.
 
 ```shell
-cargo run -- standalone start --user-provider=static_user_provider:file:<path_to_file>
+./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
 ```
 
 GreptimeDB reads the user and password on each line using `=` as a separator, just like a command-line config. For example:
