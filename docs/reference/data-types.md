@@ -15,7 +15,7 @@ GreptimeDB supports the following data types:
 |`varbinary`|Variable length binary values||
 |`date`|32-bit date values||
 |`datetime`|64-bit datetime values||
-|`timestamp`|64-bit timestamp values with millisecond precision||
+|`timestamp[(0/3/6/9)]`|64-bit timestamp values with optional precision. For example, `timestamp(0)` represents timestamp type with seconds precision, `timestamp(3)` represents  milliseconds precision, `timestamp(6)` for microseonds and `timestamp(9)` for nanoseconds. If no precision is given, the timestamp is in **milliseconds** precision by default.||
 
 ## Unsigned version of integer types
 `int` / `tinyint` / `smallint` / `bigint` also have unsigned version, and there corresponding value ranges are:
