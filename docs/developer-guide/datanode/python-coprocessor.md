@@ -24,4 +24,4 @@ But using it also involves some complications. You must set up the correct Pytho
 
 An experimental [python interpreter](https://github.com/RustPython/RustPython) to run
 the coprocessor script, it support python 3.10 grammar, but not C API, so no numpy or pandas, but
-you can still use all the very pythonic syntax(see [User Guide/Python Coprocessor](/user-guide/python-coprocessor/overview.md) for more!)
+you can still use all the very pythonic syntax(see [User Guide/Python Coprocessor](/user-guide/scripts-&-functions/overview.md) for more!)

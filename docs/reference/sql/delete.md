@@ -13,6 +13,7 @@ It removes rows from the table `[db.]table` that satisfies the expression `expr`
  **NOTE: GreptimeDB 0.1 only supports deleting rows that match the primary key and timestamp index. Later version will soon be able to delete rows by using the `WHERE` expressions.**
  
 ## Example
+
 For example, there is a table with the primary key `host`:
 ```sql
 CREATE TABLE monitor ( host STRING, ts TIMESTAMP, cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ;
