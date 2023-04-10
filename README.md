@@ -37,7 +37,7 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 
 ## Developer Guide
 
-Illustartes in detail how GreptimeDB works and helps you get involved in the development as a contributor
+Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
 
   - [Overview](./docs/developer-guide/overview.md)
   - [Frontend](./docs/developer-guide/frontend/overview.md)

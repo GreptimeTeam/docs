@@ -22,6 +22,6 @@ But using it also involves some complications. You must set up the correct Pytho
 
 ### Embedded RustPython Interpreter
 
-An experimental [python interpreter](https://github.com/RustPython/RustPython) to run
-the coprocessor script, it support python 3.10 grammar, but not C API, so no numpy or pandas, but
-you can still use all the very pythonic syntax(see [User Guide/Python Coprocessor](/user-guide/scripts-&-functions/overview.md) for more!)
+An experiment [python interpreter](https://github.com/RustPython/RustPython) to run
+the coprocessor script, it supports Python 3.10 grammar, but not C API, so no NumPy or Pandas, but
+you can still use all the very Python syntax(see [User Guide/Python Coprocessor](/user-guide/scripts-&-functions/overview.md) for more!)

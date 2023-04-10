@@ -1,9 +1,11 @@
 # Getting Started
 
-Getting started to experience the power of core futures of GreptimeDB.
+Begin to explore GreptimeDB's powerful core features.
 
 ## Install GreptimeDB
-You can try out GreptimeDB with our test builds released on [GitHub](https://github.com/GreptimeTeam/greptimedb/releases) and [Dockerhub](https://hub.docker.com/r/greptime/greptimedb). Note that GreptimeDB is currently under intense development. So these binaries are **not ready to be used in the production environment**.
+You can try out GreptimeDB with our test builds released on [GitHub](https://github.com/GreptimeTeam/greptimedb/releases) and [Dockerhub](https://hub.docker.com/r/greptime/greptimedb). Note that GreptimeDB is currently under intense development, so these binaries are **not ready to be used in the production environment yet**.
+
+We use the simplest configuration for getting started. For a comprehensive list of configuration options available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
 ### Linux & Mac
 
@@ -21,8 +23,6 @@ You can run the GreptimeDB in standalone mode:
 ./greptime standalone start
 ```
 
-For a complete specification of configuration options of GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
-
 ### Docker
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/getting-started/) to install Docker.
 
@@ -39,9 +39,9 @@ greptime/greptimedb standalone start \
 --opentsdb-addr 0.0.0.0:4242
 ```
 
-The data will be stored in the `greptimedb/` directory in your current directory. For a complete specification of configuration options of GreptimeDB, see the [configuration documentation](./../user-guide/operations/configuration.md).
+The data will be stored in the `greptimedb/` directory in your current directory.
 
-If you want to use another version of the GreptimeDB image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb).
+If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb).
 
 **Note**:
 
@@ -66,9 +66,10 @@ You can:
 
 2. Upgrade the Docker version to v23.0.0 or higher;
 
+
 ## Connect
 
-GreptimeDB supports [multiple protocols](/user-guide/clients.md). We use MySQL client here for simple.
+GreptimeDB supports [multiple protocols](/user-guide/clients.md). We use MySQL client here for simplicity.
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -102,8 +103,8 @@ Field descriptions:
 | disk\_util   | double    | The percent use of disks               |
 | ts           | timestamp | Timestamp column incrementing          |
 
-* For more information about how to create tables, please refer to [CREATE](/reference/sql/create.md) for more information.
-* For more information about data types, please refer to [data types](/reference/data-types.md).
+* For more information about how to create tables, please refer to [CREATE](/reference/sql/create.md).
+* For data types, please check [data types](/reference/data-types.md).
 
 ## Insert data
 
@@ -133,7 +134,7 @@ To select all the data from the `system_metrics` table, use the `SELECT` stateme
 SELECT * FROM system_metrics;
 ```
 
-The query result  looks like the following:
+The query result looks like the following:
 
 ```
 +-------+-------+----------+-------------+-----------+---------------------+
@@ -203,7 +204,7 @@ For more information about the `SELECT` statement, please refer to [SELECT](/ref
 
 Visualization plays a crucial role in effectively utilizing time series data. To help users leverage the various features of GreptimeDB, Greptime offers a simple [dashboard](https://github.com/GreptimeTeam/dashboard).
 
-The Dashboard is embedded into GreptimeDB's binary. After [starting GreptimeDB](#install-greptimedb), the dashboard can be visited via HTTP endpoint `http://localhost:4000/dashboard`. The current version of the dashboard supports MySQL and Python queries, with support for PromQL coming soon. Please stay tuned for updates.
+The Dashboard is embedded into GreptimeDB's binary. After [starting GreptimeDB](#install-greptimedb), the dashboard can be visited via HTTP endpoint `http://localhost:4000/dashboard`. The current version of the dashboard supports MySQL and Python queries, with support for PromQL coming soon.
 
 Write SQL into the command text, then click `Run All`. We'll got all data in system_metrics table.
 
@@ -224,7 +225,7 @@ We are committed to the ongoing development and iteration of this open source pr
 
 ## Next steps
 
-Congratulations you have walk through the basic features of GreptimeDB. Feel free to dive deeper to Guides chapter.
+Congratulations you have learned the basic features of GreptimeDB. You are ready for the Guides chapter.
 
 * [Concepts](/user-guide/concepts.md)
 * [Clients](/user-guide/clients.md)

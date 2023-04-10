@@ -9,7 +9,7 @@ To select all the data from the `system_metrics` table, use the `SELECT` stateme
 SELECT * FROM system_metrics;
 ```
 
-The query result  looks like the following:
+The query result looks like the following:
 
 ```
 +-------+-------+----------+-------------+-----------+---------------------+
