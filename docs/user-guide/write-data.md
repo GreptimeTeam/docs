@@ -96,7 +96,7 @@ curl  -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INT
 use POST method to insert data:
 
 ```shell
-curl http://localhost:4000/v1/sql -d "sql=INSERT INTO system_metrics(idc, cpu_util, memory_util, disk_util) VALUES('idc_a', 19.6, 20, 2), ('idc_b', 25.8, 34, 12), ('idc_b', 25.8, 45, 1)"
+curl http://localhost:4000/v1/sql -d "sql=INSERT INTO system_metrics(idc, cpu_util, memory_util, disk_util) VALUES('idc_a', 19.6, 20, 2), ('idc_b', 25.8, 34, 12), ('idc_b', 25.9, 45, 1)"
 ```
 
 The result is shown below:
@@ -226,7 +226,8 @@ See [Prometheus Query Language](./prometheus.md#prometheus-query-language) to kn
 
 #### `Delete` Statement
 
-To delete a row from it by primary key `host` and timestamp index `ts`:
+To delete a row from it by key `idc` and timestamp index `ts`:
+
 ```sql
 DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450;
 ```
@@ -245,7 +246,7 @@ Use GET method to delete data:
 curl  -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450"
 ```
 
-use POST method to delete data:
+Use POST method to delete data:
 
 ```shell
 curl http://localhost:4000/v1/sql -d "sql=DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450"
