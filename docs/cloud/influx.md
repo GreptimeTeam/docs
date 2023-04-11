@@ -8,7 +8,7 @@ write protocol
 
 - URL: `https://<host>:4000/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`
-- Password: You GreptimeCloud service password
+- Password: Your GreptimeCloud service password
 
 ```sh
 curl -i -XPOST 'https://<host>:4000/v1/influxdb/write?db=<dbname>&u=<username>&p=PASSWORD'
