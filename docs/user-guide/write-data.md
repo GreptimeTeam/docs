@@ -90,13 +90,13 @@ For more information about the `INSERT` statement, please refer to the SQL refer
 Use GET method to insert data:
 
 ```shell
- curl  -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
+curl  -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INTO system_metrics(idc, cpu_util, memory_util, disk_util) VALUES(\"idc_a\", 19.6, 20, 2), (\"idc_b\", 25.8, 34, 12), (\"idc_b\", 25.8, 45, 1)"
 ```
 
 use POST method to insert data:
 
 ```shell
-curl http://localhost:4000/v1/sql -d "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
+curl http://localhost:4000/v1/sql -d "sql=INSERT INTO system_metrics(idc, cpu_util, memory_util, disk_util) VALUES('idc_a', 19.6, 20, 2), ('idc_b', 25.8, 34, 12), ('idc_b', 25.8, 45, 1)"
 ```
 
 The result is shown below:
@@ -219,4 +219,41 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 ### PromQL
 
 See [Prometheus Query Language](./prometheus.md#prometheus-query-language) to know how to write data.
+
+## Delete
+
+### SQL
+
+#### `Delete` Statement
+
+To delete a row from it by primary key `host` and timestamp index `ts`:
+```sql
+DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450;
+```
+
+```
+Query OK, 1 row affected (0.00 sec)
+```
+
+For more information about the `Delete` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+
+#### HTTP API
+
+Use GET method to delete data:
+
+```shell
+curl  -v -XGET -G http://localhost:4000/v1/sql  --data-urlencode "sql=DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450"
+```
+
+use POST method to delete data:
+
+```shell
+curl http://localhost:4000/v1/sql -d "sql=DELETE FROM system_metrics WHERE idc = 'idc_a' and ts = 1667446797450"
+```
+
+The result is shown below:
+
+```json
+{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":1}
+```
 

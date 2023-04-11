@@ -217,7 +217,7 @@ SELECT * FROM system_metrics;
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 
 ![line](../public/dashboard-line.png)
-![line](../public/dashboard-line.jpg)
+![line](../public/dashboard-line-enough-data.jpg)
 ![scatter](../public/dashboard-scatter.jpg)
 
 
