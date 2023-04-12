@@ -216,8 +216,8 @@ SELECT * FROM system_metrics;
 
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 
-![line](../public/dashboard-line.jpg)
-![scatter](../public/dashboard-scatter.jpg)
+![line](../public/dashboard-line.png)
+![scatter](../public/dashboard-scatter.png)
 
 
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
