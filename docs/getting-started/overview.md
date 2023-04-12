@@ -3,7 +3,7 @@
 Begin to explore GreptimeDB's powerful core features.
 
 ## Install GreptimeDB
-You can try out GreptimeDB with our test builds released on [GitHub](https://github.com/GreptimeTeam/greptimedb/releases) and [Dockerhub](https://hub.docker.com/r/greptime/greptimedb). Note that GreptimeDB is currently under intense development, so these binaries are **not ready to be used in the production environment yet**.
+You can try out GreptimeDB with our test builds released on [Download page](https://greptime.com/download). 
 
 We use the simplest configuration for getting started. For a comprehensive list of configuration options available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
@@ -216,7 +216,6 @@ SELECT * FROM system_metrics;
 
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 
-![line](../public/dashboard-line.png)
 ![line](../public/dashboard-line.jpg)
 ![scatter](../public/dashboard-scatter.jpg)
 
@@ -225,7 +224,7 @@ We are committed to the ongoing development and iteration of this open source pr
 
 ## Next steps
 
-Congratulations you have learned the basic features of GreptimeDB. You are ready for the Guides chapter.
+Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
 * [Concepts](/user-guide/concepts.md)
 * [Clients](/user-guide/clients.md)
@@ -234,5 +233,6 @@ Congratulations you have learned the basic features of GreptimeDB. You are ready
 * [Query data](/user-guide/query-data.md)
 * [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
 * [Prometheus](/user-guide/prometheus.md)
+* [Cluster](/user-guide/cluster.md)
 * [Operations](/user-guide/operations/overview.md)
 

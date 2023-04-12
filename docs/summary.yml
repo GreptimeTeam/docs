@@ -14,6 +14,7 @@
     - data-types
     - api
   - prometheus
+  - cluster
   - Operations:
     - overview
     - configuration
@@ -25,7 +26,6 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
-  - cluster
   - Integration
 - Developer-Guide:
   - overview

@@ -26,8 +26,8 @@ years, and based on their best practices, GreptimeDB was created to offer the fo
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
-- [Guides][2]: For application developers to use GreptimeDB or build custom integration.
-- [Community developer][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
+- [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
+- [Developer Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
 - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions.
 

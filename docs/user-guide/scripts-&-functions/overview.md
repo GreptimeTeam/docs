@@ -16,7 +16,7 @@ The Python coprocessor is currently in its experimental phase, and the API may u
 
 Python coprocessor is only supported in standalone mode right now. We will support it in distributed mode in future.
 
-You can download [pre-built binaries](https://github.com/GreptimeTeam/greptimedb/releases) with PyO3 supported whose file names are postfixed by `pyo3`.You can just also use RustPython which doesn't require additional setup by download binary files without `pyo3` postfixed.
+You can download [pre-built binaries](https://greptime.com/download) with PyO3 supported whose file names are postfixed by `pyo3`.You can just also use RustPython which doesn't require additional setup by download binary files without `pyo3` postfixed.
 
 If you have some library link issues,  you must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package(on most Debian-based system). However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`.
 The recommended way is to utilize `conda` for managing your Python environment. Firstly, create a Python environment with the same version of Python demanded by the binary you download. Alternatively, you can employ a docker container and execute the `greptime` binary within it.

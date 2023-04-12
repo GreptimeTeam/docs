@@ -56,29 +56,3 @@ flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
 Find all the supported data types in [Data Types](../reference/data-types.md).
-
-<!-- ## APIs
-
-GreptimeDB provides multiple types of APIs to fit itself into your existing data
-stack. Currently, we have these approaches to access the database:
-
-- Database protocols: [MySQL](./supported-protocols/mysql.md) and
-  [PostgreSQL](./supported-protocols/postgresql.md) wire protocols are
-  supported, use standard mysql and psql client, or their connectors of specific
-  programming language
-- [HTTP RESTful APIs](./supported-protocols/http-api.md)
-- [Prometheus remote read/write](./supported-protocols/prometheus.md) endpoints
-- [Influxdb line protocol](./supported-protocols/influxdb.md) compatible API
-  over HTTP
-- [OpenTSDB compatible API](./supported-protocols/opentsdb.md) over TCP and HTTP
-- [gRPC endpoints](./supported-protocols/grpc.md) -->
-
-<!-- ## What's Next
-
-- See next chapters for [table management](./table-management.md) and [data
-  read/write](./reading-writing-data.md)
-- See our [developer guides](../developer-guide/overview.md) for more
-  information about GreptimeDB's components
-- Learn [how to
-  contribute](https://github.com/GreptimeTeam/greptimedb/blob/develop/CONTRIBUTING.md)
-  to our code and docs -->
