@@ -10,60 +10,39 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 # Table of Contents
 
-## Installation
+## Introduction
 
-Provides instructions on how to deploy GreptimeDB in either standalone or distributed mode
-
-- [Overview][18]
+- [Introduction](./docs/index.md)
 
 ## Getting Started
 
 If you are new to Greptime DB, documents below will help you quickly get started
 
-- [Overview][2]
-- [Create a time series table][3]
-- [Add time series data][4]
-- [Query data with SQL][5]
-- [Visualize data][6]
-- [Process data with Python][7]
+- [Getting started](./docs/getting-started/overview.md)
 
 ## User Guide
 
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
-- [Concepts][8]
-- [Reading/Writing data][9]
-- [Table management][10]
-- [Python Coprocessor][11]
-- [Java SDK][12]
-- [Supported protocols][13]
+- [Concepts](./docs/user-guide/concepts.md)
+- [Clients](./docs/user-guide/clients.md)
+- [Table management](./docs/user-guide/table-management.md)
+- [Write data](./docs/user-guide/write-data.md)
+- [Query data](./docs/user-guide/query-data.md)
+- [Scripts & Functions](./docs/user-guide/scripts-&-functions/overview.md)
+- [Prometheus](./docs/user-guide/prometheus.md)
+- [Cluster](./docs/user-guide/cluster.md)
+- [Operations](./docs/user-guide/Operations/overview.md)
+- [Integration](./docs/user-guide/integration.md)
 
 ## Developer Guide
 
-Illustartes in detail how GreptimeDB works and helps you get involved in the development as a contributor
+Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
 
-  - [Overview][14]
-  - [Frontend][15]
-  - [Datanode][16]
-  - [Meta][17]
-
-[2]: ./docs/getting-started/overview.md
-[3]: ./docs/getting-started/create-a-time-series-table.md
-[4]: ./docs/getting-started/add-time-series-data.md
-[5]: ./docs/getting-started/query-data-with-sql.md
-[6]: ./docs/getting-started/visualize-data.md
-[7]: ./docs/getting-started/process-data-with-python.md
-[8]: ./docs/user-guide/concepts.md
-[9]: ./docs/user-guide/reading-writing-data.md
-[10]: ./docs/user-guide/table-management.md
-[11]: ./docs/user-guide/python-coprocessor/overview.md
-[12]: ./docs/user-guide/java-sdk.md
-[13]: ./docs/user-guide/supported-protocols/overview.md
-[14]: ./docs/developer-guide/overview.md
-[15]: ./docs/developer-guide/frontend/overview.md
-[16]: ./docs/developer-guide/datanode/overview.md
-[17]: ./docs/developer-guide/meta/overview.md
-[18]: ./docs/installation/overview.md
+  - [Overview](./docs/developer-guide/overview.md)
+  - [Frontend](./docs/developer-guide/frontend/overview.md)
+  - [Datanode](./docs/developer-guide/datanode/overview.md)
+  - [Meta](./docs/developer-guide/meta/overview.md)
 
 # Contributing
 

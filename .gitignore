@@ -104,6 +104,9 @@ dist
 # TernJS port file
 .tern-port
 
+# VitePress
+cache/
+
 .DS_Store
 
 *~

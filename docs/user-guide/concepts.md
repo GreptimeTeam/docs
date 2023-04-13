@@ -1,24 +1,5 @@
 # Concepts
 
-GreptimeDB is an open-source time-series database with a special focus on
-scalability, analytical capabilities and efficiency. It's designed to work on
-infrastructure of the cloud era, and users benefit from its elasticity and
-commodity storage.
-
-Our core developers have been building time-series data platform for
-years. Based on their best-practices, GreptimeDB is born to bring you:
-
-- [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases)
-  that scales to highly-available distributed cluster, providing a transparent
-  experience for cluster users
-- Optimized columnar layout for handling time-series data; compacted,
-  compressed, stored on various storage backends
-- Flexible index options, tackling high cardinality issues down
-- Distributed, parallel query execution, leveraging elastic computing resource
-- Native SQL, and Python scripting for advanced analytical scenarios
-- Widely adopted database protocols and APIs
-- Extensible table engine architecture for extensive workloads
-
 ## Components
 
 In order to form a robust database cluster and keep complexity at an acceptable
@@ -75,29 +56,3 @@ flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
 Find all the supported data types in [Data Types](../reference/data-types.md).
-
-## APIs
-
-GreptimeDB provides multiple types of APIs to fit itself into your existing data
-stack. Currently, we have these approaches to access the database:
-
-- Database protocols: [MySQL](./supported-protocols/mysql.md) and
-  [PostgreSQL](./supported-protocols/postgresql.md) wire protocols are
-  supported, use standard mysql and psql client, or their connectors of specific
-  programming language
-- [HTTP RESTful APIs](./supported-protocols/http-api.md)
-- [Prometheus remote read/write](./supported-protocols/prometheus.md) endpoints
-- [Influxdb line protocol](./supported-protocols/influxdb.md) compatible API
-  over HTTP
-- [OpenTSDB compatible API](./supported-protocols/opentsdb.md) over TCP and HTTP
-- [gRPC endpoints](./supported-protocols/grpc.md)
-
-## What's Next
-
-- See next chapters for [table management](./table-management.md) and [data
-  read/write](./reading-writing-data.md)
-- See our [developer guides](../developer-guide/overview.md) for more
-  information about GreptimeDB's components
-- Learn [how to
-  contribute](https://github.com/GreptimeTeam/greptimedb/blob/develop/CONTRIBUTING.md)
-  to our code and docs

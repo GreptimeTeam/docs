@@ -1,25 +1,11 @@
 # Table Management
 
-## Introduction
-
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
-## MySQL
+## Create a database
 
-You can use standard MySQL client to connect to a running GreptimeDB instance.
-
-``` bash
-$ mysql -h 127.0.0.1 -P 4002
-mysql>
-```
-
-[PostgreSQL client](./supported-protocols/postgresql.md) is supported too.
-
-
-### Creating a database
-
-The default database is `public`, you can create a database:
+The default database is `public`. You can create a database manully.
 
 ```sql
 CREATE DATABASE test;
@@ -29,12 +15,11 @@ CREATE DATABASE test;
 Query OK, 1 row affected (0.05 sec)
 ```
 
-### List Existing Databases
+You can list all the existing databases.
 
 ```sql
 SHOW DATABASES;
 ```
-
 
 ```sql
 +---------+
@@ -61,9 +46,18 @@ SHOW DATABASES LIKE 'p%';
 1 row in set (0.00 sec)
 ```
 
-### Creating a Table
 
-In this example, we are going to create a table named `monitor`
+Then change the database:
+
+```sql
+USE test;
+```
+
+## Create Table
+
+**GreptimeDB is a schema-less database without creating tables in advance. The table and columns will be created automatically when [writing data](./write-data.md) with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.** 
+
+You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
 ```sql
 CREATE TABLE monitor (
@@ -93,26 +87,7 @@ to tags in other time-series systems like [InfluxDB][1].
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
 
-#### Creating a table in other database
-
-GreptimeDB doesn't support `USE [DATABASE]` statement at the moment, so you must use `[database].[table]` as the table name to create or manipulate a table in other databases:
-
-```sql
-CREATE TABLE test.monitor (
-  host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  cpu DOUBLE DEFAULT 0,
-  memory DOUBLE,
-  TIME INDEX (ts),
-  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
-```
-
-``` sql
-Query OK, 1 row affected (0.03 sec)
-```
-
-
-### List Existing Tables
+## List Existing Tables
 
 You can use `show tables` statement to list existing tables
 
@@ -161,7 +136,7 @@ SHOW TABLES FROM test;
 1 row in set (0.01 sec)
 ```
 
-### Describe Table
+## Describe Table
 
 Show table information in detail:
 
@@ -182,7 +157,7 @@ DESC TABLE monitor;
 ```
 
 
-### Alter Table
+## Alter Table
 
 You can alter the schema of existing tables just like in MySQL database
 
@@ -204,3 +179,37 @@ Query OK, 0 rows affected (0.03 sec)
 
 
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
+
+
+## Drop Table
+
+`DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `test` in the current database:
+
+```sql
+DROP TABLE monitor;
+```
+```sql
+Query OK, 1 row affected (0.01 sec)
+```
+**Note: GreptimeDB V0.1 drops the table at the conceptual level, without actually deleting the content of the table. We will fix it ASAP.**
+
+## HTTP API
+
+`/sql` only accepts one parameter:
+
+- sql: the SQL statement.
+
+The API Result contains:
+
+- code: the result integer code. Zero means success, otherwise failure.
+- output: the SQL executed result, including schema and rows.
+
+Create table through POST method:
+
+```shell
+curl http://localhost:4000/v1/sql -d "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
+```
+
+```json
+{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
+```

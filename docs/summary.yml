@@ -1,54 +1,35 @@
-- Installation:
-  - overview
-  - download-pre-built
-  - Kubernetes:
-    - overview
-    - operator
-    - gtctl
 - Getting-Started:
   - overview
-  - create-a-time-series-table
-  - add-time-series-data
-  - query-data-with-sql
-  - visualize-data
-  - process-data-with-python
-  - distributed
 - User-Guide:
+  - overview
   - concepts
-  - authentication
-  - reading-writing-data
+  - clients
   - table-management
-  - Python-Coprocessor:
+  - write-data
+  - query-data
+  - Scripts-&-Functions:
     - overview
-    - hello
-    - coprocessor
-    - vector
-    - io
-    - query-data
-    - insert-data
-    - builtins
-    - third-parties
-    - faq
-  - Java-SDK:
-    - java-sdk
-    - quick-reference
-    - quick-start
-  - cli-repl
-  - PromQL:
-    - use-promql
-    - promql
-  - Supported-Protocols:
+    - getting-started
+    - data-types
+    - function
+    - api
+  - prometheus
+  - cluster
+  - Operations:
     - overview
-    - http-api
-    - grpc
-    - mysql
-    - postgresql
-    - opentsdb
-    - influxdb
-    - prometheus
+    - configuration
+    - kubernetes
+    # TODO
+    # - monitor-&-alert
+    # - import-data
+    # - export-data
+    # - back-up-&-restore-data
+    # - capacity-planning
+    - cli-repl
+  - Integration
 - Developer-Guide:
   - overview
-  - get-started
+  - getting-started
   - Frontend:
     - overview
     - table-sharding
@@ -76,8 +57,9 @@
     - how-to-write-sdk
 - Reference:
   - command-lines
-  - configuration
   - data-types
+  - SDK:
+    - Java
   - SQL:
     - overview
     - insert
@@ -98,9 +80,7 @@
     - describe_table
     - alter
     - explain
-    - drop_table
     - compatibility
-  - functions
 - Changelog:
   - overview
   - roadmap-2023

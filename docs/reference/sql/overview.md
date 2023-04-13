@@ -18,5 +18,4 @@
 * [DESCRIBE TABLE](./describe_table.md)
 * [ALTER](./alter.md)
 * [EXPLAIN](./explain.md)
-* [DROP TABLE](./drop_table.md)
 * [ANSI Compatibility](./compatibility.md)
