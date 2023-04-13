@@ -4,7 +4,7 @@ There are two gRPC services exposed by GreptimeDB. One is defined by GreptimeDB,
 of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for
 GreptimeDB in a programming language you are familiar with, please read on!
 
-> Currently, the gRPC SDK is written in Java, and you can find more details [here](/reference/sdk/java.md).
+> Currently, the gRPC SDK is written in Java and Go, and you can find more details about [Java](/reference/sdk/java.md).
 
 ## `GreptimeDatabase` Service
 

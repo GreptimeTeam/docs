@@ -10,8 +10,8 @@
   - Scripts-&-Functions:
     - overview
     - getting-started
-    - function
     - data-types
+    - function
     - api
   - prometheus
   - cluster

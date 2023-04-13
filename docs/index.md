@@ -4,24 +4,21 @@
     <img src="./public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
-GreptimeDB is an open-source time-series database with a special focus on improving
-scalability, analytical capabilities, and efficiency. It's designed to work on
-the infrastructure of the cloud era, and users can benefit from its elasticity and commodity
+GreptimeDB is an open-source time-series database with a special focus on
+scalability, analytical capabilities and efficiency. It's designed to work on
+infrastructure of the cloud era, and users benefit from its elasticity and commodity
 storage.
 
-Our core developers have been building time-series data platform for
-years, and based on their best practices, GreptimeDB was created to offer the following features:
+Our core developers have been building time-series data platform
+for years. Based on their best-practices, GreptimeDB is born to give you:
 
-- [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases)
-  that can scale to a highly available distributed cluster, providing a transparent
-  experience for cluster users.
-- Optimized columnar layout for handling time-series data; compacted,
-  compressed, stored on various storage backends.
-- Flexible index options that address high cardinality issues.
-- Distributed, parallel query execution, leveraging elastic computing resource.
-- Native SQL, and Python scripting for advanced analytical scenarios.
-- Widely adopted database protocols and APIs.
-- An extensible table engine architecture for extensive workloads.
+- [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases) that scales to highly-available distributed cluster, providing a transparent experience for cluster users
+- Optimized columnar layout for handling time-series data; compacted, compressed, and stored on various storage backends
+- Flexible indexes, tackling high cardinality issues down
+- Distributed, parallel query execution, leveraging elastic computing resource
+- Native SQL, and Python scripting for advanced analytical scenarios
+- Widely adopted database protocols and APIs, native PromQL supports
+- Extensible table engine architecture for extensive workloads
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 

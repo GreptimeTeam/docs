@@ -3,9 +3,7 @@
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
-## SQL Operations
-
-### Create a database
+## Create a database
 
 The default database is `public`. You can create a database manully.
 
@@ -55,17 +53,11 @@ Then change the database:
 USE test;
 ```
 
-### Create Table
+## Create Table
 
-In this example, we are going to create a table named `monitor`.
+**GreptimeDB is a schema-less database without creating tables in advance. The table and columns will be created automatically when [writing data](./write-data.md) with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.** 
 
-#### Create table automatically
-
-The table and columns will be created automatically when [writing data](./write-data.md) with protocol gRPC, influxDB, Opentsdb, Prometheus remote write.
-
-#### Create table manully
-
-You can also crate table manully.
+You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
 ```sql
 CREATE TABLE monitor (
@@ -81,7 +73,7 @@ CREATE TABLE monitor (
 Query OK, 1 row affected (0.03 sec)
 ```
 
-##### `CREATE TABLE` syntax
+#### `CREATE TABLE` syntax
 
 - Timestamp column: GreptimeDB is a time-series database system, a time-series column must
 be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
@@ -95,7 +87,7 @@ to tags in other time-series systems like [InfluxDB][1].
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
 
-### List Existing Tables
+## List Existing Tables
 
 You can use `show tables` statement to list existing tables
 
@@ -144,7 +136,7 @@ SHOW TABLES FROM test;
 1 row in set (0.01 sec)
 ```
 
-### Describe Table
+## Describe Table
 
 Show table information in detail:
 
@@ -165,7 +157,7 @@ DESC TABLE monitor;
 ```
 
 
-### Alter Table
+## Alter Table
 
 You can alter the schema of existing tables just like in MySQL database
 
@@ -189,7 +181,7 @@ Query OK, 0 rows affected (0.03 sec)
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
 
 
-### Drop Table
+## Drop Table
 
 `DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `test` in the current database:
 
@@ -211,12 +203,6 @@ The API Result contains:
 
 - code: the result integer code. Zero means success, otherwise failure.
 - output: the SQL executed result, including schema and rows.
-
-Create table through Get method:
-
-```shell
-curl -v -XGET -G http://localhost:4000/v1/sql --data-urlencode "sql=CREATE TABLE HTTP_API_TEST(name STRING, \"value\" DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
-```
 
 Create table through POST method:
 

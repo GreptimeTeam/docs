@@ -65,7 +65,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 +-------+---------------------------------+
 ```
 
-For more information about the `SELECT` statement, please refer to the SQL reference document.
+For more information about the `SELECT` statement, please refer to [SELECT](/reference/sql/select.md).
 
 ### HTTP API
 

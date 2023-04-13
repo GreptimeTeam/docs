@@ -4,8 +4,8 @@ GreptimeDB supports running Python script inside the database. If the business l
 We think the python coprocessor in GreptimeDB is a perfect replacement for stored procedures in traditional RDMS, and also the user can create SQL UDF(User Defined Function) by defining coprocessors.
 
 * [Getting started](./getting-started.md)
-* [Function](./function.md)
 * [Data types](./data-types.md)
+* [Function](./function.md)
 * [API](./api.md)
 
 All the examples can be found in [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples).
@@ -13,8 +13,6 @@ All the examples can be found in [python-coprocessor-examples](https://github.co
 # Note:
 
 The Python coprocessor is currently in its experimental phase, and the API may undergo some changes.
-
-Python coprocessor is only supported in standalone mode right now. We will support it in distributed mode in future.
 
 You can download [pre-built binaries](https://greptime.com/download) with PyO3 supported whose file names are postfixed by `pyo3`.You can just also use RustPython which doesn't require additional setup by download binary files without `pyo3` postfixed.
 

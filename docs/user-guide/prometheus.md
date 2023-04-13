@@ -10,7 +10,7 @@ Data in GreptimeDB is organized as tables, which can be thought of as groups of 
 
 GreptimeDB can be used as long-term storage for Prometheus. Using GreptimeDB as a Prometheus backend is a seamless experience. Since Prometheus has built-in support for setting up basic authentication information during the configuration of remote write and read, all you need to do is add your configured username and password to the config YAML file and you're good to go!
 
-Please follow the settings in [Prometheus configuration][https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file] (`prometheus.yml`):
+Please follow the settings in [Prometheus configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`):
 
 ```yaml
 remote_write:

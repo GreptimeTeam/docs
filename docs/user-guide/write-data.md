@@ -216,7 +216,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 '
 ```
 
-### PromQL
+### Prometheus
 
-See [Prometheus Query Language](./prometheus.md#prometheus-query-language) to know how to write data.
+See [Prometheus Storage](./prometheus.md#storage) to know how to write data.
 
