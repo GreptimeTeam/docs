@@ -6,7 +6,7 @@ ingestion API over http. The API and authentication is compatible with [InfluxDB
 write protocol
 1.x](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/#write-data-using-the-influxdb-api).
 
-- URL: `https://<host>:4000/v1/influxdb/write?db=<dbname>`
+- URL: `https://<host>/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`
 - Password: Your GreptimeCloud service password
 

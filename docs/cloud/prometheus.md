@@ -7,7 +7,7 @@ Add this `remote_write` section to your prometheus configuration.
 
 ```yaml
 remote_write:
-  - url: https://<host>:4000/v1/prometheus/write?db=<dbname>
+  - url: https://<host>/v1/prometheus/write?db=<dbname>
     basic_auth:
       username: <username>
       passowrd: #paste your service password
