@@ -75,4 +75,4 @@ This PR modifies timestamps to follow the ISO8601 format when writing query resu
 
 
 ## New things
-- GreptimeDB binaries now ship dashboard UI by default. Start greptimedb and you can find the dashboard at http://localhost:4000/dashboard/
+- GreptimeDB binaries now ship dashboard UI by default. Start greptimedb and you can find the dashboard at `http://localhost:4000/dashboard/`
