@@ -22,7 +22,7 @@ A big THANK YOU for the generous and brilliant contributions! It is people like 
 ### [Have passed over **50%** of Prometheus’s compliance tests](https://github.com/GreptimeTeam/greptimedb/pull/1042)
 We have initially supported PromQL and passed over **50%** of Prometheus’s compliance tests, which greatly improved PromQL compatibility. To improve its compatibility continuously, we have created this issue and gathered all the PromQL compatibility related PRs and tasks here for easier progress tracking.
 
-<p><img src="/blogs/2023-04-12-biweekly-report/image1.png" alt="image1" style="width: 100%; margin: 0 auto;" /></p>
+![PromQL Compatibility](../../public/biweekly/20230327-20230409.png)
 
 ### [Impl region manifest checkpoint](https://github.com/GreptimeTeam/greptimedb/pull/1202)
 Have you encountered the issue of slow restarts after storing a large amount of data in the database? We have recently fixed this problem.
