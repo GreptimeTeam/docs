@@ -1,92 +1,78 @@
-# 2023.02.06 - 2023.02.26 – Supports compaction function
+# 2023.03.27 - 2023.04.09 – Support timestamp precision on creating table
 
-March 03, 2023 · 6 min read
+April 12, 2023 · 6 min read
 
 ## Summary
-
-Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress. Below are some highlights in the past three weeks:
-
-- PromQL compatible (not 100% yet, but will be soon)
-- Supports compaction function
-- Data can be exported to files in Parquet format
-- A simple REPL is provided for development debugging
-- Caching is enabled by default when using object storage
-
-Join us at [GitHub](https://github.com/GreptimeTeam/greptimedb).
+Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. Below are some highlights:
+- Have passed over **50%** of Prometheus’s compliance tests
+- Impl region [manifest checkpoint](https://github.com/GreptimeTeam/greptimedb/issues/170)
+- Support timestamp precision on creating table
 
 ## Contributor list: (in alphabetical order)
+For the past two weeks, our community has been super active with a total of **6 PRs** from 2 contributors merged successfully and lots pending to be merged.
+Congrats on becoming our most active contributors in the past 2 weeks:
+- [@etolbakov](https://github.com/etolbakov) ([db#1083](https://github.com/GreptimeTeam/greptimedb/pull/1083) [db#1289](https://github.com/GreptimeTeam/greptimedb/pull/1289) [db#1304](https://github.com/GreptimeTeam/greptimedb/pull/1304) [db#1306](https://github.com/GreptimeTeam/greptimedb/pull/1306))
+- [@haohuaijin](https://github.com/haohuaijin) ([db#1291](https://github.com/GreptimeTeam/greptimedb/pull/1291) [db#1324](https://github.com/GreptimeTeam/greptimedb/pull/1324))
 
-Our community has been super active during the past three weeks, with a total of **20 PRs from 9 contributors successfully being merged** and many more pending to be merged.
-Congrats on becoming our most active contributors from Feb 6 to Feb 26:
+👏 Let's welcome **@haohuaijin** as the new contributor to join our community and have two PRs merged.
 
-- [@Brian Crant](https://github.com/bcrant) (#184)
-- [@etolbakov](https://github.com/etolbakov) (#966, #973, #1002, #987)
-- [@hezhizhen](https://github.com/hezhizhen) (#949, #1045)
-- [@messense](https://github.com/messense) (#46)
-- [@ShenJunkun](https://github.com/ShenJunkun) (#868, #177)
-- [@WenyXu](https://github.com/WenyXu) (#980, #970, #1089, #1092)
-- [@xl Huang](https://github.com/e1ijah1) (#928, #952)
-- [@Xuanwo](https://github.com/Xuanwo) (#1067, #1057)
-- [@Yun Chen](https://github.com/masonyc) (#957)
-- [@Zheming Li](https://github.com/lizhemingi) (#995)
+A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
-Let's welcome seven new contributors to join our community with their first PRs merged.
+## Highlights of Recent PR
+### [Have passed over **50%** of Prometheus’s compliance tests](https://github.com/GreptimeTeam/greptimedb/pull/1042)
+We have initially supported PromQL and passed over **50%** of Prometheus’s compliance tests, which greatly improved PromQL compatibility. To improve its compatibility continuously, we have created this issue and gathered all the PromQL compatibility related PRs and tasks here for easier progress tracking.
 
-**greptimedb**
-- [@etolbakov](https://github.com/etolbakov) made their first contribution in #966
-- [@hezhizhen](https://github.com/hezhizhen) made their first contribution in #949
-- [@WenyXu](https://github.com/WenyXu) made their first contribution in #980
-- [@ShenJunkun](https://github.com/ShenJunkun) made their first contribution in #868
+<p><img src="/blogs/2023-04-12-biweekly-report/image1.png" alt="image1" style="width: 100%; margin: 0 auto;" /></p>
 
-**promql-parser**
+### [Impl region manifest checkpoint](https://github.com/GreptimeTeam/greptimedb/pull/1202)
+Have you encountered the issue of slow restarts after storing a large amount of data in the database? We have recently fixed this problem.
 
-- [@messense](https://github.com/messense) made their first contribution in #46
+We have implemented the region manifest checkpoint which compresses manifest actions and creates a snapshot for them. This will decrease disk consumption and speed up region recovery.
+Main changes:
+  - Region manifest snapshot structures such as `RegionManifestData` and `RegionSnapshot` etc. Please refer to [src/storage/src/manifest/action.rs](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/storage/src/manifest/action.rs).
+  - Adds `Checkpointer` trait into `ManifestImpl`.
+  - Adds `RegionManifestCheckpointer` to do checkpointing for region manifest. When saving manifest actions, a checkpoint attempt will be made every tenth time.
+  - Recovers region manifest from the checkpointed snapshot.
 
-**docs**
+### [Support timestamp precision on creating table](https://github.com/GreptimeTeam/greptimedb/pull/1332)
+We have enhanced `Timestamp` to support specifying precision when creating tables, following the [fractional seconds syntax in MySQL](https://dev.mysql.com/doc/refman/8.0/en/fractional-seconds.html).
+Fractional seconds option now accepts:
+  - 0: no factional seconds, time unit is `TimeUnit::Second`
+  - 3: `TimeUnit::Millisecond`
+  - 6: `TimeUnit::Microsecond`
+  - 9: `TimeUnit::Nanosecond`
 
-- [@Brian Crant](https://github.com/bcrant) made their first contribution in #184
-- [@ShenJunkun](https://github.com/ShenJunkun) made their first contribution in #177
+Now we can specify the time precision to microseconds like:
 
-A big THANK YOU for your generous and brilliant contributions! It is people like you who are making GreptimeDB better everyday. Let's build an open, transparent and warm community together.
+```sql
+mysql> create table demo (ts timestamp(6) time index, cnt int);
+Query OK, 0 rows affected (0.05 sec)
+```
 
+And insert timestamps with different time zones:
 
+```sql
+mysql> insert into demo(ts,cnt) values ('2023-04-04 08:00:00.52+0000', 1);
+Query OK, 1 row affected (0.00 sec)
 
-## What's cooking on DB's develop branch
+mysql> insert into demo(ts,cnt) values ('2023-04-04 08:00:00.52+0800', 2);
+Query OK, 1 row affected (0.01 sec)
+```
 
+All timestamps will be displayed in UTC time:
 
-- [Issue #1042](https://github.com/GreptimeTeam/greptimedb/issues/1042)
+```sql
+mysql> select * from demo order by ts asc;
++------------------------------+------+
+| ts                           | cnt  |
++------------------------------+------+
+| 2023-04-04 00:00:00.520+0000 |    2 || 2023-04-04 08:00:00.520+0000 |    1 |
++------------------------------+------+
+2 rows in set (0.01 sec)
+```
 
-GreptimeDB NOW supports PromQL for basic use cases!
-
-As the most commonly used query language in cloud-native Observability, PromQL is preliminarily supported in the latest version -- GreptimeDB v0.1, making it easier to integrate with the Prometheus ecosystem. We are constantly improving the compatibility of PromQL in GreptimeDB, and it is expected to reach 50% compatibility in v0.2 and 70% in v0.3.
-
-- [Issue #930](https://github.com/GreptimeTeam/greptimedb/issues/930)
-
-The table compaction function is enabled.
-
-As a storage engine based on the LSM Tree architecture, compaction is essential. Currently, GreptimeDB performs compaction on SST files from various dimensions to improve storage and query efficiency.
-
-- [PR #1000](https://github.com/GreptimeTeam/greptimedb/pull/1000)
-
-Users can export data to files with Parquet format.
-
-Parquet is a commonly used file format in columnar storage engines, known for its ability to efficiently and flexibly handle (store, compress, and query) large datasets. By offering this feature, GreptimeDB makes it handy for users to export the data to other columnar databases.
-
-- [PR #1048](https://github.com/GreptimeTeam/greptimedb/pull/1048)
-
-There's a simple REPL for development and debugging purposes.
-
-Inspired by InfluxDB_IOx, GreptimeDB now offers an easy-to-use interactive interface (REPL) for developers to debug and troubleshoot any issues.
-
-- [PR #928](https://github.com/GreptimeTeam/greptimedb/pull/928)
-
-When using S3, OSS, or other object storage methods, caching is enabled by default in GreptimeDB, greatly improving query efficiency.
+This PR modifies timestamps to follow the ISO8601 format when writing query results to the MySQL protocol writer, ensuring that the time zone and fractional parts are displayed.
 
 
 ## New things
-
-- We open-sourced [PromQL parser for Rust](https://github.com/GreptimeTeam/promql-parser) with high compatibility with [Prometheus Query Language](https://prometheus.io/docs/prometheus/latest/querying/basics/)
-
-- [GreptimeDB Go Client](https://github.com/GreptimeTeam/greptimedb-client-go) is a work-in-progress to build a GreptimeDB SDK in Go programming language.
-
-- Our team participated in the 2023 Global AI Developer Conference and delivered an open-mic speech on product features, which helped us gain attention and recognition from the developer community and other start-ups.
+- GreptimeDB binaries now ship dashboard UI by default. Start greptimedb and you can find the dashboard at http://localhost:4000/dashboard/
