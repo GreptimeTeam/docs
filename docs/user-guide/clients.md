@@ -181,7 +181,7 @@ curl -X POST \
 http://localhost:4000/v1/sql?db=public
 ```
 
-```shell
+```json
 {
   "code": 0,
   "output": [

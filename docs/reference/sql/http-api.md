@@ -1,5 +1,7 @@
 # HTTP API
 
+To submit a SQL statement to the GreptimeDB server via HTTP API, use the following format:
+
 ```shell
 curl -X POST \
   -H 'Authorization: Basic {{authentication}}' \
@@ -10,16 +12,16 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 #### Method
 
-Use POST method to submit the SQL statement to server.
+Use the POST method to submit the SQL statement to the server.
 
 #### Header
 
-* `Authorization`: The credential. Required if starting GreptimeDB with authorized users. Please refer to [authentication](/user-guide/clients.md#HTTP-API).
+* `Authorization`: The credential. Required if you are using GreptimeDB with authorized users. Please refer to [authentication](/user-guide/clients.md#HTTP-API).
 * `Content-Type`: `application/x-www-form-urlencoded`.
 
 #### Query params
 
-* `db`: The database name. Required if starting GreptimeDB with authorized users, otherwise can be omitted if you are using the default `public` database.
+* `db`: The database name. Required if you are using GreptimeDB with authorized users. Otherwise, it can be omitted if you are using the default `public` database.
 
 #### Body
 

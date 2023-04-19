@@ -11,7 +11,7 @@ SELECT * FROM monitor;
 
 The query result looks like the following:
 
-```
+```sql
 +-----------+---------------------+------+--------+
 | host      | ts                  | cpu  | memory |
 +-----------+---------------------+------+--------+
@@ -28,7 +28,7 @@ You can use the `count()` function to get the number of all rows in the table:
 SELECT count(*) FROM monitor;
 ```
 
-```
+```sql
 +-----------------+
 | COUNT(UInt8(1)) |
 +-----------------+
@@ -42,7 +42,7 @@ The `avg()` function returns the average value of a certain field:
 SELECT avg(cpu) FROM monitor;
 ```
 
-```
+```sql
 +---------------------+
 | AVG(monitor.cpu)    |
 +---------------------+
@@ -58,7 +58,7 @@ The average memory usage grouped by idc:
 SELECT host, avg(cpu) FROM monitor GROUP BY host;
 ```
 
-```
+```sql
 +-----------+------------------+
 | host      | AVG(monitor.cpu) |
 +-----------+------------------+
@@ -137,7 +137,7 @@ The result is shown below:
 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/SQL/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
 ## gRPC
 

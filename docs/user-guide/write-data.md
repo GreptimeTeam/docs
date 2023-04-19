@@ -103,7 +103,7 @@ The result is shown below:
 {"code":0,"output":[{"affectedrows":3}],"execution_time_ms":0}
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/SQL/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
 ### InfluxDB Line Protocol
 
@@ -230,7 +230,7 @@ To delete a row from it by primary key `host` and timestamp index `ts`:
 DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 ```
 
-```
+```sql
 Query OK, 1 row affected (0.00 sec)
 ```
 
@@ -254,5 +254,5 @@ The result is shown below:
 {"code":0,"output":[{"affectedrows":1}],"execution_time_ms":1}
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/SQL/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
