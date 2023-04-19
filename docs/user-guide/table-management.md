@@ -68,15 +68,14 @@ You can still crate a table manully via SQL if you have some special demands. In
 ```sql
 CREATE TABLE monitor (
   host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
   cpu DOUBLE DEFAULT 0,
   memory DOUBLE,
-  TIME INDEX (ts),
   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 ```
 
 ``` sql
-Query OK, 1 row affected (0.03 sec)
+Query OK, 0 row affected (0.03 sec)
 ```
 
 #### `CREATE TABLE` syntax
