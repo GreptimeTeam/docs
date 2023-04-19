@@ -19,8 +19,23 @@ remote_write:
 
 You can sync your prometheus configuration files via git operations.
 
-1. `git clone https://<host>/promrules/git/<teamId>/<serviceName>.git`
+1.
+```shell
+git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
+```
 
 2. copy your prometheus.yml and rules into this repo, and commit them
 
-3. `git push`
+3.
+```shell
+git add .
+```
+4.
+```
+git commit -m "sync prometheus configuration"
+```
+
+5.
+```shell
+git push
+```
