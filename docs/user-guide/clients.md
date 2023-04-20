@@ -181,21 +181,16 @@ import (
 )
 
 func InitClient() *greptime.Client {
-    // leave `addr`, `database`, `username`, `password` untouched in local machine,
-    // but in GreptimeCloud you need to create a service in advance
-    addr := "127.0.0.1"
-    database := "public"
-    username, password := "", "" // authentication of one service
-
     options := []grpc.DialOption{
         grpc.WithTransportCredentials(insecure.NewCredentials()),
     }
     // To connect a database that needs authentication, for example, those on Greptime Cloud,
-    // `Username` and `Password` are must.
-    // To connect a local database without authentication, just leave the two fields empty.
-    cfg := greptime.NewCfg(addr).
-        WithDatabase(database).
-        WithAuth(username, password).
+    // `Username` and `Password` are needed when connecting to a database that requires authentication.
+    // Leave the two fields empty if connecting a database without authentication.
+    cfg := greptime.NewCfg("127.0.0.1").
+        WithDatabase("public").      // change to your real database
+        WithPort(4001).              // default port
+        WithAuth("", "").            // `Username` and `Password`
         WithDialOptions(options...). // specify your gRPC dail options
         WithCallOptions()            // specify your gRPC call options
 

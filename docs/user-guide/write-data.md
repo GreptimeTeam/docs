@@ -64,13 +64,23 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 
 To begin with, we have to prepare a `Series`, which delegates one row data. There are three kind fields in `Series` you can use:
 
-| Kind      | Description                                                                         |
-|-----------|-------------------------------------------------------------------------------------|
-| Tag       | index column, helps to retrieve data more efficiently                               |
-| Field     | value column, helps to analysis, aggregation, calculating, etc,.                    |
-| Timestamp | timestamp column, each table MUST have exactly one timestamp column, with precision |
+| Kind      | Description                                                         |
+|-----------|---------------------------------------------------------------------|
+| Tag       | index column, helps to retrieve data more efficiently               |
+| Field     | value column, helps to analysis, aggregation, calculating, etc,.    |
+| Timestamp | timestamp column, each table MUST have exactly one timestamp column |
 
 then, you can add one `Series` into `Metric`, then create a `InsertRequest`, call `client.Insert` to store the data into GreptimeDB.
+
+`Metric` can change the `Timestamp` precision by `metric.SetTimePrecision`. The following is the supported options:
+
+| Precision        | Description |
+|------------------|-------------|
+| time.Second      |             |
+| time.Millisecond | default     |
+| time.Microsecond |             |
+| time.Nanosecond  |             |
+
 
 ```go
 func Insert() {
@@ -82,6 +92,9 @@ func Insert() {
 
     metric := greptime.Metric{} // Create a Metric and add the Series
     metric.AddSeries(series)
+    // metric.SetTimePrecision(time.Second)  // default is Millisecond
+    // metric.SetTimestampAlias("timestamp") // default is 'ts'
+
 
     // Create an InsertRequest using fluent style
     // the specified table will be created automatically if it's not exist
