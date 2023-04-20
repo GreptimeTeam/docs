@@ -223,7 +223,7 @@ See [Prometheus Storage](./prometheus.md#storage) to know how to write data.
 
 ### SQL
 
-#### `Delete` Statement
+#### `DELETE` Statement
 
 To delete a row from it by primary key `host` and timestamp index `ts`:
 ```sql
@@ -234,7 +234,7 @@ DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 Query OK, 1 row affected (0.00 sec)
 ```
 
-For more information about the `Delete` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
 
 #### HTTP API
 
