@@ -14,7 +14,7 @@ This is helpful when troubleshooting complex issues
 
 ## How to use
 
-Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients.md), [write data](/user-guide/write-data.md) and [query data](/user-guide/query-data.md).
+Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients.md#java-sdk), [write data](/user-guide/write-data.md#java) and [query data](/user-guide/query-data.md#java).
 
 ## Configuration
 
