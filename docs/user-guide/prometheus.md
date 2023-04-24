@@ -79,15 +79,24 @@ We keep the setting of the path and parameter the same as that in Prometheus, so
 GreptimeDB also exposes an HTTP API for querying with PromQL. You can find it on `/promql` path under the current stable API version `/v1`, in **GreptimeDB HTTP API Port**. For example:
 
 ```shell
-curl --location --request GET 'http://localhost:4000/v1/promql?query=sum(some_metric)&start=1676738180&end=1676738780&step=10s'
+curl -X GET \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -G \
+  --data-urlencode 'db=public' \
+  --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
+  --data-urlencode 'start=1667446797' \
+  --data-urlencode 'end=1667446799' \
+  --data-urlencode 'step=1s' \
+  http://localhost:4000/v1/promql
 ```
 
 The input parameters are similar to the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in Prometheus' HTTP API:
 
-- `query=<string>`: Prometheus expression query string
-- `start=<rfc3339 | unix_timestamp>`: start timestamp, inclusive
-- `end=<rfc3339 | unix_timestamp>`: end timestamp, inclusive
-- `step=<duration | float>`: query resolution step width in duration format or float number of seconds
+- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database.
+- `query=<string>`: Required. Prometheus expression query string.
+- `start=<rfc3339 | unix_timestamp>`: Required. The start timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
+- `end=<rfc3339 | unix_timestamp>`: Required. The end timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
+- `step=<duration | float>`: Required. Query resolution step width in duration format or float number of seconds.
 
 Here are some examples for each type of parameter:
 - rfc3339
@@ -105,7 +114,53 @@ Here are some examples for each type of parameter:
 
 The result format is the same as `/sql` interface described in [query data](./query-data.md#http-api).
 
-**Note:** If you have set username and password for GreptimeDB, please refer to client [basic authentication](clients.md#http-api) to get the http request example with authorization.
+```json
+{
+  "code": 0,
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "ts",
+              "data_type": "TimestampMillisecond"
+            },
+            {
+              "name": "AVG(system_metrics.cpu_util)",
+              "data_type": "Float64"
+            },
+            {
+              "name": "AVG(system_metrics.memory_util)",
+              "data_type": "Float64"
+            },
+            {
+              "name": "AVG(system_metrics.disk_util)",
+              "data_type": "Float64"
+            }
+          ]
+        },
+        "rows": [
+          [
+            1667446798000,
+            80.1,
+            70.3,
+            90
+          ],
+          [
+            1667446799000,
+            80.1,
+            70.3,
+            90
+          ]
+        ]
+      }
+    }
+  ],
+  "execution_time_ms": 5
+}
+```
+<!-- TODO New paths that compatible with Promethues APIs -->
 
 ### SQL
 

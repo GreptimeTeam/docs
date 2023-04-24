@@ -119,11 +119,11 @@ func Insert() {
 Let's insert some testing data to the system_metrics table which we created before. You can use the INSERT INTO SQL statements:
 
 ``` sql
-INSERT INTO system_metrics
+INSERT INTO monitor
 VALUES
-    ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797450),
-    ("host2", "idc_a", 80.1, 70.3, 90.0, 1667446797450),
-    ("host1", "idc_b", 50.0, 66.7, 40.6, 1667446797450);
+    ("127.0.0.1", 1667446797450, 0.1, 0.4),
+    ("127.0.0.2", 1667446798450, 0.2, 0.3),
+    ("127.0.0.1", 1667446798450, 0.5, 0.2);
 ```
 ```sql
 Query OK, 3 rows affected (0.01 sec)
@@ -136,24 +136,23 @@ For more information about the `INSERT` statement, please refer to the SQL refer
 
 #### HTTP API
 
-Use GET method to insert data:
+Using POST method to insert data:
 
 ```shell
- curl  -v -XPOST -G http://localhost:4000/v1/sql  --data-urlencode "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
-```
-
-use POST method to insert data:
-
-```shell
-curl http://localhost:4000/v1/sql -d "sql=INSERT INTO HTTP_API_TEST(name, value) VALUES('hello', 1), ('world', 2)"
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=INSERT INTO monitor VALUES ("127.0.0.1", 1667446797450, 0.1, 0.4), ("127.0.0.2", 1667446798450, 0.2, 0.3), ("127.0.0.1", 1667446798450, 0.5, 0.2)' \
+http://localhost:4000/v1/sql?db=public
 ```
 
 The result is shown below:
 
 ```json
-{"code":0,"output":[{"affectedrows":2}],"execution_time_ms":6}
+{"code":0,"output":[{"affectedrows":3}],"execution_time_ms":0}
 ```
 
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
 ### InfluxDB Line Protocol
 
@@ -268,3 +267,42 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 ### Prometheus
 
 See [Prometheus Storage](./prometheus.md#storage) to know how to write data.
+
+## Delete
+
+### SQL
+
+#### `DELETE` Statement
+
+To delete a row from it by primary key `host` and timestamp index `ts`:
+```sql
+DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
+```
+
+```sql
+Query OK, 1 row affected (0.00 sec)
+```
+
+For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+
+#### HTTP API
+
+Using POST method to delete data:
+
+```shell
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=DELETE FROM monitor WHERE host = '127.0.0.2' and ts = 1667446798450" \
+http://localhost:4000/v1/sql?db=public
+```
+
+The result is shown below:
+
+```json
+{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":1}
+```
+
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+
+

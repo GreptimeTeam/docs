@@ -53,6 +53,12 @@ Then change the database:
 USE test;
 ```
 
+Change back to `public` database:
+
+```sql
+USE public;
+```
+
 ## Create Table
 
 **GreptimeDB is a schema-less database without creating tables in advance. The table and columns will be created automatically when [writing data](./write-data.md) with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.** 
@@ -194,21 +200,18 @@ Query OK, 1 row affected (0.01 sec)
 
 ## HTTP API
 
-`/sql` only accepts one parameter:
-
-- sql: the SQL statement.
-
-The API Result contains:
-
-- code: the result integer code. Zero means success, otherwise failure.
-- output: the SQL executed result, including schema and rows.
-
-Create table through POST method:
+Using the following code to create a table through POST method:
 
 ```shell
-curl http://localhost:4000/v1/sql -d "sql=CREATE TABLE HTTP_API_TEST(name STRING, value DOUBLE, ts TIMESTAMP default CURRENT_TIMESTAMP, PRIMARY KEY(name), TIME INDEX(ts))"
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
+http://localhost:4000/v1/sql?db=public
 ```
 
 ```json
 {"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
 ```
+
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).

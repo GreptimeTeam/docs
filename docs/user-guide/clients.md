@@ -15,6 +15,7 @@ GreptimeDB has a simple built-in mechanism for authentication, allowing users to
 Authentication happens when a user tries to connect to the database in the frontend (or standalone if using standalone mode). GreptimeDB supports passing in a file and loads all users listed within the file. GreptimeDB reads the user and password on each line using `=` as a separator, just like a command-line config. For example:
 
 ```
+greptime_user=greptime_pwd
 alice=aaa
 bob=bbb
 ```
@@ -211,15 +212,44 @@ HTTP comes with a built-in authentication mechanism. To set up `Basic` authentic
 2. Attach your encoded credentials to the HTTP request header using the format `Authorization: Basic <base64-encoded-credentials>`.
 
 Here's an example:
+
 ```shell
-❯ curl 'http://localhost:4000/v1/sql?sql=show%20tables&db=public' \
-        -H 'authorization: Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q='
-{"code":0,"output":[{"records":{"schema":{"column_schemas":[{"name":"Tables","data_type":"String"}]},"rows":[["numbers"],["scripts"]]}}],"execution_time_ms":1}
+curl -X POST \
+-H 'Authorization: Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'sql=show tables' \
+http://localhost:4000/v1/sql?db=public
 ```
 
-`Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `your_username:your_password` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64.
+```json
+{
+  "code": 0,
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "Tables",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          ["numbers"],
+          ["scripts"]
+        ]
+      }
+    }
+  ],
+  "execution_time_ms": 1
+}
+```
 
-Note: InfluxDB uses its own authentication format, which is different from the standard Basic authentication scheme. See below for details.
+* `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `greptime_user:greptime_pwd` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64. 
+* The `public` in the URL is the name of your database, which is required with authorization.
+
+**Note: InfluxDB uses its own authentication format, which is different from the standard Basic authentication scheme. See below for details.**
 
 ### InfluxDB
 
@@ -295,7 +325,7 @@ Connection closed by foreign host.
 ~ %
 ```
 
-#### HTTP
+#### HTTP API
 
 To set up `Basic` authentication scheme like any other HTTP request, please refer to [HTTP API](#http-api). To write data to GreptimeDB, please refer to [write data](./write-data.md#opentsdb-line-protocol).
 
