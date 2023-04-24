@@ -55,7 +55,7 @@ mysql>
 ```
 
 ### gRPC
-<!-- 
+<!--
 In GreptimeDB's gRPC Request struct, set up [`AuthHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/ad0187295035e83f76272da553453e649b7570de/proto/greptime/v1/database.proto#L21) with `Basic` Authentication scheme using username and password as configured, and you are good to go.
 
 To set up `Basic` authentication scheme using a username and password, configure the [AuthHeader](https://github.com/GreptimeTeam/greptime-proto/blob/ad0187295035e83f76272da553453e649b7570de/proto/greptime/v1/database.proto#L21) when initializing a connection. You can achieve this by setting up the `AuthHeader` in GreptimeDB's gRPC request struct, as shown below.
@@ -159,10 +159,50 @@ public class QuickStart {
 }
 ```
 
-See [Java SDK in reference](/reference/sdk/java.go) to get more configurations and metrics.
+See [Java SDK in reference](/reference/sdk/java.md) to get more configurations and metrics.
 
-<!-- #### Go SDK
-TODO -->
+#### Go SDK
+
+##### Install
+
+```sh
+go get github.com/GreptimeTeam/greptimedb-client-go
+```
+
+##### Create Client
+
+```go
+package example
+
+import (
+    greptime "github.com/GreptimeTeam/greptimedb-client-go"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+)
+
+func InitClient() *greptime.Client {
+    options := []grpc.DialOption{
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    }
+    // To connect a database that needs authentication, for example, those on Greptime Cloud,
+    // `Username` and `Password` are needed when connecting to a database that requires authentication.
+    // Leave the two fields empty if connecting a database without authentication.
+    cfg := greptime.NewCfg("127.0.0.1").
+        WithDatabase("public").      // change to your real database
+        WithPort(4001).              // default port
+        WithAuth("", "").            // `Username` and `Password`
+        WithDialOptions(options...). // specify your gRPC dail options
+        WithCallOptions()            // specify your gRPC call options
+
+    client, err := greptime.NewClient(cfg)
+    if err != nil {
+        panic("failed to init client")
+    }
+    return client
+}
+```
+
+See [Go SDK in reference](/reference/sdk/go.md) to get more configurations.
 
 ### HTTP API
 HTTP comes with a built-in authentication mechanism. To set up `Basic` authentication scheme like any other HTTP request, do the following:
@@ -255,7 +295,7 @@ Connection closed by foreign host.
 ~ %
 ```
 
-#### HTTP 
+#### HTTP
 
 To set up `Basic` authentication scheme like any other HTTP request, please refer to [HTTP API](#http-api). To write data to GreptimeDB, please refer to [write data](./write-data.md#opentsdb-line-protocol).
 
