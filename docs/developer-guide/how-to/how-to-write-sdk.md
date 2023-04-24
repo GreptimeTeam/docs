@@ -4,7 +4,8 @@ There are two gRPC services exposed by GreptimeDB. One is defined by GreptimeDB,
 of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for
 GreptimeDB in a programming language you are familiar with, please read on!
 
-> Currently, the gRPC SDK is written in Java and Go, and you can find more details about [Java](/reference/sdk/java.md).
+> Currently, the gRPC SDK is written in Java and Go, and you can find more details about
+[Java](/reference/sdk/java.md) and [Go](/reference/sdk/go.md).
 
 ## `GreptimeDatabase` Service
 
@@ -19,7 +20,7 @@ service GreptimeDatabase {
 }
 ```
 
-The `Handle` method is for unary call: when a `GreptimeRequest` is received and processed by a GreptimeDB 
+The `Handle` method is for unary call: when a `GreptimeRequest` is received and processed by a GreptimeDB
 server, it responds with a `GreptimeResponse` immediately.
 
 The `HandleRequests` acts in
@@ -32,7 +33,7 @@ implement the [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.
 
 ## [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) Service
 
-First, you can find our protobuf definitions for GreptimeDB requests and responses in this [repo](https://github.com/GreptimeTeam/greptime-proto#for-sdk-developers). It is recommended to read the "For SDK developers" section in the README of that repository. 
+First, you can find our protobuf definitions for GreptimeDB requests and responses in this [repo](https://github.com/GreptimeTeam/greptime-proto#for-sdk-developers). It is recommended to read the "For SDK developers" section in the README of that repository.
 
 Make sure Arrow Flight RPC officially supports your chosen programming language. Currently, it supports C++, Java, Go, C#, and Rust. However, it may support additional languages in the future, so stay tuned with its [Implementation Status](https://arrow.apache.org/docs/status.html#flight-rpc). If you can't find the language you are using, you have to write a client from sketch (starting from Arrow Flight's raw gRPC service protobuf [definition](https://arrow.apache.org/docs/format/Flight.html#protocol-buffer-definitions)).
 
@@ -106,7 +107,7 @@ Result {
 function decode_do_get_stream(flight_datas: List<FlightData>) -> Result {
   result = Result
   context = Context
-  
+
   for flight_data in flight_datas {
     decode(flight_data, context, result);
   }
@@ -116,22 +117,22 @@ function decode_do_get_stream(flight_datas: List<FlightData>) -> Result {
 
 function decode(flight_data: FlightData, context: Context, result: Result) {
   message = Message::deserialize(flight_data.data_header);
-  
+
   switch message.header_type {
     case None:
       flight_metadata = FlightMetadata::deserialize(flight_data.app_metadata);
-      
+
       result.affected_rows = flight_metadata.affected_rows;
-    
+
     case Schema:
       context.schema = Schema::deserialize(flight_data.data_body);
-    
+
     case Recordbatch:
       recordbatch = Recordbatch::deserialize(
-        flight_data.data_body, 
+        flight_data.data_body,
         context.schema
       );
-      
+
       result.recordbatches.push(recordbatch);
   }
 }
