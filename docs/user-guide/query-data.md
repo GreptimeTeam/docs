@@ -2,8 +2,8 @@
 
 ## SQL
 
-GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `system_metrics` so you can get familiar with using SQL alongside GreptimeDB functions.
-To select all the data from the `system_metrics` table, use the `SELECT` statement:
+GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `monitor` so you can get familiar with using SQL alongside GreptimeDB functions.
+To select all the data from the `monitor` table, use the `SELECT` statement:
 
 ``` sql
 SELECT * FROM monitor;
