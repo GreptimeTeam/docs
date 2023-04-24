@@ -70,7 +70,7 @@ To begin with, we have to prepare a `Series`, which delegates one row data. Ther
 | Field     | value column, helps to analysis, aggregation, calculating, etc,.    |
 | Timestamp | timestamp column, each table MUST have exactly one timestamp column |
 
-then, you can add one `Series` into `Metric`, then create a `InsertRequest`, call `client.Insert` to store the data into GreptimeDB.
+then, you can add one `Series` into `Metric`, then create an `InsertRequest` and call `client.Insert` to store the data into GreptimeDB.
 
 `Metric` can change the `Timestamp` precision by `metric.SetTimePrecision`. The following is the supported options:
 

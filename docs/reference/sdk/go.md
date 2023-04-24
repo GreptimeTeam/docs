@@ -18,11 +18,11 @@ Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clie
 
 | Name     | Description                                                           |
 |:---------|:----------------------------------------------------------------------|
-| Addr     | GreptimeDB server address.                                            |
-| Port     | default is 4001                                                       |
+| Host     | GreptimeDB server host                                                |
+| Port     | Default is 4001                                                       |
 | Username | Leave the field empty if connecting a database without authentication |
 | Password | Leave the field empty if connecting a database without authentication |
-| Database | default database to operate on                                        |
+| Database | Default database to operate on                                        |
 
 ## Usage Examples
 

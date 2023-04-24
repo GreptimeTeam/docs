@@ -172,7 +172,7 @@ CompletableFuture<Result<QueryOk, Err>> query(QueryRequest req, Context ctx);
 
 To begin with, you have to prepare a `QueryRequest`, and you can retrieve data from GreptimeDB via:
 
-- Sql
+- SQL
 - PromQL (TODO)
 - RangePromQL
 
