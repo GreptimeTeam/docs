@@ -77,7 +77,9 @@ mysql -h 127.0.0.1 -P 4002
 
 ## Create table
 
-Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
+**Note: GreptimeDB provides schemaless writing that you don't need to create table manually with other protocols. See [write data](/user-guide/write-data.md).**
+
+Now we create a table via MySQL. Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
 
 ``` sql
 CREATE TABLE IF NOT EXISTS system_metrics (

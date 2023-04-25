@@ -61,7 +61,7 @@ USE public;
 
 ## Create Table
 
-**GreptimeDB is a schema-less database without creating tables in advance. The table and columns will be created automatically when [writing data](./write-data.md) with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.** 
+**Note: GreptimeDB provides schemaless writing that you don't need to create table manually with other protocols. See [write data](/user-guide/write-data.md).**
 
 You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
