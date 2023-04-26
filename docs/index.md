@@ -19,6 +19,7 @@ for years. Based on their best-practices, GreptimeDB is born to give you:
 - Native SQL, and Python scripting for advanced analytical scenarios
 - Widely adopted database protocols and APIs, native PromQL supports
 - Extensible table engine architecture for extensive workloads
+- Schemaless writing that automatically creates tables for data
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
