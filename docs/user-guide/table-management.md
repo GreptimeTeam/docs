@@ -3,7 +3,7 @@
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
-## Create a database
+## Create Database
 
 The default database is `public`. You can create a database manully.
 
@@ -61,7 +61,7 @@ USE public;
 
 ## Create Table
 
-**Note: GreptimeDB provides schemaless writing that you don't need to create table manually with other protocols. See [write data](/user-guide/write-data.md).**
+**Note: GreptimeDB provides schemaless writing that you don't need to create table manually with other protocols. See [auto schema](/user-guide/write-data.md#auto-schema).**
 
 You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
