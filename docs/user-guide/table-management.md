@@ -61,7 +61,7 @@ USE public;
 
 ## Create Table
 
-**Note: GreptimeDB provides schemaless writing that you don't need to create table manually with other protocols. See [Automatic Schema Generation](/user-guide/write-data.md#automatic-schema-generation).**
+**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data.md#automatic-schema-generation).**
 
 You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
