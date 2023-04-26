@@ -30,3 +30,7 @@ For fully runnable code snippets and explanations for common methods, see the [E
 
 <!-- link -->
 [example]: https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package
+
+## API
+
+Please refer to [API Document](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go).

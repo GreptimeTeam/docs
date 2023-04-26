@@ -114,3 +114,7 @@ the log output, including:
 
 ## Usage Examples
 For fully runnable code snippets and explanations for common methods, see the [Usage Examples](https://github.com/GreptimeTeam/greptimedb-client-java/tree/main/greptimedb-example/src/main/java/io/greptime/example).
+
+## API
+
+Please refer to [API Document](https://javadoc.io/doc/io.greptime/greptimedb-protocol/latest/index.html).
