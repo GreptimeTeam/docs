@@ -29,7 +29,7 @@ The Coprocessor Engine supports the following vector types:
 
 |  Type | Description  | 
 |---|---|
-| `vector[str]`  |  The sting  type |
+| `vector[str]`  |  The string  type |
 | `vector[bool]` | The boolean type |
 |  `vector[u8]`|  The 8-bit unsigned integer type |
 |  `vector[u16]` | The 16-bit unsigned integer  type |
