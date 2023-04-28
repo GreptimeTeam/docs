@@ -16,17 +16,11 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ## Does GreptimeDB have a Golang driver?
 
-Our Golang SDK is under development and you can find the repo [here](https://github.com/GreptimeTeam/greptimedb-client-go)
-Currently, we support MySQL protocol, you can check it out on the [user guide](https://docs.greptime.com/user-guide/supported-protocols/mysql ). 
-
-HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information. 
+Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
-We have completed the initial implementation of PromQL natively in GreptimeDB and this ability will be released with our version 0.1. 
-Currently, though haven't passed all the official compatibility tests, GreptimeDB is usable for some basic scenarios for PromQL query. 
-
-We plan to pass more than 50% of the test cases in this [compatibility test](https://promlabs.com/promql-compliance-tests/) in version 0.2. For details, you can check our progress under [this issue](https://github.com/GreptimeTeam/greptimedb/issues/596).
+GreptimeDB supports PromQL natively since our version 0.1. GreptimeDB v0.2 passed more than 50% of the official compatibility test cases, and we plan to pass more than 70%  in version 0.3.
 
 ## Is GreptimeDB compatible with Grafana?
 
@@ -50,8 +44,9 @@ You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/mi
 Yes, we open sourced the dashboard for users to query and visualize their data.
 Please check out our initial version on [GitHub Repo](https://github.com/GreptimeTeam/dashboard). 
 
-## Does GreptimeDB support ingesting data without defining a schema? Like Prometheus metrics.
-Yes, we can create table automatically while inserting data using TSDB’s protocol (e.g. OpenTSDB, InfluxDB, prometheus)
+## Dose GreptimeDB support schemaless?
+Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write. 
+For more information, refer to [this document](https://docs.greptime.com/user-guide/table-management#create-table).
 
 ## Are there any retention policy?
 
