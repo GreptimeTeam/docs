@@ -18,6 +18,10 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
 
+Currently, we support MySQL protocol, you can check it out on the [user guide](https://docs.greptime.com/user-guide/supported-protocols/mysql). 
+
+HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information. 
+
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
 GreptimeDB supports PromQL natively since our version 0.1. GreptimeDB v0.2 passed more than 50% of the official compatibility test cases, and we plan to pass more than 70%  in version 0.3.
