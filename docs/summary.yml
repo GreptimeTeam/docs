@@ -8,6 +8,7 @@
   - write-data
   - query-data
   - query-external-data
+  - authentication
   - Scripts-&-Functions:
     - overview
     - getting-started
