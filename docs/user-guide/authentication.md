@@ -50,7 +50,7 @@ Frequently, having only one specific user isn't particularly useful. GreptimeDB 
 ./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
 ```
 
-GreptimeDB reads the user and password on each line using `=` as a separator, just like a command-line config. For example:
+GreptimeDB reads the username and password on each line using `=` as a separator, just like a command-line config. For example:
 
 ```
 alice=aaa
