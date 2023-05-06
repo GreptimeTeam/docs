@@ -44,7 +44,7 @@ Single user configuartion is easy to setup and test, but it's not recommanded fo
 
 ### Multi-user file configuration
 
-Often, one fixed user isn't really much of a help. GreptimeDB also supports passing in a file and loads all users listed within the file.
+Frequently, having only one specific user isn't particularly useful. GreptimeDB also allows for the input of a file which then loads all users listed within it.
 
 ```shell
 ./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
