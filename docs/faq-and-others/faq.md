@@ -48,7 +48,7 @@ You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/mi
 Yes, we open sourced the dashboard for users to query and visualize their data.
 Please check out our initial version on [GitHub Repo](https://github.com/GreptimeTeam/dashboard). 
 
-## Dose GreptimeDB support schemaless?
+## Does GreptimeDB support schemaless?
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write. 
 For more information, refer to [this document](https://docs.greptime.com/user-guide/table-management#create-table).
 
