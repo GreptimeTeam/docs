@@ -2,6 +2,8 @@
 
 ## Components
 
+![components](../../public/architecture-2.png)
+
 In order to form a robust database cluster and keep complexity at an acceptable
 level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Meta.
