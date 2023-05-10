@@ -1,3 +1,5 @@
+# How to use tokio-console in GreptimeDB
+
 This document introduces how to use the [tokio-console](https://github.com/tokio-rs/console) in GreptimeDB.
 
 First, build GreptimeDB with feature `common-telemetry/console`. Also the `tokio_unstable` cfg must be enabled:
