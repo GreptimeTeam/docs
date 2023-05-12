@@ -51,3 +51,25 @@ Specifically, if you only have one file to import, you can use the following syn
 ```sql
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
+
+### WITH Options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet	 | **Required** |
+| `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
+
+### Connection Options
+
+#### S3
+
+When you try to copy data from(to) S3, e.g., `COPY tbl FROM 's3://path/to/xxx.parquet' WITH (FORMAT = 'parquet');`. You can set the following options:
+
+| Option  | Description  | Required |
+|---|---|---|
+| `REGION` | AWS region name.  e.g., us-east-1.	 | **Required** |
+| `ENDPOINT`  | The bucket endpoint  | Optional |
+| `ACCESS_KEY_ID` | ACCESS_KEY_ID	Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
+| `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.	 | Optional |
+| `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |
+| `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service.	| Optional |
