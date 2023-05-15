@@ -15,27 +15,18 @@ remote_write:
       passowrd: #paste your service password
 ```
 
-## Configuration
+## Rule Management
 
-You can sync your prometheus configuration files via git operations.
+Each GreptimeCloud service comes with a git repository for storing prometheus
+rules and configurations. By checking your rules, GreptimeCloud's
+prometheus-compatible rule engine evaluates your rules against data stored in
+the database and emits alert when matches.
 
-1.
+
 ```shell
 git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
-```
-
-2. copy your prometheus.yml and rules into this repo, and commit them
-
-3.
-```shell
+# Copy your prometheus.yml and rules into this repo, and commit them
 git add .
-```
-4.
-```
 git commit -m "sync prometheus configuration"
-```
-
-5.
-```shell
 git push
 ```
