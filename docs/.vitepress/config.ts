@@ -31,6 +31,9 @@ export default (async () => ({
   lastUpdated: true,
   ignoreDeadLinks: true,
   themeConfig: {
+    search: {
+      provider: 'local',
+    },
     siteTitle: '',
     logo: 'logo-text-tinted.png',
     locales: { root: { label: 'English' } },
