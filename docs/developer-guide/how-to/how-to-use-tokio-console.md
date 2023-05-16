@@ -2,7 +2,7 @@
 
 This document introduces how to use the [tokio-console](https://github.com/tokio-rs/console) in GreptimeDB.
 
-First, build GreptimeDB with feature `common-telemetry/console`. Also the `tokio_unstable` cfg must be enabled:
+First, build GreptimeDB with feature `cmd/tokio-console`. Also the `tokio_unstable` cfg must be enabled:
 
 ```bash
 RUSTFLAGS="--cfg tokio_unstable" cargo build -F cmd/tokio-console
