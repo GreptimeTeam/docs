@@ -63,7 +63,11 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 #### S3
 
-When you try to copy data from(to) S3, e.g., `COPY tbl FROM 's3://path/to/xxx.parquet' WITH (FORMAT = 'parquet');`. You can set the following options:
+When you try to copy data from(to) S3:
+```sql
+`COPY tbl FROM 's3://path/to/xxx.parquet' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');`. 
+```
+You can set the following options:
 
 | Option  | Description  | Required |
 |---|---|---|
