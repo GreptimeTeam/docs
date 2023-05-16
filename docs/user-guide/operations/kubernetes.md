@@ -44,7 +44,13 @@ Make sure you have already installed [Helm][5].  Use the following commands to i
 
 ```shell
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
+```
+
+```shell
 helm repo update
+```
+
+```shell
 helm install gtcloud greptime/greptimedb-operator -n default --devel
 ```
 
@@ -70,10 +76,14 @@ You can use the following commands to uninstall operator and cluster:
 ```shell
 # Uninstall the cluster.
 helm uninstall mydb
+```
 
+```shell
 # Uninstall the operator.
 helm uninstall gtcloud
+```
 
+```shell
 # Delete crds.
 kubectl delete crds greptimedbclusters.greptime.io
 ```
@@ -91,7 +101,7 @@ kubectl delete crds greptimedbclusters.greptime.io
 
 ### 1\. Create a test Kubernetes cluster
 
-You can use [kind][2] to create your own test `Kubernetes` cluster:
+You can use [kind][4] to create your own test `Kubernetes` cluster:
 
 ```shell
 kind create cluster
@@ -108,7 +118,7 @@ curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/instal
 ### 3\. Create your own GreptimeDB cluster
 
 ```shell
-gtctl cluster create mydb -n default
+./gtctl cluster create mydb -n default
 ```
 
 After the installation is completed, `gtctl` creates the followings:
@@ -127,7 +137,7 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ### 4\. Delete your own GreptimeDB cluster
 
 ```shell
-gtctl cluster delete mydb --tear-down-etcd
+./gtctl cluster delete mydb --tear-down-etcd
 ```
 
 [1]: <https://github.com/GreptimeTeam/gtctl>
