@@ -126,3 +126,69 @@ Query OK, 0 rows affected (0.01 sec)
 
 TODO by MichaelScofield
 
+## CREATE EXTERNAL TABLE
+
+### Syntax
+Creates a new file external table in the `db` database or the current database in-use:
+
+```sql
+CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
+[
+ (
+    <col_name> <col_type> [NULL | NOT NULL] [COMMENT "<comment>"]
+ )
+]
+[ WITH
+ (
+   LOCATION = 'url'
+   [,FORMAT =  { csv | json | parquet } ]
+   [,PATTERN = '<regex_pattern>' ]
+   [,ENDPOINT = '<uri>' ]
+   [,ACCESS_KEY_ID = '<key_id>' ]
+   [,SECRET_ACCESS_KEY = '<access_key>' ]
+   [,SESSION_TOKEN = '<token>' ]
+   [,REGION = '<region>' ]
+   [,ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
+   ..
+ )
+]
+```
+
+
+### Table options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `LOCATION` | External files locations, e.g., `s3://<bucket>[<path>]`, `/<path>/[<filename>]`	 | **Required** |
+| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet	 | **Required** |
+| `PATTERN` | Use regex to match files. e.g., `*_today.parquet` 	 | Optional |
+
+#### S3
+| Option  | Description  | Required |
+|---|---|---|
+| `REGION` | AWS region name.  e.g., us-east-1.	 | **Required** |
+| `ENDPOINT`  | The bucket endpoint  | Optional |
+| `ACCESS_KEY_ID` | ACCESS_KEY_ID	Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
+| `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.	 | Optional |
+| `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".		 | Optional |
+| `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service.	 | Optional |
+
+### Examples
+
+You can create a external table without any columns definitions:
+```sql
+CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
+```
+
+Or 
+
+```sql
+CREATE EXTERNAL TABLE city (
+            host string,
+            ts int64,
+            cpu float64 default 0,
+            memory float64,
+            TIME INDEX (ts),
+            PRIMARY KEY(ts, host)
+) WITH (location='/var/data/city.csv', format='csv');
+```
