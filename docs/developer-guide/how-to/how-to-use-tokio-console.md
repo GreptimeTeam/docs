@@ -18,7 +18,7 @@ RUSTFLAGS="--cfg tokio_unstable" greptime --tokio-console-addr="127.0.0.1:6669" 
 Now you can use `tokio-console` to connect to GreptimeDB's tokio console subscriber:
 
 ```bash
-tokio-consile [TARGET_ADDR]
+tokio-console [TARGET_ADDR]
 ```
 
 "TARGET_ADDR" defaults to "http://127.0.0.1:6669".
