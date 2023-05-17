@@ -73,6 +73,7 @@ async function makeSidebar() {
       return {
         text: title.replace(/-/g, ' '),
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
+        collapsed: true,
       }
     } else {
       let link = `${path}/${items}`.toLocaleLowerCase()
