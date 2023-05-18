@@ -58,3 +58,11 @@ flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
 Find all the supported data types in [Data Types](../reference/data-types.md).
+
+## Read more
+
+Get GreptimeDB roadmap and architecture design from blog posts:
+
+* [This Time, for Real - GreptimeDB is Now Open Source](https://greptime.com/blogs/2022-11-15-this-time-for-real)
+* [GreptimeDB Internal Design — Distributed, Cloud-native, and Enhanced Analytical Ability for Time Series](https://greptime.com/blogs/2022-12-08-GreptimeDB-internal-design)
+* [GreptimeDB Storage Engine Design - Catering to Time Series Scenarios](https://greptime.com/blogs/2022-12-21-storage-engine-design)
