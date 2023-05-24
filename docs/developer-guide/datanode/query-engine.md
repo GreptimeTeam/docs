@@ -26,7 +26,7 @@ The last phase "execute" is a verb, stands for the procedure that reads data fro
 calculations and generates the expected results. Although it's more abstract than previously mentioned cencepts, you can just
 simply imagine it as executing a Rust async function. And it's indeed a future (stream).
 
-`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan. 
+`EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan.
 
 ## Data Representation
 

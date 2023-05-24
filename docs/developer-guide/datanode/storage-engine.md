@@ -62,7 +62,7 @@ Each row of the mapping has the following forms:
 
 ### Region
 
-Data in the storage engine is stored in aregion, a logically isolated storage unit in the engine.
+Data in the storage engine is stored in a region, a logically isolated storage unit in the engine.
 Rows in a `region` must have the same `schema`, which defines the key and the value columns in this
 region.
 
