@@ -229,7 +229,7 @@ We are committed to the ongoing development and iteration of this open source pr
 
 Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
-* [Concepts](/user-guide/concepts.md)
+* [Concepts](/user-guide/concepts/overview.md)
 * [Clients](/user-guide/clients.md)
 * [Table management](/user-guide/table-management.md)
 * [Write data](/user-guide/write-data.md)
