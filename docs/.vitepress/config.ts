@@ -29,7 +29,7 @@ export default (async () => ({
     root: { label: 'English', lang: 'en-US' },
   },
   lastUpdated: true,
-  ignoreDeadLinks: true,
+  ignoreDeadLinks: false,
   themeConfig: {
     siteTitle: '',
     logo: 'logo-text-tinted.png',
@@ -37,6 +37,10 @@ export default (async () => ({
     copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
     email: 'marketing@greptime.com',
     sidebar: await makeSidebar(),
+    editLink: {
+      pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
+      text: 'Edit this page on GitHub',
+    },
     socialLinks: [
       {
         icon: 'github',
@@ -53,6 +57,7 @@ export default (async () => ({
         link: 'https://greptime.com/blogs',
       },
     ],
+    outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
 }))()
