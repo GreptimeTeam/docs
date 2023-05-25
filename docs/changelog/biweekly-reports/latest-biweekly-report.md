@@ -35,7 +35,7 @@ With the integration of `tokio-console` and GreptimeDB, as detailed in the [Grep
 
 Tokio console screenshot:
 
-<p><img src="/blogs/2023-05-24-biweekly-report/1.png" alt="screenshot-of-tokio-console" style="width: 70%; margin: 0 auto;" /></p>
+![Screenshot of tokio console](../../public/biweekly/1.png)
 
 ### [Support for additional endpoints in Prometheus HTTP API](https://github.com/GreptimeTeam/greptimedb/issues/1016#issuecomment-1431061736)
 
