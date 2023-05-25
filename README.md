@@ -24,7 +24,7 @@ If you are new to Greptime DB, documents below will help you quickly get started
 
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
-- [Concepts](./docs/user-guide/concepts/overview.md)
+- [Concepts](./docs/user-guide/concepts.md)
 - [Clients](./docs/user-guide/clients.md)
 - [Table management](./docs/user-guide/table-management.md)
 - [Write data](./docs/user-guide/write-data.md)

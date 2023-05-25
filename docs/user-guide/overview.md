@@ -1,6 +1,6 @@
 # User Guide
 
-* [Concepts](./concepts/overview.md)
+* [Concepts](./concepts.md)
 * [Clients](./clients.md)
 * [Table Management](./table-management.md)
 * [Write Data](./write-data.md)

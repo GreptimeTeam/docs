@@ -1,6 +1,7 @@
 # Concepts
 
-<!-- ## Why GreptimeDB -->
+<!-- ## Why GreptimeDB 
+Articl summary and link to blog post -->
 
 ## Data Model
 
@@ -40,7 +41,7 @@ We call this kind of table TimeSeries Table, which consists of four parts:
 - Tag Column: labels attached to the collected indicators, such as the `host` and `idc` columns in the example, generally to describe a particular characteristic of these indicators.
 
 
-![time-series-table-model](../../public/time-series-table-model.png)
+![time-series-table-model](../public/time-series-table-model.png)
 
 GreptimeDB is designed on top of Table for the following reasons:
 
@@ -49,29 +50,29 @@ GreptimeDB is designed on top of Table for the following reasons:
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
 - When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various index tables, offsetting the learning and use costs for users.
 
-Nevertheless, our definition of Schema is not mandatory, but more towards the Schemaless way like MongoDB. See [Automatic Schema Generation](../write-data.md#automatic-schema-generation) for more details.
+Nevertheless, our definition of Schema is not mandatory, but more towards the Schemaless way like MongoDB. See [Automatic Schema Generation](./write-data.md#automatic-schema-generation) for more details.
 
 
 ## Architecture
 
-![architecture](../../public/architecture-2.png)
+![architecture](../public/architecture-2.png)
 
 In order to form a robust database cluster and keep complexity at an acceptable
 level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Meta.
 
-- [**Meta**](../../developer-guide/meta/overview.md) is the central command of
+- [**Meta**](../developer-guide/meta/overview.md) is the central command of
   GreptimeDB cluster. In typical deployment, at least three nodes is required to
   setup a reliable *Meta* mini-cluster. *Meta* manages database and table
   information, including how data spread across the cluster and where to route
   requests to. It also keeps monitoring availability and performance of
   *Datanode*s, to ensure its routing table is valid and up-to-date.
-- [**Frontend**](../../developer-guide/frontend/overview.md) is a stateless
+- [**Frontend**](../developer-guide/frontend/overview.md) is a stateless
   component that can scale to as many as needed. It accepts incoming request,
   authenticates it, translates it from various protocols into GreptimeDB
   cluster's internal one, and forwards to certain *Datanode*s under guidance
   from *Meta*.
-- [**Datanodes**](../../developer-guide/datanode/overview.md) hold regions of
+- [**Datanodes**](../developer-guide/datanode/overview.md) hold regions of
   tables and data in Greptime DB cluster. It accepts read and write request sent
   from *Frontend*, and executes it against its data. A single-instance
   *Datanode* deployment can also be used as GreptimeDB standalone mode, for
@@ -95,11 +96,11 @@ The storage file structure of GreptimeDB includes of the following:
     └── LOCK
 ```
 
-- `data`: The files in data directory store time series data of GreptimeDB. To customize this path, please refer to [Storage option](../operations/configuration.md#storage-option).
+- `data`: The files in data directory store time series data of GreptimeDB. To customize this path, please refer to [Storage option](./operations/configuration.md#storage-option).
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
 - `wal`: The wal directory contains the write-ahead log files.
 
-## Objects
+## Key Concepts
 
 To understand how GreptimeDB manages and serves its data, you need to know about
 these building blocks of GreptimeDB.
@@ -131,41 +132,11 @@ Data in GreptimeDB is strongly typed. Auto-schema feature provides some
 flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
-Find all the supported data types in [Data Types](../../reference/data-types.md).
+Find all the supported data types in [Data Types](../reference/data-types.md).
 
 ## Protocols
 
-GreptimeDB supports multiple protocols for data ingestion and query. Please refer to [clients](../clients.md) for more details.
-
-## Smart Indexing
-
-In analytical scenarios of time series, the most common query pattern is to locate the fitting series according to the given tags and time ranges. Traditional time series databases have two ways of fast searching from tags to time series:
-
-- Popular TSDBs, for example, InfluxDB use inverted indexes and will end up spilling memory to disk when the series number increases.
-- On the other hand, if we use MPP approach instead, every query request has to go through all the SST files, which brings up the IO overhead. Moreover, the overhead will deteriorate when the SST files are offloaded to object storage on our future cloud version.
-
-GreptimeDB comes up with a mixed solution - build smart indexing and Massively Parallel Processing (MPP) to boost pruning and filtering.
-
-When designing GreptimeDB, the indexing should first boost scan pruning at the storage level. We use independent index files to record statistical information, like what Apache Parquet's row group metadata does. GreptimeDB's indexes permit MinMax, Dictionary, Bloomfilter, etc.
-
-![index file structure](../../public/index-file-structure.png)
-
-The statistical information will be helpful if and when the query is highly selective. However, if spatial locality does not hold, results scatter around in different blocks, which lowers efficiency. The good thing is that the analytical query pattern in time series always remains stationary. Therefore, we can use built-in metrics to record the workloads of different queries. Combining Cost-Based Optimization(CBO) with user-defined hints, we are able to build a smart index heuristically.
-
-
-## Data Compression
-Real world systems produce a huge volume of timeseries data everyday, so data compression is vital for TSDBs. If we fail to manage and compress those data, users end up costing a lot in storage and maintenance.
-
-GreptimeDB dynamically adopts compression algorithms based on the type and cardinality of data to meet the temporal and spatial complexity constraints.
-
-The most common data types in TSDBs are string and float. GreptimeDB dictionarizes strings when the cardinality of a block exceeds some threshold.
-
-Regarding float point numbers, GreptimeDB adopts Chimp algorithm. Usually, the difference between two adjacent floats is not that significant, so lots of "0"s are produced at the beginning and end of the results after bitwise XOR operation, providing the potential to compress them.
-
-See the example below:
-![Bitwise-XOR-Operation](../../public/Bitwise-XOR-Operation.png)
-
-By analyzing real-world time-series datasets, Chimp enhanced Gorilla's (Facebook's in-memory TSDB) algorithm, offering a higher compression rate and spatial efficiency than traditional algorithms such as zstd, Snappy, etc.
+GreptimeDB supports multiple protocols for data ingestion and query. Please refer to [clients](./clients.md) for more details.
 
 ## Read More
 

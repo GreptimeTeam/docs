@@ -2,9 +2,7 @@
   - overview
 - User-Guide:
   - overview
-  - Concepts:
-    - overview
-    # - Why-GreptimeDB
+  - concepts
   - clients
   - table-management
   - write-data
