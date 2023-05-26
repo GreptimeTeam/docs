@@ -31,6 +31,9 @@ export default (async () => ({
   lastUpdated: true,
   ignoreDeadLinks: false,
   themeConfig: {
+    search: {
+      provider: 'local',
+    },
     siteTitle: '',
     logo: 'logo-text-tinted.png',
     locales: { root: { label: 'English' } },
@@ -75,6 +78,7 @@ async function makeSidebar() {
       return {
         text: title.replace(/-/g, ' '),
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
+        collapsed: false,
       }
     } else {
       let link = `${path}/${items}`.toLocaleLowerCase()
