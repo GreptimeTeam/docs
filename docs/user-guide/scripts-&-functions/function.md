@@ -15,13 +15,12 @@ The engine allows one and only one function annotated with `@coprocesssor`. We c
 
 Both `sql` and `args` are optional; they must either be provided together or not at all. They are usually used in Post-Query processing. Please read below.
 
-The `returns` is required for every coprocessor because the output schema is necessary. 
+The `returns` is required for every coprocessor because the output schema is necessary.
 
 `backend` is optional, because `RustPython` can't support C APIs and you might want to use `pyo3` backend to use third-party python libraries that only support C APIs. For example, `numpy`, `pandas` etc.
 
 ## Input of the coprocessor function
 
-The coprocessor also accepts arguments already seen before:
 ```python
 @coprocessor(args=["number"], sql="select number from numbers limit 20", returns=["value"])
 def normalize(v) -> vector[i64]:
@@ -102,7 +101,7 @@ def return_vectors() -> (vector[i64], vector[str], vector[f64]):
     return a, b, c
 ```
 
-The return types of function `return_vectors` is `(vector[i64], vector[str], vector[f64])`. 
+The return types of function `return_vectors` is `(vector[i64], vector[str], vector[f64])`.
 
 But we must ensure that all these vectors returned by the function have the same length. Because when they are converted into rows, each row must have all the column values presented.
 
@@ -120,7 +119,7 @@ def return_vectors() -> (vector[i64], vector[str], vector[i64]):
 
 ## Query Data
 
-We provide two ways to easily query data from GreptimeDB in Python Corpcessor:
+We provide two ways to easily query data from GreptimeDB in Python Coprocessor:
 * SQL: run a SQL string and return the query result.
 * DataFrame API: a builtin module that describes and executes the query similar to a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) or [Spark DataFrame](https://spark.apache.org/docs/latest/sql-programming-guide.html).
 
@@ -187,9 +186,10 @@ def normalize(v) -> vector[i64]:
 ```
 
 The `normalize0` function behaves as described above. And the `normalize` function is the coprocessor entry point:
-* Execute the SQL `select value from demo`,
-* Extract the column `value` in the query result and use it as the argument in the `normalize` function. Then invoke the function.
-* In function, use list comprehension to process the `value` vector, which processes every element by the `normalize0` function.
+
+* Execute the SQL `select number from numbers limit 10`,
+* Extract the column `number` in the query result and use it as the argument in the `normalize` function. Then invoke the function.
+* In function, use list comprehension to process the `number` vector, which processes every element by the `normalize0` function.
 * Returns the result named as `value` column.
 
 The ` -> vector[i64]` part specifies the return column types for generating the output schema.
