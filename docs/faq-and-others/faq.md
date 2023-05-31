@@ -69,7 +69,7 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 ## Does GreptimeDB's storage system fully compatible with S3 object storage?
 
-GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), supporting most object stores. Now GreptimeDB supports S3, oss and local disk, you can refer to storage configuration guide [here](https://docs.greptime.com/user-guide/operations/configuration#storage-option).
+GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), supporting most kinds of the object storages. Now GreptimeDB supports S3, oss and local disk, you can refer to storage configuration guide [here](https://docs.greptime.com/user-guide/operations/configuration#storage-option).
 
 ## Does GreptimeDB support dumping table-level data to S3?
 
