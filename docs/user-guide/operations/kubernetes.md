@@ -1,12 +1,10 @@
 # Kubernetes
 
-## GreptimeDB Operator
+Besides Kubernetes comand line tool `kubectl`, `helm` and `gtctl` can also be used to manage GreptimeDB clusters.
 
-The GreptimeDB [Operator][1] manages GreptimeDB clusters on [Kubernetes][2] by using [Operator
-pattern][3].
+## kubectl
 
-The GreptimeDB operator abstracts the model of maintaining the highly available GreptimeDB cluster. You
-can create your own cluster as easily as possible:
+You can create your own cluster as easily as possible by using `kubectl`:
 
 ```shell
 cat <<EOF | kubectl apply -f -
@@ -29,7 +27,14 @@ spec:
 EOF
 ```
 
-### 1\. Create a test Kubernetes cluster
+## GreptimeDB Operator
+
+The GreptimeDB [Operator][1] manages GreptimeDB clusters on [Kubernetes][2] by using [Operator
+pattern][3].
+
+The GreptimeDB operator abstracts the model of maintaining the highly available GreptimeDB cluster. 
+
+### 1. Create a test Kubernetes cluster
 
 You can use [kind][4] to create your own test  Kubernetes cluster:
 
@@ -37,7 +42,7 @@ You can use [kind][4] to create your own test  Kubernetes cluster:
 kind create cluster
 ```
 
-### 2\. Use Helm to install GreptimeDB Operator
+### 2. Use Helm to install GreptimeDB Operator
 
 Make sure you have already installed [Helm][5].  Use the following commands to install
 `greptimedb-operator` in the default namespace:
@@ -56,10 +61,25 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 The maintained Helm charts are in [helm-charts][6].
 
-### 3\. Create your own GreptimeDB cluster
+### 3. Create your own GreptimeDB cluster
+
+Create etcd cluster:
+
+```shell
+helm install etcd greptime/greptimedb-etcd -n default --devel
+```
+
+Create GreptimeDB cluster:
 
 ```shell
 helm install mydb greptime/greptimedb -n default --devel
+```
+
+If you already have the etcd cluster, you can configure the etcd cluster:
+  
+```shell
+helm install mycluster greptime/greptimedb -set etcdEndpoints=<your-etcd-cluster-endpoints> \
+-n default --devel
 ```
 
 After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
@@ -69,13 +89,18 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
 
-### 4\. Destroy GreptimeDB cluster
+### 4. Destroy GreptimeDB cluster
 
 You can use the following commands to uninstall operator and cluster:
 
 ```shell
 # Uninstall the cluster.
 helm uninstall mydb
+```
+
+```shell
+# Uninstall etcd.
+helm uninstall etcd -n default
 ```
 
 ```shell
@@ -99,7 +124,7 @@ kubectl delete crds greptimedbclusters.greptime.io
 
 [gtctl][1], g-t-control, is a command-line tool for managing the GreptimeDB clusters. gtctl is the all-in-one binary that integrates with multiple operations of GreptimeDB clusters.
 
-### 1\. Create a test Kubernetes cluster
+### 1. Create a test Kubernetes cluster
 
 You can use [kind][4] to create your own test `Kubernetes` cluster:
 
@@ -107,7 +132,7 @@ You can use [kind][4] to create your own test `Kubernetes` cluster:
 kind create cluster
 ```
 
-### 2\. Install gtctl
+### 2. Install gtctl
 
 Currently, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64`.
 
@@ -115,7 +140,7 @@ Currently, `gtctl` supports `Linux` and `Darwin` on `x86_64` and `ARM64`.
 curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
-### 3\. Create your own GreptimeDB cluster
+### 3. Create your own GreptimeDB cluster
 
 ```shell
 ./gtctl cluster create mydb -n default
@@ -134,7 +159,7 @@ You can use `kubectl port-forward` command to forward frontend requests:
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
-### 4\. Delete your own GreptimeDB cluster
+### 4. Delete your own GreptimeDB cluster
 
 ```shell
 ./gtctl cluster delete mydb --tear-down-etcd
