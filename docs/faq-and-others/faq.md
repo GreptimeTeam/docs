@@ -24,7 +24,7 @@ HTTP API is also available, please see [this article](https://docs.greptime.com/
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
-GreptimeDB supports PromQL natively since our version 0.1. GreptimeDB v0.2 passed more than 50% of the official compatibility test cases, and we plan to pass more than 70%  in version 0.3.
+GreptimeDB implements PromQL operator pushdown in our latest distributed version 0.3, enabling distributed PromQL queries.
 
 ## Is GreptimeDB compatible with Grafana?
 
@@ -54,7 +54,7 @@ For more information, refer to [this document](https://docs.greptime.com/user-gu
 
 ## Are there any retention policy?
 
-We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052).
+We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](https://docs.greptime.com/reference/sql/create).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
@@ -62,4 +62,16 @@ There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to 
 
 ## Where’s the name “Greptime” coming from? 
 Because “grep” is the most useful command line tool on *nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
+
+## Is there any good first issue that can help beginners get started quickly?
+
+Yes, beginners can filter issues with ["good first issue"](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) label, stay tuned and more good first issues will be released on a rolling basis.
+
+## Does GreptimeDB's storage system fully compatible with S3 object storage?
+
+GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), supporting most object stores. Now GreptimeDB supports S3, oss and local disk, you can refer to storage configuration guide [here](https://docs.greptime.com/user-guide/operations/configuration#storage-option).
+
+## Does GreptimeDB support dumping table-level data to S3?
+
+GreptimeDB supports dumping table-level data to S3 using `COPY TO`, documented [here](https://docs.greptime.com/reference/sql/copy#s3).
 
