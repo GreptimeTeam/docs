@@ -106,8 +106,8 @@ GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storag
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|
 | storage |          |        | Storage options                                     |
-|         | type     | String | Storage type, Only supports "File" or "S3" right now |
-| File    |          |        | Local File storage options, valid when type="file"        |
+|         | type     | String | Storage type, Only supports "File", "S3" and "Oss" etc. |
+| File    |          |        | Local file storage options, valid when type="file"        |
 |         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
 | S3      |          |        | AWS S3 storage options, valid when type="S3"            |
 |         | bucket   | String | The s3 bucket name                                  |
@@ -181,7 +181,7 @@ sync_write = false
 ```
 
 * `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
-* `file_size`:  the maximum file size of the WAL log file, default is 1GB.
+* `file_size`:  the maximum size of the WAL log file, default is 1GB.
 * `purge_threshold`  and `purge_interval`: control the purging of wal files.
 * `sync_write`: whether to call `fsync` when writing every log.
 
