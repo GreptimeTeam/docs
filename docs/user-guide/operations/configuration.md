@@ -99,19 +99,35 @@ There are also some node options in common:
 
 ### Storage options
 
-The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage related options.
+The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
+
+GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storage Service and Aliyun OSS.
 
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|
 | storage |          |        | Storage options                                     |
 |         | type     | String | Storage type, Only supports "File" or "S3" right now |
-| File    |          |        | File storage options, valid when type="file"        |
+| File    |          |        | Local File storage options, valid when type="file"        |
 |         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
-| S3      |          |        | S3 storage options, valid when type="S3"            |
+| S3      |          |        | AWS S3 storage options, valid when type="S3"            |
 |         | bucket   | String | The s3 bucket name                                  |
 |         | root     | String | The root path in s3 bucket                          |
+|         | endpoint     | String | The API endpoint of S3           |
 |         | access_key_id     | String | The s3 access key id                      |
 |         | secret_access_key | String | The s3 secret access key                  |
+| Oss      |          |        | Aliyun OSS storage options, valid when type="Oss"            |
+|         | bucket   | String | The OSS bucket name                                  |
+|         | root     | String | The root path in OSS bucket                          |
+|         | endpoint     | String | The API endpoint of OSS           |
+|         | access_key_id     | String | The OSS access key id                      |
+|         | secret_access_key | String | The OSS secret access key                  |
+| Azblob      |          |        | Azure Blob Storage options, valid when type="Azblob"            |
+|         | container   | String |  The container name                                  |
+|         | root     | String |  The root path in  container                          |
+|         | endpoint     | String | The API endpoint of  Azure Blob Storage service          |
+|         | account_name     | String | The account name of Azure Blob Storage service      |
+|         | account_key    | String | The access key                  |
+|         | sas_token | String | The shared access signature                   |
 
 A file storage sample configuration:
 
@@ -132,6 +148,23 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+
+#### Object storage cache
+When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
+
+```toml
+[storage]
+type = "S3"
+bucket = "test_greptimedb"
+root = "/greptimedb"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+## Enable object storage caching
+cache_path = "/var/data/s3_local_cache"
+cache_capacity = 1024
+```
+
+The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum file number in the cache directory.
 
 ### WAL options
 
