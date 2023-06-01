@@ -1,7 +1,6 @@
 - Getting-Started:
   - overview
 - User-Guide:
-  - overview
   - concepts
   - clients
   - table-management
@@ -17,7 +16,6 @@
   - prometheus
   - cluster
   - Operations:
-    - overview
     - configuration
     - kubernetes
     # TODO
@@ -64,7 +62,6 @@
     - Java
     - Go
   - SQL:
-    - overview
     - http-api
     - insert
     - cast
