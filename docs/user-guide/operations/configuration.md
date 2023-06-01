@@ -97,7 +97,7 @@ There are also some node options in common:
 |        | mode                    | String  | Node running mode, includes "standalone" and "distributed"                         |
 |        | enable_memory_catalog   | Boolean | Use in-memory catalog, false by default                                            |
 
-### Storage option
+### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage related options.
 
@@ -106,22 +106,22 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 | storage |          |        | Storage options                                     |
 |         | type     | String | Storage type, Only supports "File" or "S3" right now |
 | File    |          |        | File storage options, valid when type="file"        |
-|         | data_dir | String | Data directory, "/tmp/greptimedb/data" by default   |
+|         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
 | S3      |          |        | S3 storage options, valid when type="S3"            |
 |         | bucket   | String | The s3 bucket name                                  |
 |         | root     | String | The root path in s3 bucket                          |
 |         | access_key_id     | String | The s3 access key id                      |
 |         | secret_access_key | String | The s3 secret access key                  |
 
-A file sample configuration:
+A file storage sample configuration:
 
 ```toml
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 ```
 
-A s3 sample configuration:
+A s3 storage sample configuration:
 
 ```toml
 [storage]
@@ -131,6 +131,26 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
+
+
+### WAL options
+
+The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
+```toml
+[wal]
+# WAL data directory
+# dir = "/tmp/greptimedb/wal"
+file_size = "1GB"
+purge_threshold = "50GB"
+purge_interval = "10m"
+read_batch_size = 128
+sync_write = false
+```
+
+* `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
+* `file_size`:  the maximum file size of the WAL log file, default is 1GB.
+* `purge_threshold`  and `purge_interval`: control the purging of wal files.
+* `sync_write`: whether to call `fsync` when writing every log.
 
 ### Compaction
 
@@ -173,7 +193,7 @@ addr = "127.0.0.1:4000"
 timeout = "30s"
 
 [wal]
-dir = "/tmp/greptimedb/wal"
+#dir = "/tmp/greptimedb/wal"
 file_size = "1GB"
 purge_interval = "10m"
 purge_threshold = "50GB"
@@ -182,7 +202,7 @@ sync_write = false
 
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 
 [grpc_options]
 addr = "127.0.0.1:4001"
@@ -248,7 +268,7 @@ mysql_addr = "127.0.0.1:4406"
 mysql_runtime_size = 4
 
 [wal]
-dir = "/tmp/greptimedb/wal"
+#dir = "/tmp/greptimedb/wal"
 file_size = "1GB"
 purge_interval = "10m"
 purge_threshold = "50GB"
@@ -257,7 +277,7 @@ sync_write = false
 
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 
 [meta_client_options]
 metasrv_addrs = ["127.0.0.1:3002"]
