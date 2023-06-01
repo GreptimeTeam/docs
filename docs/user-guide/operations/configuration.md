@@ -110,11 +110,11 @@ GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storag
 | File    |          |        | Local file storage options, valid when type="file"        |
 |         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
 | S3      |          |        | AWS S3 storage options, valid when type="S3"            |
-|         | bucket   | String | The s3 bucket name                                  |
-|         | root     | String | The root path in s3 bucket                          |
+|         | bucket   | String | The S3 bucket name                                  |
+|         | root     | String | The root path in S3 bucket                          |
 |         | endpoint     | String | The API endpoint of S3           |
-|         | access_key_id     | String | The s3 access key id                      |
-|         | secret_access_key | String | The s3 secret access key                  |
+|         | access_key_id     | String | The S3 access key id                      |
+|         | secret_access_key | String | The S3 secret access key                  |
 | Oss      |          |        | Aliyun OSS storage options, valid when type="Oss"            |
 |         | bucket   | String | The OSS bucket name                                  |
 |         | root     | String | The root path in OSS bucket                          |
@@ -137,7 +137,7 @@ type = "File"
 data_home = "/tmp/greptimedb/"
 ```
 
-A s3 storage sample configuration:
+A S3 storage sample configuration:
 
 ```toml
 [storage]
