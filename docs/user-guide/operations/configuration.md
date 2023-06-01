@@ -101,7 +101,7 @@ There are also some node options in common:
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
-GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storage Service and Aliyun OSS.
+GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storage and Aliyun OSS.
 
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|
@@ -124,8 +124,8 @@ GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storag
 | Azblob      |          |        | Azure Blob Storage options, valid when type="Azblob"            |
 |         | container   | String |  The container name                                  |
 |         | root     | String |  The root path in  container                          |
-|         | endpoint     | String | The API endpoint of  Azure Blob Storage service          |
-|         | account_name     | String | The account name of Azure Blob Storage service      |
+|         | endpoint     | String | The API endpoint of  Azure Blob Storage          |
+|         | account_name     | String | The account name of Azure Blob Storage      |
 |         | account_key    | String | The access key                  |
 |         | sas_token | String | The shared access signature                   |
 
