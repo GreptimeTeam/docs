@@ -1,8 +1,8 @@
 # Kubernetes
 <!-- TODO how to apply yaml config -->
-<!-- Besides Kubernetes comand line tool `kubectl`, `helm` and `gtctl` can also be used to manage GreptimeDB clusters.
+<!-- Besides Kubernetes command line tool `kubectl`, `helm` and `gtctl` can also be used to manage GreptimeDB clusters.
 
-## kubectl
+## Kubectl
 
 You can create your own cluster as easily as possible by using `kubectl`:
 
