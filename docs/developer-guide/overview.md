@@ -6,7 +6,7 @@
 
 - `Frontend` that exposes read and write service in various protocols, forwards requests to
 `Datanode`.
-- `Datanode` is responsible for storing data to persistent storage such as local disk, S3.
+- `Datanode` is responsible for storing data to persistent storage such as local disk or object storage in the cloud such as AWS S3, Azure Blob Storage etc.
 - `Meta` server that coordinates the operations between the `Frontend` and `Datanode`.
 
 ![Architecture](../public/architecture.png)
