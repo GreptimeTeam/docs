@@ -1,8 +1,9 @@
 # Data Model
 
-We design our data model mainly based on the table model in relational databases while also considering the characteristics of time-series data.
+GreptimeDB uses the time-series table to guide the organization, compression, and expiration management of data.
+The data model mainly based on the table model in relational databases while considering the characteristics of time-series data.
 
-For example, we have a table `system_metrics` for monitoring the resource usage of a stand-alone device:
+For example, we have a time-series table `system_metrics` for monitoring the resource usage of a stand-alone device:
 
 ```sql
 DESC TABLE system_metrics;
@@ -40,7 +41,7 @@ We call this kind of table TimeSeries Table, which consists of four parts:
 
 GreptimeDB is designed on top of Table for the following reasons:
 
-- The Table model has a broad group of users and it's easy to learn. We just introduced the concept of time index to the time series, which will be used to guide the organization, compression, and expiration management of data.
+- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the time series.
 - Schema is meta-data to describe data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
 - When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various index tables, offsetting the learning and use costs for users.
