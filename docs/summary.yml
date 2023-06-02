@@ -2,7 +2,13 @@
   - overview
 - User-Guide:
   - overview
-  - concepts
+  - Concepts:
+    - overview
+    - why-greptimedb
+    - data-model
+    - architecture
+    - storage-location
+    - key-concepts
   - clients
   - table-management
   - write-data
