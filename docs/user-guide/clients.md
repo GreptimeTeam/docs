@@ -31,11 +31,12 @@ Now, user `alice` with password `aaa` and user `bob` with password `bbb` are loa
 Note: The content of the file is loaded into the database while starting up. Modifying or appending the file won't take effect while the database is up and running.
 
 ## Connect
+
 Now you can connect database via multiple protocols.
 
 ### MySQL
 
-use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password.
+Use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password.
 
 ```shell
 ❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
@@ -54,6 +55,23 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 mysql>
 ```
+
+#### Time Zone
+
+GreptimeDB's MySQL protocol interface follows original MySQL server on [how to
+deal with time zone](https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html).
+
+By default, MySQL uses its server time zone for timestamp. To override, you can
+set `time_zone` variable for current session using SQL statement `SET time_zone
+= 'UTC';`. The value of `time_zone` can be any of:
+
+- The server's time zone: `SYSTEM`.
+- Offset to UTC such as `+08:00`.
+- Any named time zone like `Europe/Berlin`.
+
+A few MySQL clients like Grafana MySQL data source allows you to set time zone
+for current session. It is also possible to check `time_zone` variable for
+current session by SQL statement `SELECT @@time_zone;`.
 
 ### gRPC
 <!--
@@ -246,7 +264,7 @@ http://localhost:4000/v1/sql?db=public
 }
 ```
 
-* `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `greptime_user:greptime_pwd` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64. 
+* `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `greptime_user:greptime_pwd` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64.
 * The `public` in the URL is the name of your database, which is required with authorization.
 
 **Note: InfluxDB uses its own authentication format, which is different from the standard Basic authentication scheme. See below for details.**
