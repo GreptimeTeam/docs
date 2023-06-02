@@ -63,7 +63,7 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 | ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server. |
 | Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err.                                                                                           |
 
-### Go
+#### Go
 
 To begin with, we have to prepare a `Series`, which delegates one row data. There are three kind fields in `Series` you can use:
 
