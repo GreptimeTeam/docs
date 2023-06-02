@@ -12,7 +12,7 @@ remote_write:
   - url: https://<host>/v1/prometheus/write?db=<dbname>
     basic_auth:
       username: <username>
-      passowrd: #paste your service password
+      password: #paste your service password
 ```
 
 ## Configuration
