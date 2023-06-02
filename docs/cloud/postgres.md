@@ -1,4 +1,4 @@
-# Postgresql
+# PostgreSQL
 
 GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 wire protocol. Most
 standard clients and drivers are compatible at wire protocol level. Note that we

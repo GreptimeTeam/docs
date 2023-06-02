@@ -8,9 +8,9 @@ write protocol
 
 - URL: `https://<host>/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`
-- Password: Your GreptimeCloud service password
+- Password: Your service password
 
 ```sh
-curl -i -XPOST 'https://<host>:4000/v1/influxdb/write?db=<dbname>&u=<username>&p=PASSWORD' \
---data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000'
+curl -i 'https://<host>:4000/v1/influxdb/write?db=<dbname>&u=<username>&p=PASSWORD' \
+--data-binary 'system_metrics,host=host1,idc=idc_a cpu_util=11.8,memory_util=10.3,disk_util=10.3 1667446797450'
 ```
