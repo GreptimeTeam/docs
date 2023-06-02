@@ -97,7 +97,7 @@ to tags in other time-series systems like [InfluxDB][1].
 You can use `show tables` statement to list existing tables
 
 ``` sql
-show tables;
+SHOW TABLES;
 ```
 ``` sql
 +------------+
@@ -109,11 +109,11 @@ show tables;
 3 rows in set (0.00 sec)
 ```
 
-Notice: `script` table is a built-in table that holds User-Defined Functions (UDFs).
+Notice: `scripts` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
 ``` sql
-show tables like monitor;
+SHOW TABLES LIKE monitor;
 ```
 ``` sql
 +---------+
@@ -167,7 +167,7 @@ DESC TABLE monitor;
 You can alter the schema of existing tables just like in MySQL database
 
 ``` sql
-alter table monitor add label varchar;
+ALTER TABLE monitor ADD COLUMN label VARCHAR;
 ```
 
 ```sql
@@ -175,7 +175,7 @@ Query OK, 0 rows affected (0.03 sec)
 ```
 
 ``` sql
-alter table monitor drop column label;
+ALTER TABLE monitor DROP COLUMN label;
 ```
 
 ```sql

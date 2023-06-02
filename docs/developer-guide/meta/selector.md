@@ -26,7 +26,7 @@ It sorts available `datanode`s according to the load, and returns a sorted list 
 
 ## Configuration
 
-You can configure the `Selector` when starting the `meta` service, with the default being `LeaseBasedSelector`.
+You can configure the `Selector` when starting the `meta` service, with the default being `LoadBasedSelector`.
 
 For example:
 

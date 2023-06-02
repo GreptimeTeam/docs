@@ -3,9 +3,9 @@
 Begin to explore GreptimeDB's powerful core features.
 
 ## Install GreptimeDB
-You can try out GreptimeDB with our test builds released on [Download page](https://greptime.com/download). 
+You can try out GreptimeDB with our test builds released on [Download page](https://greptime.com/download).
 
-We use the simplest configuration for getting started. For a comprehensive list of configuration options available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
+We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
 ### Linux & Mac
 
@@ -15,9 +15,9 @@ For Linux and macOS users, you can download the latest build of the `greptime` b
 curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/scripts/install.sh | sh
 ```
 
-When the download is complete, the binary file `greptime` will be stored in your current directory. 
+Once the download is completed, the binary file `greptime` will be stored in your current directory.
 
-You can run the GreptimeDB in standalone mode:
+You can run GreptimeDB in the standalone mode:
 
 ```shell
 ./greptime standalone start
@@ -111,7 +111,7 @@ Field descriptions:
 
 ## Insert data
 
-Using the `INSERT` statement is an easy way to add data to your table. Through the following statement, we have inserted three rows into the `system_metrics` table.
+Using the `INSERT` statement is an easy way to add data to your table. The following statement allows us to insert several rows into the `system_metrics` table.
 
 ``` sql
 INSERT INTO system_metrics
@@ -238,4 +238,3 @@ Congratulations you have learned the basic features of GreptimeDB. You are ready
 * [Prometheus](/user-guide/prometheus.md)
 * [Cluster](/user-guide/cluster.md)
 * [Operations](/user-guide/operations/overview.md)
-
