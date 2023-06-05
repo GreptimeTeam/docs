@@ -21,13 +21,13 @@ this:
 ```sql
 CREATE TABLE my_table (
   a INT,
-  others STRING,
+  ts TIMESTAMP TIME INDEX,
 )
-PARTITION BY RANGE (a) (
+PARTITION BY RANGE COLUMNS (a) (
   PARTITION p0 VALUES LESS THAN (10),
   PARTITION p1 VALUES LESS THAN (20),
-  PARTITION p2 VALUES LESS THAN MAXVALUE,
-)
+  PARTITION p2 VALUES LESS THAN (MAXVALUE),
+);
 ```
 
 `my_table` that we created above has 3 partitions. Partition "p0" contains a portion of data that
