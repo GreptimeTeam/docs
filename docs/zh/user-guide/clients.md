@@ -113,7 +113,7 @@ Note: replace `greptime(catalog)`, `public(schema)`, `greptime_user(username)`, 
 
 ##### 连接数据库
 
-现在，可以在项目的基础包目录下创建一个包含你的应用程序的文件，名为 `QuickStart.java`。使用下面的示例代码来连接数据库，将 `endpoints` 变量的值替换成真正的连接字符串。
+现在，可以在项目的基础包目录下创建一个包含用户的应用程序的文件，名为 `QuickStart.java`。使用下面的示例代码来连接数据库，将 `endpoints` 变量的值替换成真正的连接字符串。
 
 ```java
 package io.greptime.example;

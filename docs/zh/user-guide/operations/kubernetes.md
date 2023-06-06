@@ -4,7 +4,6 @@
 
 通过利用 [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)，[GreptimeDB Operator](https://github.com/GreptimeTeam/greptimedb-operator) 可以有效管理 [Kubernetes](https://kubernetes.io/) 上的 GreptimeDB 集群。这个 operator 可以抽象出维护高可用 GreptimeDB 集群的模式。
 
-
 ### 1. 创建测试版 Kubernetes 集群
 
 用户可以通过 [kind][4] 创建测试版 Kubernetes 集群：
@@ -31,13 +30,13 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 维护的 Helm 图表在 [helm-charts][6] 中。
 
-### 3. 创建 GreptimeDB 集群
-
-创建 etcd cluster 集群：
+### 3. 创建用户自己的 etcd cluster 集群
 
 ```shell
 helm install etcd greptime/greptimedb-etcd -n default --devel
 ```
+
+### 4. 创建用户自己的 GreptimeDB 集群：
 
 创建 GreptimeDB 集群：
 
@@ -45,10 +44,10 @@ helm install etcd greptime/greptimedb-etcd -n default --devel
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-如果用户之前已经有了 etcd 集群，可以这样创建 GreptimeDB 集群
+如果用户之前已经有了 etcd 集群，可以这样对其进行配置：
 
 ```shell
-helm install mycluster greptime/greptimedb -set etcdEndpoints=<your-etcd-cluster-endpoints> \
+helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
 -n default --devel
 ```
 
@@ -58,7 +57,6 @@ helm install mycluster greptime/greptimedb -set etcdEndpoints=<your-etcd-cluster
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
-
 ### 4. 清除 GreptimeDB 集群
 
 可以通过以下命令卸载 operator 和集群：
@@ -66,6 +64,11 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```shell
 # Uninstall the cluster.
 helm uninstall mydb
+```
+
+```shell
+# Uninstall etcd.
+helm uninstall etcd -n default
 ```
 
 ```shell
@@ -78,20 +81,20 @@ helm uninstall gtcloud
 kubectl delete crds greptimedbclusters.greptime.io
 ```
 
-[1]: <https://github.com/GreptimeTeam/greptimedb-operator>
-[2]: <https://kubernetes.io/>
-[3]: <https://kubernetes.io/docs/concepts/extend-kubernetes/operator/>
-[4]: <https://kind.sigs.k8s.io/docs/user/quick-start/>
-[5]: <https://helm.sh/docs/intro/install/>
-[6]: <https://github.com/GreptimeTeam/helm-charts>
+[1]: https://github.com/GreptimeTeam/greptimedb-operator
+[2]: https://kubernetes.io/
+[3]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+[4]: https://kind.sigs.k8s.io/docs/user/quick-start/
+[5]: https://helm.sh/docs/intro/install/
+[6]: https://github.com/GreptimeTeam/helm-charts
 
 ## gtctl
 
-[gtctl][1] 是管理 GreptimeDB 集群的命令行工具，集成了 GreptimeDB 集群的多种操作。
+[gtctl][1]，g-t-control，是一个用于管理 GreptimeDB 集群的命令行工具。gtctl 是集成了 GreptimeDB 集群的多种操作的多合一 binary。
 
 ### 1. 创建测试版 Kubernetes 集群
 
-通过 [kind][4] 来创建 `Kubernetes` 集群：
+通过 [kind][4] 来创建测试版 `Kubernetes` 集群：
 
 ```shell
 kind create cluster
@@ -105,7 +108,7 @@ kind create cluster
 curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
-### 3. 创建你的 GreptimeDB 集群
+### 3. 创建用户自己的 GreptimeDB 集群
 
 ```shell
 ./gtctl cluster create mydb -n default
@@ -130,5 +133,5 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ./gtctl cluster delete mydb --tear-down-etcd
 ```
 
-[1]: <https://github.com/GreptimeTeam/gtctl>
-[2]: <https://kind.sigs.k8s.io/docs/user/quick-start/>
+[1]: https://github.com/GreptimeTeam/gtctl
+[2]: https://kind.sigs.k8s.io/docs/user/quick-start/

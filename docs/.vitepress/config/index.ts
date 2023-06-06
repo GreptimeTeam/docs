@@ -10,7 +10,7 @@ export default async () => {
   const en = { label: 'English', lang: 'en', ...(await enConfig()) }
   let root = en
 
-  switch (dotenv.config().parsed?.VITE_LANG) {
+  switch ('zh') {
     case 'zh':
       root = zh
       break
