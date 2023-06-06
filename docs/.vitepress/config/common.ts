@@ -56,7 +56,6 @@ export const common = async () => ({
 
 export async function makeSidebar(lang) {
   const langPath = lang === 'zh' ? '/zh' : ''
-  console.log(`lang:`, lang)
   const summary = YAML.load(fs.readFileSync(`docs${langPath}/summary.yml`), 'utf8')
 
   function makeSidebarItem(items, path) {

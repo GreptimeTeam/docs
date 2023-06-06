@@ -22,7 +22,8 @@ export default async () => {
     ...commonConfig,
     locales: {
       root,
-      zh,
+      en: { ...en, link: 'https://docs.greptime.com/' },
+      zh: { ...zh, link: 'http://greptime-document-bucket.s3-website.cn-northwest-1.amazonaws.com.cn' },
     },
   }
 }
