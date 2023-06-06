@@ -338,3 +338,44 @@ datanode_lease_secs = 30
 | server_addr         | String  | The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost |
 | store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                        |
 | datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |
+
+## Layered configuration
+
+GreptimeDB supports layered configuration and uses the following precedence order(each item takes precedence over the item below it):
+
+- Command line flags
+- Configuration file
+- Environment variables
+- Default values
+
+Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variables:
+
+```toml
+# ...
+[storage.compaction]
+# Max task number that can concurrently run.
+max_inflight_tasks = 4
+# ...
+```
+
+You can use the following format:
+
+```
+GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
+```
+
+**Noted that**:
+
+- Every environment variable should have the component prefix, for example:
+  - `GREPTIMEDB_FRONTEND`
+  - `GREPTIMEDB_METASRV`
+  - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_STANDALONE`
+
+- we use **double underscore `__`** as separator. For example, the above data structure `storage.compaction.max_inflight_tasks` will be transformed to `STORAGE__COMPACTION__MAX_INFLIGHT_TASKS`.
+
+The environment variable also accepts list that separated by a comma `,`, for example:
+
+```
+GREPTIMEDB_METASRV__META_CLIENT_OPTIONS__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
+```
