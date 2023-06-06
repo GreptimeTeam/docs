@@ -35,7 +35,7 @@ GreptimeDB 中的 `Table` 与传统关系型数据库中的表相似，只是
 
 GreptimeDB 是强类型的数据库。[自动生成表结构](./write-data.md#automatic-schema-generation)功能也为创建 `Table` 提供了灵活性。创建 `Table` 成功后，同一列的数据必须使用相同的数据类型。
 
-在[数据类型文档](../reference/data-types.md)中找到所有支持的数据类型。
+<!-- 在[数据类型文档](../reference/data-types.md)中找到所有支持的数据类型。 -->
 
 ## 阅读更多
 

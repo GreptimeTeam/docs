@@ -72,28 +72,28 @@ CREATE TABLE monitor (
   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 ```
 
-``` sql
+```sql
 Query OK, 0 row affected (0.03 sec)
 ```
 
 #### `CREATE TABLE` 语法
 
 - 时间戳列：GreptimeDB 是一个时序数据库系统，在创建表时，必须用 `TIME INDEX` 关键字明确指定时间序列的列。
-时间序列的列的数据类型可以是 `BIGINT` 或 `TIMESTAMP`。如果选择 `BIGINT`，该列的插入值将被自动转换为以毫秒为单位的时间戳。
+  时间序列的列的数据类型可以是 `BIGINT` 或 `TIMESTAMP`。如果选择 `BIGINT`，该列的插入值将被自动转换为以毫秒为单位的时间戳。
 - 主键：主键用于唯一地定义一系列的数据，这类似于其他时间序列系统中的标签。如 [InfluxDB][1]。
-- 表选项：当创建一个表时，可以指定一组表选项，点击[这里](.../reference/sql/create.md#table-options)了解更多细节。
+<!-- - 表选项：当创建一个表时，可以指定一组表选项，点击[这里](../reference/sql/create.md#table-options)了解更多细节。 -->
 
-[1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
-
+[1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
 
 ## 列出现有的表
 
 可以使用 `show tables` 语句来列出现有的表
 
-``` sql
+```sql
 SHOW TABLES;
 ```
-``` sql
+
+```sql
 +------------+
 | Tables     |
 +------------+
@@ -107,10 +107,11 @@ SHOW TABLES;
 
 其目前只支持表名的过滤，可以通过表名字对其进行过滤。
 
-``` sql
+```sql
 SHOW TABLES LIKE monitor;
 ```
-``` sql
+
+```sql
 +---------+
 | Tables  |
 +---------+
@@ -119,13 +120,11 @@ SHOW TABLES LIKE monitor;
 1 row in set (0.00 sec)
 ```
 
-
 列出其他数据库中的表：
 
 ```sql
 SHOW TABLES FROM test;
 ```
-
 
 ```sql
 +---------+
@@ -156,12 +155,11 @@ DESC TABLE monitor;
 4 rows in set (0.01 sec)
 ```
 
-
 ## 改动表
 
 可以像在 MySQL 数据库中一样，改变现有表的模式
 
-``` sql
+```sql
 ALTER TABLE monitor ADD COLUMN label VARCHAR;
 ```
 
@@ -169,7 +167,7 @@ ALTER TABLE monitor ADD COLUMN label VARCHAR;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-``` sql
+```sql
 ALTER TABLE monitor DROP COLUMN label;
 ```
 
@@ -177,9 +175,7 @@ ALTER TABLE monitor DROP COLUMN label;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-
 注意：目前只允许添加/删除列，将很快支持改变列的定义。
-
 
 ## 删除表
 
@@ -190,6 +186,7 @@ Query OK, 0 rows affected (0.03 sec)
 ```sql
 DROP TABLE monitor;
 ```
+
 ```sql
 Query OK, 1 row affected (0.01 sec)
 ```
@@ -209,7 +206,7 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 ```json
-{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
+{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
 关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/reference/sql/http-api.md)。

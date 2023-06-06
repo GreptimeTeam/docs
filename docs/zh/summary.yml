@@ -17,7 +17,7 @@
         - data-types
         - function
         - api
-    - Operation:
+    - Operations:
         - overview
         - configuration
         - kubernetes

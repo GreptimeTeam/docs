@@ -20,28 +20,29 @@ def query_numbers() -> vector[f64]:
 
 ## 向量
 
-向量是协处理器中的主要数据类型，它是同类值的向量。通常，它是查询结果中提取的一列，但也可以在 Python 脚本中构建它。 
+向量是协处理器中的主要数据类型，它是同类值的向量。通常，它是查询结果中提取的一列，但也可以在 Python 脚本中构建它。
 
 向量就像编程语言中的数组类型，Apache [Arrow](https://arrow.apache.org/) 中的 `Array` 或 [NumPy](https://numpy.org/doc/stable/reference/arrays.html) 中的 `NDArray`。
 
 ### 向量类型
+
 协处理器引擎支持以下类型的向量：
 
-|  Type | Description  | 
-|---|---|
-| `vector[str]`  |  The string  type |
-| `vector[bool]` | The boolean type |
-|  `vector[u8]`|  The 8-bit unsigned integer type |
-|  `vector[u16]` | The 16-bit unsigned integer  type |
-|  `vector[u32]`|  The 32-bit unsigned integer type |
-|  `vector[u64]` |  The 64-bit unsigned integer type |
-|  `vector[i8]` | The 8-bit signed integer type |
-|  `vector[i16]` | The 16-bit signed integer type |
-|  `vector[i32]` |  The 32-bit signed integer type |
-|  `vector[i64]` | The 64-bit signed integer type |
-|  `vector[f32]` | The 32-bit floating point type |
-|  `vector[f64]` | The 64-bit floating point type |
-|  `vector[none]` | The any type  |
+| Type           | Description                      |
+| -------------- | -------------------------------- |
+| `vector[str]`  | The string type                  |
+| `vector[bool]` | The boolean type                 |
+| `vector[u8]`   | The 8-bit unsigned integer type  |
+| `vector[u16]`  | The 16-bit unsigned integer type |
+| `vector[u32]`  | The 32-bit unsigned integer type |
+| `vector[u64]`  | The 64-bit unsigned integer type |
+| `vector[i8]`   | The 8-bit signed integer type    |
+| `vector[i16]`  | The 16-bit signed integer type   |
+| `vector[i32]`  | The 32-bit signed integer type   |
+| `vector[i64]`  | The 64-bit signed integer type   |
+| `vector[f32]`  | The 32-bit floating point type   |
+| `vector[f64]`  | The 64-bit floating point type   |
+| `vector[none]` | The any type                     |
 
 正如我们在 [Hello, world](./getting-started.md#hello-world-example) 的例子中看到的那样，如果我们想把它作为 SQL UDF 使用，我们可以为协处理器定义返回向量类型。否则，我们可以忽略返回向量类型的声明：
 
@@ -58,11 +59,13 @@ def hello() -> vector[str]:
 之前已经展示了在[函数](./function.md)中通过执行 `@coprocessor` 中的 `sql` 属性从查询结果中提取向量的例子。
 
 我们可以从字面意义上创建一个向量：
+
 ```python
 @copr(returns=["value"])
 def answer() -> vector[i64]:
     return 42
 ```
+
 结果 `42` 将被包装成 `vector[i64]` 的一个元素的向量。
 
 ```sql
@@ -76,6 +79,7 @@ mysql> select answer();
 ```
 
 我们可以从一个 Python 列表中创建一个向量：
+
 ```python
 from greptime import vector
 
@@ -83,6 +87,7 @@ from greptime import vector
 def answer() -> vector[i64]:
     return vector([42, 43, 44])
 ```
+
 `greptime` 是一个内置模块，请参考 [API](./api.md) 文档。
 
 ```sql
@@ -100,16 +105,16 @@ mysql> select answer();
 事实上，`vector` 函数可以从 Python 的任何可迭代对象中创建一个向量。但是它要求所有的元素类型必须相同，而且它选择第一个元素的类型作为它的向量类型。
 
 ### 向量操作
+
 向量支持很多操作：
+
 1. 支持基本的算术运算，包括 `+`、`-`、`*`、`/`。
 2. 支持基本的逻辑运算，包括 `&`, `|`, `~`。
 3. 也支持基本的比较操作，包括 `>`, `<`, `>=`, `<=`, `==`, `！=`。
 
-
-> 注意：这里我们覆盖了bitwise和 `&`，bitwise 或 `|`，bitwise 不是 `~` 的逻辑运算符，因为 Python 不支持逻辑运算符的覆盖(不能覆盖 `and` `or` `not`)。
-[PEP335](https://peps.python.org/pep-0335/) 提出了一个建议，最终被拒绝。但是位操作符的优先级比比较操作符高，所以记得使用一对小括号来确保结果是想要的。
-> 即如果想过滤一个在0和100之间的向量，应该使用 `(vector[i32] >= 0) & (vector[i32] <= 100)` 而不是 `vector[i32] >= 0 & vector[i32] <= 100`。后者将被评估为 `vector[i32] >= (0 & vector[i32]) <= 100`。
-
+> 注意：这里我们覆盖了 bitwise 和 `&`，bitwise 或 `|`，bitwise 不是 `~` 的逻辑运算符，因为 Python 不支持逻辑运算符的覆盖(不能覆盖 `and` `or` `not`)。
+> [PEP335](https://peps.python.org/pep-0335/) 提出了一个建议，最终被拒绝。但是位操作符的优先级比比较操作符高，所以记得使用一对小括号来确保结果是想要的。
+> 即如果想过滤一个在 0 和 100 之间的向量，应该使用 `(vector[i32] >= 0) & (vector[i32] <= 100)` 而不是 `vector[i32] >= 0 & vector[i32] <= 100`。后者将被评估为 `vector[i32] >= (0 & vector[i32]) <= 100`。
 
 例如，可以将两个向量相加：
 
@@ -122,6 +127,7 @@ def add_vectors(n1, n2) -> vector[i32]:
 ```
 
 或者用 Numpy 的方式对一个 bool 数组做比较：
+
 ```python
 from greptime import vector
 
@@ -132,6 +138,7 @@ def compare() -> vector[bool]:
 ```
 
 并使用 bool 数组的索引：
+
 ```python
 from greptime import vector
 
@@ -143,6 +150,7 @@ def boolean_array() -> vector[f64]:
 ```
 
 也支持两个向量之间的比较：
+
 ```python
 from greptime import vector
 
@@ -153,6 +161,7 @@ def compare_vectors() -> vector[bool]:
 ```
 
 使用一个有索引的 bool 数组从一个向量中选择元素：
+
 ```python
 from greptime import vector
 
@@ -164,6 +173,7 @@ def select_elements() -> (vector[f64]):
 ```
 
 当然，我们可以使用列表理解法来构造一个新的向量：
+
 ```python
 from greptime import vector
 

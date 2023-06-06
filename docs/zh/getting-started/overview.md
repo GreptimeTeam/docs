@@ -228,12 +228,12 @@ SELECT * FROM system_metrics;
 
 至此我们展示了 GreptimeDB 的基本功能，更多的用户指南请查阅以下文档。
 
-- [概念](/user-guide/concepts.md)
-- [客户端](/user-guide/clients.md)
-- [管理表](/user-guide/table-management.md)
-- [数据写入](/user-guide/write-data.md)
-- [数据查询](/user-guide/query-data.md)
-- [脚本和函数](/user-guide/scripts-&-functions/overview.md)
-- [Prometheus](/user-guide/prometheus.md)
-- [集群](/user-guide/cluster.md)
-- [运维操作](/user-guide/operations/overview.md)
+- [概念](../user-guide/concepts.md)
+- [客户端](../user-guide/clients.md)
+- [管理表](../user-guide/table-management.md)
+- [数据写入](../user-guide/write-data.md)
+- [数据查询](../user-guide/query-data.md)
+- [脚本和函数](../user-guide/scripts-&-functions/overview.md)
+- [Prometheus](../user-guide/prometheus.md)
+- [集群](../user-guide/cluster.md)
+- [运维操作](../user-guide/operations/overview.md)
