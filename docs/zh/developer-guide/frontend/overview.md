@@ -13,13 +13,13 @@ the data.
 Below is a typical deployment flow of GreptimeDB in the cloud. You can see how a client's requests
 flow through the `frontend` cluster and how they are processed.
 
-![frontend](../../public/frontend.png)
+![frontend](../../../public/frontend.png)
 
 ## Details
 
 - [Table Sharding][2]
 - [Distributed Querying][3]
 
-[1]: </user-guide/clients.md>
-[2]: <./table-sharding.md>
-[3]: <./distributed-querying.md>
+[1]: /user-guide/clients.md
+[2]: ./table-sharding.md
+[3]: ./distributed-querying.md

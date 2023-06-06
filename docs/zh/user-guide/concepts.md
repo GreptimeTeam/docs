@@ -2,15 +2,15 @@
 
 ## 基础架构
 
-![architecture](../public/architecture-2.png)
+![architecture](../../public/architecture-2.png)
 
 为了形成一个强大的数据库集群，并控制其复杂性，GreptimeDB 架构中有三个主要组成部分：Meta，Frontend 和 Datanodes。
 
-- [**Meta**](../developer-guide/meta/overview.md) 控制着 GreptimeDB 集群的核心命令。在典型的部署结构中，至少需要三个节点才能建立一个可靠的 *Meta* 小集群。*Meta* 管理着数据库和表的信息，包括数据如何在集群中传递、请求的转发地址等。它还负责监测 `Datanode` 的可用性和性能，以确保路由表的最新状态和有效性。
+- [**Meta**](../developer-guide/meta/overview.md) 控制着 GreptimeDB 集群的核心命令。在典型的部署结构中，至少需要三个节点才能建立一个可靠的 _Meta_ 小集群。_Meta_ 管理着数据库和表的信息，包括数据如何在集群中传递、请求的转发地址等。它还负责监测 `Datanode` 的可用性和性能，以确保路由表的最新状态和有效性。
 
-- [**Frontend**](../developer-guide/frontend/overview.md) 作为无状态的组件，可以根据需求进行伸缩扩容。它负责接收请求并鉴权，将多种协议转化为 GreptimeDB 集群的内部协议，并根据 *Meta* 中的信息将请求转发到相应的 *Datanode*。
+- [**Frontend**](../developer-guide/frontend/overview.md) 作为无状态的组件，可以根据需求进行伸缩扩容。它负责接收请求并鉴权，将多种协议转化为 GreptimeDB 集群的内部协议，并根据 _Meta_ 中的信息将请求转发到相应的 _Datanode_。
 
-- [**Datanode**](../developer-guide/datanode/overview.md) 负责 GreptimeDB 集群中表和数据的存储，接收并执行从 *Frontend* 发来的读写请求。对本地开发来说，单实例的 *Datanode* 部署也可以当作 GreptimeDB 的单机模式来用。
+- [**Datanode**](../developer-guide/datanode/overview.md) 负责 GreptimeDB 集群中表和数据的存储，接收并执行从 _Frontend_ 发来的读写请求。对本地开发来说，单实例的 _Datanode_ 部署也可以当作 GreptimeDB 的单机模式来用。
 
 ## Objects
 
@@ -19,7 +19,7 @@
 
 ### `Database`
 
-类似于关系型数据库中的 *Database*，是业务数据集的最小单元。数据在这里可以被管理和计算。
+类似于关系型数据库中的 _Database_，是业务数据集的最小单元。数据在这里可以被管理和计算。
 
 ### Table
 
@@ -41,7 +41,7 @@ GreptimeDB 是强类型的数据库。[自动生成表结构](./write-data.md#au
 
 从我们的博客文章中获取 GreptimeDB 路线图和架构设计：
 
-* [专为实时而生 — GreptimeDB 现已在 GitHub 正式开源
-](https://greptime.com/blogs/2022-11-15-this-time-for-real)
-* [GreptimeDB 架构内幕：基于分布式、云原生原则设计，实现时序处理及分析融合](https://greptime.com/blogs/2022-12-08-GreptimeDB-internal-design)
-* [GreptimeDB 存储引擎设计内幕：针对时序场景，检索压缩更智能](https://greptime.com/blogs/2022-12-21-storage-engine-design)
+- [专为实时而生 — GreptimeDB 现已在 GitHub 正式开源
+  ](https://greptime.com/blogs/2022-11-15-this-time-for-real)
+- [GreptimeDB 架构内幕：基于分布式、云原生原则设计，实现时序处理及分析融合](https://greptime.com/blogs/2022-12-08-GreptimeDB-internal-design)
+- [GreptimeDB 存储引擎设计内幕：针对时序场景，检索压缩更智能](https://greptime.com/blogs/2022-12-21-storage-engine-design)

@@ -6,7 +6,7 @@ GreptimeDB's query engine is built on [Apache DataFusion][1] (subproject under [
 Arrow][2]), a brilliant query engine written in Rust. It provides a set of well functional components from
 logical plan, physical plan and the execution runtime. Below explains how each component is orchestrated and their positions during execution.
 
-![Execution Procedure](../../public/execution-procedure.png)
+![Execution Procedure](../../../public/execution-procedure.png)
 
 The entry point is the logical plan, which is used as the general intermediate representation of a
 query or execution logic etc. Two noticeable sources of logical plan are from: 1. the user query, like

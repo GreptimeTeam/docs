@@ -1,6 +1,6 @@
 # Meta Server
 
-![meta](../../public/meta.png)
+![meta](../../../public/meta.png)
 
 ## What's in MetaSrv
 
@@ -51,7 +51,7 @@ First, the routing table in Request-Router is in the following structure (note t
 
 ## MetaSrv Architecture
 
-![metasrv-architecture](../../public/metasrv-architecture.png)
+![metasrv-architecture](../../../public/metasrv-architecture.png)
 
 ## Distributed Consensus
 

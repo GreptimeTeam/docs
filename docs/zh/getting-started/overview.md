@@ -1,6 +1,7 @@
 从这里开始探索 GreptimeDB 强大的核心功能。
 
 ## 安装 GreptimeDB
+
 用户可以在[下载页面](https://greptime.com/download)通过我们发布的测试版本尝试使用 GreptimeDB。
 
 我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
@@ -22,6 +23,7 @@ curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/script
 ```
 
 ### Docker
+
 请确保已经安装了 [Docker](https://www.docker.com/)。如果还没有安装，可以参考 Docker 官方的[文档](https://www.docker.com/getting-started/)进行安装。
 
 ```shell
@@ -64,7 +66,6 @@ greptime/greptimedb standalone start \
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
 
-
 ## 连接
 
 GreptimeDB 支持[多种协议](/user-guide/clients.md)。这里使用 MySQL 客户端示例。
@@ -79,7 +80,7 @@ mysql -h 127.0.0.1 -P 4002
 
 现在我们通过 MySQL 创建一个表。先创建 `system_metrics` 表，其中包含系统资源指标，包括 CPU /内存/磁盘的使用，这些数据每 5 秒就会被抓取一次。
 
-``` sql
+```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
     host STRING,
     idc STRING,
@@ -94,24 +95,24 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 
 Field 描述:
 
-| Field        | Type      | Description                            |
-| :----------- | :-------- | :------------------------------------- |
-| host         | string    | The hostname                           |
-| idc          | string    | The idc name where the host belongs to |
-| cpu\_util    | double    | The percent use of CPU                 |
-| memory\_util | double    | The percent use of memory              |
-| disk\_util   | double    | The percent use of disks               |
-| ts           | timestamp | Timestamp column incrementing          |
+| Field       | Type      | Description                            |
+| :---------- | :-------- | :------------------------------------- |
+| host        | string    | The hostname                           |
+| idc         | string    | The idc name where the host belongs to |
+| cpu_util    | double    | The percent use of CPU                 |
+| memory_util | double    | The percent use of memory              |
+| disk_util   | double    | The percent use of disks               |
+| ts          | timestamp | Timestamp column incrementing          |
 
-* 如果用户使用其他协议，该表可以自动创建。请参考 [Create Table](/user-guide/table-management#creat-table)。
-* 关于创建表的 SQL 信息，请参考 [CREATE](/reference/sql/create.md)。
-* 关于数据类型，请参考[数据类型](/reference/data-types.md)。
+- 如果用户使用其他协议，该表可以自动创建。请参考 [Create Table](/user-guide/table-management#creat-table)。
+- 关于创建表的 SQL 信息，请参考 [CREATE](/reference/sql/create.md)。
+- 关于数据类型，请参考[数据类型](/reference/data-types.md)。
 
 ## 数据写入
 
 使用 `INSERT` 语句是向表添加数据的一个简单方法。通过下面的语句，我们向 `system_metrics` 表插入了九条记录。
 
-``` sql
+```sql
 INSERT INTO system_metrics
 VALUES
     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797450),
@@ -131,7 +132,7 @@ VALUES
 
 想要从 `system_metrics` 表中选择数据，可以使用 `SELECT` 语句：
 
-``` sql
+```sql
 SELECT * FROM system_metrics;
 ```
 
@@ -156,7 +157,7 @@ SELECT * FROM system_metrics;
 
 用户可以使用 `count()` 函数获取表格中所有行的数量：
 
-``` sql
+```sql
 SELECT count(*) FROM system_metrics;
 ```
 
@@ -170,7 +171,7 @@ SELECT count(*) FROM system_metrics;
 
 `avg()` 函数返回特定字段的平均值：
 
-``` sql
+```sql
 SELECT avg(cpu_util) FROM system_metrics;
 ```
 
@@ -206,7 +207,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 
 可视化在有效利用时间序列数据方面发挥着关键作用。为了帮助用户充分利用 GreptimeDB 的各种功能，Greptime 提供了一个简单的 [dashboard](https://github.com/GreptimeTeam/dashboard)。
 
-Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到GreptimeDB 的 binary 文件中。在[启动 GreptimeDB ](#install-greptimedb)后，可以通过 HTTP 端点`http://localhost:4000/dashboard` 访问 dashboard。当前版本的 dashboard 支持 MySQL 和 Python 查询，不久将支持 PromQL。
+Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到 GreptimeDB 的 binary 文件中。在[启动 GreptimeDB ](#install-greptimedb)后，可以通过 HTTP 端点`http://localhost:4000/dashboard` 访问 dashboard。当前版本的 dashboard 支持 MySQL 和 Python 查询，不久将支持 PromQL。
 
 将 SQL 写入命令文本，然后单击 `RUN ALL`，我们将获取 system_metrics 中的所有数据。
 
@@ -214,13 +215,12 @@ Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到GreptimeDB 的 binary
 SELECT * FROM system_metrics;
 ```
 
-![](../public/dashboard-select.png)
+![](../../public/dashboard-select.png)
 
 我们提供不同种类的图表，可以根据不同的场景进行选择。当用户有足够的数据时，图表的内容将更加丰富。
 
-![line](../public/dashboard-line.png)
-![scatter](../public/dashboard-scatter.png)
-
+![line](../../public/dashboard-line.png)
+![scatter](../../public/dashboard-scatter.png)
 
 我们将持续开发和迭代这个开源项目，并计划将时间序列数据应用于监测、分析和其他相关领域的扩展。
 
@@ -228,13 +228,12 @@ SELECT * FROM system_metrics;
 
 至此我们展示了 GreptimeDB 的基本功能，更多的用户指南请查阅以下文档。
 
-* [概念](/user-guide/concepts.md)
-* [客户端](/user-guide/clients.md)
-* [管理表](/user-guide/table-management.md)
-* [数据写入](/user-guide/write-data.md)
-* [数据查询](/user-guide/query-data.md)
-* [脚本和函数](/user-guide/scripts-&-functions/overview.md)
-* [Prometheus](/user-guide/prometheus.md)
-* [集群](/user-guide/cluster.md)
-* [运维操作](/user-guide/operations/overview.md)
-
+- [概念](/user-guide/concepts.md)
+- [客户端](/user-guide/clients.md)
+- [管理表](/user-guide/table-management.md)
+- [数据写入](/user-guide/write-data.md)
+- [数据查询](/user-guide/query-data.md)
+- [脚本和函数](/user-guide/scripts-&-functions/overview.md)
+- [Prometheus](/user-guide/prometheus.md)
+- [集群](/user-guide/cluster.md)
+- [运维操作](/user-guide/operations/overview.md)

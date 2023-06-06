@@ -20,8 +20,8 @@ database. So where does the "distribute" happen? It's all happened in a physical
 table's data (as its name suggests obviously). When Frontend is about to execute a table scan, it
 first needs to split the table scan into smaller scans, by each region's data range.
 
-[1]: <./table-sharding.md>
-[2]: <https://paperhub.s3.amazonaws.com/dace52a42c07f7f8348b08dc2b186061.pdf>
+[1]: ./table-sharding.md
+[2]: https://paperhub.s3.amazonaws.com/dace52a42c07f7f8348b08dc2b186061.pdf
 
 All regions of a table have ranges of their stored data. Take the following table for example:
 
@@ -57,4 +57,4 @@ final output of the table scan node.
 
 The following picture summarized the above procedure of the distributed query execution:
 
-![Distributed Querying](../../public/distributed-querying.png)
+![Distributed Querying](../../../public/distributed-querying.png)

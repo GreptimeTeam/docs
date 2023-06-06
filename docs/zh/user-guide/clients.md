@@ -2,7 +2,7 @@
 
 用户可以使用各种协议从 GreptimeDB 读取或写入。
 
-![protocols](../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
+![protocols](../../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
 
 请注意，以特定的协议写入数据并不意味着必须以相同的协议读取数据。例如，可以通过 gRPC 端点写数据，同时使用 MySQL 客户端来读取它们。
 
@@ -57,6 +57,7 @@ mysql>
 ```
 
 ### gRPC
+
 <!--
 In GreptimeDB's gRPC Request struct, set up [`AuthHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/ad0187295035e83f76272da553453e649b7570de/proto/greptime/v1/database.proto#L21) with `Basic` Authentication scheme using username and password as configured, and you are good to go.
 
@@ -93,6 +94,7 @@ Note: replace `greptime(catalog)`, `public(schema)`, `greptime_user(username)`, 
 如果没有使用 IDE，请参考 [Building Maven](https://maven.apache.org/user-guide/development/guide-building-maven.html)，了解更多关于如何设置项目的信息。
 
 ##### 添加 GreptiemDB Java SDK 作为依赖项
+
 如果使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```
@@ -104,6 +106,7 @@ Note: replace `greptime(catalog)`, `public(schema)`, `greptime_user(username)`, 
     </dependency>
 </dependencies>
 ```
+
 最新的版本可以查看[这里](https://central.sonatype.com/search?q=io.greptime)。
 
 配置好依赖关系后，确保它们对项目是可用的。这可能需要在 IDE 中刷新项目或运行依赖性管理器。
@@ -205,6 +208,7 @@ func InitClient() *greptime.Client {
 通过 [Go SDK in reference](/reference/sdk/go.md) 获得更多配置。
 
 ### HTTP API
+
 HTTP API 使用内置的 `Basic` 认证方式，请执行以下操作：
 
 1. 使用 `Base64` 算法对用户名和密码进行编码。
@@ -234,10 +238,7 @@ http://localhost:4000/v1/sql?db=public
             }
           ]
         },
-        "rows": [
-          ["numbers"],
-          ["scripts"]
-        ]
+        "rows": [["numbers"], ["scripts"]]
       }
     }
   ],
@@ -245,8 +246,8 @@ http://localhost:4000/v1/sql?db=public
 }
 ```
 
-* `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` 是 `greptime_user:greptime_pwd` 使用 Base64 编码后的字符串。记得用用户自己配置的用户名和密码替换它，并使用 Base64 编码。
-* URL 中的 `public` 是用户的数据库的名称，这是授权时需要的。
+- `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` 是 `greptime_user:greptime_pwd` 使用 Base64 编码后的字符串。记得用用户自己配置的用户名和密码替换它，并使用 Base64 编码。
+- URL 中的 `public` 是用户的数据库的名称，这是授权时需要的。
 
 **注意：InfluxDB 使用其自己的认证格式，与标准的 Basic 认证方案不同。详情见下文**。
 

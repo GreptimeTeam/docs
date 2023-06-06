@@ -3,6 +3,7 @@
 想要了解如何向 GreptimeDB 写入数据，在进行以下操作之前需要先[进行连接](./clients.md#connect)。
 
 ## 自动模式生成
+
 GreptimeDB 提供了 schemaless 的写入方式，自动生成表结构，这样你就不需要提前创建表。当使用 [gRPC](#grpc)、[InfluxDB](#influxdb-line-protocol)、[OpenTSDB](#opentsdb-line-protocol) 和 [Prometheus remote write](#prometheus) 协议写入数据时，表和列将被自动创建和添加。必要时，GreptimeDB 会自动添加所需的列，以确保正确保存用户的数据。
 
 ## 写入
@@ -10,11 +11,12 @@ GreptimeDB 提供了 schemaless 的写入方式，自动生成表结构，这样
 ### gRPC
 
 #### Java
-![Data Ingestion Process](../public/data-ingest-process.png)
+
+![Data Ingestion Process](../../public/data-ingest-process.png)
 
 使用下面的代码来向 GreptimeDB 插入一个对象（object）：
 
-``` java
+```java
 TableSchema tableSchema = TableSchema.newBuilder(TableName.with("db_name", "monitor"))
     .semanticTypes(SemanticType.Tag, SemanticType.Timestamp, SemanticType.Field, SemanticType.Field)
     .dataTypes(ColumnDataType.String, ColumnDataType.Int64, ColumnDataType.Float64, ColumnDataType.Float64)
@@ -46,7 +48,7 @@ writeFuture.whenComplete((result, throwable) -> {
 
 ##### 写入 API
 
-``` java
+```java
 /**
  * Write a single table multi rows data to database.
  *
@@ -57,18 +59,18 @@ writeFuture.whenComplete((result, throwable) -> {
 CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 ```
 
-| Name                 | Description                                                                                |
-|:---------------------|:-------------------------------------------------------------------------------------------|
-| rows                 | Several rows of data to write to the database (all data must belong to the same table).    |
-| ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server. |
-| Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err.                                                                                           |
+| Name                 | Description                                                                                                                                                                                                                                |
+| :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rows                 | Several rows of data to write to the database (all data must belong to the same table).                                                                                                                                                    |
+| ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server.                                                                                                                                                 |
+| Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err. |
 
 ### Go
 
 首先，我们必须准备一个 `Series`，它代表了一行数据。在 `Series` 中可以使用三种字段：
 
 | Kind      | Description                                                         |
-|-----------|---------------------------------------------------------------------|
+| --------- | ------------------------------------------------------------------- |
 | Tag       | index column, helps to retrieve data more efficiently               |
 | Field     | value column, helps to analysis, aggregation, calculating, etc,.    |
 | Timestamp | timestamp column, each table MUST have exactly one timestamp column |
@@ -78,12 +80,11 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 `Metric` 可以通过 `metric.SetTimePrecision` 改变 `Timestamp` 精度。以下是支持的选项：
 
 | Precision        | Description |
-|------------------|-------------|
+| ---------------- | ----------- |
 | time.Second      |             |
 | time.Millisecond | default     |
 | time.Microsecond |             |
 | time.Nanosecond  |             |
-
 
 ```go
 func Insert() {
@@ -121,13 +122,14 @@ func Insert() {
 
 向之前创建的 system_metrics 表插入一些测试数据。可以使用 INSERT INTO SQL 语句：
 
-``` sql
+```sql
 INSERT INTO monitor
 VALUES
     ("127.0.0.1", 1667446797450, 0.1, 0.4),
     ("127.0.0.2", 1667446798450, 0.2, 0.3),
     ("127.0.0.1", 1667446798450, 0.5, 0.2);
 ```
+
 ```sql
 Query OK, 3 rows affected (0.01 sec)
 ```
@@ -135,7 +137,6 @@ Query OK, 3 rows affected (0.01 sec)
 通过上述语句，我们向 `system_metrics` 表插入了三条记录。
 
 关于 `INSERT` 语句的更多信息，请参考 SQL 参考文档。
-
 
 #### HTTP API
 
@@ -152,7 +153,7 @@ http://localhost:4000/v1/sql?db=public
 结果如下：
 
 ```json
-{"code":0,"output":[{"affectedrows":3}],"execution_time_ms":0}
+{ "code": 0, "output": [{ "affectedrows": 3 }], "execution_time_ms": 0 }
 ```
 
 请参考 [API](/reference/sql/http-api.md) 文档获取有关 SQL HTTP 请求的更多信息。
@@ -171,8 +172,8 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 
 `/influxdb/write` 支持的查询参数包括：
 
-* `db` 指定要写入的数据库，默认为 `public`。
-* `precision`，行协议中时间戳的精度。支持 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认为纳秒。
+- `db` 指定要写入的数据库，默认为 `public`。
+- `precision`，行协议中时间戳的精度。支持 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认为纳秒。
 
 ### OpenTSDB Line 协议
 
@@ -275,6 +276,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 #### `DELETE` 语句
 
 通过主键 `host` 和时间戳索引 `ts` 从其中删除一条记录：
+
 ```sql
 DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 ```
@@ -300,8 +302,7 @@ http://localhost:4000/v1/sql?db=public
 结果如下：
 
 ```json
-{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":1}
+{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
 ```
 
 关于 SQL HTTP 请求的更多信息，请参考 [API](/reference/sql/http-api.md) 文档。
-

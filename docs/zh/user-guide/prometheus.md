@@ -6,7 +6,7 @@ GreptimeDB 中的数据组织为 `Table` 形式，可以将它们视为 `column`
 
 例如：
 
-![Data Model](../public/PromQL-multi-value-data-model.png)
+![Data Model](../../public/PromQL-multi-value-data-model.png)
 
 ## 存储
 

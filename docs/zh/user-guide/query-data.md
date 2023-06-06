@@ -5,7 +5,7 @@
 GreptimeDB 支持 SQL 语言，方便用户查询数据。下面以 `monitor` 查询为展示，方便用户熟悉使用 SQL 和 GreptimeDB 函数。
 使用 `SELECT` 语句从 `monitor` 表中选择所有的数据，
 
-``` sql
+```sql
 SELECT * FROM monitor;
 ```
 
@@ -24,7 +24,7 @@ The query result looks like the following:
 
 使用 `count()` 函数来获得表格中所有行的数量：
 
-``` sql
+```sql
 SELECT count(*) FROM monitor;
 ```
 
@@ -38,7 +38,7 @@ SELECT count(*) FROM monitor;
 
 `avg()` 函数返回某个字段的平均值：
 
-``` sql
+```sql
 SELECT avg(cpu) FROM monitor;
 ```
 
@@ -112,24 +112,9 @@ http://localhost:4000/v1/sql?db=public
           ]
         },
         "rows": [
-          [
-            "127.0.0.1",
-            1667446797450,
-            0.1,
-            0.4
-          ],
-          [
-            "127.0.0.1",
-            1667446798450,
-            0.5,
-            0.2
-          ],
-          [
-            "127.0.0.2",
-            1667446798450,
-            0.2,
-            0.3
-          ]
+          ["127.0.0.1", 1667446797450, 0.1, 0.4],
+          ["127.0.0.1", 1667446798450, 0.5, 0.2],
+          ["127.0.0.2", 1667446798450, 0.2, 0.3]
         ]
       }
     }
@@ -139,11 +124,12 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 关于 SQL HTTP 请求的更多信息，请参考 [API](/reference/sql/http-api.md) 文档。
+
 ## gRPC
 
 ### Java
 
-![Data Query Process](../public/data-query-process.png)
+![Data Query Process](../../public/data-query-process.png)
 
 使用以下代码来查询对象：
 
@@ -186,7 +172,7 @@ if (result.isOk()) {
 
 #### 查询 API
 
-``` java
+```java
 /**
  * According to the conditions, query data from the DB.
  *

@@ -46,4 +46,4 @@ how is the data, which is physically distributed, stored in GreptimeDB? The answ
 "auto-admin" will move regions among Datanodes automatically, according to the states of Datanodes.
 Also, "auto-admin" can split or merge regions according to their data volume or access pattern.
 
-![Table Sharding](../../public/table-sharding.png)
+![Table Sharding](../../../public/table-sharding.png)
