@@ -52,10 +52,6 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write. 
 For more information, refer to [this document](https://docs.greptime.com/user-guide/table-management#create-table).
 
-## Are there any retention policy?
-
-We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table create statement [here](https://docs.greptime.com/reference/sql/create).
-
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
 There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to track the PromQL compatibility tests passing rate. It's based on Prometheus's compliance test.
@@ -66,10 +62,6 @@ Because “grep” is the most useful command line tool on *nix platform to sear
 ## Is there any good first issue that can help beginners get started quickly?
 
 Yes, beginners can filter issues with ["good first issue"](https://github.com/GreptimeTeam/greptimedb/issues?q=label%3A%22good+first+issue%22) label. Additionally, more good first issues will be released on a rolling basis, so stay tuned!
-
-## Does GreptimeDB's storage system fully compatible with S3 object storage?
-
-GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), which supports most kinds of object storage services. Currently, GreptimeDB supports S3, OSS, and local disk storage. You can refer to storage configuration guide [here](https://docs.greptime.com/user-guide/operations/configuration#storage-option).
 
 ## Does GreptimeDB support dumping table-level data to S3?
 
