@@ -2,7 +2,7 @@ import fs from 'fs'
 import { parse } from 'yaml'
 import YAML from 'js-yaml'
 
-export default (async () => ({
+export const common = async () => ({
   title: 'Greptime Docs',
   appearance: false,
   description: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure',
@@ -36,10 +36,9 @@ export default (async () => ({
     },
     siteTitle: '',
     logo: 'logo-text-tinted.png',
-    locales: { root: { label: 'English' } },
     copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
     email: 'marketing@greptime.com',
-    sidebar: await makeSidebar(),
+    // sidebar: await makeSidebar('en'),
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: 'Edit this page on GitHub',
@@ -50,23 +49,14 @@ export default (async () => ({
         link: 'https://github.com/GreptimeTeam/docs',
       },
     ],
-    nav: [
-      {
-        text: 'Home',
-        link: 'https://greptime.com/',
-      },
-      {
-        text: 'Blogs',
-        link: 'https://greptime.com/blogs',
-      },
-    ],
     outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
-}))()
+})
 
-async function makeSidebar() {
-  const summary = YAML.load(fs.readFileSync('docs/summary.yml'), 'utf8')
+export async function makeSidebar(lang) {
+  const langPath = lang === 'zh' ? '/zh' : ''
+  const summary = YAML.load(fs.readFileSync(`docs${langPath}/summary.yml`), 'utf8')
 
   function makeSidebarItem(items, path) {
     if (Array.isArray(items)) {
@@ -81,7 +71,7 @@ async function makeSidebar() {
         collapsed: false,
       }
     } else {
-      let link = `${path}/${items}`.toLocaleLowerCase()
+      let link = `${langPath}${path}/${items}`.toLocaleLowerCase()
       let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
       return {
         text: file.split('\n')[0].replace('# ', ''),
