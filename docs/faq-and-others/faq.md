@@ -67,3 +67,6 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 You can use the [`COPY TO` command](https://docs.greptime.com/reference/sql/copy#s3) to dump table-level data to S3.
 
+## TSDB features that you concern
+
+Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
