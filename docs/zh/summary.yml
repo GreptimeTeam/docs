@@ -1,8 +1,8 @@
-- Getting-Started:
+- 立即开始:
     - overview
-- User-Guide:
+- 用户指南:
     - overview
-    - Concepts:
+    - 相关概念:
         - overview
         - why-greptimedb
         - data-model
@@ -17,13 +17,13 @@
     - cluster
     - integration
     - prometheus
-    - Scripts-&-Functions:
+    - 脚本和函数:
         - overview
         - getting-started
         - data-types
         - function
         - api
-    - Operations:
+    - 运维操作:
         - overview
         - configuration
         - kubernetes
