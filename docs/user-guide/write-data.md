@@ -63,7 +63,7 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 | ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server. |
 | Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err.                                                                                           |
 
-### Go
+#### Go
 
 To begin with, we have to prepare a `Series`, which delegates one row data. There are three kind fields in `Series` you can use:
 
@@ -159,7 +159,7 @@ For more information about SQL HTTP request, please refer to [API document](/ref
 
 ### InfluxDB Line Protocol
 
-GreptimeDB supports HTTP InfluxDB line protocol. You can write data via /influxdb/write API:
+GreptimeDB supports HTTP InfluxDB Line protocol. You can write data via `/influxdb/write` API:
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" \
@@ -181,7 +181,7 @@ GreptimeDB supports ingesting OpenTSDB lines via Telnet or HTTP API.
 
 #### Telnet
 
-GreptimeDB fully supports Opentsdb's "put" command format:
+GreptimeDB fully supports OpenTSDB's "put" command format:
 
 `put <metric> <timestamp> <value> <tagk1=tagv1[tagk2=tagv2...tagkN=tagvN]>`
 
@@ -307,5 +307,3 @@ The result is shown below:
 ```
 
 For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
-
-

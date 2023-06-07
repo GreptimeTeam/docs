@@ -97,31 +97,47 @@ There are also some node options in common:
 |        | mode                    | String  | Node running mode, includes "standalone" and "distributed"                         |
 |        | enable_memory_catalog   | Boolean | Use in-memory catalog, false by default                                            |
 
-### Storage option
+### Storage options
 
-The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage related options.
+The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
+
+GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storage and Aliyun OSS.
 
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|
 | storage |          |        | Storage options                                     |
-|         | type     | String | Storage type, Only supports "File" or "S3" right now |
-| File    |          |        | File storage options, valid when type="file"        |
-|         | data_dir | String | Data directory, "/tmp/greptimedb/data" by default   |
-| S3      |          |        | S3 storage options, valid when type="S3"            |
-|         | bucket   | String | The s3 bucket name                                  |
-|         | root     | String | The root path in s3 bucket                          |
-|         | access_key_id     | String | The s3 access key id                      |
-|         | secret_access_key | String | The s3 secret access key                  |
+|         | type     | String | Storage type, Only supports "File", "S3" and "Oss" etc. |
+| File    |          |        | Local file storage options, valid when type="file"        |
+|         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
+| S3      |          |        | AWS S3 storage options, valid when type="S3"            |
+|         | bucket   | String | The S3 bucket name                                  |
+|         | root     | String | The root path in S3 bucket                          |
+|         | endpoint     | String | The API endpoint of S3           |
+|         | access_key_id     | String | The S3 access key id                      |
+|         | secret_access_key | String | The S3 secret access key                  |
+| Oss      |          |        | Aliyun OSS storage options, valid when type="Oss"            |
+|         | bucket   | String | The OSS bucket name                                  |
+|         | root     | String | The root path in OSS bucket                          |
+|         | endpoint     | String | The API endpoint of OSS           |
+|         | access_key_id     | String | The OSS access key id                      |
+|         | secret_access_key | String | The OSS secret access key                  |
+| Azblob      |          |        | Azure Blob Storage options, valid when type="Azblob"            |
+|         | container   | String |  The container name                                  |
+|         | root     | String |  The root path in  container                          |
+|         | endpoint     | String | The API endpoint of  Azure Blob Storage          |
+|         | account_name     | String | The account name of Azure Blob Storage      |
+|         | account_key    | String | The access key                  |
+|         | sas_token | String | The shared access signature                   |
 
-A file sample configuration:
+A file storage sample configuration:
 
 ```toml
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 ```
 
-A s3 sample configuration:
+A S3 storage sample configuration:
 
 ```toml
 [storage]
@@ -131,6 +147,43 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
+
+
+#### Object storage cache
+When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
+
+```toml
+[storage]
+type = "S3"
+bucket = "test_greptimedb"
+root = "/greptimedb"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+## Enable object storage caching
+cache_path = "/var/data/s3_local_cache"
+cache_capacity = 1024
+```
+
+The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum file number in the cache directory.
+
+### WAL options
+
+The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
+```toml
+[wal]
+# WAL data directory
+# dir = "/tmp/greptimedb/wal"
+file_size = "1GB"
+purge_threshold = "50GB"
+purge_interval = "10m"
+read_batch_size = 128
+sync_write = false
+```
+
+* `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
+* `file_size`:  the maximum size of the WAL log file, default is 1GB.
+* `purge_threshold`  and `purge_interval`: control the purging of wal files.
+* `sync_write`: whether to call `fsync` when writing every log.
 
 ### Compaction
 
@@ -173,7 +226,7 @@ addr = "127.0.0.1:4000"
 timeout = "30s"
 
 [wal]
-dir = "/tmp/greptimedb/wal"
+#dir = "/tmp/greptimedb/wal"
 file_size = "1GB"
 purge_interval = "10m"
 purge_threshold = "50GB"
@@ -182,7 +235,7 @@ sync_write = false
 
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 
 [grpc_options]
 addr = "127.0.0.1:4001"
@@ -248,7 +301,7 @@ mysql_addr = "127.0.0.1:4406"
 mysql_runtime_size = 4
 
 [wal]
-dir = "/tmp/greptimedb/wal"
+#dir = "/tmp/greptimedb/wal"
 file_size = "1GB"
 purge_interval = "10m"
 purge_threshold = "50GB"
@@ -257,7 +310,7 @@ sync_write = false
 
 [storage]
 type = "File"
-data_dir = "/tmp/greptimedb/data/"
+data_home = "/tmp/greptimedb/"
 
 [meta_client_options]
 metasrv_addrs = ["127.0.0.1:3002"]

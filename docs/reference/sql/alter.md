@@ -21,6 +21,17 @@ ALTER TABLE monitor ADD COLUMN load_15 double;
 
 Definition of column is the same as in [CREATE](./create.md).
 
+We can set the new column's location. In first position for example:
+
+```sql
+ALTER TABLE monitor ADD COLUMN load_15 double FIRST;
+```
+
+After an existing column:
+```sql
+ALTER TABLE monitor ADD COLUMN load_15 double AFTER memory;
+```
+
 ### Remove column
 Removes a column from the table:
 ```sql
