@@ -343,12 +343,13 @@ datanode_lease_secs = 30
 
 GreptimeDB supports layered configuration and uses the following precedence order(each item takes precedence over the item below it):
 
-- Command line flags
+- Command-line flags
 - Configuration file
 - Environment variables
 - Default values
 
-Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variables:
+
+Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variable:
 
 ```toml
 # ...
@@ -358,13 +359,13 @@ max_inflight_tasks = 4
 # ...
 ```
 
-You can use the following format:
+You can use the following shell command to setup the environment variable as the following format:
 
 ```
-GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
+export GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
 ```
 
-**Noted that**:
+### Environment Variable Rules
 
 - Every environment variable should have the component prefix, for example:
   - `GREPTIMEDB_FRONTEND`
@@ -372,9 +373,9 @@ GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
   - `GREPTIMEDB_DATANODE`
   - `GREPTIMEDB_STANDALONE`
 
-- we use **double underscore `__`** as separator. For example, the above data structure `storage.compaction.max_inflight_tasks` will be transformed to `STORAGE__COMPACTION__MAX_INFLIGHT_TASKS`.
+- We use **double underscore `__`** as a separator. For example, the above data structure `storage.compaction.max_inflight_tasks` will be transformed to `STORAGE__COMPACTION__MAX_INFLIGHT_TASKS`.
 
-The environment variable also accepts list that separated by a comma `,`, for example:
+The environment variable also accepts list that are separated by a comma `,`, for example:
 
 ```
 GREPTIMEDB_METASRV__META_CLIENT_OPTIONS__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
