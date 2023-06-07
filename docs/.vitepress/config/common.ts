@@ -2,7 +2,7 @@ import fs from 'fs'
 import { parse } from 'yaml'
 import YAML from 'js-yaml'
 
-export default (async () => ({
+export const common = async () => ({
   title: 'Greptime Docs',
   appearance: false,
   description: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure',
@@ -36,7 +36,6 @@ export default (async () => ({
     },
     siteTitle: '',
     logo: 'logo-text-tinted.png',
-    locales: { root: { label: 'English' } },
     copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
     email: 'marketing@greptime.com',
     editLink: {
@@ -60,24 +59,27 @@ export default (async () => ({
         link: 'https://greptime.com/blogs',
       },
     ],
+    cleanUrls: 'without-subfolders',
+    Plugin: [
+      [
+        'rss-feed',
+        {
+          username: 'Bougie',
+          hostname: 'https://www.greptime.com/blogs/',
+          selector: '.content__post', // extract content to content:encoded
+          count: 10,
+          filter: page => /^blog/.test(page.relativePath),
+        },
+      ],
+    ],
+    outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
-  Plugin: [
-    [
-      'rss-feed',
-      {
-        username: 'Bougie',
-        hostname: 'https://www.greptime.com/blogs/',
-        selector: '.content__post', // extract content to content:encoded
-        count: 10,
-        filter: page => /^blog/.test(page.relativePath),
-      },
-    ],
-  ],
-}))()
+})
 
-async function makeSidebar() {
-  const summary = YAML.load(fs.readFileSync('docs/summary.yml'), 'utf8')
+export async function makeSidebar(lang) {
+  const langPath = lang === 'zh' ? '/zh' : ''
+  const summary = YAML.load(fs.readFileSync(`docs${langPath}/summary.yml`), 'utf8')
 
   function makeSidebarItem(items, path) {
     if (Array.isArray(items)) {
@@ -91,7 +93,7 @@ async function makeSidebar() {
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
       }
     } else {
-      let link = `${path}/${items}`.toLocaleLowerCase()
+      let link = `${langPath}${path}/${items}`.toLocaleLowerCase()
       let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
       return {
         text: file.split('\n')[0].replace('# ', ''),
