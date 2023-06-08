@@ -23,3 +23,5 @@ Frontend and Meta.
   from *Frontend*, and executes it against its data. A single-instance
   *Datanode* deployment can also be used as GreptimeDB standalone mode, for
   local development.
+
+You can refer to [architecture](/developer-guide/overview.md) in developer guide to learn more details about how components work together.

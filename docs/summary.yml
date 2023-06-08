@@ -9,6 +9,7 @@
     - architecture
     - storage-location
     - key-concepts
+    - features-that-you-concern
   - clients
   - table-management
   - write-data
