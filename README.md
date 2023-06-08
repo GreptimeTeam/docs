@@ -25,10 +25,10 @@ If you are new to Greptime DB, documents below will help you quickly get started
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
 - [Concepts](./docs/user-guide/concepts/overview.md)
-- [Clients](./docs/user-guide/clients.md)
+- [Clients](./docs/user-guide/clients/overview.md)
 - [Table management](./docs/user-guide/table-management.md)
-- [Write data](./docs/user-guide/write-data.md)
-- [Query data](./docs/user-guide/query-data.md)
+- [Write data](./docs/user-guide/write-data/overview.md)
+- [Query data](./docs/user-guide/query-data/overview.md)
 - [Scripts & Functions](./docs/user-guide/scripts-&-functions/overview.md)
 - [Prometheus](./docs/user-guide/prometheus.md)
 - [Cluster](./docs/user-guide/cluster.md)

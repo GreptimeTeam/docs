@@ -11,8 +11,8 @@ A Go Client for GreptimeDB, which is compatible with GreptimeDB protocol and lig
 
 ## How to use
 
-Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients.md#go-sdk),
-[write data](/user-guide/write-data.md#go) and [query data](/user-guide/query-data.md#go).
+Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients/grpc.md#go),
+[write data](/user-guide/write-data/grpc.md#go) and [query data](/user-guide/query-data/grpc.md#go).
 
 ## Configuration
 
