@@ -3,7 +3,7 @@
 ## Insert
 
 ### Java
-![Data Ingestion Process](../public/data-ingest-process.png)
+![Data Ingestion Process](../../public/data-ingest-process.png)
 
 Use the following code to insert an object to GreptimeDB:
 

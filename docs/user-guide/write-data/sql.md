@@ -74,5 +74,3 @@ The result is shown below:
 
 For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
-
-
