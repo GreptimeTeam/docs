@@ -8,7 +8,8 @@ GreptimeDB provides schemaless writing that automatically creates schemas for yo
 
 ## Clients
 
-- [gRPC](./grpc.md)
+- [gRPC-Java](./grpc.md#java)
+- [gRPC-Go](./grpc.md#go)
 - [SQL](./sql.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)

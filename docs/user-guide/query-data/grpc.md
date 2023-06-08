@@ -2,7 +2,7 @@
 
 ## Java
 
-![Data Query Process](../public/data-query-process.png)
+![Data Query Process](../../public/data-query-process.png)
 
 Use the following code to query objects:
 
