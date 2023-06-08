@@ -24,11 +24,11 @@ Return the per-second rate for all time series with the `http_requests_total` me
 TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job="prometheus"}[5m]);
 ```
 
-Will get result just like other normal SQL queries.
+will get a result just like other normal SQL queries.
 
 ## EXPLAIN
 
-`EXPLAIN` shows the logical plan and execution plan of one PromQL query. The syntax is:
+`EXPLAIN` displays both the logical plan and execution plan for a given PromQL query. The syntax is as follows:
 
 ```
 TQL EXPLAIN expr;
@@ -40,7 +40,7 @@ For example, to explain the PromQL `sum by (instance) (rate(node_disk_written_by
 TQL EXPLAIN sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
 ```
 
-Notice that since the given query won't be actual executed, thus the triple `(start, end, step)` is not required. But you can still provide one like in `TQL EVAL`:
+Notice that since the given query won't be actually executed, the triple `(start, end, step)` is not necessary. But you can still provide it like in `TQL EVAL`:
 
 ```
 TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
@@ -86,7 +86,7 @@ The result should be like the following:
 
 ## ANALYZE
 
-TQL also supports `ANALYZE` keyword to analyze the given PromQL query's execution. The syntax is:
+TQL also supports `ANALYZE` keyword to analyze the given PromQL query's execution. The syntax is as follows:
 
 ```
 TQL ANALYZE (start, end, step) expr;
@@ -98,7 +98,7 @@ For example:
 TQL ANALYZE (0, 10, '5s') test;
 ```
 
-Will get result like
+will get a result like
 
 ```
 +-------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
