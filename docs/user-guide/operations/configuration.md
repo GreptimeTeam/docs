@@ -113,6 +113,7 @@ GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storag
 |         | bucket   | String | The S3 bucket name                                  |
 |         | root     | String | The root path in S3 bucket                          |
 |         | endpoint     | String | The API endpoint of S3           |
+|         | region     | String | The S3 region           |
 |         | access_key_id     | String | The S3 access key id                      |
 |         | secret_access_key | String | The S3 secret access key                  |
 | Oss      |          |        | Aliyun OSS storage options, valid when type="Oss"            |
