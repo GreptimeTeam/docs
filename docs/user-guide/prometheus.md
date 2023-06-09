@@ -32,7 +32,7 @@ remote_read:
     password: greptime_pwd
 ```
 
-Note: Be sure to replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password. Please refer to client [authentication](./clients.md#authentication).
+Note: Be sure to replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password. Please refer to client [authentication](./clients/authentication.md).
 
 The `db` parameter in url represents the database that we want to write, it's `public` if not present.
 
@@ -141,7 +141,7 @@ Here are some examples for each type of parameter:
   - `2` (2 seconds)
   - `2s` (also 2 seconds)
 
-The result format is the same as `/sql` interface described in [query data](./query-data.md#http-api).
+The result format is the same as `/sql` interface described in [query data](./query-data/sql.md#http-api).
 
 ```json
 {

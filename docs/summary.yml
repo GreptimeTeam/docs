@@ -10,10 +10,26 @@
     - storage-location
     - key-concepts
     - features-that-you-concern
-  - clients
+  - Clients:
+    - overview
+    - authentication
+    - mysql
+    - grpc
+    - influxdb-line
+    - opentsdb
+    - postgresql
+    - http-api
   - table-management
-  - write-data
-  - query-data
+  - Write-Data:
+    - overview
+    - grpc
+    - sql
+    - influxdb-line
+    - opentsdb
+  - Query-data:
+    - overview
+    - grpc
+    - sql
   - query-external-data
   - Scripts-&-Functions:
     - overview

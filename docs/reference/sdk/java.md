@@ -14,7 +14,7 @@ This is helpful when troubleshooting complex issues
 
 ## How to use
 
-Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients.md#java-sdk), [write data](/user-guide/write-data.md#java) and [query data](/user-guide/query-data.md#java).
+Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients/grpc.md#java), [write data](/user-guide/write-data/grpc.md#java) and [query data](/user-guide/query-data/grpc.md#java).
 
 ## Configuration
 

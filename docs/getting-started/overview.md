@@ -69,7 +69,7 @@ You can:
 
 ## Connect
 
-GreptimeDB supports [multiple protocols](/user-guide/clients.md). We use MySQL client here for simplicity.
+GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md). We use MySQL client here for simplicity.
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -77,7 +77,7 @@ mysql -h 127.0.0.1 -P 4002
 
 ## Create table
 
-**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data.md#automatic-schema-generation).**
+**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).**
 
 Now we create a table via MySQL. Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
 
@@ -230,10 +230,10 @@ We are committed to the ongoing development and iteration of this open source pr
 Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
 * [Concepts](/user-guide/concepts/overview.md)
-* [Clients](/user-guide/clients.md)
+* [Clients](/user-guide/clients/overview.md)
 * [Table management](/user-guide/table-management.md)
-* [Write data](/user-guide/write-data.md)
-* [Query data](/user-guide/query-data.md)
+* [Write data](/user-guide/write-data/overview.md)
+* [Query data](/user-guide/query-data/overview.md)
 * [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
 * [Prometheus](/user-guide/prometheus.md)
 * [Cluster](/user-guide/cluster.md)

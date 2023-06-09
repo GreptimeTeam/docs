@@ -46,4 +46,4 @@ GreptimeDB is designed on top of Table for the following reasons:
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
 - When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various index tables, offsetting the learning and use costs for users.
 
-Nevertheless, our definition of Schema is not mandatory, but more towards the Schemaless way like MongoDB. See [Automatic Schema Generation](../write-data.md#automatic-schema-generation) for more details.
+Nevertheless, our definition of Schema is not mandatory, but more towards the Schemaless way like MongoDB. See [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation) for more details.

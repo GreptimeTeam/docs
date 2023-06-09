@@ -16,7 +16,7 @@ Use the POST method to submit the SQL statement to the server.
 
 #### Header
 
-* `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/clients.md#HTTP-API).
+* `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/clients/http-api.md#authentication).
 * `Content-Type`: `application/x-www-form-urlencoded`.
 
 #### Query params
@@ -36,4 +36,4 @@ The response is a JSON object.
 
 #### Example
 
-Please refer to [Table Management](/user-guide/table-management.md#http-api), [Write Data](/user-guide/write-data.md#sql) and [Query Data](/user-guide/query-data.md#sql) in user guide.
+Please refer to [Table Management](/user-guide/table-management.md#http-api), [Write Data](/user-guide/write-data/sql.md#http-api) and [Query Data](/user-guide/query-data/sql.md#http-api) in user guide.
