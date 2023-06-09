@@ -10,7 +10,13 @@ Data in GreptimeDB is organized as tables, which can be thought of as groups of 
 
 GreptimeDB can be used as long-term storage for Prometheus. Using GreptimeDB as a Prometheus backend is a seamless experience. Since Prometheus has built-in support for setting up basic authentication information during the configuration of remote write and read, all you need to do is add your configured username and password to the config YAML file and you're good to go!
 
-Please follow the settings in [Prometheus configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`):
+First of all, create a database through your favourite SQL client:
+
+```sql
+CREATE DATABASE prometheus;
+```
+
+Then please follow the settings in [Prometheus configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`):
 
 ```yaml
 remote_write:
@@ -28,6 +34,27 @@ remote_read:
 
 Note: Be sure to replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password. Please refer to client [authentication](./clients.md#authentication).
 
+Show tables in Prometheus when writing successfully:
+```sql
+use prometheus;
+show tables;
+```
+
+```sql
++---------------------------------------------------------------+
+| Tables                                                        |
++---------------------------------------------------------------+
+| go_memstats_heap_inuse_bytes                                  |
+| go_memstats_last_gc_time_seconds                              |
+| net_conntrack_listener_conn_closed_total                      |
+| prometheus_remote_storage_enqueue_retries_total               |
+| prometheus_remote_storage_exemplars_pending                   |
+| prometheus_remote_storage_read_request_duration_seconds_count |
+| prometheus_rule_group_duration_seconds                        |
+| prometheus_rule_group_duration_seconds_count                  |
+| ......                                                        |
++---------------------------------------------------------------+
+```
 
 ### Prometheus Metrics in GreptimeDB
 
