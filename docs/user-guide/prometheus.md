@@ -34,6 +34,8 @@ remote_read:
 
 Note: Be sure to replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password. Please refer to client [authentication](./clients.md#authentication).
 
+The `db` parameter in url represents the database that we want to write, it's `public` if not present.
+
 Show tables in Prometheus when writing successfully:
 ```sql
 use prometheus;
