@@ -1,13 +1,92 @@
 # Configuration
 
+GreptimeDB supports **layered configuration** and uses the following precedence order(each item takes precedence over the item below it):
+
+- Command-line flags
+- Configuration file
+- Environment variables
+- Default values
+
 This page describes methods for configuring GreptimeDB server settings. Configuration can be set in TOML file.
 
 The system assigns a default value for missing parameters in the configuration file.
 
 All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
 
+## Command-line flags
 
-## Specify configuration file
+### Global flags
+
+- `-h`/`--help`: Print help information;
+- `-V`/`--version`: Print version information;
+- `--log-dir <LOG_DIR>`: The logging directory;
+- `--log-level <LOG_LEVEL>`: The logging level;
+
+### Datanode subcommand flags
+
+You can list all the flags from the following command:
+
+```
+greptime datanode start --help
+```
+
+- `-c`/`--config-file`: The configuration file for datanode;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
+- `--data-home`: Database storage root directory;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
+- `--node-id <NODE_ID>`: The datanode ID;
+- `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
+- `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
+- `--wal-dir <WAL_DIR>`: The wal directory of WAL;
+
+### Metasrv subcommand flags
+
+You can list all the flags from the following command:
+
+```
+greptime metasrv start --help
+```
+
+- `-c`/`--config-file`: The configuration file for metasrv;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
+- `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--selector <SELECTOR>`: You can refer [selector-type](https://docs.greptime.com/developer-guide/meta/selector#selector-type);
+- `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
+- `--store-addr <STORE_ADDR>`: Etcd server address;
+- `--use-memory-store`: Use memory store instead of etcd;
+
+### Frontend subcommand flags
+
+You can list all the flags from the following command:
+
+```
+greptime frontend start --help
+```
+
+- `-c`/`--config-file`: The configuration file for frontend;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
+- `--disable-dashboard`: Disable dashboard http service;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
+- `--grpc-addr <GPRC_ADDR>`: GRPC server address;
+- `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
+- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
+- ` --opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
+- `--prom-addr <PROM_ADDR>`: Prometheus server address;
+- `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
+- `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
+- `--tls-mode <TLS_MODE>`: TLS Mode;
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](https://docs.greptime.com/user-guide/clients/authentication);
+
+## Configuration File
+
+### Specify configuration file
 
 You can specify the configuration file by using the command line arg `-c [file_path]`, for example:
 
@@ -15,7 +94,7 @@ You can specify the configuration file by using the command line arg `-c [file_p
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-## Common configurations
+### Common configurations
 
 Common protocol configurations in `frontend` and `standalone` sub command:
 
@@ -63,7 +142,7 @@ addr = "127.0.0.1:4004"
 All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.
 
 
-### Protocol options
+#### Protocol options
 
 | Option             | Key          | Type    | Description                                                                     |
 |--------------------|--------------|---------|---------------------------------------------------------------------------------|
@@ -87,7 +166,7 @@ All of these options are optional, the default values are listed above. If you w
 |                    | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 
-### Node options
+#### Node options
 
 There are also some node options in common:
 
@@ -97,7 +176,7 @@ There are also some node options in common:
 |        | mode                    | String  | Node running mode, includes "standalone" and "distributed"                         |
 |        | enable_memory_catalog   | Boolean | Use in-memory catalog, false by default                                            |
 
-### Storage options
+#### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
@@ -148,7 +227,6 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-
 #### Object storage cache
 When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
 
@@ -166,7 +244,7 @@ cache_capacity = 1024
 
 The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum file number in the cache directory.
 
-### WAL options
+#### WAL options
 
 The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
 ```toml
@@ -185,7 +263,7 @@ sync_write = false
 * `purge_threshold`  and `purge_interval`: control the purging of wal files.
 * `sync_write`: whether to call `fsync` when writing every log.
 
-### Compaction
+#### Compaction
 
 The `[storage.compaction]` section configures the compaction options of storage engine:
 
@@ -199,7 +277,7 @@ max_files_in_level0 = 8
 max_purge_tasks = 32
 ```
 
-### Manifest
+#### Manifest
 
 The `[storage.manifest]` section configures the region manifest options of storage engine:
 
@@ -214,7 +292,7 @@ gc_duration = '30s'
 checkpoint_on_startup = false
 ```
 
-## Standalone
+### Standalone
 
 When you use GreptimeDB in the standalone mode, you can configure it as below:
 
@@ -261,8 +339,7 @@ addr = "127.0.0.1:4003"
 runtime_size = 2
 ```
 
-
-## Frontend in distributed mode
+### Frontend in distributed mode
 
 Configure frontend in distributed mode:
 
@@ -288,7 +365,7 @@ The `meta_client_options` configure the metasrv client, including:
 * `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
 
-## Datanode in distributed mode
+### Datanode in distributed mode
 
 Configure datanode in distributed mode:
 
@@ -321,7 +398,7 @@ tcp_nodelay = false
 
 Datanode in distributed mode should set different `node_id` in different nodes.
 
-## Metasrv configuration
+### Metasrv configuration
 
 A sample configurations:
 
@@ -339,14 +416,7 @@ datanode_lease_secs = 30
 | store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                        |
 | datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |
 
-## Layered configuration
-
-GreptimeDB supports layered configuration and uses the following precedence order(each item takes precedence over the item below it):
-
-- Command-line flags
-- Configuration file
-- Environment variables
-- Default values
+## Environment variable
 
 
 Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variable:
