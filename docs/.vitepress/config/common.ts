@@ -55,8 +55,10 @@ export const common = async () => ({
 })
 
 export async function makeSidebar(lang) {
-  const langPath = lang === 'zh' ? '/zh' : ''
-  const summary = YAML.load(fs.readFileSync(`docs${langPath}/summary.yml`), 'utf8')
+  const langPath = lang !== 'en' ? `/${lang}` : ''
+
+  const summary = YAML.load(fs.readFileSync(`docs/summary.yml`), 'utf8')
+  const summaryI18n = langPath ? YAML.load(fs.readFileSync(`docs${langPath}/summary-i18n.yml`), 'utf8') : null
 
   function makeSidebarItem(items, path) {
     if (Array.isArray(items)) {
@@ -66,7 +68,7 @@ export async function makeSidebar(lang) {
       let content = Object.values(items)[0]
 
       return {
-        text: title.replace(/-/g, ' '),
+        text: summaryI18n ? summaryI18n[title] : title.replace(/-/g, ' '),
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
         collapsed: false,
       }
