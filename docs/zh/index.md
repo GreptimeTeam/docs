@@ -1,4 +1,4 @@
-# Introduction
+# 介绍
 
 <p align="center">
     <img src="../public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">

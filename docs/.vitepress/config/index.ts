@@ -15,6 +15,7 @@ export default async () => {
     case 'zh':
       root = zh
       rewrites = {
+        'zh/:file': ':file',
         'zh/:group/:file': ':group/:file',
         'zh/:group/:type/:file': ':group/:type/:file',
       }
