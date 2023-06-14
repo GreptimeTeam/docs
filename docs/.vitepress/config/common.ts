@@ -7,7 +7,6 @@ export const common = async () => ({
   appearance: false,
   description: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure',
   head: [
-    ['script', { src: 'https://app.mailjet.com/statics/js/widget.modal.js' }],
     ['script', { src: 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/icons_19361_2.c3035490ebb16aa315f724f1eccdddde.js' }],
     ['link', { rel: 'stylesheet', href: '//at.alicdn.com/t/c/font_3652459_85jeka7sbox.css' }],
     // SEO part
@@ -67,17 +66,25 @@ export async function makeSidebar(lang) {
       let title = Object.keys(items)[0]
       let content = Object.values(items)[0]
 
+      if (summaryI18n && !summaryI18n[title]) {
+        return {}
+      }
+
       return {
         text: summaryI18n ? summaryI18n[title] : title.replace(/-/g, ' '),
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
         collapsed: false,
       }
     } else {
-      let link = `${langPath}${path}/${items}`.toLocaleLowerCase()
-      let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
-      return {
-        text: file.split('\n')[0].replace('# ', ''),
-        link,
+      try {
+        let link = `${langPath}${path}/${items}`.toLocaleLowerCase()
+        let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
+        return {
+          text: file.split('\n')[0].replace('# ', ''),
+          link,
+        }
+      } catch (error) {
+        return {}
       }
     }
   }
