@@ -1,31 +1,27 @@
-# 介绍
+# 简介
 
 <p align="center">
     <img src="../public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
-GreptimeDB is an open-source time-series database with a special focus on
-scalability, analytical capabilities and efficiency. It's designed to work on
-infrastructure of the cloud era, and users benefit from its elasticity and commodity
-storage.
+GreptimeDB 是开源的时序数据库，注重可扩展性、分析能力和效率。GreptimeDB 可以在云时代的基础设施上工作，为用户提供良好的灵活性和商品存储服务。
 
-Our core developers have been building time-series data platform
-for years. Based on their best-practices, GreptimeDB is born to give you:
+我们的核心开发人员多年深耕于建立时序数据平台。基于他们的丰富经验，GreptimeDB 应运而生，并为用户提供：
 
-- [A standalone binary](https://github.com/GreptimeTeam/greptimedb/releases) that scales to highly-available distributed cluster, providing a transparent experience for cluster users
-- Optimized columnar layout for handling time-series data; compacted, compressed, and stored on various storage backends
-- Flexible indexes, tackling high cardinality issues down
-- Distributed, parallel query execution, leveraging elastic computing resource
-- Native SQL, and Python scripting for advanced analytical scenarios
-- Widely adopted database protocols and APIs, native PromQL supports
-- Extensible table engine architecture for extensive workloads
-- Schemaless writing that automatically creates tables for data
+- 可扩展到高可用的分布式集群的[单机版 binary](https://github.com/GreptimeTeam/greptimedb/releases)，为集群用户提供透明的体验
+- 为处理时序数据而优化的列式布局；经过压缩、整理，并存储在各种存储后端
+- 灵活的索引，解决高基数的问题
+- 利用弹性计算资源执行分布式并行查询
+- 用于高级分析场景的本地 SQL 和 Python 脚本
+- 广泛采用的数据库协议和 API，支持本地 PromQL
+- 适用于广泛的工作负载可扩展的表引擎架构
+- Schemaless 写入，自动为数据创建表格
 
-Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
+在开始上手之前，请阅读以下文档，其包含了设置说明、基本概念、架构设计和教程：
 
-- [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
-- [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
-- [Developer Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
+- [立即开始][1]: 为刚接触 GreptimeDB 的用户提供指引，包括如何安装与数据库操作。
+- [用户指南][2]: 应用程序开发人员可以使用 GreptimeDB 或建立自定义集成。
+- [开发者指南][3]: 有兴趣了解更多技术细节并想成为 GreptimeDB 的贡献者的开发者请阅读此文档。
 <!-- - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions. -->
 
