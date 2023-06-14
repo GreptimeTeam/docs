@@ -158,7 +158,7 @@ http://localhost:4000/v1/sql?db=public
 
 请参考 [API](/reference/sql/http-api.md) 文档获取有关 SQL HTTP 请求的更多信息。
 
-### InfluxDB Line 协议
+### InfluxDB Line Protocol
 
 GreptimeDB 支持 HTTP InfluxDB Line 协议。你可以通过 `/influxdb/write` API 来写入数据：
 
@@ -175,7 +175,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 - `db` 指定要写入的数据库，默认为 `public`。
 - `precision`，行协议中时间戳的精度。支持 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认为纳秒。
 
-### OpenTSDB Line 协议
+### OpenTSDB Line Protocol
 
 GreptimeDB 支持通过 Telnet 或 HTTP API 写入 OpenTSDB Line。
 
