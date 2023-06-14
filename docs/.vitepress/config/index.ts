@@ -30,7 +30,7 @@ export default async () => {
     locales: {
       root,
       en: { ...en, link: 'https://docs.greptime.com/' },
-      zh: { ...zh, link: 'http://greptime-document-bucket.s3-website.cn-northwest-1.amazonaws.com.cn' },
+      zh: { ...zh, link: 'https://docs.greptime.cn/' },
     },
     rewrites,
   }
