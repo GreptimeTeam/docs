@@ -23,7 +23,7 @@
   - prometheus
   - cluster
   - Operations:
-    - overview
+    # - overview
     - configuration
     - kubernetes
     # TODO
@@ -33,7 +33,7 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
-  - Integration
+  # - Integration
 - Developer-Guide:
   - overview
   - getting-started
