@@ -1,3 +1,5 @@
+# 概述
+
 从这里开始探索 GreptimeDB 强大的核心功能。
 
 ## 安装 GreptimeDB
@@ -207,7 +209,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 
 可视化在有效利用时间序列数据方面发挥着关键作用。为了帮助用户充分利用 GreptimeDB 的各种功能，Greptime 提供了一个简单的 [dashboard](https://github.com/GreptimeTeam/dashboard)。
 
-Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到 GreptimeDB 的 binary 文件中。在[启动 GreptimeDB ](#install-greptimedb)后，可以通过 HTTP 端点`http://localhost:4000/dashboard` 访问 dashboard。当前版本的 dashboard 支持 MySQL 和 Python 查询，不久将支持 PromQL。
+Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到 GreptimeDB 的 binary 文件中。在[启动 GreptimeDB ](#安装-greptimedb)后，可以通过 HTTP 端点 `http://localhost:4000/dashboard` 访问 dashboard。当前版本的 dashboard 支持 MySQL 和 Python 查询，不久将支持 PromQL。
 
 将 SQL 写入命令文本，然后单击 `RUN ALL`，我们将获取 system_metrics 中的所有数据。
 
