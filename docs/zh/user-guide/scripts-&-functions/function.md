@@ -400,4 +400,4 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 
 `/run-script` 通过 `db` 和 `name` 运行编译好的脚本，然后返回输出，这与 `/sql` API 中的查询结果相同。
 
-`/run-script` 也接收其他查询参数，作为传递到协处理器的用户参数，参考[输入和输出](#input-the-coprocessor-function)。
+`/run-script` 也接收其他查询参数，作为传递到协处理器的用户参数，参考[输入和输出](#协处理器函数的输入)。
