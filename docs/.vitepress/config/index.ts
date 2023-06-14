@@ -9,13 +9,19 @@ export default async () => {
   const zh = { label: '简体中文', lang: 'zh', ...(await zhConfig()) }
   const en = { label: 'English', lang: 'en', ...(await enConfig()) }
   let root = en
+  let rewrites = {}
 
-  switch ('zh') {
+  switch (dotenv.config().parsed?.VITE_LANG) {
     case 'zh':
       root = zh
+      rewrites = {
+        'zh/:group/:file': ':group/:file',
+        'zh/:group/:type/:file': ':group/:type/:file',
+      }
       break
     default:
       root = en
+      rewrites = {}
   }
 
   return {
@@ -25,5 +31,6 @@ export default async () => {
       en: { ...en, link: 'https://docs.greptime.com/' },
       zh: { ...zh, link: 'http://greptime-document-bucket.s3-website.cn-northwest-1.amazonaws.com.cn' },
     },
+    rewrites,
   }
 }
