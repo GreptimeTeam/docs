@@ -16,9 +16,7 @@ This is helpful when troubleshooting complex issues
 
 Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clients/grpc.md#java), [write data](/user-guide/write-data/grpc.md#java) and [query data](/user-guide/query-data/grpc.md#java).
 
-## Configuration
-
-### Global Options (System properties / Java -Dxxx)
+## Global Options (System properties / Java -Dxxx)
 
 | Name                                           | Description                                                                                                                                                        |
 |:-----------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -26,19 +24,7 @@ Please refer to User Guide chapter to learn [how to insall SDK](/user-guide/clie
 | greptimedb.signal.out\_dir                     | Signal handler can output to the specified directory, default is the process start directory.                                                                      |
 | greptimedb.available\_cpus                     | Specify the number of available cpus, the default is to use the full number of cpus of the current environment.                                                    |
 | greptimedb.reporter.period\_minutes            | Metrics reporter timed output period, default 30 minutes.                                                                                                          |
-| greptimedb.read.write.rw_logging               | Whether to print logs for each read/write operation, default off.                                                                                                  |
-
-### GreptimeDBOptions
-
-| Name           | Description                                                                                                                                                                                                                                                                                                                                   |
-|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| endpoints      | GreptimeDB server address, can have one or more.                                                                                                                                                                                                                                                                                              |
-| asyncWritePool | As a purely asynchronous client, a write scheduling thread pool is required, which can be configured by the user, and will use SerializingExecutor by default. If you configure the pool yourself, please focus on the performance metrics: `async_write_pool.time`, and adjust the configuration of this scheduling thread pool in time. |
-| asyncReadPool  | As a purely asynchronous client, a read scheduling thread pool is required, which can be configured by the user, and will use SerializingExecutor by default.If you configure the pool yourself, please focus on the performance metrics: `async_write_pool.time`, and adjust the configuration of this scheduling thread pool in time.   |
-| rpcOptions     | Configuration options for RPC component, please refer to `RpcOptions` for details.                                                                                                                                                                                                                                                            |
-| routerOptions  | Configuration options for the routing table component, please refer to `RouterOptions` for details.                                                                                                                                                                                                                                           |
-| writeOptions   | Configuration options for the write component, please refer to `WriteOptions` for details.                                                                                                                                                                                                                                                    |
-
+| greptimedb.read.write.rw_logging               | Whether to print logs for each read/write operation, default off.                                                                                                  |                                                                                                          |
 ## Metrics&Display
 
 At runtime, users can use the SIGUSR2 signal of the Linux platform to output

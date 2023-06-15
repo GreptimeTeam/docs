@@ -68,7 +68,9 @@ public class QuickStart {
 
     public static void main(String[] args) throws Exception {
         String endpoint = "127.0.0.1:4001";
+        AuthInfo authInfo = new AuthInfo("username", "password");
         GreptimeOptions opts = GreptimeOptions.newBuilder(endpoint) //
+                .authInfo(authInfo)
                 .writeMaxRetries(1) //
                 .readMaxRetries(2) //
                 .routeTableRefreshPeriodSeconds(-1) //
