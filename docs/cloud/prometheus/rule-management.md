@@ -1,25 +1,9 @@
-# Prometheus
 
-## Remote Write
-
-GreptimeCloud instance can be configured as a [Prometheus remote write
-endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write).
-
-Add this `remote_write` section to your prometheus configuration.
-
-```yaml
-remote_write:
-  - url: https://<host>/v1/prometheus/write?db=<dbname>
-    basic_auth:
-      username: <username>
-      password: #paste your service password
-```
-
-## Rule Management
+# Rule Management
 
 With this service, you can easily set up alerting and recording rules by copying your Prometheus configuration files to GreptimeCloud. Furthermore, the visualized charts will be generated automatically in the console, providing a seamless experience for monitoring your applications. You can visit [Prometheus](https://prometheus.io/docs/prometheus/latest/configuration/configuration) for more details about the configuration files.
 
-### Manage rule files via Git
+## Manage rule files via Git
 
 Each GreptimeCloud service comes with a git repository for storing prometheus rules and configurations. By checking your rules, GreptimeCloud's prometheus-compatible rule engine evaluates your rules against data stored in the database and emits alert when matches.
 
@@ -27,7 +11,7 @@ Each GreptimeCloud service comes with a git repository for storing prometheus ru
 Creating branch or tag is disabled
 :::
 
-#### Download Template
+### Download Template
 
 Use the following code to clone the service repository which contains a sample prometheus.yml file. 
 
@@ -39,7 +23,7 @@ git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
 cd <serviceName>
 ```
 
-#### Files
+### Files
 
 You can see the following files in the repository.
 
@@ -55,7 +39,7 @@ You can add or edit files locally. Only the following files are allowed:
 - README.md
 - `<your rules>` YAML files
 
-##### `prometheus.yml`
+#### `prometheus.yml`
 
 The `prometheus.yml` file is responsible for managing global and alerting settings. Please **do not** change its name. The supported fields are listed below. Any other fields will be discarded.
 
@@ -74,7 +58,7 @@ alerting:
     [ - <alertmanager_config> ... ]
 ```
 
-##### Rule Files
+#### Rule Files
 
 You can add rule configurations in custom `.yml` files at the root directory. Suppose you have a rule file named `alert.yml` and with the following content:
 
@@ -97,13 +81,13 @@ The files in the directory should be as following:
 
 You can add as many rule files as you want.
 
-##### Restrictions
+#### Restrictions
 
 - Each file is 1MB limited, and total repo is 100MB limited
 - Each file MUST be valid rule yaml format
 - Creating directory is disabled
 
-#### Push
+### Push Code
 
 After adding or copying your Prometheus configuration files into this repository, you can push them to GreptimeCloud.
 
@@ -119,7 +103,7 @@ git commit -m "sync prometheus configuration"
 git push
 ```
 
-#### Pull
+### Pull Code
 
 In addition to editing the configuration files through Git, you can also make changes to them via the [GreptimeCloud console](#visualize-charts). Then you can pull the latest configuration files.
 
@@ -127,7 +111,7 @@ In addition to editing the configuration files through Git, you can also make ch
 git pull
 ```
 
-### Visualize Charts
+## Visualize Data
 
 After pushing your Prometheus configuration files to GreptimeCloud, visit the [GreptimeCloud console](https://console.greptime.cloud/service/list) and navigate to the `Prometheus` section. You can see the charts generated automatically based on your configuration files.
 
