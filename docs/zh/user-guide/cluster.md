@@ -51,7 +51,7 @@
    Query OK, 3 rows affected (0.09 sec)
    ```
 
-   `dist_table` 被分布在 `Datanode` 中。你可以参考 ["Table Sharding"](https://docs.greptime.com/developer-guide/frontend/table-sharding) 了解更多细节。
+   `dist_table` 被分布在 `Datanode` 中。你可以参考 ["Table Sharding"](../developer-guide/frontend/table-sharding) 了解更多细节。
 
 3. 通过 `INSERT` 语句输入一些数据。
 

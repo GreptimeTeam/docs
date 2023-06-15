@@ -99,8 +99,8 @@ export async function makeSidebar(lang) {
       }
     } else {
       try {
-        let link = `${langPath}${path}/${items}`.toLocaleLowerCase()
-        let file = fs.readFileSync(`docs${link}.md`, 'utf-8')
+        let link = `${path}/${items}`.toLocaleLowerCase()
+        let file = fs.readFileSync(`docs${langPath}${link}.md`, 'utf-8')
         return {
           text: file.split('\n')[0].replace('# ', ''),
           link,
