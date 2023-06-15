@@ -5,7 +5,7 @@ export const zhConfig = async () => ({
     nav: [
       {
         text: '主页',
-        link: 'https://greptime.com/',
+        link: 'https://greptime.cn/',
       },
       {
         text: '博客',
