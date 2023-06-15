@@ -13,5 +13,13 @@ export const zhConfig = async () => ({
       },
     ],
     sidebar: await makeSidebar('zh'),
+    editLink: {
+      text: '在 GitHub 上编辑此页',
+    },
+    lastUpdatedText: '上次更新',
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇',
+    },
   },
 })
