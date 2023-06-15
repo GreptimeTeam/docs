@@ -15,7 +15,7 @@ GreptimeDB 支持在数据库内运行 Python 脚本，如果业务逻辑太复�
 
 Python 协处理器目前正处于实验阶段，API 可能会发生一些变化。
 
-用户可以下载支持 PyO3 的 [pre-built binaries](https://greptime.com/download)，其文件名后缀为 `pyo3`。也可以通过下载没有 `pyo3` 后缀的 binary 文件直接使用 RustPython，它不需要额外的设置。
+用户可以下载支持 PyO3 的 [pre-built binaries](https://greptime.cn/download)，其文件名后缀为 `pyo3`。也可以通过下载没有 `pyo3` 后缀的 binary 文件直接使用 RustPython，它不需要额外的设置。
 
 如果有库的链接问题，那么需要检查是否设置了正确的 Python 共享库，这可能会有点难度。一般来说，只需要安装 `python-dev` 包（在大多数基于 Debian 的系统上）。然而，如果用户使用 Homebrew 在 macOS 上安装 Python，则必须创建一个适当的链接到 `Library/Frameworks/Python.framework`。
 
