@@ -21,5 +21,6 @@ export const zhConfig = async () => ({
       prev: '上一篇',
       next: '下一篇',
     },
+    outlineTitle: '目录',
   },
 })
