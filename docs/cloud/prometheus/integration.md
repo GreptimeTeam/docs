@@ -1,5 +1,7 @@
 # Integration
 
+## Remote Write and Read
+
 GreptimeCloud instance can be configured as a Prometheus [remote write
 endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) and [remote read endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read).
 
@@ -17,4 +19,19 @@ remote_read:
   basic_auth:
     username: <username>
     password: #paste your service password
+```
+
+## Rule Management
+
+Each GreptimeCloud service comes with a git repository for storing prometheus
+rules and configurations. By checking your rules, GreptimeCloud's
+prometheus-compatible rule engine evaluates your rules against data stored in
+the database and emits alert when matches. For more detail, please refer to [Rule Management](https://docs.greptime.com/cloud/prometheus/rule-management).
+
+```shell
+git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
+# Copy your prometheus.yml and rules into this repo, and commit them
+git add .
+git commit -m "sync prometheus configuration"
+git push
 ```

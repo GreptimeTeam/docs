@@ -13,14 +13,11 @@ Creating branch or tag is disabled
 
 ### Download Template
 
-Use the following code to clone the service repository which contains a sample prometheus.yml file. 
+You can get the clone URL of the repository in the [GreptimeCloud console](https://console.greptime.cloud/service/list).
+The repository contains a sample prometheus.yml file. 
 
 ```shell
-git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
-```
-
-```shell
-cd <serviceName>
+git clone <cloud-repo-url>
 ```
 
 ### Files
