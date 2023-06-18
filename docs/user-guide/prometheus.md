@@ -21,18 +21,18 @@ Then please follow the settings in [Prometheus configuration](https://prometheus
 ```yaml
 remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=prometheus
-- basic_auth:
-    username: greptime_user
-    password: greptime_pwd
+#  basic_auth:
+#    username: greptime_user
+#    password: greptime_pwd
 
 remote_read:
 - url: http://localhost:4000/v1/prometheus/read?db=prometheus
-- basic_auth:
-    username: greptime_user
-    password: greptime_pwd
+#  basic_auth:
+#    username: greptime_user
+#    password: greptime_pwd
 ```
 
-Note: Be sure to replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password. Please refer to client [authentication](./clients/authentication.md).
+Note: Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](./clients/authentication.md).
 
 The `db` parameter in url represents the database that we want to write, it's `public` if not present.
 
