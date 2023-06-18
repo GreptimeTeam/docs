@@ -26,7 +26,7 @@ remote_read:
 Each GreptimeCloud service comes with a git repository for storing prometheus
 rules and configurations. By checking your rules, GreptimeCloud's
 prometheus-compatible rule engine evaluates your rules against data stored in
-the database and emits alert when matches. For more detail, please refer to [Rule Management](https://docs.greptime.com/cloud/prometheus/rule-management).
+the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/cloud/prometheus/rule-management).
 
 ```shell
 git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
