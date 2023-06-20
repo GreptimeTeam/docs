@@ -8,7 +8,7 @@ Click the `Add data source` button and select `Prometheus` as the type.
 
 Fill in the following information in `HTTP`:
 
-- Prometheus server URL: `https://<host>/v1/prometheus/read?db=<dbname>`
+- Prometheus server URL: `https://<host>/v1/prometheus/?db=<dbname>`
 
 Click `basic auth` in the `Auth` section and fill in your GreptimeCloud service username and password in `Basic Auth Details`:
 
