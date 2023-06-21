@@ -1,9 +1,11 @@
 # MySQL
 
 GreptimeCloud exposes GreptimeDB access in MySQL server-client protocol. Most
-standard clients and drivers are compatible. The connection is encrypted with
-TLS. `database` is required when connect using MySQL protocol.
+standard clients and drivers are compatible.
+Refer to [MySQL client](https://docs.greptime.com/user-guide/clients/mysql) of GreptimeDB for more information.
 
+The connection is encrypted with TLS.
+`database` is required when connect using MySQL protocol.
 To connect to GreptimeCloud in MySQL protocol, using information below:
 
 - Host: `<host>`
