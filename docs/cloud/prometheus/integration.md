@@ -1,5 +1,9 @@
 # Integration
 
+GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
+This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
+For more information, please refer to the [Prometheus documentation](https://docs.greptime.com/user-guide/prometheus) in the GreptimeDB user guide.
+
 ## Remote Write and Read
 
 GreptimeCloud instance can be configured as a Prometheus [remote write
