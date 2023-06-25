@@ -44,6 +44,24 @@ body {
 .VPNavBar.has-sidebar {
   background: var(--color-navbar-primary);
   -webkit-backdrop-filter: saturate(50%) blur(8px);
+  .container{
+    .content-body {
+      background-color transparent
+      .VPSocialLinks .VPSocialLink svg{
+        width 32px
+        height 32px
+      }
+      .VPNavBarMenuLink svg {
+        display none  
+      }
+    }
+    .curtain {
+      display none
+    }
+    .title .VPNavBarTitle .title .VPImage.logo {
+      height 32px
+    }
+  }
 }
 
 .VPNavBar.has-sidebar .content {
@@ -53,7 +71,7 @@ body {
 
 @media (min-width: 960px) {
   .VPSidebar {
-    margin-top: 72px;
+    margin-top: var(--vp-nav-height-desktop);
     padding-top: 0 !important;
   }
 }

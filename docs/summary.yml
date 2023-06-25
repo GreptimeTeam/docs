@@ -1,36 +1,59 @@
-- Installation:
-  - overview
-  - download-pre-built
-  - Kubernetes:
-    - overview
-    - operator
-    - gtctl
 - Getting-Started:
   - overview
-  - create-a-time-series-table
-  - add-time-series-data
-  - query-data-with-sql
-  - visualize-data
-  - process-data-with-python
-  - distributed
 - User-Guide:
-  - concepts
-  - reading-writing-data
-  - table-management
-  - coprocessor-and-scripting
-  - java-sdk
-  - Supported-Protocols:
+  - overview
+  - Concepts:
     - overview
-    - http-api
-    - grpc
+    - why-greptimedb
+    - data-model
+    - architecture
+    - storage-location
+    - key-concepts
+    - features-that-you-concern
+  - Clients:
+    - overview
+    - authentication
     - mysql
-    - postgresql
+    - grpc
+    - influxdb-line
     - opentsdb
-    - influxdb
-    - prometheus
+    - postgresql
+    - http-api
+  - table-management
+  - Write-Data:
+    - overview
+    - grpc
+    - sql
+    - influxdb-line
+    - opentsdb
+  - Query-data:
+    - overview
+    - grpc
+    - sql
+  - query-external-data
+  - Scripts-&-Functions:
+    - overview
+    - getting-started
+    - data-types
+    - function
+    - api
+  - prometheus
+  - cluster
+  - Operations:
+    - overview
+    - configuration
+    - kubernetes
+    # TODO
+    # - monitor-&-alert
+    # - import-data
+    # - export-data
+    # - back-up-&-restore-data
+    # - capacity-planning
+    - cli-repl
+  - Integration
 - Developer-Guide:
   - overview
-  - get-started
+  - getting-started
   - Frontend:
     - overview
     - table-sharding
@@ -44,17 +67,47 @@
     - python-coprocessor
   - Meta:
     - overview
+    - admin-api
+    - dist-lock
+    - selector
   - Tests:
     - overview
     - unit-test
     - integration-test
     - sqlness-test
+  - Benchmarks:
+    - nyc-taxi
+  - How-To:
+    - how-to-write-sdk
+    - how-to-use-tokio-console
 - Reference:
   - command-lines
-  - configuration
   - data-types
-  - sql
-  - functions
+  - SDK:
+    - Java
+    - Go
+  - SQL:
+    - overview
+    - http-api
+    - insert
+    - cast
+    - copy
+    - select
+    - distinct
+    - where
+    - order_by
+    - group_by
+    - limit
+    - join
+    - functions
+    - delete
+    - show
+    - tql
+    - create
+    - describe_table
+    - alter
+    - explain
+    - compatibility
 - Changelog:
   - overview
   - roadmap-2023

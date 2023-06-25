@@ -39,3 +39,12 @@ cargo run --bin sqlness-runner
 It automatically finishes the following procedures: compile `GreptimeDB`, start it, grab tests and feed it to
 the server, then collect and compare the results. You only need to check whether there are new `.output` files.
 If not, congratulations, the test is passed 🥳!
+
+### Run a specific test
+
+```shell
+cargo sqlness your_test
+```
+
+If you specify a second argument, only test cases containing the specified string in their names will be executed. Sqlness also supports filtering based on environment. The filter is accepted as a regex string and the case name will be examined in the format of `env:case`.
+

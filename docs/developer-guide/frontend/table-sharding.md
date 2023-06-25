@@ -11,23 +11,22 @@ group data and SQL to query them, we borrow the word "partition", which is a con
 in OLTP databases.
 
 In GreptimeDB, a table can be horizontally partitioned in multiple ways and it uses the same
-partitioning types (and corresponding syntax) as in MySQL. Currently, GreptimeDB supports "RANGE
-partitioning" and "RANGE COLUMNS partitioning".
+partitioning types (and corresponding syntax) as in MySQL. Currently, GreptimeDB supports "RANGE COLUMNS partitioning".
 
-In RANGE partitioning, each partition includes only a portion of the data from the table, and is
+In "RANGE COLUMNS partitioning", each partition includes only a portion of the data from the table, and is
 grouped by some column(s) value range. For example, we can partition a table in GreptimeDB like
 this:
 
 ```sql
 CREATE TABLE my_table (
   a INT,
-  others STRING,
+  ts TIMESTAMP TIME INDEX,
 )
-PARTITION BY RANGE (a) (
+PARTITION BY RANGE COLUMNS (a) (
   PARTITION p0 VALUES LESS THAN (10),
   PARTITION p1 VALUES LESS THAN (20),
-  PARTITION p2 VALUES LESS THAN MAXVALUE,
-)
+  PARTITION p2 VALUES LESS THAN (MAXVALUE),
+);
 ```
 
 `my_table` that we created above has 3 partitions. Partition "p0" contains a portion of data that

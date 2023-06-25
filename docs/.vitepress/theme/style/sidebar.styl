@@ -10,7 +10,6 @@
   .items .VPLink {
     padding: 8px 0;
     margin: 0;
-
     .link-text {
       font-size: 16px;
       line-height: 24px;
@@ -19,12 +18,9 @@
 }
 
 .group {
-  margin: 15px 0 10px;
-
   .no-title .items {
     .link {
       color: var(--color-sidebar-first-text);
-
       .link-text {
         font-family: Roboto-Bold, Roboto;
         font-weight: bold;
@@ -43,7 +39,6 @@
   .items .VPLink .link-text {
     font-size: 16px;
     line-height: 24px;
-    font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
   }
 
@@ -53,5 +48,27 @@
 
   .items .link.active {
     color: var(--color-primary);
+  }
+}
+.VPSidebar .group {
+  .VPSidebarItem {
+    .text {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .item h2 {
+      font-weight: 700;
+    }
+    .item h3 {
+      line-height: 32px;
+    }
+    .VPLink .text {
+      padding: 8px 0;
+      color: var(--color-sidebar-first-text);
+      opacity: .8;
+    }
+    .caret {
+      height 40px
+    }
   }
 }

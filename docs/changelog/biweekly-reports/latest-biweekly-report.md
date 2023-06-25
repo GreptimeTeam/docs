@@ -1,69 +1,92 @@
-# 2022.12.12 - 2022.12.23 – Open-sourcing dashboard for GreptimeDB
+# 2023.05.08 - 2023.05.21 – Tokio Console Enabled for Easier Troubleshooting
 
-Jan 04, 2023 · 6 min read
+May 24, 2023 · 6 min read
 
 ## Summary
+Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. Below are some highlights:
+- Support `TQL EXPLAIN` / `TQL ANALYZE` clauses
+- Enable tokio console
+- Support more endpoints for Prometheus HTTP API 
 
-First, we would like to express our sincere wishes to you and your family, may this New Year brings love, happiness and joy to your life.
-In our first blog of 2023, we would like to reflect on what we have achieved since we open-sourced at the end of 2022.
-Some challenges we have overcome with great contributors from the community include:
+## Contributor list: (in alphabetical order)
+For the past two weeks, our community has been super active with a total of **8 PRs** from 6 contributors merged successfully and lots pending to be merged. 
+Congrats on becoming our most active contributors in the past 2 weeks:
 
-1. The official version of Arrow/Parquet is ready for use, enabling us to keep pace with the latest updates from DataFusion;
-2. Restructured APIs of gRPC, providing a much more friendly and smooth experience for developers;
-3. Achieved LogStore compaction for the local file version and further optimized our storage engine;
-4. Last but not least, GreptimeDB has a new skin! The dashboard is on GitHub, and check it out [here](https://github.com/GreptimeTeam/dashboard).
+- [@DiamondMofeng](https://github.com/DiamondMofeng) ([db#1577](https://github.com/GreptimeTeam/greptimedb/pull/1577))
+- [@etolbakov](https://github.com/haohuaijin) ([db#1427](https://github.com/GreptimeTeam/greptimedb/pull/1427))
+- [@haohuaijin](https://github.com/haohuaijin) ([db#1571](https://github.com/GreptimeTeam/greptimedb/pull/1571) [db#1580](https://github.com/GreptimeTeam/greptimedb/pull/1580))
+- [@NiwakaDev](https://github.com/NiwakaDev) ([db#1578](https://github.com/GreptimeTeam/greptimedb/pull/1578))
+- [@gitccl](https://github.com/gitccl ) ([db#1527](https://github.com/GreptimeTeam/greptimedb/pull/1527) [docs#348](https://github.com/GreptimeTeam/docs/pull/348/))
+- [@Taylor-lagrange](https://github.com/Taylor-lagrange) ([db#1497](https://github.com/GreptimeTeam/greptimedb/pull/1497) [db#1579](https://github.com/GreptimeTeam/greptimedb/pull/1579))
 
-Join us at [GitHub](https://github.com/GreptimeTeam/greptimedb).
+👏 Let's welcome **@gitccl** and **@Taylor-lagrange** as the new contributors to join our community with their **2** PRs merged respectively. 
 
-## Contributor list: (In alphabetical order)
+Special thanks to [@etolbakov](https://github.com/etolbakov), for continuously contributing to our projects, with 14 out of 15 open PRs successfully merged！Thank you for your generous and brilliant contributions! 
 
-[@masonyc](https://github.com/masonyc)(new contributor)
+A big THANK YOU for all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
-[@yfractal](https://github.com/yfractal)
+## Highlights of Recent PR 
+### [Support for `TQL EXPLAIN` and `TQL ANALYZE` clauses](https://github.com/GreptimeTeam/greptimedb/pull/1427)
+- `TQL EXPLAIN` (similar to `EXPLAIN` from `SQL`) doesn't execute the query but tells how the query would be executed.
+- `TQL ANALYZE` (similar to `ANALYZE` from `SQL`) executes the plan and tells the detailed per-step execution time.
 
-A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together in the new year.
-And WELCOME [@masonyc](https://github.com/masonyc)!
+### [Enable Tokio console](https://github.com/GreptimeTeam/greptimedb/pull/1512)
+With the integration of `tokio-console` and GreptimeDB, as detailed in the [Greptime Developer Guide](https://docs.greptime.com/developer-guide/how-to/how-to-use-tokio-console), all tokio tasks can now be seamlessly displayed. This enhancement significantly aids in troubleshooting issues related to the tokio runtime.
 
-## Good first issue
+Tokio console screenshot:
 
-### Issue [#786](https://github.com/GreptimeTeam/greptimedb/issues/786) (Help wanted)
+![Screenshot of tokio console](../../public/biweekly/1.png)
 
-Issue description: **Support `LIMIT` in distributed table scan**
+### [Support for additional endpoints in Prometheus HTTP API](https://github.com/GreptimeTeam/greptimedb/issues/1016#issuecomment-1431061736)
 
-This issue is working on a query optimization problem: `limit` cannot pushdown to the [Datanode](https://docs.greptime.com/developer-guide/datanode/overview) level in GreptimeDB's distributed mode. This is because we haven't finished the serialization/deserialization of `limit` based on Substrait[1]. A quick walkthrough of Substrait's specification reveals that there's no one-to-one relationship between `limit` and Substrait's types. The chances are that we could resolve this problem by using Substrait's extensions.
+In addition to `query` and `query_range` endpoints, as [Prometheus HTTP API](https://prometheus.io/docs/prometheus/latest/querying/api/) describes, there are some other useful endpoints which will help Prometheus users to explore the metadata or details of the datasets. These endpoints will facilitate the seamless integration of GreptimeDB into various systems as a Prometheus service.
 
-[1]: [Substrait](https://substrait.io/): Cross-Language Serialization for Relational Algebra.
+Here's an example:
 
-### Issue [#602](https://github.com/GreptimeTeam/greptimedb/issues/602) (Help wanted)
+```rust
+curl 'localhost:9090/api/v1/labels'
+{
+    "status": "success",
+    "data": [
+        "__name__",
+        "call",
+        "code",
+        "config",
+        "dialer_name",
+        "endpoint",
+        "event",
+        "goversion",
+        "handler",
+        "instance",
+        "interval",
+        "job",
+        "le",
+        "listener_name",
+        "name",
+        "quantile",
+        "reason",
+        "role",
+        "scrape_job",
+        "slice",
+        "version"
+    ]
+}
+```
 
-Issue description: **System tables for inner metrics**
+These are the updates of GreptimeDB and we are constantly making progress. We believe that the strength of our software shines in the strengths of each individual community member. Thanks for all your contributions.
 
-This good first issue was published on Nov 21 last year and we are still calling for contributors to tackle. By working on it with our contributors, GreptimeDB can fill the gap and build Observability functions from 0 to 1. You can find more details [here](https://github.com/GreptimeTeam/greptimedb/issues/602) or from our last [biweekly post](https://greptime.com/blogs/2022-12-16-biweekly-report.html).
+## New things
+### GreptimeDB v0.3 is ready for release in early June
+We are excited to announce that GreptimeDB v0.3 is ready for release in early June! This forthcoming iteration is an initial distributed version, providing users with an opportunity to test its capabilities firsthand.
 
-## Highlights of Recent PR
+This release will spotlight region-level high availability services—an assurance that data reliability will be achieved in subsequent releases. It will also introduce distributed queries for key scenarios, with a particular focus on PromQL query aspects. Moreover, we are committed to delivering a write performance that not only matches but potentially outpaces that of mainstream databases.
 
-### What's cooking on DB's develop branch
+### GreptimeDB Community is now open-sourced, welcome to contribute
 
-[#753](https://github.com/GreptimeTeam/greptimedb/pull/753)
+We extend an invitation to everyone to stay abreast of our updates and await the opportunity to trial GreptimeDB v0.3. Thank you for your support and anticipation!
 
-**GreptimeDB uses the official version of Arrow/Parquet now.** Since the maintenance of Datafusion's Arrow2 branch is suspended, we decided to switch to Arrow to keep up with the latest features. This was a big challenge, and we are happy to announce that the switch was a success.
+In order to promote collaboration across teams and create a good culture within the Greptime community, it's important to have documented community guidance so that members can build trust faster and focus on long-term sustainable growth of our community. 
 
-[#490](https://github.com/GreptimeTeam/greptimedb/issues/490)
+Whether you're a developer, architect, designer, technical writer, or just someone passionate about open-source projects, there's a place for you in our community; Check more details here: https://github.com/GreptimeTeam/Community.
 
-**The APIs of our gRPC need to be restructured**, for example:
-
-- The names "object" and "expr" used during the implementation of gRPC were not clear;
-- Conventions between gRPC objects and the results/requests of other protocols are tedious and cumbersome;
-- Hard to debug using gRPC CLI tools;
-- etc.
-
-Heavy as the task is, we've broken it into several subtasks, and it is now approaching completion!
-
-[#740](https://github.com/GreptimeTeam/greptimedb/issues/740)
-
-`LogStore` is a component of GreptimeDB's WAL, and **this PR achieves compaction for the local file version**. In summary, `LogStore` starts a background task that periodically scans the log entries of the data that has been successfully flushed in all regions, and then reclaims the log entries to release disk space.
-
-### New things
-
-- The UI of our Dashboard is getting polished, and it's now available as a docker image, see [here](https://github.com/GreptimeTeam/dashboard/tree/main/docker). We set up CI processes to upload weekly build to [docker hub](https://hub.docker.com/repository/docker/greptime/greptimedb-dashboard).
-- GreptimeDB weekly build is available on [AUR](https://aur.archlinux.org/packages/greptimedb-bin). ArchLinux users can install `greptimedb` as a `systemd` service. Please note that this build is experimental and we keep pushing for new changes every week.
+If you have any suggestions for improving this guide, you can either raise PRs or submit a proposal of improvement by sending us an email community@greptime.com. We welcome you to share your ideas and help us build a vibrant and inclusive community!

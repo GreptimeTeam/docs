@@ -1,24 +1,11 @@
 # Table Management
 
-## Introduction
+GreptimeDB provides table management functionalities via SQL. The following guide
+uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
-GreptimeDB provides table management functionality on both MySQL and gRPC protocol.
+## Create Database
 
-## MySQL
-
-You can use standard MySQL client to connect to a running GreptimeDB instance.
-
-``` bash
-$ mysql -h 127.0.0.1 -P 4002
-mysql>
-```
-
-[PostgreSQL client](./supported-protocols/postgresql.md) is supported too.
-
-
-### Creating a database
-
-The default database is `public`, you can create a database:
+The default database is `public`. You can create a database manully.
 
 ```sql
 CREATE DATABASE test;
@@ -28,12 +15,11 @@ CREATE DATABASE test;
 Query OK, 1 row affected (0.05 sec)
 ```
 
-### List Existing Databases
+You can list all the existing databases.
 
 ```sql
 SHOW DATABASES;
 ```
-
 
 ```sql
 +---------+
@@ -60,22 +46,36 @@ SHOW DATABASES LIKE 'p%';
 1 row in set (0.00 sec)
 ```
 
-### Creating a Table
 
-In this example, we are going to create a table named `monitor`
+Then change the database:
+
+```sql
+USE test;
+```
+
+Change back to `public` database:
+
+```sql
+USE public;
+```
+
+## Create Table
+
+**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).**
+
+You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
 
 ```sql
 CREATE TABLE monitor (
   host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
   cpu DOUBLE DEFAULT 0,
   memory DOUBLE,
-  TIME INDEX (ts),
   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
 ```
 
 ``` sql
-Query OK, 1 row affected (0.03 sec)
+Query OK, 0 row affected (0.03 sec)
 ```
 
 #### `CREATE TABLE` syntax
@@ -87,35 +87,17 @@ data type for the time-series column, the inserted value of that column will be
 automatically converted to a timestamp in milliseconds.
 - Primary key: primary key is used to uniquely define a series of data, which is similar
 to tags in other time-series systems like [InfluxDB][1].
+- Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
 
-#### Creating a table in other database
-
-GreptimeDB doesn't support `USE [DATABASE]` statement at the moment, so you must use `[database].[table]` as the table name to create or manipulate a table in other databases:
-
-```sql
-CREATE TABLE test.monitor (
-  host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  cpu DOUBLE DEFAULT 0,
-  memory DOUBLE,
-  TIME INDEX (ts),
-  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
-```
-
-``` sql
-Query OK, 1 row affected (0.03 sec)
-```
-
-
-### List Existing Tables
+## List Existing Tables
 
 You can use `show tables` statement to list existing tables
 
 ``` sql
-show tables;
+SHOW TABLES;
 ```
 ``` sql
 +------------+
@@ -127,11 +109,11 @@ show tables;
 3 rows in set (0.00 sec)
 ```
 
-Notice: `script` table is a built-in table that holds User-Defined Functions (UDFs).
+Notice: `scripts` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
 ``` sql
-show tables like monitor;
+SHOW TABLES LIKE monitor;
 ```
 ``` sql
 +---------+
@@ -159,7 +141,7 @@ SHOW TABLES FROM test;
 1 row in set (0.01 sec)
 ```
 
-### Describe Table
+## Describe Table
 
 Show table information in detail:
 
@@ -180,12 +162,12 @@ DESC TABLE monitor;
 ```
 
 
-### Alter Table
+## Alter Table
 
 You can alter the schema of existing tables just like in MySQL database
 
 ``` sql
-alter table monitor add label varchar;
+ALTER TABLE monitor ADD COLUMN label VARCHAR;
 ```
 
 ```sql
@@ -193,7 +175,7 @@ Query OK, 0 rows affected (0.03 sec)
 ```
 
 ``` sql
-alter table monitor drop column label;
+ALTER TABLE monitor DROP COLUMN label;
 ```
 
 ```sql
@@ -203,78 +185,33 @@ Query OK, 0 rows affected (0.03 sec)
 
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
 
-## gRPC
 
-GreptimeDB now supports gRPC API to create tables. Assume that GreptimeDB instance has been started
-and is listening for incoming gRPC requests on `127.0.0.1:4200`
+## Drop Table
 
-### Create a table
+`DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `test` in the current database:
+
+```sql
+DROP TABLE monitor;
+```
+```sql
+Query OK, 1 row affected (0.01 sec)
+```
+**Note: GreptimeDB V0.1 drops the table at the conceptual level, without actually deleting the content of the table. We will fix it ASAP.**
+
+## HTTP API
+
+Using the following code to create a table through POST method:
 
 ```shell
-$ grpcurl -plaintext -d '
-{
-  "header": { "tenant": "0" },
-  "admins": [
-    {
-      "name": "greptime",
-      "exprs": [
-        {
-          "header": { "version": 1 },
-          "create": {
-            "table_name": "hello_greptime",
-            "column_defs": [
-              {
-                "name": "c1",
-                "datatype": 3,
-                "is_nullable": false
-              },
-              {
-                "name": "c2",
-                "datatype": 12,
-                "is_nullable": true
-              },
-              {
-                "name": "ts",
-                "datatype": 15,
-                "is_nullable": false
-              }
-            ],
-            "time_index": "ts",
-            "create_if_not_exists": true,
-            "table_options": {
-              "region_id": "0"
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
-' 127.0.0.1:4200 greptime.v1.Greptime/Batch
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
+http://localhost:4000/v1/sql?db=public
 ```
 
-If the table is created, GreptimeDB will respond like
-
-``` json
-{
-  "admins": [
-    {
-      "results": [
-        {
-          "header": {
-            "version": 1
-          },
-          "mutate": {
-            "success": 1
-          }
-        }
-      ]
-    }
-  ],
-  "databases": [{}]
-}
+```json
+{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
 ```
 
-### List existing table
-
-gRPC API currently does not support listing tables yet.
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
