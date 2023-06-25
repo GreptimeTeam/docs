@@ -1,5 +1,17 @@
 - Getting-Started:
   - overview
+- Cloud:
+  - overview
+  - usage
+  - Integrations:
+    - Prometheus:
+      - integration
+      - rule-management
+    - grafana
+    - grpc
+    - mysql
+    - postgresql
+    - influxdb
 - User-Guide:
   - overview
   - Concepts:

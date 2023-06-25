@@ -1,4 +1,3 @@
-
 # Rule Management
 
 With this service, you can easily set up alerting and recording rules by copying your Prometheus configuration files to GreptimeCloud. Furthermore, the visualized charts will be generated automatically in the console, providing a seamless experience for monitoring your applications. You can visit [Prometheus](https://prometheus.io/docs/prometheus/latest/configuration/configuration) for more details about the configuration files.

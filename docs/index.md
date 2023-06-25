@@ -24,6 +24,7 @@ for years. Based on their best-practices, GreptimeDB is born to give you:
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
+- [GreptimeCloud][6]: Offers a fully-managed serverless solution for time-series data platform and Prometheus backend, providing a scalable and efficient experience for users.
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
 - [Developer Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
 - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
@@ -34,3 +35,4 @@ Before getting started, please read the following documents that include instruc
 [3]: ./developer-guide/overview.md
 [4]: ./changelog/overview.md
 [5]: ./faq-and-others/faq.md
+[6]: ./cloud/overview.md
