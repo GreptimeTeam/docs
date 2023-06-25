@@ -2,12 +2,15 @@
 
 Welcome to GreptimeCloud. This document will introduce the usage and limits of GreptimeCloud. To monitor service usage, you can go to the [GreptimeCloud Console](https://console.greptime.cloud/).
 
-Here is the overview of limits, see following sections for details of each items.
+Here are the usage limits for GreptimeCloud:
 
-- WCU: Write capacity unit. Every service can use 100 WCU.
-- RCU: Read capacity unit, Every service can use 100 RCU.
-- Storage capacity: 5GB.
-- Account limits: 5 services per account.
+- Write capacity unit (WCU): 800 WCU/5s for every service.
+- Storage capacity: 10GB.
+- Account limits: 3 services per team.
+
+:::tip NOTE
+The limits may change in the future. If you have any questions about it, please contact `feedback@greptime.cloud`.
+:::
 
 ## Capacity Unit
 
@@ -73,16 +76,16 @@ Each API call to read data from your table is a read request. RCU is the server 
 The conversion equivalency between RCU and impact items is: 
 
 - **1 RCU = 1ms cpu time**
-- **1 RCU = 100KB scanned data**
+- **1 RCU = 1KB scanned data**
 
 :::tip NOTE
 The conversion equivalencies may be subject to change in the future.
 :::
 
-For example, suppose there is a query consuming 3ms CPU time and scanning 200KB data. All of these costs add up to 5 RCUs:
+For example, suppose there is a query consuming 3ms CPU time and scanning 2KB data. All of these costs add up to 5 RCUs:
 
 - 3ms cpu time = 3 RCU
-- 200KB scanned data = 2 RCU
+- 2KB scanned data = 2 RCU
 
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
