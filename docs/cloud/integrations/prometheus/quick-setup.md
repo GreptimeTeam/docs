@@ -1,4 +1,4 @@
-# Integration
+# Quick Setup
 
 GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
 This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
@@ -39,3 +39,7 @@ git add .
 git commit -m "sync prometheus configuration"
 git push
 ```
+
+## PromQL
+
+GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/prometheus#prometheus-query-language) for more details.

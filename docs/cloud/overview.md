@@ -14,7 +14,7 @@ GreptimeCloud provides free quota during public beta, see [Usage and Limits](usa
 
 You can connect to GreptimeCLoud using popular database protocols:
 
-- Prometheus [integration](./integrations/prometheus/integration.md) and [rule management](./integrations/prometheus/rule-management.md).
+- Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md).
 - [Grafana](./integrations/grafana.md)
 - [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)

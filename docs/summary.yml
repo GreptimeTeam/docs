@@ -5,7 +5,7 @@
   - usage
   - Integrations:
     - Prometheus:
-      - integration
+      - quick-setup
       - rule-management
     - grafana
     - grpc
