@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 global_ttl = "7d"
 ```
 
-可以参考[表创建语句](/reference/sql/create)的 TTL 选项。
+可以参考表创建语句的 TTL 选项。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -52,6 +52,6 @@ GreptimeDB 通过以下方式解决了这个问题：
 
 ## 可以将数据存储到云的对象存储中吗？
 
-可以，GreptimeDB 的数据访问层是基于 [OpenDAL](https://github.com/apache/incubator-opendal) 的，它支持大多数种类的对象存储服务。数据可以存储在性价比高的云存储服务中，如 AWS S3 或 Azure Blob Storage，请参考[存储选项](././operations/configuration.md#storage-options)。
+可以，GreptimeDB 的数据访问层是基于 [OpenDAL](https://github.com/apache/incubator-opendal) 的，它支持大多数种类的对象存储服务。数据可以存储在性价比高的云存储服务中，如 AWS S3 或 Azure Blob Storage，请参考[存储选项](../operations/configuration.md#storage-options)。
 
 GreptimeDB 还提供了一个全托管的云服务 [GreptimeCloud](https://greptime.com/product/cloud) 来帮助用户管理云的数据。
