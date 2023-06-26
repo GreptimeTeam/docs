@@ -14,4 +14,3 @@ GreptimeDB 提供了 schemaless 的写入方式，自动生成表结构，这样
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [Prometheus Storage](../prometheus.md#storage)
-
