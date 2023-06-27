@@ -4,7 +4,7 @@ GreptimeCloud is a cloud service that is powered by fully-managed serverless Gre
 
 ## Learn about Usage
 
-To know how Capacity Units work in GreptimeCloud, and how to optimize your usage, see [Learn about Usage](usage.md).
+To learn how GreptimeCloud measure its workload for serverless architecture, and how to optimize your usage, see [Learn about Usage](usage.md).
 
 ## Integrations
 
@@ -15,4 +15,4 @@ Before reading the following content, you need to read [clients](/user-guide/cli
 - [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)
 - [PostgreSQL](./integrations/postgresql.md)
-- [InfluxDB](./integrations/influxdb.md)
+- [InfluxDB Line Protocol](./integrations/influxdb.md)
