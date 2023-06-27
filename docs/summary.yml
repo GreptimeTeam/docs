@@ -1,17 +1,5 @@
 - Getting-Started:
   - overview
-- Cloud:
-  - overview
-  - usage
-  - Integrations:
-    - Prometheus:
-      - quick-setup
-      - rule-management
-    - grafana
-    - grpc
-    - mysql
-    - postgresql
-    - influxdb
 - User-Guide:
   - overview
   - Concepts:
@@ -31,6 +19,18 @@
     - opentsdb
     - postgresql
     - http-api
+  - Cloud:
+    - overview
+    - usage
+    - Integrations:
+      - Prometheus:
+        - quick-setup
+        - rule-management
+      - grafana
+      - grpc
+      - mysql
+      - postgresql
+      - influxdb
   - table-management
   - Write-Data:
     - overview
