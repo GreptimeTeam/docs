@@ -1,4 +1,4 @@
-# 2023.06.05 - 2023.06.18 – Support azblob storage
+# 2023.06.05 - 2023.06.18 – Welcome our first external committer!
 
 June 21, 2023 · 6 min read
 
