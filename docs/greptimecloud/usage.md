@@ -84,16 +84,16 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 
 ## Storage Capacity
 
-GreptimeCloud stores data in cloud service such as S3. More cloud storage will be supported in the future.
+GreptimeCloud stores data in object storage such as S3, and measures the size of your total data saved in database.
 
-## Limits
+## Tech Preview Plan
 
-Here are the usage limits for GreptimeCloud during the beta period:
+Tech preview plan provides the following free tier for users to try GreptimeCloud:
 
 - Write capacity unit (WCU): Every service can use 800 WCU per 5 seconds.
 - Storage capacity: 10GB per service.
 - Account limits: 3 services per team.
 
 :::tip NOTE
-The limits may change in the future. If you have any questions about it, please contact `feedback@greptime.cloud`.
+The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).
 :::

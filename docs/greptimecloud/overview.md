@@ -8,7 +8,7 @@ To know how Capacity Units work in GreptimeCloud, and how to optimize your usage
 
 ## Integrations
 
-Before reading the following content, you need to read [clients](../clients/overview.md) first. You can connect to GreptimeCLoud using popular database protocols:
+Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCLoud using popular database protocols:
 
 - Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md).
 - [Grafana](./integrations/grafana.md)
