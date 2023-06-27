@@ -2,20 +2,20 @@
 
 GreptimeDB supports the following data types:
 
-| Type name | Description | Synonyms |
-|:-:|:-:| :-:|
-|`tinyint`| 8-bit signed small integers between -128~127| |
-|`smallint`| 16-bit signed big integers between -32768~32767 | |
-|`int`| 32-bit signed integers between -2147483648~2147483647| `integer`|
-|`bigint`| 64-bit signed big integers between -9223372036854775808~9223372036854775807| |
-|`varchar`|UTF-8 encoded strings|`text`/`string`/`char `|
-|`float`|32-bit IEEE754 floating point values ||
-|`double`|Double precision IEEE 754 floating point values||
-|`boolean`|Boolean values||
-|`varbinary`|Variable length binary values||
-|`date`|32-bit date values||
-|`datetime`|64-bit datetime values||
-|`timestamp[(0/3/6/9)]`|64-bit timestamp values with optional precision. For example, `timestamp(0)` represents timestamp type with seconds precision, `timestamp(3)` represents  milliseconds precision, `timestamp(6)` for microseonds and `timestamp(9)` for nanoseconds. If no precision is given, the timestamp is in **milliseconds** precision by default.||
+| Type name | Description | Synonyms | Size |
+|:-:|:-:| :-:| :-:|
+|`tinyint`| 8-bit signed small integers between -128~127|| 1 Byte |
+|`smallint`| 16-bit signed big integers between -32768~32767 | |2 Bytes |
+|`int`| 32-bit signed integers between -2147483648~2147483647| `integer`|  4 Bytes |
+|`bigint`| 64-bit signed big integers between -9223372036854775808~9223372036854775807| | 8 Bytes |
+|`varchar`|UTF-8 encoded strings|`text`<br />/`string`<br />/ `char `| The length of the strings |
+|`float`|32-bit IEEE754 floating point values || 4 Bytes |
+|`double`|Double precision IEEE 754 floating point values|| 8 Bytes |
+|`boolean`|Boolean values|| 1 Byte |
+|`varbinary`|Variable length binary values| | The length of the data + 2 bytes|
+|`date`|32-bit date values|| 4 Bytes |
+|`datetime`|64-bit datetime values|| 8 Bytes |
+|`timestamp[(0/3/6/9)]`|64-bit timestamp values with optional precision. <br /> For example, `timestamp(0)` represents timestamp type with seconds precision, `timestamp(3)` represents  milliseconds precision, `timestamp(6)` for microseonds and `timestamp(9)` for nanoseconds. If no precision is given, the timestamp is in **milliseconds** precision by default.|| 8 Bytes |
 
 ## Unsigned version of integer types
 `int` / `tinyint` / `smallint` / `bigint` also have unsigned version, and there corresponding value ranges are:
