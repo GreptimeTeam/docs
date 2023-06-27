@@ -106,7 +106,7 @@ Recommend using the prepared statement, JDBC for example:
 ```java
   PreparedStatement pstmt = conn.prepareStatement("insert into test values(?,?)");
   pstmt.setBytes(1, "hello".getBytes());
-  pstmt.setInt(2, i);
+  pstmt.setInt(2, 1687867163);
   pstmt.addBatch();
   ......
   pstmt.executeBatch();
@@ -115,9 +115,9 @@ Recommend using the prepared statement, JDBC for example:
 If we want to insert a literal binary, we can insert a hexadecimal literal:
 
 ```sql
-INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1);
+INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1687867163);
 -- or --
-INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1);
+INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1687867163);
 ```
 
 
