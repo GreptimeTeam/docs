@@ -1,4 +1,4 @@
-# Getting Started
+# Overview
 
 Begin to explore GreptimeDB's powerful core features.
 
