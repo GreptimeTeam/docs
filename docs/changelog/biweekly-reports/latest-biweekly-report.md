@@ -1,92 +1,72 @@
-# 2023.05.08 - 2023.05.21 – Tokio Console Enabled for Easier Troubleshooting
+# 2023.06.05 - 2023.06.18 – Support azblob storage
 
-May 24, 2023 · 6 min read
+June 21, 2023 · 6 min read
 
 ## Summary
-Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. Below are some highlights:
-- Support `TQL EXPLAIN` / `TQL ANALYZE` clauses
-- Enable tokio console
-- Support more endpoints for Prometheus HTTP API 
+Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. In the past two weeks, a total of 47 PRs were merged for our program. Below are some highlights:
+- Support azblob storage
+- Support `/api/v1/series` for Prometheus
+- Add HTTP API for CPU profiling
 
 ## Contributor list: (in alphabetical order)
-For the past two weeks, our community has been super active with a total of **8 PRs** from 6 contributors merged successfully and lots pending to be merged. 
+We would like to give a special thanks to Eugene Tolbakov [@etolbakov](https://github.com/etolbakov), who has continued to contribute to our project and has submitted **17** PRs, **16** of which have been successfully merged! He has also contributed more than **20** comments to our issues in the past month, and interacted with us in the Slack community, providing us with valuable advice. So he will be our first committer, thanks and congratulations again!
+
+For the past two weeks, our community has been super active with a total of **4 PRs** from 4 contributors merged successfully and lots pending to be merged. 
 Congrats on becoming our most active contributors in the past 2 weeks:
 
-- [@DiamondMofeng](https://github.com/DiamondMofeng) ([db#1577](https://github.com/GreptimeTeam/greptimedb/pull/1577))
-- [@etolbakov](https://github.com/haohuaijin) ([db#1427](https://github.com/GreptimeTeam/greptimedb/pull/1427))
-- [@haohuaijin](https://github.com/haohuaijin) ([db#1571](https://github.com/GreptimeTeam/greptimedb/pull/1571) [db#1580](https://github.com/GreptimeTeam/greptimedb/pull/1580))
-- [@NiwakaDev](https://github.com/NiwakaDev) ([db#1578](https://github.com/GreptimeTeam/greptimedb/pull/1578))
-- [@gitccl](https://github.com/gitccl ) ([db#1527](https://github.com/GreptimeTeam/greptimedb/pull/1527) [docs#348](https://github.com/GreptimeTeam/docs/pull/348/))
-- [@Taylor-lagrange](https://github.com/Taylor-lagrange) ([db#1497](https://github.com/GreptimeTeam/greptimedb/pull/1497) [db#1579](https://github.com/GreptimeTeam/greptimedb/pull/1579))
+- [@etolbakov](https://github.com/etolbakov) ([db#1632](https://github.com/GreptimeTeam/greptimedb/pull/1632))
+- [@NiwakaDev](https://github.com/NiwakaDev) ([db#1620](https://github.com/GreptimeTeam/greptimedb/pull/1620))
+- [@QuenKar](https://github.com/QuenKar) ([db#1749](https://github.com/GreptimeTeam/greptimedb/pull/1749))
+- [@WangTingZheng](https://github.com/WangTingZheng) ([db#1756](https://github.com/GreptimeTeam/greptimedb/pull/1756))
 
-👏 Let's welcome **@gitccl** and **@Taylor-lagrange** as the new contributors to join our community with their **2** PRs merged respectively. 
+👏 Let's welcome **@WangTingZheng** as the new contributors to join our community with their first PR merged. 
 
-Special thanks to [@etolbakov](https://github.com/etolbakov), for continuously contributing to our projects, with 14 out of 15 open PRs successfully merged！Thank you for your generous and brilliant contributions! 
-
-A big THANK YOU for all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
+A big THANK YOU for the generous and brilliant contributions! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR 
-### [Support for `TQL EXPLAIN` and `TQL ANALYZE` clauses](https://github.com/GreptimeTeam/greptimedb/pull/1427)
-- `TQL EXPLAIN` (similar to `EXPLAIN` from `SQL`) doesn't execute the query but tells how the query would be executed.
-- `TQL ANALYZE` (similar to `ANALYZE` from `SQL`) executes the plan and tells the detailed per-step execution time.
+### [Support azblob storage](https://github.com/GreptimeTeam/greptimedb/pull/1659)
+[Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs/) is an object storage service provided by Azure. After this PR, GreptimeDB now supports Azure Blob Storage as well:
+- add `ObjectStoreConfig::Azblob` for azblob object storage configurations.
+- Create azblob instance in the datanode when configured.
+- Add azblob storage tests in tests-integration.
 
-### [Enable Tokio console](https://github.com/GreptimeTeam/greptimedb/pull/1512)
-With the integration of `tokio-console` and GreptimeDB, as detailed in the [Greptime Developer Guide](https://docs.greptime.com/developer-guide/how-to/how-to-use-tokio-console), all tokio tasks can now be seamlessly displayed. This enhancement significantly aids in troubleshooting issues related to the tokio runtime.
+### [Support `/api/v1/series` for Prometheus](https://github.com/GreptimeTeam/greptimedb/pull/1620)
+We now support `/api/v1/series` for Prometheus. This interface can be used to implement query hints or completions, and is one of the meta-information-related interfaces provided by Prometheus
 
-Tokio console screenshot:
+### [Add HTTP API for CPU profiling](https://github.com/GreptimeTeam/greptimedb/pull/1694)
+This PR adds an HTTP API for CPU profiling. It also refactors the mem prof handler to make chaining handlers to the router easier.
 
-![Screenshot of tokio console](../../public/biweekly/1.png)
-
-### [Support for additional endpoints in Prometheus HTTP API](https://github.com/GreptimeTeam/greptimedb/issues/1016#issuecomment-1431061736)
-
-In addition to `query` and `query_range` endpoints, as [Prometheus HTTP API](https://prometheus.io/docs/prometheus/latest/querying/api/) describes, there are some other useful endpoints which will help Prometheus users to explore the metadata or details of the datasets. These endpoints will facilitate the seamless integration of GreptimeDB into various systems as a Prometheus service.
-
-Here's an example:
+Sample at 99 Hertz, for 5 seconds, output report in protobuf format.
 
 ```rust
-curl 'localhost:9090/api/v1/labels'
-{
-    "status": "success",
-    "data": [
-        "__name__",
-        "call",
-        "code",
-        "config",
-        "dialer_name",
-        "endpoint",
-        "event",
-        "goversion",
-        "handler",
-        "instance",
-        "interval",
-        "job",
-        "le",
-        "listener_name",
-        "name",
-        "quantile",
-        "reason",
-        "role",
-        "scrape_job",
-        "slice",
-        "version"
-    ]
-}
+curl -s '0:4000/v1/prof/cpu' > /tmp/pprof.out
 ```
+
+Sample at 99 Hertz, for 60 seconds, output report in flamegraph format.
+
+```rust
+curl -s '0:4000/v1/prof/cpu?seconds=60&output=flamegraph' > /tmp/pprof.svg
+```
+
+Sample at 49 Hertz, for 10 seconds, output report in text format.
+
+```rust
+curl -s '0:4000/v1/prof/cpu?seconds=10&frequency=49&output=text' > /tmp/pprof.txt
+```
+
+This feature is disabled by default. To enable it, we need to build the binary with `pprof` feature
+
+```rust
+cargo build --features=pprof
+```
+
+Because the pprof API needs to sample for a specific duration, we must apply the timeout layer before it. This PR also closes the test region in TestBase, which should fix the test case `test_flush_and_reopen`.
+
+### [Add timestamp types as arguments](https://github.com/GreptimeTeam/greptimedb/pull/1632)
+
+We add more argument types for `to_unixtime` function
 
 These are the updates of GreptimeDB and we are constantly making progress. We believe that the strength of our software shines in the strengths of each individual community member. Thanks for all your contributions.
 
-## New things
-### GreptimeDB v0.3 is ready for release in early June
-We are excited to announce that GreptimeDB v0.3 is ready for release in early June! This forthcoming iteration is an initial distributed version, providing users with an opportunity to test its capabilities firsthand.
-
-This release will spotlight region-level high availability services—an assurance that data reliability will be achieved in subsequent releases. It will also introduce distributed queries for key scenarios, with a particular focus on PromQL query aspects. Moreover, we are committed to delivering a write performance that not only matches but potentially outpaces that of mainstream databases.
-
-### GreptimeDB Community is now open-sourced, welcome to contribute
-
-We extend an invitation to everyone to stay abreast of our updates and await the opportunity to trial GreptimeDB v0.3. Thank you for your support and anticipation!
-
-In order to promote collaboration across teams and create a good culture within the Greptime community, it's important to have documented community guidance so that members can build trust faster and focus on long-term sustainable growth of our community. 
-
-Whether you're a developer, architect, designer, technical writer, or just someone passionate about open-source projects, there's a place for you in our community; Check more details here: https://github.com/GreptimeTeam/Community.
-
-If you have any suggestions for improving this guide, you can either raise PRs or submit a proposal of improvement by sending us an email community@greptime.com. We welcome you to share your ideas and help us build a vibrant and inclusive community!
+## New Things
+The Greptime team participated in Rust China Conf 2023 and World Of Tech 2023 last weekend, sharing technology and interacting with attendees in a positive way, which got a great success!
