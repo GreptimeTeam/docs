@@ -2,7 +2,7 @@
 
 * [Concepts](./concepts/overview.md)
 * [Clients](./clients/overview.md)
-* [Cloud](./cloud/overview.md)
+* [GreptimeCloud](./greptimecloud/overview.md)
 * [Table Management](./table-management.md)
 * [Write Data](./write-data/overview.md)
 * [Query Data](./query-data/overview.md)

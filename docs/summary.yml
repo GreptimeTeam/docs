@@ -19,7 +19,7 @@
     - opentsdb
     - postgresql
     - http-api
-  - Cloud:
+  - GreptimeCloud:
     - overview
     - usage
     - Integrations:
