@@ -1,30 +1,23 @@
-# Usage and Limits
+# Learn about Usage
 
-Welcome to GreptimeCloud. This document will introduce the usage and limits of GreptimeCloud. To monitor service usage, you can go to the [GreptimeCloud Console](https://console.greptime.cloud/).
-
-Here are the usage limits for GreptimeCloud:
-
-- Write capacity unit (WCU): 800 WCU/5s for every service.
-- Storage capacity: 10GB.
-- Account limits: 3 services per team.
-
-:::tip NOTE
-The limits may change in the future. If you have any questions about it, please contact `feedback@greptime.cloud`.
-:::
+Welcome to GreptimeCloud. This document will introduce the usage calculation algorithms of GreptimeCloud. To monitor service usage, you can go to the [GreptimeCloud Console](https://console.greptime.cloud/).
 
 ## Capacity Unit
 
 All requests to GreptimeCloud are measured in capacity units, which reflect the size and complexity of the request. The measurement methods of write capacity unit and read capacity unit are different, see following for details. 
 
-### WCU
+### WCU (Write Capacity Unit)
 
-Each API call to write data to your table is a write request. WCU (Write capacity unit) is calculated based on the size of the insert rows in a request. The conversion equivalency between WCU and request size is: **1 WCU = 1 KB**.
+Each API call to write data to your table is a write request.
+WCU is calculated based on the total size of the insert rows in one request.
+A standard write capacity unit can write rows up to 1 KB.
+For rows larger than 1 KB, additional write capacity units are required.
 
 :::tip NOTE
-The conversion equivalency may be subject to change in the future.
+The capacity unit may be subject to change in the future.
 :::
 
-We will use the following steps to determine the size of each request:
+The following steps are used to determine the size of each request:
 
 1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/reference/data-types.md) documentation.
 2. Sum up the sizes of all columns in the request. If a column is not present in the request, its size depends on the column's default value. If the default value is null, the size is 0; otherwise, it is the size of the data type.
@@ -51,7 +44,7 @@ You have a write request as following:
 INSERT INTO system_metrics VALUES ("host1", "a", 11.8, 10.3, 10.3, 1667446797450);
 ```
 
-Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8). Using the conversion equivalency, 38 bytes = 1 WCU.
+Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is 1 according to the calculation algorithm.
 
 To reduce the WCU usage, use batched `INSERT` statements to insert multiple rows in a single statement, rather than sending a separate statement per row. For example:
 
@@ -64,28 +57,25 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-The size of the request is 950 bytes (38 * 25). Using the conversion equivalency, 950 bytes is also 1 WCU.
+The size of the request is 950 bytes (38 * 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 * 40), and the WCU of this request is 2.
 
-### RCU
+### RCU (Read Capacity Unit)
 
-Each API call to read data from your table is a read request. RCU is the server resource consumed by the query. It depends on the following items:
+Each API call to read data from your table is a read request. RCU is the server resource consumed in one request. It depends on the following items:
 
 - CPU time consumed by the query
 - Scanned data size
 
-The conversion equivalency between RCU and impact items is: 
-
-- **1 RCU = 1ms cpu time**
-- **1 RCU = 1KB scanned data**
+A standard read capacity unit can consume CPU time up to 1ms or scan up to 1 KB data. For cpu time or scanned data larger than 1ms or 1KB, additional read capacity units are required.
 
 :::tip NOTE
-The conversion equivalencies may be subject to change in the future.
+The capacity unit may be subject to change in the future.
 :::
 
-For example, suppose there is a query consuming 3ms CPU time and scanning 2KB data. All of these costs add up to 5 RCUs:
+For example, suppose there is a read request consuming 2.5ms CPU time and scanning 2KB data. All of these costs add up to 5 RCUs:
 
-- 3ms cpu time = 3 RCU
-- 2KB scanned data = 2 RCU
+- 3 RCU from 2.5ms CPU time
+- 2 RCU from 2KB scanned data
 
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
@@ -94,4 +84,16 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 
 ## Storage Capacity
 
-GreptimeCloud stores data in cloud service such as S3. More cloud storage will be supported in the future.
+GreptimeCloud stores data in object storage such as S3, and measures the size of your total data saved in database.
+
+## Tech Preview Plan
+
+Tech preview plan provides the following free tier for users to try GreptimeCloud:
+
+- Write capacity unit (WCU): Every service can use 800 WCU per 5 seconds.
+- Storage capacity: 10GB per service.
+- Account limits: 3 services per team.
+
+:::tip NOTE
+The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).
+:::

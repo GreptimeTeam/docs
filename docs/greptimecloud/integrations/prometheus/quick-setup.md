@@ -1,4 +1,4 @@
-# Integration
+# Quick Setup
 
 GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
 This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
@@ -30,7 +30,7 @@ remote_read:
 Each GreptimeCloud service comes with a git repository for storing prometheus
 rules and configurations. By checking your rules, GreptimeCloud's
 prometheus-compatible rule engine evaluates your rules against data stored in
-the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/cloud/prometheus/rule-management).
+the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/greptimecloud/integrations/prometheus/rule-management).
 
 ```shell
 git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
@@ -39,3 +39,7 @@ git add .
 git commit -m "sync prometheus configuration"
 git push
 ```
+
+## PromQL
+
+GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/prometheus#prometheus-query-language) for more details.

@@ -1,4 +1,4 @@
-# User Guide
+# Overview
 
 * [Concepts](./concepts/overview.md)
 * [Clients](./clients/overview.md)
@@ -10,4 +10,3 @@
 * [Operations](./operations/overview.md)
 * [Cluster](./cluster.md)
 * [Integration](./integration.md)
-
