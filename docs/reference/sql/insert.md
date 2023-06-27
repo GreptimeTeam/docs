@@ -104,10 +104,10 @@ CREATE TABLE test(b BLOB, ts TIMESTAMP TIME INDEX);
 Recommend using the prepared statement, JDBC for example:
 
 ```java
-	PreparedStatement pstmt = conn.prepareStatement("insert into test values(?,?)");
-	pstmt.setBytes(1, "hello".getBytes());
-	pstmt.setInt(2, i);
-	pstmt.addBatch();
+  PreparedStatement pstmt = conn.prepareStatement("insert into test values(?,?)");
+  pstmt.setBytes(1, "hello".getBytes());
+  pstmt.setInt(2, i);
+  pstmt.addBatch();
   ......
   pstmt.executeBatch();
 ```
@@ -116,6 +116,7 @@ If we want to insert a literal binary, we can insert a hexadecimal literal:
 
 ```sql
 INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1);
+-- or --
 INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1);
 ```
 
