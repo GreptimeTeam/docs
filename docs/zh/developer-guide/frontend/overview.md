@@ -20,6 +20,6 @@ flow through the `frontend` cluster and how they are processed.
 - [Table Sharding][2]
 - [Distributed Querying][3]
 
-[1]: /user-guide/clients.md
+[1]: zh/user-guide/clients.md
 [2]: ./table-sharding.md
 [3]: ./distributed-querying.md
