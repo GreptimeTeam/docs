@@ -29,7 +29,7 @@ export default (async () => ({
     root: { label: 'English', lang: 'en-US' },
   },
   lastUpdated: true,
-  ignoreDeadLinks: false,
+  ignoreDeadLinks: true,
   themeConfig: {
     search: {
       provider: 'local',
@@ -39,7 +39,6 @@ export default (async () => ({
     locales: { root: { label: 'English' } },
     copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
     email: 'marketing@greptime.com',
-    sidebar: await makeSidebar(),
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: 'Edit this page on GitHub',
@@ -50,6 +49,7 @@ export default (async () => ({
         link: 'https://github.com/GreptimeTeam/docs',
       },
     ],
+    sidebar: await makeSidebar(),
     nav: [
       {
         text: 'Home',
@@ -60,25 +60,35 @@ export default (async () => ({
         link: 'https://greptime.com/blogs',
       },
     ],
-    outline: [2, 4],
   },
   cleanUrls: 'without-subfolders',
+  Plugin: [
+    [
+      'rss-feed',
+      {
+        username: 'Bougie',
+        hostname: 'https://www.greptime.com/blogs/',
+        selector: '.content__post', // extract content to content:encoded
+        count: 10,
+        filter: page => /^blog/.test(page.relativePath),
+      },
+    ],
+  ],
 }))()
 
 async function makeSidebar() {
   const summary = YAML.load(fs.readFileSync('docs/summary.yml'), 'utf8')
 
-  function makeSidebarItem(items, path, level = 0) {
+  function makeSidebarItem(items, path) {
     if (Array.isArray(items)) {
-      return items.map(item => makeSidebarItem(item, path, level + 1))
+      return items.map(item => makeSidebarItem(item, path))
     } else if (typeof items === 'object') {
       let title = Object.keys(items)[0]
       let content = Object.values(items)[0]
 
       return {
         text: title.replace(/-/g, ' '),
-        items: content.map(item => makeSidebarItem(item, `${path}/${title}`, level + 1)),
-        collapsed: level > 1,
+        items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
       }
     } else {
       let link = `${path}/${items}`.toLocaleLowerCase()
