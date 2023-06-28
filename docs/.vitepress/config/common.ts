@@ -43,9 +43,9 @@ export async function makeSidebar(lang) {
   const summary = YAML.load(fs.readFileSync(`docs/summary.yml`), 'utf8')
   const summaryI18n = langPath ? YAML.load(fs.readFileSync(`docs${langPath}/summary-i18n.yml`), 'utf8') : null
 
-  function makeSidebarItem(items, path) {
+  function makeSidebarItem(items, path, level = 0) {
     if (Array.isArray(items)) {
-      return items.map(item => makeSidebarItem(item, path))
+      return items.map(item => makeSidebarItem(item, path, level + 1))
     } else if (typeof items === 'object') {
       let title = Object.keys(items)[0]
       let content = Object.values(items)[0]
@@ -55,8 +55,9 @@ export async function makeSidebar(lang) {
       }
 
       return {
-        text: summaryI18n ? summaryI18n[title] : title.replace(/-/g, ' '),
-        items: content.map(item => makeSidebarItem(item, `${path}/${title}`)),
+        text: title.replace(/-/g, ' '),
+        items: content.map(item => makeSidebarItem(item, `${path}/${title}`, level + 1)),
+        collapsed: level > 1,
       }
     } else {
       try {
