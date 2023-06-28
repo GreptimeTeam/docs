@@ -1,80 +1,41 @@
 import fs from 'fs'
 import { parse } from 'yaml'
 import YAML from 'js-yaml'
+import { enConfig } from './en'
+import { zhConfig } from '../../zh/config/index'
 
-export const common = async () => ({
-  title: 'Greptime Docs',
-  appearance: false,
-  description: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure',
-  head: [
-    ['script', { src: 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/icons_19361_2.c3035490ebb16aa315f724f1eccdddde.js' }],
-    ['link', { rel: 'stylesheet', href: '//at.alicdn.com/t/c/font_3652459_85jeka7sbox.css' }],
-    // SEO part
-    // Open Graph
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:url', content: 'https://docs.greptime.com/' }],
-    ['meta', { property: 'og:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' }],
-    ['meta', { property: 'og:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' }],
-    // Twitter
-    ['meta', { property: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { property: 'twitter:url', content: 'https://greptime.com/' }],
-    ['meta', { property: 'twitter:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' }],
-    ['meta', { property: 'twitter:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' }],
-    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
-    // Bing verify
-    ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
-  ],
-  locales: {
-    root: { label: 'English', lang: 'en-US' },
-  },
-  lastUpdated: true,
-  ignoreDeadLinks: true,
-  themeConfig: {
-    search: {
-      provider: 'local',
+export const common = async () => {
+  return {
+    appearance: false,
+    lastUpdated: true,
+    ignoreDeadLinks: false,
+    locales: {
+      zh: { label: '简体中文', lang: 'zh', link: 'https://docs.greptime.cn/' },
+      en: { label: 'English', lang: 'en', link: 'https://docs.greptime.com/' },
     },
-    siteTitle: '',
-    logo: 'logo-text-tinted.png',
-    copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
-    email: 'marketing@greptime.com',
-    editLink: {
-      pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
-      text: 'Edit this page on GitHub',
-    },
-    socialLinks: [
-      {
-        icon: 'github',
-        link: 'https://github.com/GreptimeTeam/docs',
+    themeConfig: {
+      search: {
+        provider: 'local',
       },
-    ],
-    sidebar: await makeSidebar(),
-    nav: [
-      {
-        text: 'Home',
-        link: 'https://greptime.com/',
+      siteTitle: '',
+      logo: 'logo-text-tinted.png',
+      copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
+      email: 'marketing@greptime.com',
+      // sidebar: await makeSidebar('en'),
+      editLink: {
+        pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       },
-      {
-        text: 'Blogs',
-        link: 'https://greptime.com/blogs',
-      },
-    ],
-    cleanUrls: 'without-subfolders',
-    Plugin: [
-      [
-        'rss-feed',
+      socialLinks: [
         {
-          username: 'Bougie',
-          hostname: 'https://www.greptime.com/blogs/',
-          selector: '.content__post', // extract content to content:encoded
-          count: 10,
-          filter: page => /^blog/.test(page.relativePath),
+          icon: 'github',
+          link: 'https://github.com/GreptimeTeam/docs',
         },
       ],
-    ],
-    outline: [2, 4],
-  },
-  cleanUrls: 'without-subfolders',
-})
+      outline: [2, 4],
+    },
+    cleanUrls: 'without-subfolders',
+  }
+}
 
 export async function makeSidebar(lang) {
   const langPath = lang !== 'en' ? `/${lang}` : ''
