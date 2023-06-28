@@ -93,3 +93,46 @@ If no default value is defined for the column, the database's default value will
 INSERT INTO system_metrics (host, idc, cpu_util, memory_util, disk_util, ts)
 VALUES ("host1", "idc_a", DEFAULT, 10.3, 10.3, 1667446797460);
 ```
+
+# Insert binary data
+When we want to insert binary data which their column datatypes are `blob` or `bytea`:
+
+```sql
+CREATE TABLE test(b BLOB, ts TIMESTAMP TIME INDEX);
+```
+
+Recommend using the prepared statement, JDBC for example:
+
+```java
+  PreparedStatement pstmt = conn.prepareStatement("insert into test values(?,?)");
+  pstmt.setBytes(1, "hello".getBytes());
+  pstmt.setInt(2, 1687867163);
+  pstmt.addBatch();
+  ......
+  pstmt.executeBatch();
+```
+
+If we want to insert a literal binary, we can insert a hexadecimal literal:
+
+```sql
+INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1687867163);
+-- or --
+INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1687867163);
+```
+
+
+# Insert special numeric values
+In addition to ordinary numeric values, the numeric type has several special values:
+* `Infinity`
+* `-Infinity`
+* `NaN`
+
+Insert these values by `cast` expression:
+
+```sql
+INSERT INTO system_metrics (host, idc, cpu_util, memory_util, disk_util, ts)
+VALUES ("host1", "idc_a", 66.6, 'NaN'::double, 'Infinity'::double, 1667446797460);
+```
+
+
+`{Value}::{Type}` is used to cast the value into the special type. 
