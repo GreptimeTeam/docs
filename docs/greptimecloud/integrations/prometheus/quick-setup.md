@@ -19,7 +19,7 @@ remote_write:
       password: #paste your service password
 
 remote_read:
-- url: http://<host>/v1/prometheus/read?db=<dbname>
+- url: https://<host>/v1/prometheus/read?db=<dbname>
   basic_auth:
     username: <username>
     password: #paste your service password
