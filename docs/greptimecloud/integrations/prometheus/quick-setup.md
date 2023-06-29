@@ -33,7 +33,7 @@ prometheus-compatible rule engine evaluates your rules against data stored in
 the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/greptimecloud/integrations/prometheus/rule-management).
 
 ```shell
-git clone https://<host>/promrules/git/<teamId>/<serviceName>.git
+git clone https://<host>/promrules/git/<dbname>.git
 # Copy your prometheus.yml and rules into this repo, and commit them
 git add .
 git commit -m "sync prometheus configuration"
