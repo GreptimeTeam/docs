@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -248,8 +248,8 @@ packages:
       '@algolia/logger-common': 4.17.1
       '@algolia/requester-common': 4.17.1
 
-  /@antfu/utils@0.7.2:
-    resolution: {integrity: sha512-vy9fM3pIxZmX07dL+VX1aZe7ynZ+YyB0jY+jE6r3hOK6GNY2t6W8rzpFC4tgpbXUYABkFQwgJq2XYXlxbXAI0g==}
+  /@antfu/utils@0.7.4:
+    resolution: {integrity: sha512-qe8Nmh9rYI/HIspLSTwtbMFPj6dISG6+dJnOguTlPNXtCvS2uezdxscVBb7/3DrmNbQK49TDqpkSQ1chbRGdpQ==}
     dev: true
 
   /@babel/code-frame@7.18.6:
@@ -5618,7 +5618,7 @@ packages:
       '@vueuse/core':
         optional: true
     dependencies:
-      '@antfu/utils': 0.7.2
+      '@antfu/utils': 0.7.4
       '@rollup/pluginutils': 5.0.2(rollup@3.21.7)
       '@vueuse/core': 9.13.0(vue@3.2.45)
       local-pkg: 0.4.3
@@ -5643,7 +5643,7 @@ packages:
       '@nuxt/kit':
         optional: true
     dependencies:
-      '@antfu/utils': 0.7.2
+      '@antfu/utils': 0.7.4
       '@rollup/pluginutils': 5.0.2(rollup@3.21.7)
       chokidar: 3.5.3
       debug: 4.3.4
