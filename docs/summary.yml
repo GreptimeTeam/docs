@@ -50,7 +50,18 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
-  # - Integration
+- GreptimeCloud:
+  - overview
+  - usage
+  - Integrations:
+    - Prometheus:
+      - quick-setup
+      - rule-management
+    - grafana
+    - grpc
+    - mysql
+    - postgresql
+    - influxdb
 - Developer-Guide:
   - overview
   - getting-started
