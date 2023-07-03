@@ -90,7 +90,7 @@ GreptimeCloud stores data in object storage such as S3, and measures the size of
 
 Tech preview plan provides the following free tier for users to try GreptimeCloud:
 
-- Write capacity unit (WCU): Every service can use 800 WCU per 5 seconds.
+- Write capacity unit (WCU): 800 WCU/s per service.
 - Storage capacity: 10GB per service.
 - Account limits: 3 services per team.
 
