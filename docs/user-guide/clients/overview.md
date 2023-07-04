@@ -1,7 +1,5 @@
 # Overview
 
-### Protocols
-
 You can read from or write into GreptimeDB using various protocols.
 
 ![protocols](../../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
@@ -14,7 +12,7 @@ data through gRPC endpoint while using MySQL client to read them.
 
 Refer to [Authentication](./authentication.md) to learn how to config username and password for GreptimeDB.
 
-### Clients
+### Protocols
 
 - [MySQL](./mysql.md)
 - [gRPC](./grpc.md)

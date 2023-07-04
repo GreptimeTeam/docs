@@ -2,7 +2,7 @@
 
 ## Connect
 
-Use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password.
+Use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password:
 
 ```shell
 ❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p

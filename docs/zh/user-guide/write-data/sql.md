@@ -1,8 +1,8 @@
 # SQL
 
-## `INSERT` Statement
+## 写入新数据
 
-Let's insert some testing data to the `monitor` table which we created before. You can use the INSERT INTO SQL statements:
+让我们向之前在[管理表](./../table-management.md)中创建的 `monitor` 表中插入一些测试数据。您可以使用 `INSERT INTO` 语句：
 
 ``` sql
 INSERT INTO monitor
@@ -15,13 +15,11 @@ VALUES
 Query OK, 3 rows affected (0.01 sec)
 ```
 
-Through the above statement, we have inserted three rows into the `monitor` table.
-
-For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
+通过上面的语句，我们成功的向 `monitor` 表中插入了三条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
 ### HTTP API
 
-Using POST method to insert data:
+使用 `POST` 方法来写入新数据：
 
 ```shell
 curl -X POST \
@@ -31,19 +29,19 @@ curl -X POST \
 http://localhost:4000/v1/sql?db=public
 ```
 
-The result is shown below:
+结果如下：
 
 ```json
 {"code":0,"output":[{"affectedrows":3}],"execution_time_ms":0}
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+请参考 [API document](/reference/sql/http-api.md) 获取更多信息。
 
 
+## 删除数据
 
-## `DELETE` Statement
+通过主键 `host` 和时间戳索引 `ts` 删除一行数据：
 
-To delete a row from it by primary key `host` and timestamp index `ts`:
 ```sql
 DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 ```
@@ -52,11 +50,11 @@ DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 Query OK, 1 row affected (0.00 sec)
 ```
 
-For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+请参考 [SQL DELETE](/reference/sql/delete.md) 获取更多信息。
 
 ### HTTP API
 
-Using POST method to delete data:
+使用 `POST` 方法来写入一条新数据：
 
 ```shell
 curl -X POST \
@@ -66,11 +64,11 @@ curl -X POST \
 http://localhost:4000/v1/sql?db=public
 ```
 
-The result is shown below:
+结果如下：
 
 ```json
 {"code":0,"output":[{"affectedrows":1}],"execution_time_ms":1}
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+请参考 [API 文档](/reference/sql/http-api.md)获取更多信息。
 
