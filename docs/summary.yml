@@ -26,7 +26,7 @@
     - sql
     - influxdb-line
     - opentsdb
-  - Query-data:
+  - Query-Data:
     - overview
     - grpc
     - sql
