@@ -30,7 +30,6 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 - [Write data](./docs/user-guide/write-data/overview.md)
 - [Query data](./docs/user-guide/query-data/overview.md)
 - [Scripts & Functions](./docs/user-guide/scripts-&-functions/overview.md)
-- [Prometheus](./docs/user-guide/prometheus.md)
 - [Cluster](./docs/user-guide/cluster.md)
 - [Operations](./docs/user-guide/Operations/overview.md)
 - [Integration](./docs/user-guide/integration.md)

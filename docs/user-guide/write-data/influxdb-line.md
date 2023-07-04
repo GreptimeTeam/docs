@@ -1,4 +1,4 @@
-# InfluxDB Line
+# InfluxDB Line Protocol
 
 ## Insert
 
