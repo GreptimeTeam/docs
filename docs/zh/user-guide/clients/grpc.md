@@ -2,18 +2,18 @@
 
 ## Java SDK
 
-### Install the Java Development Kit(JDK)
-Make sure that your system has JDK 8 or later installed. For more information on how to
-check your version of Java and install the JDK, see the [Oracle Overview of JDK Installation documentation](https://www.oracle.com/java/technologies/javase-downloads.html)
+### 安装 Java Development Kit(JDK)
 
-### Create the Project
-This guide demonstrates how to add Java SDK dependencies using Maven. It is advisable to utilize an integrated development environment (IDE) like Intellij IDEA or Eclipse IDE for easier configuration of Maven in building and running your project.
+请确认你的系统已经安装了 JDK 8 或者更高版本。更多关于如何检查你的 Java 版本和安装 JDK 的信息，请参考 [Oracle Overview of JDK Installation documentation](https://www.oracle.com/java/technologies/javase-downloads.html)
 
-If you are not using an IDE, see [Building Maven](https://maven.apache.org/user-guide/development/guide-building-maven.html) for more information on how to set up your project.
+### 创建项目
 
-### Add GreptiemDB Java SDK as a Dependency
-If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
-dependencies list:
+该指南演示了如何使用 Maven 添加 Java SDK 依赖项。建议使用集成开发环境（IDE）如 Intellij IDEA 或 Eclipse IDE 来更容易的配置 Maven 以构建和运行你的项目。
+如果你没有在使用 IDE，请参考 [Building Maven](https://maven.apache.org/user-guide/development/guide-building-maven.html) 来了解更多关于如何设置你的项目的信息。
+
+### 添加 GreptiemDB Java SDK 作为依赖
+
+如果你正在使用 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```
 <dependencies>
@@ -24,15 +24,14 @@ dependencies list:
     </dependency>
 </dependencies>
 ```
-The latest version can be viewed [here](https://central.sonatype.com/search?q=io.greptime).
 
-After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
+可以到[这里](https://central.sonatype.com/search?q=io.greptime)查看最新的版本。
 
-### Connect database
+在配置完依赖后，请确保它们可以被你的项目使用，这可能需要在你的 IDE 中刷新项目或者运行依赖管理器。
 
-Now, we can create a file to contain your application called `QuickStart.java` in the base
-package directory of you project. Use the following sample code to connect database,
-replacing the value of `endpoints` variable with your real connection string.
+### 连接数据库
+
+现在创建一个文件 `QuickStart.java` 放在你的项目的基础包目录下。使用下面的示例代码来连接数据库，将 `endpoints` 变量的值替换为你实际的连接地址。
 
 ```java
 package io.greptime.example;
@@ -83,25 +82,25 @@ public class QuickStart {
 }
 ```
 
-See [Java SDK in reference](/reference/sdk/java.md) to get more configurations and metrics.
+请前往 [Java SDK in reference](/reference/sdk/java.md) 获得更多的配置和指标信息。
 
-### Write Data
+### 写入数据
 
-Please refer to [write data](../write-data/grpc.md#java).
+请参考 [写入数据](../write-data/grpc.md#java).
 
-### Query Data
+### 读取数据
 
-Please refer to [Query data](../query-data/grpc.md#java).
+请参考 [读取数据](../query-data/grpc.md#java).
 
 ## Go SDK
 
-### Install
+### 安装
 
 ```sh
 go get github.com/GreptimeTeam/greptimedb-client-go
 ```
 
-### Create Client
+### 创建数据库对象
 
 ```go
 package example
@@ -134,12 +133,12 @@ func InitClient() *greptime.Client {
 }
 ```
 
-See [Go SDK in reference](/reference/sdk/go.md) to get more configurations.
+请参考 [Go SDK in reference](/reference/sdk/go.md) 已获得更多信息.
 
-### Write Data
+### 写入数据
 
-Please refer to [write data](../write-data/grpc.md#go).
+请参考 [写入数据](../write-data/grpc.md#go).
 
-### Query Data
+### 读取数据
 
-Please refer to [Query data](../query-data/grpc.md#go).
+请参考 [读取数据](../query-data/grpc.md#go).
