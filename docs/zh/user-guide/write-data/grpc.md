@@ -3,7 +3,7 @@
 ## 写入新数据
 
 ### Java
-![Data Ingestion Process](../../public/data-ingest-process.png)
+![Data Ingestion Process](../../../public/data-ingest-process.png)
 
 使用下面的示例代码向 GreptimeDB 插入对象：
 

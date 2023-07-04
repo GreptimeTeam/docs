@@ -2,7 +2,7 @@
 
 ## Java
 
-![Data Query Process](../../public/data-query-process.png)
+![Data Query Process](../../../public/data-query-process.png)
 
 使用下方的实力代码来查询数据：
 
