@@ -10,6 +10,6 @@ Data in GreptimeDB is organized as tables, which can be thought of as groups of 
 
 Please refer to [write data](../write-data/prometheus.md) for details.
 
-## Prometheus query language
+## Prometheus Query Language
 
 Please refer to [query data](../query-data/promql.md) for details.
