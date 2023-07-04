@@ -22,18 +22,14 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - run: pnpm i --lockfile-only
+          version: 8.6.0
       - name: create env file
         run: |
           touch .env
           echo VITE_LANG=zh >> .env
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'build: update pnpm lockfile'
-          commit_options: '--no-verify'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
