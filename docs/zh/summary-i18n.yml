@@ -1,6 +1,8 @@
 Getting-Started: 立即开始
 User-Guide: 用户指南
 Concepts: 概念
+Write-Data: 写入数据
+Query-Data: 读取数据
 Scripts-&-Functions: 脚本-&-函数
 Operations: 运维操作
 Developer-Guide: 开发者指南
@@ -11,3 +13,5 @@ Tests: 测试
 Benchmarks: 基准
 How-To: 指南
 Biweekly-Reports: Biweekly-Reports
+GreptimeCloud: 云服务
+Integrations: 集成

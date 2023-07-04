@@ -55,7 +55,7 @@ export async function makeSidebar(lang) {
       }
 
       return {
-        text: title.replace(/-/g, ' '),
+        text: summaryI18n?.[title] || title.replace(/-/g, ' '),
         items: content.map(item => makeSidebarItem(item, `${path}/${title}`, level + 1)),
         collapsed: level > 1,
       }
