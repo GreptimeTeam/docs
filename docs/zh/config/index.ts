@@ -45,12 +45,6 @@ export const zhConfig = async () => ({
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: '在 GitHub 上编辑此页',
     },
-    socialLinks: [
-      {
-        icon: 'github',
-        link: 'https://github.com/GreptimeTeam/docs',
-      },
-    ],
     lastUpdatedText: '上次更新',
     docFooter: {
       prev: '上一篇',
