@@ -236,6 +236,5 @@ SELECT * FROM system_metrics;
 - [数据写入](../user-guide/write-data.md)
 - [数据查询](../user-guide/query-data.md)
 - [脚本-&-函数](../user-guide/scripts-&-functions/overview.md)
-- [Prometheus](../user-guide/prometheus.md)
 - [集群](../user-guide/cluster.md)
 - [运维操作](../user-guide/operations/overview.md)

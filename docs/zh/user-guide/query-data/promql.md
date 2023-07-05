@@ -129,7 +129,7 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 支持字符串和浮点数，与 PromQL 的[规则](https://prometheus.io/docs/prometheus/latest/querying/basics/#literals)相同。
 
-#### 选择器
+### 选择器
 
 * 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
 * 支持时间长度和偏移量，但不支持 `@` 修改器。
