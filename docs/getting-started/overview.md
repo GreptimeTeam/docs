@@ -235,6 +235,5 @@ Congratulations you have learned the basic features of GreptimeDB. You are ready
 * [Write data](/user-guide/write-data/overview.md)
 * [Query data](/user-guide/query-data/overview.md)
 * [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
-* [Prometheus](/user-guide/prometheus.md)
 * [Cluster](/user-guide/cluster.md)
 * [Operations](/user-guide/operations/overview.md)
