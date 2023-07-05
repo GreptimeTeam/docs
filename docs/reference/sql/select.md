@@ -52,7 +52,8 @@ WHERE idc IN ('idc0', 'idc1');
 
 ## Query latest 5 minutes of data
 ```sql
-SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
+SELECT * from system_metrics WHERE
+  ts >= now() - INTERVAL '5 minutes';
 ```
 
 The interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
@@ -73,6 +74,7 @@ Valid types are:
 - HOUR TO MINUTE
 - HOUR TO SECOND
 - MINUTE TO SECOND
+
 The optional precision `p` is the number of fraction digits retained in the second field.
 
 For example:
