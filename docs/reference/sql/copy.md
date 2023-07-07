@@ -72,7 +72,7 @@ You can set the following options:
 | Option  | Description  | Required |
 |---|---|---|
 | `REGION` | AWS region name.  e.g., us-east-1.	 | **Required** |
-| `ENDPOINT`  | The bucket endpoint  | Optional |
+| `ENDPOINT_URL`  | The bucket endpoint  | Optional |
 | `ACCESS_KEY_ID` | ACCESS_KEY_ID	Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
 | `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.	 | Optional |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |
