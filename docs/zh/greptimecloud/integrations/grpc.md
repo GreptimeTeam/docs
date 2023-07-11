@@ -1,8 +1,8 @@
 # gRPC
 
-Using GreptimeDB gRPC SDK to connect to GreptimeCloud. For more information about the SDK, see [how to install](https://docs.greptime.com/user-guide/clients/grpc), [write data](https://docs.greptime.com/user-guide/write-data/grpc) and [query data](https://docs.greptime.com/user-guide/query-data/grpc).
+使用 GreptimeDB gRPC SDK 连接到 GreptimeCloud。有关 SDK 的更多信息，请参见[安装](https://docs.greptime.cn/user-guide/clients/grpc)、[写入数据](https://docs.greptime.cn/user-guide/write-data/grpc)和[查询数据](https://docs.greptime.cn/user-guide/query-data/grpc)。
 
-To connect to GreptimeCloud, using information below:
+要连接到 GreptimeCloud，请使用以下信息：
 
 - Host: `<host>`
 - Port: `4001`
@@ -12,7 +12,7 @@ To connect to GreptimeCloud, using information below:
 
 ## Java SDK
 
-The following code snippet shows how to create a client using Java SDK.
+下方的代码片段展示了如何使用 Java SDK 建立一个 `client` 连接对象：
 
 ```java
 String endpoint = "<host>:4001";
@@ -32,7 +32,7 @@ if (!greptimeDB.init(opts)) {
 }
 ```
 
-After creating a GreptimeDB client, you can set database while writing data or querying data. For example query data:
+在创建了 GreptimeDB 客户端之后，你可以在写入数据或查询数据时设置数据库。例如查询数据：
 
 ```java
 QueryRequest request = QueryRequest.newBuilder() //
@@ -44,7 +44,7 @@ QueryRequest request = QueryRequest.newBuilder() //
 
 ## Go SDK
 
-The following code shows how to create a client using Go SDK.
+下方的代码片段展示了如何使用 Go SDK 建立一个 `client` 连接对象：
 
 ```go
 options := []grpc.DialOption{
