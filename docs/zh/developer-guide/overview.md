@@ -1,65 +1,41 @@
-# Overview
+# 概述
 
-## Architecture
+## 架构
 
-`GreptimeDB` consists of the following key components:
+`GreptimeDB` 由以下关键组件组成：
 
-- `Frontend` that exposes read and write service in various protocols, forwards requests to
-  `Datanode`.
-- `Datanode` is responsible for storing data to persistent storage such as local disk, S3.
-- `Meta` server that coordinates the operations between the `Frontend` and `Datanode`.
+- `Frontend`：通过多种协议提供读写服务，并将请求转发到 `Datanode`。
+- `Datanode`：负责数据的持久化存储，例如存储到本地磁盘、S3 和 Azure Blob Storage 等。
+- `Meta` 服务器：协调 `Frontend` 和 `Datanode` 之间的操作。
 
-![Architecture](../../public/architecture.png)
+![Architecture](/architecture.png)
 
-## Concepts
+## 概念
 
-To better understand `GreptimeDB`, a few concepts need to be introduced:
+为了更好地理解 `GreptimeDB`，需要介绍一些概念：
 
-- A `table` is where user data is stored in `GreptimeDB`. A `table` has a schema and a totally
-  ordered primary key. A `table` is split into segments called `region` by its primary key.
-- A `region` is a contiguous segment of a table, and also could be regarded as a partition in some
-  relational databases. A `region` could be replicated on multiple `datanode` and only one of these
-  replicas is writable and can serve write requests, while any replica can serve read requests.
-- A `datanode` stores and serves `region` to frontends. One `datanode` can serve multiple `regions`
-  and one `region` can be served by multiple `datanodes`.
-- The `meta` server stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
-  table, etc. It also coordinates frontends and `datanodes`.
-- Each `datanode` or frontend has a remote catalog implementation, which fetches the metadata from
-  meta, tells which `region` of a `table` is served by which `datanode`.
-- A `frontend` is a stateless service that serves requests from client. It acts as a proxy to
-  forward read and write requests to corresponding `datanode`, according to the mapping from catalog.
-- A timeseries of a `table` is identified by its primary key. Each `table` must have a timestamp
-  column, as `GreptimeDB` is a timeseries database. Data in `table` will be sorted by its primary key
-  and
-  timestamp, but the actual order is implementation specific and may change in the future.
-- `table` engines are `GreptimeDB` components that handle the SQL operations for different `table`
-  types.
-  `Mito` is the default `table engine`. It uses a LSM-Tree based `storage engine` as its storage
-  backend.
+- `table` 是 `GreptimeDB` 中存储用户数据的地方，有表结构和有序的主键。`table` 通过其主键被分割成称为 `region`。
+- `region` 是表中的一个连续段，在某些关系型数据库中被视为分区。`region` 可以在多个 `datanode` 上复制，其中任何一个副本都可以支持读请求，但只有一个副本支持写请求。
+- `datanode` 存储并为 `frontend` 提供 `region`。一个 `datanode` 可以服务多个 `region`，一个 `region` 可以由多个 `datanode` 服务。
+- `meta` 服务器存储集群的元数据，例如表、`datanode`、每个表的 `region` 等。它还协调 `frontend` 和 `datanode`。
+- 每个 `datanode` 或 `frontend` 都有一个远程 catalog 实现，它从 `meta` 中获取元数据，告诉相应的组件哪个 `table` 的 `region` 由哪个 `datanode` 提供服务。
+- `frontend` 是一个无状态服务，用于接收客户端的请求。它作为 proxy 根据 catalog 中的信息将读取和写入请求转发到相应的 `datanode`。
+- `table` 的时间序列由其主键标识。因为 `GreptimeDB` 是一个时间序列数据库，所以每个 `table` 必须有一个时间戳列。`table` 中的数据将按其主键和时间戳排序，但顺序的实际实现方式比较特殊，可能会在将来发生变化。
+- `table engine` 是 `GreptimeDB` 处理不同 `table` 类型的 SQL 操作的组件。`Mito` 是默认的 `table engine`。它使用基于 LSM-Tree 的 `storage engine` 作为其存储后端。
 
-## How it works
+## 工作原理
 
-![Interactions between components](../../public/how-it-works.png)
+![Interactions between components](/how-it-works.png)
 
-Before diving into each component, let's take a high level view of how the database works.
+在深入了解每个组件之前，让我们先从高层次上了解一下 GreptimeDB 数据库的工作原理。
 
-- Users can interact with the database via various protocols, such as ingesting data using
-  `InfluxDB`'s line protocol, then exploring the data using SQL or PromQL. The `frontend` is the
-  component users or clients connect to and operate, thus hide`datanode` and `metasrv` behind it.
-- Assumes a user uses the HTTP API to insert data into the database, by sending a HTTP request to a
-  `frontend` instance. When the `frontend` receives the request, it then parses the request body using
-  corresponding protocol parser, and finds the table to write to from a catalog manager based on
-  `metasrv`.
-- The `frontend` periodically fetches and caches the metadata from `metasrv`, thus it knows which
-  `datanode`, or more precisely, the region a request should be sent to. A request may be split and
-  sent to multiple `regions`, if its contents need to be stored in different `regions`.
-- When `datanode` receives the request, it writes the data to the table, and then sends response
-  back to the `frontend`. Writing to the table will then write to the underlying storage engine,
-  which will eventually put the data to persistent device.
-- Once `frontend` has received all responses from the target `datanode`s, it then sends the result
-  back to the user.
+- 用户可以通过各种协议与数据库交互，例如使用 `InfluxDB` 的行协议插入数据，然后使用 SQL 或 PromQL 探索数据。`frontend` 是用户或客户端连接和操作数据库的组件，因此在其后面隐藏了 `datanode` 和 `metasrv`。
+- 假设用户向 `frontend` 实例发送了 HTTP 请求来插入数据。当 `frontend` 接收到请求时，它会使用相应的协议解析器解析请求正文，并从 `metasrv` 的 catalog 中找到要写入的表。
+- `frontend` 定期获取并缓存来自 `metasrv` 的元数据，因此它知道应将请求发送到哪个 `datanode`，或者更准确地说，应该发送到哪个 `region`。如果请求的内容需要存储在不同的 `region` 中，则请求可能会被拆分并发送到多个 `region`。
+- 当 `datanode` 接收到请求时，它将数据写入表中，然后将响应发送回 `frontend`。写入表也意味着将数据写入底层的存储引擎中，该引擎最终将数据放置在持久化存储中。
+- 当 `frontend` 从目标 `datanodes` 接收到所有响应时，就会将结果返回给用户。
 
-For more details on each component, see the following guides:
+有关每个组件的更多详细信息，请参阅以下指南：
 
 - [frontend][1]
 - [datanode][2]
