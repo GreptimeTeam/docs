@@ -1,6 +1,6 @@
 # InfluxDB Line Protocol
 
-GreptimeCloud provides [influxdb line
+GreptimeCloud provides [Influxdb line
 protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/)
 ingestion API over http. The API and authentication is compatible with [InfluxDB
 write protocol

@@ -4,16 +4,15 @@ With this service, you can easily set up alerting and recording rules by copying
 
 ## Manage rule files via Git
 
-Each GreptimeCloud service comes with a git repository for storing prometheus rules and configurations. By checking your rules, GreptimeCloud's prometheus-compatible rule engine evaluates your rules against data stored in the database and emits alert when matches.
+Each GreptimeCloud service comes with a Git repository for storing prometheus rules and configurations. By checking your rules, GreptimeCloud's prometheus-compatible rule engine evaluates your rules against data stored in the database and emits alert when matches.
 
 ::: tip NOTE
-Creating branch or tag is disabled
+Creating branch or tag is disabled in the Git repository
 :::
 
 ### Download Template
 
 You can get the clone URL of the repository in the [GreptimeCloud console](https://console.greptime.cloud/service/list).
-The repository contains a sample prometheus.yml file. 
 
 ```shell
 git clone <cloud-repo-url>
@@ -109,7 +108,7 @@ git pull
 
 ## Visualize Data
 
-After pushing your Prometheus configuration files to GreptimeCloud, visit the [GreptimeCloud console](https://console.greptime.cloud/service/list) and navigate to the `Prometheus` section. You can see the charts generated automatically based on your configuration files.
+After pushing your Prometheus configuration files to GreptimeCloud, visit the [GreptimeCloud console](https://console.greptime.cloud/service/list) and navigate to the `Prometheus Workbench`. You can see the charts generated automatically based on your configuration files.
 
 <!-- TODO: Image waiting for dashboard production version -->
 

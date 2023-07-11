@@ -1,14 +1,10 @@
 # PostgreSQL
 
-GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 wire protocol. Most
-standard clients and drivers are compatible at wire protocol level. Note that we
-don't use Postgres' SQL dialect in GreptimeDB, so there can be some statements
-that are unsupported.
-For more information, please refer to [Postgresql documentation](https://docs.greptime.com/user-guide/clients/postgresql) of GreptimeDB.
+GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准客户端和驱动程序在协议级别上兼容，且连接使用TLS加密。
+请注意，我们在 GreptimeDB 中不使用 Postgres 的 SQL 方言，因此可能有一些不支持的语句。
+有关更多信息，请参考 GreptimeDB 的[Postgresql文档](https://docs.greptime.cn/user-guide/clients/postgresql)。
 
-The connection is encrypted with TLS.
-
-To connect to GreptimeCloud in Postgres wire protocol, using information below:
+要使用 Postgres 协议连接到 GreptimeCloud，请使用以下信息：
 
 - Host: `<host>`
 - Port: `4003`
@@ -18,17 +14,15 @@ To connect to GreptimeCloud in Postgres wire protocol, using information below:
 
 ## `psql`
 
-The default cli tool bundled with PostgreSQL.
+使用 PostgreSQL 自带的默认 CLI 工具：
 
-```
+``` shell
 psql -h <host> -p 4003 -U <username> -d <dbname> -W
 ```
 
-## Postgres Connection String
+## Postgres 连接字符串
 
-Using the connection string below for compatible client libraries like psycopg,
-rust-postgres and more. Replace *PASSWORD* with the GreptimeCloud service
-password.
+使用以下连接字符串与兼容的客户端库（如 psycopg、rust-postgres 等）连接。请将 *PASSWORD* 替换为 GreptimeCloud service 的密码。
 
 ```
 host=<host> port=4003 dbname=<dbname> user=<username> password=PASSWORD
@@ -36,8 +30,7 @@ host=<host> port=4003 dbname=<dbname> user=<username> password=PASSWORD
 
 ## Postgres JDBC URL
 
-Using the URL below with your Postgres JDBC client. Replace *PASSWORD* with the
-GreptimeCloud service password.
+在你的 Postgres JDBC 客户端使用以下 URL，请将 *PASSWORD* 替换为 GreptimeCloud service 的密码。
 
 ```
 jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=PASSOWRD&ssl=true
