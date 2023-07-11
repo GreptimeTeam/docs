@@ -1,22 +1,21 @@
 # MySQL
 
-GreptimeCloud exposes GreptimeDB access in MySQL server-client protocol. Most
-standard clients and drivers are compatible.
-Refer to [MySQL client](https://docs.greptime.com/user-guide/clients/mysql) of GreptimeDB for more information.
+GreptimeCloud 在 MySQL 服务器-客户端协议中公开了 GreptimeDB 访问。大多数标准客户端和驱动程序都兼容。
+有关更多信息，请参阅 GreptimeDB 的 [MySQL 客户端](https://docs.greptime.com/user-guide/clients/mysql)。
 
-The connection is encrypted with TLS.
-`database` is required when connect using MySQL protocol.
-To connect to GreptimeCloud in MySQL protocol, using information below:
+连接使用 TLS 加密。
+使用 MySQL 协议连接时需要 `database`。
+要连接到 GreptimeCloud，使用以下信息：
 
-- Host: `<host>`
-- Port: `4002`
-- Database: `<dbname>`
-- Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- 主机：`<host>`
+- 端口：`4002`
+- 数据库：`<dbname>`
+- 用户名：`<username>`
+- 密码：*您的 GreptimeCloud 服务密码*
 
 ## MySQL CLI
 
-Connect to GreptimeCloud service instance using `mysql` CLI.
+使用 `mysql` CLI 连接到 GreptimeCloud 服务实例。
 
 ```
 mysql --ssl-mode=REQUIRED -u <username> -p -h <host> -P 4002 -A <dbname>
