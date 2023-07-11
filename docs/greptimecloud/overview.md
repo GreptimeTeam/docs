@@ -8,9 +8,9 @@ To learn how GreptimeCloud measure its workload for serverless architecture, and
 
 ## Integrations
 
-Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCLoud using popular database protocols:
+Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCloud using popular database protocols:
 
-- Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md).
+- Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)
 - [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)

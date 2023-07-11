@@ -1,29 +1,26 @@
-# Learn about Usage
+# 了解用量
 
-Welcome to GreptimeCloud. This document will introduce the usage calculation algorithms of GreptimeCloud. To monitor service usage, you can go to the [GreptimeCloud Console](https://console.greptime.cloud/).
+欢迎使用 GreptimeCloud，本文档将介绍 GreptimeCloud 的用量计算算法。您可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。
 
-## Capacity Unit
+## 容量单位
 
-All requests to GreptimeCloud are measured in capacity units, which reflect the size and complexity of the request. The measurement methods of write capacity unit and read capacity unit are different, see following for details. 
+所有对 GreptimeCloud 的请求都是以容量单位来衡量的，容量单位反映了请求的大小和复杂程度。写容量单位和读容量单位的计算方法不同，详情请见下文。
 
 ### WCU (Write Capacity Unit)
 
-Each API call to write data to your table is a write request.
-WCU is calculated based on the total size of the insert rows in one request.
-A standard write capacity unit can write rows up to 1 KB.
-For rows larger than 1 KB, additional write capacity units are required.
+每个写入数据到表的 API 调用都是一个写请求。WCU 是根据一次请求中插入行的总大小来计算的。一个标准的 WCU 可以写入不超过 1 KB 的行数据。对于大于 1 KB 的数据，需要额外的 WCU。
 
-:::tip NOTE
-The capacity unit may be subject to change in the future.
+:::tip 注意
+WCU 的容量可能会在未来发生变化。
 :::
 
-The following steps are used to determine the size of each request:
+每个请求的大小根据以下步骤计算：
 
-1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/reference/data-types.md) documentation.
-2. Sum up the sizes of all columns in the request. If a column is not present in the request, its size depends on the column's default value. If the default value is null, the size is 0; otherwise, it is the size of the data type.
-3. Multiply the sum by the number of rows to be written.
+1. 获取表结构中每个列的数据类型的大小。你可以在 [数据类型](/reference/data-types.md) 文档中找到有关每个数据类型大小的详细信息。
+2. 计算请求中所有列的大小之和。如果请求中不存在某列，则其大小取决于该列的默认值。如果默认值为 null，则大小为 0；否则，它是该列数据类型的大小。
+3. 行数据的总和乘以要写入的行数。
 
-Here's an example of how to calculate the WCU for a table with the following schema:
+这是一个具有以下表结构的 WCU 计算示例：
 
 ```shell
 +-------------+----------------------+------+---------------------+---------------+
@@ -38,15 +35,13 @@ Here's an example of how to calculate the WCU for a table with the following sch
 +-------------+----------------------+------+---------------------+---------------+
 ```
 
-You have a write request as following:
+你有一个这样的写请求：
 
 ```shell
 INSERT INTO system_metrics VALUES ("host1", "a", 11.8, 10.3, 10.3, 1667446797450);
 ```
 
-Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is 1 according to the calculation algorithm.
-
-To reduce the WCU usage, use batched `INSERT` statements to insert multiple rows in a single statement, rather than sending a separate statement per row. For example:
+根据表结构中数据类型的大小，每行数据的大小为 38 字节（5+1+8+8+8+8），根据计算算法，此请求的 WCU 为 1。为了减少 WCU，可以使用批量的 `INSERT` 语句在单个语句中插入多行数据，而不是每行数据都发送一个单独的请求。例如：
 
 ```shell
 INSERT INTO system_metrics
@@ -57,43 +52,43 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-The size of the request is 950 bytes (38 * 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 * 40), and the WCU of this request is 2.
+该请求的大小为 950 字节（38 * 25）。此请求的 WCU 为 1。如果你在单个语句中插入 40 行数据，则大小为 1520 字节（38 * 40），此请求的 WCU 为 2。
 
 ### RCU (Read Capacity Unit)
 
-Each API call to read data from your table is a read request. RCU is the server resource consumed in one request. It depends on the following items:
+从表中读取数据的每个 API 调用都是一个读请求，RCU 是一个请求中消耗的服务器资源。它取决于以下几个因素：
 
-- CPU time consumed by the query
-- Scanned data size
+- 该请求消耗的 CPU 时间
+- 该请求扫描的数据大小
 
-A standard read capacity unit can consume CPU time up to 1ms or scan up to 1 KB data. For cpu time or scanned data larger than 1ms or 1KB, additional read capacity units are required.
+一个标准的读容量单位可以消耗不超过 1ms 的 CPU 时间或扫描不超过 1KB 的数据。对于大于 1ms 的 CPU 时间或 1KB 的扫描数据，需要额外的 RCU。
 
-:::tip NOTE
-The capacity unit may be subject to change in the future.
+:::tip 注意
+RCU 的容量可能会在未来发生变化。
 :::
 
-For example, suppose there is a read request consuming 2.5ms CPU time and scanning 2KB data. All of these costs add up to 5 RCUs:
+假设有一个读请求，消耗了 2.5ms 的 CPU 时间并扫描了 2KB 的数据，所有这些消耗加起来总共需要 5 个 RCU：
 
-- 3 RCU from 2.5ms CPU time
-- 2 RCU from 2KB scanned data
+- 2.5ms CPU 时间消耗的 3 个 RCU
+- 扫描的 2KB 数据消耗的 2 个 RCU
 
-To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
+为了降低 RCU，可以仔细设计表结构和查询请求。以下是一些建议：
 
-- Use indexes to support the efficient execution of queries in GreptimeDB. Without indexes, GreptimeDB must scan the entire table to process the query. If an index matches the query, GreptimeDB can use the index to limit the data scanned. Consider using a column with high cardinality as the primary key and use it in the `WHERE` clause.
-- Use queries that match a smaller percentage of documents for better selectivity. For instance, an equality match on the time index field and a high cardinality tag field can efficiently limit the data scanned. Note that the inequality operator `!=` is not efficient because it always scans all data.
+- 使用索引以支持在 GreptimeDB 中高效地执行查询。如果没有索引，GreptimeDB 必须扫描整个表来处理查询。如果索引与查询匹配，GreptimeDB 可以使用索引来限制扫描的数据。请考虑使用具有高区分度的列作为主键，并在 `WHERE` 子句中使用它。
+- 选择使用匹配结果较少的查询。例如，时间索引字段和高区分度的标签字段上的相等匹配可以有效地限制扫描的数据大小。请注意，不等运算符 `!=` 无法做到有效查询，因为它总是会扫描所有数据。
 
-## Storage Capacity
+## 存储容量
 
-GreptimeCloud stores data in object storage such as S3, and measures the size of your total data saved in database.
+GreptimeCloud 将数据存储在云端对象存储中，例如 S3，并测量你在数据库中保存的总数据大小。
 
-## Tech Preview Plan
+## Tech Preview 计划
 
-Tech preview plan provides the following free tier for users to try GreptimeCloud:
+Tech Preview 计划为用户提供以下免费额度以尝试 GreptimeCloud：
 
-- Write capacity unit (WCU): 800 WCU/s per service.
-- Storage capacity: 10GB per service.
-- Account limits: 3 services per team.
+- 写容量单位（WCU）：每个服务 800 WCU/s。
+- 存储容量：每个服务 10GB。
+- 帐户限制：每个团队 3 个服务。
 
-:::tip NOTE
-The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).
+:::tip 注意
+该计划可能会在未来发生变化。如果你对此有任何疑问，请联系 [feedback@greptime.cloud](mailto:feedback@greptime.cloud)。
 :::

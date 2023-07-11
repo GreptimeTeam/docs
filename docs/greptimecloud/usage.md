@@ -10,8 +10,8 @@ All requests to GreptimeCloud are measured in capacity units, which reflect the 
 
 Each API call to write data to your table is a write request.
 WCU is calculated based on the total size of the insert rows in one request.
-A standard write capacity unit can write rows up to 1 KB.
-For rows larger than 1 KB, additional write capacity units are required.
+A standard write capacity unit can write rows up to 1KB.
+For rows larger than 1KB, additional write capacity units are required.
 
 :::tip NOTE
 The capacity unit may be subject to change in the future.
@@ -63,10 +63,10 @@ The size of the request is 950 bytes (38 * 25). The WCU of this request is 1. If
 
 Each API call to read data from your table is a read request. RCU is the server resource consumed in one request. It depends on the following items:
 
-- CPU time consumed by the query
-- Scanned data size
+- CPU time consumed by the request
+- Scanned data size by the request
 
-A standard read capacity unit can consume CPU time up to 1ms or scan up to 1 KB data. For cpu time or scanned data larger than 1ms or 1KB, additional read capacity units are required.
+A standard read capacity unit can consume CPU time up to 1ms or scan up to 1KB data. For cpu time or scanned data larger than 1ms or 1KB, additional read capacity units are required.
 
 :::tip NOTE
 The capacity unit may be subject to change in the future.
@@ -80,7 +80,7 @@ For example, suppose there is a read request consuming 2.5ms CPU time and scanni
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
 - Use indexes to support the efficient execution of queries in GreptimeDB. Without indexes, GreptimeDB must scan the entire table to process the query. If an index matches the query, GreptimeDB can use the index to limit the data scanned. Consider using a column with high cardinality as the primary key and use it in the `WHERE` clause.
-- Use queries that match a smaller percentage of documents for better selectivity. For instance, an equality match on the time index field and a high cardinality tag field can efficiently limit the data scanned. Note that the inequality operator `!=` is not efficient because it always scans all data.
+- Use queries that match a smaller percentage of data for better selectivity. For instance, an equality match on the time index field and a high cardinality tag field can efficiently limit the data scanned. Note that the inequality operator `!=` is not efficient because it always scans all data.
 
 ## Storage Capacity
 
