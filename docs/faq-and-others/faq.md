@@ -41,7 +41,7 @@ GreptimeDB is focused on time-series data (or metrics) right now. It may support
 
 ## When will GreptimeDB release its first GA version?
 The current version is not at the production level yet and there is a milestone for our future development. 
-You can check our milestone [here](https://github.com/GreptimeTeam/greptimedb/milestone/2).
+You can check our milestone for GreptimeDB v0.4 [here](https://github.com/GreptimeTeam/greptimedb/milestone/5).
 
 ## Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
 
