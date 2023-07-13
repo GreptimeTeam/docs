@@ -1,25 +1,18 @@
-# Frontend
+# 概述
 
-## Introduction
+`frontend` 主要用于云服务中的分布式执行查询和运行某些特定任务，例如租户管理、鉴权认证、流量控制等。
 
-The `frontend` is mainly for distributed executing queries and performing certain tasks in the cloud
-, like tenant management, authorization validation, flow control, etc.
+`frontend` 暴露了多个接口以支持用多种协议读写数据。您可以参考 [客户端协议][1] 了解更多细节。在客户端连接建立后，`frontend` 在与数据交互时充当客户端和 `datanodes` 之间的桥梁。
 
-The `frontend` can expose multiple endpoints for reading and writing data in various protocols. You
-can refer to [Clients][1] for more details. After the client's connection is
-established, the `frontend` acts as a bridge between the client and Datanodes when interacting with
-the data.
+下面是 GreptimeDB 在云中的典型部署流程。你可以看到请求通过 `frontend` 集群传输，以及请求的处理过程。
 
-Below is a typical deployment flow of GreptimeDB in the cloud. You can see how a client's requests
-flow through the `frontend` cluster and how they are processed.
+![frontend](/frontend.png)
 
-![frontend](../../../public/frontend.png)
+## 查看更多
 
-## Details
+- [表分片][2]
+- [分布式查询][3]
 
-- [Table Sharding][2]
-- [Distributed Querying][3]
-
-[1]: zh/user-guide/clients.md
+[1]: /user-guide/clients/overview.md
 [2]: ./table-sharding.md
 [3]: ./distributed-querying.md

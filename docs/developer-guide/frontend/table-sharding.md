@@ -1,7 +1,5 @@
 # Table Sharding
 
-## Introduction
-
 The sharding of stored data is essential to any distributed database. This document will describe how table's data in GreptimeDB is being sharded, and distributed.
 
 ## Partition
@@ -33,16 +31,20 @@ PARTITION BY RANGE COLUMNS (a) (
 only has rows of column "a < 10"; partition "p1" contains rows of "10 <= a < 20"; partition "p2"
 includes the remaining rows of "a >= 20".
 
-> Important: value range must be strictly increased, and ends with "MAXVALUE".
-> Note: currently expressions are not supported in "PARTITION BY RANGE" syntax, you can only supply
-> column names.
+::: warning Important
+Value range must be strictly increased, and ends with "MAXVALUE".
+:::
+
+::: tip Note
+Currently expressions are not supported in "PARTITION BY RANGE" syntax, you can only supply column names.
+:::
 
 ## Region
 
 The data within a table is logically split after creating partitions. You may ask the question "
 how is the data, which is physically distributed, stored in GreptimeDB? The answer is in "Region".
 "Region" is a group of a table's data stored together inside a Datanode instance physically. Our
-"auto-admin" will move regions among Datanodes automatically, according to the states of Datanodes.
-Also, "auto-admin" can split or merge regions according to their data volume or access pattern.
+`metasrv` will move regions among Datanodes automatically, according to the states of Datanodes.
+Also, `metasrv` can split or merge regions according to their data volume or access pattern.
 
-![Table Sharding](../../public/table-sharding.png)
+![Table Sharding](/table-sharding.png)

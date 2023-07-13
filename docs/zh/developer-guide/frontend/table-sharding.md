@@ -1,22 +1,14 @@
-# Table Sharding
+# 表分片
 
-## Introduction
+对于任何分布式数据库来说，数据的分片都是必不可少的。本文将描述 GreptimeDB 中的表数据如何进行分片。
 
-The sharding of stored data is essential to any distributed database. This document will describe how table's data in GreptimeDB is being sharded, and distributed.
+## 分区
 
-## Partition
+从逻辑上说，在 GreptimeDB 中数据是使用分区进行分片的。我们借用了在 OLTP 数据库中常用的概念“分区”，因为 GreptimeDB 使用“表”来组织数据并使用 SQL 来查询它。
 
-In GreptimeDB, logically, data is sharded in partitions. Because GreptimeDB is using "table" to
-group data and SQL to query them, we borrow the word "partition", which is a concept commonly used
-in OLTP databases.
+在 GreptimeDB 中，一张表可以通过多种方式横向分区，并且它使用与 MySQL 相同的分区类型（以及相应的语法）。目前，GreptimeDB 支持 “RANGE COLUMNS 分区”。
 
-In GreptimeDB, a table can be horizontally partitioned in multiple ways and it uses the same
-partitioning types (and corresponding syntax) as in MySQL. Currently, GreptimeDB supports "RANGE
-partitioning" and "RANGE COLUMNS partitioning".
-
-In RANGE partitioning, each partition includes only a portion of the data from the table, and is
-grouped by some column(s) value range. For example, we can partition a table in GreptimeDB like
-this:
+在 “RANGE COLUMNS 分区”中，每个分区仅包含表中的一部分数据，并按某些列值范围进行分组。例如，我们可以像这样在 GreptimeDB 中对表进行分区：
 
 ```sql
 CREATE TABLE my_table (
@@ -30,20 +22,18 @@ PARTITION BY RANGE (a) (
 )
 ```
 
-`my_table` that we created above has 3 partitions. Partition "p0" contains a portion of data that
-only has rows of column "a < 10"; partition "p1" contains rows of "10 <= a < 20"; partition "p2"
-includes the remaining rows of "a >= 20".
+我们在上面创建的 `my_table` 有 3 个分区。分区 "p0" 包含了 "a < 10" 的行；分区 "p1" 包含了 "10 <= a < 20" 的行；分区 "p2" 包含了剩下的 "a >= 20" 的所有行。
 
-> Important: value range must be strictly increased, and ends with "MAXVALUE".
-> Note: currently expressions are not supported in "PARTITION BY RANGE" syntax, you can only supply
-> column names.
+::: warning 重要
+值的范围必须严格递增，并以 "MAXVALUE" 结尾。
+:::
+
+::: tip 注意
+目前 "PARTITION BY RANGE" 语法中不支持表达式，只能使用列名。
+:::
 
 ## Region
 
-The data within a table is logically split after creating partitions. You may ask the question "
-how is the data, which is physically distributed, stored in GreptimeDB? The answer is in "Region".
-"Region" is a group of a table's data stored together inside a Datanode instance physically. Our
-"auto-admin" will move regions among Datanodes automatically, according to the states of Datanodes.
-Also, "auto-admin" can split or merge regions according to their data volume or access pattern.
+在创建分区后，表中的数据被逻辑上分割。你可能会问 "在 GreptimeDB 中，物理分布的数据是如何存储的？" 答案在于 `region`。`region` 是一组表数据在 `datanode` 实例中存储的物理单元。我们的 `metasrv` 会根据 `datanode` 的状态在它们之间自动移动 `region`。此外，`metasrv` 还可以根据数据量或访问模式拆分或合并 `region`。
 
-![Table Sharding](../../../public/table-sharding.png)
+![Table Sharding](/table-sharding.png)
