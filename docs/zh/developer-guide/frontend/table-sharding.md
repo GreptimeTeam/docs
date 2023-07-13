@@ -34,6 +34,6 @@ PARTITION BY RANGE (a) (
 
 ## Region
 
-在创建分区后，表中的数据被逻辑上分割。你可能会问 "在 GreptimeDB 中，物理分布的数据是如何存储的？" 答案在于 `region`。`region` 是一组表数据在 `datanode` 实例中存储的物理单元。我们的 "auto-admin" 会根据 `datanode` 的状态在它们之间自动移动 `region`。此外，"auto-admin" 还可以根据数据量或访问模式拆分或合并 `region`。
+在创建分区后，表中的数据被逻辑上分割。你可能会问 "在 GreptimeDB 中，物理分布的数据是如何存储的？" 答案在于 `region`。`region` 是一组表数据在 `datanode` 实例中存储的物理单元。我们的 `metasrv` 会根据 `datanode` 的状态在它们之间自动移动 `region`。此外，`metasrv` 还可以根据数据量或访问模式拆分或合并 `region`。
 
 ![Table Sharding](/table-sharding.png)

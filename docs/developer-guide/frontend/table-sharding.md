@@ -44,7 +44,7 @@ Currently expressions are not supported in "PARTITION BY RANGE" syntax, you can 
 The data within a table is logically split after creating partitions. You may ask the question "
 how is the data, which is physically distributed, stored in GreptimeDB? The answer is in "Region".
 "Region" is a group of a table's data stored together inside a Datanode instance physically. Our
-"auto-admin" will move regions among Datanodes automatically, according to the states of Datanodes.
-Also, "auto-admin" can split or merge regions according to their data volume or access pattern.
+`metasrv` will move regions among Datanodes automatically, according to the states of Datanodes.
+Also, `metasrv` can split or merge regions according to their data volume or access pattern.
 
 ![Table Sharding](/table-sharding.png)
