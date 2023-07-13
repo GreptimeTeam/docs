@@ -6,6 +6,7 @@ Write-Data: 写入数据
 Query-Data: 读取数据
 Scripts-&-Functions: 脚本-&-函数
 Operations: 运维操作
+Prometheus: Prometheus
 Developer-Guide: 开发者指南
 Tests: 测试
 Benchmarks: 基准

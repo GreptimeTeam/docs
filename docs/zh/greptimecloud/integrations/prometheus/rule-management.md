@@ -1,27 +1,26 @@
-# Rule Management
+# 规则管理
 
-With this service, you can easily set up alerting and recording rules by copying your Prometheus configuration files to GreptimeCloud. Furthermore, the visualized charts will be generated automatically in the console, providing a seamless experience for monitoring your applications. You can visit [Prometheus](https://prometheus.io/docs/prometheus/latest/configuration/configuration) for more details about the configuration files.
+通过此服务，你可以通过将你的 Prometheus 配置文件复制到 GreptimeCloud 中轻松设置警报和记录规则。此外，可视化的图表将在控制台中自动生成，这些为监视应用程序提供了无缝体验。你可以访问 [Prometheus](https://prometheus.io/docs/prometheus/latest/configuration/configuration) 了解有关配置文件的更多详细信息。
 
-## Manage rule files via Git
+## 通过 Git 管理规则文件
 
-Each GreptimeCloud service comes with a git repository for storing prometheus rules and configurations. By checking your rules, GreptimeCloud's prometheus-compatible rule engine evaluates your rules against data stored in the database and emits alert when matches.
+每个 GreptimeCloud 服务都带有一个 Git 仓库，用于存储 Prometheus 的规则和配置。GreptimeCloud 的 Prometheus 兼容规则引擎会根据存储在数据库中的数据适配你的规则，并在匹配时发出警报。
 
-::: tip NOTE
-Creating branch or tag is disabled
+::: tip 注意
+Git 仓库中禁止创建分支或标签
 :::
 
-### Download Template
+### 下载模板
 
-You can get the clone URL of the repository in the [GreptimeCloud console](https://console.greptime.cloud/service/list).
-The repository contains a sample prometheus.yml file. 
+你可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/service) 中获取仓库的 clone URL。
 
 ```shell
 git clone <cloud-repo-url>
 ```
 
-### Files
+### 文件
 
-You can see the following files in the repository.
+在仓库中你可以看到这些文件：
 
 ```shell
 .
@@ -29,7 +28,7 @@ You can see the following files in the repository.
 └── prometheus.yml
 ```
 
-You can add or edit files locally. Only the following files are allowed:
+你可以在本地添加或修改文件，仅这些文件被允许使用：
 
 - prometheus.yml
 - README.md
@@ -37,7 +36,7 @@ You can add or edit files locally. Only the following files are allowed:
 
 #### `prometheus.yml`
 
-The `prometheus.yml` file is responsible for managing global and alerting settings. Please **do not** change its name. The supported fields are listed below. Any other fields will be discarded.
+`prometheus.yml` 文件负责管理全局和警报设置，请**不要更改**文件名称。文件内支持的字段如下所示，其他字段都会被丢弃：
 
 ```yaml
 global:
@@ -54,9 +53,9 @@ alerting:
     [ - <alertmanager_config> ... ]
 ```
 
-#### Rule Files
+#### 规则文件
 
-You can add rule configurations in custom `.yml` files at the root directory. Suppose you have a rule file named `alert.yml` and with the following content:
+你可以在根目录下添加自定义的 `.yml` 文件来添加规则配置。假设你有一个名为 `alert.yml` 的规则文件，其内容如下：
 
 ```yaml
 groups:
@@ -66,7 +65,7 @@ groups:
       expr: sum by (code) (prometheus_http_requests_total)
 ```
 
-The files in the directory should be as following:
+该文件在目录中的位置如下：
 
 ```shell
 .
@@ -75,17 +74,17 @@ The files in the directory should be as following:
 └── prometheus.yml
 ```
 
-You can add as many rule files as you want.
+你可以添加任意数量的规则文件。
 
-#### Restrictions
+#### 限制
 
-- Each file is 1MB limited, and total repo is 100MB limited
-- Each file MUST be valid rule yaml format
-- Creating directory is disabled
+- 每个文件限制为 1MB，总仓库限制为 100MB
+- 每个文件必须是有效的 `yaml` 格式
+- 禁止创建目录
 
-### Push Code
+### 推送代码
 
-After adding or copying your Prometheus configuration files into this repository, you can push them to GreptimeCloud.
+在将 Prometheus 配置文件添加或复制到此仓库后，你可以将它们推送到 GreptimeCloud。
 
 ```shell
 git add .
@@ -99,18 +98,19 @@ git commit -m "sync prometheus configuration"
 git push
 ```
 
-### Pull Code
+### 拉取代码
 
-In addition to editing the configuration files through Git, you can also make changes to them via the [GreptimeCloud console](#visualize-charts). Then you can pull the latest configuration files.
+除了通过 Git 编辑配置文件外，你还可以通过 [GreptimeCloud 控制台](#visualize-charts) 对规则进行更改。
+通过下方的命令即可拉取最新的配置文件：
 
 ```shell
 git pull
 ```
 
-## Visualize Data
+## 可视化数据
 
-After pushing your Prometheus configuration files to GreptimeCloud, visit the [GreptimeCloud console](https://console.greptime.cloud/service/list) and navigate to the `Prometheus` section. You can see the charts generated automatically based on your configuration files.
+将 Prometheus 配置文件推送到 GreptimeCloud 后，访问 [GreptimeCloud 控制台](https://console.greptime.cloud/service)，并点击 `Prometheus Workbench`。你可以看到基于你的配置文件自动生成的图表。
 
 <!-- TODO: Image waiting for dashboard production version -->
 
-You can also add a new rule or edit the exist rules via the console. The changes will be automatically pushed to the repository. 
+你还可以通过控制台添加新规则或编辑现有规则，这些更改将自动推送到仓库中。

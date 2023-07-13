@@ -1,15 +1,12 @@
-# Quick Setup
+# 快速设置
 
-GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
-This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
-For more information, please refer to the [Prometheus documentation](https://docs.greptime.com/user-guide/prometheus) in the GreptimeDB user guide.
+GreptimeCloud 与 GreptimeDB 完全兼容 Prometheus。这意味着你可以无缝地将 GreptimeCloud 用作 Prometheus 存储和查询的替代品。有关更多信息，请参阅 GreptimeDB 用户指南中的 [Prometheus 文档](https://docs.greptime.cn/user-guide/clients/prometheus)。
 
-## Remote Write and Read
+## 远程写入和读取
 
-GreptimeCloud instance can be configured as a Prometheus [remote write
-endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) and [remote read endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read).
+GreptimeCloud 实例可以配置为 Prometheus 的[远程写入端点](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)和[远程读取端点](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read)。
 
-Add the following section to your prometheus configuration.
+将以下部分添加到你的 prometheus 配置中：
 
 ```yaml
 remote_write:
@@ -25,12 +22,9 @@ remote_read:
       password: #paste your service password
 ```
 
-## Rule Management
+## 规则管理
 
-Each GreptimeCloud service comes with a git repository for storing prometheus
-rules and configurations. By checking your rules, GreptimeCloud's
-prometheus-compatible rule engine evaluates your rules against data stored in
-the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/greptimecloud/integrations/prometheus/rule-management).
+每个 GreptimeCloud 服务都带有一个 Git 存储库，用于存储 Prometheus 的规则和配置。GreptimeCloud 的 Prometheus 兼容规则引擎会根据存储在数据库中的数据评估你的规则，并在匹配时发出警报。有关更多详细信息，请参阅[规则管理](https://docs.greptime.cn/greptimecloud/integrations/prometheus/rule-management)。
 
 ```shell
 git clone https://<host>/promrules/git/<dbname>.git
@@ -42,4 +36,4 @@ git push
 
 ## PromQL
 
-GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/prometheus#prometheus-query-language) for more details.
+GreptimeDB 支持 PromQL (Prometheus 查询语言)，这意味着你可以将 GreptimeDB 作为 Prometheus 查询的替代品。有关更多详细信息，请参考 [PromQL](https://docs.greptime.cn/user-guide/prometheus#prometheus-query-language)。

@@ -1,11 +1,9 @@
 # MySQL
 
 GreptimeCloud exposes GreptimeDB access in MySQL server-client protocol. Most
-standard clients and drivers are compatible.
+standard clients and drivers are compatible and the connection is encrypted with TLS.
 Refer to [MySQL client](https://docs.greptime.com/user-guide/clients/mysql) of GreptimeDB for more information.
 
-The connection is encrypted with TLS.
-`database` is required when connect using MySQL protocol.
 To connect to GreptimeCloud in MySQL protocol, using information below:
 
 - Host: `<host>`
@@ -18,7 +16,7 @@ To connect to GreptimeCloud in MySQL protocol, using information below:
 
 Connect to GreptimeCloud service instance using `mysql` CLI.
 
-```
+```shell
 mysql --ssl-mode=REQUIRED -u <username> -p -h <host> -P 4002 -A <dbname>
 ```
 
@@ -26,7 +24,7 @@ mysql --ssl-mode=REQUIRED -u <username> -p -h <host> -P 4002 -A <dbname>
 
 MariaDB's CLI has slightly different `ssl` option with original MySQL
 
-```
+```shell
 mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 ```
 

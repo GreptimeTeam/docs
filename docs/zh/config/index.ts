@@ -25,6 +25,7 @@ export const zhConfig = async () => ({
     'zh/:file': ':file',
     'zh/:group/:file': ':group/:file',
     'zh/:group/:type/:file': ':group/:type/:file',
+    'zh/:group/:type/:file/:name': ':group/:type/:file/:name',
   },
   locales: {
     root: { label: '简体中文' },
