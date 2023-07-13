@@ -1,52 +1,48 @@
-# Getting started
+# 立即开始
 
-## Introduction
+本页面介绍如何在本地环境中从源代码运行 GreptimeDB。
 
-This page describes how to run GreptimeDB from source in your local environment.
+## 先决条件
 
-## Prerequisite
+### 系统和架构
 
-### System & Architecture
+目前，GreptimeDB 仅支持 Linux（amd64）和 macOS（amd64 和 Apple Silicone）。
 
-At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 and Apple Silicone).
+### 构建依赖项
 
-### Build Dependencies
-
-- Git (optional)
-  - Clone the source from
-- C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
-- Rust ([guide][1])
-  - Compile the source code
-- Protobuf ([guide][2])
-  - Compile the proto file
-  - Note that the version needs to be >= 3.15. You can check it with `protoc --version`
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line)（可选）
+- C/C++ 工具链：提供编译和链接的基本工具。在 Ubuntu 上，这可用作 `build-essential`。在其他平台上，也有类似的命令。
+- Rust（[指南][1]）
+  - 编译源代码
+- Protobuf（[指南][2]）
+  - 编译 proto 文件
+  - 请注意，版本需要 >= 3.15。你可以使用 `protoc --version` 检查它。
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>
 
-## Compile and Run
+## 编译和运行
 
-Start GreptimeDB standalone instance in just a few commands!
+只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例:
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
 cargo run -- standalone start
 ```
+接下来，你可以选择与 GreptimeDB 交互的协议。
 
-Next, you can choose the protocol you like to interact with in GreptimeDB.
-
-Or if you just want to build the server without running it:
+如果你只想构建服务器而不运行它：
 
 ```shell
 cargo build # --release
 ```
 
-The artifacts can be found under `$REPO/target/debug` or `$REPO/target/release`, depending on the build mode (whether the `--release` option is passed)
+根据构建的模式（是否传递了 `--release` 选项），构建后的文件可以在 `$REPO/target/debug` 或 `$REPO/target/release` 目录下找到。
 
-## Unit test
+## 单元测试
 
-GreptimeDB is well-tested, the entire unit test suite is shipped with source code. To test them, run
+GreptimeDB 经过了充分的测试，整个单元测试套件都随源代码一起提供。通过以下命令来运行测试：
 
 ```shell
 cargo test --workspace
@@ -54,4 +50,4 @@ cargo test --workspace
 
 ## Docker
 
-We also provide pre-build binary via Docker. It's which is available in dockerhub: <https://hub.docker.com/r/greptime/greptimedb>
+我们还通过 Docker 提供预构建二进制文件，可以在 [Docker Hub 上获取](https://hub.docker.com/r/greptime/greptimedb)。

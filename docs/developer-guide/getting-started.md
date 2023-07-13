@@ -1,7 +1,5 @@
 # Getting started
 
-## Introduction
-
 This page describes how to run GreptimeDB from source in your local environment.
 
 ## Prerequisite
@@ -12,8 +10,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 
 ### Build Dependencies
 
-- Git (optional)
-  - Clone the source from
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-The-Command-Line) (optional)
 - C/C++ Toolchain: provides essential tools for compiling and linking. This is available either as `build-essential` on ubuntu or a similar name on other platforms.
 - Rust ([guide][1])
   - Compile the source code
