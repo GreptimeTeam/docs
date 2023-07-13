@@ -78,7 +78,7 @@
     - data-persistence-indexing
     - wal
     - python-coprocessor
-  - Meta:
+  - Metasrv:
     - overview
     - admin-api
     - dist-lock
