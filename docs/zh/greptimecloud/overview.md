@@ -1,16 +1,16 @@
-# Overview
+# 概述
 
-GreptimeCloud is a cloud service that is powered by fully-managed serverless GreptimeDB, providing a scalable and efficient solution for time-series data platform and and Prometheus backend.
+GreptimeCloud 作为完全托管 GreptimeDB 的 Serverless 云服务，为时间序列数据平台和 Prometheus 后端提供可扩展和高效的解决方案。
 
-## Learn about Usage
+## 了解产品用量
 
-To learn how GreptimeCloud measure its workload for serverless architecture, and how to optimize your usage, see [Learn about Usage](usage.md).
+要了解 GreptimeCloud 如何测量其 Serverless 架构的工作负载以及如何优化 service 的用量，请参阅 [产品用量](usage.md)。
 
-## Integrations
+## 集成
 
-Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCLoud using popular database protocols:
+在阅读以下内容之前，需要先阅读 [客户端协议](/zh/user-guide/clients/overview.md)。你可以使用流行的数据库协议连接到 GreptimeCloud：
 
-- Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md).
+- Prometheus [integration](./integrations/prometheus/quick-setup.md) 以及 [规则管理](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)
 - [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)
