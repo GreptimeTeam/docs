@@ -6,7 +6,7 @@
 
 - `Frontend`：通过多种协议提供读写服务，并将请求转发到 `Datanode`。
 - `Datanode`：负责数据的持久化存储，例如存储到本地磁盘、S3 和 Azure Blob Storage 等。
-- `Meta` 服务器：协调 `Frontend` 和 `Datanode` 之间的操作。
+- `Metasrv` 元数据存储和分布式调度：协调 `Frontend` 和 `Datanode` 之间的操作。
 
 ![Architecture](/architecture.png)
 
@@ -27,9 +27,9 @@
 
 ![Interactions between components](/how-it-works.png)
 
-在深入了解每个组件之前，让我们先从高层次上了解一下 GreptimeDB 数据库的工作原理。
+在深入了解每个组件之前，让我们先从高层次上了解一下 GreptimeDB 的工作原理。
 
-- 用户可以通过各种协议与数据库交互，例如使用 `InfluxDB` 的行协议插入数据，然后使用 SQL 或 PromQL 探索数据。`frontend` 是用户或客户端连接和操作数据库的组件，因此在其后面隐藏了 `datanode` 和 `metasrv`。
+- 用户可以通过各种协议与数据库交互，例如使用 `InfluxDB line Protocol` 插入数据，然后使用 SQL 或 PromQL 查询数据。`frontend` 是用户或客户端连接和操作数据库的组件，因此在其后面隐藏了 `datanode` 和 `metasrv`。
 - 假设用户向 `frontend` 实例发送了 HTTP 请求来插入数据。当 `frontend` 接收到请求时，它会使用相应的协议解析器解析请求正文，并从 `metasrv` 的 catalog 中找到要写入的表。
 - `frontend` 定期获取并缓存来自 `metasrv` 的元数据，因此它知道应将请求发送到哪个 `datanode`，或者更准确地说，应该发送到哪个 `region`。如果请求的内容需要存储在不同的 `region` 中，则请求可能会被拆分并发送到多个 `region`。
 - 当 `datanode` 接收到请求时，它将数据写入表中，然后将响应发送回 `frontend`。写入表也意味着将数据写入底层的存储引擎中，该引擎最终将数据放置在持久化存储中。

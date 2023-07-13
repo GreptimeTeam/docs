@@ -15,4 +15,4 @@ GreptimeCloud: 云服务
 Integrations: 集成
 Frontend: Frontend
 Datanode: Datanode
-Meta: Meta
+Metasrv: Metasrv

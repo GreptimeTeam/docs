@@ -7,7 +7,7 @@
 - `Frontend` that exposes read and write service in various protocols, forwards requests to
 `Datanode`.
 - `Datanode` is responsible for storing data to persistent storage such as local disk or object storage in the cloud such as AWS S3, Azure Blob Storage etc.
-- `Meta` server that coordinates the operations between the `Frontend` and `Datanode`.
+- `Metasrv` server that coordinates the operations between the `Frontend` and `Datanode`.
 
 ![Architecture](/architecture.png)
 
@@ -44,7 +44,7 @@ backend.
 Before diving into each component, let's take a high level view of how the database works.
 
 - Users can interact with the database via various protocols, such as ingesting data using
-`InfluxDB`'s line protocol, then exploring the data using SQL or PromQL. The `frontend` is the
+`InfluxDB line protocol`, then exploring the data using SQL or PromQL. The `frontend` is the
 component users or clients connect to and operate, thus hide `datanode` and `metasrv` behind it.
 - Assumes a user uses the HTTP API to insert data into the database, by sending a HTTP request to a
 `frontend` instance. When the `frontend` receives the request, it then parses the request body using
