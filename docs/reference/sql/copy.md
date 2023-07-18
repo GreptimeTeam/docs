@@ -66,7 +66,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 When you try to copy data from(to) S3:
 
 ```sql
-COPY tbl FROM 's3://bucket/path/to/xxx.parquet' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
+COPY tbl FROM 'S3://bucket/path/to/xxx.parquet' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
 ```
 
 **URL**
