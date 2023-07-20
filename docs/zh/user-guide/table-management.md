@@ -191,8 +191,6 @@ DROP TABLE monitor;
 Query OK, 1 row affected (0.01 sec)
 ```
 
-**注意：GreptimeDB V0.1 在概念层面上删除了该表，但实际上并没有删除该表的内容，我们将尽快解决这个问题**。
-
 ## HTTP API
 
 使用以下代码，通过 POST 方法创建一个表：
