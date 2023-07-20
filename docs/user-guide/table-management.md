@@ -196,7 +196,6 @@ DROP TABLE monitor;
 ```sql
 Query OK, 1 row affected (0.01 sec)
 ```
-**Note: GreptimeDB V0.1 drops the table at the conceptual level, without actually deleting the content of the table. We will fix it ASAP.**
 
 ## HTTP API
 
