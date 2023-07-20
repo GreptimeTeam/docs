@@ -64,10 +64,28 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 #### S3
 
 When you try to copy data from(to) S3:
+
 ```sql
-`COPY tbl FROM 's3://path/to/xxx.parquet' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');`. 
+COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
 ```
-You can set the following options:
+
+**URL**
+
+Notes: You should specify a file using `S3://bucket/key-name`. The following example shows the correct format.
+
+```
+S3://my-bucket/data.parquet
+```
+
+Another way is using Virtual-hosted–style. The following example shows the correct format.
+
+```
+https://bucket-name.s3.region-code.amazonaws.com/key-name
+```
+
+**CONNECTION** 
+
+You can set the following **CONNECTION** options:
 
 | Option  | Description  | Required |
 |---|---|---|
