@@ -28,6 +28,8 @@ Start GreptimeDB standalone instance in just a few commands!
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
+# build rely on the nightly toolchain specified in 'rust-toolchain.toml'
+rustup toolchain add $(awk -F '"' '/channel =/{print $2}' rust-toolchain.toml)
 cargo run -- standalone start
 ```
 
