@@ -22,6 +22,11 @@ Show databases by `LIKE` pattern:
 SHOW DATABASES LIKE 'p%';
 ```
 
+Show databases by `where` expr:
+```sql
+SHOW DATABASES WHERE Schemas='test_public_schema';
+```
+
 ## SHOW TABLES 
 
 Show all tables:
@@ -46,6 +51,11 @@ SHOW TABLES FROM test;
 Show tables by `like` pattern:
 ```sql
 SHOW TABLES like '%prometheus%';
+```
+
+Show tables by `where` expr:
+```sql
+SHOW TABLES FROM test WHERE Tables='numbers';
 ```
 
 ## SHOW CREATE TABLE
