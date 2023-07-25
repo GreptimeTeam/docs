@@ -52,6 +52,8 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
+  - Cookbook:
+    - overview
 - GreptimeCloud:
   - overview
   - usage
