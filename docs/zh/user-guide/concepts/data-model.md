@@ -43,4 +43,4 @@ GreptimeDB 是在 Table 之上设计的，原因如下：
 - Schema 通过其信息比如类型、长度为优化存储和计算带来了巨大的好处，我们可以在此基础上进行针对性的优化。
 - 当我们有了 Table 模型后，我们很自然地引入 SQL，用它来处理各种索引表之间的关联分析和聚合查询，抵消了用户的学习和使用成本。
 
-尽管如此，我们对 Schema 的定义并不是强制性的，而是更倾向于像 MongoDB 那样的 Schemaless 方式。更多细节见 [Automatic Schema Generation](../write-data.md#automatic-schema-generation)。
+尽管如此，我们对 Schema 的定义并不是强制性的，而是更倾向于像 MongoDB 那样的 Schemaless 方式。更多细节见 [自动生成表结构](../write-data/overview.md#自动生成表结构)。

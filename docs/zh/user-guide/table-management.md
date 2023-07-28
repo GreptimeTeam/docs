@@ -59,7 +59,7 @@ USE public;
 
 ## 创建表
 
-**注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [Automatic Schema Generation](/user-guide/write-data.md#automatic-schema-generation)**。
+**注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [Automatic Schema Generation](/user-guide/write-data/overview.md#自动生成表结构)**。
 
 如果有一些特殊的要求，仍然可以通过 SQL 手动创建一个表。在这个例子中，将创建一个名为 `monitor ` 的表。
 
