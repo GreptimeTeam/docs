@@ -50,50 +50,6 @@ WHERE idc IN ('idc0', 'idc1');
 ```
 
 
-## Query latest 5 minutes of data
-```sql
-SELECT * from system_metrics WHERE
-  ts >= now() - INTERVAL '5 minutes';
-```
-
-The interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
-```sql
-INTERVAL [fields] [(p)]
-```
-Valid types are:
-- YEAR
-- MONTH
-- DAY
-- HOUR
-- MINUTE
-- SECOND
-- YEAR TO MONTH
-- DAY TO HOUR
-- DAY TO MINUTE
-- DAY TO SECOND
-- HOUR TO MINUTE
-- HOUR TO SECOND
-- MINUTE TO SECOND
-
-The optional precision `p` is the number of fraction digits retained in the second field.
-
-For example:
-
-```sql
-SELECT
-	now(),
-	now() - INTERVAL '1 year 3 hours 20 minutes'
-             AS "3 hours 20 minutes ago of last year";
-```
-
-Output:
-```sql
-+----------------------------+-------------------------------------+
-| now()                      | 3 hours 20 minutes ago of last year |
-+----------------------------+-------------------------------------+
-| 2023-07-05 11:43:37.861340 | 2022-07-05 08:23:37.861340          |
-+----------------------------+-------------------------------------+
-```
 
 ## Sorting SELECT Statements with ORDER BY Clause
 The `LIMIT` clause is used to limit the number of rows returned by a SELECT statement. The syntax for using
