@@ -63,8 +63,8 @@ For more details on each component, see the following guides:
 
 - [frontend][1]
 - [datanode][2]
-- [meta][3]
+- [metasrv][3]
 
 [1]: frontend/overview.md
 [2]: datanode/overview.md
-[3]: meta/overview.md
+[3]: metasrv/overview.md
