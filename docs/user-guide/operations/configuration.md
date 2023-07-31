@@ -451,3 +451,25 @@ The environment variable also accepts list that are separated by a comma `,`, fo
 ```
 GREPTIMEDB_METASRV__META_CLIENT_OPTIONS__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
+
+### GreptimeDB Telemetry
+
+To make us better. GreptimeDB will collect some telemetry data, such as the version of GreptimeDB, the number of nodes, the OS of env, the arch of env, etc. We will not collect any user data, such as the database name, table name, query content, etc. It can be enabled or disabled by the compile feature flags `greptimedb-telemetry` in the build params.
+
+#### What data will be collected?
+
+The usage details that get shared might change over time. These changes (if any) will be announced in release notes.
+
+When telemetry is enabled, GreptimeDB will collect the following information every 0.5 hours:
+
+- GreptimeDB version
+- GreptimeDB build git hash
+- The operating system of the machine on which GreptimeDB is running(Linux, macOS, etc.)
+- Architecture of the machine on which GreptimeDB is running(x86_64, arm64, etc.)
+- Mode in which GreptimeDB is running(standalone, distributed)
+- A randomly generated telemetry ID
+- The number of datanodes in the GreptimeDB cluster
+
+#### How to disable telemetry?
+
+Telemetry can be disabled by the compile feature flags `greptimedb-telemetry` in the build params.
