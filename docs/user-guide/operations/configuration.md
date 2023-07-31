@@ -454,7 +454,9 @@ GREPTIMEDB_METASRV__META_CLIENT_OPTIONS__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:
 
 ### GreptimeDB Telemetry
 
-To make us better. GreptimeDB will collect some telemetry data, such as the version of GreptimeDB, the number of nodes, the OS of env, the arch of env, etc. We will not collect any user data, such as the database name, table name, query content, etc. It can be enabled or disabled by the compile feature flags `greptimedb-telemetry` in the build params.
+To enhance our service, GreptimeDB collects certain telemetry data. This includes information like the GreptimeDB version, the number of nodes, the operating system used, the environment's architecture, and similar technical details. However, we respect your privacy and make sure not to collect any user-specific data, which entails database names, table names, query content, and the like.
+
+This telemetry collection can easily be managed according to your preferences. You may choose to enable or disable it through the greptimedb-telemetry compile feature flags in the build parameters. Your experience and privacy are our top priority.
 
 #### What data will be collected?
 
@@ -472,4 +474,4 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 
 #### How to disable telemetry?
 
-Telemetry can be disabled by the compile feature flags `greptimedb-telemetry` in the build params.
+In the case of compilation with default parameters. telemetry will not be enabled. We will compile the binary with this feature enabled. If you wish. You can use the binary product with this feature enabled. If you do not want to enable the feature. You can download the binary without this feature enabled.
