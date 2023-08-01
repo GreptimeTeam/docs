@@ -40,7 +40,7 @@ First, the routing table in Request-Router is in the following structure (note t
 ### Insert
 
 1. The Frontend fetches the routes of the specified table from MetaSrv. Note that the smallest routing unit is the route of the table (several regions), i.e., it contains the addresses of all regions of this table.
-2. The best practice is that the Frontend first fetches from its local cache and follows the route request to the Datanode. If the route is no longer valid, then Datanode is obliged to return an `Invalid Route` error, and the Frontend re-fetches the latest data from MetaSrv and updates its cache. Route information does not change frequently, thus, it's sufficient for Frontend uses the Lazy policy to maintain the cache.
+2. The best practice is that the Frontend first fetches the routes from its local cache and forwards the request to the Datanode. If the route is no longer valid, then Datanode is obliged to return an `Invalid Route` error, and the Frontend re-fetches the latest data from MetaSrv and updates its cache. Route information does not change frequently, thus, it's sufficient for Frontend uses the Lazy policy to maintain the cache.
 3. The Frontend processes a batch of writes that may contain multiple tables and multiple regions, so the Frontend needs to split user requests based on the 'route table'.
 
 ### Select
