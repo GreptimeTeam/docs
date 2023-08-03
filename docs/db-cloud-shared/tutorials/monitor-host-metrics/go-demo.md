@@ -115,7 +115,7 @@ func main() {
 }
 ```
 
-The code above creates an OTLP/HTTP exporter and a periodic reader. Then it creates a MeterProvider and starts the host metrics collection. Finally, it waits for the interrupt signal. For more detail about the code, you can refer to [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/go/).
+The code above creates an OTLP/HTTP exporter and a periodic reader. Then it creates a MeterProvider and starts the host metrics collection. Finally, it waits for the interrupt signal. For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/go/).
 
 Now we can run the application like this:
 

@@ -75,7 +75,7 @@ if (require.main === module) {
 The code above utilizes the `@opentelemetry/host-metrics` package to collect host metrics and the `@opentelemetry/exporter-metrics-otlp-proto` package to send the metrics to Greptime. It defines a `main` function that uses the `minimist` package to parse command-line arguments and extract the values of the database host address, database name, username, and password.
 
 The function also creates a `PeriodicExportingMetricReader` that periodically exports metrics to Greptime. It constructs an authorization header using the command-line arguments when exporting metrics to Greptime.
-For more detail about the code, you can refer to [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/js/getting-started/nodejs/).
+For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/js/getting-started/nodejs/).
 
 Now we can run the application like this:
 
