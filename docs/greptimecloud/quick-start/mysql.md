@@ -5,4 +5,4 @@ To quickly get started with MySQL, we can use Bash to collect system metrics, su
 curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h <host> -d <dbname> -u <username> -p <password>
 ```
 
-The source code is avaliable at [Github](https://github.com/GreptimeCloudStarters/quick-start-mysql).
+The source code is avaliable on [Github](https://github.com/GreptimeCloudStarters/quick-start-mysql).
