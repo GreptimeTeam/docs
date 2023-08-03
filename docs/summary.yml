@@ -74,6 +74,15 @@
     - postgresql
     - influxdb
   - usage
+  - Tutorials:
+    - Monitor-Host-Metrics:
+      - prometheus
+      - mysql
+      - influxdb
+      - go
+      - java
+      - python
+      - node-js
 - Developer-Guide:
   - overview
   - getting-started
