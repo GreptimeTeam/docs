@@ -5,4 +5,8 @@ Run the following command with Python 3.10+ to collect system metric data, such 
 pipx run --no-cache greptime-cloud-quick-start -host <host> -db <dbname> -u <username> -p <password>
 ```
 
-The command line is supported by a quick start demo based on OTLP/http. The source code is available on [Github](https://github.com/GreptimeCloudStarters/quick-start-python).
+This demo is based on OpenTelemetry OTLP/http. The source code is available on [Github](https://github.com/GreptimeCloudStarters/quick-start-node-python).
+
+:::tip
+[pipx](https://pypa.github.io/pipx/) is a tool to help you install and run end-user applications written in Python.
+:::
