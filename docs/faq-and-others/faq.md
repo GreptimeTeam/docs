@@ -71,10 +71,6 @@ You can use the [`COPY TO` command](https://docs.greptime.com/reference/sql/copy
 
 Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
 
-## Does GreptimeDB support auto-increment primary keys similar to MySQL?
-
-Not yet.
-
 ## Can https://n9e.github.io/ now be directly integrated with GreptimeDB? How is its compatibility?
 
 Theoretically GreptimeDB could replace VictoriaMetrics now since that most protocols are supported, but we hasn't actually tested yet.
