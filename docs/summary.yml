@@ -22,21 +22,29 @@
     - SDK-Libraries:
       - go
       - java
-      - erlang
-      - javaScript
+      # - erlang
+      # - javaScript
   - table-management
   - Write-Data:
     - overview
     - prometheus
-    - grpc
     - sql
     - influxdb-line
     - opentsdb
+    - SDK-Libraries:
+      - go
+      - java
+      # - erlang
+      # - javaScript
   - Query-Data:
     - overview
     - sql
     - promql
-    - grpc
+    - SDK-Libraries:
+      - go
+      - java
+      # - erlang
+      # - javaScript
   - query-external-data
   - Scripts-&-Functions:
     - overview
