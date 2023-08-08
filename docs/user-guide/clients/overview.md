@@ -15,8 +15,10 @@ Refer to [Authentication](./authentication.md) to learn how to config username a
 ### Protocols
 
 - [MySQL](./mysql.md)
-- [gRPC](./grpc.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [PostgreSQL](./postgresql.md)
 - [HTTP API](./http-api.md)
+- SDK Libraries
+  - [Go](./sdk-libraries/go.md)
+  - [Java](./sdk-libraries/java.md)
