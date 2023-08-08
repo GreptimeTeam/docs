@@ -70,7 +70,7 @@ greptime/greptimedb standalone start \
 
 ## 连接
 
-GreptimeDB 支持[多种协议](/user-guide/clients.md)。这里使用 MySQL 客户端示例。
+GreptimeDB 支持[多种协议](/user-guide/clients/overview.md)。这里使用 MySQL 客户端示例。
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -231,7 +231,7 @@ SELECT * FROM system_metrics;
 至此我们展示了 GreptimeDB 的基本功能，更多的用户指南请查阅以下文档。
 
 - [概念](../user-guide/concepts/overview.md)
-- [客户端](../user-guide/clients.md)
+- [客户端](../user-guide/clients/overview.md)
 - [管理表](../user-guide/table-management.md)
 - [数据写入](../user-guide/write-data/overview.md)
 - [数据查询](../user-guide/query-data/overview.md)

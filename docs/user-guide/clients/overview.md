@@ -2,7 +2,7 @@
 
 You can read from or write into GreptimeDB using various protocols.
 
-![protocols](../../public/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
+![protocols](/b8fade22-59b2-42a8-aab9-a79cdca36d27.png)
 
 Note that writing data in a specific protocol does not mean that you
 have to read data with the same protocol. For example, you can write

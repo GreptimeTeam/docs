@@ -24,7 +24,7 @@ remote_read:
 #    password: greptime_pwd
 ```
 
-注意：请将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己的用户名和密码，详情请参考客户端[鉴权认证](./clients.md#authentication)。
+注意：请将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己的用户名和密码，详情请参考客户端[鉴权认证](../clients/authentication.md)。
 
 url 中的 `db` 参数表示我们要写入的数据库，如果没有指定，则默认为 `public`。
 
