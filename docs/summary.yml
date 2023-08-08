@@ -14,12 +14,16 @@
     - overview
     - authentication
     - mysql
-    - grpc
     - prometheus
     - influxdb-line
     - opentsdb
     - postgresql
     - http-api
+    - SDK-Libraries:
+      - go
+      - java
+      - erlang
+      - javaScript
   - table-management
   - Write-Data:
     - overview
