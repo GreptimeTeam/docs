@@ -3,9 +3,10 @@
 Begin to explore GreptimeDB's powerful core features.
 
 ## Install GreptimeDB
+
 You can try out GreptimeDB with our test builds released on [Download page](https://greptime.com/download).
 
-We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](../user-guide/operations/configuration.md).
+We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
 ### Linux & Mac
 
@@ -24,6 +25,7 @@ You can run GreptimeDB in the standalone mode:
 ```
 
 ### Docker
+
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
@@ -69,7 +71,7 @@ You can:
 
 ## Connect
 
-GreptimeDB supports [multiple protocols](../user-guide/clients/overview.md). We use MySQL client here for simplicity.
+GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md). We use MySQL client here for simplicity.
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -77,7 +79,7 @@ mysql -h 127.0.0.1 -P 4002
 
 ## Create table
 
-**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](../user-guide/write-data/overview.md#automatic-schema-generation).**
+**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).**
 
 Now we create a table via MySQL. Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
 
@@ -105,9 +107,9 @@ Field descriptions:
 | disk\_util   | double    | The percent use of disks               |
 | ts           | timestamp | Timestamp column incrementing          |
 
-* The table can be created automatically if you are using other protocols. See [Create Table](../user-guide/table-management#create-table).
-* For more information about creating table SQL, please refer to [CREATE](../reference/sql/create.md).
-* For data types, please check [data types](../reference/data-types.md).
+* The table can be created automatically if you are using other protocols. See [Create Table](/user-guide/table-management#create-table).
+* For more information about creating table SQL, please refer to [CREATE](/reference/sql/create.md).
+* For data types, please check [data types](/reference/data-types.md).
 
 ## Insert data
 
@@ -127,7 +129,7 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-For more information about the `INSERT` statement, please refer to [INSERT](../reference/sql/insert.md).
+For more information about the `INSERT` statement, please refer to [INSERT](/reference/sql/insert.md).
 
 ## Query data
 
@@ -201,7 +203,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 2 rows in set (0.03 sec)
 ```
 
-For more information about the `SELECT` statement, please refer to [SELECT](../reference/sql/select.md).
+For more information about the `SELECT` statement, please refer to [SELECT](/reference/sql/select.md).
 
 ## Visualize data
 
@@ -209,13 +211,13 @@ Visualization plays a crucial role in effectively utilizing time series data. To
 
 The Dashboard is embedded into GreptimeDB's binary since GreptimeDB v0.2.0. After [starting GreptimeDB](#install-greptimedb), the dashboard can be visited via HTTP endpoint `http://localhost:4000/dashboard`. The current version of the dashboard supports MySQL and Python queries, with support for PromQL coming soon.
 
-Write SQL into the command text, then click `Run All`. We'll get all data in the system_metrics table.
+Write SQL into the command text, then click `Run All`. We'll got all data in system_metrics table.
 
 ```
 SELECT * FROM system_metrics;
 ```
 
-![](../public/dashboard-select.png)
+![dashboard-select](../public/dashboard-select.png)
 
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 
@@ -229,11 +231,11 @@ We are committed to the ongoing development and iteration of this open source pr
 
 Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
-* [Concepts](../user-guide/concepts/overview.md)
-* [Clients](../user-guide/clients/overview.md)
-* [Table management](../user-guide/table-management.md)
-* [Write data](../user-guide/write-data/overview.md)
-* [Query data](../user-guide/query-data/overview.md)
-* [Scripts-&-functions](../user-guide/scripts-&-functions/overview.md)
-* [Cluster](../user-guide/cluster.md)
-* [Operations](../user-guide/operations/overview.md)
+* [Concepts](/user-guide/concepts/overview.md)
+* [Clients](/user-guide/clients/overview.md)
+* [Table management](/user-guide/table-management.md)
+* [Write data](/user-guide/write-data/overview.md)
+* [Query data](/user-guide/query-data/overview.md)
+* [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
+* [Cluster](/user-guide/cluster.md)
+* [Operations](/user-guide/operations/overview.md)
