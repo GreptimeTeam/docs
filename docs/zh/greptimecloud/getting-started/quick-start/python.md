@@ -5,7 +5,7 @@
 pipx run --no-cache greptime-cloud-quick-start -host <host> -db <dbname> -u <username> -p <password>
 ```
 
-该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [Github](https://github.com/GreptimeCloudStarters/quick-start-node-python).
+该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [Github](https://github.com/GreptimeCloudStarters/quick-start-python).
 
 :::tip
 [pipx](https://pypa.github.io/pipx/) 是一个帮助你安装和运行用 Python 编写的应用程序的工具。
