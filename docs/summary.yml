@@ -68,7 +68,14 @@
     - overview
 - GreptimeCloud:
   - overview
-  - usage
+  - Getting-Started:
+    - prometheus
+    - mysql
+    - influxdb
+    - go
+    - java
+    - python
+    - node
   - Integrations:
     - Prometheus:
       - quick-setup
@@ -78,6 +85,7 @@
     - mysql
     - postgresql
     - influxdb
+  - usage
 - Developer-Guide:
   - overview
   - getting-started
