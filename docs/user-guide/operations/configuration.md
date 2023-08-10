@@ -474,4 +474,4 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 
 #### How to disable telemetry?
 
-In the case of compilation with default parameters. telemetry will not be enabled. We will compile the binary with this feature enabled. If you wish. You can use the binary product with this feature enabled. If you do not want to enable the feature. You can download the binary without this feature enabled.
+Telemetry will be enabled by default starting from v0.4.0. You can disable it by configuring the settings.
