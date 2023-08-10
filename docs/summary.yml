@@ -143,6 +143,7 @@
     - alter
     - explain
     - compatibility
+  - Telemetry
 - Changelog:
   - overview
   - roadmap-2023
