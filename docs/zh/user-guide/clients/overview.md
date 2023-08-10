@@ -10,11 +10,13 @@
 
 请参阅 [鉴权](./authentication.md) 以了解如何为 GreptimeDB 配置用户名和密码。
 
-## 客户端协议
+## 客户端
 
 - [MySQL](./mysql.md)
-- [gRPC](./grpc.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [PostgreSQL](./postgresql.md)
 - [HTTP API](./http-api.md)
+- SDK Libraries
+  - [Go](./sdk-libraries/go.md)
+  - [Java](./sdk-libraries/java.md)
