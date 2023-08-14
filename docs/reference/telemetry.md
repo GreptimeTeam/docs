@@ -24,7 +24,7 @@ Telemetry will be enabled by default starting from v0.4.0. You can disable it by
 
 ### Standalone  mode
 
-Set `enable_telemetry` in the standalone config file to false:
+Set `enable_telemetry` in the standalone config file to `false`:
 
 ```toml
 # Node running mode, "standalone" or "distributed".
@@ -34,10 +34,10 @@ enable_telemetry = false
 ```
 
 
-Or configure it by the env variable `GREPTIMEDB_STANDALONE__ENABLE_TELEMETRY=false` on startup.
+Or configure it by the environment variable `GREPTIMEDB_STANDALONE__ENABLE_TELEMETRY=false` on startup.
 
 ### Distributed mode
-Set `enable_telemetry`  in the metasrv config file to false:
+Set `enable_telemetry`  in the metasrv config file to `false`:
 
 ```toml
 # metasrv config file
@@ -45,4 +45,4 @@ Set `enable_telemetry`  in the metasrv config file to false:
 enable_telemetry = false 
 ```
 
-Or by the env variable `GREPTIMEDB_METASRV__ENABLE_TELEMETRY=false` on startup.
+Or set the environment variable `GREPTIMEDB_METASRV__ENABLE_TELEMETRY=false` on startup.
