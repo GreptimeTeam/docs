@@ -42,10 +42,10 @@ Please refer to [API documentation](https://greptimedb.rs/script/python/rspython
 `date_trunc` function follows the same API with PostgreSQL's [`date_trunc`](https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-TRUNC). It's illustrated as:
 
 ```sql
-date_trunc(field, source [, time_zone ])
+date_trunc(precision, source [, time_zone ])
 ```
 
-Valid fields are:
+Valid precisions are:
 - microseconds
 - milliseconds
 - second
