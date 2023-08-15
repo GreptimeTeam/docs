@@ -2,7 +2,7 @@
 
 To enhance our service, GreptimeDB collects certain telemetry data. This includes information like the GreptimeDB version, the number of nodes, the operating system used, the environment's architecture, and similar technical details. However, we respect your privacy and make sure not to collect any user-specific data, which entails database names, table names, query content, and the like.
 
-This telemetry collection can easily be managed according to your preferences. You may choose to enable or disable it through the greptimedb-telemetry compile feature flags in the build parameters. Your experience and privacy are our top priority.
+This telemetry collection can easily be managed according to your preferences. You may choose to enable or disable it through the configurations. Your experience and privacy are our top priority.
 
 ## What data will be collected?
 
@@ -15,9 +15,34 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 - The operating system of the machine on which GreptimeDB is running(Linux, macOS, etc.)
 - Architecture of the machine on which GreptimeDB is running(x86_64, arm64, etc.)
 - Mode in which GreptimeDB is running(standalone, distributed)
-- A randomly generated telemetry ID
+- A randomly generated installation ID
 - The number of datanodes in the GreptimeDB cluster
 
 ## How to disable telemetry?
 
 Telemetry will be enabled by default starting from v0.4.0. You can disable it by configuring the settings.
+
+### Standalone  mode
+
+Set `enable_telemetry` in the standalone config file to `false`:
+
+```toml
+# Node running mode, "standalone" or "distributed".
+mode = "standalone"
+# Whether to enable greptimedb telemetry, true by default.
+enable_telemetry = false
+```
+
+
+Or configure it by the environment variable `GREPTIMEDB_STANDALONE__ENABLE_TELEMETRY=false` on startup.
+
+### Distributed mode
+Set `enable_telemetry`  in the metasrv config file to `false`:
+
+```toml
+# metasrv config file
+# Whether to enable greptimedb telemetry, true by default.
+enable_telemetry = false 
+```
+
+Or set the environment variable `GREPTIMEDB_METASRV__ENABLE_TELEMETRY=false` on startup.
