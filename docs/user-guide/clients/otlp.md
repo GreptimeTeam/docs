@@ -1,19 +1,10 @@
 # OpenTelemetry Protocol(OTLP)
 
-[OpenTelemetry](https://opentelemetry.io/) is a vendor-neutral open-source Observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. The OpenTelemetry Protocol (OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such as collectors and telemetry backends.
-
-GreptimeDB can be used as a collector to receive OpenTelemetry Metrics via the OTLP protocol.
+[OpenTelemetry](https://opentelemetry.io/) is a vendor-neutral open-source observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. The OpenTelemetry Protocol (OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such as collectors and telemetry backends.
 
 ## OTLP/HTTP
 
-To send OpenTelemetry Metrics to GreptimeDB through Opentelemetry exporter SDK libraries, use the following information:
-
-* URL: `http://localhost:4000/v1/otlp/v1/metrics`
-* Method: `POST`
-* Headers:
-  * `Content-Type`: `application/x-protobuf`
-  * `X-Greptime-DB-Name`: The database name
-  * `Authorization`: `Basic` authentication, please refer to [Authentication](./authentication.md) and [HTTP API](./http-api.md#authentication)
+<!--@include: @/db-cloud-shared/clients/otlp-integration.md-->
 
 ## Data Model
 
