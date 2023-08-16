@@ -1,14 +1,14 @@
 
-We will write a Bash scripts to collect host metrics and send them to Greptime. For reference, you can view the complete demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
+We will write a Bash scripts and showcase the core code to collect host metrics and send them to Greptime. For reference, you can view the complete demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
 
-To begin, create a new directory named `quick-start-influxdb` to house our project. Then create a new file named `quick-start.sh` and make it executable:
+To begin, create a new directory named `quick-start-influxdb` to host our project. Then create a new file named `quick-start.sh` and make it executable:
 
 ```bash
 touch quick-start.sh
 chmod +x quick-start.sh
 ```
 
-Add the following to `quick-start.sh`:
+Write code to collect CPU and memory metrics and format the data into InfluxDB line protocol format:
 
 ```bash
 #!/bin/bash
@@ -40,37 +40,11 @@ generate_data()
 monitor,host=$unameOut user_cpu=$user_cpu_util,sys_cpu=$sys_cpu_util,idle_cpu=$idle_cpu_util,memory=$mem_util $now
 EOF
 }
+```
 
-while getopts h:d:u:p: flag
-do
-	case "${flag}" in
-		h) host=${OPTARG};;
-		d) database=${OPTARG};;
-		u) username=${OPTARG};;
-		p) password=${OPTARG};;
-	esac
-done
+Then send the metrics to GreptimeDB every 5 seconds:
 
-if [ -z "$host" ]; then
-	echo "-h Host is required"
-	exit 1
-fi
-
-if [ -z "$database" ]; then
-	echo "-d Database is required"
-	exit 1
-fi
-
-if [ -z "$username" ]; then
-	echo "-u Username is required"
-	exit 1
-fi
-
-if [ -z "$password" ]; then
-	echo "-p Password is required"
-	exit 1
-fi
-
+```sh
 echo Sending metrics to GreptimeCloud...
 while true
 do
@@ -79,12 +53,7 @@ do
 done
 ```
 
-The `generate_data()` function collects system metrics such as CPU usage and memory usage based on the operating system. It then formats the data into InfluxDB line protocol format.
+For information on the host, database, username, and password required for the InfluxDB API, please refer to the InfluxDB documentation in [GreptimeDB](/user-guide/clients/influxdb-line.md) or [GreptimeCloud](/greptimecloud/integrations/influxdb.md).
 
-The script takes four command-line arguments to connect to GreptimeCloud. It uses a while loop to continuously send the generated metrics to GreptimeCloud using the curl command via Greptime's InfluxDB API.
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo, which can be cloned from [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol) by following the instructions in `README.md`.
 
-Now we can run the script to send metrics to GreptimeCloud:
-
-```bash
-bash quick-start.sh -h <host> -d <dbname> -u <username> -p <password>
-```
