@@ -6,7 +6,7 @@
 
 We will use [node exporter](https://github.com/prometheus/node_exporter) to monitor the host system and send metrics to GreptimeCloud via [Prometheus](https://prometheus.io/).
 
-To begin, create a new directory named `quick-start-prometheus` to house our project. Create a docker compose file named `compose.yml` and add the following:
+To begin, create a new directory named `quick-start-prometheus` to host our project. Create a docker compose file named `compose.yml` and add the following:
 
 ```yaml
 services:
@@ -53,9 +53,10 @@ remote_write:
       password: <password>
 ```
 
-The configuration file above configures Prometheus to scrape metrics from the node exporter and send them to GreptimeCloud. Replace `<host>`, `<dbname>`, `<username>`, and `<password>` with your own values and start the containers:
+The configuration file above configures Prometheus to scrape metrics from the node exporter and send them to GreptimeCloud. For the configration about `<host>`, `<dbname>`, `<username>`, and `<password>`, please refer to the Prometheus documentation in [GreptimeDB](/user-guide/clients/prometheus.md) or [GreptimeCloud](/greptimecloud/integrations/prometheus/quick-setup.md).
+
+Finally, start the containers:
 
 ```bash
 docker-compose up
 ```
-

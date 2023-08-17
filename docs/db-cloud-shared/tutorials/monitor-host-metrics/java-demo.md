@@ -63,5 +63,4 @@ Threads.registerObservers(openTelemetry);
 
 For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/java/getting-started/).
 
-
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo, which can be cloned from [Github](https://github.com/GreptimeCloudStarters/quick-start-java) by following the instructions in `README.md`.
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [Github repository](https://github.com/GreptimeCloudStarters/quick-start-java).
