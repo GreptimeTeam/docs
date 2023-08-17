@@ -1,5 +1,5 @@
 
-The following command collects system metric data, such as CPU and memory usage, and sends it to GreptimeCloud. Once sent successfully, the metrics can be viewed on the GreptimeCloud dashboard.
+The following command collects system metric data, such as CPU and memory usage, and sends them to GreptimeCloud. Once sent successfully, the metrics can be viewed on the GreptimeCloud dashboard.
 
 ```shell
 npx greptime-cloud-quick-start --host=<host> --db=<dbname> --username=<username> --password=<password>

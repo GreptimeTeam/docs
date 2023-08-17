@@ -23,7 +23,7 @@ The optimization phase which improves execution performance by transforming both
 rules and leverage the data statistics for Cost Based Optimization/CBO.
 
 The last phase "execute" is a verb, stands for the procedure that reads data from storage, performs
-calculations and generates the expected results. Although it's more abstract than previously mentioned cencepts, you can just
+calculations and generates the expected results. Although it's more abstract than previously mentioned concepts, you can just
 simply imagine it as executing a Rust async function. And it's indeed a future (stream).
 
 `EXPLAIN [VERBOSE] <SQL>` is very useful if you want to see how your SQL is represented in the logical or physical plan.
@@ -31,7 +31,7 @@ simply imagine it as executing a Rust async function. And it's indeed a future (
 ## Data Representation
 
 GreptimeDB uses [Apache Arrow][2] as the in-memory data representation. It's column-oriented, in
-cross-planform format, and also contains many high-performance data operators. These features
+cross-platform format, and also contains many high-performance data operators. These features
 make it easy to share data in many different environments and implement calculation logic.
 
 ## Indexing

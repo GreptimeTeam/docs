@@ -48,7 +48,7 @@ curl -X GET \
   - `2` (2 seconds)
   - `2s` (also 2 seconds)
 
-结果格式与[数据查询](./query-data.md#http-api)中描述的 `/sql` 接口相同。
+结果格式与[HTTP 协议](sql.md#http-api)中描述的 `/sql` 接口相同。
 
 ```json
 {

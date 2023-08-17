@@ -180,7 +180,7 @@ There are also some node options in common:
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
-GreptimeDB supports storing data in local file system, AWS S3, Azure Blob Storage and Aliyun OSS.
+GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
 
 | Option  | Key      | Type   | Description                                         |
 |---------|----------|--------|-----------------------------------------------------|

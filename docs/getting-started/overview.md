@@ -3,6 +3,7 @@
 Begin to explore GreptimeDB's powerful core features.
 
 ## Install GreptimeDB
+
 You can try out GreptimeDB with our test builds released on [Download page](https://greptime.com/download).
 
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
@@ -24,7 +25,8 @@ You can run GreptimeDB in the standalone mode:
 ```
 
 ### Docker
-Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/getting-started/) to install Docker.
+
+Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
 docker run -p 4000-4004:4000-4004 \
@@ -215,7 +217,7 @@ Write SQL into the command text, then click `Run All`. We'll got all data in sys
 SELECT * FROM system_metrics;
 ```
 
-![](../public/dashboard-select.png)
+![dashboard-select](../public/dashboard-select.png)
 
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 

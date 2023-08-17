@@ -1,6 +1,6 @@
 # 概述
 
 - [SQL](./sql.md)
-- [gRPC-Java](./grpc.md#java)
-- [gRPC-Go](./grpc.md#go)
+- [Java](./sdk-libraries/java.md)
+- [Go](./sdk-libraries/go.md)
 - [PromQL](./prometheus.md)

@@ -26,7 +26,7 @@ curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/script
 
 ### Docker
 
-请确保已经安装了 [Docker](https://www.docker.com/)。如果还没有安装，可以参考 Docker 官方的[文档](https://www.docker.com/getting-started/)进行安装。
+请确保已经安装了 [Docker](https://www.docker.com/)。如果还没有安装，可以参考 Docker 官方的[文档](https://www.docker.com/get-started/)进行安装。
 
 ```shell
 docker run -p 4000-4004:4000-4004 \
@@ -70,7 +70,7 @@ greptime/greptimedb standalone start \
 
 ## 连接
 
-GreptimeDB 支持[多种协议](/user-guide/clients.md)。这里使用 MySQL 客户端示例。
+GreptimeDB 支持[多种协议](/user-guide/clients/overview.md)。这里使用 MySQL 客户端示例。
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -78,7 +78,7 @@ mysql -h 127.0.0.1 -P 4002
 
 ## 建表
 
-**注意: GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [Automatic Schema Generation](/user-guide/write-data.md#automatic-schema-generation)。**
+**注意: GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。**
 
 现在我们通过 MySQL 创建一个表。先创建 `system_metrics` 表，其中包含系统资源指标，包括 CPU /内存/磁盘的使用，这些数据每 5 秒就会被抓取一次。
 
@@ -217,7 +217,7 @@ Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到 GreptimeDB 的 binar
 SELECT * FROM system_metrics;
 ```
 
-![](../../public/dashboard-select.png)
+![dashboard-select](../../public/dashboard-select.png)
 
 我们提供不同种类的图表，可以根据不同的场景进行选择。当用户有足够的数据时，图表的内容将更加丰富。
 
@@ -230,11 +230,11 @@ SELECT * FROM system_metrics;
 
 至此我们展示了 GreptimeDB 的基本功能，更多的用户指南请查阅以下文档。
 
-- [概念](../user-guide/concepts/overview.md)
-- [客户端](../user-guide/clients.md)
-- [管理表](../user-guide/table-management.md)
-- [数据写入](../user-guide/write-data.md)
-- [数据查询](../user-guide/query-data.md)
-- [脚本-&-函数](../user-guide/scripts-&-functions/overview.md)
-- [集群](../user-guide/cluster.md)
-- [运维操作](../user-guide/operations/overview.md)
+- [概念](/user-guide/concepts/overview.md)
+- [客户端](/user-guide/clients/overview.md)
+- [管理表](/user-guide/table-management.md)
+- [数据写入](/user-guide/write-data/overview.md)
+- [数据查询](/user-guide/query-data/overview.md)
+- [脚本-&-函数](/user-guide/scripts-&-functions/overview.md)
+- [集群](/user-guide/cluster.md)
+- [运维操作](/user-guide/operations/overview.md)

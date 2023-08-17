@@ -9,7 +9,7 @@ let's start from the time when a query arrives at Frontend.
 When a query arrives at Frontend, it's first been parsed into a SQL abstract syntax tree(AST). We
 traverse the ast, and generate a logical plan from it. As the name suggests, a logical plan is just
 a "hint" of how to execute the query "logically". It can't be run directly, so we further generate
-a executable physical plan from it. The physical plan is a tree like data structure, each node
+an executable physical plan from it. The physical plan is a tree-like data structure, each node
 actually indicates the executing method of the query. Once we run the physical plan tree from top
 to bottom, the resulting data will flow from leaf to root, being merged or calculated. Finally we
 got the query's result at the root's output.
