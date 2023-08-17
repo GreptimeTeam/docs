@@ -4,7 +4,7 @@
 
 ## OTLP/HTTP
 
-<!--@include: @/db-cloud-shared/clients/otlp-integration.md-->
+<!--@include: ../../db-cloud-shared/clients/otlp-integration.md-->
 
 ## Data Model
 
