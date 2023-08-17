@@ -5,17 +5,16 @@
 
 ### Example Application
 
+We will write a Bash scripts and showcase the core code to collect host metrics and send them to Greptime. For reference, you can view the complete demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
 
-We will write a Bash scripts to collect host metrics and send them to Greptime. For reference, you can view the complete demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-mysql).
-
-To begin, create a new directory named `quick-start-mysql` to house our project. Then create a new file named `quick-start.sh` and make it executable:
+To begin, create a new directory named `quick-start-influxdb` to host our project. Then create a new file named `quick-start.sh` and make it executable:
 
 ```bash
 touch quick-start.sh
 chmod +x quick-start.sh
 ```
 
-Add the following to `quick-start.sh`:
+Write code to collect CPU and memory metrics and format the data into InfluxDB line protocol format:
 
 ```bash
 #!/bin/bash
@@ -42,42 +41,16 @@ generate_data()
 			idle_cpu_util=$(shuf -i 70-80 -n 1)
 			mem_util=$(shuf -i 50-60 -n 1)
 	esac
+	now=$(($(date +%s)*1000000000))
 	cat <<EOF
-    ("$unameOut",$user_cpu_util,$sys_cpu_util,$idle_cpu_util,$mem_util)
+monitor,host=$unameOut user_cpu=$user_cpu_util,sys_cpu=$sys_cpu_util,idle_cpu=$idle_cpu_util,memory=$mem_util $now
 EOF
 }
+```
 
-# Get arguments
-while getopts h:d:u:p: flag
-do
-	case "${flag}" in
-		h) host=${OPTARG};;
-		d) database=${OPTARG};;
-		u) username=${OPTARG};;
-		p) password=${OPTARG};;
-	esac
-done
+Then send the metrics to GreptimeDB every 5 seconds:
 
-if [ -z "$host" ]; then
-	echo "-h Host is required"
-	exit 1
-fi
-
-if [ -z "$database" ]; then
-	echo "-d Database is required"
-	exit 1
-fi
-
-if [ -z "$username" ]; then
-	echo "-u Username is required"
-	exit 1
-fi
-
-if [ -z "$password" ]; then
-	echo "-p Password is required"
-	exit 1
-fi
-
+```bash
 # Create table
 mysql --ssl-mode=REQUIRED -u $username -p$password -h $host -P 4002 -A $database \
     -e "CREATE TABLE IF NOT EXISTS monitor (host STRING, user_cpu DOUBLE, sys_cpu DOUBLE, idle_cpu DOUBLE, memory DOUBLE, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, TIME INDEX(ts), PRIMARY KEY(host));"
@@ -92,12 +65,7 @@ do
 done
 ```
 
-The `generate_data()` function collects system metrics such as CPU usage and memory usage based on the operating system. It then formats the data into SQL format.
+For information on the host, database, username, and password required for the MySQL API, please refer to the MySQL documentation in [GreptimeDB](/user-guide/clients/mysql.md) or [GreptimeCloud](/greptimecloud/integrations/mysql.md).
 
-The script takes four command-line arguments to connect to GreptimeCloud. It creates a table named `monitor` if it doesn't exist and uses a while loop to continuously send the metrics to GreptimeCloud using MySQL CLI.
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo, which can be cloned from [Github](https://github.com/GreptimeCloudStarters/quick-start-mysql) by following the instructions in `README.md`.
 
-Now we can run the script to send metrics to GreptimeCloud:
-
-```bash
-bash quick-start.sh -h <host> -d <dbname> -u <username> -p <password>
-```
