@@ -62,7 +62,7 @@ Valid precisions are:
 
 ### INTERVAL
 
-The interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
+The Interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
 
 ```sql
 INTERVAL [fields] [(p)]
