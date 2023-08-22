@@ -1,12 +1,12 @@
-### Prerequisites
+### 准备
 
 * [Docker](https://www.docker.com/)
 
-### Example
+### 示例
 
-We will use [node exporter](https://github.com/prometheus/node_exporter) to monitor the host system and send metrics to GreptimeDB via [Prometheus](https://prometheus.io/).
+我们将使用 [node exporter](https://github.com/prometheus/node_exporter) 来监控系统，并通过 Prometheus 将指标发送到 GreptimeDB。
 
-To begin, create a new directory named `quick-start-prometheus` to host our project. Create a docker compose file named `compose.yml` and add the following:
+首先，创建一个名为 `quick-start-prometheus` 的新目录来托管我们的项目，创建名为 `compose.yml` 的 docker-compose 文件，并添加以下内容：
 
 ```yaml
 services:
@@ -29,7 +29,7 @@ services:
       - '--path.rootfs=/'
 ```
 
-The configuration file above will start a Prometheus server and a node exporter. Next, create a new file named `prometheus-greptimedb.yml` and add the following:
+以上的配置文件将启动 Prometheus 和 node exporter。接下来，创建一个名为 `prometheus-greptimedb.yml` 的新文件，并添加以下内容：
 
 ```yaml
 # my global config
@@ -53,9 +53,9 @@ remote_write:
       password: <password>
 ```
 
-The configuration file above configures Prometheus to scrape metrics from the node exporter and send them to GreptimeDB. For the configration about `<host>`, `<dbname>`, `<username>`, and `<password>`, please refer to the Prometheus documentation in [GreptimeDB](/user-guide/clients/prometheus.md) or [GreptimeCloud](/greptimecloud/integrations/prometheus/quick-setup.md).
+通过上面的配置文件，Prometheus 从 node exporter 中抓取指标并将其发送到 GreptimeDB。有关 `<host>`, `<dbname>`, `<username>` 和 `<password>` 的信息，请参考 [GreptimeDB](/user-guide/clients/prometheus.md) 或 [GreptimeCloud](/greptimecloud/integrations/prometheus/quick-setup.md) 中的 Prometheus 文档。
 
-Finally, start the containers:
+最后启动 Docker 容器：
 
 ```bash
 docker-compose up
