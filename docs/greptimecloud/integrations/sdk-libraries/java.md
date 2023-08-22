@@ -1,6 +1,6 @@
-# gRPC
+# Java SDK
 
-Using GreptimeDB gRPC SDK to connect to GreptimeCloud. For more information about the SDK, see [how to install](https://docs.greptime.com/user-guide/clients/grpc), [write data](https://docs.greptime.com/user-guide/write-data/grpc) and [query data](https://docs.greptime.com/user-guide/query-data/grpc).
+The GreptimeDB Java SDK uses gRPC to communicate with the database. For more information on how to use the SDK, please refer to the [Java SDK documentation](https://docs.greptime.com/user-guide/clients/sdk-libraries/java).
 
 To connect to GreptimeCloud, using information below:
 
@@ -10,9 +10,7 @@ To connect to GreptimeCloud, using information below:
 - Username: `<username>`
 - Password: *Your GreptimeCloud service password*
 
-## Java SDK
-
-The following code snippet shows how to create a client using Java SDK.
+The following code snippet shows how to create a client.
 
 ```java
 String endpoint = "<host>:4001";
@@ -40,26 +38,4 @@ QueryRequest request = QueryRequest.newBuilder() //
         .ql("SELECT * FROM monitor;") //
         .databaseName("<dbname>") //
         .build();
-```
-
-## Go SDK
-
-The following code shows how to create a client using Go SDK.
-
-```go
-options := []grpc.DialOption{
-    grpc.WithTransportCredentials(insecure.NewCredentials()),
-}
-
-cfg := greptime.NewCfg("<host>").
-    WithDatabase("<dbname>").
-    WithPort(4001).
-    WithAuth("<username>", "*Your GreptimeCloud service password*").
-    WithDialOptions(options...). // specify your gRPC dail options
-    WithCallOptions()            // specify your gRPC call options
-
-client, err := greptime.NewClient(cfg)
-if err != nil {
-    panic("failed to init client")
-}
 ```

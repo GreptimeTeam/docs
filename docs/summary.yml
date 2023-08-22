@@ -21,6 +21,7 @@
     - http-api
     - otlp
     - SDK-Libraries:
+      - overview
       - go
       - java
       # - erlang
@@ -80,11 +81,13 @@
       - quick-setup
       - rule-management
     - grafana
-    - grpc
     - mysql
     - postgresql
     - influxdb
     - otlp
+    - SDK-Libraries:
+      - go
+      - java
   - usage
   - Tutorials:
     - Monitor-Host-Metrics:
