@@ -41,6 +41,7 @@ generate_data()
 			idle_cpu_util=$(shuf -i 70-80 -n 1)
 			mem_util=$(shuf -i 50-60 -n 1)
 	esac
+
 	cat <<EOF
     ("$unameOut",$user_cpu_util,$sys_cpu_util,$idle_cpu_util,$mem_util)
 EOF
