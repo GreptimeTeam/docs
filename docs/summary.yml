@@ -19,6 +19,7 @@
     - opentsdb
     - postgresql
     - http-api
+    - otlp
     - SDK-Libraries:
       - overview
       - go
@@ -65,8 +66,6 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
-  - Cookbook:
-    - overview
 - GreptimeCloud:
   - overview
   - Getting-Started:
@@ -85,10 +84,20 @@
     - mysql
     - postgresql
     - influxdb
+    - otlp
     - SDK-Libraries:
       - go
       - java
   - usage
+  - Tutorials:
+    - Monitor-Host-Metrics:
+      - prometheus
+      - mysql
+      - influxdb
+      - go
+      - java
+      - python
+      - node-js
 - Developer-Guide:
   - overview
   - getting-started

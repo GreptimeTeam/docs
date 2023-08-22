@@ -16,6 +16,7 @@
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [PostgreSQL](./postgresql.md)
+- [OpenTelemetry Protocol(OTLP)](./otlp.md)
 - [HTTP API](./http-api.md)
 - SDK Libraries
   - [Go](./sdk-libraries/go.md)
