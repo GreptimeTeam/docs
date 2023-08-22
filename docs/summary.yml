@@ -20,6 +20,7 @@
     - postgresql
     - http-api
     - SDK-Libraries:
+      - overview
       - go
       - java
       # - erlang
@@ -81,10 +82,12 @@
       - quick-setup
       - rule-management
     - grafana
-    - grpc
     - mysql
     - postgresql
     - influxdb
+    - SDK-Libraries:
+      - go
+      - java
   - usage
 - Developer-Guide:
   - overview
