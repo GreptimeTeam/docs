@@ -5,4 +5,4 @@
 npx greptime-cloud-quick-start --host=<host> --db=<dbname> --username=<username> --password=<password>
 ```
 
-该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [Github](https://github.com/GreptimeCloudStarters/quick-start-node-js).
+该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [GitHub](https://github.com/GreptimeCloudStarters/quick-start-node-js).

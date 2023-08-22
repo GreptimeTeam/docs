@@ -5,7 +5,7 @@
 
 ### Example Application
 
-In this section, we will create a quick start demo and showcase the core code to collect host metrics and send them to Greptime. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-python).
+In this section, we will create a quick start demo and showcase the core code to collect host metrics and send them to GreptimeDB. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-python).
 
 To begin, create a new directory named `quick-start-python` to house our project and create a new file named `requirements.txt` in the directory and add the following:
 
@@ -63,4 +63,4 @@ SystemMetricsInstrumentor(config=configuration).instrument()
 
 For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/python/getting-started/).
 
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [Github repository](https://github.com/GreptimeCloudStarters/quick-start-python).
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-python).

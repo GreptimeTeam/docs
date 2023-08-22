@@ -6,4 +6,4 @@
 curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/download/v0.1.2/quick-start-java-0.1.2-SNAPSHOT-all.jar --output quick-start.jar && java -jar quick-start.jar -h <host> -db <dbname> -u <username> -p <password>
 ```
 
-该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [Github](https://github.com/GreptimeCloudStarters/quick-start-java).
+该 Demo 基于 OTLP/http 采集并发送数据，源代码位于 [GitHub](https://github.com/GreptimeCloudStarters/quick-start-java).

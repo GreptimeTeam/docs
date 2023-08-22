@@ -5,4 +5,4 @@
 curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol/main/quick-start.sh | bash -s -- -h <host> -d <dbname> -u <username> -p <password>
 ```
 
-源代码位于 [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
+源代码位于 [GitHub](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).

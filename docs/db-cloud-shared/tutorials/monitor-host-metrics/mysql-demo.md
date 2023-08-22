@@ -5,7 +5,7 @@
 
 ### Example Application
 
-We will write a Bash scripts and showcase the core code to collect host metrics and send them to Greptime. For reference, you can view the complete demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
+We will write a Bash script and showcase the core code to collect host metrics and send them to GreptimeDB. For reference, you can view the complete demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
 
 To begin, create a new directory named `quick-start-influxdb` to host our project. Then create a new file named `quick-start.sh` and make it executable:
 
@@ -67,5 +67,5 @@ done
 
 For information on the host, database, username, and password required for the MySQL API, please refer to the MySQL documentation in [GreptimeDB](/user-guide/clients/mysql.md) or [GreptimeCloud](/greptimecloud/integrations/mysql.md).
 
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [Github repository](https://github.com/GreptimeCloudStarters/quick-start-mysql).
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-mysql).
 

@@ -1,7 +1,7 @@
 
-In this section, we will create a quick start demo and showcase the core code to collect host metrics and send them to Greptime. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-go).
+In this section, we will create a quick start demo and showcase the core code to collect host metrics and send them to GreptimeDB. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-go).
 
-To begin, create a new directory named `quick-start-go` to host our project. Then, run the command `go mod init quick-start` in the directory from your terminal. This will create a `go.mod` file, which is used by Go to manage imports.
+To begin, create a new directory named `quick-start-go` to host our project. Then, run the command `go mod init quick-start` in the directory from your terminal. This will generate a `go.mod` file, which is used by Go to manage imports.
 
 Next, create new file named `app.go` and install the required OpenTelemetry packages:
 
@@ -56,4 +56,4 @@ if err != nil {
 
 For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/go/).
 
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [Github repository](https://github.com/GreptimeCloudStarters/quick-start-go).
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-go).

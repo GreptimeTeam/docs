@@ -6,7 +6,7 @@
 
 ### Example Application
 
-In this section, we will create a quick start demo and showcase the core code to collect JVM runtime metrics and send them to Greptime. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [Github](https://github.com/GreptimeCloudStarters/quick-start-java).
+In this section, we will create a quick start demo and showcase the core code to collect JVM runtime metrics and send them to GreptimeDB. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-java).
 
 To begin, create a new directory named `quick-start-java` to host our project, then use IDEA to create a new project in the directory. Choose `Java` as the Language, `Gradle` as the Build System, `JDK 17` as the Project SDK, `Groovy` as the Gradle DSL, then click `Create` button.
 
@@ -63,4 +63,4 @@ Threads.registerObservers(openTelemetry);
 
 For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/java/getting-started/).
 
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [Github repository](https://github.com/GreptimeCloudStarters/quick-start-java).
+Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-java).
