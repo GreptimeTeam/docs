@@ -32,6 +32,8 @@ Consider the following table named "system_metrics":
 +-------+-------+----------+-------------+-----------+---------------------+
 ```
 
+### Group by Tags
+
 To get the avg memory_util for each idc, the following SQL query can be used:
 
 ```sql
@@ -51,3 +53,15 @@ The result of the above query would be:
 | idc_a |                            40.3 |
 +-------+---------------------------------+
 ```
+
+### Group by Time Interval
+
+To get the avg memory_util for each day, the following SQL query can be used:
+
+```sql
+SELECT date_trunc('day', ts) as dt, avg(memory_util)
+FROM system_metrics
+GROUP BY dt
+```
+
+Please refer to [date_trunc](./functions.md#date_trunc) for more details.
