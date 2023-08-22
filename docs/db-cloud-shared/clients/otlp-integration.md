@@ -3,7 +3,7 @@ GreptimeDB can be used as a collector to receive OpenTelemetry Metrics via the [
 
 ### API
 
-To send OpenTelemetry Metrics to GreptimeDB through Opentelemetry SDK libraries, use the following information:
+To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
 * URL: `https://<host>/v1/otlp/v1/metrics`
 * Headers:
