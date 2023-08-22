@@ -19,6 +19,7 @@
     - opentsdb
     - postgresql
     - http-api
+    - otlp
     - SDK-Libraries:
       - go
       - java
@@ -85,6 +86,7 @@
     - mysql
     - postgresql
     - influxdb
+    - otlp
   - usage
 - Developer-Guide:
   - overview
