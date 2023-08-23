@@ -20,6 +20,7 @@
     - postgresql
     - http-api
     - otlp
+    - vector
     - SDK-Libraries:
       - overview
       - go
@@ -76,6 +77,7 @@
     - java
     - python
     - node
+    - vector
   - Integrations:
     - Prometheus:
       - quick-setup
@@ -85,6 +87,7 @@
     - postgresql
     - influxdb
     - otlp
+    - vector
     - SDK-Libraries:
       - go
       - java
