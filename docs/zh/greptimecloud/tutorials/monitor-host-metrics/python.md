@@ -2,17 +2,17 @@
 
 <!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md-->
 
-## Create Service
+## 创建服务
 
 <!--@include: ../../getting-started/create-service.md-->
 
-## Write Data
+## 写入数据
 
 <!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/python-demo.md-->
 
-The connection information can be found on the service page of [GreptimeCloud console](https://console.greptime.cloud/service).
+连接信息可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/service)中找到。
 
-## Visualize Data
+## 数据可视化
 
 <!--@include: ./visualize-data.md-->
 

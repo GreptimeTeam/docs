@@ -1,24 +1,23 @@
 
-### Prerequisites
+### 准备
 
 * [MySQL CLI](https://dev.mysql.com/downloads/shell/)
 
-### Example Application
+### 示例 Demo
 
-We will write a Bash script and showcase the core code to collect host metrics and send them to GreptimeDB. For reference, you can view the complete demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-mysql).
+我们将编写一个 Bash 脚本，并展示收集 host metrics 并将其发送到 GreptimeDB 的核心代码。您可以在 [GitHub](https://github.com/GreptimeCloudStarters/quick-start-mysql) 上查看完整的 Demo。
 
-To begin, create a new directory named `quick-start-mysql` to host our project. Then create a new file named `quick-start.sh` and make it executable:
+首先，创建一个名为 `quick-start-mysql` 的新目录来托管我们的项目，然后创建一个名为 `quick-start.sh` 的新文件并使其可执行：
 
 ```bash
 touch quick-start.sh
 chmod +x quick-start.sh
 ```
 
-Write code to collect CPU and memory metrics and format the data into SQL format:
+在脚本中收集 CPU 和内存指标，并将数据格式化为 SQL 格式：
 
 ```bash
 #!/bin/bash
-
 generate_data()
 {
 	unameOut="$(uname -s)"
@@ -41,14 +40,13 @@ generate_data()
 			idle_cpu_util=$(shuf -i 70-80 -n 1)
 			mem_util=$(shuf -i 50-60 -n 1)
 	esac
-
 	cat <<EOF
     ("$unameOut",$user_cpu_util,$sys_cpu_util,$idle_cpu_util,$mem_util)
 EOF
 }
 ```
 
-Then send the metrics to GreptimeDB every 5 seconds:
+每隔 5 秒发送数据到 GreptimeDB：
 
 ```bash
 # Create table
@@ -65,7 +63,8 @@ do
 done
 ```
 
-For information on the host, database, username, and password required for the MySQL API, please refer to the MySQL documentation in [GreptimeDB](/user-guide/clients/mysql.md) or [GreptimeCloud](/greptimecloud/integrations/mysql.md).
 
-Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-mysql).
+请参阅 [GreptimeDB](/user-guide/clients/mysql.md) 或 [GreptimeCloud](/greptimecloud/integrations/mysql.md) 中的 MySQL 文档以获取命令中的 `host`、`database`、`username` 和 `password` 信息，
+
+恭喜你完成了 Demo 的核心部分！现在可以按照 [GitHub 库](https://github.com/GreptimeCloudStarters/quick-start-mysql)中 `README.md` 文件中的说明运行完整的 Demo。
 
