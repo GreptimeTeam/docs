@@ -22,6 +22,7 @@
     - otlp
     - vector
     - SDK-Libraries:
+      - overview
       - go
       - java
       # - erlang
@@ -66,8 +67,6 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
-  - Cookbook:
-    - overview
 - GreptimeCloud:
   - overview
   - Getting-Started:
@@ -84,13 +83,24 @@
       - quick-setup
       - rule-management
     - grafana
-    - grpc
     - mysql
     - postgresql
     - influxdb
     - otlp
     - vector
+    - SDK-Libraries:
+      - go
+      - java
   - usage
+  - Tutorials:
+    - Monitor-Host-Metrics:
+      - prometheus
+      - mysql
+      - influxdb
+      - go
+      - java
+      - python
+      - node-js
 - Developer-Guide:
   - overview
   - getting-started

@@ -1,6 +1,9 @@
 # SQL
 
 GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `monitor` so you can get familiar with using SQL alongside GreptimeDB functions.
+
+## SELECT
+
 To select all the data from the `monitor` table, use the `SELECT` statement:
 
 ``` sql
@@ -19,6 +22,10 @@ The query result looks like the following:
 +-----------+---------------------+------+--------+
 3 rows in set (0.00 sec)
 ```
+
+Please refer to [SELECT](/reference/sql/select.md) for more information.
+
+### Use Functions
 
 You can use the `count()` function to get the number of all rows in the table:
 
@@ -49,6 +56,10 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
+Please refer to [Functions](/reference/sql/functions.md) for more information.
+
+### Group By
+
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
 The average memory usage grouped by idc:
 
@@ -66,7 +77,55 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 2 rows in set (0.00 sec)
 ```
 
-For more information about the `SELECT` statement, please refer to [SELECT](/reference/sql/select.md).
+Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
+
+### Time and Date Examples
+
+#### Query Latest 5 Minutes of Data
+
+```sql
+SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
+```
+
+Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
+
+#### Cast Number Literal to Timestamp
+
+```sql
+select * from system_metrics where ts > arrow_cast(1690252336408, 'Timestamp(Millisecond, None)')
+```
+
+This query casts the number literal `1690252336408` (Unix Epoch `2023-07-25 10:32:16.408` in millisecond resolution) to the timestamp type with millisecond precision.
+
+Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
+
+#### Cast string literal to timestamp
+
+```sql
+select * from system_metrics where ts > '2023-07-25 10:32:16.408'::timestamp
+```
+
+This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
+
+Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
+
+#### Extract the day of the year from timestamp
+
+```sql
+MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
+```
+
+Output:
+```sql
++----------------------------------------------------+
+| date_part(Utf8("DOY"),Utf8("2021-07-01 00:00:00")) |
++----------------------------------------------------+
+|                                                182 |
++----------------------------------------------------+
+1 row in set (0.003 sec)
+```
+
+The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
 
 ## HTTP API
 
