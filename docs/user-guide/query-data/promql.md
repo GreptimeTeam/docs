@@ -7,9 +7,25 @@ GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, becau
 
 <!-- Maybe add a section to introduce the simulated interfaces, when there is more than one supported -->
 
-Prometheus server has a bunch of HTTP APIs (see their [official document](https://prometheus.io/docs/prometheus/latest/querying/api)), and GreptimeDB has implemented the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) interface, which allows you to query the data in a given time range with PromQL.
+GreptimeDB has implemented a set of Prometheus compatible APIs under HTTP
+context `/v1/prometheus/`:
 
-We keep the setting of the path and parameter the same as that in Prometheus, so you can use the same client to query GreptimeDB.
+- Instant queries `/api/v1/query`
+- Range queries `/api/v1/query_range`
+- Series `/api/v1/series`
+- Label names `/api/v1/labels`
+- Label values `/api/v1/label/<label_name>/values`
+
+It shares same input and output format with original Prometheus HTTP API. You
+can also use GreptimeDB as an in-place replacement of Prometheus. For example in
+Grafana Prometheus data source, set `http://localhost:4000/v1/prometheus/` as
+context root of Prometheus URL.
+
+Consult [Prometheus
+documents](https://prometheus.io/docs/prometheus/latest/querying/api) for usage
+of these API.
+
+You can use additional query parameter `db` to specify GreptimeDB database name.
 
 ## GreptimeDB's HTTP API
 
@@ -136,7 +152,7 @@ Both instant and range selector are supported. The only exception is the label m
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 
-### Binary 
+### Binary
 
 *Pure literal binary-expr like `1+1` is not supported yet.*
 
@@ -246,4 +262,3 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | idelta           | TBD     |
     | irate            | TBD     |
     | reset            | TBD     |
-
