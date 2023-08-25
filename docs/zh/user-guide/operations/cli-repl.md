@@ -10,14 +10,14 @@ cargo run -- cli attach --grpc-addr=0.0.0.0:4001
 
 等待 REPL 的提示出现：
 
-```text
+```txt
 Ready for commands. (Hint: try 'help')
 >
 ```
 
 用户可以输入 "help" 命令来查看一些有用的提示：
 
-```text
+```txt
 > help
 
 Available commands (case insensitive):
@@ -34,7 +34,7 @@ REPL 会根据用户的历史输入提供一些"提示" 。当一些提示弹出
 
 - 创建或使用一个数据库（注意：数据库的名称应该与当前使用数据库的名称一致）：
 
-```text
+```txt
 > create database foo;
 Affected Rows: 1
 Cost 21 ms
@@ -56,7 +56,7 @@ Using foo
 
 - 创建一个表。 REPL 支持多行输入（输入的内容需以分号结束，使其成为有效的 SQL 语句）：
 
-```text
+```txt
 [foo] > create table t(
   x STRING,
   ts TIMESTAMP TIME INDEX);
@@ -66,7 +66,7 @@ Cost 12 ms
 
 - 插入或选择数据：
 
-```text
+```txt
 [foo] > insert into t(x, ts) values('hello', 1);
 Affected Rows: 1
 Cost 5 ms

@@ -66,7 +66,7 @@ show tables;
 
 ## 举例: GreptimeDB 表中的 Prometheus 指标
 
-```text
+```txt
 prometheus_remote_storage_samples_total{instance="localhost:9090", job="prometheus",
 remote_name="648f0c", url="http://localhost:4000/v1/prometheus/write"} 500
 ```

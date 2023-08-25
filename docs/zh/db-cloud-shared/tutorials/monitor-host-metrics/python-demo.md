@@ -9,7 +9,7 @@
 
 首先，创建一个名为 `quick-start-python` 的新目录来托管我们的项目，然后创建文件 `requirements.txt` 并添加以下内容：
 
-```text
+```txt
 opentelemetry-api==1.19.0
 opentelemetry-exporter-otlp-proto-common==1.19.0
 opentelemetry-exporter-otlp-proto-http==1.19.0
