@@ -34,15 +34,13 @@ A big THANK YOU for the generous and brilliant contributions! It is people like 
 ## Highlights of Recent PR 
 ### [Support accept InfluxDB request without timestamp even if table doesn't exist](https://github.com/GreptimeTeam/greptimedb/pull/2041)
 
-Originally, we could execute the following command when the corresponding table existed, but we couldn't execute the command when the corresponding table didn't exist:
+We now support GreptimeDB accepting InfluxDB requests without timestamps if the corresponding table does not exist: 
 
 ```rust
 curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" \
 --data-binary \
 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
-
-We now support GreptimeDB accepting InfluxDB requests without timestamps if the corresponding table does not exist.
 
 ### [Impl interval type and conversation between gRPC and interval](https://github.com/GreptimeTeam/greptimedb/pull/2064)
 
