@@ -29,7 +29,9 @@ You can use additional query parameter `db` to specify GreptimeDB database name.
 
 ## GreptimeDB's HTTP API
 
-GreptimeDB also exposes an HTTP API for querying with PromQL. You can find it on `/promql` path under the current stable API version `/v1`, in **GreptimeDB HTTP API Port**. For example:
+GreptimeDB also exposes an custom HTTP API for querying with PromQL, and returning
+GreptimeDB's data frame output. You can find it on `/promql` path under the
+current stable API version `/v1`, in **GreptimeDB HTTP API Port**. For example:
 
 ```shell
 curl -X GET \
