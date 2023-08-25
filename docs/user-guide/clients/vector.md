@@ -9,8 +9,6 @@
 GreptimeDB uses gRPC to communicate with Vector, so the default port for the Vector sink is `4001`.
 If you have changed the default gRPC port when starting GreptimeDB with [custom configurations](../operations/configuration.md#configuration-file), use your own port instead.
 
-<!-- TODO ## Data Model -->
-
 ## Data Model
 
 The following rules are used when storing Vector metrics into GreptimeDB:
