@@ -10,8 +10,8 @@
 
 The OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
 - The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
-- All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tags field of the GreptimeDB table.
+- All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
 - The timestamp of the data point will be used as the timestamp index of GreptimeDB, and the column name is `greptime_timestamp`.
 - The data of Gauge/Sum data types will be used as the field column of GreptimeDB, and the column name is `greptime_value`.
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
-- Histogram and ExponentialHistogrrm are not supported yet, we may introduce the Histogram data type to natively support these two types in a later version.
+- Histogram and ExponentialHistogram are not supported yet, we may introduce the Histogram data type to natively support these two types in a later version.
