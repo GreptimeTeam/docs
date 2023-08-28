@@ -10,14 +10,14 @@ When running the new cli, you can specify the gRPC address of the GreptimeDB ser
 
 Wait for the REPL's prompt to come up:
 
-```text
+```txt
 Ready for commands. (Hint: try 'help')
 > 
 ```
 
 You can type in the "help" command to see some useful tips:
 
-```text
+```txt
 > help
 
 Available commands (case insensitive):
@@ -34,7 +34,7 @@ To quickly familiarize yourself with GreptimeDB, try below examples:
 
 - To create or use a database (note: the database name is the current one in-use):
 
-```text
+```txt
 > create database foo;
 Affected Rows: 1
 Cost 21 ms
@@ -54,7 +54,7 @@ Using foo
 [foo] >
 ```
 - To create a table. REPL supports multi-line input (remember to end your input with a semicolon to make it a valid SQL statement):
-```text
+```txt
 [foo] > create table t(
   x STRING, 
   ts TIMESTAMP TIME INDEX);
@@ -62,7 +62,7 @@ Affected Rows: 0
 Cost 12 ms
 ```
 - To insert or select data:
-```text
+```txt
 [foo] > insert into t(x, ts) values('hello', 1);
 Affected Rows: 1
 Cost 5 ms

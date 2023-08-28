@@ -9,7 +9,7 @@ In this section, we will create a quick start demo and showcase the core code to
 
 To begin, create a new directory named `quick-start-python` to house our project and create a new file named `requirements.txt` in the directory and add the following:
 
-```text
+```txt
 opentelemetry-api==1.19.0
 opentelemetry-exporter-otlp-proto-common==1.19.0
 opentelemetry-exporter-otlp-proto-http==1.19.0

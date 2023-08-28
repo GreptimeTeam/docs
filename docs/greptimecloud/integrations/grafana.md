@@ -4,22 +4,22 @@ GreptimeCloud service can be configured as a [Grafana data source](https://grafa
 
 ## Prometheus
 
-Click the `Add data source` button and select `Prometheus` as the type.
+Click the Add data source button and select Prometheus as the type.
 
-Fill in the following information in `HTTP`:
+Fill in the following information in HTTP:
 
 - Prometheus server URL: `https://<host>/v1/prometheus/?db=<dbname>`
 
-Click `basic auth` in the `Auth` section and fill in your GreptimeCloud service username and password in `Basic Auth Details`:
+Click basic auth in the Auth section and fill in your GreptimeCloud service username and password in Basic Auth Details:
 
 - User: `<username>`
 - Password: *Your GreptimeCloud service password*
 
-Then click `Save & Test` button to test the connection.
+Then click Save & Test button to test the connection.
 
 ## MySQL
 
-Click the `Add data source` button and select `MySQL` as the type. Fill in the following information in `MySQL Connection`:
+Click the Add data source button and select MySQL as the type. Fill in the following information in MySQL Connection:
 
 - Host: `<host>:4002`
 - Database: `<dbname>`
@@ -27,4 +27,4 @@ Click the `Add data source` button and select `MySQL` as the type. Fill in the f
 - Password: *Your GreptimeCloud service password*
 - Session timezone: `UTC`
 
-Then click `Save & Test` button to test the connection.
+Then click Save & Test button to test the connection.

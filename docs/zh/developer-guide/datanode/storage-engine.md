@@ -43,7 +43,7 @@ The architecture is the same as a traditional LSMT engine:
 The storage engine provides a data model between a key-value model and a table model. It provides a
 multi-column, key-value model in which, each row consists of multiple key columns and value columns:
 
-```text
+```txt
 colk-1, ..., colk-m, timestamp, version -> colv-1, ..., colv-n
 ```
 

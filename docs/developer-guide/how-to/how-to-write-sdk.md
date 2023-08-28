@@ -94,7 +94,7 @@ The fields are specified as follow:
 
 Here we provide a pseudocode for decoding `DoGet`'s `FlightData` stream:
 
-```text
+```txt
 Context {
   schema: Schema
 }
