@@ -10,7 +10,7 @@ scrape_interval_secs = 30
 inputs = ["in"]
 type = "greptimedb"
 endpoint = "<host>:4001"
-dbname = "<dbName>"
+dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 ```

@@ -6,7 +6,7 @@ GreptimeDB can be used as a Vector Sink component to receive metrics. To integra
 inputs = ["my-source-or-transform-id"]
 type = "greptimedb"
 endpoint = "<host>:4001"
-dbname = "<dbName>"
+dbname = "<dbname>"
 username = "<username>"
 password = "Your database password of GreptimeDB"
 ```

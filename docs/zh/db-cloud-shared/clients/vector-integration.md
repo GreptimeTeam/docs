@@ -6,7 +6,7 @@ GreptimeDB 可以作为 Vector Sink 组件用于接收 metrics，请使用以下
 inputs = ["my-source-or-transform-id"]
 type = "greptimedb"
 endpoint = "<host>:4001"
-dbname = "<dbName>"
+dbname = "<dbname>"
 username = "<username>"
 password = "Your database password of GreptimeDB"
 ```
