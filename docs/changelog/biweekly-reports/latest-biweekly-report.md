@@ -1,5 +1,7 @@
 # Biweekly Report (Aug.14 - Aug.27) – - Support starting GreptimeDB clusters with KubeBlocks
 August 30, 2023
+
+## Summary
 Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better. In the past two weeks, a total of **112 PRs** were merged for our program. Below are some highlights:
 - Support starting GreptimeDB clusters with KubeBlocks
 - Enrich sqlness test scenarios
