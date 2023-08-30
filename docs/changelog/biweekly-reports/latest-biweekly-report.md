@@ -1,4 +1,4 @@
-# Biweekly Report (Aug.14 - Aug.27) – - Support starting GreptimeDB clusters with KubeBlocks
+# Biweekly Report (Aug.14 - Aug.27) – Support starting GreptimeDB clusters with KubeBlocks
 August 30, 2023
 
 ## Summary
