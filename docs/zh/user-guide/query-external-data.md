@@ -23,14 +23,14 @@ DESC TABLE taxi_zone_lookup;
 ```
 
 ```sql
-+--------------+--------+------+---------+---------------+
-| Field        | Type   | Null | Default | Semantic Type |
-+--------------+--------+------+---------+---------------+
-| LocationID   | Int64  | YES  |         | FIELD         |
-| Borough      | String | YES  |         | FIELD         |
-| Zone         | String | YES  |         | FIELD         |
-| service_zone | String | YES  |         | FIELD         |
-+--------------+--------+------+---------+---------------+
++--------------+--------+------+------+---------+---------------+
+| Column       | Type   | Key  | Null | Default | Semantic Type |
++--------------+--------+------+------+---------+---------------+
+| LocationID   | Int64  |      | YES  |         | FIELD         |
+| Borough      | String |      | YES  |         | FIELD         |
+| Zone         | String |      | YES  |         | FIELD         |
+| service_zone | String |      | YES  |         | FIELD         |
++--------------+--------+------+------+---------+---------------+
 4 rows in set (0.00 sec)
 ```
 
