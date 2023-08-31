@@ -12,7 +12,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 The values in `Tag` columns are labels attached to the collected indicators,
 generally used to describe a particular characteristic of these indicators.
 `Tag` columns are indexed, making queries on tags performant.
-- Timestamp is the root of a time-series database.
+- `Timestamp` is the root of a time-series database.
 It represents the date and time when the data was generated.
 Timestamps are indexed, making queries on timestamps performant.
 A table can only have one timestamp column.
@@ -21,7 +21,7 @@ Fields contain the data indicators that are collected.
 These indicators are generally numerical values
 but may also be other types of data, such as strings or geographic locations. 
 Fields are not indexed,
-and queries on field values scan all data that match the specified query condition.
+and queries on field values scan all data in the table.
 This can be resource-intensive and unperformant.
 
 Suppose we have a time-series table called `system_metrics` that monitors the resource usage of a standalone device. The data model for this table is as follows:
@@ -31,14 +31,14 @@ Suppose we have a time-series table called `system_metrics` that monitors the re
 Those are very similar to the table model everyone is familiar with. The difference lies in the `Timestamp` constraint, which is used to specify the `ts` column as the time index column of this table.
 
 - The table name here is `system_metrics`.
-- For tag columns, the `host` column represents the hostname of the collected standalone machine,
+- For `Tag` columns, the `host` column represents the hostname of the collected standalone machine,
 while the `idc` column shows the data center where the machine is located.
 These are queried metadata and can be effectively used to filter data when querying.
-- The timestamp column `ts` represents the time when the data is collected.
+- The `Timestamp` column `ts` represents the time when the data is collected.
 It can be effectively used when querying data with a time range.
-- The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the field columns represent
+- The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
 the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-These columns contain the actual data and are not indexed. Avoid using field columns in query conditions
+These columns contain the actual data and are not indexed. Avoid using `Field` columns in query conditions
 which is highly resource-intensive and unperformant.
 
 ## Design Considerations
