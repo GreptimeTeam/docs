@@ -21,6 +21,7 @@
     - http-api
     - otlp
     - vector
+    - grafana
     - SDK-Libraries:
       - overview
       - go
