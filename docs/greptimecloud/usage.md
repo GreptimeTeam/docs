@@ -26,16 +26,16 @@ The following steps are used to determine the size of each request:
 Here's an example of how to calculate the WCU for a table with the following schema:
 
 ```shell
-+-------------+----------------------+------+---------------------+---------------+
-| Field       | Type                 | Null | Default             | Semantic Type |
-+-------------+----------------------+------+---------------------+---------------+
-| host        | String               | NO   |                     | PRIMARY KEY   |
-| idc         | String               | YES  | idc0                | PRIMARY KEY   |
-| cpu_util    | Float64              | YES  |                     | FIELD         |
-| memory_util | Float64              | YES  |                     | FIELD         |
-| disk_util   | Float64              | YES  |                     | FIELD         |
-| ts          | TimestampMillisecond | NO   | current_timestamp() | TIME INDEX    |
-+-------------+----------------------+------+---------------------+---------------+
++-------------+----------------------+------+------+---------------------+---------------+
+| Column      | Type                 | Key  | Null | Default             | Semantic Type |
++-------------+----------------------+------+------+---------------------+---------------+
+| host        | String               | PRI  | YES  |                     | TAG           |
+| idc         | String               | PRI  | YES  |                     | TAG           |
+| cpu_util    | Float64              |      | YES  |                     | FIELD         |
+| memory_util | Float64              |      | YES  |                     | FIELD         |
+| disk_util   | Float64              |      | YES  |                     | FIELD         |
+| ts          | TimestampMillisecond | PRI  | NO   | current_timestamp() | TIMESTAMP     |
++-------------+----------------------+------+------+---------------------+---------------+
 ```
 
 You have a write request as following:
