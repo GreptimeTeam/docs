@@ -56,8 +56,14 @@ A column definition includes the column `name`, `type`, and options such as null
 
 ### Table constraints
 The table constraints contain the following:
-*  `TIME INDEX`  specifies the time index column. And it always has one and only one column.
-*  `PRIMARY KEY` specifies the table's primary key column. And it can't include the time index column but always implicitly add the time index column to the end of keys.
+*  `TIME INDEX` specifies the time index column, which always has one and only one column. It indicates the `Timestamp` type in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
+*  `PRIMARY KEY` specifies the table's primary key column, which indicates the `Tag` type in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB. It cannot include the time index column, but it always implicitly adds the time index column to the end of keys.
+* The Other columns are `Field` columns in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
+
+:::tip NOTE
+The `PRIMARY KEY` specified in the `CREATE` statement is **not** the primary key in traditional relational databases.
+Actually, The `PRIMARY KEY` in traditional relational databases is equivalent to the combination of `PRIMARY KEY` and `TIME INDEX` in GreptimeDB. In other words, the `PRIMARY KEY` and `TIME INDEX` together constitute the unique identifier of a row in GreptimeDB.
+:::
 
 The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
 
