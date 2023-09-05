@@ -4,11 +4,26 @@ GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 
 
 ## Prometheus 的 HTTP API
 
-<!-- Maybe add a section to introduce the simulated interfaces, when there is more than one supported -->
+<!-- Maybe add a section to introduce the simulated interfaces, when there is -->
+<!-- more than one supported -->
 
-Prometheus 服务器有许多 HTTP API（请参阅他们的[官方文档](https://prometheus.io/docs/prometheus/latest/querying/api)），GreptimeDB 已经实现了 [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 接口，可以使用 PromQL 通过这个接口在给定的时间范围内查询数据。
+GreptimeDB 实现了兼容 Prometheus 的一系列 API ，通过 `/v1/prometheus` 路径对外提
+供服务：
 
-该接口的路径和参数的设置与 Prometheus 的接口相同，因此你可以使用和之前相同的客户端查询 GreptimeDB。
+- Instant queries `/api/v1/query`
+- Range queries `/api/v1/query_range`
+- Series `/api/v1/series`
+- Label names `/api/v1/labels`
+- Label values `/api/v1/label/<label_name>/values`
+
+这些接口的输入和输出与原生的 Prometheus HTTP API 相同，用户可以把 GreptimeDB 当
+作 Prometheus 的直接替换。例如，在 Grafana 中我们可以设置
+`http://localhost:4000/v1/prometheus/` 作为其 Prometheus 数据源的地址。
+
+访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/api)
+获得更详细的说明。
+
+你可以通过设置 HTTP 请求的 `db` 参数来指定 GreptimeDB 中的数据库名。
 
 ## GreptimeDB 的 HTTP API
 
@@ -134,7 +149,7 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 * 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
 * 支持时间长度和偏移量，但不支持 `@` 修改器。
 
-### Binary 
+### Binary
 
 *目前还不支持像 `1+1` 这样纯粹的 binary 表达式。*
 
@@ -244,4 +259,3 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
     | idelta           | TBD     |
     | irate            | TBD     |
     | reset            | TBD     |
-

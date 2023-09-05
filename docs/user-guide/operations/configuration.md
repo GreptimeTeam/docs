@@ -134,9 +134,6 @@ enable = true
 
 [prometheus_options]
 enable = true
-
-[promql_options]
-addr = "127.0.0.1:4004"
 ```
 
 All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.

@@ -29,7 +29,7 @@ You can run GreptimeDB in the standalone mode:
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
-docker run -p 4000-4004:4000-4004 \
+docker run -p 4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb standalone start \
@@ -37,7 +37,6 @@ greptime/greptimedb standalone start \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
 --postgres-addr 0.0.0.0:4003 \
---prom-addr 0.0.0.0:4004 \
 --opentsdb-addr 0.0.0.0:4242
 ```
 
@@ -54,7 +53,7 @@ You can:
 1. Set  `--security-opt seccomp=unconfined`, for example:
 
    ```shell
-   docker run --security-opt seccomp=unconfined -p 4000-4004:4000-4004 \
+   docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
    greptime/greptimedb standalone start \
@@ -62,7 +61,6 @@ You can:
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003 \
-   --prom-addr 0.0.0.0:4004 \
    --opentsdb-addr 0.0.0.0:4242
    ```
 
