@@ -23,6 +23,8 @@ GreptimeDB 中的所有数据都被组织成表，每个表中的数据项由三
 - `Field` 列中的 `cpu_util`、`memory_util`、`disk_util` 和 `load` 列分别表示机器的 CPU 利用率、内存利用率、磁盘利用率和负载。
 这些列包含实际的数据并且不被索引。应当避免在查询条件中使用 `Field` 列，这会消耗大量资源并且性能较差。
 
+要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](../table-management.md#create-table)和 [CREATE 语句](/reference/sql/create.md)。
+
 ## 设计考虑
 
 GreptimeDB 基于表进行设计，原因如下：
