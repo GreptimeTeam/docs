@@ -1,5 +1,7 @@
 # Table Management
 
+[Data Model](./concepts/data-model.md) should be read before this guide.
+
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
@@ -61,9 +63,18 @@ USE public;
 
 ## Create Table
 
-**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).**
+:::tip NOTE
+GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
+:::
 
-You can still crate a table manully via SQL if you have some special demands. In this example, we are going to create a table named `monitor`.
+You can still create a table manually via SQL if you have specific requirements.
+Suppose we want to create a table named monitor with the following data model:
+
+- `host` is the hostname of the collected standalone machine, which should be a `Tag` that used to filter data when querying.
+- `ts` is the time when the data is collected, which should be the `Timestamp`. It can also used as a filter when querying data with a time range.
+- `cpu` and `memory` are the CPU utilization and memory utilization of the machine, which should be `Field` columns that contain the actual data and are not indexed. 
+
+The SQL code for creating the table is shown below. In SQL, we use the primary key to specify `Tag`s and the `TIME INDEX` to specify the `Timestamp` column. The remaining columns are `Field`s.
 
 ```sql
 CREATE TABLE monitor (
@@ -71,12 +82,17 @@ CREATE TABLE monitor (
   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
   cpu DOUBLE DEFAULT 0,
   memory DOUBLE,
-  PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
+  PRIMARY KEY(host));
 ```
 
 ``` sql
 Query OK, 0 row affected (0.03 sec)
 ```
+
+:::warning NOTE
+GreptimeDB does not currently support changing the data model of existing columns after a table has been created.
+Therefore, it is important to carefully design your data model before creating tables.
+:::
 
 #### `CREATE TABLE` syntax
 
@@ -91,6 +107,28 @@ to tags in other time-series systems like [InfluxDB][1].
 
 [1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
 
+
+## Describe Table
+
+Show table information in detail:
+
+```sql
+DESC TABLE monitor;
+```
+
+```sql
++--------+----------------------+------+------+---------------------+---------------+
+| Column | Type                 | Key  | Null | Default             | Semantic Type |
++--------+----------------------+------+------+---------------------+---------------+
+| host   | String               | PRI  | YES  |                     | TAG           |
+| ts     | TimestampMillisecond | PRI  | NO   | current_timestamp() | TIMESTAMP     |
+| cpu    | Float64              |      | YES  | 0                   | FIELD         |
+| memory | Float64              |      | YES  |                     | FIELD         |
++--------+----------------------+------+------+---------------------+---------------+
+4 rows in set (0.01 sec)
+```
+
+The Semantic Type column describes the data model of the table. The `host` is a `Tag` column, `ts` is a `Timestamp` column, and cpu and memory are `Field` columns.
 
 ## List Existing Tables
 
@@ -139,26 +177,6 @@ SHOW TABLES FROM test;
 | monitor |
 +---------+
 1 row in set (0.01 sec)
-```
-
-## Describe Table
-
-Show table information in detail:
-
-```sql
-DESC TABLE monitor;
-```
-
-```sql
-+--------+-----------+------+---------------------+---------------+
-| Field  | Type      | Null | Default             | Semantic Type |
-+--------+-----------+------+---------------------+---------------+
-| host   | String    | NO   |                     | PRIMARY KEY   |
-| ts     | Timestamp | NO   | current_timestamp() | TIME INDEX    |
-| cpu    | Float64   | NO   | 0                   | VALUE         |
-| memory | Float64   | NO   |                     | VALUE         |
-+--------+-----------+------+---------------------+---------------+
-4 rows in set (0.01 sec)
 ```
 
 
@@ -214,3 +232,4 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+

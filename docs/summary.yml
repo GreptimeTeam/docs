@@ -21,6 +21,7 @@
     - http-api
     - otlp
     - vector
+    - grafana
     - SDK-Libraries:
       - overview
       - go
@@ -70,6 +71,7 @@
 - GreptimeCloud:
   - overview
   - Getting-Started:
+    - overview
     - prometheus
     - mysql
     - influxdb

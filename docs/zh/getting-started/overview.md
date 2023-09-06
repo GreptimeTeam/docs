@@ -29,7 +29,7 @@ curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/script
 请确保已经安装了 [Docker](https://www.docker.com/)。如果还没有安装，可以参考 Docker 官方的[文档](https://www.docker.com/get-started/)进行安装。
 
 ```shell
-docker run -p 4000-4004:4000-4004 \
+docker run -p 4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb standalone start \
@@ -37,7 +37,6 @@ greptime/greptimedb standalone start \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
 --postgres-addr 0.0.0.0:4003 \
---prom-addr 0.0.0.0:4004 \
 --opentsdb-addr 0.0.0.0:4242
 ```
 
@@ -54,7 +53,7 @@ greptime/greptimedb standalone start \
 1. 设置 `--security-opt seccomp=unconfined`：
 
    ```shell
-   docker run --security-opt seccomp=unconfined -p 4000-4004:4000-4004 \
+   docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
    greptime/greptimedb standalone start \
@@ -62,7 +61,6 @@ greptime/greptimedb standalone start \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003 \
-   --prom-addr 0.0.0.0:4004 \
    --opentsdb-addr 0.0.0.0:4242
    ```
 
