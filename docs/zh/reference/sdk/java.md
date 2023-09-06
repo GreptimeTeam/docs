@@ -57,8 +57,8 @@ kill -s SIGUSR2 pid
 | read\_rows\_num [histogram]                                     | 每次查询的数据项数量统计。                                                                             |
 | read\_failure\_num [meter]                                      | 失败查询的数量统计。                                                                                     |
 | serializing\_executor\_single\_task\_timer\_${name} [timer]     |  序列化执行器。单任务执行时间消耗统计                                                        |
-| serializing\_executor\_drain\_timer\_${name} [timer]            |  序列化执行器。排空所有任务的耗时统计                                                          |
-| serializing\_executor\_drain\_num\_${name} [histogram]          |  序列化执行器。排水任务数量统计                                                               |
+| serializing\_executor\_drain\_timer\_${name} [timer]            |  序列化执行器。Drains all tasks 的耗时统计                                                          |
+| serializing\_executor\_drain\_num\_${name} [histogram]          |  序列化执行器。Draining tasks 的数量统计                                                               |
 
 ## 魔法工具
 

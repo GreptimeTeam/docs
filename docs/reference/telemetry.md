@@ -22,7 +22,7 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 
 Telemetry will be enabled by default starting from v0.4.0. You can disable it by configuring the settings.
 
-### Standalone  mode
+### Standalone mode
 
 Set `enable_telemetry` in the standalone config file to `false`:
 
