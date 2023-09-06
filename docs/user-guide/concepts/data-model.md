@@ -58,3 +58,16 @@ The advantage of the multi-value model is that it can write multiple values to t
 while the single-value model requires splitting the data into multiple records.
 
 GreptimeDB uses SQL to manage table schema. Please refer to [Table Management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a schemaless approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
+
+:::tip NOTE
+Currently, we can't directly specify tags for columns when creating a table. If there are columns that you want to treat as tags, you need to specify primary keys for them, like this:
+```sql
+CREATE TABLE monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
+  cpu DOUBLE DEFAULT 0,
+  memory DOUBLE,
+  PRIMARY KEY(host));
+```
+In the above table, you can treat `host` as a tag.
+:::
