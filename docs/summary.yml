@@ -61,6 +61,7 @@
     # - overview
     - configuration
     - kubernetes
+    - gtctl
     # TODO
     # - monitor-&-alert
     # - import-data
