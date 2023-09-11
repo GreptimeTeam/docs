@@ -24,7 +24,7 @@ remote_read:
 #    password: greptime_pwd
 ```
 
-Note: Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](./clients/authentication.md).
+Note: Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
 
 The `db` parameter in url represents the database that we want to write, it's `public` if not present.
 

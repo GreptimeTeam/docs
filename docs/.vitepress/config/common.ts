@@ -8,7 +8,7 @@ export const common = async () => {
   return {
     appearance: false,
     lastUpdated: true,
-    ignoreDeadLinks: true,
+    ignoreDeadLinks: false,
     locales: {
       zh: { label: '简体中文', lang: 'zh', link: 'https://docs.greptime.cn/' },
       en: { label: 'English', lang: 'en', link: 'https://docs.greptime.com/' },

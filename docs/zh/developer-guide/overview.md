@@ -43,4 +43,4 @@
 
 [1]: frontend/overview.md
 [2]: datanode/overview.md
-[3]: meta/overview.md
+[3]: metasrv/overview.md

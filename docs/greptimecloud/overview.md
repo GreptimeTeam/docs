@@ -12,7 +12,9 @@ Before reading the following content, you need to read [clients](/user-guide/cli
 
 - Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)
-- [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)
 - [PostgreSQL](./integrations/postgresql.md)
 - [InfluxDB Line Protocol](./integrations/influxdb.md)
+- SDK Libraries
+  - [Go](./integrations/sdk-libraries/go.md)
+  - [Java](./integrations/sdk-libraries/java.md)

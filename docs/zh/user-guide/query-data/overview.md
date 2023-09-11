@@ -3,4 +3,4 @@
 - [SQL](./sql.md)
 - [Java](./sdk-libraries/java.md)
 - [Go](./sdk-libraries/go.md)
-- [PromQL](./prometheus.md)
+- [PromQL](promql.md)

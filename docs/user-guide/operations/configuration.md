@@ -54,7 +54,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
-- `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/meta/selector#selector-type);
+- `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addr <STORE_ADDR>`: Etcd server address;
 - `--use-memory-store`: Use memory store instead of etcd;
