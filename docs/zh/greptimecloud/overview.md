@@ -12,7 +12,10 @@ GreptimeCloud 作为完全托管 GreptimeDB 的 Serverless 云服务，为时间
 
 - Prometheus [integration](./integrations/prometheus/quick-setup.md) 以及 [规则管理](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)
-- [gRPC](./integrations/grpc.md)
 - [MySQL](./integrations/mysql.md)
 - [PostgreSQL](./integrations/postgresql.md)
 - [InfluxDB Line Protocol](./integrations/influxdb.md)
+- SDK Libraries
+  - [Go](./integrations/sdk-libraries/go.md)
+  - [Java](./integrations/sdk-libraries/java.md)
+  
