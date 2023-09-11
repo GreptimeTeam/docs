@@ -12,7 +12,7 @@ body {
 }
 
 .VPNav.no-sidebar, .VPNav {
-  background: var(--color-navbar-primary) !important;
+  background: var(--color-dark-2) !important;
 }
 
 .aside-curtain {
@@ -41,33 +41,45 @@ body {
   border-bottom: none;
 }
 
-.VPNavBar.has-sidebar {
-  background: var(--color-navbar-primary);
-  -webkit-backdrop-filter: saturate(50%) blur(8px);
-  .container{
-    .content-body {
+.VPNavBar.has-sidebar 
+  background var(--color-dark-2)
+  -webkit-backdrop-filter saturate(50%) blur(8px)
+  .container
+    .content-body 
       background-color transparent
-      .VPSocialLinks .VPSocialLink svg{
-        width 32px
-        height 32px
-      }
-      .VPNavBarMenuLink svg {
+      .VPNavBarHamburger .container 
+        .top,.middle,.bottom
+          background-color var(--color-light-primary)
+      .VPSocialLinks 
+        margin 0 12px
+        .VPSocialLink 
+          width 22px
+          height 22px
+          &:hover 
+            opacity .7
+          svg
+            width 22px
+            height 22px
+      .VPNavBarMenuLink svg 
         display none  
-      }
-    }
-    .curtain {
+      .VPNavBarTranslations
+        &:before
+          display none
+        .button
+          padding 0
+          margin 0 12px
+        .text
+          padding 3px
+          color var(--color-light-primary)
+          svg
+            width 15px
+            height 15px
+          svg:last-child
+            display none
+    .curtain 
       display none
-    }
-    .title .VPNavBarTitle .title .VPImage.logo {
+    .title .VPNavBarTitle .title .VPImage.logo 
       height 32px
-    }
-  }
-}
-
-.VPNavBar.has-sidebar .content {
-  background: var(--color-navbar-primary) !important;
-  -webkit-backdrop-filter: none !important;
-}
 
 @media (min-width: 960px) {
   .VPSidebar {
@@ -90,9 +102,12 @@ body {
   }
 }
 
-.VPNavBarMenu .VPLink {
-  color: var(--color-dark-text);
-}
+.VPNavBarMenu .VPLink 
+  padding 0
+  margin 0 12px
+  line-height 22px
+  font-size var(--font-size-m)
+  color var(--color-dark-text)
 
 .VPDocFooter .VPLastUpdated {
   font-size: 16px;
@@ -108,3 +123,11 @@ body {
 .VPSocialLink {
   color #fff !important
 }
+
+@media (min-width: 768px) 
+  .VPNavBar.has-sidebar .container .content-body 
+    .VPNavBarExtra 
+      display none
+    .VPNavBarTranslations,.VPNavBarSocialLinks
+      display flex
+      align-items center
