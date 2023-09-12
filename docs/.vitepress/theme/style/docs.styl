@@ -1,254 +1,192 @@
-.vp-doc {
-  h1 {
-    margin: 50px 0 20px;
-    font-size: 36px;
-    line-height: 47px;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: var(--color-light-title-text);
-  }
+.vp-doc  
+  h1, h2, h3, h4 
+    font-family Gilroy-ExtraBold
+    color var(--color-dark-primary)
 
-  h2 {
-    margin: 30px 0 20px;
-    padding-top: 30px;
-    font-size: 28px;
-    line-height: 37px;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: var(--color-light-title-text);
-  }
+  h1 
+    margin 60px 0 20px
+    font-size var(--font-size-xxl)
+    line-height var(--line-height-xxl)
 
-  h3 {
-    margin: 40px 0 20px;
-    font-size: 22px;
-    line-height: 32px;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: var(--color-light-title-text);
-  }
+  h2 
+    margin 60px 0 20px 
+    padding-top 0 
+    border-top none 
+    font-size var(--font-size-xl) 
+    line-height var(--line-height-xl) 
 
-  h4 {
-    margin: 30px 0 20px;
-    font-size: 20px;
-    line-height: 28px;
-    font-weight: bold;
-    color: var(--color-light-title-text);
-    opacity: 0.85;
-  }
+  h3  
+    margin 40px 0 20px 
+    font-size var(--font-size-l) 
+    line-height var(--line-height-l) 
 
-  p {
-    margin: 20px 0;
-    font-size: 16px;
-    color: var(--color-p-text);
-    line-height: 24px;
-  }
+  h4  
+    margin 30px 0 20px 
+    font-size var(--font-size-m) 
+    line-height var(--line-height-m) 
 
-  :not(pre) code {
-    background: var(--color-code-bg);
-    color: var(--color-code);
-  }
+  p  
+    margin 20px 0 
+    font-size var(--font-size-m) 
+    line-height var(--line-height-m) 
+    color var(--color-gray-3) 
 
-  a {
-    color: var(--color-a-text);
-    font-size: 16px;
-    line-height: 24px;
-  }
+  :not(pre) code 
+    color var(--color-red-3)
+    background var(--color-code-bg)
+    border-radius var(--border-radius-s)
+    border 1px solid var(--color-dark-primary-1)
 
-  a:hover {
-    color: var(--color-a-hover);
-    text-decoration: none;
-  }
+  a  
+    font-size var(--font-size-m) 
+    line-height var(--line-height-m) 
+    color var(--color-a-text) 
+    text-decoration underline 
 
-  ul {
-    margin: 30px 0;
-  }
+  a:hover  
+    color var(--color-a-hover) 
 
-  li {
-    margin: 12px 0;
-    font-size: 16px;
-    color: var(--color-p-text);
-    line-height: 24px;
-  }
+  ul  
+    margin 20px 0 
+  
+  li  
+    margin 10px 0 
+    font-size var(--font-size-m) 
+    line-height var(--line-height-m) 
+    color var(--color-gray-3) 
+    a
+      text-decoration none
+      &:hover
+        text-decoration none
 
-  .custom-block {
-    border-radius: 4px;
-    padding: 20px 30px 30px 26px;
 
-    p {
-      margin: 0;
-      margin-top: 20px;
-    }
+  .custom-block  
+    padding 16px
+    padding-right 40px
+    font-size var(--font-size-m)
+    line-height var(--line-height-m)
+    border-radius var(--border-radius-s)
+    p  
+      margin 10px 0 
+    p:first-child  
+      margin-bottom 15px
+    ul
+      margin 15px 0
+      li
+        margin 10px 0
+    code
+      padding 0 6px
+      font-weight 400
+      border-radius 2px 
+      font-size var(--font-size-m)
+      line-height var(--line-height-m)
+      border none
+    .custom-block-title  
+      font-family Gilroy-ExtraBold
 
-    p:first-child {
-      margin: 0;
-    }
+  .tip
+    border-color var(--color-green-1-5)
+    border-left 4px solid var(--color-green-3) 
+    background var(--color-green-2-1) 
+    color var(--color-green-1)
+    p, ul li
+      color var(--color-green-1) 
+    code  
+      background var(--color-green-2-1) 
 
-    code {
-      border-radius: 2px;
-    }
+  .warning  
+    border-color var(--color-yellow-1-5)
+    border-left 4px solid var(--color-yellow-1) 
+    background var(--color-yellow-1-1) 
+    p, ul li
+      color var(--color-yellow-1) 
+    code  
+      background var(--color-yellow-1-1)
 
-    .custom-block-title {
-      font-weight: bold;
-      font-family: Roboto-Bold, Roboto;
-      opacity: 1;
-    }
-  }
+  .danger  
+    border-color var(--color-red-1-5)
+    border-left 4px solid var(--color-red-1) 
+    background var(--color-red-1-1)
+    p, ul li
+      color var(--color-red-2) 
+    code  
+      background var(--color-red-1-1) 
 
-  .tip {
-    border-left: 4px solid var(--color-prompt);
-    background: var(--color-bg-prompt);
+  div[class*='language-']  
+    background-color var(--color-bg-code-table) 
+    opacity 0.9 
+    color var(--color-code-text)
+    border-radius var(--border-radius-m)
 
-    p {
-      color: var(--color-prompt);
-    }
+    pre  
+      background-color inherit 
+      opacity inherit 
 
-    .custom-block-title {
-      color: var(--color-titile-prompt);
-    }
+    code  
+      font-size var(--font-size-m)
+      line-height var(--line-height-m)
+      background inherit 
+      opacity inherit 
 
-    code {
-      background: var(--color-bg-prompt);
-    }
+  thead tr th  
+    padding 20px 15px
+    font-size var(--font-size-m)
+    line-height var(--line-height-m)
+    background-color var(--color-bg-table) 
+    color var(--color-title-text) 
+    border-color var(--color-border-line) 
 
-    ul {
-      li {
-        color: var(--color-prompt);
-      }
-    }
-  }
+  tbody  
+    tr  
+      background-color var(--color-bg-table-line) 
+      color var(--color-dark-text) 
 
-  .warning {
-    border-left: 4px solid var(--color-warning);
-    background: var(--color-bg-warning);
+    tr:nth-child(2n)  
+      background-color var(--color-bg-table) 
 
-    p {
-      color: var(--color-warning);
-    }
+  table  
+    border-color var(--color-border-line) 
 
-    .custom-block-title {
-      color: var(--color-titile-warning);
-    }
+    code  
+      background var(--color-code-bg-table) 
+      color var(--color-drak-text) 
+      border-radius 2px 
 
-    code {
-      background: var(--color-bg-warning);
-    }
+    td  
+      border-color var(--color-border-line) 
 
-    ul {
-      li {
-        color: var(--color-warning);
-      }
-    }
-  }
+.VPDoc .VPDocFooter
+  margin-top 60px
+  .edit-info
+    padding-bottom 20px
+  .VPLastUpdated  
+    font-size var(--font-size-xs)
+    line-height var(--line-height-xs)
+    color var(--color-gray-5) 
+  .prev-next
+    padding-top 20px
+    .pager-link
+      padding 16px 20px
+    .pager 
+      .desc
+        margin-bottom 6px
+        font-size var(--font-size-xs)
+        line-height var(--line-height-xs)
+      .title
+        font-size var(--font-size-m)
+        line-height var(--line-height-m)
 
-  .danger {
-    border-left: 4px solid var(--color-danger);
-    background: var(--color-bg-danger);
-
-    p {
-      color: var(--color-danger);
-    }
-
-    .custom-block-title {
-      color: var(--color-titile-danger);
-    }
-
-    code {
-      background: var(--color-bg-danger);
-    }
-
-    ul {
-      li {
-        color: var(--color-danger);
-      }
-    }
-  }
-
-  div[class*='language-'] {
-    background-color: var(--color-bg-code-table);
-    opacity: 0.9;
-    border-radius: 4px;
-
-    pre {
-      background-color: inherit;
-      opacity: inherit;
-    }
-
-    code {
-      font-size: 16px;
-      line-height: 30px;
-      background: inherit;
-      opacity: inherit;
-    }
-  }
-
-  thead tr th {
-    padding: 20px 15px;
-    font-size: 16px;
-    line-height: 24px;
-    background-color: var(--color-bg-table);
-    color: var(--color-title-text);
-    border-color: var(--color-border-line);
-  }
-
-  tbody {
-    tr {
-      background-color: var(--color-bg-table-line);
-      color: var(--color-dark-text);
-    }
-
-    tr:nth-child(2n) {
-      background-color: var(--color-bg-table);
-    }
-  }
-
-  table {
-    border-color: var(--color-border-line);
-
-    code {
-      background: var(--color-code-bg-table);
-      color: var(--color-drak-text);
-      border-radius: 2px;
-    }
-
-    td {
-      border-color: var(--color-border-line);
-    }
-  }
-}
-
-.VPDocFooter {
-  .VPLastUpdated {
-    font-size: 12px;
-    line-height: 18px;
-    color: var(--color-desc-text);
-  }
-}
-
-.VPDocAside {
-  .content {
-    border-left: 2px solid var(--color-aside-deliver-light);
-
-    .outline-marker {
-      width: 2px;
-      left: -2px;
-    }
-
-    .outline-title {
-      font-size: 15px;
-      line-height: 24px;
-    }
-
-    .outline-link {
-      color: var(--color-aside-text);
-      font-size: 15px;
-      line-height: 24px;
-    }
-
-    .outline-link.active {
-      color: var(--color-aside-text-active);
-    }
-  }
-  ul, li {
-    margin: 12px 0;
-  }
-}
+.VPDocAside  
+  .content  
+    border-left 2px solid var(--color-dark-primary-1) 
+    .outline-marker  
+      width 2px 
+      left -2px 
+    .outline-title, .outline-link  
+      font-size var(--font-size-s)
+      line-height var(--line-height-s)
+      color var(--color-gray-3) 
+    .outline-link.active  
+      color var(--color-dark-primary)
+  ul, li  
+    margin 8px 0 
