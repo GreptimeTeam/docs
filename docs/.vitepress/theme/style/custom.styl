@@ -1,10 +1,3 @@
-.aside-curtain {
-  display: none;
-}
-
-.VPNavBar {
-  border-bottom: none !important;
-}
 
 .VPNavBar.has-sidebar 
   background var(--color-dark-2)
@@ -45,22 +38,9 @@
     .title .VPNavBarTitle .title .VPImage.logo 
       height 32px
 
-@media (min-width: 960px) {
-  .VPSidebar {
-    margin-top: var(--vp-nav-height-desktop);
-    padding-top: 0 !important;
-  }
-}
-
 .Layout .VPSidebar
   background var(--color-light-2)
   box-shadow 1px 0px 0px 0px var(--color-gray-6)
-
-@media (min-width: 960px) {
-  .VPBackdrop {
-    display: none;
-  }
-}
 
 .VPNavBarMenu .VPLink 
   padding 0
@@ -69,21 +49,11 @@
   font-size var(--font-size-m)
   color var(--color-dark-text)
 
-.VPNavScreen .VPSocialLink {
+.VPNavScreen .VPSocialLink 
   color var(--vp-c-text-2) !important 
-}
 
-.VPSocialLinks .VPSocialLink {
+.VPSocialLinks .VPSocialLink 
   color var(--color-light-primary)
-}
-
-@media (min-width: 768px) 
-  .VPNavBar.has-sidebar .container .content-body 
-    .VPNavBarExtra 
-      display none
-    .VPNavBarTranslations,.VPNavBarSocialLinks
-      display flex
-      align-items center
 
 .VPContent .VPDoc
   padding 0 40px
@@ -92,7 +62,25 @@
     padding 0
     .content-container
       max-width 100%
-@media (min-width: 960px)
+
+@media (max-width 650px)
+  .VPContent .VPDoc 
+    padding 0 20px
+
+@media (min-width 768px) 
+  .VPNavBar.has-sidebar .container .content-body 
+    .VPNavBarExtra 
+      display none
+    .VPNavBarTranslations,.VPNavBarSocialLinks
+      display flex
+      align-items center
+
+@media (min-width 960px)  
+  .VPSidebar  
+    margin-top var(--vp-nav-height-desktop)
+    padding-top 0 !important
+  .VPBackdrop  
+    display none
   .VPContent .VPDoc
     padding 0 40px
     .aside .content
@@ -100,19 +88,18 @@
     .content
       padding 0
 
-@media (min-width: 960px) and (max-width: 1279px)
+@media (min-width 960px) and (max-width 1279px)
   .VPContent .VPDoc
     padding-top 40px
 
-@media (min-width: 1280px) 
+@media (min-width 1280px) 
   .VPDoc .content-container .VPDocOutlineDropdown 
     display none
   .VPContent .VPDoc 
     .content
       margin-right 20px
-    .aside .aside-container
-      padding-top calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + var(--vp-doc-top-height, 0px) + 60px)
-
-@media (max-width 650px)
-  .VPContent .VPDoc 
-    padding 0 20px
+    .aside 
+      .aside-container
+        padding-top calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + var(--vp-doc-top-height, 0px) + 60px)
+      .aside-curtain 
+        display none
