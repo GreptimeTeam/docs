@@ -23,6 +23,6 @@ It produces the table structure:
 
 * `Column`: the column names
 * `Type`: the column types
-* `Null`:  `yes` means nullable, otherwise `no`
+* `Null`:  `YES` means nullable, otherwise `NO`
 * `Default`: default value of the column
 * `Semantic Type`: This column represents the semantic type, corresponding to `TAG`, `FIELD` or `TIMESTAMP` in the data model.

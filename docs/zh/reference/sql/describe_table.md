@@ -26,6 +26,6 @@ DESCRIBE TABLE monitor;
 
 * `Column`: 列名
 * `Type`: 列类型
-* `Null`: `yes` 表示可以为空，否则为`no`
+* `Null`: `YES` 表示可以为空，否则为 `NO`
 * `Default`: 列的默认值
 * `Semantic Type`：该列的语义类型，对应数据模型中的 `TAG`、`FIELD` 或 `TIMESTAMP`。

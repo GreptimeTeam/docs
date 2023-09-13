@@ -37,6 +37,8 @@ greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  co
 
 `-c` specifies the configuration file, for more information check [Configuration](/user-guide/operations/configuration.md).
 
+Starts GreptimeDB in distributed mode:
+
 Starts a meta server:
 
 ```sh

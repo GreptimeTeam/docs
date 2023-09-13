@@ -36,6 +36,8 @@ greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  co
 
 `-c` 指定配置文件，更多信息请查看[配置](/user-guide/operations/configuration.md)。
 
+以分布式模式启动 GreptimeDB:
+
 启动 meta server:
 
 ```sh
