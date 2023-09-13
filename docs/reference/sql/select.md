@@ -51,7 +51,7 @@ WHERE idc IN ('idc0', 'idc1');
 
 
 
-## Sorting SELECT Statements with ORDER BY Clause
+## SELECT Statements with LIMIT Clause
 The `LIMIT` clause is used to limit the number of rows returned by a SELECT statement. The syntax for using
 `LIMIT` clause is as follows:
 
@@ -85,36 +85,7 @@ ON table1.column = table2.column;
 
 Here, the table1 and table2 are the names of the tables to be joined. The column is the related column between the two tables.
 
-## Types of JOIN Clauses
-There are several types of `JOIN` clauses:
-
-- INNER JOIN: Returns only the rows that have matching values in both tables.
-- LEFT JOIN: Returns all the rows from the left table and the matching rows from the right table.
-- RIGHT JOIN: Returns all the rows from the right table and the matching rows from the left table.
-- FULL OUTER JOIN: Returns all the rows from both tables.
-
-## Examples of JOIN Clauses
-Here are some examples of using `JOIN` clauses:
-
-```sql
--- Select all rows from the system_metrics table and idc_info table where the idc_id matches
-SELECT a.*
-FROM system_metrics a
-JOIN idc_info b
-ON a.idc = b.idc_id;
-
--- Select all rows from the idc_info table and system_metrics table where the idc_id matches, and include null values for idc_info without any matching system_metrics
-SELECT a.*
-FROM idc_info a
-LEFT JOIN system_metrics b
-ON a.idc_id = b.idc;
-
--- Select all rows from the system_metrics table and idc_info table where the idc_id matches, and include null values for idc_info without any matching system_metrics
-SELECT b.*
-FROM system_metrics a
-RIGHT JOIN idc_info b
-ON a.idc = b.idc_id;
-```
+Please refer to [JOIN](join.md) for more information.
 
 ## Grouping SELECT Statements with GROUP BY Clause
 The `GROUP BY` clause is used to group the rows in a `SELECT` statement based on one or more columns. The syntax for using `GROUP BY` clause is as follows:
@@ -140,3 +111,5 @@ SELECT idc, AVG(cpu_util) as cpu_avg
 FROM system_metrics
 GROUP BY idc;
 ```
+
+Please refer to [GROUP BY](group_by.md) for more information.
