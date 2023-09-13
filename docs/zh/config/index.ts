@@ -1,4 +1,4 @@
-import { makeSidebar } from '../../.vitepress/config/common'
+import { makeSidebar } from '../../.vitepress/theme/serverUtils'
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',

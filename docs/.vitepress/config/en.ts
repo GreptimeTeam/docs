@@ -1,4 +1,4 @@
-import { makeSidebar } from './common'
+import { makeSidebar } from '../theme/serverUtils'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
