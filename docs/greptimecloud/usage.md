@@ -98,7 +98,7 @@ Tech preview plan provides the following free tier for users to try GreptimeClou
 - Write capacity unit (WCU): 800 WCU/s per service.
 - Storage capacity: 10GB per service.
 - Account limits: 3 services per team.
-- Data retention policy: 3 months by default.
+- Data retention policy: By default, data written in the last three months is retained.
 
 :::tip NOTE
 The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).
