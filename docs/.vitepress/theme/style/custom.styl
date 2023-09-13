@@ -1,110 +1,105 @@
-body {
-  line-height: initial;
-}
 
-.VPContent.is-home {
-  background: var(--color-dark-primary);
-  color: var(--color-dark-text);
-
-  .inner-content .row .item .title {
-    line-height: 40px;
-  }
-}
-
-.VPNav.no-sidebar, .VPNav {
-  background: var(--color-navbar-primary) !important;
-}
-
-.aside-curtain {
-  display: none;
-}
-
-.VPNavBar {
-  border-bottom: none !important;
-}
-
-.VPHome {
-  padding-bottom: 0 !important;
-  position: relative;
-  top: -80px;
-  margin-bottom: -80px;
-}
-
-.VPNavBarTitle, .dark .VPNavBar.has-sidebar .content {
-  background-color: transparent !important;
-}
-
-.VPNavBarTitle.has-sidebar {
-  margin-right: 0 !important;
-  width: auto !important;
-  color: transparent !important;
-  border-bottom: none;
-}
-
-.VPNavBar.has-sidebar {
-  background: var(--color-navbar-primary);
-  -webkit-backdrop-filter: saturate(50%) blur(8px);
-  .container{
-    .content-body {
+.VPNavBar.has-sidebar 
+  background var(--color-dark-2)
+  .container
+    .content-body 
       background-color transparent
-      .VPSocialLinks .VPSocialLink svg{
-        width 32px
-        height 32px
-      }
-      .VPNavBarMenuLink svg {
+      .VPNavBarHamburger .container 
+        .top,.middle,.bottom
+          background-color var(--color-light-primary)
+      .VPSocialLinks 
+        margin 0 12px
+        .VPSocialLink 
+          width 22px
+          height 22px
+          &:hover 
+            opacity .7
+          svg
+            width 22px
+            height 22px
+      .VPNavBarMenuLink svg 
         display none  
-      }
-    }
-    .curtain {
+      .VPNavBarTranslations
+        &:before
+          display none
+        .button
+          padding 0
+          margin 0 12px
+        .text
+          padding 3px
+          color var(--color-light-primary)
+          svg
+            width 15px
+            height 15px
+          svg:last-child
+            display none
+    .curtain 
       display none
-    }
-    .title .VPNavBarTitle .title .VPImage.logo {
+    .title .VPNavBarTitle .title .VPImage.logo 
       height 32px
-    }
-  }
-}
 
-.VPNavBar.has-sidebar .content {
-  background: var(--color-navbar-primary) !important;
-  -webkit-backdrop-filter: none !important;
-}
+.Layout .VPSidebar
+  background var(--color-light-2)
+  box-shadow 1px 0px 0px 0px var(--color-gray-6)
 
-@media (min-width: 960px) {
-  .VPSidebar {
-    margin-top: var(--vp-nav-height-desktop);
-    padding-top: 0 !important;
-  }
-}
+.VPNavBarMenu .VPLink 
+  padding 0
+  margin 0 12px
+  line-height 22px
+  font-size var(--font-size-m)
+  color var(--color-dark-text)
 
-.VPSidebar {
-  border-right: 1px solid var(--vp-c-divider-light);
-}
-
-.VPNav.has-sidebar {
-  border-bottom: 1px solid var(--vp-c-divider-light);
-}
-
-@media (min-width: 960px) {
-  .VPBackdrop {
-    display: none;
-  }
-}
-
-.VPNavBarMenu .VPLink {
-  color: var(--color-dark-text);
-}
-
-.VPDocFooter .VPLastUpdated {
-  font-size: 16px;
-  color: var(--color-p-text);
-  line-height: 30px;
-  opacity: 0.6;
-}
-
-.VPNavScreen .VPSocialLink {
+.VPNavScreen .VPSocialLink 
   color var(--vp-c-text-2) !important 
-}
 
-.VPSocialLink {
-  color #fff !important
-}
+.VPSocialLinks .VPSocialLink 
+  color var(--color-light-primary)
+
+.VPContent .VPDoc
+  padding 0 40px
+  padding-bottom 128px !important
+  .content
+    padding 0
+    .content-container
+      max-width 100%
+
+@media (max-width 650px)
+  .VPContent .VPDoc 
+    padding 0 20px
+
+@media (min-width 768px) 
+  .VPNavBar.has-sidebar .container .content-body 
+    .VPNavBarExtra 
+      display none
+    .VPNavBarTranslations,.VPNavBarSocialLinks
+      display flex
+      align-items center
+
+@media (min-width 960px)  
+  .VPSidebar  
+    margin-top var(--vp-nav-height-desktop)
+    padding-top 0 !important
+  .VPBackdrop  
+    display none
+  .VPContent .VPDoc
+    padding 0 40px
+    .aside .content
+      padding-left 16px
+    .content
+      padding 0
+
+@media (min-width 960px) and (max-width 1279px)
+  .VPContent .VPDoc
+    padding-top 40px
+
+@media (min-width 1280px) 
+  .VPDoc .content-container .VPDocOutlineDropdown 
+    display none
+  .VPContent .VPDoc 
+    .content
+      margin-right 20px
+    .aside 
+      .aside-container
+        padding-top calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + var(--vp-doc-top-height, 0px) + 60px)
+      .aside-curtain 
+        display none

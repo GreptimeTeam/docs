@@ -1,74 +1,52 @@
-.VPSidebarGroup {
-  .title-text {
-    padding: 8px 0;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 24px;
-    font-family: Roboto-Bold, Roboto;
-  }
+.VPSidebar
+  .group 
+    padding-top 40px
+    & + .group 
+      padding 0
+      border-top none
+    .VPSidebarItem 
+      .text 
+        font-weight 400
+        padding 13px 0 14px
+        color var(--color-dark-primary)
+        font-size var(--font-size-s)
+        line-height var(--line-height-s)
+      .item h2 
+        padding 0
+      .item h3 
+        line-height var(--line-height-s)
+      .VPLink .text 
+        padding 13px 0 14px
+        color var(--color-dark-primary)
+      .caret 
+        height 14px
+        margin 5px 0 4px
+    .VPSidebarItem.level-1 .items
+    .VPSidebarItem.level-2 .items
+    .VPSidebarItem.level-3 .items
+    .VPSidebarItem.level-4 .items
+      padding-left 12px
+      margin-left 20px
+      border-left 2px solid var(--color-gray-4)
+      .indicator
+        width 2px
+        left - 14px
+    .VPSidebarItem.level-2 .items
+      margin-left 10px
 
-  .items .VPLink {
-    padding: 8px 0;
-    margin: 0;
-    .link-text {
-      font-size: 16px;
-      line-height: 24px;
-    }
-  }
-}
-
-.group {
-  .no-title .items {
-    .link {
-      color: var(--color-sidebar-first-text);
-      .link-text {
-        font-family: Roboto-Bold, Roboto;
-        font-weight: bold;
-      }
-    }
-  }
-
-  .title {
-    .title-text {
-      font-size: 16px;
-      font-weight: bold;
-      line-height: 24px;
-    }
-  }
-
-  .items .VPLink .link-text {
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-  }
-
-  .items .link {
-    color: var(--color-p-text);
-  }
-
-  .items .link.active {
-    color: var(--color-primary);
-  }
-}
-.VPSidebar .group {
-  .VPSidebarItem {
-    .text {
-      font-size: 16px;
-      line-height: 24px;
-    }
-    .item h2 {
-      font-weight: 700;
-    }
-    .item h3 {
-      line-height: 32px;
-    }
-    .VPLink .text {
-      padding: 8px 0;
-      color: var(--color-sidebar-first-text);
-      opacity: .8;
-    }
-    .caret {
-      height 40px
-    }
-  }
-}
+.Layout .VPSidebar 
+  #VPSidebarNav .group
+    width calc(var(--vp-sidebar-width) - 32px)
+    .VPSidebarItem.level-0
+      padding-bottom 0
+      .item 
+        align-items center
+        padding 0 14px 0 10px
+        box-shadow 0px 1px 0px 0px #D1CED5
+      h2.text
+        padding 13px 0 14px
+      .VPSidebarItem.level-1 .item
+        box-shadow none
+        padding-left 22px
+      .VPSidebarItem.level-2 .item
+        padding-left 0
