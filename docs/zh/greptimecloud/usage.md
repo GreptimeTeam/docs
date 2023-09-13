@@ -81,6 +81,10 @@ RCU 的容量可能会在未来发生变化。
 
 GreptimeCloud 将数据存储在云端对象存储中，例如 S3，并测量你在数据库中保存的总数据大小。
 
+## 数据保留
+
+根据定价计划，GreptimeCloud 可能会为你的数据启用默认保留策略，超过保留期限的数据会被删除。
+
 ## Tech Preview 计划
 
 Tech Preview 计划为用户提供以下免费额度以尝试 GreptimeCloud：
@@ -88,6 +92,7 @@ Tech Preview 计划为用户提供以下免费额度以尝试 GreptimeCloud：
 - 写容量单位（WCU）：每个服务 800 WCU/s。
 - 存储容量：每个服务 10GB。
 - 帐户限制：每个团队 3 个服务。
+- 数据保留策略：默认保留最近三个月写入的数据。
 
 :::tip 注意
 该计划可能会在未来发生变化。如果你对此有任何疑问，请联系 [feedback@greptime.cloud](mailto:feedback@greptime.cloud)。
