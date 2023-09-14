@@ -4,7 +4,7 @@ Welcome to GreptimeCloud. This document will introduce the usage calculation alg
 
 ## Capacity Unit
 
-All requests to GreptimeCloud are measured in capacity units, which reflect the size and complexity of the request. The measurement methods of write capacity unit and read capacity unit are different, see following for details. 
+All requests to GreptimeCloud are measured in capacity units, which reflect the size and complexity of the request. The measurement methods of write capacity unit and read capacity unit are different, see following for details.
 
 ### WCU (Write Capacity Unit)
 
@@ -86,6 +86,11 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 
 GreptimeCloud stores data in object storage such as S3, and measures the size of your total data saved in database.
 
+## Data retention
+
+Depends on the pricing plan, GreptimeCloud may apply a default retention policy
+for your data. Data will be deleted after its retention period expired.
+
 ## Tech Preview Plan
 
 Tech preview plan provides the following free tier for users to try GreptimeCloud:
@@ -93,6 +98,7 @@ Tech preview plan provides the following free tier for users to try GreptimeClou
 - Write capacity unit (WCU): 800 WCU/s per service.
 - Storage capacity: 10GB per service.
 - Account limits: 3 services per team.
+- Data retention policy: By default, data written in the last three months is retained.
 
 :::tip NOTE
 The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).

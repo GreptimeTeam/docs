@@ -114,7 +114,9 @@ FROM table1;
 ```
 
 In the above syntax, `table1` is the source table from which you want to copy data, and `table2` is the target table
-into which the data will be inserted. The `SELECT` statement selects the columns you want to insert from the source
+into which the data will be inserted. 
+`table1` and `table2` should have the same names and data types for the columns that you want to copy.
+The `SELECT` statement selects the columns you want to insert from the source
 table. If you do not specify the column names in the `INSERT INTO` statement, then the data will be inserted into
 all columns in the target table.
 

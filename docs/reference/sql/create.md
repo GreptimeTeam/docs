@@ -51,7 +51,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ]
 ```
 
-The table schema is specified by the brackets following the `engine`. The table schema is a list of column definitions and table constraints.
+The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.
 A column definition includes the column `name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints

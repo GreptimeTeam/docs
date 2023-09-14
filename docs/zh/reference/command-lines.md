@@ -1,9 +1,8 @@
-# Command lines
+# 命令行工具
 
-The command line `greptime` in pre-built binary can start/stop GreptimeDB and pass configuration options.
+预构建二进制文件中的命令行 `greptime` 可以启动/停止 GreptimeDB 并传递配置选项。
 
-
-`help` lists all commands and options of `greptime`.
+`help` 列出了 `greptime` 的所有命令和选项。
 
 ```sh
 $ greptime help
@@ -29,41 +28,41 @@ SUBCOMMANDS:
 * `--log-level=[info | debug | error | warn]` specify the log level, `info` by default.
 
 
-Starts GreptimeDB in standalone mode:
+以独立模式启动 GreptimeDB：
 
 ```sh
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  config/standalone.example.toml
 ```
 
-`-c` specifies the configuration file, for more information check [Configuration](/user-guide/operations/configuration.md).
+`-c` 指定配置文件，更多信息请查看[配置](/user-guide/operations/configuration.md)。
 
-Starts GreptimeDB in distributed mode:
+以分布式模式启动 GreptimeDB:
 
-Starts a meta server:
+启动 meta server:
 
 ```sh
 greptime metasrv start -c config/metasrv.example.toml
 ```
 
-Starts a datanode instance with a configuration file:
+使用配置文件启动 datanode 实例：
 
 ```sh
 greptime datanode start -c config/datanode.example.toml
 ```
 
-Starts a datanode instance with command line args:
+使用命令行参数启动 datanode 实例：
 
 ```sh
 greptime datanode start --rpc-addr=0.0.0.0:4100 --mysql-addr=0.0.0.0:4102 --metasrv-addr=0.0.0.0:3002 --node-id=1
 ```
 
-Starts a frontend instance with a configuration file:
+使用配置文件启动 frontend 实例：
 
 ```sh
 greptime frontend start -c config/frontend.example.toml
 ```
 
-Starts a frontend instance with command line args:
+使用命令行参数启动 frontend 实例：
 
 ```sh
 greptime frontend start --metasrv-addr=0.0.0.0:3002

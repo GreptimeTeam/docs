@@ -1,12 +1,15 @@
 # DESCRIBE TABLE
 
-`DESCRIBE TABLE [db.]table` describes the table structure in the `db` or the current database in-use.
+`DESCRIBE TABLE [db.]table` 描述了 `db` 或当前使用的数据库中的表结构。
 
-## Examples
-Describes the table `monitor`:
+## 示例
+
+描述表 `monitor`:
+
 ```sql
 DESCRIBE TABLE monitor;
 ```
+
 ```sql
 +--------+----------------------+------+------+---------------------+---------------+
 | Column | Type                 | Key  | Null | Default             | Semantic Type |
@@ -19,10 +22,10 @@ DESCRIBE TABLE monitor;
 4 rows in set (0.00 sec)
 ```
 
-It produces the table structure:
+结果中展示相应的表结构：
 
-* `Column`: the column names
-* `Type`: the column types
-* `Null`:  `YES` means nullable, otherwise `NO`
-* `Default`: default value of the column
-* `Semantic Type`: This column represents the semantic type, corresponding to `TAG`, `FIELD` or `TIMESTAMP` in the data model.
+* `Column`: 列名
+* `Type`: 列类型
+* `Null`: `YES` 表示可以为空，否则为 `NO`
+* `Default`: 列的默认值
+* `Semantic Type`：该列的语义类型，对应数据模型中的 `TAG`、`FIELD` 或 `TIMESTAMP`。
