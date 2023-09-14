@@ -28,12 +28,14 @@
   margin 0 12px
   #local-search .DocSearch-Button
     height 38px
-    background var(--color-primary-light-3)
+    background var(--color-light-primary-3)
     &:hover
       border-color transparent
     .DocSearch-Button-Container
       .DocSearch-Search-Icon,.DocSearch-Button-Placeholder
         color var(--color-title-text)
+      .DocSearch-Button-Placeholder
+        display none
     .DocSearch-Button-Key:first-child:after, .DocSearch-Button-Key + .DocSearch-Button-Key
       color var(--color-title-text)
     .DocSearch-Button-Key + .DocSearch-Button-Key
@@ -54,5 +56,5 @@
   #local-search 
     // TODO
     &:hover .DocSearch-Button .DocSearch-Button-Container 
-      background rgba(249,249,249,0.2)
+      background var(--color-light-primary-2)
       border-radius 4px
