@@ -20,3 +20,6 @@ Integrations: 集成
 Frontend: Frontend
 Datanode: Datanode
 Metasrv: Metasrv
+Reference: Reference
+SDK: SDK
+SQL: SQL
