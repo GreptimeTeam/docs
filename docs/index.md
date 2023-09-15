@@ -35,7 +35,7 @@ Before getting started, please read the following documents that include instruc
 - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions.
 
-[1]: ./getting-started/overview.md
+[1]: ./getting-started/try-out-greptimedb.md
 [2]: ./user-guide/overview.md
 [3]: ./developer-guide/overview.md
 [4]: ./changelog/overview.md
