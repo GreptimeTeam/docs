@@ -24,18 +24,18 @@
     .result.selected .titles
       color var(--color-dark-primary) !important
 .VPNavBarSearch
-  justify-content end
   margin 0 12px
   #local-search .DocSearch-Button
     height 38px
-    background var(--color-light-primary-3)
+    border-radius var(--border-radius-s)
+    background var(--color-light-primary-2)
     &:hover
       border-color transparent
     .DocSearch-Button-Container
       .DocSearch-Search-Icon,.DocSearch-Button-Placeholder
         color var(--color-title-text)
       .DocSearch-Button-Placeholder
-        display none
+        padding-right 24px
     .DocSearch-Button-Key:first-child:after, .DocSearch-Button-Key + .DocSearch-Button-Key
       color var(--color-title-text)
     .DocSearch-Button-Key + .DocSearch-Button-Key
@@ -58,3 +58,7 @@
     &:hover .DocSearch-Button .DocSearch-Button-Container 
       background var(--color-light-primary-2)
       border-radius 4px
+@media(min-width 960px)
+  .VPNavBarSearch
+    margin 0 12px 0 0
+    padding-left 0
