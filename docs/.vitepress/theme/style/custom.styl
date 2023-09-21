@@ -1,5 +1,5 @@
 
-.VPNavBar.has-sidebar 
+.VPNavBar.has-sidebar,.VPNavBar 
   background var(--color-dark-2)
   .container
     .content-body 
@@ -69,12 +69,13 @@
     padding 0 20px
 
 @media (min-width 768px) 
-  .VPNavBar.has-sidebar .container .content-body 
-    .VPNavBarExtra 
-      display none
-    .VPNavBarTranslations,.VPNavBarSocialLinks
-      display flex
-      align-items center
+  .VPNavBar.has-sidebar, .VPNavBar 
+    .container .content-body 
+      .VPNavBarExtra 
+        display none
+      .VPNavBarTranslations,.VPNavBarSocialLinks
+        display flex
+        align-items center
 
 @media (min-width 960px)  
   .VPSidebar  
