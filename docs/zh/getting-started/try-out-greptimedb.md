@@ -1,19 +1,20 @@
-# 概述
+# 开始探索 GreptimeDB
 
 从这里开始探索 GreptimeDB 强大的核心功能。
 
-## 安装 GreptimeDB
+## 安装
 
 用户可以在[下载页面](https://greptime.cn/download)通过我们发布的测试版本尝试使用 GreptimeDB。
 
 我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
 
-### Linux & Mac
+### 二进制
 
 使用 Linux 和 macOS 的用户，可以通过以下命令下载 `greptime` binary 的最新版本：
 
 ```shell
-curl -L https://raw.githubusercontent.com/GreptimeTeam/greptimedb/develop/scripts/install.sh | sh
+curl -fsSL \
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/develop/scripts/install.sh | sh
 ```
 
 下载完成后，binary 文件 `greptime` 将存储在用户当前的目录中。
@@ -44,7 +45,7 @@ greptime/greptimedb standalone start \
 
 如果用户想要使用另一个版本的 GreptimeDB 镜像，可以从我们的 [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb) 下载。
 
-**注意事项**:
+:::tip 注意事项
 
 如果正在使用小于 [v23.0](https://docs.docker.com/engine/release-notes/23.0/) 的 Docker 版本，由于旧版本的 Docker Engine 中存在 [bug](https://github.com/moby/moby/pull/42681)，所以当用户尝试运行上面的命令时，可能会遇到权限不足的问题。
 
@@ -65,6 +66,7 @@ greptime/greptimedb standalone start \
    ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
+:::
 
 ## 连接
 
