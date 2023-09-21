@@ -13,7 +13,7 @@ conda activate Greptime
 
 ### 安装 GreptimeDB
 
-请参考 [安装 GreptimeDB](/zh/getting-started/overview.md)。
+请参考 [安装 GreptimeDB](/zh/getting-started/try-out-greptimedb.md)。
 
 ## Hello world 实例
 
