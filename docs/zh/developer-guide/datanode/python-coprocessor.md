@@ -11,7 +11,7 @@ python grammar to indicate its metadata like type or nullability. Coprocessor wi
 convert returned object to a `RecordBatch` , be it a python list, a `RecordBatch` computed from
 parameters, or a constant(which is extends to the same length of input arguments)
 
-![Python Coprocessor](../../../public/python-coprocessor.png)
+![Python Coprocessor](/public/python-coprocessor.png)
 
 ## Two optional backends
 

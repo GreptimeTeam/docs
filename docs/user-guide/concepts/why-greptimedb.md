@@ -11,23 +11,23 @@ From day 0, GreptimeDB was designed following the principles of cloud-native dat
 
 1. highly available, on-demand computing resources with a goal to achieve availability and uptime rate of 99.999%, resulting in approximately five minutes and 15 seconds of downtime per year.
 2. Elasticity and scalability, allowing users to easily scale up or down, add or move resources according to usage.
-3. Highly reliable and fault tolerant, with the system having a 99.9999% availability rate as the goal to prevent data loss. 
+3. Highly reliable and fault tolerant, with the system having a 99.9999% availability rate as the goal to prevent data loss.
 
 Together, these features ensure that GreptimeDB always provides optimal functionality. Below, we provide additional technical explanation on how these features are accomplished.
 
-
 ### Resource Isolation for Elastic Scaling
-![Storage/Compute Disaggregation, Compute/Compute separation](../../public/storage-compute-disaggregation-compute-compute-separation.png)
+
+![Storage/Compute Disaggregation, Compute/Compute separation](/public/storage-compute-disaggregation-compute-compute-separation.png)
 
 The storage and compute resources are separated, allowing each to be scaled, consumed and priced independently.
-This greatly increases utilization of computing resources, allows the "pay-as-you-go" pricing model and avoids waste of underutilized resources. 
+This greatly increases utilization of computing resources, allows the "pay-as-you-go" pricing model and avoids waste of underutilized resources.
 
 Besides storage and compute isolation, different compute resources are also isolated to offer new efficiencies for real-time analytics at scale with shared real-time data by avoiding contention for tasks such as data ingestion and queries, ad-hoc queries, and data compaction or rollup.
 Data can be shared among multiple applications without the need of competing for the same pool of resources which greatly improve efficiency, and unlimited concurrency scalability can be provided based on demand.
 
 ### Flexible Architecture Supports Various Deployment Strategies
 
-![The architecture of GreptimeDB](../../public/architecture-2.png)
+![The architecture of GreptimeDB](/public/architecture-2.png)
 
 With flexible architecture design principles, different modules and components can be independently switched on, combined, or separated through modularization and layered design.
 For example, we can merge the frontend, datanode, and meta server modules into a standalone binary, and we can also independently enable or disable the WAL for every table.
@@ -54,7 +54,7 @@ Combining Cost-Based Optimization(CBO) with user-defined hints, we are able to b
 
 ### Easy to Deploy and Maintain
 
-To simplify deployment and maintenance processes, GreptimeDB provides [K8s operator](https://github.com/GreptimeTeam/greptimedb-operator), [command-line tool](https://github.com/GreptimeTeam/gtctl), embedded [dashboard](https://github.com/GreptimeTeam/dashboard), and other useful tools for users to configure and manage their databases easily. Check [GreptimeCloud](https://greptime.com/product/cloud) on our official website for more information. 
+To simplify deployment and maintenance processes, GreptimeDB provides [K8s operator](https://github.com/GreptimeTeam/greptimedb-operator), [command-line tool](https://github.com/GreptimeTeam/gtctl), embedded [dashboard](https://github.com/GreptimeTeam/dashboard), and other useful tools for users to configure and manage their databases easily. Check [GreptimeCloud](https://greptime.com/product/cloud) on our official website for more information.
 
 ### Easy to Integrate
 
@@ -63,7 +63,7 @@ Additionally, SDKs are provided for various programming languages, such as Java,
 In the following paragraphs, we will elaborate on three popular languages: PromQL, SQL and Python.
 
 PromQL is a popular query language that allows users to select and aggregate real-time time series data provided by Prometheus.
-It is much simpler to use than SQL for visualization with Grafana and creating alert rules. GreptimeDB supports PromQL natively and effectively by transforming it into a query plan, which is then optimized and executed by the query engine. 
+It is much simpler to use than SQL for visualization with Grafana and creating alert rules. GreptimeDB supports PromQL natively and effectively by transforming it into a query plan, which is then optimized and executed by the query engine.
 
 SQL is a highly efficient tool for analyzing data that spans over a long time span or involves multiple tables, such as table joins. Additionally, it proves to be convenient for database management.
 
@@ -74,7 +74,7 @@ Developers can write UDF and DataFrame API to accelerate data processing by embe
 
 Combining the metrics (Measurement/Tag/Field/Timestamp) model and the relational data model (Table), GreptimeDB provides a new data model called a time-series table (see below), which presents data in the form of tables consisting of rows and columns, with tags and fields of the metrics mapped to columns, and an enforced time index constraint that represents the timestamp.
 
-![Time-Series Table](../../public/time-series-table.png)
+![Time-Series Table](/public/time-series-table.png)
 
 Nevertheless, our definition of a schema is not mandatory but leans more towards the schemaless approach of databases like MongoDB.
 The table will be created dynamically and automatically when data is ingested, and new columns (tags and fields) will be added as they appear.

@@ -11,11 +11,12 @@ python grammar to indicate its metadata like type or nullability. Coprocessor wi
 convert returned object to a `RecordBatch` , be it a python list, a `RecordBatch` computed from
 parameters, or a constant(which is extends to the same length of input arguments)
 
-![Python Coprocessor](../../public/python-coprocessor.png)
+![Python Coprocessor](/public/python-coprocessor.png)
 
 ## Two optional backends
 
 ### CPython Backend powered by PyO3
+
 This backend is powered by [PyO3](https://pyo3.rs/v0.18.1/), enabling the use of your favourite Python libraries (such as NumPy, Pandas, etc.) and allowing Conda to manage your Python environment.
 
 But using it also involves some complications. You must set up the correct Python shared library, which can be a bit challenging. In general, you just need to install the `python-dev` package. However, if you are using Homebrew to install Python on macOS, you must create a proper soft link to `Library/Frameworks/Python.framework`. Detailed instructions on using PyO3 crate with different Python Version can be found [here](https://pyo3.rs/v0.18.1/building_and_distribution#configuring-the-python-version)

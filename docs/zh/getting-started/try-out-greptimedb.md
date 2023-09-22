@@ -66,7 +66,7 @@ greptime/greptimedb standalone start \
    ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
-:::
+   :::
 
 ## 连接
 
@@ -217,12 +217,12 @@ Dashboard 自 GreptimeDB v0.2.0 版本以来已经嵌入到 GreptimeDB 的 binar
 SELECT * FROM system_metrics;
 ```
 
-![dashboard-select](../../public/dashboard-select.png)
+![dashboard-select](/public/dashboard-select.png)
 
 我们提供不同种类的图表，可以根据不同的场景进行选择。当用户有足够的数据时，图表的内容将更加丰富。
 
-![line](../../public/dashboard-line.png)
-![scatter](../../public/dashboard-scatter.png)
+![line](/public/dashboard-line.png)
+![scatter](/public/dashboard-scatter.png)
 
 我们将持续开发和迭代这个开源项目，并计划将时间序列数据应用于监测、分析和其他相关领域的扩展。
 

@@ -1,7 +1,7 @@
 # 简介
 
 <p align="center">
-    <img src="../public/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
+    <img src="/public/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
 GreptimeDB 是开源的时序数据库，注重可扩展性、分析能力和效率。GreptimeDB 可以在云时代的基础设施上工作，为用户提供良好的灵活性和商品存储服务。

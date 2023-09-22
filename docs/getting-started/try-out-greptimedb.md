@@ -50,7 +50,7 @@ If you are using a Docker version lower than [v23.0](https://docs.docker.com/eng
 
 You can:
 
-1. Set  `--security-opt seccomp=unconfined`, for example:
+1. Set `--security-opt seccomp=unconfined`, for example:
 
    ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
@@ -65,7 +65,7 @@ You can:
    ```
 
 2. Upgrade the Docker version to v23.0.0 or higher;
-:::
+   :::
 
 ## Connect
 
@@ -87,7 +87,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 
 Now we create a table via MySQL. Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
 
-``` sql
+```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
     host STRING,
     idc STRING,
@@ -102,24 +102,24 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 
 Field descriptions:
 
-| Field        | Type      | Description                            |
-| :----------- | :-------- | :------------------------------------- |
-| host         | string    | The hostname                           |
-| idc          | string    | The idc name where the host belongs to |
-| cpu\_util    | double    | The percent use of CPU                 |
-| memory\_util | double    | The percent use of memory              |
-| disk\_util   | double    | The percent use of disks               |
-| ts           | timestamp | Timestamp column incrementing          |
+| Field       | Type      | Description                            |
+| :---------- | :-------- | :------------------------------------- |
+| host        | string    | The hostname                           |
+| idc         | string    | The idc name where the host belongs to |
+| cpu_util    | double    | The percent use of CPU                 |
+| memory_util | double    | The percent use of memory              |
+| disk_util   | double    | The percent use of disks               |
+| ts          | timestamp | Timestamp column incrementing          |
 
-* The table can be created automatically if you are using other protocols. See [Create Table](/user-guide/table-management#create-table).
-* For more information about creating table SQL, please refer to [CREATE](/reference/sql/create.md).
-* For data types, please check [data types](/reference/data-types.md).
+- The table can be created automatically if you are using other protocols. See [Create Table](/user-guide/table-management#create-table).
+- For more information about creating table SQL, please refer to [CREATE](/reference/sql/create.md).
+- For data types, please check [data types](/reference/data-types.md).
 
 ## Insert data
 
 Using the `INSERT` statement is an easy way to add data to your table. The following statement allows us to insert several rows into the `system_metrics` table.
 
-``` sql
+```sql
 INSERT INTO system_metrics
 VALUES
     ("host1", "idc_a", 11.8, 10.3, 10.3, 1667446797450),
@@ -139,7 +139,7 @@ For more information about the `INSERT` statement, please refer to [INSERT](/ref
 
 To select all the data from the `system_metrics` table, use the `SELECT` statement:
 
-``` sql
+```sql
 SELECT * FROM system_metrics;
 ```
 
@@ -164,7 +164,7 @@ The query result looks like the following:
 
 You can use the `count()` function to get the number of all rows in the table:
 
-``` sql
+```sql
 SELECT count(*) FROM system_metrics;
 ```
 
@@ -178,7 +178,7 @@ SELECT count(*) FROM system_metrics;
 
 The `avg()` function returns the average value of a certain field:
 
-``` sql
+```sql
 SELECT avg(cpu_util) FROM system_metrics;
 ```
 
@@ -221,13 +221,12 @@ Write SQL into the command text, then click `Run All`. We'll got all data in sys
 SELECT * FROM system_metrics;
 ```
 
-![dashboard-select](../public/dashboard-select.png)
+![dashboard-select](/public/dashboard-select.png)
 
 We offer various chart types to choose from based on different scenarios. The content of the charts will be richer when you have enough data.
 
-![line](../public/dashboard-line.png)
-![scatter](../public/dashboard-scatter.png)
-
+![line](/public/dashboard-line.png)
+![scatter](/public/dashboard-scatter.png)
 
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
 
@@ -235,11 +234,11 @@ We are committed to the ongoing development and iteration of this open source pr
 
 Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
-* [Concepts](/user-guide/concepts/overview.md)
-* [Clients](/user-guide/clients/overview.md)
-* [Table management](/user-guide/table-management.md)
-* [Write data](/user-guide/write-data/overview.md)
-* [Query data](/user-guide/query-data/overview.md)
-* [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
-* [Cluster](/user-guide/cluster.md)
-* [Operations](/user-guide/operations/overview.md)
+- [Concepts](/user-guide/concepts/overview.md)
+- [Clients](/user-guide/clients/overview.md)
+- [Table management](/user-guide/table-management.md)
+- [Write data](/user-guide/write-data/overview.md)
+- [Query data](/user-guide/query-data/overview.md)
+- [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
+- [Cluster](/user-guide/cluster.md)
+- [Operations](/user-guide/operations/overview.md)
