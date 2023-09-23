@@ -1,4 +1,4 @@
-# 概述 新版
+# 概述
 
 - [概念](../user-guide/concepts/overview.md)
 - [客户端](../user-guide/clients/overview.md)

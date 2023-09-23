@@ -1,4 +1,4 @@
-# 简介 新版本
+# 简介
 
 <p align="center">
     <img src="/public/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
