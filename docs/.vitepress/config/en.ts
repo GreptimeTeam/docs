@@ -1,4 +1,5 @@
 import { makeSidebar } from '../theme/serverUtils'
+import { CURRENT_VERSION } from './common'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -34,7 +35,24 @@ export const enConfig = async () => ({
         text: 'Blogs',
         link: 'https://greptime.com/blogs',
       },
+      {
+        // TODO change version
+        text: 'The Version Of History',
+        items: [
+          {
+            text: `${CURRENT_VERSION}(latest)`,
+            link: '/',
+          },
+          {
+            text: 'v0.3.0',
+            link: '/v0.3.0/',
+          },
+        ],
+      },
     ],
-    sidebar: await makeSidebar('en'),
+    sidebar: {
+      '/': await makeSidebar('en', CURRENT_VERSION),
+      '/v0.3.0/': await makeSidebar('en', 'v0.3.0'),
+    },
   },
 })

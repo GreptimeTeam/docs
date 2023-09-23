@@ -1,3 +1,4 @@
+export const CURRENT_VERSION = 'v0.4.0'
 export const common = async () => {
   return {
     appearance: false,

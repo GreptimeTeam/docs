@@ -1,4 +1,5 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
+import { CURRENT_VERSION } from '../../.vitepress/config/common'
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
@@ -63,8 +64,24 @@ export const zhConfig = async () => ({
         text: '博客',
         link: 'https://greptime.com/blogs',
       },
+      {
+        text: '历史版本',
+        items: [
+          {
+            text: `${CURRENT_VERSION}(最新)`,
+            link: '/',
+          },
+          {
+            text: 'v0.3.0',
+            link: '/v0.3.0/',
+          },
+        ],
+      },
     ],
-    sidebar: await makeSidebar('zh'),
+    sidebar: {
+      '/': await makeSidebar('zh', CURRENT_VERSION),
+      '/v0.3.0/': await makeSidebar('zh', 'v0.3.0'),
+    },
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: '在 GitHub 上编辑此页',
