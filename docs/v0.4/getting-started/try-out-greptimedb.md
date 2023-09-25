@@ -1,4 +1,4 @@
-# Try Out GreptimeDB New Version v0.4.0
+# Try Out GreptimeDB New Version
 
 Begin to explore GreptimeDB's powerful core features.
 

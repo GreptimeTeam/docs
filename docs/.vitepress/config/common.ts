@@ -1,4 +1,6 @@
 export const CURRENT_VERSION = 'v0.4'
+export const currentVersionPath = `/${CURRENT_VERSION}/`
+
 export const common = async () => {
   return {
     appearance: false,

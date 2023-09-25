@@ -4,7 +4,7 @@ import { CURRENT_VERSION } from '../config/common'
 
 export async function makeSidebar(lang, version) {
   const langPath = lang !== 'en' ? `/${lang}` : ''
-  const versionPath = version !== CURRENT_VERSION ? `/${version}` : ''
+  const versionPath = `/${version}`
 
   const summary = YAML.load(fs.readFileSync(`docs${versionPath}/summary.yml`), 'utf8')
   const summaryI18n = langPath ? YAML.load(fs.readFileSync(`docs${langPath}${versionPath}/summary-i18n.yml`), 'utf8') : null

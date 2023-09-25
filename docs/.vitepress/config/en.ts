@@ -1,6 +1,11 @@
 import { makeSidebar } from '../theme/serverUtils'
 import { CURRENT_VERSION } from './common'
 
+const filePath = `${CURRENT_VERSION}/:file`
+const groupPath = `${CURRENT_VERSION}/:group/:file`
+const typePath = `${CURRENT_VERSION}:group/:file`
+const namePath = `${CURRENT_VERSION}/:group/:type/:file/:name`
+
 export const enConfig = async () => ({
   title: 'Greptime Docs',
   description: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure',
@@ -24,6 +29,12 @@ export const enConfig = async () => ({
   ],
   locales: {
     root: { label: 'English' },
+  },
+  rewrites: {
+    [filePath]: ':file',
+    [groupPath]: ':group/:file',
+    [typePath]: ':group/:type/:file',
+    [namePath]: ':group/:type/:file/:name',
   },
   themeConfig: {
     nav: [
