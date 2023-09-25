@@ -12,6 +12,6 @@ export default async () => {
     en: await enConfig(),
   }
 
-  const localConfig = lang[dotenv.config().parsed?.VITE_LANG || 'en']
+  const localConfig = lang[dotenv.config().parsed?.VITE_LANG || 'zh']
   return merge(commonConfig, localConfig)
 }

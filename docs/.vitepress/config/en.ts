@@ -44,15 +44,15 @@ export const enConfig = async () => ({
             link: '/',
           },
           {
-            text: 'v0.3.0',
-            link: '/v0.3.0/',
+            text: 'v0.3',
+            link: '/v0.3/',
           },
         ],
       },
     ],
     sidebar: {
       '/': await makeSidebar('en', CURRENT_VERSION),
-      '/v0.3.0/': await makeSidebar('en', 'v0.3.0'),
+      '/v0.3/': await makeSidebar('en', 'v0.3'),
     },
   },
 })

@@ -72,15 +72,15 @@ export const zhConfig = async () => ({
             link: '/',
           },
           {
-            text: 'v0.3.0',
-            link: '/v0.3.0/',
+            text: 'v0.3',
+            link: '/v0.3/',
           },
         ],
       },
     ],
     sidebar: {
       '/': await makeSidebar('zh', CURRENT_VERSION),
-      '/v0.3.0/': await makeSidebar('zh', 'v0.3.0'),
+      '/v0.3/': await makeSidebar('zh', 'v0.3'),
     },
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
