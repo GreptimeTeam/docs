@@ -2,7 +2,7 @@
 
 ## `INSERT` Statement
 
-Let's insert some testing data to the `monitor` table which we created before. You can use the INSERT INTO SQL statements:
+Let's insert some testing data to the `monitor` table which we created [before](/user-guide/table-management.md). You can use the `INSERT INTO` SQL statements:
 
 ``` sql
 INSERT INTO monitor
