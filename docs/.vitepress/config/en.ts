@@ -3,7 +3,7 @@ import { CURRENT_VERSION } from './common'
 
 const filePath = `${CURRENT_VERSION}/:file`
 const groupPath = `${CURRENT_VERSION}/:group/:file`
-const typePath = `${CURRENT_VERSION}:group/:file`
+const typePath = `${CURRENT_VERSION}/:group/:type/:file`
 const namePath = `${CURRENT_VERSION}/:group/:type/:file/:name`
 
 export const enConfig = async () => ({
