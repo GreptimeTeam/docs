@@ -1,4 +1,3 @@
-
 We will write a Bash script and showcase the core code to collect host metrics and send them to GreptimeDB. For reference, you can view the complete demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
 
 To begin, create a new directory named `quick-start-influxdb` to host our project. Then create a new file named `quick-start.sh` and make it executable:
@@ -53,6 +52,6 @@ do
 done
 ```
 
-For information on the host, database, username, and password required for the InfluxDB API, please refer to the InfluxDB documentation in [GreptimeDB](/user-guide/clients/influxdb-line.md) or [GreptimeCloud](/greptimecloud/integrations/influxdb.md).
+For information on the host, database, username, and password required for the InfluxDB API, please refer to the InfluxDB documentation in [GreptimeDB](/v0.3/user-guide/clients/influxdb-line.md) or [GreptimeCloud](/v0.3/greptimecloud/integrations/influxdb.md).
 
 Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).

@@ -1,8 +1,7 @@
-
 ### 准备
 
-* [JDK 17](https://openjdk.org/projects/jdk/17/)
-* [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+- [JDK 17](https://openjdk.org/projects/jdk/17/)
+- [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
 ### 示例 Demo
 
@@ -23,7 +22,7 @@ dependencies {
 ```
 
 安装完依赖后，编写代码创建一个 Metric Exporter 对象，用于将 metrics 发送到 GreptimeDB。
-请参考 [GreptimeDB](/user-guide/clients/otlp.md) 或 [GreptimeCloud](/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
+请参考 [GreptimeDB](/v0.3/user-guide/clients/otlp.md) 或 [GreptimeCloud](/v0.3/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
 
 ```java
 String endpoint = String.format("https://%s/v1/otlp/v1/metrics", dbHost);
@@ -65,4 +64,3 @@ Threads.registerObservers(openTelemetry);
 请参考 [OpenTelemetry 文档](https://opentelemetry.io/docs/instrumentation/java/getting-started/) 获取有关代码的更多详细信息。
 
 恭喜你完成了 Demo 的核心部分！现在可以按照 [GitHub 库](https://github.com/GreptimeCloudStarters/quick-start-java)中 `README.md` 文件中的说明运行完整的 Demo。
-

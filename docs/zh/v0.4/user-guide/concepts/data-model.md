@@ -21,9 +21,9 @@ GreptimeDB 中的所有数据都被组织成表，每个表中的数据项由三
 - 对于 `Tag` 列，`host` 列表示收集的独立机器的主机名，`idc` 列显示机器所在的数据中心。这些是查询元数据，可以在查询时有效地过滤数据。
 - `Timestamp` 列 `ts` 表示收集数据的时间。使用该列查询具有时间范围的数据时具备较高的性能。
 - `Field` 列中的 `cpu_util`、`memory_util`、`disk_util` 和 `load` 列分别表示机器的 CPU 利用率、内存利用率、磁盘利用率和负载。
-这些列包含实际的数据并且不被索引。应当避免在查询条件中使用 `Field` 列，这会消耗大量资源并且性能较差。
+  这些列包含实际的数据并且不被索引。应当避免在查询条件中使用 `Field` 列，这会消耗大量资源并且性能较差。
 
-要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](../table-management.md#create-table)和 [CREATE 语句](/reference/sql/create.md)。
+要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](../table-management.md#create-table)和 [CREATE 语句](/v0.4/reference/sql/create.md)。
 
 ## 设计考虑
 
@@ -36,4 +36,3 @@ GreptimeDB 基于表进行设计，原因如下：
 - 使用多值模型使其中一行数据可以具有多个指标列，而不是 OpenTSDB 和 Prometheus 采用的单值模型。多值模型面向数据源建模，一个 metric 可以有用 field 表示的值。多值模型的好处是可以一次性把多个值写入到数据库中，而单值模型则要分成多条数据。
 
 GreptimeDB 使用 SQL 管理表 Schema。有关更多信息，请参见[表管理](../table-management.md)。但是，我们对 Schema 的定义并不是强制性的，而是倾向于无 Schema 的方法，类似于 MongoDB。有关更多详细信息，请参见[自动生成表结构](../write-data/overview.md#automatic-schema-generation)。
-

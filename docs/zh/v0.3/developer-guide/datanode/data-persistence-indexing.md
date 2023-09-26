@@ -12,7 +12,7 @@ First, clustering data by column makes file scanning more efficient, especially 
 
 Second, data of the same column tends to be homogeneous which helps with compression when apply techniques like dictionary and Run-Length Encoding (RLE).
 
-![Parquet file format](/public/parquet-file-format.png)
+![Parquet file format](/parquet-file-format.png)
 
 ## Data Persistence
 
@@ -22,7 +22,7 @@ When the size of data buffered in MemTable reaches a threshold, the MemTable wil
 
 Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which are used for pruning and skipping.
 
-![Column chunk header](/public/column-chunk-header.png)
+![Column chunk header](/column-chunk-header.png)
 
 For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
 

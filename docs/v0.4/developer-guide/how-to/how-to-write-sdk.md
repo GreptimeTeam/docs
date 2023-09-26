@@ -5,7 +5,7 @@ of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If y
 GreptimeDB in a programming language you are familiar with, please read on!
 
 > Currently, the gRPC SDK is written in Java and Go, and you can find more details about
-[Java](/reference/sdk/java.md) and [Go](/reference/sdk/go.md).
+> [Java](/v0.4/reference/sdk/java.md) and [Go](/v0.4/reference/sdk/go.md).
 
 ## `GreptimeDatabase` Service
 

@@ -6,7 +6,7 @@ GreptimeDB supports full SQL for you to query data from a database. Here are som
 
 To select all the data from the `monitor` table, use the `SELECT` statement:
 
-``` sql
+```sql
 SELECT * FROM monitor;
 ```
 
@@ -23,13 +23,13 @@ The query result looks like the following:
 3 rows in set (0.00 sec)
 ```
 
-Please refer to [SELECT](/reference/sql/select.md) for more information.
+Please refer to [SELECT](/v0.3/reference/sql/select.md) for more information.
 
 ### Use Functions
 
 You can use the `count()` function to get the number of all rows in the table:
 
-``` sql
+```sql
 SELECT count(*) FROM monitor;
 ```
 
@@ -43,7 +43,7 @@ SELECT count(*) FROM monitor;
 
 The `avg()` function returns the average value of a certain field:
 
-``` sql
+```sql
 SELECT avg(cpu) FROM monitor;
 ```
 
@@ -56,7 +56,7 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-Please refer to [Functions](/reference/sql/functions.md) for more information.
+Please refer to [Functions](/v0.3/reference/sql/functions.md) for more information.
 
 ### Group By
 
@@ -77,7 +77,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 2 rows in set (0.00 sec)
 ```
 
-Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
+Please refer to [GROUP BY](/v0.3/reference/sql/group_by.md) for more information.
 
 ### Time and Date Examples
 
@@ -87,7 +87,7 @@ Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
+Please refer to [INTERVAL](/v0.3/reference/sql/functions.md#interval) for more information.
 
 #### Cast Number Literal to Timestamp
 
@@ -97,7 +97,7 @@ select * from system_metrics where ts > arrow_cast(1690252336408, 'Timestamp(Mil
 
 This query casts the number literal `1690252336408` (Unix Epoch `2023-07-25 10:32:16.408` in millisecond resolution) to the timestamp type with millisecond precision.
 
-Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
+Please refer to [arrow_cast](/v0.3/reference/sql/functions.md#arrow-cast) for more information.
 
 #### Cast string literal to timestamp
 
@@ -107,7 +107,7 @@ select * from system_metrics where ts > '2023-07-25 10:32:16.408'::timestamp
 
 This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
 
-Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
+Please refer to [::timestamp](/v0.3/reference/sql/functions.md#timestamp) for more information.
 
 #### Extract the day of the year from timestamp
 
@@ -116,6 +116,7 @@ MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
 ```
 
 Output:
+
 ```sql
 +----------------------------------------------------+
 | date_part(Utf8("DOY"),Utf8("2021-07-01 00:00:00")) |
@@ -125,7 +126,7 @@ Output:
 1 row in set (0.003 sec)
 ```
 
-The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
+The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/v0.3/reference/sql/functions.md#date-part) for more information.
 
 ## HTTP API
 
@@ -168,24 +169,9 @@ The result is shown below:
           ]
         },
         "rows": [
-          [
-            "127.0.0.1",
-            1667446797450,
-            0.1,
-            0.4
-          ],
-          [
-            "127.0.0.1",
-            1667446798450,
-            0.5,
-            0.2
-          ],
-          [
-            "127.0.0.2",
-            1667446798450,
-            0.2,
-            0.3
-          ]
+          ["127.0.0.1", 1667446797450, 0.1, 0.4],
+          ["127.0.0.1", 1667446798450, 0.5, 0.2],
+          ["127.0.0.2", 1667446798450, 0.2, 0.3]
         ]
       }
     }
@@ -194,4 +180,4 @@ The result is shown below:
 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/v0.3/reference/sql/http-api.md).

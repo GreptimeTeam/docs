@@ -6,7 +6,7 @@
 
 使用下面的示例代码向 GreptimeDB 插入对象：
 
-``` java
+```java
 TableSchema tableSchema = TableSchema.newBuilder(TableName.with("db_name", "monitor"))
     .semanticTypes(SemanticType.Tag, SemanticType.Timestamp, SemanticType.Field, SemanticType.Field)
     .dataTypes(ColumnDataType.String, ColumnDataType.Int64, ColumnDataType.Float64, ColumnDataType.Float64)
@@ -36,7 +36,7 @@ writeFuture.whenComplete((result, throwable) -> {
 
 ### 写入 API
 
-``` java
+```java
 /**
  * Write a single table multi rows data to database.
  *
@@ -47,12 +47,11 @@ writeFuture.whenComplete((result, throwable) -> {
 CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 ```
 
-| Name                 | Description                                                                                |
-|:---------------------|:-------------------------------------------------------------------------------------------|
-| rows                 | 要写入数据库的数据行（所有数据必须属于同一张表）。    |
-| ctx                  | `ctx` 中的 KV 会被写到 gRPC 请求的 header 元数据中. |
-| Result<WriteOk, Err> | 受 Rust 中 Result 的启发，其中 WriteOk 和 Err 只有一个是有意义的，另一个为空。如果调用成功，您可以从 WriteOk 中提取适当的信息，否则您需要从 Err 中提取有用的信息。
+| Name                 | Description                                                                                                                                                        |
+| :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rows                 | 要写入数据库的数据行（所有数据必须属于同一张表）。                                                                                                                 |
+| ctx                  | `ctx` 中的 KV 会被写到 gRPC 请求的 header 元数据中.                                                                                                                |
+| Result<WriteOk, Err> | 受 Rust 中 Result 的启发，其中 WriteOk 和 Err 只有一个是有意义的，另一个为空。如果调用成功，您可以从 WriteOk 中提取适当的信息，否则您需要从 Err 中提取有用的信息。 |
 
 <!-- TODO -->
 <!-- ## Delete -->
- 

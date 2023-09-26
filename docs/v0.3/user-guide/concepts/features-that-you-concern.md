@@ -30,7 +30,7 @@ The TTL of temperatures is set to be seven days. If you want to set the global T
 global_ttl = "7d"
 ```
 
-You can refer to the TTL option of the table create statement [here](/reference/sql/create).
+You can refer to the TTL option of the table create statement [here](/v0.3/reference/sql/create).
 
 ## What are the compression rates of GreptimeDB?
 
@@ -46,7 +46,7 @@ Therefore, the data compression rate of GreptimeDB may be between 2 and 60 times
 GreptimeDB resolves this issue by:
 
 - **Sharding**: It distributes the data and index between different region servers. Read the [architecture](./architecture.md) of GreptimeDB.
-- **Smart Indexing**: It doesn't create the inverted index for every tag mandatorily, but chooses a proper index type based on the tag column's statistics and query workload. Find more explanation in this [blog](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing). 
+- **Smart Indexing**: It doesn't create the inverted index for every tag mandatorily, but chooses a proper index type based on the tag column's statistics and query workload. Find more explanation in this [blog](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing).
 - **MPP**: When the query engine doesn't find or choose an index, it will use the vectorize execution query engine to execute the query in parallel and distributed.
 
 ## Does GreptimeDB support continuous aggregate or downsampling?

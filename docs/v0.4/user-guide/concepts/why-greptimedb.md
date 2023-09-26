@@ -17,7 +17,7 @@ Together, these features ensure that GreptimeDB always provides optimal function
 
 ### Resource Isolation for Elastic Scaling
 
-![Storage/Compute Disaggregation, Compute/Compute separation](/public/storage-compute-disaggregation-compute-compute-separation.png)
+![Storage/Compute Disaggregation, Compute/Compute separation](/storage-compute-disaggregation-compute-compute-separation.png)
 
 The storage and compute resources are separated, allowing each to be scaled, consumed and priced independently.
 This greatly increases utilization of computing resources, allows the "pay-as-you-go" pricing model and avoids waste of underutilized resources.
@@ -27,7 +27,7 @@ Data can be shared among multiple applications without the need of competing for
 
 ### Flexible Architecture Supports Various Deployment Strategies
 
-![The architecture of GreptimeDB](/public/architecture-2.png)
+![The architecture of GreptimeDB](/architecture-2.png)
 
 With flexible architecture design principles, different modules and components can be independently switched on, combined, or separated through modularization and layered design.
 For example, we can merge the frontend, datanode, and meta server modules into a standalone binary, and we can also independently enable or disable the WAL for every table.
@@ -74,7 +74,7 @@ Developers can write UDF and DataFrame API to accelerate data processing by embe
 
 Combining the metrics (Measurement/Tag/Field/Timestamp) model and the relational data model (Table), GreptimeDB provides a new data model called a time-series table (see below), which presents data in the form of tables consisting of rows and columns, with tags and fields of the metrics mapped to columns, and an enforced time index constraint that represents the timestamp.
 
-![Time-Series Table](/public/time-series-table.png)
+![Time-Series Table](/time-series-table.png)
 
 Nevertheless, our definition of a schema is not mandatory but leans more towards the schemaless approach of databases like MongoDB.
 The table will be created dynamically and automatically when data is ingested, and new columns (tags and fields) will be added as they appear.

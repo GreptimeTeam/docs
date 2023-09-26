@@ -3,6 +3,7 @@
 `CREATE` 用于创建新的数据库或者表。
 
 ## CREATE DATABASE
+
 ### Syntax
 
 创建新数据库：
@@ -12,9 +13,10 @@ CREATE DATABASE [IF NOT EXISTS] db_name
 ```
 
 如果 `db_name` 数据库已经存在，`CREATE` 语句的行为如下：
-* 不会创建新的数据库。
-* 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
-* 否则，返回错误。
+
+- 不会创建新的数据库。
+- 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
+- 否则，返回错误。
 
 ### 示例
 
@@ -64,9 +66,10 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ### 表约束
 
 表约束包括以下内容：
-* `TIME INDEX` 指定时间索引列，每个表只能有一个时间索引列。它表示 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Timestamp` 类型。
-* `PRIMARY KEY` 指定表的主键列，它表示 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Tag` 类型。它不能包含时间索引列，但是它总是隐式地将时间索引列添加到键的末尾。
-* 其他列是 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Field` 类型。
+
+- `TIME INDEX` 指定时间索引列，每个表只能有一个时间索引列。它表示 GreptimeDB 的 [数据模型](/v0.4/user-guide/concepts/data-model.md) 中的 `Timestamp` 类型。
+- `PRIMARY KEY` 指定表的主键列，它表示 GreptimeDB 的 [数据模型](/v0.4/user-guide/concepts/data-model.md) 中的 `Tag` 类型。它不能包含时间索引列，但是它总是隐式地将时间索引列添加到键的末尾。
+- 其他列是 GreptimeDB 的 [数据模型](/v0.4/user-guide/concepts/data-model.md) 中的 `Field` 类型。
 
 :::tip 注意
 `CREATE` 语句中指定的 `PRIMARY KEY` **不是** 传统关系数据库中的主键。
@@ -80,11 +83,11 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
 
-| 选项              | 描述                        | 值                                                                                                                                               |
-| ------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`               | 表数据的存储时间 | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                        |
-| `regions`           | 表的 region 值     | 整数值，例如 1, 5, 10 etc.                                                                                                                |
-| `write_buffer_size` | 表的 memtable 大小    | 表示有效大小的字符串值，例如 `32MB`, `128MB` 等。默认值为 `32MB`。支持的单位有：`MB` / `GB`. |
+| 选项                | 描述               | 值                                                                                                         |
+| ------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `ttl`               | 表数据的存储时间   | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d` |
+| `regions`           | 表的 region 值     | 整数值，例如 1, 5, 10 etc.                                                                                 |
+| `write_buffer_size` | 表的 memtable 大小 | 表示有效大小的字符串值，例如 `32MB`, `128MB` 等。默认值为 `32MB`。支持的单位有：`MB` / `GB`.               |
 
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
 
@@ -99,12 +102,12 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 GreptimeDB 支持以下列选项：
 
-| 选项              | 描述                                                                           |
-| ----------------- | ---------------------------------------------------------------------------- |
-| NULL              | 列值可以为 `null`                                                              |
-| NOT NULL          | 列值不能为 `null`                                                              |
-| DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型                                       |
-| COMMENT `comment` | 列注释，必须为字符串类型                                                         |
+| 选项              | 描述                                          |
+| ----------------- | --------------------------------------------- |
+| NULL              | 列值可以为 `null`                             |
+| NOT NULL          | 列值不能为 `null`                             |
+| DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型 |
+| COMMENT `comment` | 列注释，必须为字符串类型                      |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -139,6 +142,7 @@ CREATE TABLE system_metrics (
     PRIMARY KEY(host, idc),
 );
 ```
+
 ```sql
 Query OK, 0 rows affected (0.01 sec)
 ```
@@ -176,24 +180,24 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 ]
 ```
 
-
 ### 表选项
 
-| 选项     | 描述                                                                     | 是否必需     |
-| ---------- | ------------------------------------------------------------------------------- | ------------ |
-| `LOCATION` | 外部表的位置，例如 `s3://<bucket>[<path>]`, `/<path>/[<filename>]`                | **是** |
-| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet                                 | **是** |
-| `PATTERN`  | 使用正则来匹配文件，例如 `*_today.parquet`                               | 可选     |
+| 选项       | 描述                                                               | 是否必需 |
+| ---------- | ------------------------------------------------------------------ | -------- |
+| `LOCATION` | 外部表的位置，例如 `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **是**   |
+| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet                            | **是**   |
+| `PATTERN`  | 使用正则来匹配文件，例如 `*_today.parquet`                         | 可选     |
 
 #### S3
-| 选项                      | 描述                                                                           | 是否必需     |
-| --------------------------- | ------------------------------------------------------------------------------------- | ------------ |
-| `REGION`                    | AWS region 名称，例如 us-east-1                                                       | **是** |
-| `ENDPOINT`                  | The bucket endpoint                                                                   | 可选     |
-| `ACCESS_KEY_ID`             | 用于连接 AWS S3 兼容对象存储的访问密钥 ID                                                  | 可选     |
-| `SECRET_ACCESS_KEY`         | 用于连接 AWS S3 兼容对象存储的秘密访问密钥                                                 | 可选     |
-| `ENABLE_VIRTUAL_HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true`                            | 可选     |
-| `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                                           | 可选     |
+
+| 选项                        | 描述                                                            | 是否必需 |
+| --------------------------- | --------------------------------------------------------------- | -------- |
+| `REGION`                    | AWS region 名称，例如 us-east-1                                 | **是**   |
+| `ENDPOINT`                  | The bucket endpoint                                             | 可选     |
+| `ACCESS_KEY_ID`             | 用于连接 AWS S3 兼容对象存储的访问密钥 ID                       | 可选     |
+| `SECRET_ACCESS_KEY`         | 用于连接 AWS S3 兼容对象存储的秘密访问密钥                      | 可选     |
+| `ENABLE_VIRTUAL_HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
+| `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                  | 可选     |
 
 ### 示例
 

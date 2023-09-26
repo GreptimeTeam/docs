@@ -43,7 +43,7 @@ The code will output the details of querying which will look something like this
 
 ## 查询 API
 
-``` java
+```java
 /**
  * According to the conditions, query data from the DB.
  *

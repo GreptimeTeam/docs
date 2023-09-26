@@ -11,7 +11,7 @@ python grammar to indicate its metadata like type or nullability. Coprocessor wi
 convert returned object to a `RecordBatch` , be it a python list, a `RecordBatch` computed from
 parameters, or a constant(which is extends to the same length of input arguments)
 
-![Python Coprocessor](/public/python-coprocessor.png)
+![Python Coprocessor](/python-coprocessor.png)
 
 ## Two optional backends
 
@@ -24,4 +24,4 @@ But using it also involves some complications. You must set up the correct Pytho
 ### Embedded RustPython Interpreter
 
 An experiment [python interpreter](https://github.com/RustPython/RustPython) to run
-the coprocessor script, it supports Python 3.10 grammar. You can use all the very Python syntax, see [User Guide/Python Coprocessor](/user-guide/scripts-&-functions/overview.md) for more!
+the coprocessor script, it supports Python 3.10 grammar. You can use all the very Python syntax, see [User Guide/Python Coprocessor](/v0.4/user-guide/scripts-&-functions/overview.md) for more!

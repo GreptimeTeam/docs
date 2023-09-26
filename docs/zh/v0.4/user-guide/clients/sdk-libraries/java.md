@@ -80,7 +80,7 @@ public class QuickStart {
 }
 ```
 
-请前往 [Java SDK in reference](/reference/sdk/java.md) 获得更多的配置和指标信息。
+请前往 [Java SDK in reference](/v0.4/reference/sdk/java.md) 获得更多的配置和指标信息。
 
 ### 写入数据
 

@@ -1,8 +1,8 @@
 ### 准备
 
-* [Node.js](https://nodejs.org/en/download)
-* [TypeScript](https://www.typescriptlang.org/download)
-* [npx](https://www.npmjs.com/package/npx)
+- [Node.js](https://nodejs.org/en/download)
+- [TypeScript](https://www.typescriptlang.org/download)
+- [npx](https://www.npmjs.com/package/npx)
 
 ### 示例 Demo
 
@@ -25,16 +25,16 @@ npm install @opentelemetry/api@1.4.1 \
 ```
 
 成功安装依赖后，创建一个名为 `app.ts` 的文件，并编写代码创建一个 metric exporter 对象，将 metrics 发送到 GreptimeDB。
-请参考 [GreptimeDB](/user-guide/clients/otlp.md) 或 [GreptimeCloud](/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
+请参考 [GreptimeDB](/v0.3/user-guide/clients/otlp.md) 或 [GreptimeCloud](/v0.3/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
 
 ```ts
 const exporter = new OTLPMetricExporter({
-    url: `https://${dbHost}/v1/otlp/v1/metrics`,
-    headers: {
-        Authorization: `Basic ${auth}`,
-        "X-Greptime-DB-Name": db,
-    },
-    timeoutMillis: 5000,
+  url: `https://${dbHost}/v1/otlp/v1/metrics`,
+  headers: {
+    Authorization: `Basic ${auth}`,
+    'X-Greptime-DB-Name': db,
+  },
+  timeoutMillis: 5000,
 })
 ```
 
@@ -42,14 +42,14 @@ const exporter = new OTLPMetricExporter({
 
 ```ts
 const metricReader = new PeriodicExportingMetricReader({
-    exporter: exporter,
-    exportIntervalMillis: 2000,
+  exporter: exporter,
+  exportIntervalMillis: 2000,
 })
 
-const meterProvider = new MeterProvider();
-meterProvider.addMetricReader(metricReader);
-const hostMetrics = new HostMetrics({ meterProvider, name: 'quick-start-demo-node' });
-hostMetrics.start();
+const meterProvider = new MeterProvider()
+meterProvider.addMetricReader(metricReader)
+const hostMetrics = new HostMetrics({ meterProvider, name: 'quick-start-demo-node' })
+hostMetrics.start()
 ```
 
 请参考 [OpenTelemetry 文档](https://opentelemetry.io/docs/instrumentation/js/getting-started/nodejs/) 获取有关代码的更多详细信息。

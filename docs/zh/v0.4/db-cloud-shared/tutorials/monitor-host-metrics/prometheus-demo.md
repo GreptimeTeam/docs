@@ -1,6 +1,6 @@
 ### 准备
 
-* [Docker](https://www.docker.com/)
+- [Docker](https://www.docker.com/)
 
 ### 示例
 
@@ -42,9 +42,9 @@ global:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "node"
+  - job_name: 'node'
     static_configs:
-      - targets: ["node_exporter:9100"]
+      - targets: ['node_exporter:9100']
 
 remote_write:
   - url: https://<host>/v1/prometheus/write?db=<dbname>
@@ -53,7 +53,7 @@ remote_write:
       password: <password>
 ```
 
-通过上面的配置文件，Prometheus 从 node exporter 中抓取指标并将其发送到 GreptimeDB。有关 `<host>`, `<dbname>`, `<username>` 和 `<password>` 的信息，请参考 [GreptimeDB](/user-guide/clients/prometheus.md) 或 [GreptimeCloud](/greptimecloud/integrations/prometheus/quick-setup.md) 中的 Prometheus 文档。
+通过上面的配置文件，Prometheus 从 node exporter 中抓取指标并将其发送到 GreptimeDB。有关 `<host>`, `<dbname>`, `<username>` 和 `<password>` 的信息，请参考 [GreptimeDB](/v0.4/user-guide/clients/prometheus.md) 或 [GreptimeCloud](/v0.4/greptimecloud/integrations/prometheus/quick-setup.md) 中的 Prometheus 文档。
 
 最后启动 Docker 容器：
 

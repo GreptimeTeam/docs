@@ -1,8 +1,8 @@
 ### Prerequisites
 
-* [Node.js](https://nodejs.org/en/download)
-* [TypeScript](https://www.typescriptlang.org/download)
-* [npx](https://www.npmjs.com/package/npx)
+- [Node.js](https://nodejs.org/en/download)
+- [TypeScript](https://www.typescriptlang.org/download)
+- [npx](https://www.npmjs.com/package/npx)
 
 ### Example Application
 
@@ -25,16 +25,16 @@ npm install @opentelemetry/api@1.4.1 \
 ```
 
 Once the required packages are installed,create a new file named `app.ts` and write the code to create a metric export object that sends metrics to GreptimeDB.
-For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/user-guide/clients/otlp.md) or [GreptimeCloud](/greptimecloud/integrations/otlp.md).
+For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/v0.4/user-guide/clients/otlp.md) or [GreptimeCloud](/v0.4/greptimecloud/integrations/otlp.md).
 
 ```ts
 const exporter = new OTLPMetricExporter({
-    url: `https://${dbHost}/v1/otlp/v1/metrics`,
-    headers: {
-        Authorization: `Basic ${auth}`,
-        "X-Greptime-DB-Name": db,
-    },
-    timeoutMillis: 5000,
+  url: `https://${dbHost}/v1/otlp/v1/metrics`,
+  headers: {
+    Authorization: `Basic ${auth}`,
+    'X-Greptime-DB-Name': db,
+  },
+  timeoutMillis: 5000,
 })
 ```
 
@@ -42,14 +42,14 @@ Then attach the exporter to the MetricReader and start the host metrics collecti
 
 ```ts
 const metricReader = new PeriodicExportingMetricReader({
-    exporter: exporter,
-    exportIntervalMillis: 2000,
+  exporter: exporter,
+  exportIntervalMillis: 2000,
 })
 
-const meterProvider = new MeterProvider();
-meterProvider.addMetricReader(metricReader);
-const hostMetrics = new HostMetrics({ meterProvider, name: 'quick-start-demo-node' });
-hostMetrics.start();
+const meterProvider = new MeterProvider()
+meterProvider.addMetricReader(metricReader)
+const hostMetrics = new HostMetrics({ meterProvider, name: 'quick-start-demo-node' })
+hostMetrics.start()
 ```
 
 For more details about the code, you can refer to the [OpenTelemetry Documentation](https://opentelemetry.io/docs/instrumentation/js/getting-started/nodejs/).

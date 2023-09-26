@@ -16,24 +16,24 @@ Use the POST method to submit the SQL statement to the server.
 
 #### Header
 
-* `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/clients/http-api.md#authentication).
-* `Content-Type`: `application/x-www-form-urlencoded`.
+- `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/v0.3/user-guide/clients/http-api.md#authentication).
+- `Content-Type`: `application/x-www-form-urlencoded`.
 
 #### Query params
 
-* `db`: The database name. Required if you are using GreptimeDB with authentication enabled. Otherwise, it can be omitted if you are using the default `public` database.
+- `db`: The database name. Required if you are using GreptimeDB with authentication enabled. Otherwise, it can be omitted if you are using the default `public` database.
 
 #### Body
 
-* `sql`: The SQL statement. Required.
+- `sql`: The SQL statement. Required.
 
 #### Response
 
 The response is a JSON object.
 
-* `code`: the result integer code. Zero means success, otherwise failure.
-* `output`: the SQL executed result, including schema and rows.
+- `code`: the result integer code. Zero means success, otherwise failure.
+- `output`: the SQL executed result, including schema and rows.
 
 #### Example
 
-Please refer to [Table Management](/user-guide/table-management.md#http-api), [Write Data](/user-guide/write-data/sql.md#http-api) and [Query Data](/user-guide/query-data/sql.md#http-api) in user guide.
+Please refer to [Table Management](/v0.3/user-guide/table-management.md#http-api), [Write Data](/v0.3/user-guide/write-data/sql.md#http-api) and [Query Data](/v0.3/user-guide/query-data/sql.md#http-api) in user guide.

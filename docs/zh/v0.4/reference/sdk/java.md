@@ -11,17 +11,17 @@
 
 ## 如何使用
 
-请参考用户指南章节，了解如何 [安装 SDK](/user-guide/clients/sdk-libraries/java.md), [写入数据](/user-guide/write-data/sdk-libraries/java.md)和[查询数据](/user-guide/query-data/sdk-libraries/java.md)。
+请参考用户指南章节，了解如何 [安装 SDK](/v0.4/user-guide/clients/sdk-libraries/java.md), [写入数据](/v0.4/user-guide/write-data/sdk-libraries/java.md)和[查询数据](/v0.4/user-guide/query-data/sdk-libraries/java.md)。
 
 ## 全局配置 (System properties / Java -Dxxx)
 
-| 属性                                           | 描述                                                                                                                                                        |
-|:-----------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| greptimedb.use\_os\_signal                     | 是否使用 OS Signal。SDK 会默认监听 SIGUSR2 信号并输出一些信息，这对解决复杂问题非常有帮助。 |
-| greptimedb.signal.out\_dir                     | 指定 signal handler 的输出目录，默认是进程启动目录。                                                                      |
-| greptimedb.available\_cpus                     | 指定可用 cpu 数量，默认使用当前环境的全部 cpu 数量。                                                  |
-| greptimedb.reporter.period\_minutes            | Metrics Reporter 定时输出周期，默认 30 分钟。                                                                                       |
-| greptimedb.read.write.rw\_logging               | 每次读写操作是否打印日志，默认关闭。                                                                                                 |                                                                                                          |
+| 属性                               | 描述                                                                                        |
+| :--------------------------------- | :------------------------------------------------------------------------------------------ | --- |
+| greptimedb.use_os_signal           | 是否使用 OS Signal。SDK 会默认监听 SIGUSR2 信号并输出一些信息，这对解决复杂问题非常有帮助。 |
+| greptimedb.signal.out_dir          | 指定 signal handler 的输出目录，默认是进程启动目录。                                        |
+| greptimedb.available_cpus          | 指定可用 cpu 数量，默认使用当前环境的全部 cpu 数量。                                        |
+| greptimedb.reporter.period_minutes | Metrics Reporter 定时输出周期，默认 30 分钟。                                               |
+| greptimedb.read.write.rw_logging   | 每次读写操作是否打印日志，默认关闭。                                                        |     |
 
 ## 指标与显示
 
@@ -38,27 +38,27 @@ kill -s SIGUSR2 pid
 默认情况下，在程序工作目录下生成 2 个文件
 （cwd：`lsof -p $pid | grep cwd`）
 
-- greptimedb\_client\_metrics.log.xxx：记录当前客户端节点的所有 metrics 信息
-- greptimedb\_client\_display.log.xxx：记录当前客户端的重要内存状态信息
+- greptimedb_client_metrics.log.xxx：记录当前客户端节点的所有 metrics 信息
+- greptimedb_client_display.log.xxx：记录当前客户端的重要内存状态信息
 
 ### 指标列表 (持续更新)
 
-| Name                                                            | Description                                                                                                                    |
-|:----------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
-| thread\_pool.${thread\_pool\_name} [timer]                      | 线程池执行任务时间统计。                                                                                   |
-| scheduled\_thread\_pool.${schedule\_thread\_pool\_name} [timer] | 调度线程池执行任务时间统计。                                                                          |
-| async\_write\_pool.time [timer]                                 | SDK 中异步写任务的异步池时间统计，这个很重要，建议重点关注。 |
-| async\_read\_pool.time [timer]                                  | SDK 中异步读任务的异步池时间统计，这个很重要，建议重点关注。  |
-| write\_rows\_success\_num [histogram]                           | 成功写入次数的统计。                                                                                 |
-| write\_rows\_failure\_num [histogram]                           | 失败写入的数据条目数。                                                                 |
-| write\_failure\_num [meter]                                     | 写入失败次数统计。 writes.                                                                                     |
-| write\_qps [meter]                                              | 写请求 QPS                                                                                                            |
-| write\_by\_retries\_${n} [meter]                                | 第 n 次重试写入的 QPS，第一次写入（非重试）n == 0，n > 3 将被计为n == 3                           |
-| read\_rows\_num [histogram]                                     | 每次查询的数据项数量统计。                                                                             |
-| read\_failure\_num [meter]                                      | 失败查询的数量统计。                                                                                     |
-| serializing\_executor\_single\_task\_timer\_${name} [timer]     |  序列化执行器。单任务执行时间消耗统计                                                        |
-| serializing\_executor\_drain\_timer\_${name} [timer]            |  序列化执行器。Drains all tasks 的耗时统计                                                          |
-| serializing\_executor\_drain\_num\_${name} [histogram]          |  序列化执行器。Draining tasks 的数量统计                                                               |
+| Name                                                       | Description                                                              |
+| :--------------------------------------------------------- | :----------------------------------------------------------------------- |
+| thread_pool.${thread_pool_name} [timer]                    | 线程池执行任务时间统计。                                                 |
+| scheduled_thread_pool.${schedule_thread_pool_name} [timer] | 调度线程池执行任务时间统计。                                             |
+| async_write_pool.time [timer]                              | SDK 中异步写任务的异步池时间统计，这个很重要，建议重点关注。             |
+| async_read_pool.time [timer]                               | SDK 中异步读任务的异步池时间统计，这个很重要，建议重点关注。             |
+| write_rows_success_num [histogram]                         | 成功写入次数的统计。                                                     |
+| write_rows_failure_num [histogram]                         | 失败写入的数据条目数。                                                   |
+| write_failure_num [meter]                                  | 写入失败次数统计。 writes.                                               |
+| write_qps [meter]                                          | 写请求 QPS                                                               |
+| write_by_retries\_${n} [meter]                             | 第 n 次重试写入的 QPS，第一次写入（非重试）n == 0，n > 3 将被计为 n == 3 |
+| read_rows_num [histogram]                                  | 每次查询的数据项数量统计。                                               |
+| read_failure_num [meter]                                   | 失败查询的数量统计。                                                     |
+| serializing_executor_single_task_timer\_${name} [timer]    | 序列化执行器。单任务执行时间消耗统计                                     |
+| serializing_executor_drain_timer\_${name} [timer]          | 序列化执行器。Drains all tasks 的耗时统计                                |
+| serializing_executor_drain_num\_${name} [histogram]        | 序列化执行器。Draining tasks 的数量统计                                  |
 
 ## 魔法工具
 
@@ -72,7 +72,7 @@ kill -s SIGUSR2 pid
 
 ### 跟随帮助信息操作
 
-``` text
+```text
  - -- GreptimeDBClient Signal Help --
  -     Signal output dir: /Users/xxx/xxx
  -

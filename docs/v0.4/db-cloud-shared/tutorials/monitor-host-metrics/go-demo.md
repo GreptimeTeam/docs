@@ -1,4 +1,3 @@
-
 In this section, we will create a quick start demo and showcase the core code to collect host metrics and send them to GreptimeDB. The demo is based on [OTLP/HTTP](https://opentelemetry.io/). For reference, you can obtain the entire demo on [GitHub](https://github.com/GreptimeCloudStarters/quick-start-go).
 
 To begin, create a new directory named `quick-start-go` to host our project. Then, run the command `go mod init quick-start` in the directory from your terminal. This will generate a `go.mod` file, which is used by Go to manage imports.
@@ -6,13 +5,13 @@ To begin, create a new directory named `quick-start-go` to host our project. The
 Next, create new file named `app.go` and install the required OpenTelemetry packages:
 
 ```shell
-go get go.opentelemetry.io/otel@v1.16.0 \                                       
+go get go.opentelemetry.io/otel@v1.16.0 \
     go.opentelemetry.io/contrib/instrumentation/host@v0.42.0 \
     go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp@v0.39.0
 ```
 
-Once the required packages are installed, write the code to create a metric export object that sends metrics to GreptimeDB in `app.go`. 
-For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/user-guide/clients/otlp.md) or [GreptimeCloud](/greptimecloud/integrations/otlp.md).
+Once the required packages are installed, write the code to create a metric export object that sends metrics to GreptimeDB in `app.go`.
+For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/v0.4/user-guide/clients/otlp.md) or [GreptimeCloud](/v0.4/greptimecloud/integrations/otlp.md).
 
 ```go
 auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))

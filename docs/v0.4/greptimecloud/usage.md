@@ -19,7 +19,7 @@ The capacity unit may be subject to change in the future.
 
 The following steps are used to determine the size of each request:
 
-1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/reference/data-types.md) documentation.
+1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/v0.4/reference/data-types.md) documentation.
 2. Sum up the sizes of all columns in the request. If a column is not present in the request, its size depends on the column's default value. If the default value is null, the size is 0; otherwise, it is the size of the data type.
 3. Multiply the sum by the number of rows to be written.
 
@@ -57,7 +57,7 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-The size of the request is 950 bytes (38 * 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 * 40), and the WCU of this request is 2.
+The size of the request is 950 bytes (38 _ 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 _ 40), and the WCU of this request is 2.
 
 ### RCU (Read Capacity Unit)
 

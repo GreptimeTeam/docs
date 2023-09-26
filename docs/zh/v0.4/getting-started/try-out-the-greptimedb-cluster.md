@@ -1,6 +1,6 @@
 # 开始探索 GreptimeDB 分布式集群
 
-GreptimeDB 可以运行于 [cluster](/zh/developer-guide/overview.md) 模式以支持水平扩展。
+GreptimeDB 可以运行于 [cluster](/zh/v0.4/developer-guide/overview.md) 模式以支持水平扩展。
 
 ## 安装 gtctl 并运行 playground
 
@@ -20,10 +20,9 @@ gtctl playground
 
 当命令执行完毕之后，playground 将会在前台启动。你可以使用 `Ctrl+C` 来停止 playground。playground 将会在你的主机上以 bare-metal 模式部署最小的 GreptimeDB 集群。
 
-你可以使用 [开始探索 GreptimeDB](/zh/getting-started/try-out-greptimedb.md) 中的相同命令来与 GreptimeDB 集群进行交互。
+你可以使用 [开始探索 GreptimeDB](/zh/v0.4/getting-started/try-out-greptimedb.md) 中的相同命令来与 GreptimeDB 集群进行交互。
 
-更多的细节，请参考 [gtctl operations](/user-guide/operations/gtctl.md)。
-
+更多的细节，请参考 [gtctl operations](/v0.4/user-guide/operations/gtctl.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 
@@ -39,11 +38,11 @@ gtctl cluster create mycluster --use-greptime-cn-artifacts
 gtctl cluster connect mycluster
 ```
 
-您还可以使用 [Helm Charts](/zh/user-guide/operations/kubernetes.md) 来部署集群。
+您还可以使用 [Helm Charts](/zh/v0.4/user-guide/operations/kubernetes.md) 来部署集群。
 
 :::tip 提示
 
-您可以使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)  来创建 Kubernetes：
+您可以使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 来创建 Kubernetes：
 
 ```
 kind create cluster
@@ -62,4 +61,4 @@ kubectl port-forward svc/mycluster-frontend \
 4242:4242
 ```
 
-您可以打开新的终端，通过客户端工具（mysql 或 psql）连接数据库，并按照 [开始探索 GreptimeDB](/getting-started/try-out-greptimedb.md) 的方式操作数据。
+您可以打开新的终端，通过客户端工具（mysql 或 psql）连接数据库，并按照 [开始探索 GreptimeDB](/v0.4/getting-started/try-out-greptimedb.md) 的方式操作数据。

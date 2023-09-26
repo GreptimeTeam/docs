@@ -13,7 +13,7 @@ conda activate Greptime
 
 ### 安装 GreptimeDB
 
-请参考 [安装 GreptimeDB](/zh/getting-started/try-out-greptimedb.md)。
+请参考 [安装 GreptimeDB](/zh/v0.4/getting-started/try-out-greptimedb.md)。
 
 ## Hello world 实例
 
@@ -34,9 +34,11 @@ curl --data-binary "@hello.py" -XPOST "http://localhost:4000/v1/scripts?name=hel
 ```
 
 然后在 SQL 中调用：
+
 ```sql
 select hello();
 ```
+
 ```sql
 +-------------------+
 | hello()           |
@@ -47,9 +49,11 @@ select hello();
 ```
 
 或者通过 [HTTP API](./function.md#http-api) 进行调用：
+
 ```sh
 curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
 ```
+
 ```json
 {
   "code": 0,
@@ -64,11 +68,7 @@ curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
             }
           ]
         },
-        "rows": [
-          [
-            "Hello, GreptimeDB"
-          ]
-        ]
+        "rows": [["Hello, GreptimeDB"]]
       }
     }
   ],
@@ -79,6 +79,7 @@ curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
 函数 `hello` 带有 `@coprocessor` 注解。
 
 `@coprocessor` 中的 `returns` 指定了返回的列名，以及整体的返回格式：
+
 ```json
        "schema": {
           "column_schemas": [
@@ -89,24 +90,24 @@ curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
           ]
         }
 ```
-               
+
 参数列表后面的 `-> vector[str]` 指定了函数的返回类型，都是具有具体类型的 vector。返回类型是生成 coprocessor 函数的输出所必需的。
 
 `hello` 的函数主体返回一个字面字符串 `"Hello, GreptimeDB"`。Coprocessor 引擎将把它转换成一个常量字符串的 vector 并返回它。
 
 总的来说一个协处理器包含三个主要部分：
-* `@coprocessor` 注解
-* 函数的输入和输出
-* 函数主体
+
+- `@coprocessor` 注解
+- 函数的输入和输出
+- 函数主体
 
 我们可以像 SQL UDF(User Defined Function) 一样在 SQL 中调用协处理器，或者通过 HTTP API 调用。
-
 
 ## SQL 实例
 
 将复杂的分析用的 Python 代码（比如下面这个通过 cpu/mem/disk 使用率来确定负载状态的代码）保存到一个文件中（这里命名为 `system_status.py`）：
 
-``` python
+```python
 @coprocessor(args=["host", "idc", "cpu_util", "memory_util", "disk_util"],
              returns = ["host", "idc", "status"],
              sql = "SELECT * FROM system_metrics")
@@ -152,46 +153,34 @@ curl  -XPOST \
 
 以 `json` 格式获取结果：
 
-``` json
+```json
 {
-   "code":0,
-   "output":{
-      "records":{
-         "schema":{
-            "column_schemas":[
-               {
-                  "name":"host",
-                  "data_type":"String"
-               },
-               {
-                  "name":"idc",
-                  "data_type":"String"
-               },
-               {
-                  "name":"status",
-                  "data_type":"String"
-               }
-            ]
-         },
-         "rows":[
-            [
-               "host1",
-               "idc_a",
-               "green"
-            ],
-            [
-               "host1",
-               "idc_b",
-               "yello"
-            ],
-            [
-               "host2",
-               "idc_a",
-               "red"
-            ]
-         ]
-      }
-   }
+  "code": 0,
+  "output": {
+    "records": {
+      "schema": {
+        "column_schemas": [
+          {
+            "name": "host",
+            "data_type": "String"
+          },
+          {
+            "name": "idc",
+            "data_type": "String"
+          },
+          {
+            "name": "status",
+            "data_type": "String"
+          }
+        ]
+      },
+      "rows": [
+        ["host1", "idc_a", "green"],
+        ["host1", "idc_b", "yello"],
+        ["host2", "idc_a", "red"]
+      ]
+    }
+  }
 }
 ```
 

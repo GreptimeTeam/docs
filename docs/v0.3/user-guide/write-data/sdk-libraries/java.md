@@ -6,7 +6,7 @@
 
 Use the following code to insert an object to GreptimeDB:
 
-``` java
+```java
 TableSchema tableSchema = TableSchema.newBuilder(TableName.with("db_name", "monitor"))
     .semanticTypes(SemanticType.Tag, SemanticType.Timestamp, SemanticType.Field, SemanticType.Field)
     .dataTypes(ColumnDataType.String, ColumnDataType.Int64, ColumnDataType.Float64, ColumnDataType.Float64)
@@ -38,7 +38,7 @@ After calling the `write` method on our completed `WriteRows`, a future will be 
 
 ### Write API
 
-``` java
+```java
 /**
  * Write a single table multi rows data to database.
  *
@@ -49,10 +49,10 @@ After calling the `write` method on our completed `WriteRows`, a future will be 
 CompletableFuture<Result<WriteOk, Err>> write(WriteRows rows, Context ctx);
 ```
 
-| Name                 | Description                                                                                |
-|:---------------------|:-------------------------------------------------------------------------------------------|
-| rows                 | Several rows of data to write to the database (all data must belong to the same table).    |
-| ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server. |
-| Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err.                                                                                           |
+| Name                 | Description                                                                                                                                                                                                                                |
+| :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rows                 | Several rows of data to write to the database (all data must belong to the same table).                                                                                                                                                    |
+| ctx                  | The KV in ctx will be written to the gRPC headers metadata then sent to GreptimeDB server.                                                                                                                                                 |
+| Result<WriteOk, Err> | Inspired by Result in Rust, where WriteOk and Err only one is meaningful and the other is empty.If the call succeeds, you can extract the appropriate information from WriteOk, otherwise you need to extract useful information from Err. |
 
 <!-- TODO: DELETE -->

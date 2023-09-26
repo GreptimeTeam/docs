@@ -2,7 +2,6 @@
 
 The command line `greptime` in pre-built binary can start/stop GreptimeDB and pass configuration options.
 
-
 `help` lists all commands and options of `greptime`.
 
 ```sh
@@ -25,9 +24,8 @@ SUBCOMMANDS:
     standalone
 ```
 
-* `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
-* `--log-level=[info | debug | error | warn]` specify the log level, `info` by default.
-
+- `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
+- `--log-level=[info | debug | error | warn]` specify the log level, `info` by default.
 
 Starts GreptimeDB in standalone mode:
 
@@ -35,7 +33,7 @@ Starts GreptimeDB in standalone mode:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  config/standalone.example.toml
 ```
 
-`-c` specifies the configuration file, for more information check [Configuration](/user-guide/operations/configuration.md).
+`-c` specifies the configuration file, for more information check [Configuration](/v0.3/user-guide/operations/configuration.md).
 
 Starts GreptimeDB in distributed mode:
 

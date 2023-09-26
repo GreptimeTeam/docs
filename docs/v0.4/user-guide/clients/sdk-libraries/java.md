@@ -1,15 +1,18 @@
 # Java
 
 ## Install the Java Development Kit(JDK)
+
 Make sure that your system has JDK 8 or later installed. For more information on how to
 check your version of Java and install the JDK, see the [Oracle Overview of JDK Installation documentation](https://www.oracle.com/java/technologies/javase-downloads.html)
 
 ## Create the Project
+
 This guide demonstrates how to add Java SDK dependencies using Maven. It is advisable to utilize an integrated development environment (IDE) like Intellij IDEA or Eclipse IDE for easier configuration of Maven in building and running your project.
 
 If you are not using an IDE, see [Building Maven](https://maven.apache.org/user-guide/development/guide-building-maven.html) for more information on how to set up your project.
 
 ## Add GreptiemDB Java SDK as a Dependency
+
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
 
@@ -22,6 +25,7 @@ dependencies list:
     </dependency>
 </dependencies>
 ```
+
 The latest version can be viewed [here](https://central.sonatype.com/search?q=io.greptime).
 
 After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
@@ -81,7 +85,7 @@ public class QuickStart {
 }
 ```
 
-See [Java SDK in reference](/reference/sdk/java.md) to get more configurations and metrics.
+See [Java SDK in reference](/v0.4/reference/sdk/java.md) to get more configurations and metrics.
 
 ## Write Data
 

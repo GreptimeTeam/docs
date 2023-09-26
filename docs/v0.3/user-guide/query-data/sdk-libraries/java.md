@@ -43,7 +43,7 @@ The code will output the details of querying which will look something like this
 
 ## Query API
 
-``` java
+```java
 /**
  * According to the conditions, query data from the DB.
  *
@@ -53,5 +53,3 @@ The code will output the details of querying which will look something like this
  */
 CompletableFuture<Result<QueryOk, Err>> query(QueryRequest req, Context ctx);
 ```
-
-

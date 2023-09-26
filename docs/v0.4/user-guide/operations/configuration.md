@@ -54,7 +54,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
-- `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: You can refer [selector-type](/v0.4/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addr <STORE_ADDR>`: Etcd server address;
 - `--use-memory-store`: Use memory store instead of etcd;
@@ -82,7 +82,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/v0.4/user-guide/clients/authentication);
 
 ## Configuration File
 
@@ -138,11 +138,10 @@ enable = true
 
 All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.
 
-
 #### Protocol options
 
 | Option             | Key          | Type    | Description                                                                     |
-|--------------------|--------------|---------|---------------------------------------------------------------------------------|
+| ------------------ | ------------ | ------- | ------------------------------------------------------------------------------- |
 | http_options       |              |         | HTTP server options                                                             |
 |                    | addr         | String  | Server address, "127.0.0.1:4000" by default                                     |
 |                    | timeout      | String  | HTTP request timeout, 30s by default                                            |
@@ -167,11 +166,10 @@ All of these options are optional, the default values are listed above. If you w
 
 There are also some node options in common:
 
-
-| Option | Key                     | Type    | Description                                                                        |
-|--------|-------------------------|---------|------------------------------------------------------------------------------------|
-|        | mode                    | String  | Node running mode, includes "standalone" and "distributed"                         |
-|        | enable_memory_catalog   | Boolean | Use in-memory catalog, false by default                                            |
+| Option | Key                   | Type    | Description                                                |
+| ------ | --------------------- | ------- | ---------------------------------------------------------- |
+|        | mode                  | String  | Node running mode, includes "standalone" and "distributed" |
+|        | enable_memory_catalog | Boolean | Use in-memory catalog, false by default                    |
 
 #### Storage options
 
@@ -179,32 +177,32 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 
 GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
 
-| Option  | Key      | Type   | Description                                         |
-|---------|----------|--------|-----------------------------------------------------|
-| storage |          |        | Storage options                                     |
-|         | type     | String | Storage type, Only supports "File", "S3" and "Oss" etc. |
-| File    |          |        | Local file storage options, valid when type="file"        |
-|         | data_home | String | Database storage root directory, "/tmp/greptimedb" by default   |
-| S3      |          |        | AWS S3 storage options, valid when type="S3"            |
-|         | bucket   | String | The S3 bucket name                                  |
-|         | root     | String | The root path in S3 bucket                          |
-|         | endpoint     | String | The API endpoint of S3           |
-|         | region     | String | The S3 region           |
-|         | access_key_id     | String | The S3 access key id                      |
-|         | secret_access_key | String | The S3 secret access key                  |
-| Oss      |          |        | Aliyun OSS storage options, valid when type="Oss"            |
-|         | bucket   | String | The OSS bucket name                                  |
-|         | root     | String | The root path in OSS bucket                          |
-|         | endpoint     | String | The API endpoint of OSS           |
-|         | access_key_id     | String | The OSS access key id                      |
-|         | secret_access_key | String | The OSS secret access key                  |
-| Azblob      |          |        | Azure Blob Storage options, valid when type="Azblob"            |
-|         | container   | String |  The container name                                  |
-|         | root     | String |  The root path in  container                          |
-|         | endpoint     | String | The API endpoint of  Azure Blob Storage          |
-|         | account_name     | String | The account name of Azure Blob Storage      |
-|         | account_key    | String | The access key                  |
-|         | sas_token | String | The shared access signature                   |
+| Option  | Key               | Type   | Description                                                   |
+| ------- | ----------------- | ------ | ------------------------------------------------------------- |
+| storage |                   |        | Storage options                                               |
+|         | type              | String | Storage type, Only supports "File", "S3" and "Oss" etc.       |
+| File    |                   |        | Local file storage options, valid when type="file"            |
+|         | data_home         | String | Database storage root directory, "/tmp/greptimedb" by default |
+| S3      |                   |        | AWS S3 storage options, valid when type="S3"                  |
+|         | bucket            | String | The S3 bucket name                                            |
+|         | root              | String | The root path in S3 bucket                                    |
+|         | endpoint          | String | The API endpoint of S3                                        |
+|         | region            | String | The S3 region                                                 |
+|         | access_key_id     | String | The S3 access key id                                          |
+|         | secret_access_key | String | The S3 secret access key                                      |
+| Oss     |                   |        | Aliyun OSS storage options, valid when type="Oss"             |
+|         | bucket            | String | The OSS bucket name                                           |
+|         | root              | String | The root path in OSS bucket                                   |
+|         | endpoint          | String | The API endpoint of OSS                                       |
+|         | access_key_id     | String | The OSS access key id                                         |
+|         | secret_access_key | String | The OSS secret access key                                     |
+| Azblob  |                   |        | Azure Blob Storage options, valid when type="Azblob"          |
+|         | container         | String | The container name                                            |
+|         | root              | String | The root path in container                                    |
+|         | endpoint          | String | The API endpoint of Azure Blob Storage                        |
+|         | account_name      | String | The account name of Azure Blob Storage                        |
+|         | account_key       | String | The access key                                                |
+|         | sas_token         | String | The shared access signature                                   |
 
 A file storage sample configuration:
 
@@ -226,6 +224,7 @@ secret_access_key = "<secret access key>"
 ```
 
 #### Object storage cache
+
 When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
 
 ```toml
@@ -245,6 +244,7 @@ The `cache_path` is the local file directory that keeps cache files, and the `ca
 #### WAL options
 
 The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
+
 ```toml
 [wal]
 # WAL data directory
@@ -256,10 +256,10 @@ read_batch_size = 128
 sync_write = false
 ```
 
-* `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
-* `file_size`:  the maximum size of the WAL log file, default is 1GB.
-* `purge_threshold`  and `purge_interval`: control the purging of wal files.
-* `sync_write`: whether to call `fsync` when writing every log.
+- `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
+- `file_size`: the maximum size of the WAL log file, default is 1GB.
+- `purge_threshold` and `purge_interval`: control the purging of wal files.
+- `sync_write`: whether to call `fsync` when writing every log.
 
 #### Compaction
 
@@ -357,11 +357,10 @@ tcp_nodelay = false
 
 The `meta_client_options` configure the metasrv client, including:
 
-* `metasrv_addrs`, metasrv address list
-* `timeout_millis`, operation timeout in milliseconds, 3000 by default.
-* `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
-* `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
-
+- `metasrv_addrs`, metasrv address list
+- `timeout_millis`, operation timeout in milliseconds, 3000 by default.
+- `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
+- `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
 ### Datanode in distributed mode
 
@@ -407,15 +406,14 @@ store_addr = "127.0.0.1:2379"
 datanode_lease_secs = 30
 ```
 
-| Key                 | Type    | Description                                                                                                             |
-|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------|
-| bind_addr           | String  | The bind address of metasrv, "127.0.0.1:3002" by default.                                                                 |
-| server_addr         | String  | The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost |
-| store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                        |
-| datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                       |
+| Key                 | Type    | Description                                                                                                                 |
+| ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| bind_addr           | String  | The bind address of metasrv, "127.0.0.1:3002" by default.                                                                   |
+| server_addr         | String  | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost |
+| store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                            |
+| datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                           |
 
 ## Environment variable
-
 
 Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variable:
 
@@ -436,6 +434,7 @@ export GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
 ### Environment Variable Rules
 
 - Every environment variable should have the component prefix, for example:
+
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`

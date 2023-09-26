@@ -1,4 +1,3 @@
-
 我们将编写一个 Bash 脚本，并展示收集 host metrics 并将其发送到 GreptimeDB 的核心代码。您可以在 [GitHub](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol) 上查看完整的 Demo。
 
 首先，创建一个名为 `quick-start-influxdb` 的新目录来托管我们的项目，然后创建一个名为 `quick-start.sh` 的新文件并使其可执行：
@@ -53,6 +52,6 @@ do
 done
 ```
 
-请参阅 [GreptimeDB](/user-guide/clients/influxdb-line.md) 或 [GreptimeCloud](/greptimecloud/integrations/influxdb.md) 中的 InfluxDB 文档以获取 InfluxDB API 中的 `host`、`database`、`username` 和 `password` 信息，
+请参阅 [GreptimeDB](/v0.3/user-guide/clients/influxdb-line.md) 或 [GreptimeCloud](/v0.3/greptimecloud/integrations/influxdb.md) 中的 InfluxDB 文档以获取 InfluxDB API 中的 `host`、`database`、`username` 和 `password` 信息，
 
 恭喜你完成了 Demo 的核心部分！现在可以按照 [GitHub 库](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol)中 `README.md` 文件中的说明运行完整的 Demo。

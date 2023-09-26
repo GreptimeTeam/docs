@@ -3,28 +3,35 @@
 `CREATE` is used to create new databases or tables.
 
 ## CREATE DATABASE
+
 ### Syntax
+
 Creates a new database:
+
 ```sql
 CREATE DATABASE [IF NOT EXISTS] db_name
 ```
 
 If the `db_name` database already exists, then GreptimeDB has the following behaviors:
-* Doesn't create a new database.
-* Doesn't return an error when the clause `IF NOT EXISTS` is presented.
-* Otherwise, returns an error.
+
+- Doesn't create a new database.
+- Doesn't return an error when the clause `IF NOT EXISTS` is presented.
+- Otherwise, returns an error.
 
 ### Examples
 
 Creates a `test` database:
+
 ```sql
 CREATE DATABASE test;
 ```
+
 ```sql
 Query OK, 1 row affected (0.05 sec)
 ```
 
 Creates it again with `IF NOT EXISTS`:
+
 ```sql
 CREATE DATABASE IF NOT EXISTS test;
 ```
@@ -32,7 +39,9 @@ CREATE DATABASE IF NOT EXISTS test;
 ## CREATE TABLE
 
 ### Syntax
+
 Creates a new table in the `db` database or the current database in use:
+
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
@@ -55,10 +64,12 @@ The table schema is specified by the brackets before the `ENGINE`. The table sch
 A column definition includes the column `name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints
+
 The table constraints contain the following:
-*  `TIME INDEX` specifies the time index column, which always has one and only one column. It indicates the `Timestamp` type in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
-*  `PRIMARY KEY` specifies the table's primary key column, which indicates the `Tag` type in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB. It cannot include the time index column, but it always implicitly adds the time index column to the end of keys.
-* The Other columns are `Field` columns in the [data model](/user-guide/concepts/data-model.md) of GreptimeDB.
+
+- `TIME INDEX` specifies the time index column, which always has one and only one column. It indicates the `Timestamp` type in the [data model](/v0.4/user-guide/concepts/data-model.md) of GreptimeDB.
+- `PRIMARY KEY` specifies the table's primary key column, which indicates the `Tag` type in the [data model](/v0.4/user-guide/concepts/data-model.md) of GreptimeDB. It cannot include the time index column, but it always implicitly adds the time index column to the end of keys.
+- The Other columns are `Field` columns in the [data model](/v0.4/user-guide/concepts/data-model.md) of GreptimeDB.
 
 :::tip NOTE
 The `PRIMARY KEY` specified in the `CREATE` statement is **not** the primary key in traditional relational databases.
@@ -68,6 +79,7 @@ Actually, The `PRIMARY KEY` in traditional relational databases is equivalent to
 The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
 
 ### Table options
+
 Users can add table options by using `WITH`. The valid options contain the following:
 
 | Option              | Description                        | Value                                                                                                                                               |
@@ -77,6 +89,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `write_buffer_size` | Memtable size of the table         | String value representing a valid size, such as `32MB`, `128MB`, etc. The default value of this option is `32MB`. Supported units are: `MB` / `GB`. |
 
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
+
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
@@ -96,6 +109,7 @@ GreptimeDB supports the following column options:
 | COMMENT `comment` | The column comment. It must be a string value                                         |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
+
 ```sql
 CREATE TABLE system_metrics (
     host STRING PRIMARY KEY,
@@ -109,6 +123,7 @@ CREATE TABLE system_metrics (
 ```
 
 Goes wrong:
+
 ```sql
  Illegal primary keys definition: not allowed to inline multiple primary keys in columns options
 ```
@@ -124,6 +139,7 @@ CREATE TABLE system_metrics (
     PRIMARY KEY(host, idc),
 );
 ```
+
 ```sql
 Query OK, 0 rows affected (0.01 sec)
 ```
@@ -135,6 +151,7 @@ TODO by MichaelScofield
 ## CREATE EXTERNAL TABLE
 
 ### Syntax
+
 Creates a new file external table in the `db` database or the current database in use:
 
 ```sql
@@ -160,7 +177,6 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 ]
 ```
 
-
 ### Table options
 
 | Option     | Description                                                                     | Required     |
@@ -170,11 +186,12 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | `PATTERN`  | Use regex to match files. e.g., `*_today.parquet`                               | Optional     |
 
 #### S3
+
 | Option                      | Description                                                                           | Required     |
 | --------------------------- | ------------------------------------------------------------------------------------- | ------------ |
-| `REGION`                    | AWS region name.  e.g., us-east-1.                                                    | **Required** |
+| `REGION`                    | AWS region name. e.g., us-east-1.                                                     | **Required** |
 | `ENDPOINT`                  | The bucket endpoint                                                                   | Optional     |
-| `ACCESS_KEY_ID`             | ACCESS_KEY_ID	Your access key ID for connecting the AWS S3 compatible object storage. | Optional     |
+| `ACCESS_KEY_ID`             | ACCESS_KEY_ID Your access key ID for connecting the AWS S3 compatible object storage. | Optional     |
 | `SECRET_ACCESS_KEY`         | Your secret access key for connecting the AWS S3 compatible object storage.           | Optional     |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".                   | Optional     |
 | `SESSION_TOKEN`             | Your temporary credential for connecting the AWS S3 service.                          | Optional     |
@@ -182,11 +199,12 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 ### Examples
 
 You can create an external table without any columns definitions:
+
 ```sql
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
-Or 
+Or
 
 ```sql
 CREATE EXTERNAL TABLE city (

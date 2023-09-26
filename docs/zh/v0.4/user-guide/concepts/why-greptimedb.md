@@ -11,7 +11,7 @@ GreptimeDB 是一种云原生时间序列数据库，具有分布式、可扩展
 - **高性能**：处理时间序列数据的特性之一就是大规模的数据摄取、查询和分析。在高并发场景下依然持续进行性能优化也是我们设计 GreptimeDB 时的核心原则之一。
 - **灵活的架构**：通过抽象良好的分层和封装隔离，GreptimeDB 的部署形式可以满足从嵌入式、单机版、传统集群到云原生的各种环境。
 
-![The architecture of GreptimeDB](/public/architecture-2.png)
+![The architecture of GreptimeDB](/architecture-2.png)
 
 _GreptimeDB 的架构_
 
@@ -21,7 +21,7 @@ _GreptimeDB 的架构_
 
 GreptimeDB 专为云而生，充分利用云的优势，如弹性、可扩展性和高可用性。
 
-![Storage/Compute Disaggregation, Compute/Compute separation](/public/storage-compute-disaggregation-compute-compute-separation.png)
+![Storage/Compute Disaggregation, Compute/Compute separation](/storage-compute-disaggregation-compute-compute-separation.png)
 
 _存算分离/算算分离_
 
@@ -47,7 +47,7 @@ _存算分离/算算分离_
 
 「GreptimeDB」结合了 Metric (Measurement/Tag/Field/Timestamp) 模型和关系数据模型（表），提供了一个名为 Time-Series Table 的新数据模型，该模型以行和列的形式呈现数据，将 Metric 中的标签和字段映射到列上，同时通过 `Time Index` 约束来指定时间索引所在列。
 
-![Time-Series Table](/public/time-series-table.png)
+![Time-Series Table](/time-series-table.png)
 
 _时间序列表格_
 

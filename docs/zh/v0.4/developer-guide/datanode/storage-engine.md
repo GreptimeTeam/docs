@@ -11,7 +11,7 @@ a general-purpose use case.
 
 The picture below shows the architecture and process procedure of the storage engine.
 
-![Architecture](/public/storage-engine-arch.png)
+![Architecture](/storage-engine-arch.png)
 
 The architecture is the same as a traditional LSMT engine:
 

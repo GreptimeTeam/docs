@@ -20,4 +20,4 @@ GreptimeDB 将时序表设计为数据存储的基本单位。其类似于传统
 
 GreptimeDB 中的数据是强类型的，当创建表时，Auto-schema 功能提供了一些灵活性。当表被创建后，同一列的数据必须共享共同的数据类型。
 
-在[数据类型](/reference/data-types.md)中找到所有支持的数据类型。
+在[数据类型](/v0.3/reference/data-types.md)中找到所有支持的数据类型。

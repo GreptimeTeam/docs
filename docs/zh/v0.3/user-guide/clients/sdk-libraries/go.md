@@ -39,7 +39,7 @@ func InitClient() *greptime.Client {
 }
 ```
 
-请参考 [Go SDK in reference](/reference/sdk/go.md) 以获得更多信息.
+请参考 [Go SDK in reference](/v0.3/reference/sdk/go.md) 以获得更多信息.
 
 ## 写入数据
 
@@ -48,4 +48,3 @@ func InitClient() *greptime.Client {
 ## 读取数据
 
 请参考 [读取数据](../../query-data/sdk-libraries/go.md).
-

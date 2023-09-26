@@ -48,7 +48,6 @@ SHOW DATABASES LIKE 'p%';
 1 row in set (0.00 sec)
 ```
 
-
 Then change the database:
 
 ```sql
@@ -64,7 +63,7 @@ USE public;
 ## Create Table
 
 :::tip NOTE
-GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
+GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/v0.3/user-guide/write-data/overview.md#automatic-schema-generation).
 :::
 
 You can still create a table manually via SQL if you have specific requirements.
@@ -72,7 +71,7 @@ Suppose we want to create a table named monitor with the following data model:
 
 - `host` is the hostname of the collected standalone machine, which should be a `Tag` that used to filter data when querying.
 - `ts` is the time when the data is collected, which should be the `Timestamp`. It can also used as a filter when querying data with a time range.
-- `cpu` and `memory` are the CPU utilization and memory utilization of the machine, which should be `Field` columns that contain the actual data and are not indexed. 
+- `cpu` and `memory` are the CPU utilization and memory utilization of the machine, which should be `Field` columns that contain the actual data and are not indexed.
 
 The SQL code for creating the table is shown below. In SQL, we use the primary key to specify `Tag`s and the `TIME INDEX` to specify the `Timestamp` column. The remaining columns are `Field`s.
 
@@ -85,7 +84,7 @@ CREATE TABLE monitor (
   PRIMARY KEY(host));
 ```
 
-``` sql
+```sql
 Query OK, 0 row affected (0.03 sec)
 ```
 
@@ -97,16 +96,15 @@ Therefore, it is important to carefully design your data model before creating t
 #### `CREATE TABLE` syntax
 
 - Timestamp column: GreptimeDB is a time-series database system, a time-series column must
-be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
-time-series column can be both `BIGINT` or `TIMESTAMP`. If `BIGINT` is chosen as the
-data type for the time-series column, the inserted value of that column will be
-automatically converted to a timestamp in milliseconds.
+  be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
+  time-series column can be both `BIGINT` or `TIMESTAMP`. If `BIGINT` is chosen as the
+  data type for the time-series column, the inserted value of that column will be
+  automatically converted to a timestamp in milliseconds.
 - Primary key: primary key is used to uniquely define a series of data, which is similar
-to tags in other time-series systems like [InfluxDB][1].
+  to tags in other time-series systems like [InfluxDB][1].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
-[1]: <https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key>
-
+[1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
 
 ## Describe Table
 
@@ -134,10 +132,11 @@ The Semantic Type column describes the data model of the table. The `host` is a 
 
 You can use `show tables` statement to list existing tables
 
-``` sql
+```sql
 SHOW TABLES;
 ```
-``` sql
+
+```sql
 +------------+
 | Tables     |
 +------------+
@@ -150,10 +149,11 @@ SHOW TABLES;
 Notice: `scripts` table is a built-in table that holds User-Defined Functions (UDFs).
 Currently only table name filtering is supported. You can filter existing tables by their names.
 
-``` sql
+```sql
 SHOW TABLES LIKE monitor;
 ```
-``` sql
+
+```sql
 +---------+
 | Tables  |
 +---------+
@@ -162,13 +162,11 @@ SHOW TABLES LIKE monitor;
 1 row in set (0.00 sec)
 ```
 
-
 List tables in other databases:
 
 ```sql
 SHOW TABLES FROM test;
 ```
-
 
 ```sql
 +---------+
@@ -179,12 +177,11 @@ SHOW TABLES FROM test;
 1 row in set (0.01 sec)
 ```
 
-
 ## Alter Table
 
 You can alter the schema of existing tables just like in MySQL database
 
-``` sql
+```sql
 ALTER TABLE monitor ADD COLUMN label VARCHAR;
 ```
 
@@ -192,7 +189,7 @@ ALTER TABLE monitor ADD COLUMN label VARCHAR;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-``` sql
+```sql
 ALTER TABLE monitor DROP COLUMN label;
 ```
 
@@ -200,9 +197,7 @@ ALTER TABLE monitor DROP COLUMN label;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
-
 
 ## Drop Table
 
@@ -211,6 +206,7 @@ Notice: currently only adding/dropping columns is allowed, altering column defin
 ```sql
 DROP TABLE monitor;
 ```
+
 ```sql
 Query OK, 1 row affected (0.01 sec)
 ```
@@ -228,8 +224,7 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 ```json
-{"code":0,"output":[{"affectedrows":1}],"execution_time_ms":10}
+{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
-
+For more information about SQL HTTP request, please refer to [API document](/v0.3/reference/sql/http-api.md).

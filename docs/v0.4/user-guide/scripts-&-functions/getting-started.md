@@ -13,7 +13,7 @@ conda activate Greptime
 
 ### Install GreptimeDB
 
-Please refer to [Installation](/getting-started/try-out-greptimedb.md#Installation).
+Please refer to [Installation](/v0.4/getting-started/try-out-greptimedb.md#Installation).
 
 ## Hello world example
 
@@ -34,9 +34,11 @@ curl --data-binary "@hello.py" -XPOST "http://localhost:4000/v1/scripts?name=hel
 ```
 
 Then call it in SQL:
+
 ```sql
 select hello();
 ```
+
 ```sql
 +-------------------+
 | hello()           |
@@ -46,10 +48,12 @@ select hello();
 1 row in set (1.77 sec)
 ```
 
-Or call it by  [HTTP API](./function.md#http-api):
+Or call it by [HTTP API](./function.md#http-api):
+
 ```sh
 curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
 ```
+
 ```json
 {
   "code": 0,
@@ -64,11 +68,7 @@ curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
             }
           ]
         },
-        "rows": [
-          [
-            "Hello, GreptimeDB"
-          ]
-        ]
+        "rows": [["Hello, GreptimeDB"]]
       }
     }
   ],
@@ -77,7 +77,8 @@ curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
 ```
 
 The function `hello` is a coprocessor with an annotation `@coprocessor`.
-The `returns` in `@coprocessor`  specifies the return column names by the coprocessor and generates the final schema of output:
+The `returns` in `@coprocessor` specifies the return column names by the coprocessor and generates the final schema of output:
+
 ```json
        "schema": {
           "column_schemas": [
@@ -88,24 +89,24 @@ The `returns` in `@coprocessor`  specifies the return column names by the coproc
           ]
         }
 ```
-               
-The  `-> vector[str]` part after the argument list specifies the return types of the function. They are always vectors with concrete types. The return types are required to generate the output of the coprocessor function.
+
+The `-> vector[str]` part after the argument list specifies the return types of the function. They are always vectors with concrete types. The return types are required to generate the output of the coprocessor function.
 
 The function body of `hello` returns a literal string: `"Hello, GreptimeDB"`.The Coprocessor engine will cast it into a vector of constant string and return it.
 
 A coprocessor contains three main parts in summary:
-* The `@coprocessor` annotation.
-* The function input and output.
-* The function body.
+
+- The `@coprocessor` annotation.
+- The function input and output.
+- The function body.
 
 We can call a coprocessor in SQL like a SQL UDF(User Defined Function) or call it by HTTP API.
-
 
 ## SQL example
 
 Save your python code for complex analysis (like the following one which determines the load status by cpu/mem/disk usage) into a file (here its named `system_status.py`):
 
-``` python
+```python
 @coprocessor(args=["host", "idc", "cpu_util", "memory_util", "disk_util"],
              returns = ["host", "idc", "status"],
              sql = "SELECT * FROM system_metrics")
@@ -151,46 +152,34 @@ curl  -XPOST \
 
 Getting the results in `json` format:
 
-``` json
+```json
 {
-   "code":0,
-   "output":{
-      "records":{
-         "schema":{
-            "column_schemas":[
-               {
-                  "name":"host",
-                  "data_type":"String"
-               },
-               {
-                  "name":"idc",
-                  "data_type":"String"
-               },
-               {
-                  "name":"status",
-                  "data_type":"String"
-               }
-            ]
-         },
-         "rows":[
-            [
-               "host1",
-               "idc_a",
-               "green"
-            ],
-            [
-               "host1",
-               "idc_b",
-               "yello"
-            ],
-            [
-               "host2",
-               "idc_a",
-               "red"
-            ]
-         ]
-      }
-   }
+  "code": 0,
+  "output": {
+    "records": {
+      "schema": {
+        "column_schemas": [
+          {
+            "name": "host",
+            "data_type": "String"
+          },
+          {
+            "name": "idc",
+            "data_type": "String"
+          },
+          {
+            "name": "status",
+            "data_type": "String"
+          }
+        ]
+      },
+      "rows": [
+        ["host1", "idc_a", "green"],
+        ["host1", "idc_b", "yello"],
+        ["host2", "idc_a", "red"]
+      ]
+    }
+  }
 }
 ```
 
