@@ -85,7 +85,7 @@
   },
   "lint-staged": {
     "*.md": [
-      "npx markdownlint -f ./docs/**/*.md"
+      "npx markdownlint"
     ]
   }
 }
