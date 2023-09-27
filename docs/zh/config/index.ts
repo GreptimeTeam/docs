@@ -27,6 +27,7 @@ export const zhConfig = async () => ({
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
+
   rewrites: {
     'zh/v0.3/:v0': 'v0.3/:v0',
     'zh/v0.3/:v0/:file': 'v0.3/:v0/:file',
