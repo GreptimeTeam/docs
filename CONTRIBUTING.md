@@ -55,6 +55,16 @@ npm run dev
 
 You can also use `npm run build` to check dead links.
 
+### Preview the Chinese documentation
+
+Add a new file `.env` in the root directory and add the following content:
+
+```shell
+VITE_LANG=zh
+```
+
+Then start a local server with `npm run dev`.
+
 ## PR Title Check
 
 We require pull request title to start with [these
