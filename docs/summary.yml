@@ -23,6 +23,7 @@
     - otlp
     - vector
     - grafana
+    - emqx
     - SDK-Libraries:
       - overview
       - go
