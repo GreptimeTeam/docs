@@ -71,4 +71,4 @@ Then start a local server with `npm run dev`.
 ## PR Title Check
 
 We require pull request title to start with [these
-keywords](https://github.com/GreptimeTeam/docs/pull/4/files#diff-778d6d6e6107ef54c50c49b37df09a4a21b2e42e8a6623aaa24888fa16bc1551R7)
+keywords](https://github.com/GreptimeTeam/docs/blob/main/.github/pr-title-checker-config.json#L7C1-L7C1)
