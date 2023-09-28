@@ -63,7 +63,7 @@ USE public;
 ## Create Table
 
 :::tip NOTE
-GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/v0.3/user-guide/write-data/overview.md#automatic-schema-generation).
+GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/en/v0.3/user-guide/write-data/overview.md#automatic-schema-generation).
 :::
 
 You can still create a table manually via SQL if you have specific requirements.
@@ -227,4 +227,4 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/v0.3/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/en/v0.3/reference/sql/http-api.md).

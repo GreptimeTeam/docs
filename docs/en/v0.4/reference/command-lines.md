@@ -33,7 +33,7 @@ Starts GreptimeDB in standalone mode:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  config/standalone.example.toml
 ```
 
-`-c` specifies the configuration file, for more information check [Configuration](/v0.4/user-guide/operations/configuration.md).
+`-c` specifies the configuration file, for more information check [Configuration](/en/v0.4/user-guide/operations/configuration.md).
 
 Starts GreptimeDB in distributed mode:
 

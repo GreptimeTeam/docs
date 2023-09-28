@@ -21,7 +21,7 @@ dependencies {
 }
 ```
 
-Once the required packages are installed, write the code to create a metric export object that sends metrics to GreptimeDB. For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/v0.4/user-guide/clients/otlp.md) or [GreptimeCloud](/v0.4/greptimecloud/integrations/otlp.md).
+Once the required packages are installed, write the code to create a metric export object that sends metrics to GreptimeDB. For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/en/v0.4/user-guide/clients/otlp.md) or [GreptimeCloud](/en/v0.4/greptimecloud/integrations/otlp.md).
 
 ```java
 String endpoint = String.format("https://%s/v1/otlp/v1/metrics", dbHost);

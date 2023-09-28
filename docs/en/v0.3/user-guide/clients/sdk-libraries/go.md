@@ -39,7 +39,7 @@ func InitClient() *greptime.Client {
 }
 ```
 
-See [Go SDK in reference](/v0.3/reference/sdk/go.md) to get more configurations.
+See [Go SDK in reference](/en/v0.3/reference/sdk/go.md) to get more configurations.
 
 ## Write Data
 

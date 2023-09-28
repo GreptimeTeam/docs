@@ -41,7 +41,7 @@ Those are very similar to the table model everyone is familiar with. The differe
   These columns contain the actual data and are not indexed. Avoid using `Field` columns in query conditions
   which is highly resource-intensive and unperformant.
 
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [Table Management](../table-management.md#create-table) and [CREATE statement](/v0.3/reference/sql/create.md).
+To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [Table Management](../table-management.md#create-table) and [CREATE statement](/en/v0.3/reference/sql/create.md).
 
 ## Design Considerations
 

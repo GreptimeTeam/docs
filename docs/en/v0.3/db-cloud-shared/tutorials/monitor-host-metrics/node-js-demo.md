@@ -25,7 +25,7 @@ npm install @opentelemetry/api@1.4.1 \
 ```
 
 Once the required packages are installed,create a new file named `app.ts` and write the code to create a metric export object that sends metrics to GreptimeDB.
-For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/v0.3/user-guide/clients/otlp.md) or [GreptimeCloud](/v0.3/greptimecloud/integrations/otlp.md).
+For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/en/v0.3/user-guide/clients/otlp.md) or [GreptimeCloud](/en/v0.3/greptimecloud/integrations/otlp.md).
 
 ```ts
 const exporter = new OTLPMetricExporter({

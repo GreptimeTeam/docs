@@ -13,7 +13,7 @@ conda activate Greptime
 
 ### Install GreptimeDB
 
-Please refer to [Installation](/v0.4/getting-started/try-out-greptimedb.md#Installation).
+Please refer to [Installation](/en/v0.4/getting-started/try-out-greptimedb.md#Installation).
 
 ## Hello world example
 

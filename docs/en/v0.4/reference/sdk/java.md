@@ -14,7 +14,7 @@ A Java Client for GreptimeDB, which is compatible with GreptimeDB protocol and l
 
 ## How to use
 
-Please refer to User Guide chapter to learn [how to insall SDK](/v0.4/user-guide/clients/sdk-libraries/java.md), [write data](/v0.4/user-guide/write-data/sdk-libraries/java.md) and [query data](/v0.4/user-guide/query-data/sdk-libraries/java.md).
+Please refer to User Guide chapter to learn [how to insall SDK](/en/v0.4/user-guide/clients/sdk-libraries/java.md), [write data](/en/v0.4/user-guide/write-data/sdk-libraries/java.md) and [query data](/en/v0.4/user-guide/query-data/sdk-libraries/java.md).
 
 ## Global Options (System properties / Java -Dxxx)
 

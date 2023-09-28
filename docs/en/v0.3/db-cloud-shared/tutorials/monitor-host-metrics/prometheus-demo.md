@@ -53,7 +53,7 @@ remote_write:
       password: <password>
 ```
 
-The configuration file above configures Prometheus to scrape metrics from the node exporter and send them to GreptimeDB. For the configration about `<host>`, `<dbname>`, `<username>`, and `<password>`, please refer to the Prometheus documentation in [GreptimeDB](/v0.3/user-guide/clients/prometheus.md) or [GreptimeCloud](/v0.3/greptimecloud/integrations/prometheus/quick-setup.md).
+The configuration file above configures Prometheus to scrape metrics from the node exporter and send them to GreptimeDB. For the configration about `<host>`, `<dbname>`, `<username>`, and `<password>`, please refer to the Prometheus documentation in [GreptimeDB](/en/v0.3/user-guide/clients/prometheus.md) or [GreptimeCloud](/en/v0.3/greptimecloud/integrations/prometheus/quick-setup.md).
 
 Finally, start the containers:
 

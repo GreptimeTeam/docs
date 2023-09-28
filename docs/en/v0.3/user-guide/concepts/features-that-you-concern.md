@@ -30,7 +30,7 @@ The TTL of temperatures is set to be seven days. If you want to set the global T
 global_ttl = "7d"
 ```
 
-You can refer to the TTL option of the table create statement [here](/v0.3/reference/sql/create).
+You can refer to the TTL option of the table create statement [here](/en/v0.3/reference/sql/create).
 
 ## What are the compression rates of GreptimeDB?
 

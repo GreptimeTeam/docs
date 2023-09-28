@@ -6,7 +6,7 @@ Begin to explore GreptimeDB's powerful core features.
 
 You can try out GreptimeDB with our test builds released on the [Download page](https://greptime.com/download).
 
-We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/v0.3/user-guide/operations/configuration.md).
+We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/en/v0.3/user-guide/operations/configuration.md).
 
 ### Binary
 
@@ -69,7 +69,7 @@ You can:
 
 ## Connect
 
-GreptimeDB supports [multiple protocols](/v0.3/user-guide/clients/overview.md). We use MySQL client here for simplicity.
+GreptimeDB supports [multiple protocols](/en/v0.3/user-guide/clients/overview.md). We use MySQL client here for simplicity.
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -83,7 +83,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 
 ## Create table
 
-**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/v0.3/user-guide/write-data/overview.md#automatic-schema-generation).**
+**Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/en/v0.3/user-guide/write-data/overview.md#automatic-schema-generation).**
 
 Now we create a table via MySQL. Let's start by creating the `system_metrics` table which contains system resource metrics, including CPU/memory/disk usage. The data is scraped every 5 seconds.
 
@@ -111,9 +111,9 @@ Field descriptions:
 | disk_util   | double    | The percent use of disks               |
 | ts          | timestamp | Timestamp column incrementing          |
 
-- The table can be created automatically if you are using other protocols. See [Create Table](/v0.3/user-guide/table-management#create-table).
-- For more information about creating table SQL, please refer to [CREATE](/v0.3/reference/sql/create.md).
-- For data types, please check [data types](/v0.3/reference/data-types.md).
+- The table can be created automatically if you are using other protocols. See [Create Table](/en/v0.3/user-guide/table-management#create-table).
+- For more information about creating table SQL, please refer to [CREATE](/en/v0.3/reference/sql/create.md).
+- For data types, please check [data types](/en/v0.3/reference/data-types.md).
 
 ## Insert data
 
@@ -133,7 +133,7 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-For more information about the `INSERT` statement, please refer to [INSERT](/v0.3/reference/sql/insert.md).
+For more information about the `INSERT` statement, please refer to [INSERT](/en/v0.3/reference/sql/insert.md).
 
 ## Query data
 
@@ -207,7 +207,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 2 rows in set (0.03 sec)
 ```
 
-For more information about the `SELECT` statement, please refer to [SELECT](/v0.3/reference/sql/select.md).
+For more information about the `SELECT` statement, please refer to [SELECT](/en/v0.3/reference/sql/select.md).
 
 ## Visualize data
 
@@ -234,11 +234,11 @@ We are committed to the ongoing development and iteration of this open source pr
 
 Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
 
-- [Concepts](/v0.3/user-guide/concepts/overview.md)
-- [Clients](/v0.3/user-guide/clients/overview.md)
-- [Table management](/v0.3/user-guide/table-management.md)
-- [Write data](/v0.3/user-guide/write-data/overview.md)
-- [Query data](/v0.3/user-guide/query-data/overview.md)
-- [Scripts-&-functions](/v0.3/user-guide/scripts-&-functions/overview.md)
-- [Cluster](/v0.3/user-guide/cluster.md)
-- [Operations](/v0.3/user-guide/operations/overview.md)
+- [Concepts](/en/v0.3/user-guide/concepts/overview.md)
+- [Clients](/en/v0.3/user-guide/clients/overview.md)
+- [Table management](/en/v0.3/user-guide/table-management.md)
+- [Write data](/en/v0.3/user-guide/write-data/overview.md)
+- [Query data](/en/v0.3/user-guide/query-data/overview.md)
+- [Scripts-&-functions](/en/v0.3/user-guide/scripts-&-functions/overview.md)
+- [Cluster](/en/v0.3/user-guide/cluster.md)
+- [Operations](/en/v0.3/user-guide/operations/overview.md)

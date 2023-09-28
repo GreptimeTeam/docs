@@ -52,6 +52,6 @@ do
 done
 ```
 
-For information on the host, database, username, and password required for the InfluxDB API, please refer to the InfluxDB documentation in [GreptimeDB](/v0.3/user-guide/clients/influxdb-line.md) or [GreptimeCloud](/v0.3/greptimecloud/integrations/influxdb.md).
+For information on the host, database, username, and password required for the InfluxDB API, please refer to the InfluxDB documentation in [GreptimeDB](/en/v0.3/user-guide/clients/influxdb-line.md) or [GreptimeCloud](/en/v0.3/greptimecloud/integrations/influxdb.md).
 
 Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol).
