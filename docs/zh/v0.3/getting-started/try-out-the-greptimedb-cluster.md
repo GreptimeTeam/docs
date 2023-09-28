@@ -22,7 +22,7 @@ gtctl playground
 
 你可以使用 [开始探索 GreptimeDB](/zh/v0.3/getting-started/try-out-greptimedb.md) 中的相同命令来与 GreptimeDB 集群进行交互。
 
-更多的细节，请参考 [gtctl operations](/v0.3/user-guide/operations/gtctl.md)。
+更多的细节，请参考 [gtctl operations](/zh/v0.3/user-guide/operations/gtctl.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 

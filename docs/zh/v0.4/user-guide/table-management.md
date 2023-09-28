@@ -62,7 +62,7 @@ USE public;
 ## 创建表
 
 :::tip NOTE
-注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [自动生成表结构](/v0.4/user-guide/write-data/overview.md#自动生成表结构)\*\*。
+注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [自动生成表结构](/zh/v0.4/user-guide/write-data/overview.md#自动生成表结构)\*\*。
 :::
 
 如果您有特殊需要，仍然可以通过 SQL 手动创建表。假设我们想要创建一个名为 `monitor` 的表，其数据模型如下：
@@ -224,4 +224,4 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/v0.4/reference/sql/http-api.md)。
+关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/zh/v0.4/reference/sql/http-api.md)。

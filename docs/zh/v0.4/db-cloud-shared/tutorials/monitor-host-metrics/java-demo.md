@@ -22,7 +22,7 @@ dependencies {
 ```
 
 安装完依赖后，编写代码创建一个 Metric Exporter 对象，用于将 metrics 发送到 GreptimeDB。
-请参考 [GreptimeDB](/v0.4/user-guide/clients/otlp.md) 或 [GreptimeCloud](/v0.4/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
+请参考 [GreptimeDB](/zh/v0.4/user-guide/clients/otlp.md) 或 [GreptimeCloud](/zh/v0.4/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
 
 ```java
 String endpoint = String.format("https://%s/v1/otlp/v1/metrics", dbHost);

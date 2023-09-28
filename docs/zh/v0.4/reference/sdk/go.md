@@ -11,8 +11,8 @@
 
 ## 如何使用
 
-请参考用户指南章节学习 [如何安装 SDK](/v0.4/user-guide/clients/sdk-libraries/go.md)、
-[如何写入数据](/v0.4/user-guide/write-data/sdk-libraries/go.md) 和 [如何查询数据](/v0.4/user-guide/query-data/sdk-libraries/go.md)。
+请参考用户指南章节学习 [如何安装 SDK](/zh/v0.4/user-guide/clients/sdk-libraries/go.md)、
+[如何写入数据](/zh/v0.4/user-guide/write-data/sdk-libraries/go.md) 和 [如何查询数据](/zh/v0.4/user-guide/query-data/sdk-libraries/go.md)。
 
 ## 配置
 

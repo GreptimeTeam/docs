@@ -23,7 +23,7 @@ The query result looks like the following:
 3 rows in set (0.00 sec)
 ```
 
-请前往 [SELECT](/v0.4/reference/sql/select.md) 查看更多.
+请前往 [SELECT](/zh/v0.4/reference/sql/select.md) 查看更多.
 
 ### 函数
 
@@ -56,7 +56,7 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-请前往 [Functions](/v0.4/reference/sql/functions.md) 查看更多.
+请前往 [Functions](/zh/v0.4/reference/sql/functions.md) 查看更多.
 
 ### Group By
 
@@ -76,7 +76,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 2 rows in set (0.00 sec)
 ```
 
-请参考 [GROUP BY](/v0.4/reference/sql/group_by.md) 获取更多相关信息。
+请参考 [GROUP BY](/zh/v0.4/reference/sql/group_by.md) 获取更多相关信息。
 
 ### 日期和时间示例
 
@@ -86,7 +86,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-请参考 [INTERVAL](/v0.4/reference/sql/functions.md#interval) 获取更多信息。
+请参考 [INTERVAL](/zh/v0.4/reference/sql/functions.md#interval) 获取更多信息。
 
 #### 将数字转换为时间戳
 
@@ -96,7 +96,7 @@ select * from system_metrics where ts > arrow_cast(1690252336408, 'Timestamp(Mil
 
 这个查询将数字 1690252336408（Unix Epoch 2023-07-25 10:32:16.408，毫秒分辨率）转换为带有毫秒精度的时间戳类型。
 
-请参考 [arrow_cast](/v0.4/reference/sql/functions.md#arrow-cast) 获取更多信息.
+请参考 [arrow_cast](/zh/v0.4/reference/sql/functions.md#arrow-cast) 获取更多信息.
 
 #### 将字符串时间转换为时间戳
 
@@ -106,7 +106,7 @@ select * from system_metrics where ts > '2023-07-25 10:32:16.408'::timestamp
 
 这个查询使用 `::` 语法将字符串时间转换为时间戳类型，所有 SQL 类型都可以在 `timestamp` 的位置上使用。
 
-请参考 [::timestamp](/v0.4/reference/sql/functions.md#timestamp) 获取更多信息.
+请参考 [::timestamp](/zh/v0.4/reference/sql/functions.md#timestamp) 获取更多信息.
 
 #### 从时间戳中提取一年中的第几天
 
@@ -125,7 +125,7 @@ Output:
 1 row in set (0.003 sec)
 ```
 
-SQL 语句中的 `DOY` 是 `day of the year` 的缩写。请参考 [date_part](/v0.4/reference/sql/functions.md#date-part) 获取更多信息。
+SQL 语句中的 `DOY` 是 `day of the year` 的缩写。请参考 [date_part](/zh/v0.4/reference/sql/functions.md#date-part) 获取更多信息。
 
 ## HTTP API
 
@@ -179,4 +179,4 @@ http://localhost:4000/v1/sql?db=public
 }
 ```
 
-请参考 [API 文档](/v0.4/reference/sql/http-api.md)获取更详细的 HTTP 请求的内容。
+请参考 [API 文档](/zh/v0.4/reference/sql/http-api.md)获取更详细的 HTTP 请求的内容。

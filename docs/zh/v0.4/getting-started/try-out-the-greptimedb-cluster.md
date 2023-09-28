@@ -22,7 +22,7 @@ gtctl playground
 
 你可以使用 [开始探索 GreptimeDB](/zh/v0.4/getting-started/try-out-greptimedb.md) 中的相同命令来与 GreptimeDB 集群进行交互。
 
-更多的细节，请参考 [gtctl operations](/v0.4/user-guide/operations/gtctl.md)。
+更多的细节，请参考 [gtctl operations](/zh/v0.4/user-guide/operations/gtctl.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 
@@ -61,4 +61,4 @@ kubectl port-forward svc/mycluster-frontend \
 4242:4242
 ```
 
-您可以打开新的终端，通过客户端工具（mysql 或 psql）连接数据库，并按照 [开始探索 GreptimeDB](/v0.4/getting-started/try-out-greptimedb.md) 的方式操作数据。
+您可以打开新的终端，通过客户端工具（mysql 或 psql）连接数据库，并按照 [开始探索 GreptimeDB](/zh/v0.4/getting-started/try-out-greptimedb.md) 的方式操作数据。
