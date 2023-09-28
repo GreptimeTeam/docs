@@ -130,4 +130,3 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```shell
 ./gtctl cluster delete mydb --tear-down-etcd
 ```
-

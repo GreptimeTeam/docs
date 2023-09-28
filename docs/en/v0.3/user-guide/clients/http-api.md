@@ -56,4 +56,5 @@ InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line.md) 
 * [OpenTSDB](../write-data/opentsdb.md)
 
 ## Query Data
+
 * [SQL](../query-data/sql.md)
