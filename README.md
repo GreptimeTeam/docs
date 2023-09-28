@@ -8,19 +8,26 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 [1]: https://docs.greptime.com
 
-# Table of Contents
+## Contributing
 
-## Introduction
+Thanks a lot for considering contributing to GreptimeDB. People like you would make
+GreptimeDB a great product.
+
+Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
+
+## Table of Contents
+
+### Introduction
 
 - [Introduction](./docs/index.md)
 
-## Getting Started
+### Getting Started
 
 If you are new to Greptime DB, documents below will help you quickly get started
 
 - [Getting started](./docs/getting-started/overview.md)
 
-## User Guide
+### User Guide
 
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
@@ -34,18 +41,11 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 - [Operations](./docs/user-guide/Operations/overview.md)
 - [Integration](./docs/user-guide/integration.md)
 
-## Developer Guide
+### Developer Guide
 
 Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
 
-  - [Overview](./docs/developer-guide/overview.md)
-  - [Frontend](./docs/developer-guide/frontend/overview.md)
-  - [Datanode](./docs/developer-guide/datanode/overview.md)
-  - [Meta](./docs/developer-guide/meta/overview.md)
-
-# Contributing
-
-Thanks a lot for considering contributing to GreptimeDB. People like you would make
-GreptimeDB a great product.
-
-Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
+- [Overview](./docs/developer-guide/overview.md)
+- [Frontend](./docs/developer-guide/frontend/overview.md)
+- [Datanode](./docs/developer-guide/datanode/overview.md)
+- [Meta](./docs/developer-guide/meta/overview.md)
