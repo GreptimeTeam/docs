@@ -23,6 +23,7 @@
        ts TIMESTAMP DEFAULT current_timestamp(),
        n INT,
        row_id INT,
+       PRIMARY KEY(n),
        TIME INDEX (ts)
    )
    PARTITION BY RANGE COLUMNS (n) (
@@ -40,6 +41,7 @@
        ->     ts TIMESTAMP DEFAULT current_timestamp(),
        ->     n INT,
        ->     row_id INT,
+       ->     TIME INDEX (ts)
        ->     TIME INDEX (ts)
        -> )
        -> PARTITION BY RANGE COLUMNS (n) (

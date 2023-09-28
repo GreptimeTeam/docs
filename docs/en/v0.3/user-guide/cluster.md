@@ -23,6 +23,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
        ts TIMESTAMP DEFAULT current_timestamp(),
        n INT,
        row_id INT,
+       PRIMARY KEY(n),
        TIME INDEX (ts)
    )
    PARTITION BY RANGE COLUMNS (n) (
@@ -40,6 +41,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
        ->     ts TIMESTAMP DEFAULT current_timestamp(),
        ->     n INT,
        ->     row_id INT,
+       ->     PRIMARY KEY(n),
        ->     TIME INDEX (ts)
        -> )
        -> PARTITION BY RANGE COLUMNS (n) (
