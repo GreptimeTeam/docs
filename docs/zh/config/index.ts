@@ -1,4 +1,11 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
+import { CURRENT_VERSION } from '../../.vitepress/config/common'
+
+// TODO
+const filePath = `zh/${CURRENT_VERSION}/:file`
+const groupPath = `zh/${CURRENT_VERSION}/:group/:file`
+const typePath = `zh/${CURRENT_VERSION}/:group/:type/:file`
+const namePath = `zh/${CURRENT_VERSION}/:group/:type/:file/:name`
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
@@ -22,10 +29,15 @@ export const zhConfig = async () => ({
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
   rewrites: {
-    'zh/:file': ':file',
-    'zh/:group/:file': ':group/:file',
-    'zh/:group/:type/:file': ':group/:type/:file',
-    'zh/:group/:type/:file/:name': ':group/:type/:file/:name',
+    [filePath]: ':file',
+    [groupPath]: ':group/:file',
+    [typePath]: ':group/:type/:file',
+    [namePath]: ':group/:type/:file/:name',
+    'zh/v0.3/:v0': 'v0.3/:v0',
+    'zh/v0.3/:v0/:file': 'v0.3/:v0/:file',
+    'zh/v0.3/:v0/:group/:file': 'v0.3/:v0/:group/:file',
+    'zh/v0.3/:v0/:group/:type/:file': 'v0.3/:v0/:group/:type/:file',
+    'zh/v0.3/:v0/:group/:type/:file/:name': 'v0.3/:v0/:group/:type/:file/:name',
   },
   locales: {
     root: { label: '简体中文', lang: 'zh-CN' },
@@ -63,8 +75,24 @@ export const zhConfig = async () => ({
         text: '博客',
         link: 'https://greptime.com/blogs',
       },
+      {
+        text: '历史版本',
+        items: [
+          {
+            text: `${CURRENT_VERSION}(最新)`,
+            link: '/',
+          },
+          {
+            text: 'v0.3',
+            link: '/v0.3/',
+          },
+        ],
+      },
     ],
-    sidebar: await makeSidebar('zh'),
+    sidebar: {
+      '/': await makeSidebar('zh', CURRENT_VERSION),
+      '/v0.3/': await makeSidebar('zh', 'v0.3'),
+    },
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: '在 GitHub 上编辑此页',

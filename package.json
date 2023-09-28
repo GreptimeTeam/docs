@@ -51,6 +51,11 @@
     "vue-demi": "^0.13.6"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "markdownlint-cli": "^0.37.0",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-vue-components": "^0.24.0",
     "vitepress": "^1.0.0-alpha.75",
@@ -59,7 +64,9 @@
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "serve": "vitepress serve docs"
+    "serve": "vitepress serve docs",
+    "lint-staged": "npx lint-staged",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -75,5 +82,10 @@
     "hooks": {
       "commit-msg": "commitlint -e $GIT_PARAMS"
     }
+  },
+  "lint-staged": {
+    "*.md": [
+      "npx markdownlint"
+    ]
   }
 }

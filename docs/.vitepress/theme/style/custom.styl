@@ -43,12 +43,21 @@
   background var(--color-light-2)
   box-shadow 1px 0px 0px 0px var(--color-gray-6)
 
-.VPNavBarMenu .VPLink 
+.VPNavBarMenu .VPLink,.VPFlyout 
   padding 0
   margin 0 12px
   line-height 22px
   font-size var(--font-size-m)
   color var(--color-dark-text)
+.VPNavBarMenu .VPFlyout
+  .text
+    color var(--color-dark-text)
+  &:hover .text 
+    color var(--vp-c-brand)
+  .VPLink
+    color var(--vp-c-text-1)
+  .link.active
+    color var(--vp-c-brand)
 
 .VPNavScreen .VPSocialLink 
   color var(--vp-c-text-2) !important 

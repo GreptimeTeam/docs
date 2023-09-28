@@ -1,4 +1,11 @@
 import { makeSidebar } from '../theme/serverUtils'
+import { CURRENT_VERSION } from './common'
+
+// TODO
+const filePath = `en/${CURRENT_VERSION}/:file`
+const groupPath = `en/${CURRENT_VERSION}/:group/:file`
+const typePath = `en/${CURRENT_VERSION}/:group/:type/:file`
+const namePath = `en/${CURRENT_VERSION}/:group/:type/:file/:name`
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -24,6 +31,17 @@ export const enConfig = async () => ({
   locales: {
     root: { label: 'English' },
   },
+  rewrites: {
+    [filePath]: ':file',
+    [groupPath]: ':group/:file',
+    [typePath]: ':group/:type/:file',
+    [namePath]: ':group/:type/:file/:name',
+    'en/v0.3/:v0': 'v0.3/:v0',
+    'en/v0.3/:v0/:file': 'v0.3/:v0/:file',
+    'en/v0.3/:v0/:group/:file': 'v0.3/:v0/:group/:file',
+    'en/v0.3/:v0/:group/:type/:file': 'v0.3/:v0/:group/:type/:file',
+    'en/v0.3/:v0/:group/:type/:file/:name': 'v0.3/:v0/:group/:type/:file/:name',
+  },
   themeConfig: {
     nav: [
       {
@@ -34,7 +52,24 @@ export const enConfig = async () => ({
         text: 'Blogs',
         link: 'https://greptime.com/blogs',
       },
+      {
+        // TODO change version
+        text: 'The Version Of History',
+        items: [
+          {
+            text: `${CURRENT_VERSION}(latest)`,
+            link: '/',
+          },
+          {
+            text: 'v0.3',
+            link: '/v0.3/',
+          },
+        ],
+      },
     ],
-    sidebar: await makeSidebar('en'),
+    sidebar: {
+      '/': await makeSidebar('en', CURRENT_VERSION),
+      '/v0.3/': await makeSidebar('en', 'v0.3'),
+    },
   },
 })

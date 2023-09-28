@@ -1,11 +1,14 @@
+export const CURRENT_VERSION = 'v0.4'
+export const currentVersionPath = `/${CURRENT_VERSION}/`
+
 export const common = async () => {
   return {
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
     locales: {
-      zh: { label: '简体中文', lang: 'zh', link: 'https://docs.greptime.cn/' },
-      en: { label: 'English', lang: 'en', link: 'https://docs.greptime.com/' },
+      zh: { label: '简体中文', lang: 'zh-CN', link: 'https://docs.greptime.cn/' },
+      en: { label: 'English', lang: 'en-US', link: 'https://docs.greptime.com/' },
     },
     themeConfig: {
       search: {
