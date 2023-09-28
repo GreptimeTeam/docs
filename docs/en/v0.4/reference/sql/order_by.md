@@ -3,7 +3,7 @@
 The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the
 `SELECT` statement.
 
-# Syntax
+## Syntax
 
 The basic syntax of the `ORDER BY` clause is as follows:
 
@@ -16,7 +16,7 @@ ORDER BY column1 [ASC | DESC], column2 [ASC | DESC], ...;
 The `ORDER BY` clause can be used with one or more columns. The ASC keyword is used to sort the data
 in ascending order (default), and the DESC keyword is used to sort the data in descending order.
 
-# Examples
+## Examples
 
 Consider the following table named "system_metrics":
 

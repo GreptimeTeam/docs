@@ -43,7 +43,7 @@ Provides a detailed overview of how GreptimeDB operates and assists you in parti
 - [Datanode](./docs/v0.4/developer-guide/datanode/overview.md)
 - [Meta](./docs/v0.4/developer-guide/meta/overview.md)
 
-# Contributing
+## Contributing
 
 Thanks a lot for considering contributing to GreptimeDB. People like you would make
 GreptimeDB a great product.
