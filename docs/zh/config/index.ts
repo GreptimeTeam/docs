@@ -1,6 +1,7 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
 import { CURRENT_VERSION } from '../../.vitepress/config/common'
 
+// TODO
 const filePath = `zh/${CURRENT_VERSION}/:file`
 const groupPath = `zh/${CURRENT_VERSION}/:group/:file`
 const typePath = `zh/${CURRENT_VERSION}/:group/:type/:file`
@@ -27,18 +28,16 @@ export const zhConfig = async () => ({
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
-
   rewrites: {
-    'zh/v0.3/:v0': 'v0.3/:v0',
-    'zh/v0.3/:v0/:file': 'v0.3/:v0/:file',
-    'zh/v0.3/:v0/:group/:file': 'v0.3/:v0/:group/:file',
-    'zh/v0.3/:v0/:group/:type/:file': 'v0.3/:v0/:group/:type/:file',
-    'zh/v0.3/:v0/:group/:type/:file/:name': 'v0.3/:v0/:group/:type/:file/:name',
-
-    [filePath]: ':file',
-    [groupPath]: ':group/:file',
-    [typePath]: ':group/:type/:file',
-    [namePath]: ':group/:type/:file/:name',
+    // [filePath]: ':file',
+    // [groupPath]: ':group/:file',
+    // [typePath]: ':group/:type/:file',
+    // [namePath]: ':group/:type/:file/:name',
+    'zh/:v0': ':v0',
+    'zh/:v0/:file': ':v0/:file',
+    'zh/:v0/:group/:file': ':v0/:group/:file',
+    'zh/:v0/:group/:type/:file': ':v0/:group/:type/:file',
+    'zh/:v0/:group/:type/:file/:name': ':v0/:group/:type/:file/:name',
   },
   locales: {
     root: { label: '简体中文', lang: 'zh-CN' },
@@ -81,7 +80,7 @@ export const zhConfig = async () => ({
         items: [
           {
             text: `${CURRENT_VERSION}(最新)`,
-            link: '/',
+            link: '/v0.4/',
           },
           {
             text: 'v0.3',
@@ -91,7 +90,7 @@ export const zhConfig = async () => ({
       },
     ],
     sidebar: {
-      '/': await makeSidebar('zh', CURRENT_VERSION),
+      '/v0.4/': await makeSidebar('zh', CURRENT_VERSION),
       '/v0.3/': await makeSidebar('zh', 'v0.3'),
     },
     editLink: {

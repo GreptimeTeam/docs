@@ -1,6 +1,7 @@
 import { makeSidebar } from '../theme/serverUtils'
 import { CURRENT_VERSION } from './common'
 
+// TODO
 const filePath = `${CURRENT_VERSION}/:file`
 const groupPath = `${CURRENT_VERSION}/:group/:file`
 const typePath = `${CURRENT_VERSION}/:group/:type/:file`
@@ -31,10 +32,15 @@ export const enConfig = async () => ({
     root: { label: 'English' },
   },
   rewrites: {
-    [filePath]: ':file',
-    [groupPath]: ':group/:file',
-    [typePath]: ':group/:type/:file',
-    [namePath]: ':group/:type/:file/:name',
+    // [filePath]: ':file',
+    // [groupPath]: ':group/:file',
+    // [typePath]: ':group/:type/:file',
+    // [namePath]: ':group/:type/:file/:name',
+    'en/:v0': ':v0',
+    'en/:v0/:file': ':v0/:file',
+    'en/:v0/:group/:file': ':v0/:group/:file',
+    'en/:v0/:group/:type/:file': ':v0/:group/:type/:file',
+    'en/:v0/:group/:type/:file/:name': ':v0/:group/:type/:file/:name',
   },
   themeConfig: {
     nav: [
@@ -52,7 +58,7 @@ export const enConfig = async () => ({
         items: [
           {
             text: `${CURRENT_VERSION}(latest)`,
-            link: '/',
+            link: '/v0.4/',
           },
           {
             text: 'v0.3',
@@ -62,7 +68,7 @@ export const enConfig = async () => ({
       },
     ],
     sidebar: {
-      '/': await makeSidebar('en', CURRENT_VERSION),
+      '/v0.4/': await makeSidebar('en', CURRENT_VERSION),
       '/v0.3/': await makeSidebar('en', 'v0.3'),
     },
   },
