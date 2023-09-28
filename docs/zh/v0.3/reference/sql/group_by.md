@@ -4,6 +4,7 @@ SQL 中的 `GROUP BY` 语句用于对具有一个或多个列中的相同值的�
 该子句通常与聚合函数（如 `COUNT`、`SUM`、`AVG` 等）一起使用，以生成汇总报表。
 
 ## Syntax
+
 `GROUP BY` 的基本语法如下：
 
 ```sql
@@ -11,6 +12,7 @@ SELECT column1, column2, ..., aggregate_function(column_name)
 FROM table_name
 GROUP BY column1, column2, ...;
 ```
+
 `GROUP BY` 语句根据子句中指定的列对结果集进行分组。
 聚合函数应用于具有相同值的组。
 
@@ -54,6 +56,7 @@ GROUP BY idc;
 ```
 
 ### 根据 Time Interval 聚合
+
 要获取 memory_util 的日均值，SQL 如下：
 
 ```sql

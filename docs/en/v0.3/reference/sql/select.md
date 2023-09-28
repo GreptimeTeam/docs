@@ -4,6 +4,7 @@ The `SELECT` statement allows you to specify a list of columns and expressions t
 one or more tables.
 
 ## Basic Syntax
+
 The basic syntax for a `SELECT` statement is as follows:
 
 ```sql
@@ -24,6 +25,7 @@ FROM table_name;
 ```
 
 ## Filtering SELECT Statements with WHERE Clause
+
 The WHERE clause is used to filter the results of a `SELECT` statement based on a specified condition. The
 syntax for using WHERE clause is as follows:
 
@@ -49,9 +51,8 @@ FROM system_metrics
 WHERE idc IN ('idc0', 'idc1');
 ```
 
-
-
 ## SELECT Statements with LIMIT Clause
+
 The `LIMIT` clause is used to limit the number of rows returned by a SELECT statement. The syntax for using
 `LIMIT` clause is as follows:
 
@@ -61,9 +62,10 @@ FROM table_name
 LIMIT number_of_rows;
 ```
 
-Here, the number_of_rows parameter specifies the maximum number of rows to return. 
+Here, the number_of_rows parameter specifies the maximum number of rows to return.
 
 ## Examples of LIMIT Clause
+
 Here are some examples of using the `LIMIT` clause:
 
 ```sql
@@ -74,6 +76,7 @@ LIMIT 10;
 ```
 
 ## Joining Tables with SELECT Statements
+
 The `JOIN` clause is used to combine rows from two or more tables based on a related column between them. The syntax for using `JOIN` clause is as follows:
 
 ```sql
@@ -88,6 +91,7 @@ Here, the table1 and table2 are the names of the tables to be joined. The column
 Please refer to [JOIN](join.md) for more information.
 
 ## Grouping SELECT Statements with GROUP BY Clause
+
 The `GROUP BY` clause is used to group the rows in a `SELECT` statement based on one or more columns. The syntax for using `GROUP BY` clause is as follows:
 
 ```sql

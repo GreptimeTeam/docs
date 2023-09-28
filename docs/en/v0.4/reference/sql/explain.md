@@ -11,10 +11,13 @@ EXPLAIN [ANALYZE] SELECT ...
 The `ANALYZE` clause will execute the statement and measure time spent at each plan node and the total rows of the output etc.
 
 ## Examples
+
 Explains the following query:
+
 ```sql
 EXPLAIN SELECT * FROM monitor where host='host1';
 ```
+
 ```sql
 | plan_type     | plan                                                                                                                                                                                                                                                         
 | logical_plan  | Projection: monitor.host, monitor.ts, monitor.cpu, monitor.memory
@@ -30,9 +33,11 @@ EXPLAIN SELECT * FROM monitor where host='host1';
 The column `plan_type` indicates whether it's a`logical_plan` or `physical_plan`. And the column `plan` explains the plan in detail.
 
 Explains the execution of the plan by `ANALYZE`:
+
 ```sql
 EXPLAIN ANALYZE SELECT * FROM monitor where host='host1';
 ```
+
 ```sql
 | plan_type         | plan
 | Plan with Metrics | CoalescePartitionsExec, metrics=[output_rows=1, elapsed_compute=79.167µs, spill_count=0, spilled_bytes=0, mem_used=0]
@@ -46,6 +51,5 @@ EXPLAIN ANALYZE SELECT * FROM monitor where host='host1';
                 ExecutionPlan(PlaceHolder), metrics=[]
                 
 ```
-
 
 TODO: explains the output of `ANALYZE`.

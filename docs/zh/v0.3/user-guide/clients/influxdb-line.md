@@ -53,4 +53,3 @@ date: Wed, 22 Feb 2023 02:30:46 GMT
 ## 写入数据
 
 请参考 [写入数据](../write-data/influxdb-line.md).
-

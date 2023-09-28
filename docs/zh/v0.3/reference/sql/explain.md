@@ -7,6 +7,7 @@
 ```sql
 EXPLAIN [ANALYZE] SELECT ...
 ```
+
 `ANALYZE` 子句将执行语句并测量每个计划节点花费的时间以及输出的总行数等。
 
 ## 示例
@@ -48,6 +49,5 @@ EXPLAIN ANALYZE SELECT * FROM monitor where host='host1';
                 ExecutionPlan(PlaceHolder), metrics=[]
                 
 ```
-
 
 <!-- TODO: explains the output of `ANALYZE`. -->

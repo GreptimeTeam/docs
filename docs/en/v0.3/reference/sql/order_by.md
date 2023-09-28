@@ -1,6 +1,6 @@
 # ORDER BY
 
-The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the 
+The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the
 `SELECT` statement.
 
 # Syntax
@@ -13,7 +13,7 @@ FROM table_name
 ORDER BY column1 [ASC | DESC], column2 [ASC | DESC], ...;
 ```
 
-The `ORDER BY` clause can be used with one or more columns. The ASC keyword is used to sort the data 
+The `ORDER BY` clause can be used with one or more columns. The ASC keyword is used to sort the data
 in ascending order (default), and the DESC keyword is used to sort the data in descending order.
 
 # Examples
@@ -32,7 +32,6 @@ Consider the following table named "system_metrics":
 +-------+-------+----------+-------------+-----------+---------------------+
 ```
 
-
 To sort the data in ascending order based on the "memory_util" column, the following SQL query can be used:
 
 ```sql
@@ -41,6 +40,7 @@ ORDER BY memory_util ASC;
 ```
 
 The result of the above query would be:
+
 ```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
@@ -61,6 +61,7 @@ ORDER BY disk_util DESC;
 ```
 
 The result of the above query would be:
+
 ```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |

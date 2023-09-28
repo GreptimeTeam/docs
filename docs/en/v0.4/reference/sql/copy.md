@@ -10,12 +10,12 @@ The syntax for using `COPY TO` is as follows:
 COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 ```
 
-The command starts with the keyword `COPY`, followed by the name of the table you want to export data from (`tbl` in this case). 
+The command starts with the keyword `COPY`, followed by the name of the table you want to export data from (`tbl` in this case).
 
 `TO` specifies the file path and name to save the exported
-data (`/xxx/xxx/output.parquet` in this case). 
+data (`/xxx/xxx/output.parquet` in this case).
 
-`WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics. 
+`WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
 
 ## COPY FROM
 
@@ -38,8 +38,8 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 
 `FORMAT` specifies the file format of the imported file. In this example, the format is Parquet.
 
-The option `PATTERN` allows the usage of wildcard characters like * to specify multiple input files that 
-match a certain pattern. For example, you can use the following syntax to import all files in the 
+The option `PATTERN` allows the usage of wildcard characters like * to specify multiple input files that
+match a certain pattern. For example, you can use the following syntax to import all files in the
 directory(which must be an absolute path) "/path/to/folder" with the filename that contains `parquet`:
 
 ```sql
@@ -56,7 +56,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 | Option  | Description  | Required |
 |---|---|---|
-| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet	 | **Required** |
+| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 
 ### Connection Options
@@ -83,15 +83,15 @@ Another way is using Virtual-hosted–style. The following example shows the cor
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-**CONNECTION** 
+**CONNECTION**
 
 You can set the following **CONNECTION** options:
 
 | Option  | Description  | Required |
 |---|---|---|
-| `REGION` | AWS region name.  e.g., us-east-1.	 | **Required** |
+| `REGION` | AWS region name.  e.g., us-east-1.  | **Required** |
 | `ENDPOINT`  | The bucket endpoint  | Optional |
-| `ACCESS_KEY_ID` | ACCESS_KEY_ID	Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
-| `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.	 | Optional |
+| `ACCESS_KEY_ID` | ACCESS_KEY_ID Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
+| `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.  | Optional |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |
-| `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service.	| Optional |
+| `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service. | Optional |

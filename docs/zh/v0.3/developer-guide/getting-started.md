@@ -30,6 +30,7 @@ git clone https://github.com/GreptimeTeam/greptimedb.git
 cd greptimedb
 cargo run -- standalone start
 ```
+
 接下来，你可以选择与 GreptimeDB 交互的协议。
 
 如果你只想构建服务器而不运行它：

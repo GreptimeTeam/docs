@@ -8,7 +8,7 @@ GreptimeDB 支持下列数据类型：
 |`smallint`| 16-bit signed big integers between -32768~32767 | |2 Bytes |
 |`int`| 32-bit signed integers between -2147483648~2147483647| `integer`|  4 Bytes |
 |`bigint`| 64-bit signed big integers between -9223372036854775808~9223372036854775807| | 8 Bytes |
-|`varchar`|UTF-8 encoded strings|`text`<br />/`string`<br />/ `char `| The length of the strings |
+|`varchar`|UTF-8 encoded strings|`text`<br />/`string`<br />/ `char`| The length of the strings |
 |`float`|32-bit IEEE754 floating point values || 4 Bytes |
 |`double`|Double precision IEEE 754 floating point values|| 8 Bytes |
 |`boolean`|Boolean values|| 1 Byte |

@@ -24,7 +24,6 @@ const exporter = new OTLPMetricExporter({
 })
 ```
 
-
 ```Go [Go]
 auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))
 exporter, err := otlpmetrichttp.New(
@@ -65,7 +64,6 @@ exporter = OTLPMetricExporter(
 
 You can find executable demos on GitHub at the links: [Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
 
-
 :::tip NOTE
 The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
 :::
@@ -75,6 +73,7 @@ For more information on the example code, please refer to the official documenta
 ## Data Model
 
 The OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
+
 - The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
 - All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
 - The timestamp of the data point will be used as the timestamp index of GreptimeDB, and the column name is `greptime_timestamp`.

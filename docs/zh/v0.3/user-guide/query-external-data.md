@@ -35,6 +35,7 @@ DESC TABLE taxi_zone_lookup;
 ```
 
 现在就可以查询外部表了：
+
 ```sql
 SELECT "Zone","Borough" FROM taxi_zone_lookup LIMIT 5;
 ```
@@ -71,11 +72,13 @@ total 165368
 ```
 
 创建外部表
+
 ```sql
 CREATE EXTERNAL TABLE yellow_tripdata with(location='/tmp/external/',format='parquet');
 ```
 
 执行查询：
+
 ```sql
 SELECT count(*) FROM yellow_tripdata;
 ```

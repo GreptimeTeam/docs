@@ -10,7 +10,7 @@ We think the python coprocessor in GreptimeDB is a perfect replacement for store
 
 All the examples can be found in [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples).
 
-# Note:
+# Note
 
 The Python coprocessor is currently in its experimental phase, and the API may undergo some changes.
 
@@ -21,5 +21,6 @@ The recommended way is to utilize `conda` for managing your Python environment. 
 A less recommended way is to manually install the exact version of Python required and set the `LD_LIBRARY_PATH` environment variable to the directory containing the `libpython<VERSION>.so` file. The version number of `<VERSION>` varies according to the version of Python being used.
 
 There is two Backend for Python Coprocessor:
+
 1. RustPython Interpreter: this is supported without installing any Python library, but it is not as fast as CPython Backend. The Release Binary without `pyo3` in its name uses RustPython Interpreter. While you can still use Python Syntax in RustPython Interpreter,  you can't use any third-parties libs.
 2. CPython Interpreter: this is the most commonly used version of Python. It allows you to use all sorts of third-parties libs, but you need to install the correct Python shared library. Any Release Binary with `pyo3` in its name uses CPython Interpreter.

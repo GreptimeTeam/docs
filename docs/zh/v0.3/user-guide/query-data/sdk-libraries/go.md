@@ -43,4 +43,3 @@ func Query() {
     fmt.Println(monitors)
 }
 ```
-

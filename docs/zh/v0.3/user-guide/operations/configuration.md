@@ -6,7 +6,6 @@
 
 所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) 文件夹中。
 
-
 ## 指定配置文件
 
 用户可以通过使用命令行参数 `-c [file_path]` 指定配置文件，比如：
@@ -86,7 +85,6 @@ enable = true
 ### 节点选项
 
 一些共同的节点选项：
-
 
 | Option | Key                     | Type    | Description                                                                        |
 |--------|-------------------------|---------|------------------------------------------------------------------------------------|
@@ -204,7 +202,6 @@ addr = "127.0.0.1:4003"
 runtime_size = 2
 ```
 
-
 ## 分布式模式下的 `Frontend`
 
 在分布式模式下配置 `Frontend`：
@@ -229,7 +226,6 @@ tcp_nodelay = false
 * `timeout_millis`， 操作超时时长，单位为毫秒，默认为 3000。
 * `connect_timeout_millis`，连接服务器超时时长，单位为毫秒，默认为 5000。
 * `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
-
 
 ## 分布式模式下的 `Datanode`
 

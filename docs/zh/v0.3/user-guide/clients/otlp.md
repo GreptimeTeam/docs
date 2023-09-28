@@ -7,7 +7,6 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 
 <!--@include: ../../db-cloud-shared/clients/otlp-integration.md-->
 
-
 ### 示例代码
 
 下面是一些编程语言设置请求的示例代码：
@@ -25,7 +24,6 @@ const exporter = new OTLPMetricExporter({
     timeoutMillis: 5000,
 })
 ```
-
 
 ```Go [Go]
 auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))
@@ -67,17 +65,16 @@ exporter = OTLPMetricExporter(
 
 你可以在 Github 中找到可执行的 Demo：[Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
 
-
 :::tip 注意
 示例代码可能会根据 OpenTelemetry 的发展发生变化，因此建议你参考 OpenTelemetry 官方文档以获取最新信息。
 :::
 
 关于示例代码，请参考 Opentelementry 的官方文档获取它所支持的编程语言获取更多信息。
 
-
 ## 数据模型
 
 OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型中：
+
 - Metric 的名称将被作为 GreptimeDB 表的名称，当表不存在时会自动创建。
 - 所有的 Attribute ，包含 resource 级别、scope 级别和 data_point 级别，都被作为 GreptimeDB 表的 tag 列。
 - 数据点的时间戳被作为 GreptimeDB 的时间戳索引，列名 greptime_timestamp。

@@ -112,4 +112,4 @@ After pushing your Prometheus configuration files to GreptimeCloud, visit the [G
 
 <!-- TODO: Image waiting for dashboard production version -->
 
-You can also add a new rule or edit the exist rules via the console. The changes will be automatically pushed to the repository. 
+You can also add a new rule or edit the exist rules via the console. The changes will be automatically pushed to the repository.

@@ -32,7 +32,7 @@ Consider the following table named "system_metrics":
 +-------+-------+----------+-------------+-----------+---------------------+
 ```
 
-To retrieve the top 3 rows by `memory_util`, we can use the` LIMIT` clause:
+To retrieve the top 3 rows by `memory_util`, we can use the`LIMIT` clause:
 
 ```sql
 SELECT host, idc, memory_util
@@ -42,6 +42,7 @@ LIMIT 3;
 ```
 
 The result of the above query would be:
+
 ```sql
 +-------+-------+-------------+
 | host  | idc   | memory_util |
@@ -72,6 +73,7 @@ LIMIT 1, 2;
 ```
 
 The result of the above query would be:
+
 ```sql
 +-------+-------+-------------+
 | host  | idc   | memory_util |

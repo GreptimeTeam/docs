@@ -50,9 +50,9 @@ InfluxDB 使用自己的鉴权格式，详情请参考 [InfluxDB](./influxdb-lin
 
 ## 写入数据
 
-- [SQL](../write-data/sql.md)
-- [OpenTSDB](../write-data/opentsdb.md)
+* [SQL](../write-data/sql.md)
+* [OpenTSDB](../write-data/opentsdb.md)
 
 ## 读取数据
 
-- [SQL](../query-data/sql.md)
+* [SQL](../query-data/sql.md)

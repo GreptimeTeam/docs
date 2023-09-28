@@ -20,6 +20,7 @@ VALUES (value1, value2, value3, ...);
 `VALUES` 关键字后面跟着的是一个值列表，这个值列表的顺序必须和 `INSERT INTO` 语句中的列顺序一致。
 
 VALUES 值支持以下数据类型：
+
 - `DEFAULT` 关键字指定该列的默认值。
 这在你不想在插入记录时显式指定某些列的值时非常有用。
 它允许使用表 schema 中定义的列默认值来替代需要显示指定的值。
@@ -69,6 +70,7 @@ VALUES ("host1", "idc_a", DEFAULT, 10.3, 10.3, 1667446797460);
 ```sql
 CREATE TABLE test(b BLOB, ts TIMESTAMP TIME INDEX);
 ```
+
 推荐使用预编译语句，例如 JDBC：
 
 ```java
@@ -102,6 +104,7 @@ VALUES ("host1", "idc_a", 66.6, 'NaN'::double, 'Infinity'::double, 1667446797460
 `INSERT INTO SELECT` 语句用于将一张表中的数据复制到另一张表中。
 
 ### Syntax
+
 `INSERT INTO SELECT` 的语法如下：
 
 ```sql

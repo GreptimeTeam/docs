@@ -15,4 +15,3 @@ The connection information can be found on the service page of [GreptimeCloud co
 ## Visualize Data
 
 <!--@include: ./visualize-data.md-->
-

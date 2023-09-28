@@ -25,9 +25,10 @@ The vector is the major data type in Coprocessor, it's a vector of values in the
 The vector is like the array type in the programming language, `Array` in Apache [Arrow](https://arrow.apache.org/) or `NDArray` in [NumPy](https://numpy.org/doc/stable/reference/arrays.html).
 
 ### Vector Types
+
 The Coprocessor Engine supports the following vector types:
 
-|  Type | Description  | 
+|  Type | Description  |
 |---|---|
 | `vector[str]`  |  The string  type |
 | `vector[bool]` | The boolean type |
@@ -58,11 +59,13 @@ The Coprocessor Engine will infer the return vector types by the result. But wit
 We have already seen the example that extracting vectors from the query result by executing the `sql` attribute in `@coprocessor` in [Function chapter](./function.md).
 
 We can create a vector from literals:
+
 ```python
 @copr(returns=["value"])
 def answer() -> vector[i64]:
     return 42
 ```
+
 The result `42` will be wrapped as a one-element vector of `vector[i64]`.
 
 ```sql
@@ -76,6 +79,7 @@ mysql> select answer();
 ```
 
 We can create a vector from a python list:
+
 ```python
 from greptime import vector
 
@@ -83,6 +87,7 @@ from greptime import vector
 def answer() -> vector[i64]:
     return vector([42, 43, 44])
 ```
+
 The `greptime` is a built-in module, please refer to [API Document](./api.md).
 
 ```sql
@@ -100,15 +105,15 @@ mysql> select answer();
 In fact, the `vector` function can create a vector from any iterable object in python. But it requires all the element types must be the same, and it chooses the first element's type as its vector type.
 
 ### Vector operations
+
 The vector supports a lot of operations:
+
 1. Basic arithmetic operators are supported, including `+`, `-`, `*`, `/`.
 2. Basic logic operations are supported, including `&`, `|`, `~`.
 3. Basic comparison operation including`>`, `<`, `>=`, `<=`, `==`, `!=` are supported too.
 
-
 > Note: Here we override bitwise and `&`, bitwise or `|`, bitwise not `~` logical operator because Python doesn't support logical operator override(You can't override `and` `or` `not`). [PEP335](https://peps.python.org/pep-0335/) made a proposal and was eventually rejected. But bitwise operators have higher precedence than comparison operators, so remember to use a pair of parentheses to make sure the result is what you want.
 > i.e. if you want to filter a vector that's between 0 and 100, you should use `(vector[i32] >= 0) & (vector[i32] <= 100)` not `vector[i32] >= 0 & vector[i32] <= 100`. The latter one will be evaluated as `vector[i32] >= (0 & vector[i32]) <= 100`.
-
 
 For example, you can plus two vectors directly:
 
@@ -121,6 +126,7 @@ def add_vectors(n1, n2) -> vector[i32]:
 ```
 
 Or do a comparison with a bool array in a Numpy way:
+
 ```python
 from greptime import vector
 
@@ -131,6 +137,7 @@ def compare() -> vector[bool]:
 ```
 
 And using the boolean array indexing:
+
 ```python
 from greptime import vector
 
@@ -142,6 +149,7 @@ def boolean_array() -> vector[f64]:
 ```
 
 Comparison between two vectors is also supported:
+
 ```python
 from greptime import vector
 
@@ -152,6 +160,7 @@ def compare_vectors() -> vector[bool]:
 ```
 
 Using an indexed bool array to select elements from a vector:
+
 ```python
 from greptime import vector
 
@@ -163,6 +172,7 @@ def select_elements() -> (vector[f64]):
 ```
 
 Of course, we can use list comprehension to construct a new vector:
+
 ```python
 from greptime import vector
 

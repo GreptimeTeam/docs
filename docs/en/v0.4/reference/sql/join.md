@@ -11,6 +11,7 @@ There are several types of JOIN clauses:
 - FULL OUTER JOIN: Returns all the rows from both tables.
 
 ## Examples
+
 Here are some examples of using JOIN clauses:
 
 ```sql

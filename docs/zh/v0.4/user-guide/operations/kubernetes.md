@@ -36,7 +36,7 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 helm install etcd greptime/greptimedb-etcd -n default --devel
 ```
 
-### 4. 创建用户自己的 GreptimeDB 集群：
+### 4. 创建用户自己的 GreptimeDB 集群
 
 创建 GreptimeDB 集群：
 
@@ -82,8 +82,6 @@ kubectl delete crds greptimedbclusters.greptime.io
 ```
 
 [1]: https://github.com/GreptimeTeam/greptimedb-operator
-[2]: https://kubernetes.io/
-[3]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
 [4]: https://kind.sigs.k8s.io/docs/user/quick-start/
 [5]: https://helm.sh/docs/intro/install/
 [6]: https://github.com/GreptimeTeam/helm-charts
@@ -133,5 +131,3 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ./gtctl cluster delete mydb --tear-down-etcd
 ```
 
-[1]: https://github.com/GreptimeTeam/gtctl
-[2]: https://kind.sigs.k8s.io/docs/user/quick-start/

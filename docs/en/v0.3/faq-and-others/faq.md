@@ -77,6 +77,6 @@ You can use the [`COPY TO` command](https://docs.greptime.com/reference/sql/copy
 
 Please refer to [features that you concern](/en/v0.3/user-guide/concepts/features-that-you-concern.md).
 
-## Can https://n9e.github.io/ now be directly integrated with GreptimeDB? How is its compatibility?
+## Can <https://n9e.github.io/> now be directly integrated with GreptimeDB? How is its compatibility?
 
 Theoretically GreptimeDB could replace VictoriaMetrics now since that most protocols are supported, but we hasn't actually tested yet.

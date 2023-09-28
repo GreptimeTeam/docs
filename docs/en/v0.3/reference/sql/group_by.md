@@ -20,6 +20,7 @@ function is applied to each group of rows that have the same values in the speci
 ## Examples
 
 Consider the following table named "system_metrics":
+
 ```sql
 +-------+-------+----------+-------------+-----------+---------------------+
 | host  | idc   | cpu_util | memory_util | disk_util | ts                  |
@@ -43,6 +44,7 @@ GROUP BY idc;
 ```
 
 The result of the above query would be:
+
 ```sql
 +-------+---------------------------------+
 | idc   | AVG(system_metrics.memory_util) |

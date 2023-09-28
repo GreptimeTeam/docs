@@ -3,12 +3,14 @@
 `SELECT` 语句允许你从一个或多个表中选择列。
 
 ## Basic Syntax
+
 `SELECT` 的基本语法如下：
 
 ```sql
 SELECT column1, column2, ...
 FROM table_name;
 ```
+
 column1, column2 是要从中获取数据的列的名称，table_name 是要从中获取数据的表的名称。
 
 该语句从 `FROM` 子句中指定的表中选择列。如果要从表中选择所有列，可以使用星号（*）通配符字符，而不是列出单个列名。

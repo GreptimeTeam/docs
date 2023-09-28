@@ -1,6 +1,5 @@
 # Prometheus Query Language
 
-
 GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, because GreptimeDB supports PromQL (Prometheus Query Language). GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to several interfaces, including the HTTP API of Prometheus, the HTTP API of GreptimeDB, and the SQL interface.
 
 ## Prometheus' HTTP API
@@ -54,6 +53,7 @@ The input parameters are similar to the [`range_query`](https://prometheus.io/do
 - `step=<duration | float>`: Required. Query resolution step width in duration format or float number of seconds.
 
 Here are some examples for each type of parameter:
+
 - rfc3339
   - `2015-07-01T20:11:00Z` (default to seconds resolution)
   - `2015-07-01T20:11:00.781Z` (with milliseconds resolution)
@@ -138,6 +138,7 @@ You can write the above command in all places that support SQL, including the Gr
 ## Limitations
 
 Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
+
 - timestamp: `Timestamp`
 - tag: `String`
 - value: `Double`
@@ -193,7 +194,6 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | max        | `max by (foo)(metric)`    |
     | stddev     | `stddev by (foo)(metric)` |
     | stdvar     | `stdvar by (foo)(metric)` |
-
 
 - Unsupported:
     | Aggregator   | Progress |

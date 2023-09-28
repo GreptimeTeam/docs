@@ -5,6 +5,7 @@ The outling of this document is a little strange, as the content is classified b
 -->
 
 ## Datafusion Functions
+
 Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
 functions in DataFusion. These functions include:
 
@@ -24,6 +25,7 @@ arrow_cast(expression, datatype)
 ```
 
 Where the `datatype` can be any valid Arrow data type in this [list](https://arrow.apache.org/datafusion/user-guide/sql/data_types.html). The four timestamp types are:
+
 - Timestamp(Second, None)
 - Timestamp(Millisecond, None)
 - Timestamp(Microsecond, None)
@@ -46,6 +48,7 @@ date_trunc(precision, source [, time_zone ])
 ```
 
 Valid precisions are:
+
 - microseconds
 - milliseconds
 - second
@@ -69,6 +72,7 @@ INTERVAL [fields] [(p)]
 ```
 
 Valid types are:
+
 - YEAR
 - MONTH
 - DAY
@@ -89,12 +93,13 @@ For example:
 
 ```sql
 SELECT
-	now(),
-	now() - INTERVAL '1 year 3 hours 20 minutes'
+ now(),
+ now() - INTERVAL '1 year 3 hours 20 minutes'
              AS "3 hours 20 minutes ago of last year";
 ```
 
 Output:
+
 ```sql
 +----------------------------+-------------------------------------+
 | now()                      | 3 hours 20 minutes ago of last year |
@@ -133,6 +138,7 @@ date_part(field, source)
 ```
 
 Some commonly used fields are:
+
 - century
 - decade
 - year
@@ -151,4 +157,3 @@ Some commonly used fields are:
 ### More Functions
 
 GreptimeDB compiled PostgreSQL's date functions. Please refer to [PostgreSQL's documentation](https://www.postgresql.org/docs/current/functions-datetime.html) for more functions.
-

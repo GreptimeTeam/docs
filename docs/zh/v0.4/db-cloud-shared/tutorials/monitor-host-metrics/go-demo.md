@@ -16,18 +16,18 @@ go get go.opentelemetry.io/otel@v1.16.0 \
 ```go
 auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))
 exporter, err := otlpmetrichttp.New(
-	context.Background(),
-	otlpmetrichttp.WithEndpoint(*dbHost),
-	otlpmetrichttp.WithURLPath("/v1/otlp/v1/metrics"),
-	otlpmetrichttp.WithHeaders(map[string]string{
-		"x-greptime-db-name": *db,
-		"Authorization":      "Basic " + auth,
-	}),
-	otlpmetrichttp.WithTimeout(time.Second*5),
+ context.Background(),
+ otlpmetrichttp.WithEndpoint(*dbHost),
+ otlpmetrichttp.WithURLPath("/v1/otlp/v1/metrics"),
+ otlpmetrichttp.WithHeaders(map[string]string{
+  "x-greptime-db-name": *db,
+  "Authorization":      "Basic " + auth,
+ }),
+ otlpmetrichttp.WithTimeout(time.Second*5),
 )
 
 if err != nil {
-	panic(err)
+ panic(err)
 }
 
 reader := metric.NewPeriodicReader(exporter, metric.WithInterval(time.Second*2))
@@ -37,19 +37,19 @@ reader := metric.NewPeriodicReader(exporter, metric.WithInterval(time.Second*2))
 
 ```go
 res := resource.NewWithAttributes(
-	semconv.SchemaURL,
-	semconv.ServiceName("quick-start-go"),
+ semconv.SchemaURL,
+ semconv.ServiceName("quick-start-go"),
 )
 
 meterProvider := metric.NewMeterProvider(
-	metric.WithResource(res),
-	metric.WithReader(reader),
+ metric.WithResource(res),
+ metric.WithReader(reader),
 )
 
 log.Print("Sending metrics...")
 err = appHost.Start(appHost.WithMeterProvider(meterProvider))
 if err != nil {
-	log.Fatal(err)
+ log.Fatal(err)
 }
 ```
 

@@ -9,7 +9,7 @@ DELETE FROM [db.]table WHERE expr
 ```
 
 上述命令从表 `[db.]table` 中删除满足 `expr` 的行。被删除的行会立刻被标记，后续的查询立刻不能获取到这些行数据。
- 
+
 ## 示例
 
 例如，有一个带有主键 `host` 的表：
@@ -17,6 +17,7 @@ DELETE FROM [db.]table WHERE expr
 ```sql
 CREATE TABLE monitor ( host STRING, ts TIMESTAMP, cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ;
 ```
+
 删除 host 为 `host1` 以及时间戳为 `1655276557000` 的行：
 
 ```sql

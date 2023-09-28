@@ -209,7 +209,7 @@ You can refer to the example config `cluster.yaml` and `cluster-with-local-artif
 
 #### Delete
 
-Since the cluster in bare-metal mode runs in the foreground, any `SIGINT` and `SIGTERM` will delete the cluster. For example, the cluster will be deleted after pressing `Ctrl+C` on keyboard. 
+Since the cluster in bare-metal mode runs in the foreground, any `SIGINT` and `SIGTERM` will delete the cluster. For example, the cluster will be deleted after pressing `Ctrl+C` on keyboard.
 
 The deletion will also delete the meta information of one cluster which located in `${HOME}/.gtctl`. The logs of cluster will remain if `--retain-logs` is enabled (enabled by default).
 
@@ -236,7 +236,6 @@ There are many useful tools provided through Makefile, you can simply run make h
     ```bash
     make e2e
     ```
-
 
 [1]: <https://github.com/GreptimeTeam/gtctl>
 [2]: <https://go.dev/doc/install>

@@ -1,5 +1,6 @@
 
 ### If you already have a Prometheus instance running
+
 Add the following section to your Prometheus configuration.
 
 ```yaml

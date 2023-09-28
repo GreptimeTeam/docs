@@ -3,7 +3,9 @@
 ## Builtin modules and functions
 
 We provide a wide range of built-in functions for users to use. The following is a list of built-in functions. Simply write `import greptime` or `from greptime import *` at the beginning of your script to use them.
+
 ## Vector functions
+
 | Function | Description |
 | :--- | :--- |
 | `pow(v0, v1)` | Raise a number `v0` to a power of `v1`. |
@@ -18,6 +20,7 @@ We provide a wide range of built-in functions for users to use. The following is
 | `scipy_stats_norm_pdf` | Calculate the probability density function for the normal distribution. similar to `scipy.stats.norm.pdf`. |
 
 ## Math functions
+
 | Function | Description |
 | :--- | :--- |
 | `sqrt(v)` | Calculate the square root of a number `v`. |
@@ -39,6 +42,7 @@ We provide a wide range of built-in functions for users to use. The following is
 | `log10(v)` | Calculate the base-10 logarithm of a number `v`. |
 
 ## Utility functions & Aggregation functions
+
 These Functions are bound from `DataFusion`
 | Function | Description |
 | :--- | :--- |
@@ -60,7 +64,8 @@ These Functions are bound from `DataFusion`
 | `variance(v0)` | Calculate the sample variance of a vector `v0`. |
 | `variance_pop(v0)` | Calculate the population variance of a vector `v0`. |
 
-## DataFrame's methods:
+## DataFrame's methods
+
 | Method | Description |
 | --- | --- |
 | `select_columns(columns: List[str])` | select columns from DataFrame |
@@ -77,7 +82,8 @@ These Functions are bound from `DataFusion`
 | `except(other: DataFrame)` | Except two DataFrame |
 | `collect()` | Collect DataFrame to a list of `PyVector` |
 
-## Expr's methods:
+## Expr's methods
+
 | Method | Description |
 | --- | --- |
 | `col(name: str)` | Create a `PyExpr` that represents a column |
@@ -85,4 +91,3 @@ These Functions are bound from `DataFusion`
 | `sort(ascending: bool, null_first: bool)` | Create a `PyExpr` that represents a sort expression |
 | comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=` | Create `PyExpr` from compare two `PyExpr` |
 | logical operators: `&`, `\|`, `~` | Create `PyExpr` from logical operation between two `PyExpr` |
-

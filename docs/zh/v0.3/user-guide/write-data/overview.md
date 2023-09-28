@@ -14,4 +14,3 @@ GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [Prometheus Storage](./prometheus.md)
-

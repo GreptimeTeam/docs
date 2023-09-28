@@ -53,7 +53,9 @@ Cost 4 ms
 Using foo
 [foo] >
 ```
+
 - To create a table. REPL supports multi-line input (remember to end your input with a semicolon to make it a valid SQL statement):
+
 ```txt
 [foo] > create table t(
   x STRING, 
@@ -61,7 +63,9 @@ Using foo
 Affected Rows: 0
 Cost 12 ms
 ```
+
 - To insert or select data:
+
 ```txt
 [foo] > insert into t(x, ts) values('hello', 1);
 Affected Rows: 1

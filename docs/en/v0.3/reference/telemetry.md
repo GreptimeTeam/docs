@@ -33,10 +33,10 @@ mode = "standalone"
 enable_telemetry = false
 ```
 
-
 Or configure it by the environment variable `GREPTIMEDB_STANDALONE__ENABLE_TELEMETRY=false` on startup.
 
 ### Distributed mode
+
 Set `enable_telemetry`  in the metasrv config file to `false`:
 
 ```toml

@@ -11,6 +11,7 @@ FROM system_metrics;
 ```
 
 `SELECT DISTINCT` can be used in conjunction with filters.
+
 ```sql
 SELECT DISTINCT idc, host
 FROM system_metrics

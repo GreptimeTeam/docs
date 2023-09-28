@@ -76,7 +76,7 @@ greptime frontend start --help
 - `--grpc-addr <GPRC_ADDR>`: GRPC server address;
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- ` --opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
+- `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
 - `--prom-addr <PROM_ADDR>`: Prometheus server address;
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
@@ -415,7 +415,7 @@ datanode_lease_secs = 30
 
 ## Environment variable
 
-Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks ` of datanode by environment variable:
+Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks` of datanode by environment variable:
 
 ```toml
 # ...

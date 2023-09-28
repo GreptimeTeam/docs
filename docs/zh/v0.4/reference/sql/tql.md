@@ -3,6 +3,7 @@
 `TQL` 关键字在 SQL 中执行 TQL 语言。TQL 是 Time-Series Query Language 的缩写，是 GreptimeDB 中对 Prometheus 的 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 的扩展。
 
 ## EVAL
+
 ### Syntax
 
 ```sql
@@ -10,9 +11,10 @@ TQL [EVAL | EVALUATE] (start, end, step) expr
 ```
 
 `start`, `end` 和 `step` 是查询参数，就像 [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/) 一样：
--   `start`: `<rfc3339 | unix_timestamp>`: Start 时间戳, 范围中包含该值。
--   `end`: `<rfc3339 | unix_timestamp>`: End 时间戳, 范围中包含该值。
--   `step`: `<duration | float>`: 查询分辨率步长，采用 `duration` 格式或浮点秒数。
+
+- `start`: `<rfc3339 | unix_timestamp>`: Start 时间戳, 范围中包含该值。
+- `end`: `<rfc3339 | unix_timestamp>`: End 时间戳, 范围中包含该值。
+- `step`: `<duration | float>`: 查询分辨率步长，采用 `duration` 格式或浮点秒数。
 
 `expr` 是 TQL 表达式查询字符串。
 

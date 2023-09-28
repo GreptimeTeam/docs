@@ -5,6 +5,7 @@
 我们提供了大量的内置函数供用户使用。下面是一个内置函数的列表。只要在脚本开头写上 `import greptime` 或 `from greptime import *` 就可以调用它们。
 
 ## 向量函数
+
 | Function | Description |
 | :--- | :--- |
 | `pow(v0, v1)` | Raise a number `v0` to a power of `v1`. |
@@ -19,6 +20,7 @@
 | `scipy_stats_norm_pdf` | Calculate the probability density function for the normal distribution. similar to `scipy.stats.norm.pdf`. |
 
 ## 数学函数
+
 | Function | Description |
 | :--- | :--- |
 | `sqrt(v)` | Calculate the square root of a number `v`. |
@@ -40,6 +42,7 @@
 | `log10(v)` | Calculate the base-10 logarithm of a number `v`. |
 
 ## 效用函数和聚合函数
+
 这些函数是由 `DataFusion` 绑定的。
 | Function | Description |
 | :--- | :--- |
@@ -61,7 +64,8 @@
 | `variance(v0)` | Calculate the sample variance of a vector `v0`. |
 | `variance_pop(v0)` | Calculate the population variance of a vector `v0`. |
 
-## 数据框架的 methods：
+## 数据框架的 methods
+
 | Method | Description |
 | --- | --- |
 | `select_columns(columns: List[str])` | select columns from DataFrame |
@@ -78,7 +82,8 @@
 | `except(other: DataFrame)` | Except two DataFrame |
 | `collect()` | Collect DataFrame to a list of `PyVector` |
 
-## Expr 的 methods:
+## Expr 的 methods
+
 | Method | Description |
 | --- | --- |
 | `col(name: str)` | Create a `PyExpr` that represents a column |
@@ -86,4 +91,3 @@
 | `sort(ascending: bool, null_first: bool)` | Create a `PyExpr` that represents a sort expression |
 | comparison operators: `==`, `!=`, `>`, `>=`, `<`, `<=` | Create `PyExpr` from compare two `PyExpr` |
 | logical operators: `&`, `\|`, `~` | Create `PyExpr` from logical operation between two `PyExpr` |
-

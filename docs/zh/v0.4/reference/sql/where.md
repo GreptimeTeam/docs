@@ -9,6 +9,7 @@ SELECT *
 FROM table_name
 WHERE condition;
 ```
+
 如果有 `WHERE` 子句，则它必须为布尔类型的表达式，这通常是带有比较和逻辑运算符的表达式。此表达式计算结果为 false 的行将会从进一步的转换或结果中排除。
 
 ## 示例
@@ -46,6 +47,7 @@ SELECT * FROM system_metrics WHERE idc IN ('idc_a', 'idc_b');
 ```
 
 ### List 不匹配
+
 ```sql
 SELECT * FROM system_metrics WHERE idc NOT IN ('idc_a', 'idc_b');
 ```

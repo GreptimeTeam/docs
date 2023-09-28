@@ -1,12 +1,15 @@
 # Sqlness Test
 
 ## Introduction
+
 SQL is an important user interface for `GreptimeDB`. We have a separate test suite for it (named `sqlness`).
 
 ## Sqlness manual
 
 ### Case file
+
 Sqlness has three types of file
+
 - `.sql`: test input, SQL only
 - `.result`: expected test output, SQL and its results
 - `.output`: different output, SQL and its results
@@ -25,6 +28,7 @@ file means your test fails. That's why we should not ignore `.output` file type 
 it and make sure it doesn't exist.
 
 ### Case organization
+
 The root dir of input cases is `tests/cases`. It contains several sub-directories stand for different test
 modes. E.g., `standalone/` contains all the tests to run under `greptimedb standalone start` mode.
 
@@ -32,10 +36,13 @@ Under the first level of sub-directory (e.g. the `cases/standalone`), you can or
 Sqlness walks through every file recursively and runs them.
 
 ## Run the test
+
 Unlike other tests, this harness is in a binary target form. You can run it with
+
 ```shell
 cargo run --bin sqlness-runner
 ```
+
 It automatically finishes the following procedures: compile `GreptimeDB`, start it, grab tests and feed it to
 the server, then collect and compare the results. You only need to check whether there are new `.output` files.
 If not, congratulations, the test is passed 🥳!
@@ -47,4 +54,3 @@ cargo sqlness your_test
 ```
 
 If you specify a second argument, only test cases containing the specified string in their names will be executed. Sqlness also supports filtering based on environment. The filter is accepted as a regex string and the case name will be examined in the format of `env:case`.
-

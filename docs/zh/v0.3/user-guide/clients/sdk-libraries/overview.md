@@ -6,4 +6,3 @@ SDKs 可能会使用不同的协议与 GreptimeDB 通信，下面展示了 SDK �
 
 - [Go](go.md)
 - [Java](java.md)
-

@@ -50,6 +50,7 @@ curl -X GET \
 - `step=<duration | float>`：必填。查询步长，可以使用持续时间格式或秒数的浮点数。
 
 以下是每种参数的类型的示例：
+
 - rfc3339
   - `2015-07-01T20:11:00Z` (default to seconds resolution)
   - `2015-07-01T20:11:00.781Z` (with milliseconds resolution)
@@ -134,6 +135,7 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 ## 局限
 
 尽管 GreptimeDB 支持丰富的数据类型，但 PromQL 的实现仍然局限于以下类型：
+
 - timestamp: `Timestamp`
 - tag: `String`
 - value: `Double`
@@ -146,8 +148,8 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 ### 选择器
 
-* 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
-* 支持时间长度和偏移量，但不支持 `@` 修改器。
+- 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
+- 支持时间长度和偏移量，但不支持 `@` 修改器。
 
 ### Binary
 
@@ -188,7 +190,6 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
     | max        | `max by (foo)(metric)`    |
     | stddev     | `stddev by (foo)(metric)` |
     | stdvar     | `stdvar by (foo)(metric)` |
-
 
 - 不支持:
     | Aggregator   | Progress |

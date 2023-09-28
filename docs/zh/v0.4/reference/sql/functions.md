@@ -24,6 +24,7 @@ arrow_cast(expression, datatype)
 ```
 
 `datatype` 可以是 DataFusion 中的任何有效的 Arrow 数据类型，具体请参考 [list](https://arrow.apache.org/datafusion/user-guide/sql/data_types.html)。四种时间戳类型是：
+
 - Timestamp(Second, None)
 - Timestamp(Millisecond, None)
 - Timestamp(Microsecond, None)
@@ -46,6 +47,7 @@ date_trunc(precision, source [, time_zone ])
 ```
 
 可用的精度有：
+
 - microseconds
 - milliseconds
 - second
@@ -90,8 +92,8 @@ INTERVAL [fields] [(p)]
 
 ```sql
 SELECT
-	now(),
-	now() - INTERVAL '1 year 3 hours 20 minutes'
+ now(),
+ now() - INTERVAL '1 year 3 hours 20 minutes'
              AS "3 hours 20 minutes ago of last year";
 ```
 
@@ -135,6 +137,7 @@ date_part(field, source)
 ```
 
 一些常用的字段有：
+
 - century
 - decade
 - year

@@ -35,6 +35,7 @@ DESC TABLE taxi_zone_lookup;
 ```
 
 Now you can query on the external table:
+
 ```sql
 SELECT "Zone","Borough" FROM taxi_zone_lookup LIMIT 5;
 ```
@@ -71,11 +72,13 @@ total 165368
 ```
 
 Create the external table:
+
 ```sql
 CREATE EXTERNAL TABLE yellow_tripdata with(location='/tmp/external/',format='parquet');
 ```
 
 Run queries:
+
 ```sql
 SELECT count(*) FROM yellow_tripdata;
 ```

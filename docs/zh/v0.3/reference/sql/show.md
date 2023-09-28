@@ -24,17 +24,21 @@ SHOW DATABASES;
 ```sql
 SHOW DATABASES LIKE 'p%';
 ```
+
 根据 `where` 表达式展示数据库：
+
 ```sql
 SHOW DATABASES WHERE Schemas='test_public_schema';
 ```
 
-## SHOW TABLES 
+## SHOW TABLES
 
 展示所有表：
+
 ```sql
 SHOW TABLES;
 ```
+
 ```sql
 +---------+
 | Tables  |
@@ -46,6 +50,7 @@ SHOW TABLES;
 ```
 
 展示 `test` 数据库中的所有表：
+
 ```sql
 SHOW TABLES FROM test;
 ```
@@ -55,7 +60,9 @@ SHOW TABLES FROM test;
 ```sql
 SHOW TABLES like '%prometheus%';
 ```
+
 根据 `where` 表达式展示表：
+
 ```sql
 SHOW TABLES FROM test WHERE Tables='numbers';
 ```

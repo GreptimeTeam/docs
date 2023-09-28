@@ -5,9 +5,11 @@ The `SHOW` keyword provides database and table information.
 ## SHOW DATABASES
 
 Show all databases:
+
 ```sql
 SHOW DATABASES;
 ```
+
 ```sql
 +---------+
 | Schemas |
@@ -18,21 +20,25 @@ SHOW DATABASES;
 ```
 
 Show databases by `LIKE` pattern:
+
 ```sql
 SHOW DATABASES LIKE 'p%';
 ```
 
 Show databases by `where` expr:
+
 ```sql
 SHOW DATABASES WHERE Schemas='test_public_schema';
 ```
 
-## SHOW TABLES 
+## SHOW TABLES
 
 Show all tables:
+
 ```sql
 SHOW TABLES;
 ```
+
 ```sql
 +---------+
 | Tables  |
@@ -44,16 +50,19 @@ SHOW TABLES;
 ```
 
 Show tables in the `test` database:
+
 ```sql
 SHOW TABLES FROM test;
 ```
 
 Show tables by `like` pattern:
+
 ```sql
 SHOW TABLES like '%prometheus%';
 ```
 
 Show tables by `where` expr:
+
 ```sql
 SHOW TABLES FROM test WHERE Tables='numbers';
 ```
@@ -67,6 +76,7 @@ SHOW CREATE TABLE [table]
 ```
 
 For example:
+
 ```sql
 SHOW CREATE TABLE system_metrics;
 ```

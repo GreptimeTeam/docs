@@ -11,7 +11,7 @@ GreptimeDB 支持在数据库内运行 Python 脚本，如果业务逻辑太复�
 
 所有的例子都可以在 [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples) 中找到。
 
-# 注意事项：
+# 注意事项
 
 Python 协处理器目前正处于实验阶段，API 可能会发生一些变化。
 
@@ -21,7 +21,7 @@ Python 协处理器目前正处于实验阶段，API 可能会发生一些变化
 
 推荐利用 `Conda` 来管理 Python 环境。首先，用下载的 binary 文件所要求的相同版本的 Python 创建一个 Python 环境。或者，可以使用一个 docker 容器，在其中执行 `greptime` binary。
 
-另一个可行方案，但并非推荐方案：手动安装所需的 Python 版本，并将 `LD_LIBRARY_PATH `环境变量设置为包含 `libpython<VERSION>.so` 文件的目录。`<VERSION>` 的版本号根据所使用的 Python 的版本而不同。
+另一个可行方案，但并非推荐方案：手动安装所需的 Python 版本，并将 `LD_LIBRARY_PATH`环境变量设置为包含 `libpython<VERSION>.so` 文件的目录。`<VERSION>` 的版本号根据所使用的 Python 的版本而不同。
 
 两个 Python coprocessor 的后端：
 

@@ -10,7 +10,7 @@ data container, within which data can be managed and computed.
 
 ## Time-Series Table
 
-GreptimeDB designed time-series table to be the basic unit of data storage. 
+GreptimeDB designed time-series table to be the basic unit of data storage.
 It is similar to a table in a traditional relational database, but requires a timestamp column.
 The table holds a set of data that shares a common schema.
 It can be created using SQL `CREATE TABLE`, or inferred from the input data structure using the auto-schema feature.

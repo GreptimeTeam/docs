@@ -30,6 +30,7 @@ def normalize(v) -> vector[i64]:
 The argument `v` is the `number` column(specified by the `args` attribute) in query results that are returned by executing the `sql`.
 
 Of course, you can have several arguments:
+
 ```python
 @coprocessor(args=["number", "number", "number"],
              sql="select number from numbers limit 5",
@@ -40,6 +41,7 @@ def normalize(n1, n2, n3) -> vector[i64]:
 ```
 
 Except `args`, we can also pass user-defined parameters into the coprocessor:
+
 ```python
 @coprocessor(returns=['value'])
 def add(**params) -> vector[i64]:
@@ -54,6 +56,7 @@ And then pass the `a` and `b` from HTTP API:
 curl  -XPOST \
    "http://localhost:4000/v1/run-script?name=add&db=public&a=42&b=99"
 ```
+
 ```json
 {
   "code": 0,
@@ -84,12 +87,12 @@ We pass `a=42&b=99` as query params into HTTP API, and it returns the result `14
 
 The user-defined parameters must be defined by `**kwargs` in the coprocessor, and all their types are strings. We can pass anything we want such as SQL to run in the coprocessor.
 
-
 ## Output of the coprocessor function
 
 As we have seen in the previous examples, the output must be vectors.
 
 We can return multi vectors:
+
 ```python
 from greptime import vector
 
@@ -106,6 +109,7 @@ The return types of function `return_vectors` is `(vector[i64], vector[str], vec
 But we must ensure that all these vectors returned by the function have the same length. Because when they are converted into rows, each row must have all the column values presented.
 
 Of course, we can return literal values, and they will be turned into vectors:
+
 ```python
 from greptime import vector
 
@@ -120,12 +124,14 @@ def return_vectors() -> (vector[i64], vector[str], vector[i64]):
 ## Query Data
 
 We provide two ways to easily query data from GreptimeDB in Python Coprocessor:
+
 * SQL: run a SQL string and return the query result.
 * DataFrame API: a builtin module that describes and executes the query similar to a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) or [Spark DataFrame](https://spark.apache.org/docs/latest/sql-programming-guide.html).
 
 ## SQL
 
 Use the `greptime` module's `query` method to retrieve a query engine, then call `sql` function to execute a SQL string, for example:
+
 ```python
 @copr(returns=["value"])
 def query_numbers()->vector[f64]:
@@ -162,11 +168,13 @@ In the above example, `sql("select number from numbers limit 10")` returns a lis
 
 The coprocessor is helpful when processing a query result before it returns to the user.
 For example, we want to normalize the value:
+
 * Return zero instead of null or `NaN` if it misses,
 * If it is greater than 5, return 5,
 * If it is less than zero, return zero.
 
 Then we can create a `normalize.py`:
+
 ```python
 import math
 
@@ -192,13 +200,14 @@ The `normalize0` function behaves as described above. And the `normalize` functi
 * In function, use list comprehension to process the `number` vector, which processes every element by the `normalize0` function.
 * Returns the result named as `value` column.
 
-The ` -> vector[i64]` part specifies the return column types for generating the output schema.
+The `-> vector[i64]` part specifies the return column types for generating the output schema.
 
 This example also shows how to import the stdlib and define other functions(the `normalize0`) for invoking.
 The `normalize` coprocessor will be called in streaming. The query result may contain several batches, and the engine will call the coprocessor with each batch.
 And we should remember that the columns extracted from the query result are all vectors. We will cover vectors in the next chapter.
 
 Submit and run this script will generate the output:
+
 ```json
 {
   "output": [

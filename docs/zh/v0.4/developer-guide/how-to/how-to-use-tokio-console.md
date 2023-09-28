@@ -21,4 +21,4 @@ Now you can use `tokio-console` to connect to GreptimeDB's tokio console subscri
 tokio-console [TARGET_ADDR]
 ```
 
-"TARGET_ADDR" defaults to "http://127.0.0.1:6669".
+"TARGET_ADDR" defaults to "<http://127.0.0.1:6669>".

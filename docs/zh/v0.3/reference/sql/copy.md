@@ -1,6 +1,7 @@
 # COPY
 
 ## COPY TO
+
 `COPY TO` 被用来将表的内容导出到文件中，其语法如下：
 
 ```sql
@@ -47,7 +48,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
-| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet	 | **是** |
+| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 
 ### Connection 选项
@@ -67,21 +68,22 @@ COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2')
 ```
 S3://my-bucket/data.parquet
 ```
+
 另一种方式是使用 Virtual-hosted–style，例如：
 
 ```
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-**CONNECTION** 
+**CONNECTION**
 
 你可以设置这些 **CONNECTION** 选项：
 
 | 选项  | 描述  | 是否必需  |
 |---|---|---|
-| `REGION` | AWS region 名称，例如 us-east-1.	 | **是** |
+| `REGION` | AWS region 名称，例如 us-east-1.  | **是** |
 | `ENDPOINT`  | The bucket endpoint  | 可选 |
 | `ACCESS_KEY_ID` | 用于连接 AWS S3 兼容的对象存储的访问密钥 ID | 可选 |
-| `SECRET_ACCESS_KEY` | 用于连接 AWS S3 兼容的对象存储的秘密访问密钥	 | 可选 |
+| `SECRET_ACCESS_KEY` | 用于连接 AWS S3 兼容的对象存储的秘密访问密钥  | 可选 |
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
-| `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。	| 可选 |
+| `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。 | 可选 |

@@ -7,7 +7,6 @@
 到目前为止，这只是一个典型的 “volcano” 查询执行模型，你可以在几乎每个 SQL 数据库中看到这种模型。那么“分布式”是在哪里发生的呢？这全部发生在一个名为 “TableScan” 的物理计划节点中。TableScan 是物理计划树中的一个叶子节点，它负责扫描表的数据（就像它的名称所暗示的）。当 `frontend` 即将扫描表时，它首先需要根据每个 `region` 的数据范围将表扫描拆分为较小的扫描。
 
 [1]: ./table-sharding.md
-[2]: https://paperhub.s3.amazonaws.com/dace52a42c07f7f8348b08dc2b186061.pdf
 
 表的所有 `region` 都有它们存储数据的范围。以下表为例：
 

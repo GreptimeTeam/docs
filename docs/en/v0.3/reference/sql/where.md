@@ -17,6 +17,7 @@ excluded from further transformations or result.
 ## Examples
 
 ### Logical operators
+
 Supports `AND`, `OR` as logical operators and can assemble conditions using brackets ().
 
 ```sql
@@ -25,6 +26,7 @@ WHERE idc = 'idc0' AND (host = 'host1' OR host = 'host2');
 ```
 
 ### Numeric
+
 Supports `=`, `!=`, `>`, `>=`, `<`, `<=` as comparison operators.
 
 ```sql
@@ -37,14 +39,17 @@ SELECT * FROM system_metrics WHERE cpu_util <= 20.0;
 ```
 
 ### List search
+
 Evaluates match or mismatch against a list of elements.
 
 ### List match
+
 ```sql
 SELECT * FROM system_metrics WHERE idc IN ('idc_a', 'idc_b');
 ```
 
 ### List mismatch
+
 ```sql
 SELECT * FROM system_metrics WHERE idc NOT IN ('idc_a', 'idc_b');
 ```

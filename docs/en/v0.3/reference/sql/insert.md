@@ -5,21 +5,24 @@ The `INSERT` statement is used to insert one or more records into a table in the
 ## `INSERT INTO` Statement
 
 ### Syntax
+
 The syntax for the INSERT INTO statement is as follows:
 
 ```sql
 INSERT INTO table_name (column1, column2, column3, ...)
 VALUES (value1, value2, value3, ...);
 ```
+
 In the above syntax, `table_name` is the name of the table into which you want to insert data,
 and `column1`, `column2`, `column3`, etc. are the names of the columns in the table.
 You can specify the columns in the `INSERT INTO` statement if you want to insert data into specific columns.
 If you do not specify the columns, the values will be inserted into all the columns in the table.
 
 The `VALUES` keyword is followed by a list of values that correspond to the columns in the `INSERT INTO`
-statement. The values must be in the same order as the columns. 
+statement. The values must be in the same order as the columns.
 
 The following types of values are supported:
+
 - The `DEFAULT` keyword specifies that the default value for that column should be inserted.
 This is useful when you do not want to explicitly specify values for some columns when inserting records.
 It allows the column's default value, as defined in the table schema, to be used instead.
@@ -105,6 +108,7 @@ VALUES ("host1", "idc_a", 66.6, 'NaN'::double, 'Infinity'::double, 1667446797460
 The statement copies data from one table and inserts it into another table.
 
 ### Syntax
+
 The syntax for the `INSERT INTO SELECT` statement is as follows:
 
 ```sql
@@ -114,7 +118,7 @@ FROM table1;
 ```
 
 In the above syntax, `table1` is the source table from which you want to copy data, and `table2` is the target table
-into which the data will be inserted. 
+into which the data will be inserted.
 `table1` and `table2` should have the same names and data types for the columns that you want to copy.
 The `SELECT` statement selects the columns you want to insert from the source
 table. If you do not specify the column names in the `INSERT INTO` statement, then the data will be inserted into
@@ -124,6 +128,7 @@ The `INSERT INTO SELECT` statement is useful when you want to copy data from one
 archiving or backing up data. It is more efficient than creating a backup of the entire database and restoring it.
 
 ### Examples
+
 Here is an example of an `INSERT INTO SELECT` statement:
 
 ```sql

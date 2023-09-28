@@ -29,6 +29,7 @@ Note: Be sure to uncomment `basic_auth` section and replace `greptime_user(usern
 The `db` parameter in url represents the database that we want to write, it's `public` if not present.
 
 Show tables in Prometheus when writing successfully:
+
 ```sql
 use prometheus;
 show tables;

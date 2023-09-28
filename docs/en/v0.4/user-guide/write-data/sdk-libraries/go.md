@@ -21,7 +21,6 @@ then, you can add one `Series` into `Metric`, then create an `InsertRequest` and
 | time.Microsecond |             |
 | time.Nanosecond  |             |
 
-
 ```go
 func Insert() {
     series := greptime.Series{}              // Create one row of data

@@ -85,7 +85,6 @@ After the installation, you can use `kubectl port-forward` to access GreptimeDB 
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
-
 ### 5. Destroy GreptimeDB cluster
 
 You can use the following commands to uninstall operator and cluster:

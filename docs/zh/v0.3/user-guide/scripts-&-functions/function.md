@@ -22,6 +22,7 @@
 ## 协处理器函数的输入
 
 该协处理器也接受之前已经看到的参数：
+
 ```python
 @coprocessor(args=["number"], sql="select number from numbers limit 20", returns=["value"])
 def normalize(v) -> vector[i64]:
@@ -31,6 +32,7 @@ def normalize(v) -> vector[i64]:
 参数 `v` 是执行 `sql` 返回的查询结果中的 `number` 列（由 `args` 属性指定）。
 
 当然，也可以有多个参数：
+
 ```python
 @coprocessor(args=["number", "number", "number"],
              sql="select number from numbers limit 5",
@@ -41,6 +43,7 @@ def normalize(n1, n2, n3) -> vector[i64]:
 ```
 
 除了 `args`，还可以向协处理器传递用户定义的参数：
+
 ```python
 @coprocessor(returns=['value'])
 def add(**params) -> vector[i64]:
@@ -55,6 +58,7 @@ def add(**params) -> vector[i64]:
 curl  -XPOST \
    "http://localhost:4000/v1/run-script?name=add&db=public&a=42&b=99"
 ```
+
 ```json
 {
   "code": 0,
@@ -85,12 +89,12 @@ curl  -XPOST \
 
 用户定义的参数必须由协处理器中的 `**kwargs` 来完成，其类型都是字符串。可以传递任何想要的东西，如在协处理器中运行的 SQL。
 
-
 ## 协处理器函数的输出
 
 正如前面的例子所展示的那样，协处理器函数的输出必须是向量。
 
 We can return multi vectors:
+
 ```python
 from greptime import vector
 
@@ -107,6 +111,7 @@ def return_vectors() -> (vector[i64], vector[str], vector[f64]):
 但必须确保所有这些由函数返回的向量具有相同的长度，因为当它们被转换为行时，每一行必须呈现所有的列值。
 
 当然，可以返回字面值，它们也会被转化为向量：
+
 ```python
 from greptime import vector
 
@@ -121,12 +126,14 @@ def return_vectors() -> (vector[i64], vector[str], vector[i64]):
 ## 查询数据
 
 我们在 Python Corpcessor 中提供了两种方法来轻松查询 GreptimeDB 的数据：
+
 * SQL：运行一个 SQL 字符串并返回查询结果。
 * DataFrame API：描述和执行查询的内置模块，类似于 [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) 或 [Spark DataFrame](https://spark.apache.org/docs/latest/sql-programming-guide.html)。
 
 ## SQL
 
 使用 `greptime` 模块的 `query` 方法来检索一个查询引擎，然后调用 `sql` 函数来执行一个 SQL 字符串，比如：
+
 ```python
 @copr(returns=["value"])
 def query_numbers()->vector[f64]:
@@ -164,11 +171,13 @@ SQL > select query_numbers();
 在查询结果返回给用户之前进行处理时，协处理器就能派上用场。
 
 例如，我们想对数值进行标准化处理：
+
 * 如果错过了，返回 0，而不是 null 或 `NaN`，
 * 如果它大于 5，返回 5，
 * 如果它小于 0，则返回 0。
 
 然后我们可以创建 `normalize.py`:
+
 ```python
 import math
 
@@ -188,6 +197,7 @@ def normalize(v) -> vector[i64]:
 ```
 
 `normalize0` 函数的行为如上所述。而 `normalize` 函数是协处理器的入口点：
+
 * 执行 SQL 的 `select value from demo`，
 * 提取查询结果中的列 `value` 并将其作为 `normalize` 函数的参数，然后调用该函数。
 * 在函数中，使用列表理解来处理 `value` 向量，通过 `normalize0` 函数处理每个元素，
@@ -199,6 +209,7 @@ def normalize(v) -> vector[i64]:
 `normalize` 协处理器将在流中被调用，查询结果可能包含多个批次，引擎将对每个批次调用协处理器。而且应该记住，从查询结果中提取的列都是向量，我们将在下一章中介绍向量。
 
 提交并运行这个脚本将产生输出：
+
 ```json
 {
   "output": [

@@ -18,6 +18,7 @@ The storage file structure of GreptimeDB includes of the following:
     ├── rewrite
     └── LOCK
 ```
+
 - `cluster`: The cluster directory contains internal data, and organizes the data grouped by datanode id.
 - `data`: The files in data directory store time series data of GreptimeDB. To customize this path, please refer to [Storage option](../operations/configuration.md#storage-option).
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
