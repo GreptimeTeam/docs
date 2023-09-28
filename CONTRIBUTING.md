@@ -11,12 +11,12 @@ For example, `/docs/v0.4` contains the documentation for GreptimeDB v0.4.
 It should match the current document structure.
 You need to use `-` and lowercase letters in markdown file names so that `summary.yml` can recognize these file names.
 
-### Chinese Documentation
+### Document Localization
 
-- The Chinese documentation is located in `/docs/zh` directory.
-- The file `summary-i18n.yml` in `/docs/zh` directory defines the navigation of the Chinese documentation website. 
-The content in `summary-i18n.yml` is the Chinease name of the relative directory.
-If you add a new directory in `/docs/zh`, remember to update `summary-i18n.yml`.
+- The localized documentation is located in the `/docs/xx` directory, where `xx` is the language code.
+- The `summary-i18n.yml` file in the `/docs/xx` directory defines the navigation of the localized documentation website.
+The content in `summary-i18n.yml` should be the localized name of the relative directory.
+If you add a new directory in `/docs/xx`, remember to update `summary-i18n.yml`.
 
 ## Links
 
@@ -55,9 +55,12 @@ npm run dev
 
 You can also use `npm run build` to check dead links.
 
-### Preview the Chinese documentation
+### Preview the Localized documentation
 
-Add a new file `.env` in the root directory and add the following content:
+To preview the documentation in a specific language,
+add a new file called `.env` to the root directory and include the `VITE_LANG=xx` environment variable,
+where `xx` is the language code.
+For example, to preview the Chinese documentation, add the following content to `.env`:
 
 ```shell
 VITE_LANG=zh
