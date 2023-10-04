@@ -1,6 +1,6 @@
 # DESCRIBE TABLE
 
-`DESCRIBE TABLE [db.]table` 描述了 `db` 或当前使用的数据库中的表结构。
+`DESCRIBE [TABLE] [db.]table` 描述了 `db` 或当前使用的数据库中的表结构。
 
 ## 示例
 
@@ -10,6 +10,13 @@
 DESCRIBE TABLE monitor;
 ```
 
+或者
+
+```sql
+DESCRIBE monitor;
+```
+
+```sql
 ```sql
 +--------+----------------------+------+------+---------------------+---------------+
 | Column | Type                 | Key  | Null | Default             | Semantic Type |
@@ -26,6 +33,7 @@ DESCRIBE TABLE monitor;
 
 * `Column`: 列名
 * `Type`: 列类型
+* `Key`: `PRI` 表示该列在 `PRIMARY KEY` 约束里。
 * `Null`: `YES` 表示可以为空，否则为 `NO`
 * `Default`: 列的默认值
 * `Semantic Type`：该列的语义类型，对应数据模型中的 `TAG`、`FIELD` 或 `TIMESTAMP`。

@@ -119,6 +119,7 @@ SHOW FULL TABLES WHERE Table_type='BASE TABLE';
 +---------+------------+
 1 row in set (0.01 sec)
 ```
+
 ## SHOW CREATE TABLE
 
 Shows the `CREATE TABLE` statement that creates the named table:
