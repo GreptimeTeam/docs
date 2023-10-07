@@ -6,7 +6,7 @@ GreptimeDB 支持的 SQL 是 ANSI SQL 的子集，并且拥有一些特有的扩
   * 支持特有的 `TIME INDEX` 约束，详细请参考[数据模型](/user-guide/concepts/data-model)和 [CREATE](./create.md) 建表语法一节。
   * 目前仅支持 `PRIMARY KEY` 约束，不支持其他类型的约束，也不支持外键。
   * GreptimeDB 是原生的分布式数据库，因此分布式表的建表语句支持分区规则，也请参考[CREATE](./create.md) 建表语法一节。
-2. 插入： 与 ANSI SQL 语法一致，但是强制要求提供 `TIME INDEX` 列值（或默认值）。
+2. 插入新数据： 与 ANSI SQL 语法一致，但是强制要求提供 `TIME INDEX` 列值（或默认值）。
 3. 更新：不支持 `UPDATE` 语法，但是在 `INSERT` 的时候，如果主键和 `TIME INDEX` 对应的列值一样，那么后续插入的行将覆盖以前写入的行，从而变相实现更新。
 4. 查询：查询语法兼容 ANSI SQL，存在部分功能差异和缺失
   * 不支持视图
