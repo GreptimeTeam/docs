@@ -1,4 +1,3 @@
-Sure, here's the translation:
 
 # ANSI Compatibility
 
