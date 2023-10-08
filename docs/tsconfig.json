@@ -8,5 +8,5 @@
   "vueCompilerOptions": {
     "experimentalDisableTemplateSupport": true
   },
-  "include": ["./*.ts", "./.vitepress/**/*.vue","./.vitepress/**/*.ts", "./.vitepress/**/*.ts"]
+  "include": ["./*.ts", "./.vitepress/**/*.vue","./.vitepress/**/*.ts", "./.vitepress/**/*.ts", "en/config/*.ts", "zh/config/*.ts"]
 }
