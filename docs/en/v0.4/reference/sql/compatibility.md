@@ -1,4 +1,3 @@
-
 # ANSI Compatibility
 
 GreptimeDB supports a subset of ANSI SQL and has some unique extensions. Some major incompatibilities and extensions are described below:
