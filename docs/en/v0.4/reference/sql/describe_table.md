@@ -17,6 +17,7 @@ DESCRIBE monitor;
 ```
 
 Output:
+
 ```sql
 +--------+----------------------+------+------+---------------------+---------------+
 | Column | Type                 | Key  | Null | Default             | Semantic Type |
