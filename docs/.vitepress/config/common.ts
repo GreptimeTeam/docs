@@ -10,12 +10,15 @@ export const common = async () => {
       zh: { label: '简体中文', lang: 'zh-CN', link: 'https://docs.greptime.cn/' },
       en: { label: 'English', lang: 'en-US', link: 'https://docs.greptime.com/' },
     },
+    markdown: {
+      theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
+    },
     themeConfig: {
       search: {
         provider: 'local',
       },
       siteTitle: '',
-      logo: 'logo-text-tinted.png',
+      logo: '/logo-text-tinted.png',
       copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
       email: 'marketing@greptime.com',
       editLink: {
