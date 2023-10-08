@@ -12,7 +12,7 @@ Fill in Prometheus server URL in HTTP:
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 
 - User: `<username>`
-- Password: *Your GreptimeDB password*
+- Password: `<password>`
 
 Then click Save & Test button to test the connection.
 
@@ -23,7 +23,7 @@ Click the Add data source button and select MySQL as the type. Fill in the follo
 - Host: `<host>:4002`
 - Database: `<dbname>`
 - User: `<username>`
-- Password: *Your GreptimeDB password*
+- Password: `<password>`
 - Session timezone: `UTC`
 
 Then click Save & Test button to test the connection.
