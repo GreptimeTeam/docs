@@ -1,11 +1,5 @@
-import { makeSidebar } from '../theme/serverUtils'
-import { CURRENT_VERSION } from './common'
-
-// TODO
-const filePath = `en/${CURRENT_VERSION}/:file`
-const groupPath = `en/${CURRENT_VERSION}/:group/:file`
-const typePath = `en/${CURRENT_VERSION}/:group/:type/:file`
-const namePath = `en/${CURRENT_VERSION}/:group/:type/:file/:name`
+import { makeSidebar } from '../../.vitepress/theme/serverUtils'
+import { CURRENT_VERSION } from '../../.vitepress/config/common'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -30,17 +24,6 @@ export const enConfig = async () => ({
   ],
   locales: {
     root: { label: 'English' },
-  },
-  rewrites: {
-    [filePath]: ':file',
-    [groupPath]: ':group/:file',
-    [typePath]: ':group/:type/:file',
-    [namePath]: ':group/:type/:file/:name',
-    'en/v0.3/:v0': 'v0.3/:v0',
-    'en/v0.3/:v0/:file': 'v0.3/:v0/:file',
-    'en/v0.3/:v0/:group/:file': 'v0.3/:v0/:group/:file',
-    'en/v0.3/:v0/:group/:type/:file': 'v0.3/:v0/:group/:type/:file',
-    'en/v0.3/:v0/:group/:type/:file/:name': 'v0.3/:v0/:group/:type/:file/:name',
   },
   themeConfig: {
     nav: [

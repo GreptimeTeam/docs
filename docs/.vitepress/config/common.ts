@@ -1,5 +1,10 @@
+import dotenv from 'dotenv'
+
+export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 export const CURRENT_VERSION = 'v0.4'
-export const currentVersionPath = `/${CURRENT_VERSION}/`
+
+const currentVersionPath = `${CURRENT_LANG}/${CURRENT_VERSION}/:path+`
+const versionPath = `${CURRENT_LANG}/:version/:path+`
 
 export const common = async () => {
   return {
@@ -12,6 +17,10 @@ export const common = async () => {
     },
     markdown: {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
+    },
+    rewrites: {
+      [currentVersionPath]: `:path+`,
+      [versionPath]: `:version(v\\d\.\\d)?/:path+`,
     },
     themeConfig: {
       search: {

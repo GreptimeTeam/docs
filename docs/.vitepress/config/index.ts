@@ -1,7 +1,6 @@
-import { enConfig } from './en'
-import { zhConfig } from '../../zh/config/index'
-import { common } from './common'
-import dotenv from 'dotenv'
+import { enConfig } from '../../en/config'
+import { zhConfig } from '../../zh/config'
+import { common, CURRENT_LANG } from './common'
 import merge from 'deepmerge'
 
 export default async () => {
@@ -12,6 +11,6 @@ export default async () => {
     en: await enConfig(),
   }
 
-  const localConfig = lang[dotenv.config().parsed?.VITE_LANG || 'en']
+  const localConfig = lang[CURRENT_LANG]
   return merge(commonConfig, localConfig)
 }

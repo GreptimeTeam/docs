@@ -1,12 +1,6 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
 import { CURRENT_VERSION } from '../../.vitepress/config/common'
 
-// TODO
-const filePath = `zh/${CURRENT_VERSION}/:file`
-const groupPath = `zh/${CURRENT_VERSION}/:group/:file`
-const typePath = `zh/${CURRENT_VERSION}/:group/:type/:file`
-const namePath = `zh/${CURRENT_VERSION}/:group/:type/:file/:name`
-
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
   description: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台',
@@ -28,17 +22,6 @@ export const zhConfig = async () => ({
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
-  rewrites: {
-    [filePath]: ':file',
-    [groupPath]: ':group/:file',
-    [typePath]: ':group/:type/:file',
-    [namePath]: ':group/:type/:file/:name',
-    'zh/v0.3/:v0': 'v0.3/:v0',
-    'zh/v0.3/:v0/:file': 'v0.3/:v0/:file',
-    'zh/v0.3/:v0/:group/:file': 'v0.3/:v0/:group/:file',
-    'zh/v0.3/:v0/:group/:type/:file': 'v0.3/:v0/:group/:type/:file',
-    'zh/v0.3/:v0/:group/:type/:file/:name': 'v0.3/:v0/:group/:type/:file/:name',
-  },
   locales: {
     root: { label: '简体中文', lang: 'zh-CN' },
   },
