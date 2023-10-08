@@ -15,8 +15,7 @@ Frontend and Meta.
 - [**Frontend**](/en/v0.3/developer-guide/frontend/overview.md) is a stateless
   component that can scale to as many as needed. It accepts incoming request,
   authenticates it, translates it from various protocols into GreptimeDB
-  cluster's internal one, and forwards to certain _Datanode_s under guidance
-  from _Meta_.
+  cluster's internal one, and forwards to certain _Datanode_s under guidance from _Meta_.
 - [**Datanodes**](/en/v0.3/developer-guide/datanode/overview.md) hold regions of
   tables and data in Greptime DB cluster. It accepts read and write request sent
   from _Frontend_, and executes it against its data. A single-instance
