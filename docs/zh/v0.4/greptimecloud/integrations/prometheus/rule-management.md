@@ -100,7 +100,7 @@ git push
 
 ### 拉取代码
 
-除了通过 Git 编辑配置文件外，你还可以通过 [GreptimeCloud 控制台](#visualize-charts) 对规则进行更改。
+除了通过 Git 编辑配置文件外，你还可以通过 [GreptimeCloud 控制台](#可视化数据) 对规则进行更改。
 通过下方的命令即可拉取最新的配置文件：
 
 ```shell

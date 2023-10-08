@@ -69,7 +69,7 @@ When you try to copy data from(to) S3:
 COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
 ```
 
-**URL**
+##### URL
 
 Notes: You should specify a file using `S3://bucket/key-name`. The following example shows the correct format.
 
@@ -83,7 +83,7 @@ Another way is using Virtual-hosted–style. The following example shows the cor
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-**CONNECTION**
+##### CONNECTION
 
 You can set the following **CONNECTION** options:
 
