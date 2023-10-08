@@ -10,7 +10,7 @@ GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准�
 - Port: `4003`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 ## `psql`
 
