@@ -1,4 +1,4 @@
-default: true
+default: false
 
 line-length: false
 fenced-code-language: false
