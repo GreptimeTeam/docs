@@ -3,7 +3,7 @@ September 20, 2023
 ## Summary
 Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better.
 
-Over the past three weeks, we have been working intensively to prepare for the release of GreptimeDB v0.4, and we are thrilled for its official launch later this week. 
+Over the past three weeks, we have been working intensively to prepare for the release of GreptimeDB v0.4, and we are thrilled for its official launch later this week.
 
 **We will host an online Meetup at 19:00 PDT on October 10, 2023. During this event, we will unveil the latest details of the GreptimeDB v0.4 Benchmark and provide insights into the technical intricacies of the new engine.** Everyone is welcome to join the Meetup to stay updated on the latest developments of GreptimeDB v0.4.
 
@@ -17,13 +17,13 @@ Below are some highlights for the past three weeks:
 - Restricted the TIME INDEX type.
 
 ## Contributors
-Over the last three weeks, our community has successfully merged a total of 189 PRs. Notably, 2 of these PRs came from 2 distinct external contributors, with several more awaiting approval. 
+Over the last three weeks, our community has successfully merged a total of 189 PRs. Notably, 2 of these PRs came from 2 distinct external contributors, with several more awaiting approval.
 A special shout-out to our standout contributors from the past three weeks:
 
 - [@NiwakaDev](https://github.com/NiwakaDev0) ([db#2267](https://github.com/GreptimeTeam/greptimedb/pull/2267))
 - [@Lilit0x](https://github.com/Lilit0x) ([db#2400](https://github.com/GreptimeTeam/greptimedb/pull/2400))
 
-👏 Let's welcome [@Lilit0x](https://github.com/Lilit0x) as the new contributors to join our community with the first PR merged. 
+👏 Let's welcome [@Lilit0x](https://github.com/Lilit0x) as the new contributors to join our community with the first PR merged.
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
@@ -128,10 +128,10 @@ New Features in Dashboard
 - The tables list on the left supports shortcut quick input, allowing for one-click insertion of preset SQL query statements.
 https://github.com/GreptimeTeam/dashboard/pull/323
 
-<p><img src="/blogs/2023-09-20-biweekly-report920/image1.png" alt="Shortcut Demonstration" style="width: 70%; margin: 0 auto;" /></p>
+<p><img src="/biweekly-images/image1.png" alt="Shortcut Demonstration" style="width: 70%; margin: 0 auto;" /></p>
 
-- The editor offers input suggestions. Both SQL and PromQL editors can automatically suggest potential table names and column names based on entered keywords. 
+- The editor offers input suggestions. Both SQL and PromQL editors can automatically suggest potential table names and column names based on entered keywords.
 https://github.com/GreptimeTeam/dashboard/pull/329
 https://github.com/GreptimeTeam/dashboard/pull/330
 
-<p><img src="/blogs/2023-09-20-biweekly-report920/image2.png" alt="Hint Demonstration" style="width: 70%; margin: 0 auto;" /></p>
+<p><img src="/biweekly-images/image2.png" alt="Hint Demonstration" style="width: 70%; margin: 0 auto;" /></p>
