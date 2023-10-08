@@ -8,7 +8,7 @@ To connect to GreptimeCloud, using information below:
 - Port: `4001`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 The following code shows how to create a `client`.
 
