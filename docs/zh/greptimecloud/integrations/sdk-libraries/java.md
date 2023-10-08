@@ -9,13 +9,13 @@ GreptimeDB Java SDK 使用 gRPC 与数据库通信，
 - Port: `4001`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 下方的代码片段展示了如何使用 Java SDK 建立一个 `client` 连接对象：
 
 ```java
 String endpoint = "<host>:4001";
-AuthInfo authInfo = new AuthInfo("<username>", "*Your GreptimeCloud service password*");
+AuthInfo authInfo = new AuthInfo("<username>", "<password>");
 
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoint) //
         .authInfo(authInfo)

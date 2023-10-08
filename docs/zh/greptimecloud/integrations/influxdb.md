@@ -4,7 +4,7 @@ GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/inf
 
 - URL: `https://<host>/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`
-- Password: Your service password
+- Password: `<password>`
 
 ```sh
 curl -i 'https://<host>/v1/influxdb/write?db=<dbname>&u=<username>&p=PASSWORD' \
