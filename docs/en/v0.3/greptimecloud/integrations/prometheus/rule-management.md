@@ -100,7 +100,7 @@ git push
 
 ### Pull Code
 
-In addition to editing the configuration files through Git, you can also make changes to them via the [GreptimeCloud console](#visualize-charts). Then you can pull the latest configuration files.
+In addition to editing the configuration files through Git, you can also make changes to them via the [GreptimeCloud console](#visualize-data). Then you can pull the latest configuration files.
 
 ```shell
 git pull

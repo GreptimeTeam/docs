@@ -16,7 +16,7 @@ Once the download is completed, the binary file `gtctl` will be stored in your c
 The **fastest** way to experience the GreptimeDB cluster is to use the playground:
 
 ```
-gtctl playground
+./gtctl playground
 ```
 
 When the command is executed, the playground will be started in the foreground. You can use `Ctrl+C` to stop the playground. The playground will deploy the minimal GreptimeDB cluster in bare-metal mode on your host.
@@ -30,24 +30,20 @@ For more details, please refer to [gtctl operations](/en/v0.3/user-guide/operati
 If your Kubernetes cluster is ready(a 1.18 or higher version is required), you can use the following command to deploy the GreptimeDB cluster:
 
 ```
-gtctl cluster create mycluster
+./gtctl cluster create mycluster
 ```
 
 After the creation is completed, you can use the following command to connect the cluster with MySQL protocol:
 
 ```
-gtctl cluster connect mycluster
+./gtctl cluster connect mycluster
 ```
 
 You also can use [Helm Charts](/en/v0.3/user-guide/operations/kubernetes.md) to deploy the cluster.
 
 :::tip Note
 
-You can use the [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create the Kubernetes:
-
-```
-kind create cluster
-```
+You can use the [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create the Kubernetes.
 
 :::
 

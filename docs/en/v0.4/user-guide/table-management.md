@@ -93,7 +93,7 @@ GreptimeDB does not currently support changing the data model of existing column
 Therefore, it is important to carefully design your data model before creating tables.
 :::
 
-#### `CREATE TABLE` syntax
+### `CREATE TABLE` syntax
 
 - Timestamp column: GreptimeDB is a time-series database system, a time-series column must
   be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of

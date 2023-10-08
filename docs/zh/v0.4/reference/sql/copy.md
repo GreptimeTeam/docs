@@ -61,7 +61,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
 ```
 
-**URL**
+##### URL
 
 注意：你应该使用 `S3://bucket/key-name` 指定文件。下方的例子展示了正确的格式：
 
@@ -75,7 +75,7 @@ S3://my-bucket/data.parquet
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-**CONNECTION**
+##### CONNECTION
 
 你可以设置这些 **CONNECTION** 选项：
 

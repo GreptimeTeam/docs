@@ -10,12 +10,12 @@ Frontend and Meta.
   GreptimeDB cluster. In typical deployment, at least three nodes is required to
   setup a reliable _Meta_ mini-cluster. _Meta_ manages database and table
   information, including how data spread across the cluster and where to route
-  requests to. It also keeps monitoring availability and performance of
-  *Datanode*s, to ensure its routing table is valid and up-to-date.
+  requests to. It also keeps monitoring availability and performance of _Datanode_s,
+  to ensure its routing table is valid and up-to-date.
 - [**Frontend**](/en/v0.4/developer-guide/frontend/overview.md) is a stateless
   component that can scale to as many as needed. It accepts incoming request,
   authenticates it, translates it from various protocols into GreptimeDB
-  cluster's internal one, and forwards to certain *Datanode*s under guidance
+  cluster's internal one, and forwards to certain _Datanode_s under guidance
   from _Meta_.
 - [**Datanodes**](/en/v0.4/developer-guide/datanode/overview.md) hold regions of
   tables and data in Greptime DB cluster. It accepts read and write request sent
