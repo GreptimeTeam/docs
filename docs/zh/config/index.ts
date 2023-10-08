@@ -1,5 +1,5 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
-import { CURRENT_VERSION } from '../../.vitepress/config/common'
+import { LATEST_VERSION } from '../../.vitepress/config/common'
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
@@ -62,7 +62,7 @@ export const zhConfig = async () => ({
         text: '历史版本',
         items: [
           {
-            text: `${CURRENT_VERSION}(最新)`,
+            text: `${LATEST_VERSION}(最新)`,
             link: '/',
           },
           {
@@ -73,7 +73,7 @@ export const zhConfig = async () => ({
       },
     ],
     sidebar: {
-      '/': await makeSidebar('zh', CURRENT_VERSION),
+      '/': await makeSidebar('zh', LATEST_VERSION),
       '/v0.3/': await makeSidebar('zh', 'v0.3'),
     },
     editLink: {

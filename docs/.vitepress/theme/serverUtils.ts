@@ -1,11 +1,11 @@
 import fs from 'fs-extra'
 import YAML from 'js-yaml'
-import { CURRENT_VERSION } from '../config/common'
+import { LATEST_VERSION } from '../config/common'
 
 export async function makeSidebar(lang, version) {
   const langPath = `/${lang}`
   const versionPath = `/${version}`
-  const linkPath = version !== CURRENT_VERSION ? `/${version}` : ''
+  const linkPath = version !== LATEST_VERSION ? `/${version}` : ''
 
   const summary = YAML.load(fs.readFileSync(`docs/en${versionPath}/summary.yml`), 'utf8')
   const summaryI18n = lang !== 'en' ? YAML.load(fs.readFileSync(`docs${langPath}${versionPath}/summary-i18n.yml`), 'utf8') : null
