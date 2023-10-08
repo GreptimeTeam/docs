@@ -22,16 +22,16 @@ psql -h <host> -p 4003 -U <username> -d <dbname> -W
 
 ## Postgres 连接字符串
 
-使用以下连接字符串与兼容的客户端库（如 psycopg、rust-postgres 等）连接。请将 *PASSWORD* 替换为 GreptimeCloud service 的密码。
+使用以下连接字符串与兼容的客户端库（如 psycopg、rust-postgres 等）连接。
 
 ```
-host=<host> port=4003 dbname=<dbname> user=<username> password=PASSWORD
+host=<host> port=4003 dbname=<dbname> user=<username> password=<password>
 ```
 
 ## Postgres JDBC URL
 
-在你的 Postgres JDBC 客户端使用以下 URL，请将 *PASSWORD* 替换为 GreptimeCloud service 的密码。
+在你的 Postgres JDBC 客户端使用以下 URL。
 
 ```
-jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=PASSOWRD&ssl=true
+jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=<password>&ssl=true
 ```
