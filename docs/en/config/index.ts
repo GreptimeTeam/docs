@@ -1,5 +1,5 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
-import { CURRENT_VERSION } from '../../.vitepress/config/common'
+import { LATEST_VERSION } from '../../.vitepress/config/common'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -40,7 +40,7 @@ export const enConfig = async () => ({
         text: 'The Version Of History',
         items: [
           {
-            text: `${CURRENT_VERSION}(latest)`,
+            text: `${LATEST_VERSION}(latest)`,
             link: '/',
           },
           {
@@ -51,7 +51,7 @@ export const enConfig = async () => ({
       },
     ],
     sidebar: {
-      '/': await makeSidebar('en', CURRENT_VERSION),
+      '/': await makeSidebar('en', LATEST_VERSION),
       '/v0.3/': await makeSidebar('en', 'v0.3'),
     },
   },
