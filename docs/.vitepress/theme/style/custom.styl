@@ -58,12 +58,14 @@
 .VPNavBarMenu .VPFlyout
   .text
     color var(--color-dark-text)
-  &:hover .text 
+  &.active .text
+  &.active:hover .text
+  &:hover .text
     color var(--vp-c-brand-light)
   .VPLink
     color var(--vp-c-text-1)
   .link.active
-    color var(--vp-c-brand-light)
+    color var(--vp-c-brand)
   .menu .VPMenu .items .link
     padding 2px 12px
     margin 0
