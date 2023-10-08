@@ -15,7 +15,7 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 最快体验 GreptimeDB 分布式集群的方式便是运行 `playground` 命令：
 
 ```
-gtctl playground
+./gtctl playground
 ```
 
 当命令执行完毕之后，playground 将会在前台启动。你可以使用 `Ctrl+C` 来停止 playground。playground 将会在你的主机上以 bare-metal 模式部署最小的 GreptimeDB 集群。
@@ -29,13 +29,13 @@ gtctl playground
 如果您的 Kubernetes 集群已经准备就绪（需要 1.18 或更高版本），您可以使用以下命令部署 GreptimeDB 集群：
 
 ```
-gtctl cluster create mycluster --use-greptime-cn-artifacts
+./gtctl cluster create mycluster --use-greptime-cn-artifacts
 ```
 
 创建完成后，你可以使用以下命令连接集群：
 
 ```
-gtctl cluster connect mycluster
+./gtctl cluster connect mycluster
 ```
 
 您还可以使用 [Helm Charts](/zh/v0.3/user-guide/operations/kubernetes.md) 来部署集群。
