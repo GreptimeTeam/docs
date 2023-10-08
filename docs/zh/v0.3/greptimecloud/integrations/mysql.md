@@ -8,7 +8,7 @@ GreptimeCloud 可以通过 MySQL 协议访问，兼容大多数标准客户端�
 - Port: `4002`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 ## MySQL CLI
 
