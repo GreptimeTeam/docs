@@ -11,6 +11,7 @@ export const common = async () => {
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
+    head: [['script', { src: 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/icons_19361_134.ede7dfbb02f3e5cba425f4d574d089ba.js' }]],
     locales: {
       zh: { label: '简体中文', lang: 'zh-CN', link: 'https://docs.greptime.cn/' },
       en: { label: 'English', lang: 'en-US', link: 'https://docs.greptime.com/' },

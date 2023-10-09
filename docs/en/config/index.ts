@@ -54,5 +54,35 @@ export const enConfig = async () => ({
       '/': await makeSidebar('en', LATEST_VERSION),
       '/v0.3/': await makeSidebar('en', 'v0.3'),
     },
+    iconMap: [
+      {
+        key: 'Getting Started',
+        icon: 'gettingStarted',
+      },
+      {
+        key: 'User Guide',
+        icon: 'docsUserGuide',
+      },
+      {
+        key: 'GreptimeCloud',
+        icon: 'greptimeCloud',
+      },
+      {
+        key: 'Developer Guide',
+        icon: 'developerGuide',
+      },
+      {
+        key: 'Reference',
+        icon: 'reference',
+      },
+      {
+        key: 'Changelog',
+        icon: 'changelog',
+      },
+      {
+        key: 'FAQ and Others',
+        icon: 'FAQandOthers',
+      },
+    ],
   },
 })

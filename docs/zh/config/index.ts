@@ -76,6 +76,28 @@ export const zhConfig = async () => ({
       '/': await makeSidebar('zh', LATEST_VERSION),
       '/v0.3/': await makeSidebar('zh', 'v0.3'),
     },
+    iconMap: [
+      {
+        key: '立即开始',
+        icon: 'gettingStarted',
+      },
+      {
+        key: '用户指南',
+        icon: 'docsUserGuide',
+      },
+      {
+        key: '云服务',
+        icon: 'greptimeCloud',
+      },
+      {
+        key: '开发者指南',
+        icon: 'developerGuide',
+      },
+      {
+        key: 'Reference',
+        icon: 'reference',
+      },
+    ],
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: '在 GitHub 上编辑此页',

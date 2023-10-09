@@ -4,24 +4,29 @@ Layout
 <script setup name="Layout" lang="ts">
 import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
 import { useRouter } from 'vitepress'
+import { getSidebarIcon } from '@/utils.ts'
 
 // data
 const { theme } = useData()
-const { latestVersion } = theme.value
+const { latestVersion, iconMap } = theme.value
 // methods
 // lifecycle
-
-onMounted(() => {
+onMounted(async () => {
   const router = useRouter()
   let path = router.route.path
   if (path.includes(latestVersion)) {
     const res = path.replace(`/${latestVersion}`, '')
-    router.go(res)
+    await router.go(res)
   }
+  getSidebarIcon(iconMap)
+  window.addEventListener('click', e => {
+    setTimeout(() => {
+      const el = <HTMLInputElement>e.target
+      if (el.matches('.VPLink')) {
+        getSidebarIcon(iconMap)
+      }
+    }, 50)
+  })
 })
+onUnmounted(() => {})
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
-. {
-
-}
-</style>
