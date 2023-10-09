@@ -19,14 +19,6 @@ onMounted(async () => {
     await router.go(res)
   }
   getSidebarIcon(iconMap)
-  window.addEventListener('click', e => {
-    setTimeout(() => {
-      const el = <HTMLInputElement>e.target
-      if (el.matches('.VPLink')) {
-        getSidebarIcon(iconMap)
-      }
-    }, 50)
-  })
 })
 onUnmounted(() => {})
 </script>
