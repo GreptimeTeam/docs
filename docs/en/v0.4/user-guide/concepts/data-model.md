@@ -7,7 +7,7 @@ The data model mainly based on the table model in relational databases while con
 
 All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`.
 
-- Table names are often the same as the indicator names.
+- Table names are often the same as the indicator names or metric names.
 - `Tag` columns store metadata that is commonly queried.
   The values in `Tag` columns are labels attached to the collected indicators,
   generally used to describe a particular characteristic of these indicators.
@@ -38,7 +38,7 @@ Those are very similar to the table model everyone is familiar with. The differe
   It can be effectively used when querying data with a time range.
 - The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
   the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-  These columns contain the actual data and are not indexed. Avoid using `Field` columns in query conditions
+  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as the latest value, maximum/minimum value, average, percentage, and so on. Please avoid using `Field` columns in query conditions,
   which is highly resource-intensive and unperformant.
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [Table Management](../table-management.md#create-table) and [CREATE statement](/en/v0.4/reference/sql/create.md).
@@ -57,4 +57,5 @@ GreptimeDB is designed on top of Table for the following reasons:
   The advantage of the multi-value model is that it can write multiple values to the database at once,
   while the single-value model requires splitting the data into multiple records.
 
-GreptimeDB uses SQL to manage table schema. Please refer to [Table Management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a schemaless approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
+GreptimeDB uses SQL to manage table schema. Please refer to [Table Management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
+

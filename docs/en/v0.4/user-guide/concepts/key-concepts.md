@@ -11,7 +11,7 @@ data container, within which data can be managed and computed.
 ## Time-Series Table
 
 GreptimeDB designed time-series table to be the basic unit of data storage.
-It is similar to a table in a traditional relational database, but requires a timestamp column.
+It is similar to a table in a traditional relational database, but requires a timestamp column(We call it time index).
 The table holds a set of data that shares a common schema.
 It can be created using SQL `CREATE TABLE`, or inferred from the input data structure using the auto-schema feature.
 In a distributed deployment, a table can be split into multiple partitions that sit on different datanodes.
@@ -22,8 +22,8 @@ For more information about the data model of the time-series table, please refer
 
 Each partition of distributed table is called a region. A region may contain a
 sequence of continuous data, depending on the partition algorithm. Region
-information is managed by Meta. It's completely transparent to users who send
-the query.
+information is managed by MetaServer. It's completely transparent to users who send
+write requests or queries.
 
 ## Data Types
 

@@ -2,7 +2,7 @@
 
 ## Does GreptimeDB support updates?
 
-Sort of. The updates can be effectively performed by insertions. If the primary keys have identical column values, the old data will be replaced with the new one. The primary keys in GreptimeDB are mostly like the series in other TSDBs.
+Sort of. The updates can be effectively performed by insertions. If the primary keys and time index have identical column values, the old data will be replaced with the new one. The primary keys with time index in GreptimeDB are mostly like the series in other TSDBs.
 
 The performance of updates is the same as insertion, but too many updates may hurt query performance.
 
@@ -39,7 +39,7 @@ GreptimeDB uses the columnar storage layout, and compresses time series data by 
 And it will select the most suitable compression algorithm based on the column data's statistics and distribution.
 GreptimeDB will provide rollups that can compress data more compactly but lose accuracy.
 
-Therefore, the data compression rate of GreptimeDB may be between 2 and 60 times, depending on the characteristics of your data and whether you can accept accuracy loss.
+Therefore, the data compression rate of GreptimeDB may be between 2 and several hundred times, depending on the characteristics of your data and whether you can accept accuracy loss.
 
 ## How does GreptimeDB address the high cardinality issue?
 
@@ -47,7 +47,7 @@ GreptimeDB resolves this issue by:
 
 - **Sharding**: It distributes the data and index between different region servers. Read the [architecture](./architecture.md) of GreptimeDB.
 - **Smart Indexing**: It doesn't create the inverted index for every tag mandatorily, but chooses a proper index type based on the tag column's statistics and query workload. Find more explanation in this [blog](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing).
-- **MPP**: When the query engine doesn't find or choose an index, it will use the vectorize execution query engine to execute the query in parallel and distributed.
+- **MPP**: Besides the indexing capability, the query engine will use the vectorize execution query engine to execute the query in parallel and distributed.
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
