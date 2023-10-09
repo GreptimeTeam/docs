@@ -33,8 +33,10 @@ only has rows of column "a < 10"; partition "p1" contains rows of "10 <= a < 20"
 includes the remaining rows of "a >= 20".
 
 ::: warning Important
+
 1. Value ranges must be strictly increased, and finally ends with "`MAXVALUE`".
 2. The partition column must be a primary key.
+
 :::
 
 ::: tip Note
