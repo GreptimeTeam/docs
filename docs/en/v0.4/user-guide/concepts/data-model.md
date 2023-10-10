@@ -58,4 +58,3 @@ GreptimeDB is designed on top of Table for the following reasons:
   while the single-value model requires splitting the data into multiple records.
 
 GreptimeDB uses SQL to manage table schema. Please refer to [Table Management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
-

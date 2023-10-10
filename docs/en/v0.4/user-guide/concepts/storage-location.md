@@ -29,4 +29,3 @@ The storage file structure of GreptimeDB includes of the following:
 ## Cloud storage
 
 The `data` directory in the file structure can be stored in cloud storage. Please refer to [Storage option](../operations/configuration.md#storage-option) for more details.
-
