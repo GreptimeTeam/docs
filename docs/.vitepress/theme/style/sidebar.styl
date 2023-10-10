@@ -29,29 +29,35 @@
     .VPSidebarItem.level-3 .items
     .VPSidebarItem.level-4 .items
       padding-left 12px
-      margin-left 20px
+      margin-left 32px
       border-left 2px solid var(--color-gray-4)
       .indicator
         width 2px
         left - 14px
     .VPSidebarItem.level-2 .items
-      margin-left 10px
+      margin-left 0
 
-.Layout .VPSidebar 
+.Layout .VPSidebar
+  padding-left 24px
+  background var(--color-light-2)
+  box-shadow 1px 0px 0px 0px var(--color-gray-6)
   #VPSidebarNav .group
-    width calc(var(--vp-sidebar-width) - 32px)
+    width calc(var(--vp-sidebar-width) - 24px)
     .VPSidebarItem.level-0.collapsible:not(.collapsed) .item h2.text 
       font-weight 700
     .VPSidebarItem.level-0
       padding-bottom 0
+      iconpark-icon
+        margin-right 6px
+        font-size 18px
       .item 
         align-items center
-        padding 0 14px 0 10px
+        padding 0 14px 0 8px
         box-shadow 0px 1px 0px 0px #D1CED5
       h2.text
         padding 13px 0 14px
       .VPSidebarItem.level-1 .item
         box-shadow none
-        padding-left 22px
+        padding-left 32px
       .VPSidebarItem.level-2 .item
         padding-left 0
