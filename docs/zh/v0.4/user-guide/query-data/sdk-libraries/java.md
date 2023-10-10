@@ -6,7 +6,7 @@
 
 ```java
 QueryRequest request = QueryRequest.newBuilder()
-    .exprType(SelectExprType.Sql) // It also supports PromQL query language (SelectExprType.Promql). Please refer to [promql](../promql.md).
+    .exprType(SelectExprType.Sql) // It also supports PromQL query language (SelectExprType.Promql)
     .ql("SELECT * FROM monitor;")
     .build();
 
