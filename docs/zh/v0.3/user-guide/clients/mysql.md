@@ -2,24 +2,18 @@
 
 ## 连接到服务端
 
-在 MySQL 连接服务器的命令中，使用 `-u` 来设定用户名，使用 `-p` 来表示密码。在下方的示例代码中，请确保用自己的用户名和密码替换 `greptime_user(username)` 和 `greptime_pwd(password)`。
+GreptimeDB 支持 MySQL 连接协议。使用 `mysql` 客户端来连接到 GreptimeDB 服务端。
 
 ```shell
-❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 8
-Server version: 5.1.10-alpha-msql-proxy Greptime
+# 127.0.0.1 是 GreptimeDB 服务端的 host 地址；4002 是默认的 MySQL 协议端口
+$ mysql -h 127.0.0.1 -P 4002
+```
 
-Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+如果 GreptimeDB 服务端设置了 [鉴权](./authentication.md)，可以使用 `-u` 来设定用户名，使用 `-p` 来提示输入密码。
 
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql>
+```shell
+# 使用设定的账号名替换命令行中的 greptime_user
+$ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
 ```
 
 ## 时区

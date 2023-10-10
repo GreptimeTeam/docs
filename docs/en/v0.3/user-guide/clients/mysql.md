@@ -2,24 +2,18 @@
 
 ## Connect
 
-Use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password:
+GreptimeDB is compatible with MySQL protocol, use `mysql` client to connect to GreptimeDB server.
 
 ```shell
-❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 8
-Server version: 5.1.10-alpha-msql-proxy Greptime
+# 127.0.0.1 is GreptimeDB's host and 4002 is the default MySQL port
+$ mysql -h 127.0.0.1 -P 4002
+```
 
-Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+If [authentication](./authentication.md) has been setup on the server side, use `-u` param to set username and `-p` to indicate password.
 
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql>
+```shell
+# replace greptime_user with your account username
+$ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
 ```
 
 ## Time Zone
