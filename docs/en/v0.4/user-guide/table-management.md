@@ -101,7 +101,7 @@ Therefore, it is important to carefully design your data model before creating t
   be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
   the timestamp column must be `TIMESTAMP`type.
 - Primary key:  The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
-  to time series like [InfluxDB][2]. 
+  to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
