@@ -5,6 +5,8 @@
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
+For more explanations of the `SQL` syntax, please see the [SQL reference](/en/v0.4/reference/sql/overview.md).
+
 ## Create Database
 
 The default database is `public`. You can create a database manully.
@@ -95,16 +97,15 @@ Therefore, it is important to carefully design your data model before creating t
 
 ### `CREATE TABLE` syntax
 
-- Timestamp column: GreptimeDB is a time-series database system, a time-series column must
+- Timestamp column: GreptimeDB is a time-series database system, a timestamp column must
   be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
-  time-series column can be both `BIGINT` or `TIMESTAMP`. If `BIGINT` is chosen as the
-  data type for the time-series column, the inserted value of that column will be
-  automatically converted to a timestamp in milliseconds.
-- Primary key: primary key is used to uniquely define a series of data, which is similar
-  to tags in other time-series systems like [InfluxDB][1].
+  the timestamp column must be `TIMESTAMP`type.
+- Primary key:  The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
+  to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
+[2]: https://docs.influxdata.com/influxdb/v1/concepts/glossary/#series
 
 ## Describe Table
 
