@@ -1,24 +1,29 @@
-# How to use tokio-console in GreptimeDB
+# 如何在 GreptimeDB 中启用 tokio-console
 
-This document introduces how to use the [tokio-console](https://github.com/tokio-rs/console) in GreptimeDB.
+本文介绍了如何在 GreptimeDB 中启用 [tokio-console](https://github.com/tokio-rs/console)。
 
-First, build GreptimeDB with feature `cmd/tokio-console`. Also the `tokio_unstable` cfg must be enabled:
+首先，在构建 GreptimeDB 时带上 feature `cmd/tokio-console`。同时 `tokio_unstable` cfg 也必须开启：
 
 ```bash
 RUSTFLAGS="--cfg tokio_unstable" cargo build -F cmd/tokio-console
 ```
 
-Then start GreptimeDB with tokio console binding address config: `--tokio-console-addr`. Remember to run with
-the `tokio_unstable` cfg. For example:
+启动 GreptimeDB，可设置 tokio console 绑定的地址，配置是 `--tokio-console-addr`。`tokio_unstable` 的 cfg 也需要同时开启。例如：
 
 ```bash
 RUSTFLAGS="--cfg tokio_unstable" greptime --tokio-console-addr="127.0.0.1:6669" standalone start
 ```
 
-Now you can use `tokio-console` to connect to GreptimeDB's tokio console subscriber:
+这样就可以使用 `tokio-console` 命令去连接 GreptimeDB 的 tokio console 服务了：
 
 ```bash
 tokio-console [TARGET_ADDR]
 ```
 
-"TARGET_ADDR" defaults to "<http://127.0.0.1:6669>".
+"`TARGET_ADDR`" 默认是 "<http://127.0.0.1:6669>"。
+
+::: tip Note
+
+`tokio-console` 命令的安装方法参见 [tokio-console](https://github.com/tokio-rs/console)。
+
+:::
