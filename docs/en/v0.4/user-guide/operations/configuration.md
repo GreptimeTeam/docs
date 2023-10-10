@@ -15,6 +15,8 @@ All sample configuration files are in the project's [config](https://github.com/
 
 ## Command-line flags
 
+See [Command lines](/en/v0.4/reference/command-lines.md) to learn how to use the `greptime` command line.
+
 ### Global flags
 
 - `-h`/`--help`: Print help information;
@@ -34,12 +36,14 @@ greptime datanode start --help
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
 - `--data-home`: Database storage root directory;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--node-id <NODE_ID>`: The datanode ID;
 - `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
 - `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
 - `--wal-dir <WAL_DIR>`: The wal directory of WAL;
+
+All the `addr` options are in the form of `ip:port`.
 
 ### Metasrv subcommand flags
 
@@ -50,13 +54,14 @@ greptime metasrv start --help
 ```
 
 - `-c`/`--config-file`: The configuration file for metasrv;
+- `--enable-region-failover`: Whether to enable region failover, default is `false`.
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/en/v0.4/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Etcd server address;
+- `--store-addr <STORE_ADDR>`: Etcd server addresses;
 - `--use-memory-store`: Use memory store instead of etcd;
 
 ### Frontend subcommand flags
@@ -69,16 +74,15 @@ greptime frontend start --help
 
 - `-c`/`--config-file`: The configuration file for frontend;
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
-- `--disable-dashboard`: Disable dashboard http service;
+- `--disable-dashboard`: Disable dashboard http service, default is `false`.
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--grpc-addr <GPRC_ADDR>`: GRPC server address;
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
 - `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--prom-addr <PROM_ADDR>`: Prometheus server address;
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
@@ -99,66 +103,74 @@ greptime [standalone | frontend | datanode | metasrv]  start -c config/standalon
 Common protocol configurations in `frontend` and `standalone` sub command:
 
 ```toml
-[http_options]
+[http]
 addr = "127.0.0.1:4000"
 timeout = "30s"
+body_limit = "64MB"
 
-[grpc_options]
+[grpc]
 addr = "127.0.0.1:4001"
 runtime_size = 8
 
-[mysql_options]
+[mysql]
+enable = true
 addr = "127.0.0.1:4002"
 runtime_size = 2
 
-[mysql_options.tls]
+[mysql.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
 
-[postgres_options]
+[postgres]
+enable = true
 addr = "127.0.0.1:4003"
 runtime_size = 2
 
-[postgres_options.tls]
+[postgres.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
 
-[opentsdb_options]
+[opentsdb]
+enable = true
 addr = "127.0.0.1:4242"
 runtime_size = 2
 
-[influxdb_options]
+[influxdb]
 enable = true
 
-[prometheus_options]
+[prom_store]
 enable = true
 ```
 
-All of these options are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can remove the `prometheus_options` or set its `enable` value to be `false`.
+All of these protocols except HTTP and gRPC are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can set the `enable` to `false`.
 
 #### Protocol options
 
 | Option             | Key          | Type    | Description                                                                     |
 | ------------------ | ------------ | ------- | ------------------------------------------------------------------------------- |
-| http_options       |              |         | HTTP server options                                                             |
+| http       |              |         | HTTP server options                                                             |
 |                    | addr         | String  | Server address, "127.0.0.1:4000" by default                                     |
-|                    | timeout      | String  | HTTP request timeout, 30s by default                                            |
-| grpc_options       |              |         | gRPC server options                                                             |
+|                    | timeout      | String  | HTTP request timeout, "30s" by default                                            |
+|                    | body_limit      | String  | HTTP max body size, "64MB" by default                                            |
+| grpc       |              |         | gRPC server options                                                             |
 |                    | addr         | String  | Server address, "127.0.0.1:4001" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 8 by default                               |
-| mysql_options      |              |         | MySQL server options                                                            |
+| mysql      |              |         | MySQL server options                                                            |
+|                    | enable       | Boolean | Whether to enable MySQL protocol, true by default |
 |                    | add          | String  | Server address, "127.0.0.1:4002" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
-| influxdb_options   |              |         | InfluxDB Protocol options                                                       |
+| influxdb   |              |         | InfluxDB Protocol options                                                       |
 |                    | enable       | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
-| opentsdb_options   |              |         | OpenTSDB Protocol options                                                       |
+| opentsdb   |              |         | OpenTSDB Protocol options                                                       |
+|                    | enable       | Boolean | Whether to enable OpenTSDB protocol, true by default |
 |                    | addr         | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
-| prometheus_options |              |         | Prometheus protocol options                                                     |
+| prom_store |              |         | Prometheus remote storage options                                                     |
 |                    | enable       | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
-| postgres_options   |              |         | PostgresSQL server options                                                      |
+| postgres   |              |         | PostgresSQL server options                                                      |
+|                    | enable       | Boolean | Whether to enable PostgresSQL protocol, true by default |
 |                    | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
 |                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 
@@ -169,7 +181,6 @@ There are also some node options in common:
 | Option | Key                   | Type    | Description                                                |
 | ------ | --------------------- | ------- | ---------------------------------------------------------- |
 |        | mode                  | String  | Node running mode, includes "standalone" and "distributed" |
-|        | enable_memory_catalog | Boolean | Use in-memory catalog, false by default                    |
 
 #### Storage options
 
@@ -236,12 +247,12 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ## Enable object storage caching
 cache_path = "/var/data/s3_local_cache"
-cache_capacity = 1024
+cache_capacity = "256MiB"
 ```
 
-The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum file number in the cache directory.
+The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum total file size in the cache directory.
 
-#### WAL options
+### WAL options
 
 The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
 
@@ -249,16 +260,16 @@ The `[wal]` section in datanode or standalone config file configures the options
 [wal]
 # WAL data directory
 # dir = "/tmp/greptimedb/wal"
-file_size = "1GB"
-purge_threshold = "50GB"
+file_size = "256MB"
+purge_threshold = "4GB"
 purge_interval = "10m"
 read_batch_size = 128
 sync_write = false
 ```
 
 - `dir`: is the directory where to write logs. When using `File` storage, it's `{data_home}/wal` by default. It must be configured explicitly when using other storage types such as `S3` etc.
-- `file_size`: the maximum size of the WAL log file, default is 1GB.
-- `purge_threshold` and `purge_interval`: control the purging of wal files.
+- `file_size`: the maximum size of the WAL log file, default is `256MB`.
+- `purge_threshold` and `purge_interval`: control the purging of wal files, default is `4GB`.
 - `sync_write`: whether to call `fsync` when writing every log.
 
 #### Compaction
@@ -285,56 +296,17 @@ The `[storage.manifest]` section configures the region manifest options of stora
 # Create a checkpoint every <checkpoint_margin> actions.
 checkpoint_margin = 10
 # Region manifest logs and checkpoints gc execution duration
-gc_duration = '30s'
-# Whether to try creating a manifest checkpoint on region opening
-checkpoint_on_startup = false
+gc_duration = '10m'
 ```
 
 ### Standalone
 
-When you use GreptimeDB in the standalone mode, you can configure it as below:
+A sample standalone configuration can be found at [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/standalone.example.toml).
 
-```toml
-mode = "standalone"
+Start the standalone mode as below:
 
-[http_options]
-addr = "127.0.0.1:4000"
-timeout = "30s"
-
-[wal]
-#dir = "/tmp/greptimedb/wal"
-file_size = "1GB"
-purge_interval = "10m"
-purge_threshold = "50GB"
-read_batch_size = 128
-sync_write = false
-
-[storage]
-type = "File"
-data_home = "/tmp/greptimedb/"
-
-[grpc_options]
-addr = "127.0.0.1:4001"
-runtime_size = 8
-
-[mysql_options]
-addr = "127.0.0.1:4002"
-runtime_size = 2
-
-[influxdb_options]
-enable = true
-
-[opentsdb_options]
-addr = "127.0.0.1:4242"
-enable = true
-runtime_size = 2
-
-[prometheus_options]
-enable = true
-
-[postgres_options]
-addr = "127.0.0.1:4003"
-runtime_size = 2
+```
+greptime standalone start -c standalone.example.toml
 ```
 
 ### Frontend in distributed mode
@@ -344,23 +316,23 @@ Configure frontend in distributed mode:
 ```toml
 mode = "distributed"
 
-[http_options]
-addr = "127.0.0.1:4000"
-timeout = "30s"
-
-[meta_client_options]
+[meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
-tcp_nodelay = false
+tcp_nodelay = true
 ```
 
-The `meta_client_options` configure the metasrv client, including:
+Specify the running mode to be `"distributed"`.
 
-- `metasrv_addrs`, metasrv address list
+The `meta_client` configures the MetaServer client, including:
+
+- `metasrv_addrs`, The MetaServer address list.
 - `timeout_millis`, operation timeout in milliseconds, 3000 by default.
 - `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
+
+A sample frontend configuration for distributed mode can be found at [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
 
 ### Datanode in distributed mode
 
@@ -369,49 +341,51 @@ Configure datanode in distributed mode:
 ```toml
 node_id = 42
 mode = "distributed"
+rpc_hostname = "127.0.0.1"
 rpc_addr = "127.0.0.1:3001"
 rpc_runtime_size = 8
-mysql_addr = "127.0.0.1:4406"
-mysql_runtime_size = 4
 
-[wal]
-#dir = "/tmp/greptimedb/wal"
-file_size = "1GB"
-purge_interval = "10m"
-purge_threshold = "50GB"
-read_batch_size = 128
-sync_write = false
-
-[storage]
-type = "File"
-data_home = "/tmp/greptimedb/"
-
-[meta_client_options]
+[meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
 tcp_nodelay = false
 ```
 
-Datanode in distributed mode should set different `node_id` in different nodes.
+Datanode in distributed mode should set **different** `node_id` in different nodes.
 
-### Metasrv configuration
+A sample datanode configuration for distributed mode can be found at [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/datanode.example.toml).
 
-A sample configurations:
+### MetaServer configuration
+
+A sample configuration can be found at [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/metasrv.example.toml).
 
 ```toml
+# The working home directory.
+data_home = "/tmp/metasrv/"
+# The bind address of metasrv, "127.0.0.1:3002" by default.
 bind_addr = "127.0.0.1:3002"
+# The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
 server_addr = "127.0.0.1:3002"
+# Etcd server addresses, "127.0.0.1:2379" by default.
 store_addr = "127.0.0.1:2379"
-datanode_lease_secs = 30
+# Datanode selector type.
+# - "LeaseBased" (default value).
+# - "LoadBased"
+# For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
+selector = "LeaseBased"
+# Store data in memory, false by default.
+use_memory_store = false
 ```
 
 | Key                 | Type    | Description                                                                                                                 |
 | ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| bind_addr           | String  | The bind address of metasrv, "127.0.0.1:3002" by default.                                                                   |
-| server_addr         | String  | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost |
-| store_addr          | String  | Etcd server address, "127.0.0.1:2379" by default                                                                            |
-| datanode_lease_secs | Integer | Datanode lease in seconds, 15 seconds by default.                                                                           |
+| data_home           | String  | The working home of MetaServer,    `"/tmp/metasrv/"` by default                                                                |
+| bind_addr           | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                   |
+| server_addr         | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost |
+| store_addr          | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`.                                                                            |
+| selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/metasrv/selector.md)                                                                     |
+|   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.   |
 
 ## Environment variable
 
@@ -445,5 +419,5 @@ export GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
 The environment variable also accepts list that are separated by a comma `,`, for example:
 
 ```
-GREPTIMEDB_METASRV__META_CLIENT_OPTIONS__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
+GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
