@@ -15,7 +15,7 @@ All sample configuration files are in the project's [config](https://github.com/
 
 ## Command-line flags
 
-See [Command lines](/en/v0.4//reference/command-lines.md) to learn how to use the `greptime` command line.
+See [Command lines](/en/v0.4/reference/command-lines.md) to learn how to use the `greptime` command line.
 
 ### Global flags
 
@@ -384,7 +384,7 @@ use_memory_store = false
 | bind_addr           | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                   |
 | server_addr         | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost |
 | store_addr          | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`.                                                                            |
-| selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/meta/selector.md)                                                                     |
+| selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/metasrv/selector.md)                                                                     |
 |   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.   |
 
 ## Environment variable

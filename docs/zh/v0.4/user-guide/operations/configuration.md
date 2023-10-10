@@ -15,7 +15,7 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 
 ## 命令行选项
 
-请阅读[命令行工具](/zh/v0.4//reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
+请阅读[命令行工具](/zh/v0.4/reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
 
 ### 全局选项
 
@@ -382,7 +382,7 @@ use_memory_store = false
 | bind_addr           | 字符串  | MetaServer 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                                   |
 | server_addr         | 字符串  | 前端和数据节点连接到 MetaServer 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机） |
 | store_addr          | 字符串  | Etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                                                                            |
-| selector          | 字符串  | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/zh/v0.4/developer-guide/meta/selector.md)                                                                     |
+| selector          | 字符串  | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/zh/v0.4/developer-guide/metasrv/selector.md)                                                                     |
 |   use_memory_store   | 布尔值  | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`|
 
 ## 环境变量配置
