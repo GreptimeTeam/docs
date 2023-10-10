@@ -4,6 +4,8 @@
 
 GreptimeDB 通过 SQL 提供了表管理的功能，下面通过 [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) 来演示它。
 
+以下部分更详细的关于 SQL 语法的解释，请参考 [SQL reference](/zh/v0.4/reference/sql/overview.md)。
+
 ## 创建数据库
 
 默认的数据库是 `public`，可以手动创建一个数据库。
@@ -94,11 +96,12 @@ GreptimeDB 目前不支持在创建表后更改已有列的数据模型。
 ### `CREATE TABLE` 语法
 
 - 时间戳列：GreptimeDB 是一个时序数据库系统，在创建表时，必须用 `TIME INDEX` 关键字明确指定时间序列的列。
-  时间序列的列的数据类型可以是 `BIGINT` 或 `TIMESTAMP`。如果选择 `BIGINT`，该列的插入值将被自动转换为以毫秒为单位的时间戳。
-- 主键：主键用于唯一地定义一系列的数据，这类似于其他时间序列系统中的标签。如 [InfluxDB][1]。
-<!-- - 表选项：当创建一个表时，可以指定一组表选项，点击[这里](../reference/sql/create.md#table-options)了解更多细节。 -->
+  时间序列的列的数据类型必须是 `TIMESTAMP`。
+- 主键：`Primary key`指定的主键列类似于其他时序系统中的 Tag，比如 [InfluxDB][1]。 主键和时间戳列用于唯一地定义一条时间线，这类似于其他时间序列系统中的时间线的概念，如 [InfluxDB][2]。
+- 表选项：当创建一个表时，可以指定一组表选项，点击[这里](../reference/sql/create.md#table-options)了解更多细节。 
 
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
+[2]: https://docs.influxdata.com/influxdb/v1/concepts/glossary/#series
 
 ## 描述表
 
