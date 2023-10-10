@@ -2,20 +2,20 @@
 
 ## Connect
 
-GreptimeDB also supports PostgreSQL server protocol! To get started, simply add the `-U` argument to your command, followed by your username and password. Here's an example:
+GreptimeDB also supports PostgreSQL server protocol! To get started, simply type the following command.
 
 ```shell
-❯ psql -h localhost -p 4003 -U greptime_user -d public
-Password for user greptime_user:
-psql (15.2, server 0.1.1)
-WARNING: psql major version 15, server major version 0.1.
-         Some psql features might not work.
-Type "help" for help.
-
-public=>
+# 127.0.0.1 is GreptimeDB's host and 4003 is the default PostgreSQL port
+# use `-d` to specify the database to connect, `public` is the default database
+$ psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-Note: Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password.
+If [authentication](./authentication.md) has been set at server side, use `-U` to specify username and input password when prompted.
+
+```shell
+# replace greptime_user with your account username
+$ psql -h localhost -p 4003 -U greptime_user -d public
+```
 
 ## HTTP API
 

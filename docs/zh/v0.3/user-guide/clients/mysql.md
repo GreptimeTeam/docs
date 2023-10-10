@@ -9,7 +9,7 @@ GreptimeDB 支持 MySQL 连接协议。使用 `mysql` 客户端来连接到 Grep
 $ mysql -h 127.0.0.1 -P 4002
 ```
 
-如果 GreptimeDB 服务端设置了 [鉴权](./authentication.md)，可以使用 `-u` 来设定用户名，使用 `-p` 来提示输入密码。
+如果 GreptimeDB 服务端设置了[鉴权](./authentication.md)，可以使用 `-u` 来设定用户名，使用 `-p` 来提示输入密码。
 
 ```shell
 # 使用设定的账号名替换命令行中的 greptime_user
