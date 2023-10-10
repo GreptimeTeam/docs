@@ -54,7 +54,7 @@ greptime metasrv start --help
 ```
 
 - `-c`/`--config-file`: The configuration file for metasrv;
-- `--enable-region-failover`: Whether to enable region failover, default is `true`.
+- `--enable-region-failover`: Whether to enable region failover, default is `false`.
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
@@ -247,12 +247,12 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ## Enable object storage caching
 cache_path = "/var/data/s3_local_cache"
-cache_capacity = 1024
+cache_capacity = "256MiB"
 ```
 
 The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum total file size in the cache directory.
 
-#### WAL options
+### WAL options
 
 The `[wal]` section in datanode or standalone config file configures the options of Write-Ahead-Log:
 
@@ -320,8 +320,10 @@ mode = "distributed"
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout_millis = 3000
 connect_timeout_millis = 5000
-tcp_nodelay = false
+tcp_nodelay = true
 ```
+
+Specify the running mode to be `"distributed"`.
 
 The `meta_client` configures the MetaServer client, including:
 
@@ -383,7 +385,7 @@ use_memory_store = false
 | server_addr         | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost |
 | store_addr          | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`.                                                                            |
 | selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/meta/selector.md)                                                                     |
-|   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory.   |
+|   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.   |
 
 ## Environment variable
 
