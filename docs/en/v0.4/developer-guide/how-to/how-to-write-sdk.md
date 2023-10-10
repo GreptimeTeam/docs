@@ -87,7 +87,8 @@ message FlightData {
 The fields are specified as follow:
 
 - `flight_descriptor` can be ignored here.
-- `data_header` must be first deserialized to `Message` (see its definition [here](https://github.com/apache/arrow/blob/master/format/Message.fbs#L134)) using [FlatBuffer](https://github.com/google/flatbuffers). The `Message`'s header type determines how the following two fields are interpreted.
+- `data_header` must be first deserialized to `Message` (see its definition [here][1]) using [FlatBuffer][2].
+  The `Message`'s header type determines how the following two fields are interpreted.
 - `app_metadata` carries GreptimeDB's custom data and this field is not empty only after client issues `InsertRequest` or `Insert Into` SQL. When it's not empty, `Message`'s header type is set to `None`. You should deserialize `app_metadata` to `FlightMetadata`. `FlightMetadata` is defined [here](https://github.com/GreptimeTeam/greptime-proto/blob/966161508646f575801bcf05f47ed283ec231d68/proto/greptime/v1/database.proto#L50).
   - `FlightMetadata` only carries "Affected Rows" when writing data into GreptimeDB, just like what "Insert Into" SQL returns in MySQL. If you don't care about the result of the affected rows, you can omit the `app_metadata` field. (Still, the response of `DoGet` itself should be handled as well.)
 - When `Message`'s header type is `Schema` or `Recordbatch`, `data_body` carries the actual data of part of the query result. You should parse all the `FlightData`s in the response stream of `DoGet` to get the complete query result. Normally, the first `FlightData` in a stream is schema, and the rests are recordbatch. You should save the first schema for parsing the follow-up `FlightData`s later.
@@ -139,3 +140,6 @@ function decode(flight_data: FlightData, context: Context, result: Result) {
 ```
 
 You can also refer to our [Rust client](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/grpc/src/flight.rs#L85).
+
+[1]: https://github.com/apache/arrow/blob/4f06beb737c3d1401e011e0a2ef33b159ab25995/format/Message.fbs#L150
+[2]: https://github.com/google/flatbuffers

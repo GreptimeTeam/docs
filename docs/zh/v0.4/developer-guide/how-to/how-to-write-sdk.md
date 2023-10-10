@@ -1,16 +1,17 @@
-# How to write a gRPC SDK for GreptimeDB
+# 如何为 GreptimeDB 开发一个 gRPC SDK
 
-There are two gRPC services exposed by GreptimeDB. One is defined by GreptimeDB, the other is built on top
-of [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html). If you want to write a gRPC SDK for
-GreptimeDB in a programming language you are familiar with, please read on!
+GreptimeDB 有2个 gRPC 服务。一个是 GreptimeDB 自己定义的，另一个是基于 [Apache Arrow Flight][1] 开发。
+如果你想给用你熟悉的编程语言给 GreptimeDB 开发一个 gRPC SDK，请继续阅读本文。
 
-> Currently, the gRPC SDK is written in Java and Go, and you can find more details about
-> [Java](/zh/v0.4/reference/sdk/java.md) and [Go](/zh/v0.4/reference/sdk/go.md).
+> 目前，GreptimeDB 有2个 gRPC SDK，分别由 Java 和 Go 实现。参见它们的 SDK 文档：
+>
+> - [Java](/zh/v0.4/reference/sdk/java.md)
+> - [Go](/zh/v0.4/reference/sdk/go.md)
 
-## `GreptimeDatabase` Service
+## `GreptimeDatabase` 服务
 
-GreptimeDB defines a custom gRPC service called `GreptimeDatabase`. You can find its protobuf
-definitions [here](https://github.com/GreptimeTeam/greptime-proto). It contains two RPC methods:
+GreptimeDB 自定义了一个 gRPC 服务：`GreptimeDatabase`。你可以在[这里][2]找到它的 protobuf 描述。
+`GreptimeDatabase` 有2个 RPC 方法：
 
 ```protobuf
 service GreptimeDatabase {
@@ -20,32 +21,34 @@ service GreptimeDatabase {
 }
 ```
 
-The `Handle` method is for unary call: when a `GreptimeRequest` is received and processed by a GreptimeDB
-server, it responds with a `GreptimeResponse` immediately.
+`Handle` 方法是一个 unary 调用：当 GreptimeDB 服务接收到一个 `GreptimeRequest` 请求后，它立刻处理该请求并返回一个相应的
+`GreptimeResponse`。
 
-The `HandleRequests` acts in
-a "[Client streaming RPC](https://grpc.io/docs/what-is-grpc/core-concepts/#client-streaming-rpc)" style. It ingests a
-stream of `GreptimeRequest`, and handles them on the fly. After all the requests have been handled, it returns a
-summarized `GreptimeResponse`. Through `HandleRequests`, we can achieve a very high throughput of requests handling.
+`HandleRequests` 方法则是一个 "[Client Streaming RPC][3]" 方式的调用。
+它可以接受一个连续的 `GreptimeRequest` 请求流，持续地发给 GreptimeDB 服务。
+GreptimeDB 服务会在收到流中的每个请求时立刻进行处理，并最终（流结束时）返回一个总结性的 `GreptimeResponse`。
+通过 `HandleRequests`，我们可以获得一个非常高的请求吞吐量。
 
-However, currently the `GreptimeDatabase` service can **only** handle insert requests. For query requests, we need to
-implement the [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) gRPC client as well.
+然而，目前 `GreptimeDatabase` 服务**只能**处理写请求。对于读请求，我们需要实现 [Apache Arrow Flight][1] 的 gRPC 客户端。
 
-## [Apache Arrow Flight](https://arrow.apache.org/docs/format/Flight.html) Service
+## [Apache Arrow Flight][1] 服务
 
-First, you can find our protobuf definitions for GreptimeDB requests and responses in this [repo](https://github.com/GreptimeTeam/greptime-proto#for-sdk-developers). It is recommended to read the "For SDK developers" section in the README of that repository.
+首先，你可以在[这个][2]仓库里找到 GreptimeDB 请求和响应的 protobuf 描述。
+同时建议阅读那个仓库的 README 的 "For SDK developers" 部分。
 
-Make sure Arrow Flight RPC officially supports your chosen programming language. Currently, it supports C++, Java, Go, C#, and Rust. However, it may support additional languages in the future, so stay tuned with its [Implementation Status](https://arrow.apache.org/docs/status.html#flight-rpc). If you can't find the language you are using, you have to write a client from sketch (starting from Arrow Flight's raw gRPC service protobuf [definition](https://arrow.apache.org/docs/format/Flight.html#protocol-buffer-definitions)).
+确认 Arrow Flight RPC 官方支持你使用的编程语言。当前支持的有 C++, Java, Go, C# 和 Rust。
+未来它可能支持其他语言，所以请留意它的 [Implementation Status][4]。
+如果你没有找到官方支持的语言，就只能从 Arrow Flight RPC 的原始 protobuf [定义][5]开始写 gRPC 客户端了。
 
-Now focus on the `DoGet` method of Arrow Flight gRPC service, which all GreptimeDB requests are handled in it.
+现在请关注 Arrow Flight gRPC 服务的 `DoGet` 方法。该方法是所有 GreptimeDB 请求的入口。
 
-The `DoGet` method is defined as follow:
+`DoGet` 方法定义如下：
 
 ```protobuf
   rpc DoGet(Ticket) returns (stream FlightData) {}
 ```
 
-To send a GreptimeDB request, encode it into raw bytes, then wrap it into a `Ticket` which is a protobuf message carrying bytes:
+要发送一个 GreptimeDB 请求，首先将其序列化为字节。然后将这些字节封装进一个 protobuf 的 `Ticket` 消息：
 
 ```protobuf
 message Ticket {
@@ -53,7 +56,8 @@ message Ticket {
 }
 ```
 
-Handling GreptimeDB responses is a little complicated. `DoGet` returns a stream of `FlightData` and the definition of `FlightData` is:
+处理 GreptimeDB 的响应有一些复杂。`DoGet` 是一个 "[Server Streaming RPC][6]"，它返回一个 `FlightData` 流。
+`FlightData` 的 protobuf 定义是：
 
 ```protobuf
 message FlightData {
@@ -84,15 +88,23 @@ message FlightData {
 }
 ```
 
-The fields are specified as follow:
+各字段的说明如下：
 
-- `flight_descriptor` can be ignored here.
-- `data_header` must be first deserialized to `Message` (see its definition [here](https://github.com/apache/arrow/blob/master/format/Message.fbs#L134)) using [FlatBuffer](https://github.com/google/flatbuffers). The `Message`'s header type determines how the following two fields are interpreted.
-- `app_metadata` carries GreptimeDB's custom data and this field is not empty only after client issues `InsertRequest` or `Insert Into` SQL. When it's not empty, `Message`'s header type is set to `None`. You should deserialize `app_metadata` to `FlightMetadata`. `FlightMetadata` is defined [here](https://github.com/GreptimeTeam/greptime-proto/blob/966161508646f575801bcf05f47ed283ec231d68/proto/greptime/v1/database.proto#L50).
-  - `FlightMetadata` only carries "Affected Rows" when writing data into GreptimeDB, just like what "Insert Into" SQL returns in MySQL. If you don't care about the result of the affected rows, you can omit the `app_metadata` field. (Still, the response of `DoGet` itself should be handled as well.)
-- When `Message`'s header type is `Schema` or `Recordbatch`, `data_body` carries the actual data of part of the query result. You should parse all the `FlightData`s in the response stream of `DoGet` to get the complete query result. Normally, the first `FlightData` in a stream is schema, and the rests are recordbatch. You should save the first schema for parsing the follow-up `FlightData`s later.
+- `flight_descriptor` 可忽略。
+- `data_header` 必须首先反序列化到 `Message` [FlatBuffer](https://github.com/google/flatbuffers) 消息。
+  其定义可见 "[message.fbs][7]"。`Message` 的 header type 决定了下面两个字段如何解析。
+- `app_metadata` 包含了 GreptimeDB 的自定义数据。
+  该字段只在客户端发送了写请求（比如 `InsertRequest` 或 `Insert Into` SQL）之后有值。
+  当 `app_metadata` 非空时，`Message` 的 header type 是 `None`。
+  - `app_metadata` 可以反序列化为 [`FlightMetadata`][8]。
+  - 对写请求的响应，`FlightMetadata` 只包含了 "Affected Rows"。就像 `Insert Into` SQL 在 MySQL 的返回值一样。
+    如果你不关注这个返回值，可以忽略 `app_metadata` 字段。
+- 当 `Message` 的 header type 是 `Schema` 或 `Recordbatch` 时，`data_body` 带有读请求的实际返回数据。
+  你可以解析 `DoGet` 接口返回的 `FlightData` 流来得到完整的读请求结果。
+  通常情况下，`FlightData` 流的首个元素是整个读请求结果的 schema。剩下的元素则是 recordbatch。
+  schema 用于解析后续的 recordbatch，需要保存在某个上下文中。
 
-Here we provide a pseudocode for decoding `DoGet`'s `FlightData` stream:
+这里我们提供了一个解析 `DoGet` 返回的 `FlightData` 流的伪代码例子：
 
 ```txt
 Context {
@@ -138,4 +150,14 @@ function decode(flight_data: FlightData, context: Context, result: Result) {
 }
 ```
 
-You can also refer to our [Rust client](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/grpc/src/flight.rs#L85).
+你也可以参考我们的 [Rust client][9] 对 `FlightData` 的解析方式。
+
+[1]: https://arrow.apache.org/docs/format/Flight.html
+[2]: https://github.com/GreptimeTeam/greptime-proto
+[3]: https://grpc.io/docs/what-is-grpc/core-concepts/#client-streaming-rpc
+[4]: https://arrow.apache.org/docs/status.html#flight-rpc
+[5]: https://arrow.apache.org/docs/format/Flight.html#protocol-buffer-definitions
+[6]: https://grpc.io/docs/what-is-grpc/core-concepts/#server-streaming-rpc
+[7]: https://github.com/apache/arrow/blob/4f06beb737c3d1401e011e0a2ef33b159ab25995/format/Message.fbs#L150
+[8]: https://github.com/GreptimeTeam/greptime-proto/blob/966161508646f575801bcf05f47ed283ec231d68/proto/greptime/v1/database.proto#L50
+[9]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/grpc/src/flight.rs#L85
