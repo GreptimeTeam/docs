@@ -1,6 +1,7 @@
 # 配置 GreptimeDB
 
 GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置：
+
 - 命令行参数
 - 配置文件
 - 环境变量
@@ -11,7 +12,6 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 在配置文件中，对于缺失的参数，系统会赋予其一个默认值。
 
 所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) 文件夹中。
-
 
 ## 命令行选项
 
@@ -45,7 +45,7 @@ greptime datanode start --help
 
 所有的地址类选项都是 `ip:port` 形式的字符串。
 
-###  metasrv 子命令选项
+### metasrv 子命令选项
 
 通过执行下列命令来获取 `metasrv` 子命令的帮助菜单：
 
@@ -146,7 +146,6 @@ enable = true
 
 ### 协议选项
 
-
 | 选项             | 键          | 类型    | 描述                                                                     |
 | ------------------ | ------------ | ------- | ------------------------------------------------------------------------------- |
 | http       |              |         | HTTP 服务器选项                                                             |
@@ -180,7 +179,6 @@ enable = true
 | Option | Key                   | Type    | Description                                                |
 | ------ | --------------------- | ------- | ---------------------------------------------------------- |
 |        | mode                  | 字符串  | 节点运行模式，可以是 `"standalone"` 或者 `"distributed"` |
-
 
 ### 存储选项
 
@@ -251,7 +249,6 @@ cache_capacity = "256MiB"
 ```
 
 `cache_path` 指定本地的缓存目录， `cache_capacity` 指定缓存的最大大小（字节）。
-
 
 ### WAL 选项
 
@@ -328,10 +325,10 @@ tcp_nodelay = true
 
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
-* `metasrv_addrs`， MetaServer 地址列表，对应 MetaServer 启动配置的 server address。
-* `timeout_millis`， 操作超时时长，单位为毫秒，默认为 3000。
-* `connect_timeout_millis`，连接服务器超时时长，单位为毫秒，默认为 5000。
-* `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
+- `metasrv_addrs`， MetaServer 地址列表，对应 MetaServer 启动配置的 server address。
+- `timeout_millis`， 操作超时时长，单位为毫秒，默认为 3000。
+- `connect_timeout_millis`，连接服务器超时时长，单位为毫秒，默认为 5000。
+- `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
 这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
 

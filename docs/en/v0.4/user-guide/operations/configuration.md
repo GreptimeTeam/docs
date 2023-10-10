@@ -43,7 +43,7 @@ greptime datanode start --help
 - `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
 - `--wal-dir <WAL_DIR>`: The wal directory of WAL;
 
-All the `addr` options are in the form of `ip:port`. 
+All the `addr` options are in the form of `ip:port`.
 
 ### Metasrv subcommand flags
 
