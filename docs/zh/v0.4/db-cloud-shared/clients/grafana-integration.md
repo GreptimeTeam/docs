@@ -1,6 +1,8 @@
 
 GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/)。
 
+GreptimeDB 一般有两种部署方法。GreptimeCloud 和自托管 GreptimeDB。只有 GreptimeCloud 需要认证信息。自托管 GreptimeDB 不支持身份验证。因此，当您使用自托管 GreptimeDB 时，可以忽略填写验证信息。
+
 ## Prometheus
 
 单击 Add data source 按钮，然后选择 Prometheus 作为类型。
@@ -8,7 +10,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 在 HTTP 中填写 Prometheus server URL
 
 - GreptimeCloud 请填写 `https://<host>/v1/prometheus?db=<dbname>`
-- Self-host GreptimeDB 请填写自己的地址，例如：`http://localhost:4000/v1/prometheus?db=<dbname>`
+- 自托管 GreptimeDB 请填写自己的地址，例如：`http://localhost:4000/v1/prometheus?db=<dbname>`
 
 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码：
 
