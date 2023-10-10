@@ -64,7 +64,7 @@ Once the `WriteRows` object is created, data can be added to it. However, this d
 
 After calling the `write` method on our completed `WriteRows`, a future will be returned which allows us to obtain write results through its callback function. You can also obtain the result synchronously by using `future.get()`.
 
-If you need to insert a large amount of data, consider using `StreamWriter` to enhance write performance. `StreamWriter` persistently writes data to the database using a `stream`. Once the writing is complete, you should invoke the `completed` method to close the `stream` and await the database's confirmation of write success. 
+If you need to insert a large amount of data, consider using `StreamWriter` to enhance write performance. `StreamWriter` persistently writes data to the database using a `stream`. Once the writing is complete, you should invoke the `completed` method to close the `stream` and await the database's confirmation of write success.
 
 :::tip
 Even though each `WriteRows` can only contain data from a single table, a `StreamWrite` instance can write multiple `WriteRows` simultaneously. This means that `StreamWrite` supports multi-table data import.

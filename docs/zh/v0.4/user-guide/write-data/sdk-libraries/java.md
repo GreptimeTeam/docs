@@ -62,7 +62,7 @@ LOG.info("Write result: {}", result);
 
 当 `WriteRows` 被创建完成后，数据可以被添加到其中，但是此时这些数据仅仅存储在客户端内存中，还没有被发送到服务器。为了高效地插入多行数据，我们可以使用批量插入。在所有需要插入的数据都被添加到 `WriteRows` 后，调用它的 `finish` 方法来表示没有新数据要再被添加了，然后调用 DB 实例的 `write` 方法将数据发送到数据库中。在写入数据后，`Future` 对象会被返回，通过它的回调函数可以获取写入结果，也可以通过 `future.get()` 来同步的获得结果。
 
-如果你需要插入大量数据，可以考虑使用 `StreamWriter` 来提高写入性能。`StreamWriter` 会持续地将数据通过 `stream` 写入数据库。写入完成后，你需要调用 `completed` 方法关闭 `stream` 并等待数据库返回写入是否成功的信息。 
+如果你需要插入大量数据，可以考虑使用 `StreamWriter` 来提高写入性能。`StreamWriter` 会持续地将数据通过 `stream` 写入数据库。写入完成后，你需要调用 `completed` 方法关闭 `stream` 并等待数据库返回写入是否成功的信息。
 
 :::tip
 尽管每个 `WriteRows` 只能包含一个表的数据，但一个 `StreamWrite` 实例可以分批写入多个 `WriteRows`，这意味着 `StreamWrite` 支持多表数据的导入。
