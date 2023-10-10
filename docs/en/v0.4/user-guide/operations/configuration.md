@@ -61,7 +61,7 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/en/v0.4/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Etcd server address;
+- `--store-addr <STORE_ADDR>`: Etcd server addresses;
 - `--use-memory-store`: Use memory store instead of etcd;
 
 ### Frontend subcommand flags
@@ -365,7 +365,7 @@ data_home = "/tmp/metasrv/"
 bind_addr = "127.0.0.1:3002"
 # The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
 server_addr = "127.0.0.1:3002"
-# Etcd server address, "127.0.0.1:2379" by default.
+# Etcd server addresses, "127.0.0.1:2379" by default.
 store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "LeaseBased" (default value).
@@ -381,7 +381,7 @@ use_memory_store = false
 | data_home           | String  | The working home of MetaServer,    `"/tmp/metasrv/"` by default                                                                |
 | bind_addr           | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                   |
 | server_addr         | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost |
-| store_addr          | String  | Etcd server address, `"127.0.0.1:2379"` by default                                                                            |
+| store_addr          | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`.                                                                            |
 | selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/meta/selector.md)                                                                     |
 |   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory.   |
 
