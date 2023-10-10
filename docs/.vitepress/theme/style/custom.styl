@@ -2,6 +2,8 @@
 .VPNavBar.has-sidebar,.VPNavBar 
   background var(--color-dark-2)
   .container
+    .content
+      padding-right 24px
     .content-body 
       background-color transparent
       .VPNavBarHamburger .container 
@@ -18,8 +20,11 @@
           svg
             width 22px
             height 22px
-      .VPNavBarMenuLink svg 
-        display none  
+      .VPNavBarMenuLink
+        &:hover
+          color var(--vp-c-brand-light)
+        svg 
+          display none  
       .VPNavBarTranslations
         &:before
           display none
@@ -36,19 +41,36 @@
             display none
     .curtain 
       display none
-    .title .VPNavBarTitle .title .VPImage.logo 
-      height 32px
+    div.title 
+      padding-left 24px
+      .VPNavBarTitle 
+        .title 
+          border-bottom none
+          .VPImage.logo 
+            height 32px
 
-.Layout .VPSidebar
-  background var(--color-light-2)
-  box-shadow 1px 0px 0px 0px var(--color-gray-6)
-
-.VPNavBarMenu .VPLink 
+.VPNavBarMenu .VPLink,.VPFlyout 
   padding 0
   margin 0 12px
   line-height 22px
   font-size var(--font-size-m)
   color var(--color-dark-text)
+.VPNavBarMenu .VPFlyout
+  .text
+    color var(--color-dark-text)
+  &.active .text
+  &.active:hover .text
+  &:hover .text
+    color var(--vp-c-brand-light)
+  .VPLink
+    color var(--vp-c-text-1)
+  .link.active
+    color var(--vp-c-brand)
+  .menu .VPMenu .items .link
+    padding 2px 12px
+    margin 0
+    &:hover
+      color var(--vp-c-brand)
 
 .VPNavScreen .VPSocialLink 
   color var(--vp-c-text-2) !important 
@@ -81,6 +103,8 @@
   .VPSidebar  
     margin-top var(--vp-nav-height-desktop)
     padding-top 0 !important
+    .curtain
+      top -68px
   .VPBackdrop  
     display none
   .VPContent .VPDoc

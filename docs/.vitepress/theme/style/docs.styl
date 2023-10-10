@@ -54,13 +54,8 @@
     font-size var(--font-size-m) 
     line-height var(--line-height-m) 
     color var(--color-gray-3) 
-    a
-      text-decoration none
-      &:hover
-        text-decoration none
 
-
-  .custom-block  
+  .custom-block
     padding 16px
     padding-right 40px
     font-size var(--font-size-m)
@@ -74,6 +69,8 @@
       margin 15px 0
       li
         margin 10px 0
+    div[class*='language-'] code
+      padding 0 15px
     code
       padding 0 6px
       font-weight 400
@@ -91,7 +88,8 @@
     color var(--color-green-1)
     p, ul li
       color var(--color-green-1) 
-    code  
+    code
+      color inherit
       background var(--color-green-2-1) 
 
   .warning  
@@ -190,7 +188,9 @@
       font-weight 400
       font-size var(--font-size-s)
       line-height var(--line-height-s)
-      color var(--color-gray-5) 
+      color var(--color-gray-5)
+    .outline-title
+      color var(--color-dark-2)
     .outline-link.active  
       color var(--color-gray-3)
   ul, li  
