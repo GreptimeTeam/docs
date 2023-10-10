@@ -40,6 +40,7 @@ replacing the value of `endpoints` variable with your real connection string.
 package io.greptime.example;
 
 import io.greptime.GreptimeDB;
+import io.greptime.models.AuthInfo;
 import io.greptime.models.ColumnDataType;
 import io.greptime.models.Err;
 import io.greptime.models.QueryOk;
@@ -70,7 +71,7 @@ public class QuickStart {
         String endpoint = "127.0.0.1:4001";
         AuthInfo authInfo = new AuthInfo("username", "password");
         GreptimeOptions opts = GreptimeOptions.newBuilder(endpoint) //
-                .authInfo(authInfo)
+                .authInfo(authInfo) // By default, no authentication is required; you can remove this line.
                 .writeMaxRetries(1) //
                 .readMaxRetries(2) //
                 .routeTableRefreshPeriodSeconds(-1) //
