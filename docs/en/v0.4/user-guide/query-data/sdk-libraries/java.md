@@ -6,7 +6,7 @@ Use the following code to query objects:
 
 ```java
 QueryRequest request = QueryRequest.newBuilder()
-    .exprType(SelectExprType.Sql) // 也支持 PromQL 查询语言(SelectExprType.Promql), PromQL 语言请参考 [promql](../promql.md)
+    .exprType(SelectExprType.Sql) // It also supports PromQL query language (SelectExprType.Promql).
     .ql("SELECT * FROM monitor;")
     .build();
 
