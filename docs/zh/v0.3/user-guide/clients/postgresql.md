@@ -2,20 +2,20 @@
 
 ## 连接数据库
 
-GreptimeDB 支持 PostgreSQL 协议。要连接到 GreptimeDB，只需要在 `psql` 命令行工具中添加 `-U` 参数，后面跟上你的用户名。例如：
+GreptimeDB 支持 PostgreSQL 协议。要连接到 GreptimeDB，只需要使用 `psql` 命令行工具。
 
 ```shell
-❯ psql -h localhost -p 4003 -U greptime_user -d public
-Password for user greptime_user:
-psql (15.2, server 0.1.1)
-WARNING: psql major version 15, server major version 0.1.
-         Some psql features might not work.
-Type "help" for help.
-
-public=>
+# 127.0.0.1 是 GreptimeDB 服务端地址；4003 是默认的 PostgreSQL 端口
+# 使用 `-d` 指定需要连接的数据库；`public` 是默认的数据库名
+$ psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-记得将示例中的 `greptime_user(username)` 和 `greptime_pwd(password)` 替换成自己的用户名和密码。
+如果服务端设置了[鉴权](./authentication.md)，使用 `-U` 来指定用户名，并根据提示输入密码。
+
+```shell
+# 将 greptime_user 替换成设定的用户名
+$ psql -h localhost -p 4003 -U greptime_user -d public
+```
 
 ## HTTP API
 
