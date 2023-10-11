@@ -11,14 +11,18 @@ const { theme } = useData()
 const { latestVersion, iconMap } = theme.value
 // methods
 // lifecycle
+const router = useRouter()
+router.onBeforePageLoad = to => {
+  const pre = to
+  let res = to.replace(`/zh`, '')
+  res = res.replace(`/en`, '')
+  res = res.replace(`/v0.4`, '')
+  res = res.replace(`/v0.4`, '')
+
+  if (pre !== res) router.go(res)
+}
+
 onMounted(async () => {
-  const router = useRouter()
-  let path = router.route.path
-  if (path.includes(latestVersion)) {
-    const res = path.replace(`/${latestVersion}`, '')
-    await router.go(res)
-  }
   getSidebarIcon(iconMap)
 })
-onUnmounted(() => {})
 </script>
