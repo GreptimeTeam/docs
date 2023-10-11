@@ -1,7 +1,7 @@
 # GreptimeDB Documentation
 
 <p align="center">
-    <img src="/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
+    <img src="./docs/public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
 This directory contains sources of all content published at [docs.greptime.com][1]
@@ -19,35 +19,33 @@ Please refer to [contribution guidelines](./CONTRIBUTING.md) for more informatio
 
 ### Introduction
 
-- [Introduction](./docs/v0.4/index.md)
+- [Introduction](https://docs.greptime.com/)
 
 ### Getting Started
 
 If you are new to Greptime DB, documents below will help you quickly get started
 
-- [Getting started](./docs/v0.4/getting-started/overview.md)
+- [Getting started](https://docs.greptime.com/getting-started/try-out-greptimedb)
 
 ### User Guide
 
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
-- [Concepts](./docs/v0.4/user-guide/concepts/overview.md)
-- [Clients](./docs/v0.4/user-guide/clients/overview.md)
-- [Table management](./docs/v0.4/user-guide/table-management.md)
-- [Write data](./docs/v0.4/user-guide/write-data/overview.md)
-- [Query data](./docs/v0.4/user-guide/query-data/overview.md)
-- [Scripts & Functions](./docs/v0.4/user-guide/scripts-&-functions/overview.md)
-- [Cluster](./docs/v0.4/user-guide/cluster.md)
-- [Operations](./docs/v0.4/user-guide/Operations/overview.md)
-- [Integration](./docs/v0.4/user-guide/integration.md)
+- [Concepts](https://docs.greptime.com/user-guide/concepts/overview)
+- [Clients](https://docs.greptime.com/user-guide/clients/overview)
+- [Table management](https://docs.greptime.com/user-guide/table-management)
+- [Write data](https://docs.greptime.com/user-guide/write-data/overview)
+- [Query data](https://docs.greptime.com/user-guide/query-data/overview)
+- [Scripts & Functions](https://docs.greptime.com/user-guide/scripts-&-functions/overview)
+- [Cluster](https://docs.greptime.com/user-guide/cluster)
 
 ### Developer Guide
 
 Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
 
-- [Overview](./docs/v0.4/developer-guide/overview.md)
-- [Frontend](./docs/v0.4/developer-guide/frontend/overview.md)
-- [Datanode](./docs/v0.4/developer-guide/datanode/overview.md)
-- [Meta](./docs/v0.4/developer-guide/meta/overview.md)
+- [Overview](https://docs.greptime.com/developer-guide/overview)
+- [Frontend](https://docs.greptime.com/developer-guide/frontend/overview)
+- [Datanode](https://docs.greptime.com/developer-guide/datanode/overview)
+- [Meta](https://docs.greptime.com/developer-guide/metasrv/overview)
 
 Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
