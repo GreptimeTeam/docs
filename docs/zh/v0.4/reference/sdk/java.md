@@ -11,17 +11,17 @@
 
 ## 如何使用
 
-请参考用户指南章节，了解如何 [安装 SDK](/zh/v0.4/user-guide/clients/sdk-libraries/java.md), [写入数据](/zh/v0.4/user-guide/write-data/sdk-libraries/java.md)和[查询数据](/zh/v0.4/user-guide/query-data/sdk-libraries/java.md)。
+请参考用户指南章节，了解如何 [安装 SDK](../../user-guide/clients/sdk-libraries/java.md), [写入数据](../../user-guide/write-data/sdk-libraries/java.md)和[查询数据](../../user-guide/query-data/sdk-libraries/java.md)。
 
 ## 全局配置 (System properties / Java -Dxxx)
 
 | 属性                               | 描述                                                                                        |
-| :--------------------------------- | :------------------------------------------------------------------------------------------ | --- |
+| :--------------------------------- | :------------------------------------------------------------------------------------------ |
 | greptimedb.use_os_signal           | 是否使用 OS Signal。SDK 会默认监听 SIGUSR2 信号并输出一些信息，这对解决复杂问题非常有帮助。 |
 | greptimedb.signal.out_dir          | 指定 signal handler 的输出目录，默认是进程启动目录。                                        |
 | greptimedb.available_cpus          | 指定可用 cpu 数量，默认使用当前环境的全部 cpu 数量。                                        |
 | greptimedb.reporter.period_minutes | Metrics Reporter 定时输出周期，默认 30 分钟。                                               |
-| greptimedb.read.write.rw_logging   | 每次读写操作是否打印日志，默认关闭。                                                        |     |
+| greptimedb.read.write.rw_logging   | 每次读写操作是否打印日志，默认关闭。                                                        |
 
 ## 指标与显示
 
