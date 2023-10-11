@@ -1,6 +1,6 @@
 # Vector
 
-[Vector](https://vector.dev/) is a high-performance observability data pipeline that puts organizations in control of their observability data. Our integration page on vector is [here](https://vector.dev/docs/reference/configuration/sinks/greptimedb/).
+[Vector](https://vector.dev/) is a high-performance observability data pipeline that puts organizations in control of their observability data. Our integration page on Vector is [here](https://vector.dev/docs/reference/configuration/sinks/greptimedb/).
 
 ## Integration
 
