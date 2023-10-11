@@ -86,7 +86,7 @@ public class QuickStart {
 }
 ```
 
-See [Java SDK in reference](/en/v0.4/reference/sdk/java.md) to get more configurations and metrics.
+See [Java SDK in reference](../../../reference/sdk/java.md) to get more configurations and metrics.
 
 ## Write Data
 
