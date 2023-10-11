@@ -199,6 +199,10 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
 | `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                  | 可选     |
 
+### 时间索引列
+
+在利用 `CREATE EXTERNAL TABLE` 语句创建外部表时，要求使用 `TIME INDEX` 约束来指定一个时间索引列。
+
 ### 示例
 
 你可以在创建表时不带有列定义：
@@ -207,15 +211,23 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
+在这个例子中，我们没有明确定义表的列，因此 `CREATE EXTERNAL TABLE` 语句会由下列规则推断出时间索引列：
+
+1. 如果可以从文件元数据中推断出时间索引列，那么就用该列作为时间索引列。
+2. 如果存在名为 `greptime_timestamp` 的列（该列的类型必须为 `TIMESTAMP`，否则将抛出错误），那么就用该列作为时间索引列。
+3. 否则，将自动创建名为 `greptime_timestamp` 的列作为时间索引列，并添加 `DEFAULT 0` 约束。
+
 或者带有列定义：
 
 ```sql
 CREATE EXTERNAL TABLE city (
             host string,
-            ts int64,
+            ts timestamp,
             cpu float64 default 0,
             memory float64,
             TIME INDEX (ts),
-            PRIMARY KEY(ts, host)
+            PRIMARY KEY(host)
 ) WITH (location='/var/data/city.csv', format='csv');
 ```
+
+在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT <expr>` 约束。
