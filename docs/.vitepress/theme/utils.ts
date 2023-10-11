@@ -43,3 +43,10 @@ export function getSidebarIcon(iconMap) {
     }
   })
 }
+
+export function setVersionOnPage(path, currentVersion) {
+  currentVersion.value = path.includes('/v0.3/') ? 'V0.3' : 'V0.4'
+  const div = document.querySelector('.VPNavBarMenuGroup')
+  const targetElement = <HTMLInputElement>div.childNodes[0].childNodes[0].childNodes[1]
+  targetElement.innerText = currentVersion.value
+}
