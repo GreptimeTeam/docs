@@ -13,17 +13,14 @@ const { latestVersion, iconMap } = theme.value
 // lifecycle
 const router = useRouter()
 const currentVersion = ref(latestVersion)
+
 router.onBeforePageLoad = to => {
   const pre = to
   let res = to.replace(`/zh`, '')
   res = res.replace(`/en`, '')
   res = res.replace(`/v0.4`, '')
   res = res.replace(`/v0.4`, '')
-
   if (pre !== res) router.go(res)
-}
-
-router.onBeforePageLoad = to => {
   setVersionOnPage(to, currentVersion)
 }
 onBeforeMount(async () => {
