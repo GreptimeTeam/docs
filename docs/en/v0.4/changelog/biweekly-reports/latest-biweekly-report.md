@@ -130,10 +130,10 @@ New Features in Dashboard
 - The tables list on the left supports shortcut quick input, allowing for one-click insertion of preset SQL query statements.
 https://github.com/GreptimeTeam/dashboard/pull/323
 
-<p><img src="/blogs/2023-09-20-biweekly-report920/image1.png" alt="Shortcut Demonstration" style="width: 70%; margin: 0 auto;" /></p>
+<p><img src="/biweekly-images/image1.png" alt="Shortcut Demonstration" style="width: 70%; margin: 0 auto;" /></p>
 
 - The editor offers input suggestions. Both SQL and PromQL editors can automatically suggest potential table names and column names based on entered keywords.
 https://github.com/GreptimeTeam/dashboard/pull/329
 https://github.com/GreptimeTeam/dashboard/pull/330
 
-<p><img src="/blogs/2023-09-20-biweekly-report920/image2.png" alt="Hint Demonstration" style="width: 70%; margin: 0 auto;" /></p>
+<p><img src="/biweekly-images/image2.png" alt="Hint Demonstration" style="width: 70%; margin: 0 auto;" /></p>
