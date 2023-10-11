@@ -1,4 +1,5 @@
 import { makeSidebar } from '../../.vitepress/theme/serverUtils'
+import { LATEST_VERSION } from '../../.vitepress/config/common'
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
@@ -21,12 +22,6 @@ export const zhConfig = async () => ({
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
-  rewrites: {
-    'zh/:file': ':file',
-    'zh/:group/:file': ':group/:file',
-    'zh/:group/:type/:file': ':group/:type/:file',
-    'zh/:group/:type/:file/:name': ':group/:type/:file/:name',
-  },
   locales: {
     root: { label: '简体中文', lang: 'zh-CN' },
   },
@@ -63,8 +58,46 @@ export const zhConfig = async () => ({
         text: '博客',
         link: 'https://greptime.com/blogs',
       },
+      {
+        text: '历史版本',
+        items: [
+          {
+            text: `${LATEST_VERSION}(最新)`,
+            link: '/',
+          },
+          {
+            text: 'v0.3',
+            link: '/v0.3/',
+          },
+        ],
+      },
     ],
-    sidebar: await makeSidebar('zh'),
+    sidebar: {
+      '/': await makeSidebar('zh', LATEST_VERSION),
+      '/v0.3/': await makeSidebar('zh', 'v0.3'),
+    },
+    iconMap: [
+      {
+        key: '立即开始',
+        icon: 'gettingStarted',
+      },
+      {
+        key: '用户指南',
+        icon: 'docsUserGuide',
+      },
+      {
+        key: '云服务',
+        icon: 'greptimeCloud',
+      },
+      {
+        key: '开发者指南',
+        icon: 'developerGuide',
+      },
+      {
+        key: 'Reference',
+        icon: 'reference',
+      },
+    ],
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
       text: '在 GitHub 上编辑此页',

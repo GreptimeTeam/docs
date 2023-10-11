@@ -8,44 +8,44 @@ This directory contains sources of all content published at [docs.greptime.com][
 
 [1]: https://docs.greptime.com
 
-# Table of Contents
-
-## Introduction
-
-- [Introduction](./docs/index.md)
-
-## Getting Started
-
-If you are new to Greptime DB, documents below will help you quickly get started
-
-- [Getting started](./docs/getting-started/overview.md)
-
-## User Guide
-
-Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
-
-- [Concepts](./docs/user-guide/concepts/overview.md)
-- [Clients](./docs/user-guide/clients/overview.md)
-- [Table management](./docs/user-guide/table-management.md)
-- [Write data](./docs/user-guide/write-data/overview.md)
-- [Query data](./docs/user-guide/query-data/overview.md)
-- [Scripts & Functions](./docs/user-guide/scripts-&-functions/overview.md)
-- [Cluster](./docs/user-guide/cluster.md)
-- [Operations](./docs/user-guide/Operations/overview.md)
-- [Integration](./docs/user-guide/integration.md)
-
-## Developer Guide
-
-Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
-
-  - [Overview](./docs/developer-guide/overview.md)
-  - [Frontend](./docs/developer-guide/frontend/overview.md)
-  - [Datanode](./docs/developer-guide/datanode/overview.md)
-  - [Meta](./docs/developer-guide/meta/overview.md)
-
-# Contributing
+## Contributing
 
 Thanks a lot for considering contributing to GreptimeDB. People like you would make
 GreptimeDB a great product.
+
+Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
+
+## Table of Contents
+
+### Introduction
+
+- [Introduction](https://docs.greptime.com/)
+
+### Getting Started
+
+If you are new to Greptime DB, documents below will help you quickly get started
+
+- [Getting started](https://docs.greptime.com/getting-started/try-out-greptimedb)
+
+### User Guide
+
+Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
+
+- [Concepts](https://docs.greptime.com/user-guide/concepts/overview)
+- [Clients](https://docs.greptime.com/user-guide/clients/overview)
+- [Table management](https://docs.greptime.com/user-guide/table-management)
+- [Write data](https://docs.greptime.com/user-guide/write-data/overview)
+- [Query data](https://docs.greptime.com/user-guide/query-data/overview)
+- [Scripts & Functions](https://docs.greptime.com/user-guide/scripts-&-functions/overview)
+- [Cluster](https://docs.greptime.com/user-guide/cluster)
+
+### Developer Guide
+
+Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
+
+- [Overview](https://docs.greptime.com/developer-guide/overview)
+- [Frontend](https://docs.greptime.com/developer-guide/frontend/overview)
+- [Datanode](https://docs.greptime.com/developer-guide/datanode/overview)
+- [Meta](https://docs.greptime.com/developer-guide/metasrv/overview)
 
 Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.

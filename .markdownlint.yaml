@@ -1,5 +1,8 @@
-default: true
+default: false
 
 line-length: false
 fenced-code-language: false
 no-inline-html: false
+single-h1: false
+first-line-h1: false
+no-duplicate-header: false
