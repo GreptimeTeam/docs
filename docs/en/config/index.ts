@@ -37,7 +37,7 @@ export const enConfig = async () => ({
       },
       {
         // TODO change version
-        text: 'The Version Of History',
+        text: 'All Versions',
         items: [
           {
             text: `${LATEST_VERSION}(latest)`,
