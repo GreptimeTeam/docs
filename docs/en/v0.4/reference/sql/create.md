@@ -212,7 +212,7 @@ In this example, since we have not explicitly defined the columns of the table, 
 
 1. If the `Time Index` column can be inferred from the file metadata, then that column will be used as the `Time Index` column.
 2. If there is a column named `greptime_timestamp` (the type of this column must be `TIMESTAMP`, otherwise, an error will be thrown), then this column will be used as the `Time Index` column.
-3. Otherwise, a column named `greptime_timestamp` will be automatically created as the `Time Index` column, and a `DEFAULT 0` constraint will be added.
+3. Otherwise, a column named `greptime_timestamp` will be automatically created as the `Time Index` column, and a `DEFAULT '1970-01-01 00:00:00+0000'` constraint will be added.
 
 Or
 

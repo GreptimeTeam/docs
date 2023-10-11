@@ -215,7 +215,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',for
 
 1. 如果可以从文件元数据中推断出时间索引列，那么就用该列作为时间索引列。
 2. 如果存在名为 `greptime_timestamp` 的列（该列的类型必须为 `TIMESTAMP`，否则将抛出错误），那么就用该列作为时间索引列。
-3. 否则，将自动创建名为 `greptime_timestamp` 的列作为时间索引列，并添加 `DEFAULT 0` 约束。
+3. 否则，将自动创建名为 `greptime_timestamp` 的列作为时间索引列，并添加 `DEFAULT '1970-01-01 00:00:00+0000'` 约束。
 
 或者带有列定义：
 

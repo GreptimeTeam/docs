@@ -36,7 +36,7 @@ DESC TABLE taxi_zone_lookup;
 ```
 
 :::tip Note
-Here, you may notice there is a `greptime_timestamp` column, which doesn't exist in the file. This is because when creating an external table, if we didn't specify a `TIME INDEX` column, the `greptime_timestamp` column is automatically added as the `TIME INDEX` column with a default value of `0`, representing `1970-01-01 00:00:00+0000`. You can find more details in the [create](../reference/sql/create.md#create-external-table) document.
+Here, you may notice there is a `greptime_timestamp` column, which doesn't exist in the file. This is because when creating an external table, if we didn't specify a `TIME INDEX` column, the `greptime_timestamp` column is automatically added as the `TIME INDEX` column with a default value of `1970-01-01 00:00:00+0000`. You can find more details in the [create](../reference/sql/create.md#create-external-table) document.
 :::
 
 Now you can query on the external table:
@@ -115,5 +115,5 @@ SELECT * FROM yellow_tripdata LIMIT 5;
 ```
 
 :::tip Note
-The query result includes the value of the `greptime_timestamp` column, although it does not exist in the original file. All these column values are `1970-01-01 00:00:00+0000`, because when we create an external table, the `greptime_timestamp` column is automatically added with a default value of `0`, representing `1970-01-01 00:00:00+0000`. You can find more details in the [create](../reference/sql/create.md#create-external-table) document.
+The query result includes the value of the `greptime_timestamp` column, although it does not exist in the original file. All these column values are `1970-01-01 00:00:00+0000`, because when we create an external table, the `greptime_timestamp` column is automatically added with a default value of `1970-01-01 00:00:00+0000`. You can find more details in the [create](../reference/sql/create.md#create-external-table) document.
 :::
