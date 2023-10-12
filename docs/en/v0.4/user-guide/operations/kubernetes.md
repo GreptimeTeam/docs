@@ -66,24 +66,26 @@ helm install etcd greptime/greptimedb-etcd -n default --devel
 
 ### 4. Create your own GreptimeDB cluster
 
-Create GreptimeDB cluster:
+Create a GreptimeDB cluster which uses the etcd cluster created at previous step:
 
 ```shell
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-If you already have the etcd cluster, you can configure the etcd cluster:
+Or, if you already have the etcd cluster, you can configure the etcd cluster:
   
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
 -n default --devel
 ```
 
-After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
+After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:
 
 ```shell
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
+
+Then you can use MySQL client to [connect to the cluster](/getting-started/try-out-greptimedb.md#Connect).
 
 ### 5. Destroy GreptimeDB cluster
 

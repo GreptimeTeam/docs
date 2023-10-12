@@ -44,18 +44,20 @@ helm install etcd greptime/greptimedb-etcd -n default --devel
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-如果用户之前已经有了 etcd 集群，可以这样对其进行配置：
+如果用户之前已经有了 etcd 集群，可以这样对其进行配置来使用自定义的 etcd 集群而不是前面创建的 etcd：
 
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
 -n default --devel
 ```
 
-安装之后，可以通过 `kubectl port-forward` 语句来访问 GreptimeDB 集群：
+安装之后，可以通过 `kubectl port-forward` 语句来转发 GreptimeDB 集群的 MySQL 协议端口：
 
 ```shell
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
+
+然后可以通过 MySQL 客户端[访问集群](/getting-started/try-out-greptimedb.md#Connect)
 
 ### 4. 清除 GreptimeDB 集群
 
