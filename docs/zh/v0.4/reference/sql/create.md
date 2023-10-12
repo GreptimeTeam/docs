@@ -45,14 +45,14 @@ CREATE DATABASE IF NOT EXISTS test;
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    name1 [type1] [NULL|NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    name2 [type2] [NULL|NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    ...,
-    [TIME INDEX (name)],
-    [PRIMARY KEY(name1, name2,...)]
-) ENGINE = engine WITH([ttl | regions] = expr, ...)
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
+) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(name1, name2, ...) (
+  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
     PARTITION r0 VALUES LESS THAN (expr1),
     PARTITION r1 VALUES LESS THAN (expr2),
     ...
@@ -158,26 +158,27 @@ TODO by MichaelScofield
 在 `db` 或当前数据库中创建新的文件外部表：
 
 ```sql
-CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
+CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 [
  (
-    <col_name> <col_type> [NULL | NOT NULL] [COMMENT "<comment>"]
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
  )
-]
-[ WITH
- (
-   LOCATION = 'url'
-   [,FORMAT =  { csv | json | parquet } ]
-   [,PATTERN = '<regex_pattern>' ]
-   [,ENDPOINT = '<uri>' ]
-   [,ACCESS_KEY_ID = '<key_id>' ]
-   [,SECRET_ACCESS_KEY = '<access_key>' ]
-   [,SESSION_TOKEN = '<token>' ]
-   [,REGION = '<region>' ]
-   [,ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
-   ..
- )
-]
+] WITH (
+  LOCATION = url,
+  FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' }
+  [,PATTERN = regex_pattern ]
+  [,REGION = region ]
+  [,ENDPOINT = uri ]
+  [,ACCESS_KEY_ID = key_id ]
+  [,SECRET_ACCESS_KEY = access_key ]
+  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
+  [,SESSION_TOKEN = token ]
+  ...
+)
 ```
 
 ### 表选项
@@ -185,7 +186,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | 选项       | 描述                                                               | 是否必需 |
 | ---------- | ------------------------------------------------------------------ | -------- |
 | `LOCATION` | 外部表的位置，例如 `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **是**   |
-| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet                            | **是**   |
+| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet, ORC                         | **是**   |
 | `PATTERN`  | 使用正则来匹配文件，例如 `*_today.parquet`                         | 可选     |
 
 #### S3
@@ -205,13 +206,13 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 
 ### 示例
 
-你可以在创建表时不带有列定义：
+你可以在创建外部表时不带有列定义，列定义将会被自动推断：
 
 ```sql
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
-在这个例子中，我们没有明确定义表的列，因此 `CREATE EXTERNAL TABLE` 语句会由下列规则推断出时间索引列：
+在这个例子中，我们没有明确定义表的列，为满足外边表必须指定**时间索引列**的要求，`CREATE EXTERNAL TABLE` 语句会依据下述规则推断出时间索引列：
 
 1. 如果可以从文件元数据中推断出时间索引列，那么就用该列作为时间索引列。
 2. 如果存在名为 `greptime_timestamp` 的列（该列的类型必须为 `TIMESTAMP`，否则将抛出错误），那么就用该列作为时间索引列。
@@ -230,4 +231,4 @@ CREATE EXTERNAL TABLE city (
 ) WITH (location='/var/data/city.csv', format='csv');
 ```
 
-在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT <expr>` 约束。
+在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT expr` 约束。

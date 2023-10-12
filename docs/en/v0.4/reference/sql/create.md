@@ -45,14 +45,14 @@ Creates a new table in the `db` database or the current database in use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    name1 [type1] [NULL|NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    name2 [type2] [NULL|NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    ...,
-    [TIME INDEX (name)],
-    [PRIMARY KEY(name1, name2,...)]
-) ENGINE = engine WITH([ttl | regions] = expr, ...)
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
+) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(name1, name2, ...) (
+  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
     PARTITION r0 VALUES LESS THAN (expr1),
     PARTITION r1 VALUES LESS THAN (expr2),
     ...
@@ -61,7 +61,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ```
 
 The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.
-A column definition includes the column `name`, `type`, and options such as nullable or default values, etc. Please see below.
+A column definition includes the column `column_name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints
 
@@ -155,26 +155,27 @@ TODO by MichaelScofield
 Creates a new file external table in the `db` database or the current database in use:
 
 ```sql
-CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
+CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 [
  (
-    <col_name> <col_type> [NULL | NOT NULL] [COMMENT "<comment>"]
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
  )
-]
-[ WITH
- (
-   LOCATION = 'url'
-   [,FORMAT =  { csv | json | parquet } ]
-   [,PATTERN = '<regex_pattern>' ]
-   [,ENDPOINT = '<uri>' ]
-   [,ACCESS_KEY_ID = '<key_id>' ]
-   [,SECRET_ACCESS_KEY = '<access_key>' ]
-   [,SESSION_TOKEN = '<token>' ]
-   [,REGION = '<region>' ]
-   [,ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
-   ..
- )
-]
+] WITH (
+  LOCATION = url,
+  FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' }
+  [,PATTERN = regex_pattern ]
+  [,REGION = region ]
+  [,ENDPOINT = uri ]
+  [,ACCESS_KEY_ID = key_id ]
+  [,SECRET_ACCESS_KEY = access_key ]
+  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
+  [,SESSION_TOKEN = token ]
+  ...
+)
 ```
 
 ### Table options
@@ -182,7 +183,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | Option     | Description                                                                     | Required     |
 | ---------- | ------------------------------------------------------------------------------- | ------------ |
 | `LOCATION` | External files locations, e.g., `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **Required** |
-| `FORMAT`   | Target file(s) format, e.g., JSON, CSV, Parquet                                 | **Required** |
+| `FORMAT`   | Target file(s) format, e.g., JSON, CSV, Parquet, ORC                            | **Required** |
 | `PATTERN`  | Use regex to match files. e.g., `*_today.parquet`                               | Optional     |
 
 #### S3
@@ -198,21 +199,21 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 
 ### Time Index Column
 
-When creating an external table using the `CREATE EXTERNAL TABLE` statement, you are required to use the `TIME INDEX` constraint to specify a time index column.
+When creating an external table using the `CREATE EXTERNAL TABLE` statement, you are required to use the `TIME INDEX` constraint to specify a Time Index column.
 
 ### Examples
 
-You can create an external table without any columns definitions:
+You can create an external table without columns definitions, the column definitions will be automatically inferred:
 
 ```sql
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
-In this example, since we have not explicitly defined the columns of the table, the `CREATE EXTERNAL TABLE` statement will infer the `Time Index` column according to the following rules:
+In this example, we did not explicitly define the columns of the table. To satisfy the requirement that the external table must specify a **Time Index** column, the `CREATE EXTERNAL TABLE` statement will infer the Time Index column according to the following rules:
 
-1. If the `Time Index` column can be inferred from the file metadata, then that column will be used as the `Time Index` column.
-2. If there is a column named `greptime_timestamp` (the type of this column must be `TIMESTAMP`, otherwise, an error will be thrown), then this column will be used as the `Time Index` column.
-3. Otherwise, a column named `greptime_timestamp` will be automatically created as the `Time Index` column, and a `DEFAULT '1970-01-01 00:00:00+0000'` constraint will be added.
+1. If the Time Index column can be inferred from the file metadata, then that column will be used as the Time Index column.
+2. If there is a column named `greptime_timestamp` (the type of this column must be `TIMESTAMP`, otherwise, an error will be thrown), then this column will be used as the Time Index column.
+3. Otherwise, a column named `greptime_timestamp` will be automatically created as the Time Index column, and a `DEFAULT '1970-01-01 00:00:00+0000'` constraint will be added.
 
 Or
 
@@ -227,4 +228,4 @@ CREATE EXTERNAL TABLE city (
 ) WITH (location='/var/data/city.csv', format='csv');
 ```
 
-In this example, we explicitly defined the `ts` column as the `Time Index` column. If there is no suitable `Time Index` column in the file, you can also create a placeholder column and add a `DEFAULT <expr>` constraint.
+In this example, we explicitly defined the `ts` column as the Time Index column. If there is no suitable Time Index column in the file, you can also create a placeholder column and add a `DEFAULT expr` constraint.
