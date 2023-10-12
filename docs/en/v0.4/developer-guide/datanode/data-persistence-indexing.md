@@ -16,7 +16,9 @@ Second, data of the same column tends to be homogeneous which helps with compres
 
 ## Data Persistence
 
-When the size of data buffered in MemTable reaches a threshold, the MemTable will be flushed to a SST file.
+GreptimeDB provides a configuration item `storage.flush.global_write_buffer_size`, which is flush threshold of the total memory usage for all MemTables.
+
+When the size of data buffered in MemTables reaches that threshold, GreptimeDB will pick MemTables and flush them to SST files.
 
 ## Indexing Data in SST Files
 
