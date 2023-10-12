@@ -2,6 +2,9 @@
 
 GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `monitor` so you can get familiar with using SQL alongside GreptimeDB functions.
 
+For examples on how to create the `monitor` table and insert data into it,
+please refer to [Table Management](/user-guide/table-management.md#create-table) and [Write Data](/user-guide/write-data/sql.md).
+
 ## SELECT
 
 To select all the data from the `monitor` table, use the `SELECT` statement:

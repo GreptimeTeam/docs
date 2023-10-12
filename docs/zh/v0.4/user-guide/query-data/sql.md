@@ -2,6 +2,8 @@
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。这里有一些示例通过 SQL 语句和 GreptimeDB 函数来查询 `monitor` 表中的数据。
 
+关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](../table-management.md#创建表)和[写入数据](../write-data/sql.md)。
+
 ## SELECT
 
 使用 `SELECT` 查询表中的全部数据：
