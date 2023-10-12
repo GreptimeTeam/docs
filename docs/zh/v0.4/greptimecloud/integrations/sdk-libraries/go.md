@@ -20,7 +20,7 @@ options := []grpc.DialOption{
 
 cfg := greptime.NewCfg("<host>").
     WithDatabase("<dbname>").
-    WithPort(4001).
+    WithPort(4001).              // default port
     WithAuth("<username>", "*Your GreptimeCloud service password*").
     WithDialOptions(options...). // specify your gRPC dail options
     WithCallOptions()            // specify your gRPC call options
