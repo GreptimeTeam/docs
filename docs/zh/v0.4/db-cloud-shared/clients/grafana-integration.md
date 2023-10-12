@@ -8,7 +8,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 在 HTTP 中填写 Prometheus server URL
 
 - GreptimeCloud 请填写 `https://<host>/v1/prometheus?db=<dbname>`
-- Self-host GreptimeDB 请填写自己的地址，例如：`http://localhost:4000/v1/prometheus?db=<dbname>`
+- 自托管 GreptimeDB 请填写自己的地址，例如：`http://localhost:4000/v1/prometheus?db=<dbname>`
 
 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码：
 

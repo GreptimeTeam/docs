@@ -33,10 +33,9 @@ GreptimeDB implements PromQL operator pushdown in our latest distributed version
 
 Yes, It's compatible with Grafana.
 
-GreptimeDB supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
-plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data.
+GreptimeDB supports MySQL,PostgreSQL and Prometheus protocol, so you can use [MySQL](https://grafana.com/docs/grafana/latest/datasources/mysql/), [PG](https://grafana.com/docs/grafana/latest/datasources/postgres/) and [Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/) grafana plugin to config GreptimeDB as a datasource. Then you can use SQL or PromQL to query the data.
 
-Also, we are implementing PromQL natively which is frequently used with Grafana.
+We are implementing PromQL natively which is frequently used with Grafana. Currently PromQL is not 100% compatible with Prometheus.
 
 ## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
