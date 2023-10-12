@@ -72,7 +72,7 @@ Create a GreptimeDB cluster which uses the etcd cluster created at previous step
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-Or, if you already have an etcd cluster, you can configure the etcd cluster:
+Or, if you already have an etcd cluster, you can use `etcdEndpoints` to use your etcd cluster:
   
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
