@@ -2,7 +2,7 @@
 
 ## 对文件进行查询
 
-目前，我们支持 `Parquet`、`CSV` 和 `NDJson` 格式文件的查询。
+目前，我们支持 `Parquet`、`CSV`、`ORC` 和 `NDJson` 格式文件的查询。
 
 以 [Taxi Zone Lookup Table](https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv) 数据为例。
 
@@ -36,7 +36,7 @@ DESC TABLE taxi_zone_lookup;
 ```
 
 :::tip 注意
-在这里，你可能会注意到出现了一个 `greptime_timestamp` 列，这个列作为表的时间索引列，在文件中并不存在。这是因为在创建外部表时，我们没有指定时间索引列，`greptime_timestamp` 列为被自动添加作为时间索引列，并且默认值为 `1970-01-01 00:00:00+0000`。你可以在 [create](../reference/sql/create.md#create-external-table) 文档中查找更多详情。
+在这里，你可能会注意到出现了一个 `greptime_timestamp` 列，这个列作为表的时间索引列，在文件中并不存在。这是因为在创建外部表时，我们没有指定时间索引列，`greptime_timestamp` 列被自动添加作为时间索引列，并且默认值为 `1970-01-01 00:00:00+0000`。你可以在 [create](../reference/sql/create.md#create-external-table) 文档中查找更多详情。
 :::
 
 现在就可以查询外部表了：
@@ -115,5 +115,5 @@ SELECT * FROM yellow_tripdata LIMIT 5;
 ```
 
 :::tip 注意
-查询结果中包含 `greptime_timestamp` 列的值，尽管它在原始文件中并不存在。所有这个列的值均为 `1970-01-01 00:00:00+0000`，这是因为我们在创建外部表时，自动添加列 `greptime_timestamp`，并且默认值为 `1970-01-01 00:00:00+0000`。你可以在 [create](../reference/sql/create.md#create-external-table) 文档中查找更多详情。
+查询结果中包含 `greptime_timestamp` 列的值，尽管它在原始文件中并不存在。这个列的所有值均为 `1970-01-01 00:00:00+0000`，这是因为我们在创建外部表时，自动添加列 `greptime_timestamp`，并且默认值为 `1970-01-01 00:00:00+0000`。你可以在 [create](../reference/sql/create.md#create-external-table) 文档中查找更多详情。
 :::

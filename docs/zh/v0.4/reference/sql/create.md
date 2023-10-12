@@ -206,13 +206,13 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 
 ### 示例
 
-你可以在创建表时不带有列定义：
+你可以在创建外部表时不带有列定义，列定义将会被自动推断：
 
 ```sql
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
-在这个例子中，我们没有明确定义表的列，因此 `CREATE EXTERNAL TABLE` 语句会由下列规则推断出时间索引列：
+在这个例子中，我们没有明确定义表的列，为满足外边表必须指定**时间索引列**的要求，`CREATE EXTERNAL TABLE` 语句会依据下述规则推断出时间索引列：
 
 1. 如果可以从文件元数据中推断出时间索引列，那么就用该列作为时间索引列。
 2. 如果存在名为 `greptime_timestamp` 的列（该列的类型必须为 `TIMESTAMP`，否则将抛出错误），那么就用该列作为时间索引列。
@@ -231,4 +231,4 @@ CREATE EXTERNAL TABLE city (
 ) WITH (location='/var/data/city.csv', format='csv');
 ```
 
-在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT <expr>` 约束。
+在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT expr` 约束。

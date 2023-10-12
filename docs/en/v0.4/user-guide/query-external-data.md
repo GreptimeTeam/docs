@@ -2,7 +2,7 @@
 
 ## Query on a file
 
-Currently, we support queries on `Parquet`, `CSV`, and `NDJson` format file(s).
+Currently, we support queries on `Parquet`, `CSV`, `ORC`, and `NDJson` format file(s).
 
 We use the [Taxi Zone Lookup Table](https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv) data as an example.
 
