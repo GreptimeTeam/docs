@@ -149,4 +149,3 @@
    1 row in set (0.03 sec)
    ```
 
-   也可以在 [REPL](./operations/cli-repl.md) 中使用 SQL，它可以直接连接到 `Datanode`。通过这种方式，可以验证来自 `Frontend` 的查询是否真的被分布式执行。关于分布式查询的更多细节，请参考[这个](/developer-guide/frontend/distributed-querying)文档。
