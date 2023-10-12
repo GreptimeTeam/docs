@@ -2,7 +2,7 @@
 
 GreptimeDB supports **layered configuration** and uses the following precedence order(each item takes precedence over the item below it):
 
-- Command-line flags
+- Command-line options
 - Configuration file
 - Environment variables
 - Default values
@@ -13,20 +13,20 @@ The system assigns a default value for missing parameters in the configuration f
 
 All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
 
-## Command-line flags
+## Command-line options
 
 See [Command lines](/reference/command-lines.md) to learn how to use the `greptime` command line.
 
-### Global flags
+### Global options
 
 - `-h`/`--help`: Print help information;
 - `-V`/`--version`: Print version information;
 - `--log-dir <LOG_DIR>`: The logging directory;
 - `--log-level <LOG_LEVEL>`: The logging level;
 
-### Datanode subcommand flags
+### Datanode subcommand options
 
-You can list all the flags from the following command:
+You can list all the options from the following command:
 
 ```
 greptime datanode start --help
@@ -44,9 +44,9 @@ greptime datanode start --help
 
 All the `addr` options are in the form of `ip:port`.
 
-### Metasrv subcommand flags
+### Metasrv subcommand options
 
-You can list all the flags from the following command:
+You can list all the options from the following command:
 
 ```
 greptime metasrv start --help
@@ -60,12 +60,12 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses;
+- `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses to store metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
 
-### Frontend subcommand flags
+### Frontend subcommand options
 
-You can list all the flags from the following command:
+You can list all the options from the following command:
 
 ```
 greptime frontend start --help
@@ -87,9 +87,9 @@ greptime frontend start --help
 - `--tls-mode <TLS_MODE>`: TLS Mode;
 - `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
 
-### Standalone subcommand flags
+### Standalone subcommand options
 
-You can list all the flags from the following command:
+You can list all the options from the following command:
 
 
 ```
@@ -399,7 +399,7 @@ use_memory_store = false
 | data_home        | String  | The working home of Metasrv, `"/tmp/metasrv/"` by default                                                                            |
 | bind_addr        | String  | The bind address of Metasrv, `"127.0.0.1:3002"` by default.                                                                          |
 | server_addr      | String  | The communication server address for frontend and datanode to connect to Metasrv, `"127.0.0.1:3002"` by default for localhost        |
-| store_addr       | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
+| store_addr       | String  | etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
 | selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/developer-guide/metasrv/selector.md)                 |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
