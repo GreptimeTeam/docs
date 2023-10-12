@@ -16,7 +16,7 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 ## Header
 
-- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。 请参考[鉴权](/zh/v0.4/user-guide/clients/http-api.md#authentication).
+- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。 请参考[鉴权](/user-guide/clients/http-api.md#authentication).
 - `Content-Type`: `application/x-www-form-urlencoded`.
 
 ## Query 参数
@@ -36,4 +36,4 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 ## 示例
 
-请参考用户指南中的[表管理](/zh/v0.4/user-guide/table-management.md#http-api), [写入数据](/zh/v0.4/user-guide/write-data/sql.md#http-api) and [查询数据](/zh/v0.4/user-guide/query-data/sql.md#http-api)。
+请参考用户指南中的[表管理](/user-guide/table-management.md#http-api), [写入数据](/user-guide/write-data/sql.md#http-api) and [查询数据](/user-guide/query-data/sql.md#http-api)。

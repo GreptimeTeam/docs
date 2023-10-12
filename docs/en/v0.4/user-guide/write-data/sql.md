@@ -2,7 +2,7 @@
 
 ## `INSERT` Statement
 
-Let's insert some testing data to the `monitor` table which we created [before](/en/v0.4/user-guide/table-management.md). You can use the `INSERT INTO` SQL statements:
+Let's insert some testing data to the `monitor` table which we created [before](/user-guide/table-management.md). You can use the `INSERT INTO` SQL statements:
 
 ```sql
 INSERT INTO monitor
@@ -18,7 +18,7 @@ Query OK, 3 rows affected (0.01 sec)
 
 Through the above statement, we have inserted three rows into the `monitor` table.
 
-For more information about the `INSERT` statement, please refer to [`INSERT`](/en/v0.4/reference/sql/insert.md).
+For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
 
 ### HTTP API
 
@@ -38,7 +38,7 @@ The result is shown below:
 { "code": 0, "output": [{ "affectedrows": 3 }], "execution_time_ms": 0 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/en/v0.4/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
 
 ## `DELETE` Statement
 
@@ -52,7 +52,7 @@ DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 Query OK, 1 row affected (0.00 sec)
 ```
 
-For more information about the `DELETE` statement, please refer to the [SQL DELETE](/en/v0.4/reference/sql/delete.md).
+For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
 
 ### HTTP API
 
@@ -72,4 +72,4 @@ The result is shown below:
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/en/v0.4/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).

@@ -15,14 +15,14 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 
 ## 命令行选项
 
-请阅读[命令行工具](/zh/v0.4/reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
+请阅读[命令行工具](/reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
 
 ### 全局选项
 
 - `-h`/`--help`: 打印命令行帮助信息
 - `-V`/`--version`: 打印 GreptimeDB 版本信息
 - `--log-dir <LOG_DIR>`: 指定日志路径
-- `--log-level <LOG_LEVEL>`:  指定日志级别，如 `info`、`debug` 等。
+- `--log-level <LOG_LEVEL>`: 指定日志级别，如 `info`、`debug` 等。
 
 ### datanode 子命令选项
 
@@ -32,16 +32,16 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 greptime datanode start --help
 ```
 
-- `-c`/`--config-file`:  指定 datanode 启动的配置文件
+- `-c`/`--config-file`: 指定 datanode 启动的配置文件
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为 `GREPTIMEDB_DATANODE`;
 - `--data-home`: 数据库存储 home 目录
-- `--http-addr <HTTP_ADDR>`:  HTTP 服务地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--metasrv-addr <METASRV_ADDR>`:  MetaServer 服务器列表，用逗号隔开
+- `--http-addr <HTTP_ADDR>`: HTTP 服务地址
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
+- `--metasrv-addr <METASRV_ADDR>`: MetaServer 服务器列表，用逗号隔开
 - `--node-id <NODE_ID>`: 节点 ID
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-- `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
-- `--wal-dir <WAL_DIR>`:  WAL 日志目录
+- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
+- `--rpc-hostname <RPC_HOSTNAME>`: 节点 hostname
+- `--wal-dir <WAL_DIR>`: WAL 日志目录
 
 所有的地址类选项都是 `ip:port` 形式的字符串。
 
@@ -53,16 +53,16 @@ greptime datanode start --help
 greptime metasrv start --help
 ```
 
-- `-c`/`--config-file`:  指定 `metasrv` 启动配置文件
-- `--enable-region-failover`:  是否启动 region 自动容灾，默认为 `false` 不启用。
+- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件
+- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用。
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
 - `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--selector <SELECTOR>`: 参考 [selector 类型](/zh/v0.4/developer-guide/metasrv/selector#selector-type);
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
+- `--selector <SELECTOR>`: 参考 [selector 类型](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
-- `--store-addr <STORE_ADDR>`:  Etcd 地址列表，用逗号隔开
-- `--use-memory-store`:  是否使用内存存储替代 etcd，仅用于测试
+- `--store-addr <STORE_ADDR>`: Etcd 地址列表，用逗号隔开
+- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
 
 ### frontend 子命令选项
 
@@ -74,19 +74,19 @@ greptime frontend start --help
 
 - `-c`/`--config-file`: 指定 `frontend` 启动配置文件
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
-- `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
+- `--disable-dashboard`: 是否禁用 dashboard，默认为 `false`。
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
+- `--influxdb-enable`: 是否启用 `influxdb` HTTP 接口，默认为 true。
 - `--grpc-addr <GPRC_ADDR>`: gRPC 服务地址
-- `--metasrv-addr <METASRV_ADDR>`:   MetaServer 地址列表，用逗号隔开
-- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--opentsdb-addr <OPENTSDB_ADDR>`:  OpenTSDB 服务地址
+- `--metasrv-addr <METASRV_ADDR>`: MetaServer 地址列表，用逗号隔开
+- `--mysql-addr <MYSQL_ADDR>`: MySQL 服务地址
+- `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB 服务地址
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
 - `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
-- `--tls-key-path <TLS_KEY_PATH>`:  TLS 私钥文件地址
+- `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
 - `--tls-mode <TLS_MODE>`: TLS 模式
-- `--user-provider <USER_PROVIDER>`:  参考 [鉴权](/zh/v0.4/user-guide/clients/authentication);
+- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
 
 ## 指定配置文件
 
@@ -146,72 +146,72 @@ enable = true
 
 ### 协议选项
 
-| 选项             | 键          | 类型    | 描述                                                                     |
-| ------------------ | ------------ | ------- | ------------------------------------------------------------------------------- |
-| http       |              |         | HTTP 服务器选项                                                             |
-|                    | addr         | 字符串  | 服务器地址，默认为 "127.0.0.1:4000"                                     |
-|                    | timeout      | 字符串  | HTTP 请求超时时间，默认为 "30s"                                            |
-|                    | body_limit   | 字符串  | HTTP 最大体积大小，默认为 "64MB"                                            |
-| grpc       |              |         | gRPC 服务器选项                                                             |
-|                    | addr         | 字符串  | 服务器地址，默认为 "127.0.0.1:4001"                                     |
-|                    | runtime_size | 整数 | 服务器工作线程数量，默认为8                               |
-| mysql      |              |         | MySQL 服务器选项                                                            |
-|                    | enable       | 布尔值 | 是否启用 MySQL 协议，默认为 true |
-|                    | add          | 字符串  | 服务器地址，默认为 "127.0.0.1:4002"                                     |
-|                    | runtime_size | 整数 | 服务器工作线程数量，默认为2                               |
-| influxdb   |              |         | InfluxDB 协议选项                                                       |
-|                    | enable       | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true                |
-| opentsdb   |              |         | OpenTSDB 协议选项                                                       |
-|                    | enable       | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true |
-|                    | addr         | 字符串  | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242"                 |
-|                    | runtime_size | 整数 | 服务器工作线程数量，默认为2                               |
-| prom_store |              |         | Prometheus 远程存储选项                                                     |
-|                    | enable       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true |
-| postgres   |              |         | PostgresSQL 服务器选项                                                      |
-|                    | enable       | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true |
-|                    | addr         | 字符串  | 服务器地址，默认为 "127.0.0.1:4003"                                     |
-|                    | runtime_size | 整数 | 服务器工作线程数量，默认为2                               |
+| 选项       | 键           | 类型   | 描述                                                    |
+| ---------- | ------------ | ------ | ------------------------------------------------------- |
+| http       |              |        | HTTP 服务器选项                                         |
+|            | addr         | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                     |
+|            | timeout      | 字符串 | HTTP 请求超时时间，默认为 "30s"                         |
+|            | body_limit   | 字符串 | HTTP 最大体积大小，默认为 "64MB"                        |
+| grpc       |              |        | gRPC 服务器选项                                         |
+|            | addr         | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                     |
+|            | runtime_size | 整数   | 服务器工作线程数量，默认为 8                            |
+| mysql      |              |        | MySQL 服务器选项                                        |
+|            | enable       | 布尔值 | 是否启用 MySQL 协议，默认为 true                        |
+|            | add          | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                     |
+|            | runtime_size | 整数   | 服务器工作线程数量，默认为 2                            |
+| influxdb   |              |        | InfluxDB 协议选项                                       |
+|            | enable       | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true       |
+| opentsdb   |              |        | OpenTSDB 协议选项                                       |
+|            | enable       | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                     |
+|            | addr         | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242" |
+|            | runtime_size | 整数   | 服务器工作线程数量，默认为 2                            |
+| prom_store |              |        | Prometheus 远程存储选项                                 |
+|            | enable       | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true |
+| postgres   |              |        | PostgresSQL 服务器选项                                  |
+|            | enable       | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                  |
+|            | addr         | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                     |
+|            | runtime_size | 整数   | 服务器工作线程数量，默认为 2                            |
 
 ### 节点选项
 
 一些共同的节点选项：
 
-| Option | Key                   | Type    | Description                                                |
-| ------ | --------------------- | ------- | ---------------------------------------------------------- |
-|        | mode                  | 字符串  | 节点运行模式，可以是 `"standalone"` 或者 `"distributed"` |
+| Option | Key  | Type   | Description                                              |
+| ------ | ---- | ------ | -------------------------------------------------------- |
+|        | mode | 字符串 | 节点运行模式，可以是 `"standalone"` 或者 `"distributed"` |
 
 ### 存储选项
 
 `存储`选项在 datanode 和单机模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB  支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 miniio、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 miniio、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
-| 选项   | 键                   | 类型   | 描述                                                           |
-| ------- | ----------------- | ------ | ------------------------------------------------------------- |
-| storage |                   |        | 存储选项                                                       |
-|         | type              | 字符串 | 存储类型，仅支持 "File"，"S3" 和 "Oss" 等.       |
-| File    |                   |        | 本地文件存储选项，当 type="file" 时有效            |
-|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb" |
-| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                  |
-|         | bucket            | 字符串 | S3 桶名称                                            |
-|         | root              | 字符串 | S3 桶中的根路径                                    |
-|         | endpoint          | 字符串 | S3 的 API 端点                                        |
-|         | region            | 字符串 | S3 区域                                                 |
-|         | access_key_id     | 字符串 | S3 访问密钥 id                                          |
-|         | secret_access_key | 字符串 | S3 秘密访问密钥                                      |
-| Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效             |
-|         | bucket            | 字符串 | OSS 桶名称                                           |
-|         | root              | 字符串 | OSS 桶中的根路径                                   |
-|         | endpoint          | 字符串 | OSS 的 API 端点                                       |
-|         | access_key_id     | 字符串 | OSS 访问密钥 id                                         |
-|         | secret_access_key | 字符串 | OSS 秘密访问密钥                                     |
-| Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效          |
-|         | container         | 字符串 | 容器名称                                            |
-|         | root              | 字符串 | 容器中的根路径                                    |
-|         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                        |
-|         | account_name      | 字符串 | Azure Blob 存储的账户名                        |
-|         | account_key       | 字符串 | 访问密钥                                                |
-|         | sas_token         | 字符串 | 共享访问签名                                           |
+| 选项    | 键                | 类型   | 描述                                         |
+| ------- | ----------------- | ------ | -------------------------------------------- |
+| storage |                   |        | 存储选项                                     |
+|         | type              | 字符串 | 存储类型，仅支持 "File"，"S3" 和 "Oss" 等.   |
+| File    |                   |        | 本地文件存储选项，当 type="file" 时有效      |
+|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"   |
+| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效         |
+|         | bucket            | 字符串 | S3 桶名称                                    |
+|         | root              | 字符串 | S3 桶中的根路径                              |
+|         | endpoint          | 字符串 | S3 的 API 端点                               |
+|         | region            | 字符串 | S3 区域                                      |
+|         | access_key_id     | 字符串 | S3 访问密钥 id                               |
+|         | secret_access_key | 字符串 | S3 秘密访问密钥                              |
+| Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效    |
+|         | bucket            | 字符串 | OSS 桶名称                                   |
+|         | root              | 字符串 | OSS 桶中的根路径                             |
+|         | endpoint          | 字符串 | OSS 的 API 端点                              |
+|         | access_key_id     | 字符串 | OSS 访问密钥 id                              |
+|         | secret_access_key | 字符串 | OSS 秘密访问密钥                             |
+| Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效 |
+|         | container         | 字符串 | 容器名称                                     |
+|         | root              | 字符串 | 容器中的根路径                               |
+|         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                   |
+|         | account_name      | 字符串 | Azure Blob 存储的账户名                      |
+|         | account_key       | 字符串 | 访问密钥                                     |
+|         | sas_token         | 字符串 | 共享访问签名                                 |
 
 文件存储配置范例：
 
@@ -265,10 +265,10 @@ read_batch_size = 128
 sync_write = false
 ```
 
-- `dir`:  WAL 的日志目录， 当使用文件 `File` 存储的时候, 默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
-- `file_size`:  单个日志文件的最大大小，默认为 `256MB`。
-- `purge_threshold` 和 `purge_interval`:  控制清除任务的触发阈值和间隔
-- `sync_write`:  是否在写入每条日志的时候调用l `fsync` 刷盘。
+- `dir`: WAL 的日志目录， 当使用文件 `File` 存储的时候, 默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
+- `file_size`: 单个日志文件的最大大小，默认为 `256MB`。
+- `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
+- `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
 
 ### Compaction
 
@@ -376,14 +376,14 @@ selector = "LeaseBased"
 use_memory_store = false
 ```
 
-| 键                 | 类型    | 描述                                                                                                                 |
-| ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| data_home           | 字符串  | MetaServer 的工作目录，默认为 `"/tmp/metasrv/"`                                                                |
-| bind_addr           | 字符串  | MetaServer 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                                   |
-| server_addr         | 字符串  | 前端和数据节点连接到 MetaServer 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机） |
-| store_addr          | 字符串  | Etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                                                                            |
-| selector          | 字符串  | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/zh/v0.4/developer-guide/metasrv/selector.md)                                                                     |
-|   use_memory_store   | 布尔值  | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`|
+| 键               | 类型   | 描述                                                                                                   |
+| ---------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| data_home        | 字符串 | MetaServer 的工作目录，默认为 `"/tmp/metasrv/"`                                                        |
+| bind_addr        | 字符串 | MetaServer 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                     |
+| server_addr      | 字符串 | 前端和数据节点连接到 MetaServer 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机）          |
+| store_addr       | 字符串 | Etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
+| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/developer-guide/metasrv/selector.md)              |
+| use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
 
 ## 环境变量配置
 

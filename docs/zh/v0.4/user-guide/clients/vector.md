@@ -1,6 +1,6 @@
 # Vector
 
-[Vector](https://vector.dev/) 是一种高性能的可以帮助工程师控制可观测性数据的通道工具。
+[Vector](https://vector.dev/) 是一种高性能的可以帮助工程师控制可观测性数据的通道工具。我们的 Vector 集成页面在[这里](https://vector.dev/docs/reference/configuration/sinks/greptimedb/)。
 
 ## 集成
 
