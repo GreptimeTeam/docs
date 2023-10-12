@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', regions=10);
 ```
 
-在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。如果你想为所有表设置全局TTL，你可以在配置文件中配置它：
+在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。如果你想为所有表设置全局 TTL，你可以在配置文件中配置它：
 
 ```toml
 [storage]
 global_ttl = "7d"
 ```
 
-你可以在[这里](/zh/v0.4/reference/sql/create)参考表创建语句的 TTL 选项。
+你可以在[这里](/reference/sql/create)参考表创建语句的 TTL 选项。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -44,7 +44,7 @@ GreptimeDB 使用列式存储布局，并通过最佳算法压缩时间序列数
 
 GreptimeDB 通过以下方式解决这个问题：
 
-- **分片**：它将数据和索引分布在不同的 Region 服务器之间。阅读GreptimeDB 的[架构](./architecture.md)。
+- **分片**：它将数据和索引分布在不同的 Region 服务器之间。阅读 GreptimeDB 的[架构](./architecture.md)。
 - **智能索引**：它不强制为每个标签创建倒排索引，而是根据标签列的特性和负载类型选择合适的索引类型并自动构建，更多信息可以参考这篇[博客](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing)。
 - **MPP**: 除了索引之外，查询引擎还会利用向量化执行和分布式并行执行等技术来加速查询。
 

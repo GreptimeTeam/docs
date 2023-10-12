@@ -23,7 +23,7 @@ The query result looks like the following:
 3 rows in set (0.00 sec)
 ```
 
-Please refer to [SELECT](/en/v0.3/reference/sql/select.md) for more information.
+Please refer to [SELECT](/reference/sql/select.md) for more information.
 
 ### Use Functions
 
@@ -56,7 +56,7 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-Please refer to [Functions](/en/v0.3/reference/sql/functions.md) for more information.
+Please refer to [Functions](/reference/sql/functions.md) for more information.
 
 ### Group By
 
@@ -77,7 +77,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 2 rows in set (0.00 sec)
 ```
 
-Please refer to [GROUP BY](/en/v0.3/reference/sql/group_by.md) for more information.
+Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
 ### Time and Date Examples
 
@@ -87,7 +87,7 @@ Please refer to [GROUP BY](/en/v0.3/reference/sql/group_by.md) for more informat
 SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-Please refer to [INTERVAL](/en/v0.3/reference/sql/functions.md#interval) for more information.
+Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
 
 #### Cast Number Literal to Timestamp
 
@@ -97,7 +97,7 @@ select * from system_metrics where ts > arrow_cast(1690252336408, 'Timestamp(Mil
 
 This query casts the number literal `1690252336408` (Unix Epoch `2023-07-25 10:32:16.408` in millisecond resolution) to the timestamp type with millisecond precision.
 
-Please refer to [arrow_cast](/en/v0.3/reference/sql/functions.md#arrow-cast) for more information.
+Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
 
 #### Cast string literal to timestamp
 
@@ -107,7 +107,7 @@ select * from system_metrics where ts > '2023-07-25 10:32:16.408'::timestamp
 
 This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
 
-Please refer to [::timestamp](/en/v0.3/reference/sql/functions.md#timestamp) for more information.
+Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
 
 #### Extract the day of the year from timestamp
 
@@ -126,7 +126,7 @@ Output:
 1 row in set (0.003 sec)
 ```
 
-The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/en/v0.3/reference/sql/functions.md#date-part) for more information.
+The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
 
 ## HTTP API
 
@@ -180,4 +180,4 @@ The result is shown below:
 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/en/v0.3/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).

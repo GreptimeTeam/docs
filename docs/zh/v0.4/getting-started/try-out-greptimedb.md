@@ -6,7 +6,7 @@
 
 用户可以在[下载页面](https://greptime.cn/download)通过我们发布的测试版本尝试使用 GreptimeDB。
 
-我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/zh/v0.4/user-guide/operations/configuration.md)。
+我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
 
 ### 二进制
 
@@ -70,7 +70,7 @@ greptime/greptimedb standalone start \
 
 ## 连接
 
-GreptimeDB 支持[多种协议](/zh/v0.4/user-guide/clients/overview.md)。这里使用 MySQL 客户端示例。
+GreptimeDB 支持[多种协议](/user-guide/clients/overview.md)。这里使用 MySQL 客户端示例。
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -78,7 +78,7 @@ mysql -h 127.0.0.1 -P 4002
 
 ## 建表
 
-**注意: GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [自动生成表结构](/zh/v0.4/user-guide/write-data/overview.md#自动生成表结构)。**
+**注意: GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。**
 
 现在我们通过 MySQL 创建一个表。先创建 `system_metrics` 表，其中包含系统资源指标，包括 CPU /内存/磁盘的使用，这些数据每 5 秒就会被抓取一次。
 
@@ -106,9 +106,9 @@ Field 描述:
 | disk_util   | double    | The percent use of disks               |
 | ts          | timestamp | Timestamp column incrementing          |
 
-- 如果用户使用其他协议，该表可以自动创建。请参考 [Create Table](/zh/v0.4/user-guide/table-management#creat-table)。
-- 关于创建表的 SQL 信息，请参考 [CREATE](/zh/v0.4/reference/sql/create.md)。
-- 关于数据类型，请参考[数据类型](/zh/v0.4/reference/data-types.md)。
+- 如果用户使用其他协议，该表可以自动创建。请参考 [Create Table](/user-guide/table-management#creat-table)。
+- 关于创建表的 SQL 信息，请参考 [CREATE](/reference/sql/create.md)。
+- 关于数据类型，请参考[数据类型](/reference/data-types.md)。
 
 ## 数据写入
 
@@ -128,7 +128,7 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-关于 `INSERT` 语句的更多信息，请参考 [INSERT](/zh/v0.4/reference/sql/insert.md)。
+关于 `INSERT` 语句的更多信息，请参考 [INSERT](/reference/sql/insert.md)。
 
 ## 数据查询
 
@@ -203,7 +203,7 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 2 rows in set (0.03 sec)
 ```
 
-关于 `SELECT` 语句的更多信息，请查看 [SELECT](/zh/v0.4/reference/sql/select.md) 文件。
+关于 `SELECT` 语句的更多信息，请查看 [SELECT](/reference/sql/select.md) 文件。
 
 ## Visualize data
 
@@ -230,11 +230,11 @@ SELECT * FROM system_metrics;
 
 至此我们展示了 GreptimeDB 的基本功能，更多的用户指南请查阅以下文档。
 
-- [概念](/zh/v0.4/user-guide/concepts/overview.md)
-- [客户端](/zh/v0.4/user-guide/clients/overview.md)
-- [管理表](/zh/v0.4/user-guide/table-management.md)
-- [数据写入](/zh/v0.4/user-guide/write-data/overview.md)
-- [数据查询](/zh/v0.4/user-guide/query-data/overview.md)
-- [脚本-&-函数](/zh/v0.4/user-guide/scripts-&-functions/overview.md)
-- [集群](/zh/v0.4/user-guide/cluster.md)
-- [运维操作](/zh/v0.4/user-guide/operations/overview.md)
+- [概念](/user-guide/concepts/overview.md)
+- [客户端](/user-guide/clients/overview.md)
+- [管理表](/user-guide/table-management.md)
+- [数据写入](/user-guide/write-data/overview.md)
+- [数据查询](/user-guide/query-data/overview.md)
+- [脚本-&-函数](/user-guide/scripts-&-functions/overview.md)
+- [集群](/user-guide/cluster.md)
+- [运维操作](/user-guide/operations/overview.md)

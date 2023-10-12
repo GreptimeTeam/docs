@@ -11,7 +11,7 @@ go get go.opentelemetry.io/otel@v1.16.0 \
 ```
 
 安装所需的包后，在 `app.go` 中编写代码创建一个 metric exporter 对象，将 metrics 发送到 GreptimeDB。
-请参考 [GreptimeDB](/zh/v0.4/user-guide/clients/otlp.md) 或 [GreptimeCloud](/zh/v0.4/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
+请参考 [GreptimeDB](/user-guide/clients/otlp.md) 或 [GreptimeCloud](/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
 
 ```go
 auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))

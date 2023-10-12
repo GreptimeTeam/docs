@@ -150,4 +150,4 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    ```
 
    You can also use SQL in [REPL](./operations/cli-repl.md) which can directly connect to the `Datanode`.
-   In this way, you can verify that the queries from `Frontend` are actually been executed distributed. For more details about distributed querying, please see [this](/en/v0.3/developer-guide/frontend/distributed-querying) document.
+   In this way, you can verify that the queries from `Frontend` are actually been executed distributed. For more details about distributed querying, please see [this](/developer-guide/frontend/distributed-querying) document.

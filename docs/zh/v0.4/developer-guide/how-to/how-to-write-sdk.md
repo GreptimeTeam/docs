@@ -1,17 +1,17 @@
 # 如何为 GreptimeDB 开发一个 gRPC SDK
 
-GreptimeDB 有2个 gRPC 服务。一个是 GreptimeDB 自己定义的，另一个是基于 [Apache Arrow Flight][1] 开发。
+GreptimeDB 有 2 个 gRPC 服务。一个是 GreptimeDB 自己定义的，另一个是基于 [Apache Arrow Flight][1] 开发。
 如果你想给用你熟悉的编程语言给 GreptimeDB 开发一个 gRPC SDK，请继续阅读本文。
 
-> 目前，GreptimeDB 有2个 gRPC SDK，分别由 Java 和 Go 实现。参见它们的 SDK 文档：
+> 目前，GreptimeDB 有 2 个 gRPC SDK，分别由 Java 和 Go 实现。参见它们的 SDK 文档：
 >
-> - [Java](/zh/v0.4/reference/sdk/java.md)
-> - [Go](/zh/v0.4/reference/sdk/go.md)
+> - [Java](/reference/sdk/java.md)
+> - [Go](/reference/sdk/go.md)
 
 ## `GreptimeDatabase` 服务
 
 GreptimeDB 自定义了一个 gRPC 服务：`GreptimeDatabase`。你可以在[这里][2]找到它的 protobuf 描述。
-`GreptimeDatabase` 有2个 RPC 方法：
+`GreptimeDatabase` 有 2 个 RPC 方法：
 
 ```protobuf
 service GreptimeDatabase {

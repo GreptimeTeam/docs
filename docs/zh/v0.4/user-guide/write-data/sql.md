@@ -16,7 +16,7 @@ VALUES
 Query OK, 3 rows affected (0.01 sec)
 ```
 
-通过上面的语句，我们成功的向 `monitor` 表中插入了三条数据。请参考 [`INSERT`](/zh/v0.4/reference/sql/insert.md) 获得更多写入数据的相关信息。
+通过上面的语句，我们成功的向 `monitor` 表中插入了三条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
 ### HTTP API
 
@@ -36,7 +36,7 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 3 }], "execution_time_ms": 0 }
 ```
 
-请参考 [API document](/zh/v0.4/reference/sql/http-api.md) 获取更多信息。
+请参考 [API document](/reference/sql/http-api.md) 获取更多信息。
 
 ## 删除数据
 
@@ -50,7 +50,7 @@ DELETE FROM monitor WHERE host='127.0.0.2' and ts=1667446798450;
 Query OK, 1 row affected (0.00 sec)
 ```
 
-请参考 [SQL DELETE](/zh/v0.4/reference/sql/delete.md) 获取更多信息。
+请参考 [SQL DELETE](/reference/sql/delete.md) 获取更多信息。
 
 ### HTTP API
 
@@ -70,4 +70,4 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
 ```
 
-请参考 [API 文档](/zh/v0.4/reference/sql/http-api.md)获取更多信息。
+请参考 [API 文档](/reference/sql/http-api.md)获取更多信息。
