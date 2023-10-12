@@ -2,37 +2,33 @@
 Layout
 </template>
 <script setup name="Layout" lang="ts">
-  import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
-  import { useRouter } from 'vitepress'
-  import { getSidebarIcon, setVersionOnPage } from '@/utils.ts'
+import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
+import { useRouter } from 'vitepress'
+import { getSidebarIcon, setVersionOnPage } from '@/utils.ts'
 
-  // data
-  const { theme } = useData()
-  const { latestVersion, iconMap } = theme.value
-  // methods
-  // lifecycle
+// data
+const { theme } = useData()
+const { latestVersion, iconMap, sidebar } = theme.value
+// methods
+// lifecycle
+const router = useRouter()
+
+router.onBeforePageLoad = to => {
+  setVersionOnPage(to, latestVersion, sidebar)
+}
+onBeforeMount(async () => {
+  const body = document.querySelector('body')
+  body.style.display = 'none'
   const router = useRouter()
-  const currentVersion = ref(latestVersion)
-
-  router.onBeforePageLoad = to => {
-    const pre = to
-    let res = to.replace(`/v0.4`, '')
-    if (pre !== res) router.go(res)
-    setVersionOnPage(to, currentVersion)
+  let path = router.route.path
+  if (path.includes(latestVersion)) {
+    const res = path.replace(`/${latestVersion}`, '')
+    await router.go(res)
   }
-  onBeforeMount(async () => {
-    const body = document.querySelector('body')
-    body.style.display = 'none'
-    const router = useRouter()
-    let path = router.route.path
-    if (path.includes(latestVersion)) {
-      const res = path.replace(`/${latestVersion}`, '')
-      await router.go(path)
-    }
-    body.style.display = 'block'
-  })
-  onMounted(async () => {
-    setVersionOnPage(router.route.path, currentVersion)
-    getSidebarIcon(iconMap)
-  })
+  body.style.display = 'block'
+})
+onMounted(async () => {
+  setVersionOnPage(router.route.path, latestVersion, sidebar)
+  getSidebarIcon(iconMap)
+})
 </script>

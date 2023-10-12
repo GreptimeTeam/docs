@@ -23,7 +23,8 @@ export const enConfig = async () => ({
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
   locales: {
-    root: { label: 'English' },
+    root: { label: 'English', lang: 'en-US', link: 'https://docs.greptime.com/' },
+    zh: { label: '简体中文', lang: 'zh-CN', link: 'https://docs.greptime.cn/' },
   },
   themeConfig: {
     nav: [
@@ -36,8 +37,7 @@ export const enConfig = async () => ({
         link: 'https://greptime.com/blogs',
       },
       {
-        // TODO change version
-        text: 'All Versions',
+        text: `${LATEST_VERSION}`,
         items: [
           {
             text: `${LATEST_VERSION}(latest)`,
