@@ -2,7 +2,7 @@
 
 GreptimeDB 支持下列数据类型：
 
-| Type name | Description | Aliases | Size |
+| 类型 | 描述 | 别名 | 大小 |
 |:-:|:-:| :-:| :-:|
 |`tinyint`| -128 ~ 127|`Int8`| 1 Byte |
 |`smallint`| -32768 ~ 32767 | `Int16`|2 Bytes |
