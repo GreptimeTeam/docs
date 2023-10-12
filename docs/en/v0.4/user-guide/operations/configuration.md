@@ -33,15 +33,14 @@ greptime datanode start --help
 ```
 
 - `-c`/`--config-file`: The configuration file for datanode;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
 - `--data-home`: Database storage root directory;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--node-id <NODE_ID>`: The datanode ID;
 - `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
 - `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
-- `--wal-dir <WAL_DIR>`: The wal directory of WAL;
 
 All the `addr` options are in the form of `ip:port`.
 
@@ -61,8 +60,8 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Etcd server addresses;
-- `--use-memory-store`: Use memory store instead of etcd;
+- `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses;
+- `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
 
 ### Frontend subcommand flags
 
@@ -73,12 +72,12 @@ greptime frontend start --help
 ```
 
 - `-c`/`--config-file`: The configuration file for frontend;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
 - `--disable-dashboard`: Disable dashboard http service, default is `false`.
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
+- `--grpc-addr <GPRC_ADDR>`: GRPC server address;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--grpc-addr <GPRC_ADDR>`: GRPC server address;
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
 - `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
@@ -87,6 +86,25 @@ greptime frontend start --help
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
 - `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
+
+### Standalone subcommand flags
+
+You can list all the flags from the following command:
+
+
+```
+greptime standalone start --help
+```
+
+- `-c`/`--config-file`: The configuration file for frontend;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_STANDALONE`;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
+- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
+- `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
+- `--rpc-addr <RPC_ADDR>`:  gRPC server address;
+
 
 ## Configuration File
 
@@ -186,13 +204,13 @@ There are also some node options in common:
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
-GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including minio, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
+GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
 
 | Option  | Key               | Type   | Description                                                   |
 | ------- | ----------------- | ------ | ------------------------------------------------------------- |
 | storage |                   |        | Storage options                                               |
-|         | type              | String | Storage type, Only supports "File", "S3" and "Oss" etc.       |
-| File    |                   |        | Local file storage options, valid when type="file"            |
+|         | type              | String | Storage type, supports "File", "S3" and "Oss" etc.       |
+| File    |                   |        | Local file storage options, valid when type="File"            |
 |         | data_home         | String | Database storage root directory, "/tmp/greptimedb" by default |
 | S3      |                   |        | AWS S3 storage options, valid when type="S3"                  |
 |         | bucket            | String | The S3 bucket name                                            |
@@ -214,6 +232,12 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_name      | String | The account name of Azure Blob Storage                        |
 |         | account_key       | String | The access key                                                |
 |         | sas_token         | String | The shared access signature                                   |
+| Gsc     |                   |        | Google Cloud Storage options, valid when type="Gsc"           |
+|         | root              | String | The root path in Gsc bucket                                   |
+|         | bucket            | String | The Gsc bucket name                                           |
+|         | scope             | String | The Gsc service scope                                         |
+|         | credential_path   | String | The Gsc credentials path                                      |
+|         | endpoint          | String | The API endpoint of Gsc                                       |
 
 A file storage sample configuration:
 
@@ -258,8 +282,6 @@ The `[wal]` section in datanode or standalone config file configures the options
 
 ```toml
 [wal]
-# WAL data directory
-# dir = "/tmp/greptimedb/wal"
 file_size = "256MB"
 purge_threshold = "4GB"
 purge_interval = "10m"
@@ -272,32 +294,6 @@ sync_write = false
 - `purge_threshold` and `purge_interval`: control the purging of wal files, default is `4GB`.
 - `sync_write`: whether to call `fsync` when writing every log.
 
-#### Compaction
-
-The `[storage.compaction]` section configures the compaction options of storage engine:
-
-```toml
-[storage.compaction]
-# Max task number that can concurrently run.
-max_inflight_tasks = 4
-# Max files in level 0 to trigger compaction.
-max_files_in_level0 = 8
-# Max task number for SST purge task after compaction.
-max_purge_tasks = 32
-```
-
-#### Manifest
-
-The `[storage.manifest]` section configures the region manifest options of storage engine:
-
-```toml
-[storage.manifest]
-# Region checkpoint actions margin.
-# Create a checkpoint every <checkpoint_margin> actions.
-checkpoint_margin = 10
-# Region manifest logs and checkpoints gc execution duration
-gc_duration = '10m'
-```
 
 ### Standalone
 
@@ -356,7 +352,7 @@ Datanode in distributed mode should set **different** `node_id` in different nod
 
 A sample datanode configuration for distributed mode can be found at [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/datanode.example.toml).
 
-### MetaServer configuration
+### Metasrv configuration
 
 A sample configuration can be found at [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/metasrv.example.toml).
 
@@ -393,16 +389,15 @@ Every item in the configuration file can be mapped into environment variables. F
 
 ```toml
 # ...
-[storage.compaction]
-# Max task number that can concurrently run.
-max_inflight_tasks = 4
+[storage]
+data_home = "/data/greptimedb"
 # ...
 ```
 
 You can use the following shell command to setup the environment variable as the following format:
 
 ```
-export GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
+export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
 ```
 
 ### Environment Variable Rules
@@ -414,7 +409,7 @@ export GREPTIMEDB_DATANODE__STORAGE__COMPACTION__MAX_INFLIGHT_TASKS=4
   - `GREPTIMEDB_DATANODE`
   - `GREPTIMEDB_STANDALONE`
 
-- We use **double underscore `__`** as a separator. For example, the above data structure `storage.compaction.max_inflight_tasks` will be transformed to `STORAGE__COMPACTION__MAX_INFLIGHT_TASKS`.
+- We use **double underscore `__`** as a separator. For example, the above data structure `storage.data_home` will be transformed to `STORAGE__DATA_HOME`.
 
 The environment variable also accepts list that are separated by a comma `,`, for example:
 
