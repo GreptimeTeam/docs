@@ -9,29 +9,6 @@
 GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端口是 `4001`。
 如果你在使用 [自定义配置](../operations/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
-## 样例
-
-下面是一个配置文件的样例：
-
-```toml
-# 使用 Vector 作为数据源
-[sources.vector]
-type = "vector"
-
-# 将 metrics 数据存入 GreptimeDB
-[sinks.greptime]
-type = "greptimedb"
-inputs = [ "vector" ]
-dbname = "public"
-endpoint = "127.0.0.1:4001"
-```
-
-你可以使用下面的命令启动 Vector，假设配置文件名为 `vector.toml`：
-
-```bash
-vector -c vector.toml
-```
-
 ## 数据模型
 
 我们使用这样的规则将 Vector 指标存入 GreptimeDB：
