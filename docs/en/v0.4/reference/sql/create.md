@@ -196,6 +196,10 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".                   | Optional     |
 | `SESSION_TOKEN`             | Your temporary credential for connecting the AWS S3 service.                          | Optional     |
 
+### Time Index Column
+
+When creating an external table using the `CREATE EXTERNAL TABLE` statement, you are required to use the `TIME INDEX` constraint to specify a time index column.
+
 ### Examples
 
 You can create an external table without any columns definitions:
@@ -204,15 +208,23 @@ You can create an external table without any columns definitions:
 CREATE EXTERNAL TABLE IF NOT EXISTS city WITH (location='/var/data/city.csv',format='csv');
 ```
 
+In this example, since we have not explicitly defined the columns of the table, the `CREATE EXTERNAL TABLE` statement will infer the `Time Index` column according to the following rules:
+
+1. If the `Time Index` column can be inferred from the file metadata, then that column will be used as the `Time Index` column.
+2. If there is a column named `greptime_timestamp` (the type of this column must be `TIMESTAMP`, otherwise, an error will be thrown), then this column will be used as the `Time Index` column.
+3. Otherwise, a column named `greptime_timestamp` will be automatically created as the `Time Index` column, and a `DEFAULT '1970-01-01 00:00:00+0000'` constraint will be added.
+
 Or
 
 ```sql
 CREATE EXTERNAL TABLE city (
             host string,
-            ts int64,
+            ts timestamp,
             cpu float64 default 0,
             memory float64,
             TIME INDEX (ts),
-            PRIMARY KEY(ts, host)
+            PRIMARY KEY(host)
 ) WITH (location='/var/data/city.csv', format='csv');
 ```
+
+In this example, we explicitly defined the `ts` column as the `Time Index` column. If there is no suitable `Time Index` column in the file, you can also create a placeholder column and add a `DEFAULT <expr>` constraint.
