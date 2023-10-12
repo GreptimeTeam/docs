@@ -2,6 +2,8 @@
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。这里有一些示例通过 SQL 语句和 GreptimeDB 函数来查询 `monitor` 表中的数据。
 
+关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](../table-management.md#创建表)和[写入数据](../write-data/sql.md)。
+
 ## SELECT
 
 使用 `SELECT` 查询表中的全部数据：
@@ -83,7 +85,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 #### 查询最近 5 分钟内的数据
 
 ```sql
-SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
+SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
 请参考 [INTERVAL](/reference/sql/functions.md#interval) 获取更多信息。
@@ -91,17 +93,17 @@ SELECT * from system_metrics WHERE ts >= now() - INTERVAL '5 minutes';
 #### 将数字转换为时间戳
 
 ```sql
-select * from system_metrics where ts > arrow_cast(1690252336408, 'Timestamp(Millisecond, None)')
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
 ```
 
-这个查询将数字 1690252336408（Unix Epoch 2023-07-25 10:32:16.408，毫秒分辨率）转换为带有毫秒精度的时间戳类型。
+这个查询将数字 1650252336408（Unix Epoch 2022-04-18 03:25:36.408，毫秒分辨率）转换为带有毫秒精度的时间戳类型。
 
 请参考 [arrow_cast](/reference/sql/functions.md#arrow-cast) 获取更多信息.
 
 #### 将字符串时间转换为时间戳
 
 ```sql
-select * from system_metrics where ts > '2023-07-25 10:32:16.408'::timestamp
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
 ```
 
 这个查询使用 `::` 语法将字符串时间转换为时间戳类型，所有 SQL 类型都可以在 `timestamp` 的位置上使用。

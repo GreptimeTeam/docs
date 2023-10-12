@@ -1,8 +1,12 @@
 # SQL
 
+We will use the `monitor` table as an example to show how to write data.
+For the SQL example on how to create the `monitor` table,
+please refer to [Table Management](../table-management.md#create-table).
+
 ## `INSERT` Statement
 
-Let's insert some testing data to the `monitor` table which we created [before](/user-guide/table-management.md). You can use the `INSERT INTO` SQL statements:
+Let's insert some testing data to the `monitor` table. You can use the `INSERT INTO` SQL statements:
 
 ```sql
 INSERT INTO monitor
