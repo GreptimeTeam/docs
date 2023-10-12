@@ -25,7 +25,7 @@ each region has a MemTable that needs to be reconstructed when Datanode restarts
 
 ## Synchronous/Asynchronous flush
 
-By default, appending to WAL is synchronous, which means the writer waits until the entry is
-flushed to the disk. This setting provides the highest durability, but also has the poorest
-performance. WAL uses group flush to alleviate sync flush overhead. In the near future, we will add
-asynchronous flush support to boost write performance when data durability is not the main concern.
+By default, appending to WAL is asynchronous, which means the writer will not wait until entries are
+flushed to disk. This setting provides higher performance, but may lose data when running host shutdown unexpectedly. In the other hand, synchronous flush provides higher durability at the cost of performance.
+
+In v0.4 version, the new region worker architecture can use batching to alleviate the overhead of sync flush.
