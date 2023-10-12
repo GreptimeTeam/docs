@@ -155,7 +155,7 @@ TODO by MichaelScofield
 Creates a new file external table in the `db` database or the current database in use:
 
 ```sql
-CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
+CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 [
  (
     column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
