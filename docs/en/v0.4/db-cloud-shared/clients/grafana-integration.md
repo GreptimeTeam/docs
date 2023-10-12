@@ -1,7 +1,5 @@
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).
 
-There are two general deployment methods of GreptimeDB. GreptimeCloud and self-hosted GreptimeDB. Only GreptimeCloud requires authentication information. The self-hosted GreptimeDB does not support authentication. So when you use your self-hosted GreptimeDB you can ignore filling in the authentication information.
-
 ## Prometheus
 
 Click the Add data source button and select Prometheus as the type.
