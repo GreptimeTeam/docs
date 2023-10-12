@@ -34,7 +34,7 @@ variable-sized 类型的最大容量, 例如 `string` 和 `varbinary`，取决�
 
 ## Timestamp类型别名
 
-timestamp”类型带有各种别名，建议使用“TimestampSecond”、“TimestampMillisecond”、“TimestampMicrosecond”和“TimestampNanosecond”。下表列出了对应的别名。
+`timestamp`类型带有各种别名，建议使用`TimestampSecond`、`TimestampMillisecond`、`TimestampMicrosecond`和`TimestampNanosecond`。下表列出了对应的别名。
 
 |Type name|Alias|
 |:-|:-:|
