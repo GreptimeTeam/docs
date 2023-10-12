@@ -60,7 +60,7 @@ export const zhConfig = async () => ({
         link: 'https://greptime.com/blogs',
       },
       {
-        text: '历史版本',
+        text: `${LATEST_VERSION}`,
         items: [
           {
             text: `${LATEST_VERSION}(最新)`,

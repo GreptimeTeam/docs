@@ -45,12 +45,8 @@ export function getSidebarIcon(iconMap) {
 }
 
 export function setVersionOnPage(path, latestVersion, sidebar) {
-  let version = latestVersion
   const allVersions = getAllVersions(sidebar, latestVersion)
-
-  allVersions.forEach(version => {
-    version = path.includes(version) ? version : latestVersion
-  })
+  const version = allVersions.find(version => path.includes(version)) || latestVersion
   const div = document.querySelector('.VPNavBarMenuGroup')
   const targetElement = <HTMLInputElement>div.childNodes[0].childNodes[0].childNodes[1]
   targetElement.innerText = version

@@ -37,7 +37,6 @@ export const enConfig = async () => ({
         link: 'https://greptime.com/blogs',
       },
       {
-        // TODO change version
         text: `${LATEST_VERSION}`,
         items: [
           {
