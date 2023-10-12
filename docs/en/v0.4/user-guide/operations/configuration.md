@@ -294,6 +294,26 @@ sync_write = false
 - `purge_threshold` and `purge_interval`: control the purging of wal files, default is `4GB`.
 - `sync_write`: whether to call `fsync` when writing every log.
 
+### Storage engine options
+
+The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, there is only one storage engine available, which is `mito`.
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+num_workers = 1
+manifest_checkpoint_distance = 10
+max_background_jobs = 4
+global_write_buffer_size = "1GB"
+global_write_buffer_reject_size = "2GB"
+```
+
+- `num_workers`: Number of write threads
+- `manifest_checkpoint_distance`: Create a checkpoint every `manifest_checkpoint_distance` manifest files are written
+- `max_background_jobs`: Number of background threads
+- `global_write_buffer_size`: Size of the write buffer, default is `1GB`
+- `global_write_buffer_reject_size`: Reject write requests when the size of data in the write buffer exceeds `global_write_buffer_reject_size`. It needs to be larger than `global_write_buffer_size`, default is `2GB`
+
 
 ### Standalone
 

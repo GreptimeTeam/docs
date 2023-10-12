@@ -293,6 +293,27 @@ sync_write = false
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
 
+### 存储引擎选项
+
+datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前只有一种存储引擎 `mito`。
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+num_workers = 1
+manifest_checkpoint_distance = 10
+max_background_jobs = 4
+global_write_buffer_size = "1GB"
+global_write_buffer_reject_size = "2GB"
+```
+
+- `num_workers`: 写入线程数量
+- `manifest_checkpoint_distance`: 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint
+- `max_background_jobs`: 后台线程数量
+- `global_write_buffer_size`: 写入缓冲区大小，默认 `1GB`
+- `global_write_buffer_reject_size`: 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，需要比 `global_write_buffer_size` 大，默认 `2GB`
+
+
 ### 单机模式
 
 当用户在单机模式（standalone）下使用 GreptimeDB 时，可以参考 [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/standalone.example.toml) 配置文件。
