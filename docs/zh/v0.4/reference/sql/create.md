@@ -67,9 +67,9 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 表约束包括以下内容：
 
-- `TIME INDEX` 指定时间索引列，每个表只能有一个时间索引列。它表示 GreptimeDB 的 [数据模型](/zh/v0.4/user-guide/concepts/data-model.md) 中的 `Timestamp` 类型。
-- `PRIMARY KEY` 指定表的主键列，它表示 GreptimeDB 的 [数据模型](/zh/v0.4/user-guide/concepts/data-model.md) 中的 `Tag` 类型。它不能包含时间索引列，但是它总是隐式地将时间索引列添加到键的末尾。
-- 其他列是 GreptimeDB 的 [数据模型](/zh/v0.4/user-guide/concepts/data-model.md) 中的 `Field` 类型。
+- `TIME INDEX` 指定时间索引列，每个表只能有一个时间索引列。它表示 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Timestamp` 类型。
+- `PRIMARY KEY` 指定表的主键列，它表示 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Tag` 类型。它不能包含时间索引列，但是它总是隐式地将时间索引列添加到键的末尾。
+- 其他列是 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 中的 `Field` 类型。
 
 :::tip 注意
 `CREATE` 语句中指定的 `PRIMARY KEY` **不是** 传统关系数据库中的主键。

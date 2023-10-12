@@ -15,7 +15,7 @@ All sample configuration files are in the project's [config](https://github.com/
 
 ## Command-line flags
 
-See [Command lines](/en/v0.4/reference/command-lines.md) to learn how to use the `greptime` command line.
+See [Command lines](/reference/command-lines.md) to learn how to use the `greptime` command line.
 
 ### Global flags
 
@@ -59,7 +59,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--selector <SELECTOR>`: You can refer [selector-type](/en/v0.4/developer-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addr <STORE_ADDR>`: Etcd server addresses;
 - `--use-memory-store`: Use memory store instead of etcd;
@@ -86,7 +86,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/en/v0.4/user-guide/clients/authentication);
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
 
 ## Configuration File
 
@@ -148,39 +148,39 @@ All of these protocols except HTTP and gRPC are optional, the default values are
 
 #### Protocol options
 
-| Option             | Key          | Type    | Description                                                                     |
-| ------------------ | ------------ | ------- | ------------------------------------------------------------------------------- |
+| Option     | Key          | Type    | Description                                                                     |
+| ---------- | ------------ | ------- | ------------------------------------------------------------------------------- |
 | http       |              |         | HTTP server options                                                             |
-|                    | addr         | String  | Server address, "127.0.0.1:4000" by default                                     |
-|                    | timeout      | String  | HTTP request timeout, "30s" by default                                            |
-|                    | body_limit      | String  | HTTP max body size, "64MB" by default                                            |
+|            | addr         | String  | Server address, "127.0.0.1:4000" by default                                     |
+|            | timeout      | String  | HTTP request timeout, "30s" by default                                          |
+|            | body_limit   | String  | HTTP max body size, "64MB" by default                                           |
 | grpc       |              |         | gRPC server options                                                             |
-|                    | addr         | String  | Server address, "127.0.0.1:4001" by default                                     |
-|                    | runtime_size | Integer | The number of server worker threads, 8 by default                               |
+|            | addr         | String  | Server address, "127.0.0.1:4001" by default                                     |
+|            | runtime_size | Integer | The number of server worker threads, 8 by default                               |
 | mysql      |              |         | MySQL server options                                                            |
-|                    | enable       | Boolean | Whether to enable MySQL protocol, true by default |
-|                    | add          | String  | Server address, "127.0.0.1:4002" by default                                     |
-|                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
+|            | enable       | Boolean | Whether to enable MySQL protocol, true by default                               |
+|            | add          | String  | Server address, "127.0.0.1:4002" by default                                     |
+|            | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 | influxdb   |              |         | InfluxDB Protocol options                                                       |
-|                    | enable       | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
+|            | enable       | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
 | opentsdb   |              |         | OpenTSDB Protocol options                                                       |
-|                    | enable       | Boolean | Whether to enable OpenTSDB protocol, true by default |
-|                    | addr         | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
-|                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
-| prom_store |              |         | Prometheus remote storage options                                                     |
-|                    | enable       | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
+|            | enable       | Boolean | Whether to enable OpenTSDB protocol, true by default                            |
+|            | addr         | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
+|            | runtime_size | Integer | The number of server worker threads, 2 by default                               |
+| prom_store |              |         | Prometheus remote storage options                                               |
+|            | enable       | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
 | postgres   |              |         | PostgresSQL server options                                                      |
-|                    | enable       | Boolean | Whether to enable PostgresSQL protocol, true by default |
-|                    | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
-|                    | runtime_size | Integer | The number of server worker threads, 2 by default                               |
+|            | enable       | Boolean | Whether to enable PostgresSQL protocol, true by default                         |
+|            | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
+|            | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 
 #### Node options
 
 There are also some node options in common:
 
-| Option | Key                   | Type    | Description                                                |
-| ------ | --------------------- | ------- | ---------------------------------------------------------- |
-|        | mode                  | String  | Node running mode, includes "standalone" and "distributed" |
+| Option | Key  | Type   | Description                                                |
+| ------ | ---- | ------ | ---------------------------------------------------------- |
+|        | mode | String | Node running mode, includes "standalone" and "distributed" |
 
 #### Storage options
 
@@ -378,14 +378,14 @@ selector = "LeaseBased"
 use_memory_store = false
 ```
 
-| Key                 | Type    | Description                                                                                                                 |
-| ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
-| data_home           | String  | The working home of MetaServer,    `"/tmp/metasrv/"` by default                                                                |
-| bind_addr           | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                   |
-| server_addr         | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost |
-| store_addr          | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`.                                                                            |
-| selector          | String  |  Load balance strategy to choose datanode when creating new tables, see [Selector](/en/v0.4/developer-guide/metasrv/selector.md)                                                                     |
-|   use_memory_store   | Boolean  |   Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.   |
+| Key              | Type    | Description                                                                                                                             |
+| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| data_home        | String  | The working home of MetaServer, `"/tmp/metasrv/"` by default                                                                            |
+| bind_addr        | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                          |
+| server_addr      | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost        |
+| store_addr       | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
+| selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/developer-guide/metasrv/selector.md)                 |
+| use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
 ## Environment variable
 

@@ -5,7 +5,7 @@
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
 
-For more explanations of the `SQL` syntax, please see the [SQL reference](/en/v0.4/reference/sql/overview.md).
+For more explanations of the `SQL` syntax, please see the [SQL reference](/reference/sql/overview.md).
 
 ## Create Database
 
@@ -65,7 +65,7 @@ USE public;
 ## Create Table
 
 :::tip NOTE
-GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/en/v0.4/user-guide/write-data/overview.md#automatic-schema-generation).
+GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 :::
 
 You can still create a table manually via SQL if you have specific requirements.
@@ -100,7 +100,7 @@ Therefore, it is important to carefully design your data model before creating t
 - Timestamp column: GreptimeDB is a time-series database system, a timestamp column must
   be explicitly specified by `TIME INDEX` keyword when creating tables. The data type of
   the timestamp column must be `TIMESTAMP`type.
-- Primary key:  The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
+- Primary key: The columns in primary key are similar to tags in other other time-series systems like [InfluxDB][1]. The primary key columns with the time index column are used to uniquely define a series of data, which is similar
   to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
@@ -228,4 +228,4 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/en/v0.4/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).

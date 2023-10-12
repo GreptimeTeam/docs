@@ -33,7 +33,7 @@ SUBCOMMANDS:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  config/standalone.example.toml
 ```
 
-`-c` 指定配置文件，更多信息请查看[配置](/zh/v0.4/user-guide/operations/configuration.md)。
+`-c` 指定配置文件，更多信息请查看[配置](/user-guide/operations/configuration.md)。
 
 以分布式模式启动 GreptimeDB:
 

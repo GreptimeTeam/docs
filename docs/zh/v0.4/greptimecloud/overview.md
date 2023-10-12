@@ -8,7 +8,7 @@ GreptimeCloud 作为完全托管 GreptimeDB 的 Serverless 云服务，为时间
 
 ## 集成
 
-在阅读以下内容之前，需要先阅读 [客户端协议](/zh/v0.4/user-guide/clients/overview.md)。你可以使用流行的数据库协议连接到 GreptimeCloud：
+在阅读以下内容之前，需要先阅读 [客户端协议](/user-guide/clients/overview.md)。你可以使用流行的数据库协议连接到 GreptimeCloud：
 
 - Prometheus [integration](./integrations/prometheus/quick-setup.md) 以及 [规则管理](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)

@@ -62,6 +62,6 @@ do
 done
 ```
 
-请参阅 [GreptimeDB](/zh/v0.4/user-guide/clients/mysql.md) 或 [GreptimeCloud](/zh/v0.4/greptimecloud/integrations/mysql.md) 中的 MySQL 文档以获取命令中的 `host`、`database`、`username` 和 `password` 信息，
+请参阅 [GreptimeDB](/user-guide/clients/mysql.md) 或 [GreptimeCloud](/greptimecloud/integrations/mysql.md) 中的 MySQL 文档以获取命令中的 `host`、`database`、`username` 和 `password` 信息，
 
 恭喜你完成了 Demo 的核心部分！现在可以按照 [GitHub 库](https://github.com/GreptimeCloudStarters/quick-start-mysql)中 `README.md` 文件中的说明运行完整的 Demo。

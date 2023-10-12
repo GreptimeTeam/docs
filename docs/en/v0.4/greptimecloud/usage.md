@@ -19,7 +19,7 @@ The capacity unit may be subject to change in the future.
 
 The following steps are used to determine the size of each request:
 
-1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/en/v0.4/reference/data-types.md) documentation.
+1. Get the size of the data type of each column in the table schema. You can find details about the size of each data type in the [Data Types](/reference/data-types.md) documentation.
 2. Sum up the sizes of all columns in the request. If a column is not present in the request, its size depends on the column's default value. If the default value is null, the size is 0; otherwise, it is the size of the data type.
 3. Multiply the sum by the number of rows to be written.
 
