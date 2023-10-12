@@ -60,7 +60,7 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
 - `--selector <SELECTOR>`: 参考 [selector 类型](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
-- `--store-addr <STORE_ADDR>`: Etcd 地址列表，用逗号隔开
+- `--store-addr <STORE_ADDR>`:  etcd 地址列表，用逗号隔开
 - `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
 
 ### frontend 子命令选项
@@ -105,7 +105,9 @@ greptime standalone start --help
 - `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
 
 
-## 指定配置文件
+## 配置文件
+
+### 指定配置文件
 
 用户可以通过使用命令行参数 `-c [file_path]` 指定配置文件，比如：
 
@@ -113,7 +115,7 @@ greptime standalone start --help
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-## 常见配置
+### 常见配置
 
 在 `frontend` 和 `standalone` 子命令中常见的协议配置有：
 
@@ -291,7 +293,7 @@ sync_write = false
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
 
-## 单机模式
+### 单机模式
 
 当用户在单机模式（standalone）下使用 GreptimeDB 时，可以参考 [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/standalone.example.toml) 配置文件。
 
@@ -301,7 +303,7 @@ sync_write = false
 greptime standalone start -c standalone.example.toml
 ```
 
-## 分布式模式下的 `Frontend`
+### 分布式模式下的 `Frontend`
 
 在分布式模式下配置 `Frontend`：
 
@@ -326,7 +328,7 @@ tcp_nodelay = true
 
 这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
 
-## 分布式模式下的 `Datanode`
+### 分布式模式下的 `Datanode`
 
 在分布式模式下配置 `datanode`：
 
@@ -348,7 +350,7 @@ tcp_nodelay = false
 
 这里可以找到配置 datanode 分布式模式运行的样例配置文件 [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/datanode.example.toml).
 
-## Metasrv 配置
+### Metasrv 配置
 
 一份配置样例文件 [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/metasrv.example.toml)：
 
