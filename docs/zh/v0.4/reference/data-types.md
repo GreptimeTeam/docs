@@ -39,7 +39,7 @@ variable-sized 类型的最大容量, 例如 `string` 和 `varbinary`，取决�
 |Type name|Alias|
 |:-|:-:|
 |TimestampSecond| Timestamp_s, Timestamp_sec , Timestamp(0)|
-|TimestampMillisecond| Timestamp_ms , Timestamp(3)|
+|TimestampMillisecond| Timestamp, Timestamp_ms , Timestamp(3)|
 |TimestampMicrosecond| Timestamp_us , Timestamp(6)|
 |TimestampNanosecond|Timestamp_ns , Timestamp(9)|
 

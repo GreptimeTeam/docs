@@ -43,7 +43,7 @@ The following table lists the corresponding alias.
 |Type name|Alias|
 |:-|:-:|
 |TimestampSecond| Timestamp_s, Timestamp_sec , Timestamp(0)|
-|TimestampMillisecond| Timestamp_ms , Timestamp(3)|
+|TimestampMillisecond| Timestamp, Timestamp_ms , Timestamp(3)|
 |TimestampMicrosecond| Timestamp_us , Timestamp(6)|
 |TimestampNanosecond|Timestamp_ns , Timestamp(9)|
 
