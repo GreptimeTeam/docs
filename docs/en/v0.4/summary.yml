@@ -71,7 +71,6 @@
     # - export-data
     # - back-up-&-restore-data
     # - capacity-planning
-    - cli-repl
 - GreptimeCloud:
   - overview
   - Getting-Started:
