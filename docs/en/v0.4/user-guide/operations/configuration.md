@@ -321,9 +321,9 @@ tcp_nodelay = true
 
 Specify the running mode to be `"distributed"`.
 
-The `meta_client` configures the MetaServer client, including:
+The `meta_client` configures the Metasrv client, including:
 
-- `metasrv_addrs`, The MetaServer address list.
+- `metasrv_addrs`, The Metasrv address list.
 - `timeout_millis`, operation timeout in milliseconds, 3000 by default.
 - `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
@@ -376,9 +376,9 @@ use_memory_store = false
 
 | Key              | Type    | Description                                                                                                                             |
 | ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| data_home        | String  | The working home of MetaServer, `"/tmp/metasrv/"` by default                                                                            |
-| bind_addr        | String  | The bind address of MetaServer, `"127.0.0.1:3002"` by default.                                                                          |
-| server_addr      | String  | The communication server address for frontend and datanode to connect to MetaServer, `"127.0.0.1:3002"` by default for localhost        |
+| data_home        | String  | The working home of Metasrv, `"/tmp/metasrv/"` by default                                                                            |
+| bind_addr        | String  | The bind address of Metasrv, `"127.0.0.1:3002"` by default.                                                                          |
+| server_addr      | String  | The communication server address for frontend and datanode to connect to Metasrv, `"127.0.0.1:3002"` by default for localhost        |
 | store_addr       | String  | Etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
 | selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/developer-guide/metasrv/selector.md)                 |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
