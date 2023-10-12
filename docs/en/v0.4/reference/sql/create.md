@@ -45,14 +45,14 @@ Creates a new table in the `db` database or the current database in use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    name1 [type1] [NULL|NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    name2 [type2] [NULL|NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    ...,
-    [TIME INDEX (name)],
-    [PRIMARY KEY(name1, name2,...)]
-) ENGINE = engine WITH([ttl | regions] = expr, ...)
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
+) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(name1, name2, ...) (
+  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
     PARTITION r0 VALUES LESS THAN (expr1),
     PARTITION r1 VALUES LESS THAN (expr2),
     ...
@@ -61,7 +61,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ```
 
 The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.
-A column definition includes the column `name`, `type`, and options such as nullable or default values, etc. Please see below.
+A column definition includes the column `column_name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints
 
@@ -158,23 +158,24 @@ Creates a new file external table in the `db` database or the current database i
 CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 [
  (
-    <col_name> <col_type> [NULL | NOT NULL] [COMMENT "<comment>"]
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
  )
-]
-[ WITH
- (
-   LOCATION = 'url'
-   [,FORMAT =  { csv | json | parquet } ]
-   [,PATTERN = '<regex_pattern>' ]
-   [,ENDPOINT = '<uri>' ]
-   [,ACCESS_KEY_ID = '<key_id>' ]
-   [,SECRET_ACCESS_KEY = '<access_key>' ]
-   [,SESSION_TOKEN = '<token>' ]
-   [,REGION = '<region>' ]
-   [,ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
-   ..
- )
-]
+] WITH (
+  LOCATION = url,
+  FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' }
+  [,PATTERN = regex_pattern ]
+  [,REGION = region ]
+  [,ENDPOINT = uri ]
+  [,ACCESS_KEY_ID = key_id ]
+  [,SECRET_ACCESS_KEY = access_key ]
+  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
+  [,SESSION_TOKEN = token ]
+  ...
+)
 ```
 
 ### Table options
@@ -182,7 +183,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | Option     | Description                                                                     | Required     |
 | ---------- | ------------------------------------------------------------------------------- | ------------ |
 | `LOCATION` | External files locations, e.g., `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **Required** |
-| `FORMAT`   | Target file(s) format, e.g., JSON, CSV, Parquet                                 | **Required** |
+| `FORMAT`   | Target file(s) format, e.g., JSON, CSV, Parquet, ORC                            | **Required** |
 | `PATTERN`  | Use regex to match files. e.g., `*_today.parquet`                               | Optional     |
 
 #### S3

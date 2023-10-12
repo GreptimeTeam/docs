@@ -45,14 +45,14 @@ CREATE DATABASE IF NOT EXISTS test;
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    name1 [type1] [NULL|NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    name2 [type2] [NULL|NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] COMMENT comment,
-    ...,
-    [TIME INDEX (name)],
-    [PRIMARY KEY(name1, name2,...)]
-) ENGINE = engine WITH([ttl | regions] = expr, ...)
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
+) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(name1, name2, ...) (
+  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
     PARTITION r0 VALUES LESS THAN (expr1),
     PARTITION r1 VALUES LESS THAN (expr2),
     ...
@@ -161,23 +161,24 @@ TODO by MichaelScofield
 CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 [
  (
-    <col_name> <col_type> [NULL | NOT NULL] [COMMENT "<comment>"]
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    ...
+    [TIME INDEX (column)],
+    [PRIMARY KEY(column1, column2, ...)]
  )
-]
-[ WITH
- (
-   LOCATION = 'url'
-   [,FORMAT =  { csv | json | parquet } ]
-   [,PATTERN = '<regex_pattern>' ]
-   [,ENDPOINT = '<uri>' ]
-   [,ACCESS_KEY_ID = '<key_id>' ]
-   [,SECRET_ACCESS_KEY = '<access_key>' ]
-   [,SESSION_TOKEN = '<token>' ]
-   [,REGION = '<region>' ]
-   [,ENABLE_VIRTUAL_HOST_STYLE = '<boolean>']
-   ..
- )
-]
+] WITH (
+  LOCATION = url,
+  FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' }
+  [,PATTERN = regex_pattern ]
+  [,REGION = region ]
+  [,ENDPOINT = uri ]
+  [,ACCESS_KEY_ID = key_id ]
+  [,SECRET_ACCESS_KEY = access_key ]
+  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
+  [,SESSION_TOKEN = token ]
+  ...
+)
 ```
 
 ### 表选项
@@ -185,7 +186,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [<database>.]<table_name>
 | 选项       | 描述                                                               | 是否必需 |
 | ---------- | ------------------------------------------------------------------ | -------- |
 | `LOCATION` | 外部表的位置，例如 `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **是**   |
-| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet                            | **是**   |
+| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet, ORC                         | **是**   |
 | `PATTERN`  | 使用正则来匹配文件，例如 `*_today.parquet`                         | 可选     |
 
 #### S3
