@@ -32,9 +32,9 @@ variable-sized 类型的最大容量, 例如 `string` 和 `varbinary`，取决�
 
 例如，`string` 值被编码为 UTF-8。如果所有字符都是 3 字节长度，则该字段可以存储 715827882 个字符。对于 `varbinary` 类型，最多可以存储 2147483647 字节。
 
-## Timestamp类型别名
+## Timestamp 类型别名
 
-`timestamp`类型带有各种别名，建议使用`TimestampSecond`、`TimestampMillisecond`、`TimestampMicrosecond`和`TimestampNanosecond`。下表列出了对应的别名。
+`timestamp` 类型带有各种别名，建议使用 `TimestampSecond`、`TimestampMillisecond`、`TimestampMicrosecond` 和 `TimestampNanosecond`。下表列出了对应的别名。
 
 |Type name|Alias|
 |:-|:-:|
