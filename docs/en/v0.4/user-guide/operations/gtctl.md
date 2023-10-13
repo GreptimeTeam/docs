@@ -53,7 +53,7 @@ The gtctl supports autocompletion of several different shells.
 
 ### Bash
 
-The gtctl completion script for Bash can be generated with the command gtctl completion bash. Sourcing the completion script in your shell enables gtctl autocompletion.
+The gtctl completion script for Bash can be generated with the command `gtctl completion bash`. Sourcing the completion script in your shell enables gtctl autocompletion.
 
 ```bash
 echo 'source <(gtctl completion bash)' >> ~/.bashrc
@@ -61,7 +61,7 @@ echo 'source <(gtctl completion bash)' >> ~/.bashrc
 
 ### Zsh
 
-The gtctl completion script for Zsh can be generated with the command gtctl completion zsh. Sourcing the completion script in your shell enables gtctl autocompletion.
+The gtctl completion script for Zsh can be generated with the command `gtctl completion zsh`. Sourcing the completion script in your shell enables gtctl autocompletion.
 
 ```bash
 mkdir -p $ZSH/completions && gtctl completion zsh > $ZSH/completions/_gtctl
@@ -69,7 +69,7 @@ mkdir -p $ZSH/completions && gtctl completion zsh > $ZSH/completions/_gtctl
 
 ### Fish
 
-The gtctl completion script for Fish can be generated with the command gtctl completion fish. Sourcing the completion script in your shell enables gtctl autocompletion.
+The gtctl completion script for Fish can be generated with the command `gtctl completion fish`. Sourcing the completion script in your shell enables gtctl autocompletion.
 
 ```bash
 gtctl completion fish | source

@@ -1,59 +1,59 @@
 # gtctl
 
-[gtctl][1], g-t-control, is a command-line tool for managing the GreptimeDB clusters. gtctl is the **All-in-One** binary that integrates with multiple operations of GreptimeDB clusters.
+[gtctl][1]，g-t-control，是一个用于管理 GreptimeDB 集群的命令行工具。gtctl 是集成了 GreptimeDB 集群的多种操作的多合一 binary。
 
-## Installation
+## 安装
 
-### One-line Installation
+### 一键安装
 
-Download the binary using the following command:
+使用以下命令下载二进制文件：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
-After downloading, the gtctl will be in the current directory.
+下载完成后，gtctl 将位于当前目录中。
 
-You also can install gtctl from the AWS-CN S3 bucket:
+你还可以从 AWS 中国区 S3 存储桶安装 gtctl：
 
 ```bash
 curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh -s -- -s aws
 ```
 
-### Homebrew
+### 通过 Homebrew 安装
 
-On macOS, gtctl is available via Homebrew:
+在 macOS 上，可以通过 Homebrew 安装 gtctl：
 
 ```bash
 brew tap greptimeteam/greptime
 brew install gtctl
 ```
 
-### From Source
+### 从源代码构建
 
-If you already have the [Go][2] installed, you can run the `make` command under this project to build gtctl:
+如果已经安装了 [Go][2]，可以在该项目下运行 `make` 命令来构建 gtctl：
 
 ```bash
 make gtctl
 ```
 
-After building, the gtctl will be generated in `./bin/`. If you want to install gtctl, you can run the `install` command:
+构建完成后，gtctl 将生成在 `./bin/` 目录下。如果想要安装 gtctl，可以运行 `install` 命令：
 
 ```bash
-# The built gtctl will be installed in /usr/local/bin.
+# 构建的 gtctl 将安装在 /usr/local/bin 目录下
 make install
 
-# The built gtctl will be installed in your customed path.
+# 构建的 gtctl 将安装在自定义路径下
 make install INSTALL_DIR=<your-path>
 ```
 
-## Enable gtctl Autocompletion (Optional)
+## 启用 gtctl 自动补全（可选）
 
-The gtctl supports autocompletion of several different shells.
+gtctl 支持多种不同的 shell 自动补全。
 
 ### Bash
 
-The gtctl completion script for Bash can be generated with the command gtctl completion bash. Sourcing the completion script in your shell enables gtctl autocompletion.
+在 Bash 中，可以使用命令 `gtctl completion bash` 生成 gtctl 的自动补全脚本。将补全脚本引入到你的 shell 中可以启用 gtctl 的自动补全功能。
 
 ```bash
 echo 'source <(gtctl completion bash)' >> ~/.bashrc
@@ -61,7 +61,7 @@ echo 'source <(gtctl completion bash)' >> ~/.bashrc
 
 ### Zsh
 
-The gtctl completion script for Zsh can be generated with the command gtctl completion zsh. Sourcing the completion script in your shell enables gtctl autocompletion.
+在 Zsh 中，可以使用命令 `gtctl completion zsh` 生成 gtctl 的自动补全脚本。将补全脚本引入到你的 shell 中可以启用 gtctl 的自动补全功能。
 
 ```bash
 mkdir -p $ZSH/completions && gtctl completion zsh > $ZSH/completions/_gtctl
@@ -69,90 +69,90 @@ mkdir -p $ZSH/completions && gtctl completion zsh > $ZSH/completions/_gtctl
 
 ### Fish
 
-The gtctl completion script for Fish can be generated with the command gtctl completion fish. Sourcing the completion script in your shell enables gtctl autocompletion.
+在 Fish 中，可以使用命令 `gtctl completion fish` 生成 gtctl 的自动补全脚本。将补全脚本引入到你的 shell 中可以启用 gtctl 的自动补全功能。
 
 ```bash
 gtctl completion fish | source
 ```
 
-## Quick Start
+## 快速入门
 
-The **fastest** way to experience the GreptimeDB cluster is to use the playground:
+体验 GreptimeDB 集群的**最快**方法是使用 playground：
 
 ```bash
 gtctl playground
 ```
 
-The `playground` will deploy the minimal GreptimeDB cluster on your environment in **bare-metal** mode.
+`playground` 命令将在你的环境中以**裸机**模式部署最小的 GreptimeDB 集群。
 
-## Deployments
+## 部署
 
-The gtctl supports two deployment mode: Kubernetes and Bare-Metal.
+gtctl 支持两种部署模式：Kubernetes 和裸机模式（Bare-Metal）。
 
 ### Kubernetes
 
-#### Prerequisites
+#### 先决条件
 
-* Kubernetes 1.18 or higher version is required.
+* 需要 Kubernetes 版本 1.18 或更高。
 
-    You can use the [kind][3] to create your own Kubernetes cluster:
+    你可以使用 [kind][3] 创建自己的 Kubernetes 集群：
 
     ```bash
     kind create cluster
     ```
 
-#### Create
+#### 创建
 
-Create your own GreptimeDB cluster and etcd cluster:
+创建自己的 GreptimeDB 集群和 etcd 集群：
 
 ```bash
 gtctl cluster create mycluster -n default
 ```
 
-If you want to use artifacts(charts and images) that are stored in the CN region, you can enable `--use-greptime-cn-artifacts`:
+如果你想使用存储在中国区的 artifacts（charts 和镜像），你可以启用 `--use-greptime-cn-artifacts`：
 
 ```bash
 gtctl cluster create mycluster -n default --use-greptime-cn-artifacts
 ```
 
-After creating, the whole GreptimeDB cluster will start in the default namespace:
+创建完成后，整个 GreptimeDB 集群将在 default 命名空间中启动：
 
 ```bash
-# Get the cluster.
+# 获取集群。
 gtctl cluster get mycluster -n default
 
-# List all clusters.
+# 列出所有集群。
 gtctl cluster list
 ```
 
-All the values used for cluster, etcd and operator which provided in [charts][4] are configurable, you can use `--set` to configure them. The gtctl also surface some commonly used configurations, you can use `gtctl cluster create --help` to browse them.
+所有在 [charts][4] 中提供的用于 cluster、etcd 和 operator 的值都是可配置的，你可以使用 `--set` 进行配置。gtctl 还提供了一些常用的配置选项，你可以使用 `gtctl cluster create --help` 来查看它们。
 
 ```bash
-# Configure cluster datanode replicas to 5
+# 将 cluster datanode 副本数配置为 5
 gtctl cluster create mycluster --set cluster.datanode.replicas=5
 
-# Two same ways to configure etcd storage size to 15Gi
+# 两种配置 etcd 存储大小为 15Gi 的方式
 gtctl cluster create mycluster --set etcd.storage.volumeSize=15Gi
 gtctl cluster create mycluster --etcd-storage-size 15Gi
 ```
 
-#### Dry Run
+#### 预运行
 
-gtctl provides `--dry-run` option in cluster creation. If a user executes the command with `--dry-run`, gtctl will output the manifests content without applying them:
+在集群创建过程中，gtctl 提供了 `--dry-run` 选项。如果用户使用 `--dry-run` 执行命令，gtctl 将输出清单的内容而不应用它们：
 
 ```bash
 gtctl cluster create mycluster -n default --dry-run
 ```
 
-#### Connect
+#### 连接
 
-You can use the kubectl `port-forward` command to forward frontend requests:
+你可以使用 kubectl 的 `port-forward` 命令将前端请求转发到本地：
 
 ```bash
 kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
 ```
 
-Use gtctl `connect` command or your `mysql` client to connect to your cluster:
+使用 gtctl 的 `connect` 命令或你的 `mysql` 客户端连接到集群：
 
 ```bash
 gtctl cluster connect mycluster -p mysql
@@ -160,77 +160,77 @@ gtctl cluster connect mycluster -p mysql
 mysql -h 127.0.0.1 -P 4002
 ```
 
-#### Scale (Experimental)
+#### 扩缩容（实验性）
 
-You can use the following commands to scale (or down-scale) your cluster:
+你可以使用以下命令来扩展（或缩小）集群的规模：
 
 ```bash
-# Scale datanode to 3 replicas.
+# 将 datanode 扩展到 3 个副本。
 gtctl cluster scale <your-cluster> -n <your-cluster-namespace> -c datanode --replicas 3
 
-# Scale frontend to 5 replicas.
+# 将 frontend 扩展到 5 个副本。
 gtctl cluster scale <your-cluster> -n <your-cluster-namespace> -c frontend --replicas 5
 ```
 
-#### Delete
+#### 删除
 
-If you want to delete the cluster, you can:
+如果你想删除集群，可以执行以下操作：
 
 ```bash
-# Delete the cluster.
+# 删除集群。
 gtctl cluster delete mycluster -n default
 
-# Delete the cluster, including etcd cluster.
+# 删除集群，包括 etcd 集群。
 gtctl cluster delete mycluster -n default --tear-down-etcd
 ```
 
-### Bare-Metal
+### 裸机模式（Bare-Metal）
 
-#### Create
+#### 创建
 
-You can deploy the GreptimeDB cluster on a bare-metal environment by the following simple command:
+你可以使用以下简单命令在裸机环境中部署 GreptimeDB 集群：
 
 ```bash
 gtctl cluster create mycluster --bare-metal
 ```
 
-It will create all the necessary meta information on `${HOME}/.gtctl`.
+它会在 `${HOME}/.gtctl` 中创建所有必要的元信息。
 
-If you want to do more configurations, you can use the yaml format config file:
+如果你想进行更多的配置，可以使用 yaml 格式的配置文件：
 
 ```bash
 gtctl cluster create mycluster --bare-metal --config <your-config-file>
 ```
 
-You can refer to the example config `cluster.yaml` and `cluster-with-local-artifacts.yaml` provided in `examples/bare-metal`.
+你可以参考 `examples/bare-metal` 中提供的示例配置文件 `cluster.yaml` 和 `cluster-with-local-artifacts.yaml`。
 
 <!-- TODO: add connect for bare-metal -->
 
-#### Delete
+#### 删除
 
-Since the cluster in bare-metal mode runs in the foreground, any `SIGINT` and `SIGTERM` will delete the cluster. For example, the cluster will be deleted after pressing `Ctrl+C` on keyboard.
+由于裸机模式下的集群在前台运行，任何 `SIGINT` 和 `SIGTERM` 信号都会删除集群。例如，在键盘上按下 `Ctrl+C` 后集群将被删除。
 
-The deletion will also delete the meta information of one cluster which located in `${HOME}/.gtctl`. The logs of cluster will remain if `--retain-logs` is enabled (enabled by default).
+删除操作还会删除位于 `${HOME}/.gtctl` 中的一个集群的元信息。如果启用了 `--retain-logs`（默认启用），集群的日志将保留。
 
-## Development
+## 开发
 
-There are many useful tools provided through Makefile, you can simply run make help to get more information:
+Makefile 提供了许多有用的工具，你可以简单地运行 `make help` 来获取更多信息：
 
-* Compile the project
+* 编译项目
 
     ```bash
     make
     ```
 
-    Then the gtctl will be generated in `./bin/`.
+    然后 gtctl 会生成在 `./bin/` 目录下。
 
-* Run the unit test
+* 运行单元测试
 
     ```bash
     make test
     ```
 
-* Run the e2e test
+* 运行端到端测试
 
     ```bash
     make e2e
