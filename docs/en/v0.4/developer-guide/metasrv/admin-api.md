@@ -138,7 +138,7 @@ curl -X GET http://localhost:3002/admin/tables
 #### Request
 
 ```bash
-curl -X GET `http://localhost:3002/admin/tables?catalog_name=greptime&schema_name=public`
+curl -X GET 'http://localhost:3002/admin/tables?catalog_name=greptime&schema_name=public'
 ```
 
 #### Response
