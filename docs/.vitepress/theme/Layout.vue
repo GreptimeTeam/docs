@@ -25,7 +25,8 @@ onBeforeMount(async () => {
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
   } else if (path.match(/(v\d\.\d)$/)) {
-    await router.go(`${path}/index`)
+    console.log('path: ', 'path')
+    await router.go(`${path}/index.html`)
   }
   body.style.display = 'block'
 })
