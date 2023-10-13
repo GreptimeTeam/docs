@@ -4,7 +4,7 @@
 
 ## 安装终端模拟器
 
-您可以从 [Google Play 商店安装](https://play.google.com/store/apps/details?id=com.termux)终端模拟器，如 [Termux](https://termux.dev/)，来运行 GreptimeDB.
+您可以从 [GitHub release 页面](https://github.com/termux/termux-app/releases/latest) 下载 [Termux 终端模拟器](https://termux.dev/) 来运行 GreptimeDB.
 
 
 

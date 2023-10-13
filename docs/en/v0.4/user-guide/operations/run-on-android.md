@@ -4,7 +4,7 @@ Since v0.4.0, GreptimeDB supports running on Android platforms with ARM64 CPU an
 
 ## Install terminal emulator on Android
 
-You can install [Termux](https://termux.dev/) from [Google Play store](https://play.google.com/store/apps/details?id=com.termux).
+You can install [Termux](https://termux.dev/) from [GitHub release page](https://github.com/termux/termux-app/releases/latest).
 
 
 ## Download GreptimeDB Android binary.
