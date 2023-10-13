@@ -23,7 +23,7 @@
   - `immutable memtable` 刷到持久存储后形成一个SST文件。
 - Compactor
   - `Compactor` 通过 compaction 操作将小的 SST 合并为大的 SST。
-  - 默认使用 [TSCS][3] 策略进行合并
+  - 默认使用 [TWCS][3] 策略进行合并
 - Manifest
   - `Manifest` 存储引擎的元数据，例如 SST 的元数据。
 - Cache

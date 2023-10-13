@@ -26,7 +26,7 @@ The architecture is the same as a traditional LSMT engine:
   - `Immutable memtable` is flushed to persistent storage and produces an SST file.
 - Compactor
   - Small `SST` is merged into large `SST` by the compactor via compaction.
-  - The default compaction strategy is [TSCS][3].
+  - The default compaction strategy is [TWCS][3].
 - Manifest
   - The manifest stores the metadata of the engine, such as the metadata of the `SST`.
 - Cache
