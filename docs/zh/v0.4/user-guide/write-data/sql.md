@@ -1,8 +1,10 @@
 # SQL
 
+我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](./../table-management.md#创建表)。
+
 ## 写入新数据
 
-让我们向之前在[管理表](./../table-management.md)中创建的 `monitor` 表中插入一些测试数据。您可以使用 `INSERT INTO` 语句：
+让我们向 `monitor` 表中插入一些测试数据。你可以使用 `INSERT INTO` 语句：
 
 ```sql
 INSERT INTO monitor

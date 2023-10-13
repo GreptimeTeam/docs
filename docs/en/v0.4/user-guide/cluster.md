@@ -148,6 +148,3 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    +---------------------+------+--------+
    1 row in set (0.03 sec)
    ```
-
-   You can also use SQL in [REPL](./operations/cli-repl.md) which can directly connect to the `Datanode`.
-   In this way, you can verify that the queries from `Frontend` are actually been executed distributed. For more details about distributed querying, please see [this](/developer-guide/frontend/distributed-querying) document.
