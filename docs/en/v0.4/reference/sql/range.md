@@ -43,7 +43,7 @@ SELECT
     min(cpu) RANGE '10s',
     max(cpu) RANGE '10s' FILL LINEAR 
 FROM host_cpu 
-ALIGN '5s' by (host) FILL PREV;
+ALIGN '5s' BY (host) FILL PREV;
 ```
 
 Get after running
@@ -64,20 +64,20 @@ Get after running
 
 The above RANGE query counts the minimum and maximum CPU usage of a machine within 10 seconds every 5 seconds:
 1. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s. The step is aligned to the calendar.
-2. `by (host)` specifies the aggregate key, and the `by` keyword supports omission. If the `by` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
+2. `BY (host)` specifies the aggregate key, and the `BY` keyword supports omission. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
 3. `max(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time span of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
-4. The `FILL` keyword can follow the `RANGE` keyword to indicate the filling method of this Range expression. The `FILL` keyword can also follow the `by` keyword, as if the `FILL` key is not given The default value for a word's Range expression. `min(cpu) RANGE '10s'` This Range expression does not provide `FILL`, so the default FILL filling method is used, which is `PREV`. If the default FILL is not given, `NULL` is used to fill.
+4. The `FILL` keyword can follow the `RANGE` keyword to indicate the filling method of this Range expression. The `FILL` keyword can also follow the `BY` keyword, as if the `FILL` key is not given The default value for a word's Range expression. `min(cpu) RANGE '10s'` This Range expression does not provide `FILL`, so the default FILL filling method is used, which is `PREV`. If the default FILL is not given, `NULL` is used to fill.
 5. The time duration parameters (e.g. `5s`) of the `RANGE` and `ALIGN` keywords follow the `Time Durations` type of `PromQL`, visit [Prometheus Documentation](https://prometheus.io/docs/ prometheus/latest/querying/basics/#time-durations)
 Get more detailed instructions.
 
-If you want to use Range query, there must be a column of data in the data table declared as `time index` when creating the table. Range query uses this column data as the timeline basis for aggregation. If the data table does not specify a primary key, the keyword `by` cannot be omitted. Users can also use the `by` keyword to declare other columns as the basis for data aggregation. For example, the following RANGE query uses the string length `length(host)` of the `host` column as the basis for data aggregation.
+If you want to use Range query, there must be a column of data in the data table declared as `time index` when creating the table. Range query uses this column data as the timeline basis for aggregation. If the data table does not specify a primary key, the keyword `BY` cannot be omitted. Users can also use the `BY` keyword to declare other columns as the basis for data aggregation. For example, the following RANGE query uses the string length `length(host)` of the `host` column as the basis for data aggregation.
 
 ```sql
 SELECT 
     ts, 
     length(host), 
     min(cpu) RANGE '10s' 
-FROM host_cpu ALIGN '5s' by (length(host));
+FROM host_cpu ALIGN '5s' BY (length(host));
 ```
 
 Get after running
@@ -294,15 +294,36 @@ Get after running
 +---------------------+-------+-------------------------------------------------------------------------------+
 ```
 
-But note that the `RANGE` keyword apply to the expression before the `RANGE` keyword. The following Range query is illegal because the `RANGE` keyword apply to the expression `2`, not the expression `min(cpu * 2) * 2`
+But note that the `RANGE` keyword apply to the expression before the `RANGE` keyword. The following Range query is illegal because the `RANGE` keyword apply to the expression `2.0`, not the expression `min(cpu * 2.0) * 2.0`
 
 ```sql
-SELECT ts, host, min(cpu * 2) * 2 RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(cpu * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
 
-ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2 without function
+ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 without function
 ```
 
-Nesting of Range query is not allowed, and nested Range queries are illegal:
+Expressions can be bracketed, and the `RANGE` keyword is automatically applied to any aggregate functions contained within the brackets:
+
+```sql
+SELECT ts, host, (min(cpu * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+```
+
+After running, we get:
+
+```sql
++---------------------+-------+-----------------------------------------------------------------+
+| ts                  | host  | MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
++---------------------+-------+-----------------------------------------------------------------+
+| 1970-01-01 08:00:00 | host2 |                                                            13.2 |
+| 1970-01-01 08:00:10 | host2 |                                                            17.6 |
+| 1970-01-01 08:00:05 | host2 |                                                            13.2 |
+| 1970-01-01 08:00:00 | host1 |                                                             4.4 |
+| 1970-01-01 08:00:10 | host1 |                                                             8.8 |
+| 1970-01-01 08:00:05 | host1 |                                                             4.4 |
++---------------------+-------+-----------------------------------------------------------------+
+```
+
+Nesting of Range expressions is not allowed. Nested Range queries are illegal:
 
 ```sql
 SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';

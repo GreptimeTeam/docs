@@ -43,7 +43,7 @@ SELECT
     min(cpu) RANGE '10s',
     max(cpu) RANGE '10s' FILL LINEAR 
 FROM host_cpu 
-ALIGN '5s' by (host) FILL PREV;
+ALIGN '5s' BY (host) FILL PREV;
 ```
 
 运行后可以得到查询结果：
@@ -64,21 +64,21 @@ ALIGN '5s' by (host) FILL PREV;
 
 上面这个 RANGE  查询，每隔 5s 统计了一次某台机器在 10s 以内使用 CPU 的最小值和最大值：
 1. `ALIGN '5s'` 指明按照  5s 为步长，进行数据的统计，步长对齐到日历。
-2. `by (host)` 指明了聚合键，`by` 关键字支持省略。如果省略 `by` 关键字，则默认使用数据表的主键作为聚合键。
+2. `BY (host)` 指明了聚合键，`BY` 关键字支持省略。如果省略 `BY` 关键字，则默认使用数据表的主键作为聚合键。
 3. `max(cpu) RANGE '10s' FILL LINEAR` 是一个 Range 表达式。`RANGE '10s'` 指明了聚合的时间跨度为 10s，`FILL LINEAR` 指明了如果在某个聚合的时间内没有数据的话，使用 `LINEAR` 方式填充。
-4. `FILL` 关键字可以跟在 `RANGE` 关键字后面，表示这个 Range 表达式的填充方式，`FILL` 关键字也可以跟在 `by` 关键字后，作为没有给出 `FILL` 关键字的 Range 表达式的缺省值。`min(cpu) RANGE '10s'` 这个 Range 表达式没有给出 `FILL` ，所以采用缺省的 FILL 填充方式，即 `PREV`。如果缺省的 FILL 也没有给出，则采用 `NULL` 方式填充。
+4. `FILL` 关键字可以跟在 `RANGE` 关键字后面，表示这个 Range 表达式的填充方式，`FILL` 关键字也可以跟在 `BY` 关键字后，作为没有给出 `FILL` 关键字的 Range 表达式的缺省值。`min(cpu) RANGE '10s'` 这个 Range 表达式没有给出 `FILL` ，所以采用缺省的 FILL 填充方式，即 `PREV`。如果缺省的 FILL 也没有给出，则采用 `NULL` 方式填充。
 5. `RANGE` 和 `ALIGN` 关键字的时间字符串参数 (e.g. `5s`) , 遵循 `PromQL` 的 `Time Durations` 类型，访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
 获得更详细的说明。
 
 
-想要使用 Range 查询，该数据表上必须有一列数据在建表时声明为 `time index`，Range 查询使用该列数据作为聚合的时间线依据，如果该数据表没有指定主键，则关键字 `by` 不能省略。用户也可以使用 `by` 关键字，声明其他列作为数据聚合的依据。比如下面这个 RANGE 查询，使用 `host` 列的字符串长度 `length(host)` 作为数据聚合的依据。
+想要使用 Range 查询，该数据表上必须有一列数据在建表时声明为 `time index`，Range 查询使用该列数据作为聚合的时间线依据，如果该数据表没有指定主键，则关键字 `BY` 不能省略。用户也可以使用 `BY` 关键字，声明其他列作为数据聚合的依据。比如下面这个 RANGE 查询，使用 `host` 列的字符串长度 `length(host)` 作为数据聚合的依据。
 
 ```sql
 SELECT 
     ts, 
     length(host), 
     min(cpu) RANGE '10s' 
-FROM host_cpu ALIGN '5s' by (length(host));
+FROM host_cpu ALIGN '5s' BY (length(host));
 ```
 
 运行后可以得到结果：
@@ -295,13 +295,35 @@ SELECT ts, host, (max(cpu) - min(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
 +---------------------+-------+-------------------------------------------------------------------------------+
 ```
 
-但注意，Range 表达式修饰的范围是位于 RANGE 关键字的前一个表达式，下面的 Range 查询是不合法的，因为 RANGE 关键字修饰的是表达式 `2`，并不是表达式 `min(cpu * 2) * 2`
+但注意，Range 表达式修饰的范围是位于 `RANGE` 关键字的前一个表达式，下面的 Range 查询是不合法的，因为 `RANGE` 关键字修饰的是表达式 `2.0`，并不是表达式 `min(cpu * 2.0) * 2.0`
 
 ```sql
-SELECT ts, host, min(cpu * 2) * 2 RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(cpu * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
 
-ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2 without function
+ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 without function
 ```
+
+可以为表达式加上括号，`RANGE` 关键字会自动应用到括号中包含的所有聚合函数：
+
+```sql
+SELECT ts, host, (min(cpu * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+```
+
+运行后得到：
+
+```sql
++---------------------+-------+-----------------------------------------------------------------+
+| ts                  | host  | MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
++---------------------+-------+-----------------------------------------------------------------+
+| 1970-01-01 08:00:00 | host2 |                                                            13.2 |
+| 1970-01-01 08:00:10 | host2 |                                                            17.6 |
+| 1970-01-01 08:00:05 | host2 |                                                            13.2 |
+| 1970-01-01 08:00:00 | host1 |                                                             4.4 |
+| 1970-01-01 08:00:10 | host1 |                                                             8.8 |
+| 1970-01-01 08:00:05 | host1 |                                                             4.4 |
++---------------------+-------+-----------------------------------------------------------------+
+```
+
 Range 表达式不允许嵌套，嵌套的 Range 查询是不合法的：
 
 ```sql
