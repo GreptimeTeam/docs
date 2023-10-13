@@ -30,32 +30,33 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 维护的 Helm 图表在 [helm-charts][6] 中。
 
-### 3. 创建用户自己的 etcd cluster 集群
+### 3. 创建用户自己的 GreptimeDB 集群
 
+为 GreptimeDB 创建 etcd cluster 集群
 ```shell
 helm install etcd greptime/greptimedb-etcd -n default --devel
 ```
 
-### 4. 创建用户自己的 GreptimeDB 集群
-
-创建 GreptimeDB 集群：
+创建 GreptimeDB 集群。该集群会使用上一步创建的 etcd 集群：
 
 ```shell
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-如果用户之前已经有了 etcd 集群，可以这样对其进行配置：
+如果你拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
 
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
 -n default --devel
 ```
 
-安装之后，可以通过 `kubectl port-forward` 语句来访问 GreptimeDB 集群：
+安装之后，可以通过 `kubectl port-forward` 语句来转发 GreptimeDB 集群的 MySQL 协议端口：
 
 ```shell
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
+
+然后可以通过 MySQL 客户端[访问集群](/getting-started/try-out-greptimedb.md#Connect)
 
 ### 4. 清除 GreptimeDB 集群
 

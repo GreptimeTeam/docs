@@ -58,34 +58,35 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 The maintained Helm charts are in [helm-charts][6].
 
-### 3. Create your own etcd cluster
+### 3. Create your own GreptimeDB cluster
 
+Create an etcd cluster for GreptimeDB:
 ```shell
 helm install etcd greptime/greptimedb-etcd -n default --devel
 ```
 
-### 4. Create your own GreptimeDB cluster
-
-Create GreptimeDB cluster:
+Create a GreptimeDB cluster which uses the etcd cluster created at previous step:
 
 ```shell
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-If you already have the etcd cluster, you can configure the etcd cluster:
+Or, if you already have an etcd cluster, you can use `etcdEndpoints` to use your etcd cluster:
   
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
 -n default --devel
 ```
 
-After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
+After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:
 
 ```shell
 kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 ```
 
-### 5. Destroy GreptimeDB cluster
+Then you can use MySQL client to [connect to the cluster](/getting-started/try-out-greptimedb.md#Connect).
+
+### 4. Destroy GreptimeDB cluster
 
 You can use the following commands to uninstall operator and cluster:
 
