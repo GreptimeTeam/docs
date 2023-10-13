@@ -52,13 +52,6 @@ func Insert() {
 	insertsRequest := greptime.InsertsRequest{}
 	insertsRequest.Append(insertRequest1).Append(insertRequest2)
 
-	// if you want to insert into different table in one request, you can construct
-	// another InsertRequest, and include it via: insertsRequest.Insert(insertRequest)
-
-	// if you want to specify another database, you can specify it via: `WithDatabase(database)`
-	// insertsRequest.WithDatabase("your database")
-
-	// Fire the real Insert request and Get the affected number of rows
 	res, err := client.Insert(context.Background(), insertsRequest)
 	if err != nil {
 		fmt.Printf("fail to insert, err: %+v\n", err)

@@ -17,9 +17,7 @@ func Query() {
 		ts     time.Time
 	}
 
-	//Query with metric via Sql, and you can also do it via PromQL
 	queryRequest := greptime.QueryRequest{}
-	// if you want to specify another database, you can specify it via: `WithDatabase(database)`
 	queryRequest.WithSql("SELECT * FROM monitor") // .WithDatabase(database)
 
 	resMetric, err := client.Query(context.Background(), queryRequest)
