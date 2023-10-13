@@ -334,8 +334,8 @@ mode = "distributed"
 
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
-timeout_millis = 3000
-connect_timeout_millis = 5000
+timeout = "3s"
+connect_timeout = "1s"
 tcp_nodelay = true
 ```
 
@@ -344,8 +344,8 @@ Specify the running mode to be `"distributed"`.
 The `meta_client` configures the Metasrv client, including:
 
 - `metasrv_addrs`, The Metasrv address list.
-- `timeout_millis`, operation timeout in milliseconds, 3000 by default.
-- `connect_timeout_millis`, connect server timeout in milliseconds,5000 by default.
+- `timeout`, operation timeout, `3s` by default.
+- `connect_timeout`, connect server timeout, `1s` by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
 A sample frontend configuration for distributed mode can be found at [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
@@ -363,8 +363,8 @@ rpc_runtime_size = 8
 
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
-timeout_millis = 3000
-connect_timeout_millis = 5000
+timeout = 3000
+connect_timeout = 5000
 tcp_nodelay = false
 ```
 

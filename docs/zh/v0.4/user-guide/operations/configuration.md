@@ -333,8 +333,8 @@ mode = "distributed"
 
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
-timeout_millis = 3000
-connect_timeout_millis = 5000
+timeout = "3s"
+connect_timeout = "1s"
 tcp_nodelay = true
 ```
 
@@ -343,8 +343,8 @@ tcp_nodelay = true
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
 - `metasrv_addrs`， Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
-- `timeout_millis`， 操作超时时长，单位为毫秒，默认为 3000。
-- `connect_timeout_millis`，连接服务器超时时长，单位为毫秒，默认为 5000。
+- `timeout`， 操作超时时长，默认为 3 秒。
+- `connect_timeout`，连接服务器超时时长，默认为 1 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
 这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
@@ -362,8 +362,8 @@ rpc_runtime_size = 8
 
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
-timeout_millis = 3000
-connect_timeout_millis = 5000
+timeout = 3000
+connect_timeout = 5000
 tcp_nodelay = false
 ```
 
