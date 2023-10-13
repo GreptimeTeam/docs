@@ -16,7 +16,7 @@ Currently, there are two types of `Selector` available in the `meta` service: `L
 
 `LeasebasedSelector` is just a simple implementation of `Selector`, but **it is not recommended**.
 
-It sorts available `datanode`s according to their lease time, and returns a sorted list of these `datanode`s.
+It shuffles available `datanode`s, and returns the list.
 
 ### LoadBasedSelector
 
