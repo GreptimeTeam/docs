@@ -30,21 +30,20 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 维护的 Helm 图表在 [helm-charts][6] 中。
 
-### 3. 创建用户自己的 etcd cluster 集群
+### 3. 创建用户自己的 GreptimeDB 集群
 
+为 GreptimeDB 创建 etcd cluster 集群
 ```shell
 helm install etcd greptime/greptimedb-etcd -n default --devel
 ```
 
-### 4. 创建用户自己的 GreptimeDB 集群
-
-创建 GreptimeDB 集群：
+创建 GreptimeDB 集群。该集群会使用上一步创建的 etcd 集群：
 
 ```shell
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-如果用户之前已经有了 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群而不是前面创建的 etcd：
+如果用户拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
 
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
