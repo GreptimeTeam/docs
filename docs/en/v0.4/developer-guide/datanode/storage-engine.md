@@ -2,10 +2,7 @@
 
 ## Introduction
 
-`Storage Engine` manages how data is stored in our product. The Mito table engine uses the storage
-engine to implement its table model. This engine is based on [LSMT][1] (Log-structured Merge-tree),
-but is optimized by our team of engineers to process time-series workload, thus is not designed for
-a general-purpose use case.
+The `storage engine` is responsible for storing the data of the database. Mito, based on [LSMT][1] (Log-structured Merge-tree), is the storage engine we use by default. We have made significant optimizations for handling time-series data scenarios, so mito engine is not suitable for general purposes.
 
 ## Architecture
 
@@ -17,7 +14,7 @@ The architecture is the same as a traditional LSMT engine:
 
 - [WAL][2]
   - Guarantees high durability for data that is not yet being flushed.
-  - Implemented based on the `Log Store` API, thus it doesn't care about the underlying storage
+  - Based on the `Log Store` API, thus it doesn't care about the underlying storage
     media.
   - Log records of the WAL can be stored in the local disk, or a distributed log service which
     implements the `Log Store` API.
@@ -27,9 +24,9 @@ The architecture is the same as a traditional LSMT engine:
 - SST
   - The full name of SST, aka SSTable is `Sorted String Table`.
   - `Immutable memtable` is flushed to persistent storage and produces an SST file.
-  - The data is partitioned into `SST` in different `Time bucket` by their timestamp.
 - Compactor
   - Small `SST` is merged into large `SST` by the compactor via compaction.
+  - The default compaction strategy is [TSCS][3].
 - Manifest
   - The manifest stores the metadata of the engine, such as the metadata of the `SST`.
 - Cache
@@ -37,51 +34,27 @@ The architecture is the same as a traditional LSMT engine:
 
 [1]: https://en.wikipedia.org/wiki/Log-structured_merge-tree
 [2]: https://en.wikipedia.org/wiki/Write-ahead_logging
+[3]: https://cassandra.apache.org/doc/latest/cassandra/operating/compaction/twcs.html
 
 ## Data Model
 
-The storage engine provides a data model between a key-value model and a table model. It provides a
-multi-column, key-value model in which, each row consists of multiple key columns and value columns:
+The data model provided by the storage engine is between the `key-value` model and the tabular model.
 
 ```txt
-colk-1, ..., colk-m, timestamp, version -> colv-1, ..., colv-n
+tag-1, ..., tag-m, timestamp -> field-1, ..., field-n
 ```
 
-Each row of the mapping has the following forms:
-
-- `0 ~ m` `key columns`
-  - `key columns` are nullable
-- MUST have a `timestamp column`
-  - `timestamp column` is not nullable
-- an optional `version column`
-- Has `0 ~ n` `value columns`
-  - `value columns` are nullable
-- `key columns`, `timestamp` and `version` form the `row key`
-  - `row key` locates a row
-  - Rows can have duplicate row keys in the future, in order to store data without unique keys.
-  - `timestamp` and `version` are special key columns that have reserved column names, thus we
-    sometimes call them `key columns` when we don't need to distinguish them from other key columns.
+Each row of data contains multiple tag columns, one timestamp column, and multiple field columns.
+- `0 ~ m` tag columns
+  - Tag columns can be nullable.
+  - Specified during table creation using `PRIMARY KEY`.
+- Must include one timestamp column
+  - Timestamp column cannot be null.
+  - Specified during table creation using `TIME INDEX`.
+- `0 ~ n` field columns
+  - Field columns can be nullable.
+- Data is sorted by tag columns and timestamp column.
 
 ### Region
 
-Data in the storage engine is stored in a region, a logically isolated storage unit in the engine.
-Rows in a `region` must have the same `schema`, which defines the key and the value columns in this
-region.
-
-`region` is similar to `table` in a database, in the way that they both have `schema`, and the data
-within them are isolated logically. In fact, Mito table engine divides a table into one or multiple
-regions.
-
-### Column Family
-
-Columns in a region are organized into column families:
-
-- Each column belongs to a `column family`, or `cf` in short
-- `column families` may be stored separately.
-- Unlike some storage systems, in GreptimeDB, columns in the same region must have unique column
-  names, even though they belong to different column families
-  - This is because we directly map the column name of the region to which of the table
-- Each region has a `default` `column family`
-- Since the `column family` feature isn't fully ready in the current released version yet, all
-  columns are stored in the "default" `column family`. In the future, you will be able to store
-  columns under different `column family`
+Data in the storage engine is stored in `regions`, which are logical isolated storage units within the engine. Rows within a `region` must have the same `schema`, which defines the tag columns, timestamp column, and field columns within the `region`. The data of tables in the database is stored in one or multiple `regions`.
