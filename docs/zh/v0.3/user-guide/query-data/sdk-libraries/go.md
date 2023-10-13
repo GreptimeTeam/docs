@@ -35,9 +35,9 @@ func Query() {
 		if exist {
 			monitor.host = host.(string)
 		}
-		monitor.cpu, _ = series.GetFloat("cpu")     // also, you can directly GetFloat
-		monitor.memory, _ = series.GetInt("memory") // also, you can directly GetInt
-		monitor.ts, _ = series.GetTimestamp("ts")   // GetTimestamp
+		monitor.cpu, _ = series.GetFloat("cpu")
+		monitor.memory, _ = series.GetInt("memory")
+		monitor.ts, _ = series.GetTimestamp("ts")
 		monitors = append(monitors, monitor)
 	}
 	fmt.Println(monitors)

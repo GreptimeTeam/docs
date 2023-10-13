@@ -23,32 +23,21 @@ then, you can add one `Series` into `Metric`, then create an `InsertRequest` and
 
 ```go
 func Insert() {
-	// Create one row of data
 	series := greptime.Series{}
-	// add index column, for query efficiency
 	series.AddStringTag("host", "localhost")
-	// add value column
 	series.AddFloatField("cpu", 0.90)
-	// add value column
 	series.AddIntField("memory", 1024)
-	// required
 	series.SetTimestamp(time.Now())
-	// Create a Metric and add the Series
+
 	metric := greptime.Metric{}
 	metric.AddSeries(series)
-	// metric.SetTimePrecision(time.Second)  // default is Millisecond
-	// metric.SetTimestampAlias("timestamp") // default is 'ts'
 
-	// Create an InsertRequest using fluent style
-	// the specified table will be created automatically if it's not exist
 	insertRequest1 := greptime.InsertRequest{}
 	insertRequest1.WithTable("monitor").WithMetric(metric)
 
 	insertRequest2 := greptime.InsertRequest{}
 	insertRequest2.WithTable("temperature").WithMetric(metric)
 
-	// You can insert data of different tables into GreptimeDB in one InsertsRequest.
-	// This insertsRequest includes two InsertRequest of two different tables
 	insertsRequest := greptime.InsertsRequest{}
 	insertsRequest.Append(insertRequest1).Append(insertRequest2)
 
