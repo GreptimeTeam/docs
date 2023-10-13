@@ -202,9 +202,7 @@ If you want to do more configurations, you can use the yaml format config file:
 gtctl cluster create mycluster --bare-metal --config <your-config-file>
 ```
 
-You can refer to the example config `cluster.yaml` and `cluster-with-local-artifacts.yaml` provided in `examples/bare-metal`.
-
-<!-- TODO: add connect for bare-metal -->
+You can refer to the example config `cluster.yaml` and `cluster-with-local-artifacts.yaml` provided in [`examples/bare-metal`][5].
 
 #### Delete
 
@@ -240,3 +238,4 @@ There are many useful tools provided through Makefile, you can simply run make h
 [2]: <https://go.dev/doc/install>
 [3]: <https://kind.sigs.k8s.io/>
 [4]: <https://github.com/GreptimeTeam/helm-charts>
+[5]: <https://github.com/GreptimeTeam/gtctl/tree/develop/examples/bare-metal>

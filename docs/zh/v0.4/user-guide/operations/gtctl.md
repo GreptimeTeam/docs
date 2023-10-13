@@ -202,9 +202,7 @@ gtctl cluster create mycluster --bare-metal
 gtctl cluster create mycluster --bare-metal --config <your-config-file>
 ```
 
-你可以参考 `examples/bare-metal` 中提供的示例配置文件 `cluster.yaml` 和 `cluster-with-local-artifacts.yaml`。
-
-<!-- TODO: add connect for bare-metal -->
+你可以参考 [`examples/bare-metal`][5] 中提供的示例配置文件 `cluster.yaml` 和 `cluster-with-local-artifacts.yaml`。
 
 #### 删除
 
@@ -240,3 +238,4 @@ Makefile 提供了许多有用的工具，你可以简单地运行 `make help` �
 [2]: <https://go.dev/doc/install>
 [3]: <https://kind.sigs.k8s.io/>
 [4]: <https://github.com/GreptimeTeam/helm-charts>
+[5]: <https://github.com/GreptimeTeam/gtctl/tree/develop/examples/bare-metal>
