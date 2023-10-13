@@ -71,8 +71,6 @@
     # - export-data
     # - back-up-&-restore-data
     # - capacity-planning
-    # Cli doesn't support attach in 0.4.
-    # - cli-repl
 - GreptimeCloud:
   - overview
   - Getting-Started:
