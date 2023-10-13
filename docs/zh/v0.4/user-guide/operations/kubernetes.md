@@ -43,7 +43,7 @@ helm install etcd greptime/greptimedb-etcd -n default --devel
 helm install mydb greptime/greptimedb -n default --devel
 ```
 
-如果用户拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
+如果你拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
 
 ```shell
 helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
