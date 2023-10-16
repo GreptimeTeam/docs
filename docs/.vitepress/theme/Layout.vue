@@ -41,9 +41,18 @@ onBeforeMount(async () => {
     body.style.display = 'none'
     console.log('path2: ', path)
     const to = `${path}/index.html`
+    await router.go(to)
     router.onBeforeRouteChange = async to => {
-      console.log('to111: ', to)
-      await router.go(to)
+      console.log('onBeforeRouteChange: ', to)
+      body.style.display = 'none'
+    }
+    router.onAfterRouteChanged = async to => {
+      console.log('onAfterRouteChanged: ', to)
+      body.style.display = 'none'
+    }
+    router.onBeforePageLoad = async to => {
+      console.log('onBeforePageLoad: ', to)
+      body.style.display = 'none'
     }
     // await window.open(to)
     console.log('to222: ', to)
