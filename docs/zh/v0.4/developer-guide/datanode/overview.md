@@ -2,47 +2,22 @@
 
 ## Introduction
 
-`Datanode` is mainly responsible for storing the actual data for GreptimeDB. `Datanode` itself is a
-stand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Meta` to form a
-distributed database service, as the following picture shows:
+`Datanode` 主要的职责是为 GreptimeDB 存储数据，我们知道在 GreptimeDB 中一个 Table 可以有一个或者多个 `region`, 
+而 `Datanode` 的职责便是管理这些 `region` 的读写。`Datanode` 不感知 `table`，可以认为它是一个 region server。
+所以 `Frontend` 和 `Metaserver` 按照 `region` 粒度来操作 `Datanode`。
 
 ![Datanode](/datanode.png)
 
 ## Components
 
-A `Datanode` contains many components needed to build up a database system. Here we list most of
-these components (some are in progress):
+一个 datanode 包含了 region server 所需的全部组件。这里列出了比较重要的部分：
 
-- A gRPC service provides read/write access to the data managed by this node. `Frontend` also uses
-  the RPC service to interact with `Datanode`s.
-- An HTTP service implements the HTTP protocol of other TSDBs or databases, and for debugging purposes.
-- `Meta` client interacts with the `Meta` service.
-- Handlers contain the actual processing logic for RPC/HTTP requests.
-- Catalog manages the metadata of the database objects, such as tables, and views in this node.
-- Resource management controls the usage of memory, CPU, and disk.
-- Physical planner, optimizer, and executor are for executing queries from the `Frontend`. `Datanode` also
-  contains components not shown in the picture, such as logical planner, and logical optimizer, which can
-  only be invoked in stand-alone mode.
-- Table engine implements the table model based on the storage engine. Note that `Datanode` is
-  designed to support multiple table engines, though currently, only one table engine has been
-  implemented.
-- [Storage engine][1] consists of many sub-components:
-  - [WAL][2]
-  - Memtable
-  - Cache
-  - SST
-  - ...
-- Abstraction layer is for log and object store services. We use the log service to implement
-  WAL.
-
-## Details
-
-- [Storage engine][1]
-- [Query engine][3]
-- [Write-Ahead Logging][2]
-- [Data persistence and indexing][4]
-
-[1]: ./storage-engine.md
-[2]: ./wal.md
-[3]: ./query-engine.md
-[4]: ./data-persistence-indexing.md
+- 一个 gRPC 服务来提供对 region 数据的读写，`Frontend` 便是使用这个服务来从 `Datanode` 读写数据。
+- 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、 配置信息等
+- `Heartbeat Task` 用来向 `Meta server` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
+  是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Meta server` 做出了调度
+  决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`
+- `Datanode` 不包含物理规划器（Physical planner）、优化器（optimizer）等组件（这些被放置在 `Frontend` 中），用户对
+  一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为 `Region` 的查询请求，`Datanode` 负责处理这些 `Region` 查询请求
+- 一个 `Region Manager` 用来管理 `Datanode` 上的所有 `Region`s
+- GreptimeDB 支持可插拔的多引擎架构，目前已有的 engine 包括 `File Engine` 和 `Mito Engine`
