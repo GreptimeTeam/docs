@@ -20,26 +20,18 @@ router.onBeforePageLoad = async to => {
 
 onBeforeMount(async () => {
   const body = document.querySelector('body')
-  console.log(`body.style.display:`, body.style.display)
   if (path.includes(latestVersion)) {
     body.style.display = 'none'
     const to = path.replace(`/${latestVersion}`, '')
-    console.log(`body.style.displayBefore:`, body.style.display)
-    window.open(to, '_self')
-    // await router.go(to)
-    // body.style.display = 'block'
-    console.log(`body.style.displayAfter:`, body.style.display)
+    await router.go(to)
+    body.style.display = 'block'
   }
   if (path.match(/(v\d\.\d)$/)) {
-    console.log('path2: ', path)
+    body.style.display = 'none'
     const to = `${path}/index.html`
-    console.log(`body.style.displayBefore:`, body.style.display)
-    await window.open(to, '_self')
+    window.open(to, '_self')
     body.style.display = 'block'
-    console.log(`body.style.displayAfter:`, body.style.display)
   }
-  // body.style.display = 'block'
-  console.log(`body.style.displayLast:`, body.style.display)
 })
 onMounted(async () => {
   setVersionOnPage(router.route.path, latestVersion, sidebar)
