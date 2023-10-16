@@ -14,6 +14,7 @@ const { latestVersion, iconMap, sidebar } = theme.value
 const router = useRouter()
 let path = router.route.path
 router.onBeforeRouteChange = async to => {
+  console.log(`path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   if (path.match(/(v\d\.\d)$/)) {
     console.log('path: ', path)
     console.log('path1: ', `${path}/index.html`)
@@ -22,7 +23,8 @@ router.onBeforeRouteChange = async to => {
     console.log('path1: ', `${path}/index.html`)
   }
 }
-router.onBeforePageLoad = to => {
+router.onBeforePageLoad = async to => {
+  console.log(`1111:`, 1111)
   setVersionOnPage(to, latestVersion, sidebar)
 }
 onBeforeMount(async () => {
@@ -33,7 +35,15 @@ onBeforeMount(async () => {
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
   } else if (path.match(/(v\d\.\d)$/)) {
+    console.log(`1111122222:`, 1111122222)
+    console.log('path2: ', path)
+    console.log('path12: ', `${path}/index.html`)
+    const to = `${path}/index.html`
+    // await router.go(`${path}/index.html`)
+    await router.go(to)
+    console.log('path12: ', `${path}/index.html`)
   }
+  console.log(`1path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   body.style.display = 'block'
 })
 onMounted(async () => {
