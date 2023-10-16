@@ -33,8 +33,8 @@ onBeforeMount(async () => {
     body.style.display = 'none'
     console.log(`body.style.display11111:`, body.style.display)
     const res = path.replace(`/${latestVersion}`, '')
-    window.location.href = res
-    // await router.go(res)
+    // window.location.href = res
+    await router.go(res)
     // body.style.display = 'block'
   }
   if (path.match(/(v\d\.\d)$/)) {
