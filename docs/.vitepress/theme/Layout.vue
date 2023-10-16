@@ -33,8 +33,8 @@ onBeforeMount(async () => {
     body.style.display = 'none'
     console.log(`body.style.display11111:`, body.style.display)
     const res = path.replace(`/${latestVersion}`, '')
-    // window.location.href = res
-    await router.go(res)
+    window.location.href = res
+    // await router.go(res)
     // body.style.display = 'block'
   }
   if (path.match(/(v\d\.\d)$/)) {
@@ -42,11 +42,11 @@ onBeforeMount(async () => {
     console.log('path2: ', path)
     const to = `${path}/index.html`
     router.onBeforeRouteChange = async to => {
-      console.log('to: ', to)
+      console.log('to111: ', to)
       await router.go(to)
     }
     // await window.open(to)
-    console.log('to: ', to)
+    console.log('to222: ', to)
     // body.style.display = 'block'
     // console.log('path: ', `${path}/index.html`)
     // console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
