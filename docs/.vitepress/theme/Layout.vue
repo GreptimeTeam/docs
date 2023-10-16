@@ -37,13 +37,17 @@ onBeforeMount(async () => {
     // await router.go(res)
     // body.style.display = 'block'
   }
-  if (path.match(/(v\d\.\d)\/?$/)) {
+  if (path.match(/(v\d\.\d)$/)) {
     body.style.display = 'none'
     console.log('path2: ', path)
     const to = `${path}/index.html`
-    await window.open(to)
+    router.onBeforeRouteChange = async to => {
+      console.log('to: ', to)
+      await router.go(to)
+    }
+    // await window.open(to)
     console.log('to: ', to)
-    body.style.display = 'block'
+    // body.style.display = 'block'
     // console.log('path: ', `${path}/index.html`)
     // console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   }
