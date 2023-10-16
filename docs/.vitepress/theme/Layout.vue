@@ -9,38 +9,29 @@ import { getSidebarIcon, setVersionOnPage } from '@/utils.ts'
 // data
 const { theme } = useData()
 const { latestVersion, iconMap, sidebar } = theme.value
-// methods
-// lifecycle
 const router = useRouter()
 let path = router.route.path
-const body = document.querySelector('body')
-router.onBeforeRouteChange = async to => {
-  console.log(`path.match(/(v\d\.\d)$/)11111:`, path.match(/(v\d\.\d)$/))
-  // if (path.match(/(v\d\.\d)$/)) {
-  //   console.log('path: ', path)
-  //   console.log('path1: ', `${path}/index.html`)
-  //   // await router.go(`${path}/index.html`)
-  //   await router.go(`${path}/index.html`)
-  //   console.log('path1: ', `${path}/index.html`)
-  // }
-}
+// const body = document.querySelector('body')
+// methods
+// lifecycle
+
 router.onBeforePageLoad = async to => {
   setVersionOnPage(to, latestVersion, sidebar)
 }
 
 if (path.includes(latestVersion)) {
-  body.style.display = 'none'
-  console.log(`body.style.display11111:`, body.style.display)
+  // body.style.display = 'none'
+  // console.log(`body.style.display11111:`, body.style.display)
   const to = path.replace(`/${latestVersion}`, '')
-  window.location.href = to
+  window.open(to)
   // router.go(res)
   // body.style.display = 'block'
 }
 if (path.match(/(v\d\.\d)$/)) {
-  body.style.display = 'none'
+  // body.style.display = 'none'
   console.log('path2: ', path)
   const to = `${path}/index.html`
-  window.location.href = to
+  window.open(to)
 
   // await window.open(to)
   console.log('to222: ', to)
