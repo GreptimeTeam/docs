@@ -13,8 +13,11 @@ const { latestVersion, iconMap, sidebar } = theme.value
 // lifecycle
 const router = useRouter()
 let path = router.route.path
+const body = document.querySelector('body')
 router.onBeforeRouteChange = async to => {
+  body.style.display = 'none'
   console.log(`path.match(/(v\d\.\d)$/)11111:`, path.match(/(v\d\.\d)$/))
+  router.go(to)
   // if (path.match(/(v\d\.\d)$/)) {
   //   console.log('path: ', path)
   //   console.log('path1: ', `${path}/index.html`)
@@ -26,34 +29,32 @@ router.onBeforeRouteChange = async to => {
 router.onBeforePageLoad = async to => {
   setVersionOnPage(to, latestVersion, sidebar)
 }
+
+if (path.includes(latestVersion)) {
+  body.style.display = 'none'
+  console.log(`body.style.display11111:`, body.style.display)
+  const res = path.replace(`/${latestVersion}`, '')
+  // window.location.href = res
+  router.go(res)
+  // body.style.display = 'block'
+}
 onBeforeMount(async () => {
-  const body = document.querySelector('body')
-  const router = useRouter()
-  if (path.includes(latestVersion)) {
-    body.style.display = 'none'
-    console.log(`body.style.display11111:`, body.style.display)
-    const res = path.replace(`/${latestVersion}`, '')
-    window.location.href = res
-    // await router.go(res)
-    // body.style.display = 'block'
-  }
+  // const body = document.querySelector('body')
+  // const router = useRouter()
+  // if (path.includes(latestVersion)) {
+  //   body.style.display = 'none'
+  //   console.log(`body.style.display11111:`, body.style.display)
+  //   const res = path.replace(`/${latestVersion}`, '')
+  //   window.location.href = res
+  //   // await router.go(res)
+  //   // body.style.display = 'block'
+  // }
   if (path.match(/(v\d\.\d)$/)) {
     body.style.display = 'none'
     console.log('path2: ', path)
     const to = `${path}/index.html`
     await router.go(to)
-    router.onBeforeRouteChange = async to => {
-      console.log('onBeforeRouteChange: ', to)
-      body.style.display = 'none'
-    }
-    router.onAfterRouteChanged = async to => {
-      console.log('onAfterRouteChanged: ', to)
-      body.style.display = 'none'
-    }
-    router.onBeforePageLoad = async to => {
-      console.log('onBeforePageLoad: ', to)
-      body.style.display = 'none'
-    }
+
     // await window.open(to)
     console.log('to222: ', to)
     // body.style.display = 'block'
