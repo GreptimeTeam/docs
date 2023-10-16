@@ -35,13 +35,8 @@ func Insert() {
 	monitorReq := greptime.InsertRequest{}
 	monitorReq.WithTable("monitor").WithMetric(metric)
 
-	monitorCopyReq := greptime.InsertRequest{}
-	monitorCopyReq.WithTable("monitor_copy").WithMetric(metric)
-
-	// You can insert data of different tables into GreptimeDB in one InsertsRequest.
-	// This insertsRequest includes two InsertRequest of two different tables
 	insertsRequest := greptime.InsertsRequest{}
-	insertsRequest.Append(monitorReq).Append(monitorCopyReq)
+	insertsRequest.Append(monitorReq)
 
 	res, err := client.Insert(context.Background(), insertsRequest)
 	if err != nil {
