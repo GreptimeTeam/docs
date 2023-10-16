@@ -17,7 +17,7 @@ export const common = async () => {
     },
     rewrites: {
       [latestVersionPath]: `:path+`,
-      [versionPath]: `:version(v\\d\.\\d)?/:path+`,
+      [versionPath]: `:version(v\\d\.\\d\/?$)?/:path+`,
     },
     themeConfig: {
       latestVersion: LATEST_VERSION,
