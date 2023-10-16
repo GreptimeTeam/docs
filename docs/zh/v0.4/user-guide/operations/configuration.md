@@ -41,6 +41,7 @@ greptime datanode start --help
 - `--node-id <NODE_ID>`: 节点 ID
 - `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
 - `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
+- `--wal-dir <WAL_DIR>`: WAL 日志目录;
 
 所有的地址类选项都是 `ip:port` 形式的字符串。
 
