@@ -39,7 +39,7 @@ SUBCOMMANDS:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-`standalone.example.toml` 配置文件来自 `greptimedb` 仓库的 `config` 目录。您可以在那里找到更多示例配置文件。使用 `-c` 选项可以指定配置文件，有关更多信息，更多信息请查看[配置](../user-guide/operations/configuration.md)。
+`standalone.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。您可以在那里找到更多示例配置文件。使用 `-c` 选项可以指定配置文件，有关更多信息，更多信息请查看[配置](../user-guide/operations/configuration.md)。
 
 为了以分布式模式启动 GreptimeDB，您需要分别启动每个组件。以下命令显示了如何使用自定义配置或命令行参数启动每个组件：
 
