@@ -9,7 +9,7 @@
 
 ![Architecture](/storage-engine-arch.png)
 
-该架构与传统的LSMT引擎相同：
+该架构与传统的 LSMT 引擎相同：
 
 - [WAL][2]
   - 为尚未刷盘的数据提供高持久性保证。
