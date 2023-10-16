@@ -4,6 +4,28 @@
 
 ## Syntax
 
+一个合法的 Range 查询语法结构如下所示：
+
+```sql
+SELECT
+  AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION],
+  ...
+FROM table_name
+ALIGN TIME_INTERVAL [BY (columna, columnb,..)] [FILL FILL_OPTION];
+```
+
+- 关键字 `ALIGN`，必选字段，后接参数 `TIME_INTERVAL` ，指明了 Range 查询的步长。
+- `TIME_INTERVAL` 遵循 `PromQL` 的 `Time Durations` 类型，访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
+获得更详细的说明。
+- 关键字 `BY` ，可选字段，后接参数 `(columna, columnb,..)` ，描述了聚合键。若该字段未给出，默认使用表的主键作为聚合键。
+- `AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
+  - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式
+  - 关键字 `RANGE`，必选字段，后接参数 `TIME_INTERVAL` 指定了每次数据聚合的时间范围，
+  - 关键字 `FILL`，可选字段，后接参数 `FILL_OPTION` 指明了聚合字段为空时的数据填充方法。
+  - Range 表达式可与其他运算结合，实现更复杂的查询。具体见[嵌套使用 Range 表达式](#嵌套使用-range-表达式) 。
+- 关键字 `FILL`，可以跟在一个 Range 表达式后，作为这个 Range 表达式的数据填充方法；也可以放在 `ALIGN` 后作为缺省数据填充方法。合法的 `FILL_OPTION` 参数见[FILL Option](#fill-option) 。
+
+## 示例
 
 下面这张 `host_cpu` 表，记录了两台机器 `host1` 和 `host2` 在某个时间消耗的 CPU ，以该表为例介绍如何进行 Range 查询。
 
@@ -67,8 +89,6 @@ ALIGN '5s' BY (host) FILL PREV;
 2. `BY (host)` 指明了聚合键，`BY` 关键字支持省略。如果省略 `BY` 关键字，则默认使用数据表的主键作为聚合键。
 3. `max(cpu) RANGE '10s' FILL LINEAR` 是一个 Range 表达式。`RANGE '10s'` 指明了聚合的时间跨度为 10s，`FILL LINEAR` 指明了如果在某个聚合的时间内没有数据的话，使用 `LINEAR` 方式填充。
 4. `FILL` 关键字可以跟在 `RANGE` 关键字后面，表示这个 Range 表达式的填充方式，`FILL` 关键字也可以跟在 `BY` 关键字后，作为没有给出 `FILL` 关键字的 Range 表达式的缺省值。`min(cpu) RANGE '10s'` 这个 Range 表达式没有给出 `FILL` ，所以采用缺省的 FILL 填充方式，即 `PREV`。如果缺省的 FILL 也没有给出，则采用 `NULL` 方式填充。
-5. `RANGE` 和 `ALIGN` 关键字的时间字符串参数 (e.g. `5s`) , 遵循 `PromQL` 的 `Time Durations` 类型，访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
-获得更详细的说明。
 
 
 想要使用 Range 查询，该数据表上必须有一列数据在建表时声明为 `time index`，Range 查询使用该列数据作为聚合的时间线依据，如果该数据表没有指定主键，则关键字 `BY` 不能省略。用户也可以使用 `BY` 关键字，声明其他列作为数据聚合的依据。比如下面这个 RANGE 查询，使用 `host` 列的字符串长度 `length(host)` 作为数据聚合的依据。

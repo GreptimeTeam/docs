@@ -107,3 +107,17 @@ GROUP BY idc;
 ```
 
 请参考[GROUP BY](group_by.md) 获取更多信息。
+
+## RANGE 查询示例
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(cpu) RANGE '10s',
+    max(cpu) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s' BY (host) FILL PREV;
+```
+
+请参考[RANGE QUERY](range.md) 获取更多信息。

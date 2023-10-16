@@ -4,6 +4,28 @@ Querying and aggregating data within a range of time is a common query pattern f
 
 ## Syntax
 
+A legal Range query syntax structure is as follows:
+
+```sql
+SELECT
+   AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION],
+   ...
+FROM table_name
+ALIGN TIME_INTERVAL [BY (columna, columnb,..)] [FILL FILL_OPTION];
+```
+
+- Keyword `ALIGN`, required field, followed by parameter `TIME_INTERVAL`, specifies the step of Range query.
+- `TIME_INTERVAL` follows the `Time Durations` type of `PromQL`, visit [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
+Get more detailed instructions.
+- Keyword `BY`, optional field, followed by parameters `(columna, columnb,..)`, describing the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default.
+- `AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION]` is called a Range expression.
+   - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated
+   - Keyword `RANGE`, required field, followed by parameter `TIME_INTERVAL` specifies the time range of each data aggregation,
+   - Keyword `FILL`, optional field, followed by parameter `FILL_OPTION` specifies the data filling method when the aggregate field is empty.
+   - Range expressions can be combined with other operations to implement more complex queries. For details, see [Nested Range Expressions](#nested-range-expressions).
+- The keyword `FILL` can be followed by a Range expression as the data filling method of this Range expression; it can also be placed after `ALIGN` as the default data filling method. See [FILL Option](#fill-option) for legal `FILL_OPTION` parameters.
+  
+## Example
 
 The following `host_cpu` table records the CPU consumed by two machines `host1` and `host2` at a certain time. This table is used as an example to introduce how to perform Range query.
 
@@ -67,8 +89,6 @@ The above RANGE query counts the minimum and maximum CPU usage of a machine with
 2. `BY (host)` specifies the aggregate key, and the `BY` keyword supports omission. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
 3. `max(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time span of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
 4. The `FILL` keyword can follow the `RANGE` keyword to indicate the filling method of this Range expression. The `FILL` keyword can also follow the `BY` keyword, as if the `FILL` key is not given The default value for a word's Range expression. `min(cpu) RANGE '10s'` This Range expression does not provide `FILL`, so the default FILL filling method is used, which is `PREV`. If the default FILL is not given, `NULL` is used to fill.
-5. The time duration parameters (e.g. `5s`) of the `RANGE` and `ALIGN` keywords follow the `Time Durations` type of `PromQL`, visit [Prometheus Documentation](https://prometheus.io/docs/ prometheus/latest/querying/basics/#time-durations)
-Get more detailed instructions.
 
 If you want to use Range query, there must be a column of data in the data table declared as `time index` when creating the table. Range query uses this column data as the timeline basis for aggregation. If the data table does not specify a primary key, the keyword `BY` cannot be omitted. Users can also use the `BY` keyword to declare other columns as the basis for data aggregation. For example, the following RANGE query uses the string length `length(host)` of the `host` column as the basis for data aggregation.
 
