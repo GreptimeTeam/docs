@@ -15,7 +15,11 @@ const router = useRouter()
 let path = router.route.path
 router.onBeforeRouteChange = async to => {
   if (path.match(/(v\d\.\d)$/)) {
+    console.log('path: ', path)
+    console.log('path1: ', `${path}/index.html`)
+    // await router.go(`${path}/index.html`)
     await router.go(`${path}/index.html`)
+    console.log('path1: ', `${path}/index.html`)
   }
 }
 router.onBeforePageLoad = to => {
@@ -29,10 +33,6 @@ onBeforeMount(async () => {
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
   } else if (path.match(/(v\d\.\d)$/)) {
-    console.log('path: ', path)
-    console.log('path1: ', `${path}/index.html`)
-    await router.go(`${path}/index.html`)
-    console.log('path1: ', `${path}/index.html`)
   }
   body.style.display = 'block'
 })
