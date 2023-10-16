@@ -3,7 +3,7 @@
 ## 安装 SDK
 
 ```sh
-go get github.com/GreptimeTeam/greptimedb-client-go
+go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2
 ```
 
 ## 创建数据库对象

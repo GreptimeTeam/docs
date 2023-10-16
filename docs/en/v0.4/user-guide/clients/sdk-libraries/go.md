@@ -3,7 +3,7 @@
 ## Install
 
 ```sh
-go get github.com/GreptimeTeam/greptimedb-client-go
+go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2
 ```
 
 ## Create a Client
