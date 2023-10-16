@@ -23,7 +23,7 @@ if (path.includes(latestVersion)) {
   // body.style.display = 'none'
   // console.log(`body.style.display11111:`, body.style.display)
   const to = path.replace(`/${latestVersion}`, '')
-  window.open(to)
+  window.open(to, '_self')
   // router.go(res)
   // body.style.display = 'block'
 }
@@ -31,7 +31,7 @@ if (path.match(/(v\d\.\d)$/)) {
   // body.style.display = 'none'
   console.log('path2: ', path)
   const to = `${path}/index.html`
-  window.open(to)
+  window.open(to, '_self')
 
   // await window.open(to)
   console.log('to222: ', to)
