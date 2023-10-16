@@ -24,31 +24,29 @@ router.onBeforeRouteChange = async to => {
   // }
 }
 router.onBeforePageLoad = async to => {
-  console.log(`1111:`, 1111)
   setVersionOnPage(to, latestVersion, sidebar)
 }
 onBeforeMount(async () => {
-  if (path.match(/(v\d\.\d)$/)) {
-    const to = `${path}/index.html`
-    await window.open(to, '_self')
-  }
   const body = document.querySelector('body')
   const router = useRouter()
   if (path.includes(latestVersion)) {
     body.style.display = 'none'
+    console.log(`body.style.display11111:`, body.style.display)
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
-  } else if (path.match(/(v\d\.\d)$/)) {
+    body.style.display = 'block'
+  }
+  if (path.match(/(v\d\.\d)$/)) {
     body.style.display = 'none'
     console.log('path2: ', path)
+    const to = `${path}/index.html`
     // console.log('to: ', to)
-    // await router.go(`${path}/index.html`)
-    // await router.go(to)
+    await router.go(to)
+    body.style.display = 'block'
     console.log('path: ', `${path}/index.html`)
     console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   }
-  console.log(`11111path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
-  body.style.display = 'block'
+  console.log(`body.style.display11111:`, body.style.display)
 })
 onMounted(async () => {
   setVersionOnPage(router.route.path, latestVersion, sidebar)
