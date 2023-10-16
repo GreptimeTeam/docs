@@ -29,12 +29,13 @@ router.onBeforePageLoad = async to => {
 }
 onBeforeMount(async () => {
   const body = document.querySelector('body')
-  body.style.display = 'none'
   const router = useRouter()
   if (path.includes(latestVersion)) {
+    body.style.display = 'none'
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
   } else if (path.match(/(v\d\.\d)$/)) {
+    body.style.display = 'none'
     console.log('path2: ', path)
     const to = `${path}/index.html`
     console.log('to: ', to)
