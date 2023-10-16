@@ -12,7 +12,12 @@ const { latestVersion, iconMap, sidebar } = theme.value
 // methods
 // lifecycle
 const router = useRouter()
-
+let path = router.route.path
+router.onBeforeRouteChange = async to => {
+  if (path.match(/(v\d\.\d)$/)) {
+    await router.go(`${path}/index.html`)
+  }
+}
 router.onBeforePageLoad = to => {
   setVersionOnPage(to, latestVersion, sidebar)
 }
@@ -20,7 +25,6 @@ onBeforeMount(async () => {
   const body = document.querySelector('body')
   body.style.display = 'none'
   const router = useRouter()
-  let path = router.route.path
   if (path.includes(latestVersion)) {
     const res = path.replace(`/${latestVersion}`, '')
     await router.go(res)
