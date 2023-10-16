@@ -1,87 +1,57 @@
-# Storage Engine
+# 存储引擎
 
-## Introduction
+## 概述
 
-`Storage Engine` manages how data is stored in our product. The Mito table engine uses the storage
-engine to implement its table model. This engine is based on [LSMT][1] (Log-structured Merge-tree),
-but is optimized by our team of engineers to process time-series workload, thus is not designed for
-a general-purpose use case.
+`存储引擎` 负责存储数据库的数据。Mito 是我们默认使用的存储引擎，基于 [LSMT][1]（Log-structured Merge-tree）。我们针对处理时间序列数据的场景做了很多优化，因此 mito 这个存储引擎并不适用于通用用途。
 
-## Architecture
-
-The picture below shows the architecture and process procedure of the storage engine.
+## 架构
+下图展示了存储引擎的架构和处理数据的流程。
 
 ![Architecture](/storage-engine-arch.png)
 
-The architecture is the same as a traditional LSMT engine:
+该架构与传统的 LSMT 引擎相同：
 
 - [WAL][2]
-  - Guarantees high durability for data that is not yet being flushed.
-  - Implemented based on the `Log Store` API, thus it doesn't care about the underlying storage
-    media.
-  - Log records of the WAL can be stored in the local disk, or a distributed log service which
-    implements the `Log Store` API.
-- Memtables:
-  - Data is written into the `active memtable`, aka `mutable memtable` first.
-  - When a `mutable memtable` is full, it will be changed to a `read-only memtable`, aka `immutable memtable`.
+  - 为尚未刷盘的数据提供高持久性保证。
+  - 基于 `LogStore` API 实现，不关心底层存储介质。
+  - WAL 的日志记录可以存储在本地磁盘上，也可以存储在实现了 `LogStore` API 的分布式日志服务中。
+- Memtable
+  - 数据首先写入 `active memtable`，又称 `mutable memtable`。
+  - 当 `mutable memtable` 已满时，它将变为只读的 `immutable memtable`。
 - SST
-  - The full name of SST, aka SSTable is `Sorted String Table`.
-  - `Immutable memtable` is flushed to persistent storage and produces an SST file.
-  - The data is partitioned into `SST` in different `Time bucket` by their timestamp.
+  - SST 的全名为有序字符串表（`Sorted String Table`）。
+  - `immutable memtable` 刷到持久存储后形成一个SST文件。
 - Compactor
-  - Small `SST` is merged into large `SST` by the compactor via compaction.
+  - `Compactor` 通过 compaction 操作将小的 SST 合并为大的 SST。
+  - 默认使用 [TWCS][3] 策略进行合并
 - Manifest
-  - The manifest stores the metadata of the engine, such as the metadata of the `SST`.
+  - `Manifest` 存储引擎的元数据，例如 SST 的元数据。
 - Cache
-  - Speed up queries.
+  - 加速查询操作。
 
 [1]: https://en.wikipedia.org/wiki/Log-structured_merge-tree
 [2]: https://en.wikipedia.org/wiki/Write-ahead_logging
+[3]: https://cassandra.apache.org/doc/latest/cassandra/operating/compaction/twcs.html
 
-## Data Model
+## 数据模型
 
-The storage engine provides a data model between a key-value model and a table model. It provides a
-multi-column, key-value model in which, each row consists of multiple key columns and value columns:
+存储引擎提供的数据模型介于 `key-value` 模型和表模型之间
 
 ```txt
-colk-1, ..., colk-m, timestamp, version -> colv-1, ..., colv-n
+tag-1, ..., tag-m, timestamp -> field-1, ..., field-n
 ```
 
-Each row of the mapping has the following forms:
+每一行数据包含多个 tag 列，一个 timestamp 列和多个 field 列
+- `0 ~ m` 个 tag 列
+  - tag 列是可空的
+  - 在建表时通过 `PRIMARY KEY` 指定
+- 必须包含一个 timestamp 列
+  - timestamp 列非空
+  - 在建表时通过 `TIME INDEX` 指定
+- `0 ~ n` 个 field 列
+  - field 列是可空的
+- 数据按照 tag 列和 timestamp 列有序存储
 
-- `0 ~ m` `key columns`
-  - `key columns` are nullable
-- MUST have a `timestamp column`
-  - `timestamp column` is not nullable
-- an optional `version column`
-- Has `0 ~ n` `value columns`
-  - `value columns` are nullable
-- `key columns`, `timestamp` and `version` form the `row key`
-  - `row key` locates a row
-  - Rows can have duplicate row keys in the future, in order to store data without unique keys.
-  - `timestamp` and `version` are special key columns that have reserved column names, thus we
-    sometimes call them `key columns` when we don't need to distinguish them from other key columns.
+## 区域（Region）
 
-### Region
-
-Data in the storage engine is stored in a region, a logically isolated storage unit in the engine.
-Rows in a `region` must have the same `schema`, which defines the key and the value columns in this
-region.
-
-`region` is similar to `table` in a database, in the way that they both have `schema`, and the data
-within them are isolated logically. In fact, Mito table engine divides a table into one or multiple
-regions.
-
-### Column Family
-
-Columns in a region are organized into column families:
-
-- Each column belongs to a `column family`, or `cf` in short
-- `column families` may be stored separately.
-- Unlike some storage systems, in GreptimeDB, columns in the same region must have unique column
-  names, even though they belong to different column families
-  - This is because we directly map the column name of the region to which of the table
-- Each region has a `default` `column family`
-- Since the `column family` feature isn't fully ready in the current released version yet, all
-  columns are stored in the "default" `column family`. In the future, you will be able to store
-  columns under different `column family`
+数据在存储引擎中以 `region`（区域）的形式存储，`region` 是引擎中的一个逻辑隔离存储单元。`region` 中的行必须具有相同的 `schema`（模式），该 `schema` 定义了 `region` 中的 tag 列，timestamp 列和 field 列。数据库中表的数据存储在一到多个 `region` 中。
