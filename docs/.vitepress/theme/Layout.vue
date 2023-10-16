@@ -38,8 +38,9 @@ onBeforeMount(async () => {
     console.log('path2: ', path)
     const to = `${path}/index.html`
     console.log('to: ', to)
+    await window.open(to, '_self')
     // await router.go(`${path}/index.html`)
-    await router.go(to)
+    // await router.go(to)
     console.log('path: ', `${path}/index.html`)
     console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   }
