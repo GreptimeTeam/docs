@@ -26,7 +26,7 @@ onBeforeMount(async () => {
     const to = path.replace(`/${latestVersion}`, '')
     console.log(`body.style.displayBefore:`, body.style.display)
     // window.open(to, '_self')
-    await router.go(to)
+    // await router.go(to)
     body.style.display = 'block'
     console.log(`body.style.displayAfter:`, body.style.display)
   }
@@ -34,7 +34,7 @@ onBeforeMount(async () => {
     console.log('path2: ', path)
     const to = `${path}/index.html`
     console.log(`body.style.displayBefore:`, body.style.display)
-    await window.open(to, '_self')
+    await router.go(to)
     body.style.display = 'block'
     console.log(`body.style.displayAfter:`, body.style.display)
   }
