@@ -33,20 +33,21 @@ onBeforeMount(async () => {
     body.style.display = 'none'
     console.log(`body.style.display11111:`, body.style.display)
     const res = path.replace(`/${latestVersion}`, '')
-    await router.go(res)
-    body.style.display = 'block'
+    window.location.href = res
+    // await router.go(res)
+    // body.style.display = 'block'
   }
   if (path.match(/(v\d\.\d)$/)) {
     body.style.display = 'none'
     console.log('path2: ', path)
     const to = `${path}/index.html`
-    // console.log('to: ', to)
-    await router.go(to)
-    body.style.display = 'block'
-    console.log('path: ', `${path}/index.html`)
-    console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
+    window.location.href = to
+    console.log('to: ', to)
+    // body.style.display = 'block'
+    // console.log('path: ', `${path}/index.html`)
+    // console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
   }
-  console.log(`body.style.display11111:`, body.style.display)
+  // console.log(`body.style.display11111:`, body.style.display)
 })
 onMounted(async () => {
   setVersionOnPage(router.route.path, latestVersion, sidebar)
