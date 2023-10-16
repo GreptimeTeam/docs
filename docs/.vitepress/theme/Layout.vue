@@ -31,9 +31,9 @@ router.onBeforePageLoad = async to => {
 if (path.includes(latestVersion)) {
   body.style.display = 'none'
   console.log(`body.style.display11111:`, body.style.display)
-  const res = path.replace(`/${latestVersion}`, '')
-  // window.location.href = res
-  router.go(res)
+  const to = path.replace(`/${latestVersion}`, '')
+  window.location.href = to
+  // router.go(res)
   // body.style.display = 'block'
 }
 if (path.match(/(v\d\.\d)$/)) {
