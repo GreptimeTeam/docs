@@ -28,6 +28,10 @@ router.onBeforePageLoad = async to => {
   setVersionOnPage(to, latestVersion, sidebar)
 }
 onBeforeMount(async () => {
+  if (path.match(/(v\d\.\d)$/)) {
+    const to = `${path}/index.html`
+    await window.open(to, '_self')
+  }
   const body = document.querySelector('body')
   const router = useRouter()
   if (path.includes(latestVersion)) {
@@ -37,9 +41,7 @@ onBeforeMount(async () => {
   } else if (path.match(/(v\d\.\d)$/)) {
     body.style.display = 'none'
     console.log('path2: ', path)
-    const to = `${path}/index.html`
-    console.log('to: ', to)
-    await window.open(to, '_self')
+    // console.log('to: ', to)
     // await router.go(`${path}/index.html`)
     // await router.go(to)
     console.log('path: ', `${path}/index.html`)
