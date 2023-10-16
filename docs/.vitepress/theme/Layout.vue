@@ -15,9 +15,7 @@ const router = useRouter()
 let path = router.route.path
 const body = document.querySelector('body')
 router.onBeforeRouteChange = async to => {
-  body.style.display = 'none'
   console.log(`path.match(/(v\d\.\d)$/)11111:`, path.match(/(v\d\.\d)$/))
-  router.go(to)
   // if (path.match(/(v\d\.\d)$/)) {
   //   console.log('path: ', path)
   //   console.log('path1: ', `${path}/index.html`)
@@ -38,6 +36,18 @@ if (path.includes(latestVersion)) {
   router.go(res)
   // body.style.display = 'block'
 }
+if (path.match(/(v\d\.\d)$/)) {
+  body.style.display = 'none'
+  console.log('path2: ', path)
+  const to = `${path}/index.html`
+  window.location.href = to
+
+  // await window.open(to)
+  console.log('to222: ', to)
+  // body.style.display = 'block'
+  // console.log('path: ', `${path}/index.html`)
+  // console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
+}
 onBeforeMount(async () => {
   // const body = document.querySelector('body')
   // const router = useRouter()
@@ -49,18 +59,6 @@ onBeforeMount(async () => {
   //   // await router.go(res)
   //   // body.style.display = 'block'
   // }
-  if (path.match(/(v\d\.\d)$/)) {
-    body.style.display = 'none'
-    console.log('path2: ', path)
-    const to = `${path}/index.html`
-    await router.go(to)
-
-    // await window.open(to)
-    console.log('to222: ', to)
-    // body.style.display = 'block'
-    // console.log('path: ', `${path}/index.html`)
-    // console.log(`2222path.match(/(v\d\.\d)$/):`, path.match(/(v\d\.\d)$/))
-  }
   // console.log(`body.style.display11111:`, body.style.display)
 })
 onMounted(async () => {
