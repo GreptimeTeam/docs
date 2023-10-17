@@ -53,7 +53,7 @@ helm repo update
 ```
 
 ```shell
-helm install gtcloud greptime/greptimedb-operator -n default --devel
+helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
 ```
 
 The maintained Helm charts are in [helm-charts][6].
@@ -62,13 +62,17 @@ The maintained Helm charts are in [helm-charts][6].
 
 Create an etcd cluster for GreptimeDB:
 ```shell
-helm install etcd greptime/greptimedb-etcd -n default --devel
+helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+--set replicaCount=3 \
+--set auth.rbac.create=false \
+--set auth.rbac.token.enabled=false \
+-n default
 ```
 
 Create a GreptimeDB cluster which uses the etcd cluster created at previous step:
 
 ```shell
-helm install mydb greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb -n default --devel
 ```
 
 Or, if you already have an etcd cluster, you can use `etcdEndpoints` to use your etcd cluster:
@@ -81,7 +85,7 @@ helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluste
 After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:
 
 ```shell
-kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
+kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
 ```
 
 Then you can use MySQL client to [connect to the cluster](/getting-started/try-out-greptimedb.md#Connect).
@@ -92,7 +96,7 @@ You can use the following commands to uninstall operator and cluster:
 
 ```shell
 # Uninstall the cluster.
-helm uninstall mydb
+helm uninstall mycluster -n default
 ```
 
 ```shell
@@ -102,7 +106,7 @@ helm uninstall etcd -n default
 
 ```shell
 # Uninstall the operator.
-helm uninstall gtcloud
+helm uninstall greptimedb-operator -n default
 ```
 
 ```shell
