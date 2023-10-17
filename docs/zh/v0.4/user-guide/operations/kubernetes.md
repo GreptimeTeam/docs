@@ -57,7 +57,11 @@ helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluste
 安装之后，可以通过 `kubectl port-forward` 语句来转发 GreptimeDB 集群的 MySQL 协议端口：
 
 ```shell
+# You can use the MySQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
 kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
+
+# You can use the PostgreSQL client to connect the cluster, for example: 'psql -h 127.0.0.1 -p 4003 -d public'.
+kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
 然后可以通过 MySQL 客户端[访问集群](/getting-started/try-out-greptimedb.md#Connect)

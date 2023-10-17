@@ -85,7 +85,11 @@ helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluste
 After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:
 
 ```shell
+# You can use the MySQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
 kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
+
+# You can use the PostgreSQL client to connect the cluster, for example: 'psql -h 127.0.0.1 -p 4003 -d public'.
+kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
 Then you can use MySQL client to [connect to the cluster](/getting-started/try-out-greptimedb.md#Connect).
