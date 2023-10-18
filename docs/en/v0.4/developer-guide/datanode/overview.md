@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Datanode` is mainly responsible for storing the actual data for GreptimeDB.. As we know, in GreptimeDB,
+`Datanode` is mainly responsible for storing the actual data for GreptimeDB. As we know, in GreptimeDB,
 a table can have one or more `region`s, and `Datanode` is responsible for managing the reading and writing
 of these `region`s. `Datanode` is not aware of table and can be considered as a `region server`. Therefore,
 `Frontend` and `Metaserver` operate `Datanode` at the granularity of `region`.
