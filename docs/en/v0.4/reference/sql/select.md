@@ -117,3 +117,17 @@ GROUP BY idc;
 ```
 
 Please refer to [GROUP BY](group_by.md) for more information.
+
+## Example of RANGE query
+
+```sql
+SELECT
+     ts,
+     host,
+     min(cpu) RANGE '10s',
+     max(cpu) RANGE '10s' FILL LINEAR
+FROM host_cpu
+ALIGN '5s' BY (host) FILL PREV;
+```
+
+Please refer to [RANGE QUERY](range.md) for more information.
