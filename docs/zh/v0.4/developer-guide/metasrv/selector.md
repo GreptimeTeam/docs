@@ -1,34 +1,34 @@
 # Selector
 
-## Introduction
+## 介绍
 
-What is the `Selector`? As its name suggests, it allows users to select specific items from a given `namespace` and `context`. There is a related trait, also named `Selector`, whose definition can be found [below][0].
+什么是 `Selector`？顾名思义，它允许用户从给定的 `namespace` 和 `context` 中选择 `Item`s。有一个相关的 `trait`，也叫做 `Selector`，其定义可以在[这里][0]找到。
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
 
-There is a specific scenario in `meta` service. When a request to create a table is sent to the `meta` service, it creates a routing table (the details of table creation will not be described here). The `meta` service needs to select the appropriate `datanode` list when creating a routing table.
+在 `MetaSrv` 中存在一个特定的场景。当 `Frontend` 向 `MetaSrv` 发送建表请求时，`MetaSrv` 会创建一个路由表（表的创建细不在这里赘述）。在创建路由表时，`MetaSrv` 需要选择适当的 `Datanode`s。
 
-## Selector Type
+## Selector 类型
 
-Currently, there are two types of `Selector` available in the `meta` service: `LeasebasedSelector` and `LoadBasedSelector`.
+目前，在 `MetaSrv` 中有两种类型的 `Selector` 可用：`LeasebasedSelector` 和 `LoadBasedSelector`。
 
-### LeasebasedSelector [not recommended]
+### LeasebasedSelector [不推荐]
 
-`LeasebasedSelector` is just a simple implementation of `Selector`, but **it is not recommended**.
+`LeasebasedSelector` 只是 `Selector` 的一个简单实现，但不建议使用。
 
-It shuffles available `datanode`s, and returns the list.
+它会对可用的 `Datanode`s 进行随机排序，然后返回列表。
 
 ### LoadBasedSelector
 
-`LoadBasedSelector` is another implementation of the `Selector`.
+`LoadBasedSelector` 是 `Selector` 的另一种实现。
 
-It sorts available `datanode`s according to the load, and returns a sorted list of these `datanode`s.
+它根据负载对可用的 `Datanode`s 进行排序，然后返回一个已排序的 `Datanode` 列表。
 
-## Configuration
+## 配置
 
-You can configure the `Selector` when starting the `meta` service, with the default being `LoadBasedSelector`.
+在启动 `MetaSrv` 服务时，您可以配置 `Selector`，默认值是 `LoadBasedSelector`。
 
-For example:
+例如：
 
 ```shell
 cargo run -- metasrv start --selector LoadBased
