@@ -75,7 +75,7 @@ greptime frontend start --help
 - `-c`/`--config-file`: 指定 `frontend` 启动配置文件
 - `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
-- `--grpc-addr <GPRC_ADDR>`: gRPC 服务地址
+- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。

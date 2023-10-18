@@ -75,7 +75,7 @@ greptime frontend start --help
 - `-c`/`--config-file`: The configuration file for frontend;
 - `--disable-dashboard`: Disable dashboard http service, default is `false`.
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
-- `--grpc-addr <GPRC_ADDR>`: GRPC server address;
+- `--rpc-addr <RPC_ADDR>`: GRPC server address;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
