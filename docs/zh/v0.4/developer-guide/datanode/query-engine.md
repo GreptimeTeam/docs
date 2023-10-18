@@ -22,13 +22,6 @@ GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是
 
 ## 索引
 
-In time series data, there are two important dimensions: timestamp and tag columns (or like
-primary key in a general relational database). GreptimeDB groups data in time buckets, so it's efficient
-to locate and extract data within the expected time range at a very low cost. And from the other
-data columns, the mainly used persistent file format [Apache Parquet][3] in GreptimeDB helps a lot -- it
-provides multi-level indices and filters that make it easy to prune data during querying. In the future, we
-will make more use of this feature, and develop our separated index to handle more complex use cases.
-
 在时序数据中，有两个重要的维度：时间戳和标签列（或者类似于关系数据库中的主键）。GreptimeDB 将数据分组到时间桶中，因此能在非常低的成本下定位和提取预期时间范围内的数据。GreptimeDB 中主要使用的持久文件格式 [Apache Parquet][3] 提供了多级索引和过滤器，使得在查询过程中很容易修剪数据。在未来，我们将更多地利用这个特性，并开发我们的分离索引来处理更复杂的用例。
 
 ## 拓展性
