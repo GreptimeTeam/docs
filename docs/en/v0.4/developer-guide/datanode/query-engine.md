@@ -38,8 +38,7 @@ make it easy to share data in many different environments and implement calculat
 
 In time series data, there are two important dimensions: timestamp and tag columns (or like
 primary key in a general relational database). GreptimeDB groups data in time buckets, so it's efficient
-to locate and extract data within the expected time range at a very low cost. And from the other
-data columns, the mainly used persistent file format [Apache Parquet][3] in GreptimeDB helps a lot -- it
+to locate and extract data within the expected time range at a very low cost. The mainly used persistent file format [Apache Parquet][3] in GreptimeDB helps a lot -- it
 provides multi-level indices and filters that make it easy to prune data during querying. In the future, we
 will make more use of this feature, and develop our separated index to handle more complex use cases.
 
