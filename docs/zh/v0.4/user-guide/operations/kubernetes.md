@@ -25,7 +25,7 @@ helm repo update
 ```
 
 ```shell
-helm install gtcloud greptime/greptimedb-operator -n default --devel
+helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
 ```
 
 维护的 Helm 图表在 [helm-charts][6] 中。
@@ -34,13 +34,17 @@ helm install gtcloud greptime/greptimedb-operator -n default --devel
 
 为 GreptimeDB 创建 etcd cluster 集群
 ```shell
-helm install etcd greptime/greptimedb-etcd -n default --devel
+helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+--set replicaCount=3 \
+--set auth.rbac.create=false \
+--set auth.rbac.token.enabled=false \
+-n default
 ```
 
 创建 GreptimeDB 集群。该集群会使用上一步创建的 etcd 集群：
 
 ```shell
-helm install mydb greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb -n default --devel
 ```
 
 如果你拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
@@ -53,7 +57,11 @@ helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluste
 安装之后，可以通过 `kubectl port-forward` 语句来转发 GreptimeDB 集群的 MySQL 协议端口：
 
 ```shell
-kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
+# You can use the MySQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
+kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
+
+# You can use the PostgreSQL client to connect the cluster, for example: 'psql -h 127.0.0.1 -p 4003 -d public'.
+kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
 然后可以通过 MySQL 客户端[访问集群](/getting-started/try-out-greptimedb.md#Connect)
@@ -64,7 +72,7 @@ kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
 
 ```shell
 # Uninstall the cluster.
-helm uninstall mydb
+helm uninstall mycluster -n default
 ```
 
 ```shell
@@ -74,7 +82,7 @@ helm uninstall etcd -n default
 
 ```shell
 # Uninstall the operator.
-helm uninstall gtcloud
+helm uninstall greptimedb-operator -n default
 ```
 
 ```shell

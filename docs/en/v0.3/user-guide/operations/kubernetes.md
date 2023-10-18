@@ -53,7 +53,7 @@ helm repo update
 ```
 
 ```shell
-helm install gtcloud greptime/greptimedb-operator -n default --devel
+helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
 ```
 
 The maintained Helm charts are in [helm-charts][6].
@@ -61,7 +61,11 @@ The maintained Helm charts are in [helm-charts][6].
 ### 3. Create your own etcd cluster
 
 ```shell
-helm install etcd greptime/greptimedb-etcd -n default --devel
+helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+--set replicaCount=3 \
+--set auth.rbac.create=false \
+--set auth.rbac.token.enabled=false \
+-n default
 ```
 
 ### 4. Create your own GreptimeDB cluster
@@ -69,7 +73,7 @@ helm install etcd greptime/greptimedb-etcd -n default --devel
 Create GreptimeDB cluster:
 
 ```shell
-helm install mydb greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb -n default --devel
 ```
 
 If you already have the etcd cluster, you can configure the etcd cluster:
@@ -82,7 +86,11 @@ helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluste
 After the installation, you can use `kubectl port-forward` to access GreptimeDB cluster:
 
 ```shell
-kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
+# You can use the MySQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
+kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
+
+# You can use the PostgreSQL client to connect the cluster, for example: 'psql -h 127.0.0.1 -p 4003 -d public'.
+kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
 ### 5. Destroy GreptimeDB cluster
@@ -91,7 +99,7 @@ You can use the following commands to uninstall operator and cluster:
 
 ```shell
 # Uninstall the cluster.
-helm uninstall mydb
+helm uninstall mycluster -n default
 ```
 
 ```shell
@@ -101,7 +109,7 @@ helm uninstall etcd -n default
 
 ```shell
 # Uninstall the operator.
-helm uninstall gtcloud
+helm uninstall greptimedb-operator -n default
 ```
 
 ```shell
