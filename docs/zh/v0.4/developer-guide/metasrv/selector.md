@@ -14,7 +14,7 @@
 
 ### LeasebasedSelector [不推荐]
 
-`LeasebasedSelector` 只是 `Selector` 的一个简单实现，但不建议使用。
+`LeasebasedSelector` 只是 `Selector` 的一个简单实现，但并不推荐。
 
 它会对可用的 `Datanode`s 进行随机排序，然后返回列表。
 
