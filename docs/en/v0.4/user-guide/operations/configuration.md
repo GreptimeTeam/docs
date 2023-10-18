@@ -41,6 +41,7 @@ greptime datanode start --help
 - `--node-id <NODE_ID>`: The datanode ID;
 - `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
 - `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
+- `--wal-dir <WAL_DIR>`: The directory of WAL;
 
 All the `addr` options are in the form of `ip:port`.
 
