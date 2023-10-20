@@ -4,7 +4,7 @@ Layout
 <script setup name="Layout" lang="ts">
 import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
 import { useRouter } from 'vitepress'
-import { getSidebarIcon, setVersionOnPage } from '@/utils.ts'
+import { getSidebarIcon, setVersionOnPage, selectSearchResult } from '@/utils.ts'
 
 // data
 const { theme } = useData()
@@ -30,5 +30,6 @@ onBeforeMount(async () => {
 onMounted(async () => {
   setVersionOnPage(router.route.path, latestVersion, sidebar)
   getSidebarIcon(iconMap)
+  selectSearchResult()
 })
 </script>

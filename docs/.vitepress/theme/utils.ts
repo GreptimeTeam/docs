@@ -33,6 +33,23 @@ export const insertIcon = iconMap => {
   })
   domObserver.observe(document.body, { childList: true, subtree: true })
 }
+export const selectSearchResult = () => {
+  const domObserver = new MutationObserver((_mutationList, observer) => {
+    const div = document.getElementById('localsearch-list')
+
+    if (div) {
+      const child = div.children
+      const regVersion = /\/v\d\.\d\//
+      const temp = window.location.href.match(regVersion)?.[0]
+      if (!temp) {
+        Array.from(child).forEach(item => item.children[0].getAttribute('href').match(regVersion) && item.remove())
+      } else {
+        Array.from(child).forEach(item => !item.children[0].getAttribute('href').includes(temp) && item.remove())
+      }
+    }
+  })
+  domObserver.observe(document.body, { childList: true, subtree: true })
+}
 
 export function getSidebarIcon(iconMap) {
   insertIcon(iconMap)
@@ -40,6 +57,7 @@ export function getSidebarIcon(iconMap) {
     const el = <HTMLInputElement>e.target
     if (el.matches('.VPLink')) {
       insertIcon(iconMap)
+      selectSearchResult()
     }
   })
 }
