@@ -39,12 +39,12 @@ export const selectSearchResult = () => {
 
     if (div) {
       const child = div.children
-      const regVersion = /\/v\d\.\d\//
-      const temp = window.location.href.match(regVersion)?.[0]
-      if (!temp) {
-        Array.from(child).forEach(item => item.children[0].getAttribute('href').match(regVersion) && item.remove())
+      const versionReg = /\/v\d\.\d\//
+      const pathVersion = window.location.href.match(versionReg)?.[0]
+      if (!pathVersion) {
+        Array.from(child).forEach(item => item.children[0].getAttribute('href').match(versionReg) && item.remove())
       } else {
-        Array.from(child).forEach(item => !item.children[0].getAttribute('href').includes(temp) && item.remove())
+        Array.from(child).forEach(item => !item.children[0].getAttribute('href').includes(pathVersion) && item.remove())
       }
     }
   })
