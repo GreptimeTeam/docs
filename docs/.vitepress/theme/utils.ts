@@ -57,7 +57,6 @@ export function getSidebarIcon(iconMap) {
     const el = <HTMLInputElement>e.target
     if (el.matches('.VPLink')) {
       insertIcon(iconMap)
-      selectSearchResult()
     }
   })
 }
