@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 
-export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
+export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
 export const LATEST_VERSION = 'v0.4'
 
 const latestVersionPath = `${CURRENT_LANG}/${LATEST_VERSION}/:path+`
@@ -23,6 +23,14 @@ export const common = async () => {
       latestVersion: LATEST_VERSION,
       search: {
         provider: 'local',
+        options: {
+          _render(src, env, md) {
+            const html = md.render(src, env)
+            if (env.frontmatter?.search === false) return ''
+            if (!env.relativePath.match(`/${LATEST_VERSION}/`)) return ''
+            return html
+          },
+        },
       },
       siteTitle: '',
       logo: '/logo-text-tinted.png',
