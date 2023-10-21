@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 
-export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
+export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 export const LATEST_VERSION = 'v0.4'
 
 const latestVersionPath = `${CURRENT_LANG}/${LATEST_VERSION}/:path+`
