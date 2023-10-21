@@ -23,6 +23,13 @@ export const common = async () => {
       latestVersion: LATEST_VERSION,
       search: {
         provider: 'local',
+        options: {
+          _render(src, env, md) {
+            if (env.frontmatter?.search === false) return ''
+            if (!env.relativePath.match(`/${LATEST_VERSION}/`)) return ''
+            return md.render(src, env)
+          },
+        },
       },
       siteTitle: '',
       logo: '/logo-text-tinted.png',
