@@ -25,10 +25,9 @@ export const common = async () => {
         provider: 'local',
         options: {
           _render(src, env, md) {
-            const html = md.render(src, env)
             if (env.frontmatter?.search === false) return ''
             if (!env.relativePath.match(`/${LATEST_VERSION}/`)) return ''
-            return html
+            return md.render(src, env)
           },
         },
       },
