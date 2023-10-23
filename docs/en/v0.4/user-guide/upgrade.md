@@ -1,6 +1,6 @@
 # Upgrade
 
-From `v0.4`, we provide a built-in utility to help upgrade your previous GreptimeDB deployment to the latest version.
+From `v0.4`, we provide a built-in utility to help upgrade your previous GreptimeDB deployment to the latest version if there are some breaking changes.
 It's recommended to use this method to upgrade your GreptimeDB with different versions.
 
 The lowest version that can be upgraded by this tool is `v0.3.0`.
@@ -35,7 +35,7 @@ OPTIONS:
 
 Here explains the meaning of some important options
 
-- `--addr`: The address of the Frontend node.
+- `--addr`: The gRPC address of the Frontend node or Standalone process.
 - `--output-dir`: The directory to put the exported data. Give a path at your current machine. The exported SQL files will be put in that directory.
 - `--target`: The things to export. `create-table` can export the `CREATE TABLE` clause for each table. `table-data` can export the data of each table alone with `COPY FROM` clause.
 

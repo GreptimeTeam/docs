@@ -1,7 +1,7 @@
 # Upgrade
 
 从 `v0.4` 开始，我们提供了一个内置的工具来帮助您将以前的 GreptimeDB 部署升级到最新版本。
-建议使用此方法在不同版本的 GreptimeDB 之间进行迁移升级。
+如果不同版本之间有 Breaking Change，我们都建议使用此方法在不同版本的 GreptimeDB 之间进行迁移升级。
 
 此工具可以将 `v0.3.0` 以上的版本升级到最新版本。
 
@@ -35,7 +35,7 @@ OPTIONS:
 
 这里解释一些重要选项的含义：
 
-- `-addr`：Frontend 节点的地址。
+- `-addr`：Frontend 节点或者 Standalone 进程的 gRPC 地址。
 - `-output-dir`：要放置导出数据的目录。需要是当前机器上的路径。导出的 SQL 文件将放在该目录中。
 - `-target`：要导出的内容。`create-table` 可以导出每个表的 `CREATE TABLE` 语句。`table-data` 可以导出每个表的数据以及对应的 `COPY FROM` 语句。
 
