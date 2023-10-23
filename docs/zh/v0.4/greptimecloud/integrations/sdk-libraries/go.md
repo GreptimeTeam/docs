@@ -9,7 +9,7 @@ GreptimeDB Go SDK 使用 gRPC 与数据库通信，
 - Port: `4001`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 下方的代码片段展示了如何使用 Go SDK 建立一个 `client` 连接对象：
 

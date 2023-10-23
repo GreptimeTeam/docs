@@ -13,13 +13,13 @@ remote_write:
   - url: https://<host>/v1/prometheus/write?db=<dbname>
     basic_auth:
       username: <username>
-      password: #paste your service password
+      password: <password>
 
 remote_read:
   - url: https://<host>/v1/prometheus/read?db=<dbname>
     basic_auth:
       username: <username>
-      password: #paste your service password
+      password: <password>
 ```
 
 ## 规则管理

@@ -8,7 +8,7 @@ To connect to GreptimeCloud, using information below:
 - Port: `4001`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 The following code shows how to create a `client`.
 
@@ -20,7 +20,7 @@ options := []grpc.DialOption{
 cfg := greptime.NewCfg("<host>").
     WithDatabase("<dbname>").
     WithPort(4001).              // default port
-    WithAuth("<username>", "*Your GreptimeCloud service password*").
+    WithAuth("<username>", "<password>").
     WithDialOptions(options...). // specify your gRPC dail options
     WithCallOptions()            // specify your gRPC call options
 

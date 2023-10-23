@@ -12,7 +12,7 @@ To connect to GreptimeCloud in Postgres wire protocol, using information below:
 - Port: `4003`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 ## `psql`
 
@@ -25,18 +25,16 @@ psql -h <host> -p 4003 -U <username> -d <dbname> -W
 ## Postgres Connection String
 
 Using the connection string below for compatible client libraries like psycopg,
-rust-postgres and more. Replace *PASSWORD* with the GreptimeCloud service
-password.
+rust-postgres and more.
 
 ```
-host=<host> port=4003 dbname=<dbname> user=<username> password=PASSWORD
+host=<host> port=4003 dbname=<dbname> user=<username> password=<password>
 ```
 
 ## Postgres JDBC URL
 
-Using the URL below with your Postgres JDBC client. Replace *PASSWORD* with the
-GreptimeCloud service password.
+Using the URL below with your Postgres JDBC client.
 
 ```
-jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=PASSOWRD&ssl=true
+jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=<password>&ssl=true
 ```

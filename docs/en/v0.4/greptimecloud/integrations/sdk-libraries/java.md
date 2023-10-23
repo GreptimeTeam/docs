@@ -8,13 +8,13 @@ To connect to GreptimeCloud, using information below:
 - Port: `4001`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 The following code snippet shows how to create a client.
 
 ```java
 String endpoint = "<host>:4001";
-AuthInfo authInfo = new AuthInfo("<username>", "*Your GreptimeCloud service password*");
+AuthInfo authInfo = new AuthInfo("<username>", "<password>");
 
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoint) //
         .authInfo(authInfo)
