@@ -53,7 +53,7 @@ helm repo update
 ```
 
 ```shell
-helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
+helm install greptimedb-operator greptime/greptimedb-operator -n default
 ```
 
 The maintained Helm charts are in [helm-charts][6].
@@ -61,25 +61,27 @@ The maintained Helm charts are in [helm-charts][6].
 ### 3. Create your own GreptimeDB cluster
 
 Create an etcd cluster for GreptimeDB:
+
 ```shell
 helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
---set replicaCount=3 \
---set auth.rbac.create=false \
---set auth.rbac.token.enabled=false \
--n default
+  --set replicaCount=3 \
+  --set auth.rbac.create=false \
+  --set auth.rbac.token.enabled=false \
+  -n default
 ```
 
 Create a GreptimeDB cluster which uses the etcd cluster created at previous step:
 
 ```shell
-helm install mycluster greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb-cluster -n default
 ```
 
 Or, if you already have an etcd cluster, you can use `etcdEndpoints` to use your etcd cluster:
   
 ```shell
-helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
--n default --devel
+helm install mycluster greptime/greptimedb-cluster \
+  --set etcdEndpoints=<your-etcd-cluster-endpoints> \
+  -n default
 ```
 
 After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:

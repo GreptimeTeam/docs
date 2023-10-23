@@ -25,7 +25,7 @@ helm repo update
 ```
 
 ```shell
-helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
+helm install greptimedb-operator greptime/greptimedb-operator -n default
 ```
 
 维护的 Helm 图表在 [helm-charts][6] 中。
@@ -34,10 +34,10 @@ helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
 
 ```shell
 helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
---set replicaCount=3 \
---set auth.rbac.create=false \
---set auth.rbac.token.enabled=false \
--n default
+  --set replicaCount=3 \
+  --set auth.rbac.create=false \
+  --set auth.rbac.token.enabled=false \
+  -n default
 ```
 
 ### 4. 创建用户自己的 GreptimeDB 集群
@@ -45,14 +45,15 @@ helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
 创建 GreptimeDB 集群：
 
 ```shell
-helm install mycluster greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb-cluster -n default
 ```
 
 如果用户之前已经有了 etcd 集群，可以这样对其进行配置：
 
 ```shell
-helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
--n default --devel
+helm install mycluster greptime/greptimedb-cluster \
+  --set etcdEndpoints=<your-etcd-cluster-endpoints> \
+  -n default
 ```
 
 安装之后，可以通过 `kubectl port-forward` 语句来访问 GreptimeDB 集群：
@@ -117,7 +118,7 @@ curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/instal
 ### 3. 创建用户自己的 GreptimeDB 集群
 
 ```shell
-./gtctl cluster create mydb -n default
+./gtctl cluster create mycluster -n default
 ```
 
 安装完成后，`gtctl` 会创建以下内容：
@@ -130,11 +131,11 @@ curl -L https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/instal
 可以通过 `kubectl port-forward` 命令来转发前端请求：
 
 ```shell
-kubectl port-forward svc/mydb-frontend 4002:4002 > connections.out &
+kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
 ```
 
 ### 4. 清除 GreptimeDB 集群
 
 ```shell
-./gtctl cluster delete mydb --tear-down-etcd
+./gtctl cluster delete mycluster --tear-down-etcd
 ```
