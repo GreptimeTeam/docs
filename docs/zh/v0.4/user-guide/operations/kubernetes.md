@@ -33,25 +33,27 @@ helm install greptimedb-operator greptime/greptimedb-operator -n default --devel
 ### 3. 创建用户自己的 GreptimeDB 集群
 
 为 GreptimeDB 创建 etcd cluster 集群
+
 ```shell
 helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
---set replicaCount=3 \
---set auth.rbac.create=false \
---set auth.rbac.token.enabled=false \
--n default
+  --set replicaCount=3 \
+  --set auth.rbac.create=false \
+  --set auth.rbac.token.enabled=false \
+  -n default
 ```
 
 创建 GreptimeDB 集群。该集群会使用上一步创建的 etcd 集群：
 
 ```shell
-helm install mycluster greptime/greptimedb -n default --devel
+helm install mycluster greptime/greptimedb-cluster -n default
 ```
 
 如果你拥有自己的 etcd 集群，可以通过设置 `etcdEndpoints` 来使用自定义的 etcd 集群：
 
 ```shell
-helm install mycluster greptime/greptimedb --set etcdEndpoints=<your-etcd-cluster-endpoints> \
--n default --devel
+helm install mycluster greptime/greptimedb-cluster \
+  --set etcdEndpoints=<your-etcd-cluster-endpoints> \
+  -n default
 ```
 
 安装之后，可以通过 `kubectl port-forward` 语句来转发 GreptimeDB 集群的 MySQL 协议端口：
