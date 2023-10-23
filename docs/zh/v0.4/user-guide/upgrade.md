@@ -39,24 +39,18 @@ OPTIONS:
 - `-output-dir`：要放置导出数据的目录。需要是当前机器上的路径。导出的 SQL 文件将放在该目录中。
 - `-target`：要导出的内容。`create-table` 可以导出每个表的 `CREATE TABLE` 语句。`table-data` 可以导出每个表的数据以及对应的 `COPY FROM` 语句。
 
-For a complete upgrade, you will need to execute this tools twice with each target options.
-
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
 
 ## 示例
 
-Here is a complete example for upgrading from `v0.3.0` to `v0.4.0`.
-
 这一节将演示如何从 `v0.3.0` 升级到 `v0.4.0`。
 
-In the following text, we assume that you have a Frontend's gRPC endpoint is available at `127.0.0.1:4000`. And the catalog is `greptime`, schema is `public`. Hence the database is `greptime-public`. The output dir is `/tmp/greptimedb-export`.
-
-在下面的文本中，我们假设您的 Frontend 的 gRPC 端点为 `127.0.0.1:4000`，需要导出的 Catalog 为 `greptime`，Schema 为 `public`。因此 Database 是 `greptime-public`。输出目录是 `/tmp/greptimedb-export`。
+在下面的文本中，我们假设您的 Frontend 的 gRPC 端点为 `127.0.0.1:4000`。输出目录是 `/tmp/greptimedb-export`。
 
 ### 导出 `CREATE TABLE`
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 如果成功，您将看到类似于以下内容的输出
@@ -98,6 +92,8 @@ greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-
 
 :::tip NOTICE
 从这一步开始，所有的操作都是在新版本的 GreptimeDB 中完成的。
+
+PostgreSQL 协议的默认端口是 `4003`。
 :::
 
 在执行以下命令之前，您需要在新部署中首先创建相应的数据库（但在本例中，数据库 `greptime-public` 是默认的）。
@@ -105,13 +101,13 @@ greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-
 此命令将在新版本的 GreptimeDB 中创建所有表。
 
 ```shell
-psql greptime-public -f /tmp/greptime-public.sql
+psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public.sql
 ```
 
 接下来导入数据
 
 ```shell
-psql greptime-public -f /tmp/greptime-public_copy_from.sql
+psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
 ### 清理
