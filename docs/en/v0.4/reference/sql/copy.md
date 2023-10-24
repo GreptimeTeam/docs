@@ -15,7 +15,17 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 `TO` specifies the file path and name to save the exported
 data (`/xxx/xxx/output.parquet` in this case).
 
+### `WITH` Option
+
 `WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
+
+| Option  | Description  | Required |
+|---|---|---|
+| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
+
+### `CONNECTION` Option
+
+`COPY TO` supports exporting data to cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
 ## COPY FROM
 
@@ -36,6 +46,8 @@ FROM { '<path>/[<filename>]' }
 
 The command starts with the keyword `COPY`, followed by the name of the table you want to import data into.
 
+### `WITH` Option
+
 `FORMAT` specifies the file format of the imported file. In this example, the format is Parquet.
 
 The option `PATTERN` allows the usage of wildcard characters like * to specify multiple input files that
@@ -52,24 +64,28 @@ Specifically, if you only have one file to import, you can use the following syn
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
-### WITH Options
-
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 
-### Connection Options
+### `CONNECTION` Option
 
-#### S3
+`COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
-When you try to copy data from(to) S3:
+## Connect to S3
+
+You can copy data from/to S3
 
 ```sql
-COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
+-- COPY FROM
+COPY tbl FROM '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
+
+-- COPY TO
+COPY tbl TO '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
 ```
 
-##### URL
+### URL
 
 Notes: You should specify a file using `S3://bucket/key-name`. The following example shows the correct format.
 
@@ -77,20 +93,24 @@ Notes: You should specify a file using `S3://bucket/key-name`. The following exa
 S3://my-bucket/data.parquet
 ```
 
-Another way is using Virtual-hosted–style. The following example shows the correct format.
+Another way is using Virtual-hosted–style(`ENABLE_VIRTUAL_HOST_STYLE` must be set to `true` to enable this). The following example shows the correct format.
 
 ```
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-##### CONNECTION
+:::tip NOTE
+you can use `Copy S3 URI` or `COPY URL` on S3 console to get S3 URI/HTTP URL prefix or full path.
+:::
+
+### Options
 
 You can set the following **CONNECTION** options:
 
 | Option  | Description  | Required |
 |---|---|---|
-| `REGION` | AWS region name.  e.g., us-east-1.  | **Required** |
-| `ENDPOINT`  | The bucket endpoint  | Optional |
+| `REGION` | AWS region name.  e.g., `us-west-2`  | **Required** |
+| `ENDPOINT`  | The bucket endpoint. e.g., `s3.us-west-2.amazonaws.com`  | Optional |
 | `ACCESS_KEY_ID` | ACCESS_KEY_ID Your access key ID for connecting the AWS S3 compatible object storage.  | Optional |
 | `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.  | Optional |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |

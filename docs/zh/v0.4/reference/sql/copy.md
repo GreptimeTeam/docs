@@ -11,7 +11,18 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 命令以 `COPY` 关键字开始，后面跟着要导出数据的表名（本例中为 `tbl`）。
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
+### `WITH` 选项
+
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
+
+### `CONNECTION` 选项
+
+`COPY TO` 支持导出数据到云存储上，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+
 
 ## COPY FROM
 
@@ -30,6 +41,8 @@ FROM { '<path>/[<filename>]' }
 
 命令以 `COPY` 关键字开始，后面跟着要导入数据的表名。
 
+### `WITH` 选项
+
 `FORMAT` 指定导入文件的格式，本例中为 Parquet。
 
 选项 `PATTERN` 允许使用通配符（如 *）指定匹配某种模式的多个输入文件。例如，你可以使用以下语法导入目录（必须是绝对路径）"/path/to/folder" 中文件名包含 `parquet` 的所有文件：
@@ -44,8 +57,6 @@ COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
-### WITH 选项
-
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
@@ -53,15 +64,21 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 ### Connection 选项
 
-#### S3
+`COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
 
-当你从 S3 导入数据时可以使用下方语法：
+## 连接 S3
+
+你可以从 S3 导入/导出数据
 
 ```sql
-COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2');. 
+-- COPY FROM
+COPY tbl FROM '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
+
+-- COPY TO
+COPY tbl TO '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
 ```
 
-##### URL
+### URL
 
 注意：你应该使用 `S3://bucket/key-name` 指定文件。下方的例子展示了正确的格式：
 
@@ -69,20 +86,24 @@ COPY tbl FROM '<url>' WITH (FORMAT = 'parquet') CONNECTION(BUCKET = 'us-west-2')
 S3://my-bucket/data.parquet
 ```
 
-另一种方式是使用 Virtual-hosted–style，例如：
+另一种方式是使用 Virtual-hosted–style（`ENABLE_VIRTUAL_HOST_STYLE` 需要设置成 `true`），例如：
 
 ```
 https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
-##### CONNECTION
+:::tip NOTE
+可以在 S3 控制台上点击 `Copy S3 URI` 或者 `COPY URL` 直接获取对应的 URL/HTTP 前缀或者完整路径。
+:::
+
+### 选项
 
 你可以设置这些 **CONNECTION** 选项：
 
 | 选项  | 描述  | 是否必需  |
 |---|---|---|
-| `REGION` | AWS region 名称，例如 us-east-1.  | **是** |
-| `ENDPOINT`  | The bucket endpoint  | 可选 |
+| `REGION` | AWS region 名称，例如 `us-west-2` | **是** |
+| `ENDPOINT`  | The bucket endpoint，例如 `s3.us-west-2.amazonaws.com`  | 可选 |
 | `ACCESS_KEY_ID` | 用于连接 AWS S3 兼容的对象存储的访问密钥 ID | 可选 |
 | `SECRET_ACCESS_KEY` | 用于连接 AWS S3 兼容的对象存储的秘密访问密钥  | 可选 |
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
