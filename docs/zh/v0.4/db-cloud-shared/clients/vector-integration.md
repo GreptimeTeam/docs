@@ -8,7 +8,7 @@ type = "greptimedb"
 endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
-password = "Your database password of GreptimeDB"
+password = "<password>"
 ```
 
 请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/sinks/greptimedb/) 查看更多配置项。

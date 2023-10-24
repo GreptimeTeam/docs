@@ -13,7 +13,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码：
 
 - User: `<username>`
-- Password: *Your GreptimeDB password*
+- Password: `<password>`
 
 然后单击 Save & Test 按钮以测试连接。
 
@@ -24,7 +24,10 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 - Host: `<host>:4002`
 - Database: `<dbname>`
 - User: `<username>`
-- Password: *Your GreptimeDB password*
+- Password: `<password>`
 - Session timezone: `UTC`
 
 然后单击 Save & Test 按钮以测试连接。
+
+注意目前我们只能使用 SQL 创建 Grafana Panel。由于时间戳数据类型的区别，Grafana
+的 SQL Builder 暂时无法选择时间戳字段。

@@ -10,7 +10,7 @@ To connect to GreptimeCloud in MySQL protocol, using information below:
 - Port: `4002`
 - Database: `<dbname>`
 - Username: `<username>`
-- Password: *Your GreptimeCloud service password*
+- Password: `<password>`
 
 ## MySQL CLI
 
@@ -30,9 +30,8 @@ mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 
 ## JDBC URL
 
-Use following connect string for your JDBC client. Replace *PASSWORD* with the
-GreptimeCloud service password.
+Use following connect string for your JDBC client.
 
 ```
-jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=PASSWORD
+jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
 ```
