@@ -13,7 +13,7 @@ GreptimeDB 中的所有数据都被组织成表，每个表中的数据项由三
 
 假设我们有一个名为 `system_metrics` 的时间序列表用于监控独立设备的资源使用情况。该表的数据模型如下：
 
-![time-series-table-model](/time-series-table-model.png)
+![time-series-table-model](/time-series-data-model.drawio.svg)
 
 这与大家熟悉的表模型非常相似。不同之处在于 `Timestamp` 约束，它用于将 `ts` 列指定为此表的时间索引列。
 
