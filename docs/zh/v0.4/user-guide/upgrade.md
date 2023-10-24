@@ -88,7 +88,7 @@ greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-
 
 ### 导入表结构和数据
 
-然后您需要执行上一步生成的 SQL 文件。首先是 `greptime-public.sql`。使用 `psql` 作为客户端。
+然后您需要执行上一步生成的 SQL 文件。首先是 `greptime-public.sql`。在之前的步骤中导出的 SQL 语句使用的是 PostgreSQL 方言，接下来的操作都将通过 [PG 协议](/user-guide/clients/postgresql.md)来进行。本文档假设客户端为 `psql`。
 
 :::tip NOTICE
 从这一步开始，所有的操作都是在新版本的 GreptimeDB 中完成的。
