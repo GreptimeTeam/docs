@@ -25,7 +25,7 @@ data (`/xxx/xxx/output.parquet` in this case).
 
 ### `CONNECTION` Option
 
-`COPY TO` supports export data to cloud storages like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY TO` supports exporting data to cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
 ## COPY FROM
 
