@@ -71,7 +71,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 ### `CONNECTION` Option
 
-`COPY FROM` also supports import data from cloud storages like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
 ## Connect to S3
 
