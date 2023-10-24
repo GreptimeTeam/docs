@@ -26,7 +26,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 
 Suppose we have a time-series table called `system_metrics` that monitors the resource usage of a standalone device. The data model for this table is as follows:
 
-![time-series-table-model](/time-series-data-model.drawio.svg)
+![time-series-table-model](/time-series-data-model.svg)
 
 Those are very similar to the table model everyone is familiar with. The difference lies in the `Timestamp` constraint, which is used to specify the `ts` column as the time index column of this table.
 
