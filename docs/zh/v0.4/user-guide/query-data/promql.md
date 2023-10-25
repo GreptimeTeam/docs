@@ -132,6 +132,24 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 你可以在所有支持 SQL 的地方编写上述命令，包括 GreptimeDB HTTP API、SDK、PostgreSQL 和 MySQL 客户端等。
 
+## 多列查询
+
+基于表模型，GreptimeDB 支持在单个表（或在 Prometheus 中称为指标）中查询多个字段。默认情况下，查询将应用于每个值字段 (field)。或者也可以使用特殊的过滤器 `__field__` 来查询特定的字段：
+
+```promql
+metric{__field__="field1"}
+```
+
+反选或正则表达式也都支持
+
+```promql
+metric{__field__!="field1"}
+
+metric{__field__=~"field_1|field_2"}
+
+metric{__field__!~"field_1|field_2"}
+```
+
 ## 局限
 
 尽管 GreptimeDB 支持丰富的数据类型，但 PromQL 的实现仍然局限于以下类型：
@@ -199,26 +217,33 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
     | topk         | TBD      |
     | bottomk      | TBD      |
     | count_values | TBD      |
-    | quantile     | TBD      |
 
 ### Instant Functions
 
 - 支持:
-    | Function | Example         |
-    | :------- | :-------------- |
-    | abs      | `abs(metric)`   |
-    | ceil     | `ceil(metric)`  |
-    | exp      | `exp(metric)`   |
-    | ln       | `ln(metric)`    |
-    | log2     | `log2(metric)`  |
-    | log10    | `log10(metric)` |
-    | sqrt     | `sqrt(metric)`  |
-    | acos     | `acos(metric)`  |
-    | asin     | `asin(metric)`  |
-    | atan     | `atan(metric)`  |
-    | sin      | `sin(metric)`   |
-    | cos      | `cos(metric)`   |
-    | tan      | `tan(metric)`   |
+    | Function           | Example                           |
+    | :----------------- | :-------------------------------- |
+    | abs                | `abs(metric)`                     |
+    | ceil               | `ceil(metric)`                    |
+    | exp                | `exp(metric)`                     |
+    | ln                 | `ln(metric)`                      |
+    | log2               | `log2(metric)`                    |
+    | log10              | `log10(metric)`                   |
+    | sqrt               | `sqrt(metric)`                    |
+    | acos               | `acos(metric)`                    |
+    | asin               | `asin(metric)`                    |
+    | atan               | `atan(metric)`                    |
+    | sin                | `sin(metric)`                     |
+    | cos                | `cos(metric)`                     |
+    | tan                | `tan(metric)`                     |
+    | acosh              | `acosh(metric)`                   |
+    | asinh              | `asinh(metric)`                   |
+    | atanh              | `atanh(metric)`                   |
+    | sinh               | `sinh(metric)`                    |
+    | cosh               | `cosh(metric)`                    |
+    | tanh               | `tanh(metric)`                    |
+    | timestamp          | `timestamp()`                     |
+    | histogram_quantile | `histogram_quantile(phi, metric)` |
 
 - 不支持:
     | Function                   | Progress |
@@ -228,13 +253,6 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
     | sgn                        | TBD      |
     | sort                       | TBD      |
     | sort_desc                  | TBD      |
-    | timestamp                  | TBD      |
-    | acosh                      | TBD      |
-    | asinh                      | TBD      |
-    | atanh                      | TBD      |
-    | sinh                       | TBD      |
-    | cosh                       | TBD      |
-    | tanh                       | TBD      |
     | deg                        | TBD      |
     | rad                        | TBD      |
     | *other multiple input fns* | TBD      |
@@ -242,21 +260,17 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 ### Range Functions
 
 - 支持:
-    | Function           | Example                       |
-    | :----------------- | :---------------------------- |
-    | idelta             | `idelta(metric[5m])`          |
-    | \<aggr\>_over_time | `count_over_time(metric[5m])` |
-
-- 不支持:
-    | Function         | Example |
-    | :--------------- | :------ |
-    | stddev_over_time | TBD     |
-    | stdvar_over_time | TBD     |
-    | changes          | TBD     |
-    | delta            | TBD     |
-    | rate             | TBD     |
-    | deriv            | TBD     |
-    | increase         | TBD     |
-    | idelta           | TBD     |
-    | irate            | TBD     |
-    | reset            | TBD     |
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | idelta             | `idelta(metric[5m])`           |
+    | \<aggr\>_over_time | `count_over_time(metric[5m])`  |
+    | stddev_over_time   | `stddev_over_time(metric[5m])` |
+    | stdvar_over_time   | `stdvar_over_time(metric[5m])` |
+    | changes            | `changes(metric[5m])`          |
+    | delta              | `delta(metric[5m])`            |
+    | rate               | `rate(metric[5m])`             |
+    | deriv              | `deriv(metric[5m])`            |
+    | increase           | `increase(metric[5m])`         |
+    | idelta             | `idelta(metric[5m])`           |
+    | irate              | `irate(metric[5m])`            |
+    | reset              | `reset(metric[5m])`            |
