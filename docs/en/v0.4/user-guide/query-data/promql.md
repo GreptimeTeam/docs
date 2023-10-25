@@ -135,6 +135,24 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 You can write the above command in all places that support SQL, including the GreptimeDB HTTP API, SDK, PostgreSQL and MySQL client etc.
 
+## Multiple fields
+
+Based on the table model, GreptimeDB supports multiple fields in a single table(or metric, in the context of Prometheus). Queries will run on every fields by default. Or you can use the special filter `__field__` to query a specific field(s):
+
+```promql
+metric{__field__="field1"}
+```
+
+Exclude or regex are also supported:
+
+```promql
+metric{__field__!="field1"}
+
+metric{__field__=~"field_1|field_2"}
+
+metric{__field__!~"field_1|field_2"}
+```
+
 ## Limitations
 
 Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
@@ -203,64 +221,60 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | topk         | TBD      |
     | bottomk      | TBD      |
     | count_values | TBD      |
-    | quantile     | TBD      |
 
 ### Instant Functions
 
 - Supported:
-    | Function | Example         |
-    | :------- | :-------------- |
-    | abs      | `abs(metric)`   |
-    | ceil     | `ceil(metric)`  |
-    | exp      | `exp(metric)`   |
-    | ln       | `ln(metric)`    |
-    | log2     | `log2(metric)`  |
-    | log10    | `log10(metric)` |
-    | sqrt     | `sqrt(metric)`  |
-    | acos     | `acos(metric)`  |
-    | asin     | `asin(metric)`  |
-    | atan     | `atan(metric)`  |
-    | sin      | `sin(metric)`   |
-    | cos      | `cos(metric)`   |
-    | tan      | `tan(metric)`   |
+    | Function           | Example                           |
+    | :----------------- | :-------------------------------- |
+    | abs                | `abs(metric)`                     |
+    | ceil               | `ceil(metric)`                    |
+    | exp                | `exp(metric)`                     |
+    | ln                 | `ln(metric)`                      |
+    | log2               | `log2(metric)`                    |
+    | log10              | `log10(metric)`                   |
+    | sqrt               | `sqrt(metric)`                    |
+    | acos               | `acos(metric)`                    |
+    | asin               | `asin(metric)`                    |
+    | atan               | `atan(metric)`                    |
+    | sin                | `sin(metric)`                     |
+    | cos                | `cos(metric)`                     |
+    | tan                | `tan(metric)`                     |
+    | acosh              | `acosh(metric)`                   |
+    | asinh              | `asinh(metric)`                   |
+    | atanh              | `atanh(metric)`                   |
+    | sinh               | `sinh(metric)`                    |
+    | cosh               | `cosh(metric)`                    |
+    | tanh               | `tanh(metric)`                    |
+    | timestamp          | `timestamp()`                     |
+    | histogram_quantile | `histogram_quantile(phi, metric)` |
 
 - Unsupported:
-    | Function                   | Progress |
-    | :------------------------- | :------- |
-    | absent                     | TBD      |
-    | scalar                     | TBD      |
-    | sgn                        | TBD      |
-    | sort                       | TBD      |
-    | sort_desc                  | TBD      |
-    | timestamp                  | TBD      |
-    | acosh                      | TBD      |
-    | asinh                      | TBD      |
-    | atanh                      | TBD      |
-    | sinh                       | TBD      |
-    | cosh                       | TBD      |
-    | tanh                       | TBD      |
-    | deg                        | TBD      |
-    | rad                        | TBD      |
-    | *other multiple input fns* | TBD      |
+    | Function                   | Progress / Example |
+    | :------------------------- | :----------------- |
+    | absent                     | TBD                |
+    | scalar                     | TBD                |
+    | sgn                        | TBD                |
+    | sort                       | TBD                |
+    | sort_desc                  | TBD                |
+    | deg                        | TBD                |
+    | rad                        | TBD                |
+    | *other multiple input fns* | TBD                |
 
 ### Range Functions
 
 - Supported:
-    | Function           | Example                       |
-    | :----------------- | :---------------------------- |
-    | idelta             | `idelta(metric[5m])`          |
-    | \<aggr\>_over_time | `count_over_time(metric[5m])` |
-
-- Unsupported:
-    | Function         | Example |
-    | :--------------- | :------ |
-    | stddev_over_time | TBD     |
-    | stdvar_over_time | TBD     |
-    | changes          | TBD     |
-    | delta            | TBD     |
-    | rate             | TBD     |
-    | deriv            | TBD     |
-    | increase         | TBD     |
-    | idelta           | TBD     |
-    | irate            | TBD     |
-    | reset            | TBD     |
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | idelta             | `idelta(metric[5m])`           |
+    | \<aggr\>_over_time | `count_over_time(metric[5m])`  |
+    | stddev_over_time   | `stddev_over_time(metric[5m])` |
+    | stdvar_over_time   | `stdvar_over_time(metric[5m])` |
+    | changes            | `changes(metric[5m])`          |
+    | delta              | `delta(metric[5m])`            |
+    | rate               | `rate(metric[5m])`             |
+    | deriv              | `deriv(metric[5m])`            |
+    | increase           | `increase(metric[5m])`         |
+    | idelta             | `idelta(metric[5m])`           |
+    | irate              | `irate(metric[5m])`            |
+    | reset              | `reset(metric[5m])`            |
