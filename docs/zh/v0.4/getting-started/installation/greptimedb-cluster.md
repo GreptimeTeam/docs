@@ -1,4 +1,4 @@
-# 开始探索 GreptimeDB 分布式集群
+# GreptimeDB 分布式集群
 
 GreptimeDB 可以运行于 [cluster](/developer-guide/overview.md) 模式以支持水平扩展。
 
@@ -19,8 +19,6 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 ```
 
 当命令执行完毕之后，playground 将会在前台启动。你可以使用 `Ctrl+C` 来停止 playground。playground 将会在你的主机上以 bare-metal 模式部署最小的 GreptimeDB 集群。
-
-你可以使用 [开始探索 GreptimeDB](/getting-started/try-out-greptimedb.md) 中的相同命令来与 GreptimeDB 集群进行交互。
 
 更多的细节，请参考 [gtctl operations](/user-guide/operations/gtctl.md)。
 
@@ -61,4 +59,7 @@ kubectl port-forward svc/mycluster-frontend \
 4242:4242
 ```
 
-您可以打开新的终端，通过客户端工具（mysql 或 psql）连接数据库，并按照 [开始探索 GreptimeDB](/getting-started/try-out-greptimedb.md) 的方式操作数据。
+## 下一步
+
+在[快速入门](../quick-start/overview.md)中学习如何将数据写入 GreptimeDB 并使用 Grafana 进行可视化。
+

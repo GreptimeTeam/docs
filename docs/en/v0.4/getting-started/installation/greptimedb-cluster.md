@@ -1,4 +1,4 @@
-# Try Out the GreptimeDB Cluster
+# GreptimeDB Cluster
 
 The GreptimeDB cluster can run in the [cluster](/developer-guide/overview.md) mode to scale horizontally.
 
@@ -20,8 +20,6 @@ The **fastest** way to experience the GreptimeDB cluster is to use the playgroun
 ```
 
 When the command is executed, the playground will be started in the foreground. You can use `Ctrl+C` to stop the playground. The playground will deploy the minimal GreptimeDB cluster in bare-metal mode on your host.
-
-You can use the same commands from [Try Out GreptimeDB](/getting-started/try-out-greptimedb.md) to interact with the GreptimeDB cluster.
 
 For more details, please refer to [gtctl operations](/user-guide/operations/gtctl.md).
 
@@ -62,4 +60,6 @@ kubectl port-forward svc/mycluster-frontend \
   4242:4242
 ```
 
-You can open the new terminal to connect the database by client tools(mysql or psql) and operate the data like [Try Out GreptimeDB](/getting-started/try-out-greptimedb.md).
+## Next Step
+
+Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).

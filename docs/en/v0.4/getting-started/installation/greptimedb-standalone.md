@@ -1,14 +1,10 @@
-# Try Out GreptimeDB
-
-Begin to explore GreptimeDB's powerful core features.
-
-## Installation
+# GreptimeDB Standalone
 
 You can try out GreptimeDB with our test builds released on the [Download page](https://greptime.com/download).
 
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
-### Binary
+## Binary
 
 For Linux and macOS users, you can download the latest build of the `greptime` binary by using the following commands:
 
@@ -25,7 +21,7 @@ You can run GreptimeDB in the standalone mode:
 ./greptime standalone start
 ```
 
-### Docker
+## Docker
 
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
@@ -66,7 +62,7 @@ You can:
 
 2. Upgrade the Docker version to v23.0.0 or higher;
    :::
-
+<!-- 
 ## Connect
 
 GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md). We use MySQL client here for simplicity.
@@ -241,4 +237,8 @@ Congratulations you have learned the basic features of GreptimeDB. You are ready
 - [Query data](/user-guide/query-data/overview.md)
 - [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
 - [Cluster](/user-guide/cluster.md)
-- [Operations](/user-guide/operations/overview.md)
+- [Operations](/user-guide/operations/overview.md) -->
+
+## Next Step
+
+Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).

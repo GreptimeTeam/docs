@@ -1,6 +1,17 @@
 - Getting-Started:
-  - try-out-greptimedb
-  - try-out-the-greptimedb-cluster
+  - Installation:
+    - greptimedb-standalone
+    - greptimedb-cluster
+  - Quick-Start:
+    - overview
+    - prometheus
+    - mysql
+    - influxdb
+    - go
+    - java
+    - python
+    - node
+    - vector
 - User-Guide:
   - overview
   - Concepts:
