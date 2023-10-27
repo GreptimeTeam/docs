@@ -1,7 +1,7 @@
 * [GreptimeDB](https://greptime.com/)
 * [Grafana](https://grafana.com/)
 
-Here we use Docker Compose to start GreptimeDB and Grafana. To do this, create a `docker-compose.yml` file with the following content:
+Here we use [Docker Compose](https://docs.docker.com/compose/) to start GreptimeDB and Grafana. To do this, create a `docker-compose.yml` file with the following content:
 
 ```yaml
 services:
