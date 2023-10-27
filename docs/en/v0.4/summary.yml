@@ -4,8 +4,8 @@
     - greptimedb-cluster
   - Quick-Start:
     - overview
-    - prometheus
     - mysql
+    - prometheus
     - influxdb
     - go
     - java
