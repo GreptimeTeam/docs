@@ -45,7 +45,7 @@ OPTIONS:
 
 这一节将演示如何从 `v0.3.0` 升级到 `v0.4.0`。
 
-在下面的文本中，我们假设您的 Frontend 的 gRPC 端点为 `127.0.0.1:4000`。输出目录是 `/tmp/greptimedb-export`。
+在下面的文本中，我们假设您的 Frontend 的 gRPC 端口为 `127.0.0.1:4001`。输出目录是 `/tmp/greptimedb-export`。
 
 ### 导出 `CREATE TABLE`
 
