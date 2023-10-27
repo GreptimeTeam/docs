@@ -37,6 +37,9 @@ Run prometheus:
 ./prometheus --config.file=prometheus.yml
 ```
 
+Access Prometheus by entering `localhost:9090` in your web browser.
+
+
 ## Docker
 
 Run GreptimeDB:

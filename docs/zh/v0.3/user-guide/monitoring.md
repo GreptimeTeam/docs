@@ -37,7 +37,7 @@ scrape_configs:
 ./prometheus --config.file=prometheus.yml
 ```
 
-在浏览器输入`localhost:9090`访问prometheus，完成对GreptimeDB的监控
+在浏览器输入`localhost:9090`访问prometheus
 
 ## Docker
 
