@@ -21,7 +21,7 @@ tar xvfz prometheus-*.tar.gz
 cd prometheus-*
 ```
 
-编写prometheus配置文件，并保存为prometheus.yml:
+Write a Prometheus configuration file and save it as prometheus.yml:
 ```
 global:
   scrape_interval: 10s 
@@ -32,16 +32,14 @@ scrape_configs:
       - targets: ['localhost:4000']
 ```
 
-运行prometheus:
+Run prometheus:
 ```
 ./prometheus --config.file=prometheus.yml
 ```
 
-在浏览器输入`localhost:9090`访问prometheus，完成对GreptimeDB的监控
-
 ## Docker
 
-运行GreptimeDB:
+Run GreptimeDB:
 ```
 docker run -p 4000-4003:4000-4003 \
   -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
