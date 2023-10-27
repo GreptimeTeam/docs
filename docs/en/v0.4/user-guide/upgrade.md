@@ -45,7 +45,7 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 Here is a complete example for upgrading from `v0.3.0` to `v0.4.0`.
 
-In the following text, we assume that you have a Frontend's gRPC endpoint is available at `127.0.0.1:4000`. The output dir is `/tmp/greptimedb-export`.
+In the following text, we assume that you have a Frontend's gRPC endpoint is available at `127.0.0.1:4001`. The output dir is `/tmp/greptimedb-export`.
 
 ### Export `CREATE TABLE`
 
