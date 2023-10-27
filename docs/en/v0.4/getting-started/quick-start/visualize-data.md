@@ -1,4 +1,4 @@
-<!-- This document is used by go.md, java.md, node.md, python.md, influxdb.md -->
+<!-- This document is used by go.md, java.md, node.md, python.md, influxdb.md, vector.md -->
 
 ### Add Data Source
 
