@@ -71,6 +71,7 @@
     # - back-up-&-restore-data
     # - capacity-planning
     - cli-repl
+  - monitoring
 - GreptimeCloud:
   - overview
   - Getting-Started:
