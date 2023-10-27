@@ -60,6 +60,6 @@ kubectl port-forward svc/mycluster-frontend \
   4242:4242
 ```
 
-## Next Step
+## Next Steps
 
 Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).

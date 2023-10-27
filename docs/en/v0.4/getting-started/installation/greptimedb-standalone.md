@@ -239,6 +239,6 @@ Congratulations you have learned the basic features of GreptimeDB. You are ready
 - [Cluster](/user-guide/cluster.md)
 - [Operations](/user-guide/operations/overview.md) -->
 
-## Next Step
+## Next Steps
 
 Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).

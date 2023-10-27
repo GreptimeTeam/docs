@@ -1,6 +1,7 @@
 # Overview
 
-In this section, we will guide you through the process of using GreptimeDB to collect and visualize data. We hope you find it enjoyable!
+In this section, we will guide you through the process of collecting data,
+writing it to GreptimeDB, and visualizing it with Grafana.
 
 ## Protocols
 
