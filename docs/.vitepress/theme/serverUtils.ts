@@ -7,8 +7,8 @@ export async function makeSidebar(lang, version) {
   const versionPath = `/${version}`
   const linkPath = version !== LATEST_VERSION ? `/${version}` : ''
 
-  const summary = YAML.load(fs.readFileSync(`docs/en${versionPath}/summary.yml`), 'utf8')
-  const summaryI18n = lang !== 'en' ? YAML.load(fs.readFileSync(`docs${langPath}${versionPath}/summary-i18n.yml`), 'utf8') : null
+  const summary = YAML.load(fs.readFileSync(`docs${versionPath}/en/summary.yml`), 'utf8')
+  const summaryI18n = lang !== 'en' ? YAML.load(fs.readFileSync(`docs${versionPath}${langPath}/summary-i18n.yml`), 'utf8') : null
   function makeSidebarItem(items, path, level = 0) {
     if (Array.isArray(items)) {
       return items.map(item => makeSidebarItem(item, path, level + 1))
@@ -28,7 +28,7 @@ export async function makeSidebar(lang, version) {
     } else {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
-        let file = fs.readFileSync(`docs${langPath}${versionPath}${link}.md`, 'utf-8')
+        let file = fs.readFileSync(`docs${versionPath}${langPath}${link}.md`, 'utf-8')
         return {
           text: file.split('\n')[0].replace('# ', ''),
           link: `${linkPath}${link}`,

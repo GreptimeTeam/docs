@@ -1,13 +1,15 @@
 import dotenv from 'dotenv'
+import rollupOptions from './rollupOptions'
 
 export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 export const LATEST_VERSION = 'v0.4'
 
-const latestVersionPath = `${CURRENT_LANG}/${LATEST_VERSION}/:path+`
-const versionPath = `${CURRENT_LANG}/:version/:path+`
+const latestVersionPath = `${LATEST_VERSION}/${CURRENT_LANG}/:path+`
+const versionPath = `:version/${CURRENT_LANG}/:path+`
 
 export const common = async () => {
   return {
+    rollupOptions,
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,

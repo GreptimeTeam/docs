@@ -1,5 +1,5 @@
-import { enConfig } from '../../en/config'
-import { zhConfig } from '../../zh/config'
+import { enConfig } from './en'
+import { zhConfig } from './zh'
 import { common, CURRENT_LANG } from './common'
 import merge from 'deepmerge'
 

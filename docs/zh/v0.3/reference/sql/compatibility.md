@@ -1,3 +1,0 @@
-# ANSI Compatibility
-
-TODO
