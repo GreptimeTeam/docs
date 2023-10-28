@@ -8,6 +8,7 @@
 
 Create a file named `vector.toml` and copy the following content into it.
 The configuration collects [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) as a Vector source and uses local GreptimeDB as the sink destination.
+The host `greptimedb` in the endpoint is the service name of GreptimeDB in the Docker network.
 
 ```toml
 [sources.in]
