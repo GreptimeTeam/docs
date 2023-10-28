@@ -5,13 +5,13 @@
   - Quick-Start:
     - overview
     - mysql
-    - prometheus
     - influxdb
     - go
     - java
     - python
     - node
     - vector
+    - prometheus
 - User-Guide:
   - overview
   - Concepts:
