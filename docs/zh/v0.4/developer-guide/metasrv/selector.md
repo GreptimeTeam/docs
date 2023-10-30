@@ -6,7 +6,7 @@
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
 
-在 `MetaSrv` 中存在一个特定的场景。当 `Frontend` 向 `MetaSrv` 发送建表请求时，`MetaSrv` 会创建一个路由表（表的创建细不在这里赘述）。在创建路由表时，`MetaSrv` 需要选择适当的 `Datanode`s。
+在 `MetaSrv` 中存在一个特定的场景。当 `Frontend` 向 `MetaSrv` 发送建表请求时，`MetaSrv` 会创建一个路由表（表的创建细节不在这里赘述）。在创建路由表时，`MetaSrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
 
 ## Selector 类型
 
