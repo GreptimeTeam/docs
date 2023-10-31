@@ -49,15 +49,6 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
-安装etcd
-```
-helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  -n default
-```
-
 使用 [gtctl](https://docs.greptime.cn/user-guide/operations/gtctl) 安装 GreptimeDB cluster:
 ```
 gtctl cluster create mycluster -n default \
