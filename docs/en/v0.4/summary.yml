@@ -65,14 +65,13 @@
     - kubernetes
     - gtctl
     - run-on-android
+    - monitor-&-alert
     # TODO
-    # - monitor-&-alert
     # - import-data
     # - export-data
     # - back-up-&-restore-data
     # - capacity-planning
   - upgrade
-  - monitoring
 - GreptimeCloud:
   - overview
   - Getting-Started:
