@@ -33,7 +33,7 @@ Access Prometheus by entering `localhost:9090` in your web browser.
 
 Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#docker)
 
-Run prometheus:
+Run Prometheus:
 ```
 docker run \
   -p 9090:9090 \
