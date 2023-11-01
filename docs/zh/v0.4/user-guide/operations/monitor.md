@@ -61,6 +61,7 @@ gtctl cluster create mycluster -n default \
 ```
 
 ## Metrics Detail
+To find update-to-date information, please check the output of `curl http://<host>:<port>/metrics`
 
 ### Frontend
 
