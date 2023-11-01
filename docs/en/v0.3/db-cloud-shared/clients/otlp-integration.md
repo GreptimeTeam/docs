@@ -1,5 +1,4 @@
-
-GreptimeDB can be used as a collector to receive OpenTelemetry Metrics via the [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
+GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
 ### API
 

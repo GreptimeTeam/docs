@@ -1,5 +1,4 @@
-
-GreptimeDB 可以作为 collector 通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议接收 OpenTelemetry 指标。
+GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议，可以作为后端存储服务来接收 OpenTelemetry 指标数据。
 
 ### API
 
