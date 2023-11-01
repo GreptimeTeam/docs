@@ -112,7 +112,26 @@ Get after running
 +---------------------+---------------------------------+---------------------------------------+
 ```
 
+Users can explicitly use `BY ()` which mean they do not need to use aggregation keys and aggregate all data into a group. **But if the user directly omits the `BY` keyword, it means using the primary key of the table as the aggregate key.**
 
+```sql
+SELECT
+     ts,
+     min(cpu) RANGE '10s'
+FROM host_cpu ALIGN '5s' BY ();
+```
+
+Get after running
+
+```sql
++---------------------+---------------------------------------+
+| ts                  | MIN(host_cpu.cpu) RANGE 10s FILL NULL |
++---------------------+---------------------------------------+
+| 1970-01-01 08:00:05 |                                   1.1 |
+| 1970-01-01 08:00:00 |                                   1.1 |
+| 1970-01-01 08:00:10 |                                   2.2 |
++---------------------+---------------------------------------+
+```
 
 ## FILL OPTION
 
