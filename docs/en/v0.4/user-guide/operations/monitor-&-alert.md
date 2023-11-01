@@ -50,7 +50,7 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
-Use [gtctl](https://docs.greptime.com/user-guide/operations/gtctl) install GreptimeDB cluster:
+Use [gtctl](https://docs.greptime.com/user-guide/operations/gtctl) to install GreptimeDB cluster:
 ```
 gtctl cluster create mycluster -n default \
   --set cluster.prometheusMonitor.enabled=true \
