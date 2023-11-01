@@ -18,7 +18,7 @@ scrape_configs:
 ## Start GreptimeDB and Prometheus
 ### Binary
 
-根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#binary) 安装GreptimeDB
+根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#binary) 安装 GreptimeDB
 
 进入[prometheus官方文档](https://prometheus.io/download/) 下载二进制，并执行以下命令:
 
