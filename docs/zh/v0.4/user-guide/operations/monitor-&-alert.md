@@ -26,7 +26,7 @@ scrape_configs:
 ./prometheus --config.file=prometheus.yml
 ```
 
-在浏览器输入`localhost:9090`访问prometheus
+在浏览器输入`localhost:9090`访问 Prometheus
 
 ### Docker
 
