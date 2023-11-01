@@ -1,6 +1,6 @@
 # Monitor GreptimeDB
 
-使用prometheus采集GreptimeDB metrics
+使用 Prometheus 采集 GreptimeDB metrics
 
 ## Promethues Configuration
 
