@@ -4,7 +4,7 @@
 
 ## Promethues Configuration
 
-编写prometheus配置文件，并保存为prometheus.yml:
+编写 Prometheus 配置文件，并保存为 prometheus.yml:
 ```
 global:
   scrape_interval: 15s
