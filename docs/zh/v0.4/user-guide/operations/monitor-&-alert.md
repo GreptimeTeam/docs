@@ -32,7 +32,7 @@ scrape_configs:
 
 根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#docker) 安装GreptimeDB
 
-运行prometheus:
+运行 Prometheus:
 ```
 docker run \
   -p 9090:9090 \
