@@ -1,6 +1,6 @@
 # Monitor GreptimeDB
 
-To collect GreptimeDB metrics using prometheus
+To collect GreptimeDB metrics using Prometheus
 
 ## Promethues Configuration
 
