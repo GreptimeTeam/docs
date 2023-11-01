@@ -20,7 +20,7 @@ scrape_configs:
 
 Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#binary)
 
-[The official documentation for prometheus](https://prometheus.io/download/) download the binary, and execute the following command:
+Visit [the official documentation for Prometheus](https://prometheus.io/download/) to download the binary. Afterward, execute the following command:
 
 ```
 ./prometheus --config.file=prometheus.yml
