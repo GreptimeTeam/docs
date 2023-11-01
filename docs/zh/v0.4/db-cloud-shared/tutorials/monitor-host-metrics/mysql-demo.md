@@ -50,7 +50,7 @@ EOF
 ```bash
 # Create table
 mysql --ssl-mode=REQUIRED -u $username -p$password -h $host -P 4002 -A $database \
-    -e "CREATE TABLE IF NOT EXISTS monitor (host STRING, user_cpu DOUBLE, sys_cpu DOUBLE, idle_cpu DOUBLE, memory DOUBLE, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, TIME INDEX(ts), PRIMARY KEY(host));"
+    -e "CREATE TABLE IF NOT EXISTS monitor (host STRING, user_cpu DOUBLE, sys_cpu DOUBLE, idle_cpu DOUBLE, memory DOUBLE, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), TIME INDEX(ts), PRIMARY KEY(host));"
 
 # Insert metrics
 echo Sending metrics to GreptimeCloud...

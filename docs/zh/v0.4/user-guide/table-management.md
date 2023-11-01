@@ -78,7 +78,7 @@ USE public;
 ```sql
 CREATE TABLE monitor (
   host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   cpu DOUBLE DEFAULT 0,
   memory DOUBLE,
   PRIMARY KEY(host)) ENGINE=mito WITH(regions=1);
@@ -219,7 +219,7 @@ Query OK, 1 row affected (0.01 sec)
 curl -X POST \
   -H 'authorization: Basic {{authorization if exists}}' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
+  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), cpu DOUBLE DEFAULT 0, memory DOUBLE, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
 http://localhost:4000/v1/sql?db=public
 ```
 

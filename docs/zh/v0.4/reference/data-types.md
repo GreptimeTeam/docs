@@ -67,7 +67,7 @@ CREATE TABLE data_types (
   ts0 TimestampSecond,
   ts3 TimestampMillisecond,
   ts6 TimestampMicrosecond,
-  ts9 TimestampNanosecond DEFAULT CURRENT_TIMESTAMP TIME INDEX,
+  ts9 TimestampNanosecond DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   PRIMARY KEY(s));
 ```
 
