@@ -1,139 +1,80 @@
-# Biweekly Report (Aug.28 - Sep.17) – Welcome GreptimeDB's First Contributor from Africa
-
-September 20, 2023
-
+# Biweekly Report (Oct.16 - Oct.28) – Seamless Upgrade to the new GreptimeDB v0.4 with Our Latest Tool
+November 01, 2023
 ## Summary
-Together with all our contributors worldwide, we are glad to see GreptimeDB making remarkable progress for the better.
+Together with our global community of contributors, GreptimeDB continues to evolve and flourish as a growing open-source project. We are grateful to each and every one of you.
 
-Over the past three weeks, we have been working intensively to prepare for the release of GreptimeDB v0.4, and we are thrilled for its official launch later this week.
+In the past two weeks, we have iterated through two minor versions, v0.4.1 and v0.4.2, following the official release of GreptimeDB v0.4. Below are some highlights:
 
-**We will host an online Meetup at 19:00 PDT on October 10, 2023. During this event, we will unveil the latest details of the GreptimeDB v0.4 Benchmark and provide insights into the technical intricacies of the new engine.** Everyone is welcome to join the Meetup to stay updated on the latest developments of GreptimeDB v0.4.
-
-Register now for the Zoom invite: https://m0k0y6ku50y.typeform.com/to/m5G87XDI
-
-Below are some highlights for the past three weeks:
-
-- Optimized SQL data types.
-- Added support for adding primary key columns through `ALTER TABLE`.
-- Refined the heartbeat protocol within the distributed architecture.
-- Restricted the TIME INDEX type.
+- Implemented support for Prometheus Histograms.
+- Optimized the OpenTSDB protocol.
+- Added support for nested `range` expressions in queries, which is very useful.
+- Resolved a bug related to inconsistent behavior in the `range` implementation when using different `KvBackend` implementations.
+- Provided a built-in tool to assist users in upgrading from v0.3 to v0.4. For more information, please refer to the official documentation at https://docs.greptime.com/user-guide/upgrade.
 
 ## Contributors
-Over the last three weeks, our community has successfully merged a total of 189 PRs. Notably, 2 of these PRs came from 2 distinct external contributors, with several more awaiting approval.
-A special shout-out to our standout contributors from the past three weeks:
+For the past two weeks, our community has been super active with a total of 76 PRs merged. 8 PRs from 6 external contributors merged successfully and lots pending to be merged.
 
-- [@NiwakaDev](https://github.com/NiwakaDev0) ([db#2267](https://github.com/GreptimeTeam/greptimedb/pull/2267))
-- [@Lilit0x](https://github.com/Lilit0x) ([db#2400](https://github.com/GreptimeTeam/greptimedb/pull/2400))
+Congrats on becoming our most active contributors in the past 2 weeks:
 
-👏 Let's welcome [@Lilit0x](https://github.com/Lilit0x) as the new contributors to join our community with the first PR merged.
+- @[AbhineshJha](https://github.com/AbhineshJha) ([db#2656](https://github.com/GreptimeTeam/greptimedb/pull/2656))
+
+- @[Lilit0x](https://github.com/Lilit0x) ([db#2623](https://github.com/GreptimeTeam/greptimedb/pull/2623))
+
+- @[NiwakaDev](https://github.com/NiwakaDev) ([db#2621](https://github.com/GreptimeTeam/greptimedb/pull/2621))
+
+- @[shoothzj](https://github.com/shoothzj) ([docs#651](https://github.com/GreptimeTeam/docs/pull/651)  [db#2606](https://github.com/GreptimeTeam/greptimedb/pull/2606))
+
+- @[tisonkun](https://github.com/tisonkun) ([db#2653](https://github.com/GreptimeTeam/greptimedb/pull/2653))
+
+- @[Yun Chen](https://github.com/masonyc) ([db#2609](https://github.com/GreptimeTeam/greptimedb/pull/2609) [docs#652](https://github.com/GreptimeTeam/docs/pull/652))
+
+👏  Welcome contributors @AbhineshJha  @shoothzj and @tisonkun to the community as new contributors, and congratulations on successfully merging their first PR!
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR
-[**#2331 Optimized SQL data types**](https://github.com/GreptimeTeam/greptimedb/pull/2331)
+### [#2626](https://github.com/GreptimeTeam/greptimedb/pull/2626) [#2651](https://github.com/GreptimeTeam/greptimedb/pull/2651) Implemented the [histogram_quantile function](https://prometheus.io/docs/prometheus/latest/querying/functions/#histogram_quantile) for PromQL
+This is one of the most commonly used calculation functions for the Histogram data type among the four data types in Prometheus, capable of computing the φ-quantile (0 ≤ φ ≤ 1). For example:
+```
+histogram_quantile(0.9, rate(http_request_duration_seconds_bucket[10m]))
+```
 
-Before this PR, the data types displayed in CREATE TABLE and DESC TABLE were different, which was confusing for users. For instance:
+### [#2623](https://github.com/GreptimeTeam/greptimedb/pull/2623) Optimized OpenTSDB writes with support for batch data parsing and insertion
 
+### [#2557](https://github.com/GreptimeTeam/greptimedb/pull/2557) Support for nested Range expressions
+`Range` expressions like `max(a+1) Range '5m' FILL NULL` are allowed to nest in any expression.
+
+Valid SQL example:
 ```sql
-CREATE TABLE data_types (
-  s string,
-  tint tinyint,
-  sint smallint,
-  i int,
-  bint bigint,
-  v varchar,
-  f float,
-  d double,
-  b boolean,
-  vb varbinary,
-  dt date,
-  dtt datetime,
-  ts0 timestamp(0),
-  ts3 timestamp(3),
-  ts6 timestamp(6),
-  ts9 timestamp(9) DEFAULT CURRENT_TIMESTAMP TIME INDEX,
-  PRIMARY KEY(s));
+select
+    round(max(a+1) Range '5m' FILL NULL),
+    sin((max(a) + 1) Range '5m' FILL NULL)，
+from
+    test
+ALIGN '1h' by (b) FILL NULL;
 ```
 
-```bash
-+--------+----------------------+------+------+---------------------+---------------+
-| Column | Type                 | Key  | Null | Default             | Semantic Type |
-+--------+----------------------+------+------+---------------------+---------------+
-| s      | String               | PRI  | YES  |                     | TAG           |
-| tint   | Int8                 |      | YES  |                     | FIELD         |
-| sint   | Int16                |      | YES  |                     | FIELD         |
-| i      | Int32                |      | YES  |                     | FIELD         |
-| bint   | Int64                |      | YES  |                     | FIELD         |
-| v      | String               |      | YES  |                     | FIELD         |
-| f      | Float32              |      | YES  |                     | FIELD         |
-| d      | Float64              |      | YES  |                     | FIELD         |
-| b      | Boolean              |      | YES  |                     | FIELD         |
-| vb     | Binary               |      | YES  |                     | FIELD         |
-| dt     | Date                 |      | YES  |                     | FIELD         |
-| dtt    | DateTime             |      | YES  |                     | FIELD         |
-| ts0    | TimestampSecond      |      | YES  |                     | FIELD         |
-| ts3    | TimestampMillisecond |      | YES  |                     | FIELD         |
-| ts6    | TimestampMicrosecond |      | YES  |                     | FIELD         |
-| ts9    | TimestampNanosecond  | PRI  | NO   | current_timestamp() | TIMESTAMP     |
-+--------+----------------------+------+------+---------------------+---------------+
-16 rows in set (0.00 sec)
-```
-
-This PR adds aliases for SQL data types, as shown below:
-- TimestampSecond, Timestamp_s, Timestamp_sec for Timestamp(0).
-- TimestampMillisecond, Timestamp_ms for Timestamp(3).
-- TimestampMicrosecond, Timestamp_us for Timestamp(6).
-- TimestampNanosecond, Timestamp_ns for Timestamp(9).
-- INT8 for tinyint
-- INT16 for smallint
-- INT32 for int
-- INT64 for bigint
-- And UINT8, UINT16 etc. for UnsignedTinyint etc.
-
-Now, you can also use GreptimeDB types to create tables in SQL:
-
+This is semantically equivalent to SQL:
 ```sql
- CREATE TABLE data_types (
-  s String,
-  tint Int8,
-  sint Int16,
-  i Int32,
-  bint Int64,
-  v String,
-  f Float32,
-  d Float64,
-  b Boolean,
-  vb Varbinary,
-  dt Date,
-  dtt DateTime,
-  ts0 TimestampSecond,
-  ts3 TimestampMillisecond,
-  ts6 TimestampMicrosecond,
-  ts9 TimestampNanosecond DEFAULT CURRENT_TIMESTAMP TIME INDEX,
-  PRIMARY KEY(s));
+select round(x), sin(y + 1) from
+    (
+        select max(a+1) Range '5m' FILL NULL as x, max(a) Range '5m' FILL NULL as y
+            from
+        test
+            ALIGN '1h' by (b) FILL NULL;
+    )
+;
 ```
 
-[**#2310 Added support for adding primary key columns through ALTER TABLE**](https://github.com/GreptimeTeam/greptimedb/pull/2310)
+Invalid example: Nested `range` expressions into another `range` expression are invalid (e.g. , `SELECT min(max(val) RANGE '20s') RANGE '20s' FROM host ALIGN '10s';`).
 
-In time-series data model, Label or Tag corresponds to the primary key in the Table model in GreptimeDB. Therefore, it's necessary to support adding primary key columns through the `ALTER TABLE` statement.
+`Range` queries now support the following fill options, used to fill in occurrences of null values:
 
-[**#96 Refined the heartbeat protocol within the distributed architecture**](https://github.com/GreptimeTeam/greptime-proto/pull/96)
+1. `NULL`: Keeps nulls as it is.
+2. `PREV`: Fills nulls with the previous value.
+3. `LINEAR`: Fills nulls with the average of the previous number and next number.
+4. `x`: Fills nulls with a constant `x`.
 
-In the upcoming 0.4 release, we went through an in-depth restructuring and upgrade of the database architecture. The first to undergo remodelling was the heartbeat protocol that serves as the foundation of distributed coordination communication. The intent behind this overhaul was to manage larger clusters and a higher number of regions more efficiently. To that end, we trimmed the size of the heartbeat package to alleviate the communication layer's load. For instance, we removed the unnecessary NodeStat, eliminated information such as CPU and Load, and only retained W/RCU as the sole reference for load balancing and scheduling. At the same time, we also removed unnecessary information like table names and database names.
+Using `LINEAR` converts integers to floats.
 
-[**#2281 Restricted the TIME INDEX type**](https://github.com/GreptimeTeam/greptimedb/pull/2281)
-
-The TIME INDEX type is restricted, only allowing timestamp types to serve as TIME INDEX to prevent potential ambiguities.
-
-## New Things
-New Features in Dashboard
-- The tables list on the left supports shortcut quick input, allowing for one-click insertion of preset SQL query statements.
-https://github.com/GreptimeTeam/dashboard/pull/323
-
-<p><img src="/biweekly-images/image1.png" alt="Shortcut Demonstration" style="width: 70%; margin: 0 auto;" /></p>
-
-- The editor offers input suggestions. Both SQL and PromQL editors can automatically suggest potential table names and column names based on entered keywords.
-https://github.com/GreptimeTeam/dashboard/pull/329
-https://github.com/GreptimeTeam/dashboard/pull/330
-
-<p><img src="/biweekly-images/image2.png" alt="Hint Demonstration" style="width: 70%; margin: 0 auto;" /></p>
+For specific usage of `range` query, please refer to the documentation: https://docs.greptime.com/reference/sql/range
