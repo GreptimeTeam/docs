@@ -1,10 +1,10 @@
-# Monitor GreptimeDB
+# Monitoring
 
-使用 Prometheus 采集 GreptimeDB metrics
+GreptimeDB 暴露了 Prometheus 指标, 用户可以使用 [Prometheus](https://prometheus.io/) 来采集指标。
 
 ## Promethues Configuration
 
-编写 Prometheus 配置文件，并保存为 prometheus.yml:
+编写 Prometheus 配置文件，并保存为`prometheus.yml`:
 ```
 global:
   scrape_interval: 15s
@@ -18,21 +18,25 @@ scrape_configs:
 ## Start GreptimeDB and Prometheus
 ### Binary
 
-根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#binary) 安装 GreptimeDB
+使用二进制安装 GreptimeDB 和 Prometheus
 
-进入 [Prometheus 官方文档](https://prometheus.io/download/) 下载二进制，并执行以下命令:
+1. 根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#binary) 安装 GreptimeDB
+
+2. 进入 [Prometheus 官方文档](https://prometheus.io/download/) 下载二进制，并执行以下命令:
 
 ```
 ./prometheus --config.file=prometheus.yml
 ```
 
-在浏览器输入`localhost:9090`访问 Prometheus
+在浏览器输入`localhost:9090`访问 Prometheus。
 
 ### Docker
 
-根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#docker) 安装 GreptimeDB
+使用 Docker 安装 GreptimeDB 和 Prometheus
 
-运行 Prometheus:
+1. 根据[文档](https://docs.greptime.cn/getting-started/try-out-greptimedb#docker) 安装 GreptimeDB
+
+2. 运行 Prometheus:
 ```
 docker run \
   -p 9090:9090 \
@@ -42,14 +46,14 @@ docker run \
 
 ### Kubernetes
 
-安装 [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) 
+1. 安装 [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) chart: 
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
-使用 [gtctl](https://docs.greptime.cn/user-guide/operations/gtctl) 安装 GreptimeDB cluster:
+2. 使用 [gtctl](https://docs.greptime.cn/user-guide/operations/gtctl) 安装 GreptimeDB cluster:
 ```
 gtctl cluster create mycluster -n default \
   --set cluster.prometheusMonitor.enabled=true \
@@ -61,7 +65,8 @@ gtctl cluster create mycluster -n default \
 ```
 
 ## Metrics Detail
-To find update-to-date information, please check the output of `curl http://<host>:<port>/metrics`
+
+可以通过执行`curl http://<host>:<port>/metrics`的输出来获取 GreptimeDB 的最新指标。
 
 ### Frontend
 

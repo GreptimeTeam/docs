@@ -1,10 +1,10 @@
-# Monitor GreptimeDB
+# Monitoring
 
-To collect GreptimeDB metrics using Prometheus
+The GreptimeDB exposes the Prometheus metrics, and the users can also use [Prometheus](https://prometheus.io/) to collect the metrics.
 
 ## Promethues Configuration
 
-Write a Prometheus configuration file and save it as prometheus.yml:
+Write a Prometheus configuration file and save it as `prometheus.yml`:
 ```
 global:
   scrape_interval: 15s 
@@ -18,9 +18,11 @@ scrape_configs:
 ## Start GreptimeDB and Prometheus
 ### Binary
 
-Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#binary)
+Use Binary to deploy Prometheus and GreptimeDB:
 
-Visit [the official documentation for Prometheus](https://prometheus.io/download/) to download the binary. Afterward, execute the following command:
+1. Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#binary).
+
+2. Visit [the official documentation for Prometheus](https://prometheus.io/download/) to download the binary. Afterward, execute the following command:
 
 ```
 ./prometheus --config.file=prometheus.yml
@@ -31,9 +33,11 @@ Access Prometheus by entering `localhost:9090` in your web browser.
 
 ### Docker
 
-Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#docker)
+Use Docker to deploy Prometheus and GreptimeDB:
 
-Run Prometheus:
+1. Install GreptimeDB according to the [documentation](https://docs.greptime.com/getting-started/try-out-greptimedb#docker).
+
+2. Start the Prometheus:
 ```
 docker run \
   -p 9090:9090 \
@@ -43,14 +47,14 @@ docker run \
 
 ### Kubernetes
 
-Install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
+1. Install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) chart:
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack
 ```
 
-Use [gtctl](https://docs.greptime.com/user-guide/operations/gtctl) to install GreptimeDB cluster:
+2. Use [gtctl](https://docs.greptime.com/user-guide/operations/gtctl) to deploy GreptimeDB cluster:
 ```
 gtctl cluster create mycluster -n default \
   --set cluster.prometheusMonitor.enabled=true \
@@ -63,7 +67,7 @@ gtctl cluster create mycluster -n default \
 
 
 ## Metrics Detail
-To find update-to-date information, please check the output of `curl http://<host>:<port>/metrics`
+You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB. We will add more documents of the metrics sooner.
 
 ### Frontend
 
