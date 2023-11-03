@@ -65,8 +65,8 @@
     - kubernetes
     - gtctl
     - run-on-android
+    - monitoring
     # TODO
-    # - monitor-&-alert
     # - import-data
     # - export-data
     # - back-up-&-restore-data
