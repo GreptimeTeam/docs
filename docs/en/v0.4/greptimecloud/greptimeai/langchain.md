@@ -16,7 +16,15 @@ export GREPTIMEAI_TOKEN='<username>:<password>'
 
 ## How-To
 
-If you have OpenAI account, you can observe your LLM applications like this:
+Assume you have OpenAI account:
+
+- Set `OPENAI_API_KEY` environment variable
+
+```shell
+export OPENAI_API_KEY='sk-xxx'
+```
+
+- Instrument your LLM application
 
 ```python
 from greptimeai.langchain.callback import GreptimeCallbackHandler
