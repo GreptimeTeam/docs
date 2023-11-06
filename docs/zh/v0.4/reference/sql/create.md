@@ -118,7 +118,7 @@ CREATE TABLE system_metrics (
     cpu_util DOUBLE,
     memory_util DOUBLE,
     disk_util DOUBLE,
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     TIME INDEX(ts)
 );
 ```
@@ -138,7 +138,7 @@ CREATE TABLE system_metrics (
     cpu_util DOUBLE,
     memory_util DOUBLE,
     disk_util DOUBLE,
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP TIME INDEX,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
     PRIMARY KEY(host, idc),
 );
 ```
