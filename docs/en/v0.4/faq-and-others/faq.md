@@ -80,3 +80,7 @@ Please refer to [features that you concern](/user-guide/concepts/features-that-y
 ## Can <https://n9e.github.io/> now be directly integrated with GreptimeDB? How is its compatibility?
 
 Theoretically GreptimeDB could replace VictoriaMetrics now since that most protocols are supported, but we hasn't actually tested yet.
+
+## Should I use the command "drop database" to delete a database?
+
+Yes, that is the intended command. However, "drop database" has not been implemented in version 0.4. It is expected to be included in the next minor iterative update. Currently, there is an associated pull request (PR) under review for this feature. As a result, there is no direct way to delete a database at the moment. You may consider creating a new database for testing purposes. If you're working with test data, you also have the option to clear it by deleting the data directory.
