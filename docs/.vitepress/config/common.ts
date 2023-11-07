@@ -1,15 +1,21 @@
 import dotenv from 'dotenv'
 import rollupOptions from './rollupOptions'
 
+const { VERSION } = process.env
+
 export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 export const LATEST_VERSION = 'v0.4'
+export const CURRENT_VERSION = VERSION || LATEST_VERSION
 
-const latestVersionPath = `${LATEST_VERSION}/${CURRENT_LANG}/:path+`
 const versionPath = `:version/${CURRENT_LANG}/:path+`
+
+let base = VERSION ? `/${VERSION}/` : '/'
 
 export const common = async () => {
   return {
-    rollupOptions,
+    base,
+    outDir: `./.vitepress/dist${base}`,
+    srcExclude: base === '/' ? ['**/v0.3/**'] : ['**/v0.4/**'],
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
@@ -18,20 +24,12 @@ export const common = async () => {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
     },
     rewrites: {
-      [latestVersionPath]: `:path+`,
-      [versionPath]: `:version(v\\d\.\\d)?/:path+`,
+      [versionPath]: `:path+`,
     },
     themeConfig: {
       latestVersion: LATEST_VERSION,
       search: {
         provider: 'local',
-        options: {
-          _render(src, env, md) {
-            if (env.frontmatter?.search === false) return ''
-            if (!env.relativePath.match(`/${LATEST_VERSION}/`)) return ''
-            return md.render(src, env)
-          },
-        },
       },
       siteTitle: '',
       logo: '/logo-text-tinted.png',

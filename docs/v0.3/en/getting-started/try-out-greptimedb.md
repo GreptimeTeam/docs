@@ -1,6 +1,6 @@
 # Try Out GreptimeDB V0.3
 
-Begin to explore GreptimeDB's powerful core features.
+Begin to explore GreptimeDB's powerful core features. [GOTO](/getting-started/try-out-the-greptimedb-cluster.md)
 
 ## Installation
 

@@ -31,7 +31,7 @@ export async function makeSidebar(lang, version) {
         let file = fs.readFileSync(`docs${versionPath}${langPath}${link}.md`, 'utf-8')
         return {
           text: file.split('\n')[0].replace('# ', ''),
-          link: `${linkPath}${link}`,
+          link: `${link}`,
         }
       } catch (error) {
         return {}

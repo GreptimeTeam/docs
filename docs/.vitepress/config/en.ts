@@ -1,5 +1,5 @@
 import { makeSidebar } from '../theme/serverUtils'
-import { LATEST_VERSION } from './common'
+import { LATEST_VERSION, CURRENT_VERSION } from './common'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -41,18 +41,17 @@ export const enConfig = async () => ({
         items: [
           {
             text: `${LATEST_VERSION}(latest)`,
-            link: '/',
+            link: 'http://192.168.216.134:8000/',
           },
           {
             text: 'v0.3',
-            link: '/v0.3/',
+            link: 'http://192.168.216.134:8000/v0.3/',
           },
         ],
       },
     ],
     sidebar: {
-      '/': await makeSidebar('en', LATEST_VERSION),
-      '/v0.3/': await makeSidebar('en', 'v0.3'),
+      '/': await makeSidebar('en', CURRENT_VERSION),
     },
     iconMap: [
       {

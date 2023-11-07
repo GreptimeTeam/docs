@@ -1,5 +1,7 @@
 # Try Out the GreptimeDB Cluster
 
+## I am V0.3
+
 The GreptimeDB cluster can run in the mode to scale horizontally.
 
 ## Install gtctl and run playground

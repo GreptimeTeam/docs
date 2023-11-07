@@ -65,10 +65,11 @@
   },
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
+    "docs:build": "vitepress build docs",
     "serve": "vitepress serve docs",
     "lint-staged": "npx lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "pnpm docs:build && VERSION='v0.3' pnpm docs:build"
   },
   "repository": {
     "type": "git",
