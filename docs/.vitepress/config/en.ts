@@ -41,11 +41,11 @@ export const enConfig = async () => ({
         items: [
           {
             text: `${LATEST_VERSION}(latest)`,
-            link: 'https://feat-catalog.greptime-docs.pages.dev/',
+            link: '/',
           },
           {
             text: 'v0.3',
-            link: 'https://feat-catalog.greptime-docs.pages.dev/v0.3/',
+            link: '/v0.3/',
           },
         ],
       },
