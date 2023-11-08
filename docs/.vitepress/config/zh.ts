@@ -23,8 +23,8 @@ export const zhConfig = async () => ({
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
   ],
   locales: {
-    root: { label: '简体中文', lang: 'zh-CN', link: '/' },
-    en: { label: 'English', lang: 'en-US', link: websiteMap['en'], base },
+    root: { label: '简体中文', lang: 'zh-CN', link: base },
+    en: { label: 'English', lang: 'en-US', link: websiteMap['en'] },
   },
   themeConfig: {
     search: {
