@@ -24,7 +24,7 @@ export const enConfig = async () => ({
   ],
   locales: {
     root: { label: 'English', lang: 'en-US', link: '/' },
-    zh: { label: '简体中文', lang: 'zh-CN', link: `${websiteMap['zh']}/${base}` },
+    zh: { label: '简体中文', lang: 'zh-CN', link: `${websiteMap['zh']}${base}` },
   },
   themeConfig: {
     nav: [

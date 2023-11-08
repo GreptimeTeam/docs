@@ -24,7 +24,7 @@ export const zhConfig = async () => ({
   ],
   locales: {
     root: { label: '简体中文', lang: 'zh-CN', link: '/' },
-    en: { label: 'English', lang: 'en-US', link: `${websiteMap['en']}/${base}` },
+    en: { label: 'English', lang: 'en-US', link: `${websiteMap['en']}${base}` },
   },
   themeConfig: {
     search: {
