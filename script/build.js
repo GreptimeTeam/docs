@@ -2,7 +2,7 @@ const { execSync } = require('node:child_process')
 const fs = require('fs')
 
 const LATEST_VERSION = 'v0.4'
-const websiteMap = { en: 'https://feat-catalog.greptime-docs.pages.dev', zh: 'https://feat-catalog.greptime-docs.pages.dev' }
+const websiteMap = { en: 'https://feat-catalog.greptime-docs.pages.dev', zh: 'https://feat-catalog-zh.greptime-docs.pages.dev' }
 
 ;(async () => {
   const files = fs.readdirSync('./docs')

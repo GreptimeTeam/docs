@@ -1,4 +1,4 @@
-import { CURRENT_VERSION } from './common'
+import { CURRENT_VERSION, websiteMap } from './common'
 import { getVersionList } from '../theme/serverUtils'
 
 export const enConfig = async () => ({
@@ -24,7 +24,7 @@ export const enConfig = async () => ({
   ],
   locales: {
     root: { label: 'English', lang: 'en-US', link: '/' },
-    zh: { label: '简体中文', lang: 'zh-CN', link: 'https://docs.greptime.cn/' },
+    zh: { label: '简体中文', lang: 'zh-CN', link: websiteMap['zh'] },
   },
   themeConfig: {
     nav: [
