@@ -1,4 +1,4 @@
-import { CURRENT_VERSION, websiteMap } from './common'
+import { CURRENT_VERSION, websiteMap, base } from './common'
 import { getVersionList } from '../theme/serverUtils'
 
 export const enConfig = async () => ({
@@ -24,7 +24,7 @@ export const enConfig = async () => ({
   ],
   locales: {
     root: { label: 'English', lang: 'en-US', link: '/' },
-    zh: { label: '简体中文', lang: 'zh-CN', link: websiteMap['zh'] },
+    zh: { label: '简体中文', lang: 'zh-CN', link: websiteMap['zh'], base },
   },
   themeConfig: {
     nav: [

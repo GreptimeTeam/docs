@@ -51,4 +51,4 @@ const common = async () => {
   }
 }
 
-export { CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, common }
+export { CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, base, common }
