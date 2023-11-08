@@ -1,5 +1,5 @@
-import { makeSidebar } from '../theme/serverUtils'
-import { LATEST_VERSION } from './common'
+import { CURRENT_VERSION } from './common'
+import { getVersionList } from '../theme/serverUtils'
 
 export const zhConfig = async () => ({
   title: 'Greptime 文档',
@@ -60,23 +60,10 @@ export const zhConfig = async () => ({
         link: 'https://greptime.com/blogs',
       },
       {
-        text: `${LATEST_VERSION}`,
-        items: [
-          {
-            text: `${LATEST_VERSION}(最新)`,
-            link: '/',
-          },
-          {
-            text: 'v0.3',
-            link: '/v0.3/',
-          },
-        ],
+        text: `${CURRENT_VERSION}`,
+        items: getVersionList('zh'),
       },
     ],
-    sidebar: {
-      '/': await makeSidebar('zh', LATEST_VERSION),
-      '/v0.3/': await makeSidebar('zh', 'v0.3'),
-    },
     iconMap: [
       {
         key: '立即开始',

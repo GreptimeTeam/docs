@@ -1,21 +1,19 @@
 import dotenv from 'dotenv'
-import rollupOptions from './rollupOptions'
+import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
 
-const { VERSION } = process.env
+const { VERSION, LATEST_VERSION, VERSION_MAP, WEBSITE_MAP, BASE: base = '/' } = process.env
+const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
 
-export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
-export const LATEST_VERSION = 'v0.4'
-export const CURRENT_VERSION = VERSION || LATEST_VERSION
-
+const CURRENT_VERSION = VERSION || LATEST_VERSION
 const versionPath = `:version/${CURRENT_LANG}/:path+`
+const versionMap = JSON.parse(VERSION_MAP)
+const websiteMap = JSON.parse(WEBSITE_MAP)
 
-let base = VERSION ? `/${VERSION}/` : '/'
-
-export const common = async () => {
+const common = async () => {
   return {
     base,
     outDir: `./.vitepress/dist${base}`,
-    srcExclude: base === '/' ? ['**/v0.3/**'] : ['**/v0.4/**'],
+    srcExclude: getSrcExclude(versionMap, CURRENT_LANG),
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
@@ -32,6 +30,9 @@ export const common = async () => {
         provider: 'local',
       },
       siteTitle: '',
+      sidebar: {
+        '/': await makeSidebar(CURRENT_LANG, CURRENT_VERSION),
+      },
       logo: '/logo-text-tinted.png',
       copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
       email: 'marketing@greptime.com',
@@ -49,3 +50,5 @@ export const common = async () => {
     cleanUrls: 'without-subfolders',
   }
 }
+
+export { CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, common }

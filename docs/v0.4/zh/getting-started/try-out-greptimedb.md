@@ -1,6 +1,6 @@
 # 开始探索 GreptimeDB V0.4
 
-从这里开始探索 GreptimeDB 强大的核心功能。
+从这里开始探索 GreptimeDB 强大的核心功能。[GOTO](/getting-started/try-out-the-greptimedb-cluster.md)
 
 ## 安装
 

@@ -69,7 +69,7 @@
     "serve": "vitepress serve docs",
     "lint-staged": "npx lint-staged",
     "prepare": "husky install",
-    "build": "npm run docs:build && VERSION='v0.3' npm run docs:build"
+    "build": "node ./script/build.js"
   },
   "repository": {
     "type": "git",

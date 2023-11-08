@@ -1,5 +1,5 @@
-import { makeSidebar } from '../theme/serverUtils'
-import { LATEST_VERSION, CURRENT_VERSION } from './common'
+import { CURRENT_VERSION } from './common'
+import { getVersionList } from '../theme/serverUtils'
 
 export const enConfig = async () => ({
   title: 'Greptime Docs',
@@ -37,22 +37,10 @@ export const enConfig = async () => ({
         link: 'https://greptime.com/blogs',
       },
       {
-        text: `${LATEST_VERSION}`,
-        items: [
-          {
-            text: `${LATEST_VERSION}(latest)`,
-            link: 'https://feat-catalog.greptime-docs.pages.dev/',
-          },
-          {
-            text: 'v0.3',
-            link: 'https://feat-catalog.greptime-docs.pages.dev/v0.3/',
-          },
-        ],
+        text: `${CURRENT_VERSION}`,
+        items: getVersionList('en'),
       },
     ],
-    sidebar: {
-      '/': await makeSidebar('en', CURRENT_VERSION),
-    },
     iconMap: [
       {
         key: 'Getting Started',
