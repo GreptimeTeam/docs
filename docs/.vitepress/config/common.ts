@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
 
 const { VERSION, LATEST_VERSION, VERSION_MAP, WEBSITE_MAP, BASE: base = '/' } = process.env
-const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
+const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 
 const CURRENT_VERSION = VERSION || LATEST_VERSION
 const versionPath = `:version/${CURRENT_LANG}/:path+`
