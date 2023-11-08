@@ -1,4 +1,4 @@
-# 简介 V0.4
+# 简介
 
 <p align="center">
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
@@ -24,6 +24,10 @@ GreptimeDB 是开源的时序数据库，注重可扩展性、分析能力和效
 - [开发者指南][3]: 有兴趣了解更多技术细节并想成为 GreptimeDB 的贡献者的开发者请阅读此文档。
 <!-- - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions. -->
+
+[1]: ./getting-started/try-out-greptimedb.md
+[2]: ./user-guide/overview.md
+[3]: ./developer-guide/overview.md
 
 <!-- [4]: ./changelog/overview.md
 [5]: ./faq-and-others/faq.md -->

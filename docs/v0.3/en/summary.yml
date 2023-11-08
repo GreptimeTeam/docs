@@ -1,6 +1,175 @@
 - Getting-Started:
-    - try-out-greptimedb
-    - try-out-the-greptimedb-cluster
+  - try-out-greptimedb
+  - try-out-the-greptimedb-cluster
 - User-Guide:
-    - table-management
-    - upgrade
+  - overview
+  - Concepts:
+    - overview
+    - why-greptimedb
+    - data-model
+    - architecture
+    - storage-location
+    - key-concepts
+    - features-that-you-concern
+  - Clients:
+    - overview
+    - authentication
+    - mysql
+    - prometheus
+    - influxdb-line
+    - opentsdb
+    - postgresql
+    - http-api
+    - otlp
+    - vector
+    - grafana
+    - emqx
+    - SDK-Libraries:
+      - overview
+      - go
+      - java
+      # - erlang
+      # - javaScript
+  - table-management
+  - Write-Data:
+    - overview
+    - prometheus
+    - sql
+    - influxdb-line
+    - opentsdb
+    - SDK-Libraries:
+      - go
+      - java
+      # - erlang
+      # - javaScript
+  - Query-Data:
+    - overview
+    - sql
+    - promql
+    - SDK-Libraries:
+      - go
+      - java
+      # - erlang
+      # - javaScript
+  - query-external-data
+  - Scripts-&-Functions:
+    - overview
+    - getting-started
+    - data-types
+    - function
+    - api
+  - cluster
+  - Operations:
+    # - overview
+    - configuration
+    - kubernetes
+    - gtctl
+    # TODO
+    # - monitor-&-alert
+    # - import-data
+    # - export-data
+    # - back-up-&-restore-data
+    # - capacity-planning
+    - cli-repl
+- GreptimeCloud:
+  - overview
+  - Getting-Started:
+    - overview
+    - prometheus
+    - mysql
+    - influxdb
+    - go
+    - java
+    - python
+    - node
+    - vector
+  - Integrations:
+    - Prometheus:
+      - quick-setup
+      - rule-management
+    - grafana
+    - mysql
+    - postgresql
+    - influxdb
+    - otlp
+    - vector
+    - SDK-Libraries:
+      - go
+      - java
+  - usage
+  - Tutorials:
+    - Monitor-Host-Metrics:
+      - prometheus
+      - mysql
+      - influxdb
+      - go
+      - java
+      - python
+      - node-js
+- Developer-Guide:
+  - overview
+  - getting-started
+  - Frontend:
+    - overview
+    - table-sharding
+    - distributed-querying
+  - Datanode:
+    - overview
+    - storage-engine
+    - query-engine
+    - data-persistence-indexing
+    - wal
+    - python-coprocessor
+  - Metasrv:
+    - overview
+    - admin-api
+    - dist-lock
+    - selector
+  - Tests:
+    - overview
+    - unit-test
+    - integration-test
+    - sqlness-test
+  - Benchmarks:
+    - nyc-taxi
+  - How-To:
+    - how-to-write-sdk
+    - how-to-use-tokio-console
+- Reference:
+  - command-lines
+  - data-types
+  - SDK:
+    - Java
+    - Go
+  - SQL:
+    - overview
+    - http-api
+    - insert
+    - cast
+    - copy
+    - select
+    - distinct
+    - where
+    - order_by
+    - group_by
+    - limit
+    - join
+    - functions
+    - delete
+    - show
+    - tql
+    - create
+    - describe_table
+    - alter
+    - explain
+    - compatibility
+  - Telemetry
+- Changelog:
+  - overview
+  - roadmap-2023
+  - Biweekly-Reports:
+    - overview
+    - latest-biweekly-report
+- FAQ-and-Others:
+  - overview
+  - faq

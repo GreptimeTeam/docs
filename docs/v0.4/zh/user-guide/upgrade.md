@@ -40,3 +40,92 @@ OPTIONS:
 - `-target`：要导出的内容。`create-table` 可以导出每个表的 `CREATE TABLE` 语句。`table-data` 可以导出每个表的数据以及对应的 `COPY FROM` 语句。
 
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
+
+## 示例
+
+这一节将演示如何从 `v0.3.0` 升级到 `v0.4.0`。
+
+在下面的文本中，我们假设您的 Frontend 的 gRPC 端口为 `127.0.0.1:4001`。输出目录是 `/tmp/greptimedb-export`。
+
+### 导出 `CREATE TABLE`
+
+```shell
+greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
+```
+
+如果成功，您将看到类似于以下内容的输出
+
+```log
+2023-10-20T09:41:06.500390Z  INFO cmd::cli::export: finished exporting greptime.public with 434 tables
+2023-10-20T09:41:06.500482Z  INFO cmd::cli::export: success 1/1 jobs
+```
+
+此时输出目录的结构如下
+
+```plaintext
+/tmp/greptimedb-export
+└── greptime-public.sql
+```
+
+### 导出表数据
+
+```shell
+greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+```
+
+日志输出与上面类似。输出目录的结构如下
+
+```plaintext
+/tmp/greptimedb-export
+├── greptime-public
+│   ├── up.parquet
+│   └── other-tables.parquet
+├── greptime-public_copy_from.sql
+└── greptime-public.sql
+```
+
+新的内容是 `greptime-public_copy_from.sql` 和 `greptime-public`。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
+
+### 导入表结构和数据
+
+然后您需要执行上一步生成的 SQL 文件。首先是 `greptime-public.sql`。在之前的步骤中导出的 SQL 语句使用的是 PostgreSQL 方言，接下来的操作都将通过 [PG 协议](/user-guide/clients/postgresql.md)来进行。本文档假设客户端为 `psql`。
+
+:::tip NOTICE
+从这一步开始，所有的操作都是在新版本的 GreptimeDB 中完成的。
+
+PostgreSQL 协议的默认端口是 `4003`。
+:::
+
+在执行以下命令之前，您需要在新部署中首先创建相应的数据库（但在本例中，数据库 `greptime-public` 是默认的）。
+
+此命令将在新版本的 GreptimeDB 中创建所有表。
+
+```shell
+psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public.sql
+```
+
+接下来导入数据
+
+```shell
+psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
+```
+
+### 清理
+
+到这一步，所有的数据都已经迁移完毕。您可以在新集群中检查数据。
+
+在确认数据正确后，您可以清理旧集群和临时的 `--output-dir`。在本例中是 `/tmp/greptimedb-export`。
+
+## 推荐流程
+
+该部分给出了一个推荐的整体流程，以便平滑升级 GreptimeDB。如果您的环境可以在升级过程中离线，可以跳过此部分。
+
+1. 创建一个全新的 v0.4 集群 
+2. 导出并导入 `create-table`
+3. 将工作负载切换到新集群
+4. 导出并导入 `table-data`
+
+注意
+
+- 在步骤 2 和 3 之间对表结构的更改将丢失
+- 在第四部完成之前，老数据在新集群上是不可见的。

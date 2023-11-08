@@ -1,4 +1,4 @@
-# Introduction V0.4
+# Introduction
 
 <p align="center">
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
@@ -34,3 +34,10 @@ Before getting started, please read the following documents that include instruc
 - [Developer Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
 - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions.
+
+[1]: ./getting-started/try-out-greptimedb.md
+[2]: ./user-guide/overview.md
+[3]: ./developer-guide/overview.md
+[4]: ./changelog/overview.md
+[5]: ./faq-and-others/faq.md
+[6]: ./greptimecloud/overview.md
