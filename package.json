@@ -64,11 +64,12 @@
     "vue": "^3.3.4"
   },
   "scripts": {
-    "dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "serve": "vitepress serve docs",
     "lint-staged": "npx lint-staged",
     "prepare": "husky install",
+    "dev": "node ./script/dev.js",
     "build": "node ./script/build.js"
   },
   "repository": {
