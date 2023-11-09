@@ -1,7 +1,7 @@
 {
   "LATEST_VERSION": "v0.4",
   "websiteMap": { 
-    "en": "https://feat-catalog.greptime-docs.pages.dev", 
-    "zh": "https://feat-catalog-zh.greptime-docs.pages.dev"
+    "en": "https://docs.greptime.com", 
+    "zh": "https://docs.greptime.cn"
   }
 }
