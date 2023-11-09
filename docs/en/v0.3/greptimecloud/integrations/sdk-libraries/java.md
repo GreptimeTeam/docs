@@ -1,6 +1,6 @@
 # Java SDK
 
-The GreptimeDB Java SDK uses gRPC to communicate with the database. For more information on how to use the SDK, please refer to the [Java SDK documentation](https://docs.greptime.com/user-guide/clients/sdk-libraries/java).
+The GreptimeDB Java SDK uses gRPC to communicate with the database. For more information on how to use the SDK, please refer to the [Java SDK documentation](https://docs.greptime.com/v0.3/user-guide/clients/sdk-libraries/java).
 
 To connect to GreptimeCloud, using information below:
 
