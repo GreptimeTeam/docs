@@ -1,19 +1,20 @@
 import dotenv from 'dotenv'
 import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
 
-const { VERSION, LATEST_VERSION, VERSION_MAP, WEBSITE_MAP, BASE: base = '/' } = process.env
+const { ENV, VERSION, LATEST_VERSION, VERSION_MAP, WEBSITE_MAP, BASE: base = '/' } = process.env
 const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
 
 const CURRENT_VERSION = VERSION || LATEST_VERSION
 const versionPath = `:version/${CURRENT_LANG}/:path+`
 const versionMap = JSON.parse(VERSION_MAP)
 const websiteMap = JSON.parse(WEBSITE_MAP)
+const langMap = ['en', 'zh']
 
 const common = async () => {
   return {
     base,
     outDir: `./.vitepress/dist${base}`,
-    srcExclude: getSrcExclude(versionMap, CURRENT_LANG),
+    srcExclude: getSrcExclude(versionMap, CURRENT_LANG, langMap),
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
@@ -24,6 +25,7 @@ const common = async () => {
     rewrites: {
       [versionPath]: `:path+`,
     },
+    locales: {},
     themeConfig: {
       latestVersion: LATEST_VERSION,
       search: {
@@ -51,4 +53,4 @@ const common = async () => {
   }
 }
 
-export { CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, base, common }
+export { ENV, CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, versionPath, base, common }
