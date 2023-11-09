@@ -41,18 +41,32 @@ export async function makeSidebar(lang, version) {
   return makeSidebarItem(summary, '')
 }
 
-export const getSrcExclude = (versionMap: Array<string>, lang: string) => {
-  const excludeLang = lang === 'en' ? 'zh' : 'en'
-  return versionMap.map(version => {
-    return version === CURRENT_VERSION ? `**/${version}/${excludeLang}/**` : `**/${version}/**`
+export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: Array<string>) => {
+  const srcExclude = []
+  const excludeLangs = langMap.filter(l => l !== lang)
+
+  versionMap.forEach(version => {
+    if (version === CURRENT_VERSION) {
+      excludeLangs.forEach(excludeLang => {
+        srcExclude.push(`**/${version}/${excludeLang}/**`)
+      })
+    } else {
+      srcExclude.push(`**/${version}/**`)
+    }
   })
+
+  return srcExclude
 }
 
 export const getVersionList = (lang: string) => {
+  const textMap = {
+    en: '(latest)',
+    zh: '(最新)',
+  }
   return versionMap
     .filter(version => version !== CURRENT_VERSION)
     .map(version => {
-      const endText = version !== LATEST_VERSION ? '' : lang === 'en' ? '(latest)' : '(最新)'
+      const endText = version !== LATEST_VERSION ? '' : textMap[lang] || '(latest)'
       return {
         text: `${version} ${endText}`,
         link: `${websiteMap[lang]}/${version}/`,
