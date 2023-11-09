@@ -50,6 +50,12 @@ const common = async () => {
       outline: [2, 4],
     },
     cleanUrls: 'without-subfolders',
+    async transformHead(context) {
+      return [
+        ['meta', { property: 'og:title', content: 'Text For Meta In Docs' }],
+        ['meta', { property: 'og:description', content: 'If it successfully, we can start next!' }],
+      ]
+    },
   }
 }
 
