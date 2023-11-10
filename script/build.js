@@ -2,7 +2,6 @@ const fs = require('fs')
 const { execSync } = require('node:child_process')
 const settingData = require('./setting.json')
 
-// TODO update address before pop up online (update websiteMap in setting.json)
 const { LATEST_VERSION, websiteMap } = settingData
 
 ;(async () => {
