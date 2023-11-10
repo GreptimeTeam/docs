@@ -15,6 +15,6 @@ const { execSync } = require('node:child_process')
       },
     })
   } catch (error) {
-    if (error.status !== 1) console.log(error)
+    if (error.status !== 1) console.error(error)
   }
 })()
