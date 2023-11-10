@@ -27,6 +27,11 @@ export const zhConfig = async () => ({
     en: { label: 'English', lang: 'en-US', link: `${websiteMap['en']}${base}` },
   },
   themeConfig: {
+    notFound: {
+      title: '页面不存在',
+      quote: '您访问的页面不存在，可能是因为您的链接已失效、输入的地址有误或者该页面已被删除。',
+      linkText: '返回首页',
+    },
     search: {
       options: {
         locales: {
