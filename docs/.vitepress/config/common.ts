@@ -1,13 +1,20 @@
 import dotenv from 'dotenv'
+import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
+import settingConfig from './setting.json'
 
-export const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
-export const LATEST_VERSION = 'v0.4'
+const { LATEST_VERSION, langMap, websiteMap } = settingConfig
+const { ENV, VERSION = LATEST_VERSION, VERSION_MAP, BASE: base = '/' } = process.env
+const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
+const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION
 
-const latestVersionPath = `${CURRENT_LANG}/${LATEST_VERSION}/:path+`
-const versionPath = `${CURRENT_LANG}/:version/:path+`
+const versionPath = `:version/${CURRENT_LANG}/:path+`
+const versionMap = JSON.parse(VERSION_MAP)
 
-export const common = async () => {
+const common = async () => {
   return {
+    base,
+    outDir: `./.vitepress/dist${base}`,
+    srcExclude: getSrcExclude(versionMap, CURRENT_LANG, langMap),
     appearance: false,
     lastUpdated: true,
     ignoreDeadLinks: false,
@@ -16,22 +23,18 @@ export const common = async () => {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
     },
     rewrites: {
-      [latestVersionPath]: `:path+`,
-      [versionPath]: `:version(v\\d\.\\d)?/:path+`,
+      [versionPath]: `:path+`,
     },
+    locales: {},
     themeConfig: {
       latestVersion: LATEST_VERSION,
       search: {
         provider: 'local',
-        options: {
-          _render(src, env, md) {
-            if (env.frontmatter?.search === false) return ''
-            if (!env.relativePath.match(`/${LATEST_VERSION}/`)) return ''
-            return md.render(src, env)
-          },
-        },
       },
       siteTitle: '',
+      sidebar: {
+        '/': await makeSidebar(CURRENT_LANG, CURRENT_VERSION),
+      },
       logo: '/logo-text-tinted.png',
       copyright: '©Copyright 2022 Greptime Inc. All Rights Reserved',
       email: 'marketing@greptime.com',
@@ -47,5 +50,11 @@ export const common = async () => {
       outline: [2, 4],
     },
     cleanUrls: 'without-subfolders',
+    async transformHead(context) {
+      const { pageData } = context
+      return [['meta', { property: 'og:title', content: pageData.title }]]
+    },
   }
 }
+
+export { ENV, CURRENT_LANG, LATEST_VERSION, CURRENT_VERSION, versionMap, websiteMap, versionPath, base, common }

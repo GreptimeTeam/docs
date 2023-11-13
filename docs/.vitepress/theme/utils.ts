@@ -43,17 +43,3 @@ export function getSidebarIcon(iconMap) {
     }
   })
 }
-
-export function setVersionOnPage(path, latestVersion, sidebar) {
-  const allVersions = getAllVersions(sidebar, latestVersion)
-  const version = allVersions.find(version => path.includes(version)) || latestVersion
-  const div = document.querySelector('.VPNavBarMenuGroup')
-  const targetElement = <HTMLInputElement>div.childNodes[0].childNodes[0].childNodes[1]
-  targetElement.innerText = version
-}
-
-export const getAllVersions = (sidebar, latestVersion) =>
-  Object.keys(sidebar).map(v => {
-    if (v === '/') return latestVersion
-    return v.replace(new RegExp(/\//g), '')
-  })

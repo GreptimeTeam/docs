@@ -148,6 +148,12 @@ devDependencies:
   markdownlint-cli:
     specifier: ^0.37.0
     version: 0.37.0
+  rollup-plugin-ignore:
+    specifier: ^1.0.10
+    version: 1.0.10
+  rollup-plugin-multi-input:
+    specifier: ^1.4.1
+    version: 1.4.1
   unplugin-auto-import:
     specifier: ^0.15.1
     version: 0.15.3(@vueuse/core@9.13.0)(rollup@3.26.0)
@@ -6314,6 +6320,17 @@ packages:
     dependencies:
       glob: 7.2.3
     dev: false
+
+  /rollup-plugin-ignore@1.0.10:
+    resolution: {integrity: sha512-VsbnfwwaTv2Dxl2onubetX/3RnSnplNnjdix0hvF8y2YpqdzlZrjIq6zkcuVJ08XysS8zqW3gt3ORBndFDgsrg==}
+    dev: true
+
+  /rollup-plugin-multi-input@1.4.1:
+    resolution: {integrity: sha512-ybvotObZFFDEbqw6MDrYUa/TXmF+1qCVX3svpAddmIOLP3/to5zkSKP0MJV5bNBZfFFpblwChurz4tsPR/zJew==}
+    engines: {node: '>=16'}
+    dependencies:
+      fast-glob: 3.2.12
+    dev: true
 
   /rollup@3.26.0:
     resolution: {integrity: sha512-YzJH0eunH2hr3knvF3i6IkLO/jTjAEwU4HoMUbQl4//Tnl3ou0e7P5SjxdDr8HQJdeUJShlbEHXrrnEHy1l7Yg==}
