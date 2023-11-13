@@ -4,7 +4,7 @@ import settingConfig from './setting.json'
 
 const { LATEST_VERSION, langMap, websiteMap } = settingConfig
 const { ENV, VERSION = LATEST_VERSION, VERSION_MAP, BASE: base = '/' } = process.env
-const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
+const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'zh'
 const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION
 
 const versionPath = `:version/${CURRENT_LANG}/:path+`
