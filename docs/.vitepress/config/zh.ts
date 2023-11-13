@@ -27,6 +27,11 @@ export const zhConfig = async () => ({
     en: { label: 'English', lang: 'en-US', link: `${websiteMap['en']}${base}` },
   },
   themeConfig: {
+    notFound: {
+      title: '页面不存在',
+      quote: '您访问的页面不存在，可能是因为您的链接已失效、输入的地址有误或者该页面已被删除。',
+      linkText: '返回首页',
+    },
     search: {
       options: {
         locales: {
@@ -96,5 +101,8 @@ export const zhConfig = async () => ({
       next: '下一篇',
     },
     outlineTitle: '目录',
+    copyright: '©2023 格睿云(北京)技术咨询有限公司',
+    icp: { text: '京ICP备2023008042号', link: 'https://beian.miit.gov.cn/' },
+    gongan: { text: '京公网安备 11010502052203号', link: 'https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502052203' },
   },
 })

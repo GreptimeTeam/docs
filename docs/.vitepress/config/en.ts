@@ -71,5 +71,6 @@ export const enConfig = async () => ({
         icon: 'FAQandOthers',
       },
     ],
+    copyright: '©Copyright 2023 Greptime Inc. All Rights Reserved',
   },
 })
