@@ -4,7 +4,7 @@
 <!--@include: ./create-service.md-->
 
 ## Write Data
-<!--@include: ./quick-start/mysql.md-->
+<!--@include: ../../db-cloud-shared/quick-start/mysql.md-->
 
 ## Visualize Data
 <!--@include: ./visualize-data.md-->

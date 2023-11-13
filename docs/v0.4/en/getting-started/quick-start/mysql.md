@@ -1,75 +1,11 @@
-# Try Out GreptimeDB
+# MySQL
 
-Begin to explore GreptimeDB's powerful core features.
+Before reading this document, please ensure that you have installed and are running GreptimeDB locally.
+Please refer to [GreptimeDB Standalone](../installation/greptimedb-standalone.md) or [GreptimeDB Cluster](../installation/greptimedb-cluster.md).
 
-## Installation
+## Try Out GreptimeDB
 
-You can try out GreptimeDB with our test builds released on the [Download page](https://greptime.com/download).
-
-We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
-
-### Binary
-
-For Linux and macOS users, you can download the latest build of the `greptime` binary by using the following commands:
-
-```shell
-curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/develop/scripts/install.sh | sh
-```
-
-Once the download is completed, the binary file `greptime` will be stored in your current directory.
-
-You can run GreptimeDB in the standalone mode:
-
-```shell
-./greptime standalone start
-```
-
-### Docker
-
-Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
-
-```shell
-docker run -p 4000-4003:4000-4003 \
--p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
---name greptime --rm \
-greptime/greptimedb standalone start \
---http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
---mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003 \
---opentsdb-addr 0.0.0.0:4242
-```
-
-The data will be stored in the `greptimedb/` directory in your current directory.
-
-If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb). In particular, we support GreptimeDB based on CentOS, and you can try image `greptime/greptimedb-centos`.
-
-:::tip NOTE
-If you are using a Docker version lower than [v23.0](https://docs.docker.com/engine/release-notes/23.0/), you may experience problems with insufficient permissions when trying to run the command above, due to a [bug](https://github.com/moby/moby/pull/42681) in the older version of Docker Engine.
-
-You can:
-
-1. Set `--security-opt seccomp=unconfined`, for example:
-
-   ```shell
-   docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-   -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
-   --name greptime --rm \
-   greptime/greptimedb standalone start \
-   --http-addr 0.0.0.0:4000 \
-   --rpc-addr 0.0.0.0:4001 \
-   --mysql-addr 0.0.0.0:4002 \
-   --postgres-addr 0.0.0.0:4003 \
-   --opentsdb-addr 0.0.0.0:4242
-   ```
-
-2. Upgrade the Docker version to v23.0.0 or higher;
-   :::
-
-## Connect
-
-GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md). We use MySQL client here for simplicity.
+### Connect
 
 ```sql
 mysql -h 127.0.0.1 -P 4002
@@ -81,7 +17,7 @@ Also, you can use PostgreSQL to connect the database:
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-## Create table
+### Create table
 
 **Note: GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).**
 
@@ -94,7 +30,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
     cpu_util DOUBLE,
     memory_util DOUBLE,
     disk_util DOUBLE,
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(host, idc),
     TIME INDEX(ts)
 );
@@ -115,7 +51,7 @@ Field descriptions:
 - For more information about creating table SQL, please refer to [CREATE](/reference/sql/create.md).
 - For data types, please check [data types](/reference/data-types.md).
 
-## Insert data
+### Insert data
 
 Using the `INSERT` statement is an easy way to add data to your table. The following statement allows us to insert several rows into the `system_metrics` table.
 
@@ -135,7 +71,7 @@ VALUES
 
 For more information about the `INSERT` statement, please refer to [INSERT](/reference/sql/insert.md).
 
-## Query data
+### Query data
 
 To select all the data from the `system_metrics` table, use the `SELECT` statement:
 
@@ -209,7 +145,22 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 
 For more information about the `SELECT` statement, please refer to [SELECT](/reference/sql/select.md).
 
+
+## Collect Host Metrics
+
+<!--@include: ../../db-cloud-shared/quick-start/mysql.md-->
+
+If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
+
+```shell
+curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4000
+```
+
+
+
 ## Visualize data
+
+### GreptimeDB Dashboard
 
 Visualization plays a crucial role in effectively utilizing time series data. To help users leverage the various features of GreptimeDB, Greptime offers a simple [dashboard](https://github.com/GreptimeTeam/dashboard).
 
@@ -230,15 +181,10 @@ We offer various chart types to choose from based on different scenarios. The co
 
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
 
-## Next steps
+<!-- ### Grafana
 
-Congratulations you have learned the basic features of GreptimeDB. You are ready for the User Guide chapter.
+TODO -->
 
-- [Concepts](/user-guide/concepts/overview.md)
-- [Clients](/user-guide/clients/overview.md)
-- [Table management](/user-guide/table-management.md)
-- [Write data](/user-guide/write-data/overview.md)
-- [Query data](/user-guide/query-data/overview.md)
-- [Scripts-&-functions](/user-guide/scripts-&-functions/overview.md)
-- [Cluster](/user-guide/cluster.md)
-- [Operations](/user-guide/operations/overview.md)
+## Next Steps
+
+<!--@include: ./next-steps.md-->

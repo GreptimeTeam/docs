@@ -1,6 +1,17 @@
 - Getting-Started:
-  - try-out-greptimedb
-  - try-out-the-greptimedb-cluster
+  - Installation:
+    - greptimedb-standalone
+    - greptimedb-cluster
+  - Quick-Start:
+    - overview
+    - mysql
+    - influxdb
+    - go
+    - java
+    - python
+    - node
+    - vector
+    - prometheus
 - User-Guide:
   - overview
   - Concepts:
@@ -67,6 +78,7 @@
     - run-on-android
     - monitoring
     # TODO
+    # - alert
     # - import-data
     # - export-data
     # - back-up-&-restore-data
