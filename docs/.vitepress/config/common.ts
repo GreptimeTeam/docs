@@ -1,14 +1,14 @@
 import dotenv from 'dotenv'
 import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
+import settingConfig from './setting.json'
 
-const { ENV, VERSION, LATEST_VERSION, VERSION_MAP, WEBSITE_MAP, BASE: base = '/' } = process.env
+const { LATEST_VERSION, langMap, websiteMap } = settingConfig
+const { ENV, VERSION = LATEST_VERSION, VERSION_MAP, BASE: base = '/' } = process.env
 const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
+const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION
 
-const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION || LATEST_VERSION
 const versionPath = `:version/${CURRENT_LANG}/:path+`
 const versionMap = JSON.parse(VERSION_MAP)
-const websiteMap = JSON.parse(WEBSITE_MAP)
-const langMap = ['en', 'zh']
 
 const common = async () => {
   return {
