@@ -67,9 +67,10 @@ export const getVersionList = (lang: string) => {
     .filter(version => version !== CURRENT_VERSION)
     .map(version => {
       const endText = version !== LATEST_VERSION ? '' : textMap[lang] || '(latest)'
+      const linkVersion = version !== LATEST_VERSION ? `${version}/` : ''
       return {
         text: `${version} ${endText}`,
-        link: `${websiteMap[lang]}/${version}/`,
+        link: `${websiteMap[lang]}/${linkVersion}`,
       }
     })
 }
