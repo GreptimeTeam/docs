@@ -1,22 +1,18 @@
 <template lang="pug">
-Layout
-  template(#doc-after)
-    Footer
+.footer 
+  .copyright-wrapper
+    .copyright {{copyright}}
+    a.icp(v-if="showIcp" :href="icp.link" target="_blank") {{ icp.text }}
+    a.icp(v-if="showIcp" :href="gongan.link" target="_blank") {{ gongan.text }}
 </template>
-<script setup name="Layout" lang="ts">
-import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
-import Footer from './components/Footer.vue'
-import { getSidebarIcon } from '@/utils.ts'
-
+<script setup name="Footer" lang="ts">
 // data
 const { theme } = useData()
-const { iconMap } = theme.value
+const { copyright, icp, gongan } = theme.value
 
+const showIcp = computed(() => !!icp)
 // methods
 // lifecycle
-onMounted(async () => {
-  getSidebarIcon(iconMap)
-})
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .footer
@@ -42,4 +38,15 @@ onMounted(async () => {
       padding-left 5px
       margin-left 5px
       border-left 1px solid var(--color-gray-5)
+
+@media(max-width 600px)
+  .footer .copyright-wrapper
+    margin-top 48px
+    flex-direction column
+    .icp
+      margin-top 8px
+      margin-left 0
+      padding-left 0
+      border-left none
+      display block
 </style>
