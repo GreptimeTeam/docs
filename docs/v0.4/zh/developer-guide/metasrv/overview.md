@@ -1,4 +1,4 @@
-# Meta Server
+# Overview
 
 ![meta](/meta.png)
 
@@ -76,7 +76,7 @@ A heartbeat will probably carry the data listed below, but this is not the final
 ```
 service Heartbeat {
   // Heartbeat, there may be many contents of the heartbeat, such as:
-  // 1. Metadata to be registered to meta server and discoverable by other nodes.
+  // 1. Metadata to be registered to metasrv and discoverable by other nodes.
   // 2. Some performance metrics, such as Load, CPU usage, etc.
   // 3. The number of computing tasks being executed.
   rpc Heartbeat(stream HeartbeatRequest) returns (stream HeartbeatResponse) {}

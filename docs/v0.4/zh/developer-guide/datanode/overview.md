@@ -14,8 +14,8 @@
 
 - 一个 gRPC 服务来提供对 region 数据的读写，`Frontend` 便是使用这个服务来从 `Datanode` 读写数据。
 - 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、 配置信息等
-- `Heartbeat Task` 用来向 `Meta server` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
-  是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Meta server` 做出了调度
+- `Heartbeat Task` 用来向 `Metasrv` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
+  是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Metasrv` 做出了调度
   决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`
 - `Datanode` 不包含物理规划器（Physical planner）、优化器（optimizer）等组件（这些被放置在 `Frontend` 中），用户对
   一个或多个 `Table` 的查询请求会在 `Frontend` 中被转换为 `Region` 的查询请求，`Datanode` 负责处理这些 `Region` 查询请求
