@@ -7,7 +7,7 @@
 - `Frontend` that exposes read and write service in various protocols, forwards requests to
   `Datanode`.
 - `Datanode` is responsible for storing data to persistent storage such as local disk or object storage in the cloud such as AWS S3, Azure Blob Storage etc.
-- `Metasrv` server that coordinates the operations between the `Frontend` and `Datanode`.
+- `Metasrv` that coordinates the operations between the `Frontend` and `Datanode`.
 
 ![Architecture](/architecture.png)
 
@@ -22,10 +22,10 @@ To better understand `GreptimeDB`, a few concepts need to be introduced:
   replicas is writable and can serve write requests, while any replica can serve read requests.
 - A `datanode` stores and serves `region` to `frontends`. One `datanode` can serve multiple `regions`
   and one `region` can be served by multiple `datanodes`.
-- The `meta` server stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
+- The `metasrv` stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
   table, etc. It also coordinates `frontends` and `datanodes`.
 - Each `datanode` or `frontend` has a remote catalog implementation, which fetches the metadata from
-  `meta`, tells which `region` of a `table` is served by which `datanode`.
+  `metasrv`, tells which `region` of a `table` is served by which `datanode`.
 - A `frontend` is a stateless service that serves requests from client. It acts as a proxy to
   forward read and write requests to corresponding `datanode`, according to the mapping from catalog.
 - A timeseries of a `table` is identified by its primary key. Each `table` must have a timestamp
