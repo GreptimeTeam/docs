@@ -27,7 +27,7 @@ export OPENAI_API_KEY='sk-xxx'
 - Instrument your LLM application
 
 ```python
-from greptimeai.langchain.callback import GreptimeCallbackHandler
+from greptimeai.langchain_callback import GreptimeCallbackHandler
 from langchain.chains import LLMChain
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
