@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Meta` provides the functionality of distributed locks via `gRPC`.
+`Metasrv` provides the functionality of distributed locks via `gRPC`.
 
 ## How to use
 

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Meta` provides the functionality of distributed locks via `gRPC`.
+`Metasrv` provides the functionality of distributed locks via `gRPC`.
 
 ## How to use
 
@@ -54,4 +54,4 @@ The current implementation of distributed lock is based on [etcd][4]. We have de
 
 [4]: https://etcd.io/docs/v3.5/dev-guide/api_concurrency_reference_v3/
 
-Since `etcd` maintains the state of the distributed lock, both the `Meta` leader and its follower nodes can provide the Lock's `gRPC` service.
+Since `etcd` maintains the state of the distributed lock, both the `Metasrv` leader and its follower nodes can provide the Lock's `gRPC` service.

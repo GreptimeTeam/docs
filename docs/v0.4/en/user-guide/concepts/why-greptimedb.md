@@ -30,7 +30,7 @@ Data can be shared among multiple applications without the need of competing for
 ![The architecture of GreptimeDB](/architecture-2.png)
 
 With flexible architecture design principles, different modules and components can be independently switched on, combined, or separated through modularization and layered design.
-For example, we can merge the frontend, datanode, and meta server modules into a standalone binary, and we can also independently enable or disable the WAL for every table.
+For example, we can merge the frontend, datanode, and metasrv modules into a standalone binary, and we can also independently enable or disable the WAL for every table.
 
 Flexible architecture allows GreptimeDB to meet deployment and usage requirements in scenarios from the edge to the cloud, while still using the same set of APIs and control panels.
 Through well-abstracted layering and encapsulation isolation, GreptimeDB's deployment form supports various environments from embedded, standalone, and traditional clusters to cloud-native.

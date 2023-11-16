@@ -3,7 +3,7 @@
 ## Introduction
 
 `Datanode` is mainly responsible for storing the actual data for GreptimeDB. `Datanode` itself is a
-stand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Meta` to form a
+stand-alone database service. Meanwhile, it could cooperate with `Frontend` and `Metasrv` to form a
 distributed database service, as the following picture shows:
 
 ![Datanode](/datanode.png)
@@ -16,7 +16,7 @@ these components (some are in progress):
 - A gRPC service provides read/write access to the data managed by this node. `Frontend` also uses
   the RPC service to interact with `Datanode`s.
 - An HTTP service implements the HTTP protocol of other TSDBs or databases, and for debugging purposes.
-- `Meta` client interacts with the `Meta` service.
+- `Meta` client interacts with the `Metasrv`.
 - Handlers contain the actual processing logic for RPC/HTTP requests.
 - Catalog manages the metadata of the database objects, such as tables, and views in this node.
 - Resource management controls the usage of memory, CPU, and disk.

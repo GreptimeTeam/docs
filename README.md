@@ -46,6 +46,6 @@ Provides a detailed overview of how GreptimeDB operates and assists you in parti
 - [Overview](https://docs.greptime.com/developer-guide/overview)
 - [Frontend](https://docs.greptime.com/developer-guide/frontend/overview)
 - [Datanode](https://docs.greptime.com/developer-guide/datanode/overview)
-- [Meta](https://docs.greptime.com/developer-guide/metasrv/overview)
+- [Metasrv](https://docs.greptime.com/developer-guide/metasrv/overview)
 
 Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
