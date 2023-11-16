@@ -29,7 +29,7 @@ export const zhConfig = async () => ({
   themeConfig: {
     notFound: {
       title: '页面不存在',
-      quote: '您访问的页面不存在，可能是因为您的链接已失效、输入的地址有误或者该页面已被删除。',
+      quote: '您访问的页面不存在',
       linkText: '返回首页',
     },
     search: {
