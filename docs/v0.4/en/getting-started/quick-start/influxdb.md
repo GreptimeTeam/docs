@@ -10,10 +10,8 @@
 
 <!--@include: ../../db-cloud-shared/quick-start/influxdb.md-->
 
-If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
-
 ```shell
-curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol/main/quick-start.sh | bash -s -- -h localhost -d public -s false -P 4000
+curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-influxdb-line-protocol/main/quick-start.sh | bash -s -- -e http://localhost:4000/v1/influxdb/write
 ```
 
 ## Visualize Data with Grafana

@@ -13,7 +13,7 @@
 If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
 
 ```shell
-pipx run --no-cache greptime-cloud-quick-start -host localhost -db public -P 4000 --no-secure
+pipx run --no-cache greptime-cloud-quick-start -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
 ## Visualize Data with Grafana
