@@ -37,7 +37,7 @@ greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  co
 
 Starts GreptimeDB in distributed mode:
 
-Starts a meta server:
+Starts a metasrv:
 
 ```sh
 greptime metasrv start -c config/metasrv.example.toml

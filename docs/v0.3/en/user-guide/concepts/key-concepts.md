@@ -22,7 +22,7 @@ For more information about the data model of the time-series table, please refer
 
 Each partition of distributed table is called a region. A region may contain a
 sequence of continuous data, depending on the partition algorithm. Region
-information is managed by Meta. It's completely transparent to users who send
+information is managed by Metasrv. It's completely transparent to users who send
 the query.
 
 ## Data Types

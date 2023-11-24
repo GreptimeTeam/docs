@@ -17,8 +17,8 @@
 - `table` 是 `GreptimeDB` 中存储用户数据的地方，有表结构和有序的主键。`table` 通过其主键被分割成称为 `region`。
 - `region` 是表中的一个连续段，在某些关系型数据库中被视为分区。`region` 可以在多个 `datanode` 上复制，其中任何一个副本都可以支持读请求，但只有一个副本支持写请求。
 - `datanode` 存储并为 `frontend` 提供 `region`。一个 `datanode` 可以服务多个 `region`，一个 `region` 可以由多个 `datanode` 服务。
-- `meta` 服务器存储集群的元数据，例如表、`datanode`、每个表的 `region` 等。它还协调 `frontend` 和 `datanode`。
-- 每个 `datanode` 或 `frontend` 都有一个远程 catalog 实现，它从 `meta` 中获取元数据，告诉相应的组件哪个 `table` 的 `region` 由哪个 `datanode` 提供服务。
+- `metasrv` 服务器存储集群的元数据，例如表、`datanode`、每个表的 `region` 等。它还协调 `frontend` 和 `datanode`。
+- 每个 `datanode` 或 `frontend` 都有一个远程 catalog 实现，它从 `metasrv` 中获取元数据，告诉相应的组件哪个 `table` 的 `region` 由哪个 `datanode` 提供服务。
 - `frontend` 是一个无状态服务，用于接收客户端的请求。它作为 proxy 根据 catalog 中的信息将读取和写入请求转发到相应的 `datanode`。
 - `table` 的时间序列由其主键标识。因为 `GreptimeDB` 是一个时间序列数据库，所以每个 `table` 必须有一个时间戳列。`table` 中的数据将按其主键和时间戳排序，但顺序的实际实现方式比较特殊，可能会在将来发生变化。
 - `table engine` 是 `GreptimeDB` 处理不同 `table` 类型的 SQL 操作的组件。`Mito` 是默认的 `table engine`。它使用基于 LSM-Tree 的 `storage engine` 作为其存储后端。
@@ -39,7 +39,7 @@
 
 - [frontend][1]
 - [datanode][2]
-- [meta][3]
+- [metasrv][3]
 
 [1]: frontend/overview.md
 [2]: datanode/overview.md

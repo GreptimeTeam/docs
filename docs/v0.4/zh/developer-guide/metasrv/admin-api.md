@@ -1,6 +1,6 @@
 # Admin API
 
-The Admin API provides a simple way to view cluster information, including meta health detection, meta leader query, database metadata query, and datanode heartbeat detection.
+The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
 
 The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
 Available APIs:
@@ -14,11 +14,11 @@ Available APIs:
 
 All these APIs are under the parent resource `/admin`.
 
-In the following sections, we assume that your meta instance is running on localhost port 3002.
+In the following sections, we assume that your metasrv instance is running on localhost port 3002.
 
 ## /health HTTP endpoint  
 
-The `/health` endpoint accepts GET HTTP requests and you can use this endpoint to check the health of your meta instance.
+The `/health` endpoint accepts GET HTTP requests and you can use this endpoint to check the health of your metasrv instance.
 
 ### Definition
 
@@ -42,7 +42,7 @@ OK
 
 ## /leader HTTP endpoint
 
-The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint to query the leader's addr of your meta instance.
+The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint to query the leader's addr of your metasrv instance.
 
 ### Definition
 

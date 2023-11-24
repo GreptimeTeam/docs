@@ -37,7 +37,7 @@ greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c  co
 
 以分布式模式启动 GreptimeDB:
 
-启动 meta server:
+启动 metasrv:
 
 ```sh
 greptime metasrv start -c config/metasrv.example.toml

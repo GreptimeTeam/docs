@@ -7,7 +7,7 @@
 - `Frontend` that exposes read and write service in various protocols, forwards requests to
   `Datanode`.
 - `Datanode` is responsible for storing data to persistent storage such as local disk or object storage in the cloud such as AWS S3, Azure Blob Storage etc.
-- `Metasrver` server that coordinates the operations between the `Frontend` and `Datanode`.
+- `Metasrv` server that coordinates the operations between the `Frontend` and `Datanode`.
 
 ![Architecture](/architecture.png)
 
@@ -22,10 +22,10 @@ To better understand `GreptimeDB`, a few concepts need to be introduced:
   replicas is writable and can serve write requests, while any replica can serve read requests.
 - A `datanode` stores and serves `region` to `frontends`. One `datanode` can serve multiple `regions`
   and one `region` can be served by multiple `datanodes`.
-- The `metaserver` stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
+- The `metasrv` stores the metadata of the cluster, such as tables, `datanodes`, `regions` of each
   table, etc. It also coordinates `frontends` and `datanodes`.
 - The `frontend` has a catalog implementation, which fetches the metadata from
-  `metaserver`, tells which `region` of a `table` is served by which `datanode`.
+  `metasrv`, tells which `region` of a `table` is served by which `datanode`.
 - A `frontend` is a stateless service that serves requests from client. It acts as a proxy to
   forward read and write requests to corresponding `datanode`, according to the mapping from catalog.
 - A timeseries of a `table` is identified by its primary key. Each `table` must have a timestamp
@@ -41,12 +41,12 @@ Before diving into each component, let's take a high level view of how the datab
 
 - Users can interact with the database via various protocols, such as ingesting data using
   `InfluxDB line protocol`, then exploring the data using SQL or PromQL. The `frontend` is the
-  component users or clients connect to and operate, thus hide `datanode` and `metasrver` behind it.
+  component users or clients connect to and operate, thus hide `datanode` and `metasrv` behind it.
 - Assumes a user uses the HTTP API to insert data into the database, by sending a HTTP request to a
   `frontend` instance. When the `frontend` receives the request, it then parses the request body using
   corresponding protocol parser, and finds the table to write to from a catalog manager based on
-  `metasrver`.
-- The `frontend` relies on a push-pull strategy to cache metadata from `metaserver`, thus it knows which
+  `metasrv`.
+- The `frontend` relies on a push-pull strategy to cache metadata from `metasrv`, thus it knows which
   `datanode`, or more precisely, the `region` a request should be sent to. A request may be split and
   sent to multiple `region`s, if its contents need to be stored in different `region`s.
 - When `datanode` receives the request, it writes the data to the `region`, and then sends response
@@ -59,7 +59,7 @@ For more details on each component, see the following guides:
 
 - [frontend][1]
 - [datanode][2]
-- [metaserver][3]
+- [metasrv][3]
 
 [1]: ./frontend/overview.md
 [2]: ./datanode/overview.md

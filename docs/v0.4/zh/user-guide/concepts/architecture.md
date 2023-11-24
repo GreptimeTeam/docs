@@ -2,7 +2,7 @@
 
 ![architecture](/architecture-2.png)
 
-为了形成一个强大的数据库集群，并控制其复杂性，GreptimeDB 架构中有三个主要组成部分：MetaServer，Frontend 和 Datanodes。
+为了形成一个强大的数据库集群，并控制其复杂性，GreptimeDB 架构中有三个主要组成部分：Metasrv，Frontend 和 Datanodes。
 
 - [**MetaServer**](/developer-guide/metasrv/overview.md) 控制着 GreptimeDB 集群的核心命令。在典型的部署结构中，至少需要三个节点才能建立一个可靠的 _MetaServer_ 小集群。_MetaServer_ 管理着数据库和表的信息，包括数据如何在集群中传递、请求的转发地址等。它还负责监测 `Datanode` 的可用性和性能，以确保路由表的最新状态和有效性。
 

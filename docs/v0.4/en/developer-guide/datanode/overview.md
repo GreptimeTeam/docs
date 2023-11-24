@@ -5,7 +5,7 @@
 `Datanode` is mainly responsible for storing the actual data for GreptimeDB. As we know, in GreptimeDB,
 a table can have one or more `region`s, and `Datanode` is responsible for managing the reading and writing
 of these `region`s. `Datanode` is not aware of table and can be considered as a `region server`. Therefore,
-`Frontend` and `Metaserver` operate `Datanode` at the granularity of `region`.
+`Frontend` and `Metasrv` operate `Datanode` at the granularity of `region`.
 
 ![Datanode](/datanode.png)
 
@@ -16,10 +16,10 @@ A `Datanode` contains all the components needed for a `region server`. Here we l
 - A gRPC service is provided for reading and writing region data, and `Frontend` uses this service
   to read and write data from `Datanode`s.
 - An HTTP service, through which you can obtain metrics, configuration information, etc., of the current node.
-- `Heartbeat Task` is used to send heartbeat to the `Meta server`. The heartbeat plays a crucial role in the
+- `Heartbeat Task` is used to send heartbeat to the `Metasrv`. The heartbeat plays a crucial role in the
   distributed architecture of GreptimeDB and serves as a basic communication channel for distributed coordination.
   The upstream heartbeat messages contain important information such as the workload of a `Region`. If the
-  `Meta server `has made scheduling(such as `Region` migration) decisions, it will send instructions to the
+  `Metasrv `has made scheduling(such as `Region` migration) decisions, it will send instructions to the
   `Datanode` via downstream heartbeat messages.
 - The `Datanode` does not include components like the `Physical Planner`, `Optimizer`, etc. (these are placed in
   the `Frontend`). The user's query requests for one or more `Table`s will be transformed into `Region` query

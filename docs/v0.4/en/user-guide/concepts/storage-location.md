@@ -21,7 +21,7 @@ The storage file structure of GreptimeDB includes of the following:
     └── LOCK
 ```
 
-- `metadata`:  The internal metadata directory that keeps catalog/table info, procedure states, etc. In cluster mode, this directory does not exist in Datanodes or Frontends, because all those states including region route info are saved in MetaServer.
+- `metadata`:  The internal metadata directory that keeps catalog/table info, procedure states, etc. In cluster mode, this directory does not exist in Datanodes or Frontends, because all those states including region route info are saved in Metasrv.
 - `data`: The files in data directory store time series data of GreptimeDB. To customize this path, please refer to [Storage option](../operations/configuration.md#storage-option).
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
 - `wal`: The wal directory contains the write-ahead log files.

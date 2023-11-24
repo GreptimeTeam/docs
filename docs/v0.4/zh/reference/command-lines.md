@@ -43,7 +43,7 @@ greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c con
 
 为了以分布式模式启动 GreptimeDB，您需要分别启动每个组件。以下命令显示了如何使用自定义配置或命令行参数启动每个组件：
 
-使用自定义配置启动 meta server：
+使用自定义配置启动 metasrv：
 
 ```sh
 greptime metasrv start -c config/metasrv.example.toml
@@ -55,7 +55,7 @@ greptime metasrv start -c config/metasrv.example.toml
 greptime datanode start -c config/datanode.example.toml
 ```
 
-使用命令行参数启动 datanode，指定 gRPC 服务地址、MySQL 服务地址、meta server 地址和该 datanode 的 ID：
+使用命令行参数启动 datanode，指定 gRPC 服务地址、MySQL 服务地址、metasrv 地址和该 datanode 的 ID：
 
 ```sh
 greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addr=0.0.0.0:3002 --node-id=1
@@ -67,7 +67,7 @@ greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --meta
 greptime frontend start -c config/frontend.example.toml
 ```
 
-使用命令行参数启动 frontend，指定 meta server 的地址：
+使用命令行参数启动 frontend，指定 metasrv 的地址：
 
 ```sh
 greptime frontend start --metasrv-addr=0.0.0.0:3002

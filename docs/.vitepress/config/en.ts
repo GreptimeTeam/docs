@@ -27,6 +27,10 @@ export const enConfig = async () => ({
     zh: { label: '简体中文', lang: 'zh-CN', link: `${websiteMap['zh']}${base}` },
   },
   themeConfig: {
+    notFound: {
+      quote: 'Unfortunately, the content you are looking for is not found.',
+      linkText: 'Take me to homepage',
+    },
     nav: [
       {
         text: 'Home',

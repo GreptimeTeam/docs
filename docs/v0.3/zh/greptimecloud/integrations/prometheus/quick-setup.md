@@ -36,4 +36,4 @@ git push
 
 ## PromQL
 
-GreptimeDB 支持 PromQL (Prometheus 查询语言)，这意味着你可以将 GreptimeDB 作为 Prometheus 查询的替代品。有关更多详细信息，请参考 [PromQL](https://docs.greptime.cn/user-guide/prometheus#prometheus-query-language)。
+GreptimeDB 支持 PromQL (Prometheus 查询语言)，这意味着你可以将 GreptimeDB 作为 Prometheus 查询的替代品。有关更多详细信息，请参考 [PromQL](https://docs.greptime.cn/user-guide/clients/prometheus#prometheus-query-language)。
