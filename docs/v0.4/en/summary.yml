@@ -66,6 +66,7 @@
     - gtctl
     - run-on-android
     - monitoring
+    - tracing
     # TODO
     # - import-data
     # - export-data
@@ -136,6 +137,7 @@
   - How-To:
     - how-to-write-sdk
     - how-to-use-tokio-console
+    - how-to-trace-greptimedb
 - Reference:
   - command-lines
   - data-types
