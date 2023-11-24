@@ -5,9 +5,9 @@ In these documentation, we will use CPU usage as an example to quickly go throug
 
 ## Protocols
 
+- [MySQL](mysql.md)
 - [Prometheus](prometheus.md)
 - [InfluxDB](influxdb.md)
-- [MySQL](mysql.md)
 - [Vector](vector.md)
 
 ## Languages

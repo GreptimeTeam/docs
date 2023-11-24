@@ -163,7 +163,7 @@ curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysq
 
 Visualization plays a crucial role in effectively utilizing time series data. To help users leverage the various features of GreptimeDB, Greptime offers a simple [dashboard](https://github.com/GreptimeTeam/dashboard).
 
-The Dashboard is embedded into GreptimeDB's binary since GreptimeDB v0.2.0. After [starting GreptimeDB](#installation), the dashboard can be visited via HTTP endpoint `http://localhost:4000/dashboard`. The current version of the dashboard supports MySQL and Python queries, with support for PromQL coming soon.
+The Dashboard is embedded into GreptimeDB's binary since GreptimeDB v0.2.0. After [starting GreptimeDB](#installation), the dashboard can be visited via HTTP endpoint `http://localhost:4000/dashboard`. The current version of the dashboard supports MySQL, Python and PromQL queries.
 
 Write SQL into the command text, then click `Run All`. We'll got all data in system_metrics table.
 
@@ -181,8 +181,6 @@ We offer various chart types to choose from based on different scenarios. The co
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
 
 ### Grafana
-
-#### Installation
 
 #### Add Data Source
 
@@ -202,6 +200,8 @@ Fill in the following information:
 * SessionTimezone: `UTC`
 
 ![grafana-mysql-config](/grafana-mysql-config.jpg)
+
+Click `Save & Test` button to test the connection.
 
 For more information on using MySQL as a data source for GreptimeDB,
 please refer to [Grafana-MySQL](/user-guide/clients/grafana.md#mysql).

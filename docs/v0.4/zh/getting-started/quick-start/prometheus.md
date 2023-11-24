@@ -2,12 +2,12 @@
 
 <!--@include: ./introduction.md-->
 
-## Write Data
+## 写入数据
 
-### Configure
+### 配置
 
-We use Prometheus [node_exporter](https://github.com/prometheus/node_exporter) as an example to collect data.
-To do this, create a file named `prometheus.yml` and copy the following content into it.
+我们使用 Prometheus [node_exporter](https://github.com/prometheus/node_exporter) 作为收集数据的示例。
+首先创建一个名为 `prometheus.yml` 的文件，将以下配置复制到其中。
 
 ```yml
 global:
@@ -25,11 +25,11 @@ remote_write:
   - url: http://greptimedb:4000/v1/prometheus/write?db=public
 ```
 
-The configuration sets the `remote_write` URL to the Greptime URL and sets the interval for collecting metrics to 10 seconds. The host `greptimedb` in the URL is the service name of GreptimeDB in the Docker network.
+配置中将 `remote_write` 的 URL 设置为 GreptimeDB 的 URL，并将收集指标的间隔设置为 10 秒。URL 中的 `greptimedb` 是 Docker 网络中 GreptimeDB 的服务名。
 
-### Start Services
+### 启动服务
 
-We use [Docker Compose](https://docs.docker.com/compose/) to start GreptimeDB, Prometheues, node_exporter and Grafana. To do this, create a `docker-compose.yml` file with the following content:
+我们使用 [Docker Compose](https://docs.docker.com/compose/) 启动 GreptimeDB、Prometheues、node_exporter 和 Grafana。首先创建一个名为 `docker-compose.yml` 的文件，将以下内容复制到其中：
 
 ```yaml
 services:
@@ -74,18 +74,17 @@ services:
 networks: {}
 ```
 
-Then run the following command:
+然后执行以下命令：
 
 ```shell
 docker-compose up
 ```
+当所有服务成功启动后，主机指标将被收集并发送到 GreptimeDB。
 
-After every service starts successfully, the host metrics will be collected and sent to GreptimeDB.
+## 使用 Grafana 可视化数据
 
-## Visualize Data with Grafana
+<!--@include: ./visualize-data-by-grafana.md-->
 
-<!--@include: ./visualize-data.md-->
-
-## Next Steps
+## 下一步
 
 <!--@include: ./next-steps.md-->

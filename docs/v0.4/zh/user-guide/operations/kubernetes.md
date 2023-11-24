@@ -66,7 +66,7 @@ kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
 kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
-然后可以通过 MySQL 客户端[访问集群](/getting-started/try-out-greptimedb.md#Connect)
+然后可以通过 MySQL 客户端[访问集群](/getting-started/quick-start/mysql.md#connect)
 
 ### 4. 清除 GreptimeDB 集群
 

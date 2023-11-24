@@ -2,11 +2,11 @@
 
 <!--@include: ./introduction.md-->
 
-## Write Data
+## 写入数据
 
-### Configure
+### 配置
 
-Create a file named `vector.toml` and copy the following content into it.
+创建一个名为 `vector.toml` 的文件，并将以下内容复制到其中。
 
 ```toml
 [sources.in]
@@ -20,12 +20,11 @@ endpoint = "greptimedb:4001"
 dbname = "public"
 ```
 
-The configuration collects [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) as a Vector source and uses local GreptimeDB as the sink destination.
-The host `greptimedb` in the endpoint is the service name of GreptimeDB in the Docker network.
+该配置将 [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) 作为 Vector 源，并使用本地 GreptimeDB 作为接收端。`endpoint` 地址中的 `greptimedb` 是 Docker 网络中 GreptimeDB 的服务名。
 
-### Start
+### 启动服务
 
-Here we use [Docker Compose](https://docs.docker.com/compose/) to start GreptimeDB, Vector and Grafana. To do this, create a `docker-compose.yml` file with the following content:
+我们使用 [Docker Compose](https://docs.docker.com/compose/) 启动 GreptimeDB、Vector 和 Grafana。首先创建一个名为 `docker-compose.yml` 的文件，将以下内容复制到其中：
 
 ```yaml
 services:
@@ -60,17 +59,17 @@ services:
 networks: {}
 ```
 
-Then run the following command:
+然后执行以下命令：
 
 ```shell
 docker-compose up
 ```
 
-After every service starts successfully, the host metrics will be collected and sent to GreptimeDB.
+当所有服务成功启动后，主机指标将被收集并发送到 GreptimeDB。
 
 ## Visualize Data with Grafana
 
-<!--@include: ./visualize-data.md-->
+<!--@include: ./visualize-data-by-grafana.md-->
 
 ## Next Steps
 

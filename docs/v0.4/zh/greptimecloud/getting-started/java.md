@@ -4,7 +4,11 @@
 <!--@include: ./create-service.md-->
 
 ## 写入数据
-<!--@include: ./quick-start/java.md-->
+<!--@include: ../../db-cloud-shared/quick-start/java.md-->
+
+```shell
+curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/download/v0.1.2/quick-start-java-0.1.2-SNAPSHOT-all.jar --output quick-start.jar && java -jar quick-start.jar -h <host> -db <dbname> -u <username> -p <password>
+```
 
 ## 数据可视化
 <!--@include: ./visualize-data.md-->

@@ -2,11 +2,11 @@
 
 <!--@include: ./introduction.md-->
 
-## Prerequisites
+## 准备事项
 
 <!--@include: ./prerequisites.md-->
 
-## Write Data
+## 写入数据
 
 <!--@include: ../../db-cloud-shared/quick-start/java.md-->
 
@@ -15,10 +15,10 @@ curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/downl
 --output quick-start.jar && java -jar quick-start.jar -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-## Visualize Data with Grafana
+## 使用 Grafana 可视化数据
 
-<!--@include: ./visualize-data.md-->
+<!--@include: ./visualize-data-by-grafana.md-->
 
-## Next Steps
+## 下一步
 
 <!--@include: ./next-steps.md-->
