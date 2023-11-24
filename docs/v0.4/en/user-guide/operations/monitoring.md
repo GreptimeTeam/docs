@@ -20,7 +20,7 @@ scrape_configs:
 
 Use Binary to deploy Prometheus and GreptimeDB:
 
-1. Install GreptimeDB according to the [documentation](/getting-started/try-out-greptimedb#binary).
+1. Install GreptimeDB according to the [documentation](/getting-started/installation/greptimedb-standalone#binary).
 
 2. Visit [the official documentation for Prometheus](https://prometheus.io/download/) to download the binary. Afterward, execute the following command:
 
@@ -35,7 +35,7 @@ Access Prometheus by entering `localhost:9090` in your web browser.
 
 Use Docker to deploy Prometheus and GreptimeDB:
 
-1. Install GreptimeDB according to the [documentation](/getting-started/try-out-greptimedb#docker).
+1. Install GreptimeDB according to the [documentation](/getting-started/installation/greptimedb-standalone#docker).
 
 2. Start the Prometheus:
 ```

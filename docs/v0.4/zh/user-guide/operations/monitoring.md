@@ -20,7 +20,7 @@ scrape_configs:
 
 使用二进制安装 GreptimeDB 和 Prometheus
 
-1. 根据[文档](/getting-started/try-out-greptimedb#binary) 安装 GreptimeDB
+1. 根据[文档](/getting-started/installation/greptimedb-standalone#binary) 安装 GreptimeDB
 
 2. 进入 [Prometheus 官方文档](https://prometheus.io/download/) 下载二进制，并执行以下命令:
 
@@ -34,7 +34,7 @@ scrape_configs:
 
 使用 Docker 安装 GreptimeDB 和 Prometheus
 
-1. 根据[文档](/getting-started/try-out-greptimedb#docker) 安装 GreptimeDB
+1. 根据[文档](/getting-started/installation/greptimedb-standalone#docker) 安装 GreptimeDB
 
 2. 运行 Prometheus:
 ```
