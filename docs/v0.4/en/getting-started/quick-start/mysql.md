@@ -218,7 +218,7 @@ switch to the `Code` tab, and write the following SQL statement. Note that we ar
 SELECT ts AS "time", idle_cpu, sys_cpu FROM public.monitor
 ```
 
-![grafana-mysql-query-code](/grafana-mysql-run-query-code.jpg)
+![grafana-mysql-query-code](/grafana-mysql-query-code.jpg)
 
 Click `Run query` to view the metric data.
 

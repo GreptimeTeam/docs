@@ -1,6 +1,7 @@
 # Overview
 
 Getting Started with your familiar protocols or languages!
+In these documentation, we will use CPU usage as an example to quickly go through the basic usage of GreptimeDB.
 
 ## Protocols
 
