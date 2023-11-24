@@ -1,9 +1,10 @@
 # MySQL
 
-Before reading this document, please ensure that you have installed and are running GreptimeDB locally.
-Please refer to [GreptimeDB Standalone](../installation/greptimedb-standalone.md) or [GreptimeDB Cluster](../installation/greptimedb-cluster.md).
+## Prerequisites
 
-## Try Out GreptimeDB
+<!--@include: ./prerequisites.md-->
+
+## Try Out Basic SQL Operations
 
 ### Connect
 
@@ -153,10 +154,8 @@ For more information about the `SELECT` statement, please refer to [SELECT](/ref
 If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
 
 ```shell
-curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4000
+curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4002
 ```
-
-
 
 ## Visualize data
 
@@ -181,9 +180,49 @@ We offer various chart types to choose from based on different scenarios. The co
 
 We are committed to the ongoing development and iteration of this open source project, and we plan to expand the application of time series data in monitoring, analysis, and other relevant fields in the future.
 
-<!-- ### Grafana
+### Grafana
 
-TODO -->
+#### Installation
+
+#### Add Data Source
+
+You can access Grafana at `http://localhost:3000`.
+Use `admin` as both the username and password to log in.
+
+GreptimeDB can be configured as a MySQL data source in Grafana.
+Click the `Add data source` button and select MySQL as the type.
+
+![add-mysql-data-source](/add-mysql-data-source.jpg)
+
+Fill in the following information:
+
+* Name: `GreptimeDB`
+* Host: `greptimedb:4002`. The host `greptimedb` is the name of GreptimeDB container
+* Database: `public`
+* SessionTimezone: `UTC`
+
+![grafana-mysql-config](/grafana-mysql-config.jpg)
+
+For more information on using MySQL as a data source for GreptimeDB,
+please refer to [Grafana-MySQL](/user-guide/clients/grafana.md#mysql).
+
+#### Create a Dashboard
+
+To create a new dashboard in Grafana, click the `Create your first dashboard` button on the home page.
+Then, click `Add visualization` and select `GreptimeDB` as the data source.
+
+In the `Query` section, ensure that you select `GreptimeDB` as the data source, choose `Time series` as the format,
+switch to the `Code` tab, and write the following SQL statement. Note that we are using `ts` as the time column.
+
+```sql
+SELECT ts AS "time", idle_cpu, sys_cpu FROM public.monitor
+```
+
+![grafana-mysql-query-code](/grafana-mysql-run-query-code.jpg)
+
+Click `Run query` to view the metric data.
+
+![grafana-mysql-run-query](/grafana-mysql-run-query.jpg)
 
 ## Next Steps
 

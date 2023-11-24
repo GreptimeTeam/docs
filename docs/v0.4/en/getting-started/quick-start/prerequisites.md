@@ -1,7 +1,8 @@
-<!-- This document is used by go.md, java.md, node.md, python.md, influxdb.md -->
 
-* [GreptimeDB](https://greptime.com/)
-* [Grafana](https://grafana.com/)
+Before trying GreptimeDB, we need to have GreptimeDB and Grafana installed and running locally.
+
+* [GreptimeDB](https://greptime.com/) is used for storing and querying data.
+* [Grafana](https://grafana.com/) is used for visualizing data.
 
 Here we use [Docker Compose](https://docs.docker.com/compose/) to start GreptimeDB and Grafana. To do this, create a `docker-compose.yml` file with the following content:
 
