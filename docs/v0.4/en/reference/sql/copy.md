@@ -90,17 +90,17 @@ COPY tbl TO '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
 Notes: You should specify a file using `S3://bucket/key-name`. The following example shows the correct format.
 
 ```
-S3://my-bucket/data.parquet
+s3://my-bucket/data.parquet
 ```
 
 Another way is using Virtual-hosted–style(`ENABLE_VIRTUAL_HOST_STYLE` must be set to `true` to enable this). The following example shows the correct format.
 
 ```
-https://bucket-name.s3.region-code.amazonaws.com/key-name
+s3://bucket-name.s3.region-code.amazonaws.com/key-name
 ```
 
 :::tip NOTE
-you can use `Copy S3 URI` or `COPY URL` on S3 console to get S3 URI/HTTP URL prefix or full path.
+You can use `Copy S3 URI` or `COPY URL` on S3 console to get S3 URI/HTTP URL prefix or full path.
 :::
 
 ### Options
