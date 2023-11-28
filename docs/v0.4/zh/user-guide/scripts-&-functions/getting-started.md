@@ -141,7 +141,7 @@ def system_status(hosts, idcs, cpus, memories, disks)\
 
 ```shell
 curl  --data-binary "@system_status.py" \
-   -XPOST "http://localhost:4000/v1/scripts?name=system_status&db=greptime.public"
+   -XPOST "http://localhost:4000/v1/scripts?name=system_status&db=public"
 ```
 
 运行该脚本：
