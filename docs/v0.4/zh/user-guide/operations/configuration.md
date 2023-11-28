@@ -407,7 +407,7 @@ use_memory_store = false
 
 ### Logging 选项
 
-frontend、metasrv、datanode 和 standalone 都可以在 `[logging]` 部分配置 log、tracing 相关参数：
+`frontend`、`metasrv`、`datanode` 和 `standalone` 都可以在 `[logging]` 部分配置 log、tracing 相关参数：
 
 ```toml
 [logging]
@@ -419,12 +419,12 @@ tracing_sample_ratio = 1.0
 ```
 
 - `dir`: log 输出目录。
-- `level`: log 输出的日志等级，默认等级为 `info`。
-- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启
-- `otlp_endpoint`：使用基于 grpc 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`
-- `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing
+- `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
+- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
+- `otlp_endpoint`：使用基于 grpc 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
+- `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing。
 
-如何使用分布式追踪，请[参考文章](./tracing.md)
+如何使用分布式追踪，请参考 [Tracing](./tracing.md)
 
 ## 环境变量配置
 

@@ -4,21 +4,21 @@ GreptimeDB uses Rust's [tracing](https://docs.rs/tracing/latest/tracing/) framew
 
 By transparently transmitting `trace_id` and other information on the entire distributed system, we can record the function call chain of the entire distributed link, know the time of each tracked function take and other related information, so as to monitor the entire system.
 
-## Define tracing context in rpc
+## Define tracing context in RPC
 
-Because the tracing framework does not natively support distributed tracing, we need to manually pass information such as `trace_id` in the rpc message to correctly identify the function calling relationship. We use standards based on [w3c](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) to encode relevant information into `tracing_context` and attach the message to the rpc header. Mainly defined in:
+Because the tracing framework does not natively support distributed tracing, we need to manually pass information such as `trace_id` in the RPC message to correctly identify the function calling relationship. We use standards based on [w3c](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) to encode relevant information into `tracing_context` and attach the message to the RPC header. Mainly defined in:
 
-- frontend interacts with datanode: `tracing_context` is defined in [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto)
-- frontend interacts with metasrv: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto)
-- Client interacts with frontend: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto)
+- `frontend` interacts with `datanode`: `tracing_context` is defined in [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto)
+- `frontend` interacts with `metasrv`: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto)
+- Client interacts with `frontend`: `tracing_context` is defined in [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto)
 
-## Pass tracing context in rpc call
+## Pass tracing context in RPC call
 
 We build a `TracingContext` structure that encapsulates operations related to the tracing context. [Related code](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/telemetry/src/tracing_context.rs)
 
-GreptimeDB uses `TracingContext::from_current_span()` to obtain the current tracing context, uses the `to_w3c()` method to encode the tracing context into a w3c-compliant format, and attaches it to the rpc message, so that the tracing context is correctly distributed passed within the component.
+GreptimeDB uses `TracingContext::from_current_span()` to obtain the current tracing context, uses the `to_w3c()` method to encode the tracing context into a w3c-compliant format, and attaches it to the RPC message, so that the tracing context is correctly distributed passed within the component.
 
-The following example illustrates how to obtain the current tracing context and pass the parameters correctly when constructing the rpc message, so that the tracing context is correctly passed among the distributed components.
+The following example illustrates how to obtain the current tracing context and pass the parameters correctly when constructing the RPC message, so that the tracing context is correctly passed among the distributed components.
 
 
 ```rust
@@ -31,7 +31,7 @@ let request = RegionRequest {
 };
 ```
 
-On the receiver side of the rpc message, the tracing context needs to be correctly decoded and used to build the first `span` to trace the function call. For example, the following code will correctly decode the `tracing_context` in the received rpc message using the `TracingContext::from_w3c` method. And use the `attach` method to attach the context message to the newly created `info_span!("RegionServer::handle_read")`, so that the call can be tracked across distributed components.
+On the receiver side of the RPC message, the tracing context needs to be correctly decoded and used to build the first `span` to trace the function call. For example, the following code will correctly decode the `tracing_context` in the received RPC message using the `TracingContext::from_w3c` method. And use the `attach` method to attach the context message to the newly created `info_span!("RegionServer::handle_read")`, so that the call can be tracked across distributed components.
 
 ```rust
 ...

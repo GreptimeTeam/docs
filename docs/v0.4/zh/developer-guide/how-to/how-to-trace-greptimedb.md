@@ -4,21 +4,21 @@ GreptimeDB 使用 Rust 的 [tracing](https://docs.rs/tracing/latest/tracing/) �
 
 通过将 `trace_id` 等信息在整个分布式数据链路上透传，使得我们能够记录整个分布式链路的函数调用链，知道每个被追踪函数的调用时间等相关信息，从而对整个系统进行诊断。
 
-## 在 rpc 中定义 tracing 上下文
+## 在 RPC 中定义 tracing 上下文
 
-因为 tracing 框架并没有原生支持分布式追踪，我们需要手动将 `trace_id` 等信息在 rpc 消息中传递，从而正确的识别函数的调用关系。我们使用基于 [w3c 的标准](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) 将相关信息编码为 `tracing_context` ，将消息附在 rpc 的 header 中。主要定义在：
+因为 tracing 框架并没有原生支持分布式追踪，我们需要手动将 `trace_id` 等信息在 RPC 消息中传递，从而正确的识别函数的调用关系。我们使用基于 [w3c 的标准](https://www.w3.org/TR/trace-context/#traceparent-header-field-values) 将相关信息编码为 `tracing_context` ，将消息附在 RPC 的 header 中。主要定义在：
 
-- frontend 与 datanode 交互：`tracing_context` 定义在 [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto) 中
-- frontend 与 metasrv 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto) 中
-- client 与 frontend 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto) 中
+- `frontend` 与 `datanode` 交互：`tracing_context` 定义在 [`RegionRequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/region/server.proto) 中
+- `frontend` 与 `metasrv` 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/meta/common.proto) 中
+- Client 与 `frontend` 交互：`tracing_context`  定义在  [`RequestHeader`](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/common.proto) 中
 
-## 在 rpc 调用中传递 tracing 上下文
+## 在 RPC 调用中传递 tracing 上下文
 
 我们构建了一个 `TracingContext` 结构体，封装了与 tracing 上下文有关的操作。[相关代码](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/telemetry/src/tracing_context.rs)
 
-GreptimeDB 在使用 `TracingContext::from_current_span()` 获取当前 tracing 上下文，使用 `to_w3c()` 方法将 tracing 上下文编码为符合 w3c 的格式，并将其附在 rpc 消息中，从而使 tracing 上下文正确的在分布式组件之中传递。
+GreptimeDB 在使用 `TracingContext::from_current_span()` 获取当前 tracing 上下文，使用 `to_w3c()` 方法将 tracing 上下文编码为符合 w3c 的格式，并将其附在 RPC 消息中，从而使 tracing 上下文正确的在分布式组件之中传递。
 
-下面的例子说明了如何获取当前 tracing 上下文，并在构造 rpc 消息时正确传递参数，从而使 tracing 上下文正确的在分布式组件之中传递。
+下面的例子说明了如何获取当前 tracing 上下文，并在构造 RPC 消息时正确传递参数，从而使 tracing 上下文正确的在分布式组件之中传递。
 
 
 ```rust
@@ -31,7 +31,7 @@ let request = RegionRequest {
 };
 ```
 
-在 rpc 消息的接收方，需要将 tracing 上下文正确解码，并且使用该上下文构建第一个 `span` 对函数调用进行追踪。比如下面的代码就将接收到的 rpc 消息中的 `tracing_context` 使用 `TracingContext::from_w3c` 方法正确解码。并使用 `attach` 方法将新建的 `info_span!("RegionServer::handle_read")`  附上了上下文消息，从而能够跨分布式组件对调用进行追踪。 
+在 RPC 消息的接收方，需要将 tracing 上下文正确解码，并且使用该上下文构建第一个 `span` 对函数调用进行追踪。比如下面的代码就将接收到的 RPC 消息中的 `tracing_context` 使用 `TracingContext::from_w3c` 方法正确解码。并使用 `attach` 方法将新建的 `info_span!("RegionServer::handle_read")`  附上了上下文消息，从而能够跨分布式组件对调用进行追踪。 
 
 ```rust
 ...
