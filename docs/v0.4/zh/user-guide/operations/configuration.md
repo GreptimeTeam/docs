@@ -405,6 +405,27 @@ use_memory_store = false
 | selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/developer-guide/metasrv/selector.md)              |
 | use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
 
+### Logging 选项
+
+`frontend`、`metasrv`、`datanode` 和 `standalone` 都可以在 `[logging]` 部分配置 log、tracing 相关参数：
+
+```toml
+[logging]
+dir = "/tmp/greptimedb/logs"
+level = "info"
+enable_otlp_tracing = false
+otlp_endpoint = "localhost:4317"
+tracing_sample_ratio = 1.0
+```
+
+- `dir`: log 输出目录。
+- `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
+- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
+- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
+- `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing。
+
+如何使用分布式追踪，请参考 [Tracing](./tracing.md)
+
 ## 环境变量配置
 
 配置文件中的每一项都可以映射到环境变量。例如，如果我们想通过环境变量设置 datanode 的配置项 `data_home`：

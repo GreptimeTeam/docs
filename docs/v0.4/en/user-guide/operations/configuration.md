@@ -406,6 +406,27 @@ use_memory_store = false
 | selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/developer-guide/metasrv/selector.md)                 |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
+### Logging options
+
+`frontend`, `metasrv`, `datanode` and `standalone` can all configure log and tracing related parameters in the `[logging]` section:
+
+```toml
+[logging]
+dir = "/tmp/greptimedb/logs"
+level = "info"
+enable_otlp_tracing = false
+otlp_endpoint = "localhost:4317"
+tracing_sample_ratio = 1.0
+```
+
+- `dir`: log output directory.
+- `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
+- `enable_otlp_tracing`: whether to turn on distributed tracing, not turned on by default.
+- `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
+- `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
+
+How to use distributed tracing, please reference [Tracing](./tracing.md)
+
 ## Environment variable
 
 Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks` of datanode by environment variable:
