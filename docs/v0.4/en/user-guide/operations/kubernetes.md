@@ -94,7 +94,7 @@ kubectl port-forward svc/mycluster-frontend 4002:4002 > connections.out &
 kubectl port-forward svc/mycluster-frontend 4003:4003 > connections.out &
 ```
 
-Then you can use MySQL client to [connect to the cluster](/getting-started/try-out-greptimedb.md#Connect).
+Then you can use MySQL client to [connect to the cluster](/getting-started/quick-start/mysql.md#connect).
 
 ### 4. Destroy GreptimeDB cluster
 
