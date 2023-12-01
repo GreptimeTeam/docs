@@ -8,19 +8,23 @@
 
 ```sql
 SELECT
-  AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION],
+  AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION],
   ...
 FROM table_name
-ALIGN TIME_INTERVAL [BY (columna, columnb,..)] [FILL FILL_OPTION];
+ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION];
+
+INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr ) 
 ```
 
-- 关键字 `ALIGN`，必选字段，后接参数 `TIME_INTERVAL` ，指明了 Range 查询的步长。
-- `TIME_INTERVAL` 遵循 `PromQL` 的 `Time Durations` 类型，访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
-获得更详细的说明。
-- 关键字 `BY` ，可选字段，后接参数 `(columna, columnb,..)` ，描述了聚合键。若该字段未给出，默认使用表的主键作为聚合键。
-- `AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
+- 关键字 `ALIGN`，必选字段，后接参数 `INTERVAL` ，`ALIGN` 指明了 Range 查询的步长。
+  - 子关键字 `TO` ，可选字段，指定 Range 查询对齐到的时间点，合法的 `TO_OPTION` 参数见[TO Option](#to-option) 。
+  - 子关键字 `BY` ，可选字段，后接参数 `(columna, columnb,..)` ，描述了聚合键。若该字段未给出，默认使用表的主键作为聚合键。
+- 参数 `INTERVAL` ，主要用于给出一段时间长度，有两种参数形式：
+  - 基于 `PromQL Time Durations` 格式的字符串（例如：`3h`、`1h30m`）。访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) 获取该格式更详细的说明。
+  - `Interval` 类型，使用 `Interval` 类型需要携带括号,（例如：`(INTERVAL '1 year 3 hours 20 minutes')`）。访问 [Interval](./functions.md#interval) 获取该格式更详细的说明。
+- `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
   - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式
-  - 关键字 `RANGE`，必选字段，后接参数 `TIME_INTERVAL` 指定了每次数据聚合的时间范围，
+  - 关键字 `RANGE`，必选字段，后接参数 `INTERVAL` 指定了每次数据聚合的时间范围，
   - 关键字 `FILL`，可选字段，后接参数 `FILL_OPTION` 指明了聚合字段为空时的数据填充方法。
   - Range 表达式可与其他运算结合，实现更复杂的查询。具体见[嵌套使用 Range 表达式](#嵌套使用-range-表达式) 。
 - 关键字 `FILL`，可以跟在一个 Range 表达式后，作为这个 Range 表达式的数据填充方法；也可以放在 `ALIGN` 后作为缺省数据填充方法。合法的 `FILL_OPTION` 参数见[FILL Option](#fill-option) 。
@@ -140,7 +144,7 @@ FILL 有以下几种填充方式：
 
 |   FILL   |                                                      描述                                                      |
 | :------: | :------------------------------------------------------------------------------------------------------------: |
-|  `NULL`  |                                              直接使用 `NULL` 填充                                              |
+|  `NULL`  |                                        直接使用 `NULL` 填充（默认方式）                                        |
 |  `PREV`  |                                             使用前一个点的数据填充                                             |
 | `LINEAR` | 用前后两点的数据取平均，如果一个整数类型使用 `LINEAR` 填充，则该列的变量类型会在计算的时候被隐式转换为浮点类型 |
 |   `X`    |                        填充一个常量，该常量的数据类型必须和 Range 表达式的变量类型一致                         |
@@ -228,6 +232,120 @@ SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
 | 1970-01-01 08:00:05 |                                 6 |
 | 1970-01-01 08:00:10 |                               6.5 |
 +---------------------+-----------------------------------+
+```
+
+## TO OPTION
+
+关键字 `TO` ，指定 Range 查询对齐到的时间点，合法的 `TO` 选项有：
+
+|     TO      |                                描述                                |
+| :---------: | :----------------------------------------------------------------: |
+| `CALENDAR`  |                 对齐到 UTC 时间 0 时刻（默认方式）                 |
+|    `NOW`    |                         对齐到当前查询时间                         |
+| `Timestamp` | 对齐到一个用户指定的时间戳上，支持时间戳格式 `RFC3339` / `ISO8601` |
+
+使用下面的例子说明 `TO` 关键字的用法，首先执行下面的 SQL 语句创建数据表：
+
+```sql
+CREATE TABLE host (
+  ts timestamp(3) time index,
+  host STRING PRIMARY KEY,
+  val BIGINT,
+);
+
+INSERT INTO TABLE host VALUES
+    ("1970-01-01T02:00:00+08:00", 'host1', 0),
+    ("1970-01-01T10:00:00+08:00", 'host1', 1),
+    ("1970-01-01T02:00:00+08:00", 'host2', 2),
+    ("1970-01-01T10:00:00+08:00", 'host2', 3);
+```
+
+执行如下命令将 Mysql 客户端的时区调整至东八区：
+
+```sql
+set time_zone = '+8:00';
+
+SELECT 0::timestamp;
+
++---------------------+
+| Int64(0)            |
++---------------------+
+| 1970-01-01 08:00:00 |
++---------------------+
+```
+
+假设用户想查询在北京时间下，每天 `val` 的最小值。如果不指定 `TO` 关键字，直接运行下面的 Range 查询：
+
+```sql
+SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day);
+```
+
+运行后得到结果：
+
+```sql
++---------------------+-------+----------------------------------------------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
++---------------------+-------+----------------------------------------------------------------------------+
+| 1970-01-01 08:00:00 | host1 |                                                                          0 |
+| 1970-01-02 08:00:00 | host1 |                                                                          1 |
+| 1970-01-01 08:00:00 | host2 |                                                                          2 |
+| 1970-01-02 08:00:00 | host2 |                                                                          3 |
++---------------------+-------+----------------------------------------------------------------------------+
+```
+
+上述查询没有指定 `TO` 关键字，所以默认使用 `CALENDAR` 方式，将时间对齐到 UTC 时间 0 时刻。在这种对齐方式下，按东八区计算的一天为早上 8 点到第二天早上 8 点，并不满足我们的查询需求。
+
+这时需要使用 `TO` 关键字，将查询时间对齐到东八区时间，运行下面的 Range 查询：
+
+```sql
+SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day) TO '1900-01-01T00:00:00+08:00';
+```
+
+运行后得到结果：
+
+```sql
++---------------------+-------+----------------------------------------------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
++---------------------+-------+----------------------------------------------------------------------------+
+| 1970-01-02 00:00:00 | host1 |                                                                          0 |
+| 1970-01-02 00:00:00 | host2 |                                                                          2 |
++---------------------+-------+----------------------------------------------------------------------------+
+```
+
+通过手动指定对齐时间，我们可以指定查询时区，也可以查询特定时间范围的数据。比如使用下面这条语句，我们可以查询从北京时间 `00:45` - `02:45` 这个时间段内的每日 `val` 最小值：
+
+```sql
+SELECT ts, host, min(val) RANGE '2h' FROM host ALIGN '1d' TO '1900-01-01T02:45:00+08:00';
+```
+
+用户可以阅读 [Range 查询原理](#range-查询原理)，了解 Range 查询聚合时间段的计算方法，从而更好的理解上述查询的原理。
+
+运行后得到结果：
+
+```sql
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 2h FILL NULL |
++---------------------+-------+----------------------------------+
+| 1970-01-01 02:45:00 | host1 |                                0 |
+| 1970-01-01 02:45:00 | host2 |                                2 |
++---------------------+-------+----------------------------------+
+```
+
+用户也可以通过指定 `NOW`，将对齐时间设置为查询时间，假设现在的查询时间为 `2023-12-01T16:29:58.470000+8:00`.运行下面的语句:
+
+```sql
+SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO NOW;
+```
+
+可以得到查询结果
+
+```sql
++----------------------------+-------+----------------------------------+
+| ts                         | host  | MIN(host.val) RANGE 1d FILL NULL |
++----------------------------+-------+----------------------------------+
+| 1970-01-01 16:29:58.470000 | host1 |                                0 |
+| 1970-01-01 16:29:58.470000 | host2 |                                2 |
++----------------------------+-------+----------------------------------+
 ```
 
 ## 嵌套使用 Range 表达式
@@ -370,3 +488,26 @@ SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
+
+## Range 查询原理
+
+本节介绍 Range 查询的实现原理，以便用户可以更深刻的理解并使用 Range 查询。
+
+Range 查询本质上是一个数据聚合算法，但是与传统 SQL 数据聚合不一样的地方是：在 Range 查询中，一个数据有可能会被聚合到多个 Group 中。比如用户想以天为单位，统计每天的周平均气温，每一个气温点都会在多个周平均气温中被用于计算。上述查询逻辑写成 Range 查询如下所示：
+
+```sql
+SELECT avg(temperature) RANGE '7d' from table ALIGN '1d';
+```
+
+针对每个 Range 表达式，我们使用 `align_to` （由 `TO` 关键字指定，上文未指定 `TO` 关键字，为 UTC 0 时刻）、`align`（上文为`'1d'`）、`range`（上文为`'7d'`） 三个参数来划分时间窗口（一个时间窗口称为一个 `time slot`），并将数据按照正确的时间戳放入 `time slot` 中。
+
+1. 使用 `align_to`，作为时间轴的时间原点，向前向后以 `align` 为步长，划分出一个个对齐的时间点，这些时间点构成的集合称为 `align_ts` 。 `align_ts = { ts | ts = align_to + k * align, k 为整数 }`
+2. 针对 `align_ts` 集合中的每一个元素 `ts`，可以定义一个 `time slot`。 `time slot` 是一个满足 `(ts - range, ts]` 的左开右闭区间。
+
+当 `align > range` 时，划分的 `time slot` 如下图所示，此时一条数据只会属于一个 `time slot`。
+
+![align > range](/range_1.png)
+
+当 `align < range` 时，划分的 `time slot` 如下图所示，此时一条数据可能会属于多个 `time slot`。
+
+![align < range](/range_2.png)

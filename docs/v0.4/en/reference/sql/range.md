@@ -8,19 +8,23 @@ A legal Range query syntax structure is as follows:
 
 ```sql
 SELECT
-   AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION],
-   ...
+  AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION],
+  ...
 FROM table_name
-ALIGN TIME_INTERVAL [BY (columna, columnb,..)] [FILL FILL_OPTION];
+ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION];
+
+INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr ) 
 ```
 
-- Keyword `ALIGN`, required field, followed by parameter `TIME_INTERVAL`, specifies the step of Range query.
-- `TIME_INTERVAL` follows the `Time Durations` type of `PromQL`, visit [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations)
-Get more detailed instructions.
-- Keyword `BY`, optional field, followed by parameters `(columna, columnb,..)`, describing the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default.
-- `AGGR_FUNCTION(column1, column2,..) RANGE TIME_INTERVAL [FILL FILL_OPTION]` is called a Range expression.
+- Keyword `ALIGN`, required field, followed by parameter `INTERVAL`, `ALIGN` specifies the step of Range query.
+   - Subkeyword `TO`, optional field, specifies the time point to which Range query is aligned. For legal `TO_OPTION` parameters, see [TO Option](#to-option).
+   - Subkeyword `BY`, optional field, followed by parameter `(columna, columnb,..)`, describes the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default.
+- The parameter `INTERVAL` is mainly used to give the length of a period of time. There are two parameter forms:
+   - Strings based on the `PromQL Time Durations` format (eg: `3h`, `1h30m`). Visit the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) for a more detailed description of this format.
+   - `Interval` type. To use the `Interval` type, you need to carry parentheses, (for example: `(INTERVAL '1 year 3 hours 20 minutes')`). Visit [Interval](./functions.md#interval) for a more detailed description of this format.
+- `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` is called a Range expression.
    - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated
-   - Keyword `RANGE`, required field, followed by parameter `TIME_INTERVAL` specifies the time range of each data aggregation,
+   - Keyword `RANGE`, required field, followed by parameter `INTERVAL` specifies the time range of each data aggregation,
    - Keyword `FILL`, optional field, followed by parameter `FILL_OPTION` specifies the data filling method when the aggregate field is empty.
    - Range expressions can be combined with other operations to implement more complex queries. For details, see [Nested Range Expressions](#nested-range-expressions).
 - The keyword `FILL` can be followed by a Range expression as the data filling method of this Range expression; it can also be placed after `ALIGN` as the default data filling method. See [FILL Option](#fill-option) for legal `FILL_OPTION` parameters.
@@ -139,7 +143,7 @@ FILL has the following filling methods:
 
 |   FILL   |                                                                                               DESCRIPTION                                                                                                |
 | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  `NULL`  |                                                                                        Fill directly with `NULL`                                                                                         |
+|  `NULL`  |                                                                                Fill directly with `NULL` (default method)                                                                                |
 |  `PREV`  |                                                                                    Fill with data from previous point                                                                                    |
 | `LINEAR` | Use the data of the two previous points to average. If an integer type is filled with `LINEAR`, the variable type of the column will be implicitly converted to a floating point type during calculation |
 |   `X`    |                                           Fill in a constant, the data type of the constant must be consistent with the variable type of the Range expression                                            |
@@ -227,6 +231,120 @@ Get after running
 | 1970-01-01 08:00:05 |                                 6 |
 | 1970-01-01 08:00:10 |                               6.5 |
 +---------------------+-----------------------------------+
+```
+
+## TO OPTION
+
+The keyword `TO` specifies the time point to which the Range query is aligned. The legal `TO` options are:
+
+|     TO      |                                     DESCRIPTION                                      |
+| :---------: | :----------------------------------------------------------------------------------: |
+| `CALENDAR`  |                            Align to UTC time 0 (default)                             |
+|    `NOW`    |                             Align to current query time                              |
+| `Timestamp` | Align to a user-specified timestamp, supports timestamp format `RFC3339` / `ISO8601` |
+
+Use the following example to illustrate the usage of the `TO` keyword. First execute the following SQL statement to create a data table:
+
+```sql
+CREATE TABLE host (
+   ts timestamp(3) time index,
+   host STRING PRIMARY KEY,
+   val BIGINT,
+);
+
+INSERT INTO TABLE host VALUES
+     ("1970-01-01T02:00:00+08:00", 'host1', 0),
+     ("1970-01-01T10:00:00+08:00", 'host1', 1),
+     ("1970-01-01T02:00:00+08:00", 'host2', 2),
+     ("1970-01-01T10:00:00+08:00", 'host2', 3);
+```
+
+Execute the following command to adjust the time zone of the Mysql client to the East Eighth District:
+
+```sql
+set time_zone = '+8:00';
+
+SELECT 0::timestamp;
+
++---------------------+
+| Int64(0)            |
++---------------------+
+| 1970-01-01 08:00:00 |
++---------------------+
+```
+
+Suppose the user wants to query the minimum value of `val` every day in Beijing time. If you do not specify the `TO` keyword, run the following Range query directly:
+
+```sql
+SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day);
+```
+
+Get the result after running:
+
+```sql
++---------------------+-------+----------------------------------------------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
++---------------------+-------+----------------------------------------------------------------------------+
+| 1970-01-01 08:00:00 | host1 |                                                                          0 |
+| 1970-01-02 08:00:00 | host1 |                                                                          1 |
+| 1970-01-01 08:00:00 | host2 |                                                                          2 |
+| 1970-01-02 08:00:00 | host2 |                                                                          3 |
++---------------------+-------+----------------------------------------------------------------------------+
+```
+
+The above query does not specify the `TO` keyword, so the `CALENDAR` method is used by default to align the time to UTC time 0. In this alignment, one day in East Eighth District is from 8 am to 8 am the next day, which does not meet our query needs.
+
+At this time, you need to use the `TO` keyword to align the query time to the East Eighth District time, and run the following Range query:
+
+```sql
+SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day) TO '1900-01-01T00:00:00+08:00';
+```
+
+Get the result after running:
+
+```sql
++---------------------+-------+----------------------------------------------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
++---------------------+-------+----------------------------------------------------------------------------+
+| 1970-01-02 00:00:00 | host1 |                                                                          0 |
+| 1970-01-02 00:00:00 | host2 |                                                                          2 |
++---------------------+-------+----------------------------------------------------------------------------+
+```
+
+By manually specifying the alignment time, we can specify the query time zone and query data for a specific time range. For example, using the following statement, we can query the daily minimum value of `val` in the time period from `00:45` - `02:45` under Beijing time:
+
+```sql
+SELECT ts, host, min(val) RANGE '2h' FROM host ALIGN '1d' TO '1900-01-01T02:45:00+08:00';
+```
+
+Users can read [Range Query Principle](#range-query-principle) to learn about the calculation method of Range query aggregation time period, so as to better understand the principle of the above query.
+
+Get the result after running:
+
+```sql
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 2h FILL NULL |
++---------------------+-------+----------------------------------+
+| 1970-01-01 02:45:00 | host1 |                                0 |
+| 1970-01-01 02:45:00 | host2 |                                2 |
++---------------------+-------+----------------------------------+
+```
+
+Users can also set the alignment time to the query time by specifying `NOW`. Assume that the current query time is `2023-12-01T16:29:58.470000+8:00`. Run the following statement:
+
+```sql
+SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO NOW;
+```
+
+Query results can be obtained
+
+```sql
++----------------------------+-------+----------------------------------+
+| ts                         | host  | MIN(host.val) RANGE 1d FILL NULL |
++----------------------------+-------+----------------------------------+
+| 1970-01-01 16:29:58.470000 | host1 |                                0 |
+| 1970-01-01 16:29:58.470000 | host2 |                                2 |
++----------------------------+-------+----------------------------------+
 ```
 
 ## Nested Range Expressions
@@ -369,3 +487,26 @@ SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
+
+## Range query principle
+
+This section introduces the implementation principle of Range query so that users can have a deeper understanding and use of Range query.
+
+Range query is essentially a data aggregation algorithm, but the difference from traditional SQL data aggregation is that in Range query, one data may be aggregated into multiple Groups. For example, if the user wants to calculate the weekly average temperature of each day, each temperature point will be used in the calculation for multiple times. The above query logic is written as a Range query as follows:
+
+```sql
+SELECT avg(temperature) RANGE '7d' from table ALIGN '1d';
+```
+
+For each Range expression, we use `align_to` (specified by the `TO` keyword, the `TO` keyword is not specified above, which is UTC 0 time), `align` (the above is `'1d'`) , `range` (the above is `'7d'`) three parameters to divide the `time slot`, and put the data into the `time slot` according to the correct timestamp.
+
+1. Use `align_to` as the time origin of the timeline, and use `align` as the step forward and backward to divide aligned time points. The set of these time points is called `align_ts`. `align_ts = { ts | ts = align_to + k * align, k is an integer }`
+2. For each element `ts` in the `align_ts` collection, a `time slot` can be defined. `time slot` is a left-open and right-closed interval that satisfies `(ts - range, ts]`.
+
+When `align > range`, the divided `time slot` is as shown in the figure below. At this time, a piece of data will only belong to one `time slot`.
+
+![align > range](/range_1.png)
+
+When `align < range`, the divided `time slot` is as shown in the figure below. At this time, a piece of data may belong to multiple `time slots`.
+
+![align < range](/range_2.png)
