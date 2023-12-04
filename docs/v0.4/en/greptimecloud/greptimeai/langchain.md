@@ -6,7 +6,7 @@ pip install greptimeai
 
 ## Setup
 
-Before get started, add the following to your environment variables:
+Before get started, export the following to your environment variables:
 
 ```shell
 export GREPTIMEAI_HOST='<host>'
