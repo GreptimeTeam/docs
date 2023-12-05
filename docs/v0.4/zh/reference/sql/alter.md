@@ -9,7 +9,7 @@
 
 ```sql
 ALTER TABLE [db.]table
-   [ADD COLUMN name type ... 
+   [ADD COLUMN name type [options] 
     | DROP COLUMN name
     | RENAME name
    ]
@@ -38,6 +38,12 @@ ALTER TABLE monitor ADD COLUMN load_15 double FIRST;
 ```sql
 ALTER TABLE monitor ADD COLUMN load_15 double AFTER memory;
 ```
+
+增加一个带默认值的 Tag 列（加入 Primary key 约束）：
+```sql
+ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
+```
+
 
 ### 移除列
 
