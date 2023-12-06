@@ -47,6 +47,44 @@ The following table lists the corresponding alias.
 |TimestampMicrosecond| Timestamp_us , Timestamp(6)|
 |TimestampNanosecond|Timestamp_ns , Timestamp(9)|
 
+## Decimal
+
+GreptimeDB supports `decimal` type, which is a fixed-point type. 
+
+It is represented as `decimal(precision, scale)`, where `precision` is the total number of digits and `scale` is the 
+number of digits in the fractional part. For example, `123.45` has a precision of 5 and a scale of 2.
+
+> ⚠️：It is an undefined behavior if we use `Decimal(3, 2)` to store `123.45`.
+
+- precision can range from [1, 38]. 
+- scale can range from [0, precision].
+
+The default decimal is `decimal(38, 10)` if the precision and scale are not specified.
+
+### Simple Usage
+
+```sql
+CREATE TABLE decimals(
+    d DECIMAL(3, 2), 
+    ts TIMESTAMP TIME INDEX,
+);
+
+INSERT INTO decimals VALUES ('0.1',1000), ('0.2',2000);
+
+SELECT * FROM decimals;
+```
+
+Output:
+```sh
++------+---------------------+
+| d    | ts                  |
++------+---------------------+
+| 0.10 | 1970-01-01T00:00:01 |
+| 0.20 | 1970-01-01T00:00:02 |
++------+---------------------+
+```
+
+
 ## Examples
 
 ### Create Table

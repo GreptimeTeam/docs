@@ -43,6 +43,44 @@ variable-sized 类型的最大容量, 例如 `string` 和 `varbinary`，取决�
 |TimestampMicrosecond| Timestamp_us , Timestamp(6)|
 |TimestampNanosecond|Timestamp_ns , Timestamp(9)|
 
+## Decimal
+
+GreptimeDB 支持 `decimal` 类型，这是一种定点类型。
+
+它表示为`decimal(precision, scale)`, `precision` 是数位的总数， `scale` 是小数部分的位数。
+例如, `123.45` 的 precision = 5 ， scale = 2.
+
+> ⚠️：用`Decimal(3, 2)` 存储 `123.45` 是未定义的行为
+
+- precision 的范围 [1, 38].
+- scale 的范围 [0, precision].
+
+如果没有指定precision和scale，默认的decimal类型是 `decimal(38, 10)`.
+
+### Simple Usage
+
+```sql
+CREATE TABLE decimals(
+    d DECIMAL(3, 2), 
+    ts TIMESTAMP TIME INDEX,
+);
+
+INSERT INTO decimals VALUES ('0.1',1000), ('0.2',2000);
+
+SELECT * FROM decimals;
+```
+
+Output:
+```sh
++------+---------------------+
+| d    | ts                  |
++------+---------------------+
+| 0.10 | 1970-01-01T00:00:01 |
+| 0.20 | 1970-01-01T00:00:02 |
++------+---------------------+
+```
+
+
 ## Examples
 
 ### Create Table
