@@ -52,8 +52,8 @@ GreptimeDB 支持 `decimal` 类型，这是一种定点类型。
 
 > ⚠️：用`Decimal(3, 2)` 存储 `123.45` 是未定义的行为
 
-- precision 的范围 [1, 38].
-- scale 的范围 [0, precision].
+- `precision` 的范围 [1, 38].
+- `scale` 的范围 [0, precision].
 
 如果没有指定precision和scale，默认的decimal类型是 `decimal(38, 10)`.
 

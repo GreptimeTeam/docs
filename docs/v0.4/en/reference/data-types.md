@@ -56,8 +56,8 @@ number of digits in the fractional part. For example, `123.45` has a precision o
 
 > ⚠️：It is an undefined behavior if we use `Decimal(3, 2)` to store `123.45`.
 
-- precision can range from [1, 38]. 
-- scale can range from [0, precision].
+- `precision` can range from [1, 38]. 
+- `scale` can range from [0, precision].
 
 The default decimal is `decimal(38, 10)` if the precision and scale are not specified.
 
