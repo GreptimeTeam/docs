@@ -260,21 +260,7 @@ INSERT INTO TABLE host VALUES
     ("1970-01-01T10:00:00+08:00", 'host2', 3);
 ```
 
-执行如下命令将 Mysql 客户端的时区调整至东八区：
-
-```sql
-set time_zone = '+8:00';
-
-SELECT 0::timestamp;
-
-+---------------------+
-| Int64(0)            |
-+---------------------+
-| 1970-01-01 08:00:00 |
-+---------------------+
-```
-
-假设用户想查询在北京时间下，每天 `val` 的最小值。如果不指定 `TO` 关键字，直接运行下面的 Range 查询：
+用户不指定 `TO` 关键字，默认使用 `CALENDAR` 方式，将时间对齐到 UTC 时间 0 时刻。
 
 ```sql
 SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day);
@@ -293,9 +279,7 @@ SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1'
 +---------------------+-------+----------------------------------------------------------------------------+
 ```
 
-上述查询没有指定 `TO` 关键字，所以默认使用 `CALENDAR` 方式，将时间对齐到 UTC 时间 0 时刻。在这种对齐方式下，按东八区计算的一天为早上 8 点到第二天早上 8 点，并不满足我们的查询需求。
-
-这时需要使用 `TO` 关键字，将查询时间对齐到东八区时间，运行下面的 Range 查询：
+如果用户想查询在北京时间下每天 `val` 的最小值，需要使用 `TO` 关键字，将查询时间对齐到东八区时间，运行下面的 Range 查询：
 
 ```sql
 SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day) TO '1900-01-01T00:00:00+08:00';

@@ -259,21 +259,7 @@ INSERT INTO TABLE host VALUES
      ("1970-01-01T10:00:00+08:00", 'host2', 3);
 ```
 
-Execute the following command to adjust the time zone of the Mysql client to the East Eighth District:
-
-```sql
-set time_zone = '+8:00';
-
-SELECT 0::timestamp;
-
-+---------------------+
-| Int64(0)            |
-+---------------------+
-| 1970-01-01 08:00:00 |
-+---------------------+
-```
-
-Suppose the user wants to query the minimum value of `val` every day in Beijing time. If you do not specify the `TO` keyword, run the following Range query directly:
+If the user does not specify the `TO` keyword, the `CALENDAR` method is used by default to align the time to UTC time 0:
 
 ```sql
 SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day);
@@ -292,9 +278,7 @@ Get the result after running:
 +---------------------+-------+----------------------------------------------------------------------------+
 ```
 
-The above query does not specify the `TO` keyword, so the `CALENDAR` method is used by default to align the time to UTC time 0. In this alignment, one day in East Eighth District is from 8 am to 8 am the next day, which does not meet our query needs.
-
-At this time, you need to use the `TO` keyword to align the query time to the East Eighth District time, and run the following Range query:
+If the user wants to query the minimum value of `val` every day in Beijing time, he needs to use the `TO` keyword, align the query time to the East Eighth District time, and run the following Range query:
 
 ```sql
 SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day) TO '1900-01-01T00:00:00+08:00';
