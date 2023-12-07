@@ -84,3 +84,7 @@ Theoretically GreptimeDB could replace VictoriaMetrics now since that most proto
 ## Should I use the command "drop database" to delete a database?
 
 Yes, that is the intended command. However, "drop database" has not been implemented in version 0.4. It is expected to be included in the next minor iterative update. Currently, there is an associated pull request (PR) under review for this feature. As a result, there is no direct way to delete a database at the moment. You may consider creating a new database for testing purposes. If you're working with test data, you also have the option to clear it by deleting the data directory.
+
+## Are there any retention policy? 
+
+We have implemented table level Time-To-Live (TTL) in this PR https://github.com/GreptimeTeam/greptimedb/pull/1052. You can refer to the TTL option of the table build statement here https://docs.greptime.com/reference/sql/create.
