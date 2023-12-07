@@ -9,7 +9,7 @@
 
 ```sql
 ALTER TABLE [db.]table
-   [ADD COLUMN name type ... 
+   [ADD COLUMN name type [options]
     | DROP COLUMN name
     | RENAME name
    ]
@@ -37,6 +37,11 @@ After an existing column:
 
 ```sql
 ALTER TABLE monitor ADD COLUMN load_15 double AFTER memory;
+```
+
+Adds a new column as a tag(primary key) with a default value:
+```sql
+ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
 
 ### Remove column
