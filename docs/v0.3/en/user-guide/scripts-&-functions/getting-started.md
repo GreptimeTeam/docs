@@ -4,12 +4,14 @@
 
 ### Create python environment
 
-Using conda to create a python 3 environment. Conda is a great tool for managing Python environments, see [official docs](https://docs.conda.io/en/latest/miniconda.html) to get more information.
+First you need to know which python version is required for your greptime binary. You can check it by `ldd greptime | grep 'libpython'`(Or `otool -L greptime|grep Python.framework` on Mac), and then install the corresponding python version(i.e. `libpython3.10.so` require Python 3.10).
+Then, you can use conda to create a python 3 environment. Conda is a great tool for managing Python environments, see [official docs](https://docs.conda.io/en/latest/miniconda.html) to get more information.
 
 ```shell
-conda create --name Greptime python=3
+conda create --name Greptime python=<Specific Python Version from above step i.e. 3.10>
 conda activate Greptime
 ```
+You may need to set correct `LD_LIBRARY_PATH` for your python shared library, i.e. for cond environment, you need to set `LD_LIBRARY_PATH`(Or `DYLD_LIBRARY_PATH`) to `$CONDA_PREFIX/lib`. You can check if that path contain correct Python shared library by `ls $CONDA_PREFIX/lib | grep 'libpython'` and confirm the version is correct.
 
 ### Install GreptimeDB
 
