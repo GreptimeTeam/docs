@@ -3,8 +3,9 @@
 ## Installation
 
 ### Create python environment
+If you are using greptime's docker image, then it's already setup for scripting functionality. You can skip this step.
 
-First you need to know which python version is required for your greptime binary. You can check it by `ldd greptime | grep 'libpython'`(Or `otool -L greptime|grep Python.framework` on Mac), and then install the corresponding python version(i.e. `libpython3.10.so` require Python 3.10).
+If you wish to use greptime binary with pyo3 feature, then first you need to know which python version is required for your greptime binary. You can check it by `ldd greptime | grep 'libpython'`(Or `otool -L greptime|grep Python.framework` on Mac), and then install the corresponding python version(i.e. `libpython3.10.so` require Python 3.10).
 Then, you can use conda to create a python 3 environment. Conda is a great tool for managing Python environments, see [official docs](https://docs.conda.io/en/latest/miniconda.html) to get more information.
 
 ```shell
