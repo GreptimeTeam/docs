@@ -54,7 +54,6 @@ GreptimeDB supports `decimal` type, which is a fixed-point type.
 It is represented as `decimal(precision, scale)`, where `precision` is the total number of digits and `scale` is the 
 number of digits in the fractional part. For example, `123.45` has a precision of 5 and a scale of 2.
 
-> ⚠️：It is an undefined behavior if we use `Decimal(3, 2)` to store `123.45`.
 
 - `precision` can range from [1, 38]. 
 - `scale` can range from [0, precision].

@@ -50,7 +50,6 @@ GreptimeDB 支持 `decimal` 类型，这是一种定点类型。
 它表示为`decimal(precision, scale)`, `precision` 是数位的总数， `scale` 是小数部分的位数。
 例如, `123.45` 的 precision = 5 ， scale = 2.
 
-> ⚠️：用`Decimal(3, 2)` 存储 `123.45` 是未定义的行为
 
 - `precision` 的范围 [1, 38].
 - `scale` 的范围 [0, precision].
