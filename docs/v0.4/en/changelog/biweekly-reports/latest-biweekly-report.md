@@ -1,13 +1,5 @@
----
-title: Biweekly Report (Nov.13 - Nov.26) – Storage Engine Mito2 -  Constantly Evolving
-category: Engineering
-summary: A recap of the past two-weeks progress and changes happened on GreptimeDB.
-cover: /blogs/2023-11-29-biweekly-report/coverimage.png
-authors:
-  - name: Jiachun Feng
-    email: jiachun@greptime.com
-modify: November 29, 2023
----
+# Biweekly Report (Nov.13 - Nov.26) – Storage Engine Mito2 -  Constantly Evolving
+November 29, 2023
 
 ## Summary
 
@@ -67,6 +59,6 @@ Cached pages are decompressed, so we can skip the decompression step and reduce 
 
 ## Good First Issue
 
-#### [#2637](https://github.com/GreptimeTeam/greptimedb/issues/2637) Add more SQLness case for special characters in identifier 
+#### [#2637](https://github.com/GreptimeTeam/greptimedb/issues/2637) Add more SQLness case for special characters in identifier
 
 #### [#2601](https://github.com/GreptimeTeam/greptimedb/issues/2601) Execute `create database` in procedure
