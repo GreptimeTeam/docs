@@ -57,7 +57,7 @@ VALUES
     ("host1", "idc_b", 90.0, 39.9, 60.6, 1667446798250);
 ```
 
-The size of the request is 950 bytes (38 _25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38_ 40), and the WCU of this request is 2.
+The size of the request is 950 bytes (38 x 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 x 40), and the WCU of this request is 2.
 
 ### RCU (Read Capacity Unit)
 
