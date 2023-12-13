@@ -1,23 +1,24 @@
-# Node.js
+<template quick-start>
 
-<!--@include: ./introduction.md-->
+{{%block title
 
-## Prerequisites
+Node.js
 
-<!--@include: ./prerequisites.md-->
+}}
 
-## Write Data
+{{%block Github-Demo-url
 
-<!--@include: ../../db-cloud-shared/quick-start/node.md-->
+https://github.com/GreptimeCloudStarters/quick-start-node-js
+
+}}
+
+{{%block write-data-shell
 
 ```shell
 npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-## Visualize Data with Grafana
+}}
 
-<!--@include: ./visualize-data.md-->
+</template>
 
-## Next Steps
-
-<!--@include: ./next-steps.md-->

@@ -1,23 +1,24 @@
-# Go
+<template quick-start>
 
-<!--@include: ./introduction.md-->
+{{%block title
 
-## Prerequisites
+Go
 
-<!--@include: ./prerequisites.md-->
+}}
 
-## Write Data
+{{%block Github-Demo-url
 
-<!--@include: ../../db-cloud-shared/quick-start/go.md-->
+https://github.com/GreptimeCloudStarters/quick-start-go
+
+}}
+
+{{%block write-data-shell
 
 ```shell
 go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-## Visualize Data with Grafana
+}}
 
-<!--@include: ./visualize-data.md-->
+</template>
 
-## Next Steps
-
-<!--@include: ./next-steps.md-->
