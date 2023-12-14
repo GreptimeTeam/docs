@@ -145,7 +145,7 @@ FILL has the following filling methods:
 | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |  `NULL`  |                                                                                Fill directly with `NULL` (default method)                                                                                |
 |  `PREV`  |                                                                                    Fill with data from previous point                                                                                    |
-| `LINEAR` | Use the data of the two previous points to average. If an integer type is filled with `LINEAR`, the variable type of the column will be implicitly converted to a floating point type during calculation |
+| `LINEAR` | Use [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) to fill the data. If an integer type is filled with `LINEAR`, the variable type of the column will be implicitly converted to a floating point type during calculation |
 |   `X`    |                                           Fill in a constant, the data type of the constant must be consistent with the variable type of the Range expression                                            |
 
 
