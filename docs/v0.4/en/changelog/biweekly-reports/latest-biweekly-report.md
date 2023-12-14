@@ -1,64 +1,110 @@
-# Biweekly Report (Nov.13 - Nov.26) – Storage Engine Mito2 -  Constantly Evolving
-November 29, 2023
-
+# Biweekly Report – 82% Compatibility Milestone for PromQL, with a Remarkable 200% Performance Uplift in Targeted TSBS Scenarios
+December 13, 2023
 ## Summary
-
 Together with our global community of contributors, GreptimeDB continues to evolve and flourish as a growing open-source project. We are grateful to each and every one of you.
 
 In the past two weeks, we have made steady progress. Below are some highlights:
 
-- Removed the storage crate from the dependency lists of other crates, and the actual storage engine is `Mito2`.
+- Compatibility of PromQL has been enhanced to 82%.
 
-- Enabled distributed tracing in GreptimeDB.
+- Parallel scanning for SSTs and `memtables` has been implemented, resulting in up to 200% performance improvement in TSBS scenarios.
 
-- A new `Decimal128` type has been added to the supported types.
+- New functions, `date_add` and `date_sub` have been added.
 
-- A row group level page cache for the `Mito` engine has been implemented in order to reduce data scan time.
+- Tables can now be created with the option to specify different storage backends.
 
-- New modules region migration and inverted index are currently under accelerated development.
+- Introduction of the `ALIGN TO` clause, along with support for `Interval` queries.
+
+- Support for configuring the sampling rate parameter for distributed tracing.
+
+- Fixed an issue where Procedures were unable to resume execution after a restart.
 
 ## Contributors
-
-For the past two weeks, our community has been super active with a total of 58 PRs merged. 7 PRs from 4 external contributors merged successfully and lots pending to be merged.
+For the past two weeks, our community has been super active with a total of 56 PRs merged. 8 PRs from 4 individual contributors merged successfully and lots pending to be merged.
 
 Congrats on becoming our most active contributors in the past 2 weeks:
 
-- @[bigboss2063](https://github.com/bigboss2063) ([db#2775](https://github.com/GreptimeTeam/greptimedb/pull/2775))
+- @[hygkui](https://github.com/hygkui) ([db#2821](https://github.com/GreptimeTeam/greptimedb/pull/2821))
 
-- @[lyang24](https://github.com/lyang24) ([db#2765](https://github.com/GreptimeTeam/greptimedb/pull/2765))
+- @[LinuxSuRen](https://github.com/LinuxSuRen) ([dashboard#359](https://github.com/GreptimeTeam/dashboard/pull/359))
 
-- @[taobo](https://github.com/realtaobo)（[db#2748](https://github.com/GreptimeTeam/greptimedb/pull/2748))
+- @[NiwakaDev](https://github.com/NiwakaDev) ([db#2887](https://github.com/GreptimeTeam/greptimedb/pull/2887) [db#2733](https://github.com/GreptimeTeam/greptimedb/pull/2733))
 
-- @[tisonkun](https://github.com/tisonkun) ([db#2799](https://github.com/GreptimeTeam/greptimedb/pull/2799) [db#2734](https://github.com/GreptimeTeam/greptimedb/pull/2734) [db#2781](https://github.com/GreptimeTeam/greptimedb/pull/2781) [db#2716](https://github.com/GreptimeTeam/greptimedb/pull/2716))
+- @[tisonkun](https://github.com/tisonkun) ([db#2886](https://github.com/GreptimeTeam/greptimedb/pull/2886) [db#2884](https://github.com/GreptimeTeam/greptimedb/pull/2884) [db#2874](https://github.com/GreptimeTeam/greptimedb/pull/2874) [db#2859](https://github.com/GreptimeTeam/greptimedb/pull/2859))
 
-👏  Welcome contributor @[bigboss2063](https://github.com/bigboss2063) @[lyang24](https://github.com/lyang24) @[taobo](https://github.com/realtaobo) to the community as new contributors, and congratulations on successfully merging their first PR!
+👏  Welcome contributor @[hygkui](https://github.com/hygkui)  @[LinuxSuRen](https://github.com/LinuxSuRen) to the community as new contributors, and congratulations on successfully merging their first PR, more PRs are waiting to be merged.
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR
+### [#2651](https://github.com/GreptimeTeam/greptimedb/pull/2651) Implemented the PromQL `histogram_quantile` function
 
-### [#2777](https://github.com/GreptimeTeam/greptimedb/pull/2777)  This PR removes the storage crate from other crates' dependency lists and the actual storage engine is `Mito2`.
+### [#2839](https://github.com/GreptimeTeam/greptimedb/pull/2839) Introduced the PromQL `AND` and `UNLESS` operators
 
-### [#2755](https://github.com/GreptimeTeam/greptimedb/pull/2755) To enable distributed tracing in GreptimeDB.
-Use otlp as exporter protocol, which can support distributed tracing backend like jaeger, tempo etc.
+### [#2854](https://github.com/GreptimeTeam/greptimedb/pull/2854) Implemented `time()` and date-related functions
 
-### [#2788](https://github.com/GreptimeTeam/greptimedb/pull/2788) A new `Decimal128` type has been added to the supported types.
+### [#2879](https://github.com/GreptimeTeam/greptimedb/pull/2879) Aligned PromQL `linear_regression` behavior
+The above pull requests have increased the compatibility of PromQL to 82%. For more details, please refer to issue [#1042](https://github.com/GreptimeTeam/greptimedb/issues/1042)
 
-### [#2688](https://github.com/GreptimeTeam/greptimedb/pull/2688)
-This PR implements a row group level page cache for the Mito engine.
+### [#2852](https://github.com/GreptimeTeam/greptimedb/pull/2852) Introduced parallel scanning for SSTs and memtables
+The default configuration employs threads equivalent to 1/4 of the CPU count for parallel scanning. In the TSBS Benchmark, the performance improvement of multi-threaded scanning compared to single-threaded scanning is significant, with some scenarios experiencing up to a 200% boost.
 
-A new page reader `CachedPageReader` is introduced to return pages of a row group from the cache.
+### [#2881](https://github.com/GreptimeTeam/greptimedb/pull/2881) Added support for the `date_add` and `date_sub` functions
+This enhancement allows for adding or subtracting an `interval` value from timestamp, date, or datetime numeric values.
 
-When the first time we read a row group, all pages of the row group are loaded and put it into the cache. The next time we read, we can fetch cached pages from the cache and build a `CachedPageReader`.
+### [#2733](https://github.com/GreptimeTeam/greptimedb/pull/2733) Now supports specifying different object storage backends when creating tables
+In previous versions, tables could only be stored in the same storage backend. This pull request enables the configuration of multiple distinct storage backends at startup, allowing the specification of the storage backend for storing table data during table creation.  For example, we can store one table locally and another table on S3.
 
-Cached pages are decompressed, so we can skip the decompression step and reduce 20% - 30% of the total scan time if a query hits the cache.
+### [#2842](https://github.com/GreptimeTeam/greptimedb/pull/2842) Introduced the `ALIGN TO` clause and `Interval` query support
 
-#### Region migration is under development, details can be found at https://github.com/GreptimeTeam/greptimedb/issues/2700
+#### `Interval` Support:
+Interval expressions can now be used as optional duration strings after the `RANGE` and `ALIGN` keywords.
 
-#### The inverted index is also under intensive development, details can be found at https://github.com/GreptimeTeam/greptimedb/issues/2705
+```rust
+SELECT 
+    rate(a) RANGE (INTERVAL '1 year 2 hours 3 minutes') 
+FROM 
+    t 
+    ALIGN (INTERVAL '1 year 2 hours 3 minutes')
+FILL NULL;
+```
 
-## Good First Issue
+#### `ALIGN TO` Clause:
+Supports the `ALIGN TO` clause, allowing users to align time to their desired points.
 
-#### [#2637](https://github.com/GreptimeTeam/greptimedb/issues/2637) Add more SQLness case for special characters in identifier
+```rust
+SELECT rate(a) RANGE '6m' FROM t ALIGN '1h' TO '2021-07-01 00:00:00' by (a, b) FILL NULL;
+```
 
-#### [#2601](https://github.com/GreptimeTeam/greptimedb/issues/2601) Execute `create database` in procedure
+Available `ALIGN TO` options include:
+
+- Calendar (default): Aligns to UTC timestamp 0.
+
+- Now: Aligns to the current UTC timestamp.
+
+- Timestamp: Aligns to the user-specified specific timestamp.
+
+More details can be found in the range query documentation:
+https://docs.greptime.com/reference/sql/range
+
+### [#2809](https://github.com/GreptimeTeam/greptimedb/pull/2809) Added support for configuring the sampling rate parameter for distributed tracing
+In previous versions, distributed tracing defaulted to collecting complete data. Configuring the sampling rate parameter enables data collection in proportion to the specified ratio.
+
+More details can be found in configuration documentation: 
+https://docs.greptime.com/user-guide/operations/configuration#logging-options
+
+### [#2824](https://github.com/GreptimeTeam/greptimedb/pull/2824) Resolved a bug where Procedures couldn't continue execution after a system restart
+ In earlier versions, incomplete Procedures were unable to resume execution after a system reboot. This pull request fixes this issue.
+
+## Good first issue
+[#2889](https://github.com/GreptimeTeam/greptimedb/issues/2889)
+Fix the issue with the `redact_sql_secrets` function not handling special characters properly.
+
+[#2877](https://github.com/GreptimeTeam/greptimedb/issues/2877)
+Enhance HTTP SQL output to support pretty print.
+
+[#2853](https://github.com/GreptimeTeam/greptimedb/issues/2853)
+Standardize the code style of the Builder.
+
+[#2637](https://github.com/GreptimeTeam/greptimedb/issues/2637)
+Add more SQLness tests that include special cases.

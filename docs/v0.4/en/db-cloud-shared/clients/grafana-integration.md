@@ -6,13 +6,17 @@ Click the Add data source button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
 
-- GreptimeCloud: `https://<host>/v1/prometheus?db=<dbname>`
-- Self-host GreptimeDB: Your own host address, for example: `http://localhost:4000/v1/prometheus?db=<dbname>`
+`https://<host>/v1/prometheus`
 
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 
 - User: `<username>`
 - Password: `<password>`
+
+Click Custom HTTP Headers and add one header:
+
+- Header: `x-greptime-db-name`
+- Value: `<dbname>`
 
 Then click Save & Test button to test the connection.
 
