@@ -4,18 +4,18 @@
 
 ### 创建 Python 环境
 
-如果您正在使用greptime的Docker镜像，那么它已经设置好了脚本功能，您可以跳过这一步。
+如果您正在使用 Greptime 的 Docker 镜像，那么它已经设置好了脚本功能，您可以跳过这一步。
 
-如果您希望使用带有pyo3功能的greptime二进制文件，首先需要知道您的greptime二进制文件所需的Python版本。您可以通过运行`ldd greptime | grep 'libpython'`（或在Mac上运行`otool -L greptime|grep Python.framework`）来检查。然后安装相应的Python版本（例如，`libpython3.10.so`需要Python 3.10）。
+如果您希望使用带有 pyo3 功能的 Greptime 二进制文件，首先需要知道您的 Greptime 二进制文件所需的 Python 版本。您可以通过运行 `ldd greptime | grep 'libpython'`（或在 Mac 上运行 `otool -L greptime|grep Python.framework`）来检查。然后安装相应的 Python 版本（例如，`libpython3.10.so` 需要 Python 3.10 ）。
 
-使用conda创建一个Python 3环境。Conda是管理Python环境的强大工具，请参阅[官方文档](https://docs.conda.io/en/latest/miniconda.html)以获取更多信息。
+使用 Conda 创建一个Python 3环境。Conda 是管理 Python 环境的强大工具，请参阅[官方文档](https://docs.conda.io/en/latest/miniconda.html)以获取更多信息。
 
 ```shell
 conda create --name Greptime python=<上一步中特定的Python版本，例如3.10>
 conda activate Greptime
 ```
 
-您可能需要为您的Python共享库设置正确的`LD_LIBRARY_PATH`，例如，对于conda环境，您需要将`LD_LIBRARY_PATH`（或`DYLD_LIBRARY_PATH`）设置为`$CONDA_PREFIX/lib`。您可以通过运行`ls $CONDA_PREFIX/lib | grep 'libpython'`来检查该路径是否包含正确的Python共享库，并确认版本是否正确。
+您可能需要为您的 Python 共享库设置正确的 `LD_LIBRARY_PATH`，例如，对于 Conda 环境，您需要将 `LD_LIBRARY_PATH`（或`DYLD_LIBRARY_PATH`）设置为 `$CONDA_PREFIX/lib`。您可以通过运行`ls $CONDA_PREFIX/lib | grep 'libpython'` 来检查该路径是否包含正确的 Python 共享库，并确认版本是否正确。
 
 ### 安装 GreptimeDB
 
