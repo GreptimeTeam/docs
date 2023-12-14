@@ -4,7 +4,7 @@ Querying and aggregating data within a range of time is a common query pattern f
 
 ## Syntax
 
-A legal Range query syntax structure is as follows:
+Range query uses `Time Index` column as the timeline basis for aggregation. A legal Range query syntax structure is as follows:
 
 ```sql
 SELECT
@@ -18,49 +18,28 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
 
 - Keyword `ALIGN`, required field, followed by parameter `INTERVAL`, `ALIGN` specifies the step of Range query.
    - Subkeyword `TO`, optional field, specifies the time point to which Range query is aligned. For legal `TO_OPTION` parameters, see [TO Option](#to-option).
-   - Subkeyword `BY`, optional field, followed by parameter `(columna, columnb,..)`, describes the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default.
+   - Subkeyword `BY`, optional field, followed by parameter `(columna, columnb,..)`, describes the aggregate key. For legal `BY_OPTION` parameters, see [BY Option](#by-option).
 - The parameter `INTERVAL` is mainly used to give the length of a period of time. There are two parameter forms:
    - Strings based on the `PromQL Time Durations` format (eg: `3h`, `1h30m`). Visit the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) for a more detailed description of this format.
    - `Interval` type. To use the `Interval` type, you need to carry parentheses, (for example: `(INTERVAL '1 year 3 hours 20 minutes')`). Visit [Interval](./functions.md#interval) for a more detailed description of this format.
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` is called a Range expression.
-   - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated
-   - Keyword `RANGE`, required field, followed by parameter `INTERVAL` specifies the time range of each data aggregation,
-   - Keyword `FILL`, optional field, followed by parameter `FILL_OPTION` specifies the data filling method when the aggregate field is empty.
+   - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated.
+   - Keyword `RANGE`, required field, followed by parameter `INTERVAL` specifies the time range of each data aggregation.
+   - Keyword `FILL`, optional field, please see [`FILL` Option](#fill-option) for details.
    - Range expressions can be combined with other operations to implement more complex queries. For details, see [Nested Range Expressions](#nested-range-expressions).
-- The keyword `FILL` can be followed by a Range expression as the data filling method of this Range expression; it can also be placed after `ALIGN` as the default data filling method. See [FILL Option](#fill-option) for legal `FILL_OPTION` parameters.
-  
-## Example
+- `FILL` keyword after `ALIGN`, optional field. See [FILL Option](#fill-option) for details.
 
-The following `host_cpu` table records the CPU consumed by two machines `host1` and `host2` at a certain time. This table is used as an example to introduce how to perform Range query.
+## `FILL` OPTION
 
-```sql
-+---------------------+-------+------+
-| ts                  | host  | cpu  |
-+---------------------+-------+------+
-| 1970-01-01 08:00:00 | host1 |  1.1 |
-| 1970-01-01 08:00:05 | host1 |  2.2 |
-| 1970-01-01 08:00:00 | host2 |  3.3 |
-| 1970-01-01 08:00:05 | host2 |  4.4 |
-+---------------------+-------+------+
-```
+`FILL` option specifies the data filling method when the aggregate field is empty.
 
-Create a data table using the following SQL statement:
+The `FILL` keyword can be used after the `RANGE` keyword to indicate the filling method for the Range expression.
+The `FILL` keyword can also be used after the `BY` keyword to specify the default filling method for a Range expression
+if no fill option is provided.
 
-```sql
-CREATE TABLE host_cpu (
-   ts timestamp(3) time index,
-   host STRING PRIMARY KEY,
-   cpu Float64,
-);
-
-INSERT INTO TABLE host_cpu VALUES
-     (0, 'host1', 1.1),
-     (5000, 'host1', 2.2),
-     (0, 'host2', 3.3),
-     (5000, 'host2', 4.4);
-```
-
-Run this Range query:
+For example, in the following SQL code,
+the `max(cpu) RANGE '10s'` Range expression uses the fill option `LINEAR`, while the `min(cpu) RANGE '10s'` Range expression,
+which does not specify a fill option, uses the fill option `PREV` specified after the `BY` keyword.
 
 ```sql
 SELECT 
@@ -72,74 +51,7 @@ FROM host_cpu
 ALIGN '5s' BY (host) FILL PREV;
 ```
 
-Get after running
-
-```sql
-+---------------------+-------+---------------------------------------+-----------------------------------------+
-| ts                  | host  | MIN(host_cpu.cpu) RANGE 10s FILL PREV | MAX(host_cpu.cpu) RANGE 10s FILL LINEAR |
-+---------------------+-------+---------------------------------------+-----------------------------------------+
-| 1970-01-01 08:00:00 | host2 |                                   3.3 |                                     3.3 |
-| 1970-01-01 08:00:05 | host2 |                                   3.3 |                                     4.4 |
-| 1970-01-01 08:00:10 | host2 |                                   4.4 |                                     4.4 |
-| 1970-01-01 08:00:00 | host1 |                                   1.1 |                                     1.1 |
-| 1970-01-01 08:00:05 | host1 |                                   1.1 |                                     2.2 |
-| 1970-01-01 08:00:10 | host1 |                                   2.2 |                                     2.2 |
-+---------------------+-------+---------------------------------------+-----------------------------------------+
-```
-
-
-The above RANGE query counts the minimum and maximum CPU usage of a machine within 10 seconds every 5 seconds:
-1. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s. The step is aligned to the calendar.
-2. `BY (host)` specifies the aggregate key, and the `BY` keyword supports omission. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
-3. `max(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time span of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
-4. The `FILL` keyword can follow the `RANGE` keyword to indicate the filling method of this Range expression. The `FILL` keyword can also follow the `BY` keyword, as if the `FILL` key is not given The default value for a word's Range expression. `min(cpu) RANGE '10s'` This Range expression does not provide `FILL`, so the default FILL filling method is used, which is `PREV`. If the default FILL is not given, `NULL` is used to fill.
-
-If you want to use Range query, there must be a column of data in the data table declared as `time index` when creating the table. Range query uses this column data as the timeline basis for aggregation. If the data table does not specify a primary key, the keyword `BY` cannot be omitted. Users can also use the `BY` keyword to declare other columns as the basis for data aggregation. For example, the following RANGE query uses the string length `length(host)` of the `host` column as the basis for data aggregation.
-
-```sql
-SELECT 
-    ts, 
-    length(host), 
-    min(cpu) RANGE '10s' 
-FROM host_cpu ALIGN '5s' BY (length(host));
-```
-
-Get after running
-
-```sql
-+---------------------+---------------------------------+---------------------------------------+
-| ts                  | character_length(host_cpu.host) | MIN(host_cpu.cpu) RANGE 10s FILL NULL |
-+---------------------+---------------------------------+---------------------------------------+
-| 1970-01-01 08:00:00 |                               5 |                                   1.1 |
-| 1970-01-01 08:00:05 |                               5 |                                   1.1 |
-| 1970-01-01 08:00:10 |                               5 |                                   2.2 |
-+---------------------+---------------------------------+---------------------------------------+
-```
-
-Users can explicitly use `BY ()` which mean they do not need to use aggregation keys and aggregate all data into a group. **But if the user directly omits the `BY` keyword, it means using the primary key of the table as the aggregate key.**
-
-```sql
-SELECT
-     ts,
-     min(cpu) RANGE '10s'
-FROM host_cpu ALIGN '5s' BY ();
-```
-
-Get after running
-
-```sql
-+---------------------+---------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 10s FILL NULL |
-+---------------------+---------------------------------------+
-| 1970-01-01 08:00:05 |                                   1.1 |
-| 1970-01-01 08:00:00 |                                   1.1 |
-| 1970-01-01 08:00:10 |                                   2.2 |
-+---------------------+---------------------------------------+
-```
-
-## FILL OPTION
-
-FILL has the following filling methods:
+`FILL` has the following filling methods:
 
 |   FILL   |                                                                                               DESCRIPTION                                                                                                |
 | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -149,186 +61,251 @@ FILL has the following filling methods:
 |   `X`    |                                           Fill in a constant, the data type of the constant must be consistent with the variable type of the Range expression                                            |
 
 
-Take the following table as an example
+Take the following table as an example:
 
 ```sql
 +---------------------+-------+------+
 | ts                  | host  | cpu  |
 +---------------------+-------+------+
-| 1970-01-01 08:00:00 | host1 |  4.5 |
-| 1970-01-01 08:00:05 | host1 | NULL |
-| 1970-01-01 08:00:10 | host1 |  6.5 |
+| 2023-01-01 08:00:00 | host1 |  4.5 |
+| 2023-01-01 08:00:05 | host1 | NULL |
+| 2023-01-01 08:00:10 | host1 |  6.5 |
 +---------------------+-------+------+
 ```
 
-Use `NULL` for FILL
+The result of each `FILL` option is as follows:
 
-```sql
-SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
-```
+::: code-group
 
-Get after running
+```sql [NULL]
 
-```sql
+> SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
+
 +---------------------+--------------------------------------+
 | ts                  | MIN(host_cpu.cpu) RANGE 5s FILL NULL |
 +---------------------+--------------------------------------+
-| 1970-01-01 08:00:00 |                                  4.5 |
-| 1970-01-01 08:00:05 |                                 NULL |
-| 1970-01-01 08:00:10 |                                  6.5 |
+| 2023-01-01 08:00:00 |                                  4.5 |
+| 2023-01-01 08:00:05 |                                 NULL |
+| 2023-01-01 08:00:10 |                                  6.5 |
 +---------------------+--------------------------------------+
+
 ```
 
-Use `PREV` for FILL
+```sql [PREV]
 
-```sql
-SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
-```
+> SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
 
-Get after running
-
-```sql
 +---------------------+--------------------------------------+
 | ts                  | MIN(host_cpu.cpu) RANGE 5s FILL PREV |
 +---------------------+--------------------------------------+
-| 1970-01-01 08:00:00 |                                  4.5 |
-| 1970-01-01 08:00:05 |                                  4.5 |
-| 1970-01-01 08:00:10 |                                  6.5 |
+| 2023-01-01 08:00:00 |                                  4.5 |
+| 2023-01-01 08:00:05 |                                  4.5 |
+| 2023-01-01 08:00:10 |                                  6.5 |
 +---------------------+--------------------------------------+
 ```
 
-FILL using `LINEAR`
+```sql [LINEAR]
 
-```sql
-SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
-```
+> SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
 
-Get after running
-
-```sql
 +---------------------+----------------------------------------+
 | ts                  | MIN(host_cpu.cpu) RANGE 5s FILL LINEAR |
 +---------------------+----------------------------------------+
-| 1970-01-01 08:00:00 |                                    4.5 |
-| 1970-01-01 08:00:05 |                                    5.5 |
-| 1970-01-01 08:00:10 |                                    6.5 |
+| 2023-01-01 08:00:00 |                                    4.5 |
+| 2023-01-01 08:00:05 |                                    5.5 |
+| 2023-01-01 08:00:10 |                                    6.5 |
 +---------------------+----------------------------------------+
 ```
 
-Use constant value `6.0` for FILL
+```sql [Constant Value 6.0]
+
+> SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
+
++---------------------+-----------------------------------+
+| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL 6 |
++---------------------+-----------------------------------+
+| 2023-01-01 08:00:00 |                               4.5 |
+| 2023-01-01 08:00:05 |                                 6 |
+| 2023-01-01 08:00:10 |                               6.5 |
++---------------------+-----------------------------------+
+```
+
+:::
+
+## TO OPTION
+
+The `TO` keyword specifies the origin time point to which the range query is aligned.
+`TO` option along with `RANGE` option and `ALIGN INTERVAL` determine the time range windows.
+Please refer to [Time Range Window](/user-guide/query-data/sql.md#time-range-window) for details.
+
+The default value of `TO` option is Unix time 0. Other valid `TO` options are:
+
+|     TO      |                                     DESCRIPTION                                      |
+| :---------: | :----------------------------------------------------------------------------------: |
+|    `NOW`    |                             Align to current query time                              |
+| `Timestamp` | Align to a user-specified timestamp, supports timestamp format `RFC3339` / `ISO8601` |
+
+
+Suppose we have a tale `host` with the following data:
 
 ```sql
-SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
++---------------------+-------+------+
+| ts                  | host  | val  |
++---------------------+-------+------+
+| 2023-01-01 23:00:00 | host1 |    0 |
+| 2023-01-02 01:00:00 | host1 |    1 |
+| 2023-01-01 23:00:00 | host2 |    2 |
+| 2023-01-02 01:00:00 | host2 |    3 |
++---------------------+-------+------+
+```
+
+The query results by each `TO` options shown below:
+
+::: code-group
+
+```sql [Default Unix time 0]
+
+-- If we do not specify the `TO` keyword,
+-- the default value Unix time 0 will be used as the alignment time. 
+
+> SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d';
+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 1d FILL NULL |
++---------------------+-------+----------------------------------+
+| 2023-01-03 00:00:00 | host2 |                                3 |
+| 2023-01-02 00:00:00 | host2 |                                2 |
+| 2023-01-03 00:00:00 | host1 |                                1 |
+| 2023-01-02 00:00:00 | host1 |                                0 |
++---------------------+-------+----------------------------------+
+```
+
+```sql [NOW]
+
+-- If you want to align the query time to the current time,
+-- use the `NOW` keyword.
+-- Assume that the current query time is `2023-01-02T08:42:46.371000`.
+
+> SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO NOW;
+
++----------------------------+-------+----------------------------------+
+| ts                         | host  | MIN(host.val) RANGE 1d FILL NULL |
++----------------------------+-------+----------------------------------+
+| 2023-01-02 08:42:46.371000 | host1 |                                0 |
+| 2023-01-02 08:42:46.371000 | host2 |                                2 |
++----------------------------+-------+----------------------------------+
+
+```
+
+```sql [Specific Timestamp]
+
+-- If you want to align the query time to a specific timestamp,
+-- for example, "+08:00" Beijing time on December 1, 2023,
+-- you can set the `TO` option to the specific timestamp '2023-01-01T00:00:00+08:00'.
+
+SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:00+08:00';
+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 1d FILL NULL |
++---------------------+-------+----------------------------------+
+| 2023-01-02 16:00:00 | host2 |                                2 |
+| 2023-01-02 16:00:00 | host1 |                                0 |
++---------------------+-------+----------------------------------+
+
+```
+
+:::
+
+If you want to query data for a specific time range, you can specify the timestamp using the `TO` keyword.
+For example, to query the daily minimum value of `val` between `00:45` and `06:45`,
+you can use `1900-01-01T06:45:00` as the `TO` option along with a `6h` range.
+
+```sql
+SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '1900-01-01T06:45:00';
+```
+
+```sql
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 6h FILL NULL |
++---------------------+-------+----------------------------------+
+| 2023-01-02 06:45:00 | host1 |                                1 |
+| 2023-01-02 06:45:00 | host2 |                                3 |
++---------------------+-------+----------------------------------+
+```
+
+## BY OPTION
+
+`BY` Option describes the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default. If the table does not specify a primary key, the `BY` keyword cannot be omitted.
+
+Suppose we have a tale `host` with the following data:
+
+```sql
++---------------------+-------+------+
+| ts                  | host  | val  |
++---------------------+-------+------+
+| 2023-01-01 23:00:00 | host1 |    0 |
+| 2023-01-02 01:00:00 | host1 |    1 |
+| 2023-01-01 23:00:00 | host2 |    2 |
+| 2023-01-02 01:00:00 | host2 |    3 |
++---------------------+-------+------+
+```
+
+The following SQL uses `host` as the aggragate key:
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(val) RANGE '10s' 
+FROM host ALIGN '5s' BY (host);
+```
+
+You can also use the `BY` keyword to declare other columns as the basis for data aggregation.
+For example, the following RANGE query uses the string length `length(host)` of the `host` column as the basis for data aggregation.
+
+```sql
+SELECT 
+    ts, 
+    length(host), 
+    min(val) RANGE '10s' 
+FROM host ALIGN '5s' BY (length(host));
+```
+
+Get after running
+
+```sql
++---------------------+-----------------------------+-----------------------------------+
+| ts                  | character_length(host.host) | MIN(host.val) RANGE 10s FILL NULL |
++---------------------+-----------------------------+-----------------------------------+
+| 2023-01-01 23:00:00 |                           5 |                                 0 |
+| 2023-01-01 23:00:05 |                           5 |                                 0 |
+| 2023-01-02 01:00:05 |                           5 |                                 1 |
+| 2023-01-02 01:00:00 |                           5 |                                 1 |
++---------------------+-----------------------------+-----------------------------------+
+```
+
+You can explicitly use `BY ()`,
+which means you do not need to use aggregation keys and aggregate all data into a group.
+**However, if you omit the `BY` keyword directly, it means using the primary key of the table as the aggregate key.**
+
+```sql
+SELECT
+     ts,
+     min(val) RANGE '10s'
+FROM host ALIGN '5s' BY ();
 ```
 
 Get after running
 
 ```sql
 +---------------------+-----------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL 6 |
+| ts                  | MIN(host.val) RANGE 10s FILL NULL |
 +---------------------+-----------------------------------+
-| 1970-01-01 08:00:00 |                               4.5 |
-| 1970-01-01 08:00:05 |                                 6 |
-| 1970-01-01 08:00:10 |                               6.5 |
+| 2023-01-01 23:00:05 |                                 0 |
+| 2023-01-02 01:00:05 |                                 1 |
+| 2023-01-01 23:00:00 |                                 0 |
+| 2023-01-02 01:00:00 |                                 1 |
 +---------------------+-----------------------------------+
-```
-
-## TO OPTION
-
-The keyword `TO` specifies the time point to which the Range query is aligned. The legal `TO` options are:
-
-|     TO      |                                     DESCRIPTION                                      |
-| :---------: | :----------------------------------------------------------------------------------: |
-| `CALENDAR`  |                            Align to UTC time 0 (default)                             |
-|    `NOW`    |                             Align to current query time                              |
-| `Timestamp` | Align to a user-specified timestamp, supports timestamp format `RFC3339` / `ISO8601` |
-
-Use the following example to illustrate the usage of the `TO` keyword. First execute the following SQL statement to create a data table:
-
-```sql
-CREATE TABLE host (
-   ts timestamp(3) time index,
-   host STRING PRIMARY KEY,
-   val BIGINT,
-);
-
-INSERT INTO TABLE host VALUES
-     ("1970-01-01T02:00:00+08:00", 'host1', 0),
-     ("1970-01-01T10:00:00+08:00", 'host1', 1),
-     ("1970-01-01T02:00:00+08:00", 'host2', 2),
-     ("1970-01-01T10:00:00+08:00", 'host2', 3);
-```
-
-If the user does not specify the `TO` keyword, the `CALENDAR` method is used by default to align the time to UTC time 0:
-
-```sql
-SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day);
-```
-
-Get the result after running:
-
-```sql
-+---------------------+-------+----------------------------------------------------------------------------+
-| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
-+---------------------+-------+----------------------------------------------------------------------------+
-| 1970-01-01 08:00:00 | host1 |                                                                          0 |
-| 1970-01-02 08:00:00 | host1 |                                                                          1 |
-| 1970-01-01 08:00:00 | host2 |                                                                          2 |
-| 1970-01-02 08:00:00 | host2 |                                                                          3 |
-+---------------------+-------+----------------------------------------------------------------------------+
-```
-
-If the user wants to query the minimum value of `val` every day in Beijing time, he needs to use the `TO` keyword, align the query time to the East Eighth District time, and run the following Range query:
-
-```sql
-SELECT ts, host, min(val) RANGE (INTERVAL '1' day) FROM host ALIGN (INTERVAL '1' day) TO '1900-01-01T00:00:00+08:00';
-```
-
-Get the result after running:
-
-```sql
-+---------------------+-------+----------------------------------------------------------------------------+
-| ts                  | host  | MIN(host.val) RANGE IntervalMonthDayNano("18446744073709551616") FILL NULL |
-+---------------------+-------+----------------------------------------------------------------------------+
-| 1970-01-02 00:00:00 | host1 |                                                                          0 |
-| 1970-01-02 00:00:00 | host2 |                                                                          2 |
-+---------------------+-------+----------------------------------------------------------------------------+
-```
-
-By manually specifying the alignment time, we can specify the query time zone and query data for a specific time range. For example, using the following statement, we can query the daily minimum value of `val` in the time period from `00:45` - `02:45` under Beijing time:
-
-```sql
-SELECT ts, host, min(val) RANGE '2h' FROM host ALIGN '1d' TO '1900-01-01T02:45:00+08:00';
-```
-
-Users can read [Range Query Principle](#range-query-principle) to learn about the calculation method of Range query aggregation time period, so as to better understand the principle of the above query.
-
-Get the result after running:
-
-```sql
-+---------------------+-------+----------------------------------+
-| ts                  | host  | MIN(host.val) RANGE 2h FILL NULL |
-+---------------------+-------+----------------------------------+
-| 1970-01-01 02:45:00 | host1 |                                0 |
-| 1970-01-01 02:45:00 | host2 |                                2 |
-+---------------------+-------+----------------------------------+
-```
-
-Users can also set the alignment time to the query time by specifying `NOW`. Assume that the current query time is `2023-12-01T16:29:58.470000+8:00`. Run the following statement:
-
-```sql
-SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO NOW;
-```
-
-Query results can be obtained
-
-```sql
-+----------------------------+-------+----------------------------------+
-| ts                         | host  | MIN(host.val) RANGE 1d FILL NULL |
-+----------------------------+-------+----------------------------------+
-| 1970-01-01 16:29:58.470000 | host1 |                                0 |
-| 1970-01-01 16:29:58.470000 | host2 |                                2 |
-+----------------------------+-------+----------------------------------+
 ```
 
 ## Nested Range Expressions
@@ -341,10 +318,10 @@ Take the following table as an example:
 +---------------------+-------+------+
 | ts                  | host  | cpu  |
 +---------------------+-------+------+
-| 1970-01-01 08:00:00 | host1 |  1.1 |
-| 1970-01-01 08:00:05 | host1 |  2.2 |
-| 1970-01-01 08:00:00 | host2 |  3.3 |
-| 1970-01-01 08:00:05 | host2 |  4.4 |
+| 2023-01-01 08:00:00 | host1 |  1.1 |
+| 2023-01-01 08:00:05 | host1 |  2.2 |
+| 2023-01-01 08:00:00 | host2 |  3.3 |
+| 2023-01-01 08:00:05 | host2 |  4.4 |
 +---------------------+-------+------+
 ```
 
@@ -360,12 +337,12 @@ Get after running
 +---------------------+-------+-----------------------------------------------------------------+
 | ts                  | host  | Float64(2) * MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL |
 +---------------------+-------+-----------------------------------------------------------------+
-| 1970-01-01 08:00:00 | host2 |                                                            13.2 |
-| 1970-01-01 08:00:10 | host2 |                                                            17.6 |
-| 1970-01-01 08:00:05 | host2 |                                                            13.2 |
-| 1970-01-01 08:00:10 | host1 |                                                             8.8 |
-| 1970-01-01 08:00:05 | host1 |                                                             4.4 |
-| 1970-01-01 08:00:00 | host1 |                                                             4.4 |
+| 2023-01-01 08:00:00 | host2 |                                                            13.2 |
+| 2023-01-01 08:00:10 | host2 |                                                            17.6 |
+| 2023-01-01 08:00:05 | host2 |                                                            13.2 |
+| 2023-01-01 08:00:10 | host1 |                                                             8.8 |
+| 2023-01-01 08:00:05 | host1 |                                                             4.4 |
+| 2023-01-01 08:00:00 | host1 |                                                             4.4 |
 +---------------------+-------+-----------------------------------------------------------------+
 ```
 
@@ -383,12 +360,12 @@ Get after running
 +---------------------+-------+----------------------------------------------+
 | ts                  | host  | MIN(round(host_cpu.cpu)) RANGE 10s FILL NULL |
 +---------------------+-------+----------------------------------------------+
-| 1970-01-01 08:00:05 | host1 |                                            1 |
-| 1970-01-01 08:00:00 | host1 |                                            1 |
-| 1970-01-01 08:00:10 | host1 |                                            2 |
-| 1970-01-01 08:00:00 | host2 |                                            3 |
-| 1970-01-01 08:00:10 | host2 |                                            4 |
-| 1970-01-01 08:00:05 | host2 |                                            3 |
+| 2023-01-01 08:00:05 | host1 |                                            1 |
+| 2023-01-01 08:00:00 | host1 |                                            1 |
+| 2023-01-01 08:00:10 | host1 |                                            2 |
+| 2023-01-01 08:00:00 | host2 |                                            3 |
+| 2023-01-01 08:00:10 | host2 |                                            4 |
+| 2023-01-01 08:00:05 | host2 |                                            3 |
 +---------------------+-------+----------------------------------------------+
 ```
 
@@ -403,12 +380,12 @@ Get after running
 +---------------------+-------+----------------------------------------------+
 | ts                  | host  | round(MIN(host_cpu.cpu) RANGE 10s FILL NULL) |
 +---------------------+-------+----------------------------------------------+
-| 1970-01-01 08:00:00 | host2 |                                            3 |
-| 1970-01-01 08:00:10 | host2 |                                            4 |
-| 1970-01-01 08:00:05 | host2 |                                            3 |
-| 1970-01-01 08:00:05 | host1 |                                            1 |
-| 1970-01-01 08:00:00 | host1 |                                            1 |
-| 1970-01-01 08:00:10 | host1 |                                            2 |
+| 2023-01-01 08:00:00 | host2 |                                            3 |
+| 2023-01-01 08:00:10 | host2 |                                            4 |
+| 2023-01-01 08:00:05 | host2 |                                            3 |
+| 2023-01-01 08:00:05 | host1 |                                            1 |
+| 2023-01-01 08:00:00 | host1 |                                            1 |
+| 2023-01-01 08:00:10 | host1 |                                            2 |
 +---------------------+-------+----------------------------------------------+
 ```
 
@@ -426,12 +403,12 @@ Get after running
 +---------------------+-------+-------------------------------------------------------------------------------+
 | ts                  | host  | MAX(host_cpu.cpu) RANGE 10s FILL NULL - MIN(host_cpu.cpu) RANGE 10s FILL NULL |
 +---------------------+-------+-------------------------------------------------------------------------------+
-| 1970-01-01 08:00:10 | host1 |                                                                             0 |
-| 1970-01-01 08:00:05 | host1 |                                                                           1.1 |
-| 1970-01-01 08:00:00 | host1 |                                                                             0 |
-| 1970-01-01 08:00:05 | host2 |                                                                           1.1 |
-| 1970-01-01 08:00:10 | host2 |                                                                             0 |
-| 1970-01-01 08:00:00 | host2 |                                                                             0 |
+| 2023-01-01 08:00:10 | host1 |                                                                             0 |
+| 2023-01-01 08:00:05 | host1 |                                                                           1.1 |
+| 2023-01-01 08:00:00 | host1 |                                                                             0 |
+| 2023-01-01 08:00:05 | host2 |                                                                           1.1 |
+| 2023-01-01 08:00:10 | host2 |                                                                             0 |
+| 2023-01-01 08:00:00 | host2 |                                                                             0 |
 +---------------------+-------+-------------------------------------------------------------------------------+
 ```
 
@@ -455,12 +432,12 @@ After running, we get:
 +---------------------+-------+-----------------------------------------------------------------+
 | ts                  | host  | MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
 +---------------------+-------+-----------------------------------------------------------------+
-| 1970-01-01 08:00:00 | host2 |                                                            13.2 |
-| 1970-01-01 08:00:10 | host2 |                                                            17.6 |
-| 1970-01-01 08:00:05 | host2 |                                                            13.2 |
-| 1970-01-01 08:00:00 | host1 |                                                             4.4 |
-| 1970-01-01 08:00:10 | host1 |                                                             8.8 |
-| 1970-01-01 08:00:05 | host1 |                                                             4.4 |
+| 2023-01-01 08:00:00 | host2 |                                                            13.2 |
+| 2023-01-01 08:00:10 | host2 |                                                            17.6 |
+| 2023-01-01 08:00:05 | host2 |                                                            13.2 |
+| 2023-01-01 08:00:00 | host1 |                                                             4.4 |
+| 2023-01-01 08:00:10 | host1 |                                                             8.8 |
+| 2023-01-01 08:00:05 | host1 |                                                             4.4 |
 +---------------------+-------+-----------------------------------------------------------------+
 ```
 
@@ -472,25 +449,3 @@ SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
 
-## Range query principle
-
-This section introduces the implementation principle of Range query so that users can have a deeper understanding and use of Range query.
-
-Range query is essentially a data aggregation algorithm, but the difference from traditional SQL data aggregation is that in Range query, one data may be aggregated into multiple Groups. For example, if the user wants to calculate the weekly average temperature of each day, each temperature point will be used in the calculation for multiple times. The above query logic is written as a Range query as follows:
-
-```sql
-SELECT avg(temperature) RANGE '7d' from table ALIGN '1d';
-```
-
-For each Range expression, we use `align_to` (specified by the `TO` keyword, the `TO` keyword is not specified above, which is UTC 0 time), `align` (the above is `'1d'`) , `range` (the above is `'7d'`) three parameters to divide the `time slot`, and put the data into the `time slot` according to the correct timestamp.
-
-1. Use `align_to` as the time origin of the timeline, and use `align` as the step forward and backward to divide aligned time points. The set of these time points is called `align_ts`. `align_ts = { ts | ts = align_to + k * align, k is an integer }`
-2. For each element `ts` in the `align_ts` collection, a `time slot` can be defined. `time slot` is a left-open and right-closed interval that satisfies `(ts - range, ts]`.
-
-When `align > range`, the divided `time slot` is as shown in the figure below. At this time, a piece of data will only belong to one `time slot`.
-
-![align > range](/range_1.png)
-
-When `align < range`, the divided `time slot` is as shown in the figure below. At this time, a piece of data may belong to multiple `time slots`.
-
-![align < range](/range_2.png)

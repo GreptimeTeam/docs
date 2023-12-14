@@ -28,7 +28,7 @@ The query result looks like the following:
 
 Please refer to [SELECT](/reference/sql/select.md) for more information.
 
-### Use Functions
+### Use functions
 
 You can use the `count()` function to get the number of all rows in the table:
 
@@ -82,9 +82,120 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
-### Time and Date Examples
+### Aggregate data by time
 
-#### Query Latest 5 Minutes of Data
+GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time.
+
+Suppose we have the following data in the [`monitor` table](../table-management.md#create-table):
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2023-12-13 02:05:41 |  0.5 |    0.2 |
+| 127.0.0.1 | 2023-12-13 02:05:46 | NULL |   NULL |
+| 127.0.0.1 | 2023-12-13 02:05:51 |  0.4 |    0.3 |
+| 127.0.0.2 | 2023-12-13 02:05:41 |  0.3 |    0.1 |
+| 127.0.0.2 | 2023-12-13 02:05:46 | NULL |   NULL |
+| 127.0.0.2 | 2023-12-13 02:05:51 |  0.2 |    0.4 |
++-----------+---------------------+------+--------+
+```
+
+The following query returns the average CPU usage in a 10-second time range and calculates it every 5 seconds:
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    avg(cpu) RANGE '10s' FILL LINEAR
+FROM monitor
+ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
+```
+
+1. `avg(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time span of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
+2. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s.
+3. `TO '2023-12-01T00:00:00` specifies the origin alignment time. The default value is Unix time 0.
+4. `BY (host)` specifies the aggregate key. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
+
+The Response is shown below:
+
+```sql
++---------------------+-----------+----------------------------------------+
+| ts                  | host      | AVG(monitor.cpu) RANGE 10s FILL LINEAR |
++---------------------+-----------+----------------------------------------+
+| 2023-12-13 02:05:45 | 127.0.0.2 |                                    0.3 |
+| 2023-12-13 02:05:50 | 127.0.0.2 |                                    0.3 |
+| 2023-12-13 02:05:55 | 127.0.0.2 |                                    0.2 |
+| 2023-12-13 02:06:00 | 127.0.0.2 |                                    0.2 |
+| 2023-12-13 02:05:45 | 127.0.0.1 |                                    0.5 |
+| 2023-12-13 02:05:50 | 127.0.0.1 |                                    0.5 |
+| 2023-12-13 02:05:55 | 127.0.0.1 |                                    0.4 |
+| 2023-12-13 02:06:00 | 127.0.0.1 |                                    0.4 |
++---------------------+-----------+----------------------------------------+
+```
+
+#### Time range window
+
+The origin time range window steps forward and backward in the time series to generate all time range windows.
+In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the end time of the origin time window.
+
+The `RANGE` option, along with the origin alignment time, defines the origin time range window that starts from `origin alignment timestamp - range` and ends at `origin alignment timestamp`.
+
+The `ALIGN` option defines the query resolution steps.
+It determines the calculation steps from the origin time window to other time windows.
+For example, with the origin alignment time `2023-12-01T00:00:00` and `ALIGN '5s'`, the alignment times are `2023-11-30T23:59:55`, `2023-12-01T00:00:00`, `2023-12-01T00:00:05`, `2023-12-01T00:00:10`, and so on.
+
+These time windows are left-open and right-closed intervals
+that satisfy the condition `(alignment timestamp - range, alignment timestamp]`.
+
+The following images can help you understand the time range window more visually:
+
+When the query resolution is greater than the time range window, the metrics data will be calculated for only one time range window.
+
+![align > range](/align_greater_than_range.png)
+
+When the query resolution is less than the time range window, the metrics data will be calculated for multiple time range windows.
+
+![align < range](/align_less_than_range.png)
+
+#### Align to specific timestamp
+
+You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    avg(cpu) RANGE '1w'
+FROM monitor 
+ALIGN '1d' TO NOW BY (host);
+```
+
+Or use a `ISO 8601` timestamp to align to a specified time:
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    avg(cpu) RANGE '1w'
+FROM monitor
+ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
+```
+
+#### Fill null values
+
+The `FILL` option can be used to fill null values in the data.
+In the above example, the `LINEAR` method is used to fill null values.
+Other methods are also supported, such as `PREV` and a constant value `X`.
+For more information, please refer to the [FILL OPTION](/reference/sql/range.md#fill-option).
+
+#### Syntax
+
+Please refer to [Range Query](/reference/sql/range.md) for more information.
+
+### Time and date functions
+
+#### Query latest 5 minutes of data
 
 ```sql
 SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
@@ -92,7 +203,7 @@ SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 
 Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
 
-#### Cast Number Literal to Timestamp
+#### Cast number literal to timestamp
 
 ```sql
 select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
