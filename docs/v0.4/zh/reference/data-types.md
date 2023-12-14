@@ -47,14 +47,14 @@ variable-sized 类型的最大容量, 例如 `string` 和 `varbinary`，取决�
 
 GreptimeDB 支持 `decimal` 类型，这是一种定点类型。
 
-它表示为`decimal(precision, scale)`, `precision` 是数位的总数， `scale` 是小数部分的位数。
+它表示为 `decimal(precision, scale)`, `precision` 是数位的总数， `scale` 是小数部分的位数。
 例如, `123.45` 的 precision = 5 ， scale = 2.
 
 
 - `precision` 的范围 [1, 38].
 - `scale` 的范围 [0, precision].
 
-如果没有指定precision和scale，默认的decimal类型是 `decimal(38, 10)`.
+如果没有指定 precision 和 scale，默认的 decimal 类型是 `decimal(38, 10)`.
 
 ### Simple Usage
 
