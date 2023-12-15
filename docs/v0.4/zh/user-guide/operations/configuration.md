@@ -258,6 +258,28 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+#### 自定义多存储引擎
+
+`[[storage.providers]]`  用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
+
+```toml
+# Allows using multiple storages
+[[storage.providers]]
+type = "S3"
+bucket = "test_greptimedb"
+root = "/greptimedb"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+~
+[[storage.providers]]
+type = "Gcs"
+bucket = "test_greptimedb"
+root = "/greptimedb"
+credential_path = "<gcs credential path>"
+~
+```
+
+
 #### 对象存储缓存
 
 当使用 S3、阿里云 OSS 等对象存储的时候，最好开启缓存来加速查询：
