@@ -271,14 +271,15 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
-~
+
 [[storage.providers]]
 type = "Gcs"
 bucket = "test_greptimedb"
 root = "/greptimedb"
 credential_path = "<gcs credential path>"
-~
 ```
+
+All configured providers can be used as the `storage` option when creating tables.
 
 #### Object storage cache
 

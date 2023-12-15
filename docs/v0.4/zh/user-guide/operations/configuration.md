@@ -270,15 +270,15 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
-~
+
 [[storage.providers]]
 type = "Gcs"
 bucket = "test_greptimedb"
 root = "/greptimedb"
 credential_path = "<gcs credential path>"
-~
 ```
 
+所有配置的这些存储引擎提供商都可以在创建表时用作 `storage` 选项。
 
 #### 对象存储缓存
 
