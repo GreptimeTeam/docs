@@ -8,7 +8,7 @@
 
 如果您希望使用带有 pyo3 功能的 Greptime 二进制文件，首先需要知道您的 Greptime 二进制文件所需的 Python 版本。您可以通过运行 `ldd greptime | grep 'libpython'`（或在 Mac 上运行 `otool -L greptime|grep Python.framework`）来检查。然后安装相应的 Python 版本（例如，`libpython3.10.so` 需要 Python 3.10 ）。
 
-使用 Conda 创建一个Python 3环境。Conda 是管理 Python 环境的强大工具，请参阅[官方文档](https://docs.conda.io/en/latest/miniconda.html)以获取更多信息。
+使用 Conda 创建一个 Python3 环境。Conda 是管理 Python 环境的强大工具，请参阅[官方文档](https://docs.conda.io/en/latest/miniconda.html)以获取更多信息。
 
 ```shell
 conda create --name Greptime python=<上一步中特定的Python版本，例如3.10>
