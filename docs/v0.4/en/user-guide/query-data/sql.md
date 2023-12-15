@@ -59,6 +59,53 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
+#### Query latest 5 minutes of data
+
+```sql
+SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
+```
+
+Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
+
+#### Cast number literal to timestamp
+
+```sql
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
+```
+
+This query casts the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` in millisecond resolution) to the timestamp type with millisecond precision.
+
+Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
+
+#### Cast string literal to timestamp
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
+```
+
+This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
+
+Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
+
+#### Extract the day of the year from timestamp
+
+```sql
+MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
+```
+
+Output:
+
+```sql
++----------------------------------------------------+
+| date_part(Utf8("DOY"),Utf8("2021-07-01 00:00:00")) |
++----------------------------------------------------+
+|                                                182 |
++----------------------------------------------------+
+1 row in set (0.003 sec)
+```
+
+The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
+
 Please refer to [Functions](/reference/sql/functions.md) for more information.
 
 ### Group By
@@ -112,7 +159,7 @@ FROM monitor
 ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
 ```
 
-1. `avg(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time span of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
+1. `avg(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time range of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
 2. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s.
 3. `TO '2023-12-01T00:00:00` specifies the origin alignment time. The default value is Unix time 0.
 4. `BY (host)` specifies the aggregate key. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
@@ -192,55 +239,6 @@ For more information, please refer to the [FILL OPTION](/reference/sql/range.md#
 #### Syntax
 
 Please refer to [Range Query](/reference/sql/range.md) for more information.
-
-### Time and date functions
-
-#### Query latest 5 minutes of data
-
-```sql
-SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
-```
-
-Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
-
-#### Cast number literal to timestamp
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
-```
-
-This query casts the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` in millisecond resolution) to the timestamp type with millisecond precision.
-
-Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
-
-#### Cast string literal to timestamp
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
-```
-
-This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
-
-Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
-
-#### Extract the day of the year from timestamp
-
-```sql
-MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
-```
-
-Output:
-
-```sql
-+----------------------------------------------------+
-| date_part(Utf8("DOY"),Utf8("2021-07-01 00:00:00")) |
-+----------------------------------------------------+
-|                                                182 |
-+----------------------------------------------------+
-1 row in set (0.003 sec)
-```
-
-The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
 
 ## HTTP API
 
