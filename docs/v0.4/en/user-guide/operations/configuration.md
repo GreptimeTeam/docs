@@ -259,7 +259,7 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-#### Custom  multiple storage engines
+#### Custom multiple storage engines
 
 `[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you to create a table with a specified storage, see [create table](/reference/sql/create#create-table):
 

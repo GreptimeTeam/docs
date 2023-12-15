@@ -29,3 +29,7 @@ The storage file structure of GreptimeDB includes of the following:
 ## Cloud storage
 
 The `data` directory in the file structure can be stored in cloud storage. Please refer to [Storage option](../operations/configuration.md#storage-option) for more details.
+
+## Multiple storage engines
+
+Another powerful feature of GreptimeDB is that you can choose the storage engine for each table. For example, you can store some tables on the local disk, and some tables in Amazon S3 or Google Cloud Storage, see [create table](/reference/sql/create#create-table).
