@@ -259,6 +259,22 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+#### Custom storages
+
+`[[storage.providers]]` allows you to create a table with a specified storage:
+
+```toml
+# Allows using multiple storages
+[[storage.providers]]
+type = "S3"
+bucket = "test_greptimedb"
+~
+[[storage.providers]]
+type = "Gcs"
+bucket = "test_greptimedb"
+~
+```
+
 #### Object storage cache
 
 When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
