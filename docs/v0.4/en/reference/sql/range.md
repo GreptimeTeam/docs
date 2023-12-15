@@ -29,17 +29,17 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
    - Range expressions can be combined with other operations to implement more complex queries. For details, see [Nested Range Expressions](#nested-range-expressions).
 - `FILL` keyword after `ALIGN`, optional field. See [FILL Option](#fill-option) for details.
 
-## `FILL` OPTION
+## `FILL` Option
 
 `FILL` option specifies the data filling method when the aggregate field is empty.
 
 The `FILL` keyword can be used after the `RANGE` keyword to indicate the filling method for the Range expression.
-The `FILL` keyword can also be used after the `BY` keyword to specify the default filling method for a Range expression
+The `FILL` keyword can also be used after the `ALIGN` keyword to specify the default filling method for a Range expression
 if no fill option is provided.
 
 For example, in the following SQL code,
 the `max(cpu) RANGE '10s'` Range expression uses the fill option `LINEAR`, while the `min(cpu) RANGE '10s'` Range expression,
-which does not specify a fill option, uses the fill option `PREV` specified after the `BY` keyword.
+which does not specify a fill option, uses the fill option `PREV` specified after the `ALIGN` keyword.
 
 ```sql
 SELECT 
@@ -132,7 +132,7 @@ The result of each `FILL` option is as follows:
 
 :::
 
-## TO OPTION
+## `TO` Option
 
 The `TO` keyword specifies the origin time point to which the range query is aligned.
 `TO` option along with `RANGE` option and `ALIGN INTERVAL` determine the time range windows.
@@ -166,7 +166,7 @@ The query results by each `TO` options shown below:
 ```sql [Default Unix time 0]
 
 -- If we do not specify the `TO` keyword,
--- the default value Unix time 0 will be used as the alignment time. 
+-- the default value Unix time 0 will be used as the origin alignment time. 
 
 > SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d';
 
@@ -182,7 +182,7 @@ The query results by each `TO` options shown below:
 
 ```sql [NOW]
 
--- If you want to align the query time to the current time,
+-- If you want to align the origin time to the current time,
 -- use the `NOW` keyword.
 -- Assume that the current query time is `2023-01-02T08:42:46.371000`.
 
@@ -199,7 +199,7 @@ The query results by each `TO` options shown below:
 
 ```sql [Specific Timestamp]
 
--- If you want to align the query time to a specific timestamp,
+-- If you want to align the origin time to a specific timestamp,
 -- for example, "+08:00" Beijing time on December 1, 2023,
 -- you can set the `TO` option to the specific timestamp '2023-01-01T00:00:00+08:00'.
 
@@ -218,10 +218,10 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 If you want to query data for a specific time range, you can specify the timestamp using the `TO` keyword.
 For example, to query the daily minimum value of `val` between `00:45` and `06:45`,
-you can use `1900-01-01T06:45:00` as the `TO` option along with a `6h` range.
+you can use `2023-01-01T06:45:00` as the `TO` option along with a `6h` range.
 
 ```sql
-SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '1900-01-01T06:45:00';
+SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '2023-01-01T06:45:00';
 ```
 
 ```sql
@@ -233,9 +233,9 @@ SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '1900-01-01T06:45:0
 +---------------------+-------+----------------------------------+
 ```
 
-## BY OPTION
+## `BY` Option
 
-`BY` Option describes the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default. If the table does not specify a primary key, the `BY` keyword cannot be omitted.
+`BY` option describes the aggregate key. If this field is not given, the primary key of the table is used as the aggregate key by default. If the table does not specify a primary key, the `BY` keyword cannot be omitted.
 
 Suppose we have a tale `host` with the following data:
 
