@@ -261,7 +261,7 @@ secret_access_key = "<secret access key>"
 
 #### Custom multiple storage engines
 
-`[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you to create a table with a specified storage, see [create table](/reference/sql/create#create-table):
+`[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you can create a table with a specified storage, see [create table](/reference/sql/create#create-table):
 
 ```toml
 # Allows using multiple storages

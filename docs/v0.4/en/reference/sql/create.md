@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', regions=10);
 ```
 
-Create a table with a specified storage engine that stores the data in Google Cloud Storage:
+Create a table that stores the data in Google Cloud Storage:
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
