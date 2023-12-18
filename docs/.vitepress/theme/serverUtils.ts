@@ -28,7 +28,10 @@ export async function makeSidebar(lang, version) {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
         let file = fs.readFileSync(`docs${versionPath}${langPath}${link}.md`, 'utf-8')
-        const text = file.split('\n')[0] === '---' ? file.split('\n')[1].replace('title: ', '') : file.split('\n')[0].replace('# ', '')
+        const text = file
+          .split('\n')
+          .find(line => line.startsWith('# '))
+          ?.replace('# ', '')
         return {
           text,
           link: `${link}`,
