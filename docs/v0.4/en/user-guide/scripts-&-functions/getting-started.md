@@ -3,18 +3,18 @@
 ## Installation
 
 ### Create python environment
-If you are using Greptime's docker image, then it is already set up for scripting functionality, so you can skip this step.
+If you are using Greptime's docker image, no need to set up scripting again—it's ready to go.
 
-If you want to use the Greptime binary with the pyo3 feature, you first need to determine which version of Python is required for your Greptime binary. You can check this by running `ldd greptime | grep 'libpython'` (or `otool -L greptime|grep Python.framework` on Mac), and then install the corresponding Python version (e.g., `libpython3.10.so` requires Python 3.10).
+If you want to use the Greptime binary with the pyo3 feature, first figure out which Python version you need. Check by running `ldd greptime | grep 'libpython'` (or `otool -L greptime|grep Python.framework` on Mac), then install the corresponding Python version (e.g., `libpython3.10.so` requires Python 3.10).
 
-To create a Python 3 environment using conda, which is a useful tool for managing Python environments, please refer to the [official documentation](https://docs.conda.io/en/latest/miniconda.html) for more information.
+To set up a Python 3 environment using conda, a handy tool for managing Python environments, please refer to the [official documentation](https://docs.conda.io/en/latest/miniconda.html) for more information.
 
 ```shell
 conda create --name Greptime python=<Specific Python Version from above step, e.g., 3.10>
 conda activate Greptime
 ```
 
-You may need to set the correct `LD_LIBRARY_PATH` for your Python shared library. For example, for the conda environment, you need to set `LD_LIBRARY_PATH` (or `DYLD_LIBRARY_PATH`) to `$CONDA_PREFIX/lib`. You can check if this path contains the correct Python shared library by running `ls $CONDA_PREFIX/lib | grep 'libpython'` and confirming that the version is correct.
+You may have to adjust the correct `LD_LIBRARY_PATH` for your Python shared library. For example, in the conda environment, set `LD_LIBRARY_PATH` (or `DYLD_LIBRARY_PATH`) to `$CONDA_PREFIX/lib`. To ensure the correct Python shared library is in this path, run `ls $CONDA_PREFIX/lib | grep 'libpython'` and verifty that the version is correct.
 
 ### Install GreptimeDB
 
