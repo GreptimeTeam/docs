@@ -87,7 +87,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `ttl`               | The storage time of the table data | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                        |
 | `regions`           | The region number of the table     | Integer value, such as 1, 5, 10 etc.                                                                                                                |
 | `write_buffer_size` | Memtable size of the table         | String value representing a valid size, such as `32MB`, `128MB`, etc. The default value of this option is `32MB`. Supported units are: `MB` / `GB`. |
-| `storage` | The name of the table storage         | String value, such as `S3`, `Gcs`, etc. |
+| `storage` | The name of the table storage engine provider   | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration#custom-multiple-storage-engines). |
 
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
 
@@ -96,6 +96,15 @@ CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
 ) engine=mito with(ttl='7d', regions=10);
+```
+
+Create a table that stores the data in Google Cloud Storage:
+
+```sql
+CREATE TABLE IF NOT EXISTS temperatures(
+  ts TIMESTAMP TIME INDEX,
+  temperature DOUBLE DEFAULT 10,
+) engine=mito with(ttl='7d', regions=10, storage="Gcs");
 ```
 
 ### Column options

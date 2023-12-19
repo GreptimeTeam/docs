@@ -259,21 +259,27 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-#### Custom storages
+#### Custom multiple storage engines
 
-`[[storage.providers]]` allows you to create a table with a specified storage:
+`[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you can create a table with a specified storage, see [create table](/reference/sql/create#create-table):
 
 ```toml
 # Allows using multiple storages
 [[storage.providers]]
 type = "S3"
 bucket = "test_greptimedb"
-~
+root = "/greptimedb"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+
 [[storage.providers]]
 type = "Gcs"
 bucket = "test_greptimedb"
-~
+root = "/greptimedb"
+credential_path = "<gcs credential path>"
 ```
+
+All configured providers can be used as the `storage` option when creating tables.
 
 #### Object storage cache
 

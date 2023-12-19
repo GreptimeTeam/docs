@@ -27,3 +27,7 @@ GreptimeDB 的存储文件结构包括以下内容：
 ## 云存储
 
 文件结构中的 `cluster` 和 `data` 目录可以存储在云存储中。请参考[存储选项](../operations/configuration.md#storage-option)了解更多细节。
+
+## 多存储引擎支持
+
+GreptimeDB 的另一个强大功能是可以为每张表单独选择存储引擎。例如，您可以将一些表存储在本地磁盘上，将另一些表存储在 Amazon S3 或 Google Cloud Storage 中，请参考 [create table](/reference/sql/create#create-table)。
