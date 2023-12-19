@@ -1,3 +1,7 @@
+---
+template: true
+templateKey: sdk-template
+---
 # Go
 
 <!--link%
@@ -10,10 +14,4 @@ go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://l
 ```
 -->
 
-<code-preview file="go" />
-
-<script setup>
-import CodePreview from './CodePreview.vue'
-</script>
-
-
+<docs-template />

@@ -1,3 +1,7 @@
+---
+template: true
+templateKey: sdk-template
+---
 # Node.js
 
 <!--link%
@@ -10,8 +14,4 @@ npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v
 ```
 -->
 
-<code-preview file="node" />
-
-<script setup>
-import CodePreview from './CodePreview.vue'
-</script>
+<docs-template />
