@@ -46,11 +46,9 @@ The following steps assume that you have followed the documentation above, which
 
 ## Write Data
 
-The following command collects system metric data, such as CPU and memory usage, and sends them to GreptimeDB. This demo is based on OpenTelemetry OTLP/http. The source code is available on <a :href="$frontmatter.githubDemoUrl">GitHub</a>.
+<!--% link -->
 
-```shell-vue
-{{$frontmatter.writeDataShell}}
-```
+<!--% code -->
 
 ## Visualize Data with Grafana
 

@@ -1,7 +1,19 @@
----
-githubDemoUrl: https://github.com/GreptimeCloudStarters/quick-start-go
-writeDataShell: go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
----
 # Go
 
-<!--@include: ./template.md-->
+<!--link%
+The following command collects system metric data, such as CPU and memory usage, and sends them to GreptimeDB. This demo is based on OpenTelemetry OTLP/http. The source code is available on [github](https://github.com/GreptimeCloudStarters/quick-start-go)
+-->
+
+<!--code%
+```shell
+go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
+```
+-->
+
+<code-preview file="go" />
+
+<script setup>
+import CodePreview from './CodePreview.vue'
+</script>
+
+

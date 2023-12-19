@@ -1,7 +1,17 @@
----
-githubDemoUrl: https://github.com/GreptimeCloudStarters/quick-start-node-js
-writeDataShell: npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
----
 # Node.js
 
-<!--@include: ./template.md-->
+<!--link%
+The following command collects system metric data, such as CPU and memory usage, and sends them to GreptimeDB. This demo is based on OpenTelemetry OTLP/http. The source code is available on [github](https://github.com/GreptimeCloudStarters/quick-start-node-js)
+-->
+
+<!--code%
+```shell
+npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
+```
+-->
+
+<code-preview file="node" />
+
+<script setup>
+import CodePreview from './CodePreview.vue'
+</script>
