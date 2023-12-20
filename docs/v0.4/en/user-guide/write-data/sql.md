@@ -11,13 +11,16 @@ Let's insert some testing data to the `monitor` table. You can use the `INSERT I
 ```sql
 INSERT INTO monitor
 VALUES
-    ("127.0.0.1", 1667446797450, 0.1, 0.4),
-    ("127.0.0.2", 1667446798450, 0.2, 0.3),
-    ("127.0.0.1", 1667446798450, 0.5, 0.2);
+    ("127.0.0.1", 1702433141000, 0.5, 0.2),
+    ("127.0.0.2", 1702433141000, 0.3, 0.1),
+    ("127.0.0.1", 1702433146000, 0.3, 0.2),
+    ("127.0.0.2", 1702433146000, 0.2, 0.4),
+    ("127.0.0.1", 1702433151000, 0.4, 0.3),
+    ("127.0.0.2", 1702433151000, 0.2, 0.4);
 ```
 
 ```sql
-Query OK, 3 rows affected (0.01 sec)
+Query OK, 6 rows affected (0.01 sec)
 ```
 
 Through the above statement, we have inserted three rows into the `monitor` table.
