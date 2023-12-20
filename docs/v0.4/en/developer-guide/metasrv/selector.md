@@ -31,9 +31,9 @@ You can configure the `Selector` when starting the `MetaSrv` service, with the d
 For example:
 
 ```shell
-cargo run -- metasrv start --selector LoadBased
+cargo run -- metasrv start --selector load_based
 ```
 
 ```shell
-cargo run -- metasrv start --selector LeaseBased
+cargo run -- metasrv start --selector lease_based
 ```

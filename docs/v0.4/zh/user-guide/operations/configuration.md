@@ -410,10 +410,10 @@ server_addr = "127.0.0.1:3002"
 # Etcd server addresses, "127.0.0.1:2379" by default.
 store_addr = "127.0.0.1:2379"
 # Datanode selector type.
-# - "LeaseBased" (default value).
-# - "LoadBased"
+# - "lease_based" (default value).
+# - "load_based"
 # For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
-selector = "LeaseBased"
+selector = "lease_based"
 # Store data in memory, false by default.
 use_memory_store = false
 ```
