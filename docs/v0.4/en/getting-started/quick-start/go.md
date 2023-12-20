@@ -1,5 +1,5 @@
 ---
-template: sdk-template
+template: ../getting-started-sdk-template.md
 ---
 # Go
 

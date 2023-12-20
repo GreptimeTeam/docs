@@ -2,54 +2,63 @@ import { createMarkdownRenderer } from 'vitepress'
 import fs from 'fs-extra'
 import matter from 'gray-matter'
 
-const templateBasePath = 'docs/docs-template/'
-const filePaths = ['docs/v0.4/en/getting-started/quick-start/']
-
 export default {
   load: async () => {
     const md = await createMarkdownRenderer('', {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
     })
     const mdMap = {}
-    const templateMap = getTemplateMap(templateBasePath)
-    const filesMap = getFilesMap(filePaths)
-    Object.keys(templateMap).forEach(templateKey => {
+    const filesMap = getAllFilesMap()
+    Object.keys(filesMap).forEach(templateKey => {
       filesMap[templateKey] &&
         Object.keys(filesMap[templateKey]).forEach(fileKey => {
-          mdMap[fileKey] = md.render(getFileContent(templateMap[templateKey], filesMap[templateKey][fileKey]))
+          mdMap[fileKey] = md.render(getFileContent(getTemplate(templateKey), filesMap[templateKey][fileKey]))
         })
     })
     return mdMap
   },
 }
 
-const getTemplateMap = path => {
-  const fileNames = fs
-    .readdirSync(path)
-    .filter(file => file.match(/\.md/))
-    .map(file => file.replace(/\.md/, ''))
-  const templateMap = {}
-  fileNames.forEach(fileName => {
-    const template = fs.readFileSync(`${path}${fileName}.md`, 'UTF-8')
-    templateMap[fileName] = template
-  })
-  return templateMap
+const getTemplate = path => fs.readFileSync(path, 'UTF-8')
+
+const getAllFilesMap = () => {
+  const filesMap = {}
+  const getFilesMap = (filesMap, path) => {
+    try {
+      const fileNames = fs.readdirSync(path)
+      fileNames.forEach(fileName => {
+        if (fileName.match(/.md/)) {
+          const file = fs.readFileSync(`${path}/${fileName}`, 'UTF-8')
+          const { data, content } = matter(file)
+          if (data.template) {
+            const templatePath = getAbsolutePath(data.template, path)
+            filesMap[templatePath] = filesMap[templatePath] || {}
+            filesMap[templatePath][`${path}/${fileName}`] = content
+          }
+        } else {
+          getFilesMap(filesMap, `${path}/${fileName}`)
+        }
+      })
+    } catch {
+      return
+    }
+  }
+  getFilesMap(filesMap, 'docs')
+  return filesMap
 }
 
-const getFilesMap = paths => {
-  const fileNames = paths.map(path => fs.readdirSync(path).filter(file => file.match(/\.md/)))
-  const filesMap = {}
-  fileNames.forEach((files, index) => {
-    files.forEach(fileName => {
-      const file = fs.readFileSync(`${paths[index]}${fileName}`, 'UTF-8')
-      const { data, content } = matter(file)
-      if (data.template) {
-        filesMap[data.template] = filesMap[data.template] || {}
-        filesMap[data.template][`${paths[index]}${fileName}`] = content
-      }
-    })
+const getAbsolutePath = (relativePath, currentPath) => {
+  const relativePathArray = relativePath.split('/')
+  const currentPathArray = currentPath.split('/')
+  relativePathArray.forEach((path, index) => {
+    if (path === '..') {
+      currentPathArray.pop()
+      relativePathArray.splice(index, 1)
+    } else if (path == '.') {
+      relativePathArray.splice(index, 1)
+    }
   })
-  return filesMap
+  return `${currentPathArray.join('/')}/${relativePathArray.join('/')}`
 }
 
 const getReplacementsMap = content => {

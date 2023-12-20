@@ -1,5 +1,5 @@
 ---
-template: sdk-template
+template: ./quick-start-sdk-template.md
 ---
 # Node.js
 
