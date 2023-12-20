@@ -44,8 +44,8 @@ const getFilesMap = paths => {
       const file = fs.readFileSync(`${paths[index]}${fileName}`, 'UTF-8')
       const { data, content } = matter(file)
       if (data.template) {
-        filesMap[data.templateKey] = filesMap[data.templateKey] || {}
-        filesMap[data.templateKey][`${paths[index]}${fileName}`] = content
+        filesMap[data.template] = filesMap[data.template] || {}
+        filesMap[data.template][`${paths[index]}${fileName}`] = content
       }
     })
   })
@@ -53,12 +53,13 @@ const getFilesMap = paths => {
 }
 
 const getReplacementsMap = content => {
-  const regex = /<!--([\s\S]*?)-->/g
-  const matches = content.match(regex).map(match => match.replace(/<!--([\s\S]*)-->/, '$1'))
+  const regex = /<!--template ([\s\S]*?)-->/g
+  const matches = content.match(regex).map(match => match.replace(/<!--template ([\s\S]*)-->/, ($1, $2) => $2))
   const map = {}
   matches.forEach(match => {
-    const key = match.split('%')[0]
-    const value = match.split('%')[1].replace(/\n/, '')
+    const target = match.split('%')
+    const key = target[0]
+    const value = target[1].slice(target[1].indexOf('\n') + 1)
     map[key] = value
   })
   return map
@@ -66,5 +67,5 @@ const getReplacementsMap = content => {
 
 const getFileContent = (template, file) => {
   const replacementsMap = getReplacementsMap(file)
-  return template.replace(/<!--% ([\s\S]*?) -->/g, (match, key) => replacementsMap[key] || match)
+  return template.replace(/<!--template ([\s\S]*?)% -->/g, (match, key) => replacementsMap[key] || match)
 }
