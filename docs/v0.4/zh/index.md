@@ -21,13 +21,13 @@ GreptimeDB 是开源的时序数据库，注重可扩展性、分析能力和效
 
 - [立即开始][1]: 为刚接触 GreptimeDB 的用户提供指引，包括如何安装与数据库操作。
 - [用户指南][2]: 应用程序开发人员可以使用 GreptimeDB 或建立自定义集成。
-- [开发者指南][3]: 有兴趣了解更多技术细节并想成为 GreptimeDB 的贡献者的开发者请阅读此文档。
+- [贡献者指南][3]: 有兴趣了解更多技术细节并参与贡献 GreptimeDB 的开发者请阅读此文档。
 <!-- - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions. -->
 
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
-[3]: ./developer-guide/overview.md
+[3]: ./contributor-guide/overview.md
 
 <!-- [4]: ./changelog/overview.md
 [5]: ./faq-and-others/faq.md -->

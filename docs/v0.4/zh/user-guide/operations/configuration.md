@@ -59,7 +59,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
-- `--selector <SELECTOR>`: 参考 [selector 类型](/developer-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
 - `--store-addr <STORE_ADDR>`: 存储元数据的 etcd 地址列表，用逗号隔开
 - `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
@@ -412,7 +412,7 @@ store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
 # - "load_based"
-# For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
+# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
 selector = "lease_based"
 # Store data in memory, false by default.
 use_memory_store = false
@@ -424,7 +424,7 @@ use_memory_store = false
 | bind_addr        | 字符串 | Metasrv 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                     |
 | server_addr      | 字符串 | 前端和数据节点连接到 Metasrv 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机）          |
 | store_addr       | 字符串 | etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
-| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/developer-guide/metasrv/selector.md)              |
+| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/contributor-guide/metasrv/selector.md)              |
 | use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
 
 ### Logging 选项

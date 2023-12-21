@@ -1,6 +1,6 @@
 # GreptimeDB 分布式集群
 
-GreptimeDB 可以运行于 [cluster](/developer-guide/overview.md) 模式以支持水平扩展。
+GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以支持水平扩展。
 
 ## 安装 gtctl 并运行 playground
 

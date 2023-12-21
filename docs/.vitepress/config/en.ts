@@ -63,6 +63,10 @@ export const enConfig = async () => ({
         icon: 'developerGuide',
       },
       {
+        key: 'Contributor Guide',
+        icon: 'developerGuide',
+      },
+      {
         key: 'Reference',
         icon: 'reference',
       },

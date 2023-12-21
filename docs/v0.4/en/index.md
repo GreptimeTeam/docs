@@ -31,13 +31,13 @@ Before getting started, please read the following documents that include instruc
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
 - [GreptimeCloud][6]: For users of GreptimeCloud to get started.
-- [Developer Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
+- [Contributor Guide][3]: For developers interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
 - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
 - [FAQ][5]: Presents the most frequently asked questions.
 
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
-[3]: ./developer-guide/overview.md
+[3]: ./contributor-guide/overview.md
 [4]: ./changelog/overview.md
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md

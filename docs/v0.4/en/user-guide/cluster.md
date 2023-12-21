@@ -53,7 +53,7 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    Query OK, 3 rows affected (0.09 sec)
    ```
 
-   The `dist_table` is distributed among the `Datanode`s. You can refer to ["Table Sharding"](https://docs.greptime.com/developer-guide/frontend/table-sharding) for more details.
+   The `dist_table` is distributed among the `Datanode`s. You can refer to ["Table Sharding"](/contributor-guide/frontend/table-sharding) for more details.
 
 3. Insert some data via `INSERT` statement.
 

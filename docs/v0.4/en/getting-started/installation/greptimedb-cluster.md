@@ -1,6 +1,6 @@
 # GreptimeDB Cluster
 
-The GreptimeDB cluster can run in the [cluster](/developer-guide/overview.md) mode to scale horizontally.
+The GreptimeDB cluster can run in the [cluster](/contributor-guide/overview.md) mode to scale horizontally.
 
 ## Install gtctl and run playground
 

@@ -59,7 +59,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses to store metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
@@ -413,7 +413,7 @@ store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
 # - "load_based"
-# For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
+# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
 selector = "LeaseBased"
 # Store data in memory, false by default.
 use_memory_store = false
@@ -425,7 +425,7 @@ use_memory_store = false
 | bind_addr        | String  | The bind address of Metasrv, `"127.0.0.1:3002"` by default.                                                                          |
 | server_addr      | String  | The communication server address for frontend and datanode to connect to Metasrv, `"127.0.0.1:3002"` by default for localhost        |
 | store_addr       | String  | etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
-| selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/developer-guide/metasrv/selector.md)                 |
+| selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/contributor-guide/metasrv/selector.md)                 |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
 ### Logging options

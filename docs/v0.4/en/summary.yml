@@ -122,36 +122,6 @@
       - java
       - python
       - node-js
-- Developer-Guide:
-  - overview
-  - getting-started
-  - Frontend:
-    - overview
-    - table-sharding
-    - distributed-querying
-  - Datanode:
-    - overview
-    - storage-engine
-    - query-engine
-    - data-persistence-indexing
-    - wal
-    - python-coprocessor
-  - Metasrv:
-    - overview
-    - admin-api
-    - dist-lock
-    - selector
-  - Tests:
-    - overview
-    - unit-test
-    - integration-test
-    - sqlness-test
-  - Benchmarks:
-    - nyc-taxi
-  - How-To:
-    - how-to-write-sdk
-    - how-to-use-tokio-console
-    - how-to-trace-greptimedb
 - Reference:
   - command-lines
   - data-types
@@ -182,6 +152,36 @@
     - explain
     - compatibility
   - Telemetry
+- Contributor-Guide:
+  - overview
+  - getting-started
+  - Frontend:
+    - overview
+    - table-sharding
+    - distributed-querying
+  - Datanode:
+    - overview
+    - storage-engine
+    - query-engine
+    - data-persistence-indexing
+    - wal
+    - python-coprocessor
+  - Metasrv:
+    - overview
+    - admin-api
+    - dist-lock
+    - selector
+  - Tests:
+    - overview
+    - unit-test
+    - integration-test
+    - sqlness-test
+  - Benchmarks:
+    - nyc-taxi
+  - How-To:
+    - how-to-write-sdk
+    - how-to-use-tokio-console
+    - how-to-trace-greptimedb
 - Changelog:
   - overview
   - roadmap-2023
