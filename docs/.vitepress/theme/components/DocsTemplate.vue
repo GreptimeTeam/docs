@@ -2,7 +2,7 @@
 div(v-html="md")
 </template>
 <script setup>
-import { data } from '../data/template.data.js'
+import { data } from '../template.data.js'
 // data
 const route = useRoute()
 const fileKey = `docs/${route.data.filePath}`

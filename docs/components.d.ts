@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    DocsTemplate: typeof import('./.vitepress/theme/components/DocsTemplate.vue')['default']
     Footer: typeof import('./.vitepress/theme/components/Footer.vue')['default']
   }
 }

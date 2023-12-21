@@ -1,7 +1,7 @@
 import { gtag } from '@/utils.ts'
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
-import DocsTemplate from '../../docs-template/component/DocsTemplate.vue'
+import DocsTemplate from './components/DocsTemplate.vue'
 import './style/index.styl'
 
 export default {

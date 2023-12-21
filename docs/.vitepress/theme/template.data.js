@@ -76,5 +76,5 @@ const getReplacementsMap = content => {
 
 const getFileContent = (template, file) => {
   const replacementsMap = getReplacementsMap(file)
-  return template.replace(/<!--template ([\s\S]*?)% -->/g, (match, key) => replacementsMap[key] || match)
+  return template.replace(/{template ([\s\S]*?)%}/g, (match, key) => replacementsMap[key] || match)
 }

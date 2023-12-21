@@ -48,9 +48,9 @@ The following steps assume that you have followed the documentation above, which
 
 ## Write Data
 
-<!--template link% -->
+{template link%}
 
-<!--template code% -->
+{template code%}
 
 ## Visualize Data with Grafana
 
