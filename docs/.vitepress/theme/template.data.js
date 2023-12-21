@@ -1,4 +1,5 @@
 import { createMarkdownRenderer } from 'vitepress'
+import path from 'path'
 import fs from 'fs-extra'
 import matter from 'gray-matter'
 
@@ -12,7 +13,9 @@ export default {
     Object.keys(filesMap).forEach(templateKey => {
       filesMap[templateKey] &&
         Object.keys(filesMap[templateKey]).forEach(fileKey => {
-          mdMap[fileKey] = md.render(getFileContent(getTemplate(templateKey), filesMap[templateKey][fileKey]))
+          let src = getFileContent(getTemplate(templateKey), filesMap[templateKey][fileKey])
+          src = processIncludes('.', src, fileKey, [])
+          mdMap[fileKey] = md.render(src)
         })
     })
     return mdMap
@@ -62,8 +65,8 @@ const getAbsolutePath = (relativePath, currentPath) => {
 }
 
 const getReplacementsMap = content => {
-  const regex = /<!--template ([\s\S]*?)-->/g
-  const matches = content.match(regex).map(match => match.replace(/<!--template ([\s\S]*)-->/, ($1, $2) => $2))
+  const regex = /{template ([\s\S]*?)}/g
+  const matches = content.match(regex).map(match => match.replace(/{template ([\s\S]*)}/, ($1, $2) => $2))
   const map = {}
   matches.forEach(match => {
     const target = match.split('%')
@@ -77,4 +80,34 @@ const getReplacementsMap = content => {
 const getFileContent = (template, file) => {
   const replacementsMap = getReplacementsMap(file)
   return template.replace(/{template ([\s\S]*?)%}/g, (match, key) => replacementsMap[key] || match)
+}
+
+function slash(p) {
+  return p.replace(/\\/g, '/')
+}
+
+function processIncludes(srcDir, src, file, includes) {
+  const includesRE = /<!--\s*@include:\s*(.*?)\s*-->/g
+  const rangeRE = /\{(\d*),(\d*)\}$/
+  return src.replace(includesRE, (m, m1) => {
+    if (!m1.length) return m
+
+    const range = m1.match(rangeRE)
+    range && (m1 = m1.slice(0, -range[0].length))
+    const atPresent = m1[0] === '@'
+    try {
+      const includePath = atPresent ? path.join(srcDir, m1.slice(m1[1] === '/' ? 2 : 1)) : path.join(path.dirname(file), m1)
+      let content = fs.readFileSync(includePath, 'utf-8')
+      if (range) {
+        const [, startLine, endLine] = range
+        const lines = content.split(/\r?\n/)
+        content = lines.slice(startLine ? parseInt(startLine, 10) - 1 : undefined, endLine ? parseInt(endLine, 10) : undefined).join('\n')
+      }
+      includes.push(slash(includePath))
+      // recursively process includes in the content
+      return processIncludes(srcDir, content, includePath, includes)
+    } catch (error) {
+      return m // silently ignore error if file is not present
+    }
+  })
 }
