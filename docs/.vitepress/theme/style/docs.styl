@@ -39,14 +39,27 @@
     border-radius var(--border-radius-s)
     border 1px solid var(--color-dark-primary-1)
 
+  code
+    padding 2px 6px
+    box-decoration-break clone
+    -webkit-box-decoration-break clone
+
   a  
-    font-size var(--font-size-m) 
-    line-height var(--line-height-m) 
+    font-size inherit
+    line-height inherit
     color var(--color-a-text) 
     text-decoration underline 
+    text-underline-offset 2px
+    code
+      border none
+      margin-right 4px
+      color var(--color-a-text) 
+      border-radius var(--border-radius-xs)
 
-  a:hover  
+  a:hover
     color var(--color-a-hover) 
+    code
+      color var(--color-a-hover) 
 
   ul  
     margin 20px 0 
