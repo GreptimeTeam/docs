@@ -4,8 +4,6 @@
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
-See `WHERE` more about [`WHERE` clause](https://docs.greptime.com/reference/sql/where).
-
 GreptimeDB is an open-source time-series database with a special focus on
 scalability, analytical capabilities and efficiency. It's designed to work on
 infrastructure of the cloud era, and users benefit from its elasticity and commodity
