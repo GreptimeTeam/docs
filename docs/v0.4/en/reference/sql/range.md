@@ -218,18 +218,18 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 If you want to query data for a specific time range, you can specify the timestamp using the `TO` keyword.
 For example, to query the daily minimum value of `val` between `00:45` and `06:45`,
-you can use `2023-01-01T06:45:00` as the `TO` option along with a `6h` range.
+you can use `2023-01-01T00:45:00` as the `TO` option along with a `6h` range.
 
 ```sql
-SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '2023-01-01T06:45:00';
+SELECT ts, host, min(val) RANGE '6h' FROM host ALIGN '1d' TO '2023-01-01T00:45:00';
 ```
 
 ```sql
 +---------------------+-------+----------------------------------+
 | ts                  | host  | MIN(host.val) RANGE 6h FILL NULL |
 +---------------------+-------+----------------------------------+
-| 2023-01-02 06:45:00 | host1 |                                1 |
-| 2023-01-02 06:45:00 | host2 |                                3 |
+| 2023-01-02 00:45:00 | host1 |                                1 |
+| 2023-01-02 00:45:00 | host2 |                                3 |
 +---------------------+-------+----------------------------------+
 ```
 
