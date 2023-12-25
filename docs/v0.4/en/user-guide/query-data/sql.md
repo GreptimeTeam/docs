@@ -186,14 +186,14 @@ The Response is shown below:
 The origin time range window steps forward and backward in the time series to generate all time range windows.
 In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the end time of the origin time window.
 
-The `RANGE` option, along with the origin alignment time, defines the origin time range window that starts from `origin alignment timestamp - range` and ends at `origin alignment timestamp`.
+The `RANGE` option, along with the origin alignment time, defines the origin time range window that starts from `origin alignment timestamp` and ends at `origin alignment timestamp + range`.
 
 The `ALIGN` option defines the query resolution steps.
 It determines the calculation steps from the origin time window to other time windows.
 For example, with the origin alignment time `2023-12-01T00:00:00` and `ALIGN '5s'`, the alignment times are `2023-11-30T23:59:55`, `2023-12-01T00:00:00`, `2023-12-01T00:00:05`, `2023-12-01T00:00:10`, and so on.
 
-These time windows are left-open and right-closed intervals
-that satisfy the condition `(alignment timestamp - range, alignment timestamp]`.
+These time windows are left-closed and right-open intervals
+that satisfy the condition `[alignment timestamp, alignment timestamp + range)`.
 
 The following images can help you understand the time range window more visually:
 
