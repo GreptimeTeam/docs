@@ -1,12 +1,13 @@
+---
+template: quick-start-template.md
+---
+
 # Java
 
-<!--@include: ./introduction.md-->
+<docs-template>
 
-## Prerequisites
+{template write-data%
 
-<!--@include: ./prerequisites.md-->
-
-## Write Data
 
 <!--@include: ../../db-cloud-shared/quick-start/java.md-->
 
@@ -15,10 +16,6 @@ curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/lates
 --output quick-start.jar && java -jar quick-start.jar -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-## Visualize Data with Grafana
+}
 
-<!--@include: ./visualize-data.md-->
-
-## Next Steps
-
-<!--@include: ./next-steps.md-->
+</docs-template>
