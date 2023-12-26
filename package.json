@@ -3,6 +3,7 @@
   "description": "Docs of Greptime",
   "version": "1.0.0",
   "main": "index.js",
+  "type":"module",
   "directories": {
     "doc": "docs"
   },
@@ -30,6 +31,7 @@
     "markdown-it": "^13.0.1",
     "md5": "^2.3.0",
     "nanoid": "^4.0.1",
+    "path": "^0.12.7",
     "path-parse": "^1.0.7",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.21",

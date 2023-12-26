@@ -115,3 +115,9 @@ cache/
 
 # editor and IDE paraphernalia
 .idea
+
+# automatic generation while `npm run build` and `npm run dev`
+
+auto-imports.d.ts
+components.d.ts
+

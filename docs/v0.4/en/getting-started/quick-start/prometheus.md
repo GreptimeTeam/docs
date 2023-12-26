@@ -84,7 +84,7 @@ After every service starts successfully, the host metrics will be collected and 
 
 ## Visualize Data with Grafana
 
-<!--@include: ./visualize-data.md-->
+<!--@include: ./visualize-data-by-grafana.md-->
 
 ## Next Steps
 

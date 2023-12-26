@@ -1,13 +1,16 @@
 import { gtag } from '@/utils.ts'
 import DefaultTheme from 'vitepress/theme'
 import Layout from './Layout.vue'
+import DocsTemplate from './components/DocsTemplate.vue'
 import './style/index.styl'
 
 export default {
   ...DefaultTheme,
   Layout,
   NotFound: () => '',
-  enhanceApp(app) {
+  enhanceApp({ app }) {
+    app.component('DocsTemplate', DocsTemplate)
+
     if (typeof window !== 'undefined') {
       const oScript = window.document.createElement('script')
 
