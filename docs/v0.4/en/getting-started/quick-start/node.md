@@ -1,16 +1,14 @@
 ---
-template: ./quick-start-sdk-template.md
+template: quick-start-template.md
 ---
 # Node.js
 
 <docs-template>
 
-{template link%
-<!--@include: ./prerequisites.md-->
-The following command collects system metric data, such as CPU and memory usage, and sends them to GreptimeDB. This demo is based on OpenTelemetry OTLP/http. The source code is available on [github](https://github.com/GreptimeCloudStarters/quick-start-node-js)
-}
+{template write-data%
 
-{template code%
+<!--@include: ../../db-cloud-shared/quick-start/node.md-->
+
 ```shell
 npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
 ```

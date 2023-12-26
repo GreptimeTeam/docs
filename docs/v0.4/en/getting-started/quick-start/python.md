@@ -1,12 +1,12 @@
+---
+template: quick-start-template.md
+---
+
 # Python
 
-<!--@include: ./introduction.md-->
+<docs-template>
 
-## Prerequisites
-
-<!--@include: ./prerequisites.md-->
-
-## Write Data
+{template write-data%
 
 <!--@include: ../../db-cloud-shared/quick-start/python.md-->
 
@@ -14,10 +14,6 @@
 pipx run --no-cache greptime-cloud-quick-start -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-## Visualize Data with Grafana
+}
 
-<!--@include: ./visualize-data.md-->
-
-## Next Steps
-
-<!--@include: ./next-steps.md-->
+</docs-template>
