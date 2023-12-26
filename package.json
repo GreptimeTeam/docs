@@ -1,7 +1,8 @@
 {
-  "name": "Greptime-Docs",
+  "name": "greptime_docs",
   "description": "Docs of Greptime",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "type":"module",
   "directories": {

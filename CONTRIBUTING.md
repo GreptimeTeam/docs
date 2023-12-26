@@ -49,11 +49,11 @@ This project requires Node.js version 18.0.0 or higher.
 Use the following commands to start a local server:
 
 ```shell
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
-You can also use `npm run build` to check dead links.
+You can also use `pnpm run build` to check dead links.
 
 ### Preview the Localized documentation
 
@@ -66,7 +66,7 @@ For example, to preview the Chinese documentation, add the following content to 
 VITE_LANG=zh
 ```
 
-Then start a local server with `npm run dev`.
+Then start a local server with `pnpm run dev`.
 
 ## PR Title Check
 
