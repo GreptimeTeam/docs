@@ -438,6 +438,7 @@ level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
 tracing_sample_ratio = 1.0
+append_stdout = true
 ```
 
 - `dir`: log 输出目录。
@@ -445,6 +446,7 @@ tracing_sample_ratio = 1.0
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing。
+- `append_stdout`：是否将日志打印到stdout。默认是`true`。
 
 如何使用分布式追踪，请参考 [Tracing](./tracing.md)
 

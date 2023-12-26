@@ -439,6 +439,7 @@ level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
 tracing_sample_ratio = 1.0
+append_stdout = true
 ```
 
 - `dir`: log output directory.
@@ -446,6 +447,7 @@ tracing_sample_ratio = 1.0
 - `enable_otlp_tracing`: whether to turn on distributed tracing, not turned on by default.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
+- `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
 
 How to use distributed tracing, please reference [Tracing](./tracing.md)
 
