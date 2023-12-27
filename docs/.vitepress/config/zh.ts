@@ -87,6 +87,10 @@ export const zhConfig = async () => ({
         icon: 'developerGuide',
       },
       {
+        key: '贡献者指南',
+        icon: 'developerGuide',
+      },
+      {
         key: 'Reference',
         icon: 'reference',
       },
