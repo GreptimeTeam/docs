@@ -91,7 +91,7 @@ SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 #### 将数字转换为时间戳
 
 ```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
 ```
 
 这个查询将数字 1650252336408（Unix Epoch 2022-04-18 03:25:36.408，毫秒分辨率）转换为带有毫秒精度的时间戳类型。
@@ -101,7 +101,7 @@ select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecon
 #### 将字符串时间转换为时间戳
 
 ```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
 ```
 
 这个查询使用 `::` 语法将字符串时间转换为时间戳类型，所有 SQL 类型都可以在 `timestamp` 的位置上使用。
@@ -111,7 +111,7 @@ select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
 #### 从时间戳中提取一年中的第几天
 
 ```sql
-MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
+SELECT date_part('DOY', '2021-07-01 00:00:00');
 ```
 
 Output:

@@ -92,7 +92,7 @@ Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more inform
 #### Cast Number Literal to Timestamp
 
 ```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)')
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
 ```
 
 This query casts the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` in millisecond resolution) to the timestamp type with millisecond precision.
@@ -102,7 +102,7 @@ Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more in
 #### Cast string literal to timestamp
 
 ```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
 ```
 
 This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
@@ -112,7 +112,7 @@ Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more in
 #### Extract the day of the year from timestamp
 
 ```sql
-MySQL [(none)]> SELECT date_part('DOY', '2021-07-01 00:00:00');
+SELECT date_part('DOY', '2021-07-01 00:00:00');
 ```
 
 Output:
