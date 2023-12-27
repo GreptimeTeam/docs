@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
   const files = fs.readdirSync('./docs')
   const versionMap = files.filter(file => file.match(/v\d\.\d/))
   for (let i = versionMap.length; i >= 0; i--) {
-    await execSync(`npm run docs:build`, {
+    await execSync(`pnpm run docs:build`, {
       env: {
         ...process.env,
         VERSION: versionMap[i],
