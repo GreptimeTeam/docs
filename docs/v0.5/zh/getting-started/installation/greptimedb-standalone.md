@@ -8,6 +8,8 @@
 
 ### 二进制
 
+### Linux 或 macOS
+
 如果你使用的是 Linux 或 macOS，可以通过以下命令下载 `greptime` binary 的最新版本：
 
 ```shell
@@ -21,6 +23,18 @@ curl -fsSL \
 
 ```shell
 ./greptime standalone start
+```
+
+### Windows
+
+若您的 Windows 系统已开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，您可以直接打开一个最新的 Ubuntu 接着如上所示运行 GreptimeDB ！
+
+否则请到我们的[官网](https://greptime.com/resources)下载并解压最新的 GreptimeDB for Windows 安装包。
+
+在单机模式下运行 GreptimeDB，您可以在 GreptimeDB 二进制所在的文件夹下打开一个终端（比如 Powershell ），执行：
+
+```shell
+.\greptime standalone start
 ```
 
 ### Docker

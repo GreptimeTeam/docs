@@ -6,6 +6,8 @@ We use the simplest configuration for you to get started. For a comprehensive li
 
 ## Binary
 
+### Linux and macOS
+
 For Linux and macOS users, you can download the latest build of the `greptime` binary by using the following commands:
 
 ```shell
@@ -19,6 +21,18 @@ You can run GreptimeDB in the standalone mode:
 
 ```shell
 ./greptime standalone start
+```
+
+### Windows
+
+If you have WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) enabled, you can lunch a latest Ubuntu and run GreptimeDB like above!
+
+Otherwise please download the GreptimeDB binary for Windows at our [official site](https://greptime.com/resources), and unzip the downloaded artifact.
+
+To run GreptimeDB in standalone mode, open a terminal (like Powershell) at the directory where the GreptimeDB binary locates, and execute:
+
+```shell
+.\greptime standalone start
 ```
 
 ## Docker
