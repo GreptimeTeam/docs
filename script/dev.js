@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
   const files = fs.readdirSync('./docs')
   const versionMap = files.filter(file => file.match(/v\d\.\d/))
   try {
-    await execSync(`npm run docs:dev`, {
+    await execSync(`pnpm run docs:dev`, {
       stdio: 'inherit',
       env: {
         ...process.env,
