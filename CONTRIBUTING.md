@@ -46,7 +46,7 @@ You can also use markdownlint extension if you are using VS Code.
 
 We highly encourage you to preview your changes locally before submitting a pull request.
 This project requires Node.js version 18.0.0 or higher.
-Use the following commands to start a local server:
+Use `npm install -g pnpm` to install package manager, and start a local server with the following commands:
 
 ```shell
 pnpm install
