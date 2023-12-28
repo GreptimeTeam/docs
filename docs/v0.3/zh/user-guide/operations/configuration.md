@@ -4,7 +4,7 @@
 
 在配置文件中，对于缺失的参数，系统会赋予其一个默认值。
 
-所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) 文件夹中。
+所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) 文件夹中。
 
 ## 指定配置文件
 

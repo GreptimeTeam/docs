@@ -10,7 +10,7 @@ For Linux and macOS users, you can download the latest build of the `greptime` b
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/develop/scripts/install.sh | sh
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh
 ```
 
 Once the download is completed, the binary file `greptime` will be stored in your current directory.

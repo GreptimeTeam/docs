@@ -8,7 +8,7 @@
 
 The [meta-client][1] crate provides a Rust-based meta client implementation.
 
-[1]: https://github.com/GreptimeTeam/greptimedb/tree/develop/src/meta-client
+[1]: https://github.com/GreptimeTeam/greptimedb/tree/main/src/meta-client
 
 For example:
 
@@ -34,7 +34,7 @@ async fn do_some_work(meta_client: MetaClient) {
 
 More examples [here][2].
 
-[2]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-client/examples/lock.rs
+[2]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-client/examples/lock.rs
 
 Because gRPC works across languages, it is easy to implement clients for other programming languages.
 

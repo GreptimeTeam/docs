@@ -11,7 +11,7 @@ This page describes methods for configuring GreptimeDB server settings. Configur
 
 The system assigns a default value for missing parameters in the configuration file.
 
-All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) folder.
+All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) folder.
 
 ## Command-line options
 
@@ -340,7 +340,7 @@ global_write_buffer_reject_size = "2GB"
 
 ### Standalone
 
-A sample standalone configuration can be found at [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/standalone.example.toml).
+A sample standalone configuration can be found at [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml).
 
 Start the standalone mode as below:
 
@@ -373,7 +373,7 @@ The `meta_client` configures the Metasrv client, including:
 - `ddl_timeout`, DDL execution timeout, `10s` by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
-A sample frontend configuration for distributed mode can be found at [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
+A sample frontend configuration for distributed mode can be found at [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml).
 
 ### Datanode in distributed mode
 
@@ -395,11 +395,11 @@ tcp_nodelay = false
 
 Datanode in distributed mode should set **different** `node_id` in different nodes.
 
-A sample datanode configuration for distributed mode can be found at [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/datanode.example.toml).
+A sample datanode configuration for distributed mode can be found at [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml).
 
 ### Metasrv configuration
 
-A sample configuration can be found at [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/metasrv.example.toml).
+A sample configuration can be found at [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml).
 
 ```toml
 # The working home directory.

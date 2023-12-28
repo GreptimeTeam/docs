@@ -12,7 +12,7 @@
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/develop/scripts/install.sh | sh
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh
 ```
 
 下载完成后，binary 文件 `greptime` 将存储在当前的目录中。
