@@ -11,6 +11,12 @@ curl -fsSL \
   https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
 ```
 
+:::tip Note
+
+For Windows users, due to the complexity and compatibility of running multiple components together, we strongly recommend enabling WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) on your operating system, and lunch a latest Ubuntu to proceed.
+
+:::
+
 Once the download is completed, the binary file `gtctl` will be stored in your current directory.
 
 The **fastest** way to experience the GreptimeDB cluster is to use the playground:

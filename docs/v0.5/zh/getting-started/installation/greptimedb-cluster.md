@@ -10,6 +10,12 @@ GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以�
 curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh -s -- -s aws
 ```
 
+:::tip Note
+
+若您使用 Windows 操作系统，考虑到各组件运行的复杂性和兼容性，我们强烈建议您开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，启动一个最新的 Ubuntu 来继续执行 GreptimeDB 集群版的安装。
+
+:::
+
 一旦下载已经完成，`gtctl` 的二进制文件将保存在你的当前目录下。
 
 最快体验 GreptimeDB 分布式集群的方式便是运行 `playground` 命令：
