@@ -138,4 +138,4 @@ function decode(flight_data: FlightData, context: Context, result: Result) {
 }
 ```
 
-You can also refer to our [Rust client](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/grpc/src/flight.rs#L85).
+You can also refer to our [Rust client](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/grpc/src/flight.rs#L85).

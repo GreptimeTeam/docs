@@ -14,7 +14,7 @@ GreptimeDB 使用 Rust 的 [tracing](https://docs.rs/tracing/latest/tracing/) �
 
 ## 在 RPC 调用中传递 tracing 上下文
 
-我们构建了一个 `TracingContext` 结构体，封装了与 tracing 上下文有关的操作。[相关代码](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/telemetry/src/tracing_context.rs)
+我们构建了一个 `TracingContext` 结构体，封装了与 tracing 上下文有关的操作。[相关代码](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs)
 
 GreptimeDB 在使用 `TracingContext::from_current_span()` 获取当前 tracing 上下文，使用 `to_w3c()` 方法将 tracing 上下文编码为符合 w3c 的格式，并将其附在 RPC 消息中，从而使 tracing 上下文正确的在分布式组件之中传递。
 

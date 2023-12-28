@@ -36,5 +36,5 @@ GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是
 [2]: https://arrow.apache.org/
 [3]: https://parquet.apache.org
 [4]: python-coprocessor.md
-[5]: https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/how-to/how-to-write-aggregate-function.md
+[5]: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md
 [6]: ../frontend/distributed-querying.md

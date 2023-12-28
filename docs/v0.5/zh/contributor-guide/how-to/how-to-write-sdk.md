@@ -160,4 +160,4 @@ function decode(flight_data: FlightData, context: Context, result: Result) {
 [6]: https://grpc.io/docs/what-is-grpc/core-concepts/#server-streaming-rpc
 [7]: https://github.com/apache/arrow/blob/4f06beb737c3d1401e011e0a2ef33b159ab25995/format/Message.fbs#L150
 [8]: https://github.com/GreptimeTeam/greptime-proto/blob/966161508646f575801bcf05f47ed283ec231d68/proto/greptime/v1/database.proto#L50
-[9]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/grpc/src/flight.rs#L85
+[9]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/grpc/src/flight.rs#L85
