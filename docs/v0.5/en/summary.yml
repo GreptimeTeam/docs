@@ -37,12 +37,6 @@
     - vector
     - grafana
     - emqx
-    - SDK-Libraries:
-      - overview
-      - go
-      - java
-      # - erlang
-      # - javaScript
   - table-management
   - Write-Data:
     - overview
@@ -50,21 +44,15 @@
     - sql
     - influxdb-line
     - opentsdb
-    - SDK-Libraries:
-      - go
-      - java
-      # - erlang
-      # - javaScript
   - Query-Data:
     - overview
     - sql
     - promql
-    - SDK-Libraries:
-      - go
-      - java
-      # - erlang
-      # - javaScript
   - query-external-data
+  - Client-Libraries:
+    - overview
+    - go
+    - java
   - Scripts-&-Functions:
     - overview
     - getting-started

@@ -1,8 +1,3 @@
-# Overview
+# THIS PAGE HAS BEEN DEPRECATED
 
-SDKs may use different protocols to communicate with GreptimeDB. The following shows the protocols supported by each SDK.
-
-## gRPC
-
-- [Go](go.md)
-- [Java](java.md)
+Please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) for up-to-date information.
