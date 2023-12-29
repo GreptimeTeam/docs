@@ -22,7 +22,7 @@ import (
 )
 ```
 
-}
+%}
 
 {template ingester-lib-connect%
 
@@ -43,7 +43,7 @@ cfg := greptime.NewCfg("127.0.0.1").
 client, _ := greptime.NewClient(cfg)
 ```
 
-}
+%}
 
 
 
@@ -51,7 +51,7 @@ client, _ := greptime.NewClient(cfg)
 
 The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
 
-}
+%}
 
 
 {template create-a-rows%
@@ -63,7 +63,7 @@ seriesHost1.AddFloatField("cpu", 0.90)
 seriesHost1.SetTimestamp(time.Now())
 ```
 
-}
+%}
 
 {template create-rows%
 
@@ -82,7 +82,7 @@ metric := greptime.Metric{}
 metric.AddSeries(seriesHost1, seriesHost2)
 ```
 
-}
+%}
 
 
 {template save-rows%
@@ -116,7 +116,7 @@ if err != nil {
 fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
 ```
 
-}
+%}
 
 {template update-rows%
 ```go
@@ -150,14 +150,14 @@ insertsRequest := greptime.InsertsRequest{}
 insertsRequest.Append(monitorReq)
 res, _ := client.Insert(context.Background(), insertsRequest)
 ```
-}
+%}
 
 
 {template recommended-query-library%
 
 We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly.
 
-}
+%}
 
 {template query-library-installation%
 
@@ -194,7 +194,7 @@ import (
 )
 ```
 
-}
+%}
 
 {template query-library-connect%
 
@@ -261,7 +261,7 @@ pg.DB = db
 
 ```
 
-}
+%}
 
 {template query-library-raw-sql%
 
@@ -282,13 +282,13 @@ db.Raw("SELECT host, cpu, ts FROM users WHERE ts > ?", 1701360000000).Scan(&resu
 
 ```
 
-}
+%}
 
 {template query-lib-link%
 
 [GORM](https://gorm.io/docs/index.html)
 
-}
+%}
 
 
 </docs-template>

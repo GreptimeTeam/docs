@@ -8,17 +8,17 @@ template: template.md
 {template ingester-lib-installation%
 
 
-}
+%}
 
 {template ingester-lib-connect%
 
-}
+%}
 
 {template row-object%
 
 The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s can be added to a `Table` object and then written to GreptimeDB.
 
-}
+%}
 
 
 {template create-a-rows%
@@ -29,7 +29,7 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 
 ```
 
-}
+%}
 
 {template create-rows%
 
@@ -38,7 +38,7 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 
 ```
 
-}
+%}
 
 
 {template save-rows%
@@ -49,7 +49,7 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 
 ```
 
-}
+%}
 
 {template update-rows%
 
@@ -68,19 +68,19 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 // overwrite the existing data
 
 ```
-}
+%}
 
 
 {template recommended-query-library%
 
 <!-- We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly. -->
 
-}
+%}
 
 {template query-library-installation%
 
 
-}
+%}
 
 {template query-library-connect%
 
@@ -97,7 +97,7 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 
 ```
 
-}
+%}
 
 {template query-library-raw-sql%
 
@@ -105,12 +105,12 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 
 ```
 
-}
+%}
 
 {template query-lib-link%
 
 <!-- [GORM](https://gorm.io/docs/index.html) -->
 
-}
+%}
 
 </docs-template>

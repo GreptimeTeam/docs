@@ -11,7 +11,7 @@ For more information, refer to [Automatic Schema Generation](/user-guide/write-d
 
 ### Installation
 
-{template ingester-lib-installation%}
+{template ingester-lib-installation%%}
 
 ### Connect to database
 
@@ -20,11 +20,11 @@ For how to set authentication to GreptimeDB, see [Authentication](/user-guide/cl
 
 Here we set the username and password when using the library to connect to GreptimeDB.
 
-{template ingester-lib-connect%}
+{template ingester-lib-connect%%}
 
 ### Row object
 
-{template row-object%}
+{template row-object%%}
 
 Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/data-types.md).
@@ -33,17 +33,17 @@ The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. 
 
 The following example shows how to create a row contains `Tag`, `Timestamp`, and `Field` columns. The `Tag` column is a `String` type, the `Timestamp` column is a `Timestamp` type, and the `Field` column is a `Float` type.
 
-{template create-a-row%}
+{template create-a-row%%}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
-{template create-rows%}
+{template create-rows%%}
 
 ### Save rows
 
 The following example shows how to save rows to a table in GreptimeDB.
 
-{template save-rows%}
+{template save-rows%%}
 
 ### Update rows
 
@@ -52,7 +52,7 @@ The update is performed by data insertion. If the tags and time index of the row
 
 The following example shows saving a row and then updating the row.
 
-{template update-rows%}
+{template update-rows%%}
 
 :::tip NOTE
 Too many updates will affect the performance of GreptimeDB. 
@@ -67,27 +67,27 @@ Therefore, we recommend using mature SQL drivers to query data.
 
 ### Recommended library
 
-{template recommended-query-library%}
+{template recommended-query-library%%}
 
 ### Installation
 
-{template query-library-installation%}
+{template query-library-installation%%}
 
 ### Connect to database
 
 The following example shows how to connect to GreptimeDB:
 
-{template query-library-connect%}
+{template query-library-connect%%}
 
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data:
 
-{template query-library-raw-sql%}
+{template query-library-raw-sql%%}
 
 ### Reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-{template query-lib-doc-link%}
+{template query-lib-doc-link%%}
