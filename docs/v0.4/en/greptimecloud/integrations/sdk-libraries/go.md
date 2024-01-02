@@ -1,6 +1,6 @@
 # Go SDK
 
-The GreptimeDB Go SDK uses gRPC to communicate with the database. For more information on how to use the SDK, please refer to the [Go SDK documentation](/user-guide/clients/sdk-libraries/go).
+The GreptimeDB Go SDK uses gRPC to communicate with the database. For more information on how to use the SDK, please refer to the [Go SDK documentation](https://docs.greptime.com/user-guide/clients/sdk-libraries/go).
 
 To connect to GreptimeCloud, using information below:
 
