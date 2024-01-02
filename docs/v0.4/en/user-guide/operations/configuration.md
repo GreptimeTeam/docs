@@ -413,7 +413,7 @@ store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
 # - "load_based"
-# For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
+# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
 selector = "LeaseBased"
 # Store data in memory, false by default.
 use_memory_store = false
