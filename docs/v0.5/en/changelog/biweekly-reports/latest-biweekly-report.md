@@ -1,110 +1,67 @@
-# Biweekly Report – 82% Compatibility Milestone for PromQL, with a Remarkable 200% Performance Uplift in Targeted TSBS Scenarios
-December 13, 2023
+# Biweekly Report - Explore More SQL Examples in the GreptimeDB Playground
+
 ## Summary
 Together with our global community of contributors, GreptimeDB continues to evolve and flourish as a growing open-source project. We are grateful to each and every one of you.
 
 In the past two weeks, we have made steady progress. Below are some highlights:
 
-- Compatibility of PromQL has been enhanced to 82%.
+- Complete remote WAL's basic framework;
 
-- Parallel scanning for SSTs and `memtables` has been implemented, resulting in up to 200% performance improvement in TSBS scenarios.
+- HTTP SQL API now features the capability to return SQL query results in the InfluxDB v1 format;
 
-- New functions, `date_add` and `date_sub` have been added.
+- Support concurrent Parquet acquisition to improve query performance;
 
-- Tables can now be created with the option to specify different storage backends.
-
-- Introduction of the `ALIGN TO` clause, along with support for `Interval` queries.
-
-- Support for configuring the sampling rate parameter for distributed tracing.
-
-- Fixed an issue where Procedures were unable to resume execution after a restart.
+- The Inverted Index and Metric Engine are under full development.
 
 ## Contributors
-For the past two weeks, our community has been super active with a total of 56 PRs merged. 8 PRs from 4 individual contributors merged successfully and lots pending to be merged.
+For the past two weeks, our community has been super active with a total of 56 PRs merged. 5 PRs from 3 individual contributors merged successfully and lots pending to be merged.
 
 Congrats on becoming our most active contributors in the past 2 weeks:
 
-- @[hygkui](https://github.com/hygkui) ([db#2821](https://github.com/GreptimeTeam/greptimedb/pull/2821))
+- @[Dysprosium](https://github.com/Dysprosium0626) ([db#2919](https://github.com/GreptimeTeam/greptimedb/pull/2919))
 
-- @[LinuxSuRen](https://github.com/LinuxSuRen) ([dashboard#359](https://github.com/GreptimeTeam/dashboard/pull/359))
+- @[NiwakaDev](https://github.com/NiwakaDev) ([docs#712](https://github.com/GreptimeTeam/docs/pull/712))
 
-- @[NiwakaDev](https://github.com/NiwakaDev) ([db#2887](https://github.com/GreptimeTeam/greptimedb/pull/2887) [db#2733](https://github.com/GreptimeTeam/greptimedb/pull/2733))
+- @[tisonkun](https://github.com/tisonkun) ([db#2906](https://github.com/GreptimeTeam/greptimedb/pull/2906) [db#2898](https://github.com/GreptimeTeam/greptimedb/pull/2898) [db#2896](https://github.com/GreptimeTeam/greptimedb/pull/2896))
 
-- @[tisonkun](https://github.com/tisonkun) ([db#2886](https://github.com/GreptimeTeam/greptimedb/pull/2886) [db#2884](https://github.com/GreptimeTeam/greptimedb/pull/2884) [db#2874](https://github.com/GreptimeTeam/greptimedb/pull/2874) [db#2859](https://github.com/GreptimeTeam/greptimedb/pull/2859))
-
-👏  Welcome contributor @[hygkui](https://github.com/hygkui)  @[LinuxSuRen](https://github.com/LinuxSuRen) to the community as new contributors, and congratulations on successfully merging their first PR, more PRs are waiting to be merged.
+👏  Welcome our new contributor @[Dysprosium](https://github.com/Dysprosium0626) to our community, and congratulations on successfully merging his first PR. 
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR
-### [#2651](https://github.com/GreptimeTeam/greptimedb/pull/2651) Implemented the PromQL `histogram_quantile` function
+### [#2917](https://github.com/GreptimeTeam/greptimedb/pull/2917) HTTP SQL API now features the capability to return SQL query results in the InfluxDB v1 format
+We support returning the query in influxdb v1 result format, for example, we can send the following request: `http://ip:port/v1/sql?db=public&format=influxdb_v1&epoch=ns`.
+The epoch precision can be one of `[ns,u,µ,ms,s]`.
 
-### [#2839](https://github.com/GreptimeTeam/greptimedb/pull/2839) Introduced the PromQL `AND` and `UNLESS` operators
+### [#2935](https://github.com/GreptimeTeam/greptimedb/pull/2935) Added some tables to `information_schema`
+Introduce `information_schema`, which provides an ANSI-standard way of viewing system metadata, and we add `engines`, `column_privileges` and `column_statistics` to `information_schema` now.
 
-### [#2854](https://github.com/GreptimeTeam/greptimedb/pull/2854) Implemented `time()` and date-related functions
+For example, we can view the system's engines through the following SQL statement.
 
-### [#2879](https://github.com/GreptimeTeam/greptimedb/pull/2879) Aligned PromQL `linear_regression` behavior
-The above pull requests have increased the compatibility of PromQL to 82%. For more details, please refer to issue [#1042](https://github.com/GreptimeTeam/greptimedb/issues/1042)
-
-### [#2852](https://github.com/GreptimeTeam/greptimedb/pull/2852) Introduced parallel scanning for SSTs and memtables
-The default configuration employs threads equivalent to 1/4 of the CPU count for parallel scanning. In the TSBS Benchmark, the performance improvement of multi-threaded scanning compared to single-threaded scanning is significant, with some scenarios experiencing up to a 200% boost.
-
-### [#2881](https://github.com/GreptimeTeam/greptimedb/pull/2881) Added support for the `date_add` and `date_sub` functions
-This enhancement allows for adding or subtracting an `interval` value from timestamp, date, or datetime numeric values.
-
-### [#2733](https://github.com/GreptimeTeam/greptimedb/pull/2733) Now supports specifying different object storage backends when creating tables
-In previous versions, tables could only be stored in the same storage backend. This pull request enables the configuration of multiple distinct storage backends at startup, allowing the specification of the storage backend for storing table data during table creation.  For example, we can store one table locally and another table on S3.
-
-### [#2842](https://github.com/GreptimeTeam/greptimedb/pull/2842) Introduced the `ALIGN TO` clause and `Interval` query support
-
-#### `Interval` Support:
-Interval expressions can now be used as optional duration strings after the `RANGE` and `ALIGN` keywords.
-
-```rust
-SELECT 
-    rate(a) RANGE (INTERVAL '1 year 2 hours 3 minutes') 
-FROM 
-    t 
-    ALIGN (INTERVAL '1 year 2 hours 3 minutes')
-FILL NULL;
+```sql
+mysql> select * from engines;
++--------+---------+-------------------------------------+--------------+------+------------+
+| engine | support | comment                             | transactions | xa   | savepoints |
++--------+---------+-------------------------------------+--------------+------+------------+
+| mito   | DEFAULT | Storage engine for time-series data | NO           | NO   | NO         |
++--------+---------+-------------------------------------+--------------+------+------------+
 ```
 
-#### `ALIGN TO` Clause:
-Supports the `ALIGN TO` clause, allowing users to align time to their desired points.
+### [#2930](https://github.com/GreptimeTeam/greptimedb/pull/2930) Allowed initializing regions in background
+This feature allows users to initiate the startup process for all regions in the background, without delaying or blocking the startup process. As a result, users can start using the database more quickly.
 
-```rust
-SELECT rate(a) RANGE '6m' FROM t ALIGN '1h' TO '2021-07-01 00:00:00' by (a, b) FILL NULL;
-```
-
-Available `ALIGN TO` options include:
-
-- Calendar (default): Aligns to UTC timestamp 0.
-
-- Now: Aligns to the current UTC timestamp.
-
-- Timestamp: Aligns to the user-specified specific timestamp.
-
-More details can be found in the range query documentation:
-https://docs.greptime.com/reference/sql/range
-
-### [#2809](https://github.com/GreptimeTeam/greptimedb/pull/2809) Added support for configuring the sampling rate parameter for distributed tracing
-In previous versions, distributed tracing defaulted to collecting complete data. Configuring the sampling rate parameter enables data collection in proportion to the specified ratio.
-
-More details can be found in configuration documentation: 
-https://docs.greptime.com/user-guide/operations/configuration#logging-options
-
-### [#2824](https://github.com/GreptimeTeam/greptimedb/pull/2824) Resolved a bug where Procedures couldn't continue execution after a system restart
- In earlier versions, incomplete Procedures were unable to resume execution after a system reboot. This pull request fixes this issue.
+### [#2959](https://github.com/GreptimeTeam/greptimedb/pull/2959) Supported concurrent fetching of parquet files with ranges
+Previously, we obtained the parquet file sequentially, and now it is optimized for concurrent acquisition. Under TSBS benchmark, some scenarios have an improvement of more than 175%.
 
 ## Good first issue
-[#2889](https://github.com/GreptimeTeam/greptimedb/issues/2889)
-Fix the issue with the `redact_sql_secrets` function not handling special characters properly.
+[#2931](https://github.com/GreptimeTeam/greptimedb/issues/2931)
+Information_schema improvements
 
-[#2877](https://github.com/GreptimeTeam/greptimedb/issues/2877)
-Enhance HTTP SQL output to support pretty print.
+[#2995](https://github.com/GreptimeTeam/greptimedb/issues/2995)
+Make the stdout log appender configurable
 
-[#2853](https://github.com/GreptimeTeam/greptimedb/issues/2853)
-Standardize the code style of the Builder.
+## New Things
+### Play more SQL statements in PLAYGROUND now
+The 'Getting Started' documentation has been updated with new data sources, along with the inclusion of new Range Query SQL statements. Additionally, a weather-related example demonstrating the Range Query has been added for enhanced clarity and practical application.
 
-[#2637](https://github.com/GreptimeTeam/greptimedb/issues/2637)
-Add more SQLness tests that include special cases.
+Try now: https://greptime.com/playground/
