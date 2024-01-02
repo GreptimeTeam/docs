@@ -61,7 +61,7 @@ Information_schema improvements
 Make the stdout log appender configurable
 
 ## New Things
-### Play more SQL statement in PLAYGROUND now
+### Play more SQL statements in PLAYGROUND now
 The 'Getting Started' documentation has been updated with new data sources, along with the inclusion of new Range Query SQL statements. Additionally, a weather-related example demonstrating the Range Query has been added for enhanced clarity and practical application.
 
 Try now: https://greptime.com/playground/
