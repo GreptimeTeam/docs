@@ -42,4 +42,4 @@ git push
 
 ## PromQL
 
-GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/clients/prometheus#prometheus-query-language) for more details. for more details.
+GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/clients/prometheus#prometheus-query-language) for more details.
