@@ -21,9 +21,9 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
 
-Currently, we support MySQL protocol, you can check it out on the [user guide](https://docs.greptime.com/user-guide/supported-protocols/mysql).
+Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql).
 
-HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information.
+HTTP API is also available, please see [this article](/user-guide/clients/http-api) for more information.
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
@@ -55,7 +55,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 ## Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
-For more information, refer to [this document](https://docs.greptime.com/user-guide/table-management#create-table).
+For more information, refer to [this document](/user-guide/table-management#create-table).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
@@ -71,7 +71,7 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 ## Does GreptimeDB support dumping table-level data to S3?
 
-You can use the [`COPY TO` command](https://docs.greptime.com/reference/sql/copy#s3) to dump table-level data to S3.
+You can use the [`COPY TO` command](/reference/sql/copy#s3) to dump table-level data to S3.
 
 ## TSDB features that you concern
 
