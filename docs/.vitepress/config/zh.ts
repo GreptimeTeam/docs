@@ -105,7 +105,7 @@ export const zhConfig = async () => ({
       next: '下一篇',
     },
     outlineTitle: '目录',
-    copyright: '©2023 格睿云(北京)技术咨询有限公司',
+    copyright: '©2024 格睿云(北京)技术咨询有限公司',
     icp: { text: '京ICP备2023008042号', link: 'https://beian.miit.gov.cn/' },
     gongan: { text: '京公网安备 11010502052203号', link: 'https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502052203' },
   },
