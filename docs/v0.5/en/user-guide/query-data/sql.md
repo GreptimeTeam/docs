@@ -5,9 +5,10 @@ GreptimeDB supports full SQL for you to query data from a database. Here are som
 For examples on how to create the `monitor` table and insert data into it,
 please refer to [Table Management](/user-guide/table-management.md#create-table) and [Write Data](/user-guide/write-data/sql.md).
 
-## SELECT
+## Basic query
 
-To select all the data from the `monitor` table, use the `SELECT` statement:
+The query is represented by the `SELECT` statement.
+For example, the following query selects all data from the `monitor` table:
 
 ```sql
 SELECT * FROM monitor;
@@ -26,11 +27,8 @@ The query result looks like the following:
 3 rows in set (0.00 sec)
 ```
 
-Please refer to [SELECT](/reference/sql/select.md) for more information.
-
-### Use functions
-
-You can use the `count()` function to get the number of all rows in the table:
+Functions are also supported in the `SELECT` field list.
+For example, you can use the `count()` function to retrieve the total number of rows in the table:
 
 ```sql
 SELECT count(*) FROM monitor;
@@ -59,35 +57,8 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-#### Query latest 5 minutes of data
-
-```sql
-SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
-```
-
-Please refer to [INTERVAL](/reference/sql/functions.md#interval) for more information.
-
-#### Cast number literal to timestamp
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
-```
-
-This query casts the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` in millisecond resolution) to the timestamp type with millisecond precision.
-
-Please refer to [arrow_cast](/reference/sql/functions.md#arrow-cast) for more information.
-
-#### Cast string literal to timestamp
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
-```
-
-This query uses the `::` grammar to cast the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
-
-Please refer to [::timestamp](/reference/sql/functions.md#timestamp) for more information.
-
-#### Extract the day of the year from timestamp
+You can also select only the result of a function. For example, you can extract the day of the year from a timestamp.
+The `DOY` in the SQL statement is the abbreviation of `day of the year`:
 
 ```sql
 SELECT date_part('DOY', '2021-07-01 00:00:00');
@@ -104,11 +75,97 @@ Output:
 1 row in set (0.003 sec)
 ```
 
-The `DOY` in the SQL statement is the abbreviation of `day of the year`. Please refer to [date_part](/reference/sql/functions.md#date-part) for more information.
+Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions.md) for more information.
 
-Please refer to [Functions](/reference/sql/functions.md) for more information.
+## Limit the number of rows returned
 
-### Group By
+Time series data is typically massive.
+To save bandwidth and improve query performance,
+you can use the `LIMIT` clause to restrict the number of rows returned by the `SELECT` statement.
+
+For example, the following query limits the number of rows returned to 10:
+
+```sql
+SELECT * FROM monitor LIMIT 10;
+```
+
+## Query Constraints
+
+You can use the `WHERE` clause to filter the rows returned by the `SELECT` statement.
+
+Filtering data by tags or time index is efficient and common in time series scenarios.
+For example, the following query filter data by tag `host`:
+
+```sql
+SELECT * FROM monitor WHERE host='127.0.0.1';
+```
+
+The following query filter data by time index `ts`, and returns the data after `2022-11-03 03:39:57`:
+
+```sql
+SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57';
+```
+
+You can also use the `AND` keyword to combine multiple constraints:
+
+```sql
+SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
+```
+
+### Time index constraints
+
+Filtering data by time index is a key feature for time series databases.
+GreptimeDB supports `RFC3339`, `ISO8601`, and UNIX timestamp formats to make it easier for you to write time index constraints.
+
+For example, the following queries demonstrate the usage of the three formats for filtering data:
+
+```sql
+-- RFC3339
+SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57Z';
+-- ISO8601
+SELECT * FROM monitor WHERE ts > '2022-11-03T03:39:57+08:00';
+-- UNIX timestamp
+SELECT * FROM monitor WHERE ts > 1667446797000;
+```
+
+You can also use time and date functions to filter data.
+<!-- Here are some examples of using time and date functions in the `WHERE` clause. -->
+For example, use the `now()` function and the `INTERVAL` keyword to retrieve data from the last 5 minutes:
+
+```sql
+SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
+```
+
+<!-- Use the `arrow_cast` function to cast the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` with millisecond resolution) to the timestamp type with millisecond precision:
+
+```sql
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
+```
+
+Use the `::` grammar to cast the string literal to the timestamp type.
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
+``` -->
+
+For date and time functions, please refer to [Functions](/reference/sql/functions.md) for more information.
+
+## Order By
+
+The order of the returned data is not guaranteed. You need to use the `ORDER BY` clause to sort the returned data.
+For example, in time series scenarios, it is common to use the time index column as the sorting key to arrange the data chronologically:
+
+```sql
+-- ascending order by ts
+SELECT * FROM monitor ORDER BY ts ASC;
+```
+
+```sql
+-- descending order by ts
+SELECT * FROM monitor ORDER BY ts DESC;
+```
+
+## Group By
 
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
 The average memory usage grouped by idc:
@@ -129,7 +186,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
-### Aggregate data by time
+## Aggregate data by time
 
 GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time.
 
@@ -156,13 +213,14 @@ SELECT
     host, 
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
-ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
+ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 ```
 
 1. `avg(cpu) RANGE '10s' FILL LINEAR` is a Range expression. `RANGE '10s'` specifies that the time range of the aggregation is 10s, and `FILL LINEAR` specifies that if there is no data within a certain aggregation time, use the `LINEAR` method to fill it.
 2. `ALIGN '5s'` specifies the that data statistics should be performed in steps of 5s.
 3. `TO '2023-12-01T00:00:00` specifies the origin alignment time. The default value is Unix time 0.
 4. `BY (host)` specifies the aggregate key. If the `BY` keyword is omitted, the primary key of the data table is used as the aggregate key by default.
+5. `ORDER BY ts ASC` specifies the sorting method of the result set. If you do not specify the sorting method, the order of the results is not guaranteed.
 
 The Response is shown below:
 
@@ -181,7 +239,7 @@ The Response is shown below:
 +---------------------+-----------+----------------------------------------+
 ```
 
-#### Time range window
+### Time range window
 
 The origin time range window steps forward and backward in the time series to generate all time range windows.
 In the example above, the origin alignment time is set to `2023-12-01T00:00:00`, which is also the end time of the origin time window.
@@ -205,7 +263,7 @@ When the query resolution is less than the time range window, the metrics data w
 
 ![align < range](/align_less_than_range.png)
 
-#### Align to specific timestamp
+### Align to specific timestamp
 
 You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
 
@@ -229,14 +287,14 @@ FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 ```
 
-#### Fill null values
+### Fill null values
 
 The `FILL` option can be used to fill null values in the data.
 In the above example, the `LINEAR` method is used to fill null values.
 Other methods are also supported, such as `PREV` and a constant value `X`.
 For more information, please refer to the [FILL OPTION](/reference/sql/range.md#fill-option).
 
-#### Syntax
+### Syntax
 
 Please refer to [Range Query](/reference/sql/range.md) for more information.
 
