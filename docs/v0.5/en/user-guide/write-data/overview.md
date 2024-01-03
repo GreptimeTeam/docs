@@ -23,7 +23,7 @@ For more information about column types, please refer to [Data Model](../concept
 ## Delete data
 
 You can effectively delete data by specifying tags and time index.
-Deleting data without specifying the tag and time index columns is not efficient, as it requires two steps: querying the data and then deleting it.
+Deleting data without specifying the tag and time index columns is not efficient, as it requires two steps: querying the data and then deleting it by tag and time index.
 
 :::tip NOTE
 Excessive deletions can negatively impact query performance.

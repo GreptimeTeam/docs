@@ -36,7 +36,7 @@ VALUES
     ("127.0.0.2", 1702433151000, 0.2, 0.4);
 ```
 
-Through the above statement, we have inserted three rows into the `monitor` table.
+Through the above statement, we have inserted six rows into the `monitor` table.
 
 For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
 
@@ -62,7 +62,7 @@ For more information about SQL HTTP request, please refer to [API document](/ref
 
 ## Update data
 
-You can update data by inserting new data with the same tag and time index as the existing data.
+You can update data by inserting data with the same tag and time index as the existing data.
 For example, first, we can insert a new row into the `monitor` table:
 
 ```sql
@@ -72,8 +72,8 @@ VALUES
 ```
 
 As described in the [Create Table](../table-management.md#create-table) section,
-the `host` is the tag and `ts` is the time index.
-We can then update the data by using the same tag and time index as the existing data,
+the `host` column represents the tag and the `ts` column represents the time index.
+To update the data, you can use the same `host` and `ts` values as the existing data
 and set the new `cpu` value to `0.5`:
 
 ```sql
@@ -93,8 +93,9 @@ The new data is:
 +-----------+---------------------+------+--------+
 ```
 
-Note that you **cannot omit** the `memory` column if you only want to update the `cpu` column.
-Doing so will overwrite the `memory` column with the default value. For example:
+Note that you **cannot omit** the other columns in the `INSERT INTO` statement if you only want to update one column.
+If you omit the other columns,
+they will be overwritten with the default values. For example:
 
 ```sql
 INSERT INTO monitor (host, ts, cpu)
