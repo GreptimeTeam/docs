@@ -167,7 +167,7 @@
     - query-engine
     - data-persistence-indexing
     - wal
-    - python-coprocessor
+    - python-scripts
   - Metasrv:
     - overview
     - admin-api
