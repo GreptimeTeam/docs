@@ -1,8 +1,9 @@
 # SQL
 
-GreptimeDB supports full SQL for you to query data from a database. Here are some query examples for the `monitor` so you can get familiar with using SQL alongside GreptimeDB functions.
+GreptimeDB supports full SQL for querying data from a database. 
 
-For examples on how to create the `monitor` table and insert data into it,
+In this document, we will use the `monitor` table to demonstrate how to query data.
+For instructions on creating the `monitor` table and inserting data into it,
 please refer to [Table Management](/user-guide/table-management.md#create-table) and [Write Data](/user-guide/write-data/sql.md).
 
 ## Basic query
@@ -89,7 +90,7 @@ For example, the following query limits the number of rows returned to 10:
 SELECT * FROM monitor LIMIT 10;
 ```
 
-## Query Constraints
+## Filter data
 
 You can use the `WHERE` clause to filter the rows returned by the `SELECT` statement.
 
@@ -112,7 +113,7 @@ You can also use the `AND` keyword to combine multiple constraints:
 SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 ```
 
-### Time index constraints
+### Filter by time index
 
 Filtering data by time index is a key feature for time series databases.
 GreptimeDB supports `RFC3339`, `ISO8601`, and UNIX timestamp formats to make it easier for you to write time index constraints.
@@ -165,7 +166,7 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
-## Group By
+## Aggregate data by tag
 
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
 The average memory usage grouped by idc:
