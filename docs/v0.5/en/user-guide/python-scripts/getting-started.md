@@ -30,7 +30,7 @@ def hello() -> vector[str]:
    return "Hello, GreptimeDB"
 ```
 
-Save it as `hello.py`, then post it by [HTTP API](./function.md#http-api):
+Save it as `hello.py`, then post it by [HTTP API](./define-function.md#http-api):
 
 ### Submit the Python Script to GreptimeDB
 
@@ -53,7 +53,7 @@ select hello();
 1 row in set (1.77 sec)
 ```
 
-Or call it by [HTTP API](./function.md#http-api):
+Or call it by [HTTP API](./define-function.md#http-api):
 
 ```sh
 curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
@@ -188,4 +188,4 @@ Getting the results in `json` format:
 }
 ```
 
-For more information about python coprocessor, please refer to [Function](./function.md) for more information.
+For more information about python coprocessor, please refer to [Function](./define-function.md#http-api) for more information.

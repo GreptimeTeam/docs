@@ -65,11 +65,13 @@
       # - erlang
       # - javaScript
   - query-external-data
-  - Scripts-&-Functions:
+  - Python-Scripts:
     - overview
     - getting-started
+    - define-function
+    - query-data
+    - write-data
     - data-types
-    - function
     - api
   - cluster
   - Operations:

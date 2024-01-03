@@ -56,7 +56,7 @@ def hello() -> vector[str]:
 
 ### 构建一个向量
 
-之前已经展示了在[函数](./function.md)中通过执行 `@coprocessor` 中的 `sql` 属性从查询结果中提取向量的例子。
+之前已经展示了在[查询数据](./query-data.md)中通过执行 `@coprocessor` 中的 `sql` 属性从查询结果中提取向量的例子。
 
 我们可以从字面意义上创建一个向量：
 

@@ -36,7 +36,7 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 - [Table management](https://docs.greptime.com/user-guide/table-management)
 - [Write data](https://docs.greptime.com/user-guide/write-data/overview)
 - [Query data](https://docs.greptime.com/user-guide/query-data/overview)
-- [Scripts & Functions](https://docs.greptime.com/user-guide/scripts-&-functions/overview)
+- [Scripts & Functions](https://docs.greptime.com/user-guide/python-scripts/overview)
 - [Cluster](https://docs.greptime.com/user-guide/cluster)
 
 ### Developer Guide

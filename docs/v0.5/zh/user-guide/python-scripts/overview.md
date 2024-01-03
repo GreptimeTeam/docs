@@ -5,8 +5,10 @@ GreptimeDB 支持在数据库内运行 Python 脚本，如果业务逻辑太复�
 我们认为 GreptimeDB 中的 Python coprocessor 是传统 RDMS 中存储过程的完美替代品，同时用户也可以通过定义 coprocessor 来创建 SQL UDF（用户定义的函数）。
 
 - [入门指南](./getting-started.md)
+- [定义函数](./define-function.md)
+- [查询数据](./query-data.md)
+- [写入数据](./write-data.md)
 - [数据类型](./data-types.md)
-- [函数](./function.md)
 - [API](./api.md)
 
 所有的例子都可以在 [python-coprocessor-examples](https://github.com/GreptimeTeam/python-coprocessor-examples) 中找到。

@@ -31,7 +31,7 @@ def hello() -> vector[str]:
    return "Hello, GreptimeDB"
 ```
 
-将其保存为 `hello.py`，然后通过 [HTTP API](./function.md#http-api) 发布：
+将其保存为 `hello.py`，然后通过 [HTTP API](./define-function.md#http-api) 发布：
 
 ### 提交 Python 脚本到 GreptimeDB
 
@@ -54,7 +54,7 @@ select hello();
 1 row in set (1.77 sec)
 ```
 
-或者通过 [HTTP API](./function.md#http-api) 进行调用：
+或者通过 [HTTP API](./define-function.md#http-api) 进行调用：
 
 ```sh
 curl -XPOST "http://localhost:4000/v1/run-script?name=hello&db=public"
@@ -190,4 +190,4 @@ curl  -XPOST \
 }
 ```
 
-更多有关 Python 协处理器的信息，请参考[函数](./function.md)文档。
+更多有关 Python 协处理器的信息，请参考[定义函数](./define-function.md)文档。
