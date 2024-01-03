@@ -1,6 +1,6 @@
 # InfluxDB Line Protocol
 
-## Insert
+## Insert data
 
 GreptimeDB supports HTTP InfluxDB Line protocol. You can write data via `/influxdb/write` API:
 

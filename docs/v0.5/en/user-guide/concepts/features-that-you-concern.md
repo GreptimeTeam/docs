@@ -1,17 +1,5 @@
 # Features that You Concern
 
-## Does GreptimeDB support updates?
-
-Sort of. The updates can be effectively performed by insertions. If the primary keys and time index have identical column values, the old data will be replaced with the new one. The primary keys with time index in GreptimeDB are mostly like the series in other TSDBs.
-
-The performance of updates is the same as insertion, but too many updates may hurt query performance.
-
-## Does GreptimeDB support deletion?
-
-Yes, it does. It can delete the data by its primary keys effectively, but also may hurt query performance when too many.
-
-Deleting data using other queries is not an efficient operation, as it requires two steps: querying the data and then deleting it by primary keys.
-
 ## Can I set TTL or retention policy for different tables or measurements?
 
 Of course, you can set TTL for every table when creating it:
