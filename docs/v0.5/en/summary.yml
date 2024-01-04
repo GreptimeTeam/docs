@@ -65,11 +65,13 @@
       # - erlang
       # - javaScript
   - query-external-data
-  - Scripts-&-Functions:
+  - Python-Scripts:
     - overview
     - getting-started
+    - define-function
+    - query-data
+    - write-data
     - data-types
-    - function
     - api
   - cluster
   - Operations:
@@ -165,7 +167,7 @@
     - query-engine
     - data-persistence-indexing
     - wal
-    - python-coprocessor
+    - python-scripts
   - Metasrv:
     - overview
     - admin-api

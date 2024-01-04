@@ -7,7 +7,7 @@ Clients: 客户端
 SDK-Libraries: SDK 库
 Write-Data: 写入数据
 Query-Data: 读取数据
-Scripts-&-Functions: 脚本-&-函数
+Python-Scripts: Python 脚本
 Operations: 运维操作
 Prometheus: Prometheus
 Contributor-Guide: 贡献者指南
