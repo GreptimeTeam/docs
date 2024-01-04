@@ -181,9 +181,9 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 请参考 [GROUP BY](/reference/sql/group_by.md) 获取更多相关信息。
 
-## 按时间聚合数据
+## 按时间窗口聚合数据
 
-GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间聚合数据。
+GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚合数据。
 
 假设我们有以下数据在 [`monitor` 表](../table-management.md#创建表) 中：
 

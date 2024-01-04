@@ -187,9 +187,9 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
-## Aggregate data by time
+## Aggregate data by time window
 
-GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time.
+GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time window.
 
 Suppose we have the following data in the [`monitor` table](../table-management.md#create-table):
 
