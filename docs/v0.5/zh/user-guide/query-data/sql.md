@@ -1,18 +1,18 @@
 # SQL
 
-GreptimeDB 在查询数据时支持完整的 `SQL` 语法。这里有一些示例通过 SQL 语句和 GreptimeDB 函数来查询 `monitor` 表中的数据。
+GreptimeDB 在查询数据时支持完整的 `SQL` 语法。
 
-关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](../table-management.md#创建表)和[写入数据](../write-data/sql.md)。
+在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](../table-management.md#创建表)和[写入数据](../write-data/sql.md)。
 
-## SELECT
+## 基础查询
 
-使用 `SELECT` 查询表中的全部数据：
+通过 `SELECT` 语句来查询数据。例如，下面的查询返回 `monitor` 表中的所有数据：
 
 ```sql
 SELECT * FROM monitor;
 ```
 
-The query result looks like the following:
+查询结果如下：
 
 ```sql
 +-----------+---------------------+------+--------+
@@ -25,11 +25,8 @@ The query result looks like the following:
 3 rows in set (0.00 sec)
 ```
 
-请前往 [SELECT](/reference/sql/select.md) 查看更多.
-
-### 使用函数
-
-使用 `count()` 函数获取表中的全部行数：
+`SELECT` 字段列表中也支持使用函数。
+例如，你可以使用 `count()` 函数来获取表中的总行数：
 
 ```sql
 SELECT count(*) FROM monitor;
@@ -43,7 +40,7 @@ SELECT count(*) FROM monitor;
 +-----------------+
 ```
 
-`avg()` 函数返回某个字段中所有数值的平均值：
+使用函数 `avg()` 返回某个字段的平均值：
 
 ```sql
 SELECT avg(cpu) FROM monitor;
@@ -58,41 +55,14 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-#### 查询最近 5 分钟内的数据
-
-```sql
-SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
-```
-
-请参考 [INTERVAL](/reference/sql/functions.md#interval) 获取更多信息。
-
-#### 将数字转换为时间戳
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
-```
-
-这个查询将数字 1650252336408（Unix Epoch 2022-04-18 03:25:36.408，毫秒分辨率）转换为带有毫秒精度的时间戳类型。
-
-请参考 [arrow_cast](/reference/sql/functions.md#arrow-cast) 获取更多信息.
-
-#### 将字符串时间转换为时间戳
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
-```
-
-这个查询使用 `::` 语法将字符串时间转换为时间戳类型，所有 SQL 类型都可以在 `timestamp` 的位置上使用。
-
-请参考 [::timestamp](/reference/sql/functions.md#timestamp) 获取更多信息.
-
-#### 从时间戳中提取一年中的第几天
+你还可以只返回函数的结果，例如从时间戳中提取一年中的第几天。
+SQL 语句中的 `DOY` 是 `day of the year` 的缩写：
 
 ```sql
 SELECT date_part('DOY', '2021-07-01 00:00:00');
 ```
 
-Output:
+结果:
 
 ```sql
 +----------------------------------------------------+
@@ -103,11 +73,95 @@ Output:
 1 row in set (0.003 sec)
 ```
 
-SQL 语句中的 `DOY` 是 `day of the year` 的缩写。请参考 [date_part](/reference/sql/functions.md#date-part) 获取更多信息。
+请参考 [SELECT](/reference/sql/select.md) 和 [Functions](/reference/sql/functions.md) 获取更多信息。
 
-请前往 [Functions](/reference/sql/functions.md) 查看更多.
+## 限制返回的行数
 
-### Group By
+时间序列数据通常是海量的。
+为了节省带宽和提高查询性能，你可以使用 `LIMIT` 语句来限制 `SELECT` 语句返回的行数。
+
+例如，下面的查询限制返回的行数为 10：
+
+```sql
+SELECT * FROM monitor LIMIT 10;
+```
+
+## 过滤数据
+
+你可以使用 `WHERE` 子句来过滤 `SELECT` 语句返回的行。
+时序数据库中常见的场景是按照标签或时间索引来过滤数据。
+例如，按照标签 `host` 来过滤数据：
+
+```sql
+SELECT * FROM monitor WHERE host='127.0.0.1';
+```
+
+按照时间索引 `ts` 来过滤数据，返回 `2022-11-03 03:39:57` 之后的数据：
+
+```sql
+SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57';
+```
+
+你可以使用 `AND` 关键字来组合多个约束条件：
+
+```sql
+SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
+```
+
+### 使用时间索引过滤数据
+
+按照时间索引来过滤数据是时序数据库的一个关键特性。
+GreptimeDB 支持 `RFC3339`、`ISO8601` 和 UNIX 时间戳格式来过滤数据，以便你更方便的写时间索引的约束条件。
+
+例如，下面的查询展示了三种格式的时间索引过滤数据的用法：
+
+```sql
+-- RFC3339
+SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57Z';
+-- ISO8601
+SELECT * FROM monitor WHERE ts > '2022-11-03T03:39:57+08:00';
+-- UNIX timestamp
+SELECT * FROM monitor WHERE ts > 1667446797000;
+```
+
+你还可以使用时间函数来过滤数据。
+<!-- Here are some examples of using time and date functions in the `WHERE` clause. -->
+例如，使用 `now()` 函数和 `INTERVAL` 关键字来获取最近 5 分钟的数据：
+
+```sql
+SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
+```
+
+<!-- Use the `arrow_cast` function to cast the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` with millisecond resolution) to the timestamp type with millisecond precision:
+
+```sql
+select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
+```
+
+Use the `::` grammar to cast the string literal to the timestamp type.
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
+``` -->
+
+请参考 [Functions](/reference/sql/functions.md) 获取更多时间函数信息。
+
+## 排序
+
+GreptimeDB 不保证返回数据的顺序。你需要使用 `ORDER BY` 子句来对返回的数据进行排序。
+例如，在时间序列场景中通常使用时间索引列作为排序键：
+
+```sql
+-- ascending order by ts
+SELECT * FROM monitor ORDER BY ts ASC;
+```
+
+```sql
+-- descending order by ts
+SELECT * FROM monitor ORDER BY ts DESC;
+```
+
+## 按标签聚合数据
 
 你可以使用 `GROUP BY` 语句将具有相同值的行进行分组汇总，例如查询 `idc` 列中的所有不同值的内存均值：
 
@@ -127,9 +181,9 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 请参考 [GROUP BY](/reference/sql/group_by.md) 获取更多相关信息。
 
-### 按时间聚合数据
+## 按时间窗口聚合数据
 
-GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间聚合数据。
+GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚合数据。
 
 假设我们有以下数据在 [`monitor` 表](../table-management.md#创建表) 中：
 
@@ -154,13 +208,14 @@ SELECT
     host, 
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
-ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
+ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 ```
 
 1. `avg(cpu) RANGE '10s' FILL LINEAR` 是一个 Range 表达式。`RANGE '10s'` 指定了聚合的时间范围为 10s，`FILL LINEAR` 指定了如果某个点没有数据，使用 `LINEAR` 方法来填充。
 2. `ALIGN '5s'` 指定了查询的步频为 5s。
 3. `TO '2023-12-01T00:00:00` 指定了原始对齐时间。默认值为 Unix 时间 0。
 4. `BY (host)` 指定了聚合的键。如果省略 `BY` 关键字，那么默认使用数据表的主键作为聚合键。
+5. `ORDER BY ts ASC` 指定了结果集的排序方法。如果不指定排序方法，结果集的顺序是不确定的。
 
 查询结果如下：
 
@@ -179,7 +234,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
 +---------------------+-----------+----------------------------------------+
 ```
 
-#### 时间范围窗口
+### 时间范围窗口
 
 将初始时间范围窗口在时间序列中向前和向后移动，就生成了所有时间范围窗口。
 在上面的例子中，初始对齐时间被设置为 `2023-12-01T00:00:00`，这也是初始时间窗口的结束时间。
@@ -200,7 +255,7 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host);
 
 ![align < range](/align_less_than_range.png)
 
-#### 对齐到特定时间戳
+### 对齐到特定时间戳
 
 你可以将初始对齐时间设置为任何你想要的时间戳。例如，使用 `NOW` 将对齐到当前时间：
 
@@ -224,13 +279,13 @@ FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 ```
 
-#### 填充空值
+### 填充空值
 
 `FILL` 选项可以用来填充数据中的空值。
 例如上面的例子使用了 `LINEAR` 方法来填充空值。
 该选项也支持其他填充空值的方法，例如 `PREV` 和常量值 `X`，更多信息请参考 [FILL OPTION](/reference/sql/range.md#fill-option)。
 
-#### 语法
+### 语法
 
 请参考 [Range Query](/reference/sql/range.md) 获取更多信息。
 
