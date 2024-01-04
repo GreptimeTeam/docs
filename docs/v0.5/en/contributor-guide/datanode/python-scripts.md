@@ -2,8 +2,8 @@
 
 ## Introduction
 
-Python scripts are methods for analyzing data in local databases
-and sending it to a remote node instead of sending all the data to the remote node.
+Python scripts are methods for analyzing data in GreptimeDB,
+by running it in the database directly instead of fetching all the data from the database and running it locally.
 This approach saves a lot of data transfer costs.
 The image below depicts how the script works.
 The `RecordBatch` (which is basically a column in a table with type and nullability metadata)
