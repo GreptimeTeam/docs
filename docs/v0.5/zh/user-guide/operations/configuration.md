@@ -452,11 +452,17 @@ append_stdout = true
 
 ### Export metrics 选项
 
-`frontend`、`metasrv`、`datanode` 和 `standalone` 支持收集自身产生的 metrics 数据，并将采集到的 metrics 数据发送到[Prometheus RemoteWrite 协议](https://prometheus.io/docs/concepts/remote_write_spec/)兼容的接收端，比如发送到 `greptimedb` 自身。**注意：该功能和使用 Prometheus 收集 `greptimedb` 产生的 metrics 没有关系，该功能仅作为 `greptimedb` 导出自身产生 metrics 的一种方式。** 用户可以通过 `[export_metrics]` 部分配置相关导出参数。
+`frontend`、`metasrv`、`datanode` 和 `standalone` 支持收集自身产生的 metrics 数据，并将采集到的 metrics 数据发送到[Prometheus RemoteWrite 协议](https://prometheus.io/docs/concepts/remote_write_spec/)兼容的接收端，比如发送到 `greptimedb` 自身。 用户可以通过 `[export_metrics]` 配置相关导出参数。
+
+:::tip NOTE
+注意：该功能和使用 Prometheus 收集 `greptimedb` 产生的 metrics 没有关系，该功能仅作为 `greptimedb` 导出自身产生 metrics 的一种方式。
+:::
 
 总共有两种方式用于导出 metrics 数据：
-1. `remote_write` 方式：所有组件均可使用该方式导出。用户通过 `[export_metrics.remote_write]` 下的相关配置，指定一个支持 Prometheus RemoteWrite 协议的 URL，将产生的数据通过 URL 发送到接收端。
-2. `self_import` 方式：只有 `frontend`、`standalone` 支持使用 `self_import` 方式导出数据。选择 `self_import` 方式意味着用户指定了将收集到的 metrics 数据又送回到  `greptimedb` 自身。用户通过 `[export_metrics.self_import]` 下的相关配置，指定数据导出到的数据库库名，即可将数据导出到自身。
+
+#### `remote_write` 方式
+
+所有组件均可使用该方式导出。用户通过 `[export_metrics.remote_write]` 下的相关配置，指定一个支持 Prometheus RemoteWrite 协议的 URL，将产生的数据通过 URL 发送到接收端。
 
 一份使用 `remote_write` 方式导出的配置文件：
 
@@ -473,6 +479,13 @@ url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
 headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 ```
 
+#### `self_import` 方式
+
+:::tip NOTE
+只有 `frontend`、`standalone` 支持使用 `self_import` 方式导出数据。
+:::
+
+选择 `self_import` 方式意味着用户指定了将收集到的 metrics 数据又送回到  `greptimedb` 自身。用户通过 `[export_metrics.self_import]` 下的相关配置，指定数据导出到的数据库库名，即可将数据导出到自身。
 
 一份使用 `self_import` 方式导出的配置文件：
 
