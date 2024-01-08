@@ -18,13 +18,11 @@ If you are using [Maven](https://maven.apache.org/), add the following to your p
 dependencies list:
 
 ```
-<dependencies>
-    <dependency>
-        <groupId>io.greptime</groupId>
-        <artifactId>ingester-all</artifactId>
-        <version>${latest_version}</version>
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>io.greptime</groupId>
+    <artifactId>ingester-all</artifactId>
+    <version>${latest_version}</version>
+</dependency>
 ```
 
 The latest version can be viewed [here](https://central.sonatype.com/search?q=io.greptime&name=ingester-all).
@@ -35,7 +33,7 @@ After configuring your dependencies, make sure they are available to your projec
 
 {template ingester-lib-connect%
 
-The following code demonstrates how to start an `Ingester`` with all options included. We need to pay attention
+The following code demonstrates how to start an `Ingester` with all options included. We need to pay attention
 to the accompanying comments for each option, as they provide detailed explanations of their respective roles.
 
 ```
@@ -126,11 +124,13 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 {template row-object%
 
-The Java ingester SDK uses `Table` to represent multi rows on a table. We can add the row data item into the `Table` object and then written to GreptimeDB.
+The Java ingester SDK uses `Table` to denote multiple rows in a table. We can add row data items into the `Table` object, which are then written into GreptimeDB.
 
-Alternatively, there is another way which allows us to write with simple POJO objects. Of course, this requires the use of Greptime's annotations, but these annotations are easy to understand, so don't worry about that.
 
-Next, we will demonstrate both way:
+On the other hand, there's an alternative approach that allows us to use basic POJO objects for writing. Naturally, this requires Greptime's own annotations. However, these annotations are straightforward to use, so you needn't be concerned.
+
+
+Following, we will present both methods:
 
 }
 
@@ -139,75 +139,97 @@ Next, we will demonstrate both way:
 
 ```java
 // Creates schemas
-TableSchema myMetricCpuSchema = TableSchema.newBuilder("my_metric_cpu")
-        .addColumn("host", SemanticType.Tag, DataType.String)
-        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
-        .addColumn("cpu", SemanticType.Field, DataType.Float64)
-        .build();
-TableSchema myMetricMemSchema = TableSchema.newBuilder("my_metric_mem")
-        .addColumn("host", SemanticType.Tag, DataType.String)
-        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
-        .addColumn("memory", SemanticType.Field, DataType.Float64)
+TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
+        .addColumn("host", SemanticType.Tag, DataType.String) //
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
+        .addColumn("cpu_user", SemanticType.Field, DataType.Float64) //
+        .addColumn("cpu_sys", SemanticType.Field, DataType.Float64) //
         .build();
 
-// Adds row data items into myMetricCpu
-myMetricCpu.addRow("127.0.0.1", System.currentTimeMillis(), 0.23);
-myMetricCpu.addRow("127.0.0.2", System.currentTimeMillis(), 0.24);
-// Adds row data items into myMetricMem
-myMetricMem.addRow("127.0.0.1", System.currentTimeMillis(), 0.33);
-myMetricMem.addRow("127.0.0.2", System.currentTimeMillis(), 0.34);
+TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric") //
+        .addColumn("host", SemanticType.Tag, DataType.String) //
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
+        .addColumn("mem_usage", SemanticType.Field, DataType.Float64) //
+        .build();
+
+Table cpuMetric = Table.from(cpuMetricSchema);
+Table memMetric = Table.from(memMetricSchema);
+
+// Adds row data items
+for (int i = 0; i < 10; i++) {
+    String host = "127.0.0." + i;
+    long ts = System.currentTimeMillis();
+    double cpuUser = i + 0.1;
+    double cpuSys = i + 0.12;
+    cpuMetric.addRow(host, ts, cpuUser, cpuSys);
+}
+
+for (int i = 0; i < 10; i++) {
+    String host = "127.0.0." + i;
+    long ts = System.currentTimeMillis();
+    double memUsage = i + 0.2;
+    memMetric.addRow(host, ts, memUsage);
+}
 
 ```
 
 Or we can build data with POJO objects:
 
 ```java
-@Metric(name = "my_metric_cpu")
+@Metric(name = "cpu_metric")
 public class Cpu {
     @Column(name = "host", tag = true, dataType = DataType.String)
     private String host;
+
     @Column(name = "ts", timestamp = true, dataType = DataType.TimestampMillisecond)
     private long ts;
-    @Column(name = "cpu", dataType = DataType.Float64)
-    private double cpu;
+
+    @Column(name = "cpu_user", dataType = DataType.Float64)
+    private double cpuUser;
+    @Column(name = "cpu_sys", dataType = DataType.Float64)
+    private double cpuSys;
+
     // getters and setters
     // ...
 }
 
-@Metric(name = "my_metric_mem")
+@Metric(name = "mem_metric")
 public class Memory {
     @Column(name = "host", tag = true, dataType = DataType.String)
     private String host;
+
     @Column(name = "ts", timestamp = true, dataType = DataType.TimestampMillisecond)
     private long ts;
-    @Column(name = "mem", dataType = DataType.Float64)
-    private double mem;
+
+    @Column(name = "mem_usage", dataType = DataType.Float64)
+    private double memUsage;
     // getters and setters
     // ...
 }
 
+
+```
+
+```java
 // Add rows
-Cpu cpuRow1 = new Cpu();
-cpuRow1.setHost("127.0.0.1");
-cpuRow1.setTs(System.currentTimeMillis());
-cpuRow1.setCpu(0.23);
-Cpu cpuRow2 = new Cpu();
-cpuRow2.setHost("127.0.0.1");
-cpuRow2.setTs(System.currentTimeMillis());
-cpuRow2.setCpu(0.24);
+List<Cpu> cpus = new ArrayList<>();
+for (int i = 0; i < 10; i++) {
+    Cpu c = new Cpu();
+    c.setHost("127.0.0." + i);
+    c.setTs(System.currentTimeMillis());
+    c.setCpuUser(i + 0.1);
+    c.setCpuSys(i + 0.12);
+    cpus.add(c);
+}
 
-List<Cpu> cpuRows = Arrays.asList(cpuRow1, cpuRow2);
-
-Memory memRow1 = new Memory();
-memRow1.setHost("127.0.0.1");
-memRow1.setTs(System.currentTimeMillis());
-memRow1.setMem(0.33);
-Memory memRow2 = new Memory();
-memRow2.setHost("127.0.0.2");
-memRow2.setTs(System.currentTimeMillis());
-memRow2.setMem(0.34);
-
-List<Memory> memRows = Arrays.asList(memRow1, memRow2);
+List<Memory> memories = new ArrayList<>();
+for (int i = 0; i < 10; i++) {
+    Memory m = new Memory();
+    m.setHost("127.0.0." + i);
+    m.setTs(System.currentTimeMillis());
+    m.setMemUsage(i + 0.2);
+    memories.add(m);
+}
 ```
 
 }
@@ -221,14 +243,13 @@ List<Memory> memRows = Arrays.asList(memRow1, memRow2);
 // For performance reasons, the SDK is designed to be purely asynchronous.
 // The return value is a future object. If you want to immediately obtain
 // the result, you can call `future.get()`.
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpu, myMetricMem);
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
 Result<WriteOk, Err> result = future.get();
+
 if (result.isOk()) {
-    // Congratulations, the write was successful.
     LOG.info("Write result: {}", result.getOk());
 } else {
-    // Writing failed, print the reason for the failure through the log.
     LOG.error("Failed to write: {}", result.getErr());
 }
 
@@ -239,14 +260,13 @@ We also can write with POJO objects:
 ```java
 // Saves data
 
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.writePOJOs(cpuRows, memRows);
+CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
 
-Result<WriteOk, Err> result = future.get();
+Result<WriteOk, Err> result = puts.get();
+
 if (result.isOk()) {
-    // Congratulations, the write was successful.
     LOG.info("Write result: {}", result.getOk());
 } else {
-    // Writing failed, print the reason for the failure through the log.
     LOG.error("Failed to write: {}", result.getErr());
 }
 ```
@@ -256,23 +276,23 @@ if (result.isOk()) {
 {template update-rows%
 
 ```java
-Table myMetricCpu = Table.from(myMetricCpuSchema);
+Table cpuMetric = Table.from(myMetricCpuSchema);
 // save a row data
 long ts = 1703832681000L;
-myMetricCpu.addRow("host1", ts, 0.23);
+cpuMetric.addRow("host1", ts, 0.23, 0.12);
 
-Result<WriteOk, Err> putResult = greptimeDB.write(myMetricCpu).get();
+Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
 
 // update the row data
-Table newMyMetricCpu = Table.from(myMetricCpuSchema);
+Table newCpuMetric = Table.from(myMetricCpuSchema);
 // The same tag `host1`
 // The same time index `1703832681000`
-// The new field value `0.80`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
 long ts = 1703832681000L;
-newMyMetricCpu.addRow("host1", ts, 0.80);
+myMetricCpuSchema.addRow("host1", ts, 0.80, 0.81);
 
 // overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.write(newMyMetricCpu).get();
+Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
 ```
 
 Or we can update with POJO objects:
@@ -281,7 +301,8 @@ Or we can update with POJO objects:
 Cpu cpu = new Cpu();
 cpu.setHost("host1");
 cpu.setTs(1703832681000L);
-cpu.setCpu(0.23);
+cpu.setCpuUser(0.23);
+cpu.setCpuSys(0.12);
 
 // save a row data
 Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
@@ -292,23 +313,39 @@ Cpu newCpu = new Cpu();
 newCpu.setHost("host1");
 // The same time index `1703832681000`
 newCpu.setTs(1703832681000L);
-// The new field value `0.80`
-newCpu.setCpu(0.80);
+// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
+cpu.setCpuUser(0.23);
+cpu.setCpuSys(0.12);
 
 // overwrite the existing data
 Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 ```
+
+For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
+
 }
 
 
 {template recommended-query-library%
 
-<!-- We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly. -->
+Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
+
+Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API. Since GreptimeDB supports the MySQL protocol, we can directly use the JDBC MySQL driver.
+GreptimeDB also supports the PostgreSQL protocol. Here, we will only show how to use JDBC (irrespective of the specific implementation, meaning that the same code can run just by replacing it with the PostgreSQL driver).
 
 }
 
 {template query-library-installation%
 
+If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
+dependencies list:
+
+<!-- MySQL usage dependency -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.33</version>
+</dependency>
 
 }
 
@@ -318,20 +355,83 @@ Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 
 ```java
 
+public static Connection getConnection() throws IOException, ClassNotFoundException, SQLException {
+    Properties prop = new Properties();
+    prop.load(QueryJDBC.class.getResourceAsStream("/db-connection.properties"));
+
+    String dbName = (String) prop.get("db.database-driver");
+
+    String dbConnUrl = (String) prop.get("db.url");
+    String dbUserName = (String) prop.get("db.username");
+    String dbPassword = (String) prop.get("db.password");
+
+    Class.forName(dbName);
+    Connection dbConn = DriverManager.getConnection(dbConnUrl, dbUserName, dbPassword);
+
+    return Objects.requireNonNull(dbConn, "Failed to make connection!");
+}
+
 ```
+
+You need a properties file to store the DB connection information. Place it in the Resources directory and name it `db-connection.properties`. The file content is as follows:
+
+```
+# DataSource
+db.database-driver=com.mysql.cj.jdbc.Driver
+db.url=jdbc:mysql://localhost:4002/public
+db.username=
+db.password=
+```
+
+Or you can just get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
 
 {template query-library-raw-sql%
 
 ```java
+GreptimeDB greptimeDB = TestConnector.connectToDefaultDB();
+
+// Inserts data for query
+insertData(greptimeDB);
+
+try (Connection conn = getConnection()) {
+    Statement statement = conn.createStatement();
+
+    // DESC table;
+    ResultSet rs = statement.executeQuery("DESC cpu_metric");
+    LOG.info("Column | Type | Key | Null | Default | Semantic Type ");
+    while (rs.next()) {
+        LOG.info("{} | {} | {} | {} | {} | {}", //
+                rs.getString(1), //
+                rs.getString(2), //
+                rs.getString(3), //
+                rs.getString(4), //
+                rs.getString(5), //
+                rs.getString(6));
+    }
+
+    // SELECT COUNT(*) FROM cpu_metric;
+    rs = statement.executeQuery("SELECT COUNT(*) FROM cpu_metric");
+    while (rs.next()) {
+        LOG.info("Count: {}", rs.getInt(1));
+    }
+
+    // SELECT * FROM cpu_metric ORDER BY ts DESC LIMIT 5;
+    rs = statement.executeQuery("SELECT * FROM cpu_metric ORDER BY ts DESC LIMIT 5");
+    LOG.info("host | ts | cpu_user | cpu_sys");
+    while (rs.next()) {
+        LOG.info("{} | {} | {} | {}", //
+                rs.getString("host"), //
+                rs.getTimestamp("ts"), //
+                rs.getDouble("cpu_user"), //
+                rs.getDouble("cpu_sys"));
+    }
+}
 
 ```
 
-}
-
-{template query-lib-link%
-
-<!-- [GORM](https://gorm.io/docs/index.html) -->
+For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
 
 }
+
 
 </docs-template>
