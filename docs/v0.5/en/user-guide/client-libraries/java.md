@@ -126,7 +126,7 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 {template row-object%
 
-The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s can be added to a `Table` object and then written to GreptimeDB.
+The Java ingester SDK uses `Table` to represent multi rows on a table. We can add the row data item into the `Table` object and then written to GreptimeDB.
 
 }
 
@@ -134,17 +134,19 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 {template create-a-rows%
 
 ```java
+// First, we need to create the schema of `my_metric`
+TableSchema myMetricSchema = TableSchema.newBuilder("my_metric")
+        .addColumn("host", SemanticType.Tag, DataType.String)
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
+        .addColumn("cpu", SemanticType.Field, DataType.Float64)
+        .addColumn("memory", SemanticType.Field, DataType.Float64)
+        .build();
 
+// Creates a table object from the schema
+Table myMetric = Table.from(myMetricSchema);
 
-
-```
-
-}
-
-{template create-rows%
-
-```java
-
+meMetric.addRow("127.0.0.1", System.currentTimeMillis(), 0.23, 0.1);
+meMetric.addRow("127.0.0.2", System.currentTimeMillis(), 0.35, 0.2);
 
 ```
 
@@ -154,8 +156,46 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 {template save-rows%
 
 ```java
+// Creates schemas
+TableSchema myMetricCpuSchema = TableSchema.newBuilder("my_metric_cpu")
+        .addColumn("host", SemanticType.Tag, DataType.String)
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
+        .addColumn("cpu", SemanticType.Field, DataType.Float64)
+        .build();
+TableSchema myMetricMemSchema = TableSchema.newBuilder("my_metric_mem")
+        .addColumn("host", SemanticType.Tag, DataType.String)
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
+        .addColumn("memory", SemanticType.Field, DataType.Float64)
+        .build();
 
+// Creates table objects from the schemas
+Table myMetricCpu = Table.from(myMetricCpuSchema);
+Table myMetricMem = Table.from(myMetricMemSchema);
 
+// Adds row data items into myMetricCpu
+myMetricCpu.addRow("127.0.0.1", System.currentTimeMillis(), 0.23);
+myMetricCpu.addRow("127.0.0.1", System.currentTimeMillis(), 0.24);
+myMetricCpu.addRow("127.0.0.1", System.currentTimeMillis(), 0.26);
+// Adds row data items into myMetricMem
+myMetricMem.addRow("127.0.0.1", System.currentTimeMillis(), 0.33);
+myMetricMem.addRow("127.0.0.1", System.currentTimeMillis(), 0.34);
+myMetricMem.addRow("127.0.0.1", System.currentTimeMillis(), 0.36);
+
+// Saves data
+
+// For performance reasons, the SDK is designed to be purely asynchronous.
+// The return value is a future object. If you want to immediately obtain
+// the result, you can call `future.get()`.
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpu, myMetricMem);
+
+Result<WriteOk, Err> result = future.get();
+if (result.isOk()) {
+    // Congratulations, the write was successful.
+    LOG.info("Write result: {}", result.getOk());
+} else {
+    // Writing failed, print the reason for the failure through the log.
+    LOG.error("Failed to write: {}", result.getErr());
+}
 
 ```
 
@@ -164,19 +204,29 @@ The Java ingester SDK uses `Row` to represent a row data item. Multiple `Row`s c
 {template update-rows%
 
 ```java
-// save a row data
+TableSchema myMetricCpuSchema = TableSchema.newBuilder("my_metric_cpu")
+        .addColumn("host", SemanticType.Tag, DataType.String)
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond)
+        .addColumn("cpu", SemanticType.Field, DataType.Float64)
+        .build();
 
+Table myMetricCpu = Table.from(myMetricCpuSchema);
+// save a row data
+long ts = 1703832681000L;
+myMetricCpu.addRow("host1", ts, 0.23);
+
+Result<WriteOk, Err> putResult = greptimeDB.write(myMetricCpu).get();
 
 // update the row data
-
+Table newMyMetricCpu = Table.from(myMetricCpuSchema);
 // The same tag `host1`
-
 // The same time index `1703832681000`
-
 // The new field value `0.80`
+long ts = 1703832681000L;
+newMyMetricCpu.addRow("host1", ts, 0.80);
 
 // overwrite the existing data
-
+Result<WriteOk, Err> updateResult = greptimeDB.write(newMyMetricCpu).get();
 ```
 }
 
