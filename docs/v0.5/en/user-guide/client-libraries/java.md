@@ -51,8 +51,11 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database) //
         // tasks in the SDK (You are using a purely asynchronous SDK). If you do not
         // set it, there will be a default implementation, which you can reconfigure
         // if the default implementation is not satisfied.
+        //
+        // Note: We do not close it to free resources(if it need to be closed), as we
+        // view it as shared.
         // The default implementation is: `SerializingExecutor`
-        .asyncPool(new SerializingExecutor("asyncPool"))
+        .asyncPool(new SerializingExecutor("async_pool"))
         // Optional, the default value is fine.
         //
         // Sets the RPC options, in general, the default configuration is fine.
@@ -79,8 +82,8 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database) //
         .writeLimitedPolicy(LimitedPolicy.defaultWriteLimitedPolicy())
         // Optional, the default value is fine.
         //
-        // The default rate limit for stream writer. It only takes effect when we do not specify the
-        // `maxPointsPerSecond` when creating a `StreamWriter`.
+        // The default rate limit value(points per second) for `StreamWriter`. It only takes
+        // effect when we do not specify the `maxPointsPerSecond` when creating a `StreamWriter`.
         // The default is 10 * 65536
         .defaultStreamMaxWritePointsPerSecond(10 * 65536)
         // Optional, the default value is fine.
@@ -90,7 +93,7 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database) //
         .routeTableRefreshPeriodSeconds(-1)
         // Optional, the default value is fine.
         //
-        // Sets the request router, The internal default implementation works well.
+        // Sets the request router. The internal default implementation works well.
         // You don't need to set it unless you have special requirements.
         .router(null)
         // Sets authentication information. If the DB is not required to authenticate, we can ignore this.
@@ -131,6 +134,27 @@ On the other hand, there's an alternative approach that allows us to use basic P
 
 
 Following, we will present both methods:
+
+}
+
+{template create-a-row%
+
+```java
+// Creates schemas
+TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
+        .addColumn("host", SemanticType.Tag, DataType.String) //
+        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
+        .addColumn("cpu_user", SemanticType.Field, DataType.Float64) //
+        .addColumn("cpu_sys", SemanticType.Field, DataType.Float64) //
+        .build();
+Table cpuMetric = Table.from(cpuMetricSchema);
+
+String host = "127.0.0.1";
+long ts = System.currentTimeMillis();
+double cpuUser = 0.1;
+double cpuSys = 0.12;
+cpuMetric.addRow(host, ts, cpuUser, cpuSys);
+```
 
 }
 
@@ -433,5 +457,10 @@ For the complete code of the demo, please refer to [here](https://github.com/Gre
 
 }
 
+{template query-lib-doc-link%
+
+[JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
+
+}
 
 </docs-template>
