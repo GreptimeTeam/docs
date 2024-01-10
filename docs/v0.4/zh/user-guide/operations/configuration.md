@@ -11,7 +11,7 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 
 在配置文件中，对于缺失的参数，系统会赋予其一个默认值。
 
-所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/develop/config) 文件夹中。
+所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) 文件夹中。
 
 ## 命令行选项
 
@@ -339,7 +339,7 @@ global_write_buffer_reject_size = "2GB"
 
 ### 单机模式
 
-当用户在单机模式（standalone）下使用 GreptimeDB 时，可以参考 [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/standalone.example.toml) 配置文件。
+当用户在单机模式（standalone）下使用 GreptimeDB 时，可以参考 [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml) 配置文件。
 
 类似下面这样的命令启动：
 
@@ -372,7 +372,7 @@ tcp_nodelay = true
 - `ddl_timeout`， DDL 执行的超时时间，默认 10 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
-这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/frontend.example.toml).
+这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml).
 
 ### 分布式模式下的 `Datanode`
 
@@ -394,11 +394,11 @@ tcp_nodelay = false
 
 分布式模式下的 datanode 应该在不同的节点上设置**不同**的 `node_id`。
 
-这里可以找到配置 datanode 分布式模式运行的样例配置文件 [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/datanode.example.toml).
+这里可以找到配置 datanode 分布式模式运行的样例配置文件 [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml).
 
 ### Metasrv 配置
 
-一份配置样例文件 [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/develop/config/metasrv.example.toml)：
+一份配置样例文件 [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)：
 
 ```toml
 # The working home directory.
@@ -412,7 +412,7 @@ store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
 # - "load_based"
-# For details, please see "https://docs.greptime.com/developer-guide/meta/selector".
+# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
 selector = "lease_based"
 # Store data in memory, false by default.
 use_memory_store = false

@@ -5,7 +5,7 @@
 * [Table Management](./table-management.md)
 * [Write Data](./write-data/overview.md)
 * [Query Data](./query-data/overview.md)
-* [Scripts-&-Functions](./scripts-&-functions/overview.md)
+* [Python Scripts](./python-scripts/overview.md)
 * [Operations](./operations/overview.md)
 * [Cluster](./cluster.md)
 * [Integration](./integration.md)

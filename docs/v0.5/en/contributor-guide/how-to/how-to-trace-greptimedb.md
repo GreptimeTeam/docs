@@ -14,7 +14,7 @@ Because the tracing framework does not natively support distributed tracing, we 
 
 ## Pass tracing context in RPC call
 
-We build a `TracingContext` structure that encapsulates operations related to the tracing context. [Related code](https://github.com/GreptimeTeam/greptimedb/blob/develop/src/common/telemetry/src/tracing_context.rs)
+We build a `TracingContext` structure that encapsulates operations related to the tracing context. [Related code](https://github.com/GreptimeTeam/greptimedb/blob/main/src/common/telemetry/src/tracing_context.rs)
 
 GreptimeDB uses `TracingContext::from_current_span()` to obtain the current tracing context, uses the `to_w3c()` method to encode the tracing context into a w3c-compliant format, and attaches it to the RPC message, so that the tracing context is correctly distributed passed within the component.
 

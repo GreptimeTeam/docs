@@ -4,7 +4,7 @@
 
 What is the `Selector`? As its name suggests, it allows users to select specific items from a given `namespace` and `context`. There is a related trait, also named `Selector`, whose definition can be found [below][0].
 
-[0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
+[0]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs
 
 There is a specific scenario in `metasrv`. When a request to create a table is sent to the `metasrv`, it creates a routing table (the details of table creation will not be described here). The `metasrv` needs to select the appropriate `datanode` list when creating a routing table.
 

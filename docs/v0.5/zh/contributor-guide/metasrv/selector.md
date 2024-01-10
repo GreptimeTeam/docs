@@ -4,7 +4,7 @@
 
 什么是 `Selector`？顾名思义，它允许用户从给定的 `namespace` 和 `context` 中选择 `Item`s。有一个相关的 `trait`，也叫做 `Selector`，其定义可以在[这里][0]找到。
 
-[0]: https://github.com/GreptimeTeam/greptimedb/blob/develop/src/meta-srv/src/selector.rs
+[0]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs
 
 在 `MetaSrv` 中存在一个特定的场景。当 `Frontend` 向 `MetaSrv` 发送建表请求时，`MetaSrv` 会创建一个路由表（表的创建细节不在这里赘述）。在创建路由表时，`MetaSrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
 

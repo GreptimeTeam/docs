@@ -55,5 +55,5 @@ Covered in [Distributed Querying][6].
 [2]: https://arrow.apache.org/
 [3]: https://parquet.apache.org
 [4]: python-coprocessor.md
-[5]: https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/how-to/how-to-write-aggregate-function.md
+[5]: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md
 [6]: ../frontend/distributed-querying.md

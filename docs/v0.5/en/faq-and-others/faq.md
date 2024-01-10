@@ -21,9 +21,9 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
 
-Currently, we support MySQL protocol, you can check it out on the [user guide](https://docs.greptime.com/user-guide/supported-protocols/mysql).
+Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql).
 
-HTTP API is also available, please see [this article](https://docs.greptime.com/user-guide/supported-protocols/http-api) for more information.
+HTTP API is also available, please see [this article](/user-guide/clients/http-api) for more information.
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
@@ -55,7 +55,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 ## Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
-For more information, refer to [this document](https://docs.greptime.com/user-guide/table-management#create-table).
+For more information, refer to [this document](/user-guide/table-management#create-table).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
@@ -71,7 +71,7 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 ## Does GreptimeDB support dumping table-level data to S3?
 
-You can use the [`COPY TO` command](https://docs.greptime.com/reference/sql/copy#s3) to dump table-level data to S3.
+You can use the [`COPY TO` command](/reference/sql/copy#s3) to dump table-level data to S3.
 
 ## TSDB features that you concern
 
@@ -88,3 +88,19 @@ Yes, that is the intended command. However, "drop database" has not been impleme
 ## Are there any retention policy? 
 
 We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+
+## What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
+
+At GreptimeDB, we share some technical similarities with InfluxDB, both using Datafusion, Arrow, Parquet, and built on object storage. However, we differ in several key aspects:
+
+- Open-Source Strategy: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
+
+- Distributed Architecture: Our architecture is more aligned with HBase's Region/RegionServer design. Our Write-Ahead Log (WAL) uses Kafka, and we're exploring a quorum-based implementation in the future.
+
+- Workload and Services: We focus on a hybrid workload combining time series and analytics. This integration aims to enhance resource efficiency and real-time performance for users. We also offer [GreptimeCloud](https://greptime.com/product/cloud), a commercial cloud service.
+
+- Storage Engine Design: Our pluggable storage engine is versatile. For scenarios with many small data tables, like in Prometheus, we have a dedicated Metrics storage engine.
+
+- Query Language Support: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
+
+We're a young, rapidly evolving project and always looking to improve. For more details, visit [our Blog](https://greptime.com/blogs/) and [Contributor Guide](https://docs.greptime.com/contributor-guide/overview). We welcome your interest and contributions!

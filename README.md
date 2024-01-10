@@ -36,16 +36,16 @@ Explains how to use, integrate or customize GreptimeDB; also includes common iss
 - [Table management](https://docs.greptime.com/user-guide/table-management)
 - [Write data](https://docs.greptime.com/user-guide/write-data/overview)
 - [Query data](https://docs.greptime.com/user-guide/query-data/overview)
-- [Scripts & Functions](https://docs.greptime.com/user-guide/scripts-&-functions/overview)
+- [Python Scripts](https://docs.greptime.com/user-guide/python-scripts/overview)
 - [Cluster](https://docs.greptime.com/user-guide/cluster)
 
 ### Developer Guide
 
 Provides a detailed overview of how GreptimeDB operates and assists you in participating as a contributor in its development
 
-- [Overview](https://docs.greptime.com/developer-guide/overview)
-- [Frontend](https://docs.greptime.com/developer-guide/frontend/overview)
-- [Datanode](https://docs.greptime.com/developer-guide/datanode/overview)
-- [Metasrv](https://docs.greptime.com/developer-guide/metasrv/overview)
+- [Overview](https://docs.greptime.com/contributor-guide/overview)
+- [Frontend](https://docs.greptime.com/contributor-guide/frontend/overview)
+- [Datanode](https://docs.greptime.com/contributor-guide/datanode/overview)
+- [Metasrv](https://docs.greptime.com/contributor-guide/metasrv/overview)
 
-Please refer to [contribution guidelines](./CONTRIBUTING.md) for more information.
+Please refer to [contribution guidelines](CONTRIBUTING.md) for more information.
