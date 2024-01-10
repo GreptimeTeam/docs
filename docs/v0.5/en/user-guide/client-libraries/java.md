@@ -29,7 +29,7 @@ The latest version can be viewed [here](https://central.sonatype.com/search?q=io
 
 After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
 
-}
+%}
 
 {template ingester-lib-connect%
 
@@ -123,7 +123,7 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
-}
+%}
 
 {template row-object%
 
@@ -135,7 +135,7 @@ On the other hand, there's an alternative approach that allows us to use basic P
 
 Following, we will present both methods:
 
-}
+%}
 
 {template create-a-row%
 
@@ -156,7 +156,7 @@ double cpuSys = 0.12;
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
-}
+%}
 
 
 {template create-rows%
@@ -256,7 +256,7 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-}
+%}
 
 
 {template save-rows%
@@ -295,7 +295,7 @@ if (result.isOk()) {
 }
 ```
 
-}
+%}
 
 {template update-rows%
 
@@ -347,7 +347,7 @@ Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 
 For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
 
-}
+%}
 
 
 {template recommended-query-library%
@@ -357,7 +357,7 @@ Java database connectivity (JDBC) is the JavaSoft specification of a standard ap
 Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API. Since GreptimeDB supports the MySQL protocol, we can directly use the JDBC MySQL driver.
 GreptimeDB also supports the PostgreSQL protocol. Here, we will only show how to use JDBC (irrespective of the specific implementation, meaning that the same code can run just by replacing it with the PostgreSQL driver).
 
-}
+%}
 
 {template query-library-installation%
 
@@ -371,7 +371,7 @@ dependencies list:
     <version>8.0.33</version>
 </dependency>
 
-}
+%}
 
 {template query-library-connect%
 
@@ -408,6 +408,8 @@ db.password=
 ```
 
 Or you can just get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
+
+%}
 
 {template query-library-raw-sql%
 
@@ -455,12 +457,12 @@ try (Connection conn = getConnection()) {
 
 For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
 
-}
+%}
 
 {template query-lib-doc-link%
 
 [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
-}
+%}
 
 </docs-template>

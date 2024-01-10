@@ -18,6 +18,3 @@ Refer to [Authentication](./authentication.md) to learn how to config username a
 - [PostgreSQL](./postgresql.md)
 - [OpenTelemetry Protocol(OTLP)](./otlp.md)
 - [HTTP API](./http-api.md)
-- SDK Libraries
-  - [Go](./sdk-libraries/go.md)
-  - [Java](./sdk-libraries/java.md)

@@ -11,7 +11,7 @@
 
 ## 如何使用
 
-请参考用户指南章节，了解如何 [安装 SDK](../../user-guide/clients/sdk-libraries/java.md), [写入数据](../../user-guide/write-data/sdk-libraries/java.md)和[查询数据](../../user-guide/query-data/sdk-libraries/java.md)。
+请参考用户指南章节，了解如何 [如何使用 Java SDK](/user-guide/client-libraries/java.md)。
 
 ## 全局配置 (System properties / Java -Dxxx)
 

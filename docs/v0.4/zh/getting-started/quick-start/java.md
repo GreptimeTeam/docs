@@ -16,6 +16,6 @@ curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/lates
 --output quick-start.jar && java -jar quick-start.jar -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-}
+%}
 
 </docs-template>

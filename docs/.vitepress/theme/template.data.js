@@ -65,13 +65,14 @@ const getAbsolutePath = (relativePath, currentPath) => {
 }
 
 const getReplacementsMap = content => {
-  const regex = /{template ([\s\S]*?)}/g
-  const matches = content.match(regex).map(match => match.replace(/{template ([\s\S]*)}/, ($1, $2) => $2))
+  const regex = /\{template ([\s\S]*?)%\}/g
+  const matches = content.match(regex).map(match => match.replace(/\{template ([\s\S]*)%\}/, ($1, $2) => $2))
   const map = {}
   matches.forEach(match => {
-    const target = match.split('%')
-    const key = target[0]
-    const value = target[1].slice(target[1].indexOf('\n') + 1)
+    const targetKey = match.slice(0, match.indexOf('%'))
+    const targetValue = match.slice(match.indexOf('%') + 1)
+    const key = targetKey
+    const value = targetValue.slice(targetValue[1].indexOf('\n') + 1)
     map[key] = value
   })
   return map
@@ -79,7 +80,7 @@ const getReplacementsMap = content => {
 
 const getFileContent = (template, file) => {
   const replacementsMap = getReplacementsMap(file)
-  return template.replace(/{template ([\s\S]*?)%}/g, (match, key) => replacementsMap[key] || match)
+  return template.replace(/\{template ([\s\S]*?)%%\}/g, (match, key) => replacementsMap[key] || match)
 }
 
 function slash(p) {

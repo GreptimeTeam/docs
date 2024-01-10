@@ -14,7 +14,7 @@ template: quick-start-template.md
 go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-}
+%}
 
 </docs-template>
 
