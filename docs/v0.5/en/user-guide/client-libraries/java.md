@@ -5,6 +5,17 @@ template: template.md
 
 <docs-template>
 
+{template ingester-lib-introduction%
+
+The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
+
+- SPI-based extensible network transport layer, which provides the default implementation using the gRPC framework.
+- Non-blocking, purely asynchronous API that is easy to use.
+- Automatic collection of various performance metrics by default. You can then configure and write them to local files.
+- Ability to take in-memory snapshots of critical objects, configure them, and write them to local files. This is helpful for troubleshooting complex issues.
+
+%}
+
 {template ingester-lib-installation%
 
 1. Install the Java Development Kit(JDK)
@@ -17,7 +28,7 @@ check your version of Java and install the JDK, see the [Oracle Overview of JDK 
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
 
-```
+```xml
 <dependency>
     <groupId>io.greptime</groupId>
     <artifactId>ingester-all</artifactId>
@@ -36,7 +47,9 @@ After configuring your dependencies, make sure they are available to your projec
 The following code demonstrates how to start an `Ingester` with all options included. We need to pay attention
 to the accompanying comments for each option, as they provide detailed explanations of their respective roles.
 
-```
+In most cases, the default connection options work well. The simplest code to connect to GreptimeDB is:
+
+```java
 // GreptimeDB has a default database named "public" in the default catalog "greptime",
 // we can use it as the test database
 String database = "public";
@@ -44,84 +57,18 @@ String database = "public";
 // We can provide multiple endpoints that point to the same GreptimeDB cluster.
 // The client will make calls to these endpoints based on a load balancing strategy.
 String[] endpoints = {"127.0.0.1:4001"};
-GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database) //
-        // Optional, the default value is fine.
-        //
-        // Asynchronous thread pool, which is used to handle various asynchronous
-        // tasks in the SDK (You are using a purely asynchronous SDK). If you do not
-        // set it, there will be a default implementation, which you can reconfigure
-        // if the default implementation is not satisfied.
-        //
-        // Note: We do not close it to free resources(if it need to be closed), as we
-        // view it as shared.
-        // The default implementation is: `SerializingExecutor`
-        .asyncPool(new SerializingExecutor("async_pool"))
-        // Optional, the default value is fine.
-        //
-        // Sets the RPC options, in general, the default configuration is fine.
-        .rpcOptions(RpcOptions.newDefault())
-        // Optional, the default value is fine.
-        //
-        // In some case of failure, a retry of write can be attempted.
-        // The default is 1
-        .writeMaxRetries(1)
-        // Optional, the default value is fine.
-        //
-        // Write flow limit: maximum number of data rows in-flight. It does not take effect on `StreamWriter`
-        // The default is 65536
-        .maxInFlightWriteRows(65536)
-        // Optional, the default value is fine.
-        //
-        // Write flow limit: the policy to use when the write flow limit is exceeded.
-        // All options:
-        // - `LimitedPolicy.DiscardPolicy`: discard the data if the limiter is full.
-        // - `LimitedPolicy.AbortPolicy`: abort if the limiter is full.
-        // - `LimitedPolicy.BlockingPolicy`: blocks if the limiter is full.
-        // - `LimitedPolicy.AbortOnBlockingTimeoutPolicy`: blocks the specified time if the limiter is full.
-        // The default is `LimitedPolicy.AbortOnBlockingTimeoutPolicy`
-        .writeLimitedPolicy(LimitedPolicy.defaultWriteLimitedPolicy())
-        // Optional, the default value is fine.
-        //
-        // The default rate limit value(points per second) for `StreamWriter`. It only takes
-        // effect when we do not specify the `maxPointsPerSecond` when creating a `StreamWriter`.
-        // The default is 10 * 65536
-        .defaultStreamMaxWritePointsPerSecond(10 * 65536)
-        // Optional, the default value is fine.
-        //
-        // Refresh frequency of route tables. The background refreshes all route tables
-        // periodically. By default, the route tables will not be refreshed.
-        .routeTableRefreshPeriodSeconds(-1)
-        // Optional, the default value is fine.
-        //
-        // Sets the request router. The internal default implementation works well.
-        // You don't need to set it unless you have special requirements.
-        .router(null)
-        // Sets authentication information. If the DB is not required to authenticate, we can ignore this.
-        .authInfo(AuthInfo.noAuthorization())
-        // A good start ^_^
-        .build();
-
-GreptimeDB client = GreptimeDB.create(opts);
-```
-
-In most cases, the default options work well, so the above code can be simplified to:
-
-```
-// GreptimeDB has a default database named "public" in the default catalog "greptime",
-// we can use it as the test database
-String database = "public";
-// By default, GreptimeDB listens on port 4001 using the gRPC protocol.
-// We can provide multiple endpoints that point to the same GreptimeDB cluster.
-// The client will make calls to these endpoints based on a load balancing strategy.
-String[] endpoints = {"127.0.0.1:4001"};
+// Sets authentication information.
+AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
-        // Sets authentication information. If the DB is not required to authenticate, we can ignore this.
-        .authInfo(AuthInfo.noAuthorization())
+        // If the database does not require authentication, we can use AuthInfo.noAuthorization() as the parameter.
+        .authInfo(authInfo)
         // A good start ^_^
         .build();
 
 GreptimeDB client = GreptimeDB.create(opts);
 ```
+
+For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
 
 %}
 
@@ -129,11 +76,7 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 The Java ingester SDK uses `Table` to denote multiple rows in a table. We can add row data items into the `Table` object, which are then written into GreptimeDB.
 
-
-On the other hand, there's an alternative approach that allows us to use basic POJO objects for writing. Naturally, this requires Greptime's own annotations. However, these annotations are straightforward to use, so you needn't be concerned.
-
-
-Following, we will present both methods:
+On the other hand, there is an alternative approach that allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
 %}
 
@@ -231,10 +174,6 @@ public class Memory {
     // ...
 }
 
-
-```
-
-```java
 // Add rows
 List<Cpu> cpus = new ArrayList<>();
 for (int i = 0; i < 10; i++) {
@@ -304,7 +243,6 @@ Table cpuMetric = Table.from(myMetricCpuSchema);
 // save a row data
 long ts = 1703832681000L;
 cpuMetric.addRow("host1", ts, 0.23, 0.12);
-
 Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
 
 // update the row data
@@ -350,6 +288,27 @@ For the complete code of the demo, please refer to [here](https://github.com/Gre
 %}
 
 
+{template ingester-lib-debug-logs%
+
+### Debug logs
+
+The ingester SDK provides metrics and logs for debugging.
+Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
+
+%}
+
+{template more-ingestion-examples%
+
+For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
+
+%}
+
+{template ingester-lib-reference%
+
+- [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+
+%}
+
 {template recommended-query-library%
 
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
@@ -364,18 +323,20 @@ GreptimeDB also supports the PostgreSQL protocol. Here, we will only show how to
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
 
+```xml
 <!-- MySQL usage dependency -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
     <version>8.0.33</version>
 </dependency>
+```
 
 %}
 
 {template query-library-connect%
 
-#### MySQL
+Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
 
 ```java
 
@@ -399,7 +360,7 @@ public static Connection getConnection() throws IOException, ClassNotFoundExcept
 
 You need a properties file to store the DB connection information. Place it in the Resources directory and name it `db-connection.properties`. The file content is as follows:
 
-```
+```txt
 # DataSource
 db.database-driver=com.mysql.cj.jdbc.Driver
 db.url=jdbc:mysql://localhost:4002/public
@@ -414,11 +375,6 @@ Or you can just get the file from [here](https://github.com/GreptimeTeam/greptim
 {template query-library-raw-sql%
 
 ```java
-GreptimeDB greptimeDB = TestConnector.connectToDefaultDB();
-
-// Inserts data for query
-insertData(greptimeDB);
-
 try (Connection conn = getConnection()) {
     Statement statement = conn.createStatement();
 
@@ -461,7 +417,7 @@ For the complete code of the demo, please refer to [here](https://github.com/Gre
 
 {template query-lib-doc-link%
 
-[JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
+- [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
 %}
 

@@ -9,6 +9,8 @@ It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 
+{template ingester-lib-introduction%%}
+
 ### Installation
 
 {template ingester-lib-installation%%}
@@ -17,17 +19,16 @@ For more information, refer to [Automatic Schema Generation](/user-guide/write-d
 
 Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
-
 Here we set the username and password when using the library to connect to GreptimeDB.
 
 {template ingester-lib-connect%%}
 
 ### Row object
 
-{template row-object%%}
-
-Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
+Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/data-types.md).
+
+{template row-object%%}
 
 ### Create rows
 
@@ -41,7 +42,7 @@ To improve the efficiency of writing data, you can create multiple rows at once 
 
 ### Save rows
 
-The following example shows how to save rows to a table in GreptimeDB.
+The following example shows how to save rows to tables in GreptimeDB.
 
 {template save-rows%%}
 
@@ -59,6 +60,16 @@ Too many updates will affect the performance of GreptimeDB.
 :::
 
 <!-- TODO ### Delete Metrics -->
+
+{template ingester-lib-debug-logs%%}
+
+### More examples
+
+{template more-ingestion-examples%%}
+
+### Ingester library reference
+
+{template ingester-lib-reference%%}
 
 ## Query data
 
@@ -86,7 +97,7 @@ The following example shows how to use raw SQL to query data:
 
 {template query-library-raw-sql%%}
 
-### Reference
+### Query library reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 

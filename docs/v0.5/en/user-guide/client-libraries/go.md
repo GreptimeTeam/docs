@@ -4,6 +4,15 @@ template: template.md
 # Go
 
 <docs-template>
+
+{template ingester-lib-introduction%
+
+The Go ingester SDK provided by GreptimeDB is a lightweight,
+concurrent-safe library that is easy to use with the metric struct.
+
+%}
+
+
 {template ingester-lib-installation%
 
 Use the following command to install the GreptimeDB client library for Go:
@@ -152,6 +161,18 @@ res, _ := client.Insert(context.Background(), insertsRequest)
 ```
 %}
 
+{template more-ingestion-examples%
+
+For fully runnable code snippets and explanations for common methods, see the [Examples](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package).
+
+%}
+
+{template ingester-lib-reference%
+
+- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
+
+%}
+
 
 {template recommended-query-library%
 
@@ -167,16 +188,14 @@ Use the following command to install the Gorm library:
 go get -u gorm.io/gorm
 ```
 
-and install the driver you want to use:
+and install the MySQL driver as the example:
 
 ```shell
 # MySQL
 go get -u gorm.io/driver/mysql
-# PostgreSQL
-go get -u gorm.io/driver/postgres
 ```
 
-Then import the libraries in your code, for example, use MySQL:
+Then import the libraries in your code:
 
 ```go
 import (
@@ -185,20 +204,9 @@ import (
 )
 ```
 
-use PostgreSQL:
-
-```go
-import (
-    "gorm.io/gorm"
-    "gorm.io/driver/postgres"
-)
-```
-
 %}
 
 {template query-library-connect%
-
-#### MySQL
 
 ```go
 type Mysql struct {
@@ -228,40 +236,6 @@ if err != nil {
 }
 m.DB = db
 ```
-
-#### PostgreSQL
-
-```go
-type Postgres struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Database string
-
-	DB *gorm.DB
-}
-
-pg := &Postgres{
-    Host:     "127.0.0.1",
-    Port:     "4003", // default port for PostgreSQL
-    User:     "username",
-    Password: "password",
-    Database: "public",
-}
-
-dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=<your-local-time-zone>",
-    p.Host, p.User, p.Password, p.Database, p.Port)
-db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-if err != nil {
-    //error handling 
-}
-
-pg.DB = db
-
-```
-
-%}
 
 {template query-library-raw-sql%
 
