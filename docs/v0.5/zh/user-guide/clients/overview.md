@@ -16,6 +16,3 @@
 - [PostgreSQL](./postgresql.md)
 - [OpenTelemetry Protocol(OTLP)](./otlp.md)
 - [HTTP API](./http-api.md)
-- SDK Libraries
-  - [Go](./sdk-libraries/go.md)
-  - [Java](./sdk-libraries/java.md)
