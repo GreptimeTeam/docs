@@ -33,14 +33,14 @@ For more information about column types, please refer to [Data Model](../concept
 
 ## Clients
 
-### Protocols
+### Protocols or languages
 
 - [Prometheus Storage](./prometheus.md)
 - [SQL](./sql.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 
-### SDK Libraries
+### Client libraries
 
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
 They offer functionality for writing and querying data,

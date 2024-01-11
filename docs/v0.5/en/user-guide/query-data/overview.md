@@ -1,6 +1,6 @@
 # Overview
 
-## Protocols
+## Query Languages
 
 - [PromQL](./promql.md)
 - [SQL](./sql.md)

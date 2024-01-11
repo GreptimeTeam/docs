@@ -28,9 +28,17 @@ GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需
 
 关于列类型，请参考[数据模型](../concepts/data-model.md)。
 
-## 客户端协议
+## 客户端
+
+## 协议或语言
 
 - [SQL](./sql.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [Prometheus Storage](./prometheus.md)
+
+## 客户端库
+
+客户端库提供了一种方便的方式来连接 GreptimeDB 并与数据交互。
+它们提供了写入和查询数据的功能，使得将 GreptimeDB 集成到你的应用程序中变得更加容易。
+请参考[客户端库](/user-guide/client-libraries/overview.md)文档获取更多信息。

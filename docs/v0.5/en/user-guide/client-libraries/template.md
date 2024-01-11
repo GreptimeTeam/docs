@@ -1,5 +1,5 @@
 
-Greptime uses different client libraries for writing and querying data.
+GreptimeDB uses different client libraries for writing and querying data.
 You can choose the client library that best suits your needs.
 
 ## Write data
@@ -48,16 +48,10 @@ The following example shows how to save rows to tables in GreptimeDB.
 
 ### Update rows
 
-<!-- TODO move the introduction to write-data/overview.md -->
-The update is performed by data insertion. If the tags and time index of the row item to be inserted are the same as those of an existing row item, the existing data will be overwritten.
-
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
 The following example shows saving a row and then updating the row.
 
 {template update-rows%%}
-
-:::tip NOTE
-Too many updates will affect the performance of GreptimeDB. 
-:::
 
 <!-- TODO ### Delete Metrics -->
 
