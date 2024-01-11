@@ -155,4 +155,4 @@ date_part(field, source)
 
 ### 更多 Functions
 
-GreptimeDB 兼容 PostgreSQL 的日期函数。请参考 [PostgreSQL 文档](https://www.postgresql.org/docs/current/functions-datetime.html) 获取更多函数。
+有关时间和日期的更多函数，请参考 DataFusion 文档中的 [Time and Date Functions](https://arrow.apache.org/datafusion/user-guide/sql/scalar_functions.html#time-and-date-functions) 部分。
