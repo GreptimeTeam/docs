@@ -6,7 +6,7 @@
 
 ### 自动生成表结构
 
-GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需提前创建表。当使用协议支持 gRPC 协议的 [SDK]((/user-guide/client-libraries/overview.md))、[InfluxDB](./influxdb-line.md)、[OpenTSDB](./opentsdb.md) 和 [Prometheus](./prometheus.md) 写入数据时，表和列将会被自动创建。必要时，GreptimeDB 会自动添加所需的列，以确保用户的数据正确保存。
+GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需提前创建表。当使用协议支持 gRPC 协议的 [SDK](/user-guide/client-libraries/overview.md)、[InfluxDB](./influxdb-line.md)、[OpenTSDB](./opentsdb.md) 和 [Prometheus](./prometheus.md) 写入数据时，表和列将会被自动创建。必要时，GreptimeDB 会自动添加所需的列，以确保用户的数据正确保存。
 
 ## 更新数据
 
