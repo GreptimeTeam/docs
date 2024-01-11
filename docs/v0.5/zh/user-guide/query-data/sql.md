@@ -111,9 +111,7 @@ SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 ### 使用时间索引过滤数据
 
 按照时间索引来过滤数据是时序数据库的一个关键特性。
-默认情况下，数据库会将过滤条件中的时间值类型视为时间索引列中的值类型。
-你可以使用 [Describe Table](/user-guide/table-management.md#描述表) 语句来查看时间索引列的值类型。
-
+默认情况下，数据库会将条件中的时间类型视为该列的值类型。
 例如，假如 `monitor` 表中的 `ts` 列的值类型为 `TimestampMillisecond`，你可以使用下面的查询来过滤数据：
 
 ```sql
@@ -131,8 +129,7 @@ SELECT * FROM monitor WHERE ts > 1667446797000;
 select * from monitor where ts > 1667446797::TimestampSecond;
 ```
 
-对于标准的 `RFC3339` 或 `ISO8601` 字符串字面量，你可以使用任何有效的时间戳类型来指定它们。
-建议将类型指定为与时间索引列的值相同的类型以便获得更好的查询精度。
+对于标准的 `RFC3339` 或 `ISO8601` 字符串，将它们指定为 `TimestampMillisecond` 类型。
 
 ```sql
 select * from monitor where ts > '2022-07-25 10:32:16.408'::TimestampMillisecond;

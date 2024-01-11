@@ -116,9 +116,7 @@ SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 ### Filter by time index
 
 Filtering data by the time index is a crucial feature in time series databases.
-By default, the database treats the type of the time value in the filter condition as the same type as the value in the time index column.
-You can use the [Describe Table](/user-guide/table-management.md#describe-table) statement to view the type of the time index column.
-
+By default, the database treats the time type in the condition as the type of the column value.
 For example, if the value type in the `ts` column of the `monitor` table is `TimestampMillisecond`,
 you can use the following query to filter the data:
 
@@ -139,8 +137,7 @@ This informs the database that the value `1667446797` should be treated as a tim
 select * from monitor where ts > 1667446797::TimestampSecond;
 ```
 
-For standard `RFC3339` or `ISO8601` string literals, you can specify them with any valid timestamp type.
-It is recommended to specify the type as the same type as the value of the time index column for better query accuracy.
+For standard `RFC3339` or `ISO8601` string literals, specify the type to `TimestampMillisecond`.
 
 ```sql
 select * from monitor where ts > '2022-07-25 10:32:16.408'::TimestampMillisecond;
