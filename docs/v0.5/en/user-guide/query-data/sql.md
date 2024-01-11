@@ -115,39 +115,45 @@ SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 
 ### Filter by time index
 
-Filtering data by time index is a key feature for time series databases.
-GreptimeDB supports `RFC3339`, `ISO8601`, and UNIX timestamp formats to make it easier for you to write time index constraints.
+Filtering data by the time index is a crucial feature in time series databases.
+By default, the database treats the type of the time value in the filter condition as the same type as the value in the time index column.
+You can use the [Describe Table](/user-guide/table-management.md#describe-table) statement to view the type of the time index column.
 
-For example, the following queries demonstrate the usage of the three formats for filtering data:
+For example, if the value type in the `ts` column of the `monitor` table is `TimestampMillisecond`,
+you can use the following query to filter the data:
 
 ```sql
--- RFC3339
-SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57Z';
--- ISO8601
-SELECT * FROM monitor WHERE ts > '2022-11-03T03:39:57+08:00';
--- UNIX timestamp
+-- The unix time value 1667446797000 corresponds to the TimestampMillisecond type.
 SELECT * FROM monitor WHERE ts > 1667446797000;
 ```
 
-You can also use time and date functions to filter data.
-<!-- Here are some examples of using time and date functions in the `WHERE` clause. -->
+When dealing with other types of time values in the filter condition,
+you need to use the `::` syntax to specify the type of the time value.
+This ensures that the database correctly identifies the type.
+
+For example, if you have a number `1667446797` that represents a timestamp in seconds,
+you can specify its type as `TimestampSecond` using the `::TimestampSecond` syntax.
+This informs the database that the value `1667446797` should be treated as a timestamp in seconds.
+
+```sql
+select * from monitor where ts > 1667446797::TimestampSecond;
+```
+
+For standard `RFC3339` or `ISO8601` string literals, you can specify them with any valid timestamp type.
+It is recommended to specify the type as the same type as the value of the time index column for better query accuracy.
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408'::TimestampMillisecond;
+```
+
+<!-- TODO: link to fresh data types doc -->
+
+Time and date functions are also supported in the filter condition.
 For example, use the `now()` function and the `INTERVAL` keyword to retrieve data from the last 5 minutes:
 
 ```sql
 SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
-
-<!-- Use the `arrow_cast` function to cast the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` with millisecond resolution) to the timestamp type with millisecond precision:
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
-```
-
-Use the `::` grammar to cast the string literal to the timestamp type.
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
-``` -->
 
 For date and time functions, please refer to [Functions](/reference/sql/functions.md) for more information.
 
