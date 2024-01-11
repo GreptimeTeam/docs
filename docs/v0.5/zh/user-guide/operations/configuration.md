@@ -455,7 +455,7 @@ append_stdout = true
 `frontend`、`metasrv`、`datanode` 和 `standalone` 支持收集自身产生的 metrics 数据，并将采集到的 metrics 数据发送到[Prometheus RemoteWrite 协议](https://prometheus.io/docs/concepts/remote_write_spec/)兼容的接收端，比如发送到 `greptimedb` 自身。 用户可以通过 `[export_metrics]` 配置相关导出参数。
 
 :::tip NOTE
-注意：该功能和使用 Prometheus 收集 `greptimedb` 产生的 metrics 没有关系，该功能仅作为 `greptimedb` 导出自身产生 metrics 的一种方式。
+请参考 [Monitoring](./monitoring.md#使用-greptimedb-观测-greptimedb)，了解如何使用 export metrics 监控 `greptimedb` 
 :::
 
 总共有两种方式用于导出 metrics 数据：

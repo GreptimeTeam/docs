@@ -64,6 +64,58 @@ gtctl cluster create mycluster -n default \
   --set cluster.prometheusMonitor.labelsSelector.release="prometheus"
 ```
 
+## 使用 GreptimeDB 观测 GreptimeDB
+
+在大部分情况下，使用 Prometheus 可以对 GreptimeDB 的各项指标进行很好的观测。但如果用户不想依赖于Prometheus 去处理 GreptimeDB 产生的各种 metrics 数据。GreptimeDB 提供了 export metrics 功能，用于将 GreptimeDB 产生的 metrics 直接存储到 GreptimeDB 内部，从而避免依赖 Prometheus。关于 export metrics 的配置说明，请看 [export metrics 配置](./configuration.md#export-metrics-选项)
+
+### Standalone
+
+在 standalone 模式下建议使用 `self_import` 方式导出数据，默认 `self_import` 方式导入到的数据库库名是 `information_schema`，为了避免 metrics 与 `information_schema` 库中其他数据表混杂，用户可以先创建一个新的数据库，比如 `system`。
+
+```sql
+CREATE DATABASE system;
+```
+
+最后配置如下所示:
+
+```toml
+[export_metrics]
+enable = true
+write_interval = "30s"
+[export_metrics.self_import]
+db = "system"
+```
+
+### Cluster
+
+在集群模式下，建议 `frontend` 使用 `self_import` 方式导出、`metasrv`、`datanode` 使用 `remote_write` 方式导出。
+
+同上，首先创建数据库 `system`。最后各组件的相关配置如下所示：
+
+`frontend` 的配置，假设 `frontend` 使用 HTTP 协议监听 `127.0.0.1:4000`
+
+```toml
+[http]
+addr = "127.0.0.1:4000"
+...
+
+[export_metrics]
+enable = true
+write_interval = "30s"
+[export_metrics.self_import]
+db = "system"
+```
+
+`metasrv`、`datanode` 的配置如下所示，使用 `remote_write` 将数据发送到 `frontend`
+
+```toml
+[export_metrics]
+enable = true
+write_interval = "30s"
+[export_metrics.remote_write]
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
+```
+
 ## Metrics Detail
 
 可以通过执行`curl http://<host>:<port>/metrics`的输出来获取 GreptimeDB 的最新指标。
