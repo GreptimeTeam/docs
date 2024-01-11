@@ -156,4 +156,4 @@ Some commonly used fields are:
 
 ### More Functions
 
-GreptimeDB compiled PostgreSQL's date functions. Please refer to [PostgreSQL's documentation](https://www.postgresql.org/docs/current/functions-datetime.html) for more functions.
+For more functions related to time and date, please refer to the [Time and Date Functions](https://arrow.apache.org/datafusion/user-guide/sql/scalar_functions.html#time-and-date-functions) section of the DataFusion documentation.
