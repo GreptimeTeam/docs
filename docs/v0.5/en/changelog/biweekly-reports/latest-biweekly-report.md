@@ -1,67 +1,64 @@
-# Biweekly Report - Explore More SQL Examples in the GreptimeDB Playground
-
+# Biweekly Report - v0.5.1 Update Enhances Remote WAL to Support Cloud-Native Applications
+January 10, 2024
 ## Summary
 Together with our global community of contributors, GreptimeDB continues to evolve and flourish as a growing open-source project. We are grateful to each and every one of you.
 
 In the past two weeks, we have made steady progress. Below are some highlights:
 
-- Complete remote WAL's basic framework;
+- v0.5 has been successfully released, with highlights of the new version featuring:
+    - Key functionality for cloud-native architecture: Remote WAL
+    - A brand new storage engine: Metric Engine
 
-- HTTP SQL API now features the capability to return SQL query results in the InfluxDB v1 format;
+- PromQL enhancement: Added support for the `OR` operator, now fully supporting all set operators in PromQL.
 
-- Support concurrent Parquet acquisition to improve query performance;
+- Significant expansion of system tables: Added 20+ new tables to the `INFORMATION_SCHEMA`.
 
-- The Inverted Index and Metric Engine are under full development.
+- Query performance optimization: Implemented predicate pushdown for the `INFORMATION_SCHEMA` tables.
+
+- Feature development progress: Full-speed development of Region Migration, Write Cache, and Inverted Index features.
 
 ## Contributors
-For the past two weeks, our community has been super active with a total of 56 PRs merged. 5 PRs from 3 individual contributors merged successfully and lots pending to be merged.
+For the past two weeks, our community has been super active with a total of 76 PRs merged. 12 PRs from 6 individual contributors merged successfully and lots pending to be merged.
 
 Congrats on becoming our most active contributors in the past 2 weeks:
 
-- @[Dysprosium](https://github.com/Dysprosium0626) ([db#2919](https://github.com/GreptimeTeam/greptimedb/pull/2919))
+- @[AntiTopQuark](https://github.com/AntiTopQuark) ([db#3031](https://github.com/GreptimeTeam/greptimedb/pull/3031))
 
-- @[NiwakaDev](https://github.com/NiwakaDev) ([docs#712](https://github.com/GreptimeTeam/docs/pull/712))
+- @[Clayton Collie](https://github.com/ccollie) ([docs#752](https://github.com/GreptimeTeam/docs/pull/752))
 
-- @[tisonkun](https://github.com/tisonkun) ([db#2906](https://github.com/GreptimeTeam/greptimedb/pull/2906) [db#2898](https://github.com/GreptimeTeam/greptimedb/pull/2898) [db#2896](https://github.com/GreptimeTeam/greptimedb/pull/2896))
+- @[ClSlaid](https://github.com/ClSlaid) ([db#3084](https://github.com/GreptimeTeam/greptimedb/pull/3084))
 
-👏  Welcome our new contributor @[Dysprosium](https://github.com/Dysprosium0626) to our community, and congratulations on successfully merging his first PR. 
+- @[dimbtp](https://github.com/dimbtp) ([db#3060](https://github.com/GreptimeTeam/greptimedb/pull/3060) [db#3057](https://github.com/GreptimeTeam/greptimedb/pull/3057) [db#3054](https://github.com/GreptimeTeam/greptimedb/pull/3054))
+
+- @[SSebo](https://github.com/SSebo) ([db#2985](https://github.com/GreptimeTeam/greptimedb/pull/2985))
+
+- @[tisonkun](https://github.com/tisonkun) ([db#3080](https://github.com/GreptimeTeam/greptimedb/pull/3080) [dashboard#396](https://github.com/GreptimeTeam/dashboard/pull/396)[docs#748](https://github.com/GreptimeTeam/docs/pull/748) [docs#733](https://github.com/GreptimeTeam/docs/pull/733) [db#2996](https://github.com/GreptimeTeam/greptimedb/pull/2996))
+
+<p><img src="/blogs/2024-01-10-biweekly-report/newcontributor.png" alt="meetup" style="width: 70%; margin: 0 auto"></p>
+
+👏  Welcome contributor @[AntiTopQuark](https://github.com/AntiTopQuark) @[Clayton Collie](https://github.com/ccollie) @[ClSlaid](https://github.com/ClSlaid) @[dimbtp](https://github.com/dimbtp) to the community as new contributors, and congratulations on successfully merging their first PR!
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR
-### [#2917](https://github.com/GreptimeTeam/greptimedb/pull/2917) HTTP SQL API now features the capability to return SQL query results in the InfluxDB v1 format
-We support returning the query in influxdb v1 result format, for example, we can send the following request: `http://ip:port/v1/sql?db=public&format=influxdb_v1&epoch=ns`.
-The epoch precision can be one of `[ns,u,µ,ms,s]`.
+### [#2988](https://github.com/GreptimeTeam/greptimedb/pull/2988) Support for using a single Etcd instance to serve multiple GreptimeDB clusters
+By introducing the `--store-key-prefix` configuration option, administrators can specify a prefix for metasrv to avoid key collisions.
 
-### [#2935](https://github.com/GreptimeTeam/greptimedb/pull/2935) Added some tables to `information_schema`
-Introduce `information_schema`, which provides an ANSI-standard way of viewing system metadata, and we add `engines`, `column_privileges` and `column_statistics` to `information_schema` now.
+### [#2992](https://github.com/GreptimeTeam/greptimedb/pull/2992) New configuration item to specify the default timezone for database queries
+The `default_time_zone` option has been added to the configuration of the standalone mode and the Frontend component, enabling users to set the system timezone, which defaults to UTC. When a new session is established, the system timezone will become the user's default timezone, but users can change the timezone using `SET time_zone = 'UTC'`.
 
-For example, we can view the system's engines through the following SQL statement.
+### [#3091](https://github.com/GreptimeTeam/greptimedb/pull/3091) Performance optimization for queries on the `INFORMATION_SCHEMA` tables, supporting the pushdown of filters
+This optimization reduces memory consumption when constructing system table results and speeds up queries.
 
-```sql
-mysql> select * from engines;
-+--------+---------+-------------------------------------+--------------+------+------------+
-| engine | support | comment                             | transactions | xa   | savepoints |
-+--------+---------+-------------------------------------+--------------+------+------------+
-| mito   | DEFAULT | Storage engine for time-series data | NO           | NO   | NO         |
-+--------+---------+-------------------------------------+--------------+------+------------+
-```
+### [#3047](https://github.com/GreptimeTeam/greptimedb/pull/3047) Optimized network overhead for GreptimeDB's self-importing Metrics
+Improvements to the `ExportMetricHandler` behavior in standalone mode and Frontend component have been made to avoid unnecessary network communication.
 
-### [#2930](https://github.com/GreptimeTeam/greptimedb/pull/2930) Allowed initializing regions in background
-This feature allows users to initiate the startup process for all regions in the background, without delaying or blocking the startup process. As a result, users can start using the database more quickly.
-
-### [#2959](https://github.com/GreptimeTeam/greptimedb/pull/2959) Supported concurrent fetching of parquet files with ranges
-Previously, we obtained the parquet file sequentially, and now it is optimized for concurrent acquisition. Under TSBS benchmark, some scenarios have an improvement of more than 175%.
+### [#3024](https://github.com/GreptimeTeam/greptimedb/pull/3024) Implemented the `OR` logical operator in PromQL
+A new special `UNION` operator (`OR` in PromQL) has been introduced specifically for certain PromQL query scenarios. The operator takes two inputs, outputs all columns from the left child, and uses the columns specified by `compare_keys` to check for collision. In case of collision, if they all originate from the right child, only the first row is kept; if from the left child, the corresponding row from the right child is discarded. The output includes all columns from both the left and right children, and the row order is not maintained.
 
 ## Good first issue
-[#2931](https://github.com/GreptimeTeam/greptimedb/issues/2931)
-Information_schema improvements
+[#3004](https://github.com/GreptimeTeam/greptimedb/issues/3004) Add checksum verification mechanism to manifest file
 
-[#2995](https://github.com/GreptimeTeam/greptimedb/issues/2995)
-Make the stdout log appender configurable
+[#3044](https://github.com/GreptimeTeam/greptimedb/issues/3044) Add more tests for `MetaPeerClientRef`
 
-## New Things
-### Play more SQL statements in PLAYGROUND now
-The 'Getting Started' documentation has been updated with new data sources, along with the inclusion of new Range Query SQL statements. Additionally, a weather-related example demonstrating the Range Query has been added for enhanced clarity and practical application.
-
-Try now: https://greptime.com/playground/
+[#3046](https://github.com/GreptimeTeam/greptimedb/issues/3046) Implement the `KvBackend` trait for `MetaPeerClient`
