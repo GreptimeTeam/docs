@@ -272,8 +272,8 @@ newCpu.setHost("host1");
 // The same time index `1703832681000`
 newCpu.setTs(1703832681000L);
 // The new value: cpu_user = `0.80`, cpu_sys = `0.81`
-cpu.setCpuUser(0.23);
-cpu.setCpuSys(0.12);
+cpu.setCpuUser(0.80);
+cpu.setCpuSys(0.81);
 
 // overwrite the existing data
 Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
