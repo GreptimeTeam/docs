@@ -34,7 +34,7 @@ Congrats on becoming our most active contributors in the past 2 weeks:
 
 - @[tisonkun](https://github.com/tisonkun) ([db#3080](https://github.com/GreptimeTeam/greptimedb/pull/3080) [dashboard#396](https://github.com/GreptimeTeam/dashboard/pull/396)[docs#748](https://github.com/GreptimeTeam/docs/pull/748) [docs#733](https://github.com/GreptimeTeam/docs/pull/733) [db#2996](https://github.com/GreptimeTeam/greptimedb/pull/2996))
 
-<p><img src="/blogs/2024-01-10-biweekly-report/newcontributor.png" alt="meetup" style="width: 70%; margin: 0 auto"></p>
+<p><img src="/biweekly-images/newcontributor.png" alt="contributors" style="width: 70%; margin: 0 auto"></p>
 
 👏  Welcome contributor @[AntiTopQuark](https://github.com/AntiTopQuark) @[Clayton Collie](https://github.com/ccollie) @[ClSlaid](https://github.com/ClSlaid) @[dimbtp](https://github.com/dimbtp) to the community as new contributors, and congratulations on successfully merging their first PR!
 
