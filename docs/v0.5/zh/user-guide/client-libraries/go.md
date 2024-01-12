@@ -7,21 +7,20 @@ template: template.md
 
 {template ingester-lib-introduction%
 
-The Go ingester SDK provided by GreptimeDB is a lightweight,
-concurrent-safe library that is easy to use with the metric struct.
+GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使用起来非常简单。
 
 %}
 
 
 {template ingester-lib-installation%
 
-Use the following command to install the GreptimeDB client library for Go:
+使用下方的命令安装 Go Ingest SDK：
 
 ```shell
 go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2 google.golang.org/grpc google.golang.org/grpc/credentials/insecure
 ```
 
-Import the library in your code:
+引入到代码中：
 
 ```go
 import (
@@ -58,7 +57,7 @@ client, _ := greptime.NewClient(cfg)
 
 {template row-object%
 
-The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
+Go Ingest SDK 使用 `Series` 来表示一行数据，多个 `Series` 可以添加到 `Metric` 中，然后写入到 GreptimeDB 中。
 
 %}
 
@@ -163,39 +162,38 @@ res, _ := client.Insert(context.Background(), insertsRequest)
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package).
+有关更多可运行的代码片段和常用方法的解释，请参阅[示例](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package)。
 
 %}
 
 {template ingester-lib-reference%
 
-- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
+- [API 文档](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
 
 %}
 
 
 {template recommended-query-library%
 
-We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly.
+我们推荐使用 [Gorm](https://gorm.io/) 库来查询数据。
 
 %}
 
 {template query-library-installation%
 
-Use the following command to install the Gorm library:
+使用下方的命令安装 Gorm：
 
 ```shell
 go get -u gorm.io/gorm
 ```
 
-and install the MySQL driver as the example:
+以 MySQL 为例安装 driver：
 
 ```shell
-# MySQL
 go get -u gorm.io/driver/mysql
 ```
 
-Then import the libraries in your code:
+引入到代码中：
 
 ```go
 import (
@@ -205,6 +203,7 @@ import (
 ```
 
 %}
+
 
 {template query-library-connect%
 
@@ -237,14 +236,15 @@ if err != nil {
 m.DB = db
 ```
 
+%}
+
 {template query-library-raw-sql%
 
 ```go
 type Monitor struct {
-	ID          int64     `gorm:"primaryKey"`
-	Host        string    `gorm:"column:host"`
+	Host        string    `gorm:"column:host;primaryKey"`
+	Ts          time.Time `gorm:"column:ts;primaryKey"`
 	Cpu         float64   `gorm:"column:cpu"`
-	Ts          time.Time `gorm:"column:ts"`
 }
 
 func (Monitor) TableName() string {
@@ -260,7 +260,7 @@ db.Raw("SELECT host, cpu, ts FROM users WHERE ts > ?", 1701360000000).Scan(&resu
 
 {template query-lib-link%
 
-[GORM](https://gorm.io/docs/index.html)
+[Gorm](https://gorm.io/docs/index.html)
 
 %}
 

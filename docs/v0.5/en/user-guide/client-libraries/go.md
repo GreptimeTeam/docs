@@ -191,7 +191,6 @@ go get -u gorm.io/gorm
 and install the MySQL driver as the example:
 
 ```shell
-# MySQL
 go get -u gorm.io/driver/mysql
 ```
 
@@ -236,6 +235,7 @@ if err != nil {
 }
 m.DB = db
 ```
+%}
 
 {template query-library-raw-sql%
 
