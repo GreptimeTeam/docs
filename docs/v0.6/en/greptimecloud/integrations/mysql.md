@@ -28,10 +28,17 @@ MariaDB's CLI has slightly different `ssl` option with original MySQL
 mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 ```
 
-## JDBC URL
+## URL
 
 Use following connect string for your JDBC client.
 
 ```
 jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
+```
+
+And if you are using client like Python, use following url to connect to your
+instance.
+
+```
+mysql://<username>:<password>@<host>:4002/<dbname>
 ```

@@ -26,10 +26,16 @@ MariaDB CLI 与原始的 MySQL 的 `ssl` 参数有些许不同：
 mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 ```
 
-## JDBC URL
+## URL
 
 使用以下连接字符串连接你的 JDBC 客户端。
 
 ```
 jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
+```
+
+如果你使用 Python 等语言的客户端，也可以复制以下 URL 进行连接
+
+```
+mysql://<username>:<password>@<host>:4002/<dbname>
 ```
