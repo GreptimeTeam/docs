@@ -241,10 +241,9 @@ m.DB = db
 
 ```go
 type Monitor struct {
-	ID          int64     `gorm:"primaryKey"`
-	Host        string    `gorm:"column:host"`
+	Host        string    `gorm:"column:host;primaryKey"`
+	Ts          time.Time `gorm:"column:ts;primaryKey"`
 	Cpu         float64   `gorm:"column:cpu"`
-	Ts          time.Time `gorm:"column:ts"`
 }
 
 func (Monitor) TableName() string {
