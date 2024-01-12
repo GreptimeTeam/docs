@@ -115,39 +115,45 @@ SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 
 ### Filter by time index
 
-Filtering data by time index is a key feature for time series databases.
-GreptimeDB supports `RFC3339`, `ISO8601`, and UNIX timestamp formats to make it easier for you to write time index constraints.
+Filtering data by the time index is a crucial feature in time series databases.
 
-For example, the following queries demonstrate the usage of the three formats for filtering data:
+When working with Unix time values, the database treats them based on the type of the column value.
+For instance, if the `ts` column in the `monitor` table has a value type of `TimestampMillisecond`,
+you can use the following query to filter the data:
+
+The Unix time value `1667446797000` corresponds to the `TimestampMillisecond` type。
 
 ```sql
--- RFC3339
-SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57Z';
--- ISO8601
-SELECT * FROM monitor WHERE ts > '2022-11-03T03:39:57+08:00';
--- UNIX timestamp
 SELECT * FROM monitor WHERE ts > 1667446797000;
 ```
 
-You can also use time and date functions to filter data.
-<!-- Here are some examples of using time and date functions in the `WHERE` clause. -->
+When working with a Unix time value that doesn't have the precision of the column value,
+you need to use the `::` syntax to specify the type of the time value.
+This ensures that the database correctly identifies the type.
+
+For example, `1667446797` represents a timestamp in seconds,
+which is different from the default millisecond timestamp of the `ts` column.
+You need to specify its type as `TimestampSecond` using the `::TimestampSecond` syntax.
+This informs the database that the value `1667446797` should be treated as a timestamp in seconds.
+
+```sql
+select * from monitor where ts > 1667446797::TimestampSecond;
+```
+<!-- TODO: link to fresh data types doc -->
+
+When using standard `RFC3339` or `ISO8601` string literals,
+you can directly use them in the filter condition since the precision is clear:
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408';
+```
+
+Time and date functions are also supported in the filter condition.
 For example, use the `now()` function and the `INTERVAL` keyword to retrieve data from the last 5 minutes:
 
 ```sql
 SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
-
-<!-- Use the `arrow_cast` function to cast the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` with millisecond resolution) to the timestamp type with millisecond precision:
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
-```
-
-Use the `::` grammar to cast the string literal to the timestamp type.
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
-``` -->
 
 For date and time functions, please refer to [Functions](/reference/sql/functions.md) for more information.
 

@@ -111,38 +111,40 @@ SELECT * FROM monitor WHERE host='127.0.0.1' AND ts > '2022-11-03 03:39:57';
 ### 使用时间索引过滤数据
 
 按照时间索引来过滤数据是时序数据库的一个关键特性。
-GreptimeDB 支持 `RFC3339`、`ISO8601` 和 UNIX 时间戳格式来过滤数据，以便你更方便的写时间索引的约束条件。
 
-例如，下面的查询展示了三种格式的时间索引过滤数据的用法：
+当处理 Unix 时间值时，数据库会默认将其类型认定为相关列的值类型。
+例如，当 `monitor` 表中的 `ts` 列的值类型为 `TimestampMillisecond` 时，
+你可以使用下面的查询来过滤数据：
+
+Unix 时间值 `1667446797000` 表示一个以毫秒为单位的时间戳。
 
 ```sql
--- RFC3339
-SELECT * FROM monitor WHERE ts > '2022-11-03 03:39:57Z';
--- ISO8601
-SELECT * FROM monitor WHERE ts > '2022-11-03T03:39:57+08:00';
--- UNIX timestamp
 SELECT * FROM monitor WHERE ts > 1667446797000;
 ```
 
+当处理时间精度为非默认类型的 Unix 时间值时，你需要使用 `::` 语法来指定时间的类型。
+这样可以确保数据库正确地识别时间的类型。
+
+例如 `1667446797` 表示一个以秒为单位的时间戳，不是 `ts` 列默认的毫秒时间戳。
+你需要使用 `::TimestampSecond` 语法来指定它的类型为 `TimestampSecond` 来告知数据库 `1667446797` 应该被视为以秒为单位的时间戳。
+
+```sql
+select * from monitor where ts > 1667446797::TimestampSecond;
+```
+<!-- TODO: link to fresh data types doc -->
+
+对于标准的 `RFC3339` 或 `ISO8601` 字符串，由于其具备明确的精度，你可以直接在过滤条件中使用它们：
+
+```sql
+select * from monitor where ts > '2022-07-25 10:32:16.408';
+```
+
 你还可以使用时间函数来过滤数据。
-<!-- Here are some examples of using time and date functions in the `WHERE` clause. -->
 例如，使用 `now()` 函数和 `INTERVAL` 关键字来获取最近 5 分钟的数据：
 
 ```sql
 SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
-
-<!-- Use the `arrow_cast` function to cast the number literal `1650252336408` (Unix Epoch `2022-04-18 03:25:36.408` with millisecond resolution) to the timestamp type with millisecond precision:
-
-```sql
-select * from monitor where ts > arrow_cast(1650252336408, 'Timestamp(Millisecond, None)');
-```
-
-Use the `::` grammar to cast the string literal to the timestamp type.
-
-```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408'::timestamp;
-``` -->
 
 请参考 [Functions](/reference/sql/functions.md) 获取更多时间函数信息。
 
