@@ -7,7 +7,7 @@
 
 ## Write Data
 
-{template write-data%}
+{template write-data%%}
 
 ## Visualize Data with Grafana
 <!--@include: ./visualize-data-by-grafana.md-->

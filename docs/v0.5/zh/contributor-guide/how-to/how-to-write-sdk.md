@@ -5,8 +5,8 @@ GreptimeDB 有 2 个 gRPC 服务。一个是 GreptimeDB 自己定义的，另一
 
 > 目前，GreptimeDB 有 2 个 gRPC SDK，分别由 Java 和 Go 实现。参见它们的 SDK 文档：
 >
-> - [Java](/reference/sdk/java.md)
-> - [Go](/reference/sdk/go.md)
+> - [Java](/user-guide/client-libraries/java.md)
+> - [Go](/user-guide/client-libraries/go.md)
 
 ## `GreptimeDatabase` 服务
 

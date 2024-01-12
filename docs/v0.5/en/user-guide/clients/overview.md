@@ -8,7 +8,7 @@ data through gRPC endpoint while using MySQL client to read them.
 
 ## Authentication
 
-Refer to [Authentication](./authentication.md) to learn how to config username and password for GreptimeDB.
+Please refer to [Authentication](./authentication.md) to learn how to config username and password for GreptimeDB.
 
 ## Protocols
 
@@ -18,6 +18,10 @@ Refer to [Authentication](./authentication.md) to learn how to config username a
 - [PostgreSQL](./postgresql.md)
 - [OpenTelemetry Protocol(OTLP)](./otlp.md)
 - [HTTP API](./http-api.md)
-- SDK Libraries
-  - [Go](./sdk-libraries/go.md)
-  - [Java](./sdk-libraries/java.md)
+
+## Client SDK Libraries
+
+Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
+They offer functionality for writing and querying data,
+making it easier to integrate GreptimeDB into your applications.
+For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) documentation.

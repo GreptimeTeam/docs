@@ -14,6 +14,6 @@ template: quick-start-template.md
 pipx run --no-cache greptime-cloud-quick-start -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-}
+%}
 
 </docs-template>

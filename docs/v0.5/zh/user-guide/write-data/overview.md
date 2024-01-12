@@ -6,7 +6,7 @@
 
 ### 自动生成表结构
 
-GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需提前创建表。当使用协议 [gRPC](../clients/sdk-libraries/overview.md#grpc)、[InfluxDB](./influxdb-line.md)、[OpenTSDB](./opentsdb.md) 和 [Prometheus](./prometheus.md) 写入数据时，表和列将会被自动创建。必要时，GreptimeDB 会自动添加所需的列，以确保用户的数据正确保存。
+GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需提前创建表。当使用协议支持 gRPC 协议的 [SDK](/user-guide/client-libraries/overview.md)、[InfluxDB](./influxdb-line.md)、[OpenTSDB](./opentsdb.md) 和 [Prometheus](./prometheus.md) 写入数据时，表和列将会被自动创建。必要时，GreptimeDB 会自动添加所需的列，以确保用户的数据正确保存。
 
 ## 更新数据
 
@@ -28,11 +28,17 @@ GreptimeDB 的自动生成表结构功能可以使你在写入数据之前无需
 
 关于列类型，请参考[数据模型](../concepts/data-model.md)。
 
-## 客户端协议
+## 客户端
 
-- [Java](./sdk-libraries/java.md)
-- [Go](./sdk-libraries/go.md)
+## 协议或语言
+
 - [SQL](./sql.md)
 - [InfluxDB line](./influxdb-line.md)
 - [OpenTSDB](./opentsdb.md)
 - [Prometheus Storage](./prometheus.md)
+
+## 客户端库
+
+客户端库提供了一种方便的方式来连接 GreptimeDB 并与数据交互。
+它们提供了写入和查询数据的功能，使得将 GreptimeDB 集成到你的应用程序中变得更加容易。
+请参考[客户端库](/user-guide/client-libraries/overview.md)文档获取更多信息。
