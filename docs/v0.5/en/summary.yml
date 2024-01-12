@@ -70,6 +70,7 @@
     - run-on-android
     - monitoring
     - tracing
+    - kafka-remote-wal
     # TODO
     # - alert
     # - import-data
