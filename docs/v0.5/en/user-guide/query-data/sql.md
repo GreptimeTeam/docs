@@ -127,12 +127,13 @@ The Unix time value `1667446797000` corresponds to the `TimestampMillisecond` ty
 SELECT * FROM monitor WHERE ts > 1667446797000;
 ```
 
-When working with a Unix time value that doesn't have millisecond precision,
+When working with a Unix time value that doesn't have the precision of the column value,
 you need to use the `::` syntax to specify the type of the time value.
 This ensures that the database correctly identifies the type.
 
-For example, the Unix time value `1667446797` that represents a timestamp in seconds,
-you need to specify its type as `TimestampSecond` using the `::TimestampSecond` syntax.
+For example, `1667446797` represents a timestamp in seconds,
+which is different from the default millisecond timestamp of the `ts` column.
+You need to specify its type as `TimestampSecond` using the `::TimestampSecond` syntax.
 This informs the database that the value `1667446797` should be treated as a timestamp in seconds.
 
 ```sql
