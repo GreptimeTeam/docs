@@ -1,70 +1,102 @@
 # Monitoring
 
-The GreptimeDB exposes the Prometheus metrics, and the users can also use [Prometheus](https://prometheus.io/) to collect the metrics.
+Monitoring is a crucial part of database administration. By monitoring metrics, you can assess the state of the database, maintain the deployment without crisis, and diagnose problems when they occur.
 
-## Promethues Configuration
+For detailed metrics of GreptimeDB, please refer to the [Metrics Detail](#metrics-detail) section.
 
-Write a Prometheus configuration file and save it as `prometheus.yml`:
-```
+## Start GreptimeDB
+
+Please refer to the [documentation](/getting-started/installation/overview) to learn how to start GreptimeDB.
+
+## Export metrics to Prometheus
+
+GreptimeDB supports exporting metrics to Prometheus.
+Before configuring export of metrics, you need to setup Prometheus by following their official [documentation](https://prometheus.io/docs/prometheus/latest/installation/).
+
+To scrape metrics from GreptimeDB, write a Prometheus configuration file and save it as `prometheus.yml`:
+
+```yml
 global:
   scrape_interval: 15s 
 
 scrape_configs:
   - job_name: 'greptimedb'
     static_configs:
+      # Assuming that GreptimeDB is running locally.
+      # The default HTTP port of 4000.
       - targets: ['localhost:4000']
 ```
 
-## Start GreptimeDB and Prometheus
-### Binary
+Start Prometheus using the configuration file.
+For example, bind-mount the configuration file when starting Prometheus using Docker:
 
-Use Binary to deploy Prometheus and GreptimeDB:
-
-1. Install GreptimeDB according to the [documentation](/getting-started/installation/greptimedb-standalone#binary).
-
-2. Visit [the official documentation for Prometheus](https://prometheus.io/download/) to download the binary. Afterward, execute the following command:
-
-```
-./prometheus --config.file=prometheus.yml
-```
-
-Access Prometheus by entering `localhost:9090` in your web browser.
-
-
-### Docker
-
-Use Docker to deploy Prometheus and GreptimeDB:
-
-1. Install GreptimeDB according to the [documentation](/getting-started/installation/greptimedb-standalone#docker).
-
-2. Start the Prometheus:
-```
+```bash
 docker run \
   -p 9090:9090 \
   -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
   prom/prometheus
 ```
 
-### Kubernetes
+## Save metrics to GreptimeDB itself
 
-1. Install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) chart:
-```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install prometheus prometheus-community/kube-prometheus-stack
+You can also save metrics to GreptimeDB itself for convenient querying and analysis using SQL statements.
+
+### Standalone
+
+In standalone mode, you can simply use `self_import` to export metrics.
+The default database used by `self_import` is `information_schema`.
+You can also create another database for saving system metrics.
+The configuration looks like this:
+
+```toml
+[export_metrics]
+enable=true
+# The interval of writing metrics.
+write_interval = "30s"
+[export_metrics.self_import]
+# If you want to save metrics to another database, change the value of `db`
+db = "information_schema"
 ```
 
-2. Use [gtctl](/user-guide/operations/gtctl) to deploy GreptimeDB cluster:
-```
-gtctl cluster create mycluster -n default \
-  --set cluster.prometheusMonitor.enabled=true \
-  --set cluster.prometheusMonitor.path="/metrics" \
-  --set cluster.prometheusMonitor.port="http" \
-  --set cluster.prometheusMonitor.interval="30s" \
-  --set cluster.prometheusMonitor.honorLabels=true \
-  --set cluster.prometheusMonitor.labelsSelector.release="prometheus"
+### Distributed cluster
+
+Configuration files need to be written for each component in the cluster.
+
+#### Frontend
+
+you can simply use `self_import` to export metrics.
+The default database used by `self_import` is `information_schema`.
+You can also create another database for saving system metrics.
+
+```toml
+[export_metrics]
+enable=true
+# The interval of writing metrics.
+write_interval = "30s"
+[export_metrics.self_import]
+# If you want to save metrics to another database, change the value of `db`
+db = "information_schema"
 ```
 
+#### Datanode
+
+```toml
+[export_metrics]
+enable=true
+write_interval = "30s"
+[export_metrics.remote_write]
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
+```
+
+#### MetaSrv
+
+```toml
+[export_metrics]
+enable=true
+write_interval = "30s"
+[export_metrics.remote_write]
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
+```
 
 ## Metrics Detail
 You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB. We will add more documents of the metrics sooner.
