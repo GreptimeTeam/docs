@@ -99,6 +99,7 @@
     - influxdb
     - otlp
     - vector
+    - streamlit
     - SDK-Libraries:
       - go
       - java

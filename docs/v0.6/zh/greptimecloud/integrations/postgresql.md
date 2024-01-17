@@ -28,10 +28,16 @@ psql -h <host> -p 4003 -U <username> -d <dbname> -W
 host=<host> port=4003 dbname=<dbname> user=<username> password=<password>
 ```
 
-## Postgres JDBC URL
+## URL
 
 在你的 Postgres JDBC 客户端使用以下 URL。
 
 ```
 jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=<password>&ssl=true
+```
+
+如果你使用 Python 等语言的数据库客户端，也可以通过这个 URL 连接到服务
+
+```
+postgresql://<username>:<password>@<host>:4003/<dbname>
 ```

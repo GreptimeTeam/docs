@@ -31,10 +31,16 @@ rust-postgres and more.
 host=<host> port=4003 dbname=<dbname> user=<username> password=<password>
 ```
 
-## Postgres JDBC URL
+## URL
 
 Using the URL below with your Postgres JDBC client.
 
 ```
 jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=<password>&ssl=true
+```
+
+If you are using clients from Python, you might be able to use following URL
+
+```
+postgresql://<username>:<password>@<host>:4003/<dbname>
 ```
