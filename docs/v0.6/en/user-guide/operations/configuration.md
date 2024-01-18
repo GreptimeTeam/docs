@@ -109,17 +109,38 @@ greptime standalone start --help
 
 ## Configuration File
 
+### Examples
+
+Configurations can be used in one or multiple components according to their features.
+You can find all available configurations for each component on GitHub:
+
+- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
+- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
+- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
+
 ### Specify configuration file
 
-You can specify the configuration file by using the command line arg `-c [file_path]`, for example:
+You can specify the configuration file by using the command line arg `-c [file_path]`.
 
 ```sh
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-### Common configurations
+For example, start the standalone mode as below:
 
-Common protocol configurations in `frontend` and `standalone` sub command:
+```bash
+greptime standalone start -c standalone.example.toml
+```
+
+### Protocol options
+
+Protocol options are valid in `frontend` and `standalone` sub command, which specify the protocol server address and other protocol-related options.
+
+Below is an example configuration with default values. 
+The HTTP and gRPC protocols must be enabled for the database to work correctly.
+The other protocols are optional.
+If you want to disable certain options, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
 
 ```toml
 [http]
@@ -163,9 +184,7 @@ enable = true
 enable = true
 ```
 
-All of these protocols except HTTP and gRPC are optional, the default values are listed above. If you want to disable some options, such as OpenTSDB protocol support, you can set the `enable` to `false`.
-
-#### Protocol options
+The following table describes the options in detail:
 
 | Option     | Key          | Type    | Description                                                                     |
 | ---------- | ------------ | ------- | ------------------------------------------------------------------------------- |
@@ -193,15 +212,15 @@ All of these protocols except HTTP and gRPC are optional, the default values are
 |            | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
 |            | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 
-#### Node options
+<!-- #### Node options
 
 There are also some node options in common:
 
 | Option | Key  | Type   | Description                                                |
 | ------ | ---- | ------ | ---------------------------------------------------------- |
-|        | mode | String | Node running mode, includes "standalone" and "distributed" |
+|        | mode | String | Node running mode, includes "standalone" and "distributed" | -->
 
-#### Storage options
+### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
 
@@ -259,7 +278,7 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-#### Custom multiple storage engines
+### Storage engine provider
 
 `[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you can create a table with a specified storage, see [create table](/reference/sql/create#create-table):
 
@@ -281,7 +300,7 @@ credential_path = "<gcs credential path>"
 
 All configured providers can be used as the `storage` option when creating tables.
 
-#### Object storage cache
+### Object storage cache
 
 When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
 
@@ -317,7 +336,30 @@ sync_write = false
 - `purge_threshold` and `purge_interval`: control the purging of wal files, default is `4GB`.
 - `sync_write`: whether to call `fsync` when writing every log.
 
-### Storage engine options
+### Logging options
+
+`frontend`, `metasrv`, `datanode` and `standalone` can all configure log and tracing related parameters in the `[logging]` section:
+
+```toml
+[logging]
+dir = "/tmp/greptimedb/logs"
+level = "info"
+enable_otlp_tracing = false
+otlp_endpoint = "localhost:4317"
+tracing_sample_ratio = 1.0
+append_stdout = true
+```
+
+- `dir`: log output directory.
+- `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
+- `enable_otlp_tracing`: whether to turn on distributed tracing, not turned on by default.
+- `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
+- `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
+- `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
+
+How to use distributed tracing, please reference [Tracing](./tracing.md)
+
+### Region engine options
 
 The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, there is only one storage engine available, which is `mito`.
 
@@ -337,25 +379,11 @@ global_write_buffer_reject_size = "2GB"
 - `global_write_buffer_size`: Size of the write buffer, default is `1GB`
 - `global_write_buffer_reject_size`: Reject write requests when the size of data in the write buffer exceeds `global_write_buffer_reject_size`. It needs to be larger than `global_write_buffer_size`, default is `2GB`
 
+### Specify meta client
 
-### Standalone
-
-A sample standalone configuration can be found at [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml).
-
-Start the standalone mode as below:
-
-```
-greptime standalone start -c standalone.example.toml
-```
-
-### Frontend in distributed mode
-
-Configure frontend in distributed mode:
+The `meta_client` options are valid in `datanode` and `frontend` mode, which specify the Metasrv client information.
 
 ```toml
-mode = "distributed"
-
-[meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout = "3s"
 connect_timeout = "1s"
@@ -363,43 +391,14 @@ ddl_timeout = "10s"
 tcp_nodelay = true
 ```
 
-Specify the running mode to be `"distributed"`.
-
-The `meta_client` configures the Metasrv client, including:
-
-- `metasrv_addrs`, The Metasrv address list.
-- `timeout`, operation timeout, `3s` by default.
+- `metasrv_addrs`: The Metasrv address list.
+- `timeout`: operation timeout, `3s` by default.
 - `connect_timeout`, connect server timeout, `1s` by default.
 - `ddl_timeout`, DDL execution timeout, `10s` by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
-A sample frontend configuration for distributed mode can be found at [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml).
 
-### Datanode in distributed mode
-
-Configure datanode in distributed mode:
-
-```toml
-node_id = 42
-mode = "distributed"
-rpc_hostname = "127.0.0.1"
-rpc_addr = "127.0.0.1:3001"
-rpc_runtime_size = 8
-
-[meta_client]
-metasrv_addrs = ["127.0.0.1:3002"]
-timeout = "3s"
-connect_timeout = "1s"
-tcp_nodelay = false
-```
-
-Datanode in distributed mode should set **different** `node_id` in different nodes.
-
-A sample datanode configuration for distributed mode can be found at [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml).
-
-### Metasrv configuration
-
-A sample configuration can be found at [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml).
+### Metasrv-only configuration
 
 ```toml
 # The working home directory.
@@ -428,28 +427,21 @@ use_memory_store = false
 | selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/contributor-guide/metasrv/selector.md)                 |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
-### Logging options
-
-`frontend`, `metasrv`, `datanode` and `standalone` can all configure log and tracing related parameters in the `[logging]` section:
+### Datanode-only configuration
 
 ```toml
-[logging]
-dir = "/tmp/greptimedb/logs"
-level = "info"
-enable_otlp_tracing = false
-otlp_endpoint = "localhost:4317"
-tracing_sample_ratio = 1.0
-append_stdout = true
+node_id = 42
+rpc_hostname = "127.0.0.1"
+rpc_addr = "127.0.0.1:3001"
+rpc_runtime_size = 8
 ```
 
-- `dir`: log output directory.
-- `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
-- `enable_otlp_tracing`: whether to turn on distributed tracing, not turned on by default.
-- `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
-- `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
-- `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-
-How to use distributed tracing, please reference [Tracing](./tracing.md)
+| Key              | Type    | Description                                                                                                                             |
+| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| node_id        | Integer  | The datanode identifier, should be unique.                                    |
+| rpc_hostname        | String  | Hostname of this node.                                                    |
+| rpc_addr        | String  | gRPC server address, `"127.0.0.1:3001"` by default.                           |
+| rpc_runtime_size        | Integer  | # The number of gRPC server worker threads, 8 by default.            |
 
 ## Environment variable
 
