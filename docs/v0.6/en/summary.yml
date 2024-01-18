@@ -70,6 +70,7 @@
     - run-on-android
     - monitoring
     - tracing
+    - region-migration
     # TODO
     # - alert
     # - import-data
