@@ -391,6 +391,8 @@ ddl_timeout = "10s"
 tcp_nodelay = true
 ```
 
+The `meta_client` configures the Metasrv client, including:
+
 - `metasrv_addrs`: The Metasrv address list.
 - `timeout`: operation timeout, `3s` by default.
 - `connect_timeout`, connect server timeout, `1s` by default.
@@ -399,7 +401,7 @@ tcp_nodelay = true
 
 ### Monitor metrics options
 
-Save system metrics to GreptimeDB itself.
+These options are used to save system metrics to GreptimeDB itself.
 For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/operations/monitoring.md) guide.
 
 ```toml
@@ -493,7 +495,7 @@ rpc_runtime_size = 8
 | node_id        | Integer  | The datanode identifier, should be unique.                                    |
 | rpc_hostname        | String  | Hostname of this node.                                                    |
 | rpc_addr        | String  | gRPC server address, `"127.0.0.1:3001"` by default.                           |
-| rpc_runtime_size        | Integer  | # The number of gRPC server worker threads, 8 by default.            |
+| rpc_runtime_size        | Integer  | The number of gRPC server worker threads, 8 by default.            |
 
 ## Environment variable
 
