@@ -40,7 +40,7 @@ docker run \
 ## Save metrics to GreptimeDB itself
 
 You can also save metrics to GreptimeDB itself for convenient querying and analysis using SQL statements.
-This section provides examples of how to configure GreptimeDB to save metrics to itself.
+This section provides some configuration examples.
 For more details about configuration, please refer to the [Monitor metrics options](./configuration.md#monitor-metrics-options).
 
 ### Standalone
