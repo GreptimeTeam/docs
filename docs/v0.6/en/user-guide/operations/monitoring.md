@@ -40,12 +40,12 @@ docker run \
 ## Save metrics to GreptimeDB itself
 
 You can also save metrics to GreptimeDB itself for convenient querying and analysis using SQL statements.
+This section provides examples of how to configure GreptimeDB to save metrics to itself.
+For more details about configuration, please refer to the [Monitor metrics options](./configuration.md#monitor-metrics-options).
 
 ### Standalone
 
 In standalone mode, you can simply use `self_import` to export metrics.
-The default database used by `self_import` is `information_schema`.
-You can also create another database for saving system metrics.
 The configuration looks like this:
 
 ```toml
@@ -65,8 +65,6 @@ Configuration files need to be written for each component in the cluster.
 #### Frontend
 
 you can simply use `self_import` to export metrics.
-The default database used by `self_import` is `information_schema`.
-You can also create another database for saving system metrics.
 
 ```toml
 [export_metrics]
@@ -78,7 +76,9 @@ write_interval = "30s"
 db = "information_schema"
 ```
 
-#### Datanode
+#### Datanode and Metasrv
+
+To export metrics for Datanode and Metasrv, you can use the `remote_write` configuration:
 
 ```toml
 [export_metrics]
@@ -88,15 +88,7 @@ write_interval = "30s"
 url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
 ```
 
-#### MetaSrv
-
-```toml
-[export_metrics]
-enable=true
-write_interval = "30s"
-[export_metrics.remote_write]
-url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
-```
+GreptimeDB is compatible with the Prometheus remote write protocol. For more information, please refer to the [Prometheus remote write](/user-guide/write-data/prometheus.md) documentation.
 
 ## Metrics Detail
 You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB. We will add more documents of the metrics sooner.

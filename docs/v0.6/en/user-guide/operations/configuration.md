@@ -397,6 +397,58 @@ tcp_nodelay = true
 - `ddl_timeout`, DDL execution timeout, `10s` by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
+### Monitor metrics options
+
+Save system metrics to GreptimeDB itself.
+For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/operations/monitoring.md) guide.
+
+```toml
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
+```
+
+- `enable`: Whether to enable export_metrics, `false` by default.
+- `write_interval`: Export time interval.
+
+#### `self_import` method
+
+Only `frontend` and `standalone` support exporting metrics using `self_import` method.
+
+```toml
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
+[export_metrics.self_import]
+db = "information_schema"
+```
+
+- `db`: The default database used by `self_import` is `information_schema`. You can also create another database for saving system metrics.
+
+#### `remote_write` method
+
+The `remote_write` method is supported by `datanode`, `frontend`, `metasrv`, and `standalone`.
+It sends metrics to a receiver compatible with the [Prometheus RemoteWrite protocol](https://prometheus.io/docs/concepts/remote_write_spec/).
+
+```toml
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
+[export_metrics.remote_write]
+# URL specified by Prometheus RemoteWrite protocol
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
+# Some optional HTTP parameters, such as authentication information
+headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
+```
+
+- `url`: URL specified by Prometheus RemoteWrite protocol.
+- `headers`: Some optional HTTP parameters, such as authentication information.
 
 ### Metasrv-only configuration
 
