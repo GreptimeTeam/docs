@@ -35,7 +35,7 @@ curl {YOUR_META_SRV_LEADER_SERVER}:3002/admin/route?table_id={TABLE_ID}
 当起始节点等于目标节点时，Region 迁移不会被执行
 :::
 
-如果你通过 GreptimeDB operator 部署 DB 集群，Datanode 的 `peer_id` 总是从 0 开始递增。例如，有一个3 Datanode DB 集群，则 `peer_id` 应为 0,1,2。
+如果你通过 GreptimeDB operator 部署 DB 集群，Datanode 的 `peer_id` 总是从 0 开始递增。例如，DB 集群有 3 个 Datanode，则 `peer_id` 应为 0,1,2。
 最后，你可以通过以下 HTTP 请求发起 Region 迁移请求：
 
 ```bash
