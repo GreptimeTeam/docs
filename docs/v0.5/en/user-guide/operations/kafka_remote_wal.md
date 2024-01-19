@@ -6,7 +6,7 @@ Before version 0.5, we utilized an embedded [Raft Engine](https://www.pingcap.co
 
 With the release of version [0.5](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.5.0), we transitioned to using a remote storage service as the WAL storage engine, referred to as Remote WAL. [Apache Kafka](https://kafka.apache.org/), widely adopted in the field of stream processing, exhibits excellent distributed fault tolerance and a subscription mechanism based on [Topics](https://www.conduktor.io/kafka/kafka-topics/). This aligns well with GreptimeDB's current requirements for Remote WAL. Hence, in version 0.5, we introduced Apache Kafka as an optional storage engine for WAL.
 
-# How to use Kafka Remote WAL
+## How to use Kafka Remote WAL
 
 ## Step 1: Start Kafka Cluster
 
@@ -14,7 +14,7 @@ If you have already deployed a Kafka cluster, you can skip this step. However, p
 
 
 
-We recommend using [docker compose](https://docs.docker.com/compose/) to start the Kafka cluster. Kafka supports two deployment modes: [KRaft](https://www.conduktor.io/kafka/kafka-kraft-mode/) and [Zookeeper](https://www.conduktor.io/kafka/zookeeper-with-kafka/). You can find docker compose scripts for KRaft and Zookeeper modes [here](https://github.com/confluentinc/kafka-images/blob/master/examples/confluent-server-kraft/docker-compose.yml) and [here](https://github.com/conduktor/kafka-stack-docker-compose) respectively. We advise deploying in KRaft mode, similar to the [docker-compose-standalone.yml](https://github.com/GreptimeTeam/greptimedb/blob/main/tests-integration/fixtures/kafka/docker-compose-standalone.yml) script we use, which is also pasted below for your convenience.
+We recommend using [docker compose](https://docs.docker.com/compose/) to start the Kafka cluster. Kafka supports two deployment modes: [KRaft](https://www.conduktor.io/kafka/kafka-kraft-mode/) and [Zookeeper](https://www.conduktor.io/kafka/zookeeper-with-kafka/). You can find docker compose scripts for KRaft and Zookeeper modes [here](https://github.com/confluentinc/kafka-images/blob/master/examples/confluent-server-kraft/docker-compose.yml) and [here](https://github.com/conduktor/kafka-stack-docker-compose) respectively. We recommend deploying in KRaft mode, similar to the [docker-compose-standalone.yml](https://github.com/GreptimeTeam/greptimedb/blob/main/tests-integration/fixtures/kafka/docker-compose-standalone.yml) script we use, which is also pasted below for your convenience.
 
 ```yaml
 version: '3.8'
@@ -83,7 +83,7 @@ The meanings of each configuration option are as follows:
 - `replication_factor`: Determines the number of brokers to which data from each [partition](https://www.conduktor.io/kafka/kafka-topic-replication/) is replicated. The value of this configuration must be greater than 0 and not exceed the number of brokers.
 - `max_batch_size`: We limit the total size of log entries transmitted in a batch to the value set in this configuration. It's important to note that Kafka, by default, rejects logs exceeding 1MB. Therefore, we recommend setting this configuration to a value not exceeding 1MB. If you do need to increase this configuration, you can refer to this [link](https://www.conduktor.io/kafka/how-to-send-large-messages-in-apache-kafka/) on how to configure Kafka.
 
-### ****Distributed Mode****
+### Distributed Mode
 
 For the distributed mode, Kafka Remote WAL configuration options are distributed across the configuration files of metasrv and datanode. In comparison to the standalone mode, the names, meanings, and default values of the configuration options remain consistent. You can refer to this [link](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/metasrv.example.toml#L46-L78) for an example of metasrv configuration options and this [link](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/datanode.example.toml#L40-L60) for an example of datanode configuration options for the distributed mode.
 
