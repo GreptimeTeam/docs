@@ -6,9 +6,9 @@
 
 随着 [0.5 版本](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.5.0)的发布，我们开始使用远程存储服务作为 WAL 的存储引擎，我们称这样的 WAL 为 Remote WAL。 [Apache Kafka](https://kafka.apache.org/) 被广泛用于流处理领域，它自身的分布式容灾能力，以及基于 [Topic](https://www.conduktor.io/kafka/kafka-topics/) 的订阅机制，能够很好地满足 GreptimeDB 现阶段对 Remote WAL 的需求，因此我们在 0.5 版本中增加 Apache Kafka 作为 WAL 的可选存储引擎。
 
-# **如何使用 Kafka Remote WAL**
+## 如何使用 Kafka Remote WAL
 
-## **Step 1: 启动 Kafka 集群**
+### Step 1: 启动 Kafka 集群
 
 如果您已经部署了 Kafka 集群，您可以跳过此步骤。但请您留意部署时设定的 [advertised listeners](https://www.conduktor.io/kafka/kafka-advertised-host-setting/)，您将在 Step 2 使用它。
 
@@ -60,11 +60,11 @@ kafka  |         advertised.listeners = PLAINTEXT://127.0.0.1:9092
 kafka  | [2024-01-11 07:06:55,554] INFO [KafkaRaftServer nodeId=1] Kafka Server started (kafka.server.KafkaRaftServer)
 ```
 
-## **Step 2: 配置 GreptimeDB**
+### Step 2: 配置 GreptimeDB
 
 目前，GreptimeDB 默认使用 Raft Engine 作为 WAL 的存储引擎。当使用 Kafka Remote WAL 时，您需要通过配置文件手动指定 Kafka 为 WAL 的存储引擎。
 
-### **Standalone 模式**
+#### Standalone 模式
 
 我们将一些需要您特别关注的 Kafka Remote WAL 的配置项摘录如下。关于完整的配置项，您可以查看[这里](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/standalone.example.toml#L83-L124)。
 
@@ -83,13 +83,13 @@ max_batch_size = "1MB"
 - `replication_factor`: 每个 [partition](https://www.conduktor.io/kafka/kafka-topic-replication/) 的数据会复制到指定数量的 brokers 上。该配置项的值必须大于 0，且不大于 brokers 的数量。
 - `max_batch_size`: 我们会限制一批次传输的 log batch 的总大小不超过该配置项所设定的值。需要注意的是，Kafka 默认会拒绝超过 1MB 的 log，所以我们建议您将该配置项设定为不超过 1MB。如您确实需要调大该配置项，您可以参考[这里](https://www.conduktor.io/kafka/how-to-send-large-messages-in-apache-kafka/)以了解如何配置 Kafka。
 
-### **Distributed 模式**
+#### Distributed 模式
 
 对于分布式模式，Kafka Remote WAL 的配置项分布在 metasrv 和 datanode 的配置文件中。与单机模式相比，配置项的名称、含义、默认值均保持一致。您可以在[这里](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/metasrv.example.toml#L46-L78)查看 metasrv 的示例配置项，以及在[这里](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/datanode.example.toml#L40-L60)查看 datanode 的示例配置项。
 
-## **Step 3: 启动 GreptimeDB**
+### Step 3: 启动 GreptimeDB
 
-### **Standalone 模式**
+#### Standalone 模式
 
 假设您正确设置了 GreptimeDB 二进制文件的路径，您可以在终端中执行如下命令，以启动一个 GreptimeDB 单例，并让其使用您在 Step 2 中所设定的配置项。
 
@@ -117,7 +117,7 @@ INFO servers::server: MySQL server started at 127.0.0.1:4002
 
 注意，如您在 Kafka 集群存续的情况下，多次拉起 GreptimeDB，您看到的关于 Kafka 的日志可能有所不同。
 
-### **Distributed 模式**
+#### Distributed 模式
 
 我们提供了 [gtctl](https://docs.greptime.com/user-guide/operations/gtctl#gtctl) 工具以辅助您快速拉起一个 GreptimeDB 集群。为了便于演示，我们使用 gtctl 启动一个 [bare-metal](https://docs.greptime.com/user-guide/operations/gtctl#bare-metal) 集群，包含 1 个 metasrv、1 个 frontend、3 个 datanodes。为此，您需要准备好 gtctl 所需的配置文件 `cluster.yml`。一个示例配置文件的内容如下：
 
@@ -176,7 +176,7 @@ To view dashboard by accessing: http://localhost:4000/dashboard/
 
 默认配置下，您可以在 `~/.gtctl/mycluster/logs` 目录下找到 `mycluster` 集群中各个组件的日志。例如在 `~/.gtctl/mycluster/logs/metasrv.0/log` 日志文件中，您将找到与 [Standalone 模式](https://greptime.feishu.cn/wiki/FtqvwppGLi8tXJkDeslcPNcVn2f#Ko2qdSiJMoQWrzxyeSncW6ppn6e)类似的内容。
 
-# **验证 Kafka Remote WAL 的有效性**
+## 验证 Kafka Remote WAL 的有效性
 
 验证流程可归结为：
 
@@ -195,14 +195,14 @@ To view dashboard by accessing: http://localhost:4000/dashboard/
 ```sql
 CREATE TABLE dist_table(
     ts TIMESTAMP DEFAULT current_timestamp(),
-    n INT,
-    row_id INT,
+    n STRING,
+    row_num INT,
     PRIMARY KEY(n),
     TIME INDEX (ts)
 )
 PARTITION BY RANGE COLUMNS (n) (
-    PARTITION r0 VALUES LESS THAN (5),
-    PARTITION r1 VALUES LESS THAN (9),
+    PARTITION r0 VALUES LESS THAN ("f"),
+    PARTITION r1 VALUES LESS THAN ("z"),
     PARTITION r2 VALUES LESS THAN (MAXVALUE),
 )
 engine=mito;
@@ -211,18 +211,18 @@ engine=mito;
 执行以下命令以写入一定量的数据：
 
 ```sql
-INSERT INTO dist_table(n, row_id) VALUES (1, 1);
-INSERT INTO dist_table(n, row_id) VALUES (2, 2);
-INSERT INTO dist_table(n, row_id) VALUES (3, 3);
-INSERT INTO dist_table(n, row_id) VALUES (4, 4);
-INSERT INTO dist_table(n, row_id) VALUES (5, 5);
-INSERT INTO dist_table(n, row_id) VALUES (6, 6);
-INSERT INTO dist_table(n, row_id) VALUES (7, 7);
-INSERT INTO dist_table(n, row_id) VALUES (8, 8);
-INSERT INTO dist_table(n, row_id) VALUES (9, 9);
-INSERT INTO dist_table(n, row_id) VALUES (10, 10);
-INSERT INTO dist_table(n, row_id) VALUES (11, 11);
-INSERT INTO dist_table(n, row_id) VALUES (12, 12);
+INSERT INTO dist_table(n, row_num) VALUES ("a", 1);
+INSERT INTO dist_table(n, row_num) VALUES ("b", 2);
+INSERT INTO dist_table(n, row_num) VALUES ("c", 3);
+INSERT INTO dist_table(n, row_num) VALUES ("d", 4);
+INSERT INTO dist_table(n, row_num) VALUES ("e", 5);
+INSERT INTO dist_table(n, row_num) VALUES ("f", 6);
+INSERT INTO dist_table(n, row_num) VALUES ("g", 7);
+INSERT INTO dist_table(n, row_num) VALUES ("h", 8);
+INSERT INTO dist_table(n, row_num) VALUES ("i", 9);
+INSERT INTO dist_table(n, row_num) VALUES ("j", 10);
+INSERT INTO dist_table(n, row_num) VALUES ("k", 11);
+INSERT INTO dist_table(n, row_num) VALUES ("l", 12);
 ```
 
 执行以下命令以查询数据：
@@ -234,29 +234,29 @@ SELECT * FROM dist_table;
 如果一切正常，您将看到如下输出（`ts` 列的内容将会不同）：
 
 ```sql
-+----------------------------+----+--------+
-| ts                         | n  | row_id |
-+----------------------------+----+--------+
-| 2024-01-11 08:05:06.535000 |  1 |      1 |
-| 2024-01-11 08:05:06.768000 |  2 |      2 |
-| 2024-01-11 08:05:06.987000 |  3 |      3 |
-| 2024-01-11 08:05:07.206000 |  4 |      4 |
-| 2024-01-11 08:05:07.425000 |  5 |      5 |
-| 2024-01-11 08:05:07.652000 |  6 |      6 |
-| 2024-01-11 08:05:07.871000 |  7 |      7 |
-| 2024-01-11 08:05:08.086000 |  8 |      8 |
-| 2024-01-11 08:05:08.307000 |  9 |      9 |
-| 2024-01-11 08:05:08.534000 | 10 |     10 |
-| 2024-01-11 08:05:08.752000 | 11 |     11 |
-| 2024-01-11 08:05:10.904000 | 12 |     12 |
-+----------------------------+----+--------+
-12 rows in set (0.0687 sec)
++----------------------------+---+---------+
+| ts                         | n | row_num |
++----------------------------+---+---------+
+| 2024-01-19 07:33:34.123000 | a |       1 |
+| 2024-01-19 07:33:34.128000 | b |       2 |
+| 2024-01-19 07:33:34.130000 | c |       3 |
+| 2024-01-19 07:33:34.131000 | d |       4 |
+| 2024-01-19 07:33:34.133000 | e |       5 |
+| 2024-01-19 07:33:34.134000 | f |       6 |
+| 2024-01-19 07:33:34.135000 | g |       7 |
+| 2024-01-19 07:33:34.136000 | h |       8 |
+| 2024-01-19 07:33:34.138000 | i |       9 |
+| 2024-01-19 07:33:34.140000 | j |      10 |
+| 2024-01-19 07:33:34.141000 | k |      11 |
+| 2024-01-19 07:33:34.907000 | l |      12 |
++----------------------------+---+---------+
+12 rows in set (0.0346 sec)
 ```
 
 由于我们在建表时指定了 partition 规则，metasrv 会将该表的 regions 均匀分配到集群中的 datanodes 上。查看 datanode 0 的日志文件 `~/.gtctl/mycluster/logs/datanode.0/log`，您将看到类似如下内容的日志：
 
 ```bash
-INFO mito2::worker::handle_create: A new region created, region: RegionMetadata { column_metadatas: [[ts TimestampMillisecond not null default=Function("current_timestamp()") Timestamp 0], [n Int32 null Tag 1], [row_id Int32 null Field 2]], time_index: 0, primary_key: [1], region_id: 4398046511105(1024, 1), schema_version: 0 }
+INFO mito2::worker::handle_create: A new region created, region: RegionMetadata { column_metadatas: [[ts TimestampMillisecond not null default=Function("current_timestamp()") Timestamp 0], [n String null Tag 1], [row_num Int32 null Field 2]], time_index: 0, primary_key: [1], region_id: 4398046511105(1024, 1), schema_version: 0 }
 INFO rskafka::client::partition: Creating new partition-specific broker connection topic=greptimedb_wal_topic_22 partition=0
 INFO rskafka::client::partition: Detected leader topic=greptimedb_wal_topic_22 partition=0 leader=1 metadata_mode=CachedArbitrary
 INFO rskafka::connection: Establishing new connection broker=1 url="127.0.0.1:9092"
@@ -268,17 +268,10 @@ INFO rskafka::connection: Establishing new connection broker=1 url="127.0.0.1:90
 
 现在我们验证了数据已经成功写入，我们 kill 掉 datanode 0，再重新拉起它。
 
-在终端中执行 `ps` 命令，您将看到类似如下内容的输出。我们需要从其中找到 datanode 0 所属的 pid，以及记录 gtctl 启动 datanode 0 时执行的具体命令。
+在终端中执行 `ps | grep node-id=0` 命令，您将看到类似如下内容的输出。我们需要从其中找到 datanode 0 所属的 pid，以及记录 gtctl 启动 datanode 0 时执行的具体命令。
 
 ```bash
-17255 ttys002    0:00.23 gtctl cluster create mycluster --bare-metal --config examples/bare-metal/cluster.yaml
-17299 ttys002    0:11.30 /opt/homebrew/bin/etcd --data-dir /Users/sunflower/.gtctl/mycluster/data/etcd
-17331 ttys002    0:11.36 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info metasrv start --store-addr=127.0.0.1:2379 --server-addr=0.0.0.0:3002 --http-addr=0.0.0.0:14001 --bind-addr=127.0.0.1:3002 -c=/Users/sunflower/greptimedb/config/metasrv.example.toml
 17332 ttys002    0:01.76 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=0 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14100 --http-addr=0.0.0.0:14300 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.0/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17333 ttys002    0:01.81 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=1 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14101 --http-addr=0.0.0.0:14301 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.1/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17334 ttys002    0:01.81 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=2 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14102 --http-addr=0.0.0.0:14302 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.2/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17455 ttys002    0:01.50 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info frontend start --metasrv-addr=0.0.0.0:3002
-87056 ttys111    0:00.53 docker compose -f docker-compose-standalone.yml up
 ```
 
 使用 `kill` 命令强制终止 datanode 0（您需要根据您的实际情况修改 datanode 0 的 pid）：
@@ -318,23 +311,23 @@ SELECT * FROM dist_table;
 如果一切正常，您将看到如下输出。这说明 datanode 0 被成功拉起，且正确恢复了数据。
 
 ```sql
-+----------------------------+----+--------+
-| ts                         | n  | row_id |
-+----------------------------+----+--------+
-| 2024-01-11 08:09:01.916000 |  1 |      1 |
-| 2024-01-11 08:09:02.145000 |  2 |      2 |
-| 2024-01-11 08:09:02.355000 |  3 |      3 |
-| 2024-01-11 08:09:02.575000 |  4 |      4 |
-| 2024-01-11 08:09:02.795000 |  5 |      5 |
-| 2024-01-11 08:09:03.021000 |  6 |      6 |
-| 2024-01-11 08:09:03.241000 |  7 |      7 |
-| 2024-01-11 08:09:03.454000 |  8 |      8 |
-| 2024-01-11 08:09:03.671000 |  9 |      9 |
-| 2024-01-11 08:09:03.896000 | 10 |     10 |
-| 2024-01-11 08:09:04.116000 | 11 |     11 |
-| 2024-01-11 08:09:05.354000 | 12 |     12 |
-+----------------------------+----+--------+
-12 rows in set (0.0367 sec)
++----------------------------+---+---------+
+| ts                         | n | row_num |
++----------------------------+---+---------+
+| 2024-01-19 07:33:34.123000 | a |       1 |
+| 2024-01-19 07:33:34.128000 | b |       2 |
+| 2024-01-19 07:33:34.130000 | c |       3 |
+| 2024-01-19 07:33:34.131000 | d |       4 |
+| 2024-01-19 07:33:34.133000 | e |       5 |
+| 2024-01-19 07:33:34.134000 | f |       6 |
+| 2024-01-19 07:33:34.135000 | g |       7 |
+| 2024-01-19 07:33:34.136000 | h |       8 |
+| 2024-01-19 07:33:34.138000 | i |       9 |
+| 2024-01-19 07:33:34.140000 | j |      10 |
+| 2024-01-19 07:33:34.141000 | k |      11 |
+| 2024-01-19 07:33:34.907000 | l |      12 |
++----------------------------+---+---------+
+12 rows in set (0.0346 sec)
 ```
 
 同时，在 datanode 0 的前台终端中，您将看到类似如下内容的日志：

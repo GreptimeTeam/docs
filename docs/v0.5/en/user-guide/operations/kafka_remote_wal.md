@@ -8,7 +8,7 @@ With the release of version [0.5](https://github.com/GreptimeTeam/greptimedb/rel
 
 ## How to use Kafka Remote WAL
 
-## Step 1: Start Kafka Cluster
+### Step 1: Start Kafka Cluster
 
 If you have already deployed a Kafka cluster, you can skip this step. However, please pay attention to the [advertised listeners](https://www.conduktor.io/kafka/kafka-advertised-host-setting/) configured during deployment, as you will use them in Step 2.
 
@@ -60,11 +60,11 @@ kafka  |         advertised.listeners = PLAINTEXT://127.0.0.1:9092
 kafka  | [2024-01-11 07:06:55,554] INFO [KafkaRaftServer nodeId=1] Kafka Server started
 ```
 
-## Step 2: Configure GreptimeDB
+### Step 2: Configure GreptimeDB
 
 Currently, GreptimeDB defaults to using Raft Engine as the storage engine for WAL. When using Kafka Remote WAL, you need to manually specify Kafka as the WAL storage engine through the configuration file.
 
-### Standalone Mode
+#### Standalone Mode
 
 We have excerpted some Kafka Remote WAL configuration options that require your special attention. For the complete set of configuration options, you can refer to this [link](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/standalone.example.toml#L83-L124).
 
@@ -83,13 +83,13 @@ The meanings of each configuration option are as follows:
 - `replication_factor`: Determines the number of brokers to which data from each [partition](https://www.conduktor.io/kafka/kafka-topic-replication/) is replicated. The value of this configuration must be greater than 0 and not exceed the number of brokers.
 - `max_batch_size`: We limit the total size of log entries transmitted in a batch to the value set in this configuration. It's important to note that Kafka, by default, rejects logs exceeding 1MB. Therefore, we recommend setting this configuration to a value not exceeding 1MB. If you do need to increase this configuration, you can refer to this [link](https://www.conduktor.io/kafka/how-to-send-large-messages-in-apache-kafka/) on how to configure Kafka.
 
-### Distributed Mode
+#### Distributed Mode
 
 For the distributed mode, Kafka Remote WAL configuration options are distributed across the configuration files of metasrv and datanode. In comparison to the standalone mode, the names, meanings, and default values of the configuration options remain consistent. You can refer to this [link](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/metasrv.example.toml#L46-L78) for an example of metasrv configuration options and this [link](https://github.com/GreptimeTeam/greptimedb/blob/d061bf3d07897ea785924eda8b947f9b18d44646/config/datanode.example.toml#L40-L60) for an example of datanode configuration options for the distributed mode.
 
-## Step 3: Start GreptimeDB
+### Step 3: Start GreptimeDB
 
-### Standalone Mode
+#### Standalone Mode
 
 Assuming you have correctly set the path to the GreptimeDB binary, you can execute the following command in the terminal to start a GreptimeDB instance and have it use the configuration options set in Step 2.
 
@@ -117,7 +117,7 @@ INFO servers::server: MySQL server started at 127.0.0.1:4002
 
 Note that if you start GreptimeDB multiple times with the Kafka cluster already running, the Kafka-related logs you observe may vary.
 
-### Distributed Mode
+#### Distributed Mode
 
 We provide the [gtctl](https://docs.greptime.com/user-guide/operations/gtctl#gtctl) tool to assist you in quickly launching a GreptimeDB cluster. For demonstration purposes, we use gtctl to start a [bare-metal](https://docs.greptime.com/user-guide/operations/gtctl#bare-metal) cluster, consisting of 1 metasrv, 1 frontend, and 3 datanodes. You need to prepare the `cluster.yml` configuration file required by gtctl. The content of an example configuration file is as follows:
 
@@ -176,7 +176,7 @@ To view dashboard by accessing: http://localhost:4000/dashboard/
 
 Under the default configuration, you can find logs for each component of the `mycluster` cluster in the directory `~/.gtctl/mycluster/logs`. For example, in the log file `~/.gtctl/mycluster/logs/metasrv.0/log`, you will find content similar to that in standalone mode.
 
-# Validate the effectiveness of Kafka Remote WAL
+## Validate the effectiveness of Kafka Remote WAL
 
 The validation process can be summarized as follows:
 
@@ -195,14 +195,14 @@ Assuming you have successfully connected to the GreptimeDB cluster, you can exec
 ```sql
 CREATE TABLE dist_table(
     ts TIMESTAMP DEFAULT current_timestamp(),
-    n INT,
-    row_id INT,
+    n STRING,
+    row_num INT,
     PRIMARY KEY(n),
     TIME INDEX (ts)
 )
 PARTITION BY RANGE COLUMNS (n) (
-    PARTITION r0 VALUES LESS THAN (5),
-    PARTITION r1 VALUES LESS THAN (9),
+    PARTITION r0 VALUES LESS THAN ("f"),
+    PARTITION r1 VALUES LESS THAN ("z"),
     PARTITION r2 VALUES LESS THAN (MAXVALUE),
 )
 engine=mito;
@@ -211,18 +211,18 @@ engine=mito;
 Execute the following command to insert a substantial amount of data:
 
 ```sql
-INSERT INTO dist_table(n, row_id) VALUES (1, 1);
-INSERT INTO dist_table(n, row_id) VALUES (2, 2);
-INSERT INTO dist_table(n, row_id) VALUES (3, 3);
-INSERT INTO dist_table(n, row_id) VALUES (4, 4);
-INSERT INTO dist_table(n, row_id) VALUES (5, 5);
-INSERT INTO dist_table(n, row_id) VALUES (6, 6);
-INSERT INTO dist_table(n, row_id) VALUES (7, 7);
-INSERT INTO dist_table(n, row_id) VALUES (8, 8);
-INSERT INTO dist_table(n, row_id) VALUES (9, 9);
-INSERT INTO dist_table(n, row_id) VALUES (10, 10);
-INSERT INTO dist_table(n, row_id) VALUES (11, 11);
-INSERT INTO dist_table(n, row_id) VALUES (12, 12);
+INSERT INTO dist_table(n, row_num) VALUES ("a", 1);
+INSERT INTO dist_table(n, row_num) VALUES ("b", 2);
+INSERT INTO dist_table(n, row_num) VALUES ("c", 3);
+INSERT INTO dist_table(n, row_num) VALUES ("d", 4);
+INSERT INTO dist_table(n, row_num) VALUES ("e", 5);
+INSERT INTO dist_table(n, row_num) VALUES ("f", 6);
+INSERT INTO dist_table(n, row_num) VALUES ("g", 7);
+INSERT INTO dist_table(n, row_num) VALUES ("h", 8);
+INSERT INTO dist_table(n, row_num) VALUES ("i", 9);
+INSERT INTO dist_table(n, row_num) VALUES ("j", 10);
+INSERT INTO dist_table(n, row_num) VALUES ("k", 11);
+INSERT INTO dist_table(n, row_num) VALUES ("l", 12);
 ```
 
 Execute the following command to query the data:
@@ -234,29 +234,29 @@ SELECT * FROM dist_table;
 If everything is in order, you will see the following output (the content of the `ts` column will be different):
 
 ```sql
-+----------------------------+----+--------+
-| ts                         | n  | row_id |
-+----------------------------+----+--------+
-| 2024-01-11 08:05:06.535000 |  1 |      1 |
-| 2024-01-11 08:05:06.768000 |  2 |      2 |
-| 2024-01-11 08:05:06.987000 |  3 |      3 |
-| 2024-01-11 08:05:07.206000 |  4 |      4 |
-| 2024-01-11 08:05:07.425000 |  5 |      5 |
-| 2024-01-11 08:05:07.652000 |  6 |      6 |
-| 2024-01-11 08:05:07.871000 |  7 |      7 |
-| 2024-01-11 08:05:08.086000 |  8 |      8 |
-| 2024-01-11 08:05:08.307000 |  9 |      9 |
-| 2024-01-11 08:05:08.534000 | 10 |     10 |
-| 2024-01-11 08:05:08.752000 | 11 |     11 |
-| 2024-01-11 08:05:10.904000 | 12 |     12 |
-+----------------------------+----+--------+
-12 rows in set (0.0687 sec)
++----------------------------+---+---------+
+| ts                         | n | row_num |
++----------------------------+---+---------+
+| 2024-01-19 07:33:34.123000 | a |       1 |
+| 2024-01-19 07:33:34.128000 | b |       2 |
+| 2024-01-19 07:33:34.130000 | c |       3 |
+| 2024-01-19 07:33:34.131000 | d |       4 |
+| 2024-01-19 07:33:34.133000 | e |       5 |
+| 2024-01-19 07:33:34.134000 | f |       6 |
+| 2024-01-19 07:33:34.135000 | g |       7 |
+| 2024-01-19 07:33:34.136000 | h |       8 |
+| 2024-01-19 07:33:34.138000 | i |       9 |
+| 2024-01-19 07:33:34.140000 | j |      10 |
+| 2024-01-19 07:33:34.141000 | k |      11 |
+| 2024-01-19 07:33:34.907000 | l |      12 |
++----------------------------+---+---------+
+12 rows in set (0.0346 sec)
 ```
 
 Since we specified partition rules when creating the table, metasrv will evenly distribute the regions of this table across the datanodes in the cluster. Check the log file for datanode 0 at `~/.gtctl/mycluster/logs/datanode.0/log`. You will see logs similar to the following:
 
 ```bash
-INFO mito2::worker::handle_create: A new region created, region: RegionMetadata { column_metadatas: [[ts TimestampMillisecond not null default=Function("current_timestamp()") Timestamp 0], [n Int32 null Tag 1], [row_id Int32 null Field 2]], time_index: 0, primary_key: [1], region_id: 4398046511105(1024, 1), schema_version: 0 }
+INFO mito2::worker::handle_create: A new region created, region: RegionMetadata { column_metadatas: [[ts TimestampMillisecond not null default=Function("current_timestamp()") Timestamp 0], [n String null Tag 1], [row_num Int32 null Field 2]], time_index: 0, primary_key: [1], region_id: 4398046511105(1024, 1), schema_version: 0 }
 INFO rskafka::client::partition: Creating new partition-specific broker connection topic=greptimedb_wal_topic_22 partition=0
 INFO rskafka::client::partition: Detected leader topic=greptimedb_wal_topic_22 partition=0 leader=1 metadata_mode=CachedArbitrary
 INFO rskafka::connection: Establishing new connection broker=1 url="127.0.0.1:9092"
@@ -268,17 +268,10 @@ These logs indicate that a region of the `dist_table` table we created has been 
 
 Now that we have confirmed data has been successfully written, let's kill datanode 0 and then restart it. 
 
-Execute the `ps` command in the terminal, and you will see output similar to the following. We need to find the PID of the process hosting the datanode 0, and record the exact command used when starting datanode 0 with gtctl.
+Execute the `ps | grep node-id=0` command in the terminal, and you will see output similar to the following. We need to find the PID of the process hosting the datanode 0, and record the exact command used when starting datanode 0 with gtctl.
 
 ```bash
-17255 ttys002    0:00.23 gtctl cluster create mycluster --bare-metal --config examples/bare-metal/cluster.yaml
-17299 ttys002    0:11.30 /opt/homebrew/bin/etcd --data-dir /Users/sunflower/.gtctl/mycluster/data/etcd
-17331 ttys002    0:11.36 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info metasrv start --store-addr=127.0.0.1:2379 --server-addr=0.0.0.0:3002 --http-addr=0.0.0.0:14001 --bind-addr=127.0.0.1:3002 -c=/Users/sunflower/greptimedb/config/metasrv.example.toml
 17332 ttys002    0:01.76 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=0 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14100 --http-addr=0.0.0.0:14300 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.0/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17333 ttys002    0:01.81 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=1 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14101 --http-addr=0.0.0.0:14301 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.1/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17334 ttys002    0:01.81 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info datanode start --node-id=2 --metasrv-addr=0.0.0.0:3002 --rpc-addr=0.0.0.0:14102 --http-addr=0.0.0.0:14302 --data-home=/Users/sunflower/.gtctl/mycluster/data/datanode.2/home -c=/Users/sunflower/greptimedb/config/datanode.example.toml
-17455 ttys002    0:01.50 /Users/sunflower/greptimedb/target/debug/greptime --log-level=info frontend start --metasrv-addr=0.0.0.0:3002
-87056 ttys111    0:00.53 docker compose -f docker-compose-standalone.yml up
 ```
 
 Use the `kill` command to forcefully terminate datanode 0 (you need to modify the PID of datanode 0 based on your actual situation):
@@ -318,23 +311,23 @@ SELECT * FROM dist_table;
 If everything is in order, you will see the following output. This indicates that datanode 0 has been successfully restarted and has correctly recovered the data.
 
 ```sql
-+----------------------------+----+--------+
-| ts                         | n  | row_id |
-+----------------------------+----+--------+
-| 2024-01-11 08:09:01.916000 |  1 |      1 |
-| 2024-01-11 08:09:02.145000 |  2 |      2 |
-| 2024-01-11 08:09:02.355000 |  3 |      3 |
-| 2024-01-11 08:09:02.575000 |  4 |      4 |
-| 2024-01-11 08:09:02.795000 |  5 |      5 |
-| 2024-01-11 08:09:03.021000 |  6 |      6 |
-| 2024-01-11 08:09:03.241000 |  7 |      7 |
-| 2024-01-11 08:09:03.454000 |  8 |      8 |
-| 2024-01-11 08:09:03.671000 |  9 |      9 |
-| 2024-01-11 08:09:03.896000 | 10 |     10 |
-| 2024-01-11 08:09:04.116000 | 11 |     11 |
-| 2024-01-11 08:09:05.354000 | 12 |     12 |
-+----------------------------+----+--------+
-12 rows in set (0.0367 sec)
++----------------------------+---+---------+
+| ts                         | n | row_num |
++----------------------------+---+---------+
+| 2024-01-19 07:33:34.123000 | a |       1 |
+| 2024-01-19 07:33:34.128000 | b |       2 |
+| 2024-01-19 07:33:34.130000 | c |       3 |
+| 2024-01-19 07:33:34.131000 | d |       4 |
+| 2024-01-19 07:33:34.133000 | e |       5 |
+| 2024-01-19 07:33:34.134000 | f |       6 |
+| 2024-01-19 07:33:34.135000 | g |       7 |
+| 2024-01-19 07:33:34.136000 | h |       8 |
+| 2024-01-19 07:33:34.138000 | i |       9 |
+| 2024-01-19 07:33:34.140000 | j |      10 |
+| 2024-01-19 07:33:34.141000 | k |      11 |
+| 2024-01-19 07:33:34.907000 | l |      12 |
++----------------------------+---+---------+
+12 rows in set (0.0227 sec)
 ```
 
 Simultaneously, in the foreground terminal of datanode 0, you will see logs similar to the following:
