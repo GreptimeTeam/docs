@@ -131,3 +131,15 @@ COPY DATABASE <db_name>
 - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
 - `FORMAT` 选项可选值与导入/导出表的可选值相同；
 - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+
+## Windows 平台上的路径
+
+请注意，在 Windows 平台上执行 `COPY`/`COPY DATABASE` 语句时，请使用 `/` 代替 `<PATH>` 中的 `\`，如 `C:/some_dir/output.parquet`。
+
+```sql
+-- 下列语句将会报错
+COPY tbl TO 'C:\xxx\xxx\output.parquet' WITH (FORMAT = 'parquet');
+
+-- 下列语句能够正常执行
+COPY tbl TO 'C:/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
+```

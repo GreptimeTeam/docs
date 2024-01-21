@@ -138,3 +138,15 @@ COPY DATABASE <db_name>
 - When copying databses, `<PATH>` must end with `/`.
 - `FORMAT` option has the same available values as copying tables.
 - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
+
+## Special reminder for Windows platforms
+
+Please notice that when executing `COPY`/`COPY DATABASE` statements on Windows platforms, backslashes (`\`) in paths should be replaced with `/` for compatibility.
+
+```sql
+-- Won't work
+COPY tbl TO 'C:\xxx\xxx\output.parquet' WITH (FORMAT = 'parquet');
+
+-- Correct path:
+COPY tbl TO 'C:/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
+```
