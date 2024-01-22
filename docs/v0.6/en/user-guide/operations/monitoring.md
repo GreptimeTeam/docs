@@ -54,9 +54,10 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-# If you want to save metrics to another database, change the value of `db`
 db = "information_schema"
 ```
+
+The `db` option specifies the database where metrics are saved. You can change it to a different database.
 
 ### Distributed cluster
 
@@ -72,9 +73,10 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-# If you want to save metrics to another database, change the value of `db`
 db = "information_schema"
 ```
+
+The `db` option specifies the database where metrics are saved. You can change it to a different database.
 
 #### Datanode and Metasrv
 

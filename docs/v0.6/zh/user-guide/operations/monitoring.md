@@ -52,9 +52,10 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-# If you want to save metrics to another database, change the value of `db`
 db = "information_schema"
 ```
+
+`db` 选项指定了保存指标的数据库，你可以将其修改为其他数据库。
 
 ### 分布式集群
 
@@ -70,9 +71,10 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-# If you want to save metrics to another database, change the value of `db`
 db = "information_schema"
 ```
+
+`db` 选项指定了保存指标的数据库，你可以将其修改为其他数据库。
 
 #### Datanode 和 Metasrv
 

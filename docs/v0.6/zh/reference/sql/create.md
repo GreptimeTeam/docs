@@ -88,7 +88,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `ttl`               | 表数据的存储时间   | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d` |
 | `regions`           | 表的 region 值     | 整数值，例如 1, 5, 10 etc.                                                                                 |
 | `write_buffer_size` | 表的 memtable 大小 | 表示有效大小的字符串值，例如 `32MB`, `128MB` 等。默认值为 `32MB`。支持的单位有：`MB` / `GB`.               |
-| `storage` |  自定义表的存储引擎，存储引擎提供商的名字  |  字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#自定义多存储引擎)。|
+| `storage` |  自定义表的存储引擎，存储引擎提供商的名字  |  字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#存储引擎提供商)。|
 
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
 
