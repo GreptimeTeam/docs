@@ -212,14 +212,6 @@ The following table describes the options in detail:
 |            | addr         | String  | Server address, "127.0.0.1:4003" by default                                     |
 |            | runtime_size | Integer | The number of server worker threads, 2 by default                               |
 
-<!-- #### Node options
-
-There are also some node options in common:
-
-| Option | Key  | Type   | Description                                                |
-| ------ | ---- | ------ | ---------------------------------------------------------- |
-|        | mode | String | Node running mode, includes "standalone" and "distributed" | -->
-
 ### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
@@ -451,6 +443,23 @@ headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 
 - `url`: URL specified by Prometheus RemoteWrite protocol.
 - `headers`: Some optional HTTP parameters, such as authentication information.
+
+
+### Mode option
+
+The `mode` option is valid in `datanode`, `frontend` and `standalone`, which specify the running mode of the component.
+
+In the configuration files of `datanode` and `frontend` of distributed GreptimeDB, the value needs to be set as `distributed`:
+
+```toml
+mode = "distributed"
+``` 
+
+In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
+
+```toml
+mode = "standalone"
+```
 
 ### Metasrv-only configuration
 
