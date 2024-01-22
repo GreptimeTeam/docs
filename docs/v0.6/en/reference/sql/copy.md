@@ -137,7 +137,7 @@ COPY DATABASE <db_name>
 
 - When copying databases, `<PATH>` must end with `/`.
 - `FORMAT` option has the same available values as copying tables.
-- `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
+- `CONNECTION` parameters can also be used to copying databases to/from object storage services like [AWS S3](#connect-to-s3).
 
 ## Special reminder for Windows platforms
 
