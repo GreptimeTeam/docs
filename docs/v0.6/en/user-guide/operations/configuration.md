@@ -127,7 +127,7 @@ You can specify the configuration file by using the command line arg `-c [file_p
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-For example, start the standalone mode as below:
+For example, start the standalone as below:
 
 ```bash
 greptime standalone start -c standalone.example.toml
@@ -135,12 +135,12 @@ greptime standalone start -c standalone.example.toml
 
 ### Protocol options
 
-Protocol options are valid in `frontend` and `standalone` sub command, which specify the protocol server address and other protocol-related options.
+Protocol options are valid in `frontend` and `standalone` sub commands, which specify the protocol server addresses and other protocol-related options.
 
 Below is an example configuration with default values. 
 The HTTP and gRPC protocols must be enabled for the database to work correctly.
 The other protocols are optional.
-If you want to disable certain options, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
+If you want to disable certain protocols, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
 
 ```toml
 [http]
@@ -352,7 +352,7 @@ append_stdout = true
 
 - `dir`: log output directory.
 - `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
-- `enable_otlp_tracing`: whether to turn on distributed tracing, not turned on by default.
+- `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
