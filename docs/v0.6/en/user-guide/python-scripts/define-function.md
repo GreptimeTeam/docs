@@ -255,3 +255,13 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 `/run-script` runs the compiled script by `db` and `name`, then returns the output which is the same as the query result in `/sql` API.
 
 `/run-script` also receives other query parameters as the user params passed into the coprocessor, refer to [Input and Output](#input-of-the-coprocessor-function).
+
+## Edit scripts in GreptimeDB Dashboard
+
+[GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) provides a convenient editor for users to edit scripts.
+
+After starting GreptimeDB, you can access the dashboard at `http://localhost:4000/dashboard`.
+Click on `Scripts` in the left sidebar to navigate to the script page.
+From there, you can create a new script, edit an existing script, or run a script.
+
+![dashboard-scripts](/db-dashboard-scripts.png)

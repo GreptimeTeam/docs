@@ -257,3 +257,14 @@ curl -XPOST -G "http://localhost:4000/v1/run-script?db=default&name=square"
 `/run-script` 通过 `db` 和 `name` 运行编译好的脚本，然后返回输出，这与 `/sql` API 中的查询结果相同。
 
 `/run-script` 也接收其他查询参数，作为传递到协处理器的用户参数，参考[输入和输出](#协处理器函数的输入)。
+
+
+## 在 GreptimeDB 控制台中编辑脚本
+
+[GreptimeDB 控制台](/getting-started/installation/greptimedb-dashboard.md) 提供了编辑器供用户方便地编辑脚本。
+
+在启动 GreptimeDB 后，你可以通过 URL `http://localhost:4000/dashboard` 访问控制台。
+点击左侧边栏的 `Scripts` 进入脚本列表页。
+你可以创建一个新的脚本，编辑一个已有的脚本，或者从控制台运行一个脚本。
+
+![dashboard-scripts](/db-dashboard-scripts.png)
