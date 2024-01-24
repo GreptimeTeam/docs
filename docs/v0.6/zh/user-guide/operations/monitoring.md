@@ -1,70 +1,97 @@
-# Monitoring
+# 监控
 
-GreptimeDB 暴露了 Prometheus 指标, 用户可以使用 [Prometheus](https://prometheus.io/) 来采集指标。
+监控是数据库管理的重要组成部分。通过监控指标，你可以评估数据库的状态，维护部署并诊断问题。
 
-## Promethues Configuration
+请参考[指标详情](#指标详情)章节了解 GreptimeDB 的具体指标。
 
-编写 Prometheus 配置文件，并保存为`prometheus.yml`:
-```
+## 启动 GreptimeDB
+
+请参考[此处](/getting-started/installation/overview)了解如何启动 GreptimeDB。
+
+## 导出数据到 Prometheus
+
+GreptimeDB 支持导出数据到 Prometheus。 在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
+
+要从 GreptimeDB 中抓取指标，请编写 Prometheus 配置文件并将其保存为 `prometheus.yml`：
+
+```yml
 global:
-  scrape_interval: 15s
+  scrape_interval: 15s 
 
 scrape_configs:
   - job_name: 'greptimedb'
     static_configs:
+      # Assuming that GreptimeDB is running locally.
+      # The default HTTP port of 4000.
       - targets: ['localhost:4000']
 ```
 
-## Start GreptimeDB and Prometheus
-### Binary
+使用该配置文件启动 Prometheus。
+例如，使用 Docker 启动 Prometheus 时，可以将配置文件挂载到 Docker 容器中：
 
-使用二进制安装 GreptimeDB 和 Prometheus
-
-1. 根据[文档](/getting-started/installation/greptimedb-standalone#binary) 安装 GreptimeDB
-
-2. 进入 [Prometheus 官方文档](https://prometheus.io/download/) 下载二进制，并执行以下命令:
-
-```
-./prometheus --config.file=prometheus.yml
-```
-
-在浏览器输入`localhost:9090`访问 Prometheus。
-
-### Docker
-
-使用 Docker 安装 GreptimeDB 和 Prometheus
-
-1. 根据[文档](/getting-started/installation/greptimedb-standalone#docker) 安装 GreptimeDB
-
-2. 运行 Prometheus:
-```
+```bash
 docker run \
   -p 9090:9090 \
   -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
   prom/prometheus
 ```
 
-### Kubernetes
+## 将指标保存到 GreptimeDB 自身
 
-1. 安装 [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) chart: 
-```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install prometheus prometheus-community/kube-prometheus-stack
+你还可以将指标保存到 GreptimeDB 本身，以便于使用 SQL 语句进行查询和分析。
+本节提供了相关配置示例，有关配置的更多详细信息，请参阅[监控指标选项](./configuration.md#monitor-metrics-options)。
+
+### 单机模式
+
+在单机模式下，你可以简单地使用 `self_import` 来导出指标。
+相关配置如下：
+
+```toml
+[export_metrics]
+enable=true
+# The interval of writing metrics.
+write_interval = "30s"
+[export_metrics.self_import]
+db = "information_schema"
 ```
 
-2. 使用 [gtctl](/user-guide/operations/gtctl) 安装 GreptimeDB cluster:
-```
-gtctl cluster create mycluster -n default \
-  --set cluster.prometheusMonitor.enabled=true \
-  --set cluster.prometheusMonitor.path="/metrics" \
-  --set cluster.prometheusMonitor.port="http" \
-  --set cluster.prometheusMonitor.interval="30s" \
-  --set cluster.prometheusMonitor.honorLabels=true \
-  --set cluster.prometheusMonitor.labelsSelector.release="prometheus"
+`db` 选项指定了保存指标的数据库，你可以将其修改为其他数据库。
+
+### 分布式集群
+
+集群中的每个组件都需要编写配置文件。
+
+#### Frontend
+
+你可以简单地使用 `self_import` 来导出指标。
+
+```toml
+[export_metrics]
+enable=true
+# The interval of writing metrics.
+write_interval = "30s"
+[export_metrics.self_import]
+db = "information_schema"
 ```
 
-## Metrics Detail
+`db` 选项指定了保存指标的数据库，你可以将其修改为其他数据库。
+
+#### Datanode 和 Metasrv
+
+在 Datanode 和 Metasrv 中，你需要使用 `remote_write` 配置来导出指标。
+
+```toml
+[export_metrics]
+enable=true
+write_interval = "30s"
+[export_metrics.remote_write]
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
+```
+
+GreptimeDB 兼容 Prometheus Remote-Write 协议。
+请参考 [Prometheus Remote-Write](/user-guide/write-data/prometheus.md) 获取更多信息。
+
+## 指标详情
 
 可以通过执行`curl http://<host>:<port>/metrics`的输出来获取 GreptimeDB 的最新指标。
 

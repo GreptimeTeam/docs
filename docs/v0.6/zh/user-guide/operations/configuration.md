@@ -108,17 +108,37 @@ greptime standalone start --help
 
 ## 配置文件
 
+### 示例
+
+各项配置根据其功能适用于一个或多个组件。
+你可以在 GitHub 上找到每个组件的所有可用配置：
+
+- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
+- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
+- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
+
 ### 指定配置文件
 
-用户可以通过使用命令行参数 `-c [file_path]` 指定配置文件，比如：
+用户可以通过使用命令行参数 `-c [file_path]` 指定配置文件。
 
 ```sh
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-### 常见配置
+例如，启动 standalone 模式：
 
-在 `frontend` 和 `standalone` 子命令中常见的协议配置有：
+```bash
+greptime standalone start -c standalone.example.toml
+```
+
+### 协议选项
+
+协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
+
+下面的示例配置包含了所有协议选项的默认值。
+为了使数据库正常工作，配置中必须启用 HTTP 和 gRPC 协议，其他协议可选。
+如果要禁用某些选项，比如禁用 OpenTSDB 协议，可以将 `enable` 参数设置为 `false`。
 
 ```toml
 [http]
@@ -162,9 +182,7 @@ enable = true
 enable = true
 ```
 
-除了 HTTP 和 gRPC 以外，其他协议都是可选的，上面列出了其默认值。如果想禁用某些协议，比如 OpenTSDB 协议，可以将 `enable` 的值设为 `false`。
-
-### 协议选项
+下表描述了每个选项的详细信息：
 
 | 选项       | 键           | 类型   | 描述                                                    |
 | ---------- | ------------ | ------ | ------------------------------------------------------- |
@@ -191,14 +209,6 @@ enable = true
 |            | enable       | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                  |
 |            | addr         | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                     |
 |            | runtime_size | 整数   | 服务器工作线程数量，默认为 2                            |
-
-### 节点选项
-
-一些共同的节点选项：
-
-| Option | Key  | Type   | Description                                              |
-| ------ | ---- | ------ | -------------------------------------------------------- |
-|        | mode | 字符串 | 节点运行模式，可以是 `"standalone"` 或者 `"distributed"` |
 
 ### 存储选项
 
@@ -258,7 +268,7 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
-#### 自定义多存储引擎
+### 存储引擎提供商
 
 `[[storage.providers]]`  用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
 
@@ -280,7 +290,7 @@ credential_path = "<gcs credential path>"
 
 所有配置的这些存储引擎提供商都可以在创建表时用作 `storage` 选项。
 
-#### 对象存储缓存
+### 对象存储缓存
 
 当使用 S3、阿里云 OSS 等对象存储的时候，最好开启缓存来加速查询：
 
@@ -316,7 +326,30 @@ sync_write = false
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
 
-### 存储引擎选项
+### Logging 选项
+
+`frontend`、`metasrv`、`datanode` 和 `standalone` 都可以在 `[logging]` 部分配置 log、tracing 相关参数：
+
+```toml
+[logging]
+dir = "/tmp/greptimedb/logs"
+level = "info"
+enable_otlp_tracing = false
+otlp_endpoint = "localhost:4317"
+tracing_sample_ratio = 1.0
+append_stdout = true
+```
+
+- `dir`: log 输出目录。
+- `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
+- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
+- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
+- `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing。
+- `append_stdout`：是否将日志打印到stdout。默认是`true`。
+
+如何使用分布式追踪，请参考 [Tracing](./tracing.md)
+
+### Region 引擎选项
 
 datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前只有一种存储引擎 `mito`。
 
@@ -337,23 +370,11 @@ global_write_buffer_reject_size = "2GB"
 - `global_write_buffer_reject_size`: 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，需要比 `global_write_buffer_size` 大，默认 `2GB`
 
 
-### 单机模式
+### 设定 meta client
 
-当用户在单机模式（standalone）下使用 GreptimeDB 时，可以参考 [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml) 配置文件。
-
-类似下面这样的命令启动：
-
-```
-greptime standalone start -c standalone.example.toml
-```
-
-### 分布式模式下的 `Frontend`
-
-在分布式模式下配置 `Frontend`：
+The `meta_client` options are valid in `datanode` and `frontend` mode, which specify the Metasrv client information.
 
 ```toml
-mode = "distributed"
-
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout = "3s"
@@ -361,8 +382,6 @@ connect_timeout = "1s"
 ddl_timeout = "10s"
 tcp_nodelay = true
 ```
-
-指定运行模式为 `"distributed"`。
 
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
@@ -372,33 +391,76 @@ tcp_nodelay = true
 - `ddl_timeout`， DDL 执行的超时时间，默认 10 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
-这里可以找到配置 frontend 分布式模式运行的样例配置文件 [frontend.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml).
+### 指标监控选项
 
-### 分布式模式下的 `Datanode`
-
-在分布式模式下配置 `datanode`：
+这些选项用于将系统监控指标保存到 GreptimeDB 本身。
+有关如何使用此功能的说明，请参见 [监控](/user-guide/operations/monitoring.md) 指南。
 
 ```toml
-node_id = 42
-mode = "distributed"
-rpc_hostname = "127.0.0.1"
-rpc_addr = "127.0.0.1:3001"
-rpc_runtime_size = 8
-
-[meta_client]
-metasrv_addrs = ["127.0.0.1:3002"]
-timeout = "3s"
-connect_timeout = "1s"
-tcp_nodelay = false
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
 ```
 
-分布式模式下的 datanode 应该在不同的节点上设置**不同**的 `node_id`。
+- `enable`: 是否启用导出指标功能，默认为 `false`。
+- `write_interval`: 指标导出时间间隔。
 
-这里可以找到配置 datanode 分布式模式运行的样例配置文件 [datanode.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml).
+#### `self_import` 方法
 
-### Metasrv 配置
+仅 `frontend` 和 `standalone` 支持使用 `self_import` 方法导出指标。
 
-一份配置样例文件 [metasrv.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)：
+```toml
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
+[export_metrics.self_import]
+db = "information_schema"
+```
+
+- `db`: 默认的数据库为 `information_schema`，你也可以创建另一个数据库来保存系统指标。
+
+#### `remote_write` 方法
+
+`datanode`、`frontend`、`metasrv` 和 `standalone` 支持使用 `remote_write` 方法导出指标。
+它将指标发送到与 [Prometheus Remote-Write protocol](https://prometheus.io/docs/concepts/remote_write_spec/) 兼容的接受端。
+
+```toml
+[export_metrics]
+# Whether to enable export_metrics
+enable=true
+# Export time interval
+write_interval = "30s"
+[export_metrics.remote_write]
+# URL specified by Prometheus Remote-Write protocol
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
+# Some optional HTTP parameters, such as authentication information
+headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
+```
+
+- `url`: Prometheus Remote-Write 协议指定的 URL。
+- `headers`: 一些可选的 HTTP 参数，比如认证信息。
+
+### Mode 选项
+
+`mode` 选项在 `datanode`、`frontend` 和 `standalone` 中可用，它指定了组件的运行模式。
+
+在分布式 GreptimeDB 的 `datanode` 和 `frontend` 的配置文件中，需要将值设置为 `distributed`：
+
+```toml
+mode = "distributed"
+```
+
+在 standalone GreptimeDB 的配置文件中，需要将值设置为 `standalone`：
+
+```toml
+mode = "standalone"
+```
+
+### 仅限于 Metasrv 的配置
 
 ```toml
 # The working home directory.
@@ -427,28 +489,22 @@ use_memory_store = false
 | selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/contributor-guide/metasrv/selector.md)              |
 | use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
 
-### Logging 选项
 
-`frontend`、`metasrv`、`datanode` 和 `standalone` 都可以在 `[logging]` 部分配置 log、tracing 相关参数：
+### 仅限于 `Datanode` 的配置
 
 ```toml
-[logging]
-dir = "/tmp/greptimedb/logs"
-level = "info"
-enable_otlp_tracing = false
-otlp_endpoint = "localhost:4317"
-tracing_sample_ratio = 1.0
-append_stdout = true
+node_id = 42
+rpc_hostname = "127.0.0.1"
+rpc_addr = "127.0.0.1:3001"
+rpc_runtime_size = 8
 ```
 
-- `dir`: log 输出目录。
-- `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
-- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
-- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
-- `tracing_sample_ratio`： 采样 tracing 的百分比，取值范围 `[0,1]`，默认值为 1，代表采样所有的 tracing。
-- `append_stdout`：是否将日志打印到stdout。默认是`true`。
-
-如何使用分布式追踪，请参考 [Tracing](./tracing.md)
+| Key              | Type    | Description                                                                                                                             |
+| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| node_id        | Integer  | 该 `datanode` 的唯一标识符。                                 |
+| rpc_hostname        | String  | 该 `datanode` 的 Hostname。                                                    |
+| rpc_addr        | String  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。                          |
+| rpc_runtime_size        | Integer  | gRPC 服务器工作线程数，默认为 8。            |
 
 ## 环境变量配置
 
