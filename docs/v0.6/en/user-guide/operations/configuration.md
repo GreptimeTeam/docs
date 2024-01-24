@@ -426,7 +426,7 @@ db = "information_schema"
 #### `remote_write` method
 
 The `remote_write` method is supported by `datanode`, `frontend`, `metasrv`, and `standalone`.
-It sends metrics to a receiver compatible with the [Prometheus RemoteWrite protocol](https://prometheus.io/docs/concepts/remote_write_spec/).
+It sends metrics to a receiver compatible with the [Prometheus Remote-Write protocol](https://prometheus.io/docs/concepts/remote_write_spec/).
 
 ```toml
 [export_metrics]
@@ -435,13 +435,13 @@ enable=true
 # Export time interval
 write_interval = "30s"
 [export_metrics.remote_write]
-# URL specified by Prometheus RemoteWrite protocol
+# URL specified by Prometheus Remote-Write protocol
 url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
 # Some optional HTTP parameters, such as authentication information
 headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 ```
 
-- `url`: URL specified by Prometheus RemoteWrite protocol.
+- `url`: URL specified by Prometheus Remote-Write protocol.
 - `headers`: Some optional HTTP parameters, such as authentication information.
 
 

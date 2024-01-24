@@ -434,7 +434,7 @@ db = "information_schema"
 #### `remote_write` 方法
 
 `datanode`、`frontend`、`metasrv` 和 `standalone` 支持使用 `remote_write` 方法导出指标。
-它将指标发送到与 [Prometheus RemoteWrite protocol](https://prometheus.io/docs/concepts/remote_write_spec/) 兼容的接受端。
+它将指标发送到与 [Prometheus Remote-Write protocol](https://prometheus.io/docs/concepts/remote_write_spec/) 兼容的接受端。
 
 ```toml
 [export_metrics]
@@ -443,13 +443,13 @@ enable=true
 # Export time interval
 write_interval = "30s"
 [export_metrics.remote_write]
-# URL specified by Prometheus RemoteWrite protocol
+# URL specified by Prometheus Remote-Write protocol
 url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
 # Some optional HTTP parameters, such as authentication information
 headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 ```
 
-- `url`: Prometheus RemoteWrite 协议指定的 URL。
+- `url`: Prometheus Remote-Write 协议指定的 URL。
 - `headers`: 一些可选的 HTTP 参数，比如认证信息。
 
 ### Mode 选项

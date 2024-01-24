@@ -1,6 +1,6 @@
 # 监控
 
-监控是数据库管理的重要组成部分。 通过监控指标，你可以评估数据库的状态，维护部署并诊断问题。
+监控是数据库管理的重要组成部分。通过监控指标，你可以评估数据库的状态，维护部署并诊断问题。
 
 请参考[指标详情](#指标详情)章节了解 GreptimeDB 的具体指标。
 
@@ -88,8 +88,8 @@ write_interval = "30s"
 url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
 ```
 
-GreptimeDB 兼容 Prometheus remote write 协议。
-请参考 [Prometheus remote write](/user-guide/write-data/prometheus.md) 获取更多信息。
+GreptimeDB 兼容 Prometheus Remote-Write 协议。
+请参考 [Prometheus Remote-Write](/user-guide/write-data/prometheus.md) 获取更多信息。
 
 ## 指标详情
 
