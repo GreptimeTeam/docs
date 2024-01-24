@@ -4,6 +4,7 @@
     - overview
     - greptimedb-standalone
     - greptimedb-cluster
+    - greptimedb-dashboard
   - Quick-Start:
     - overview
     - mysql
