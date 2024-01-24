@@ -1,6 +1,7 @@
 # COPY
 
-## COPY TO
+## COPY TABLE
+### COPY TO
 
 `COPY TO` is used to export the contents of a table to a file.
 
@@ -15,7 +16,7 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 `TO` specifies the file path and name to save the exported
 data (`/xxx/xxx/output.parquet` in this case).
 
-### `WITH` Option
+#### `WITH` Option
 
 `WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
 
@@ -23,11 +24,11 @@ data (`/xxx/xxx/output.parquet` in this case).
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 
-### `CONNECTION` Option
+#### `CONNECTION` Option
 
 `COPY TO` supports exporting data to cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
-## COPY FROM
+### COPY FROM
 
 `COPY FROM` is used to import data from a file into a table.
 
@@ -46,7 +47,7 @@ FROM { '<path>/[<filename>]' }
 
 The command starts with the keyword `COPY`, followed by the name of the table you want to import data into.
 
-### `WITH` Option
+#### `WITH` Option
 
 `FORMAT` specifies the file format of the imported file. In this example, the format is Parquet.
 
@@ -69,11 +70,11 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 
-### `CONNECTION` Option
+#### `CONNECTION` Option
 
 `COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
 
-## Connect to S3
+### Connect to S3
 
 You can copy data from/to S3
 
@@ -85,7 +86,7 @@ COPY tbl FROM '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2')
 COPY tbl TO '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
 ```
 
-### URL
+#### URL
 
 Notes: You should specify a file using `S3://bucket/key-name`. The following example shows the correct format.
 
@@ -103,7 +104,7 @@ s3://bucket-name.s3.region-code.amazonaws.com/key-name
 You can use `Copy S3 URI` or `COPY URL` on S3 console to get S3 URI/HTTP URL prefix or full path.
 :::
 
-### Options
+#### Options
 
 You can set the following **CONNECTION** options:
 
@@ -115,3 +116,37 @@ You can set the following **CONNECTION** options:
 | `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.  | Optional |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |
 | `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service. | Optional |
+
+## COPY DATABASE
+
+Beside copying specific table to/from some path, `COPY` statement can also be used to copy whole database to/from some path. The syntax for copying databases is:
+
+
+```sql
+COPY DATABASE <db_name> 
+  [TO | FROM] '<PATH>' 
+  WITH (FORMAT = "<FORMAT>") 
+  [CONNECTION(
+    REGION = "<REGION NAME>",
+    ENDPOINT = "<ENDPOINT>",
+    ACCESS_KEY_ID = "<ACCESS KEY>",
+    SECRET_ACCESS_KEY = "<SECRET KEY>",
+    ENABLE_VIRTUAL_HOST_STYLE = "[true | false]",
+  )]
+```
+
+- When copying databases, `<PATH>` must end with `/`.
+- `FORMAT` option has the same available values as copying tables.
+- `CONNECTION` parameters can also be used to copying databases to/from object storage services like [AWS S3](#connect-to-s3).
+
+## Special reminder for Windows platforms
+
+Please notice that when executing `COPY`/`COPY DATABASE` statements on Windows platforms, backslashes (`\`) in paths should be replaced with `/` for compatibility.
+
+```sql
+-- Won't work
+COPY tbl TO 'C:\xxx\xxx\output.parquet' WITH (FORMAT = 'parquet');
+
+-- Correct path:
+COPY tbl TO 'C:/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
+```

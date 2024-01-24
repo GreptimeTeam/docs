@@ -1,6 +1,7 @@
 # COPY
 
-## COPY TO
+## COPY TABLE
+### COPY TO
 
 `COPY TO` 被用来将表的内容导出到文件中，其语法如下：
 
@@ -11,7 +12,7 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 命令以 `COPY` 关键字开始，后面跟着要导出数据的表名（本例中为 `tbl`）。
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
-### `WITH` 选项
+#### `WITH` 选项
 
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
 
@@ -19,12 +20,12 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 
-### `CONNECTION` 选项
+#### `CONNECTION` 选项
 
 `COPY TO` 支持导出数据到云存储上，比如 S3。详情请参考 [连接 S3](#连接-s3)。
 
 
-## COPY FROM
+### COPY FROM
 
 `COPY FROM` 被用来将文件中的数据导入到表中，其语法如下：
 
@@ -41,7 +42,7 @@ FROM { '<path>/[<filename>]' }
 
 命令以 `COPY` 关键字开始，后面跟着要导入数据的表名。
 
-### `WITH` 选项
+#### `WITH` 选项
 
 `FORMAT` 指定导入文件的格式，本例中为 Parquet。
 
@@ -60,13 +61,14 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
+| `START_TIME`/`END_TIME`| 需要导出数据的时间范围 | 可选 |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 
-### Connection 选项
+#### Connection 选项
 
 `COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
 
-## 连接 S3
+### 连接 S3
 
 你可以从 S3 导入/导出数据
 
@@ -78,7 +80,7 @@ COPY tbl FROM '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2')
 COPY tbl TO '<URL>' WITH (FORMAT = 'parquet') CONNECTION(REGION = 'us-west-2');
 ```
 
-### URL
+#### URL
 
 注意：你应该使用 `S3://bucket/key-name` 指定文件。下方的例子展示了正确的格式：
 
@@ -96,7 +98,7 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 可以在 S3 控制台上点击 `Copy S3 URI` 或者 `COPY URL` 直接获取对应的 URL/HTTP 前缀或者完整路径。
 :::
 
-### 选项
+#### 选项
 
 你可以设置这些 **CONNECTION** 选项：
 
@@ -108,3 +110,36 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 | `SECRET_ACCESS_KEY` | 用于连接 AWS S3 兼容的对象存储的秘密访问密钥  | 可选 |
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
 | `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。 | 可选 |
+
+## COPY DATABASE
+
+`COPY` 语句除可以导入/导出表之外，也可以导入/导出指定的数据库，其语法如下：
+
+```sql
+COPY DATABASE <db_name> 
+  [TO | FROM] '<PATH>' 
+  WITH (FORMAT = "<FORMAT>") 
+  [CONNECTION(
+    REGION = "<REGION NAME>",
+    ENDPOINT = "<ENDPOINT>",
+    ACCESS_KEY_ID = "<ACCESS KEY>",
+    SECRET_ACCESS_KEY = "<SECRET KEY>",
+    ENABLE_VIRTUAL_HOST_STYLE = "[true | false]",
+  )]
+```
+
+- 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
+- `FORMAT` 选项可选值与导入/导出表的可选值相同；
+- COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+
+## Windows 平台上的路径
+
+请注意，在 Windows 平台上执行 `COPY`/`COPY DATABASE` 语句时，请使用 `/` 代替 `<PATH>` 中的 `\`，如 `C:/some_dir/output.parquet`。
+
+```sql
+-- 下列语句将会报错
+COPY tbl TO 'C:\xxx\xxx\output.parquet' WITH (FORMAT = 'parquet');
+
+-- 下列语句能够正常执行
+COPY tbl TO 'C:/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
+```
