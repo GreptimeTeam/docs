@@ -1,64 +1,53 @@
-# Biweekly Report - v0.5.1 Update Enhances Remote WAL to Support Cloud-Native Applications
-January 10, 2024
+# Biweekly Report - Lazy Load of Vector Builder Leads to a 90% Drop in Memory Usage
+January 24, 2024
 ## Summary
 Together with our global community of contributors, GreptimeDB continues to evolve and flourish as a growing open-source project. We are grateful to each and every one of you.
 
 In the past two weeks, we have made steady progress. Below are some highlights:
 
-- v0.5 has been successfully released, with highlights of the new version featuring:
-    - Key functionality for cloud-native architecture: Remote WAL
-    - A brand new storage engine: Metric Engine
-
-- PromQL enhancement: Added support for the `OR` operator, now fully supporting all set operators in PromQL.
-
-- Significant expansion of system tables: Added 20+ new tables to the `INFORMATION_SCHEMA`.
-
-- Query performance optimization: Implemented predicate pushdown for the `INFORMATION_SCHEMA` tables.
-
-- Feature development progress: Full-speed development of Region Migration, Write Cache, and Inverted Index features.
+- Continuous Performance Enhancements:
+  - Memory usage reduced by up to 90% in scenarios with high null values.
+  - Optimize the filter for reading Parquet files, gaining up to 50% faster TSBS test time.
+- Expanding fuzz testing in GreptimeDB to encompass a wider array of scenarios.
+- Officially launching Inverted Index, set to boost future read performance of GreptimeDB.
+- Further developed support for SQL and PromQL features.
 
 ## Contributors
-For the past two weeks, our community has been super active with a total of 76 PRs merged. 12 PRs from 6 individual contributors merged successfully and lots pending to be merged.
+For the past two weeks, our community has been super active with a total of 77 PRs merged. 6 PRs from 3 individual contributors have been successfully merged, with many more pending merger.
 
 Congrats on becoming our most active contributors in the past 2 weeks:
 
-- @[AntiTopQuark](https://github.com/AntiTopQuark) ([db#3031](https://github.com/GreptimeTeam/greptimedb/pull/3031))
+- @[etolbakov](https://github.com/etolbakov) ([db#3147](https://github.com/GreptimeTeam/greptimedb/pull/3147))
 
-- @[Clayton Collie](https://github.com/ccollie) ([docs#752](https://github.com/GreptimeTeam/docs/pull/752))
+- @[lyang24](https://github.com/lyang24) ([db#3076](https://github.com/GreptimeTeam/greptimedb/pull/3076))
 
-- @[ClSlaid](https://github.com/ClSlaid) ([db#3084](https://github.com/GreptimeTeam/greptimedb/pull/3084))
+- @[tisonkun](https://github.com/tisonkun) ([db#3168](https://github.com/GreptimeTeam/greptimedb/pull/3168) [db#3169](https://github.com/GreptimeTeam/greptimedb/pull/3169) [db#3118](https://github.com/GreptimeTeam/greptimedb/pull/3118) [db#3062](https://github.com/GreptimeTeam/greptimedb/pull/3062))
 
-- @[dimbtp](https://github.com/dimbtp) ([db#3060](https://github.com/GreptimeTeam/greptimedb/pull/3060) [db#3057](https://github.com/GreptimeTeam/greptimedb/pull/3057) [db#3054](https://github.com/GreptimeTeam/greptimedb/pull/3054))
-
-- @[SSebo](https://github.com/SSebo) ([db#2985](https://github.com/GreptimeTeam/greptimedb/pull/2985))
-
-- @[tisonkun](https://github.com/tisonkun) ([db#3080](https://github.com/GreptimeTeam/greptimedb/pull/3080) [dashboard#396](https://github.com/GreptimeTeam/dashboard/pull/396)[docs#748](https://github.com/GreptimeTeam/docs/pull/748) [docs#733](https://github.com/GreptimeTeam/docs/pull/733) [db#2996](https://github.com/GreptimeTeam/greptimedb/pull/2996))
-
-<p><img src="/biweekly-images/newcontributor.png" alt="contributors" style="width: 70%; margin: 0 auto"></p>
-
-👏  Welcome contributor @[AntiTopQuark](https://github.com/AntiTopQuark) @[Clayton Collie](https://github.com/ccollie) @[ClSlaid](https://github.com/ClSlaid) @[dimbtp](https://github.com/dimbtp) to the community as new contributors, and congratulations on successfully merging their first PR!
+👏  Welcome contributor @[etolbakov](https://github.com/etolbakov) @[lyang24](https://github.com/lyang24) back to the community!
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
 
 ## Highlights of Recent PR
-### [#2988](https://github.com/GreptimeTeam/greptimedb/pull/2988) Support for using a single Etcd instance to serve multiple GreptimeDB clusters
-By introducing the `--store-key-prefix` configuration option, administrators can specify a prefix for metasrv to avoid key collisions.
+### [#3210](https://github.com/GreptimeTeam/greptimedb/pull/3210) Lazy load to delay initialization of Vector Builder time
+In scenarios with numerous null values, this optimization can slash GreptimeDB's memory consumption by about 90%, significantly enhancing its space efficiency.
 
-### [#2992](https://github.com/GreptimeTeam/greptimedb/pull/2992) New configuration item to specify the default timezone for database queries
-The `default_time_zone` option has been added to the configuration of the standalone mode and the Frontend component, enabling users to set the system timezone, which defaults to UTC. When a new session is established, the system timezone will become the user's default timezone, but users can change the timezone using `SET time_zone = 'UTC'`.
+### [#3182](https://github.com/GreptimeTeam/greptimedb/pull/3182) Introduced random generators for create table and alter table SQL in fuzz testing
+Fuzz testing aids in early bug detection in GreptimeDB.
 
-### [#3091](https://github.com/GreptimeTeam/greptimedb/pull/3091) Performance optimization for queries on the `INFORMATION_SCHEMA` tables, supporting the pushdown of filters
-This optimization reduces memory consumption when constructing system table results and speeds up queries.
+### [#3178](https://github.com/GreptimeTeam/greptimedb/pull/3178) More precise filtering when reading Parquet files
+Optimized performance for reading Parquet files, cutting down time costs by up to 50% in TSBS tests.
 
-### [#3047](https://github.com/GreptimeTeam/greptimedb/pull/3047) Optimized network overhead for GreptimeDB's self-importing Metrics
-Improvements to the `ExportMetricHandler` behavior in standalone mode and Frontend component have been made to avoid unnecessary network communication.
+### [#3164](https://github.com/GreptimeTeam/greptimedb/pull/3164) Support for `COPY DATABASE FROM` statement
+Facilitates full database export and import, complementing the `COPY DATABASE TO` functionality.
 
-### [#3024](https://github.com/GreptimeTeam/greptimedb/pull/3024) Implemented the `OR` logical operator in PromQL
-A new special `UNION` operator (`OR` in PromQL) has been introduced specifically for certain PromQL query scenarios. The operator takes two inputs, outputs all columns from the left child, and uses the columns specified by `compare_keys` to check for collision. In case of collision, if they all originate from the right child, only the first row is kept; if from the left child, the corresponding row from the right child is discarded. The output includes all columns from both the left and right children, and the row order is not maintained.
+### [#3158](https://github.com/GreptimeTeam/greptimedb/pull/3158) Official launch of the Inverted Index feature
+Inverted indexes can significantly improve query efficiency. For more information about GreptimeDB's Inverted Index, please refer to the RFC: 
+https://github.com/GreptimeTeam/greptimedb/blob/develop/docs/rfcs/2023-11-03-inverted-index.md
 
-## Good first issue
-[#3004](https://github.com/GreptimeTeam/greptimedb/issues/3004) Add checksum verification mechanism to manifest file
+## Good First Issue
+[#3212](https://github.com/GreptimeTeam/greptimedb/issues/3212) Fix a minor bug in `join_path` for more elegant code
 
-[#3044](https://github.com/GreptimeTeam/greptimedb/issues/3044) Add more tests for `MetaPeerClientRef`
+[#3044](https://github.com/GreptimeTeam/greptimedb/issues/3044) 
+Add tests for `MetaPeerClientRef` to enhance GreptimeDB's stability
 
-[#3046](https://github.com/GreptimeTeam/greptimedb/issues/3046) Implement the `KvBackend` trait for `MetaPeerClient`
+[#2931](https://github.com/GreptimeTeam/greptimedb/issues/2931) Enhance GreptimeDB's self-observability with `information_schema`,  welcome contributions to improve it
