@@ -129,21 +129,22 @@ SELECT * FROM monitor WHERE ts > 1667446797000;
 你需要使用 `::TimestampSecond` 语法来指定它的类型为 `TimestampSecond` 来告知数据库 `1667446797` 应该被视为以秒为单位的时间戳。
 
 ```sql
-select * from monitor where ts > 1667446797::TimestampSecond;
+SELECT * FROM monitor WHERE ts > 1667446797::TimestampSecond;
 ```
-<!-- TODO: link to fresh data types doc -->
+
+请参考[数据类型](/reference/sql/data-types.md#日期和时间类型) 获取更多时间类型。
 
 对于标准的 `RFC3339` 或 `ISO8601` 字符串，由于其具备明确的精度，你可以直接在过滤条件中使用它们：
 
 ```sql
-select * from monitor where ts > '2022-07-25 10:32:16.408';
+SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
 ```
 
 你还可以使用时间函数来过滤数据。
 例如，使用 `now()` 函数和 `INTERVAL` 关键字来获取最近 5 分钟的数据：
 
 ```sql
-SELECT * from monitor WHERE ts >= now() - INTERVAL '5 minutes';
+SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
 请参考 [Functions](/reference/sql/functions.md) 获取更多时间函数信息。
