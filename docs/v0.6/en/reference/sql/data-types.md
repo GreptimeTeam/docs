@@ -114,9 +114,9 @@ For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, a
 
 ```sql
 CREATE TABLE alias_types (
-  s Varchar(255),
-  i Double,
-  ts0 Timestamp(0) DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+  s VARCHAR(255),
+  i DOUBLE,
+  ts0 TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   PRIMARY KEY(s)
 );
 ```
@@ -136,25 +136,25 @@ In addition to the `Timestamp` types used as the default time type in GreptimeDB
 
 ```sql
 CREATE TABLE data_types (
-  s String,
-  vbi Binary,
-  b Boolean,
-  tint Int8,
-  sint Int16,
-  i Int32,
-  bint Int64,
-  utint UInt8,
-  usint UInt16,
-  ui UInt32,
-  ubint UInt64,
-  f Float32,
-  d Float64,
-  dt Date,
-  dtt DateTime,
-  ts0 TimestampSecond,
-  ts3 TimestampMillisecond,
-  ts6 TimestampMicrosecond,
-  ts9 TimestampNanosecond DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+  s STRING,
+  vbi BINARY,
+  b BOOLEAN,
+  tint INT8,
+  sint INT16,
+  i INT32,
+  bint INT64,
+  utint UINT8,
+  usint UINT16,
+  ui UINT32,
+  ubint UINT64,
+  f FLOAT32,
+  d FLOAT64,
+  dt DATE,
+  dtt DATETIME,
+  ts0 TIMESTAMPSECOND,
+  ts3 TIMESTAMPMILLISECOND,
+  ts6 TIMESTAMPMICROSECOND,
+  ts9 TIMESTAMPNANOSECOND DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   PRIMARY KEY(s));
 ```
 
