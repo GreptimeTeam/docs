@@ -25,7 +25,7 @@ GreptimeDB 提供了一个 ingester 库来帮助你写入数据。
 ### 行对象
 
 表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
-列值的类型可以是 `String`、`Float`、`Int`、`Timestamp` 等。更多信息请参考 [数据类型](/reference/data-types.md)。
+列值的类型可以是 `String`、`Float`、`Int`、`Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
 
 {template row-object%%}
 

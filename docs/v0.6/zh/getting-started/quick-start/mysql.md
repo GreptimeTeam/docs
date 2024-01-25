@@ -52,7 +52,7 @@ Field 描述:
 
 - 如果用户使用其他协议，该表可以自动创建。请参考 [Create Table](/user-guide/table-management#creat-table)。
 - 关于创建表的 SQL 信息，请参考 [CREATE](/reference/sql/create.md)。
-- 关于数据类型，请参考[数据类型](/reference/data-types.md)。
+- 关于数据类型，请参考[数据类型](/reference/sql/data-types.md)。
 
 ### 数据写入
 

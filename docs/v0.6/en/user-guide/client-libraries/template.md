@@ -26,7 +26,7 @@ Here we set the username and password when using the library to connect to Grept
 ### Row object
 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
-The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/data-types.md).
+The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
 {template row-object%%}
 
