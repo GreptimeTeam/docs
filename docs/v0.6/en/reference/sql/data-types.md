@@ -114,7 +114,7 @@ For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, a
 
 ```sql
 CREATE TABLE alias_types (
-  s VARCHAR(255),
+  s TEXT,
   i DOUBLE,
   ts0 TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   PRIMARY KEY(s)
@@ -149,6 +149,7 @@ CREATE TABLE data_types (
   ubint UINT64,
   f FLOAT32,
   d FLOAT64,
+  dm DECIMAL(3, 2), 
   dt DATE,
   dtt DATETIME,
   ts0 TIMESTAMPSECOND,
@@ -160,8 +161,11 @@ CREATE TABLE data_types (
 
 ### Describe Table
 
-```sh
-> describe table data_types;
+```sql
+DESC TABLE data_types;
+```
+
+```sql
 +--------+----------------------+------+------+---------------------+---------------+
 | Column | Type                 | Key  | Null | Default             | Semantic Type |
 +--------+----------------------+------+------+---------------------+---------------+
@@ -178,6 +182,7 @@ CREATE TABLE data_types (
 | ubint  | UInt64               |      | YES  |                     | FIELD         |
 | f      | Float32              |      | YES  |                     | FIELD         |
 | d      | Float64              |      | YES  |                     | FIELD         |
+| dm     | Decimal(3, 2)        |      | YES  |                     | FIELD         |
 | dt     | Date                 |      | YES  |                     | FIELD         |
 | dtt    | DateTime             |      | YES  |                     | FIELD         |
 | ts0    | TimestampSecond      |      | YES  |                     | FIELD         |

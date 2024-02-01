@@ -78,7 +78,7 @@ Suppose we want to create a table named monitor with the following data model:
 The SQL code for creating the table is shown below. In SQL, we use the primary key to specify `Tag`s and the `TIME INDEX` to specify the `Timestamp` column. The remaining columns are `Field`s.
 
 ```sql
-CREATE TABLE monitor1 (
+CREATE TABLE monitor (
   host STRING,
   ts TIMESTAMPMILLISECOND DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   cpu FLOAT64 DEFAULT 0,
