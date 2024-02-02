@@ -81,10 +81,10 @@ Java ingester SDK 使用 `Table` 来表示表中的多行数据。我们可以�
 ```java
 // Creates schemas
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
-        .addColumn("host", SemanticType.Tag, DataType.String) //
-        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
-        .addColumn("cpu_user", SemanticType.Field, DataType.Float64) //
-        .addColumn("cpu_sys", SemanticType.Field, DataType.Float64) //
+        .addTag("host", DataType.String) //
+        .addTimestamp("ts", DataType.TimestampMillisecond) //
+        .addField("cpu_user", DataType.Float64) //
+        .addField("cpu_sys", DataType.Float64) //
         .build();
 Table cpuMetric = Table.from(cpuMetricSchema);
 
@@ -103,16 +103,16 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```java
 // Creates schemas
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
-        .addColumn("host", SemanticType.Tag, DataType.String) //
-        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
-        .addColumn("cpu_user", SemanticType.Field, DataType.Float64) //
-        .addColumn("cpu_sys", SemanticType.Field, DataType.Float64) //
+        .addTag("host", DataType.String) //
+        .addTimestamp("ts", DataType.TimestampMillisecond) //
+        .addField("cpu_user", DataType.Float64) //
+        .addField("cpu_sys", DataType.Float64) //
         .build();
 
 TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric") //
-        .addColumn("host", SemanticType.Tag, DataType.String) //
-        .addColumn("ts", SemanticType.Timestamp, DataType.TimestampMillisecond) //
-        .addColumn("mem_usage", SemanticType.Field, DataType.Float64) //
+        .addTag("host", DataType.String) //
+        .addTimestamp("ts", DataType.TimestampMillisecond) //
+        .addField("mem_usage", DataType.Float64) //
         .build();
 
 Table cpuMetric = Table.from(cpuMetricSchema);
