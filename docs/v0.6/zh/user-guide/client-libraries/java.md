@@ -80,11 +80,11 @@ Java ingester SDK 使用 `Table` 来表示表中的多行数据。我们可以�
 
 ```java
 // Creates schemas
-TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
-        .addTag("host", DataType.String) //
-        .addTimestamp("ts", DataType.TimestampMillisecond) //
-        .addField("cpu_user", DataType.Float64) //
-        .addField("cpu_sys", DataType.Float64) //
+TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
+        .addTag("host", DataType.String)
+        .addTimestamp("ts", DataType.TimestampMillisecond)
+        .addField("cpu_user", DataType.Float64)
+        .addField("cpu_sys", DataType.Float64)
         .build();
 Table cpuMetric = Table.from(cpuMetricSchema);
 
@@ -102,17 +102,17 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 
 ```java
 // Creates schemas
-TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric") //
-        .addTag("host", DataType.String) //
-        .addTimestamp("ts", DataType.TimestampMillisecond) //
-        .addField("cpu_user", DataType.Float64) //
-        .addField("cpu_sys", DataType.Float64) //
+TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
+        .addTag("host", DataType.String)
+        .addTimestamp("ts", DataType.TimestampMillisecond)
+        .addField("cpu_user", DataType.Float64)
+        .addField("cpu_sys", DataType.Float64)
         .build();
 
-TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric") //
-        .addTag("host", DataType.String) //
-        .addTimestamp("ts", DataType.TimestampMillisecond) //
-        .addField("mem_usage", DataType.Float64) //
+TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
+        .addTag("host", DataType.String)
+        .addTimestamp("ts", DataType.TimestampMillisecond)
+        .addField("mem_usage", DataType.Float64)
         .build();
 
 Table cpuMetric = Table.from(cpuMetricSchema);
@@ -378,12 +378,12 @@ try (Connection conn = getConnection()) {
     ResultSet rs = statement.executeQuery("DESC cpu_metric");
     LOG.info("Column | Type | Key | Null | Default | Semantic Type ");
     while (rs.next()) {
-        LOG.info("{} | {} | {} | {} | {} | {}", //
-                rs.getString(1), //
-                rs.getString(2), //
-                rs.getString(3), //
-                rs.getString(4), //
-                rs.getString(5), //
+        LOG.info("{} | {} | {} | {} | {} | {}",
+                rs.getString(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getString(4),
+                rs.getString(5),
                 rs.getString(6));
     }
 
@@ -397,10 +397,10 @@ try (Connection conn = getConnection()) {
     rs = statement.executeQuery("SELECT * FROM cpu_metric ORDER BY ts DESC LIMIT 5");
     LOG.info("host | ts | cpu_user | cpu_sys");
     while (rs.next()) {
-        LOG.info("{} | {} | {} | {}", //
-                rs.getString("host"), //
-                rs.getTimestamp("ts"), //
-                rs.getDouble("cpu_user"), //
+        LOG.info("{} | {} | {} | {}",
+                rs.getString("host"),
+                rs.getTimestamp("ts"),
+                rs.getDouble("cpu_user"),
                 rs.getDouble("cpu_sys"));
     }
 }
