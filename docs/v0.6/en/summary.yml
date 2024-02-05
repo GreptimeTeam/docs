@@ -118,12 +118,12 @@
       - node-js
 - Reference:
   - command-lines
-  - data-types
   - SDK:
     - Java
     - Go
   - SQL:
     - overview
+    - data-types
     - http-api
     - insert
     - cast

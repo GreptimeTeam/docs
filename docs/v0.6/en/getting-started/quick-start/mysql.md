@@ -50,7 +50,7 @@ Field descriptions:
 
 - The table can be created automatically if you are using other protocols. See [Create Table](/user-guide/table-management#create-table).
 - For more information about creating table SQL, please refer to [CREATE](/reference/sql/create.md).
-- For data types, please check [data types](/reference/data-types.md).
+- For data types, please check [data types](/reference/sql/data-types.md).
 
 ### Insert data
 
