@@ -80,7 +80,7 @@ The SQL code for creating the table is shown below. In SQL, we use the primary k
 ```sql
 CREATE TABLE monitor (
   host STRING,
-  ts TIMESTAMPMILLISECOND DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   cpu FLOAT64 DEFAULT 0,
   memory FLOAT64,
   PRIMARY KEY(host));
@@ -220,7 +220,7 @@ Using the following code to create a table through POST method:
 curl -X POST \
   -H 'authorization: Basic {{authorization if exists}}' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMPMILLISECOND DEFAULT CURRENT_TIMESTAMP(), cpu FLOAT64 DEFAULT 0, memory FLOAT64, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
+  -d 'sql=CREATE TABLE monitor (host STRING, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP(), cpu FLOAT64 DEFAULT 0, memory FLOAT64, TIME INDEX (ts), PRIMARY KEY(host)) ENGINE=mito WITH(regions=1)' \
 http://localhost:4000/v1/sql?db=public
 ```
 
