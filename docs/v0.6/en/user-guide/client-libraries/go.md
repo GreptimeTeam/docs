@@ -15,19 +15,18 @@ concurrent-safe library that is easy to use with the metric struct.
 
 {template ingester-lib-installation%
 
-Use the following command to install the GreptimeDB client library for Go:
+Use the following command to install the GreptimeDB ingester library for Go:
 
 ```shell
-go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2 google.golang.org/grpc google.golang.org/grpc/credentials/insecure
+go get -u github.com/GreptimeTeam/greptimedb-ingester-go
 ```
 
 Import the library in your code:
 
 ```go
 import (
-    greptime "github.com/GreptimeTeam/greptimedb-client-go"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/client"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/config"
 )
 ```
 
@@ -36,140 +35,93 @@ import (
 {template ingester-lib-connect%
 
 ```go
-options := []grpc.DialOption{
-    grpc.WithTransportCredentials(insecure.NewCredentials()),
-}
 // To connect a database that needs authentication, for example, those on Greptime Cloud,
 // `Username` and `Password` are needed when connecting to a database that requires authentication.
-// Leave the two fields empty if connecting a database without authentication.
-cfg := greptime.NewCfg("127.0.0.1").
-    WithDatabase("public").      // change to your real database
-    WithPort(4001).              // default port
-    WithAuth("username", "password").            // `Username` and `Password`
-    WithDialOptions(options...). // specify your gRPC dail options
-    WithCallOptions()            // specify your gRPC call options
+// Leave the two fields empty if connecting a local database.
+cfg := config.New("127.0.0.1").WithDatabase("public").WithAuth("<username>", "<password>")
 
-client, _ := greptime.NewClient(cfg)
+client, _ := client.New(cfg)
 ```
 
 %}
-
 
 
 {template row-object%
 
-The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
+The Go ingester SDK uses `Table` to denote multiple rows in a table. We can add row data items into the `Table` object, which are then written into GreptimeDB.
+
+On the other hand, there is an alternative approach that allows us to write struct directly into GreptimeDB. This approach requires the use of Greptime's own field tags, but they are easy to use.
 
 %}
 
-
-{template create-a-rows%
-
-```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
-```
-
-%}
 
 {template create-rows%
 
+We can build data with `Table` struct, call `AddTagColumn`, `AddFieldColumn`, `AddTimestampColumn` at first to define the schema, then call `AddRow` to append data.
+
+
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
+tbl, err := table.New("<table_name>")
 
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
+tbl.AddTagColumn("id", types.INT64)
+tbl.AddFieldColumn("host", types.STRING)
+tbl.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
 
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
+tbl.AddRow(1, "127.0.0.1", time.Now())
+tbl.AddRow(2, "127.0.0.2", time.Now())
+
+resp, err := cli.Write(context.Background(), tbl)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
 %}
 
 
-{template save-rows%
+{template create-rows%
+
+Or we can directly define data struct with `greptime` tag, and `Create` the struct(s) into GreptimeDB.
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
-
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
-
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
-
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-
-res, err := client.Insert(context.Background(), insertsRequest)
-if err != nil {
-    fmt.Printf("fail to insert, err: %+v\n", err)
-    // error handling
-    // ...
+type Monitor struct {
+	ID          int64     `greptime:"tag;column:id;type:int64"`
+	Host        string    `greptime:"field;column:host;type:string"`
+	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
 }
-fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
+
+func (Monitor) TableName() string {
+	return "monitors"
+}
+
+monitors := []Monitor{
+    {
+        ID:          1,
+        Host:        "127.0.0.1",
+        Ts:          time.Now(),
+    },
+    {
+        ID:          2,
+        Host:        "127.0.0.2",
+        Ts:          time.Now(),
+    },
+}
+
+resp, err := cli.Create(context.Background(), monitors)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
 %}
 
-{template update-rows%
-```go
-// save a row data
-series := greptime.Series{}
-series.AddStringTag("host", "host1")
-series.AddFloatField("cpu", 0.90)
-series.SetTimestamp(1703832681000)
-metric := greptime.Metric{}
-metric.AddSeries(series)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
-
-// update the row data
-newSeries := greptime.Series{}
-// The same tag `host1`
-newSeries.AddStringTag("host", "host1")
-// The same time index `1703832681000`
-newSeries.SetTimestamp(1703832681000)
-// The new field value `0.80`
-newSeries.AddFloatField("cpu", 0.80)
-// overwrite the existing data
-metric := greptime.Metric{}
-metric.AddSeries(newSeries)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
-```
-%}
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package).
+For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
 %}
 
 {template ingester-lib-reference%
 
-- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
+- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
+- [Ingester Readme](https://github.com/GreptimeTeam/greptimedb-ingester-go)
 
 %}
 
@@ -182,16 +134,10 @@ We recommend using the [Gorm](https://gorm.io/) library, which is popular and de
 
 {template query-library-installation%
 
-Use the following command to install the Gorm library:
+Use the following command to install the Gorm library and MySQL driver:
 
 ```shell
-go get -u gorm.io/gorm
-```
-
-and install the MySQL driver as the example:
-
-```shell
-go get -u gorm.io/driver/mysql
+go get -u gorm.io/gorm gorm.io/driver/mysql
 ```
 
 Then import the libraries in your code:
@@ -231,7 +177,7 @@ dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 dsn = fmt.Sprintf("%s:%s@%s", m.User, m.Password, dsn)
 db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 if err != nil {
-    //error handling 
+    //error handling
 }
 m.DB = db
 ```
@@ -241,18 +187,17 @@ m.DB = db
 
 ```go
 type Monitor struct {
-	Host        string    `gorm:"column:host;primaryKey"`
-	Ts          time.Time `gorm:"column:ts;primaryKey"`
-	Cpu         float64   `gorm:"column:cpu"`
+	ID        int64     `gorm:"column:host;primaryKey"`
+	Ts        time.Time `gorm:"column:ts;primaryKey"`
+	Host      string    `gorm:"column:host"`
 }
 
 func (Monitor) TableName() string {
-	return "monitor"
+	return "monitors"
 }
 
-var monitor Monitor
-db.Raw("SELECT host, cpu, ts FROM users WHERE ts > ?", 1701360000000).Scan(&result)
-
+var monitors []Monitor
+result := db.Find(&monitors)
 ```
 
 %}
