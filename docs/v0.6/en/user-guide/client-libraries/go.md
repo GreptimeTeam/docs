@@ -8,7 +8,7 @@ template: template.md
 {template ingester-lib-introduction%
 
 The Go ingester SDK provided by GreptimeDB is a lightweight,
-concurrent-safe library that is easy to use with the metric struct.
+concurrent-safe library that is easy to use.
 
 %}
 
@@ -26,7 +26,9 @@ Import the library in your code:
 ```go
 import (
     "github.com/GreptimeTeam/greptimedb-ingester-go/client"
-    "github.com/GreptimeTeam/greptimedb-ingester-go/config"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/config"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/table"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
 ```
 
@@ -35,9 +37,6 @@ import (
 {template ingester-lib-connect%
 
 ```go
-// To connect a database that needs authentication, for example, those on Greptime Cloud,
-// `Username` and `Password` are needed when connecting to a database that requires authentication.
-// Leave the two fields empty if connecting a local database.
 cfg := config.New("127.0.0.1").WithDatabase("public").WithAuth("<username>", "<password>")
 
 client, _ := client.New(cfg)
@@ -55,20 +54,20 @@ On the other hand, there is an alternative approach that allows us to write stru
 %}
 
 
-{template create-rows%
+{template create-a-row%
 
 We can build data with `Table` struct, call `AddTagColumn`, `AddFieldColumn`, `AddTimestampColumn` at first to define the schema, then call `AddRow` to append data.
 
 
 ```go
-tbl, err := table.New("<table_name>")
+tbl, err := table.New("monitors")
 
-tbl.AddTagColumn("id", types.INT64)
-tbl.AddFieldColumn("host", types.STRING)
+tbl.AddTagColumn("host", types.STRING)
+tbl.AddFieldColumn("memory", types.FLOAT)
 tbl.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
 
-tbl.AddRow(1, "127.0.0.1", time.Now())
-tbl.AddRow(2, "127.0.0.2", time.Now())
+tbl.AddRow("127.0.0.1", "1.0", time.Now())
+tbl.AddRow("127.0.0.2", "2.0", time.Now())
 
 resp, err := cli.Write(context.Background(), tbl)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
@@ -83,8 +82,8 @@ Or we can directly define data struct with `greptime` tag, and `Create` the stru
 
 ```go
 type Monitor struct {
-	ID          int64     `greptime:"tag;column:id;type:int64"`
-	Host        string    `greptime:"field;column:host;type:string"`
+    Host        string    `greptime:"tag;column:host;type:string"`
+	Memory      float64   `greptime:"field;column:memory;type:float64"`
 	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
 }
 
@@ -94,13 +93,13 @@ func (Monitor) TableName() string {
 
 monitors := []Monitor{
     {
-        ID:          1,
         Host:        "127.0.0.1",
+        Memory:      1.0,
         Ts:          time.Now(),
     },
     {
-        ID:          2,
         Host:        "127.0.0.2",
+        Memory:      2.0,
         Ts:          time.Now(),
     },
 }
@@ -187,9 +186,9 @@ m.DB = db
 
 ```go
 type Monitor struct {
-	ID        int64     `gorm:"column:host;primaryKey"`
+	Host      string    `gorm:"column:host;primaryKey"`
 	Ts        time.Time `gorm:"column:ts;primaryKey"`
-	Host      string    `gorm:"column:host"`
+	Memory    string    `gorm:"column:memory"`
 }
 
 func (Monitor) TableName() string {
@@ -202,9 +201,9 @@ result := db.Find(&monitors)
 
 %}
 
-{template query-lib-link%
+{template query-lib-doc-link%
 
-[GORM](https://gorm.io/docs/index.html)
+- [GORM](https://gorm.io/docs/index.html)
 
 %}
 
