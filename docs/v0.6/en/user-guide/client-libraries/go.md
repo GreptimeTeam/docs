@@ -25,9 +25,10 @@ Import the library in your code:
 
 ```go
 import (
-    greptime "github.com/GreptimeTeam/greptimedb-client-go"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/client"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/config"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/table"
+	"github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
 ```
 
@@ -56,13 +57,17 @@ client, _ := greptime.NewClient(cfg)
 
 {template greptimedb-style-object%
 
-The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
+When using `table` object to add rows, the arguments of `AddRow` method must be in the same order as the columns in the table.
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
+cpuTable, err := table.New("cpu_metric")
+cpuTable.AddTagColumn("host", types.STRING)
+cpuTable.AddFieldColumn("cpu", types.FLOAT)
+cpuTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+
+// the same order as the columns in the table: host, memory, ts
+cpuTable.AddRow("127.0.0.1", "0.1", time.Now())
+
 ```
 
 %}
@@ -70,18 +75,20 @@ seriesHost1.SetTimestamp(time.Now())
 {template create-rows%
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
+cpuTable, err := table.New("cpu_metric")
+cpuTable.AddTagColumn("host", types.STRING)
+cpuTable.AddFieldColumn("cpu", types.FLOAT)
+cpuTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
 
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
+// the same order as the columns in the table: host, memory, ts
+cpuTable.AddRow("127.0.0.1", "0.1", time.Now())
 
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
+memTable, err := table.New("mem_metric")
+memTable.AddTagColumn("host", types.STRING)
+memTable.AddFieldColumn("memory", types.FLOAT)
+memTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+// the same order as the columns in the table: host, memory, ts
+memTable.AddRow("127.0.0.1", "112", time.Now())
 ```
 
 %}
@@ -89,32 +96,10 @@ metric.AddSeries(seriesHost1, seriesHost2)
 {template insert-rows%
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
 
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
+resp, err := cli.Write(context.Background(), cpuTable, memTable)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
-
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-
-res, err := client.Insert(context.Background(), insertsRequest)
-if err != nil {
-    fmt.Printf("fail to insert, err: %+v\n", err)
-    // error handling
-    // ...
-}
-fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
 ```
 
 %}
@@ -126,41 +111,51 @@ fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
 %}
 
 {template update-rows%
-```go
-// save a row data
-series := greptime.Series{}
-series.AddStringTag("host", "host1")
-series.AddFloatField("cpu", 0.90)
-series.SetTimestamp(1703832681000)
-metric := greptime.Metric{}
-metric.AddSeries(series)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
-
-// update the row data
-newSeries := greptime.Series{}
-// The same tag `host1`
-newSeries.AddStringTag("host", "host1")
-// The same time index `1703832681000`
-newSeries.SetTimestamp(1703832681000)
-// The new field value `0.80`
-newSeries.AddFloatField("cpu", 0.80)
-// overwrite the existing data
-metric := greptime.Metric{}
-metric.AddSeries(newSeries)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
-```
+<!-- TODO -->
 %}
 
 {template orm-style-object%
-<!-- TODO -->
+```go
+type CpuMetric struct {
+    Host        string    `greptime:"tag;column:host;type:string"`
+	Cpu         float64   `greptime:"field;column:cpu;type:float64"`
+	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+}
+
+func (CpuMetric) TableName() string {
+	return "cpu_metrics"
+}
+
+cpuMetrics := []CpuMetric{
+    {
+        Host:        "127.0.0.1",
+        CPU:         0.1,
+        Ts:          time.Now(),
+    }
+}
+
+
+type MemMetric struct {
+    Host        string    `greptime:"tag;column:host;type:string"`
+	Memory      float64   `greptime:"field;column:memory;type:float64"`
+	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+}
+
+func (MemoryMetric) TableName() string {
+	return "mem_metrics"
+}
+
+memMetrics := []MemMetric{
+    {
+        Host:        "127.0.0.1",
+        CPU:         0.1,
+        Ts:          time.Now(),
+    }
+}
+
+resp, err := cli.Create(context.Background(), cpuMetrics, memMetrics)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
+```
 %}
 
 {template orm-style-insert-data%
