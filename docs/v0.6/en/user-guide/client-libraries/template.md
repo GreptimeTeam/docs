@@ -23,43 +23,77 @@ Here we set the username and password when using the library to connect to Grept
 
 {template ingester-lib-connect%%}
 
-### Row object
+### Data model
 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
-{template row-object%%}
+### GreptimeDB style object
 
-### Create rows
+The GreptimeDB style object allows you to add rows to the table object with a predefined schema.
 
-The following example shows how to create a row contains `Tag`, `Timestamp`, and `Field` columns. The `Tag` column is a `String` type, the `Timestamp` column is a `Timestamp` type, and the `Field` column is a `Float` type.
+The following code first creates a table with columns `host`, `ts`, `cpu_user`,
+and `cpu_sys`. Then, it adds a row to the table.
+A row contains columns for `Tag`, `Timestamp`,
+and `Field`. The `Tag` column is of type `String`,
+the `Timestamp` column is of type `Timestamp`,
+and the `Field` column is of type `Float`.
 
-{template create-a-row%%}
+{template greptimedb-style-object%%}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
 {template create-rows%%}
 
-### Save rows
+#### Insert data
 
-The following example shows how to save rows to tables in GreptimeDB.
+The following example shows how to insert rows to tables in GreptimeDB.
 
-{template save-rows%%}
+{template insert-rows%%}
 
-### Update rows
+#### Streaming insert
+
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
+
+{template streaming-insert%%}
+
+#### Update data
 
 Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
-The following example shows saving a row and then updating the row.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 {template update-rows%%}
 
 <!-- TODO ### Delete Metrics -->
 
-{template ingester-lib-debug-logs%%}
+### ORM style object
+
+The ORM style object allows you to create, insert, and update data in a more object-oriented way.
+
+{template orm-style-object%%}
+
+#### Insert data
+
+{template orm-style-insert-data%%}
+
+#### Streaming insert
+
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
+
+{template orm-style-streaming-insert%%}
+
+#### Update data
+
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
+
+{template orm-style-update-data%%}
 
 ### More examples
 
 {template more-ingestion-examples%%}
+
+{template ingester-lib-debug-logs%%}
 
 ### Ingester library reference
 
