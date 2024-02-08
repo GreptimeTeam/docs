@@ -54,16 +54,9 @@ client, _ := greptime.NewClient(cfg)
 
 %}
 
-
-
-{template row-object%
+{template greptimedb-style-object%
 
 The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
-
-%}
-
-
-{template create-a-rows%
 
 ```go
 seriesHost1 := greptime.Series{}
@@ -93,8 +86,7 @@ metric.AddSeries(seriesHost1, seriesHost2)
 
 %}
 
-
-{template save-rows%
+{template insert-rows%
 
 ```go
 seriesHost1 := greptime.Series{}
@@ -124,6 +116,12 @@ if err != nil {
 }
 fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
 ```
+
+%}
+
+{template streaming-insert%
+
+<!-- TODO -->
 
 %}
 
@@ -159,6 +157,22 @@ insertsRequest := greptime.InsertsRequest{}
 insertsRequest.Append(monitorReq)
 res, _ := client.Insert(context.Background(), insertsRequest)
 ```
+%}
+
+{template orm-style-object%
+<!-- TODO -->
+%}
+
+{template orm-style-insert-data%
+<!-- TODO -->
+%}
+
+{template orm-style-streaming-insert%
+<!-- TODO -->
+%}
+
+{template orm-style-update-data%
+<!-- TODO -->
 %}
 
 {template more-ingestion-examples%

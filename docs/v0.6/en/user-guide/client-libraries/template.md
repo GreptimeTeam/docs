@@ -69,6 +69,8 @@ In the following code, we first save a row and then use the same tag and time in
 ### ORM style object
 
 The ORM style object allows you to create, insert, and update data in a more object-oriented way.
+However, it is not as efficient as the GreptimeDB style object.
+This is because the ORM style object may consume more resources and time when converting the objects.
 
 {template orm-style-object%%}
 
