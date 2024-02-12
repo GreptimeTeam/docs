@@ -54,8 +54,8 @@ dependencies:
     specifier: ^1.0.3
     version: 1.0.3
   is-core-module:
-    specifier: ^2.10.0
-    version: 2.11.0
+    specifier: ^2.13.1
+    version: 2.13.1
   js-yaml:
     specifier: ^4.1.0
     version: 4.1.0
@@ -3612,6 +3612,10 @@ packages:
 
   /function-bind@1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
+    dev: false
+
+  /function-bind@1.1.2:
+    resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
   /get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -3977,6 +3981,13 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+    dev: false
+
+  /hasown@2.0.1:
+    resolution: {integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==}
+    engines: {node: '>= 0.4'}
+    dependencies:
+      function-bind: 1.1.2
 
   /helper-cache@0.7.2:
     resolution: {integrity: sha512-ictXA4Nsj9HZcY5Sf4PyWKOXRkQLCDLJLvekaKKrQ+IGLMe4Z+u2oM1QqRGjtWeQRfQCA3NJyIzZpfmw6GvwOQ==}
@@ -4157,10 +4168,10 @@ packages:
     resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
     dev: false
 
-  /is-core-module@2.11.0:
-    resolution: {integrity: sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==}
+  /is-core-module@2.13.1:
+    resolution: {integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==}
     dependencies:
-      has: 1.0.3
+      hasown: 2.0.1
 
   /is-data-descriptor@0.1.4:
     resolution: {integrity: sha512-+w9D5ulSoBNlmw9OHn3U2v51SyoCd0he+bB3xMl62oijhrspxowjU+AIcDY0N3iEJbUEkB15IlMASQsxYigvXg==}
@@ -5434,7 +5445,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.11.0
+      is-core-module: 2.13.1
       semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
@@ -6286,7 +6297,7 @@ packages:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.11.0
+      is-core-module: 2.13.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
