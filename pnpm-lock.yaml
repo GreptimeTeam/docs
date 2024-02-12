@@ -84,8 +84,8 @@ dependencies:
     specifier: ^1.0.0
     version: 1.0.0
   postcss:
-    specifier: ^8.4.21
-    version: 8.4.23
+    specifier: ^8.4.35
+    version: 8.4.35
   preact:
     specifier: ^10.15.1
     version: 10.15.1
@@ -165,7 +165,7 @@ devDependencies:
     version: 0.24.1(rollup@3.26.0)(vue@3.3.4)
   vitepress:
     specifier: 1.0.0-rc.20
-    version: 1.0.0-rc.20(@algolia/client-search@4.20.0)(@types/node@20.4.7)(postcss@8.4.23)(search-insights@2.8.3)(stylus@0.59.0)
+    version: 1.0.0-rc.20(@algolia/client-search@4.20.0)(@types/node@20.4.7)(postcss@8.4.35)(search-insights@2.8.3)(stylus@0.59.0)
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -1216,7 +1216,7 @@ packages:
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.0
-      postcss: 8.4.31
+      postcss: 8.4.35
       source-map-js: 1.0.2
 
   /@vue/compiler-ssr@3.3.4:
@@ -5390,8 +5390,8 @@ packages:
     resolution: {integrity: sha1-j7+rsKmKJT0xhDMfno3rc3L6xsA=}
     dev: false
 
-  /nanoid@3.3.6:
-    resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
+  /nanoid@3.3.7:
+    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -5819,19 +5819,11 @@ packages:
       pathe: 1.1.0
     dev: true
 
-  /postcss@8.4.23:
-    resolution: {integrity: sha512-bQ3qMcpF6A/YjR55xtoTr0jGOlnPOKAIMdOWiv0EIT6HVPEaJiJB4NLljSbiHoC2RX7DN5Uvjtpbg1NPdwv1oA==}
+  /postcss@8.4.35:
+    resolution: {integrity: sha512-u5U8qYpBCpN13BsiEB0CbR1Hhh4Gc0zLFuedrHJKMctHCHAGrMdG0PRM/KErzAL3CU6/eckEtmHNB3x6e3c0vA==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-
-  /postcss@8.4.31:
-    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
+      nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
@@ -7397,7 +7389,7 @@ packages:
     dependencies:
       '@types/node': 20.4.7
       esbuild: 0.17.19
-      postcss: 8.4.23
+      postcss: 8.4.35
       rollup: 3.26.0
       stylus: 0.59.0
     optionalDependencies:
@@ -7434,14 +7426,14 @@ packages:
     dependencies:
       '@types/node': 20.4.7
       esbuild: 0.18.11
-      postcss: 8.4.31
+      postcss: 8.4.35
       rollup: 3.29.4
       stylus: 0.59.0
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
 
-  /vitepress@1.0.0-rc.20(@algolia/client-search@4.20.0)(@types/node@20.4.7)(postcss@8.4.23)(search-insights@2.8.3)(stylus@0.59.0):
+  /vitepress@1.0.0-rc.20(@algolia/client-search@4.20.0)(@types/node@20.4.7)(postcss@8.4.35)(search-insights@2.8.3)(stylus@0.59.0):
     resolution: {integrity: sha512-CykMUJ8JLxLcGWek0ew3wln4RYbsOd1+0YzXITTpajggpynm2S331TNkJVOkHrMRc6GYe3y4pS40GfgcW0ZwAw==}
     hasBin: true
     peerDependencies:
@@ -7462,7 +7454,7 @@ packages:
       focus-trap: 7.5.3
       mark.js: 8.11.1
       minisearch: 6.1.0
-      postcss: 8.4.23
+      postcss: 8.4.35
       shiki: 0.14.4
       vite: 4.4.11(@types/node@20.4.7)(stylus@0.59.0)
       vue: 3.3.4
