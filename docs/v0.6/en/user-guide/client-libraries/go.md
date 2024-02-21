@@ -18,7 +18,7 @@ concurrent-safe library that is easy to use with the metric struct.
 Use the following command to install the GreptimeDB client library for Go:
 
 ```shell
-go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2 google.golang.org/grpc google.golang.org/grpc/credentials/insecure
+go get -u github.com/GreptimeTeam/greptimedb-ingester-go
 ```
 
 Import the library in your code:
@@ -26,9 +26,9 @@ Import the library in your code:
 ```go
 import (
     "github.com/GreptimeTeam/greptimedb-ingester-go/client"
-	"github.com/GreptimeTeam/greptimedb-ingester-go/config"
-	"github.com/GreptimeTeam/greptimedb-ingester-go/table"
-	"github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/config"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/table"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
 ```
 
@@ -37,36 +37,41 @@ import (
 {template ingester-lib-connect%
 
 ```go
-options := []grpc.DialOption{
-    grpc.WithTransportCredentials(insecure.NewCredentials()),
-}
-// To connect a database that needs authentication, for example, those on Greptime Cloud,
-// `Username` and `Password` are needed when connecting to a database that requires authentication.
-// Leave the two fields empty if connecting a database without authentication.
 cfg := greptime.NewCfg("127.0.0.1").
-    WithDatabase("public").      // change to your real database
-    WithPort(4001).              // default port
-    WithAuth("username", "password").            // `Username` and `Password`
-    WithDialOptions(options...). // specify your gRPC dail options
-    WithCallOptions()            // specify your gRPC call options
+    // change the database name to your database name
+    WithDatabase("public").
+    // default port
+    WithPort(4001).
+    // set authentication information
+    WithAuth("username", "password")
 
-client, _ := greptime.NewClient(cfg)
+client, _ := client.New(cfg)
 ```
-
 %}
 
-{template greptimedb-style-object%
-
-When using `table` object to add rows, the arguments of `AddRow` method must be in the same order as the columns in the table.
+{template low-level-object%
 
 ```go
-cpuTable, err := table.New("cpu_metric")
-cpuTable.AddTagColumn("host", types.STRING)
-cpuTable.AddFieldColumn("cpu", types.FLOAT)
-cpuTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+// Construct the table schema for CPU metrics
+cpuMetric, err := table.New("cpu_metric")
+if err != nil {
+    // Handle error appropriately
+}
 
-// the same order as the columns in the table: host, memory, ts
-cpuTable.AddRow("127.0.0.1", "0.1", time.Now())
+// Add a 'Tag' column for host identifiers
+cpuMetric.AddTagColumn("host", types.STRING)
+// Add a 'Timestamp' column for recording the time of data collection
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+// Add 'Field' columns for user and system CPU usage measurements
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
+
+// Insert example data
+// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+if err != nil {
+    // Handle error appropriately
+}
 
 ```
 
@@ -75,20 +80,30 @@ cpuTable.AddRow("127.0.0.1", "0.1", time.Now())
 {template create-rows%
 
 ```go
-cpuTable, err := table.New("cpu_metric")
-cpuTable.AddTagColumn("host", types.STRING)
-cpuTable.AddFieldColumn("cpu", types.FLOAT)
-cpuTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+cpuMetric, err := table.New("cpu_metric")
+if err != nil {
+    // Handle error appropriately
+}
+cpuMetric.AddTagColumn("host", types.STRING)
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+if err != nil {
+    // Handle error appropriately
+}
 
-// the same order as the columns in the table: host, memory, ts
-cpuTable.AddRow("127.0.0.1", "0.1", time.Now())
-
-memTable, err := table.New("mem_metric")
-memTable.AddTagColumn("host", types.STRING)
-memTable.AddFieldColumn("memory", types.FLOAT)
-memTable.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
-// the same order as the columns in the table: host, memory, ts
-memTable.AddRow("127.0.0.1", "112", time.Now())
+memMetric, err := table.New("mem_metric")
+if err != nil {
+    // Handle error appropriately
+}
+memMetric.AddTagColumn("host", types.STRING)
+memMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+memMetric.AddFieldColumn("mem_usage", types.FLOAT)
+err = memMetric.AddRow("127.0.0.1", time.Now(), 112)
+if err != nil {
+    // Handle error appropriately
+}
 ```
 
 %}
@@ -96,40 +111,76 @@ memTable.AddRow("127.0.0.1", "112", time.Now())
 {template insert-rows%
 
 ```go
-
-resp, err := cli.Write(context.Background(), cpuTable, memTable)
+resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
+if err != nil {
+    // Handle error appropriately
+}
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
-
 ```
 
 %}
 
 {template streaming-insert%
 
-<!-- TODO -->
+To insert data using the streaming API, you must first create a stream client.
+
+```go
+cfg := config.New("<host>").
+    WithAuth("<username>", "<password>").
+    WithDatabase(database)
+streamClient, err := client.NewStreamClient(cfg)
+```
+
+Then send the data to the server.
+
+```go
+err := streamClient.Send(context.Background(), cpuMetric, memMetric)
+if err != nil {
+    // Handle error appropriately
+}
+```
 
 %}
 
 {template update-rows%
-<!-- TODO -->
+
+```go
+ts := time.Now()
+_ = cpuMetric.AddRow("127.0.0.1", ts, 0.1, 0.12)
+// insert a row data
+resp, _ := cli.Write(context.Background(), cpuMetric)
+
+// update the row data
+// The same tag `127.0.0.1`
+// The same time index `ts`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+_ = cpuMetric.AddRow("127.0.0.1", ts, 0.80, 0.11)
+// overwrite the existing data
+resp, _ = cli.Write(context.Background(), cpuMetric)
+```
+
 %}
 
+
 {template orm-style-object%
+
 ```go
 type CpuMetric struct {
-    Host        string    `greptime:"tag;column:host;type:string"`
-	Cpu         float64   `greptime:"field;column:cpu;type:float64"`
-	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+    Host            string    `greptime:"tag;column:host;type:string"`
+    CpuUser         float64   `greptime:"field;column:cpu_user;type:float64"`
+    CpuSys          float64   `greptime:"field;column:cpu_sys;type:float64"`
+    Ts              time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
 }
 
 func (CpuMetric) TableName() string {
-	return "cpu_metrics"
+	return "cpu_metric"
 }
 
 cpuMetrics := []CpuMetric{
     {
         Host:        "127.0.0.1",
-        CPU:         0.1,
+        CpuUser:     0.10,
+        CpuSys:      0.12,
         Ts:          time.Now(),
     }
 }
@@ -137,37 +188,81 @@ cpuMetrics := []CpuMetric{
 
 type MemMetric struct {
     Host        string    `greptime:"tag;column:host;type:string"`
-	Memory      float64   `greptime:"field;column:memory;type:float64"`
+	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
 	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
 }
 
 func (MemoryMetric) TableName() string {
-	return "mem_metrics"
+	return "mem_metric"
 }
 
 memMetrics := []MemMetric{
     {
         Host:        "127.0.0.1",
-        CPU:         0.1,
+        Memory:      112,
         Ts:          time.Now(),
     }
 }
-
-resp, err := cli.Create(context.Background(), cpuMetrics, memMetrics)
-log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 %}
 
 {template orm-style-insert-data%
-<!-- TODO -->
+
+```go
+resp, err := cli.Create(context.Background(), cpuMetrics, memMetrics)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
+```
+
 %}
 
 {template orm-style-streaming-insert%
-<!-- TODO -->
+
+To insert data using the streaming API, you must first create a stream client.
+
+```go
+cfg := config.New("<host>").
+    WithAuth("<username>", "<password>").
+    WithDatabase(database)
+streamClient, err := client.NewStreamClient(cfg)
+```
+
+Then send the data to the server.
+
+```go
+err := streamClient.Create(context.Background(), cpuMetrics, memMetrics)
+```
+
 %}
 
 {template orm-style-update-data%
-<!-- TODO -->
+
+```go
+ts = time.Now()
+cpuMetrics := []CpuMetric{
+    {
+        Host:        "127.0.0.1",
+        CpuUser:     0.10,
+        CpuSys:      0.12,
+        Ts:          ts,
+    }
+}
+// insert a row data
+resp, err := cli.Create(context.Background(), cpuMetrics)
+
+// update the row data
+newCpuMetrics := []CpuMetric{
+    {
+        Host:        "127.0.0.1",    // The same tag `127.0.0.1`
+        CpuUser:     0.80,       // The new value: cpu_user = `0.80`
+        CpuSys:      0.11,    // The new value: cpu_sys = `0.11`
+        Ts:          ts,     // The same time index `ts`
+    }
+}
+// overwrite the existing data
+resp, err := cli.Create(context.Background(), newCpuMetrics)
+
+```
+
 %}
 
 {template more-ingestion-examples%
@@ -248,25 +343,47 @@ m.DB = db
 
 {template query-library-raw-sql%
 
+#### Declare model
+
 ```go
-type Monitor struct {
-	Host        string    `gorm:"column:host;primaryKey"`
-	Ts          time.Time `gorm:"column:ts;primaryKey"`
-	Cpu         float64   `gorm:"column:cpu"`
+type CpuMetric struct {
+    Host        string    `gorm:"column:host;primaryKey"`
+    Ts          time.Time `gorm:"column:ts;primaryKey"`
+    CpuUser     float64   `gorm:"column:cpu_user"`
+    CpuSys      float64   `gorm:"column:cpu_sys"`
 }
+```
 
-func (Monitor) TableName() string {
-	return "monitor"
+If you are using the ORM API to insert data, you can declare the model with both Gorm and Greptime tags.
+
+```go
+type CpuMetric struct {
+    Host        string    `gorm:"column:host;primaryKey" greptime:"tag;column:host;type:string"`
+    Ts          time.Time `gorm:"column:ts;primaryKey"   greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+    CpuUser     float64   `gorm:"column:cpu_user"        greptime:"field;column:cpu_user;type:float64"`
+    CpuSys      float64   `gorm:"column:cpu_sys"         greptime:"field;column:cpu_sys;type:float64"`
 }
+```
 
-var monitor Monitor
-db.Raw("SELECT host, cpu, ts FROM users WHERE ts > ?", 1701360000000).Scan(&result)
+#### Declare table name
+
+```go
+func (CpuMetric) TableName() string {
+	return "cpu_metric"
+}
+```
+
+#### Query data
+
+```go
+var cpuMetric CpuMetric
+db.Raw("SELECT * FROM cpu_metric WHERE ts > ?", 1701360000000).Scan(&result)
 
 ```
 
 %}
 
-{template query-lib-link%
+{template query-lib-doc-link%
 
 [GORM](https://gorm.io/docs/index.html)
 

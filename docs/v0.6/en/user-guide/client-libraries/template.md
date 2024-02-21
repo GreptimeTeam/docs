@@ -28,18 +28,22 @@ Here we set the username and password when using the library to connect to Grept
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
-### GreptimeDB style object
+### Low-level API
 
-The GreptimeDB style object allows you to add rows to the table object with a predefined schema.
+The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
+by adding rows to the table object with a predefined schema.
 
-The following code first creates a table with columns `host`, `ts`, `cpu_user`,
-and `cpu_sys`. Then, it adds a row to the table.
-A row contains columns for `Tag`, `Timestamp`,
-and `Field`. The `Tag` column is of type `String`,
-the `Timestamp` column is of type `Timestamp`,
-and the `Field` column is of type `Float`.
+This following code snippet begins by constructing a table named `cpu_metric`,
+which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
+Subsequently, it inserts a single row into the table.
 
-{template greptimedb-style-object%%}
+The table consists of three types of columns:
+
+- `Tag`: The `host` column, with values of type `String`.
+- `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
+- `Timestamp`: The `ts` column, with values of type `Timestamp`.
+
+{template low-level-object%%}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
@@ -66,10 +70,11 @@ In the following code, we first save a row and then use the same tag and time in
 
 <!-- TODO ### Delete Metrics -->
 
-### ORM style object
+### ORM API
 
-The ORM style object allows you to create, insert, and update data in a more object-oriented way.
-However, it is not as efficient as the GreptimeDB style object.
+The ORM style object allows you to create, insert, and update data in a more object-oriented way,
+providing developers with a friendlier experience.
+However, it is not as efficient as the low-level object.
 This is because the ORM style object may consume more resources and time when converting the objects.
 
 {template orm-style-object%%}
@@ -123,7 +128,7 @@ The following example shows how to connect to GreptimeDB:
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
-The following example shows how to use raw SQL to query data:
+The following example shows how to use raw SQL to query data.
 
 {template query-library-raw-sql%%}
 
