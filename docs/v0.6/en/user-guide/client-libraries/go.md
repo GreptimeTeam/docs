@@ -343,7 +343,7 @@ m.DB = db
 
 {template query-library-raw-sql%
 
-#### Declare model
+The following code declares a Gorm object model:
 
 ```go
 type CpuMetric struct {
@@ -365,7 +365,7 @@ type CpuMetric struct {
 }
 ```
 
-#### Declare table name
+Declare the table name as follows:
 
 ```go
 func (CpuMetric) TableName() string {
@@ -373,7 +373,7 @@ func (CpuMetric) TableName() string {
 }
 ```
 
-#### Query data
+Use raw SQL to query data:
 
 ```go
 var cpuMetric CpuMetric

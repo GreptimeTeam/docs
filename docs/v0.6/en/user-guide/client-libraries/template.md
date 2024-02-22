@@ -33,6 +33,8 @@ The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. 
 The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
 by adding rows to the table object with a predefined schema.
 
+#### Create row objects
+
 This following code snippet begins by constructing a table named `cpu_metric`,
 which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
 Subsequently, it inserts a single row into the table.
@@ -76,6 +78,8 @@ The ORM style object allows you to create, insert, and update data in a more obj
 providing developers with a friendlier experience.
 However, it is not as efficient as the low-level object.
 This is because the ORM style object may consume more resources and time when converting the objects.
+
+#### Create row objects
 
 {template orm-style-object%%}
 
