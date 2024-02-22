@@ -44,7 +44,7 @@ You have a write request as following:
 INSERT INTO system_metrics VALUES ("host1", "a", 11.8, 10.3, 10.3, 1667446797450);
 ```
 
-Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is rounded up to 1 according to the calculation algorithm.
+Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is ceiling to 1 according to the calculation algorithm.
 
 To reduce the WCU usage, use batched `INSERT` statements to insert multiple rows in a single statement, rather than sending a separate statement per row. For example:
 
@@ -69,7 +69,7 @@ A standard read capacity unit can scan up to 1MB data. For scanned data larger t
 The capacity unit may be subject to change in the future.
 :::
 
-For example, suppose there is a read request scanning 2.5MB data. The RCU of this request is rounding up to 3 according to calculation algorithm.
+For example, suppose there is a read request scanning 2.5MB data. The RCU of this request is ceiling to 3 according to calculation algorithm.
 
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
