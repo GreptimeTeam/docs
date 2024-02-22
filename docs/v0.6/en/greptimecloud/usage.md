@@ -11,7 +11,7 @@ All requests to GreptimeCloud are measured in capacity units, which reflect the 
 Each API call to write data to your table is a write request.
 WCU is calculated based on the total size of the insert rows in one request.
 A standard write capacity unit can write rows up to 1KB.
-For rows larger than 1KB, additional write capacity units are required.
+For rows larger than 1KB, additional write capacity units are required accordingly.
 
 :::tip NOTE
 The capacity unit may be subject to change in the future.
@@ -44,7 +44,7 @@ You have a write request as following:
 INSERT INTO system_metrics VALUES ("host1", "a", 11.8, 10.3, 10.3, 1667446797450);
 ```
 
-Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is 1 according to the calculation algorithm.
+Based on the size of the data types in your table schema, the size of each row is 38 bytes (5+1+8+8+8+8), and the WCU of this request is rounded up to 1 according to the calculation algorithm.
 
 To reduce the WCU usage, use batched `INSERT` statements to insert multiple rows in a single statement, rather than sending a separate statement per row. For example:
 
@@ -63,19 +63,17 @@ The size of the request is 950 bytes (38 x 25). The WCU of this request is 1. If
 
 Each API call to read data from your table is a read request. RCU is the server resource consumed in one request. It depends on the following items:
 
-- CPU time consumed by the request
 - Scanned data size by the request
 
-A standard read capacity unit can consume CPU time up to 1ms or scan up to 1KB data. For cpu time or scanned data larger than 1ms or 1KB, additional read capacity units are required.
+A standard read capacity unit can scan up to 1MB data. For scanned data larger than 1MB, additional read capacity units are required accordingly.
 
 :::tip NOTE
 The capacity unit may be subject to change in the future.
 :::
 
-For example, suppose there is a read request consuming 2.5ms CPU time and scanning 2KB data. All of these costs add up to 5 RCUs:
+For example, suppose there is a read request scanning 2MB data. All of these costs add up to 2 RCUs:
 
-- 3 RCU from 2.5ms CPU time
-- 2 RCU from 2KB scanned data
+- 2 RCU from 2MB scanned data
 
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
