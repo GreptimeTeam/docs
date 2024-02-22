@@ -61,19 +61,15 @@ The size of the request is 950 bytes (38 x 25). The WCU of this request is 1. If
 
 ### RCU (Read Capacity Unit)
 
-Each API call to read data from your table is a read request. RCU is the server resource consumed in one request. It depends on the following items:
-
-- Scanned data size by the request
-
+Each API call to read data from your table is a read request. 
+RCU is the data size scanned and loaded into server's memory in one request. 
 A standard read capacity unit can scan up to 1MB data. For scanned data larger than 1MB, additional read capacity units are required accordingly.
 
 :::tip NOTE
 The capacity unit may be subject to change in the future.
 :::
 
-For example, suppose there is a read request scanning 2MB data. All of these costs add up to 2 RCUs:
-
-- 2 RCU from 2MB scanned data
+For example, suppose there is a read request scanning 2.5MB data. The RCU of this request is rounding up to 3 according to calculation algorithm.
 
 To lower the RCU, you can design the table schema and queries carefully. Here are some tips:
 
