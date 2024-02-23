@@ -37,11 +37,9 @@ import (
 
 ```go
 cfg := greptime.NewCfg("127.0.0.1").
-    // change the database name to your database name
+    // 将数据库名称更改为你的数据库名称
     WithDatabase("public").
-    // default port
-    WithPort(4001).
-    // set authentication information
+    // 设置鉴权信息
     WithAuth("username", "password")
 
 client, _ := client.New(cfg)
@@ -51,25 +49,25 @@ client, _ := client.New(cfg)
 {template low-level-object%
 
 ```go
-// Construct the table schema for CPU metrics
+// 为 CPU 指标构建表结构
 cpuMetric, err := table.New("cpu_metric")
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 
-// Add a 'Tag' column for host identifiers
+// 添加一个 'Tag' 列，用于主机标识符
 cpuMetric.AddTagColumn("host", types.STRING)
-// Add a 'Timestamp' column for recording the time of data collection
+// 添加一个 'Timestamp' 列，用于记录数据收集的时间
 cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
-// Add 'Field' columns for user and system CPU usage measurements
+// 添加 'Field' 列，用于测量用户和系统 CPU 使用率
 cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
 cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
 
-// Insert example data
-// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
+// 插入示例数据
+// 注意：参数必须按照定义的表结构中的列的顺序排列：host, ts, cpu_user, cpu_sys
 err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 
 ```
@@ -81,7 +79,7 @@ if err != nil {
 ```go
 cpuMetric, err := table.New("cpu_metric")
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 cpuMetric.AddTagColumn("host", types.STRING)
 cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
@@ -89,19 +87,19 @@ cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
 cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
 err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 
 memMetric, err := table.New("mem_metric")
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 memMetric.AddTagColumn("host", types.STRING)
 memMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
 memMetric.AddFieldColumn("mem_usage", types.FLOAT)
 err = memMetric.AddRow("127.0.0.1", time.Now(), 112)
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 ```
 
@@ -112,7 +110,7 @@ if err != nil {
 ```go
 resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
@@ -135,7 +133,7 @@ streamClient, err := client.NewStreamClient(cfg)
 ```go
 err := streamClient.Send(context.Background(), cpuMetric, memMetric)
 if err != nil {
-    // Handle error appropriately
+    // 处理错误
 }
 ```
 
@@ -146,15 +144,15 @@ if err != nil {
 ```go
 ts := time.Now()
 _ = cpuMetric.AddRow("127.0.0.1", ts, 0.1, 0.12)
-// insert a row data
+// 插入一条行数据
 resp, _ := cli.Write(context.Background(), cpuMetric)
 
-// update the row data
-// The same tag `127.0.0.1`
-// The same time index `ts`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+// 更新该行数据
+// 同样的标签 `127.0.0.1`
+// 同样的时间索引 `ts`
+// 新值：cpu_user = `0.80`, cpu_sys = `0.11`
 _ = cpuMetric.AddRow("127.0.0.1", ts, 0.80, 0.11)
-// overwrite the existing data
+// 覆盖现有数据
 resp, _ = cli.Write(context.Background(), cpuMetric)
 ```
 
@@ -245,19 +243,20 @@ cpuMetrics := []CpuMetric{
         Ts:          ts,
     }
 }
-// insert a row data
+// 插入一条行数据
 resp, err := cli.Create(context.Background(), cpuMetrics)
 
-// update the row data
+// 更新该条行数据
 newCpuMetrics := []CpuMetric{
     {
-        Host:        "127.0.0.1",    // The same tag `127.0.0.1`
-        CpuUser:     0.80,       // The new value: cpu_user = `0.80`
-        CpuSys:      0.11,    // The new value: cpu_sys = `0.11`
-        Ts:          ts,     // The same time index `ts`
+        Host:        "127.0.0.1",    // 同样的标签 `127.0.0.1`
+        CpuUser:     0.80,       // 新值：cpu_user = `0.80`
+        CpuSys:      0.11,    // 新值：cpu_sys = `0.11`
+        Ts:          ts,     // 同样的索引 `ts`
     }
 }
-// overwrite the existing data
+
+// 覆盖现有数据
 resp, err := cli.Create(context.Background(), newCpuMetrics)
 
 ```
@@ -324,7 +323,7 @@ type Mysql struct {
 
 m := &Mysql{
     Host:     "127.0.0.1",
-    Port:     "4002", // default port for MySQL
+    Port:     "4002", // MySQL 协议的默认端口
     User:     "username",
     Password: "password",
     Database: "public",
@@ -335,7 +334,7 @@ dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 dsn = fmt.Sprintf("%s:%s@%s", m.User, m.Password, dsn)
 db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 if err != nil {
-    //error handling 
+    // 错误处理
 }
 m.DB = db
 ```

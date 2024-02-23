@@ -48,19 +48,19 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 请注意每个选项的注释，它们提供了对其各自角色的详细解释。
 
 ```java
-// GreptimeDB has a default database named "public" in the default catalog "greptime",
-// we can use it as the test database
+// GreptimeDB 默认数据库名称为 "public"，默认目录为 "greptime"，
+// 我们可以将其作为测试数据库使用
 String database = "public";
-// By default, GreptimeDB listens on port 4001 using the gRPC protocol.
-// We can provide multiple endpoints that point to the same GreptimeDB cluster.
-// The client will make calls to these endpoints based on a load balancing strategy.
+// 默认情况下，GreptimeDB 使用 gRPC 协议在监听端口 4001。
+// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints。
+// 客户端将根据负载均衡策略调用这些 endpoints。
 String[] endpoints = {"127.0.0.1:4001"};
-// Sets authentication information.
+// 设置鉴权信息
 AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
-        // If the database does not require authentication, we can use AuthInfo.noAuthorization() as the parameter.
+        // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
-        // A good start ^_^
+        // 好的开始 ^_^
         .build();
 
 GreptimeDB client = GreptimeDB.create(opts);
@@ -71,25 +71,25 @@ GreptimeDB client = GreptimeDB.create(opts);
 {template low-level-object%
 
 ```java
-// Construct the table schema for CPU metrics
+// 为 CPU 指标构建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String) // Identifier for the host
-        .addTimestamp("ts", DataType.TimestampMillisecond) // Timestamp in milliseconds
-        .addField("cpu_user", DataType.Float64) // CPU usage by user processes
-        .addField("cpu_sys", DataType.Float64) // CPU usage by system processes
+        .addTag("host", DataType.String) // 主机的标识符
+        .addTimestamp("ts", DataType.TimestampMillisecond) // 毫秒级的时间戳
+        .addField("cpu_user", DataType.Float64) // 用户进程的 CPU 使用率
+        .addField("cpu_sys", DataType.Float64) // 系统进程的 CPU 使用率
         .build();
 
-// Create the table from the defined schema
+// 根据定义的模式创建表
 Table cpuMetric = Table.from(cpuMetricSchema);
 
-// Example data for a single row
-String host = "127.0.0.1"; // Host identifier
-long ts = System.currentTimeMillis(); // Current timestamp
-double cpuUser = 0.1; // CPU usage by user processes (in percentage)
-double cpuSys = 0.12; // CPU usage by system processes (in percentage)
+// 单行的示例数据
+String host = "127.0.0.1"; // 主机标识符
+long ts = System.currentTimeMillis(); // 当前时间戳
+double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
+double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 
-// Insert the row into the table
-// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
+// 将行插入表中
+// 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
@@ -98,7 +98,7 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 {template create-rows%
 
 ```java
-// Creates schemas
+// 创建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String)
         .addTimestamp("ts", DataType.TimestampMillisecond)
@@ -115,7 +115,7 @@ TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
 Table cpuMetric = Table.from(cpuMetricSchema);
 Table memMetric = Table.from(memMetricSchema);
 
-// Adds row data items
+// 添加行数据
 for (int i = 0; i < 10; i++) {
     String host = "127.0.0." + i;
     long ts = System.currentTimeMillis();
@@ -138,11 +138,10 @@ for (int i = 0; i < 10; i++) {
 {template insert-rows%
 
 ```java
-// Saves data
+// 插入数据
 
-// For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
+// 考虑到性能问题，SDK 设计为纯异步的。
+// 返回值是一个 future 对象。如果你想立即获取结果，可以调用 `future.get()`。
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
 Result<WriteOk, Err> result = future.get();
@@ -163,14 +162,14 @@ if (result.isOk()) {
 ```java
 StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
 
-// write data into stream
+// 写入数据到流中
 writer.write(cpuMetric);
 writer.write(memMetric);
 
-// You can perform operations on the stream, such as deleting the first 5 rows.
+// 你可以对流执行操作，例如删除前 5 行
 writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
 
-// complete the stream
+// 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
@@ -182,20 +181,20 @@ LOG.info("Write result: {}", result);
 
 ```java
 Table cpuMetric = Table.from(myMetricCpuSchema);
-// insert a row data
+// 插入一行数据
 long ts = 1703832681000L;
 cpuMetric.addRow("host1", ts, 0.23, 0.12);
 Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
 
-// update the row data
+// 更新行数据
 Table newCpuMetric = Table.from(myMetricCpuSchema);
-// The same tag `host1`
-// The same time index `1703832681000`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+// 相同的标签 `host1`
+// 相同的时间索引 `1703832681000`
+// 新的值：cpu_user = `0.80`, cpu_sys = `0.11`
 long ts = 1703832681000L;
 myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
 
-// overwrite the existing data
+// 覆盖现有数据
 Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
 ```
 
@@ -238,7 +237,7 @@ public class Memory {
     // ...
 }
 
-// Add rows
+// 添加行
 List<Cpu> cpus = new ArrayList<>();
 for (int i = 0; i < 10; i++) {
     Cpu c = new Cpu();
@@ -267,7 +266,7 @@ for (int i = 0; i < 10; i++) {
 写入 POJO 对象：
 
 ```java
-// Saves data
+// 插入数据
 
 CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
 
@@ -287,14 +286,14 @@ if (result.isOk()) {
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
 
-// write data into stream
+// 写入数据到流中
 writer.write(cpus);
 writer.write(memories);
 
-// You can perform operations on the stream, such as deleting the first 5 rows.
+// 你可以对流执行操作，例如删除前 5 行
 writer.write(cpus.subList(0, 5), WriteOp.Delete);
 
-// complete the stream
+// 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
@@ -311,20 +310,20 @@ cpu.setTs(1703832681000L);
 cpu.setCpuUser(0.23);
 cpu.setCpuSys(0.12);
 
-// insert a row data
+// 插入一行数据
 Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
 
-// update the row data
+// 更新该行数据
 Cpu newCpu = new Cpu();
-// The same tag `host1`
+// 相同的标签 `host1`
 newCpu.setHost("host1");
-// The same time index `1703832681000`
+// 相同的时间索引 `1703832681000`
 newCpu.setTs(1703832681000L);
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+// 新的值: cpu_user = `0.80`, cpu_sys = `0.11`
 cpu.setCpuUser(0.80);
 cpu.setCpuSys(0.11);
 
-// overwrite the existing data
+// 覆盖现有数据
 Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 ```
 
@@ -369,7 +368,7 @@ Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接�
 如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```xml
-<!-- MySQL usage dependency -->
+<!-- MySQL 依赖 -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
