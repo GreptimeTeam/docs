@@ -267,26 +267,26 @@ resp, err := cli.Create(context.Background(), newCpuMetrics)
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package).
+For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
 %}
 
 {template ingester-lib-reference%
 
-- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
+- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
 %}
 
 
 {template recommended-query-library%
 
-We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly.
+We recommend using the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
 
 %}
 
 {template query-library-installation%
 
-Use the following command to install the Gorm library:
+Use the following command to install the GORM library:
 
 ```shell
 go get -u gorm.io/gorm
@@ -343,7 +343,7 @@ m.DB = db
 
 {template query-library-raw-sql%
 
-The following code declares a Gorm object model:
+The following code declares a GORM object model:
 
 ```go
 type CpuMetric struct {
@@ -354,7 +354,7 @@ type CpuMetric struct {
 }
 ```
 
-If you are using the ORM API to insert data, you can declare the model with both Gorm and Greptime tags.
+If you are using the [ORM API](#orm-api) to insert data, you can declare the model with both GORM and Greptime tags.
 
 ```go
 type CpuMetric struct {
