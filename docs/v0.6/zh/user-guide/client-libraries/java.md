@@ -68,35 +68,32 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 %}
 
-{template row-object%
-
-Java ingester SDK 使用 `Table` 来表示表中的多行数据。我们可以将行数据项添加到 `Table` 对象中，然后写入 GreptimeDB。
-
-我们还可以基本的 POJO 对象作为另一种替代方法进行写入。这种方法需要使用 Greptime 的注解，但它们很容易使用。
-
-%}
-
-{template create-a-row%
+{template low-level-object%
 
 ```java
-// Creates schemas
+// Construct the table schema for CPU metrics
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String)
-        .addTimestamp("ts", DataType.TimestampMillisecond)
-        .addField("cpu_user", DataType.Float64)
-        .addField("cpu_sys", DataType.Float64)
+        .addTag("host", DataType.String) // Identifier for the host
+        .addTimestamp("ts", DataType.TimestampMillisecond) // Timestamp in milliseconds
+        .addField("cpu_user", DataType.Float64) // CPU usage by user processes
+        .addField("cpu_sys", DataType.Float64) // CPU usage by system processes
         .build();
+
+// Create the table from the defined schema
 Table cpuMetric = Table.from(cpuMetricSchema);
 
-String host = "127.0.0.1";
-long ts = System.currentTimeMillis();
-double cpuUser = 0.1;
-double cpuSys = 0.12;
+// Example data for a single row
+String host = "127.0.0.1"; // Host identifier
+long ts = System.currentTimeMillis(); // Current timestamp
+double cpuUser = 0.1; // CPU usage by user processes (in percentage)
+double cpuSys = 0.12; // CPU usage by system processes (in percentage)
+
+// Insert the row into the table
+// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
 %}
-
 
 {template create-rows%
 
@@ -136,7 +133,78 @@ for (int i = 0; i < 10; i++) {
 
 ```
 
-或者我们可以使用 POJO 对象构建数据：
+%}
+
+{template insert-rows%
+
+```java
+// Saves data
+
+// For performance reasons, the SDK is designed to be purely asynchronous.
+// The return value is a future object. If you want to immediately obtain
+// the result, you can call `future.get()`.
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
+
+Result<WriteOk, Err> result = future.get();
+
+if (result.isOk()) {
+    LOG.info("Write result: {}", result.getOk());
+} else {
+    LOG.error("Failed to write: {}", result.getErr());
+}
+
+```
+
+%}
+
+{template streaming-insert%
+
+
+```java
+StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
+
+// write data into stream
+writer.write(cpuMetric);
+writer.write(memMetric);
+
+// You can perform operations on the stream, such as deleting the first 5 rows.
+writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
+
+// complete the stream
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
+```
+
+%}
+
+{template update-rows%
+
+```java
+Table cpuMetric = Table.from(myMetricCpuSchema);
+// insert a row data
+long ts = 1703832681000L;
+cpuMetric.addRow("host1", ts, 0.23, 0.12);
+Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+
+// update the row data
+Table newCpuMetric = Table.from(myMetricCpuSchema);
+// The same tag `host1`
+// The same time index `1703832681000`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+long ts = 1703832681000L;
+myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
+
+// overwrite the existing data
+Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+```
+
+%}
+
+
+{template orm-style-object%
+
+GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
 
 ```java
 @Metric(name = "cpu_metric")
@@ -194,27 +262,9 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template save-rows%
+{template orm-style-insert-data%
 
-```java
-// Saves data
-
-// For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
-
-Result<WriteOk, Err> result = future.get();
-
-if (result.isOk()) {
-    LOG.info("Write result: {}", result.getOk());
-} else {
-    LOG.error("Failed to write: {}", result.getErr());
-}
-
-```
-
-我们还可以使用 POJO 对象进行写入：
+写入 POJO 对象：
 
 ```java
 // Saves data
@@ -232,28 +282,27 @@ if (result.isOk()) {
 
 %}
 
-{template update-rows%
+{template orm-style-streaming-insert%
 
 ```java
-Table cpuMetric = Table.from(myMetricCpuSchema);
-// save a row data
-long ts = 1703832681000L;
-cpuMetric.addRow("host1", ts, 0.23, 0.12);
-Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
 
-// update the row data
-Table newCpuMetric = Table.from(myMetricCpuSchema);
-// The same tag `host1`
-// The same time index `1703832681000`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
-long ts = 1703832681000L;
-myMetricCpuSchema.addRow("host1", ts, 0.80, 0.81);
+// write data into stream
+writer.write(cpus);
+writer.write(memories);
 
-// overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+// You can perform operations on the stream, such as deleting the first 5 rows.
+writer.write(cpus.subList(0, 5), WriteOp.Delete);
+
+// complete the stream
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
 ```
 
-或者我们可以使用 POJO 对象进行更新：
+%}
+
+{template orm-style-update-data%
 
 ```java
 Cpu cpu = new Cpu();
@@ -262,7 +311,7 @@ cpu.setTs(1703832681000L);
 cpu.setCpuUser(0.23);
 cpu.setCpuSys(0.12);
 
-// save a row data
+// insert a row data
 Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
 
 // update the row data
@@ -271,9 +320,9 @@ Cpu newCpu = new Cpu();
 newCpu.setHost("host1");
 // The same time index `1703832681000`
 newCpu.setTs(1703832681000L);
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
 cpu.setCpuUser(0.80);
-cpu.setCpuSys(0.81);
+cpu.setCpuSys(0.11);
 
 // overwrite the existing data
 Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
