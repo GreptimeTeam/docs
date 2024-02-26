@@ -32,13 +32,13 @@ mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 
 Use following connect string for your JDBC client.
 
-```
+```text
 jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
 ```
 
 And if you are using client like Python, use following url to connect to your
 instance.
 
-```
+```text
 mysql://<username>:<password>@<host>:4002/<dbname>
 ```
