@@ -41,7 +41,7 @@ cfg := greptime.NewCfg("127.0.0.1").
     // 设置鉴权信息
     WithAuth("username", "password")
 
-cli, _ := client.New(cfg)
+cli, _ := greptime.NewClient(cfg)
 ```
 %}
 
@@ -65,6 +65,7 @@ cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
 // 插入示例数据
 // 注意：参数必须按照定义的表结构中的列的顺序排列：host, ts, cpu_user, cpu_sys
 err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.11, 0.13)
 if err != nil {
     // 处理错误
 }

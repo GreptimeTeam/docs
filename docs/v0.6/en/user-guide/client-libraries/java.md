@@ -203,7 +203,8 @@ long ts = 1703832681000L;
 myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
 
 // overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
+Result<WriteOk, Err> result = future.get();
 ```
 
 %}

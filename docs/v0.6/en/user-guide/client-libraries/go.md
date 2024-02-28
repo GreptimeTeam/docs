@@ -44,7 +44,7 @@ cfg := greptime.NewCfg("127.0.0.1").
     // set authentication information
     WithAuth("username", "password")
 
-cli, _ := client.New(cfg)
+cli, _ := greptime.NewClient(cfg)
 ```
 %}
 
@@ -68,6 +68,7 @@ cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
 // Insert example data
 // NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
 err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.11, 0.13)
 if err != nil {
     // Handle error appropriately
 }

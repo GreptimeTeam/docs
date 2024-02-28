@@ -48,11 +48,11 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 请注意每个选项的注释，它们提供了对其各自角色的详细解释。
 
 ```java
-// GreptimeDB 默认数据库名称为 "public"，默认目录为 "greptime"，
+// GreptimeDB 默认 database 为 "public"，默认 catalog 为 "greptime"，
 // 我们可以将其作为测试数据库使用
 String database = "public";
 // 默认情况下，GreptimeDB 使用 gRPC 协议在监听端口 4001。
-// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints。
+// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints，
 // 客户端将根据负载均衡策略调用这些 endpoints。
 String[] endpoints = {"127.0.0.1:4001"};
 // 设置鉴权信息
@@ -88,7 +88,7 @@ long ts = System.currentTimeMillis(); // 当前时间戳
 double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
 double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 
-// 将行插入表中
+// 将一行数据插入表中
 // 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
@@ -140,7 +140,7 @@ for (int i = 0; i < 10; i++) {
 ```java
 // 插入数据
 
-// 考虑到性能问题，SDK 设计为纯异步的。
+// 考虑到尽可能提升性能和降低资源占用，SDK 设计为纯异步的。
 // 返回值是一个 future 对象。如果你想立即获取结果，可以调用 `future.get()`。
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
@@ -195,7 +195,8 @@ long ts = 1703832681000L;
 myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
 
 // 覆盖现有数据
-Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
+Result<WriteOk, Err> result = future.get();
 ```
 
 %}
