@@ -13,18 +13,12 @@ To connect to GreptimeCloud, using information below:
 The following code shows how to create a `client`.
 
 ```go
-options := []grpc.DialOption{
-    grpc.WithTransportCredentials(insecure.NewCredentials()),
-}
-
 cfg := greptime.NewCfg("<host>").
     WithDatabase("<dbname>").
-    WithPort(4001).              // default port
-    WithAuth("<username>", "<password>").
-    WithDialOptions(options...). // specify your gRPC dail options
-    WithCallOptions()            // specify your gRPC call options
+    WithPort(4001).
+    WithAuth("<username>", "<password>")
 
-client, err := greptime.NewClient(cfg)
+cli, err := greptime.NewClient(cfg)
 if err != nil {
     panic("failed to init client")
 }
