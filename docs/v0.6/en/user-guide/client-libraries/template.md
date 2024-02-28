@@ -63,11 +63,6 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 {template streaming-insert%%}
 
-#### Update data
-
-Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
-In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
-
 {template update-rows%%}
 
 <!-- TODO ### Delete Metrics -->
@@ -93,11 +88,6 @@ This is because the ORM style object may consume more resources and time when co
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 {template high-level-style-streaming-insert%%}
-
-#### Update data
-
-Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
-In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 {template high-level-style-update-data%%}
 

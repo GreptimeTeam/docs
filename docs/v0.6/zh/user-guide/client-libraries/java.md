@@ -179,6 +179,11 @@ LOG.info("Write result: {}", result);
 
 {template update-rows%
 
+#### 更新数据
+
+关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
+下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
+
 ```java
 Table cpuMetric = Table.from(myMetricCpuSchema);
 // 插入一行数据
@@ -303,6 +308,11 @@ LOG.info("Write result: {}", result);
 %}
 
 {template high-level-style-update-data%
+
+#### 更新数据
+
+关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
+下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
 
 ```java
 Cpu cpu = new Cpu();

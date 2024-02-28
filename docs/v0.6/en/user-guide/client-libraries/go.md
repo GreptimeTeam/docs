@@ -132,25 +132,6 @@ affected, err := cli.CloseStream(ctx)
 
 %}
 
-{template update-rows%
-
-```go
-ts := time.Now()
-_ = cpuMetric.AddRow("127.0.0.1", ts, 0.1, 0.12)
-// insert a row data
-resp, _ := cli.Write(context.Background(), cpuMetric)
-
-// update the row data
-// The same tag `127.0.0.1`
-// The same time index `ts`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
-_ = cpuMetric.AddRow("127.0.0.1", ts, 0.80, 0.11)
-// overwrite the existing data
-resp, _ = cli.Write(context.Background(), cpuMetric)
-```
-
-%}
-
 
 {template high-level-style-object%
 
@@ -213,37 +194,6 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```go
 err := cli.StreamWriteObject(context.Background(), cpuMetrics)
 affected, err := cli.CloseStream(ctx)
-```
-
-%}
-
-{template high-level-style-update-data%
-
-```go
-ts = time.Now()
-cpuMetrics := []CpuMetric{
-    {
-        Host:        "127.0.0.1",
-        CpuUser:     0.10,
-        CpuSys:      0.12,
-        Ts:          ts,
-    }
-}
-// insert a row data
-resp, err := cli.WriteObject(context.Background(), cpuMetrics)
-
-// update the row data
-newCpuMetrics := []CpuMetric{
-    {
-        Host:        "127.0.0.1",    // The same tag `127.0.0.1`
-        CpuUser:     0.80,       // The new value: cpu_user = `0.80`
-        CpuSys:      0.11,    // The new value: cpu_sys = `0.11`
-        Ts:          ts,     // The same time index `ts`
-    }
-}
-// overwrite the existing data
-resp, err := cli.WriteObject(context.Background(), newCpuMetrics)
-
 ```
 
 %}
@@ -360,7 +310,7 @@ Use raw SQL to query data:
 
 ```go
 var cpuMetric CpuMetric
-db.Raw("SELECT * FROM cpu_metric WHERE ts > ?", 1701360000000).Scan(&result)
+db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 ```
 

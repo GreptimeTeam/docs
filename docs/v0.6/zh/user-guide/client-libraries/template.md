@@ -60,11 +60,6 @@ GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添�
 
 {template streaming-insert%%}
 
-#### 更新数据
-
-关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
-下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
-
 {template update-rows%%}
 
 <!-- TODO ### Delete Metrics -->
@@ -89,11 +84,6 @@ SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
 
 {template high-level-style-streaming-insert%%}
-
-#### 更新数据
-
-关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
-下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
 
 {template high-level-style-update-data%%}
 

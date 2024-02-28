@@ -187,6 +187,11 @@ LOG.info("Write result: {}", result);
 
 {template update-rows%
 
+#### Update data
+
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
+
 ```java
 Table cpuMetric = Table.from(myMetricCpuSchema);
 // insert a row data
@@ -312,6 +317,11 @@ LOG.info("Write result: {}", result);
 %}
 
 {template high-level-style-update-data%
+
+#### Update data
+
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 ```java
 Cpu cpu = new Cpu();
