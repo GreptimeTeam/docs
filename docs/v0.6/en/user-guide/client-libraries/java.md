@@ -176,7 +176,12 @@ writer.write(memMetric);
 
 // You can perform operations on the stream, such as deleting the first 5 rows.
 writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
+```
 
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```java
 // complete the stream
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
@@ -307,7 +312,12 @@ writer.write(memories);
 
 // You can perform operations on the stream, such as deleting the first 5 rows.
 writer.write(cpus.subList(0, 5), WriteOp.Delete);
+```
 
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```java
 // complete the stream
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();

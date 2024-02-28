@@ -168,7 +168,12 @@ writer.write(memMetric);
 
 // 你可以对流执行操作，例如删除前 5 行
 writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
+```
 
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
+
+```java
 // 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
@@ -298,7 +303,12 @@ writer.write(memories);
 
 // 你可以对流执行操作，例如删除前 5 行
 writer.write(cpus.subList(0, 5), WriteOp.Delete);
+```
 
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
+
+```java
 // 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();

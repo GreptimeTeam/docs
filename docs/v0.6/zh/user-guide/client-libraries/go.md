@@ -124,30 +124,16 @@ err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
 if err != nil {
     // 处理错误
 }
+```
+
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
+
+```go
 affected, err := cli.CloseStream(ctx)
 ```
 
 %}
-
-{template update-rows%
-
-```go
-ts := time.Now()
-_ = cpuMetric.AddRow("127.0.0.1", ts, 0.1, 0.12)
-// 插入一条行数据
-resp, _ := cli.Write(context.Background(), cpuMetric)
-
-// 更新该行数据
-// 同样的标签 `127.0.0.1`
-// 同样的时间索引 `ts`
-// 新值：cpu_user = `0.80`, cpu_sys = `0.11`
-_ = cpuMetric.AddRow("127.0.0.1", ts, 0.80, 0.11)
-// 覆盖现有数据
-resp, _ = cli.Write(context.Background(), cpuMetric)
-```
-
-%}
-
 
 {template high-level-style-object%
 
@@ -210,36 +196,11 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetrics)
 ```
 
-%}
-
-{template high-level-style-update-data%
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
 
 ```go
-ts = time.Now()
-cpuMetrics := []CpuMetric{
-    {
-        Host:        "127.0.0.1",
-        CpuUser:     0.10,
-        CpuSys:      0.12,
-        Ts:          ts,
-    }
-}
-// 插入一条行数据
-resp, err := cli.WriteObject(context.Background(), cpuMetrics)
-
-// 更新该条行数据
-newCpuMetrics := []CpuMetric{
-    {
-        Host:        "127.0.0.1",    // 同样的标签 `127.0.0.1`
-        CpuUser:     0.80,       // 新值：cpu_user = `0.80`
-        CpuSys:      0.11,    // 新值：cpu_sys = `0.11`
-        Ts:          ts,     // 同样的索引 `ts`
-    }
-}
-
-// 覆盖现有数据
-resp, err := cli.WriteObject(context.Background(), newCpuMetrics)
-
+affected, err := cli.CloseStream(ctx)
 ```
 
 %}

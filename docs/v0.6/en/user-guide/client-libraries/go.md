@@ -127,6 +127,12 @@ err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
 if err != nil {
     // Handle error appropriately
 }
+```
+
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```go
 affected, err := cli.CloseStream(ctx)
 ```
 
@@ -193,6 +199,12 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
 ```go
 err := cli.StreamWriteObject(context.Background(), cpuMetrics)
+```
+
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```go
 affected, err := cli.CloseStream(ctx)
 ```
 
