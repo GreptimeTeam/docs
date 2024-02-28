@@ -27,9 +27,9 @@ GreptimeDB 提供了一个 ingester 库来帮助你写入数据。
 表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
 列值的类型可以是 `String`、`Float`、`Int`、`Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
 
-### 低级 API
+### 低层级 API
 
-GreptimeDB 的低级 API 通过向具有预定义模式的 `table` 对象添加 `row` 来写入数据。
+GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添加 `row` 来写入数据。
 
 #### 创建行数据
 
@@ -69,32 +69,33 @@ GreptimeDB 的低级 API 通过向具有预定义模式的 `table` 对象添加 
 
 <!-- TODO ### Delete Metrics -->
 
-### ORM API
+### 高层级 API
 
-ORM 风格的对象允许你以更面向对象的方式创建、插入和更新数据，为开发者提供了更友好的体验。
-然而，它不如低级对象那样高效。
+SDK 的高层级 API 使用 ORM 风格的对象写入数据，
+它允许你以更面向对象的方式创建、插入和更新数据，为开发者提供了更友好的体验。
+然而，高层级 API 不如低层级 API 高效。
 这是因为 ORM 风格的对象在转换对象时可能会消耗更多的资源和时间。
 
 #### 创建行数据
 
-{template orm-style-object%%}
+{template high-level-style-object%%}
 
 #### 插入数据
 
-{template orm-style-insert-data%%}
+{template high-level-style-insert-data%%}
 
 #### 流式插入
 
 当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
 
-{template orm-style-streaming-insert%%}
+{template high-level-style-streaming-insert%%}
 
 #### 更新数据
 
 关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
 下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
 
-{template orm-style-update-data%%}
+{template high-level-style-update-data%%}
 
 ### 更多示例
 

@@ -24,8 +24,7 @@ go get -u github.com/GreptimeTeam/greptimedb-ingester-go
 
 ```go
 import (
-    "github.com/GreptimeTeam/greptimedb-ingester-go/client"
-    "github.com/GreptimeTeam/greptimedb-ingester-go/config"
+    greptime "github.com/GreptimeTeam/greptimedb-ingester-go"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
@@ -42,7 +41,7 @@ cfg := greptime.NewCfg("127.0.0.1").
     // 设置鉴权信息
     WithAuth("username", "password")
 
-client, _ := client.New(cfg)
+cli, _ := client.New(cfg)
 ```
 %}
 
@@ -119,22 +118,12 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
 {template streaming-insert%
 
-想要使用流式 API 插入数据，你需要首先创建一个流客户端。
-
 ```go
-cfg := config.New("<host>").
-    WithAuth("<username>", "<password>").
-    WithDatabase(database)
-streamClient, err := client.NewStreamClient(cfg)
-```
-
-然后将数据发送给数据库：
-
-```go
-err := streamClient.Send(context.Background(), cpuMetric, memMetric)
+err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
 if err != nil {
     // 处理错误
 }
+affected, err := cli.CloseStream(ctx)
 ```
 
 %}
@@ -159,7 +148,7 @@ resp, _ = cli.Write(context.Background(), cpuMetric)
 %}
 
 
-{template orm-style-object%
+{template high-level-style-object%
 
 ```go
 type CpuMetric struct {
@@ -181,8 +170,10 @@ cpuMetrics := []CpuMetric{
         Ts:          time.Now(),
     }
 }
+```
 
-
+<!-- SDK TODO -->
+<!-- ```go
 type MemMetric struct {
     Host        string    `greptime:"tag;column:host;type:string"`
 	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
@@ -200,38 +191,27 @@ memMetrics := []MemMetric{
         Ts:          time.Now(),
     }
 }
-```
+``` -->
 %}
 
-{template orm-style-insert-data%
+{template high-level-style-insert-data%
 
 ```go
-resp, err := cli.Create(context.Background(), cpuMetrics, memMetrics)
+resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
 %}
 
-{template orm-style-streaming-insert%
-
-要使用流式 API 插入数据，你需要首先创建一个流客户端。
+{template high-level-style-streaming-insert%
 
 ```go
-cfg := config.New("<host>").
-    WithAuth("<username>", "<password>").
-    WithDatabase(database)
-streamClient, err := client.NewStreamClient(cfg)
-```
-
-然后发送数据到数据库。
-
-```go
-err := streamClient.Create(context.Background(), cpuMetrics, memMetrics)
+err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetrics)
 ```
 
 %}
 
-{template orm-style-update-data%
+{template high-level-style-update-data%
 
 ```go
 ts = time.Now()
@@ -244,7 +224,7 @@ cpuMetrics := []CpuMetric{
     }
 }
 // 插入一条行数据
-resp, err := cli.Create(context.Background(), cpuMetrics)
+resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 
 // 更新该条行数据
 newCpuMetrics := []CpuMetric{
@@ -257,7 +237,7 @@ newCpuMetrics := []CpuMetric{
 }
 
 // 覆盖现有数据
-resp, err := cli.Create(context.Background(), newCpuMetrics)
+resp, err := cli.WriteObject(context.Background(), newCpuMetrics)
 
 ```
 

@@ -72,33 +72,34 @@ In the following code, we first save a row and then use the same tag and time in
 
 <!-- TODO ### Delete Metrics -->
 
-### ORM API
+### High-level API
 
-The ORM style object allows you to create, insert, and update data in a more object-oriented way,
+The high-level API uses an ORM style object to write data to GreptimeDB.
+It allows you to create, insert, and update data in a more object-oriented way,
 providing developers with a friendlier experience.
-However, it is not as efficient as the low-level object.
+However, it is not as efficient as the low-level API.
 This is because the ORM style object may consume more resources and time when converting the objects.
 
 #### Create row objects
 
-{template orm-style-object%%}
+{template high-level-style-object%%}
 
 #### Insert data
 
-{template orm-style-insert-data%%}
+{template high-level-style-insert-data%%}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-{template orm-style-streaming-insert%%}
+{template high-level-style-streaming-insert%%}
 
 #### Update data
 
 Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
 In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
-{template orm-style-update-data%%}
+{template high-level-style-update-data%%}
 
 ### More examples
 

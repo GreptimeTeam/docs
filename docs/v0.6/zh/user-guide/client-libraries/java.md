@@ -201,7 +201,7 @@ Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
 %}
 
 
-{template orm-style-object%
+{template high-level-style-object%
 
 GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
 
@@ -261,7 +261,7 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template orm-style-insert-data%
+{template high-level-style-insert-data%
 
 写入 POJO 对象：
 
@@ -281,7 +281,7 @@ if (result.isOk()) {
 
 %}
 
-{template orm-style-streaming-insert%
+{template high-level-style-streaming-insert%
 
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
@@ -301,7 +301,7 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template orm-style-update-data%
+{template high-level-style-update-data%
 
 ```java
 Cpu cpu = new Cpu();

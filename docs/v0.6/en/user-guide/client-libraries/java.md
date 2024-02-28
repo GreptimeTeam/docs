@@ -208,7 +208,7 @@ Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
 
 %}
 
-{template orm-style-object%
+{template high-level-style-object%
 
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
@@ -268,7 +268,7 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template orm-style-insert-data%
+{template high-level-style-insert-data%
 
 
 Write data with POJO objects:
@@ -276,7 +276,7 @@ Write data with POJO objects:
 ```java
 // Saves data
 
-CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
+CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writeObjects(cpus, memories);
 
 Result<WriteOk, Err> result = puts.get();
 
@@ -290,10 +290,10 @@ if (result.isOk()) {
 %}
 
 
-{template orm-style-streaming-insert%
+{template high-level-style-streaming-insert%
 
 ```java
-StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
+StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
 
 // write data into stream
 writer.write(cpus);
@@ -310,7 +310,7 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template orm-style-update-data%
+{template high-level-style-update-data%
 
 ```java
 Cpu cpu = new Cpu();
@@ -320,7 +320,7 @@ cpu.setCpuUser(0.23);
 cpu.setCpuSys(0.12);
 
 // insert a row data
-Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
+Result<WriteOk, Err> putResult = greptimeDB.writeObjects(cpu).get();
 
 // update the row data
 Cpu newCpu = new Cpu();
@@ -333,7 +333,7 @@ cpu.setCpuUser(0.80);
 cpu.setCpuSys(0.11);
 
 // overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
+Result<WriteOk, Err> updateResult = greptimeDB.writeObjects(newCpu).get();
 ```
 
 %}

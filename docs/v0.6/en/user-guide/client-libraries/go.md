@@ -25,8 +25,7 @@ Import the library in your code:
 
 ```go
 import (
-    "github.com/GreptimeTeam/greptimedb-ingester-go/client"
-    "github.com/GreptimeTeam/greptimedb-ingester-go/config"
+    greptime "github.com/GreptimeTeam/greptimedb-ingester-go"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
@@ -45,7 +44,7 @@ cfg := greptime.NewCfg("127.0.0.1").
     // set authentication information
     WithAuth("username", "password")
 
-client, _ := client.New(cfg)
+cli, _ := client.New(cfg)
 ```
 %}
 
@@ -122,22 +121,12 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
 {template streaming-insert%
 
-To insert data using the streaming API, you must first create a stream client.
-
 ```go
-cfg := config.New("<host>").
-    WithAuth("<username>", "<password>").
-    WithDatabase(database)
-streamClient, err := client.NewStreamClient(cfg)
-```
-
-Then send the data to the server.
-
-```go
-err := streamClient.Send(context.Background(), cpuMetric, memMetric)
+err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
 if err != nil {
     // Handle error appropriately
 }
+affected, err := cli.CloseStream(ctx)
 ```
 
 %}
@@ -162,7 +151,7 @@ resp, _ = cli.Write(context.Background(), cpuMetric)
 %}
 
 
-{template orm-style-object%
+{template high-level-style-object%
 
 ```go
 type CpuMetric struct {
@@ -184,8 +173,10 @@ cpuMetrics := []CpuMetric{
         Ts:          time.Now(),
     }
 }
+```
 
-
+<!-- SDK TODO -->
+<!-- ```go
 type MemMetric struct {
     Host        string    `greptime:"tag;column:host;type:string"`
 	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
@@ -203,38 +194,29 @@ memMetrics := []MemMetric{
         Ts:          time.Now(),
     }
 }
-```
+``` -->
+
 %}
 
-{template orm-style-insert-data%
+{template high-level-style-insert-data%
 
 ```go
-resp, err := cli.Create(context.Background(), cpuMetrics, memMetrics)
+resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
 %}
 
-{template orm-style-streaming-insert%
-
-To insert data using the streaming API, you must first create a stream client.
+{template high-level-style-streaming-insert%
 
 ```go
-cfg := config.New("<host>").
-    WithAuth("<username>", "<password>").
-    WithDatabase(database)
-streamClient, err := client.NewStreamClient(cfg)
-```
-
-Then send the data to the server.
-
-```go
-err := streamClient.Create(context.Background(), cpuMetrics, memMetrics)
+err := cli.StreamWriteObject(context.Background(), cpuMetrics)
+affected, err := cli.CloseStream(ctx)
 ```
 
 %}
 
-{template orm-style-update-data%
+{template high-level-style-update-data%
 
 ```go
 ts = time.Now()
@@ -247,7 +229,7 @@ cpuMetrics := []CpuMetric{
     }
 }
 // insert a row data
-resp, err := cli.Create(context.Background(), cpuMetrics)
+resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 
 // update the row data
 newCpuMetrics := []CpuMetric{
@@ -259,7 +241,7 @@ newCpuMetrics := []CpuMetric{
     }
 }
 // overwrite the existing data
-resp, err := cli.Create(context.Background(), newCpuMetrics)
+resp, err := cli.WriteObject(context.Background(), newCpuMetrics)
 
 ```
 
