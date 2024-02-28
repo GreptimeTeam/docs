@@ -318,7 +318,7 @@ func (CpuMetric) TableName() string {
 
 ```go
 var cpuMetric CpuMetric
-db.Raw("SELECT * FROM cpu_metric WHERE ts > ?", 1701360000000).Scan(&result)
+db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 ```
 
