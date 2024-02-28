@@ -71,30 +71,29 @@ For customizing the connection options, please refer to [API Documentation](#ing
 
 %}
 
-{template row-object%
 
-The Java ingester SDK uses `Table` to denote multiple rows in a table. We can add row data items into the `Table` object, which are then written into GreptimeDB.
-
-On the other hand, there is an alternative approach that allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
-
-%}
-
-{template create-a-row%
+{template low-level-object%
 
 ```java
-// Creates schemas
+// Construct the table schema for CPU metrics
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String)
-        .addTimestamp("ts", DataType.TimestampMillisecond)
-        .addField("cpu_user", DataType.Float64)
-        .addField("cpu_sys", DataType.Float64)
+        .addTag("host", DataType.String) // Identifier for the host
+        .addTimestamp("ts", DataType.TimestampMillisecond) // Timestamp in milliseconds
+        .addField("cpu_user", DataType.Float64) // CPU usage by user processes
+        .addField("cpu_sys", DataType.Float64) // CPU usage by system processes
         .build();
+
+// Create the table from the defined schema
 Table cpuMetric = Table.from(cpuMetricSchema);
 
-String host = "127.0.0.1";
-long ts = System.currentTimeMillis();
-double cpuUser = 0.1;
-double cpuSys = 0.12;
+// Example data for a single row
+String host = "127.0.0.1"; // Host identifier
+long ts = System.currentTimeMillis(); // Current timestamp
+double cpuUser = 0.1; // CPU usage by user processes (in percentage)
+double cpuSys = 0.12; // CPU usage by system processes (in percentage)
+
+// Insert the row into the table
+// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
@@ -139,7 +138,90 @@ for (int i = 0; i < 10; i++) {
 
 ```
 
-Or we can build data with POJO objects:
+%}
+
+
+{template insert-rows%
+
+```java
+// Saves data
+
+// For performance reasons, the SDK is designed to be purely asynchronous.
+// The return value is a future object. If you want to immediately obtain
+// the result, you can call `future.get()`.
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
+
+Result<WriteOk, Err> result = future.get();
+
+if (result.isOk()) {
+    LOG.info("Write result: {}", result.getOk());
+} else {
+    LOG.error("Failed to write: {}", result.getErr());
+}
+
+```
+
+%}
+
+
+{template streaming-insert%
+
+
+```java
+StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
+
+// write data into stream
+writer.write(cpuMetric);
+writer.write(memMetric);
+
+// You can perform operations on the stream, such as deleting the first 5 rows.
+writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
+```
+
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```java
+// complete the stream
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
+```
+
+%}
+
+{template update-rows%
+
+#### Update data
+
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
+
+```java
+Table cpuMetric = Table.from(myMetricCpuSchema);
+// insert a row data
+long ts = 1703832681000L;
+cpuMetric.addRow("host1", ts, 0.23, 0.12);
+Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+
+// update the row data
+Table newCpuMetric = Table.from(myMetricCpuSchema);
+// The same tag `host1`
+// The same time index `1703832681000`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
+long ts = 1703832681000L;
+myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
+
+// overwrite the existing data
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
+Result<WriteOk, Err> result = future.get();
+```
+
+%}
+
+{template high-level-style-object%
+
+GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
 ```java
 @Metric(name = "cpu_metric")
@@ -197,32 +279,15 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template save-rows%
+{template high-level-style-insert-data%
+
+
+Write data with POJO objects:
 
 ```java
 // Saves data
 
-// For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
-
-Result<WriteOk, Err> result = future.get();
-
-if (result.isOk()) {
-    LOG.info("Write result: {}", result.getOk());
-} else {
-    LOG.error("Failed to write: {}", result.getErr());
-}
-
-```
-
-We also can write with POJO objects:
-
-```java
-// Saves data
-
-CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
+CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writeObjects(cpus, memories);
 
 Result<WriteOk, Err> result = puts.get();
 
@@ -235,28 +300,38 @@ if (result.isOk()) {
 
 %}
 
-{template update-rows%
+
+{template high-level-style-streaming-insert%
 
 ```java
-Table cpuMetric = Table.from(myMetricCpuSchema);
-// save a row data
-long ts = 1703832681000L;
-cpuMetric.addRow("host1", ts, 0.23, 0.12);
-Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
 
-// update the row data
-Table newCpuMetric = Table.from(myMetricCpuSchema);
-// The same tag `host1`
-// The same time index `1703832681000`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
-long ts = 1703832681000L;
-myMetricCpuSchema.addRow("host1", ts, 0.80, 0.81);
+// write data into stream
+writer.write(cpus);
+writer.write(memories);
 
-// overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+// You can perform operations on the stream, such as deleting the first 5 rows.
+writer.write(cpus.subList(0, 5), WriteOp.Delete);
 ```
 
-Or we can update with POJO objects:
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```java
+// complete the stream
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
+```
+
+%}
+
+{template high-level-style-update-data%
+
+#### Update data
+
+Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 ```java
 Cpu cpu = new Cpu();
@@ -265,8 +340,8 @@ cpu.setTs(1703832681000L);
 cpu.setCpuUser(0.23);
 cpu.setCpuSys(0.12);
 
-// save a row data
-Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
+// insert a row data
+Result<WriteOk, Err> putResult = greptimeDB.writeObjects(cpu).get();
 
 // update the row data
 Cpu newCpu = new Cpu();
@@ -274,18 +349,15 @@ Cpu newCpu = new Cpu();
 newCpu.setHost("host1");
 // The same time index `1703832681000`
 newCpu.setTs(1703832681000L);
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
+// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
 cpu.setCpuUser(0.80);
-cpu.setCpuSys(0.81);
+cpu.setCpuSys(0.11);
 
 // overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
+Result<WriteOk, Err> updateResult = greptimeDB.writeObjects(newCpu).get();
 ```
 
-For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
-
 %}
-
 
 {template ingester-lib-debug-logs%
 
@@ -298,7 +370,7 @@ Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-i
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
+For fully runnable code snippets and the complete code of the demo, please refer to the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
 
 %}
 

@@ -18,16 +18,16 @@ concurrent-safe library that is easy to use with the metric struct.
 Use the following command to install the GreptimeDB client library for Go:
 
 ```shell
-go get github.com/GreptimeTeam/greptimedb-client-go@v0.1.2 google.golang.org/grpc google.golang.org/grpc/credentials/insecure
+go get -u github.com/GreptimeTeam/greptimedb-ingester-go
 ```
 
 Import the library in your code:
 
 ```go
 import (
-    greptime "github.com/GreptimeTeam/greptimedb-client-go"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
+    greptime "github.com/GreptimeTeam/greptimedb-ingester-go"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/table"
+    "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
 ```
 
@@ -36,40 +36,43 @@ import (
 {template ingester-lib-connect%
 
 ```go
-options := []grpc.DialOption{
-    grpc.WithTransportCredentials(insecure.NewCredentials()),
-}
-// To connect a database that needs authentication, for example, those on Greptime Cloud,
-// `Username` and `Password` are needed when connecting to a database that requires authentication.
-// Leave the two fields empty if connecting a database without authentication.
 cfg := greptime.NewCfg("127.0.0.1").
-    WithDatabase("public").      // change to your real database
-    WithPort(4001).              // default port
-    WithAuth("username", "password").            // `Username` and `Password`
-    WithDialOptions(options...). // specify your gRPC dail options
-    WithCallOptions()            // specify your gRPC call options
+    // change the database name to your database name
+    WithDatabase("public").
+    // default port
+    WithPort(4001).
+    // set authentication information
+    WithAuth("username", "password")
 
-client, _ := greptime.NewClient(cfg)
+cli, _ := greptime.NewClient(cfg)
 ```
-
 %}
 
-
-
-{template row-object%
-
-The Go ingester SDK uses `Series` to represent a row data item. Multiple `Series` can be added to a `Metric` object and then written to GreptimeDB.
-
-%}
-
-
-{template create-a-rows%
+{template low-level-object%
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
+// Construct the table schema for CPU metrics
+cpuMetric, err := table.New("cpu_metric")
+if err != nil {
+    // Handle error appropriately
+}
+
+// Add a 'Tag' column for host identifiers
+cpuMetric.AddTagColumn("host", types.STRING)
+// Add a 'Timestamp' column for recording the time of data collection
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+// Add 'Field' columns for user and system CPU usage measurements
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
+
+// Insert example data
+// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.11, 0.13)
+if err != nil {
+    // Handle error appropriately
+}
+
 ```
 
 %}
@@ -77,112 +80,158 @@ seriesHost1.SetTimestamp(time.Now())
 {template create-rows%
 
 ```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
-
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
-
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
-```
-
-%}
-
-
-{template save-rows%
-
-```go
-seriesHost1 := greptime.Series{}
-seriesHost1.AddStringTag("host", "host1")
-seriesHost1.AddFloatField("cpu", 0.90)
-seriesHost1.SetTimestamp(time.Now())
-
-seriesHost2 := greptime.Series{}
-seriesHost2.AddStringTag("host", "host2")
-seriesHost2.AddFloatField("cpu", 0.70)
-seriesHost2.SetTimestamp(time.Now())
-
-metric := greptime.Metric{}
-metric.AddSeries(seriesHost1, seriesHost2)
-
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-
-res, err := client.Insert(context.Background(), insertsRequest)
+cpuMetric, err := table.New("cpu_metric")
 if err != nil {
-    fmt.Printf("fail to insert, err: %+v\n", err)
-    // error handling
-    // ...
+    // Handle error appropriately
 }
-fmt.Printf("AffectedRows: %d\n", res.GetAffectedRows().Value)
+cpuMetric.AddTagColumn("host", types.STRING)
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT)
+err = cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+if err != nil {
+    // Handle error appropriately
+}
+
+memMetric, err := table.New("mem_metric")
+if err != nil {
+    // Handle error appropriately
+}
+memMetric.AddTagColumn("host", types.STRING)
+memMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+memMetric.AddFieldColumn("mem_usage", types.FLOAT)
+err = memMetric.AddRow("127.0.0.1", time.Now(), 112)
+if err != nil {
+    // Handle error appropriately
+}
 ```
 
 %}
 
-{template update-rows%
-```go
-// save a row data
-series := greptime.Series{}
-series.AddStringTag("host", "host1")
-series.AddFloatField("cpu", 0.90)
-series.SetTimestamp(1703832681000)
-metric := greptime.Metric{}
-metric.AddSeries(series)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
+{template insert-rows%
 
-// update the row data
-newSeries := greptime.Series{}
-// The same tag `host1`
-newSeries.AddStringTag("host", "host1")
-// The same time index `1703832681000`
-newSeries.SetTimestamp(1703832681000)
-// The new field value `0.80`
-newSeries.AddFloatField("cpu", 0.80)
-// overwrite the existing data
-metric := greptime.Metric{}
-metric.AddSeries(newSeries)
-monitorReq := greptime.InsertRequest{}
-monitorReq.WithTable("monitor").WithMetric(metric)
-insertsRequest := greptime.InsertsRequest{}
-insertsRequest.Append(monitorReq)
-res, _ := client.Insert(context.Background(), insertsRequest)
+```go
+resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
+if err != nil {
+    // Handle error appropriately
+}
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
+
+%}
+
+{template streaming-insert%
+
+```go
+err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
+if err != nil {
+    // Handle error appropriately
+}
+```
+
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```go
+affected, err := cli.CloseStream(ctx)
+```
+
+%}
+
+
+{template high-level-style-object%
+
+```go
+type CpuMetric struct {
+    Host            string    `greptime:"tag;column:host;type:string"`
+    CpuUser         float64   `greptime:"field;column:cpu_user;type:float64"`
+    CpuSys          float64   `greptime:"field;column:cpu_sys;type:float64"`
+    Ts              time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+}
+
+func (CpuMetric) TableName() string {
+	return "cpu_metric"
+}
+
+cpuMetrics := []CpuMetric{
+    {
+        Host:        "127.0.0.1",
+        CpuUser:     0.10,
+        CpuSys:      0.12,
+        Ts:          time.Now(),
+    }
+}
+```
+
+<!-- SDK TODO -->
+<!-- ```go
+type MemMetric struct {
+    Host        string    `greptime:"tag;column:host;type:string"`
+	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
+	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+}
+
+func (MemoryMetric) TableName() string {
+	return "mem_metric"
+}
+
+memMetrics := []MemMetric{
+    {
+        Host:        "127.0.0.1",
+        Memory:      112,
+        Ts:          time.Now(),
+    }
+}
+``` -->
+
+%}
+
+{template high-level-style-insert-data%
+
+```go
+resp, err := cli.WriteObject(context.Background(), cpuMetrics)
+log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
+```
+
+%}
+
+{template high-level-style-streaming-insert%
+
+```go
+err := cli.StreamWriteObject(context.Background(), cpuMetrics)
+```
+
+Close the stream writing after all data has been written.
+In general, you do not need to close the stream writing when continuously writing data.
+
+```go
+affected, err := cli.CloseStream(ctx)
+```
+
 %}
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go#example-package).
+For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
 %}
 
 {template ingester-lib-reference%
 
-- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-client-go)
+- [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
 %}
 
 
 {template recommended-query-library%
 
-We recommend using the [Gorm](https://gorm.io/) library, which is popular and developer-friendly.
+We recommend using the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
 
 %}
 
 {template query-library-installation%
 
-Use the following command to install the Gorm library:
+Use the following command to install the GORM library:
 
 ```shell
 go get -u gorm.io/gorm
@@ -239,25 +288,47 @@ m.DB = db
 
 {template query-library-raw-sql%
 
+The following code declares a GORM object model:
+
 ```go
-type Monitor struct {
-	Host        string    `gorm:"column:host;primaryKey"`
-	Ts          time.Time `gorm:"column:ts;primaryKey"`
-	Cpu         float64   `gorm:"column:cpu"`
+type CpuMetric struct {
+    Host        string    `gorm:"column:host;primaryKey"`
+    Ts          time.Time `gorm:"column:ts;primaryKey"`
+    CpuUser     float64   `gorm:"column:cpu_user"`
+    CpuSys      float64   `gorm:"column:cpu_sys"`
 }
+```
 
-func (Monitor) TableName() string {
-	return "monitor"
+If you are using the [ORM API](#orm-api) to insert data, you can declare the model with both GORM and Greptime tags.
+
+```go
+type CpuMetric struct {
+    Host        string    `gorm:"column:host;primaryKey" greptime:"tag;column:host;type:string"`
+    Ts          time.Time `gorm:"column:ts;primaryKey"   greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
+    CpuUser     float64   `gorm:"column:cpu_user"        greptime:"field;column:cpu_user;type:float64"`
+    CpuSys      float64   `gorm:"column:cpu_sys"         greptime:"field;column:cpu_sys;type:float64"`
 }
+```
 
-var monitor Monitor
-db.Raw("SELECT host, cpu, ts FROM users WHERE ts > ?", 1701360000000).Scan(&result)
+Declare the table name as follows:
+
+```go
+func (CpuMetric) TableName() string {
+	return "cpu_metric"
+}
+```
+
+Use raw SQL to query data:
+
+```go
+var cpuMetric CpuMetric
+db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 ```
 
 %}
 
-{template query-lib-link%
+{template query-lib-doc-link%
 
 [GORM](https://gorm.io/docs/index.html)
 

@@ -48,19 +48,19 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 请注意每个选项的注释，它们提供了对其各自角色的详细解释。
 
 ```java
-// GreptimeDB has a default database named "public" in the default catalog "greptime",
-// we can use it as the test database
+// GreptimeDB 默认 database 为 "public"，默认 catalog 为 "greptime"，
+// 我们可以将其作为测试数据库使用
 String database = "public";
-// By default, GreptimeDB listens on port 4001 using the gRPC protocol.
-// We can provide multiple endpoints that point to the same GreptimeDB cluster.
-// The client will make calls to these endpoints based on a load balancing strategy.
+// 默认情况下，GreptimeDB 使用 gRPC 协议在监听端口 4001。
+// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints，
+// 客户端将根据负载均衡策略调用这些 endpoints。
 String[] endpoints = {"127.0.0.1:4001"};
-// Sets authentication information.
+// 设置鉴权信息
 AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
-        // If the database does not require authentication, we can use AuthInfo.noAuthorization() as the parameter.
+        // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
-        // A good start ^_^
+        // 好的开始 ^_^
         .build();
 
 GreptimeDB client = GreptimeDB.create(opts);
@@ -68,40 +68,37 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 %}
 
-{template row-object%
-
-Java ingester SDK 使用 `Table` 来表示表中的多行数据。我们可以将行数据项添加到 `Table` 对象中，然后写入 GreptimeDB。
-
-我们还可以基本的 POJO 对象作为另一种替代方法进行写入。这种方法需要使用 Greptime 的注解，但它们很容易使用。
-
-%}
-
-{template create-a-row%
+{template low-level-object%
 
 ```java
-// Creates schemas
+// 为 CPU 指标构建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String)
-        .addTimestamp("ts", DataType.TimestampMillisecond)
-        .addField("cpu_user", DataType.Float64)
-        .addField("cpu_sys", DataType.Float64)
+        .addTag("host", DataType.String) // 主机的标识符
+        .addTimestamp("ts", DataType.TimestampMillisecond) // 毫秒级的时间戳
+        .addField("cpu_user", DataType.Float64) // 用户进程的 CPU 使用率
+        .addField("cpu_sys", DataType.Float64) // 系统进程的 CPU 使用率
         .build();
+
+// 根据定义的模式创建表
 Table cpuMetric = Table.from(cpuMetricSchema);
 
-String host = "127.0.0.1";
-long ts = System.currentTimeMillis();
-double cpuUser = 0.1;
-double cpuSys = 0.12;
+// 单行的示例数据
+String host = "127.0.0.1"; // 主机标识符
+long ts = System.currentTimeMillis(); // 当前时间戳
+double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
+double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
+
+// 将一行数据插入表中
+// 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
 %}
 
-
 {template create-rows%
 
 ```java
-// Creates schemas
+// 创建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String)
         .addTimestamp("ts", DataType.TimestampMillisecond)
@@ -118,7 +115,7 @@ TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
 Table cpuMetric = Table.from(cpuMetricSchema);
 Table memMetric = Table.from(memMetricSchema);
 
-// Adds row data items
+// 添加行数据
 for (int i = 0; i < 10; i++) {
     String host = "127.0.0." + i;
     long ts = System.currentTimeMillis();
@@ -136,7 +133,88 @@ for (int i = 0; i < 10; i++) {
 
 ```
 
-或者我们可以使用 POJO 对象构建数据：
+%}
+
+{template insert-rows%
+
+```java
+// 插入数据
+
+// 考虑到尽可能提升性能和降低资源占用，SDK 设计为纯异步的。
+// 返回值是一个 future 对象。如果你想立即获取结果，可以调用 `future.get()`。
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
+
+Result<WriteOk, Err> result = future.get();
+
+if (result.isOk()) {
+    LOG.info("Write result: {}", result.getOk());
+} else {
+    LOG.error("Failed to write: {}", result.getErr());
+}
+
+```
+
+%}
+
+{template streaming-insert%
+
+
+```java
+StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
+
+// 写入数据到流中
+writer.write(cpuMetric);
+writer.write(memMetric);
+
+// 你可以对流执行操作，例如删除前 5 行
+writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
+```
+
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
+
+```java
+// 完成流式写入
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
+```
+
+%}
+
+{template update-rows%
+
+#### 更新数据
+
+关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
+下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
+
+```java
+Table cpuMetric = Table.from(myMetricCpuSchema);
+// 插入一行数据
+long ts = 1703832681000L;
+cpuMetric.addRow("host1", ts, 0.23, 0.12);
+Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+
+// 更新行数据
+Table newCpuMetric = Table.from(myMetricCpuSchema);
+// 相同的标签 `host1`
+// 相同的时间索引 `1703832681000`
+// 新的值：cpu_user = `0.80`, cpu_sys = `0.11`
+long ts = 1703832681000L;
+myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
+
+// 覆盖现有数据
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
+Result<WriteOk, Err> result = future.get();
+```
+
+%}
+
+
+{template high-level-style-object%
+
+GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
 
 ```java
 @Metric(name = "cpu_metric")
@@ -170,7 +248,7 @@ public class Memory {
     // ...
 }
 
-// Add rows
+// 添加行
 List<Cpu> cpus = new ArrayList<>();
 for (int i = 0; i < 10; i++) {
     Cpu c = new Cpu();
@@ -194,30 +272,12 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template save-rows%
+{template high-level-style-insert-data%
+
+写入 POJO 对象：
 
 ```java
-// Saves data
-
-// For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
-
-Result<WriteOk, Err> result = future.get();
-
-if (result.isOk()) {
-    LOG.info("Write result: {}", result.getOk());
-} else {
-    LOG.error("Failed to write: {}", result.getErr());
-}
-
-```
-
-我们还可以使用 POJO 对象进行写入：
-
-```java
-// Saves data
+// 插入数据
 
 CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
 
@@ -232,28 +292,37 @@ if (result.isOk()) {
 
 %}
 
-{template update-rows%
+{template high-level-style-streaming-insert%
 
 ```java
-Table cpuMetric = Table.from(myMetricCpuSchema);
-// save a row data
-long ts = 1703832681000L;
-cpuMetric.addRow("host1", ts, 0.23, 0.12);
-Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
+StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
 
-// update the row data
-Table newCpuMetric = Table.from(myMetricCpuSchema);
-// The same tag `host1`
-// The same time index `1703832681000`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
-long ts = 1703832681000L;
-myMetricCpuSchema.addRow("host1", ts, 0.80, 0.81);
+// 写入数据到流中
+writer.write(cpus);
+writer.write(memories);
 
-// overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.write(myMetricCpuSchema).get();
+// 你可以对流执行操作，例如删除前 5 行
+writer.write(cpus.subList(0, 5), WriteOp.Delete);
 ```
 
-或者我们可以使用 POJO 对象进行更新：
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
+
+```java
+// 完成流式写入
+CompletableFuture<WriteOk> future = writer.completed();
+WriteOk result = future.get();
+LOG.info("Write result: {}", result);
+```
+
+%}
+
+{template high-level-style-update-data%
+
+#### 更新数据
+
+关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
+下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
 
 ```java
 Cpu cpu = new Cpu();
@@ -262,20 +331,20 @@ cpu.setTs(1703832681000L);
 cpu.setCpuUser(0.23);
 cpu.setCpuSys(0.12);
 
-// save a row data
+// 插入一行数据
 Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
 
-// update the row data
+// 更新该行数据
 Cpu newCpu = new Cpu();
-// The same tag `host1`
+// 相同的标签 `host1`
 newCpu.setHost("host1");
-// The same time index `1703832681000`
+// 相同的时间索引 `1703832681000`
 newCpu.setTs(1703832681000L);
-// The new value: cpu_user = `0.80`, cpu_sys = `0.81`
+// 新的值: cpu_user = `0.80`, cpu_sys = `0.11`
 cpu.setCpuUser(0.80);
-cpu.setCpuSys(0.81);
+cpu.setCpuSys(0.11);
 
-// overwrite the existing data
+// 覆盖现有数据
 Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 ```
 
@@ -320,7 +389,7 @@ Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接�
 如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```xml
-<!-- MySQL usage dependency -->
+<!-- MySQL 依赖 -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>

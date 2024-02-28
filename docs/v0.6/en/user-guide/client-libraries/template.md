@@ -23,43 +23,79 @@ Here we set the username and password when using the library to connect to Grept
 
 {template ingester-lib-connect%%}
 
-### Row object
+### Data model
 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
-{template row-object%%}
+### Low-level API
 
-### Create rows
+The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
+by adding rows to the table object with a predefined schema.
 
-The following example shows how to create a row contains `Tag`, `Timestamp`, and `Field` columns. The `Tag` column is a `String` type, the `Timestamp` column is a `Timestamp` type, and the `Field` column is a `Float` type.
+#### Create row objects
 
-{template create-a-row%%}
+This following code snippet begins by constructing a table named `cpu_metric`,
+which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
+Subsequently, it inserts a single row into the table.
+
+The table consists of three types of columns:
+
+- `Tag`: The `host` column, with values of type `String`.
+- `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
+- `Timestamp`: The `ts` column, with values of type `Timestamp`.
+
+{template low-level-object%%}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
 {template create-rows%%}
 
-### Save rows
+#### Insert data
 
-The following example shows how to save rows to tables in GreptimeDB.
+The following example shows how to insert rows to tables in GreptimeDB.
 
-{template save-rows%%}
+{template insert-rows%%}
 
-### Update rows
+#### Streaming insert
 
-Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
-The following example shows saving a row and then updating the row.
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
+
+{template streaming-insert%%}
 
 {template update-rows%%}
 
 <!-- TODO ### Delete Metrics -->
 
-{template ingester-lib-debug-logs%%}
+### High-level API
+
+The high-level API uses an ORM style object to write data to GreptimeDB.
+It allows you to create, insert, and update data in a more object-oriented way,
+providing developers with a friendlier experience.
+However, it is not as efficient as the low-level API.
+This is because the ORM style object may consume more resources and time when converting the objects.
+
+#### Create row objects
+
+{template high-level-style-object%%}
+
+#### Insert data
+
+{template high-level-style-insert-data%%}
+
+#### Streaming insert
+
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
+
+{template high-level-style-streaming-insert%%}
+
+{template high-level-style-update-data%%}
 
 ### More examples
 
 {template more-ingestion-examples%%}
+
+{template ingester-lib-debug-logs%%}
 
 ### Ingester library reference
 
@@ -87,7 +123,7 @@ The following example shows how to connect to GreptimeDB:
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
-The following example shows how to use raw SQL to query data:
+The following example shows how to use raw SQL to query data.
 
 {template query-library-raw-sql%%}
 
