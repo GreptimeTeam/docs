@@ -6,7 +6,7 @@ GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/inf
 - Username: `<username>`
 - Password: `<password>`
 
-下方的 Java 代码片段展示了如何通过配置 InfluxDB 客户端连接到 GreptimeCloud：
+下方的 Java 代码片段展示了如何通过配置 [InfluxDB 客户端](https://github.com/influxdata/influxdb-java)连接到 GreptimeCloud：
 
 ```java
 final String serverURL = "https://<host>/v1/influxdb/write", username = "<username>", password = "<password>";
