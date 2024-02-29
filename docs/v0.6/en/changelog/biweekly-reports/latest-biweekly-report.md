@@ -33,8 +33,6 @@ Congrats on becoming our most active contributors in the past 2 weeks:
 
 👏  Welcome contributor @[caicancai](https://github.com/caicancai) @[Hudson C. Dalprá](https://github.com/dalprahcd) @[KKould](https://github.com/KKould) @[SteveLauC](https://github.com/SteveLauC) join to the community!
 
-<p><img src="/blogs/2024-02-28-biweekly-report/contributorpost.jpg" alt="latency figure" style="width: 70%; margin: 0 auto"></p>
-
 🌟 Special thanks to our distinguished contributor @yurivict, Greptime is now supported for installation on FreeBSD: https://cgit.freebsd.org/ports/tree/databases/greptimedb.
 
 A big THANK YOU to all our members and contributors! It is people like you who are making GreptimeDB a great product. Let's build an even greater community together.
