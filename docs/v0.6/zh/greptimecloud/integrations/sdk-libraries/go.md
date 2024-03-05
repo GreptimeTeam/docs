@@ -14,7 +14,7 @@ GreptimeDB Go SDK 使用 gRPC 与数据库通信，
 下方的代码片段展示了如何使用 Go SDK 建立一个 `client` 连接对象：
 
 ```go
-cfg := greptime.NewCfg("<host>").
+cfg := greptime.NewConfig("<host>").
     WithDatabase("<dbname>").
     WithPort(4001).
     WithAuth("<username>", "<password>")
