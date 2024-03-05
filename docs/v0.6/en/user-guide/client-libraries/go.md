@@ -36,7 +36,7 @@ import (
 {template ingester-lib-connect%
 
 ```go
-cfg := greptime.NewCfg("127.0.0.1").
+cfg := greptime.NewConfig("127.0.0.1").
     // change the database name to your database name
     WithDatabase("public").
     // default port
@@ -280,7 +280,7 @@ dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 dsn = fmt.Sprintf("%s:%s@%s", m.User, m.Password, dsn)
 db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 if err != nil {
-    //error handling 
+    //error handling
 }
 m.DB = db
 ```
