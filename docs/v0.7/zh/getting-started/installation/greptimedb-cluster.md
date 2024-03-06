@@ -26,6 +26,8 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 
 当命令执行完毕之后，playground 将会在前台启动。你可以使用 `Ctrl+C` 来停止 playground。playground 将会在你的主机上以 bare-metal 模式部署最小的 GreptimeDB 集群。
 
+如果一切正常，你可以使用浏览器访问内置的 Dashboard `http://localhost:4000/dashboard/`。
+
 更多的细节，请参考 [gtctl operations](/user-guide/operations/gtctl.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群

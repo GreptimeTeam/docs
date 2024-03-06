@@ -154,7 +154,9 @@ For more information about the `SELECT` statement, please refer to [SELECT](/ref
 If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
 
 ```shell
-curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4002
+curl -L \
+   https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh |\
+   bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4002
 ```
 
 ## Visualize data

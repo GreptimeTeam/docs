@@ -8,7 +8,8 @@ The GreptimeDB cluster can run in the [cluster](/contributor-guide/overview.md) 
 
 ```
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh | sh
+  https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh |\
+  sh
 ```
 
 :::tip Note
@@ -26,6 +27,8 @@ The **fastest** way to experience the GreptimeDB cluster is to use the playgroun
 ```
 
 When the command is executed, the playground will be started in the foreground. You can use `Ctrl+C` to stop the playground. The playground will deploy the minimal GreptimeDB cluster in bare-metal mode on your host.
+
+If everything is ok, you can visit the Dashboard via `http://localhost:4000/dashboard/`.
 
 For more details, please refer to [gtctl operations](/user-guide/operations/gtctl.md).
 
