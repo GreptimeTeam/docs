@@ -14,7 +14,7 @@ Please refer to [InfluxDB client](https://docs.greptime.com/user-guide/clients/i
 The following Java example code demonstrates how to configure the [InfluxDB client](https://github.com/influxdata/influxdb-java) when connecting to GreptimeCloud:
 
 ```java
-final String serverURL = "https://<host>/v1/influxdb/write", username = "<username>", password = "<password>";
+final String serverURL = "https://<host>/v1/influxdb/", username = "<username>", password = "<password>";
 final InfluxDB influxDB = InfluxDBFactory.connect(serverURL, username, password);
 influxDB.setDatabase("<dbname>");
 ```
