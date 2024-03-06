@@ -8,4 +8,3 @@
 * [Python Scripts](./python-scripts/overview.md)
 * [Operations](./operations/overview.md)
 * [Cluster](./cluster.md)
-* [Integration](./integration.md)

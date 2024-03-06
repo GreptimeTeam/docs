@@ -11,7 +11,8 @@ Click the `Add data source` button and select Prometheus as the type.
 Fill in the following information:
 
 * Name: `GreptimeDB`
-* Prometheus server URL in HTTP: `http://greptime:4000/v1/prometheus?db=public`
+* Prometheus server URL in HTTP: `http://greptimedb:4000/v1/prometheus`
+* Custom HTTP headers: Click "Add header" and fill in the header `x-greptime-db-name` with the value `public`, which is the name of the database.
 
 ![grafana-prometheus-config.jpg](/grafana-prometheus-config.jpg)
 

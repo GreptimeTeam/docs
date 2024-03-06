@@ -13,7 +13,7 @@ To connect to GreptimeCloud, using information below:
 The following code shows how to create a `client`.
 
 ```go
-cfg := greptime.NewCfg("<host>").
+cfg := greptime.NewConfig("<host>").
     WithDatabase("<dbname>").
     WithPort(4001).
     WithAuth("<username>", "<password>")

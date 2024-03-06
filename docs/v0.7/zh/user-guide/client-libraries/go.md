@@ -35,7 +35,7 @@ import (
 {template ingester-lib-connect%
 
 ```go
-cfg := greptime.NewCfg("127.0.0.1").
+cfg := greptime.NewConfig("127.0.0.1").
     // 将数据库名称更改为你的数据库名称
     WithDatabase("public").
     // 设置鉴权信息
