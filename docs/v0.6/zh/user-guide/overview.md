@@ -8,4 +8,3 @@
 - [Python 脚本](../user-guide/python-scripts/overview.md)
 - [运维操作](../user-guide/operations/overview.md)
 - [集群](../user-guide/cluster.md)
-- [集成](../user-guide/integration.md)
