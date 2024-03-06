@@ -15,6 +15,7 @@ The storage file structure of GreptimeDB includes of the following:
 │   ├── greptime
 │   └── system
 ├── logs
+├── index_intermediate
 └── wal
     ├── raftlog
     ├── rewrite
@@ -25,6 +26,7 @@ The storage file structure of GreptimeDB includes of the following:
 - `data`: The files in data directory store time series data of GreptimeDB. To customize this path, please refer to [Storage option](../operations/configuration.md#storage-option).
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
 - `wal`: The wal directory contains the write-ahead log files.
+- `index_intermediate`: the temporary intermediate data while indexing.
 
 ## Cloud storage
 

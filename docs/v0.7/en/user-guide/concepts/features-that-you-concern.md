@@ -47,7 +47,7 @@ GreptimeDB resolves this issue by:
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
-It doesn't, but we have a plan to support it.
+It doesn't, but we have a new project `GreptimeFlow` for it, please refer to the [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/3187).
 
 ## Can I store data in object storage in the cloud?
 

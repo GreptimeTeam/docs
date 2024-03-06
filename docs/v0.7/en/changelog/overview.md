@@ -1,3 +1,3 @@
 # Overview
 
-In this section, we present our [latest roadmap](./roadmap-2023.md) and biweekly reports.
+In this section, we present our [latest roadmap](https://greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap) and biweekly reports.

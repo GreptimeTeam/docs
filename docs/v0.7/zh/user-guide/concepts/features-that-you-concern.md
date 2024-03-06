@@ -46,7 +46,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持连续聚合或降采样吗？
 
-不支持，但我们有计划支持它。
+不支持，但是我们已经启动了一个项目 `GreptimeFlow` 正在研发，请查看 [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/3187)。
 
 ## 我可以在云的对象存储中存储数据吗？
 
