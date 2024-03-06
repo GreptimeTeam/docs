@@ -1,37 +1,33 @@
 # Prometheus
 
-GreptimeDB 可以作为 Prometheus 的长期存储。使用 GreptimeDB 作为 Prometheus 的后端存储可以获得无缝体验。由于 Prometheus 支持在配置远程写和读的过程中设置基本的认证信息，用户只需要把配置的用户名和密码添加到配置 YAML 文件中，就可以了。
-
-首先要为存储 Prometheus 的数据创建一个单独的数据库:
-
-```sql
-CREATE DATABASE prometheus;
-```
+GreptimeDB 可以作为 Prometheus 的长期存储。使用 GreptimeDB 作为 Prometheus 的后端存储可以获得无缝体验。由于 Prometheus 支持在配置远程写和读的过程中设置基本的认证信息，你只需要把配置的用户名和密码添加到配置 YAML 文件中就可以了。
 
 请按照 [Prometheus configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`) 中的设置进行配置：
 
 ```yaml
 remote_write:
-- url: http://localhost:4000/v1/prometheus/write?db=prometheus
+- url: http://localhost:4000/v1/prometheus/write?db=public
 #  basic_auth:
 #    username: greptime_user
 #    password: greptime_pwd
 
 remote_read:
-- url: http://localhost:4000/v1/prometheus/read?db=prometheus
+- url: http://localhost:4000/v1/prometheus/read?db=public
 #  basic_auth:
 #    username: greptime_user
 #    password: greptime_pwd
 ```
 
-注意：请将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己的用户名和密码，详情请参考客户端[鉴权认证](../clients/authentication.md)。
+:::tip 注意
+请将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己的用户名和密码，详情请参考客户端[鉴权认证](../clients/authentication.md)。
+:::
 
-url 中的 `db` 参数表示我们要写入的数据库，如果没有指定，则默认为 `public`。
+url 中的 `db` 参数表示我们要写入的数据库，默认为 `public`。
+如果你想要写入到其他数据库，可以[创建新数据库](../table-management.md#create-database)并将 `public` 替换为新的数据库名称。
 
-写入数据成功后，使用下面的命令展示 Prometheus 数据库中的表：
+写入数据成功后，使用下面的命令展示数据库中的表：
 
 ```sql
-use prometheus;
 show tables;
 ```
 

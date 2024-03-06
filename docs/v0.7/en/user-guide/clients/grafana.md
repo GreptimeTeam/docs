@@ -1,3 +1,14 @@
+---
+template: ../../db-cloud-shared/clients/grafana-integration.md
+---
 # Grafana
 
-<!--@include: ../../db-cloud-shared/clients/grafana-integration.md-->
+<docs-template>
+
+{template prometheus-server-url%
+
+`http://<host>:4000/v1/prometheus`
+
+%}
+
+</docs-template>
