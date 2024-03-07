@@ -106,6 +106,12 @@
     - SDK-Libraries:
       - go
       - java
+  - Usage-&-Billing
+    - wcu-rcu
+    - hobby
+    - serverless
+    - dedicated
+    - byoc
   - usage
   - Tutorials:
     - Monitor-Host-Metrics:
