@@ -338,18 +338,19 @@ dir = "/tmp/greptimedb/logs"
 level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
-tracing_sample_ratio = 1.0
 append_stdout = true
+[logging.tracing_sample_ratio]
+default_ratio = 0.0
 ```
 
 - `dir`: log output directory.
 - `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
-- `tracing_sample_ratio`: The percentage of sampling tracing, the value range is `[0,1]`, the default value is 1, which means sampling all tracing.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
+- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](./tracing.md#guide-how-to-configure-tracing-sampling-rate).
 
-How to use distributed tracing, please reference [Tracing](./tracing.md)
+How to use distributed tracing, please reference [Tracing](./tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
 ### Region engine options
 
