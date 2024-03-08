@@ -7,13 +7,13 @@ Region 迁移允许用户在 Datanode 间移动 Region 数据。
 - 使用 Kafka WAL
 - 使用共享存储 (例如：AWS S3)
 
-我们无法在任何上述以外的情况下使用 Region 迁移。
+无法在任何上述以外的情况下使用 Region 迁移。
 :::
 
 
 ## 查询 Region 分布
 
-首先我们需要查询该数据表分区（Region）分布情况，即查询数据表中的 Region 分别在哪一些 Datanode 节点上。
+首先需要查询该数据表分区（Region）分布情况，即查询数据表中的 Region 分别在哪一些 Datanode 节点上。
 
 ```sql
 select b.peer_id as datanode_id,
@@ -22,7 +22,7 @@ from information_schema.partitions a left join information_schema.greptime_regio
 on a.greptime_partition_id = b.region_idwhere a.table_name='migration_target' order by datanode_id asc;
 ```
 
-例如：我们有以下的 Region 分布
+例如：有以下的 Region 分布
 ```sql
 +-------------+---------------+
 | datanode_id | region_id     |
@@ -55,4 +55,4 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | `region_id`      | Region Id                                                      | **Required** |   |
 | `from_peer_id`   | 迁移起始节点(Datanode) 的 peer id。                               | **Required** |   |
 | `to_peer_id`     | 迁移目标节点(Datanode) 的 peer id。                               | **Required** |   |
-| `replay_timeout` | 迁移时回放数据的超时时间，例如：1h30m10s                             |   Optional   |   |
+| `replay_timeout` | 迁移时回放数据的超时时间（单位：秒）                                 |   Optional   |   |

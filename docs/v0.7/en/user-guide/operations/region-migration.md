@@ -12,7 +12,7 @@ Otherwise, you can't perform a region migration.
 
 
 ## Figure out the region distribution of the table.
-We need to first query the region distribution of the table, i.e., find out on which Datanode the Regions in the table are located.
+You need to first query the region distribution of the table, i.e., find out on which Datanode the Regions in the table are located.
 
 ```sql
 select b.peer_id as datanode_id,
@@ -21,7 +21,7 @@ from information_schema.partitions a left join information_schema.greptime_regio
 on a.greptime_partition_id = b.region_idwhere a.table_name='migration_target' order by datanode_id asc;
 ```
 
-For example, we have the following region distribution:
+For example, have the following region distribution:
 
 ```sql
 +-------------+---------------+
@@ -56,4 +56,4 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | `region_id`      | The region id.                                                 | **Required** |   |
 | `from_peer_id`   | The peer id of the migration source(Datanode).                 | **Required** |   |
 | `to_peer_id`     | The peer id of the migration destination(Datanode).            | **Required** |   |
-| `replay_timeout` | The timeout of replay data. e.g., 1h30m10s                     |   Optional   |   |
+| `replay_timeout` | The timeout(secs) of replay data.                              |   Optional   |   |
