@@ -12,7 +12,7 @@ then the Dedicated Plan is your choice.
 
 Please see [Pricing](https://greptime.com/pricing) for the latest pricing information.
 
-### Node Costs
+### Computing nodes
 
 When setting up a service under the Dedicated Plan, you'll need to configure the service mode,
 which determine the size of computing nodes.
@@ -25,4 +25,10 @@ Cost Calculation Formula:
 - Monthly Costs: Sum of Daily Costs
 
 <!--@include: shared-storage-capacity.md-->
+
+### Network traffic
+
+The cost of network traffic will be included in your monthly bill.
+Pricing is determined by the cloud server provider (such as AWS).
+Greptime does not charge any additional fees for traffic costs.
 
