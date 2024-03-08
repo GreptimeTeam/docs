@@ -75,9 +75,9 @@ DROP TABLE host;
 
 ## Guide: How to configure tracing sampling rate
 
-GreptimeDB provides many protocols and interfaces for data insertion, query and other functions. We can collect the calling chains of each operation through tracing. However, for some high-frequency operations, collecting all tracing of the operation may be unnecessary and waste storage space. At this time, we can use `tracing_sample_ratio` to set the sampling rate of tracing for various operations, which can greatly reduce the number of exported tracing and facilitate system observation.
+GreptimeDB provides many protocols and interfaces for data insertion, query and other functions. You can collect the calling chains of each operation through tracing. However, for some high-frequency operations, collecting all tracing of the operation may be unnecessary and waste storage space. At this time, you can use `tracing_sample_ratio` to set the sampling rate of tracing for various operations, which can greatly reduce the number of exported tracing and facilitate system observation.
 
-We classify all tracing according to the protocol GreptimeDB is connected to and the operations corresponding to the protocol:
+All tracing within GreptimeDB is classified according to the protocol it is connected to and the corresponding operations of that protocol:
 
 | **protocol** | **request_type**                                                                                                                                                                                                      |
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -90,7 +90,7 @@ We classify all tracing according to the protocol GreptimeDB is connected to and
 | prometheus   | remote_read / remote_write / format_query / instant_query / range_query / labels_query / series_query / label_values_query                                                                                                          |
 | http         | sql / promql       
 
-Users can configure different tracing sampling rates through `tracing_sample_ratio`.
+You can configure different tracing sampling rates through `tracing_sample_ratio`.
 
 ```toml
 [logging]
@@ -106,6 +106,6 @@ request_types = ["inserts"]
 ratio = 0.3
 ```
 
-The above configuration formulates two sampling rules and sets a default sampling rate. GreptimeDB will start matching from the first one according to the sampling rules provided by the user, and use the first matching sampling rule as the sampling rate of the tracing. If no rule matches, `default_ratio` will be used as the default sampling rate. The range of sampling rate is `[0.0, 1.0]`, `0.0` means not sampling, `1.0` means sampling all tracing.
+The above configuration formulates two sampling rules and sets a default sampling rate. GreptimeDB will start matching from the first one according to the sampling rules, and use the first matching sampling rule as the sampling rate of the tracing. If no rule matches, `default_ratio` will be used as the default sampling rate. The range of sampling rate is `[0.0, 1.0]`, `0.0` means not sampling, `1.0` means sampling all tracing.
 
 For example, according to the rules provided above, all calls accessed using the mysql protocol will be sampled, data inserted using grpc will be sampled 30%, and all remaining tracing will not be sampled.

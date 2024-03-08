@@ -340,7 +340,7 @@ enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
 append_stdout = true
 [logging.tracing_sample_ratio]
-default_ratio = 0.0
+default_ratio = 1.0
 ```
 
 - `dir`: log output directory.
