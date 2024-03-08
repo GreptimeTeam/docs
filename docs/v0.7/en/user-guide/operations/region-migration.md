@@ -57,3 +57,6 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | `from_peer_id`   | The peer id of the migration source(Datanode).                 | **Required** |   |
 | `to_peer_id`     | The peer id of the migration destination(Datanode).            | **Required** |   |
 | `replay_timeout` | The timeout(secs) of replay data.                              |   Optional   |   |
+
+Note: If the new Region fails to replay the data within the specified timeout, 
+the migration will fail; the data in the old Region will not be lost.
