@@ -41,7 +41,7 @@ Remember, if you deploy the cluster via the GreptimeDB operator, the `peer_id` o
 
 Finally, you can do a Region migration request via the following SQL:
 
-```bash
+```sql
 select migrate_region(4398046511104, 1, 2, 60);
 ```
 
