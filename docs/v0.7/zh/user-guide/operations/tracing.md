@@ -1,6 +1,6 @@
 # Tracing
 
-GreptimeDB 支持分布式链路追踪。 GreptimeDB 使用基于 gRPC 的 OTLP 协议导出所有采集到的 Span。用户可以使用 [Jaeger](https://www.jaegertracing.io/)、[Tempo](https://grafana.com/oss/tempo/) 等支持基于 gRPC 的 OTLP 协议后端接收 GreptimeDB 采集到的 Span。 
+GreptimeDB 支持分布式链路追踪。 GreptimeDB 使用基于 gRPC 的 OTLP 协议导出所有采集到的 Span。您可以使用 [Jaeger](https://www.jaegertracing.io/)、[Tempo](https://grafana.com/oss/tempo/) 等支持基于 gRPC 的 OTLP 协议后端接收 GreptimeDB 采集到的 Span。 
 
 在配置中的 [logging 部分](./configuration.md#logging-选项) 有对 tracing 的相关配置项说明，[standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml) 的 logging 部分提供了参考配置项。
 
@@ -72,3 +72,40 @@ DROP TABLE host;
 ![JaegerUI](/jaegerui.png)
 
 ![Select-tracing](/select-tracing.png)
+
+## 指南：如何配置 tracing 采样率
+
+GreptimeDB 提供了许多协议与接口，用于数据的插入、查询等功能。您可以通过 tracing 采集到每种操作的调用链路。但是对于某些高频操作，将所有该操作的 tracing 都采集下来，可能没有必要而且浪费存储空间。这个时候，您可以使用 `tracing_sample_ratio` 来对各种操作 tracing 的采样率进行设置，这样能够很大程度上减少导出 tracing 的数量并有利于系统观测。
+
+GreptimeDB 根据接入的协议，还有该协议对应的操作，对所有 tracing 进行了分类：
+
+| **protocol** | **request_type**                                                                                                                                                                                                      |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| grpc         | inserts / query.sql / query.logical_plan / query.prom_range / query.empty / ddl.create_database / ddl.create_table / ddl.alter / ddl.drop_table / ddl.truncate_table / ddl.empty / deletes / row_inserts / row_deletes |
+| mysql        |                                                                                                                                                                                                                       |
+| postgres     |                                                                                                                                                                                                                       |
+| otlp         | metrics / traces                                                                                                                                                                                                      |
+| opentsdb     |                                                                                                                                                                                                                       |
+| influxdb     | write_v1 / write_v2                                                                                                                                                                                                   |
+| prometheus   | remote_read / remote_write / format_query / instant_query / range_query / labels_query / series_query / label_values_query                                                                                                          |
+| http         | sql / promql       
+
+您可以通过 `tracing_sample_ratio` 来配置不同 tracing 的采样率。
+
+```toml
+[logging]
+enable_otlp_tracing = true
+[logging.tracing_sample_ratio]
+default_ratio = 0.0
+[[logging.tracing_sample_ratio.rules]]
+protocol = "mysql"
+ratio = 1.0
+[[logging.tracing_sample_ratio.rules]]
+protocol = "grpc"
+request_types = ["inserts"]
+ratio = 0.3
+```
+
+上述配置制定了两条采样规则，并制定了默认采样率，GreptimeDB 会根据您提供的采样规则，从第一条开始匹配，并使用第一条匹配到的采样规则作为该 tracing 的采样率，如果没有任何规则匹配，则 `default_ratio` 会被作为默认采样率被使用。采样率的范围是 `[0.0, 1.0]`, `0.0` 代表所有 tracing 都不采样，`1.0` 代表采样所有 tracing。
+
+比如上面提供的规则，使用 mysql 协议接入的所有调用都将被采样，使用 grpc 插入的数据会被采样 30%，其余所有 tracing 都不会被采样。
