@@ -1,6 +1,6 @@
-# Region migration
+# Region Migration
 
-Region migration allows users to move regions between the Datanode.
+Region Migration allows users to move regions between the Datanode.
 
 :::warning Warning
 This feature is only available on GreptimeDB running on cluster mode and 

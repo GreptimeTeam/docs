@@ -1,4 +1,4 @@
-# Region migration
+# Region Migration
 
 Region 迁移允许用户在 Datanode 间移动 Region 数据。
 
