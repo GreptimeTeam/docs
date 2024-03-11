@@ -6,8 +6,8 @@ It is suitable for production environments and can scale as your business grows.
 When setting up a service under the Serverless Plan or upgrading from the Hobby Plan,
 you'll need to configure the capacity units for the service plan, which include:
 
-- The Maximum Concurrent WCU (Write Capacity Unit), upper limit of 5000
-- The Maximum Concurrent RCU (Read Capacity Unit), upper limit of 5000
+- The Maximum WCU (Write Capacity Unit) per second, upper limit of 5000
+- The Maximum RCU (Read Capacity Unit) per second, upper limit of 5000
 - Storage Capacity
 
 :::tip NOTE

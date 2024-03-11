@@ -86,4 +86,4 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 ## Usage metrics
 
 You can view the usage at the [GreptimeCloud Console](https://console.greptime.cloud/).
-The maximum concurrent WCU and RCU utilized are aggregated by time range and presented in the usage charts.
+The maximum WCU and RCU utilized are aggregated by time range and presented in the usage charts.

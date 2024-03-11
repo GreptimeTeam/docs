@@ -1,4 +1,4 @@
-# Hobby plan
+# Hobby Plan
 
 ## Introduction
 
@@ -7,8 +7,8 @@ Each team can create up to three services in the Hobby Plan.
 
 The Hobby Plan has the following limitations:
 
-- Read capacity units (RCU): 40 RCU/s per service.
-- Write capacity units (WCU): 20 WCU/s per service.
+- RCU (Read Capacity Units): 40 RCU/s per service.
+- WCU (Write Capacity Units): 20 WCU/s per service.
 - Storage capacity: 1GB per service.
 - Data retention policy: By default, data written in the last three months is retained.
 

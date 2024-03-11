@@ -1,8 +1,8 @@
-# Dedicated
+# Dedicated Plan
 
-The dedicated plan offers unlimited data storage,
+The dedicated plan offers unlimited data storage and retention,
 completely isolated resource control and network,
-and includes support from our SRE team.
+and includes support from Greptime's SRE team.
 
 If you require absolute isolation from other users or 
 need to exceed the maximum WCU and RCU limits of the Serverless Plan, 

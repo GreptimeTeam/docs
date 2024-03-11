@@ -1,6 +1,6 @@
-# 了解用量
+# WCU & RCU
 
-欢迎使用 GreptimeCloud，本文档将介绍 GreptimeCloud 的用量计算算法。您可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。
+本文档将介绍 GreptimeCloud 的用量计算算法。您可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。
 
 ## 容量单位
 
@@ -77,23 +77,7 @@ RCU 的容量可能会在未来发生变化。
 - 使用索引以支持在 GreptimeDB 中高效地执行查询。如果没有索引，GreptimeDB 必须扫描整个表来处理查询。如果索引与查询匹配，GreptimeDB 可以使用索引来限制扫描的数据。请考虑使用具有高区分度的列作为主键，并在 `WHERE` 子句中使用它。
 - 选择使用匹配结果较少的查询。例如，时间索引字段和高区分度的标签字段上的相等匹配可以有效地限制扫描的数据大小。请注意，不等运算符 `!=` 无法做到有效查询，因为它总是会扫描所有数据。
 
-## 存储容量
+## 用量统计
 
-GreptimeCloud 将数据存储在云端对象存储中，例如 S3，并测量你在数据库中保存的总数据大小。
-
-## 数据保留
-
-根据定价计划，GreptimeCloud 可能会为你的数据启用默认保留策略，超过保留期限的数据会被删除。
-
-## Tech Preview 计划
-
-Tech Preview 计划为用户提供以下免费额度以尝试 GreptimeCloud：
-
-- 写容量单位（WCU）：每个服务 800 WCU/s。
-- 存储容量：每个服务 10GB。
-- 帐户限制：每个团队 3 个服务。
-- 数据保留策略：默认保留最近三个月写入的数据。
-
-:::tip 注意
-该计划可能会在未来发生变化。如果你对此有任何疑问，请联系 [feedback@greptime.cloud](mailto:feedback@greptime.cloud)。
-:::
+你可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/) 查看用量.
+最大 WCU 和 RCU 的使用情况将按时间范围进行聚合，并在用量图表中呈现。

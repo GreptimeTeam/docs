@@ -112,7 +112,6 @@
     - serverless
     - dedicated
     - byoc
-  - usage
   - Tutorials:
     - Monitor-Host-Metrics:
       - prometheus
