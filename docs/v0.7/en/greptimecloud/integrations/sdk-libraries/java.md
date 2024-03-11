@@ -5,7 +5,7 @@ The GreptimeDB Java ingester library utilizes gRPC for writing data to the datab
 To connect to GreptimeCloud, using information below:
 
 - Host: `<host>`
-- Port: `4001`
+- Port: `5001`
 - Database: `<dbname>`
 - Username: `<username>`
 - Password: `<password>`
@@ -18,6 +18,7 @@ String[] endpoints = {"<host>:4001"};
 AuthInfo authInfo = new AuthInfo("<username>", "<password>");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         .authInfo(authInfo)
+        .tlsOptions(new TlsOptions())
         .build();
 GreptimeDB client = GreptimeDB.create(opts);
 ```
