@@ -23,4 +23,4 @@ Hobby Plan 有以下限制：
 
 在 [GreptimeCloud 控制台](https://console.greptime.cloud/)，在服务详情页面点击 `升级` 并选择合适的计划。
 
-<!-- TODO image -->
+TODO image -->

@@ -30,7 +30,7 @@ Cost Calculation Formula:
 - Daily Costs: Sum of Hourly Costs
 - Monthly Costs: Sum of Daily Costs
 
-<!--@include: shared-storage-capacity.md-->
+<!--@include: ./shared-storage-capacity.md-->
 
 <!-- ### Cost Optimization
 

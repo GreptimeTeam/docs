@@ -1,8 +1,8 @@
-# Dedicated
+# Dedicated Plan
 
 Dedicated 方案提供无限制的数据存储及数据过期配置，完全隔离的资源控制和网络，以及 Greptime 的 SRE 团队的支持。
 
-如果你需要绝对隔离其他用户，或者需要超出 Serverless 方案的最大 WCU 和 RCU 限制，那么 Dedicated 方案是你的选择。
+如果你需要绝对地与其他用户隔离，或者需要超出 Serverless 方案的最大 WCU 和 RCU 限制，那么 Dedicated 方案是你的选择。
 
 ## 费用
 
