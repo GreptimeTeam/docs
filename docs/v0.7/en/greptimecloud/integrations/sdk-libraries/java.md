@@ -14,7 +14,7 @@ The following code snippet shows how to connect to database:
 
 ```java
 String database = "<dbname>";
-String[] endpoints = {"<host>:4001"};
+String[] endpoints = {"<host>:5001"};
 AuthInfo authInfo = new AuthInfo("<username>", "<password>");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         .authInfo(authInfo)
