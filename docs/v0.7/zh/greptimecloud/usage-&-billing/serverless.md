@@ -1,7 +1,8 @@
 # Serverless Plan
 
 Serverless Plan 允许你超出 Hobby Plan 的限制，并提供 SRE 团队支持。
-它适用于生产环境，并且可以随着业务的增长而扩展。
+该解决方案提供无限的数据存储和可配置的数据保留策略，
+适用于生产环境，并且可以随着业务的增长而扩展。
 
 当创建 Serverless Plan 新服务或从 Hobby Plan 升级时，
 你需要配置容量单元，包括：

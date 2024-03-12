@@ -1,7 +1,8 @@
 # Serverless Plan
 
 The Serverless Plan allows you to exceed the limitations of the Hobby Plan and provides support from the SRE team.
-It is suitable for production environments and can scale as your business grows.
+This solution provides unlimited data storage and configurable retention,
+making it suitable for production environments and scalable with your business growth.
 
 When setting up a service under the Serverless Plan or upgrading from the Hobby Plan,
 you'll need to configure the capacity units for the service plan, which include:
