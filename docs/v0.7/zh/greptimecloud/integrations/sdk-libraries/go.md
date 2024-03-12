@@ -6,7 +6,7 @@ GreptimeDB Go SDK 使用 gRPC 与数据库通信，
 请使用以下信息连接到 GreptimeCloud：
 
 - Host: `<host>`
-- Port: `4001`
+- Port: `5001`
 - Database: `<dbname>`
 - Username: `<username>`
 - Password: `<password>`
@@ -16,7 +16,8 @@ GreptimeDB Go SDK 使用 gRPC 与数据库通信，
 ```go
 cfg := greptime.NewConfig("<host>").
     WithDatabase("<dbname>").
-    WithPort(4001).
+    WithPort(5001).
+    WithInsecure(false).
     WithAuth("<username>", "<password>")
 
 cli, err := greptime.NewClient(cfg)

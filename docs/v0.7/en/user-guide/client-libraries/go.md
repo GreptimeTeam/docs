@@ -39,8 +39,10 @@ import (
 cfg := greptime.NewConfig("127.0.0.1").
     // change the database name to your database name
     WithDatabase("public").
-    // default port
-    WithPort(4001).
+    // Default port 4001
+    // WithPort(4001).
+    // Enable secure connection if your server is secured by TLS
+    // WithInsecure(false).
     // set authentication information
     WithAuth("username", "password")
 
