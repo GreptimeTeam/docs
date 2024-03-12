@@ -6,7 +6,7 @@ GreptimeDB Java ingester 库使用 gRPC 协议写入数据，
 请使用以下信息连接到 GreptimeCloud：
 
 - Host: `<host>`
-- Port: `4001`
+- Port: `5001`
 - Database: `<dbname>`
 - Username: `<username>`
 - Password: `<password>`
@@ -15,10 +15,11 @@ GreptimeDB Java ingester 库使用 gRPC 协议写入数据，
 
 ```java
 String database = "<dbname>";
-String[] endpoints = {"<host>:4001"};
+String[] endpoints = {"<host>:5001"};
 AuthInfo authInfo = new AuthInfo("<username>", "<password>");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         .authInfo(authInfo)
+        .tlsOptions(new TlsOptions())
         .build();
 GreptimeDB client = GreptimeDB.create(opts);
 ```

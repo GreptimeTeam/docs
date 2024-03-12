@@ -61,6 +61,8 @@ AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         // If the database does not require authentication, we can use AuthInfo.noAuthorization() as the parameter.
         .authInfo(authInfo)
+        // Enable secure connection if your server is secured by TLS
+        //.tlsOptions(new TlsOptions())
         // A good start ^_^
         .build();
 
