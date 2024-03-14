@@ -30,35 +30,35 @@ For example, in the above Parquet file, if you want to filter rows where `name` 
 
 ## Index Files
 
-For each SST file, in addition to the internal index within the SST file, GreptimeDB also creates a separate file to store  index structures for that SST file.
+For each SST file, GreptimeDB not only maintains an internal index but also generates a separate file to store the index structures specific to that SST file.
 
 The index files utilize the [Puffin][3] format, which offers significant flexibility, allowing for the storage of additional metadata and supporting a broader range of index structures.
 
 ![Puffin](/puffin.png)
 
-Currently, the inverted index serves as the first separate index structure supported, stored in the index file in the form of a Blob.
+Currently, the inverted index is the first supported index structure, and it is stored within the index file as a Blob.
 
 ## Inverted Index
 
 In version 0.7, GreptimeDB introduced the inverted index to accelerate queries.
 
-The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. We have applied this technology, originating from search engines, to the time series database GreptimeDB.
+The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. Greptime has adopted this technology, which originates from search engines, for use in the time series databases.
 
-Search engines and time series databases belong to two different domains. Although the principle of the inverted index technology applied is similar, there are some conceptual migrations:
+Search engines and time series databases operate in separate domains, yet the principle behind the applied inverted index technology is similar. This similarity requires some conceptual adjustments:
 1. Term: In GreptimeDB, it refers to the column value of the time series.
 2. Document: In GreptimeDB, it refers to the data segment containing multiple time series.
 
-The introduction of the inverted index allows GreptimeDB to skip data segments that do not meet the conditions during queries, thereby improving scanning performance.
+The inverted index enables GreptimeDB to skip data segments that do not meet query conditions, thus improving scanning efficiency.
 
 ![Inverted index searching](/inverted-index-searching.png)
 
-For example, in the above query, retrieve the data segments where `job` = `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4..` from the inverted index, and get the data segment list `[1]`. Subsequently, only the data segment needs to be scanned, reducing a large number of IO operations.
+For instance, the query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. It then scans these data segments to produce the final results that meet all conditions, significantly reducing the number of IO operations.
 
 ### Inverted Index Format
 
 The inverted index is stored by column internally, and each column's inverted index block consists of FST and a Bitmap storing data segment IDs.
 
-The FST (Finite State Transducer) allows us to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and complex search capabilities (such as regular expression matching).
+The FST (Finite State Transducer) allows GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching).
 
 The Bitmap is used to store data segment IDs, with each bit representing a data segment, and a 1 indicates that the data segment contains the column value.
 
@@ -66,9 +66,9 @@ The Bitmap is used to store data segment IDs, with each bit representing a data 
 
 ### Index Data Segments
 
-GreptimeDB divides an SST file into several indexed data segments, each containing an equal number of rows.
+GreptimeDB divides an SST file into multiple indexed data segments, with each segment housing an equal number of rows. This segmentation is designed to optimize query performance by scanning only the data segments that match the query conditions. 
 
-For example, if a data segment contains 1024 rows and the data segment list obtained after applying the inverted index to the query conditions is `[0, 2]`, then only the 0th and 2nd data segments in the SST file need to be scanned, i.e., from row 0 to row 1023 and from row 2048 to row 3071.
+For example, if a data segment contains 1024 rows and the list of data segments identified through the inverted index for the query conditions is `[0, 2]`, then only the 0th and 2nd data segments in the SST file—from rows 0 to 1023 and 2048 to 3071, respectively—need to be scanned.
 
 The number of rows in a data segment is controlled by the engine option `index.inverted_index.segment_row_count`, which defaults to `1024`. A smaller value means more precise indexing and often results in better query performance but increases the cost of index storage. By adjusting this option, a balance can be struck between storage costs and query performance.
 
