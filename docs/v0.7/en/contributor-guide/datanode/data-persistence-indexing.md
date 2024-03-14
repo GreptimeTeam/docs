@@ -56,13 +56,11 @@ For instance, the query above uses the inverted index to identify data segments 
 
 ### Inverted Index Format
 
-The inverted index is stored by column internally, and each column's inverted index block consists of FST and a Bitmap storing data segment IDs.
-
-The FST (Finite State Transducer) allows GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching).
-
-The Bitmap is used to store data segment IDs, with each bit representing a data segment, and a 1 indicates that the data segment contains the column value.
-
 ![Inverted index format](/inverted-index-format.png)
+
+GreptimeDB builds inverted indexes by column, with each inverted index consisting of an FST and multiple Bitmaps.
+
+The FST (Finite State Transducer) enables GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching). The Bitmaps maintain a list of data segment IDs, with each bit representing a data segment.
 
 ### Index Data Segments
 

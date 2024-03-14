@@ -57,13 +57,12 @@ Apache Parquet 文件格式在列块和数据页的头部提供了内置的统�
 
 ### 倒排索引格式
 
-倒排索引内部按列存储，每一列的倒排索引块由 FST 和存储数据段 ID 的 Bitmap 构成。
-
-FST（Finite State Transducer）允许 GreptimeDB 以紧凑的格式存储列值到 Bitmap 位置的映射，并且提供了优秀的搜索性能和支持复杂搜索（例如正则表达式匹配）。
-
-Bitmap 用于存储数据段 ID，每一位代表一个数据段，1 代表该数据段包含该列值。
-
 ![Inverted index format](/inverted-index-format.png)
+
+GreptimeDB 按列构建倒排索引，每个倒排索引包含一个 FST 和多个 Bitmap。
+
+FST（Finite State Transducer）允许 GreptimeDB 以紧凑的格式存储列值到 Bitmap 位置的映射，并且提供了优秀的搜索性能和支持复杂搜索（例如正则表达式匹配）；Bitmap 则维护了数据段 ID 列表，每个位表示一个数据段。
+
 
 ### 索引数据段
 
