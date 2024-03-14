@@ -160,6 +160,7 @@
     - data-persistence-indexing
     - wal
     - python-scripts
+    - metric-engine
   - Metasrv:
     - overview
     - admin-api
