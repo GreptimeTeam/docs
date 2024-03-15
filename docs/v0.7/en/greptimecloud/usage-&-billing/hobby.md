@@ -9,8 +9,8 @@ The Hobby Plan has the following limitations:
 
 - RCU (Read Capacity Units): 40 RCU/s per service.
 - WCU (Write Capacity Units): 20 WCU/s per service.
-- Storage capacity: 1GB per service.
-- Data retention policy: By default, data written in the last three months is retained.
+- Storage capacity: 5GB per service.
+- Data retention policy: 3 months.
 
 :::tip NOTE
 The plan may change in the future. If you have any questions about it, please contact [feedback@greptime.cloud](mailto:feedback@greptime.cloud).

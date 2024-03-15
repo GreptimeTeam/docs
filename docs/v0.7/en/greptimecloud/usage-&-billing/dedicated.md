@@ -1,12 +1,13 @@
 # Dedicated Plan
 
-The dedicated plan offers unlimited data storage and retention,
-completely isolated resource control and network,
+The dedicated plan allows you to purchase dedicated CPUs and storage to host GreptimeDB.
+It provides unlimited data storage and retention,
+complete isolation of resources and network,
 and includes support from Greptime's SRE team.
 
 If you require absolute isolation from other users or 
-need to exceed the maximum WCU and RCU limits of the Serverless Plan, 
-then the Dedicated Plan is your choice.
+need to exceed the maximum usage limits of the serverless plan, 
+then the dedicated plan is your choice.
 
 ## Costs
 

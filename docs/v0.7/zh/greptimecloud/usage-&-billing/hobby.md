@@ -9,8 +9,8 @@ Hobby Plan 有以下限制：
 
 - RCU (Read Capacity Units): 每个服务 40 RCU/s。
 - WCU (Write Capacity Units): 每个服务 20 WCU/s。
-- 存储容量: 每个服务 1GB。
-- 数据保留策略: 默认保留最近三个月的数据。
+- 存储容量: 每个服务 5GB。
+- 数据保留策略: 最近三个月。
 
 :::tip 注意
 计划可能会在未来更改。如果有任何问题，请联系 [feedback@greptime.cloud](mailto:feedback@greptime.cloud)。

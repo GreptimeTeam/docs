@@ -1,6 +1,6 @@
 # Serverless Plan
 
-Serverless Plan 允许你超出 Hobby Plan 的限制，并提供 SRE 团队支持。
+Serverless 计划允许你根据需求购买请求容量，并提供 SRE 团队支持。
 该解决方案提供无限的数据存储和可配置的数据保留策略，
 适用于生产环境，并且可以随着业务的增长而扩展。
 
@@ -9,7 +9,6 @@ Serverless Plan 允许你超出 Hobby Plan 的限制，并提供 SRE 团队支�
 
 - 每秒最大 WCU (Write Capacity Unit)，上限为 5000
 - 每秒最大 RCU (Read Capacity Unit)，上限为 5000
-- 存储容量
 
 :::tip 注意
 请查看 [WCU and RCU](wcu-rcu.md) 了解 WCU 和 RCU 的概念。

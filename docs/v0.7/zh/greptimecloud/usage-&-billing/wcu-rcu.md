@@ -1,12 +1,9 @@
-# WCU & RCU
+# 请求容量单位
 
-本文档将介绍 GreptimeCloud 的用量计算算法。您可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。
-
-## 容量单位
-
+本文档将介绍 GreptimeCloud 的请求容量单位算法。你可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。
 所有对 GreptimeCloud 的请求都是以容量单位来衡量的，容量单位反映了请求的大小和复杂程度。写容量单位和读容量单位的计算方法不同，详情请见下文。
 
-### WCU (Write Capacity Unit)
+### Write Capacity Unit (WCU)
 
 每个写入数据到表的 API 调用都是一个写请求。WCU 是根据一次请求中插入行的总大小来计算的。一个标准的 WCU 可以写入不超过 1 KB 的行数据。对于大于 1 KB 的数据，需要额外的 WCU。
 
@@ -54,7 +51,7 @@ VALUES
 
 该请求的大小为 950 字节（38 x 25）。此请求的 WCU 为 1。如果你在单个语句中插入 40 行数据，则大小为 1520 字节（38 x 40），此请求的 WCU 为 2。
 
-### RCU (Read Capacity Unit)
+### Read Capacity Unit (RCU)
 
 从表中读取数据的每个 API 调用都是一个读请求。
 
