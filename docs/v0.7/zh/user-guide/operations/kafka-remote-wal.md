@@ -1,4 +1,4 @@
-# Kafka Remote WAL 文档 - User Guide
+# Kafka Remote WAL 文档
 
 [Write-Ahead Logging](https://docs.greptime.com/contributor-guide/datanode/wal#introduction)（WAL）是 GreptimeDB 中的一个重要组件。每一个数据修改的操作，都会作为一个日志存储在 WAL 中，以确保数据库不会丢失缓存在内存中的数据。
 
