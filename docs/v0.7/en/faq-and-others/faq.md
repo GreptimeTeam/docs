@@ -11,15 +11,15 @@ Common use cases for time-series database include but are not limited to the fol
 
 ## How is GreptimeDB's performance compared to other solutions?
 
-GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
+GreptimeDB has released v0.7, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link below: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.7.0.md.
 
 ## How is the performance of GreptimeDB when used for non-time-series DB tables?
 
 GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain (time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
 
-## Does GreptimeDB have a Golang driver?
+## Does GreptimeDB have a Go driver?
 
-Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
+Yes, you can find our Go SDK here: https://github.com/GreptimeTeam/greptimedb-ingester-go.
 
 Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql).
 
@@ -27,7 +27,7 @@ HTTP API is also available, please see [this article](/user-guide/clients/http-a
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
-GreptimeDB implements PromQL operator pushdown in our latest distributed version 0.3, enabling distributed PromQL queries.
+GreptimeDB has initially implemented native support for PromQL, with compatibility in GreptimeDB v0.7 surpassing 80%, making it comparable to VictoriaMetrics.
 
 ## Is GreptimeDB compatible with Grafana?
 
@@ -40,12 +40,13 @@ Also, we are implementing PromQL natively which is frequently used with Grafana.
 
 ## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
-GreptimeDB is focused on time-series data (or metrics) right now. It may support log and tracing storage in the future.
+GreptimeDB is currently focused on the development of Metrics-related features. However, our Greptime 2024 Roadmap has already announced the release plan for the Log Engine, which is expected to be implemented in version 1.1. 
+
+For more information: https://github.com/GreptimeTeam/greptimedb/issues/3412
 
 ## When will GreptimeDB release its first GA version?
 
-The current version is not at the production level yet and there is a milestone for our future development.
-You can check our milestone for GreptimeDB v0.4 [here](https://github.com/GreptimeTeam/greptimedb/milestone/5).
+The current version has not yet reached General Availability version standards. In line with our Greptime 2024 Roadmap, we plan to achieve a production-level version with the update to v1.0 in August. More details: https://github.com/GreptimeTeam/greptimedb/issues/3412.
 
 ## Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
 
@@ -55,6 +56,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 ## Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
+
 For more information, refer to [this document](/user-guide/table-management#create-table).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
@@ -79,11 +81,11 @@ Please refer to [features that you concern](/user-guide/concepts/features-that-y
 
 ## Can <https://n9e.github.io/> now be directly integrated with GreptimeDB? How is its compatibility?
 
-Theoretically GreptimeDB could replace VictoriaMetrics now since that most protocols are supported, but we hasn't actually tested yet.
+Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
 
 ## Should I use the command "drop database" to delete a database?
 
-Yes, that is the intended command. However, "drop database" has not been implemented in version 0.4. It is expected to be included in the next minor iterative update. Currently, there is an associated pull request (PR) under review for this feature. As a result, there is no direct way to delete a database at the moment. You may consider creating a new database for testing purposes. If you're working with test data, you also have the option to clear it by deleting the data directory.
+Yes, that is the intended command. However, 'drop database' will be implemented in v0.8. It is expected to be included in the next minor iterative update. As a result, there is no direct way to delete a database at the moment. You may consider creating a new database for testing purposes. If you're working with test data, you also have the option to clear it by deleting the data directory.
 
 ## Are there any retention policy? 
 
@@ -108,6 +110,10 @@ We're a young, rapidly evolving project and always looking to improve. For more 
 ## As a first-timer looking to contribute to GreptimeDB, where can I find a comprehensive guide to get started?
 
 Welcome! Please refer to our [contribution guide](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md). For those new to GreptimeDB, we have a selected collection of [good first issues](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22). Feel free to reach us in Slack channel anytime!
+
+## I'm considering using GreptimeDB for a large-scale metrics system similar to Facebook's Gorilla or Google's Monarch, with a preference for in-memory data and high availability, possibly at the expense of some data loss. Given GreptimeDB's focus on consistency over in-memory storage, are there plans to introduce options like asynchronous WAL or optional disk storage for flexibility? Also, is there a way to ensure data replication without WAL, and when can we expect documentation and features for tiered storage?
+
+GreptimeDB already supports asynchronous WAL, and we're looking into a per-table WAL toggle for more control. We're also developing a tiered storage approach, starting with in-memory caching. For data replication, we ensure that data flushed to remote stores like S3 is replicated, independent of WAL. The details for tiered storage are tracked in issue [#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). We provide a remote WAL implementation based on Apache Kafka to ensure the durability of data not being flushed in cluster mode.
 
 ## Does GreptimeDB have a way to handle absolute counters that can reset, like InfluxDB's non-negative differential? How do aggregations work with these counters, and is PromQL preferred over SQL for them? Also, is there a plan to integrate PromQL functions into SQL, similar to InfluxDB v3?
 
