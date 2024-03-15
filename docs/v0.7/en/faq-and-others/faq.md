@@ -56,6 +56,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 ## Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
+
 For more information, refer to [this document](/user-guide/table-management#create-table).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
@@ -90,6 +91,30 @@ Yes, that is the intended command. However, 'drop database' will be implemented 
 
 We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
+## What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
+
+At GreptimeDB, we share some technical similarities with InfluxDB, both using Datafusion, Arrow, Parquet, and built on object storage. However, we differ in several key aspects:
+
+- Open-Source Strategy: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
+
+- Distributed Architecture: Our architecture is more aligned with HBase's Region/RegionServer design. Our Write-Ahead Log (WAL) uses Kafka, and we're exploring a quorum-based implementation in the future.
+
+- Workload and Services: We focus on a hybrid workload combining time series and analytics. This integration aims to enhance resource efficiency and real-time performance for users. We also offer [GreptimeCloud](https://greptime.com/product/cloud), a commercial cloud service.
+
+- Storage Engine Design: Our pluggable storage engine is versatile. For scenarios with many small data tables, like in Prometheus, we have a dedicated Metrics storage engine.
+
+- Query Language Support: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
+
+We're a young, rapidly evolving project and always looking to improve. For more details, visit [our Blog](https://greptime.com/blogs/) and [Contributor Guide](https://docs.greptime.com/contributor-guide/overview). We welcome your interest and contributions!
+
+## As a first-timer looking to contribute to GreptimeDB, where can I find a comprehensive guide to get started?
+
+Welcome! Please refer to our [contribution guide](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md). For those new to GreptimeDB, we have a selected collection of [good first issues](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22). Feel free to reach us in Slack channel anytime!
+
 ## I'm considering using GreptimeDB for a large-scale metrics system similar to Facebook's Gorilla or Google's Monarch, with a preference for in-memory data and high availability, possibly at the expense of some data loss. Given GreptimeDB's focus on consistency over in-memory storage, are there plans to introduce options like asynchronous WAL or optional disk storage for flexibility? Also, is there a way to ensure data replication without WAL, and when can we expect documentation and features for tiered storage?
 
 GreptimeDB already supports asynchronous WAL, and we're looking into a per-table WAL toggle for more control. We're also developing a tiered storage approach, starting with in-memory caching. For data replication, we ensure that data flushed to remote stores like S3 is replicated, independent of WAL. The details for tiered storage are tracked in issue [#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). We provide a remote WAL implementation based on Apache Kafka to ensure the durability of data not being flushed in cluster mode.
+
+## Does GreptimeDB have a way to handle absolute counters that can reset, like InfluxDB's non-negative differential? How do aggregations work with these counters, and is PromQL preferred over SQL for them? Also, is there a plan to integrate PromQL functions into SQL, similar to InfluxDB v3?
+
+GreptimeDB, like Prometheus, handles counters effectively. Functions like` reset()`, `rate()`, or `delta()` in GreptimeDB are designed to automatically detect and adjust for counter resets. While it's not recommended to use the `deriv()` function on a counter since it's meant for gauges, you can apply `rate()` to your counter and then use `deriv()`. PromQL is indeed more suitable for operations involving counters, given its origin in Prometheus. However, we are exploring the integration of PromQL functions into SQL for greater flexibility. If you're interested in implementing functions into GreptimeDB, we have documentation available which you can check out: [Greptime Documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md).
