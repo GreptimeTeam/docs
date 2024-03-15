@@ -373,7 +373,7 @@ global_write_buffer_reject_size = "2GB"
 
 ### 设定 meta client
 
-The `meta_client` options are valid in `datanode` and `frontend` mode, which specify the Metasrv client information.
+`meta_client` 选项适用于 `datanode` 和 `frontend` 模块，用于指定 Metasrv 的相关信息。
 
 ```toml
 [meta_client]
