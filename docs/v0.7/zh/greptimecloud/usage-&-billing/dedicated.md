@@ -1,4 +1,4 @@
-# Dedicated Plan
+# Dedicated 计划
 
 Dedicated 计划允许你购买专用的 CPU 和存储来托管 GreptimeDB。
 它提供无限的数据存储和数据保留策略，

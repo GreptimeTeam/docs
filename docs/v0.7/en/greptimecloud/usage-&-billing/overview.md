@@ -2,7 +2,7 @@
 
 These documents will help you understand the usage and billing of Greptime Cloud.
 
-- [WCU and RCU](wcu-rcu.md)
+- [Request Capacity Unit](request-capacity-unit.md)
 - [Hobby Plan](hobby.md)
 - [Serverless Plan](serverless.md)
 - [Dedicated Plan](dedicated.md)

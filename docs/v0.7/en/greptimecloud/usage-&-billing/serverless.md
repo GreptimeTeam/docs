@@ -12,7 +12,7 @@ you'll need to configure the capacity units for the service plan, which include:
 - The Maximum RCU (Read Capacity Unit) per second, upper limit of 5000
 
 :::tip NOTE
-For the concepts of WCU and RCU, see [WCU and RCU](wcu-rcu.md).
+For the concepts of WCU and RCU, see [Request Capacity Unit](request-capacity-unit.md).
 :::
 
 ## Costs

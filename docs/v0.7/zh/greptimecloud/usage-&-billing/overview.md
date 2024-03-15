@@ -1,9 +1,9 @@
 # 概览
 
-此文档将帮助你了解 Greptime Cloud 的用量和费用。
+此文档将帮助你了解 GreptimeCloud 的用量和费用。
 
-- [WCU and RCU](wcu-rcu.md)
-- [Hobby Plan](hobby.md)
-- [Serverless Plan](serverless.md)
-- [Dedicated Plan](dedicated.md)
+- [请求容量单位](request-capacity-unit.md)
+- [Hobby 计划](hobby.md)
+- [Serverless 计划](serverless.md)
+- [Dedicated 计划](dedicated.md)
 - [BYOC](byoc.md)

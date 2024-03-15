@@ -1,11 +1,11 @@
-# Hobby plan
+# Hobby 计划
 
 ## 简介
 
-GreptimeCloud 提供免费的 Hobby Plan 供你尝试服务。
-每个团队可以在 Hobby Plan 中创建最多三个服务。
+GreptimeCloud 提供免费的 Hobby 计划供你尝试服务。
+每个团队可以在 Hobby 计划中创建最多三个服务。
 
-Hobby Plan 有以下限制：
+Hobby 计划有以下限制：
 
 - RCU (Read Capacity Units): 每个服务 40 RCU/s。
 - WCU (Write Capacity Units): 每个服务 20 WCU/s。

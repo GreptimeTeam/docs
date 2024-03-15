@@ -4,7 +4,7 @@ This document introduces the calculation algorithms for request capacity units. 
 
 All requests to GreptimeCloud are measured in capacity units, which reflect the size and complexity of the request. The measurement methods of write capacity unit and read capacity unit are different, see following for details.
 
-### Write Capacity Unit (WCU)
+### Write capacity unit (WCU)
 
 Each API call to write data to your table is a write request.
 WCU is calculated based on the total size of the insert rows in one request.
@@ -57,7 +57,7 @@ VALUES
 
 The size of the request is 950 bytes (38 x 25). The WCU of this request is 1. If you insert 40 rows in a single statement, the size is 1520 bytes (38 x 40), and the WCU of this request is 2.
 
-### Read Capacity Unit (RCU)
+### Read capacity unit (RCU)
 
 Each API call to read data from your table is a read request.
 RCU is the data size scanned and loaded into server's memory in one request. 

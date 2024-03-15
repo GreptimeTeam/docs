@@ -108,7 +108,7 @@
       - java
   - Usage-&-Billing:
     - overview
-    - wcu-rcu
+    - request-capacity-unit
     - hobby
     - serverless
     - dedicated
