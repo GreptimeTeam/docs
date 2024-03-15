@@ -28,7 +28,47 @@ Apache Parquet file format provides inherent statistics in headers of column chu
 
 For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
 
-Besides Parquet's built-in statistics, our team is working on supporting a separate index file that utilizes some time-series specific indexing techniques to improve scanning performance.
+## Index Files
+
+For each SST file, GreptimeDB not only maintains an internal index but also generates a separate file to store the index structures specific to that SST file.
+
+The index files utilize the [Puffin][3] format, which offers significant flexibility, allowing for the storage of additional metadata and supporting a broader range of index structures.
+
+![Puffin](/puffin.png)
+
+Currently, the inverted index is the first supported index structure, and it is stored within the index file as a Blob.
+
+## Inverted Index
+
+In version 0.7, GreptimeDB introduced the inverted index to accelerate queries.
+
+The inverted index is a common index structure used for full-text searches, mapping each word in the document to a list of documents containing that word. Greptime has adopted this technology, which originates from search engines, for use in the time series databases.
+
+Search engines and time series databases operate in separate domains, yet the principle behind the applied inverted index technology is similar. This similarity requires some conceptual adjustments:
+1. Term: In GreptimeDB, it refers to the column value of the time series.
+2. Document: In GreptimeDB, it refers to the data segment containing multiple time series.
+
+The inverted index enables GreptimeDB to skip data segments that do not meet query conditions, thus improving scanning efficiency.
+
+![Inverted index searching](/inverted-index-searching.png)
+
+For instance, the query above uses the inverted index to identify data segments where `job` equals `apiserver`, `handler` matches the regex `.*users`, and `status` matches the regex `4...`. It then scans these data segments to produce the final results that meet all conditions, significantly reducing the number of IO operations.
+
+### Inverted Index Format
+
+![Inverted index format](/inverted-index-format.png)
+
+GreptimeDB builds inverted indexes by column, with each inverted index consisting of an FST and multiple Bitmaps.
+
+The FST (Finite State Transducer) enables GreptimeDB to store mappings from column values to Bitmap positions in a compact format and provides excellent search performance and supports complex search capabilities (such as regular expression matching). The Bitmaps maintain a list of data segment IDs, with each bit representing a data segment.
+
+### Index Data Segments
+
+GreptimeDB divides an SST file into multiple indexed data segments, with each segment housing an equal number of rows. This segmentation is designed to optimize query performance by scanning only the data segments that match the query conditions. 
+
+For example, if a data segment contains 1024 rows and the list of data segments identified through the inverted index for the query conditions is `[0, 2]`, then only the 0th and 2nd data segments in the SST file—from rows 0 to 1023 and 2048 to 3071, respectively—need to be scanned.
+
+The number of rows in a data segment is controlled by the engine option `index.inverted_index.segment_row_count`, which defaults to `1024`. A smaller value means more precise indexing and often results in better query performance but increases the cost of index storage. By adjusting this option, a balance can be struck between storage costs and query performance.
 
 ## Unified Data Access Layer: OpenDAL
 
@@ -36,3 +76,4 @@ GreptimeDB uses [OpenDAL][2] to provide a unified data access layer, thus, the s
 
 [1]: https://parquet.apache.org
 [2]: https://github.com/datafuselabs/opendal
+[3]: https://iceberg.apache.org/puffin-spec
