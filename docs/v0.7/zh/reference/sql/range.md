@@ -12,7 +12,10 @@ SELECT
   AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION],
   ...
 FROM table_name
-ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION];
+  [ WHERE <where_clause>]
+ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION]
+  [ ORDER BY <order_by_clause>]
+[ LIMIT <limit_clause>];
 
 INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr ) 
 ```
@@ -24,7 +27,7 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
   - 基于 `PromQL Time Durations` 格式的字符串（例如：`3h`、`1h30m`）。访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) 获取该格式更详细的说明。
   - `Interval` 类型，使用 `Interval` 类型需要携带括号,（例如：`(INTERVAL '1 year 3 hours 20 minutes')`）。访问 [Interval](./functions.md#interval) 获取该格式更详细的说明。
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
-  - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式。
+  - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式。聚合函数支持使用 `order by` 表达式。(注：`first_value` 和 `last_value` 函数默认使用时间戳作为 `order by` 表达式)
   - 关键字 `RANGE`，必选字段，后接参数 `INTERVAL` 指定了每次数据聚合的时间范围，
   - 关键字 `FILL`，可选字段，详情请见 [`FILL` Option](#fill-option)。
   - Range 表达式可与其他运算结合，实现更复杂的查询。具体见[嵌套使用 Range 表达式](#嵌套使用-range-表达式) 。
@@ -33,7 +36,8 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
 
 ## `FILL` 选项
 
-`FILL` 选项指定了聚合字段的值为空时的数据填充方法。
+`FILL` 选项指定了在某个聚合的时间片上没有数据，或者聚合字段的值为空时的数据填充方法。
+
 它可以跟在一个 Range 表达式后，作为这个 Range 表达式的数据填充方法；也可以放在 `ALIGN` 后面作为所有未指定 `FILL` 选项的 Range 表达式的填充方法。
 
 例如，在下面的 SQL 代码中，
@@ -57,16 +61,42 @@ ALIGN '5s' BY (host) FILL PREV;
 | `LINEAR` | 使用线性插值法填充数据，如果一个整数类型使用 `LINEAR` 填充，则该列的变量类型会在计算的时候被隐式转换为浮点类型 |
 |   `X`    |                        填充一个常量，该常量的数据类型必须和 Range 表达式的变量类型一致                         |
 
+:::tip NOTE
+注意，如果存在多个 Range 表达式，只对其中的一个表达式制定了 FILL 方法的话，为了保持 SQL 输出行数的统一，其他 Range 表达式会被使用 FILL NULL 方法来填充缺失的时间片段。所以下面两句 SQL 在输出上是等价的：
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(cpu) RANGE '10s',
+    max(cpu) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
+
+等价于
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(cpu) RANGE '10s' FILL NULL,
+    max(cpu) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
+:::
 
 以下面这张表为例
 
 ```sql
 +---------------------+-------+------+
-| ts                  | host  | cpu  |
+| ts                  | host  | val  |
 +---------------------+-------+------+
-| 2023-01-01 08:00:00 | host1 |  4.5 |
-| 2023-01-01 08:00:05 | host1 | NULL |
-| 2023-01-01 08:00:10 | host1 |  6.5 |
+| 1970-01-01 00:00:00 | host1 |    0 |
+| 1970-01-01 00:00:15 | host1 |    6 |
+| 1970-01-01 00:00:00 | host2 |    6 |
+| 1970-01-01 00:00:15 | host2 |   12 |
 +---------------------+-------+------+
 ```
 
@@ -74,57 +104,92 @@ ALIGN '5s' BY (host) FILL PREV;
 
 ::: code-group
 
-```sql [NULL]
+```sql [NO FILL]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FROM host ALIGN '5s';
 
-+---------------------+--------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL NULL |
-+---------------------+--------------------------------------+
-| 2023-01-01 08:00:00 |                                  4.5 |
-| 2023-01-01 08:00:05 |                                 NULL |
-| 2023-01-01 08:00:10 |                                  6.5 |
-+---------------------+--------------------------------------+
++---------------------+-------+------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s |
++---------------------+-------+------------------------+
+| 1970-01-01 00:00:00 | host1 |                      0 |
+| 1970-01-01 00:00:15 | host1 |                      6 |
+| 1970-01-01 00:00:00 | host2 |                      6 |
+| 1970-01-01 00:00:15 | host2 |                     12 |
++---------------------+-------+------------------------+
 
 ```
 
-```sql [PREV]
+```sql [FILL NULL]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL NULL FROM host ALIGN '5s';
 
-+---------------------+--------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL PREV |
-+---------------------+--------------------------------------+
-| 2023-01-01 08:00:00 |                                  4.5 |
-| 2023-01-01 08:00:05 |                                  4.5 |
-| 2023-01-01 08:00:10 |                                  6.5 |
-+---------------------+--------------------------------------+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL NULL |
++---------------------+-------+----------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                0 |
+| 1970-01-01 00:00:05 | host1 |                             NULL |
+| 1970-01-01 00:00:10 | host1 |                             NULL |
+| 1970-01-01 00:00:15 | host1 |                                6 |
+| 1970-01-01 00:00:00 | host2 |                                6 |
+| 1970-01-01 00:00:05 | host2 |                             NULL |
+| 1970-01-01 00:00:10 | host2 |                             NULL |
+| 1970-01-01 00:00:15 | host2 |                               12 |
++---------------------+-------+----------------------------------+
+
 ```
 
-```sql [LINEAR]
+```sql [FILL PREV]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL PREV FROM host ALIGN '5s';
 
-+---------------------+----------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL LINEAR |
-+---------------------+----------------------------------------+
-| 2023-01-01 08:00:00 |                                    4.5 |
-| 2023-01-01 08:00:05 |                                    5.5 |
-| 2023-01-01 08:00:10 |                                    6.5 |
-+---------------------+----------------------------------------+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL PREV |
++---------------------+-------+----------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                0 |
+| 1970-01-01 00:00:05 | host1 |                                0 |
+| 1970-01-01 00:00:10 | host1 |                                0 |
+| 1970-01-01 00:00:15 | host1 |                                6 |
+| 1970-01-01 00:00:00 | host2 |                                6 |
+| 1970-01-01 00:00:05 | host2 |                                6 |
+| 1970-01-01 00:00:10 | host2 |                                6 |
+| 1970-01-01 00:00:15 | host2 |                               12 |
++---------------------+-------+----------------------------------+
 ```
 
-```sql [Constant Value 6.0]
+```sql [FILL LINEAR]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL LINEAR FROM host ALIGN '5s';
 
-+---------------------+-----------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL 6 |
-+---------------------+-----------------------------------+
-| 2023-01-01 08:00:00 |                               4.5 |
-| 2023-01-01 08:00:05 |                                 6 |
-| 2023-01-01 08:00:10 |                               6.5 |
-+---------------------+-----------------------------------+
++---------------------+-------+------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL LINEAR |
++---------------------+-------+------------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                  0 |
+| 1970-01-01 00:00:05 | host1 |                                  2 |
+| 1970-01-01 00:00:10 | host1 |                                  4 |
+| 1970-01-01 00:00:15 | host1 |                                  6 |
+| 1970-01-01 00:00:00 | host2 |                                  6 |
+| 1970-01-01 00:00:05 | host2 |                                  8 |
+| 1970-01-01 00:00:10 | host2 |                                 10 |
+| 1970-01-01 00:00:15 | host2 |                                 12 |
++---------------------+-------+------------------------------------+
+```
+
+```sql [FILL Constant Value 6.0]
+
+> SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
+
++---------------------+-------+-------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL 6 |
++---------------------+-------+-------------------------------+
+| 1970-01-01 00:00:00 | host1 |                             0 |
+| 1970-01-01 00:00:05 | host1 |                             6 |
+| 1970-01-01 00:00:10 | host1 |                             6 |
+| 1970-01-01 00:00:15 | host1 |                             6 |
+| 1970-01-01 00:00:00 | host2 |                             6 |
+| 1970-01-01 00:00:05 | host2 |                             6 |
+| 1970-01-01 00:00:10 | host2 |                             6 |
+| 1970-01-01 00:00:15 | host2 |                            12 |
++---------------------+-------+-------------------------------+
 ```
 
 :::
