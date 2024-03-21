@@ -2,9 +2,9 @@
 
 ## 协处理器注释
 
-`@coprocesssor` 注释指定一个 python 函数作为 GreptimeDB 的协处理器，并为其设置一些属性。
+`@coprocessor` 注释指定一个 python 函数作为 GreptimeDB 的协处理器，并为其设置一些属性。
 
-该引擎允许一个且仅有一个用 `@coprocesssor` 注释的函数，不能在一个脚本中拥有一个以上的协处理器。
+该引擎允许一个且仅有一个用 `@coprocessor` 注释的函数，不能在一个脚本中拥有一个以上的协处理器。
 
 | Parameter | Description | Example |
 | --- | --- | --- |
