@@ -41,15 +41,15 @@ The `FILL` keyword can also be used after the `ALIGN` keyword to specify the def
 if no fill option is provided.
 
 For example, in the following SQL code,
-the `max(cpu) RANGE '10s'` Range expression uses the fill option `LINEAR`, while the `min(cpu) RANGE '10s'` Range expression,
+the `max(val) RANGE '10s'` Range expression uses the fill option `LINEAR`, while the `min(val) RANGE '10s'` Range expression,
 which does not specify a fill option, uses the fill option `PREV` specified after the `ALIGN` keyword.
 
 ```sql
 SELECT 
     ts, 
     host, 
-    min(cpu) RANGE '10s',
-    max(cpu) RANGE '10s' FILL LINEAR 
+    min(val) RANGE '10s',
+    max(val) RANGE '10s' FILL LINEAR 
 FROM host_cpu 
 ALIGN '5s' BY (host) FILL PREV;
 ```
@@ -62,32 +62,6 @@ ALIGN '5s' BY (host) FILL PREV;
 |  `PREV`  |                                                                                    Fill with data from previous point                                                                                    |
 | `LINEAR` | Use [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) to fill the data. If an integer type is filled with `LINEAR`, the variable type of the column will be implicitly converted to a floating point type during calculation |
 |   `X`    |                                           Fill in a constant, the data type of the constant must be consistent with the variable type of the Range expression                                            |
-
-:::tip NOTE
-Note that if there are multiple Range expressions and the FILL method is specified for only one of them, in order to keep the number of SQL output rows uniform, the other Range expressions will use the FILL NULL method to fill in the missing time slots. So the following two SQL statements are equivalent in output:
-
-```sql
-SELECT 
-    ts, 
-    host, 
-    min(cpu) RANGE '10s',
-    max(cpu) RANGE '10s' FILL LINEAR 
-FROM host_cpu 
-ALIGN '5s';
-```
-
-equal to
-
-```sql
-SELECT 
-    ts, 
-    host, 
-    min(cpu) RANGE '10s' FILL NULL,
-    max(cpu) RANGE '10s' FILL LINEAR 
-FROM host_cpu 
-ALIGN '5s';
-```
-:::
 
 Take the following table as an example:
 
@@ -195,6 +169,29 @@ The result of each `FILL` option is as follows:
 ```
 
 :::
+
+If there are multiple Range expressions but only one of them specifies the `Fill` option, the other Range expressions will use the `FILL NULL` method to fill in the missing time slots.
+The following two SQL statements are equivalent in output:
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(val) RANGE '10s',
+    max(val) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(val) RANGE '10s' FILL NULL,
+    max(val) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
 
 ## `TO` Option
 
@@ -380,7 +377,7 @@ Take the following table as an example:
 
 ```sql
 +---------------------+-------+------+
-| ts                  | host  | cpu  |
+| ts                  | host  | val  |
 +---------------------+-------+------+
 | 2023-01-01 08:00:00 | host1 |  1.1 |
 | 2023-01-01 08:00:05 | host1 |  2.2 |
@@ -392,14 +389,14 @@ Take the following table as an example:
 1. Aggregation functions support calculations both internally and externally：
 
 ```sql
-SELECT ts, host, 2.0 * min(cpu * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, 2.0 * min(val * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 Get after running
 
 ```sql
 +---------------------+-------+-----------------------------------------------------------------+
-| ts                  | host  | Float64(2) * MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL |
+| ts                  | host  | Float64(2) * MIN(host_cpu.val * Float64(2)) RANGE 10s FILL NULL |
 +---------------------+-------+-----------------------------------------------------------------+
 | 2023-01-01 07:59:55 | host1 |                                                             4.4 |
 | 2023-01-01 07:59:55 | host2 |                                                            13.2 |
@@ -412,17 +409,17 @@ Get after running
 
 
 2. Scalar functions are supported both inside and outside aggregate functions:
-    - `min(round(cpu)) RANGE '10s'` means that each value is rounded using the `round` function before aggregation
-    - `round(min(cpu) RANGE '10s')` means rounding the result of each aggregation using the `round` function
+    - `min(round(val)) RANGE '10s'` means that each value is rounded using the `round` function before aggregation
+    - `round(min(val) RANGE '10s')` means rounding the result of each aggregation using the `round` function
 
 ```sql
-SELECT ts, host, min(round(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(round(val)) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 Get after running
 
 ```sql
 +---------------------+-------+----------------------------------------------+
-| ts                  | host  | MIN(round(host_cpu.cpu)) RANGE 10s FILL NULL |
+| ts                  | host  | MIN(round(host_cpu.val)) RANGE 10s FILL NULL |
 +---------------------+-------+----------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                            3 |
 | 2023-01-01 07:59:55 | host1 |                                            1 |
@@ -435,14 +432,14 @@ Get after running
 
 
 ```sql
-SELECT ts, host, round(min(cpu) RANGE '10s') FROM host_cpu ALIGN '5s';
+SELECT ts, host, round(min(val) RANGE '10s') FROM host_cpu ALIGN '5s';
 ```
 
 Get after running
 
 ```sql
 +---------------------+-------+----------------------------------------------+
-| ts                  | host  | round(MIN(host_cpu.cpu) RANGE 10s FILL NULL) |
+| ts                  | host  | round(MIN(host_cpu.val) RANGE 10s FILL NULL) |
 +---------------------+-------+----------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                            3 |
 | 2023-01-01 07:59:55 | host1 |                                            1 |
@@ -456,16 +453,16 @@ Get after running
 3. Multiple Range expressions can also evaluate together, and Range expressions support the distributive law. The following two Range query are legal and equivalent:
 
 ```sql
-SELECT ts, host, max(cpu) RANGE '10s' - min(cpu) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, max(val) RANGE '10s' - min(val) RANGE '10s' FROM host_cpu ALIGN '5s';
 
-SELECT ts, host, (max(cpu) - min(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, (max(val) - min(val)) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 Get after running
 
 ```sql
 +---------------------+-------+-------------------------------------------------------------------------------+
-| ts                  | host  | MAX(host_cpu.cpu) RANGE 10s FILL NULL - MIN(host_cpu.cpu) RANGE 10s FILL NULL |
+| ts                  | host  | MAX(host_cpu.val) RANGE 10s FILL NULL - MIN(host_cpu.val) RANGE 10s FILL NULL |
 +---------------------+-------+-------------------------------------------------------------------------------+
 | 2023-01-01 08:00:05 | host1 |                                                                             0 |
 | 2023-01-01 08:00:05 | host2 |                                                                             0 |
@@ -476,10 +473,10 @@ Get after running
 +---------------------+-------+-------------------------------------------------------------------------------+
 ```
 
-But note that the `RANGE` keyword apply to the expression before the `RANGE` keyword. The following Range query is illegal because the `RANGE` keyword apply to the expression `2.0`, not the expression `min(cpu * 2.0) * 2.0`
+But note that the `RANGE` keyword apply to the expression before the `RANGE` keyword. The following Range query is illegal because the `RANGE` keyword apply to the expression `2.0`, not the expression `min(val * 2.0) * 2.0`
 
 ```sql
-SELECT ts, host, min(cpu * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(val * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 without function
 ```
@@ -487,14 +484,14 @@ ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 wi
 Expressions can be bracketed, and the `RANGE` keyword is automatically applied to any aggregate functions contained within the brackets:
 
 ```sql
-SELECT ts, host, (min(cpu * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, (min(val * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 After running, we get:
 
 ```sql
 +---------------------+-------+-----------------------------------------------------------------+
-| ts                  | host  | MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
+| ts                  | host  | MIN(host_cpu.val * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
 +---------------------+-------+-----------------------------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                                            13.2 |
 | 2023-01-01 07:59:55 | host1 |                                                             4.4 |
@@ -508,7 +505,7 @@ After running, we get:
 Nesting of Range expressions is not allowed. Nested Range queries are illegal:
 
 ```sql
-SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, max(min(val) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
