@@ -26,7 +26,7 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
    - Strings based on the `PromQL Time Durations` format (eg: `3h`, `1h30m`). Visit the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) for a more detailed description of this format.
    - `Interval` type. To use the `Interval` type, you need to carry parentheses, (for example: `(INTERVAL '1 year 3 hours 20 minutes')`). Visit [Interval](./functions.md#interval) for a more detailed description of this format.
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` is called a Range expression.
-   - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated. Aggregate functions support the use of `order by` expressions. (Note: `first_value` and `last_value` functions use timestamp as `order by` expression by default)
+   - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated.
    - Keyword `RANGE`, required field, followed by parameter `INTERVAL` specifies the time range of each data aggregation.
    - Keyword `FILL`, optional field, please see [`FILL` Option](#fill-option) for details.
    - Range expressions can be combined with other operations to implement more complex queries. For details, see [Nested Range Expressions](#nested-range-expressions).
@@ -367,6 +367,56 @@ Get after running
 | 2023-01-02 00:59:55 |                                 1 |
 | 2023-01-02 01:00:00 |                                 1 |
 +---------------------+-----------------------------------+
+```
+
+## `ORDER BY` option
+
+Range queries support the use of `order by` expressions within specific aggregate functions to sort data on the same time slot. Taking the `first_value` and `last_value` aggregate functions as an example, users can use `order by` to sort the aggregated data to correctly select the first value and the last value. By default, the `first_value` and `last_value` functions sort data in ascending order using timestamps.
+
+Take this table as an example:
+
+```sql
++---------------------+-------+------+-------+
+| ts                  | host  | val  | addon |
++---------------------+-------+------+-------+
+| 1970-01-01 00:00:00 | host1 |    0 |     3 |
+| 1970-01-01 00:00:01 | host1 |    1 |     2 |
+| 1970-01-01 00:00:02 | host1 |    2 |     1 |
++---------------------+-------+------+-------+
+```
+
+Users can not specify the `order by` expression, and the effect is equivalent to using the `ts` column to sort in ascending order.
+
+```sql
+SELECT ts, first_value(val) RANGE '5s', last_value(val) RANGE '5s' FROM host ALIGN '5s';
+-- Equivalent to
+SELECT ts, first_value(val order by ts ASC) RANGE '5s', last_value(val order by ts ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+Get after query
+
+```sql
++---------------------+--------------------------------+-------------------------------+
+| ts                  | FIRST_VALUE(host.val) RANGE 5s | LAST_VALUE(host.val) RANGE 5s |
++---------------------+--------------------------------+-------------------------------+
+| 1970-01-01 00:00:00 |                              0 |                             2 |
++---------------------+--------------------------------+-------------------------------+
+```
+
+Users can also specify their own sorting rules without using the default sorting options, such as using `addon` sorting:
+
+```sql
+SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER BY addon ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+Get after query
+
+```sql
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| ts                  | FIRST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s | LAST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| 1970-01-01 00:00:00 |                                                                   2 |                                                                  0 |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
 ```
 
 ## Nested Range Expressions

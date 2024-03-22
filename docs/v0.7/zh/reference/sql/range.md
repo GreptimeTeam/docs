@@ -27,7 +27,7 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
   - 基于 `PromQL Time Durations` 格式的字符串（例如：`3h`、`1h30m`）。访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) 获取该格式更详细的说明。
   - `Interval` 类型，使用 `Interval` 类型需要携带括号,（例如：`(INTERVAL '1 year 3 hours 20 minutes')`）。访问 [Interval](./functions.md#interval) 获取该格式更详细的说明。
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
-  - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式。聚合函数支持使用 `order by` 表达式。(注：`first_value` 和 `last_value` 函数默认使用时间戳作为 `order by` 表达式)
+  - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式。
   - 关键字 `RANGE`，必选字段，后接参数 `INTERVAL` 指定了每次数据聚合的时间范围，
   - 关键字 `FILL`，可选字段，详情请见 [`FILL` Option](#fill-option)。
   - Range 表达式可与其他运算结合，实现更复杂的查询。具体见[嵌套使用 Range 表达式](#嵌套使用-range-表达式) 。
@@ -364,6 +364,57 @@ FROM host ALIGN '5s' BY ();
 | 2023-01-02 00:59:55 |                                 1 |
 | 2023-01-02 01:00:00 |                                 1 |
 +---------------------+-----------------------------------+
+```
+
+## `ORDER BY` 选项
+
+Range 查询支持在特定聚合函数内使用 `order by` 表达式，来对同一个时间片上的数据进行排序。以 `first_value` 和 `last_value` 聚合函数为例，用户可以使用 `order by` 对聚合的内容进行排序，从而正确的选出第一个值和最后一个值。在默认情况下，`first_value` 和 `last_value` 函数使用时间戳升序排列数据。
+
+以该数据表为例：
+
+
+```sql
++---------------------+-------+------+-------+
+| ts                  | host  | val  | addon |
++---------------------+-------+------+-------+
+| 1970-01-01 00:00:00 | host1 |    0 |     3 |
+| 1970-01-01 00:00:01 | host1 |    1 |     2 |
+| 1970-01-01 00:00:02 | host1 |    2 |     1 |
++---------------------+-------+------+-------+
+```
+
+用户可以不指定 `order by` 表达式，效果等价于使用 `ts` 列升序排列。
+
+```sql
+SELECT ts, first_value(val) RANGE '5s', last_value(val) RANGE '5s' FROM host ALIGN '5s';
+-- 等价于
+SELECT ts, first_value(val order by ts ASC) RANGE '5s', last_value(val order by ts ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+查询后得到
+
+```sql
++---------------------+--------------------------------+-------------------------------+
+| ts                  | FIRST_VALUE(host.val) RANGE 5s | LAST_VALUE(host.val) RANGE 5s |
++---------------------+--------------------------------+-------------------------------+
+| 1970-01-01 00:00:00 |                              0 |                             2 |
++---------------------+--------------------------------+-------------------------------+
+```
+
+用户也可以不使用默认的排序选项自己指定排序规则，比如使用 `addon` 排序：
+
+```sql
+SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER BY addon ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+查询后得到
+
+```sql
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| ts                  | FIRST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s | LAST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| 1970-01-01 00:00:00 |                                                                   2 |                                                                  0 |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
 ```
 
 ## 嵌套使用 Range 表达式
