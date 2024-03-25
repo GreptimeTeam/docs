@@ -135,7 +135,7 @@ ALIGN '5s' BY (host) FILL PREV;
 `TO` 选项、`RANGE` 选项和 `ALIGN INTERVAL` 共同决定了范围查询的时间窗口。
 请参考[时间范围窗口](/user-guide/query-data/sql.md#时间范围窗口)。
 
-`TO` 选项的默认值为 Unix 0 时间，其他可用的 `TO` 选项有：
+`TO` 选项的默认值为当前数据库时区（如何设置数据库时区，请参考 [设置数据库时区](../../user-guide/query-data/timezone.md)），其他可用的 `TO` 选项有：
 
 The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
@@ -161,10 +161,19 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
 ::: code-group
 
-```sql [Default Unix time 0]
+```sql [Default to timezone]
+
+-- 使用 mysql 协议查询数据库时区，当前处于 UTC 时区
+> SELECT @@time_zone;
+
++-------------+
+| @@time_zone |
++-------------+
+| UTC         |
++-------------+
 
 -- 如果没有指定 `TO` 选项
--- 会使用默认值 Unix 0 作为初始的对齐时间
+-- 会使用当前查询指定的时区作为初始的对齐时间
 
 > SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d';
 
