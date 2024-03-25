@@ -49,6 +49,7 @@
     - overview
     - sql
     - promql
+    - timezone
   - query-external-data
   - Client-Libraries:
     - overview
