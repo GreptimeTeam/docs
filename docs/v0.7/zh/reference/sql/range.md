@@ -368,7 +368,7 @@ FROM host ALIGN '5s' BY ();
 
 ## 聚合函数中的 `ORDER BY` 选项
 
-Range 查询支持在聚合函数 `first_value` 和 `last_value` 中使用 `order by` 表达式，默认情况下，聚合函数使用时间列升序排列数据。
+Range 查询支持在聚合函数 `first_value` 和 `last_value` 中使用 `order by` 表达式，默认情况下，聚合函数使用时间索引列升序排列数据。
 
 以该数据表为例：
 
