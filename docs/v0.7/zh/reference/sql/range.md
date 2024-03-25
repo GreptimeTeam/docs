@@ -12,7 +12,10 @@ SELECT
   AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION],
   ...
 FROM table_name
-ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION];
+  [ WHERE <where_clause>]
+ALIGN INTERVAL [ TO TO_OPTION ] [BY (columna, columnb,..)] [FILL FILL_OPTION]
+  [ ORDER BY <order_by_clause>]
+[ LIMIT <limit_clause>];
 
 INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr ) 
 ```
@@ -33,18 +36,19 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
 
 ## `FILL` 选项
 
-`FILL` 选项指定了聚合字段的值为空时的数据填充方法。
+`FILL` 选项指定了在某个聚合的时间片上没有数据，或者聚合字段的值为空时的数据填充方法。
+
 它可以跟在一个 Range 表达式后，作为这个 Range 表达式的数据填充方法；也可以放在 `ALIGN` 后面作为所有未指定 `FILL` 选项的 Range 表达式的填充方法。
 
 例如，在下面的 SQL 代码中，
-`max(cpu) RANGE '10s'` 范围表达式使用 `FILL` 选项 `LINEAR`，而 `min(cpu) RANGE '10s'` 没有指定 `FILL` 选项，它将使用在 `ALIGN`关键字之后指定的选项`PREV`。
+`max(val) RANGE '10s'` 范围表达式使用 `FILL` 选项 `LINEAR`，而 `min(val) RANGE '10s'` 没有指定 `FILL` 选项，它将使用在 `ALIGN`关键字之后指定的选项`PREV`。
 
 ```sql
 SELECT 
     ts, 
     host, 
-    min(cpu) RANGE '10s',
-    max(cpu) RANGE '10s' FILL LINEAR 
+    min(val) RANGE '10s',
+    max(val) RANGE '10s' FILL LINEAR 
 FROM host_cpu 
 ALIGN '5s' BY (host) FILL PREV;
 ```
@@ -57,16 +61,16 @@ ALIGN '5s' BY (host) FILL PREV;
 | `LINEAR` | 使用线性插值法填充数据，如果一个整数类型使用 `LINEAR` 填充，则该列的变量类型会在计算的时候被隐式转换为浮点类型 |
 |   `X`    |                        填充一个常量，该常量的数据类型必须和 Range 表达式的变量类型一致                         |
 
-
 以下面这张表为例
 
 ```sql
 +---------------------+-------+------+
-| ts                  | host  | cpu  |
+| ts                  | host  | val  |
 +---------------------+-------+------+
-| 2023-01-01 08:00:00 | host1 |  4.5 |
-| 2023-01-01 08:00:05 | host1 | NULL |
-| 2023-01-01 08:00:10 | host1 |  6.5 |
+| 1970-01-01 00:00:00 | host1 |    0 |
+| 1970-01-01 00:00:15 | host1 |    6 |
+| 1970-01-01 00:00:00 | host2 |    6 |
+| 1970-01-01 00:00:15 | host2 |   12 |
 +---------------------+-------+------+
 ```
 
@@ -74,60 +78,118 @@ ALIGN '5s' BY (host) FILL PREV;
 
 ::: code-group
 
-```sql [NULL]
+```sql [NO FILL]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FROM host ALIGN '5s';
 
-+---------------------+--------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL NULL |
-+---------------------+--------------------------------------+
-| 2023-01-01 08:00:00 |                                  4.5 |
-| 2023-01-01 08:00:05 |                                 NULL |
-| 2023-01-01 08:00:10 |                                  6.5 |
-+---------------------+--------------------------------------+
++---------------------+-------+------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s |
++---------------------+-------+------------------------+
+| 1970-01-01 00:00:00 | host1 |                      0 |
+| 1970-01-01 00:00:15 | host1 |                      6 |
+| 1970-01-01 00:00:00 | host2 |                      6 |
+| 1970-01-01 00:00:15 | host2 |                     12 |
++---------------------+-------+------------------------+
 
 ```
 
-```sql [PREV]
+```sql [FILL NULL]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL NULL FROM host ALIGN '5s';
 
-+---------------------+--------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL PREV |
-+---------------------+--------------------------------------+
-| 2023-01-01 08:00:00 |                                  4.5 |
-| 2023-01-01 08:00:05 |                                  4.5 |
-| 2023-01-01 08:00:10 |                                  6.5 |
-+---------------------+--------------------------------------+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL NULL |
++---------------------+-------+----------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                0 |
+| 1970-01-01 00:00:05 | host1 |                             NULL |
+| 1970-01-01 00:00:10 | host1 |                             NULL |
+| 1970-01-01 00:00:15 | host1 |                                6 |
+| 1970-01-01 00:00:00 | host2 |                                6 |
+| 1970-01-01 00:00:05 | host2 |                             NULL |
+| 1970-01-01 00:00:10 | host2 |                             NULL |
+| 1970-01-01 00:00:15 | host2 |                               12 |
++---------------------+-------+----------------------------------+
+
 ```
 
-```sql [LINEAR]
+```sql [FILL PREV]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL PREV FROM host ALIGN '5s';
 
-+---------------------+----------------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL LINEAR |
-+---------------------+----------------------------------------+
-| 2023-01-01 08:00:00 |                                    4.5 |
-| 2023-01-01 08:00:05 |                                    5.5 |
-| 2023-01-01 08:00:10 |                                    6.5 |
-+---------------------+----------------------------------------+
++---------------------+-------+----------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL PREV |
++---------------------+-------+----------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                0 |
+| 1970-01-01 00:00:05 | host1 |                                0 |
+| 1970-01-01 00:00:10 | host1 |                                0 |
+| 1970-01-01 00:00:15 | host1 |                                6 |
+| 1970-01-01 00:00:00 | host2 |                                6 |
+| 1970-01-01 00:00:05 | host2 |                                6 |
+| 1970-01-01 00:00:10 | host2 |                                6 |
+| 1970-01-01 00:00:15 | host2 |                               12 |
++---------------------+-------+----------------------------------+
 ```
 
-```sql [Constant Value 6.0]
+```sql [FILL LINEAR]
 
-> SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
+> SELECT ts, host, min(val) RANGE '5s' FILL LINEAR FROM host ALIGN '5s';
 
-+---------------------+-----------------------------------+
-| ts                  | MIN(host_cpu.cpu) RANGE 5s FILL 6 |
-+---------------------+-----------------------------------+
-| 2023-01-01 08:00:00 |                               4.5 |
-| 2023-01-01 08:00:05 |                                 6 |
-| 2023-01-01 08:00:10 |                               6.5 |
-+---------------------+-----------------------------------+
++---------------------+-------+------------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL LINEAR |
++---------------------+-------+------------------------------------+
+| 1970-01-01 00:00:00 | host1 |                                  0 |
+| 1970-01-01 00:00:05 | host1 |                                  2 |
+| 1970-01-01 00:00:10 | host1 |                                  4 |
+| 1970-01-01 00:00:15 | host1 |                                  6 |
+| 1970-01-01 00:00:00 | host2 |                                  6 |
+| 1970-01-01 00:00:05 | host2 |                                  8 |
+| 1970-01-01 00:00:10 | host2 |                                 10 |
+| 1970-01-01 00:00:15 | host2 |                                 12 |
++---------------------+-------+------------------------------------+
+```
+
+```sql [FILL Constant Value 6.0]
+
+> SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
+
++---------------------+-------+-------------------------------+
+| ts                  | host  | MIN(host.val) RANGE 5s FILL 6 |
++---------------------+-------+-------------------------------+
+| 1970-01-01 00:00:00 | host1 |                             0 |
+| 1970-01-01 00:00:05 | host1 |                             6 |
+| 1970-01-01 00:00:10 | host1 |                             6 |
+| 1970-01-01 00:00:15 | host1 |                             6 |
+| 1970-01-01 00:00:00 | host2 |                             6 |
+| 1970-01-01 00:00:05 | host2 |                             6 |
+| 1970-01-01 00:00:10 | host2 |                             6 |
+| 1970-01-01 00:00:15 | host2 |                            12 |
++---------------------+-------+-------------------------------+
 ```
 
 :::
+
+注意，如果存在多个 Range 表达式，只对其中的一个表达式使用了 FILL 方法的话，为了保持 SQL 输出行数的统一，其他 Range 表达式会被使用 FILL NULL 方法来填充缺失的时间片段。
+所以下面两句 SQL 在输出上是等价的：
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(val) RANGE '10s',
+    max(val) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
+
+```sql
+SELECT 
+    ts, 
+    host, 
+    min(val) RANGE '10s' FILL NULL,
+    max(val) RANGE '10s' FILL LINEAR 
+FROM host_cpu 
+ALIGN '5s';
+```
 
 ## `TO` 选项
 
@@ -304,6 +366,57 @@ FROM host ALIGN '5s' BY ();
 +---------------------+-----------------------------------+
 ```
 
+## 聚合函数中的 `ORDER BY` 选项
+
+Range 查询支持在聚合函数 `first_value` 和 `last_value` 中使用 `order by` 表达式，默认情况下，聚合函数使用时间索引列升序排列数据。
+
+以该数据表为例：
+
+
+```sql
++---------------------+-------+------+-------+
+| ts                  | host  | val  | addon |
++---------------------+-------+------+-------+
+| 1970-01-01 00:00:00 | host1 |    0 |     3 |
+| 1970-01-01 00:00:01 | host1 |    1 |     2 |
+| 1970-01-01 00:00:02 | host1 |    2 |     1 |
++---------------------+-------+------+-------+
+```
+
+如果不指定 `order by` 表达式，默认使用 `ts` 列升序排列。
+
+```sql
+SELECT ts, first_value(val) RANGE '5s', last_value(val) RANGE '5s' FROM host ALIGN '5s';
+-- 等价于
+SELECT ts, first_value(val order by ts ASC) RANGE '5s', last_value(val order by ts ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+查询后得到
+
+```sql
++---------------------+--------------------------------+-------------------------------+
+| ts                  | FIRST_VALUE(host.val) RANGE 5s | LAST_VALUE(host.val) RANGE 5s |
++---------------------+--------------------------------+-------------------------------+
+| 1970-01-01 00:00:00 |                              0 |                             2 |
++---------------------+--------------------------------+-------------------------------+
+```
+
+也可以自定义排序规则，比如使用 `addon` 排序：
+
+```sql
+SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER BY addon ASC) RANGE '5s' FROM host ALIGN '5s';
+```
+
+查询后得到
+
+```sql
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| ts                  | FIRST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s | LAST_VALUE(host.val) ORDER BY [host.addon ASC NULLS LAST] RANGE 5s |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+| 1970-01-01 00:00:00 |                                                                   2 |                                                                  0 |
++---------------------+---------------------------------------------------------------------+--------------------------------------------------------------------+
+```
+
 ## 嵌套使用 Range 表达式
 
 Range 表达式支持灵活的嵌套，可以将 Range 表达式结合各种运算，提供更强大的查询能力。
@@ -312,7 +425,7 @@ Range 表达式支持灵活的嵌套，可以将 Range 表达式结合各种运�
 
 ```sql
 +---------------------+-------+------+
-| ts                  | host  | cpu  |
+| ts                  | host  | val  |
 +---------------------+-------+------+
 | 2023-01-01 08:00:00 | host1 |  1.1 |
 | 2023-01-01 08:00:05 | host1 |  2.2 |
@@ -324,14 +437,14 @@ Range 表达式支持灵活的嵌套，可以将 Range 表达式结合各种运�
 1. 聚合函数内部和外部都支持计算：
 
 ```sql
-SELECT ts, host, 2.0 * min(cpu * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, 2.0 * min(val * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 运行后得到
 
 ```sql
 +---------------------+-------+-----------------------------------------------------------------+
-| ts                  | host  | Float64(2) * MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL |
+| ts                  | host  | Float64(2) * MIN(host_cpu.val * Float64(2)) RANGE 10s FILL NULL |
 +---------------------+-------+-----------------------------------------------------------------+
 | 2023-01-01 07:59:55 | host1 |                                                             4.4 |
 | 2023-01-01 07:59:55 | host2 |                                                            13.2 |
@@ -344,17 +457,17 @@ SELECT ts, host, 2.0 * min(cpu * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 
 
 2. 聚合函数内部和外部都支持使用 Scalar 函数：
-   - `min(round(cpu)) RANGE '10s'` 表示对每个值先使用 `round` 函数四舍五入后再进行聚合
-   - `round(min(cpu) RANGE '10s')` 表示对每个聚合完成的结果使用 `round` 函数四舍五入
+   - `min(round(val)) RANGE '10s'` 表示对每个值先使用 `round` 函数四舍五入后再进行聚合
+   - `round(min(val) RANGE '10s')` 表示对每个聚合完成的结果使用 `round` 函数四舍五入
 
 ```sql
-SELECT ts, host, min(round(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(round(val)) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 运行后得到
 
 ```sql
 +---------------------+-------+----------------------------------------------+
-| ts                  | host  | MIN(round(host_cpu.cpu)) RANGE 10s FILL NULL |
+| ts                  | host  | MIN(round(host_cpu.val)) RANGE 10s FILL NULL |
 +---------------------+-------+----------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                            3 |
 | 2023-01-01 07:59:55 | host1 |                                            1 |
@@ -367,14 +480,14 @@ SELECT ts, host, min(round(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
 
 
 ```sql
-SELECT ts, host, round(min(cpu) RANGE '10s') FROM host_cpu ALIGN '5s';
+SELECT ts, host, round(min(val) RANGE '10s') FROM host_cpu ALIGN '5s';
 ```
 
 运行后得到
 
 ```sql
 +---------------------+-------+----------------------------------------------+
-| ts                  | host  | round(MIN(host_cpu.cpu) RANGE 10s FILL NULL) |
+| ts                  | host  | round(MIN(host_cpu.val) RANGE 10s FILL NULL) |
 +---------------------+-------+----------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                            3 |
 | 2023-01-01 07:59:55 | host1 |                                            1 |
@@ -388,16 +501,16 @@ SELECT ts, host, round(min(cpu) RANGE '10s') FROM host_cpu ALIGN '5s';
 3. 多个 Range 表达式也可以相互计算，并且 Range 表达式支持分配律，下面两个表达式都是合法且等价的：
 
 ```sql
-SELECT ts, host, max(cpu) RANGE '10s' - min(cpu) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, max(val) RANGE '10s' - min(val) RANGE '10s' FROM host_cpu ALIGN '5s';
 
-SELECT ts, host, (max(cpu) - min(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, (max(val) - min(val)) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 运行后得到
 
 ```sql
 +---------------------+-------+-------------------------------------------------------------------------------+
-| ts                  | host  | MAX(host_cpu.cpu) RANGE 10s FILL NULL - MIN(host_cpu.cpu) RANGE 10s FILL NULL |
+| ts                  | host  | MAX(host_cpu.val) RANGE 10s FILL NULL - MIN(host_cpu.val) RANGE 10s FILL NULL |
 +---------------------+-------+-------------------------------------------------------------------------------+
 | 2023-01-01 08:00:05 | host1 |                                                                             0 |
 | 2023-01-01 08:00:05 | host2 |                                                                             0 |
@@ -408,10 +521,10 @@ SELECT ts, host, (max(cpu) - min(cpu)) RANGE '10s' FROM host_cpu ALIGN '5s';
 +---------------------+-------+-------------------------------------------------------------------------------+
 ```
 
-但注意，Range 表达式修饰的范围是位于 `RANGE` 关键字的前一个表达式，下面的 Range 查询是不合法的，因为 `RANGE` 关键字修饰的是表达式 `2.0`，并不是表达式 `min(cpu * 2.0) * 2.0`
+但注意，Range 表达式修饰的范围是位于 `RANGE` 关键字的前一个表达式，下面的 Range 查询是不合法的，因为 `RANGE` 关键字修饰的是表达式 `2.0`，并不是表达式 `min(val * 2.0) * 2.0`
 
 ```sql
-SELECT ts, host, min(cpu * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, min(val * 2.0) * 2.0 RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 without function
 ```
@@ -419,14 +532,14 @@ ERROR 1815 (HY000): sql parser error: Can't use the RANGE keyword in Expr 2.0 wi
 可以为表达式加上括号，`RANGE` 关键字会自动应用到括号中包含的所有聚合函数：
 
 ```sql
-SELECT ts, host, (min(cpu * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, (min(val * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 ```
 
 运行后得到：
 
 ```sql
 +---------------------+-------+-----------------------------------------------------------------+
-| ts                  | host  | MIN(host_cpu.cpu * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
+| ts                  | host  | MIN(host_cpu.val * Float64(2)) RANGE 10s FILL NULL * Float64(2) |
 +---------------------+-------+-----------------------------------------------------------------+
 | 2023-01-01 07:59:55 | host2 |                                                            13.2 |
 | 2023-01-01 07:59:55 | host1 |                                                             4.4 |
@@ -440,7 +553,7 @@ SELECT ts, host, (min(cpu * 2.0) * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';
 Range 表达式不允许嵌套，嵌套的 Range 查询是不合法的：
 
 ```sql
-SELECT ts, host, max(min(cpu) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
+SELECT ts, host, max(min(val) RANGE '10s') RANGE '10s' FROM host_cpu ALIGN '5s';
 
 ERROR 1815 (HY000): Range Query: Nest Range Query is not allowed
 ```
