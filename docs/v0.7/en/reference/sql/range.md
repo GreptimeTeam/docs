@@ -369,9 +369,9 @@ Get after running
 +---------------------+-----------------------------------+
 ```
 
-## `ORDER BY` option
+## `ORDER BY` option in aggregate functions
 
-Range queries support the use of `order by` expressions within specific aggregate functions to sort data on the same time slot. Taking the `first_value` and `last_value` aggregate functions as an example, users can use `order by` to sort the aggregated data to correctly select the first value and the last value. By default, the `first_value` and `last_value` functions sort data in ascending order using timestamps.
+Range queries support the use of `order by` expressions in the parameters of the `first_value` and `last_value` aggregate functions. By default, the data is sorted in ascending order based on the time index column.
 
 Take this table as an example:
 
@@ -385,7 +385,7 @@ Take this table as an example:
 +---------------------+-------+------+-------+
 ```
 
-Users can not specify the `order by` expression, and the effect is equivalent to using the `ts` column to sort in ascending order.
+When the `order by` expression is not specified in the function parameter, the default behavior is to sort the data in ascending order based on the time index column.
 
 ```sql
 SELECT ts, first_value(val) RANGE '5s', last_value(val) RANGE '5s' FROM host ALIGN '5s';
@@ -403,7 +403,7 @@ Get after query
 +---------------------+--------------------------------+-------------------------------+
 ```
 
-Users can also specify their own sorting rules without using the default sorting options, such as using `addon` sorting:
+You can specify your own sorting rules. For example, the following SQL sorts the data by the `addon` column in ascending order:
 
 ```sql
 SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER BY addon ASC) RANGE '5s' FROM host ALIGN '5s';

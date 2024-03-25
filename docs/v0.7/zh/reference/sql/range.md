@@ -366,9 +366,9 @@ FROM host ALIGN '5s' BY ();
 +---------------------+-----------------------------------+
 ```
 
-## `ORDER BY` 选项
+## 聚合函数中的 `ORDER BY` 选项
 
-Range 查询支持在特定聚合函数内使用 `order by` 表达式，来对同一个时间片上的数据进行排序。以 `first_value` 和 `last_value` 聚合函数为例，用户可以使用 `order by` 对聚合的内容进行排序，从而正确的选出第一个值和最后一个值。在默认情况下，`first_value` 和 `last_value` 函数使用时间戳升序排列数据。
+Range 查询支持在聚合函数 `first_value` 和 `last_value` 中使用 `order by` 表达式，默认情况下，聚合函数使用时间列升序排列数据。
 
 以该数据表为例：
 
@@ -383,7 +383,7 @@ Range 查询支持在特定聚合函数内使用 `order by` 表达式，来对�
 +---------------------+-------+------+-------+
 ```
 
-用户可以不指定 `order by` 表达式，效果等价于使用 `ts` 列升序排列。
+如果不指定 `order by` 表达式，默认使用 `ts` 列升序排列。
 
 ```sql
 SELECT ts, first_value(val) RANGE '5s', last_value(val) RANGE '5s' FROM host ALIGN '5s';
@@ -401,7 +401,7 @@ SELECT ts, first_value(val order by ts ASC) RANGE '5s', last_value(val order by 
 +---------------------+--------------------------------+-------------------------------+
 ```
 
-用户也可以不使用默认的排序选项自己指定排序规则，比如使用 `addon` 排序：
+也可以自定义排序规则，比如使用 `addon` 排序：
 
 ```sql
 SELECT ts, first_value(val ORDER BY addon ASC) RANGE '5s', last_value(val ORDER BY addon ASC) RANGE '5s' FROM host ALIGN '5s';
