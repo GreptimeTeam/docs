@@ -1,2 +1,2 @@
-# The TABLE_CONSTRAINTS table
+# TABLE_CONSTRAINTS
 todo

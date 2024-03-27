@@ -1,3 +1,3 @@
-# The COLUMNS table
+# COLUMNS
 
 todo

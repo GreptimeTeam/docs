@@ -1,2 +1,2 @@
-# The SCHEMATA table
+# SCHEMATA
 todo

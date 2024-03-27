@@ -1,2 +1,2 @@
-# The RUNTIME_METRICS table
+# RUNTIME_METRICS
 todo

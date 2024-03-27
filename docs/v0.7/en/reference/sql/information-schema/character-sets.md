@@ -1,3 +1,3 @@
-# The CHARACTER_SETS table
+# CHARACTER_SETS
 
 TODO

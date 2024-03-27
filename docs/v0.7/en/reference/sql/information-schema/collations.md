@@ -1,3 +1,3 @@
-# The COLLATIONS table
+# COLLATIONS
 
 todo

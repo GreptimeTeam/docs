@@ -1,2 +1,2 @@
-# The TABLES table
+# TABLES
 todo

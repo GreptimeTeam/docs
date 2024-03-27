@@ -1,2 +1,2 @@
-# The KEY_COLUMN_USAGE table
+# KEY_COLUMN_USAGE
 todo

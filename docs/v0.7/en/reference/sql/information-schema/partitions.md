@@ -1,2 +1,2 @@
-# The PARTITIONS table
+# PARTITIONS
 todo
