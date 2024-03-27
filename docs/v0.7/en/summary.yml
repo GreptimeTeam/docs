@@ -153,6 +153,7 @@
     - compatibility
     - information-schema:
       - overview
+      - build-info
       - character-sets
       - collations
       - collation-character-set-applicability
