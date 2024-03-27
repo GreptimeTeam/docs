@@ -1,0 +1,3 @@
+# The COLUMNS table
+
+todo

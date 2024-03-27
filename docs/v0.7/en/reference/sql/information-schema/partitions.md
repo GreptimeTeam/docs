@@ -1,0 +1,2 @@
+# The PARTITIONS table
+todo

@@ -1,0 +1,3 @@
+# The COLLATIONS table
+
+todo
