@@ -7,9 +7,6 @@ Available APIs:
 
 - /health
 - /leader
-- /catalogs
-- /schemas
-- /tables
 - /heartbeat
 
 All these APIs are under the parent resource `/admin`.
@@ -62,89 +59,6 @@ curl -X GET http://localhost:3002/admin/leader
 
 ```json
 127.0.0.1:3002
-```
-
-## /catalogs HTTP endpoint
-
-The `/catalogs` endpoint accepts GET HTTP requests and you can use this endpoint to query the all the catalog's name.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/catalogs
-```
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET http://localhost:3002/admin/catalogs
-```
-
-#### Response
-
-```json
-["greptime"]
-```
-
-## /schemas HTTP endpoint
-
-The `/schemas` endpoint accepts GET HTTP requests and you can use this endpoint to query all schemas of a specific catalog.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/schemas
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition               |
-|:-----------------------|:-------|:------------------|:-------------------------|
-| catalog_name           | String | Required          | The name of the catalog. |
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET 'http://localhost:3002/admin/schemas?catalog_name=greptime'
-```
-
-#### Response
-
-```json
-["public"]
-```
-
-## /tables HTTP endpoint
-
-The `/tables` endpoint accepts GET HTTP requests and you can use this endpoint to query all tables of a specific catalog and schema.
-
-Therefore, it is required to specify `catalog_name` and `schema_name` in the path.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/tables
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition               |
-|:-----------------------|:-------|:------------------|:-------------------------|
-| catalog_name           | String | Required          | The name of the catalog. |
-| schema_name            | String | Required          | The name of the schema.  |
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET 'http://localhost:3002/admin/tables?catalog_name=greptime&schema_name=public'
-```
-
-#### Response
-
-```json
-["dist_table"]
 ```
 
 ## /heartbeat HTTP endpoint
