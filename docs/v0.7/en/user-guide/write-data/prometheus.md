@@ -2,36 +2,34 @@
 
 GreptimeDB can be used as long-term storage for Prometheus. Using GreptimeDB as a Prometheus backend is a seamless experience. Since Prometheus has built-in support for setting up basic authentication information during the configuration of remote write and read, all you need to do is add your configured username and password to the config YAML file and you're good to go!
 
-First of all, create a database through your favourite SQL client:
-
-```sql
-CREATE DATABASE prometheus;
-```
-
-Then please follow the settings in [Prometheus configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`):
+To configure Prometheus, use the following settings in the [Prometheus configuration file](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`):
 
 ```yaml
 remote_write:
-- url: http://localhost:4000/v1/prometheus/write?db=prometheus
+- url: http://localhost:4000/v1/prometheus/write?db=public
 #  basic_auth:
 #    username: greptime_user
 #    password: greptime_pwd
 
 remote_read:
-- url: http://localhost:4000/v1/prometheus/read?db=prometheus
+- url: http://localhost:4000/v1/prometheus/read?db=public
 #  basic_auth:
 #    username: greptime_user
 #    password: greptime_pwd
 ```
 
-Note: Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
+:::tip NOTE
+Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
+:::
 
-The `db` parameter in url represents the database that we want to write, it's `public` if not present.
+The `db` parameter in the url represents the database that we want to write data.
+By default, the database is `public`.
+If you want to write to another database, you can [create a new database](../table-management.md#create-database) 
+and replace `public` with the new database name.
 
-Show tables in Prometheus when writing successfully:
+Show tables when writing successfully:
 
 ```sql
-use prometheus;
 show tables;
 ```
 

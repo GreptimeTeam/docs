@@ -60,6 +60,8 @@ AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
+        // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
+        //.tlsOptions(new TlsOptions())
         // 好的开始 ^_^
         .build();
 

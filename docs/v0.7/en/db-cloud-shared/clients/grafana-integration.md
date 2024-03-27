@@ -6,7 +6,7 @@ Click the Add data source button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
 
-`https://<host>/v1/prometheus`
+{template prometheus-server-url%%}
 
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 

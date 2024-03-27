@@ -11,7 +11,8 @@ GreptimeDB 可以作为 Prometheus 数据源配置在 Grafana 中。
 填写以下信息：
 
 * Name: `GreptimeDB`
-* Prometheus server URL in HTTP: `http://greptime:4000/v1/prometheus?db=public`
+* Prometheus server URL in HTTP: `http://greptimedb:4000/v1/prometheus`
+* Custom HTTP headers: 点击 Add header, 填写 header `x-greptime-db-name` 和 value `public`，即数据库的名称。
 
 ![grafana-prometheus-config.jpg](/grafana-prometheus-config.jpg)
 

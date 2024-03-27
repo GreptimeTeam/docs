@@ -5,7 +5,7 @@ The GreptimeDB Go ingester library utilizes gRPC for writing data to the databas
 To connect to GreptimeCloud, using information below:
 
 - Host: `<host>`
-- Port: `4001`
+- Port: `5001`
 - Database: `<dbname>`
 - Username: `<username>`
 - Password: `<password>`
@@ -13,9 +13,10 @@ To connect to GreptimeCloud, using information below:
 The following code shows how to create a `client`.
 
 ```go
-cfg := greptime.NewCfg("<host>").
+cfg := greptime.NewConfig("<host>").
     WithDatabase("<dbname>").
-    WithPort(4001).
+    WithPort(5001).
+    WithInsecure(false).
     WithAuth("<username>", "<password>")
 
 cli, err := greptime.NewClient(cfg)
