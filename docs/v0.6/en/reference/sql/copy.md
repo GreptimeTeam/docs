@@ -23,7 +23,7 @@ data (`/xxx/xxx/output.parquet` in this case).
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
-| `START_TIME`/`END_TIME`| The time range within which data should be exported | Optional |
+| `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
 
 #### `CONNECTION` Option
 
