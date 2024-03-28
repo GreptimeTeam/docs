@@ -19,3 +19,4 @@
 * [ALTER](./alter.md)
 * [EXPLAIN](./explain.md)
 * [ANSI Compatibility](./compatibility.md)
+* [INFORMATION_SCHEMA](./information-schema/overview.md)
