@@ -19,6 +19,7 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
+| `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
 
 #### `CONNECTION` 选项
 
@@ -61,7 +62,6 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
-| `START_TIME`/`END_TIME`| 需要导出数据的时间范围 | 可选 |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 
 #### Connection 选项
@@ -118,7 +118,11 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 ```sql
 COPY DATABASE <db_name> 
   [TO | FROM] '<PATH>' 
-  WITH (FORMAT = "<FORMAT>") 
+  WITH (
+    FORMAT = "<FORMAT>",
+    START_TIME = "<START TIMESTAMP>",
+    END_TIME = "<END TIMESTAMP>"
+  ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
     ENDPOINT = "<ENDPOINT>",
@@ -128,9 +132,27 @@ COPY DATABASE <db_name>
   )]
 ```
 
-- 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
-- `FORMAT` 选项可选值与导入/导出表的可选值相同；
-- COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
+| `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+
+> - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
+> - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+
+
+### 示例
+
+```sql
+-- 将 public 数据库中所有数据导出到 /tmp/export/ 目录下
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+
+-- 将 public 数据库中时间范围在 2022-04-11 08:00:00到2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
+
+-- 从 /tmp/export/ 目录恢复 public 数据库的数据
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+```
 
 ## Windows 平台上的路径
 
