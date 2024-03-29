@@ -99,3 +99,9 @@ Here we enthusiastically invite you to mark your calendar and experience the rob
 If anything above draws your attention, don't hesitate to star us on [GitHub](https://github.com/GreptimeTeam/greptimedb) or GreptimeDB Community on [Slack](https://www.greptime.com/slack). Also, you can go to our [contribution page](https://github.com/GreptimeTeam/greptimedb/contribute) to find some interesting issues to start with.
 
 Looking beyond the initiatives that are in progress, there's a lot of room for improvement. We also welcome other ideas besides these planned updates. If you might be interested in giving that a try, speak up and chat with the team. We probably will end up being the ones who get you the best.
+
+---
+
+To learn about our previous roadmaps, kindly refere to the blog posts below:
+
+- [2023 Roadmap](https://www.greptime.com/blogs/2022-11-29-have-a-grep-time-making-the-most-of-2023): Have a Grep Time, Making the Most of 2023 - GreptimeDB Roadmap for Next Year
