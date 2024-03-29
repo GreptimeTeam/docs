@@ -28,7 +28,7 @@ For more information, please refer to the [Client Libraries](/user-guide/client-
 
 ## Time zone
 
-SQL client sessions use the system time zone by default. 
+SQL client sessions use the database system time zone by default. 
 You can specify the time zone for the current SQL client session, 
 which will override the database's system time zone. 
 GreptimeDB converts timestamp values from the current time zone to UTC for storage, 
