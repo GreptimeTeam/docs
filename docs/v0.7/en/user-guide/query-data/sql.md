@@ -58,7 +58,8 @@ SELECT avg(cpu) FROM monitor;
 1 row in set (0.00 sec)
 ```
 
-You can also select only the result of a function. For example, you can extract the day of the year from a timestamp.
+You can also select only the result of a function.
+For example, you can extract the day of the year from a timestamp.
 The `DOY` in the SQL statement is the abbreviation of `day of the year`:
 
 ```sql
@@ -74,6 +75,14 @@ Output:
 |                                                182 |
 +----------------------------------------------------+
 1 row in set (0.003 sec)
+```
+
+The parameters and results of date functions align with the SQL client's time zone.
+For example, when the client's time zone is set to `+08:00`, the results of the two queries below are the same:
+
+```sql
+select to_unixtime('2024-01-02 00:00:00');
+select to_unixtime('2024-01-02 00:00:00+08:00');
 ```
 
 Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions.md) for more information.
@@ -143,7 +152,7 @@ SELECT * FROM monitor WHERE ts > 1667446797::TimestampSecond;
 For the supported time data types, please refer to [Data Types](/reference/sql/data-types.md#date-and-time-types).
 
 When using standard `RFC3339` or `ISO8601` string literals,
-you can directly use them in the filter condition since the precision is clear:
+you can directly use them in the filter condition since the precision is clear.
 
 ```sql
 SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
@@ -157,6 +166,38 @@ SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
 For date and time functions, please refer to [Functions](/reference/sql/functions.md) for more information.
+
+### Time zone
+
+A string literal timestamp without time zone information will be interpreted based on the local time zone of the SQL client. For example, the following two queries are equivalent when the client time zone is `+08:00`:
+
+```sql
+SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
+SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408+08:00';
+```
+
+All the timestamp column values in query results are formatted based on the client time zone.
+For example, the following code shows the same value formatted in the client time zones `UTC` and `+08:00` respectively.
+
+::: code-group
+
+```sql [timezone UTC]
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.2 | 2023-12-31 16:00:00 |  0.5 |    0.1 |
++-----------+---------------------+------+--------+
+```
+
+```sql [timezone +08:00]
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2024-01-01 00:00:00 |  0.4 |    0.1 |
++-----------+---------------------+------+--------+
+```
+:::
+
 
 ## Order By
 
@@ -273,6 +314,7 @@ When the query resolution is less than the time range window, the metrics data w
 
 ### Align to specific timestamp
 
+The default alignment times are based on the current query timezone.
 You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
 
 ```sql

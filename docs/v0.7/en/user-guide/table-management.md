@@ -229,3 +229,11 @@ http://localhost:4000/v1/sql?db=public
 ```
 
 For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+
+## Time zone
+
+The specified time zone will affect the default timestamp value when creating or altering a table.
+If you set the default value of a timestamp column to a string without a time zone,
+the client's time zone information will be automatically added.
+
+For more information about the effect of the client time zone, please refer to the [time zone](./write-data/sql.md#time-zone) section in the write data document.

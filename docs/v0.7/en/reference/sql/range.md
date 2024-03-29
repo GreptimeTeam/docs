@@ -58,7 +58,7 @@ ALIGN '5s' BY (host) FILL PREV;
 
 |   FILL   |                                                                                               DESCRIPTION                                                                                                |
 | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  `NULL`  |                                                                                Fill directly with `NULL` (default method)                                                                                |
+|  `NULL`  |                                                                                Fill directly with `NULL`                                                                                |
 |  `PREV`  |                                                                                    Fill with data from previous point                                                                                    |
 | `LINEAR` | Use [linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) to fill the data. If an integer type is filled with `LINEAR`, the variable type of the column will be implicitly converted to a floating point type during calculation |
 |   `X`    |                                           Fill in a constant, the data type of the constant must be consistent with the variable type of the Range expression                                            |
@@ -199,7 +199,9 @@ The `TO` keyword specifies the origin time point to which the range query is ali
 `TO` option along with `RANGE` option and `ALIGN INTERVAL` determine the time range windows.
 Please refer to [Time Range Window](/user-guide/query-data/sql.md#time-range-window) for details.
 
-The default value of `TO` option is current query timezone. To set the timezone, please refer to [Timezone Settings](../../user-guide/query-data/timezone.md). Other valid `TO` options are:
+The default value of `TO` option is current query timezone. To set the timezone,
+please refer to [MySQL client](/user-guide/clients/mysql.md#time-zone) or [PostgreSQL client](/user-guide/clients/postgresql.md#time-zone).
+Other valid `TO` options are:
 
 |     TO      |                                     DESCRIPTION                                      |
 | :---------: | :----------------------------------------------------------------------------------: |

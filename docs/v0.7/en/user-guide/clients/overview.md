@@ -19,9 +19,16 @@ Please refer to [Authentication](./authentication.md) to learn how to config use
 - [OpenTelemetry Protocol(OTLP)](./otlp.md)
 - [HTTP API](./http-api.md)
 
-## Client SDK Libraries
+## Client SDK libraries
 
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
 They offer functionality for writing and querying data,
 making it easier to integrate GreptimeDB into your applications.
-For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) documentation.
+For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) document.
+
+## Timezone settings
+
+You can specify the time zone for current SQL client session, which will override the database's system time zone during SQL insertions or queries. GreptimeDB converts timestamp values from the current time zone to UTC for storage, and back from UTC to the current time zone for retrieval. 
+
+- To learn how to set the time zone, please refer to the documents for [MySQL](mysql.md#time-zone) and [PostgreSQL](postgresql.md#time-zone).
+- For information on how the time zone affects queries and inserts, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.
