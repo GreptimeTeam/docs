@@ -3,12 +3,11 @@ Vector is [a high performance observability data
 pipeline](https://vector.dev). It has native support for GreptimeDB metrics data
 sink. With vector, you can ingest metrics data from various sources, including
 Prometheus, OpenTelemetry, StatsD and many more.
-
 GreptimeDB can be used as a Vector Sink component to receive metrics. 
 
 {template toml-config%%}
 
-Execute vector with:
+Execute Vector with:
 
 ```
 vector -c sample.toml

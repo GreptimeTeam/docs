@@ -1,14 +1,16 @@
+Vector 是高性能的可观测数据管道。
+它原生支持 GreptimeDB 指标数据接收端。
+通过 Vector，你可以从各种来源接收指标数据，包括 Prometheus、OpenTelemetry、StatsD 等。
+GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 
-GreptimeDB 可以作为 Vector Sink 组件用于接收 metrics，请使用以下配置集成 Vector：
+{template toml-config%%}
 
-```toml
-[sinks.my_sink_id]
-inputs = ["my-source-or-transform-id"]
-type = "greptimedb"
-endpoint = "<host>:4001"
-dbname = "<dbname>"
-username = "<username>"
-password = "<password>"
+启动 Vector:
+
+```
+vector -c sample.toml
 ```
 
 请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/sinks/greptimedb/) 查看更多配置项。
+
+{template data-model%%}
