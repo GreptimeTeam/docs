@@ -232,7 +232,7 @@ For more information about SQL HTTP request, please refer to [API document](/ref
 
 ## Time zone
 
-The specified time zone will affect the default timestamp value when creating or altering a table.
+The specified time zone in the SQL client session will affect the default timestamp value when creating or altering a table.
 If you set the default value of a timestamp column to a string without a time zone,
 the client's time zone information will be automatically added.
 

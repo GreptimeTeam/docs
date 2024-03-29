@@ -73,7 +73,7 @@ Change the session time zone to `+1:00`:
 SET time_zone = '+1:00'
 ```
 
-Then you can observe the difference between the system time zone and the session time zone:
+Then you can see the difference between the system time zone and the session time zone:
 
 ```SQL
 SELECT @@system_time_zone, @@time_zone;
@@ -85,4 +85,4 @@ SELECT @@system_time_zone, @@time_zone;
 +--------------------+-------------+
 ```
 
-For information on how the time zone affects queries and inserts, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.

@@ -314,7 +314,7 @@ When the query resolution is less than the time range window, the metrics data w
 
 ### Align to specific timestamp
 
-The default alignment times are based on the current query timezone.
+The alignment times default based on the time zone of the current SQL client session.
 You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
 
 ```sql

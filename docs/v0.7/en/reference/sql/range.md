@@ -199,7 +199,7 @@ The `TO` keyword specifies the origin time point to which the range query is ali
 `TO` option along with `RANGE` option and `ALIGN INTERVAL` determine the time range windows.
 Please refer to [Time Range Window](/user-guide/query-data/sql.md#time-range-window) for details.
 
-The default value of `TO` option is current query timezone. To set the timezone,
+The default value of the `TO` option is the current query client timezone. To set the timezone,
 please refer to [MySQL client](/user-guide/clients/mysql.md#time-zone) or [PostgreSQL client](/user-guide/clients/postgresql.md#time-zone).
 Other valid `TO` options are:
 

@@ -26,9 +26,13 @@ They offer functionality for writing and querying data,
 making it easier to integrate GreptimeDB into your applications.
 For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) document.
 
-## Timezone settings
+## Time zone
 
-You can specify the time zone for current SQL client session, which will override the database's system time zone during SQL insertions or queries. GreptimeDB converts timestamp values from the current time zone to UTC for storage, and back from UTC to the current time zone for retrieval. 
+SQL client sessions use the system time zone by default. 
+You can specify the time zone for the current SQL client session, 
+which will override the database's system time zone. 
+GreptimeDB converts timestamp values from the current time zone to UTC for storage, 
+and converts them back from UTC to the current time zone for retrieval.
 
 - To learn how to set the time zone, please refer to the documents for [MySQL](mysql.md#time-zone) and [PostgreSQL](postgresql.md#time-zone).
-- For information on how the time zone affects queries and inserts, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.
+- For information on how the time zone affects inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.

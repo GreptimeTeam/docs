@@ -197,9 +197,7 @@ ALIGN '5s';
 `TO` 选项、`RANGE` 选项和 `ALIGN INTERVAL` 共同决定了范围查询的时间窗口。
 请参考[时间范围窗口](/user-guide/query-data/sql.md#时间范围窗口)。
 
-`TO` 选项的默认值为当前数据库时区（如何设置数据库时区，请参考 [设置数据库时区](../../user-guide/query-data/timezone.md)），其他可用的 `TO` 选项有：
-
-The default value of `TO` option is Unix time 0. Other valid `TO` options are:
+`TO` 选项的默认值为当前查询客户端的时区。如果想要设置时区，请参考 [MySQL 客户端](../../user-guide/clients/mysql.md#时区) 或 [PostgreSQL 客户端](../../user-guide/clients/postgresql.md#时区)文档中的时区设置。其他可用的 `TO` 选项有：
 
 |     TO      |                                描述                                |
 | :---------: | :----------------------------------------------------------------: |

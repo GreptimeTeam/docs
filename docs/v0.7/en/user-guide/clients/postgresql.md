@@ -38,7 +38,7 @@ set `time_zone` variable for current session using SQL statement `SET TIMEZONE T
 The value of `time_zone` can be any of:
 
 - A full time zone name, for example `America/New_York`.
-- A time zone abbreviation, for example PST.
+- A time zone abbreviation, for example `PST`.
 - Offset to UTC such as `+08:00`.
 
 You can use `SHOW` to check the current time zone settings. For example:
@@ -59,5 +59,5 @@ Change the session time zone to `+1:00`:
 SET TIMEZONE TO '+1:00'
 ```
 
-For information on how the time zone affects queries and inserts, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
 
