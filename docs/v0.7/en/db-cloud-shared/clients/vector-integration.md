@@ -1,14 +1,20 @@
 
-GreptimeDB can be used as a Vector Sink component to receive metrics. To integrate Vector with GreptimeDB, use the following configuration:
+Vector is [a high performance observability data
+pipeline](https://vector.dev). It has native support for GreptimeDB metrics data
+sink. With vector, you can ingest metrics data from various sources, including
+Prometheus, OpenTelemetry, StatsD and many more.
 
-```toml
-[sinks.my_sink_id]
-inputs = ["my-source-or-transform-id"]
-type = "greptimedb"
-endpoint = "<host>:4001"
-dbname = "<dbname>"
-username = "<username>"
-password = "<password>"
+GreptimeDB can be used as a Vector Sink component to receive metrics. 
+
+{template toml-config%%}
+
+Execute vector with:
+
+```
+vector -c sample.toml
 ```
 
-For more configuration options, see [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/sinks/greptimedb/).
+For more configuration options, see [Vector GreptimeDB
+Configuration](https://vector.dev/docs/reference/sinks/greptimedb/).
+
+{template data-model%%}
