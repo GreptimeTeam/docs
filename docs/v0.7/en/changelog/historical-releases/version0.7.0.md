@@ -1,4 +1,4 @@
-# GreptimeDB v0.7.0 
+# GreptimeDB v0.7.0 Release Note
 
 Release date: March 12, 2024
 
