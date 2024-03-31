@@ -27,7 +27,7 @@ mysql>
 GreptimeDB supports sending SQL statements through HTTP API.
 For information on how to set up authentication and how to set up time zone, please refer to [HTTP API](./http-api.md).
 
-## Write Data
+## Write data
 
 Please refer to [SQL](../write-data/sql.md).
 
