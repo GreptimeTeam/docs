@@ -23,3 +23,11 @@
 它们提供了写入和查询数据的功能，使得将 GreptimeDB 集成到你的应用程序中变得更加容易。
 请参考[客户端库](/user-guide/client-libraries/overview.md)文档获取更多信息。
 
+## 时区
+
+SQL 客户端会话默认使用数据库系统时区。
+你可以为当前的 SQL 客户端会话指定时区覆盖数据库的系统时区。
+GreptimeDB 将时间戳值从当前时区转换为 UTC 进行存储，然后在查询时将时间戳从 UTC 转换回当前时区。
+
+- 要了解如何设置时区，请参考 [MySQL](mysql.md#时区) 和 [PostgreSQL](postgresql.md#时区) 文档。
+- 有关时区如何影响数据插入和查询，请参考[写入数据](../write-data/sql.md#时区)和[查询数据](../query-data/sql.md#时区)章节中的 SQL 文档。

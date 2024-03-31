@@ -2,7 +2,7 @@
 
 <!--@include: ./introduction.md-->
 
-## Write Data
+## Write data
 
 ### Configure
 

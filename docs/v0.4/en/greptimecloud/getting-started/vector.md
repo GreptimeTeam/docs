@@ -3,7 +3,7 @@
 ## Create Service
 <!--@include: ./create-service.md-->
 
-## Write Data
+## Write data
 
 The following configuration, written in the `vector.toml` file, collects [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) as a Vector source and uses GreptimeDB as the sink destination.
 

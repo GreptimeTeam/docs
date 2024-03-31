@@ -22,31 +22,67 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
 
-## Time Zone
+## HTTP API
 
-GreptimeDB's MySQL protocol interface follows original MySQL server on [how to
+GreptimeDB supports sending SQL statements through HTTP API.
+For information on how to set up authentication and how to set up time zone, please refer to [HTTP API](./http-api.md).
+
+## Write data
+
+Please refer to [SQL](../write-data/sql.md).
+
+## Query data
+
+Please refer to [SQL](../query-data/sql.md).
+
+## Time zone
+
+GreptimeDB's MySQL protocol interface follows original MySQL on [how to
 deal with time zone](https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html).
 
 By default, MySQL uses its server time zone for timestamp. To override, you can
-set `time_zone` variable for current session using SQL statement `SET time_zone
-= 'UTC';`. The value of `time_zone` can be any of:
+set `time_zone` variable for current session using SQL statement `SET time_zone = '<value>';`.
+The value of `time_zone` can be any of:
 
 - The server's time zone: `SYSTEM`.
 - Offset to UTC such as `+08:00`.
 - Any named time zone like `Europe/Berlin`.
 
-A few MySQL clients like Grafana MySQL data source allows you to set time zone
-for current session. It is also possible to check `time_zone` variable for
-current session by SQL statement `SELECT @@time_zone;`.
+Some MySQL clients, such as Grafana MySQL data source, allow you to set the time zone for the current session.
+You can also use the above values when setting the time zone.
 
-## HTTP API
+You can use `SELECT` to check the current time zone settings. For example:
 
-GreptimeDB supports sending SQL statements through HTTP API. For information on how to set up authentication, please refer to [HTTP API](./http-api.md).
+```sql
+SELECT @@system_time_zone, @@time_zone;
+```
 
-## Write Data
+The result shows that both the system time zone and the session time zone are set to `UTC`:
 
-Please refer to [SQL](../write-data/sql.md).
+```SQL
++--------------------+-------------+
+| @@system_time_zone | @@time_zone |
++--------------------+-------------+
+| UTC                | UTC         |
++--------------------+-------------+
+```
 
-## Query Data
+Change the session time zone to `+1:00`:
 
-Please refer to [SQL](../query-data/sql.md).
+```SQL
+SET time_zone = '+1:00'
+```
+
+Then you can see the difference between the system time zone and the session time zone:
+
+```SQL
+SELECT @@system_time_zone, @@time_zone;
+
++--------------------+-------------+
+| @@system_time_zone | @@time_zone |
++--------------------+-------------+
+| UTC                | +01:00      |
++--------------------+-------------+
+```
+
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.

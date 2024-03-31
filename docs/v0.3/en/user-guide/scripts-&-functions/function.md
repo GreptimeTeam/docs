@@ -121,7 +121,7 @@ def return_vectors() -> (vector[i64], vector[str], vector[i64]):
     return a, b, c
 ```
 
-## Query Data
+## Query data
 
 We provide two ways to easily query data from GreptimeDB in Python Coprocessor:
 

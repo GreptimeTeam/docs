@@ -49,11 +49,11 @@ http://localhost:4000/v1/sql?db=public
 InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line.md) for details.
 :::
 
-## Write Data
+## Write data
 
 * [SQL](../write-data/sql.md)
 * [OpenTSDB](../write-data/opentsdb.md)
 
-## Query Data
+## Query data
 
 * [SQL](../query-data/sql.md)
