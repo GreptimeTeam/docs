@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Metric` engine is a component of GreptimeDB, and it's an implementation of the "storage engine". It mainly targets scenarios with a large number of small tables for observable metrics.
+The `Metric` engine is a component of GreptimeDB, and it's an implementation of the storage engine. It mainly targets scenarios with a large number of small tables for observable metrics.
 
 Its main feature is to use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. This reduces storage overhead for small tables and improves columnar compression efficiency. The concept of a table becomes even more lightweight under the `Metric` engine.
 
