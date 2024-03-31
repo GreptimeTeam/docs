@@ -51,7 +51,7 @@ InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line.md) 
 
 ## Time zone
 
-GreptimeDB supports the `X-Greptime-Timezone` field in the header of the HTTP protocol.
+GreptimeDB supports the `X-Greptime-Timezone` header in HTTP requests.
 It is used to specify the timezone for the current SQL query.
 
 For example, the following request uses the time zone `+1:00` for the query:
