@@ -16,7 +16,7 @@ If [authentication](./authentication.md) has been setup on the server side, use 
 $ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
 ```
 
-## Time Zone
+## Time zone
 
 GreptimeDB's MySQL protocol interface follows original MySQL server on [how to
 deal with time zone](https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html).

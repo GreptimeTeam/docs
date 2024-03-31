@@ -35,7 +35,7 @@ Please refer to [SQL](../write-data/sql.md).
 
 Please refer to [SQL](../query-data/sql.md).
 
-## Time Zone
+## Time zone
 
 GreptimeDB's MySQL protocol interface follows original MySQL on [how to
 deal with time zone](https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html).

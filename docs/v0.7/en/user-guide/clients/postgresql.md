@@ -29,7 +29,7 @@ Please refer to [SQL](../write-data/sql.md).
 
 Please refer to [SQL](../query-data/sql.md).
 
-## Time Zone
+## Time zone
 
 GreptimeDB's PostgreSQL protocol interface follows original PostgreSQL on [datatype-timezones](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-TIMEZONES).
 
