@@ -91,7 +91,7 @@ After the query, the result will be:
 }
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
+For information on how the timezone affects data inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
 
 ## Write data
 
