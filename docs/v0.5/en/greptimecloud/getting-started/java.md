@@ -3,7 +3,7 @@
 ## Create Service
 <!--@include: ./create-service.md-->
 
-## Write Data
+## Write data
 <!--@include: ../../db-cloud-shared/quick-start/java.md-->
 
 ```shell

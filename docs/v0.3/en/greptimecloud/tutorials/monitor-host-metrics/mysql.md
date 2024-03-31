@@ -6,7 +6,7 @@
 
 <!--@include: ../../getting-started/create-service.md-->
 
-## Write Data
+## Write data
 
 <!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/mysql-demo.md-->
 

@@ -31,7 +31,7 @@ For information on how to set up authentication and how to set up time zone, ple
 
 Please refer to [SQL](../write-data/sql.md).
 
-## Query Data
+## Query data
 
 Please refer to [SQL](../query-data/sql.md).
 
@@ -85,4 +85,4 @@ SELECT @@system_time_zone, @@time_zone;
 +--------------------+-------------+
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Write Data](../write-data/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.

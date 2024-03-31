@@ -88,10 +88,10 @@ public class QuickStart {
 
 See [Java SDK in reference](../../../reference/sdk/java.md) to get more configurations and metrics.
 
-## Write Data
+## Write data
 
 Please refer to [write data](../../write-data/sdk-libraries/java.md).
 
-## Query Data
+## Query data
 
-Please refer to [Query data](../../query-data/sdk-libraries/java.md).
+Please refer to [query data](../../query-data/sdk-libraries/java.md).

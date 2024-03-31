@@ -37,4 +37,4 @@ The response is a JSON object.
 
 ## Example
 
-Please refer to [Table Management](/user-guide/table-management.md#http-api), [Write Data](/user-guide/write-data/sql.md#http-api) and [Query Data](/user-guide/query-data/sql.md#http-api) in user guide.
+Please refer to [table management](/user-guide/table-management.md#http-api), [write data](/user-guide/write-data/sql.md#http-api) and [query data](/user-guide/query-data/sql.md#http-api) in user guide.

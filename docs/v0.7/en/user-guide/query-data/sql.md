@@ -4,7 +4,7 @@ GreptimeDB supports full SQL for querying data from a database.
 
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
-please refer to [Table Management](/user-guide/table-management.md#create-table) and [Write Data](/user-guide/write-data/sql.md).
+Please refer to [table management](/user-guide/table-management.md#create-table) and [write data](/user-guide/write-data/sql.md).
 
 ## Basic query
 
