@@ -3,7 +3,7 @@
 The `SCHEMATA` table provides information about databases. The table data is equivalent to the result of the `SHOW DATABASES` statement.
 
 ```sql
-USE information_schema;
+USE INFORMATION_SCHEMA;
 DESC SCHEMATA;
 ```
 

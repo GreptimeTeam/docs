@@ -3,8 +3,8 @@
 The `KEY_COLUMN_USAGE` table describes the key constraints of the columns, such as the time index key constraint.
 
 ```sql
-USE information_schema;
-DESC key_column_usage;
+USE INFORMATION_SCHEMA;
+DESC KEY_COLUMN_USAGE;
 ```
 
 The output is as follows:

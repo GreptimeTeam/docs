@@ -4,7 +4,7 @@ The `PARTITIONS` table provides information about partitioned tables.
 
 ```sql
 USE INFORMATION_SCHEMA;
-DESC partitions;
+DESC PARTITIONS;
 ```
 
 The output is as follows:
