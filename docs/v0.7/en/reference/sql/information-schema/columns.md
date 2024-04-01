@@ -45,16 +45,16 @@ The output is as follows:
 
 The description of columns in the `COLUMNS` table is as follows:
 
-- `TABLE_CATALOG`: The name of the catalog to which the table with the column belongs. The value is always `greptime`.
-- `TABLE_SCHEMA`: The name of the schema in which the table with the column is located.
-- `TABLE_NAME`: The name of the table with the column.
-- `COLUMN_NAME`: The name of the column.
-- `DATA_TYPE`: The type of data in the column.
-- `SEMANTIC_TYPE`: The type of the column. It can be one of the following: `TAG`, `FIELD`, or `TIMESTAMP`.
-- `COLUMN_DEFAULT`: The default value of the column. If the explicit default value is `NULL`, or if the column definition does not include the `default` clause, this value is `NULL`.
-- `IS_NULLABLE`: Whether the column is nullable. If the column can store null values, this value is `YES`; otherwise, it is `NO`.
-- `COLUMN_TYPE`: The data type of the column. It is the same as the `DATA_TYPE` column.
-- `COLUMN_COMMENT`: Comments contained in the column definition.
+- `table_catalog`: The name of the catalog to which the table with the column belongs. The value is always `greptime`.
+- `table_schema`: The name of the schema in which the table with the column is located.
+- `table_name`: The name of the table with the column.
+- `column_name`: The name of the column.
+- `data_type`: The type of data in the column.
+- `semantic_type`: The type of the column. It can be one of the following: `TAG`, `FIELD`, or `TIMESTAMP`.
+- `column_default`: The default value of the column. If the explicit default value is `NULL`, or if the column definition does not include the `default` clause, this value is `NULL`.
+- `is_nullable`: Whether the column is nullable. If the column can store null values, this value is `YES`; otherwise, it is `NO`.
+- `column_type`: The data type of the column. It is the same as the `DATA_TYPE` column.
+- `column_comment`: Comments contained in the column definition.
 
 The corresponding `SHOW` statement is as follows:
 
