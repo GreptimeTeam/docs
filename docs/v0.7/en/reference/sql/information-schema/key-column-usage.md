@@ -30,17 +30,39 @@ The output is as follows:
 ```
 
 ```sql
-SELECT * FROM key_column_usage WHERE table_schema='public' and table_name='monitor';
+SELECT * FROM key_column_usage WHERE table_schema='public' and table_name='monitor'\G
 ```
 
 ```sql
-+--------------------+-------------------+-----------------+---------------+--------------------+--------------+------------+-------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
-| constraint_catalog | constraint_schema | constraint_name | table_catalog | real_table_catalog | table_schema | table_name | column_name | ordinal_position | position_in_unique_constraint | referenced_table_schema | referenced_table_name | referenced_column_name |
-+--------------------+-------------------+-----------------+---------------+--------------------+--------------+------------+-------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
-| def                | public            | TIME INDEX      | def           | greptime           | public       | monitor    | ts          |                1 |                          NULL | NULL                    | NULL                  | NULL                   |
-| def                | public            | PRIMARY         | def           | greptime           | public       | monitor    | host        |                1 |                          NULL | NULL                    | NULL                  | NULL                   |
-+--------------------+-------------------+-----------------+---------------+--------------------+--------------+------------+-------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
-2 rows in set (0.00 sec)
+*************************** 1. row ***************************
+           constraint_catalog: def
+            constraint_schema: public
+              constraint_name: TIME INDEX
+                table_catalog: def
+           real_table_catalog: greptime
+                 table_schema: public
+                   table_name: monitor
+                  column_name: ts
+             ordinal_position: 1
+position_in_unique_constraint: NULL
+      referenced_table_schema: NULL
+        referenced_table_name: NULL
+       referenced_column_name: NULL
+*************************** 2. row ***************************
+           constraint_catalog: def
+            constraint_schema: public
+              constraint_name: PRIMARY
+                table_catalog: def
+           real_table_catalog: greptime
+                 table_schema: public
+                   table_name: monitor
+                  column_name: host
+             ordinal_position: 1
+position_in_unique_constraint: NULL
+      referenced_table_schema: NULL
+        referenced_table_name: NULL
+       referenced_column_name: NULL
+2 rows in set (0.02 sec)
 ```
 
 The description of columns in the `KEY_COLUMN_USAGE` table is as follows:

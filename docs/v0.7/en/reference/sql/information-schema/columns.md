@@ -28,19 +28,46 @@ Create a table `public.t1` and query the information in the `COLUMNS` table:
 
 ```sql
 CREATE TABLE public.t1 (h STRING, v FLOAT64, ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX, PRIMARY KEY(h));
-SELECT * FROM COLUMNS WHERE table_schema='public' AND TABLE_NAME='t1';
+SELECT * FROM COLUMNS WHERE table_schema='public' AND TABLE_NAME='t1'\G
 ```
 
 The output is as follows:
 
 ```sql
-+---------------+--------------+------------+-------------+----------------------+---------------+---------------------+-------------+----------------------+----------------+
-| table_catalog | table_schema | table_name | column_name | data_type            | semantic_type | column_default      | is_nullable | column_type          | column_comment |
-+---------------+--------------+------------+-------------+----------------------+---------------+---------------------+-------------+----------------------+----------------+
-| greptime      | public       | t1         | h           | String               | TAG           | NULL                | Yes         | String               | NULL           |
-| greptime      | public       | t1         | v           | Float64              | FIELD         | NULL                | Yes         | Float64              | NULL           |
-| greptime      | public       | t1         | ts          | TimestampMillisecond | TIMESTAMP     | current_timestamp() | No          | TimestampMillisecond | NULL           |
-+---------------+--------------+------------+-------------+----------------------+---------------+---------------------+-------------+----------------------+----------------+
+*************************** 1. row ***************************
+ table_catalog: greptime
+  table_schema: public
+    table_name: t1
+   column_name: h
+     data_type: String
+ semantic_type: TAG
+column_default: NULL
+   is_nullable: Yes
+   column_type: String
+column_comment: NULL
+*************************** 2. row ***************************
+ table_catalog: greptime
+  table_schema: public
+    table_name: t1
+   column_name: v
+     data_type: Float64
+ semantic_type: FIELD
+column_default: NULL
+   is_nullable: Yes
+   column_type: Float64
+column_comment: NULL
+*************************** 3. row ***************************
+ table_catalog: greptime
+  table_schema: public
+    table_name: t1
+   column_name: ts
+     data_type: TimestampMillisecond
+ semantic_type: TIMESTAMP
+column_default: current_timestamp()
+   is_nullable: No
+   column_type: TimestampMillisecond
+column_comment: NULL
+3 rows in set (0.01 sec)
 ```
 
 The description of columns in the `COLUMNS` table is as follows:
