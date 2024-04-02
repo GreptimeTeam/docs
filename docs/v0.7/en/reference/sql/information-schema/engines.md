@@ -1,6 +1,6 @@
 # ENGINES
 
-The `ENGINES` table provides provides information about storage engines. This is particularly useful for checking whether a storage engine is supported, or to see what the default engine is.
+The `ENGINES` table provides information about storage engines. This is particularly useful for checking whether a storage engine is supported, or to see what the default engine is.
 
 The `ENGINES` table has the following columns:
 
@@ -22,16 +22,24 @@ The `ENGINES` table has the following columns:
 For example:
 
 ```sql
-SELECT * from INFORMATION_SCHEMA.ENGINES;
+SELECT * from INFORMATION_SCHEMA.ENGINES\G
 ```
 
 The output is as follows:
 
 ```sql
-+--------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------+------------+
-| engine | support | comment                                                                                                                                                            | transactions | xa   | savepoints |
-+--------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------+------------+
-| mito   | DEFAULT | Storage engine for time-series data                                                                                                                                | NO           | NO   | NO         |
-| metric | YES     | Storage engine for observability scenarios, which is adept at handling a large number of small tables, making it particularly suitable for cloud-native monitoring | NO           | NO   | NO         |
-+--------+---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------+------------+
+*************************** 1. row ***************************
+      engine: mito
+     support: DEFAULT
+     comment: Storage engine for time-series data
+transactions: NO
+          xa: NO
+  savepoints: NO
+*************************** 2. row ***************************
+      engine: metric
+     support: YES
+     comment: Storage engine for observability scenarios, which is adept at handling a large number of small tables, making it particularly suitable for cloud-native monitoring
+transactions: NO
+          xa: NO
+  savepoints: NO
 ```
