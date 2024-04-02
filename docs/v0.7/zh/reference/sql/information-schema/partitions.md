@@ -1,13 +1,13 @@
 # PARTITIONS
 
-The `PARTITIONS` table provides information about partitioned tables.
+`PARTITIONS` 表提供了关于分区表的信息。
 
 ```sql
 USE INFORMATION_SCHEMA;
 DESC PARTITIONS;
 ```
 
-The output is as follows:
+结果如下：
 
 ```sql
 +-------------------------------+----------+------+------+---------+---------------+
