@@ -41,7 +41,7 @@ Those are very similar to the table model everyone is familiar with. The differe
   These columns contain the actual data and are not indexed. Avoid using `Field` columns in query conditions
   which is highly resource-intensive and unperformant.
 
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [Table Management](../table-management.md#create-table) and [CREATE statement](/reference/sql/create.md).
+To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](../table-management.md#create-table) and [CREATE statement](/reference/sql/create.md).
 
 ## Design Considerations
 
@@ -57,4 +57,4 @@ GreptimeDB is designed on top of Table for the following reasons:
   The advantage of the multi-value model is that it can write multiple values to the database at once,
   while the single-value model requires splitting the data into multiple records.
 
-GreptimeDB uses SQL to manage table schema. Please refer to [Table Management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a schemaless approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
+GreptimeDB uses SQL to manage table schema. Please refer to [table management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a schemaless approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).

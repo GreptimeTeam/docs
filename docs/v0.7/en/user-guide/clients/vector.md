@@ -1,13 +1,38 @@
+---
+template: ../../db-cloud-shared/clients/vector-integration.md
+---
+
 # Vector
 
-[Vector](https://vector.dev/) is a high-performance observability data pipeline that puts organizations in control of their observability data. Our integration page on Vector is [here](https://vector.dev/docs/reference/configuration/sinks/greptimedb/).
+<docs-template>
+
+{template toml-config%
 
 ## Integration
 
-<!--@include: ../../db-cloud-shared/clients/vector-integration.md-->
+A minimal configuration of when using your GreptimeDB instance can be:
+
+```toml
+# sample.toml
+
+[sources.in]
+type = "host_metrics"
+
+[sinks.my_sink_id]
+inputs = ["in"]
+type = "greptimedb"
+endpoint = "<host>:4001"
+dbname = "<dbname>"
+username = "<username>"
+password = "<password>"
+```
 
 GreptimeDB uses gRPC to communicate with Vector, so the default port for the Vector sink is `4001`.
 If you have changed the default gRPC port when starting GreptimeDB with [custom configurations](../operations/configuration.md#configuration-file), use your own port instead.
+
+%}
+
+{template data-model%
 
 ## Data Model
 
@@ -23,3 +48,7 @@ The following rules are used when storing Vector metrics into GreptimeDB:
   - For AggregatedHistogram metrics, the values of each bucket are stored in the `bxx` column, where xx is the upper limit of the bucket, and the `sum/count` columns are also stored;
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
   - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
+
+%}
+
+</docs-template>

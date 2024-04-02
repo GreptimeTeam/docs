@@ -56,7 +56,7 @@ ALIGN '5s' BY (host) FILL PREV;
 
 |   FILL   |                                                      描述                                                      |
 | :------: | :------------------------------------------------------------------------------------------------------------: |
-|  `NULL`  |                                        直接使用 `NULL` 填充（默认方式）                                        |
+|  `NULL`  |                                        直接使用 `NULL` 填充                                        |
 |  `PREV`  |                                             使用前一个点的数据填充                                             |
 | `LINEAR` | 使用线性插值法填充数据，如果一个整数类型使用 `LINEAR` 填充，则该列的变量类型会在计算的时候被隐式转换为浮点类型 |
 |   `X`    |                        填充一个常量，该常量的数据类型必须和 Range 表达式的变量类型一致                         |
@@ -197,9 +197,7 @@ ALIGN '5s';
 `TO` 选项、`RANGE` 选项和 `ALIGN INTERVAL` 共同决定了范围查询的时间窗口。
 请参考[时间范围窗口](/user-guide/query-data/sql.md#时间范围窗口)。
 
-`TO` 选项的默认值为 Unix 0 时间，其他可用的 `TO` 选项有：
-
-The default value of `TO` option is Unix time 0. Other valid `TO` options are:
+`TO` 选项的默认值为当前查询客户端的时区。如果想要设置时区，请参考 [MySQL 客户端](../../user-guide/clients/mysql.md#时区) 或 [PostgreSQL 客户端](../../user-guide/clients/postgresql.md#时区)文档中的时区设置。其他可用的 `TO` 选项有：
 
 |     TO      |                                描述                                |
 | :---------: | :----------------------------------------------------------------: |
@@ -223,10 +221,19 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
 ::: code-group
 
-```sql [Default Unix time 0]
+```sql [Default to timezone]
+
+-- 使用 mysql 协议查询数据库时区，当前处于 UTC 时区
+> SELECT @@time_zone;
+
++-------------+
+| @@time_zone |
++-------------+
+| UTC         |
++-------------+
 
 -- 如果没有指定 `TO` 选项
--- 会使用默认值 Unix 0 作为初始的对齐时间
+-- 会使用当前查询指定的时区作为初始的对齐时间
 
 > SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d';
 

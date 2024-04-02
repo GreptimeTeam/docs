@@ -48,6 +48,50 @@ http://localhost:4000/v1/sql?db=public
 InfluxDB 使用自己的鉴权格式，详情请参考 [InfluxDB](./influxdb-line.md)。
 :::
 
+## 时区
+
+GreptimeDB 支持 HTTP 协议中的 `X-Greptime-Timezone` 字段。
+它用于为当前 SQL 查询指定时区。
+
+例如，下方请求使用时区 `+1:00` 进行查询：
+
+```bash
+curl -X POST \
+-H 'X-Greptime-Timezone: +1:00' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'sql=SHOW VARIABLES time_zone;' \
+http://localhost:4000/v1/sql?db=public
+```
+
+SQL 执行结果为：
+
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "TIME_ZONE",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "+01:00"
+          ]
+        ]
+      }
+    }
+  ],
+  "execution_time_ms": 27
+}
+```
+
+有关时区如何影响数据的插入和查询，请参考 [写入数据](../write-data/sql.md#时区) 和 [查询数据](../query-data/sql.md#时区) 中的 SQL 文档。
+
 ## 写入数据
 
 * [SQL](../write-data/sql.md)

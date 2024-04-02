@@ -3,7 +3,7 @@
 ## Create Service
 <!--@include: ./create-service.md-->
 
-## Write Data
+## Write data
 <!--@include: ./quick-start/node.md-->
 
 ## Visualize Data

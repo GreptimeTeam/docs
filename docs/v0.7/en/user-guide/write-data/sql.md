@@ -2,7 +2,7 @@
 
 We will use the `monitor` table as an example to show how to write data.
 For the SQL example on how to create the `monitor` table,
-please refer to [Table Management](../table-management.md#create-table).
+Please refer to [table management](../table-management.md#create-table).
 
 ## Insert data
 
@@ -126,6 +126,51 @@ Query OK, 1 row affected (0.00 sec)
 ```
 
 For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+
+## Time zone
+
+The time zone specified in the SQL client will affect the timestamp with a string format that does not have time zone information. 
+The timestamp value will automatically have the client's time zone information added.
+
+For example, the following SQL set the time zone to `+8:00`:
+
+```sql
+SET time_zone = '+8:00';
+```
+
+Then insert values into the `monitor` table:
+
+```sql
+INSERT INTO monitor (host, ts, cpu, memory)
+VALUES
+    ("127.0.0.1", "2024-01-01 00:00:00", 0.4, 0.1),
+    ("127.0.0.2", "2024-01-01 00:00:00+08:00", 0.5, 0.1);
+```
+
+The first timestamp value `2024-01-01 00:00:00` does not have time zone information, so it will automatically have the client's time zone information added.
+After inserting, it will be equivalent to the second value `2024-01-01 00:00:00+08:00`.
+
+The result in the `+8:00` time zone client is as follows:
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2024-01-01 00:00:00 |  0.4 |    0.1 |
+| 127.0.0.2 | 2024-01-01 00:00:00 |  0.5 |    0.1 |
++-----------+---------------------+------+--------+
+```
+
+The result in the `UTC` time zone client is as follows:
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2023-12-31 16:00:00 |  0.4 |    0.1 |
+| 127.0.0.2 | 2023-12-31 16:00:00 |  0.5 |    0.1 |
++-----------+---------------------+------+--------+
+```
 
 ### HTTP API
 
