@@ -151,7 +151,7 @@
     - alter
     - explain
     - compatibility
-    - information-schema:
+    - Information-Schema:
       - overview
       - build-info
       - character-sets
