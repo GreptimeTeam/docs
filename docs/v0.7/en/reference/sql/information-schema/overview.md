@@ -4,7 +4,7 @@
 
 Many `INFORMATION_SCHEMA` tables have a corresponding `SHOW` command. The benefit of querying `INFORMATION_SCHEMA` is that it is possible to join between tables.
 
-There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking issue for `INFORMATION_SCHEMA` is https://github.com/GreptimeTeam/greptimedb/issues/2931.
+There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue](https://github.com/GreptimeTeam/greptimedb/issues/2931) for `INFORMATION_SCHEMA`.
 
 ## Tables for MySQL compatibility
 
