@@ -1,13 +1,13 @@
 # KEY_COLUMN_USAGE
 
-The `KEY_COLUMN_USAGE` table describes the key constraints of the columns, such as the time index key constraint.
+`KEY_COLUMN_USAGE` 表描述列的键约束，例如时间索引键的约束。
 
 ```sql
 USE INFORMATION_SCHEMA;
 DESC KEY_COLUMN_USAGE;
 ```
 
-The output is as follows:
+结果如下：
 
 ```sql
 +-------------------------------+--------+------+------+---------+---------------+
@@ -65,19 +65,19 @@ position_in_unique_constraint: NULL
 2 rows in set (0.02 sec)
 ```
 
-The description of columns in the `KEY_COLUMN_USAGE` table is as follows:
+`KEY_COLUMN_USAGE` 表中列的描述如下：
 
-- `constraint_catalog`: The name of the catalog to which the constraint belongs. The value is always `def`.
-- `constraint_schema`: The name of the database to which the constraint belongs.
-- `constraint_name`: The name of the constraint.
-- `table_catalog`: The name of the catalog to which the table with the constraint belongs. The value is always `def`.
-- `real_table_catalog`: The real name of the catalog to which the table with the constraint belongs. The value is always `greptime`.
-- `table_schema`: The name of the database to which the table belongs.
-- `table_name`: The name of the table with the constraint.
-- `column_name`: The name of the column with the constraint.
-- `ordinal_position`: The position of the column in the constraint, rather than in the table. The position number starts from `1`.
-- `position_in_unique_constraint`: The unique constraint and the primary key constraint are empty. For foreign key constraints, this column is the position of the referenced table's key.
-- `referenced_table_schema`: The name of the schema referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
-- `referenced_table_name`: The name of the table referenced by the constraint. Currently in GreptimeDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
-- `referenced_column_name`: The name of the column referenced by the constraint. Currently in TiDB, the value of this column in all constraints is `NULL`, except for the foreign key constraint.
+- `constraint_catalog`：约束所属的目录名称。该值始终为 `def`。
+- `constraint_schema`：约束所属的数据库名称。
+- `constraint_name`：约束的名称。
+- `table_catalog`：表所属目录的名称。该值始终为 `def`。
+- `real_table_catalog`：表所属目录的真实名称。该值始终为 `greptime`。
+- `table_schema`：表所属的数据库名称。
+- `table_name`：具有约束的表的名称。
+- `column_name`：具有约束的列的名称。
+- `ordinal_position`：列在约束中的位置，而不是在表中的位置。位置编号从 `1` 开始。
+- `position_in_unique_constraint`：唯一约束和主键约束为空。对于外键约束，此列是引用表键的位置。
+- `referenced_table_schema`：约束引用的数据库名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
+- `referenced_table_name`：约束引用的表名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
+- `referenced_column_name`：约束引用的列名称。目前在 GreptimeDB 中，除外键约束外，所有约束中此列的值均为 `NULL`。
 
