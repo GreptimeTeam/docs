@@ -182,10 +182,9 @@
     - how-to-write-sdk
     - how-to-use-tokio-console
     - how-to-trace-greptimedb
-- Changelog:
-  - roadmap
-  - Release-Log:
-    - version-0-7-0
+- Release-Notes:
+  - all-releases
+  - release-0-7-0
 - FAQ-and-Others:
   - overview
   - faq

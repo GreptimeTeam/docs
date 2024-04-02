@@ -1,8 +1,8 @@
-# v0.7.0 
+# v0.7.0
 
 Release date: March 12, 2024
 
-This is a major version update, read [this Blog](https://www.greptime.com/blogs/2024-03-07-greptimedb-v0.7) to learn more detail about the feature and performance updates.
+This is a feature release, read [the release blog](https://www.greptime.com/blogs/2024-03-07-greptimedb-v0.7) to learn more detail about the feature and performance updates.
 
 v0.7 represents a crucial leap toward achieving production readiness; it implements production-ready features for cloud-native monitoring scenarios.
 

@@ -28,12 +28,14 @@ Before getting started, please read the following documents that include instruc
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
 - [GreptimeCloud][6]: For users of GreptimeCloud to get started.
 - [Contributor Guide][3]: For contributor interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
-- [Changelog][4]: Presents the latest GreptimeDB roadmap and all the historical version change logs.
+- [Roadmap][7]: The latest GreptimeDB roadmap.
+- [Release Notes][4]: Presents all the historical version release notes.
 - [FAQ][5]: Presents the most frequently asked questions.
 
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
 [3]: ./contributor-guide/overview.md
-[4]: ./changelog/roadmap.md
+[4]: ./release-notes/all-releases.md
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
+[7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap
