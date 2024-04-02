@@ -1,13 +1,13 @@
 # TABLES
 
-The `TABLES` table provides information about tables in databases:
+`TABLES` 表提供数据库中表的信息：
 
 ```sql
 USE INFORMATION_SCHEMA;
 DESC TABLES;
 ```
 
-The output is as follows:
+结果如下：
 
 ```sql
 +---------------+--------+------+------+---------+---------------+
@@ -38,7 +38,7 @@ table_catalog: greptime
 1 row in set (0.01 sec)
 ```
 
-The following statements are equivalent:
+下方的语句是等价的：
 
 ```sql
 SELECT table_name FROM INFORMATION_SCHEMA.TABLES
@@ -50,14 +50,14 @@ SHOW TABLES
   [LIKE 'monitor']
 ```
 
-The description of columns in the `TABLES` table is as follows:
+`TABLES` 表的字段描述如下：
 
-- `table_catalog`: The catalog to which the table belongs. The value is always `greptime`.
-- `table_schema`: The database to which the table belongs.
-- `table_name`: The name of the table.
-- `table_type`: The type of the table.
+- `table_catalog`：表所属的目录。该值始终为 `greptime`。
+- `table_schema`：表所属的数据库。
+- `table_name`：表的名称。
+- `table_type`：表的类型。
   - `BASE TABLE`
   - `TEMPORARY`
   - `VIEW`
-- `table_id`: The ID of the table.
-- `engine`: The storage engine of the table used.
+- `table_id`：表 ID。
+- `engine`：该表使用的存储引擎。
