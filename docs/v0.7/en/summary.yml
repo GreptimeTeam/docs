@@ -182,11 +182,9 @@
     - how-to-write-sdk
     - how-to-use-tokio-console
     - how-to-trace-greptimedb
-- Changelog:
-  - overview
-  - Biweekly-Reports:
-    - overview
-    - latest-biweekly-report
+- Release-Notes:
+  - all-releases
+  - release-0-7-0
 - FAQ-and-Others:
   - overview
   - faq

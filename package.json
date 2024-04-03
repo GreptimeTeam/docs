@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "directories": {
     "doc": "docs"
   },
@@ -94,5 +94,6 @@
     "*.md": [
       "npx markdownlint"
     ]
-  }
+  },
+  "packageManager": "pnpm@8.6.0"
 }
