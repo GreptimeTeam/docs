@@ -8,6 +8,8 @@ Available APIs:
 - /health
 - /leader
 - /heartbeat
+- /maintenance
+- /maintenanace/set
 
 All these APIs are under the parent resource `/admin`.
 
@@ -241,4 +243,60 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
   "region_stats": []
  }]
 ]
+```
+
+## /maintenance HTTP endpoint
+
+The `/maintenance` endpoint accepts GET HTTP requests and you can use this endpoint to query the maintenance status of your metasrv instance.
+
+The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
+
+### Definition
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance
+```
+
+### Examples
+
+#### Request
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance
+```
+
+#### Response
+
+```text
+Maintenance mode is disabled
+```
+
+## /maintenance/set HTTP endpoint
+
+The `/maintenance/set` endpoint accepts POST HTTP requests and you can toggle the maintenance status of your metasrv instance.
+
+The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
+
+### Definition
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance/set
+```
+
+| Query String Parameter | Type   | Optional/Required | Definition                |
+|:-----------------------|:-------|:------------------|:--------------------------|
+| enable                 | String | Required          | 'true' or 'false'         |
+
+### Examples
+
+#### Request
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance/set?enable=true
+```
+
+#### Response
+
+```text
+Maintenance mode enabled
 ```
