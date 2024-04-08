@@ -56,8 +56,8 @@ The description of columns in the `TABLES` table is as follows:
 - `table_schema`: The database to which the table belongs.
 - `table_name`: The name of the table.
 - `table_type`: The type of the table.
-  - `BASE TABLE`
-  - `TEMPORARY`
-  - `VIEW`
+  - `BASE TABLE`  for a table.
+  - `TEMPORARY` for a temporary result set.
+  - `VIEW`  for a view.
 - `table_id`: The ID of the table.
 - `engine`: The storage engine of the table used.
