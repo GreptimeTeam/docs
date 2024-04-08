@@ -1,10 +1,11 @@
 # v0.7.2
 
-Release date: April 07, 2024
+Release date: April 08, 2024
 
 ## Breaking changes
 
 * refactor!: Renames the new memtable to PartitionTreeMemtable by [@evenyag](https://github.com/evenyag) in [#3547](https://github.com/GreptimeTeam/greptimedb/pull/3547)
+* fix!: columns table in information_schema misses some columns by [@killme2008](https://github.com/killme2008) in [#3639](https://github.com/GreptimeTeam/greptimedb/pull/3639)
 
 ### 🚀 Features
 
@@ -46,6 +47,9 @@ Release date: April 07, 2024
 * feat(procedure): enable auto split large value by [@WenyXu](https://github.com/WenyXu) in [#3628](https://github.com/GreptimeTeam/greptimedb/pull/3628)
 * feat: introduce wal benchmarker by [@niebayes](https://github.com/niebayes) in [#3446](https://github.com/GreptimeTeam/greptimedb/pull/3446)
 * feat: adding victoriametrics remote write by [@sunng87](https://github.com/sunng87) in [#3641](https://github.com/GreptimeTeam/greptimedb/pull/3641)
+* feat: Add timers to more mito methods by [@evenyag](https://github.com/evenyag) in [#3659](https://github.com/GreptimeTeam/greptimedb/pull/3659)
+* feat: cluster information by [@fengjiachun](https://github.com/fengjiachun) in [#3631](https://github.com/GreptimeTeam/greptimedb/pull/3631)
+* feat: update dashboard to v0.4.10 by [@ZonaHex](https://github.com/ZonaHex) in [#3663](https://github.com/GreptimeTeam/greptimedb/pull/3663)
 
 ### 🐛 Bug Fixes
 
@@ -75,6 +79,8 @@ Release date: April 07, 2024
 * refactor(table): remove unused table requests by [@zhongzc](https://github.com/zhongzc) in [#3603](https://github.com/GreptimeTeam/greptimedb/pull/3603)
 * refactor: cache invalidator by [@fengjiachun](https://github.com/fengjiachun) in [#3611](https://github.com/GreptimeTeam/greptimedb/pull/3611)
 * refactor: alter logical tables by [@fengjiachun](https://github.com/fengjiachun) in [#3618](https://github.com/GreptimeTeam/greptimedb/pull/3618)
+* refactor: move create database to procedure by [@CookiePieWw](https://github.com/CookiePieWw) in [#3626](https://github.com/GreptimeTeam/greptimedb/pull/3626)
+* refactor: drop Table trait by [@tisonkun](https://github.com/tisonkun) in [#3654](https://github.com/GreptimeTeam/greptimedb/pull/3654)
 
 ### 📚 Documentation
 
@@ -88,6 +94,7 @@ Release date: April 07, 2024
 * test: add a parameter type mismatch test case to sql integration test by [@xxxuuu](https://github.com/xxxuuu) in [#3568](https://github.com/GreptimeTeam/greptimedb/pull/3568)
 * test: add tests for drop databases by [@WenyXu](https://github.com/WenyXu) in [#3594](https://github.com/GreptimeTeam/greptimedb/pull/3594)
 * test: add more integration test for kafka wal by [@niebayes](https://github.com/niebayes) in [#3190](https://github.com/GreptimeTeam/greptimedb/pull/3190)
+* test(sqlness): release databases after tests by [@WenyXu](https://github.com/WenyXu) in [#3648](https://github.com/GreptimeTeam/greptimedb/pull/3648)
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -105,6 +112,10 @@ Release date: April 07, 2024
 * chore: add back core dependency by [@shuiyisong](https://github.com/shuiyisong) in [#3588](https://github.com/GreptimeTeam/greptimedb/pull/3588)
 * chore: do not reply for broadcast msg by [@fengjiachun](https://github.com/fengjiachun) in [#3595](https://github.com/GreptimeTeam/greptimedb/pull/3595)
 * ci: ignore type in sqlness sql and result files by [@waynexia](https://github.com/waynexia) in [#3616](https://github.com/GreptimeTeam/greptimedb/pull/3616)
+* ci: bump license header checker action version by [@tisonkun](https://github.com/tisonkun) in [#3655](https://github.com/GreptimeTeam/greptimedb/pull/3655)
+* chore: generate release notes with git-cliff by [@tisonkun](https://github.com/tisonkun) in [#3650](https://github.com/GreptimeTeam/greptimedb/pull/3650)
+* chore: add manifest related metrics by [@MichaelScofield](https://github.com/MichaelScofield) in [#3634](https://github.com/GreptimeTeam/greptimedb/pull/3634)
+* chore: bump version to 0.7.2 by [@waynexia](https://github.com/waynexia) in [#3658](https://github.com/GreptimeTeam/greptimedb/pull/3658)
 
 ### Build
 
@@ -114,6 +125,7 @@ Release date: April 07, 2024
 
 ## New Contributors
 
+* @CookiePieWw made their first contribution in [#3626](https://github.com/GreptimeTeam/greptimedb/pull/3626)
 * @xxxuuu made their first contribution in [#3571](https://github.com/GreptimeTeam/greptimedb/pull/3571)
 * @YCCDSZXH made their first contribution in [#3539](https://github.com/GreptimeTeam/greptimedb/pull/3539)
 
@@ -121,4 +133,4 @@ Release date: April 07, 2024
 
 We would like to thank the following contributors from the GreptimeDB community:
 
-waynexia, sunng87, dependabot[bot], dimbtp, v0y4g3r, niebayes, WenyXu, fengjiachun, J0HN50N133, evenyag, killme2008, etolbakov, zhongzc, shuiyisong, tisonkun, xxxuuu, discord9, YCCDSZXH, Taylor-lagrange, ZonaHex
+ZonaHex, fengjiachun, tisonkun, CookiePieWw, waynexia, evenyag, MichaelScofield, killme2008, WenyXu, sunng87, dependabot[bot], dimbtp, v0y4g3r, niebayes, J0HN50N133, etolbakov, zhongzc, shuiyisong, xxxuuu, discord9, YCCDSZXH, Taylor-lagrange
