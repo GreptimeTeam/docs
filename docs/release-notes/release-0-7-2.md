@@ -125,12 +125,12 @@ Release date: April 08, 2024
 
 ## New Contributors
 
-* @CookiePieWw made their first contribution in [#3626](https://github.com/GreptimeTeam/greptimedb/pull/3626)
-* @xxxuuu made their first contribution in [#3571](https://github.com/GreptimeTeam/greptimedb/pull/3571)
-* @YCCDSZXH made their first contribution in [#3539](https://github.com/GreptimeTeam/greptimedb/pull/3539)
+* [@CookiePieWw](https://github.com/CookiePieWw) made their first contribution in [#3626](https://github.com/GreptimeTeam/greptimedb/pull/3626)
+* [@xxxuuu](https://github.com/xxxuuu) made their first contribution in [#3571](https://github.com/GreptimeTeam/greptimedb/pull/3571)
+* [@YCCDSZXH](https://github.com/YCCDSZXH) made their first contribution in [#3539](https://github.com/GreptimeTeam/greptimedb/pull/3539)
 
 ## All Contributors
 
 We would like to thank the following contributors from the GreptimeDB community:
 
-ZonaHex, fengjiachun, tisonkun, CookiePieWw, waynexia, evenyag, MichaelScofield, killme2008, WenyXu, sunng87, dependabot[bot], dimbtp, v0y4g3r, niebayes, J0HN50N133, etolbakov, zhongzc, shuiyisong, xxxuuu, discord9, YCCDSZXH, Taylor-lagrange
+[@CookiePieWw](https://github.com/CookiePieWw), [@J0HN50N133](https://github.com/J0HN50N133), [@MichaelScofield](https://github.com/MichaelScofield), [@Taylor-lagrange](https://github.com/Taylor-lagrange), [@WenyXu](https://github.com/WenyXu), [@YCCDSZXH](https://github.com/YCCDSZXH), [@ZonaHex](https://github.com/ZonaHex), [@dimbtp](https://github.com/dimbtp), [@discord9](https://github.com/discord9), [@etolbakov](https://github.com/etolbakov), [@evenyag](https://github.com/evenyag), [@fengjiachun](https://github.com/fengjiachun), [@killme2008](https://github.com/killme2008), [@niebayes](https://github.com/niebayes), [@shuiyisong](https://github.com/shuiyisong), [@sunng87](https://github.com/sunng87), [@tisonkun](https://github.com/tisonkun), [@v0y4g3r](https://github.com/v0y4g3r), [@waynexia](https://github.com/waynexia), [@xxxuuu](https://github.com/xxxuuu), [@zhongzc](https://github.com/zhongzc)
