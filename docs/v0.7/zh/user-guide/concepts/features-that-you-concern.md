@@ -19,12 +19,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', regions=10);
 ```
 
-在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。如果你想为所有表设置全局 TTL，你可以在配置文件中配置它：
-
-```toml
-[storage]
-global_ttl = "7d"
-```
+在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。
 
 你可以在[这里](/reference/sql/create)参考表创建语句的 TTL 选项。
 
