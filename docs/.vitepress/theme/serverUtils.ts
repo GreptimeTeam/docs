@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import YAML from 'js-yaml'
-import { CURRENT_VERSION, versionMap, websiteMap, LATEST_VERSION } from '../config/common'
+import { CURRENT_VERSION, versionMap, websiteMap, LATEST_VERSION, CURRENT_LANG } from '../config/common'
+import semver from 'semver'
 
 export async function makeSidebar(lang, version) {
   const langPath = `/${lang}`
@@ -57,6 +58,7 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
   const srcExclude = []
   const excludeLangs = langMap.filter(l => l !== lang)
 
+  const curVer = semver.parse(`${CURRENT_VERSION}.0`)
   versionMap.forEach(version => {
     if (version === CURRENT_VERSION) {
       excludeLangs.forEach(excludeLang => {
@@ -64,6 +66,11 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
       })
     } else {
       srcExclude.push(`**/${version}/**`)
+    }
+    const ver = semver.parse(`${version}.0`);
+    if (ver > curVer) {
+      const fixedVer = `${ver.major}-${ver.minor}`
+      srcExclude.push(`**/release-notes/release-${fixedVer}-*`)
     }
   })
 
