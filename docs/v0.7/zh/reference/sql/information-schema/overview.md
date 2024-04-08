@@ -36,7 +36,7 @@
 | `STATISTICS` | 不支持。 |
 | [`TABLES`](./tables.md) | 提供了当前用户可见的表列表。类似于 `SHOW TABLES`。 |
 | `TABLESPACES` | 不支持。 |
-| [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 |
+<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 | -->
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |
 | `TRIGGERS` | 未实现。返回零行。 |
 | `USER_ATTRIBUTES` | 不支持。 |
