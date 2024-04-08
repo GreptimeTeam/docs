@@ -163,7 +163,7 @@
       - partitions
       - schemata
       - tables
-      - table-constraints
+      # - table-constraints
       - greptime-region-peers
       - runtime-metrics
   - Telemetry

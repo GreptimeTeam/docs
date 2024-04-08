@@ -56,8 +56,8 @@ SHOW TABLES
 - `table_schema`：表所属的数据库。
 - `table_name`：表的名称。
 - `table_type`：表的类型。
-  - `BASE TABLE`
-  - `TEMPORARY`
-  - `VIEW`
+  - `BASE TABLE`：基础表
+  - `TEMPORARY`：临时结果集
+  - `VIEW`：视图表
 - `table_id`：表 ID。
 - `engine`：该表使用的存储引擎。
