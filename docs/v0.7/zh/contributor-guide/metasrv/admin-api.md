@@ -273,7 +273,7 @@ Maintenance mode is disabled
 The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
 
 ```bash
-curl -X GET http://localhost:3002/admin/maintenance/set
+curl -X PUT http://localhost:3002/admin/maintenance
 ```
 
 | Query String Parameter | Type   | Optional/Required | Definition                |
@@ -283,7 +283,7 @@ curl -X GET http://localhost:3002/admin/maintenance/set
 #### Request
 
 ```bash
-curl -X GET http://localhost:3002/admin/maintenance/set?enable=true
+curl -X PUT http://localhost:3002/admin/maintenance?enable=true
 ```
 
 #### Response
