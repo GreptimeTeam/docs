@@ -148,6 +148,21 @@
     - alter
     - explain
     - compatibility
+    - Information-Schema:
+      - overview
+      - build-info
+      - character-sets
+      - collations
+      - collation-character-set-applicability
+      - columns
+      - engines
+      - key-column-usage
+      - partitions
+      - schemata
+      - tables
+      # - table-constraints
+      - greptime-region-peers
+      - runtime-metrics
   - Telemetry
 - Contributor-Guide:
   - overview
