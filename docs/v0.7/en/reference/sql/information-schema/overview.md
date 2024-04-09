@@ -1,4 +1,4 @@
-# Information Schema
+# Overview
 
 `INFORMATION_SCHEMA` provides access to system metadata, such as the name of a database or table, the data type of a column, etc. GreptimeDB also provides some custom `INFORMATION_SCHEMA` tables to query metadata about the GreptimeDB system itself, cluster information, and runtime telemetry for example.
 
@@ -38,14 +38,13 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | `STATISTICS` | Not supported. |
 | [`TABLES`](./tables.md) | Provides a list of tables that the current user has visibility of. Similar to `SHOW TABLES`. |
 | `TABLESPACES` | Not supported. |
-<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides information on primary keys, unique indexes, and foreign keys. | -->
 | `TABLE_PRIVILEGES` | Not implemented. Returns zero rows. |
 | `TRIGGERS` | Not implemented. Returns zero rows. |
 | `USER_ATTRIBUTES` | Not supported. |
 | `USER_PRIVILEGES` | Not supported.|
 | `VARIABLES_INFO` | Not supported. |
 | `VIEWS`| Not supported. |
-
+<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides information on primary keys, unique indexes, and foreign keys. | -->
 
 ## Tables that GreptimeDB provides
 

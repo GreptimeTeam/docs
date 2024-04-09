@@ -1,4 +1,4 @@
-# Information Schema
+# 概述
 
 `INFORMATION_SCHEMA` 提供了对系统元数据的访问，例如数据库或表的名称、列的数据类型等。GreptimeDB 还提供了一些自定义的 `INFORMATION_SCHEMA` 表，用于查询有关 GreptimeDB 系统本身、集群信息和运行时指标等元数据。很多 `INFORMATION_SCHEMA` 表都有对应的 `SHOW` 命令，查询 `INFORMATION_SCHEMA` 的好处是可以在表之间进行连接。
 
@@ -36,13 +36,13 @@
 | `STATISTICS` | 不支持。 |
 | [`TABLES`](./tables.md) | 提供了当前用户可见的表列表。类似于 `SHOW TABLES`。 |
 | `TABLESPACES` | 不支持。 |
-<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 | -->
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |
 | `TRIGGERS` | 未实现。返回零行。 |
 | `USER_ATTRIBUTES` | 不支持。 |
 | `USER_PRIVILEGES` | 不支持。|
 | `VARIABLES_INFO` | 不支持。 |
 | `VIEWS`| 不支持。 |
+<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 | -->
 
 ## GreptimeDB 提供的表
 
