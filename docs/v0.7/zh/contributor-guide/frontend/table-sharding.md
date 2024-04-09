@@ -8,7 +8,18 @@
 
 在 GreptimeDB 中，一张表可以通过多种方式横向分区，并且它使用与 MySQL 相同的分区类型（以及相应的语法）。目前，GreptimeDB 支持 “RANGE COLUMNS 分区”。
 
-在 “RANGE COLUMNS 分区”中，每个分区仅包含表中的一部分数据，并按某些列值范围进行分组。例如，我们可以像这样在 GreptimeDB 中对表进行分区：
+在 “RANGE COLUMNS 分区”中，每个分区仅包含表中的一部分数据，并按某些列值范围进行分组。例如，我们可以使用这样的语法在 GreptimeDB 中对表进行分区：
+
+```sql
+CREATE TABLE (...)
+PARTITION ON COLUMNS (<COLUMN LIST>) (
+    <RULE LIST>
+);
+```
+
+主要分为两部分，`PARTITION ON COLUMNS` 后跟随一个使用逗号分隔的列名列表，主要用于指定哪些列*可能会被*用于分区；`RULE LIST` 是一个包含多个分区规则的列表，每个规则都是一个分区名称和一个分区条件的组合。
+
+能在 `RULE LIST` 处使用的表达式是有限制的。目前仅 `=`, `!=`, `>`, `>=`, `<`, `<=` 以及 `AND` 和 `OR` 能使用在此处。 下面是一个具体的例子：
 
 ```sql
 CREATE TABLE my_table (
@@ -16,10 +27,10 @@ CREATE TABLE my_table (
   b STRING,
   ts TIMESTAMP TIME INDEX,
 )
-PARTITION BY RANGE COLUMNS (a) (
-  PARTITION p0 VALUES LESS THAN (10),
-  PARTITION p1 VALUES LESS THAN (20),
-  PARTITION p2 VALUES LESS THAN (MAXVALUE),
+PARTITION ON COLUMNS (a) (
+  a < 10,
+  a >= 10 AND a < 20,
+  a >= 20,
 );
 ```
 
@@ -27,13 +38,9 @@ PARTITION BY RANGE COLUMNS (a) (
 
 ::: warning 重要
 
-1. 所有分区的范围必须严格递增，并最终以 "`MAXVALUE`" 结尾。
-2. 用于分区的列必须是主键。
+1. 所有分区的范围必须是不重叠的。
+2. 用于分区的列必须是在 `ON COLUMNS` 指定，但不是所有指定的列都必须用上。
 
-:::
-
-::: tip 注意
-目前 "PARTITION BY RANGE" 语法中不支持表达式，只能使用列名。
 :::
 
 ## Region
