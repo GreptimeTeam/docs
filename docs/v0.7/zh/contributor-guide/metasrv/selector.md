@@ -6,11 +6,11 @@
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs
 
-在 `MetaSrv` 中存在一个特定的场景。当 `Frontend` 向 `MetaSrv` 发送建表请求时，`MetaSrv` 会创建一个路由表（表的创建细节不在这里赘述）。在创建路由表时，`MetaSrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
+在 `Metasrv` 中存在一个特定的场景。当 `Frontend` 向 `Metasrv` 发送建表请求时，`Metasrv` 会创建一个路由表（表的创建细节不在这里赘述）。在创建路由表时，`Metasrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
 
 ## Selector 类型
 
-目前，在 `MetaSrv` 中有两种类型的 `Selector` 可用：`LeasebasedSelector` 和 `LoadBasedSelector`。
+目前，在 `Metasrv` 中有两种类型的 `Selector` 可用：`LeasebasedSelector` 和 `LoadBasedSelector`。
 
 ### LeasebasedSelector [不推荐]
 
@@ -26,7 +26,7 @@
 
 ## 配置
 
-在启动 `MetaSrv` 服务时，您可以配置 `Selector`，默认值是 `LoadBasedSelector`。
+在启动 `Metasrv` 服务时，您可以配置 `Selector`，默认值是 `LoadBasedSelector`。
 
 例如：
 
