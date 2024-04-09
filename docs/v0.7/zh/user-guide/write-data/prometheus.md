@@ -85,7 +85,7 @@ VictoriaMetrics 微调了 Prometheus remote write 协议，通过 zstd 压缩试
 VictoriaMetrics remote write 协议。
 
 GreptimeDB 也支持了这个变种协议。用户只需要将 GreptimeDB 的 remote write 路径配
-置给 `vmagent` 就可以达到效果。例如，对本地安装的 greptimedb 来说：
+置给 `vmagent` 就可以达到效果。例如，对本地安装的 GreptimeDB 来说：
 
 ```shell
 vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write

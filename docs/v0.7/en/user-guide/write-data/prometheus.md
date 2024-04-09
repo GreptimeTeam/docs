@@ -89,7 +89,7 @@ compression. The protocol is automatically enabled when you are using `vmagent`
 to send data to a compatible backend.
 
 GreptimeDB has this variant supported, too. Just configure GreptimeDB's remote
-write url for `vmagent`. For example, if you have greptimedb installed locally:
+write url for `vmagent`. For example, if you have  GreptimeDB installed locally:
 
 ```shell
 vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write
