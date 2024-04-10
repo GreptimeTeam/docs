@@ -6,7 +6,9 @@ GreptimeDB 的 gRPC SDK 只需要处理写请求即可。读请求是标准 SQL 
 
 ## `GreptimeDatabase` 服务
 
-GreptimeDB 自定义了一个 gRPC 服务：`GreptimeDatabase`。你只需要实现这个服务即可。你可以在[这里][1]找到它的 protobuf 定义。
+GreptimeDB 自定义了一个 gRPC 服务：`GreptimeDatabase`
+。你只需要实现这个服务即可。你可以在[这里](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto)
+找到它的 protobuf 定义。
 
 `GreptimeDatabase` 有 2 个 RPC 方法：
 
@@ -64,5 +66,3 @@ message GreptimeResponse {
 `ResponseHeader` 包含了返回值的状态码，以及错误信息（如果有的话）。"oneof" 的字段目前只有 "affected rows"。
 
 GreptimeDB 现在有很多 SDK，你可以参考[这里](https://github.com/GreptimeTeam?q=ingester&type=all&language=&sort=)获取一些示例。
-
-[1]: https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto

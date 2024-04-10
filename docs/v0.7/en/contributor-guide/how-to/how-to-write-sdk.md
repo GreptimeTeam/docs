@@ -7,7 +7,8 @@ like "`greptimedb-ingester-<language>`". Please make sure your GreptimeDB SDK fo
 ## `GreptimeDatabase` Service
 
 GreptimeDB defines a custom gRPC service called `GreptimeDatabase`. All you need to do in your SDK are implement it. You
-can find its protobuf definitions [here](1).
+can find its protobuf
+definitions [here](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto).
 
 The service contains two RPC methods:
 
@@ -69,5 +70,3 @@ contains the affected rows for now.
 
 GreptimeDB has a lot of SDKs now, you can refer to
 them [here](https://github.com/GreptimeTeam?q=ingester&type=all&language=&sort=) for some examples.
-
-[1]: https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto
