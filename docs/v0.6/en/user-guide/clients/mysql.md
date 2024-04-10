@@ -22,7 +22,7 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
 
-## Time Zone
+## Time zone
 
 GreptimeDB's MySQL protocol interface follows original MySQL server on [how to
 deal with time zone](https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html).
@@ -43,10 +43,10 @@ current session by SQL statement `SELECT @@time_zone;`.
 
 GreptimeDB supports sending SQL statements through HTTP API. For information on how to set up authentication, please refer to [HTTP API](./http-api.md).
 
-## Write Data
+## Write data
 
 Please refer to [SQL](../write-data/sql.md).
 
-## Query Data
+## Query data
 
 Please refer to [SQL](../query-data/sql.md).

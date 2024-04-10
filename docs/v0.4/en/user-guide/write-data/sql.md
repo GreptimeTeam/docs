@@ -2,7 +2,7 @@
 
 We will use the `monitor` table as an example to show how to write data.
 For the SQL example on how to create the `monitor` table,
-please refer to [Table Management](../table-management.md#create-table).
+Please refer to [table management](../table-management.md#create-table).
 
 ## `INSERT` Statement
 

@@ -19,12 +19,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', regions=10);
 ```
 
-The TTL of temperatures is set to be seven days. If you want to set the global TTL of all tables, you can configure it in the configuration file:
-
-```toml
-[storage]
-global_ttl = "7d"
-```
+The TTL of temperatures is set to be seven days. 
 
 You can refer to the TTL option of the table create statement [here](/reference/sql/create).
 

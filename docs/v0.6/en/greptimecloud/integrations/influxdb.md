@@ -11,7 +11,10 @@ Please refer to [InfluxDB client](https://docs.greptime.com/user-guide/clients/i
 - Username: `<username>`
 - Password: `<password>`
 
-```sh
-curl -i 'https://<host>/v1/influxdb/write?db=<dbname>&u=<username>&p=<password>' \
---data-binary 'system_metrics,host=host1,idc=idc_a cpu_util=11.8,memory_util=10.3,disk_util=10.3 1667446797450000000'
+The following Java example code demonstrates how to configure the [InfluxDB client](https://github.com/influxdata/influxdb-java) when connecting to GreptimeCloud:
+
+```java
+final String serverURL = "https://<host>/v1/influxdb/write", username = "<username>", password = "<password>";
+final InfluxDB influxDB = InfluxDBFactory.connect(serverURL, username, password);
+influxDB.setDatabase("<dbname>");
 ```

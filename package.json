@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
-  "type":"module",
+  "type": "module",
   "directories": {
     "doc": "docs"
   },
@@ -40,6 +40,7 @@
     "pug": "^3.0.2",
     "resolve": "^1.22.1",
     "rollup": "^3.26.0",
+    "semver": "^7.6.0",
     "shiki": "^0.14.1",
     "simple-git": "^3.16.0",
     "source-map": "^0.7.4",
@@ -94,5 +95,6 @@
     "*.md": [
       "npx markdownlint"
     ]
-  }
+  },
+  "packageManager": "pnpm@8.6.0"
 }

@@ -10,20 +10,14 @@ You can install [Termux](https://termux.dev/) from [GitHub release page](https:/
 ## Download GreptimeDB Android binary.
 
 ```bash
-curl -sOL https://github.com/GreptimeTeam/greptimedb/releases/download/v0.4.0/greptime-android-arm64-v0.4.0.tar.gz
-tar zxvf ./greptime-android-arm64-v0.4.0.tar.gz
+VERSION=$(curl -s -XGET "https://api.github.com/repos/GreptimeTeam/greptimedb/releases" | grep tag_name | grep -v nightly | cut -d: -f 2 | sed 's/.*"\(.*\)".*/\1/' | uniq | sort -r | head -n 1)
+
+curl -sOL "https://github.com/GreptimeTeam/greptimedb/releases/download/${VERSION}/greptime-android-arm64-${VERSION}.tar.gz"
+tar zxvf ./greptime-android-arm64-${VERSION}.tar.gz
 ./greptime -V
 ```
 
-If binary's downloaded correctly, the command is expected to print:
-
-```
-greptimedb
-branch: HEAD
-commit: c9c2b3c91f273ff605782dbb8a4873e511dfea10
-dirty: false
-version: 0.4.0
-```
+If binary's downloaded correctly, the command is expected to print the version of downloaded binary.
 
 ## Create GreptimeDB configuration file 
 

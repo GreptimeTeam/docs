@@ -3,7 +3,10 @@
     "target": "es2017",
     "module": "commonjs",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./.vitepress/theme/*"],
+    }
   },
   "vueCompilerOptions": {
     "experimentalDisableTemplateSupport": true
