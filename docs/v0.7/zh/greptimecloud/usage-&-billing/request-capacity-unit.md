@@ -70,6 +70,35 @@ RCU 的容量可能会在未来发生变化。
 - 使用索引以支持在 GreptimeDB 中高效地执行查询。如果没有索引，GreptimeDB 必须扫描整个表来处理查询。如果索引与查询匹配，GreptimeDB 可以使用索引来限制扫描的数据。请考虑使用具有高区分度的列作为主键，并在 `WHERE` 子句中使用它。
 - 选择使用匹配结果较少的查询。例如，时间索引字段和高区分度的标签字段上的相等匹配可以有效地限制扫描的数据大小。请注意，不等运算符 `!=` 无法做到有效查询，因为它总是会扫描所有数据。
 
+## 通过 HTTP 响应监控 CU 使用情况
+GreptimeCloud 现在通过 HTTP 响应头提供 CU（Capacity Unit）使用信息。此功能使用户能够方便地跟踪其请求的 CU 消耗。例如，当使用类似以下命令进行写入请求时：
+
+```bash
+curl -s -i -XPOST -w '\n' \
+    "https://<GREPTIME_DB_HOST>/v1/influxdb/api/v2/write?db=<GREPTIME_DB_NAME>&precision=ms&u=<GREPTIME_DB_USERNAME>&p=<GREPTIME_DB_PASSWORD>" \
+    --data-binary \
+    'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
+     monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
+     monitor,host=127.0.0.1 cpu=0.5,memory=0.2 1667446798450'
+```
+
+响应头将包括诸如以下信息：
+
+```
+HTTP/2 204 
+date: Wed, 10 Apr 2024 03:29:36 GMT
+x-greptime-metrics: {"greptime_cloud_wcu":1}
+strict-transport-security: max-age=15724800; includeSubDomains
+access-control-allow-origin: *
+access-control-allow-credentials: true
+access-control-allow-methods: OPTIONS
+access-control-allow-headers: DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization
+access-control-max-age: 1728000
+```
+
+可以看到，`x-greptime-metrics` 展示了 `greptime_cloud_wcu` 的值，指示了该写入请求的消耗 CU。类似地，对于读取请求，你可以查看 `greptime_cloud_rcu`。此功能为用户提供了对其 CU 利用情况的宝贵洞察，有助于更好地管理资源并进行优化。
+
+
 ## 用量统计
 
 你可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/) 查看用量.
