@@ -77,3 +77,16 @@ remote_name="648f0c", url="http://localhost:4000/v1/prometheus/write"} 500
 | url                | `http://localhost:4000/v1/prometheus/write` | String             |
 | greptime_value     | 500                                         | Double             |
 | greptime_timestamp | The sample's unix timestamp                 | Timestamp          |
+
+## VictoriaMetrics remote write 协议支持
+
+VictoriaMetrics 微调了 Prometheus remote write 协议，通过 zstd 压缩试图获取更好
+的压缩率和更低资源消耗。当你配置了支持该协议的后端时，`vmagent` 工具会自动切换到
+VictoriaMetrics remote write 协议。
+
+GreptimeDB 也支持了这个变种协议。用户只需要将 GreptimeDB 的 remote write 路径配
+置给 `vmagent` 就可以达到效果。例如，对本地安装的 GreptimeDB 来说：
+
+```shell
+vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write
+```
