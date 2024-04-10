@@ -74,6 +74,35 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 - Use indexes to support the efficient execution of queries in GreptimeDB. Without indexes, GreptimeDB must scan the entire table to process the query. If an index matches the query, GreptimeDB can use the index to limit the data scanned. Consider using a column with high cardinality as the primary key and use it in the `WHERE` clause.
 - Use queries that match a smaller percentage of data for better selectivity. For instance, an equality match on the time index field and a high cardinality tag field can efficiently limit the data scanned. Note that the inequality operator `!=` is not efficient because it always scans all data.
 
+## Monitoring CU Usage via HTTP Response
+
+GreptimeCloud provides information on CU (Capacity Unit) usage through HTTP response headers. This enhancement allows you to conveniently track CU consumption for requests. For instance, when making a write request like following:
+
+```bash
+curl -s -i -XPOST -w '\n' \
+    "https://<host>/v1/influxdb/api/v2/write?db=<dbname>&precision=ms&u=<username>&p=<password>" \
+    --data-binary \
+    'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
+     monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
+     monitor,host=127.0.0.1 cpu=0.5,memory=0.2 1667446798450'
+```
+
+The response headers will include information such as:
+
+```
+HTTP/2 204 
+date: Wed, 10 Apr 2024 03:29:36 GMT
+x-greptime-metrics: {"greptime_cloud_wcu":1}
+strict-transport-security: max-age=15724800; includeSubDomains
+access-control-allow-origin: *
+access-control-allow-credentials: true
+access-control-allow-methods: OPTIONS
+access-control-allow-headers: DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization
+access-control-max-age: 1728000
+```
+
+Here, the `x-greptime-metrics` header includes the value of `greptime_cloud_wcu`, indicating the consumed WCU for the particular write request. Similarly, for read requests, you can inspect `greptime_cloud_rcu`. This capability provides valuable insights into CU utilization, facilitating better resource management and optimization efforts.
+
 ## Usage metrics
 
 You can view the usage at the [GreptimeCloud Console](https://console.greptime.cloud/).
