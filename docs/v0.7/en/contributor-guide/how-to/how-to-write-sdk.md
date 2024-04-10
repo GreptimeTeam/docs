@@ -7,7 +7,7 @@ like "`greptimedb-ingester-<language>`". Please make sure your GreptimeDB SDK fo
 ## `GreptimeDatabase` Service
 
 GreptimeDB defines a custom gRPC service called `GreptimeDatabase`. All you need to do in your SDK are implement it. You
-can find its protobuf
+can find its Protobuf
 definitions [here](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto).
 
 The service contains two RPC methods:
@@ -30,7 +30,7 @@ summarized `GreptimeResponse`. Through `HandleRequests`, we can achieve a very h
 
 ### `GreptimeRequest`
 
-The `GreptimeRequest` is a protobuf message defined like this:
+The `GreptimeRequest` is a Protobuf message defined like this:
 
 ```protobuf
 message GreptimeRequest {
@@ -56,7 +56,7 @@ of "null" values to insert, the "column" form is better to be used.
 
 ### `GreptimeResponse`
 
-The `GreptimeResponse` is a protobuf message defined like this:
+The `GreptimeResponse` is a Protobuf message defined like this:
 
 ```protobuf
 message GreptimeResponse {

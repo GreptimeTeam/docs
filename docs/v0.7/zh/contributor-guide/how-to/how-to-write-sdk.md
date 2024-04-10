@@ -8,7 +8,7 @@ GreptimeDB 的 gRPC SDK 只需要处理写请求即可。读请求是标准 SQL 
 
 GreptimeDB 自定义了一个 gRPC 服务：`GreptimeDatabase`
 。你只需要实现这个服务即可。你可以在[这里](https://github.com/GreptimeTeam/greptime-proto/blob/main/proto/greptime/v1/database.proto)
-找到它的 protobuf 定义。
+找到它的 Protobuf 定义。
 
 `GreptimeDatabase` 有 2 个 RPC 方法：
 
@@ -30,7 +30,7 @@ GreptimeDB 服务会在收到流中的每个请求时立刻进行处理，并最
 
 ### `GreptimeRequest`
 
-`GreptimeRequest` 是一个 protobuf 消息，定义如下：
+`GreptimeRequest` 是一个 Protobuf 消息，定义如下：
 
 ```protobuf
 message GreptimeRequest {
@@ -54,7 +54,7 @@ message GreptimeRequest {
 
 ### `GreptimeResponse`
 
-`GreptimeResponse` 是一个 protobuf 消息，定义如下：
+`GreptimeResponse` 是一个 Protobuf 消息，定义如下：
 
 ```protobuf
 message GreptimeResponse {
