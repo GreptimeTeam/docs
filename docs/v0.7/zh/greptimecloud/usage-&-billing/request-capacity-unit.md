@@ -71,7 +71,7 @@ RCU 的容量可能会在未来发生变化。
 - 选择使用匹配结果较少的查询。例如，时间索引字段和高区分度的标签字段上的相等匹配可以有效地限制扫描的数据大小。请注意，不等运算符 `!=` 无法做到有效查询，因为它总是会扫描所有数据。
 
 ## 通过 HTTP 响应监控 CU 使用情况
-GreptimeCloud 现在通过 HTTP 响应头提供 CU（Capacity Unit）使用信息。此功能使用户能够方便地跟踪其请求的 CU 消耗。例如，当使用类似以下命令进行写入请求时：
+GreptimeCloud 现在通过 HTTP 响应头提供 CU（Capacity Unit）使用信息。此功能使用户能够方便地跟踪其请求的 CU 消耗。例如，当使用如下命令进行写入请求时：
 
 ```bash
 curl -s -i -XPOST -w '\n' \
@@ -82,7 +82,7 @@ curl -s -i -XPOST -w '\n' \
      monitor,host=127.0.0.1 cpu=0.5,memory=0.2 1667446798450'
 ```
 
-响应头将包括诸如以下信息：
+响应头将包括如下信息：
 
 ```
 HTTP/2 204 
@@ -96,7 +96,7 @@ access-control-allow-headers: DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modi
 access-control-max-age: 1728000
 ```
 
-可以看到，`x-greptime-metrics` 展示了 `greptime_cloud_wcu` 的值，指示了该写入请求的消耗 CU。类似地，对于读取请求，你可以查看 `greptime_cloud_rcu`。此功能为用户提供了对其 CU 利用情况的宝贵洞察，有助于更好地管理资源并进行优化。
+可以看到，`x-greptime-metrics` 展示了 `greptime_cloud_wcu` 的值，指示了该写入请求的消耗 WCU。类似地，对于读取请求，你可以查看 `greptime_cloud_rcu`。此功能为用户提供了对其 CU 利用情况的宝贵洞察，有助于更好地管理资源并进行优化。
 
 
 ## 用量统计

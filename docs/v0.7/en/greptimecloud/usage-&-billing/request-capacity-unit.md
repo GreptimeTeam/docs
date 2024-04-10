@@ -75,7 +75,7 @@ To lower the RCU, you can design the table schema and queries carefully. Here ar
 - Use queries that match a smaller percentage of data for better selectivity. For instance, an equality match on the time index field and a high cardinality tag field can efficiently limit the data scanned. Note that the inequality operator `!=` is not efficient because it always scans all data.
 
 ## Monitoring CU Usage via HTTP Response
-GreptimeCloud now provides information on CU (Capacity Unit) usage through HTTP response headers. This enhancement allows users to conveniently track CU consumption for their requests. For instance, when making a write request using a command similar to the following:
+GreptimeCloud now provides information on CU (Capacity Unit) usage through HTTP response headers. This enhancement allows users to conveniently track CU consumption for their requests. For instance, when making a write request like following:
 
 ```bash
 curl -s -i -XPOST -w '\n' \
@@ -100,7 +100,7 @@ access-control-allow-headers: DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modi
 access-control-max-age: 1728000
 ```
 
-Here, the `x-greptime-metrics` header reveals the value of `greptime_cloud_wcu`, indicating the consumed CU for the particular write request. Similarly, for read requests, you can inspect `greptime_cloud_rcu`. This capability provides users with valuable insights into their CU utilization, facilitating better resource management and optimization efforts.
+Here, the `x-greptime-metrics` header includes the value of `greptime_cloud_wcu`, indicating the consumed WCU for the particular write request. Similarly, for read requests, you can inspect `greptime_cloud_rcu`. This capability provides users with valuable insights into their CU utilization, facilitating better resource management and optimization efforts.
 
 ## Usage metrics
 
