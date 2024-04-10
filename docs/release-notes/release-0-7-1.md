@@ -4,7 +4,7 @@ Release date: March 14, 2024
 
 This is a patch release, containing an important bug fix while decoding the Prometheus remote write proto https ([#3505](https://github.com/GreptimeTeam/greptimedb/pull/3505)).
 
-**It's highly recommended to upgrade to this version if you're using v0.7.**
+**Future critical bug fixes were delivered at v0.7.2. It's highly recommended to upgrade to [v0.7.2](./release-0-7-2.md) if you're using v0.7.**
 
 ## Breaking changes
 
