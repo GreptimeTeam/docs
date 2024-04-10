@@ -62,7 +62,7 @@
     "markdownlint-cli": "^0.37.0",
     "rollup-plugin-ignore": "^1.0.10",
     "rollup-plugin-multi-input": "^1.4.1",
-    "unplugin-auto-import": "^0.15.1",
+    "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.24.0",
     "vitepress": "1.0.0-rc.20",
     "vue": "^3.3.4"
