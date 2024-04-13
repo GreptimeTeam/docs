@@ -11,11 +11,11 @@ MindsDB. To configure GreptimeDB database, run the following SQL:
 CREATE DATABASE greptime_datasource
 WITH ENGINE = 'mysql',
 PARAMETERS = {
-  "host": "<host>",                              --- host name or IP address
-  "port": 4002,                                 --- port used to make TCP/IP connection
-  "database": "<dbname>",                          --- database name
-  "user": "<username>",                              --- database user
-  "password": "<password>",                          --- database password
+  "host": "<host>",
+  "port": 4002,
+  "database": "<dbname>",
+  "user": "<username>",
+  "password": "<password>",
   "ssl": True
 };
 
