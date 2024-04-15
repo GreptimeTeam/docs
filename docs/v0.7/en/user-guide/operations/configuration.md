@@ -356,23 +356,74 @@ How to use distributed tracing, please reference [Tracing](./tracing.md#tutorial
 
 ### Region engine options
 
-The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, there is only one storage engine available, which is `mito`.
+The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, only options for `mito` region engine is available.
+
+
+Frequently used options:
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
-num_workers = 1
+num_workers = 8
 manifest_checkpoint_distance = 10
 max_background_jobs = 4
+auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
+sst_meta_cache_size = "128MB"
+vector_cache_size = "512MB"
+page_cache_size = "512MB"
+sst_write_buffer_size = "8MB"
+scan_parallelism = 0
+
+[region_engine.mito.inverted_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "64M"
+intermediate_path = ""
+
+[region_engine.mito.memtable]
+type = "time_series"
 ```
 
-- `num_workers`: Number of write threads
-- `manifest_checkpoint_distance`: Create a checkpoint every `manifest_checkpoint_distance` manifest files are written
-- `max_background_jobs`: Number of background threads
-- `global_write_buffer_size`: Size of the write buffer, default is `1GB`
-- `global_write_buffer_reject_size`: Reject write requests when the size of data in the write buffer exceeds `global_write_buffer_reject_size`. It needs to be larger than `global_write_buffer_size`, default is `2GB`
+
+The `mito` engine provides an experimental memtable which optimizes for write performance and memory efficiency under millions of time-series:
+```toml
+[region_engine.mito.memtable]
+type = "partition_tree"
+index_max_keys_per_shard = 8192
+data_freeze_threshold = 32768
+fork_dictionary_bytes = "1GiB"
+```
+
+
+| Key | Type | Default | Descriptions |
+| --- | -----| ------- | ----------- |
+| `[[region_engine]]` | -- | -- | The region engine options. You can configure multiple region engines. |
+| `region_engine.mito` | -- | -- | The Mito engine options. |
+| `region_engine.mito.num_workers` | Integer | `8` | Number of region workers. |
+| `region_engine.mito.manifest_checkpoint_distance` | Integer | `10` | Number of meta action updated to trigger a new checkpoint for the manifest. |
+| `region_engine.mito.max_background_jobs` | Integer | `4` | Max number of running background jobs |
+| `region_engine.mito.auto_flush_interval` | String | `1h` | Interval to auto flush a region if it has not flushed yet. |
+| `region_engine.mito.global_write_buffer_size` | String | `1GB` | Global write buffer size for all regions. If not set, it's default to 1/8 of OS memory with a max limitation of 1GB. |
+| `region_engine.mito.global_write_buffer_reject_size` | String | `2GB` | Global write buffer size threshold to reject write requests. If not set, it's default to 2 times of `global_write_buffer_size` |
+| `region_engine.mito.sst_meta_cache_size` | String | `128MB` | Cache size for SST metadata. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB. |
+| `region_engine.mito.vector_cache_size` | String | `512MB` | Cache size for vectors and arrow arrays. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB. |
+| `region_engine.mito.page_cache_size` | String | `512MB` | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB. |
+| `region_engine.mito.sst_write_buffer_size` | String | `8MB` | Buffer size for SST writing. |
+| `region_engine.mito.scan_parallelism` | Integer | `0` | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n. |
+| `region_engine.mito.inverted_index` | -- | -- | The options for inverted index in Mito engine. |
+| `region_engine.mito.inverted_index.create_on_flush` | String | `auto` | Whether to create the index on flush.<br/>- `auto`: automatically<br/>- `disable`: never |
+| `region_engine.mito.inverted_index.create_on_compaction` | String | `auto` | Whether to create the index on compaction.<br/>- `auto`: automatically<br/>- `disable`: never |
+| `region_engine.mito.inverted_index.apply_on_query` | String | `auto` | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never |
+| `region_engine.mito.inverted_index.mem_threshold_on_create` | String | `64M` | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory. |
+| `region_engine.mito.inverted_index.intermediate_path` | String | `""` | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`). |
+| `region_engine.mito.memtable.type` | String | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental) |
+| `region_engine.mito.memtable.index_max_keys_per_shard` | Integer | `8192` | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable. |
+| `region_engine.mito.memtable.data_freeze_threshold` | Integer | `32768` | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable. |
+| `region_engine.mito.memtable.fork_dictionary_bytes` | String | `1GiB` | Max dictionary bytes.<br/>Only available for `partition_tree` memtable. |
+
 
 ### Specify meta client
 
