@@ -52,9 +52,8 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     [PRIMARY KEY(column1, column2, ...)]
 ) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
-    PARTITION r0 VALUES LESS THAN (expr1),
-    PARTITION r1 VALUES LESS THAN (expr2),
+  PARTITION ON COLUMNS(column1, column2, ...) (
+    <PARTITION EXPR>,
     ...
   )
 ]

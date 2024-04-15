@@ -52,9 +52,8 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     [PRIMARY KEY(column1, column2, ...)]
 ) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
 [
-  PARTITION BY RANGE COLUMNS(column1, column2, ...) (
-    PARTITION r0 VALUES LESS THAN (expr1),
-    PARTITION r1 VALUES LESS THAN (expr2),
+  PARTITION ON COLUMNS(column1, column2, ...) (
+    <PARTITION EXPR>,
     ...
   )
 ]
@@ -83,12 +82,12 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
 
-| 选项                | 描述               | 值                                                                                                         |
-| ------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `ttl`               | 表数据的存储时间   | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d` |
-| `regions`           | 表的 region 值     | 整数值，例如 1, 5, 10 etc.                                                                                 |
-| `write_buffer_size` | 表的 memtable 大小 | 表示有效大小的字符串值，例如 `32MB`, `128MB` 等。默认值为 `32MB`。支持的单位有：`MB` / `GB`.               |
-| `storage` |  自定义表的存储引擎，存储引擎提供商的名字  |  字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#存储引擎提供商)。|
+| 选项                | 描述                                     | 值                                                                                                                                                   |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ttl`               | 表数据的存储时间                         | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                           |
+| `regions`           | 表的 region 值                           | 整数值，例如 1, 5, 10 etc.                                                                                                                           |
+| `write_buffer_size` | 表的 memtable 大小                       | 表示有效大小的字符串值，例如 `32MB`, `128MB` 等。默认值为 `32MB`。支持的单位有：`MB` / `GB`.                                                         |
+| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#存储引擎提供商)。 |
 
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
 
@@ -157,9 +156,9 @@ CREATE TABLE system_metrics (
 Query OK, 0 rows affected (0.01 sec)
 ```
 
-### Region partition rules
+### Region 分区规则
 
-TODO by MichaelScofield
+请参考 [分区](/contributor-guide/frontend/table-sharding#partition) 章节.
 
 ## CREATE EXTERNAL TABLE
 
@@ -196,7 +195,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 | 选项       | 描述                                                               | 是否必需 |
 | ---------- | ------------------------------------------------------------------ | -------- |
 | `LOCATION` | 外部表的位置，例如 `s3://<bucket>[<path>]`, `/<path>/[<filename>]` | **是**   |
-| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet, ORC                         | **是**   |
+| `FORMAT`   | 目标文件的格式，例如 JSON，CSV，Parquet, ORC                       | **是**   |
 | `PATTERN`  | 使用正则来匹配文件，例如 `*_today.parquet`                         | 可选     |
 
 #### S3
