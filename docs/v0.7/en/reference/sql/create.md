@@ -156,7 +156,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 ### Region partition rules
 
-Please refer to [here](./table-sharding.md#partition) for more details.
+Please refer to [Partition](/contributor-guide/frontend/table-sharding#partition) for more details.
 
 ## CREATE EXTERNAL TABLE
 
