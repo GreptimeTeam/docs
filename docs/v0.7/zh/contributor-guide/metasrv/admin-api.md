@@ -7,10 +7,8 @@ Available APIs:
 
 - /health
 - /leader
-- /catalogs
-- /schemas
-- /tables
 - /heartbeat
+- /maintenance
 
 All these APIs are under the parent resource `/admin`.
 
@@ -62,89 +60,6 @@ curl -X GET http://localhost:3002/admin/leader
 
 ```json
 127.0.0.1:3002
-```
-
-## /catalogs HTTP endpoint
-
-The `/catalogs` endpoint accepts GET HTTP requests and you can use this endpoint to query the all the catalog's name.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/catalogs
-```
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET http://localhost:3002/admin/catalogs
-```
-
-#### Response
-
-```json
-["greptime"]
-```
-
-## /schemas HTTP endpoint
-
-The `/schemas` endpoint accepts GET HTTP requests and you can use this endpoint to query all schemas of a specific catalog.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/schemas
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition               |
-|:-----------------------|:-------|:------------------|:-------------------------|
-| catalog_name           | String | Required          | The name of the catalog. |
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET 'http://localhost:3002/admin/schemas?catalog_name=greptime'
-```
-
-#### Response
-
-```json
-["public"]
-```
-
-## /tables HTTP endpoint
-
-The `/tables` endpoint accepts GET HTTP requests and you can use this endpoint to query all tables of a specific catalog and schema.
-
-Therefore, it is required to specify `catalog_name` and `schema_name` in the path.
-
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/tables
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition               |
-|:-----------------------|:-------|:------------------|:-------------------------|
-| catalog_name           | String | Required          | The name of the catalog. |
-| schema_name            | String | Required          | The name of the schema.  |
-
-### Examples
-
-#### Request
-
-```bash
-curl -X GET 'http://localhost:3002/admin/tables?catalog_name=greptime&schema_name=public'
-```
-
-#### Response
-
-```json
-["dist_table"]
 ```
 
 ## /heartbeat HTTP endpoint
@@ -327,4 +242,52 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
   "region_stats": []
  }]
 ]
+```
+
+## /maintenance HTTP endpoint
+
+The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
+
+### GET
+
+The `/maintenance` endpoint accepts GET HTTP requests and you can use this endpoint to query the maintenance status of your metasrv instance.
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance
+```
+
+#### Request
+
+```bash
+curl -X GET http://localhost:3002/admin/maintenance
+```
+
+#### Response
+
+```text
+Maintenance mode is disabled
+```
+
+### PUT
+
+The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
+
+```bash
+curl -X PUT http://localhost:3002/admin/maintenance
+```
+
+| Query String Parameter | Type   | Optional/Required | Definition                |
+|:-----------------------|:-------|:------------------|:--------------------------|
+| enable                 | String | Required          | 'true' or 'false'         |
+
+#### Request
+
+```bash
+curl -X PUT http://localhost:3002/admin/maintenance?enable=true
+```
+
+#### Response
+
+```text
+Maintenance mode enabled
 ```

@@ -2,10 +2,6 @@
 
 GreptimeCloud 作为完全托管 GreptimeDB 的 Serverless 云服务，为时间序列数据平台和 Prometheus 后端提供可扩展和高效的解决方案。
 
-## 了解产品用量
-
-要了解 GreptimeCloud 如何测量其 Serverless 架构的工作负载以及如何优化 service 的用量，请参阅 [产品用量](usage.md)。
-
 ## 集成
 
 在阅读以下内容之前，需要先阅读 [客户端协议](/user-guide/clients/overview.md)。你可以使用流行的数据库协议连接到 GreptimeCloud：
@@ -18,3 +14,7 @@ GreptimeCloud 作为完全托管 GreptimeDB 的 Serverless 云服务，为时间
 - SDK Libraries
   - [Go](./integrations/sdk-libraries/go.md)
   - [Java](./integrations/sdk-libraries/java.md)
+
+## 了解费用及用量
+
+要了解 GreptimeCloud 如何测量其 Serverless 架构的工作负载以及如何优化 service 的用量及费用，请参阅 [用量及费用](./usage-&-billing/overview.md)。

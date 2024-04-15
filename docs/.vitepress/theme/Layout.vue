@@ -6,7 +6,7 @@ Layout
 <script setup name="Layout" lang="ts">
 import Layout from 'vitepress/dist/client/theme-default/Layout.vue'
 import Footer from './components/Footer.vue'
-import { getSidebarIcon } from '@/utils.ts'
+import { getSidebarIcon } from '@/utils'
 
 // data
 const { theme } = useData()

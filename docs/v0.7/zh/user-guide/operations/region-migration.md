@@ -19,7 +19,7 @@ Region 迁移允许用户在 Datanode 间移动 Region 数据。
 select b.peer_id as datanode_id,
        a.greptime_partition_id as region_id
 from information_schema.partitions a left join information_schema.greptime_region_peers b
-on a.greptime_partition_id = b.region_idwhere a.table_name='migration_target' order by datanode_id asc;
+on a.greptime_partition_id = b.region_id where a.table_name='migration_target' order by datanode_id asc;
 ```
 
 例如：有以下的 Region 分布

@@ -6,11 +6,11 @@ What is the `Selector`? As its name suggests, it allows users to select specific
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs
 
-There is a specific scenario in `MetaSrv` service. When a request to create a table is sent to the `MetaSrv` service, it creates a routing table (the details of table creation will not be described here). The `MetaSrv` service needs to select the appropriate `Datanode` list when creating a routing table.
+There is a specific scenario in `Metasrv` service. When a request to create a table is sent to the `Metasrv` service, it creates a routing table (the details of table creation will not be described here). The `Metasrv` service needs to select the appropriate `Datanode` list when creating a routing table.
 
 ## Selector Type
 
-Currently, there are two types of `Selector` available in the `MetaSrv` service: `LeasebasedSelector` and `LoadBasedSelector`.
+Currently, there are two types of `Selector` available in the `Metasrv` service: `LeasebasedSelector` and `LoadBasedSelector`.
 
 ### LeasebasedSelector [not recommended]
 
@@ -26,7 +26,7 @@ It sorts available `Datanode`s according to the load, and returns a sorted list 
 
 ## Configuration
 
-You can configure the `Selector` when starting the `MetaSrv` service, with the default being `LoadBasedSelector`.
+You can configure the `Selector` when starting the `Metasrv` service, with the default being `LoadBasedSelector`.
 
 For example:
 

@@ -75,6 +75,10 @@ export const enConfig = async () => ({
         icon: 'changelog',
       },
       {
+        key: 'Release Notes',
+        icon: 'changelog',
+      },
+      {
         key: 'FAQ and Others',
         icon: 'FAQandOthers',
       },

@@ -54,6 +54,6 @@ content-length: 0
 date: Wed, 22 Feb 2023 02:30:46 GMT
 ```
 
-## Write Data
+## Write data
 
 Please refer to [write data](../write-data/influxdb-line.md).

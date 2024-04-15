@@ -21,10 +21,43 @@ Note: Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` 
 
 GreptimeDB supports sending SQL statements through HTTP API. For information on how to set up authentication, please refer to [HTTP API](./http-api.md).
 
-## Write Data
+## Write data
 
 Please refer to [SQL](../write-data/sql.md).
 
-## Query Data
+## Query data
 
 Please refer to [SQL](../query-data/sql.md).
+
+## Time zone
+
+GreptimeDB's PostgreSQL protocol interface follows original PostgreSQL on [datatype-timezones](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-TIMEZONES).
+
+By default, PostgreSQL uses its server time zone for timestamp. To override, you can
+set `time_zone` variable for current session using SQL statement `SET TIMEZONE TO '<value>';`.
+The value of `time_zone` can be any of:
+
+- A full time zone name, for example `America/New_York`.
+- A time zone abbreviation, for example `PST`.
+- Offset to UTC such as `+08:00`.
+
+You can use `SHOW` to check the current time zone settings. For example:
+
+```sql
+SHOW VARIABLES time_zone;
+```
+
+```sql
+ TIME_ZONE 
+-----------
+ UTC
+```
+
+Change the session time zone to `+1:00`:
+
+```SQL
+SET TIMEZONE TO '+1:00'
+```
+
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
+

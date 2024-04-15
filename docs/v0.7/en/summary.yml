@@ -102,11 +102,19 @@
     - influxdb
     - otlp
     - vector
+    - emqx
     - streamlit
+    - mindsdb
     - SDK-Libraries:
       - go
       - java
-  - usage
+  - Usage-&-Billing:
+    - overview
+    - request-capacity-unit
+    - hobby
+    - serverless
+    - dedicated
+    - byoc
   - Tutorials:
     - Monitor-Host-Metrics:
       - prometheus
@@ -118,9 +126,6 @@
       - node-js
 - Reference:
   - command-lines
-  - SDK:
-    - Java
-    - Go
   - SQL:
     - overview
     - data-types
@@ -145,6 +150,21 @@
     - alter
     - explain
     - compatibility
+    - Information-Schema:
+      - overview
+      - build-info
+      - character-sets
+      - collations
+      - collation-character-set-applicability
+      - columns
+      - engines
+      - key-column-usage
+      - partitions
+      - schemata
+      - tables
+      # - table-constraints
+      - greptime-region-peers
+      - runtime-metrics
   - Telemetry
 - Contributor-Guide:
   - overview
@@ -160,6 +180,7 @@
     - data-persistence-indexing
     - wal
     - python-scripts
+    - metric-engine
   - Metasrv:
     - overview
     - admin-api
@@ -176,11 +197,11 @@
     - how-to-write-sdk
     - how-to-use-tokio-console
     - how-to-trace-greptimedb
-- Changelog:
-  - overview
-  - Biweekly-Reports:
-    - overview
-    - latest-biweekly-report
+- Release-Notes:
+  - all-releases
+  - release-0-7-2
+  - release-0-7-1
+  - release-0-7-0
 - FAQ-and-Others:
   - overview
   - faq

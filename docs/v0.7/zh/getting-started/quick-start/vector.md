@@ -42,7 +42,6 @@ services:
       - 4001:4001
       - 4002:4002
       - 4003:4003
-      - 4004:4004
       - 4242:4242
     command: "standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003 --opentsdb-addr 0.0.0.0:4242"
     volumes:

@@ -23,6 +23,7 @@ data (`/xxx/xxx/output.parquet` in this case).
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
+| `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
 
 #### `CONNECTION` Option
 
@@ -121,11 +122,14 @@ You can set the following **CONNECTION** options:
 
 Beside copying specific table to/from some path, `COPY` statement can also be used to copy whole database to/from some path. The syntax for copying databases is:
 
-
 ```sql
 COPY DATABASE <db_name> 
   [TO | FROM] '<PATH>' 
-  WITH (FORMAT = "<FORMAT>") 
+  WITH (
+    FORMAT = "<EXPORT FILE FORMAT>",
+    START_TIME = "<START TIMESTAMP>",
+    END_TIME = "<END TIMESTAMP>"
+  ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
     ENDPOINT = "<ENDPOINT>",
@@ -135,9 +139,26 @@ COPY DATABASE <db_name>
   )]
 ```
 
-- When copying databases, `<PATH>` must end with `/`.
-- `FORMAT` option has the same available values as copying tables.
-- `CONNECTION` parameters can also be used to copying databases to/from object storage services like [AWS S3](#connect-to-s3).
+| Option  | Description  | Required |
+|---|---|---|
+| `FORMAT` | Export file format, available options: JSON, CSV, Parquet  | **Required** |
+| `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
+
+> - When copying databses, `<PATH>` must end with `/`.
+> - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
+
+### Examples
+
+```sql
+-- Export all tables' data to /tmp/export/
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+
+-- Export all tables' data within time range 2022-04-11 08:00:00~2022-04-11 09:00:00 to /tmp/export/
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
+
+-- Import files under /tmp/export/ directory to database named public.
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+```
 
 ## Special reminder for Windows platforms
 

@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import YAML from 'js-yaml'
-import { CURRENT_VERSION, versionMap, websiteMap, LATEST_VERSION } from '../config/common'
+import { CURRENT_VERSION, versionMap, websiteMap, LATEST_VERSION, CURRENT_LANG } from '../config/common'
+import semver from 'semver'
 
 export async function makeSidebar(lang, version) {
   const langPath = `/${lang}`
@@ -27,7 +28,15 @@ export async function makeSidebar(lang, version) {
     } else {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
-        let file = fs.readFileSync(`docs${versionPath}${langPath}${link}.md`, 'utf-8')
+
+        let filepath: string;
+        if (link.startsWith('/release-notes/') && link !== '/release-notes/all-releases') {
+          filepath = `docs${link}.md`
+        } else {
+          filepath = `docs${versionPath}${langPath}${link}.md`
+        }
+
+        let file = fs.readFileSync(filepath, 'utf-8')
         const text = file
           .split('\n')
           .find(line => line.startsWith('# '))
@@ -49,6 +58,7 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
   const srcExclude = []
   const excludeLangs = langMap.filter(l => l !== lang)
 
+  const curVer = semver.parse(`${CURRENT_VERSION}.0`)
   versionMap.forEach(version => {
     if (version === CURRENT_VERSION) {
       excludeLangs.forEach(excludeLang => {
@@ -56,6 +66,11 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
       })
     } else {
       srcExclude.push(`**/${version}/**`)
+    }
+    const ver = semver.parse(`${version}.0`);
+    if (ver > curVer) {
+      const fixedVer = `${ver.major}-${ver.minor}`
+      srcExclude.push(`**/release-notes/release-${fixedVer}-*`)
     }
   })
 

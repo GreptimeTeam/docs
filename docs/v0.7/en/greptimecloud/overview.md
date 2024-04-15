@@ -2,10 +2,6 @@
 
 GreptimeCloud is a cloud service that is powered by fully-managed serverless GreptimeDB, providing a scalable and efficient solution for time-series data platform and and Prometheus backend.
 
-## Learn about Usage
-
-To learn how GreptimeCloud measure its workload for serverless architecture, and how to optimize your usage, see [Learn about Usage](usage.md).
-
 ## Integrations
 
 Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCloud using popular database protocols:
@@ -18,3 +14,7 @@ Before reading the following content, you need to read [clients](/user-guide/cli
 - SDK Libraries
   - [Go](./integrations/sdk-libraries/go.md)
   - [Java](./integrations/sdk-libraries/java.md)
+
+## Learn about usage and billing
+
+To learn how GreptimeCloud measure its workload for serverless architecture, and how to optimize your usage and billing, see [Usage & Billing](./usage-&-billing/overview.md).

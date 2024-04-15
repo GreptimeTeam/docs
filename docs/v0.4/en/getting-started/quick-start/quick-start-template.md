@@ -5,7 +5,7 @@
 
 <!--@include: ./prerequisites.md-->
 
-## Write Data
+## Write data
 
 {template write-data%%}
 
