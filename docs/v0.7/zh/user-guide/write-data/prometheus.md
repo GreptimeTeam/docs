@@ -22,14 +22,16 @@ remote_read:
 请将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己的用户名和密码，详情请参考客户端[鉴权认证](../clients/authentication.md)。
 :::
 
-url 中的 `db` 参数表示我们要写入的数据库，是可选的，默认为 `public`。
+URL 中的 `db` 参数表示我们要写入的数据库，是可选的，默认为 `public`。
 如果你想要写入到其他数据库，可以[创建新数据库](../table-management.md#create-database)并将 `public` 替换为新的数据库名称。
 
-url 中的 `physical_table` 参数表示我们要写入的物理表。在 GreptimeDB 的 `Metric` 引擎中，我们有一个物理表的概念，它指定了存储数据的物理表。这个参数是可选的。如果你不指定它，将会使用默认的物理表名 `greptime_physical_table`。不存在的物理表将会被自动创建。
+GreptimeDB 将多个 Prometheus 指标[自动组合](../clients/prometheus#数据模型)到相应的逻辑表中，因此你无需在 `remote_write` 的 URL 中指定逻辑表。
+
+URL 中的 `physical_table` 参数可选，表示数据被写入的[物理表](/contributor-guide/datanode/metric-engine#物理表)。在不指定该参数的情况下默认使用 `greptime_physical_table` 表。如果指定的物理表不存在，该表会被自动创建。
 
 请注意，这个 `physical_table` 参数只在下面两种情况下生效：
 - 在配置文件中启用了 `with_metric_engine`。它默认是启用的。
-- 对应的 `db` 中没有之前的数据。也就是说，要写入的指标是第一次出现在这个 `db` 中。
+- 对应的 `db` 中没有已经存在的同名逻辑表。
 
 下面是 URL 参数的表格：
 

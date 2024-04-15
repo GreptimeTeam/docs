@@ -22,16 +22,18 @@ remote_read:
 Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
 :::
 
-The `db` parameter in the url represents the database that we want to write data. It's optional.
+The `db` parameter in the URL represents the database that we want to write data. It's optional.
 By default, the database is `public`.
 If you want to write to another database, you can [create a new database](../table-management.md#create-database) 
 and replace `public` with the new database name.
 
-The `physical_table` parameter in the url represents the physical table that we want to write data. In GreptimeDB's `Metric` engine, we have a concept of physical table which specifies the table that store data physically. This parameter is optional. If you don't specify it, the default physical table name `greptime_physical_table` will be used. This physical table will be created automatically if it doesn't exist.
+GreptimeDB automatically groups multiple Prometheus metrics (../clients/prometheus#data-model) into the corresponding logical tables, so you do not need to specify the logical table in the URL of `remote_write`.
+
+The `physical_table` parameter in the URL is optional and represents the [physical table] (/contributor-guide/datanode/metric-engine#physical table) where the data is written. The `greptime_physical_table` table is used by default if this parameter is not specified. If the specified physical table does not exist, the table will be automatically created.
 
 Notice that this `physical_table` parameter only works when
 - `with_metric_engine` is enabled in the configuration file. It's enabled by default.
-- There is no previous data in corresponding `db`. I.e., those metrics to be written are first seen to that `db`.
+There is no existing logical table with the same name in the corresponding `db`.
 
 Here is a table of URL parameters:
 
