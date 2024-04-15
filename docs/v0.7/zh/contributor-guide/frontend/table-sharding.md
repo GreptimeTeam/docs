@@ -41,7 +41,7 @@ PARTITION ON COLUMNS (a) (
 ::: warning 重要
 
 1. 所有分区的范围不能重叠。
-2. 用于分区的列必须是在 `ON COLUMNS` 指定，但不是所有指定的列都必须用上。
+2. 用于分区的列必须是在 `ON COLUMNS` 中指定。
 
 :::
 
