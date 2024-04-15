@@ -182,36 +182,38 @@ enable = true
 
 [prom_store]
 enable = true
+with_metric_engine = true
 ```
 
 The following table describes the options in detail:
 
-| Option     | Key            | Type    | Description                                                                     |
-| ---------- | ------------   | ------- | ------------------------------------------------------------------------------- |
-| http       |                |         | HTTP server options                                                             |
-|            | addr           | String  | Server address, "127.0.0.1:4000" by default                                     |
-|            | timeout        | String  | HTTP request timeout, "30s" by default                                          |
-|            | body_limit     | String  | HTTP max body size, "64MB" by default                                           |
-|            | is_strict_mode | Boolean | Whether to validate protocol strings, false by default                          |
-| grpc       |                |         | gRPC server options                                                             |
-|            | addr           | String  | Server address, "127.0.0.1:4001" by default                                     |
-|            | runtime_size   | Integer | The number of server worker threads, 8 by default                               |
-| mysql      |                |         | MySQL server options                                                            |
-|            | enable         | Boolean | Whether to enable MySQL protocol, true by default                               |
-|            | add            | String  | Server address, "127.0.0.1:4002" by default                                     |
-|            | runtime_size   | Integer | The number of server worker threads, 2 by default                               |
-| influxdb   |                |         | InfluxDB Protocol options                                                       |
-|            | enable         | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
-| opentsdb   |                |         | OpenTSDB Protocol options                                                       |
-|            | enable         | Boolean | Whether to enable OpenTSDB protocol, true by default                            |
-|            | addr           | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
-|            | runtime_size   | Integer | The number of server worker threads, 2 by default                               |
-| prom_store |                |         | Prometheus remote storage options                                               |
-|            | enable         | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
-| postgres   |                |         | PostgresSQL server options                                                      |
-|            | enable         | Boolean | Whether to enable PostgresSQL protocol, true by default                         |
-|            | addr           | String  | Server address, "127.0.0.1:4003" by default                                     |
-|            | runtime_size   | Integer | The number of server worker threads, 2 by default                               |
+| Option     | Key                | Type    | Description                                                                     |
+| ---------- | ------------       | ------- | ------------------------------------------------------------------------------- |
+| http       |                    |         | HTTP server options                                                             |
+|            | addr               | String  | Server address, "127.0.0.1:4000" by default                                     |
+|            | timeout            | String  | HTTP request timeout, "30s" by default                                          |
+|            | body_limit         | String  | HTTP max body size, "64MB" by default                                           |
+|            | is_strict_mode     | Boolean | Whether to validate protocol strings, false by default                          |
+| grpc       |                    |         | gRPC server options                                                             |
+|            | addr               | String  | Server address, "127.0.0.1:4001" by default                                     |
+|            | runtime_size       | Integer | The number of server worker threads, 8 by default                               |
+| mysql      |                    |         | MySQL server options                                                            |
+|            | enable             | Boolean | Whether to enable MySQL protocol, true by default                               |
+|            | add                | String  | Server address, "127.0.0.1:4002" by default                                     |
+|            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
+| influxdb   |                    |         | InfluxDB Protocol options                                                       |
+|            | enable             | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
+| opentsdb   |                    |         | OpenTSDB Protocol options                                                       |
+|            | enable             | Boolean | Whether to enable OpenTSDB protocol, true by default                            |
+|            | addr               | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
+|            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
+| prom_store |                    |         | Prometheus remote storage options                                               |
+|            | enable             | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
+|            | with_metric_engine | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default    |
+| postgres   |                    |         | PostgresSQL server options                                                      |
+|            | enable             | Boolean | Whether to enable PostgresSQL protocol, true by default                         |
+|            | addr               | String  | Server address, "127.0.0.1:4003" by default                                     |
+|            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
 
 ### Storage options
 
@@ -222,7 +224,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 | Option  | Key               | Type   | Description                                                   |
 | ------- | ----------------- | ------ | ------------------------------------------------------------- |
 | storage |                   |        | Storage options                                               |
-|         | type              | String | Storage type, supports "File", "S3" and "Oss" etc.       |
+|         | type              | String | Storage type, supports "File", "S3" and "Oss" etc.            |
 | File    |                   |        | Local file storage options, valid when type="File"            |
 |         | data_home         | String | Database storage root directory, "/tmp/greptimedb" by default |
 | S3      |                   |        | AWS S3 storage options, valid when type="S3"                  |
@@ -485,11 +487,11 @@ use_memory_store = false
 
 | Key              | Type    | Description                                                                                                                             |
 | ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| data_home        | String  | The working home of Metasrv, `"/tmp/metasrv/"` by default                                                                            |
-| bind_addr        | String  | The bind address of Metasrv, `"127.0.0.1:3002"` by default.                                                                          |
-| server_addr      | String  | The communication server address for frontend and datanode to connect to Metasrv, `"127.0.0.1:3002"` by default for localhost        |
+| data_home        | String  | The working home of Metasrv, `"/tmp/metasrv/"` by default                                                                               |
+| bind_addr        | String  | The bind address of Metasrv, `"127.0.0.1:3002"` by default.                                                                             |
+| server_addr      | String  | The communication server address for frontend and datanode to connect to Metasrv, `"127.0.0.1:3002"` by default for localhost           |
 | store_addr       | String  | etcd server addresses, `"127.0.0.1:2379"` by default, server address separated by commas, in the format of `"ip1:port1,ip2:port2,..."`. |
-| selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/contributor-guide/metasrv/selector.md)                 |
+| selector         | String  | Load balance strategy to choose datanode when creating new tables, see [Selector](/contributor-guide/metasrv/selector.md)               |
 | use_memory_store | Boolean | Only used for testing when you don't have an etcd cluster, store data in memory, `false` by default.                                    |
 
 ### Datanode-only configuration
@@ -501,12 +503,12 @@ rpc_addr = "127.0.0.1:3001"
 rpc_runtime_size = 8
 ```
 
-| Key              | Type    | Description                                                                                                                             |
-| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| node_id        | Integer  | The datanode identifier, should be unique.                                    |
-| rpc_hostname        | String  | Hostname of this node.                                                    |
-| rpc_addr        | String  | gRPC server address, `"127.0.0.1:3001"` by default.                           |
-| rpc_runtime_size        | Integer  | The number of gRPC server worker threads, 8 by default.            |
+| Key              | Type    | Description                                             |
+| ---------------- | ------- | ------------------------------------------------------- |
+| node_id          | Integer | The datanode identifier, should be unique.              |
+| rpc_hostname     | String  | Hostname of this node.                                  |
+| rpc_addr         | String  | gRPC server address, `"127.0.0.1:3001"` by default.     |
+| rpc_runtime_size | Integer | The number of gRPC server worker threads, 8 by default. |
 
 ## Environment variable
 

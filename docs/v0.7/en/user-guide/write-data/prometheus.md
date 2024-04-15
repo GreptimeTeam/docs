@@ -6,7 +6,7 @@ To configure Prometheus, use the following settings in the [Prometheus configura
 
 ```yaml
 remote_write:
-- url: http://localhost:4000/v1/prometheus/write?db=public
+- url: http://localhost:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 #  basic_auth:
 #    username: greptime_user
 #    password: greptime_pwd
@@ -22,10 +22,27 @@ remote_read:
 Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
 :::
 
-The `db` parameter in the url represents the database that we want to write data.
+The `db` parameter in the URL represents the database that we want to write data. It's optional.
 By default, the database is `public`.
 If you want to write to another database, you can [create a new database](../table-management.md#create-database)
 and replace `public` with the new database name.
+
+GreptimeDB automatically groups multiple Prometheus metrics (../clients/prometheus#data-model) into the corresponding logical tables, so you do not need to specify the logical table in the URL of `remote_write`.
+
+The optional `physical_table` parameter in the URL represents the [physical table](/contributor-guide/datanode/metric-engine#physical-table),
+which reduces storage overhead for small tables and improves columnar compression efficiency.
+If unspecified, the `greptime_physical_table` is used by default;
+if the specified physical table does not exist, it will be automatically created.
+
+The `physical_table` parameter only works when the [`with_metric_engine`](/user-guide/operations/configuration.md#protocol-options) is enabled in the configuration file.
+It is enabled by default.
+
+Here is a table of URL parameters:
+
+| Param          | Required | Default Value           |
+| -------------- | -------- | ----------------------- |
+| db             | optional | public                  |
+| physical_table | optional | greptime_physical_table |
 
 Show tables when writing successfully:
 
@@ -54,12 +71,12 @@ show tables;
 When the metrics are written into GreptimeDB by remote write endpoint, they will be transformed as
 follows:
 
-| Sample Metrics | In GreptimeDB                | GreptimeDB Data Types |
-|:---------------|:-----------------------------|:----------------------|
-| Name           | Table (Auto-created) Name    | String                |
+| Sample Metrics | In GreptimeDB               | GreptimeDB Data Types |
+| :------------- | :-------------------------- | :-------------------- |
+| Name           | Table (Auto-created) Name   | String                |
 | Value          | Column (greptime_value)     | Double                |
 | Timestamp      | Column (greptime_timestamp) | Timestamp             |
-| Label          | Column                       | String                |
+| Label          | Column                      | String                |
 
  A primary key with all label columns will be created automatically. When a new label is added, it
  will be added into primary key automatically too.
@@ -74,7 +91,7 @@ remote_name="648f0c", url="http://localhost:4000/v1/prometheus/write"} 500
 This example will be transformed as a row in the table `prometheus_remote_storage_samples_total`：
 
 | Column             | Value                                       | Column  Data  Type |
-|:-------------------|:--------------------------------------------|:-------------------|
+| :----------------- | :------------------------------------------ | :----------------- |
 | instance           | localhost:9090                              | String             |
 | job                | prometheus                                  | String             |
 | remote_name        | 648f0c                                      | String             |

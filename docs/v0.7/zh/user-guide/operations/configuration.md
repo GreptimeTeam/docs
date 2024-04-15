@@ -185,31 +185,32 @@ enable = true
 下表描述了每个选项的详细信息：
 
 | 选项       | 键           | 类型   | 描述                                                    |
-| ---------- | ------------   | ------ | ------------------------------------------------------- |
-| http       |                |        | HTTP 服务器选项                                         |
-|            | addr           | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                     |
-|            | timeout        | 字符串 | HTTP 请求超时时间，默认为 "30s"                         |
-|            | body_limit     | 字符串 | HTTP 最大体积大小，默认为 "64MB"                        |
-|            | is_strict_mode | 布尔值 | 是否验证协议字符串，默认为false                          |
-| grpc       |                |        | gRPC 服务器选项                                         |
-|            | addr           | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                     |
-|            | runtime_size   | 整数   | 服务器工作线程数量，默认为 8                            |
-| mysql      |                |        | MySQL 服务器选项                                        |
-|            | enable         | 布尔值 | 是否启用 MySQL 协议，默认为 true                        |
-|            | add            | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                     |
-|            | runtime_size   | 整数   | 服务器工作线程数量，默认为 2                            |
-| influxdb   |                |        | InfluxDB 协议选项                                       |
-|            | enable         | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true       |
-| opentsdb   |                |        | OpenTSDB 协议选项                                       |
-|            | enable         | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                     |
-|            | addr           | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242" |
-|            | runtime_size   | 整数   | 服务器工作线程数量，默认为 2                            |
-| prom_store |                |        | Prometheus 远程存储选项                                 |
-|            | enable         | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true |
-| postgres   |                |        | PostgresSQL 服务器选项                                  |
-|            | enable         | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                  |
-|            | addr           | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                     |
-|            | runtime_size   | 整数   | 服务器工作线程数量，默认为 2                            |
+| ---------- | ------------       | ------ | ------------------------------------------------------- |
+| http       |                    |        | HTTP 服务器选项                                         |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                     |
+|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                         |
+|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                        |
+|            | is_strict_mode     | 布尔值 | 是否验证协议字符串，默认为false                          |
+| grpc       |                    |        | gRPC 服务器选项                                         |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                     |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                            |
+| mysql      |                    |        | MySQL 服务器选项                                        |
+|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                        |
+|            | add                | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                     |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
+| influxdb   |                    |        | InfluxDB 协议选项                                       |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true       |
+| opentsdb   |                    |        | OpenTSDB 协议选项                                       |
+|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                     |
+|            | addr               | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242" |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
+| prom_store |                    |        | Prometheus 远程存储选项                                 |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true |
+|            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true |
+| postgres   |                    |        | PostgresSQL 服务器选项                                  |
+|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                  |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                     |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
 
 ### 存储选项
 
@@ -217,38 +218,38 @@ enable = true
 
 GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
-| 选项   | 键                   | 类型   | 描述                                                           |
-| ------- | ----------------- | ------ | ------------------------------------------------------------- |
-| storage |                   |        | 存储选项                                                       |
-|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等.       |
-| File    |                   |        | 本地文件存储选项，当 type="File" 时有效            |
-|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb" |
-| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                  |
-|         | bucket            | 字符串 | S3 桶名称                                            |
-|         | root              | 字符串 | S3 桶中的根路径                                    |
-|         | endpoint          | 字符串 | S3 的 API 端点                                        |
-|         | region            | 字符串 | S3 区域                                                 |
-|         | access_key_id     | 字符串 | S3 访问密钥 id                                          |
-|         | secret_access_key | 字符串 | S3 秘密访问密钥                                      |
-| Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效             |
-|         | bucket            | 字符串 | OSS 桶名称                                           |
-|         | root              | 字符串 | OSS 桶中的根路径                                   |
-|         | endpoint          | 字符串 | OSS 的 API 端点                                       |
-|         | access_key_id     | 字符串 | OSS 访问密钥 id                                         |
-|         | secret_access_key | 字符串 | OSS 秘密访问密钥                                     |
-| Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效          |
+| 选项    | 键                | 类型   | 描述                                                |
+| ------- | ----------------- | ------ | --------------------------------------------------- |
+| storage |                   |        | 存储选项                                            |
+|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等.            |
+| File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
+|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
+| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
+|         | bucket            | 字符串 | S3 桶名称                                           |
+|         | root              | 字符串 | S3 桶中的根路径                                     |
+|         | endpoint          | 字符串 | S3 的 API 端点                                      |
+|         | region            | 字符串 | S3 区域                                             |
+|         | access_key_id     | 字符串 | S3 访问密钥 id                                      |
+|         | secret_access_key | 字符串 | S3 秘密访问密钥                                     |
+| Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效           |
+|         | bucket            | 字符串 | OSS 桶名称                                          |
+|         | root              | 字符串 | OSS 桶中的根路径                                    |
+|         | endpoint          | 字符串 | OSS 的 API 端点                                     |
+|         | access_key_id     | 字符串 | OSS 访问密钥 id                                     |
+|         | secret_access_key | 字符串 | OSS 秘密访问密钥                                    |
+| Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效        |
 |         | container         | 字符串 | 容器名称                                            |
-|         | root              | 字符串 | 容器中的根路径                                    |
-|         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                        |
-|         | account_name      | 字符串 | Azure Blob 存储的账户名                        |
-|         | account_key       | 字符串 | 访问密钥                                                |
-|         | sas_token         | 字符串 | 共享访问签名                                           |
-| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效          |
+|         | root              | 字符串 | 容器中的根路径                                      |
+|         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                          |
+|         | account_name      | 字符串 | Azure Blob 存储的账户名                             |
+|         | account_key       | 字符串 | 访问密钥                                            |
+|         | sas_token         | 字符串 | 共享访问签名                                        |
+| Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
 |         | root              | 字符串 | Gsc 桶中的根路径                                    |
-|         | bucket            | 字符串 | Gsc 桶名称                                    |
-|         | scope             | 字符串 | Gsc 权限                                    |
-|         | credential_path   | 字符串 | Gsc 访问证书                                    |
-|         | endpoint          | 字符串 | GSC 的 API 端点                                    |
+|         | bucket            | 字符串 | Gsc 桶名称                                          |
+|         | scope             | 字符串 | Gsc 权限                                            |
+|         | credential_path   | 字符串 | Gsc 访问证书                                        |
+|         | endpoint          | 字符串 | GSC 的 API 端点                                     |
 
 文件存储配置范例：
 
@@ -484,11 +485,11 @@ use_memory_store = false
 
 | 键               | 类型   | 描述                                                                                                   |
 | ---------------- | ------ | ------------------------------------------------------------------------------------------------------ |
-| data_home        | 字符串 | Metasrv 的工作目录，默认为 `"/tmp/metasrv/"`                                                        |
-| bind_addr        | 字符串 | Metasrv 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                     |
-| server_addr      | 字符串 | 前端和数据节点连接到 Metasrv 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机）          |
+| data_home        | 字符串 | Metasrv 的工作目录，默认为 `"/tmp/metasrv/"`                                                           |
+| bind_addr        | 字符串 | Metasrv 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                        |
+| server_addr      | 字符串 | 前端和数据节点连接到 Metasrv 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机）             |
 | store_addr       | 字符串 | etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
-| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/contributor-guide/metasrv/selector.md)              |
+| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/contributor-guide/metasrv/selector.md)            |
 | use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
 
 
@@ -501,12 +502,12 @@ rpc_addr = "127.0.0.1:3001"
 rpc_runtime_size = 8
 ```
 
-| Key              | Type    | Description                                                                                                                             |
-| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| node_id        | Integer  | 该 `datanode` 的唯一标识符。                                 |
-| rpc_hostname        | String  | 该 `datanode` 的 Hostname。                                                    |
-| rpc_addr        | String  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。                          |
-| rpc_runtime_size        | Integer  | gRPC 服务器工作线程数，默认为 8。            |
+| Key              | Type    | Description                                 |
+| ---------------- | ------- | ------------------------------------------- |
+| node_id          | Integer | 该 `datanode` 的唯一标识符。                |
+| rpc_hostname     | String  | 该 `datanode` 的 Hostname。                 |
+| rpc_addr         | String  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
+| rpc_runtime_size | Integer | gRPC 服务器工作线程数，默认为 8。           |
 
 ## 环境变量配置
 
