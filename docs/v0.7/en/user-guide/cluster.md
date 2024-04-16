@@ -26,10 +26,10 @@ You can follow the steps to use SQL to play with distributed insertions and quer
        PRIMARY KEY(n),
        TIME INDEX (ts)
    )
-   PARTITION BY RANGE COLUMNS (n) (
-       PARTITION r0 VALUES LESS THAN (5),
-       PARTITION r1 VALUES LESS THAN (9),
-       PARTITION r2 VALUES LESS THAN (MAXVALUE),
+   PARTITION ON COLUMNS (n) (
+      n < 5,
+      n >= 5 AND n < 9,
+      n >= 9
    )
    engine=mito;
    ```
@@ -44,10 +44,10 @@ You can follow the steps to use SQL to play with distributed insertions and quer
        ->     TIME INDEX (ts)
        ->     PRIMARY KEY(n),
        -> )
-       -> PARTITION BY RANGE COLUMNS (n) (
-       ->     PARTITION r0 VALUES LESS THAN (5),
-       ->     PARTITION r1 VALUES LESS THAN (9),
-       ->     PARTITION r2 VALUES LESS THAN (MAXVALUE),
+       -> PARTITION ON COLUMNS (n) (
+       ->    n < 5,
+       ->    n >= 5 AND n < 9,
+       ->    n >= 9
        -> )
        -> engine=mito;
    Query OK, 3 rows affected (0.09 sec)
