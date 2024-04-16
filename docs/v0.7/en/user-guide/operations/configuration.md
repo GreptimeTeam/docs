@@ -112,7 +112,7 @@ greptime standalone start --help
 ### Examples
 
 Configurations can be used in one or multiple components according to their features.
-This document only contains examples for frequently used configurations. Please refer to the auto-generated [document]((https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md)) for all available configurations.
+This document only contains examples for frequently used configurations. Please refer to the auto-generated [document](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md) for all available configurations.
 
 You can find all available configurations for each component on GitHub:
 
@@ -391,7 +391,7 @@ type = "time_series"
 ```
 
 
-The `mito` engine provides an experimental memtable which optimizes for write performance and memory efficiency under millions of time-series:
+The `mito` engine provides an experimental memtable which optimizes for write performance and memory efficiency under large amounts of time-series. Its read performance might not as fast as the default `time_series` memtable.
 ```toml
 [region_engine.mito.memtable]
 type = "partition_tree"
