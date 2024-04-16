@@ -200,10 +200,10 @@ CREATE TABLE dist_table(
     PRIMARY KEY(n),
     TIME INDEX (ts)
 )
-PARTITION BY RANGE COLUMNS (n) (
-    PARTITION r0 VALUES LESS THAN ("f"),
-    PARTITION r1 VALUES LESS THAN ("z"),
-    PARTITION r2 VALUES LESS THAN (MAXVALUE),
+PARTITION ON COLUMNS (n) (
+    n < 'f',
+    n >= 'f' AND n < 'z',
+    n >= 'z'
 )
 engine=mito;
 ```
