@@ -8,7 +8,7 @@
 - `Datanode`：负责数据的持久化存储，例如存储到本地磁盘、S3 和 Azure Blob Storage 等。
 - `Metasrv` 元数据存储和分布式调度：协调 `Frontend` 和 `Datanode` 之间的操作。
 
-![Architecture](/architecture.png)
+![Architecture](/architecture-3.png)
 
 ## 概念
 
@@ -16,7 +16,7 @@
 
 - `table` 是 `GreptimeDB` 中存储用户数据的地方，有表结构和有序的主键。`table` 通过其分区键被分割成称为 `region`。
 - `region` 是表中的一个连续段，在某些关系型数据库中被视为分区。`region` 可以在多个 `datanode` 上复制，其中任何一个副本都可以支持读请求，但只有一个副本支持写请求。
-- `datanode` 存储并为 `frontend` 提供 `region`。一个 `datanode` 可以服务多个 `region`，一个 `region` 可以由多个 `datanode` 服务。
+- `datanode` 存储并为 `frontend` 提供 `region` 服务。一个 `datanode` 可以服务多个 `region`，一个 `region` 可以由多个 `datanode` 服务。
 - `metasrv` 服务器存储集群的元数据，例如表、`datanode`、每个表的 `region` 等。它还协调 `frontend` 和 `datanode`。
 - `frontend` 有一个 catalog 实现，它从 `metasrv` 中获取元数据，告诉相应的组件哪个 `table` 的 `region` 由哪个 `datanode` 提供服务。
 - `frontend` 是一个无状态服务，用于接收客户端的请求。它作为 proxy 根据 catalog 中的信息将读取和写入请求转发到相应的 `datanode`。

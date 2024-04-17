@@ -1,6 +1,6 @@
 # Architecture
 
-![architecture](/architecture-2.png)
+![architecture](/architecture-3.png)
 
 In order to form a robust database cluster and keep complexity at an acceptable
 level, there are three main components in GreptimeDB architecture: Datanode,
@@ -17,7 +17,7 @@ Frontend and Metasrv.
   authenticates it, translates it from various protocols into GreptimeDB
   cluster's internal one, and forwards to certain \_Datanode_s under guidance from Metasrv.
 - [**Datanodes**](/contributor-guide/datanode/overview.md) hold regions of
-  tables and data in Greptime DB cluster. It accepts read and write request sent
+  tables in Greptime DB cluster. It accepts read and write request sent
   from _Frontend_, and executes it against its data.
 
 These three components will be combined as GreptimeDB standalone mode, for local or embedded development.
