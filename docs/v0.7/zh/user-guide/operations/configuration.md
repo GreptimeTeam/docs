@@ -110,8 +110,10 @@ greptime standalone start --help
 
 ### 示例
 
-各项配置根据其功能适用于一个或多个组件。
-你可以在 GitHub 上找到每个组件的所有可用配置：
+各项配置根据其功能适用于一个或多个组件。本文档只包含部分常用配置的示例。完整的配置说明可以在[这个](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md)自动生成的文档中找到。
+
+
+你可以在 GitHub 上找到每个组件的所有可用配置示例：
 
 - [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
 - [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
@@ -353,23 +355,73 @@ default_ratio = 1.0
 
 ### Region 引擎选项
 
-datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前只有一种存储引擎 `mito`。
+datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前只可以配置存储引擎 `mito` 的选项。
+
+部分常用的选项如下
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
-num_workers = 1
+num_workers = 8
 manifest_checkpoint_distance = 10
 max_background_jobs = 4
+auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
+sst_meta_cache_size = "128MB"
+vector_cache_size = "512MB"
+page_cache_size = "512MB"
+sst_write_buffer_size = "8MB"
+scan_parallelism = 0
+
+[region_engine.mito.inverted_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "64M"
+intermediate_path = ""
+
+[region_engine.mito.memtable]
+type = "time_series"
 ```
 
-- `num_workers`: 写入线程数量
-- `manifest_checkpoint_distance`: 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint
-- `max_background_jobs`: 后台线程数量
-- `global_write_buffer_size`: 写入缓冲区大小，默认 `1GB`
-- `global_write_buffer_reject_size`: 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，需要比 `global_write_buffer_size` 大，默认 `2GB`
+此外，`mito` 也提供了一个实验性质的 memtable。该 memtable 主要优化大量时间序列下的写入性能和内存占用。其查询性能可能会不如默认的 `time_series` memtable。
+
+```toml
+[region_engine.mito.memtable]
+type = "partition_tree"
+index_max_keys_per_shard = 8192
+data_freeze_threshold = 32768
+fork_dictionary_bytes = "1GiB"
+```
+
+以下是可供使用的选项
+
+| 键 | 类型 | 默认值 | 描述 |
+| --- | -----| ------- | ----------- |
+| `num_workers` | 整数 | `8` | 写入线程数量 |
+| `manifest_checkpoint_distance` | 整数 | `10` | 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint |
+| `max_background_jobs` | 整数 | `4` | 后台线程数量 |
+| `auto_flush_interval` | 字符串 | `1h` | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region |
+| `global_write_buffer_size` | 字符串 | `1GB` | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB |
+| `global_write_buffer_reject_size` | 字符串 | `2GB` | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒
+绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
+| `sst_meta_cache_size` | 字符串 | `128MB` | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB |
+| `vector_cache_size` | 字符串 | `512MB` | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB |
+| `page_cache_size` | 字符串 | `512MB` | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB |
+| `sst_write_buffer_size` | 字符串 | `8MB` | SST 的写缓存大小 |
+| `scan_parallelism` | 整数 | `0` | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描 |
+| `inverted_index.create_on_flush` | 字符串 | `auto` | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `inverted_index.create_on_compaction` | 字符串 | `auto` | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `inverted_index.apply_on_query` | 字符串 | `auto` | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `inverted_index.mem_threshold_on_create` | 字符串 | `64M` | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序 |
+| `inverted_index.intermediate_path` | 字符串 | `""` | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`). |
+| `memtable.type` | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能) |
+| `memtable.index_max_keys_per_shard` | 整数 | `8192` | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效 |
+| `memtable.data_freeze_threshold` | 整数 | `32768` | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效 |
+| `memtable.fork_dictionary_bytes` | 字符串 | `1GiB` | 主键字典的大小<br/>只对 `partition_tree` memtable 生效 |
+
+
 
 
 ### 设定 meta client
@@ -503,10 +555,10 @@ rpc_runtime_size = 8
 
 | Key              | Type    | Description                                 |
 | ---------------- | ------- | ------------------------------------------- |
-| node_id          | Integer | 该 `datanode` 的唯一标识符。                |
-| rpc_hostname     | String  | 该 `datanode` 的 Hostname。                 |
-| rpc_addr         | String  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
-| rpc_runtime_size | Integer | gRPC 服务器工作线程数，默认为 8。           |
+| node_id          | 整数 | 该 `datanode` 的唯一标识符。                |
+| rpc_hostname     | 字符串  | 该 `datanode` 的 Hostname。                 |
+| rpc_addr         | 字符串  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
+| rpc_runtime_size | 整数 | gRPC 服务器工作线程数，默认为 8。           |
 
 ## 环境变量配置
 
