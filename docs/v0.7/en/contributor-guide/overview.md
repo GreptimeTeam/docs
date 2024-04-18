@@ -9,7 +9,7 @@
 - `Datanode` is responsible for storing data to persistent storage such as local disk or object storage in the cloud such as AWS S3, Azure Blob Storage etc.
 - `Metasrv` server that coordinates the operations between the `Frontend` and `Datanode`.
 
-![Architecture](/architecture.png)
+![Architecture](/architecture-3.png)
 
 ## Concepts
 
