@@ -1,7 +1,6 @@
 # Migrate from InfluxDB
 
-GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
-Which means you can easily migrate from InfluxDB to GreptimeDB.
+
 
 ## Data model in difference
 
@@ -59,12 +58,52 @@ The schema of `census` table is as following:
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
+## Database connection information
+
+Before writing or querying data, it is important to understand the differences in database connection information between InfluxDB and GreptimeDB.
+
+- Token: The InfluxDB API token is used for authentication and is the same as the GreptimeDB authentication. You can use `<greptimedb_user:greptimedb_password>` as the token when interacting with GreptimeDB using InfluxDB's client libraries or HTTP API.
+- Organization: There is no organization when connecting to GreptimeDB.
+- Bucket: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
+
 ## Write data
 
-### Prerequisites
+GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
+Which means you can easily migrate from InfluxDB to GreptimeDB.
+
+### HTTP API
+
+To write a measurement to GreptimeDB, you can use the following HTTP API request:
+
+Influxdb line protocol v2:
+
+```shell
+curl -X POST 'http://<greptimedb-url>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
+  -H 'authorization: token <greptime_user:greptimedb_password>' \
+  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+```
+
+Influxdb line protocol v1:
+
+```shell
+curl 'http://<greptimedb-url>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
+  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+```
+
+### Telegraf
+
+
+
+### Client libraries
+
+
 
 
 ## Migrate data
 
 ## Query data
+
+### HTTP API
+
+### Client libraries
 
