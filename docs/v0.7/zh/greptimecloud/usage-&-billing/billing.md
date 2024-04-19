@@ -20,4 +20,9 @@ GreptimeCloud 按自然月收费并生成发票。
 
 用量跟踪项目每天更新一次，通过汇总当前月份前几天的用量得出。
 例如，如果你有 Service A 在 Serverless 计划中设定了 10 RCU，Service B 设定了 20 RCU，
-那么 Serverless RCU 的用量在月份第二天的计算结果 30（10 + 20），在第三天为 60（30 + 30）。
+那么 Serverless RCU 的用量在月份第二天的计算结果为 720（10 * 24 小时 + 20 * 24 小时），在第三天为 1440（720 + 720）。
+
+## 费用
+
+请参考 [Serverless Plan](serverless.md#费用) 和 [Dedicated Plan](dedicated.md#费用) 了解费用计算逻辑。
+

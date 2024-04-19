@@ -20,4 +20,9 @@ A detailed usage report for the current billing cycle can be found in the [billi
 
 The usage tracking items are updated daily by summing up the usage from the previous days of the current month.
 For example, if you have Service A in the Serverless plan with 10 RCU set, and Service B with 20 RCU set,
-the usage tracking item "Serverless RCU" is calculated as 30 (10+20) on the second day of the month and 60 (30+30) on the third day.
+the usage tracking item "Serverless RCU" is calculated as 720 (10 * 24 hours + 20 * 24 hours) on the second day of the month and 1440 (720 + 720) on the third day.
+
+## Costs
+
+Please refer to [Serverless Plan](serverless.md#costs) and [Dedicated Plan](dedicated.md#costs) for cost calculation logics.
+
