@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
+import { getSrcExclude, makeSidebar, getVariate } from '../theme/serverUtils'
 import settingConfig from './setting.json'
 
 const { LATEST_VERSION, langMap, websiteMap } = settingConfig
@@ -28,6 +28,7 @@ const common = async () => {
     locales: {},
     themeConfig: {
       latestVersion: LATEST_VERSION,
+      variate: getVariate(CURRENT_VERSION),
       search: {
         provider: 'local',
       },

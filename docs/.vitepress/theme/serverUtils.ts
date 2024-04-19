@@ -29,7 +29,7 @@ export async function makeSidebar(lang, version) {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
 
-        let filepath: string;
+        let filepath: string
         if (link.startsWith('/release-notes/') && link !== '/release-notes/all-releases') {
           filepath = `docs${link}.md`
         } else {
@@ -67,7 +67,7 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
     } else {
       srcExclude.push(`**/${version}/**`)
     }
-    const ver = semver.parse(`${version}.0`);
+    const ver = semver.parse(`${version}.0`)
     if (ver > curVer) {
       const fixedVer = `${ver.major}-${ver.minor}`
       srcExclude.push(`**/release-notes/release-${fixedVer}-*`)
@@ -92,4 +92,11 @@ export const getVersionList = (lang: string) => {
         link: `${websiteMap[lang]}/${linkVersion}`,
       }
     })
+}
+
+export const getVariate = (version: string) => {
+  const variatePath = `docs/${version}/variate/index.yml`
+  let variate = {}
+  if (fs.existsSync(variatePath)) variate = YAML.load(fs.readFileSync(variatePath), 'utf8')
+  return variate
 }
