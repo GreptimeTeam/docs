@@ -115,6 +115,7 @@
     - serverless
     - dedicated
     - byoc
+    - billing
   - Tutorials:
     - Monitor-Host-Metrics:
       - prometheus

@@ -21,13 +21,12 @@ Please see [Pricing](https://greptime.com/pricing) for the latest pricing inform
 
 ### WCU and RCU
 
-Greptime calculates costs based on the capacity units specified in your chosen plan on a minute-by-minute basis 
+Greptime calculates costs based on the capacity units specified in your chosen plan on a hour-by-hour basis 
 and bills you monthly for the services used.
 
 Cost Calculation Formula:
 
-- Minute Costs: (Chosen Plan's WCU * WCU Minute Price) + (Chosen Plan's RCU * RCU Minute Price)
-- Hourly Costs: Sum of Minute Costs
+- Hourly Costs: (Chosen Plan's WCU * (WCU Minute Price * 60 minutes)) + (Chosen Plan's RCU * (RCU Minute Price * 60 minutes))
 - Daily Costs: Sum of Hourly Costs
 - Monthly Costs: Sum of Daily Costs
 
