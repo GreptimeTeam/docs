@@ -95,7 +95,7 @@ export const getVersionList = (lang: string) => {
 }
 
 export const getVariate = (version: string) => {
-  const variatePath = `docs/${version}/variate/index.yml`
+  const variatePath = `docs/${version}/variate.yml`
   let variate = {}
   if (fs.existsSync(variatePath)) variate = YAML.load(fs.readFileSync(variatePath), 'utf8')
   return variate

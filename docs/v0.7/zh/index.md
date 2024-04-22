@@ -1,9 +1,12 @@
 # 简介
-
+<script setup>
+import { useData } from 'vitepress'
+const { theme, site } = useData()
+</script>
 <p align="center">
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
 </p>
-
+site.localeIndex: {{ site.localeIndex }}
 GreptimeDB 是开源的时序数据库，注重效率、可扩展性和分析能力。GreptimeDB 可以在云时代的基础设施上工作，使用户受益于良好的灵活性和高性价比的存储。
 
 GreptimeDB 经由 [GreptimeCloud](https://greptime.cn/product/cloud) 提供云服务。
