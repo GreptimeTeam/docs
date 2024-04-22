@@ -1,8 +1,3 @@
-<script setup>
-import { useData } from 'vitepress'
-const { theme } = useData()
-</script>
-
 # Introduction
 
 <p align="center">
@@ -12,7 +7,9 @@ const { theme } = useData()
 GreptimeDB is an open-source time-series database focusing on efficiency, scalability, and analytical capabilities.
 It's designed to work on infrastructure of the cloud era, and users benefit from its elasticity and commodity storage.
 
-grafana-version: {{ theme.variate['grafana-version'] }}
+grafana-version: <{grafana-version}>
+
+db-config-version: <{db-config-version}>
 
 GreptimeDB is also on cloud as
 [GreptimeCloud](https://greptime.com/product/cloud), a fully-managed time-series
