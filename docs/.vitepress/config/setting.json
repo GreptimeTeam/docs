@@ -2,7 +2,7 @@
   "LATEST_VERSION": "v0.7",
   "websiteMap": { 
     "en": "https://feat-variate.greptime-docs.pages.dev", 
-    "zh": "https://docs.greptime.cn"
+    "zh": "https://feat-variate-zh.greptime-docs.pages.dev"
   },
   "langMap": [ "en", "zh" ]
 }

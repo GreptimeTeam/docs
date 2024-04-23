@@ -1,4 +1,4 @@
-# Introduction
+# Introduction v0.6
 
 <p align="center">
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
