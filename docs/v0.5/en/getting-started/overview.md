@@ -1,4 +1,4 @@
-# Overview v0.5
+# Overview
 
 Get started with GreptimeDB quickly by following these steps:
 
