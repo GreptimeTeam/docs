@@ -5,19 +5,17 @@ export const replaceVariate = md => {
   const variates = getVariate(CURRENT_VERSION)
   const variatesKey = Object.keys(variates)
 
-  md.core.ruler.push('variate_replace', state => {
+  md.block.ruler.before('paragraph', 'variate_replace', state => {
     variatesKey.forEach(key => {
       for (let i = 0; i < state.tokens.length; i++) {
         const token = state.tokens[i]
         if (token) {
-          token.content.replace(new RegExp(key, 'g'), () => {})
-          token.content = token.content.replace(new RegExp(`<{${key}}>`, 'g'), () => {
-            return variates[key]
+          token.content = token.content.replace(new RegExp(/<%\s*(.*?)\s*%>/, 'g'), (_, $1) => {
+            if (variates[$1]) return `${variates[key]}`
+            else {
+              return `${_}`
+            }
           })
-          if (token.content.includes(variates[key])) {
-            console.log(`token.content:`, token.content)
-            console.log(`state.tokens[i].content:`, state.tokens[i].content)
-          }
         }
       }
     })

@@ -7,9 +7,7 @@
 GreptimeDB is an open-source time-series database focusing on efficiency, scalability, and analytical capabilities.
 It's designed to work on infrastructure of the cloud era, and users benefit from its elasticity and commodity storage.
 
-grafana-version: <{grafana-version}>
-
-db-config-version: <{db-config-version}>
+grafana-version: <%grafana-version%>
 
 GreptimeDB is also on cloud as
 [GreptimeCloud](https://greptime.com/product/cloud), a fully-managed time-series
