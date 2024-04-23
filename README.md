@@ -1,7 +1,7 @@
 # GreptimeDB Documentation
 
 <p align="center">
-    <img src="./docs/public/logo-text-padding.png" alt="GreptimeDB Logo" width="400px">
+    <img src="./docs/public/logo-text-padding.png" alt="GreptimeDB Logo" width="400">
 </p>
 
 This directory contains sources of all content published at [docs.greptime.com][1]
