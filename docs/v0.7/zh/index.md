@@ -1,9 +1,8 @@
-# 简介 v0.7
-<p align="center">
-    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
-</p>
+# 简介
 
-grafana-version: <% grafana-version %>
+<p align="center">
+    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
+</p>
 
 GreptimeDB 是开源的时序数据库，注重效率、可扩展性和分析能力。GreptimeDB 可以在云时代的基础设施上工作，使用户受益于良好的灵活性和高性价比的存储。
 

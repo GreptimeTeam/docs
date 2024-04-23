@@ -1,12 +1,10 @@
-# 简介 v0.6
+# 简介
 
 <p align="center">
-    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
+    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400px">
 </p>
 
 GreptimeDB 是开源的时序数据库，注重效率、可扩展性和分析能力。GreptimeDB 可以在云时代的基础设施上工作，使用户受益于良好的灵活性和高性价比的存储。
-
-db-config-version: <%db-config-version%>
 
 GreptimeDB 经由 [GreptimeCloud](https://greptime.cn/product/cloud) 提供云服务。
 GreptimeCloud 是一个完全托管的时序数据库服务，具有无服务器的可扩展性、与生态系统的无缝集成和 Prometheus 兼容性。
