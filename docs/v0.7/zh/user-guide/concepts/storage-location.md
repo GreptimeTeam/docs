@@ -21,7 +21,7 @@ GreptimeDB 的存储文件结构包括以下内容：
 ```
 
 - `cluster`：集群目录包含了内部数据，并按数据节点的 ID 组织数据。
-- `data`：data 目录下的文件存储 GreptimeDB 的时序数据。要定制这个路径，请参考 [Storage option](../operations/configuration.md#storage-options)。
+- `data`：data 目录下的文件存储 GreptimeDB 的时序数据。要定制这个路径，请参考[存储选项](../operations/configuration.md#storage-options)。
 - `logs`：日志文件包含 GreptimeDB 中所有的操作日志。
 - `wal`：wal 目录包含了预写日志文件。
 - `index_intermediate`: 索引相关的临时文件目录。
