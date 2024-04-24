@@ -71,7 +71,7 @@
     - run-on-android
     - monitoring
     - tracing
-    - kafka-remote-wal
+    - remote-wal
     - region-migration
     # TODO
     # - alert
