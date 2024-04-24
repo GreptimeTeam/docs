@@ -224,7 +224,7 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 请参考 [GROUP BY](/reference/sql/group_by.md) 获取更多相关信息。
 
-### 查询每条时间线最新的数据点
+### 查询时间线中的最新数据
 
 你可以通过组合使用 `DISTINCT ON` 和 `ORDER BY` 来查询每条时间线的最新数据点，例如：
 

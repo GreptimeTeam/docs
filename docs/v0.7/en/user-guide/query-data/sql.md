@@ -235,9 +235,9 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
-### Find the latest point of every series
+### Find the latest data of time series
 
-To find the latest point of every series, you can use `DISTINCT ON` together with `ORDER BY` like in [ClickHose](https://clickhouse.com/docs/en/sql-reference/statements/select/distinct).
+To find the latest point of each time series, you can use `DISTINCT ON` together with `ORDER BY` like in [ClickHose](https://clickhouse.com/docs/en/sql-reference/statements/select/distinct).
 
 ```sql
 SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
