@@ -92,7 +92,28 @@ curl 'http://<greptimedb-url>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_us
 
 ### Telegraf
 
+Support of InfluxDB line protocol also means GreptimeDB is compatible with Telegraf.
+To configure Telegraf, simply add `http://<greptimedb-url>:4000` URL to Telegraf configs:
 
+::: code-group
+
+```toml [InfluxDB v1]
+[[outputs.influxdb]]
+  urls = ["http://<greptimedb-url>:4000"]
+  database = "<db-name>"
+  username = "<greptime_user>"
+  password = "<greptimedb_password>"
+```
+
+```toml [InfluxDB v2]
+[[outputs.influxdb_v2]]
+  urls = ["http://<greptimedb-url>:4000/v1/influxdb"]
+  token = "<greptime_user>:<greptimedb_password>"
+  bucket = "<db-name>"
+  ## Leave empty
+  organization = ""
+```
+:::
 
 ### Client libraries
 
