@@ -224,6 +224,23 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 请参考 [GROUP BY](/reference/sql/group_by.md) 获取更多相关信息。
 
+### 查询每条时间线最新的数据点
+
+你可以通过组合使用 `DISTINCT ON` 和 `ORDER BY` 来查询每条时间线的最新数据点，例如：
+
+```sql
+SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
+```
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2022-11-03 03:39:58 |  0.5 |    0.2 |
+| 127.0.0.2 | 2022-11-03 03:39:58 |  0.2 |    0.3 |
++-----------+---------------------+------+--------+
+2 rows in set (0.00 sec)
+```
 ## 按时间窗口聚合数据
 
 GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚合数据。

@@ -235,6 +235,24 @@ SELECT host, avg(cpu) FROM monitor GROUP BY host;
 
 Please refer to [GROUP BY](/reference/sql/group_by.md) for more information.
 
+### Find the latest point of every series
+
+To find the latest point of every series, you can use `DISTINCT ON` together with `ORDER BY` like in [ClickHose](https://clickhouse.com/docs/en/sql-reference/statements/select/distinct).
+
+```sql
+SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
+```
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2022-11-03 03:39:58 |  0.5 |    0.2 |
+| 127.0.0.2 | 2022-11-03 03:39:58 |  0.2 |    0.3 |
++-----------+---------------------+------+--------+
+2 rows in set (0.00 sec)
+```
+
 ## Aggregate data by time window
 
 GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time window.
