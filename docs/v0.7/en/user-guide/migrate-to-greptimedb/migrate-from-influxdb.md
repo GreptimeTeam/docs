@@ -75,13 +75,13 @@ To write a measurement to GreptimeDB, you can use the following HTTP API request
 ::: code-group
 
 ```shell [Influxdb line protocol v2]
-curl -X POST 'http://<greptimedb-url>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
+curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
 ```shell [Influxdb line protocol v1]
-curl 'http://<greptimedb-url>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
+curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
@@ -90,13 +90,13 @@ curl 'http://<greptimedb-url>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_us
 ## Telegraf
 
 Support of InfluxDB line protocol also means GreptimeDB is compatible with Telegraf.
-To configure Telegraf, simply add `http://<greptimedb-url>:4000` URL to Telegraf configs:
+To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegraf configs:
 
 ::: code-group
 
 ```toml [Influxdb line protocol v2]
 [[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-url>:4000/v1/influxdb"]
+  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
   bucket = "<db-name>"
   ## Leave empty
@@ -105,7 +105,7 @@ To configure Telegraf, simply add `http://<greptimedb-url>:4000` URL to Telegraf
 
 ```toml [Influxdb line protocol v1]
 [[outputs.influxdb]]
-  urls = ["http://<greptimedb-url>:4000/v1/influxdb"]
+  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
@@ -131,7 +131,7 @@ You can also query data using the same client configuration.
 import { InfluxDB, Point } from '@influxdata/influxdb-client'
 
 /** Environment variables **/
-const url = 'http://<greptimedb-url>:4000/v1/influxdb'
+const url = 'http://<greptimedb-host>:4000/v1/influxdb'
 const token = '<greptime_user>:<greptimedb_password>'
 const org = ''
 const bucket = '<db-name>'
@@ -155,7 +155,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 bucket = "<db-name>"
 org = ""
 token = "<greptime_user>:<greptimedb_password>"
-url="http://<greptimedb-url>:4000/v1/influxdb"
+url="http://<greptimedb-host>:4000/v1/influxdb"
 
 client = influxdb_client.InfluxDBClient(
     url=url,
@@ -176,7 +176,7 @@ write_api.write(bucket=bucket, org=org, record=p)
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
-url := "http://<greptimedb-url>:4000/v1/influxdb"
+url := "http://<greptimedb-host>:4000/v1/influxdb"
 client := influxdb2.NewClient(url, token)
 writeAPI := client.WriteAPIBlocking(org, bucket)
 
@@ -191,7 +191,7 @@ client.Close()
 
 ```java [Java]
 
-private static String url = "http://<greptimedb-url>:4000/v1/influxdb";
+private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
 private static char[] token = "<greptime_user>:<greptimedb_password>".toCharArray();
@@ -212,7 +212,7 @@ public static void main(final String[] args) {
 
 ```php [PHP]
 $client = new Client([
-    "url" => "http://<greptimedb-url>:4000/v1/influxdb",
+    "url" => "http://<greptimedb-host>:4000/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
     "bucket" => "<db-name>",
     "org" => "",
@@ -235,6 +235,81 @@ Besides the languages mentioned above, GreptimeDB also supports client libraries
 You can write code in your preferred language by referring to the connection information code snippets provided above.
 
 ## Migrate data
+
+If you do not need all historical data, you can double write data to both GreptimeDB and InfluxDB.
+After a period of time, you can stop writing to InfluxDB and only write to GreptimeDB.
+When using InfluxDB client libraries, you need to create two instances of clients, one for GreptimeDB and one for InfluxDB.
+
+If you need to migrate all historical data, please follow these steps.
+
+### Export Data from InfluxDB v2 Server
+
+Let's get the bucket ID to be migrated with InfluxDB CLI:
+
+```shell
+influx bucket list
+```
+
+You'll get outputs look like the following:
+
+```shell
+ID               Name           Retention Shard group duration Organization ID  Schema Type
+22bdf03ca860e351 _monitoring    168h0m0s  24h0m0s              41fabbaf2d6c2841 implicit
+b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 implicit
+9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
+```
+
+Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
+
+Log in to the server you deployed InfluxDB v2 and run the following command to export data in InfluxDB Line Protocol format:
+
+```shell
+# The engine path is often "/var/lib/influxdb2/engine/".
+export ENGINE_PATH="<engine-path>"
+# Export all the data in example-bucket (ID=9a79c1701e579c94).
+influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
+```
+
+The outputs look like the following:
+
+```shell
+{"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
+{"level":"info","ts":1713227837.1399868,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/9a79c1701e579c94","file_count":1}
+{"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
+```
+
+:::tip Tip
+You can specify more concrete data sets, like measurements and time range, to be exported. Please refer to the [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) manual for details.
+:::
+
+### Import Data to GreptimeDB
+
+Copy the `influxdb_export.lp` file to a working directory.
+
+```shell
+cp influxdb2:/influxdb_export.lp influxdb_export.lp
+```
+
+Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
+
+```shell
+split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
+# -l [line_count]    Create split files line_count lines in length.
+# -d                 Use a numeric suffix instead of a alphabetic suffix.
+# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
+```
+
+Now, import data to GreptimeDB via the HTTP API:
+
+```
+for file in influxdb_export_slice.*; do
+    curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
+        -X POST "https://<greptimedb-host>/v1/influxdb/api/v2/write?db=<db-name>" \
+        --data-binary @${file}
+    # avoid rate limit in the hobby plan
+    sleep 1
+done
+```
 
 ## Visualize data
 
