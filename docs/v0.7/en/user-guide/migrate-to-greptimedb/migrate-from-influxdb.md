@@ -309,7 +309,7 @@ Now, import data to GreptimeDB via the HTTP API:
 ```
 for file in influxdb_export_slice.*; do
     curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
-        -X POST "https://<greptimedb-host>/v1/influxdb/api/v2/write?db=<db-name>" \
+        -X POST "http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>" \
         --data-binary @${file}
     # avoid rate limit in the hobby plan
     sleep 1
