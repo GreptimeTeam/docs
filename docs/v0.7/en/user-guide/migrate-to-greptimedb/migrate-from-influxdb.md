@@ -1,5 +1,14 @@
 # Migrate from InfluxDB
 
+InfluxDB is a well-known time series database.
+However, as the volume of time series data grows today,
+it may not meet users' requirements in terms of performance, scalability, and cost.
+
+GreptimeDB is a high-performance time series database designed to work in the infrastructure of the cloud era.
+Users can benefit from its elasticity and commodity storage.
+
+Migrating from InfluxDB to GreptimeDB can be a good choice.
+This document will help you understand the differences between the data models of the two databases and guide you through the migration process.
 
 ## Data model in difference
 
@@ -61,9 +70,9 @@ The schema of `census` table is as following:
 
 Before writing or querying data, it is important to understand the differences in database connection information between InfluxDB and GreptimeDB.
 
-- Token: The InfluxDB API token is used for authentication and is the same as the GreptimeDB authentication. You can use `<greptimedb_user:greptimedb_password>` as the token when interacting with GreptimeDB using InfluxDB's client libraries or HTTP API.
-- Organization: There is no organization when connecting to GreptimeDB.
-- Bucket: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
+- **Token**: The InfluxDB API token is used for authentication and is the same as the GreptimeDB authentication. You can use `<greptimedb_user:greptimedb_password>` as the token when interacting with GreptimeDB using InfluxDB's client libraries or HTTP API.
+- **Organization**: There is no organization when connecting to GreptimeDB.
+- **Bucket**: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
 
 ## Write data
 
@@ -76,13 +85,13 @@ To write a measurement to GreptimeDB, you can use the following HTTP API request
 
 ::: code-group
 
-```shell [Influxdb line protocol v2]
+```shell [InfluxDB line protocol v2]
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-```shell [Influxdb line protocol v1]
+```shell [InfluxDB line protocol v1]
 curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
@@ -96,7 +105,7 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
 
 ::: code-group
 
-```toml [Influxdb line protocol v2]
+```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -105,7 +114,7 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
   organization = ""
 ```
 
-```toml [Influxdb line protocol v1]
+```toml [InfluxDB line protocol v1]
 [[outputs.influxdb]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   database = "<db-name>"
