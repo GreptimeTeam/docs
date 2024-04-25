@@ -1,26 +1,29 @@
-# Migrate from InfluxDB
+# 从 InfluxDB 迁移
 
-InfluxDB is a well-known time series database.
-However, as the volume of time series data grows today,
-it may not meet users' requirements in terms of performance, scalability, and cost.
+InfluxDB 是知名的时间序列数据库。
+随着时间序列数据量的增长，
+它可能无法满足用户在性能、可扩展性和成本方面的需求。
 
-GreptimeDB is a high-performance time series database designed to work in the infrastructure of the cloud era.
-Users can benefit from its elasticity and commodity storage.
+GreptimeDB 是高性能的时间序列数据库，专为云时代的基础设施而设计，
+使用户受益于良好的弹性结构和高性价比的存储。
 
-Migrating from InfluxDB to GreptimeDB can be a good choice.
-This document will help you understand the differences between the data models of the two databases and guide you through the migration process.
+从 InfluxDB 迁移到 GreptimeDB 将会是不错的选择。
+本文档将帮助你了解这两个数据库的数据模型之间的区别，并指导你完成迁移过程。
 
-## Data model in difference
+## 数据模型的区别
 
-While you are likely familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](../concepts/data-model.md) of GreptimeDB is something new to explore.
-Let's start with similarities and differences:
+你可能已经熟悉了 [InfluxDB 的关键概念](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/)，
+reptimeDB 的 [数据模型](../concepts/data-model.md) 是值得探索的新领域。
+让我们从相似和不同之处开始：
 
-- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), which means there is no need to define a schema before writing data.
-- In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp. In GreptimeDB, it is represented as a row of data in the time-series table. The table name corresponds to the measurement, and the columns consist of three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
-- GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
+- 两者都是[无 schema 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
+  在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
+  表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
+- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line) 的时间戳数据类型。
+- GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
 
-Let’s consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
+让我们以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
 
 |_time|_measurement|location|scientist|_field|_value|
 |---|---|---|---|---|---|
@@ -29,8 +32,7 @@ Let’s consider the following [sample data](https://docs.influxdata.com/influxd
 |2019-08-18T00:06:00Z|census|klamath|anderson|bees|28|
 |2019-08-18T00:06:00Z|census|portland|mullen|ants|32|
 
-The InfluxDB line protocol format for the above data is:
-
+上述数据的 InfluxDB 行协议格式为：
 
 ```shell
 census,location=klamath,scientist=anderson bees=23 1566086400000000000
@@ -39,7 +41,7 @@ census,location=klamath,scientist=anderson bees=28 1566086760000000000
 census,location=portland,scientist=mullen ants=32 1566086760000000000
 ```
 
-In GreptimeDB data model the above data be represented as the following in `census` table:
+在 GreptimeDB 数据模型中，上述数据将被表示为 `census` 表中的以下内容：
 
 ```sql
 +----------+-----------+------+---------------------+------+
@@ -52,7 +54,7 @@ In GreptimeDB data model the above data be represented as the following in `cens
 +----------+-----------+------+---------------------+------+
 ```
 
-The schema of `census` table is as following:
+`census` 表结构如下：
 
 ```sql
 +-----------+----------------------+------+------+---------+---------------+
@@ -66,22 +68,23 @@ The schema of `census` table is as following:
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-## Database connection information
+## 数据库连接信息
 
-Before writing or querying data, it is important to understand the differences in database connection information between InfluxDB and GreptimeDB.
+在写入或查询数据之前，了解 InfluxDB 和 GreptimeDB 之间的数据库连接信息的差异很重要。
 
-- **Token**: The InfluxDB API token is used for authentication and is the same as the GreptimeDB authentication. You can use `<greptimedb_user:greptimedb_password>` as the token when interacting with GreptimeDB using InfluxDB's client libraries or HTTP API.
-- **Organization**: There is no organization when connecting to GreptimeDB.
-- **Bucket**: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
+- **Token**：InfluxDB API 中的 token 用于身份验证，与 GreptimeDB 身份验证相同。
+  当使用 InfluxDB 的客户端库或 HTTP API 与 GreptimeDB 交互时，你可以使用 `<greptimedb_user:greptimedb_password>` 作为 token。
+- **Organization**：GreptimeDB 中没有组织。
+- **Bucket**：在 InfluxDB 中，bucket 是时间序列数据的容器，与 GreptimeDB 中的数据库名称相同。
 
-## Write data
+## 写入数据
 
-GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
-Which means you can easily migrate from InfluxDB to GreptimeDB.
+GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
+这意味着你可以轻松地从 InfluxDB 迁移到 GreptimeDB。
 
 ### HTTP API
 
-To write a measurement to GreptimeDB, you can use the following HTTP API request:
+你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
 ::: code-group
 
@@ -100,8 +103,8 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 ### Telegraf
 
-Support of InfluxDB line protocol also means GreptimeDB is compatible with Telegraf.
-To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegraf configs:
+GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
+要配置 Telegraf，只需将 `http://<greptimedb-host>:4000` URL 添加到 Telegraf 配置中：
 
 ::: code-group
 
@@ -110,7 +113,7 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
   bucket = "<db-name>"
-  ## Leave empty
+  ## 留空即可
   organization = ""
 ```
 
@@ -123,12 +126,12 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
 ```
 :::
 
-### Client libraries
+### 客户端库
 
-Writing data to GreptimeDB is straightforward when using InfluxDB client libraries.
-All you need to do is include the URL and authentication details in the client configuration.
+使用 InfluxDB 客户端库写入数据到 GreptimeDB 非常直接且简单。
+你只需在客户端配置中包含 URL 和身份验证信息。
 
-For example:
+例如：
 
 ::: code-group
 
@@ -139,7 +142,7 @@ For example:
 
 import { InfluxDB, Point } from '@influxdata/influxdb-client'
 
-/** Environment variables **/
+/** 环境变量 **/
 const url = 'http://<greptimedb-host>:4000/v1/influxdb'
 const token = '<greptime_user>:<greptimedb_password>'
 const org = ''
@@ -154,7 +157,6 @@ const point1 = new Point('temperature')
 writeApi.writePoint(point1)
 
 ```
-
 
 ```python [Python]
 import influxdb_client
@@ -171,7 +173,6 @@ client = influxdb_client.InfluxDBClient(
     org=org
 )
 
-# Write script
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 p = influxdb_client.Point("my_measurement").tag("location", "Prague").field("temperature", 25.3)
@@ -237,26 +238,26 @@ $writeApi->write($point);
 
 :::
 
-Besides the languages mentioned above, GreptimeDB also supports client libraries for other languages that InfluxDB supports.
-You can write code in your preferred language by referring to the connection information code snippets provided above.
+除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
+你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
 
-## Migrate data
+## 迁移数据
 
-If you do not need all historical data, you can double write data to both GreptimeDB and InfluxDB.
-After a period of time, you can stop writing to InfluxDB and only write to GreptimeDB.
-When using InfluxDB client libraries, you need to create two instances of clients, one for GreptimeDB and one for InfluxDB.
+如果你不需要所有历史数据，可以将数据同时写入 GreptimeDB 和 InfluxDB。
+一段时间后，可以停止向 InfluxDB 写入数据，只写入 GreptimeDB。
+当使用 InfluxDB 客户端库时，需要创建两个客户端实例，一个用于 GreptimeDB，一个用于 InfluxDB。
 
-If you need to migrate all historical data, please follow these steps.
+如果你需要迁移所有历史数据，请按照以下步骤操作。
 
-### Export Data from InfluxDB v2 Server
+### 从 InfluxDB v2 服务器导出数据
 
-Let's get the bucket ID to be migrated with InfluxDB CLI:
+首先，使用 InfluxDB CLI 获取 bucket ID：
 
 ```shell
 influx bucket list
 ```
 
-You'll get outputs look like the following:
+你将看到类似以下的输出：
 
 ```shell
 ID               Name           Retention Shard group duration Organization ID  Schema Type
@@ -265,17 +266,17 @@ b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 
 9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
 ```
 
-Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
-Log in to the server you deployed InfluxDB v2 and run the following command to export data in InfluxDB Line Protocol format:
+假设你想要从 `example-bucket` 迁移数据，那么 ID 为 `9a79c1701e579c94`。
+登录到部署 InfluxDB v2 的服务器，并运行以下命令以导出数据为 InfluxDB 行协议格式：
 
 ```shell
-# The engine path is often "/var/lib/influxdb2/engine/".
+# 引擎路径通常为 "/var/lib/influxdb2/engine/"
 export ENGINE_PATH="<engine-path>"
-# Export all the data in example-bucket (ID=9a79c1701e579c94).
+# 导出 example-bucket 中的所有数据（ID=9a79c1701e579c94）
 influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
 ```
 
-The outputs look like the following:
+输出类似如下的数据：
 
 ```shell
 {"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
@@ -283,19 +284,19 @@ The outputs look like the following:
 {"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
 ```
 
-:::tip Tip
-You can specify more concrete data sets, like measurements and time range, to be exported. Please refer to the [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) manual for details.
+:::tip 提示
+你可以指定更具体的数据集进行导出，例如指定 measurement 和时间范围。详细信息请参考 [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/)。
 :::
 
-### Import Data to GreptimeDB
+### 导入数据到 GreptimeDB
 
-Copy the `influxdb_export.lp` file to a working directory.
+将 `influxdb_export.lp` 文件复制到工作目录：
 
 ```shell
 cp influxdb2:/influxdb_export.lp influxdb_export.lp
 ```
 
-Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
+在将数据导入 GreptimeDB 之前，如果数据文件过大，建议将数据文件拆分为多个片段：
 
 ```shell
 split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
@@ -304,7 +305,7 @@ split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
 # -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
 ```
 
-Now, import data to GreptimeDB via the HTTP API:
+通过 HTTP API 将数据导入 GreptimeDB：
 
 ```
 for file in influxdb_export_slice.*; do
@@ -316,20 +317,20 @@ for file in influxdb_export_slice.*; do
 done
 ```
 
-## Query data
+## 查询数据
 
-GreptimeDB does not support Flux and InfluxQL. Instead, it utilizes SQL and PromQL.
+GreptimeDB 不支持 Flux 和 InfluxQL，而是使用 SQL 和 PromQL。
 
-SQL is a universal language designed for managing and manipulating relational databases.
-With flexible capabilities for data retrieval, manipulation, and analytics,
-it is also reduce the learning curve for users who are already familiar with SQL.
+SQL 是一种通用的用于管理和操作关系数据库的语言。
+具有灵活的数据检索、操作和分析功能，
+减少了已经熟悉 SQL 的用户的学习曲线。
 
-PromQL (Prometheus Query Language) lets the user select and aggregate time series data in real time,
-The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
-or consumed by external systems via the [HTTP API](/user-guide/query-data/promql#prometheus-http-api).
+PromQL（Prometheus 查询语言）允许用户实时选择和聚合时间序列数据，
+表达式的结果可以显示为图形，也可以在 Prometheus 的表达式浏览器中以表格数据的形式查看，
+或通过 [HTTP API](/user-guide/query-data/promql#prometheus-http-api) 传递给外部系统。
 
-Suppose you are querying the max cpu from the `monitor` table that has been recorded over the past 24 hours.
-In influxQL, the query would be something like:
+假设你要查询过去 24 小时内记录的 `monitor` 表中的最大 CPU。
+在 InfluxQL 中，查询如下：
 
 ```sql [InfluxQL]
 SELECT 
@@ -342,11 +343,10 @@ GROUP BY
    time(1h)
 ```
 
-This InfluxQL query calculates the max value of the `cpu` field from the `monitor` table,
-where the time is greater than the current time minus 24 hours.
-The results are grouped in one-hour intervals.
+此 InfluxQL 查询计算 `monitor` 表中 `cpu`字段的最大值，
+其中时间大于当前时间减去 24 小时，结果以一小时为间隔进行分组。
 
-In Flux, the query would be something like:
+该查询在 Flux 中的表达如下：
 
 ```flux [Flux]
 from(bucket: "public")
@@ -355,7 +355,7 @@ from(bucket: "public")
   |> aggregateWindow(every: 1h, fn: max)
 ```
 
-The similar query in GreptimeDB SQL would be:
+在 GreptimeDB SQL 中，类似的查询为：
 
 ```sql [SQL]
 SELECT
@@ -370,22 +370,22 @@ ALIGN '1h' TO NOW
 ORDER BY ts DESC;
 ```
 
-In this SQL query,
-the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,
-while the `ALIGN` clause sets the alignment time for the time series data.
-For additional details on grouping by time window, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
+在该 SQL 查询中，
+`RANGE` 子句确定了 AVG(cpu) 聚合函数的时间窗口，
+而 `ALIGN` 子句设置了时间序列数据的对齐时间。
+有关按时间窗口分组的更多详细信息，请参考[按时间窗口聚合数据](/user-guide/query-data/sql#按时间窗口聚合数据)文档。
 
-The similar query in PromQL would be something like:
+在 PromQL 中，类似的查询为：
 
 ```promql
 avg_over_time(monitor[1h])
 ```
 
-To query the last 24 hours of time series data,
-you need to execute this PromQL with the `start` and `end` parameters of the HTTP API to define the time range.
-For more information on PromQL, please refer to the [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) document.
+要查询最后 24 小时的时间序列数据，
+你需要执行此 PromQL 并使用 HTTP API 的 `start` 和 `end` 参数定义时间范围。
+有关 PromQL 的更多信息，请参考 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 文档。
 
-## Visualize data
+## 可视化数据
 
-It is recommanded using Grafana to visualize data in GreptimeDB.
-Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
+推荐使用 Grafana 可视化 GreptimeDB 数据，
+请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
