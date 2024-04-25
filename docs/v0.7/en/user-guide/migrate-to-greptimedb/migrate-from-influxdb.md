@@ -1,8 +1,5 @@
 # Migrate from InfluxDB
 
-GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
-Which means you can easily migrate from InfluxDB to GreptimeDB.
-
 
 ## Data model in difference
 
@@ -68,7 +65,12 @@ Before writing or querying data, it is important to understand the differences i
 - Organization: There is no organization when connecting to GreptimeDB.
 - Bucket: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
 
-## HTTP API
+## Write data
+
+GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
+Which means you can easily migrate from InfluxDB to GreptimeDB.
+
+### HTTP API
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
@@ -87,7 +89,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 :::
 
-## Telegraf
+### Telegraf
 
 Support of InfluxDB line protocol also means GreptimeDB is compatible with Telegraf.
 To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegraf configs:
@@ -112,13 +114,12 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
 ```
 :::
 
-## Client libraries
+### Client libraries
 
-Writing and querying data with GreptimeDB is straightforward when using InfluxDB client libraries.
+Writing data to GreptimeDB is straightforward when using InfluxDB client libraries.
 All you need to do is include the URL and authentication details in the client configuration.
 
-The following examples demonstrate how to write data to GreptimeDB.
-You can also query data using the same client configuration.
+For example:
 
 ::: code-group
 
@@ -148,7 +149,6 @@ writeApi.writePoint(point1)
 
 
 ```python [Python]
-
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -172,7 +172,6 @@ write_api.write(bucket=bucket, org=org, record=p)
 ```
 
 ```go [Go]
-
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
@@ -190,7 +189,6 @@ client.Close()
 ```
 
 ```java [Java]
-
 private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
@@ -311,5 +309,76 @@ for file in influxdb_export_slice.*; do
 done
 ```
 
+## Query data
+
+GreptimeDB does not support Flux and InfluxQL. Instead, it utilizes SQL and PromQL.
+
+SQL is a universal language designed for managing and manipulating relational databases.
+With flexible capabilities for data retrieval, manipulation, and analytics,
+it is also reduce the learning curve for users who are already familiar with SQL.
+
+PromQL (Prometheus Query Language) lets the user select and aggregate time series data in real time,
+The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
+or consumed by external systems via the [HTTP API](/user-guide/query-data/promql#prometheus-http-api).
+
+Suppose you are querying the max cpu from the `monitor` table that has been recorded over the past 24 hours.
+In influxQL, the query would be something like:
+
+```sql [InfluxQL]
+SELECT 
+   MAX("cpu") 
+FROM 
+   "monitor" 
+WHERE 
+   time > now() - 24h 
+GROUP BY 
+   time(1h)
+```
+
+This InfluxQL query calculates the max value of the `cpu` field from the `monitor` table,
+where the time is greater than the current time minus 24 hours.
+The results are grouped in one-hour intervals.
+
+In Flux, the query would be something like:
+
+```flux [Flux]
+from(bucket: "public")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "monitor")
+  |> aggregateWindow(every: 1h, fn: max)
+```
+
+The similar query in GreptimeDB SQL would be:
+
+```sql [SQL]
+SELECT
+    ts,
+    host,
+    AVG(cpu) RANGE '1h' as mean_cpu
+FROM
+    monitor
+WHERE
+    ts > NOW() - INTERVAL '24 hours'
+ALIGN '1h' TO NOW
+ORDER BY ts DESC;
+```
+
+In this SQL query,
+the `RANGE` clause determines the time window for the AVG(cpu) aggregation function,
+while the `ALIGN` clause sets the alignment time for the time series data.
+For additional details on grouping by time window, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
+
+The similar query in PromQL would be something like:
+
+```promql
+avg_over_time(monitor[1h])
+```
+
+To query the last 24 hours of time series data,
+you need to execute this PromQL with the `start` and `end` parameters of the HTTP API to define the time range.
+For more information on PromQL, please refer to the [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) document.
+
 ## Visualize data
 
+It is recommanded using Grafana to visualize data in GreptimeDB.
+Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
