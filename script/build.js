@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process'
 ;(async () => {
   const files = fs.readdirSync('./docs')
   const versionMap = files.filter(file => file.match(/v\d\.\d/))
+  versionMap.push('nightly')
   for (let i = versionMap.length; i >= 0; i--) {
     await execSync(`pnpm run docs:build`, {
       env: {
