@@ -71,7 +71,7 @@
     - run-on-android
     - monitoring
     - tracing
-    - remote-wal
+    - Remote-Wal:
       - quick-start
       - cluster-deployment
     - region-migration
