@@ -2,6 +2,8 @@ import { createMarkdownRenderer } from 'vitepress'
 import path from 'path'
 import fs from 'fs-extra'
 import matter from 'gray-matter'
+import { getVariate } from './serverUtils'
+import { CURRENT_VERSION } from '../config/common'
 
 export default {
   load: async () => {
@@ -15,6 +17,7 @@ export default {
         Object.keys(filesMap[templateKey]).forEach(fileKey => {
           let src = getFileContent(getTemplate(templateKey), filesMap[templateKey][fileKey])
           src = processIncludes('.', src, fileKey, [])
+          src = replaceVariate(src)
           mdMap[fileKey] = md.render(src)
         })
     })
@@ -111,4 +114,19 @@ function processIncludes(srcDir, src, file, includes) {
       return m // silently ignore error if file is not present
     }
   })
+}
+
+function replaceVariate(src) {
+  const variates = getVariate(CURRENT_VERSION)
+  const variatesKey = Object.keys(variates)
+  
+  variatesKey.forEach(key => {
+    src = src.replace(new RegExp(/<%\s*(.*?)\s*%>/, 'g'), (_, $1) => {
+      if (variates[$1]) return `${variates[key]}`
+      else {
+        return `${_}`
+      }
+    })
+  })
+  return src;
 }
