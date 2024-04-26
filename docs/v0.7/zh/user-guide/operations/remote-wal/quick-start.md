@@ -1,4 +1,4 @@
-# Remote WAL
+# 快速开始
 
 ## 什么是 Remote WAL
 
@@ -7,7 +7,7 @@
 为了解决上述问题，我们决定设计并实现一个远程 WAL。远程 WAL 将 WAL 从 Datanode 分离到远程服务，我们选择了 Apache Kafka 作为远程服务。Apache Kafka 在流处理中被广泛采用，展现出卓越的分布式容错能力和基于主题的订阅机制。在发布 v0.5.0 版本时，我们引入了 Apache Kafka 作为 WAL 的可选存储引擎。
 
 
-##  快速开始
+## 运行带有 Remote WAL 的 Standalone GreptimeDB
 
 通过以下步骤使用 Docker 体验远程 WAL 非常简单。在这个快速开始中，我们将创建一个采用 KRaft 模式的 Kafka 集群，并将其作为独立 GreptimeDB 的远程 WAL。
 

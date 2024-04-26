@@ -1,4 +1,4 @@
-# Remote WAL
+# Quick Start
 
 ## What's Remote WAL
 
@@ -6,7 +6,7 @@
 
 To resolve the above problems, we decided to design and implement a remote WAL. The remote WAL decouples the WAL from the Datanode to the remote service, which we chose to be [Apache Kafka](https://kafka.apache.org/). Apache Kafka is widely adopted in stream processing and exhibits excellent distributed fault tolerance and a subscription mechanism based on topics. With the release [v0.5.0](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.5.0), we introduced Apache Kafka as an optional storage engine for WAL.
 
-##  Quick Start
+##  Run Standalone GreptimeDB with Remote WAL
 
 It's very easy to experience remote WAL by using the Docker with the following steps. In this quick start, we will create a Kafka cluster with one broker in KRaft mode and use it as remote WAL for the standalone GreptimeDB.
 
