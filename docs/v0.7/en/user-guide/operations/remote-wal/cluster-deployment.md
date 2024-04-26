@@ -7,7 +7,6 @@ It's highly recommended to deploy the GreptimeDB cluster in Kubernetes. There ar
   For testing purposes, you can use Kind or Minikube to create Kubernetes.
 
 - Helm v3
-
 - kubectl
 
 ## Step 1: Deploy the GreptimeDB Operator

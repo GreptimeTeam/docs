@@ -72,6 +72,8 @@
     - monitoring
     - tracing
     - remote-wal
+      - quick-start
+      - cluster-deployment
     - region-migration
     # TODO
     # - alert
