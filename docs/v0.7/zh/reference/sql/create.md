@@ -92,7 +92,6 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数         | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用 |
 | `compaction.twcs.time_window` | Compaction 时间窗口    | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用 |
 | `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
-| `append_mode`           | 该表是否时 append-only 的     | 字符串值. 默认为 'false'，表示会根据主键和时间戳对数据去重。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行     |
 
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
 
@@ -128,14 +127,6 @@ with(
   'compaction.twcs.max_active_window_files'='8',
   'compaction.twcs.max_inactive_window_files'='1',
 );
-```
-
-创建一个 append-only 表来关闭去重
-```sql
-CREATE TABLE IF NOT EXISTS temperatures(
-  ts TIMESTAMP TIME INDEX,
-  temperature DOUBLE DEFAULT 10,
-) engine=mito with('append_mode'='true');
 ```
 
 
