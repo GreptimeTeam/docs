@@ -55,8 +55,6 @@
     "vue-demi": "^0.13.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.7.1",
-    "@commitlint/config-conventional": "^17.7.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "markdownlint-cli": "^0.37.0",
@@ -86,11 +84,6 @@
     "url": "https://github.com/GrepTimeTeam/docs/issues"
   },
   "homepage": "https://github.com/GrepTimeTeam/docs#readme",
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $GIT_PARAMS"
-    }
-  },
   "lint-staged": {
     "*.md": [
       "npx markdownlint"
