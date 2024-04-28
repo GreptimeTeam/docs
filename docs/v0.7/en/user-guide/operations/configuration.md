@@ -191,12 +191,11 @@ with_metric_engine = true
 The following table describes the options in detail:
 
 | Option     | Key                | Type    | Description                                                                     |
-| ---------- | ------------       | ------- | ------------------------------------------------------------------------------- |
+| ---------- | ------------------ | ------- | ------------------------------------------------------------------------------- |
 | http       |                    |         | HTTP server options                                                             |
 |            | addr               | String  | Server address, "127.0.0.1:4000" by default                                     |
 |            | timeout            | String  | HTTP request timeout, "30s" by default                                          |
 |            | body_limit         | String  | HTTP max body size, "64MB" by default                                           |
-|            | is_strict_mode     | Boolean | Whether to validate protocol strings, false by default                          |
 | grpc       |                    |         | gRPC server options                                                             |
 |            | addr               | String  | Server address, "127.0.0.1:4001" by default                                     |
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                               |
@@ -211,7 +210,7 @@ The following table describes the options in detail:
 |            | addr               | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
 | prom_store |                    |         | Prometheus remote storage options                                               |
-|            | enable             | Boolean | Whether to enable Prometheus remote write and read in HTTP API, true by default |
+|            | enable             | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default |
 |            | with_metric_engine | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default    |
 | postgres   |                    |         | PostgresSQL server options                                                      |
 |            | enable             | Boolean | Whether to enable PostgresSQL protocol, true by default                         |

@@ -186,33 +186,32 @@ enable = true
 
 下表描述了每个选项的详细信息：
 
-| 选项       | 键           | 类型   | 描述                                                    |
-| ---------- | ------------       | ------ | ------------------------------------------------------- |
-| http       |                    |        | HTTP 服务器选项                                         |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                     |
-|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                         |
-|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                        |
-|            | is_strict_mode     | 布尔值 | 是否验证协议字符串，默认为false                          |
-| grpc       |                    |        | gRPC 服务器选项                                         |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                     |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                            |
-| mysql      |                    |        | MySQL 服务器选项                                        |
-|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                        |
-|            | add                | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                     |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
-| influxdb   |                    |        | InfluxDB 协议选项                                       |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true       |
-| opentsdb   |                    |        | OpenTSDB 协议选项                                       |
-|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                     |
-|            | addr               | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242" |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
-| prom_store |                    |        | Prometheus 远程存储选项                                 |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true |
+| 选项       | 键                 | 类型   | 描述                                                        |
+| ---------- | ------------------ | ------ | ----------------------------------------------------------- |
+| http       |                    |        | HTTP 服务器选项                                             |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                         |
+|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                             |
+|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                            |
+| grpc       |                    |        | gRPC 服务器选项                                             |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                         |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
+| mysql      |                    |        | MySQL 服务器选项                                            |
+|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                            |
+|            | add                | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                         |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
+| influxdb   |                    |        | InfluxDB 协议选项                                           |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true           |
+| opentsdb   |                    |        | OpenTSDB 协议选项                                           |
+|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                         |
+|            | addr               | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242"     |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
+| prom_store |                    |        | Prometheus 远程存储选项                                     |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true     |
 |            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true |
-| postgres   |                    |        | PostgresSQL 服务器选项                                  |
-|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                  |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                     |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                            |
+| postgres   |                    |        | PostgresSQL 服务器选项                                      |
+|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                      |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                         |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
 
 ### 存储选项
 
