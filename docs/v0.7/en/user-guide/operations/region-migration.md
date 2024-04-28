@@ -51,10 +51,9 @@ The parameters of `migrate_region`：
 select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 ```
 
-| Option           | Description                                                    | Required     |   |
-|------------------|----------------------------------------------------------------|--------------|---|
-| `region_id`      | The region id.                                                 | **Required** |   |
-| `from_peer_id`   | The peer id of the migration source(Datanode).                 | **Required** |   |
-| `to_peer_id`     | The peer id of the migration destination(Datanode).            | **Required** |   |
-| `replay_timeout` | The timeout(secs) of replay data. If the new Region fails to replay the data within the specified timeout, 
-the migration will fail, however the data in the old Region will not be lost.                             |   Optional   |   |
+| Option           | Description                                                                                                                                                                               | Required     |     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --- |
+| `region_id`      | The region id.                                                                                                                                                                            | **Required** |     |
+| `from_peer_id`   | The peer id of the migration source(Datanode).                                                                                                                                            | **Required** |     |
+| `to_peer_id`     | The peer id of the migration destination(Datanode).                                                                                                                                       | **Required** |     |
+| `replay_timeout` | The timeout(secs) of replay data. If the new Region fails to replay the data within the specified timeout,  the migration will fail, however the data in the old Region will not be lost. | Optional     |     |
