@@ -7,7 +7,7 @@ const { ENV, VERSION = LATEST_VERSION, VERSION_MAP, BASE: base = '/' } = process
 const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION
 
-const versionPath = `:version/${CURRENT_LANG}/:path+`
+const versionPath = `${CURRENT_VERSION}/${CURRENT_LANG}/:path+`
 const versionMap = JSON.parse(VERSION_MAP)
 
 const common = async () => {

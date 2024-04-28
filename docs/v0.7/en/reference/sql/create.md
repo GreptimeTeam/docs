@@ -85,8 +85,12 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | The storage time of the table data            | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                                                 |
 | `regions`           | The region number of the table                | Integer value, such as 1, 5, 10 etc.                                                                                                                                         |
-| `write_buffer_size` | Memtable size of the table                    | String value representing a valid size, such as `32MB`, `128MB`, etc. The default value of this option is `32MB`. Supported units are: `MB` / `GB`.                          |
 | `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration#storage-engine-provider). |
+| `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
+| `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
+| `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.         | String value, such as '1'. Only available when `compaction.type` is `twcs`. |
+| `compaction.twcs.time_window` | Compaction time window    | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.  |
+| `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
 
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
 
@@ -105,6 +109,25 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) engine=mito with(ttl='7d', regions=10, storage="Gcs");
 ```
+
+Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data.
+- It merges files within the latest time window if they exceed 8 files
+- It merges files within inactive windows into a single file
+
+```sql
+CREATE TABLE IF NOT EXISTS temperatures(
+  ts TIMESTAMP TIME INDEX,
+  temperature DOUBLE DEFAULT 10,
+)
+engine=mito
+with(
+  'compaction.type'='twcs',
+  'compaction.twcs.time_window'='1d',
+  'compaction.twcs.max_active_window_files'='8',
+  'compaction.twcs.max_inactive_window_files'='1',
+);
+```
+
 
 ### Column options
 
