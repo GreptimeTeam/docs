@@ -240,82 +240,6 @@ $writeApi->write($point);
 Besides the languages mentioned above, GreptimeDB also supports client libraries for other languages that InfluxDB supports.
 You can write code in your preferred language by referring to the connection information code snippets provided above.
 
-## Migrate data
-
-If you do not need all historical data, you can double write data to both GreptimeDB and InfluxDB.
-After a period of time, you can stop writing to InfluxDB and only write to GreptimeDB.
-When using InfluxDB client libraries, you need to create two instances of clients, one for GreptimeDB and one for InfluxDB.
-
-If you need to migrate all historical data, please follow these steps.
-
-### Export Data from InfluxDB v2 Server
-
-Let's get the bucket ID to be migrated with InfluxDB CLI:
-
-```shell
-influx bucket list
-```
-
-You'll get outputs look like the following:
-
-```shell
-ID               Name           Retention Shard group duration Organization ID  Schema Type
-22bdf03ca860e351 _monitoring    168h0m0s  24h0m0s              41fabbaf2d6c2841 implicit
-b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 implicit
-9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
-```
-
-Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
-Log in to the server you deployed InfluxDB v2 and run the following command to export data in InfluxDB Line Protocol format:
-
-```shell
-# The engine path is often "/var/lib/influxdb2/engine/".
-export ENGINE_PATH="<engine-path>"
-# Export all the data in example-bucket (ID=9a79c1701e579c94).
-influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
-```
-
-The outputs look like the following:
-
-```shell
-{"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
-{"level":"info","ts":1713227837.1399868,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/9a79c1701e579c94","file_count":1}
-{"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
-```
-
-:::tip Tip
-You can specify more concrete data sets, like measurements and time range, to be exported. Please refer to the [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) manual for details.
-:::
-
-### Import Data to GreptimeDB
-
-Copy the `influxdb_export.lp` file to a working directory.
-
-```shell
-cp influxdb2:/influxdb_export.lp influxdb_export.lp
-```
-
-Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
-
-```shell
-split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
-# -l [line_count]    Create split files line_count lines in length.
-# -d                 Use a numeric suffix instead of a alphabetic suffix.
-# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
-```
-
-Now, import data to GreptimeDB via the HTTP API:
-
-```
-for file in influxdb_export_slice.*; do
-    curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
-        -X POST "http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>" \
-        --data-binary @${file}
-    # avoid rate limit in the hobby plan
-    sleep 1
-done
-```
-
 ## Query data
 
 GreptimeDB does not support Flux and InfluxQL. Instead, it utilizes SQL and PromQL.
@@ -389,3 +313,96 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 It is recommanded using Grafana to visualize data in GreptimeDB.
 Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
+
+## Migrate data
+
+For a seamless migration of data from InfluxDB to GreptimeDB, you can follow these steps:
+
+![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
+
+### Simultaneously write data to both GreptimeDB and InfluxDB
+
+Simultaneously writing data to both GreptimeDB and InfluxDB is an effective strategy to prevent data loss during migration.
+When utilizing InfluxDB's [client libraries](#client-libraries), you can establish two client instances - one for GreptimeDB and another for InfluxDB.
+
+For information on how to write data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
+
+### Export Data from InfluxDB v2 Server
+
+If you don't require all historical data,
+you can write data to both GreptimeDB and InfluxDB for a certain period of time to gather the necessary recent data.
+Afterward, stop writing to InfluxDB and continue only with GreptimeDB.
+If you need to migrate all historical data, please follow the steps below.
+
+Let's get the bucket ID to be migrated with InfluxDB CLI.
+
+```shell
+influx bucket list
+```
+
+You'll get outputs look like the following:
+
+```shell
+ID               Name           Retention Shard group duration Organization ID  Schema Type
+22bdf03ca860e351 _monitoring    168h0m0s  24h0m0s              41fabbaf2d6c2841 implicit
+b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 implicit
+9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
+```
+
+Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
+Log in to the server you deployed InfluxDB v2 and run the following command to export data in InfluxDB Line Protocol format:
+
+```shell
+# The engine path is often "/var/lib/influxdb2/engine/".
+export ENGINE_PATH="<engine-path>"
+# Export all the data in example-bucket (ID=9a79c1701e579c94).
+influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
+```
+
+The outputs look like the following:
+
+```shell
+{"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
+{"level":"info","ts":1713227837.1399868,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/9a79c1701e579c94","file_count":1}
+{"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
+```
+
+:::tip Tip
+You can specify more concrete data sets, like measurements and time range, to be exported. Please refer to the [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) manual for details.
+:::
+
+Copy the `influxdb_export.lp` file to a working directory.
+
+```shell
+cp influxdb2:/influxdb_export.lp influxdb_export.lp
+```
+
+### Export data from InfluxDB v1 Server
+
+
+
+
+
+### Import Data to GreptimeDB
+
+Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
+
+```shell
+split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
+# -l [line_count]    Create split files line_count lines in length.
+# -d                 Use a numeric suffix instead of a alphabetic suffix.
+# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
+```
+
+Now, import data to GreptimeDB via the HTTP API:
+
+```
+for file in influxdb_export_slice.*; do
+    curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
+        -X POST "http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>" \
+        --data-binary @${file}
+    # avoid rate limit in the hobby plan
+    sleep 1
+done
+```
+
