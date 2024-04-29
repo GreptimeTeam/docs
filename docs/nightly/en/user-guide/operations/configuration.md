@@ -196,7 +196,7 @@ The following table describes the options in detail:
 |            | addr               | String  | Server address, "127.0.0.1:4000" by default                                     |
 |            | timeout            | String  | HTTP request timeout, "30s" by default                                          |
 |            | body_limit         | String  | HTTP max body size, "64MB" by default                                           |
-|            | is_strict_mode     | Boolean | Whether to strictly verify that the protocol string is UTF-8, default false                          |
+|            | is_strict_mode     | Boolean | Whether to enable the strict verification mode of the string protocol, which will slightly affect performance. False by default.                          |
 | grpc       |                    |         | gRPC server options                                                             |
 |            | addr               | String  | Server address, "127.0.0.1:4001" by default                                     |
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                               |
