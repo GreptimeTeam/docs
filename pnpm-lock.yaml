@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@docsearch/css':
-    specifier: ^3.3.2
-    version: 3.3.4
+    specifier: ^3.6.0
+    version: 3.6.0
   '@vueuse/core':
     specifier: ^9.13.0
     version: 9.13.0(vue@3.3.4)
@@ -470,13 +470,12 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@docsearch/css@3.3.4:
-    resolution: {integrity: sha512-vDwCDoVXDgopw/hvr0zEADew2wWaGP8Qq0Bxhgii1Ewz2t4fQeyJwIRN/mWADeLFYPVkpz8TpEbxya/i6Tm0WA==}
-    dev: false
-
   /@docsearch/css@3.5.2:
     resolution: {integrity: sha512-SPiDHaWKQZpwR2siD0KQUwlStvIAnEyK6tAE2h2Wuoq8ue9skzhlyVQ1ddzOxX6khULnAALDiR/isSF3bnuciA==}
     dev: true
+
+  /@docsearch/css@3.6.0:
+    resolution: {integrity: sha512-+sbxb71sWre+PwDK7X2T8+bhS6clcVMLwBPznX45Qu6opJcgRjAp7gYSDzVFp187J+feSj5dNBN1mJoi6ckkUQ==}
 
   /@docsearch/js@3.5.2(@algolia/client-search@4.20.0)(search-insights@2.8.3):
     resolution: {integrity: sha512-p1YFTCDflk8ieHgFJYfmyHBki1D61+U9idwrLh+GQQMrBSP3DLGKpy0XUJtPjAOPltcVbqsTjiPFfH7JImjUNg==}
@@ -6889,7 +6888,7 @@ packages:
       postcss:
         optional: true
     dependencies:
-      '@docsearch/css': 3.5.2
+      '@docsearch/css': 3.6.0
       '@docsearch/js': 3.5.2(@algolia/client-search@4.20.0)(search-insights@2.8.3)
       '@types/markdown-it': 13.0.2
       '@vue/devtools-api': 6.5.0
