@@ -327,12 +327,63 @@ When utilizing InfluxDB's [client libraries](#client-libraries), you can establi
 
 For information on how to write data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
 
-### Export Data from InfluxDB v2 Server
-
-If you don't require all historical data,
+If you do not need all historical data,
 you can write data to both GreptimeDB and InfluxDB for a certain period of time to gather the necessary recent data.
 Afterward, stop writing to InfluxDB and continue only with GreptimeDB.
 If you need to migrate all historical data, please follow the steps below.
+
+### Export data from InfluxDB v1 Server
+
+If you are using Docker to run InfluxDB, the first step is to connect to the Docker container shell.
+Otherwise, you can skip this Docker step.
+
+```shell
+docker exec -it <influxdb-container-id> bash
+```
+
+Create a temporary directory to store the exported data of InfluxDB.
+
+```shell
+mkdir -p /home/influxdb_export
+```
+
+Use the [`influx_inspect export` command](https://docs.influxdata.com/influxdb/v1/tools/influx_inspect/#export) of InfluxDB to export data.
+
+```shell
+influx_inspect export \
+  -database <db-name> \ 
+  -end <end-time> \
+  -lponly \
+  -datadir /var/lib/influxdb/data \
+  -waldir /var/lib/influxdb/wal \
+  -out /home/influxdb_export/data
+```
+
+- The `-database` flag specifies the database to be exported.
+- The `-end` flag specifies the end time of the data to be exported.
+Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
+You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+- The `-lponly` flag specifies that only the Line Protocol data should be exported.
+- The `-datadir` flag specifies the path to the data directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
+- The `-waldir` flag specifies the path to the WAL directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
+- The `-out` flag specifies the output directory.
+
+After successfully executing the command, you will see the exported data, in InfluxDB line protocol, looks like the following:
+
+```txt
+disk,device=disk1s5s1,fstype=apfs,host=bogon,mode=ro,path=/ inodes_used=356810i 1714363350000000000
+diskio,host=bogon,name=disk0 iops_in_progress=0i 1714363350000000000
+disk,device=disk1s6,fstype=apfs,host=bogon,mode=rw,path=/System/Volumes/Update inodes_used_percent=0.0002391237988702021 1714363350000000000
+...
+```
+
+If you are using Docker to run InfluxDB, exit the Docker shell and copy the data file to the current path on the host machine.
+
+```shell
+docker cp <influxdb-container-id>:/home/influxdb_export/data .
+```
+
+### Export Data from InfluxDB v2 Server
 
 Let's get the bucket ID to be migrated with InfluxDB CLI.
 
@@ -376,12 +427,6 @@ Copy the `influxdb_export.lp` file to a working directory.
 ```shell
 cp influxdb2:/influxdb_export.lp influxdb_export.lp
 ```
-
-### Export data from InfluxDB v1 Server
-
-
-
-
 
 ### Import Data to GreptimeDB
 
