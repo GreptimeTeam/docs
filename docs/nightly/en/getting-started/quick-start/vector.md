@@ -30,7 +30,7 @@ Here we use [Docker Compose](https://docs.docker.com/compose/) to start Greptime
 ```yaml
 services:
   grafana:
-    image: grafana/grafana-oss:9.5.15
+    image: grafana/grafana-oss:<%grafana-version%>
     container_name: grafana
     ports:
       - 3000:3000
