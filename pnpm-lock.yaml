@@ -96,8 +96,8 @@ dependencies:
     specifier: ^1.22.1
     version: 1.22.1
   rollup:
-    specifier: ^3.26.0
-    version: 3.26.0
+    specifier: ^3.29.4
+    version: 3.29.4
   semver:
     specifier: ^7.6.0
     version: 7.6.0
@@ -156,10 +156,10 @@ devDependencies:
     version: 1.4.1
   unplugin-auto-import:
     specifier: ^0.17.5
-    version: 0.17.5(@vueuse/core@9.13.0)(rollup@3.26.0)
+    version: 0.17.5(@vueuse/core@9.13.0)(rollup@3.29.4)
   unplugin-vue-components:
     specifier: ^0.24.0
-    version: 0.24.1(rollup@3.26.0)(vue@3.3.4)
+    version: 0.24.1(rollup@3.29.4)(vue@3.3.4)
   vitepress:
     specifier: 1.0.0-rc.20
     version: 1.0.0-rc.20(@algolia/client-search@4.20.0)(postcss@8.4.38)(search-insights@2.8.3)(stylus@0.59.0)
@@ -943,7 +943,7 @@ packages:
     dev: true
     optional: true
 
-  /@rollup/pluginutils@5.0.2(rollup@3.26.0):
+  /@rollup/pluginutils@5.0.2(rollup@3.29.4):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -955,10 +955,10 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.26.0
+      rollup: 3.29.4
     dev: true
 
-  /@rollup/pluginutils@5.1.0(rollup@3.26.0):
+  /@rollup/pluginutils@5.1.0(rollup@3.29.4):
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -970,7 +970,7 @@ packages:
       '@types/estree': 1.0.0
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.26.0
+      rollup: 3.29.4
     dev: true
 
   /@types/estree@1.0.0:
@@ -5838,20 +5838,12 @@ packages:
       fast-glob: 3.2.12
     dev: true
 
-  /rollup@3.26.0:
-    resolution: {integrity: sha512-YzJH0eunH2hr3knvF3i6IkLO/jTjAEwU4HoMUbQl4//Tnl3ou0e7P5SjxdDr8HQJdeUJShlbEHXrrnEHy1l7Yg==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.3
-
   /rollup@3.29.4:
     resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /run-async@0.1.0:
     resolution: {integrity: sha512-qOX+w+IxFgpUpJfkv2oGN0+ExPs68F4sZHfaRRx4dDexAQkG83atugKVEylyT5ARees3HBbfmuvnjbrd8j9Wjw==}
@@ -6505,10 +6497,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /unimport@3.7.1(rollup@3.26.0):
+  /unimport@3.7.1(rollup@3.29.4):
     resolution: {integrity: sha512-V9HpXYfsZye5bPPYUgs0Otn3ODS1mDUciaBlXljI4C2fTwfFpvFZRywmlOu943puN9sncxROMZhsZCjNXEpzEQ==}
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@3.26.0)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       acorn: 8.11.3
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
@@ -6562,7 +6554,7 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: false
 
-  /unplugin-auto-import@0.17.5(@vueuse/core@9.13.0)(rollup@3.26.0):
+  /unplugin-auto-import@0.17.5(@vueuse/core@9.13.0)(rollup@3.29.4):
     resolution: {integrity: sha512-fHNDkDSxv3PGagX1wmKBYBkgaM4AKAgZmdJw/bxjhNljx9KSXSgHpGfX0MwUrq9qw6q1bhHIZVWyOwoY2koo4w==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -6575,19 +6567,19 @@ packages:
         optional: true
     dependencies:
       '@antfu/utils': 0.7.7
-      '@rollup/pluginutils': 5.1.0(rollup@3.26.0)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
       '@vueuse/core': 9.13.0(vue@3.3.4)
       fast-glob: 3.3.2
       local-pkg: 0.5.0
       magic-string: 0.30.10
       minimatch: 9.0.3
-      unimport: 3.7.1(rollup@3.26.0)
+      unimport: 3.7.1(rollup@3.29.4)
       unplugin: 1.7.1
     transitivePeerDependencies:
       - rollup
     dev: true
 
-  /unplugin-vue-components@0.24.1(rollup@3.26.0)(vue@3.3.4):
+  /unplugin-vue-components@0.24.1(rollup@3.29.4)(vue@3.3.4):
     resolution: {integrity: sha512-T3A8HkZoIE1Cja95xNqolwza0yD5IVlgZZ1PVAGvVCx8xthmjsv38xWRCtHtwl+rvZyL9uif42SRkDGw9aCfMA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -6601,7 +6593,7 @@ packages:
         optional: true
     dependencies:
       '@antfu/utils': 0.7.4
-      '@rollup/pluginutils': 5.0.2(rollup@3.26.0)
+      '@rollup/pluginutils': 5.0.2(rollup@3.29.4)
       chokidar: 3.5.3
       debug: 4.3.4
       fast-glob: 3.2.12
@@ -6835,7 +6827,7 @@ packages:
     dependencies:
       esbuild: 0.17.19
       postcss: 8.4.38
-      rollup: 3.26.0
+      rollup: 3.29.4
       stylus: 0.59.0
     optionalDependencies:
       fsevents: 2.3.3
