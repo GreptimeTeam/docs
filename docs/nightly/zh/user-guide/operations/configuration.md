@@ -192,7 +192,7 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                         |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                             |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                            |
-|            | is_strict_mode     | 布尔值 | 是否验证协议字符串，默认为false                          |
+|            | is_strict_mode     | 布尔值 | 是否严格校验协议字符串为 UTF-8，默认为false                          |
 | grpc       |                    |        | gRPC 服务器选项                                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                         |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
