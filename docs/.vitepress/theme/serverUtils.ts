@@ -31,7 +31,7 @@ export async function makeSidebar(lang, version) {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
 
-        let filepath: string;
+        let filepath: string
         if (link.startsWith('/release-notes/') && link !== '/release-notes/all-releases') {
           filepath = `docs${link}.md`
         } else {
@@ -97,4 +97,11 @@ export const getVersionList = (lang: string) => {
         link: `${websiteMap[lang]}/${linkVersion}`,
       }
     })
+}
+
+export const getVariate = (version: string) => {
+  const variatePath = `docs/${version}/variates.yml`
+  let variate = {}
+  if (fs.existsSync(variatePath)) variate = YAML.load(fs.readFileSync(variatePath), 'utf8')
+  return variate
 }
