@@ -49,8 +49,7 @@ greptime/greptimedb standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003 \
---opentsdb-addr 0.0.0.0:4242
+--postgres-addr 0.0.0.0:4003
 ```
 
 数据将会存储在当前目录下的 `greptimedb/` 目录中。
@@ -73,8 +72,7 @@ greptime/greptimedb standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
-   --postgres-addr 0.0.0.0:4003 \
-   --opentsdb-addr 0.0.0.0:4242
+   --postgres-addr 0.0.0.0:4003
    ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
