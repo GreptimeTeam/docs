@@ -41,14 +41,14 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 In the GreptimeDB data model, the data is represented as follows in the `census` table:
 
 ```sql
-+----------+-----------+------+---------------------+------+
-| location | scientist | bees | ts                  | ants |
-+----------+-----------+------+---------------------+------+
-| klamath  | anderson  |   23 | 2019-08-18 00:00:00 | NULL |
-| klamath  | anderson  |   28 | 2019-08-18 00:06:00 | NULL |
-| portland | mullen    | NULL | 2019-08-18 00:00:00 |   30 |
-| portland | mullen    | NULL | 2019-08-18 00:06:00 |   32 |
-+----------+-----------+------+---------------------+------+
++---------------------+----------+-----------+------+------+
+| ts                  | location | scientist | bees | ants |
++---------------------+----------+-----------+------+------+
+| 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
+| 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
+| 2019-08-18 00:00:00 | portland | mullen    | NULL |   30 |
+| 2019-08-18 00:06:00 | portland | mullen    | NULL |   32 |
++---------------------+----------+-----------+------+------+
 ```
 
 The schema of the `census` table is as follows:
