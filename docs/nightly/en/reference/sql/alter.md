@@ -57,13 +57,13 @@ The removed column can't be retrieved immediately by all subsequent queries.
 
 ### Modify column type
 
-Modify the date type of column
+Modify the date type of a column
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The modified column cannot be a tag (primary key) or timestamp (time index), and it must be Nullable to ensure that the data can be safely converted (become null).
+The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (become null).
 
 ### Rename table
 
