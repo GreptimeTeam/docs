@@ -2,7 +2,7 @@
 
 `ALERT` 可以用来修改表的设置或者表中的数据：
 
-* 添加/删除列
+* 添加/删除/修改列
 * 重命名表
 
 ## Syntax
@@ -11,6 +11,7 @@
 ALTER TABLE [db.]table
    [ADD COLUMN name type [options] 
     | DROP COLUMN name
+    | MODIFY COLUMN name type
     | RENAME name
    ]
 ```
@@ -54,6 +55,16 @@ ALTER TABLE monitor DROP COLUMN load_15;
 ```
 
 后续的所有查询立刻不能获取到被移除的列。
+
+### 修改列类型
+
+修改列的数据类型
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
+```
+
+被修改的的列不能是tag列(primary key)或Timestamp列(time index), 同时他必须是Nullable来保证数据能够安全地进行转换(变成null)。
 
 ### 重命名表
 
