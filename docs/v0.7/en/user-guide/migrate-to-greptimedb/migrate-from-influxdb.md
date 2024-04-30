@@ -1,26 +1,25 @@
 # Migrate from InfluxDB
 
-InfluxDB is a well-known time series database.
-However, as the volume of time series data grows today,
-it may not meet users' requirements in terms of performance, scalability, and cost.
-
 GreptimeDB is a high-performance time series database designed to work in the infrastructure of the cloud era.
 Users can benefit from its elasticity and commodity storage.
 
-Migrating from InfluxDB to GreptimeDB can be a good choice.
-This document will help you understand the differences between the data models of the two databases and guide you through the migration process.
+Migrating from InfluxDB to GreptimeDB could be a beneficial move.
+This guide will help you comprehend the differences between the data models of the two databases and will walk you through the migration process.
 
 ## Data model in difference
 
-While you are likely familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](../concepts/data-model.md) of GreptimeDB is something new to explore.
+While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](../concepts/data-model.md) of GreptimeDB is something new to explore.
 Let's start with similarities and differences:
 
-- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), which means there is no need to define a schema before writing data.
-- In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp. In GreptimeDB, it is represented as a row of data in the time-series table. The table name corresponds to the measurement, and the columns consist of three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
+In GreptimeDB, it is represented as a row of data in the time-series table,
+where the table name aligns with the measurement,
+and the columns are divided into three types: Tag, Field, and Timestamp.
+- GreptimeDB uses `TimestampMillisecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
-Let’s consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
+Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
 
 |_time|_measurement|location|scientist|_field|_value|
 |---|---|---|---|---|---|
@@ -29,7 +28,7 @@ Let’s consider the following [sample data](https://docs.influxdata.com/influxd
 |2019-08-18T00:06:00Z|census|klamath|anderson|bees|28|
 |2019-08-18T00:06:00Z|census|portland|mullen|ants|32|
 
-The InfluxDB line protocol format for the above data is:
+The data mentioned above is formatted as follows in the InfluxDB line protocol:
 
 
 ```shell
@@ -39,7 +38,7 @@ census,location=klamath,scientist=anderson bees=28 1566086760000000000
 census,location=portland,scientist=mullen ants=32 1566086760000000000
 ```
 
-In GreptimeDB data model the above data be represented as the following in `census` table:
+In the GreptimeDB data model, the data is represented as follows in the `census` table:
 
 ```sql
 +----------+-----------+------+---------------------+------+
@@ -52,7 +51,7 @@ In GreptimeDB data model the above data be represented as the following in `cens
 +----------+-----------+------+---------------------+------+
 ```
 
-The schema of `census` table is as following:
+The schema of the `census` table is as follows:
 
 ```sql
 +-----------+----------------------+------+------+---------+---------------+
@@ -61,23 +60,23 @@ The schema of `census` table is as following:
 | location  | String               | PRI  | YES  |         | TAG           |
 | scientist | String               | PRI  | YES  |         | TAG           |
 | bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
+| ts        | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
 | ants      | Float64              |      | YES  |         | FIELD         |
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
 ## Database connection information
 
-Before writing or querying data, it is important to understand the differences in database connection information between InfluxDB and GreptimeDB.
+Before you begin writing or querying data, it's crucial to comprehend the differences in database connection information between InfluxDB and GreptimeDB.
 
-- **Token**: The InfluxDB API token is used for authentication and is the same as the GreptimeDB authentication. You can use `<greptimedb_user:greptimedb_password>` as the token when interacting with GreptimeDB using InfluxDB's client libraries or HTTP API.
-- **Organization**: There is no organization when connecting to GreptimeDB.
-- **Bucket**: In InfluxDB, a bucket is a container for time series data. It is the same as the database name in GreptimeDB.
+- **Token**: The InfluxDB API token, used for authentication, aligns with the GreptimeDB authentication. When interacting with GreptimeDB using InfluxDB's client libraries or HTTP API, you can use `<greptimedb_user:greptimedb_password>` as the token.
+- **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
+- **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
 
 ## Write data
 
-GreptimeDB is compatible with InfluxDB's line protocol format, both v1 and v2.
-Which means you can easily migrate from InfluxDB to GreptimeDB.
+GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
+facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 ### HTTP API
 
@@ -100,8 +99,8 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 ### Telegraf
 
-Support of InfluxDB line protocol also means GreptimeDB is compatible with Telegraf.
-To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegraf configs:
+GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
+To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL into Telegraf configurations:
 
 ::: code-group
 
@@ -125,8 +124,8 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL to Telegra
 
 ### Client libraries
 
-Writing data to GreptimeDB is straightforward when using InfluxDB client libraries.
-All you need to do is include the URL and authentication details in the client configuration.
+Writing data to GreptimeDB is a straightforward process when using InfluxDB client libraries.
+Simply include the URL and authentication details in the client configuration.
 
 For example:
 
@@ -237,23 +236,24 @@ $writeApi->write($point);
 
 :::
 
-Besides the languages mentioned above, GreptimeDB also supports client libraries for other languages that InfluxDB supports.
-You can write code in your preferred language by referring to the connection information code snippets provided above.
+In addition to the languages previously mentioned,
+GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
+You can code in your language of choice by referencing the connection information and code snippets provided earlier.
 
 ## Query data
 
-GreptimeDB does not support Flux and InfluxQL. Instead, it utilizes SQL and PromQL.
+GreptimeDB does not support Flux and InfluxQL, opting instead for SQL and PromQL.
 
 SQL is a universal language designed for managing and manipulating relational databases.
 With flexible capabilities for data retrieval, manipulation, and analytics,
 it is also reduce the learning curve for users who are already familiar with SQL.
 
-PromQL (Prometheus Query Language) lets the user select and aggregate time series data in real time,
+PromQL (Prometheus Query Language) allows users to select and aggregate time series data in real time,
 The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
 or consumed by external systems via the [HTTP API](/user-guide/query-data/promql#prometheus-http-api).
 
-Suppose you are querying the max cpu from the `monitor` table that has been recorded over the past 24 hours.
-In influxQL, the query would be something like:
+Suppose you are querying the maximum cpu usage from the `monitor` table, recorded over the past 24 hours.
+In influxQL, the query might look something like this:
 
 ```sql [InfluxQL]
 SELECT 
@@ -266,11 +266,11 @@ GROUP BY
    time(1h)
 ```
 
-This InfluxQL query calculates the max value of the `cpu` field from the `monitor` table,
-where the time is greater than the current time minus 24 hours.
-The results are grouped in one-hour intervals.
+This InfluxQL query computes the maximum value of the `cpu` field from the `monitor` table,
+considering only the data where the time is within the last 24 hours.
+The results are then grouped into one-hour intervals.
 
-In Flux, the query would be something like:
+In Flux, the query might look something like this:
 
 ```flux [Flux]
 from(bucket: "public")
@@ -297,16 +297,15 @@ ORDER BY ts DESC;
 In this SQL query,
 the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,
 while the `ALIGN` clause sets the alignment time for the time series data.
-For additional details on grouping by time window, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
+For more information on time window grouping, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
 
 The similar query in PromQL would be something like:
 
 ```promql
 avg_over_time(monitor[1h])
 ```
-
-To query the last 24 hours of time series data,
-you need to execute this PromQL with the `start` and `end` parameters of the HTTP API to define the time range.
+To query time series data from the last 24 hours,
+you need to execute this PromQL, using the `start` and `end` parameters of the HTTP API to define the time range.
 For more information on PromQL, please refer to the [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) document.
 
 ## Visualize data
@@ -328,13 +327,12 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 Simultaneously writing data to both GreptimeDB and InfluxDB is an effective strategy to prevent data loss during migration.
 When utilizing InfluxDB's [client libraries](#client-libraries), you can establish two client instances - one for GreptimeDB and another for InfluxDB.
-
 For information on how to write data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
 
 If you do not need all historical data,
 you can write data to both GreptimeDB and InfluxDB for a certain period of time to gather the necessary recent data.
 Afterward, stop writing to InfluxDB and continue only with GreptimeDB.
-If you need to migrate all historical data, please follow the steps below.
+If you need to migrate all historical data, please follow the next steps.
 
 ### Export data from InfluxDB v1 Server
 
@@ -402,27 +400,11 @@ Create a temporary directory to store the exported data of InfluxDB.
 mkdir -p /home/influxdb_export
 ```
 
-Get the bucket ID to be migrated with InfluxDB CLI.
-
-```shell
-influx bucket list
-```
-
-You'll get outputs look like the following:
-
-```shell
-ID               Name           Retention Shard group duration Organization ID  Schema Type
-22bdf03ca860e351 _monitoring    168h0m0s  24h0m0s              41fabbaf2d6c2841 implicit
-b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 implicit
-9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
-```
-
-Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
 Use the [`influx inspect export-lp` command](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) of InfluxDB to export data in the bucket to line protocol.
 
 ```shell
 influxd inspect export-lp \
-  --bucket-id 9a79c1701e579c94 \
+  --bucket-id <bucket-id> \
   --engine-path /var/lib/influxdb2/engine/ \
   --end <end-time> \
   --output-path /home/influxdb_export/data

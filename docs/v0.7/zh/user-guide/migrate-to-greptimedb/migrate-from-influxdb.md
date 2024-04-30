@@ -1,9 +1,5 @@
 # 从 InfluxDB 迁移
 
-InfluxDB 是知名的时间序列数据库。
-随着时间序列数据量的增长，
-它可能无法满足用户在性能、可扩展性和成本方面的需求。
-
 GreptimeDB 是高性能的时间序列数据库，专为云时代的基础设施而设计，
 使用户受益于良好的弹性结构和高性价比的存储。
 
@@ -241,82 +237,6 @@ $writeApi->write($point);
 除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
 你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
 
-## 迁移数据
-
-如果你不需要所有历史数据，可以将数据同时写入 GreptimeDB 和 InfluxDB。
-一段时间后，可以停止向 InfluxDB 写入数据，只写入 GreptimeDB。
-当使用 InfluxDB 客户端库时，需要创建两个客户端实例，一个用于 GreptimeDB，一个用于 InfluxDB。
-
-如果你需要迁移所有历史数据，请按照以下步骤操作。
-
-### 从 InfluxDB v2 服务器导出数据
-
-首先，使用 InfluxDB CLI 获取 bucket ID：
-
-```shell
-influx bucket list
-```
-
-你将看到类似以下的输出：
-
-```shell
-ID               Name           Retention Shard group duration Organization ID  Schema Type
-22bdf03ca860e351 _monitoring    168h0m0s  24h0m0s              41fabbaf2d6c2841 implicit
-b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 implicit
-9a79c1701e579c94 example-bucket infinite  168h0m0s             41fabbaf2d6c2841 implicit
-```
-
-假设你想要从 `example-bucket` 迁移数据，那么 ID 为 `9a79c1701e579c94`。
-登录到部署 InfluxDB v2 的服务器，并运行以下命令以导出数据为 InfluxDB 行协议格式：
-
-```shell
-# 引擎路径通常为 "/var/lib/influxdb2/engine/"
-export ENGINE_PATH="<engine-path>"
-# 导出 example-bucket 中的所有数据（ID=9a79c1701e579c94）
-influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
-```
-
-输出类似如下的数据：
-
-```shell
-{"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
-{"level":"info","ts":1713227837.1399868,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/9a79c1701e579c94","file_count":1}
-{"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
-```
-
-:::tip 提示
-你可以指定更具体的数据集进行导出，例如指定 measurement 和时间范围。详细信息请参考 [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/)。
-:::
-
-### 导入数据到 GreptimeDB
-
-将 `influxdb_export.lp` 文件复制到工作目录：
-
-```shell
-cp influxdb2:/influxdb_export.lp influxdb_export.lp
-```
-
-在将数据导入 GreptimeDB 之前，如果数据文件过大，建议将数据文件拆分为多个片段：
-
-```shell
-split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
-# -l [line_count]    Create split files line_count lines in length.
-# -d                 Use a numeric suffix instead of a alphabetic suffix.
-# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
-```
-
-通过 HTTP API 将数据导入 GreptimeDB：
-
-```
-for file in influxdb_export_slice.*; do
-    curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
-        -X POST "http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>" \
-        --data-binary @${file}
-    # avoid rate limit in the hobby plan
-    sleep 1
-done
-```
-
 ## 查询数据
 
 GreptimeDB 不支持 Flux 和 InfluxQL，而是使用 SQL 和 PromQL。
@@ -389,3 +309,225 @@ avg_over_time(monitor[1h])
 
 推荐使用 Grafana 可视化 GreptimeDB 数据，
 请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
+
+## 迁移数据
+
+你可以通过以下步骤实现从 InfluxDB 到 GreptimeDB 的数据无缝迁移：
+
+![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
+
+1. 同时将数据写入 GreptimeDB 和 InfluxDB，以避免迁移过程中的数据丢失。
+2. 从 InfluxDB 导出所有历史数据，并将数据导入 GreptimeDB。
+3. 停止向 InfluxDB 写入数据，并移除 InfluxDB 服务器。
+
+### 双写 GreptimeDB 和 InfluxDB
+
+将数据双写 GreptimeDB 和 InfluxDB 是迁移过程中防止数据丢失的有效策略。
+当使用 InfluxDB 的[客户端库](#client-libraries)时，你可以建立两个客户端实例，一个用于 GreptimeDB，另一个用于 InfluxDB。
+有关如何使用 InfluxDB 行协议将数据写入 GreptimeDB 的操作，请参考[写入数据](#write-data)部分。
+
+如果你不需要所有历史数据，
+可以双写 GreptimeDB 和 InfluxDB 一段时间只收集必要的最新数据。
+然后停止向 InfluxDB 写入数据并只使用 GreptimeDB。
+如果需要迁移所有历史数据，请按照接下来的步骤操作。
+
+### 从 InfluxDB v1 服务器导出数据
+
+如果你使用 Docker 运行 InfluxDB，首先需要连接到 Docker 容器的 shell。
+否则你可以跳过 Docker 步骤。
+
+```shell
+docker exec -it <influxdb-container-id> bash
+```
+
+创建一个临时目录来存储 InfluxDB 的导出数据。
+
+```shell
+mkdir -p /home/influxdb_export
+```
+
+使用 InfluxDB 的 [`influx_inspect export` 命令](https://docs.influxdata.com/influxdb/v1/tools/influx_inspect/#export) 导出数据。
+
+```shell
+influx_inspect export \
+  -database <db-name> \ 
+  -end <end-time> \
+  -lponly \
+  -datadir /var/lib/influxdb/data \
+  -waldir /var/lib/influxdb/wal \
+  -out /home/influxdb_export/data
+```
+
+- `-database` 指定要导出的数据库。
+- `-end` 指定要导出的数据的结束时间。
+必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
+你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+- `-lponly` 指定只导出行协议数据。
+- `-datadir` 指定数据目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
+- `-waldir` 指定 WAL 目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings)中的配置。
+- `-out` 指定输出目录。
+
+导出的 InfluxDB 行协议数据类似如下：
+
+```txt
+disk,device=disk1s5s1,fstype=apfs,host=bogon,mode=ro,path=/ inodes_used=356810i 1714363350000000000
+diskio,host=bogon,name=disk0 iops_in_progress=0i 1714363350000000000
+disk,device=disk1s6,fstype=apfs,host=bogon,mode=rw,path=/System/Volumes/Update inodes_used_percent=0.0002391237988702021 1714363350000000000
+...
+```
+
+如果你使用 Docker 运行 InfluxDB，请退出 Docker shell 并将数据文件复制到主机机器的当前路径。
+
+```shell
+docker cp <influxdb-container-id>:/home/influxdb_export/data .
+```
+
+### 从 InfluxDB v2 服务器导出数据
+
+如果你使用 Docker 运行 InfluxDB，首先需要连接到 Docker 容器的 shell。
+否则可以跳过 Docker 步骤。
+
+```shell
+docker exec -it <influxdb-container-id> bash
+```
+
+创建一个临时目录来存储 InfluxDB 的导出数据。
+
+```shell
+mkdir -p /home/influxdb_export
+```
+
+使用 InfluxDB 的 [`influx inspect export-lp` 命令](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) 导出数据。
+
+```shell
+influxd inspect export-lp \
+  --bucket-id <bucket-id> \
+  --engine-path /var/lib/influxdb2/engine/ \
+  --end <end-time> \
+  --output-path /home/influxdb_export/data
+```
+
+- `--bucket-id` 指定要导出的 bucket ID。
+- `--engine-path` 指定引擎目录的路径，请见[InfluxDB 数据设置](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path)中的配置。
+- `--end` 指定要导出的数据的结束时间。
+必须是[RFC3339 格式](https://datatracker.ietf.org/doc/html/rfc3339)，例如 `2024-01-01T00:00:00Z`。
+你可以使用同时写入 GreptimeDB 和 InfluxDB 时的时间戳作为结束时间。
+- `--output-path` 指定输出目录。
+
+命令行的执行结果类似如下：
+
+```json
+{"level":"info","ts":1714377321.4795408,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/307013e61d514f3c","file_count":1}
+{"level":"info","ts":1714377321.4940555,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/307013e61d514f3c","file_count":1}
+{"level":"info","ts":1714377321.4941633,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
+```
+
+导出的 InfluxDB 行协议数据类似如下：
+
+```txt
+cpu,cpu=cpu-total,host=bogon usage_idle=80.4448912910468 1714376180000000000
+cpu,cpu=cpu-total,host=bogon usage_idle=78.50167052182304 1714376190000000000
+cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375700000000000
+cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
+...
+```
+
+如果你使用 Docker 运行 InfluxDB，请退出 Docker shell 并将数据文件复制到主机机器的当前路径。
+
+```shell
+docker cp <influxdb-container-id>:/home/influxdb_export/data .
+```
+
+### 导入数据到 GreptimeDB
+
+在将数据导入 GreptimeDB 之前，如果数据文件过大，建议将数据文件拆分为多个片段：
+
+```shell
+split -l 100000 -d -a 10 data data.
+# -l [line_count]    Create split files line_count lines in length.
+# -d                 Use a numeric suffix instead of a alphabetic suffix.
+# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
+```
+
+你可以使用 HTTP API 导入数据，如[写入数据](#写入数据)部分所述。
+下方提供的 Python 脚本将帮助你从文件中读取数据并将其导入 GreptimeDB。
+
+创建一个名为 `ingest.py` 的 Python 文件，确保你使用的是 Python 3.9 或更高版本，然后将以下代码复制并粘贴到其中。
+
+```python
+import os
+import sys
+import subprocess
+
+def process_file(file_path, url, token):
+    print("Ingesting file:", file_path)
+    curl_command = ['curl', '-i',
+                    '-H', "authorization: token {}".format(token),
+                    '-X', "POST",
+                    '--data-binary', "@{}".format(file_path),
+                    url]
+    print(" ".join(curl_command))
+
+    attempts = 0
+    while attempts < 3:  # Retry up to 3 times
+        result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(result)
+        # Check if there are any warnings or errors in the curl command output
+        output = result.stderr.lower()
+        if "warning" in output or "error" in output:
+            print("Warnings or errors detected. Retrying...")
+            attempts += 1
+        else:
+            break
+
+    if attempts == 3:
+        print("Request failed after 3 attempts. Giving up.")
+        sys.exit(1)
+
+def process_directory(directory, url, token):
+    file_names = []
+
+    # Walk through the directory
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_names.append(file_path)
+
+    # Sort the file names array
+    file_names.sort()
+
+    # Process each file
+    for file_name in file_names:
+        process_file(file_name, url, token)
+
+# Check if the directory path argument is provided
+if len(sys.argv) < 4:
+    print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
+    sys.exit(1)
+
+# Get the directory path from the command-line argument
+directory_path = sys.argv[1]
+url = sys.argv[2]
+token = sys.argv[3]
+
+# Call the function to process the directory
+process_directory(directory_path, url, token)
+```
+
+假如你的工作目录树如下：
+
+```shell
+.
+├── ingest.py
+└── slices
+    ├── data.0000000000
+    ├── data.0000000001
+    ├── data.0000000002
+
+```
+
+执行 Python 脚本并等待数据导入完成。
+
+```shell
+python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>
+```
