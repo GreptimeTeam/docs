@@ -320,6 +320,10 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 
 ![Double write to GreptimeDB and InfluxDB](/migrate-influxdb-to-greptimedb.drawio.svg)
 
+1. Write data to both GreptimeDB and InfluxDB to avoid data loss during migration.
+2. Export all historical data from InfluxDB and import the data into GreptimeDB.
+3. Stop writing data to InfluxDB and remove the InfluxDB server.
+
 ### Simultaneously write data to both GreptimeDB and InfluxDB
 
 Simultaneously writing data to both GreptimeDB and InfluxDB is an effective strategy to prevent data loss during migration.
@@ -335,7 +339,7 @@ If you need to migrate all historical data, please follow the steps below.
 ### Export data from InfluxDB v1 Server
 
 If you are using Docker to run InfluxDB, the first step is to connect to the Docker container shell.
-Otherwise, you can skip this Docker step.
+Otherwise, you can skip the Docker steps.
 
 ```shell
 docker exec -it <influxdb-container-id> bash
@@ -368,7 +372,7 @@ You can use the timestamp when simultaneously writing data to both GreptimeDB an
 - The `-waldir` flag specifies the path to the WAL directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v1/administration/config/#data-settings).
 - The `-out` flag specifies the output directory.
 
-After successfully executing the command, you will see the exported data, in InfluxDB line protocol, looks like the following:
+The exported data in InfluxDB line protocol looks like the following:
 
 ```txt
 disk,device=disk1s5s1,fstype=apfs,host=bogon,mode=ro,path=/ inodes_used=356810i 1714363350000000000
@@ -385,7 +389,20 @@ docker cp <influxdb-container-id>:/home/influxdb_export/data .
 
 ### Export Data from InfluxDB v2 Server
 
-Let's get the bucket ID to be migrated with InfluxDB CLI.
+If you are using Docker to run InfluxDB, the first step is to connect to the Docker container shell.
+Otherwise, you can skip the Docker steps.
+
+```shell
+docker exec -it <influxdb-container-id> bash
+```
+
+Create a temporary directory to store the exported data of InfluxDB.
+
+```shell
+mkdir -p /home/influxdb_export
+```
+
+Get the bucket ID to be migrated with InfluxDB CLI.
 
 ```shell
 influx bucket list
@@ -401,31 +418,44 @@ b60a6fd784bae5cb _tasks         72h0m0s   24h0m0s              41fabbaf2d6c2841 
 ```
 
 Supposed you'd like to migrate data from `example-bucket`, then the ID is `9a79c1701e579c94`.
-Log in to the server you deployed InfluxDB v2 and run the following command to export data in InfluxDB Line Protocol format:
+Use the [`influx inspect export-lp` command](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) of InfluxDB to export data in the bucket to line protocol.
 
 ```shell
-# The engine path is often "/var/lib/influxdb2/engine/".
-export ENGINE_PATH="<engine-path>"
-# Export all the data in example-bucket (ID=9a79c1701e579c94).
-influxd inspect export-lp --bucket-id 9a79c1701e579c94 --engine-path $ENGINE_PATH --output-path influxdb_export.lp
+influxd inspect export-lp \
+  --bucket-id 9a79c1701e579c94 \
+  --engine-path /var/lib/influxdb2/engine/ \
+  --end <end-time> \
+  --output-path /home/influxdb_export/data
 ```
+
+- The `--bucket-id` flag specifies the bucket ID to be exported.
+- The `--engine-path` flag specifies the path to the engine directory, as configured in the [InfluxDB data settings](https://docs.influxdata.com/influxdb/v2.0/reference/config-options/#engine-path).
+- The `--end` flag specifies the end time of the data to be exported. Must be in [RFC3339 format](https://datatracker.ietf.org/doc/html/rfc3339), such as `2024-01-01T00:00:00Z`.
+You can use the timestamp when simultaneously writing data to both GreptimeDB and InfluxDB as the end time.
+- The `--output-path` flag specifies the output directory.
 
 The outputs look like the following:
 
-```shell
-{"level":"info","ts":1713227837.139161,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/9a79c1701e579c94","file_count":0}
-{"level":"info","ts":1713227837.1399868,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/9a79c1701e579c94","file_count":1}
-{"level":"info","ts":1713227837.1669333,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
+```json
+{"level":"info","ts":1714377321.4795408,"caller":"export_lp/export_lp.go:219","msg":"exporting TSM files","tsm_dir":"/var/lib/influxdb2/engine/data/307013e61d514f3c","file_count":1}
+{"level":"info","ts":1714377321.4940555,"caller":"export_lp/export_lp.go:315","msg":"exporting WAL files","wal_dir":"/var/lib/influxdb2/engine/wal/307013e61d514f3c","file_count":1}
+{"level":"info","ts":1714377321.4941633,"caller":"export_lp/export_lp.go:204","msg":"export complete"}
 ```
 
-:::tip Tip
-You can specify more concrete data sets, like measurements and time range, to be exported. Please refer to the [`influxd inspect export-lp`](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) manual for details.
-:::
+The exported data in InfluxDB line protocol looks like the following:
 
-Copy the `influxdb_export.lp` file to a working directory.
+```txt
+cpu,cpu=cpu-total,host=bogon usage_idle=80.4448912910468 1714376180000000000
+cpu,cpu=cpu-total,host=bogon usage_idle=78.50167052182304 1714376190000000000
+cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375700000000000
+cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
+...
+```
+
+If you are using Docker to run InfluxDB, exit the Docker shell and copy the data file to the current path on the host machine.
 
 ```shell
-cp influxdb2:/influxdb_export.lp influxdb_export.lp
+docker cp <influxdb-container-id>:/home/influxdb_export/data .
 ```
 
 ### Import Data to GreptimeDB
@@ -433,21 +463,91 @@ cp influxdb2:/influxdb_export.lp influxdb_export.lp
 Before importing data to GreptimeDB, if the data file is too large, it's recommended to split the data file into multiple slices:
 
 ```shell
-split -l 1000 -d -a 10 influxdb_export.lp influxdb_export_slice.
+split -l 100000 -d -a 10 data data.
 # -l [line_count]    Create split files line_count lines in length.
 # -d                 Use a numeric suffix instead of a alphabetic suffix.
 # -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
 ```
 
-Now, import data to GreptimeDB via the HTTP API:
+You can import data using the HTTP API as described in the [write data section](#http-api).
+The Python script provided below will help you in reading data from the files and importing it into GreptimeDB.
+
+Create a Python file named `ingest.py`, ensuring you're using Python version 3.9 or later, and then copy and paste the following code into it.
+
+```python
+import os
+import sys
+import subprocess
+
+def process_file(file_path, url, token):
+    print("Ingesting file:", file_path)
+    curl_command = ['curl', '-i',
+                    '-H', "authorization: token {}".format(token),
+                    '-X', "POST",
+                    '--data-binary', "@{}".format(file_path),
+                    url]
+    print(" ".join(curl_command))
+
+    attempts = 0
+    while attempts < 3:  # Retry up to 3 times
+        result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(result)
+        # Check if there are any warnings or errors in the curl command output
+        output = result.stderr.lower()
+        if "warning" in output or "error" in output:
+            print("Warnings or errors detected. Retrying...")
+            attempts += 1
+        else:
+            break
+
+    if attempts == 3:
+        print("Request failed after 3 attempts. Giving up.")
+        sys.exit(1)
+
+def process_directory(directory, url, token):
+    file_names = []
+
+    # Walk through the directory
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_names.append(file_path)
+
+    # Sort the file names array
+    file_names.sort()
+
+    # Process each file
+    for file_name in file_names:
+        process_file(file_name, url, token)
+
+# Check if the directory path argument is provided
+if len(sys.argv) < 4:
+    print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
+    sys.exit(1)
+
+# Get the directory path from the command-line argument
+directory_path = sys.argv[1]
+url = sys.argv[2]
+token = sys.argv[3]
+
+# Call the function to process the directory
+process_directory(directory_path, url, token)
+```
+
+Suppose your dictionary tree is as following:
+
+```shell
+.
+├── ingest.py
+└── slices
+    ├── data.0000000000
+    ├── data.0000000001
+    ├── data.0000000002
 
 ```
-for file in influxdb_export_slice.*; do
-    curl -i -H "Authorization: token <greptime_user>:$<greptimedb_password>" \
-        -X POST "http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>" \
-        --data-binary @${file}
-    # avoid rate limit in the hobby plan
-    sleep 1
-done
-```
 
+Execute the Python script in the current directory and wait for the data import to complete.
+
+```shell
+python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>
+```
