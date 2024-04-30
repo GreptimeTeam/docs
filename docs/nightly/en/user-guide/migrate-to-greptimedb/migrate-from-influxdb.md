@@ -16,7 +16,7 @@ Let's start with similarities and differences:
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampMillisecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
@@ -60,7 +60,7 @@ The schema of the `census` table is as follows:
 | location  | String               | PRI  | YES  |         | TAG           |
 | scientist | String               | PRI  | YES  |         | TAG           |
 | bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
+| ts        | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
 | ants      | Float64              |      | YES  |         | FIELD         |
 +-----------+----------------------+------+------+---------+---------------+
 ```
