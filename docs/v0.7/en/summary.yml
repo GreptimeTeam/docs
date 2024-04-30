@@ -73,7 +73,9 @@
     - run-on-android
     - monitoring
     - tracing
-    - kafka-remote-wal
+    - Remote-WAL:
+      - quick-start
+      - cluster-deployment
     - region-migration
     # TODO
     # - alert
@@ -117,6 +119,7 @@
     - serverless
     - dedicated
     - byoc
+    - billing
   - Tutorials:
     - Monitor-Host-Metrics:
       - prometheus

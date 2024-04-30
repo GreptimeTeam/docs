@@ -2,12 +2,15 @@ import { createMarkdownRenderer } from 'vitepress'
 import path from 'path'
 import fs from 'fs-extra'
 import matter from 'gray-matter'
-
+import { getVariate } from './serverUtils'
+import { CURRENT_VERSION } from '../config/common'
+import { replaceVariate } from '../config/plugins'
 export default {
   load: async () => {
     const md = await createMarkdownRenderer('', {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
     })
+    md.use(replaceVariate)
     const mdMap = {}
     const filesMap = getAllFilesMap()
     Object.keys(filesMap).forEach(templateKey => {

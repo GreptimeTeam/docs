@@ -1,13 +1,14 @@
 import dotenv from 'dotenv'
 import { getSrcExclude, makeSidebar } from '../theme/serverUtils'
 import settingConfig from './setting.json'
+import { replaceVariate } from './plugins'
 
 const { LATEST_VERSION, langMap, websiteMap } = settingConfig
 const { ENV, VERSION = LATEST_VERSION, VERSION_MAP, BASE: base = '/' } = process.env
 const CURRENT_LANG = dotenv.config().parsed?.VITE_LANG || 'en'
 const CURRENT_VERSION = dotenv.config().parsed?.VITE_VERSION || VERSION
 
-const versionPath = `:version/${CURRENT_LANG}/:path+`
+const versionPath = `${CURRENT_VERSION}/${CURRENT_LANG}/:path+`
 const versionMap = JSON.parse(VERSION_MAP)
 
 const common = async () => {
@@ -21,6 +22,9 @@ const common = async () => {
     head: [['script', { src: 'https://lf1-cdn-tos.bytegoofy.com/obj/iconpark/icons_19361_134.ede7dfbb02f3e5cba425f4d574d089ba.js' }]],
     markdown: {
       theme: { light: 'material-theme-darker', dark: 'material-theme-darker' },
+      config: md => {
+        md.use(replaceVariate)
+      },
     },
     rewrites: {
       [versionPath]: `:path+`,

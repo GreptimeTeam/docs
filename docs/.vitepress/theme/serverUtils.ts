@@ -3,6 +3,8 @@ import YAML from 'js-yaml'
 import { CURRENT_VERSION, versionMap, websiteMap, LATEST_VERSION, CURRENT_LANG } from '../config/common'
 import semver from 'semver'
 
+const NIGHTLY_VERSION = "nightly"
+
 export async function makeSidebar(lang, version) {
   const langPath = `/${lang}`
   const versionPath = `/${version}`
@@ -29,7 +31,7 @@ export async function makeSidebar(lang, version) {
       try {
         let link = `${path}/${items}`.toLocaleLowerCase()
 
-        let filepath: string;
+        let filepath: string
         if (link.startsWith('/release-notes/') && link !== '/release-notes/all-releases') {
           filepath = `docs${link}.md`
         } else {
@@ -67,10 +69,13 @@ export const getSrcExclude = (versionMap: Array<string>, lang: string, langMap: 
     } else {
       srcExclude.push(`**/${version}/**`)
     }
-    const ver = semver.parse(`${version}.0`);
-    if (ver > curVer) {
-      const fixedVer = `${ver.major}-${ver.minor}`
-      srcExclude.push(`**/release-notes/release-${fixedVer}-*`)
+
+    if (version !== NIGHTLY_VERSION) {
+      const ver = semver.parse(`${version}.0`);
+      if (ver > curVer) {
+        const fixedVer = `${ver.major}-${ver.minor}`
+        srcExclude.push(`**/release-notes/release-${fixedVer}-*`)
+      }
     }
   })
 
@@ -92,4 +97,11 @@ export const getVersionList = (lang: string) => {
         link: `${websiteMap[lang]}/${linkVersion}`,
       }
     })
+}
+
+export const getVariate = (version: string) => {
+  const variatePath = `docs/${version}/variates.yml`
+  let variate = {}
+  if (fs.existsSync(variatePath)) variate = YAML.load(fs.readFileSync(variatePath), 'utf8')
+  return variate
 }
