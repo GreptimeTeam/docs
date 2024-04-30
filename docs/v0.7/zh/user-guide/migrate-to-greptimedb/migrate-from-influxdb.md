@@ -9,10 +9,10 @@ GreptimeDB 是高性能的时间序列数据库，专为云时代的基础设施
 ## 数据模型的区别
 
 你可能已经熟悉了 [InfluxDB 的关键概念](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/)，
-reptimeDB 的 [数据模型](../concepts/data-model.md) 是值得探索的新领域。
+GreptimeDB 的 [数据模型](../concepts/data-model.md) 是值得了解的新事物。
 让我们从相似和不同之处开始：
 
-- 两者都是[无 schema 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- 两者都是[schemaless 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
@@ -66,7 +66,7 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 
 ## 数据库连接信息
 
-在写入或查询数据之前，了解 InfluxDB 和 GreptimeDB 之间的数据库连接信息的差异很重要。
+在写入或查询数据之前，需要了解 InfluxDB 和 GreptimeDB 之间的数据库连接信息的差异。
 
 - **Token**：InfluxDB API 中的 token 用于身份验证，与 GreptimeDB 身份验证相同。
   当使用 InfluxDB 的客户端库或 HTTP API 与 GreptimeDB 交互时，你可以使用 `<greptimedb_user:greptimedb_password>` 作为 token。
@@ -326,10 +326,10 @@ avg_over_time(monitor[1h])
 当使用 InfluxDB 的[客户端库](#client-libraries)时，你可以建立两个客户端实例，一个用于 GreptimeDB，另一个用于 InfluxDB。
 有关如何使用 InfluxDB 行协议将数据写入 GreptimeDB 的操作，请参考[写入数据](#write-data)部分。
 
-如果你不需要所有历史数据，
-可以双写 GreptimeDB 和 InfluxDB 一段时间只收集必要的最新数据。
-然后停止向 InfluxDB 写入数据并只使用 GreptimeDB。
-如果需要迁移所有历史数据，请按照接下来的步骤操作。
+如果无需保留所有历史数据，
+你可以双写一段时间以积累所需的最新数据，
+然后停止向 InfluxDB 写入数据并仅使用 GreptimeDB。
+如果需要完整迁移所有历史数据，请按照接下来的步骤操作。
 
 ### 从 InfluxDB v1 服务器导出数据
 

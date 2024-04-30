@@ -323,21 +323,23 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 2. Export all historical data from InfluxDB and import the data into GreptimeDB.
 3. Stop writing data to InfluxDB and remove the InfluxDB server.
 
-### Simultaneously write data to both GreptimeDB and InfluxDB
+### Write data to both GreptimeDB and InfluxDB simultaneously
 
-Simultaneously writing data to both GreptimeDB and InfluxDB is an effective strategy to prevent data loss during migration.
-When utilizing InfluxDB's [client libraries](#client-libraries), you can establish two client instances - one for GreptimeDB and another for InfluxDB.
-For information on how to write data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
+Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
+By utilizing InfluxDB's [client libraries](#client-libraries),
+you can set up two client instances - one for GreptimeDB and another for InfluxDB.
+For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
 
-If you do not need all historical data,
-you can write data to both GreptimeDB and InfluxDB for a certain period of time to gather the necessary recent data.
-Afterward, stop writing to InfluxDB and continue only with GreptimeDB.
-If you need to migrate all historical data, please follow the next steps.
+If retaining all historical data isn't necessary,
+you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data. 
+Subsequently, cease writing to InfluxDB and continue exclusively with GreptimeDB.
+If a complete migration of all historical data is needed, please proceed with the following steps.
 
 ### Export data from InfluxDB v1 Server
 
-If you are using Docker to run InfluxDB, the first step is to connect to the Docker container shell.
-Otherwise, you can skip the Docker steps.
+If Docker is the platform for running InfluxDB,
+your initial step should be to connect to the Docker container shell.
+Otherwise, you can bypass the Docker steps.
 
 ```shell
 docker exec -it <influxdb-container-id> bash
@@ -387,8 +389,9 @@ docker cp <influxdb-container-id>:/home/influxdb_export/data .
 
 ### Export Data from InfluxDB v2 Server
 
-If you are using Docker to run InfluxDB, the first step is to connect to the Docker container shell.
-Otherwise, you can skip the Docker steps.
+If Docker is the platform for running InfluxDB,
+your initial step should be to connect to the Docker container shell.
+Otherwise, you can bypass the Docker steps.
 
 ```shell
 docker exec -it <influxdb-container-id> bash
