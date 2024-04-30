@@ -64,7 +64,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-被修改的的列不能是tag列(primary key)或Timestamp列(time index), 同时他必须是Nullable来保证数据能够安全地进行转换(变成null)。
+被修改的的列不能是tag列(primary key)或Timestamp列(time index), 同时该列必须是Nullable来保证数据能够安全地进行转换(变成null)。
 
 ### 重命名表
 
