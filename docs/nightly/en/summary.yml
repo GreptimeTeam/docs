@@ -38,6 +38,8 @@
     - vector
     - grafana
     - emqx
+  - Migrate-to-GreptimeDB:
+    - migrate-from-influxdb
   - table-management
   - Write-Data:
     - overview
