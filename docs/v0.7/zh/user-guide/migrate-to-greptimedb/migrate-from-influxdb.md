@@ -444,9 +444,9 @@ docker cp <influxdb-container-id>:/home/influxdb_export/data .
 
 ```shell
 split -l 100000 -d -a 10 data data.
-# -l [line_count]    Create split files line_count lines in length.
-# -d                 Use a numeric suffix instead of a alphabetic suffix.
-# -a [suffix_length] Use suffix_length letters to form the suffix of the file name.
+# -l [line_count]    创建长度为 line_count 行的拆分文件。
+# -d                 使用数字后缀而不是字母后缀。
+# -a [suffix_length] 使用 suffix_length 个字母来形成文件名的后缀。
 ```
 
 你可以使用 HTTP API 导入数据，如[写入数据](#写入数据)部分所述。
@@ -469,10 +469,10 @@ def process_file(file_path, url, token):
     print(" ".join(curl_command))
 
     attempts = 0
-    while attempts < 3:  # Retry up to 3 times
+    while attempts < 3:  # 最多重试三次
         result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(result)
-        # Check if there are any warnings or errors in the curl command output
+        # 检查 curl 命令输出中是否有任何警告或错误
         output = result.stderr.lower()
         if "warning" in output or "error" in output:
             print("Warnings or errors detected. Retrying...")
@@ -487,30 +487,29 @@ def process_file(file_path, url, token):
 def process_directory(directory, url, token):
     file_names = []
 
-    # Walk through the directory
+    # 遍历目录
     for root, dirs, files in os.walk(directory):
         for file in files:
             file_path = os.path.join(root, file)
             file_names.append(file_path)
 
-    # Sort the file names array
+    # 对文件名数组进行排序
     file_names.sort()
 
-    # Process each file
+    # 处理每个文件
     for file_name in file_names:
         process_file(file_name, url, token)
 
-# Check if the directory path argument is provided
+# 检查是否提供了参数
 if len(sys.argv) < 4:
     print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
     sys.exit(1)
 
-# Get the directory path from the command-line argument
 directory_path = sys.argv[1]
 url = sys.argv[2]
 token = sys.argv[3]
 
-# Call the function to process the directory
+# 调用函数处理目录
 process_directory(directory_path, url, token)
 ```
 
@@ -526,7 +525,7 @@ process_directory(directory_path, url, token)
 
 ```
 
-执行 Python 脚本并等待数据导入完成。
+在当前目录执行 Python 脚本并等待数据导入完成。
 
 ```shell
 python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>

@@ -505,12 +505,11 @@ def process_directory(directory, url, token):
     for file_name in file_names:
         process_file(file_name, url, token)
 
-# Check if the directory path argument is provided
+# Check if the arguments are provided
 if len(sys.argv) < 4:
     print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
     sys.exit(1)
 
-# Get the directory path from the command-line argument
 directory_path = sys.argv[1]
 url = sys.argv[2]
 token = sys.argv[3]
