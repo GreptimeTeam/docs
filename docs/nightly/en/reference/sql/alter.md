@@ -63,7 +63,7 @@ Modify the date type of a column
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (become null).
+The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns null on cast failures).
 
 ### Rename table
 
