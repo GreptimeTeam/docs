@@ -1,6 +1,6 @@
-# GREPTIME_REGION_PEERS
+# REGION_PEERS
 
-`GREPTIME_REGION_PEERS` 表显示了 GreptimeDB 中单个 Region 节点的详细信息，例如它是 learner 还是 leader。
+`REGION_PEERS` 表显示了 GreptimeDB 中单个 Region 节点的详细信息，例如它是 learner 还是 leader。
 
 :::tip 注意
 该表在 [GreptimeCloud](https://greptime.cloud/) 中不可用。
@@ -8,7 +8,7 @@
 
 ```sql
 USE INFORMATION_SCHEMA;
-DESC GREPTIME_REGION_PEERS;
+DESC REGION_PEERS;
 ```
 
 结果如下：
@@ -27,7 +27,7 @@ DESC GREPTIME_REGION_PEERS;
 6 rows in set (0.00 sec)
 ```
 
-`GREPTIME_REGION_PEERS` 表中的字段描述如下：
+`REGION_PEERS` 表中的字段描述如下：
 
 - `region_id`：Region 的 ID。
 - `peer_id`：Region peer 的 ID。
