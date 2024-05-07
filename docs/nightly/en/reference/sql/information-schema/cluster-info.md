@@ -37,7 +37,7 @@ The columns in table:
 * `uptime`: The uptime of the node, in the format of duration string `24h 10m 59s 150ms`.
 * `active_time`: The duration string in the format of `24h 10m 59s 150ms` since the node's last active time(sending the heartbeats), it's always empty for standalone deployments.
 
-Let's query the table:
+Query the table:
 
 ```sql
 SELECT * FROM CLUSTER_INFO;

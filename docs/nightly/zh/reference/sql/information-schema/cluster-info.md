@@ -38,7 +38,7 @@ DESC TABLE CLUSTER_INFO;
 * `active_time`: 距离节点上一次活跃（也就是发送心跳请求）过去的时间，形如 `24h 10m 59s 150ms` 的字符串。单机模式下该字段总为空。
 
 
-让我们尝试查询下这张表：
+尝试查询下这张表：
 
 ```sql
 SELECT * FROM CLUSTER_INFO;
