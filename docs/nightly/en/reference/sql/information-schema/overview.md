@@ -51,8 +51,9 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | Table Name | Description |
 | --- | --- |
 | [`BUILD_INFO`](./build-info.md) | Provides the system build info. |
-| [`GREPTIME_REGION_PEERS`](./greptime-region-peers.md) | Provides details about where regions are stored. |
+| [`REGION_PEERS`](./region-peers.md) | Provides details about where regions are stored. |
 | [`RUNTIME_METRICS`](./runtime-metrics.md)| Provides the system runtime metrics.|
+| [`CLUSTER_INFO`](./cluster-info.md)| Provides the topology information of the cluster.|
 
 
 

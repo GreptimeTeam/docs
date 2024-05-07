@@ -168,8 +168,9 @@
       - schemata
       - tables
       # - table-constraints
-      - greptime-region-peers
+      - region-peers
       - runtime-metrics
+      - cluster-info
   - Telemetry
 - Contributor-Guide:
   - overview

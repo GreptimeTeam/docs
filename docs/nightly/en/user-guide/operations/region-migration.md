@@ -17,7 +17,7 @@ You need to first query the region distribution of the table, i.e., find out on 
 ```sql
 select b.peer_id as datanode_id,
        a.greptime_partition_id as region_id
-from information_schema.partitions a left join information_schema.greptime_region_peers b
+from information_schema.partitions a left join information_schema.region_peers b
 on a.greptime_partition_id = b.region_id where a.table_name='migration_target' order by datanode_id asc;
 ```
 
@@ -31,6 +31,9 @@ For example, have the following region distribution:
 +-------------+---------------+
 1 row in set (0.01 sec)
 ```
+
+
+For more info about the `region_peers` table, please read the [REGION-PEERS](/reference/sql/information-schema/region-peers.md).
 
 ## Select a Datanode as the migration destination.
 :::warning Warning
