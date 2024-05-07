@@ -2,7 +2,7 @@
 
 `ALERT` can be used to modify any table settings or data within the table:
 
-* Add/Drop a column
+* Add/Drop/Modify a column
 * Rename a table
 
 ## Syntax
@@ -11,6 +11,7 @@
 ALTER TABLE [db.]table
    [ADD COLUMN name type [options]
     | DROP COLUMN name
+    | MODIFY COLUMN name type
     | RENAME name
    ]
 ```
@@ -53,6 +54,16 @@ ALTER TABLE monitor DROP COLUMN load_15;
 ```
 
 The removed column can't be retrieved immediately by all subsequent queries.
+
+### Modify column type
+
+Modify the date type of a column
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
+```
+
+The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
 
 ### Rename table
 
