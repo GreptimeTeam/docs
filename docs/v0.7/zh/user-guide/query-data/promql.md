@@ -271,6 +271,5 @@ metric{__field__!~"field_1|field_2"}
     | rate               | `rate(metric[5m])`             |
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
-    | idelta             | `idelta(metric[5m])`           |
     | irate              | `irate(metric[5m])`            |
     | reset              | `reset(metric[5m])`            |

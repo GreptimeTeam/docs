@@ -275,6 +275,5 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | rate               | `rate(metric[5m])`             |
     | deriv              | `deriv(metric[5m])`            |
     | increase           | `increase(metric[5m])`         |
-    | idelta             | `idelta(metric[5m])`           |
     | irate              | `irate(metric[5m])`            |
     | reset              | `reset(metric[5m])`            |
