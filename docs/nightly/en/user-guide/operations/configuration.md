@@ -81,7 +81,6 @@ greptime frontend start --help
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
@@ -102,7 +101,6 @@ greptime standalone start --help
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--opentsdb-addr <OPENTSDB_ADDR>`: OpenTSDB server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
 - `--rpc-addr <RPC_ADDR>`:  gRPC server address;
 
@@ -177,8 +175,6 @@ key_path = ""
 
 [opentsdb]
 enable = true
-addr = "127.0.0.1:4242"
-runtime_size = 2
 
 [influxdb]
 enable = true
@@ -207,9 +203,7 @@ The following table describes the options in detail:
 | influxdb   |                    |         | InfluxDB Protocol options                                                       |
 |            | enable             | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                |
 | opentsdb   |                    |         | OpenTSDB Protocol options                                                       |
-|            | enable             | Boolean | Whether to enable OpenTSDB protocol, true by default                            |
-|            | addr               | String  | OpenTSDB telnet API server address, "127.0.0.1:4242" by default                 |
-|            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
+|            | enable             | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                |
 | prom_store |                    |         | Prometheus remote storage options                                               |
 |            | enable             | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default |
 |            | with_metric_engine | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default    |

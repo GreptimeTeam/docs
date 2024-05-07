@@ -47,8 +47,7 @@ greptime/greptimedb standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003 \
---opentsdb-addr 0.0.0.0:4242
+--postgres-addr 0.0.0.0:4003
 ```
 
 The data will be stored in the `greptimedb/` directory in your current directory.
@@ -70,8 +69,7 @@ You can:
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
-   --postgres-addr 0.0.0.0:4003 \
-   --opentsdb-addr 0.0.0.0:4242
+   --postgres-addr 0.0.0.0:4003
    ```
 
 2. Upgrade the Docker version to v23.0.0 or higher;

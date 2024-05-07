@@ -81,7 +81,6 @@ greptime frontend start --help
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
 - `--metasrv-addr <METASRV_ADDR>`:   Metasrv 地址列表，用逗号隔开
 - `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--opentsdb-addr <OPENTSDB_ADDR>`:  OpenTSDB 服务地址
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
 - `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
 - `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
@@ -101,7 +100,6 @@ greptime standalone start --help
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
 - `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--opentsdb-addr <OPENTSDB_ADDR>`:  OpenTSDB 服务地址
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
 - `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
 
@@ -174,8 +172,6 @@ key_path = ""
 
 [opentsdb]
 enable = true
-addr = "127.0.0.1:4242"
-runtime_size = 2
 
 [influxdb]
 enable = true
@@ -204,8 +200,6 @@ enable = true
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true           |
 | opentsdb   |                    |        | OpenTSDB 协议选项                                           |
 |            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                         |
-|            | addr               | 字符串 | OpenTSDB telnet API 服务器地址，默认为 "127.0.0.1:4242"     |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
 | prom_store |                    |        | Prometheus 远程存储选项                                     |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true     |
 |            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true |

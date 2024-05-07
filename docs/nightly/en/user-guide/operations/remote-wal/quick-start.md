@@ -59,8 +59,7 @@ docker run \
   --http-addr 0.0.0.0:4000 \
   --rpc-addr 0.0.0.0:4001 \
   --mysql-addr 0.0.0.0:4002 \
-  --postgres-addr 0.0.0.0:4003 \
-  --opentsdb-addr 0.0.0.0:4242
+  --postgres-addr 0.0.0.0:4003
 ```
 
 We use the [environment variables](/user-guide/operations/configuration#environment-variable) to specify the provider:
