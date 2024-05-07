@@ -1,10 +1,6 @@
 # Migrate from InfluxDB
 
-GreptimeDB is a high-performance time series database designed to work in the infrastructure of the cloud era.
-Users can benefit from its elasticity and commodity storage.
-
-Migrating from InfluxDB to GreptimeDB could be a beneficial move.
-This guide will help you comprehend the differences between the data models of the two databases and will walk you through the migration process.
+This guide will help you understand the differences between the data models of GreptimeDB and InfluxDB, and guide you through the migration process.
 
 ## Data model in difference
 
@@ -337,18 +333,10 @@ If a complete migration of all historical data is needed, please proceed with th
 
 ### Export data from InfluxDB v1 Server
 
-If Docker is the platform for running InfluxDB,
-your initial step should be to connect to the Docker container shell.
-Otherwise, you can bypass the Docker steps.
-
-```shell
-docker exec -it <influxdb-container-id> bash
-```
-
 Create a temporary directory to store the exported data of InfluxDB.
 
 ```shell
-mkdir -p /home/influxdb_export
+mkdir -p /path/to/export
 ```
 
 Use the [`influx_inspect export` command](https://docs.influxdata.com/influxdb/v1/tools/influx_inspect/#export) of InfluxDB to export data.
@@ -360,7 +348,7 @@ influx_inspect export \
   -lponly \
   -datadir /var/lib/influxdb/data \
   -waldir /var/lib/influxdb/wal \
-  -out /home/influxdb_export/data
+  -out /path/to/export/data
 ```
 
 - The `-database` flag specifies the database to be exported.
@@ -381,26 +369,12 @@ disk,device=disk1s6,fstype=apfs,host=bogon,mode=rw,path=/System/Volumes/Update i
 ...
 ```
 
-If you are using Docker to run InfluxDB, exit the Docker shell and copy the data file to the current path on the host machine.
-
-```shell
-docker cp <influxdb-container-id>:/home/influxdb_export/data .
-```
-
 ### Export Data from InfluxDB v2 Server
-
-If Docker is the platform for running InfluxDB,
-your initial step should be to connect to the Docker container shell.
-Otherwise, you can bypass the Docker steps.
-
-```shell
-docker exec -it <influxdb-container-id> bash
-```
 
 Create a temporary directory to store the exported data of InfluxDB.
 
 ```shell
-mkdir -p /home/influxdb_export
+mkdir -p /path/to/export
 ```
 
 Use the [`influx inspect export-lp` command](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) of InfluxDB to export data in the bucket to line protocol.
@@ -410,7 +384,7 @@ influxd inspect export-lp \
   --bucket-id <bucket-id> \
   --engine-path /var/lib/influxdb2/engine/ \
   --end <end-time> \
-  --output-path /home/influxdb_export/data
+  --output-path /path/to/export/data
 ```
 
 - The `--bucket-id` flag specifies the bucket ID to be exported.
@@ -435,12 +409,6 @@ cpu,cpu=cpu-total,host=bogon usage_idle=78.50167052182304 1714376190000000000
 cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375700000000000
 cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
 ...
-```
-
-If you are using Docker to run InfluxDB, exit the Docker shell and copy the data file to the current path on the host machine.
-
-```shell
-docker cp <influxdb-container-id>:/home/influxdb_export/data .
 ```
 
 ### Import Data to GreptimeDB

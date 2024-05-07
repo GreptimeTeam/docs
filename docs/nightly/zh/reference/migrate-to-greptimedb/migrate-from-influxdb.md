@@ -1,10 +1,6 @@
 # 从 InfluxDB 迁移
 
-GreptimeDB 是高性能的时间序列数据库，专为云时代的基础设施而设计，
-使用户受益于良好的弹性结构和高性价比的存储。
-
-从 InfluxDB 迁移到 GreptimeDB 将会是不错的选择。
-本文档将帮助你了解这两个数据库的数据模型之间的区别，并指导你完成迁移过程。
+本文档将帮助你了解 GreptimeDB 和 InfluxDB 的数据模型之间的区别，并指导你完成迁移过程。
 
 ## 数据模型的区别
 
@@ -333,17 +329,10 @@ avg_over_time(monitor[1h])
 
 ### 从 InfluxDB v1 服务器导出数据
 
-如果你使用 Docker 运行 InfluxDB，首先需要连接到 Docker 容器的 shell。
-否则你可以跳过 Docker 步骤。
-
-```shell
-docker exec -it <influxdb-container-id> bash
-```
-
 创建一个临时目录来存储 InfluxDB 的导出数据。
 
 ```shell
-mkdir -p /home/influxdb_export
+mkdir -p /path/to/export
 ```
 
 使用 InfluxDB 的 [`influx_inspect export` 命令](https://docs.influxdata.com/influxdb/v1/tools/influx_inspect/#export) 导出数据。
@@ -355,7 +344,7 @@ influx_inspect export \
   -lponly \
   -datadir /var/lib/influxdb/data \
   -waldir /var/lib/influxdb/wal \
-  -out /home/influxdb_export/data
+  -out /path/to/export/data
 ```
 
 - `-database` 指定要导出的数据库。
@@ -376,25 +365,12 @@ disk,device=disk1s6,fstype=apfs,host=bogon,mode=rw,path=/System/Volumes/Update i
 ...
 ```
 
-如果你使用 Docker 运行 InfluxDB，请退出 Docker shell 并将数据文件复制到主机机器的当前路径。
-
-```shell
-docker cp <influxdb-container-id>:/home/influxdb_export/data .
-```
-
 ### 从 InfluxDB v2 服务器导出数据
-
-如果你使用 Docker 运行 InfluxDB，首先需要连接到 Docker 容器的 shell。
-否则可以跳过 Docker 步骤。
-
-```shell
-docker exec -it <influxdb-container-id> bash
-```
 
 创建一个临时目录来存储 InfluxDB 的导出数据。
 
 ```shell
-mkdir -p /home/influxdb_export
+mkdir -p /path/to/export
 ```
 
 使用 InfluxDB 的 [`influx inspect export-lp` 命令](https://docs.influxdata.com/influxdb/v2/reference/cli/influxd/inspect/export-lp/) 导出数据。
@@ -404,7 +380,7 @@ influxd inspect export-lp \
   --bucket-id <bucket-id> \
   --engine-path /var/lib/influxdb2/engine/ \
   --end <end-time> \
-  --output-path /home/influxdb_export/data
+  --output-path /path/to/export/data
 ```
 
 - `--bucket-id` 指定要导出的 bucket ID。
@@ -430,12 +406,6 @@ cpu,cpu=cpu-total,host=bogon usage_idle=78.50167052182304 1714376190000000000
 cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375700000000000
 cpu,cpu=cpu-total,host=bogon usage_iowait=0 1714375710000000000
 ...
-```
-
-如果你使用 Docker 运行 InfluxDB，请退出 Docker shell 并将数据文件复制到主机机器的当前路径。
-
-```shell
-docker cp <influxdb-container-id>:/home/influxdb_export/data .
 ```
 
 ### 导入数据到 GreptimeDB
