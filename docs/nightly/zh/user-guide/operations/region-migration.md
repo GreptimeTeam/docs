@@ -33,7 +33,7 @@ on a.greptime_partition_id = b.region_id where a.table_name='migration_target' o
 ```
 
 
-更多关于 `region_peers`  表的信息，请阅读 [Reference](/reference/sql/information-schema/cluster-info.md)。
+更多关于 `region_peers`  表的信息，请阅读 [REGION-PEERS](/reference/sql/information-schema/region-peers.md)。
 
 ## 选择 Region 迁移的目标节点
 :::warning Warning

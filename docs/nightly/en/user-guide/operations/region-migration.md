@@ -33,7 +33,7 @@ For example, have the following region distribution:
 ```
 
 
-For more info about the `region_peers` table, please read the [reference](/reference/sql/information-schema/cluster-info.md).
+For more info about the `region_peers` table, please read the [REGION-PEERS](/reference/sql/information-schema/region-peers.md).
 
 ## Select a Datanode as the migration destination.
 :::warning Warning
