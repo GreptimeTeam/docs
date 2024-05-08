@@ -165,4 +165,3 @@ COPY tbl TO 'C:\xxx\xxx\output.parquet' WITH (FORMAT = 'parquet');
 
 -- 下列语句能够正常执行
 COPY tbl TO 'C:/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
-```
