@@ -67,6 +67,8 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
 - **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
 
+{template get-database-connection-information%%}
+
 ## Write data
 
 GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,

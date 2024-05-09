@@ -112,7 +112,7 @@
     - SDK-Libraries:
       - go
       - java
-  - Migrate-to-GreptimeDB:
+  - Migrate-to-GreptimeCloud:
     - migrate-from-influxdb
   - Usage-&-Billing:
     - overview
