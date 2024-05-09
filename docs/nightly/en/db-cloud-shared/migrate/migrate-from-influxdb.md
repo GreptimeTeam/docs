@@ -363,5 +363,4 @@ Suppose your dictionary tree is as following:
 
 Execute the Python script in the current directory and wait for the data import to complete.
 
-
 {template import-data-shell%%}
