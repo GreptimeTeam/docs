@@ -3,7 +3,7 @@
 ## 数据模型的区别
 
 你可能已经熟悉了 [InfluxDB 的关键概念](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/)，
-GreptimeDB 的 [数据模型](../concepts/data-model.md) 是值得了解的新事物。
+GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
 - 两者都是[schemaless 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
