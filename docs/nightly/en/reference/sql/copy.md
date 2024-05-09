@@ -70,6 +70,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
+| `MAX_INSERT_ROWS` | Maximum number of rows for insertion. e.g., `1000` | Optional |
 
 #### `CONNECTION` Option
 
