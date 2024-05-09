@@ -112,6 +112,8 @@
     - SDK-Libraries:
       - go
       - java
+  - Migrate-to-GreptimeDB:
+    - migrate-from-influxdb
   - Usage-&-Billing:
     - overview
     - request-capacity-unit

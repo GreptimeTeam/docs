@@ -9,13 +9,13 @@ template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
-curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
+curl -X POST 'https://<host>/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
 ```shell [InfluxDB line protocol v1]
-curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
+curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
@@ -30,7 +30,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  urls = ["https://<host>/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
   bucket = "<db-name>"
   ## Leave empty
@@ -39,7 +39,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 ```toml [InfluxDB line protocol v1]
 [[outputs.influxdb]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  urls = ["https://<host>/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
@@ -66,7 +66,7 @@ For example:
 import { InfluxDB, Point } from '@influxdata/influxdb-client'
 
 /** Environment variables **/
-const url = 'http://<greptimedb-host>:4000/v1/influxdb'
+const url = 'https://<host>/v1/influxdb'
 const token = '<greptime_user>:<greptimedb_password>'
 const org = ''
 const bucket = '<db-name>'
@@ -89,7 +89,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 bucket = "<db-name>"
 org = ""
 token = "<greptime_user>:<greptimedb_password>"
-url="http://<greptimedb-host>:4000/v1/influxdb"
+url="https://<host>/v1/influxdb"
 
 client = influxdb_client.InfluxDBClient(
     url=url,
@@ -109,7 +109,7 @@ write_api.write(bucket=bucket, org=org, record=p)
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
-url := "http://<greptimedb-host>:4000/v1/influxdb"
+url := "https://<host>/v1/influxdb"
 client := influxdb2.NewClient(url, token)
 writeAPI := client.WriteAPIBlocking(org, bucket)
 
@@ -123,7 +123,7 @@ client.Close()
 ```
 
 ```java [Java]
-private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
+private static String url = "https://<host>/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
 private static char[] token = "<greptime_user>:<greptimedb_password>".toCharArray();
@@ -144,7 +144,7 @@ public static void main(final String[] args) {
 
 ```php [PHP]
 $client = new Client([
-    "url" => "http://<greptimedb-host>:4000/v1/influxdb",
+    "url" => "https://<host>/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
     "bucket" => "<db-name>",
     "org" => "",
@@ -364,7 +364,7 @@ Execute the Python script in the current directory and wait for the data import 
 {template import-data-shell%
 
 ```shell
-python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>
+python3 ingest.py slices https://<host>/v1/influxdb/write?db=<db-name> <token>
 ```
 
 %}

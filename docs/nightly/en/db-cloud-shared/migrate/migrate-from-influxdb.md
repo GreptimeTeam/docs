@@ -1,52 +1,89 @@
----
-template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
----
-# Migrate from InfluxDB
+This guide will help you understand the differences between the data models of GreptimeDB and InfluxDB, and guide you through the migration process.
 
-<docs-template>
+## Data model in difference
 
-{template write-data-http-api%
-::: code-group
+While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](../concepts/data-model.md) of GreptimeDB is something new to explore.
+Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
-```shell [InfluxDB line protocol v2]
-curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
-  -H 'authorization: token <greptime_user:greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
+In GreptimeDB, it is represented as a row of data in the time-series table,
+where the table name aligns with the measurement,
+and the columns are divided into three types: Tag, Field, and Timestamp.
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
+
+Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
+
+|_time|_measurement|location|scientist|_field|_value|
+|---|---|---|---|---|---|
+|2019-08-18T00:00:00Z|census|klamath|anderson|bees|23|
+|2019-08-18T00:00:00Z|census|portland|mullen|ants|30|
+|2019-08-18T00:06:00Z|census|klamath|anderson|bees|28|
+|2019-08-18T00:06:00Z|census|portland|mullen|ants|32|
+
+The data mentioned above is formatted as follows in the InfluxDB line protocol:
+
+
+```shell
+census,location=klamath,scientist=anderson bees=23 1566086400000000000
+census,location=portland,scientist=mullen ants=30 1566086400000000000
+census,location=klamath,scientist=anderson bees=28 1566086760000000000
+census,location=portland,scientist=mullen ants=32 1566086760000000000
 ```
 
-```shell [InfluxDB line protocol v1]
-curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
+In the GreptimeDB data model, the data is represented as follows in the `census` table:
+
+```sql
++---------------------+----------+-----------+------+------+
+| ts                  | location | scientist | bees | ants |
++---------------------+----------+-----------+------+------+
+| 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
+| 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
+| 2019-08-18 00:00:00 | portland | mullen    | NULL |   30 |
+| 2019-08-18 00:06:00 | portland | mullen    | NULL |   32 |
++---------------------+----------+-----------+------+------+
 ```
 
-:::
+The schema of the `census` table is as follows:
 
-%}
-
-{template write-data-telegraf%
-
-
-::: code-group
-
-```toml [InfluxDB line protocol v2]
-[[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  token = "<greptime_user>:<greptimedb_password>"
-  bucket = "<db-name>"
-  ## Leave empty
-  organization = ""
+```sql
++-----------+----------------------+------+------+---------+---------------+
+| Column    | Type                 | Key  | Null | Default | Semantic Type |
++-----------+----------------------+------+------+---------+---------------+
+| location  | String               | PRI  | YES  |         | TAG           |
+| scientist | String               | PRI  | YES  |         | TAG           |
+| bees      | Float64              |      | YES  |         | FIELD         |
+| ts        | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| ants      | Float64              |      | YES  |         | FIELD         |
++-----------+----------------------+------+------+---------+---------------+
 ```
 
-```toml [InfluxDB line protocol v1]
-[[outputs.influxdb]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  database = "<db-name>"
-  username = "<greptime_user>"
-  password = "<greptimedb_password>"
-```
-:::
+## Database connection information
 
-%}
+Before you begin writing or querying data, it's crucial to comprehend the differences in database connection information between InfluxDB and GreptimeDB.
+
+- **Token**: The InfluxDB API token, used for authentication, aligns with the GreptimeDB authentication. When interacting with GreptimeDB using InfluxDB's client libraries or HTTP API, you can use `<greptimedb_user:greptimedb_password>` as the token.
+- **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
+- **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
+
+## Write data
+
+GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
+facilitating a seamless migration from InfluxDB to GreptimeDB.
+
+### HTTP API
+
+To write a measurement to GreptimeDB, you can use the following HTTP API request:
+
+{template write-data-http-api%%}
+
+### Telegraf
+
+GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
+To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
+
+{template write-data-telegraf%%}
 
 ### Client libraries
 
@@ -55,120 +92,83 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-{template write-data-client-libs%
-::: code-group
+{template write-data-client-libs%%}
 
-```js [Node.js]
-'use strict'
-/** @module write
-**/
+In addition to the languages previously mentioned,
+GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
+You can code in your language of choice by referencing the connection information and code snippets provided earlier.
 
-import { InfluxDB, Point } from '@influxdata/influxdb-client'
+## Query data
 
-/** Environment variables **/
-const url = 'http://<greptimedb-host>:4000/v1/influxdb'
-const token = '<greptime_user>:<greptimedb_password>'
-const org = ''
-const bucket = '<db-name>'
+GreptimeDB does not support Flux and InfluxQL, opting instead for SQL and PromQL.
 
-const influxDB = new InfluxDB({ url, token })
-const writeApi = influxDB.getWriteApi(org, bucket)
-writeApi.useDefaultTags({ region: 'west' })
-const point1 = new Point('temperature')
-  .tag('sensor_id', 'TLM01')
-  .floatField('value', 24.0)
-writeApi.writePoint(point1)
+SQL is a universal language designed for managing and manipulating relational databases.
+With flexible capabilities for data retrieval, manipulation, and analytics,
+it is also reduce the learning curve for users who are already familiar with SQL.
 
+PromQL (Prometheus Query Language) allows users to select and aggregate time series data in real time,
+The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
+or consumed by external systems via the [HTTP API](/user-guide/query-data/promql#prometheus-http-api).
+
+Suppose you are querying the maximum cpu usage from the `monitor` table, recorded over the past 24 hours.
+In influxQL, the query might look something like this:
+
+```sql [InfluxQL]
+SELECT 
+   MAX("cpu") 
+FROM 
+   "monitor" 
+WHERE 
+   time > now() - 24h 
+GROUP BY 
+   time(1h)
 ```
 
+This InfluxQL query computes the maximum value of the `cpu` field from the `monitor` table,
+considering only the data where the time is within the last 24 hours.
+The results are then grouped into one-hour intervals.
 
-```python [Python]
-import influxdb_client
-from influxdb_client.client.write_api import SYNCHRONOUS
+In Flux, the query might look something like this:
 
-bucket = "<db-name>"
-org = ""
-token = "<greptime_user>:<greptimedb_password>"
-url="http://<greptimedb-host>:4000/v1/influxdb"
-
-client = influxdb_client.InfluxDBClient(
-    url=url,
-    token=token,
-    org=org
-)
-
-# Write script
-write_api = client.write_api(write_options=SYNCHRONOUS)
-
-p = influxdb_client.Point("my_measurement").tag("location", "Prague").field("temperature", 25.3)
-write_api.write(bucket=bucket, org=org, record=p)
-
+```flux [Flux]
+from(bucket: "public")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r._measurement == "monitor")
+  |> aggregateWindow(every: 1h, fn: max)
 ```
 
-```go [Go]
-bucket := "<db-name>"
-org := ""
-token := "<greptime_user>:<greptimedb_password>"
-url := "http://<greptimedb-host>:4000/v1/influxdb"
-client := influxdb2.NewClient(url, token)
-writeAPI := client.WriteAPIBlocking(org, bucket)
+The similar query in GreptimeDB SQL would be:
 
-p := influxdb2.NewPoint("stat",
-    map[string]string{"unit": "temperature"},
-    map[string]interface{}{"avg": 24.5, "max": 45},
-    time.Now())
-writeAPI.WritePoint(context.Background(), p)
-client.Close()
-
+```sql [SQL]
+SELECT
+    ts,
+    host,
+    AVG(cpu) RANGE '1h' as mean_cpu
+FROM
+    monitor
+WHERE
+    ts > NOW() - INTERVAL '24 hours'
+ALIGN '1h' TO NOW
+ORDER BY ts DESC;
 ```
 
-```java [Java]
-private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
-private static String org = "";
-private static String bucket = "<db-name>";
-private static char[] token = "<greptime_user>:<greptimedb_password>".toCharArray();
+In this SQL query,
+the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,
+while the `ALIGN` clause sets the alignment time for the time series data.
+For more information on time window grouping, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
 
-public static void main(final String[] args) {
+The similar query in PromQL would be something like:
 
-    InfluxDBClient influxDBClient = InfluxDBClientFactory.create(url, token, org, bucket);
-    WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-    Point point = Point.measurement("temperature")
-            .addTag("location", "west")
-            .addField("value", 55D)
-            .time(Instant.now().toEpochMilli(), WritePrecision.MS);
-
-    writeApi.writePoint(point);
-    influxDBClient.close();
-}
+```promql
+avg_over_time(monitor[1h])
 ```
+To query time series data from the last 24 hours,
+you need to execute this PromQL, using the `start` and `end` parameters of the HTTP API to define the time range.
+For more information on PromQL, please refer to the [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) document.
 
-```php [PHP]
-$client = new Client([
-    "url" => "http://<greptimedb-host>:4000/v1/influxdb",
-    "token" => "<greptime_user>:<greptimedb_password>",
-    "bucket" => "<db-name>",
-    "org" => "",
-    "precision" => InfluxDB2\Model\WritePrecision::S
-]);
+## Visualize data
 
-$writeApi = $client->createWriteApi();
-
-$dateTimeNow = new DateTime('NOW');
-$point = Point::measurement("weather")
-        ->addTag("location", "Denver")
-        ->addField("temperature", rand(0, 20))
-        ->time($dateTimeNow->getTimestamp());
-$writeApi->write($point);
-```
-
-:::
-
-%}
-
-{template visualize-data%
-It is recommanded using Grafana to visualize data in GreptimeDB.
-Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
-%}
+{template visualize-data%%}
 
 ## Migrate data
 
@@ -361,12 +361,5 @@ Suppose your dictionary tree is as following:
 
 Execute the Python script in the current directory and wait for the data import to complete.
 
-{template import-data-shell%
 
-```shell
-python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>
-```
-
-%}
-
-</docs-template>
+{template import-data-shell%%}
