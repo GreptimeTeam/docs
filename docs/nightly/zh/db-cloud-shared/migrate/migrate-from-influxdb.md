@@ -285,81 +285,27 @@ split -l 100000 -d -a 10 data data.
 ```
 
 你可以使用 HTTP API 导入数据，如[写入数据](#写入数据)部分所述。
-下方提供的 Python 脚本将帮助你从文件中读取数据并将其导入 GreptimeDB。
+下方提供的脚本将帮助你从文件中读取数据并将其导入 GreptimeDB。
 
-创建一个名为 `ingest.py` 的 Python 文件，确保你使用的是 Python 3.9 或更高版本，然后将以下代码复制并粘贴到其中。
-
-```python
-import os
-import sys
-import subprocess
-
-def process_file(file_path, url, token):
-    print("Ingesting file:", file_path)
-    curl_command = ['curl', '-i',
-                    '-H', "authorization: token {}".format(token),
-                    '-X', "POST",
-                    '--data-binary', "@{}".format(file_path),
-                    url]
-    print(" ".join(curl_command))
-
-    attempts = 0
-    while attempts < 3:  # 最多重试三次
-        result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(result)
-        # 检查 curl 命令输出中是否有任何警告或错误
-        output = result.stderr.lower()
-        if "warning" in output or "error" in output:
-            print("Warnings or errors detected. Retrying...")
-            attempts += 1
-        else:
-            break
-
-    if attempts == 3:
-        print("Request failed after 3 attempts. Giving up.")
-        sys.exit(1)
-
-def process_directory(directory, url, token):
-    file_names = []
-
-    # 遍历目录
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_names.append(file_path)
-
-    # 对文件名数组进行排序
-    file_names.sort()
-
-    # 处理每个文件
-    for file_name in file_names:
-        process_file(file_name, url, token)
-
-# 检查是否提供了参数
-if len(sys.argv) < 4:
-    print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
-    sys.exit(1)
-
-directory_path = sys.argv[1]
-url = sys.argv[2]
-token = sys.argv[3]
-
-# 调用函数处理目录
-process_directory(directory_path, url, token)
-```
-
-假如你的工作目录树如下：
+假设你的当前位置是存储数据文件的目录：
 
 ```shell
 .
-├── ingest.py
-└── slices
-    ├── data.0000000000
-    ├── data.0000000001
-    ├── data.0000000002
-
+├── data.0000000000
+├── data.0000000001
+├── data.0000000002
+...
 ```
 
-在当前目录执行 Python 脚本并等待数据导入完成。
+将 GreptimeDB 的连接信息设置到环境变量中：
+
+```shell
+export GREPTIME_USERNAME=<greptime_username>
+export GREPTIME_PASSWORD=<greptime_password>
+export GREPTIME_HOST=<host>
+export GREPTIME_DB=<db-name>
+```
+
+将数据导入到 GreptimeDB：
 
 {template import-data-shell%%}

@@ -286,81 +286,27 @@ split -l 100000 -d -a 10 data data.
 ```
 
 You can import data using the HTTP API as described in the [write data section](#http-api).
-The Python script provided below will help you in reading data from the files and importing it into GreptimeDB.
+The script provided below will help you in reading data from the files and importing it into GreptimeDB.
 
-Create a Python file named `ingest.py`, ensuring you're using Python version 3.9 or later, and then copy and paste the following code into it.
-
-```python
-import os
-import sys
-import subprocess
-
-def process_file(file_path, url, token):
-    print("Ingesting file:", file_path)
-    curl_command = ['curl', '-i',
-                    '-H', "authorization: token {}".format(token),
-                    '-X', "POST",
-                    '--data-binary', "@{}".format(file_path),
-                    url]
-    print(" ".join(curl_command))
-
-    attempts = 0
-    while attempts < 3:  # Retry up to 3 times
-        result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(result)
-        # Check if there are any warnings or errors in the curl command output
-        output = result.stderr.lower()
-        if "warning" in output or "error" in output:
-            print("Warnings or errors detected. Retrying...")
-            attempts += 1
-        else:
-            break
-
-    if attempts == 3:
-        print("Request failed after 3 attempts. Giving up.")
-        sys.exit(1)
-
-def process_directory(directory, url, token):
-    file_names = []
-
-    # Walk through the directory
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_names.append(file_path)
-
-    # Sort the file names array
-    file_names.sort()
-
-    # Process each file
-    for file_name in file_names:
-        process_file(file_name, url, token)
-
-# Check if the arguments are provided
-if len(sys.argv) < 4:
-    print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
-    sys.exit(1)
-
-directory_path = sys.argv[1]
-url = sys.argv[2]
-token = sys.argv[3]
-
-# Call the function to process the directory
-process_directory(directory_path, url, token)
-```
-
-Suppose your dictionary tree is as following:
+Suppose you are in the directory where the data files are stored:
 
 ```shell
 .
-├── ingest.py
-└── slices
-    ├── data.0000000000
-    ├── data.0000000001
-    ├── data.0000000002
-
+├── data.0000000000
+├── data.0000000001
+├── data.0000000002
+...
 ```
 
-Execute the Python script in the current directory and wait for the data import to complete.
+Replace the following placeholders with your GreptimeDB connection information to setup the environment variables:
+
+```shell
+export GREPTIME_USERNAME=<greptime_username>
+export GREPTIME_PASSWORD=<greptime_password>
+export GREPTIME_HOST=<host>
+export GREPTIME_DB=<db-name>
+```
+
+Import the data from the files into GreptimeDB:
 
 {template import-data-shell%%}

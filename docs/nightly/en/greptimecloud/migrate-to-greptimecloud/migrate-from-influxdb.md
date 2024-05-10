@@ -176,7 +176,12 @@ then create a new Workbench file and add panels as your needs.
 {template import-data-shell%
 
 ```shell
-python3 ingest.py slices https://<host>/v1/influxdb/write?db=<db-name> <token>
+for file in data.*; do
+  curl -i --retry 3 -H "Authorization: token ${GREPTIME_USERNAME}:${GREPTIME_PASSWORD}" \
+    -X POST "https://${GREPTIME_HOST}/v1/influxdb/write?db=${GREPTIME_DB}" \
+    --data-binary @${file}
+  sleep 1
+done
 ```
 
 %}
