@@ -40,7 +40,7 @@ services:
       - 3000:3000
 
   greptime:
-    image: greptime/greptimedb:latest
+    image: greptime/greptimedb:v<%greptimedb-version%>
     container_name: greptimedb
     ports:
       - 4000:4000
@@ -52,7 +52,7 @@ services:
       - ./greptimedb:/tmp/greptimedb
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v<%prometheus-version%>
     container_name: prometheus
     depends_on:
       - node_exporter
@@ -62,7 +62,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
   node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
+    image: quay.io/prometheus/node-exporter:v<%node-exporter-version%>
     container_name: node_exporter_local
     ports:
       - 9100:9100
