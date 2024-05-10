@@ -16,7 +16,7 @@ You can find the GreptimeDB URL, database name, as well as the username and pass
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
-curl -X POST 'https://<host>/v1/influxdb/api/v2/write?db=<db-name>' \
+curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
@@ -177,8 +177,8 @@ then create a new Workbench file and add panels as your needs.
 
 ```shell
 for file in data.*; do
-  curl -i --retry 3 -H "Authorization: token ${GREPTIME_USERNAME}:${GREPTIME_PASSWORD}" \
-    -X POST "https://${GREPTIME_HOST}/v1/influxdb/write?db=${GREPTIME_DB}" \
+  curl -i --retry 3 \
+    -X POST "https://${GREPTIME_HOST}/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
     --data-binary @${file}
   sleep 1
 done

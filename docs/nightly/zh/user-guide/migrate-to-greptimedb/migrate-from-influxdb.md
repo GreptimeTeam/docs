@@ -171,8 +171,8 @@ $writeApi->write($point);
 
 ```shell
 for file in data.*; do
-  curl -i --retry 3 -H "Authorization: token ${GREPTIME_USERNAME}:${GREPTIME_PASSWORD}" \
-    -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}" \
+  curl -i --retry 3 \
+    -X POST "http://${GREPTIME_HOST}:4000/v1/influxdb/write?db=${GREPTIME_DB}&u=${GREPTIME_USERNAME}&p=${GREPTIME_PASSWORD}" \
     --data-binary @${file}
   sleep 1
 done
