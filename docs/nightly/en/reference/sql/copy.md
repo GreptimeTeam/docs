@@ -44,6 +44,7 @@ FROM { '<path>/[<filename>]' }
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
+[LIMIT NUM]
 ```
 
 The command starts with the keyword `COPY`, followed by the name of the table you want to import data into.
@@ -118,6 +119,10 @@ You can set the following **CONNECTION** options:
 | `SECRET_ACCESS_KEY` | Your secret access key for connecting the AWS S3 compatible object storage.  | Optional |
 | `ENABLE_VIRTUAL_HOST_STYLE` | If you use virtual hosting to address the bucket, set it to "true".| Optional |
 | `SESSION_TOKEN` | Your temporary credential for connecting the AWS S3 service. | Optional |
+
+#### LIMIT
+
+You can use `LIMIT` to restrict maximum number of rows inserted at once.
 
 ## COPY DATABASE
 
