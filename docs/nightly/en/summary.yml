@@ -51,7 +51,7 @@
     - overview
     - sql
     - promql
-  - query-external-data
+    - query-external-data
   - Client-Libraries:
     - overview
     - go
