@@ -31,4 +31,4 @@ Data in GreptimeDB is strongly typed. Auto-schema feature provides some
 flexibility when creating a table. Once the table is created, data of the same
 column must share common data type.
 
-Find all the supported data types in [Data Types](../../reference/sql/data-types.md).
+Find all the supported data types in [Data Types](/reference/sql/data-types.md).
