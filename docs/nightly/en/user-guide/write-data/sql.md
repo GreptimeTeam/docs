@@ -127,6 +127,26 @@ Query OK, 1 row affected (0.00 sec)
 
 For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
 
+### HTTP API
+
+Using POST method to delete data:
+
+```shell
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=DELETE FROM monitor WHERE host = '127.0.0.2' and ts = 1667446798450" \
+http://localhost:4000/v1/sql?db=public
+```
+
+The result is shown below:
+
+```json
+{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
+```
+
+For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+
 ## Time zone
 
 The time zone specified in the SQL client will affect the timestamp with a string format that does not have time zone information. 
@@ -171,23 +191,3 @@ The result in the `UTC` time zone client is as follows:
 | 127.0.0.2 | 2023-12-31 16:00:00 |  0.5 |    0.1 |
 +-----------+---------------------+------+--------+
 ```
-
-### HTTP API
-
-Using POST method to delete data:
-
-```shell
-curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d "sql=DELETE FROM monitor WHERE host = '127.0.0.2' and ts = 1667446798450" \
-http://localhost:4000/v1/sql?db=public
-```
-
-The result is shown below:
-
-```json
-{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
-```
-
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
