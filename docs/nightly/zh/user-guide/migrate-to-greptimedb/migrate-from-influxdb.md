@@ -1,7 +1,7 @@
 ---
 template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
 ---
-# Migrate from InfluxDB
+# 从 InfluxDB 迁移
 
 <docs-template>
 
@@ -160,11 +160,14 @@ $writeApi->write($point);
 %}
 
 {template visualize-data%
-It is recommanded using Grafana to visualize data in GreptimeDB.
-Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
+
+推荐使用 Grafana 可视化 GreptimeDB 数据，
+请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
+
 %}
 
 {template import-data-shell%
+
 
 ```shell
 for file in data.*; do

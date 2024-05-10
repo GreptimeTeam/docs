@@ -1,12 +1,10 @@
-# 从 InfluxDB 迁移
-
 本文档将帮助你了解 GreptimeDB 和 InfluxDB 的数据模型之间的区别，并指导你完成迁移过程。
 
 ## 数据模型的区别
 
 你可能已经熟悉了 [InfluxDB 的关键概念](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/)，
-GreptimeDB 的 [数据模型](../concepts/data-model.md) 是值得了解的新事物。
-让我们从相似和不同之处开始：
+GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
+下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
 - 两者都是[schemaless 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
@@ -15,7 +13,7 @@ GreptimeDB 的 [数据模型](../concepts/data-model.md) 是值得了解的新�
 - GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line) 的时间戳数据类型。
 - GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
 
-让我们以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
+以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
 
 |_time|_measurement|location|scientist|_field|_value|
 |---|---|---|---|---|---|
@@ -69,6 +67,8 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 - **Organization**：GreptimeDB 中没有组织。
 - **Bucket**：在 InfluxDB 中，bucket 是时间序列数据的容器，与 GreptimeDB 中的数据库名称相同。
 
+{template get-database-connection-information%%}
+
 ## 写入数据
 
 GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
@@ -78,45 +78,14 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
-::: code-group
-
-```shell [InfluxDB line protocol v2]
-curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
-  -H 'authorization: token <greptime_user:greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
-```
-
-```shell [InfluxDB line protocol v1]
-curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
-  -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
-```
-
-:::
+{template write-data-http-api%%}
 
 ### Telegraf
 
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
-要配置 Telegraf，只需将 `http://<greptimedb-host>:4000` URL 添加到 Telegraf 配置中：
+要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
-::: code-group
-
-```toml [InfluxDB line protocol v2]
-[[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  token = "<greptime_user>:<greptimedb_password>"
-  bucket = "<db-name>"
-  ## 留空即可
-  organization = ""
-```
-
-```toml [InfluxDB line protocol v1]
-[[outputs.influxdb]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  database = "<db-name>"
-  username = "<greptime_user>"
-  password = "<greptimedb_password>"
-```
-:::
+{template write-data-telegraf%%}
 
 ### 客户端库
 
@@ -125,110 +94,7 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 例如：
 
-::: code-group
-
-```js [Node.js]
-'use strict'
-/** @module write
-**/
-
-import { InfluxDB, Point } from '@influxdata/influxdb-client'
-
-/** 环境变量 **/
-const url = 'http://<greptimedb-host>:4000/v1/influxdb'
-const token = '<greptime_user>:<greptimedb_password>'
-const org = ''
-const bucket = '<db-name>'
-
-const influxDB = new InfluxDB({ url, token })
-const writeApi = influxDB.getWriteApi(org, bucket)
-writeApi.useDefaultTags({ region: 'west' })
-const point1 = new Point('temperature')
-  .tag('sensor_id', 'TLM01')
-  .floatField('value', 24.0)
-writeApi.writePoint(point1)
-
-```
-
-```python [Python]
-import influxdb_client
-from influxdb_client.client.write_api import SYNCHRONOUS
-
-bucket = "<db-name>"
-org = ""
-token = "<greptime_user>:<greptimedb_password>"
-url="http://<greptimedb-host>:4000/v1/influxdb"
-
-client = influxdb_client.InfluxDBClient(
-    url=url,
-    token=token,
-    org=org
-)
-
-write_api = client.write_api(write_options=SYNCHRONOUS)
-
-p = influxdb_client.Point("my_measurement").tag("location", "Prague").field("temperature", 25.3)
-write_api.write(bucket=bucket, org=org, record=p)
-
-```
-
-```go [Go]
-bucket := "<db-name>"
-org := ""
-token := "<greptime_user>:<greptimedb_password>"
-url := "http://<greptimedb-host>:4000/v1/influxdb"
-client := influxdb2.NewClient(url, token)
-writeAPI := client.WriteAPIBlocking(org, bucket)
-
-p := influxdb2.NewPoint("stat",
-    map[string]string{"unit": "temperature"},
-    map[string]interface{}{"avg": 24.5, "max": 45},
-    time.Now())
-writeAPI.WritePoint(context.Background(), p)
-client.Close()
-
-```
-
-```java [Java]
-private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
-private static String org = "";
-private static String bucket = "<db-name>";
-private static char[] token = "<greptime_user>:<greptimedb_password>".toCharArray();
-
-public static void main(final String[] args) {
-
-    InfluxDBClient influxDBClient = InfluxDBClientFactory.create(url, token, org, bucket);
-    WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
-    Point point = Point.measurement("temperature")
-            .addTag("location", "west")
-            .addField("value", 55D)
-            .time(Instant.now().toEpochMilli(), WritePrecision.MS);
-
-    writeApi.writePoint(point);
-    influxDBClient.close();
-}
-```
-
-```php [PHP]
-$client = new Client([
-    "url" => "http://<greptimedb-host>:4000/v1/influxdb",
-    "token" => "<greptime_user>:<greptimedb_password>",
-    "bucket" => "<db-name>",
-    "org" => "",
-    "precision" => InfluxDB2\Model\WritePrecision::S
-]);
-
-$writeApi = $client->createWriteApi();
-
-$dateTimeNow = new DateTime('NOW');
-$point = Point::measurement("weather")
-        ->addTag("location", "Denver")
-        ->addField("temperature", rand(0, 20))
-        ->time($dateTimeNow->getTimestamp());
-$writeApi->write($point);
-```
-
-:::
+{template write-data-client-libs%%}
 
 除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
 你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
@@ -303,8 +169,7 @@ avg_over_time(monitor[1h])
 
 ## 可视化数据
 
-推荐使用 Grafana 可视化 GreptimeDB 数据，
-请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
+{template visualize-data%%}
 
 ## 迁移数据
 
@@ -420,83 +285,27 @@ split -l 100000 -d -a 10 data data.
 ```
 
 你可以使用 HTTP API 导入数据，如[写入数据](#写入数据)部分所述。
-下方提供的 Python 脚本将帮助你从文件中读取数据并将其导入 GreptimeDB。
+下方提供的脚本将帮助你从文件中读取数据并将其导入 GreptimeDB。
 
-创建一个名为 `ingest.py` 的 Python 文件，确保你使用的是 Python 3.9 或更高版本，然后将以下代码复制并粘贴到其中。
-
-```python
-import os
-import sys
-import subprocess
-
-def process_file(file_path, url, token):
-    print("Ingesting file:", file_path)
-    curl_command = ['curl', '-i',
-                    '-H', "authorization: token {}".format(token),
-                    '-X', "POST",
-                    '--data-binary', "@{}".format(file_path),
-                    url]
-    print(" ".join(curl_command))
-
-    attempts = 0
-    while attempts < 3:  # 最多重试三次
-        result = subprocess.run(curl_command, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(result)
-        # 检查 curl 命令输出中是否有任何警告或错误
-        output = result.stderr.lower()
-        if "warning" in output or "error" in output:
-            print("Warnings or errors detected. Retrying...")
-            attempts += 1
-        else:
-            break
-
-    if attempts == 3:
-        print("Request failed after 3 attempts. Giving up.")
-        sys.exit(1)
-
-def process_directory(directory, url, token):
-    file_names = []
-
-    # 遍历目录
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_names.append(file_path)
-
-    # 对文件名数组进行排序
-    file_names.sort()
-
-    # 处理每个文件
-    for file_name in file_names:
-        process_file(file_name, url, token)
-
-# 检查是否提供了参数
-if len(sys.argv) < 4:
-    print("Please provide the directory path as the first argument, the url as the second argument and the token as the third argument.")
-    sys.exit(1)
-
-directory_path = sys.argv[1]
-url = sys.argv[2]
-token = sys.argv[3]
-
-# 调用函数处理目录
-process_directory(directory_path, url, token)
-```
-
-假如你的工作目录树如下：
+假设你的当前位置是存储数据文件的目录：
 
 ```shell
 .
-├── ingest.py
-└── slices
-    ├── data.0000000000
-    ├── data.0000000001
-    ├── data.0000000002
-
+├── data.0000000000
+├── data.0000000001
+├── data.0000000002
+...
 ```
 
-在当前目录执行 Python 脚本并等待数据导入完成。
+将 GreptimeDB 的连接信息设置到环境变量中：
 
 ```shell
-python3 ingest.py slices http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name> <token>
+export GREPTIME_USERNAME=<greptime_username>
+export GREPTIME_PASSWORD=<greptime_password>
+export GREPTIME_HOST=<host>
+export GREPTIME_DB=<db-name>
 ```
+
+将数据导入到 GreptimeDB：
+
+{template import-data-shell%%}
