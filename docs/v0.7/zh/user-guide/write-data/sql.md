@@ -121,6 +121,26 @@ Query OK, 1 row affected (0.00 sec)
 
 请参考 [SQL DELETE](/reference/sql/delete.md) 获取更多信息。
 
+### HTTP API
+
+使用 `POST` 方法来写入一条新数据：
+
+```shell
+curl -X POST \
+  -H 'authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=DELETE FROM monitor WHERE host = '127.0.0.2' and ts = 1667446798450" \
+http://localhost:4000/v1/sql?db=public
+```
+
+结果如下：
+
+```json
+{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
+```
+
+请参考 [API 文档](/reference/sql/http-api.md)获取更多信息。
+
 ## 时区
 
 SQL 客户端中指定的时区将影响没有时区信息的字符串格式的时间戳。
@@ -165,23 +185,3 @@ VALUES
 | 127.0.0.2 | 2023-12-31 16:00:00 |  0.5 |    0.1 |
 +-----------+---------------------+------+--------+
 ```
-
-### HTTP API
-
-使用 `POST` 方法来写入一条新数据：
-
-```shell
-curl -X POST \
-  -H 'authorization: Basic {{authorization if exists}}' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d "sql=DELETE FROM monitor WHERE host = '127.0.0.2' and ts = 1667446798450" \
-http://localhost:4000/v1/sql?db=public
-```
-
-结果如下：
-
-```json
-{ "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 1 }
-```
-
-请参考 [API 文档](/reference/sql/http-api.md)获取更多信息。
