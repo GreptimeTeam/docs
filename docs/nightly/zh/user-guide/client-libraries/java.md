@@ -30,7 +30,7 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 <dependency>
     <groupId>io.greptime</groupId>
     <artifactId>ingester-all</artifactId>
-    <version>${latest_version}</version>
+    <version><%java-sdk-version%></version>
 </dependency>
 ```
 

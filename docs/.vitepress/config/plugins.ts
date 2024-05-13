@@ -6,18 +6,16 @@ export const replaceVariate = md => {
   const variatesKey = Object.keys(variates)
 
   md.block.ruler.before('paragraph', 'variate_replace', state => {
-    variatesKey.forEach(key => {
-      for (let i = 0; i < state.tokens.length; i++) {
-        const token = state.tokens[i]
-        if (token) {
-          token.content = token.content.replace(new RegExp(/<%\s*(.*?)\s*%>/, 'g'), (_, $1) => {
-            if (variates[$1]) return `${variates[key]}`
-            else {
-              return `${_}`
-            }
-          })
-        }
+    for (let i = 0; i < state.tokens.length; i++) {
+      const token = state.tokens[i]
+      if (token) {
+        token.content = token.content.replace(new RegExp(/<%\s*(.*?)\s*%>/, 'g'), (_, $1) => {
+          if (variates[$1]) return `${variates[$1]}`
+          else {
+            return `${_}`
+          }
+        })
       }
-    })
+    }
   })
 }

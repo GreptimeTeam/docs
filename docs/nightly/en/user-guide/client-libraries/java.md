@@ -32,7 +32,7 @@ dependencies list:
 <dependency>
     <groupId>io.greptime</groupId>
     <artifactId>ingester-all</artifactId>
-    <version>${latest_version}</version>
+    <version><%java-sdk-version%></version>
 </dependency>
 ```
 

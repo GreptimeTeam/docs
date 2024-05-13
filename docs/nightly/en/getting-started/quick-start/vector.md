@@ -36,7 +36,7 @@ services:
       - 3000:3000
 
   greptime:
-    image: greptime/greptimedb:latest
+    image: greptime/greptimedb:<%greptimedb-version%>
     container_name: greptimedb
     ports:
       - 4000:4000
@@ -48,7 +48,7 @@ services:
       - ./greptimedb:/tmp/greptimedb
 
   vector:
-    image: timberio/vector:0.33.0-debian
+    image: timberio/vector:<%vector-version%>
     container_name: vector
     ports:
       - 8686:8686
