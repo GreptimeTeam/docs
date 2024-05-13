@@ -45,7 +45,7 @@ curl -fsSL \
 docker run -p 4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v<%greptimedb-version%> standalone start \
+greptime/greptimedb:<%greptimedb-version%> standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
@@ -68,7 +68,7 @@ greptime/greptimedb:v<%greptimedb-version%> standalone start \
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb:v<%greptimedb-version%> standalone start \
+   greptime/greptimedb:<%greptimedb-version%> standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
