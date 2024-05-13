@@ -58,7 +58,7 @@ greptime datanode start -c config/datanode.example.toml
 使用命令行参数启动 datanode，指定 gRPC 服务地址、MySQL 服务地址、metasrv 地址和该 datanode 的 ID：
 
 ```sh
-greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addr=0.0.0.0:3002 --node-id=1
+greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 使用自定义配置启动 frontend：
@@ -70,5 +70,5 @@ greptime frontend start -c config/frontend.example.toml
 使用命令行参数启动 frontend，指定 metasrv 的地址：
 
 ```sh
-greptime frontend start --metasrv-addr=0.0.0.0:3002
+greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
