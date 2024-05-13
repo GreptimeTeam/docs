@@ -37,7 +37,7 @@ greptime datanode start --help
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
+- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
 - `--node-id <NODE_ID>`: The datanode ID;
 - `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
 - `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
@@ -61,7 +61,7 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses to store metadata;
+- `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
 
 ### Frontend subcommand options

@@ -58,7 +58,7 @@ greptime datanode start -c config/datanode.example.toml
 Starts a datanode instance with command line arguments specifying the gRPC service address, the MySQL service address, the address of the metasrv, and the node id of the instance:
 
 ```sh
-greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addr=0.0.0.0:3002 --node-id=1
+greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 Starts a frontend instance with customized configurations:
@@ -70,5 +70,5 @@ greptime frontend start -c config/frontend.example.toml
 Starts a frontend instance with command line arguments specifying the address of the metasrv:
 
 ```sh
-greptime frontend start --metasrv-addr=0.0.0.0:3002
+greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
