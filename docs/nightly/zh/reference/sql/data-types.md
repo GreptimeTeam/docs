@@ -89,24 +89,24 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 
 对于从 MySQL 或 PostgreSQL 迁移到 GreptimeDB 的用户，GreptimeDB 支持以下类型别名。
 
-| 数据类型            | 别名                               |
-|----------------------|----------------------------------------|
-| `String`             | `Text`, `Varchar`, `Char`              |
-| `Binary`             | `Varbinary`                           |
-| `Int8`               | `TinyInt`                              |
-| `Int16`              | `SmallInt`                             |
-| `Int32`              | `Int`                                  |
-| `Int64`              | `BigInt`                               |
-| `UInt8`              | `UnsignedInt`                   |
-| `UInt16`             | `UnsignedTinyInt`              |
-| `UInt32`             | `UnsignedSmallInt`             |
-| `UInt64`             | `UnsignedBigInt`               |
-| `Float32`            | `Float`                                |
-| `Float64`            | `Double`                               |
-| `TimestampSecond`    |  `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)` |
-| `TimestampMillisecond`| `Timestamp`, `Timestamp_ms` , `Timestamp(3)`|
-| `TimestampMicroSecond`| `Timestamp_us`, `Timestamp(6)`       |
-| `TimestampNanosecond`| `Timestamp_ns`, `Timestamp(9)`       |
+| 数据类型               | 别名                                                            |
+| ---------------------- | --------------------------------------------------------------- |
+| `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
+| `Binary`               | `Varbinary`                                                     |
+| `Int8`                 | `TinyInt`                                                       |
+| `Int16`                | `SmallInt`                                                      |
+| `Int32`                | `Int`                                                           |
+| `Int64`                | `BigInt`                                                        |
+| `UInt8`                | `UnsignedInt`                                                   |
+| `UInt16`               | `UnsignedTinyInt`                                               |
+| `UInt32`               | `UnsignedSmallInt`                                              |
+| `UInt64`               | `UnsignedBigInt`                                                |
+| `Float32`              | `Float`                                                         |
+| `Float64`              | `Double`                                                        |
+| `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
+| `TimestampMillisecond` | `Timestamp`, `Timestamp_ms` , `Timestamp(3)`                    |
+| `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
+| `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
 在创建表时也可以使用这些别名类型。
 例如，使用 `Varchar` 代替 `String`，使用 `Double` 代替 `Float64`，使用 `Timestamp(0)` 代替 `TimestampMillisecond`。
