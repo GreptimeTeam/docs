@@ -90,24 +90,24 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 
 For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports the following alias types.
 
-| Data Type            | Alias Types                               |
-|----------------------|-------------------------------------------|
-| `String`             | `Text`, `Varchar`, `Char`                  |
-| `Binary`             | `Varbinary`                               |
-| `Int8`               | `TinyInt`                                 |
-| `Int16`              | `SmallInt`                                |
-| `Int32`              | `Int`                                     |
-| `Int64`              | `BigInt`                                  |
-| `UInt8`              | `UnsignedInt`                   |
-| `UInt16`             | `UnsignedTinyInt`              |
-| `UInt32`             | `UnsignedSmallInt`             |
-| `UInt64`             | `UnsignedBigInt`               |
-| `Float32`            | `Float`                                   |
-| `Float64`            | `Double`                                  |
-| `TimestampSecond`    |  `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)` |
-| `TimestampMillisecond`| `Timestamp`, `Timestamp_ms` , `Timestamp(3)`|
-| `TimestampMicroSecond`| `Timestamp_us`, `Timestamp(6)`           |
-| `TimestampNanosecond`| `Timestamp_ns`, `Timestamp(9)`            |
+| Data Type              | Alias Types                                                     |
+| ---------------------- | --------------------------------------------------------------- |
+| `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
+| `Binary`               | `Varbinary`                                                     |
+| `Int8`                 | `TinyInt`                                                       |
+| `Int16`                | `SmallInt`                                                      |
+| `Int32`                | `Int`                                                           |
+| `Int64`                | `BigInt`                                                        |
+| `UInt8`                | `UnsignedInt`                                                   |
+| `UInt16`               | `UnsignedTinyInt`                                               |
+| `UInt32`               | `UnsignedSmallInt`                                              |
+| `UInt64`               | `UnsignedBigInt`                                                |
+| `Float32`              | `Float`                                                         |
+| `Float64`              | `Double`                                                        |
+| `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
+| `TimestampMillisecond` | `Timestamp`, `Timestamp_ms`, `Timestamp(3)`                     |
+| `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
+| `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
 You can use these alias types when creating tables.
 For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, and `Timestamp(0)` instead of `TimestampMillisecond`.
