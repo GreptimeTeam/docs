@@ -52,6 +52,12 @@
     - sql
     - promql
     - query-external-data
+  - Continuous-Aggregation:
+    - overview
+    - manage-flow
+    - define-time-window
+    - query
+    - expression
   - Client-Libraries:
     - overview
     - go
