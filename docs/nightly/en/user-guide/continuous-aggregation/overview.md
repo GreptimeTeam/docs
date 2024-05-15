@@ -7,4 +7,4 @@ GreptimeDB provides a continuous aggregation feature that allows you to aggregat
 - [Query](./query.md) describes how to write a continuous aggregation query.
 - [Expression](./expression.md) is a reference of available expressions in the continuous aggregation query.
 
-![Continuous Aggregation](./flow-ani.svg)
+![Continuous Aggregation](/flow-ani.svg)
