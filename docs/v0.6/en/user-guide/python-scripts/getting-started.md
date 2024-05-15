@@ -14,7 +14,7 @@ conda create --name Greptime python=<Specific Python Version from above step, e.
 conda activate Greptime
 ```
 
-You may have to adjust the correct `LD_LIBRARY_PATH` for your Python shared library. For example, in the conda environment, set `LD_LIBRARY_PATH` (or `DYLD_LIBRARY_PATH`) to `$CONDA_PREFIX/lib`. To ensure the correct Python shared library is in this path, run `ls $CONDA_PREFIX/lib | grep 'libpython'` and verifty that the version is correct.
+You may have to adjust the correct `LD_LIBRARY_PATH` for your Python shared library. For example, in the conda environment, set `LD_LIBRARY_PATH` (or `DYLD_LIBRARY_PATH`) to `$CONDA_PREFIX/lib`. To ensure the correct Python shared library is in this path, run `ls $CONDA_PREFIX/lib | grep 'libpython'` and verify that the version is correct.
 
 ### Install GreptimeDB
 

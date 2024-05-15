@@ -34,7 +34,7 @@ This is a patch release, containing an important bug fix while decoding the Prom
 * feat: clamp function by [@waynexia](https://github.com/waynexia) in [#3465](https://github.com/GreptimeTeam/greptimedb/pull/3465)
 * feat(fuzz): validate columns by [@WenyXu](https://github.com/WenyXu) in [#3485](https://github.com/GreptimeTeam/greptimedb/pull/3485)
 * feat: to_timezone function by [@tisonkun](https://github.com/tisonkun) in [#3470](https://github.com/GreptimeTeam/greptimedb/pull/3470)
-* feat(flow): accumlator for aggr func by [@discord9](https://github.com/discord9) in [#3396](https://github.com/GreptimeTeam/greptimedb/pull/3396)
+* feat(flow): accumulator for aggr func by [@discord9](https://github.com/discord9) in [#3396](https://github.com/GreptimeTeam/greptimedb/pull/3396)
 * feat(flow): plan def by [@discord9](https://github.com/discord9) in [#3490](https://github.com/GreptimeTeam/greptimedb/pull/3490)
 * feat: improve prom write requests decode performance by [@v0y4g3r](https://github.com/v0y4g3r) in [#3478](https://github.com/GreptimeTeam/greptimedb/pull/3478)
 * feat(fuzz): add insert target by [@zhongzc](https://github.com/zhongzc) in [#3499](https://github.com/GreptimeTeam/greptimedb/pull/3499)

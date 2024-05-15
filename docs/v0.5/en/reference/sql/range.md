@@ -250,7 +250,7 @@ Suppose we have a tale `host` with the following data:
 +---------------------+-------+------+
 ```
 
-The following SQL uses `host` as the aggragate key:
+The following SQL uses `host` as the aggregate key:
 
 ```sql
 SELECT 

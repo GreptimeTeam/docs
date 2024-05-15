@@ -145,7 +145,7 @@ COPY DATABASE <db_name>
 | `FORMAT` | Export file format, available options: JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
 
-> - When copying databses, `<PATH>` must end with `/`.
+> - When copying databases, `<PATH>` must end with `/`.
 > - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
 
 ### Examples

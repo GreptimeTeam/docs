@@ -44,7 +44,7 @@ v0.7 represents a crucial leap toward achieving production readiness; it impleme
 * fix: bump libgit2-sys from 0.16.1+1.7.1 to 0.16.2+1.7.2 by [@dependabot](https://github.com/dependabot) in [#3316](https://github.com/GreptimeTeam/greptimedb/pull/3316)
 * fix: split write metadata request by [@fengjiachun](https://github.com/fengjiachun) in [#3311](https://github.com/GreptimeTeam/greptimedb/pull/3311)
 * fix(index): encode string type to original data to enable fst regex to work by [@zhongzc](https://github.com/zhongzc) in [#3324](https://github.com/GreptimeTeam/greptimedb/pull/3324)
-* fix: disable ansi contorl char when stdout is redirected by [@waynexia](https://github.com/waynexia) in [#3332](https://github.com/GreptimeTeam/greptimedb/pull/3332)
+* fix: disable ansi control char when stdout is redirected by [@waynexia](https://github.com/waynexia) in [#3332](https://github.com/GreptimeTeam/greptimedb/pull/3332)
 * fix: typo in lint config by [@waynexia](https://github.com/waynexia) in [#3358](https://github.com/GreptimeTeam/greptimedb/pull/3358)
 * fix: treat "0" and "1" as valid boolean values. by [@MichaelScofield](https://github.com/MichaelScofield) in [#3370](https://github.com/GreptimeTeam/greptimedb/pull/3370)
 * fix: remove unused imports in memtable_util.rs by [@v0y4g3r](https://github.com/v0y4g3r) in [#3376](https://github.com/GreptimeTeam/greptimedb/pull/3376)

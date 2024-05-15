@@ -1,0 +1,8 @@
+[default.extend-words]
+# random strings
+yello = "yello"
+datas = "datas"
+
+# tech abbreviations
+ND = "ND"
+RTO = "RTO"
