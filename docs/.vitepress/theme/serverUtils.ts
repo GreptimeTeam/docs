@@ -96,6 +96,7 @@ export const getVersionList = (lang: string) => {
         text: `${version} ${endText}`,
         link: `/${linkVersion}`,
         target: '_blank',
+        activeMatch: `/${linkVersion}/`,
       }
     })
 }
