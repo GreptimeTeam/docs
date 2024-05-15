@@ -49,3 +49,9 @@ To delete a flow, use the following `DROP FLOW` clause:
 ```sql
 DROP FLOW [IF EXISTS] <name>
 ```
+
+For example:
+
+```sql
+DROP FLOW IF EXISTS my_flow;
+```
