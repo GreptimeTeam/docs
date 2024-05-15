@@ -94,7 +94,8 @@ export const getVersionList = (lang: string) => {
       const linkVersion = version !== LATEST_VERSION ? `${version}/` : ''
       return {
         text: `${version} ${endText}`,
-        link: `${websiteMap[lang]}/${linkVersion}`,
+        link: `/${linkVersion}`,
+        target: '_blank',
       }
     })
 }
