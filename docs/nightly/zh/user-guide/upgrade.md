@@ -87,8 +87,8 @@ greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-
 新的内容是 `greptime-public_copy_from.sql` 和 `greptime-public`。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
 
 ### 处理 Breaking Changes
-:::warning NOTICE
-从版本0.7.x升级时存在已知的 Breaking Changes。您需要手动编辑导出的 SQL 文件（即，/tmp/greptimedb-export/greptime-public.sql）
+:::warning 注意
+从版本 0.7.x 升级时存在已知的 Breaking Changes。您需要手动编辑导出的 SQL 文件（即 /tmp/greptimedb-export/greptime-public.sql）
 :::
 
 #### 删除 `WITH` 从句中的 `regions` 选项
