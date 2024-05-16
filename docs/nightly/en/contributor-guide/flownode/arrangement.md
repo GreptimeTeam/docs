@@ -1,10 +1,9 @@
 # Arrangement
 
-Arrangement store the state in the dataflow's process, streams of updates flow in to an arrangement, and arrangement store them for further query and updates.
+Arrangement stores the state in the dataflow's process. Streams of update flows are sent to an arrangement, and the arrangement stores them for further querying and updating.
 
-For now there is no persisent and we store arrangement in the memory. The arrangement essentially store key-value pairs with timestamp to mark it's change time. 
+The arrangement essentially stores key-value pairs with timestamps to mark their change time.
 
-The kv pairs are both `Row` in arrangement, and the timestamp is the time when the row is created or updated.
-
-Internally, arrangement get tuples like
-`((Key Row, Value Row), timestamp, diff)` and store them in the memory. And one can query key-value pairs at certain time with `get(now: Timestamp, key: Row)` method, and get the value at given time `now` for the key. Arrangement, also assume everything older than a certain time(also known as low watermark) is already ingested and wouldn't keep history for them.
+Internally, the arrangement receives tuples like
+`((Key Row, Value Row), timestamp, diff)` and stores them in memory. One can query key-value pairs at a certain time using the `get(now: Timestamp, key: Row)` method, and retrieve the value for the given key at the specified time `now`.
+The arrangement also assumes that everything older than a certain time (also known as the low watermark) has already been ingested and does not keep a history for them.
