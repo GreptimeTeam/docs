@@ -150,8 +150,40 @@ CREATE TABLE IF NOT EXISTS "phy" (
 )
 ENGINE=metric
 WITH(
-  physical_metric_table = '',
-  regions = 1
+  physical_metric_table = ''
+);
+```
+
+#### Add missing Time Index constraint
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+  TIME INDEX ("ts")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
 );
 ```
 
