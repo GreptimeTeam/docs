@@ -1,6 +1,8 @@
 # Arrangement
 
-Arrangement store the state in the dataflow's process, for now there is no persisent and we store arrangement in the memory. The arrangement essentially store key-value pairs with timestamp to mark it's change time. 
+Arrangement store the state in the dataflow's process, streams of updates flow in to an arrangement, and arrangement store them for further query and updates.
+
+For now there is no persisent and we store arrangement in the memory. The arrangement essentially store key-value pairs with timestamp to mark it's change time. 
 
 The kv pairs are both `Row` in arrangement, and the timestamp is the time when the row is created or updated.
 
