@@ -7,3 +7,5 @@ The arrangement essentially stores key-value pairs with timestamps to mark their
 Internally, the arrangement receives tuples like
 `((Key Row, Value Row), timestamp, diff)` and stores them in memory. One can query key-value pairs at a certain time using the `get(now: Timestamp, key: Row)` method, and retrieve the value for the given key at the specified time `now`.
 The arrangement also assumes that everything older than a certain time (also known as the low watermark) has already been ingested and does not keep a history for them.
+
+NOTE: The arrangement allows for the removal of keys by setting the `diff` to -1 in incoming tuples. Moreover, if a row has been previously added to the arrangement and the same key is inserted with a different value, the original value is overwritten with the new value.
