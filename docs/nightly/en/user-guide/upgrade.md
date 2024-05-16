@@ -43,11 +43,36 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 ## Upgrade from 0.7.x
 
-:::tip NOTICE
+Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
+
+
+### Export `CREATE TABLE`
+
+```shell
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
+```
+
+If success, you will see something like this
+
+```log
+2023-10-20T09:41:06.500390Z  INFO cmd::cli::export: finished exporting greptime.public with 434 tables
+2023-10-20T09:41:06.500482Z  INFO cmd::cli::export: success 1/1 jobs
+```
+
+And now the output directory structure is
+
+```plaintext
+/tmp/greptimedb-export
+└── greptime-public.sql
+```
+
+### Handle Breaking Changes
+:::warning NOTICE
 There are known breaking changes when attempting to upgrade from version 0.7.x.
+**You need to manually edit the exported SQL files (e.g., `/tmp/greptimedb-export/greptime-public.sql`). **
 :::
 
-1. Remove the `WITH` clause.
+#### Remove the `WITH` clause.
 
 Before:
 ```sql
@@ -72,7 +97,7 @@ CREATE TABLE foo (
 ) ENGINE=mito;
 ```
 
-2. Rewrite the partition rule.
+#### Rewrite the partition rule.
 
 Before:
 ```sql
@@ -94,7 +119,7 @@ PARTITION ON COLUMNS (n) (
 )
 ```
 
-3. Remove the internal columns from the create table SQL files.
+#### Remove the internal columns.
 
 Before:
 ```sql
@@ -130,30 +155,6 @@ WITH(
 );
 ```
 
-## Example
-
-Here is a complete example for upgrading from `v0.3.0` to `v0.4.0`.
-
-
-### Export `CREATE TABLE`
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
-```
-
-If success, you will see something like this
-
-```log
-2023-10-20T09:41:06.500390Z  INFO cmd::cli::export: finished exporting greptime.public with 434 tables
-2023-10-20T09:41:06.500482Z  INFO cmd::cli::export: success 1/1 jobs
-```
-
-And now the output directory structure is
-
-```plaintext
-/tmp/greptimedb-export
-└── greptime-public.sql
-```
 
 ### Export table data
 
