@@ -41,16 +41,15 @@ Here explains the meaning of some important options
 
 For a complete upgrade, you will need to execute this tools twice with each target options.
 
-## Example
+## Upgrade from 0.7.x
 
-Here is a complete example for upgrading from `v0.3.0` to `v0.4.0`.
+Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 
-In the following text, we assume that you have a Frontend's gRPC endpoint is available at `127.0.0.1:4001`. The output dir is `/tmp/greptimedb-export`.
 
 ### Export `CREATE TABLE`
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 If success, you will see something like this
@@ -67,10 +66,132 @@ And now the output directory structure is
 └── greptime-public.sql
 ```
 
+### Handle Breaking Changes
+:::warning NOTICE
+There are known breaking changes when attempting to upgrade from version 0.7.x.
+**You need to manually edit the exported SQL files (i.e., `/tmp/greptimedb-export/greptime-public.sql`). **
+:::
+
+#### Remove `regions` option in `WITH` clause
+
+Before:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito 
+WITH(
+    regions=1
+);
+```
+
+After:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito;
+```
+
+#### Rewrite the partition rule
+
+Before:
+```sql
+PARTITION BY RANGE COLUMNS (n) (
+     PARTITION r0 VALUES LESS THAN (1),
+     PARTITION r1 VALUES LESS THAN (10),
+     PARTITION r2 VALUES LESS THAN (100),
+     PARTITION r3 VALUES LESS THAN (MAXVALUE),
+)
+```
+
+After:
+```sql
+PARTITION ON COLUMNS (n) (
+     n < 1,
+     n >= 1 AND n < 10,
+     n >= 10 AND n < 100,
+     n >= 100
+)
+```
+
+#### Remove the internal columns
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "__table_id" INT UNSIGNED NOT NULL,
+  "__tsid" BIGINT UNSIGNED NOT NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = '',
+  regions = 1
+);
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+#### Add missing Time Index constraint
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+  TIME INDEX ("ts")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+
 ### Export table data
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 The log output is similar to the previous one. And the output directory structure is
