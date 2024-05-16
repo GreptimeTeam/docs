@@ -194,6 +194,10 @@
     - admin-api
     - dist-lock
     - selector
+  - Flownode:
+    - overview
+    - dataflow
+    - arrangement
   - Tests:
     - overview
     - unit-test
