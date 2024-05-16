@@ -64,7 +64,6 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
-| `MAX_INSERT_ROWS` | 一次性插入最大行数，例如 `1000` | 可选 |
 
 #### Connection 选项
 
