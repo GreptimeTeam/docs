@@ -1,11 +1,13 @@
 # Arrangement
 
-Arrangement 存储数据流进程中的状态。更新流被发送到 Arrangement，Arrangement 会存储这些更新流，以便进一步查询和更新。
+Arrangement 存储数据流进程中的状态，存储 flow 的更新流（stream）以供进一步查询和更新。
 
-Arrangement 主要存储带有时间戳的键值对，以标记其更改时间。
+Arrangement 本质上存储的是带有时间戳的键值对。
+在内部，Arrangement 接收类似 `((Key Row, Value Row), timestamp, diff)` 的 tuple，并将其存储在内存中。
+你可以使用 `get(now: Timestamp, key: Row)` 查询某个时间的键值对。
+Arrangement 假定早于某个时间（也称为 Low Watermark）的所有内容都已被写入到 sink 表中，不会为其保留历史记录。
 
-在内部，Arrangement 接收的元组包括
-`((Key Row, Value Row), timestamp, diff)` 这样的元组并将其存储在内存中。人们可以使用 `get(now: Timestamp, key: Row)` 方法查询某个时间的键值对，并检索指定时间 `now` 的给定键值。
-该安排还假定，所有早于一定时间（也称为 Low Watermark）的内容都已被摄取，因此不会为它们保留历史记录。
-
-注意：Arrangement 允许通过将传入元组中的 `diff` 设置为 -1 来删除键。此外，如果之前已向 Arrangement 添加了一行，而插入的相同键值不同，则会用新值覆盖原值。
+:::tip 注意
+Arrangement 允许通过将传入 tuple 的 `diff` 设置为 -1 来删除键。
+此外，如果已将行数据添加到 Arrangement 并且使用不同的值插入相同的键，则原始值将被新值覆盖。
+:::

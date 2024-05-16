@@ -1,17 +1,16 @@
-# 概览
+# 概述
 
 ## 简介
 
+`Flownode` 为数据库提供了一种简单的流处理（称为 `flow`）能力。
+`Flownode` 管理 `flow`，这些 `flow` 是从 `source` 接收数据并将数据发送到 `sink` 的任务。
 
-Flownode “为数据库提供了一种简单的流式处理能力（称为 `flow`）。
-Flownode “管理 `flow`，`flow` 是主动从作为数据源的表接收数据并将计算结果发送到结果表的任务。
-
-在当前版本中，`Flownode` 仅支持 Standalone 模式。未来，我们将支持分布式模式。
+在当前版本中，`Flownode` 仅在单机模式中支持，未来将支持分布式模式。
 
 ## 组件
 
-一个 `Flownode` 包含流的流处理过程所需的所有组件。在此，我们列出了其中的重要部分：
+`Flownode` 包含了 flow 流式处理的所有组件，以下是关键部分：
 
-- `FlownodeManager`，用于接收从 ”前端 "转发的插入信息，并将结果发送回流的汇表。
-- 一定数量的 `FlowWorker` 实例，每个实例在单独的线程中运行。目前，Standalone 模式下只有一个 `FlowWorker`，但将来可能会改变。
-- `flow` 是一个主动从作为数据源的表接收数据，并向结果表发送数据的任务。它由 `FlownodeManager` 管理，并由 `FlowWorker` 运行。
+- `FlownodeManager`：用于接收从 `Frontend` 转发的插入数据并将结果发送回 flow 的 sink 表。
+- 一定数量的 `FlowWorker` 实例，每个实例在单独的线程中运行。当前在单机模式中只有一个 flow worker，但这可能会在未来发生变化。
+- `Flow` 是一个主动从 `source` 接收数据并将数据发送到 `sink` 的任务。由 `FlownodeManager` 管理并由 `FlowWorker` 运行。
