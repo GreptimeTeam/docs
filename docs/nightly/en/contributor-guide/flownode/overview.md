@@ -3,7 +3,7 @@
 ## Introduction
 
 
-`Flownode` provide simple streaming process ability to the database. 
+`Flownode` provide simple streaming process(known as `flow`) ability to the database. 
 `Flownode` manage `flows` which are tasks that actively receive data from the `source` and send data to the `sink`.
 
 In current version, `Flownode` only support standalone mode. In the future, we will support distributed mode.
