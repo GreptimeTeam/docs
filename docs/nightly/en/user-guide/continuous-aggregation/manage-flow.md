@@ -1,4 +1,4 @@
-# Manage Flow
+# Manage Flows
 
 Each `flow` is a continuous aggregation query in GreptimeDB. It is a query that continuously updates the aggregated data based on the incoming data and materializes the result. This document describes how to create, update, and delete a flow.
 
@@ -10,7 +10,7 @@ A `flow` have those attributes:
 - `comment`: the description of the flow.
 - `SQL`: the continuous aggregation query to define the flow. Refer to [Expression](./expression.md) for the available expressions.
 
-# Create flow or update flow
+# Create or update a flow
 
 The grammar to create a flow is:
 
@@ -42,7 +42,7 @@ SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 
 
 The created flow will compute `count(item)` for every 5 minutes and store the result in `my_sink_table`. All data comes within 1 hour will be used in the flow. For the `tumble()` function, refer to [define time window](./define-time-window.md) part.
 
-# Delete flow
+# Delete a flow
 
 To delete a flow, use the following `DROP FLOW` clause:
 
