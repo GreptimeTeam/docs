@@ -112,7 +112,7 @@ curl -X GET \
   "execution_time_ms": 5
 }
 ```
-<!-- TODO New paths that compatible with Promethues APIs -->
+<!-- TODO New paths that compatible with Prometheus APIs -->
 
 ## SQL
 

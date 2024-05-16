@@ -313,7 +313,7 @@ For fully runnable code snippets and explanations for common methods, see the [E
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
 Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API.
-Since GreptimeDB supports [mutiple protocols](/user-guide/clients/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
+Since GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
 If you want to use other protocols, just replace the MySQL driver with the corresponding driver.
 
 %}

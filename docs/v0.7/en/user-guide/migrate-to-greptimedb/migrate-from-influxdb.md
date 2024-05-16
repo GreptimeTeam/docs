@@ -306,7 +306,7 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 ## Visualize data
 
-It is recommanded using Grafana to visualize data in GreptimeDB.
+It is recommended using Grafana to visualize data in GreptimeDB.
 Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
 
 ## Migrate data

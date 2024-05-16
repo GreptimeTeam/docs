@@ -2,7 +2,7 @@
 
 The GreptimeDB exposes the Prometheus metrics, and the users can also use [Prometheus](https://prometheus.io/) to collect the metrics.
 
-## Promethues Configuration
+## Prometheus Configuration
 
 Write a Prometheus configuration file and save it as `prometheus.yml`:
 ```

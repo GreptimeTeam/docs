@@ -9,7 +9,7 @@ For more explanations of the `SQL` syntax, please see the [SQL reference](/refer
 
 ## Create Database
 
-The default database is `public`. You can create a database manully.
+The default database is `public`. You can create a database manually.
 
 ```sql
 CREATE DATABASE test;

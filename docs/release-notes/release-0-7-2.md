@@ -76,7 +76,7 @@ This is a patch release, containing a critial bug fix to avoid wrongly delete da
 * refactor: introduce the DropTableExecutor by [@WenyXu](https://github.com/WenyXu) in [#3534](https://github.com/GreptimeTeam/greptimedb/pull/3534)
 * refactor: refactor CacheInvalidator by [@WenyXu](https://github.com/WenyXu) in [#3550](https://github.com/GreptimeTeam/greptimedb/pull/3550)
 * refactor: handle error for http format by [@tisonkun](https://github.com/tisonkun) in [#3548](https://github.com/GreptimeTeam/greptimedb/pull/3548)
-* refactor: remove redudant PromStoreProtocolHandler::write  by [@v0y4g3r](https://github.com/v0y4g3r) in [#3553](https://github.com/GreptimeTeam/greptimedb/pull/3553)
+* refactor: remove redundant PromStoreProtocolHandler::write  by [@v0y4g3r](https://github.com/v0y4g3r) in [#3553](https://github.com/GreptimeTeam/greptimedb/pull/3553)
 * refactor: reduce one clone by carefully pass ready boundary by [@tisonkun](https://github.com/tisonkun) in [#3543](https://github.com/GreptimeTeam/greptimedb/pull/3543)
 * refactor: try upgrade regex-automata by [@tisonkun](https://github.com/tisonkun) in [#3575](https://github.com/GreptimeTeam/greptimedb/pull/3575)
 * refactor: refactor drop table executor by [@WenyXu](https://github.com/WenyXu) in [#3589](https://github.com/GreptimeTeam/greptimedb/pull/3589)

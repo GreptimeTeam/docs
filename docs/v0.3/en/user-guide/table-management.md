@@ -7,7 +7,7 @@ uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.h
 
 ## Create Database
 
-The default database is `public`. You can create a database manully.
+The default database is `public`. You can create a database manually.
 
 ```sql
 CREATE DATABASE test;

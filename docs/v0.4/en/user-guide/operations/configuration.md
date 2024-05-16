@@ -61,7 +61,7 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--selector <SELECTOR>`: You can refer [selector-type](/developer-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addr <STORE_ADDR>`: Comma seperated etcd server addresses to store metadata;
+- `--store-addr <STORE_ADDR>`: Comma separated etcd server addresses to store metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
 
 ### Frontend subcommand options
