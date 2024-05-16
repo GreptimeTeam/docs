@@ -43,14 +43,14 @@ OPTIONS:
 
 ## 示例
 
-这一节将演示如何从 `v0.3.0` 升级到 `v0.4.0`。
+这一节将演示如何从 `v0.7.x` 升级到 `v0.8.0`。
 
-在下面的文本中，我们假设您的 Frontend 的 gRPC 端口为 `127.0.0.1:4001`。输出目录是 `/tmp/greptimedb-export`。
+在下面的文本中，我们假设您的 Frontend 的 HTTP 端口为 `127.0.0.1:4000`。输出目录是 `/tmp/greptimedb-export`。
 
 ### 导出 `CREATE TABLE`
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 如果成功，您将看到类似于以下内容的输出
@@ -70,7 +70,7 @@ greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export 
 ### 导出表数据
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 日志输出与上面类似。输出目录的结构如下
@@ -85,6 +85,94 @@ greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-
 ```
 
 新的内容是 `greptime-public_copy_from.sql` 和 `greptime-public`。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
+
+### 处理 Breaking Changes
+:::warning NOTICE
+从版本0.7.x升级时存在已知的 Breaking Changes。您需要手动编辑导出的 SQL 文件（即，/tmp/greptimedb-export/greptime-public.sql）
+:::
+
+#### 删除 `WITH` 从句中的 `regions` 选项
+
+修改前:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito 
+WITH(
+    regions=1
+);
+```
+
+修改后:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito;
+```
+
+#### 重写分区规则
+
+修改前:
+```sql
+PARTITION BY RANGE COLUMNS (n) (
+     PARTITION r0 VALUES LESS THAN (1),
+     PARTITION r1 VALUES LESS THAN (10),
+     PARTITION r2 VALUES LESS THAN (100),
+     PARTITION r3 VALUES LESS THAN (MAXVALUE),
+)
+```
+
+修改后:
+```sql
+PARTITION ON COLUMNS (n) (
+     n < 1,
+     n >= 1 AND n < 10,
+     n >= 10 AND n < 100,
+     n >= 100
+)
+```
+
+#### 删除内部列
+
+修改前:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "__table_id" INT UNSIGNED NOT NULL,
+  "__tsid" BIGINT UNSIGNED NOT NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = '',
+  regions = 1
+);
+```
+
+修改后:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = '',
+  regions = 1
+);
+```
 
 ### 导入表结构和数据
 

@@ -69,10 +69,10 @@ And now the output directory structure is
 ### Handle Breaking Changes
 :::warning NOTICE
 There are known breaking changes when attempting to upgrade from version 0.7.x.
-**You need to manually edit the exported SQL files (e.g., `/tmp/greptimedb-export/greptime-public.sql`). **
+**You need to manually edit the exported SQL files (i.e., `/tmp/greptimedb-export/greptime-public.sql`). **
 :::
 
-#### Remove the `WITH` clause.
+#### Remove `regions` option in `WITH` clause
 
 Before:
 ```sql
@@ -97,7 +97,7 @@ CREATE TABLE foo (
 ) ENGINE=mito;
 ```
 
-#### Rewrite the partition rule.
+#### Rewrite the partition rule
 
 Before:
 ```sql
@@ -119,7 +119,7 @@ PARTITION ON COLUMNS (n) (
 )
 ```
 
-#### Remove the internal columns.
+#### Remove the internal columns
 
 Before:
 ```sql
