@@ -45,11 +45,6 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 
-### Upgrade from 0.7.0 or 0.7.1
-:::warning NOTICE
-If you are using `v0.7.0` or `v0.7.1`, Please replace the old version with `v0.7.11`(Open the data directory using the GreptimeDB `v0.7.11`).
-:::
-
 ### Export `CREATE TABLE`
 
 Assuming the HTTP service port of the old database is `4000`.
@@ -88,7 +83,7 @@ CREATE TABLE foo (
     TIME INDEX (ts),
     PRIMARY KEY(host)
 ) ENGINE=mito 
-WITH(
+WITH( # Delete 
     regions=1
 );
 ```
@@ -136,7 +131,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "__tsid" BIGINT UNSIGNED NOT NULL,
   "host" STRING NULL,
   "job" STRING NULL,
-  PRIMARY KEY ("__table_id", "__tsid", "host", "job")
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job") # Modify this line
 )
 ENGINE=metric
 WITH(
@@ -185,7 +180,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "host" STRING NULL,
   "job" STRING NULL,
   PRIMARY KEY ("host", "job")
-  TIME INDEX ("ts")
+  TIME INDEX ("ts") # Add this line
 )
 ENGINE=metric
 WITH(
@@ -200,7 +195,7 @@ Related [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
 Before:
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
-  "ts" TIMESTAMP(6) NOT NULL,
+  "ts" TIMESTAMP(6) NOT NULL, # Modify this line
   "val" DOUBLE NULL,
   "host" STRING NULL,
   "job" STRING NULL,

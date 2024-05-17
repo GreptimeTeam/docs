@@ -41,11 +41,11 @@ OPTIONS:
 
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
 
-## 示例
+## 从 0.7.x 升级
 
 这一节将演示如何从 `v0.7.x` 升级到 `v0.8.0`。
 
-在下面的文本中，我们假设您的 Frontend 的 HTTP 端口为 `127.0.0.1:4000`。输出目录是 `/tmp/greptimedb-export`。
+在下面的文本中，我们假设您的数据库的 HTTP 端口为 `127.0.0.1:4000`。
 
 ### 导出 `CREATE TABLE`
 
@@ -101,7 +101,7 @@ CREATE TABLE foo (
     TIME INDEX (ts),
     PRIMARY KEY(host)
 ) ENGINE=mito 
-WITH(
+WITH( # 删除
     regions=1
 );
 ```
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "__tsid" BIGINT UNSIGNED NOT NULL,
   "host" STRING NULL,
   "job" STRING NULL,
-  PRIMARY KEY ("__table_id", "__tsid", "host", "job")
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job") # 修改此处
 )
 ENGINE=metric
 WITH(
@@ -199,12 +199,42 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "host" STRING NULL,
   "job" STRING NULL,
   PRIMARY KEY ("host", "job")
-  TIME INDEX ("ts")
+  TIME INDEX ("ts") # 添加在此处
 )
 ENGINE=metric
 WITH(
   physical_metric_table = ''
 );
+```
+
+#### 为 InfluxDB 协议的表更新建表语句
+
+相关 [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
+
+修改前:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(6) NOT NULL, # 修改此处
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
+修改后:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(9) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
 ```
 
 
