@@ -20,7 +20,9 @@ Where `col` specifies use which column to compute the time window. The provided 
 
 # Hop (not supported yet)
 
-`hop` defines sliding window that moves forward by a fixed interval. It signature is like the following:
+`hop` defines sliding window that moves forward by a fixed interval. This feeaure is not supported yet and is expected to be available in the near future.
+
+<!-- `hop` defines sliding window that moves forward by a fixed interval. It signature is like the following:
 
 ```
 hop(col, size_interval, hop_interval, <start_time>)
@@ -30,4 +32,4 @@ Where `col` specifies use which column to compute the time window. The provided 
 
 `size_interval` specifies the size of each window, while `hop_interval` specifies the delta between two windows' start timestamp. You can think the `tumble()` function as a special case of `hop()` function where the `size_interval` and `hop_interval` are the same.
 
-`start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender.
+`start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender. -->
