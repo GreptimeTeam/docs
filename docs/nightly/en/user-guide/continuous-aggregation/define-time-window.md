@@ -2,6 +2,10 @@
 
 Time window is an important attribute of your continuous aggregation query. It defines how the data is aggregated in the flow. GreptimeDB provides two types of time windows: `hop` and `tumble`, or "sliding window" and "fixed window" in other words. You can specify the time window in the `GROUP BY` clause using `hop()` function or `tumble()` function respectively. These two functions are only supported in continuous aggregate queries's `GROUP BY` position.
 
+Here illustrates the `hop()` and `tumble()` functions works:
+
+![Time Window](/time-window.svg)
+
 # Tumble
 
 `tumble()` defines fixed windows that do not overlap. It signature is like the following:
