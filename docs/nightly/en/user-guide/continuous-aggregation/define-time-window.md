@@ -1,6 +1,10 @@
 # Define Time Window
 
-Time window is an important attribute of your continuous aggregation query. It defines how the data is aggregated in the flow. GreptimeDB provides two types of time windows: `hop` and `tumble`, or "sliding window" and "fixed window" in other words. You can specify the time window in the `GROUP BY` clause using `hop()` function or `tumble()` function respectively. These two functions are only supported in continuous aggregate queries's `GROUP BY` position.
+Time window is an important attribute of your continuous aggregation query. It defines how the data is aggregated in the flow.
+
+A time window corresponds to a range of time. Data from source table will be mapped to the corresponding window based on the time index column. Time window is also the scope of one calculation of an aggregation expression, so each time window will result in one row in the result table.
+
+GreptimeDB provides two types of time windows: `hop` and `tumble`, or "sliding window" and "fixed window" in other words. You can specify the time window in the `GROUP BY` clause using `hop()` function or `tumble()` function respectively. These two functions are only supported in continuous aggregate queries's `GROUP BY` position.
 
 Here illustrates how the `hop()` and `tumble()` functions work:
 
