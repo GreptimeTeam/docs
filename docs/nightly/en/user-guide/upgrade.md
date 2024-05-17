@@ -45,11 +45,17 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 
+### Upgrade from 0.7.0 or 0.7.1
+:::warning NOTICE
+If you are using `v0.7.0` or `v0.7.1`, Please replace the old version with `v0.7.11`(Open the data directory using the GreptimeDB `v0.7.11`).
+:::
 
 ### Export `CREATE TABLE`
 
+Assuming the HTTP service port of the old database is `4000`.
+
 ```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
+v0.8.0/greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 If success, you will see something like this
@@ -187,11 +193,40 @@ WITH(
 );
 ```
 
+#### Update the create table statement for tables written using the InfluxDB protocol
+
+Related [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(6) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(9) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
 
 ### Export table data
 
 ```shell
-greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+v0.8.0/greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 The log output is similar to the previous one. And the output directory structure is
