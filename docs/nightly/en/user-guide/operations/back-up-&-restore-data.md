@@ -16,7 +16,7 @@ Backup the data in the time range:
 COPY monitor TO '/home/backup/monitor/monitor_20240518.parquet' WITH (FORMAT = 'parquet', START_TIME='2024-05-18 00:00:00', END_TIME='2025-05-19 00:00:00');
 ```
 
-The above command will export the data on `2024-05-19`. Use such command to achieve incremental backup.
+The above command will export the data on `2024-05-18`. Use such command to achieve incremental backup.
 
 ## Restore Table
 

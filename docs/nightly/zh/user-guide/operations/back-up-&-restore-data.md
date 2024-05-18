@@ -16,7 +16,7 @@ COPY monitor TO '/home/backup/monitor/monitor.parquet' WITH (FORMAT = 'parquet')
 COPY monitor TO '/home/backup/monitor/monitor_20240518.parquet' WITH (FORMAT = 'parquet', START_TIME='2024-05-18 00:00:00', END_TIME='2025-05-19 00:00:00');
 ```
 
-上述命令将导出 `2024-05-19` 的数据。可以使用此命令实现增量备份。
+上述命令将导出 `2024-05-18` 的数据。可以使用此命令实现增量备份。
 
 ## 恢复表
 
