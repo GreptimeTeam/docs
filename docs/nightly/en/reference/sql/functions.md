@@ -37,6 +37,28 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 
 Please refer to [API documentation](https://greptimedb.rs/script/python/rspython/builtins/greptime_builtin/index.html#functions)
 
+### Admin Functions
+
+GreptimeDB provides some administration functions to manage the database and data:
+
+* `flush_table(table_name)` to flush a table's memtables into SST file by table name.
+* `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [REGION_PEERS](./information-schema/region-peers.md) table.
+* `compact_table(table_name)` to schedule a compaction task for a table by table name.
+* `compact_region(region_id)` to schedule a compaction task for a region by region id.
+* `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration).
+* `procedure_state(procedure_id)` to query a procedure state by its id.
+
+For example:
+```sql
+-- Flush the table test --
+select flush_table("test");
+
+-- Schedule a compaction for table test --
+select compact_table("test");
+```
+
+
+
 ## Time and Date
 
 ### `date_trunc`
