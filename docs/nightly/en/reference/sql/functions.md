@@ -42,7 +42,7 @@ Please refer to [API documentation](https://greptimedb.rs/script/python/rspython
 GreptimeDB provides some administration functions to manage the database and data:
 
 * `flush_table(table_name)` to flush a table's memtables into SST file by table name.
-* `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [REGION_PEERS](./information-schema/region-peers.md) table.
+* `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [PARTITIONS](./information-schema/partitions.md) table.
 * `compact_table(table_name)` to schedule a compaction task for a table by table name.
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration).
