@@ -72,6 +72,8 @@ PARTITION ON COLUMNS (a) (
 SELECT * FROM PARTITIONS WHERE table_schema='public' AND table_name='test_p'\G
 ```
 
+示例输出如下：
+
 ```sql
 *************************** 1. row ***************************
                 table_catalog: greptime
