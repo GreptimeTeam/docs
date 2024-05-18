@@ -47,9 +47,9 @@ DESC PARTITIONS;
 * `table_catalog`：表所属目录的名称。该值始终为 `def`。
 * `table_schema`：表所属的 schema（数据库）的名称。
 * `table_name`：包含分区（region）的表的名称。
-* `parition_name`：分区（region）的名称。
+* `partition_name`：分区（region）的名称。
 * `partition_ordinal_position`：所有分区按照定义的顺序进行索引，1 是分配给第一个分区的编号。
-* `parition_method`：该值始终为 `RANGE`，GreptimeDB 仅支持范围分区。
+* `partition_method`：该值始终为 `RANGE`，GreptimeDB 仅支持范围分区。
 * `partition_expression`：该分区的表达式。
 * `create_time`：分区创建的时间。
 * `greptime_partition_id`：GreptimeDB 扩展字段，也就是 Region Id。
