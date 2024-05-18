@@ -16,7 +16,7 @@
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10);
+) engine=mito with(ttl='7d');
 ```
 
 在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。
