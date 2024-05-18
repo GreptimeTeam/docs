@@ -58,7 +58,6 @@ select compact_table("test");
 ```
 
 
-
 ## Time and Date
 
 ### `date_trunc`

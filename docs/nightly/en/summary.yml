@@ -66,8 +66,9 @@
     - api
   - cluster
   - Operations:
-    # - overview
+    - admin
     - configuration
+    - back-up-&-restore-data
     - kubernetes
     - gtctl
     - run-on-android
@@ -81,7 +82,6 @@
     # - alert
     # - import-data
     # - export-data
-    # - back-up-&-restore-data
     # - capacity-planning
   - upgrade
 - GreptimeCloud:

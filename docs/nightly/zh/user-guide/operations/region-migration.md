@@ -59,3 +59,19 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | `from_peer_id`   | 迁移起始节点(Datanode) 的 peer id。                                                                                    | **Required** |     |
 | `to_peer_id`     | 迁移目标节点(Datanode) 的 peer id。                                                                                    | **Required** |     |
 | `replay_timeout` | 迁移时回放数据的超时时间（单位：秒）。如果新 Region 未能在指定时间内回放数据，迁移将失败，旧 Region 中的数据不会丢失。 | Optional     |     |
+
+## 查询迁移状态
+
+`migrate_region` 函数将返回执行迁移的 Procedure Id，可以通过它查询过程状态：
+
+```sql
+select procedure_state('538b7476-9f79-4e50-aa9c-b1de90710839')
+```
+
+如果顺利完成，将输出 JSON 格式的状态：
+
+```json
+ {"status":"Done"}
+```
+
+当然，最终可以通过从 `information_schema` 中查询 `region_peers` 和 `partitions` 来确认 Region 分布是否符合预期。
