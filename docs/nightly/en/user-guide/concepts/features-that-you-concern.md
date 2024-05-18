@@ -16,7 +16,7 @@ Of course, you can set TTL for every table when creating it:
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10);
+) engine=mito with(ttl='7d');
 ```
 
 The TTL of temperatures is set to be seven days. 

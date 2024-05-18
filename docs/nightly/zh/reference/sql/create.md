@@ -50,7 +50,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
-) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
+) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
     <PARTITION EXPR>,
@@ -93,13 +93,13 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
 | `append_mode`           | 该表是否时 append-only 的     | 字符串值. 默认为 'false'，表示会根据主键和时间戳对数据去重。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行     |
 
-例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
+例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10);
+) engine=mito with(ttl='7d');
 ```
 
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10, storage="Gcs");
+) engine=mito with(ttl='7d', storage="Gcs");
 ```
 
 创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区。
