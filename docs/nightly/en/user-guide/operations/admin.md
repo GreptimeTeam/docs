@@ -14,7 +14,7 @@ This document addresses strategies and practices used in the operation of Grepti
 * Find the topology information of the cluster though [CLUSTER_INFO](/reference/sql/information-schema/cluster-info.md) table.
 * Find the table regions distribution though [REGION_PEERS](/reference/sql/information-schema/region-peers.md) table.
 
-`INFORMATION_SCHEMA` provides access to system metadata, such as the name of a database or table, the data type of a column, etc. Please read the [reference](/reference/sql/information-schema/overview.md).
+The `INFORMATION_SCHEMA` database provides access to system metadata, such as the name of a database or table, the data type of a column, etc. Please read the [reference](/reference/sql/information-schema/overview.md).
 
 ## Data management
 

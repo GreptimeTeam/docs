@@ -14,7 +14,7 @@
 * 通过 [CLUSTER_INFO](/reference/sql/information-schema/cluster-info.md) 表查找集群的拓扑信息。
 * 通过 [REGION_PEERS](/reference/sql/information-schema/region-peers.md) 表查找表的 Region 分布。
 
-`INFORMATION_SCHEMA` 提供了对系统元数据的访问，如数据库或表的名称、列的数据类型等。请阅读 [参考文档](/reference/sql/information-schema/overview.md)。
+`INFORMATION_SCHEMA` 数据库提供了对系统元数据的访问，如数据库或表的名称、列的数据类型等。请阅读 [参考文档](/reference/sql/information-schema/overview.md)。
 
 ## 数据管理
 
