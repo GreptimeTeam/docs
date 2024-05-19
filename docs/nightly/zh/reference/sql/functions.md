@@ -41,7 +41,7 @@ arrow_cast(expression, datatype)
 GreptimeDB 提供了一些管理函数来管理数据库和数据：
 
 * `flush_table(table_name)` 通过表名将表的内存表刷写到 SST 文件。
-* `flush_region(region_id)` 通过 Region Id 将 Region 的内存表刷写到 SST 文件。可以通过 [REGION_PEERS](./information-schema/region-peers.md) 表查找 Region Id。
+* `flush_region(region_id)` 通过 Region Id 将 Region 的内存表刷写到 SST 文件。可以通过 [PARTITIONS](./information-schema/partitions.md) 表查找一张表的所有 Region Id。
 * `compact_table(table_name)` 通过表名为表发起compaction 任务。
 * `compact_region(region_id)` 通过 Region Id 为 Region 发起 compaction 任务。
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration)。
