@@ -7,7 +7,7 @@
 一个 `flow` 有以下属性：
 - `name`: flow 的名称。在目录级别中是唯一的标识符。
 - `source tables`: 为 flow 提供数据的表。每个 flow 可以有多个 source 表。
-- `sink table`: 存储聚合数据的表。
+- `sink table`: 存储聚合数据的结果表。
 <!-- - `expire after`: 从 source 表中过期数据的时间间隔。过期时间之后的数据将不会在 flow 中使用。 -->
 - `comment`: flow 的描述。
 - `SQL`: 定义 flow 的连续聚合查询。有关可用表达式，请参阅 [表达式](./expression.md)。
@@ -62,7 +62,7 @@ CREATE FLOW IF NOT EXISTS my_flow
 OUTPUT TO my_sink_table
 COMMENT = "My first flow in GreptimeDB"
 AS
-SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes');
+SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
 ```
 
 该 Flow 将每 5 分钟计算 `count(item)` 并将结果存储在 `my_sink_table` 中。

@@ -58,7 +58,7 @@ CREATE FLOW IF NOT EXISTS my_flow
 OUTPUT TO my_sink_table
 COMMENT = "My first flow in GreptimeDB"
 AS
-SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes');
+SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
 ```
 
 The created flow will compute `count(item)` for every 5 minutes and store the result in `my_sink_table`. For the `tumble()` function, refer to [define time window](./define-time-window.md) part.
