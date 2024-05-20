@@ -67,25 +67,6 @@ greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export 
 └── greptime-public.sql
 ```
 
-### 导出表数据
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
-```
-
-日志输出与上面类似。输出目录的结构如下
-
-```plaintext
-/tmp/greptimedb-export
-├── greptime-public
-│   ├── up.parquet
-│   └── other-tables.parquet
-├── greptime-public_copy_from.sql
-└── greptime-public.sql
-```
-
-新的内容是 `greptime-public_copy_from.sql` 和 `greptime-public`。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
-
 ### 处理 Breaking Changes
 :::warning 注意
 从版本 0.7.x 升级时存在已知的 Breaking Changes。您需要手动编辑导出的 SQL 文件（即 /tmp/greptimedb-export/greptime-public.sql）
@@ -237,6 +218,24 @@ CREATE TABLE IF NOT EXISTS "phy" (
 ENGINE=mito;
 ```
 
+### 导出表数据
+
+```shell
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+```
+
+日志输出与上面类似。输出目录的结构如下
+
+```plaintext
+/tmp/greptimedb-export
+├── greptime-public
+│   ├── up.parquet
+│   └── other-tables.parquet
+├── greptime-public_copy_from.sql
+└── greptime-public.sql
+```
+
+新的内容是 `greptime-public_copy_from.sql` 和 `greptime-public`。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
 
 ### 导入表结构和数据
 
@@ -262,6 +261,14 @@ psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public.sql
 psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
+### 已知问题
+
+#### 升级工具依然会导出 0.7.0 中的物理表数据
+在将 v0.7.0 的数据导入至 v0.8.0 时，数据库可能会出现以下错误。可直接忽略，该错误并不会影响数据的完整性。
+```
+psql:/tmp/greptimedb-export/greptime-public_copy_from.sql:2: ERROR:  Alter request to physical region is forbidden
+```
+
 ### 清理
 
 到这一步，所有的数据都已经迁移完毕。您可以在新集群中检查数据。
@@ -272,10 +279,10 @@ psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 
 该部分给出了一个推荐的整体流程，以便平滑升级 GreptimeDB。如果您的环境可以在升级过程中离线，可以跳过此部分。
 
-1. 创建一个全新的 v0.4 集群 
-2. 导出并导入 `create-table`
+1. 创建一个全新的 v0.8.0 集群 
+2. 使用 v0.8.0 版本的 cli 工具导出并导入 `create-table`
 3. 将工作负载切换到新集群
-4. 导出并导入 `table-data`
+4. 使用 v0.8.0 版本的 cli 工具导出并导入 `table-data`
 
 注意
 

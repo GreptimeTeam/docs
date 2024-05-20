@@ -261,6 +261,14 @@ And then import the data
 psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
+### Known Issues
+
+#### The upgrade tool will still export physical table data from v0.7.0
+When importing v0.7.0 data into v0.8.0, the database may encounter the following error. This error can be safely ignored as it does not affect data integrity.
+```
+psql:/tmp/greptimedb-export/greptime-public_copy_from.sql:2: ERROR:  Alter request to physical region is forbidden
+```
+
 ### Clean up
 
 At this step all the data is migrated. You can check the data in the new cluster.
@@ -271,10 +279,10 @@ After confirming that the data is correct, you can clean up the old cluster and 
 
 This section gives a recommended overall process for upgrading GreptimeDB smoothly. You can skip this section if your environment can go offline on the upgrade progress.
 
-1. Create a brand new v0.4 cluster
-2. Export and import `create-table`
-3. Switch workload to the new cluster
-4. Export and import table data
+1. Create a brand new v0.8.0 cluster.
+2. Use the v0.8.0 CLI tool to export and import `create-table`.
+3. Switch the workload to the new cluster.
+4. Use the v0.8.0 CLI tool to export and import `table-data`.
 
 Caveats
 - Changes to table structure between step 2 and 3 will be lost
