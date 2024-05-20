@@ -50,7 +50,7 @@ Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 Assuming the HTTP service port of the old database is `4000`.
 
 ```shell
-v0.8.0/greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 If success, you will see something like this
@@ -195,7 +195,7 @@ Related [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
 Before:
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
-  "ts" TIMESTAMP(6) NOT NULL, # Modify this line
+  "ts" TIMESTAMP(6) NOT NULL, # Modify to TIMESTAMP(9)
   "val" DOUBLE NULL,
   "host" STRING NULL,
   "job" STRING NULL,
@@ -221,7 +221,7 @@ ENGINE=mito;
 ### Export table data
 
 ```shell
-v0.8.0/greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 The log output is similar to the previous one. And the output directory structure is
