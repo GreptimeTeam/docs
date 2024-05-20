@@ -23,11 +23,11 @@ AS
 <SQL>;
 ```
 
-When `OR REPLACE` is specified, if a flow with the same name already exists, it will be updated to the new one.
+When `OR REPLACE` is specified, if a flow with the same name already exists, it will be updated to the new one. Notice that this only affects the flow task itself, and both source and sink tables will not be changed.
 
 `sink-table-name` is the table name to store the materialized aggregated data. It can be an existing table or a new table, `flow` will create the sink table if it doesn't exist. But if the table already exists, the schema of the table must match the schema of the query result.
 
-`expire after` is an optional interval to expire the data from the source table. The expiration time is a relative time from the current time (by "current time" we means the physical time of the data arrive the Flow engine). For example, `INTERVAL '1 hour'` means the data after 1 hour from the current time will be expired. Expired will be dropped directly.
+`expire after` is an optional interval to expire the data from the source table. The expiration time is a relative time from the current time (by "current time" we means the physical time of the data arrive the Flow engine). For example, `INTERVAL '1 hour'` means the data **older** than 1 hour from the current time will be expired. Expired data will be dropped directly.
 
 `SQL` part defines the continuous aggregation query. Refer to [Query](./query.md) for the details. Generally speaking, the `SQL` part is just like a normal `SELECT` clause with a few difference.
 
