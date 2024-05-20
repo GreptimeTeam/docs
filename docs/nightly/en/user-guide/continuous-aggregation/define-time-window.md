@@ -10,7 +10,7 @@ Here illustrates how the `hop()` and `tumble()` functions work:
 
 ![Time Window](/time-window.svg)
 
-# Tumble
+## Tumble
 
 `tumble()` defines fixed windows that do not overlap.
 
@@ -23,7 +23,7 @@ tumble(col, interval, <start_time>)
 - `start_time` specify the start time of the first window.
 <!-- - `start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender. -->
 
-# Hop (not supported yet)
+## Hop (not supported yet)
 
 `hop` defines sliding window that moves forward by a fixed interval. This feeaure is not supported yet and is expected to be available in the near future.
 

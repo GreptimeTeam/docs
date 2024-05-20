@@ -15,7 +15,7 @@ GreptimeDB 提供两种时间窗口类型：`hop` 和 `tumble`，或者换句话
 
 ![Time Window](/time-window.svg)
 
-# Tumble
+## Tumble
 
 `tumble()` 定义固定窗口，窗口之间不重叠。
 
@@ -28,7 +28,7 @@ tumble(col, interval, <start_time>)
 - `start_time` 用于指定第一个窗口的开始时间。
 <!-- `start_time` 是一个可选参数，用于指定第一个窗口的开始时间。如果未提供，开始时间将与日历对齐。 -->
 
-# Hop（尚未支持）
+## Hop（尚未支持）
 
 `hop` 定义滑动窗口，窗口按固定间隔向前移动。
 此功能尚未支持，预计将在不久的将来提供。
