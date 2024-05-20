@@ -45,8 +45,9 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 
-
 ### Export `CREATE TABLE`
+
+Assuming the HTTP service port of the old database is `4000`.
 
 ```shell
 greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
@@ -82,7 +83,7 @@ CREATE TABLE foo (
     TIME INDEX (ts),
     PRIMARY KEY(host)
 ) ENGINE=mito 
-WITH(
+WITH( # Delete 
     regions=1
 );
 ```
@@ -130,7 +131,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "__tsid" BIGINT UNSIGNED NOT NULL,
   "host" STRING NULL,
   "job" STRING NULL,
-  PRIMARY KEY ("__table_id", "__tsid", "host", "job")
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job") # Modify this line
 )
 ENGINE=metric
 WITH(
@@ -179,7 +180,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
   "host" STRING NULL,
   "job" STRING NULL,
   PRIMARY KEY ("host", "job")
-  TIME INDEX ("ts")
+  TIME INDEX ("ts") # Add this line
 )
 ENGINE=metric
 WITH(
@@ -187,6 +188,35 @@ WITH(
 );
 ```
 
+#### Update the create table statement for tables written using the InfluxDB protocol
+
+Related [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(6) NOT NULL, # Modify to TIMESTAMP(9)
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(9) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
 
 ### Export table data
 
@@ -231,6 +261,14 @@ And then import the data
 psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
+### Known Issues
+
+#### The upgrade tool will still export physical table data from v0.7.0
+When importing v0.7.0 data into v0.8.0, the database may encounter the following error. This error can be safely ignored as it does not affect data integrity.
+```
+psql:/tmp/greptimedb-export/greptime-public_copy_from.sql:2: ERROR:  Alter request to physical region is forbidden
+```
+
 ### Clean up
 
 At this step all the data is migrated. You can check the data in the new cluster.
@@ -241,10 +279,10 @@ After confirming that the data is correct, you can clean up the old cluster and 
 
 This section gives a recommended overall process for upgrading GreptimeDB smoothly. You can skip this section if your environment can go offline on the upgrade progress.
 
-1. Create a brand new v0.4 cluster
-2. Export and import `create-table`
-3. Switch workload to the new cluster
-4. Export and import table data
+1. Create a brand new v0.8.0 cluster.
+2. Use the v0.8.0 CLI tool to export and import `create-table`.
+3. Switch the workload to the new cluster.
+4. Use the v0.8.0 CLI tool to export and import `table-data`.
 
 Caveats
 - Changes to table structure between step 2 and 3 will be lost
