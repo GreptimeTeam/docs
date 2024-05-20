@@ -55,8 +55,8 @@
   - Continuous-Aggregation:
     - overview
     - manage-flow
-    - define-time-window
     - query
+    - define-time-window
     - expression
   - Client-Libraries:
     - overview
