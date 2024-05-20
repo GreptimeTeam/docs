@@ -67,7 +67,7 @@ SELECT * FROM out_num_cnt;
 Let's try to insert more data into `numbers_input` table.
 
 ```sql
-public=> INSERT INTO numbers_input 
+INSERT INTO numbers_input 
 VALUES
     (23,1625097601000),
     (24,1625097601500);
