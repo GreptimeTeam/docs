@@ -15,7 +15,7 @@ Here illustrates how the `hop()` and `tumble()` functions work:
 `tumble()` defines fixed windows that do not overlap.
 
 ```
-tumble(col, interval, <start_time>)
+tumble(col, interval, start_time)
 ```
 
 - `col` specifies use which column to compute the time window. The provided column must have a timestamp type.

@@ -20,7 +20,7 @@ GreptimeDB 提供两种时间窗口类型：`hop` 和 `tumble`，或者换句话
 `tumble()` 定义固定窗口，窗口之间不重叠。
 
 ```
-tumble(col, interval, <start_time>)
+tumble(col, interval, start_time)
 ```
 
 - `col` 指定使用哪一列计算时间窗口。提供的列必须是时间戳类型。
