@@ -7,6 +7,7 @@ Clients: 客户端
 Client-Libraries: 客户端库
 Write-Data: 写入数据
 Query-Data: 读取数据
+Continuous-Aggregation: 持续聚合
 Python-Scripts: Python 脚本
 Operations: 运维操作
 Prometheus: Prometheus
