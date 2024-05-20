@@ -12,7 +12,7 @@
 ### 运行时信息
 
 * 通过 [CLUSTER_INFO](/reference/sql/information-schema/cluster-info.md) 表查找集群的拓扑信息。
-* 通过 [PARTITIONS](reference/sql/information-schema/partitions.md) 表和[REGION_PEERS](/reference/sql/information-schema/region-peers.md) 表查找表的 Region 分布。
+* 通过 [PARTITIONS](/reference/sql/information-schema/partitions.md) 表和[REGION_PEERS](/reference/sql/information-schema/region-peers.md) 表查找表的 Region 分布。
 
 例如查询一张表的所有 Region Id:
 
@@ -38,7 +38,7 @@ ORDER BY datanode_id ASC
 * [存储位置说明](/user-guide/concepts/storage-location.md)。
 * 通过 [设置Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
 * [Table 和 Region 的 Flush 和 Compaction](/reference/sql/functions#admin-functions)。
-* 通过 Region 对表进行分区，请阅读 [表的分片](./contributor-guide/frontend/table-sharding.md) 参考。
+* 通过 Region 对表进行分区，请阅读 [表的分片](/contributor-guide/frontend/table-sharding.md) 参考。
   * [迁移 Region](./region-migration.md) 以实现负载均衡。
 * [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
 
