@@ -72,7 +72,7 @@ VALUES
     (24,"2021-07-01 00:00:01.500");
 ```
 
-The sink table `out_num_cnt` now contains two rows: representing the sums of 42 and 47 (23+24) for the two respective 1-second windows.
+The sink table `out_num_cnt` now contains two rows: representing the sum data 42 and 47 (23+24) for the two respective 1-second windows.
 
 ```sql
 SELECT * FROM out_num_cnt;

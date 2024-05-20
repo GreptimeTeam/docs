@@ -2,10 +2,10 @@
 
 This chapter describes how to write a continuous aggregation query in GreptimeDB. Query here should be a `SELECT` statement with either aggregating functions or non-aggregating functions (i.e., scalar function).
 
-The grammar of continuous aggregation query is like the following:
+The grammar of the query is like the following:
 
 ```sql
-SELECT AGGR_FUNCTION(column1, column2,..) FROM source_table GROUP BY TIME_WINDOW_FUNCTION();
+SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WINDOW_FUNCTION();
 ```
 
 Only two kinds of expression are allowed after `SELECT` keyword:

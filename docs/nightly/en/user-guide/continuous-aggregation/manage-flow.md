@@ -1,6 +1,8 @@
 # Manage Flows
 
-Each `flow` is a continuous aggregation query in GreptimeDB. It is a query that continuously updates the aggregated data based on the incoming data and materializes the result. This document describes how to create, update, and delete a flow.
+Each `flow` is a continuous aggregation query in GreptimeDB.
+It continuously updates the aggregated data based on the incoming data.
+This document describes how to create, update, and delete a flow.
 
 A `flow` have those attributes:
 - `name`: the name of the flow. It's an unique identifier in the catalog level.
