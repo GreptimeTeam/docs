@@ -52,6 +52,6 @@ tag-1, ..., tag-m, timestamp -> field-1, ..., field-n
   - field 列是可空的
 - 数据按照 tag 列和 timestamp 列有序存储
 
-## 区域（Region）
+## Region
 
-数据在存储引擎中以 `region`（区域）的形式存储，`region` 是引擎中的一个逻辑隔离存储单元。`region` 中的行必须具有相同的 `schema`（模式），该 `schema` 定义了 `region` 中的 tag 列，timestamp 列和 field 列。数据库中表的数据存储在一到多个 `region` 中。
+数据在存储引擎中以 `region` 的形式存储，`region` 是引擎中的一个逻辑隔离存储单元。`region` 中的行必须具有相同的 `schema`（模式），该 `schema` 定义了 `region` 中的 tag 列，timestamp 列和 field 列。数据库中表的数据存储在一到多个 `region` 中。

@@ -50,7 +50,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
-) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
+) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
     <PARTITION EXPR>,
@@ -84,7 +84,6 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | Option              | Description                                   | Value                                                                                                                                                                        |
 | ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | The storage time of the table data            | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                                                 |
-| `regions`           | The region number of the table                | Integer value, such as 1, 5, 10 etc.                                                                                                                                         |
 | `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration#storage-engine-provider). |
 | `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
 | `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
@@ -93,13 +92,13 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
 | `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
 
-For example, to create a table with the storage data TTL(Time-To-Live) is seven days and region number is 10:
+For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10);
+) engine=mito with(ttl='7d');
 ```
 
 Create a table that stores the data in Google Cloud Storage:
@@ -108,7 +107,7 @@ Create a table that stores the data in Google Cloud Storage:
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10, storage="Gcs");
+) engine=mito with(ttl='7d', storage="Gcs");
 ```
 
 Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data.

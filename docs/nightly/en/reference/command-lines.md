@@ -39,7 +39,7 @@ Starts GreptimeDB in standalone mode with customized configurations:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-The `standalone.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuraiton files there. The `-c` option specifies the configuration file, for more information check [Configuration](../user-guide/operations/configuration.md).
+The `standalone.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](../user-guide/operations/configuration.md).
 
 To start GreptimeDB in distributed mode, you need to start each component separately. The following commands show how to start each component with customized configurations or command line arguments.
 
@@ -58,7 +58,7 @@ greptime datanode start -c config/datanode.example.toml
 Starts a datanode instance with command line arguments specifying the gRPC service address, the MySQL service address, the address of the metasrv, and the node id of the instance:
 
 ```sh
-greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addr=0.0.0.0:3002 --node-id=1
+greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 Starts a frontend instance with customized configurations:
@@ -70,5 +70,5 @@ greptime frontend start -c config/frontend.example.toml
 Starts a frontend instance with command line arguments specifying the address of the metasrv:
 
 ```sh
-greptime frontend start --metasrv-addr=0.0.0.0:3002
+greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```

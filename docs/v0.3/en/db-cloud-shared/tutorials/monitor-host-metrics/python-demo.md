@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```
 
 Once the required packages are installed,create a new file named `main.py` and write the code to create a metric export object that sends metrics to GreptimeDB.
-For the configration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/user-guide/clients/otlp.md) or [GreptimeCloud](/greptimecloud/integrations/otlp.md).
+For the configuration about the exporter, please refer to OTLP integration documentation in [GreptimeDB](/user-guide/clients/otlp.md) or [GreptimeCloud](/greptimecloud/integrations/otlp.md).
 
 ```python
 from opentelemetry import metrics

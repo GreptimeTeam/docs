@@ -1,0 +1,21 @@
+name: Linters
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  linter:
+    name: Run Linters
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Markdown lint
+      uses: nosborn/github-action-markdown-cli@v3.2.0
+      with:
+        files: "./**/*.md"
+        config_file: .markdownlint.yaml
+    - name: Check typos
+      uses: crate-ci/typos@master

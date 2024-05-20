@@ -41,16 +41,16 @@ Here explains the meaning of some important options
 
 For a complete upgrade, you will need to execute this tools twice with each target options.
 
-## Example
+## Upgrade from 0.7.x
 
-Here is a complete example for upgrading from `v0.3.0` to `v0.4.0`.
-
-In the following text, we assume that you have a Frontend's gRPC endpoint is available at `127.0.0.1:4001`. The output dir is `/tmp/greptimedb-export`.
+Here is a complete example for upgrading from `v0.7.x` to `v0.8.0`.
 
 ### Export `CREATE TABLE`
 
+Assuming the HTTP service port of the old database is `4000`.
+
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 If success, you will see something like this
@@ -67,10 +67,161 @@ And now the output directory structure is
 └── greptime-public.sql
 ```
 
+### Handle Breaking Changes
+:::warning NOTICE
+There are known breaking changes when attempting to upgrade from version 0.7.x.
+**You need to manually edit the exported SQL files (i.e., `/tmp/greptimedb-export/greptime-public.sql`). **
+:::
+
+#### Remove `regions` option in `WITH` clause
+
+Before:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito 
+WITH( # Delete 
+    regions=1
+);
+```
+
+After:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito;
+```
+
+#### Rewrite the partition rule
+
+Before:
+```sql
+PARTITION BY RANGE COLUMNS (n) (
+     PARTITION r0 VALUES LESS THAN (1),
+     PARTITION r1 VALUES LESS THAN (10),
+     PARTITION r2 VALUES LESS THAN (100),
+     PARTITION r3 VALUES LESS THAN (MAXVALUE),
+)
+```
+
+After:
+```sql
+PARTITION ON COLUMNS (n) (
+     n < 1,
+     n >= 1 AND n < 10,
+     n >= 10 AND n < 100,
+     n >= 100
+)
+```
+
+#### Remove the internal columns
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "__table_id" INT UNSIGNED NOT NULL,
+  "__tsid" BIGINT UNSIGNED NOT NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job") # Modify this line
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = '',
+  regions = 1
+);
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+#### Add missing Time Index constraint
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+  TIME INDEX ("ts") # Add this line
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+#### Update the create table statement for tables written using the InfluxDB protocol
+
+Related [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
+
+Before:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(6) NOT NULL, # Modify to TIMESTAMP(9)
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
+After:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(9) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
 ### Export table data
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 The log output is similar to the previous one. And the output directory structure is
@@ -110,6 +261,14 @@ And then import the data
 psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
+### Known Issues
+
+#### The upgrade tool will still export physical table data from v0.7.0
+When importing v0.7.0 data into v0.8.0, the database may encounter the following error. This error can be safely ignored as it does not affect data integrity.
+```
+psql:/tmp/greptimedb-export/greptime-public_copy_from.sql:2: ERROR:  Alter request to physical region is forbidden
+```
+
 ### Clean up
 
 At this step all the data is migrated. You can check the data in the new cluster.
@@ -120,10 +279,10 @@ After confirming that the data is correct, you can clean up the old cluster and 
 
 This section gives a recommended overall process for upgrading GreptimeDB smoothly. You can skip this section if your environment can go offline on the upgrade progress.
 
-1. Create a brand new v0.4 cluster
-2. Export and import `create-table`
-3. Switch workload to the new cluster
-4. Export and import table data
+1. Create a brand new v0.8.0 cluster.
+2. Use the v0.8.0 CLI tool to export and import `create-table`.
+3. Switch the workload to the new cluster.
+4. Use the v0.8.0 CLI tool to export and import `table-data`.
 
 Caveats
 - Changes to table structure between step 2 and 3 will be lost

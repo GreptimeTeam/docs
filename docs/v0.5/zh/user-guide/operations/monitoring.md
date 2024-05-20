@@ -2,7 +2,7 @@
 
 GreptimeDB 暴露了 Prometheus 指标, 用户可以使用 [Prometheus](https://prometheus.io/) 来采集指标。
 
-## Promethues Configuration
+## Prometheus Configuration
 
 编写 Prometheus 配置文件，并保存为`prometheus.yml`:
 ```

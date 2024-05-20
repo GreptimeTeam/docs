@@ -37,7 +37,7 @@ greptime datanode start --help
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为 `GREPTIMEDB_DATANODE`;
 - `--http-addr <HTTP_ADDR>`:  HTTP 服务地址
 - `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--metasrv-addr <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号隔开
+- `--metasrv-addrs <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号或者空格隔开
 - `--node-id <NODE_ID>`: 节点 ID
 - `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
 - `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
@@ -61,7 +61,7 @@ greptime metasrv start --help
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
 - `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
 - `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
-- `--store-addr <STORE_ADDR>`: 存储元数据的 etcd 地址列表，用逗号隔开
+- `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
 - `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
 
 ### frontend 子命令选项
@@ -79,7 +79,7 @@ greptime frontend start --help
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
-- `--metasrv-addr <METASRV_ADDR>`:   Metasrv 地址列表，用逗号隔开
+- `--metasrv-addrs <METASRV_ADDR>`:   Metasrv 地址列表，用逗号或者空格隔开
 - `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
 - `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址

@@ -50,7 +50,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
-) ENGINE = engine WITH([TTL | REGIONS] = expr, ...)
+) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
     <PARTITION EXPR>,
@@ -85,7 +85,6 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | 选项                | 描述                                     | 值                                                                                                                                                   |
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | 表数据的存储时间                         | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                           |
-| `regions`           | 表的 region 值                           | 整数值，例如 1, 5, 10 etc.                                                                                                                           |
 | `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#存储引擎提供商)。 |
 | `compaction.type` | Compaction 策略         | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略 |
 | `compaction.twcs.max_active_window_files` | 当前活跃时间窗口内的最大文件数         | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用 |
@@ -94,13 +93,13 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
 | `append_mode`           | 该表是否时 append-only 的     | 字符串值. 默认为 'false'，表示会根据主键和时间戳对数据去重。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行     |
 
-例如，创建一个存储数据 TTL(Time-To-Live) 为七天，region 数为 10 的表：
+例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10);
+) engine=mito with(ttl='7d');
 ```
 
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
@@ -109,7 +108,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', regions=10, storage="Gcs");
+) engine=mito with(ttl='7d', storage="Gcs");
 ```
 
 创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区。

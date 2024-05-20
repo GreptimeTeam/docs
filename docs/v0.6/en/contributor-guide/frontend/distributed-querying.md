@@ -15,7 +15,7 @@ Planner will traverse the input logical plan, and split it into multiple stages 
 rule](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/rfcs/2023-05-09-distributed-planner.md)".
 
 This rule is under heavy development. At present it will consider things like:
-- whether the operator ifself is commutative
+- whether the operator itself is commutative
 - how the partition rule is configured
 - etc...
 

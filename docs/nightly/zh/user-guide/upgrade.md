@@ -41,16 +41,16 @@ OPTIONS:
 
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
 
-## 示例
+## 从 0.7.x 升级
 
-这一节将演示如何从 `v0.3.0` 升级到 `v0.4.0`。
+这一节将演示如何从 `v0.7.x` 升级到 `v0.8.0`。
 
-在下面的文本中，我们假设您的 Frontend 的 gRPC 端口为 `127.0.0.1:4001`。输出目录是 `/tmp/greptimedb-export`。
+在下面的文本中，我们假设您的数据库的 HTTP 端口为 `127.0.0.1:4000`。
 
 ### 导出 `CREATE TABLE`
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
 ```
 
 如果成功，您将看到类似于以下内容的输出
@@ -67,10 +67,161 @@ greptime cli export --addr '127.0.0.1:4001' --output-dir /tmp/greptimedb-export 
 └── greptime-public.sql
 ```
 
+### 处理 Breaking Changes
+:::warning 注意
+从版本 0.7.x 升级时存在已知的 Breaking Changes。您需要手动编辑导出的 SQL 文件（即 /tmp/greptimedb-export/greptime-public.sql）
+:::
+
+#### 删除 `WITH` 从句中的 `regions` 选项
+
+修改前:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito 
+WITH( # 删除
+    regions=1
+);
+```
+
+修改后:
+```sql
+CREATE TABLE foo (
+    host string,
+    ts timestamp DEFAULT '2023-04-29 00:00:00+00:00',
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+) ENGINE=mito;
+```
+
+#### 重写分区规则
+
+修改前:
+```sql
+PARTITION BY RANGE COLUMNS (n) (
+     PARTITION r0 VALUES LESS THAN (1),
+     PARTITION r1 VALUES LESS THAN (10),
+     PARTITION r2 VALUES LESS THAN (100),
+     PARTITION r3 VALUES LESS THAN (MAXVALUE),
+)
+```
+
+修改后:
+```sql
+PARTITION ON COLUMNS (n) (
+     n < 1,
+     n >= 1 AND n < 10,
+     n >= 10 AND n < 100,
+     n >= 100
+)
+```
+
+#### 删除内部列
+
+修改前:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "__table_id" INT UNSIGNED NOT NULL,
+  "__tsid" BIGINT UNSIGNED NOT NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("__table_id", "__tsid", "host", "job") # 修改此处
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = '',
+  regions = 1
+);
+```
+
+修改后:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+
+#### 添加缺失的 Time Index 约束
+
+修改前:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+修改后:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(3) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job")
+  TIME INDEX ("ts") # 添加在此处
+)
+ENGINE=metric
+WITH(
+  physical_metric_table = ''
+);
+```
+
+#### 为 InfluxDB 协议的表更新建表语句
+
+相关 [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
+
+修改前:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(6) NOT NULL, # 修改此处
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
+修改后:
+```sql
+CREATE TABLE IF NOT EXISTS "phy" (
+  "ts" TIMESTAMP(9) NOT NULL,
+  "val" DOUBLE NULL,
+  "host" STRING NULL,
+  "job" STRING NULL,
+  PRIMARY KEY ("host", "job"),
+  TIME INDEX ("ts")
+)
+ENGINE=mito;
+```
+
 ### 导出表数据
 
 ```shell
-greptime cli export --addr '127.0.0.1:4001' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
+greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target table-data
 ```
 
 日志输出与上面类似。输出目录的结构如下
@@ -110,6 +261,14 @@ psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public.sql
 psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 ```
 
+### 已知问题
+
+#### 升级工具依然会导出 0.7.0 中的物理表数据
+在将 v0.7.0 的数据导入至 v0.8.0 时，数据库可能会出现以下错误。可直接忽略，该错误并不会影响数据的完整性。
+```
+psql:/tmp/greptimedb-export/greptime-public_copy_from.sql:2: ERROR:  Alter request to physical region is forbidden
+```
+
 ### 清理
 
 到这一步，所有的数据都已经迁移完毕。您可以在新集群中检查数据。
@@ -120,10 +279,10 @@ psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptime-public_copy_from.sql
 
 该部分给出了一个推荐的整体流程，以便平滑升级 GreptimeDB。如果您的环境可以在升级过程中离线，可以跳过此部分。
 
-1. 创建一个全新的 v0.4 集群 
-2. 导出并导入 `create-table`
+1. 创建一个全新的 v0.8.0 集群 
+2. 使用 v0.8.0 版本的 cli 工具导出并导入 `create-table`
 3. 将工作负载切换到新集群
-4. 导出并导入 `table-data`
+4. 使用 v0.8.0 版本的 cli 工具导出并导入 `table-data`
 
 注意
 

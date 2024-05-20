@@ -39,6 +39,7 @@ FROM { '<path>/[<filename>]' }
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
+[LIMIT NUM]
 ```
 
 命令以 `COPY` 关键字开始，后面跟着要导入数据的表名。
@@ -63,11 +64,14 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
-| `MAX_INSERT_ROWS` | 一次性插入最大行数，例如 `1000` | 可选 |
 
 #### Connection 选项
 
 `COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+
+#### LIMIT 选项
+
+可以通过 `LIMIT` 手动限制一次插入的最大行数。
 
 ### 连接 S3
 

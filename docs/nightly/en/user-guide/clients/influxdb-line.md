@@ -6,7 +6,7 @@ GreptimeDB is compatible with InfluxDB's line protocol authentication format, bo
 
 **[V2 protocol](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=Auth+Enabled#apiv2query-http-endpoint)**
 
-InfluxDB's V2 protocol uses a format much like HTTP's standard basic authentication scheme. We can write data easily through InfluxDB's line protcol.
+InfluxDB's V2 protocol uses a format much like HTTP's standard basic authentication scheme. We can write data easily through InfluxDB's line protocol.
 
 ```shell
 ❯ curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \

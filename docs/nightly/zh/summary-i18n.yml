@@ -26,5 +26,8 @@ Frontend: Frontend
 Datanode: Datanode
 Metasrv: Metasrv
 Reference: Reference
+Admin: 管理
+Administration: 管理
+back-up-&-restore-data: 备份和恢复
 SDK: SDK
 SQL: SQL

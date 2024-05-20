@@ -43,6 +43,19 @@ The output is as follows:
 26 rows in set (0.01 sec)
 ```
 
+Main columns:
+* `table_catalog`:  The name of the catalog to which the table belongs. This value is always `def`.
+* `table_schema`: The name of the schema (database) to which the table belongs.
+* `table_name`: The name of the table containing the partition(region).
+* `partition_name`: The name of the partition(region).
+* `partition_ordinal_position`: All partitions are indexed in the same order as they are defined, with 1 being the number assigned to the first partition. 
+* `partition_method`: This value is always `RANGE`, GreptimeDB only supports range partitioning.
+* `partition_expression`: The expression of this partition.
+* `create_time`:  The time that the partition was created.
+* `greptime_partition_id`: GreptimeDB extended field, it's the Region Id.
+
+For example, create a partitioned table:
+
 ```sql
 CREATE TABLE public.test_p (
   a INT PRIMARY KEY,
@@ -54,8 +67,12 @@ PARTITION ON COLUMNS (a) (
   a > 10 AND a < 20,
   a >= 20
 );
+
+--- Query the partitions of the table --
 SELECT * FROM PARTITIONS WHERE table_schema='public' AND table_name='test_p'\G
 ```
+
+Outputs:
 
 ```sql
 *************************** 1. row ***************************
