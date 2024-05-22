@@ -1,6 +1,16 @@
 # v0.8.0
 
-Release date: May 17, 2024
+Release date: May 18, 2024
+
+## 👍 Highlights
+
+- Flow Engine: which brings continuous aggregation capabilities.
+- Column Type Modification: allows users to effortlessly alter the data type of columns within a table without the hassle of rebuilding the table or manually migrating data.
+- Cluster Management Information Table: allows querying for information about the cluster. This functionality aids administrators in monitoring and managing the health status of the database cluster, facilitating prompt issue detection and resolution.
+- Append-only Tables: Users can now create tables in Append-only mode by setting the append mode during table creation.
+- DROP DATABASE: enables swift deletion of all tables and resources under a database instance.
+- New Table Partitioning Methods and Syntax: considering the future need for frequent partition changes such as automatic partitioning or repartitioning, we're developing a new partitioning syntax.
+- `EXPLAIN ANALYZE <QUERY>`: analyze and optimize query statements swiftly in distributed mode.
 
 ## Breaking changes
 
