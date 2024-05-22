@@ -1,8 +1,41 @@
 # DROP
 
+## DROP DATABASE
+
+`DROP DATABASE` drops a database. It removes the catalog entries for the database and deletes the directory containing the data.
+It cannot be executed while you are connected to the target database.
+Also, if anyone else is connected to the target database, this command will fail unless you use the `FORCE` option described below.
+
+`DROP DATABASE` cannot be undone. Use it with care!
+
+### Syntax
+
+```sql
+DROP DATABASE [ IF EXISTS ] db_name [ [ WITH ] ( option [, ...] ) ]
+
+where option can be:
+
+    FORCE
+```
+
+- `IF EXISTS`: Do not throw an error if the database does not exist.
+- `db_name`: The name of the database to remove.
+- `FORCE`: Terminate all sessions connected to the target database before dropping it.
+
+### Examples
+
+To drop a database named `test`:
+
+```sql
+DROP DATABASE test;
+```
+
+
 ## DROP TABLE
 
 `DROP TABLE` removes tables from the database. It will remove the table definition and all table data, indexes, rules, and constraints for that table.
+
+`DROP TABLE` cannot be undone. Use it with care!
 
 ### Syntax
 
