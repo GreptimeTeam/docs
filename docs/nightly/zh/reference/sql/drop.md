@@ -15,16 +15,11 @@
 ### 语法
 
 ```sql
-DROP DATABASE [ IF EXISTS ] db_name [ [ WITH ] ( option [, ...] ) ]
-
-where option can be:
-
-    FORCE
+DROP DATABASE [ IF EXISTS ] db_name
 ```
 
 - `IF EXISTS`: 如果数据库不存在，则不抛出错误。
 - `db_name`: 要删除的数据库的名称。
-- `FORCE`: 在删除数据库之前终止所有连接到目标数据库的会话。
 
 ### 示例
 
@@ -47,7 +42,7 @@ DROP DATABASE test;
 ### 语法
 
 ```sql
-DROP TABLE [ IF EXISTS ] table_name [, ...]
+DROP TABLE [ IF EXISTS ] table_name
 ```
 
 - `IF EXISTS`: 如果表不存在，则不抛出错误。
@@ -55,8 +50,8 @@ DROP TABLE [ IF EXISTS ] table_name [, ...]
 
 ### 示例
 
-删除表 `monitor` 和 `system_metrics`：
+删除 `monitor` 表：
   
 ```sql
-DROP TABLE monitor, system_metrics;
+DROP TABLE monitor;
 ```

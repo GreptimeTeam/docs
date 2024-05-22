@@ -6,7 +6,7 @@
 It cannot be executed while you are connected to the target database.
 Also, if anyone else is connected to the target database, this command will fail unless you use the `FORCE` option described below.
 
-:::danger danger
+:::danger Danger
 
 `DROP DATABASE` cannot be undone. Use it with care!
 
@@ -15,16 +15,11 @@ Also, if anyone else is connected to the target database, this command will fail
 ### Syntax
 
 ```sql
-DROP DATABASE [ IF EXISTS ] db_name [ [ WITH ] ( option [, ...] ) ]
-
-where option can be:
-
-    FORCE
+DROP DATABASE [ IF EXISTS ] db_name
 ```
 
 - `IF EXISTS`: Do not throw an error if the database does not exist.
 - `db_name`: The name of the database to remove.
-- `FORCE`: Terminate all sessions connected to the target database before dropping it.
 
 ### Examples
 
@@ -39,7 +34,7 @@ DROP DATABASE test;
 
 `DROP TABLE` removes tables from the database. It will remove the table definition and all table data, indexes, rules, and constraints for that table.
 
-:::danger danger
+:::danger Danger
 
 `DROP TABLE` cannot be undone. Use it with care!
 
@@ -48,7 +43,7 @@ DROP DATABASE test;
 ### Syntax
 
 ```sql
-DROP TABLE [ IF EXISTS ] table_name [, ...]
+DROP TABLE [ IF EXISTS ] table_name
 ```
 
 - `IF EXISTS`: Do not throw an error if the table does not exist.
@@ -57,8 +52,8 @@ DROP TABLE [ IF EXISTS ] table_name [, ...]
 
 ### Examples
 
-To destroy two tables, `monitor` and `system_metrics`:
+Drop the table `monitor` in the current database:
   
 ```sql
-DROP TABLE monitor, system_metrics;
+DROP TABLE monitor;
 ```
