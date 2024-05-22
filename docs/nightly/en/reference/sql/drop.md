@@ -3,8 +3,6 @@
 ## DROP DATABASE
 
 `DROP DATABASE` drops a database. It removes the catalog entries for the database and deletes the directory containing the data.
-It cannot be executed while you are connected to the target database.
-Also, if anyone else is connected to the target database, this command will fail unless you use the `FORCE` option described below.
 
 :::danger Danger
 
