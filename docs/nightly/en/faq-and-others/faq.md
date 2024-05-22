@@ -85,7 +85,8 @@ Currently, GreptimeDB's compatibility efforts are primarily focused on the imple
 
 ## Should I use the command "drop database" to delete a database?
 
-Yes, that is the intended command. However, 'drop database' will be implemented in v0.8. It is expected to be included in the next minor iterative update. As a result, there is no direct way to delete a database at the moment. You may consider creating a new database for testing purposes. If you're working with test data, you also have the option to clear it by deleting the data directory.
+Yes, you can use `DROP DATABASE db_name` command to delete a database.
+Please refer to the [DROP](/reference/sql/drop.md#drop-database) document for more details.
 
 ## Are there any retention policy? 
 

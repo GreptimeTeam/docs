@@ -6,7 +6,11 @@
 It cannot be executed while you are connected to the target database.
 Also, if anyone else is connected to the target database, this command will fail unless you use the `FORCE` option described below.
 
+:::danger danger
+
 `DROP DATABASE` cannot be undone. Use it with care!
+
+:::
 
 ### Syntax
 
@@ -35,7 +39,11 @@ DROP DATABASE test;
 
 `DROP TABLE` removes tables from the database. It will remove the table definition and all table data, indexes, rules, and constraints for that table.
 
+:::danger danger
+
 `DROP TABLE` cannot be undone. Use it with care!
+
+:::
 
 ### Syntax
 

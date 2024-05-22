@@ -229,7 +229,7 @@ For example, to drop the `test` database:
 DROP DATABASE test;
 ```
 
-Please refer to the [DROP](/reference/sql/drop.md) document for more details.
+Please refer to the [DROP](/reference/sql/drop.md#drop-database) document for more details.
 
 ## HTTP API
 
