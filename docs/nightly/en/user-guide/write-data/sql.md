@@ -2,7 +2,7 @@
 
 We will use the `monitor` table as an example to show how to write data.
 For the SQL example on how to create the `monitor` table,
-Please refer to [table management](../table-management.md#create-table).
+Please refer to [table management](../table-management.md#create-a-table).
 
 ## Insert data
 
@@ -71,7 +71,7 @@ VALUES
     ("127.0.0.1", 1702433141000, 0.8, 0.1);
 ```
 
-As described in the [Create Table](../table-management.md#create-table) section,
+As described in the [Create Table](../table-management.md#create-a-table) section,
 the `host` column represents the tag and the `ts` column represents the time index.
 To update the data, you can use the same `host` and `ts` values as the existing data
 and set the new `cpu` value to `0.5`:

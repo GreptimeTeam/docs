@@ -199,6 +199,10 @@ Query OK, 0 rows affected (0.03 sec)
 
 ## 删除表
 
+:::danger 危险操作
+表删除后不可撤销！请谨慎操作！
+:::
+
 `DROP TABLE [db.]table` 用于删除 `db` 或当前正在使用的数据库中的表。
 
 删除当前数据库中的表 `test`：
@@ -210,6 +214,21 @@ DROP TABLE monitor;
 ```sql
 Query OK, 1 row affected (0.01 sec)
 ```
+
+## 删除数据库
+
+:::danger 危险操作
+数据库删除后不可撤销！请谨慎操作！
+:::
+
+可以使用 `DROP DATABASE` 删除数据库。
+例如，删除 `test` 数据库：
+
+```sql
+DROP DATABASE test;
+```
+
+请前往 [DROP](/reference/sql/drop.md#drop-database) 文档了解更多内容。
 
 ## HTTP API
 
