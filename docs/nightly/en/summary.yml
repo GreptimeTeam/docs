@@ -146,6 +146,7 @@
     - insert
     - cast
     - copy
+    - drop
     - select
     - distinct
     - where
