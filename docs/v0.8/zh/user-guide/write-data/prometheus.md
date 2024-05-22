@@ -23,7 +23,7 @@ remote_read:
 :::
 
 URL 中的 `db` 参数表示我们要写入的数据库，是可选的，默认为 `public`。
-如果你想要写入到其他数据库，可以[创建新数据库](../table-management.md#create-database)并将 `public` 替换为新的数据库名称。
+如果你想要写入到其他数据库，可以[创建新数据库](../table-management.md#create-a-database)并将 `public` 替换为新的数据库名称。
 
 GreptimeDB 将多个 Prometheus 指标[自动组合](../clients/prometheus#数据模型)到相应的逻辑表中，因此你无需在 `remote_write` 的 URL 中指定逻辑表。
 

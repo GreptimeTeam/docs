@@ -1,8 +1,9 @@
-# SQL
+# Overview
 
 * [INSERT](./insert.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)
+* [DROP](./drop.md)
 * [SELECT](./select.md)
 * [DISTINCT](./distinct.md)
 * [WHERE](./where.md)

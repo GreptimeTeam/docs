@@ -41,7 +41,7 @@ Those are very similar to the table model everyone is familiar with. The differe
   These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as the latest value, maximum/minimum value, average, percentage, and so on. Please avoid using `Field` columns in query conditions,
   which is highly resource-intensive and unperformant.
 
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](../table-management.md#create-table) and [CREATE statement](/reference/sql/create.md).
+To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](../table-management.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
 ## Design Considerations
 
