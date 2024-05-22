@@ -7,7 +7,7 @@ uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.h
 
 For more explanations of the `SQL` syntax, please see the [SQL reference](/reference/sql/overview.md).
 
-## Create Database
+## Create a database
 
 The default database is `public`. You can create a database manually.
 
@@ -62,7 +62,7 @@ Change back to `public` database:
 USE public;
 ```
 
-## Create Table
+## Create a table
 
 :::tip NOTE
 GreptimeDB offers a schemaless approach to writing data that eliminates the need to manually create tables using additional protocols. See [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
@@ -107,7 +107,7 @@ Therefore, it is important to carefully design your data model before creating t
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
 [2]: https://docs.influxdata.com/influxdb/v1/concepts/glossary/#series
 
-## Describe Table
+## Describe a table
 
 Show table information in detail:
 
@@ -178,7 +178,7 @@ SHOW TABLES FROM test;
 1 row in set (0.01 sec)
 ```
 
-## Alter Table
+## Alter a table
 
 You can alter the schema of existing tables just like in MySQL database
 
@@ -200,7 +200,11 @@ Query OK, 0 rows affected (0.03 sec)
 
 Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
 
-## Drop Table
+## Drop a table
+
+:::danger danger
+`DROP TABLE` cannot be undone. Use it with care!
+:::
 
 `DROP TABLE [db.]table` is used to drop the table in `db` or the current database in-use.Drop the table `test` in the current database:
 
@@ -212,9 +216,26 @@ DROP TABLE monitor;
 Query OK, 1 row affected (0.01 sec)
 ```
 
+## Drop a database
+
+:::danger danger
+`DROP DATABASE` cannot be undone. Use it with care!
+:::
+
+You can use `DROP DATABASE` to drop a database.
+For example, to drop the `test` database:
+
+```sql
+DROP DATABASE test;
+```
+
+Please refer to the [DROP](/reference/sql/drop.md) document for more details.
+
 ## HTTP API
 
-Using the following code to create a table through POST method:
+You can execute the SQL statements through the HTTP API.
+For example,
+using the following code to create a table through POST method:
 
 ```shell
 curl -X POST \

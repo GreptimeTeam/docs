@@ -24,7 +24,7 @@ Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`,
 
 The `db` parameter in the URL represents the database that we want to write data. It's optional.
 By default, the database is `public`.
-If you want to write to another database, you can [create a new database](../table-management.md#create-database)
+If you want to write to another database, you can [create a new database](../table-management.md#create-a-database)
 and replace `public` with the new database name.
 
 GreptimeDB automatically groups multiple Prometheus metrics (../clients/prometheus#data-model) into the corresponding logical tables, so you do not need to specify the logical table in the URL of `remote_write`.
