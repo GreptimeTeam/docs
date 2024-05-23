@@ -65,8 +65,7 @@ kubectl port-forward svc/mycluster-frontend \
   4000:4000 \
   4001:4001 \
   4002:4002 \
-  4003:4003 \
-  4242:4242
+  4003:4003
 ```
 
 ## Next Steps
