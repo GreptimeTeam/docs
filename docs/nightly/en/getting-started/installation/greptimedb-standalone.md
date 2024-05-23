@@ -41,7 +41,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 
 ```shell
 docker run -p 4000-4003:4000-4003 \
--p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+-v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb:<%greptimedb-version%> standalone start \
 --http-addr 0.0.0.0:4000 \
@@ -63,7 +63,7 @@ You can:
 
    ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-   -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+   -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
    greptime/greptimedb:<%greptimedb-version%> standalone start \
    --http-addr 0.0.0.0:4000 \
