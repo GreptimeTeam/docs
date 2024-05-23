@@ -18,3 +18,7 @@ remote_write:
 ```shell
 docker run --rm -e GREPTIME_URL='https://<host>/v1/prometheus/write?db=<dbname>' -e GREPTIME_USERNAME='<username>' -e GREPTIME_PASSWORD='<password>' --name greptime-node-exporter greptime/node-exporter
 ```
+
+:::tip NOTE
+为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+:::
