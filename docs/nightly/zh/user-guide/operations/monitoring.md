@@ -36,6 +36,10 @@ docker run \
   prom/prometheus
 ```
 
+:::tip NOTE
+为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+:::
+
 ## 将指标保存到 GreptimeDB 自身
 
 你还可以将指标保存到 GreptimeDB 本身，以便于使用 SQL 语句进行查询和分析。

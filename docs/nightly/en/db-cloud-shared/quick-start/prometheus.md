@@ -18,3 +18,8 @@ Spin up a Docker container to write sample data to your database:
 ```shell
 docker run --rm -e GREPTIME_URL='https://<host>/v1/prometheus/write?db=<dbname>' -e GREPTIME_USERNAME='<username>' -e GREPTIME_PASSWORD='<password>' --name greptime-node-exporter greptime/node-exporter
 ```
+
+:::tip NOTE
+To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+the `docker run` command.
+:::
