@@ -50,6 +50,11 @@ greptime/greptimedb:<%greptimedb-version%> standalone start \
 --postgres-addr 0.0.0.0:4003
 ```
 
+:::tip NOTE
+To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+the `docker run` command.
+:::
+
 The data will be stored in the `greptimedb/` directory in your current directory.
 
 If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb). In particular, we support GreptimeDB based on CentOS, and you can try image `greptime/greptimedb-centos`.

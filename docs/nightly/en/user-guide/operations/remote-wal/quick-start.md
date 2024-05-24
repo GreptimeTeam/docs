@@ -41,6 +41,11 @@ docker run \
   bitnami/kafka:3.6.0
 ```
 
+:::tip NOTE
+To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+the `docker run` command.
+:::
+
 The data will be stored in `$(pwd)/kafka-data`.
 
 ### Step 3: Start the GreptimeDB with Remote WAL Configurations
@@ -61,6 +66,11 @@ docker run \
   --mysql-addr 0.0.0.0:4002 \
   --postgres-addr 0.0.0.0:4003
 ```
+
+:::tip NOTE
+To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+the `docker run` command.
+:::
 
 We use the [environment variables](/user-guide/operations/configuration#environment-variable) to specify the provider:
 

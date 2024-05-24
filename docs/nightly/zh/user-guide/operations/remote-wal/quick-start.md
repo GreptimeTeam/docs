@@ -42,6 +42,10 @@ docker run \
   bitnami/kafka:3.6.0
 ```
 
+:::tip NOTE
+为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+:::
+
 数据将保存在 `$(pwd)/kafka-data`.
 
 ### Step 3: 用 Remote WAL 模式启动 standalone 模式 GreptimeDB
@@ -63,6 +67,9 @@ docker run \
   --postgres-addr 0.0.0.0:4003
 ```
 
+:::tip NOTE
+为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+:::
 
 我们使用环境变量来指定 provider：
 

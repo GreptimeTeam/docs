@@ -37,6 +37,11 @@ docker run \
   prom/prometheus
 ```
 
+:::tip NOTE
+To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+the `docker run` command.
+:::
+
 ## Save metrics to GreptimeDB itself
 
 You can also save metrics to GreptimeDB itself for convenient querying and analysis using SQL statements.
