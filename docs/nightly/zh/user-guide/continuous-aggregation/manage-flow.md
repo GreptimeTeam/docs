@@ -18,7 +18,7 @@
 
 <!-- ```sql
 CREATE [ OR REPLACE ] FLOW [ IF NOT EXISTS ] <name>
-OUTPUT TO <sink-table-name>
+SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT = "<string>" ]
 AS 
@@ -27,7 +27,7 @@ AS
 
 ```sql
 CREATE FLOW [ IF NOT EXISTS ] <name>
-OUTPUT TO <sink-table-name>
+SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT = "<string>" ]
 AS 
@@ -40,7 +40,7 @@ AS
 它可以是一个现有表或一个新表，`flow` 会在目标表不存在时创建它。
 但如果表已经存在，表的 schema 必须与查询结果的模式匹配。
 
-<!-- `expire after` 是一个可选的时间间隔，用于从源表中过期数据。过期时间是相对于当前时间的时间（“当前时间”是指数据到达 Flow 引擎的物理时间）。例如，`INTERVAL '1 hour'` 表示数据 **早于** 1 小时的数据将被过期。过期数据将直接被删除。 -->
+`expire after` 是一个可选的时间间隔，用于从源表中过期数据。过期时间是相对于当前时间的时间（“当前时间”是指数据到达 Flow 引擎的物理时间）。例如，`INTERVAL '1 hour'` 表示数据 **早于** 1 小时的数据将被过期。过期数据将直接被删除。请注意，“删除”意味着数据将从 flow 的内部状态中删除，而不是源表，因此您的数据是安全的，只是 flow 将拒绝计算到达时间太晚的数据。
 
 `SQL` 部分定义了连续聚合查询。
 有关详细信息，请参阅 [编写查询](./query.md) 部分。
@@ -50,7 +50,7 @@ AS
 
 <!-- ```sql
 CREATE FLOW IF NOT EXISTS my_flow
-OUTPUT TO my_sink_table
+SINK TO my_sink_table
 EXPIRE AFTER INTERVAL '1 hour'
 COMMENT = "My first flow in GreptimeDB"
 AS
@@ -59,7 +59,7 @@ SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 
 
 ```sql
 CREATE FLOW IF NOT EXISTS my_flow
-OUTPUT TO my_sink_table
+SINK TO my_sink_table
 COMMENT = "My first flow in GreptimeDB"
 AS
 SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
