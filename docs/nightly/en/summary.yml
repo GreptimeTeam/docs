@@ -80,19 +80,18 @@
       - greptimedb-operator
       - standalone
       - cluster
-      - remote-wal
+    - Remote-Wal-for-Failover
+      - Overview
+      - greptime-standalone
+      - greptime-cluster
     - run-on-android
     - back-up-&-restore-data
-    # - kubernetes
     - Table-Sharding:
       - partition
       - region-migration
     - monitoring
     - tracing
     - performance-&-optimizations
-    # - Remote-WAL:
-    #   - quick-start
-    #   - cluster-deployment
     # TODO
     # - import-data
     # - export-data
