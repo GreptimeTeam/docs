@@ -93,6 +93,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
 | `append_mode`           | 该表是否时 append-only 的     | 字符串值. 默认为 'false'，表示会根据主键和时间戳对数据去重。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行     |
 
+#### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
 
 ```sql
@@ -102,6 +103,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d');
 ```
 
+#### 创建自定义存储的表
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
 
 ```sql
@@ -111,6 +113,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', storage="Gcs");
 ```
 
+#### 创建自定义 compaction 参数的表
 创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区。
 - 它会在最新时间窗口内的文件超过 8 个时合并该窗口的文件
 - 它会将非最新窗口内的文件合并为一个文件
@@ -129,6 +132,7 @@ with(
 );
 ```
 
+#### 创建 Append-Only 表
 创建一个 append-only 表来关闭去重
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
