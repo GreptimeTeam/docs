@@ -8,7 +8,7 @@ GreptimeDB 支持的 SQL 是 ANSI SQL 的子集，并且拥有一些特有的扩
     * GreptimeDB 是原生的分布式数据库，因此分布式表的建表语句支持分区规则，也请参考[CREATE](./create.md) 建表语法一节。
 2. 插入新数据： 与 ANSI SQL 语法一致，但是强制要求提供 `TIME INDEX` 列值（或默认值）。
 3. 更新：不支持 `UPDATE` 语法，但是在 `INSERT` 的时候，如果主键和 `TIME INDEX` 对应的列值一样，那么后续插入的行将覆盖以前写入的行，从而变相实现更新。
-    * 从 0.8 开始， GreptimeDB 支持 [append 模式](/reference/sql/create#table-options)，创建时指定`append_mode = "true"` 选项的表将保留重复的行。 
+    * 从 0.8 开始， GreptimeDB 支持 [append 模式](/reference/sql/create#创建-Append-Only-表)，创建时指定`append_mode = "true"` 选项的表将保留重复的数据行。 
 4. 查询：查询语法兼容 ANSI SQL，存在部分功能差异和缺失
     * 不支持视图
     * TQL 语法扩展：TQL 子命令支持在 SQL 中执行 PromQL，详细请参考 [TQL](./tql.md) 一节。

@@ -8,7 +8,7 @@ GreptimeDB supports a subset of ANSI SQL and has some unique extensions. Some ma
    * GreptimeDB is a native distributed database, so the table creation syntax for distributed tables supports partitioning rules. Please also refer to the [CREATE](./create.md).
 2. Insert data: Consistent with ANSI SQL syntax, but requires the `TIME INDEX` column value (or default value) to be provided.
 3. Update data: Does not support `UPDATE` syntax, but if the primary key and `TIME INDEX` corresponding column values are the same during `INSERT`, subsequent inserted rows will overwrite previously written rows, effectively achieving an update.
-   * Since 0.8, GreptimeDB supports [append mode](/reference/sql/create#table-options) that creates an append-only table with `append_mode="true"` option which keeps duplicate rows.
+   * Since 0.8, GreptimeDB supports [append mode](/reference/sql/create#create-an-append-only-table) that creates an append-only table with `append_mode="true"` option which keeps duplicate rows.
 4. Query data: Query syntax is compatible with ANSI SQL, with some functional differences and omissions.
    * Does not support views.
    * TQL syntax extension: Supports executing PromQL in SQL via TQL subcommands. Please refer to the [TQL](./tql.md) section for details.
