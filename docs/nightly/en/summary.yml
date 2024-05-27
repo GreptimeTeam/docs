@@ -74,21 +74,28 @@
   - Operations:
     - admin
     - configuration
-    - back-up-&-restore-data
-    - kubernetes
-    - gtctl
+    - capacity-plan
+    - Deploy-on-Kubernetes:
+      - overview
+      - greptimedb-operator
+      - standalone
+      - cluster
+      - remote-wal
     - run-on-android
+    - back-up-&-restore-data
+    # - kubernetes
+    - Table-Sharding:
+      - partition
+      - region-migration
     - monitoring
     - tracing
-    - Remote-WAL:
-      - quick-start
-      - cluster-deployment
-    - region-migration
+    - performance-&-optimizations
+    # - Remote-WAL:
+    #   - quick-start
+    #   - cluster-deployment
     # TODO
-    # - alert
     # - import-data
     # - export-data
-    # - capacity-planning
   - upgrade
 - GreptimeCloud:
   - overview
@@ -180,7 +187,8 @@
       - region-peers
       - runtime-metrics
       - cluster-info
-  - Telemetry
+  - telemetry
+  - gtctl
 - Contributor-Guide:
   - overview
   - getting-started

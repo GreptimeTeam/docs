@@ -10,6 +10,8 @@ Query-Data: 读取数据
 Continuous-Aggregation: 持续聚合
 Python-Scripts: Python 脚本
 Operations: 运维操作
+Deploy-on-Kubernetes: 部署到 Kubernetes
+Table-Sharding: 表分片
 Prometheus: Prometheus
 Contributor-Guide: 贡献者指南
 Tests: 测试
