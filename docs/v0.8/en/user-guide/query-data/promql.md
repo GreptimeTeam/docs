@@ -175,7 +175,7 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
 
 ### Timestamp precision
 
-The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision, potentially leading to a loss of accuracy.
+The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
 
 ### Binary
 
