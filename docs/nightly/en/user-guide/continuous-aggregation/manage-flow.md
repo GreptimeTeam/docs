@@ -4,14 +4,6 @@ Each `flow` is a continuous aggregation query in GreptimeDB.
 It continuously updates the aggregated data based on the incoming data.
 This document describes how to create, update, and delete a flow.
 
-A `flow` have those attributes:
-- `name`: the name of the flow. It's an unique identifier in the catalog level.
-- `source tables`: tables provide data for the flow. Each flow can have multiple source tables.
-- `sink table`: the table to store the materialized aggregated data.
-- `expire after`: the interval to expire the data from the source table. Data after the expiration time will not be used in the flow.
-- `comment`: the description of the flow.
-- `SQL`: the continuous aggregation query to define the flow. Refer to [Expression](./expression.md) for the available expressions.
-
 ## Create or update a flow
 
 The grammar to create a flow is:
@@ -26,7 +18,7 @@ AS
 ``` -->
 
 ```sql
-CREATE FLOW [ IF NOT EXISTS ] <name>
+CREATE FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT = "<string>" ]
@@ -36,11 +28,17 @@ AS
 
 <!-- When `OR REPLACE` is specified, if a flow with the same name already exists, it will be updated to the new one. Notice that this only affects the flow task itself, and both source and sink tables will not be changed. -->
 
-`sink-table-name` is the table name to store the materialized aggregated data. It can be an existing table or a new table, `flow` will create the sink table if it doesn't exist. But if the table already exists, the schema of the table must match the schema of the query result.
-
-`expire after` is an optional interval to expire the data from the source table. The expiration time is a relative time from the current time (by "current time" we means the physical time of the data arrive the Flow engine). For example, `INTERVAL '1 hour'` means the data **older** than 1 hour from the current time will be expired. Expired data will be dropped directly. Notice that "dropped" means the data will be removed from the flow's internal state, not the source table, so you data is safe, just flow will refuse to compute data that arrive too late.
-
-`SQL` part defines the continuous aggregation query. Refer to [Write a Query](./query.md) for the details. Generally speaking, the `SQL` part is just like a normal `SELECT` clause with a few difference.
+- `flow-name` is an unique identifier in the catalog level.
+- `sink-table-name` is the table name where the materialized aggregated data is stored.
+  It can be an existing table or a new one. `flow` will create the sink table if it doesn't exist. 
+  <!-- If the table already exists, its schema must match the schema of the query result. -->
+- `EXPIRE AFTER` is an optional interval to expire the data from the Flow engine.
+  For more details, please refer to the [EXPIRE AFTER](#expire-after-clause) part.
+- `COMMENT` is the description of the flow.
+- `SQL` part defines the continuous aggregation query.
+  It defines the source tables provide data for the flow.
+  Each flow can have multiple source tables.
+  Please Refer to [Write a Query](./query.md) for the details.
 
 A simple example to create a flow:
 
@@ -54,6 +52,23 @@ SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 
 ```
 
 The created flow will compute `count(item)` for every 5 minutes and store the result in `my_sink_table`. All data comes within 1 hour will be used in the flow. For the `tumble()` function, refer to [define time window](./define-time-window.md) part. 
+
+### `EXPIRE AFTER` clause
+
+The Flow engine operates with two concepts of time: data timestamp and processing time.
+
+The data timestamp is the time stored in the time index column of the source table,
+while the processing time refers to the moment when the Flow engine executes the aggregation operation.
+
+The `EXPIRE AFTER` clause specifies the interval after which the data will expire.
+Any data with a timestamp older than the processing time minus the interval time will be expired.
+This means that the Flow engine only uses data within this interval to compute the aggregation.
+
+For example, if the Flow engine processes the aggregation operation at 10:00:00 and the `INTERVAL '1 hour'` is set,
+any data older than 1 hour from the processing time (data before 09:00:00) will be expired.
+Only data within the interval from 09:00:00 to 10:00:00 will be used in the aggregation.
+
+The `EXPIRE` operation only expire data from the Flow engine, it does not affect the data in the source table.
 
 ## Delete a flow
 

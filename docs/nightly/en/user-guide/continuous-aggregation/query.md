@@ -2,6 +2,7 @@
 
 This chapter describes how to write a continuous aggregation query in GreptimeDB. Query here should be a `SELECT` statement with either aggregating functions or non-aggregating functions (i.e., scalar function).
 
+Generally speaking, the `SQL` part is just like a normal `SELECT` clause with a few difference.
 The grammar of the query is like the following:
 
 ```sql
