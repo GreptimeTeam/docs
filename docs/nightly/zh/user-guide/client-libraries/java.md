@@ -439,7 +439,7 @@ db.password=
 
 #### 时区
 
-通过设置URL参数来设置JDBC时区:
+通过设置 URL 参数来设置 JDBC 时区：
 
 ```txt
 jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
