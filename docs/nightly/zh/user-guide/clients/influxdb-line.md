@@ -9,7 +9,7 @@ Greptime 完全兼容 InfluxDB line protocol 的鉴权格式，包括 v1 和 v2�
 InfluxDB 的 v2 协议使用的格式很像 HTTP 的标准基本鉴权方案，我们可以通过 InfluxDB 的 line protocol 轻松写入数据。在下方的示例代码中，请注意将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己配置的用户名和密码。
 
 ```shell
-❯ curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
+curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
     -H 'authorization: token greptime_user:greptime_pwd' \
     -d 'monitor,host=host1 cpu=1.2 1664370459457010101'
 ```
@@ -19,7 +19,7 @@ InfluxDB 的 v2 协议使用的格式很像 HTTP 的标准基本鉴权方案，�
 GreptimeDB 同样支持 InfluxDB 的 v1 鉴权格式。在 HTTP 查询字符串中添加 `u` 代表用户，`p` 代表密码，请注意将 `greptime_user(username)`, `greptime_pwd(password)` 替换为用户自己配置的用户名和密码，如下所示：
 
 ```shell
-❯ curl 'http://localhost:4000/v1/influxdb/write?db=public&u=greptime_user&p=greptime_pwd' \
+curl 'http://localhost:4000/v1/influxdb/write?db=public&u=greptime_user&p=greptime_pwd' \
     -d 'monitor,host=host2 cpu=1.2 1678679359062504960'
 ```
 
