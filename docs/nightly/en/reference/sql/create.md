@@ -91,6 +91,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.twcs.time_window` | Compaction time window    | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.  |
 | `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
 | `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
+| `comment`           | Table level comment   | String value.      |
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
