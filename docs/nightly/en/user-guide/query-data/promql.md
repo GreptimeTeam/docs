@@ -173,6 +173,10 @@ Both instant and range selector are supported. The only exception is the label m
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 
+### Timestamp precision
+
+The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
+
 ### Binary
 
 *Pure literal binary-expr like `1+1` is not supported yet.*
@@ -245,6 +249,7 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | atanh              | `atanh(metric)`                   |
     | sinh               | `sinh(metric)`                    |
     | cosh               | `cosh(metric)`                    |
+    | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
     | timestamp          | `timestamp()`                     |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
@@ -253,7 +258,6 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
     | Function                   | Progress / Example |
     | :------------------------- | :----------------- |
     | absent                     | TBD                |
-    | scalar                     | TBD                |
     | sgn                        | TBD                |
     | sort                       | TBD                |
     | sort_desc                  | TBD                |
