@@ -36,6 +36,8 @@ Use following connect string for your JDBC client.
 jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
 ```
 
+Read the [time zone setting](/user-guide/client-libraries/java#time-zone) for JDBC.
+
 And if you are using client like Python, use following url to connect to your
 instance.
 
