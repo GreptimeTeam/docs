@@ -33,7 +33,7 @@ AS
   It can be an existing table or a new one. `flow` will create the sink table if it doesn't exist. 
   <!-- If the table already exists, its schema must match the schema of the query result. -->
 - `EXPIRE AFTER` is an optional interval to expire the data from the Flow engine.
-  For more details, please refer to the [EXPIRE AFTER](#expire-after-clause) part.
+  For more details, please refer to the [`EXPIRE AFTER`](#expire-after-clause) part.
 - `COMMENT` is the description of the flow.
 - `SQL` part defines the continuous aggregation query.
   It defines the source tables provide data for the flow.
