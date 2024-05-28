@@ -452,7 +452,7 @@ Set the JDBC time zone by setting URL parameters:
 jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
 ```
 
-* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies how the server's session time zone (about which the timestamps are saved onto the server) is to be determined by Connector/J. Read the [MySQL manual](https://dev.mysql.com/doc/connector-j/en/connector-j-time-instants.html) for more details.
+* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
 * `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
 
 %}

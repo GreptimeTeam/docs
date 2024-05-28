@@ -445,7 +445,7 @@ db.password=
 jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
 ```
 
-* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 指定Connector/J如何确定服务器 session 时区(时间戳保存到服务器的参考时区)。详情请参阅[MySQL手册](https://dev.mysql.com/doc/connector-j/en/connector-j-time-instants.html)。
+* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 配置连接时区。
 * `forceConnectionTimeZoneToSession=true` 使 session `time_zone` 变量被设置为 `connectionTimeZone` 指定的值。
 %}
 
