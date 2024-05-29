@@ -62,11 +62,10 @@ while the processing time refers to the moment when the Flow engine executes the
 
 The `EXPIRE AFTER` clause specifies the interval after which the data will expire.
 Any data with a timestamp older than the processing time minus the interval time will be expired.
-This means that the Flow engine only uses data within this interval to compute the aggregation.
 
 For example, if the Flow engine processes the aggregation operation at 10:00:00 and the `INTERVAL '1 hour'` is set,
 any data older than 1 hour from the processing time (data before 09:00:00) will be expired.
-Only data within the interval from 09:00:00 to 10:00:00 will be used in the aggregation.
+Only data timestamped from 09:00:00 onwards will be used in the aggregation.
 
 The `EXPIRE` operation only expire data from the Flow engine, it does not affect the data in the source table.
 
