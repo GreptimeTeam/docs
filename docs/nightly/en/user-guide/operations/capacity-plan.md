@@ -7,7 +7,7 @@ which allows for the database to be initiated with minimal server resources.
 However, when configuring your server capacity for a production environment,
 there are several key considerations:
 
-- Row processed per second
+- Data points processed per second
 - Query requests per second
 - Data volume
 - Data retention policy
