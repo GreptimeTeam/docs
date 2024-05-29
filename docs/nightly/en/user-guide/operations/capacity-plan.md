@@ -38,7 +38,7 @@ For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB
 If you are using the [continuous aggregation](../continuous-aggregation/overview.md) feature,
 keep in mind that the Flow engine stores data used for aggregation in memory.
 Therefore, it is crucial to allocate enough memory to accommodate all unexpired data within the Flow engine.
-To conserve memory, it is recommanded to set an [`EXPIRE AFTER`](../continuous-aggregation/manage-flow.md#expire-after-clause) policy.
+To conserve memory, it is recommended to set an [`EXPIRE AFTER`](../continuous-aggregation/manage-flow.md#expire-after-clause) policy.
 
 ## Storage
 
@@ -49,7 +49,7 @@ please refer to the [storage configuration](./configuration.md#storage-options) 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
 With cloud storage, only about 200GB of local storage space is needed for the Write-Ahead Log (WAL) caching data.
 
-However, if you perfer using a local file system for data storage,
+However, if you prefer using a local file system for data storage,
 you need to consider the volume of data.
 For example, if your data ingestion rage is 300k data points per second,
 each data point is about 1kb in size,
@@ -67,7 +67,7 @@ here's an example of how you might allocate resources:
 
 - CPU: 8 cores.
 - Memory: 32 GB.
-If you are using [continuous aggreation](../continuous-aggregation/overview.md) with a policy to expire data after 1 day,
+If you are using [continuous aggregation](../continuous-aggregation/overview.md) with a policy to expire data after 1 day,
 an additional about 420 GB of memory will be required for the Flow engine.
 - Storage: 200 GB.
 
