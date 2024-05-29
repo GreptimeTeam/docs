@@ -107,4 +107,4 @@ SELECT * FROM out_num_cnt;
 - [编写查询语句](./query.md) 描述了如何编写连续聚合查询。
 - [定义时间窗口](./define-time-window.md) 描述了如何为连续聚合定义时间窗口。时间窗口是连续聚合查询的一个重要属性，它定义了聚合的时间间隔。
 - [表达式](./expression.md) 是连续聚合查询中可用表达式。
-
+- 阅读 [容量规划](/user-guide/operations/capacity-plan.md) 指南，了解如何为 Flow 引擎分配内存。内存不足可能导致 OOM 错误，进而使 Flow 引擎退出。

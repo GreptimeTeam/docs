@@ -104,3 +104,4 @@ Please refer to the following sections to learn more:
 - [Write a Query](./query.md) describes how to write a continuous aggregation query.
 - [Define Time Window](./define-time-window.md) describes how to define the time window for the continuous aggregation. Time window is an important attribute of your continuous aggregation query. It defines the time interval for the aggregation.
 - [Expression](./expression.md) is a reference of available expressions in the continuous aggregation query.
+- Read the [Capacity Plan](/user-guide/operations/capacity-plan.md) guide to understand how to allocate memory for the Flow engine. Insufficient memory can lead to an Out of Memory (OOM) error, causing the Flow engine to exit.
