@@ -35,11 +35,6 @@ a ratio of 1:2 can also be acceptable.
 In general, the more memory you have, the faster your queries will run.
 For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB for more advanced ones.
 
-If you are using the [continuous aggregation](../continuous-aggregation/overview.md) feature,
-keep in mind that the Flow engine stores data used for aggregation in memory.
-Therefore, it is crucial to allocate enough memory to accommodate all unexpired data within the Flow engine.
-To conserve memory, it is recommended to set an [`EXPIRE AFTER`](../continuous-aggregation/manage-flow.md#expire-after-clause) policy.
-
 ## Storage
 
 Data can be stored either in a local file system or in cloud storage, such as AWS S3.
@@ -65,11 +60,9 @@ Consider a scenario where your database handles a query rate of about 200 simple
 Given the high ingestion and query rates,
 here's an example of how you might allocate resources:
 
-- CPU: 8 cores.
-- Memory: 32 GB.
-If you are using [continuous aggregation](../continuous-aggregation/overview.md) with a policy to expire data after 1 day,
-an additional about 420 GB of memory will be required for the Flow engine.
-- Storage: 200 GB.
+- CPU: 8 cores
+- Memory: 32 GB
+- Storage: 200 GB
 
 Such an allocation is designed to optimize performance,
 ensuring smooth data ingestion and query processing without system overload.
