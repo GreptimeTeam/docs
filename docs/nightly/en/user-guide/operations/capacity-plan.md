@@ -26,9 +26,9 @@ but the actual number of CPUs you should use depends on your workload.
 Consider allocating 30% of your CPU resources for data ingestion,
 with the remaining 70% to querying and analytics.
 
-A recommended guideline for resource allocation is to maintain a CPU to memory ratio of 1:4 (for instance, 2 core to 8 GB).
+A recommended guideline for resource allocation is to maintain a CPU to memory ratio of 1:4 (for instance, 8 core to 32 GB).
 However, if your workload consists primarily of data ingestion with few queries,
-a ratio of 1:2 can also be acceptable.
+a ratio of 1:2 (8 core to 16 GB) can also be acceptable.
 
 ## Memory
 
@@ -42,7 +42,7 @@ FOr more information on storage options,
 please refer to the [storage configuration](./configuration.md#storage-options) documentation.
 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
-With cloud storage, only about 200GB of local storage space is needed for the Write-Ahead Log (WAL) caching data.
+With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).
 
 However, if you prefer using a local file system for data storage,
 you need to consider the volume of data.
@@ -55,7 +55,7 @@ setting a [retention policy](/user-guide/concepts/features-that-you-concern#can-
 
 ## Example
 
-Consider a scenario where your database handles a query rate of about 200 simple queries per second (qps) and an ingestion rate of approximately 300k data points per second, using cloud storage for data.
+Consider a scenario where your database handles a query rate of about 200 simple queries per second (QPS) and an ingestion rate of approximately 300k data points per second, using cloud storage for data.
 
 Given the high ingestion and query rates,
 here's an example of how you might allocate resources:
