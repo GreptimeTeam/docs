@@ -23,6 +23,16 @@ You can run GreptimeDB in the standalone mode:
 ./greptime standalone start
 ```
 
+:::tip NOTE
+GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections from other addresses, you can start with the following parameters.
+```shell
+./greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
+```
+
+You can also refer to the [Configuration](../../user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
+:::
+
+
 ### Windows
 
 If you have WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) enabled, you can lunch a latest Ubuntu and run GreptimeDB like above!
@@ -34,6 +44,16 @@ To run GreptimeDB in standalone mode, open a terminal (like Powershell) at the d
 ```shell
 .\greptime standalone start
 ```
+
+:::tip NOTE
+GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections from other addresses, you can start with the following parameters.
+```shell
+.\greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
+```
+
+You can also refer to the [Configuration](../../user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
+:::
+
 
 ## Docker
 

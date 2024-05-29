@@ -25,6 +25,16 @@ curl -fsSL \
 ./greptime standalone start
 ```
 
+:::tip 注意事项
+GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自其他地址的连接，可以通过以下参数启动。
+```shell
+./greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
+```
+
+你也可以参考[配置 GreptimeDB](../../user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
+:::
+
+
 ### Windows
 
 若您的 Windows 系统已开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，您可以直接打开一个最新的 Ubuntu 接着如上所示运行 GreptimeDB ！
@@ -36,6 +46,16 @@ curl -fsSL \
 ```shell
 .\greptime standalone start
 ```
+
+:::tip 注意事项
+GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自其他地址的连接，可以通过以下参数启动。
+```shell
+.\greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
+```
+
+你也可以参考[配置 GreptimeDB](../../user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
+:::
+
 
 ### Docker
 

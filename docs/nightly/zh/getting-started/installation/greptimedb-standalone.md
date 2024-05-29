@@ -51,7 +51,7 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 :::tip 注意事项
 GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自其他地址的连接，可以通过以下参数启动。
 ```shell
-./greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
+.\greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
 ```
 
 你也可以参考[配置 GreptimeDB](../../user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
