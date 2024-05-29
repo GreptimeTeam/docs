@@ -444,6 +444,17 @@ db.password=
 
 Or you can just get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
 
+#### Time zone
+
+Set the JDBC time zone by setting URL parameters:
+
+```txt
+jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
+```
+
+* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
+* `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
+
 %}
 
 {template query-library-raw-sql%
