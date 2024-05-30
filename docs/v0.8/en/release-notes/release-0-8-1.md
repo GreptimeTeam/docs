@@ -22,7 +22,7 @@ This is a patch release, containing some important bug fix for flow's continuous
 * feat: round-robin selector by [@waynexia](https://github.com/waynexia) in [#4024](https://github.com/GreptimeTeam/greptimedb/pull/4024)
 * feat: implement the `LogStoreRawEntryReader` and `RawEntryReaderFilter` by [@WenyXu](https://github.com/WenyXu) in [#4030](https://github.com/GreptimeTeam/greptimedb/pull/4030)
 * feat: support table level comment by [@irenjj](https://github.com/irenjj) in [#4042](https://github.com/GreptimeTeam/greptimedb/pull/4042)
-* feat(opertor): check if a database is in use before dropping it by [@etolbakov](https://github.com/etolbakov) in [#4035](https://github.com/GreptimeTeam/greptimedb/pull/4035)
+* feat(operator): check if a database is in use before dropping it by [@etolbakov](https://github.com/etolbakov) in [#4035](https://github.com/GreptimeTeam/greptimedb/pull/4035)
 * feat: change EXPIRE WHEN to EXPIRE AFTER by [@waynexia](https://github.com/waynexia) in [#4002](https://github.com/GreptimeTeam/greptimedb/pull/4002)
 * feat: enable tcp keepalive for http server by [@MichaelScofield](https://github.com/MichaelScofield) in [#4019](https://github.com/GreptimeTeam/greptimedb/pull/4019)
 * feat: invoke `flush_table` and `compact_table` in fuzz tests by [@WenyXu](https://github.com/WenyXu) in [#4045](https://github.com/GreptimeTeam/greptimedb/pull/4045)
