@@ -30,6 +30,8 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 ```
 
 You can also refer to the [Configuration](../../user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
+
+If the computer running GreptimeDB is directly exposed to the internet, binding to `0.0.0.0` is dangerous and will expose the instance to everybody on the internet.
 :::
 
 
@@ -52,6 +54,8 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 ```
 
 You can also refer to the [Configuration](../../user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
+
+If the computer running GreptimeDB is directly exposed to the internet, binding to `0.0.0.0` is dangerous and will expose the instance to everybody on the internet.
 :::
 
 
