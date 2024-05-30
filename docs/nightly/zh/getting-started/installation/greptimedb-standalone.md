@@ -25,18 +25,6 @@ curl -fsSL \
 ./greptime standalone start
 ```
 
-:::tip 注意事项
-GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自所有地址的连接，可以通过以下参数启动。
-```shell
-./greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
-```
-
-你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
-
-如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
-:::
-
-
 ### Windows
 
 若您的 Windows 系统已开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，您可以直接打开一个最新的 Ubuntu 接着如上所示运行 GreptimeDB ！
@@ -48,19 +36,6 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 ```shell
 .\greptime standalone start
 ```
-
-
-:::tip 注意事项
-GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自所有地址的连接，可以通过以下参数启动。
-```shell
-.\greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
-```
-
-你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
-
-如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
-:::
-
 
 ### Docker
 
@@ -106,6 +81,39 @@ greptime/greptimedb:<%greptimedb-version%> standalone start \
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
    :::
+
+## 绑定地址
+
+GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自所有地址的连接，可以通过以下参数启动。
+
+:::danger 危险操作
+
+如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
+
+:::code-group
+
+```shell [二进制]
+./greptime standalone start \
+   --http-addr 0.0.0.0:4000 \
+   --rpc-addr 0.0.0.0:4001 \
+   --mysql-addr 0.0.0.0:4002 \
+   --postgres-addr 0.0.0.0:4003
+```
+
+```shell [Docker]
+docker run -p 0.0.0.0:4000-4003:4000-4003 \
+-v "$(pwd)/greptimedb:/tmp/greptimedb" \
+--name greptime --rm \
+greptime/greptimedb:<%greptimedb-version%> standalone start \
+--http-addr 0.0.0.0:4000 \
+--rpc-addr 0.0.0.0:4001 \
+--mysql-addr 0.0.0.0:4002 \
+--postgres-addr 0.0.0.0:4003
+```
+
+:::
+
+你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
 
 ## 下一步
 
