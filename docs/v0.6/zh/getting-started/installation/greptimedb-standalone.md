@@ -42,7 +42,7 @@ curl -fsSL \
 请确保已经安装了 [Docker](https://www.docker.com/)。如果还没有安装，可以参考 Docker 官方的[文档](https://www.docker.com/get-started/)进行安装。
 
 ```shell
-docker run -p 4000-4003:4000-4003 \
+docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb standalone start \
