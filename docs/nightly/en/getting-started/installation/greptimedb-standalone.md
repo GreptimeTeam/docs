@@ -64,7 +64,7 @@ If the computer running GreptimeDB is directly exposed to the internet, binding 
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
-docker run -p 4000-4003:4000-4003 \
+docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb:<%greptimedb-version%> standalone start \
