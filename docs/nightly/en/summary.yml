@@ -74,6 +74,7 @@
   - Operations:
     - admin
     - configuration
+    - capacity-plan
     - back-up-&-restore-data
     - kubernetes
     - gtctl
@@ -88,7 +89,6 @@
     # - alert
     # - import-data
     # - export-data
-    # - capacity-planning
   - upgrade
 - GreptimeCloud:
   - overview
