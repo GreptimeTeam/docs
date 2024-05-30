@@ -37,6 +37,9 @@ For basic workloads, it's recommended to have at least 8 GB of memory, and 32 GB
 
 ## Storage
 
+GreptimeDB features an efficient data compaction mechanism that reduces the original data size to about 1/8 to 1/10 of its initial volume.
+This allows GreptimeDB to store large amounts of data in a significantly smaller space.
+
 Data can be stored either in a local file system or in cloud storage, such as AWS S3.
 FOr more information on storage options,
 please refer to the [storage configuration](./configuration.md#storage-options) documentation.
@@ -44,14 +47,8 @@ please refer to the [storage configuration](./configuration.md#storage-options) 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
 With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).
 
-However, if you prefer using a local file system for data storage,
-you need to consider the volume of data.
-For example, if your data ingestion rage is 300k data points per second,
-each data point is about 1kb in size,
-then you will need to add approximately 420GB of storage space per day.
-
-Regardless of whether you choose cloud or local storage,
-setting a [retention policy](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements) is recommended to manage storage costs effectively.
+In order to manage the storage costs effectively, 
+it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
 ## Example
 
