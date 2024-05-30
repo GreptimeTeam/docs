@@ -31,7 +31,7 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 ./greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
 ```
 
-你也可以参考[配置 GreptimeDB](../../user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
+你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
 
 如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
 :::
@@ -55,7 +55,7 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 .\greptime standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003
 ```
 
-你也可以参考[配置 GreptimeDB](../../user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
+你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
 
 如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
 :::
