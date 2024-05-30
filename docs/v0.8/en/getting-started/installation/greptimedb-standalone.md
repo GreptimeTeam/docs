@@ -40,7 +40,7 @@ To run GreptimeDB in standalone mode, open a terminal (like Powershell) at the d
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
-docker run -p 4000-4003:4000-4003 \
+docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb:<%greptimedb-version%> standalone start \
@@ -79,6 +79,39 @@ You can:
 
 2. Upgrade the Docker version to v23.0.0 or higher;
    :::
+
+## Binding address
+
+GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections from other addresses, you can start with the following parameters.
+
+:::danger Warning
+
+If the computer running GreptimeDB is directly exposed to the internet, binding to `0.0.0.0` is dangerous and will expose the instance to everybody on the internet.
+
+
+:::code-group
+
+```shell [Binary]
+./greptime standalone start \
+   --http-addr 0.0.0.0:4000 \
+   --rpc-addr 0.0.0.0:4001 \
+   --mysql-addr 0.0.0.0:4002 \
+   --postgres-addr 0.0.0.0:4003
+```
+
+```shell [Docker]
+docker run -p 0.0.0.0:4000-4003:4000-4003 \
+-v "$(pwd)/greptimedb:/tmp/greptimedb" \
+--name greptime --rm \
+greptime/greptimedb:<%greptimedb-version%> standalone start \
+--http-addr 0.0.0.0:4000 \
+--rpc-addr 0.0.0.0:4001 \
+--mysql-addr 0.0.0.0:4002 \
+--postgres-addr 0.0.0.0:4003
+```
+:::
+
+You can also refer to the [Configuration](/user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
 
 ## Next Steps
 
