@@ -2,6 +2,7 @@
 
 ## 0.8
 
+* [0.8.1](/release-notes/release-0-8-1.md): 2024-05-30
 * [0.8.0](/release-notes/release-0-8-0.md): 2024-05-18
 
 ## 0.7
