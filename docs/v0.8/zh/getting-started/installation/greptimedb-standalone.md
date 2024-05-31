@@ -52,7 +52,7 @@ greptime/greptimedb:<%greptimedb-version%> standalone start \
 --postgres-addr 0.0.0.0:4003
 ```
 
-:::tip NOTE
+:::tip 注意事项
 为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
