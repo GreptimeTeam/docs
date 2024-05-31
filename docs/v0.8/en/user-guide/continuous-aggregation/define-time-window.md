@@ -1,6 +1,7 @@
 # Define Time Window
 
 Time window is an important attribute of your continuous aggregation query. It defines how the data is aggregated in the flow.
+These time windows are left-closed and right-open intervals.
 
 A time window corresponds to a range of time. Data from source table will be mapped to the corresponding window based on the time index column. Time window is also the scope of one calculation of an aggregation expression, so each time window will result in one row in the result table.
 
