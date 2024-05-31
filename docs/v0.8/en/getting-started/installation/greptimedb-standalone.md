@@ -88,7 +88,6 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 
 If the computer running GreptimeDB is directly exposed to the internet, binding to `0.0.0.0` is dangerous and will expose the instance to everybody on the internet.
 
-
 :::code-group
 
 ```shell [Binary]
