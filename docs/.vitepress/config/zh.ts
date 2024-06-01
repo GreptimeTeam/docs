@@ -1,4 +1,4 @@
-import { CURRENT_VERSION, websiteMap, base } from './common'
+import { CURRENT_VERSION, websiteMap, base, } from './common'
 import { getVersionList } from '../theme/serverUtils'
 
 export const zhConfig = async () => ({
@@ -21,9 +21,11 @@ export const zhConfig = async () => ({
     ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
+    ['meta', { name: 'docsearch:language', content: 'zh-Hans'}],
+    ['meta', { name: 'docsearch:version', content: CURRENT_VERSION}]
   ],
   locales: {
-    root: { label: '简体中文', lang: 'zh-CN', link: '/' },
+    root: { label: '简体中文', lang: 'zh-Hans', link: '/' },
     en: { label: 'English', lang: 'en-US', link: `${websiteMap['en']}${base}` },
   },
   themeConfig: {
