@@ -1,4 +1,4 @@
-import { CURRENT_VERSION, websiteMap, base, } from './common'
+import { CURRENT_VERSION, websiteMap, base } from './common'
 import { getVersionList } from '../theme/serverUtils'
 
 export const zhConfig = async () => ({
