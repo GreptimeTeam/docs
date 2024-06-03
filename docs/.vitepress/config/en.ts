@@ -21,6 +21,8 @@ export const enConfig = async () => ({
     ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
+    ['meta', { name: 'docsearch:language', content: 'en-US'}],
+    ['meta', { name: 'docsearch:version', content: CURRENT_VERSION}]
   ],
   locales: {
     root: { label: 'English', lang: 'en-US', link: '/' },
