@@ -18,7 +18,7 @@ export const enConfig = async () => ({
     ['meta', { property: 'twitter:url', content: 'https://greptime.com/' }],
     ['meta', { property: 'twitter:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' }],
     ['meta', { property: 'twitter:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' }],
-    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
+    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' }],
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
     ['meta', { name: 'docsearch:language', content: 'en-US'}],
