@@ -36,6 +36,12 @@ export const zhConfig = async () => ({
     },
     search: {
       options: {
+        appId: 'SCVT6GSUZV',
+        apiKey: '450bf5e5a3c1ecd3c4154530e25678c5',
+        indexName: 'greptime',
+        searchParameters: {
+          facetFilters: [`version:${CURRENT_VERSION}`]
+        },
         locales: {
           root: {
             translations: {

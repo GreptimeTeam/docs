@@ -28,7 +28,16 @@ export const enConfig = async () => ({
     root: { label: 'English', lang: 'en-US', link: '/' },
     zh: { label: '简体中文', lang: 'zh-CN', link: `${websiteMap['zh']}${base}` },
   },
-  themeConfig: {
+  themeConfig: {search: {
+    options: {
+      appId: 'SRGB68Y6CW',
+      apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
+      indexName: 'greptime',
+      searchParameters: {
+        facetFilters: [`version:${CURRENT_VERSION}`]
+      },
+    },
+  },
     notFound: {
       quote: 'Unfortunately, the content you are looking for is not found.',
       linkText: 'Take me to homepage',
