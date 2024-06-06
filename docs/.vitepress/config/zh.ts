@@ -42,6 +42,7 @@ export const zhConfig = async () => ({
         searchParameters: {
           facetFilters: [`version:${CURRENT_VERSION}`]
         },
+        maxResultsPerGroup: 7,
         locales: {
           root: {
             translations: {
