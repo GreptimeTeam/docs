@@ -33,15 +33,7 @@ const common = async () => {
     themeConfig: {
       latestVersion: LATEST_VERSION,
       search: {
-        provider: 'local',
-        options: {
-          _render(src, env, md) {
-            const html = md.render(src, env)
-            // excludes internal document dictionary
-            if (env.relativePath.includes('db-cloud-shared')) return ''
-            return html
-          }
-        }
+        provider: 'algolia',
       },
       siteTitle: '',
       sidebar: {
