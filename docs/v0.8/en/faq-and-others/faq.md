@@ -131,10 +131,6 @@ Thank you for asking, here are some key points:
 
 As mentioned, the cloud version offers more ready-to-use features to help you get started quickly. The core features are almost identical, especially on our dedicated plan.
 
-## Where can I find documentation related to on-premises deployment and performance benchmark reports?
-
-You can find the public TSBS benchmark results [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.7.0.md) and the deployment documentation [here](https://docs.greptime.com/getting-started/installation/overview).
-
 ## What should I do if the region becomes `DOWNGRADED` and the tables on that node become read-only after the datanode restarts? Is there a way to automatically reactivate it?
 
 According to your configuration, the failover in metasrv, which may mark the region as `DOWNGRADED`, is disabled. Another procedure that may mark a region as `DOWNGRADED` is the region migration procedure. Please try running the region migration procedure and provide feedback for further assistance.
@@ -201,16 +197,18 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-## Several questions about GreptimeDB: Does GreptimeDB v0.7 support inverted indexes, and does it use Tantivy? In v0.8, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations? Will Metasrv support storage backends like MySQL or PostgreSQL?
+## Does GreptimeDB v0.7 support inverted indexes, and does it use Tantivy?
 
 Yes, we have tested Tantivy, and it meets our current requirements very well.
 
+## In v0.8, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
+
 This is a good suggestion. Currently, the Flow Engine does not support PromQL syntax for calculations. We will evaluate this, as it seems theoretically feasible.
 
-We have developed an abstraction layer for Metasrv, but it does not yet support RDBMS backends. Support for MySQL and PostgreSQL is planned.
+## Will Metasrv support storage backends like MySQL or PostgreSQL?
 
-For further suggestions, please open an issue on our GitHub repository.
+We have developed an abstraction layer for Metasrv, but it does not yet support RDBMS backends. Support for MySQL and PostgreSQL is planned. For further suggestions, please open an issue on our GitHub repository.
 
-## What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs across thousands of computers every 30 seconds, so that the data can be kept for many years?
+## What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
 
 Using a flow table is the appropriate tool for this task. A simple flow task should suffice. The output of a flow task is stored in a normal table, allowing it to be kept indefinitely.
