@@ -12,16 +12,16 @@ services:
     image: grafana/grafana-oss:<%grafana-version%>
     container_name: grafana
     ports:
-      - 3000:3000
+      - 127.0.0.1:3000:3000
 
   greptime:
     image: greptime/greptimedb:<%greptimedb-version%>
     container_name: greptimedb
     ports:
-      - 4000:4000
-      - 4001:4001
-      - 4002:4002
-      - 4003:4003
+      - 127.0.0.1:4000:4000
+      - 127.0.0.1:4001:4001
+      - 127.0.0.1:4002:4002
+      - 127.0.0.1:4003:4003
     command: "standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003"
     volumes:
       - ./greptimedb:/tmp/greptimedb
@@ -38,3 +38,22 @@ docker-compose up
 :::tip 注意
 接下来的步骤假设你按照上面的文档安装了 GreptimeDB 和 Grafana。
 :::
+
+当你成功启动 GreptimeDB 之后，可以使用以下命令验证数据库状态：
+
+```shell
+curl http://127.0.0.1:4000/status
+```
+
+如果数据库正在运行，你将看到类似如下的输出：
+
+```json
+{
+  "source_time": "2024-05-30T07:59:52Z",
+  "commit": "05751084e7bbfc5e646df7f51bb7c3e5cbf16d58",
+  "branch": "HEAD",
+  "rustc_version": "rustc 1.79.0-nightly (f9b161492 2024-04-19)",
+  "hostname": "977898bbda4f",
+  "version": "0.8.1"
+}
+```
