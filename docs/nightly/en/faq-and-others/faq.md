@@ -81,9 +81,9 @@ Please refer to [features that you concern](/user-guide/concepts/features-that-y
 
 Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
 
-## If I delete the database, can I use the `drop database` command?
+## If I delete the database, can I use the `DROP DATABASE` command?
 
-Yes, the `drop database` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](https://docs.greptime.com/reference/sql/drop#drop).
+Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](https://docs.greptime.com/reference/sql/drop#drop).
 
 ## Are there any retention policy? 
 
