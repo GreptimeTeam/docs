@@ -8,8 +8,7 @@
 ## Client SDK libraries
 
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
-They offer functionality for writing and querying data,
-making it easier to integrate GreptimeDB into your applications.
+There are mature SQL driver libraries available for querying GreptimeDB.
 For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) documentation.
 
 ## Query external data
