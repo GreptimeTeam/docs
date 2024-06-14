@@ -11,15 +11,15 @@ Common use cases for time-series database include but are not limited to the fol
 
 ## How is GreptimeDB's performance compared to other solutions?
 
-GreptimeDB is still in its early stage and under rapid iterations. We are still optimizing our performance and enriching the features. Performance benchmark will be posted on our website as soon as it's ready. Please stay tuned.
+GreptimeDB has released v0.8, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.8.0.md).
 
 ## How is the performance of GreptimeDB when used for non-time-series DB tables?
 
 GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain (time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
 
-## Does GreptimeDB have a Golang driver?
+## Does GreptimeDB have a Go driver?
 
-Yes, you can find our Golang SDK [here](https://github.com/GreptimeTeam/greptimedb-client-go).
+Yes, you can find our Go SDK here: https://github.com/GreptimeTeam/greptimedb-ingester-go.
 
 Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql).
 
@@ -27,7 +27,7 @@ HTTP API is also available, please see [this article](/user-guide/clients/http-a
 
 ## Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
-GreptimeDB implements PromQL operator pushdown in our latest distributed version 0.3, enabling distributed PromQL queries.
+GreptimeDB has initially implemented native support for PromQL, with compatibility in GreptimeDB v0.7 surpassing 80%, making it comparable to VictoriaMetrics.
 
 ## Is GreptimeDB compatible with Grafana?
 
@@ -38,14 +38,13 @@ plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config Gr
 
 Also, we are implementing PromQL natively which is frequently used with Grafana.
 
-## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as a tracing or logging subscriber?
+## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
 GreptimeDB has primarily focused on metrics, but will soon offer log storage and full-text search capabilities for logs. These features are expected to be available in version 0.9, which is anticipated to be released in early July.
 
 ## When will GreptimeDB release its first GA version?
 
-The current version is not at the production level yet and there is a milestone for our future development.
-You can check our milestone for GreptimeDB v0.4 [here](https://github.com/GreptimeTeam/greptimedb/milestone/5).
+The current version has not yet reached General Availability version standards. In line with our Greptime 2024 Roadmap, we plan to achieve a production-level version with the update to v1.0 in August. More details: https://github.com/GreptimeTeam/greptimedb/issues/3412.
 
 ## Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
 
@@ -55,6 +54,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 ## Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
+
 For more information, refer to [this document](/user-guide/table-management#create-table).
 
 ## How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
@@ -79,41 +79,43 @@ Please refer to [features that you concern](/user-guide/concepts/features-that-y
 
 ## Can <https://n9e.github.io/> now be directly integrated with GreptimeDB? How is its compatibility?
 
-Theoretically GreptimeDB could replace VictoriaMetrics now since that most protocols are supported, but we hasn't actually tested yet.
+Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
 
-## If I delete the database, can I use the "drop database" command?
+## If I delete the database, can I use the `drop database` command?
 
-Yes, the drop database command has been implemented in version 0.8. You can refer to the official documentation for usage: [Drop Database](https://docs.greptime.com/reference/sql/drop#drop).
+Yes, the `drop database` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](https://docs.greptime.com/reference/sql/drop#drop).
 
 ## Are there any retention policy? 
 
 We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
-## What are the main differences between GreptimeDB and another time-series database built on DataFusion like InfluxDB?
+## What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
 
 At GreptimeDB, we share some technical similarities with InfluxDB, both using Datafusion, Arrow, Parquet, and built on object storage. However, we differ in several key aspects:
-Open-Source Strategy: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
+
+- Open-Source Strategy: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
 
 - Distributed Architecture: Our architecture is more aligned with HBase's Region/RegionServer design. Our Write-Ahead Log (WAL) uses Kafka, and we're exploring a quorum-based implementation in the future.
 
-- Workload and Services: We focus on a hybrid workload combining time series and analytics. This integration aims to enhance resource efficiency and real-time performance for users. We also offer GreptimeCloud, a commercial cloud service.
+- Workload and Services: We focus on a hybrid workload combining time series and analytics. This integration aims to enhance resource efficiency and real-time performance for users. We also offer [GreptimeCloud](https://greptime.com/product/cloud), a commercial cloud service.
 
 - Storage Engine Design: Our pluggable storage engine is versatile. For scenarios with many small data tables, like in Prometheus, we have a dedicated Metrics storage engine.
-Query Language Support: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
 
-We're a young, rapidly evolving project and always looking to improve. For more details, visit our [Blog](https://greptime.com/blogs/) and [Contributor Guide](https://docs.greptime.com/contributor-guide/overview). We welcome your interest and contributions!
+- Query Language Support: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
+
+We're a young, rapidly evolving project and always looking to improve. For more details, visit [our Blog](https://greptime.com/blogs/) and [Contributor Guide](https://docs.greptime.com/contributor-guide/overview). We welcome your interest and contributions!
 
 ## As a first-timer looking to contribute to GreptimeDB, where can I find a comprehensive guide to get started?
 
 Welcome! Please refer to our [contribution guide](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md). For those new to GreptimeDB, we have a selected collection of [good first issues](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22). Feel free to reach us in Slack channel anytime!
 
-## Does GreptimeDB have a way to handle absolute counters that can reset, like InfluxDB's non-negative differential? How do aggregations work with these counters, and is PromQL preferred over SQL for them? Also, is there a plan to integrate PromQL functions into SQL, similar to InfluxDB v3?
-
-GreptimeDB, like Prometheus, handles counters effectively. Functions like` reset()`, `rate()`, or `delta()` in GreptimeDB are designed to automatically detect and adjust for counter resets. While it's not recommended to use the `deriv()` function on a counter since it's meant for gauges, you can apply `rate()` to your counter and then use `deriv()`. PromQL is indeed more suitable for operations involving counters, given its origin in Prometheus. However, we are exploring the integration of PromQL functions into SQL for greater flexibility. If you're interested in implementing functions into GreptimeDB, we have documentation available which you can check out: [Greptime Documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md).
-
 ## Can GreptimeDB be used for a large-scale internal metrics collection system similar to Fb's Gorilla or Google's Monarch, with a preference for in-memory data and high availability? Are there plans for asynchronous WAL or optional disk storage, and how is data replication handled without WAL?
 
 GreptimeDB supports asynchronous WAL and is developing a per-table WAL toggle for more control. A tiered storage approach, starting with in-memory caching, is also in development. For data replication, data flushed to remote stores like S3 is replicated independently of WAL. The details for tiered storage are tracked in issue [db#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). A remote WAL implementation based on Apache Kafka ensures the durability of unflushed data in cluster mode.
+
+## Does GreptimeDB have a way to handle absolute counters that can reset, like InfluxDB's non-negative differential? How do aggregations work with these counters, and is PromQL preferred over SQL for them? Also, is there a plan to integrate PromQL functions into SQL, similar to InfluxDB v3?
+
+GreptimeDB, like Prometheus, handles counters effectively. Functions like` reset()`, `rate()`, or `delta()` in GreptimeDB are designed to automatically detect and adjust for counter resets. While it's not recommended to use the `deriv()` function on a counter since it's meant for gauges, you can apply `rate()` to your counter and then use `deriv()`. PromQL is indeed more suitable for operations involving counters, given its origin in Prometheus. However, we are exploring the integration of PromQL functions into SQL for greater flexibility. If you're interested in implementing functions into GreptimeDB, we have documentation available which you can check out: [Greptime Documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md).
 
 ## What are the feature differences between the open-source version and the cloud version of GreptimeDB?
 
@@ -144,9 +146,10 @@ We have prebuilt binaries for Android ARM64 platforms, which have been successfu
 ## Why is there a performance drop in query response times after upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server? After upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server, there might be a noticeable performance drop when querying data with SQL from Grafana. Before the update, the query response time was around 70ms, but it increased to approximately 460ms post-upgrade. This performance issue generally improves over time as the system stabilizes.
 
 Currently, GreptimeDB only builds indexes for persistent data. Therefore, query performance might improve after flushing buffered input data. The in-memory page cache for persistent files also needs to be warmed up by queries after restarting the instance.
-Persistence Mechanism: Data is flushed periodically or when the buffered data size reaches a threshold.
 
-Cache Warm-up: Query performance improves as the in-memory page cache warms up.
+- Persistence Mechanism: Data is flushed periodically or when the buffered data size reaches a threshold.
+
+- Cache Warm-up: Query performance improves as the in-memory page cache warms up.
 
 These mechanisms help stabilize and improve query performance after an upgrade.
 
