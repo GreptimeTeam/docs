@@ -11,7 +11,7 @@ Common use cases for time-series database include but are not limited to the fol
 
 ## How is GreptimeDB's performance compared to other solutions?
 
-GreptimeDB has released v0.7, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link below: https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.7.0.md.
+GreptimeDB has released v0.8, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.8.0.md).
 
 ## How is the performance of GreptimeDB when used for non-time-series DB tables?
 
@@ -40,9 +40,7 @@ Also, we are implementing PromQL natively which is frequently used with Grafana.
 
 ## How does this compare to Loki? Is there a crate with Rust bindings available, preferably as tracing or logging subscriber?
 
-GreptimeDB is currently focused on the development of Metrics-related features. However, our Greptime 2024 Roadmap has already announced the release plan for the Log Engine, which is expected to be implemented in version 1.1. 
-
-For more information: https://github.com/GreptimeTeam/greptimedb/issues/3412
+GreptimeDB has primarily focused on metrics, but will soon offer log storage and full-text search capabilities for logs. These features are expected to be available in version 0.9, which is anticipated to be released in early July.
 
 ## When will GreptimeDB release its first GA version?
 
@@ -83,10 +81,9 @@ Please refer to [features that you concern](/user-guide/concepts/features-that-y
 
 Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
 
-## Should I use the command "drop database" to delete a database?
+## If I delete the database, can I use the `DROP DATABASE` command?
 
-Yes, you can use `DROP DATABASE db_name` command to delete a database.
-Please refer to the [DROP](/reference/sql/drop.md#drop-database) document for more details.
+Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](https://docs.greptime.com/reference/sql/drop#drop).
 
 ## Are there any retention policy? 
 
@@ -112,10 +109,106 @@ We're a young, rapidly evolving project and always looking to improve. For more 
 
 Welcome! Please refer to our [contribution guide](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md). For those new to GreptimeDB, we have a selected collection of [good first issues](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22). Feel free to reach us in Slack channel anytime!
 
-## I'm considering using GreptimeDB for a large-scale metrics system similar to Facebook's Gorilla or Google's Monarch, with a preference for in-memory data and high availability, possibly at the expense of some data loss. Given GreptimeDB's focus on consistency over in-memory storage, are there plans to introduce options like asynchronous WAL or optional disk storage for flexibility? Also, is there a way to ensure data replication without WAL, and when can we expect documentation and features for tiered storage?
+## Can GreptimeDB be used for a large-scale internal metrics collection system similar to Fb's Gorilla or Google's Monarch, with a preference for in-memory data and high availability? Are there plans for asynchronous WAL or optional disk storage, and how is data replication handled without WAL?
 
-GreptimeDB already supports asynchronous WAL, and we're looking into a per-table WAL toggle for more control. We're also developing a tiered storage approach, starting with in-memory caching. For data replication, we ensure that data flushed to remote stores like S3 is replicated, independent of WAL. The details for tiered storage are tracked in issue [#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). We provide a remote WAL implementation based on Apache Kafka to ensure the durability of data not being flushed in cluster mode.
+GreptimeDB supports asynchronous WAL and is developing a per-table WAL toggle for more control. A tiered storage approach, starting with in-memory caching, is also in development. For data replication, data flushed to remote stores like S3 is replicated independently of WAL. The details for tiered storage are tracked in issue [db#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). A remote WAL implementation based on Apache Kafka ensures the durability of unflushed data in cluster mode.
 
 ## Does GreptimeDB have a way to handle absolute counters that can reset, like InfluxDB's non-negative differential? How do aggregations work with these counters, and is PromQL preferred over SQL for them? Also, is there a plan to integrate PromQL functions into SQL, similar to InfluxDB v3?
 
 GreptimeDB, like Prometheus, handles counters effectively. Functions like` reset()`, `rate()`, or `delta()` in GreptimeDB are designed to automatically detect and adjust for counter resets. While it's not recommended to use the `deriv()` function on a counter since it's meant for gauges, you can apply `rate()` to your counter and then use `deriv()`. PromQL is indeed more suitable for operations involving counters, given its origin in Prometheus. However, we are exploring the integration of PromQL functions into SQL for greater flexibility. If you're interested in implementing functions into GreptimeDB, we have documentation available which you can check out: [Greptime Documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md).
+
+## What are the feature differences between the open-source version and the cloud version of GreptimeDB?
+
+Thank you for asking, here are some key points:
+
+- **Foundational Features**: The foundational features, including the ingestion protocol, SQL capabilities, and storage functions, are largely identical between the two versions. However, GreptimeCloud offers advanced SQL functions and additional features.
+
+- **Fully Managed Service**: GreptimeCloud is a fully managed service that supports multi-tenancy, data encryption, and security audits for compliance, which are not available in the open-source version.
+
+- **Enhanced Dashboard**: Another significant advantage of GreptimeCloud is its superior dashboard, which is more user-friendly and includes a unique Prometheus workbench. This workbench facilitates online editing of Prometheus dashboards and alert rules, as well as GitOps integration.
+
+- **Specialized Solutions**: GreptimeCloud introduces specialized solutions like GreptimeAI, which leverages DBaaS technology. We are also expanding our offerings to include more innovative solutions, such as those for IoT.
+
+As mentioned, the cloud version offers more ready-to-use features to help you get started quickly. The core features are almost identical, especially on our dedicated plan.
+
+## What should I do if the region becomes `DOWNGRADED` and the tables on that node become read-only after the datanode restarts? Is there a way to automatically reactivate it?
+
+According to your configuration, the failover in metasrv, which may mark the region as `DOWNGRADED`, is disabled. Another procedure that may mark a region as `DOWNGRADED` is the region migration procedure. Please try running the region migration procedure and provide feedback for further assistance.
+
+## Is there a guide or suggestions for compiling GreptimeDB into a standalone binary with only the necessary modules and features for an embedded environment?
+
+We have prebuilt binaries for Android ARM64 platforms, which have been successfully used in some enterprise projects. However, these binaries are not available for bare metal devices, as some fundamental components of GreptimeDB require a standard library.
+
+## Why is there a performance drop in query response times after upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server? After upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server, there might be a noticeable performance drop when querying data with SQL from Grafana. Before the update, the query response time was around 70ms, but it increased to approximately 460ms post-upgrade. This performance issue generally improves over time as the system stabilizes.
+
+Currently, GreptimeDB only builds indexes for persistent data. Therefore, query performance might improve after flushing buffered input data. The in-memory page cache for persistent files also needs to be warmed up by queries after restarting the instance.
+
+- Persistence Mechanism: Data is flushed periodically or when the buffered data size reaches a threshold.
+
+- Cache Warm-up: Query performance improves as the in-memory page cache warms up.
+
+These mechanisms help stabilize and improve query performance after an upgrade.
+
+## Is there a built-in SQL command like 'compaction table t1' that can be used for manual compaction?
+
+Please follow the instructions provided in this issue: Issue [db#3363](https://github.com/GreptimeTeam/greptimedb/pull/3363).
+
+## Why isn't the data older than 7 days being cleaned up when I set `global_ttl = "7d"` in the configuration file? What is the TTL mechanism?
+
+The global_ttl mechanism was removed in versions after 0.4. The documentation was recently updated to reflect this change. If you need TTL functionality, you can specify a table-level TTL when creating the table (see [Table Options](https://docs.greptime.com/reference/sql/create#table-options)). In future updates, we plan to support database-level TTL.
+
+## Can GreptimeDB be used to store logs?
+
+- The current columnar storage structure can be used to store logs. For example, by setting a column's type to string (non-primary key), logs can be stored. Logs can be written and queried using the supported protocols, and the data can be stored in object storage (OSS/S3) with distributed scalability.
+
+- If logs can be parsed into structured dimensions, they can also be stored as tags (primary key). These tags can then be used for dimensional queries.
+
+- However, there are still a few key features missing. Firstly, full-text indexing (currently, LIKE queries can be used as a substitute). Secondly, specific syntax or SQL functions for log queries. Lastly, support for some unique log ingestion protocols. These features are under active development and are expected to be supported in version 0.9, anticipated for release in early July. However, it may not be a simple replacement for Elasticsearch (ES) since its query syntax needs further exploration. Currently, SQL is the primary query language.
+
+## How is the query performance for non-primary key fields? Can inverted indexes be set? Will the storage cost be lower compared to Elasticsearch?
+
+Currently, non-primary key fields (or non-tag fields) do not have default inverted indexes, and we have not yet provided a `CREATE INDEX` syntax. Inverted index support will be released in an upcoming iteration along with full-text indexing. Without indexes, queries rely on MPP brute-force scanning. Although there is some parallel processing, the efficiency may not be optimal.
+
+As for storage costs, they will certainly be lower. You can use containers and object storage directly without relying on disks, using small local disks for buffering/caching to speed up performance. GreptimeDB employs a tiered storage architecture. For more details, please refer to our documentation on architecture and storage location.
+
+## Is the Log-Structured Merge-Tree engine similar to Kafka's engine model?
+
+From a technical storage perspective, they are similar. However, the actual data formats differ: GreptimeDB reads and writes Parquet format, while Kafka uses its own RecordBatch format. To analyze time-series data temporarily stored in Kafka, it needs to be written into GreptimeDB first.
+
+You can replace Kafka with EMQX, which is also a message queue. Here is a reference example: [EMQX Data Integration with GreptimeDB](https://www.emqx.com/en). The process of writing data from Kafka to GreptimeDB is quite similar.
+
+As mentioned, to analyze the data, it must be written into GreptimeDB first. Consume Kafka messages and write them into GreptimeDB using the provided protocols. If analyzing data directly in Kafka is necessary, you might consider the KSQL project: [KSQL GitHub Repository](https://github.com/confluentinc/ksql). However, our past attempts with KSQL encountered several issues.
+
+We are also working on releasing a Kafka consumer component that will automate the consumption and writing process.
+
+## Are there limitations on the number of tables or columns in GreptimeDB? Does having many columns affect read and write performance?
+
+Generally, there are no strict limitations. With a few hundred tables, as long as there aren't many primary key columns, the impact on write performance is minimal (measured by the number of points written per second, not rows).
+
+Similarly, for reads, if queries only involve a subset of columns, the memory and computational load will not be significantly high.
+
+## Can tables be dynamically partitioned by day based on timestamps, or is this unnecessary because the timestamp field already has an index?
+
+GreptimeDB's data is distributed in timestamp order, so there is no need to additionally shard/partition by timestamp. It is recommended to shard by primary key instead.
+
+## How many servers are generally needed to set up a reliable GreptimeDB cluster, and how should Frontend, Datanode, and Metasrv be deployed? Should each node run all three services regardless of the number of nodes?
+
+A minimum of 3 nodes is required, with each node running the 3 services: metasrv, frontend, and datanode. However, the exact number of nodes depends on the scale of data being handled.
+
+It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
+
+## Does GreptimeDB v0.7 support inverted indexes, and does it use Tantivy?
+
+Yes, we have tested Tantivy, and it meets our current requirements very well.
+
+## In v0.8, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
+
+This is a good suggestion. Currently, the Flow Engine does not support PromQL syntax for calculations. We will evaluate this, as it seems theoretically feasible.
+
+## Will Metasrv support storage backends like MySQL or PostgreSQL?
+
+We have developed an abstraction layer for Metasrv, but it does not yet support RDBMS backends. Support for MySQL and PostgreSQL is planned. For further suggestions, please open an issue on our GitHub repository.
+
+## What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
+
+Using a flow table is the appropriate tool for this task. A simple flow task should suffice. The output of a flow task is stored in a normal table, allowing it to be kept indefinitely.
