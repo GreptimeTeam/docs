@@ -194,7 +194,7 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan#).
+For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan).
 
 ## Does GreptimeDB support inverted indexes, and does it use Tantivy?
 
