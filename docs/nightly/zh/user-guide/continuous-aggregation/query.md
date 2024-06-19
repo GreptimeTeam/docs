@@ -3,7 +3,8 @@
 本章节描述如何在 GreptimeDB 中编写连续聚合查询。
 查询语句应该是一个带有聚合函数或非聚合函数（即 scalar 函数）的 `SELECT` 语句。
 
-查询的语法如下：
+一般来说，Flow 的 `SQL` 部分就像一个普通的 `SELECT` 子句，只是稍微有一些不同。
+具体语法如下：
 
 ```sql
 SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WINDOW_FUNCTION();

@@ -40,7 +40,7 @@ To run GreptimeDB in standalone mode, open a terminal (like Powershell) at the d
 Make sure the [Docker](https://www.docker.com/) is already installed. If not, you can follow the official [documents](https://www.docker.com/get-started/) to install Docker.
 
 ```shell
-docker run -p 4000-4003:4000-4003 \
+docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
 greptime/greptimedb standalone start \

@@ -437,6 +437,16 @@ db.password=
 
 或者你可以从[这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties)获取文件。
 
+#### 时区
+
+通过设置 URL 参数来设置 JDBC 时区:
+
+```txt
+jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
+```
+
+* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 配置连接时区。
+* `forceConnectionTimeZoneToSession=true` 使 session `time_zone` 变量被设置为 `connectionTimeZone` 指定的值。
 %}
 
 {template query-library-raw-sql%

@@ -91,7 +91,9 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.twcs.time_window` | Compaction time window    | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.  |
 | `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
 | `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
+| `comment`           | Table level comment   | String value.      |
 
+#### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
 
 ```sql
@@ -101,6 +103,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d');
 ```
 
+#### Create a table with custom storage
 Create a table that stores the data in Google Cloud Storage:
 
 ```sql
@@ -110,6 +113,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with(ttl='7d', storage="Gcs");
 ```
 
+#### Create a table with custom compaction options
 Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data.
 - It merges files within the latest time window if they exceed 8 files
 - It merges files within inactive windows into a single file
@@ -128,9 +132,7 @@ with(
 );
 ```
 
-
-
-
+#### Create an append-only table
 Create an append-only table which disables deduplication.
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(

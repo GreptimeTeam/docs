@@ -9,7 +9,7 @@ GreptimeDB is compatible with InfluxDB's line protocol authentication format, bo
 InfluxDB's V2 protocol uses a format much like HTTP's standard basic authentication scheme. We can write data easily through InfluxDB's line protocol.
 
 ```shell
-❯ curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
+curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
     -H 'authorization: token greptime_user:greptime_pwd' \
     -d 'monitor,host=host1 cpu=1.2 1664370459457010101'
 ```
@@ -21,7 +21,7 @@ Note: replace `greptime_user(username)`, `greptime_pwd(password)` with your conf
 GreptimeDB also supports InfluxDB's V1 authentication format. Add `u` for user and `p` for password to the HTTP query string as shown below:
 
 ```shell
-❯ curl 'http://localhost:4000/v1/influxdb/write?db=public&u=greptime_user&p=greptime_pwd' \
+curl 'http://localhost:4000/v1/influxdb/write?db=public&u=greptime_user&p=greptime_pwd' \
     -d 'monitor,host=host2 cpu=1.2 1678679359062504960'
 ```
 

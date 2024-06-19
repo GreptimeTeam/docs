@@ -18,15 +18,28 @@ export const enConfig = async () => ({
     ['meta', { property: 'twitter:url', content: 'https://greptime.com/' }],
     ['meta', { property: 'twitter:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' }],
     ['meta', { property: 'twitter:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' }],
-    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
+    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' }],
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
+    ['meta', { name: 'docsearch:language', content: 'en-US'}],
+    ['meta', { name: 'docsearch:version', content: CURRENT_VERSION}]
   ],
   locales: {
     root: { label: 'English', lang: 'en-US', link: '/' },
     zh: { label: '简体中文', lang: 'zh-CN', link: `${websiteMap['zh']}${base}` },
   },
   themeConfig: {
+    search: {
+      options: {
+        appId: 'SRGB68Y6CW',
+        apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
+        indexName: 'greptime',
+        searchParameters: {
+          facetFilters: [`version:${CURRENT_VERSION}`],
+        },
+        maxResultsPerGroup: 7,
+      },
+    },
     notFound: {
       quote: 'Unfortunately, the content you are looking for is not found.',
       linkText: 'Take me to homepage',

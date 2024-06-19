@@ -18,9 +18,11 @@ export const zhConfig = async () => ({
     ['meta', { property: 'twitter:url', content: 'https://greptime.com/' }],
     ['meta', { property: 'twitter:title', content: '分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' }],
     ['meta', { property: 'twitter:description', content: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' }],
-    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_banner.png' }],
+    ['meta', { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' }],
     // Bing verify
     ['meta', { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }],
+    ['meta', { name: 'docsearch:language', content: 'zh-CN'}],
+    ['meta', { name: 'docsearch:version', content: CURRENT_VERSION}]
   ],
   locales: {
     root: { label: '简体中文', lang: 'zh-CN', link: '/' },
@@ -34,6 +36,13 @@ export const zhConfig = async () => ({
     },
     search: {
       options: {
+        appId: 'SCVT6GSUZV',
+        apiKey: '450bf5e5a3c1ecd3c4154530e25678c5',
+        indexName: 'greptime',
+        searchParameters: {
+          facetFilters: [`version:${CURRENT_VERSION}`]
+        },
+        maxResultsPerGroup: 7,
         locales: {
           root: {
             translations: {

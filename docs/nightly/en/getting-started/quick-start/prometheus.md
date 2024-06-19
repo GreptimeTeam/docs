@@ -37,16 +37,16 @@ services:
     image: grafana/grafana-oss:<%grafana-version%>
     container_name: grafana
     ports:
-      - 3000:3000
+      - 127.0.0.1:3000:3000
 
   greptime:
     image: greptime/greptimedb:<%greptimedb-version%>
     container_name: greptimedb
     ports:
-      - 4000:4000
-      - 4001:4001
-      - 4002:4002
-      - 4003:4003
+      - 127.0.0.1:4000:4000
+      - 127.0.0.1:4001:4001
+      - 127.0.0.1:4002:4002
+      - 127.0.0.1:4003:4003
     command: "standalone start --http-addr 0.0.0.0:4000 --rpc-addr 0.0.0.0:4001 --mysql-addr 0.0.0.0:4002 --postgres-addr 0.0.0.0:4003"
     volumes:
       - ./greptimedb:/tmp/greptimedb
@@ -57,7 +57,7 @@ services:
     depends_on:
       - node_exporter
     ports:
-      - 9090:9090
+      - 127.0.0.1:9090:9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
@@ -65,7 +65,7 @@ services:
     image: quay.io/prometheus/node-exporter:<%node-exporter-version%>
     container_name: node_exporter_local
     ports:
-      - 9100:9100
+      - 127.0.0.1:9100:9100
     command:
       - '--path.rootfs=/'
 

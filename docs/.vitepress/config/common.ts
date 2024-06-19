@@ -33,7 +33,7 @@ const common = async () => {
     themeConfig: {
       latestVersion: LATEST_VERSION,
       search: {
-        provider: 'local',
+        provider: 'algolia',
       },
       siteTitle: '',
       sidebar: {

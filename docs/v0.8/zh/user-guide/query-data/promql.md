@@ -169,6 +169,10 @@ metric{__field__!~"field_1|field_2"}
 - 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
 - 支持时间长度和偏移量，但不支持 `@` 修改器。
 
+### 时间精度
+
+PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒级精度的计算。然而，GreptimeDB 支持存储微秒和纳秒等高精度时间。在使用 PromQL 进行计算时，这些高精度时间将被隐式转换为毫秒精度进行计算。
+
 ### Binary
 
 *目前还不支持像 `1+1` 这样纯粹的 binary 表达式。*
@@ -241,6 +245,7 @@ metric{__field__!~"field_1|field_2"}
     | atanh              | `atanh(metric)`                   |
     | sinh               | `sinh(metric)`                    |
     | cosh               | `cosh(metric)`                    |
+    | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
     | timestamp          | `timestamp()`                     |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
@@ -249,7 +254,6 @@ metric{__field__!~"field_1|field_2"}
     | Function                   | Progress |
     | :------------------------- | :------- |
     | absent                     | TBD      |
-    | scalar                     | TBD      |
     | sgn                        | TBD      |
     | sort                       | TBD      |
     | sort_desc                  | TBD      |
