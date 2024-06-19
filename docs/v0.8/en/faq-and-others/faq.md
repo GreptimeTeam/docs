@@ -9,6 +9,10 @@ Common use cases for time-series database include but are not limited to the fol
 3. Process self-driving vehicle data
 4. Understand financial trends
 
+## TSDB features that you concern
+
+Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
+
 ## How is GreptimeDB's performance compared to other solutions?
 
 GreptimeDB has released v0.8, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.8.0.md).
@@ -33,7 +37,9 @@ GreptimeDB has initially implemented native support for PromQL, with compatibili
 
 Yes, It's compatible with Grafana.
 
-GreptimeDB supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
+GreptimeDB has an official Grafana plugin: [greptimedb-grafana-datasource](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/)
+
+GreptimeDB also supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
 plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data.
 
 Also, we are implementing PromQL natively which is frequently used with Grafana.
@@ -63,7 +69,7 @@ There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to 
 
 ## Where’s the name “Greptime” coming from?
 
-Because “grep” is the most useful command line tool on \*nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
+Because `grep` is the most useful command line tool on \*nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
 
 ## Is there any good first issue that can help beginners get started quickly?
 
@@ -72,10 +78,6 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 ## Does GreptimeDB support dumping table-level data to S3?
 
 You can use the [`COPY TO` command](/reference/sql/copy#s3) to dump table-level data to S3.
-
-## TSDB features that you concern
-
-Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
 
 ## Can <https://n9e.github.io/> now be directly integrated with GreptimeDB? How is its compatibility?
 
@@ -88,6 +90,8 @@ Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can re
 ## Are there any retention policy? 
 
 We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+
+And since 0.8, GreptimeDB already supports database level `TTL` too, read the [CREATE DATABASE](/reference/sql/create#create-database).
 
 ## What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
 
@@ -139,23 +143,9 @@ According to your configuration, the failover in metasrv, which may mark the reg
 
 We have prebuilt binaries for Android ARM64 platforms, which have been successfully used in some enterprise projects. However, these binaries are not available for bare metal devices, as some fundamental components of GreptimeDB require a standard library.
 
-## Why is there a performance drop in query response times after upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server? After upgrading from GreptimeDB 0.7.2 to 0.8.0 on an Odroid N2+ server, there might be a noticeable performance drop when querying data with SQL from Grafana. Before the update, the query response time was around 70ms, but it increased to approximately 460ms post-upgrade. This performance issue generally improves over time as the system stabilizes.
-
-Currently, GreptimeDB only builds indexes for persistent data. Therefore, query performance might improve after flushing buffered input data. The in-memory page cache for persistent files also needs to be warmed up by queries after restarting the instance.
-
-- Persistence Mechanism: Data is flushed periodically or when the buffered data size reaches a threshold.
-
-- Cache Warm-up: Query performance improves as the in-memory page cache warms up.
-
-These mechanisms help stabilize and improve query performance after an upgrade.
-
 ## Is there a built-in SQL command like 'compaction table t1' that can be used for manual compaction?
 
 Please follow the instructions provided in this issue: Issue [db#3363](https://github.com/GreptimeTeam/greptimedb/pull/3363).
-
-## Why isn't the data older than 7 days being cleaned up when I set `global_ttl = "7d"` in the configuration file? What is the TTL mechanism?
-
-The global_ttl mechanism was removed in versions after 0.4. The documentation was recently updated to reflect this change. If you need TTL functionality, you can specify a table-level TTL when creating the table (see [Table Options](https://docs.greptime.com/reference/sql/create#table-options)). In future updates, we plan to support database-level TTL.
 
 ## Can GreptimeDB be used to store logs?
 
@@ -197,9 +187,13 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-## Does GreptimeDB v0.7 support inverted indexes, and does it use Tantivy?
+For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan#).
 
-Yes, we have tested Tantivy, and it meets our current requirements very well.
+## Does GreptimeDB support inverted indexes, and does it use Tantivy?
+
+Since v0.7, GreptimeDB supports inverted indexes which are designed by ourselves, read the [Contributor Guide](/contributor-guide/datanode/data-persistence-indexing#inverted-index) for more information.
+
+We plan to integrate Tantivy into the upcoming 0.9 release for full-text search functionality, although we are not currently using it.
 
 ## In v0.8, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
 
