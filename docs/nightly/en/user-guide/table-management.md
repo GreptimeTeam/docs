@@ -104,7 +104,8 @@ CREATE TABLE monitor (
   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
   cpu FLOAT64 DEFAULT 0,
   memory FLOAT64,
-  PRIMARY KEY(host)) engine=mito with(ttl='7d');
+  PRIMARY KEY(host)
+) ENGINE=mito WITH (ttl='7d');
 ```
 
 :::warning NOTE
