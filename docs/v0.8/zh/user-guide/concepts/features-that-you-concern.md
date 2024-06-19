@@ -21,7 +21,13 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。
 
-你可以在[这里](/reference/sql/create)参考表创建语句的 TTL 选项。
+从 0.8 版本开始，也支持数据库级别的 `TTL`。
+
+```sql
+CREATE DATABASE test WITH (ttl='7d');
+```
+
+你可以在[这里](/reference/sql/create)参考数据库和表创建语句的 TTL 选项。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -41,7 +47,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持连续聚合或降采样吗？
 
-不支持，但是我们已经启动了一个项目 `GreptimeFlow` 正在研发，请查看 [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/3187)。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于连续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 
