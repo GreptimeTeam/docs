@@ -206,3 +206,13 @@ We have developed an abstraction layer for Metasrv, but it does not yet support 
 ## What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
 
 Using a flow table is the appropriate tool for this task. A simple flow task should suffice. The output of a flow task is stored in a normal table, allowing it to be kept indefinitely.
+
+## Why is there a performance drop in query response times after upgrading or restarting?
+
+Currently, GreptimeDB only builds indexes for persistent data. Therefore, query performance might improve after flushing buffered input data. The in-memory page cache for persistent files also needs to be warmed up by queries after restarting the instance.
+
+- Persistence Mechanism: Data is flushed periodically or when the buffered data size reaches a threshold.
+
+- Cache Warm-up: Query performance improves as the in-memory page cache warms up.
+
+These mechanisms help stabilize and improve query performance after an upgrade.
