@@ -78,7 +78,6 @@
     - Deploy-on-Kubernetes:
       - overview
       - greptimedb-operator
-      - standalone
       - cluster
     - Remote-Wal-for-Failover
       - Overview

@@ -1,1 +1,0 @@
-# Remote WAL for Failover
