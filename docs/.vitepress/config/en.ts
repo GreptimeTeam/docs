@@ -98,4 +98,7 @@ export const enConfig = async () => ({
     ],
     copyright: '©Copyright 2024 Greptime Inc. All Rights Reserved',
   },
+  sitemap: {
+    hostname: 'https://docs.greptime.com'
+  }
 })
