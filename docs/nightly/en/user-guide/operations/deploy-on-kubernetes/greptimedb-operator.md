@@ -1,6 +1,7 @@
 # Install GreptimeDB Opertator
 
-By utilizing the [Operator pattern][3], [GreptimeDB Operator][1] can effectively manage GreptimeDB clusters on [Kubernetes][2]. This operator abstracts the model of maintaining a highly available GreptimeDB cluster.
+By utilizing the [Operator pattern][3], [GreptimeDB Operator][1] can effectively manage GreptimeDB clusters on [Kubernetes][2].
+This operator abstracts the model of maintaining a highly available GreptimeDB cluster.
 
 You can use Helm to install GreptimeDB Operator.
 Make sure you have already installed [Helm][5]. 

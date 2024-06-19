@@ -78,7 +78,8 @@
     - Deploy-on-Kubernetes:
       - overview
       - greptimedb-operator
-      - cluster
+      - deploy-greptimedb-cluster
+      - destroy-cluster
     - Remote-Wal-for-Failover
       - Overview
       - greptime-standalone
@@ -86,7 +87,7 @@
     - run-on-android
     - back-up-&-restore-data
     - Table-Sharding:
-      - partition
+      # - partition
       - region-migration
     - monitoring
     - tracing

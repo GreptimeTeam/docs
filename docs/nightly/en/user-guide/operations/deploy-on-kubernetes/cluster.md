@@ -1,3 +1,0 @@
-# Deploy GreptimeDB Cluster
-
-
