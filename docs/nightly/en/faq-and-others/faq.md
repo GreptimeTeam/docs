@@ -145,7 +145,14 @@ We have prebuilt binaries for Android ARM64 platforms, which have been successfu
 
 ## Is there a built-in SQL command like 'compaction table t1' that can be used for manual compaction?
 
-Please follow the instructions provided in this issue: Issue [db#3363](https://github.com/GreptimeTeam/greptimedb/pull/3363).
+Of course, please use the `compact_table` function:
+
+```sql
+-- Schedule a compaction for table test --
+select compact_table("test");
+```
+
+There are many [administration functions](/reference/sql/functions#admin-functions) for database management.
 
 ## Can GreptimeDB be used to store logs?
 
