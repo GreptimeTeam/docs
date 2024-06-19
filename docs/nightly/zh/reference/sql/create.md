@@ -9,7 +9,7 @@
 创建新数据库：
 
 ```sql
-CREATE DATABASE [IF NOT EXISTS] db_name
+CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 ```
 
 如果 `db_name` 数据库已经存在，`CREATE` 语句的行为如下：
@@ -17,6 +17,8 @@ CREATE DATABASE [IF NOT EXISTS] db_name
 - 不会创建新的数据库。
 - 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
 - 否则，返回错误。
+
+数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
 
 ### 示例
 
@@ -35,6 +37,13 @@ Query OK, 1 row affected (0.05 sec)
 ```sql
 CREATE DATABASE IF NOT EXISTS test;
 ```
+
+创建一个具有 7 天 `TTL`（数据存活时间）的数据库，也就是该数据库中的所有表如果没有单独设置 TTL 选项，都将继承此选项值。
+
+```sql
+CREATE DATABASE test WITH (ttl='7d');
+```
+
 
 ## CREATE TABLE
 

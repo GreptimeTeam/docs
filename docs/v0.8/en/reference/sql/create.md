@@ -9,7 +9,7 @@
 Creates a new database:
 
 ```sql
-CREATE DATABASE [IF NOT EXISTS] db_name
+CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 ```
 
 If the `db_name` database already exists, then GreptimeDB has the following behaviors:
@@ -17,6 +17,8 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 - Doesn't create a new database.
 - Doesn't return an error when the clause `IF NOT EXISTS` is presented.
 - Otherwise, returns an error.
+
+The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. All options available in [Table Options](#table-options) can be utilized here as well. When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
 
 ### Examples
 
@@ -34,6 +36,12 @@ Creates it again with `IF NOT EXISTS`:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS test;
+```
+
+Create a database with a `TTL` (Time-To-Live) of seven days, which means all the tables in this database will inherit this option if they don't have their own `TTL` setting:
+
+```sql
+CREATE DATABASE test with(ttl='7d');
 ```
 
 ## CREATE TABLE

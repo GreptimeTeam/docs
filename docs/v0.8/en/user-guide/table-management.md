@@ -19,6 +19,12 @@ CREATE DATABASE test;
 Query OK, 1 row affected (0.05 sec)
 ```
 
+Create a database with a `TTL` (Time-To-Live) of seven days, which means all the tables in this database will inherit this option if they don't have their own `TTL` setting:
+
+```sql
+CREATE DATABASE test with(ttl='7d');
+```
+
 You can list all the existing databases.
 
 ```sql
@@ -90,9 +96,20 @@ CREATE TABLE monitor (
 Query OK, 0 row affected (0.03 sec)
 ```
 
+Create the table  with a `TTL` (Time-To-Live) of seven days:
+
+```sql
+CREATE TABLE monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+  cpu FLOAT64 DEFAULT 0,
+  memory FLOAT64,
+  PRIMARY KEY(host)) engine=mito with(ttl='7d');
+```
+
 :::warning NOTE
-GreptimeDB does not currently support changing the data model of existing columns after a table has been created.
-Therefore, it is important to carefully design your data model before creating tables.
+GreptimeDB does not currently support changing the TIME INDEX after a table has been created.
+Therefore, it is important to carefully choose your TIME INDEX column before creating tables.
 :::
 
 ### `CREATE TABLE` syntax
