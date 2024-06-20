@@ -18,6 +18,12 @@ CREATE DATABASE test;
 Query OK, 1 row affected (0.05 sec)
 ```
 
+创建一个具有 7 天 `TTL`（数据存活时间）的数据库，也就是该数据库中的所有表如果没有单独设置 TTL 选项，都将继承此选项值。
+
+```sql
+CREATE DATABASE test WITH (ttl='7d');
+```
+
 列出所有现有的数据库。
 
 ```sql
@@ -88,9 +94,22 @@ CREATE TABLE monitor (
 Query OK, 0 row affected (0.03 sec)
 ```
 
+创建一个具有 7 天 `TTL`（数据存活时间）的表：
+
+```sql
+CREATE TABLE monitor (
+  host STRING,
+  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+  cpu FLOAT64 DEFAULT 0,
+  memory FLOAT64,
+  PRIMARY KEY(host)
+) ENGINE=mito WITH (ttl='7d');
+```
+
+
 :::warning NOTE
-GreptimeDB 目前不支持在创建表后更改已有列的数据模型。
-因此，在创建表之前，仔细设计数据模型非常重要。
+GreptimeDB 目前不支持在创建表后更改 TIME INDEX 约束，
+因此，在创建表之前，仔细选择适当的 TIME INDEX 列。
 :::
 
 ### `CREATE TABLE` 语法
