@@ -75,7 +75,7 @@
     - admin
     - configuration
     - capacity-plan
-    - Disaster-Recovery
+    - Disaster-Recovery:
       - overview
       - back-up-&-restore-data
     - kubernetes
