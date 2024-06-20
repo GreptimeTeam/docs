@@ -75,7 +75,9 @@
     - admin
     - configuration
     - capacity-plan
-    - back-up-&-restore-data
+    - Disaster-Recovery
+      - overview
+      - back-up-&-restore-data
     - kubernetes
     - gtctl
     - run-on-android
