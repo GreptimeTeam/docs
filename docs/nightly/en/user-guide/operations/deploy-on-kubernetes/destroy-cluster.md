@@ -4,7 +4,7 @@ You can use the following commands to uninstall operator and cluster:
 
 ```shell
 # Uninstall the cluster.
-helm uninstall mycluster -n default
+helm uninstall greptime-cluster -n default
 ```
 
 ```shell
@@ -13,7 +13,7 @@ helm uninstall etcd -n default
 ```
 
 ```shell
-helm uninstall greptimedb-operator -n <namespace>
+helm uninstall greptimedb-operator -n default
 ```
 
 ```shell
