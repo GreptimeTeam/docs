@@ -103,6 +103,14 @@ export const zhConfig = async () => ({
         key: 'Reference',
         icon: 'reference',
       },
+      {
+        key: 'Release Notes',
+        icon: 'changelog',
+      },
+      {
+        key: '常见问题及其他',
+        icon: 'FAQandOthers',
+      },
     ],
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
