@@ -7,7 +7,7 @@ The `SHOW` keyword provides database and table information.
 Show all databases:
 
 ```sql
-SHOW DATABASES;
+SHOW [FULL] DATABASES;
 ```
 
 ```sql
@@ -29,6 +29,24 @@ Show databases by `where` expr:
 
 ```sql
 SHOW DATABASES WHERE Schemas='test_public_schema';
+```
+
+Show all databases with options:
+
+```sql
+create database with(ttl='7d');
+SHOW FULL DATABASES;
+```
+
+```sql
++--------------------+-------------+
+| Database           | Options     |
++--------------------+-------------+
+| greptime_private   |             |
+| information_schema |             |
+| public             |             |
+| test               | ttl='7days' |
++--------------------+-------------+
 ```
 
 ## SHOW TABLES
