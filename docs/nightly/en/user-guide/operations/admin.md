@@ -7,7 +7,7 @@ This document addresses strategies and practices used in the operation of Grepti
 * [Installation](/getting-started/installation/overview.md) for GreptimeDB and the [g-t-control](./gtctl.md) command line tool.
 * Database Configuration, please read the [Configuration](./configuration.md) reference.
 * [Monitoring](./monitoring.md) and [Tracing](./tracing.md) for GreptimeDB.
-* GreptimeDB [Backup & Restore methods](./back-up-\&-restore-data.md).
+* GreptimeDB [Disaster Recovery](./disaster-recovery/overview.md).
 
 ### Runtime information
 
