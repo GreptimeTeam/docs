@@ -1,0 +1,19 @@
+# GreptimeDB Opertator
+
+## 安装 GreptimeDB Opertator
+
+通过利用 [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)，
+[GreptimeDB Operator](https://github.com/GreptimeTeam/greptimedb-operator) 可以有效管理 [Kubernetes](https://kubernetes.io/) 上的 GreptimeDB 集群。
+这个 operator 可以抽象出维护高可用 GreptimeDB 集群的模式。
+
+你可以使用 Helm 来安装 GreptimeDB Operator。
+
+```shell
+helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin
+```
+
+<!-- TODO: more feature instructions of GreptimeDB Operator -->
+
+## Next steps
+
+- [部署GreptimeDB集群](deploy-greptimedb-cluster.md)：本节介绍了如何在 Kubernetes 上部署 etcd 集群和 GreptimeDB 集群。

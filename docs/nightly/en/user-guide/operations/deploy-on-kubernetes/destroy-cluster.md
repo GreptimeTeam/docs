@@ -1,6 +1,6 @@
 # Destroy the Cluster
 
-This guide outlines the steps to delete all resources previously created as per documentation.
+This guide will remove all resources created by the documentation in this Deploy on Kubernetes chapter.
 
 ## Uninstall the GreptimeDB Operator
 

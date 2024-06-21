@@ -30,8 +30,6 @@ kind create cluster --name greptime
 For better isolation and scalability.
 It is recommended to use separate namespaces for the GreptimeDB Operator, etcd cluster, and GreptimeDB cluster.
 
-The following example shows how to create these namespaces:
-
 ```shell
 kubectl create namespace greptimedb-admin
 kubectl create namespace etcd
@@ -40,7 +38,6 @@ kubectl create namespace greptimedb-cluster
 
 ### Add Helm repository
 
-You can find the maintained [Helm charts](https://github.com/GreptimeTeam/helm-charts) in the Github repository.
 Use the command below to add the GreptimeDB Helm chart repository.
 
 ```shell
@@ -50,6 +47,8 @@ helm repo add greptime https://greptimeteam.github.io/helm-charts/
 ```shell
 helm repo update
 ```
+
+You can find the maintained [Helm charts](https://github.com/GreptimeTeam/helm-charts) in the Github repository.
 
 ## Components
 
@@ -63,6 +62,6 @@ The deployment on Kubernetes involves the following components:
 
 To deploy GreptimeDB on Kubernetes, follow these steps:
 
-- [GreptimeDB Opertator](greptimedb-operator.md): Assists engineers in managing GreptimeDB clusters effectively on Kubernetes.This section guides you on installing the GreptimeDB Operator, which manages GreptimeDB clusters on Kubernetes.
+- [GreptimeDB Opertator](greptimedb-operator.md): This section guides you on installing the GreptimeDB Operator.
 - [Deploy GreptimeDB Cluster](deploy-greptimedb.md): This section provides instructions on how to deploy etcd cluster and GreptimeDB cluster on Kubernetes.
-- [Destroy Cluster](destroy-cluster.md): This section explains how to uninstall the GreptimeDB Operator and the GreptimeDB cluster.
+- [Destroy Cluster](destroy-cluster.md): This section describes how to uninstall the GreptimeDB Operator and the GreptimeDB cluster.
