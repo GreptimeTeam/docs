@@ -7,7 +7,7 @@
 * GreptimeDB 的 [安装](/getting-started/installation/overview.md) 和 [g-t-control](/reference/gtctl.md) 命令行工具。
 * 数据库配置，请阅读 [配置](./configuration.md) 参考。
 * GreptimeDB 的 [监控](./monitoring.md) 和 [链路追踪](./tracing.md)。
-* GreptimeDB 的 [备份与恢复方法](./back-up-\&-restore-data.md)。
+* GreptimeDB 的 [灾难恢复方案](./disaster-recovery/overview.md)。
 
 ### 运行时信息
 

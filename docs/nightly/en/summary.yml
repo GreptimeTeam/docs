@@ -80,11 +80,13 @@
       - greptimedb-operator
       - deploy-greptimedb-cluster
       - destroy-cluster
+    - run-on-android
+    - Disaster-Recovery:
+      - overview
+      - back-up-&-restore-data
     - Remote-WAL:
       - quick-start
       - cluster-deployment
-    - run-on-android
-    - back-up-&-restore-data
     - region-migration
     - monitoring
     - tracing

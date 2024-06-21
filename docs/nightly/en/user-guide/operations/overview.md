@@ -1,11 +1,12 @@
 # Operations
 
+* [Administration](./admin.md)
 * [Configuration](./configuration.md)
+* [Capacity Plan](./capacity-plan.md) 
 * [Kubernetes](./deploy-on-kubernetes/overview.md)
-* [gtctl](/reference/gtctl.md)
+* [Running on Android](./run-on-android.md)
+* [Disaster Recovery](./disaster-recovery/overview.md)
 * [Monitoring](./monitoring.md)
 * [Tracing](./tracing.md)
-<!-- * [Import data](./import-data.md)
-* [Export data](./export-data.md)
-* [Backup & restore data](./back-up-&-restore-data.md)
-* [Capacity planning](./capacity-planning.md) -->
+* [Remote WAL](./remote-wal/quick-start.md)
+* [Region Migration](./region-migration.md)
