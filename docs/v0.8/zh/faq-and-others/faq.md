@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# 常见问题
 
 ### What would be the use cases for a time-series database?
 

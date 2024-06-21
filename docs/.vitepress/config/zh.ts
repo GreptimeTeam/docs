@@ -103,6 +103,14 @@ export const zhConfig = async () => ({
         key: 'Reference',
         icon: 'reference',
       },
+      {
+        key: 'Release Notes',
+        icon: 'changelog',
+      },
+      {
+        key: '常见问题及其他',
+        icon: 'FAQandOthers',
+      },
     ],
     editLink: {
       pattern: 'https://github.com/GreptimeTeam/docs/blob/main/docs/:path',
@@ -118,4 +126,7 @@ export const zhConfig = async () => ({
     icp: { text: '京ICP备2023008042号', link: 'https://beian.miit.gov.cn/' },
     gongan: { text: '京公网安备 11010502052203号', link: 'https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502052203' },
   },
+  sitemap: {
+    hostname: 'https://docs.greptime.cn'
+  }
 })
