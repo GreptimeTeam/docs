@@ -7,7 +7,7 @@
 展示所有数据库：
 
 ```sql
-SHOW DATABASES;
+SHOW [FULL] DATABASES;
 ```
 
 ```sql
@@ -29,6 +29,24 @@ SHOW DATABASES LIKE 'p%';
 
 ```sql
 SHOW DATABASES WHERE Schemas='test_public_schema';
+```
+
+展示所有数据库，包括它们的选项：
+
+```sql
+create database with(ttl='7d');
+SHOW FULL DATABASES;
+```
+
+```sql
++--------------------+-------------+
+| Database           | Options     |
++--------------------+-------------+
+| greptime_private   |             |
+| information_schema |             |
+| public             |             |
+| test               | ttl='7days' |
++--------------------+-------------+
 ```
 
 ## SHOW TABLES
