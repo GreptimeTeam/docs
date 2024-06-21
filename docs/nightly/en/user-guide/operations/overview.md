@@ -1,8 +1,8 @@
 # Operations
 
 * [Configuration](./configuration.md)
-* [Kubernetes](./kubernetes.md)
-* [gtctl](./gtctl.md)
+* [Kubernetes](./deploy-on-kubernetes/overview.md)
+* [gtctl](/reference/gtctl.md)
 * [Monitoring](./monitoring.md)
 * [Tracing](./tracing.md)
 <!-- * [Import data](./import-data.md)
