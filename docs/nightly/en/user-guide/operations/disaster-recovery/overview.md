@@ -1,3 +1,3 @@
-# Overview of GreptimeDB Disaster Recovery
+# Overview
 
 * [Backup & restore data](./back-up-&-restore-data.md)
