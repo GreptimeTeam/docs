@@ -80,10 +80,13 @@
       - greptimedb-operator
       - deploy-greptimedb-cluster
       - destroy-cluster
-    - Remote-Wal-for-Failover
-      - Overview
-      - greptime-standalone
-      - greptime-cluster
+    - Remote-WAL:
+      - quick-start
+      - cluster-deployment
+    # - Remote-Wal-for-Failover:
+    #   - Overview
+    #   - greptime-standalone
+    #   - greptime-cluster
     - run-on-android
     - back-up-&-restore-data
     - Table-Sharding:

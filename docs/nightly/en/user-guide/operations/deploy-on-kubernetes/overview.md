@@ -2,14 +2,6 @@
 
 This guide provides a walkthrough on how to deploy a GreptimeDB cluster on Kubernetes.
 
-## Components
-
-The deployment on Kubernetes involves the following components:
-
-- GreptimeDB Operator: Assists engineers in managing GreptimeDB clusters effectively on Kubernetes.
-- etcd Cluster. etcd is a consistent and highly-available key value store used for GreptimeDB cluster metadata storage.
-- GreptimeDB Cluster: The main database cluster.
-
 ## Prerequisites
 
 Before initiating the deployment of GreptimeDB on Kubernetes,
@@ -30,7 +22,7 @@ you will need to use the following tools in addition to [Kubernetes](https://kub
 You can use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a Kubernetes cluster for GreptimeDB:
 
 ```shell
-kind create cluster --name greptimedb
+kind create cluster --name greptime
 ```
 
 ### Create Namespaces
@@ -59,10 +51,18 @@ helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 ```
 
+## Components
+
+The deployment on Kubernetes involves the following components:
+
+- GreptimeDB Operator: Assists engineers in managing GreptimeDB clusters effectively on Kubernetes.
+- etcd Cluster: etcd is a consistent and highly-available key value store used for GreptimeDB cluster metadata storage.
+- GreptimeDB Cluster: The main database cluster.
+
 ## Next Steps
 
-Once the cluster is set up，proceed with the following steps to deploy GreptimeDB on Kubernetes:
+To deploy GreptimeDB on Kubernetes, follow these steps:
 
-- [GreptimeDB Opertator](greptimedb-operator.md): This section guides you on installing the GreptimeDB Operator, which manages GreptimeDB clusters on Kubernetes.
-- [Deploy GreptimeDB Cluster](deploy-greptimedb.md): This section provides instructions on how to deploy a GreptimeDB cluster on Kubernetes.
+- [GreptimeDB Opertator](greptimedb-operator.md): Assists engineers in managing GreptimeDB clusters effectively on Kubernetes.This section guides you on installing the GreptimeDB Operator, which manages GreptimeDB clusters on Kubernetes.
+- [Deploy GreptimeDB Cluster](deploy-greptimedb.md): This section provides instructions on how to deploy etcd cluster and GreptimeDB cluster on Kubernetes.
 - [Destroy Cluster](destroy-cluster.md): This section explains how to uninstall the GreptimeDB Operator and the GreptimeDB cluster.
