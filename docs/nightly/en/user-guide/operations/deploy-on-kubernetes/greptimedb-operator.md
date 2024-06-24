@@ -9,7 +9,10 @@ This operator abstracts the model of maintaining a highly available GreptimeDB c
 You can use Helm to install GreptimeDB Operator.
 
 ```shell
-helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin
+helm upgrade \
+  -- install greptimedb-operator greptime/greptimedb-operator \
+  --create-namespace \
+  -n greptimedb-admin
 ```
 
 <!-- TODO: more feature instructions of GreptimeDB Operator -->

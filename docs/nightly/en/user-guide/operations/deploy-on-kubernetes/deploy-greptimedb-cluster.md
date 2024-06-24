@@ -14,6 +14,7 @@ helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
+  --create-namespace \
   -n etcd
 ```
 
@@ -28,6 +29,7 @@ Deploy the GreptimeDB cluster, ensuring it connects to the previously establishe
 ```shell
 helm install greptimedb greptime/greptimedb-cluster \
   --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --create-namespace \
   -n greptimedb-cluster
 ```
 

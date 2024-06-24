@@ -9,10 +9,14 @@
 首先，通过执行以下命令来建立一个支持 GreptimeDB 的 etcd 集群：
 
 ```shell
-helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+helm upgrade \
+  --install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set image.tag=3.5.12 \
+  --create-namespace \
   -n etcd
 ```
 
@@ -24,8 +28,13 @@ helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
 部署 GreptimeDB 集群，确保它连接到先前建立的 etcd 集群：
 
 ```shell
-helm install greptimedb greptime/greptimedb-cluster \
+helm upgrade \
+  --install greptimedb \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  greptime/greptimedb-cluster \
+  --create-namespace \
   -n greptimedb-cluster
 ```
 

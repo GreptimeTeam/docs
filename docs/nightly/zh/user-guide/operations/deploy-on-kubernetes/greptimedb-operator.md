@@ -9,7 +9,11 @@
 你可以使用 Helm 来安装 GreptimeDB Operator。
 
 ```shell
-helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin
+helm upgrade \
+  --install greptimedb-operator greptime/greptimedb-operator \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --create-namespace \
+  -n greptimedb-admin
 ```
 
 <!-- TODO: more feature instructions of GreptimeDB Operator -->
