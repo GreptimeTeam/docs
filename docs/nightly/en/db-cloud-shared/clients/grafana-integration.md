@@ -36,7 +36,7 @@ docker run -d -p 3000:3000 --name=grafana --rm \
   grafana/grafana-oss
 ```
 
-### Connction Settings
+### Connection Settings
 
 Click the Add data source button and select GreptimeDB as the type.
 
