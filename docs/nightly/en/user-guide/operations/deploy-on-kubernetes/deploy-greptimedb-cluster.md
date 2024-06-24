@@ -33,6 +33,32 @@ helm install greptimedb greptime/greptimedb-cluster \
   -n greptimedb-cluster
 ```
 
+### Setting Resource requests and limits
+
+The GreptimeDB Helm charts enable you to specify resource requests and limits for each component within your deployment.
+
+Here's how you can configure these settings:
+
+```shell
+helm install greptimedb greptime/greptimedb-cluster \
+  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --set datanode.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set datanode.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --set frontend.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set frontend.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --create-namespace \
+  -n greptimedb-cluster
+```
+
+For a comprehensive list of configurable values via Helm,
+please refer to the [value configration](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/README.md#values).
+
+<!-- ### Use a different GreptimeDB version
+
+### Specify the database configuration file -->
+
 ## Using kubectl for deployment
 
 Alternatively, you can manually create a GreptimeDB cluster using `kubectl`.
@@ -77,33 +103,3 @@ kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > c
 ```
 
 Then you can use MySQL client to [connect to the cluster](/getting-started/quick-start/mysql.md#connect).
-
-<!--
-
-TODO:
-Capacity plan for each component: etcd, frontend, datanode, metasrv
-The following command maybe used in the future documentation:
-
-```shell
-helm upgrade \
-      --install etcd \
-      --set replicaCount=3 \
-      --set resources.requests.cpu=100m \
-      --set auth.rbac.create=false \
-      --set auth.rbac.token.enabled=false \
-      oci://registry-1.docker.io/bitnamicharts/etcd \
-      -n etcd
-```
-
-helm upgrade \
-      --install greptimedb \
-      --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
-      --set base.podTemplate.main.resources.requests.cpu=100m \
-      --set base.podTemplate.main.resources.requests.memory=256Mi \
-      --set datanode.podTemplate.main.resources.requests.cpu=100m \
-      --set datanode.podTemplate.main.resources.requests.memory=256Mi \
-      --set frontend.podTemplate.main.resources.requests.cpu=100m \
-      --set frontend.podTemplate.main.resources.requests.memory=256Mi \
-      greptime/greptimedb-cluster \
-      -n greptimedb-cluster 
--->

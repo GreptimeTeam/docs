@@ -38,6 +38,27 @@ helm upgrade \
   -n greptimedb-cluster
 ```
 
+### 设置资源
+
+GreptimeDB Helm charts 能够为部署中的每个组件指定资源请求和限制。
+以下是如何配置这些设置的示例：
+
+```shell
+helm install greptimedb greptime/greptimedb-cluster \
+  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --set datanode.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set datanode.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --set frontend.podTemplate.main.resources.requests.cpu=<cpu-resource> \
+  --set frontend.podTemplate.main.resources.requests.memory=<mem-resource> \
+  --create-namespace \
+  -n greptimedb-cluster
+```
+
+有关通过 Helm 的可配置值的完整列表，请参考 [values](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/README.md#values).
+
+
 ## 使用 kubectl 进行部署
 
 你还可以使用 `kubectl` 手动创建 GreptimeDB 集群。
@@ -82,34 +103,3 @@ kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > c
 ```
 
 然后就可以使用 MySQL 客户端来[连接到集群](/getting-started/quick-start/mysql.md#connect)。
-
-<!--
-
-TODO:
-Capacity plan for each component: etcd, frontend, datanode, metasrv
-The following command maybe used in the future documentation:
-
-```shell
-helm upgrade \
-      --install etcd \
-      --set replicaCount=3 \
-      --set resources.requests.cpu=100m \
-      --set auth.rbac.create=false \
-      --set auth.rbac.token.enabled=false \
-      oci://registry-1.docker.io/bitnamicharts/etcd \
-      -n etcd
-```
-
-helm upgrade \
-      --install greptimedb \
-      --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
-      --set base.podTemplate.main.resources.requests.cpu=100m \
-      --set base.podTemplate.main.resources.requests.memory=256Mi \
-      --set datanode.podTemplate.main.resources.requests.cpu=100m \
-      --set datanode.podTemplate.main.resources.requests.memory=256Mi \
-      --set frontend.podTemplate.main.resources.requests.cpu=100m \
-      --set frontend.podTemplate.main.resources.requests.memory=256Mi \
-      greptime/greptimedb-cluster \
-      -n greptimedb-cluster 
--->
-
