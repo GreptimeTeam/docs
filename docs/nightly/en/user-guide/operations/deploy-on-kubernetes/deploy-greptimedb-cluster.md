@@ -53,7 +53,7 @@ helm install greptimedb greptime/greptimedb-cluster \
 ```
 
 For a comprehensive list of configurable values via Helm,
-please refer to the [value configration](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/README.md#values).
+please refer to the [value configuration](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/README.md#values).
 
 <!-- ### Use a different GreptimeDB version
 
@@ -102,4 +102,4 @@ kubectl port-forward svc/greptimedb-frontend 4002:4002 -n greptimedb-cluster > c
 kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > connections.out &
 ```
 
-Then you can use MySQL client to [connect to the cluster](/getting-started/quick-start/mysql.md#connect).
+Then you can use the MySQL client to [connect to the cluster](/getting-started/quick-start/mysql.md#connect).

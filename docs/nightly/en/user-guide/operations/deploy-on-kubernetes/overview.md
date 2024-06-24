@@ -55,7 +55,7 @@ You can find the maintained [Helm charts](https://github.com/GreptimeTeam/helm-c
 The deployment on Kubernetes involves the following components:
 
 - GreptimeDB Operator: Assists engineers in managing GreptimeDB clusters effectively on Kubernetes.
-- etcd Cluster: etcd is a consistent and highly-available key value store used for GreptimeDB cluster metadata storage.
+- etcd Cluster: etcd is a consistent and highly available key value store used for GreptimeDB cluster metadata storage.
 - GreptimeDB Cluster: The main database cluster.
 
 ## Next Steps
