@@ -3,23 +3,32 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ## GreptimeDB 数据源插件
 
-### 单独安装插件
+### 安装
 
-* #### 通过 grafana cli 安装
+从[发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)获取最新版本，解压文件到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
+
+你也可以使用 grafana cli 下载并安装：
+
 ```
 grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
 ```
 
-* #### 解压安装
-直接解压 [plugin zip](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip) 到你的 [grafana plugin 目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)
+注意，安装插件后可能需要重新启动 grafana 服务器。
 
-### 通过 Docker 集成安装使用
+### 使用 Docker 快速预览
 
-* #### docker compose
-[files in docker dirctory](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/tree/main/docker) 中包含了集成使用的示例文件，可直接 `docker compose up` 运行
-* #### docker
+我们构建了一个 docker compose 文件，将 GreptimeDB、Prometheus、Prometheus Node Exporter、Grafana 和该插件集成在一起。
+
+```bash
+git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git
+cd docker
+docker compose up
 ```
-docker run -d -p 3000:3000 --name=grafana \
+
+你也可以从 Grafana 的 docker 镜像中试用此插件：
+
+```
+docker run -d -p 3000:3000 --name=grafana --rm \
   -e "GF_INSTALL_PLUGINS=https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip;info8fcc" \
   grafana/grafana-oss
 ```
