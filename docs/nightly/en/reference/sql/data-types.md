@@ -64,6 +64,126 @@ Output:
 | `TimestampMillisecond` | 64-bit timestamp values with milliseconds precision | 8 Bytes |
 | `TimestampMicroSecond` | 64-bit timestamp values with microseconds precision | 8 Bytes |
 | `TimestampNanosecond` | 64-bit timestamp values with nanoseconds precision | 8 Bytes |
+| `Interval`|  Time interval | 4 Bytes for `YearMonth`, 8 Bytes for `DayTime` and 16 Bytes for `MonthDayNano`|
+
+### Interval Type
+
+`Interval` type is used in scenarios where you need to track and manipulate time durations.It can be written using the following verbose syntax:
+
+```
+ quantity unit [quantity unit...]
+```
+
+* `quantity`:  is a number (possibly signed),
+* `unit`:   is `microsecond`, `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`, `decade`, `century`, or abbreviations or plurals of these units; 
+
+The amounts of the different units are implicitly added with appropriate sign accounting. Unfortunately, GreptimeDB doesn't support writing the interval in the format of [ISO 8601 time intervals](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals) such as `P3Y3M700DT133H17M36.789S` etc. But it's output support it.
+
+Let's take some examples:
+
+```sql
+SELECT '2 years 15 months 100 weeks 99 hours 123456789 milliseconds'::INTERVAL;
+```
+
+```sql
++---------------------------------------------------------------------+
+| Utf8("2 years 15 months 100 weeks 99 hours 123456789 milliseconds") |
++---------------------------------------------------------------------+
+| P3Y3M700DT133H17M36.789S                                            |
++---------------------------------------------------------------------+
+```
+
+55 minutes ago:
+
+```sql
+SELECT '-1 hour 5 minute'::INTERVAL;
+```
+
+```sql
++--------------------------+
+| Utf8("-1 hour 5 minute") |
++--------------------------+
+| P0Y0M0DT0H-55M0S         |
++--------------------------+
+```
+
+1 hour and 5 minutes ago:
+
+```sql
+SELECT '-1 hour -5 minute'::INTERVAL;
+```
+
+```sql
++---------------------------+
+| Utf8("-1 hour -5 minute") |
++---------------------------+
+| P0Y0M0DT-1H-5M0S          |
++---------------------------+
+```
+
+And of course, you can manipulate time with intervals by arithmetics.
+Get the time of 5 minutes go:
+
+```sql
+SELECT now() - INTERVAL '5 minute';
+```
+
+```sql
++----------------------------------------------+
+| now() - IntervalMonthDayNano("300000000000") |
++----------------------------------------------+
+| 2024-06-24 21:24:05.012306                   |
++----------------------------------------------+
+```
+
+Note that you can also input the interval type using the `INTERVAL 'literal'` format. The syntax `'-1 hour -5 minute'::INTERVAL` is actually a `CAST` function call.
+
+GreptimeDB also supports shorthand forms without spaces, such as `3y2mon4h`, but they must be written in the `INTERVAL 'literal'` format:
+
+```sql
+SELECT INTERVAL '3y2mon4h';
+```
+
+```sql
++---------------------------------------------------------+
+| IntervalMonthDayNano("3010670175542044842954670112768") |
++---------------------------------------------------------+
+| P3Y2M0DT4H0M0S                                          |
++---------------------------------------------------------+
+```
+
+It also supports signed numbers:
+
+```sql
+SELECT INTERVAL '-1h5m';
+```
+
+```sql
++----------------------------------------------+
+| IntervalMonthDayNano("18446740773709551616") |
++----------------------------------------------+
+| P0Y0M0DT0H-55M0S                             |
++----------------------------------------------+
+```
+
+Supported abbreviations include:
+
+| y     | years         |
+|-------|---------------|
+| mon   | months        |
+| w     | weeks         |
+| d     | days          |
+| h     | hours         |
+| m     | minutes       |
+| s     | seconds       |
+| millis| milliseconds  |
+| mils  | milliseconds          |
+| ms    | milliseconds  |
+| us    | microseconds  |
+| ns    | nanoseconds   |
+
+
+
 
 ## Boolean Type
 
