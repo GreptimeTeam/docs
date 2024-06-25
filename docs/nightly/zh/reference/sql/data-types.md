@@ -165,18 +165,20 @@ SELECT INTERVAL '-1h5m';
 
 支持的缩写包括：
 
-| y | years |
-|mon | months |
-|w |weeks|
-|d| days|
-|h| hours|
-|m| minutes|
-|s| seconds|
-|millis| milliseconds|
-|mils| milliseconds|
-|ms|milliseconds|
-|us|microseconds|
-|ns|nanoseconds|
+| 缩写 | 全称 |
+|-------|---------------|
+| y     | years         |
+| mon   | months        |
+| w     | weeks         |
+| d     | days          |
+| h     | hours         |
+| m     | minutes       |
+| s     | seconds       |
+| millis| milliseconds  |
+| mils  | milliseconds          |
+| ms    | milliseconds  |
+| us    | microseconds  |
+| ns    | nanoseconds   |
 
 ## 布尔类型
 

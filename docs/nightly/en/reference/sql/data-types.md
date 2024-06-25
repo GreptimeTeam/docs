@@ -168,8 +168,9 @@ SELECT INTERVAL '-1h5m';
 
 Supported abbreviations include:
 
-| y     | years         |
+| Abbreviation | Full name |
 |-------|---------------|
+| y     | years         |
 | mon   | months        |
 | w     | weeks         |
 | d     | days          |
@@ -181,7 +182,6 @@ Supported abbreviations include:
 | ms    | milliseconds  |
 | us    | microseconds  |
 | ns    | nanoseconds   |
-
 
 
 
