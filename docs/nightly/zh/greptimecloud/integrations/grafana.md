@@ -21,11 +21,10 @@ https://<host>
 
 %}
 
-{template greptimecloud-configurations%
+{template the-detail-usage-link%
 
-你可以从 GreptimeCloud 控制台中获取相关配置：
+有关如何使用 GreptimeDB 数据源的详细信息，请参阅 [使用 GreptimeDB 数据源文档](https://docs.greptime.cn/user-guide/clients/grafana)。
 
-![greptimedb-connection-cloud](/greptimedb-connection-cloud.png)
 
 %}
 

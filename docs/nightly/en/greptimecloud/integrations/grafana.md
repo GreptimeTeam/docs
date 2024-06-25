@@ -21,11 +21,10 @@ https://<host>
 
 %}
 
-{template greptimecloud-configurations%
+{template the-detail-usage-link%
 
-You can get the relevant configurations from the GreptimeCloud console:
-
-![greptimedb-connection-cloud](/greptimedb-connection-cloud.png)
+For more information about how to use GreptimeDB data source,
+please refer to the [GreptimeDB data source](https://docs.greptime.com/user-guide/clients/grafana) document.
 
 %}
 

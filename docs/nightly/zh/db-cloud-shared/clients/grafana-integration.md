@@ -3,35 +3,17 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ## GreptimeDB 数据源插件
 
-GreptimeDB 数据源插件基于 Prometheus 数据源开发并附加了特定于 GreptimeDB 的功能。
-该插件完美适配了 GreptimeDB 的数据模型，
-从而提供了更好的用户体验。
-此外，和直接使用 Prometheus 数据源相比，它还解决了一些兼容性问题。
+{template data-source-plugin-intro%%}
 
-### 安装
-
-GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
-在安装插件前请确保 Grafana 已经安装并运行。
-
-你可以任选以下一种安装方式：
-
-- 下载安装包并解压到相关目录：从[发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)获取最新版本，解压文件到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
-- 使用 Grafana Cli 下载并安装：
-  ```shell
-  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
-  ```
-
-注意，安装插件后可能需要重新启动 Grafana 服务器。
+{template data-source-plugin-installation%%}
 
 {template preview-greptimedb-using-docker%%}
 
-### Connection 配置
-
-{template greptimecloud-configurations%%}
+{template connection-settings-title%%}
 
 在 Grafana 中单击 Add data source 按钮，选择 GreptimeDB 作为类型。
 
-![grafana-add-greptimedb-data-source](/grafana-add-greptimedb-data-source.png)
+{template grafana-add-greptimedb-data-source-img%%}
 
 在 GreptimeDB server URL 中填写以下地址：
 
@@ -47,25 +29,9 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
 
 然后单击 Save & Test 按钮以测试连接。
 
-### 创建仪表盘
+{template the-detail-usage-link%%}
 
-在 Grafana 中创建一个新的仪表盘，点击 `Create your first dashboard` 按钮。
-然后，点击 `Add visualization`，选择 `GreptimeDB` 作为数据源。
-
-在 `Metric` 下拉列表中选择一个指标，然后点击 `Run query` 查看指标数据。
-当你查看数据并确认无误后，点击 `Save` 保存面板。
-
-![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.png)
-
-你还可以使用 PromQL 创建面板。
-点击 `Query` 标签页右侧的 `code` 按钮，切换到 PromQL 编辑器。
-然后输入一个 PromQL 语句，例如 `system_memory_usage{state="used"}`，点击 `Run queries` 查看指标数据。
-
-![grafana-create-panel-with-promql](/grafana-create-panel-with-promql.png)
-
-:::tip 注意
-GreptimeDB 兼容大部分 PromQL，但是有一些限制。请参考 [PromQL 限制](/user-guide/query-data/promql#局限) 文档获取更多信息。
-:::
+{template create-a-dashboard%%}
 
 ## Prometheus 数据源
 
