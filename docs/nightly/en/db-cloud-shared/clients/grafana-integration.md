@@ -17,30 +17,18 @@ grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datas
 
 Note that you may need to restart your grafana server after installing the plugin.
 
-### Quick Preview using Docker
-
-We built a docker compose file that integrated GreptimeDB, Prometheus,
-Prometheus Node Exporter, Grafana and this plugin together.
-
-```bash
-git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git
-cd docker
-docker compose up
-```
-
-You can also try out this plugin from a Grafana docker image:
-
-```
-docker run -d -p 3000:3000 --name=grafana --rm \
-  -e "GF_INSTALL_PLUGINS=https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip;info8fcc" \
-  grafana/grafana-oss
-```
+{template preview-greptimedb-using-docker%%}
 
 ### Connection Settings
 
-Click the Add data source button and select GreptimeDB as the type.
+{template greptimecloud-configrations%%}
 
-- Fill in the `http://<host>:4000` in the GreptimeDB server URL field.
+Click the Add data source button and select GreptimeDB as the type. Fill in the following URL in the GreptimeDB server URL:
+
+{template greptime-data-source-connection-url%%}
+
+Then do the following configuration:
+
 - Fill in the database name in the Database Name field, default is `public` (not set by default, no need to fill in).
 - In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
 
@@ -49,14 +37,28 @@ Click the Add data source button and select GreptimeDB as the type.
 
 Then click the Save & Test button to test the connection.
 
-For users using GreptimeCloud, get the configuration from here.
-:::tip Note
-Host corresponds to GreptimeDB server URL.
+### Create a Dashboard
+
+Create a new dashboard in Grafana by clicking the `Create your first dashboard` button.
+Then click `Add visualization`, select `GreptimeDB` as the data source.
+
+Select a metric from the `Metric` dropdown list, then click `Run query` to view the metric data.
+When you see the data and confirm it is correct, click `Save` to save the panel.
+
+![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.jpg)
+
+You can also create a panel using PromQL.
+Click the `code` button on the right side of the `Query` tab to switch to the PromQL editor.
+Then enter a PromQL statement, such as `system_memory_usage{state="used"}`, click `Run query` to view the metric data.
+
+![grafana-create-panel-with-promql](/grafana-create-panel-with-promql.png)
+
+
+:::tip NOTE
+GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql#局限) document for more information.
 :::
-![greptimedb-connection-cloud](/greptimedb-connection-cloud.png)
 
-
-## Prometheus
+## Prometheus data source
 
 Click the Add data source button and select Prometheus as the type.
 
@@ -76,7 +78,7 @@ Click Custom HTTP Headers and add one header:
 
 Then click Save & Test button to test the connection.
 
-## MySQL
+## MySQL 数据源
 
 Click the Add data source button and select MySQL as the type. Fill in the following information in MySQL Connection:
 
