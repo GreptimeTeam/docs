@@ -3,6 +3,11 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ## GreptimeDB 数据源插件
 
+GreptimeDB 数据源插件基于 Prometheus 数据源开发并附加了特定于 GreptimeDB 的功能。
+该插件完美适配了 GreptimeDB 的数据模型，
+从而提供了更好的用户体验。
+此外，和直接使用 Prometheus 数据源相比，它还解决了一些兼容性问题。
+
 ### 安装
 
 GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
