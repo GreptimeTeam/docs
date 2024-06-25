@@ -51,7 +51,7 @@ CREATE TABLE public.test_p (
 )
 PARTITION ON COLUMNS (a) (
   a < 10,
-  a > 10 AND a < 20,
+  a >= 10 AND a < 20,
   a >= 20
 );
 SELECT * FROM PARTITIONS WHERE table_schema='public' AND table_name='test_p'\G
