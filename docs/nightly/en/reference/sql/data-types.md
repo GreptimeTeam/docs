@@ -136,7 +136,7 @@ SELECT now() - INTERVAL '5 minute';
 +----------------------------------------------+
 ```
 
-Note that you can also input the interval type using the `INTERVAL 'literal'` format. The syntax `'-1 hour -5 minute'::INTERVAL` is actually a `CAST` function call.
+Note that you can also input the interval type using the `INTERVAL 'literal'` format. Using the syntax `'-1 hour -5 minute'::INTERVAL` explicitly casts the string to an interval type, which is how SQL handles type conversion.
 
 GreptimeDB also supports shorthand forms without spaces, such as `3y2mon4h`, but they must be written in the `INTERVAL 'literal'` format:
 
