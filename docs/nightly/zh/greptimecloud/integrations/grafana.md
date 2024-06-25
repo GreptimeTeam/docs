@@ -21,7 +21,7 @@ https://<host>
 
 %}
 
-{template greptimecloud-configrations%
+{template greptimecloud-configurations%
 
 你可以从 GreptimeCloud 控制台中获取相关配置：
 

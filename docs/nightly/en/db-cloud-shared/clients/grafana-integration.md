@@ -21,7 +21,7 @@ Note that you may need to restart your grafana server after installing the plugi
 
 ### Connection Settings
 
-{template greptimecloud-configrations%%}
+{template greptimecloud-configurations%%}
 
 Click the Add data source button and select GreptimeDB as the type. Fill in the following URL in the GreptimeDB server URL:
 
@@ -29,9 +29,8 @@ Click the Add data source button and select GreptimeDB as the type. Fill in the 
 
 Then do the following configuration:
 
-- Fill in the database name in the Database Name field, default is `public` (not set by default, no need to fill in).
+- Database Name：`<dbname>`, leave it blank to use the default database `public`
 - In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
-
   - User: `<username>`
   - Password: `<password>`
 

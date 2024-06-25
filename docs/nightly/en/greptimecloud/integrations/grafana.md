@@ -21,7 +21,7 @@ https://<host>
 
 %}
 
-{template greptimecloud-configrations%
+{template greptimecloud-configurations%
 
 You can get the relevant configurations from the GreptimeCloud console:
 
