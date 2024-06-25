@@ -4,16 +4,18 @@ GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs
 
 ### Installation
 
-Grab the latest release from [release
+The GreptimeDB Data source plugin can currently only installed on a local Grafana instance.
+Make sure Grafana is installed and running before installing the plugin.
+
+You can choose one of the following installation methods:
+- Download the installation package and unzip it to the relevant directory: Grab the latest release from [release
 page](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/),
 Unzip the file to your [grafana plugin
 directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins).
-
-You can also use grafana cli to download and install
-
-```
-grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
-```
+- Use grafana cli to download and install:
+  ```shell
+  grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
+  ```
 
 Note that you may need to restart your grafana server after installing the plugin.
 
@@ -23,7 +25,11 @@ Note that you may need to restart your grafana server after installing the plugi
 
 {template greptimecloud-configurations%%}
 
-Click the Add data source button and select GreptimeDB as the type. Fill in the following URL in the GreptimeDB server URL:
+Click the Add data source button and select GreptimeDB as the type.
+
+![grafana-add-greptimedb-data-source](/grafana-add-greptimedb-data-source.png)
+
+Fill in the following URL in the GreptimeDB server URL:
 
 {template greptime-data-source-connection-url%%}
 
@@ -41,10 +47,10 @@ Then click the Save & Test button to test the connection.
 Create a new dashboard in Grafana by clicking the `Create your first dashboard` button.
 Then click `Add visualization`, select `GreptimeDB` as the data source.
 
-Select a metric from the `Metric` dropdown list, then click `Run query` to view the metric data.
+Select a metric from the `Metric` dropdown list, then click `Run queries` to view the metric data.
 When you see the data and confirm it is correct, click `Save` to save the panel.
 
-![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.jpg)
+![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.png)
 
 You can also create a panel using PromQL.
 Click the `code` button on the right side of the `Query` tab to switch to the PromQL editor.
@@ -54,7 +60,7 @@ Then enter a PromQL statement, such as `system_memory_usage{state="used"}`, clic
 
 
 :::tip NOTE
-GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql#局限) document for more information.
+GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql#limitations) document for more information.
 :::
 
 ## Prometheus data source
@@ -77,7 +83,7 @@ Click Custom HTTP Headers and add one header:
 
 Then click Save & Test button to test the connection.
 
-## MySQL 数据源
+## MySQL data source
 
 Click the Add data source button and select MySQL as the type. Fill in the following information in MySQL Connection:
 

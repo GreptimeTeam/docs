@@ -17,7 +17,9 @@ http://<host>:4000/v1/prometheus
 
 ### 使用 Docker 快速预览
 
-我们构建了一个 docker compose 文件，将 GreptimeDB、Prometheus、Prometheus Node Exporter、Grafana 和该插件集成在一起。
+Greptime 提供了一个 docker compose 文件，
+将 GreptimeDB、Prometheus、Prometheus Node Exporter、Grafana 和该插件集成在一起，
+以便你能够快速体验 GreptimeDB 数据源插件。
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git

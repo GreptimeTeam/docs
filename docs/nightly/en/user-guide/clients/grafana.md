@@ -16,8 +16,7 @@ http://<host>:4000/v1/prometheus
 
 ### Quick Preview using Docker
 
-We built a docker compose file that integrated GreptimeDB, Prometheus,
-Prometheus Node Exporter, Grafana and this plugin together.
+Greptime provides a docker compose file that integrates GreptimeDB, Prometheus, Prometheus Node Exporter, Grafana, and this plugin together so you can quickly experience the GreptimeDB data source plugin.
 
 ```bash
 git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git
