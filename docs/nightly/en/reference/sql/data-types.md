@@ -74,7 +74,7 @@ Output:
 QUANTITY UNIT [QUANTITY UNIT...]
 ```
 
-* `quantity`:  is a number (possibly signed),
+* `QUANTITY`:  is a number (possibly signed),
 * `unit`:   is `microsecond`, `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`, `decade`, `century`, or abbreviations or plurals of these units; 
 
 The amounts of the different units are implicitly added with appropriate sign accounting. Unfortunately, GreptimeDB doesn't support writing the interval in the format of [ISO 8601 time intervals](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals) such as `P3Y3M700DT133H17M36.789S` etc. But it's output supports it.
