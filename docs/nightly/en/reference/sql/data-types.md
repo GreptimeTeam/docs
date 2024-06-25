@@ -71,7 +71,7 @@ Output:
 `Interval` type is used in scenarios where you need to track and manipulate time durations. It can be written using the following verbose syntax:
 
 ```
- quantity unit [quantity unit...]
+QUANTITY UNIT [QUANTITY UNIT...]
 ```
 
 * `quantity`:  is a number (possibly signed),
