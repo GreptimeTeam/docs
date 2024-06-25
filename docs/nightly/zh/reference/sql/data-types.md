@@ -70,7 +70,7 @@ SELECT * FROM decimals;
 `Interval` 类型用于需要跟踪和操作时间间隔的场景。它的编写语法如下：
 
 ```
- quantity unit [quantity unit...]
+QUANTITY UNIT [QUANTITY UNIT...]
 ```
 
 * `QUANTITY`：是一个数字（可能有符号），
