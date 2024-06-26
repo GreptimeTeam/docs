@@ -6,11 +6,18 @@
 
 ### 创建 etcd 集群
 
-首先，通过执行以下命令来建立一个支持 GreptimeDB 的 etcd 集群：
+为了避免遇到网络问题，先拉取 chart 到本地：
+
+```shell
+wget https://downloads.greptime.cn/releases/charts/etcd/10.2.4/etcd-10.2.4.tgz
+tar -zxvf etcd-10.2.4.tgz
+```
+
+然后执行以下命令来建立一个支持 GreptimeDB 的 etcd 集群：
 
 ```shell
 helm upgrade \
-  --install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+  --install etcd etcd \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
@@ -25,15 +32,21 @@ helm upgrade \
 
 ### 创建 GretpimeDB 集群
 
-部署 GreptimeDB 集群，确保它连接到先前建立的 etcd 集群：
+为了避免遇到网络问题，先拉取 chart 到本地：
+
+```shell
+wget https://downloads.greptime.cn/releases/charts/greptimedb-cluster/latest/greptimedb-cluster-latest.tgz
+tar -zxvf greptimedb-cluster-latest.tgz
+```
+
+然后部署 GreptimeDB 集群，确保它连接到先前建立的 etcd 集群：
 
 ```shell
 helm upgrade \
-  --install greptimedb \
+  --install greptimedb greptimedb-cluster \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
-  greptime/greptimedb-cluster \
   --create-namespace \
   -n greptimedb-cluster
 ```

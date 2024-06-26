@@ -8,9 +8,18 @@
 
 你可以使用 Helm 来安装 GreptimeDB Operator。
 
+为了避免遇到网络问题，先拉取 chart 到本地：
+
+```shell
+wget https://downloads.greptime.cn/releases/charts/greptimedb-operator/latest/greptimedb-operator-latest.tgz
+tar -zxvf greptimedb-operator-latest.tgz
+```
+
+然后安装 GreptimeDB Operator：
+
 ```shell
 helm upgrade \
-  --install greptimedb-operator greptime/greptimedb-operator \
+  --install greptimedb-operator greptimedb-operator \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --create-namespace \
   -n greptimedb-admin

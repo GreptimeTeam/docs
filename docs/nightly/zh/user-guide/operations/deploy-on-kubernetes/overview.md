@@ -41,7 +41,7 @@ kubectl create namespace greptimedb-cluster
 使用以下命令添加GreptimeDB Helm chart仓库。
 
 ```shell
-helm repo add greptime https://greptimeteam.github.io/helm-charts/
+helm repo add greptime https://downloads.greptime.cn/releases/charts/package
 ```
 
 ```shell
