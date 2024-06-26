@@ -76,7 +76,8 @@ QUANTITY UNIT [QUANTITY UNIT...]
 * `QUANTITY`：是一个数字（可能有符号），
 * `UNIT`：时间单位，可以是 `microsecond`（微秒）、`millisecond`（毫秒）、`second`（秒）、`minute`（分钟）、`hour`（小时）、`day`（天）、`week`（周）、`month`（月）、`year`（年）、`decade`（十年）、`century`（世纪）或这些单位的缩写或复数形式；
 
-不同单位的数量会根据适当的符号自动相加。遗憾的是，GreptimeDB 暂时还不支持以 [ISO 8601 时间间隔](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals)格式编写间隔，例如 `P3Y3M700DT133H17M36.789S` 等。但它支持以这种格式输出。
+不同的时间单位将会被计算合并，每个单位的符号决定它是增加还是减少总间隔。例如，“1 年 -2 个月”导致净间隔为 10 个月。
+遗憾的是，GreptimeDB 暂时还不支持以 [ISO 8601 时间间隔](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals)格式编写间隔，例如 `P3Y3M700DT133H17M36.789S` 等。但它支持以这种格式输出。
 
 让我们来看一些例子：
 
