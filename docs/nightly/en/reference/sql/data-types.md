@@ -178,7 +178,6 @@ Supported abbreviations include:
 | m     | minutes       |
 | s     | seconds       |
 | millis| milliseconds  |
-| mils  | milliseconds          |
 | ms    | milliseconds  |
 | us    | microseconds  |
 | ns    | nanoseconds   |
