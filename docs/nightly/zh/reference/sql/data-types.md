@@ -63,6 +63,123 @@ SELECT * FROM decimals;
 | `TimestampMillisecond` | 64 位时间戳值，毫秒精度 | 8 字节 |
 | `TimestampMicroSecond` | 64 位时间戳值，微秒精度 | 8 字节 |
 | `TimestampNanosecond` | 64 位时间戳值，纳秒精度 | 8 字节 |
+| `Interval`| 时间间隔 | `YearMonth` 占 4 字节，`DayTime` 占 8 字节，`MonthDayNano` 占 16 字节|
+
+### Interval 类型详解
+
+`Interval` 类型用于需要跟踪和操作时间间隔的场景。它的编写语法如下：
+
+```
+QUANTITY UNIT [QUANTITY UNIT...]
+```
+
+* `QUANTITY`：是一个数字（可能有符号），
+* `UNIT`：时间单位，可以是 `microsecond`（微秒）、`millisecond`（毫秒）、`second`（秒）、`minute`（分钟）、`hour`（小时）、`day`（天）、`week`（周）、`month`（月）、`year`（年）、`decade`（十年）、`century`（世纪）或这些单位的缩写或复数形式；
+
+不同的时间单位将会被计算合并，每个单位的符号决定它是增加还是减少总间隔。例如，“1 年 -2 个月”导致净间隔为 10 个月。
+遗憾的是，GreptimeDB 暂时还不支持以 [ISO 8601 时间间隔](https://en.wikipedia.org/wiki/ISO_8601#Time_intervals)格式编写间隔，例如 `P3Y3M700DT133H17M36.789S` 等。但它支持以这种格式输出。
+
+让我们来看一些例子：
+
+```sql
+SELECT '2 years 15 months 100 weeks 99 hours 123456789 milliseconds'::INTERVAL;
+```
+
+```sql
++---------------------------------------------------------------------+
+| Utf8("2 years 15 months 100 weeks 99 hours 123456789 milliseconds") |
++---------------------------------------------------------------------+
+| P3Y3M700DT133H17M36.789S                                            |
++---------------------------------------------------------------------+
+```
+
+55 分钟前：
+
+```sql
+SELECT '-1 hour 5 minute'::INTERVAL;
+```
+
+```sql
++--------------------------+
+| Utf8("-1 hour 5 minute") |
++--------------------------+
+| P0Y0M0DT0H-55M0S         |
++--------------------------+
+```
+
+1 小时 5 分钟前：
+
+```sql
+SELECT '-1 hour -5 minute'::INTERVAL;
+```
+
+```sql
++---------------------------+
+| Utf8("-1 hour -5 minute") |
++---------------------------+
+| P0Y0M0DT-1H-5M0S          |
++---------------------------+
+```
+
+当然，你可以通过算术运算来操作时间间隔。
+获取 5 分钟前的时间：
+
+```sql
+SELECT now() - INTERVAL '5 minute';
+```
+
+```sql
++----------------------------------------------+
+| now() - IntervalMonthDayNano("300000000000") |
++----------------------------------------------+
+| 2024-06-24 21:24:05.012306                   |
++----------------------------------------------+
+```
+
+注意到你也可以用 `INTERVAL 'literal'` 的方式来输入 interval 类型。`'-1 hour -5 minute'::INTERVAL` 这样的方式其实是一个`CAST` 函数调用。
+
+GreptimeDB 还支持类似 `3y2mon4h` 这样不包含空格的简写形式，但是必须要以 `INTERVAL 'literal`` 的形式来编写：
+
+```sql
+SELECT INTERVAL '3y2mon4h';
+```
+
+```sql
++---------------------------------------------------------+
+| IntervalMonthDayNano("3010670175542044842954670112768") |
++---------------------------------------------------------+
+| P3Y2M0DT4H0M0S                                          |
++---------------------------------------------------------+
+```
+
+同样也支持符号数：
+
+```sql
+SELECT INTERVAL '-1h5m';
+
++----------------------------------------------+
+| IntervalMonthDayNano("18446740773709551616") |
++----------------------------------------------+
+| P0Y0M0DT0H-55M0S                             |
++----------------------------------------------+
+```
+
+支持的缩写包括：
+
+| 缩写 | 全称 |
+|-------|---------------|
+| y     | years         |
+| mon   | months        |
+| w     | weeks         |
+| d     | days          |
+| h     | hours         |
+| m     | minutes       |
+| s     | seconds       |
+| millis| milliseconds  |
+| mils  | milliseconds          |
+| ms    | milliseconds  |
+| us    | microseconds  |
+| ns    | nanoseconds   |
 
 ## 布尔类型
 
