@@ -30,8 +30,6 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 然后单击 Save & Test 按钮以测试连接。
 
-{template the-detail-usage-link%%}
-
 {template create-a-dashboard%%}
 
 ## Prometheus 数据源

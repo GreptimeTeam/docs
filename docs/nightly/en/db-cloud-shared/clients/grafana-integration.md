@@ -28,8 +28,6 @@ Then do the following configuration:
 
 Then click the Save & Test button to test the connection.
 
-{template the-detail-usage-link%%}
-
 {template create-a-dashboard%%}
 
 ## Prometheus data source
