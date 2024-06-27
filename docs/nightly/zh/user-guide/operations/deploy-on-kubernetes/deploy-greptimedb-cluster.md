@@ -57,7 +57,7 @@ GreptimeDB Helm charts 能够为部署中的每个组件指定资源请求和限
 以下是如何配置这些设置的示例：
 
 ```shell
-helm install greptimedb greptime/greptimedb-cluster \
+helm install greptimedb greptimedb-cluster \
   --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
   --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
   --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
