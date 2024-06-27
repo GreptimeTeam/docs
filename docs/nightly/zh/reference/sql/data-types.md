@@ -138,7 +138,7 @@ SELECT now() - INTERVAL '5 minute';
 
 注意到你也可以用 `INTERVAL 'literal'` 的方式来输入 interval 类型。`'-1 hour -5 minute'::INTERVAL` 这样的方式其实是一个`CAST` 函数调用。
 
-GreptimeDB 还支持类似 `3y2mon4h` 这样不包含空格的简写形式，但是必须要以 `INTERVAL 'literal`` 的形式来编写：
+GreptimeDB 还支持类似 `3y2mon4h` 这样不包含空格的简写形式：
 
 ```sql
 SELECT INTERVAL '3y2mon4h';
