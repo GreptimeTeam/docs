@@ -30,7 +30,7 @@ When the command is executed, the playground will be started in the foreground. 
 
 If everything is ok, you can visit the Dashboard via `http://localhost:4000/dashboard/`.
 
-For more details, please refer to [gtctl operations](/user-guide/operations/gtctl.md).
+For more details, please refer to [gtctl operations](/reference/gtctl.md).
 
 ## Deploy the GreptimeDB cluster in Kubernetes
 
@@ -46,7 +46,7 @@ After the creation is completed, you can use the following command to connect th
 ./gtctl cluster connect mycluster
 ```
 
-You also can use [Helm Charts](/user-guide/operations/kubernetes.md) to deploy the cluster.
+You also can use [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md.md) to deploy the cluster.
 
 :::tip Note
 

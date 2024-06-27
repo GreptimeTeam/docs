@@ -72,23 +72,26 @@
     - api
   - cluster
   - Operations:
+    - overview
     - admin
     - configuration
     - capacity-plan
+    - Deploy-on-Kubernetes:
+      - overview
+      - greptimedb-operator
+      - deploy-greptimedb-cluster
+      - destroy-cluster
+    - run-on-android
     - Disaster-Recovery:
       - overview
       - back-up-&-restore-data
-    - kubernetes
-    - gtctl
-    - run-on-android
-    - monitoring
-    - tracing
     - Remote-WAL:
       - quick-start
       - cluster-deployment
     - region-migration
+    - monitoring
+    - tracing
     # TODO
-    # - alert
     # - import-data
     # - export-data
   - upgrade
@@ -182,7 +185,8 @@
       - region-peers
       - runtime-metrics
       - cluster-info
-  - Telemetry
+  - telemetry
+  - gtctl
 - Contributor-Guide:
   - overview
   - getting-started

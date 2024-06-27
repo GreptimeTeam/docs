@@ -2,7 +2,7 @@
 
 ## 创建一个集群
 
-请参考 [Kubernetes](./operations/kubernetes.md) 以获得关于创建 Kubernetes 集群的信息。
+请参考 [Kubernetes](./operations/deploy-on-kubernetes/overview.md) 以获得关于创建 Kubernetes 集群的信息。
 
 ## 分布式读/写
 
