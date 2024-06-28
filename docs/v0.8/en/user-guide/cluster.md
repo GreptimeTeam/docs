@@ -2,7 +2,7 @@
 
 ## Create a cluster
 
-Please refer to [Kubernetes](./operations/kubernetes.md) to get the information about creating a Kubernetes cluster.
+Please refer to [Kubernetes](./operations/deploy-on-kubernetes/overview.md) to get the information about creating a Kubernetes cluster.
 
 ## Distributed Read/Write
 
