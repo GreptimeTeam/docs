@@ -138,13 +138,19 @@ SELECT now() - INTERVAL '5 minute';
 
 注意到你也可以用 `INTERVAL 'literal'` 的方式来输入 interval 类型。`'-1 hour -5 minute'::INTERVAL` 这样的方式其实是一个`CAST` 函数调用。
 
-GreptimeDB 还支持类似 `3y2mon4h` 这样不包含空格的简写形式，但是必须要以 `INTERVAL 'literal`` 的形式来编写：
+GreptimeDB 还支持类似 `3y2mon4h` 这样不包含空格的简写形式：
 
 ```sql
 SELECT INTERVAL '3y2mon4h';
+SELECT '3y2mon4h'::INTERVAL;
 ```
 
-```sql
+```
++---------------------------------------------------------+
+| IntervalMonthDayNano("3010670175542044842954670112768") |
++---------------------------------------------------------+
+| P3Y2M0DT4H0M0S                                          |
++---------------------------------------------------------+
 +---------------------------------------------------------+
 | IntervalMonthDayNano("3010670175542044842954670112768") |
 +---------------------------------------------------------+
@@ -156,7 +162,15 @@ SELECT INTERVAL '3y2mon4h';
 
 ```sql
 SELECT INTERVAL '-1h5m';
+SELECT '-1h5m'::INTERVAL;
+```
 
+```
++----------------------------------------------+
+| IntervalMonthDayNano("18446740773709551616") |
++----------------------------------------------+
+| P0Y0M0DT0H-55M0S                             |
++----------------------------------------------+
 +----------------------------------------------+
 | IntervalMonthDayNano("18446740773709551616") |
 +----------------------------------------------+
@@ -176,7 +190,6 @@ SELECT INTERVAL '-1h5m';
 | m     | minutes       |
 | s     | seconds       |
 | millis| milliseconds  |
-| mils  | milliseconds          |
 | ms    | milliseconds  |
 | us    | microseconds  |
 | ns    | nanoseconds   |
