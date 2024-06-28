@@ -28,7 +28,7 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 
 如果一切正常，你可以使用浏览器访问内置的 Dashboard `http://localhost:4000/dashboard/`。
 
-更多的细节，请参考 [gtctl operations](/user-guide/operations/gtctl.md)。
+更多的细节，请参考 [gtctl operations](/reference/gtctl.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 
@@ -44,7 +44,7 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 ./gtctl cluster connect mycluster
 ```
 
-您还可以使用 [Helm Charts](/user-guide/operations/kubernetes.md) 来部署集群。
+您还可以使用 [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md.md) 来部署集群。
 
 :::tip 提示
 
