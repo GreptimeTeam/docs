@@ -8,7 +8,7 @@ template: ../../db-cloud-shared/clients/grafana-integration.md
 {template data-source-plugin-intro%
 
 The GreptimeDB data source plugin is based on the Prometheus data source and adds GreptimeDB-specific features.
-The plugin perfectly adapts to the GreptimeDB data model,
+The plugin adapts perfectly to the GreptimeDB data model,
 thus providing a better user experience.
 In addition, it also solves some compatibility issues compared to using the Prometheus data source directly.
 
@@ -18,7 +18,7 @@ In addition, it also solves some compatibility issues compared to using the Prom
 
 ### Installation
 
-The GreptimeDB Data source plugin can currently only installed on a local Grafana instance.
+The GreptimeDB Data source plugin can currently only be installed on a local Grafana instance.
 Make sure Grafana is installed and running before installing the plugin.
 
 You can choose one of the following installation methods:
