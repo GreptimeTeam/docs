@@ -1,6 +1,6 @@
 # Overview
 
-GreptimeDB is a distributed database that is designed to tolerate in a disaster. It provides different solutions for disaster recovery (DR).
+GreptimeDB is a distributed database designed to withstand disasters. It provides different solutions for disaster recovery (DR).
 
 ## Basic Concepts
 
