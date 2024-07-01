@@ -79,7 +79,7 @@ greptime frontend start --help
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--metasrv-addr <METASRV_ADDR>`: Metasrv address list;
+- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
@@ -138,7 +138,7 @@ greptime standalone start -c standalone.example.toml
 
 Protocol options are valid in `frontend` and `standalone` sub commands, which specify the protocol server addresses and other protocol-related options.
 
-Below is an example configuration with default values. 
+Below is an example configuration with default values.
 The HTTP and gRPC protocols must be enabled for the database to work correctly.
 The other protocols are optional.
 If you want to disable certain protocols, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
@@ -504,7 +504,7 @@ In the configuration files of `datanode` and `frontend` of distributed GreptimeD
 
 ```toml
 mode = "distributed"
-``` 
+```
 
 In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
 
