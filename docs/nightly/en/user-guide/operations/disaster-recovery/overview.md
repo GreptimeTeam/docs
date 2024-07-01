@@ -49,30 +49,61 @@ When a cluster encounters a disaster, you can restore the cluster from backup da
 ### DR solution for Standalone
 If the Standalone is running on the local disk for WAL and data, then:
 * RPO: depends on backup frequency.
-* RTO: doesn't make sense in standalone mode, mostly depends on your failure response time and the operational infrastructure.
+* RTO: doesn't make sense in standalone mode, mostly depends on the size of the data to be restored, your failure response time, and the operational infrastructure.
 
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
 ![DR-Standalone](/DR-Standalone.png)
 
 Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution allows for an RPO of zero, and an RTO measured in minutes.
 
+ For more information about this solution, see [DR solution for Standalone](./todo)
+
 ### DR solution based on Dual Active-Standby 
 ![Dual-active-standby](/Dual-active-standby.png)
 
-In some edge or small-to-medium scale scenarios, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability.
+In some edge or small-to-medium scale scenarios, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
 
 Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
 
 > **Note: the Dual Active-Standby is a commercial solution.**
 
-### DR solution  based on multiple replicas in a single cluster
+For more information about this solution, see [DR solution based on Dual Active-Standby](./todo)
 
+### DR solution  based on cross-region deployment in a single cluster
+
+![Cross-region-single-cluster](/Cross-region-single-cluster.png)
+
+For medium-to-large scale scenarios requiring zero RPO, this solution is highly recommended. In this deployment architecture, the entire cluster spans across three regions, with each region capable of handling both read and write requests. Data replication is achieved using remote WAL and object storage, both of which must have cross-region DR enabled.
+
+In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
+
+This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./todo)
 
 ### DR solution based on BR
 
+![/BR-DR](/BR-DR.png)
+
+In this architecture, GreptimeDB Cluster 1 is deployed in region 1. The BR process continuously and regularly backs up the data from Cluster 1 to region 2. If region 1 experiences a disaster rendering Cluster 1 unrecoverable, you can use the backup data to restore a new cluster (Cluster 2) in region 2 to resume services.
+
+The DR solution based on BR provides an RPO depending on the backup frequency and an RTO that varies with the size of the data to be restored.
+
+Read [Backup & restore data](./back-up-&-restore-data.md) for details, and we plan to provide a BR tool in-house for this solution.
 
 ### Solution Comparison
+
+By comparing these DR solutions, users can decide on the final option based on their specific scenarios, requirements, and investment.
+
+
+|     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Notes |
+| ------------- | ------------------------- | ----- | ----- | ----- | ---------- | --------|
+|  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability |  Recommended to use remote WAL and object storage to achieve high availability and reliability in small scenarios |
+|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Medium | High requirements for availability and reliability in small-to-medium size scenarios |  Remote WAL and Object storage are optional|
+|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large size scenarios |  Remote WAL and Object storage are required |
+|  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability |  Remote WAL and Object storage are optional |
 
 
 ## References
 * [Backup & restore data](./back-up-&-restore-data.md)
+* [DR solution for Standalone](./todo)
+* [DR solution based on Dual Active-Standby](./todo)
+* [DR solution based on cross-region deployment in a single cluster](./todo)
