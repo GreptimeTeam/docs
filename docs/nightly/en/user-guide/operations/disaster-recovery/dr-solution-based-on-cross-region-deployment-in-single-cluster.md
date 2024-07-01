@@ -1,0 +1,1 @@
+# DR solution based on cross-region deployment in a single cluster
