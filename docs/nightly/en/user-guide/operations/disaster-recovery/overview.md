@@ -107,5 +107,7 @@ By comparing these DR solutions, users can decide on the final option based on t
 * [DR solution for Standalone](./dr-solution-for-standalone.md)
 * [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
-* [DR for Multi-Datacenter Apache Kafka Deployments](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/) and [Increase Apache Kafka’s resiliency with a multi-Region deployment and MirrorMaker 2](https://aws.amazon.com/cn/blogs/big-data/increase-apache-kafkas-resiliency-with-a-multi-region-deployment-and-mirrormaker-2/)
+* Kafka DR solution:
+  * [DR for Multi-Datacenter Apache Kafka Deployments](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/)
+  * [Increase Apache Kafka’s resiliency with a multi-Region deployment and MirrorMaker 2](https://aws.amazon.com/cn/blogs/big-data/increase-apache-kafkas-resiliency-with-a-multi-region-deployment-and-mirrormaker-2/)
 * [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
