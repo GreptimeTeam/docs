@@ -56,7 +56,7 @@ But if running the Standalone with remote WAL and object storage, there is a bet
 
 Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution allows for an RPO of zero, and an RTO measured in minutes.
 
- For more information about this solution, see [DR solution for Standalone](./todo)
+ For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
 
 ### DR solution based on Dual Active-Standby 
 ![Dual-active-standby](/Dual-active-standby.png)
@@ -67,7 +67,7 @@ Deploying nodes in different regions can also meet region-level DR requirements,
 
 > **Note: the Dual Active-Standby is a commercial solution.**
 
-For more information about this solution, see [DR solution based on Dual Active-Standby](./todo)
+For more information about this solution, see [DR solution based on Dual Active-Standby]((./dr-solution-based-on-dual-active-standby.md).
 
 ### DR solution  based on cross-region deployment in a single cluster
 
@@ -77,7 +77,7 @@ For medium-to-large scale scenarios requiring zero RPO, this solution is highly 
 
 In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
 
-This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./todo)
+This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
 
 ### DR solution based on BR
 
@@ -104,6 +104,6 @@ By comparing these DR solutions, users can decide on the final option based on t
 
 ## References
 * [Backup & restore data](./back-up-&-restore-data.md)
-* [DR solution for Standalone](./todo)
-* [DR solution based on Dual Active-Standby](./todo)
-* [DR solution based on cross-region deployment in a single cluster](./todo)
+* [DR solution for Standalone](./dr-solution-for-standalone.md)
+* [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md)
+* [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
