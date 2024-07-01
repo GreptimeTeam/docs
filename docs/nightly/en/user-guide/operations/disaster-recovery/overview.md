@@ -57,7 +57,13 @@ But if running the Standalone with remote WAL and object storage, there is a bet
 Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution allows for an RPO of zero, and an RTO measured in minutes.
 
 ### DR solution based on Dual Active-Standby 
+![Dual-active-standby](/Dual-active-standby.png)
 
+In some edge or small-to-medium scale scenarios, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability.
+
+Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
+
+> **Note: the Dual Active-Standby is a commercial solution.**
 
 ### DR solution  based on multiple replicas in a single cluster
 
