@@ -67,7 +67,7 @@ Deploying nodes in different regions can also meet region-level DR requirements,
 
 > **Note: the Dual Active-Standby is a commercial solution.**
 
-For more information about this solution, see [DR solution based on Dual Active-Standby]((./dr-solution-based-on-dual-active-standby.md).
+For more information about this solution, see [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md).
 
 ### DR solution  based on cross-region deployment in a single cluster
 
