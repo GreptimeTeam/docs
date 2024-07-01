@@ -30,7 +30,7 @@ Before digging into the specific DR solution, let's explain the architecture of 
 GreptimeDB is designed with a cloud-native architecture based on storage-compute separation：
 * **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
 * **Datanode**:  the storage layer of GreptimeDB, and is a LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage(such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DA.
-* **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files.
+* **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based(local WAL) or Kafka cluster-based(remote WAL).
 * **Object Storage**: persists the SSTable data and index.
 
 The GreptimeDB stores data in object storage such as [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html) or its compatible services, which is designed to provide 99.999999999% durability and 99.99% availability of objects over a given year. And services such as S3 provide [replications in Single-Region or Cross-Region](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html), which is naturally capable of DR.
@@ -46,13 +46,24 @@ When a cluster encounters a disaster, you can restore the cluster from backup da
 
 ## Solutions introduction
 
-### Standalone DR discussion
+### DR solution for Standalone
+If the Standalone is running on the local disk for WAL and data, then:
+* RPO: depends on backup frequency.
+* RTO: doesn't make sense in standalone mode, mostly depends on your failure response time and the operational infrastructure.
+
+But if running the Standalone with remote WAL and object storage, there is a better DR solution:
+![DR-Standalone](/DR-Standalone.png)
+
+Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution allows for an RPO of zero, and an RTO measured in minutes.
 
 ### DR solution based on Dual Active-Standby 
 
+
 ### DR solution  based on multiple replicas in a single cluster
 
+
 ### DR solution based on BR
+
 
 ### Solution Comparison
 
