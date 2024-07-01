@@ -74,7 +74,7 @@ For more information about this solution, see [DR solution based on Dual Active-
 ![Cross-region-single-cluster](/Cross-region-single-cluster.png)
 
 For medium-to-large scale scenarios requiring zero RPO, this solution is highly recommended. In this deployment architecture, the entire cluster spans across three regions, with each region capable of handling both read and write requests. Data replication is achieved using remote WAL and object storage, both of which must have cross-region DR enabled.
-
+If Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions.
 In the event that Region 1 becomes completely unavailable due to a disaster, the table regions within it will be opened and recovered in the other regions. Region 3 serves as a replica to adhere to the majority protocol of Metasrv.
 
 This solution provides region-level error tolerance, scalable write capability, zero RPO, and minute-level RTO or even lower. For more information about this solution, see [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md).
