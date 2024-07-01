@@ -18,7 +18,7 @@ GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/
 
 The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions(e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
 
-* **Region**: a contiguous segment of a table, and also could be regarded as a partition in some relational databases.
+* **Region**: a contiguous segment of a table, and also could be regarded as a partition in some relational databases. Read [Table Sharding](/contributor-guide/frontend/table-sharding#region) for more details.
 
 ## Component architecture
 
@@ -107,3 +107,5 @@ By comparing these DR solutions, users can decide on the final option based on t
 * [DR solution for Standalone](./dr-solution-for-standalone.md)
 * [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
+* [DR for Multi-Datacenter Apache Kafka Deployments](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/) and [Increase Apache Kafka’s resiliency with a multi-Region deployment and MirrorMaker 2](https://aws.amazon.com/cn/blogs/big-data/increase-apache-kafkas-resiliency-with-a-multi-region-deployment-and-mirrormaker-2/)
+* [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
