@@ -2,6 +2,12 @@
 
 GreptimeDB is a distributed database designed to withstand disasters. It provides different solutions for disaster recovery (DR).
 
+This document contains:
+* Basic concepts in DR.
+* The deployment architecture of GreptimeDB and Backup & Restore (BR).
+* GreptimeDB provides the DR solutions.
+* Compares these DR solutions.
+
 ## Basic Concepts
 
 * **Recovery Time Objective (RTO)**: refers to the maximum acceptable amount of time that a business process can be down after a disaster occurs before it negatively impacts the organization.
@@ -41,7 +47,7 @@ At the same time, the WAL component is pluggable, e.g. using Kafka as the WAL se
 
 ![BR-explain](/BR-explain.png)
 
-BR tool can perform a full snapshot backup of databases or tables at a specific time and supports incremental backup.
+The Backup & Restore (BR) tool can perform a full snapshot backup of databases or tables at a specific time and supports incremental backup.
 When a cluster encounters a disaster, you can restore the cluster from backup data. Generally speaking, BR is the last resort for disaster recovery.
 
 ## Solutions introduction
