@@ -14,7 +14,7 @@ The following figure illustrates these two concepts:
 * **Write-Ahead Logging(WAL)**: persistently records every data modification to ensure data integrity and consistency.
 
 GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree) :
-![LSM-tree-explain.pngin](/LSM-tree-explain.png)
+![LSM-tree-explain](/LSM-tree-explain.png)
 
 The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions (e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
 
