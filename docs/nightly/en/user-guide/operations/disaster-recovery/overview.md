@@ -101,9 +101,9 @@ By comparing these DR solutions, users can decide on the final option based on t
 
 
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
-| ------------- | ------------------------- | ----- | ----- | ----- | ---------- | --------- | --------|
+| ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
-|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Medium | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
+|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
 |  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
 |  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
 
