@@ -29,7 +29,7 @@ Before digging into the specific DR solution, let's explain the architecture of 
 
 GreptimeDB is designed with a cloud-native architecture based on storage-compute separation：
 * **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
-* **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage(such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DA.
+* **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage (such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DA.
 * **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based(local WAL) or Kafka cluster-based(remote WAL).
 * **Object Storage**: persists the SSTable data and index.
 
