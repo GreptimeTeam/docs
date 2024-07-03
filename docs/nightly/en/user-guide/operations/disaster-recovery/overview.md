@@ -35,7 +35,7 @@ Before digging into the specific DR solution, let's explain the architecture of 
 
 GreptimeDB is designed with a cloud-native architecture based on storage-compute separation：
 * **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
-* **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage (such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DA.
+* **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage (such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DR.
 * **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based (local WAL) or Kafka cluster-based (remote WAL).
 * **Object Storage**: persists the SSTable data and index.
 
@@ -67,7 +67,7 @@ Write the WAL to the Kafka cluster and store the data in object storage, so the 
 ### DR solution based on Dual Active-Standby 
 ![Dual-active-standby](/Dual-active-standby.png)
 
-In some edge or small-to-medium scale scenarios, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
+In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
 
 Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
 
@@ -100,12 +100,12 @@ Read [Backup & restore data](./back-up-&-restore-data.md) for details, and we pl
 By comparing these DR solutions, users can decide on the final option based on their specific scenarios, requirements, and investment.
 
 
-|     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Notes |
-| ------------- | ------------------------- | ----- | ----- | ----- | ---------- | --------|
-|  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Recommended to use remote WAL and object storage to achieve high availability and reliability |
-|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Medium | High requirements for availability and reliability in small-to-medium scenarios |  Remote WAL and Object storage are optional, commercial feature|
-|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Remote WAL and Object storage are required |
-|  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability |  Remote WAL and Object storage are optional |
+|     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
+| ------------- | ------------------------- | ----- | ----- | ----- | ---------- | --------- | --------|
+|  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Recommended | |
+|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Medium | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
+|  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
+|  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
 
 
 ## References
