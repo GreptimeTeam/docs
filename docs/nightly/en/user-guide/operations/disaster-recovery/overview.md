@@ -16,7 +16,7 @@ The following figure illustrates these two concepts:
 GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree) :
 ![LSM-tree-explain.pngin](/LSM-tree-explain.png)
 
-The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions(e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
+The data written is going firstly persisted into WAL, then applied into Memtable in memory. Under specific conditions (e.g., exceeding the memory threshold), the Memtable will be flushed and persisted as an SSTable. So the DR of WAL and SSTable is key to the DR of GreptimeDB.
 
 * **Region**: a contiguous segment of a table, and also could be regarded as a partition in some relational databases. Read [Table Sharding](/contributor-guide/frontend/table-sharding#region) for more details.
 
