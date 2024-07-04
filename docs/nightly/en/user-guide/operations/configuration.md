@@ -87,6 +87,21 @@ greptime frontend start --help
 - `--tls-mode <TLS_MODE>`: TLS Mode;
 - `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
 
+### Flownode subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime flownode start --help
+```
+
+- `--node-id <NODE_ID>`: Flownode's id
+- `--rpc-addr <RPC_ADDR>`: Bind address for the gRPC server
+- `--rpc-hostname <RPC_HOSTNAME>`: Hostname for the gRPC server
+- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv address list
+- `-c, --config-file <CONFIG_FILE>`: The configuration file for the flownode
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`
+
 ### Standalone subcommand options
 
 You can list all the options from the following command:

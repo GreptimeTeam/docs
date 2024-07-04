@@ -68,6 +68,19 @@ Starts a frontend instance with command line arguments specifying the address of
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
 
+Starts a flownode instance with customized configurations:
+
+```sh
+greptime flownode start -c config/flownode.example.toml
+```
+
+Starts a flownode instance with command line arguments specifying the address of the metasrv:
+
+```sh
+greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
+```
+
 ## Upgrade GreptimeDB version
 
 Please refer to [the upgrade steps](/user-guide/upgrade.md)
+

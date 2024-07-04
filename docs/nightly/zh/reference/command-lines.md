@@ -69,6 +69,18 @@ greptime frontend start -c config/frontend.example.toml
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
 
+使用自定义配置启动 flownode
+
+```sh
+greptime flownode start -c config/flownode.example.toml
+```
+
+使用命令行参数启动 flownode，指定 metasrv 和 frontend 的地址：
+
+```sh
+greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
+```
+
 ## 升级 GreptimeDB 版本
 
 请参考具体的[升级步骤](/user-guide/upgrade.md)
