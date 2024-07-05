@@ -1,1 +1,1 @@
-# DR solution for Standalone
+# DR solution for GreptimeDB Standalone

@@ -11,13 +11,13 @@ This document contains:
 ## Basic Concepts
 
 * **Recovery Time Objective (RTO)**: refers to the maximum acceptable amount of time that a business process can be down after a disaster occurs before it negatively impacts the organization.
-* **Recovery Point Objective (RPO)**: refers to the maximum acceptable amount of data loss measured in time before the disaster occurs. It indicates the time interval during which data might be lost due to a major incident. 
+* **Recovery Point Objective (RPO)**: refers to the maximum acceptable amount of time since the last data recovery point. This determines what is considered an acceptable loss of data between the last recovery point and the interruption of service.
 
 The following figure illustrates these two concepts:
 
 ![RTO-RPO-explain](/RTO-RPO-explain.png)
 
-* **Write-Ahead Logging(WAL)**: persistently records every data modification to ensure data integrity and consistency.
+* **Write-Ahead Logging (WAL)**: persistently records every data modification to ensure data integrity and consistency.
 
 GreptimeDB storage engine is a typical [LSM Tree](https://en.wikipedia.org/wiki/Log-structured_merge-tree) :
 ![LSM-tree-explain](/LSM-tree-explain.png)
@@ -43,7 +43,7 @@ The GreptimeDB stores data in object storage such as [AWS S3](https://docs.aws.a
 
 At the same time, the WAL component is pluggable, e.g. using Kafka as the WAL service that offers a mature [DR solution](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/).
 
-### BR
+### Backup and restore
 
 ![BR-explain](/BR-explain.png)
 
@@ -52,7 +52,8 @@ When a cluster encounters a disaster, you can restore the cluster from backup da
 
 ## Solutions introduction
 
-### DR solution for Standalone
+### DR solution for GreptimeDB Standalone
+
 If the Standalone is running on the local disk for WAL and data, then:
 * RPO: depends on backup frequency.
 * RTO: doesn't make sense in standalone mode, mostly depends on the size of the data to be restored, your failure response time, and the operational infrastructure.
@@ -65,13 +66,18 @@ Write the WAL to the Kafka cluster and store the data in object storage, so the 
  For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
 
 ### DR solution based on Dual Active-Standby 
+
 ![Dual-active-standby](/Dual-active-standby.png)
 
 In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
 
 Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
 
-> **Note: the Dual Active-Standby is a commercial solution.**
+:::tip NOTE
+
+**the Dual Active-Standby is a commercial solution.**
+
+:::
 
 For more information about this solution, see [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md).
 
@@ -97,7 +103,7 @@ Read [Backup & restore data](./back-up-&-restore-data.md) for details, and we pl
 
 ### Solution Comparison
 
-By comparing these DR solutions, users can decide on the final option based on their specific scenarios, requirements, and investment.
+By comparing these DR solutions, you can decide on the final option based on their specific scenarios, requirements, and cost.
 
 
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
@@ -109,8 +115,9 @@ By comparing these DR solutions, users can decide on the final option based on t
 
 
 ## References
+
 * [Backup & restore data](./back-up-&-restore-data.md)
-* [DR solution for Standalone](./dr-solution-for-standalone.md)
+* [DR solution for GreptimeDB Standalone](./dr-solution-for-standalone.md)
 * [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * Kafka DR solution:
