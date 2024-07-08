@@ -1,4 +1,4 @@
-# Greptime Command Lines
+# Greptime Command Line Interface
 
 The `greptime` command provided by the pre-built binary can start/stop GreptimeDB and pass configuration options. To execute the binary with `greptime` instead of the ad-hoc `./greptime`, you might need to move the binary into the system `bin` directory or add the binary path to the `PATH` environment variable.
 
