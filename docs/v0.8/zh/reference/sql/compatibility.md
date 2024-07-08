@@ -16,4 +16,4 @@ GreptimeDB 支持的 SQL 是 ANSI SQL 的子集，并且拥有一些特有的扩
 5. 删除数据：语法与 ANSI SQL 基本一致。
 6. 他项：
     * 标识符，如表名，列名等，约束与 ANSI SQL 类似，大小写敏感，遇到特殊字符或者大写需要用双引号括起来。
-    * GreptimeDB 针对不同方言做了优化，比如用 MySQL 客户端或者 PostgreSQL 客户端连接到数据库时， 允许使用特定 SQL 方言的标识符规则，比如在 MySQL 中可以用反引号 ```，而在 PostgreSQL 中还是标准的双引号 `"`。
+    * GreptimeDB 针对不同方言做了优化，比如用 MySQL 客户端或者 PostgreSQL 客户端连接到数据库时， 允许使用特定 SQL 方言的标识符规则，比如在 MySQL 中可以用反引号 `` ` ``，而在 PostgreSQL 中还是标准的双引号 `"`。

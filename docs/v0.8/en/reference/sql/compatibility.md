@@ -16,4 +16,4 @@ GreptimeDB supports a subset of ANSI SQL and has some unique extensions. Some ma
 5. Delete data: Deletion syntax is basically consistent with ANSI SQL.
 6. Others:
    * Identifiers such as table names and column names have constraints similar to ANSI SQL, are case sensitive, and require double quotes when encountering special characters or uppercase letters.
-   * GreptimeDB has optimized identifier rules for different dialects. For example, when you connect with a MySQL or PostgreSQL client, you can use identifier rules specific to that SQL dialect, such as using backticks ``` for MySQL and standard double quotes `"` for PostgreSQL.
+   * GreptimeDB has optimized identifier rules for different dialects. For example, when you connect with a MySQL or PostgreSQL client, you can use identifier rules specific to that SQL dialect, such as using backticks `` ` `` for MySQL and standard double quotes `"` for PostgreSQL.
