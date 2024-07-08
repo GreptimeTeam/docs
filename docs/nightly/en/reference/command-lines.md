@@ -1,4 +1,4 @@
-# Command lines
+# Greptime Command Line Interface
 
 The `greptime` command provided by the pre-built binary can start/stop GreptimeDB and pass configuration options. To execute the binary with `greptime` instead of the ad-hoc `./greptime`, you might need to move the binary into the system `bin` directory or add the binary path to the `PATH` environment variable.
 
@@ -6,32 +6,27 @@ The `help` command lists all available commands and options of `greptime`.
 
 ```sh
 $ greptime help
-greptimedb
-branch:  ...
-commit:  ...
-dirty:   ...
-version: ...
+Usage: greptime [OPTIONS] <COMMAND>
 
-USAGE:
-    greptime [OPTIONS] <SUBCOMMAND>
+Commands:
+  datanode    Start datanode service
+  frontend    Start frontend service
+  metasrv     Start metasrv service
+  standalone  Run greptimedb as a standalone service
+  cli         Execute the cli tools for greptimedb
+  help        Print this message or the help of the given subcommand(s)
 
-OPTIONS:
-    -h, --help                     Print help information
-        --log-dir <LOG_DIR>
-        --log-level <LOG_LEVEL>
-    -V, --version                  Print version information
-
-SUBCOMMANDS:
-    cli
-    datanode
-    frontend
-    help          Print this message or the help of the given subcommand(s)
-    metasrv
-    standalone
+Options:
+      --log-dir <LOG_DIR>
+      --log-level <LOG_LEVEL>
+  -h, --help                   Print help
+  -V, --version                Print version
 ```
 
 - `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
+
+## Start service with configurations
 
 Starts GreptimeDB in standalone mode with customized configurations:
 
@@ -72,3 +67,7 @@ Starts a frontend instance with command line arguments specifying the address of
 ```sh
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
+
+## Upgrade GreptimeDB version
+
+Please refer to [the upgrade steps](/user-guide/upgrade.md)

@@ -1,4 +1,4 @@
-# 命令行工具
+# Greptime 命令行工具
 
 预构建二进制文件所提供的 `greptime` 命令可以启动、停止、或传递配置项给 GreptimeDB。为了使用 `greptime` 而不是 `./greptime` 命令，您可能需要将二进制文件移动到系统的 `bin` 文件夹，或者将二进制文件的路径添加到 `PATH` 环境变量。
 
@@ -6,32 +6,28 @@
 
 ```sh
 $ greptime help
-greptimedb
-branch:  ...
-commit:  ...
-dirty:   ...
-version: ...
+Usage: greptime [OPTIONS] <COMMAND>
 
-USAGE:
-    greptime [OPTIONS] <SUBCOMMAND>
+Commands:
+  datanode    Start datanode service
+  frontend    Start frontend service
+  metasrv     Start metasrv service
+  standalone  Run greptimedb as a standalone service
+  cli         Execute the cli tools for greptimedb
+  help        Print this message or the help of the given subcommand(s)
 
-OPTIONS:
-    -h, --help                     Print help information
-        --log-dir <LOG_DIR>
-        --log-level <LOG_LEVEL>
-    -V, --version                  Print version information
-
-SUBCOMMANDS:
-    cli
-    datanode
-    frontend
-    help          Print this message or the help of the given subcommand(s)
-    metasrv
-    standalone
+Options:
+      --log-dir <LOG_DIR>
+      --log-level <LOG_LEVEL>
+  -h, --help                   Print help
+  -V, --version                Print version
 ```
 
 - `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
+
+
+## 启动服务时使用相关配置
 
 使用自定义配置以 standalone 模式启动 GreptimeDB：
 
@@ -72,3 +68,7 @@ greptime frontend start -c config/frontend.example.toml
 ```sh
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
+
+## 升级 GreptimeDB 版本
+
+请参考具体的[升级步骤](/user-guide/upgrade.md)
