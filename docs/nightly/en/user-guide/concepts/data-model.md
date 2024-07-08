@@ -26,7 +26,22 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 
 ### Metric Table
 
-Suppose we have a time-series table called `system_metrics` that monitors the resource usage of a standalone device. The data model for this table is as follows:
+Suppose we have a time-series table called `system_metrics` that monitors the resource usage of a standalone device:
+
+```sql
+CREATE TABLE IF NOT EXISTS system_metrics (
+    host STRING,
+    idc STRING,
+    cpu_util DOUBLE,
+    memory_util DOUBLE,
+    disk_util DOUBLE,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(host, idc),
+    TIME INDEX(ts)
+);
+```
+
+The data model for this table is as follows:
 
 ![time-series-table-model](/time-series-data-model.svg)
 
@@ -61,7 +76,7 @@ CREATE TABLE access_logs (
 
 - The time index column is `access_time`.
 - `remote_addr`, `http_status`, `http_method`, `http_refer` and `user_agent` are tags.
-- `request` is a field which enables full-text index.
+- `request` is a field that enables full-text index by the `FULLTEXT` column option.
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](../table-management.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
@@ -69,14 +84,14 @@ To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer t
 
 GreptimeDB is designed on top of Table for the following reasons:
 
-- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the time series.
+- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the metrics & events.
 - Schema is meta-data to describe data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
-- When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various index tables, offsetting the learning and use costs for users.
-- Use a multi-value model where a row of data can have multiple metric columns,
+- When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, offsetting the learning and use costs for users.
+- Use a multi-value model where a row of data can have multiple field columns,
   instead of the single-value model adopted by OpenTSDB and Prometheus.
   The multi-value model is used to model data sources, where a metric can have multiple values represented by fields.
-  The advantage of the multi-value model is that it can write multiple values to the database at once,
-  while the single-value model requires splitting the data into multiple records.
+  The advantage of the multi-value model is that it can write or read multiple values to the database at once,
+  while the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of multi-value mode.
 
 GreptimeDB uses SQL to manage table schema. Please refer to [table management](../table-management.md) for more information. However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB. For more details, see [Automatic Schema Generation](../write-data/overview.md#automatic-schema-generation).
