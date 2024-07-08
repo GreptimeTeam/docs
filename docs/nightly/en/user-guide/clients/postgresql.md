@@ -17,9 +17,9 @@ public=>
 
 Note: Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password.
 
-## HTTP API
+## Table management
 
-GreptimeDB supports sending SQL statements through HTTP API. For information on how to set up authentication, please refer to [HTTP API](./http-api.md).
+Please refer to [Table Management](../table-management.md).
 
 ## Write data
 

@@ -22,9 +22,9 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
 
-## HTTP API
+## 管理表
 
-GreptimeDB 支持通过 HTTP API 发送 SQL 语句。关于如何设置鉴权认证信息，请参考 [HTTP API](./http-api.md)。
+请参考 [管理表](../table-management.md)。
 
 ## 写入数据
 
