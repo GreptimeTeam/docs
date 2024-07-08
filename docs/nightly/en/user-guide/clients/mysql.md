@@ -22,10 +22,9 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
 
-## HTTP API
+## Table management
 
-GreptimeDB supports sending SQL statements through HTTP API.
-For information on how to set up authentication and how to set up time zone, please refer to [HTTP API](./http-api.md).
+Please refer to [Table Management](../table-management.md).
 
 ## Write data
 

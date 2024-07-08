@@ -17,9 +17,9 @@ public=>
 
 记得将示例中的 `greptime_user(username)` 和 `greptime_pwd(password)` 替换成自己的用户名和密码。
 
-## HTTP API
+## 管理表
 
-GreptimeDB 支持通过 HTTP API 发送 SQL 语句。要在 HTTP 请求中设置鉴权，请参考 [HTTP API](./http-api.md)。
+请参考 [管理表](../table-management.md)。
 
 ## 写入数据
 
