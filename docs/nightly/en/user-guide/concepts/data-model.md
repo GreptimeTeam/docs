@@ -3,7 +3,7 @@
 ## Model
 
 GreptimeDB uses the time-series table to guide the organization, compression, and expiration management of data.
-The data model is mainly based on the table model in relational databases while considering the characteristics of Metrics & Events data.
+The data model is mainly based on the table model in relational databases while considering the characteristics of metrics & events data.
 
 All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`.
 
@@ -12,7 +12,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
   The values in `Tag` columns are labels attached to the collected sources,
   generally used to describe a particular characteristic of these sources.
   `Tag` columns are indexed, making queries on tags performant.
-- `Timestamp` is the root of a Metrics & Events database.
+- `Timestamp` is the root of a metrics & events database.
   It represents the date and time when the data was generated.
   Timestamps are indexed, making queries on timestamps performant.
   A table can only have one timestamp column, which is called time index.
