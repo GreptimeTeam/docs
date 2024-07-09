@@ -43,10 +43,20 @@ The artifacts can be found under `$REPO/target/debug` or `$REPO/target/release`,
 
 ## Unit test
 
-GreptimeDB is well-tested, the entire unit test suite is shipped with source code. To test them, run
+GreptimeDB is well-tested, the entire unit test suite is shipped with source code. To test them, run with [nextest](https://nexte.st/index.html).
+
+To install nextest using cargo, run:
 
 ```shell
-cargo test --workspace
+cargo install cargo-nextest --locked
+```
+
+Or you can check their [docs](https://nexte.st/docs/installation/pre-built-binaries/) for other ways to install.
+
+After nextest is ready, you can run the test suite with:
+
+```shell
+cargo nextest run
 ```
 
 ## Docker
