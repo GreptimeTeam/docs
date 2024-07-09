@@ -5,7 +5,7 @@
 Unit tests are embedded into the codebase, usually placed next to the logic being tested.
 They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
 
-The default test runner ships with `cargo` is not supported in our codebase. It's recommended
+The default test runner ships with `cargo` is not supported in GreptimeDB codebase. It's recommended
 to use [`nextest`](https://nexte.st/) instead. You can install it with
 
 ```shell

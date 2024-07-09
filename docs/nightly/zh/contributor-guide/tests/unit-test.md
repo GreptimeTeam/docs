@@ -5,8 +5,8 @@
 Unit tests are embedded into the codebase, usually placed next to the logic being tested.
 They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
 
-The default test runner ships with `cargo` is a bit slow. It's recommended to use
-[`nextest`](https://nexte.st/) to speed up the test procedure. You can install it with
+The default test runner ships with `cargo` is not supported in GreptimeDB codebase. It's recommended
+to use [`nextest`](https://nexte.st/) instead. You can install it with
 
 ```shell
 cargo install cargo-nextest --locked
