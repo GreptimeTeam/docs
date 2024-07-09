@@ -43,10 +43,20 @@ cargo build # --release
 
 ## 单元测试
 
-GreptimeDB 经过了充分的测试，整个单元测试套件都随源代码一起提供。通过以下命令来运行测试：
+GreptimeDB 经过了充分的测试，整个单元测试套件都随源代码一起提供。要测试它们，请使用 [nextest](https://nexte.st/index.html)。
+
+要使用 cargo 安装 nextest，请运行：
 
 ```shell
-cargo test --workspace
+cargo install cargo-nextest --locked
+```
+
+或者，你可以查看他们的[文档](https://nexte.st/docs/installation/pre-built-binaries/)以了解其他安装方式。
+
+安装好 nextest 后，你可以使用以下命令运行测试套件：
+
+```shell
+cargo nextest run
 ```
 
 ## Docker

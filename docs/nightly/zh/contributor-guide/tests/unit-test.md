@@ -3,7 +3,7 @@
 ## Introduction
 
 Unit tests are embedded into the codebase, usually placed next to the logic being tested.
-They are written using Rust's `#[test]` attribute and can run with `cargo test --workspace`.
+They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
 Since `GreptimeDB` orchestrates its components in the "workspace" manner, the tailing
 `--workspace` is necessary to run all the unit cases.
 

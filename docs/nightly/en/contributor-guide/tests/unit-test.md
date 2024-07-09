@@ -3,12 +3,12 @@
 ## Introduction
 
 Unit tests are embedded into the codebase, usually placed next to the logic being tested.
-They are written using Rust's `#[test]` attribute and can run with `cargo test --workspace`.
+They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
 Since `GreptimeDB` orchestrates its components in the "workspace" manner, the tailing
 `--workspace` is necessary to run all the unit cases.
 
-The default test runner ships with `cargo` is a bit slow. It's recommended to use
-[`nextest`](https://nexte.st/) to speed up the test procedure. You can install it with
+The default test runner ships with `cargo` is not supported in our codebase. It's recommended
+to use [`nextest`](https://nexte.st/) instead. You can install it with
 
 ```shell
 cargo install cargo-nextest --locked
