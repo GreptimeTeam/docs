@@ -1,8 +1,10 @@
-# DataFusion Functions
-This page is generated from the Apache DataFusion project's documents:
-  * [DataFusion Scalar Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md)
-  * [DataFusion Aggregate Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md)
-  * [DataFusion Window Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/window_functions.md)
+# DataFusion 函数
+
+这个页面生成自 Apache DataFusion 项目的文档：
+
+  * [DataFusion 标量函数](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md)
+  * [DataFusion 聚合函数](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md)
+  * [DataFusion 窗口函数](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/window_functions.md)
 
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
@@ -23,9 +25,9 @@ This page is generated from the Apache DataFusion project's documents:
   under the License.
 -->
 
-## Scalar Functions
+## 标量函数
 
-### Math Functions
+### 数学函数
 
 - [abs](#abs)
 - [acos](#acos)
@@ -65,155 +67,155 @@ This page is generated from the Apache DataFusion project's documents:
 - [tan](#tan)
 - [tanh](#tanh)
 - [trunc](#trunc)
-
 ##### `abs`
 
-Returns the absolute value of a number.
+返回一个数的绝对值。
 
 ```
 abs(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `acos`
 
-Returns the arc cosine or inverse cosine of a number.
+返回一个数的反余弦或反余弦。
 
 ```
 acos(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `acosh`
 
-Returns the area hyperbolic cosine or inverse hyperbolic cosine of a number.
+返回一个数的反双曲余弦或反双曲余弦。
 
 ```
 acosh(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `asin`
 
-Returns the arc sine or inverse sine of a number.
+返回一个数的反正弦或反正弦。
 
 ```
 asin(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `asinh`
 
-Returns the area hyperbolic sine or inverse hyperbolic sine of a number.
+返回一个数的反双曲正弦或反双曲正弦。
 
 ```
 asinh(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `atan`
 
-Returns the arc tangent or inverse tangent of a number.
+返回一个数的反正切或反正切。
 
 ```
 atan(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `atanh`
 
-Returns the area hyperbolic tangent or inverse hyperbolic tangent of a number.
+返回一个数的反双曲正切或反双曲正切。
 
 ```
 atanh(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `atan2`
 
-Returns the arc tangent or inverse tangent of `expression_y / expression_x`.
+返回 `expression_y / expression_x` 的反正切或反正切。
 
 ```
 atan2(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: First numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Second numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 要操作的第一个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression_x**: 要操作的第二个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+
 
 ##### `cbrt`
 
-Returns the cube root of a number.
+返回一个数的立方根。
 
 ```
 cbrt(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `ceil`
 
-Returns the nearest integer greater than or equal to a number.
+返回大于或等于一个数的最近整数。
 
 ```
 ceil(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `cos`
 
-Returns the cosine of a number.
+返回一个数的余弦值。
 
 ```
 cos(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `cosh`
 
-Returns the hyperbolic cosine of a number.
+返回一个数的双曲余弦值。
 
 ```
 cosh(numeric_expression)
@@ -221,192 +223,187 @@ cosh(numeric_expression)
 
 ##### `degrees`
 
-Converts radians to degrees.
+将弧度转换为角度。
 
 ```
 degrees(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-###### Arguments
-
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `exp`
 
-Returns the base-e exponential of a number.
+返回一个数的以 e 为底的指数值。
 
 ```
 exp(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to use as the exponent.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 作为指数的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `factorial`
 
-Factorial. Returns 1 if value is less than 2.
+阶乘。如果值小于 2，则返回 1。
 
 ```
 factorial(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `floor`
 
-Returns the nearest integer less than or equal to a number.
+返回小于或等于一个数的最近整数。
 
 ```
 floor(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `gcd`
 
-Returns the greatest common divisor of `expression_x` and `expression_y`. Returns 0 if both inputs are zero.
+返回 `expression_x` 和 `expression_y` 的最大公约数。如果两个输入都为零，则返回 0。
 
 ```
 gcd(expression_x, expression_y)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_x**: First numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_y**: Second numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_x**: 要操作的第一个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression_y**: 要操作的第二个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `isnan`
 
-Returns true if a given number is +NaN or -NaN otherwise returns false.
+如果给定的数是 +NaN 或 -NaN，则返回 true；否则返回 false。
 
 ```
 isnan(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `iszero`
 
-Returns true if a given number is +0.0 or -0.0 otherwise returns false.
+如果给定的数是 +0.0 或 -0.0，则返回 true；否则返回 false。
 
 ```
 iszero(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `lcm`
 
-Returns the least common multiple of `expression_x` and `expression_y`. Returns 0 if either input is zero.
+返回 `expression_x` 和 `expression_y` 的最小公倍数。如果任一输入为零，则返回 0。
 
 ```
 lcm(expression_x, expression_y)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_x**: First numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_y**: Second numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_x**: 要操作的第一个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression_y**: 要操作的第二个数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `ln`
 
-Returns the natural logarithm of a number.
+返回一个数的自然对数。
 
 ```
 ln(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `log`
 
-Returns the base-x logarithm of a number.
-Can either provide a specified base, or if omitted then takes the base-10 of a number.
+返回一个数的以指定底数为底的对数值。
+如果省略底数，则取以 10 为底的对数。
 
 ```
 log(base, numeric_expression)
 log(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **base**: Base numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **base**: 要操作的底数表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `log10`
 
-Returns the base-10 logarithm of a number.
+返回一个数的以 10 为底的对数值。
 
 ```
 log10(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `log2`
 
-Returns the base-2 logarithm of a number.
+返回一个数的以 2 为底的对数值。
 
 ```
 log2(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `nanvl`
 
-Returns the first argument if it's not _NaN_.
-Returns the second argument otherwise.
+如果第一个参数不是 _NaN_，则返回第一个参数。
+否则返回第二个参数。
 
 ```
 nanvl(expression_x, expression_y)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_x**: Numeric expression to return if it's not _NaN_.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_y**: Numeric expression to return if the first expression is _NaN_.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_x**: 如果不是 _NaN_，则返回的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression_y**: 如果第一个表达式是 _NaN_，则返回的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `pi`
 
-Returns an approximate value of π.
+返回 π 的近似值。
 
 ```
 pi()
@@ -414,44 +411,43 @@ pi()
 
 ##### `power`
 
-Returns a base expression raised to the power of an exponent.
+返回一个基数表达式的指数幂。
 
 ```
 power(base, exponent)
 ```
 
-###### Arguments
+###### 参数
 
-- **base**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **exponent**: Exponent numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **base**: 要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **exponent**: 要操作的指数数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
-###### Aliases
+###### 别名
 
 - pow
-
 ##### `pow`
 
-_Alias of [power](#power)._
+_别名：[power](#power)。_
 
 ##### `radians`
 
-Converts degrees to radians.
+将角度转换为弧度。
 
 ```
 radians(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `random`
 
-Returns a random float value in the range [0, 1).
-The random seed is unique to each row.
+返回一个在范围 [0, 1) 内的随机浮点数。
+每行的随机种子是唯一的。
 
 ```
 random()
@@ -459,119 +455,116 @@ random()
 
 ##### `round`
 
-Rounds a number to the nearest integer.
+将一个数四舍五入到最近的整数。
 
 ```
 round(numeric_expression[, decimal_places])
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **decimal_places**: Optional. The number of decimal places to round to.
-  Defaults to 0.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **decimal_places**：可选。要四舍五入到的小数位数。
+  默认为 0。
 
 ##### `signum`
 
-Returns the sign of a number.
-Negative numbers return `-1`.
-Zero and positive numbers return `1`.
+返回一个数的符号。
+负数返回 `-1`。
+零和正数返回 `1`。
 
 ```
 signum(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `sin`
 
-Returns the sine of a number.
+返回一个数的正弦值。
 
 ```
 sin(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `sinh`
 
-Returns the hyperbolic sine of a number.
+返回一个数的双曲正弦值。
 
 ```
 sinh(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `sqrt`
 
-Returns the square root of a number.
+返回一个数的平方根。
 
 ```
 sqrt(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `tan`
 
-Returns the tangent of a number.
+返回一个数的正切值。
 
 ```
 tan(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `tanh`
 
-Returns the hyperbolic tangent of a number.
+返回一个数的双曲正切值。
 
 ```
 tanh(numeric_expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `trunc`
 
-Truncates a number to a whole number or truncated to the specified decimal places.
+将一个数截断为整数或截断到指定的小数位数。
 
 ```
 trunc(numeric_expression[, decimal_places])
 ```
 
-###### Arguments
+###### 参数
 
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **numeric_expression**：要操作的数值表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
-- **decimal_places**: Optional. The number of decimal places to
-  truncate to. Defaults to 0 (truncate to a whole number). If
-  `decimal_places` is a positive integer, truncates digits to the
-  right of the decimal point. If `decimal_places` is a negative
-  integer, replaces digits to the left of the decimal point with `0`.
+- **decimal_places**：可选。要截断到的小数位数。
+  默认为 0（截断为整数）。如果 `decimal_places` 是正整数，则截断小数点右侧的数字。如果 `decimal_places` 是负整数，则用 `0` 替换小数点左侧的数字。
 
-### Conditional Functions
+### 条件函数
 
 - [coalesce](#coalesce)
 - [nullif](#nullif)
@@ -581,74 +574,74 @@ trunc(numeric_expression[, decimal_places])
 
 ##### `coalesce`
 
-Returns the first of its arguments that is not _null_.
-Returns _null_ if all arguments are _null_.
-This function is often used to substitute a default value for _null_ values.
+返回其参数中第一个非 _null_ 的值。
+如果所有参数都为 _null_，则返回 _null_。
+该函数通常用于替换 _null_ 值的默认值。
 
 ```
 coalesce(expression1[, ..., expression_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1, expression_n**:
-  Expression to use if previous expressions are _null_.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  Pass as many expression arguments as necessary.
+- **expression1, expression_n**：
+  如果前面的表达式为 _null_，则使用的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+  根据需要传递多个表达式参数。
 
 ##### `nullif`
 
-Returns _null_ if _expression1_ equals _expression2_; otherwise it returns _expression1_.
-This can be used to perform the inverse operation of [`coalesce`](#coalesce).
+如果 _expression1_ 等于 _expression2_，则返回 _null_；否则返回 _expression1_。
+这可以用来执行 [`coalesce`](#coalesce) 的反向操作。
 
 ```
 nullif(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: Expression to compare and return if equal to expression2.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Expression to compare to expression1.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**：要比较并在等于 expression2 时返回的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression2**：要与 expression1 进行比较的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `nvl`
 
-Returns _expression2_ if _expression1_ is NULL; otherwise it returns _expression1_.
+如果 _expression1_ 为 NULL，则返回 _expression2_；否则返回 _expression1_。
 
 ```
 nvl(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: return if expression1 not is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: return if expression1 is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**：如果 expression1 不为 NULL，则返回的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression2**：如果 expression1 为 NULL，则返回的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `nvl2`
 
-Returns _expression2_ if _expression1_ is not NULL; otherwise it returns _expression3_.
+如果 _expression1_ 不为 NULL，则返回 _expression2_；否则返回 _expression3_。
 
 ```
 nvl2(expression1, expression2, expression3)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: conditional expression.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: return if expression1 is not NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression3**: return if expression1 is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**：条件表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression2**：如果 expression1 不为 NULL，则返回的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+- **expression3**：如果 expression1 为 NULL，则返回的表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `ifnull`
 
-_Alias of [nvl](#nvl)._
+_别名：[nvl](#nvl)。_
 
-### String Functions
+### 字符串函数
 
 - [ascii](#ascii)
 - [bit_length](#bit-length)
@@ -688,515 +681,507 @@ _Alias of [nvl](#nvl)._
 - [find_in_set](#find-in-set)
 - [position](#position)
 - [contains](#contains)
-
 ##### `ascii`
 
-Returns the ASCII value of the first character in a string.
+返回字符串中第一个字符的 ASCII 值。
 
 ```
 ascii(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [chr](#chr)
 
 ##### `bit_length`
 
-Returns the bit length of a string.
+返回字符串的位长度。
 
 ```
 bit_length(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [length](#length),
 [octet_length](#octet-length)
 
 ##### `btrim`
 
-Trims the specified trim string from the start and end of a string.
-If no trim string is provided, all whitespace is removed from the start and end
-of the input string.
+从字符串的开头和结尾删除指定的修剪字符串。
+如果未提供修剪字符串，则从输入字符串的开头和结尾删除所有空格。
 
 ```
 btrim(str[, trim_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the beginning and end of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **trim_str**：要从输入字符串的开头和结尾修剪的字符串表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+  _默认为空格字符。_
 
-**Related functions**:
+**相关函数**：
 [ltrim](#ltrim),
 [rtrim](#rtrim)
 
-###### Aliases
+###### 别名
 
 - trim
 
 ##### `char_length`
 
-_Alias of [length](#length)._
+[长度](#length)的别名。
 
 ##### `character_length`
 
-_Alias of [length](#length)._
+[长度](#length)的别名。
 
 ##### `concat`
 
-Concatenates multiple strings together.
+将多个字符串连接在一起。
 
 ```
 concat(str[, ..., str_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to concatenate.
-  Can be a constant, column, or function, and any combination of string operators.
-- **str_n**: Subsequent string column or literal string to concatenate.
+- **str**：要连接的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **str_n**：要连接的后续字符串列或文字字符串。
 
-**Related functions**:
+**相关函数**：
 [concat_ws](#concat-ws)
 
 ##### `concat_ws`
 
-Concatenates multiple strings together with a specified separator.
+使用指定的分隔符将多个字符串连接在一起。
 
 ```
 concat(separator, str[, ..., str_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **separator**: Separator to insert between concatenated strings.
-- **str**: String expression to concatenate.
-  Can be a constant, column, or function, and any combination of string operators.
-- **str_n**: Subsequent string column or literal string to concatenate.
+- **separator**：要插入在连接的字符串之间的分隔符。
+- **str**：要连接的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **str_n**：要连接的后续字符串列或文字字符串。
 
-**Related functions**:
+**相关函数**：
 [concat](#concat)
 
 ##### `chr`
 
-Returns the character with the specified ASCII or Unicode code value.
+返回具有指定 ASCII 或 Unicode 代码值的字符。
 
 ```
 chr(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression containing the ASCII or Unicode code value to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+- **expression**：包含要操作的 ASCII 或 Unicode 代码值的表达式。
+  可以是常量、列或函数，以及任意组合的算术或字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [ascii](#ascii)
 
 ##### `ends_with`
 
-Tests if a string ends with a substring.
+测试字符串是否以子字符串结尾。
 
 ```
 ends_with(str, substr)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to test.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring to test for.
+- **str**：要测试的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **substr**：要测试的子字符串。
 
 ##### `initcap`
 
-Capitalizes the first character in each word in the input string.
-Words are delimited by non-alphanumeric characters.
+将输入字符串中每个单词的首字母大写。
+单词由非字母数字字符分隔。
 
 ```
 initcap(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [lower](#lower),
 [upper](#upper)
 
 ##### `instr`
 
-_Alias of [strpos](#strpos)._
+[strpos](#strpos)的别名。
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to search for.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **substr**：要搜索的子字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
 ##### `left`
 
-Returns a specified number of characters from the left side of a string.
+从字符串的左侧返回指定数量的字符。
 
 ```
 left(str, n)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of characters to return.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **n**：要返回的字符数。
 
-**Related functions**:
+**相关函数**：
 [right](#right)
 
 ##### `length`
 
-Returns the number of characters in a string.
+返回字符串中的字符数。
 
 ```
 length(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-###### Aliases
+###### 别名
 
 - char_length
 - character_length
 
-**Related functions**:
+**相关函数**：
 [bit_length](#bit-length),
 [octet_length](#octet-length)
 
 ##### `lower`
 
-Converts a string to lower-case.
+将字符串转换为小写。
 
 ```
 lower(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [initcap](#initcap),
 [upper](#upper)
 
 ##### `lpad`
 
-Pads the left side of a string with another string to a specified string length.
+使用另一个字符串在字符串的左侧填充到指定的字符串长度。
 
 ```
 lpad(str, n[, padding_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: String length to pad to.
-- **padding_str**: String expression to pad with.
-  Can be a constant, column, or function, and any combination of string operators.
-  _Default is a space._
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **n**：要填充到的字符串长度。
+- **padding_str**：要填充的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+  _默认为空格。_
 
-**Related functions**:
+**相关函数**：
 [rpad](#rpad)
 
 ##### `ltrim`
 
-Trims the specified trim string from the beginning of a string.
-If no trim string is provided, all whitespace is removed from the start
-of the input string.
+从字符串的开头删除指定的修剪字符串。
+如果未提供修剪字符串，则从输入字符串的开头删除所有空格。
 
 ```
 ltrim(str[, trim_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the beginning of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **trim_str**：要从输入字符串的开头修剪的字符串表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+  _默认为空格字符。_
 
-**Related functions**:
+**相关函数**：
 [btrim](#btrim),
 [rtrim](#rtrim)
 
 ##### `octet_length`
 
-Returns the length of a string in bytes.
+返回字符串的字节长度。
 
 ```
 octet_length(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [bit_length](#bit-length),
 [length](#length)
 
 ##### `repeat`
 
-Returns a string with an input string repeated a specified number.
+返回一个重复指定次数的输入字符串的字符串。
 
 ```
 repeat(str, n)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of times to repeat the input string.
+- **str**：要重复的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **n**：要重复输入字符串的次数。
 
 ##### `replace`
 
-Replaces all occurrences of a specified substring in a string with a new substring.
+将字符串中所有出现的指定子字符串替换为新的子字符串。
 
 ```
 replace(str, substr, replacement)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to replace in the input string.
-  Can be a constant, column, or function, and any combination of string operators.
-- **replacement**: Replacement substring expression.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **substr**：要替换的子字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **replacement**：替换的子字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
 ##### `reverse`
 
-Reverses the character order of a string.
+反转字符串的字符顺序。
 
 ```
 reverse(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
 ##### `right`
 
-Returns a specified number of characters from the right side of a string.
+从字符串的右侧返回指定数量的字符。
 
 ```
 right(str, n)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of characters to return.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **n**：要返回的字符数。
 
-**Related functions**:
+**相关函数**：
 [left](#left)
 
 ##### `rpad`
 
-Pads the right side of a string with another string to a specified string length.
+使用另一个字符串在字符串的右侧填充到指定的字符串长度。
 
 ```
 rpad(str, n[, padding_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: String length to pad to.
-- **padding_str**: String expression to pad with.
-  Can be a constant, column, or function, and any combination of string operators.
-  _Default is a space._
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **n**：要填充到的字符串长度。
+- **padding_str**：要填充的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+  _默认为空格。_
 
-**Related functions**:
+**相关函数**：
 [lpad](#lpad)
 
 ##### `rtrim`
 
-Trims the specified trim string from the end of a string.
-If no trim string is provided, all whitespace is removed from the end
-of the input string.
+从字符串的末尾删除指定的修剪字符串。
+如果未提供修剪字符串，则从输入字符串的末尾删除所有空格。
 
 ```
 rtrim(str[, trim_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the end of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **trim_str**：要从输入字符串的末尾修剪的字符串表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
+  _默认为空格字符。_
 
-**Related functions**:
+**相关函数**：
 [btrim](#btrim),
 [ltrim](#ltrim)
 
 ##### `split_part`
 
-Splits a string based on a specified delimiter and returns the substring in the
-specified position.
+根据指定的分隔符拆分字符串，并返回指定位置的子字符串。
 
 ```
 split_part(str, delimiter, pos)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to spit.
-  Can be a constant, column, or function, and any combination of string operators.
-- **delimiter**: String or character to split on.
-- **pos**: Position of the part to return.
+- **str**：要拆分的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **delimiter**：要拆分的字符串或字符。
+- **pos**：要返回的部分的位置。
 
 ##### `starts_with`
 
-Tests if a string starts with a substring.
+测试字符串是否以子字符串开头。
 
 ```
 starts_with(str, substr)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to test.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring to test for.
+- **str**：要测试的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **substr**：要测试的子字符串。
 
 ##### `strpos`
 
-Returns the starting position of a specified substring in a string.
-Positions begin at 1.
-If the substring does not exist in the string, the function returns 0.
+返回字符串中指定子字符串的起始位置。
+位置从1开始。
+如果字符串中不存在子字符串，则函数返回0。
 
 ```
 strpos(str, substr)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to search for.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **substr**：要搜索的子字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-###### Aliases
+###### 别名
 
 - instr
 
 ##### `substr`
 
-Extracts a substring of a specified number of characters from a specific
-starting position in a string.
+从字符串的指定起始位置提取指定数量的字符的子字符串。
 
 ```
 substr(str, start_pos[, length])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **start_pos**: Character position to start the substring at.
-  The first character in the string has a position of 1.
-- **length**: Number of characters to extract.
-  If not specified, returns the rest of the string after the start position.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **start_pos**：子字符串的起始位置。
+  字符串中的第一个字符的位置为1。
+- **length**：要提取的字符数。
+  如果未指定，则返回起始位置之后的剩余字符串。
 
-###### Aliases
+###### 别名
 
 - substring
 
 ##### `substring`
 
-_Alias of [substr](#substr)._
+[substr](#substr)的别名。
 
 ##### `translate`
 
-Translates characters in a string to specified translation characters.
+将字符串中的字符转换为指定的转换字符。
 
 ```
 translate(str, chars, translation)
 ```
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **chars**: Characters to translate.
-- **translation**: Translation characters. Translation characters replace only
-  characters at the same position in the **chars** string.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **chars**：要转换的字符。
+- **translation**：转换字符。转换字符仅替换 **chars** 字符串中相同位置的字符。
 
 ##### `to_hex`
 
-Converts an integer to a hexadecimal string.
+将整数转换为十六进制字符串。
 
 ```
 to_hex(int)
 ```
 
-###### Arguments
+###### 参数
 
-- **int**: Integer expression to convert.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **int**：要转换的整数表达式。
+  可以是常量、列或函数，以及任意组合的算术运算符。
 
 ##### `trim`
 
-_Alias of [btrim](#btrim)._
+[btrim](#btrim)的别名。
 
 ##### `upper`
 
-Converts a string to upper-case.
+将字符串转换为大写。
 
 ```
 upper(str)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
 
-**Related functions**:
+**相关函数**：
 [initcap](#initcap),
 [lower](#lower)
 
 ##### `uuid`
 
-Returns UUID v4 string value which is unique per row.
+返回每行唯一的UUID v4字符串值。
 
 ```
 uuid()
@@ -1204,143 +1189,141 @@ uuid()
 
 ##### `overlay`
 
-Returns the string which is replaced by another string from the specified position and specified count length.
-For example, `overlay('Txxxxas' placing 'hom' from 2 for 4) → Thomas`
+返回从指定位置和指定计数长度替换的字符串。
+例如，`overlay('Txxxxas' placing 'hom' from 2 for 4) → Thomas`
 
 ```
 overlay(str PLACING substr FROM pos [FOR count])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-- **substr**: the string to replace part of str.
-- **pos**: the start position to replace of str.
-- **count**: the count of characters to be replaced from start position of str. If not specified, will use substr length instead.
+- **str**：要操作的字符串表达式。
+- **substr**：要替换str的字符串。
+- **pos**：要替换str的起始位置。
+- **count**：要替换的字符数。如果未指定，则使用substr的长度。
 
 ##### `levenshtein`
 
-Returns the Levenshtein distance between the two given strings.
-For example, `levenshtein('kitten', 'sitting') = 3`
+返回两个给定字符串之间的Levenshtein距离。
+例如，`levenshtein('kitten', 'sitting') = 3`
 
 ```
 levenshtein(str1, str2)
 ```
 
-###### Arguments
+###### 参数
 
-- **str1**: String expression to compute Levenshtein distance with str2.
-- **str2**: String expression to compute Levenshtein distance with str1.
+- **str1**：要计算与str2的Levenshtein距离的字符串表达式。
+- **str2**：要计算与str1的Levenshtein距离的字符串表达式。
 
 ##### `substr_index`
 
-Returns the substring from str before count occurrences of the delimiter delim.
-If count is positive, everything to the left of the final delimiter (counting from the left) is returned.
-If count is negative, everything to the right of the final delimiter (counting from the right) is returned.
-For example, `substr_index('www.apache.org', '.', 1) = www`, `substr_index('www.apache.org', '.', -1) = org`
+返回在delim定界符之前的str子字符串。
+如果count为正数，则返回最后一个定界符左侧的所有内容。
+如果count为负数，则返回最后一个定界符右侧的所有内容。
+例如，`substr_index('www.apache.org', '.', 1) = www`，`substr_index('www.apache.org', '.', -1) = org`
 
 ```
 substr_index(str, delim, count)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-- **delim**: the string to find in str to split str.
-- **count**: The number of times to search for the delimiter. Can be both a positive or negative number.
+- **str**：要操作的字符串表达式。
+- **delim**：要在str中查找并拆分str的字符串。
+- **count**：要搜索定界符的次数。可以是正数或负数。
 
 ##### `find_in_set`
 
-Returns a value in the range of 1 to N if the string str is in the string list strlist consisting of N substrings.
-For example, `find_in_set('b', 'a,b,c,d') = 2`
+如果字符串str在由N个子字符串组成的字符串列表strlist中，则返回1到N之间的值。
+例如，`find_in_set('b', 'a,b,c,d') = 2`
 
 ```
 find_in_set(str, strlist)
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to find in strlist.
-- **strlist**: A string list is a string composed of substrings separated by , characters.
+- **str**：要在strlist中查找的字符串表达式。
+- **strlist**：字符串列表是由逗号字符分隔的子字符串组成的字符串。
 
-### Binary String Functions
+### 二进制字符串函数
 
 - [decode](#decode)
 - [encode](#encode)
 
 ##### `encode`
 
-Encode binary data into a textual representation.
+将二进制数据编码为文本表示。
 
 ```
 encode(expression, format)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression containing string or binary data
+- **expression**：包含字符串或二进制数据的表达式。
 
-- **format**: Supported formats are: `base64`, `hex`
+- **format**：支持的格式有：`base64`，`hex`
 
-**Related functions**:
+**相关函数**：
 [decode](#decode)
 
 ##### `decode`
 
-Decode binary data from textual representation in string.
+从字符串中解码二进制数据的文本表示。
 
 ```
 decode(expression, format)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression containing encoded string data
+- **expression**：包含编码的字符串数据的表达式。
 
-- **format**: Same arguments as [encode](#encode)
+- **format**：与[encode](#encode)相同的参数
 
-**Related functions**:
+**相关函数**：
 [encode](#encode)
 
-### Regular Expression Functions
+### 正则表达式函数
 
-Apache DataFusion uses a [PCRE-like] regular expression [syntax]
-(minus support for several features including look-around and backreferences).
-The following regular expression functions are supported:
+Apache DataFusion使用类似于[PCRE]的正则表达式[语法]
+（减去了对几个功能的支持，包括环视和反向引用）。
+支持以下正则表达式函数：
 
 - [regexp_like](#regexp-like)
 - [regexp_match](#regexp-match)
 - [regexp_replace](#regexp-replace)
 
-[pcre-like]: https://en.wikibooks.org/wiki/Regular_Expressions/Perl-Compatible_Regular_Expressions
-[syntax]: https://docs.rs/regex/latest/regex/#syntax
+[pcre]: https://en.wikibooks.org/wiki/Regular_Expressions/Perl-Compatible_Regular_Expressions
+[语法]: https://docs.rs/regex/latest/regex/#syntax
 
 ##### `regexp_like`
 
-Returns true if a [regular expression] has at least one match in a string,
-false otherwise.
+如果字符串中的[正则表达式]至少有一个匹配项，则返回true，否则返回false。
 
-[regular expression]: https://docs.rs/regex/latest/regex/#syntax
+[正则表达式]: https://docs.rs/regex/latest/regex/#syntax
 
 ```
 regexp_like(str, regexp[, flags])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to test against the string expression.
-  Can be a constant, column, or function.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **regexp**：要与字符串表达式进行匹配的正则表达式。
+  可以是常量、列或函数。
+- **flags**：可选的正则表达式标志，用于控制正则表达式的行为。支持以下标志：
+  - **i**：不区分大小写：字母匹配大写和小写
+  - **m**：多行模式：^和$匹配行的开头和结尾
+  - **s**：允许.匹配\n
+  - **R**：启用CRLF模式：当启用多行模式时，使用\r\n
+  - **U**：交换x*和x*的含义？
 
-###### Example
+###### 示例
 
 ```sql
 select regexp_like('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
@@ -1357,31 +1340,30 @@ SELECT regexp_like('aBc', '(b|d)', 'i');
 +--------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)找到
 
 ##### `regexp_match`
 
-Returns a list of [regular expression](https://docs.rs/regex/latest/regex/#syntax) matches in a string.
+返回字符串中与[正则表达式](https://docs.rs/regex/latest/regex/#syntax)匹配的列表。
 
 ```
 regexp_match(str, regexp[, flags])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to match against.
-  Can be a constant, column, or function.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **regexp**：要与之匹配的正则表达式。
+  可以是常量、列或函数。
+- **flags**：可选的正则表达式标志，用于控制正则表达式的行为。支持以下标志：
+  - **i**：不区分大小写：字母匹配大写和小写
+  - **m**：多行模式：^和$匹配行的开头和结尾
+  - **s**：允许.匹配\n
+  - **R**：启用CRLF模式：当启用多行模式时，使用\r\n
+  - **U**：交换x*和x*的含义？
 
-###### Example
+###### 示例
 
 ```sql
 select regexp_match('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
@@ -1398,34 +1380,33 @@ SELECT regexp_match('aBc', '(b|d)', 'i');
 +---------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)找到
 
 ##### `regexp_replace`
 
-Replaces substrings in a string that match a [regular expression](https://docs.rs/regex/latest/regex/#syntax).
+替换字符串中与[正则表达式](https://docs.rs/regex/latest/regex/#syntax)匹配的子字符串。
 
 ```
 regexp_replace(str, regexp, replacement[, flags])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to match against.
-  Can be a constant, column, or function.
-- **replacement**: Replacement string expression.
-  Can be a constant, column, or function, and any combination of string operators.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **g**: (global) Search globally and don't return after the first match
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
+- **str**：要操作的字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **regexp**：要与之匹配的正则表达式。
+  可以是常量、列或函数。
+- **replacement**：替换字符串表达式。
+  可以是常量、列或函数，以及任意组合的字符串运算符。
+- **flags**：可选的正则表达式标志，用于控制正则表达式的行为。支持以下标志：
+  - **g**：（全局）全局搜索，匹配后不返回
+  - **i**：不区分大小写：字母匹配大写和小写
+  - **m**：多行模式：^和$匹配行的开头和结尾
+  - **s**：允许.匹配\n
+  - **R**：启用CRLF模式：当启用多行模式时，使用\r\n
+  - **U**：交换x*和x*的含义？
 
-###### Example
+###### 示例
 
 ```sql
 SELECT regexp_replace('foobarbaz', 'b(..)', 'X\\1Y', 'g');
@@ -1442,36 +1423,35 @@ SELECT regexp_replace('aBc', '(b|d)', 'Ab\\1a', 'i');
 +-------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)找到
 
 ##### `position`
 
-Returns the position of `substr` in `origstr` (counting from 1). If `substr` does
-not appear in `origstr`, return 0.
+返回`origstr`中`substr`的位置（从1开始计数）。如果`origstr`中不存在`substr`，则返回0。
 
 ```
 position(substr in origstr)
 ```
 
-###### Arguments
+###### 参数
 
-- **substr**: The pattern string.
-- **origstr**: The model string.
+- **substr**：模式字符串。
+- **origstr**：模型字符串。
 
 ##### `contains`
 
-Return true if search_string is found within string.
+如果`search_string`在`string`中找到，则返回true。
 
 ```
 contains(string, search_string)
 ```
 
-###### Arguments
+###### 参数
 
-- **string**: The pattern string.
-- **search_string**: The model string.
+- **string**：模式字符串。
+- **search_string**：模型字符串。
 
-### Time and Date Functions
+### 时间和日期函数
 
 - [now](#now)
 - [current_date](#current-date)
@@ -1496,10 +1476,9 @@ contains(string, search_string)
 
 ##### `now`
 
-Returns the current UTC timestamp.
+返回当前的 UTC 时间戳。
 
-The `now()` return value is determined at query time and will return the same timestamp,
-no matter when in the query plan the function executes.
+`now()`的返回值在查询时确定，并且无论函数在查询计划的哪个位置执行，都会返回相同的时间戳。
 
 ```
 now()
@@ -1507,29 +1486,27 @@ now()
 
 ##### `current_date`
 
-Returns the current UTC date.
+返回当前的 UTC 日期。
 
-The `current_date()` return value is determined at query time and will return the same date,
-no matter when in the query plan the function executes.
+`current_date()`的返回值在查询时确定，并且无论函数在查询计划的哪个位置执行，都会返回相同的日期。
 
 ```
 current_date()
 ```
 
-###### Aliases
+###### 别名
 
 - today
 
 ##### `today`
 
-_Alias of [current_date](#current-date)._
+[current_date](#current-date)的别名。
 
 ##### `current_time`
 
-Returns the current UTC time.
+返回当前的UTC时间。
 
-The `current_time()` return value is determined at query time and will return the same time,
-no matter when in the query plan the function executes.
+`current_time()`的返回值在查询时确定，并且无论函数在查询计划的哪个位置执行，都会返回相同的时间。
 
 ```
 current_time()
@@ -1537,27 +1514,23 @@ current_time()
 
 ##### `date_bin`
 
-Calculates time intervals and returns the start of the interval nearest to the specified timestamp.
-Use `date_bin` to downsample time series data by grouping rows into time-based "bins" or "windows"
-and applying an aggregate or selector function to each window.
+计算时间间隔，并返回最接近指定时间戳的间隔的起始时间。
+使用`date_bin`将时间序列数据按时间“bin”或“window”分组，并对每个窗口应用聚合或选择器函数，以降低采样率。
 
-For example, if you "bin" or "window" data into 15 minute intervals, an input
-timestamp of `2023-01-01T18:18:18Z` will be updated to the start time of the 15
-minute bin it is in: `2023-01-01T18:15:00Z`.
+例如，如果将数据分组为15分钟的间隔，输入时间戳`2023-01-01T18:18:18Z`将更新为所在15分钟间隔的起始时间：`2023-01-01T18:15:00Z`。
 
 ```
 date_bin(interval, expression, origin-timestamp)
 ```
 
-###### Arguments
+###### 参数
 
-- **interval**: Bin interval.
-- **expression**: Time expression to operate on.
-  Can be a constant, column, or function.
-- **origin-timestamp**: Optional. Starting point used to determine bin boundaries. If not specified
-  defaults `1970-01-01T00:00:00Z` (the UNIX epoch in UTC).
+- **interval**：时间间隔。
+- **expression**：要操作的时间表达式。
+  可以是常量、列或函数。
+- **origin-timestamp**：可选。用于确定间隔边界的起始点。如果未指定，默认为`1970-01-01T00:00:00Z`（UNIX纪元时间，UTC）。
 
-The following intervals are supported:
+支持以下时间间隔：
 
 - nanoseconds
 - microseconds
@@ -1570,19 +1543,18 @@ The following intervals are supported:
 - months
 - years
 - century
-
 ##### `date_trunc`
 
-Truncates a timestamp value to a specified precision.
+将时间戳值截断到指定的精度。
 
 ```
-date_trunc(precision, expression)
+date_trunc(精度, 表达式)
 ```
 
-###### Arguments
+###### 参数
 
-- **precision**: Time precision to truncate to.
-  The following precisions are supported:
+- **精度**：要截断到的时间精度。
+  支持以下精度：
 
   - year / YEAR
   - quarter / QUARTER
@@ -1592,30 +1564,29 @@ date_trunc(precision, expression)
   - hour / HOUR
   - minute / MINUTE
   - second / SECOND
+  - **expression**: 操作的时间表达式。
+    可以是常量、列或函数。
 
-- **expression**: Time expression to operate on.
-  Can be a constant, column, or function.
+  ###### 别名
 
-###### Aliases
+  - datetrunc
 
-- datetrunc
+  ##### `datetrunc`
 
-##### `datetrunc`
+  [date_trunc](#date-trunc)的别名。
 
-_Alias of [date_trunc](#date-trunc)._
+  ##### `date_part`
 
-##### `date_part`
+  返回日期的指定部分作为整数。
 
-Returns the specified part of the date as an integer.
+  ```
+  date_part(part, expression)
+  ```
 
-```
-date_part(part, expression)
-```
+  ###### 参数
 
-###### Arguments
-
-- **part**: Part of the date to return.
-  The following date parts are supported:
+  - **part**: 要返回的日期部分。
+    支持以下日期部分：
 
   - year
   - quarter _(emits value in inclusive range [1, 4] based on which quartile of the year the date is in)_
@@ -1631,179 +1602,169 @@ date_part(part, expression)
   - dow _(day of the week)_
   - doy _(day of the year)_
   - epoch _(seconds since Unix epoch)_
+  - **expression**：要操作的时间表达式。
+    可以是常量、列或函数。
 
-- **expression**: Time expression to operate on.
-  Can be a constant, column, or function.
+  ###### 别名
 
-###### Aliases
+  - datepart
 
-- datepart
+  ##### `datepart`
 
-##### `datepart`
+  _别名：[date_part](#date-part)。_
 
-_Alias of [date_part](#date-part)._
+  ##### `extract`
 
-##### `extract`
+  从时间值中返回一个子字段作为整数。
 
-Returns a sub-field from a time value as an integer.
+  ```
+  extract(字段 FROM 源)
+  ```
 
-```
-extract(field FROM source)
-```
+  等同于调用`date_part('字段', 源)`。例如，下面两个语句是等价的：
 
-Equivalent to calling `date_part('field', source)`. For example, these are equivalent:
+  ```sql
+  extract(day FROM '2024-04-13'::date)
+  date_part('day', '2024-04-13'::date)
+  ```
 
-```sql
-extract(day FROM '2024-04-13'::date)
-date_part('day', '2024-04-13'::date)
-```
+  请参阅[date_part](#date-part)。
+  ##### `make_date`
 
-See [date_part](#date-part).
+  从年/月/日组件部分创建日期。
 
-##### `make_date`
+  ```
+  make_date(year, month, day)
+  ```
 
-Make a date from year/month/day component parts.
+  ###### 参数
 
-```
-make_date(year, month, day)
-```
+  - **year**：创建日期时要使用的年份。
+    可以是常量、列或函数，以及任意组合的算术运算符。
+  - **month**：创建日期时要使用的月份。
+    可以是常量、列或函数，以及任意组合的算术运算符。
+  - **day**：创建日期时要使用的日期。
+    可以是常量、列或函数，以及任意组合的算术运算符。
 
-###### Arguments
+  ###### 示例
 
-- **year**: Year to use when making the date.
-  Can be a constant, column or function, and any combination of arithmetic operators.
-- **month**: Month to use when making the date.
-  Can be a constant, column or function, and any combination of arithmetic operators.
-- **day**: Day to use when making the date.
-  Can be a constant, column or function, and any combination of arithmetic operators.
+  ```
+  > select make_date(2023, 1, 31);
+  +-------------------------------------------+
+  | make_date(Int64(2023),Int64(1),Int64(31)) |
+  +-------------------------------------------+
+  | 2023-01-31                                |
+  +-------------------------------------------+
+  > select make_date('2023', '01', '31');
+  +-----------------------------------------------+
+  | make_date(Utf8("2023"),Utf8("01"),Utf8("31")) |
+  +-----------------------------------------------+
+  | 2023-01-31                                    |
+  +-----------------------------------------------+
+  ```
 
-###### Example
+  更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/make_date.rs)找到
 
-```
-> select make_date(2023, 1, 31);
-+-------------------------------------------+
-| make_date(Int64(2023),Int64(1),Int64(31)) |
-+-------------------------------------------+
-| 2023-01-31                                |
-+-------------------------------------------+
-> select make_date('2023', '01', '31');
-+-----------------------------------------------+
-| make_date(Utf8("2023"),Utf8("01"),Utf8("31")) |
-+-----------------------------------------------+
-| 2023-01-31                                    |
-+-----------------------------------------------+
-```
+  ##### `to_char`
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/make_date.rs)
+  根据[Chrono格式]，返回日期、时间、时间戳或持续时间的字符串表示。
+  与PostgreSQL中的等效函数不同，不支持数字格式化。
 
-##### `to_char`
+  ```
+  to_char(expression, format)
+  ```
 
-Returns a string representation of a date, time, timestamp or duration based
-on a [Chrono format]. Unlike the PostgreSQL equivalent of this function
-numerical formatting is not supported.
+  ###### 参数
 
-```
-to_char(expression, format)
-```
+  - **expression**：要操作的表达式。
+    可以是常量、列或函数，以及任意组合的算术运算符，结果为日期、时间、时间戳或持续时间。
+  - **format**：用于转换表达式的[Chrono格式]字符串。
 
-###### Arguments
+  ###### 示例
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function that results in a
-  date, time, timestamp or duration.
-- **format**: A [Chrono format] string to use to convert the expression.
+  ```
+  > > select to_char('2023-03-01'::date, '%d-%m-%Y');
+  +----------------------------------------------+
+  | to_char(Utf8("2023-03-01"),Utf8("%d-%m-%Y")) |
+  +----------------------------------------------+
+  | 01-03-2023                                   |
+  +----------------------------------------------+
+  ```
 
-###### Example
+  更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_char.rs)找到
 
-```
-> > select to_char('2023-03-01'::date, '%d-%m-%Y');
-+----------------------------------------------+
-| to_char(Utf8("2023-03-01"),Utf8("%d-%m-%Y")) |
-+----------------------------------------------+
-| 01-03-2023                                   |
-+----------------------------------------------+
-```
+  ###### 别名
 
-Additional examples can be found [here]
+  - date_format
 
-[here]: https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_char.rs
+  ##### `to_date`
 
-###### Aliases
+  将值转换为日期（`YYYY-MM-DD`）。
+  支持字符串、整数和双精度类型作为输入。
+  如果未提供[Chrono格式]，则将字符串解析为YYYY-MM-DD（例如'2023-07-20'）。
+  整数和双精度类型被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的天数。
+  返回相应的日期。
 
-- date_format
+  注意：`to_date`返回Date32。整数输入的支持范围为`-96465293`到`95026237`。
+  字符串输入的支持范围为`1677-09-21`到`2262-04-11`（不包括）。要解析超出该范围的日期，请使用[Chrono格式]。
 
-##### `to_date`
+  ```
+  to_date(expression[, ..., format_n])
+  ```
 
-Converts a value to a date (`YYYY-MM-DD`).
-Supports strings, integer and double types as input.
-Strings are parsed as YYYY-MM-DD (e.g. '2023-07-20') if no [Chrono format]s are provided.
-Integers and doubles are interpreted as days since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding date.
+  ###### 参数
 
-Note: `to_date` returns Date32. The supported range for integer input is between `-96465293` and `95026237`.
-Supported range for string input is between `1677-09-21` and `2262-04-11` exclusive. To parse dates outside of
-that range use a [Chrono format].
+  - **expression**：要操作的表达式。
+    可以是常量、列或函数，以及任意组合的算术运算符。
+  - **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，
+    第一个成功的格式将被返回。如果没有格式成功解析表达式，则会返回错误。
 
-```
-to_date(expression[, ..., format_n])
-```
+  [Chrono格式]：https://docs.rs/chrono/latest/chrono/format/strftime/index.html
 
-###### Arguments
+  ###### 示例
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+  ```
+  > select to_date('2023-01-31');
+  +-----------------------------+
+  | to_date(Utf8("2023-01-31")) |
+  +-----------------------------+
+  | 2023-01-31                  |
+  +-----------------------------+
+  > select to_date('2023/01/31', '%Y-%m-%d', '%Y/%m/%d');
+  +---------------------------------------------------------------+
+  | to_date(Utf8("2023/01/31"),Utf8("%Y-%m-%d"),Utf8("%Y/%m/%d")) |
+  +---------------------------------------------------------------+
+  | 2023-01-31                                                    |
+  +---------------------------------------------------------------+
+  ```
 
-[chrono format]: https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+  更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_date.rs)找到
 
-###### Example
-
-```
-> select to_date('2023-01-31');
-+-----------------------------+
-| to_date(Utf8("2023-01-31")) |
-+-----------------------------+
-| 2023-01-31                  |
-+-----------------------------+
-> select to_date('2023/01/31', '%Y-%m-%d', '%Y/%m/%d');
-+---------------------------------------------------------------+
-| to_date(Utf8("2023/01/31"),Utf8("%Y-%m-%d"),Utf8("%Y/%m/%d")) |
-+---------------------------------------------------------------+
-| 2023-01-31                                                    |
-+---------------------------------------------------------------+
-```
-
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_date.rs)
 
 ##### `to_timestamp`
 
-Converts a value to a timestamp (`YYYY-MM-DDT00:00:00Z`).
-Supports strings, integer, unsigned integer, and double types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono formats] are provided.
-Integers, unsigned integers, and doubles are interpreted as seconds since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding timestamp.
+将值转换为时间戳（`YYYY-MM-DDT00:00:00Z`）。
+支持字符串、整数、无符号整数和双精度类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+整数、无符号整数和双精度数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的秒数。
+返回相应的时间戳。
 
-Note: `to_timestamp` returns `Timestamp(Nanosecond)`. The supported range for integer input is between `-9223372037` and `9223372036`.
-Supported range for string input is between `1677-09-21T00:12:44.0` and `2262-04-11T23:47:16.0`. Please use `to_timestamp_seconds`
-for the input outside of supported bounds.
+注意：`to_timestamp`返回`Timestamp(Nanosecond)`。整数输入的支持范围为`-9223372037`到`9223372036`。
+字符串输入的支持范围为`1677-09-21T00:12:44.0`到`2262-04-11T23:47:16.0`。请在支持范围之外的输入中使用`to_timestamp_seconds`。
 
 ```
 to_timestamp(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-[chrono format]: https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+[chrono格式]：https://docs.rs/chrono/latest/chrono/format/strftime/index.html
 
-###### Example
+###### 示例
 
 ```
 > select to_timestamp('2023-01-31T09:26:56.123456789-05:00');
@@ -1820,29 +1781,27 @@ to_timestamp(expression[, ..., format_n])
 +--------------------------------------------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)找到
 
 ##### `to_timestamp_millis`
 
-Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000Z`).
-Supports strings, integer, and unsigned integer types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format]s are provided.
-Integers and unsigned integers are interpreted as milliseconds since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding timestamp.
+将值转换为时间戳（`YYYY-MM-DDT00:00:00.000Z`）。
+支持字符串、整数和无符号整数类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+整数和无符号整数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的毫秒数。
+返回相应的时间戳。
 
 ```
 to_timestamp_millis(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-###### Example
+###### 示例
 
 ```
 > select to_timestamp_millis('2023-01-31T09:26:56.123456789-05:00');
@@ -1859,29 +1818,27 @@ to_timestamp_millis(expression[, ..., format_n])
 +---------------------------------------------------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)找到
 
 ##### `to_timestamp_micros`
 
-Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000000Z`).
-Supports strings, integer, and unsigned integer types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format]s are provided.
-Integers and unsigned integers are interpreted as microseconds since the unix epoch (`1970-01-01T00:00:00Z`)
-Returns the corresponding timestamp.
+将值转换为时间戳（`YYYY-MM-DDT00:00:00.000000Z`）。
+支持字符串、整数和无符号整数类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+整数和无符号整数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的微秒数。
+返回相应的时间戳。
 
 ```
 to_timestamp_micros(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-###### Example
+###### 示例
 
 ```
 > select to_timestamp_micros('2023-01-31T09:26:56.123456789-05:00');
@@ -1898,29 +1855,26 @@ to_timestamp_micros(expression[, ..., format_n])
 +---------------------------------------------------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)
-
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)找到
 ##### `to_timestamp_nanos`
 
-Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000000000Z`).
-Supports strings, integer, and unsigned integer types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format]s are provided.
-Integers and unsigned integers are interpreted as nanoseconds since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding timestamp.
+将值转换为时间戳（`YYYY-MM-DDT00:00:00.000000000Z`）。
+支持字符串、整数和无符号整数类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+整数和无符号整数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的纳秒数。
+返回相应的时间戳。
 
 ```
 to_timestamp_nanos(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-###### Example
+###### 示例
 
 ```
 > select to_timestamp_nanos('2023-01-31T09:26:56.123456789-05:00');
@@ -1937,29 +1891,27 @@ to_timestamp_nanos(expression[, ..., format_n])
 +---------------------------------------------------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)找到
 
 ##### `to_timestamp_seconds`
 
-Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000Z`).
-Supports strings, integer, and unsigned integer types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format]s are provided.
-Integers and unsigned integers are interpreted as seconds since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding timestamp.
+将值转换为时间戳（`YYYY-MM-DDT00:00:00.000Z`）。
+支持字符串、整数和无符号整数类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+整数和无符号整数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的秒数。
+返回相应的时间戳。
 
 ```
 to_timestamp_seconds(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-###### Example
+###### 示例
 
 ```
 > select to_timestamp_seconds('2023-01-31T09:26:56.123456789-05:00');
@@ -1976,42 +1928,41 @@ to_timestamp_seconds(expression[, ..., format_n])
 +----------------------------------------------------------------------------------------------------------------+
 ```
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)
+更多示例可以在[这里](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_timestamp.rs)找到
 
 ##### `from_unixtime`
 
-Converts an integer to RFC3339 timestamp format (`YYYY-MM-DDT00:00:00.000000000Z`).
-Integers and unsigned integers are interpreted as nanoseconds since the unix epoch (`1970-01-01T00:00:00Z`)
-return the corresponding timestamp.
+将整数转换为RFC3339时间戳格式（`YYYY-MM-DDT00:00:00.000000000Z`）。
+整数和无符号整数被解释为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的纳秒数。
+返回相应的时间戳。
 
 ```
 from_unixtime(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `to_unixtime`
 
-Converts a value to seconds since the unix epoch (`1970-01-01T00:00:00Z`).
-Supports strings, dates, timestamps and double types as input.
-Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono formats] are provided.
+将值转换为自UNIX纪元（`1970-01-01T00:00:00Z`）以来的秒数。
+支持字符串、日期、时间戳和双精度类型作为输入。
+如果没有提供[Chrono格式]，则将字符串解析为RFC3339格式（例如'2023-07-20T05:44:00'）。
+返回相应的秒数。
 
 ```
 to_unixtime(expression[, ..., format_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
+- **expression**：要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **format_n**：可选的[Chrono格式]字符串，用于解析表达式。将按照它们出现的顺序尝试格式，返回第一个成功的格式。如果没有格式成功解析表达式，则会返回错误。
 
-###### Example
+###### 示例
 
 ```
 > select to_unixtime('2020-09-08T12:00:00+00:00');
@@ -2028,7 +1979,7 @@ to_unixtime(expression[, ..., format_n])
 +-----------------------------------------------------------------------------------------------------------------------------+
 ```
 
-### Array Functions
+### 数组函数
 
 - [array_append](#array-append)
 - [array_sort](#array-sort)
@@ -2118,19 +2069,19 @@ to_unixtime(expression[, ..., format_n])
 
 ##### `array_append`
 
-Appends an element to the end of an array.
+将元素追加到数组的末尾。
 
 ```
 array_append(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to append to the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要追加到数组的元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_append([1, 2, 3], 4);
@@ -2141,7 +2092,7 @@ array_append(array, element)
 +--------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_push_back
 - list_append
@@ -2149,20 +2100,20 @@ array_append(array, element)
 
 ##### `array_sort`
 
-Sort array.
+对数组进行排序。
 
 ```
 array_sort(array, desc, nulls_first)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **desc**: Whether to sort in descending order(`ASC` or `DESC`).
-- **nulls_first**: Whether to sort nulls first(`NULLS FIRST` or `NULLS LAST`).
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **desc**：是否按降序排序（`ASC` 或 `DESC`）。
+- **nulls_first**：是否将空值排在前面（`NULLS FIRST` 或 `NULLS LAST`）。
 
-###### Example
+###### 示例
 
 ```
 > select array_sort([3, 1, 2]);
@@ -2173,26 +2124,26 @@ array_sort(array, desc, nulls_first)
 +-----------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_sort
 
 ##### `array_resize`
 
-Resizes the list to contain size elements. Initializes new elements with value or empty if value is not set.
+调整数组的大小，使其包含指定数量的元素。如果未设置值，则初始化新元素为空。
 
 ```
 array_resize(array, size, value)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **size**: New size of given array.
-- **value**: Defines new elements' value or empty if value is not set.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **size**：数组的新大小。
+- **value**：定义新元素的值，如果未设置值，则为空。
 
-###### Example
+###### 示例
 
 ```
 > select array_resize([1, 2, 3], 5, 0);
@@ -2203,29 +2154,29 @@ array_resize(array, size, value)
 +-------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_resize
 
 ##### `array_cat`
 
-_Alias of [array_concat](#array-concat)._
+_别名：[array_concat](#array-concat)。_
 
 ##### `array_concat`
 
-Concatenates arrays.
+连接数组。
 
 ```
 array_concat(array[, ..., array_n])
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression to concatenate.
-  Can be a constant, column, or function, and any combination of array operators.
-- **array_n**: Subsequent array column or literal array to concatenate.
+- **array**：要连接的数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **array_n**：要连接的后续数组列或字面数组。
 
-###### Example
+###### 示例
 
 ```
 > select array_concat([1, 2], [3, 4], [5, 6]);
@@ -2236,7 +2187,7 @@ array_concat(array[, ..., array_n])
 +---------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_cat
 - list_cat
@@ -2244,79 +2195,79 @@ array_concat(array[, ..., array_n])
 
 ##### `array_contains`
 
-_Alias of [array_has](#array-has)._
+_别名：[array_has](#array-has)。_
 
 ##### `array_has`
 
-Returns true if the array contains the element
+如果数组包含元素，则返回true。
 
 ```
 array_has(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Scalar or Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：标量或数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Aliases
+###### 别名
 
 - list_has
 
 ##### `array_has_all`
 
-Returns true if all elements of sub-array exist in array
+如果子数组的所有元素都存在于数组中，则返回true。
 
 ```
 array_has_all(array, sub-array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **sub-array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **sub-array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Aliases
+###### 别名
 
 - list_has_all
 
 ##### `array_has_any`
 
-Returns true if any elements exist in both arrays
+如果两个数组中存在任何元素，则返回true。
 
 ```
 array_has_any(array, sub-array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **sub-array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **sub-array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Aliases
+###### 别名
 
 - list_has_any
 
 ##### `array_dims`
 
-Returns an array of the array's dimensions.
+返回数组的维度数组。
 
 ```
 array_dims(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_dims([[1, 2, 3], [4, 5, 6]]);
@@ -2327,24 +2278,24 @@ array_dims(array)
 +---------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_dims
 
 ##### `array_distinct`
 
-Returns distinct values from the array after removing duplicates.
+从数组中移除重复项后返回不重复的值数组。
 
 ```
 array_distinct(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_distinct([1, 3, 2, 3, 1, 2, 4]);
@@ -2355,25 +2306,25 @@ array_distinct(array)
 +---------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_distinct
 
 ##### `array_element`
 
-Extracts the element with the index n from the array.
+从数组中提取索引为n的元素。
 
 ```
 array_element(array, index)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **index**: Index to extract the element from the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **index**：要从数组中提取元素的索引。
 
-###### Example
+###### 示例
 
 ```
 > select array_element([1, 2, 3, 4], 3);
@@ -2384,7 +2335,7 @@ array_element(array, index)
 +-----------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_extract
 - list_element
@@ -2392,37 +2343,37 @@ array_element(array, index)
 
 ##### `array_extract`
 
-_Alias of [array_element](#array-element)._
+_别名：[array_element](#array-element)。_
 
 ##### `array_fill`
 
-Returns an array filled with copies of the given value.
+返回由给定值填充的数组。
 
-DEPRECATED: use `array_repeat` instead!
+已弃用：请改用 `array_repeat`！
 
 ```
 array_fill(element, array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to copy to the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要复制到数组的元素。
 
 ##### `flatten`
 
-Converts an array of arrays to a flat array
+将数组的数组转换为扁平数组
 
-- Applies to any depth of nested arrays
-- Does not change arrays that are already flat
+- 适用于任意嵌套数组的深度
+- 不会改变已经是扁平的数组
 
-The flattened array contains all the elements from all source arrays.
+扁平化的数组包含所有源数组的元素。
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
 ```
 flatten(array)
@@ -2430,24 +2381,24 @@ flatten(array)
 
 ##### `array_indexof`
 
-_Alias of [array_position](#array-position)._
+_别名：[array_position](#array-position)。_
 
 ##### `array_intersect`
 
-Returns an array of elements in the intersection of array1 and array2.
+返回数组1和数组2的交集元素数组。
 
 ```
 array_intersect(array1, array2)
 ```
 
-###### Arguments
+###### 参数
 
-- **array1**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **array2**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array1**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **array2**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_intersect([1, 2, 3, 4], [5, 6, 3, 4]);
@@ -2465,30 +2416,29 @@ array_intersect(array1, array2)
 ```
 
 ---
-
-###### Aliases
+###### 别名
 
 - list_intersect
 
 ##### `array_join`
 
-_Alias of [array_to_string](#array-to-string)._
+_别名：[array_to_string](#array-to-string)。_
 
 ##### `array_length`
 
-Returns the length of the array dimension.
+返回数组的长度。
 
 ```
 array_length(array, dimension)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **dimension**: Array dimension.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **dimension**：数组的维度。
 
-###### Example
+###### 示例
 
 ```
 > select array_length([1, 2, 3, 4, 5]);
@@ -2499,24 +2449,24 @@ array_length(array, dimension)
 +---------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_length
 
 ##### `array_ndims`
 
-Returns the number of dimensions of the array.
+返回数组的维度数。
 
 ```
 array_ndims(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_ndims([[1, 2, 3], [4, 5, 6]]);
@@ -2527,25 +2477,25 @@ array_ndims(array, element)
 +----------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_ndims
 
 ##### `array_prepend`
 
-Prepends an element to the beginning of an array.
+在数组的开头添加一个元素。
 
 ```
 array_prepend(element, array)
 ```
 
-###### Arguments
+###### 参数
 
-- **element**: Element to prepend to the array.
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **element**：要添加到数组开头的元素。
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_prepend(1, [2, 3, 4]);
@@ -2556,7 +2506,7 @@ array_prepend(element, array)
 +---------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_push_front
 - list_prepend
@@ -2564,18 +2514,18 @@ array_prepend(element, array)
 
 ##### `array_pop_front`
 
-Returns the array without the first element.
+返回删除第一个元素后的数组。
 
 ```
 array_pop_front(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_pop_front([1, 2, 3]);
@@ -2586,24 +2536,24 @@ array_pop_front(array)
 +-------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_pop_front
 
 ##### `array_pop_back`
 
-Returns the array without the last element.
+返回删除最后一个元素后的数组。
 
 ```
 array_pop_back(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_pop_back([1, 2, 3]);
@@ -2614,27 +2564,27 @@ array_pop_back(array)
 +-------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_pop_back
 
 ##### `array_position`
 
-Returns the position of the first occurrence of the specified element in the array.
+返回数组中指定元素的第一次出现的位置。
 
 ```
 array_position(array, element)
 array_position(array, element, index)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to search for position in the array.
-- **index**: Index at which to start searching.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要在数组中搜索位置的元素。
+- **index**：开始搜索的索引位置。
 
-###### Example
+###### 示例
 
 ```
 > select array_position([1, 2, 2, 3, 1, 4], 2);
@@ -2645,7 +2595,7 @@ array_position(array, element, index)
 +----------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_indexof
 - list_indexof
@@ -2653,19 +2603,19 @@ array_position(array, element, index)
 
 ##### `array_positions`
 
-Searches for an element in the array, returns all occurrences.
+在数组中搜索元素，返回所有出现的位置。
 
 ```
 array_positions(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to search for positions in the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要在数组中搜索位置的元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_positions([1, 2, 2, 3, 1, 4], 2);
@@ -2676,33 +2626,33 @@ array_positions(array, element)
 +-----------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_positions
 
 ##### `array_push_back`
 
-_Alias of [array_append](#array-append)._
+_别名：[array_append](#array-append)。_
 
 ##### `array_push_front`
 
-_Alias of [array_prepend](#array-prepend)._
+_别名：[array_prepend](#array-prepend)。_
 
 ##### `array_repeat`
 
-Returns an array containing element `count` times.
+返回包含元素重复 `count` 次的数组。
 
 ```
 array_repeat(element, count)
 ```
 
-###### Arguments
+###### 参数
 
-- **element**: Element expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **count**: Value of how many times to repeat the element.
+- **element**：元素表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **count**：重复元素的次数。
 
-###### Example
+###### 示例
 
 ```
 > select array_repeat(1, 3);
@@ -2722,25 +2672,25 @@ array_repeat(element, count)
 +------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_repeat
 
 ##### `array_remove`
 
-Removes the first element from the array equal to the given value.
+从数组中删除第一个等于给定值的元素。
 
 ```
 array_remove(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to be removed from the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要从数组中删除的元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_remove([1, 2, 2, 3, 2, 1, 4], 2);
@@ -2751,26 +2701,26 @@ array_remove(array, element)
 +----------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_remove
 
 ##### `array_remove_n`
 
-Removes the first `max` elements from the array equal to the given value.
+从数组中删除前 `max` 个等于给定值的元素。
 
 ```
 array_remove_n(array, element, max)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to be removed from the array.
-- **max**: Number of first occurrences to remove.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要从数组中删除的元素。
+- **max**：要删除的首次出现的次数。
 
-###### Example
+###### 示例
 
 ```
 > select array_remove_n([1, 2, 2, 3, 2, 1, 4], 2, 2);
@@ -2781,25 +2731,25 @@ array_remove_n(array, element, max)
 +---------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_remove_n
 
 ##### `array_remove_all`
 
-Removes all elements from the array equal to the given value.
+从数组中删除所有等于给定值的元素。
 
 ```
 array_remove_all(array, element)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **element**: Element to be removed from the array.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **element**：要从数组中删除的元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_remove_all([1, 2, 2, 3, 2, 1, 4], 2);
@@ -2810,26 +2760,26 @@ array_remove_all(array, element)
 +--------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_remove_all
 
 ##### `array_replace`
 
-Replaces the first occurrence of the specified element with another specified element.
+将指定元素的第一个出现替换为另一个指定元素。
 
 ```
 array_replace(array, from, to)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **from**: Initial element.
-- **to**: Final element.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **from**：初始元素。
+- **to**：最终元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_replace([1, 2, 2, 3, 2, 1, 4], 2, 5);
@@ -2840,27 +2790,27 @@ array_replace(array, from, to)
 +--------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_replace
 
 ##### `array_replace_n`
 
-Replaces the first `max` occurrences of the specified element with another specified element.
+将指定元素的前 `max` 个出现替换为另一个指定元素。
 
 ```
 array_replace_n(array, from, to, max)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **from**: Initial element.
-- **to**: Final element.
-- **max**: Number of first occurrences to replace.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **from**：初始元素。
+- **to**：最终元素。
+- **max**：要替换的首次出现的次数。
 
-###### Example
+###### 示例
 
 ```
 > select array_replace_n([1, 2, 2, 3, 2, 1, 4], 2, 5, 2);
@@ -2871,26 +2821,26 @@ array_replace_n(array, from, to, max)
 +-------------------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_replace_n
 
 ##### `array_replace_all`
 
-Replaces all occurrences of the specified element with another specified element.
+将所有指定元素替换为另一个指定元素。
 
 ```
 array_replace_all(array, from, to)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **from**: Initial element.
-- **to**: Final element.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **from**：初始元素。
+- **to**：最终元素。
 
-###### Example
+###### 示例
 
 ```
 > select array_replace_all([1, 2, 2, 3, 2, 1, 4], 2, 5);
@@ -2901,24 +2851,24 @@ array_replace_all(array, from, to)
 +------------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_replace_all
 
 ##### `array_reverse`
 
-Returns the array with the order of the elements reversed.
+返回元素顺序颠倒的数组。
 
 ```
 array_reverse(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_reverse([1, 2, 3, 4]);
@@ -2929,29 +2879,29 @@ array_reverse(array)
 +------------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_reverse
 
 ##### `array_slice`
 
-Returns a slice of the array based on 1-indexed start and end positions.
+根据从 1 开始的起始和结束位置返回数组的切片。
 
 ```
 array_slice(array, begin, end)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **begin**: Index of the first element.
-  If negative, it counts backward from the end of the array.
-- **end**: Index of the last element.
-  If negative, it counts backward from the end of the array.
-- **stride**: Stride of the array slice. The default is 1.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **begin**：第一个元素的索引。
+  如果为负数，则从数组末尾开始计数。
+- **end**：最后一个元素的索引。
+  如果为负数，则从数组末尾开始计数。
+- **stride**：数组切片的步长。默认为 1。
 
-###### Example
+###### 示例
 
 ```
 > select array_slice([1, 2, 3, 4, 5, 6, 7, 8], 3, 6);
@@ -2962,25 +2912,25 @@ array_slice(array, begin, end)
 +--------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - list_slice
 
 ##### `array_to_string`
 
-Converts each element to its text representation.
+将每个元素转换为其文本表示形式。
 
 ```
 array_to_string(array, delimiter)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **delimiter**: Array element separator.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **delimiter**：数组元素的分隔符。
 
-###### Example
+###### 示例
 
 ```
 > select array_to_string([[1, 2, 3, 4], [5, 6, 7, 8]], ',');
@@ -2991,7 +2941,7 @@ array_to_string(array, delimiter)
 +----------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_join
 - list_join
@@ -2999,20 +2949,20 @@ array_to_string(array, delimiter)
 
 ##### `array_union`
 
-Returns an array of elements that are present in both arrays (all elements from both arrays) with out duplicates.
+返回两个数组中都存在的元素的数组（两个数组的所有元素），并去除重复项。
 
 ```
 array_union(array1, array2)
 ```
 
-###### Arguments
+###### 参数
 
-- **array1**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **array2**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array1**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **array2**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_union([1, 2, 3, 4], [5, 6, 3, 4]);
@@ -3031,26 +2981,26 @@ array_union(array1, array2)
 
 ---
 
-###### Aliases
+###### 别名
 
 - list_union
 
 ##### `array_except`
 
-Returns an array of the elements that appear in the first array but not in the second.
+返回出现在第一个数组中但不在第二个数组中的元素的数组。
 
 ```
 array_except(array1, array2)
 ```
 
-###### Arguments
+###### 参数
 
-- **array1**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **array2**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array1**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
+- **array2**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select array_except([1, 2, 3, 4], [5, 6, 3, 4]);
@@ -3069,24 +3019,24 @@ array_except(array1, array2)
 
 ---
 
-###### Aliases
+###### 别名
 
 - list_except
 
 ##### `cardinality`
 
-Returns the total number of elements in the array.
+返回数组中的元素总数。
 
 ```
 cardinality(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select cardinality([[1, 2, 3, 4], [5, 6, 7, 8]]);
@@ -3099,18 +3049,18 @@ cardinality(array)
 
 ##### `empty`
 
-Returns 1 for an empty array or 0 for a non-empty array.
+对于空数组返回 1，对于非空数组返回 0。
 
 ```
 empty(array)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**：数组表达式。
+  可以是常量、列或函数，以及任何组合的数组操作符。
 
-###### Example
+###### 示例
 
 ```
 > select empty([1]);
@@ -3121,26 +3071,27 @@ empty(array)
 +------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - array_empty,
 - list_empty
 
+
 ##### `generate_series`
 
-Similar to the range function, but it includes the upper bound.
+类似于range函数，但包括上限。
 
 ```
 generate_series(start, stop, step)
 ```
 
-###### Arguments
+###### 参数
 
-- **start**: start of the range
-- **end**: end of the range (included)
-- **step**: increase by step (can not be 0)
+- **start**: 范围的起始值
+- **end**: 范围的结束值（包含）
+- **step**: 增加的步长（不能为0）
 
-###### Example
+###### 示例
 
 ```
 > select generate_series(1,3);
@@ -3153,155 +3104,155 @@ generate_series(start, stop, step)
 
 ##### `list_append`
 
-_Alias of [array_append](#array-append)._
+[array_append](#array-append)的别名。
 
 ##### `list_cat`
 
-_Alias of [array_concat](#array-concat)._
+[array_concat](#array-concat)的别名。
 
 ##### `list_concat`
 
-_Alias of [array_concat](#array-concat)._
+[array_concat](#array-concat)的别名。
 
 ##### `list_dims`
 
-_Alias of [array_dims](#array-dims)._
+[array_dims](#array-dims)的别名。
 
 ##### `list_distinct`
 
-_Alias of [array_dims](#array-distinct)._
+[array_dims](#array-distinct)的别名。
 
 ##### `list_element`
 
-_Alias of [array_element](#array-element)._
+[array_element](#array-element)的别名。
 
 ##### `list_empty`
 
-_Alias of [empty](#empty)._
+[empty](#empty)的别名。
 
 ##### `list_except`
 
-_Alias of [array_element](#array-except)._
+[array_element](#array-except)的别名。
 
 ##### `list_extract`
 
-_Alias of [array_element](#array-element)._
+[array_element](#array-element)的别名。
 
 ##### `list_has`
 
-_Alias of [array_has](#array-has)._
+[array_has](#array-has)的别名。
 
 ##### `list_has_all`
 
-_Alias of [array_has_all](#array-has-all)._
+[array_has_all](#array-has-all)的别名。
 
 ##### `list_has_any`
 
-_Alias of [array_has_any](#array-has-any)._
+[array_has_any](#array-has-any)的别名。
 
 ##### `list_indexof`
 
-_Alias of [array_position](#array-position)._
+[array_position](#array-position)的别名。
 
 ##### `list_intersect`
 
-_Alias of [array_position](#array-intersect)._
+[array_position](#array-intersect)的别名。
 
 ##### `list_join`
 
-_Alias of [array_to_string](#array-to-string)._
+[array_to_string](#array-to-string)的别名。
 
 ##### `list_length`
 
-_Alias of [array_length](#array-length)._
+[array_length](#array-length)的别名。
 
 ##### `list_ndims`
 
-_Alias of [array_ndims](#array-ndims)._
+[array_ndims](#array-ndims)的别名。
 
 ##### `list_prepend`
 
-_Alias of [array_prepend](#array-prepend)._
+[array_prepend](#array-prepend)的别名。
 
 ##### `list_pop_back`
 
-_Alias of [array_pop_back](#array-pop-back)._
+[array_pop_back](#array-pop-back)的别名。
 
 ##### `list_pop_front`
 
-_Alias of [array_pop_front](#array-pop-front)._
+[array_pop_front](#array-pop-front)的别名。
 
 ##### `list_position`
 
-_Alias of [array_position](#array-position)._
+[array_position](#array-position)的别名。
 
 ##### `list_positions`
 
-_Alias of [array_positions](#array-positions)._
+[array_positions](#array-positions)的别名。
 
 ##### `list_push_back`
 
-_Alias of [array_append](#array-append)._
+[array_append](#array-append)的别名。
 
 ##### `list_push_front`
 
-_Alias of [array_prepend](#array-prepend)._
+[array_prepend](#array-prepend)的别名。
 
 ##### `list_repeat`
 
-_Alias of [array_repeat](#array-repeat)._
+[array_repeat](#array-repeat)的别名。
 
 ##### `list_resize`
 
-_Alias of [array_resize](#array-resize)._
+[array_resize](#array-resize)的别名。
 
 ##### `list_remove`
 
-_Alias of [array_remove](#array-remove)._
+[array_remove](#array-remove)的别名。
 
 ##### `list_remove_n`
 
-_Alias of [array_remove_n](#array-remove-n)._
+[array_remove_n](#array-remove-n)的别名。
 
 ##### `list_remove_all`
 
-_Alias of [array_remove_all](#array-remove-all)._
+[array_remove_all](#array-remove-all)的别名。
 
 ##### `list_replace`
 
-_Alias of [array_replace](#array-replace)._
+[array_replace](#array-replace)的别名。
 
 ##### `list_replace_n`
 
-_Alias of [array_replace_n](#array-replace-n)._
+[array_replace_n](#array-replace-n)的别名。
 
 ##### `list_replace_all`
 
-_Alias of [array_replace_all](#array-replace-all)._
+[array_replace_all](#array-replace-all)的别名。
 
 ##### `list_reverse`
 
-_Alias of [array_reverse](#array-reverse)._
+[array_reverse](#array-reverse)的别名。
 
 ##### `list_slice`
 
-_Alias of [array_slice](#array-slice)._
+[array_slice](#array-slice)的别名。
 
 ##### `list_sort`
 
-_Alias of [array_sort](#array-sort)._
+[array_sort](#array-sort)的别名。
 
 ##### `list_to_string`
 
-_Alias of [array_to_string](#array-to-string)._
+[array_to_string](#array-to-string)的别名。
 
 ##### `list_union`
 
-_Alias of [array_union](#array-union)._
+[array_union](#array-union)的别名。
 
 ##### `make_array`
 
-Returns an Arrow array using the specified input expressions.
+使用指定的输入表达式返回一个Arrow数组。
 
 ```
 make_array(expression1[, ..., expression_n])
@@ -3309,15 +3260,14 @@ make_array(expression1[, ..., expression_n])
 
 ##### `array_empty`
 
-_Alias of [empty](#empty)._
+[empty](#empty)的别名。
 
-###### Arguments
+###### 参数
 
-- **expression_n**: Expression to include in the output array.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+- **expression_n**: 要包含在输出数组中的表达式。
+  可以是常量、列或函数，以及任何组合的算术或字符串运算符。
 
-###### Example
+###### 示例
 
 ```
 > select make_array(1, 2, 3, 4, 5);
@@ -3328,63 +3278,63 @@ _Alias of [empty](#empty)._
 +----------------------------------------------------------+
 ```
 
-###### Aliases
+###### 别名
 
 - make_list
 
 ##### `make_list`
 
-_Alias of [make_array](#make-array)._
+[make_array](#make-array)的别名。
 
 ##### `string_to_array`
 
-Splits a string in to an array of substrings based on a delimiter. Any substrings matching the optional `null_str` argument are replaced with NULL.
-`SELECT string_to_array('abc##def', '##')` or `SELECT string_to_array('abc def', ' ', 'def')`
+根据分隔符将字符串拆分为子字符串数组。任何与可选的`null_str`参数匹配的子字符串都将替换为NULL。
+`SELECT string_to_array('abc##def', '##')` 或 `SELECT string_to_array('abc def', ' ', 'def')`
 
 ```
 starts_with(str, delimiter[, null_str])
 ```
 
-###### Arguments
+###### 参数
 
-- **str**: String expression to split.
-- **delimiter**: Delimiter string to split on.
-- **null_str**: Substring values to be replaced with `NULL`
+- **str**: 要拆分的字符串表达式。
+- **delimiter**: 要拆分的分隔符字符串。
+- **null_str**: 要替换为`NULL`的子字符串值。
 
-###### Aliases
+###### 别名
 
 - string_to_list
 
 ##### `string_to_list`
 
-_Alias of [string_to_array](#string-to-array)._
+[string_to_array](#string-to-array)的别名。
 
 ##### `trim_array`
 
-Removes the last n elements from the array.
+从数组中删除最后n个元素。
 
-DEPRECATED: use `array_slice` instead!
+已弃用：请改用`array_slice`！
 
 ```
 trim_array(array, n)
 ```
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression.
-  Can be a constant, column, or function, and any combination of array operators.
-- **n**: Element to trim the array.
+- **array**: 数组表达式。
+  可以是常量、列或函数，以及任何组合的数组运算符。
+- **n**: 要删除的元素个数。
 
 ##### `unnest`
 
-Transforms an array into rows.
+将数组转换为行。
 
-###### Arguments
+###### 参数
 
-- **array**: Array expression to unnest.
-  Can be a constant, column, or function, and any combination of array operators.
+- **array**: 要展开的数组表达式。
+  可以是常量、列或函数，以及任何组合的数组运算符。
 
-###### Examples
+###### 示例
 
 ```
 > select unnest(make_array(1, 2, 3, 4, 5));
@@ -3419,14 +3369,14 @@ Transforms an array into rows.
 
 ##### `range`
 
-Returns an Arrow array between start and stop with step. `SELECT range(2, 10, 3) -> [2, 5, 8]` or `SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);`
+返回一个介于起始值和结束值之间的Arrow数组。`SELECT range(2, 10, 3) -> [2, 5, 8]` 或 `SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);`
 
-The range start..end contains all values with start <= x < end. It is empty if start >= end.
+范围start..end包含所有满足start <= x < end的值。如果start >= end，则为空。
 
-Step can not be 0 (then the range will be nonsense.).
+步长不能为0（否则范围将无意义）。
 
-Note that when the required range is a number, it accepts (stop), (start, stop), and (start, stop, step) as parameters, but when the required range is a date, it must be 3 non-NULL parameters.
-For example,
+请注意，当所需范围是数字时，它接受(stop)，(start, stop)和(start, stop, step)作为参数，但当所需范围是日期时，它必须是3个非NULL参数。
+例如，
 
 ```
 SELECT range(3);
@@ -3434,15 +3384,15 @@ SELECT range(1,5);
 SELECT range(1,5,1);
 ```
 
-are allowed in number ranges
+在数字范围中是允许的
 
-but in date ranges, only
+但在日期范围中，只有
 
 ```
 SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);
 ```
 
-is allowed, and
+是允许的，而
 
 ```
 SELECT range(DATE '1992-09-01', DATE '1993-03-01', NULL);
@@ -3450,19 +3400,19 @@ SELECT range(NULL, DATE '1993-03-01', INTERVAL '1' MONTH);
 SELECT range(DATE '1992-09-01', NULL, INTERVAL '1' MONTH);
 ```
 
-are not allowed
+是不允许的
 
-###### Arguments
+###### 参数
 
-- **start**: start of the range
-- **end**: end of the range (not included)
-- **step**: increase by step (can not be 0)
+- **start**: 范围的起始值
+- **end**: 范围的结束值（不包含）
+- **step**: 增加的步长（不能为0）
 
-###### Aliases
+###### 别名
 
 - generate_series
 
-### Struct Functions
+### 结构体函数
 
 - [struct](#struct)
 - [named_struct](#named-struct)
@@ -3470,16 +3420,15 @@ are not allowed
 
 ##### `struct`
 
-Returns an Arrow struct using the specified input expressions optionally named.
-Fields in the returned struct use the optional name or the `cN` naming convention.
-For example: `c0`, `c1`, `c2`, etc.
+使用指定的输入表达式返回一个Arrow结构体，可选择命名字段。
+返回的结构体中的字段使用可选的名称或`cN`命名约定。
+例如：`c0`、`c1`、`c2`等。
 
 ```
 struct(expression1[, ..., expression_n])
 ```
 
-For example, this query converts two columns `a` and `b` to a single column with
-a struct type of fields `field_a` and `c1`:
+例如，此查询将两列`a`和`b`转换为具有字段`field_a`和`c1`的结构体类型的单列：
 
 ```
 select * from t;
@@ -3490,7 +3439,7 @@ select * from t;
 | 3 | 4 |
 +---+---+
 
--- use default names `c0`, `c1`
+-- 使用默认名称`c0`、`c1`
 > select struct(a, b) from t;
 +-----------------+
 | struct(t.a,t.b) |
@@ -3499,7 +3448,7 @@ select * from t;
 | {c0: 3, c1: 4}  |
 +-----------------+
 
--- name the first field `field_a`
+-- 将第一个字段命名为`field_a`
 select struct(a as field_a, b) from t;
 +--------------------------------------------------+
 | named_struct(Utf8("field_a"),t.a,Utf8("c1"),t.b) |
@@ -3509,22 +3458,20 @@ select struct(a as field_a, b) from t;
 +--------------------------------------------------+
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_n**: Expression to include in the output struct.
-  Can be a constant, column, or function, any combination of arithmetic or
-  string operators, or a named expression of previous listed .
+- **expression_n**: 要包含在输出结构体中的表达式。
+  可以是常量、列或函数，以及任何组合的算术或字符串运算符，或前面列出的命名表达式。
 
 ##### `named_struct`
 
-Returns an Arrow struct using the specified name and input expressions pairs.
+使用指定的名称和输入表达式对返回一个Arrow结构体。
 
 ```
 named_struct(expression1_name, expression1_input[, ..., expression_n_name, expression_n_input])
 ```
 
-For example, this query converts two columns `a` and `b` to a single column with
-a struct type of fields `field_a` and `field_b`:
+例如，此查询将两列`a`和`b`转换为具有字段`field_a`和`field_b`的结构体类型的单列：
 
 ```
 select * from t;
@@ -3544,24 +3491,23 @@ select named_struct('field_a', a, 'field_b', b) from t;
 +-------------------------------------------------------+
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_n_name**: Name of the column field.
-  Must be a constant string.
-- **expression_n_input**: Expression to include in the output struct.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+- **expression_n_name**: 列字段的名称。
+  必须是一个常量字符串。
+- **expression_n_input**: 要包含在输出结构体中的表达式。
+  可以是常量、列或函数，以及任何组合的算术或字符串运算符。
 
 ##### `unnest (struct)`
 
-Unwraps struct fields into columns.
+将结构体字段展开为列。
 
-###### Arguments
+###### 参数
 
-- **struct**: Object expression to unnest.
-  Can be a constant, column, or function, and any combination of object operators.
+- **struct**: 要展开的对象表达式。
+  可以是常量、列或函数，以及任何组合的对象运算符。
 
-###### Examples
+###### 示例
 
 ```
 > select * from foo;
@@ -3579,7 +3525,7 @@ Unwraps struct fields into columns.
 +-----------------------+-----------------------+
 ```
 
-### Hashing Functions
+### 哈希函数
 
 - [digest](#digest)
 - [md5](#md5)
@@ -3590,18 +3536,18 @@ Unwraps struct fields into columns.
 
 ##### `digest`
 
-Computes the binary hash of an expression using the specified algorithm.
+使用指定的算法计算表达式的二进制哈希值。
 
 ```
 digest(expression, algorithm)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **algorithm**: String expression specifying algorithm to use.
-  Must be one of:
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
+- **algorithm**: 指定要使用的算法的字符串表达式。
+  必须是以下之一：
 
   - md5
   - sha224
@@ -3614,91 +3560,103 @@ digest(expression, algorithm)
 
 ##### `md5`
 
-Computes an MD5 128-bit checksum for a string expression.
+计算字符串表达式的MD5 128位校验和。
 
 ```
 md5(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
 
 ##### `sha224`
 
-Computes the SHA-224 hash of a binary string.
+计算二进制字符串的SHA-224哈希值。
 
 ```
 sha224(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
 
 ##### `sha256`
 
-Computes the SHA-256 hash of a binary string.
+计算二进制字符串的SHA-256哈希值。
 
 ```
 sha256(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
 
 ##### `sha384`
 
-Computes the SHA-384 hash of a binary string.
+计算二进制字符串的SHA-384哈希值。
 
 ```
 sha384(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
 
 ##### `sha512`
 
-Computes the SHA-512 hash of a binary string.
+计算二进制字符串的SHA-512哈希值。
 
 ```
 sha512(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
 
-### Other Functions
+##### `sha512`
+
+计算二进制字符串的SHA-512哈希值。
+
+```
+sha512(expression)
+```
+
+###### 参数
+
+- **expression**: 要操作的字符串表达式。
+  可以是常量、列或函数，以及任何组合的字符串运算符。
+
+### 其他函数
 
 - [arrow_cast](#arrow-cast)
 - [arrow_typeof](#arrow-typeof)
 
 ##### `arrow_cast`
 
-Casts a value to a specific Arrow data type:
+将值转换为特定的Arrow数据类型：
 
 ```
 arrow_cast(expression, datatype)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to cast.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
-- **datatype**: [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) name
-  to cast to, as a string. The format is the same as that returned by [`arrow_typeof`]
+- **expression**: 要转换的表达式。
+  可以是常量、列或函数，以及任何组合的算术或字符串运算符。
+- **datatype**: 要转换为的[Arrow数据类型](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html)名称，作为字符串。
+  格式与[`arrow_typeof`]返回的格式相同。
 
-###### Example
+###### 示例
 
 ```
 > select arrow_cast(-5, 'Int8') as a,
@@ -3716,19 +3674,18 @@ arrow_cast(expression, datatype)
 
 ##### `arrow_typeof`
 
-Returns the name of the underlying [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) of the expression:
+返回表达式的底层[Arrow数据类型](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html)的名称：
 
 ```
 arrow_typeof(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to evaluate.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+- **expression**: 要评估的表达式。
+  可以是常量、列或函数，以及任何组合的算术或字符串运算符。
 
-###### Example
+###### 示例
 
 ```
 > select arrow_typeof('foo'), arrow_typeof(1);
@@ -3758,11 +3715,11 @@ arrow_typeof(expression)
   under the License.
 -->
 
-## Aggregate Functions
+## 聚合函数
 
-Aggregate functions operate on a set of values to compute a single result.
+聚合函数对一组值进行计算，得出单个结果。
 
-### General
+### 通用
 
 - [avg](#avg)
 - [bit_and](#bit-and)
@@ -3782,197 +3739,197 @@ Aggregate functions operate on a set of values to compute a single result.
 
 ##### `avg`
 
-Returns the average of numeric values in the specified column.
+返回指定列中数值的平均值。
 
 ```
 avg(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
-###### Aliases
+###### 别名
 
 - `mean`
 
 ##### `bit_and`
 
-Computes the bitwise AND of all non-null input values.
+计算所有非空输入值的按位与。
 
 ```
 bit_and(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `bit_or`
 
-Computes the bitwise OR of all non-null input values.
+计算所有非空输入值的按位或。
 
 ```
 bit_or(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `bit_xor`
 
-Computes the bitwise exclusive OR of all non-null input values.
+计算所有非空输入值的按位异或。
 
 ```
 bit_xor(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `bool_and`
 
-Returns true if all non-null input values are true, otherwise false.
+如果所有非空输入值都为true，则返回true；否则返回false。
 
 ```
 bool_and(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `bool_or`
 
-Returns true if any non-null input value is true, otherwise false.
+如果任何非空输入值为true，则返回true；否则返回false。
 
 ```
 bool_or(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `count`
 
-Returns the number of non-null values in the specified column.
+返回指定列中的非空值数量。
 
-To include _null_ values in the total count, use `count(*)`.
+要包括_null_值在总计中，请使用`count(*)`。
 
 ```
 count(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `max`
 
-Returns the maximum value in the specified column.
+返回指定列中的最大值。
 
 ```
 max(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `mean`
 
-_Alias of [avg](#avg)._
+[avg](#avg)的别名。
 
 ##### `median`
 
-Returns the median value in the specified column.
+返回指定列中的中位数。
 
 ```
 median(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `min`
 
-Returns the minimum value in the specified column.
+返回指定列中的最小值。
 
 ```
 min(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `sum`
 
-Returns the sum of all values in the specified column.
+返回指定列中所有值的总和。
 
 ```
 sum(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `array_agg`
 
-Returns an array created from the expression elements. If ordering requirement is given, elements are inserted in the order of required ordering.
+从表达式元素创建一个数组。如果给定了排序要求，则按照所需的排序顺序插入元素。
 
 ```
 array_agg(expression [ORDER BY expression])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `first_value`
 
-Returns the first element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
+根据请求的排序顺序返回聚合组中的第一个元素。如果没有给定排序，则从组中返回任意元素。
 
 ```
 first_value(expression [ORDER BY expression])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `last_value`
 
-Returns the last element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
+根据请求的排序顺序返回聚合组中的最后一个元素。如果没有给定排序，则从组中返回任意元素。
 
 ```
 last_value(expression [ORDER BY expression])
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
-### Statistical
+### 统计函数
 
 - [corr](#corr)
 - [covar](#covar)
@@ -3996,279 +3953,279 @@ last_value(expression [ORDER BY expression])
 
 ##### `corr`
 
-Returns the coefficient of correlation between two numeric values.
+返回两个数值之间的相关系数。
 
 ```
 corr(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**: 第一个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression2**: 第二个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `covar`
 
-Returns the covariance of a set of number pairs.
+返回一组数对的协方差。
 
 ```
 covar(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**: 第一个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression2**: 第二个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `covar_pop`
 
-Returns the population covariance of a set of number pairs.
+返回一组数对的总体协方差。
 
 ```
 covar_pop(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**: 第一个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression2**: 第二个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `covar_samp`
 
-Returns the sample covariance of a set of number pairs.
+返回一组数对的样本协方差。
 
 ```
 covar_samp(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression1**: 第一个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression2**: 第二个要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `stddev`
 
-Returns the standard deviation of a set of numbers.
+返回一组数字的标准差。
 
 ```
 stddev(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `stddev_pop`
 
-Returns the population standard deviation of a set of numbers.
+返回一组数字的总体标准差。
 
 ```
 stddev_pop(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `stddev_samp`
 
-Returns the sample standard deviation of a set of numbers.
+返回一组数字的样本标准差。
 
 ```
 stddev_samp(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `var`
 
-Returns the statistical variance of a set of numbers.
+返回一组数字的统计方差。
 
 ```
 var(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `var_pop`
 
-Returns the statistical population variance of a set of numbers.
+返回一组数字的总体方差。
 
 ```
 var_pop(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `var_samp`
 
-Returns the statistical sample variance of a set of numbers.
+返回一组数字的样本方差。
 
 ```
 var_samp(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_slope`
 
-Returns the slope of the linear regression line for non-null pairs in aggregate columns.
-Given input column Y and X: regr_slope(Y, X) returns the slope (k in Y = k\*X + b) using minimal RSS fitting.
+返回聚合列中非空数对的线性回归线的斜率。
+给定输入列 Y 和 X：regr_slope(Y, X) 使用最小的残差平方和拟合返回斜率 (Y = k*X + b)。
 
 ```
 regr_slope(expression1, expression2)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_avgx`
 
-Computes the average of the independent variable (input) `expression_x` for the non-null paired data points.
+计算非空配对数据点的自变量 (输入) `expression_x` 的平均值。
 
 ```
 regr_avgx(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_avgy`
 
-Computes the average of the dependent variable (output) `expression_y` for the non-null paired data points.
+计算非空配对数据点的因变量 (输出) `expression_y` 的平均值。
 
 ```
 regr_avgy(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_count`
 
-Counts the number of non-null paired data points.
+计算非空配对数据点的数量。
 
 ```
 regr_count(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_intercept`
 
-Computes the y-intercept of the linear regression line. For the equation \(y = kx + b\), this function returns `b`.
+计算线性回归线的 y 截距。对于方程 \(y = kx + b\)，该函数返回 `b`。
 
 ```
 regr_intercept(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_r2`
 
-Computes the square of the correlation coefficient between the independent and dependent variables.
+计算自变量和因变量之间的相关系数的平方。
 
 ```
 regr_r2(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_sxx`
 
-Computes the sum of squares of the independent variable.
+计算自变量的平方和。
 
 ```
 regr_sxx(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_syy`
 
-Computes the sum of squares of the dependent variable.
+计算因变量的平方和。
 
 ```
 regr_syy(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `regr_sxy`
 
-Computes the sum of products of paired data points.
+计算配对数据点的乘积和。
 
 ```
 regr_sxy(expression_y, expression_x)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression_y**: Dependent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression_x**: Independent variable.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression_y**: 因变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **expression_x**: 自变量。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
-### Approximate
+### 近似
 
 - [approx_distinct](#approx-distinct)
 - [approx_median](#approx-median)
@@ -4277,67 +4234,64 @@ regr_sxy(expression_y, expression_x)
 
 ##### `approx_distinct`
 
-Returns the approximate number of distinct input values calculated using the
-HyperLogLog algorithm.
+使用HyperLogLog算法计算的近似不同输入值的数量。
 
 ```
 approx_distinct(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `approx_median`
 
-Returns the approximate median (50th percentile) of input values.
-It is an alias of `approx_percentile_cont(x, 0.5)`.
+返回输入值的近似中位数（第50个百分位数）。
+它是`approx_percentile_cont(x, 0.5)`的别名。
 
 ```
 approx_median(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
 
 ##### `approx_percentile_cont`
 
-Returns the approximate percentile of input values using the t-digest algorithm.
+使用t-digest算法返回输入值的近似百分位数。
 
 ```
 approx_percentile_cont(expression, percentile, centroids)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **percentile**: Percentile to compute. Must be a float value between 0 and 1 (inclusive).
-- **centroids**: Number of centroids to use in the t-digest algorithm. _Default is 100_.
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **percentile**: 要计算的百分位数。必须是介于0和1之间（包括0和1）的浮点值。
+- **centroids**: 在t-digest算法中使用的质心数量。_默认值为100_。
 
-  If there are this number or fewer unique values, you can expect an exact result.
-  A higher number of centroids results in a more accurate approximation, but
-  requires more memory to compute.
+  如果唯一值少于或等于这个数量，您可以期望得到精确的结果。
+  更高的质心数量会得到更准确的近似值，但需要更多的内存来计算。
 
 ##### `approx_percentile_cont_with_weight`
 
-Returns the weighted approximate percentile of input values using the
-t-digest algorithm.
+使用t-digest算法返回输入值的加权近似百分位数。
 
 ```
 approx_percentile_cont_with_weight(expression, weight, percentile)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **weight**: Expression to use as weight.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **percentile**: Percentile to compute. Must be a float value between 0 and 1 (inclusive).
+- **expression**: 要操作的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **weight**: 用作权重的表达式。
+  可以是常量、列或函数，以及任何组合的算术运算符。
+- **percentile**: 要计算的百分位数。必须是介于0和1之间（包括0和1）的浮点值。
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -4357,11 +4311,11 @@ approx_percentile_cont_with_weight(expression, weight, percentile)
   under the License.
 -->
 
-## Window Functions
+## 窗口函数
 
-A _window function_ performs a calculation across a set of table rows that are somehow related to the current row. This is comparable to the type of calculation that can be done with an aggregate function. However, window functions do not cause rows to become grouped into a single output row like non-window aggregate calls would. Instead, the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result
+窗口函数是对与当前行相关的一组表行执行计算的函数。这类似于可以使用聚合函数进行的计算类型。然而，窗口函数不会导致行成为单个输出行，就像非窗口聚合调用那样。相反，行保留其各自的身份。在幕后，窗口函数能够访问查询结果的当前行以外的更多行。
 
-Here is an example that shows how to compare each employee's salary with the average salary in his or her department:
+下面是一个示例，展示了如何将每个员工的工资与其所在部门的平均工资进行比较：
 
 ```sql
 SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM empsalary;
@@ -4382,13 +4336,13 @@ SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM emps
 +-----------+-------+--------+-------------------+
 ```
 
-A window function call always contains an OVER clause directly following the window function's name and argument(s). This is what syntactically distinguishes it from a normal function or non-window aggregate. The OVER clause determines exactly how the rows of the query are split up for processing by the window function. The PARTITION BY clause within OVER divides the rows into groups, or partitions, that share the same values of the PARTITION BY expression(s). For each row, the window function is computed across the rows that fall into the same partition as the current row. The previous example showed how to count the average of a column per partition.
+窗口函数调用总是在窗口函数的名称和参数之后直接包含一个OVER子句。这在语法上区分它与普通函数或非窗口聚合函数。OVER子句确定了查询的行如何被分割以供窗口函数处理。OVER中的PARTITION BY子句将行分成具有相同PARTITION BY表达式值的组或分区。对于每一行，窗口函数在与当前行属于同一分区的行中进行计算。前面的示例展示了如何对每个分区计算平均值。
 
-You can also control the order in which rows are processed by window functions using ORDER BY within OVER. (The window ORDER BY does not even have to match the order in which the rows are output.) Here is an example:
+您还可以使用OVER中的ORDER BY控制窗口函数处理行的顺序。（窗口ORDER BY甚至不必与行的输出顺序匹配。）下面是一个示例：
 
 ```sql
 SELECT depname, empno, salary,
-       rank() OVER (PARTITION BY depname ORDER BY salary DESC)
+  rank() OVER (PARTITION BY depname ORDER BY salary DESC)
 FROM empsalary;
 
 +-----------+-------+--------+--------+
@@ -4407,7 +4361,7 @@ FROM empsalary;
 +-----------+-------+--------+--------+
 ```
 
-There is another important concept associated with window functions: for each row, there is a set of rows within its partition called its window frame. Some window functions act only on the rows of the window frame, rather than of the whole partition. Here is an example of using window frames in queries:
+窗口函数还有一个重要的概念：对于每一行，都有一组在其分区内的行称为窗口帧。某些窗口函数仅对窗口帧的行进行操作，而不是整个分区的行。下面是在查询中使用窗口帧的示例：
 
 ```sql
 SELECT depname, empno, salary,
@@ -4432,7 +4386,7 @@ ORDER BY empno ASC;
 +-----------+-------+--------+--------------------+---------+
 ```
 
-When a query involves multiple window functions, it is possible to write out each one with a separate OVER clause, but this is duplicative and error-prone if the same windowing behavior is wanted for several functions. Instead, each windowing behavior can be named in a WINDOW clause and then referenced in OVER. For example:
+当一个查询涉及多个窗口函数时，可以将每个函数都写成一个单独的OVER子句，但如果多个函数需要相同的窗口行为，则这样做会产生冗余并容易出错。相反，可以在WINDOW子句中为每个窗口行为命名，然后在OVER中引用。例如：
 
 ```sql
 SELECT sum(salary) OVER w, avg(salary) OVER w
@@ -4440,9 +4394,9 @@ FROM empsalary
 WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
 ```
 
-### Syntax
+### 语法
 
-The syntax for the OVER-clause is
+OVER子句的语法如下：
 
 ```
 function([expr])
@@ -4453,14 +4407,14 @@ function([expr])
     )
 ```
 
-where **frame_clause** is one of:
+其中**frame_clause**可以是以下之一：
 
 ```
   { RANGE | ROWS | GROUPS } frame_start
   { RANGE | ROWS | GROUPS } BETWEEN frame_start AND frame_end
 ```
 
-and **frame_start** and **frame_end** can be one of
+而**frame_start**和**frame_end**可以是以下之一：
 
 ```sql
 UNBOUNDED PRECEDING
@@ -4470,15 +4424,15 @@ offset FOLLOWING
 UNBOUNDED FOLLOWING
 ```
 
-where **offset** is an non-negative integer.
+其中**offset**是非负整数。
 
-RANGE and GROUPS modes require an ORDER BY clause (with RANGE the ORDER BY must specify exactly one column).
+RANGE和GROUPS模式需要一个ORDER BY子句（对于RANGE，ORDER BY必须指定一个列）。
 
-### Aggregate functions
+### 聚合函数
 
-All [aggregate functions](#aggregate-functions) can be used as window functions.
+所有[聚合函数](#聚合函数)都可以用作窗口函数。
 
-### Ranking functions
+### 排名函数
 
 - [row_number](#row-number)
 - [rank](#rank)
@@ -4487,7 +4441,7 @@ All [aggregate functions](#aggregate-functions) can be used as window functions.
 
 ##### `row_number`
 
-Number of the current row within its partition, counting from 1.
+当前行在其分区内的编号，从1开始计数。
 
 ```sql
 row_number()
@@ -4495,7 +4449,7 @@ row_number()
 
 ##### `rank`
 
-Rank of the current row with gaps; same as row_number of its first peer.
+当前行的排名，有间隔；与其第一个同级的行的row_number相同。
 
 ```sql
 rank()
@@ -4503,7 +4457,7 @@ rank()
 
 ##### `dense_rank`
 
-Rank of the current row without gaps; this function counts peer groups.
+当前行的排名，没有间隔；此函数计算同级组。
 
 ```sql
 dense_rank()
@@ -4511,17 +4465,17 @@ dense_rank()
 
 ##### `ntile`
 
-Integer ranging from 1 to the argument value, dividing the partition as equally as possible.
+从1到参数值的整数，将分区均匀地分成若干组。
 
 ```sql
 ntile(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: An integer describing the number groups the partition should be split into
+- **expression**：描述分区应分成的组数的整数
 
-### Analytical functions
+### 分析函数
 
 - [cume_dist](#cume-dist)
 - [percent_rank](#percent-rank)
@@ -4533,7 +4487,7 @@ ntile(expression)
 
 ##### `cume_dist`
 
-Relative rank of the current row: (number of rows preceding or peer with current row) / (total rows).
+当前行的相对排名：（在当前行之前或与当前行同级的行数）/（总行数）。
 
 ```sql
 cume_dist()
@@ -4541,7 +4495,7 @@ cume_dist()
 
 ##### `percent_rank`
 
-Relative rank of the current row: (rank - 1) / (total rows - 1).
+当前行的相对排名：（排名 - 1）/（总行数 - 1）。
 
 ```sql
 percent_rank()
@@ -4549,65 +4503,65 @@ percent_rank()
 
 ##### `lag`
 
-Returns value evaluated at the row that is offset rows before the current row within the partition; if there is no such row, instead return default (which must be of the same type as value). Both offset and default are evaluated with respect to the current row. If omitted, offset defaults to 1 and default to null.
+返回在分区内当前行之前偏移行数的行上评估的值；如果没有这样的行，则返回默认值（默认值必须与值的类型相同）。偏移和默认值都是相对于当前行进行评估的。如果省略，偏移默认为1，默认值默认为null。
 
 ```sql
 lag(expression, offset, default)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on
-- **offset**: Integer. Specifies how many rows back the value of _expression_ should be retrieved. Defaults to 1.
-- **default**: The default value if the offset is not within the partition. Must be of the same type as _expression_.
+- **expression**：要操作的表达式
+- **offset**：整数。指定应从_expression_之前检索多少行的值。默认为1。
+- **default**：如果偏移不在分区内，则为默认值。必须与_expression_的类型相同。
 
 ##### `lead`
 
-Returns value evaluated at the row that is offset rows after the current row within the partition; if there is no such row, instead return default (which must be of the same type as value). Both offset and default are evaluated with respect to the current row. If omitted, offset defaults to 1 and default to null.
+返回在分区内当前行之后偏移行数的行上评估的值；如果没有这样的行，则返回默认值（默认值必须与值的类型相同）。偏移和默认值都是相对于当前行进行评估的。如果省略，偏移默认为1，默认值默认为null。
 
 ```sql
 lead(expression, offset, default)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on
-- **offset**: Integer. Specifies how many rows forward the value of _expression_ should be retrieved. Defaults to 1.
-- **default**: The default value if the offset is not within the partition. Must be of the same type as _expression_.
+- **expression**：要操作的表达式
+- **offset**：整数。指定应从_expression_之后检索多少行的值。默认为1。
+- **default**：如果偏移不在分区内，则为默认值。必须与_expression_的类型相同。
 
 ##### `first_value`
 
-Returns value evaluated at the row that is the first row of the window frame.
+返回窗口帧中第一行评估的值。
 
 ```sql
 first_value(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on
+- **expression**: 要操作的表达式
 
 ##### `last_value`
 
-Returns value evaluated at the row that is the last row of the window frame.
+返回窗口帧中最后一行评估的值。
 
 ```sql
 last_value(expression)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: Expression to operate on
+- **expression**: 要操作的表达式
 
 ##### `nth_value`
 
-Returns value evaluated at the row that is the nth row of the window frame (counting from 1); null if no such row.
+返回窗口帧中第n行（从1开始计数）评估的值；如果没有这样的行，则返回null。
 
 ```sql
 nth_value(expression, n)
 ```
 
-###### Arguments
+###### 参数
 
-- **expression**: The name the column of which nth value to retrieve
-- **n**: Integer. Specifies the _n_ in nth
+- **expression**: 要操作的表达式的列名
+- **n**: 整数。指定nth中的_n_

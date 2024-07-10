@@ -42,7 +42,7 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 DataFusion [String Function](./df-functions#string-functions).GreptimeDB provides:
 * `matches(expression, pattern)` for full text search. 
 
-TODO: link to full-text searching user guide.
+<!-- TODO: link to full-text searching user guide. -->
 
 ### Math Functions
 
