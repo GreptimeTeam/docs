@@ -132,6 +132,7 @@ greptime standalone start --help
 - [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
 - [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
 - [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
 
 ### 指定配置文件

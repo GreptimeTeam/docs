@@ -132,6 +132,7 @@ You can find all available configurations for each component on GitHub:
 - [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
 - [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
 - [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
 
 
