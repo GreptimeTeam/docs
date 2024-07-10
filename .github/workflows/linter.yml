@@ -19,4 +19,5 @@ jobs:
         config_file: .markdownlint.yaml
     - name: Check typos
       uses: crate-ci/typos@master
-      with: .typo.toml
+      with:
+        config: .typo.toml
