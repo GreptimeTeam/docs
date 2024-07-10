@@ -62,7 +62,7 @@ select compact_table("test");
 
 ## Time and Date
 
-DataFusion [Time and Date Functon](./df_functions#time-and-date-functions).
+DataFusion [Time and Date Function](./df_functions#time-and-date-functions).
 
 ### INTERVAL
 

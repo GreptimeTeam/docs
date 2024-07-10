@@ -3,7 +3,6 @@
 ## Usage: ruby misc/update_functions.rb [nightly | v0.x]
 # encoding: utf-8
 require 'net/http'
-require 'rdoc'
 
 scalar_functions = {
   :name => "DataFusion Scalar Functions",
@@ -20,6 +19,29 @@ window_functions = {
 
 ## Apache DataFusion functions
 datafusion_functions = [scalar_functions, agg_functions, window_functions]
+
+
+def process_headlines(line)
+  ## Add a level of headlines
+  if line =~ /^\s*(#+)\s/
+    replacement = "#{$1}#"
+    ## We don't want to render the function names in right menu bar
+    replacement += "#" if replacement.length >= 4
+    line.gsub! $1, replacement
+  end
+  line
+end
+
+def fix_links(line)
+  ## Fix link: #a_b_c -> #a-b-c
+  line.gsub!(/(#[a-zA-Z0-9_]+)\)/) { |match| match.gsub("_", "-") }
+  ## Fix link: a_b_c.md -> #a-b-c
+  line.gsub!(/\]\(([a-zA-Z0-9_]+\.md)\)/) { |match|
+    match.gsub("_", "-").gsub(".md", "").gsub("](", "](#")
+  }
+
+  line
+end
 
 
 File.open("temp.md", "w") do |f|
@@ -40,29 +62,10 @@ File.open("temp.md", "w") do |f|
     markdown = Net::HTTP.get(uri).force_encoding(Encoding::UTF_8)
 
     lines = markdown.split(/\n/)
+
     lines.map! do |line|
-      ## Add a level of headlines
-      if line =~ /^\s*(#+)\s/
-        replacement = "#{$1}#"
-
-        if replacement.length >= 4
-          replacement += "#"
-        end
-        line.gsub! $1, replacement
-      end
-      ## Fix link: #a_b_c -> #a-b-c
-      if line =~ /(#[a-zA-Z0-9_]+)\)/
-        link = $1.to_s
-        replacement = link.gsub("_", "-")
-        line.gsub! link, replacement
-      end
-      ## Fix link: a_b_c.md -> #a-b-c
-      if line =~ /\]\(([a-zA-Z0-9_]+\.md)\)/
-        link = $1.to_s
-        replacement = "#" + link.gsub("_", "-").gsub("\.md", "")
-        line.gsub! link, replacement
-      end
-
+      line = process_headlines(line)
+      line = fix_links(line)
       line
     end
 
