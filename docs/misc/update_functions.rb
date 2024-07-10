@@ -75,6 +75,6 @@ end
 
 target = ARGV[0] || "nightly"
 
-File.rename "temp.md", "#{target}/en/reference/sql/df_functions.md"
+File.rename "temp.md", "#{target}/en/reference/sql/df-functions.md"
 
-puts "#{target}/en/reference/sql/df_functions.md updated!"
+puts "#{target}/en/reference/sql/df-functions.md updated!"

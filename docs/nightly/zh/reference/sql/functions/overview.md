@@ -1,53 +1,51 @@
-# Functions
+# 概述
 
 <!--
 The outling of this document is a little strange, as the content is classified by company functions and feature functions. We plan to tidy up the content in the future when out functions are more stable.
 -->
 
-## Datafusion Functions
+## Datafusion 函数
 
-Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
-functions in DataFusion. These functions include:
+由于 GreptimeDB 的查询引擎是基于 Apache Arrow DataFusion 构建的，GreptimeDB 继承了 DataFusion 中所有内置的函数。这些函数包括：
 
-* **Aggregate functions**: such as `COUNT`, `SUM`, `MIN`, `MAX`, etc. For a detailed list, please refer to [Aggregate Functions](./df_functions#aggregate-functions)
-* **Scalar functions**: such as `ABS`, `COS`, `FLOOR`, etc. For a detailed list, please refer to [Scalar Functions](./df_functions#scalar-functions)
-* **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df_functions#window-functions)
+* **聚合函数**: 如 `COUNT`、`SUM`、`MIN`、`MAX` 等。详细列表请参阅 [聚合函数](./df-functions#aggregate-functions)
+* **标量函数**: 如 `ABS`、`COS`、`FLOOR` 等。详细列表请参阅 [标量函数](./df-functions#scalar-functions)
+* **窗口函数**: 对相关的一组行记录执行计算。详细列表请参阅 [窗口函数](./df-functions#window-functions)
 
-To find all the DataFusion functions, please refer to [DataFusion Functions](./df_functions).
+要查找所有 DataFusion 函数，请参阅 [DataFusion 函数](./df-functions)。
 
-In summary, GreptimeDB supports all SQL aggregate functions, scalar functions, and window functions in DataFusion. Users can safely
-use these rich built-in functions in GreptimeDB to manipulate and analyze data.
+总之，GreptimeDB 支持 DataFusion 中的所有 SQL 聚合函数、标量函数和窗口函数。用户可以安全地在 GreptimeDB 中使用这些丰富的内置函数来处理和分析数据。
 
 ### `arrow_cast`
 
-`arrow_cast` function is from DataFusion's [`arrow_cast`](./df_functions#arrow-cast). It's illustrated as:
+`arrow_cast` 函数来自 DataFusion 的 [`arrow_cast`](./df-functions#arrow-cast)。其用法如下：
 
 ```sql
 arrow_cast(expression, datatype)
 ```
 
-Where the `datatype` can be any valid Arrow data type in this [list](https://arrow.apache.org/datafusion/user-guide/sql/data_types.html). The four timestamp types are:
+其中 `datatype` 可以是此 [列表](https://arrow.apache.org/datafusion/user-guide/sql/data_types.html) 中的任何有效 Arrow 数据类型。四种时间戳类型是：
 
 - Timestamp(Second, None)
 - Timestamp(Millisecond, None)
 - Timestamp(Microsecond, None)
 - Timestamp(Nanosecond, None)
 
-(Notice that the `None` means the timestamp is timezone naive)
+（注意 `None` 表示时间戳不考虑时区）
 
-## GreptimeDB Functions
+## GreptimeDB 函数
 
-### String Functions
+### 字符串函数
 
-DataFusion [String Function](./df_functions#string-functions).GreptimeDB provides:
-* `matches(expression, pattern)` for full text search. 
+DataFusion [字符串函数](./df-functions#string-functions)。GreptimeDB 提供：
+* `matches(expression, pattern)` 用于全文检索。
 
-TODO: link to full-text searching user guide.
+TODO：链接到全文检索用户指南。
 
-### Math Functions
+### 数学函数
 
-DataFusion [Math Function](./df_functions#math-functions).GreptimeDB provides:
-* `clamp(value, lower, upper)` to restrict a given value between a lower and upper bound:
+DataFusion [数学函数](./df-functions#math-functions)。GreptimeDB 额外提供：
+* `clamp(value, lower, upper)` 将给定值限制在上下界之间：
 ```sql
 SELECT CLAMP(10, 0, 1);
 
@@ -59,7 +57,7 @@ SELECT CLAMP(10, 0, 1);
 ```
 
 ```sql
-SELECT CLAMP(0.5, 0, 1)
+SELECT CLAMP(0.5, 0, 1);
 
 +---------------------------------------+
 | clamp(Float64(0.5),Int64(0),Int64(1)) |
@@ -68,7 +66,7 @@ SELECT CLAMP(0.5, 0, 1)
 +---------------------------------------+
 ```
 
-* `mod(x, y)` to get the remainder of a number divided by another number:
+* `mod(x, y)` 获取一个数除以另一个数的余数：
 ```sql
 SELECT mod(18, 4);
 
@@ -79,7 +77,7 @@ SELECT mod(18, 4);
 +-------------------------+
 ```
 
-* `pow(x, y)` to get the value of a number raised to the power of another number:
+* `pow(x, y)` 获取一个数的幂值：
 ```sql
 SELECT pow(2, 10);
 
@@ -90,12 +88,11 @@ SELECT pow(2, 10);
 +-------------------------+
 ```
 
-### Date and Time Functions
+### 日期和时间函数
 
-DataFusion [Time and Date Function](./df_functions#time-and-date-functions).
-GreptimeDB provides:
+DataFusion [时间和日期函数](./df-functions#time-and-date-functions)。GreptimeDB 额外提供：
 
-*  `date_add(expression, interval)` to add an interval value to Timestamp, Date, or DateTime
+*  `date_add(expression, interval)` 向 Timestamp、Date 或 DateTime 添加一个间隔值：
 
 ```sql
 SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
@@ -109,7 +106,7 @@ SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
 +----------------------------------------------------+
 ```
 
-* `date_sub(expression, interval)` to subtract an interval value to Timestamp, Date, or DateTime
+* `date_sub(expression, interval)` 从 Timestamp、Date 或 DateTime 减去一个间隔值：
 
 ```sql
 SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
@@ -123,7 +120,7 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
-* `date_format(expression, fmt)` to format Timestamp, Date, or DateTime into string by the format:
+* `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime格式化：
 
 ```sql
 SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');
@@ -137,9 +134,9 @@ SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f'
 +-----------------------------------------------------------------------------------------------------------------------------+
 ```
 
-Supported specifiers refer to the [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) module.
+支持的格式化符号请参阅 [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 模块。
 
-* `to_unixtime(expression)` to convert the expression into the Unix timestamp in seconds. The argument can be integers (Unix timestamp in milliseconds), Timestamp, Date, DateTime, or String. If the argument is the string type, the function will first try to convert it into a DateTime, Timestamp, or Date.
+* `to_unixtime(expression)` 将表达式转换为 Unix 时间戳（秒）。参数可以是整数（毫秒 Unix 时间戳）、Timestamp、Date、DateTime 或字符串类型。如果参数是字符串类型，函数将首先尝试将其转换为 DateTime、Timestamp 或 Date。
 
 ```sql
 select to_unixtime('2023-03-01T06:35:02Z');
@@ -165,7 +162,7 @@ select to_unixtime('2023-03-01'::date);
 +---------------------------------+
 ```
 
-* `to_timezone(expression, timezone)` to convert the expression by the timezone. The argument can be integers (Unix timestamp in milliseconds), Timestamp, or String. If the argument is the string type, the function will first try to convert it into a Timestamp.
+* `to_timezone(expression, timezone)` 根据时区转换表达式。参数可以是整数（毫秒 Unix 时间戳）、Timestamp 或字符串类型。如果参数是字符串类型，函数将首先尝试将其转换为 Timestamp。
 
 ```sql
 SELECT to_timezone('2022-09-20T14:16:43.012345+08:00', 'Europe/Berlin');
@@ -192,7 +189,7 @@ SELECT to_timezone(1709992225000, 'Asia/Shanghai');
 +---------------------------------------------------------+
 ```
 
-* `timezone()` to retrieve the current session timezone:
+* `timezone()` 查询当前会话时区：
 
 ```sql
 select timezone();
@@ -206,9 +203,9 @@ select timezone();
 +------------+
 ```
 
-### System Functions
+### 系统函数
 
-* `isnull(expression)` to check whether an expression is `NULL`:
+* `isnull(expression)` 检查表达式是否为 `NULL`：
 ```sql
  SELECT isnull(1);
  
@@ -229,10 +226,9 @@ SELECT isnull(NULL);
 +--------------+
 ```
 
-
-* `build()` to retrieve the GreptimeDB build info.
-* `version()` to retrieve the GreptimeDB version.
-* `database()` to retrieve the current session database:
+* `build()` 查询 GreptimeDB 构建信息。
+* `version()` 查询 GreptimeDB 版本信息。
+* `database()` 查询当前会话数据库：
 
 ```sql
 select database();
@@ -244,22 +240,22 @@ select database();
 +------------+
 ```
 
-### Admin Functions
+### 管理函数
 
-GreptimeDB provides some administration functions to manage the database and data:
+GreptimeDB 提供一些管理数据库和数据的函数：
 
-* `flush_table(table_name)` to flush a table's memtables into SST file by table name.
-* `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [PARTITIONS](./information-schema/partitions.md) table.
-* `compact_table(table_name)` to schedule a compaction task for a table by table name.
-* `compact_region(region_id)` to schedule a compaction task for a region by region id.
-* `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration).
-* `procedure_state(procedure_id)` to query a procedure state by its id.
+* `flush_table(table_name)` 通过表名将表的内存表刷写到 SST 文件。
+* `flush_region(region_id)` 通过 Region Id 将 Region 的内存表刷写到 SST 文件。可以通过 [PARTITIONS](./information-schema/partitions.md) 表查找一张表的所有 Region Id。
+* `compact_table(table_name)` 通过表名为表发起compaction 任务。
+* `compact_region(region_id)` 通过 Region Id 为 Region 发起 compaction 任务。
+* `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration)。
+* `procedure_state(procedure_id)` 通过 Procedure Id 查询 Procedure 状态。
 
-For example:
+例如：
 ```sql
--- Flush the table test --
+-- 刷新表 test --
 select flush_table("test");
 
--- Schedule a compaction for table test --
+-- 为表 test 安排压缩任务 --
 select compact_table("test");
 ```
