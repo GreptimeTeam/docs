@@ -1,2 +1,2 @@
 [files]
-extend-exclude = ["./**/df_functions.md"]
+extend-exclude = ["*/**/df_functions.md"]
