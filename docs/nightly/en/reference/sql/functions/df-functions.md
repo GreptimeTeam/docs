@@ -1,4 +1,5 @@
 # DataFusion Functions
+
 This page is generated from the Apache DataFusion project's documents:
   * [DataFusion Scalar Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md)
   * [DataFusion Aggregate Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md)

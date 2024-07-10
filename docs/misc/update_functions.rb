@@ -45,7 +45,7 @@ end
 
 
 File.open("temp.md", "w") do |f|
-  f.puts("# DataFusion Functions")
+  f.puts("# DataFusion Functions\n\n")
   f.puts("This page is generated from the Apache DataFusion project's documents:")
 
   for doc in datafusion_functions
@@ -75,6 +75,6 @@ end
 
 target = ARGV[0] || "nightly"
 
-File.rename "temp.md", "#{target}/en/reference/sql/df-functions.md"
+File.rename "temp.md", "#{target}/en/reference/sql/functions/df-functions.md"
 
-puts "#{target}/en/reference/sql/df-functions.md updated!"
+puts "#{target}/en/reference/sql/functions/df-functions.md updated!"
