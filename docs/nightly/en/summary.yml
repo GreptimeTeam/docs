@@ -159,7 +159,6 @@
     - group_by
     - limit
     - join
-    - functions
     - range
     - delete
     - show
@@ -168,6 +167,9 @@
     - describe_table
     - alter
     - explain
+    - Functions:
+      - overview
+      - df-functions
     - compatibility
     - Information-Schema:
       - overview

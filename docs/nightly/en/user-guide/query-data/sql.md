@@ -85,7 +85,7 @@ select to_unixtime('2024-01-02 00:00:00');
 select to_unixtime('2024-01-02 00:00:00+08:00');
 ```
 
-Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions.md) for more information.
+Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions/overview.md) for more information.
 
 ## Limit the number of rows returned
 
@@ -165,7 +165,7 @@ For example, use the `now()` function and the `INTERVAL` keyword to retrieve dat
 SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-For date and time functions, please refer to [Functions](/reference/sql/functions.md) for more information.
+For date and time functions, please refer to [Functions](/reference/sql/functions/overview.md) for more information.
 
 ### Time zone
 

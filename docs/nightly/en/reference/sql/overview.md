@@ -11,7 +11,7 @@
 * [GROUP BY](./group_by.md)
 * [LIMIT](./limit.md)
 * [JOIN](./join.md)
-* [Functions](./functions.md)
+* [Functions](./functions/overview.md)
 * [DELETE](./delete.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
