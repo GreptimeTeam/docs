@@ -7,6 +7,9 @@ Pipeline 是用于在 GreptimeDB 中对 log （由 json 格式构成的数据）
 Pipeline 一般主要由两部分组成：
 Processors 和 Transform。均为数组形式，可以包含多个 Processor 和多个 Transform。
 
+**Processor 长用于对 log 数据进行预处理，例如解析时间字段，替换字段等。**
+**Transform 用于对 log 数据进行转换，例如将字符串类型转换为数字类型。**
+
 ```yaml
 processors:
   - urlencoding:
@@ -29,7 +32,8 @@ transform:
 
 ### Processor
 
-Processor 用于对 log 数据进行预处理。Processor 的配置位于 Yaml 文件中的 `processors` 字段下。一个 Pipeline 可存在多个 Processor ，他们会按照顺序执行加工数据。每个 Processor 都可以依赖上一个 Processor 处理的结果。Processor 由一个 Processor name 和 Processor 的配置组成。不同类型的 Processor 配置有不同的字段。Processor 的配置为 Yaml 格式，包含了 Processor 的数据转换规则。
+Processor 用于对 log 数据进行预处理。Processor 的配置位于 Yaml 文件中的 `processors` 字段下。一个 Pipeline 可存在多个 Processor ，他们会按照顺序执行加工数据。每个 Processor 都可以依赖上一个 Processor 处理的结果。Processor 由一个 Processor name 和 Processor 的配置组成。不同类型的 Processor 配置有不同的字段。Processor 的配置为 Yaml 格式。
+
 我们目前内置了以下几种 Processor：
 
 - `date`: 用于解析时间字段。
@@ -51,7 +55,7 @@ processors:
   - date:
       field: time
       formats:
-        - "%Y-%m-%d %H:%M:%S%.3f"
+        - '%Y-%m-%d %H:%M:%S%.3f'
       ignore_missing: true
 ```
 
@@ -88,9 +92,9 @@ processors:
 processors:
   - dissect:
       field: message
-      pattern: "%{key1} %{key2}"
+      pattern: '%{key1} %{key2}'
       ignore_missing: true
-      append_separator: "-"
+      append_separator: '-'
 ```
 
 如上所示，`dissect` Processor 的配置包含以下字段：
@@ -108,6 +112,43 @@ processors:
 "%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
 ```
 
+##### Dissect 修饰符
+
+Dissect 模式支持以下修饰符：
+
+| 修饰符      | 说明                                     | 示例                  |
+| ----------- | ---------------------------------------- | --------------------- |
+| `+`         | 将两个或多个字段追加到一起               | `%{+key} %{+key}`     |
+| `+` 和 `/n` | 按照指定的顺序将两个或多个字段追加到一起 | `%{+key/2} %{+key/1}` |
+| `->`        | 忽略右侧的任何重复字符                   | `%{key1->} %{key2->}` |
+| `?`         | 忽略匹配的值                             | `%{?key}`             |
+| `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&value}`   |
+
+##### Dissect 示例
+
+例如，对于以下 log 数据：
+
+```
+"key1 key2 key3 key4 key5 key6 key7 key8"
+```
+
+使用以下 Dissect 模式：
+
+```
+"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key7} %{&key8}"
+```
+
+将得到以下结果：
+
+```
+{
+  "key1": "key1",
+  "key2": "key2",
+  "key3": "key3 key4",
+  "key5": "key5",
+  "key7": "key8"
+}
+```
 
 #### gsub
 
@@ -117,8 +158,8 @@ processors:
 processors:
   - gsub:
       field: message
-      pattern: "old"
-      replacement: "new"
+      pattern: 'old'
+      replacement: 'new'
       ignore_missing: true
 ```
 
@@ -137,7 +178,7 @@ processors:
 processors:
   - join:
       field: message
-      separator: ","
+      separator: ','
       ignore_missing: true
 ```
 
@@ -173,7 +214,7 @@ processors:
 processors:
   - regex:
       field: message
-      pattern: ".*"
+      pattern: '.*'
       ignore_missing: true
 ```
 
@@ -201,4 +242,26 @@ processors:
 
 - `fields`: 需要编码的字段名。
 - `method`: 编码方法，支持 `encode`, `decode`。默认为 `encode`。
+- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+
+#### csv
+
+`csv` Processor 用于对 log 数据中没有携带 header 的 CSV 类型字段解析。`csv` Processor 的示例配置如下：
+
+```yaml
+processors:
+  - csv:
+      field: message
+      separator: ','
+      quote: '"'
+      trim: true
+      ignore_missing: true
+```
+
+如上所示，`csv` Processor 的配置包含以下字段：
+
+- `field`: 需要解析的字段名。
+- `separator`: 分隔符。
+- `quote`: 引号。
+- `trim`: 是否去除空格。默认为 `false`。
 - `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。

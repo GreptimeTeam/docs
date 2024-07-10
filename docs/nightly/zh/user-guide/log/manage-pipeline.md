@@ -1,16 +1,14 @@
 # 管理 Pipeline
 
-每一个 `pipeline` 是 GreptimeDB 中的一个数据变换单元，他用于拆分转换写入的 log 内容。
-本文档描述了如何创建、删除一个 Pipeline。
+在 GreptimeDB 中，每个 `pipeline` 是一个数据处理单元集合，用于解析和转换写入的日志内容。本文档旨在指导您如何创建和删除 Pipeline，以便高效地管理日志数据的处理流程。
 
 ## 简介
 
-Pipeline 是由一个 Pipeline name 和 Pipeline 的配置组成的。 Pipeline 的配置为 Yaml 格式，包含了 Pipeline 的数据转换规则。
-在 log 写入时，GreptimeDB 会根据 Pipeline 的配置将 log 内容进行格式转换，数据拆分等多个操作，并将转换后的结果写入到对应的表中。方便后续进行结构化查询。
+Pipeline 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
 ## 创建 Pipeline
 
-我们提供了专门的 http 接口进行 Pipeline 的创建，接口如下：
+为了创建 Pipeline，GreptimeDB 提供了一个专用的 HTTP 接口。以下是创建 Pipeline 的示例命令：
 
 ```shell
 ## test 为 Pipeline 的名称
@@ -38,13 +36,13 @@ transform:
     index: timestamp
 ```
 
-上面的例子中，我们创建了一个名为 `test` 的 Pipeline，其中包含了一个 Processor 和三个 Transform。它将先对 log 中的 time 字段按照 Rust 时间格式化字符串 `%Y-%m-%d %H:%M:%S%.3f` 对时间进行解析，然后将 id1 和 id2 字段转换为 int32 类型，type、log、logger 字段转换为 string 类型，最后将 time 字段转换为时间类型，并将其设置为 timestamp 索引。请注意。**此处仅作为展示。具体的 Pipeline 语法请参考 [Pipeline 介绍](log-pipeline.md)。**
+在这个示例中，我们创建了一个名为 `test` 的 Pipeline，它包含了一个 Processor 和三个 Transform。它将先对 log 中的 time 字段按照 Rust 时间格式化字符串 `%Y-%m-%d %H:%M:%S%.3f` 对时间进行解析，然后将 id1 和 id2 字段转换为 int32 类型，type、log、logger 字段转换为 string 类型，最后将 time 字段转换为时间类型，并将其设置为 timestamp 索引。请注意。**此处仅作为展示。具体的 Pipeline 语法请参考 [Pipeline 介绍](log-pipeline.md)。**
 
 此接口的返回值为创建的 Pipeline 的名称和版本号，例如 `{"name":"test","version":"2024-06-19 09:24:55.788204038Z"}` 版本号用精度为纳秒的时间字符串表示。
 
 ## 删除 Pipeline
 
-我们提供了专门的 http 接口进行 Pipeline 的删除，接口如下：
+要删除 Pipeline，您可以使用以下专用的 HTTP 接口：
 
 ```shell
 ## test 为 Pipeline 的名称
