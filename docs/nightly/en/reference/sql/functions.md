@@ -9,18 +9,18 @@ The outling of this document is a little strange, as the content is classified b
 Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
 functions in DataFusion. These functions include:
 
-* **Aggregate functions**: such as COUNT(), SUM(), MIN(), MAX(), etc. For a detailed list, please refer to [Aggregate Functions](./df_functions#aggregate-functions)
-* **Scalar functions**: such as ABS(), COS(), FLOOR(), etc. For a detailed list, please refer to [Scalar Functions](./df_functions#scalar-functions)
+* **Aggregate functions**: such as `COUNT`, `SUM`, `MIN`, `MAX`, etc. For a detailed list, please refer to [Aggregate Functions](./df_functions#aggregate-functions)
+* **Scalar functions**: such as `ABS`, `COS`, `FLOOR`, etc. For a detailed list, please refer to [Scalar Functions](./df_functions#scalar-functions)
 * **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df_functions#window-functions)
 
 To find all the DataFusion functions, please refer to [DataFusion Functions](./df_functions).
 
-In summary, GreptimeDB supports all SQL aggregate functions and scalar functions in DataFusion. Users can safely
+In summary, GreptimeDB supports all SQL aggregate functions, scalar functions, and window functions in DataFusion. Users can safely
 use these rich built-in functions in GreptimeDB to manipulate and analyze data.
 
 ### `arrow_cast`
 
-`arrow_cast` function is from DataFusion's [`arrow_cast`](https://arrow.apache.org/datafusion/user-guide/sql/scalar_functions.html#arrow-cast). It's illustrated as:
+`arrow_cast` function is from DataFusion's [`arrow_cast`](./df_functions#arrow-cast). It's illustrated as:
 
 ```sql
 arrow_cast(expression, datatype)
@@ -37,7 +37,212 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 
 ## GreptimeDB Functions
 
-Please refer to [API documentation](https://greptimedb.rs/common_function/function/trait.Function.html#implementors)
+### String Functions
+
+DataFusion [String Function](./df_functions#string-functions).GreptimeDB provides:
+* `matches(expression, pattern)` for full text search. 
+
+TODO: link to full-text searching user guide.
+
+### Math Functions
+
+DataFusion [Math Function](./df_functions#math-functions).GreptimeDB provides:
+* `clamp(value, lower, upper)` to restrict a given value between a lower and upper bound:
+```sql
+SELECT CLAMP(10, 0, 1);
+
++------------------------------------+
+| clamp(Int64(10),Int64(0),Int64(1)) |
++------------------------------------+
+|                                  1 |
++------------------------------------+
+```
+
+```sql
+SELECT CLAMP(0.5, 0, 1)
+
++---------------------------------------+
+| clamp(Float64(0.5),Int64(0),Int64(1)) |
++---------------------------------------+
+|                                   0.5 |
++---------------------------------------+
+```
+
+* `mod(x, y)` to get the remainder of a number divided by another number:
+```sql
+SELECT mod(18, 4);
+
++-------------------------+
+| mod(Int64(18),Int64(4)) |
++-------------------------+
+|                       2 |
++-------------------------+
+```
+
+* `pow(x, y)` to get the value of a number raised to the power of another number:
+```sql
+SELECT pow(2, 10);
+
++-------------------------+
+| pow(Int64(2),Int64(10)) |
++-------------------------+
+|                    1024 |
++-------------------------+
+```
+
+### Date and Time Functions
+
+DataFusion [Time and Date Function](./df_functions#time-and-date-functions).
+GreptimeDB provides:
+
+*  `date_add(expression, interval)` to add an interval value to Timestamp, Date, or DateTime
+
+```sql
+SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
+```
+
+```
++----------------------------------------------------+
+| date_add(Utf8("2023-12-06"),Utf8("3 month 5 day")) |
++----------------------------------------------------+
+| 2024-03-11                                         |
++----------------------------------------------------+
+```
+
+* `date_sub(expression, interval)` to subtract an interval value to Timestamp, Date, or DateTime
+
+```sql
+SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
+```
+
+```
++-----------------------------------------------------------------------------------------------------------------------------------------+
+| date_sub(arrow_cast(Utf8("2023-12-06 07:39:46.222"),Utf8("Timestamp(Millisecond, None)")),IntervalMonthDayNano("92233720368547758080")) |
++-----------------------------------------------------------------------------------------------------------------------------------------+
+| 2023-12-01 07:39:46.222000                                                                                                              |
++-----------------------------------------------------------------------------------------------------------------------------------------+
+```
+
+* `date_format(expression, fmt)` to format Timestamp, Date, or DateTime into string by the format:
+
+```sql
+SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');
+```
+
+```
++-----------------------------------------------------------------------------------------------------------------------------+
+| date_format(arrow_cast(Utf8("2023-12-06 07:39:46.222"),Utf8("Timestamp(Millisecond, None)")),Utf8("%Y-%m-%d %H:%M:%S:%3f")) |
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2023-12-06 07:39:46:222                                                                                                     |
++-----------------------------------------------------------------------------------------------------------------------------+
+```
+
+Supported specifiers refer to the [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) module.
+
+* `to_unixtime(expression)` to convert the expression into the Unix timestamp in seconds. The argument can be integers (Unix timestamp in milliseconds), Timestamp, Date, DateTime, or String. If the argument is the string type, the function will first try to convert it into a DateTime, Timestamp, or Date.
+
+```sql
+select to_unixtime('2023-03-01T06:35:02Z');
+```
+
+```
++-------------------------------------------+
+| to_unixtime(Utf8("2023-03-01T06:35:02Z")) |
++-------------------------------------------+
+|                                1677652502 |
++-------------------------------------------+
+```
+
+```sql
+select to_unixtime('2023-03-01'::date);
+```
+
+```
++---------------------------------+
+| to_unixtime(Utf8("2023-03-01")) |
++---------------------------------+
+|                      1677628800 |
++---------------------------------+
+```
+
+* `to_timezone(expression, timezone)` to convert the expression by the timezone. The argument can be integers (Unix timestamp in milliseconds), Timestamp, or String. If the argument is the string type, the function will first try to convert it into a Timestamp.
+
+```sql
+SELECT to_timezone('2022-09-20T14:16:43.012345+08:00', 'Europe/Berlin');
+```
+
+```
++-----------------------------------------------------------------------------+
+| to_timezone(Utf8("2022-09-20T14:16:43.012345+08:00"),Utf8("Europe/Berlin")) |
++-----------------------------------------------------------------------------+
+| 2022-09-20 08:16:43.012345                                                  |
++-----------------------------------------------------------------------------+
+```
+
+
+```sql
+SELECT to_timezone(1709992225000, 'Asia/Shanghai');
+```
+
+```
++---------------------------------------------------------+
+| to_timezone(Int64(1709992225000),Utf8("Asia/Shanghai")) |
++---------------------------------------------------------+
+| 2024-03-09 21:50:25                                     |
++---------------------------------------------------------+
+```
+
+* `timezone()` to retrieve the current session timezone:
+
+```sql
+select timezone();
+```
+
+```
++------------+
+| timezone() |
++------------+
+| UTC        |
++------------+
+```
+
+### System Functions
+
+* `isnull(expression)` to check whether an expression is `NULL`:
+```sql
+ SELECT isnull(1);
+ 
+ +------------------+
+| isnull(Int64(1)) |
++------------------+
+|                0 |
++------------------+
+```
+
+```sql
+SELECT isnull(NULL);
+
++--------------+
+| isnull(NULL) |
++--------------+
+|            1 |
++--------------+
+```
+
+
+* `build()` to retrieve the GreptimeDB build info.
+* `version()` to retrieve the GreptimeDB version.
+* `database()` to retrieve the current session database:
+
+```sql
+select database();
+
++------------+
+| database() |
++------------+
+| public     |
++------------+
+```
 
 ### Admin Functions
 
@@ -58,76 +263,3 @@ select flush_table("test");
 -- Schedule a compaction for table test --
 select compact_table("test");
 ```
-
-
-## Time and Date
-
-DataFusion [Time and Date Function](./df_functions#time-and-date-functions).
-
-### INTERVAL
-
-The Interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
-
-```sql
-INTERVAL [fields]
-```
-
-Valid types are:
-
-- YEAR
-- MONTH
-- DAY
-- HOUR
-- MINUTE
-- SECOND
-- YEAR TO MONTH
-- DAY TO HOUR
-- DAY TO MINUTE
-- DAY TO SECOND
-- HOUR TO MINUTE
-- HOUR TO SECOND
-- MINUTE TO SECOND
-
-For example:
-
-```sql
-SELECT
- now(),
- now() - INTERVAL '1 year 3 hours 20 minutes'
-             AS "3 hours 20 minutes ago of last year";
-```
-
-Output:
-
-```sql
-+----------------------------+-------------------------------------+
-| now()                      | 3 hours 20 minutes ago of last year |
-+----------------------------+-------------------------------------+
-| 2023-07-05 11:43:37.861340 | 2022-07-05 08:23:37.861340          |
-+----------------------------+-------------------------------------+
-```
-
-For more info about interval data type, please refer to [Data Type](./data-types#interval-type) document.
-
-### `::timestamp`
-
-The `::timestamp` grammar casts the string literal to the timestamp type. All the SQL types are valid to be in the position of `timestamp`.
-
-Example:
-
-```sql
-MySQL [(none)]> select '2021-07-01 00:00:00'::timestamp;
-```
-
-Output:
-
-```sql
-+-----------------------------+
-| Utf8("2021-07-01 00:00:00") |
-+-----------------------------+
-| 2021-07-01 08:00:00         |
-+-----------------------------+
-1 row in set (0.000 sec)
-```
-
-
