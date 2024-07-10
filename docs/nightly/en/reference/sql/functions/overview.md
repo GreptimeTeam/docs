@@ -15,9 +15,6 @@ functions in DataFusion. These functions include:
 
 To find all the DataFusion functions, please refer to [DataFusion Functions](./df-functions).
 
-In summary, GreptimeDB supports all SQL aggregate functions, scalar functions, and window functions in DataFusion. Users can safely
-use these rich built-in functions in GreptimeDB to manipulate and analyze data.
-
 ### `arrow_cast`
 
 `arrow_cast` function is from DataFusion's [`arrow_cast`](./df-functions#arrow-cast). It's illustrated as:
@@ -46,8 +43,12 @@ DataFusion [String Function](./df-functions#string-functions).GreptimeDB provide
 
 ### Math Functions
 
-DataFusion [Math Function](./df-functions#math-functions).GreptimeDB provides:
+DataFusion [Math Function](./df-functions#math-functions).
+
+GreptimeDB provides:
+
 * `clamp(value, lower, upper)` to restrict a given value between a lower and upper bound:
+
 ```sql
 SELECT CLAMP(10, 0, 1);
 
@@ -230,9 +231,9 @@ SELECT isnull(NULL);
 ```
 
 
-* `build()` to retrieve the GreptimeDB build info.
-* `version()` to retrieve the GreptimeDB version.
-* `database()` to retrieve the current session database:
+* `build()` retrieves the GreptimeDB build info.
+* `version()` retrieves the GreptimeDB version.
+* `database()` retrieves the current session database:
 
 ```sql
 select database();
