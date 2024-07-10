@@ -24,7 +24,7 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
    - Subkeyword `BY`, optional field, followed by parameter `(columna, columnb,..)`, describes the aggregate key. For legal `BY_OPTION` parameters, see [BY Option](#by-option).
 - The parameter `INTERVAL` is mainly used to give the length of a period of time. There are two parameter forms:
    - Strings based on the `PromQL Time Durations` format (eg: `3h`, `1h30m`). Visit the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) for a more detailed description of this format.
-   - `Interval` type. To use the `Interval` type, you need to carry parentheses, (for example: `(INTERVAL '1 year 3 hours 20 minutes')`). Visit [Interval](./functions/overview.md#interval) for a more detailed description of this format.
+   - `Interval` type. To use the `Interval` type, you need to carry parentheses, (for example: `(INTERVAL '1 year 3 hours 20 minutes')`). Visit [Interval](./data-types#interval-type) for a more detailed description of this format.
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` is called a Range expression.
    - `AGGR_FUNCTION(column1, column2,..)` is an aggregate function that represents the expression that needs to be aggregated.
    - Keyword `RANGE`, required field, followed by parameter `INTERVAL` specifies the time range of each data aggregation.
