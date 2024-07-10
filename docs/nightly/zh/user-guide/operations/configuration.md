@@ -87,6 +87,22 @@ greptime frontend start --help
 - `--tls-mode <TLS_MODE>`: TLS 模式
 - `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
 
+
+### Flownode 子命令选项
+
+通过执行下列命令来获取 `flownode` 子命令的帮助菜单：
+
+```
+greptime flownode start --help
+```
+
+- `--node-id <NODE_ID>`: Flownode的ID
+- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
+- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
+- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
+- `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
+- `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
+
 ### standalone 子命令选项
 
 通过执行下列命令来获取 `standalone` 子命令的帮助菜单：
@@ -116,6 +132,7 @@ greptime standalone start --help
 - [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
 - [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
 - [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
 
 ### 指定配置文件
