@@ -9,9 +9,11 @@ The outling of this document is a little strange, as the content is classified b
 Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
 functions in DataFusion. These functions include:
 
-**Aggregate functions**: such as COUNT(), SUM(), MIN(), MAX(), etc. For a detailed list, please refer to [Aggregate Functions](https://arrow.apache.org/datafusion/user-guide/sql/aggregate_functions.html)
+* **Aggregate functions**: such as COUNT(), SUM(), MIN(), MAX(), etc. For a detailed list, please refer to [Aggregate Functions](./df_functions#aggregate-functions)
+* **Scalar functions**: such as ABS(), COS(), FLOOR(), etc. For a detailed list, please refer to [Scalar Functions](./df_functions#scalar-functions)
+* **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df_functions#window-functions)
 
-**Scalar functions**: such as ABS(), COS(), FLOOR(), etc. For a detailed list, please refer to [Scalar Functions](https://arrow.apache.org/datafusion/user-guide/sql/scalar_functions.html)
+To find all the DataFusion functions, please refer to [DataFusion Functions](./df_functions).
 
 In summary, GreptimeDB supports all SQL aggregate functions and scalar functions in DataFusion. Users can safely
 use these rich built-in functions in GreptimeDB to manipulate and analyze data.
@@ -35,7 +37,7 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 
 ## GreptimeDB Functions
 
-Please refer to [API documentation](https://greptimedb.rs/script/python/rspython/builtins/greptime_builtin/index.html#functions)
+Please refer to [API documentation](https://greptimedb.rs/common_function/function/trait.Function.html#implementors)
 
 ### Admin Functions
 
@@ -60,36 +62,14 @@ select compact_table("test");
 
 ## Time and Date
 
-### `date_trunc`
-
-`date_trunc` function follows the same API with PostgreSQL's [`date_trunc`](https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-TRUNC). It's illustrated as:
-
-```sql
-date_trunc(precision, source [, time_zone ])
-```
-
-Valid precisions are:
-
-- microseconds
-- milliseconds
-- second
-- minute
-- hour
-- day
-- week
-- month
-- quarter
-- year
-- decade
-- century
-- millennium
+DataFusion [Time and Date Functon](./df_functions#time-and-date-functions).
 
 ### INTERVAL
 
 The Interval data type allows you to store and manipulate a period of time in years, months, days, hours etc. It's illustrated as:
 
 ```sql
-INTERVAL [fields] [(p)]
+INTERVAL [fields]
 ```
 
 Valid types are:
@@ -107,8 +87,6 @@ Valid types are:
 - HOUR TO MINUTE
 - HOUR TO SECOND
 - MINUTE TO SECOND
-
-The optional precision `p` is the number of fraction digits retained in the second field.
 
 For example:
 
@@ -128,6 +106,8 @@ Output:
 | 2023-07-05 11:43:37.861340 | 2022-07-05 08:23:37.861340          |
 +----------------------------+-------------------------------------+
 ```
+
+For more info about interval data type, please refer to [Data Type](./data-types#interval-type) document.
 
 ### `::timestamp`
 
@@ -150,31 +130,4 @@ Output:
 1 row in set (0.000 sec)
 ```
 
-### `date_part`
 
-`date_part` function follows the same API with PostgreSQL's [`date_part`](https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-EXTRACT). It's illustrated as:
-
-```sql
-date_part(field, source)
-```
-
-Some commonly used fields are:
-
-- century
-- decade
-- year
-- quarter
-- month
-- day
-- dow (day of week)
-- doy (day of year)
-- hour
-- minute
-- second
-- milliseconds
-- microseconds
-- nanoseconds
-
-### More Functions
-
-For more functions related to time and date, please refer to the [Time and Date Functions](https://arrow.apache.org/datafusion/user-guide/sql/scalar_functions.html#time-and-date-functions) section of the DataFusion documentation.
