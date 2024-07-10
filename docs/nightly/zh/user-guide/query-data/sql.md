@@ -81,7 +81,7 @@ select to_unixtime('2024-01-02 00:00:00');
 select to_unixtime('2024-01-02 00:00:00+08:00');
 ```
 
-请参考 [SELECT](/reference/sql/select.md) 和 [Functions](/reference/sql/functions.md) 获取更多信息。
+请参考 [SELECT](/reference/sql/select.md) 和 [Functions](/reference/sql/functions/overview.md) 获取更多信息。
 
 ## 限制返回的行数
 
@@ -155,7 +155,7 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
 SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-请参考 [Functions](/reference/sql/functions.md) 获取更多时间函数信息。
+请参考 [Functions](/reference/sql/functions/overview.md) 获取更多时间函数信息。
 
 ### 时区
 

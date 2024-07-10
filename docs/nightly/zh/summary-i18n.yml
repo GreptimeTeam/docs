@@ -24,6 +24,7 @@ Migrate-to-GreptimeDB: 迁移到 GreptimeDB
 Migrate-to-GreptimeCloud: 迁移到 GreptimeCloud
 Integrations: 集成
 Usage-&-Billing: 用量及费用
+Functions: 函数
 Frontend: Frontend
 Datanode: Datanode
 Flownode: Flownode

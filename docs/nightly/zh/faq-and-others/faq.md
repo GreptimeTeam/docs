@@ -145,7 +145,7 @@ Of course, please use the `compact_table` function:
 select compact_table("test");
 ```
 
-There are many [administration functions](/reference/sql/functions#admin-functions) for database management.
+There are many [administration functions](/reference/sql/functions/overview#admin-functions) for database management.
 
 ### Can GreptimeDB be used to store logs?
 
