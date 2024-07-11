@@ -1,7 +1,5 @@
 # Configuration
 
-This page describes the methods for configuring GreptimeDB server settings.
-
 GreptimeDB supports **layered configuration** and uses the following precedence order (where each item overrides the one below it):
 
 - Greptime command line options
@@ -9,7 +7,7 @@ GreptimeDB supports **layered configuration** and uses the following precedence 
 - Environment variables
 - Default values
 
-For any settings not explicitly configured, the system will assign default values.
+For any settings that not configured, GreptimeDB will assign default values.
 
 ## Greptime command line options
 
@@ -35,14 +33,14 @@ greptime standalone start -c standalone.example.toml
 
 ### Options
 
-For a comprehensive list of configurations, 
 please visit [all available configurations](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/config.md) on GitHub.
 
 ### Examples
 
 Below are example configuration files for each GreptimeDB component, which include all available configurations. 
-However, it is unnecessary to configure every setting in the example files.
-You can only setup the configurations as needed.
+In actual scenarios,
+you only need to configure the required options,
+do not need to configure all options as in the sample file.
 
 - [standalone](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/standalone.example.toml)
 - [frontend](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/frontend.example.toml)
@@ -52,7 +50,7 @@ You can only setup the configurations as needed.
 
 ## Environment variable
 
-Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `data_home` of the storage data by environment variable:
+Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `data_home` of the datanode by environment variable:
 
 ```toml
 # ...
