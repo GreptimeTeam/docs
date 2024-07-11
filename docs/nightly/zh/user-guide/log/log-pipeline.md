@@ -1,14 +1,17 @@
-## Pipeline 变换
+# Pipeline 配置
 
-Pipeline 是用于在 GreptimeDB 中对 log （由 json 格式构成的数据）数据进行转换的一种机制。Pipeline 由多个 Processor 和多个 Transform 组成。Processor 用于对 log 数据进行预处理，例如解析时间字段，Transform 用于对 log 数据进行转换，例如将字段转换为特定类型。使用 Yaml 格式来定义 Pipeline 的配置。
+Pipeline 是 GreptimeDB 中对 log （由 JSON 格式构成的数据）数据进行转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。
 
-### 整体结构
+这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
-Pipeline 一般主要由两部分组成：
-Processors 和 Transform。均为数组形式，可以包含多个 Processor 和多个 Transform。
+## 整体结构
 
-**Processor 长用于对 log 数据进行预处理，例如解析时间字段，替换字段等。**
-**Transform 用于对 log 数据进行转换，例如将字符串类型转换为数字类型。**
+Pipeline 由两部分组成：Processors 和 Transform，这两部分均为数组形式。一个 Pipeline 配置可以包含多个 Processor 和多个 Transform。
+
+- Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
+- Transform 用于对 log 数据进行转换，例如将字符串类型转换为数字类型。
+
+一个包含 Processor 和 Transform 的简单配置示例如下：
 
 ```yaml
 processors:
@@ -30,9 +33,11 @@ transform:
     index: timestamp
 ```
 
-### Processor
+## Processor
 
-Processor 用于对 log 数据进行预处理。Processor 的配置位于 Yaml 文件中的 `processors` 字段下。一个 Pipeline 可存在多个 Processor ，他们会按照顺序执行加工数据。每个 Processor 都可以依赖上一个 Processor 处理的结果。Processor 由一个 Processor name 和 Processor 的配置组成。不同类型的 Processor 配置有不同的字段。Processor 的配置为 Yaml 格式。
+Processor 用于对 log 数据进行预处理，其配置位于 YAML 文件中的 `processors` 字段下。
+Pipeline 会按照多个 Processor 的顺序依次加工数据，每个 Processor 都依赖于上一个 Processor 处理的结果。
+Processor 由一个 name 和多个配置组成，不同类型的 Processor 配置有不同的字段。
 
 我们目前内置了以下几种 Processor：
 
@@ -46,9 +51,9 @@ Processor 用于对 log 数据进行预处理。Processor 的配置位于 Yaml �
 - `urlencoding`: 用于对 log 数据字段进行 URL 编码。
 - `csv`: 用于对 log 数据字段进行 CSV 解析。
 
-#### date
+### date
 
-`date` Processor 用于解析时间字段。`date` Processor 的示例配置如下：
+`date` Processor 用于解析时间字段。示例配置如下：
 
 ```yaml
 processors:
@@ -57,18 +62,19 @@ processors:
       formats:
         - '%Y-%m-%d %H:%M:%S%.3f'
       ignore_missing: true
+      timezone: 'Asia/Shanghai'
 ```
 
 如上所示，`date` Processor 的配置包含以下字段：
 
 - `field`: 需要解析的时间字段名。
 - `formats`: 时间格式化字符串，支持多个时间格式化字符串。按照提供的顺序尝试解析，直到解析成功。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
-- `timezone`： 时区。默认为 `UTC`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
+- `timezone`： 时区。使用[tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 中的时区标识符来指定时区。默认为 `UTC`。
 
-#### epoch
+### epoch
 
-`epoch` Processor 用于解析时间戳字段。`epoch` Processor 的示例配置如下：
+`epoch` Processor 用于解析时间戳字段，示例配置如下：
 
 ```yaml
 processors:
@@ -82,11 +88,11 @@ processors:
 
 - `field`: 需要解析的时间戳字段名。
 - `resolution`: 时间戳精度，支持 `s`, `sec` , `second` , `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`。默认为 `ms`。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### dissect
+### dissect
 
-`dissect` Processor 用于对 log 数据字段进行拆分。`dissect` Processor 的示例配置如下：
+`dissect` Processor 用于对 log 数据字段进行拆分，示例配置如下：
 
 ```yaml
 processors:
@@ -101,10 +107,10 @@ processors:
 
 - `field`: 需要拆分的字段名。
 - `pattern`: 拆分的 dissect 模式。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `append_separator`: 是否在拆分后的字段之间添加分隔符。 默认为空。
 
-##### Dissect 模式
+#### Dissect 模式
 
 和 Logstash 的 Dissect 模式类似，Dissect 模式由 `%{key}` 组成，其中 `%{key}` 为一个字段名。例如：
 
@@ -112,7 +118,7 @@ processors:
 "%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
 ```
 
-##### Dissect 修饰符
+#### Dissect 修饰符
 
 Dissect 模式支持以下修饰符：
 
@@ -124,7 +130,7 @@ Dissect 模式支持以下修饰符：
 | `?`         | 忽略匹配的值                             | `%{?key}`             |
 | `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&value}`   |
 
-##### Dissect 示例
+#### Dissect 示例
 
 例如，对于以下 log 数据：
 
@@ -150,9 +156,9 @@ Dissect 模式支持以下修饰符：
 }
 ```
 
-#### gsub
+### gsub
 
-`gsub` Processor 用于对 log 数据字段进行替换。`gsub` Processor 的示例配置如下：
+`gsub` Processor 用于对 log 数据字段进行替换，示例配置如下：
 
 ```yaml
 processors:
@@ -168,11 +174,11 @@ processors:
 - `field`: 需要替换的字段名。
 - `pattern`: 需要替换的字符串。支持正则表达式。
 - `replacement`: 替换后的字符串。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### join
+### join
 
-`join` Processor 用于对 log 中的 array 类型字段进行合并。`join` Processor 的示例配置如下：
+`join` Processor 用于对 log 中的 Array 类型字段进行合并，示例配置如下：
 
 ```yaml
 processors:
@@ -186,11 +192,11 @@ processors:
 
 - `field`: 需要合并的字段名。
 - `separator`: 合并后的分隔符。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### letter
+### letter
 
-`letter` Processor 用于对 log 数据字段进行字母转换。`letter` Processor 的示例配置如下：
+`letter` Processor 用于对 log 数据字段进行字母转换，示例配置如下：
 
 ```yaml
 processors:
@@ -204,29 +210,37 @@ processors:
 
 - `field`: 需要转换的字段名。
 - `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### regex
+### regex
 
-`regex` Processor 用于对 log 数据字段进行正则匹配。`regex` Processor 的示例配置如下：
+`regex` Processor 用于对 log 数据字段进行正则匹配，示例配置如下：
 
 ```yaml
 processors:
   - regex:
       field: message
-      pattern: '.*'
+      pattern: ':(?<id>[0-9])'
       ignore_missing: true
 ```
 
 如上所示，`regex` Processor 的配置包含以下字段：
 
 - `field`: 需要匹配的字段名。
-- `pattern`: 正则表达式。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `pattern`: 要进行匹配的正则表达式，需要包含命名捕获组才可以从对因字段中取出对应数据。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### urlencoding
+#### regex 组命名规则
 
-`urlencoding` Processor 用于对 log 数据字段进行 URL 编码。`urlencoding` Processor 的示例配置如下：
+`regex` Processor 支持使用 `(?<name>...)` 的语法来命名组。
+
+如上述例子所述，`id` 为命名组。为了区分不同 regex 的命名组，我们需要使用 `regex` Processor 的 `field` 字段来指定处理后的字段名前缀。
+
+比如 `:(?<id>[0-9])` 的 `id` 组，处理后的字段名为 `message_id`。
+
+### urlencoding
+
+`urlencoding` Processor 用于对 log 数据字段进行 URL 编码，示例配置如下：
 
 ```yaml
 processors:
@@ -242,11 +256,11 @@ processors:
 
 - `fields`: 需要编码的字段名。
 - `method`: 编码方法，支持 `encode`, `decode`。默认为 `encode`。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### csv
+### csv
 
-`csv` Processor 用于对 log 数据中没有携带 header 的 CSV 类型字段解析。`csv` Processor 的示例配置如下：
+`csv` Processor 用于对 log 数据中没有携带 header 的 CSV 类型字段解析，示例配置如下：
 
 ```yaml
 processors:
@@ -264,4 +278,4 @@ processors:
 - `separator`: 分隔符。
 - `quote`: 引号。
 - `trim`: 是否去除空格。默认为 `false`。
-- `ignore_missing`: 是否忽略字段不存在的情况。默认为 `false`。
+- `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
