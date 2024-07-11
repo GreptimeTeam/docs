@@ -2,8 +2,8 @@
 
 GreptimeDB supports **layered configuration** and uses the following precedence order(each item takes precedence over the item below it):
 
-- Command-line options
-- Configuration file
+- Greptime command line options
+- Configuration file options
 - Environment variables
 - Default values
 
@@ -13,128 +13,11 @@ The system assigns a default value for missing parameters in the configuration f
 
 All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) folder.
 
-## Command-line options
+## Greptime command line options
 
 See [Command lines](/reference/command-lines.md) to learn how to use the `greptime` command line.
 
-### Global options
-
-- `-h`/`--help`: Print help information;
-- `-V`/`--version`: Print version information;
-- `--log-dir <LOG_DIR>`: The logging directory;
-- `--log-level <LOG_LEVEL>`: The logging level;
-
-### Datanode subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime datanode start --help
-```
-
-- `-c`/`--config-file`: The configuration file for datanode;
-- `--data-home`: Database storage root directory;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
-- `--node-id <NODE_ID>`: The datanode ID;
-- `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
-- `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
-- `--wal-dir <WAL_DIR>`: The directory of WAL;
-
-All the `addr` options are in the form of `ip:port`.
-
-### Metasrv subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime metasrv start --help
-```
-
-- `-c`/`--config-file`: The configuration file for metasrv;
-- `--enable-region-failover`: Whether to enable region failover, default is `false`.
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
-- `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
-- `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
-
-### Frontend subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime frontend start --help
-```
-
-- `-c`/`--config-file`: The configuration file for frontend;
-- `--disable-dashboard`: Disable dashboard http service, default is `false`.
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: GRPC server address;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
-- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
-- `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
-- `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
-
-### Flownode subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime flownode start --help
-```
-
-- `--node-id <NODE_ID>`: Flownode's id
-- `--rpc-addr <RPC_ADDR>`: Bind address for the gRPC server
-- `--rpc-hostname <RPC_HOSTNAME>`: Hostname for the gRPC server
-- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv address list
-- `-c, --config-file <CONFIG_FILE>`: The configuration file for the flownode
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`
-
-### Standalone subcommand options
-
-You can list all the options from the following command:
-
-
-```
-greptime standalone start --help
-```
-
-- `-c`/`--config-file`: The configuration file for frontend;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_STANDALONE`;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--rpc-addr <RPC_ADDR>`:  gRPC server address;
-
-
-## Configuration File
-
-### Examples
-
-Configurations can be used in one or multiple components according to their features.
-This document only contains examples for frequently used configurations. Please refer to the auto-generated [document](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md) for all available configurations.
-
-You can find all available configurations for each component on GitHub:
-
-- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
-- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
-- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
-- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
-- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
-
+## Configuration file
 
 ### Specify configuration file
 
@@ -149,6 +32,19 @@ For example, start the standalone as below:
 ```bash
 greptime standalone start -c standalone.example.toml
 ```
+
+### Examples
+
+Configurations can be used in one or multiple components according to their features.
+This document only contains examples for frequently used configurations. Please refer to the auto-generated [document](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md) for all available configurations.
+
+You can find all available configurations for each component on GitHub:
+
+- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
+- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
+- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
+- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
 
 ### Protocol options
 

@@ -2,8 +2,8 @@
 
 GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置：
 
-- 命令行参数
-- 配置文件
+- 命令行配置选项
+- 配置文件选项
 - 环境变量
 - 默认值
 
@@ -16,109 +16,6 @@ GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效
 ## 命令行选项
 
 请阅读[命令行工具](/reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
-
-### 全局选项
-
-- `-h`/`--help`: 打印命令行帮助信息
-- `-V`/`--version`: 打印 GreptimeDB 版本信息
-- `--log-dir <LOG_DIR>`: 指定日志路径
-- `--log-level <LOG_LEVEL>`: 指定日志级别，如 `info`、`debug` 等。
-
-### datanode 子命令选项
-
-通过执行下列命令来获取 `datanode` 子命令的帮助菜单：
-
-```
-greptime datanode start --help
-```
-
-- `-c`/`--config-file`:  指定 datanode 启动的配置文件
-- `--data-home`: 数据库存储 home 目录
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为 `GREPTIMEDB_DATANODE`;
-- `--http-addr <HTTP_ADDR>`:  HTTP 服务地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--metasrv-addrs <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号或者空格隔开
-- `--node-id <NODE_ID>`: 节点 ID
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-- `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
-- `--wal-dir <WAL_DIR>`: WAL 日志目录;
-
-所有的地址类选项都是 `ip:port` 形式的字符串。
-
-### metasrv 子命令选项
-
-通过执行下列命令来获取 `metasrv` 子命令的帮助菜单：
-
-```
-greptime metasrv start --help
-```
-
-- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件
-- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用。
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
-- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
-- `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
-- `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
-- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
-
-### frontend 子命令选项
-
-通过执行下列命令来获取 `frontend` 子命令的帮助菜单：
-
-```
-greptime frontend start --help
-```
-
-- `-c`/`--config-file`: 指定 `frontend` 启动配置文件
-- `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
-- `--metasrv-addrs <METASRV_ADDR>`:   Metasrv 地址列表，用逗号或者空格隔开
-- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
-- `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
-- `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
-- `--tls-mode <TLS_MODE>`: TLS 模式
-- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
-
-
-### Flownode 子命令选项
-
-通过执行下列命令来获取 `flownode` 子命令的帮助菜单：
-
-```
-greptime flownode start --help
-```
-
-- `--node-id <NODE_ID>`: Flownode的ID
-- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
-- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
-- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
-- `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
-- `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
-
-### standalone 子命令选项
-
-通过执行下列命令来获取 `standalone` 子命令的帮助菜单：
-
-```
-greptime standalone start --help
-```
-
-- `-c`/`--config-file`: 指定 `standalone` 启动配置文件
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_STANDALONE`;
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
-- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-
 
 ## 配置文件
 
