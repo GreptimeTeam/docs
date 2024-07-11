@@ -27,11 +27,85 @@ transform:
       - string_field_b
     type: string
   # 写入的数据必须包含 timestamp 字段
-  - field: reqTimeSec, req_time_sec
+  - fields: 
+      - reqTimeSec, req_time_sec
     # epoch 是特殊字段，必须指定精度
     type: epoch, ms
     index: timestamp
 ```
+
+## Transform
+
+Transform 用于对 log 数据进行转换，其配置位于 YAML 文件中的 `transform` 字段下。
+
+Transform 由一个或多个配置组成，每个配置包含以下字段：
+
+- `fields`: 需要转换的字段名列表。
+- `type`: 转换类型
+
+### fields 字段
+
+`fields` 字段是一个字符串数组，包含需要转换的字段名列表。字段名是经过 processor 转换后的 log 数据中的 key。
+每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`。
+这将在 GreptimeDB 中写入 `req_time_sec` 字段。
+
+### type 字段
+
+我们目前内置了以下几种转换类型：
+
+- `int8`, `int16`, `int32`, `int64`: 整数类型。
+- `uint8`, `uint16`, `uint32`, `uint64`: 无符号整数类型。
+- `float32`, `float64`: 浮点数类型。
+- `string`: 字符串类型。
+- `time`: 时间类型。将被转换为 GreptimeDB `timestamp(9)` 类型。
+- `epoch`: 时间戳类型。将被转换为 GreptimeDB `timestamp(n)` 类型。n 为时间戳精度，n 的值视 epoch 精度而定。当精度为 `s` 时，n 为 0；当精度为 `ms` 时，n 为 3；当精度为 `us` 时，n 为 6；当精度为 `ns` 时，n 为 9。
+
+如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。比如，如果将一个字符串转换为整数时，字符串不是一个合法的整数，比如 `abc` 。那么 Pipeline 将会抛出异常。
+
+### index 字段
+
+在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的字段，用于存储时间戳。
+
+在 Transform 中，可以通过 `index: timestamp` 字段指定哪个字段是时间戳字段。一个 Pipeline 有且只有一个时间戳字段。
+
+### Transform 示例
+
+例如，对于以下 log 数据：
+
+```json
+{
+  "num_field_a": "3",
+  "string_field_b": "john",
+  "time_field_c": 1625760000
+}
+```
+
+使用以下配置：
+
+```yaml
+transform:
+  - fields:
+      - string_field_a, name
+    type: string
+  - fields:
+      - num_field_a, age
+    type: int32
+  - fields:
+      - reqTimeSec, bron_time
+    type: epoch, s
+    index: timestamp
+```
+
+将得到以下结果：
+
+```
+{
+  "name": "john",
+  "age": 3,
+  "bron_time": 2021-07-08 16:00:00
+}
+```
+
 
 ## Processor
 
@@ -58,7 +132,8 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 ```yaml
 processors:
   - date:
-      field: time
+      fields: 
+        - time
       formats:
         - '%Y-%m-%d %H:%M:%S%.3f'
       ignore_missing: true
@@ -67,7 +142,7 @@ processors:
 
 如上所示，`date` Processor 的配置包含以下字段：
 
-- `field`: 需要解析的时间字段名。
+- `fields`: 需要解析的时间字段名列表。
 - `formats`: 时间格式化字符串，支持多个时间格式化字符串。按照提供的顺序尝试解析，直到解析成功。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `timezone`： 时区。使用[tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 中的时区标识符来指定时区。默认为 `UTC`。
@@ -79,14 +154,15 @@ processors:
 ```yaml
 processors:
   - epoch:
-      field: reqTimeSec
+      fields:
+        - reqTimeSec
       resolution: millisecond
       ignore_missing: true
 ```
 
 如上所示，`epoch` Processor 的配置包含以下字段：
 
-- `field`: 需要解析的时间戳字段名。
+- `fields`: 需要解析的时间戳字段名列表。
 - `resolution`: 时间戳精度，支持 `s`, `sec` , `second` , `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`。默认为 `ms`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
@@ -97,7 +173,8 @@ processors:
 ```yaml
 processors:
   - dissect:
-      field: message
+      fields: 
+        - message
       pattern: '%{key1} %{key2}'
       ignore_missing: true
       append_separator: '-'
@@ -105,7 +182,7 @@ processors:
 
 如上所示，`dissect` Processor 的配置包含以下字段：
 
-- `field`: 需要拆分的字段名。
+- `fields`: 需要拆分的字段名列表。
 - `pattern`: 拆分的 dissect 模式。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `append_separator`: 是否在拆分后的字段之间添加分隔符。 默认为空。
@@ -163,7 +240,8 @@ Dissect 模式支持以下修饰符：
 ```yaml
 processors:
   - gsub:
-      field: message
+      fields: 
+        - message
       pattern: 'old'
       replacement: 'new'
       ignore_missing: true
@@ -171,7 +249,7 @@ processors:
 
 如上所示，`gsub` Processor 的配置包含以下字段：
 
-- `field`: 需要替换的字段名。
+- `fields`: 需要替换的字段名列表。
 - `pattern`: 需要替换的字符串。支持正则表达式。
 - `replacement`: 替换后的字符串。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
@@ -183,16 +261,45 @@ processors:
 ```yaml
 processors:
   - join:
-      field: message
+      fields:
+        - message
       separator: ','
       ignore_missing: true
 ```
 
 如上所示，`join` Processor 的配置包含以下字段：
 
-- `field`: 需要合并的字段名。
+- `fields`: 需要合并的字段名列表。
 - `separator`: 合并后的分隔符。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
+
+#### join 示例
+
+例如，对于以下 log 数据：
+
+```json
+{
+  "message": ["a", "b", "c"]
+}
+```
+
+使用以下配置：
+
+```yaml
+processors:
+  - join:
+      fields:
+        - message
+      separator: ','
+```
+
+将得到以下结果：
+
+```json
+{
+  "message": "a,b,c"
+}
+```
 
 ### letter
 
@@ -201,14 +308,14 @@ processors:
 ```yaml
 processors:
   - letter:
-      field: message
+      fields: message
       method: upper
       ignore_missing: true
 ```
 
 如上所示，`letter` Processor 的配置包含以下字段：
 
-- `field`: 需要转换的字段名。
+- `fields`: 需要转换的字段名列表。
 - `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
@@ -219,24 +326,37 @@ processors:
 ```yaml
 processors:
   - regex:
-      field: message
+      fields:
+        - message
       pattern: ':(?<id>[0-9])'
       ignore_missing: true
 ```
 
 如上所示，`regex` Processor 的配置包含以下字段：
 
-- `field`: 需要匹配的字段名。
-- `pattern`: 要进行匹配的正则表达式，需要包含命名捕获组才可以从对因字段中取出对应数据。
+- `fields`: 需要匹配的字段名列表。
+- `pattern`: 要进行匹配的正则表达式，需要使用命名捕获组才可以从对应字段中取出对应数据。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### regex 组命名规则
+#### regex 命名捕获组的规则
 
-`regex` Processor 支持使用 `(?<name>...)` 的语法来命名组。
+`regex` Processor 支持使用 `(?<group-name>...)` 的语法来命名捕获组，最终将数据处理为这种形式： 
+	
+```json
+{
+  "<field-name>_<group-name>": "<value>"
+}
+```
 
-如上述例子所述，`id` 为命名组。为了区分不同 regex 的命名组，我们需要使用 `regex` Processor 的 `field` 字段来指定处理后的字段名前缀。
-
-比如 `:(?<id>[0-9])` 的 `id` 组，处理后的字段名为 `message_id`。
+例如 `regex` Processor 中 field 填写的字段名为 `message`，对应的内容为 `"[ERROR] error message"`，
+你可以将 pattern 设置为 `\[(?<level>[A-Z]+)\] (?<content>.+)`，
+最终数据会被处理为：
+```json
+{
+  "message_level": "ERROR",
+  "message_content": "error message"
+}
+```
 
 ### urlencoding
 
@@ -254,7 +374,7 @@ processors:
 
 如上所示，`urlencoding` Processor 的配置包含以下字段：
 
-- `fields`: 需要编码的字段名。
+- `fields`: 需要编码的字段名列表。
 - `method`: 编码方法，支持 `encode`, `decode`。默认为 `encode`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
@@ -265,7 +385,8 @@ processors:
 ```yaml
 processors:
   - csv:
-      field: message
+      fields:
+        - message
       separator: ','
       quote: '"'
       trim: true
@@ -274,7 +395,7 @@ processors:
 
 如上所示，`csv` Processor 的配置包含以下字段：
 
-- `field`: 需要解析的字段名。
+- `fields`: 需要解析的字段名列表。
 - `separator`: 分隔符。
 - `quote`: 引号。
 - `trim`: 是否去除空格。默认为 `false`。
