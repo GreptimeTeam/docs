@@ -34,79 +34,6 @@ transform:
     index: timestamp
 ```
 
-## Transform
-
-Transform 用于对 log 数据进行转换，其配置位于 YAML 文件中的 `transform` 字段下。
-
-Transform 由一个或多个配置组成，每个配置包含以下字段：
-
-- `fields`: 需要转换的字段名列表。
-- `type`: 转换类型
-
-### fields 字段
-
-`fields` 字段是一个字符串数组，包含需要转换的字段名列表。字段名是经过 processor 转换后的 log 数据中的 key。
-每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`。
-这将在 GreptimeDB 中写入 `req_time_sec` 字段。
-
-### type 字段
-
-我们目前内置了以下几种转换类型：
-
-- `int8`, `int16`, `int32`, `int64`: 整数类型。
-- `uint8`, `uint16`, `uint32`, `uint64`: 无符号整数类型。
-- `float32`, `float64`: 浮点数类型。
-- `string`: 字符串类型。
-- `time`: 时间类型。将被转换为 GreptimeDB `timestamp(9)` 类型。
-- `epoch`: 时间戳类型。将被转换为 GreptimeDB `timestamp(n)` 类型。n 为时间戳精度，n 的值视 epoch 精度而定。当精度为 `s` 时，n 为 0；当精度为 `ms` 时，n 为 3；当精度为 `us` 时，n 为 6；当精度为 `ns` 时，n 为 9。
-
-如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。比如，如果将一个字符串转换为整数时，字符串不是一个合法的整数，比如 `abc` 。那么 Pipeline 将会抛出异常。
-
-### index 字段
-
-在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的字段，用于存储时间戳。
-
-在 Transform 中，可以通过 `index: timestamp` 字段指定哪个字段是时间戳字段。一个 Pipeline 有且只有一个时间戳字段。
-
-### Transform 示例
-
-例如，对于以下 log 数据：
-
-```json
-{
-  "num_field_a": "3",
-  "string_field_b": "john",
-  "time_field_c": 1625760000
-}
-```
-
-使用以下配置：
-
-```yaml
-transform:
-  - fields:
-      - string_field_a, name
-    type: string
-  - fields:
-      - num_field_a, age
-    type: int32
-  - fields:
-      - reqTimeSec, bron_time
-    type: epoch, s
-    index: timestamp
-```
-
-将得到以下结果：
-
-```
-{
-  "name": "john",
-  "age": 3,
-  "bron_time": 2021-07-08 16:00:00
-}
-```
-
-
 ## Processor
 
 Processor 用于对 log 数据进行预处理，其配置位于 YAML 文件中的 `processors` 字段下。
@@ -308,7 +235,8 @@ processors:
 ```yaml
 processors:
   - letter:
-      fields: message
+      fields:
+        - message
       method: upper
       ignore_missing: true
 ```
@@ -400,3 +328,75 @@ processors:
 - `quote`: 引号。
 - `trim`: 是否去除空格。默认为 `false`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
+
+
+## Transform
+
+Transform 用于对 log 数据进行转换，其配置位于 YAML 文件中的 `transform` 字段下。
+
+Transform 由一个或多个配置组成，每个配置包含以下字段：
+
+- `fields`: 需要转换的字段名列表。
+- `type`: 转换类型
+
+### fields 字段
+
+每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，
+最终数据将被写入到 GreptimeDB 的 `req_time_sec` 列。
+
+### type 字段
+
+GreptimeDB 目前内置了以下几种转换类型：
+
+- `int8`, `int16`, `int32`, `int64`: 整数类型。
+- `uint8`, `uint16`, `uint32`, `uint64`: 无符号整数类型。
+- `float32`, `float64`: 浮点数类型。
+- `string`: 字符串类型。
+- `time`: 时间类型。将被转换为 GreptimeDB `timestamp(9)` 类型。
+- `epoch`: 时间戳类型。将被转换为 GreptimeDB `timestamp(n)` 类型。n 为时间戳精度，n 的值视 epoch 精度而定。当精度为 `s` 时，n 为 0；当精度为 `ms` 时，n 为 3；当精度为 `us` 时，n 为 6；当精度为 `ns` 时，n 为 9。
+
+如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。例如将一个字符串 `abc` 转换为整数时，由于该字符串不是一个合法的整数，Pipeline 将会抛出异常。
+
+### index 字段
+
+在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列。
+
+在 Transform 中，可以通过 `index: timestamp` 字段指定哪个字段是时间索引列。一个 Pipeline 有且只有一个时间索引列。
+
+### Transform 示例
+
+例如，对于以下 log 数据：
+
+```json
+{
+  "num_field_a": "3",
+  "string_field_b": "john",
+  "time_field_c": 1625760000
+}
+```
+
+使用以下配置：
+
+```yaml
+transform:
+  - fields:
+      - string_field_a, name
+    type: string
+  - fields:
+      - num_field_a, age
+    type: int32
+  - fields:
+      - time_field_c, bron_time
+    type: epoch, s
+    index: timestamp
+```
+
+将得到以下结果：
+
+```
+{
+  "name": "john",
+  "age": 3,
+  "bron_time": 2021-07-08 16:00:00
+}
+```
