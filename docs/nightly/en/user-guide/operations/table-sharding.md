@@ -23,7 +23,7 @@ The syntax mainly consists of two parts:
 - `PARTITION ON COLUMNS` followed by a comma-separated list of column names, which specifies which columns might be used for partitioning. The partition list specified here is only used as an "allow list", and in reality only a portion of the columns specified here will be used for partitioning.
 - `RULE LIST` is a list of multiple partition rules, each of which is a combination of a partition name and a partition condition. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column name and literals.
 
-Here is a concrete example that shard `my_table` into 3 partitons based on column `a`:
+Here is a concrete example that shard `my_table` into 3 partitions based on column `a`:
 
 ```sql
 CREATE TABLE my_table (
@@ -62,5 +62,5 @@ This partition rule can be illustrated in a 2-dimensional space like this:
 ![table-sharding-partition](/table-sharding-partition.png)
 
 Two things need stress in this complex example:
-- Each column in the partition rule are evaluated **separatly**, this is different from the traditional storage system like MySQL or TiKV. Hence you can write whatever complex rule you want without considering the "primary key order" or "physical storage order".
+- Each column in the partition rule are evaluated **separately**, this is different from the traditional storage system like MySQL or TiKV. Hence you can write whatever complex rule you want without considering the "primary key order" or "physical storage order".
 - String comparison is based on the lexicographical order. E.g., string `"10"` is less than string `"2"`.
