@@ -8,9 +8,6 @@ In GreptimeDB, logically, data is sharded in partitions. Because GreptimeDB is u
 group data and SQL to query them, we borrow the word "partition", which is a concept commonly used
 in OLTP databases.
 
-In GreptimeDB, a table can be horizontally partitioned in multiple ways and it uses the same
-partitioning types (and corresponding syntax) as in MySQL. Currently, GreptimeDB supports "RANGE COLUMNS partitioning".
-
 Each partition includes only a portion of the data from the table, and is
 grouped by some column(s) value range. For example, we can partition a table in GreptimeDB like
 this:

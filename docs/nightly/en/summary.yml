@@ -76,6 +76,7 @@
     - admin
     - configuration
     - capacity-plan
+    - table-sharding
     - Deploy-on-Kubernetes:
       - overview
       - greptimedb-operator
