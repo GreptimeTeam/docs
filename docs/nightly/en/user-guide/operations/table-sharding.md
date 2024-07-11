@@ -10,6 +10,8 @@ Inside GreptimeDB, both data management and scheduling are based on the region l
 
 A region in GreptimeDB has a relative fixed throughput capacity, and the number of regions in a table determines the total throughput capacity of the table. If you want to increase the throughput capacity of a table, you can increase the number of regions in the table. Ideally the overall throughput of a table should be proportional to the number of regions.
 
+As for which specific partition column to use or how many regions to create, it depends on the data distribution and the query pattern. A general goal is to make the data distribution among regions as even as possible. And the query pattern should be considered when designing the partition rule set as one query can be processed in parallel among regions. In other word the query latency is depends on the "slowest" region's latency.
+
 But notice that the increse of regions will bring some basic consumption and increase the complexity of the system. You need to consider the requirement of data ingest rate, the query performance, the data distribution on storage system. You should shard a table only when necessary.
 
 ## Partition Rule Set
