@@ -8,11 +8,8 @@
 
 ## 创建 Pipeline
 
-GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline，示例如下：
-
-首先我们创建一个 Pipeline 文件，例如 `pipeline.yaml`，内容如下：
-
-假设你已经准备好了一个 Pipeline 配置文件 pipeline.yaml，使用以下命令上传配置文件，其中 test 是你指定的 Pipeline 的名称：
+GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
+假设你已经准备好了一个 Pipeline 配置文件 pipeline.yaml，使用以下命令上传配置文件，其中 `test` 是你指定的 Pipeline 的名称：
 
 ```
 ## 上传 pipeline 文件。test 为 Pipeline 的名称
@@ -21,7 +18,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeli
 
 ## 删除 Pipeline
 
-要删除 Pipeline，您可以使用以下专用的 HTTP 接口：
+可以使用以下 HTTP 接口删除 Pipeline：
 
 ```shell
 ## test 为 Pipeline 的名称
@@ -38,7 +35,7 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test"
 SELECT * FROM greptime_private.pipelines;
 ```
 
-请注意，如果您使用 MySQL 或者 PostgreSQL 协议作为连接 GreptimeDB 的方式，查询出来的 Pipeline 时间信息精度可能有所不同。可能会丢失纳秒级别的精度。
+请注意，如果您使用 MySQL 或者 PostgreSQL 协议作为连接 GreptimeDB 的方式，查询出来的 Pipeline 时间信息精度可能有所不同，可能会丢失纳秒级别的精度。
 
 为了解决这个问题，可以将 `created_at` 字段强制转换为 timestamp 来查看 Pipeline 的创建时间。例如，下面的查询将 `created_at` 以 `bigint` 的格式展示:
 

@@ -14,11 +14,6 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
      -d "$<log-items>"
 ```
 
-执行上述命令后，您将收到如下响应：
-
-```json
-{"output":[{"affectedrows":4}],"execution_time_ms":22}
-```
 
 ## Query 参数
 

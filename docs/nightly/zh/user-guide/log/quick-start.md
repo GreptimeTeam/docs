@@ -4,13 +4,13 @@
 
 ## 下载并安装 GreptimeDB & 启动 GreptimeDB
 
-请遵循 [安装指南](../../getting-started/overview.md) 来安装并启动 GreptimeDB。
+请遵循[安装指南](../../getting-started/overview.md) 来安装并启动 GreptimeDB。
 
 ## 创建 Pipeline
 
-我们提供了专门的 HTTP 接口用于创建 Pipeline，具体操作如下：
+GreptimeDB 提供了专门的 HTTP 接口用于创建 Pipeline，具体操作如下：
 
-首先我们创建一个 Pipeline 文件，例如 `pipeline.yaml`，内容如下：
+首先创建一个 Pipeline 文件，例如 `pipeline.yaml`，内容如下：
 
 ```shell
 ## 创建 pipeline 文件
@@ -45,7 +45,8 @@ EOF
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
 ```
 
-命令执行成功后，我们创建了一个名为 `test` 的 Pipeline，并收到了如下响应：`{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`。其中，`name` 为 Pipeline 名称，`version` 为 Pipeline 版本号。
+该命令执行成功后，会创建了一个名为 `test` 的 Pipeline，并返回结果：`{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`。
+其中 `name` 为 Pipeline 名称，`version` 为 Pipeline 版本号。
 
 此 Pipeline 包含一个 Processor 和三个 Transform。Processor 使用了 Rust 的时间格式化字符串 `%Y-%m-%d %H:%M:%S%.3f` 解析日志中的 timestamp 字段，然后 Transform 将 id1 和 id2 字段转换为 int32 类型，将 level、content、logger 字段转换为 string 类型，最后将 timestamp 字段转换为时间类型，并将其设置为 Timestamp 索引。
 
@@ -91,7 +92,7 @@ SELECT * FROM greptime_private.pipelines;
 
 ## 写入日志
 
-我们提供了专门的 HTTP 接口进行日志的写入，接口如下：
+写入日志的 HTTP 接口如下：
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeline_name=test" \
@@ -107,13 +108,13 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeli
 {"output":[{"affectedrows":4}],"execution_time_ms":22}
 ```
 
-上面的例子中，我们向 `public.logs` 表中成功写入了 4 条日志。
+上面的例子中，`public.logs` 表中被成功写入了 4 条日志。
 
-请参考 [配合 Pipeline 写入日志](write-log.md)获取具体的日志写入语法。
+请参考[配合 Pipeline 写入日志](write-log.md)获取具体的日志写入语法。
 
 ## `logs` 表结构
 
-本文档示例中所使用的日志对应的 `public.logs` 表结构如下：
+上述示例中所使用的日志对应的 `public.logs` 表结构如下：
 
 ```sql
 DESC TABLE logs;
