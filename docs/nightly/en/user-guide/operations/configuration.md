@@ -33,7 +33,7 @@ greptime standalone start -c standalone.example.toml
 
 ### Options
 
-please visit [all available configurations](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/config.md) on GitHub.
+Please visit [all available configurations](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/config.md) on GitHub.
 
 ### Examples
 
