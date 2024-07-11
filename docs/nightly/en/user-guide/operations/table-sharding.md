@@ -38,22 +38,22 @@ PARTITION ON COLUMNS (a) (
 );
 ```
 
-You can also define the rule set based on multiple primary key columns. For example, if you have a table with two primary key columns `a` and `b`, you can partition the table like this:
+You can also define the rule set based on multiple primary key columns. For example, if you have a table with two primary key columns `series` and `host`, you can partition the table like this:
 
 ```sql
 CREATE TABLE my_table (
-  a INT,
-  b STRING,
+  series INT,
+  host STRING,
   ts TIMESTAMP TIME INDEX,
-  PRIMARY KEY (a, b)
+  PRIMARY KEY (series, host)
 )
-PARTITION ON COLUMNS (a, b) (
-  b < "banana" AND a < 10,                          -- partition purple
-  b < "banana" AND a >= 10,                         -- partition yellow
-  b >= "banana" AND b < "watermelon",               -- partition blue
-  b >= "watermelon" AND b < "raspberry" AND a <= 20 -- partition green
-  b >= "watermelon" AND a > 20,                     -- partition gray
-  b >= "raspberry" AND a <= 20,                     -- partition pink
+PARTITION ON COLUMNS (series, host) (
+  host < "banana" AND series < 10,                             -- partition purple
+  host < "banana" AND series >= 10,                            -- partition yellow
+  host >= "banana" AND host < "watermelon",                    -- partition blue
+  host >= "watermelon" AND host < "raspberry" AND series <= 20 -- partition green
+  host >= "watermelon" AND series > 20,                        -- partition gray
+  host >= "raspberry" AND series <= 20,                        -- partition pink
 );
 ```
 
