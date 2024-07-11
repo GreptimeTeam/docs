@@ -8,6 +8,10 @@ This document will describe the when and how to configure table sharding.
 
 Inside GreptimeDB, both data management and scheduling are based on the region level. And each region is corresponding to a table partition. Thus when you have a table that is too large to fit into a single node, or the table is too hot to be served by a single node, you should consider sharding it.
 
+A region in GreptimeDB has a relative fixed throughput capacity, and the number of regions in a table determines the total throughput capacity of the table. If you want to increase the throughput capacity of a table, you can increase the number of regions in the table. Ideally the overall throughput of a table should be proportional to the number of regions.
+
+But notice that the increse of regions will bring some basic consumption and increase the complexity of the system. You need to consider the requirement of data ingest rate, the query performance, the data distribution on storage system. You should shard a table only when necessary.
+
 ## Partition Rule Set
 
 GreptimeDB uses value ranges of columns to partition data. The partition rule is a combination of a partition name and a partition condition. Partition rule's grammar is:
@@ -38,7 +42,11 @@ PARTITION ON COLUMNS (a) (
 );
 ```
 
-You can also define the rule set based on multiple primary key columns. For example, if you have a table with two primary key columns `series` and `host`, you can partition the table like this:
+You can also define the rule set based on multiple primary key columns. For example, if you have a table with two primary key columns `series` and `host`. And we know how the load is distributed in the table. Like:
+
+![table-sharding-load](/table-sharding-load.png)
+
+And we want to partition the table for some reason like one region's capacity is 30 load unit. So we'll need 6 partitions with each has similar load. One possible partition rule set is:
 
 ```sql
 CREATE TABLE my_table (
@@ -57,10 +65,14 @@ PARTITION ON COLUMNS (series, host) (
 );
 ```
 
-This partition rule can be illustrated in a 2-dimensional space like this:
+This partition rule can be illustrated in a 2-dimensional space like this with each has 24 load unit:
 
 ![table-sharding-partition](/table-sharding-partition.png)
 
 Two things need stress in this complex example:
 - Each column in the partition rule are evaluated **separately**, this is different from the traditional storage system like MySQL or TiKV. Hence you can write whatever complex rule you want without considering the "primary key order" or "physical storage order".
 - String comparison is based on the lexicographical order. E.g., string `"10"` is less than string `"2"`.
+
+## Inspect a sharded table
+
+GreptimeDB provides severals system table to check DB's state. For table sharding information, you can query [`information_schema.partitions`](../../reference/sql/information-schema/partitions.md) which gives the detail of partitions inside one table, and [`information_schema.region_peers`](../../reference/sql/information-schema/region-peers.md) which gives the runtime distribution of regions.
