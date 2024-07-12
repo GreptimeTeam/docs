@@ -8,7 +8,7 @@ GreptimeDB allows for flexible querying of data using SQL statements. This secti
 
 ## Full-Text Search Using the `MATCHES` Function
 
-You can use the `MATCHES` function in SQL statements to perform full-text searches, which is particularly useful for log analysis. The `MATCHES` function supports full-text search on `String` type columns. Here’s an example of how it can be used:
+In SQL statements, you can use the `MATCHES` function to perform full-text searches, which is especially useful for log analysis. The `MATCHES` function supports full-text searches on `String` type columns. Here’s an example of how it can be used:
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
@@ -17,7 +17,7 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 The `MATCHES` function is designed for full-text search and accepts two parameters:
 
 - `column_name`: The column to perform the full-text search on, which should contain textual data of type `String`.
-- `search_query`: A string containing query statement which you want to search for.
+- `search_query`: A string containing query statement which you want to search for. See the [Query Statements](#query-statements) section below for more details.
 
 ## Query Statements
 
@@ -29,7 +29,7 @@ Simple term searches are straightforward:
 SELECT * FROM logs WHERE MATCHES(message, 'Barack Obama');
 ```
 
-This query considers `Barack` and `Obama` as separate terms. It matches all rows that contain either `Barack` or `Obama`, equivalent to using the `OR` operator:
+The value `Barack Obama` in the `search_query` parameter of the `MATCHES` function will be considered as two separate terms: `Barack` and `Obama`. This means the query will match all rows containing either `Barack` or `Obama`, equivalent to using `OR`:
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'Barack OR Obama');
@@ -79,13 +79,13 @@ To include quotes within a phrase, use a backslash `\` to escape them:
 SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 ```
 
-## Full-Text Index for Accelerated Full-Text Search
+## Full-Text Index for Accelerated Search
 
-For efficient full-text searches, especially in large datasets, using a full-text index is recommended. This can significantly speed up searches:
+A full-text index is essential for full-text search, especially when dealing with large datasets. Without a full-text index, the search operation could be very slow, impacting the overall query performance and user experience. By configuring a full-text index within the Pipeline, you can ensure that search operations are performed efficiently, even with significant data volumes.
 
 ### Configuring Full-Text Index
 
-In the Pipeline configuration, you can specify a column to use a full-text index. Here is an example configuration where the `message` column is set for full-text indexing:
+In the Pipeline configuration, you can [specify a column to use a full-text index](./log-pipeline.md#index-field). Below is a configuration example where the `message` column is set with a full-text index:
 
 ```yaml
 processors:
@@ -106,7 +106,7 @@ transform:
 
 ### Viewing Table Schema
 
-After data insertion, you can use an SQL statement to view the table schema and confirm that the `message` column is set for full-text indexing:
+After data is written, you can use an SQL statement to view the table schema and confirm that the `message` column is set for full-text indexing:
 
 ```sql
 SHOW CREATE TABLE many_logs\G
@@ -125,11 +125,3 @@ WITH(
   append_mode = 'true'
 )
 ```
-
-### Importance of Full-Text Index
-
-Full-text indexing is crucial for effective full-text search, especially in scenarios involving large data sets. Without full-text indexing, search operations can be exceedingly slow, negatively impacting overall query performance and user experience. Configuring full-text indexing in the Pipeline ensures search queries are executed efficiently, maintaining good performance even with vast amounts of data.
-
-## Conclusion
-
-With the concepts covered, you should be able to use GreptimeDB's query capabilities to search and analyze log data more effectively. Continue exploring more advanced query functionalities to fully leverage the powerful tools GreptimeDB provides.
