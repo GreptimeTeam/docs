@@ -1,14 +1,14 @@
 # Log Query
 
-This document provides an overview of how to utilize GreptimeDB's query language for searching and analyzing log data.
+This document provides a guide on how to use GreptimeDB's query language for effective searching and analysis of log data.
 
-## Query Overview
+## Overview
 
-In GreptimeDB, you can perform flexible data queries using SQL statements. This section will introduce specific search functions and query statements that help optimize your log queries.
+GreptimeDB allows for flexible querying of data using SQL statements. This section introduces specific search functions and query statements designed to enhance your log querying capabilities.
 
 ## Full-Text Search Using the `MATCHES` Function
 
-You can use the `MATCHES` function in SQL statements to perform full-text searches, which is particularly useful for log analysis. The `MATCHES` function supports full-text search on `String` type columns. Here is a typical usage example:
+You can use the `MATCHES` function in SQL statements to perform full-text searches, which is particularly useful for log analysis. The `MATCHES` function supports full-text search on `String` type columns. Here’s an example of how it can be used:
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
@@ -23,13 +23,13 @@ The `MATCHES` function is designed for full-text search and accepts two paramete
 
 ### Simple Term
 
-A simple term search works as follows:
+Simple term searches are straightforward:
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'Barack Obama');
 ```
 
-This query treats `Barack` and `Obama` as two independent terms. It matches all rows that contain either `Barack` or `Obama`, equivalent to using the `OR` operator:
+This query considers `Barack` and `Obama` as separate terms. It matches all rows that contain either `Barack` or `Obama`, equivalent to using the `OR` operator:
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'Barack OR Obama');
@@ -81,7 +81,7 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 ## Full-Text Index for Accelerated Full-Text Search
 
-To enhance the efficiency of full-text searches, especially when dealing with large data sets, it is recommended to use a full-text index. A full-text index can significantly speed up search operations, allowing you to quickly locate records containing specific words even in extensive data sets.
+For efficient full-text searches, especially in large datasets, using a full-text index is recommended. This can significantly speed up searches:
 
 ### Configuring Full-Text Index
 
