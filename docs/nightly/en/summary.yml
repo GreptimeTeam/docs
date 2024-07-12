@@ -89,6 +89,7 @@
       - quick-start
       - cluster-deployment
     - region-migration
+    - region-failover
     - monitoring
     - tracing
     # TODO
