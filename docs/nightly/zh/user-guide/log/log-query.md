@@ -17,7 +17,7 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 `MATCHES` 是一个专门用于全文搜索的函数，它接受两个参数：
 
 - `column_name`：要进行全文搜索的列，该列包含文本数据，列的数据类型必须是 `String`。
-- `search_query`：一个字符串，包含要搜索的关键词和操作符，详情请看下文中的[查询语句类型](#查询语句类型)
+- `search_query`：一个字符串，包含要搜索的关键词和操作符，详情请看下文中的[查询语句类型](#查询语句类型)。
 
 ## 查询语句类型
 
@@ -85,7 +85,9 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 ### 配置全文索引
 
-在 Pipeline 的配置中，可以[指定某列使用全文索引](./log-pipeline.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引：
+在 Pipeline 的配置中，可以指定某列使用全文索引。以下是一个配置示例，其中 `message` 列被设置为全文索引：
+
+<!-- 在 Pipeline 的配置中，可以[指定某列使用全文索引](./log-pipeline.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引： -->
 
 ```yaml
 processors:

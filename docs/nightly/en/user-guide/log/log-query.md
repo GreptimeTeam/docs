@@ -85,7 +85,9 @@ A full-text index is essential for full-text search, especially when dealing wit
 
 ### Configuring Full-Text Index
 
-In the Pipeline configuration, you can [specify a column to use a full-text index](./log-pipeline.md#index-field). Below is a configuration example where the `message` column is set with a full-text index:
+In the Pipeline configuration, you can specify a column to use a full-text index. Below is a configuration example where the `message` column is set with a full-text index:
+
+<!-- In the Pipeline configuration, you can [specify a column to use a full-text index](./log-pipeline.md#index-field). Below is a configuration example where the `message` column is set with a full-text index: -->
 
 ```yaml
 processors:
