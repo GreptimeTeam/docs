@@ -45,7 +45,7 @@ A simple model to estimate the read amplification factor:
 | 8                           | 13                                        | 28                                     | 364                                | 182.5            |
 | 16                          | 7                                         | 120                                    | 840                                | 420.5            |
 
-**If the Kafka cluster can provide 300MB/s read throughput, recover 100 regions requires approximately 10 minutes (182.5GB/0.3GB = 10m).**
+**If the Kafka cluster can provide 300MB/s read throughput, recovering 100 regions requires approximately 10 minutes (182.5GB/0.3GB = 10m).**
 
 ### Examples
 
