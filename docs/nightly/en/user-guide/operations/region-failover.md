@@ -1,6 +1,6 @@
 # Region Failover
 
-Region Failover provides the ability to recover regions from a crashed data node without losing data.
+Region Failover provides the ability to recover regions from crashed Datanodes without losing data.
 
 :::warning Warning
 This feature is only available on GreptimeDB running on cluster mode and
