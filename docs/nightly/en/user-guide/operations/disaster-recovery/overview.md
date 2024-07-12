@@ -61,7 +61,7 @@ If the Standalone is running on the local disk for WAL and data, then:
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
 ![DR-Standalone](/DR-Standalone.png)
 
-Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution allows for an RPO of zero, and an RTO measured in minutes.
+Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution can achieve **RPO=0** and **RTO in minutes**.
 
  For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
 
