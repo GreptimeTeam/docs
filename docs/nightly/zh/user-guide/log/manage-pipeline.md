@@ -22,10 +22,10 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeli
 
 ```shell
 ## test 为 Pipeline 的名称
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test"
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27 12:02:34.257312110Z"
 ```
 
-上面的例子中，我们删除了一个名为 `test` 的 Pipeline。
+上面的例子中，我们删除了一个名为 `test` 的 Pipeline。`version` 参数是必须的，用于指定要删除的 Pipeline 的版本号。
 
 ## 查询 Pipeline
 

@@ -102,7 +102,8 @@ processors:
   - dissect:
       fields: 
         - message
-      pattern: '%{key1} %{key2}'
+      patterns:
+        - '%{key1} %{key2}'
       ignore_missing: true
       append_separator: '-'
 ```
@@ -339,6 +340,8 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 - `fields`: 需要转换的字段名列表。
 - `type`: 转换类型
 - `index`: 索引类型（可选）
+- `on_failure`: 转换失败时的处理方式（可选）
+- `default`: 默认值（可选）
 
 ### fields 字段
 

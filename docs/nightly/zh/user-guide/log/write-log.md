@@ -2,7 +2,7 @@
 
 本文档介绍如何通过 HTTP 接口使用指定的 Pipeline 进行处理后将日志写入 GreptimeDB。
 
-在写入日志之前，请先阅读 [Pipeline 配置](log-pipeline.md)和[管理 Pipeline](manage-pipeline.md)完成配置的设定和上传。
+在写入日志之前，请先阅读 [Pipeline 配置](log-pipeline.md)和[管理 Pipeline](manage-pipeline.md) 完成配置的设定和上传。
 
 ## HTTP API
 
@@ -19,8 +19,8 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 
 此接口接受以下参数：
 
-- `db-name`：数据库名称。
-- `table-name`：表名称。
+- `db`：数据库名称。
+- `table`：表名称。
 - `pipeline_name`：[Pipeline](./log-pipeline.md) 名称。
 
 ## Body 数据格式
