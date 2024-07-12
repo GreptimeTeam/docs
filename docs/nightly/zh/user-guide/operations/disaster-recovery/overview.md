@@ -66,6 +66,8 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 * RPO：取决于备份频率。
 * RTO：在 Standalone 没有意义，主要取决于要恢复的数据大小、故障响应时间和操作基础设施。
 
+亚马逊EC2（结合 EBS卷）提供了一个全面的[备份和恢复解决方案](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/backup-recovery-ec2-ebs.html)来应对这种情况，当然其他IaaS供应商也提供类似的解决方案。选择这个方案是一个很好的开始。
+
 但是如果使用远程 WAL 和对象存储运行 Standalone，有一个更好的 DR 解决方案：
 
 ![DR-Standalone](/DR-Standalone.png)
