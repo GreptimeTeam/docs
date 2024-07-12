@@ -17,7 +17,7 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 `MATCHES` 是一个专门用于全文搜索的函数，它接受两个参数：
 
 - `column_name`：要进行全文搜索的列，该列包含文本数据，列的数据类型必须是 `String`。
-- `search_query`：一个字符串，包含要搜索的关键词和操作符。
+- `search_query`：一个字符串，包含要搜索的关键词和操作符，详情请看下文中的[查询语句类型](#查询语句类型)
 
 ## 查询语句类型
 
@@ -29,7 +29,7 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 SELECT * FROM logs WHERE MATCHES(message, 'Barack Obama');
 ```
 
-以上查询会被视为 `Barack` 和 `Obama` 两个独立的词项。这意味着查询将匹配包含 `Barack` 或 `Obama` 的所有行。等价于使用 `OR`：
+上述 `MATCHES` 中参数 `search_query` 的值 `Barack Obama` 将被视为 `Barack` 和 `Obama` 两个独立的词项，这意味着该查询将匹配包含 `Barack` 或 `Obama` 的所有行，等价于使用 `OR`：
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, 'Barack OR Obama');
@@ -79,13 +79,13 @@ SELECT * FROM logs WHERE MATCHES(message, '"Barack Obama"');
 SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 ```
 
-## 全文索引加速全文搜索
+## 全文索引加速搜索
 
-为了提高全文搜索的效率，特别是在处理大量数据时，建议使用全文索引。全文索引可以显著加快搜索速度，使得即使在庞大的数据集中也能快速定位到包含特定关键词的记录。
+全文索引是全文搜索的关键配置，尤其是在需要处理大量数据的搜索查询场景中。没有全文索引，搜索操作可能会非常缓慢，影响整体的查询性能和用户体验。通过在 Pipeline 中配置全文索引，可以确保搜索操作能够高效执行，即使是在数据量极大的情况下也能保持良好的性能。
 
 ### 配置全文索引
 
-在 Pipeline 的配置中，可以指定某列使用全文索引。以下是一个配置示例，其中 `message` 列被设置为全文索引：
+在 Pipeline 的配置中，可以[指定某列使用全文索引](./log-pipeline.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引：
 
 ```yaml
 processors:
@@ -125,11 +125,3 @@ WITH(
   append_mode = 'true'
 )
 ```
-
-### 全文索引的重要性
-
-全文索引是全文搜索的关键配置，尤其是在需要处理大量数据的搜索查询场景中。没有全文索引，搜索操作可能会非常缓慢，影响整体的查询性能和用户体验。通过在 Pipeline 中配置全文索引，可以确保搜索操作能够高效执行，即使是在数据量极大的情况下也能保持良好的性能。
-
-## 结语
-
-通过上述介绍，您应该可以更有效地使用 GreptimeDB 的查询功能来搜索和分析日志数据。继续探索更多高级查询功能，以充分利用 GreptimeDB 提供的强大工具。
