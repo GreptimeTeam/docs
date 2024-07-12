@@ -59,7 +59,7 @@ SELECT * FROM logs WHERE MATCHES(message, '+apple +fruit');
 SELECT * FROM logs WHERE MATCHES(message, 'a AND b OR c');
 ```
 
-等价于：
+这意味着查询将匹配同时包含 `a` 和 `b` 的行，或者包含 `c` 的行。等价于：
 
 ```sql
 SELECT * FROM logs WHERE MATCHES(message, '(+a +b) c');
