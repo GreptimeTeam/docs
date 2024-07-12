@@ -29,9 +29,13 @@ transform:
     type: int32
   - fields:
       - type
-      - log
       - logger
     type: string
+    index: tag
+  - fields:
+      - log
+    type: string
+    index: fulltext
   - field: time
     type: time
     index: timestamp
@@ -81,12 +85,17 @@ SELECT * FROM greptime_private.pipelines;
       |        |              |     type: int32                  +|
       |        |              |   - fields:                      +|
       |        |              |       - type                     +|
-      |        |              |       - log                      +|
       |        |              |       - logger                   +|
       |        |              |     type: string                 +|
+      |        |              |     index: tag                   +|
+      |        |              |   - fields:                      +|
+      |        |              |       - log                      +|
+      |        |              |     type: string                 +|
+      |        |              |     index: fulltext              +|
       |        |              |   - field: time                  +|
       |        |              |     type: time                   +|
-      |        |              |     index: timestamp              |
+      |        |              |     index: timestamp             +|
+      |        |              |                                   |
 (1 row)
 ```
 
@@ -114,17 +123,22 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeli
 
 ## `logs` 表结构
 
-上述示例中所使用的日志对应的 `public.logs` 表结构如下：
+我们可以使用 SQL 查询来查看 `public.logs` 表的结构。
 
 ```sql
 DESC TABLE logs;
+```
+
+查询结果如下：
+
+```sql
  Column |        Type         | Key | Null | Default | Semantic Type
 --------+---------------------+-----+------+---------+---------------
  id1    | Int32               |     | YES  |         | FIELD
  id2    | Int32               |     | YES  |         | FIELD
- type   | String              |     | YES  |         | FIELD
+ type   | String              | PRI | YES  |         | TAG
+ logger | String              | PRI | YES  |         | TAG
  log    | String              |     | YES  |         | FIELD
- logger | String              |     | YES  |         | FIELD
  time   | TimestampNanosecond | PRI | NO   |         | TIMESTAMP
 (6 rows)
 ```
@@ -145,20 +159,26 @@ mysql --host=127.0.0.1 --port=4002 public
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-查询日志表：
+可通过 SQL 查询日志表：
 
 ```sql
 SELECT * FROM public.logs;
- id1  | id2  | type |                    log                     |      logger      |            time
-------+------+------+--------------------------------------------+------------------+----------------------------
- 2436 | 2528 | I    | ClusterAdapter:enter sendTextDataToCluster+| INTERACT.MANAGER | 2024-05-25 20:16:37.217000
-      |      |      |                                            |                  |
- 2436 | 2528 | I    | ClusterAdapter:enter sendTextDataToCluster+| INTERACT.MANAGER | 2024-05-25 20:16:37.217000
-      |      |      |                                            |                  |
- 2436 | 2528 | I    | ClusterAdapter:enter sendTextDataToCluster+| INTERACT.MANAGER | 2024-05-25 20:16:37.217000
-      |      |      |                                            |                  |
- 2436 | 2528 | I    | ClusterAdapter:enter sendTextDataToCluster+| INTERACT.MANAGER | 2024-05-25 20:16:37.217000
-      |      |      |                                            |                  |
+```
+
+查询结果如下：
+
+```sql
+
+ id1  | id2  | type |      logger      |                    log                     |            time
+------+------+------+------------------+--------------------------------------------+----------------------------
+ 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
+      |      |      |                  |                                            |
+ 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
+      |      |      |                  |                                            |
+ 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
+      |      |      |                  |                                            |
+ 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
+      |      |      |                  |                                            |
 (4 rows)
 ```
 

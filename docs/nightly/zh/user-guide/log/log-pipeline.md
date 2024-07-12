@@ -338,6 +338,7 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 
 - `fields`: 需要转换的字段名列表。
 - `type`: 转换类型
+- `index`: 索引类型（可选）
 
 ### fields 字段
 
@@ -359,9 +360,30 @@ GreptimeDB 目前内置了以下几种转换类型：
 
 ### index 字段
 
-在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列。
+`Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。
 
-在 Transform 中，可以通过 `index: timestamp` 字段指定哪个字段是时间索引列。一个 Pipeline 有且只有一个时间索引列。
+`index` 字段用于指定哪些字段需要被索引。
+
+我们目前支持一下三种字段的索引类型：
+
+- `tag`: 可用于指定列上使用 tag 类型的索引
+- `fulltext`: 可用于指定列上使用 fulltext 类型的索引
+- `timestamp`: 可用于指定某个列是 timestamp 列
+
+不提供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
+
+在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列。一个 Pipeline 有且只有一个时间索引列。
+
+可以通过 `index: timestamp` 字段指定哪个字段是时间索引列。
+
+#### 时间戳列 & `tag` 列
+
+请参考 [GreptimeDB 数据模型](../../reference/sql/create.md#表约束)。
+
+#### fulltext 列
+
+指定为 `fulltext` 列的字段将会被用于全文搜索。全文搜索是一种用于在大量文本数据中搜索特定词语的技术。全文搜索引擎会对文本数据进行索引，以便快速搜索。
+
 
 ### Transform 示例
 
@@ -370,8 +392,9 @@ GreptimeDB 目前内置了以下几种转换类型：
 ```json
 {
   "num_field_a": "3",
-  "string_field_b": "john",
-  "time_field_c": 1625760000
+  "string_field_a": "john",
+  "string_field_b": "It was snowing when he was born.",
+  "time_field_a": 1625760000
 }
 ```
 
@@ -382,11 +405,16 @@ transform:
   - fields:
       - string_field_a, name
     type: string
+    index: tag
   - fields:
       - num_field_a, age
     type: int32
   - fields:
-      - time_field_c, bron_time
+      - string_field_b, description
+    type: string
+    index: fulltext
+  - fields:
+      - time_field_a, bron_time
     type: epoch, s
     index: timestamp
 ```
@@ -397,6 +425,7 @@ transform:
 {
   "name": "john",
   "age": 3,
+  "description": "It was snowing when he was born.",
   "bron_time": 2021-07-08 16:00:00
 }
 ```

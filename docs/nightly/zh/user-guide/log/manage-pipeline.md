@@ -11,7 +11,7 @@
 GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
 假设你已经准备好了一个 Pipeline 配置文件 pipeline.yaml，使用以下命令上传配置文件，其中 `test` 是你指定的 Pipeline 的名称：
 
-```
+```shell
 ## 上传 pipeline 文件。test 为 Pipeline 的名称
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
 ```
@@ -62,12 +62,17 @@ SELECT name,pipeline,created_at::bigint FROM greptime_private.pipelines;
       |     type: int32                  +|
       |   - fields:                      +|
       |       - type                     +|
-      |       - log                      +|
       |       - logger                   +|
       |     type: string                 +|
+      |     index: tag                   +|
+      |   - fields:                      +|
+      |       - log                      +|
+      |     type: string                 +|
+      |     index: fulltext              +|
       |   - field: time                  +|
       |     type: time                   +|
-      |     index: timestamp              |
+      |     index: timestamp             +|
+      |                                   |
 (1 row)
 ```
 
@@ -79,7 +84,7 @@ timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${ti
 
 输出：
 
-```
+```shell
 Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 ```
 
