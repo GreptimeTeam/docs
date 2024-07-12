@@ -75,7 +75,7 @@ Deploying nodes in different regions can also meet region-level DR requirements,
 
 :::tip NOTE
 
-**the Dual Active-Standby is a commercial solution.**
+**Dual Active-Standby is only available in GreptimeDB Enterprise.**
 
 :::
 
