@@ -1,15 +1,15 @@
 # Pipeline 配置
 
-Pipeline 是 GreptimeDB 中对 log （由 JSON 格式构成的数据）数据进行转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。
+Pipeline 是 GreptimeDB 中对 log 数据进行转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。
 
 这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
 ## 整体结构
 
-Pipeline 由两部分组成：Processors 和 Transform，这两部分均为数组形式。一个 Pipeline 配置可以包含多个 Processor 和多个 Transform。
+Pipeline 由两部分组成：Processors 和 Transform，这两部分均为数组形式。一个 Pipeline 配置可以包含多个 Processor 和多个 Transform。Transform 所描述的数据类型会决定日志数据保存到数据库时的表结构。
 
 - Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
-- Transform 用于对 log 数据进行转换，例如将字符串类型转换为数字类型。
+- Transform 用于对 log 数据进行格式转换，例如将字符串类型转换为数字类型。
 
 一个包含 Processor 和 Transform 的简单配置示例如下：
 
@@ -29,7 +29,7 @@ transform:
   # 写入的数据必须包含 timestamp 字段
   - fields: 
       - reqTimeSec, req_time_sec
-    # epoch 是特殊字段，必须指定精度
+    # epoch 是特殊字段类型，必须指定精度
     type: epoch, ms
     index: timestamp
 ```
@@ -42,14 +42,14 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 
 我们目前内置了以下几种 Processor：
 
-- `date`: 用于解析时间字段。
-- `epoch`: 用于解析时间戳字段。
+- `date`: 用于解析格式化的时间字符串字段，例如 `2024-07-12T16:18:53.048`。
+- `epoch`: 用于解析数字时间戳字段，例如 `1720772378893`。
 - `dissect`: 用于对 log 数据字段进行拆分。
 - `gsub`: 用于对 log 数据字段进行替换。
 - `join`: 用于对 log 中的 array 类型字段进行合并。
 - `letter`: 用于对 log 数据字段进行字母转换。
 - `regex`: 用于对 log 数据字段进行正则匹配。
-- `urlencoding`: 用于对 log 数据字段进行 URL 编码。
+- `urlencoding`: 用于对 log 数据字段进行 URL 编解码。
 - `csv`: 用于对 log 数据字段进行 CSV 解析。
 
 ### date
@@ -112,7 +112,7 @@ processors:
 - `fields`: 需要拆分的字段名列表。
 - `pattern`: 拆分的 dissect 模式。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
-- `append_separator`: 是否在拆分后的字段之间添加分隔符。 默认为空。
+- `append_separator`: 对于多个追加到一起的字段，指定连接符。默认是一个空字符串。
 
 #### Dissect 模式
 
@@ -382,7 +382,7 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 #### fulltext 列
 
-通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升[日志搜索](./log-query.md)的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./log-query.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
 
 ### Transform 示例
 

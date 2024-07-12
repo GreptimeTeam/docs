@@ -29,7 +29,7 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test"
 
 ## 查询 Pipeline
 
-目前 GreptimeDB 还不支持通过 HTTP 查询 Pipeline ，但可以使用 SQL 来查询。
+目前可以使用 SQL 来查询 Pipeline 的信息。
 
 ```sql
 SELECT * FROM greptime_private.pipelines;
@@ -40,7 +40,7 @@ SELECT * FROM greptime_private.pipelines;
 为了解决这个问题，可以将 `created_at` 字段强制转换为 timestamp 来查看 Pipeline 的创建时间。例如，下面的查询将 `created_at` 以 `bigint` 的格式展示:
 
 ```sql
-SELECT name,pipeline,created_at::bigint FROM greptime_private.pipelines;
+SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
 ```
 
 查询结果如下：

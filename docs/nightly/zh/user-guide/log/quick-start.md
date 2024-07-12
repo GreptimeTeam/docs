@@ -4,7 +4,7 @@
 
 ## 下载并安装 GreptimeDB & 启动 GreptimeDB
 
-请遵循[安装指南](../../getting-started/overview.md) 来安装并启动 GreptimeDB。
+请遵循 [安装指南](../../getting-started/overview.md) 来安装并启动 GreptimeDB。
 
 ## 创建 Pipeline
 
@@ -12,9 +12,8 @@ GreptimeDB 提供了专门的 HTTP 接口用于创建 Pipeline，具体操作如
 
 首先创建一个 Pipeline 文件，例如 `pipeline.yaml`，内容如下：
 
-```shell
-## 创建 pipeline 文件
-cat > pipeline.yaml <<EOF
+```yaml
+# pipeline.yaml
 processors:
   - date:
       field: time
@@ -39,8 +38,6 @@ transform:
   - field: time
     type: time
     index: timestamp
-EOF
-```
 
 然后执行以下命令上传配置文件：
 
@@ -60,7 +57,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeli
 
 ## 查询 Pipeline
 
-目前 GreptimeDB 还不支持通过 HTTP 查询 Pipeline ，但可以使用 SQL 来查询。
+可以使用 SQL 查询保存在数据库中的 pipeline 内容，请求示例如下：
 
 ```sql
 SELECT * FROM greptime_private.pipelines;
@@ -117,7 +114,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeli
 {"output":[{"affectedrows":4}],"execution_time_ms":22}
 ```
 
-上面的例子中，`public.logs` 表中被成功写入了 4 条日志。
+上面的例子中，我们向 `public.logs` 表中成功写入了 4 条日志。
 
 请参考[配合 Pipeline 写入日志](write-log.md)获取具体的日志写入语法。
 
@@ -147,7 +144,7 @@ DESC TABLE logs;
 
 ## 查询日志
 
-目前 GreptimeDB 暂不支持通过 HTTP 查询日志，但可以使用 SQL 来查询。
+就像任何其他数据一样，我们可以使用标准 SQL 来查询日志数据。
 
 ```shell
 # 使用 MySQL 或者 PostgreSQL 协议连接 GreptimeDB
@@ -187,4 +184,4 @@ SELECT * FROM public.logs;
 ## 结语
 
 通过以上步骤，您已经成功创建了 Pipeline，写入日志并进行了查询。这只是 GreptimeDB 提供功能的冰山一角。
-接下来请继续阅读[Pipeline 配置](log-pipeline.md)和[管理 Pipeline](manage-pipeline.md)来了解更多高级特性和最佳实践。
+接下来请继续阅读 [Pipeline 配置](log-pipeline.md)和[管理 Pipeline](manage-pipeline.md) 来了解更多高级特性和最佳实践。
