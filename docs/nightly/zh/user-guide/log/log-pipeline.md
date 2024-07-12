@@ -360,30 +360,29 @@ GreptimeDB 目前内置了以下几种转换类型：
 
 ### index 字段
 
-`Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。
+`Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。`index` 字段用于指定哪些字段需要被索引。关于 GreptimeDB 的列类型，请参考[数据模型](/user-guide/concepts/data-model.md)文档。
 
-`index` 字段用于指定哪些字段需要被索引。
+GreptimeDB 支持以下三种字段的索引类型：
 
-我们目前支持一下三种字段的索引类型：
-
-- `tag`: 可用于指定列上使用 tag 类型的索引
-- `fulltext`: 可用于指定列上使用 fulltext 类型的索引
-- `timestamp`: 可用于指定某个列是 timestamp 列
+- `tag`: 用于指定某列为 Tag 列
+- `fulltext`: 用于指定某列使用 fulltext 类型的索引，该列需要是字符串类型
+- `timestamp`: 用于指定某列是时间索引列
 
 不提供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
 
-在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列。一个 Pipeline 有且只有一个时间索引列。
+在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列，因此一个 Pipeline 有且只有一个时间索引列。
 
-可以通过 `index: timestamp` 字段指定哪个字段是时间索引列。
+#### 时间戳列
 
-#### 时间戳列 & `tag` 列
+通过 `index: timestamp` 指定哪个字段是时间索引列，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-请参考 [GreptimeDB 数据模型](../../reference/sql/create.md#表约束)。
+#### tag 列
+
+通过 `index: tag` 指定哪个字段是 Tag 列，写法请参考下方的 [Transform 示例](#transform-示例)。
 
 #### fulltext 列
 
-指定为 `fulltext` 列的字段将会被用于全文搜索。全文搜索是一种用于在大量文本数据中搜索特定词语的技术。全文搜索引擎会对文本数据进行索引，以便快速搜索。
-
+通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升[日志搜索](./log-query.md)的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
 
 ### Transform 示例
 
