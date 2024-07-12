@@ -35,7 +35,7 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 A simple model to estimate the read amplification factor:
 
 - For a single topic, the amplification factor is 1 + 2 + ... + 7 = 28 times.
-- When recover 100 regions (requiring about 12 topics), the amplification factor is approximately 28 \* 12 = 336 times.
+- When recovering 100 regions (requiring about 12 topics), the amplification factor is approximately 28 \* 12 = 336 times.
 
 | Number of regions per Topic | Number of topics required for 100 Regions | Single topic read amplification factor | Total reading amplification factor | Replay size (GB) |
 | --------------------------- | ----------------------------------------- | -------------------------------------- | ---------------------------------- | ---------------- |
