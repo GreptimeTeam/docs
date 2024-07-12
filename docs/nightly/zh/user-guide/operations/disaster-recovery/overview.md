@@ -87,7 +87,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 在不同区域部署节点也可以满足区域级灾难恢复要求，但可扩展性有限。
 
 :::tip 注意
-**双活-备份是商业解决方案。**
+**双活-备份功能仅在 GreptimeDB 企业版中提供。**
 :::
 
 有关此解决方案的更多信息，请参阅[基于双活-备份的 DR 解决方案](./dr-solution-based-on-dual-active-standby.md)。
