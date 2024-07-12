@@ -72,7 +72,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 将 WAL 写入 Kafka 集群，并将数据存储在对象存储中，因此数据库本身是无状态的。
 在影响独立数据库的灾难事件发生时，你可以使用远程 WAL 和对象存储来恢复它。
-此解决方案允许零 RPO 和以分钟为单位的 RTO。
+此方案能实现 RPO=0 和分钟级 RTO。
 
 有关此解决方案的更多信息，请参阅[独立模式的 DR 解决方案](./dr-solution-for-standalone.md)。
 
