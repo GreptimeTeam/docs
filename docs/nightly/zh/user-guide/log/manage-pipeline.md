@@ -2,7 +2,6 @@
 
 在 GreptimeDB 中，每个 `pipeline` 是一个数据处理单元集合，用于解析和转换写入的日志内容。本文档旨在指导您如何创建和删除 Pipeline，以便高效地管理日志数据的处理流程。
 
-## 简介
 
 有关 Pipeline 的具体配置，请阅读 [Pipeline 配置](log-pipeline.md)。
 

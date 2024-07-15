@@ -14,7 +14,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
      -d "$<log-items>"
 ```
 
-## Query Parameters
+## Query parameters
 
 This interface accepts the following parameters:
 
@@ -22,10 +22,10 @@ This interface accepts the following parameters:
 - `table`: The name of the table.
 - `pipeline_name`: The name of the [pipeline](./log-pipeline.md).
 
-## Body Data Format
+## Body data format
 
 The request body supports NDJSON and JSON Array formats, where each JSON object represents a log entry.
 
 ## Example
 
-Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#写入日志) guide for an example.
+Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for an example.

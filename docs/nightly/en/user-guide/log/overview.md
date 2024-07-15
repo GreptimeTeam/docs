@@ -1,4 +1,4 @@
-# Log Overview
+# Overview
 
 - [Quick Start](./quick-start.md): Provides an introduction on how to quickly get started with GreptimeDB log service.
 - [Pipeline Configuration](./log-pipeline.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.

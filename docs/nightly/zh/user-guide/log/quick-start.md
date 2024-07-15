@@ -1,16 +1,15 @@
 # 快速开始
 
-首先请确保您的 GreptimeDB 的版本为 0.9.0 或更高版本。
 
 ## 下载并安装 GreptimeDB & 启动 GreptimeDB
 
-请遵循 [安装指南](../../getting-started/overview.md) 来安装并启动 GreptimeDB。
+请遵循[安装指南](/getting-started/overview.md) 来安装并启动 GreptimeDB。
 
 ## 创建 Pipeline
 
 GreptimeDB 提供了专门的 HTTP 接口用于创建 Pipeline，具体操作如下：
 
-首先创建一个 Pipeline 文件，例如 `pipeline.yaml`，内容如下：
+首先创建一个 Pipeline 文件，例如 `pipeline.yaml`。
 
 ```yaml
 # pipeline.yaml
@@ -98,7 +97,7 @@ SELECT * FROM greptime_private.pipelines;
 
 ## 写入日志
 
-写入日志的 HTTP 接口如下：
+可以使用 HTTP 接口写入日志，请求示例如下：
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeline_name=test" \

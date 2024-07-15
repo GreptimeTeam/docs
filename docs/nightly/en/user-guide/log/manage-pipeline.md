@@ -2,11 +2,10 @@
 
 In GreptimeDB, each `pipeline` is a collection of data processing units used for parsing and transforming the ingested log content. This document provides guidance on creating and deleting pipelines to efficiently manage the processing flow of log data.
 
-## Introduction
 
 For specific pipeline configurations, please refer to the [Pipeline Configuration](log-pipeline.md) documentation.
 
-## Creating a Pipeline
+## Create a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating pipelines.
 Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use the following command to upload the configuration file, where `test` is the name you specify for the pipeline:
@@ -16,7 +15,7 @@ Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use th
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
 ```
 
-## Deleting a Pipeline
+## Delete a Pipeline
 
 You can use the following HTTP interface to delete a pipeline:
 
@@ -27,7 +26,7 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06
 
 In the above example, we deleted a pipeline named `test`. The `version` parameter is required to specify the version of the pipeline to be deleted.
 
-## Querying Pipelines
+## Query Pipelines
 
 Currently, you can use SQL to query pipeline information.
 

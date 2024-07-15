@@ -4,7 +4,7 @@ Pipeline is a mechanism in GreptimeDB for transforming log data. It consists of 
 
 These configurations are provided in YAML format, allowing the Pipeline to process data during the log writing process according to the defined rules and store the processed data in the database for subsequent structured queries.
 
-## Overall Structure
+## The overall structure
 
 Pipeline consists of two parts: Processors and Transform, both of which are in array format. A Pipeline configuration can contain multiple Processors and multiple Transforms. The data type described by Transform determines the table structure when storing log data in the database.
 
@@ -50,7 +50,7 @@ We currently provide the following built-in Processors:
 - `urlencoding`: Used to perform URL encoding/decoding on log data fields.
 - `csv`: Used to parse CSV data fields in logs.
 
-### date
+### `date`
 
 The `date` processor is used to parse time fields. Here's an example configuration:
 
@@ -72,7 +72,7 @@ In the above example, the configuration of the `date` processor includes the fol
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `timezone`: Time zone. Use the time zone identifiers from the [tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to specify the time zone. Defaults to `UTC`.
 
-### epoch
+### `epoch`
 
 The `epoch` processor is used to parse timestamp fields. Here's an example configuration:
 
@@ -91,7 +91,7 @@ In the above example, the configuration of the `epoch` processor includes the fo
 - `resolution`: Timestamp precision, supports `s`, `sec`, `second`, `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`. Defaults to `ms`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-### dissect
+### `dissect`
 
 The `dissect` processor is used to split log data fields. Here's an example configuration:
 
@@ -113,17 +113,17 @@ In the above example, the configuration of the `dissect` processor includes the 
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `append_separator`: Specifies the separator for concatenating multiple fields together. Defaults to an empty string.
 
-#### Dissect Pattern
+#### `dissect` pattern
 
-Similar to Logstash's Dissect pattern, the Dissect pattern consists of `%{key}`, where `%{key}` is a field name. For example:
+Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`, where `%{key}` is a field name. For example:
 
 ```
 "%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
 ```
 
-#### Dissect Modifiers
+#### `dissect` modifiers
 
-The Dissect pattern supports the following modifiers:
+The `dissect` pattern supports the following modifiers:
 
 | Modifier   | Description                                          | Example              |
 | ---------- | ---------------------------------------------------- | -------------------- |
@@ -133,7 +133,7 @@ The Dissect pattern supports the following modifiers:
 | `?`        | Ignores matching values                               | `%{?key}`            |
 | `*` and `&` | Sets the output key as \* and the output value as &   | `%{*key} %{&value}`  |
 
-#### Dissect Examples
+#### `dissect` examples
 
 For example, given the following log data:
 
@@ -159,7 +159,7 @@ The result will be:
 }
 ```
 
-### gsub
+### `gsub`
 
 The `gsub` processor is used to replace values in log data fields. Here's an example configuration:
 
@@ -180,7 +180,7 @@ In the above example, the configuration of the `gsub` processor includes the fol
 - `replacement`: The string to replace with.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-### join
+### `join`
 
 The `join` processor is used to merge Array-type fields in log data. Here's an example configuration:
 
@@ -199,7 +199,7 @@ In the above example, the configuration of the `join` processor includes the fol
 - `separator`: The separator for the merged result.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-#### Join Example
+#### `join` example
 
 For example, given the following log data:
 
@@ -227,7 +227,7 @@ The result will be:
 }
 ```
 
-### letter
+### `letter`
 
 The `letter` processor is used to convert the case of characters in log data fields. Here's an example configuration:
 
@@ -246,7 +246,7 @@ In the above example, the configuration of the `letter` processor includes the f
 - `method`: The transformation method, supports `upper`, `lower`, `capital`. Defaults to `lower`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-### regex
+### `regex`
 
 The `regex` processor is used to perform regular expression matching on log data fields. Here's an example configuration:
 
@@ -284,7 +284,7 @@ For example, if the field name specified in the `regex` processor is `message`, 
 }
 ```
 
-### urlencoding
+### `urlencoding`
 
 The `urlencoding` processor is used to perform URL encoding on log data fields. Here's an example configuration:
 
@@ -304,7 +304,7 @@ In the above example, the configuration of the `urlencoding` processor includes 
 - `method`: The encoding method, supports `encode`, `decode`. Defaults to `encode`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-### csv
+### `csv`
 
 The `csv` processor is used to parse CSV-type fields in log data that do not have a header. Here's an example configuration:
 
@@ -340,11 +340,11 @@ A Transform consists of one or more configurations, and each configuration conta
 - `on_failure`: Handling method for transformation failures (optional).
 - `default`: Default value (optional).
 
-### fields field
+### The `fields` field
 
 Each field name is a string. When a field name contains `,`, the field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the final data will be written to the `req_time_sec` column in GreptimeDB.
 
-### type field
+### The `type` field
 
 GreptimeDB currently provides the following built-in transformation types:
 
@@ -357,7 +357,7 @@ GreptimeDB currently provides the following built-in transformation types:
 
 If a field obtains an illegal value during the transformation process, the Pipeline will throw an exception. For example, when converting a string `abc` to an integer, an exception will be thrown because the string is not a valid integer.
 
-### index field
+### The `index` field
 
 The `Pipeline` will write the processed data to the automatically created table in GreptimeDB. To improve query efficiency, GreptimeDB creates indexes for certain columns in the table. The `index` field is used to specify which fields need to be indexed. For information about GreptimeDB column types, please refer to the [Data Model](/user-guide/concepts/data-model.md) documentation.
 
@@ -369,28 +369,28 @@ GreptimeDB supports the following three types of index for fields:
 
 When `index` field is not provided, GreptimeDB treats the field as a `Field` column.
 
-In GreptimeDB, a table must include a column of type `timestamp` as the time index column. Therefore, a Pipeline can have only one time index column.
+In GreptimeDB, a table must include one column of type `timestamp` as the time index column. Therefore, a Pipeline can have only one time index column.
 
-#### Timestamp Column
+#### The `Timestamp` column
 
 Specify which field is the timestamp index column using `index: timestamp`. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### Tag Column
+#### The `Tag` column
 
 Specify which field is the Tag column using `index: tag`. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### Fulltext Column
+#### The `Fulltext` column
 
 Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./log-query.md). Refer to the [Transform Example](#transform-example) below for syntax.
 
-### on_failure field
+### The `on_failure` field
 
 The `on_failure` field is used to specify the handling method when a transformation fails. It supports the following methods:
 
 - `ignore`: Ignore the failed field and do not write it to the database.
 - `default`: Write the default value. The default value is specified by the `default` field.
 
-### default field
+### The `default` field
 
 The `default` field is used to specify the default value when a transformation fails.
 

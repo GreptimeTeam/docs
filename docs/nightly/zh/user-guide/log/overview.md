@@ -1,4 +1,4 @@
-# 日志概述
+# 概述
 
 - [快速开始](./quick-start.md)：介绍了如何快速开始使用 GreptimeDB 日志服务。
 - [Pipeline 配置](./log-pipeline.md)：深入介绍 GreptimeDB 中的 Pipeline 的每项具体配置。

@@ -1,16 +1,15 @@
 # Quick Start
 
-First, make sure your GreptimeDB version is 0.9.0 or higher.
 
-## Download and Install GreptimeDB & Start GreptimeDB
+## Download and install & start GreptimeDB
 
-Follow the [installation guide](../../getting-started/overview.md) to install and start GreptimeDB.
+Follow the [Installation Guide](/getting-started/overview.md) to install and start GreptimeDB.
 
 ## Create a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating Pipelines. Here's how to do it:
 
-First, create a Pipeline file, for example, `pipeline.yaml`, with the following content:
+First, create a Pipeline file, for example, `pipeline.yaml`.
 
 ```yaml
 # pipeline.yaml
@@ -50,11 +49,11 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeli
 After the successful execution of this command, a Pipeline named `test` will be created, and the result will be returned as: `{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`.
 Here, `name` is the name of the Pipeline, and `version` is the Pipeline version.
 
-This Pipeline includes one Processor and three Transforms. The Processor uses the Rust time format string `%Y-%m-%d %H:%M:%S%.3f` to parse the timestamp field in the logs, and then the Transforms convert the id1 and id2 fields to int32 type, the type and logger fields to string type with an index of "tag", the log field to string type with an index of "fulltext", and the time field to a time type with an index of "timestamp".
+This Pipeline includes one Processor and three Transforms. The Processor uses the Rust time format string `%Y-%m-%d %H:%M:%S%.3f` to parse the timestamp field in the logs, and then the Transforms convert the `id1` and `id2` fields to `int32` type, the `type` and `logger` fields to `string` type with an index of "tag", the `log` field to `string` type with an index of "fulltext", and the `time` field to a time type with an index of "timestamp".
 
 Refer to the [Pipeline Introduction](log-pipeline.md) for specific syntax details.
 
-## Query Pipeline
+## Query Pipelines
 
 You can use SQL to query the pipeline content stored in the database. The example query is as follows:
 
@@ -95,7 +94,7 @@ The query result is as follows:
 (1 row)
 ```
 
-## Writing Logs
+## Write logs
 
 The HTTP interface for writing logs is as follows:
 
@@ -118,7 +117,7 @@ In the above example, we successfully wrote 4 log entries to the `public.logs` t
 
 Please refer to [Writing Logs with Pipeline](write-log.md) for specific syntax for writing logs.
 
-## `logs` Table Structure
+## `logs` table structure
 
 We can use SQL to query the structure of the `public.logs` table.
 
@@ -140,11 +139,11 @@ The query result is as follows:
 (6 rows)
 ```
 
-From the above result, we can see that based on the processed result of the pipeline, the `public.logs` table contains 6 fields: id1 and id2 are converted to the int32 type, type, log, and logger are converted to the string type, and time is converted to a timestamp type and indexed as Timestamp.
+From the above result, we can see that based on the processed result of the pipeline, the `public.logs` table contains 6 fields: `id1` and `id2` are converted to the `Int32` type, `type`, `log`, and `logger` are converted to the `String` type, and time is converted to a `TimestampNanosecond` type and indexed as Timestamp.
 
-## Querying Logs
+## Query logs
 
-Just like any other data, we can use standard SQL to query log data.
+We can use standard SQL to query log data.
 
 ```shell
 # Connect to GreptimeDB using MySQL or PostgreSQL protocol
