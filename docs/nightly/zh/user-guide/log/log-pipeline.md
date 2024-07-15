@@ -111,7 +111,7 @@ processors:
 如上所示，`dissect` Processor 的配置包含以下字段：
 
 - `fields`: 需要拆分的字段名列表。
-- `pattern`: 拆分的 dissect 模式。
+- `patterns`: 拆分的 dissect 模式。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `append_separator`: 对于多个追加到一起的字段，指定连接符。默认是一个空字符串。
 

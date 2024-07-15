@@ -109,7 +109,7 @@ processors:
 In the above example, the configuration of the `dissect` processor includes the following fields:
 
 - `fields`: A list of field names to be split.
-- `pattern`: The dissect pattern for splitting.
+- `patterns`: The dissect pattern for splitting.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `append_separator`: Specifies the separator for concatenating multiple fields together. Defaults to an empty string.
 
