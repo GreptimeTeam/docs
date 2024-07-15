@@ -37,7 +37,7 @@ In best practices, the number of topics/partitions supported by a Kafka cluster 
 
 ### The read amplification
 
-The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). If multiple regions share a single topic, replaying data for a specific region from the topic requires filtering out unrelated data (i.e., data from other regions). **This means replaying data for a specific region from the topic requires reading more data than the actual size of the region's data in the topic, a phenomenon known as read amplification**.
+The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). The failover of a specific region from a crashed datanode to another datanode only requires reading the WAL data to reconstruct the memory state, which is called region replaying. However, If multiple regions share a single topic, replaying data for a specific region from the topic requires filtering out unrelated data (i.e., data from other regions). **This means replaying data for a specific region from the topic requires reading more data than the actual size of the region's data in the topic, a phenomenon known as read amplification**.
 
 Although multiple regions share the same topic, allowing the Datanode to support more regions, the cost of this approach is read amplification during WAL replay.
 
@@ -51,12 +51,12 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 In actual scenarios, the read amplification may be larger than this model.
 :::
 
-A simple model to estimate the read amplification factor:
+A simple model to estimate the read amplification factor (replay data size/actual data size):
 
-- For a single topic, the amplification factor is 1 + 2 + ... + 7 = 28 times.
+- For a single topic, the amplification factor is 1 + 2 + ... + 7 = 28 times (Region WAL data distribution is shown in the Figure 1).
 - When recovering 100 regions (requiring about 13 topics), the amplification factor is approximately 28 \* 13 = 364 times.
 
-| Number of regions per Topic | Number of topics required for 100 Regions | Single topic read amplification factor | Total reading amplification factor | Replay size (GB) |
+| Number of regions per Topic | Number of topics required for 100 Regions | Single topic read amplification factor | Total reading amplification factor | Replay data size (GB) |
 | --------------------------- | ----------------------------------------- | -------------------------------------- | ---------------------------------- | ---------------- |
 | 1                           | 100                                       | 0                                      | 0                                  | 0.5              |
 | 2                           | 50                                        | 1                                      | 50                                 | 25.5             |
@@ -66,9 +66,9 @@ A simple model to estimate the read amplification factor:
 
 **If the Kafka cluster can provide 300MB/s read throughput, recovering 100 regions requires approximately 10 minutes (182.5GB/0.3GB = 10m).**
 
-### More examples
+### Conclusion
 
-| Number of regions per Topic | Replay size (GB) | Kafka throughput 300MB/s- Reovery time (secs) | Kafka throughput 1000MB/s- Reovery time (secs) |
+| Number of regions per Topic | Replay data size (GB) | Kafka throughput 300MB/s- Reovery time (secs) | Kafka throughput 1000MB/s- Reovery time (secs) |
 | --------------------------- | ---------------- | --------------------------------------------- | ---------------------------------------------- |
 | 1                           | 0.5              | 2                                             | 1                                              |
 | 2                           | 25.5             | 85                                            | 26                                             |
@@ -76,4 +76,8 @@ A simple model to estimate the read amplification factor:
 | 8                           | 182.5            | 608                                           | 183                                            |
 | 16                          | 420.5            | 1402                                          | 421                                            |
 
+We have calculated the recovery time under different Number of regions per Topic configuration for reference. If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
+
 <sub>\*: Assuming the unflushed data size is 0.5GB.</sub>
+
+<sub>\**Replay data size: The total size of WAL data that needs to be read to reconstruct the memory state.</sub>
