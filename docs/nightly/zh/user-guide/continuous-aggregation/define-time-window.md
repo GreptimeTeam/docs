@@ -1,47 +1,24 @@
 # 定义时间窗口
 
-时间窗口是连续聚合查询的重要属性。
-它定义了数据在流中的聚合方式。
-这些窗口是左闭右开的区间。
+时间窗口是连续聚合查询中的一个关键属性，它决定了数据在流中的聚合方式。
+这些时间窗口是左闭右开的间隔。
 
-时间窗口对应于时间范围。
-source 表中的数据将根据时间索引列映射到相应的窗口。
-时间窗口也是聚合表达式计算的范围，因此每个时间窗口将在结果表中生成一行。
+时间窗口表示特定的时间范围，
+源表中的数据根据时间索引列映射到相应的窗口。
+每个时间窗口对应一个聚合表达式的计算，结果是存储到表中的一行数据。
 
-GreptimeDB 提供两种时间窗口类型：`hop` 和 `tumble`，或者换句话说是滑动窗口和固定窗口。
-你可以在 `GROUP BY` 子句中使用 `hop()` 函数或 `tumble()` 函数指定时间窗口。
-这两个函数仅支持在连续聚合查询的 `GROUP BY` 位置使用。
+要定义一个时间窗口，可以使用 `date_bin(interval, expression, origin-timestamp)` 函数。
+该函数计算时间间隔，并返回最接近指定时间戳的间隔的起始时间。
+通过使用 `date_bin` ，可以将时间序列数据进行降采样，将行分组到基于时间的容器或窗口中，并对每个窗口应用聚合或选择器函数。
 
-下图展示了 `hop()` 和 `tumble()` 函数的工作方式：
+例如，如果将数据分组或窗口化为 15 分钟间隔，输入时间戳 `2023-01-01T18:18:18Z` 将被调整为所属的 15 分钟容器的起始时间：`2023-01-01T18:15:00Z`。
 
-![Time Window](/time-window.svg)
-
-## Tumble
-
-`tumble()` 定义固定窗口，窗口之间不重叠。
-
-```
-tumble(col, interval, start_time)
+```sql
+date_bin(interval, expression, origin-timestamp)
 ```
 
-- `col` 指定使用哪一列计算时间窗口。提供的列必须是时间戳类型。
-- `interval` 指定窗口的大小。`tumble` 函数将时间列划分为固定大小的窗口，并在每个窗口中聚合数据。
-- `start_time` 用于指定第一个窗口的开始时间。
-<!-- `start_time` 是一个可选参数，用于指定第一个窗口的开始时间。如果未提供，开始时间将与日历对齐。 -->
+参数说明如下：
 
-## Hop（尚未支持）
-
-`hop` 定义滑动窗口，窗口按固定间隔向前移动。
-此功能尚未支持，预计将在不久的将来提供。
-
-<!-- `hop` defines sliding window that moves forward by a fixed interval. It signature is like the following:
-
-```
-hop(col, size_interval, hop_interval, <start_time>)
-```
-
-Where `col` specifies use which column to compute the time window. The provided column must have a timestamp type.
-
-`size_interval` specifies the size of each window, while `hop_interval` specifies the delta between two windows' start timestamp. You can think the `tumble()` function as a special case of `hop()` function where the `size_interval` and `hop_interval` are the same.
-
-`start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender. -->
+- `interval`：容器的时间间隔。
+- `expression`：要操作的时间表达式。可以是常量、列或函数。
+- `origin-timestamp`：可选。用于确定时间窗口边界的起始点。如果未指定，默认为 1970-01-01T00:00:00Z（UNIX 纪元时间，以 UTC 为准）。

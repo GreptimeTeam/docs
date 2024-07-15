@@ -41,7 +41,7 @@ CREATE TABLE out_num_cnt (
 CREATE FLOW test_numbers 
 SINK TO out_num_cnt
 AS 
-SELECT sum(number) FROM numbers_input GROUP BY tumble(ts, '1 second', '2021-07-01 00:00:00');
+SELECT date_bin(ts, '1 second', '2021-07-01 00:00:00'), sum(number) FROM numbers_input GROUP BY date_bin(ts, '1 second', '2021-07-01 00:00:00');
 ```
 
 要观察 `out_num_cnt` 表中连续聚合的结果，向 source 表 `numbers_input` 插入一些数据。

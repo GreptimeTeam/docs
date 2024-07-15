@@ -56,10 +56,10 @@ CREATE FLOW IF NOT EXISTS my_flow
 SINK TO my_sink_table
 COMMENT = "My first flow in GreptimeDB"
 AS
-SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
+SELECT date_bin(INTERVAL '5 minutes', time_index, '2024-05-20 00:00:00'), count(item) from my_source_table GROUP BY date_bin(INTERVAL '5 minutes', time_index, '2024-05-20 00:00:00');
 ```
 
-创建的 flow 将每 5 分钟计算 `count(item)` 并将结果存储在 `my_sink_table` 中。所有在 1 小时内的数据将在 flow 中使用。有关 `tumble()` 函数，请参考[定义时间窗口](./define-time-window.md) 部分。
+创建的 flow 将每 5 分钟计算 `count(item)` 并将结果存储在 `my_sink_table` 中。所有在 1 小时内的数据将在 flow 中使用。有关 `date_bin(interval, expression, origin-timestamp)` 函数，请参考[定义时间窗口](./define-time-window.md) 部分。
 
 ### `EXPIRE AFTER` 语句
 

@@ -18,7 +18,7 @@ SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WIND
 
 `GROUP BY` 子句与普通查询中的工作方式相同。
 它根据指定的列对数据进行分组。
-`GROUP BY` 子句中使用的时间窗口函数 `hop()` 和 `tumble()` 在 [定义时间窗口](./define-time-window.md) 部分中有描述。
+`GROUP BY` 子句中使用的时间窗口函数 `date_bin(interval, expression, origin-timestamp)` 在 [定义时间窗口](./define-time-window.md) 部分中有描述。
 它们用于在聚合中定义时间窗口。
 `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
 
