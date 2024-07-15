@@ -521,6 +521,11 @@ store_addr = "127.0.0.1:2379"
 selector = "LeaseBased"
 # Store data in memory, false by default.
 use_memory_store = false
+## Whether to enable region failover.
+## This feature is only available on GreptimeDB running on cluster mode and
+## - Using Remote WAL
+## - Using shared storage (e.g., s3).
+enable_region_failover = false
 
 [wal]
 # Available wal providers:
@@ -572,6 +577,7 @@ backoff_deadline = "5mins"
 | `use_memory_store`         | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
 | `enable_telemetry`         | Bool    | `true`                 | Whether to enable greptimedb telemetry.                                                                                                                                       |
 | `store_key_prefix`         | String  | `""`                   | If it's not empty, the metasrv will store all data with this key prefix.                                                                                                      |
+| `enable_region_failover`   | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
 | `enable_region_failover`   | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
 | `wal`                      | --      | --                     | --                                                                                                                                                                            |
 | `wal.provider`             | String  | `raft_engine`          | --                                                                                                                                                                            |
