@@ -385,7 +385,7 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 #### Fulltext 列
 
-通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./log-query.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./query-logs.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
 
 ### `on_failure` 字段
 

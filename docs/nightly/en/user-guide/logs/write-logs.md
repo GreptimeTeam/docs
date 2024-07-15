@@ -2,7 +2,7 @@
 
 This document describes how to write logs to GreptimeDB by processing them through a specified pipeline using the HTTP interface.
 
-Before writing logs, please read the [Pipeline Configuration](log-pipeline.md) and [Managing Pipelines](manage-pipeline.md) documents to complete the configuration setup and upload.
+Before writing logs, please read the [Pipeline Configuration](pipeline-config.md) and [Managing Pipelines](manage-pipelines.md) documents to complete the configuration setup and upload.
 
 ## HTTP API
 
@@ -20,7 +20,7 @@ This interface accepts the following parameters:
 
 - `db`: The name of the database.
 - `table`: The name of the table.
-- `pipeline_name`: The name of the [pipeline](./log-pipeline.md).
+- `pipeline_name`: The name of the [pipeline](./pipeline-config.md).
 
 ## Body data format
 

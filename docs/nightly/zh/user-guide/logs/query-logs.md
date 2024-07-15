@@ -1,4 +1,4 @@
-# 日志查询
+# 查询日志
 
 本文档介绍如何使用 GreptimeDB 提供的查询语言进行日志数据的搜索和分析。
 
@@ -87,7 +87,7 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 在 Pipeline 的配置中，可以指定某列使用全文索引。以下是一个配置示例，其中 `message` 列被设置为全文索引：
 
-<!-- 在 Pipeline 的配置中，可以[指定某列使用全文索引](./log-pipeline.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引： -->
+<!-- 在 Pipeline 的配置中，可以[指定某列使用全文索引](./pipeline-config.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引： -->
 
 ```yaml
 processors:
