@@ -1,14 +1,20 @@
 # Overview
 
 Welcome to the user guide for GreptimeDB.
+
+GreptimeDB is the unified time series database for metrics, events, and logs,
+providing real-time insights from Edge to Cloud at any scale.
 This guide will help you explore each powerful feature of GreptimeDB.
 
 ## SQL query example
 
 Let's start with a SQL query example.
 
-To monitor and analyze the performance and reliability of specific metrics over a recent period,
-engineers commonly use queries like the following:
+To monitor the performance and reliability of specific metrics, 
+engineers commonly analyze data over time at regular intervals using queries.
+This often involves joining two data sources.
+However, executing a query like the one below was previously impossible,
+which is now possible with GreptimeDB.
 
 ```sql
 SELECT
@@ -36,7 +42,7 @@ Break down the query step by step:
     - `metrics INNER JOIN logs on metrics.host = logs.host`: Joins the metrics and logs tables on the host field.
 3. WHERE clause: 
     - `time > now() - INTERVAL '1 hour'`: Filters the records to include only those from the past hour.
-    - `matches(path, '/api/v1/avator')`: Filters the records to include only those from the past hour.
+    - `matches(path, '/api/v1/avator')`: Filters the records to include only those matching the path `/api/v1/avator`.
 4. ALIGN clause:
     - `ALIGN '5s' BY (host) FILL PREV`: Aligns the results to every 5 seconds and fills in missing values with the previous non-null value.
 

@@ -1,14 +1,20 @@
 # 概述
 
 欢迎使用 GreptimeDB 用户指南。
+
+GreptimeDB 是用于指标、事件和日志的统一时间序列数据库，
+可提供从边缘到云的任何规模的实时洞察。
 本指南将帮助你探索 GreptimeDB 的每个强大功能。
 
 ## SQL 查询示例
 
 让我们从一个 SQL 查询示例开始。
 
-为了监控和分析最近一段时间内特定指标的性能和可靠性，
-工程师通常使用以下类似的查询：
+为了监控特定指标的性能和可靠性，
+工程师通常定期查询并分析一段时间内的数据。
+在分析过程中通常涉及到 JOIN 两个数据源，
+但如下方的查询在之前是不可能的，
+而现在使用 GreptimeDB 就可以做到：
 
 ```sql
 SELECT
@@ -36,7 +42,7 @@ ALIGN '5s' BY (host) FILL PREV
   - `metrics INNER JOIN logs on metrics.host = logs.host`：在 host 字段上将 metrics 和 logs 表进行连接。
 3. WHERE 子句：
   - `time > now() - INTERVAL '1 hour'`：筛选出过去一小时内的记录。
-  - `matches(path, '/api/v1/avator')`：筛选出特定 API 路径的记录。
+  - `matches(path, '/api/v1/avator')`：筛选出特定 API 路径 `/api/v1/avator` 的记录。
 4. ALIGN 子句：
   - `ALIGN '5s' BY (host) FILL PREV`：将结果对齐到每 5 秒，并使用前一个非空值填充缺失值。
 
