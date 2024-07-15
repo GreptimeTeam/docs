@@ -100,7 +100,8 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数         | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用 |
 | `compaction.twcs.time_window` | Compaction 时间窗口    | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用 |
 | `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
-| `append_mode`           | 该表是否时 append-only 的     | 字符串值. 默认为 'false'，表示会根据主键和时间戳对数据去重。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行     |
+| `append_mode`           | 该表是否时 append-only 的     | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行    |
+| `merge_mode` | 合并重复行的策略 | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `comment`           | 表级注释     | 字符串值.      |
 
 #### 创建指定 TTL 的表
@@ -151,6 +152,70 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with('append_mode'='true');
 ```
 
+#### 创建带有 merge 模式的表
+
+创建一个带有 `last_row` merge 模式的表，这是默认的 merge 模式。
+
+```sql
+create table if not exists metrics(
+  host string,
+  ts timestamp,
+  cpu double,
+  memory double,
+  TIME INDEX (ts),
+  PRIMARY KEY(host)
+)
+engine=mito
+with('merge_mode'='last_row');
+```
+
+在 `last_row` 模式下，表会通过保留最新的行来合并具有相同主键和时间戳的行。
+
+```sql
+INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
+INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
+
+SELECT * from metrics ORDER BY host, ts;
+
++-------+-------------------------+------+--------+
+| host  | ts                      | cpu  | memory |
++-------+-------------------------+------+--------+
+| host1 | 1970-01-01T00:00:00     |      | 10.0   |
+| host2 | 1970-01-01T00:00:00.001 | 11.0 |        |
++-------+-------------------------+------+--------+
+```
+
+
+创建带有 `last_non_null` merge 模式的表。
+
+```sql
+create table if not exists metrics(
+  host string,
+  ts timestamp,
+  cpu double,
+  memory double,
+  TIME INDEX (ts),
+  PRIMARY KEY(host)
+)
+engine=mito
+with('merge_mode'='last_non_null');
+```
+
+在 `last_non_null` 模式下，表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行。
+
+```sql
+INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
+INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
+
+SELECT * from metrics ORDER BY host, ts;
+
++-------+-------------------------+------+--------+
+| host  | ts                      | cpu  | memory |
++-------+-------------------------+------+--------+
+| host1 | 1970-01-01T00:00:00     | 0.0  | 10.0   |
+| host2 | 1970-01-01T00:00:00.001 | 11.0 | 1.0    |
++-------+-------------------------+------+--------+
+```
 
 ### 列选项
 
