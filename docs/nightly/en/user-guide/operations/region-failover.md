@@ -1,6 +1,6 @@
 # Region Failover
 
-Region Failover provides the ability to recover regions from crashed Datanodes without losing data. This is implemented via [Region Migration](/user-guide/operations/region-migration).
+Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/operations/region-migration).
 
 ## Enable the Region Failover
 
@@ -37,7 +37,7 @@ In best practices, the number of topics/partitions supported by a Kafka cluster 
 
 ### The read amplification
 
-The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). The failover of a specific region from a crashed datanode to another datanode only requires reading the WAL data to reconstruct the memory state, which is called region replaying. However, If multiple regions share a single topic, replaying data for a specific region from the topic requires filtering out unrelated data (i.e., data from other regions). **This means replaying data for a specific region from the topic requires reading more data than the actual size of the region's data in the topic, a phenomenon known as read amplification**.
+The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). The failover of a specific region only requires reading the region's WAL data to reconstruct the memory state, which is called region replaying. However, If multiple regions share a single topic, replaying data for a specific region from the topic requires filtering out unrelated data (i.e., data from other regions). **This means replaying data for a specific region from the topic requires reading more data than the actual size of the region's data in the topic, a phenomenon known as read amplification**.
 
 Although multiple regions share the same topic, allowing the Datanode to support more regions, the cost of this approach is read amplification during WAL replay.
 
