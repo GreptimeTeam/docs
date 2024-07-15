@@ -158,7 +158,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 可通过 SQL 查询日志表：
 
 ```sql
-SELECT * FROM public.logs;
+SELECT * FROM public.logs WHERE MATCHES(log, 'sendTextDataToCluster');
 ```
 
 查询结果如下：

@@ -158,7 +158,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 You can query the log table using SQL:
 
 ```sql
-SELECT * FROM public.logs;
+SELECT * FROM public.logs WHERE MATCHES(log, 'sendTextDataToCluster');
 ```
 
 The query result is as follows:
