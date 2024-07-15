@@ -72,6 +72,6 @@ A simple model to estimate the read amplification factor (replay data size/actua
 | 4                           | 75.5             | 252                                           | 76                                             |
 | 8                           | 182.5            | 608                                           | 183                                            |
 | 16                          | 420.5            | 1402                                          | 421                                            |
-
+### Suggestions for improving recovery time
 We have calculated the recovery time under different Number of regions per Topic configuration for reference. If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
 
