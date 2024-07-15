@@ -21,7 +21,7 @@ You can use the following HTTP interface to delete a pipeline:
 
 ```shell
 ## 'test' is the name of the pipeline
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27 12:02:34.257312110Z"
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z"
 ```
 
 In the above example, we deleted a pipeline named `test`. The `version` parameter is required to specify the version of the pipeline to be deleted.

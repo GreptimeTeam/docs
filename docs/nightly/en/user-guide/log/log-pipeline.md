@@ -111,7 +111,7 @@ In the above example, the configuration of the `dissect` processor includes the 
 - `fields`: A list of field names to be split.
 - `patterns`: The dissect pattern for splitting.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
-- `append_separator`: Specifies the separator for concatenating multiple fields together. Defaults to an empty string.
+- `append_separator`: Specifies the separator for concatenating multiple fields with same field name together. Defaults to an empty string. See `+` modifier below.
 
 #### Dissect pattern
 
@@ -195,7 +195,7 @@ processors:
 
 In the above example, the configuration of the `join` processor includes the following fields:
 
-- `fields`: A list of field names to be merged.
+- `fields`: A list of field names to be merged. Note that all the fields mentioned are already of array type. Each field will have its own array merged separately. The content of multiple fields will not be combined.
 - `separator`: The separator for the merged result.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
