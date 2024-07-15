@@ -53,8 +53,8 @@ Creates a new table in the `db` database or the current database in use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
@@ -159,6 +159,7 @@ GreptimeDB supports the following column options:
 | NOT NULL          | The column value can't be `null`.                                                     |
 | DEFAULT `expr`    | The column's default value is `expr`, which its result type must be the column's type |
 | COMMENT `comment` | The column comment. It must be a string value                                         |
+| FULLTEXT          | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
 
@@ -195,6 +196,32 @@ CREATE TABLE system_metrics (
 ```sql
 Query OK, 0 rows affected (0.01 sec)
 ```
+
+#### `FULLTEXT` Column Option
+
+The `FULLTEXT` option is used to create a full-text index, accelerating full-text search operations. This option can only be applied to string-type columns.
+
+You can specify the following options using `FULLTEXT WITH`:
+
+- `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
+- `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
+
+If `WITH` is not specified, `FULLTEXT` will use the following default values:
+
+- `analyzer`: default is `English`
+- `case_sensitive`: default is `true`
+
+For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `Chinese` and setting `case_sensitive` to `false`:
+
+```sql
+CREATE TABLE IF NOT EXISTS logs(
+  host STRING PRIMARY KEY,
+  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  ts TIMESTAMP TIME INDEX
+) ENGINE=mito;
+```
+
+For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/log/log-query.md).
 
 ### Region partition rules
 

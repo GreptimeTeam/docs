@@ -54,8 +54,8 @@ CREATE DATABASE test WITH (ttl='7d');
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
@@ -162,6 +162,7 @@ GreptimeDB 支持以下列选项：
 | NOT NULL          | 列值不能为 `null`                             |
 | DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型 |
 | COMMENT `comment` | 列注释，必须为字符串类型                      |
+| FULLTEXT          | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -200,6 +201,32 @@ CREATE TABLE system_metrics (
 ```sql
 Query OK, 0 rows affected (0.01 sec)
 ```
+
+#### `FULLTEXT` 列选项
+
+`FULLTEXT` 用于创建全文索引，加速全文搜索操作。该选项只能应用于字符串类型的列。
+
+使用 `FULLTEXT WITH` 可以指定以下选项：
+
+- `analyzer`：设置全文索引的分析器语言，支持 `English` 和 `Chinese`。
+- `case_sensitive`：设置全文索引是否区分大小写，支持 `true` 和 `false`。
+
+如果不带 `WITH` 选项，`FULLTEXT` 将使用默认值：
+
+- `analyzer`：默认 `English`
+- `case_sensitive`：默认 `true`
+
+例如，要创建一个带有全文索引的表，配置 `log` 列为全文索引，并指定分析器为 `Chinese` 且不区分大小写：
+
+```sql
+CREATE TABLE IF NOT EXISTS logs(
+  host STRING PRIMARY KEY,
+  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  ts TIMESTAMP TIME INDEX
+) ENGINE=mito;
+```
+
+更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/log/log-query.md)。
 
 ### Region 分区规则
 
