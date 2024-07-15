@@ -63,7 +63,8 @@ A simple model to estimate the read amplification factor (replay data size/actua
 
 **If the Kafka cluster can provide 300MB/s read throughput, recovering 100 regions requires approximately 10 minutes (182.5GB/0.3GB = 10m).**
 
-### Conclusion
+
+### More examples
 
 | Number of regions per Topic | Replay data size (GB) | Kafka throughput 300MB/s- Reovery time (secs) | Kafka throughput 1000MB/s- Reovery time (secs) |
 | --------------------------- | ---------------- | --------------------------------------------- | ---------------------------------------------- |
@@ -72,6 +73,9 @@ A simple model to estimate the read amplification factor (replay data size/actua
 | 4                           | 75.5             | 252                                           | 76                                             |
 | 8                           | 182.5            | 608                                           | 183                                            |
 | 16                          | 420.5            | 1402                                          | 421                                            |
+
+<sub>\*: Assuming the unflushed data size is 0.5GB.</sub>
+<sub>\**Replay data size: The total size of WAL data that needs to be read to reconstruct the memory state.</sub>
 ### Suggestions for improving recovery time
 We have calculated the recovery time under different Number of regions per Topic configuration for reference. If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
 
