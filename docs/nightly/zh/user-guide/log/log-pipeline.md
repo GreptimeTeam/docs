@@ -387,6 +387,17 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./log-query.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
 
+### on_failure 字段
+
+`on_failure` 字段用于指定转换失败时的处理方式，支持以下几种方式：
+
+- `ignore`: 忽略转换失败的字段，不写入数据库。
+- `default`: 写入默认值。默认值由 `default` 字段指定。
+
+### default 字段
+
+`default` 字段用于指定转换失败时的默认值。
+
 ### Transform 示例
 
 例如，对于以下 log 数据：
