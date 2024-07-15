@@ -50,7 +50,7 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 
 A simple model to estimate the read amplification factor (replay data size/actual data size):
 
-- For a single topic, the amplification factor is 1 + 2 + ... + 7 = 28 times (Region WAL data distribution is shown in the Figure 1).
+- For a single topic, if we try to replay all regions that belong to the topic, then the amplification factor would be 7+6+...+1 = 28 times. (The Region WAL data distribution is shown in the Figure 1. Replaying Region 3 will read 7 times redundant data larger than the actual size; Region 6 will read 6 times, and so on)
 - When recovering 100 regions (requiring about 13 topics), the amplification factor is approximately 28 \* 13 = 364 times.
 
 | Number of regions per Topic | Number of topics required for 100 Regions | Single topic read amplification factor | Total reading amplification factor | Replay data size (GB) |
@@ -76,6 +76,10 @@ A simple model to estimate the read amplification factor (replay data size/actua
 
 <sub>\*: Assuming the unflushed data size is 0.5GB.</sub>
 <sub>\**Replay data size: The total size of WAL data that needs to be read to reconstruct the memory state.</sub>
+
 ### Suggestions for improving recovery time
-We have calculated the recovery time under different Number of regions per Topic configuration for reference. If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
+
+We have calculated the recovery time under different Number of regions per Topic configuration for reference.
+In actual scenarios, the read amplification may be larger than this model.
+If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
 
