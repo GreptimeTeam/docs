@@ -3,7 +3,7 @@
 Region Migration allows users to move regions between the Datanode.
 
 :::warning Warning
-This feature is only available on GreptimeDB running on cluster mode and 
+This feature is only available on GreptimeDB running on distributed mode and 
 - Using Kafka WAL
 - Using [shared storage](/user-guide/operations/configuration.md#storage-options) (e.g., AWS S3)
 

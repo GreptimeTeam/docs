@@ -5,7 +5,7 @@ Region Failover provides the ability to recover regions from region failures wit
 ## Enable the Region Failover
 
 :::warning Warning
-This feature is only available on GreptimeDB running on cluster mode and
+This feature is only available on GreptimeDB running on distributed mode and
 
 - Using Kafka WAL
 - Using [shared storage](/user-guide/operations/configuration.md#storage-options) (e.g., AWS S3)
@@ -32,7 +32,8 @@ The recovery time of Region Failover depends on:
 
 :::tip Note
 
-In best practices, the number of topics/partitions supported by a Kafka cluster is limited (exceeding this number can degrade Kafka cluster performance). Therefore, we allow multiple regions to share a single topic as the WAL.
+In best practices, [the number of topics/partitions supported by a Kafka cluster is limited](https://docs.aws.amazon.com/msk/latest/developerguide/bestpractices.html) (exceeding this number can degrade Kafka cluster performance). 
+ Therefore, we allow multiple regions to share a single topic as the WAL. 
 :::
 
 ### The read amplification
