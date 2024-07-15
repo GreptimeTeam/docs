@@ -1,9 +1,9 @@
-# Managing Pipelines
+# Manage Pipelines
 
 In GreptimeDB, each `pipeline` is a collection of data processing units used for parsing and transforming the ingested log content. This document provides guidance on creating and deleting pipelines to efficiently manage the processing flow of log data.
 
 
-For specific pipeline configurations, please refer to the [Pipeline Configuration](log-pipeline.md) documentation.
+For specific pipeline configurations, please refer to the [Pipeline Configuration](pipeline-config.md) documentation.
 
 ## Create a Pipeline
 

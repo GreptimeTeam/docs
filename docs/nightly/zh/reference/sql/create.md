@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS logs(
 ) ENGINE=mito;
 ```
 
-更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/log/log-query.md)。
+更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/logs/query-logs.md)。
 
 ### Region 分区规则
 

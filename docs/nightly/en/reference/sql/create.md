@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS logs(
 ) ENGINE=mito;
 ```
 
-For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/log/log-query.md).
+For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/logs/query-logs.md).
 
 ### Region partition rules
 

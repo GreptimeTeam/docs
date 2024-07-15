@@ -1,4 +1,4 @@
-# Log Query
+# Query Log
 
 This document provides a guide on how to use GreptimeDB's query language for effective searching and analysis of log data.
 
@@ -87,7 +87,7 @@ A full-text index is essential for full-text search, especially when dealing wit
 
 In the Pipeline configuration, you can specify a column to use a full-text index. Below is a configuration example where the `message` column is set with a full-text index:
 
-<!-- In the Pipeline configuration, you can [specify a column to use a full-text index](./log-pipeline.md#index-field). Below is a configuration example where the `message` column is set with a full-text index: -->
+<!-- In the Pipeline configuration, you can [specify a column to use a full-text index](./pipeline-config.md#index-field). Below is a configuration example where the `message` column is set with a full-text index: -->
 
 ```yaml
 processors:

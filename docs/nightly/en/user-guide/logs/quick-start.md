@@ -1,15 +1,15 @@
-# 快速开始
+# Quick Start
 
 
-## 下载并安装 GreptimeDB & 启动 GreptimeDB
+## Download and install & start GreptimeDB
 
-请遵循[安装指南](/getting-started/overview.md) 来安装并启动 GreptimeDB。
+Follow the [Installation Guide](/getting-started/overview.md) to install and start GreptimeDB.
 
-## 创建 Pipeline
+## Create a Pipeline
 
-GreptimeDB 提供了专门的 HTTP 接口用于创建 Pipeline，具体操作如下：
+GreptimeDB provides a dedicated HTTP interface for creating Pipelines. Here's how to do it:
 
-首先创建一个 Pipeline 文件，例如 `pipeline.yaml`。
+First, create a Pipeline file, for example, `pipeline.yaml`.
 
 ```yaml
 # pipeline.yaml
@@ -37,32 +37,31 @@ transform:
   - field: time
     type: time
     index: timestamp
+```
 
-然后执行以下命令上传配置文件：
+Then, execute the following command to upload the configuration file:
 
 ```shell
-## 上传 pipeline 文件。test 为 Pipeline 的名称
+## Upload the pipeline file. "test" is the name of the Pipeline
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
 ```
 
-该命令执行成功后，会创建了一个名为 `test` 的 Pipeline，并返回结果：`{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`。
-其中 `name` 为 Pipeline 名称，`version` 为 Pipeline 版本号。
+After the successful execution of this command, a Pipeline named `test` will be created, and the result will be returned as: `{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`.
+Here, `name` is the name of the Pipeline, and `version` is the Pipeline version.
 
-此 Pipeline 包含一个 Processor 和三个 Transform。Processor 使用了 Rust 的时间格式化字符串 `%Y-%m-%d %H:%M:%S%.3f` 解析日志中的 timestamp 字段，然后 Transform 将 id1 和 id2 字段转换为 int32 类型，将 level、content、logger 字段转换为 string 类型，最后将 timestamp 字段转换为时间类型，并将其设置为 Timestamp 索引。
+This Pipeline includes one Processor and three Transforms. The Processor uses the Rust time format string `%Y-%m-%d %H:%M:%S%.3f` to parse the timestamp field in the logs, and then the Transforms convert the `id1` and `id2` fields to `int32` type, the `type` and `logger` fields to `string` type with an index of "tag", the `log` field to `string` type with an index of "fulltext", and the `time` field to a time type with an index of "timestamp".
 
-请参考 [Pipeline 介绍](log-pipeline.md)查看具体的语法。
+Refer to the [Pipeline Introduction](pipeline-config.md) for specific syntax details.
 
+## Query Pipelines
 
-
-## 查询 Pipeline
-
-可以使用 SQL 查询保存在数据库中的 pipeline 内容，请求示例如下：
+You can use SQL to query the pipeline content stored in the database. The example query is as follows:
 
 ```sql
 SELECT * FROM greptime_private.pipelines;
 ```
 
-查询结果如下：
+The query result is as follows:
 
 ```sql
  name | schema | content_type |             pipeline              |         created_at
@@ -95,9 +94,9 @@ SELECT * FROM greptime_private.pipelines;
 (1 row)
 ```
 
-## 写入日志
+## Write logs
 
-可以使用 HTTP 接口写入日志，请求示例如下：
+The HTTP interface for writing logs is as follows:
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeline_name=test" \
@@ -107,25 +106,26 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeli
 {"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}
 {"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}'
 ```
-上述命令返回结果如下：
+
+The above command returns the following result:
 
 ```json
 {"output":[{"affectedrows":4}],"execution_time_ms":22}
 ```
 
-上面的例子中，我们向 `public.logs` 表中成功写入了 4 条日志。
+In the above example, we successfully wrote 4 log entries to the `public.logs` table.
 
-请参考[配合 Pipeline 写入日志](write-log.md)获取具体的日志写入语法。
+Please refer to [Writing Logs with Pipeline](write-logs.md) for specific syntax for writing logs.
 
-## `logs` 表结构
+## `logs` table structure
 
-我们可以使用 SQL 查询来查看 `public.logs` 表的结构。
+We can use SQL to query the structure of the `public.logs` table.
 
 ```sql
 DESC TABLE logs;
 ```
 
-查询结果如下：
+The query result is as follows:
 
 ```sql
  Column |        Type         | Key | Null | Default | Semantic Type
@@ -139,32 +139,31 @@ DESC TABLE logs;
 (6 rows)
 ```
 
-从上述结果可以看出，根据 Pipeline 处理后的结果，`public.logs` 表包含了 6 个字段：id1 和 id2 都被转换为 int32 类型，type、log、logger 都被转换为 string 类型，time 被转换为时间戳类型，并且设置为 Timestamp 索引。
+From the above result, we can see that based on the processed result of the pipeline, the `public.logs` table contains 6 fields: `id1` and `id2` are converted to the `Int32` type, `type`, `log`, and `logger` are converted to the `String` type, and time is converted to a `TimestampNanosecond` type and indexed as Timestamp.
 
-## 查询日志
+## Query logs
 
-就像任何其他数据一样，我们可以使用标准 SQL 来查询日志数据。
+We can use standard SQL to query log data.
 
 ```shell
-# 使用 MySQL 或者 PostgreSQL 协议连接 GreptimeDB
+# Connect to GreptimeDB using MySQL or PostgreSQL protocol
 
-# mysql
+# MySQL
 mysql --host=127.0.0.1 --port=4002 public
 
-# postgresql
+# PostgreSQL
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-可通过 SQL 查询日志表：
+You can query the log table using SQL:
 
 ```sql
 SELECT * FROM public.logs;
 ```
 
-查询结果如下：
+The query result is as follows:
 
 ```sql
-
  id1  | id2  | type |      logger      |                    log                     |            time
 ------+------+------+------------------+--------------------------------------------+----------------------------
  2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
@@ -178,9 +177,9 @@ SELECT * FROM public.logs;
 (4 rows)
 ```
 
-可以看出，通过 Pipeline 将 Log 进行类型转换后存储为结构化的日志，为日志的进一步查询和分析带来了便利。
+As you can see, the logs have been stored as structured logs after applying type conversions using the pipeline. This provides convenience for further querying and analysis of the logs.
 
-## 结语
+## Conclusion
 
-通过以上步骤，您已经成功创建了 Pipeline，写入日志并进行了查询。这只是 GreptimeDB 提供功能的冰山一角。
-接下来请继续阅读 [Pipeline 配置](log-pipeline.md)和[管理 Pipeline](manage-pipeline.md) 来了解更多高级特性和最佳实践。
+By following the above steps, you have successfully created a pipeline, written logs, and performed queries. This is just the tip of the iceberg in terms of the capabilities offered by GreptimeDB.
+Next, please continue reading [Pipeline Configuration](pipeline-config.md) and [Managing Pipelines](manage-pipelines.md) to learn more about advanced features and best practices.

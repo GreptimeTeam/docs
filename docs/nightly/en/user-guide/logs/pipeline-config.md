@@ -381,7 +381,7 @@ Specify which field is the Tag column using `index: tag`. Refer to the [Transfor
 
 #### The Fulltext column
 
-Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./log-query.md). Refer to the [Transform Example](#transform-example) below for syntax.
+Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./query-logs.md). Refer to the [Transform Example](#transform-example) below for syntax.
 
 ### The `on_failure` field
 
