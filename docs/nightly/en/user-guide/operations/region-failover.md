@@ -47,9 +47,6 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 
 <p style="text-align: center;"><b>(Figure1: recovery Region 3 need to read redundant data 7 times larger than the actual size)</b></p>
 
-:::warning Note
-In actual scenarios, the read amplification may be larger than this model.
-:::
 
 A simple model to estimate the read amplification factor (replay data size/actual data size):
 
