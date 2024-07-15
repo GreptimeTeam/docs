@@ -37,7 +37,7 @@ In best practices, the number of topics/partitions supported by a Kafka cluster 
 
 ### The read amplification
 
-The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). If multiple regions share a single topic, replaying data for a specific region from the Topic requires filtering out unrelated data (i.e., data from other regions). **This means reading more data than the actual data size of the region, a phenomenon known as read amplification**.
+The data belonging to a specific region consists of data files plus data in the WAL (typically `WAL[LastCheckpoint...Latest]`). If multiple regions share a single topic, replaying data for a specific region from the topic requires filtering out unrelated data (i.e., data from other regions). **This means replaying data for a specific region from the topic requires reading more data than the actual size of the region's data in the topic, a phenomenon known as read amplification**.
 
 Although multiple regions share the same topic, allowing the Datanode to support more regions, the cost of this approach is read amplification during WAL replay.
 
@@ -45,10 +45,10 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 
-<p style="text-align: center;"><b>(Figure1: recovery Region 3 need to read 7 times the redundant data)</b></p>
+<p style="text-align: center;"><b>(Figure1: recovery Region 3 need to read redundant data 7 times larger than the actual size)</b></p>
 
 :::warning Note
-In actual scenarios, the reading amplification may be larger than this model.
+In actual scenarios, the read amplification may be larger than this model.
 :::
 
 A simple model to estimate the read amplification factor:
