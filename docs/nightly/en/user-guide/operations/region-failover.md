@@ -75,6 +75,3 @@ A simple model to estimate the read amplification factor (replay data size/actua
 
 We have calculated the recovery time under different Number of regions per Topic configuration for reference. If you are very sensitive to recovery time, we recommend that each region have its topic(i.e., Number of regions per Topic is 1).
 
-<sub>\*: Assuming the unflushed data size is 0.5GB.</sub>
-
-<sub>\**Replay data size: The total size of WAL data that needs to be read to reconstruct the memory state.</sub>
