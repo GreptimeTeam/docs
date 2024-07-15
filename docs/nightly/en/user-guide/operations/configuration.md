@@ -1,163 +1,114 @@
 # Configuration
 
-GreptimeDB supports **layered configuration** and uses the following precedence order(each item takes precedence over the item below it):
+GreptimeDB supports **layered configuration** with the following precedence order (where each item overrides the one below it):
 
-- Command-line options
-- Configuration file
+- Greptime command line options
+- Configuration file options
 - Environment variables
 - Default values
 
-This page describes methods for configuring GreptimeDB server settings. Configuration can be set in TOML file.
+You only need to set up the configurations you require.
+GreptimeDB will assign default values for any settings not configured.
 
-The system assigns a default value for missing parameters in the configuration file.
+## How to set up configurations
 
-All sample configuration files are in the project's [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) folder.
+### Greptime command line options
 
-## Command-line options
+You can specify several configurations using command line arguments.
+For example, to start GreptimeDB in standalone mode with a configured HTTP address:
 
-See [Command lines](/reference/command-lines.md) to learn how to use the `greptime` command line.
-
-### Global options
-
-- `-h`/`--help`: Print help information;
-- `-V`/`--version`: Print version information;
-- `--log-dir <LOG_DIR>`: The logging directory;
-- `--log-level <LOG_LEVEL>`: The logging level;
-
-### Datanode subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime datanode start --help
+```shell
+greptime standalone start --http-addr 127.0.0.1:4000 
 ```
 
-- `-c`/`--config-file`: The configuration file for datanode;
-- `--data-home`: Database storage root directory;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
-- `--node-id <NODE_ID>`: The datanode ID;
-- `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
-- `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
-- `--wal-dir <WAL_DIR>`: The directory of WAL;
+For all the options supported by the Greptime command line,
+refer to the [GreptimeDB Command Line Interface](/reference/command-lines.md).
 
-All the `addr` options are in the form of `ip:port`.
+### Configuration file options
 
-### Metasrv subcommand options
+You can specify configurations in a TOML file.
+For example, create a configuration file `standalone.example.toml` as shown below:
 
-You can list all the options from the following command:
-
-```
-greptime metasrv start --help
+```toml
+[storage]
+type = "File"
+data_home = "/tmp/greptimedb/"
 ```
 
-- `-c`/`--config-file`: The configuration file for metasrv;
-- `--enable-region-failover`: Whether to enable region failover, default is `false`.
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
-- `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
-- `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
-- `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
-
-### Frontend subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime frontend start --help
-```
-
-- `-c`/`--config-file`: The configuration file for frontend;
-- `--disable-dashboard`: Disable dashboard http service, default is `false`.
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: GRPC server address;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
-- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
-- `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
-- `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
-
-### Flownode subcommand options
-
-You can list all the options from the following command:
-
-```
-greptime flownode start --help
-```
-
-- `--node-id <NODE_ID>`: Flownode's id
-- `--rpc-addr <RPC_ADDR>`: Bind address for the gRPC server
-- `--rpc-hostname <RPC_HOSTNAME>`: Hostname for the gRPC server
-- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv address list
-- `-c, --config-file <CONFIG_FILE>`: The configuration file for the flownode
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`
-
-### Standalone subcommand options
-
-You can list all the options from the following command:
-
-
-```
-greptime standalone start --help
-```
-
-- `-c`/`--config-file`: The configuration file for frontend;
-- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_STANDALONE`;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
-- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--rpc-addr <RPC_ADDR>`:  gRPC server address;
-
-
-## Configuration File
-
-### Examples
-
-Configurations can be used in one or multiple components according to their features.
-This document only contains examples for frequently used configurations. Please refer to the auto-generated [document](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md) for all available configurations.
-
-You can find all available configurations for each component on GitHub:
-
-- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
-- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
-- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
-- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
-- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
-
-
-### Specify configuration file
-
-You can specify the configuration file by using the command line arg `-c [file_path]`.
+Then, specify the configuration file using the command line argument `-c [file_path]`.
 
 ```sh
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-For example, start the standalone as below:
+For example, to start in standalone mode:
 
 ```bash
 greptime standalone start -c standalone.example.toml
 ```
 
+#### Example files
+
+Below are example configuration files for each GreptimeDB component,
+including all available configurations.
+In actual scenarios,
+you only need to configure the required options and do not need to configure all options as in the sample file.
+
+- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/standalone.example.toml)
+- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/frontend.example.toml)
+- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/flownode.example.toml)
+- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/metasrv.example.toml)
+
+### Environment variable
+
+Every item in the configuration file can be mapped to environment variables.
+For example, to set the `data_home` configuration item for the datanode using an environment variable:
+
+```toml
+# ...
+[storage]
+data_home = "/data/greptimedb"
+# ...
+```
+
+Use the following shell command to set the environment variable in the following format:
+
+```
+export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
+```
+
+#### Environment Variable Rules
+
+- Each environment variable should have the component prefix, for example:
+
+  - `GREPTIMEDB_FRONTEND`
+  - `GREPTIMEDB_METASRV`
+  - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_STANDALONE`
+
+- Use **double underscore `__`** separators. For example, the data structure `storage.data_home` is transformed to `STORAGE__DATA_HOME`.
+
+The environment variable also accepts lists that are separated by commas `,`, for example:
+
+```
+GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
+```
+
+## Options
+
+In this section, we will introduce some main configuration options.
+For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/config.md) on Github.
+
 ### Protocol options
 
-Protocol options are valid in `frontend` and `standalone` sub commands, which specify the protocol server addresses and other protocol-related options.
+Protocol options are valid in `frontend` and `standalone` subcommands,
+specifying protocol server addresses and other protocol-related options.
 
 Below is an example configuration with default values.
-The HTTP and gRPC protocols must be enabled for the database to work correctly.
-The other protocols are optional.
-If you want to disable certain protocols, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
+You can change the values or disable certain protocols in your configuration file.
+For example, to disable OpenTSDB protocol support, set the `enable` parameter to `false`.
+Note that HTTP and gRPC protocols cannot be disabled for the database to function correctly.
 
 ```toml
 [http]
@@ -227,6 +178,7 @@ The following table describes the options in detail:
 |            | enable             | Boolean | Whether to enable PostgresSQL protocol, true by default                         |
 |            | addr               | String  | Server address, "127.0.0.1:4003" by default                                     |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                               |
+
 
 ### Storage options
 
@@ -411,6 +363,7 @@ data_freeze_threshold = 32768
 fork_dictionary_bytes = "1GiB"
 ```
 
+
 Available options:
 
 | Key | Type | Default | Descriptions |
@@ -436,7 +389,6 @@ Available options:
 | `memtable.index_max_keys_per_shard` | Integer | `8192` | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable. |
 | `memtable.data_freeze_threshold` | Integer | `32768` | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable. |
 | `memtable.fork_dictionary_bytes` | String | `1GiB` | Max dictionary bytes.<br/>Only available for `partition_tree` memtable. |
-
 
 ### Specify meta client
 
@@ -520,7 +472,7 @@ In the configuration files of `datanode` and `frontend` of distributed GreptimeD
 
 ```toml
 mode = "distributed"
-```
+``` 
 
 In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
 
@@ -572,37 +524,3 @@ rpc_runtime_size = 8
 | rpc_hostname     | String  | Hostname of this node.                                  |
 | rpc_addr         | String  | gRPC server address, `"127.0.0.1:3001"` by default.     |
 | rpc_runtime_size | Integer | The number of gRPC server worker threads, 8 by default. |
-
-## Environment variable
-
-Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks` of datanode by environment variable:
-
-```toml
-# ...
-[storage]
-data_home = "/data/greptimedb"
-# ...
-```
-
-You can use the following shell command to setup the environment variable as the following format:
-
-```
-export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
-```
-
-### Environment Variable Rules
-
-- Every environment variable should have the component prefix, for example:
-
-  - `GREPTIMEDB_FRONTEND`
-  - `GREPTIMEDB_METASRV`
-  - `GREPTIMEDB_DATANODE`
-  - `GREPTIMEDB_STANDALONE`
-
-- We use **double underscore `__`** as a separator. For example, the above data structure `storage.data_home` will be transformed to `STORAGE__DATA_HOME`.
-
-The environment variable also accepts list that are separated by a comma `,`, for example:
-
-```
-GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
-```

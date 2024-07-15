@@ -1,6 +1,17 @@
 # Greptime Command Line Interface
 
-The `greptime` command provided by the pre-built binary can start/stop GreptimeDB and pass configuration options. To execute the binary with `greptime` instead of the ad-hoc `./greptime`, you might need to move the binary into the system `bin` directory or add the binary path to the `PATH` environment variable.
+The `greptime` command can start/stop GreptimeDB and pass configuration options. 
+
+## Install the Greptime CLI
+
+The Greptime CLI comes bundled with the GreptimeDB binary.
+After [installing GreptimeDB](/getting-started/installation/overview.md),
+you can execute the `./greptime` command within the GreptimeDB directory.
+
+For convenience, if you wish to run commands using `greptime` instead of `./greptime`,
+consider moving the CLI binary to your system's `bin` directory or appending the binary's path to your `PATH` environment variable.
+
+## CLI Options
 
 The `help` command lists all available commands and options of `greptime`.
 
@@ -26,7 +37,111 @@ Options:
 - `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
 
-## Start service with configurations
+### Global options
+
+- `-h`/`--help`: Print help information;
+- `-V`/`--version`: Print version information;
+- `--log-dir <LOG_DIR>`: The logging directory;
+- `--log-level <LOG_LEVEL>`: The logging level;
+
+### Datanode subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime datanode start --help
+```
+
+- `-c`/`--config-file`: The configuration file for datanode;
+- `--data-home`: Database storage root directory;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
+- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
+- `--node-id <NODE_ID>`: The datanode ID;
+- `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
+- `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
+- `--wal-dir <WAL_DIR>`: The directory of WAL;
+
+All the `addr` options are in the form of `ip:port`.
+
+### Metasrv subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime metasrv start --help
+```
+
+- `-c`/`--config-file`: The configuration file for metasrv;
+- `--enable-region-failover`: Whether to enable region failover, default is `false`.
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
+- `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
+- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
+- `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
+- `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
+- `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
+
+### Frontend subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime frontend start --help
+```
+
+- `-c`/`--config-file`: The configuration file for frontend;
+- `--disable-dashboard`: Disable dashboard http service, default is `false`.
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
+- `--rpc-addr <RPC_ADDR>`: GRPC server address;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
+- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
+- `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
+- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
+- `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
+- `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
+- `--tls-mode <TLS_MODE>`: TLS Mode;
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
+
+### Flownode subcommand options
+
+You can list all the options from the following command:
+
+```
+greptime flownode start --help
+```
+
+- `--node-id <NODE_ID>`: Flownode's id
+- `--rpc-addr <RPC_ADDR>`: Bind address for the gRPC server
+- `--rpc-hostname <RPC_HOSTNAME>`: Hostname for the gRPC server
+- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv address list
+- `-c, --config-file <CONFIG_FILE>`: The configuration file for the flownode
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`
+
+### Standalone subcommand options
+
+You can list all the options from the following command:
+
+
+```
+greptime standalone start --help
+```
+
+- `-c`/`--config-file`: The configuration file for frontend;
+- `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_STANDALONE`;
+- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
+- `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
+- `--rpc-addr <RPC_ADDR>`:  gRPC server address;
+
+## Examples
+
+### Start service with configurations
 
 Starts GreptimeDB in standalone mode with customized configurations:
 
@@ -80,7 +195,7 @@ Starts a flownode instance with command line arguments specifying the address of
 greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
 ```
 
-## Upgrade GreptimeDB version
+### Upgrade GreptimeDB version
 
 Please refer to [the upgrade steps](/user-guide/upgrade.md)
 

@@ -564,7 +564,7 @@ rpc_runtime_size = 8
 
 ## Environment variable
 
-Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `max_inflight_tasks` of datanode by environment variable:
+Every item in the configuration file can be mapped into environment variables. For example, if we want to set the configuration item `data_home` of the datanode by environment variable:
 
 ```toml
 # ...
