@@ -165,7 +165,7 @@ The following table describes the options in detail:
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                                                                         |
 | mysql      |                    |         | MySQL server options                                                                                                      |
 |            | enable             | Boolean | Whether to enable MySQL protocol, true by default                                                                         |
-|            | add                | String  | Server address, "127.0.0.1:4002" by default                                                                               |
+|            | addr               | String  | Server address, "127.0.0.1:4002" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                                                                         |
 | influxdb   |                    |         | InfluxDB Protocol options                                                                                                 |
 |            | enable             | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                          |
@@ -575,9 +575,6 @@ backoff_deadline = "5mins"
 | `store_addr`               | String  | `127.0.0.1:2379`       | Etcd server address.                                                                                                                                                          |
 | `selector`                 | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
 | `use_memory_store`         | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
-| `enable_telemetry`         | Bool    | `true`                 | Whether to enable greptimedb telemetry.                                                                                                                                       |
-| `store_key_prefix`         | String  | `""`                   | If it's not empty, the metasrv will store all data with this key prefix.                                                                                                      |
-| `enable_region_failover`   | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
 | `enable_region_failover`   | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
 | `wal`                      | --      | --                     | --                                                                                                                                                                            |
 | `wal.provider`             | String  | `raft_engine`          | --                                                                                                                                                                            |
