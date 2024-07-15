@@ -15,7 +15,3 @@ For example, on this timestamp line:
 ```
 
 If `x` is the source timestamp, `date_bin(2, x, 7)` will return `7`, `date_bin(1, x, 8)` will return `8`, and so on.
-
-## Hop (not supported yet)
-
-`hop` defines sliding window that moves forward by a fixed interval. This feeaure is not supported yet and is expected to be available in the near future.
