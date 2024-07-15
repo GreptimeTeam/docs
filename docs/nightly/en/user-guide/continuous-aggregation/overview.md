@@ -38,7 +38,7 @@ Then create the flow `test_numbers` to aggregate the sum of `number` column in `
 CREATE FLOW test_numbers 
 SINK TO out_num_cnt
 AS 
-SELECT sum(number) FROM numbers_input GROUP BY tumble(ts, '1 second', '2021-07-01 00:00:00');
+SELECT date_bin(ts, '1 second', '2021-07-01 00:00:00'), sum(number) FROM numbers_input GROUP BY date_bin(ts, '1 second', '2021-07-01 00:00:00');
 ```
 
 To observe the outcome of the continuous aggregation in the `out_num_cnt` table, insert some data into the source table `numbers_input`.

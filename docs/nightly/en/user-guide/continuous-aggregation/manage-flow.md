@@ -48,10 +48,10 @@ SINK TO my_sink_table
 EXPIRE AFTER INTERVAL '1 hour'
 COMMENT = "My first flow in GreptimeDB"
 AS
-SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
+SELECT date_bin(INTERVAL '5 minutes', time_index, '2024-05-20 00:00:00'), count(item) from my_source_table GROUP BY date_bin(INTERVAL '5 minutes', time_index, '2024-05-20 00:00:00');
 ```
 
-The created flow will compute `count(item)` for every 5 minutes and store the result in `my_sink_table`. All data comes within 1 hour will be used in the flow. For the `tumble()` function, refer to [define time window](./define-time-window.md) part. 
+The created flow will compute `count(item)` for every 5 minutes and store the result in `my_sink_table`. All data comes within 1 hour will be used in the flow. For the `date_bin()` function, refer to [define time window](./define-time-window.md) part. 
 
 ### `EXPIRE AFTER` clause
 
