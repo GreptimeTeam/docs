@@ -5,7 +5,7 @@ These time windows are left-closed and right-open intervals.
 
 A time window corresponds to a range of time. Data from source table will be mapped to the corresponding window based on the time index column. Time window is also the scope of one calculation of an aggregation expression, so each time window will result in one row in the result table.
 
-To define a time window, you can use the `date_bin()` function, which takes two necessary param and one optional param: `interval`, `exoression` and `origin-timestamp`. It returns the start time of the time window that the source timestamp belongs to.
+To define a time window, you can use the `date_bin()` function, which takes two necessary param and one optional param: `interval`, `expression` and `origin-timestamp`. It returns the start time of the time window that the source timestamp belongs to.
 
 For example, on this timestamp line:
 ```
