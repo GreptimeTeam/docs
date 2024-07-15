@@ -113,7 +113,7 @@ In the above example, the configuration of the `dissect` processor includes the 
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `append_separator`: Specifies the separator for concatenating multiple fields together. Defaults to an empty string.
 
-#### `dissect` pattern
+#### Dissect pattern
 
 Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`, where `%{key}` is a field name. For example:
 
@@ -121,9 +121,9 @@ Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`,
 "%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
 ```
 
-#### `dissect` modifiers
+#### Dissect modifiers
 
-The `dissect` pattern supports the following modifiers:
+The dissect pattern supports the following modifiers:
 
 | Modifier   | Description                                          | Example              |
 | ---------- | ---------------------------------------------------- | -------------------- |
@@ -371,15 +371,15 @@ When `index` field is not provided, GreptimeDB treats the field as a `Field` col
 
 In GreptimeDB, a table must include one column of type `timestamp` as the time index column. Therefore, a Pipeline can have only one time index column.
 
-#### The `Timestamp` column
+#### The Timestamp column
 
 Specify which field is the timestamp index column using `index: timestamp`. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### The `Tag` column
+#### The Tag column
 
 Specify which field is the Tag column using `index: tag`. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### The `Fulltext` column
+#### The Fulltext column
 
 Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./log-query.md). Refer to the [Transform Example](#transform-example) below for syntax.
 

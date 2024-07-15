@@ -52,7 +52,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `urlencoding`: 用于对 log 数据字段进行 URL 编解码。
 - `csv`: 用于对 log 数据字段进行 CSV 解析。
 
-### date
+### `date`
 
 `date` Processor 用于解析时间字段。示例配置如下：
 
@@ -74,7 +74,7 @@ processors:
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `timezone`： 时区。使用[tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 中的时区标识符来指定时区。默认为 `UTC`。
 
-### epoch
+### `epoch`
 
 `epoch` Processor 用于解析时间戳字段，示例配置如下：
 
@@ -93,7 +93,7 @@ processors:
 - `resolution`: 时间戳精度，支持 `s`, `sec` , `second` , `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`。默认为 `ms`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-### dissect
+### `dissect`
 
 `dissect` Processor 用于对 log 数据字段进行拆分，示例配置如下：
 
@@ -135,7 +135,7 @@ Dissect 模式支持以下修饰符：
 | `?`         | 忽略匹配的值                             | `%{?key}`             |
 | `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&value}`   |
 
-#### Dissect 示例
+#### `dissect` 示例
 
 例如，对于以下 log 数据：
 
@@ -161,7 +161,7 @@ Dissect 模式支持以下修饰符：
 }
 ```
 
-### gsub
+### `gsub`
 
 `gsub` Processor 用于对 log 数据字段进行替换，示例配置如下：
 
@@ -182,7 +182,7 @@ processors:
 - `replacement`: 替换后的字符串。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-### join
+### `join`
 
 `join` Processor 用于对 log 中的 Array 类型字段进行合并，示例配置如下：
 
@@ -201,7 +201,7 @@ processors:
 - `separator`: 合并后的分隔符。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-#### join 示例
+#### `join` 示例
 
 例如，对于以下 log 数据：
 
@@ -229,7 +229,7 @@ processors:
 }
 ```
 
-### letter
+### `letter`
 
 `letter` Processor 用于对 log 数据字段进行字母转换，示例配置如下：
 
@@ -248,7 +248,7 @@ processors:
 - `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-### regex
+### `regex`
 
 `regex` Processor 用于对 log 数据字段进行正则匹配，示例配置如下：
 
@@ -287,7 +287,7 @@ processors:
 }
 ```
 
-### urlencoding
+### `urlencoding`
 
 `urlencoding` Processor 用于对 log 数据字段进行 URL 编码，示例配置如下：
 
@@ -307,7 +307,7 @@ processors:
 - `method`: 编码方法，支持 `encode`, `decode`。默认为 `encode`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-### csv
+### `csv`
 
 `csv` Processor 用于对 log 数据中没有携带 header 的 CSV 类型字段解析，示例配置如下：
 
@@ -343,12 +343,12 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 - `on_failure`: 转换失败时的处理方式（可选）
 - `default`: 默认值（可选）
 
-### fields 字段
+### `fields` 字段
 
 每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，
 最终数据将被写入到 GreptimeDB 的 `req_time_sec` 列。
 
-### type 字段
+### `type` 字段
 
 GreptimeDB 目前内置了以下几种转换类型：
 
@@ -361,7 +361,7 @@ GreptimeDB 目前内置了以下几种转换类型：
 
 如果字段在转换过程中获得了非法值，Pipeline 将会抛出异常。例如将一个字符串 `abc` 转换为整数时，由于该字符串不是一个合法的整数，Pipeline 将会抛出异常。
 
-### index 字段
+### `index` 字段
 
 `Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。`index` 字段用于指定哪些字段需要被索引。关于 GreptimeDB 的列类型，请参考[数据模型](/user-guide/concepts/data-model.md)文档。
 
@@ -379,22 +379,22 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 通过 `index: timestamp` 指定哪个字段是时间索引列，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-#### tag 列
+#### Tag 列
 
 通过 `index: tag` 指定哪个字段是 Tag 列，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-#### fulltext 列
+#### Fulltext 列
 
 通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./log-query.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-### on_failure 字段
+### `on_failure` 字段
 
 `on_failure` 字段用于指定转换失败时的处理方式，支持以下几种方式：
 
 - `ignore`: 忽略转换失败的字段，不写入数据库。
 - `default`: 写入默认值。默认值由 `default` 字段指定。
 
-### default 字段
+### `default` 字段
 
 `default` 字段用于指定转换失败时的默认值。
 
