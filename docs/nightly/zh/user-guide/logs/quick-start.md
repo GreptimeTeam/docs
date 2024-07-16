@@ -37,6 +37,7 @@ transform:
   - field: time
     type: time
     index: timestamp
+```
 
 然后执行以下命令上传配置文件：
 
