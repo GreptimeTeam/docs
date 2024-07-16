@@ -48,10 +48,8 @@ ALIGN '5s' BY (host) FILL PREV
 
 接下来解析一下该查询示例展示的 GreptimeDB 关键功能：
 
-## GreptimeDB 的关键功能
-
-- **统一存储：** GreptimeDB 将时间序列指标和 [日志](/user-guide/log/overview.md) 存储在一个数据库中。简化的架构和数据一致性增强了分析和解决问题的能力，并可节省成本且提高系统性能。
-- **独特的数据模型：** 独特的[数据模型](/user-guide/concepts/data-model.md)搭配时间索引和全文索引，大大提升了查询性能，并在超大数据集上也经受住了考验。它不仅支持[数据指标的插入](/user-guide/write-data/overview.md)和[查询](/user-guide/query-data/overview.md)，也提供了非常友好的方式便于日志的[写入](/user-guide/log/write-log.md)和[查询](/user-guide/log/log-query.md)。
+- **统一存储：** GreptimeDB 将时间序列指标和 [日志](/user-guide/logs/overview.md) 存储在一个数据库中。简化的架构和数据一致性增强了分析和解决问题的能力，并可节省成本且提高系统性能。
+- **独特的数据模型：** 独特的[数据模型](/user-guide/concepts/data-model.md)搭配时间索引和全文索引，大大提升了查询性能，并在超大数据集上也经受住了考验。它不仅支持[数据指标的插入](/user-guide/write-data/overview.md)和[查询](/user-guide/query-data/overview.md)，也提供了非常友好的方式便于日志的[写入](/user-guide/logs/write-logs.md)和[查询](/user-guide/logs/query-logs.md)。
 - **范围查询：** GreptimeDB 支持[范围查询](/user-guide/query-data/sql#aggregate-data-by-time-window)来计算一段时间内的[表达式](/reference/sql/functions/overview.md)，从而了解指标趋势。你还可以[持续聚合](/user-guide/continuous-aggregation/overview)数据以进行进一步分析。
 - **SQL 和多种协议：** GreptimeDB 使用 SQL 作为主要查询语言，并支持[多种协议](/user-guide/clients/overview.md#protocols)，大大降低了学习曲线和接入成本。你可以轻松从 Prometheus 或 [Influxdb 迁移](/user-guide/migrate-to-greptimedb/migrate-from-influxdb)至 GreptimeDB，或者从 0 接入 GreptimeDB。
 - **JOIN 操作：** GreptimeDB 的时间序列表的数据模型，使其成为第一个支持[JOIN 操作](reference/sql/join.md)的时序数据库。
