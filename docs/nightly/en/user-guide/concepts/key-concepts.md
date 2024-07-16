@@ -48,4 +48,4 @@ The data displayed in a view is retrieved dynamically from the underlying tables
 
 ## Flow
 
-A `flow` in GreptimeDB refers to a continuous aggregation process that continuously updates and materializes aggregated data based on incoming data. Please refer to the [user guide](/user-guide/continuous-aggregation/overview) for more information.
+A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/continuous-aggregation/overview) process that continuously updates and materializes aggregated data based on incoming data.
