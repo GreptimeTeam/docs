@@ -50,7 +50,7 @@ A simple model to estimate the read amplification factor (replay data size/actua
 - For a single topic, if we try to replay all regions that belong to the topic, then the amplification factor would be 7+6+...+1 = 28 times. (The Region WAL data distribution is shown in the Figure 1. Replaying Region 3 will read 7 times redundant data larger than the actual size; Region 6 will read 6 times, and so on)
 - When recovering 100 regions (requiring about 13 topics), the amplification factor is approximately 28 \* 13 = 364 times.
 
-Assuming we have 100 regions to recover, and the actual data size of all region is 0.5GB, the following table shows the replay data size based on the number of regions per topic.
+Assuming we have 100 regions to recover, and the actual data size of all regions is 0.5GB, the following table shows the replay data size based on the number of regions per topic.
 
 | Number of regions per Topic | Number of topics required for 100 Regions | Single topic read amplification factor | Total reading amplification factor | Replay data size (GB) |
 | --------------------------- | ----------------------------------------- | -------------------------------------- | ---------------------------------- | ---------------- |
@@ -63,7 +63,7 @@ Assuming we have 100 regions to recover, and the actual data size of all region 
 
 The following table shows the recovery time of 100 regions under different read throughput conditions of the Kafka cluster. For example, when providing a read throughput of 300MB/s, recovering 100 regions requires approximately 10 minutes (182.5GB/0.3GB = 10m).
 
-| Number of regions per Topic | Replay data size (GB) | Kafka throughput 300MB/s- Reovery time (secs) | Kafka throughput 1000MB/s- Reovery time (secs) |
+| Number of regions per Topic | Replay data size (GB) | Kafka throughput 300MB/s- Recovery time (secs) | Kafka throughput 1000MB/s- Recovery time (secs) |
 | --------------------------- | ---------------- | --------------------------------------------- | ---------------------------------------------- |
 | 1                           | 0.5              | 2                                             | 1                                              |
 | 2                           | 25.5             | 85                                            | 26                                             |
