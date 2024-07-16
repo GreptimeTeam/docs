@@ -155,7 +155,7 @@ enable = true
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
 | mysql      |                    |        | MySQL 服务器选项                                            |
 |            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                            |
-|            | add                | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                         |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                         |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
 | influxdb   |                    |        | InfluxDB 协议选项                                           |
 |            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true           |
@@ -271,6 +271,8 @@ cache_capacity = "256MiB"
 
 datanode 和 standalone 在 `[wal]` 部分可以配置 Write-Ahead-Log 的对应参数：
 
+#### Local WAL
+
 ```toml
 [wal]
 file_size = "256MB"
@@ -284,6 +286,29 @@ sync_write = false
 - `file_size`: 单个日志文件的最大大小，默认为 `256MB`。
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
+
+
+#### Remote WAL
+
+```toml
+[wal]
+provider = "kafka"
+broker_endpoints = ["127.0.0.1:9092"]
+max_batch_bytes = "1MB"
+consumer_wait_timeout = "100ms"
+backoff_init = "500ms"
+backoff_max = "10s"
+backoff_base = 2
+backoff_deadline = "5mins"
+```
+
+- `broker_endpoints`：Kafka 端点
+- `max_batch_bytes`：单个生产者批次的最大大小
+- `consumer_wait_timeout`：消费者等待超时时间
+- `backoff_init`：初始退避延迟
+- `backoff_max`：最大退避延迟
+- `backoff_base`：指数退避率
+- `backoff_deadline`：重试的截止时间
 
 ### Logging 选项
 
@@ -488,17 +513,73 @@ store_addr = "127.0.0.1:2379"
 selector = "lease_based"
 # Store data in memory, false by default.
 use_memory_store = false
+## Whether to enable region failover.
+## This feature is only available on GreptimeDB running on cluster mode and
+## - Using Remote WAL
+## - Using shared storage (e.g., s3).
+enable_region_failover = false
+
+[wal]
+# Available wal providers:
+# - `raft_engine` (default): there're none raft-engine wal config since metasrv only involves in remote wal currently.
+# - `kafka`: metasrv **have to be** configured with kafka wal config when using kafka wal provider in datanode.
+provider = "raft_engine"
+
+# Kafka wal config.
+
+## The broker endpoints of the Kafka cluster.
+broker_endpoints = ["127.0.0.1:9092"]
+
+## Number of topics to be created upon start.
+num_topics = 64
+
+## Topic selector type.
+## Available selector types:
+## - `round_robin` (default)
+selector_type = "round_robin"
+
+## A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.
+topic_name_prefix = "greptimedb_wal_topic"
+
+## Expected number of replicas of each partition.
+replication_factor = 1
+
+## Above which a topic creation operation will be cancelled.
+create_topic_timeout = "30s"
+## The initial backoff for kafka clients.
+backoff_init = "500ms"
+
+## The maximum backoff for kafka clients.
+backoff_max = "10s"
+
+## Exponential backoff rate, i.e. next backoff = base * current backoff.
+backoff_base = 2
+
+## Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.
+backoff_deadline = "5mins"
 ```
 
-| 键               | 类型   | 描述                                                                                                   |
-| ---------------- | ------ | ------------------------------------------------------------------------------------------------------ |
-| data_home        | 字符串 | Metasrv 的工作目录，默认为 `"/tmp/metasrv/"`                                                           |
-| bind_addr        | 字符串 | Metasrv 的绑定地址，默认为 `"127.0.0.1:3002"`。                                                        |
-| server_addr      | 字符串 | 前端和数据节点连接到 Metasrv 的通信服务器地址，默认为 `"127.0.0.1:3002"`（适用于本地主机）             |
-| store_addr       | 字符串 | etcd 服务器地址，默认为 `"127.0.0.1:2379"`，服务器地址由逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
-| selector         | 字符串 | 创建新表时选择数据节点的负载均衡策略，参见 [选择器](/contributor-guide/metasrv/selector.md)            |
-| use_memory_store | 布尔值 | 仅在测试时使用，当你没有 etcd 集群时，将数据存储在内存中，默认为 `false`                               |
-
+| 键                  | 类型    | 默认值               | 描述                                                                                             |
+| ------------------ | ------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| `data_home`        | String  | `/tmp/metasrv/`  | 工作目录。                                                                                         |
+| `bind_addr`        | String  | `127.0.0.1:3002` | Metasrv 的绑定地址。                                                                              |
+| `server_addr`      | String  | `127.0.0.1:3002` | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                 |
+| `store_addr`       | String  | `127.0.0.1:2379` | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
+| `selector`         | String  | `lease_based`    | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。      |
+| `use_memory_store` | Boolean | `false`          | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                              |
+| enable_region_failover | Bool | false | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。 |
+| wal | -- | -- | -- |
+| wal.provider | String | raft_engine | -- |
+| wal.broker_endpoints | Array | -- | Kafka 集群的端点 |
+| wal.num_topics | Integer | 64 | 启动时创建的主题数 |
+| wal.selector_type | String | round_robin | 主题选择器类型 <br/>可用选择器类型：<br/>- round_robin（默认） |
+| wal.topic_name_prefix | String | greptimedb_wal_topic | 一个 Kafka 主题是通过连接 topic_name_prefix 和 topic_id 构建的 |
+| wal.replication_factor | Integer | 1 | 每个分区的副本数 |
+| wal.create_topic_timeout | String | 30s | 超过该时间后，主题创建操作将被取消 |
+| wal.backoff_init | String | 500ms | Kafka 客户端的初始退避时间 |
+| wal.backoff_max | String | 10s | Kafka 客户端的最大退避时间 |
+| wal.backoff_base | Integer | 2 | 指数退避率，即下次退避时间 = 基数 * 当前退避时间 |
+| wal.backoff_deadline | String | 5mins | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止 |
 
 ### 仅限于 `Datanode` 的配置
 
