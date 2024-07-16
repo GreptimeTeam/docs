@@ -58,7 +58,7 @@ If the Standalone is running on the local disk for WAL and data, then:
 * RPO: depends on backup frequency.
 * RTO: doesn't make sense in standalone mode, mostly depends on the size of the data to be restored, your failure response time, and the operational infrastructure.
 
-Amazon EC2 with EBS volumes provides a comprehensive [Backup and Recovery solution](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/backup-recovery-ec2-ebs.html) for such scenarios, and the other IaaS vendors also offer similar solutions. Choosing this one is a good start.
+A good start is to deploy GreptimeDB Standalone into an IaaS platform that has a backup and recovery solution. For example, Amazon EC2 with EBS volumes provides a comprehensive [Backup and Recovery solution](https://docs.aws.amazon.com/prescriptive-guidance/latest/backup-recovery/backup-recovery-ec2-ebs.html).
 
 But if running the Standalone with remote WAL and object storage, there is a better DR solution:
 ![DR-Standalone](/DR-Standalone.png)
