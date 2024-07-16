@@ -4,20 +4,18 @@
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
 </p>
 
-GreptimeDB is an open-source time-series database focusing on efficiency, scalability, and analytical capabilities.
-It's designed to work on infrastructure of the cloud era, and users benefit from its elasticity and commodity storage.
+**GreptimeDB** is an open-source unified time-series database for **Metrics**, **Events**, and **Logs** (also **Traces** in plan). You can gain real-time insights from Edge to Cloud at any scale.
 
-GreptimeDB is also on cloud as
-[GreptimeCloud](https://greptime.com/product/cloud), a fully-managed time-series
-database service that features serverless scalability, seamless integration with
-ecoystem and improved Prometheus compatibility.
+GreptimeDB is also on cloud as [GreptimeCloud](https://greptime.com/product/cloud),
+a fully-managed time-series database service that features serverless scalability,
+seamless integration with ecoystem and improved Prometheus compatibility.
 
 Our core developers have been building time-series data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
 
+- Unified all kinds of time series; GreptimeDB treats all time series as contextual events with timestamp, and thus unifies the processing of metrics and events. It supports analyzing metrics and events with SQL and PromQL, and doing streaming with continuous aggregation.
 - Optimized columnar layout for handling time-series data; compacted, compressed, and stored on various storage backends, particularly cloud object storage with 50x cost efficiency.
 - Fully open-source distributed cluster architecture that harnesses the power of cloud-native elastic computing resources.
 - Seamless scalability from a standalone binary at edge to a robust, highly available distributed cluster in cloud, with a transparent experience for both developers and administrators.
-- Native SQL and PromQL for queries, and Python scripting to facilitate complex analytical tasks.
 - Flexible indexing capabilities and distributed, parallel-processing query engine, tackling high cardinality issues down.
 - Widely adopted database protocols and APIs, including MySQL, PostgreSQL, and Prometheus Remote Storage, etc.
 - Schemaless writing that automatically creates tables for data.

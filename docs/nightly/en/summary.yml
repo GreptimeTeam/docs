@@ -58,6 +58,13 @@
     - query
     - define-time-window
     - expression
+  - Logs:
+    - overview
+    - quick-start
+    - pipeline-config
+    - manage-pipelines
+    - write-logs
+    - query-logs
   - Client-Libraries:
     - overview
     - go
