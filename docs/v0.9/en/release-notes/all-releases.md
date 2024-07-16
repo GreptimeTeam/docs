@@ -1,5 +1,9 @@
 # All releases
 
+## 0.9
+
+* [0.9.0](/release-notes/release-0-9-0.md): 2024-07-16
+
 ## 0.8
 
 * [0.8.2](/release-notes/release-0-8-2.md): 2024-06-14
