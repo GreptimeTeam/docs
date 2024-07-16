@@ -1,8 +1,8 @@
 # Region Failover
 
-Region 故障切换提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/operations/region-migration) 实现的。
+Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/operations/region-migration) 实现的。
 
-## 开启 Region 故障切换
+## 开启 Region Failover 
 
 :::warning Warning
 该功能仅在 GreptimeDB 集群模式下可用，并且需要满足以下条件
@@ -25,9 +25,9 @@ helm install greptimedb greptime/greptimedb-cluster \
   ...
 ```
 
-## Region 故障切换的恢复用时
+## Region Failover 的恢复用时
 
-Region 故障切换的恢复时间取决于：
+Region Failover 的恢复时间取决于：
 
 - 每个 Topic 的 region 数量
 - Kafka 集群的读取吞吐性能
