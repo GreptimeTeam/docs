@@ -149,7 +149,7 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                         |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                             |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                            |
-|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为false  |
+|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为false |
 | grpc       |                    |        | gRPC 服务器选项                                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                         |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
@@ -378,29 +378,28 @@ fork_dictionary_bytes = "1GiB"
 
 以下是可供使用的选项
 
-| 键 | 类型 | 默认值 | 描述 |
-| --- | -----| ------- | ----------- |
-| `num_workers` | 整数 | `8` | 写入线程数量 |
-| `manifest_checkpoint_distance` | 整数 | `10` | 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint |
-| `max_background_jobs` | 整数 | `4` | 后台线程数量 |
-| `auto_flush_interval` | 字符串 | `1h` | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region |
-| `global_write_buffer_size` | 字符串 | `1GB` | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB |
-| `global_write_buffer_reject_size` | 字符串 | `2GB` | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒
-绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
-| `sst_meta_cache_size` | 字符串 | `128MB` | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB |
-| `vector_cache_size` | 字符串 | `512MB` | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB |
-| `page_cache_size` | 字符串 | `512MB` | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB |
-| `sst_write_buffer_size` | 字符串 | `8MB` | SST 的写缓存大小 |
-| `scan_parallelism` | 整数 | `0` | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描 |
-| `inverted_index.create_on_flush` | 字符串 | `auto` | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
-| `inverted_index.create_on_compaction` | 字符串 | `auto` | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
-| `inverted_index.apply_on_query` | 字符串 | `auto` | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
-| `inverted_index.mem_threshold_on_create` | 字符串 | `64M` | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序 |
-| `inverted_index.intermediate_path` | 字符串 | `""` | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`). |
-| `memtable.type` | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能) |
-| `memtable.index_max_keys_per_shard` | 整数 | `8192` | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效 |
-| `memtable.data_freeze_threshold` | 整数 | `32768` | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效 |
-| `memtable.fork_dictionary_bytes` | 字符串 | `1GiB` | 主键字典的大小<br/>只对 `partition_tree` memtable 生效 |
+| 键                                       | 类型   | 默认值        | 描述                                                                                                                   |
+| ---------------------------------------- | ------ | ------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `num_workers`                            | 整数   | `8`           | 写入线程数量                                                                                                           |
+| `manifest_checkpoint_distance`           | 整数   | `10`          | 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint                                              |
+| `max_background_jobs`                    | 整数   | `4`           | 后台线程数量                                                                                                           |
+| `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region                                                               |
+| `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
+| `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
+| `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
+| `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
+| `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                                              |
+| `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
+| `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
+| `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
+| `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
+| `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
+| `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
+| `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
+| `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
+| `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
+| `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
+| `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
 
 
 
@@ -559,27 +558,27 @@ backoff_base = 2
 backoff_deadline = "5mins"
 ```
 
-| 键                  | 类型    | 默认值               | 描述                                                                                             |
-| ------------------ | ------- | ---------------- | -------------------------------------------------------------------------------------------------- |
-| `data_home`        | String  | `/tmp/metasrv/`  | 工作目录。                                                                                         |
-| `bind_addr`        | String  | `127.0.0.1:3002` | Metasrv 的绑定地址。                                                                              |
-| `server_addr`      | String  | `127.0.0.1:3002` | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                 |
-| `store_addr`       | String  | `127.0.0.1:2379` | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。 |
-| `selector`         | String  | `lease_based`    | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。      |
-| `use_memory_store` | Boolean | `false`          | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                              |
-| enable_region_failover | Bool | false | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。 |
-| wal | -- | -- | -- |
-| wal.provider | String | raft_engine | -- |
-| wal.broker_endpoints | Array | -- | Kafka 集群的端点 |
-| wal.num_topics | Integer | 64 | 启动时创建的主题数 |
-| wal.selector_type | String | round_robin | 主题选择器类型 <br/>可用选择器类型：<br/>- round_robin（默认） |
-| wal.topic_name_prefix | String | greptimedb_wal_topic | 一个 Kafka 主题是通过连接 topic_name_prefix 和 topic_id 构建的 |
-| wal.replication_factor | Integer | 1 | 每个分区的副本数 |
-| wal.create_topic_timeout | String | 30s | 超过该时间后，主题创建操作将被取消 |
-| wal.backoff_init | String | 500ms | Kafka 客户端的初始退避时间 |
-| wal.backoff_max | String | 10s | Kafka 客户端的最大退避时间 |
-| wal.backoff_base | Integer | 2 | 指数退避率，即下次退避时间 = 基数 * 当前退避时间 |
-| wal.backoff_deadline | String | 5mins | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止 |
+| 键                       | 类型    | 默认值               | 描述                                                                                                                               |
+| ------------------------ | ------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `data_home`              | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                         |
+| `bind_addr`              | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                               |
+| `server_addr`            | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                               |
+| `store_addr`             | String  | `127.0.0.1:2379`     | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                         |
+| `selector`               | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                    |
+| `use_memory_store`       | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                             |
+| enable_region_failover   | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。 |
+| wal                      | --      | --                   | --                                                                                                                                 |
+| wal.provider             | String  | raft_engine          | --                                                                                                                                 |
+| wal.broker_endpoints     | Array   | --                   | Kafka 集群的端点                                                                                                                   |
+| wal.num_topics           | Integer | 64                   | 启动时创建的主题数                                                                                                                 |
+| wal.selector_type        | String  | round_robin          | 主题选择器类型 <br/>可用选择器类型：<br/>- round_robin（默认）                                                                     |
+| wal.topic_name_prefix    | String  | greptimedb_wal_topic | 一个 Kafka 主题是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
+| wal.replication_factor   | Integer | 1                    | 每个分区的副本数                                                                                                                   |
+| wal.create_topic_timeout | String  | 30s                  | 超过该时间后，主题创建操作将被取消                                                                                                 |
+| wal.backoff_init         | String  | 500ms                | Kafka 客户端的初始退避时间                                                                                                         |
+| wal.backoff_max          | String  | 10s                  | Kafka 客户端的最大退避时间                                                                                                         |
+| wal.backoff_base         | Integer | 2                    | 指数退避率，即下次退避时间 = 基数 * 当前退避时间                                                                                   |
+| wal.backoff_deadline     | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                     |
 
 ### 仅限于 `Datanode` 的配置
 
@@ -590,10 +589,10 @@ rpc_addr = "127.0.0.1:3001"
 rpc_runtime_size = 8
 ```
 
-| Key              | Type    | Description                                 |
-| ---------------- | ------- | ------------------------------------------- |
-| node_id          | 整数 | 该 `datanode` 的唯一标识符。                |
-| rpc_hostname     | 字符串  | 该 `datanode` 的 Hostname。                 |
-| rpc_addr         | 字符串  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
-| rpc_runtime_size | 整数 | gRPC 服务器工作线程数，默认为 8。           |
+| Key              | Type   | Description                                 |
+| ---------------- | ------ | ------------------------------------------- |
+| node_id          | 整数   | 该 `datanode` 的唯一标识符。                |
+| rpc_hostname     | 字符串 | 该 `datanode` 的 Hostname。                 |
+| rpc_addr         | 字符串 | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
+| rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
 
