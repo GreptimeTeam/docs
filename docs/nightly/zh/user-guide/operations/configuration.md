@@ -303,11 +303,11 @@ backoff_deadline = "5mins"
 ```
 
 - `broker_endpoints`：Kafka 端点
-- `max_batch_bytes`：单个生产者批次的最大大小
-- `consumer_wait_timeout`：消费者等待超时时间
-- `backoff_init`：初始退避延迟
-- `backoff_max`：最大退避延迟
-- `backoff_base`：指数退避率
+- `max_batch_bytes`：单个 producer batch 的最大值
+- `consumer_wait_timeout`：consumer 的等待超时时间
+- `backoff_init`：backoff 初始延迟
+- `backoff_max`：：backoff 最大延迟
+- `backoff_base`：：backoff 指数
 - `backoff_deadline`：重试的截止时间
 
 ### Logging 选项
@@ -497,66 +497,67 @@ mode = "standalone"
 ### 仅限于 Metasrv 的配置
 
 ```toml
-# The working home directory.
+# 工作主目录。
 data_home = "/tmp/metasrv/"
-# The bind address of metasrv, "127.0.0.1:3002" by default.
+# metasrv 的绑定地址，默认为 "127.0.0.1:3002"。
 bind_addr = "127.0.0.1:3002"
-# The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
+# frontend 和 datanode 连接到 metasrv 的通信服务器地址，本地默认为 "127.0.0.1:3002"。
 server_addr = "127.0.0.1:3002"
-# Etcd server addresses, "127.0.0.1:2379" by default.
+# Etcd 服务器地址，默认为 "127.0.0.1:2379"。
 store_addr = "127.0.0.1:2379"
-# Datanode selector type.
-# - "lease_based" (default value).
+# Datanode 选择器类型。
+# - "lease_based" (默认值)
 # - "load_based"
-# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
+# 详情请参阅 "https://docs.greptime.com/contributor-guide/meta/selector"
 selector = "lease_based"
-# Store data in memory, false by default.
+# 将数据存储在内存中，默认值为 false。
 use_memory_store = false
-## Whether to enable region failover.
-## This feature is only available on GreptimeDB running on cluster mode and
-## - Using Remote WAL
-## - Using shared storage (e.g., s3).
+## 是否启用 region failover。
+## 该功能仅适用于运行在集群模式下的 GreptimeDB，并且
+## - 使用 Remote WAL
+## - 使用共享存储（例如 s3）。
 enable_region_failover = false
 
 [wal]
-# Available wal providers:
-# - `raft_engine` (default): there're none raft-engine wal config since metasrv only involves in remote wal currently.
-# - `kafka`: metasrv **have to be** configured with kafka wal config when using kafka wal provider in datanode.
+# 可用的 WAL 提供者：
+# - `raft_engine`（默认）：由于 metasrv 目前仅涉及远程 WAL，因此没有 raft-engine WAL 配置。
+# - `kafka`：在 datanode 中使用 kafka WAL 提供者时，metasrv **必须** 配置 kafka WAL 配置。
 provider = "raft_engine"
 
-# Kafka wal config.
+# Kafka WAL 配置。
 
-## The broker endpoints of the Kafka cluster.
+## Kafka 集群的代理端点。
 broker_endpoints = ["127.0.0.1:9092"]
 
-## Number of topics to be created upon start.
+## 启动时创建的 topic 数量。
 num_topics = 64
 
-## Topic selector type.
-## Available selector types:
-## - `round_robin` (default)
+## topic selector 类型。
+## 可用的 selector 类型：
+## - `round_robin`（默认）
 selector_type = "round_robin"
 
-## A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.
+## Kafka topic 通过连接 `topic_name_prefix` 和 `topic_id` 构建。
 topic_name_prefix = "greptimedb_wal_topic"
 
-## Expected number of replicas of each partition.
+## 每个分区的预期副本数。
 replication_factor = 1
 
-## Above which a topic creation operation will be cancelled.
+## 超过此时间创建 topic 的操作将被取消。
 create_topic_timeout = "30s"
-## The initial backoff for kafka clients.
+
+## Kafka 客户端的 backoff 初始时间。
 backoff_init = "500ms"
 
-## The maximum backoff for kafka clients.
+## Kafka 客户端的 backoff 最大时间。
 backoff_max = "10s"
 
-## Exponential backoff rate, i.e. next backoff = base * current backoff.
+## backoff 指数，即下一个 backoff 时间 = 该指数 * 当前 backoff 时间。
 backoff_base = 2
 
-## Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.
+## 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止。
 backoff_deadline = "5mins"
-```
+
 
 | 键                       | 类型    | 默认值               | 描述                                                                                                                               |
 | ------------------------ | ------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -570,14 +571,14 @@ backoff_deadline = "5mins"
 | wal                      | --      | --                   | --                                                                                                                                 |
 | wal.provider             | String  | raft_engine          | --                                                                                                                                 |
 | wal.broker_endpoints     | Array   | --                   | Kafka 集群的端点                                                                                                                   |
-| wal.num_topics           | Integer | 64                   | 启动时创建的主题数                                                                                                                 |
-| wal.selector_type        | String  | round_robin          | 主题选择器类型 <br/>可用选择器类型：<br/>- round_robin（默认）                                                                     |
-| wal.topic_name_prefix    | String  | greptimedb_wal_topic | 一个 Kafka 主题是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
+| wal.num_topics           | Integer | 64                   | 启动时创建的 topic数                                                                                                                 |
+| wal.selector_type        | String  | round_robin          | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                                     |
+| wal.topic_name_prefix    | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
 | wal.replication_factor   | Integer | 1                    | 每个分区的副本数                                                                                                                   |
-| wal.create_topic_timeout | String  | 30s                  | 超过该时间后，主题创建操作将被取消                                                                                                 |
-| wal.backoff_init         | String  | 500ms                | Kafka 客户端的初始退避时间                                                                                                         |
-| wal.backoff_max          | String  | 10s                  | Kafka 客户端的最大退避时间                                                                                                         |
-| wal.backoff_base         | Integer | 2                    | 指数退避率，即下次退避时间 = 基数 * 当前退避时间                                                                                   |
+| wal.create_topic_timeout | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                                 |
+| wal.backoff_init         | String  | 500ms                | Kafka 客户端的 backoff 初始时间                                                                                                         |
+| wal.backoff_max          | String  | 10s                  | Kafka 客户端的 backoff 最大时间                                                                                                         |
+| wal.backoff_base         | Integer | 2                    | backoff 指数，即下一个 backoff 时间 = 该指数 * 当前 backoff 时间                                                                                   |
 | wal.backoff_deadline     | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                     |
 
 ### 仅限于 `Datanode` 的配置
