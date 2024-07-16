@@ -178,6 +178,7 @@ The query result is as follows:
 ```
 
 As you can see, the logs have been stored as structured logs after applying type conversions using the pipeline. This provides convenience for further querying and analysis of the logs.
+Please refer to [Query Log](query-logs.md) for the specific syntax of querying logs.
 
 ## Conclusion
 
