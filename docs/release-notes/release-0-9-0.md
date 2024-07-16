@@ -10,7 +10,7 @@ Release date: July 16, 2024
 * [Short interval literal](https://docs.greptime.com/reference/sql/data-types#interval-type) for user experience.
 * InfluxDB Merge Read: You can now use the `merge_mode=last_non_null` table option to allow SELECT result merges all the last non-null fields.
 * gRPC TLS: You can now set up the `grpc.tls` config to turn on TLS for gRPC connection.
-* Manually Compact: You can now use `SELECT COMPACT_TABLE("monitor", "strict_window", "3600");` to manually schedule a compaction task.
+* [Manually Compact in Strict Window](https://docs.greptime.com/reference/sql/functions/overview#admin-functions): You can now use `SELECT COMPACT_TABLE("monitor", "strict_window", "3600");` to manually schedule a compaction task, splitting SST files strictly into time windows. The third option is the time window's width in seconds.
 
 ## Breaking changes
 
