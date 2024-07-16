@@ -1,152 +1,95 @@
 # 配置 GreptimeDB
 
-GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置：
+GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置（每个项目都会覆盖下面的项目）：
 
-- 命令行参数
-- 配置文件
+- Greptime 命令行选项
+- 配置文件选项
 - 环境变量
 - 默认值
 
-本文介绍了配置 GreptimeDB server 的方法，用户可以在 TOML 文件中进行设置。
+你只需要设置所需的配置项。
+GreptimeDB 将为未配置的任何设置分配默认值。
 
-在配置文件中，对于缺失的参数，系统会赋予其一个默认值。
+## 如何设置配置项
 
-所有样本配置文件都放在项目的 [config](https://github.com/GreptimeTeam/greptimedb/tree/main/config) 文件夹中。
+### Greptime 命令行选项
 
-## 命令行选项
+你可以使用命令行参数指定多个配置项。
+例如，以配置的 HTTP 地址启动 GreptimeDB 的独立模式：
 
-请阅读[命令行工具](/reference/command-lines.md)学习如何使用 `greptime` 命令行工具。
-
-### 全局选项
-
-- `-h`/`--help`: 打印命令行帮助信息
-- `-V`/`--version`: 打印 GreptimeDB 版本信息
-- `--log-dir <LOG_DIR>`: 指定日志路径
-- `--log-level <LOG_LEVEL>`: 指定日志级别，如 `info`、`debug` 等。
-
-### datanode 子命令选项
-
-通过执行下列命令来获取 `datanode` 子命令的帮助菜单：
-
-```
-greptime datanode start --help
+```shell
+greptime standalone start --http-addr 127.0.0.1:4000 
 ```
 
-- `-c`/`--config-file`:  指定 datanode 启动的配置文件
-- `--data-home`: 数据库存储 home 目录
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为 `GREPTIMEDB_DATANODE`;
-- `--http-addr <HTTP_ADDR>`:  HTTP 服务地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--metasrv-addrs <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号或者空格隔开
-- `--node-id <NODE_ID>`: 节点 ID
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-- `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
-- `--wal-dir <WAL_DIR>`: WAL 日志目录;
+有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines.md)。
 
-所有的地址类选项都是 `ip:port` 形式的字符串。
+### 配置文件选项
 
-### metasrv 子命令选项
+你可以在 TOML 文件中指定配置项。
+例如，创建一个名为 `standalone.example.toml` 的配置文件，如下所示：
 
-通过执行下列命令来获取 `metasrv` 子命令的帮助菜单：
-
-```
-greptime metasrv start --help
+```toml
+[storage]
+type = "File"
+data_home = "/tmp/greptimedb/"
 ```
 
-- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件
-- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用。
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
-- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
-- `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
-- `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
-- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
-
-### frontend 子命令选项
-
-通过执行下列命令来获取 `frontend` 子命令的帮助菜单：
-
-```
-greptime frontend start --help
-```
-
-- `-c`/`--config-file`: 指定 `frontend` 启动配置文件
-- `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
-- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
-- `--metasrv-addrs <METASRV_ADDR>`:   Metasrv 地址列表，用逗号或者空格隔开
-- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
-- `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
-- `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
-- `--tls-mode <TLS_MODE>`: TLS 模式
-- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
-
-
-### Flownode 子命令选项
-
-通过执行下列命令来获取 `flownode` 子命令的帮助菜单：
-
-```
-greptime flownode start --help
-```
-
-- `--node-id <NODE_ID>`: Flownode的ID
-- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
-- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
-- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
-- `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
-- `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
-
-### standalone 子命令选项
-
-通过执行下列命令来获取 `standalone` 子命令的帮助菜单：
-
-```
-greptime standalone start --help
-```
-
-- `-c`/`--config-file`: 指定 `standalone` 启动配置文件
-- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_STANDALONE`;
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
-- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
-- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-
-
-## 配置文件
-
-### 示例
-
-各项配置根据其功能适用于一个或多个组件。本文档只包含部分常用配置的示例。完整的配置说明可以在[这个](https://github.com/GreptimeTeam/greptimedb/blob/main/config/config.md)自动生成的文档中找到。
-
-
-你可以在 GitHub 上找到每个组件的所有可用配置示例：
-
-- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml)
-- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/main/config/frontend.example.toml)
-- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/datanode.example.toml)
-- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/main/config/flownode.example.toml)
-- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/main/config/metasrv.example.toml)
-
-### 指定配置文件
-
-用户可以通过使用命令行参数 `-c [file_path]` 指定配置文件。
+然后使用命令行参数 `-c [file_path]` 指定配置文件。
 
 ```sh
 greptime [standalone | frontend | datanode | metasrv]  start -c config/standalone.example.toml
 ```
 
-例如，启动 standalone 模式：
+例如以 standalone 模式启动 GreptimeDB：
 
 ```bash
 greptime standalone start -c standalone.example.toml
+```
+
+#### 示例文件
+
+以下是每个 GreptimeDB 组件的示例配置文件，包括所有可用配置项。
+在实际场景中，你只需要配置所需的选项，不需要像示例文件中那样配置所有选项。
+
+- [独立模式](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/standalone.example.toml)
+- [前端](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/frontend.example.toml)
+- [数据节点](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/datanode.example.toml)
+- [流节点](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/flownode.example.toml)
+- [元服务](https://github.com/GreptimeTeam/greptimedb/blob/<%greptimedb-version%>/config/metasrv.example.toml)
+
+### 环境变量
+
+配置文件中的每个项目都可以映射到环境变量。
+例如，使用环境变量设置数据节点的 `data_home` 配置项：
+
+```toml
+# ...
+[storage]
+data_home = "/data/greptimedb"
+# ...
+```
+
+使用以下 shell 命令以以下格式设置环境变量：
+
+```
+export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
+```
+
+#### 环境变量规则
+
+- 每个环境变量应具有组件前缀，例如：
+
+  - `GREPTIMEDB_FRONTEND`
+  - `GREPTIMEDB_METASRV`
+  - `GREPTIMEDB_DATANODE`
+  - `GREPTIMEDB_STANDALONE`
+
+- 使用**双下划线 `__`**作为分隔符。例如，数据结构 `storage.data_home` 转换为 `STORAGE__DATA_HOME`。
+
+环境变量还接受以逗号 `,` 分隔的列表，例如：
+
+```
+GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
 
 ### 协议选项
@@ -154,8 +97,9 @@ greptime standalone start -c standalone.example.toml
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
 
 下面的示例配置包含了所有协议选项的默认值。
-为了使数据库正常工作，配置中必须启用 HTTP 和 gRPC 协议，其他协议可选。
-如果要禁用某些选项，比如禁用 OpenTSDB 协议，可以将 `enable` 参数设置为 `false`。
+你可以在配置文件中更改这些值或禁用某些协议。
+例如禁用 OpenTSDB 协议支持，可以将 `enable` 参数设置为 `false`。
+请注意，为了保障数据库的正常工作，无法禁用 HTTP 和 gRPC 协议。
 
 ```toml
 [http]
@@ -572,36 +516,3 @@ rpc_runtime_size = 8
 | rpc_addr         | 字符串  | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
 | rpc_runtime_size | 整数 | gRPC 服务器工作线程数，默认为 8。           |
 
-## 环境变量配置
-
-配置文件中的每一项都可以映射到环境变量。例如，如果我们想通过环境变量设置 datanode 的配置项 `data_home`：
-
-```toml
-# ...
-[storage]
-data_home = "/data/greptimedb"
-# ...
-```
-
-你可以使用以下的 shell 命令来设置环境变量，格式如下：
-
-```
-export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
-```
-
-### 环境变量规则
-
-- 每个环境变量应该有组件前缀，例如：
-
-  - `GREPTIMEDB_FRONTEND`
-  - `GREPTIMEDB_METASRV`
-  - `GREPTIMEDB_DATANODE`
-  - `GREPTIMEDB_STANDALONE`
-
-- 我们使用**双下划线 `__`** 作为分隔符。例如，上述的数据结构 `storage.data_home` 将被转换为 `STORAGE__DATA_HOME`。
-
-环境变量也接受用逗号 `,` 分隔的列表，例如：
-
-```
-GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
-```

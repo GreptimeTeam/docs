@@ -1,6 +1,17 @@
 # Greptime 命令行工具
 
-预构建二进制文件所提供的 `greptime` 命令可以启动、停止、或传递配置项给 GreptimeDB。为了使用 `greptime` 而不是 `./greptime` 命令，您可能需要将二进制文件移动到系统的 `bin` 文件夹，或者将二进制文件的路径添加到 `PATH` 环境变量。
+`greptime` 命令行工具可以启动、停止、或传递配置项给 GreptimeDB。
+
+## 安装命令行工具
+
+Greptime 命令行工具与 GreptimeDB 二进制文件捆绑在一起。
+在[安装 GreptimeDB](/getting-started/installation/overview.md)之后，
+你可以在 GreptimeDB 的当前目录中执行 `./greptime` 命令。
+
+为了方便起见，如果你希望使用 `greptime` 而不是 `./greptime` 来运行命令，
+可以将命令行工具的二进制文件移动到系统的 `bin` 目录，或者将二进制文件的路径添加到 `PATH` 环境变量中。
+
+## 选项
 
 `help` 命令列出了 `greptime` 所有可用的命令和选项。
 
@@ -26,8 +37,111 @@ Options:
 - `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
 
+### 全局选项
 
-## 启动服务时使用相关配置
+- `-h`/`--help`: 打印命令行帮助信息
+- `-V`/`--version`: 打印 GreptimeDB 版本信息
+- `--log-dir <LOG_DIR>`: 指定日志路径
+- `--log-level <LOG_LEVEL>`: 指定日志级别，如 `info`、`debug` 等。
+
+### datanode 子命令选项
+
+通过执行下列命令来获取 `datanode` 子命令的帮助菜单：
+
+```
+greptime datanode start --help
+```
+
+- `-c`/`--config-file`:  指定 datanode 启动的配置文件
+- `--data-home`: 数据库存储 home 目录
+- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为 `GREPTIMEDB_DATANODE`;
+- `--http-addr <HTTP_ADDR>`:  HTTP 服务地址
+- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
+- `--metasrv-addrs <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号或者空格隔开
+- `--node-id <NODE_ID>`: 节点 ID
+- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
+- `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
+- `--wal-dir <WAL_DIR>`: WAL 日志目录;
+
+所有的地址类选项都是 `ip:port` 形式的字符串。
+
+### metasrv 子命令选项
+
+通过执行下列命令来获取 `metasrv` 子命令的帮助菜单：
+
+```
+greptime metasrv start --help
+```
+
+- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件
+- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用。
+- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
+- `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
+- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
+- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
+- `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
+- `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
+- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
+
+### frontend 子命令选项
+
+通过执行下列命令来获取 `frontend` 子命令的帮助菜单：
+
+```
+greptime frontend start --help
+```
+
+- `-c`/`--config-file`: 指定 `frontend` 启动配置文件
+- `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
+- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
+- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
+- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
+- `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
+- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
+- `--metasrv-addrs <METASRV_ADDR>`:   Metasrv 地址列表，用逗号或者空格隔开
+- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
+- `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
+- `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
+- `--tls-mode <TLS_MODE>`: TLS 模式
+- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
+
+
+### Flownode 子命令选项
+
+通过执行下列命令来获取 `flownode` 子命令的帮助菜单：
+
+```
+greptime flownode start --help
+```
+
+- `--node-id <NODE_ID>`: Flownode的ID
+- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
+- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
+- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
+- `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
+- `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
+
+### standalone 子命令选项
+
+通过执行下列命令来获取 `standalone` 子命令的帮助菜单：
+
+```
+greptime standalone start --help
+```
+
+- `-c`/`--config-file`: 指定 `standalone` 启动配置文件
+- `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_STANDALONE`;
+- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
+- `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
+- `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
+- `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
+- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
+
+## 配置示例
+
+### 启动服务时使用相关配置
 
 使用自定义配置以 standalone 模式启动 GreptimeDB：
 
@@ -81,6 +195,6 @@ greptime flownode start -c config/flownode.example.toml
 greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
 ```
 
-## 升级 GreptimeDB 版本
+### 升级 GreptimeDB 版本
 
 请参考具体的[升级步骤](/user-guide/upgrade.md)

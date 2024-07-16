@@ -53,8 +53,8 @@ Creates a new table in the `db` database or the current database in use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)]
@@ -98,7 +98,8 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.         | String value, such as '1'. Only available when `compaction.type` is `twcs`. |
 | `compaction.twcs.time_window` | Compaction time window    | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.  |
 | `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
-| `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
+| `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
+| `merge_mode`           | The strategy to merge duplicate rows     | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.     |
 | `comment`           | Table level comment   | String value.      |
 
 #### Create a table with TTL
@@ -149,6 +150,67 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) engine=mito with('append_mode'='true');
 ```
 
+#### Create a table with merge mode
+Create a table with `last_row` merge mode, which is the default merge mode.
+```sql
+create table if not exists metrics(
+    host string,
+    ts timestamp,
+    cpu double,
+    memory double,
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+)
+engine=mito
+with('merge_mode'='last_row');
+```
+
+Under `last_row` mode, the table merges rows with the same primary key and timestamp by only keeping the latest row.
+```sql
+INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
+INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
+
+SELECT * from metrics ORDER BY host, ts;
+
++-------+-------------------------+------+--------+
+| host  | ts                      | cpu  | memory |
++-------+-------------------------+------+--------+
+| host1 | 1970-01-01T00:00:00     |      | 10.0   |
+| host2 | 1970-01-01T00:00:00.001 | 11.0 |        |
++-------+-------------------------+------+--------+
+```
+
+
+Create a table with `last_non_null` merge mode.
+```sql
+create table if not exists metrics(
+    host string,
+    ts timestamp,
+    cpu double,
+    memory double,
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+)
+engine=mito
+with('merge_mode'='last_non_null');
+```
+
+Under `last_non_null` mode, the table merges rows with the same primary key and timestamp by keeping the latest value of each field.
+```sql
+INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
+INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
+
+SELECT * from metrics ORDER BY host, ts;
+
++-------+-------------------------+------+--------+
+| host  | ts                      | cpu  | memory |
++-------+-------------------------+------+--------+
+| host1 | 1970-01-01T00:00:00     | 0.0  | 10.0   |
+| host2 | 1970-01-01T00:00:00.001 | 11.0 | 1.0    |
++-------+-------------------------+------+--------+
+```
+
+
 ### Column options
 
 GreptimeDB supports the following column options:
@@ -159,6 +221,7 @@ GreptimeDB supports the following column options:
 | NOT NULL          | The column value can't be `null`.                                                     |
 | DEFAULT `expr`    | The column's default value is `expr`, which its result type must be the column's type |
 | COMMENT `comment` | The column comment. It must be a string value                                         |
+| FULLTEXT          | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
 
@@ -195,6 +258,32 @@ CREATE TABLE system_metrics (
 ```sql
 Query OK, 0 rows affected (0.01 sec)
 ```
+
+#### `FULLTEXT` Column Option
+
+The `FULLTEXT` option is used to create a full-text index, accelerating full-text search operations. This option can only be applied to string-type columns.
+
+You can specify the following options using `FULLTEXT WITH`:
+
+- `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
+- `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
+
+If `WITH` is not specified, `FULLTEXT` will use the following default values:
+
+- `analyzer`: default is `English`
+- `case_sensitive`: default is `true`
+
+For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `Chinese` and setting `case_sensitive` to `false`:
+
+```sql
+CREATE TABLE IF NOT EXISTS logs(
+  host STRING PRIMARY KEY,
+  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  ts TIMESTAMP TIME INDEX
+) ENGINE=mito;
+```
+
+For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/logs/query-logs.md).
 
 ### Region partition rules
 
