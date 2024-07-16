@@ -158,7 +158,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 可通过 SQL 查询日志表：
 
 ```sql
-SELECT * FROM public.logs;
+SELECT * FROM public.logs WHERE MATCHES(log, 'sendTextDataToCluster');
 ```
 
 查询结果如下：
@@ -179,6 +179,7 @@ SELECT * FROM public.logs;
 ```
 
 可以看出，通过 Pipeline 将 Log 进行类型转换后存储为结构化的日志，为日志的进一步查询和分析带来了便利。
+请参阅[查询日志](query-logs.md)以了解查询日志的具体语法。
 
 ## 结语
 
