@@ -157,7 +157,7 @@ COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- Import files under /tmp/export/ directory to database named public.
-COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
 ```
 
 ## Special reminder for Windows platforms
