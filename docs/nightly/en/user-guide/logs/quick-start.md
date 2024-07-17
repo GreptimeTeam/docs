@@ -174,9 +174,9 @@ The `pipeline_logs` table stores the log message in multiple columns.
 
 It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Tag matching query proves superior to full-text searching for several key reasons:
 
-- **Performance Efficiency**: tag matching query is typically faster than full-text searching.
+- **Performance Efficiency**: Tag matching query is typically faster than full-text searching.
 - **Resource Consumption**: Due to GreptimeDB's columnar storage engine, structured data is more conducive to compression. Additionally, the inverted index used for tag matching query typically consumes significantly fewer resources than a full-text index, especially in terms of storage size.
-- **Maintainability**: tag matching query are straightforward and easier to understand, write, and debug.
+- **Maintainability**: Tag matching query are straightforward and easier to understand, write, and debug.
 
 Of course, if you need keyword searching within large text blocks, you must use full-text searching as it is specifically designed for that purpose.
 
