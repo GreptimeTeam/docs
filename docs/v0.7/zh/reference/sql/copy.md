@@ -151,7 +151,7 @@ COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- 从 /tmp/export/ 目录恢复 public 数据库的数据
-COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
 ```
 
 ## Windows 平台上的路径
