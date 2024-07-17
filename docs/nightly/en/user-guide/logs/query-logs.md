@@ -85,7 +85,7 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 ## Full-Text Index for Accelerated Search
 
-A full-text index is essential for full-text search, especially when dealing with large datasets. Without a full-text index, the search operation could be very slow, impacting the overall query performance and user experience. By configuring a full-text index within the Pipeline, you can ensure that search operations are performed efficiently, even with significant data volumes.
+A full-text index is essential for full-text search, especially when dealing with large datasets. Without a full-text index, the search operation could be very slow, impacting the overall query performance and user experience. You can configure a full-text index either directly via SQL during table creation or through the Pipeline configuration, ensuring that search operations are performed efficiently, even with significant data volumes.
 
 ### Creating Full-Text Index via SQL
 
