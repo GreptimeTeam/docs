@@ -3,7 +3,7 @@
 This guide will walk you through the process of quickly writing and querying logs.
 
 You can write logs directly or use pipeline to write logs.
-Writing logs directly is simple but cannot split log text to stuctured data as the pipeline method does.
+Writing logs directly is simple but cannot split log text to structured data as the pipeline method does.
 The following sections will help you understand the differences between these two methods.
 
 ## Write logs directly
