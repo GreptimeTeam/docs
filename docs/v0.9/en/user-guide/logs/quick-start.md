@@ -172,14 +172,12 @@ From the table structure, you can see that the `origin_logs` table has only two 
 with the entire log message stored in a single column.
 The `pipeline_logs` table stores the log message in multiple columns.
 
-It is recommended to use the pipeline method to split the log message into multiple columns,
-which gives the advantage of explicitly querying a certain value within one certain column.
-Exact matching proves to be superior to fuzzy querying when handling strings for several key reasons:
+It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying a specific value within a certain column. Exact matching proves to be superior to fuzzy querying when handling strings for several key reasons:
 
-- Performance Efficiency: Marking a column as a Tag in pipeline creates an inverted index upon the column values, resulting in faster query execution compared to full-text indexes used in fuzzy querying.
+- Performance Efficiency: By marking a column as a Tag in the pipeline, an inverted index is created on the column values, resulting in faster query execution compared to the full-text indexes used in fuzzy querying.
 - Resource Consumption: Exact matching queries typically involve simpler comparisons and use fewer CPU, memory, and I/O resources compared to the more resource-intensive full-text indexes required for fuzzy querying.
 - Accuracy: Exact matching returns precise results that strictly meet the query conditions, reducing the chances of irrelevant results, whereas fuzzy querying can still return more noise even with full-text indexing.
-- Maintainability: Exact matching queries are straightforward and easier to understand, write, and debug, while fuzzy queries with full-text indexes still add a layer of complexity, making them more challenging to optimize and maintain.
+- Maintainability: Exact matching queries are straightforward and easier to understand, write, and debug, while fuzzy queries with full-text indexes add a layer of complexity, making them more challenging to optimize and maintain.
 
 ## Query logs
 
