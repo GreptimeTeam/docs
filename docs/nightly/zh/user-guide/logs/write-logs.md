@@ -22,7 +22,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 - `db`：数据库名称。
 - `table`：表名称。
 - `pipeline_name`：[Pipeline](./pipeline-config.md) 名称。
-- `version`：Pipeline 版本号。
+- `version`：Pipeline 版本号。可选，默认使用最新版本。
 
 ## Body 数据格式
 

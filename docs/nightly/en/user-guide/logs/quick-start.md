@@ -41,7 +41,7 @@ and you must add an extra timestamp for each log.
 
 ## Write logs by Pipeline
 
-Using a pipeline allows you to automatically format and transform the log message into multiple columns,
+Using a pipeline allows you to automatically parse and transform the log message into multiple columns,
 as well as create tables automatically.
 
 ### Create a Pipeline
@@ -68,8 +68,11 @@ transform:
   - fields:
       - ip_address
       - http_method
-      - status_code
     type: string
+    index: tag
+  - fields:
+      - status_code
+    type: int32
     index: tag
   - fields:
       - request_line
@@ -156,25 +159,27 @@ DESC pipeline_logs;
 +---------------+---------------------+------+------+---------+---------------+
 | ip_address    | String              | PRI  | YES  |         | TAG           |
 | http_method   | String              | PRI  | YES  |         | TAG           |
-| status_code   | String              | PRI  | YES  |         | TAG           |
+| status_code   | Int32               | PRI  | YES  |         | TAG           |
 | request_line  | String              |      | YES  |         | FIELD         |
 | user_agent    | String              |      | YES  |         | FIELD         |
 | response_size | Int32               |      | YES  |         | FIELD         |
 | timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
 +---------------+---------------------+------+------+---------+---------------+
-7 rows in set (0.01 sec)
+7 rows in set (0.00 sec)
 ```
 
 From the table structure, you can see that the `origin_logs` table has only two columns,
 with the entire log message stored in a single column.
 The `pipeline_logs` table stores the log message in multiple columns.
 
-It is recommended to use the pipeline method to write logs to GreptimeDB.
-Here are some advantages of using the pipeline method to split the log message into multiple columns:
+It is recommended to use the pipeline method to split the log message into multiple columns,
+which gives the advantage of explicitly querying a certain value within one certain column.
+Exact matching proves to be superior to fuzzy querying when handling strings for several key reasons:
 
-- Smaller data storage space: The tag index size is less than the full-text index size; fewer full-text data leads to a smaller full-text index size; Tag-structured data have high compaction rates.
-- High performance: Querying tags is more efficient than querying full-text data.
-- Writing SQL is easier: You do not need to remember many full-text query syntaxes, just search by tags.
+- Performance Efficiency: Marking a column as a Tag in pipeline creates an inverted index upon the column values, resulting in faster query execution compared to full-text indexes used in fuzzy querying.
+- Resource Consumption: Exact matching queries typically involve simpler comparisons and use fewer CPU, memory, and I/O resources compared to the more resource-intensive full-text indexes required for fuzzy querying.
+- Accuracy: Exact matching returns precise results that strictly meet the query conditions, reducing the chances of irrelevant results, whereas fuzzy querying can still return more noise even with full-text indexing.
+- Maintainability: Exact matching queries are straightforward and easier to understand, write, and debug, while fuzzy queries with full-text indexes still add a layer of complexity, making them more challenging to optimize and maintain.
 
 ## Query logs
 
@@ -187,16 +192,16 @@ you can query data by tags flexibly.
 For example, query the logs with `status_code` 200 and `http_method` GET.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = '200' AND http_method = 'GET';
+SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
 | ip_address | http_method | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           |
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1  | GET         | 200         | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
+| 127.0.0.1  | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-1 row in set (0.06 sec)
+1 row in set (0.02 sec)
 ```
 
 ### Full-Text Search
@@ -215,10 +220,10 @@ SELECT * FROM pipeline_logs WHERE MATCHES(request_line, 'index.html /api/login')
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
 | ip_address  | http_method | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           |
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1   | GET         | 200         | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
-| 192.168.1.1 | POST        | 200         | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
+| 127.0.0.1   | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
+| 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-2 rows in set (0.16 sec)
+2 rows in set (0.00 sec)
 ```
 
 You can refer to the [Full-Text Search](query-logs.md#full-text-search-using-the-matches-function) document for detailed usage of the `MATCHES` function.

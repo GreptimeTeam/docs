@@ -21,7 +21,7 @@ This interface accepts the following parameters:
 - `db`: The name of the database.
 - `table`: The name of the table.
 - `pipeline_name`: The name of the [pipeline](./pipeline-config.md).
-- `version`: The version of the pipeline.
+- `version`: The version of the pipeline. Optional, default use the latest one.
 
 ## Body data format
 

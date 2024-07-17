@@ -66,8 +66,11 @@ transform:
   - fields:
       - ip_address
       - http_method
-      - status_code
     type: string
+    index: tag
+  - fields:
+      - status_code
+    type: int32
     index: tag
   - fields:
       - request_line
@@ -153,22 +156,25 @@ DESC pipeline_logs;
 +---------------+---------------------+------+------+---------+---------------+
 | ip_address    | String              | PRI  | YES  |         | TAG           |
 | http_method   | String              | PRI  | YES  |         | TAG           |
-| status_code   | String              | PRI  | YES  |         | TAG           |
+| status_code   | Int32               | PRI  | YES  |         | TAG           |
 | request_line  | String              |      | YES  |         | FIELD         |
 | user_agent    | String              |      | YES  |         | FIELD         |
 | response_size | Int32               |      | YES  |         | FIELD         |
 | timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
 +---------------+---------------------+------+------+---------+---------------+
-7 rows in set (0.01 sec)
+7 rows in set (0.00 sec)
 ```
 
 从表结构中可以看到，`origin_logs` 表只有两列，整个日志消息存储在一个列中。
 而 `pipeline_logs` 表将日志消息存储在多个列中。
 
-推荐使用 pipeline 方法将日志写入 GreptimeDB，以下是使用 pipeline 方法将日志消息拆分为多个列的一些优点：
-- 更小的数据存储空间：Tag 索引占用的空间小于全文索引；较少的全文数据会使得全文索引占用的空间也变小；Tag 结构化数据具备较高的压缩率。
-- 高性能：查询 Tag 比查询全文数据更高效。
-- 编写 SQL 更省心：您不需要记住很多全文查询语法，只需按 Tag 搜索即可。
+推荐使用 pipeline 方法将日志消息拆分为多个列，这样可以明确查询某个特定列中的某个值。
+与模糊查询相比，精确匹配在处理字符串时具有以下几个关键优势：
+
+- 性能效率：在 pipeline 中将列标记为 Tag 会基于该列的值创建一个倒排索引，从而实现比模糊查询中使用的全文索引更快的查询执行。
+- 资源消耗：精确匹配查询通常涉及更简单的比较，并且使用的 CPU、内存和 I/O 资源较少，而模糊查询需要更多资源密集型的全文索引。
+- 准确性：精确匹配返回严格符合查询条件的精确结果，减少了无关结果的可能性，而模糊查询即使使用全文索引仍然可能返回更多噪音。
+- 可维护性：精确匹配查询简单直观，编写和调试更容易，而带有全文索引的模糊查询仍然增加了一层复杂性，使其更具挑战性，难以优化和维护。
 
 ## 查询日志
 
@@ -180,16 +186,16 @@ DESC pipeline_logs;
 例如，查询 `status_code` 为 `200` 且 `http_method` 为 `GET` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = '200' AND http_method = 'GET';
+SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
 | ip_address | http_method | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           |
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1  | GET         | 200         | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
+| 127.0.0.1  | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
 +------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-1 row in set (0.06 sec)
+1 row in set (0.02 sec)
 ```
 
 ### 全文搜索
@@ -207,10 +213,10 @@ SELECT * FROM pipeline_logs WHERE MATCHES(request_line, 'index.html /api/login')
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
 | ip_address  | http_method | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           |
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1   | GET         | 200         | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
-| 192.168.1.1 | POST        | 200         | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
+| 127.0.0.1   | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
+| 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
 +-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-2 rows in set (0.16 sec)
+2 rows in set (0.00 sec)
 ```
 
 您可以参阅[全文搜索](query-logs.md#使用-matches-函数进行全文搜索)文档以获取 `MATCHES` 函数的详细用法。
