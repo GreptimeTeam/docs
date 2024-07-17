@@ -3,7 +3,7 @@
 This guide will walk you through the process of quickly writing and querying logs.
 
 You can write logs directly or use pipeline to write logs.
-Writing logs directly is simple but cannot split log text to stuctured data as the pipeline method does.
+Writing logs directly is simple but cannot split log text to structured data as the pipeline method does.
 The following sections will help you understand the differences between these two methods.
 
 ## Write logs directly
@@ -127,7 +127,7 @@ You will see the following output if the command is successful:
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-## Differences bewteen writing logs directly and using a pipeline
+## Differences between writing logs directly and using a pipeline
 
 In the above examples, the table `origin_logs` is created by writing logs directly,
 and the table `pipeline_logs` is automatically created by writing logs using pipeline.
