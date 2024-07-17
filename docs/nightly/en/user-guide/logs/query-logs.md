@@ -19,6 +19,10 @@ The `MATCHES` function is designed for full-text search and accepts two paramete
 - `column_name`: The column to perform the full-text search on, which should contain textual data of type `String`.
 - `search_query`: A string containing query statement which you want to search for. See the [Query Statements](#query-statements) section below for more details.
 
+:::tip
+It is strongly recommended that the `column_name` column contains a full-text index to ensure efficient search operations. See the [Full-Text Index for Accelerated Search](#full-text-index-for-accelerated-search) section for more details.
+:::
+
 ## Query Statements
 
 ### Simple Term
@@ -83,11 +87,24 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 A full-text index is essential for full-text search, especially when dealing with large datasets. Without a full-text index, the search operation could be very slow, impacting the overall query performance and user experience. By configuring a full-text index within the Pipeline, you can ensure that search operations are performed efficiently, even with significant data volumes.
 
-### Configuring Full-Text Index
+### Creating Full-Text Index via SQL
 
-In the Pipeline configuration, you can specify a column to use a full-text index. Below is a configuration example where the `message` column is set with a full-text index:
+You can create a full-text index for a column by specifying the `FULLTEXT` option in the column definition. Below is an example of creating a table with a full-text index on the `message` column:
 
-<!-- In the Pipeline configuration, you can [specify a column to use a full-text index](./pipeline-config.md#index-field). Below is a configuration example where the `message` column is set with a full-text index: -->
+```sql
+CREATE TABLE `logs` (
+  `message` STRING FULLTEXT,
+  `time` TIMESTAMP TIME INDEX,
+) WITH (
+  append_mode = 'true'
+);
+```
+
+For more details, see the [Fulltext Column Option](/reference/sql/create#fulltext-column-option).
+
+### Configuring Full-Text Index via Pipeline
+
+In the Pipeline configuration, you can [specify a column to use a full-text index](./pipeline-config.md#the-index-field). Below is a configuration example where the `message` column is set with a full-text index:
 
 ```yaml
 processors:
@@ -106,20 +123,18 @@ transform:
     index: timestamp
 ```
 
-### Viewing Table Schema
+#### Viewing Table Schema
 
 After data is written, you can use an SQL statement to view the table schema and confirm that the `message` column is set for full-text indexing:
 
 ```sql
-SHOW CREATE TABLE many_logs\G
+SHOW CREATE TABLE logs\G
 *************************** 1. row ***************************
-       Table: many_logs
-Create Table: CREATE TABLE IF NOT EXISTS `many_logs` (
-  `host` STRING NULL,
-  `log` STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
-  `ts` TIMESTAMP(9) NOT NULL,
-  TIME INDEX (`ts`),
-  PRIMARY KEY (`host`)
+       Table: logs
+Create Table: CREATE TABLE IF NOT EXISTS `logs` (
+  `message` STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  `time` TIMESTAMP(9) NOT NULL,
+  TIME INDEX (`time`),
 )
 
 ENGINE=mito
