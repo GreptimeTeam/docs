@@ -9,7 +9,7 @@ Before writing logs, please read the [Pipeline Configuration](pipeline-config.md
 You can use the following command to write logs via the HTTP interface:
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>" \
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
      -H 'Content-Type: application/json' \
      -d "$<log-items>"
 ```
@@ -21,6 +21,7 @@ This interface accepts the following parameters:
 - `db`: The name of the database.
 - `table`: The name of the table.
 - `pipeline_name`: The name of the [pipeline](./pipeline-config.md).
+- `version`: The version of the pipeline.
 
 ## Body data format
 
