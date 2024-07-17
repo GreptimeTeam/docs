@@ -1,8 +1,8 @@
 # Quick Start
 
-This guide will walk you through the process of logging data to GreptimeDB.
+This guide will walk you through the process of quickly writing and querying logs.
 
-You can either write logs directly or use a pipeline.
+You can write logs directly or use pipeline to write logs.
 Writing logs directly is simple but cannot split log text to stuctured data as the pipeline method does.
 The following sections will help you understand the differences between these two methods.
 
@@ -88,7 +88,7 @@ transform:
 The pipeline splits the message field using the specified pattern to extract the `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 It then parses the `timestamp` field using the format` %d/%b/%Y:%H:%M:%S %z` to convert it into a proper timestamp format that the database can understand.
 Finally, it converts each field to the appropriate data type and indexes it accordingly.
-It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries. And there must be one time index column specified by the `timestamp` index.
+It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries. And there must be one time index column specified by the `timestamp`.
 
 Execute the following command to upload the configuration file:
 
@@ -129,9 +129,9 @@ You will see the following output if the command is successful:
 
 ## Differences bewteen writing logs directly and using a pipeline
 
-In the above examples, two tables, `origin_logs` and `pipeline_logs`, were created to store logs.
+In the above examples, the table `origin_logs` is created by writing logs directly,
+and the table `pipeline_logs` is automatically created by writing logs using pipeline.
 Let's explore the differences between these two tables.
-
 
 ```sql
 DESC origin_logs;
@@ -172,9 +172,9 @@ The `pipeline_logs` table stores the log message in multiple columns.
 It is recommended to use the pipeline method to write logs to GreptimeDB.
 Here are some advantages of using the pipeline method to split the log message into multiple columns:
 
-- Smaller data storage space: The tag index size is less than the full-text index size; fewer full-text data leads to a smaller full-text index size. Tag-structured data can have high compaction rates.
+- Smaller data storage space: The tag index size is less than the full-text index size; fewer full-text data leads to a smaller full-text index size; Tag-structured data have high compaction rates.
 - High performance: Querying tags is more efficient than querying full-text data.
-- User-friendly when writing SQL: You do not need to remember many full-text query syntaxes, just search by tags.
+- Writing SQL is easier: You do not need to remember many full-text query syntaxes, just search by tags.
 
 ## Query logs
 
