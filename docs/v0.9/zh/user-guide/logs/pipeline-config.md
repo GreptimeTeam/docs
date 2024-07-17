@@ -257,7 +257,8 @@ processors:
   - regex:
       fields:
         - message
-      pattern: ':(?<id>[0-9])'
+      patterns:
+        - ':(?<id>[0-9])'
       ignore_missing: true
 ```
 
