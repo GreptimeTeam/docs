@@ -16,12 +16,8 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 
 The `MATCHES` function is designed for full-text search and accepts two parameters:
 
-- `column_name`: The column to perform the full-text search on, which should contain textual data of type `String`.
+- `column_name`: The column to perform the full-text search on, which should contain textual data of type `String`. The [full-text index](#full-text-index-for-accelerated-search) must be created on this column to optimize queries.
 - `search_query`: A string containing query statement which you want to search for. See the [Query Statements](#query-statements) section below for more details.
-
-:::tip
-It is strongly recommended that the `column_name` column contains a full-text index to ensure efficient search operations. See the [Full-Text Index for Accelerated Search](#full-text-index-for-accelerated-search) section for more details.
-:::
 
 ## Query Statements
 
