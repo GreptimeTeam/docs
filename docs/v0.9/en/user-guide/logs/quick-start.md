@@ -1,186 +1,239 @@
 # Quick Start
 
+This guide will walk you through the process of quickly writing and querying logs.
 
-## Download and install & start GreptimeDB
+You can write logs directly or use pipeline to write logs.
+Writing logs directly is simple but cannot split log text to structured data as the pipeline method does.
+The following sections will help you understand the differences between these two methods.
 
-Follow the [Installation Guide](/getting-started/overview.md) to install and start GreptimeDB.
+## Write logs directly
 
-## Create a Pipeline
+This is the simplest way to write logs to GreptimeDB. 
 
-GreptimeDB provides a dedicated HTTP interface for creating Pipelines. Here's how to do it:
+### Create a table
 
-First, create a Pipeline file, for example, `pipeline.yaml`.
+First, create a table named origin_logs to store your logs.
+The `FULLTEXT` specification for the message column in the following SQL creates a full-text index to optimize queries.
+
+```sql
+CREATE TABLE `origin_logs` (
+  `message` STRING FULLTEXT,
+  `time` TIMESTAMP TIME INDEX
+) WITH (
+  append_mode = 'true'
+);
+```
+
+### Insert logs
+
+Use the `INSERT` statement to insert logs into the table.
+
+```sql
+INSERT INTO origin_logs (message, time) VALUES
+('127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"', '2024-05-25 20:16:37.217'),
+('192.168.1.1 - - [25/May/2024:20:17:37 +0000] "POST /api/login HTTP/1.1" 200 1784 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"', '2024-05-25 20:17:37.217'),
+('10.0.0.1 - - [25/May/2024:20:18:37 +0000] "GET /images/logo.png HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"', '2024-05-25 20:18:37.217'),
+('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
+```
+
+The above SQL inserts the entire log text into a single column,
+and you must add an extra timestamp for each log.
+
+## Write logs by Pipeline
+
+Using a pipeline allows you to automatically parse and transform the log message into multiple columns,
+as well as create tables automatically.
+
+### Create a Pipeline
+
+GreptimeDB provides a dedicated HTTP interface for creating pipelines. Here's how to do it:
+
+First, create a pipeline file, for example, `pipeline.yaml`.
 
 ```yaml
-# pipeline.yaml
 processors:
-  - date:
-      field: time
-      formats:
-        - "%Y-%m-%d %H:%M:%S%.3f"
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
+  - date:
+      fields:
+        - timestamp
+      formats:
+        - "%d/%b/%Y:%H:%M:%S %z"
 
 transform:
   - fields:
-      - id1
-      - id2
-    type: int32
-  - fields:
-      - type
-      - logger
+      - ip_address
+      - http_method
     type: string
     index: tag
   - fields:
-      - log
+      - status_code
+    type: int32
+    index: tag
+  - fields:
+      - request_line
+      - user_agent
     type: string
     index: fulltext
-  - field: time
+  - fields:
+      - response_size
+    type: int32
+  - fields:
+      - timestamp
     type: time
     index: timestamp
 ```
 
-Then, execute the following command to upload the configuration file:
+The pipeline splits the message field using the specified pattern to extract the `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
+It then parses the `timestamp` field using the format` %d/%b/%Y:%H:%M:%S %z` to convert it into a proper timestamp format that the database can understand.
+Finally, it converts each field to the appropriate data type and indexes it accordingly.
+It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries. And there must be one time index column specified by the `timestamp`.
+
+Execute the following command to upload the configuration file:
 
 ```shell
-## Upload the pipeline file. "test" is the name of the Pipeline
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "file=@pipeline.yaml"
 ```
 
-After the successful execution of this command, a Pipeline named `test` will be created, and the result will be returned as: `{"name":"test","version":"2024-06-27 12:02:34.257312110Z"}`.
-Here, `name` is the name of the Pipeline, and `version` is the Pipeline version.
-
-This Pipeline includes one Processor and three Transforms. The Processor uses the Rust time format string `%Y-%m-%d %H:%M:%S%.3f` to parse the timestamp field in the logs, and then the Transforms convert the `id1` and `id2` fields to `int32` type, the `type` and `logger` fields to `string` type with an index of "tag", the `log` field to `string` type with an index of "fulltext", and the `time` field to a time type with an index of "timestamp".
-
-Refer to the [Pipeline Introduction](pipeline-config.md) for specific syntax details.
-
-## Query Pipelines
-
-You can use SQL to query the pipeline content stored in the database. The example query is as follows:
-
-```sql
-SELECT * FROM greptime_private.pipelines;
-```
-
-The query result is as follows:
-
-```sql
- name | schema | content_type |             pipeline              |         created_at
-------+--------+--------------+-----------------------------------+----------------------------
- test | public | yaml         | processors:                      +| 2024-06-27 12:02:34.257312
-      |        |              |   - date:                        +|
-      |        |              |       field: time                +|
-      |        |              |       formats:                   +|
-      |        |              |         - "%Y-%m-%d %H:%M:%S%.3f"+|
-      |        |              |       ignore_missing: true       +|
-      |        |              |                                  +|
-      |        |              | transform:                       +|
-      |        |              |   - fields:                      +|
-      |        |              |       - id1                      +|
-      |        |              |       - id2                      +|
-      |        |              |     type: int32                  +|
-      |        |              |   - fields:                      +|
-      |        |              |       - type                     +|
-      |        |              |       - logger                   +|
-      |        |              |     type: string                 +|
-      |        |              |     index: tag                   +|
-      |        |              |   - fields:                      +|
-      |        |              |       - log                      +|
-      |        |              |     type: string                 +|
-      |        |              |     index: fulltext              +|
-      |        |              |   - field: time                  +|
-      |        |              |     type: time                   +|
-      |        |              |     index: timestamp             +|
-      |        |              |                                   |
-(1 row)
-```
-
-## Write logs
-
-The HTTP interface for writing logs is as follows:
+After successfully executing this command, a pipeline named `nginx_pipeline` will be created, and the result will be returned as:
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=logs&pipeline_name=test" \
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
+```
+
+You can create multiple versions for the same pipeline name.
+All pipelines are stored at the `greptime_private.pipelines` table.
+Please refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view the pipeline data in the table.
+
+### Write logs
+
+The following example writes logs to the `pipeline_logs` table and uses the `nginx_pipeline` pipeline to format and transform the log messages.
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=nginx_pipeline" \
      -H 'Content-Type: application/json' \
-     -d $'{"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}
-{"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}
-{"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}
-{"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}'
+     -d $'[
+{"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \\"GET /index.html HTTP/1.1\\" 200 612 \\"-\\" \\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\\""},
+{"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \\"POST /api/login HTTP/1.1\\" 200 1784 \\"-\\" \\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\\""},
+{"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \\"GET /images/logo.png HTTP/1.1\\" 304 0 \\"-\\" \\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\\""},
+{"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \\"GET /contact HTTP/1.1\\" 404 162 \\"-\\" \\"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\\""}
+]'
 ```
 
-The above command returns the following result:
+You will see the following output if the command is successful:
 
-```json
-{"output":[{"affectedrows":4}],"execution_time_ms":22}
+```shell
+{"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-In the above example, we successfully wrote 4 log entries to the `public.logs` table.
+## Differences between writing logs directly and using a pipeline
 
-Please refer to [Writing Logs with Pipeline](write-logs.md) for specific syntax for writing logs.
-
-## `logs` table structure
-
-We can use SQL to query the structure of the `public.logs` table.
+In the above examples, the table `origin_logs` is created by writing logs directly,
+and the table `pipeline_logs` is automatically created by writing logs using pipeline.
+Let's explore the differences between these two tables.
 
 ```sql
-DESC TABLE logs;
+DESC origin_logs;
 ```
-
-The query result is as follows:
 
 ```sql
- Column |        Type         | Key | Null | Default | Semantic Type
---------+---------------------+-----+------+---------+---------------
- id1    | Int32               |     | YES  |         | FIELD
- id2    | Int32               |     | YES  |         | FIELD
- type   | String              | PRI | YES  |         | TAG
- logger | String              | PRI | YES  |         | TAG
- log    | String              |     | YES  |         | FIELD
- time   | TimestampNanosecond | PRI | NO   |         | TIMESTAMP
-(6 rows)
++---------+----------------------+------+------+---------+---------------+
+| Column  | Type                 | Key  | Null | Default | Semantic Type |
++---------+----------------------+------+------+---------+---------------+
+| message | String               |      | YES  |         | FIELD         |
+| time    | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
++---------+----------------------+------+------+---------+---------------+
 ```
 
-From the above result, we can see that based on the processed result of the pipeline, the `public.logs` table contains 6 fields: `id1` and `id2` are converted to the `Int32` type, `type`, `log`, and `logger` are converted to the `String` type, and time is converted to a `TimestampNanosecond` type and indexed as Timestamp.
+```sql
+DESC pipeline_logs;
+```
+
+```sql
++---------------+---------------------+------+------+---------+---------------+
+| Column        | Type                | Key  | Null | Default | Semantic Type |
++---------------+---------------------+------+------+---------+---------------+
+| ip_address    | String              | PRI  | YES  |         | TAG           |
+| http_method   | String              | PRI  | YES  |         | TAG           |
+| status_code   | Int32               | PRI  | YES  |         | TAG           |
+| request_line  | String              |      | YES  |         | FIELD         |
+| user_agent    | String              |      | YES  |         | FIELD         |
+| response_size | Int32               |      | YES  |         | FIELD         |
+| timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
++---------------+---------------------+------+------+---------+---------------+
+7 rows in set (0.00 sec)
+```
+
+From the table structure, you can see that the `origin_logs` table has only two columns,
+with the entire log message stored in a single column.
+The `pipeline_logs` table stores the log message in multiple columns.
+
+It is recommended to use the pipeline method to split the log message into multiple columns,
+which gives the advantage of explicitly querying a certain value within one certain column.
+Exact matching proves to be superior to fuzzy querying when handling strings for several key reasons:
+
+- Performance Efficiency: Marking a column as a Tag in pipeline creates an inverted index upon the column values, resulting in faster query execution compared to full-text indexes used in fuzzy querying.
+- Resource Consumption: Exact matching queries typically involve simpler comparisons and use fewer CPU, memory, and I/O resources compared to the more resource-intensive full-text indexes required for fuzzy querying.
+- Accuracy: Exact matching returns precise results that strictly meet the query conditions, reducing the chances of irrelevant results, whereas fuzzy querying can still return more noise even with full-text indexing.
+- Maintainability: Exact matching queries are straightforward and easier to understand, write, and debug, while fuzzy queries with full-text indexes still add a layer of complexity, making them more challenging to optimize and maintain.
 
 ## Query logs
 
-We can use standard SQL to query log data.
+The `pipeline_logs` as the example to query logs.
 
-```shell
-# Connect to GreptimeDB using MySQL or PostgreSQL protocol
+### Query logs by tags
 
-# MySQL
-mysql --host=127.0.0.1 --port=4002 public
-
-# PostgreSQL
-psql -h 127.0.0.1 -p 4003 -d public
-```
-
-You can query the log table using SQL:
+With the multiple tag columns in `pipeline_logs`,
+you can query data by tags flexibly.
+For example, query the logs with `status_code` 200 and `http_method` GET.
 
 ```sql
-SELECT * FROM public.logs WHERE MATCHES(log, 'sendTextDataToCluster');
+SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
-
-The query result is as follows:
 
 ```sql
- id1  | id2  | type |      logger      |                    log                     |            time
-------+------+------+------------------+--------------------------------------------+----------------------------
- 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
-      |      |      |                  |                                            |
- 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
-      |      |      |                  |                                            |
- 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
-      |      |      |                  |                                            |
- 2436 | 2528 | I    | INTERACT.MANAGER | ClusterAdapter:enter sendTextDataToCluster+| 2024-05-25 20:16:37.217000
-      |      |      |                  |                                            |
-(4 rows)
++------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| ip_address | http_method | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           |
++------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| 127.0.0.1  | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
++------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+1 row in set (0.02 sec)
 ```
 
-As you can see, the logs have been stored as structured logs after applying type conversions using the pipeline. This provides convenience for further querying and analysis of the logs.
-Please refer to [Query Log](query-logs.md) for the specific syntax of querying logs.
+### Full-Text Search
 
-## Conclusion
+For the text fields `request_line` and `user_agent`, you can use the `MATCHES` function to search logs.
+Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline). \
+This allows for high-performance full-text searches.
 
-By following the above steps, you have successfully created a pipeline, written logs, and performed queries. This is just the tip of the iceberg in terms of the capabilities offered by GreptimeDB.
-Next, please continue reading [Pipeline Configuration](pipeline-config.md) and [Managing Pipelines](manage-pipelines.md) to learn more about advanced features and best practices.
+For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
+
+```sql
+SELECT * FROM pipeline_logs WHERE MATCHES(request_line, 'index.html /api/login');
+```
+
+```sql
++-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| ip_address  | http_method | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           |
++-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| 127.0.0.1   | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
+| 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
++-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+2 rows in set (0.00 sec)
+```
+
+You can refer to the [Full-Text Search](query-logs.md#full-text-search-using-the-matches-function) document for detailed usage of the `MATCHES` function.
+
+## Next steps
+
+You have now experienced GreptimeDB's logging capabilities.
+You can explore further by following the documentation below:
+
+- [Pipeline Configuration](./pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.
+- [Managing Pipelines](./manage-pipelines.md): Explains how to create and delete pipelines.
+- [Writing Logs with Pipelines](./write-logs.md): Provides detailed instructions on efficiently writing log data by leveraging the pipeline mechanism.
+- [Query Logs](./query-logs.md): Describes how to query logs using the GreptimeDB SQL interface.

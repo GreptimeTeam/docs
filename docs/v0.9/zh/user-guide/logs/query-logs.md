@@ -16,7 +16,7 @@ SELECT * FROM logs WHERE MATCHES(message, 'error OR fail');
 
 `MATCHES` 是一个专门用于全文搜索的函数，它接受两个参数：
 
-- `column_name`：要进行全文搜索的列，该列包含文本数据，列的数据类型必须是 `String`。
+- `column_name`：要进行全文搜索的列，该列包含文本数据，列的数据类型必须是 `String`。必须为此列建立[全文索引](#全文索引加速搜索)以优化查询。
 - `search_query`：一个字符串，包含要搜索的关键词和操作符，详情请看下文中的[查询语句类型](#查询语句类型)。
 
 ## 查询语句类型
@@ -81,13 +81,26 @@ SELECT * FROM logs WHERE MATCHES(message, '"He said \"hello\""');
 
 ## 全文索引加速搜索
 
-全文索引是全文搜索的关键配置，尤其是在需要处理大量数据的搜索查询场景中。没有全文索引，搜索操作可能会非常缓慢，影响整体的查询性能和用户体验。通过在 Pipeline 中配置全文索引，可以确保搜索操作能够高效执行，即使是在数据量极大的情况下也能保持良好的性能。
+全文索引是全文搜索的关键配置，尤其是在需要处理大量数据的搜索查询场景中。没有全文索引，搜索操作可能会非常缓慢，影响整体的查询性能和用户体验。您可以在创建表时直接通过 SQL 配置全文索引，或者通过 Pipeline 配置，确保搜索操作能够高效执行，即使是在数据量极大的情况下也能保持良好的性能。
 
-### 配置全文索引
+### 通过 SQL 配置全文索引
 
-在 Pipeline 的配置中，可以指定某列使用全文索引。以下是一个配置示例，其中 `message` 列被设置为全文索引：
+您可以通过在列定义中指定 `FULLTEXT` 选项为某列创建全文索索引。下面是一个在 `message` 列上创建带有全文索引的表的示例：
 
-<!-- 在 Pipeline 的配置中，可以[指定某列使用全文索引](./pipeline-config.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引： -->
+```sql
+CREATE TABLE `logs` (
+  `message` STRING FULLTEXT,
+  `time` TIMESTAMP TIME INDEX,
+) WITH (
+  append_mode = 'true'
+);
+```
+
+更多详情，请参见[`FULLTEXT` 列选项](/reference/sql/create#fulltext-列选项)。
+
+### 通过 Pipeline 配置全文索引
+
+在 Pipeline 的配置中，可以[指定某列使用全文索引](./pipeline-config.md#index-字段)。以下是一个配置示例，其中 `message` 列被设置为全文索引：
 
 ```yaml
 processors:
@@ -106,20 +119,18 @@ transform:
     index: timestamp
 ```
 
-### 查看表结构
+#### 查看表结构
 
 在数据写入后，可以通过 SQL 命令查看表结构，确认 `message` 列已经被设置为全文索引：
 
 ```sql
-SHOW CREATE TABLE many_logs\G
+SHOW CREATE TABLE logs\G
 *************************** 1. row ***************************
-       Table: many_logs
-Create Table: CREATE TABLE IF NOT EXISTS `many_logs` (
-  `host` STRING NULL,
-  `log` STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
-  `ts` TIMESTAMP(9) NOT NULL,
-  TIME INDEX (`ts`),
-  PRIMARY KEY (`host`)
+       Table: logs
+Create Table: CREATE TABLE IF NOT EXISTS `logs` (
+  `message` STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  `time` TIMESTAMP(9) NOT NULL,
+  TIME INDEX (`time`),
 )
 
 ENGINE=mito
