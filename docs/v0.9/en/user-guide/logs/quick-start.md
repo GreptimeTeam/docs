@@ -172,12 +172,13 @@ From the table structure, you can see that the `origin_logs` table has only two 
 with the entire log message stored in a single column.
 The `pipeline_logs` table stores the log message in multiple columns.
 
-It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying a specific value within a certain column. Exact matching proves to be superior to fuzzy querying when handling strings for several key reasons:
+It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Tag matching query proves superior to full-text searching for several key reasons:
 
-- Performance Efficiency: By marking a column as a Tag in the pipeline, an inverted index is created on the column values, resulting in faster query execution compared to the full-text indexes used in fuzzy querying.
-- Resource Consumption: Exact matching queries typically involve simpler comparisons and use fewer CPU, memory, and I/O resources compared to the more resource-intensive full-text indexes required for fuzzy querying.
-- Accuracy: Exact matching returns precise results that strictly meet the query conditions, reducing the chances of irrelevant results, whereas fuzzy querying can still return more noise even with full-text indexing.
-- Maintainability: Exact matching queries are straightforward and easier to understand, write, and debug, while fuzzy queries with full-text indexes add a layer of complexity, making them more challenging to optimize and maintain.
+- **Performance Efficiency**: tag matching query is typically faster than full-text searching.
+- **Resource Consumption**: Due to GreptimeDB's columnar storage engine, structured data is more conducive to compression. Additionally, the inverted index used for tag matching query typically consumes significantly fewer resources than a full-text index, especially in terms of storage size.
+- **Maintainability**: tag matching query are straightforward and easier to understand, write, and debug.
+
+Of course, if you need keyword searching within large text blocks, you must use full-text searching as it is specifically designed for that purpose.
 
 ## Query logs
 
