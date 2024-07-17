@@ -172,7 +172,6 @@ From the table structure, you can see that the `origin_logs` table has only two 
 with the entire log message stored in a single column.
 The `pipeline_logs` table stores the log message in multiple columns.
 
-
 It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Tag matching queries proves superior to full-text searching for several key reasons:
 
 - **Performance Efficiency**: tag matching queries are typically faster than full-text searching.
