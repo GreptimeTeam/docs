@@ -1,6 +1,6 @@
 # Pipeline 配置
 
-Pipeline 是 GreptimeDB 中对 log 数据进行转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。
+Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。
 
 这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
@@ -9,7 +9,7 @@ Pipeline 是 GreptimeDB 中对 log 数据进行转换的一种机制， 由一�
 Pipeline 由两部分组成：Processors 和 Transform，这两部分均为数组形式。一个 Pipeline 配置可以包含多个 Processor 和多个 Transform。Transform 所描述的数据类型会决定日志数据保存到数据库时的表结构。
 
 - Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
-- Transform 用于对 log 数据进行格式转换，例如将字符串类型转换为数字类型。
+- Transform 用于对数据进行格式转换，例如将字符串类型转换为数字类型。
 
 一个包含 Processor 和 Transform 的简单配置示例如下：
 
@@ -42,15 +42,15 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 
 我们目前内置了以下几种 Processor：
 
-- `date`: 用于解析格式化的时间字符串字段，例如 `2024-07-12T16:18:53.048`。
-- `epoch`: 用于解析数字时间戳字段，例如 `1720772378893`。
-- `dissect`: 用于对 log 数据字段进行拆分。
-- `gsub`: 用于对 log 数据字段进行替换。
-- `join`: 用于对 log 中的 array 类型字段进行合并。
-- `letter`: 用于对 log 数据字段进行字母转换。
-- `regex`: 用于对 log 数据字段进行正则匹配。
-- `urlencoding`: 用于对 log 数据字段进行 URL 编解码。
-- `csv`: 用于对 log 数据字段进行 CSV 解析。
+- `date`: 解析格式化的时间字符串字段，例如 `2024-07-12T16:18:53.048`。
+- `epoch`: 解析数字时间戳字段，例如 `1720772378893`。
+- `dissect`: 对 log 数据字段进行拆分。
+- `gsub`: 对 log 数据字段进行替换。
+- `join`: 对 log 中的 array 类型字段进行合并。
+- `letter`: 对 log 数据字段进行字母转换。
+- `regex`: 对 log 数据字段进行正则匹配。
+- `urlencoding`: 对 log 数据字段进行 URL 编解码。
+- `csv`: 对 log 数据字段进行 CSV 解析。
 
 ### `date`
 
@@ -70,7 +70,7 @@ processors:
 如上所示，`date` Processor 的配置包含以下字段：
 
 - `fields`: 需要解析的时间字段名列表。
-- `formats`: 时间格式化字符串，支持多个时间格式化字符串。按照提供的顺序尝试解析，直到解析成功。
+- `formats`: 时间格式化字符串，支持多个时间格式化字符串。按照提供的顺序尝试解析，直到解析成功。你可以在[这里](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)找到格式化的语法说明。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `timezone`： 时区。使用[tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) 中的时区标识符来指定时区。默认为 `UTC`。
 

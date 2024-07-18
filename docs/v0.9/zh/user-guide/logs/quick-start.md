@@ -99,7 +99,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "fi
 
 成功执行此命令后，将创建一个名为 `nginx_pipeline` 的 pipeline，返回的结果如下：
 
-```shell
+```json
 {"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
 ```
 
@@ -124,7 +124,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
 
 如果命令执行成功，您将看到以下输出：
 
-```shell
+```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
@@ -179,7 +179,7 @@ DESC pipeline_logs;
 
 ## 查询日志
 
-以 `pipeline_logs` 为例查询日志。
+以 `pipeline_logs` 表为例查询日志。
 
 ### 按 Tag 查询日志
 
