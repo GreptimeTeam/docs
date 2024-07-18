@@ -101,7 +101,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "fi
 
 After successfully executing this command, a pipeline named `nginx_pipeline` will be created, and the result will be returned as:
 
-```shell
+```json
 {"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
 ```
 
@@ -126,7 +126,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
 
 You will see the following output if the command is successful:
 
-```shell
+```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
@@ -182,7 +182,7 @@ Of course, if you need keyword searching within large text blocks, you must use 
 
 ## Query logs
 
-The `pipeline_logs` as the example to query logs.
+We use the `pipeline_logs` table as an example to query logs.
 
 ### Query logs by tags
 
