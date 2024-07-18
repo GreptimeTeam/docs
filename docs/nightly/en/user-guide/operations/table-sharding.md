@@ -77,4 +77,4 @@ Two things need stress in this complex example:
 
 ## Inspect a sharded table
 
-GreptimeDB provides severals system table to check DB's state. For table sharding information, you can query [`information_schema.partitions`](../../reference/sql/information-schema/partitions.md) which gives the detail of partitions inside one table, and [`information_schema.region_peers`](../../reference/sql/information-schema/region-peers.md) which gives the runtime distribution of regions.
+GreptimeDB provides severals system table to check DB's state. For table sharding information, you can query [`information_schema.partitions`](/reference/sql/information-schema/partitions.md) which gives the detail of partitions inside one table, and [`information_schema.region_peers`](/reference/sql/information-schema/region-peers.md) which gives the runtime distribution of regions.
