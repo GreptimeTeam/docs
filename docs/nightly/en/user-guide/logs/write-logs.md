@@ -42,7 +42,7 @@ Here is an example of JSON format body payload
 ]
 ```
 
-Note the whole JSON is an array of four objects (log lines). Each JSON object represents one line to be processed by Pipeline engine. 
+Note the whole JSON is an array (log lines). Each JSON object represents one line to be processed by Pipeline engine. 
 
 The name of the key in JSON objects, which is `message` here, is used as field name in Pipeline processors. For example: 
 
@@ -50,6 +50,7 @@ The name of the key in JSON objects, which is `message` here, is used as field n
 processors:
   - dissect:
       fields:
+        # `message` is the key in JSON object
         - message
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
@@ -90,6 +91,7 @@ Unlike JSON format, where the input data already have key names as field names t
 processors:
   - dissect:
       fields:
+        # use `line` as the field name
         - line
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
