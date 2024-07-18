@@ -35,10 +35,10 @@ Here is an example of JSON format body payload
 
 ```JSON
 [
-     {"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \\"GET /index.html HTTP/1.1\\" 200 612 \\"-\\" \\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\\""},
-     {"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \\"POST /api/login HTTP/1.1\\" 200 1784 \\"-\\" \\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\\""},
-     {"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \\"GET /images/logo.png HTTP/1.1\\" 304 0 \\"-\\" \\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\\""},
-     {"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \\"GET /contact HTTP/1.1\\" 404 162 \\"-\\" \\"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\\""}
+     {"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""},
+     {"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \"POST /api/login HTTP/1.1\" 200 1784 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\""},
+     {"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \"GET /images/logo.png HTTP/1.1\" 304 0 \"-\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\""},
+     {"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \"GET /contact HTTP/1.1\" 404 162 \"-\" \"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\""}
 ]
 ```
 
@@ -62,10 +62,10 @@ processors:
 We can also rewrite the payload into NDJSON format like following:
 
 ```JSON
-{"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \\"GET /index.html HTTP/1.1\\" 200 612 \\"-\\" \\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\\""}
-{"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \\"POST /api/login HTTP/1.1\\" 200 1784 \\"-\\" \\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\\""}
-{"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \\"GET /images/logo.png HTTP/1.1\\" 304 0 \\"-\\" \\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\\""}
-{"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \\"GET /contact HTTP/1.1\\" 404 162 \\"-\\" \\"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\\""}
+{"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""}
+{"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \"POST /api/login HTTP/1.1\" 200 1784 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\""}
+{"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \"GET /images/logo.png HTTP/1.1\" 304 0 \"-\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\""}
+{"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \"GET /contact HTTP/1.1\" 404 162 \"-\" \"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\""}
 ```
 
 Note the outer array is eliminated, and lines are separated by line breaks instead of `,`.
@@ -85,7 +85,7 @@ The equivalent body payload of previous example is like following:
 
 Sending log ingestion request to GreptimeDB requires only modifying the `Content-Type` header to be `text/plain`, and you are good to go!
 
-Unlike JSON format, where the input data already have key names as field names to be used in Pipeline processors, `text/plain` format just gives the whole line as input to the Pipeline engine. In this case we use `line` as the field name to refer to the input line, for example:
+Please note that, unlike JSON format, where the input data already have key names as field names to be used in Pipeline processors, `text/plain` format just gives the whole line as input to the Pipeline engine. In this case we use `line` as the field name to refer to the input line, for example:
 
 ```yaml
 processors:
