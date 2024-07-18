@@ -1,15 +1,15 @@
 # Pipeline Configuration
 
-Pipeline is a mechanism in GreptimeDB for transforming log data. It consists of a unique name and a set of configuration rules that define how log data is formatted, split, and transformed. Currently, we support JSON (`application/json`) and plain text (`text/plain`) formats as input for log data.
+Pipeline is a mechanism in GreptimeDB for parsing and transforming log data. It consists of a unique name and a set of configuration rules that define how log data is formatted, split, and transformed. Currently, we support JSON (`application/json`) and plain text (`text/plain`) formats as input for log data.
 
 These configurations are provided in YAML format, allowing the Pipeline to process data during the log writing process according to the defined rules and store the processed data in the database for subsequent structured queries.
 
-## The overall structure
+## Overall structure
 
 Pipeline consists of two parts: Processors and Transform, both of which are in array format. A Pipeline configuration can contain multiple Processors and multiple Transforms. The data type described by Transform determines the table structure when storing log data in the database.
 
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
-- Transform is used for converting log data formats, such as converting string types to numeric types.
+- Transform is used for converting data formats, such as converting string types to numeric types.
 
 Here is an example of a simple configuration that includes Processors and Transform:
 
@@ -40,15 +40,15 @@ The Processor is used for preprocessing log data, and its configuration is locat
 
 We currently provide the following built-in Processors:
 
-- `date`: Used to parse formatted time string fields, such as `2024-07-12T16:18:53.048`.
-- `epoch`: Used to parse numeric timestamp fields, such as `1720772378893`.
-- `dissect`: Used to split log data fields.
-- `gsub`: Used to replace log data fields.
-- `join`: Used to merge array-type fields in logs.
-- `letter`: Used to convert log data fields to letters.
-- `regex`: Used to perform regular expression matching on log data fields.
-- `urlencoding`: Used to perform URL encoding/decoding on log data fields.
-- `csv`: Used to parse CSV data fields in logs.
+- `date`: parses formatted time string fields, such as `2024-07-12T16:18:53.048`.
+- `epoch`: parses numeric timestamp fields, such as `1720772378893`.
+- `dissect`: splits log data fields.
+- `gsub`: replaces log data fields.
+- `join`: merges array-type fields in logs.
+- `letter`: converts log data fields to letters.
+- `regex`: performs regular expression matching on log data fields.
+- `urlencoding`: performs URL encoding/decoding on log data fields.
+- `csv`: parses CSV data fields in logs.
 
 ### `date`
 
@@ -68,7 +68,7 @@ processors:
 In the above example, the configuration of the `date` processor includes the following fields:
 
 - `fields`: A list of time field names to be parsed.
-- `formats`: Time format strings, supporting multiple format strings. Parsing is attempted in the order provided until successful.
+- `formats`: Time format strings, supporting multiple format strings. Parsing is attempted in the order provided until successful. You can find reference [here](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) for formatting syntax. 
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `timezone`: Time zone. Use the time zone identifiers from the [tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to specify the time zone. Defaults to `UTC`.
 
