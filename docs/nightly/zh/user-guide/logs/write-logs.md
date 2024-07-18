@@ -43,7 +43,7 @@ GreptimeDB 使用 `Content-Type` header 来决定如何解码请求体内容。�
 ]
 ```
 
-注意到整个 JSON 是一个数组（包含多行日志）。每个 JSON 对象代表即将要被 Pipeline 引擎处理的一行日志。
+请注意整个 JSON 是一个数组（包含多行日志）。每个 JSON 对象代表即将要被 Pipeline 引擎处理的一行日志。
 
 JSON 对象中的 key 名，也就是这里的 `message`，会被用作 Pipeline processor 处理时的 field 名称。比如：
 
