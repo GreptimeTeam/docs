@@ -25,11 +25,11 @@ FROM
   metrics INNER JOIN logs on metrics.host = logs.host
 WHERE
   time > now() - INTERVAL '1 hour' AND
-  matches(path, '/api/v1/avator')
+  matches(path, '/api/v1/avatar')
 ALIGN '5s' BY (host) FILL PREV
 ```
 
-该查询分析了过去一小时内特定 API 路径 (`/api/v1/avator`) 的性能和错误。
+该查询分析了过去一小时内特定 API 路径 (`/api/v1/avatar`) 的性能和错误。
 它计算了每个 15 秒间隔内的第 95 百分位延迟和错误数量，并将结果对齐到每个 5 秒间隔以保持连续性和可读性。
 
 逐步解析该查询：
@@ -42,7 +42,7 @@ ALIGN '5s' BY (host) FILL PREV
   - `metrics INNER JOIN logs on metrics.host = logs.host`：在 host 字段上将 metrics 和 logs 表进行连接。
 3. WHERE 子句：
   - `time > now() - INTERVAL '1 hour'`：筛选出过去一小时内的记录。
-  - `matches(path, '/api/v1/avator')`：筛选出特定 API 路径 `/api/v1/avator` 的记录。
+  - `matches(path, '/api/v1/avatar')`：筛选出特定 API 路径 `/api/v1/avatar` 的记录。
 4. ALIGN 子句：
   - `ALIGN '5s' BY (host) FILL PREV`：将结果对齐到每 5 秒，并使用前一个非空值填充缺失值。
 

@@ -10,7 +10,7 @@ This guide will help you explore each powerful feature of GreptimeDB.
 
 Let's start with a SQL query example.
 
-To monitor the performance and reliability of specific metrics, 
+To monitor the performance and reliability of specific metrics,
 engineers commonly analyze data over time at regular intervals using queries.
 This often involves joining two data sources.
 However, executing a query like the one below was previously impossible,
@@ -25,24 +25,24 @@ FROM
     metrics INNER JOIN logs on metrics.host = logs.host
 WHERE
     time > now() - INTERVAL '1 hour' AND
-    matches(path, '/api/v1/avator')
+    matches(path, '/api/v1/avatar')
 ALIGN '5s' BY (host) FILL PREV
 ```
 
-This query analyzes the performance and errors of a specific API path (`/api/v1/avator`) over the past hour.
+This query analyzes the performance and errors of a specific API path (`/api/v1/avatar`) over the past hour.
 It calculates the 95th percentile latency and the number of errors in 15-second intervals and aligns the results to 5-second intervals for continuity and readability.
 
 Break down the query step by step:
 
-1. SELECT clause: 
+1. SELECT clause:
     - `host`: Selects the host field.
     - `approx_percentile_cont(latency, 0.95) RANGE '15s' as p95_latency`: Calculates the 95th percentile of latency within a 15-second range and labels it as p95_latency.
     - `count(error) RANGE '15s' as num_errors`: Counts the number of errors within a 15-second range and labels it as num_errors.
-2. FROM clause: 
+2. FROM clause:
     - `metrics INNER JOIN logs on metrics.host = logs.host`: Joins the metrics and logs tables on the host field.
-3. WHERE clause: 
+3. WHERE clause:
     - `time > now() - INTERVAL '1 hour'`: Filters the records to include only those from the past hour.
-    - `matches(path, '/api/v1/avator')`: Filters the records to include only those matching the path `/api/v1/avator`.
+    - `matches(path, '/api/v1/avatar')`: Filters the records to include only those matching the path `/api/v1/avatar`.
 4. ALIGN clause:
     - `ALIGN '5s' BY (host) FILL PREV`: Aligns the results to every 5 seconds and fills in missing values with the previous non-null value.
 
