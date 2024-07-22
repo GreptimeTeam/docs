@@ -65,9 +65,9 @@ But if running the Standalone with remote WAL and object storage, there is a bet
 
 Write the WAL to the Kafka cluster and store the data in object storage, so the database itself is stateless. In the event of a disaster affecting the standalone database, you can restore it using the remote WAL and object storage. This solution can achieve **RPO=0** and **RTO in minutes**.
 
- For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
+For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
 
-### DR solution based on Active-Active Failover 
+### DR solution based on Active-Active Failover
 
 ![Active-active failover](/active-active-failover.png)
 
