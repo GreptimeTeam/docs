@@ -22,7 +22,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
   but may also be other types of data, such as geographic locations.
   Fields are not indexed by default,
   and queries on field values scan all data in the table. It can be resource-intensive and underperformant.
- However, the string field can turn on the full-text index to speed up queries such as log searching.
+ However, the string field can turn on the [full-text index](/user-guide/logs/query-logs#full-text-index-for-accelerated-search) to speed up queries such as log searching.
 
 ### Metric Table
 
@@ -79,6 +79,8 @@ CREATE TABLE access_logs (
 - `request` is a field that enables full-text index by the [`FULLTEXT` column option](/reference/sql/create#fulltext-column-option).
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](../table-management.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
+
+Of course, you can place metrics and logs in a single table at any time, which is also a key capability provided by GreptimeDB.
 
 ## Design Considerations
 

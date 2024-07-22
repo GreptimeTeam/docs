@@ -36,10 +36,10 @@ GreptimeDB 中的数据是强类型的，当创建表时，Auto-schema 功能提
 索引是一种性能调优方法，可以加快数据的更快地检索速度。
 GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-indexing#inverted-index)来加速查询。
 
-<!-- ## View
+## View
 
 从 SQL 查询结果集派生的虚拟表。它像真实表一样包含行和列，但它本身不存储任何数据。
-每次查询视图时，都会从底层表中动态检索视图中显示的数据。 -->
+每次查询视图时，都会从底层表中动态检索视图中显示的数据。
 
 ## Flow
 
