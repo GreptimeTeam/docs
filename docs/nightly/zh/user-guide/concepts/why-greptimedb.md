@@ -1,6 +1,7 @@
 # Why GreptimeDB
 
-GreptimeDB 是一种云原生时间序列数据库，具有分布式、可扩展和高效的特性。关于更多 GreptimeDB 创立背景和所能解决的行业痛点分析，欢迎先阅读[这篇文章](https://mp.weixin.qq.com/s/lTXXsBziCIjJJSCQEW-unw)。
+GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处理、存储和分析海量的指标（metrics）、日志（logs）和事件（events）数据（链路 traces 也在计划中）。
+关于更多 GreptimeDB 创立背景和所能解决的行业痛点分析，欢迎先阅读[这篇文章](https://mp.weixin.qq.com/s/lTXXsBziCIjJJSCQEW-unw)。
 
 我们的解决方案能更高效地管理海量的时间序列数据，并且能轻松处理时序数据的写入/查询和分析的混合负载需求。无论你的系统是在本地运行还是在云端，GreptimeDB 都可以轻松处理任何规模的负载。基于过去的经验，我们有信心为用户提供任何符合其需求的解决方案和服务。
 
