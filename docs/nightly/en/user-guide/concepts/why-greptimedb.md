@@ -8,6 +8,12 @@ To gain insight into the motivations that led to the development of GreptimeDB, 
 
 In this document, we delve into the reasons behind Greptime's high performance and some highlighted features.
 
+## Unified metrics, logs and events
+
+Through the model design of [time series tables](./data-model), native support for SQL, and the hybrid workload brought by the storage-computation separation architecture, GreptimeDB can handle metrics, logs, and events together, enhance the coloration analysis between different time series data and simplify the architecture, deployment and APIs for users.
+
+Read the [SQL example](/user-guide/overview#sql-query-example) for detailed info.
+
 ## Availability, Scalability, and Elasticity
 
 From day 0, GreptimeDB was designed following the principles of cloud-native databases, which means that it runs and takes full advantage of the cloud. Some of the benefits include:
