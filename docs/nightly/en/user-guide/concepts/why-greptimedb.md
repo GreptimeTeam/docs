@@ -6,7 +6,7 @@ It's highly efficient at handling hybrid processing workloads which involve both
 
 To gain insight into the motivations that led to the development of GreptimeDB, we recommend reading our blog posts titled ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real) and ["Unifying Logs and Metrics"](https://greptime.com/blogs/2024-06-25-logs-and-metrics).
 
-In this document, we delve into the reasons behind Greptime's high performance and some highlighted features.
+In these documents, we delve into the reasons behind Greptime's high performance and some highlighted features.
 
 ## Unified metrics, logs and events
 
