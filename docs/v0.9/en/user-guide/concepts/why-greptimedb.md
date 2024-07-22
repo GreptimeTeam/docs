@@ -1,9 +1,18 @@
 # Why GreptimeDB
 
-GreptimeDB is a cloud-native, distributed and open source Time Series Database (TSDB), it's designed to process, store and analyze vast amounts of time-series data.
+GreptimeDB is a cloud-native, distributed and open source time series database, it's designed to process, store and analyze vast amounts of metrics, logs & events data (also Traces in plan).
+
 It's highly efficient at handling hybrid processing workloads which involve both time-series and real-time analysis, while providing users with great experience.
-To gain insight into the motivations that led to the development of GreptimeDB, we recommend reading our blog post titled ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real).
-In this article, we delve into the reasons behind Greptime's high performance and some highlighted features.
+
+To gain insight into the motivations that led to the development of GreptimeDB, we recommend reading our blog posts titled ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real) and ["Unifying Logs and Metrics"](https://greptime.com/blogs/2024-06-25-logs-and-metrics).
+
+In these documents, we delve into the reasons behind Greptime's high performance and some highlighted features.
+
+## Unified metrics, logs and events
+
+Through the model design of [time series tables](./data-model), native support for SQL, and the hybrid workload brought by the storage-computation separation architecture, GreptimeDB can handle metrics, logs, and events together, enhance the correlation analysis between different time series data and simplify the architecture, deployment and APIs for users.
+
+Read the [SQL example](/user-guide/overview#sql-query-example) for detailed info.
 
 ## Availability, Scalability, and Elasticity
 
