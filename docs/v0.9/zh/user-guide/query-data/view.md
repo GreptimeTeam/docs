@@ -1,21 +1,23 @@
-# View
+# 视图
 
-In SQL, a view is a virtual table based on the result set of an SQL statement. It contains rows and columns just like a real table.
+在 SQL 中，视图是基于 SQL 语句的结果集的虚拟表。它包含与真实的表一样的行和列。
 
-A view is created with the `CREATE VIEW` statement.
+可以使用 `CREATE VIEW` 语句创建视图。
 
-## View examples
+## 视图示例
 
 ```sql
 CREATE VIEW cpu_monitor AS
     SELECT cpu, host, ts FROM monitor;
 ```
 
-The view name is `cpu_monitor`, and the query statement after `AS` is the SQL statement to present the data. Query the view:
+这个视图的名称是 `cpu_monitor`，在 `AS` 之后的查询语句是用于呈现数据的 SQL 语句。查询视图：
 
 ```sql
 SELECT * FROM cpu_monitor;
 ```
+
+结果示例：
 
 ```sql
 +------+-----------+---------------------+
@@ -30,11 +32,13 @@ SELECT * FROM cpu_monitor;
 +------+-----------+---------------------+
 ```
 
-Query view by `WHERE`:
+通过 `WHERE` 查询视图：
 
 ```sql
 SELECT * FROM cpu_monitor where host = '127.0.0.2';
 ```
+
+结果示例：
 
 ```sql
 +------+-----------+---------------------+
@@ -46,7 +50,7 @@ SELECT * FROM cpu_monitor where host = '127.0.0.2';
 +------+-----------+---------------------+
 ```
 
-Create a view that queries data from two tables:
+创建一个从两个表联合查询数据的视图：
 
 ```sql
 CREATE VIEW app_cpu_monitor AS
@@ -54,24 +58,24 @@ CREATE VIEW app_cpu_monitor AS
     ON monitor.host = app_monitor.host and monitor.ts = app_monitor.ts
 ```
 
-Then query the view as if the data were coming from one single table:
+然后可以像查询一个单表数据一样查询这个视图：
 
 ```sql
 SELECT * FROM app_cpu_monitor WHERE host = 'host1'
 ```
 
-## Update View
+## 更新视图
 
-`CREATE OR REPLACE VIEW` to update a view, if it doesn't exist, it will be created:
+使用 `CREATE OR REPLACE VIEW` 来更新视图，如果视图不存在，则会创建：
 
 ```sql
 CREATE OR REPLACE VIEW memory_monitor AS
     SELECT memory, host, ts FROM monitor;
 ```
 
-## List views
+## 列出视图
 
-`SHOW VIEWS` statement to find all the views:
+使用 `SHOW VIEWS` 语句查找所有视图：
 
 ```sql
 > SHOW VIEWS;
@@ -84,7 +88,7 @@ CREATE OR REPLACE VIEW memory_monitor AS
 +----------------+
 ```
 
-of course, just like `SHOW TABLES`, it supports `LIKE` and `WHERE`:
+当然，像 `SHOW TABLES` 一样，它也支持 `LIKE` 和 `WHERE`：
 
 ```sql
 > SHOW VIEWS like 'cpu%';
@@ -103,17 +107,16 @@ of course, just like `SHOW TABLES`, it supports `LIKE` and `WHERE`:
 +----------------+
 ```
 
-## Drop View
+## 删除视图
 
-Use `DROP VIEW` statement to drop a view:
+使用 `DROP VIEW` 语句删除视图：
 
 ```sql
 DROP VIEW cpu_monitor;
 ```  
 
-To be quiet if it does not exist:
+如果希望在视图不存在时不报错，可以使用：
 
 ```sql
 DROP VIEW IF EXISTS test;
 ```
-
