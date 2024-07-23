@@ -5,16 +5,17 @@
     - greptimedb-standalone
     - greptimedb-cluster
     - greptimedb-dashboard
-  - Quick-Start:
-    - overview
-    - mysql
-    - influxdb
-    - go
-    - java
-    - python
-    - node
-    - vector
-    - prometheus
+  - quick-start
+  # - Quick-Start:
+  #   - overview
+  #   - mysql
+  #   - influxdb
+  #   - go
+  #   - java
+  #   - python
+  #   - node
+  #   - vector
+  #   - prometheus
 - User-Guide:
   - overview
   - Concepts:
