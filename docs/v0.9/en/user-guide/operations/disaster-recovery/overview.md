@@ -81,7 +81,7 @@ Deploying nodes in different regions can also meet region-level DR requirements,
 
 :::
 
-For more information about this solution, see [DR solution based on active-active failover](./dr-solution-based-on-active-active-failover.md).
+For more information about this solution, see [DR solution based on Active-Active Failover](./dr-solution-based-on-active-active-failover.md).
 
 ### DR solution  based on cross-region deployment in a single cluster
 
