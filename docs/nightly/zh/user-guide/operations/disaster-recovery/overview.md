@@ -80,7 +80,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 ### 基于双活-备份的 DR 解决方案
 
-![Dual-active-standby](/Dual-active-standby.png)
+![Active-active failover](/active-active-failover.png)
 
 在某些边缘或中小型场景中，或者如果你没有资源部署远程 WAL 或对象存储，双活-备份相对于 Standalone 的灾难恢复提供了更好的解决方案。
 通过在两个独立节点之间同步复制请求，确保了高可用性。
@@ -92,7 +92,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 **双活-备份功能仅在 GreptimeDB 企业版中提供。**
 :::
 
-有关此解决方案的更多信息，请参阅[基于双活-备份的 DR 解决方案](./dr-solution-based-on-dual-active-standby.md)。
+有关此解决方案的更多信息，请参阅[基于双活-备份的 DR 解决方案](./dr-solution-based-on-active-active-failover.md)。
 
 ### 基于单集群跨区域部署的 DR 解决方案
 
@@ -137,9 +137,6 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 * [备份与恢复数据](./back-up-&-restore-data.md)
 * [GreptimeDB Standalone 的 DR 解决方案](./dr-solution-for-standalone.md)
-* [基于双活-备份的 DR 解决方案](./dr-solution-based-on-dual-active-standby.md)
+* [基于双活-备份的 DR 解决方案](./dr-solution-based-on-active-active-failover.md)
 * [基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
-* Kafka DR 解决方案：
-  * [DR for Multi-Datacenter Apache Kafka Deployments](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/)
-  * [Increase Apache Kafka’s resiliency with a multi-Region deployment and MirrorMaker 2](https://aws.amazon.com/cn/blogs/big-data/increase-apache-kafkas-resiliency-with-a-multi-region-deployment-and-mirrormaker-2/)
 * [S3 对象副本概述](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
