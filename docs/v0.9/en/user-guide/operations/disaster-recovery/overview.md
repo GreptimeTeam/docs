@@ -67,21 +67,21 @@ Write the WAL to the Kafka cluster and store the data in object storage, so the 
 
  For more information about this solution, see [DR solution for Standalone](./dr-solution-for-standalone.md).
 
-### DR solution based on Dual Active-Standby 
+### DR solution based on Active-Active Failover 
 
-![Dual-active-standby](/Dual-active-standby.png)
+![Active-active failover](/active-active-failover.png)
 
-In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Dual Active-Standby offers a better solution compared to Standalone DR. By replicating requests synchronously between two standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
+In some edge or small-to-medium scale scenarios, or if you lack the resources to deploy remote WAL or object storage, Active-Active Failover offers a better solution compared to Standalone DR. By replicating requests synchronously between two actively serving standalone nodes, high availability is ensured. The failure of any single node will not lead to data loss or a decrease in service availability even when using local disk-based WAL and data storage.
 
 Deploying nodes in different regions can also meet region-level DR requirements, but the scalability is limited.
 
 :::tip NOTE
 
-**Dual Active-Standby is only available in GreptimeDB Enterprise.**
+**Active-Active Failover  is only available in GreptimeDB Enterprise.**
 
 :::
 
-For more information about this solution, see [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md).
+For more information about this solution, see [DR solution based on Active-Active Failover](./dr-solution-based-on-active-active-failover.md).
 
 ### DR solution  based on cross-region deployment in a single cluster
 
@@ -111,7 +111,7 @@ By comparing these DR solutions, you can decide on the final option based on the
 |     DR solution | Error Tolerance Objective |  RPO | RTO | TCO | Scenarios | Remote WAL & Object Storage | Notes |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
 |  DR solution for Standalone| Single-Region | Backup Interval | Minute or Hour level | Low | Low requirements for availability and reliability in small scenarios |  Optional | |
-|  DR solution based on Dual Active-Standby| Cross-Region | 0 | Minute level | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
+|  DR solution based on active-active failover | Cross-Region | 0 | Minute level | Low | High requirements for availability and reliability in small-to-medium scenarios |  Optional | Commercial feature |
 |  DR solution based on cross-region deployment in a single cluster| Multi-Regions | 0 | Minute level | High | High requirements for availability and reliability in medium-to-large scenarios |  Required | |
 |  DR solution based on BR | Single-Region | Backup Interval | Minute or Hour level | Low | Acceptable requirements for availability and reliability | Optional | |
 
@@ -120,9 +120,6 @@ By comparing these DR solutions, you can decide on the final option based on the
 
 * [Backup & restore data](./back-up-&-restore-data.md)
 * [DR solution for GreptimeDB Standalone](./dr-solution-for-standalone.md)
-* [DR solution based on Dual Active-Standby](./dr-solution-based-on-dual-active-standby.md)
+* [DR solution based on Active-Active Failover ](./dr-solution-based-on-active-active-failover.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
-* Kafka DR solution:
-  * [DR for Multi-Datacenter Apache Kafka Deployments](https://www.confluent.io/blog/disaster-recovery-multi-datacenter-apache-kafka-deployments/)
-  * [Increase Apache Kafka’s resiliency with a multi-Region deployment and MirrorMaker 2](https://aws.amazon.com/cn/blogs/big-data/increase-apache-kafkas-resiliency-with-a-multi-region-deployment-and-mirrormaker-2/)
 * [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)

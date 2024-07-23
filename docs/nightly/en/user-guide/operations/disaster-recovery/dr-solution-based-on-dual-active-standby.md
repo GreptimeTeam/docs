@@ -1,1 +1,0 @@
-# DR solution based on Dual Active-Standby
