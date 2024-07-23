@@ -54,14 +54,14 @@
     - overview
     - go
     - java
-  - Python-Scripts:
-    - overview
-    - getting-started
-    - define-function
-    - query-data
-    - write-data
-    - data-types
-    - api
+  # - Python-Scripts:
+  #   - overview
+  #   - getting-started
+  #   - define-function
+  #   - query-data
+  #   - write-data
+  #   - data-types
+  #   - api
   - cluster
   - Operations:
     # - overview
