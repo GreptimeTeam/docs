@@ -1,6 +1,9 @@
 # View
 
-In SQL, a view is a virtual table based on the result set of an SQL statement. It contains rows and columns just like a real table.
+In SQL, a view is a virtual table based on the result set of an SQL statement. It contains rows and columns just like a real table. In the following situations, we can use views:
+
+* Simplifying complex queries, avoiding the need to repeatedly write and send complex statements for every query.
+* Granting read permissions to specific users while restricting access to certain columns and rows to ensure data security and isolation.
 
 A view is created with the `CREATE VIEW` statement.
 
