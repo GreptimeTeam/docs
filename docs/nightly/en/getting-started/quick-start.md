@@ -307,7 +307,7 @@ ORDER BY
 
 ### Continues aggregation
 
-For futher analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the continuous aggregation feature of GreptimeDB.
+For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the continuous aggregation feature of GreptimeDB.
 
 For example, we can sink data to two tables for the metrics and logs example in this document.
 `metrics_5_seconds` and `logs_5_seconds` are the tables that store the 5-second aggregated data of the `app_metrics` and `app_logs` tables.
