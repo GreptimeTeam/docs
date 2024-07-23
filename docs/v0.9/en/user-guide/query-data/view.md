@@ -69,7 +69,7 @@ CREATE OR REPLACE VIEW memory_monitor AS
     SELECT memory, host, ts FROM monitor;
 ```
 
-## List views
+## List Views
 
 `SHOW VIEWS` statement to find all the views:
 
