@@ -46,7 +46,7 @@ After the creation is completed, you can use the following command to connect th
 ./gtctl cluster connect mycluster
 ```
 
-You also can use [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md.md) to deploy the cluster.
+You also can use [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md) to deploy the cluster.
 
 :::tip Note
 

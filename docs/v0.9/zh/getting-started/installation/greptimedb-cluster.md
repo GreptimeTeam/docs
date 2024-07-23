@@ -44,7 +44,7 @@ curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh 
 ./gtctl cluster connect mycluster
 ```
 
-您还可以使用 [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md.md) 来部署集群。
+您还可以使用 [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md) 来部署集群。
 
 :::tip 提示
 
