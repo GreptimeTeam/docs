@@ -1,7 +1,7 @@
 # Quick Start
 
 Before reading this guide,
-you should have already [installed GreptimeDB](../installation/overview.md).
+you should have already [installed GreptimeDB](./installation/overview.md).
 
 In this document, we will create a metric table and a log table to go through the core features of GreptimeDB.
 
@@ -425,7 +425,7 @@ select * from cor_metrics_logs
 
 ### GreptimeDB Dashboard
 
-GreptimeDB provides a user-friendly [dashboard](../installation/greptimedb-dashboard.md) to assist you in exploring data.
+GreptimeDB provides a user-friendly [dashboard](./installation/greptimedb-dashboard.md) to assist you in exploring data.
 Once GreptimeDB is started as mentioned in the Prerequisites section, you can access the dashboard through the HTTP endpoint `http://localhost:4000/dashboard`.
 
 Write SQL into the command text, then click `Run All`. We'll got all data in system_metrics table.
