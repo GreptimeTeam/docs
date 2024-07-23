@@ -253,6 +253,7 @@ SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
 2 rows in set (0.00 sec)
 ```
 
+
 ## Aggregate data by time window
 
 GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time window.
