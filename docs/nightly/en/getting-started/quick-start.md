@@ -353,7 +353,7 @@ Then click on the `Chart` button in the result panel to visualize the data.
 Besides SQL, GreptimeDB also supports multiple protocols, one of the most popular is InfluxDB Line Protocol.
 By click `Ingest` icon in the dashboard, you can upload data in InfluxDB Line Protocol format.
 
-For example, choose `Miliseconds` in the input panel, and paste the following data into the input box:
+For example, choose `Milliseconds` in the input panel, and paste the following data into the input box:
 
 ```txt
 grpc_metrics,host=host1,method_name=GetUser latency=100 1720728021000
