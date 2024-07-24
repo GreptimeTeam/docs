@@ -176,3 +176,48 @@ WITH(
 
 * `Table`: 表的名称
 * `Create Table`: 用于创建该表的 SQL
+
+## SHOW CREATE FLOW
+
+展示创建指定 Flow 任务的 `CREATE FLOW` 语句。
+
+比如：
+  
+```sql
+public=> SHOW CREATE FLOW filter_numbers;
+```
+
+```sql
+      Flow      |                      Create Flow                      
+----------------+-------------------------------------------------------
+ filter_numbers | CREATE OR REPLACE FLOW IF NOT EXISTS filter_numbers  +
+                | SINK TO out_num_cnt                                  +
+                | AS SELECT number FROM numbers_input WHERE number > 10
+(1 row)
+```
+
+## SHOW FLOWS
+
+展示当前所有 Flow 任务：
+
+```sql
+public=> SHOW FLOWS;
+```
+
+```sql
+     Flows      
+----------------
+ filter_numbers
+(1 row)
+```
+also support `LIKE` expression:
+```sql
+public=> show flows like "filter%";
+```
+
+```sql
+     Flows      
+----------------
+ filter_numbers
+(1 row)
+```
