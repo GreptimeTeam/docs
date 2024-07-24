@@ -65,4 +65,4 @@ GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://gre
 
 ## Does GreptimeDB have disaster recovery solutions?
 
-Yes,  Please refer to the [disaster recovery documentation](/user-guide/operations/disaster-recovery/overview).
+Yes. Please refer to [disaster recovery](/user-guide/operations/disaster-recovery/overview).
