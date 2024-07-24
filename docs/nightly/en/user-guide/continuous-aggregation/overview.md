@@ -82,7 +82,7 @@ VALUES
     ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", "2021-07-01 00:01:01.500");
 ```
 
-Then the sink table `ngx_statistics` will be incremently updated and contain the following data:
+Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
 
 ```sql
 SELECT * FROM ngx_statistics;

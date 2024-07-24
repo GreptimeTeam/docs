@@ -1,6 +1,6 @@
 # Expression
 
-This part list all supported aggregate functions.
+This part list all supported aggregate functions in flow.
 
 - `count(column)`: count the number of rows.
 - `sum(column)`: sum the values of the column.

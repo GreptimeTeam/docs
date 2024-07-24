@@ -18,3 +18,5 @@ The query should have a `FROM` clause to identify the source table. As the join 
 `GROUP BY` clause works as in a normal query. It groups the data by the specified columns. One special thing is the time window functions `hop()` and `tumble()` described in [Define Time Window](./define-time-window.md) part. They are used in the `GROUP BY` clause to define the time window for the aggregation. Other expressions in `GROUP BY` can be either literal, column or scalar expressions.
 
 Others things like `ORDER BY`, `LIMIT`, `OFFSET` are not supported in the continuous aggregation query.
+
+## Rewrite existing query to continuous aggregation query
