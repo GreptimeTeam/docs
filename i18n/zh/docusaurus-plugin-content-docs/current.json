@@ -1,0 +1,94 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.docs.category.Getting Started": {
+    "message": "Getting Started",
+    "description": "The label for category Getting Started in sidebar docs"
+  },
+  "sidebar.docs.category.Installation": {
+    "message": "Installation",
+    "description": "The label for category Installation in sidebar docs"
+  },
+  "sidebar.docs.category.Quick Start": {
+    "message": "Quick Start",
+    "description": "The label for category Quick Start in sidebar docs"
+  },
+  "sidebar.docs.category.User Guide": {
+    "message": "User Guide",
+    "description": "The label for category User Guide in sidebar docs"
+  },
+  "sidebar.docs.category.Concepts": {
+    "message": "Concepts",
+    "description": "The label for category Concepts in sidebar docs"
+  },
+  "sidebar.docs.category.Clients": {
+    "message": "Clients",
+    "description": "The label for category Clients in sidebar docs"
+  },
+  "sidebar.docs.category.sdk-libraries": {
+    "message": "sdk-libraries",
+    "description": "The label for category sdk-libraries in sidebar docs"
+  },
+  "sidebar.docs.category.Migrate to GreptimeDB": {
+    "message": "Migrate to GreptimeDB",
+    "description": "The label for category Migrate to GreptimeDB in sidebar docs"
+  },
+  "sidebar.docs.category.Write Data": {
+    "message": "Write Data",
+    "description": "The label for category Write Data in sidebar docs"
+  },
+  "sidebar.docs.category.Query Data": {
+    "message": "Query Data",
+    "description": "The label for category Query Data in sidebar docs"
+  },
+  "sidebar.docs.category.Continuous Aggregation": {
+    "message": "Continuous Aggregation",
+    "description": "The label for category Continuous Aggregation in sidebar docs"
+  },
+  "sidebar.docs.category.Client Libraries": {
+    "message": "Client Libraries",
+    "description": "The label for category Client Libraries in sidebar docs"
+  },
+  "sidebar.docs.category.Python Scripts": {
+    "message": "Python Scripts",
+    "description": "The label for category Python Scripts in sidebar docs"
+  },
+  "sidebar.docs.category.Operations": {
+    "message": "Operations",
+    "description": "The label for category Operations in sidebar docs"
+  },
+  "sidebar.docs.category.deploy-on-kubernetes": {
+    "message": "deploy-on-kubernetes",
+    "description": "The label for category deploy-on-kubernetes in sidebar docs"
+  },
+  "sidebar.docs.category.disaster-recovery": {
+    "message": "disaster-recovery",
+    "description": "The label for category disaster-recovery in sidebar docs"
+  },
+  "sidebar.docs.category.remote-wal": {
+    "message": "remote-wal",
+    "description": "The label for category remote-wal in sidebar docs"
+  },
+  "sidebar.docs.category.Reference": {
+    "message": "Reference",
+    "description": "The label for category Reference in sidebar docs"
+  },
+  "sidebar.docs.category.SQL": {
+    "message": "SQL",
+    "description": "The label for category SQL in sidebar docs"
+  },
+  "sidebar.docs.category.functions": {
+    "message": "functions",
+    "description": "The label for category functions in sidebar docs"
+  },
+  "sidebar.docs.category.information-schema": {
+    "message": "information-schema",
+    "description": "The label for category information-schema in sidebar docs"
+  },
+  "sidebar.docs.link.Release Notes": {
+    "message": "Release Notes",
+    "description": "The label for link Release Notes in sidebar docs, linking to /blog/release-notes/all-releases"
+  }
+}

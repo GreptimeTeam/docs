@@ -1,0 +1,22 @@
+{
+  "title": {
+    "message": "GreptimeDB",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "GreptimeDB Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Home": {
+    "message": "Home",
+    "description": "Navbar item with label Home"
+  },
+  "item.label.Blogs": {
+    "message": "Blogs",
+    "description": "Navbar item with label Blogs"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}
