@@ -1,8 +1,11 @@
 # FLOWS
-The Flows table provide the flow task's information.
+The `Flows` table provides the flow task information.
 
 ```sql
 public=> DESC TABLE INFORMATION_SCHEMA.FLOWS;
+```
+
+```sql
       Column      |  Type  | Key | Null | Default | Semantic Type 
 ------------------+--------+-----+------+---------+---------------
  flow_name        | String |     | NO   |         | FIELD
@@ -23,7 +26,7 @@ The columns in table:
 * `flow_name`: the flow task's name.
 * `flow_id`: the flow task's id.
 * `table_catalog`: the catalog this flow belongs to, named as `table_catalog` to keep consistent with the `INFORMATION_SCHEMA` standard.
-* `flow_definition`: the flow task's definition. It's the SQL statement that were used to creates the flow task.
+* `flow_definition`: the flow task's definition. It's the SQL statement used to create the flow task.
 * `comment`: the comment of the flow task.
 * `expire_after`: the expire time of the flow task.
 * `source_table_ids`: the source table ids of the flow task.

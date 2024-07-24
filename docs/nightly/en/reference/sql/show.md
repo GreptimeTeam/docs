@@ -185,6 +185,9 @@ For example:
   
 ```sql
 public=> SHOW CREATE FLOW filter_numbers;
+```
+
+```sql
       Flow      |                      Create Flow                      
 ----------------+-------------------------------------------------------
  filter_numbers | CREATE OR REPLACE FLOW IF NOT EXISTS filter_numbers  +
@@ -199,14 +202,20 @@ Show all flows:
 
 ```sql
 public=> SHOW FLOWS;
+```
+
+```sql
      Flows      
 ----------------
  filter_numbers
 (1 row)
 ```
 also support `LIKE` expression:
-``sql
+```sql
 public=> show flows like "filter%";
+```
+
+```sql
      Flows      
 ----------------
  filter_numbers
