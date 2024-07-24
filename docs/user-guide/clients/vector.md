@@ -6,7 +6,7 @@ template: ../../db-cloud-shared/clients/vector-integration.md
 
 <docs-template>
 
-{template toml-config%
+\{template toml-config%
 
 ## Integration
 
@@ -32,7 +32,7 @@ If you have changed the default gRPC port when starting GreptimeDB with [custom 
 
 %}
 
-{template data-model%
+\{template data-model%
 
 ## Data Model
 

@@ -3,21 +3,21 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-{template data-source-plugin-intro%%}
+\{template data-source-plugin-intro%%}
 
-{template data-source-plugin-installation%%}
+\{template data-source-plugin-installation%%}
 
-{template preview-greptimedb-using-docker%%}
+\{template preview-greptimedb-using-docker%%}
 
-{template connection-settings-title%%}
+\{template connection-settings-title%%}
 
 Click the Add data source button and select GreptimeDB as the type.
 
-{template grafana-add-greptimedb-data-source-img%%}
+\{template grafana-add-greptimedb-data-source-img%%}
 
 Fill in the following URL in the GreptimeDB server URL:
 
-{template greptime-data-source-connection-url%%}
+\{template greptime-data-source-connection-url%%}
 
 Then do the following configuration:
 
@@ -28,7 +28,7 @@ Then do the following configuration:
 
 Then click the Save & Test button to test the connection.
 
-{template create-a-dashboard%%}
+\{template create-a-dashboard%%}
 
 ## Prometheus data source
 
@@ -36,7 +36,7 @@ Click the Add data source button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
 
-{template prometheus-server-url%%}
+\{template prometheus-server-url%%}
 
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 

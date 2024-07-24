@@ -5,7 +5,7 @@ template: template.md
 
 <docs-template>
 
-{template ingester-lib-introduction%
+\{template ingester-lib-introduction%
 
 The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
 
@@ -16,7 +16,7 @@ The Java ingester SDK provided by GreptimeDB is a lightweight library with the f
 
 %}
 
-{template ingester-lib-installation%
+\{template ingester-lib-installation%
 
 1. Install the Java Development Kit(JDK)
 
@@ -42,7 +42,7 @@ After configuring your dependencies, make sure they are available to your projec
 
 %}
 
-{template ingester-lib-connect%
+\{template ingester-lib-connect%
 
 The following code demonstrates how to connect to GreptimeDB with the simplest configuration.
 For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
@@ -74,7 +74,7 @@ For customizing the connection options, please refer to [API Documentation](#ing
 %}
 
 
-{template low-level-object%
+\{template low-level-object%
 
 ```java
 // Construct the table schema for CPU metrics
@@ -102,7 +102,7 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 %}
 
 
-{template create-rows%
+\{template create-rows%
 
 ```java
 // Creates schemas
@@ -143,7 +143,7 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template insert-rows%
+\{template insert-rows%
 
 ```java
 // Saves data
@@ -166,7 +166,7 @@ if (result.isOk()) {
 %}
 
 
-{template streaming-insert%
+\{template streaming-insert%
 
 
 ```java
@@ -192,7 +192,7 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template update-rows%
+\{template update-rows%
 
 #### Update data
 
@@ -221,7 +221,7 @@ Result<WriteOk, Err> result = future.get();
 
 %}
 
-{template high-level-style-object%
+\{template high-level-style-object%
 
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
@@ -281,7 +281,7 @@ for (int i = 0; i < 10; i++) {
 %}
 
 
-{template high-level-style-insert-data%
+\{template high-level-style-insert-data%
 
 
 Write data with POJO objects:
@@ -303,7 +303,7 @@ if (result.isOk()) {
 %}
 
 
-{template high-level-style-streaming-insert%
+\{template high-level-style-streaming-insert%
 
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
@@ -328,7 +328,7 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template high-level-style-update-data%
+\{template high-level-style-update-data%
 
 #### Update data
 
@@ -361,7 +361,7 @@ Result<WriteOk, Err> updateResult = greptimeDB.writeObjects(newCpu).get();
 
 %}
 
-{template ingester-lib-debug-logs%
+\{template ingester-lib-debug-logs%
 
 ### Debug logs
 
@@ -370,19 +370,19 @@ Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-i
 
 %}
 
-{template more-ingestion-examples%
+\{template more-ingestion-examples%
 
 For fully runnable code snippets and the complete code of the demo, please refer to the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
 
 %}
 
-{template ingester-lib-reference%
+\{template ingester-lib-reference%
 
 - [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
 %}
 
-{template recommended-query-library%
+\{template recommended-query-library%
 
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
@@ -392,7 +392,7 @@ If you want to use other protocols, just replace the MySQL driver with the corre
 
 %}
 
-{template query-library-installation%
+\{template query-library-installation%
 
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
@@ -408,7 +408,7 @@ dependencies list:
 
 %}
 
-{template query-library-connect%
+\{template query-library-connect%
 
 Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
 
@@ -457,7 +457,7 @@ jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTime
 
 %}
 
-{template query-library-raw-sql%
+\{template query-library-raw-sql%
 
 ```java
 try (Connection conn = getConnection()) {
@@ -500,7 +500,7 @@ For the complete code of the demo, please refer to [here](https://github.com/Gre
 
 %}
 
-{template query-lib-doc-link%
+\{template query-lib-doc-link%
 
 - [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 

@@ -5,7 +5,7 @@ template: template.md
 
 <docs-template>
 
-{template ingester-lib-introduction%
+\{template ingester-lib-introduction%
 
 The Go ingester SDK provided by GreptimeDB is a lightweight,
 concurrent-safe library that is easy to use with the metric struct.
@@ -13,7 +13,7 @@ concurrent-safe library that is easy to use with the metric struct.
 %}
 
 
-{template ingester-lib-installation%
+\{template ingester-lib-installation%
 
 Use the following command to install the GreptimeDB client library for Go:
 
@@ -33,7 +33,7 @@ import (
 
 %}
 
-{template ingester-lib-connect%
+\{template ingester-lib-connect%
 
 ```go
 cfg := greptime.NewConfig("127.0.0.1").
@@ -50,7 +50,7 @@ cli, _ := greptime.NewClient(cfg)
 ```
 %}
 
-{template low-level-object%
+\{template low-level-object%
 
 ```go
 // Construct the table schema for CPU metrics
@@ -79,7 +79,7 @@ if err != nil {
 
 %}
 
-{template create-rows%
+\{template create-rows%
 
 ```go
 cpuMetric, err := table.New("cpu_metric")
@@ -110,7 +110,7 @@ if err != nil {
 
 %}
 
-{template insert-rows%
+\{template insert-rows%
 
 ```go
 resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
@@ -122,7 +122,7 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
 %}
 
-{template streaming-insert%
+\{template streaming-insert%
 
 ```go
 err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
@@ -141,7 +141,7 @@ affected, err := cli.CloseStream(ctx)
 %}
 
 
-{template high-level-style-object%
+\{template high-level-style-object%
 
 ```go
 type CpuMetric struct {
@@ -188,7 +188,7 @@ memMetrics := []MemMetric{
 
 %}
 
-{template high-level-style-insert-data%
+\{template high-level-style-insert-data%
 
 ```go
 resp, err := cli.WriteObject(context.Background(), cpuMetrics)
@@ -197,7 +197,7 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 
 %}
 
-{template high-level-style-streaming-insert%
+\{template high-level-style-streaming-insert%
 
 ```go
 err := cli.StreamWriteObject(context.Background(), cpuMetrics)
@@ -212,26 +212,26 @@ affected, err := cli.CloseStream(ctx)
 
 %}
 
-{template more-ingestion-examples%
+\{template more-ingestion-examples%
 
 For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
 %}
 
-{template ingester-lib-reference%
+\{template ingester-lib-reference%
 
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
 %}
 
 
-{template recommended-query-library%
+\{template recommended-query-library%
 
 We recommend using the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
 
 %}
 
-{template query-library-installation%
+\{template query-library-installation%
 
 Use the following command to install the GORM library:
 
@@ -256,7 +256,7 @@ import (
 
 %}
 
-{template query-library-connect%
+\{template query-library-connect%
 
 ```go
 type Mysql struct {
@@ -288,7 +288,7 @@ m.DB = db
 ```
 %}
 
-{template query-library-raw-sql%
+\{template query-library-raw-sql%
 
 The following code declares a GORM object model:
 
@@ -330,7 +330,7 @@ db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 %}
 
-{template query-lib-doc-link%
+\{template query-lib-doc-link%
 
 [GORM](https://gorm.io/docs/index.html)
 

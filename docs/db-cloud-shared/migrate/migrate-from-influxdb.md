@@ -67,7 +67,7 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
 - **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
 
-{template get-database-connection-information%%}
+\{template get-database-connection-information%%}
 
 ## Write data
 
@@ -78,14 +78,14 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
-{template write-data-http-api%%}
+\{template write-data-http-api%%}
 
 ### Telegraf
 
 GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
 To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
-{template write-data-telegraf%%}
+\{template write-data-telegraf%%}
 
 ### Client libraries
 
@@ -94,7 +94,7 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-{template write-data-client-libs%%}
+\{template write-data-client-libs%%}
 
 In addition to the languages previously mentioned,
 GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
@@ -170,7 +170,7 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 ## Visualize data
 
-{template visualize-data%%}
+\{template visualize-data%%}
 
 ## Migrate data
 
@@ -309,4 +309,4 @@ export GREPTIME_DB=<db-name>
 
 Import the data from the files into GreptimeDB:
 
-{template import-data-shell%%}
+\{template import-data-shell%%}

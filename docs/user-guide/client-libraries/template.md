@@ -9,11 +9,11 @@ It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 
-{template ingester-lib-introduction%%}
+\{template ingester-lib-introduction%%}
 
 ### Installation
 
-{template ingester-lib-installation%%}
+\{template ingester-lib-installation%%}
 
 ### Connect to database
 
@@ -21,7 +21,7 @@ Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
 Here we set the username and password when using the library to connect to GreptimeDB.
 
-{template ingester-lib-connect%%}
+\{template ingester-lib-connect%%}
 
 ### Data model
 
@@ -45,25 +45,25 @@ The table consists of three types of columns:
 - `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
 - `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
-{template low-level-object%%}
+\{template low-level-object%%}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
-{template create-rows%%}
+\{template create-rows%%}
 
 #### Insert data
 
 The following example shows how to insert rows to tables in GreptimeDB.
 
-{template insert-rows%%}
+\{template insert-rows%%}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-{template streaming-insert%%}
+\{template streaming-insert%%}
 
-{template update-rows%%}
+\{template update-rows%%}
 
 <!-- TODO ### Delete Metrics -->
 
@@ -77,29 +77,29 @@ This is because the ORM style object may consume more resources and time when co
 
 #### Create row objects
 
-{template high-level-style-object%%}
+\{template high-level-style-object%%}
 
 #### Insert data
 
-{template high-level-style-insert-data%%}
+\{template high-level-style-insert-data%%}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-{template high-level-style-streaming-insert%%}
+\{template high-level-style-streaming-insert%%}
 
-{template high-level-style-update-data%%}
+\{template high-level-style-update-data%%}
 
 ### More examples
 
-{template more-ingestion-examples%%}
+\{template more-ingestion-examples%%}
 
-{template ingester-lib-debug-logs%%}
+\{template ingester-lib-debug-logs%%}
 
 ### Ingester library reference
 
-{template ingester-lib-reference%%}
+\{template ingester-lib-reference%%}
 
 ## Query data
 
@@ -108,27 +108,27 @@ Therefore, we recommend using mature SQL drivers to query data.
 
 ### Recommended library
 
-{template recommended-query-library%%}
+\{template recommended-query-library%%}
 
 ### Installation
 
-{template query-library-installation%%}
+\{template query-library-installation%%}
 
 ### Connect to database
 
 The following example shows how to connect to GreptimeDB:
 
-{template query-library-connect%%}
+\{template query-library-connect%%}
 
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data.
 
-{template query-library-raw-sql%%}
+\{template query-library-raw-sql%%}
 
 ### Query library reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-{template query-lib-doc-link%%}
+\{template query-lib-doc-link%%}

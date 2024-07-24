@@ -1,7 +1,7 @@
 # Introduction
 
 <p align="center">
-    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
+    <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
 </p>
 
 **GreptimeDB** is an open-source unified time-series database for **Metrics**, **Logs**, and **Events** (also **Traces** in plan). You can gain real-time insights from Edge to Cloud at any scale.

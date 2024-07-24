@@ -5,7 +5,7 @@ template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
 
 <docs-template>
 
-{template write-data-http-api%
+\{template write-data-http-api%
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
@@ -23,7 +23,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 %}
 
-{template write-data-telegraf%
+\{template write-data-telegraf%
 
 
 ::: code-group
@@ -49,7 +49,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 %}
 
 
-{template write-data-client-libs%
+\{template write-data-client-libs%
 ::: code-group
 
 ```js [Node.js]
@@ -159,12 +159,12 @@ $writeApi->write($point);
 
 %}
 
-{template visualize-data%
+\{template visualize-data%
 It is recommended using Grafana to visualize data in GreptimeDB.
 Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
 %}
 
-{template import-data-shell%
+\{template import-data-shell%
 
 ```shell
 for file in data.*; do

@@ -41,7 +41,7 @@ PARTITION ON COLUMNS (a) (
 );
 ```
 
-The above `my_table` has 3 partitions. The first partition contains rows where "a < 10", the second partition contains rows where "10 <= a < 20", and the third partition contains all rows where "a >= 20".
+The above `my_table` has 3 partitions. The first partition contains rows where "a < 10", the second partition contains rows where "10 \<= a < 20", and the third partition contains all rows where "a >= 20".
 
 ::: warning Important
 

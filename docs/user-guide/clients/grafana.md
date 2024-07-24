@@ -5,7 +5,7 @@ template: ../../db-cloud-shared/clients/grafana-integration.md
 
 <docs-template>
 
-{template data-source-plugin-intro%
+\{template data-source-plugin-intro%
 
 The GreptimeDB data source plugin is based on the Prometheus data source and adds GreptimeDB-specific features.
 The plugin adapts perfectly to the GreptimeDB data model,
@@ -14,7 +14,7 @@ In addition, it also solves some compatibility issues compared to using the Prom
 
 %}
 
-{template data-source-plugin-installation%
+\{template data-source-plugin-installation%
 
 ### Installation
 
@@ -35,7 +35,7 @@ Note that you may need to restart your grafana server after installing the plugi
 
 %}
 
-{template preview-greptimedb-using-docker%
+\{template preview-greptimedb-using-docker%
 
 ### Quick preview using Docker
 
@@ -57,17 +57,17 @@ docker run -d -p 3000:3000 --name=grafana --rm \
 
 %}
 
-{template grafana-add-greptimedb-data-source-img%
+\{template grafana-add-greptimedb-data-source-img%
 
 ![grafana-add-greptimedb-data-source](/grafana-add-greptimedb-data-source.png)
 
 %}
 
-{template connection-settings-title%
+\{template connection-settings-title%
 ### Connection settings
 %}
 
-{template greptime-data-source-connection-url%
+\{template greptime-data-source-connection-url%
 
 ```txt
 http://<host>:4000
@@ -75,7 +75,7 @@ http://<host>:4000
 
 %}
 
-{template create-a-dashboard%
+\{template create-a-dashboard%
 
 ### Create a dashboard
 
@@ -100,7 +100,7 @@ GreptimeDB is compatible with most PromQL, but there are some limitations. Pleas
 
 %}
 
-{template prometheus-server-url%
+\{template prometheus-server-url%
 
 ```txt
 http://<host>:4000/v1/prometheus

@@ -6,7 +6,7 @@ template: ../../db-cloud-shared/clients/vector-integration.md
 
 <docs-template>
 
-{template toml-config%
+\{template toml-config%
 
 To use Vector with GreptimeCloud, you need its version `0.37` and above.
 A minimal configuration of when using your GreptimeCloud instance can be:

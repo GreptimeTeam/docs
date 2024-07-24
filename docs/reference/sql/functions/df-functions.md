@@ -3422,7 +3422,7 @@ Transforms an array into rows.
 
 Returns an Arrow array between start and stop with step. `SELECT range(2, 10, 3) -> [2, 5, 8]` or `SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);`
 
-The range start..end contains all values with start <= x < end. It is empty if start >= end.
+The range start..end contains all values with start \<= x < end. It is empty if start >= end.
 
 Step can not be 0 (then the range will be nonsense.).
 

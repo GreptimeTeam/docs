@@ -5,7 +5,7 @@ template: quick-start-template.md
 
 <docs-template>
 
-{template write-data%
+\{template write-data%
 
 <!--@include: ../../db-cloud-shared/quick-start/node.md-->
 

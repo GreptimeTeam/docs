@@ -5,14 +5,14 @@ template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
 
 <docs-template>
 
-{template get-database-connection-information%
+\{template get-database-connection-information%
 
 Navigate to the [GreptimeCloud console](https://greptime.cloud) and click the `Connection Information` section under `Manage Your Data`.
 You can find the GreptimeDB URL, database name, as well as the username and password associated with the token.
 
 %}
 
-{template write-data-http-api%
+\{template write-data-http-api%
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
@@ -30,7 +30,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 %}
 
-{template write-data-telegraf%
+\{template write-data-telegraf%
 
 
 ::: code-group
@@ -55,7 +55,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 %}
 
-{template write-data-client-libs%
+\{template write-data-client-libs%
 ::: code-group
 
 ```js [Node.js]
@@ -165,7 +165,7 @@ $writeApi->write($point);
 
 %}
 
-{template visualize-data%
+\{template visualize-data%
 
 The GreptimeCloud console provides a Workbench for data visualization.
 To use it, open the [Greptime console](https://greptime.cloud), select `Web Dashboard` under `Manage Your Data`,
@@ -173,7 +173,7 @@ then create a new Workbench file and add panels as your needs.
 
 %}
 
-{template import-data-shell%
+\{template import-data-shell%
 
 ```shell
 for file in data.*; do
