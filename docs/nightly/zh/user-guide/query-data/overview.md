@@ -5,6 +5,10 @@
 - [SQL](./sql.md)
 - [PromQL](promql.md)
 
+从 v0.9 开始， GreptimeDB 开始支持查询视图：
+
+* [View](./view.md)
+
 ## 客户端库
 
 客户端库提供了一种方便的方式来连接 GreptimeDB 并与数据交互。

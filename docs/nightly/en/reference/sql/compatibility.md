@@ -11,7 +11,7 @@ GreptimeDB supports a subset of ANSI SQL and has some unique extensions. Some ma
    * Since 0.8, GreptimeDB supports [append mode](/reference/sql/create#create-an-append-only-table) that creates an append-only table with `append_mode="true"` option which keeps duplicate rows.
    * GreptimeDB supports [merge mode](/reference/sql/create#create-an-append-only-table) that creates a table with `merge_mode="last_non_null"` option which allow updating a field partially.
 4. Query data: Query syntax is compatible with ANSI SQL, with some functional differences and omissions.
-   * Does not support views.
+   * Since v0.9.0, begins to support [VIEW](/user-guide/query-data/view).
    * TQL syntax extension: Supports executing PromQL in SQL via TQL subcommands. Please refer to the [TQL](./tql.md) section for details.
    * [Range Query](/reference/sql/range#range-query) to query and aggregate data within a range of time.
 5. Delete data: Deletion syntax is basically consistent with ANSI SQL.

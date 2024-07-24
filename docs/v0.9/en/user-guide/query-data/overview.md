@@ -5,6 +5,10 @@
 - [PromQL](./promql.md)
 - [SQL](./sql.md)
 
+Since v0.9, GreptimeDB supports view just like other databases:
+
+* [View](./view.md)
+
 ## Client SDK libraries
 
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.

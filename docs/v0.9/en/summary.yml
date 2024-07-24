@@ -51,6 +51,7 @@
     - overview
     - sql
     - promql
+    - view
     - query-external-data
   - Continuous-Aggregation:
     - overview
