@@ -55,3 +55,38 @@ Drop the table `monitor` in the current database:
 ```sql
 DROP TABLE monitor;
 ```
+
+
+## DROP FLOW
+
+```sql
+DROP FLOW [ IF EXISTS ] flow_name;
+```
+
+- `IF EXISTS`: Do not throw an error if the flow does not exist.
+- `flow_name`: The name of the flow to destroy.
+
+```sql
+DROP FLOW IF EXISTS test_flow;
+```
+
+```
+Query OK, 0 rows affected (0.00 sec)
+```
+
+## DROP VIEW
+
+```sql
+DROP VIEW [ IF EXISTS ] view_name;
+```
+
+- `IF EXISTS`: Do not throw an error if the view does not exist.
+- `view_name`: The name of the view to remove.
+
+```sql
+DROP VIEW IF EXISTS test_view;
+```
+
+```
+Query OK, 0 rows affected (0.00 sec)
+```
