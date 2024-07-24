@@ -1,5 +1,11 @@
 # Features that You Concern
 
+## Does GreptimeDB support logs or events?
+
+Yes, since v0.9.0, GreptimeDB treats all time series as contextual events with timestamps, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics and events with SQL, PromQL, and streaming with continuous aggregation.
+
+Please read the [log user guide](/user-guide/logs/overview).
+
 ## Does GreptimeDB support updates?
 
 Sort of, Please refer to the [update data](/user-guide/write-data/overview.md#update-data) for more information.
@@ -56,3 +62,7 @@ Yes, GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apa
 The data can be stored in cost-effective cloud storage services such as AWS S3 or Azure Blob Storage, please refer to storage configuration guide [here](./../operations/configuration.md#storage-options).
 
 GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.
+
+## Does GreptimeDB have disaster recovery solutions?
+
+Yes,  Please refer to the [disaster recovery documentation](/user-guide/operations/disaster-recovery/overview).
