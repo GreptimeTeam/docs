@@ -1,15 +1,14 @@
 # Quick Start
 
-Before reading this guide,
-you should have already [installed GreptimeDB](./installation/overview.md).
+Before proceeding, please ensure you have [installed GreptimeDB](./installation/overview.md).
 
-In this document, we will create a metric table and a log table to go through the core features of GreptimeDB.
+This guide will walk you through creating a metric table and a log table, highlighting the core features of GreptimeDB.
 
 
 ## Connect to GreptimeDB
 
-If your GreptimeDB is running at `127.0.0.1` and use the default port `4000`,
-you can connect to it via MySQL Client or PostgreSQL Client:
+If your GreptimeDB instance is running on` 127.0.0.1` with the default port `4000`,
+you can connect to it using either a MySQL or PostgreSQL client:
 
 ```shell
 mysql -h 127.0.0.1 -P 4002
@@ -23,167 +22,155 @@ psql -h 127.0.0.1 -p 4003 -d public
 
 ## Create tables
 
-Suppose you have a table named `app_metrics` that stores the RPC latency of your application.
+Suppose you have a table named `grpc_metrics` that stores the gRPC latency of your application.
+The table schema is as follows:
 
 ```sql
-create table app_metrics (
-    ts timestamp time index,
-    dc string,
-    host string,
-    latency double,
-    primary key (dc, host)
-);
-```
-The `ts` column is the time index column and the `dc` and `host` columns are tag columns that are specified by the `primary key` clause. The schema of the table is:
-
-- `ts` is the metric timestamp when collected.
-- `dc` is the datacenter name.
-- `host` is the application server hostname.
-- `latency` is the RPC request latency.
-
-There is another table that stores the application logs.
-
-```sql
-create table app_logs (
-    ts timestamp time index,
-    host string,
-    dc string,
-    `path` string,
-    `error` string FULLTEXT,
-    primary key (dc, host)
+CREATE TABLE grpc_metrics (
+    ts TIMESTAMP TIME INDEX,
+    host STRING,
+    method_name STRING,
+    latency DOUBLE,
+    PRIMARY KEY (host, method_name)
 );
 ```
 
-The time index and tag columns are the same as the `app_metrics` table.
-It is worth noting that the `error` column is specified with the `FULLTEXT` option, which creates a [full-text index](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for the column to accelerate log searching.
+- `ts`: The timestamp when the metric was collected. It is the time index column.
+- `host`: The hostname of the application server. It is a tag column.
+- `method_name`: The name of the RPC request method. It is a tag column.
+- `latency`: The latency of the RPC request.
 
-The schema of the table is:
+Additionally, there is a table `app_logs` for storing application logs:
 
-- `ts`: the log timestamp
-- `host`: the application server hostname, just like `app_metrics.host`
-- `path`: the RPC request URL path
-- `error`: the log error message, which enables the `FULLTEXT` option for log searching
+```sql
+CREATE TABLE app_logs (
+    ts TIMESTAMP TIME INDEX,
+    host STRING,
+    path STRING,
+    error STRING FULLTEXT,
+    PRIMARY KEY (host)
+);
+```
+
+- `ts`: The timestamp of the log entry. It is the time index column.
+- `host`: The hostname of the application server. It is a tag column.
+- `path`: The URL path of the RPC request.
+- `error`: The error message, [indexed with `FULLTEXT`](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for accelerated search.
 
 ## Write data
 
-Let's mock some collected metrics per second and error logs.
+Let's insert some mocked data to simulate collected metrics and error logs.
 
-The `host1` and `host2` are two application servers in the `dc1` datacenter.
-Since `2024-07-11 20:00:10`, the `host1` latency of RPC requests has become problematic,
-increasing from about 100ms to 1000ms or more.
+Two application servers, `host1` and `host2`,
+have been recording RPC latencies. Starting from `2024-07-11 20:00:10`,
+`host1` experienced a significant increase in latency.
 
 The following image shows the unstable latencies of `host1`.
 
 <img src="/unstable-latencies.png" alt="unstable latencies" width="600">
 
-Use the following SQLs to insert the mocked data.
+The following SQL statements insert the mocked data.
 
-The hosts work normally before `2024-07-11 20:00:10`:
+Before `2024-07-11 20:00:10`, the hosts were functioning normally:
 
 ```sql
-INSERT INTO app_metrics (ts, dc, host, latency) VALUES
-('2024-07-11 20:00:06', 'dc1', 'host1', 103.0),
-('2024-07-11 20:00:06', 'dc1', 'host2', 113.0),
-('2024-07-11 20:00:07', 'dc1', 'host1', 103.5),
-('2024-07-11 20:00:07', 'dc1', 'host2', 107.0),
-('2024-07-11 20:00:08', 'dc1', 'host1', 104.0),
-('2024-07-11 20:00:08', 'dc1', 'host2', 96.0),
-('2024-07-11 20:00:09', 'dc1', 'host1', 104.5),
-('2024-07-11 20:00:09', 'dc1', 'host2', 114.0);
+INSERT INTO grpc_metrics (ts, host, method_name, latency) VALUES
+('2024-07-11 20:00:06', 'host1', 'GetUser', 103.0),
+('2024-07-11 20:00:06', 'host2', 'GetUser', 113.0),
+('2024-07-11 20:00:07', 'host1', 'GetUser', 103.5),
+('2024-07-11 20:00:07', 'host2', 'GetUser', 107.0),
+('2024-07-11 20:00:08', 'host1', 'GetUser', 104.0),
+('2024-07-11 20:00:08', 'host2', 'GetUser', 96.0),
+('2024-07-11 20:00:09', 'host1', 'GetUser', 104.5),
+('2024-07-11 20:00:09', 'host2', 'GetUser', 114.0);
 ```
 
-The requested latency of `host1` is starting to become unstable and noticeably higher.
+After `2024-07-11 20:00:10`, `host1`'s latency becomes unstable:
 
 ```sql
-INSERT INTO app_metrics (ts, dc, host, latency) VALUES
-('2024-07-11 20:00:10', 'dc1', 'host1', 150.0),
-('2024-07-11 20:00:10', 'dc1', 'host2', 110.0),
-('2024-07-11 20:00:11', 'dc1', 'host1', 200.0),
-('2024-07-11 20:00:11', 'dc1', 'host2', 102.0),
-('2024-07-11 20:00:12', 'dc1', 'host1', 1000.0),
-('2024-07-11 20:00:12', 'dc1', 'host2', 108.0),
-('2024-07-11 20:00:13', 'dc1', 'host1', 80.0),
-('2024-07-11 20:00:13', 'dc1', 'host2', 111.0),
-('2024-07-11 20:00:14', 'dc1', 'host1', 4200.0),
-('2024-07-11 20:00:14', 'dc1', 'host2', 95.0),
-('2024-07-11 20:00:15', 'dc1', 'host1', 90.0),
-('2024-07-11 20:00:15', 'dc1', 'host2', 115.0),
-('2024-07-11 20:00:16', 'dc1', 'host1', 3000.0),
-('2024-07-11 20:00:16', 'dc1', 'host2', 95.0),
-('2024-07-11 20:00:17', 'dc1', 'host1', 320.0),
-('2024-07-11 20:00:17', 'dc1', 'host2', 115.0),
-('2024-07-11 20:00:18', 'dc1', 'host1', 3500.0),
-('2024-07-11 20:00:18', 'dc1', 'host2', 95.0),
-('2024-07-11 20:00:19', 'dc1', 'host1', 100.0),
-('2024-07-11 20:00:19', 'dc1', 'host2', 115.0),
-('2024-07-11 20:00:20', 'dc1', 'host1', 2500.0),
-('2024-07-11 20:00:20', 'dc1', 'host2', 95.0);
+INSERT INTO grpc_metrics (ts, host, method_name, latency) VALUES
+('2024-07-11 20:00:10', 'host1', 'GetUser', 150.0),
+('2024-07-11 20:00:10', 'host2', 'GetUser', 110.0),
+('2024-07-11 20:00:11', 'host1', 'GetUser', 200.0),
+('2024-07-11 20:00:11', 'host2', 'GetUser', 102.0),
+('2024-07-11 20:00:12', 'host1', 'GetUser', 1000.0),
+('2024-07-11 20:00:12', 'host2', 'GetUser', 108.0),
+('2024-07-11 20:00:13', 'host1', 'GetUser', 80.0),
+('2024-07-11 20:00:13', 'host2', 'GetUser', 111.0),
+('2024-07-11 20:00:14', 'host1', 'GetUser', 4200.0),
+('2024-07-11 20:00:14', 'host2', 'GetUser', 95.0),
+('2024-07-11 20:00:15', 'host1', 'GetUser', 90.0),
+('2024-07-11 20:00:15', 'host2', 'GetUser', 115.0),
+('2024-07-11 20:00:16', 'host1', 'GetUser', 3000.0),
+('2024-07-11 20:00:16', 'host2', 'GetUser', 95.0),
+('2024-07-11 20:00:17', 'host1', 'GetUser', 320.0),
+('2024-07-11 20:00:17', 'host2', 'GetUser', 115.0),
+('2024-07-11 20:00:18', 'host1', 'GetUser', 3500.0),
+('2024-07-11 20:00:18', 'host2', 'GetUser', 95.0),
+('2024-07-11 20:00:19', 'host1', 'GetUser', 100.0),
+('2024-07-11 20:00:19', 'host2', 'GetUser', 115.0),
+('2024-07-11 20:00:20', 'host1', 'GetUser', 2500.0),
+('2024-07-11 20:00:20', 'host2', 'GetUser', 95.0);
 ```
 
-Some error logs were collected when the `host1` latency of RPC requests becomes problematic.
+Some error logs were collected when the `host1` latency of RPC requests encounter latency issues.
 
 ```sql
-INSERT INTO app_logs (ts, dc, host, path, error) VALUES
-('2024-07-11 20:00:10', 'dc1', 'host1', '/api/v1/resource', 'Error: Connection timeout'),
-('2024-07-11 20:00:11', 'dc1', 'host1', '/api/v1/resource', 'Error: Database unavailable'),
-('2024-07-11 20:00:12', 'dc1', 'host1', '/api/v1/resource', 'Error: Service overload'),
-('2024-07-11 20:00:13', 'dc1', 'host1', '/api/v1/resource', 'Error: Connection reset'),
-('2024-07-11 20:00:14', 'dc1', 'host1', '/api/v1/resource', 'Error: Timeout'),
-('2024-07-11 20:00:15', 'dc1', 'host1', '/api/v1/resource', 'Error: Disk full'),
-('2024-07-11 20:00:16', 'dc1', 'host1', '/api/v1/resource', 'Error: Network issue');
+INSERT INTO app_logs (ts, host, path, error) VALUES
+('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'Error: Connection timeout'),
+('2024-07-11 20:00:11', 'host1', '/api/v1/resource', 'Error: Database unavailable'),
+('2024-07-11 20:00:12', 'host1', '/api/v1/resource', 'Error: Service overload'),
+('2024-07-11 20:00:13', 'host1', '/api/v1/resource', 'Error: Connection reset'),
+('2024-07-11 20:00:14', 'host1', '/api/v1/resource', 'Error: Timeout'),
+('2024-07-11 20:00:15', 'host1', '/api/v1/resource', 'Error: Disk full'),
+('2024-07-11 20:00:16', 'host1', '/api/v1/resource', 'Error: Network issue');
 ```
 
 ## Query data
 
 ### Filter by tags and time index
 
-You can filter the data by use of the `WHERE` clause.
-For example, to query the latency of `host1` in `dc1` after `2024-07-11 20:00:10`:
+You can filter data using the WHERE clause.
+For example, to query the latency of `host1` after `2024-07-11 20:00:15`:
 
 ```sql
-SELECT * FROM app_metrics WHERE dc = 'dc1' AND host = 'host1' AND ts >= '2024-07-11 20:00:10';
+SELECT * FROM grpc_metrics WHERE host = 'host1' AND ts > '2024-07-11 20:00:15';
 ```
 
 ```sql
-+---------------------+------+-------+---------+
-| ts                  | dc   | host  | latency |
-+---------------------+------+-------+---------+
-| 2024-07-11 20:00:10 | dc1  | host1 |     150 |
-| 2024-07-11 20:00:11 | dc1  | host1 |     200 |
-| 2024-07-11 20:00:12 | dc1  | host1 |    1000 |
-| 2024-07-11 20:00:13 | dc1  | host1 |      80 |
-| 2024-07-11 20:00:14 | dc1  | host1 |    4200 |
-| 2024-07-11 20:00:15 | dc1  | host1 |      90 |
-| 2024-07-11 20:00:16 | dc1  | host1 |    3000 |
-| 2024-07-11 20:00:17 | dc1  | host1 |     320 |
-| 2024-07-11 20:00:18 | dc1  | host1 |    3500 |
-| 2024-07-11 20:00:19 | dc1  | host1 |     100 |
-| 2024-07-11 20:00:20 | dc1  | host1 |    2500 |
-+---------------------+------+-------+---------+
-11 rows in set (0.03 sec)
++---------------------+-------+-------------+---------+
+| ts                  | host  | method_name | latency |
++---------------------+-------+-------------+---------+
+| 2024-07-11 20:00:16 | host1 | GetUser     |    3000 |
+| 2024-07-11 20:00:17 | host1 | GetUser     |     320 |
+| 2024-07-11 20:00:18 | host1 | GetUser     |    3500 |
+| 2024-07-11 20:00:19 | host1 | GetUser     |     100 |
+| 2024-07-11 20:00:20 | host1 | GetUser     |    2500 |
++---------------------+-------+-------------+---------+
+5 rows in set (0.01 sec)
 ```
 
 You can also use functions when filtering the data.
-For example, use aggregate function `avg` and the `GROUP BY` clause to get the average latencies after `2024-07-11 20:00:10`:
+For example, you can use `approx_percentile_cont` to calculate the 95th percentile of the latency grouped by the host:
 
 ```sql
-SELECT avg(latency), host FROM app_metrics WHERE ts >= '2024-07-11 20:00:10' GROUP BY host;
+SELECT approx_percentile_cont(latency, 0.95) AS p95_latency, host FROM grpc_metrics WHERE ts >= '2024-07-11 20:00:10' GROUP BY host;
 ```
 
 ```sql
-+--------------------------+-------+
-| AVG(app_metrics.latency) | host  |
-+--------------------------+-------+
-|       1376.3636363636363 | host1 |
-|        105.0909090909091 | host2 |
-+--------------------------+-------+
-2 rows in set (0.01 sec)
++-------------------+-------+
+| p95_latency       | host  |
++-------------------+-------+
+| 4164.999999999999 | host1 |
+|               115 | host2 |
++-------------------+-------+
+2 rows in set (0.02 sec)
 ```
 
 ### Range query
 
-To monitor the latencies, it is better to use [Range Queries](/reference/sql/range#range-query) to get metrics in real times.
-For example, calculate the p95 latency of requests using a 5-second time window:
+You can use [range queries](/reference/sql/range#range-query) to monitor latencies in real-time.
+For example, to calculate the p95 latency of requests using a 5-second window:
 
 ```sql
 SELECT 
@@ -191,7 +178,7 @@ SELECT
   host, 
   approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency 
 FROM 
-  app_metrics
+  grpc_metrics
 ALIGN '5s' FILL PREV;
 ```
 
@@ -199,23 +186,22 @@ ALIGN '5s' FILL PREV;
 +---------------------+-------+-------------+
 | ts                  | host  | p95_latency |
 +---------------------+-------+-------------+
-| 2024-07-11 20:00:05 | host1 |       104.5 |
-| 2024-07-11 20:00:10 | host1 |        4200 |
-| 2024-07-11 20:00:15 | host1 |        3500 |
-| 2024-07-11 20:00:20 | host1 |        2500 |
 | 2024-07-11 20:00:05 | host2 |         114 |
 | 2024-07-11 20:00:10 | host2 |         111 |
 | 2024-07-11 20:00:15 | host2 |         115 |
 | 2024-07-11 20:00:20 | host2 |          95 |
+| 2024-07-11 20:00:05 | host1 |       104.5 |
+| 2024-07-11 20:00:10 | host1 |        4200 |
+| 2024-07-11 20:00:15 | host1 |        3500 |
+| 2024-07-11 20:00:20 | host1 |        2500 |
 +---------------------+-------+-------------+
-8 rows in set (0.20 sec)
+8 rows in set (0.15 sec)
 ```
 
 ### Full-text search
 
-From the latency analysis above, we know that there may be some problems in `host1`.
-Since we typically care about API `api/v1`,
-we can use the full-text search `matches(path, 'api/v1')` to find the error logs related to the API:
+The latency analysis above indicates that `host1` may be experiencing some issues.
+You can utilize the full-text search `matches(path, 'api/v1')` to identify error logs associated with the specific API `api/v1`:
 
 ```sql
 SELECT 
@@ -238,15 +224,18 @@ ALIGN '5s';
 | 2024-07-11 20:00:10 |          5 | Error: Connection timeout | Error: Timeout       | host1 |
 | 2024-07-11 20:00:15 |          2 | Error: Disk full          | Error: Network issue | host1 |
 +---------------------+------------+---------------------------+----------------------+-------+
-2 rows in set (0.04 sec)
+2 rows in set (0.08 sec)
 ```
 
-From the SQL result, we can see that the application was working well until `2024-07-11 20:00:10`, when an `Error: Connection timeout` occurred. Between `2024-07-11 20:00:10` and `2024-07-11 20:00:15`, there are 5 error logs.
+The SQL result shows that the application was functioning properly until `2024-07-11 20:00:10`,
+when an `Error: Connection timeout` occurred.
+Between `2024-07-11 20:00:10` and `2024-07-11 20:00:15`, there were 5 error logs.
 
-### Correlation analysis for logs and metrics
+### Correlate Metrics and Logs
 
-By putting the data in two tables together, we can determine the failure time and the associated logs more easily and quickly:
-The following SQL use `JOIN` operation to correlate the metrics and logs: 
+By combining the data from the two tables,
+you can easily and quickly determine the time of failure and the corresponding logs.
+The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
 
 ```sql
 WITH
@@ -256,7 +245,7 @@ WITH
       host, 
       approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency 
     FROM 
-      app_metrics 
+      grpc_metrics 
     ALIGN '5s' FILL PREV
   ), 
   logs AS (
@@ -302,182 +291,80 @@ ORDER BY
 | 2024-07-11 20:00:20 |          95 |          0 | NULL                      | NULL                 | host2 |
 | 2024-07-11 20:00:20 |        2500 |          0 | NULL                      | NULL                 | host1 |
 +---------------------+-------------+------------+---------------------------+----------------------+-------+
-8 rows in set (0.20 sec)
+8 rows in set (0.08 sec)
 ```
 
-### Continues aggregation
+<!-- TODO need to fix bug
 
-For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the continuous aggregation feature of GreptimeDB.
+### Continuous aggregation
 
-For example, we can sink data to two tables for the metrics and logs example in this document.
-`metrics_5_seconds` and `logs_5_seconds` are the tables that store the 5-second aggregated data of the `app_metrics` and `app_logs` tables.
+For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the [continuous aggregation](/user-guide/continuous-aggregation/overview.md) feature of GreptimeDB.
 
-Create the `metrics_5_seconds` table:
+For example, aggregate the API error number by 5-second and save the data to table `api_error_count`.
+
+Create the `api_error_count` table:
 
 ```sql
-CREATE TABLE metrics_5_seconds (
+CREATE TABLE api_error_count (
   ts TIMESTAMP TIME INDEX,
-  host string,
-  p95_latency double,
+  host STRING,
+  num_errors int, 
   PRIMARY KEY(host)
 );
 ```
 
-Create the `logs_5_seconds` table:
+Then, create a Flow to aggregate the error number by 5-second:
 
 ```sql
-CREATE TABLE logs_5_seconds (
-  ts TIMESTAMP TIME INDEX,
-  host string,
-  num_errors int,
-  first_error string,
-  last_error string,
-  PRIMARY KEY(host)
-);
-```
-
-Then create `Flow`s to sink the data to the tables.
-Different from the range query syntax, you need to use the `date_bin()` function to specify the time window for the aggregation.
-
-The following SQL creates a flow named `flow_metrics_5_seconds` to sink the 5-second aggregated data of the `app_metrics` table to the `metrics_5_seconds` table:
-
-```sql
-CREATE FLOW flow_metrics_5_seconds 
-SINK TO metrics_5_seconds
+CREATE FLOW flow_api_error_count 
+SINK TO api_error_count
 AS
 SELECT 
-  date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond) AS ts, 
-  host, 
-  approx_percentile_cont(latency, 0.95) AS p95_latency 
-FROM 
-  app_metrics 
-GROUP BY date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond);
-```
-
-The following SQL creates a flow named `flow_logs_5_seconds` to sink the 5-second aggregated data of the `app_logs` table to the `logs_5_seconds` table:
-
-```sql
-CREATE FLOW flow_logs_5_seconds
-SINK TO logs_5_seconds
-AS
-SELECT 
-  date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond) AS ts, 
+  date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond) AS ts,
   host,
-  first_value(error) RANGE '5s' AS first_error,
-  last_value(error) RANGE '5s' AS last_error, 
   count(error) RANGE '5s' AS num_errors
-FROM
-  app_logs
-WHERE
-  matches(path, 'api/v1')
+FROM 
+  app_logs 
 GROUP BY date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond);
-```
+``` -->
 
-After creating the flows, when there is new data inserted into the `app_metrics` and `app_logs` tables, the data will be automatically aggregated and stored in the `metrics_5_seconds` and `logs_5_seconds` tables.
+## GreptimeDB Dashboard
 
-For example, insert more metrics to the tables respectively:
+GreptimeDB offers a [dashboard](./installation/greptimedb-dashboard.md) for data exploration and management.
 
-```sql
-INSERT INTO app_metrics (ts, dc, host, latency) VALUES
-('2024-07-11 20:00:21', 'dc1', 'host1', 1500.0),
-('2024-07-11 20:00:21', 'dc1', 'host2', 110.0);
-```
+### Explore data
 
-```sql
-INSERT INTO app_logs (ts, dc, host, path, error) VALUES
-('2024-07-11 20:00:17', 'dc1', 'host1', '/api/v1/resource', 'Error: Network issue');
-```
+Once GreptimeDB is started as mentioned in the [installation section](./installation/overview.md), you can access the dashboard through the HTTP endpoint `http://localhost:4000/dashboard`.
 
-After the data is inserted, the `metrics_5_seconds` and `logs_5_seconds` tables will be updated with the new data.
+To add a new query, click on the `+` button, write your SQL command in the command text, and then click on `Run All`. This will retrieve all the data from the `grpc_metrics` table.
 
 ```sql
-select * from metrics_5_seconds;
+SELECT * FROM grpc_metrics;
 ```
 
-```sql
-select * from logs_5_seconds;
-```
+Then click on the `Chart` button in the result panel to visualize the data.
 
-### Create a View
+![select gRPC metrics](/select-grpc-metrics.png)
 
-Use a View to save the result for `JOIN` operations on the `metrics_5_seconds` and `logs_5_seconds` tables to correlate the metrics and logs.
+<!-- TODO: need to fix API bug
 
-```sql
-CREATE VIEW cor_metrics_logs AS
-  SELECT 
-    metrics_5_seconds.ts,
-    metrics_5_seconds.p95_latency, 
-    coalesce(logs_5_seconds.num_errors, 0) as num_errors,
-    logs_5_seconds.first_error,
-    logs_5_seconds.last_error,
-    metrics_5_seconds.host
-  FROM 
-    metrics_5_seconds 
-    LEFT JOIN logs_5_seconds ON metrics_5_seconds.host = logs_5_seconds.host 
-    AND metrics_5_seconds.ts = logs_5_seconds.ts 
-```
+### Ingest data by InfluxDB Line Protocol
 
-```sql
-select * from cor_metrics_logs
-```
+Besides SQL, GreptimeDB also supports multiple protocols, one of the most popular is InfluxDB Line Protocol.
+By click `Ingest` icon in the dashboard, you can upload data in InfluxDB Line Protocol format.
 
-## Visualize data
+For example, choose `Miliseconds` in the input panel, and paste the following data into the input box:
 
-### GreptimeDB Dashboard
+```txt
+grpc_metrics,host=host1,method_name=GetUser latency=100 1720728021000
+grpc_metrics,host=host2,method_name=GetUser latency=110 1720728021000
+``` -->
 
-GreptimeDB provides a user-friendly [dashboard](./installation/greptimedb-dashboard.md) to assist you in exploring data.
-Once GreptimeDB is started as mentioned in the Prerequisites section, you can access the dashboard through the HTTP endpoint `http://localhost:4000/dashboard`.
+## Next steps
 
-Write SQL into the command text, then click `Run All`. We'll got all data in system_metrics table.
+You have now experienced the core features of GreptimeDB.
+To further explore and utilize GreptimeDB:
 
-```
-SELECT * FROM system_metrics;
-```
-
-![dashboard-select](/dashboard-select.png)
-
-
-### Grafana
-
-#### Add Data Source
-
-You can access Grafana at `http://localhost:3000`.
-Use `admin` as both the username and password to log in.
-
-GreptimeDB can be configured as a MySQL data source in Grafana.
-Click the `Add data source` button and select MySQL as the type.
-
-![add-mysql-data-source](/add-mysql-data-source.jpg)
-
-Fill in the following information:
-
-* Name: `GreptimeDB`
-* Host: `greptimedb:4002`. The host `greptimedb` is the name of GreptimeDB container
-* Database: `public`
-* SessionTimezone: `UTC`
-
-![grafana-mysql-config](/grafana-mysql-config.jpg)
-
-Click `Save & Test` button to test the connection.
-
-For more information on using MySQL as a data source for GreptimeDB,
-please refer to [Grafana-MySQL](/user-guide/clients/grafana.md#mysql).
-
-#### Create a Dashboard
-
-To create a new dashboard in Grafana, click the `Create your first dashboard` button on the home page.
-Then, click `Add visualization` and select `GreptimeDB` as the data source.
-
-In the `Query` section, ensure that you select `GreptimeDB` as the data source, choose `Time series` as the format,
-switch to the `Code` tab, and write the following SQL statement. Note that we are using `ts` as the time column.
-
-```sql
-SELECT ts AS "time", idle_cpu, sys_cpu FROM public.monitor
-```
-
-![grafana-mysql-query-code](/grafana-mysql-query-code.jpg)
-
-Click `Run query` to view the metric data.
-
-![grafana-mysql-run-query](/grafana-mysql-run-query.jpg)
-
+- [Visualize data using Grafana](/user-guide/clients/grafana.md)
+- [Explore more demos of GreptimeDB](https://github.com/GreptimeTeam/demo-scene/)
+- [Read the user guide document to learn more details about GreptimeDB](/user-guide/overview.md)
