@@ -40,7 +40,7 @@ SELECT * FROM cpu_monitor;
 Query view by `WHERE`:
 
 ```sql
-SELECT * FROM cpu_monitor where host = '127.0.0.2';
+SELECT * FROM cpu_monitor WHERE host = '127.0.0.2';
 ```
 
 ```sql
@@ -58,7 +58,7 @@ Create a view that queries data from two tables:
 ```sql
 CREATE VIEW app_cpu_monitor AS
     SELECT cpu, latency, host, ts FROM monitor LEFT JOIN app_monitor
-    ON monitor.host = app_monitor.host and monitor.ts = app_monitor.ts
+    ON monitor.host = app_monitor.host AND monitor.ts = app_monitor.ts
 ```
 
 Then query the view as if the data were coming from one single table:

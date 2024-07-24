@@ -41,7 +41,7 @@ SELECT * FROM cpu_monitor;
 通过 `WHERE` 查询视图：
 
 ```sql
-SELECT * FROM cpu_monitor where host = '127.0.0.2';
+SELECT * FROM cpu_monitor WHERE host = '127.0.0.2';
 ```
 
 结果示例：
@@ -61,7 +61,7 @@ SELECT * FROM cpu_monitor where host = '127.0.0.2';
 ```sql
 CREATE VIEW app_cpu_monitor AS
     SELECT cpu, latency, host, ts FROM monitor LEFT JOIN app_monitor
-    ON monitor.host = app_monitor.host and monitor.ts = app_monitor.ts
+    ON monitor.host = app_monitor.host AND monitor.ts = app_monitor.ts
 ```
 
 然后可以像查询一个单表数据一样查询这个视图：
