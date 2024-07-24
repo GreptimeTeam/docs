@@ -54,6 +54,7 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`REGION_PEERS`](./region-peers.md) | Provides details about where regions are stored. |
 | [`RUNTIME_METRICS`](./runtime-metrics.md)| Provides the system runtime metrics.|
 | [`CLUSTER_INFO`](./cluster-info.md)| Provides the topology information of the cluster.|
+| [`FLOWS`](./flows.md) | Provides the flow information.|
 
 
 

@@ -176,3 +176,48 @@ WITH(
 
 * `Table`: the table name.
 * `Create Table`: The SQL to create the table.
+
+## SHOW CREATE FLOW
+
+Shows the `CREATE FLOW` statement that creates the flow task.
+
+For example:
+  
+```sql
+public=> SHOW CREATE FLOW filter_numbers;
+```
+
+```sql
+      Flow      |                      Create Flow                      
+----------------+-------------------------------------------------------
+ filter_numbers | CREATE OR REPLACE FLOW IF NOT EXISTS filter_numbers  +
+                | SINK TO out_num_cnt                                  +
+                | AS SELECT number FROM numbers_input WHERE number > 10
+(1 row)
+```
+
+## SHOW FLOWS
+
+Show all flows:
+
+```sql
+public=> SHOW FLOWS;
+```
+
+```sql
+     Flows      
+----------------
+ filter_numbers
+(1 row)
+```
+also support `LIKE` expression:
+```sql
+public=> show flows like "filter%";
+```
+
+```sql
+     Flows      
+----------------
+ filter_numbers
+(1 row)
+```
