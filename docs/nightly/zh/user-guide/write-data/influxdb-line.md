@@ -1,8 +1,15 @@
 # InfluxDB Line Protocol
 
+GreptimeDB 支持 HTTP InfluxDB Line 协议。
+
+## 数据模型
+
+要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从 Influxdb 迁移到 GreptimeDB 文档中的[数据模型差异](../migrate-to-greptimedb/migrate-from-influxdb.md#数据模型的区别)。
+
 ## 写入新数据
 
-GreptimeDB 支持 HTTP InfluxDB Line 协议。您可以通过 `/influxdb/write` API 写入数据：
+你可以通过 `/influxdb/write` API 写入数据。
+以下是一个示例：
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" \
@@ -14,8 +21,8 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 
 `/influxdb/write` 支持查询参数，包括：
 
-* `db` 指定要写入的数据库，默认为 `public`。
-* `precision`，时间戳的精度。接受 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认为纳秒。
+* `db`：指定要写入的数据库。默认值为 `public`。
+* `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
 
 你还可以在发送请求时省略 timestamp，GreptimeDB 将使用主机机器的当前系统时间（UTC 时间）作为 timestamp。例如：
 
@@ -31,5 +38,3 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 
 [InfluxDB Line protocol](https://docs.influxdata.com/influxdb/v2.7/reference/syntax/line-protocol/)
 
-<!-- TODO -->
-<!-- ## Delete -->
