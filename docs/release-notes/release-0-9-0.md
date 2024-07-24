@@ -4,7 +4,7 @@ Release date: July 16, 2024
 
 ## 👍 Highlights
 
-* [Log Engine](https://docs.greptime.com/user-guide/logs/overview): GreptimeDB is now a unified time-series database for both metrics, events, and logs (trace in plan).
+* [Log Engine](https://docs.greptime.com/user-guide/logs/overview): GreptimeDB is now a unified time-series database for both metrics, logs, and events (trace in plan).
 * [Remote WAL](https://docs.greptime.com/user-guide/operations/remote-wal/quick-start) is significantly improved and is now recommended to turn on.
 * Table View: You can now `CREATE VIEW` on tables and treat them as logical table.
 * [Short interval literal](https://docs.greptime.com/reference/sql/data-types#interval-type) for user experience.
