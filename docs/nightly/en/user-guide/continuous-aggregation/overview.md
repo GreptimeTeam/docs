@@ -13,6 +13,7 @@ The entire process is illustrated in the following image:
 
 Here is a complete example of how a continuous aggregation query looks like.
 
+This use case is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
 First, create a source table `ngx_access_log` and a sink table `ngx_statistics` with following clauses:
 
 ```sql
