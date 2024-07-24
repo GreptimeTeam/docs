@@ -49,7 +49,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column.
 
 ```sql
 CREATE FLOW ngx_aggregation
@@ -62,7 +62,7 @@ SELECT
     max(size) as max_size,
     avg(size) as avg_size,
     sum(case when `size` > 550::double then 1::double else 0::double end) as high_size_count,
-    date_bin(INTERVAL '1 minutes', access_time, '2024-01-01 00:00:00'::TimestampNanosecond) as time_window,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
     status,
@@ -70,59 +70,66 @@ GROUP BY
 ```
 !!!!!!!!!!!!!!!!!!!TODO: insert example and explain output
 
-To observe the outcome of the continuous aggregation in the `out_num_cnt` table, insert some data into the source table `numbers_input`.
+To observe the outcome of the continuous aggregation in the `ngx_statistics` table, insert some data into the source table `ngx_access_log`.
 
 ```sql
-INSERT INTO numbers_input 
+INSERT INTO ngx_access_log 
 VALUES
-    (20, "2021-07-01 00:00:00.200"),
-    (22, "2021-07-01 00:00:00.600");
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", "2021-07-01 00:00:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:00:30.500"),
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", "2021-07-01 00:01:01.500");
 ```
 
-The sum of the `number` column is 42 (20+22), so the sink table `out_num_cnt` should have the following data:
+Then the sink table `ngx_statistics` will be incremently updated and contain the following data:
 
 ```sql
-SELECT * FROM out_num_cnt;
+SELECT * FROM ngx_statistics;
 ```
 
 ```sql
- sum_number |        start_window        |         end_window         |         update_at          
-------------+----------------------------+----------------------------+----------------------------
-         42 | 2021-07-01 00:00:00.000000 | 2021-07-01 00:00:01.000000 | 2024-05-17 08:32:56.026000
-(1 row)
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          1 |      600 |      600 |      600 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+    404 |          1 |      700 |      700 |      700 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+(3 rows)
 ```
 
-Try to insert more data into the `numbers_input` table:
+Try to insert more data into the `ngx_access_log` table:
 
 ```sql
-INSERT INTO numbers_input 
+INSERT INTO ngx_access_log 
 VALUES
-    (23,"2021-07-01 00:00:01.000"),
-    (24,"2021-07-01 00:00:01.500");
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", "2021-07-01 00:01:01.500");
 ```
 
-The sink table `out_num_cnt` now contains two rows: representing the sum data 42 and 47 (23+24) for the two respective 1-second windows.
+The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
 
 ```sql
-SELECT * FROM out_num_cnt;
+SELECT * FROM ngx_statistics;
 ```
 
 ```sql
- sum_number |        start_window        |         end_window         |         update_at          
-------------+----------------------------+----------------------------+----------------------------
-         42 | 2021-07-01 00:00:00.000000 | 2021-07-01 00:00:01.000000 | 2024-05-17 08:32:56.026000
-         47 | 2021-07-01 00:00:01.000000 | 2021-07-01 00:00:02.000000 | 2024-05-17 08:33:10.048000
-(2 rows)
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          2 |      500 |      600 |      550 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+    404 |          2 |      700 |      800 |      750 |               2 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+(3 rows)
 ```
 
 Here is the explanation of the columns in the `out_num_cnt` table:
 
-- `sum_number`: the sum of the `number` column in the window.
-- `start_window`: the start time of the window.
-- `end_window`: the end time of the window.
-- `update_at`: the time when the row data is updated.
-
-The `start_window`, `end_window`, and `update_at` columns are automatically added by the time window functions of Flow engine.
+- `status`: The status code of the HTTP response.
+- `total_logs`: The total number of logs with the same status code.
+- `min_size`: The minimum size of the packets with the same status code.
+- `max_size`: The maximum size of the packets with the same status code.
+- `avg_size`: The average size of the packets with the same status code.
+- `high_size_count`: The number of packets with the size greater than 550.
+- `time_window`: The time window of the aggregation.
+- `update_at`: The time when the aggregation is updated.
 
 ## Next Steps
 
