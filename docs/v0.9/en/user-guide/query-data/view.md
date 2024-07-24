@@ -2,7 +2,7 @@
 
 In SQL, a view is a virtual table based on the result set of an SQL statement.
 It contains rows and columns just like a real table.
-When you query a view, the underlying SQL query is executed every time to fetch the data from the base tables.
+The query of a view is run every time the view is referenced in a query.
 
 In the following situations, you can use views:
 
