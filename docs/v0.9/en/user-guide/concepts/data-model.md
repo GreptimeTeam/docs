@@ -3,7 +3,7 @@
 ## Model
 
 GreptimeDB uses the time-series table to guide the organization, compression, and expiration management of data.
-The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs and events data.
+The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs, and events data.
 
 All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`.
 
@@ -12,7 +12,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
   The values in `Tag` columns are labels attached to the collected sources,
   generally used to describe a particular characteristic of these sources.
   `Tag` columns are indexed, making queries on tags performant.
-- `Timestamp` is the root of a metrics, logs and events database.
+- `Timestamp` is the root of a metrics, logs, and events database.
   It represents the date and time when the data was generated.
   Timestamps are indexed, making queries on timestamps performant.
   A table can only have one timestamp column, which is called time index.
@@ -86,7 +86,7 @@ Of course, you can place metrics and logs in a single table at any time, which i
 
 GreptimeDB is designed on top of Table for the following reasons:
 
-- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the metrics, logs and events.
+- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the metrics, logs, and events.
 - Schema is meta-data to describe data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
 - When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, offsetting the learning and use costs for users.

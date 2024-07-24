@@ -2,7 +2,7 @@
 
 Welcome to the user guide for GreptimeDB.
 
-GreptimeDB is the unified time series database for metrics, events, and logs,
+GreptimeDB is the unified time series database for metrics, logs, and events,
 providing real-time insights from Edge to Cloud at any scale.
 This guide will help you explore each powerful feature of GreptimeDB.
 

@@ -4,7 +4,7 @@
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
 </p>
 
-GreptimeDB 是开源的统一时序数据库，能同时处理**指标**（Metrics）、**事件**（Events）、**日志**（Logs）和**追踪**（Traces）。从云到端，GreptimeDB 能从任意规模的时序数据中获取实时数据洞察。
+GreptimeDB 是开源的统一时序数据库，能同时处理**指标**（Metrics）、**日志**（Logs）、**事件**（Events）和**追踪**（Traces）。从云到端，GreptimeDB 能从任意规模的时序数据中获取实时数据洞察。
 
 GreptimeDB 经由 [GreptimeCloud](https://greptime.cn/product/cloud) 提供云服务。
 GreptimeCloud 是一个完全托管的时序数据库服务，具有无服务器的可扩展性、与生态系统的无缝集成和 Prometheus 兼容性。

@@ -8,7 +8,7 @@ To gain insight into the motivations that led to the development of GreptimeDB, 
 
 In these documents, we delve into the reasons behind Greptime's high performance and some highlighted features.
 
-## Unified metrics, logs and events
+## Unified metrics, logs, and events
 
 Through the model design of [time series tables](./data-model), native support for SQL, and the hybrid workload brought by the storage-computation separation architecture, GreptimeDB can handle metrics, logs, and events together, enhance the correlation analysis between different time series data and simplify the architecture, deployment and APIs for users.
 

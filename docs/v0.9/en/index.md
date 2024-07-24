@@ -4,7 +4,7 @@
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400">
 </p>
 
-**GreptimeDB** is an open-source unified time-series database for **Metrics**, **Events**, and **Logs** (also **Traces** in plan). You can gain real-time insights from Edge to Cloud at any scale.
+**GreptimeDB** is an open-source unified time-series database for **Metrics**, **Logs**, and **Events** (also **Traces** in plan). You can gain real-time insights from Edge to Cloud at any scale.
 
 GreptimeDB is also on cloud as [GreptimeCloud](https://greptime.com/product/cloud),
 a fully-managed time-series database service that features serverless scalability,
