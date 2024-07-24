@@ -7,28 +7,33 @@ GreptimeDB 支持将数据存储在本地文件系统、AWS S3 及其兼容服�
 GreptimeDB 的存储文件结构包括以下内容：
 
 ```cmd
-├── cluster
-│   └── dn-0
+├── metadata
+    ├── raftlog
+    ├── rewrite
+    └── LOCK
 ├── data
 │   ├── greptime
-│   └── system
+│       └── public
 ├── logs
 ├── index_intermediate
+│   └── staging
 └── wal
     ├── raftlog
     ├── rewrite
     └── LOCK
 ```
 
-- `cluster`：集群目录包含了内部数据，并按数据节点的 ID 组织数据。
-- `data`：data 目录下的文件存储 GreptimeDB 的时序数据。要定制这个路径，请参考[存储选项](../operations/configuration.md#存储选项)。
-- `logs`：日志文件包含 GreptimeDB 中所有的操作日志。
-- `wal`：wal 目录包含了预写日志文件。
-- `index_intermediate`: 索引相关的临时文件目录。
+- `metadata`: 内部元数据目录，保存 catatalog、数据库以及 表的元信息、procedure 状态等内部状态。在集群模式下，此目录不存在，因为所有这些状态（包括区域路由信息）都保存在 `Metasrv` 中。
+- `data`: 存储 GreptimeDB 的实际的时间序列数据和索引文件。如果要自定义此路径，请参阅 [存储选项](../operations/configuration.md#storage-options)。该目录按照 catalog 和 schema 的两级结构组织。
+- `logs`: GreptimeDB 日志文件目录。
+- `wal`:  预写日志文件目录。
+- `index_intermediate`: 索引构建和查询相关的的临时中间数据目录。
 
 ## 云存储
 
 文件结构中的 `cluster` 和 `data` 目录可以存储在云存储中。请参考[存储选项](../operations/configuration.md#存储选项)了解更多细节。
+
+请注意，仅将 `data` 目录存储在对象存储中不足以确保数据可靠性和灾难恢复。请参阅 [灾难恢复文档](/user-guide/operations/disaster-recovery/overview)。
 
 ## 多存储引擎支持
 
