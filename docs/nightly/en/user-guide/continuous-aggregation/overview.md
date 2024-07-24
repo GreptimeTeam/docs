@@ -1,6 +1,7 @@
 # Overview
 
-GreptimeDB provides a continuous aggregation feature that allows you to aggregate data in real-time. This feature is useful when you need to calculate and query the sum, average, or other aggregations on the fly. The continuous aggregation feature is provided by the Flow engine. It continuously updates the aggregated data based on the incoming data and materialize it.
+GreptimeDB provides a continuous aggregation feature that allows you to aggregate data in real-time. This feature is useful when you need to calculate and query the sum, average, or other aggregations on the fly. The continuous aggregation feature is provided by the Flow engine. It continuously updates the aggregated data based on the incoming data and materialize it. So you can think of it as a clever materialized views that know when to update result view table and how to update it with 
+minimal effort.
 
 When you insert data into the source table, the data is also sent to and stored in the Flow engine.
 The Flow engine calculate the aggregation by time windows and store the result in the sink table.
@@ -12,34 +13,62 @@ The entire process is illustrated in the following image:
 
 Here is a complete example of how a continuous aggregation query looks like.
 
-First, create a source table `numbers_input` and a sink table `out_num_cnt` with following clauses:
+First, create a source table `ngx_access_log` and a sink table `ngx_statistics` with following clauses:
 
 ```sql
-CREATE TABLE numbers_input (
-    number INT,
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(number),
-    TIME INDEX(ts)
+CREATE TABLE `ngx_access_log` (
+  `client` STRING NULL,
+  `ua_platform` STRING NULL,
+  `referer` STRING NULL,
+  `method` STRING NULL,
+  `endpoint` STRING NULL,
+  `trace_id` STRING NULL FULLTEXT,
+  `protocol` STRING NULL,
+  `status` SMALLINT UNSIGNED NULL,
+  `size` DOUBLE NULL,
+  `agent` STRING NULL,
+  `access_time` TIMESTAMP(3) NOT NULL,
+  TIME INDEX (`access_time`)
+)
+WITH(
+  append_mode = 'true'
 );
 ```
 
 ```sql
-CREATE TABLE out_num_cnt (
-    sum_number BIGINT,
-    start_window TIMESTAMP TIME INDEX,
-    end_window TIMESTAMP,
-    update_at TIMESTAMP,
+CREATE TABLE `ngx_statistics` (
+  `status` SMALLINT UNSIGNED NULL,
+  `total_logs` BIGINT NULL,
+  `min_size` DOUBLE NULL,
+  `max_size` DOUBLE NULL,
+  `avg_size` DOUBLE NULL,
+  `high_size_count` DOUBLE NULL,
+  `time_window` TIMESTAMP time index,
+  `update_at` TIMESTAMP NULL,
+  PRIMARY KEY (`status`)
 );
 ```
 
-Then create the flow `test_numbers` to aggregate the sum of `number` column in `numbers_input` table. The aggregation is calculated in 1-second fixed windows.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column.
 
 ```sql
-CREATE FLOW test_numbers 
-SINK TO out_num_cnt
-AS 
-SELECT sum(number) FROM numbers_input GROUP BY tumble(ts, '1 second', '2021-07-01 00:00:00');
+CREATE FLOW ngx_aggregation
+SINK TO ngx_statistics
+AS
+SELECT
+    status,
+    count(client) AS total_logs,
+    min(size) as min_size,
+    max(size) as max_size,
+    avg(size) as avg_size,
+    sum(case when `size` > 550::double then 1::double else 0::double end) as high_size_count,
+    date_bin(INTERVAL '1 minutes', access_time, '2024-01-01 00:00:00'::TimestampNanosecond) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window;
 ```
+!!!!!!!!!!!!!!!!!!!TODO: insert example and explain output
 
 To observe the outcome of the continuous aggregation in the `out_num_cnt` table, insert some data into the source table `numbers_input`.
 
