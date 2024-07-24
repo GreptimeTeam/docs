@@ -210,7 +210,8 @@ public=> SHOW FLOWS;
  filter_numbers
 (1 row)
 ```
-also support `LIKE` expression:
+
+同样也支持 `LIKE` 表达式：
 ```sql
 public=> show flows like "filter%";
 ```

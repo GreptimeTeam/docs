@@ -25,8 +25,8 @@ public=> DESC TABLE INFORMATION_SCHEMA.FLOWS;
 
 * `flow_name`: Flow 任务的名称。
 * `flow_id`: Flow 任务的 id。
-* `table_catalog`: the catalog this flow belongs to, named as `table_catalog` to keep consistent with the `INFORMATION_SCHEMA` standard. 该 Flow 所属的目录，命名为 `table_catalog` 以保持与 `INFORMATION_SCHEMA` 标准的一致性。
-* `flow_definition`: Flow 任务的定义。这是用于创建 Flow 任务的 SQL 语句。
+* `table_catalog`: 该 Flow 所属的目录，命名为 `table_catalog` 以保持与 `INFORMATION_SCHEMA` 标准一致。
+* `flow_definition`: Flow 任务的定义，是用于创建 Flow 任务的 SQL 语句。
 * `comment`: Flow 任务的注释。
 * `expire_after`: Flow 任务的过期时间。
 * `source_table_ids`: Flow 任务的源表 id。
