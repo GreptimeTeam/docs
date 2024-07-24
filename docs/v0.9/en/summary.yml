@@ -193,7 +193,9 @@
       - partitions
       - schemata
       - tables
-      # - table-constraints
+      - table-constraints
+      - views
+      - flows
       - region-peers
       - runtime-metrics
       - cluster-info

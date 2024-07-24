@@ -1,6 +1,6 @@
 # TABLE_CONSTRAINTS
 
-The `TABLE_CONSTRAINTS` table describes which tables have constraints.
+`TABLE_CONSTRAINTS` 表描述了哪些表具有约束（constraint）以及相关信息。
 
 ```sql
 DESC INFORMATION_SCHEMA.table_constraints;
@@ -20,20 +20,20 @@ DESC INFORMATION_SCHEMA.table_constraints;
 +--------------------+--------+------+------+---------+---------------+
 ```
 
-The columns in the table:
+表中的列：
 
-* `CONSTRAINT_CATALOG`: The name of the catalog to which the constraint belongs. This value is always `def`.
-* `CONSTRAINT_SCHEMA`: The name of the database to which the constraint belongs.
-* `CONSTRAINT_NAME`: The name of the constraint, `TIME INDEX` or `PRIMARY`.
-* `TABLE_NAME`: The name of the table.
-* `CONSTRAINT_TYPE`: The type of the constraint. The value can be `TIME INDEX` or `PRIMARY KEY`. The `TIME INDEX` and `PRIMARY KEY` information is similar to the execution result of the `SHOW INDEX` statement.
-* `enforced`:  Doesn't support `CHECK` constraints, the value is always` YES`.
+* `CONSTRAINT_CATALOG`: 约束所属 catalog 的名称。此值始终为 `def`。
+* `CONSTRAINT_SCHEMA`: 约束所属数据库的名称。
+* `CONSTRAINT_NAME`: 约束的名称，可以是 `TIME INDEX` 或 `PRIMARY`。
+* `TABLE_NAME`: 表的名称。
+* `CONSTRAINT_TYPE`: 约束的类型。值可以是 `TIME INDEX` 或 `PRIMARY KEY`。`TIME INDEX` 和 `PRIMARY KEY` 信息类似于 `SHOW INDEX` 语句的执行结果。
+* `enforced`: 不支持 `CHECK` 约束，此值始终为 `YES`。
 
 ```sql
 select * from INFORMATION_SCHEMA.table_constraints WHERE table_name = 'monitor'\G;
 ```
 
-The output:
+输出结果：
 
 ```sql
 *************************** 1. row ***************************
@@ -53,4 +53,3 @@ constraint_catalog: def
    constraint_type: PRIMARY KEY
           enforced: YES
 ```
-

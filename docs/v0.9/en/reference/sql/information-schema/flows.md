@@ -2,7 +2,7 @@
 The `Flows` table provides the flow task information.
 
 ```sql
-public=> DESC TABLE INFORMATION_SCHEMA.FLOWS;
+DESC TABLE INFORMATION_SCHEMA.FLOWS;
 ```
 
 ```sql
