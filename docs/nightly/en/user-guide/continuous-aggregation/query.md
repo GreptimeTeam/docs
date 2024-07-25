@@ -86,6 +86,16 @@ GROUP BY
 ORDER BY status, time_window, bucket;
 ```
 
+```
+ status |        time_window         | bucket | percentile 
+--------+----------------------------+--------+------------
+    404 | 1970-01-01 00:00:00.000000 |      0 |         22
+    404 | 1970-01-01 00:00:00.000000 |      1 |         55
+    404 | 1970-01-01 00:00:00.000000 |      2 |         66
+    404 | 1970-01-01 00:00:00.000000 |      3 |        100
+(4 rows)
+```
+
 <!-- 
 TODO(discord9): add example for percentile query
 TODO(discord9): add example for tumble and hop once we support window table function
