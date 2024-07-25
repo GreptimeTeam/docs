@@ -64,4 +64,4 @@ GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://grept
 
 ## GreptimeDB 有灾难恢复解决方案吗？
 
-有的，请参阅 [灾难恢复文档](/user-guide/operations/disaster-recovery/overview)。
+有的，请参阅[灾难恢复文档](/user-guide/operations/disaster-recovery/overview)。
