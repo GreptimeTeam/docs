@@ -23,6 +23,6 @@ The columns in the output:
 * `branch`: the build git branch name.
 * `git_commit`: the build commit revision.
 * `git_commit_short`: the short commit revision.
-* `git_clean`:  `true` if the build source directory doesn't contain uncommitted changes.
+* `git_clean`:  `true` if the build source directory contains all the committed changes.
 * `pkg_version`: the GreptimeDB version.
 
