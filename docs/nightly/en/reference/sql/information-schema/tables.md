@@ -10,17 +10,34 @@ DESC TABLES;
 The output is as follows:
 
 ```sql
-+---------------+--------+------+------+---------+---------------+
-| Column        | Type   | Key  | Null | Default | Semantic Type |
-+---------------+--------+------+------+---------+---------------+
-| table_catalog | String |      | NO   |         | FIELD         |
-| table_schema  | String |      | NO   |         | FIELD         |
-| table_name    | String |      | NO   |         | FIELD         |
-| table_type    | String |      | NO   |         | FIELD         |
-| table_id      | UInt32 |      | YES  |         | FIELD         |
-| engine        | String |      | YES  |         | FIELD         |
-+---------------+--------+------+------+---------+---------------+
-6 rows in set (0.00 sec)
++------------------+----------+------+------+---------+---------------+
+| Column           | Type     | Key  | Null | Default | Semantic Type |
++------------------+----------+------+------+---------+---------------+
+| table_catalog    | String   |      | NO   |         | FIELD         |
+| table_schema     | String   |      | NO   |         | FIELD         |
+| table_name       | String   |      | NO   |         | FIELD         |
+| table_type       | String   |      | NO   |         | FIELD         |
+| table_id         | UInt32   |      | YES  |         | FIELD         |
+| data_length      | UInt64   |      | YES  |         | FIELD         |
+| max_data_length  | UInt64   |      | YES  |         | FIELD         |
+| index_length     | UInt64   |      | YES  |         | FIELD         |
+| max_index_length | UInt64   |      | YES  |         | FIELD         |
+| avg_row_length   | UInt64   |      | YES  |         | FIELD         |
+| engine           | String   |      | YES  |         | FIELD         |
+| version          | UInt64   |      | YES  |         | FIELD         |
+| row_format       | String   |      | YES  |         | FIELD         |
+| table_rows       | UInt64   |      | YES  |         | FIELD         |
+| data_free        | UInt64   |      | YES  |         | FIELD         |
+| auto_increment   | UInt64   |      | YES  |         | FIELD         |
+| create_time      | DateTime |      | YES  |         | FIELD         |
+| update_time      | DateTime |      | YES  |         | FIELD         |
+| check_time       | DateTime |      | YES  |         | FIELD         |
+| table_collation  | String   |      | YES  |         | FIELD         |
+| checksum         | UInt64   |      | YES  |         | FIELD         |
+| create_options   | String   |      | YES  |         | FIELD         |
+| table_comment    | String   |      | YES  |         | FIELD         |
+| temporary        | String   |      | YES  |         | FIELD         |
++------------------+----------+------+------+---------+---------------+
 ```
 
 ```sql
@@ -29,12 +46,30 @@ SELECT * FROM tables WHERE table_schema='public' AND table_name='monitor'\G
 
 ```sql
 *************************** 1. row ***************************
-table_catalog: greptime
- table_schema: public
-   table_name: monitor
-   table_type: BASE TABLE
-     table_id: 1025
-       engine: mito
+   table_catalog: greptime
+    table_schema: public
+      table_name: monitor
+      table_type: BASE TABLE
+        table_id: 1054
+     data_length: 0
+ max_data_length: 0
+    index_length: 0
+max_index_length: 0
+  avg_row_length: 0
+          engine: mito
+         version: 11
+      row_format: Fixed
+      table_rows: 0
+       data_free: 0
+  auto_increment: 0
+     create_time: 2024-07-24 22:06:18.085000
+     update_time: NULL
+      check_time: NULL
+ table_collation: NULL
+        checksum: 0
+  create_options:
+   table_comment: NULL
+       temporary: N
 1 row in set (0.01 sec)
 ```
 
@@ -61,3 +96,7 @@ The description of columns in the `TABLES` table is as follows:
   - `VIEW`  for a view.
 - `table_id`: The ID of the table.
 - `engine`: The storage engine of the table used.
+- `version`:  Version. The value is `11` by default.
+- `create_time`: The table created timestamp.
+- `table_comment`: The table comment.
+- Other columns such as `table_rows`, `row_format` etc. are not supported, just for compatibility with MySQL. GreptimeDB may support some of them in the future.
