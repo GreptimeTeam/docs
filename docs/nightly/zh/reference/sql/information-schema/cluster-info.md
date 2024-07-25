@@ -33,6 +33,7 @@ DESC TABLE CLUSTER_INFO;
 * `peer_type`: 节点类型, 分布式集群里可能是 `METASRV`、`FRONTEND` 或者 `DATANODE`。单机模式显示为 `STANDALONE`。
 * `peer_addr`: 节点的 gRPC 服务地址。对于单机部署，该字段总为空。
 * `version`: 节点的版本号，形如 `0.7.2` 的字符串。
+* `git_commit`: 节点编译的 git 版本号。
 * `start_time`: 节点的启动时间。
 * `uptime`: 节点的持续运行时间，形如 `24h 10m 59s 150ms` 的字符串。
 * `active_time`: 距离节点上一次活跃（也就是发送心跳请求）过去的时间，形如 `24h 10m 59s 150ms` 的字符串。单机模式下该字段总为空。

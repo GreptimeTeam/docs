@@ -33,6 +33,7 @@ The columns in table:
 * `peer_type`: the node type, `METASRV`,`FRONTEND`, or `DATANODE` for distributed clusters and `STANDALONE` for standalone deployments.
 * `peer_addr`: the GRPC server address of the node. It's always empty for standalone deployments.
 * `version`: The build version of the node, such as `0.7.2` etc.
+* `git_commit`: The build git commit of the node.
 * `start_time`: The node start time.
 * `uptime`: The uptime of the node, in the format of duration string `24h 10m 59s 150ms`.
 * `active_time`: The duration string in the format of `24h 10m 59s 150ms` since the node's last active time(sending the heartbeats), it's always empty for standalone deployments.
