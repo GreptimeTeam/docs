@@ -43,8 +43,8 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | `USER_ATTRIBUTES` | Not supported. |
 | `USER_PRIVILEGES` | Not supported.|
 | `VARIABLES_INFO` | Not supported. |
-| `VIEWS`| Not supported. |
-<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides information on primary keys, unique indexes, and foreign keys. | -->
+| [`VIEWS`](./views.md)| Provides a list of views that the current user has visibility of. Similar to running `SHOW FULL TABLES WHERE table_type = 'VIEW'` |
+| [`TABLE_CONSTRAINTS`](./table-constraints.md) | Provides information on primary keys, unique indexes, and foreign keys. |
 
 ## Tables that GreptimeDB provides
 

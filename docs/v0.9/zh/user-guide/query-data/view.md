@@ -1,6 +1,6 @@
 # 视图
 
-在 SQL 中，视图是基于 SQL 语句的结果集的虚拟表。
+在 SQL 中，视图（View）是基于 SQL 语句的结果集的虚拟表。
 它包含与真实的表一样的行和列。
 每次查询视图时，都会运行该视图的查询。
 
@@ -77,6 +77,22 @@ SELECT * FROM app_cpu_monitor WHERE host = 'host1'
 ```sql
 CREATE OR REPLACE VIEW memory_monitor AS
     SELECT memory, host, ts FROM monitor;
+```
+
+## 显示视图定义
+
+通过 `SHOW CREATE VIEW view_name` 语句来显示创建视图的 `CREATE VIEW` 语句：
+
+```sql
+SHOW CREATE VIEW cpu_monitor;
+```
+
+```sql
++-------------+--------------------------------------------------------------+
+| View        | Create View                                                  |
++-------------+--------------------------------------------------------------+
+| cpu_monitor | CREATE VIEW cpu_monitor AS SELECT cpu, host, ts FROM monitor |
++-------------+--------------------------------------------------------------+
 ```
 
 ## 列出视图

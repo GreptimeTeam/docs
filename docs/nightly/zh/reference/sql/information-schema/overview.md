@@ -41,8 +41,8 @@
 | `USER_ATTRIBUTES` | 不支持。 |
 | `USER_PRIVILEGES` | 不支持。|
 | `VARIABLES_INFO` | 不支持。 |
-| `VIEWS`| 不支持。 |
-<!-- | [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 | -->
+| [`VIEWS`](./views.md)| 提供了当前用户可见的视图（View）列表及相关信息。 |
+| [`TABLE_CONSTRAINTS`](./table-constraints.md) | 提供了主键、唯一索引和外键的信息。 |
 
 ## GreptimeDB 提供的表
 

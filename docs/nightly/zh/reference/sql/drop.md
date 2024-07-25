@@ -53,3 +53,37 @@ DROP TABLE [ IF EXISTS ] table_name
 ```sql
 DROP TABLE monitor;
 ```
+
+## 删除 Flow
+
+```sql
+DROP FLOW [ IF EXISTS ] flow_name;
+```
+
+- `IF EXISTS`: 如果流不存在，则不抛出错误。
+- `flow_name`: 要删除的流的名称。
+
+```sql
+DROP FLOW IF EXISTS test_flow;
+```
+
+```
+Query OK, 0 rows affected (0.00 sec)
+```
+
+## 删除 View
+
+```sql
+DROP VIEW [ IF EXISTS ] view_name;
+```
+
+- `IF EXISTS`: 如果视图不存在，则不抛出错误。
+- `view_name`: 要删除的视图的名称。
+
+```sql
+DROP VIEW IF EXISTS test_view;
+```
+
+```
+Query OK, 0 rows affected (0.00 sec)
+```

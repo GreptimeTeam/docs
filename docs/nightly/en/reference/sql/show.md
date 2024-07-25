@@ -221,3 +221,64 @@ public=> show flows like "filter%";
  filter_numbers
 (1 row)
 ```
+
+## SHOW CREATE VIEW
+
+To show the view's definition:
+
+```sql
+SHOW CREATE VIEW cpu_monitor;
+```
+
+```
++-------------+--------------------------------------------------------------+
+| View        | Create View                                                  |
++-------------+--------------------------------------------------------------+
+| cpu_monitor | CREATE VIEW cpu_monitor AS SELECT cpu, host, ts FROM monitor |
++-------------+--------------------------------------------------------------+
+```
+
+## SHOW VIEWS
+
+List all views:
+
+```sql
+SHOW VIEWS;
+```
+
+```sql
++----------------+
+| Views          |
++----------------+
+| cpu_monitor    |
+| memory_monitor |
++----------------+
+```
+
+Of course, it supports `LIKE`:
+
+```sql
+SHOW VIEWS LIKE 'cpu%';
+```
+
+```sql
++-------------+
+| Views       |
++-------------+
+| cpu_monitor |
++-------------+
+```
+
+And `where`:
+
+```sql
+SHOW VIEWS WHERE Views = 'memory_monitor';
+```
+
+```sql
++----------------+
+| Views          |
++----------------+
+| memory_monitor |
++----------------+
+```
