@@ -40,7 +40,7 @@ COPY [<db>.]<table_name>
 FROM { '<path>/[<filename>]' }
 [ [ WITH ]
  (
-   [ FORMAT =  { parquet } ]
+   [ FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' } ]
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
@@ -69,7 +69,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 | Option  | Description  | Required |
 |---|---|---|
-| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
+| `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 
 #### `CONNECTION` Option
@@ -131,7 +131,7 @@ Beside copying specific table to/from some path, `COPY` statement can also be us
 COPY DATABASE <db_name> 
   [TO | FROM] '<PATH>' 
   WITH (
-    FORMAT = "<EXPORT FILE FORMAT>",
+    FORMAT = { 'CSV' | 'JSON' | 'PARQUET' },
     START_TIME = "<START TIMESTAMP>",
     END_TIME = "<END TIMESTAMP>"
   ) 

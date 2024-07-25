@@ -35,7 +35,7 @@ COPY [<db>.]<table_name>
 FROM { '<path>/[<filename>]' }
 [ [ WITH ]
  (
-   [ FORMAT =  { parquet } ]
+   [ FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' } ]
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
@@ -62,7 +62,7 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
-| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
+| `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 
 #### Connection 选项
@@ -124,7 +124,7 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 COPY DATABASE <db_name> 
   [TO | FROM] '<PATH>' 
   WITH (
-    FORMAT = "<FORMAT>",
+    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
     START_TIME = "<START TIMESTAMP>",
     END_TIME = "<END TIMESTAMP>"
   ) 
