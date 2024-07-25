@@ -283,3 +283,79 @@ SHOW VIEWS WHERE Views = 'memory_monitor';
 | memory_monitor |
 +----------------+
 ```
+
+## SHOW 语句的扩展
+
+与 MySQL 类似，一些 `SHOW` 语句的扩展伴随着 [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview) 的实现，它们还接受 `WHERE` 子句，提供了在指定显示的行时更大的灵活性。
+
+GreptimeDB 为 MySQL 兼容性实现了这些扩展的一部分，这对于像 [Navicat for MySQL](https://www.navicat.com/en/products/navicat-for-mysql) 或 [dbeaver](https://dbeaver.io/) 这样的工具连接 GreptimeDB 非常有用。
+
+```sql
+SHOW CHARACTER SET;
+```
+
+输出类似于 `INFORMATION_SCHEMA.CHARACTER_SETS` 表：
+
+```sql
++---------+---------------+-------------------+--------+
+| Charset | Description   | Default collation | Maxlen |
++---------+---------------+-------------------+--------+
+| utf8    | UTF-8 Unicode | utf8_bin          |      4 |
++---------+---------------+-------------------+--------+
+```
+
+使用 `SHOW COLLATION` 来查看 `INFORMATION_SCHEMA.COLLATIONS` 表。
+
+```sql
+SHOW INDEX FROM monitor;
+```
+
+列出表中的所有索引：
+
+```sql
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   | greptime-inverted-index-v1 |         |               | YES     |       NULL |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
+
+这是 `INFORMATION_SCHEMA.TABLE_CONSTRAINTS` 的扩展。
+
+列出表中的所有列：
+
+```sql
+SHOW COLUMNS FROM monitor;
+```
+
+输出类似于 `INFORMATION_SCHEMA.COLUMNS`：
+
+```sql
++--------+--------------+------+------------+---------------------+-------+----------------------+
+| Field  | Type         | Null | Key        | Default             | Extra | Greptime_type        |
++--------+--------------+------+------------+---------------------+-------+----------------------+
+| cpu    | double       | Yes  |            | 0                   |       | Float64              |
+| host   | string       | Yes  | PRI        | NULL                |       | String               |
+| memory | double       | Yes  |            | NULL                |       | Float64              |
+| ts     | timestamp(3) | No   | TIME INDEX | current_timestamp() |       | TimestampMillisecond |
++--------+--------------+------+------------+---------------------+-------+----------------------+
+```
+
+所有这些 `SHOW` 扩展都接受 `WHERE` 子句：
+
+```sql
+SHOW COLUMNS FROM monitor WHERE Field = 'cpu';
+```
+
+```sql
++-------+--------+------+------+---------+-------+---------------+
+| Field | Type   | Null | Key  | Default | Extra | Greptime_type |
++-------+--------+------+------+---------+-------+---------------+
+| cpu   | double | Yes  |      | 0       |       | Float64       |
++-------+--------+------+------+---------+-------+---------------+
+```
+
+其他 `SHOW` 扩展语句：
+* `SHOW STATUS` 和 `SHOW VARIABLES` 不支持，仅返回空结果。
+* `SHOW TABLE STATUS` 是 `INFORMATION_SCHEMA.TABLES` 的扩展。

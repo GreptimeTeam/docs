@@ -282,3 +282,79 @@ SHOW VIEWS WHERE Views = 'memory_monitor';
 | memory_monitor |
 +----------------+
 ```
+
+## Extensions to SHOW Statements
+
+Some extensions to `SHOW` statements accompany the implementation of [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview) just like MySQL, they also accept a `WHERE` clause that provides more flexibility in specifying which rows to display. 
+
+GreptimeDB supports some extensions for MySQL compatibility, it's good for tools like [Navicat for MySQL](https://www.navicat.com/en/products/navicat-for-mysql) or [dbeaver](https://dbeaver.io/) to connect GreptimeDB.
+
+```sql
+SHOW CHARACTER SET;
+```
+
+Output just like the `INFORMATION_SCHEMA.CHARACTER_SETS` table:
+
+```sql
++---------+---------------+-------------------+--------+
+| Charset | Description   | Default collation | Maxlen |
++---------+---------------+-------------------+--------+
+| utf8    | UTF-8 Unicode | utf8_bin          |      4 |
++---------+---------------+-------------------+--------+
+```
+
+`SHOW COLLATION` for `INFORMATION_SCHEMA.COLLATIONS` table.
+
+```sql
+SHOW INDEX FROM monitor
+```
+
+To list all indexes in a table:
+
+```sql
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   | greptime-inverted-index-v1 |         |               | YES     |       NULL |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
+
+Which is the extension of `INFORMATION_SCHEMA.TABLE_CONSTRAINTS`.
+
+List all the columns in a table:
+
+```sql
+SHOW COLUMNS FROM monitor;
+```
+
+Output just like `INFORMATION_SCHEMA.COLUMNS`:
+
+```sql
++--------+--------------+------+------------+---------------------+-------+----------------------+
+| Field  | Type         | Null | Key        | Default             | Extra | Greptime_type        |
++--------+--------------+------+------------+---------------------+-------+----------------------+
+| cpu    | double       | Yes  |            | 0                   |       | Float64              |
+| host   | string       | Yes  | PRI        | NULL                |       | String               |
+| memory | double       | Yes  |            | NULL                |       | Float64              |
+| ts     | timestamp(3) | No   | TIME INDEX | current_timestamp() |       | TimestampMillisecond |
++--------+--------------+------+------------+---------------------+-------+----------------------+
+```
+
+All these `SHOW` extensions accept `WHERE`:
+
+```sql
+SHOW COLUMNS FROM monitor WHERE Field = 'cpu';
+```
+
+```sql
++-------+--------+------+------+---------+-------+---------------+
+| Field | Type   | Null | Key  | Default | Extra | Greptime_type |
++-------+--------+------+------+---------+-------+---------------+
+| cpu   | double | Yes  |      | 0       |       | Float64       |
++-------+--------+------+------+---------+-------+---------------+
+```
+
+Other `SHOW` statements:
+* `SHOW STATUS`  and `SHOW VARIABLES` are not supported, just return empty results.
+* `SHOW TABLE STATUS` is the extension of  `INFORMATION_SCHEMA.TABLES`.
