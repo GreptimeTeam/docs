@@ -2,7 +2,7 @@
 `Flows` 表提供了 Flow 任务的相关信息。
 
 ```sql
-public=> DESC TABLE INFORMATION_SCHEMA.FLOWS;
+DESC TABLE INFORMATION_SCHEMA.FLOWS;
 ```
 
 ```sql

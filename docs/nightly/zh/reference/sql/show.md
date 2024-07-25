@@ -222,3 +222,64 @@ public=> show flows like "filter%";
  filter_numbers
 (1 row)
 ```
+
+## SHOW CREATE VIEW
+
+用于显示视图（View）的定义：
+
+```sql
+SHOW CREATE VIEW cpu_monitor;
+```
+
+```
++-------------+--------------------------------------------------------------+
+| View        | Create View                                                  |
++-------------+--------------------------------------------------------------+
+| cpu_monitor | CREATE VIEW cpu_monitor AS SELECT cpu, host, ts FROM monitor |
++-------------+--------------------------------------------------------------+
+```
+
+## SHOW VIEWS
+
+列出所有视图：
+
+```sql
+SHOW VIEWS;
+```
+
+```sql
++----------------+
+| Views          |
++----------------+
+| cpu_monitor    |
+| memory_monitor |
++----------------+
+```
+
+当然，它也支持 `LIKE` 查询：
+
+```sql
+SHOW VIEWS LIKE 'cpu%';
+```
+
+```sql
++-------------+
+| Views       |
++-------------+
+| cpu_monitor |
++-------------+
+```
+
+以及 `WHERE` 条件：
+
+```sql
+SHOW VIEWS WHERE Views = 'memory_monitor';
+```
+
+```sql
++----------------+
+| Views          |
++----------------+
+| memory_monitor |
++----------------+
+```

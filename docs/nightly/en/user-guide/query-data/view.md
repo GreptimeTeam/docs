@@ -76,6 +76,22 @@ CREATE OR REPLACE VIEW memory_monitor AS
     SELECT memory, host, ts FROM monitor;
 ```
 
+## Shows the view definition
+
+Shows the `CREATE VIEW` statement that creates the named view by `SHOW CREATE VIEW view_name`:
+
+```sql
+SHOW CREATE VIEW cpu_monitor;
+```
+
+```sql
++-------------+--------------------------------------------------------------+
+| View        | Create View                                                  |
++-------------+--------------------------------------------------------------+
+| cpu_monitor | CREATE VIEW cpu_monitor AS SELECT cpu, host, ts FROM monitor |
++-------------+--------------------------------------------------------------+
+```
+
 ## List Views
 
 `SHOW VIEWS` statement to find all the views:
