@@ -39,7 +39,7 @@ GROUP BY
 ```
 
 However, there are other types of query that cannot be directly used as continuous aggregation query. 
-For example, a query that need to compute percentile, because it would be unwise to repeatly calculate the percentile for each time window. In this case, you can pre-aggregate the data into buckets of desired size, and then calculate the percentile in the sink table using standard SQL when needed. The original sql might be:
+For example, a query that need to compute percentile, because it would be unwise to repeatedly calculate the percentile for each time window. In this case, you can pre-aggregate the data into buckets of desired size, and then calculate the percentile in the sink table using standard SQL when needed. The original sql might be:
 ```sql
 SELECT
     status,
@@ -71,14 +71,14 @@ GROUP BY
 And then you can calculate the percentile in the sink table using standard SQL:
 ```sql
 SELECT
-    ot.status,
-    ot.time_window,
-    ot.bucket,
-    SUM(case when in1.bucket <= ot.bucket then in1.total_logs else 0 end) * 100 / SUM(in1.total_logs) AS percentile
-FROM ngx_distribution AS ot
+    outer.status,
+    outer.time_window,
+    outer.bucket,
+    SUM(case when in1.bucket <= outer.bucket then in1.total_logs else 0 end) * 100 / SUM(in1.total_logs) AS percentile
+FROM ngx_distribution AS outer
 JOIN ngx_distribution AS in1
-ON in1.status = ot.status 
-AND in1.time_window = ot.time_window
+ON in1.status = outer.status 
+AND in1.time_window = outer.time_window
 GROUP BY
     status,
     time_window,
