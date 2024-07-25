@@ -4,43 +4,43 @@
     "description": "The label for version current"
   },
   "sidebar.docs.category.Getting Started": {
-    "message": "Getting Started",
+    "message": "开始",
     "description": "The label for category Getting Started in sidebar docs"
   },
   "sidebar.docs.category.Installation": {
-    "message": "Installation",
+    "message": "安装",
     "description": "The label for category Installation in sidebar docs"
   },
   "sidebar.docs.category.Quick Start": {
-    "message": "Quick Start",
+    "message": "快速开始",
     "description": "The label for category Quick Start in sidebar docs"
   },
   "sidebar.docs.category.User Guide": {
-    "message": "User Guide",
+    "message": "用户指南",
     "description": "The label for category User Guide in sidebar docs"
   },
   "sidebar.docs.category.Concepts": {
-    "message": "Concepts",
+    "message": "概念",
     "description": "The label for category Concepts in sidebar docs"
   },
   "sidebar.docs.category.Clients": {
-    "message": "Clients",
+    "message": "客户端",
     "description": "The label for category Clients in sidebar docs"
   },
   "sidebar.docs.category.sdk-libraries": {
-    "message": "sdk-libraries",
+    "message": "SDK",
     "description": "The label for category sdk-libraries in sidebar docs"
   },
   "sidebar.docs.category.Migrate to GreptimeDB": {
-    "message": "Migrate to GreptimeDB",
+    "message": "迁移到 GreptimeDB",
     "description": "The label for category Migrate to GreptimeDB in sidebar docs"
   },
   "sidebar.docs.category.Write Data": {
-    "message": "Write Data",
+    "message": "写数据",
     "description": "The label for category Write Data in sidebar docs"
   },
   "sidebar.docs.category.Query Data": {
-    "message": "Query Data",
+    "message": "读数据",
     "description": "The label for category Query Data in sidebar docs"
   },
   "sidebar.docs.category.Continuous Aggregation": {
