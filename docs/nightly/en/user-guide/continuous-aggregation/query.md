@@ -20,3 +20,74 @@ The query should have a `FROM` clause to identify the source table. As the join 
 Others things like `ORDER BY`, `LIMIT`, `OFFSET` are not supported in the continuous aggregation query.
 
 ## Rewrite existing query to continuous aggregation query
+
+Some of simple existing aggregation queries can be directly used as continuous aggregation queries. For example, the example in [overview](./overview.md) can be used to query both in standard SQL and continuous aggregation query, since it's also a valid sql query without any flow-specific syntax or function:
+
+```sql
+SELECT
+    status,
+    count(client) AS total_logs,
+    min(size) as min_size,
+    max(size) as max_size,
+    avg(size) as avg_size,
+    sum(case when `size` > 550::double then 1::double else 0::double end) as high_size_count,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window;
+```
+
+However, there are other types of query that cannot be directly used as continuous aggregation query. 
+For example, a query that need to compute percentile, because it would be unwise to repeatly calculate the percentile for each time window. In this case, you can pre-aggregate the data into buckets of desired size, and then calculate the percentile in the sink table using standard SQL when needed. The original sql might be:
+```sql
+SELECT
+    status,
+    percentile_approx(size, 0.5) as median_size,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window;
+```
+The above query will then be rewritten to first aggregate the data into buckets of size 10, and then calculate the percentile in the sink table.
+The flow query would be:
+```sql
+CREATE FLOW calc_ngx_distribution
+SINK TO ngx_distribution
+AS
+SELECT
+    status,
+    trunc(size, -1) as bucket,
+    count(client) AS total_logs,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window,
+    bucket;
+```
+
+And then you can calculate the percentile in the sink table using standard SQL:
+```sql
+SELECT
+    ot.status,
+    ot.time_window,
+    ot.bucket,
+    SUM(case when in1.bucket <= ot.bucket then in1.total_logs else 0 end) * 100 / SUM(in1.total_logs) AS percentile
+FROM ngx_distribution AS ot
+JOIN ngx_distribution AS in1
+ON in1.status = ot.status 
+AND in1.time_window = ot.time_window
+GROUP BY
+    status,
+    time_window,
+    bucket
+ORDER BY status, time_window, bucket;
+```
+
+<!-- 
+TODO(discord9): add example for percentile query
+TODO(discord9): add example for tumble and hop once we support window table function
+Another example that require rewrite is for query that needs overlapping timewindow, hence `hop()` function is needed. 
+-->
