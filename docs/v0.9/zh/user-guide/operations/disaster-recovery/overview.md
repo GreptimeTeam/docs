@@ -78,18 +78,18 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 
 有关此解决方案的更多信息，请参阅[独立模式的 DR 解决方案](./dr-solution-for-standalone.md)。
 
-### 基于双活-备份的 DR 解决方案
+### 基于双活互备的 DR 解决方案
 
 ![Active-active failover](/active-active-failover.png)
 
-在某些边缘或中小型场景中，或者如果你没有资源部署远程 WAL 或对象存储，双活-备份相对于 Standalone 的灾难恢复提供了更好的解决方案。
+在某些边缘或中小型场景中，或者如果你没有资源部署远程 WAL 或对象存储，双活互备相对于 Standalone 的灾难恢复提供了更好的解决方案。
 通过在两个独立节点之间同步复制请求，确保了高可用性。
 即使使用基于本地磁盘的 WAL 和数据存储，任何单个节点的故障也不会导致数据丢失或服务可用性降低。
 
 在不同区域部署节点也可以满足区域级灾难恢复要求，但可扩展性有限。
 
 :::tip 注意
-**双活-备份功能仅在 GreptimeDB 企业版中提供。**
+**双活互备功能仅在 GreptimeDB 企业版中提供。**
 :::
 
 有关此解决方案的更多信息，请参阅[基于双活-备份的 DR 解决方案](./dr-solution-based-on-active-active-failover.md)。
