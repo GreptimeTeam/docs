@@ -1,5 +1,11 @@
 # 关键特性
 
+## GreptimeDB 支持处理日志或事件吗？
+
+是的，从 v0.9.0 版本开始，GreptimeDB 将所有时间序列视为具有时间戳的上下文事件，从而统一了指标、日志和事件的处理。它支持使用 SQL、PromQL 进行指标和事件分析，并支持通过连续聚合进行流式处理。
+
+请阅读[日志处理使用指南](/user-guide/logs/overview)。
+
 ## GreptimeDB 支持更新数据吗？
 
 支持，请参考[更新数据](/user-guide/write-data/overview.md#更新数据)获取更多信息。
@@ -55,3 +61,7 @@ GreptimeDB 通过以下方式解决这个问题：
 数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](./../operations/configuration.md#storage-options)。
 
 GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://greptime.cn/product/cloud) 来帮助您管理云中的数据。
+
+## GreptimeDB 有灾难恢复解决方案吗？
+
+有的，请参阅 [灾难恢复文档](/user-guide/operations/disaster-recovery/overview)。
