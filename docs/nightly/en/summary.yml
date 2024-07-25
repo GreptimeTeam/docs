@@ -93,6 +93,7 @@
     - Disaster-Recovery:
       - overview
       - back-up-&-restore-data
+      - dr-solution-based-on-active-active-failover
     - Remote-WAL:
       - quick-start
       - cluster-deployment
