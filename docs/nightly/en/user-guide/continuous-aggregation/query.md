@@ -19,9 +19,9 @@ The query should have a `FROM` clause to identify the source table. As the join 
 
 Others things like `ORDER BY`, `LIMIT`, `OFFSET` are not supported in the continuous aggregation query.
 
-## Rewrite existing query to continuous aggregation query
+## Rewrite an existing query to a continuous aggregation query
 
-Some of simple existing aggregation queries can be directly used as continuous aggregation queries. For example, the example in [overview](./overview.md) can be used to query both in standard SQL and continuous aggregation query, since it's also a valid sql query without any flow-specific syntax or function:
+Some of simple existing aggregation queries can be directly used as continuous aggregation queries. For example, the example in [overview](./overview.md) can be used to query both in standard SQL and continuous aggregation query, since it's also a valid SQL query without any flow-specific syntax or functions:
 
 ```sql
 SELECT
@@ -38,8 +38,8 @@ GROUP BY
     time_window;
 ```
 
-However, there are other types of query that cannot be directly used as continuous aggregation query. 
-For example, a query that need to compute percentile, because it would be unwise to repeatedly calculate the percentile for each time window. In this case, you can pre-aggregate the data into buckets of desired size, and then calculate the percentile in the sink table using standard SQL when needed. The original sql might be:
+However, there are other types of queries that cannot be directly used as continuous aggregation queries. 
+For example, a query that needs to compute percentiles would be unwise to repeatedly calculate the percentile for each time window everytime a new batch of data arrive. In this case, you can pre-aggregate the data into buckets of the desired size, and then calculate the percentile in the sink table using standard SQL when needed. The original SQL might be:
 ```sql
 SELECT
     status,
@@ -50,7 +50,7 @@ GROUP BY
     status,
     time_window;
 ```
-The above query will then be rewritten to first aggregate the data into buckets of size 10, and then calculate the percentile in the sink table.
+The above query can be rewritten to first aggregate the data into buckets of size 10, and then calculate the percentile in the sink table.
 The flow query would be:
 ```sql
 CREATE FLOW calc_ngx_distribution
