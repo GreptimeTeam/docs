@@ -306,7 +306,7 @@ Output just like the `INFORMATION_SCHEMA.CHARACTER_SETS` table:
 `SHOW COLLATION` for `INFORMATION_SCHEMA.COLLATIONS` table.
 
 ```sql
-SHOW INDEX FROM monitor
+SHOW INDEX FROM monitor;
 ```
 
 To list all indexes in a table:
