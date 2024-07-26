@@ -6,6 +6,9 @@ This guide will walk you through creating a metric table and a log table, highli
 
 ## Connect to GreptimeDB
 
+GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md) for interacting with the database.
+In this quick start document, we use SQL for simplicity.
+
 If your GreptimeDB instance is running on `127.0.0.1` with the MySQL client default port `4002` or the PostgreSQL client default port `4003`,
 you can connect to it using the following commands:
 
@@ -26,7 +29,7 @@ The table schema is as follows:
 
 ```sql
 CREATE TABLE grpc_latencies (
-  ts TIMESTAMPNANOSECOND TIME INDEX,
+  ts TIMESTAMP TIME INDEX,
   host STRING,
   method_name STRING,
   latency DOUBLE,
@@ -43,13 +46,14 @@ Additionally, there is a table `app_logs` for storing application logs:
 
 ```sql
 CREATE TABLE app_logs (
-  ts TIMESTAMPNANOSECOND TIME INDEX,
+  ts TIMESTAMP TIME INDEX,
   host STRING,
   api_path STRING FULLTEXT,
   log_level STRING,
   log STRING FULLTEXT,
   PRIMARY KEY (host, log_level)
-);
+)
+engine=mito with('append_mode'='true');
 ```
 
 - `ts`: The timestamp of the log entry. It is the time index column.
@@ -121,12 +125,19 @@ Some error logs were collected when the `host1` latencies of RPC requests encoun
 
 INSERT INTO app_logs (ts, host, api_path, log_level, log) VALUES
   ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection timeout'),
+  ('2024-07-11 20:00:10', 'host1', '/api/v1/billings', 'ERROR', 'Connection timeout'),
   ('2024-07-11 20:00:11', 'host1', '/api/v1/resource', 'ERROR', 'Database unavailable'),
+  ('2024-07-11 20:00:11', 'host1', '/api/v1/billings', 'ERROR', 'Database unavailable'),
   ('2024-07-11 20:00:12', 'host1', '/api/v1/resource', 'ERROR', 'Service overload'),
+  ('2024-07-11 20:00:12', 'host1', '/api/v1/billings', 'ERROR', 'Service overload'),
   ('2024-07-11 20:00:13', 'host1', '/api/v1/resource', 'ERROR', 'Connection reset'),
+  ('2024-07-11 20:00:13', 'host1', '/api/v1/billings', 'ERROR', 'Connection reset'),
   ('2024-07-11 20:00:14', 'host1', '/api/v1/resource', 'ERROR', 'Timeout'),
+  ('2024-07-11 20:00:14', 'host1', '/api/v1/billings', 'ERROR', 'Timeout'),
   ('2024-07-11 20:00:15', 'host1', '/api/v1/resource', 'ERROR', 'Disk full'),
-  ('2024-07-11 20:00:16', 'host1', '/api/v1/resource', 'ERROR', 'Network issue');
+  ('2024-07-11 20:00:15', 'host1', '/api/v1/billings', 'ERROR', 'Disk full'),
+  ('2024-07-11 20:00:16', 'host1', '/api/v1/resource', 'ERROR', 'Network issue'),
+  ('2024-07-11 20:00:16', 'host1', '/api/v1/billings', 'ERROR', 'Network issue');
 ```
 
 ## Query data
@@ -159,10 +170,12 @@ You can also use functions when filtering the data.
 For example, you can use `approx_percentile_cont` to calculate the 95th percentile of the latency grouped by the host:
 
 ```sql
-SELECT approx_percentile_cont(latency, 0.95) AS p95_latency, host
-  FROM grpc_latencies
-  WHERE ts >= '2024-07-11 20:00:10'
-  GROUP BY host;
+SELECT 
+  approx_percentile_cont(latency, 0.95) AS p95_latency, 
+  host
+FROM grpc_latencies
+WHERE ts >= '2024-07-11 20:00:10'
+GROUP BY host;
 ```
 
 ```sql
@@ -208,34 +221,29 @@ ALIGN '5s' FILL PREV;
 
 ### Full-text search
 
-The latency analysis above indicates that `host1` may be experiencing some issues.
-You can utilize the full-text search `matches(path, 'api/v1')` to identify error logs associated with the specific API `api/v1`:
+You can use `matches` to search for the columns with the `FULLTEXT` index.
+For example, to search for logs with error `timeout`:
 
 ```sql
 SELECT 
-  ts, 
-  count(log) RANGE '5s' AS num_errors,
-  host
+  ts,
+  api_path,
+  log
 FROM
   app_logs
 WHERE
-  matches(api_path, 'api/v1')
-ALIGN '5s';
+  matches(log, 'timeout');
 ```
 
 ```sql
-+---------------------+------------+-------+
-| ts                  | num_errors | host  |
-+---------------------+------------+-------+
-| 2024-07-11 20:00:10 |          5 | host1 |
-| 2024-07-11 20:00:15 |          2 | host1 |
-+---------------------+------------+-------+
-2 rows in set (0.04 sec)
++---------------------+------------------+--------------------+
+| ts                  | api_path         | log                |
++---------------------+------------------+--------------------+
+| 2024-07-11 20:00:10 | /api/v1/billings | Connection timeout |
+| 2024-07-11 20:00:10 | /api/v1/resource | Connection timeout |
++---------------------+------------------+--------------------+
+2 rows in set (0.01 sec)
 ```
-
-The SQL result shows that the application was functioning properly until `2024-07-11 20:00:10`,
-when an `Error: Connection timeout` occurred.
-Between `2024-07-11 20:00:10` and `2024-07-11 20:00:15`, there were 5 error logs.
 
 ### Correlate Metrics and Logs
 
@@ -282,14 +290,14 @@ ORDER BY
 +---------------------+-------------+------------+-------+
 | 2024-07-11 20:00:05 |         114 |          0 | host2 |
 | 2024-07-11 20:00:05 |       104.5 |          0 | host1 |
-| 2024-07-11 20:00:10 |        4200 |          5 | host1 |
+| 2024-07-11 20:00:10 |        4200 |         10 | host1 |
 | 2024-07-11 20:00:10 |         111 |          0 | host2 |
 | 2024-07-11 20:00:15 |         115 |          0 | host2 |
-| 2024-07-11 20:00:15 |        3500 |          2 | host1 |
-| 2024-07-11 20:00:20 |          95 |          0 | host2 |
+| 2024-07-11 20:00:15 |        3500 |          4 | host1 |
+| 2024-07-11 20:00:20 |         110 |          0 | host2 |
 | 2024-07-11 20:00:20 |        2500 |          0 | host1 |
 +---------------------+-------------+------------+-------+
-8 rows in set (0.05 sec)
+8 rows in set (0.02 sec)
 ```
 
 <!-- TODO need to fix bug
@@ -352,11 +360,12 @@ By click `Ingest` icon in the dashboard, you can upload data in InfluxDB Line Pr
 For example, paste the following data into the input box:
 
 ```txt
-grpc_latencies,host=host1,method_name=GetUser latency=100 1720728021000000000
-grpc_latencies,host=host2,method_name=GetUser latency=110 1720728021000000000
+grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
+grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
 ```
 
 Then click the `Write` button to ingest the data.
+After data written, the table `grpc_metrics` will be created automatically if it does not exist.
 
 ## Next steps
 
