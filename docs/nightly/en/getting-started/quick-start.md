@@ -34,7 +34,8 @@ CREATE TABLE grpc_latencies (
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
-);
+)
+engine=mito with('append_mode'='true');
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
