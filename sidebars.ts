@@ -156,7 +156,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'link',
       label: 'Release Notes',
-      href: '/release'
+      href: '/all-releases'
       
     },
     
