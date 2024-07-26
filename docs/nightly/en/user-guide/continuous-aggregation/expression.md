@@ -10,7 +10,7 @@ This part list all supported aggregate functions in flow:
 - `min(column)`: find the minimum value of the column.
 - `max(column)`: find the maximum value of the column.
 
-more aggregate fucntions will be added in the future.
+more aggregate functions will be added in the future.
 
 ## Scalar functions
 
