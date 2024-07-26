@@ -86,7 +86,9 @@ GROUP BY
 ORDER BY status, time_window, bucket;
 ```
 
-```
+The SQL query groups the data by status, time_window, and bucket. The percentile column calculates the percentage within each group by taking the sum of all buckets not greater than the current bucket and dividing it by the total count of all logs. The result would be something like this:
+
+```sql
  status |        time_window         | bucket | percentile 
 --------+----------------------------+--------+------------
     404 | 1970-01-01 00:00:00.000000 |      0 |         22
