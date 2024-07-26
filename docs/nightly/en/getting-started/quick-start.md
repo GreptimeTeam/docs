@@ -252,13 +252,8 @@ you can easily and quickly determine the time of failure and the corresponding l
 The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
 
 ```sql
-SELECT
-  metrics.ts,
-  p95_latency, 
-  coalesce(num_errors, 0) as num_errors,
-  metrics.host
-FROM 
-  (
+WITH
+  metrics AS (
     SELECT 
       ts, 
       host, 
@@ -266,18 +261,27 @@ FROM
     FROM 
       grpc_latencies 
     ALIGN '5s' FILL PREV
-  ) AS metrics 
-  LEFT JOIN (
+  ), 
+  logs AS (
     SELECT 
       ts, 
       host,
-      count(log) RANGE '5s' AS num_errors
-    FROM 
+      count(log) RANGE '5s' AS num_errors, 
+    FROM
       app_logs 
-    WHERE 
-      matches(api_path, 'api/v1') 
+    WHERE
+      log_level = 'ERROR'
     ALIGN '5s'
-  ) AS logs ON metrics.host = logs.host 
+) 
+--- Analyze and correlate metrics and logs ---
+SELECT 
+  metrics.ts,
+  p95_latency, 
+  coalesce(num_errors, 0) as num_errors,
+  metrics.host
+FROM 
+  metrics 
+  LEFT JOIN logs ON metrics.host = logs.host 
   AND metrics.ts = logs.ts 
 ORDER BY 
   metrics.ts;
