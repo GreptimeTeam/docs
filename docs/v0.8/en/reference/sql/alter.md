@@ -1,6 +1,6 @@
 # ALTER
 
-`ALERT` can be used to modify any table settings or data within the table:
+`ALTER` can be used to modify any table settings or data within the table:
 
 * Add/Drop/Modify a column
 * Rename a table
