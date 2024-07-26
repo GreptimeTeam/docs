@@ -2,8 +2,8 @@
 
 GreptimeDB provides a continuous aggregation feature that allows you to aggregate data in real-time. This feature is useful when you need to calculate and query the sum, average, or other aggregations on the fly. The continuous aggregation feature is provided by the Flow engine. It continuously updates the aggregated data based on the incoming data and materialize it. So you can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort. Some common use case include:
 
-- downsampling the data point using i.e. average pooling to reduce amount of data for storage and analysis
-- real-time analytics that provide actionable information in near real-time
+- Downsampling the data point using i.e. average pooling to reduce amount of data for storage and analysis
+- Real-time analytics that provide actionable information in near real-time
 
 When you insert data into the source table, the data is also sent to and stored in the Flow engine.
 The Flow engine calculate the aggregation by time windows and store the result in the sink table.
@@ -52,7 +52,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So user can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, user can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, user can then trying to locate that packet and further inspect it.
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
 
 ```sql
 CREATE FLOW ngx_aggregation
