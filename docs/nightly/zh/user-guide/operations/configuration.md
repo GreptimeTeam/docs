@@ -492,7 +492,7 @@ mode = "standalone"
 
 ### 仅限于 Metasrv 的配置
 
-````toml
+```toml
 # 工作主目录。
 data_home = "/tmp/metasrv/"
 # metasrv 的绑定地址，默认为 "127.0.0.1:3002"。
