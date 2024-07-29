@@ -1,17 +1,21 @@
+import Introduction from './introduction.md'
+import Prerequisites from './prerequisites.md'
+import VisulizeGrafana from './visualize-data-by-grafana.md'
+import NextSteps from './next-steps.md'
 
-<!--@include: ./introduction.md-->
+<Introduction/>
 
 ## Prerequisites
 
-<!--@include: ./prerequisites.md-->
+<Prerequisites/>
 
 ## Write data
 
-\{template write-data%%}
+{props.writeData}
 
 ## Visualize Data with Grafana
-<!--@include: ./visualize-data-by-grafana.md-->
+<VisulizeGrafana/>
 
 ## Next Steps
 
-<!--@include: ./next-steps.md-->
+<NextSteps/>
