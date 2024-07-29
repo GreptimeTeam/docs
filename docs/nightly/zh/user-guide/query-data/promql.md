@@ -23,96 +23,9 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API ，通过 `/v1/prometheus
 访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/api)
 获得更详细的说明。
 
-你可以通过设置 HTTP 请求的 `db` 参数来指定 GreptimeDB 中的数据库名。
+你可以通过设置 HTTP 请求的 `db` 参数或 HTTP 头 `x-greptime-db-name` 来指定
+GreptimeDB 中的数据库名。
 
-## GreptimeDB 的 HTTP API
-
-GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在当前的 API 路径 `/v1` 的后方拼接 `/promql`，如下示例：
-
-```shell
-curl -X GET \
-  -H 'Authorization: Basic {{authorization if exists}}' \
-  -G \
-  --data-urlencode 'db=public' \
-  --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
-  --data-urlencode 'start=1667446797' \
-  --data-urlencode 'end=1667446799' \
-  --data-urlencode 'step=1s' \
-  http://localhost:4000/v1/promql
-```
-
-接口中的参数和 Prometheus' HTTP API 的 [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 接口相似：
-
-- `db=<database>`：在使用 GreptimeDB 进行鉴权操作时必填。
-- `query=<string>`：必填。Prometheus 表达式查询字符串。
-- `start=<rfc3339 | unix_timestamp>`：必填。开始时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
-- `end=<rfc3339 | unix_timestamp>`：必填。结束时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
-- `step=<duration | float>`：必填。查询步长，可以使用持续时间格式或秒数的浮点数。
-
-以下是每种参数的类型的示例：
-
-- rfc3339
-  - `2015-07-01T20:11:00Z` (default to seconds resolution)
-  - `2015-07-01T20:11:00.781Z` (with milliseconds resolution)
-  - `2015-07-02T04:11:00+08:00` (with timezone offset)
-- unix timestamp
-  - `1435781460` (default to seconds resolution)
-  - `1435781460.781` (with milliseconds resolution)
-- duration
-  - `1h` (1 hour)
-  - `5d1m` (5 days and 1 minute)
-  - `2` (2 seconds)
-  - `2s` (also 2 seconds)
-
-结果格式与[HTTP 协议](sql.md#http-api)中描述的 `/sql` 接口相同。
-
-```json
-{
-  "code": 0,
-  "output": [
-    {
-      "records": {
-        "schema": {
-          "column_schemas": [
-            {
-              "name": "ts",
-              "data_type": "TimestampMillisecond"
-            },
-            {
-              "name": "AVG(system_metrics.cpu_util)",
-              "data_type": "Float64"
-            },
-            {
-              "name": "AVG(system_metrics.memory_util)",
-              "data_type": "Float64"
-            },
-            {
-              "name": "AVG(system_metrics.disk_util)",
-              "data_type": "Float64"
-            }
-          ]
-        },
-        "rows": [
-          [
-            1667446798000,
-            80.1,
-            70.3,
-            90
-          ],
-          [
-            1667446799000,
-            80.1,
-            70.3,
-            90
-          ]
-        ]
-      }
-    }
-  ],
-  "execution_time_ms": 5
-}
-```
-<!-- TODO New paths that compatible with Prometheus APIs -->
 
 ## SQL
 
