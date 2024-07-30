@@ -1,0 +1,36 @@
+filter "**/*.md"
+
+//replace template provide start
+replace-regex "\\\{template ([\w-]*)%"
+with "<div id="$1"></div>"
+
+// replace template provide end
+replace-regex "%\}"
+with "</div>"
+
+// replace template inject
+replace-regex "\\\{template ([\w-]*)%%\}"
+with "{props.children.filter(c => c.props.id == '$1')}"
+
+// replace doctemplate declare start
+replace-regex "<docs-template>"
+with "<DocTemplate>"
+
+// replace doctemplate declare end
+replace-regex "</docs-template>"
+with "</DocTemplate>"
+
+
+// replace file include
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3$4$5 from '$1/$2-$3-$4-$5.md' \n\n<Include$2$3$4$5/>"
+
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3$4 from '$1/$2-$3-$4.md' \n\n<Include$2$3$4/>"
+
+
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3 from '$1/$2-$3.md' \n\n<Include$2$3/>"
+
+replace-regex "<!--@include: (.*)/([a-zA-Z0-9]*)\.md-->"
+with "import Include$2 from '$1/$2.md' \n\n<Include$2/>"
