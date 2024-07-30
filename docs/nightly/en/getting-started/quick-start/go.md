@@ -1,19 +1,3 @@
----
-template: quick-start-template.md
----
+# THIS PAGE HAS BEEN DEPRECATED
 
-# Go
-
-<docs-template>
-
-{template write-data%
-
-<!--@include: ../../db-cloud-shared/quick-start/go.md-->
-
-```shell
-go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
-```
-
-%}
-
-</docs-template>
+Please refer to the [Quick Start](../quick-start.md) page for up-to-date information.

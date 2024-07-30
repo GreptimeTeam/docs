@@ -1,17 +1,3 @@
----
-template: quick-start-template.md
----
-# Node.js
+# 此页面已被弃用
 
-<docs-template>
-
-{template write-data%
-
-<!--@include: ../../db-cloud-shared/quick-start/node.md-->
-
-```shell
-npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
-```
-%}
-
-</docs-template>
+请参考[快速入门](../quick-start.md)页面获取最新信息。

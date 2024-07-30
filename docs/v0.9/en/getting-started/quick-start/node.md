@@ -1,17 +1,3 @@
----
-template: quick-start-template.md
----
-# Node.js
+# THIS PAGE HAS BEEN DEPRECATED
 
-<docs-template>
-
-{template write-data%
-
-<!--@include: ../../db-cloud-shared/quick-start/node.md-->
-
-```shell
-npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
-```
-%}
-
-</docs-template>
+Please refer to the [Quick Start](../quick-start.md) page for up-to-date information.

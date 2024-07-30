@@ -118,4 +118,4 @@ You can also refer to the [Configuration](/user-guide/operations/configuration.m
 
 ## Next Steps
 
-Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).
+Learn how to write data to GreptimeDB in the [Quick Start](../quick-start.md).

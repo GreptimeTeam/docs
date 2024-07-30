@@ -1,19 +1,3 @@
----
-template: quick-start-template.md
----
+# 此页面已被弃用
 
-# Python
-
-<docs-template>
-
-{template write-data%
-
-<!--@include: ../../db-cloud-shared/quick-start/python.md-->
-
-```shell
-pipx run --no-cache greptime-cloud-quick-start -e http://localhost:4000/v1/otlp/v1/metrics
-```
-
-%}
-
-</docs-template>
+请参考[快速入门](../quick-start.md)页面获取最新信息。
