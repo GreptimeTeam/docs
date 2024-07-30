@@ -117,4 +117,4 @@ greptime/greptimedb:<%greptimedb-version%> standalone start \
 
 ## 下一步
 
-学习如何使用 GreptimeDB 并使用 Grafana 可视化数据：[快速开始](../quick-start.md)。
+学习如何使用 GreptimeDB：[快速开始](../quick-start.md)。
