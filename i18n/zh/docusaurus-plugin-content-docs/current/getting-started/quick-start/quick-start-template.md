@@ -11,7 +11,7 @@ import Includeprerequisites from './prerequisites.md'
 
 ## 写入数据
 
-{props.children.filter(c => c.props.id == 'write-data')}
+{props.children.length ? props.children.filter(c => c.props.id == 'write-data') : props.id === 'write-data' ? props.children : null}
 
 ## 使用 Grafana 可视化数据
 import Includevisualizedatabygrafana from './visualize-data-by-grafana.md' 

@@ -42,6 +42,8 @@ const config: Config = {
           routeBasePath: '/',
           exclude: [
             'db-cloud-shared/**',
+            'user-guide/client-libraries/template.md',
+            'getting-started/quick-start/quick-start-template.md'
           ]
         },
         blog: {
