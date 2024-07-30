@@ -1,31 +1,31 @@
-# Quick Start
+# 快速开始
 
-Before proceeding, please ensure you have [installed GreptimeDB](./installation/overview.md).
+在继续阅读之前，请确保你已经[安装了 GreptimeDB](./installation/overview.md)。
 
-This guide will walk you through creating a metric table and a log table, highlighting the core features of GreptimeDB.
+本指南通过引导你创建一个 metric 表和一个 log 表来介绍 GreptimeDB 的核心功能。
 
-## Connect to GreptimeDB
+## 连接到 GreptimeDB
 
-GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md) for interacting with the database.
-In this quick start document, we use SQL for simplicity.
+GreptimeDB 支持[多种协议](/user-guide/clients/overview.md)与数据库进行交互。
+在本快速入门文档中，我们使用 SQL 作为实例。
 
-If your GreptimeDB instance is running on `127.0.0.1` with the MySQL client default port `4002` or the PostgreSQL client default port `4003`,
-you can connect to GreptimeDB using the following commands:
+如果你的 GreptimeDB 实例运行在 `127.0.0.1` 中，
+并且使用 MySQL 客户端默认端口 `4002` 或 PostgreSQL 客户端默认端口 `4003`，
+你可以使用以下命令连接到数据库：
 
 ```shell
 mysql -h 127.0.0.1 -P 4002
 ```
 
-Or
+或者
 
 ```shell
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-## Create tables
+## 创建表
 
-Suppose you have a table named `grpc_latencies` that stores the gRPC latencies of your application.
-The table schema is as follows:
+假设你有一个名为 `grpc_latencies` 的表，用于存储的 gRPC 延迟。表 schema 如下：
 
 ```sql
 CREATE TABLE grpc_latencies (
@@ -38,12 +38,12 @@ CREATE TABLE grpc_latencies (
 engine=mito with('append_mode'='true');
 ```
 
-- `ts`: The timestamp when the metric was collected. It is the time index column.
-- `host`: The hostname of the application server. It is a tag column.
-- `method_name`: The name of the RPC request method. It is a tag column.
-- `latency`: The latency of the RPC request.
+- `ts`：收集指标时的时间戳，时间索引列。
+- `host`：主机名，tag 列。
+- `method_name`：RPC 请求方法的名称，tag 列。
+- `latency`：RPC 请求的延迟。
 
-Additionally, there is a table `app_logs` for storing application logs:
+此外，还有一个名为 `app_logs` 的表用于存储日志：
 
 ```sql
 CREATE TABLE app_logs (
@@ -57,27 +57,26 @@ CREATE TABLE app_logs (
 engine=mito with('append_mode'='true');
 ```
 
-- `ts`: The timestamp of the log entry. It is the time index column.
-- `host`: The hostname of the application server. It is a tag column.
-- `api_path`: The API path, [indexed with `FULLTEXT`](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for accelerated search..
-- `log_level`: The log level of the log entry. It is a tag column.
-- `log`: The log message, [indexed with `FULLTEXT`](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for accelerated search.
+- `ts`：日志条目的时间戳，时间索引列。
+- `host`：主机名，tag 列。
+- `api_path`：API 路径，使用 `FULLTEXT` 进行索引以加速搜索。
+- `log_level`：日志级别，tag 列。
+- `log`：日志消息，使用 `FULLTEXT` 进行索引以加速搜索。
 
-## Write data
+## 写入数据
 
-Let's insert some mocked data to simulate collected metrics and error logs.
+让我们插入一些模拟数据来模拟收集的指标和错误日志。
 
-Two application servers, `host1` and `host2`,
-have been recording gRPC latencies. Starting from `2024-07-11 20:00:10`,
-`host1` experienced a significant increase in latency.
+假设有两个服务器 `host1` 和 `host2` 记录着 gRPC 延迟。
+从 `2024-07-11 20:00:10` 开始，`host1` 的延迟显著增加。
 
-The following image shows the unstable latencies of `host1`.
+下图显示了 `host1` 的不稳定延迟。
 
 <img src="/unstable-latencies.png" alt="unstable latencies" width="600">
 
-The following SQL statements insert the mocked data.
+使用以下 SQL 语句插入模拟数据。
 
-Before `2024-07-11 20:00:10`, the hosts were functioning normally:
+在 `2024-07-11 20:00:10` 之前，主机正常运行：
 
 ```sql
 INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
@@ -91,7 +90,7 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:09', 'host2', 'GetUser', 114.0);
 ```
 
-After `2024-07-11 20:00:10`, `host1`'s latencies becomes unstable:
+在 `2024-07-11 20:00:10` 之后，`host1` 的延迟变得不稳定：
 
 ```sql
 
@@ -120,7 +119,7 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:20', 'host2', 'GetUser', 95.0);
 ```
 
-Some error logs were collected when the `host1` latencies of RPC requests encounter latency issues.
+当 `host1` 的 gRPC 请求的延迟遇到问题时，收集了一些错误日志。
 
 ```sql
 INSERT INTO app_logs (ts, host, api_path, log_level, log) VALUES
@@ -140,12 +139,11 @@ INSERT INTO app_logs (ts, host, api_path, log_level, log) VALUES
   ('2024-07-11 20:00:16', 'host1', '/api/v1/billings', 'ERROR', 'Network issue');
 ```
 
-## Query data
+## 查询数据
 
-### Filter by tags and time index
+### 根据 tag 和时间索引进行过滤
 
-You can filter data using the WHERE clause.
-For example, to query the latency of `host1` after `2024-07-11 20:00:15`:
+你可以使用 WHERE 子句来过滤数据。例如，要查询 `2024-07-11 20:00:15` 之后 `host1` 的延迟：
 
 ```sql
 SELECT *
@@ -166,8 +164,7 @@ SELECT *
 5 rows in set (0.14 sec)
 ```
 
-You can also use functions when filtering the data.
-For example, you can use `approx_percentile_cont` to calculate the 95th percentile of the latency grouped by the host:
+你还可以在过滤数据时使用函数。例如，你可以使用 `approx_percentile_cont` 函数按主机分组计算延迟的第 95 百分位数：
 
 ```sql
 SELECT 
@@ -190,8 +187,7 @@ GROUP BY host;
 
 ### Range query
 
-You can use [range queries](/reference/sql/range#range-query) to monitor latencies in real-time.
-For example, to calculate the p95 latency of requests using a 5-second window:
+你可以使用 [range query](/reference/sql/range#range-query)来实时监控延迟。例如，按 5 秒窗口计算请求的 p95 延迟：
 
 ```sql
 SELECT 
@@ -219,10 +215,9 @@ ALIGN '5s' FILL PREV;
 8 rows in set (0.06 sec)
 ```
 
-### Full-text search
+### 全文搜索
 
-You can use `matches` to search for the columns with the `FULLTEXT` index.
-For example, to search for logs with error `timeout`:
+你可以使用 `matches` 函数来搜索具有 `FULLTEXT` 索引的列。例如，搜索包含错误信息 `timeout` 的日志：
 
 ```sql
 SELECT 
@@ -245,11 +240,9 @@ WHERE
 2 rows in set (0.01 sec)
 ```
 
-### Correlate Metrics and Logs
+### 指标和日志的关联查询
 
-By combining the data from the two tables,
-you can easily and quickly determine the time of failure and the corresponding logs.
-The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
+通过组合两个表的数据，你可以快速地确定故障时间和相应的日志。以下 SQL 查询使用 `JOIN` 操作关联指标和日志：
 
 ```sql
 WITH
@@ -273,7 +266,7 @@ WITH
       log_level = 'ERROR'
     ALIGN '5s'
 ) 
---- Analyze and correlate metrics and logs ---
+--- 关联 metric 和日志 ---
 SELECT 
   metrics.ts,
   p95_latency, 
@@ -306,13 +299,13 @@ ORDER BY
 
 <!-- TODO need to fix bug
 
-### Continuous aggregation
+### 连续聚合
 
-For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the [continuous aggregation](/user-guide/continuous-aggregation/overview.md) feature of GreptimeDB.
+为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的[连续聚合](/user-guide/continuous-aggregation/overview.md)功能来实现。
 
-For example, aggregate the API error number by 5-second and save the data to table `api_error_count`.
+例如，按照 5 秒钟的时间窗口聚合 API 错误数量，并将数据保存到 `api_error_count` 表中。
 
-Create the `api_error_count` table:
+创建 `api_error_count` 表：
 
 ```sql
 CREATE TABLE api_error_count (
@@ -323,7 +316,7 @@ CREATE TABLE api_error_count (
 );
 ```
 
-Then, create a Flow to aggregate the error number by 5-second:
+然后，创建一个 Flow 来按照 5 秒钟的时间窗口聚合错误数量：
 
 ```sql
 CREATE FLOW flow_api_error_count 
@@ -338,45 +331,45 @@ FROM
 GROUP BY date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond);
 ``` -->
 
-## GreptimeDB Dashboard
+## GreptimeDB 控制台
 
-GreptimeDB offers a [dashboard](./installation/greptimedb-dashboard.md) for data exploration and management.
+GreptimeDB 提供了一个[仪表板](./installation/greptimedb-dashboard.md)用于数据探索和管理。
 
-### Explore data
+### 数据探索
 
-Once GreptimeDB is started as mentioned in the [installation section](./installation/overview.md), you can access the dashboard through the HTTP endpoint `http://localhost:4000/dashboard`.
+按照[安装部分](./installation/overview.md)中的说明启动 GreptimeDB 后，你可以通过 HTTP 地址 `http://localhost:4000/dashboard` 访问控制台。
 
-To add a new query, click on the `+` button, write your SQL command in the command text, and then click on `Run All`.
-The following SQL will retrieve all the data from the `grpc_latencies` table.
+点击 `+` 按钮添加一个新的查询，在命令文本中编写你的 SQL 命令，然后点击 `Run All`。
+下方的 SQL 会查询 `grpc_latencies` 表中的所有数据。
 
 ```sql
 SELECT * FROM grpc_latencies;
 ```
 
-Then click on the `Chart` button in the result panel to visualize the data.
+然后点击结果面板中的 `Chart` 按钮来可视化数据。
 
 ![select gRPC latencies](/select-grpc-latencies.png)
 
-### Ingest data by InfluxDB Line Protocol
+### 使用 InfluxDB Line Protocol 导入数据
 
-Besides SQL, GreptimeDB also supports multiple protocols, one of the most popular is InfluxDB Line Protocol.
-By click `Ingest` icon in the dashboard, you can upload data in InfluxDB Line Protocol format.
+除了 SQL，GreptimeDB 还支持多种协议，其中最常用之一是 InfluxDB Line Protocol。
+在仪表板中点击 `Ingest` 图标，你可以以 InfluxDB Line Protocol 格式上传数据。
 
-For example, paste the following data into the input box:
+例如，将以下数据粘贴到输入框中：
 
 ```txt
 grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
 grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
 ```
 
-Then click the `Write` button to ingest the data to the table `grpc_metrics`.
-The `grpc_metrics` table will be created automatically if it does not exist.
+然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果改表不存在，将会自动创建该表。
 
-## Next steps
+## 下一步
 
-You have now experienced the core features of GreptimeDB.
-To further explore and utilize GreptimeDB:
+你现在已经体验了 GreptimeDB 的核心功能。
+要进一步探索和利用 GreptimeDB：
 
-- [Visualize data using Grafana](/user-guide/clients/grafana.md)
-- [Explore more demos of GreptimeDB](https://github.com/GreptimeTeam/demo-scene/)
-- [Read the user guide document to learn more details about GreptimeDB](/user-guide/overview.md)
+- [使用 Grafana 可视化数据](/user-guide/clients/grafana.md)
+- [探索更多 GreptimeDB 的 Demo](https://github.com/GreptimeTeam/demo-scene/)
+- [阅读用户指南文档以了解更多关于 GreptimeDB 的详细信息](/user-guide/overview.md)
+
