@@ -1,9 +1,16 @@
 
 import DocTemplate from './quick-start-template.md'
-import WriteData from './go-includes/write-data.md'
+import GoShared from '../../db-cloud-shared/quick-start/go.md'
+
+
 
 # Go
 
-<DocTemplate writeData={<WriteData></WriteData>}>
+<DocTemplate>
+  <GoShared></GoShared>
+
+  ```shell
+  go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
+  ```
 </DocTemplate>
 

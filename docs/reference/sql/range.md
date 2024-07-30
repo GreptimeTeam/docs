@@ -83,7 +83,6 @@ The result of each `FILL` option is as follows:
 
 <Tabs>
   <TabItem value="NOT FILL">
-## test
 
 ```sql [NO FILL]
 
