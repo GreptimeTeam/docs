@@ -115,4 +115,4 @@ kubectl port-forward svc/greptimedb-frontend 4002:4002 -n greptimedb-cluster > c
 kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > connections.out &
 ```
 
-然后就可以使用 MySQL 客户端来[连接到集群](/getting-started/quick-start/mysql.md#connect)。
+然后就可以使用 MySQL 客户端来[连接到集群](/getting-started/quick-start.md)。
