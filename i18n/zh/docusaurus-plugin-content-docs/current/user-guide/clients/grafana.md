@@ -1,20 +1,19 @@
----
-template: ../../db-cloud-shared/clients/grafana-integration.md
----
+import DocTemplate from './../../db-cloud-shared/clients/grafana-integration.md' 
+
 # Grafana
 
-<docs-template>
+<DocTemplate>
 
-\{template data-source-plugin-intro%
+<div id="data-source-plugin-intro">
 
 GreptimeDB 数据源插件基于 Prometheus 数据源开发并附加了特定于 GreptimeDB 的功能。
 该插件完美适配了 GreptimeDB 的数据模型，
 从而提供了更好的用户体验。
 此外，和直接使用 Prometheus 数据源相比，它还解决了一些兼容性问题。
 
-%}
+</div>
 
-\{template data-source-plugin-installation%
+<div id="data-source-plugin-installation">
 
 ### 安装
 
@@ -31,9 +30,9 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
 
 注意，安装插件后可能需要重新启动 Grafana 服务器。
 
-%}
+</div>
 
-\{template preview-greptimedb-using-docker%
+<div id="preview-greptimedb-using-docker">
 
 ### 使用 Docker 快速预览
 
@@ -55,32 +54,32 @@ docker run -d -p 3000:3000 --name=grafana --rm \
   grafana/grafana-oss
 ```
 
-%}
+</div>
 
-\{template grafana-add-greptimedb-data-source-img%
+<div id="grafana-add-greptimedb-data-source-img">
 
 ![grafana-add-greptimedb-data-source](/grafana-add-greptimedb-data-source.png)
 
-%}
+</div>
 
 
-\{template connection-settings-title%
+<div id="connection-settings-title">
 
 ### Connection 配置
 
-%}
+</div>
 
 
-\{template greptime-data-source-connection-url%
+<div id="greptime-data-source-connection-url">
 
 ```txt
 http://<host>:4000
 ```
 
-%}
+</div>
 
 
-\{template create-a-dashboard%
+<div id="create-a-dashboard">
 
 ### 创建仪表盘
 
@@ -102,15 +101,15 @@ http://<host>:4000
 GreptimeDB 兼容大部分 PromQL，但是有一些限制。请参考 [PromQL 限制](/user-guide/query-data/promql#局限) 文档获取更多信息。
 :::
 
-%}
+</div>
 
 
-\{template prometheus-server-url%
+<div id="prometheus-server-url">
 
 ```txt
 http://<host>:4000/v1/prometheus
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

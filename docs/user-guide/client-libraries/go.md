@@ -1,19 +1,18 @@
----
-template: template.md
----
+import DocTemplate from './template.md' 
+
 # Go
 
-<docs-template>
+<DocTemplate>
 
-\{template ingester-lib-introduction%
+<div id="ingester-lib-introduction">
 
 The Go ingester SDK provided by GreptimeDB is a lightweight,
 concurrent-safe library that is easy to use with the metric struct.
 
-%}
+</div>
 
 
-\{template ingester-lib-installation%
+<div id="ingester-lib-installation">
 
 Use the following command to install the GreptimeDB client library for Go:
 
@@ -31,9 +30,9 @@ import (
 )
 ```
 
-%}
+</div>
 
-\{template ingester-lib-connect%
+<div id="ingester-lib-connect">
 
 ```go
 cfg := greptime.NewConfig("127.0.0.1").
@@ -48,9 +47,9 @@ cfg := greptime.NewConfig("127.0.0.1").
 
 cli, _ := greptime.NewClient(cfg)
 ```
-%}
+</div>
 
-\{template low-level-object%
+<div id="low-level-object">
 
 ```go
 // Construct the table schema for CPU metrics
@@ -77,9 +76,9 @@ if err != nil {
 
 ```
 
-%}
+</div>
 
-\{template create-rows%
+<div id="create-rows">
 
 ```go
 cpuMetric, err := table.New("cpu_metric")
@@ -108,9 +107,9 @@ if err != nil {
 }
 ```
 
-%}
+</div>
 
-\{template insert-rows%
+<div id="insert-rows">
 
 ```go
 resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
@@ -120,9 +119,9 @@ if err != nil {
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-%}
+</div>
 
-\{template streaming-insert%
+<div id="streaming-insert">
 
 ```go
 err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
@@ -138,10 +137,10 @@ In general, you do not need to close the stream writing when continuously writin
 affected, err := cli.CloseStream(ctx)
 ```
 
-%}
+</div>
 
 
-\{template high-level-style-object%
+<div id="high-level-style-object">
 
 ```go
 type CpuMetric struct {
@@ -186,18 +185,18 @@ memMetrics := []MemMetric{
 }
 ``` -->
 
-%}
+</div>
 
-\{template high-level-style-insert-data%
+<div id="high-level-style-insert-data">
 
 ```go
 resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-%}
+</div>
 
-\{template high-level-style-streaming-insert%
+<div id="high-level-style-streaming-insert">
 
 ```go
 err := cli.StreamWriteObject(context.Background(), cpuMetrics)
@@ -210,28 +209,28 @@ In general, you do not need to close the stream writing when continuously writin
 affected, err := cli.CloseStream(ctx)
 ```
 
-%}
+</div>
 
-\{template more-ingestion-examples%
+<div id="more-ingestion-examples">
 
 For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
-%}
+</div>
 
-\{template ingester-lib-reference%
+<div id="ingester-lib-reference">
 
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
-%}
+</div>
 
 
-\{template recommended-query-library%
+<div id="recommended-query-library">
 
 We recommend using the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
 
-%}
+</div>
 
-\{template query-library-installation%
+<div id="query-library-installation">
 
 Use the following command to install the GORM library:
 
@@ -254,9 +253,9 @@ import (
 )
 ```
 
-%}
+</div>
 
-\{template query-library-connect%
+<div id="query-library-connect">
 
 ```go
 type Mysql struct {
@@ -286,9 +285,9 @@ if err != nil {
 }
 m.DB = db
 ```
-%}
+</div>
 
-\{template query-library-raw-sql%
+<div id="query-library-raw-sql">
 
 The following code declares a GORM object model:
 
@@ -328,13 +327,13 @@ db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 ```
 
-%}
+</div>
 
-\{template query-lib-doc-link%
+<div id="query-lib-doc-link">
 
 [GORM](https://gorm.io/docs/index.html)
 
-%}
+</div>
 
 
-</docs-template>
+</DocTemplate>

@@ -1,11 +1,10 @@
----
-template: template.md
----
+import DocTemplate from './template.md' 
+
 # Java
 
-<docs-template>
+<DocTemplate>
 
-\{template ingester-lib-introduction%
+<div id="ingester-lib-introduction">
 
 The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
 
@@ -14,9 +13,9 @@ The Java ingester SDK provided by GreptimeDB is a lightweight library with the f
 - Automatic collection of various performance metrics by default. You can then configure and write them to local files.
 - Ability to take in-memory snapshots of critical objects, configure them, and write them to local files. This is helpful for troubleshooting complex issues.
 
-%}
+</div>
 
-\{template ingester-lib-installation%
+<div id="ingester-lib-installation">
 
 1. Install the Java Development Kit(JDK)
 
@@ -40,9 +39,9 @@ The latest version can be viewed [here](https://central.sonatype.com/search?q=io
 
 After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
 
-%}
+</div>
 
-\{template ingester-lib-connect%
+<div id="ingester-lib-connect">
 
 The following code demonstrates how to connect to GreptimeDB with the simplest configuration.
 For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
@@ -71,10 +70,10 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
 
-%}
+</div>
 
 
-\{template low-level-object%
+<div id="low-level-object">
 
 ```java
 // Construct the table schema for CPU metrics
@@ -99,10 +98,10 @@ double cpuSys = 0.12; // CPU usage by system processes (in percentage)
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
-%}
+</div>
 
 
-\{template create-rows%
+<div id="create-rows">
 
 ```java
 // Creates schemas
@@ -140,10 +139,10 @@ for (int i = 0; i < 10; i++) {
 
 ```
 
-%}
+</div>
 
 
-\{template insert-rows%
+<div id="insert-rows">
 
 ```java
 // Saves data
@@ -163,10 +162,10 @@ if (result.isOk()) {
 
 ```
 
-%}
+</div>
 
 
-\{template streaming-insert%
+<div id="streaming-insert">
 
 
 ```java
@@ -190,9 +189,9 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-%}
+</div>
 
-\{template update-rows%
+<div id="update-rows">
 
 #### Update data
 
@@ -219,9 +218,9 @@ CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSch
 Result<WriteOk, Err> result = future.get();
 ```
 
-%}
+</div>
 
-\{template high-level-style-object%
+<div id="high-level-style-object">
 
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
@@ -278,10 +277,10 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-%}
+</div>
 
 
-\{template high-level-style-insert-data%
+<div id="high-level-style-insert-data">
 
 
 Write data with POJO objects:
@@ -300,10 +299,10 @@ if (result.isOk()) {
 }
 ```
 
-%}
+</div>
 
 
-\{template high-level-style-streaming-insert%
+<div id="high-level-style-streaming-insert">
 
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
@@ -326,9 +325,9 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-%}
+</div>
 
-\{template high-level-style-update-data%
+<div id="high-level-style-update-data">
 
 #### Update data
 
@@ -359,30 +358,30 @@ cpu.setCpuSys(0.11);
 Result<WriteOk, Err> updateResult = greptimeDB.writeObjects(newCpu).get();
 ```
 
-%}
+</div>
 
-\{template ingester-lib-debug-logs%
+<div id="ingester-lib-debug-logs">
 
 ### Debug logs
 
 The ingester SDK provides metrics and logs for debugging.
 Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
 
-%}
+</div>
 
-\{template more-ingestion-examples%
+<div id="more-ingestion-examples">
 
 For fully runnable code snippets and the complete code of the demo, please refer to the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
 
-%}
+</div>
 
-\{template ingester-lib-reference%
+<div id="ingester-lib-reference">
 
 - [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
-%}
+</div>
 
-\{template recommended-query-library%
+<div id="recommended-query-library">
 
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
@@ -390,9 +389,9 @@ Many databases, such as MySQL or PostgreSQL, have implemented their own drivers 
 Since GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
 If you want to use other protocols, just replace the MySQL driver with the corresponding driver.
 
-%}
+</div>
 
-\{template query-library-installation%
+<div id="query-library-installation">
 
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
@@ -406,9 +405,9 @@ dependencies list:
 </dependency>
 ```
 
-%}
+</div>
 
-\{template query-library-connect%
+<div id="query-library-connect">
 
 Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
 
@@ -455,9 +454,9 @@ jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTime
 * `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
 * `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
 
-%}
+</div>
 
-\{template query-library-raw-sql%
+<div id="query-library-raw-sql">
 
 ```java
 try (Connection conn = getConnection()) {
@@ -498,12 +497,12 @@ try (Connection conn = getConnection()) {
 
 For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
 
-%}
+</div>
 
-\{template query-lib-doc-link%
+<div id="query-lib-doc-link">
 
 - [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

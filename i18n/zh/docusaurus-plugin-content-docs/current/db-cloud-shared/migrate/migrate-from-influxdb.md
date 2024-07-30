@@ -67,7 +67,7 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 - **Organization**：GreptimeDB 中没有组织。
 - **Bucket**：在 InfluxDB 中，bucket 是时间序列数据的容器，与 GreptimeDB 中的数据库名称相同。
 
-\{template get-database-connection-information%%}
+{props.children.filter(c => c.props.id == 'get-database-connection-information')}
 
 ## 写入数据
 
@@ -78,14 +78,14 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
-\{template write-data-http-api%%}
+{props.children.filter(c => c.props.id == 'write-data-http-api')}
 
 ### Telegraf
 
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
-\{template write-data-telegraf%%}
+{props.children.filter(c => c.props.id == 'write-data-telegraf')}
 
 ### 客户端库
 
@@ -94,7 +94,7 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 例如：
 
-\{template write-data-client-libs%%}
+{props.children.filter(c => c.props.id == 'write-data-client-libs')}
 
 除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
 你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
@@ -169,7 +169,7 @@ avg_over_time(monitor[1h])
 
 ## 可视化数据
 
-\{template visualize-data%%}
+{props.children.filter(c => c.props.id == 'visualize-data')}
 
 ## 迁移数据
 
@@ -308,4 +308,4 @@ export GREPTIME_DB=<db-name>
 
 将数据导入到 GreptimeDB：
 
-\{template import-data-shell%%}
+{props.children.filter(c => c.props.id == 'import-data-shell')}

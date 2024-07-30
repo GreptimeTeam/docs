@@ -1,11 +1,10 @@
----
-template: template.md
----
+import DocTemplate from './template.md' 
+
 # Java
 
-<docs-template>
+<DocTemplate>
 
-\{template ingester-lib-introduction%
+<div id="ingester-lib-introduction">
 
 GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特点：
 
@@ -14,9 +13,9 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 - 默认情况下自动收集各种性能指标，然后可以配置并将其写入本地文件。
 - 能够对关键对象进行内存快照，配置并将其写入本地文件。这对于解决复杂问题很有帮助。
 
-%}
+</div>
 
-\{template ingester-lib-installation%
+<div id="ingester-lib-installation">
 
 1. 安装 Java 开发工具包（JDK）
 
@@ -38,9 +37,9 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 
 配置依赖项后，请确保它们对项目可用，这可能需要在 IDE 中刷新项目或运行依赖项管理器。
 
-%}
+</div>
 
-\{template ingester-lib-connect%
+<div id="ingester-lib-connect">
 
 
 下方的代码展示了以最简单的配置连接到 GreptimeDB 的方法。
@@ -68,9 +67,9 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
-%}
+</div>
 
-\{template low-level-object%
+<div id="low-level-object">
 
 ```java
 // 为 CPU 指标构建表结构
@@ -95,9 +94,9 @@ double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
-%}
+</div>
 
-\{template create-rows%
+<div id="create-rows">
 
 ```java
 // 创建表结构
@@ -135,9 +134,9 @@ for (int i = 0; i < 10; i++) {
 
 ```
 
-%}
+</div>
 
-\{template insert-rows%
+<div id="insert-rows">
 
 ```java
 // 插入数据
@@ -156,9 +155,9 @@ if (result.isOk()) {
 
 ```
 
-%}
+</div>
 
-\{template streaming-insert%
+<div id="streaming-insert">
 
 
 ```java
@@ -182,9 +181,9 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-%}
+</div>
 
-\{template update-rows%
+<div id="update-rows">
 
 #### 更新数据
 
@@ -211,10 +210,10 @@ CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSch
 Result<WriteOk, Err> result = future.get();
 ```
 
-%}
+</div>
 
 
-\{template high-level-style-object%
+<div id="high-level-style-object">
 
 GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
 
@@ -271,10 +270,10 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-%}
+</div>
 
 
-\{template high-level-style-insert-data%
+<div id="high-level-style-insert-data">
 
 写入 POJO 对象：
 
@@ -292,9 +291,9 @@ if (result.isOk()) {
 }
 ```
 
-%}
+</div>
 
-\{template high-level-style-streaming-insert%
+<div id="high-level-style-streaming-insert">
 
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
@@ -317,9 +316,9 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-%}
+</div>
 
-\{template high-level-style-update-data%
+<div id="high-level-style-update-data">
 
 #### 更新数据
 
@@ -352,31 +351,31 @@ Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
 
 请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime)获取更多代码示例。
 
-%}
+</div>
 
 
-\{template ingester-lib-debug-logs%
+<div id="ingester-lib-debug-logs">
 
 ### 调试日志
 
 ingester SDK 提供了用于调试的指标和日志。
 请参考 [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) 和 [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) 了解如何启用或禁用日志。
 
-%}
+</div>
 
-\{template more-ingestion-examples%
+<div id="more-ingestion-examples">
 
 请参考[示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime)获取更多完全可运行的代码片段和常用方法的解释。
 
-%}
+</div>
 
-\{template ingester-lib-reference%
+<div id="ingester-lib-reference">
 
 - [API 文档](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
-%}
+</div>
 
-\{template recommended-query-library%
+<div id="recommended-query-library">
 
 Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接口（API），它允许 Java 程序访问数据库管理系统。
 
@@ -384,9 +383,9 @@ Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接�
 由于 GreptimeDB [支持多种协议](/user-guide/clients/overview.md)，这里我们使用 MySQL 协议作为示例来演示如何使用 JDBC。
 如果你希望使用其他协议，只需要将 MySQL 驱动程序替换为相应的驱动程序。
 
-%}
+</div>
 
-\{template query-library-installation%
+<div id="query-library-installation">
 
 如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
@@ -399,9 +398,9 @@ Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接�
 </dependency>
 ```
 
-%}
+</div>
 
-\{template query-library-connect%
+<div id="query-library-connect">
 
 这里我们使用 MySQL 作为示例来演示如何连接到 GreptimeDB。
 
@@ -447,9 +446,9 @@ jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTime
 
 * `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 配置连接时区。
 * `forceConnectionTimeZoneToSession=true` 使 session `time_zone` 变量被设置为 `connectionTimeZone` 指定的值。
-%}
+</div>
 
-\{template query-library-raw-sql%
+<div id="query-library-raw-sql">
 
 ```java
 try (Connection conn = getConnection()) {
@@ -490,12 +489,12 @@ try (Connection conn = getConnection()) {
 
 请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java)获取更多可执行代码。
 
-%}
+</div>
 
-\{template query-lib-doc-link%
+<div id="query-lib-doc-link">
 
 - [JDBC 在线教程](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

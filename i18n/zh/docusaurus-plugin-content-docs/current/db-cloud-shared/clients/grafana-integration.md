@@ -4,21 +4,21 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ## GreptimeDB 数据源插件
 
-\{template data-source-plugin-intro%%}
+{props.children.filter(c => c.props.id == 'data-source-plugin-intro')}
 
-\{template data-source-plugin-installation%%}
+{props.children.filter(c => c.props.id == 'data-source-plugin-installation')}
 
-\{template preview-greptimedb-using-docker%%}
+{props.children.filter(c => c.props.id == 'preview-greptimedb-using-docker')}
 
-\{template connection-settings-title%%}
+{props.children.filter(c => c.props.id == 'connection-settings-title')}
 
 在 Grafana 中单击 Add data source 按钮，选择 GreptimeDB 作为类型。
 
-\{template grafana-add-greptimedb-data-source-img%%}
+{props.children.filter(c => c.props.id == 'grafana-add-greptimedb-data-source-img')}
 
 在 GreptimeDB server URL 中填写以下地址：
 
-\{template greptime-data-source-connection-url%%}
+{props.children.filter(c => c.props.id == 'greptime-data-source-connection-url')}
 
 接下来做如下配置：
 
@@ -30,7 +30,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 然后单击 Save & Test 按钮以测试连接。
 
-\{template create-a-dashboard%%}
+{props.children.filter(c => c.props.id == 'create-a-dashboard')}
 
 ## Prometheus 数据源
 
@@ -38,7 +38,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 在 HTTP 中填写 Prometheus server URL
 
-\{template prometheus-server-url%%}
+{props.children.filter(c => c.props.id == 'prometheus-server-url')}
 
 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码：
 

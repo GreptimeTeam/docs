@@ -1,8 +1,4 @@
----
-template: quick-start-template.md
----
-
-import DocTemplate from './quick-start-template.md'
+import DocTemplate from './quick-start-template.md' 
 import ShardInflux from '../../db-cloud-shared/quick-start/influxdb.md'
 
 # InfluxDB Line Protocol

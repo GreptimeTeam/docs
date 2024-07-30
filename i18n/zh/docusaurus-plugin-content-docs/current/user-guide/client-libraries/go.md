@@ -1,18 +1,17 @@
----
-template: template.md
----
+import DocTemplate from './template.md' 
+
 # Go
 
-<docs-template>
+<DocTemplate>
 
-\{template ingester-lib-introduction%
+<div id="ingester-lib-introduction">
 
 GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使用起来非常简单。
 
-%}
+</div>
 
 
-\{template ingester-lib-installation%
+<div id="ingester-lib-installation">
 
 使用下方的命令安装 Go Ingest SDK：
 
@@ -30,9 +29,9 @@ import (
 )
 ```
 
-%}
+</div>
 
-\{template ingester-lib-connect%
+<div id="ingester-lib-connect">
 
 ```go
 cfg := greptime.NewConfig("127.0.0.1").
@@ -47,9 +46,9 @@ cfg := greptime.NewConfig("127.0.0.1").
 
 cli, _ := greptime.NewClient(cfg)
 ```
-%}
+</div>
 
-\{template low-level-object%
+<div id="low-level-object">
 
 ```go
 // 为 CPU 指标构建表结构
@@ -76,9 +75,9 @@ if err != nil {
 
 ```
 
-%}
+</div>
 
-\{template create-rows%
+<div id="create-rows">
 
 ```go
 cpuMetric, err := table.New("cpu_metric")
@@ -107,9 +106,9 @@ if err != nil {
 }
 ```
 
-%}
+</div>
 
-\{template insert-rows%
+<div id="insert-rows">
 
 ```go
 resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
@@ -119,9 +118,9 @@ if err != nil {
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-%}
+</div>
 
-\{template streaming-insert%
+<div id="streaming-insert">
 
 ```go
 err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
@@ -137,9 +136,9 @@ if err != nil {
 affected, err := cli.CloseStream(ctx)
 ```
 
-%}
+</div>
 
-\{template high-level-style-object%
+<div id="high-level-style-object">
 
 ```go
 type CpuMetric struct {
@@ -183,18 +182,18 @@ memMetrics := []MemMetric{
     }
 }
 ``` -->
-%}
+</div>
 
-\{template high-level-style-insert-data%
+<div id="high-level-style-insert-data">
 
 ```go
 resp, err := cli.WriteObject(context.Background(), cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-%}
+</div>
 
-\{template high-level-style-streaming-insert%
+<div id="high-level-style-streaming-insert">
 
 ```go
 err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetrics)
@@ -207,28 +206,28 @@ err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetri
 affected, err := cli.CloseStream(ctx)
 ```
 
-%}
+</div>
 
-\{template more-ingestion-examples%
+<div id="more-ingestion-examples">
 
 有关更多可运行的代码片段和常用方法的解释，请参阅[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples)。
 
-%}
+</div>
 
-\{template ingester-lib-reference%
+<div id="ingester-lib-reference">
 
 - [API 文档](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
-%}
+</div>
 
 
-\{template recommended-query-library%
+<div id="recommended-query-library">
 
 我们推荐使用 [GORM](https://gorm.io/) 库来查询数据。
 
-%}
+</div>
 
-\{template query-library-installation%
+<div id="query-library-installation">
 
 使用下方的命令安装 GORM：
 
@@ -251,10 +250,10 @@ import (
 )
 ```
 
-%}
+</div>
 
 
-\{template query-library-connect%
+<div id="query-library-connect">
 
 ```go
 type Mysql struct {
@@ -284,9 +283,9 @@ if err != nil {
 }
 m.DB = db
 ```
-%}
+</div>
 
-\{template query-library-raw-sql%
+<div id="query-library-raw-sql">
 
 下方的代码声明了一个 GORM 对象模型：
 
@@ -326,13 +325,13 @@ db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
 
 ```
 
-%}
+</div>
 
-\{template query-lib-doc-link%
+<div id="query-lib-doc-link">
 
 [GORM](https://gorm.io/docs/index.html)
 
-%}
+</div>
 
 
-</docs-template>
+</DocTemplate>

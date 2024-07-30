@@ -1,18 +1,17 @@
----
-template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
----
+import DocTemplate from './../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
+
 # 从 InfluxDB 迁移
 
-<docs-template>
+<DocTemplate>
 
-\{template get-database-connection-information%
+<div id="get-database-connection-information">
 
 打开 [GreptimeCloud 控制台](https://greptime.cloud) 点击 `Manage Your Data` 下的 `Connection Information`.
 你可以找到 GreptimeDB URL，数据库名称，以及 token 所需的 username 和 password。
 
-%}
+</div>
 
-\{template write-data-http-api%
+<div id="write-data-http-api">
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
@@ -28,9 +27,9 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 :::
 
-%}
+</div>
 
-\{template write-data-telegraf%
+<div id="write-data-telegraf">
 
 
 ::: code-group
@@ -53,9 +52,9 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 ```
 :::
 
-%}
+</div>
 
-\{template write-data-client-libs%
+<div id="write-data-client-libs">
 ::: code-group
 
 ```js [Node.js]
@@ -162,18 +161,18 @@ $writeApi->write($point);
 
 :::
 
-%}
+</div>
 
-\{template visualize-data%
+<div id="visualize-data">
 
 GreptimeCloud 控制台提供了名为 Workbench 的数据可视化工作台。
 打开[控制台](https://greptime.cloud), 在 `Manage Your Data` 下选择 `Web Dashboard`，
 然后创建一个新的 Workbench 文件，
 即可按需求创建图表。
 
-%}
+</div>
 
-\{template import-data-shell%
+<div id="import-data-shell">
 
 ```shell
 for file in data.*; do
@@ -184,6 +183,6 @@ for file in data.*; do
 done
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

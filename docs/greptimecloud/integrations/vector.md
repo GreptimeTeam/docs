@@ -1,12 +1,11 @@
----
-template: ../../db-cloud-shared/clients/vector-integration.md
----
+import DocTemplate from './../../db-cloud-shared/clients/vector-integration.md' 
+
 
 # Vector
 
-<docs-template>
+<DocTemplate>
 
-\{template toml-config%
+<div id="toml-config">
 
 To use Vector with GreptimeCloud, you need its version `0.37` and above.
 A minimal configuration of when using your GreptimeCloud instance can be:
@@ -27,6 +26,6 @@ password = "<password>"
 tls = {}
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

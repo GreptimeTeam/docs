@@ -1,12 +1,11 @@
----
-template: quick-start-template.md
----
+import DocTemplate from './quick-start-template.md' 
+
 
 # Python
 
-<docs-template>
+<DocTemplate>
 
-\{template write-data%
+<div id="write-data">
 
 <!--@include: ../../db-cloud-shared/quick-start/python.md-->
 
@@ -14,6 +13,6 @@ template: quick-start-template.md
 pipx run --no-cache greptime-cloud-quick-start -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

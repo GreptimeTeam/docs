@@ -1,14 +1,13 @@
----
-template: ../../db-cloud-shared/clients/vector-integration.md
----
+import DocTemplate from './../../db-cloud-shared/clients/vector-integration.md' 
+
 
 # Vector
 
-<docs-template>
+<DocTemplate>
 
 [Vector](https://vector.dev/) 是一种高性能的可以帮助工程师控制可观测性数据的通道工具。我们的 Vector 集成页面在[这里](https://vector.dev/docs/reference/configuration/sinks/greptimedb/)。
 
-\{template toml-config%
+<div id="toml-config">
 
 ## 集成
 
@@ -32,9 +31,9 @@ password = "<password>"
 GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端口是 `4001`。
 如果你在使用 [自定义配置](../operations/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
-%}
+</div>
 
-\{template data-model%
+<div id="data-model">
 
 ## 数据模型
 
@@ -51,6 +50,6 @@ GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端
   - AggregatedSummary 类型，各个百分位数值点分别存入 pxx 列，其中 xx 是 quantile 数值，此外我们还会记录 sum/count 列；
   - Sketch 类型，各个百分位数值点分别存入 pxx 列，其中 xx 是 quantile 数值，此外我们还会记录 min/max/avg/sum 列；
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

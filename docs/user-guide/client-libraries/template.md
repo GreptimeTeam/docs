@@ -9,11 +9,11 @@ It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 
-\{template ingester-lib-introduction%%}
+{props.children.filter(c => c.props.id == 'ingester-lib-introduction')}
 
 ### Installation
 
-\{template ingester-lib-installation%%}
+{props.children.filter(c => c.props.id == 'ingester-lib-installation')}
 
 ### Connect to database
 
@@ -21,7 +21,7 @@ Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
 Here we set the username and password when using the library to connect to GreptimeDB.
 
-\{template ingester-lib-connect%%}
+{props.children.filter(c => c.props.id == 'ingester-lib-connect')}
 
 ### Data model
 
@@ -45,25 +45,25 @@ The table consists of three types of columns:
 - `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
 - `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
-\{template low-level-object%%}
+{props.children.filter(c => c.props.id == 'low-level-object')}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
-\{template create-rows%%}
+{props.children.filter(c => c.props.id == 'create-rows')}
 
 #### Insert data
 
 The following example shows how to insert rows to tables in GreptimeDB.
 
-\{template insert-rows%%}
+{props.children.filter(c => c.props.id == 'insert-rows')}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-\{template streaming-insert%%}
+{props.children.filter(c => c.props.id == 'streaming-insert')}
 
-\{template update-rows%%}
+{props.children.filter(c => c.props.id == 'update-rows')}
 
 <!-- TODO ### Delete Metrics -->
 
@@ -77,29 +77,29 @@ This is because the ORM style object may consume more resources and time when co
 
 #### Create row objects
 
-\{template high-level-style-object%%}
+{props.children.filter(c => c.props.id == 'high-level-style-object')}
 
 #### Insert data
 
-\{template high-level-style-insert-data%%}
+{props.children.filter(c => c.props.id == 'high-level-style-insert-data')}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-\{template high-level-style-streaming-insert%%}
+{props.children.filter(c => c.props.id == 'high-level-style-streaming-insert')}
 
-\{template high-level-style-update-data%%}
+{props.children.filter(c => c.props.id == 'high-level-style-update-data')}
 
 ### More examples
 
-\{template more-ingestion-examples%%}
+{props.children.filter(c => c.props.id == 'more-ingestion-examples')}
 
-\{template ingester-lib-debug-logs%%}
+{props.children.filter(c => c.props.id == 'ingester-lib-debug-logs')}
 
 ### Ingester library reference
 
-\{template ingester-lib-reference%%}
+{props.children.filter(c => c.props.id == 'ingester-lib-reference')}
 
 ## Query data
 
@@ -108,27 +108,27 @@ Therefore, we recommend using mature SQL drivers to query data.
 
 ### Recommended library
 
-\{template recommended-query-library%%}
+{props.children.filter(c => c.props.id == 'recommended-query-library')}
 
 ### Installation
 
-\{template query-library-installation%%}
+{props.children.filter(c => c.props.id == 'query-library-installation')}
 
 ### Connect to database
 
 The following example shows how to connect to GreptimeDB:
 
-\{template query-library-connect%%}
+{props.children.filter(c => c.props.id == 'query-library-connect')}
 
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data.
 
-\{template query-library-raw-sql%%}
+{props.children.filter(c => c.props.id == 'query-library-raw-sql')}
 
 ### Query library reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-\{template query-lib-doc-link%%}
+{props.children.filter(c => c.props.id == 'query-lib-doc-link')}

@@ -1,11 +1,10 @@
----
-template: ../../db-cloud-shared/migrate/migrate-from-influxdb.md
----
+import DocTemplate from './../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
+
 # 从 InfluxDB 迁移
 
-<docs-template>
+<DocTemplate>
 
-\{template write-data-http-api%
+<div id="write-data-http-api">
 ::: code-group
 
 ```shell [InfluxDB line protocol v2]
@@ -21,9 +20,9 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 :::
 
-%}
+</div>
 
-\{template write-data-telegraf%
+<div id="write-data-telegraf">
 
 
 ::: code-group
@@ -46,10 +45,10 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 ```
 :::
 
-%}
+</div>
 
 
-\{template write-data-client-libs%
+<div id="write-data-client-libs">
 ::: code-group
 
 ```js [Node.js]
@@ -157,16 +156,16 @@ $writeApi->write($point);
 
 :::
 
-%}
+</div>
 
-\{template visualize-data%
+<div id="visualize-data">
 
 推荐使用 Grafana 可视化 GreptimeDB 数据，
 请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
 
-%}
+</div>
 
-\{template import-data-shell%
+<div id="import-data-shell">
 
 
 ```shell
@@ -178,6 +177,6 @@ for file in data.*; do
 done
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

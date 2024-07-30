@@ -1,17 +1,16 @@
----
-template: quick-start-template.md
----
+import DocTemplate from './quick-start-template.md' 
+
 # Node.js
 
-<docs-template>
+<DocTemplate>
 
-\{template write-data%
+<div id="write-data">
 
 <!--@include: ../../db-cloud-shared/quick-start/node.md-->
 
 ```shell
 npx greptime-cloud-quick-start@latest --endpoint=http://localhost:4000/v1/otlp/v1/metrics
 ```
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

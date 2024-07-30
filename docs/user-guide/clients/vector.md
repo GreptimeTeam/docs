@@ -1,12 +1,11 @@
----
-template: ../../db-cloud-shared/clients/vector-integration.md
----
+import DocTemplate from './../../db-cloud-shared/clients/vector-integration.md' 
+
 
 # Vector
 
-<docs-template>
+<DocTemplate>
 
-\{template toml-config%
+<div id="toml-config">
 
 ## Integration
 
@@ -30,9 +29,9 @@ password = "<password>"
 GreptimeDB uses gRPC to communicate with Vector, so the default port for the Vector sink is `4001`.
 If you have changed the default gRPC port when starting GreptimeDB with [custom configurations](../operations/configuration.md#configuration-file), use your own port instead.
 
-%}
+</div>
 
-\{template data-model%
+<div id="data-model">
 
 ## Data Model
 
@@ -49,6 +48,6 @@ The following rules are used when storing Vector metrics into GreptimeDB:
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
   - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>

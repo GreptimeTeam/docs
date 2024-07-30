@@ -1,12 +1,11 @@
----
-template: quick-start-template.md
----
+import DocTemplate from './quick-start-template.md' 
+
 
 # Java
 
-<docs-template>
+<DocTemplate>
 
-\{template write-data%
+<div id="write-data">
 
 
 <!--@include: ../../db-cloud-shared/quick-start/java.md-->
@@ -16,6 +15,6 @@ curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/lates
 --output quick-start.jar && java -jar quick-start.jar -e http://localhost:4000/v1/otlp/v1/metrics
 ```
 
-%}
+</div>
 
-</docs-template>
+</DocTemplate>
