@@ -176,7 +176,7 @@ my-cluster   1          3          1      Running   latest    5m30s
 
 ##  Step 5: Write and Query Data
 
-For this tutorial, let's choose to connect the cluster using the MySQL protocol. Use the kubectl to port forward `4002` traffic:
+Let's choose to connect the cluster using the MySQL protocol. Use the kubectl to port forward `4002` traffic:
 
 ```
 kubectl port-forward svc/my-cluster-frontend 4002:4002 -n default

@@ -102,4 +102,4 @@ kubectl port-forward svc/greptimedb-frontend 4002:4002 -n greptimedb-cluster > c
 kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > connections.out &
 ```
 
-Then you can use the MySQL client to [connect to the cluster](/getting-started/quick-start/mysql.md#connect).
+Then you can use the MySQL client to [connect to the cluster](/user-guide/clients/mysql#connect).
