@@ -1,4 +1,4 @@
-import DocTemplate from './../../db-cloud-shared/clients/grafana-integration.md' 
+import DocTemplate from '../../db-cloud-shared/clients/grafana-integration.md' 
 import Install from './grafana-includes/_install.md'
 import PreviewDocker from './grafana-includes/_preview-docker.md'
 import DataSourceImg from './grafana-includes/_datasource-img.md'

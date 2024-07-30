@@ -53,6 +53,6 @@ Since 0.8, GreptimeDB added a new function called `Flow`, which is used for cont
 ## Can I store data in object storage in the cloud?
 
 Yes, GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), which supports most kinds of object storage services.
-The data can be stored in cost-effective cloud storage services such as AWS S3 or Azure Blob Storage, please refer to storage configuration guide [here](./../operations/configuration.md#storage-options).
+The data can be stored in cost-effective cloud storage services such as AWS S3 or Azure Blob Storage, please refer to storage configuration guide [here](../operations/configuration.md#storage-options).
 
 GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.

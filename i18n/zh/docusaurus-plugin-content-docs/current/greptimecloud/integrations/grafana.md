@@ -1,4 +1,4 @@
-import DocTemplate from './../../db-cloud-shared/clients/grafana-integration.md' 
+import DocTemplate from '../../db-cloud-shared/clients/grafana-integration.md' 
 
 # Grafana
 

@@ -1,4 +1,4 @@
-import DocTemplate from './../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
+import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
 
 # 从 InfluxDB 迁移
 
