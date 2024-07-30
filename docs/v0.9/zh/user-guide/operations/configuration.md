@@ -18,7 +18,7 @@ GreptimeDB 将为未配置的任何设置分配默认值。
 例如，以配置的 HTTP 地址启动 GreptimeDB 的独立模式：
 
 ```shell
-greptime standalone start --http-addr 127.0.0.1:4000 
+greptime standalone start --http-addr 127.0.0.1:4000
 ```
 
 有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines.md)。
@@ -143,31 +143,31 @@ enable = true
 
 下表描述了每个选项的详细信息：
 
-| 选项       | 键                 | 类型   | 描述                                                        |
-| ---------- | ------------------ | ------ | ----------------------------------------------------------- |
-| http       |                    |        | HTTP 服务器选项                                             |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                         |
-|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                             |
-|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                            |
-|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为false |
-| grpc       |                    |        | gRPC 服务器选项                                             |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                         |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
-| mysql      |                    |        | MySQL 服务器选项                                            |
-|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                            |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                         |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
-| influxdb   |                    |        | InfluxDB 协议选项                                           |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true           |
-| opentsdb   |                    |        | OpenTSDB 协议选项                                           |
-|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                         |
-| prom_store |                    |        | Prometheus 远程存储选项                                     |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true     |
-|            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true |
-| postgres   |                    |        | PostgresSQL 服务器选项                                      |
-|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                      |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                         |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                |
+| 选项       | 键                 | 类型   | 描述                                                         |
+| ---------- | ------------------ | ------ | ------------------------------------------------------------ |
+| http       |                    |        | HTTP 服务器选项                                              |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
+|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
+|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
+|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为 false |
+| grpc       |                    |        | gRPC 服务器选项                                              |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                          |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
+| mysql      |                    |        | MySQL 服务器选项                                             |
+|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+| influxdb   |                    |        | InfluxDB 协议选项                                            |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
+| opentsdb   |                    |        | OpenTSDB 协议选项                                            |
+|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
+| prom_store |                    |        | Prometheus 远程存储选项                                      |
+|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true      |
+|            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true  |
+| postgres   |                    |        | PostgresSQL 服务器选项                                       |
+|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
+|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
+|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
 
 ### 存储选项
 
@@ -229,7 +229,7 @@ secret_access_key = "<secret access key>"
 
 ### 存储引擎提供商
 
-`[[storage.providers]]`  用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
+`[[storage.providers]]` 用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
 
 ```toml
 # Allows using multiple storages
@@ -287,7 +287,6 @@ sync_write = false
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
 
-
 #### Remote WAL
 
 ```toml
@@ -329,7 +328,7 @@ default_ratio = 1.0
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
-- `append_stdout`：是否将日志打印到stdout。默认是`true`。
+- `append_stdout`：是否将日志打印到 stdout。默认是`true`。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](./tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](./tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
@@ -400,9 +399,6 @@ fork_dictionary_bytes = "1GiB"
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
 | `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
-
-
-
 
 ### 设定 meta client
 
@@ -518,6 +514,45 @@ use_memory_store = false
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
 
+## Procedure 选项
+[procedure]
+
+## 最大重试次数
+max_retry_times = 12
+
+## 程序的初始重试延迟
+retry_delay = "500ms"
+
+# Failure detector 选项
+[failure_detector]
+
+## Failure detector 检测阈值
+threshold = 8.0
+
+## 心跳间隔的最小标准差，用于计算可接受的变化。
+min_std_deviation = "100ms"
+
+## 心跳之间可接受的暂停时间长度。
+acceptable_heartbeat_pause = "10000ms"
+
+## 首次心跳间隔的估计值。
+first_heartbeat_estimate = "1000ms"
+
+## Datanode 选项。
+[datanode]
+
+## Datanode 客户端配置。
+[datanode.client]
+
+## 操作超时时间
+timeout = "10s"
+
+## 连接服务器超时时间。
+connect_timeout = "10s"
+
+## 接受连接时的 `TCP_NODELAY` 选项，默认为 true。
+tcp_nodelay = true
+
 [wal]
 # 可用的 WAL 提供者：
 # - `raft_engine`（默认）：由于 metasrv 目前仅涉及远程 WAL，因此没有 raft-engine WAL 配置。
@@ -568,6 +603,19 @@ backoff_deadline = "5mins"
 | `selector`               | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                    |
 | `use_memory_store`       | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                             |
 | enable_region_failover   | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。 |
+| `procedure`                    | --      | --      |                                                                                                       |
+| `procedure.max_retry_times`    | 整数    | `12`    | Procedure 的最大重试次数。                                                                                                |
+| `procedure.retry_delay`        | 字符串  | `500ms` | Procedure 初始重试延迟，延迟会指数增长。                                                                               |
+| `failure_detector`             | --      | --      | 故障检测选项。                                                                                                    |
+| `failure_detector.threshold`   | 浮点数  | `8.0`   | Failure detector 用来判断故障条件的阈值。                                                                                  |
+| `failure_detector.min_std_deviation` | 字符串 | `100ms` | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                    |
+| `failure_detector.acceptable_heartbeat_pause` | 字符串 | `10000ms` | 允许的最大心跳暂停时间，用于确定心跳间隔是否可接受。                                                                |
+| `failure_detector.first_heartbeat_estimate` | 字符串 | `1000ms` | 初始心跳间隔估算值。                                                                               |
+| `datanode`                     | --      | --      |                                                                                                     |
+| `datanode.client`              | --      | --      | Datanode 客户端选项。                                                                                              |
+| `datanode.client.timeout`      | 字符串  | `10s`   | 操作超时。                                                                                                        |
+| `datanode.client.connect_timeout` | 字符串 | `10s`   | 连接服务器超时。                                                                                                  |
+| `datanode.client.tcp_nodelay`  | 布尔值  | `true`  | 接受连接的 `TCP_NODELAY` 选项。                                                                                   |
 | wal                      | --      | --                   | --                                                                                                                                 |
 | wal.provider             | String  | raft_engine          | --                                                                                                                                 |
 | wal.broker_endpoints     | Array   | --                   | Kafka 集群的端点                                                                                                                   |
@@ -596,4 +644,3 @@ rpc_runtime_size = 8
 | rpc_hostname     | 字符串 | 该 `datanode` 的 Hostname。                 |
 | rpc_addr         | 字符串 | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
 | rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
-
