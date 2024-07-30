@@ -11,7 +11,7 @@ import NextSteps from './next-steps.md'
 
 ## Write data
 
-{props.writeData}
+{props.children}
 
 ## Visualize Data with Grafana
 <VisulizeGrafana/>
