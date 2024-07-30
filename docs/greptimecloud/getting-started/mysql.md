@@ -1,10 +1,16 @@
 # MySQL
 
 ## Create Service
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
-<!--@include: ./quick-start/mysql.md-->
+import Includemysql from './quick-start/mysql.md' 
+
+<Includemysql/>
 
 ## Visualize Data
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

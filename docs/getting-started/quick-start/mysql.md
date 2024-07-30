@@ -2,7 +2,9 @@
 
 ## Prerequisites
 
-<!--@include: ./prerequisites.md-->
+import Includeprerequisites from './prerequisites.md' 
+
+<Includeprerequisites/>
 
 ## Try Out Basic SQL Operations
 
@@ -149,7 +151,9 @@ For more information about the `SELECT` statement, please refer to [SELECT](/ref
 
 ## Collect Host Metrics
 
-<!--@include: ../../db-cloud-shared/quick-start/mysql.md-->
+import Includemysql from '../../db-cloud-shared/quick-start/mysql.md' 
+
+<Includemysql/>
 
 If you have started GreptimeDB using the [Prerequisites section](#prerequisites), you can use the following command to write data:
 
@@ -221,4 +225,6 @@ Click `Run query` to view the metric data.
 
 ## Next Steps
 
-<!--@include: ./next-steps.md-->
+import Includenextsteps from './next-steps.md' 
+
+<Includenextsteps/>

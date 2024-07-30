@@ -1,10 +1,16 @@
 # Prometheus
 
 ## 创建服务
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## 写入数据
-<!--@include: ../../db-cloud-shared/quick-start/prometheus.md-->
+import Includeprometheus from '../../db-cloud-shared/quick-start/prometheus.md' 
+
+<Includeprometheus/>
 
 ## 数据可视化
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

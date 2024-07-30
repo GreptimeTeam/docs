@@ -1,6 +1,8 @@
 # Vector
 
-<!--@include: ./introduction.md-->
+import Includeintroduction from './introduction.md' 
+
+<Includeintroduction/>
 
 ## Write data
 
@@ -68,8 +70,12 @@ After every service starts successfully, the host metrics will be collected and 
 
 ## Visualize Data with Grafana
 
-<!--@include: ./visualize-data-by-grafana.md-->
+import Includevisualizedatabygrafana from './visualize-data-by-grafana.md' 
+
+<Includevisualizedatabygrafana/>
 
 ## Next Steps
 
-<!--@include: ./next-steps.md-->
+import Includenextsteps from './next-steps.md' 
+
+<Includenextsteps/>

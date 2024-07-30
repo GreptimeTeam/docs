@@ -1,6 +1,8 @@
 # Prometheus
 
-<!--@include: ./introduction.md-->
+import Includeintroduction from './introduction.md' 
+
+<Includeintroduction/>
 
 ## 写入数据
 
@@ -81,8 +83,12 @@ docker-compose up
 
 ## 使用 Grafana 可视化数据
 
-<!--@include: ./visualize-data-by-grafana.md-->
+import Includevisualizedatabygrafana from './visualize-data-by-grafana.md' 
+
+<Includevisualizedatabygrafana/>
 
 ## 下一步
 
-<!--@include: ./next-steps.md-->
+import Includenextsteps from './next-steps.md' 
+
+<Includenextsteps/>

@@ -1,17 +1,25 @@
 
-<!--@include: ./introduction.md-->
+import Includeintroduction from './introduction.md' 
+
+<Includeintroduction/>
 
 ## 准备事项
 
-<!--@include: ./prerequisites.md-->
+import Includeprerequisites from './prerequisites.md' 
+
+<Includeprerequisites/>
 
 ## 写入数据
 
 {props.children.filter(c => c.props.id == 'write-data')}
 
 ## 使用 Grafana 可视化数据
-<!--@include: ./visualize-data-by-grafana.md-->
+import Includevisualizedatabygrafana from './visualize-data-by-grafana.md' 
+
+<Includevisualizedatabygrafana/>
 
 ## 下一步
 
-<!--@include: ./next-steps.md-->
+import Includenextsteps from './next-steps.md' 
+
+<Includenextsteps/>

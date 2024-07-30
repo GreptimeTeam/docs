@@ -1,10 +1,16 @@
 # InfluxDB Line Protocol
 
 ## 创建服务
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## 写入数据
-<!--@include: ./quick-start/influxdb.md-->
+import Includeinfluxdb from './quick-start/influxdb.md' 
+
+<Includeinfluxdb/>
 
 ## 数据可视化
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

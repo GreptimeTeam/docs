@@ -1,17 +1,25 @@
 # Go
 
-<!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md-->
+import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 
+
+<Includeoverview/>
 
 ## Create Service
 
-<!--@include: ../../getting-started/create-service.md-->
+import Includecreateservice from '../../getting-started/create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
 
-<!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/go-demo.md-->
+import Includegodemo from '../../../db-cloud-shared/tutorials/monitor-host-metrics/go-demo.md' 
+
+<Includegodemo/>
 
 The connection information can be found on the service page of [GreptimeCloud console](https://console.greptime.cloud/service).
 
 ## Visualize Data
 
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

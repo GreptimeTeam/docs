@@ -1,10 +1,16 @@
 # Vector
 
 ## Create Service
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
-<!--@include: ./quick-start/vector.md-->
+import Includevector from './quick-start/vector.md' 
+
+<Includevector/>
 
 ## Visualize Data
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

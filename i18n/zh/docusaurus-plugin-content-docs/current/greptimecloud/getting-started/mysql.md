@@ -1,10 +1,16 @@
 # MySQL
 
 ## 创建服务
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## 写入数据
-<!--@include: ./quick-start/mysql.md-->
+import Includemysql from './quick-start/mysql.md' 
+
+<Includemysql/>
 
 ## 数据可视化
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

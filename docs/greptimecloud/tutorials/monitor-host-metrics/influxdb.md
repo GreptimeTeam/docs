@@ -1,17 +1,25 @@
 # InfluxDB Line Protocol
 
-<!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md-->
+import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 
+
+<Includeoverview/>
 
 ## Create Service
 
-<!--@include: ../../getting-started/create-service.md-->
+import Includecreateservice from '../../getting-started/create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
 
-<!--@include: ../../../db-cloud-shared/tutorials/monitor-host-metrics/influxdb-demo.md-->
+import Includeinfluxdbdemo from '../../../db-cloud-shared/tutorials/monitor-host-metrics/influxdb-demo.md' 
+
+<Includeinfluxdbdemo/>
 
 The connection information can be found on the service page of [GreptimeCloud console](https://console.greptime.cloud/service).
 
 ## Visualize Data
 
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

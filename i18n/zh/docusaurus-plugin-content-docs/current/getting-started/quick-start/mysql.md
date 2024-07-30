@@ -2,7 +2,9 @@
 
 ## 准备
 
-<!--@include: ./prerequisites.md-->
+import Includeprerequisites from './prerequisites.md' 
+
+<Includeprerequisites/>
 
 ## 尝试基本的 SQL 操作
 
@@ -150,7 +152,9 @@ SELECT idc, avg(memory_util) FROM system_metrics GROUP BY idc;
 
 ## 采集主机指标
 
-<!--@include: ../../db-cloud-shared/quick-start/mysql.md-->
+import Includemysql from '../../db-cloud-shared/quick-start/mysql.md' 
+
+<Includemysql/>
 
 ```shell
 curl -L https://raw.githubusercontent.com/GreptimeCloudStarters/quick-start-mysql/main/quick-start.sh | bash -s -- -h 127.0.0.1 -d public -s DISABLED -P 4002
@@ -215,4 +219,6 @@ SELECT ts AS "time", idle_cpu, sys_cpu FROM public.monitor
 
 ## 下一步
 
-<!--@include: ./next-steps.md-->
+import Includenextsteps from './next-steps.md' 
+
+<Includenextsteps/>

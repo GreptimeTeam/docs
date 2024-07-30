@@ -4,7 +4,9 @@
 
 ## OTLP/HTTP
 
-<!--@include: ../../db-cloud-shared/clients/otlp-integration.md-->
+import Includeotlpintegration from '../../db-cloud-shared/clients/otlp-integration.md' 
+
+<Includeotlpintegration/>
 
 ### Example Code
 

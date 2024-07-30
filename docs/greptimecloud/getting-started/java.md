@@ -1,10 +1,16 @@
 # Java
 
 ## Create Service
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
-<!--@include: ./quick-start/java.md-->
+import Includejava from './quick-start/java.md' 
+
+<Includejava/>
 
 ## Visualize Data
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

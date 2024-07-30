@@ -1,10 +1,16 @@
 # Python
 
 ## Create Service
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
-<!--@include: ./quick-start/python.md-->
+import Includepython from './quick-start/python.md' 
+
+<Includepython/>
 
 ## Visualize Data
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>

@@ -1,5 +1,7 @@
 
-<!--@include: ../../../db-cloud-shared/quick-start/java.md-->
+import Includejava from '../../../db-cloud-shared/quick-start/java.md' 
+
+<Includejava/>
 
 ```shell
 curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/latest/download/greptime-quick-start-java-all.jar \

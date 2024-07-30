@@ -5,7 +5,9 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 
 ## OTLP/HTTP
 
-<!--@include: ../../db-cloud-shared/clients/otlp-integration.md-->
+import Includeotlpintegration from '../../db-cloud-shared/clients/otlp-integration.md' 
+
+<Includeotlpintegration/>
 
 ### 示例代码
 

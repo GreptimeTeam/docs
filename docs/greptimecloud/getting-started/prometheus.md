@@ -1,10 +1,16 @@
 # Prometheus
 
 ## Create Service
-<!--@include: ./create-service.md-->
+import Includecreateservice from './create-service.md' 
+
+<Includecreateservice/>
 
 ## Write data
-<!--@include: ../../db-cloud-shared/quick-start/prometheus.md-->
+import Includeprometheus from '../../db-cloud-shared/quick-start/prometheus.md' 
+
+<Includeprometheus/>
 
 ## Visualize Data
-<!--@include: ./visualize-data.md-->
+import Includevisualizedata from './visualize-data.md' 
+
+<Includevisualizedata/>
