@@ -12,6 +12,10 @@ with "</div>"
 replace-regex "\\\{template ([\w-]*)%%\}"
 with "{props.children.filter(c => c.props.id == '$1')}"
 
+// replace template import
+replace-regex "---(\n)template:.(.*)(\n)---"
+with "import DocTemplate from '$2' \n"
+
 // replace doctemplate declare start
 replace-regex "<docs-template>"
 with "<DocTemplate>"
