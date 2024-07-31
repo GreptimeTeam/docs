@@ -248,6 +248,7 @@ GreptimeDB 提供一些管理数据库和数据的函数：
 * `compact_region(region_id)` 通过 Region Id 为 Region 发起 compaction 任务。
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration)。
 * `procedure_state(procedure_id)` 通过 Procedure Id 查询 Procedure 状态。
+* `flush_flow(flow_name)` 通过 Flow 名称将 Flow 的输出刷写到结果表。
 
 例如：
 ```sql
