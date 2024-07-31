@@ -45,9 +45,9 @@ GreptimeDB 通过以下方式解决这个问题：
 - **智能索引**：它不强制为每个标签创建倒排索引，而是根据标签列的特性和负载类型选择合适的索引类型并自动构建，更多信息可以参考这篇[博客](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing)。
 - **MPP**: 除了索引之外，查询引擎还会利用向量化执行和分布式并行执行等技术来加速查询。
 
-## GreptimeDB 支持连续聚合或降采样吗？
+## GreptimeDB 支持持续聚合或降采样吗？
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于连续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview)获取更多信息。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 

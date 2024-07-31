@@ -1,6 +1,6 @@
 # 管理 Flows
 
-每一个 `flow` 是 GreptimeDB 中的一个连续聚合查询。
+每一个 `flow` 是 GreptimeDB 中的一个持续聚合查询。
 它根据传入的数据持续更新并聚合数据。
 本文档描述了如何创建、更新和删除一个 flow。
 
@@ -35,7 +35,7 @@ AS
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于从 Flow 引擎中过期数据。
   有关更多详细信息，请参考 [`EXPIRE AFTER`](#expire-after-语句) 部分。
 - `COMMENT` 是 flow 的描述。
-- `SQL` 部分定义了用于连续聚合的查询。
+- `SQL` 部分定义了用于持续聚合的查询。
   它定义了为 flow 提供数据的源表。
   每个 flow 可以有多个源表。
   有关详细信息，请参考[编写查询](./query.md) 部分。

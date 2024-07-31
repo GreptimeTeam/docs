@@ -1,6 +1,6 @@
 # 编写查询语句
 
-本章节描述如何在 GreptimeDB 中编写连续聚合查询。
+本章节描述如何在 GreptimeDB 中编写持续聚合查询。
 查询语句应该是一个带有聚合函数或非聚合函数（即 scalar 函数）的 `SELECT` 语句。
 
 一般来说，Flow 的 `SQL` 部分就像一个普通的 `SELECT` 子句，只是稍微有一些不同。
@@ -22,4 +22,4 @@ SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WIND
 它们用于在聚合中定义时间窗口。
 `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
 
-连续聚合查询不支持 `ORDER BY`、`LIMIT`、`OFFSET` 等其他操作。
+持续聚合查询不支持 `ORDER BY`、`LIMIT`、`OFFSET` 等其他操作。
