@@ -128,10 +128,10 @@ SELECT * FROM ngx_statistics;
 `ngx_statistics` 表中的列解释如下：
 
 - `status`: HTTP 响应的状态码。
-- `total_logs`: 共享相同状态码的日志总数。
-- `min_size`: 共享相同状态码的数据包的最小大小。
-- `max_size`: 共享相同状态码的数据包的最大大小。
-- `avg_size`: 共享相同状态码的数据包的平均大小。
+- `total_logs`: 相同状态码的日志总数。
+- `min_size`: 相同状态码的数据包的最小大小。
+- `max_size`: 相同状态码的数据包的最大大小。
+- `avg_size`: 相同状态码的数据包的平均大小。
 - `high_size_count`: 包大小大于 550 的数据包数。
 - `time_window`: 聚合的时间窗口。
 - `update_at`: 聚合结果更新的时间。

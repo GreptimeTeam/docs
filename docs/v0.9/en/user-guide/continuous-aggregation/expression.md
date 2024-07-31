@@ -14,10 +14,10 @@ more aggregate functions will be added in the future.
 
 ## Scalar functions
 
-Flow support most scalar functions from datafusion, see the full list of supported scalar functions in [datafusion](https://docs.greptime.com/reference/sql/functions/df-functions#scalar-functions).
+Flow support most scalar functions from datafusion, see the full list of supported scalar functions in [datafusion](/reference/sql/functions/df-functions#scalar-functions).
 
 And here are some of the most commonly used scalar functions in flow:
 
-- [`date_bin`](https://docs.greptime.com/reference/sql/functions/df-functions#date-bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
-- [`date_trunc`](https://docs.greptime.com/reference/sql/functions/df-functions#date-trunc): truncate a timestamp value to a specified precision.
-- [`trunc`](https://docs.greptime.com/reference/sql/functions/df-functions#trunc): truncate a number to a whole number or truncated to the specified decimal places.
+- [`date_bin`](/reference/sql/functions/df-functions#date-bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
+- [`date_trunc`](/reference/sql/functions/df-functions#date-trunc): truncate a timestamp value to a specified precision.
+- [`trunc`](/reference/sql/functions/df-functions#trunc): truncate a number to a whole number or truncated to the specified decimal places.
