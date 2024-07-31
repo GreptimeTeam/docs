@@ -42,7 +42,7 @@ For example, configure 128 topics for [metasrv](/user-guide/operations/configura
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 
-<p style="text-align: center;"><b>(Figure1: recovery Region 3 need to read redundant data 7 times larger than the actual size)</b></p>
+<p style={{"textAlign": "center"}}><b>(Figure1: recovery Region 3 need to read redundant data 7 times larger than the actual size)</b></p>
 
 
 A simple model to estimate the read amplification factor (replay data size/actual data size):
