@@ -33,7 +33,7 @@ Before getting started, please read the following documents that include instruc
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
 [3]: ./contributor-guide/overview.md
-[4]: ./release-notes/all-releases.md
+[4]: ./release-notes
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
 [7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap

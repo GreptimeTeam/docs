@@ -5,7 +5,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'doc',
       className: 'hidden',
-      id: 'index'
+      id: 'index',
     },
     {
       type: 'category',
@@ -373,6 +373,11 @@ const sidebars: SidebarsConfig = {
           ],
         },
       ],
+    },
+    {
+      type: 'link',
+      label: 'Release Notes',
+      href: '/release-notes'
     },
     {
       type: 'category',

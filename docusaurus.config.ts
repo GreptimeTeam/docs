@@ -52,6 +52,7 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/GreptimeTeam/blog/',
+          routeBasePath: 'release-notes',
         },
         theme: {
           customCss: './src/css/custom.css',
