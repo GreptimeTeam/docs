@@ -1,8 +1,8 @@
 # 概述
 
-GreptimeDB 提供连续聚合功能允许你实时聚合数据。
+GreptimeDB 提供持续聚合功能允许你实时聚合数据。
 当你需要实时计算和查询总和、平均值或其他聚合时，此功能非常有用。
-连续聚合功能由 Flow 引擎提供。
+持续聚合功能由 Flow 引擎提供。
 它根据传入的数据不断更新聚合数据。
 
 当你将数据插入 source 表时，数据也会被发送到 Flow 引擎并存储在其中。
@@ -13,7 +13,7 @@ Flow 引擎通过时间窗口计算聚合并将结果存储在目标表中。
 
 ## 快速开始示例
 
-以下是连续聚合查询的一个完整示例。
+以下是持续聚合查询的一个完整示例。
 
 首先，使用以下语句创建一个 source 表 `numbers_input` 和一个 sink 表 `out_num_cnt`：
 
@@ -44,7 +44,7 @@ AS
 SELECT sum(number) FROM numbers_input GROUP BY tumble(ts, '1 second', '2021-07-01 00:00:00');
 ```
 
-要观察 `out_num_cnt` 表中连续聚合的结果，向 source 表 `numbers_input` 插入一些数据。
+要观察 `out_num_cnt` 表中持续聚合的结果，向 source 表 `numbers_input` 插入一些数据。
 
 ```sql
 INSERT INTO numbers_input 
@@ -100,10 +100,10 @@ SELECT * FROM out_num_cnt;
 
 ## 下一步
 
-恭喜你已经初步了解了连续聚合功能。
+恭喜你已经初步了解了持续聚合功能。
 请参考以下章节了解更多：
 
-- [管理 Flow](./manage-flow.md) 描述了如何创建、更新和删除 flow。你的每个连续聚合查询都是一个 flow。
-- [编写查询语句](./query.md) 描述了如何编写连续聚合查询。
-- [定义时间窗口](./define-time-window.md) 描述了如何为连续聚合定义时间窗口。时间窗口是连续聚合查询的一个重要属性，它定义了聚合的时间间隔。
-- [表达式](./expression.md) 是连续聚合查询中可用表达式。
+- [管理 Flow](./manage-flow.md) 描述了如何创建、更新和删除 flow。你的每个持续聚合查询都是一个 flow。
+- [编写查询语句](./query.md) 描述了如何编写持续聚合查询。
+- [定义时间窗口](./define-time-window.md) 描述了如何为持续聚合定义时间窗口。时间窗口是持续聚合查询的一个重要属性，它定义了聚合的时间间隔。
+- [表达式](./expression.md) 是持续聚合查询中可用表达式。
