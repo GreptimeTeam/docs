@@ -124,7 +124,7 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 COPY DATABASE <db_name> 
   [TO | FROM] '<PATH>' 
   WITH (
-    FORMAT = { 'CSV' | 'JSON' | 'PARQUET' },
+    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
     START_TIME = "<START TIMESTAMP>",
     END_TIME = "<END TIMESTAMP>"
   ) 

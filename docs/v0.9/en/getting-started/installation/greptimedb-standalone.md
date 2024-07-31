@@ -1,7 +1,5 @@
 # GreptimeDB Standalone
 
-
-
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
 ## Binary

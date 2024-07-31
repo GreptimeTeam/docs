@@ -2,8 +2,6 @@
 
 ## 安装
 
-
-
 我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
 
 ### 二进制

@@ -40,7 +40,7 @@ COPY [<db>.]<table_name>
 FROM { '<path>/[<filename>]' }
 [ [ WITH ]
  (
-    FORMAT = { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' },
+   [ FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' | 'ORC' } ]
    [ PATTERN = '<regex_pattern>' ]
  )
 ]
