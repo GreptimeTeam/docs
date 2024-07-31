@@ -5,16 +5,7 @@
     - greptimedb-standalone
     - greptimedb-cluster
     - greptimedb-dashboard
-  - Quick-Start:
-    - overview
-    - mysql
-    - influxdb
-    - go
-    - java
-    - python
-    - node
-    - vector
-    - prometheus
+  - quick-start
 - User-Guide:
   - overview
   - Concepts:
@@ -93,6 +84,7 @@
     - Disaster-Recovery:
       - overview
       - back-up-&-restore-data
+      - dr-solution-based-on-active-active-failover
     - Remote-WAL:
       - quick-start
       - cluster-deployment
@@ -192,7 +184,9 @@
       - partitions
       - schemata
       - tables
-      # - table-constraints
+      - table-constraints
+      - views
+      - flows
       - region-peers
       - runtime-metrics
       - cluster-info

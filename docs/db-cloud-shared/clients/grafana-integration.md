@@ -1,24 +1,24 @@
-
-import {MDXProvider} from '@mdx-js/react'
-import Markdown from 'react-markdown'
-import CodeBlock from '@theme/CodeBlock'
-
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).
 You have the option to connect GreptimeDB with Grafana using one of three data sources: GreptimeDB, Prometheus, or MySQL.
 
 ## GreptimeDB data source plugin
-{props.dataSourcePluginIntro}
-{props.dataSourcePluginInstallation}
-{props.previewDocker}
-<Markdown>
-{props.connectionTitle}
-</Markdown>
+
+<div id="data-source-plugin-intro"></div>
+
+<div id="data-source-plugin-installation"></div>
+
+<div id="preview-greptimedb-using-docker"></div>
+
+<div id="connection-settings-title"></div>
+
 Click the Add data source button and select GreptimeDB as the type.
-{props.dataSourceImg}
+
+<div id="grafana-add-greptimedb-data-source-img"></div>
+
 Fill in the following URL in the GreptimeDB server URL:
-<CodeBlock>
-{props.connectionUrl}
-</CodeBlock>
+
+<div id="greptime-data-source-connection-url"></div>
+
 Then do the following configuration:
 
 - Database Name：`<dbname>`, leave it blank to use the default database `public`
@@ -27,15 +27,17 @@ Then do the following configuration:
   - Password: `<password>`
 
 Then click the Save & Test button to test the connection.
-{props.createDashboard}
+
+<div id="create-a-dashboard"></div>
+
 ## Prometheus data source
 
 Click the Add data source button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
-<CodeBlock>
-  {props.serverUrl}
-</CodeBlock>
+
+<div id="prometheus-server-url"></div>
+
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 
 - User: `<username>`

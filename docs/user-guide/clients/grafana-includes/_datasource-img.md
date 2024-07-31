@@ -1,1 +1,0 @@
-![grafana-add-greptimedb-data-source](/grafana-add-greptimedb-data-source.png)

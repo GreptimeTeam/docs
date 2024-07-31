@@ -18,7 +18,7 @@ You can specify several configurations using command line arguments.
 For example, to start GreptimeDB in standalone mode with a configured HTTP address:
 
 ```shell
-greptime standalone start --http-addr 127.0.0.1:4000 
+greptime standalone start --http-addr 127.0.0.1:4000
 ```
 
 For all the options supported by the Greptime command line,
@@ -178,7 +178,6 @@ The following table describes the options in detail:
 |            | enable             | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                   |
 |            | addr               | String  | Server address, "127.0.0.1:4003" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                                                                         |
-
 
 ### Storage options
 
@@ -387,32 +386,31 @@ data_freeze_threshold = 32768
 fork_dictionary_bytes = "1GiB"
 ```
 
-
 Available options:
 
-| Key | Type | Default | Descriptions |
-| --- | -----| ------- | ----------- |
-| `num_workers` | Integer | `8` | Number of region workers. |
-| `manifest_checkpoint_distance` | Integer | `10` | Number of meta action updated to trigger a new checkpoint for the manifest. |
-| `max_background_jobs` | Integer | `4` | Max number of running background jobs |
-| `auto_flush_interval` | String | `1h` | Interval to auto flush a region if it has not flushed yet. |
-| `global_write_buffer_size` | String | `1GB` | Global write buffer size for all regions. If not set, it's default to 1/8 of OS memory with a max limitation of 1GB. |
-| `global_write_buffer_reject_size` | String | `2GB` | Global write buffer size threshold to reject write requests. If not set, it's default to 2 times of `global_write_buffer_size` |
-| `sst_meta_cache_size` | String | `128MB` | Cache size for SST metadata. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB. |
-| `vector_cache_size` | String | `512MB` | Cache size for vectors and arrow arrays. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB. |
-| `page_cache_size` | String | `512MB` | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB. |
-| `sst_write_buffer_size` | String | `8MB` | Buffer size for SST writing. |
-| `scan_parallelism` | Integer | `0` | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n. |
-| `inverted_index` | -- | -- | The options for inverted index in Mito engine. |
-| `inverted_index.create_on_flush` | String | `auto` | Whether to create the index on flush.<br/>- `auto`: automatically<br/>- `disable`: never |
-| `inverted_index.create_on_compaction` | String | `auto` | Whether to create the index on compaction.<br/>- `auto`: automatically<br/>- `disable`: never |
-| `inverted_index.apply_on_query` | String | `auto` | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never |
-| `inverted_index.mem_threshold_on_create` | String | `64M` | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory. |
-| `inverted_index.intermediate_path` | String | `""` | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`). |
-| `memtable.type` | String | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental) |
-| `memtable.index_max_keys_per_shard` | Integer | `8192` | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable. |
-| `memtable.data_freeze_threshold` | Integer | `32768` | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable. |
-| `memtable.fork_dictionary_bytes` | String | `1GiB` | Max dictionary bytes.<br/>Only available for `partition_tree` memtable. |
+| Key                                      | Type    | Default       | Descriptions                                                                                                                                                                          |
+| ---------------------------------------- | ------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `num_workers`                            | Integer | `8`           | Number of region workers.                                                                                                                                                             |
+| `manifest_checkpoint_distance`           | Integer | `10`          | Number of meta action updated to trigger a new checkpoint for the manifest.                                                                                                           |
+| `max_background_jobs`                    | Integer | `4`           | Max number of running background jobs                                                                                                                                                 |
+| `auto_flush_interval`                    | String  | `1h`          | Interval to auto flush a region if it has not flushed yet.                                                                                                                            |
+| `global_write_buffer_size`               | String  | `1GB`         | Global write buffer size for all regions. If not set, it's default to 1/8 of OS memory with a max limitation of 1GB.                                                                  |
+| `global_write_buffer_reject_size`        | String  | `2GB`         | Global write buffer size threshold to reject write requests. If not set, it's default to 2 times of `global_write_buffer_size`                                                        |
+| `sst_meta_cache_size`                    | String  | `128MB`       | Cache size for SST metadata. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB.                                  |
+| `vector_cache_size`                      | String  | `512MB`       | Cache size for vectors and arrow arrays. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                      |
+| `page_cache_size`                        | String  | `512MB`       | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                       |
+| `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                          |
+| `scan_parallelism`                       | Integer | `0`           | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n. |
+| `inverted_index`                         | --      | --            | The options for inverted index in Mito engine.                                                                                                                                        |
+| `inverted_index.create_on_flush`         | String  | `auto`        | Whether to create the index on flush.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                              |
+| `inverted_index.create_on_compaction`    | String  | `auto`        | Whether to create the index on compaction.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                         |
+| `inverted_index.apply_on_query`          | String  | `auto`        | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                |
+| `inverted_index.mem_threshold_on_create` | String  | `64M`         | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory.       |
+| `inverted_index.intermediate_path`       | String  | `""`          | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`).                                                                         |
+| `memtable.type`                          | String  | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental)                                                               |
+| `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                |
+| `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                               |
+| `memtable.fork_dictionary_bytes`         | String  | `1GiB`        | Max dictionary bytes.<br/>Only available for `partition_tree` memtable.                                                                                                               |
 
 ### Specify meta client
 
@@ -495,7 +493,7 @@ In the configuration files of `datanode` and `frontend` of distributed GreptimeD
 
 ```toml
 mode = "distributed"
-``` 
+```
 
 In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
 
@@ -526,6 +524,45 @@ use_memory_store = false
 ## - Using Remote WAL
 ## - Using shared storage (e.g., s3).
 enable_region_failover = false
+
+## Procedure storage options.
+[procedure]
+
+## Procedure max retry time.
+max_retry_times = 12
+
+## Initial retry delay of procedures, increases exponentially
+retry_delay = "500ms"
+
+# Failure detectors options.
+[failure_detector]
+
+## The threshold value used by the failure detector to determine failure conditions.
+threshold = 8.0
+
+## The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.
+min_std_deviation = "100ms"
+
+## The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.
+acceptable_heartbeat_pause = "10000ms"
+
+## The initial estimate of the heartbeat interval used by the failure detector.
+first_heartbeat_estimate = "1000ms"
+
+## Datanode options.
+[datanode]
+
+## Datanode client options.
+[datanode.client]
+
+## Operation timeout.
+timeout = "10s"
+
+## Connect server timeout.
+connect_timeout = "10s"
+
+## `TCP_NODELAY` option for accepted connections.
+tcp_nodelay = true
 
 [wal]
 # Available wal providers:
@@ -567,27 +604,40 @@ backoff_base = 2
 backoff_deadline = "5mins"
 ```
 
-| Key                        | Type    | Default                | Descriptions                                                                                                                                                                  |
-| -------------------------- | ------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data_home`                | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                   |
-| `bind_addr`                | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                  |
-| `server_addr`              | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                  |
-| `store_addr`               | String  | `127.0.0.1:2379`       | Etcd server address.                                                                                                                                                          |
-| `selector`                 | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
-| `use_memory_store`         | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
-| `enable_region_failover`   | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
-| `wal`                      | --      | --                     | --                                                                                                                                                                            |
-| `wal.provider`             | String  | `raft_engine`          | --                                                                                                                                                                            |
-| `wal.broker_endpoints`     | Array   | --                     | The broker endpoints of the Kafka cluster.                                                                                                                                    |
-| `wal.num_topics`           | Integer | `64`                   | Number of topics to be created upon start.                                                                                                                                    |
-| `wal.selector_type`        | String  | `round_robin`          | Topic selector type.<br/>Available selector types:<br/>- `round_robin` (default)                                                                                              |
-| `wal.topic_name_prefix`    | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                             |
-| `wal.replication_factor`   | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                |
-| `wal.create_topic_timeout` | String  | `30s`                  | Above which a topic creation operation will be cancelled.                                                                                                                     |
-| `wal.backoff_init`         | String  | `500ms`                | The initial backoff for kafka clients.                                                                                                                                        |
-| `wal.backoff_max`          | String  | `10s`                  | The maximum backoff for kafka clients.                                                                                                                                        |
-| `wal.backoff_base`         | Integer | `2`                    | Exponential backoff rate, i.e. next backoff = base \* current backoff.                                                                                                        |
-| `wal.backoff_deadline`     | String  | `5mins`                | Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.                                                   |
+| Key                                           | Type    | Default                | Descriptions                                                                                                                                                                                                                                                                                                     |
+| --------------------------------------------- | ------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data_home`                                   | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                                                                                                                                                      |
+| `bind_addr`                                   | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                                                                                                                                                     |
+| `server_addr`                                 | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                                                                                                                                                     |
+| `store_addr`                                  | String  | `127.0.0.1:2379`       | Etcd server address.                                                                                                                                                                                                                                                                                             |
+| `selector`                                    | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                                                                                                                                                          |
+| `use_memory_store`                            | Bool    | `false`                | Store data in memory.                                                                                                                                                                                                                                                                                            |
+| `enable_region_failover`                      | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3).                                                                                                                                    |
+| `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                                                                                                                                                       |
+| `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                                                                                                                                                        |
+| `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                                                                                                                                                       |
+| `failure_detector`                            | --      | --                     | --                                                                                                                                                                                                                                                                                                               |
+| `failure_detector.threshold`                  | Float   | `8.0`                  | The threshold value used by the failure detector to determine failure conditions.                                                                                                                                                                                                                                |
+| `failure_detector.min_std_deviation`          | String  | `100ms`                | The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.                                                                                                                                                                                                              |
+| `failure_detector.acceptable_heartbeat_pause` | String  | `10000ms`              | The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.                                                                                                                                                                                                       |
+| `failure_detector.first_heartbeat_estimate`   | String  | `1000ms`               | The initial estimate of the heartbeat interval used by the failure detector.                                                                                                                                                                                                                                     |
+| `datanode`                                    | --      | --                     | Datanode options.                                                                                                                                                                                                                                                                                                |
+| `datanode.client`                             | --      | --                     | Datanode client options.                                                                                                                                                                                                                                                                                         |
+| `datanode.client.timeout`                     | String  | `10s`                  | Operation timeout.                                                                                                                                                                                                                                                                                               |
+| `datanode.client.connect_timeout`             | String  | `10s`                  | Connect server timeout.                                                                                                                                                                                                                                                                                          |
+| `datanode.client.tcp_nodelay`                 | Bool    | `true`                 | `TCP_NODELAY` option for accepted connections.                                                                                                                                                                                                                                                                   |
+| `wal`                                         | --      | --                     | --                                                                                                                                                                                                                                                                                                               |
+| `wal.provider`                                | String  | `raft_engine`          | --                                                                                                                                                                                                                                                                                                               |
+| `wal.broker_endpoints`                        | Array   | --                     | The broker endpoints of the Kafka cluster.                                                                                                                                                                                                                                                                       |
+| `wal.num_topics`                              | Integer | `64`                   | Number of topics to be created upon start.                                                                                                                                                                                                                                                                       |
+| `wal.selector_type`                           | String  | `round_robin`          | Topic selector type.<br/>Available selector types:<br/>- `round_robin` (default)                                                                                                                                                                                                                                 |
+| `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                                                                                                                                                                |
+| `wal.replication_factor`                      | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                                                                                                                                                   |
+| `wal.create_topic_timeout`                    | String  | `30s`                  | Above which a topic creation operation will be cancelled.                                                                                                                                                                                                                                                        |
+| `wal.backoff_init`                            | String  | `500ms`                | The initial backoff for kafka clients.                                                                                                                                                                                                                                                                           |
+| `wal.backoff_max`                             | String  | `10s`                  | The maximum backoff for kafka clients.                                                                                                                                                                                                                                                                           |
+| `wal.backoff_base`                            | Integer | `2`                    | Exponential backoff rate, i.e. next backoff = base \* current backoff.                                                                                                                                                                                                                                           |
+| `wal.backoff_deadline`                        | String  | `5mins`                | Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.                                                                                                                                                                                      |
 
 ### Datanode-only configuration
 

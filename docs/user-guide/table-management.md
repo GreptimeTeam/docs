@@ -147,6 +147,50 @@ DESC TABLE monitor;
 
 The Semantic Type column describes the data model of the table. The `host` is a `Tag` column, `ts` is a `Timestamp` column, and cpu and memory are `Field` columns.
 
+## Show Table Definition and Indexes
+
+Use `SHOW CREATE TABLE table_name` to get the statement when creating the table:
+
+```sql
+SHOW CREATE TABLE monitor;
+```
+
+```
++---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table                                                                                                                                                                                                                              |
++---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| monitor | CREATE TABLE IF NOT EXISTS `monitor` (
+  `host` STRING NULL,
+  `ts` TIMESTAMP(3) NOT NULL DEFAULT current_timestamp(),
+  `cpu` DOUBLE NULL DEFAULT 0,
+  `memory` DOUBLE NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`host`)
+)
+
+ENGINE=mito
+ |
++---------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+
+List all indexes in a table:
+
+```sql
+SHOW INDEXES FROM monitor;
+```
+
+
+```sql
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table   | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| monitor |          1 | PRIMARY    |            1 | host        | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| monitor |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   | greptime-inverted-index-v1 |         |               | YES     |       NULL |
++---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
+
+For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show#show).
+
 ## List Existing Tables
 
 You can use `show tables` statement to list existing tables
@@ -216,7 +260,7 @@ ALTER TABLE monitor DROP COLUMN label;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-Notice: currently only adding/dropping columns is allowed, altering column definition will soon be supported.
+The `ALTER TABLE` statement also supports adding, removing, and renaming columns, as well as modifying the column datatype, etc. Please refer to the [ALTER reference](/reference/sql/alter) for more information.
 
 ## Drop a table
 

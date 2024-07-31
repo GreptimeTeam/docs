@@ -1,10 +1,12 @@
 # GreptimeDB Standalone
 
-You can try out GreptimeDB with our test builds released on the [Download page](https://greptime.com/download).
-
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
 
 ## Binary
+
+### Download from website
+
+You can try out GreptimeDB by downloading the latest stable build releases from the [Download page](https://greptime.com/download).
 
 ### Linux and macOS
 
@@ -12,7 +14,7 @@ For Linux and macOS users, you can download the latest build of the `greptime` b
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s <%greptimedb-version%>
 ```
 
 Once the download is completed, the binary file `greptime` will be stored in your current directory.
@@ -114,4 +116,4 @@ You can also refer to the [Configuration](/user-guide/operations/configuration.m
 
 ## Next Steps
 
-Learn how to write data to GreptimeDB and visualize it using Grafana in the [Quick Start](../quick-start/overview.md).
+Learn how to write data to GreptimeDB in the [Quick Start](../quick-start.md).

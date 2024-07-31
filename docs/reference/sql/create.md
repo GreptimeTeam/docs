@@ -370,3 +370,26 @@ CREATE EXTERNAL TABLE city (
 ```
 
 In this example, we explicitly defined the `ts` column as the Time Index column. If there is no suitable Time Index column in the file, you can also create a placeholder column and add a `DEFAULT expr` constraint.
+
+
+## CREATE FLOW
+
+```sql
+CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
+SINK TO <sink-table-name>
+[ EXPIRE AFTER <expr> ]
+[ COMMENT = "<string>" ]
+AS
+<SQL>;
+```
+
+For the statement to create or update a flow, please read the [flow management documents](/user-guide/continuous-aggregation/manage-flow#create-or-update-a-flow).
+
+## CREATE VIEW
+
+```sql
+CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
+AS select_statement
+```
+
+For the statement to create or update a view, please read the [view user guide](/user-guide/query-data/view#view).

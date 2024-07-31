@@ -1,6 +1,3 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem'
-
 # RANGE QUERY
 
 Querying and aggregating data within a range of time is a common query pattern for time series data, such as the `Range selector` in `PromQL`. GreptimeDB supports Range queries in SQL, which is used to summarize time series data into time chunks and aggregate data on time chunks. As part of the `SELECT` statement, Range query can be flexibly combined with SQL to provide more powerful time series data query capabilities in SQL.
@@ -81,8 +78,7 @@ Take the following table as an example:
 
 The result of each `FILL` option is as follows:
 
-<Tabs>
-  <TabItem value="NOT FILL">
+::: code-group
 
 ```sql [NO FILL]
 
@@ -98,9 +94,8 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+------------------------+
 
 ```
-  </TabItem>
-  <TabItem value="FILL NULL">
-  ```sql [FILL NULL]
+
+```sql [FILL NULL]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL NULL FROM host ALIGN '5s';
 
@@ -118,10 +113,8 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+----------------------------------+
 
 ```
-  </TabItem>
-  <TabItem value="FILL PREV">
-  
-```sql
+
+```sql [FILL PREV]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL PREV FROM host ALIGN '5s';
 
@@ -139,9 +132,7 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+----------------------------------+
 ```
 
-  </TabItem>
-  <TabItem value="FILL LINEAR">
-  ```sql [FILL LINEAR]
+```sql [FILL LINEAR]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL LINEAR FROM host ALIGN '5s';
 
@@ -158,9 +149,8 @@ The result of each `FILL` option is as follows:
 | 1970-01-01 00:00:15 | host2 |                                 12 |
 +---------------------+-------+------------------------------------+
 ```
-  </TabItem>
-  <TabItem value="FILL Constant Value 6.0">
-  ```sql [FILL Constant Value 6.0]
+
+```sql [FILL Constant Value 6.0]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
 
@@ -177,9 +167,8 @@ The result of each `FILL` option is as follows:
 | 1970-01-01 00:00:15 | host2 |                            12 |
 +---------------------+-------+-------------------------------+
 ```
-  </TabItem>
-</Tabs>
 
+:::
 
 If there are multiple Range expressions but only one of them specifies the `Fill` option, the other Range expressions will use the `FILL NULL` method to fill in the missing time slots.
 The following two SQL statements are equivalent in output:

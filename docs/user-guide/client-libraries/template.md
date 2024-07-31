@@ -9,11 +9,11 @@ It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 
-{props.children.filter(c => c.props.id == 'ingester-lib-introduction')}
+<div id="ingester-lib-introduction"></div>
 
 ### Installation
 
-{props.children.filter(c => c.props.id == 'ingester-lib-installation')}
+<div id="ingester-lib-installation"></div>
 
 ### Connect to database
 
@@ -21,7 +21,7 @@ Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
 Here we set the username and password when using the library to connect to GreptimeDB.
 
-{props.children.filter(c => c.props.id == 'ingester-lib-connect')}
+<div id="ingester-lib-connect"></div>
 
 ### Data model
 
@@ -45,25 +45,25 @@ The table consists of three types of columns:
 - `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
 - `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
-{props.children.filter(c => c.props.id == 'low-level-object')}
+<div id="low-level-object"></div>
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
-{props.children.filter(c => c.props.id == 'create-rows')}
+<div id="create-rows"></div>
 
 #### Insert data
 
 The following example shows how to insert rows to tables in GreptimeDB.
 
-{props.children.filter(c => c.props.id == 'insert-rows')}
+<div id="insert-rows"></div>
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-{props.children.filter(c => c.props.id == 'streaming-insert')}
+<div id="streaming-insert"></div>
 
-{props.children.filter(c => c.props.id == 'update-rows')}
+<div id="update-rows"></div>
 
 <!-- TODO ### Delete Metrics -->
 
@@ -77,29 +77,29 @@ This is because the ORM style object may consume more resources and time when co
 
 #### Create row objects
 
-{props.children.filter(c => c.props.id == 'high-level-style-object')}
+<div id="high-level-style-object"></div>
 
 #### Insert data
 
-{props.children.filter(c => c.props.id == 'high-level-style-insert-data')}
+<div id="high-level-style-insert-data"></div>
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-{props.children.filter(c => c.props.id == 'high-level-style-streaming-insert')}
+<div id="high-level-style-streaming-insert"></div>
 
-{props.children.filter(c => c.props.id == 'high-level-style-update-data')}
+<div id="high-level-style-update-data"></div>
 
 ### More examples
 
-{props.children.filter(c => c.props.id == 'more-ingestion-examples')}
+<div id="more-ingestion-examples"></div>
 
-{props.children.filter(c => c.props.id == 'ingester-lib-debug-logs')}
+<div id="ingester-lib-debug-logs"></div>
 
 ### Ingester library reference
 
-{props.children.filter(c => c.props.id == 'ingester-lib-reference')}
+<div id="ingester-lib-reference"></div>
 
 ## Query data
 
@@ -108,27 +108,27 @@ Therefore, we recommend using mature SQL drivers to query data.
 
 ### Recommended library
 
-{props.children.filter(c => c.props.id == 'recommended-query-library')}
+<div id="recommended-query-library"></div>
 
 ### Installation
 
-{props.children.filter(c => c.props.id == 'query-library-installation')}
+<div id="query-library-installation"></div>
 
 ### Connect to database
 
 The following example shows how to connect to GreptimeDB:
 
-{props.children.filter(c => c.props.id == 'query-library-connect')}
+<div id="query-library-connect"></div>
 
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data.
 
-{props.children.filter(c => c.props.id == 'query-library-raw-sql')}
+<div id="query-library-raw-sql"></div>
 
 ### Query library reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-{props.children.filter(c => c.props.id == 'query-lib-doc-link')}
+<div id="query-lib-doc-link"></div>

@@ -12,7 +12,7 @@ seamless integration with ecoystem and improved Prometheus compatibility.
 
 Our core developers have been building time-series data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
 
-- Unified all kinds of time series; GreptimeDB treats all time series as contextual events with timestamp, and thus unifies the processing of metrics and logs. It supports analyzing metrics and logs with SQL and PromQL, and doing streaming with continuous aggregation.
+- Unified all kinds of time series; GreptimeDB treats all time series as contextual events with timestamp, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and events with SQL and PromQL, and doing streaming with continuous aggregation.
 - Optimized columnar layout for handling time-series data; compacted, compressed, and stored on various storage backends, particularly cloud object storage with 50x cost efficiency.
 - Fully open-source distributed cluster architecture that harnesses the power of cloud-native elastic computing resources.
 - Seamless scalability from a standalone binary at edge to a robust, highly available distributed cluster in cloud, with a transparent experience for both developers and administrators.
@@ -33,7 +33,7 @@ Before getting started, please read the following documents that include instruc
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
 [3]: ./contributor-guide/overview.md
-[4]: /all-releases
+[4]: ./release-notes/all-releases.md
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
 [7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap
