@@ -79,7 +79,7 @@ Here explains the meaning of some important options
 
 - `--addr`: The server address of the Frontend node or Standalone process.
 - `--output-dir`: The directory to put the exported data. Give a path at your current machine. The exported SQL files will be put in that directory.
-- `-target`: Specifies the data to export. The `create-table` option exports the `CREATE TABLE` clause for each table. The `database-data` option exports the data of each database along with the `COPY FROM` clause. By default, all data is exported for both `create-table` and `database-data`. It is recommended not to specify this option that use the default value to export all data.
+- `-target`: Specifies the data to export. The `schema` option exports the `CREATE TABLE` clause for each table. The `data` option exports the data of each database along with the `COPY FROM` clause. By default, all data is exported for both `schema` and `data`. It is recommended not to specify this option that use the default value to export all data.
 
 For a complete upgrade, you will need to execute this tools twice with each target options.
 
