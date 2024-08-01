@@ -47,9 +47,9 @@ OPTIONS:
           Things to export
 
           Possible values:
-          - create-table:  Corresponding to `SHOW CREATE TABLE`
-          - table-data:    Corresponding to `EXPORT TABLE`
-          - database-data: Corresponding to `EXPORT DATABASE`
+          - create-table:  Export all table schemas, corresponding to `SHOW CREATE TABLE`
+          - database-data: Export all table data, corresponding to `COPY DATABASE TO`
+          - all:           Export all table schemas and data at once
 
       --log-dir <LOG_DIR>
           
@@ -71,13 +71,14 @@ OPTIONS:
 
   -V, --version
           Print version
+
 ```
 
 这里解释一些重要选项的含义：
 
-- `-addr`：Frontend 节点或者 Standalone 进程的 gRPC 地址。
+- `-addr`：Frontend 节点或者 Standalone 进程的 http server 地址。
 - `-output-dir`：要放置导出数据的目录。需要是当前机器上的路径。导出的 SQL 文件将放在该目录中。
-- `-target`：要导出的内容。`create-table` 可以导出每个表的 `CREATE TABLE` 语句。`database-data` 可以导出每个表的数据以及对应 DB 的 `COPY FROM` 语句。
+- `-target`：要导出的内容。建议不填直接使用默认值，默认会导出全部 schema 也就是 `CREATE-TABLE` 语句，同时导出每个表的数据文件和用于数据再次导入新 DB 的 `COPY FROM` 语句。
 
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
 
@@ -87,34 +88,39 @@ OPTIONS:
 
 在下面的文本中，我们假设您的数据库的 HTTP 端口为 `127.0.0.1:4000`。
 
-### 导出 `CREATE TABLE`
+### 一次导出表结构和表数据
 
 ```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export
 ```
 
 如果成功，您将看到类似于以下内容的输出
 
 ```log
-2023-10-20T09:41:06.500390Z INFO cmd::cli::export: Finished exporting greptime.public with 434 table schemas to path: /tmp/greptimedb-export/greptime/public
-2023-10-20T09:41:06.500482Z  INFO cmd::cli::export: success 1/1 jobs
+2024-08-01T06:32:26.547809Z  INFO cmd: Starting app: greptime-cli
+2024-08-01T06:32:27.239639Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private with 0 table schemas to path: /tmp/greptimedb-export/greptime/greptime_private/
+2024-08-01T06:32:27.540696Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog with 0 table schemas to path: /tmp/greptimedb-export/greptime/pg_catalog/
+2024-08-01T06:32:27.832018Z  INFO cmd::cli::export: Finished exporting greptime.public with 0 table schemas to path: /tmp/greptimedb-export/greptime/public/
+2024-08-01T06:32:28.272054Z  INFO cmd::cli::export: Finished exporting greptime.test with 1 table schemas to path: /tmp/greptimedb-export/greptime/test/
+2024-08-01T06:32:28.272166Z  INFO cmd::cli::export: Success 4/4 jobs, cost: 1.724222791s
+2024-08-01T06:32:28.416532Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."greptime_private" TO '/tmp/greptimedb-export/greptime/greptime_private/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.556017Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private data into path: /tmp/greptimedb-export/greptime/greptime_private/
+2024-08-01T06:32:28.556330Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private copy_from.sql
+2024-08-01T06:32:28.556424Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."pg_catalog" TO '/tmp/greptimedb-export/greptime/pg_catalog/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.738719Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog data into path: /tmp/greptimedb-export/greptime/pg_catalog/
+2024-08-01T06:32:28.738998Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog copy_from.sql
+2024-08-01T06:32:28.739098Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."public" TO '/tmp/greptimedb-export/greptime/public/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.875600Z  INFO cmd::cli::export: Finished exporting greptime.public data into path: /tmp/greptimedb-export/greptime/public/
+2024-08-01T06:32:28.875888Z  INFO cmd::cli::export: Finished exporting greptime.public copy_from.sql
+2024-08-01T06:32:28.876005Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."test" TO '/tmp/greptimedb-export/greptime/test/' WITH (FORMAT='parquet');
+2024-08-01T06:32:29.053681Z  INFO cmd::cli::export: Finished exporting greptime.test data into path: /tmp/greptimedb-export/greptime/test/
+2024-08-01T06:32:29.054104Z  INFO cmd::cli::export: Finished exporting greptime.test copy_from.sql
+2024-08-01T06:32:29.054162Z  INFO cmd::cli::export: Success 4/4 jobs, costs: 781.98875ms
+2024-08-01T06:32:29.054181Z  INFO cmd: Goodbye!
+
 ```
 
 此时输出目录的结构如下
-
-```plaintext
-/tmp/greptimedb-export/
- └── greptime/public/
-      └── create_tables.sql
-```
-
-### 导出表数据
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target database-data
-```
-
-日志输出与上面类似。输出目录的结构如下
 
 ```plaintext
 /tmp/greptimedb-export/
@@ -125,7 +131,7 @@ greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-
 │   └── other-tables.parquet
 ```
 
-新的内容是 `copy_from.sql` 和 DB `greptime-public` 的每个表的 parquet 文件。前者包含每个表的 `COPY FROM` 语句。后者包含每个表的数据。
+内容包括 `create_tables.sql`, `copy_from.sql` 和 DB `greptime-public` 的每个表的 parquet 文件。`create_tables.sql` 包含当前 DB 所有表的建表语句，`copy_from.sql` 则包含一条 `COPY DATABASE FROM` 的语句，用于将数据文件 COPY 到目标 DB。剩下的 parquet 个数的文件就是每个表的数据文件。
 
 ### 导入表结构和数据
 
