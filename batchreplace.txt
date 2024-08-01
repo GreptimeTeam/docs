@@ -1,5 +1,9 @@
 filter "i18n/zh/**/*.md"
 
+// replace template inject
+replace-regex "\{template ([\w-]*)%%\}"
+with "{props.children.filter(c => c.props.id == '$1')}"
+
 //replace template provide start
 replace-regex "\{template ([\w-]*)%"
 with "<div id="$1">"
@@ -8,9 +12,7 @@ with "<div id="$1">"
 replace-regex "%\}"
 with "</div>"
 
-// replace template inject
-replace-regex "\{template ([\w-]*)%%\}"
-with "{props.children.filter(c => c.props.id == '$1')}"
+
 
 // replace template import
 replace-regex "---(\n)template:.(.*)(\n)---"
@@ -55,3 +57,9 @@ with ""10 \<= a < 20""
 
 replace "start <= x < end"
 with "start \<= x < end"
+
+replace "<http://127.0.0.1:6669>"
+with "\<http://127.0.0.1:6669\>"
+
+replace "- [FAQ][5]: Presents"
+with " [FAQ][5]: Presents"
