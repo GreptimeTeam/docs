@@ -45,11 +45,13 @@ OPTIONS:
 
   -t, --target <TARGET>
           Things to export
+          
+          [default: all]
 
           Possible values:
-          - create-table:  Export all table schemas, corresponding to `SHOW CREATE TABLE`
-          - database-data: Export all table data, corresponding to `COPY DATABASE TO`
-          - all:           Export all table schemas and data at once
+          - schema: Export all table schemas, corresponding to `SHOW CREATE TABLE`
+          - data:   Export all table data, corresponding to `COPY DATABASE TO`
+          - all:    Export all table schemas and data at once
 
       --log-dir <LOG_DIR>
           
@@ -71,7 +73,6 @@ OPTIONS:
 
   -V, --version
           Print version
-
 ```
 
 这里解释一些重要选项的含义：

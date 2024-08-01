@@ -45,11 +45,13 @@ OPTIONS:
 
   -t, --target <TARGET>
           Things to export
+          
+          [default: all]
 
           Possible values:
-          - create-table:  Corresponding to `SHOW CREATE TABLE`
-          - table-data:    Corresponding to `EXPORT TABLE`
-          - database-data: Corresponding to `EXPORT DATABASE`
+          - schema: Export all table schemas, corresponding to `SHOW CREATE TABLE`
+          - data:   Export all table data, corresponding to `COPY DATABASE TO`
+          - all:    Export all table schemas and data at once
 
       --log-dir <LOG_DIR>
           
