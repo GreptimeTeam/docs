@@ -1,4 +1,4 @@
-filter "i18n/**/*.md"
+filter "versioned_docs/version-0.9/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
