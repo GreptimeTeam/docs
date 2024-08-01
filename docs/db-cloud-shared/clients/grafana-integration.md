@@ -3,21 +3,21 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-<div id="data-source-plugin-intro"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'data-source-plugin-intro'):props.children.props.id=='data-source-plugin-intro'?props.children:null}
 
-<div id="data-source-plugin-installation"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'data-source-plugin-installation'):props.children.props.id=='data-source-plugin-installation'?props.children:null}
 
-<div id="preview-greptimedb-using-docker"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'preview-greptimedb-using-docker'):props.children.props.id=='preview-greptimedb-using-docker'?props.children:null}
 
-<div id="connection-settings-title"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'connection-settings-title'):props.children.props.id=='connection-settings-title'?props.children:null}
 
 Click the Add data source button and select GreptimeDB as the type.
 
-<div id="grafana-add-greptimedb-data-source-img"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'grafana-add-greptimedb-data-source-img'):props.children.props.id=='grafana-add-greptimedb-data-source-img'?props.children:null}
 
 Fill in the following URL in the GreptimeDB server URL:
 
-<div id="greptime-data-source-connection-url"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'greptime-data-source-connection-url'):props.children.props.id=='greptime-data-source-connection-url'?props.children:null}
 
 Then do the following configuration:
 
@@ -28,7 +28,7 @@ Then do the following configuration:
 
 Then click the Save & Test button to test the connection.
 
-<div id="create-a-dashboard"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'create-a-dashboard'):props.children.props.id=='create-a-dashboard'?props.children:null}
 
 ## Prometheus data source
 
@@ -36,7 +36,7 @@ Click the Add data source button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
 
-<div id="prometheus-server-url"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'prometheus-server-url'):props.children.props.id=='prometheus-server-url'?props.children:null}
 
 Click basic auth in the Auth section and fill in your GreptimeDB username and password in Basic Auth Details:
 

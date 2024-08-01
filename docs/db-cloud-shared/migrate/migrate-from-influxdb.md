@@ -67,7 +67,7 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
 - **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
 
-<div id="get-database-connection-information"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'get-database-connection-information'):props.children.props.id=='get-database-connection-information'?props.children:null}
 
 ## Write data
 
@@ -78,14 +78,14 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
-<div id="write-data-http-api"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'write-data-http-api'):props.children.props.id=='write-data-http-api'?props.children:null}
 
 ### Telegraf
 
 GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
 To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
-<div id="write-data-telegraf"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'write-data-telegraf'):props.children.props.id=='write-data-telegraf'?props.children:null}
 
 ### Client libraries
 
@@ -94,7 +94,7 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-<div id="write-data-client-libs"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'write-data-client-libs'):props.children.props.id=='write-data-client-libs'?props.children:null}
 
 In addition to the languages previously mentioned,
 GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
@@ -170,7 +170,7 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 ## Visualize data
 
-<div id="visualize-data"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'visualize-data'):props.children.props.id=='visualize-data'?props.children:null}
 
 ## Migrate data
 
@@ -309,4 +309,4 @@ export GREPTIME_DB=<db-name>
 
 Import the data from the files into GreptimeDB:
 
-<div id="import-data-shell"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'import-data-shell'):props.children.props.id=='import-data-shell'?props.children:null}

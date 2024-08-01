@@ -255,6 +255,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration).
 * `procedure_state(procedure_id)` to query a procedure state by its id.
+* `flush_flow(flow_name)` to flush a flow's output into the sink table.
 
 For example:
 ```sql

@@ -9,11 +9,11 @@ It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
 
-<div id="ingester-lib-introduction"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'ingester-lib-introduction'):props.children.props.id=='ingester-lib-introduction'?props.children:null}
 
 ### Installation
 
-<div id="ingester-lib-installation"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'ingester-lib-installation'):props.children.props.id=='ingester-lib-installation'?props.children:null}
 
 ### Connect to database
 
@@ -21,7 +21,7 @@ Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
 Here we set the username and password when using the library to connect to GreptimeDB.
 
-<div id="ingester-lib-connect"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'ingester-lib-connect'):props.children.props.id=='ingester-lib-connect'?props.children:null}
 
 ### Data model
 
@@ -45,25 +45,25 @@ The table consists of three types of columns:
 - `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
 - `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
-<div id="low-level-object"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'low-level-object'):props.children.props.id=='low-level-object'?props.children:null}
 
 To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
-<div id="create-rows"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'create-rows'):props.children.props.id=='create-rows'?props.children:null}
 
 #### Insert data
 
 The following example shows how to insert rows to tables in GreptimeDB.
 
-<div id="insert-rows"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'insert-rows'):props.children.props.id=='insert-rows'?props.children:null}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-<div id="streaming-insert"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'streaming-insert'):props.children.props.id=='streaming-insert'?props.children:null}
 
-<div id="update-rows"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'update-rows'):props.children.props.id=='update-rows'?props.children:null}
 
 <!-- TODO ### Delete Metrics -->
 
@@ -77,29 +77,29 @@ This is because the ORM style object may consume more resources and time when co
 
 #### Create row objects
 
-<div id="high-level-style-object"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'high-level-style-object'):props.children.props.id=='high-level-style-object'?props.children:null}
 
 #### Insert data
 
-<div id="high-level-style-insert-data"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'high-level-style-insert-data'):props.children.props.id=='high-level-style-insert-data'?props.children:null}
 
 #### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
-<div id="high-level-style-streaming-insert"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'high-level-style-streaming-insert'):props.children.props.id=='high-level-style-streaming-insert'?props.children:null}
 
-<div id="high-level-style-update-data"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'high-level-style-update-data'):props.children.props.id=='high-level-style-update-data'?props.children:null}
 
 ### More examples
 
-<div id="more-ingestion-examples"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'more-ingestion-examples'):props.children.props.id=='more-ingestion-examples'?props.children:null}
 
-<div id="ingester-lib-debug-logs"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'ingester-lib-debug-logs'):props.children.props.id=='ingester-lib-debug-logs'?props.children:null}
 
 ### Ingester library reference
 
-<div id="ingester-lib-reference"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'ingester-lib-reference'):props.children.props.id=='ingester-lib-reference'?props.children:null}
 
 ## Query data
 
@@ -108,27 +108,27 @@ Therefore, we recommend using mature SQL drivers to query data.
 
 ### Recommended library
 
-<div id="recommended-query-library"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'recommended-query-library'):props.children.props.id=='recommended-query-library'?props.children:null}
 
 ### Installation
 
-<div id="query-library-installation"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'query-library-installation'):props.children.props.id=='query-library-installation'?props.children:null}
 
 ### Connect to database
 
 The following example shows how to connect to GreptimeDB:
 
-<div id="query-library-connect"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'query-library-connect'):props.children.props.id=='query-library-connect'?props.children:null}
 
 ### Raw SQL
 
 We recommend you using raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data.
 
-<div id="query-library-raw-sql"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'query-library-raw-sql'):props.children.props.id=='query-library-raw-sql'?props.children:null}
 
 ### Query library reference
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-<div id="query-lib-doc-link"></div>
+{props.children.length?props.children.filter(c => c.props.id == 'query-lib-doc-link'):props.children.props.id=='query-lib-doc-link'?props.children:null}

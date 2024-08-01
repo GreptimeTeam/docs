@@ -1,4 +1,4 @@
-filter "i18n/zh/**/*.md"
+filter "docs/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
@@ -64,5 +64,5 @@ with "\<http://127.0.0.1:6669\>"
 replace "- [FAQ][5]: Presents"
 with " [FAQ][5]: Presents"
 
-replace "style="text-align: center;"
+replace "style="text-align: center;""
 with "style={{"textAlign": "center"}}"
