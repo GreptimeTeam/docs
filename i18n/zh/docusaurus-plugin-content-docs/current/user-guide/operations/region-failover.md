@@ -46,7 +46,7 @@ Region Failover 的恢复时间取决于：
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 
-<p style={{textAlign: "center"}}><b>(图 1：恢复 Region 3 需要读取比实际大小大 7 倍的冗余数据)</b></p>
+<p style="text-align: center;"><b>(图 1：恢复 Region 3 需要读取比实际大小大 7 倍的冗余数据)</b></p>
 
 估算读取放大倍数（重放数据大小/实际数据大小）的简单模型：
 

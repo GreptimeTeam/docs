@@ -1,22 +1,3 @@
-import DocTemplate from './quick-start-template.md' 
+# 此页面已被弃用
 
-
-# Java
-
-<DocTemplate>
-
-<div id="write-data">
-
-
-import Includejava from '../../db-cloud-shared/quick-start/java.md' 
-
-<Includejava/>
-
-```shell
-curl -L https://github.com/GreptimeCloudStarters/quick-start-java/releases/latest/download/greptime-quick-start-java-all.jar \
---output quick-start.jar && java -jar quick-start.jar -e http://localhost:4000/v1/otlp/v1/metrics
-```
-
-</div>
-
-</DocTemplate>
+请参考[快速入门](../quick-start.md)页面获取最新信息。

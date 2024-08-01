@@ -378,3 +378,25 @@ CREATE EXTERNAL TABLE city (
 ```
 
 在这个例子中，我们明确定义了 `ts` 列作为时间索引列。如果在文件中没有适合的时间索引列，你也可以创建一个占位符列，并添加 `DEFAULT expr` 约束。
+
+## 创建 Flow
+
+```sql
+CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
+SINK TO <sink-table-name>
+[ EXPIRE AFTER <expr> ]
+[ COMMENT = "<string>" ]
+AS
+<SQL>;
+```
+
+用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow#创建或更新-flow)。
+
+## 创建 View
+
+```sql
+CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
+AS select_statement
+```
+
+用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view#视图)。

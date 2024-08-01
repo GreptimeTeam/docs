@@ -1,21 +1,3 @@
-import DocTemplate from './quick-start-template.md' 
+# 此页面已被弃用
 
-
-# Go
-
-<DocTemplate>
-
-<div id="write-data">
-
-import Includego from '../../db-cloud-shared/quick-start/go.md' 
-
-<Includego/>
-
-```shell
-go run github.com/GreptimeCloudStarters/quick-start-go@latest -endpoint=http://localhost:4000/v1/otlp/v1/metrics
-```
-
-</div>
-
-</DocTemplate>
-
+请参考[快速入门](../quick-start.md)页面获取最新信息。

@@ -1,6 +1,6 @@
 # SQL
 
-我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](../table-management.md#创建表)。
+我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](./../table-management.md#创建表)。
 
 ## 插入数据
 

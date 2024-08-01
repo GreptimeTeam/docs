@@ -11,7 +11,7 @@ GreptimeCloud 是一个完全托管的时序数据库服务，具有无服务器
 
 我们的核心开发人员多年深耕于建立时序数据平台。基于他们的丰富经验，GreptimeDB 应运而生，并为用户提供：
 
-- 统一的时序数据处理；GreptimeDB 将所有时序数据统一抽象成带有时间戳和上下文的事件，从而统一了指标和事件的存储和分析。同时，GreptimeDB 支持使用 SQL 和 PromQL 进行分析，以及通过持续聚合能力来实现流处理。
+- 统一的时序数据处理；GreptimeDB 将所有时序数据统一抽象成带有时间戳和上下文的事件，从而统一了指标、日志和事件的存储和分析。同时，GreptimeDB 支持使用 SQL 和 PromQL 进行分析，以及通过持续聚合能力来实现流处理。
 - 为处理时序数据而优化的列式布局；经过压缩、整理，并存储在各种存储后端，尤其是可以节省 50 倍成本效率的云对象存储。
 - 完全开源的分布式集群架构，利用云原生弹性计算资源的强大功能。
 - 从边缘节点的单机部署到云端强大、高可用的分布式集群的无缝扩展，为开发人员和管理员提供透明的体验。
@@ -24,7 +24,8 @@ GreptimeCloud 是一个完全托管的时序数据库服务，具有无服务器
 - [立即开始][1]: 为刚接触 GreptimeDB 的用户提供指引，包括如何安装与数据库操作。
 - [用户指南][2]: 应用程序开发人员可以使用 GreptimeDB 或建立自定义集成。
 - [贡献者指南][3]: 有兴趣了解更多技术细节并想成为 GreptimeDB 的贡献者的开发者请阅读此文档。
-
+<!-- - [Changelog][4]: Presents the latest GreptimeDB roadmap and biweekly reports.
+ [FAQ][5]: Presents the most frequently asked questions. -->
 
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md

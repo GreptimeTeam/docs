@@ -59,5 +59,5 @@ SHOW VARIABLES time_zone;
 SET TIMEZONE TO '+1:00'
 ```
 
-有关时区如何影响数据的插入和查询，请参考[写入数据](../write-data/sql.md#时区) 和 [查询数据](../query-data/sql.md#时区)中的 SQL 文档。
+有关时区如何影响数据的插入和查询，请参考[写入数据](../write-data/sql.md#时区)和[查询数据](../query-data/sql.md#时区)中的 SQL 文档。
 

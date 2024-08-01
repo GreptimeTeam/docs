@@ -2,11 +2,11 @@
 
 ## 安装
 
-你可以在[下载页面](https://greptime.cn/download)通过我们发布的测试版本尝试使用 GreptimeDB。
-
 我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
 
 ### 二进制
+
+你可以在[下载页面](https://greptime.cn/download)通过发布的最新稳定版本尝试使用 GreptimeDB。
 
 ### Linux 或 macOS
 
@@ -14,7 +14,7 @@
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s <%greptimedb-version%>
 ```
 
 下载完成后，binary 文件 `greptime` 将存储在当前的目录中。
@@ -117,4 +117,4 @@ greptime/greptimedb:<%greptimedb-version%> standalone start \
 
 ## 下一步
 
-学习如何使用 GreptimeDB 并使用 Grafana 可视化数据：[快速开始](../quick-start/overview.md)。
+学习如何使用 GreptimeDB：[快速开始](../quick-start.md)。

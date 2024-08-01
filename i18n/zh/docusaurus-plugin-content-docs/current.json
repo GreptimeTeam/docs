@@ -4,72 +4,96 @@
     "description": "The label for version current"
   },
   "sidebar.docs.category.Getting Started": {
-    "message": "开始",
+    "message": "Getting Started",
     "description": "The label for category Getting Started in sidebar docs"
   },
   "sidebar.docs.category.Installation": {
-    "message": "安装",
+    "message": "Installation",
     "description": "The label for category Installation in sidebar docs"
   },
-  "sidebar.docs.category.Quick Start": {
-    "message": "快速开始",
-    "description": "The label for category Quick Start in sidebar docs"
-  },
   "sidebar.docs.category.User Guide": {
-    "message": "用户指南",
+    "message": "User Guide",
     "description": "The label for category User Guide in sidebar docs"
   },
   "sidebar.docs.category.Concepts": {
-    "message": "概念",
+    "message": "Concepts",
     "description": "The label for category Concepts in sidebar docs"
   },
   "sidebar.docs.category.Clients": {
-    "message": "客户端",
+    "message": "Clients",
     "description": "The label for category Clients in sidebar docs"
   },
-  "sidebar.docs.category.sdk-libraries": {
-    "message": "SDK",
-    "description": "The label for category sdk-libraries in sidebar docs"
-  },
   "sidebar.docs.category.Migrate to GreptimeDB": {
-    "message": "迁移到 GreptimeDB",
+    "message": "Migrate to GreptimeDB",
     "description": "The label for category Migrate to GreptimeDB in sidebar docs"
   },
   "sidebar.docs.category.Write Data": {
-    "message": "写数据",
+    "message": "Write Data",
     "description": "The label for category Write Data in sidebar docs"
   },
   "sidebar.docs.category.Query Data": {
-    "message": "读数据",
+    "message": "Query Data",
     "description": "The label for category Query Data in sidebar docs"
   },
   "sidebar.docs.category.Continuous Aggregation": {
     "message": "Continuous Aggregation",
     "description": "The label for category Continuous Aggregation in sidebar docs"
   },
+  "sidebar.docs.category.Logs": {
+    "message": "Logs",
+    "description": "The label for category Logs in sidebar docs"
+  },
   "sidebar.docs.category.Client Libraries": {
     "message": "Client Libraries",
     "description": "The label for category Client Libraries in sidebar docs"
-  },
-  "sidebar.docs.category.Python Scripts": {
-    "message": "Python Scripts",
-    "description": "The label for category Python Scripts in sidebar docs"
   },
   "sidebar.docs.category.Operations": {
     "message": "Operations",
     "description": "The label for category Operations in sidebar docs"
   },
-  "sidebar.docs.category.deploy-on-kubernetes": {
-    "message": "deploy-on-kubernetes",
-    "description": "The label for category deploy-on-kubernetes in sidebar docs"
+  "sidebar.docs.category.Deploy on Kubernetes": {
+    "message": "Deploy on Kubernetes",
+    "description": "The label for category Deploy on Kubernetes in sidebar docs"
   },
-  "sidebar.docs.category.disaster-recovery": {
-    "message": "disaster-recovery",
-    "description": "The label for category disaster-recovery in sidebar docs"
+  "sidebar.docs.category.Disaster Recovery": {
+    "message": "Disaster Recovery",
+    "description": "The label for category Disaster Recovery in sidebar docs"
   },
-  "sidebar.docs.category.remote-wal": {
-    "message": "remote-wal",
-    "description": "The label for category remote-wal in sidebar docs"
+  "sidebar.docs.category.Remote WAL": {
+    "message": "Remote WAL",
+    "description": "The label for category Remote WAL in sidebar docs"
+  },
+  "sidebar.docs.category.GreptimeCloud": {
+    "message": "GreptimeCloud",
+    "description": "The label for category GreptimeCloud in sidebar docs"
+  },
+  "sidebar.docs.category.Integrations": {
+    "message": "Integrations",
+    "description": "The label for category Integrations in sidebar docs"
+  },
+  "sidebar.docs.category.Prometheus": {
+    "message": "Prometheus",
+    "description": "The label for category Prometheus in sidebar docs"
+  },
+  "sidebar.docs.category.SDK Libraries": {
+    "message": "SDK Libraries",
+    "description": "The label for category SDK Libraries in sidebar docs"
+  },
+  "sidebar.docs.category.Migrate to GreptimeCloud": {
+    "message": "Migrate to GreptimeCloud",
+    "description": "The label for category Migrate to GreptimeCloud in sidebar docs"
+  },
+  "sidebar.docs.category.Usage & Billing": {
+    "message": "Usage & Billing",
+    "description": "The label for category Usage & Billing in sidebar docs"
+  },
+  "sidebar.docs.category.Tutorials": {
+    "message": "Tutorials",
+    "description": "The label for category Tutorials in sidebar docs"
+  },
+  "sidebar.docs.category.Monitor Host Metrics": {
+    "message": "Monitor Host Metrics",
+    "description": "The label for category Monitor Host Metrics in sidebar docs"
   },
   "sidebar.docs.category.Reference": {
     "message": "Reference",
@@ -79,16 +103,48 @@
     "message": "SQL",
     "description": "The label for category SQL in sidebar docs"
   },
-  "sidebar.docs.category.functions": {
-    "message": "functions",
-    "description": "The label for category functions in sidebar docs"
+  "sidebar.docs.category.Functions": {
+    "message": "Functions",
+    "description": "The label for category Functions in sidebar docs"
   },
-  "sidebar.docs.category.information-schema": {
-    "message": "information-schema",
-    "description": "The label for category information-schema in sidebar docs"
+  "sidebar.docs.category.Information Schema": {
+    "message": "Information Schema",
+    "description": "The label for category Information Schema in sidebar docs"
+  },
+  "sidebar.docs.category.Contributor Guide": {
+    "message": "Contributor Guide",
+    "description": "The label for category Contributor Guide in sidebar docs"
+  },
+  "sidebar.docs.category.Frontend": {
+    "message": "Frontend",
+    "description": "The label for category Frontend in sidebar docs"
+  },
+  "sidebar.docs.category.Datanode": {
+    "message": "Datanode",
+    "description": "The label for category Datanode in sidebar docs"
+  },
+  "sidebar.docs.category.Metasrv": {
+    "message": "Metasrv",
+    "description": "The label for category Metasrv in sidebar docs"
+  },
+  "sidebar.docs.category.Flownode": {
+    "message": "Flownode",
+    "description": "The label for category Flownode in sidebar docs"
+  },
+  "sidebar.docs.category.Tests": {
+    "message": "Tests",
+    "description": "The label for category Tests in sidebar docs"
+  },
+  "sidebar.docs.category.How To": {
+    "message": "How To",
+    "description": "The label for category How To in sidebar docs"
+  },
+  "sidebar.docs.category.FAQ and Others": {
+    "message": "FAQ and Others",
+    "description": "The label for category FAQ and Others in sidebar docs"
   },
   "sidebar.docs.link.Release Notes": {
     "message": "Release Notes",
-    "description": "The label for link Release Notes in sidebar docs, linking to /blog/release-notes/all-releases"
+    "description": "The label for link Release Notes in sidebar docs, linking to /release-notes"
   }
 }
