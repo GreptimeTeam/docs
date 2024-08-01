@@ -7,7 +7,7 @@ You can choose the client library that best suits your needs.
 GreptimeDB provides an ingester library to help you write data.
 It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
-For more information, refer to [Automatic Schema Generation](/user-guide/write-data/overview.md#automatic-schema-generation).
+For more information, refer to [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
 {template ingester-lib-introduction%%}
 

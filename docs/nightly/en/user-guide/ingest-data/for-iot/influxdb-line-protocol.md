@@ -4,7 +4,7 @@ GreptimeDB supports HTTP InfluxDB Line protocol.
 
 ## Data model
 
-To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [data model in differences](../migrate-to-greptimedb/migrate-from-influxdb.md#data-model-in-difference) section in the Migrate from InfluxDB to GreptimeDB document.
+To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [data model in differences](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md#data-model-in-difference) section in the Migrate from InfluxDB to GreptimeDB document.
 
 ## Write data
 

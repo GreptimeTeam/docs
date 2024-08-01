@@ -23,12 +23,12 @@ remote_read:
 Since Prometheus has built-in support for setting up basic authentication information during the configuration of remote write and read, all you need to do is add your configured username and password to the config YAML file and you're good to go!
 
 :::tip NOTE
-Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](../clients/authentication.md).
+Be sure to uncomment `basic_auth` section and replace `greptime_user(username)`, `greptime_pwd(password)` with your own username and password when you enable database authentication. Please refer to client [authentication](/user-guide/clients/authentication.md).
 :::
 
 The `db` parameter in the URL represents the database that we want to write data. It's optional.
 By default, the database is `public`.
-If you want to write to another database, you can [create a new database](../table-management.md#create-a-database)
+If you want to write to another database, you can [create a new database](/user-guide/table-management.md#create-a-database)
 and replace `public` with the new database name.
 
 

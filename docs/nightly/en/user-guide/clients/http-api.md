@@ -91,12 +91,12 @@ After the query, the result will be:
 }
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../ingest-data/for-iot/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
 
 ## Write data
 
-* [SQL](../write-data/sql.md)
-* [OpenTSDB](../write-data/opentsdb.md)
+* [SQL](../ingest-data/for-iot/sql.md)
+* [OpenTSDB](../ingest-data/for-iot/opentsdb.md)
 
 ## Query data
 

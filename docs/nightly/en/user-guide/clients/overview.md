@@ -35,4 +35,4 @@ GreptimeDB converts timestamp values from the current time zone to UTC for stora
 and converts them back from UTC to the current time zone for retrieval.
 
 - To learn how to set the time zone, please refer to the documents for [MySQL](mysql.md#time-zone) and [PostgreSQL](postgresql.md#time-zone).
-- For information on how the time zone affects inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) chapters.
+- For information on how the time zone affects inserts and queries, please refer to the SQL documents in the [write data](../ingest-data/for-iot/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) chapters.

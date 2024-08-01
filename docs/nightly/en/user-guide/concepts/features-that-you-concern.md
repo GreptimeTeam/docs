@@ -8,11 +8,11 @@ Please read the [log user guide](/user-guide/logs/overview).
 
 ## Does GreptimeDB support updates?
 
-Sort of, Please refer to the [update data](/user-guide/write-data/overview.md#update-data) for more information.
+Sort of, Please refer to the [update data](/user-guide/manage-data/overview.md#update-data) for more information.
 
 ## Does GreptimeDB support deletion?
 
-Yes, it does. Please refer to the [delete data](/user-guide/write-data/overview.md#delete-data) for more information.
+Yes, it does. Please refer to the [delete data](/user-guide/manage-data/overview.md#delete-data) for more information.
 
 ## Can I set TTL or retention policy for different tables or measurements?
 

@@ -196,7 +196,7 @@ LOG.info("Write result: {}", result);
 
 #### Update data
 
-Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+Please refer to [update data](/user-guide/manage-data/overview.md#update-data) for the updating mechanism.
 In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 ```java
@@ -332,7 +332,7 @@ LOG.info("Write result: {}", result);
 
 #### Update data
 
-Please refer to [update data](/user-guide/write-data/overview.md#update-data) for the updating mechanism.
+Please refer to [update data](/user-guide/manage-data/overview.md#update-data) for the updating mechanism.
 In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
 
 ```java
