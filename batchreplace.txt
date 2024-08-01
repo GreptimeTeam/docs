@@ -2,7 +2,7 @@ filter "i18n/zh/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
-with "{props.children.filter(c => c.props.id == '$1')}"
+with "{props.children.length?props.children.filter(c => c.props.id == '$1'):props.children.props.id=='$1'?props.children:null}"
 
 //replace template provide start
 replace-regex "\{template ([\w-]*)%"
@@ -63,3 +63,6 @@ with "\<http://127.0.0.1:6669\>"
 
 replace "- [FAQ][5]: Presents"
 with " [FAQ][5]: Presents"
+
+replace "style="text-align: center;"
+with "style={{"textAlign": "center"}}"
