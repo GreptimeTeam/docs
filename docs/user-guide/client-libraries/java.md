@@ -31,7 +31,7 @@ dependencies list:
 <dependency>
     <groupId>io.greptime</groupId>
     <artifactId>ingester-all</artifactId>
-    <version><%java-sdk-version%></version>
+    <version>0.7.3</version>
 </dependency>
 ```
 

@@ -11,7 +11,7 @@
 ```yaml
 services:
   prometheus:
-    image: prom/prometheus:<%prometheus-version%>
+    image: prom/prometheus:v2.52.0
     container_name: prometheus
     depends_on:
       - node_exporter
@@ -21,7 +21,7 @@ services:
       - ./prometheus-greptimedb.yml:/etc/prometheus/prometheus.yml:ro
 
   node_exporter:
-    image: quay.io/prometheus/node-exporter:<%node-exporter-version%>
+    image: quay.io/prometheus/node-exporter:v1.8.0
     container_name: node_exporter
     ports:
       - 9100:9100

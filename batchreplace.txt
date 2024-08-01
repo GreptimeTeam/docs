@@ -1,4 +1,4 @@
-filter "docs/**/*.md"
+filter "i18n/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
@@ -66,3 +66,19 @@ with " [FAQ][5]: Presents"
 
 replace "style="text-align: center;""
 with "style={{"textAlign": "center"}}"
+
+// variable replace
+replace "<%greptimedb-version%>"
+with "v0.10.0-nightly-20240722"
+
+replace "<%prometheus-version%>"
+with "v2.52.0"
+
+replace "<%node-exporter-version%>"
+with "v1.8.0"
+
+replace "<%go-sdk-version%>"
+with "v0.5.0"
+
+replace "<%java-sdk-version%>"
+with "0.7.3"
