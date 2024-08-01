@@ -2,7 +2,7 @@ filter "versioned_docs/version-0.9/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
-with "{props.children.length?props.children.filter(c => c.props.id == '$1'):props.children.props.id=='$1'?props.children:null}"
+with "<InjectContent id="$1" content={props.children}/>"
 
 //replace template provide start
 replace-regex "\{template ([\w-]*)%"

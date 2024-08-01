@@ -3,9 +3,10 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-{props.children.length?props.children.filter(c => c.props.id == 'data-source-plugin-intro'):props.children.props.id=='data-source-plugin-intro'?props.children:null}
+<InjectContent id="data-source-plugin-intro" content={props.children}/>
 
-{props.children.length?props.children.filter(c => c.props.id == 'data-source-plugin-installation'):props.children.props.id=='data-source-plugin-installation'?props.children:null}
+<InjectContent id="data-source-plugin-installation" content={props.children}/>
+
 
 {props.children.length?props.children.filter(c => c.props.id == 'preview-greptimedb-using-docker'):props.children.props.id=='preview-greptimedb-using-docker'?props.children:null}
 
