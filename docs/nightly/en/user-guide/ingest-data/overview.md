@@ -4,7 +4,7 @@ To write data to GreptimeDB, you'll need to establish a [connection](../clients/
 
 ## Automatic schema generation
 
-GreptimeDB provides schemaless writing that automatically creates schemas for your data, so that you don't need to create tables in advance. The table and columns will be created and added automatically when writing data with protocol gRPC supported by [SDKs](/user-guide/client-libraries/overview.md), [InfluxDB](./for-iot/influxdb-line-protocol.md), [OpenTSDB](./for-iot/opentsdb.md) and [Prometheus remote write](./for-observerbility/prometheus.md). When necessary, GreptimeDB automatically adds the required columns to ensure that the user's data is correctly saved.
+GreptimeDB provides schemaless writing that automatically creates schemas for your data, so that you don't need to create tables in advance. The table and columns will be created and added automatically when writing data with protocol gRPC supported by [SDKs](/user-guide/ingest-data/for-iot/grpc/overview.md), [InfluxDB](./for-iot/influxdb-line-protocol.md), [OpenTSDB](./for-iot/opentsdb.md) and [Prometheus remote write](./for-observerbility/prometheus.md). When necessary, GreptimeDB automatically adds the required columns to ensure that the user's data is correctly saved.
 
 ## Recommended data ingestion methods
 
@@ -29,4 +29,4 @@ GreptimeDB provides schemaless writing that automatically creates schemas for yo
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
 They offer functionality for writing and querying data,
 making it easier to integrate GreptimeDB into your applications.
-For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) documentation. -->
+For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc/overview.md) documentation. -->

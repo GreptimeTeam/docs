@@ -1,6 +1,6 @@
 # Java SDK
 
-The GreptimeDB Java ingester library utilizes gRPC for writing data to the database. For how to use the library, please refer to the [Java library documentation](https://docs.greptime.com/user-guide/client-libraries/java).
+The GreptimeDB Java ingester library utilizes gRPC for writing data to the database. For how to use the library, please refer to the [Java library documentation](https://docs.greptime.com/user-guide/ingest-data/for-iot/grpc/java).
 
 To connect to GreptimeCloud, using information below:
 
