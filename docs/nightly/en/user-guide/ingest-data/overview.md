@@ -1,32 +1,27 @@
 # Overview
 
-To write data to GreptimeDB, you'll need to establish a [connection](../clients/overview.md) first.
+## Automatic Schema Generation
 
-## Automatic schema generation
+GreptimeDB supports schemaless writing, automatically creating tables and adding necessary columns as data is ingested.
+This capability ensures that you do not need to manually define schemas beforehand, making it easier to manage and integrate diverse data sources seamlessly.
+<!-- TODO: add links to protocols and integrations -->
+This feature is supported for all protocols and integrations, except [SQL](./for-iot/sql.md).
 
-GreptimeDB provides schemaless writing that automatically creates schemas for your data, so that you don't need to create tables in advance. The table and columns will be created and added automatically when writing data with protocol gRPC supported by [SDKs](/user-guide/ingest-data/for-iot/grpc/overview.md), [InfluxDB](./for-iot/influxdb-line-protocol.md), [OpenTSDB](./for-iot/opentsdb.md) and [Prometheus remote write](./for-observerbility/prometheus.md). When necessary, GreptimeDB automatically adds the required columns to ensure that the user's data is correctly saved.
+## Recommended Data Ingestion Methods
 
-## Recommended data ingestion methods
+GreptimeDB supports various data ingestion methods tailored to specific scenarios, ensuring optimal performance and integration flexibility.
 
-### For Observability scenarios
+### Observability Scenarios
 
-- [Prometheus Remote Write](./for-observerbility/prometheus.md)
-- [Vector](./for-observerbility/vector.md)
-- [OpenTelemetry](./for-observerbility/opentelemetry.md)
+- [Prometheus Remote Write](./for-observerbility/prometheus.md): Integrate GreptimeDB as remote storage for Prometheus, suitable for real-time monitoring and alerting.
+- [Vector](./for-observerbility/vector.md): Use GreptimeDB as a sink for Vector, ideal for complex data pipelines and diverse data sources.
+- [OpenTelemetry](./for-observerbility/opentelemetry.md): Collect and export telemetry data to GreptimeDB for detailed observability insights.
 
-### For IoT scenarios
+### IoT Scenarios
 
-- [SQL INSERT](./for-iot/sql.md)
-- [gRPC](./for-iot/grpc/overview.md)
-- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)
-- [EMQX](./for-iot/emqx.md)
-- [OpenTSDB](./for-iot/opentsdb.md)
+- [SQL INSERT](./for-iot/sql.md): A straightforward method for inserting data.
+- [gRPC](./for-iot/grpc/overview.md): Offers efficient, high-performance data ingestion, particularly suited for real-time data applications and complex IoT infrastructures.
+- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md): A widely-used protocol for time-series data, facilitating migration from InfluxDB to GreptimeDB.
+- [EMQX](./for-iot/emqx.md): An MQTT broker supporting massive device connections, can be used to ingest data to GreptimeDB.
+- [OpenTSDB](./for-iot/opentsdb.md): Ingest data to GreptimeDB using the OpenTSDB protocol.
 
-
-
-<!-- ### Client libraries
-
-Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
-They offer functionality for writing and querying data,
-making it easier to integrate GreptimeDB into your applications.
-For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc/overview.md) documentation. -->
