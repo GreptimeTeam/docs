@@ -79,7 +79,7 @@ OPTIONS:
 
 - `-addr`：Frontend 节点或者 Standalone 进程的 http server 地址。
 - `-output-dir`：要放置导出数据的目录。需要是当前机器上的路径。导出的 SQL 文件将放在该目录中。
-- `-target`：要导出的内容。建议不填直接使用默认值，默认会导出全部 schema 也就是 `CREATE-TABLE` 语句，同时导出每个表的数据文件和用于数据再次导入新 DB 的 `COPY FROM` 语句。
+- `-target`：指定要导出的数据。`create-table` 选项会导出每个表的 `CREATE TABLE` 子句。`database-data` 选项会导出每个数据库的数据以及对应 DB 的 `COPY FROM` 语句。默认情况下会导出 `create-table` 和 `database-data` 的所有数据，推荐不设定选项直接使用默认值以导出所有数据。
 
 对于完整的升级，您需要使用每个目标选项两次执行此工具。
 
