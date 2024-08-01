@@ -1,4 +1,4 @@
-# OpenTelemetry Protocol(OTLP)
+# OpenTelemetry Protocol (OTLP)
 
 [OpenTelemetry](https://opentelemetry.io/) is a vendor-neutral open-source observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. The OpenTelemetry Protocol (OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such as collectors and telemetry backends.
 
