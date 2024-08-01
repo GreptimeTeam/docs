@@ -16,6 +16,31 @@
     - storage-location
     - key-concepts
     - features-that-you-concern
+  - Ingest-Data:
+    - overview
+    - For-Observerbility:
+      - overview
+      - prometheus
+      - vector
+      - opentelemetry
+    - For-IoT:
+      - overview
+      - sql
+      - grpc:
+        - overview
+        - Go
+        - Java
+      - influxdb-line-protocol
+      - emqx
+      - opentsdb
+  - Query-Data:
+    - overview
+    - sql
+    - promql
+    - view
+    - query-external-data
+  - Manage-Data:
+    - overview
   - Clients:
     - overview
     - authentication
@@ -32,18 +57,6 @@
   - Migrate-to-GreptimeDB:
     - migrate-from-influxdb
   - table-management
-  - Write-Data:
-    - overview
-    - prometheus
-    - sql
-    - influxdb-line
-    - opentsdb
-  - Query-Data:
-    - overview
-    - sql
-    - promql
-    - view
-    - query-external-data
   - Continuous-Aggregation:
     - overview
     - manage-flow
@@ -57,10 +70,6 @@
     - manage-pipelines
     - write-logs
     - query-logs
-  - Client-Libraries:
-    - overview
-    - go
-    - java
   # - Python-Scripts:
   #   - overview
   #   - getting-started
