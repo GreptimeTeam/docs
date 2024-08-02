@@ -25,7 +25,9 @@ Cost Calculation Formula:
 - Daily Costs: Sum of Hourly Costs
 - Monthly Costs: Sum of Daily Costs
 
-<!--@include: shared-storage-capacity.md-->
+import Includesharedstoragecapacity from './shared-storage-capacity.md' 
+
+<Includesharedstoragecapacity/>
 
 ### Network traffic
 

@@ -1,4 +1,4 @@
-filter "versioned_docs/version-0.9/**/*.md"
+filter "/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
@@ -44,6 +44,8 @@ with "import Include$2 from '$1/$2.md' \n\n<Include$2/>"
 replace-regex "from '([a-z])"
 with "from './$1"
 
+replace-regex "<!--@include: ([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$1$2$3 from './$1-$2-$3.md' \n\n<Include$1$2$3/>"
 
 
 replace "<https://n9e.github.io/>"

@@ -28,7 +28,9 @@ Greptime 根据你选择的计划中指定的容量单元按小时计算费用�
 - 每日费用：每小时费用之和
 - 每月费用：每日费用之和
 
-<!--@include: shared-storage-capacity.md-->
+import Includesharedstoragecapacity from './shared-storage-capacity.md' 
+
+<Includesharedstoragecapacity/>
 
 <!-- ### 优化费用
 
