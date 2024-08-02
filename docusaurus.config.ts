@@ -50,6 +50,9 @@ const config: Config = {
               label: 'nightly',
               path: 'nightly',
             },
+            '0.8': {
+              path: 'v0.8'
+            }
           }
         },
         blog: {

@@ -1,6 +1,11 @@
 {
   "docs": [
     {
+      "type": "doc",
+      "className": "hidden",
+      "id": "index"
+    },
+    {
       "type": "category",
       "label": "Getting Started",
       "items": [

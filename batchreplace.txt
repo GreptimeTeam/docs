@@ -1,4 +1,4 @@
-filter "/**/*.md"
+filter "**/version-0.8/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
@@ -84,3 +84,6 @@ with "v0.5.0"
 
 replace "<%java-sdk-version%>"
 with "0.7.3"
+
+replace "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
+with "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
