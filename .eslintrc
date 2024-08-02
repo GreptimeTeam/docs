@@ -5,9 +5,15 @@
     "mdx/code-blocks": true,
     // optional, if you want to disable language mapper, set it to `false`
     // if you want to override the default language mapper inside, you can provide your own
-    "mdx/language-mapper": {}
+    "mdx/language-mapper": {},
   },
   "parserOptions": {
-    "extensions": [".mdx", ".md"]
+    "extensions": [".mdx", ".md"],
+  },
+  "rules": {
+    "no-unused-expressions": "off",
+  },
+  "globals": {
+    "InjectContent": "writable"
   }
 }
