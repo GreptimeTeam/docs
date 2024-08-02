@@ -5,9 +5,10 @@
 - [PromQL](./promql.md)
 - [SQL](./sql.md)
 
-Since v0.9, GreptimeDB supports view just like other databases:
+Since v0.9, GreptimeDB supports view and CTE just like other databases, used to simplify queries:
 
 * [View](./view.md)
+* [Common Table Expression (CTE)](./cte.md)
 
 ## Client SDK libraries
 
