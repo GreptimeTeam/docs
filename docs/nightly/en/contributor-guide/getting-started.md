@@ -6,7 +6,7 @@ This page describes how to run GreptimeDB from source in your local environment.
 
 ### System & Architecture
 
-At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 and Apple Silicone).
+At the moment, GreptimeDB supports Linux(both amd64 and arm64), macOS (both amd64 and Apple Silicone) and Windows.
 
 ### Build Dependencies
 
@@ -17,6 +17,7 @@ At the moment, GreptimeDB now only supports Linux(amd64) and macOS (both amd64 a
 - Protobuf ([guide][2])
   - Compile the proto file
   - Note that the version needs to be >= 3.15. You can check it with `protoc --version`
+- Machine: Recommended memory is 16GB or more, or use the [mold](https://github.com/rui314/mold) tool to reduce memory usage during linking.
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>
