@@ -245,7 +245,7 @@ processors:
 如上所示，`letter` Processor 的配置包含以下字段：
 
 - `fields`: 需要转换的字段名列表。
-- `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。
+- `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。注意 `capital` 只会将第一个字母转换为大写。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
 ### `regex`

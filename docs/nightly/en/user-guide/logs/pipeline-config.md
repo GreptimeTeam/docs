@@ -243,7 +243,7 @@ processors:
 In the above example, the configuration of the `letter` processor includes the following fields:
 
 - `fields`: A list of field names to be transformed.
-- `method`: The transformation method, supports `upper`, `lower`, `capital`. Defaults to `lower`.
+- `method`: The transformation method, supports `upper`, `lower`, `capital`. Defaults to `lower`. Note the `capital` only changes the first letter to uppercase.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
 ### `regex`
