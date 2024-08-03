@@ -6,7 +6,7 @@
 
 ### 系统和架构
 
-目前，GreptimeDB 仅支持 Linux（amd64）和 macOS（amd64 和 Apple Silicone）。
+目前，GreptimeDB 支持 Linux（amd64 和 arm64）、macOS（amd64 和 Apple Silicone）和 Windows。
 
 ### 构建依赖项
 
@@ -17,6 +17,7 @@
 - Protobuf（[指南][2]）
   - 编译 proto 文件
   - 请注意，版本需要 >= 3.15。你可以使用 `protoc --version` 检查它。
+- 机器：建议内存在16GB以上 或者 使用[mold](https://github.com/rui314/mold)工具以降低链接时的内存使用。
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>
