@@ -91,7 +91,7 @@ SELECT
     COALESCE(logs.num_errors, 0) AS num_errors
 FROM 
     metrics 
-    LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts = logs.ts 
+LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts = logs.ts
 ORDER BY 
     metrics.ts;
 ```
@@ -152,7 +152,7 @@ Output:
           COALESCE(logs.num_errors, 0) AS num_errors
       FROM
           metrics
-          LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts =   logs.ts
+      LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts =   logs.ts
       ORDER BY
           metrics.ts;
       ```
