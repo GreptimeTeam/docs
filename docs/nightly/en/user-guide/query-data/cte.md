@@ -4,11 +4,11 @@ CTEs are similar to [Views](./view.md) in that they help you reduce the complexi
 
 You already read a CTE in the [quickstart](/getting-started/quick-start#correlate-metrics-and-logs) document.
 
-### What is a Common Table Expression (CTE)?
+## What is a Common Table Expression (CTE)?
 
 A Common Table Expression (CTE) is a temporary result set that you can reference within a `SELECT`, `INSERT`, `UPDATE`, or `DELETE` statement. CTEs help to break down complex queries into more readable parts and can be referenced multiple times within the same query.
 
-### Basic Syntax of CTE
+## Basic syntax of CTE
 
 CTEs are typically defined using the `WITH` keyword. The basic syntax is as follows:
 
@@ -20,11 +20,11 @@ SELECT ...
 FROM cte_name;
 ```
 
-### Example Explanation
+## Example explanation
 
 Next, we'll go through a complete example that demonstrates how to use CTEs, including data preparation, CTE creation, and usage.
 
-### Step 1: Create Example Data
+### Step 1: Create example data
 
 Let's assume we have the following two tables:
 
@@ -58,7 +58,7 @@ INSERT INTO app_logs VALUES
 ('2023-10-01 10:00:05', 'host1', 'Error connecting to DB', 'ERROR');
 ```
 
-### Step 2: Define and Use CTEs
+### Step 2: Define and use CTEs
 
 We will create two CTEs to calculate the 95th percentile latency and the number of error logs, respectively.
 
@@ -108,7 +108,7 @@ Output:
 +---------------------+-------+-------------+------------+
 ```
 
-### Detailed Explanation
+## Detailed explanation
 
 1. **Define CTEs**:
   - `metrics`: 
@@ -126,7 +126,7 @@ Output:
       ```
      Here we use a [range query](/user-guide/query-data/sql#aggregate-data-by-time-window) to calculate the 95th percentile latency for each `host` within every 5-second window.
      
-    - `logs`:
+  - `logs`:
       ```sql
       logs AS (
         SELECT 
@@ -144,20 +144,20 @@ Output:
 
 2. **Use CTEs**:
     The final query part:
-    ```sql
-    SELECT 
-        metrics.ts,
-        metrics.host,
-        metrics.p95_latency,
-        COALESCE(logs.num_errors, 0) AS num_errors
-    FROM 
-        metrics 
-        LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts = logs.ts 
-    ORDER BY 
-        metrics.ts;
-    ```
+      ```sql
+      SELECT
+          metrics.ts,
+          metrics.host,
+          metrics.p95_latency,
+          COALESCE(logs.num_errors, 0) AS num_errors
+      FROM
+          metrics
+          LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts =   logs.ts
+      ORDER BY
+          metrics.ts;
+      ```
     We perform a left join on the two CTE result sets to get a comprehensive analysis result.
 
-### Summary
+## Summary
 
 With CTEs, you can break down complex SQL queries into more manageable and understandable parts. In this example, we created two CTEs to calculate the 95th percentile latency and the number of error logs separately and then merged them into the final query for analysis.  Read more [WITH](/reference/sql/with).

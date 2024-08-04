@@ -4,11 +4,11 @@ CTE 与 [视图](./view.md) 类似，它们帮助您简化查询的复杂性，�
 
 您已经在 [快速开始](/getting-started/quick-start#指标和日志的关联查询) 文档中阅读了一个 CTE 的例子。
 
-### 什么是公共表表达式 （CTE）？
+## 什么是公共表表达式 （CTE）？
 
 公共表表达式 (CTE) 是可以在 `SELECT`、`INSERT`、`UPDATE` 或 `DELETE` 语句中引用的临时结果集。CTE 有助于将复杂的查询分解成更可读的部分，并且可以在同一个查询中多次引用。
 
-### CTE 的基本语法
+## CTE 的基本语法
 
 CTE 通常使用 `WITH` 关键字定义。基本语法如下：
 
@@ -20,7 +20,7 @@ SELECT ...
 FROM cte_name;
 ```
 
-### 示例解释
+## 示例解释
 
 接下来，我们将通过一个完整的示例来演示如何使用 CTE，包括数据准备、CTE 创建和使用。
 
@@ -126,7 +126,7 @@ ORDER BY
       ```
      这里我们使用[范围查询](/user-guide/query-data/sql#按时间窗口聚合数据)计算每个 `host` 在每个 5 秒时间窗口内的第 95 百分位延迟。
      
-    - `logs`:
+  - `logs`:
       ```sql
       logs AS (
         SELECT 
@@ -144,20 +144,20 @@ ORDER BY
 
 2. **使用 CTEs**：
     在最终的查询部分：
-    ```sql
-    SELECT 
-        metrics.ts,
-        metrics.host,
-        metrics.p95_latency,
-        COALESCE(logs.num_errors, 0) AS num_errors
-    FROM 
-        metrics 
-        LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts = logs.ts 
-    ORDER BY 
-        metrics.ts;
+      ```sql
+      SELECT
+          metrics.ts,
+          metrics.host,
+          metrics.p95_latency,
+          COALESCE(logs.num_errors, 0) AS num_errors
+      FROM
+          metrics
+      LEFT JOIN logs ON metrics.host = logs.host AND metrics.ts = logs.ts
+      ORDER BY
+          metrics.ts;
     ```
     我们对两个 CTE 结果集进行左连接，以获得最终的综合分析结果。
 
-### 总结
+## 总结
 
 通过 CTE，您可以将复杂的 SQL 查询分解为更易于管理和理解的部分。在本示例中，我们分别创建了两个 CTE 来计算第 95 百分位延迟和错误日志的数量，然后将它们合并到最终查询中进行分析。 阅读更多 [WITH](/reference/sql/with)。
