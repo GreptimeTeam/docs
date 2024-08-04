@@ -2,6 +2,7 @@
 
 ## 0.9
 
+* [0.9.1](/release-notes/release-0-9-1.md): 2024-08-02
 * [0.9.0](/release-notes/release-0-9-0.md): 2024-07-16
 
 ## 0.8
