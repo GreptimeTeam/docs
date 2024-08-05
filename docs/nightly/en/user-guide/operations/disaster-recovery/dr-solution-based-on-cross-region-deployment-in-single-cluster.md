@@ -8,7 +8,7 @@ It can be a Data Center (DC), a compartment of a DC. This depends on your specif
 
 A GreptimeDB region is a city. When two DC are in the same region and one DC becomes unavailable, the other DC can take over the services of the unavailable DC. This is a localization strategy.
 
-### Disaster Recovery Solution: Across 2 regions, Data in the same region
+### Across 2 regions, data in the same region
 
 In this solution, the data is in one region (2 DCs), while the metadata across 2 regions.
 
