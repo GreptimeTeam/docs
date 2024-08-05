@@ -47,7 +47,7 @@ Supports High Availability:
 
 If you can't tolerate performance degradation from a single DC failure, consider upgrading to the five-DC and three-region solution.
 
-### Disaster Recovery Solution: Across 3 regions, data across 2 regions
+### Across 3 regions, data across 2 regions
 
 In this solution, the data across 2 regions, while the metadata across 3 regions.
 
