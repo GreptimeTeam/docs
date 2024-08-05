@@ -45,7 +45,7 @@ Sorted runs is a collection of SST files that have sorted and non-overlapping ti
 
 For example, a table contains 5 SSTs with following time ranges (all inclusive): `[0, 10]`, `[12, 23]`, `[22, 25]`,`[24, 30]`,`[26,33]` and we can find 2 sorted runs:
 
-![num-of-sorted-runs](compaction-num-sorted-runs.jpg)
+![num-of-sorted-runs](/compaction-num-sorted-runs.jpg)
 
 
 The number of sorted runs indicates the orderliness of SST files. More sorted runs typically lead to worse query performance. The main goal of compactions is to reduce the number of sorted runs.

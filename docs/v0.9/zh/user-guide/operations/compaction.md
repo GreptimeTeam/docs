@@ -44,7 +44,7 @@ GreptimeDB 将包含最近插入时间戳的窗口视为**活跃窗口（active 
 
 例如，一个表包含5个SST，时间范围如下（全部包括在内）：`[0, 10]`, `[12, 23]`, `[22, 25]`,`[24, 30]`,`[26,33]`，我们可以找到2个有序组：
 
-![num-of-sorted-runs](compaction-num-sorted-runs.jpg)
+![num-of-sorted-runs](/compaction-num-sorted-runs.jpg)
 
 
 有序组的数量往往能够反映 SST 文件的有序性。更多的有序组通常会导致查询性能变差，因为特定时间范围的查询往往会命中多个重叠的文件。压缩的主要目标是减少有序组的数量。
