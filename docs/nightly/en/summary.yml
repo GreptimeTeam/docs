@@ -56,7 +56,6 @@
     - emqx
   - Migrate-to-GreptimeDB:
     - migrate-from-influxdb
-  - table-management
   - Continuous-Aggregation:
     - overview
     - manage-flow
@@ -79,6 +78,7 @@
   #   - data-types
   #   - api
   - cluster
+  - table-management
   - Operations:
     - overview
     - admin
