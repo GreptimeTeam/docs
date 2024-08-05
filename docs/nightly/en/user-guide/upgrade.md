@@ -45,11 +45,13 @@ OPTIONS:
 
   -t, --target <TARGET>
           Things to export
+          
+          [default: all]
 
           Possible values:
-          - create-table:  Corresponding to `SHOW CREATE TABLE`
-          - table-data:    Corresponding to `EXPORT TABLE`
-          - database-data: Corresponding to `EXPORT DATABASE`
+          - schema: Export all table schemas, corresponding to `SHOW CREATE TABLE`
+          - data:   Export all table data, corresponding to `COPY DATABASE TO`
+          - all:    Export all table schemas and data at once
 
       --log-dir <LOG_DIR>
           
@@ -75,9 +77,9 @@ OPTIONS:
 
 Here explains the meaning of some important options
 
-- `--addr`: The gRPC address of the Frontend node or Standalone process.
+- `--addr`: The server address of the Frontend node or Standalone process.
 - `--output-dir`: The directory to put the exported data. Give a path at your current machine. The exported SQL files will be put in that directory.
-- `--target`: The things to export. `create-table` can export the `CREATE TABLE` clause for each table. `database-data` can export the data of each database alone with `COPY FROM` clause.
+- `-target`: Specifies the data to export. The `schema` option exports the `CREATE TABLE` clause for each table. The `data` option exports the data of each database along with the `COPY FROM` clause. By default, all data is exported for both `schema` and `data`. It is recommended not to specify this option that use the default value to export all data.
 
 For a complete upgrade, you will need to execute this tools twice with each target options.
 
@@ -85,36 +87,40 @@ For a complete upgrade, you will need to execute this tools twice with each targ
 
 Here is a complete example for upgrading from `v0.8.x` to `v0.9.x`.
 
-### Export `CREATE TABLE`
+### Export `CREATE TABLE`s and table data at once
 
 Assuming the HTTP service port of the old database is `4000`.
 
 ```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export --target create-table
+greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export
 ```
 
 If success, you will see something like this
 
 ```log
-2023-10-20T09:41:06.500390Z  INFO cmd::cli::export: Finished exporting greptime.public with 434 table schemas to path: /tmp/greptimedb-export/greptime/public
-2023-10-20T09:41:06.500482Z  INFO cmd::cli::export: success 1/1 jobs
+2024-08-01T06:32:26.547809Z  INFO cmd: Starting app: greptime-cli
+2024-08-01T06:32:27.239639Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private with 0 table schemas to path: /tmp/greptimedb-export/greptime/greptime_private/
+2024-08-01T06:32:27.540696Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog with 0 table schemas to path: /tmp/greptimedb-export/greptime/pg_catalog/
+2024-08-01T06:32:27.832018Z  INFO cmd::cli::export: Finished exporting greptime.public with 0 table schemas to path: /tmp/greptimedb-export/greptime/public/
+2024-08-01T06:32:28.272054Z  INFO cmd::cli::export: Finished exporting greptime.test with 1 table schemas to path: /tmp/greptimedb-export/greptime/test/
+2024-08-01T06:32:28.272166Z  INFO cmd::cli::export: Success 4/4 jobs, cost: 1.724222791s
+2024-08-01T06:32:28.416532Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."greptime_private" TO '/tmp/greptimedb-export/greptime/greptime_private/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.556017Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private data into path: /tmp/greptimedb-export/greptime/greptime_private/
+2024-08-01T06:32:28.556330Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private copy_from.sql
+2024-08-01T06:32:28.556424Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."pg_catalog" TO '/tmp/greptimedb-export/greptime/pg_catalog/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.738719Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog data into path: /tmp/greptimedb-export/greptime/pg_catalog/
+2024-08-01T06:32:28.738998Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog copy_from.sql
+2024-08-01T06:32:28.739098Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."public" TO '/tmp/greptimedb-export/greptime/public/' WITH (FORMAT='parquet');
+2024-08-01T06:32:28.875600Z  INFO cmd::cli::export: Finished exporting greptime.public data into path: /tmp/greptimedb-export/greptime/public/
+2024-08-01T06:32:28.875888Z  INFO cmd::cli::export: Finished exporting greptime.public copy_from.sql
+2024-08-01T06:32:28.876005Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."test" TO '/tmp/greptimedb-export/greptime/test/' WITH (FORMAT='parquet');
+2024-08-01T06:32:29.053681Z  INFO cmd::cli::export: Finished exporting greptime.test data into path: /tmp/greptimedb-export/greptime/test/
+2024-08-01T06:32:29.054104Z  INFO cmd::cli::export: Finished exporting greptime.test copy_from.sql
+2024-08-01T06:32:29.054162Z  INFO cmd::cli::export: Success 4/4 jobs, costs: 781.98875ms
+2024-08-01T06:32:29.054181Z  INFO cmd: Goodbye!
 ```
 
 And now the output directory structure is
-
-```plaintext
-/tmp/greptimedb-export/
-└── greptime/public/
-     └── create_tables.sql
-```
-
-### Export table data
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --database greptime-public --output-dir /tmp/greptimedb-export --target database-data
-```
-
-The log output is similar to the previous one. And the output directory structure is
 
 ```plaintext
 /tmp/greptimedb-export/
@@ -125,7 +131,7 @@ The log output is similar to the previous one. And the output directory structur
 │   └── other-tables.parquet
 ```
 
-New files are `copy_from.sql` and parquet files of each table. The former one contains the `COPY FROM` clause for each database. The latter one contains the data of each table.
+The content includes `create_tables.sql`, `copy_from.sql`, and the parquet files for each table in the DB `greptime-public`. The `create_tables.sql` contains the create table statements for all tables in the current DB, while `copy_from.sql` includes a single `COPY DATABASE FROM` statement used to copy data files to the target DB. The remaining parquet files are the data files for each table.
 
 ### Import table schema and data
 
