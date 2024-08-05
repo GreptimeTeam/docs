@@ -5,9 +5,10 @@
 - [SQL](./sql.md)
 - [PromQL](promql.md)
 
-从 v0.9 开始， GreptimeDB 开始支持查询视图：
+从 v0.9 开始， GreptimeDB 开始支持查询视图和公共表表达式（CTE），用于简化查询语句：
 
 * [View](./view.md)
+* [公共表表达式（CTE）](./cte.md)
 
 ## 客户端库
 
