@@ -71,7 +71,7 @@ In above example, we got 4 rows of output. Except the last row gives an overall 
 
 ### Stage and node
 
-This example is based on a distributed partition table with two regions. We mark different "stage" in a distributed execution plan with stage number, start from 0. And in each stage, we may have multiple "node" to execute the plan in parallel. The node number also starts from 0 in each stage.
+This example is based on a distributed partition table with two regions. We mark different "stage" in a distributed execution plan with stage number, start from 0. And in each stage, we may have multiple "node" to execute the plan in parallel. The node number also starts from 0 in each stage. These two words are only used here currently.
 
 ### Metrics
 
