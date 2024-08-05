@@ -79,7 +79,15 @@ Each plan node has its own metrics after the word `metrics`. The metrics may or 
 - Timer
   - `elapsed_compute`, `repart_time`, `fetch_time`, `send_time` etc.
   - Shows the elapsed time in nanosecond. Different timer corresponding different time span.
-  - Notice that for plans that have multiple partitions, the timer is usually summed across all partitions.
+  - Notice that for plans that have multiple input partitions, timers used to measure input stream are usually summed across all partitions.
 - Counter
   - `output_rows`, `mem_used` etc.
   - Shows the number of rows output by the node, or the memory used in Bytes by the node.
+
+Here are the rough explanation of some common metrics:
+- `elapsed_compute`: elapsed time for computation
+- `repart_time`: elapsed time for repartition
+- `fetch_time`: elapsed time for fetching from input
+- `send_time`: elapsed time for sending to output
+- `output_rows`: row number of output
+- `mem_used`: memory usage.
