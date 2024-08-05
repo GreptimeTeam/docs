@@ -2,6 +2,16 @@
 
 Release date: August 02, 2024
 
+This is a patch release, containing some important bug fixes:
+
+- [#4447](https://github.com/GreptimeTeam/greptimedb/pull/4447): Full-text search may miss some rows when a full-text index is applied.
+- [#4476](https://github.com/GreptimeTeam/greptimedb/pull/4476): Data ingestion can stall due to missing notifications.
+
+
+**It's highly recommended to upgrade to this version if you're using v0.9.0.**
+
+
+
 ## Breaking changes
 
 * refactor!: Remove `Mode` from `FrontendOptions` by [@zyy17](https://github.com/zyy17) in [#4401](https://github.com/GreptimeTeam/greptimedb/pull/4401)
