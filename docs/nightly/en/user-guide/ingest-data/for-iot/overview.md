@@ -5,7 +5,7 @@ The IoT data ingestion process is a critical part of the IoT data pipeline. It i
 GreptimeDB provides a powerful and flexible platform for ingesting IoT data. It supports various data formats, protocols, and interfaces, making it easy to integrate with different IoT devices and systems. GreptimeDB can handle large volumes of data, process it in real-time, and store it efficiently for future analysis.
 
 - [SQL](sql.md)
-- [gRPC-SDK](./grpc-sdk/overview.md)
+- [gRPC-SDK](./grpc-sdks/overview.md)
 - [InfluxDB Line Protocol](influxdb-line-protocol.md)
 - [EMQX](emqx.md)
 - [OpenTSDB](opentsdb.md)

@@ -24,7 +24,7 @@ Please refer to [Authentication](./authentication.md) to learn how to config use
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
 They offer functionality for writing and querying data,
 making it easier to integrate GreptimeDB into your applications.
-For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc-sdk/overview.md) document.
+For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) document.
 
 ## Time zone
 

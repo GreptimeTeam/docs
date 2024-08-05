@@ -26,7 +26,7 @@
     - For-IoT:
       - overview
       - sql
-      - gRPC-SDK:
+      - gRPC-SDKs:
         - overview
         - Go
         - Java
