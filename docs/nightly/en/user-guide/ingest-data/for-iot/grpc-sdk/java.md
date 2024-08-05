@@ -192,35 +192,6 @@ LOG.info("Write result: {}", result);
 
 %}
 
-<!-- {template update-rows%
-
-#### Update data
-
-Please refer to [update data](/user-guide/manage-data/overview.md#update-data) for the updating mechanism.
-In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
-
-```java
-Table cpuMetric = Table.from(myMetricCpuSchema);
-// insert a row data
-long ts = 1703832681000L;
-cpuMetric.addRow("host1", ts, 0.23, 0.12);
-Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
-
-// update the row data
-Table newCpuMetric = Table.from(myMetricCpuSchema);
-// The same tag `host1`
-// The same time index `1703832681000`
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
-long ts = 1703832681000L;
-myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
-
-// overwrite the existing data
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
-Result<WriteOk, Err> result = future.get();
-```
-
-%}
-
 {template high-level-style-object%
 
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
@@ -328,39 +299,6 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template high-level-style-update-data%
-
-#### Update data
-
-Please refer to [update data](/user-guide/manage-data/overview.md#update-data) for the updating mechanism.
-In the following code, we first save a row and then use the same tag and time index to identify the row for updating.
-
-```java
-Cpu cpu = new Cpu();
-cpu.setHost("host1");
-cpu.setTs(1703832681000L);
-cpu.setCpuUser(0.23);
-cpu.setCpuSys(0.12);
-
-// insert a row data
-Result<WriteOk, Err> putResult = greptimeDB.writeObjects(cpu).get();
-
-// update the row data
-Cpu newCpu = new Cpu();
-// The same tag `host1`
-newCpu.setHost("host1");
-// The same time index `1703832681000`
-newCpu.setTs(1703832681000L);
-// The new value: cpu_user = `0.80`, cpu_sys = `0.11`
-cpu.setCpuUser(0.80);
-cpu.setCpuSys(0.11);
-
-// overwrite the existing data
-Result<WriteOk, Err> updateResult = greptimeDB.writeObjects(newCpu).get();
-```
-
-%}
-
 {template ingester-lib-debug-logs%
 
 ### Debug logs
@@ -382,7 +320,7 @@ For fully runnable code snippets and the complete code of the demo, please refer
 
 %}
 
-{template recommended-query-library%
+<!-- {template recommended-query-library%
 
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
@@ -398,7 +336,6 @@ If you are using [Maven](https://maven.apache.org/), add the following to your p
 dependencies list:
 
 ```xml
-<!-- MySQL usage dependency -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
@@ -406,9 +343,9 @@ dependencies list:
 </dependency>
 ```
 
-%}
+%} -->
 
-{template query-library-connect%
+<!-- {template query-library-connect%
 
 Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
 
@@ -455,9 +392,9 @@ jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTime
 * `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
 * `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
 
-%}
+%} -->
 
-{template query-library-raw-sql%
+<!-- {template query-library-raw-sql%
 
 ```java
 try (Connection conn = getConnection()) {
@@ -498,12 +435,12 @@ try (Connection conn = getConnection()) {
 
 For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
 
-%}
+%} -->
 
-{template query-lib-doc-link%
+<!-- {template query-lib-doc-link%
 
 - [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
-%}
+%} -->
 
 </docs-template>

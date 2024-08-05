@@ -1,21 +1,16 @@
 
-GreptimeDB uses different client libraries for writing and querying data.
-You can choose the client library that best suits your needs.
-
-## Write data
-
-GreptimeDB provides an ingester library to help you write data.
+GreptimeDB provides an ingester libraries to help you write data.
 It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
 {template ingester-lib-introduction%%}
 
-### Installation
+## Installation
 
 {template ingester-lib-installation%%}
 
-### Connect to database
+## Connect to database
 
 Username and password are always required to connect to GreptimeDB.
 For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
@@ -23,17 +18,17 @@ Here we set the username and password when using the library to connect to Grept
 
 {template ingester-lib-connect%%}
 
-### Data model
+## Data model
 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
-### Low-level API
+## Low-level API
 
 The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
 by adding rows to the table object with a predefined schema.
 
-#### Create row objects
+### Create row objects
 
 This following code snippet begins by constructing a table named `cpu_metric`,
 which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
@@ -51,13 +46,13 @@ To improve the efficiency of writing data, you can create multiple rows at once 
 
 {template create-rows%%}
 
-#### Insert data
+### Insert data
 
 The following example shows how to insert rows to tables in GreptimeDB.
 
 {template insert-rows%%}
 
-#### Streaming insert
+### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
@@ -65,9 +60,7 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 {template update-rows%%}
 
-<!-- TODO ### Delete Metrics -->
-
-### High-level API
+## High-level API
 
 The high-level API uses an ORM style object to write data to GreptimeDB.
 It allows you to create, insert, and update data in a more object-oriented way,
@@ -75,15 +68,15 @@ providing developers with a friendlier experience.
 However, it is not as efficient as the low-level API.
 This is because the ORM style object may consume more resources and time when converting the objects.
 
-#### Create row objects
+### Create row objects
 
 {template high-level-style-object%%}
 
-#### Insert data
+### Insert data
 
 {template high-level-style-insert-data%%}
 
-#### Streaming insert
+### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
@@ -91,17 +84,17 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 {template high-level-style-update-data%%}
 
-### More examples
+## More examples
 
 {template more-ingestion-examples%%}
 
 {template ingester-lib-debug-logs%%}
 
-### Ingester library reference
+## Ingester library reference
 
 {template ingester-lib-reference%%}
 
-## Query data
+<!-- ## Query data
 
 GreptimeDB uses SQL as the main query language and is compatible with MySQL and PostgreSQL.
 Therefore, we recommend using mature SQL drivers to query data.
@@ -131,4 +124,4 @@ The following example shows how to use raw SQL to query data.
 
 For more information about how to use the query library, please see the documentation of the corresponding library:
 
-{template query-lib-doc-link%%}
+{template query-lib-doc-link%%} -->
