@@ -131,7 +131,7 @@ The dissect pattern supports the following modifiers:
 | `+` and `/n` | Concatenates two or more fields in the specified order | `%{+key/2} %{+key/1}` |
 | `->`       | Ignores any repeating characters on the right side    | `%{key1->} %{key2->}` |
 | `?`        | Ignores matching values                               | `%{?key}`            |
-| `*` and `&` | Sets the output key as \* and the output value as &   | `%{*key} %{&value}`  |
+| `*` and `&` | Sets the output key as \* and the output value as &   | `%{*key} %{&key}`  |
 
 #### `dissect` examples
 
@@ -144,7 +144,7 @@ For example, given the following log data:
 Using the following Dissect pattern:
 
 ```
-"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key7} %{&key8}"
+"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key} %{&key}"
 ```
 
 The result will be:
@@ -243,7 +243,7 @@ processors:
 In the above example, the configuration of the `letter` processor includes the following fields:
 
 - `fields`: A list of field names to be transformed.
-- `method`: The transformation method, supports `upper`, `lower`, `capital`. Defaults to `lower`.
+- `method`: The transformation method, supports `upper`, `lower`, `capital`. Defaults to `lower`. Note the `capital` only changes the first letter to uppercase.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
 ### `regex`

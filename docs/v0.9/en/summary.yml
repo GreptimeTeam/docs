@@ -43,6 +43,7 @@
     - sql
     - promql
     - view
+    - cte
     - query-external-data
   - Continuous-Aggregation:
     - overview
@@ -166,6 +167,7 @@
     - tql
     - create
     - describe_table
+    - with
     - alter
     - explain
     - Functions:
@@ -227,6 +229,7 @@
     - how-to-trace-greptimedb
 - Release-Notes:
   - all-releases
+  - release-0-9-1
   - release-0-9-0
   - release-0-8-2
   - release-0-8-1
