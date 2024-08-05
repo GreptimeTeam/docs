@@ -1,7 +1,7 @@
 # DR Solution Based on Cross-Region Deployment in a Single Cluster
 
 ## How Disaster Recovery Works in GreptimeDB
-GreptimeDB is well-suited for cross-region disaster recovery. Customers may have varying regional characteristics and business needs, and GreptimeDB offers tailored solutions to meet these diverse requirements.
+GreptimeDB is well-suited for cross-region disaster recovery. You may have varying regional characteristics and business needs, and GreptimeDB offers tailored solutions to meet these diverse requirements.
 
 GreptimeDB resource management involves the concept of AZs (Availability Zones). An AZ is a logical unit of disaster recovery.
 It can be a DC(Datra Center), a compartment of a DC. This depends on the customer's specific DC conditions and deployment design.
