@@ -192,7 +192,7 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template update-rows%
+<!-- {template update-rows%
 
 #### Update data
 
@@ -278,7 +278,7 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-%}
+%} -->
 
 
 {template high-level-style-insert-data%
