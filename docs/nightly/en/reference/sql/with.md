@@ -1,4 +1,4 @@
-翻译成中文：# WITH
+# WITH
 
 Use `WITH` to specify a Common Table Expression.
 
@@ -6,7 +6,7 @@ Use `WITH` to specify a Common Table Expression.
 
 A Common Table Expression (CTE) is a temporary result set that you can reference within a `SELECT`, `INSERT`, `UPDATE`, or `DELETE` statement. CTEs help to break down complex queries into more readable parts and can be referenced multiple times within the same query.
 
-## Basic Syntax of CTE
+## Basic syntax of CTE
 
 CTEs are typically defined using the `WITH` keyword. The basic syntax is as follows:
 
