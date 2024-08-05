@@ -21,11 +21,11 @@ Typically, the time ranges of SST files do not overlap during real-time writing 
 
 ### Time window
 
-Time-series workloads present prominent "windowed" pattern in that most recently inserted rows are more possible to be read. Thus GreptimeDB logically partitioned the time axis into different time windows and we are more insterested in compacting those SST files fall into the same time window. 
+Time-series workloads present prominent "windowed" pattern in that most recently inserted rows are more possible to be read. Thus GreptimeDB logically partitioned the time axis into different time windows and we are more interested in compacting those SST files fall into the same time window. 
 
-Time window for some specific table is usually infered from the most-recently flushed SST files or users may manually specify the time window if TWCS is chosen.
+Time window for some specific table is usually inferred from the most-recently flushed SST files or users may manually specify the time window if TWCS is chosen.
 
-GreptimeDB has a preset colection of window sizes that are:
+GreptimeDB has a preset collection of window sizes that are:
 - 1 hour
 - 2 hours
 - 12 hours
@@ -41,7 +41,7 @@ For example, during the first compaction, the time span for all SST files is 4 h
 GreptimeDB considers the window contains most recently inserted timestamps as **active window** and those previous windows as **inactive windows**.
 
 ### Sorted runs
-Sorted runs is a colection of SST files that have sorted and non-overlapping time ranges. 
+Sorted runs is a collection of SST files that have sorted and non-overlapping time ranges. 
 
 For example, a table contains 5 SSTs with following time ranges (all inclusive): `[0, 10]`, `[12, 23]`, `[22, 25]`,`[24, 30]`,`[26,33]` and we can find 2 sorted runs:
 
