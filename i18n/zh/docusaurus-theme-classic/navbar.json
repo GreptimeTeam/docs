@@ -8,11 +8,11 @@
     "description": "The alt text of navbar logo"
   },
   "item.label.Home": {
-    "message": "Home",
+    "message": "主页",
     "description": "Navbar item with label Home"
   },
   "item.label.Blogs": {
-    "message": "Blogs",
+    "message": "博客",
     "description": "Navbar item with label Blogs"
   },
   "item.label.GitHub": {
