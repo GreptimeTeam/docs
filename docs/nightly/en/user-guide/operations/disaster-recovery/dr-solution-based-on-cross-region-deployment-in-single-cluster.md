@@ -29,7 +29,7 @@ Supports High Availability:
 
 If you want a regional-level disaster recovery solution, you can take it a step further by providing read and write services on DC3. So, the next solution is:
 
-### Disaster Recovery Solution: Data across 2 regions
+### Data across 2 regions
 
 In this solution, the data across 2 regions.
 
