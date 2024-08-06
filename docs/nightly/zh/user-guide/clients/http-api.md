@@ -90,12 +90,12 @@ SQL 执行结果为：
 }
 ```
 
-有关时区如何影响数据的插入和查询，请参考 [写入数据](../write-data/sql.md#时区) 和 [查询数据](../query-data/sql.md#时区) 中的 SQL 文档。
+有关时区如何影响数据的插入和查询，请参考 [写入数据](../ingest-data/for-iot/sql.md#时区) 和 [查询数据](../query-data/sql.md#时区) 中的 SQL 文档。
 
 ## 写入数据
 
-* [SQL](../write-data/sql.md)
-* [OpenTSDB](../write-data/opentsdb.md)
+* [SQL](../ingest-data/for-iot/sql.md)
+* [OpenTSDB](../ingest-data/for-iot/opentsdb.md)
 
 ## 读取数据
 

@@ -1,7 +1,7 @@
 
 GreptimeDB 提供了 ingester 库来帮助你写入数据。
 它使用 gRPC 协议，支持自动生成表结构，无需在写入数据前创建表。
-更多信息请参考 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。
+更多信息请参考 [自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
 {template ingester-lib-introduction%%}
 
