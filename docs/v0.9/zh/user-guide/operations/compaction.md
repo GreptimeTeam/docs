@@ -112,18 +112,18 @@ SELECT COMPACT_TABLE(
 );
 ```
 
-`<strategy_name>` 参数可以是 `twcs` 或 `strict_window`。
-对于 `strict_window` 策略， `<strategy_parameters>` 指定用于拆分 SST 文件的窗口大小（以秒为单位）。例如：
+`<strategy_name>` 参数可以是 `twcs` 或 `swcs`（大小写不敏感），分别指定时间窗口压缩策略和严格窗口压缩策略。
+对于 `swcs` 策略， `<strategy_parameters>` 指定用于拆分 SST 文件的窗口大小（以秒为单位）。例如：
 
 ```sql
 SELECT COMPACT_TABLE(
     "monitor", 
-    "strict_window", 
+    "swcs", 
     "3600"
 );
 
 +--------------------------------------------------------------------+
-| compact_table(Utf8("monitor"),Utf8("strict_window"),Utf8("3600")) |
+| compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
 +--------------------------------------------------------------------+
 |                                                                  0 |
 +--------------------------------------------------------------------+

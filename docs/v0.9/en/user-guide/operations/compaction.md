@@ -113,23 +113,24 @@ SELECT COMPACT_TABLE(
 );
 ```
 
-The `<strategy_name>` parameter can be either `twcs` or `strict_window`.
-For the `strict_window` strategy, the `<strategy_parameters>` specify the window size (in seconds) for splitting SST files. For example:
+The `<strategy_name>` parameter can be either `twcs` or `swcs` (case insensitive) which refer to Time Windowed Compaction Strategy and Strict Window Compaction Strategy respectively.
+For the `swcs` strategy, the `<strategy_parameters>` specify the window size (in seconds) for splitting SST files. For example:
 
 ```sql
 SELECT COMPACT_TABLE(
     "monitor", 
-    "strict_window", 
+    "swcs", 
     "3600"
 );
 
 +--------------------------------------------------------------------+
-| compact_table(Utf8("monitor"),Utf8("strict_window"),Utf8("3600")) |
+| compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
 +--------------------------------------------------------------------+
 |                                                                  0 |
 +--------------------------------------------------------------------+
 1 row in set (0.01 sec)
 ```
+
 When executing this statement, GreptimeDB will split each SST file into segments with a time span of 1 hour (3600 seconds) and merge these segments into a single output, ensuring no overlapping files remain.
 
 The following diagram shows the process of strict window compression:
