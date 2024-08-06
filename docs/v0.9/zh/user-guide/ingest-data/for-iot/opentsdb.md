@@ -1,21 +1,14 @@
 # OpenTSDB
 
-GreptimeDB supports ingesting OpenTSDB via HTTP API.
+GreptimeDB支持通过 HTTP API 使用 OpenTSDB 协议。
 
-## Insert
+## 写入新数据
 
 ### HTTP API
 
-GreptimeDB also supports inserting OpenTSDB metrics via HTTP endpoints. We use the request and
-response format described in OpenTSDB's `/api/put`.
+GreptimeDB 还支持通过 HTTP 接口插入 OpenTSDB 数据，接口是 `/opentsdb/api/put`，使用的请求和响应格式与 OpenTSDB 的 `/api/put` 接口相同。
 
-The HTTP endpoint in GreptimeDB for handling metrics is `/opentsdb/api/put`
-
-> Note: remember to prefix the path with GreptimeDB's http API version, `v1`.
-
-Starting GreptimeDB, the HTTP server is listening on port `4000` by default.
-
-Use curl to insert one metric point:
+GreptimeDB 的 HTTP Server 默认监听 `4000` 端口。例如使用 curl 写入一个指标数据：
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
@@ -31,7 +24,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 '
 ```
 
-Or insert multiple metric points:
+插入多个指标数据:
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
@@ -58,5 +51,6 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 '
 ```
 
-<!-- TODO -->
-<!-- ## Delete -->
+:::tip 注意
+记得在路径前加上 GreptimeDB 的 HTTP API 版本 `v1`。
+:::

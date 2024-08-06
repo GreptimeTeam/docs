@@ -49,6 +49,80 @@ http://localhost:4000/v1/sql?db=public
 InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line.md) for details.
 :::
 
+## POST SQL Statements
+
+You can use the GreptimeDB HTTP API to post SQL statements and interact with the database.
+For example, to insert data into the `monitor` table, use the following command:
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql=INSERT INTO monitor VALUES ("127.0.0.1", 1667446797450, 0.1, 0.4), ("127.0.0.2", 1667446798450, 0.2, 0.3), ("127.0.0.1", 1667446798450, 0.5, 0.2)' \
+  http://localhost:4000/v1/sql?db=public
+```
+
+- The API endpoint is `/v1/sql`.
+- The authentication header is optional. For more information, refer to the [Authentication](#authentication) section.
+- The SQL statement should be included in the body of the request.
+- The `db` parameter in the URL is optional and specifies the database to use. The default value is `public`.
+
+You can also use the HTTP API to execute other SQL statements.
+For example, to retrieve data from the `monitor` table:
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public
+```
+
+The response will contain the queried data in JSON format:
+
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "host",
+              "data_type": "String"
+            },
+            {
+              "name": "ts",
+              "data_type": "TimestampMillisecond"
+            },
+            {
+              "name": "cpu",
+              "data_type": "Float64"
+            },
+            {
+              "name": "memory",
+              "data_type": "Float64"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "127.0.0.1",
+            1720728000000,
+            0.5,
+            0.1
+          ]
+        ],
+        "total_rows": 1
+      }
+    }
+  ],
+  "execution_time_ms": 7
+}
+```
+
+For more information about making SQL requests using the HTTP API, please refer to the [API documentation](/reference/sql/http-api.md).
+
 ## Time zone
 
 GreptimeDB supports the `X-Greptime-Timezone` header in HTTP requests.
@@ -91,12 +165,12 @@ After the query, the result will be:
 }
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../ingest-data/for-iot/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
 
 ## Write data
 
-* [SQL](../write-data/sql.md)
-* [OpenTSDB](../write-data/opentsdb.md)
+* [SQL](../ingest-data/for-iot/sql.md)
+* [OpenTSDB](../ingest-data/for-iot/opentsdb.md)
 
 ## Query data
 

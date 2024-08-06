@@ -8,7 +8,7 @@ Data in GreptimeDB is organized as tables, which can be thought of as groups of 
 
 ## Storage
 
-Please refer to [write data](../write-data/prometheus.md) for details.
+Please refer to [write data](../ingest-data/for-observerbility/prometheus.md) for details.
 
 ## Prometheus Query Language
 

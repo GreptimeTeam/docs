@@ -5,12 +5,12 @@ This guide will help you understand the differences between the data models of G
 While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](/user-guide/concepts/data-model.md) of GreptimeDB is something new to explore.
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
-- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- Both solutions are [schemaless](/user-guide/ingest-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:

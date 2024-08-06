@@ -184,35 +184,6 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template update-rows%
-
-#### 更新数据
-
-关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
-下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
-
-```java
-Table cpuMetric = Table.from(myMetricCpuSchema);
-// 插入一行数据
-long ts = 1703832681000L;
-cpuMetric.addRow("host1", ts, 0.23, 0.12);
-Result<WriteOk, Err> putResult = greptimeDB.write(cpuMetric).get();
-
-// 更新行数据
-Table newCpuMetric = Table.from(myMetricCpuSchema);
-// 相同的标签 `host1`
-// 相同的时间索引 `1703832681000`
-// 新的值：cpu_user = `0.80`, cpu_sys = `0.11`
-long ts = 1703832681000L;
-myMetricCpuSchema.addRow("host1", ts, 0.80, 0.11);
-
-// 覆盖现有数据
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(myMetricCpuSchema);
-Result<WriteOk, Err> result = future.get();
-```
-
-%}
-
 
 {template high-level-style-object%
 
@@ -319,45 +290,10 @@ LOG.info("Write result: {}", result);
 
 %}
 
-{template high-level-style-update-data%
-
-#### 更新数据
-
-关于更新机制，请参考 [更新数据](/user-guide/write-data/overview.md#更新数据)。
-下方代码首先保存了一行数据，然后使用相同的标签和时间索引来更新特定的行数据。
-
-```java
-Cpu cpu = new Cpu();
-cpu.setHost("host1");
-cpu.setTs(1703832681000L);
-cpu.setCpuUser(0.23);
-cpu.setCpuSys(0.12);
-
-// 插入一行数据
-Result<WriteOk, Err> putResult = greptimeDB.writePOJOs(cpu).get();
-
-// 更新该行数据
-Cpu newCpu = new Cpu();
-// 相同的标签 `host1`
-newCpu.setHost("host1");
-// 相同的时间索引 `1703832681000`
-newCpu.setTs(1703832681000L);
-// 新的值: cpu_user = `0.80`, cpu_sys = `0.11`
-cpu.setCpuUser(0.80);
-cpu.setCpuSys(0.11);
-
-// 覆盖现有数据
-Result<WriteOk, Err> updateResult = greptimeDB.writePOJOs(newCpu).get();
-```
-
-请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime)获取更多代码示例。
-
-%}
-
 
 {template ingester-lib-debug-logs%
 
-### 调试日志
+## 调试日志
 
 ingester SDK 提供了用于调试的指标和日志。
 请参考 [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) 和 [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) 了解如何启用或禁用日志。
@@ -375,7 +311,7 @@ ingester SDK 提供了用于调试的指标和日志。
 - [API 文档](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
 %}
-
+<!-- 
 {template recommended-query-library%
 
 Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接口（API），它允许 Java 程序访问数据库管理系统。
@@ -391,7 +327,6 @@ Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接�
 如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```xml
-<!-- MySQL 依赖 -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
@@ -496,6 +431,6 @@ try (Connection conn = getConnection()) {
 
 - [JDBC 在线教程](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
-%}
+%} -->
 
 </docs-template>

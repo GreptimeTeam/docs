@@ -1,10 +1,6 @@
-# InfluxDB Line Protocol
+# Influxdb Line Protocol
 
 GreptimeDB supports HTTP InfluxDB Line protocol.
-
-## Data model
-
-To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [data model in differences](../migrate-to-greptimedb/migrate-from-influxdb.md#data-model-in-difference) section in the Migrate from InfluxDB to GreptimeDB document.
 
 ## Write data
 
@@ -33,6 +29,10 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3
  monitor,host=127.0.0.1 cpu=0.5,memory=0.2'
 ```
+
+## Data model
+
+To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [data model in differences](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md#data-model-in-difference) section in the Migrate from InfluxDB to GreptimeDB document.
 
 ## Reference
 

@@ -23,7 +23,7 @@ Please refer to [Table Management](../table-management.md).
 
 ## Write data
 
-Please refer to [SQL](../write-data/sql.md).
+Please refer to [SQL](../ingest-data/for-iot/sql.md).
 
 ## Query data
 
@@ -59,5 +59,5 @@ Change the session time zone to `+1:00`:
 SET TIMEZONE TO '+1:00'
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [write data](../ingest-data/for-iot/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) sections.
 

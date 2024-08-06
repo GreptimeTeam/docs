@@ -1,20 +1,15 @@
 
-GreptimeDB 使用不同的客户端库来写入和查询数据。
-你根据需求可以选择合适的客户端库。
-
-## 写入数据
-
-GreptimeDB 提供了一个 ingester 库来帮助你写入数据。
+GreptimeDB 提供了 ingester 库来帮助你写入数据。
 它使用 gRPC 协议，支持自动生成表结构，无需在写入数据前创建表。
-更多信息请参考 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。
+更多信息请参考 [自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
 {template ingester-lib-introduction%%}
 
-### 安装
+## 安装
 
 {template ingester-lib-installation%%}
 
-### 连接数据库
+## 连接数据库
 
 连接 GreptimeDB 时，通常需要用户名和密码。
 关于如何设置 GreptimeDB 的鉴权方式，请参考[鉴权](/user-guide/clients/authentication.md)。
@@ -22,16 +17,16 @@ GreptimeDB 提供了一个 ingester 库来帮助你写入数据。
 
 {template ingester-lib-connect%%}
 
-### 数据模型
+## 数据模型
 
 表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
 列值的类型可以是 `String`、`Float`、`Int`、`Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
 
-### 低层级 API
+## 低层级 API
 
 GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添加 `row` 来写入数据。
 
-#### 创建行数据
+### 创建行数据
 
 以下代码片段首先构建了一个名为 `cpu_metric` 的表，其中包括 `host`、`cpu_user`、`cpu_sys` 和 `ts` 列。
 随后，它向表中插入了一行数据。
@@ -48,13 +43,13 @@ GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添�
 
 {template create-rows%%}
 
-#### 插入数据
+### 插入数据
 
 下方示例展示了如何向 GreptimeDB 的表中插入行数据。
 
 {template insert-rows%%}
 
-#### 流式插入
+### 流式插入
 
 当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
 
@@ -64,22 +59,22 @@ GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添�
 
 <!-- TODO ### Delete Metrics -->
 
-### 高层级 API
+## 高层级 API
 
 SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 它允许你以更面向对象的方式创建、插入和更新数据，为开发者提供了更友好的体验。
 然而，高层级 API 不如低层级 API 高效。
 这是因为 ORM 风格的对象在转换对象时可能会消耗更多的资源和时间。
 
-#### 创建行数据
+### 创建行数据
 
 {template high-level-style-object%%}
 
-#### 插入数据
+### 插入数据
 
 {template high-level-style-insert-data%%}
 
-#### 流式插入
+### 流式插入
 
 当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
 
@@ -87,17 +82,17 @@ SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 
 {template high-level-style-update-data%%}
 
-### 更多示例
+## 更多示例
 
 {template more-ingestion-examples%%}
 
 {template ingester-lib-debug-logs%%}
 
-### Ingester 库参考
+## Ingester 库参考
 
 {template ingester-lib-reference%%}
 
-## 查询数据
+<!-- ## 查询数据
 
 GreptimeDB 使用 SQL 作为主要查询语言，兼容 MySQL 和 PostgreSQL。
 因此，我们推荐使用成熟的 SQL 驱动来查询数据。
@@ -127,4 +122,4 @@ GreptimeDB 使用 SQL 作为主要查询语言，兼容 MySQL 和 PostgreSQL。
 
 有关如何使用查询库的更多信息，请参考相应库的文档：
 
-{template query-lib-doc-link%%}
+{template query-lib-doc-link%%} -->

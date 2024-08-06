@@ -2,10 +2,6 @@
 
 GreptimeDB 支持 HTTP InfluxDB Line 协议。
 
-## 数据模型
-
-要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从 Influxdb 迁移到 GreptimeDB 文档中的[数据模型差异](../migrate-to-greptimedb/migrate-from-influxdb.md#数据模型的区别)。
-
 ## 写入新数据
 
 你可以通过 `/influxdb/write` API 写入数据。
@@ -33,6 +29,10 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3
  monitor,host=127.0.0.1 cpu=0.5,memory=0.2'
 ```
+
+## 数据模型
+
+要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从 Influxdb 迁移到 GreptimeDB 文档中的[数据模型差异](../migrate-to-greptimedb/migrate-from-influxdb.md#数据模型的区别)。
 
 ## 参考
 

@@ -150,7 +150,7 @@ type CpuMetric struct {
 }
 
 func (CpuMetric) TableName() string {
-	return "cpu_metric"
+    return "cpu_metric"
 }
 
 cpuMetrics := []CpuMetric{
@@ -163,26 +163,6 @@ cpuMetrics := []CpuMetric{
 }
 ```
 
-<!-- SDK TODO -->
-<!-- ```go
-type MemMetric struct {
-    Host        string    `greptime:"tag;column:host;type:string"`
-	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
-	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
-}
-
-func (MemoryMetric) TableName() string {
-	return "mem_metric"
-}
-
-memMetrics := []MemMetric{
-    {
-        Host:        "127.0.0.1",
-        Memory:      112,
-        Ts:          time.Now(),
-    }
-}
-``` -->
 %}
 
 {template high-level-style-insert-data%
@@ -258,13 +238,13 @@ import (
 
 ```go
 type Mysql struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Database string
+    Host     string
+    Port     string
+    User     string
+    Password string
+    Database string
 
-	DB *gorm.DB
+    DB *gorm.DB
 }
 
 m := &Mysql{
@@ -314,7 +294,7 @@ type CpuMetric struct {
 
 ```go
 func (CpuMetric) TableName() string {
-	return "cpu_metric"
+    return "cpu_metric"
 }
 ```
 
