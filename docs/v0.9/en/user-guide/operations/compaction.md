@@ -127,8 +127,8 @@ When executing this statement, GreptimeDB will split each SST file into segments
 
 The following diagram shows the process of strict window compression:
 
-In Figure A, there are 3 overlapping SST files: `[0, 3]` (which includes timestamps 0, 1, 2, and 3), `[3,8]`, and `[8,10]`.
-The strict window compaction strategy will assign the file `[3,8]` that covers windows 0, 4, and 8 to three separate windows respectively. This allows it to merge with `[0,3]` and `[8,10]` separately.
-Figure B shows the final compaction result with three files: `[0,3]`, `[4,7]`, and `[8,10]`. These files do not overlap with each other.
+In Figure A, there are 3 overlapping SST files: `[0, 3]` (which includes timestamps 0, 1, 2, and 3), `[3, 8]`, and `[8, 10]`.
+The strict window compaction strategy will assign the file `[3, 8]` that covers windows 0, 4, and 8 to three separate windows respectively. This allows it to merge with `[0, 3]` and `[8, 10]` separately.
+Figure B shows the final compaction result with three files: `[0, 3]`, `[4, 7]`, and `[8, 10]`. These files do not overlap with each other.
 
 ![compaction-strict-window.jpg](/compaction-strict-window.jpg)
