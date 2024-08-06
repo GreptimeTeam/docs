@@ -13,7 +13,7 @@ Let us start with those core concepts of compaction in GreptimeDB.
 
 SSTs are sorted files generated when memtables are flushed to persistent storage, such as disks and object stores.
 
-In GreptimeDB, data rows in SST files are organized by primary keys and timestamps, as illustrated below. Each SST file covers a specific time range. When a query specifies a time range, GreptimeDB retrieves only the relevant SST files that may contain data within that range, rather than loading all persisted files.
+In GreptimeDB, data rows in SST files are organized by [tags](/user-guide/concepts/data-model.md) and timestamps, as illustrated below. Each SST file covers a specific time range. When a query specifies a time range, GreptimeDB retrieves only the relevant SST files that may contain data within that range, rather than loading all persisted files.
 
 ![SST layout](/compaction-sst-file-layout.jpg)
 

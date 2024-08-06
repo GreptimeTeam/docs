@@ -12,7 +12,7 @@
 
 当内存表刷新到持久存储（如磁盘和对象存储）时，会生成排序的 SST 文件。
 
-在 GreptimeDB 中，SST 文件中的数据行按主键和时间戳组织，如下所示。每个 SST 文件覆盖特定的时间范围。当查询指定一个时间范围时，GreptimeDB 只检索可能包含该范围内数据的相关 SST 文件，而不是加载所有已持久化的文件。
+在 GreptimeDB 中，SST 文件中的数据行按[tag 列](/user-guide/concepts/data-model.md)和时间戳组织，如下所示。每个 SST 文件覆盖特定的时间范围。当查询指定一个时间范围时，GreptimeDB 只检索可能包含该范围内数据的相关 SST 文件，而不是加载所有已持久化的文件。
 
 ![SST layout](/compaction-sst-file-layout.jpg)
 
