@@ -11,6 +11,7 @@ Logs: 日志
 Python-Scripts: Python 脚本
 Operations: 运维操作
 Remote-WAL: Remote WAL
+Compaction: Compaction
 Deploy-on-Kubernetes: 部署到 Kubernetes
 Table-Sharding: 表分片
 Prometheus: Prometheus
