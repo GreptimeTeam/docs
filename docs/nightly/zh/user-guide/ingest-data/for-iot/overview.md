@@ -8,7 +8,7 @@ GreptimeDB 可处理并存储超大规模量级的数据以供分析，
 支持各种数据格式、协议和接口，以便集成不同的物联网设备和系统。
 
 - [SQL](sql.md)
-- [gRPC-SDK](./grpc-sdks/overview.md)
+- [gRPC SDK](./grpc-sdks/overview.md)
 - [InfluxDB Line Protocol](influxdb-line-protocol.md)
 - [EMQX](emqx.md)
 - [OpenTSDB](opentsdb.md)

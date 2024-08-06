@@ -67,7 +67,7 @@ Here are some examples for each type of parameter:
   - `2` (2 seconds)
   - `2s` (also 2 seconds)
 
-The result format is the same as `/sql` interface described in [query data](sql.md#http-api).
+The result format is the same as `/sql` interface described in [Query Data](sql.md#http-api).
 
 ```json
 {

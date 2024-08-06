@@ -2,4 +2,4 @@
 
 ## Write data
 
-Please refer to [write data](../ingest-data/for-iot/opentsdb.md).
+Please refer to [Ingest Data](../ingest-data/for-iot/opentsdb.md).

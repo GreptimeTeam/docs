@@ -20,7 +20,7 @@ GreptimeDB supports various data ingestion methods for specific scenarios, ensur
 ### IoT Scenarios
 
 - [SQL INSERT](./for-iot/sql.md): A straightforward method for inserting data.
-- [gRPC-SDK](./for-iot/grpc-sdks/overview.md): Offers efficient, high-performance data ingestion, particularly suited for real-time data applications and complex IoT infrastructures.
+- [gRPC SDK](./for-iot/grpc-sdks/overview.md): Offers efficient, high-performance data ingestion, particularly suited for real-time data applications and complex IoT infrastructures.
 - [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md): A widely-used protocol for time-series data, facilitating migration from InfluxDB to GreptimeDB.
 - [EMQX](./for-iot/emqx.md): An MQTT broker supporting massive device connections, can be used to ingest data to GreptimeDB.
 - [OpenTSDB](./for-iot/opentsdb.md): Ingest data to GreptimeDB using the OpenTSDB protocol.

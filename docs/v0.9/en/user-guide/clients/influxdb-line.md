@@ -56,4 +56,4 @@ date: Wed, 22 Feb 2023 02:30:46 GMT
 
 ## Write data
 
-Please refer to [write data](../ingest-data/for-iot/influxdb-line-protocol.md).
+Please refer to [Ingest Data](../ingest-data/for-iot/influxdb-line-protocol.md).

@@ -9,7 +9,7 @@ It also supports various data formats, protocols, and interfaces,
 making it easy to integrate with different IoT devices and systems. 
 
 - [SQL](sql.md)
-- [gRPC-SDK](./grpc-sdks/overview.md)
+- [gRPC SDK](./grpc-sdks/overview.md)
 - [InfluxDB Line Protocol](influxdb-line-protocol.md)
 - [EMQX](emqx.md)
 - [OpenTSDB](opentsdb.md)

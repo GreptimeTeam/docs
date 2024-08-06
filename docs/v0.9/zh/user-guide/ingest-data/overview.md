@@ -20,7 +20,7 @@ GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳
 ### 物联网场景
 
 - [SQL INSERT](./for-iot/sql.md)：简单直接的数据插入方法。
-- [gRPC-SDK](./for-iot/grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
+- [gRPC SDK](./for-iot/grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
 - [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。
 - [EMQX](./for-iot/emqx.md)：支持大规模设备连接的 MQTT 代理，可用于将数据写入到 GreptimeDB。
 - [OpenTSDB](./for-iot/opentsdb.md)：使用 OpenTSDB 协议将数据写入到 GreptimeDB。
