@@ -17,6 +17,7 @@
 * [DELETE](./delete.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
+* [TRUNCATE](./truncate.md)
 * [CREATE](./create.md)
 * [DESCRIBE TABLE](./describe_table.md)
 * [WITH](./with.md)
