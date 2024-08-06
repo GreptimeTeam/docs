@@ -6,7 +6,7 @@ GreptimeDB is well-suited for cross-region disaster recovery. You may have varyi
 GreptimeDB resource management involves the concept of Availability Zones (AZs). An AZ is a logical unit of disaster recovery.
 It can be a Data Center (DC), a compartment of a DC. This depends on your specific DC conditions and deployment design.
 
-A GreptimeDB region is a city. When two DC are in the same region and one DC becomes unavailable, the other DC can take over the services of the unavailable DC. This is a localization strategy.
+In the cross region disaster recovery solutions, a GreptimeDB region is a city. When two DC are in the same region and one DC becomes unavailable, the other DC can take over the services of the unavailable DC. This is a localization strategy.
 
 ### Across 2 regions, data in the same region
 
