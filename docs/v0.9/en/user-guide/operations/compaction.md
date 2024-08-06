@@ -74,11 +74,11 @@ TWCS provides 4 parameters:
 
 You can set different thresholds for active and inactive windows. This is important because out-of-order writes typically occur in the active window. By allowing more overlapping files in the active window, TWCS reduces write amplification during ingestion and merges all these files when the active window becomes inactive.
 
-Following diagrams show how files in an active window get compacted. 
-In A, there're two SST files `[0,3]` and `[5,6,9]` but there's only one sorted run since those two files have disjoint time ranges. 
-In B, a new SST file `[1,4]` is flushed therefore forms two sorted runs. Then `[0,3]` and `[1,4]` are merged to `[0,1,3,4]`.
-In C, a new SST file `[9,10]` is flushed, and it will be merged with `[5,6,10]` to create `[5,6,9,10]`.
-D is the final state, in two compacted files form one sorted run.
+Following diagrams show how files in an active window get compacted when `max_sorted_runs = 1`:
+- In A, there're two SST files `[0, 3]` and `[5, 6, 9]` but there's only one sorted run since those two files have disjoint time ranges. 
+- In B, a new SST file `[1, 4]` is flushed therefore forms two sorted runs that exceeds the threshold. Then `[0, 3]` and `[1, 4]` are merged to `[0, 1, 3, 4]`.
+- In C, a new SST file `[9, 10]` is flushed, and it will be merged with `[5, 6, 10]` to create `[5, 6, 9, 10]`.
+- D is the final state, in two compacted files form one sorted run.
 
 ![compaction-twcs-active.jpg](/compaction-twcs-active.jpg)
 
