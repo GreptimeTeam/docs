@@ -2,7 +2,7 @@
 
 For databases based on the LSM Tree, compaction is extremely critical. It merges overlapping fragmented SST files into a single ordered file, discards deleted data while significantly improves query performance.
 
-Until v0.9.1, GreptimeDB provides compaction strategies to control how SST files are compacted: Time Windowed Compaction Strategy (TWCS) and strict window compaction strategy.
+Until v0.9.1, GreptimeDB provides compaction strategies to control how SST files are compacted: Time Windowed Compaction Strategy (TWCS) and Strict Window Compaction Strategy (SWCS).
 
 
 ## Concepts
@@ -55,9 +55,9 @@ The number of sorted runs indicates the orderliness of SST files. More sorted ru
 Databases based on LSM trees may also have levels, keys are merged level by level. GreptimeDB only has 2 levels which are 0 (uncompacted) and 1 (compacted).
 
 ## Compaction strategies
-GreptimeDB provides two compaction strategies as mentioned above, but only Time Windowed Compaction Strategy (TWCS) can be chosen when creating tables. Strict window is only available when executing manual compactions.
+GreptimeDB provides two compaction strategies as mentioned above, but only Time Windowed Compaction Strategy (TWCS) can be chosen when creating tables. Strict Window Compaction Strategy (SWCS) is only available when executing manual compactions.
 
-## Time Windowed Compaction Strategy
+## Time Windowed Compaction Strategy (TWCS)
 
 TWCS primarily aims to reduce read/write amplification during compaction.
 
@@ -101,9 +101,9 @@ WITH (
     );
 ```
 
-## Strict window compaction strategy and manual compaction
+## Strict Window Compaction Strategy (SWCS) and manual compaction
 
-Unlike TWCS, which assigns one window per SST file based on their maximum timestamps, the strict window strategy assigns SST files to **all** overlapping windows. Consequently, a single SST file may be included in multiple compaction outputs, as its name suggests. Due to its high read amplification during compaction, the strict window is not the default compaction strategy. However, it is useful when you need to manually trigger compaction to reorganize the layout of SST files—especially if an individual SST file spans a large time range that significantly slows down queries. GreptimeDB offers a simple SQL function for triggering compaction:
+Unlike TWCS, which assigns one window per SST file based on their maximum timestamps, SWCS assigns SST files to **all** overlapping windows. Consequently, a single SST file may be included in multiple compaction outputs, as its name suggests. Due to its high read amplification during compaction, SWCS is not the default compaction strategy. However, it is useful when you need to manually trigger compaction to reorganize the layout of SST files—especially if an individual SST file spans a large time range that significantly slows down queries. GreptimeDB offers a simple SQL function for triggering compaction:
 
 ```sql
 SELECT COMPACT_TABLE(
