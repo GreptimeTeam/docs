@@ -72,22 +72,3 @@ In above example, we got 4 rows of output. Except the last row gives an overall 
 ### Stage and node
 
 This example is based on a distributed partition table with two regions. We mark different "stage" in a distributed execution plan with stage number, start from 0. And in each stage, we may have multiple "node" to execute the plan in parallel. The node number also starts from 0 in each stage. These two words are only used here currently.
-
-### Metrics
-
-Each plan node has its own metrics after the word `metrics`. The metrics may or may not include `output_rows`, `elapsed_compute`, `repart_time`, `fetch_time`, `send_time`, `mem_used` etc. They can be classified into several categories:
-- Timer
-  - `elapsed_compute`, `repart_time`, `fetch_time`, `send_time` etc.
-  - Shows the elapsed time in nanosecond. Different timer corresponding different time span.
-  - Notice that for plans that have multiple input partitions, timers used to measure input stream are usually summed across all partitions.
-- Counter
-  - `output_rows`, `mem_used` etc.
-  - Shows the number of rows output by the node, or the memory used in Bytes by the node.
-
-Here are the rough explanation of some common metrics:
-- `elapsed_compute`: elapsed time for computation
-- `repart_time`: elapsed time for repartition
-- `fetch_time`: elapsed time for fetching from input
-- `send_time`: elapsed time for sending to output
-- `output_rows`: row number of output
-- `mem_used`: memory usage.
