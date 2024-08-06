@@ -122,6 +122,13 @@ SELECT COMPACT_TABLE(
     "strict_window", 
     "3600"
 );
+
++--------------------------------------------------------------------+
+| compact_table(Utf8("monitor2"),Utf8("strict_window"),Utf8("3600")) |
++--------------------------------------------------------------------+
+|                                                                  0 |
++--------------------------------------------------------------------+
+1 row in set (0.01 sec)
 ```
 When executing this statement, GreptimeDB will split each SST file into segments with a time span of 1 hour (3600 seconds) and merge these segments into a single output, ensuring no overlapping files remain.
 
