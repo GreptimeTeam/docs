@@ -16,6 +16,7 @@ GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳
 - [Prometheus Remote Write](./for-observerbility/prometheus.md)：将 GreptimeDB 作为 Prometheus 的远程存储，适用于实时监控和警报。
 - [Vector](./for-observerbility/vector.md)：将 GreptimeDB 用作 Vector 的接收端，适用于复杂的数据流水线和多样化的数据源。
 - [OpenTelemetry](./for-observerbility/opentelemetry.md)：将 telemetry 数据收集并导出到 GreptimeDB，以获取详细的可观测性洞察。
+- [Telegraf](./for-observerbility/telegraf.md)：使用 Telegraf 从各种数据源写入数据到 GreptimeDB，适用于监控和性能分析。
 
 ### 物联网场景
 

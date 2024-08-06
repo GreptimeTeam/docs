@@ -25,29 +25,9 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 {template write-data-telegraf%
 
-
-::: code-group
-
-```toml [InfluxDB line protocol v2]
-[[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  token = "<greptime_user>:<greptimedb_password>"
-  bucket = "<db-name>"
-  ## Leave empty
-  organization = ""
-```
-
-```toml [InfluxDB line protocol v1]
-[[outputs.influxdb]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
-  database = "<db-name>"
-  username = "<greptime_user>"
-  password = "<greptimedb_password>"
-```
-:::
+有关详细的配置说明，请参考[通过 Telegraf 写入数据](/user-guide/ingest-data/for-observerbility/telegraf.md)文档。
 
 %}
-
 
 {template write-data-client-libs%
 ::: code-group

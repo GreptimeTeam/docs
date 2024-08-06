@@ -1,5 +1,6 @@
 # SQL
 
+你可以使用 [MySQL](/user-guide/clients/mysql.md) 或 [PostgreSQL](/user-guide/clients/postgresql.md) 客户端执行 SQL 语句。
 我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](./../table-management.md#创建表)。
 
 ## 创建表

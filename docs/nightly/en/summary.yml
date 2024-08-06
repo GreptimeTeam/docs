@@ -23,6 +23,7 @@
       - prometheus
       - vector
       - opentelemetry
+      - telegraf
     - For-IoT:
       - overview
       - sql

@@ -6,3 +6,5 @@ GreptimeDB 与领先的可观测性工具无缝集成，为你提供系统健康
 - [Prometheus](prometheus.md)
 - [Vector](vector.md)
 - [OpenTelemetry](opentelemetry.md)
+- [Telegraf](telegraf.md)
+

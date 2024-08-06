@@ -16,6 +16,7 @@ GreptimeDB supports various data ingestion methods for specific scenarios, ensur
 - [Prometheus Remote Write](./for-observerbility/prometheus.md): Integrate GreptimeDB as remote storage for Prometheus, suitable for real-time monitoring and alerting.
 - [Vector](./for-observerbility/vector.md): Use GreptimeDB as a sink for Vector, ideal for complex data pipelines and diverse data sources.
 - [OpenTelemetry](./for-observerbility/opentelemetry.md): Collect and export telemetry data to GreptimeDB for detailed observability insights.
+- [Telegraf](./for-observerbility/telegraf.md): Ingest data from various sources to GreptimeDB using Telegraf, suitable for monitoring and performance analysis.
 
 ### IoT Scenarios
 

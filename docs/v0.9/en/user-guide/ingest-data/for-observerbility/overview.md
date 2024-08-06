@@ -7,3 +7,4 @@ GreptimeDB integrates seamlessly with leading observability tools to provide a c
 - [Prometheus](prometheus.md)
 - [Vector](vector.md)
 - [OpenTelemetry](opentelemetry.md)
+- [Telegraf](telegraf.md)

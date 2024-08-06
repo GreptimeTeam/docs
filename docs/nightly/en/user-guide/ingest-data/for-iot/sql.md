@@ -1,5 +1,6 @@
 # SQL
 
+You can execute SQL statements using [MySQL](/user-guide/clients/mysql.md) or [PostgreSQL](/user-guide/clients/postgresql.md) clients.
 We will use the `monitor` table as an example to show how to write data.
 
 ## Create a table
