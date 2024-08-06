@@ -24,7 +24,7 @@ remote_read:
 #    password: greptime_pwd
 ```
 
-- The host and port in the URL represent the GreptimeDB server. In this example, the server is running on `localhost:4000`. You can replace it with your own server address. For the HTTP protocol configuration, please refer to the [protocol options](/user-guide/operations/configuration.md#protocol-options).
+- The host and port in the URL represent the GreptimeDB server. In this example, the server is running on `localhost:4000`. You can replace it with your own server address. For the HTTP protocol configuration in GreptimeDB, please refer to the [protocol options](/user-guide/operations/configuration.md#protocol-options).
 - The `db` parameter in the URL represents the database to which we want to write data. It is optional. By default, the database is set to `public`.
 - `basic_auth` is the authentication configuration. Fill in the username and password if GreptimeDB authentication is enabled. Please refer to the [authentication document](/user-guide/clients/authentication.md).
 
@@ -68,8 +68,8 @@ will be transformed as a row in the table `prometheus_remote_storage_samples_tot
 
 ## Improve efficiency by using metric engine
 
-The Prometheus remote writing always creates a large number of small tables,
-referred to as logical tables in GreptimeDB.
+The Prometheus remote writing always creates a large number of small tables.
+These tables are classified as logical tables in GreptimeDB.
 However, having a large number of small tables can be inefficient for both data storage and query performance.
 To address this, GreptimeDB introduces the metric engine feature,
 which stores the data represented by the logical tables in a single physical table.
@@ -77,7 +77,7 @@ This approach reduces storage overhead and improves columnar compression efficie
 
 The metric engine is enabled by default in GreptimeDB,
 and you don't need to specify any additional configuration.
-By default, the physical table used is called `greptime_physical_table`.
+By default, the physical table used is `greptime_physical_table`.
 If you want to use a specific physical table, you can specify the `physical_table` parameter in the remote write URL.
 If the specified physical table doesn't exist, it will be automatically created.
 

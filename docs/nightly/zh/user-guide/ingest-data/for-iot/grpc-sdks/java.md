@@ -7,26 +7,24 @@ template: template.md
 
 {template ingester-lib-introduction%
 
-The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
+GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特点：
 
-- SPI-based extensible network transport layer, which provides the default implementation using the gRPC framework.
-- Non-blocking, purely asynchronous API that is easy to use.
-- Automatic collection of various performance metrics by default. You can then configure and write them to local files.
-- Ability to take in-memory snapshots of critical objects, configure them, and write them to local files. This is helpful for troubleshooting complex issues.
+- 基于 SPI 的可扩展网络传输层，提供了使用 gRPC 框架的默认实现。
+- 非阻塞、纯异步的易于使用的 API。
+- 默认情况下自动收集各种性能指标，然后可以配置并将其写入本地文件。
+- 能够对关键对象进行内存快照，配置并将其写入本地文件。这对于解决复杂问题很有帮助。
 
 %}
 
 {template ingester-lib-installation%
 
-1. Install the Java Development Kit(JDK)
+1. 安装 Java 开发工具包（JDK）
 
-Make sure that your system has JDK 8 or later installed. For more information on how to
-check your version of Java and install the JDK, see the [Oracle Overview of JDK Installation documentation](https://www.oracle.com/java/technologies/javase-downloads.html)
+确保你的系统已安装 JDK 8 或更高版本。有关如何检查 Java 版本并安装 JDK 的更多信息，请参见 [Oracle JDK 安装概述文档](https://www.oracle.com/java/technologies/javase-downloads.html)
 
-2. Add GreptiemDB Java SDK as a Dependency
+2. 将 GreptimeDB Java SDK 添加为依赖项
 
-If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
-dependencies list:
+如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```xml
 <dependency>
@@ -36,76 +34,73 @@ dependencies list:
 </dependency>
 ```
 
-The latest version can be viewed [here](https://central.sonatype.com/search?q=io.greptime&name=ingester-all).
+最新版本可以在 [这里](https://central.sonatype.com/search?q=io.greptime&name=ingester-all) 查看。
 
-After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
+配置依赖项后，请确保它们对项目可用，这可能需要在 IDE 中刷新项目或运行依赖项管理器。
 
 %}
 
 {template ingester-lib-connect%
 
-The following code demonstrates how to connect to GreptimeDB with the simplest configuration.
-For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
-Please pay attention to the accompanying comments for each option, as they provide detailed explanations of their respective roles.
+
+下方的代码展示了以最简单的配置连接到 GreptimeDB 的方法。
+如果想要自定义连接选项，请参考 [API 文档](#ingester-库参考)。
+请注意每个选项的注释，它们提供了对其各自角色的详细解释。
 
 ```java
-// GreptimeDB has a default database named "public" in the default catalog "greptime",
-// we can use it as the test database
+// GreptimeDB 默认 database 为 "public"，默认 catalog 为 "greptime"，
+// 我们可以将其作为测试数据库使用
 String database = "public";
-// By default, GreptimeDB listens on port 4001 using the gRPC protocol.
-// We can provide multiple endpoints that point to the same GreptimeDB cluster.
-// The client will make calls to these endpoints based on a load balancing strategy.
+// 默认情况下，GreptimeDB 使用 gRPC 协议在监听端口 4001。
+// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints，
+// 客户端将根据负载均衡策略调用这些 endpoints。
 String[] endpoints = {"127.0.0.1:4001"};
-// Sets authentication information.
+// 设置鉴权信息
 AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
-        // If the database does not require authentication, we can use AuthInfo.noAuthorization() as the parameter.
+        // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
-        // Enable secure connection if your server is secured by TLS
+        // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
         //.tlsOptions(new TlsOptions())
-        // A good start ^_^
+        // 好的开始 ^_^
         .build();
 
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
-For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
-
 %}
-
 
 {template low-level-object%
 
 ```java
-// Construct the table schema for CPU metrics
+// 为 CPU 指标构建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String) // Identifier for the host
-        .addTimestamp("ts", DataType.TimestampMillisecond) // Timestamp in milliseconds
-        .addField("cpu_user", DataType.Float64) // CPU usage by user processes
-        .addField("cpu_sys", DataType.Float64) // CPU usage by system processes
+        .addTag("host", DataType.String) // 主机的标识符
+        .addTimestamp("ts", DataType.TimestampMillisecond) // 毫秒级的时间戳
+        .addField("cpu_user", DataType.Float64) // 用户进程的 CPU 使用率
+        .addField("cpu_sys", DataType.Float64) // 系统进程的 CPU 使用率
         .build();
 
-// Create the table from the defined schema
+// 根据定义的模式创建表
 Table cpuMetric = Table.from(cpuMetricSchema);
 
-// Example data for a single row
-String host = "127.0.0.1"; // Host identifier
-long ts = System.currentTimeMillis(); // Current timestamp
-double cpuUser = 0.1; // CPU usage by user processes (in percentage)
-double cpuSys = 0.12; // CPU usage by system processes (in percentage)
+// 单行的示例数据
+String host = "127.0.0.1"; // 主机标识符
+long ts = System.currentTimeMillis(); // 当前时间戳
+double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
+double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 
-// Insert the row into the table
-// NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
+// 将一行数据插入表中
+// 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 ```
 
 %}
 
-
 {template create-rows%
 
 ```java
-// Creates schemas
+// 创建表结构
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String)
         .addTimestamp("ts", DataType.TimestampMillisecond)
@@ -122,7 +117,7 @@ TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
 Table cpuMetric = Table.from(cpuMetricSchema);
 Table memMetric = Table.from(memMetricSchema);
 
-// Adds row data items
+// 添加行数据
 for (int i = 0; i < 10; i++) {
     String host = "127.0.0." + i;
     long ts = System.currentTimeMillis();
@@ -142,15 +137,13 @@ for (int i = 0; i < 10; i++) {
 
 %}
 
-
 {template insert-rows%
 
 ```java
-// Saves data
+// 插入数据
 
-// For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
+// 考虑到尽可能提升性能和降低资源占用，SDK 设计为纯异步的。
+// 返回值是一个 future 对象。如果你想立即获取结果，可以调用 `future.get()`。
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
 Result<WriteOk, Err> result = future.get();
@@ -165,26 +158,25 @@ if (result.isOk()) {
 
 %}
 
-
 {template streaming-insert%
 
 
 ```java
 StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
 
-// write data into stream
+// 写入数据到流中
 writer.write(cpuMetric);
 writer.write(memMetric);
 
-// You can perform operations on the stream, such as deleting the first 5 rows.
+// 你可以对流执行操作，例如删除前 5 行
 writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
 ```
 
-Close the stream writing after all data has been written.
-In general, you do not need to close the stream writing when continuously writing data.
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
 
 ```java
-// complete the stream
+// 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
@@ -192,9 +184,10 @@ LOG.info("Write result: {}", result);
 
 %}
 
+
 {template high-level-style-object%
 
-GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
+GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
 
 ```java
 @Metric(name = "cpu_metric")
@@ -228,7 +221,7 @@ public class Memory {
     // ...
 }
 
-// Add rows
+// 添加行
 List<Cpu> cpus = new ArrayList<>();
 for (int i = 0; i < 10; i++) {
     Cpu c = new Cpu();
@@ -254,13 +247,12 @@ for (int i = 0; i < 10; i++) {
 
 {template high-level-style-insert-data%
 
-
-Write data with POJO objects:
+写入 POJO 对象：
 
 ```java
-// Saves data
+// 插入数据
 
-CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writeObjects(cpus, memories);
+CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
 
 Result<WriteOk, Err> result = puts.get();
 
@@ -273,25 +265,24 @@ if (result.isOk()) {
 
 %}
 
-
 {template high-level-style-streaming-insert%
 
 ```java
-StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
+StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
 
-// write data into stream
+// 写入数据到流中
 writer.write(cpus);
 writer.write(memories);
 
-// You can perform operations on the stream, such as deleting the first 5 rows.
+// 你可以对流执行操作，例如删除前 5 行
 writer.write(cpus.subList(0, 5), WriteOp.Delete);
 ```
 
-Close the stream writing after all data has been written.
-In general, you do not need to close the stream writing when continuously writing data.
+在所有数据写入完毕后关闭流式写入。
+一般情况下，连续写入数据时不需要关闭流式写入。
 
 ```java
-// complete the stream
+// 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
@@ -299,41 +290,41 @@ LOG.info("Write result: {}", result);
 
 %}
 
+
 {template ingester-lib-debug-logs%
 
-### Debug logs
+## 调试日志
 
-The ingester SDK provides metrics and logs for debugging.
-Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
+ingester SDK 提供了用于调试的指标和日志。
+请参考 [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) 和 [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) 了解如何启用或禁用日志。
 
 %}
 
 {template more-ingestion-examples%
 
-For fully runnable code snippets and the complete code of the demo, please refer to the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
+请参考[示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime)获取更多完全可运行的代码片段和常用方法的解释。
 
 %}
 
 {template ingester-lib-reference%
 
-- [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+- [API 文档](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
 %}
+<!-- 
+{template recommended-query-library%
 
-<!-- {template recommended-query-library%
+Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接口（API），它允许 Java 程序访问数据库管理系统。
 
-Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
-
-Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API.
-Since GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
-If you want to use other protocols, just replace the MySQL driver with the corresponding driver.
+许多数据库，如 MySQL 或 PostgreSQL，都已经基于 JDBC API 实现了自己的驱动程序。
+由于 GreptimeDB [支持多种协议](/user-guide/clients/overview.md)，这里我们使用 MySQL 协议作为示例来演示如何使用 JDBC。
+如果你希望使用其他协议，只需要将 MySQL 驱动程序替换为相应的驱动程序。
 
 %}
 
 {template query-library-installation%
 
-If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
-dependencies list:
+如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 pom.xml 的依赖项列表中：
 
 ```xml
 <dependency>
@@ -343,11 +334,11 @@ dependencies list:
 </dependency>
 ```
 
-%} -->
+%}
 
-<!-- {template query-library-connect%
+{template query-library-connect%
 
-Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
+这里我们使用 MySQL 作为示例来演示如何连接到 GreptimeDB。
 
 ```java
 
@@ -369,7 +360,7 @@ public static Connection getConnection() throws IOException, ClassNotFoundExcept
 
 ```
 
-You need a properties file to store the DB connection information. Place it in the Resources directory and name it `db-connection.properties`. The file content is as follows:
+你需要一个 properties 文件来存储数据库连接信息，将其放在 Resources 目录中并命名为 `db-connection.properties`。文件内容如下：
 
 ```txt
 # DataSource
@@ -379,22 +370,21 @@ db.username=
 db.password=
 ```
 
-Or you can just get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
+或者你可以从[这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties)获取文件。
 
-#### Time zone
+#### 时区
 
-Set the JDBC time zone by setting URL parameters:
+通过设置 URL 参数来设置 JDBC 时区:
 
 ```txt
 jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
 ```
 
-* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
-* `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
+* `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 配置连接时区。
+* `forceConnectionTimeZoneToSession=true` 使 session `time_zone` 变量被设置为 `connectionTimeZone` 指定的值。
+%}
 
-%} -->
-
-<!-- {template query-library-raw-sql%
+{template query-library-raw-sql%
 
 ```java
 try (Connection conn = getConnection()) {
@@ -433,13 +423,13 @@ try (Connection conn = getConnection()) {
 
 ```
 
-For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
+请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java)获取更多可执行代码。
 
-%} -->
+%}
 
-<!-- {template query-lib-doc-link%
+{template query-lib-doc-link%
 
-- [JDBC Online Tutorials](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
+- [JDBC 在线教程](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
 
 %} -->
 

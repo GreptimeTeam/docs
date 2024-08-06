@@ -1,21 +1,21 @@
 # SQL
 
-We will use the `monitor` table as an example to show how to write data.
+我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](./../table-management.md#创建表)。
 
-## Create a table
+## 创建表
 
-Before inserting data, you need to create a table. For example, create a table named `monitor`:
+在插入数据之前，您需要创建一个表。例如，创建一个名为 `monitor` 的表：
 
 ```sql
 CREATE TABLE monitor (
-  host STRING,
-  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
-  cpu FLOAT64 DEFAULT 0,
-  memory FLOAT64,
-  PRIMARY KEY(host));
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64 DEFAULT 0,
+    memory FLOAT64,
+    PRIMARY KEY(host));
 ```
 
-The above statement will create a table with the following schema:
+上述语句将创建一个具有以下 schema 的表：
 
 ```sql
 +--------+----------------------+------+------+---------------------+---------------+
@@ -29,12 +29,11 @@ The above statement will create a table with the following schema:
 4 rows in set (0.01 sec)
 ```
 
-For more information about the `CREATE TABLE` statement,
-please refer to [table management](/user-guide/table-management.md#create-a-table).
+有关 `CREATE TABLE` 语句的更多信息，请参阅[表管理](/user-guide/table-management.md#create-a-table)。
 
-## Insert data
+## 插入数据
 
-Let's insert some testing data to the `monitor` table. You can use the `INSERT INTO` SQL statements:
+让我们向 `monitor` 表中插入一些测试数据。你可以使用 `INSERT INTO` 语句：
 
 ```sql
 INSERT INTO monitor
@@ -51,7 +50,7 @@ VALUES
 Query OK, 6 rows affected (0.01 sec)
 ```
 
-You can also insert data by specifying the column names:
+你还可以插入数据时指定列名：
 
 ```sql
 INSERT INTO monitor (host, ts, cpu, memory)
@@ -64,22 +63,20 @@ VALUES
     ("127.0.0.2", 1702433151000, 0.2, 0.4);
 ```
 
-Through the above statement, we have inserted six rows into the `monitor` table.
+通过上面的语句，我们成功的向 `monitor` 表中插入了六条数据。请参考 [`INSERT`](/reference/sql/insert.md) 获得更多写入数据的相关信息。
 
-For more information about the `INSERT` statement, please refer to [`INSERT`](/reference/sql/insert.md).
+## 时区
 
-## Time zone
+SQL 客户端中指定的时区将影响没有时区信息的字符串格式的时间戳。
+该时间戳值将会自动添加客户端的时区信息。
 
-The time zone specified in the SQL client will affect the timestamp with a string format that does not have time zone information. 
-The timestamp value will automatically have the client's time zone information added.
-
-For example, the following SQL set the time zone to `+8:00`:
+例如，下面的 SQL 将时区设置为 `+8:00`：
 
 ```sql
 SET time_zone = '+8:00';
 ```
 
-Then insert values into the `monitor` table:
+然后向 `monitor` 表中插入值：
 
 ```sql
 INSERT INTO monitor (host, ts, cpu, memory)
@@ -88,10 +85,10 @@ VALUES
     ("127.0.0.2", "2024-01-01 00:00:00+08:00", 0.5, 0.1);
 ```
 
-The first timestamp value `2024-01-01 00:00:00` does not have time zone information, so it will automatically have the client's time zone information added.
-After inserting, it will be equivalent to the second value `2024-01-01 00:00:00+08:00`.
+第一个时间戳值 `2024-01-01 00:00:00` 没有时区信息，因此它将自动添加客户端的时区信息。
+在插入数据后，它将等同于第二个值 `2024-01-01 00:00:00+08:00`。
 
-The result in the `+8:00` time zone client is as follows:
+`+8:00` 时区下的结果如下：
 
 ```sql
 +-----------+---------------------+------+--------+
@@ -102,7 +99,7 @@ The result in the `+8:00` time zone client is as follows:
 +-----------+---------------------+------+--------+
 ```
 
-The result in the `UTC` time zone client is as follows:
+`UTC` 时区下的结果如下：
 
 ```sql
 +-----------+---------------------+------+--------+

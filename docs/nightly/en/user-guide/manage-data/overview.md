@@ -4,8 +4,8 @@
 
 ### Update data with same tags and time index
 
-Updates can be effectively performed by insertions.
-By default, if the tags and time index have identical column values, the old data will be replaced with the new one.
+Updates can be efficiently performed by inserting new data.
+By default, if rows of data have the same tags and time index, the old data will be replaced with the new data.
 For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
 
 :::warning Note
@@ -88,8 +88,6 @@ The default value of the `memory` column in the `monitor` table is `NULL`. There
 ```sql
 SELECT * FROM monitor;
 ```
-
-The output will be:
 
 ```sql
 +-----------+---------------------+------+--------+

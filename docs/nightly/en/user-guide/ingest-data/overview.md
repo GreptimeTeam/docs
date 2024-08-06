@@ -9,7 +9,7 @@ This feature is supported for all protocols and integrations, except [SQL](./for
 
 ## Recommended Data Ingestion Methods
 
-GreptimeDB supports various data ingestion methods tailored to specific scenarios, ensuring optimal performance and integration flexibility.
+GreptimeDB supports various data ingestion methods for specific scenarios, ensuring optimal performance and integration flexibility.
 
 ### Observability Scenarios
 
