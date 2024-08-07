@@ -2,7 +2,9 @@
 
 GreptimeDB supports HTTP InfluxDB Line protocol.
 
-## Write data
+## Ingest data
+
+### Protocols
 
 You can write data to GreptimeDB using the `/influxdb/write` API.
 Here's an example of how to use this API:
@@ -29,6 +31,32 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3
  monitor,host=127.0.0.1 cpu=0.5,memory=0.2'
 ```
+
+### Telegraf
+
+GreptimeDB's support for the [InfluxDB line protocol](../for-iot/influxdb-line-protocol.md) ensures its compatibility with Telegraf.
+To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
+
+::: code-group
+
+```toml [InfluxDB line protocol v2]
+[[outputs.influxdb_v2]]
+  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  token = "<greptime_user>:<greptimedb_password>"
+  bucket = "<db-name>"
+  ## Leave empty
+  organization = ""
+```
+
+```toml [InfluxDB line protocol v1]
+[[outputs.influxdb]]
+  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  database = "<db-name>"
+  username = "<greptime_user>"
+  password = "<greptimedb_password>"
+```
+
+:::
 
 ## Data model
 
