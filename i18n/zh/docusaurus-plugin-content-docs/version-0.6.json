@@ -144,7 +144,7 @@
     "description": "The label for link Release Notes in sidebar docs, linking to /release-notes"
   },
   "version.label": {
-    "message": "0.8",
-    "description": "The label for version 0.8"
+    "message": "0.6",
+    "description": "The label for version 0.6"
   }
 }
