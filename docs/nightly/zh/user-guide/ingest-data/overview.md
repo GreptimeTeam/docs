@@ -16,13 +16,13 @@ GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳
 - [Prometheus Remote Write](./for-observerbility/prometheus.md)：将 GreptimeDB 作为 Prometheus 的远程存储，适用于实时监控和警报。
 - [Vector](./for-observerbility/vector.md)：将 GreptimeDB 用作 Vector 的接收端，适用于复杂的数据流水线和多样化的数据源。
 - [OpenTelemetry](./for-observerbility/opentelemetry.md)：将 telemetry 数据收集并导出到 GreptimeDB，以获取详细的可观测性洞察。
-- [Telegraf](./for-observerbility/telegraf.md)：使用 Telegraf 从各种数据源写入数据到 GreptimeDB，适用于监控和性能分析。
+- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
 
 ### 物联网场景
 
 - [SQL INSERT](./for-iot/sql.md)：简单直接的数据插入方法。
 - [gRPC SDK](./for-iot/grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
-- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。
+- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
 - [EMQX](./for-iot/emqx.md)：支持大规模设备连接的 MQTT 代理，可直接将数据写入到 GreptimeDB。
 - [OpenTSDB](./for-iot/opentsdb.md)：使用 OpenTSDB 协议将数据写入到 GreptimeDB。
 
