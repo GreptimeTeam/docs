@@ -17,7 +17,7 @@ GreptimeDB 将时序表设计为数据存储的基本单位。
 * 行：表中水平方向的值的集合。
 * 列：表中垂直方向的值的集合，GreptimeDB 将列分为时间索引 Time Index、标签 Tag 和字段 Field。
 
-你使用 SQL `CREATE TABLE` 创建表，或者使用[自动生成表结构](/user-guide/write-data/overview#自动生成表结构)功能通过输入的数据结构自动创建表。在分布式部署中，一个表可以被分割成多个分区，其位于不同的数据节点上。
+你使用 SQL `CREATE TABLE` 创建表，或者使用[自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)功能通过输入的数据结构自动创建表。在分布式部署中，一个表可以被分割成多个分区，其位于不同的数据节点上。
 
 关于时序表的数据模型的更多信息，请参考[数据模型](./data-model.md)。
 
@@ -34,7 +34,7 @@ GreptimeDB 中的数据是强类型的，当创建表时，Auto-schema 功能提
 ## 索引
 
 索引是一种性能调优方法，可以加快数据的更快地检索速度。
-GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-indexing#倒排索引)来加速查询。
+GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)来加速查询。
 
 ## View
 
@@ -43,4 +43,4 @@ GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-ind
 
 ## Flow
 
-GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/continuous-aggregation/overview)过程，该过程根据传入数据持续更新和聚合数据。
+GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/continuous-aggregation/overview.md)过程，该过程根据传入数据持续更新和聚合数据。

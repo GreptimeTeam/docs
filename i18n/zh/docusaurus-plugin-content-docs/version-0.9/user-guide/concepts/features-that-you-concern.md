@@ -4,7 +4,7 @@
 
 是的，从 v0.9.0 版本开始，GreptimeDB 将所有时间序列视为具有时间戳的上下文事件，从而统一了指标、日志和事件的处理。它支持使用 SQL、PromQL 进行指标和事件分析，并支持通过持续聚合进行流式处理。
 
-请阅读[日志处理使用指南](/user-guide/logs/overview)。
+请阅读[日志处理使用指南](/user-guide/logs/overview.md)。
 
 ## GreptimeDB 支持更新数据吗？
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE DATABASE test WITH (ttl='7d');
 ```
 
-你可以在[这里](/reference/sql/create)参考数据库和表创建语句的 TTL 选项。
+你可以在[这里](/reference/sql/create.md)参考数据库和表创建语句的 TTL 选项。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -53,7 +53,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持持续聚合或降采样吗？
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview)获取更多信息。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview.md)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 
@@ -64,4 +64,4 @@ GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://grept
 
 ## GreptimeDB 有灾难恢复解决方案吗？
 
-有的，请参阅[灾难恢复文档](/user-guide/operations/disaster-recovery/overview)。
+有的，请参阅[灾难恢复文档](/user-guide/operations/disaster-recovery/overview.md)。

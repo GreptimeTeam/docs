@@ -187,7 +187,7 @@ GROUP BY host;
 
 ### Range query
 
-你可以使用 [range query](/reference/sql/range#range-query)来实时监控延迟。例如，按 5 秒窗口计算请求的 p95 延迟：
+你可以使用 [range query](/reference/sql/range.md#range-query)来实时监控延迟。例如，按 5 秒窗口计算请求的 p95 延迟：
 
 ```sql
 SELECT 

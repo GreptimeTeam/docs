@@ -21,7 +21,7 @@ GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处
 
 通过[时序表](./data-model)的模型设计、SQL 的原生支持，以及存算分离架构带来的混合负载，GreptimeDB 可以同时处理指标、日志和事件，增强不同时间序列数据之间的关联分析，并简化用户的架构、部署和 API。
 
-阅读[SQL 示例](/user-guide/overview#sql-查询示例)以获取详细信息。
+阅读[SQL 示例](/user-guide/overview.md#sql-查询示例)以获取详细信息。
 
 
 ## 云原生

@@ -37,10 +37,10 @@ ORDER BY datanode_id ASC
 
 * [存储位置说明](/user-guide/concepts/storage-location.md)。
 * 通过 [设置Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
-* [Table 和 Region 的 Flush 和 Compaction](/reference/sql/functions/overview#admin-functions)。
+* [Table 和 Region 的 Flush 和 Compaction](/reference/sql/functions/overview.md#admin-functions)。
 * 通过 Region 对表进行分区，请阅读 [表的分片](/contributor-guide/frontend/table-sharding.md) 参考。
   * [迁移 Region](./region-migration.md) 以实现负载均衡。
-* [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
+* [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
 
 ## 最佳实践
 

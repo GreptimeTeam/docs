@@ -4,7 +4,7 @@
 
 Yes. Since v0.9.0, GreptimeDB treats all time series as contextual events with timestamps, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and events with SQL, PromQL, and streaming with continuous aggregation.
 
-Please read the [log user guide](/user-guide/logs/overview).
+Please read the [log user guide](/user-guide/logs/overview.md).
 
 ## Does GreptimeDB support updates?
 
@@ -33,7 +33,7 @@ Since 0.8, the database level `TTL` is supported too.
 CREATE DATABASE test with(ttl='7d');
 ```
 
-You can refer to the TTL option of the database and table create statement [here](/reference/sql/create).
+You can refer to the TTL option of the database and table create statement [here](/reference/sql/create.md).
 
 ## What are the compression rates of GreptimeDB?
 
@@ -54,7 +54,7 @@ GreptimeDB resolves this issue by:
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
-Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/continuous-aggregation/overview).
+Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/continuous-aggregation/overview.md).
 
 ## Can I store data in object storage in the cloud?
 
@@ -65,4 +65,4 @@ GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://gre
 
 ## Does GreptimeDB have disaster recovery solutions?
 
-Yes. Please refer to [disaster recovery](/user-guide/operations/disaster-recovery/overview).
+Yes. Please refer to [disaster recovery](/user-guide/operations/disaster-recovery/overview.md).

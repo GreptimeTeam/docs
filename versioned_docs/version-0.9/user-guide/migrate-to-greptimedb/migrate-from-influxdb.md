@@ -160,7 +160,7 @@ $writeApi->write($point);
 
 <div id="visualize-data">
 It is recommended using Grafana to visualize data in GreptimeDB.
-Please refer to the [Grafana documentation](/user-guide/clients/grafana) for details on configuring GreptimeDB.
+Please refer to the [Grafana documentation](/user-guide/clients/grafana.md) for details on configuring GreptimeDB.
 </div>
 
 <div id="import-data-shell">

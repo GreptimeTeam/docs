@@ -39,7 +39,7 @@ Find all the supported data types in [Data Types](/reference/sql/data-types.md).
 
 ## Index
 
-The `index` is a performance-tuning method that allows faster retrieval of records. GreptimeDB uses the [inverted index](/contributor-guide/datanode/data-persistence-indexing#inverted-index) to accelerate queries.
+The `index` is a performance-tuning method that allows faster retrieval of records. GreptimeDB uses the [inverted index](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) to accelerate queries.
 
 ## View
 
@@ -48,4 +48,4 @@ The data displayed in a view is retrieved dynamically from the underlying tables
 
 ## Flow
 
-A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/continuous-aggregation/overview) process that continuously updates and materializes aggregated data based on incoming data.
+A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/continuous-aggregation/overview.md) process that continuously updates and materializes aggregated data based on incoming data.

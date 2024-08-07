@@ -94,7 +94,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | 选项                | 描述                                     | 值                                                                                                                                                   |
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | 表数据的存储时间                         | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                           |
-| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration#存储引擎提供商)。 |
+| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration.md#存储引擎提供商)。 |
 | `compaction.type` | Compaction 策略         | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略 |
 | `compaction.twcs.max_active_window_files` | 当前活跃时间窗口内的最大文件数         | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用 |
 | `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数         | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用 |
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS logs(
 
 ### Region 分区规则
 
-请参考 [分区](/contributor-guide/frontend/table-sharding#partition) 章节.
+请参考 [分区](/contributor-guide/frontend/table-sharding.md#partition) 章节.
 
 ## CREATE EXTERNAL TABLE
 
@@ -390,7 +390,7 @@ AS
 <SQL>;
 ```
 
-用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow#创建或更新-flow)。
+用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow.md#创建或更新-flow)。
 
 ## 创建 View
 
@@ -399,4 +399,4 @@ CREATE [OR REPLACE] VIEW [ IF NOT EXISTS ] <view-name>
 AS select_statement
 ```
 
-用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view#视图)。
+用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#视图)。

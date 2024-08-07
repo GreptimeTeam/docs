@@ -40,7 +40,7 @@ ORDER BY datanode_id ASC
 * [Table 和 Region 的 Flush 和 Compaction](/reference/sql/functions.md#admin-functions)。
 * 通过 Region 对表进行分区，请阅读 [表的分片](/contributor-guide/frontend/table-sharding.md) 参考。
   * [迁移 Region](./region-migration.md) 以实现负载均衡。
-* [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
+* [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
 
 ## 最佳实践
 

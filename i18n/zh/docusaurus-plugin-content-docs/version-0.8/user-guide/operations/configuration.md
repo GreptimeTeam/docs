@@ -59,7 +59,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
-- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector.md#selector-type);
 - `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
 - `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
 - `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
@@ -85,7 +85,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
 - `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
 - `--tls-mode <TLS_MODE>`: TLS 模式
-- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication);
+- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/clients/authentication.md);
 
 ### standalone 子命令选项
 
@@ -268,7 +268,7 @@ secret_access_key = "<secret access key>"
 
 ### 存储引擎提供商
 
-`[[storage.providers]]`  用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
+`[[storage.providers]]`  用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create.md#create-table):
 
 ```toml
 # Allows using multiple storages

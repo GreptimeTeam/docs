@@ -253,7 +253,7 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `flush_region(region_id)` to flush a region's memtables into SST file by region id. Find the region id through [PARTITIONS](../information-schema/partitions.md) table.
 * `compact_table(table_name)` to schedule a compaction task for a table by table name.
 * `compact_region(region_id)` to schedule a compaction task for a region by region id.
-* `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration).
+* `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/operations/region-migration.md).
 * `procedure_state(procedure_id)` to query a procedure state by its id.
 * `flush_flow(flow_name)` to flush a flow's output into the sink table.
 

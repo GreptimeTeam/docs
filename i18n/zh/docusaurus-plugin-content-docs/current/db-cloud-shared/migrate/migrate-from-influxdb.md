@@ -6,11 +6,11 @@
 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
-- 两者都是[schemaless 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- 两者都是[schemaless 写入](/user-guide/write-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
-- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line) 的时间戳数据类型。
+- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line.md) 的时间戳数据类型。
 - GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
 
 以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
@@ -109,7 +109,7 @@ SQL 是一种通用的用于管理和操作关系数据库的语言。
 
 PromQL（Prometheus 查询语言）允许用户实时选择和聚合时间序列数据，
 表达式的结果可以显示为图形，也可以在 Prometheus 的表达式浏览器中以表格数据的形式查看，
-或通过 [HTTP API](/user-guide/query-data/promql#prometheus-http-api) 传递给外部系统。
+或通过 [HTTP API](/user-guide/query-data/promql.md#prometheus-http-api) 传递给外部系统。
 
 假设你要查询过去 24 小时内记录的 `monitor` 表中的最大 CPU。
 在 InfluxQL 中，查询如下：
@@ -155,7 +155,7 @@ ORDER BY ts DESC;
 在该 SQL 查询中，
 `RANGE` 子句确定了 AVG(cpu) 聚合函数的时间窗口，
 而 `ALIGN` 子句设置了时间序列数据的对齐时间。
-有关按时间窗口分组的更多详细信息，请参考[按时间窗口聚合数据](/user-guide/query-data/sql#按时间窗口聚合数据)文档。
+有关按时间窗口分组的更多详细信息，请参考[按时间窗口聚合数据](/user-guide/query-data/sql.md#按时间窗口聚合数据)文档。
 
 在 PromQL 中，类似的查询为：
 

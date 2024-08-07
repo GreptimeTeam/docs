@@ -6,7 +6,7 @@ For detailed metrics of GreptimeDB, please refer to the [Metrics Detail](#metric
 
 ## Start GreptimeDB
 
-Please refer to the [documentation](/getting-started/installation/overview) to learn how to start GreptimeDB.
+Please refer to the [documentation](/getting-started/installation/overview.md) to learn how to start GreptimeDB.
 
 ## Export metrics to Prometheus
 

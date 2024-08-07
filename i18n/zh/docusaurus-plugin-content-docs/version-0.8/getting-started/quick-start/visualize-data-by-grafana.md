@@ -37,5 +37,5 @@ GreptimeDB 可以作为 Prometheus 数据源配置在 Grafana 中。
 ![grafana-create-panel-with-promql](/grafana-create-panel-with-promql.png)
 
 :::tip 注意
-GreptimeDB 兼容大部分 PromQL，但是有一些限制。请参考 [PromQL 限制](/user-guide/query-data/promql#局限) 文档获取更多信息。
+GreptimeDB 兼容大部分 PromQL，但是有一些限制。请参考 [PromQL 限制](/user-guide/query-data/promql.md#局限) 文档获取更多信息。
 :::

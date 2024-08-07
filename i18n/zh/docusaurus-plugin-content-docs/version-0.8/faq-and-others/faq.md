@@ -25,9 +25,9 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 Yes, you can find our Go SDK here: https://github.com/GreptimeTeam/greptimedb-ingester-go.
 
-Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql).
+Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql.md).
 
-HTTP API is also available, please see [this article](/user-guide/clients/http-api) for more information.
+HTTP API is also available, please see [this article](/user-guide/clients/http-api.md) for more information.
 
 ### Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
@@ -61,7 +61,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
 
-For more information, refer to [this document](/user-guide/table-management#create-table).
+For more information, refer to [this document](/user-guide/table-management.md#create-table).
 
 ### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
@@ -77,7 +77,7 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 ### Does GreptimeDB support dumping table-level data to S3?
 
-You can use the [`COPY TO` command](/reference/sql/copy#s3) to dump table-level data to S3.
+You can use the [`COPY TO` command](/reference/sql/copy.md#s3) to dump table-level data to S3.
 
 ### Can [https://n9e.github.io](https://n9e.github.io) now be directly integrated with GreptimeDB? How is its compatibility?
 
@@ -89,9 +89,9 @@ Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can re
 
 ### Are there any retention policy? 
 
-We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
-And since 0.8, GreptimeDB already supports database level `TTL` too, read the [CREATE DATABASE](/reference/sql/create#create-database).
+And since 0.8, GreptimeDB already supports database level `TTL` too, read the [CREATE DATABASE](/reference/sql/create.md#create-database).
 
 ### What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
 
@@ -187,11 +187,11 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan).
+For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan.md).
 
 ### Does GreptimeDB support inverted indexes, and does it use Tantivy?
 
-Since v0.7, GreptimeDB supports inverted indexes which are designed by ourselves, read the [Contributor Guide](/contributor-guide/datanode/data-persistence-indexing#inverted-index) for more information.
+Since v0.7, GreptimeDB supports inverted indexes which are designed by ourselves, read the [Contributor Guide](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) for more information.
 
 We plan to integrate Tantivy into the upcoming 0.9 release for full-text search functionality, although we are not currently using it.
 

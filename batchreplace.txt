@@ -1,4 +1,4 @@
-filter "**/version-0.8/**/*.md"
+filter "**/version-0.7/**/*.md"
 
 // replace template inject
 replace-regex "\{template ([\w-]*)%%\}"
@@ -87,3 +87,12 @@ with "0.7.3"
 
 replace "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
 with "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
+
+replace-regex "\]\(/([a-z0-9-/]*)#(.*)\)"
+with "](/$1.md#$2)"
+
+replace-regex "\]\(/([^\.#]*)\)"
+with "](/$1.md)"
+
+
+

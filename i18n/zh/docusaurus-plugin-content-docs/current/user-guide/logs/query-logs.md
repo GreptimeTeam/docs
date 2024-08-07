@@ -96,7 +96,7 @@ CREATE TABLE `logs` (
 );
 ```
 
-更多详情，请参见[`FULLTEXT` 列选项](/reference/sql/create#fulltext-列选项)。
+更多详情，请参见[`FULLTEXT` 列选项](/reference/sql/create.md#fulltext-列选项)。
 
 ### 通过 Pipeline 配置全文索引
 

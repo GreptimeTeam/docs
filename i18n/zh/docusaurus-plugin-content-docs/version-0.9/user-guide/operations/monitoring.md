@@ -6,7 +6,7 @@
 
 ## 启动 GreptimeDB
 
-请参考[此处](/getting-started/installation/overview)了解如何启动 GreptimeDB。
+请参考[此处](/getting-started/installation/overview.md)了解如何启动 GreptimeDB。
 
 ## 导出数据到 Prometheus
 

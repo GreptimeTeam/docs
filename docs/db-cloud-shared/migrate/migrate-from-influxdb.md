@@ -5,12 +5,12 @@ This guide will help you understand the differences between the data models of G
 While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](/user-guide/concepts/data-model.md) of GreptimeDB is something new to explore.
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
-- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- Both solutions are [schemaless](/user-guide/write-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line.md).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
@@ -110,7 +110,7 @@ it is also reduce the learning curve for users who are already familiar with SQL
 
 PromQL (Prometheus Query Language) allows users to select and aggregate time series data in real time,
 The result of an expression can either be shown as a graph, viewed as tabular data in Prometheus's expression browser,
-or consumed by external systems via the [HTTP API](/user-guide/query-data/promql#prometheus-http-api).
+or consumed by external systems via the [HTTP API](/user-guide/query-data/promql.md#prometheus-http-api).
 
 Suppose you are querying the maximum cpu usage from the `monitor` table, recorded over the past 24 hours.
 In influxQL, the query might look something like this:
@@ -157,7 +157,7 @@ ORDER BY ts DESC;
 In this SQL query,
 the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,
 while the `ALIGN` clause sets the alignment time for the time series data.
-For more information on time window grouping, please refer to the [Aggregate data by time window](/user-guide/query-data/sql#aggregate-data-by-time-window) document.
+For more information on time window grouping, please refer to the [Aggregate data by time window](/user-guide/query-data/sql.md#aggregate-data-by-time-window) document.
 
 The similar query in PromQL would be something like:
 

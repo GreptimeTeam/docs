@@ -48,7 +48,7 @@ Cloud storage is highly recommended for data storage due to its simplicity in ma
 With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).
 
 In order to manage the storage costs effectively, 
-it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+it is recommended setting a [retention policy](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
 ## Example
 

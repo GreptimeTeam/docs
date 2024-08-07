@@ -59,7 +59,7 @@ greptime metasrv start --help
 - `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
-- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector#selector-type);
+- `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector.md#selector-type);
 - `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
@@ -85,7 +85,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication);
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/clients/authentication.md);
 
 ### Standalone subcommand options
 
@@ -272,7 +272,7 @@ secret_access_key = "<secret access key>"
 
 ### Storage engine provider
 
-`[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you can create a table with a specified storage, see [create table](/reference/sql/create#create-table):
+`[[storage.providers]]`  setups the table storage engine providers. Based on these providers,  you can create a table with a specified storage, see [create table](/reference/sql/create.md#create-table):
 
 ```toml
 # Allows using multiple storages

@@ -92,7 +92,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | Option              | Description                                   | Value                                                                                                                                                                        |
 | ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | The storage time of the table data            | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                                                 |
-| `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration#storage-engine-provider). |
+| `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration.md#storage-engine-provider). |
 | `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
 | `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.         | String value, such as '1'. Only available when `compaction.type` is `twcs`. |
@@ -198,7 +198,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 ### Region partition rules
 
-Please refer to [Partition](/contributor-guide/frontend/table-sharding#partition) for more details.
+Please refer to [Partition](/contributor-guide/frontend/table-sharding.md#partition) for more details.
 
 ## CREATE EXTERNAL TABLE
 

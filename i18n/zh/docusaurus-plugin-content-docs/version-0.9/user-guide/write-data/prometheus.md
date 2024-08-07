@@ -27,7 +27,7 @@ URL 中的 `db` 参数表示我们要写入的数据库，是可选的，默认�
 
 GreptimeDB 将多个 Prometheus 指标[自动组合](../clients/prometheus#数据模型)到相应的逻辑表中，因此你无需在 `remote_write` 的 URL 中指定逻辑表。
 
-URL 中的 `physical_table` 参数可选，表示数据被写入的[物理表](/contributor-guide/datanode/metric-engine#物理表)，
+URL 中的 `physical_table` 参数可选，表示数据被写入的[物理表](/contributor-guide/datanode/metric-engine.md#物理表)，
 它可以减少小表的存储开销，提高列压缩效率。
 在不指定该参数的情况下默认使用 `greptime_physical_table` 表。如果指定的物理表不存在，该表会被自动创建。
 

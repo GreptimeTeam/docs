@@ -96,7 +96,7 @@ CREATE TABLE `logs` (
 );
 ```
 
-For more details, see the [Fulltext Column Option](/reference/sql/create#fulltext-column-option).
+For more details, see the [Fulltext Column Option](/reference/sql/create.md#fulltext-column-option).
 
 ### Configuring Full-Text Index via Pipeline
 

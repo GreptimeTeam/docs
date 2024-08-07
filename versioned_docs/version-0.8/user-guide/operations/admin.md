@@ -40,7 +40,7 @@ The `INFORMATION_SCHEMA` database provides access to system metadata, such as th
 * [Flush and Compaction for Table & Region](/reference/sql/functions.md#admin-functions).
 * Partition the table by regions, read the [Table Sharding](/contributor-guide/frontend/table-sharding.md) reference.
   * [Migrate the Region](./region-migration.md) for Load Balance.
-* [Expire Data by Setting TTL](/user-guide/concepts/features-that-you-concern#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+* [Expire Data by Setting TTL](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
 ## Best Practices
 

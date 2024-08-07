@@ -190,7 +190,7 @@ GROUP BY host;
 
 ### Range query
 
-You can use [range queries](/reference/sql/range#range-query) to monitor latencies in real-time.
+You can use [range queries](/reference/sql/range.md#range-query) to monitor latencies in real-time.
 For example, to calculate the p95 latency of requests using a 5-second window:
 
 ```sql

@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE DATABASE test WITH (ttl='7d');
 ```
 
-你可以在[这里](/reference/sql/create)参考数据库和表创建语句的 TTL 选项。
+你可以在[这里](/reference/sql/create.md)参考数据库和表创建语句的 TTL 选项。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -47,7 +47,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持持续聚合或降采样吗？
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview)获取更多信息。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview.md)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 

@@ -28,7 +28,7 @@ GreptimeDB 存储引擎是一个典型的 [LSM 树](https://en.wikipedia.org/wik
 Memtable 将被刷新并持久化为 SSTable。
 因此，WAL 和 SSTable 的备份恢复是 GreptimeDB 灾难恢复的关键。
 
-* **Region**：表的连续段，也可以被视为某些关系数据库中的分区。请阅读[表分片](/contributor-guide/frontend/table-sharding#region)以获取更多详细信息。
+* **Region**：表的连续段，也可以被视为某些关系数据库中的分区。请阅读[表分片](/contributor-guide/frontend/table-sharding.md#region)以获取更多详细信息。
 
 ## 组件架构
 

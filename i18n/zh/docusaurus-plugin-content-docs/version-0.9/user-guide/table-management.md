@@ -185,7 +185,7 @@ SHOW INDEXES FROM monitor;
 +---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
 ```
 
-有关 `SHOW` 语句的更多信息，请阅读 [SHOW 参考](/reference/sql/show#show)。
+有关 `SHOW` 语句的更多信息，请阅读 [SHOW 参考](/reference/sql/show.md#show)。
 
 ## 列出现有的表
 
@@ -257,7 +257,7 @@ ALTER TABLE monitor DROP COLUMN label;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-`ALTER TABLE` 语句还支持添加、删除、重命名列以及修改列的数据类型等更改。有关更多信息，请参阅[ALTER 参考指南](/reference/sql/alter)。
+`ALTER TABLE` 语句还支持添加、删除、重命名列以及修改列的数据类型等更改。有关更多信息，请参阅[ALTER 参考指南](/reference/sql/alter.md)。
 
 ## 删除表
 

@@ -229,7 +229,7 @@ secret_access_key = "<secret access key>"
 
 ### 存储引擎提供商
 
-`[[storage.providers]]` 用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create#create-table):
+`[[storage.providers]]` 用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create.md#create-table):
 
 ```toml
 # Allows using multiple storages

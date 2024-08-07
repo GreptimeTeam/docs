@@ -27,7 +27,7 @@ Since 0.8, the database level `TTL` is supported too.
 CREATE DATABASE test with(ttl='7d');
 ```
 
-You can refer to the TTL option of the database and table create statement [here](/reference/sql/create).
+You can refer to the TTL option of the database and table create statement [here](/reference/sql/create.md).
 
 ## What are the compression rates of GreptimeDB?
 
@@ -48,7 +48,7 @@ GreptimeDB resolves this issue by:
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
-Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/continuous-aggregation/overview).
+Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/continuous-aggregation/overview.md).
 
 ## Can I store data in object storage in the cloud?
 

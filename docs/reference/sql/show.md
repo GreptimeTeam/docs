@@ -285,7 +285,7 @@ SHOW VIEWS WHERE Views = 'memory_monitor';
 
 ## Extensions to SHOW Statements
 
-Some extensions to `SHOW` statements accompany the implementation of [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview) just like MySQL, they also accept a `WHERE` clause that provides more flexibility in specifying which rows to display. 
+Some extensions to `SHOW` statements accompany the implementation of [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview.md) just like MySQL, they also accept a `WHERE` clause that provides more flexibility in specifying which rows to display. 
 
 GreptimeDB supports some extensions for MySQL compatibility, it's good for tools like [Navicat for MySQL](https://www.navicat.com/en/products/navicat-for-mysql) or [dbeaver](https://dbeaver.io/) to connect GreptimeDB.
 

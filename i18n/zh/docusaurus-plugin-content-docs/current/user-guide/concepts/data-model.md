@@ -9,7 +9,7 @@ GreptimeDB 中的所有数据都被组织成表，每个表中的数据项由三
 - 表名通常与指标、日志的名称相同。
 - `Tag` 列中存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特定特征。`Tag` 列具有索引，所以使用 `Tag` 列的查询具备良好的性能。
 - `Timestamp` 是指标、日志及事件的时序数据库的基础，它表示数据生成的日期和时间。Timestamp 具有索引，所以使用 `Timestamp` 的查询具有良好的性能。一个表只能有一个 `Timestamp` 列，被称为时间索引列。
-- 其他列是 `Field` 列，其中的值是被收集的数据指标或日志。这些指标通常是数值或字符串，但也可能是其他类型的数据，例如地理位置。`Field` 列默认情况下没有被索引，对该字段做过滤查询会全表扫描。这可能会消耗大量资源并且性能较差，但是字符串字段可以启用[全文索引](/user-guide/logs/query-logs#全文索引加速搜索)，以加快日志搜索等查询的速度。
+- 其他列是 `Field` 列，其中的值是被收集的数据指标或日志。这些指标通常是数值或字符串，但也可能是其他类型的数据，例如地理位置。`Field` 列默认情况下没有被索引，对该字段做过滤查询会全表扫描。这可能会消耗大量资源并且性能较差，但是字符串字段可以启用[全文索引](/user-guide/logs/query-logs.md#全文索引加速搜索)，以加快日志搜索等查询的速度。
 
 ### Metric 表
 
@@ -61,7 +61,7 @@ CREATE TABLE access_logs (
 
 - 时间索引列为 `access_time`。
 - `remote_addr`、`http_status`、`http_method`、`http_refer`、`user_agent` 为 Tag。
-- `request` 是通过 [`FULLTEXT` 列选项](/reference/sql/create#fulltext-列选项)启用全文索引的字段。
+- `request` 是通过 [`FULLTEXT` 列选项](/reference/sql/create.md#fulltext-列选项)启用全文索引的字段。
 
 要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](../table-management.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
 

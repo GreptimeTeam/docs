@@ -189,7 +189,7 @@ SHOW INDEXES FROM monitor;
 +---------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
 ```
 
-For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show#show).
+For more info about `SHOW` statement, please read the [SHOW reference](/reference/sql/show.md#show).
 
 ## List Existing Tables
 
@@ -260,7 +260,7 @@ ALTER TABLE monitor DROP COLUMN label;
 Query OK, 0 rows affected (0.03 sec)
 ```
 
-The `ALTER TABLE` statement also supports adding, removing, and renaming columns, as well as modifying the column datatype, etc. Please refer to the [ALTER reference](/reference/sql/alter) for more information.
+The `ALTER TABLE` statement also supports adding, removing, and renaming columns, as well as modifying the column datatype, etc. Please refer to the [ALTER reference](/reference/sql/alter.md) for more information.
 
 ## Drop a table
 

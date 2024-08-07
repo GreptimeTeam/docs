@@ -29,7 +29,7 @@ and replace `public` with the new database name.
 
 GreptimeDB automatically groups multiple Prometheus metrics (../clients/prometheus#data-model) into the corresponding logical tables, so you do not need to specify the logical table in the URL of `remote_write`.
 
-The optional `physical_table` parameter in the URL represents the [physical table](/contributor-guide/datanode/metric-engine#physical-table),
+The optional `physical_table` parameter in the URL represents the [physical table](/contributor-guide/datanode/metric-engine.md#physical-table),
 which reduces storage overhead for small tables and improves columnar compression efficiency.
 If unspecified, the `greptime_physical_table` is used by default;
 if the specified physical table does not exist, it will be automatically created.

@@ -2,7 +2,7 @@
 
 ## 什么是 Remote WAL
 
-[WAL](/contributor-guide/datanode/wal#introduction)(Write-Ahead Logging) 是 GreptimeDB 中的一个关键组件，它持久记录每一次数据修改，以确保不会丢失缓存在内存中的数据。我们在  [Datanode](/user-guide/concepts/why-greptimedb)  服务中用持久的嵌入式存储引擎 [raft-engine](https://github.com/tikv/raft-engine) 将 WAL 实现为一个模块。在公共云中部署 GreptimeDB 时，我们可以在云存储（AWS EBS、GCP 持久盘等）中持久存储 WAL 数据，以实现 0 RPO。然而，由于 WAL 与 Datanode 紧密耦合，导致部署过程中的 RTO（Recovery Time Objective）较长。此外，由于 raft-engine 无法支持多日志订阅，这使得实现 region 热备份和 region 迁移变得困难。
+[WAL](/contributor-guide/datanode/wal.md#introduction)(Write-Ahead Logging) 是 GreptimeDB 中的一个关键组件，它持久记录每一次数据修改，以确保不会丢失缓存在内存中的数据。我们在  [Datanode](/user-guide/concepts/why-greptimedb.md)  服务中用持久的嵌入式存储引擎 [raft-engine](https://github.com/tikv/raft-engine) 将 WAL 实现为一个模块。在公共云中部署 GreptimeDB 时，我们可以在云存储（AWS EBS、GCP 持久盘等）中持久存储 WAL 数据，以实现 0 RPO。然而，由于 WAL 与 Datanode 紧密耦合，导致部署过程中的 RTO（Recovery Time Objective）较长。此外，由于 raft-engine 无法支持多日志订阅，这使得实现 region 热备份和 region 迁移变得困难。
 
 为了解决上述问题，我们决定设计并实现一个远程 WAL。远程 WAL 将 WAL 从 Datanode 分离到远程服务，我们选择了 Apache Kafka 作为远程服务。Apache Kafka 在流处理中被广泛采用，展现出卓越的分布式容错能力和基于主题的订阅机制。在发布 v0.5.0 版本时，我们引入了 Apache Kafka 作为 WAL 的可选存储引擎。
 

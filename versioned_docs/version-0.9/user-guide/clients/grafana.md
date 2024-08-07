@@ -94,7 +94,7 @@ Then enter a PromQL statement, such as `system_memory_usage{state="used"}`, clic
 
 
 :::tip NOTE
-GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql#limitations) document for more information.
+GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql.md#limitations) document for more information.
 :::
 
 </div>

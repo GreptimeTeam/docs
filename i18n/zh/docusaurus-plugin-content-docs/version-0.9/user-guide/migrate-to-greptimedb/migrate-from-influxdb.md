@@ -161,7 +161,7 @@ $writeApi->write($point);
 <div id="visualize-data">
 
 推荐使用 Grafana 可视化 GreptimeDB 数据，
-请参考 [Grafana 文档](/user-guide/clients/grafana)了解如何配置 GreptimeDB。
+请参考 [Grafana 文档](/user-guide/clients/grafana.md)了解如何配置 GreptimeDB。
 
 </div>
 

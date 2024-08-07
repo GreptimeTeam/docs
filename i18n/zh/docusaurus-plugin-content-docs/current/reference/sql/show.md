@@ -286,7 +286,7 @@ SHOW VIEWS WHERE Views = 'memory_monitor';
 
 ## SHOW 语句的扩展
 
-与 MySQL 类似，一些 `SHOW` 语句的扩展伴随着 [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview) 的实现，它们还接受 `WHERE` 子句，提供了在指定显示的行时更大的灵活性。
+与 MySQL 类似，一些 `SHOW` 语句的扩展伴随着 [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview.md) 的实现，它们还接受 `WHERE` 子句，提供了在指定显示的行时更大的灵活性。
 
 GreptimeDB 为 MySQL 兼容性实现了这些扩展的一部分，这对于像 [Navicat for MySQL](https://www.navicat.com/en/products/navicat-for-mysql) 或 [dbeaver](https://dbeaver.io/) 这样的工具连接 GreptimeDB 非常有用。
 
