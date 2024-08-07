@@ -60,7 +60,7 @@ GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也�
 
 ## 数据模型
 
-要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从 Influxdb 迁移到 GreptimeDB 文档中的[数据模型差异](../migrate-to-greptimedb/migrate-from-influxdb.md#数据模型的区别)。
+要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从 Influxdb 迁移到 GreptimeDB 文档中的[数据模型差异](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md#数据模型的区别)。
 
 ## 参考
 

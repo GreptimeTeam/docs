@@ -25,7 +25,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 {template write-data-telegraf%
 
-有关详细的配置说明，请参考[通过 Telegraf 写入数据](/user-guide/ingest-data/for-observerbility/telegraf.md)文档。
+有关详细的配置说明，请参考[通过 Telegraf 写入数据](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#telegraf)文档。
 
 %}
 
