@@ -39,6 +39,7 @@
     - sql
     - promql
     - view
+    - cte
     - query-external-data
   - Manage-Data:
     - overview

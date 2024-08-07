@@ -5,15 +5,22 @@
 ### Update data with same tags and time index
 
 Updates can be efficiently performed by inserting new data.
-By default, if rows of data have the same tags and time index, the old data will be replaced with the new data.
+If rows of data have the same tags and time index,
+the old data will be replaced with the new data.
+This means that you can only update columns with a field type.
+To update data, simply insert new data with the same tag and time index as the existing data.
+
 For more information about column types, please refer to the [Data Model](../concepts/data-model.md).
 
 :::warning Note
 Excessive updates may negatively impact query performance, even though the performance of updates is the same as insertion.
 :::
 
-To update data, you can insert new data with the same tag and time index as the existing data.
-This updating mechanism is supported by all GreptimeDB protocols in the [Ingest Data documents](/user-guide/ingest-data/overview.md). The following example uses SQL.
+#### Overwrite all fields in a table
+
+By default, when updating data, all fields will be overwritten with the new values,
+except for [InfluxDB line protocol](/user-guide/clients/influxdb-line.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
+The following example using SQL demonstrates the behavior of overwriting all fields in a table.
 
 Assuming you have a table named `monitor` with the following schema.
 The `host` column represents the tag and the `ts` column represents the time index.
@@ -22,7 +29,7 @@ The `host` column represents the tag and the `ts` column represents the time ind
 CREATE TABLE monitor (
     host STRING,
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
-    cpu FLOAT64 DEFAULT 0,
+    cpu FLOAT64,
     memory FLOAT64,
     PRIMARY KEY(host)
 );
@@ -73,9 +80,10 @@ SELECT * FROM monitor;
 1 row in set (0.01 sec)
 ```
 
-Note that you **cannot omit** the other columns in the `INSERT INTO` statement if you only want to update one column.
-If you omit the other columns,
+With the default merge policy,
+if columns are omitted in the `INSERT INTO` statement,
 they will be overwritten with the default values.
+
 For example:
 
 ```sql
@@ -97,6 +105,74 @@ SELECT * FROM monitor;
 +-----------+---------------------+------+--------+
 1 row in set (0.01 sec)
 ```
+
+### Overwriting specific fields in a table
+
+The overwrite policy is supported by default in the [InfluxDB line protocol](/user-guide/clients/influxdb-line.md).
+You can also enable this behavior by specifying the `merge_mode` option as `last_non_null` when creating a table using SQL.
+Here's an example:
+
+```sql
+CREATE TABLE monitor (
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64,
+    memory FLOAT64,
+    PRIMARY KEY(host)
+) WITH ('merge_mode'='last_non_null');
+```
+
+```sql
+INSERT INTO monitor (host, ts, cpu, memory)
+VALUES ("127.0.0.1", "2024-07-11 20:00:00", 0.8, 0.1);
+```
+
+To update specific fields in the `monitor` table,
+you can insert new data with only the fields you want to update.
+For example:
+
+```sql
+INSERT INTO monitor (host, ts, cpu)
+VALUES ("127.0.0.1", "2024-07-11 20:00:00", 0.5);
+```
+
+This will update the `cpu` field while leaving the `memory` field unchanged.
+The result will be:
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2024-07-11 20:00:00 |  0.5 |    0.1 |
++-----------+---------------------+------+--------+
+```
+
+
+Notice that the `last_non_null` merge mode cannot update the old value to `NULL`.
+For example:
+
+
+```sql
+INSERT INTO monitor (host, ts, cpu, memory)
+VALUES ("127.0.0.1", "2024-07-11 20:00:01", 0.8, 0.1);
+```
+
+```sql
+INSERT INTO monitor (host, ts, cpu)
+VALUES ("127.0.0.1", "2024-07-11 20:00:01", NULL);
+```
+
+That will not update anything:
+
+```sql
++-----------+---------------------+------+--------+
+| host      | ts                  | cpu  | memory |
++-----------+---------------------+------+--------+
+| 127.0.0.1 | 2024-07-11 20:00:01 |  0.8 |    0.1 |
++-----------+---------------------+------+--------+
+```
+
+For more information about the `merge_mode` option, please refer to the [CREATE TABLE](/reference/sql/create.md##create-a-table-with-merge-mode) statement.
 
 ### Avoid updating data by creating table with `append_mode` option
 
@@ -194,3 +270,14 @@ Query OK, 1 row affected (0.00 sec)
 ```
 
 For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
+
+<!-- ## Truncate Table
+
+To delete all data in a table, you can use the `TRUNCATE TABLE` statement in SQL.
+For example, to truncate the `monitor` table:
+
+```sql
+TRUNCATE TABLE monitor;
+```
+
+For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation. -->

@@ -69,7 +69,7 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 
 {template get-database-connection-information%%}
 
-## Write data
+## Ingest data
 
 GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
 facilitating a seamless migration from InfluxDB to GreptimeDB.
@@ -187,7 +187,7 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
-For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#write-data) section.
+For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.
 
 If retaining all historical data isn't necessary,
 you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data. 

@@ -1,6 +1,6 @@
 # SQL
 
-You can execute SQL statements using [MySQL](/user-guide/clients/mysql.md) or [PostgreSQL](/user-guide/clients/postgresql.md) clients.
+You can execute SQL statements using [MySQL](/user-guide/clients/mysql.md) or [PostgreSQL](/user-guide/clients/postgresql.md) clients. You can access GreptimeDB using the MySQL or PostgreSQL protocol with any programming language of your preference, such as Java JDBC.
 We will use the `monitor` table as an example to show how to write data.
 
 ## Create a table

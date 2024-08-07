@@ -64,7 +64,7 @@ curl -X POST \
 
 - The API endpoint is `/v1/sql`.
 - The authentication header is optional. For more information, refer to the [Authentication](#authentication) section.
-- The SQL statement should be included in the body of the request.
+- The SQL statement should be included in the body of the request as `sql` parameter.
 - The `db` parameter in the URL is optional and specifies the database to use. The default value is `public`.
 
 You can also use the HTTP API to execute other SQL statements.
@@ -120,6 +120,14 @@ The response will contain the queried data in JSON format:
   "execution_time_ms": 7
 }
 ```
+
+The response contains the following fields:
+
+- `output`: The execution result.
+  - `records`: The query result.
+    - `schema`: The schema of the result, including the schema of each column.
+    - `rows`: The rows of the query result, where each row is an array containing the corresponding values of the columns in the schema.
+- `execution_time_ms`: The execution time of the statement in milliseconds.
 
 For more information about making SQL requests using the HTTP API, please refer to the [API documentation](/reference/sql/http-api.md).
 

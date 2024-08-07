@@ -30,7 +30,7 @@ remote_read:
 
 ## Data Model
 
-In the [data model](/user-guide/concepts/data-model.md) of GreptimeDB, data is organized into tables with columns for tags, time indices, and fields.
+In the [data model](/user-guide/concepts/data-model.md) of GreptimeDB, data is organized into tables with columns for tags, time index, and fields.
 GreptimeDB can be thought of as a multi-value data model,
 automatically grouping multiple Prometheus metrics into corresponding tables.
 This allows for efficient data management and querying.
@@ -71,7 +71,7 @@ will be transformed as a row in the table `prometheus_remote_storage_samples_tot
 The Prometheus remote writing always creates a large number of small tables.
 These tables are classified as logical tables in GreptimeDB.
 However, having a large number of small tables can be inefficient for both data storage and query performance.
-To address this, GreptimeDB introduces the metric engine feature,
+To address this, GreptimeDB introduces the [metric engine](/contributor-guide/datanode/metric-engine) feature,
 which stores the data represented by the logical tables in a single physical table.
 This approach reduces storage overhead and improves columnar compression efficiency.
 
@@ -105,6 +105,44 @@ show tables;
 | prometheus_rule_group_duration_seconds                        |
 | ......                                                        |
 +---------------------------------------------------------------+
+```
+
+The physical table itself can also be queried.
+It contains columns from all the logical tables,
+making it convenient for multi-join analysis and computation.
+
+To view the schema of the physical table, use the `DESC TABLE` command:
+
+```sql
+DESC TABLE greptime_physical_table;
+```
+
+The physical table includes all the columns from the logical tables:
+
+```sql
++--------------------+----------------------+------+------+---------+---------------+
+| Column             | Type                 | Key  | Null | Default | Semantic Type |
++--------------------+----------------------+------+------+---------+---------------+
+| greptime_timestamp | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
+| greptime_value     | Float64              |      | YES  |         | FIELD         |
+| __table_id         | UInt32               | PRI  | NO   |         | TAG           |
+| __tsid             | UInt64               | PRI  | NO   |         | TAG           |
+| device             | String               | PRI  | YES  |         | TAG           |
+| instance           | String               | PRI  | YES  |         | TAG           |
+| job                | String               | PRI  | YES  |         | TAG           |
+| error              | String               | PRI  | YES  |         | TAG           |
+...
+```
+
+You can use the `SELECT` statement to filter data from the physical table as needed.
+For example, you can filter data based on the `device` condition from logical table A and the `job` condition from logical table B:
+
+```sql
+SELECT *
+FROM greptime_physical_table
+WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
+  AND device = "device1"
+  AND job = "job1";
 ```
 
 ## VictoriaMetrics remote write

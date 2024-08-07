@@ -1,5 +1,5 @@
 
-GreptimeDB provides an ingester libraries to help you write data.
+GreptimeDB offers ingester libraries for high-throughput data writing.
 It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
 For more information, refer to [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
