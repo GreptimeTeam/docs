@@ -52,6 +52,12 @@ const config: Config = {
             },
             '0.8': {
               path: 'v0.8'
+            },
+            '0.7': {
+              path: 'v0.7'
+            },
+            '0.6': {
+              path: 'v0.6'
             }
           }
         },
