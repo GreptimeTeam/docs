@@ -91,6 +91,7 @@
       - cluster-deployment
     - region-migration
     - region-failover
+    - compaction
     - monitoring
     - tracing
     # TODO
