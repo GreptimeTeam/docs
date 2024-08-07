@@ -25,7 +25,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 {template write-data-telegraf%
 
-For detailed configuration instructions, please refer to the [Ingest Data via Telegraf](/user-guide/ingest-data/for-observerbility/telegraf.md) documentation.
+For detailed configuration instructions, please refer to the [Ingest Data via Telegraf](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#telegraf) documentation.
 
 %}
 

@@ -11,18 +11,11 @@ GreptimeDB 支持无 schema 写入，即在数据写入时自动创建表格并�
 
 GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳性能和集成灵活性。
 
-### 可观测性场景
+- [可观测场景](./for-observerbility/overview.md)：适用于实时监控和警报。
+- [物联网场景](./for-iot/overview.md)：适用于实时数据和复杂的物联网基础设施。
 
-- [Prometheus Remote Write](./for-observerbility/prometheus.md)：将 GreptimeDB 作为 Prometheus 的远程存储，适用于实时监控和警报。
-- [Vector](./for-observerbility/vector.md)：将 GreptimeDB 用作 Vector 的接收端，适用于复杂的数据流水线和多样化的数据源。
-- [OpenTelemetry](./for-observerbility/opentelemetry.md)：将 telemetry 数据收集并导出到 GreptimeDB，以获取详细的可观测性洞察。
-- [Telegraf](./for-observerbility/telegraf.md)：使用 Telegraf 从各种数据源写入数据到 GreptimeDB，适用于监控和性能分析。
+## 下一步
 
-### 物联网场景
-
-- [SQL INSERT](./for-iot/sql.md)：简单直接的数据插入方法。
-- [gRPC SDK](./for-iot/grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
-- [InfluxDB Line Protocol](./for-iot/influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。
-- [EMQX](./for-iot/emqx.md)：支持大规模设备连接的 MQTT 代理，可用于将数据写入到 GreptimeDB。
-- [OpenTSDB](./for-iot/opentsdb.md)：使用 OpenTSDB 协议将数据写入到 GreptimeDB。
+- [查询数据](/user-guide/query-data/overview.md): 学习如何通过查询 GreptimeDB 数据库来探索数据。
+- [管理数据](/user-guide/manage-data/overview.md): 学习如何更新和删除数据等，确保数据完整性和高效的数据管理。
 

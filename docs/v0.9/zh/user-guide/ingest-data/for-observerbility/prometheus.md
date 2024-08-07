@@ -67,7 +67,7 @@ remote_name="648f0c", url="http://localhost:4000/v1/prometheus/write"} 500
 
 Prometheus Remote Write 写入数据的方式经常会创建大量的小表，这些表在 GreptimeDB 中被归类为逻辑表。
 然而，拥有大量的小表对于数据存储和查询性能来说是低效的。
-为了解决这个问题，GreptimeDB 引入了 metric engine 功能，将逻辑表表示的数据存储在单个物理表中。
+为了解决这个问题，GreptimeDB 引入了 [metric engine](/contributor-guide/datanode/metric-engine) 功能，将逻辑表表示的数据存储在单个物理表中。
 这种方法减少了存储开销并提高了列式压缩效率。
 
 GreptimeDB 默认启用 metric engine，你不需要指定任何额外的配置。
@@ -80,7 +80,7 @@ remote_write:
 - url: http://localhost:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 ```
 
-虽然数据被存储在物理表中，但查询是在逻辑表上执行以提供从指标角度的直观视角。
+虽然数据被存储在物理表中，但查询可以在逻辑表上执行以提供从指标角度的直观视角。
 例如，当成功写入数据时，你可以使用以下命令显示逻辑表：
 
 ```sql
@@ -97,6 +97,43 @@ show tables;
 | prometheus_rule_group_duration_seconds                        |
 | ......                                                        |
 +---------------------------------------------------------------+
+```
+
+物理表本身也可以进行查询。
+它包含了所有逻辑表的列，方便进行多表连接分析和计算。
+
+要查看物理表的 schema，请使用 `DESC TABLE` 命令：
+
+```sql
+DESC TABLE greptime_physical_table;
+```
+
+物理表包含了所有逻辑表的列：
+
+```sql
++--------------------+----------------------+------+------+---------+---------------+
+| Column             | Type                 | Key  | Null | Default | Semantic Type |
++--------------------+----------------------+------+------+---------+---------------+
+| greptime_timestamp | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
+| greptime_value     | Float64              |      | YES  |         | FIELD         |
+| __table_id         | UInt32               | PRI  | NO   |         | TAG           |
+| __tsid             | UInt64               | PRI  | NO   |         | TAG           |
+| device             | String               | PRI  | YES  |         | TAG           |
+| instance           | String               | PRI  | YES  |         | TAG           |
+| job                | String               | PRI  | YES  |         | TAG           |
+| error              | String               | PRI  | YES  |         | TAG           |
+...
+```
+
+你可以使用 `SELECT` 语句根据需要从物理表中过滤数据。
+例如，根据逻辑表 A 的 `device` 条件和逻辑表 B 的 `job` 条件来过滤数据：
+
+```sql
+SELECT *
+FROM greptime_physical_table
+WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
+  AND device = "device1"
+  AND job = "job1";
 ```
 
 ## VictoriaMetrics Remote Write

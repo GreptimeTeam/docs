@@ -8,9 +8,9 @@ GreptimeDB can handle large volumes of data, process it in real-time, and store 
 It also supports various data formats, protocols, and interfaces,
 making it easy to integrate with different IoT devices and systems. 
 
-- [SQL](sql.md)
-- [gRPC SDK](./grpc-sdks/overview.md)
-- [InfluxDB Line Protocol](influxdb-line-protocol.md)
-- [EMQX](emqx.md)
-- [OpenTSDB](opentsdb.md)
+- [SQL INSERT](sql.md): A straightforward method for inserting data.
+- [gRPC SDK](./grpc-sdks/overview.md): Offers efficient, high-performance data ingestion, particularly suited for real-time data applications and complex IoT infrastructures.
+- [InfluxDB Line Protocol](influxdb-line-protocol.md): A widely-used protocol for time-series data, facilitating migration from InfluxDB to GreptimeDB. The Telegraf integration method is also introduced in this document.
+- [EMQX](emqx.md): An MQTT broker supporting massive device connections, can ingest data to GreptimeDB directly.
+- [OpenTSDB](opentsdb.md): Ingest data to GreptimeDB using the OpenTSDB protocol.
 

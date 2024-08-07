@@ -23,7 +23,7 @@
       - prometheus
       - vector
       - opentelemetry
-      - telegraf
+      - influxdb-line-protocol
     - For-IoT:
       - overview
       - sql
@@ -39,6 +39,7 @@
     - sql
     - promql
     - view
+    - cte
     - query-external-data
   - Manage-Data:
     - overview

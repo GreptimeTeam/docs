@@ -7,9 +7,9 @@
 GreptimeDB 可处理并存储超大规模量级的数据以供分析，
 支持各种数据格式、协议和接口，以便集成不同的物联网设备和系统。
 
-- [SQL](sql.md)
-- [gRPC SDK](./grpc-sdks/overview.md)
-- [InfluxDB Line Protocol](influxdb-line-protocol.md)
-- [EMQX](emqx.md)
-- [OpenTSDB](opentsdb.md)
+- [SQL INSERT](sql.md)：简单直接的数据插入方法。
+- [gRPC SDK](./grpc-sdks/overview.md)：提供高效、高性能的数据写入，特别适用于实时数据和复杂的物联网基础设施。
+- [InfluxDB Line Protocol](influxdb-line-protocol.md)：一种广泛使用的时间序列数据协议，便于从 InfluxDB 迁移到 GreptimeDB。该文档同样介绍了 Telegraf 的集成方式。
+- [EMQX](emqx.md)：支持大规模设备连接的 MQTT 代理，可直接将数据写入到 GreptimeDB。
+- [OpenTSDB](opentsdb.md)：使用 OpenTSDB 协议将数据写入到 GreptimeDB。
 
