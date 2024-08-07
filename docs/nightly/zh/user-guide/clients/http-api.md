@@ -63,7 +63,7 @@ curl -X POST \
 
 - API endpoint 为 `/v1/sql`。
 - 鉴权 header 可选。有关更多信息，请参考[鉴权](#鉴权)部分。
-- SQL 语句应包含在请求的 body 中。
+- SQL 语句应包含在请求的 body 中作为 `sql` 的参数。
 - URL 中的 `db` 参数可选，用于指定要使用的数据库。默认值为 `public`。
 
 你还可以使用 HTTP API 执行其他 SQL 语句。
@@ -119,6 +119,15 @@ curl -X POST \
   "execution_time_ms": 7
 }
 ```
+
+
+结果包含以下字段：
+
+- `output`：执行结果。
+  - `records`：查询结果。
+    - `schema`：结果的 schema，包括每个列的 schema。
+    - `rows`：查询结果的行数据，每行是一个数组，包含 schema 中对应列的值。
+- `execution_time_ms`：该语句的执行时间，以毫秒为单位。
 
 有关使用 HTTP API 发送 SQL 请求的更多信息，请参考[API 文档](/reference/sql/http-api.md)。
 

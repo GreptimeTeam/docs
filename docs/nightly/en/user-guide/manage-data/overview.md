@@ -16,7 +16,7 @@ For more information about column types, please refer to the [Data Model](../con
 Excessive updates may negatively impact query performance, even though the performance of updates is the same as insertion.
 :::
 
-#### Overwrite all fields in a table
+#### Update all fields in a table
 
 By default, when updating data, all fields will be overwritten with the new values,
 except for [InfluxDB line protocol](/user-guide/clients/influxdb-line.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
@@ -106,9 +106,9 @@ SELECT * FROM monitor;
 1 row in set (0.01 sec)
 ```
 
-### Overwriting specific fields in a table
+### Update specific fields in a table
 
-The overwrite policy is supported by default in the [InfluxDB line protocol](/user-guide/clients/influxdb-line.md).
+This update policy is supported by default in the [InfluxDB line protocol](/user-guide/clients/influxdb-line.md).
 You can also enable this behavior by specifying the `merge_mode` option as `last_non_null` when creating a table using SQL.
 Here's an example:
 

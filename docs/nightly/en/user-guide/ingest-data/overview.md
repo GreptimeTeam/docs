@@ -28,6 +28,7 @@ GreptimeDB supports various data ingestion methods for specific scenarios, ensur
 
 ## Next Steps
 
-- [Query Data](/user-guide/query-data/overview.md): Learn how to explore your data and gain valuable insights by querying your GreptimeDB database.
-- [Manage Data](/user-guide/manage-data/overview.md): Learn how to update and delete data, ensuring data integrity and efficient data management.
+- [Query Data](/user-guide/query-data/overview.md): Learn how to explore your data by querying your GreptimeDB database.
+
+- [Manage Data](/user-guide/manage-data/overview.md): Learn how to update and delete data, etc., to ensure data integrity and efficient data management.
 
