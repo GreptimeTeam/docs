@@ -19,12 +19,12 @@ DC1 and DC2 are used together to handle read and write services, while DC3 (loca
 Both DC1 and DC2 must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
 Features:
-    - 2ms latency in the same region
-    - 30ms latency in two regions
+- 2ms latency in the same region
+- 30ms latency in two regions
 
 Supports High Availability:
-    - A single AZ is unavailable with the same performance
-    - A single DC is unavailable with almost the same performance
+- A single AZ is unavailable with the same performance
+- A single DC is unavailable with almost the same performance
 
 
 If you want a regional-level disaster recovery solution, you can take it a step further by providing read and write services on DC3. So, the next solution is:
@@ -38,12 +38,12 @@ In this solution, the data across 2 regions.
 Each DC must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
 Features:
-    - 2ms latency in the same region
-    - 30ms latency in two regions
+- 2ms latency in the same region
+- 30ms latency in two regions
 
 Supports High Availability:
-    - A single AZ is unavailable with the same performance
-    - A single DC is unavailable with degraded performance
+- A single AZ is unavailable with the same performance
+- A single DC is unavailable with degraded performance
 
 If you can't tolerate performance degradation from a single DC failure, consider upgrading to the five-DC and three-region solution.
 
@@ -58,14 +58,14 @@ Region1 and region2 are used together to handle read and write services, while r
 Each of the two adjacent regions must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
 Features:
-    - 2ms latency in the same region
-    - 7ms latency in two adjacent regions
-    - 30ms latency in two distant regions
+- 2ms latency in the same region
+- 7ms latency in two adjacent regions
+- 30ms latency in two distant regions
 
 Supports High Availability:
-    - A single AZ is unavailable with the same performance
-    - A single DC is unavailable with the same performance
-    - A single region(city) is unavailable with the degraded performance
+- A single AZ is unavailable with the same performance
+- A single DC is unavailable with the same performance
+- A single region(city) is unavailable with the degraded performance
 
 You can take it a step further by providing read and write services on both 3 regions. So, the next solution is:
 (This solution may have higher latency, so if that's unacceptable, it's not recommended.)
@@ -79,11 +79,11 @@ In this solution, the data across 3 regions.
 In the event of a failure in one region, the other two regions must be able to handle all requests, so please ensure sufficient resources are allocated.
 
 Features:
-    - 2ms latency in the same region
-    - 7ms latency in two adjacent regions
-    - 30ms latency in two distant regions
+- 2ms latency in the same region
+- 7ms latency in two adjacent regions
+- 30ms latency in two distant regions
 
 Supports High Availability:
-    - A single AZ is unavailable with the same performance
-    - A single DC is unavailable with the same performance
-    - A single region(city) is unavailable with degraded performance
+- A single AZ is unavailable with the same performance
+- A single DC is unavailable with the same performance
+- A single region(city) is unavailable with degraded performance
