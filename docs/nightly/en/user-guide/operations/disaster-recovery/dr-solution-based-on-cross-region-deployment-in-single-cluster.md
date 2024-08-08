@@ -107,3 +107,15 @@ Supports High Availability:
 - A single AZ is unavailable with the same performance
 - A single DC is unavailable with the same performance
 - A single region(city) is unavailable with degraded performance
+
+## Solution Comparison
+The goal of the above solutions is to meet the high requirements for availability and reliability in medium to large-scale scenarios. However, in specific implementations, the cost and effectiveness of each solution may vary. The table below compares each solution to help you choose the final plan based on your specific scenario, needs, and costs.
+
+Here is the content formatted into a table:
+
+| Solution | Latencies | High Availability |
+| --- | --- | --- |
+| Across 2 regions, data in the same region | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with almost the same performance |
+| Data across 2 regions | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with degraded performance |
+| Across 3 regions, data across 2 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with the degraded performance |
+| Data across 3 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with degraded performance |
