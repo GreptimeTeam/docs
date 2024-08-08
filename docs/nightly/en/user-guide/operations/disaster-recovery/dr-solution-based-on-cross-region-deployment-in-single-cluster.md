@@ -38,7 +38,7 @@ DC1 and DC2 are used together to handle read and write services, while DC3 (loca
 
 Both DC1 and DC2 must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
-Features:
+Latencies:
 - 2ms latency in the same region
 - 30ms latency in two regions
 
@@ -57,7 +57,7 @@ In this solution, the data across 2 regions.
 
 Each DC must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
-Features:
+Latencies:
 - 2ms latency in the same region
 - 30ms latency in two regions
 
@@ -77,7 +77,7 @@ Region1 and region2 are used together to handle read and write services, while r
 
 Each of the two adjacent regions must be able to handle all requests in extreme situations, so please ensure that sufficient resources are allocated.
 
-Features:
+Latencies:
 - 2ms latency in the same region
 - 7ms latency in two adjacent regions
 - 30ms latency in two distant regions
@@ -85,7 +85,7 @@ Features:
 Supports High Availability:
 - A single AZ is unavailable with the same performance
 - A single DC is unavailable with the same performance
-- A single region(city) is unavailable with the degraded performance
+- A single region(city) is unavailable with slightly degraded performance
 
 You can take it a step further by providing read and write services on both 3 regions. So, the next solution is:
 (This solution may have higher latency, so if that's unacceptable, it's not recommended.)
@@ -98,7 +98,7 @@ In this solution, the data across 3 regions.
 
 In the event of a failure in one region, the other two regions must be able to handle all requests, so please ensure sufficient resources are allocated.
 
-Features:
+Latencies:
 - 2ms latency in the same region
 - 7ms latency in two adjacent regions
 - 30ms latency in two distant regions
@@ -117,5 +117,5 @@ Here is the content formatted into a table:
 | --- | --- | --- |
 | Across 2 regions, data in the same region | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with almost the same performance |
 | Data across 2 regions | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with degraded performance |
-| Across 3 regions, data across 2 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with the degraded performance |
+| Across 3 regions, data across 2 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with slightly degraded performance |
 | Data across 3 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with degraded performance |
