@@ -28,7 +28,7 @@ Table partition count: 3
 ```
 
 
-### Across 2 regions, data in the same region
+### Metadata across 2 regions, data in the same region
 
 ![DR-across-2dc-1region](/DR-across-2dc-1region.png)
 
