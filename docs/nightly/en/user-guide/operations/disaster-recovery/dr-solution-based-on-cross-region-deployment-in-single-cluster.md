@@ -67,7 +67,7 @@ Supports High Availability:
 
 If you can't tolerate performance degradation from a single DC failure, consider upgrading to the five-DC and three-region solution.
 
-### Across 3 regions, data across 2 regions
+### Metadata across 3 regions, data across 2 regions
 
 ![DR-across-5dc-2region](/DR-across-5dc-2region.png)
 
