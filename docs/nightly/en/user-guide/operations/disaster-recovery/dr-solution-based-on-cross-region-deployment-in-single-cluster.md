@@ -115,7 +115,7 @@ Here is the content formatted into a table:
 
 | Solution | Latencies | High Availability |
 | --- | --- | --- |
-| Across 2 regions, data in the same region | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with almost the same performance |
+| Metadata across 2 regions, data in the same region | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with almost the same performance |
 | Data across 2 regions | - 2ms latency in the same region<br>- 30ms latency in two regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with degraded performance |
-| Across 3 regions, data across 2 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with slightly degraded performance |
+| Metadata across 3 regions, data across 2 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with slightly degraded performance |
 | Data across 3 regions | - 2ms latency in the same region<br>- 7ms latency in two adjacent regions<br>- 30ms latency in two distant regions | - A single AZ is unavailable with the same performance<br>- A single DC is unavailable with the same performance<br>- A single region(city) is unavailable with degraded performance |
