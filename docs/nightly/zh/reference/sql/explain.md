@@ -33,21 +33,42 @@ EXPLAIN SELECT * FROM monitor where host='host1';
 使用 `ANALYZE` 解释执行计划：
 
 ```sql
-EXPLAIN ANALYZE SELECT * FROM monitor where host='host1';
+EXPLAIN ANALYZE SELECT * FROM monitor where host='host1'\G
 ```
 
 ```sql
-| plan_type         | plan
-| Plan with Metrics | CoalescePartitionsExec, metrics=[output_rows=1, elapsed_compute=79.167µs, spill_count=0, spilled_bytes=0, mem_used=0]
-  ProjectionExec: expr=[host@0 as host, ts@1 as ts, cpu@2 as cpu, memory@3 as memory], metrics=[output_rows=1, elapsed_compute=17.176µs, spill_count=0, spilled_bytes=0, mem_used=0]
-    CoalesceBatchesExec: target_batch_size=4096, metrics=[output_rows=1, elapsed_compute=14.248µs, spill_count=0, spilled_bytes=0, mem_used=0]
-      CoalesceBatchesExec: target_batch_size=4096, metrics=[output_rows=1, elapsed_compute=17.21µs, spill_count=0, spilled_bytes=0, mem_used=0]
-        FilterExec: host@0 = host1, metrics=[output_rows=1, elapsed_compute=541.801µs, spill_count=0, spilled_bytes=0, mem_used=0]
-          CoalesceBatchesExec: target_batch_size=4096, metrics=[output_rows=3, elapsed_compute=43.004µs, spill_count=0, spilled_bytes=0, mem_used=0]
-            RepartitionExec: partitioning=RoundRobinBatch(10), metrics=[fetch_time=5.832958ms, repart_time=10ns, send_time=2.467µs]
-              RepartitionExec: partitioning=RoundRobinBatch(10), metrics=[fetch_time=386.585µs, repart_time=1ns, send_time=7.833µs]
-                ExecutionPlan(PlaceHolder), metrics=[]
-                
+*************************** 1. row ***************************
+stage: 0
+ node: 0
+ plan:  MergeScanExec: peers=[5471788335104(1274, 0), 5471788335105(1274, 1), ] metrics=[output_rows: 0, greptime_exec_read_cost: 0, finish_time: 1496211, ready_time: 846828, first_consume_time: 1491941, ]
+
+*************************** 2. row ***************************
+stage: 1
+ node: 0
+ plan:  CoalesceBatchesExec: target_batch_size=8192 metrics=[output_rows: 0, elapsed_compute: 4147, ]
+  FilterExec: host@2 = host1 metrics=[output_rows: 0, elapsed_compute: 32, ]
+    RepartitionExec: partitioning=RoundRobinBatch(32), input_partitions=8 metrics=[repart_time: 8, fetch_time: 230515, send_time: 256, ]
+      SeqScan: region=5471788335105(1274, 1), partition_count=0 (0 memtable ranges, 0 file ranges) metrics=[output_rows: 0, mem_used: 0, ]
+
+*************************** 3. row ***************************
+stage: 1
+ node: 1
+ plan:  CoalesceBatchesExec: target_batch_size=8192 metrics=[output_rows: 0, elapsed_compute: 3660, ]
+  FilterExec: host@2 = host1 metrics=[output_rows: 0, elapsed_compute: 32, ]
+    RepartitionExec: partitioning=RoundRobinBatch(32), input_partitions=8 metrics=[repart_time: 8, fetch_time: 113774, send_time: 256, ]
+      SeqScan: region=5471788335104(1274, 0), partition_count=0 (0 memtable ranges, 0 file ranges) metrics=[output_rows: 0, mem_used: 0, ]
+
+*************************** 4. row ***************************
+stage: NULL
+ node: NULL
+ plan: Total rows: 0
+4 rows in set (0.002 sec)       
 ```
 
-<!-- TODO: explains the output of `ANALYZE`. -->
+在上面的例子中，我们得到了 4 行输出。除了最后一行给出了总体摘要，每一行都代表了执行计划的一个阶段节点。`stage` 列表示阶段编号，`node` 列表示节点编号。`plan` 列详细说明了计划和相关指标。
+
+## Stage 和 node
+
+这个例子基于一个有两个 region 的分布式分区表。我们使用 stage 编号在分布式执行计划中标记不同的 stage，从 0 开始。在每个 stage 中，我们可能有多个 node 并行执行计划。node 编号在每个 stage 中也从 0 开始。以下是有 2 个 stage 和 3 个 node 的示例：
+
+![stage and node](/explain-stage-and-node.png)
