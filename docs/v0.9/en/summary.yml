@@ -96,6 +96,7 @@
       - overview
       - back-up-&-restore-data
       - dr-solution-based-on-active-active-failover
+      - dr-solution-based-on-cross-region-deployment-in-single-cluster
     - Remote-WAL:
       - quick-start
       - cluster-deployment
