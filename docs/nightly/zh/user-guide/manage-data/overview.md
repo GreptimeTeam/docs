@@ -266,7 +266,7 @@ Query OK, 1 row affected (0.00 sec)
 
 有关 `DELETE` 语句的更多信息，请参阅 [SQL DELETE](/reference/sql/delete.md)。
 
-<!-- ## 删除表中的所有数据
+## 删除表中的所有数据
 
 要删除表中的所有数据，可以使用 SQL 中的 `TRUNCATE TABLE` 语句。
 例如，要清空 `monitor` 表：
@@ -275,6 +275,6 @@ Query OK, 1 row affected (0.00 sec)
 TRUNCATE TABLE monitor;
 ```
 
-有关 `TRUNCATE TABLE` 语句的更多信息，请参阅 [SQL TRUNCATE TABLE](/reference/sql/truncate.md) 文档。 -->
+有关 `TRUNCATE TABLE` 语句的更多信息，请参阅 [SQL TRUNCATE TABLE](/reference/sql/truncate.md) 文档。
 
 

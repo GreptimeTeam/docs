@@ -271,7 +271,7 @@ Query OK, 1 row affected (0.00 sec)
 
 For more information about the `DELETE` statement, please refer to the [SQL DELETE](/reference/sql/delete.md).
 
-<!-- ## Truncate Table
+## Truncate Table
 
 To delete all data in a table, you can use the `TRUNCATE TABLE` statement in SQL.
 For example, to truncate the `monitor` table:
@@ -280,4 +280,4 @@ For example, to truncate the `monitor` table:
 TRUNCATE TABLE monitor;
 ```
 
-For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation. -->
+For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation.
