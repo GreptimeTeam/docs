@@ -105,7 +105,7 @@ const config: Config = {
           position: 'right'
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/GreptimeTeam/docs/',
           label: 'GitHub',
           position: 'right',
         },
