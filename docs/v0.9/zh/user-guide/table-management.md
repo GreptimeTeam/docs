@@ -70,7 +70,7 @@ USE public;
 ## 创建表
 
 :::tip NOTE
-注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)\*\*。
+注意：GreptimeDB 提供了一种 schemaless 方法来写入数据，不需要使用额外的协议手动创建表。参见 [自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)\*\*。
 :::
 
 如果您有特殊需要，仍然可以通过 SQL 手动创建表。假设我们想要创建一个名为 `monitor` 的表，其数据模型如下：
@@ -315,4 +315,4 @@ http://localhost:4000/v1/sql?db=public
 SQL 客户端会话中指定的时区将影响创建或更改表时的默认时间戳值。
 如果将时间戳列的默认值设置为不带时区的字符串，则该默认值会被自动添加客户端的时区信息。
 
-有关客户端时区的影响，请参考 [写入数据](./write-data/sql.md#时区) 文档中的时区部分。
+有关客户端时区的影响，请参考 [写入数据](./ingest-data/for-iot/sql.md#时区) 文档中的时区部分。

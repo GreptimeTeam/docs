@@ -56,7 +56,7 @@ The Coprocessor Engine will infer the return vector types by the result. But wit
 
 ### Construct a vector
 
-We have already seen the example that extracting vectors from the query result by executing the `sql` attribute in `@coprocessor` in [query data](./query-data.md).
+We have already seen the example that extracting vectors from the query result by executing the `sql` attribute in `@coprocessor` in [Query Data](./query-data.md).
 
 We can create a vector from literals:
 

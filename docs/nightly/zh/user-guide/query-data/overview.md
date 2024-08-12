@@ -14,7 +14,7 @@
 
 客户端库提供了一种方便的方式来连接 GreptimeDB 并与数据交互。
 现有的成熟 SQL driver 库可用于查询 GreptimeDB。
-请参考[客户端库](/user-guide/client-libraries/overview.md)文档获取更多信息。
+请参考[客户端库](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md)文档获取更多信息。
 
 ## 查询外部数据
 

@@ -4,7 +4,11 @@ User-Guide: 用户指南
 Concepts: 概念
 Clients: 客户端
 Client-Libraries: 客户端库
-Write-Data: 写入数据
+Ingest-Data: 写入数据
+Manage-Data: 管理数据
+For-Observerbility: 可观测场景
+For-IoT: 物联网（IoT）场景
+gRPC-SDKs: gRPC-SDKs
 Query-Data: 读取数据
 Continuous-Aggregation: 持续聚合
 Logs: 日志

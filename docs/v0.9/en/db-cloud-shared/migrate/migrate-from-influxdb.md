@@ -5,12 +5,12 @@ This guide will help you understand the differences between the data models of G
 While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](/user-guide/concepts/data-model.md) of GreptimeDB is something new to explore.
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
-- Both solutions are [schemaless](/user-guide/write-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- Both solutions are [schemaless](/user-guide/ingest-data/overview#automatic-schema-generation), eliminating the need to define a schema before writing data.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line).
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
@@ -69,7 +69,7 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 
 {template get-database-connection-information%%}
 
-## Write data
+## Ingest data
 
 GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
 facilitating a seamless migration from InfluxDB to GreptimeDB.
@@ -187,7 +187,7 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
-For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
+For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.
 
 If retaining all historical data isn't necessary,
 you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data. 

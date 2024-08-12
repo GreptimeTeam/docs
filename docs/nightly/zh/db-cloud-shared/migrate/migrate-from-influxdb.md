@@ -6,11 +6,11 @@
 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
-- 两者都是[schemaless 写入](/user-guide/write-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- 两者都是[schemaless 写入](/user-guide/ingest-data/overview#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
-- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line) 的时间戳数据类型。
+- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/ingest-data/for-iot/influxdb-line-protocol) 的时间戳数据类型。
 - GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
 
 以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
