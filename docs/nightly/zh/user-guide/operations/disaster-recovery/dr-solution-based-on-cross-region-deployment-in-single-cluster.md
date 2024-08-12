@@ -1,6 +1,6 @@
 # 基于单集群跨区域部署的 DR 解决方案
 
-## GreptimeDB 的 DR 工作原理
+## GreptimeDB DR 的工作原理
 GreptimeDB 非常适合跨区域灾难恢复。你可能有不同的区域特征和业务需求，GreptimeDB 提供了量身定制的解决方案，以满足这些多样化的要求。
 
 GreptimeDB 资源管理涉及 Availability Zones（AZ）的概念。一个 AZ 是一个逻辑上的灾难恢复单元。
