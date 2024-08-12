@@ -95,4 +95,5 @@ replace-regex "\]\(/([^\.#]*)\)"
 with "](/$1.md)"
 
 
-
+replace-regex "::: (\w*)"
+with ":::$1"
