@@ -30,7 +30,7 @@ Table partition count: 3
 
 ### 元数据跨两个区域，数据在同一区域
 
-![DR-across-2dc-1region](/DR_across_2dc_1region.png)
+![DR-across-2dc-1region](/DR-across-2dc-1region.png)
 
 在此解决方案中，数据位于一个区域（2 个 DC），而元数据跨越两个区域。
 
