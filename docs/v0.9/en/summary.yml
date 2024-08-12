@@ -101,6 +101,7 @@
       - cluster-deployment
     - region-migration
     - region-failover
+    - compaction
     - monitoring
     - tracing
     # TODO
@@ -175,6 +176,7 @@
     - delete
     - show
     - tql
+    - truncate
     - create
     - describe_table
     - with
