@@ -71,12 +71,12 @@ You can also use `pnpm run build` to check dead links.
 ### Preview the localized documentation
 
 To preview the documentation in a specific language,
-add a new file called `.env` to the root directory and include the `VITE_LANG=xx` environment variable,
+add a new file called `.env` to the root directory and include the `DOC_LANG=xx` environment variable,
 where `xx` is the language code.
 For example, to preview the Chinese documentation, add the following content to `.env`:
 
 ```shell
-VITE_LANG=zh
+DOC_LANG=zh
 ```
 
 Then start a local server with `pnpm run dev`.
