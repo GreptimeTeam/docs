@@ -1,12 +1,10 @@
----
-template: ../../db-cloud-shared/clients/vector-integration.md
----
-
 # Vector
 
-<docs-template>
-
-{template toml-config%
+Vector is [a high performance observability data
+pipeline](https://vector.dev). It has native support for GreptimeDB metrics data
+sink. With vector, you can ingest metrics data from various sources, including
+Prometheus, OpenTelemetry, StatsD and many more.
+GreptimeDB can be used as a Vector Sink component to receive metrics. 
 
 To use Vector with GreptimeCloud, you need its version `0.37` and above.
 A minimal configuration of when using your GreptimeCloud instance can be:
@@ -27,6 +25,12 @@ password = "<password>"
 tls = {}
 ```
 
-%}
+Execute Vector with:
 
-</docs-template>
+```
+vector -c sample.toml
+```
+
+For more configuration options, see [Vector GreptimeDB
+Configuration](https://vector.dev/docs/reference/sinks/greptimedb/).
+
