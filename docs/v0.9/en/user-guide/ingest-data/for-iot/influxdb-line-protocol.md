@@ -1,4 +1,4 @@
-# Influxdb Line Protocol
+# InfluxDB Line Protocol
 
 GreptimeDB supports HTTP InfluxDB Line protocol.
 
@@ -41,7 +41,7 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  urls = ["http://<host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
   bucket = "<db-name>"
   ## Leave empty
@@ -50,7 +50,7 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
 ```toml [InfluxDB line protocol v1]
 [[outputs.influxdb]]
-  urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
+  urls = ["http://<host>:4000/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
