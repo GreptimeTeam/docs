@@ -76,7 +76,7 @@ ALIGN '5s' BY (host) FILL PREV;
 
 不同 `FILL` 选项的结果如下：
 
-::: code-group
+:::code-group
 
 ```sql [NO FILL]
 
@@ -219,7 +219,7 @@ ALIGN '5s';
 
 对不同的 `TO` 选项的查询结果如下：
 
-::: code-group
+:::code-group
 
 ```sql [Default to timezone]
 

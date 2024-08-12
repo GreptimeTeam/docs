@@ -25,14 +25,14 @@ PARTITION BY RANGE COLUMNS (a) (
 
 我们在上面创建的 `my_table` 有 3 个分区。分区 "p0" 包含了 "a < 10" 的行；分区 "p1" 包含了 "10 \<= a < 20" 的行；分区 "p2" 包含了剩下的 "a >= 20" 的所有行。
 
-::: warning 重要
+:::warning 重要
 
 1. 所有分区的范围必须严格递增，并最终以 "`MAXVALUE`" 结尾。
 2. 用于分区的列必须是主键。
 
 :::
 
-::: tip 注意
+:::tip 注意
 目前 "PARTITION BY RANGE" 语法中不支持表达式，只能使用列名。
 :::
 

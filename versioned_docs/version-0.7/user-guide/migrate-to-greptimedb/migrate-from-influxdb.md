@@ -78,7 +78,7 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
-::: code-group
+:::code-group
 
 ```shell [InfluxDB line protocol v2]
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
@@ -98,7 +98,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
 To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL into Telegraf configurations:
 
-::: code-group
+:::code-group
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
@@ -125,7 +125,7 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-::: code-group
+:::code-group
 
 ```js [Node.js]
 'use strict'

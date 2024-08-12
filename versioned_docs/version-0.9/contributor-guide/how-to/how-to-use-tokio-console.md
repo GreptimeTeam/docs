@@ -23,7 +23,7 @@ tokio-console [TARGET_ADDR]
 
 "TARGET_ADDR" defaults to "\<http://127.0.0.1:6669\>".
 
-::: tip Note
+:::tip Note
 
 You can refer to [tokio-console](https://github.com/tokio-rs/console) to see the installation of `tokio-console`.
 

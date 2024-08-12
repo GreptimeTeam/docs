@@ -12,7 +12,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 </div>
 
 <div id="write-data-http-api">
-::: code-group
+:::code-group
 
 ```shell [InfluxDB line protocol v2]
 curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
@@ -32,7 +32,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 <div id="write-data-telegraf">
 
 
-::: code-group
+:::code-group
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
@@ -55,7 +55,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 </div>
 
 <div id="write-data-client-libs">
-::: code-group
+:::code-group
 
 ```js [Node.js]
 'use strict'

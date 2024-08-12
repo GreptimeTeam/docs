@@ -78,7 +78,7 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
-::: code-group
+:::code-group
 
 ```shell [InfluxDB line protocol v2]
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
@@ -98,7 +98,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 `http://<greptimedb-host>:4000` URL 添加到 Telegraf 配置中：
 
-::: code-group
+:::code-group
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
@@ -125,7 +125,7 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 例如：
 
-::: code-group
+:::code-group
 
 ```js [Node.js]
 'use strict'

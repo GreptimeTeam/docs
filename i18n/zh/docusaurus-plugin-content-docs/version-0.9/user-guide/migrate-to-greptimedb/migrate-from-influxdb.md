@@ -5,7 +5,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <DocTemplate>
 
 <div id="write-data-http-api">
-::: code-group
+:::code-group
 
 ```shell [InfluxDB line protocol v2]
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
@@ -25,7 +25,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 <div id="write-data-telegraf">
 
 
-::: code-group
+:::code-group
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
@@ -49,7 +49,7 @@ curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_u
 
 
 <div id="write-data-client-libs">
-::: code-group
+:::code-group
 
 ```js [Node.js]
 'use strict'

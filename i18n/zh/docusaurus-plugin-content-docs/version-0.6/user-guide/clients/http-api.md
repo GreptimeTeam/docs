@@ -44,7 +44,7 @@ http://localhost:4000/v1/sql?db=public
 * `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` 是 `greptime_user:greptime_pwd` 使用 `Base64` 编码后的结果，请记得替换为你自己的用户名和密码使用 `Base64` 编码后的字符串。
 * URL 中的 `public` 是数据库的名称，在鉴权时必须提供。
 
-::: tip 注意
+:::tip 注意
 InfluxDB 使用自己的鉴权格式，详情请参考 [InfluxDB](./influxdb-line.md)。
 :::
 

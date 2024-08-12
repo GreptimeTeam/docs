@@ -75,7 +75,7 @@ Take the following table as an example:
 
 The result of each `FILL` option is as follows:
 
-::: code-group
+:::code-group
 
 ```sql [NULL]
 
@@ -161,7 +161,7 @@ Suppose we have a tale `host` with the following data:
 
 The query results by each `TO` options shown below:
 
-::: code-group
+:::code-group
 
 ```sql [Default Unix time 0]
 

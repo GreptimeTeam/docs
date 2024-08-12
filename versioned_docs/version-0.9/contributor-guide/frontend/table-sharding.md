@@ -43,14 +43,14 @@ PARTITION ON COLUMNS (a) (
 
 The above `my_table` has 3 partitions. The first partition contains rows where "a < 10", the second partition contains rows where "10 \<= a < 20", and the third partition contains all rows where "a >= 20".
 
-::: warning Important
+:::warning Important
 
 1. The ranges of all partitions must not overlap.
 2. The columns used for partitioning must be specified in `ON COLUMNS`
 
 :::
 
-::: tip Note
+:::tip Note
 Currently expressions are not supported in "PARTITION BY RANGE" syntax, you can only supply column names.
 :::
 

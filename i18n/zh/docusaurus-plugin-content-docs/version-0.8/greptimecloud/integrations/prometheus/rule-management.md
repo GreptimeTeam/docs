@@ -6,7 +6,7 @@
 
 每个 GreptimeCloud 服务都带有一个 Git 仓库，用于存储 Prometheus 的规则和配置。GreptimeCloud 的 Prometheus 兼容规则引擎会根据存储在数据库中的数据适配你的规则，并在匹配时发出警报。
 
-::: tip 注意
+:::tip 注意
 Git 仓库中禁止创建分支或标签
 :::
 

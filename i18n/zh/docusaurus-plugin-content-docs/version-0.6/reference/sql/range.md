@@ -72,7 +72,7 @@ ALIGN '5s' BY (host) FILL PREV;
 
 不同 `FILL` 选项的结果如下：
 
-::: code-group
+:::code-group
 
 ```sql [NULL]
 
@@ -159,7 +159,7 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
 对不同的 `TO` 选项的查询结果如下：
 
-::: code-group
+:::code-group
 
 ```sql [Default Unix time 0]
 

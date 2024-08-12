@@ -12,7 +12,7 @@ import Includeotlpintegration from '../../db-cloud-shared/clients/otlp-integrati
 
 Here are some example codes about how to setup the request in different languages:
 
-::: code-group
+:::code-group
 
 ```ts [TypeScript]
 const auth = Buffer.from(`${username}:${password}`).toString('base64')

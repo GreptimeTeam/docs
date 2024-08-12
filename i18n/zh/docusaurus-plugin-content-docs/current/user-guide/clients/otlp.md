@@ -13,7 +13,7 @@ import Includeotlpintegration from '../../db-cloud-shared/clients/otlp-integrati
 
 下面是一些编程语言设置请求的示例代码：
 
-::: code-group
+:::code-group
 
 ```ts [TypeScript]
 const auth = Buffer.from(`${username}:${password}`).toString('base64')

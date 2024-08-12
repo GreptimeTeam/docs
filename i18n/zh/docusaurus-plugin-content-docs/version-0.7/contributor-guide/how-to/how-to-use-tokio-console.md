@@ -22,7 +22,7 @@ tokio-console [TARGET_ADDR]
 
 "`TARGET_ADDR`" 默认是 "\<http://127.0.0.1:6669\>"。
 
-::: tip Note
+:::tip Note
 
 `tokio-console` 命令的安装方法参见 [tokio-console](https://github.com/tokio-rs/console)。
 

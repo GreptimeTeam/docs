@@ -6,7 +6,7 @@ With this service, you can easily set up alerting and recording rules by copying
 
 Each GreptimeCloud service comes with a Git repository for storing prometheus rules and configurations. By checking your rules, GreptimeCloud's prometheus-compatible rule engine evaluates your rules against data stored in the database and emits alert when matches.
 
-::: tip NOTE
+:::tip NOTE
 Creating branch or tag is disabled in the Git repository
 :::
 

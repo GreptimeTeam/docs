@@ -45,7 +45,7 @@ http://localhost:4000/v1/sql?db=public
 * `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `greptime_user:greptime_pwd` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64.
 * The `public` in the URL is the name of your database, which is required with authorization.
 
-::: tip NOTE
+:::tip NOTE
 InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line.md) for details.
 :::
 
