@@ -9,7 +9,7 @@ It can be a Data Center (DC), a compartment of a DC. This depends on your specif
 In the cross region disaster recovery solutions, a GreptimeDB region is a city. When two DC are in the same region and one DC becomes unavailable, the other DC can take over the services of the unavailable DC. This is a localization strategy.
 
 Before understanding the details of each DR solution, it is necessary to first understand the following knowledge:
-1. The DR solution for the remote Wal component is also very important. Essentially, it forms the foundation of the entire DR solution. Therefore, for each DR solution of GreptimeDB, we will let the remote wal component in the diagram. Currently, GreptimeDB's default remote wal component is implemented based on Kafka, and other implementations will be provided in the future; however, there won't be significant differences in deployment.
+1. The DR solution for the remote wal component is also very important. Essentially, it forms the foundation of the entire DR solution. Therefore, for each DR solution of GreptimeDB, we will let the remote wal component in the diagram. Currently, GreptimeDB's default remote wal component is implemented based on Kafka, and other implementations will be provided in the future; however, there won't be significant differences in deployment.
 2. The table of GreptimeDB: Each table can be divided into multiple partitions according to a certain range, and each partition may be distributed on different datanodes. When writing or querying, the specified node will be called according to the corresponding rules. A table's partitions might look like this:
 
 ```
