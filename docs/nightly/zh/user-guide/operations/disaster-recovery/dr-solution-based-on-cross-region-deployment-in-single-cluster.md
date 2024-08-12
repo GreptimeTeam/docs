@@ -28,7 +28,7 @@ Table partition count: 3
 ```
 
 
-### 元数据跨 2 个区域，数据在同一区域
+### 元数据跨两个区域，数据在同一区域
 
 ![DR-across-2dc-1region](/DR_across_2dc_1region.png)
 
