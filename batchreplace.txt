@@ -102,7 +102,7 @@ with ":::$1"
 
 
 // replace-regex "```(\w*) \[(.*)\]([\s\S\n]*?)```"
-// with "<TabItem value="$2" label="$2">
+// with "<TabItem value="$1" label="$2">
 // 
 // ```$1$3```
 // 

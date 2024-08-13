@@ -166,6 +166,8 @@ The result of each `FILL` option is as follows:
 
 </TabItem>
 
+<TabItem value="FILL Constant Value 6.0" label="FILL Constant Value 6.0">
+
 ```sql [FILL Constant Value 6.0]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
@@ -183,6 +185,10 @@ The result of each `FILL` option is as follows:
 | 1970-01-01 00:00:15 | host2 |                            12 |
 +---------------------+-------+-------------------------------+
 ```
+
+</TabItem>
+
+
 
 </Tabs>
 
