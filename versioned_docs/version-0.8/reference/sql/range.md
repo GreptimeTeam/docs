@@ -78,9 +78,11 @@ Take the following table as an example:
 
 The result of each `FILL` option is as follows:
 
-:::code-group
+<Tabs>
 
-```sql [NO FILL]
+<TabItem value="NO FILL" label="NO FILL">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FROM host ALIGN '5s';
 
@@ -95,7 +97,11 @@ The result of each `FILL` option is as follows:
 
 ```
 
-```sql [FILL NULL]
+</TabItem>
+
+<TabItem value="FILL NULL" label="FILL NULL">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL NULL FROM host ALIGN '5s';
 
@@ -114,7 +120,11 @@ The result of each `FILL` option is as follows:
 
 ```
 
-```sql [FILL PREV]
+</TabItem>
+
+<TabItem value="FILL PREV" label="FILL PREV">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL PREV FROM host ALIGN '5s';
 
@@ -132,7 +142,11 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [FILL LINEAR]
+</TabItem>
+
+<TabItem value="FILL LINEAR" label="FILL LINEAR">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL LINEAR FROM host ALIGN '5s';
 
@@ -150,7 +164,11 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+------------------------------------+
 ```
 
-```sql [FILL Constant Value 6.0]
+</TabItem>
+
+<TabItem value="FILL Constant Value 6.0" label="FILL Constant Value 6.0">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
 
@@ -168,7 +186,9 @@ The result of each `FILL` option is as follows:
 +---------------------+-------+-------------------------------+
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 If there are multiple Range expressions but only one of them specifies the `Fill` option, the other Range expressions will use the `FILL NULL` method to fill in the missing time slots.
 The following two SQL statements are equivalent in output:
@@ -224,9 +244,11 @@ Suppose we have a tale `host` with the following data:
 
 The query results by each `TO` options shown below:
 
-:::code-group
+<Tabs>
 
-```sql [Default to timezone]
+<TabItem value="Default to timezone" label="Default to timezone">
+
+```sql
 
 -- Querying the database timezone using the MySQL protocol, currently in the UTC timezone
 > SELECT @@time_zone;
@@ -252,7 +274,11 @@ The query results by each `TO` options shown below:
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [NOW]
+</TabItem>
+
+<TabItem value="NOW" label="NOW">
+
+```sql
 
 -- If you want to align the origin time to the current time,
 -- use the `NOW` keyword.
@@ -269,7 +295,11 @@ The query results by each `TO` options shown below:
 
 ```
 
-```sql [Specific Timestamp]
+</TabItem>
+
+<TabItem value="Specific Timestamp" label="Specific Timestamp">
+
+```sql
 
 -- If you want to align the origin time to a specific timestamp,
 -- for example, "+08:00" Beijing time on December 1, 2023,
@@ -286,7 +316,9 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 If you want to query data for a specific time range, you can specify the timestamp using the `TO` keyword.
 For example, to query the daily minimum value of `val` between `00:45` and `06:45`,

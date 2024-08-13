@@ -179,9 +179,11 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408+08:00';
 All the timestamp column values in query results are formatted based on the client time zone.
 For example, the following code shows the same `ts` value formatted in the client time zones `UTC` and `+08:00` respectively.
 
-:::code-group
+<Tabs>
 
-```sql [timezone UTC]
+<TabItem value="timezone UTC" label="timezone UTC">
+
+```sql
 +-----------+---------------------+------+--------+
 | host      | ts                  | cpu  | memory |
 +-----------+---------------------+------+--------+
@@ -189,14 +191,20 @@ For example, the following code shows the same `ts` value formatted in the clien
 +-----------+---------------------+------+--------+
 ```
 
-```sql [timezone +08:00]
+</TabItem>
+
+<TabItem value="timezone +08:00" label="timezone +08:00">
+
+```sql
 +-----------+---------------------+------+--------+
 | host      | ts                  | cpu  | memory |
 +-----------+---------------------+------+--------+
 | 127.0.0.1 | 2024-01-01 00:00:00 |  0.5 |    0.1 |
 +-----------+---------------------+------+--------+
 ```
-:::
+
+</TabItem>
+</Tabs>
 
 
 ## Order By

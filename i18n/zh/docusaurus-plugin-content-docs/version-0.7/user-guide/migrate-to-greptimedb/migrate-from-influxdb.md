@@ -78,29 +78,39 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
-:::code-group
+<Tabs>
 
-```shell [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```shell
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-```shell [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```shell
 curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ### Telegraf
 
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 `http://<greptimedb-host>:4000` URL 添加到 Telegraf 配置中：
 
-:::code-group
+<Tabs>
 
-```toml [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```toml
 [[outputs.influxdb_v2]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -109,14 +119,20 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
   organization = ""
 ```
 
-```toml [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```toml
 [[outputs.influxdb]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
 ```
-:::
+
+</TabItem>
+</Tabs>
 
 ### 客户端库
 
@@ -125,9 +141,11 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 例如：
 
-:::code-group
+<Tabs>
 
-```js [Node.js]
+<TabItem value="Node.js" label="Node.js">
+
+```js
 'use strict'
 /** @module write
 **/
@@ -150,7 +168,11 @@ writeApi.writePoint(point1)
 
 ```
 
-```python [Python]
+</TabItem>
+
+<TabItem value="Python" label="Python">
+
+```python
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -172,7 +194,11 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 ```
 
-```go [Go]
+</TabItem>
+
+<TabItem value="Go" label="Go">
+
+```go
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
@@ -189,7 +215,11 @@ client.Close()
 
 ```
 
-```java [Java]
+</TabItem>
+
+<TabItem value="Java" label="Java">
+
+```java
 private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
@@ -209,7 +239,11 @@ public static void main(final String[] args) {
 }
 ```
 
-```php [PHP]
+</TabItem>
+
+<TabItem value="PHP" label="PHP">
+
+```php
 $client = new Client([
     "url" => "http://<greptimedb-host>:4000/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
@@ -228,7 +262,9 @@ $point = Point::measurement("weather")
 $writeApi->write($point);
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
 你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
@@ -248,7 +284,9 @@ PromQL（Prometheus 查询语言）允许用户实时选择和聚合时间序列
 假设你要查询过去 24 小时内记录的 `monitor` 表中的最大 CPU。
 在 InfluxQL 中，查询如下：
 
-```sql [InfluxQL]
+<TabItem value="InfluxQL" label="InfluxQL">
+
+```sql
 SELECT 
    MAX("cpu") 
 FROM 
@@ -259,21 +297,29 @@ GROUP BY
    time(1h)
 ```
 
+</TabItem>
+
 此 InfluxQL 查询计算 `monitor` 表中 `cpu`字段的最大值，
 其中时间大于当前时间减去 24 小时，结果以一小时为间隔进行分组。
 
 该查询在 Flux 中的表达如下：
 
-```flux [Flux]
+<TabItem value="Flux" label="Flux">
+
+```flux
 from(bucket: "public")
   |> range(start: -24h)
   |> filter(fn: (r) => r._measurement == "monitor")
   |> aggregateWindow(every: 1h, fn: max)
 ```
 
+</TabItem>
+
 在 GreptimeDB SQL 中，类似的查询为：
 
-```sql [SQL]
+<TabItem value="SQL" label="SQL">
+
+```sql
 SELECT
     ts,
     host,
@@ -285,6 +331,8 @@ WHERE
 ALIGN '1h' TO NOW
 ORDER BY ts DESC;
 ```
+
+</TabItem>
 
 在该 SQL 查询中，
 `RANGE` 子句确定了 AVG(cpu) 聚合函数的时间窗口，

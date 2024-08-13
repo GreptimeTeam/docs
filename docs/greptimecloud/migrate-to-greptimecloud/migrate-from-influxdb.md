@@ -12,7 +12,7 @@ You can find the GreptimeDB URL, database name, as well as the username and pass
 </div>
 
 <div id="write-data-http-api">
-:::code-group
+<Tabs>
 
 ```shell [InfluxDB line protocol v2]
 curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
@@ -25,14 +25,14 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-:::
+</Tabs>
 
 </div>
 
 <div id="write-data-telegraf">
 
 
-:::code-group
+<Tabs>
 
 ```toml [InfluxDB line protocol v2]
 [[outputs.influxdb_v2]]
@@ -50,12 +50,14 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
   username = "<greptime_user>"
   password = "<greptimedb_password>"
 ```
-:::
+</Tabs>
 
 </div>
 
 <div id="write-data-client-libs">
-:::code-group
+<Tabs>
+
+<TabItem value="Node.js" label="Node.js">
 
 ```js [Node.js]
 'use strict'
@@ -80,8 +82,11 @@ writeApi.writePoint(point1)
 
 ```
 
+</TabItem>
 
-```python [Python]
+<TabItem value="Python" label="Python">
+
+```python
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -104,7 +109,11 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 ```
 
-```go [Go]
+</TabItem>
+
+<TabItem value="Go" label="Go">
+
+```go
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
@@ -121,7 +130,11 @@ client.Close()
 
 ```
 
-```java [Java]
+</TabItem>
+
+<TabItem value="Java" label="Java">
+
+```java
 private static String url = "https://<host>/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
@@ -141,7 +154,11 @@ public static void main(final String[] args) {
 }
 ```
 
-```php [PHP]
+</TabItem>
+
+<TabItem value="PHP" label="PHP">
+
+```php
 $client = new Client([
     "url" => "https://<host>/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
@@ -160,7 +177,9 @@ $point = Point::measurement("weather")
 $writeApi->write($point);
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 </div>
 

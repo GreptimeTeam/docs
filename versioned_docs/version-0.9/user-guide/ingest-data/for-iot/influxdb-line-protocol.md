@@ -37,9 +37,11 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 GreptimeDB's support for the [InfluxDB line protocol](../for-iot/influxdb-line-protocol.md) ensures its compatibility with Telegraf.
 To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
-:::code-group
+<Tabs>
 
-```toml [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```toml
 [[outputs.influxdb_v2]]
   urls = ["http://<host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -48,7 +50,11 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
   organization = ""
 ```
 
-```toml [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```toml
 [[outputs.influxdb]]
   urls = ["http://<host>:4000/v1/influxdb"]
   database = "<db-name>"
@@ -56,7 +62,9 @@ To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
   password = "<greptimedb_password>"
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ## Data model
 

@@ -90,9 +90,11 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 
 如果运行 GreptimeDB 的计算机直接向互联网暴露服务，那么绑定 `0.0.0.0` 会十分危险，因为这将数据库实例暴露给互联网上的所有人。
 
-:::code-group
+<Tabs>
 
-```shell [二进制]
+<TabItem value="二进制" label="二进制">
+
+```shell
 ./greptime standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
@@ -100,7 +102,11 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
    --postgres-addr 0.0.0.0:4003
 ```
 
-```shell [Docker]
+</TabItem>
+
+<TabItem value="Docker" label="Docker">
+
+```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
@@ -111,7 +117,9 @@ greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
 --postgres-addr 0.0.0.0:4003
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
 

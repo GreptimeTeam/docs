@@ -37,9 +37,11 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms" 
 GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
-:::code-group
+<Tabs>
 
-```toml [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```toml
 [[outputs.influxdb_v2]]
   urls = ["http://<host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -48,7 +50,11 @@ GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也�
   organization = ""
 ```
 
-```toml [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```toml
 [[outputs.influxdb]]
   urls = ["http://<host>:4000/v1/influxdb"]
   database = "<db-name>"
@@ -56,7 +62,9 @@ GreptimeDB 支持 [InfluxDB 行协议](../for-iot/influxdb-line-protocol.md)也�
   password = "<greptimedb_password>"
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ## 数据模型
 

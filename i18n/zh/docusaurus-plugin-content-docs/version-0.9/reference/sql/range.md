@@ -76,9 +76,11 @@ ALIGN '5s' BY (host) FILL PREV;
 
 不同 `FILL` 选项的结果如下：
 
-:::code-group
+<Tabs>
 
-```sql [NO FILL]
+<TabItem value="NO FILL" label="NO FILL">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FROM host ALIGN '5s';
 
@@ -93,7 +95,11 @@ ALIGN '5s' BY (host) FILL PREV;
 
 ```
 
-```sql [FILL NULL]
+</TabItem>
+
+<TabItem value="FILL NULL" label="FILL NULL">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL NULL FROM host ALIGN '5s';
 
@@ -112,7 +118,11 @@ ALIGN '5s' BY (host) FILL PREV;
 
 ```
 
-```sql [FILL PREV]
+</TabItem>
+
+<TabItem value="FILL PREV" label="FILL PREV">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL PREV FROM host ALIGN '5s';
 
@@ -130,7 +140,11 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [FILL LINEAR]
+</TabItem>
+
+<TabItem value="FILL LINEAR" label="FILL LINEAR">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL LINEAR FROM host ALIGN '5s';
 
@@ -148,7 +162,11 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+-------+------------------------------------+
 ```
 
-```sql [FILL Constant Value 6.0]
+</TabItem>
+
+<TabItem value="FILL Constant Value 6.0" label="FILL Constant Value 6.0">
+
+```sql
 
 > SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
 
@@ -166,7 +184,9 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+-------+-------------------------------+
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 注意，如果存在多个 Range 表达式，只对其中的一个表达式使用了 FILL 方法的话，为了保持 SQL 输出行数的统一，其他 Range 表达式会被使用 FILL NULL 方法来填充缺失的时间片段。
 所以下面两句 SQL 在输出上是等价的：
@@ -219,9 +239,11 @@ ALIGN '5s';
 
 对不同的 `TO` 选项的查询结果如下：
 
-:::code-group
+<Tabs>
 
-```sql [Default to timezone]
+<TabItem value="Default to timezone" label="Default to timezone">
+
+```sql
 
 -- 使用 mysql 协议查询数据库时区，当前处于 UTC 时区
 > SELECT @@time_zone;
@@ -247,7 +269,11 @@ ALIGN '5s';
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [NOW]
+</TabItem>
+
+<TabItem value="NOW" label="NOW">
+
+```sql
 
 -- 如果你想要将查询范围的初始时间对齐到当前时间，
 -- 可以使用 `NOW` 关键字。
@@ -264,7 +290,11 @@ ALIGN '5s';
 
 ```
 
-```sql [Specific Timestamp]
+</TabItem>
+
+<TabItem value="Specific Timestamp" label="Specific Timestamp">
+
+```sql
 
 -- 如果你想要将查询范围的初始时间对其到特定的时间戳，
 -- 例如北京时间 2023 年 12 月 1 日，
@@ -281,7 +311,9 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 如果要查询特定时间范围内的数据，也可以使用 `TO` 关键字指定时间戳达到目的。
 例如，要查询 `val` 在 `00:45` 和 `06:45` 之间的每日最小值，

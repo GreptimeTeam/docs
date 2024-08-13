@@ -75,9 +75,11 @@ Take the following table as an example:
 
 The result of each `FILL` option is as follows:
 
-:::code-group
+<Tabs>
 
-```sql [NULL]
+<TabItem value="NULL" label="NULL">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
 
@@ -91,7 +93,11 @@ The result of each `FILL` option is as follows:
 
 ```
 
-```sql [PREV]
+</TabItem>
+
+<TabItem value="PREV" label="PREV">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
 
@@ -104,7 +110,11 @@ The result of each `FILL` option is as follows:
 +---------------------+--------------------------------------+
 ```
 
-```sql [LINEAR]
+</TabItem>
+
+<TabItem value="LINEAR" label="LINEAR">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
 
@@ -117,7 +127,11 @@ The result of each `FILL` option is as follows:
 +---------------------+----------------------------------------+
 ```
 
-```sql [Constant Value 6.0]
+</TabItem>
+
+<TabItem value="Constant Value 6.0" label="Constant Value 6.0">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
 
@@ -130,7 +144,9 @@ The result of each `FILL` option is as follows:
 +---------------------+-----------------------------------+
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ## `TO` Option
 
@@ -161,9 +177,11 @@ Suppose we have a tale `host` with the following data:
 
 The query results by each `TO` options shown below:
 
-:::code-group
+<Tabs>
 
-```sql [Default Unix time 0]
+<TabItem value="Default Unix time 0" label="Default Unix time 0">
+
+```sql
 
 -- If we do not specify the `TO` keyword,
 -- the default value Unix time 0 will be used as the origin alignment time. 
@@ -180,7 +198,11 @@ The query results by each `TO` options shown below:
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [NOW]
+</TabItem>
+
+<TabItem value="NOW" label="NOW">
+
+```sql
 
 -- If you want to align the origin time to the current time,
 -- use the `NOW` keyword.
@@ -197,7 +219,11 @@ The query results by each `TO` options shown below:
 
 ```
 
-```sql [Specific Timestamp]
+</TabItem>
+
+<TabItem value="Specific Timestamp" label="Specific Timestamp">
+
+```sql
 
 -- If you want to align the origin time to a specific timestamp,
 -- for example, "+08:00" Beijing time on December 1, 2023,
@@ -214,7 +240,9 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 If you want to query data for a specific time range, you can specify the timestamp using the `TO` keyword.
 For example, to query the daily minimum value of `val` between `00:45` and `06:45`,

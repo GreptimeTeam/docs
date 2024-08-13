@@ -5,20 +5,28 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <DocTemplate>
 
 <div id="write-data-http-api">
-:::code-group
+<Tabs>
 
-```shell [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```shell
 curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-```shell [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```shell
 curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 </div>
 
@@ -29,9 +37,11 @@ curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<gre
 </div>
 
 <div id="write-data-client-libs">
-:::code-group
+<Tabs>
 
-```js [Node.js]
+<TabItem value="Node.js" label="Node.js">
+
+```js
 'use strict'
 /** @module write
 **/
@@ -54,8 +64,12 @@ writeApi.writePoint(point1)
 
 ```
 
+</TabItem>
 
-```python [Python]
+
+<TabItem value="Python" label="Python">
+
+```python
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -78,7 +92,11 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 ```
 
-```go [Go]
+</TabItem>
+
+<TabItem value="Go" label="Go">
+
+```go
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
@@ -95,7 +113,11 @@ client.Close()
 
 ```
 
-```java [Java]
+</TabItem>
+
+<TabItem value="Java" label="Java">
+
+```java
 private static String url = "http://<host>:4000/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
@@ -115,7 +137,11 @@ public static void main(final String[] args) {
 }
 ```
 
-```php [PHP]
+</TabItem>
+
+<TabItem value="PHP" label="PHP">
+
+```php
 $client = new Client([
     "url" => "http://<host>:4000/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
@@ -134,7 +160,9 @@ $point = Point::measurement("weather")
 $writeApi->write($point);
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 </div>
 

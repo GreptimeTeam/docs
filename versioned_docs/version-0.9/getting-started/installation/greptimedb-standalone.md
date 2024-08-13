@@ -90,9 +90,11 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 
 If the computer running GreptimeDB is directly exposed to the internet, binding to `0.0.0.0` is dangerous and will expose the instance to everybody on the internet.
 
-:::code-group
+<Tabs>
 
-```shell [Binary]
+<TabItem value="Binary" label="Binary">
+
+```shell
 ./greptime standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
@@ -100,7 +102,11 @@ If the computer running GreptimeDB is directly exposed to the internet, binding 
    --postgres-addr 0.0.0.0:4003
 ```
 
-```shell [Docker]
+</TabItem>
+
+<TabItem value="Docker" label="Docker">
+
+```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
@@ -110,7 +116,9 @@ greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
 --mysql-addr 0.0.0.0:4002 \
 --postgres-addr 0.0.0.0:4003
 ```
-:::
+
+</TabItem>
+</Tabs>
 
 You can also refer to the [Configuration](/user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
 

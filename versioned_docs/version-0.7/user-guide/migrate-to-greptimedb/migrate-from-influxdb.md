@@ -78,29 +78,39 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
-:::code-group
+<Tabs>
 
-```shell [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```shell
 curl -X POST 'http://<greptimedb-host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-```shell [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```shell
 curl 'http://<greptimedb-host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ### Telegraf
 
 GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
 To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL into Telegraf configurations:
 
-:::code-group
+<Tabs>
 
-```toml [InfluxDB line protocol v2]
+<TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
+
+```toml
 [[outputs.influxdb_v2]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -109,14 +119,20 @@ To configure Telegraf, simply add `http://<greptimedb-host>:4000` URL into Teleg
   organization = ""
 ```
 
-```toml [InfluxDB line protocol v1]
+</TabItem>
+
+<TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
+
+```toml
 [[outputs.influxdb]]
   urls = ["http://<greptimedb-host>:4000/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
 ```
-:::
+
+</TabItem>
+</Tabs>
 
 ### Client libraries
 
@@ -125,9 +141,11 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-:::code-group
+<Tabs>
 
-```js [Node.js]
+<TabItem value="Node.js" label="Node.js">
+
+```js
 'use strict'
 /** @module write
 **/
@@ -150,8 +168,12 @@ writeApi.writePoint(point1)
 
 ```
 
+</TabItem>
 
-```python [Python]
+
+<TabItem value="Python" label="Python">
+
+```python
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -174,7 +196,11 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 ```
 
-```go [Go]
+</TabItem>
+
+<TabItem value="Go" label="Go">
+
+```go
 bucket := "<db-name>"
 org := ""
 token := "<greptime_user>:<greptimedb_password>"
@@ -191,7 +217,11 @@ client.Close()
 
 ```
 
-```java [Java]
+</TabItem>
+
+<TabItem value="Java" label="Java">
+
+```java
 private static String url = "http://<greptimedb-host>:4000/v1/influxdb";
 private static String org = "";
 private static String bucket = "<db-name>";
@@ -211,7 +241,11 @@ public static void main(final String[] args) {
 }
 ```
 
-```php [PHP]
+</TabItem>
+
+<TabItem value="PHP" label="PHP">
+
+```php
 $client = new Client([
     "url" => "http://<greptimedb-host>:4000/v1/influxdb",
     "token" => "<greptime_user>:<greptimedb_password>",
@@ -230,7 +264,9 @@ $point = Point::measurement("weather")
 $writeApi->write($point);
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 In addition to the languages previously mentioned,
 GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
@@ -251,7 +287,9 @@ or consumed by external systems via the [HTTP API](/user-guide/query-data/promql
 Suppose you are querying the maximum cpu usage from the `monitor` table, recorded over the past 24 hours.
 In influxQL, the query might look something like this:
 
-```sql [InfluxQL]
+<TabItem value="InfluxQL" label="InfluxQL">
+
+```sql
 SELECT 
    MAX("cpu") 
 FROM 
@@ -262,22 +300,30 @@ GROUP BY
    time(1h)
 ```
 
+</TabItem>
+
 This InfluxQL query computes the maximum value of the `cpu` field from the `monitor` table,
 considering only the data where the time is within the last 24 hours.
 The results are then grouped into one-hour intervals.
 
 In Flux, the query might look something like this:
 
-```flux [Flux]
+<TabItem value="Flux" label="Flux">
+
+```flux
 from(bucket: "public")
   |> range(start: -24h)
   |> filter(fn: (r) => r._measurement == "monitor")
   |> aggregateWindow(every: 1h, fn: max)
 ```
 
+</TabItem>
+
 The similar query in GreptimeDB SQL would be:
 
-```sql [SQL]
+<TabItem value="SQL" label="SQL">
+
+```sql
 SELECT
     ts,
     host,
@@ -289,6 +335,8 @@ WHERE
 ALIGN '1h' TO NOW
 ORDER BY ts DESC;
 ```
+
+</TabItem>
 
 In this SQL query,
 the `RANGE` clause determines the time window for the `AVG(cpu)` aggregation function,

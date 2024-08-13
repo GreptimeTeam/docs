@@ -72,9 +72,11 @@ ALIGN '5s' BY (host) FILL PREV;
 
 不同 `FILL` 选项的结果如下：
 
-:::code-group
+<Tabs>
 
-```sql [NULL]
+<TabItem value="NULL" label="NULL">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL NULL FROM host_cpu ALIGN '5s';
 
@@ -88,7 +90,11 @@ ALIGN '5s' BY (host) FILL PREV;
 
 ```
 
-```sql [PREV]
+</TabItem>
+
+<TabItem value="PREV" label="PREV">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL PREV FROM host_cpu ALIGN '5s';
 
@@ -101,7 +107,11 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+--------------------------------------+
 ```
 
-```sql [LINEAR]
+</TabItem>
+
+<TabItem value="LINEAR" label="LINEAR">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL LINEAR FROM host_cpu ALIGN '5s';
 
@@ -114,7 +124,11 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+----------------------------------------+
 ```
 
-```sql [Constant Value 6.0]
+</TabItem>
+
+<TabItem value="Constant Value 6.0" label="Constant Value 6.0">
+
+```sql
 
 > SELECT ts, min(cpu) RANGE '5s' FILL 6.0 FROM host_cpu ALIGN '5s';
 
@@ -127,7 +141,9 @@ ALIGN '5s' BY (host) FILL PREV;
 +---------------------+-----------------------------------+
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 ## `TO` 选项
 
@@ -159,9 +175,11 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
 对不同的 `TO` 选项的查询结果如下：
 
-:::code-group
+<Tabs>
 
-```sql [Default Unix time 0]
+<TabItem value="Default Unix time 0" label="Default Unix time 0">
+
+```sql
 
 -- 如果没有指定 `TO` 选项
 -- 会使用默认值 Unix 0 作为初始的对齐时间
@@ -178,7 +196,11 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 +---------------------+-------+----------------------------------+
 ```
 
-```sql [NOW]
+</TabItem>
+
+<TabItem value="NOW" label="NOW">
+
+```sql
 
 -- 如果你想要将查询范围的初始时间对齐到当前时间，
 -- 可以使用 `NOW` 关键字。
@@ -195,7 +217,11 @@ The default value of `TO` option is Unix time 0. Other valid `TO` options are:
 
 ```
 
-```sql [Specific Timestamp]
+</TabItem>
+
+<TabItem value="Specific Timestamp" label="Specific Timestamp">
+
+```sql
 
 -- 如果你想要将查询范围的初始时间对其到特定的时间戳，
 -- 例如北京时间 2023 年 12 月 1 日，
@@ -212,7 +238,9 @@ SELECT ts, host, min(val) RANGE '1d' FROM host ALIGN '1d' TO '2023-01-01T00:00:0
 
 ```
 
-:::
+</TabItem>
+
+</Tabs>
 
 如果要查询特定时间范围内的数据，也可以使用 `TO` 关键字指定时间戳达到目的。
 例如，要查询 `val` 在 `00:45` 和 `06:45` 之间的每日最小值，
