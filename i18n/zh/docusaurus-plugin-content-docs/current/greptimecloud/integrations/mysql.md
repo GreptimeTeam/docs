@@ -34,7 +34,7 @@ mysql --ssl -u <username> -p -h <host> -P 4002 -A <dbname>
 jdbc:mysql://<host>:4002/<dbname>?user=<username>&password=<password>
 ```
 
- JDBC 的时区设置请阅读[这篇文档](https://docs.greptime.cn/user-guide/client-libraries/java#时区)。
+<!-- JDBC 的时区设置请阅读[这篇文档](https://docs.greptime.cn/user-guide/ingest-data/for-iot/grpc-sdks/java#时区)。 -->
 
 如果你使用 Python 等语言的客户端，也可以复制以下 URL 进行连接
 

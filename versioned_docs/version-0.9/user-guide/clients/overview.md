@@ -24,7 +24,7 @@ Please refer to [Authentication](./authentication.md) to learn how to config use
 Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
 They offer functionality for writing and querying data,
 making it easier to integrate GreptimeDB into your applications.
-For more information, please refer to the [Client Libraries](/user-guide/client-libraries/overview.md) document.
+For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) document.
 
 ## Time zone
 
@@ -35,4 +35,4 @@ GreptimeDB converts timestamp values from the current time zone to UTC for stora
 and converts them back from UTC to the current time zone for retrieval.
 
 - To learn how to set the time zone, please refer to the documents for [MySQL](mysql.md#time-zone) and [PostgreSQL](postgresql.md#time-zone).
-- For information on how the time zone affects inserts and queries, please refer to the SQL documents in the [write data](../write-data/sql.md#time-zone) and [query data](../query-data/sql.md#time-zone) chapters.
+- For information on how the time zone affects inserts and queries, please refer to the SQL documents in the [Ingest Data](../ingest-data/for-iot/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) chapters.

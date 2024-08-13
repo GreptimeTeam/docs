@@ -1,73 +1,42 @@
 # GreptimeDB Cluster
 
-The GreptimeDB cluster can run in the [cluster](/contributor-guide/overview.md) mode to scale horizontally.
+The GreptimeDB cluster can run in cluster mode to scale horizontally.
 
-## Install gtctl and run playground
+## Use Docker Compose
 
-[gtctl](https://github.com/GreptimeTeam/gtctl) is the cli tool for managing the GreptimeDB cluster. You can use the following one-line installation(only for Linux and macOS):
+###  Prerequisites
 
-```
-curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/gtctl/develop/hack/install.sh |\
-  sh
-```
+Using Docker Compose is the easiest way to run the GreptimeDB cluster. Before starting, make sure you have already installed the Docker.
 
-:::tip Note
-
-For Windows users, due to the complexity and compatibility of running multiple components together, we strongly recommend enabling WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) on your operating system, and lunch a latest Ubuntu to proceed.
-
-:::
-
-Once the download is completed, the binary file `gtctl` will be stored in your current directory.
-
-The **fastest** way to experience the GreptimeDB cluster is to use the playground:
+### Step1: Download the YAML file for Docker Compose
 
 ```
-./gtctl playground
+wget https://raw.githubusercontent.com/GreptimeTeam/greptimedb/v0.10.0-nightly-20240722/docker/docker-compose/cluster-with-etcd.yaml
 ```
 
-When the command is executed, the playground will be started in the foreground. You can use `Ctrl+C` to stop the playground. The playground will deploy the minimal GreptimeDB cluster in bare-metal mode on your host.
+### Step2: Start the cluster
 
-If everything is ok, you can visit the Dashboard via `http://localhost:4000/dashboard/`.
+```
+GREPTIMEDB_VERSION=v0.10.0-nightly-20240722 \
+  docker compose -f ./cluster-with-etcd.yaml up 
+```
 
-For more details, please refer to [gtctl operations](/reference/gtctl.md).
+If the cluster starts successfully, it will listen on 4000-4003. , you can access the cluster by referencing the [Quick Start](../quick-start.md).
+
+### Clean up
+
+You can use the following command to stop the cluster:
+
+```
+docker compose -f ./cluster-with-etcd.yaml down
+```
+
+By default, the data will be stored in `/tmp/greptimedb-cluster-docker-compose`. You also can remove the data directory if you want to clean up the data.
 
 ## Deploy the GreptimeDB cluster in Kubernetes
 
-If your Kubernetes cluster is ready(a 1.18 or higher version is required), you can use the following command to deploy the GreptimeDB cluster:
-
-```
-./gtctl cluster create mycluster
-```
-
-After the creation is completed, you can use the following command to connect the cluster with MySQL protocol:
-
-```
-./gtctl cluster connect mycluster
-```
-
-You also can use [Helm Charts](/user-guide/operations/deploy-on-kubernetes/overview.md) to deploy the cluster.
-
-:::tip Note
-
-You can use the [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create the Kubernetes:
-
-```
-kind create cluster
-```
-
-:::
-
-When the cluster is ready on your Kubernetes, you can use the following commands to expose all the service ports(make sure you already install [kubectl](https://kubernetes.io/docs/tasks/tools/)):
-
-```
-kubectl port-forward svc/mycluster-frontend \
-  4000:4000 \
-  4001:4001 \
-  4002:4002 \
-  4003:4003
-```
+Please refer to [Deploy on Kubernetes](/user-guide/operations/deploy-on-kubernetes/overview.md).
 
 ## Next Steps
 
-Learn how to write data to GreptimeDB in the [Quick Start](../quick-start.md).
+Learn how to write data to GreptimeDB in [Quick Start](../quick-start.md).

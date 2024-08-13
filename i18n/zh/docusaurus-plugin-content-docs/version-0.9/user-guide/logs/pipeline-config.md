@@ -133,7 +133,7 @@ Dissect 模式支持以下修饰符：
 | `+` 和 `/n` | 按照指定的顺序将两个或多个字段追加到一起 | `%{+key/2} %{+key/1}` |
 | `->`        | 忽略右侧的任何重复字符                   | `%{key1->} %{key2->}` |
 | `?`         | 忽略匹配的值                             | `%{?key}`             |
-| `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&value}`   |
+| `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&key}`   |
 
 #### `dissect` 示例
 
@@ -146,7 +146,7 @@ Dissect 模式支持以下修饰符：
 使用以下 Dissect 模式：
 
 ```
-"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key7} %{&key8}"
+"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key} %{&key}"
 ```
 
 将得到以下结果：
@@ -245,7 +245,7 @@ processors:
 如上所示，`letter` Processor 的配置包含以下字段：
 
 - `fields`: 需要转换的字段名列表。
-- `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。
+- `method`: 转换方法，支持 `upper`, `lower` ，`capital`。默认为 `lower`。注意 `capital` 只会将第一个字母转换为大写。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
 ### `regex`

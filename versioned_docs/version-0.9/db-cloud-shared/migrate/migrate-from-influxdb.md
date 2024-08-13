@@ -5,12 +5,12 @@ This guide will help you understand the differences between the data models of G
 While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](/user-guide/concepts/data-model.md) of GreptimeDB is something new to explore.
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
-- Both solutions are [schemaless](/user-guide/write-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- Both solutions are [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
 and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/write-data/influxdb-line.md).
+- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md).
 - GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
 
 Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
@@ -67,9 +67,9 @@ Before you begin writing or querying data, it's crucial to comprehend the differ
 - **Organization**: Unlike InfluxDB, GreptimeDB does not require an organization for connection.
 - **Bucket**: In InfluxDB, a bucket serves as a container for time series data, which is equivalent to the database name in GreptimeDB.
 
-{props.children.length?props.children.filter(c => c.props.id == 'get-database-connection-information'):props.children.props.id=='get-database-connection-information'?props.children:null}
+<InjectContent id="get-database-connection-information" content={props.children}/>
 
-## Write data
+## Ingest data
 
 GreptimeDB is compatible with both v1 and v2 of InfluxDB's line protocol format,
 facilitating a seamless migration from InfluxDB to GreptimeDB.
@@ -78,14 +78,14 @@ facilitating a seamless migration from InfluxDB to GreptimeDB.
 
 To write a measurement to GreptimeDB, you can use the following HTTP API request:
 
-{props.children.length?props.children.filter(c => c.props.id == 'write-data-http-api'):props.children.props.id=='write-data-http-api'?props.children:null}
+<InjectContent id="write-data-http-api" content={props.children}/>
 
 ### Telegraf
 
 GreptimeDB's support for the Influxdb line protocol ensures its compatibility with Telegraf.
 To configure Telegraf, simply add GreptimeDB URL into Telegraf configurations:
 
-{props.children.length?props.children.filter(c => c.props.id == 'write-data-telegraf'):props.children.props.id=='write-data-telegraf'?props.children:null}
+<InjectContent id="write-data-telegraf" content={props.children}/>
 
 ### Client libraries
 
@@ -94,7 +94,7 @@ Simply include the URL and authentication details in the client configuration.
 
 For example:
 
-{props.children.length?props.children.filter(c => c.props.id == 'write-data-client-libs'):props.children.props.id=='write-data-client-libs'?props.children:null}
+<InjectContent id="write-data-client-libs" content={props.children}/>
 
 In addition to the languages previously mentioned,
 GreptimeDB also accommodates client libraries for other languages supported by InfluxDB.
@@ -170,7 +170,7 @@ For more information on PromQL, please refer to the [PromQL](https://prometheus.
 
 ## Visualize data
 
-{props.children.length?props.children.filter(c => c.props.id == 'visualize-data'):props.children.props.id=='visualize-data'?props.children:null}
+<InjectContent id="visualize-data" content={props.children}/>
 
 ## Migrate data
 
@@ -187,7 +187,7 @@ For a seamless migration of data from InfluxDB to GreptimeDB, you can follow the
 Writing data to both GreptimeDB and InfluxDB simultaneously is a practical strategy to avoid data loss during migration.
 By utilizing InfluxDB's [client libraries](#client-libraries),
 you can set up two client instances - one for GreptimeDB and another for InfluxDB.
-For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [write data](#write-data) section.
+For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.
 
 If retaining all historical data isn't necessary,
 you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data. 
@@ -309,4 +309,4 @@ export GREPTIME_DB=<db-name>
 
 Import the data from the files into GreptimeDB:
 
-{props.children.length?props.children.filter(c => c.props.id == 'import-data-shell'):props.children.props.id=='import-data-shell'?props.children:null}
+<InjectContent id="import-data-shell" content={props.children}/>

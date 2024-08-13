@@ -3,9 +3,9 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
 const sidebars: SidebarsConfig = {
   docs: [
     {
-      type: 'doc',
-      className: 'hidden',
-      id: 'index',
+      "type": "doc",
+      "className": "hidden",
+      "id": "index"
     },
     {
       type: 'category',
@@ -45,6 +45,57 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Ingest Data',
+          items: [
+            'user-guide/ingest-data/overview',
+            {
+              type: 'category',
+              label: 'For Observerbility',
+              items: [
+                'user-guide/ingest-data/for-observerbility/overview',
+                'user-guide/ingest-data/for-observerbility/prometheus',
+                'user-guide/ingest-data/for-observerbility/vector',
+                'user-guide/ingest-data/for-observerbility/opentelemetry',
+                'user-guide/ingest-data/for-observerbility/influxdb-line-protocol',
+              ],
+            },
+            {
+              type: 'category',
+              label: 'For IoT',
+              items: [
+                'user-guide/ingest-data/for-iot/overview',
+                'user-guide/ingest-data/for-iot/sql',
+                {
+                  type: 'category',
+                  label: 'gRPC SDKs',
+                  items: [
+                    'user-guide/ingest-data/for-iot/grpc-sdks/overview',
+                    'user-guide/ingest-data/for-iot/grpc-sdks/go',
+                    'user-guide/ingest-data/for-iot/grpc-sdks/java',
+                  ],
+                },
+                'user-guide/ingest-data/for-iot/influxdb-line-protocol',
+                'user-guide/ingest-data/for-iot/emqx',
+                'user-guide/ingest-data/for-iot/opentsdb',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Query Data',
+          items: [
+            'user-guide/query-data/overview',
+            'user-guide/query-data/sql',
+            'user-guide/query-data/promql',
+            'user-guide/query-data/view',
+            'user-guide/query-data/cte',
+            'user-guide/query-data/query-external-data',
+          ],
+        },
+        { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview'] },
+        {
+          type: 'category',
           label: 'Clients',
           items: [
             'user-guide/clients/overview',
@@ -61,34 +112,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/clients/emqx',
           ],
         },
-        {
-          type: 'category',
-          label: 'Migrate to GreptimeDB',
-          items: ['user-guide/migrate-to-greptimedb/migrate-from-influxdb'],
-        },
-        'user-guide/table-management',
-        {
-          type: 'category',
-          label: 'Write Data',
-          items: [
-            'user-guide/write-data/overview',
-            'user-guide/write-data/prometheus',
-            'user-guide/write-data/sql',
-            'user-guide/write-data/influxdb-line',
-            'user-guide/write-data/opentsdb',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Query Data',
-          items: [
-            'user-guide/query-data/overview',
-            'user-guide/query-data/sql',
-            'user-guide/query-data/promql',
-            'user-guide/query-data/view',
-            'user-guide/query-data/query-external-data',
-          ],
-        },
+        { type: 'category', label: 'Migrate to GreptimeDB', items: ['user-guide/migrate-to-greptimedb/migrate-from-influxdb'] },
         {
           type: 'category',
           label: 'Continuous Aggregation',
@@ -112,12 +136,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/logs/query-logs',
           ],
         },
-        {
-          type: 'category',
-          label: 'Client Libraries',
-          items: ['user-guide/client-libraries/overview', 'user-guide/client-libraries/go', 'user-guide/client-libraries/java'],
-        },
         'user-guide/cluster',
+        'user-guide/table-management',
         {
           type: 'category',
           label: 'Operations',
@@ -144,6 +164,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/operations/disaster-recovery/overview',
                 'user-guide/operations/disaster-recovery/back-up-&-restore-data',
                 'user-guide/operations/disaster-recovery/dr-solution-based-on-active-active-failover',
+                'user-guide/operations/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
             {
@@ -153,6 +174,7 @@ const sidebars: SidebarsConfig = {
             },
             'user-guide/operations/region-migration',
             'user-guide/operations/region-failover',
+            'user-guide/operations/compaction',
             'user-guide/operations/monitoring',
             'user-guide/operations/tracing',
           ],
@@ -205,11 +227,7 @@ const sidebars: SidebarsConfig = {
             },
           ],
         },
-        {
-          type: 'category',
-          label: 'Migrate to GreptimeCloud',
-          items: ['greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb'],
-        },
+        { type: 'category', label: 'Migrate to GreptimeCloud', items: ['greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb'] },
         {
           type: 'category',
           label: 'Usage & Billing',
@@ -271,15 +289,13 @@ const sidebars: SidebarsConfig = {
             'reference/sql/delete',
             'reference/sql/show',
             'reference/sql/tql',
+            'reference/sql/truncate',
             'reference/sql/create',
             'reference/sql/describe_table',
+            'reference/sql/with',
             'reference/sql/alter',
             'reference/sql/explain',
-            {
-              type: 'category',
-              label: 'Functions',
-              items: ['reference/sql/functions/overview', 'reference/sql/functions/df-functions'],
-            },
+            { type: 'category', label: 'Functions', items: ['reference/sql/functions/overview', 'reference/sql/functions/df-functions'] },
             'reference/sql/compatibility',
             {
               type: 'category',
@@ -375,15 +391,11 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
-      type: 'link',
-      label: 'Release Notes',
-      href: '/release-notes'
+      "type": "link",
+      "label": "Release Notes",
+      "href": "/release-notes"
     },
-    {
-      type: 'category',
-      label: 'FAQ and Others',
-      items: ['faq-and-others/overview', 'faq-and-others/faq'],
-    },
+    { type: 'category', label: 'FAQ and Others', items: ['faq-and-others/overview', 'faq-and-others/faq'] },
   ],
 }
 

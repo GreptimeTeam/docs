@@ -6,11 +6,11 @@
 GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
-- 两者都是[schemaless 写入](/user-guide/write-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- 两者都是[schemaless 写入](/user-guide/ingest-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
-- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/write-data/influxdb-line.md) 的时间戳数据类型。
+- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) 的时间戳数据类型。
 - GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
 
 以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
@@ -67,7 +67,7 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 - **Organization**：GreptimeDB 中没有组织。
 - **Bucket**：在 InfluxDB 中，bucket 是时间序列数据的容器，与 GreptimeDB 中的数据库名称相同。
 
-{props.children.filter(c => c.props.id == 'get-database-connection-information')}
+<InjectContent id="get-database-connection-information" content={props.children}/>
 
 ## 写入数据
 
@@ -78,14 +78,14 @@ GreptimeDB 兼容 InfluxDB 的行协议格式，包括 v1 和 v2。
 
 你可以使用以下 HTTP API 请求将 measurement 写入 GreptimeDB：
 
-{props.children.filter(c => c.props.id == 'write-data-http-api')}
+<InjectContent id="write-data-http-api" content={props.children}/>
 
 ### Telegraf
 
 GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容。
 要配置 Telegraf，只需将 GreptimeDB 的 URL 添加到 Telegraf 配置中：
 
-{props.children.filter(c => c.props.id == 'write-data-telegraf')}
+<InjectContent id="write-data-telegraf" content={props.children}/>
 
 ### 客户端库
 
@@ -94,7 +94,7 @@ GreptimeDB 支持 InfluxDB 行协议也意味着 GreptimeDB 与 Telegraf 兼容�
 
 例如：
 
-{props.children.filter(c => c.props.id == 'write-data-client-libs')}
+<InjectContent id="write-data-client-libs" content={props.children}/>
 
 除了上述语言之外，GreptimeDB 还支持其他 InfluxDB 支持的客户端库。
 你可以通过参考上面提供的连接信息代码片段，使用你喜欢的语言编写代码。
@@ -169,7 +169,7 @@ avg_over_time(monitor[1h])
 
 ## 可视化数据
 
-{props.children.filter(c => c.props.id == 'visualize-data')}
+<InjectContent id="visualize-data" content={props.children}/>
 
 ## 迁移数据
 
@@ -308,4 +308,4 @@ export GREPTIME_DB=<db-name>
 
 将数据导入到 GreptimeDB：
 
-{props.children.filter(c => c.props.id == 'import-data-shell')}
+<InjectContent id="import-data-shell" content={props.children}/>

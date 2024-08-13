@@ -49,7 +49,7 @@ Break down the query step by step:
 Next, let's analyze the key features of GreptimeDB demonstrated by this query example:
 
 - **Unified Storage:** GreptimeDB is the time series database to store and analyze both metrics and [logs](/user-guide/logs/overview.md). The simplified architecture and data consistency enhances the ability to analyze and troubleshoot issues, and can lead to cost savings and improved system performance.
-- **Unique Data Model:** The unique [data model](/user-guide/concepts/data-model.md) with time index and full-text index greatly improves query performance and has stood the test of large data sets. It not only supports metric [insertion](/user-guide/write-data/overview.md) and [query](/user-guide/query-data/overview.md), but also provides a very friendly way to [write](/user-guide/logs/write-logs.md) and [query](/user-guide/logs/query-logs.md) logs.
+- **Unique Data Model:** The unique [data model](/user-guide/concepts/data-model.md) with time index and full-text index greatly improves query performance and has stood the test of large data sets. It not only supports metric [insertion](/user-guide/ingest-data/overview.md) and [query](/user-guide/query-data/overview.md), but also provides a very friendly way to [write](/user-guide/logs/write-logs.md) and [query](/user-guide/logs/query-logs.md) logs.
 - **Range Queries:** GreptimeDB supports [range queries](/user-guide/query-data/sql.md#aggregate-data-by-time-window) to evaluate [expressions](/reference/sql/functions/overview.md) over time, providing insights into metric trends. You can also [continuously aggregate](/user-guide/continuous-aggregation/overview.md) data for further analysis.
 - **SQL and Multiple Protocols:** GreptimeDB uses SQL as the main query language and supports [multiple protocols](/user-guide/clients/overview.md#protocols), which greatly reduces the learning curve and development cost. You can easily migrate from Prometheus or [Influxdb to GreptimeDB](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md), or just start with GreptimeDB.
 - **JOIN Operations:** The data model of GreptimeDB's time series tables enables it to support [JOIN operations](/reference/sql/join.md) on metrics and logs.
@@ -62,8 +62,8 @@ Having understood these features, you can now go directly to exploring the featu
 * [Clients](./clients/overview.md)
 * [Table Management](./table-management.md)
 * [Migrate to GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
-* [Write data](./write-data/overview.md)
-* [Query data](./query-data/overview.md)
+* [Ingest data](./ingest-data/overview.md)
+* [Query Data](./query-data/overview.md)
 * [Continuous Aggregation](./continuous-aggregation/overview.md)
 * [Python Scripts](./python-scripts/overview.md)
 * [Operations](./operations/overview.md)

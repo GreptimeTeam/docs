@@ -8,11 +8,11 @@
 
 ## GreptimeDB 支持更新数据吗？
 
-支持，请参考[更新数据](/user-guide/write-data/overview.md#更新数据)获取更多信息。
+支持，请参考[更新数据](/user-guide/manage-data/overview.md#更新数据)获取更多信息。
 
 ## GreptimeDB 支持删除数据吗？
 
-支持，请参考[删除数据](/user-guide/write-data/overview.md#删除数据)获取更多信息。
+支持，请参考[删除数据](/user-guide/ingest-data/overview.md#删除数据)获取更多信息。
 
 ## 我可以为不同的表或指标设置 TTL 或保留策略吗？
 

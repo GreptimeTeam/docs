@@ -93,7 +93,7 @@ url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
 ```
 
 GreptimeDB 兼容 Prometheus Remote-Write 协议。
-请参考 [Prometheus Remote-Write](/user-guide/write-data/prometheus.md) 获取更多信息。
+请参考 [Prometheus Remote-Write](/user-guide/ingest-data/for-observerbility/prometheus.md) 获取更多信息。
 
 ## 指标详情
 

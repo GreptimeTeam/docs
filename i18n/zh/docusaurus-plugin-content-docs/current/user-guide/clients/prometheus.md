@@ -8,7 +8,7 @@ GreptimeDB 以表的形式组织数据，可以将其视为列的组合。其中
 
 ## 存储
 
-请参考 [写入数据](../write-data/prometheus.md)。
+请参考 [写入数据](../ingest-data/for-observerbility/prometheus.md)。
 
 ## Prometheus Query Language
 

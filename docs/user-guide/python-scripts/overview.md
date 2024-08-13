@@ -6,8 +6,8 @@ We think the python scripts in GreptimeDB is a perfect replacement for stored pr
 
 * [Getting started](./getting-started.md)
 * [Function](./define-function.md)
-* [Query data](./query-data.md)
-* [Write data](./write-data.md)
+* [Query Data](./query-data.md)
+* [Ingest Data](./write-data.md)
 * [Data types](./data-types.md)
 * [API](./api.md)
 

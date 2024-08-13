@@ -246,7 +246,7 @@ GreptimeDB 提供一些管理数据库和数据的函数：
 * `flush_region(region_id)` 通过 Region Id 将 Region 的内存表刷写到 SST 文件。可以通过 [PARTITIONS](../information-schema/partitions.md) 表查找一张表的所有 Region Id。
 * `compact_table(table_name)` 通过表名为表发起compaction 任务。
 * `compact_region(region_id)` 通过 Region Id 为 Region 发起 compaction 任务。
-* `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration.md)。
+* `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration)。
 * `procedure_state(procedure_id)` 通过 Procedure Id 查询 Procedure 状态。
 * `flush_flow(flow_name)` 通过 Flow 名称将 Flow 的输出刷写到结果表。
 
@@ -256,5 +256,5 @@ GreptimeDB 提供一些管理数据库和数据的函数：
 select flush_table("test");
 
 -- 为表 test 安排压缩任务 --
-select compact_table("test");
+select compact_table("test".md);
 ```
