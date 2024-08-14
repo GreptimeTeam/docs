@@ -36,7 +36,7 @@ remote_write:
 ```yaml
 services:
   grafana:
-    image: grafana/grafana-oss:<%grafana-version%>
+    image: grafana/grafana-oss:9.5.15
     container_name: grafana
     ports:
       - 127.0.0.1:3000:3000

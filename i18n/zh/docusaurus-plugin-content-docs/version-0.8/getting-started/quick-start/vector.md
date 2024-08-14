@@ -31,7 +31,7 @@ dbname = "public"
 ```yaml
 services:
   grafana:
-    image: grafana/grafana-oss:<%grafana-version%>
+    image: grafana/grafana-oss:9.5.15
     container_name: grafana
     ports:
       - 127.0.0.1:3000:3000
@@ -49,7 +49,7 @@ services:
       - ./greptimedb:/tmp/greptimedb
 
   vector:
-    image: timberio/vector:<%vector-version%>
+    image: timberio/vector:0.33.0-debian
     container_name: vector
     ports:
       - 127.0.0.1:8686:8686
