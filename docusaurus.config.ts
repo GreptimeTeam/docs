@@ -2,13 +2,43 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const locale = process.env.DOC_LANG || 'en'
+
+const metaMap = {
+  'en': [
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://docs.greptime.com/' },
+    { property: 'og:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' },
+    { property: 'og:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' },
+    { property: 'twitter:card', content: 'summary_large_image' },
+    { property: 'twitter:url', content: 'https://greptime.com/' },
+    { property: 'twitter:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' },
+    { property: 'twitter:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' },
+    { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
+    { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
+
+  ],
+  'zh': [
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://docs.greptime.cn/' },
+    { property: 'og:title', content: '分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'og:description', content: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'twitter:card', content: 'summary_large_image' },
+    { property: 'twitter:url', content: 'https://greptime.com/' },
+    { property: 'twitter:title', content: '分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'twitter:description', content: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
+    { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
+  ]
+}
+
 const config: Config = {
   title: 'GreptimeDB',
   tagline: 'Dinosaurs are cool',
   favicon: '/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://docs.greptime.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -25,7 +55,7 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: process.env.DOC_LANG || 'en',
+    defaultLocale: locale,
     locales: ['en', 'zh'],
   },
 
@@ -83,7 +113,8 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+
+    metadata: metaMap[locale],
     navbar: {
       title: 'GreptimeDB',
       logo: {
