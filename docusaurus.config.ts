@@ -152,30 +152,30 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
       additionalLanguages: ['java'],
     },
-    algolia: {
-      // The application ID provided by Algolia
-      appId: 'SRGB68Y6CW',
+    // algolia: {
+    //   // The application ID provided by Algolia
+    //   appId: 'SRGB68Y6CW',
 
-      // Public API key: it is safe to commit it
-      apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
+    //   // Public API key: it is safe to commit it
+    //   apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
 
-      indexName: 'greptime',
+    //   indexName: 'greptime',
 
-      // Optional: see doc section below
-      contextualSearch: false,
+    //   // Optional: see doc section below
+    //   contextualSearch: false,
 
 
-      // Optional: Algolia search parameters
-      searchParameters: {},
+    //   // Optional: Algolia search parameters
+    //   searchParameters: {},
 
-      // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: 'search',
+    //   // Optional: path for search page that enabled by default (`false` to disable it)
+    //   searchPagePath: 'search',
 
-      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-      insights: false,
+    //   // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+    //   insights: false,
       
 
-    },
+    // },
   } satisfies Preset.ThemeConfig,
 };
 
