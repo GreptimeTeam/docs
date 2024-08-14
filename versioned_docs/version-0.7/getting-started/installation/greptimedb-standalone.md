@@ -43,7 +43,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+greptime/greptimedb:v0.7.2 standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
@@ -65,7 +65,7 @@ You can:
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -p 4242:4242 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+   greptime/greptimedb:v0.7.2 standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \

@@ -11,13 +11,13 @@ Using Docker Compose is the easiest way to run the GreptimeDB cluster. Before st
 ### Step1: Download the YAML file for Docker Compose
 
 ```
-wget https://raw.githubusercontent.com/GreptimeTeam/greptimedb/v0.10.0-nightly-20240722/docker/docker-compose/cluster-with-etcd.yaml
+wget https://raw.githubusercontent.com/GreptimeTeam/greptimedb/v0.9.1/docker/docker-compose/cluster-with-etcd.yaml
 ```
 
 ### Step2: Start the cluster
 
 ```
-GREPTIMEDB_VERSION=v0.10.0-nightly-20240722 \
+GREPTIMEDB_VERSION=v0.9.1 \
   docker compose -f ./cluster-with-etcd.yaml up 
 ```
 

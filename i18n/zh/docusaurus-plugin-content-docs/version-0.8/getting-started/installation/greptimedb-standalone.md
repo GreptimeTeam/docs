@@ -45,7 +45,7 @@ curl -fsSL \
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+greptime/greptimedb:v0.8.2 standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
@@ -72,7 +72,7 @@ greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+   greptime/greptimedb:v0.8.2 standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
@@ -110,7 +110,7 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+greptime/greptimedb:v0.8.2 standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \

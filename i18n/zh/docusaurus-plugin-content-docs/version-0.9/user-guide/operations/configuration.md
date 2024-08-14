@@ -51,11 +51,11 @@ greptime standalone start -c standalone.example.toml
 以下是每个 GreptimeDB 组件的示例配置文件，包括所有可用配置项。
 在实际场景中，你只需要配置所需的选项，不需要像示例文件中那样配置所有选项。
 
-- [独立模式](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/standalone.example.toml)
-- [前端](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/frontend.example.toml)
-- [数据节点](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/datanode.example.toml)
-- [流节点](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/flownode.example.toml)
-- [元服务](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/metasrv.example.toml)
+- [独立模式](https://github.com/GreptimeTeam/greptimedb/blob/v0.9.1/config/standalone.example.toml)
+- [前端](https://github.com/GreptimeTeam/greptimedb/blob/v0.9.1/config/frontend.example.toml)
+- [数据节点](https://github.com/GreptimeTeam/greptimedb/blob/v0.9.1/config/datanode.example.toml)
+- [流节点](https://github.com/GreptimeTeam/greptimedb/blob/v0.9.1/config/flownode.example.toml)
+- [元服务](https://github.com/GreptimeTeam/greptimedb/blob/v0.9.1/config/metasrv.example.toml)
 
 ### 环境变量
 

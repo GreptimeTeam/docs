@@ -38,7 +38,7 @@ services:
       - 3000:3000
 
   greptime:
-    image: greptime/greptimedb:v0.10.0-nightly-20240722
+    image: greptime/greptimedb:v0.7.2
     container_name: greptimedb
     ports:
       - 4000:4000
