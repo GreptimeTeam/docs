@@ -145,6 +145,8 @@ const config: Config = {
           editUrl:
             'https://github.com/GreptimeTeam/blog/',
           routeBasePath: 'release-notes',
+          blogSidebarCount: 'ALL',
+          blogSidebarTitle: 'Release Notes'
         },
         theme: {
           customCss: './src/css/custom.css',

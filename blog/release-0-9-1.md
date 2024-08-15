@@ -1,3 +1,7 @@
+---
+date: 2024-08-02
+---
+
 # v0.9.1
 
 Release date: August 02, 2024

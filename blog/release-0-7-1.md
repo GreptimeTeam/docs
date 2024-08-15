@@ -1,3 +1,7 @@
+---
+date: 2024-03-14
+---
+
 # v0.7.1
 
 Release date: March 14, 2024
