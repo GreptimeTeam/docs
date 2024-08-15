@@ -146,5 +146,13 @@
   "version.label": {
     "message": "0.7",
     "description": "The label for version 0.7"
+  },
+  "sidebar.docs.category.Quick Start": {
+    "message": "立即开始",
+    "description": "The label for category Quick Start in sidebar docs"
+  },
+  "sidebar.docs.category.Benchmarks": {
+    "message": "Benchmarks",
+    "description": "The label for category Benchmarks in sidebar docs"
   }
 }

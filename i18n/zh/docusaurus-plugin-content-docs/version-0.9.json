@@ -146,5 +146,25 @@
   "version.label": {
     "message": "0.9",
     "description": "The label for version 0.9"
+  },
+  "sidebar.docs.category.Ingest Data": {
+    "message": "写入数据",
+    "description": "The label for category Ingest Data in sidebar docs"
+  },
+  "sidebar.docs.category.For Observerbility": {
+    "message": "可观测场景",
+    "description": "The label for category For Observerbility in sidebar docs"
+  },
+  "sidebar.docs.category.For IoT": {
+    "message": "物联网（IoT）场景",
+    "description": "The label for category For IoT in sidebar docs"
+  },
+  "sidebar.docs.category.gRPC SDKs": {
+    "message": "gRPC SDKs",
+    "description": "The label for category gRPC SDKs in sidebar docs"
+  },
+  "sidebar.docs.category.Manage Data": {
+    "message": "管理数据",
+    "description": "The label for category Manage Data in sidebar docs"
   }
 }

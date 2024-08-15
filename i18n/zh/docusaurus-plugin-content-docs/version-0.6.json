@@ -146,5 +146,25 @@
   "version.label": {
     "message": "0.6",
     "description": "The label for version 0.6"
+  },
+  "sidebar.docs.category.Quick Start": {
+    "message": "Quick Start",
+    "description": "The label for category Quick Start in sidebar docs"
+  },
+  "sidebar.docs.category.SDK": {
+    "message": "SDK",
+    "description": "The label for category SDK in sidebar docs"
+  },
+  "sidebar.docs.category.Benchmarks": {
+    "message": "Benchmarks",
+    "description": "The label for category Benchmarks in sidebar docs"
+  },
+  "sidebar.docs.category.Changelog": {
+    "message": "Changelog",
+    "description": "The label for category Changelog in sidebar docs"
+  },
+  "sidebar.docs.category.Biweekly Reports": {
+    "message": "Biweekly Reports",
+    "description": "The label for category Biweekly Reports in sidebar docs"
   }
 }
