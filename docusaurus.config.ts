@@ -32,6 +32,52 @@ const metaMap = {
   ]
 }
 
+
+const algoliaMap = {
+  'en':  {
+      // The application ID provided by Algolia
+      appId: 'SRGB68Y6CW',
+
+      // Public API key: it is safe to commit it
+      apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
+
+      indexName: 'greptime',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      insights: false,
+    },
+    'zh': {
+      // The application ID provided by Algolia
+      appId: 'SCVT6GSUZV',
+
+      // Public API key: it is safe to commit it
+      apiKey: '450bf5e5a3c1ecd3c4154530e25678c5',
+
+      indexName: 'greptime',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      insights: false,
+    }
+}
+
 const config: Config = {
   title: 'GreptimeDB',
   tagline: 'Dinosaurs are cool',
@@ -152,30 +198,8 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
       additionalLanguages: ['java'],
     },
-    // algolia: {
-    //   // The application ID provided by Algolia
-    //   appId: 'SRGB68Y6CW',
-
-    //   // Public API key: it is safe to commit it
-    //   apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
-
-    //   indexName: 'greptime',
-
-    //   // Optional: see doc section below
-    //   contextualSearch: false,
-
-
-    //   // Optional: Algolia search parameters
-    //   searchParameters: {},
-
-    //   // Optional: path for search page that enabled by default (`false` to disable it)
-    //   searchPagePath: 'search',
-
-    //   // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-    //   insights: false,
-      
-
-    // },
+    // algolia: algoliaMap[locale]
+   //,
   } satisfies Preset.ThemeConfig,
 };
 
