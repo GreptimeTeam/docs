@@ -33,6 +33,11 @@ const metaMap = {
 }
 
 
+const hostMap = {
+  'en': 'https://greptime.com',
+  'zh': 'https://greptime.cn'
+}
+
 const algoliaMap = {
   'en':  {
       // The application ID provided by Algolia
@@ -171,11 +176,11 @@ const config: Config = {
       },
       items: [
         {
-          to: 'https://greptime.com',
+          to: hostMap[locale],
           position: 'left',
           label: 'Home',
         },
-        {to: 'https://greptime.com/blogs', label: 'Blogs', position: 'left'},
+        {to: hostMap[locale] + '/blogs', label: 'Blogs', position: 'left'},
         {
           type: 'docsVersionDropdown',
           position: 'right'
