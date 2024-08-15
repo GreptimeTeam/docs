@@ -180,7 +180,7 @@ const config: Config = {
           position: 'left',
           label: 'Home',
         },
-        {to: hostMap[locale] + '/blogs', label: 'Blogs', position: 'left'},
+        {to: hostMap[locale] + '/blogs/', label: 'Blogs', position: 'left'},
         {
           type: 'docsVersionDropdown',
           position: 'right'
