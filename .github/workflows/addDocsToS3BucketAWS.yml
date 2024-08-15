@@ -29,14 +29,14 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo VITE_LANG=zh >> .env
+          echo DOC_LANG=zh >> .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm build
+      - run: DOC_LANG=zh pnpm build
       - name: Upload to S3
         run: |
           aws s3 sync ./docs/.vitepress/dist s3://greptime-document-bucket --delete

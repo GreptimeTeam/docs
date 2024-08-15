@@ -1,0 +1,364 @@
+{
+  "docs": [
+    {
+      "type": "doc",
+      "className": "hidden",
+      "id": "index"
+    },
+    {
+      "type": "category",
+      "label": "Getting Started",
+      "items": [
+        "getting-started/overview",
+        {
+          "type": "category",
+          "label": "Installation",
+          "items": [
+            "getting-started/installation/overview",
+            "getting-started/installation/greptimedb-standalone",
+            "getting-started/installation/greptimedb-cluster",
+            "getting-started/installation/greptimedb-dashboard"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Quick Start",
+          "items": [
+            "getting-started/quick-start/overview",
+            "getting-started/quick-start/mysql",
+            "getting-started/quick-start/influxdb",
+            "getting-started/quick-start/go",
+            "getting-started/quick-start/java",
+            "getting-started/quick-start/python",
+            "getting-started/quick-start/node",
+            "getting-started/quick-start/vector",
+            "getting-started/quick-start/prometheus"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "User Guide",
+      "items": [
+        "user-guide/overview",
+        {
+          "type": "category",
+          "label": "Concepts",
+          "items": [
+            "user-guide/concepts/overview",
+            "user-guide/concepts/why-greptimedb",
+            "user-guide/concepts/data-model",
+            "user-guide/concepts/architecture",
+            "user-guide/concepts/storage-location",
+            "user-guide/concepts/key-concepts",
+            "user-guide/concepts/features-that-you-concern"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Clients",
+          "items": [
+            "user-guide/clients/overview",
+            "user-guide/clients/authentication",
+            "user-guide/clients/mysql",
+            "user-guide/clients/prometheus",
+            "user-guide/clients/influxdb-line",
+            "user-guide/clients/opentsdb",
+            "user-guide/clients/postgresql",
+            "user-guide/clients/http-api",
+            "user-guide/clients/otlp",
+            "user-guide/clients/vector",
+            "user-guide/clients/grafana",
+            "user-guide/clients/emqx"
+          ]
+        },
+        { "type": "category", "label": "Migrate to GreptimeDB", "items": ["user-guide/migrate-to-greptimedb/migrate-from-influxdb"] },
+        "user-guide/table-management",
+        {
+          "type": "category",
+          "label": "Write Data",
+          "items": [
+            "user-guide/write-data/overview",
+            "user-guide/write-data/prometheus",
+            "user-guide/write-data/sql",
+            "user-guide/write-data/influxdb-line",
+            "user-guide/write-data/opentsdb"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Query Data",
+          "items": [
+            "user-guide/query-data/overview",
+            "user-guide/query-data/sql",
+            "user-guide/query-data/promql",
+            "user-guide/query-data/query-external-data"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Continuous Aggregation",
+          "items": [
+            "user-guide/continuous-aggregation/overview",
+            "user-guide/continuous-aggregation/manage-flow",
+            "user-guide/continuous-aggregation/query",
+            "user-guide/continuous-aggregation/define-time-window",
+            "user-guide/continuous-aggregation/expression"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Client Libraries",
+          "items": ["user-guide/client-libraries/overview", "user-guide/client-libraries/go", "user-guide/client-libraries/java"]
+        },
+        "user-guide/cluster",
+        {
+          "type": "category",
+          "label": "Operations",
+          "items": [
+            "user-guide/operations/overview",
+            "user-guide/operations/admin",
+            "user-guide/operations/configuration",
+            "user-guide/operations/capacity-plan",
+            {
+              "type": "category",
+              "label": "Deploy on Kubernetes",
+              "items": [
+                "user-guide/operations/deploy-on-kubernetes/overview",
+                "user-guide/operations/deploy-on-kubernetes/greptimedb-operator",
+                "user-guide/operations/deploy-on-kubernetes/deploy-greptimedb-cluster",
+                "user-guide/operations/deploy-on-kubernetes/destroy-cluster"
+              ]
+            },
+            "user-guide/operations/run-on-android",
+            {
+              "type": "category",
+              "label": "Disaster Recovery",
+              "items": ["user-guide/operations/disaster-recovery/overview", "user-guide/operations/disaster-recovery/back-up-&-restore-data"]
+            },
+            {
+              "type": "category",
+              "label": "Remote WAL",
+              "items": ["user-guide/operations/remote-wal/quick-start", "user-guide/operations/remote-wal/cluster-deployment"]
+            },
+            "user-guide/operations/region-migration",
+            "user-guide/operations/monitoring",
+            "user-guide/operations/tracing"
+          ]
+        },
+        "user-guide/upgrade"
+      ]
+    },
+    {
+      "type": "category",
+      "label": "GreptimeCloud",
+      "items": [
+        "greptimecloud/overview",
+        {
+          "type": "category",
+          "label": "Getting Started",
+          "items": [
+            "greptimecloud/getting-started/overview",
+            "greptimecloud/getting-started/prometheus",
+            "greptimecloud/getting-started/mysql",
+            "greptimecloud/getting-started/influxdb",
+            "greptimecloud/getting-started/go",
+            "greptimecloud/getting-started/java",
+            "greptimecloud/getting-started/python",
+            "greptimecloud/getting-started/node",
+            "greptimecloud/getting-started/vector"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Integrations",
+          "items": [
+            {
+              "type": "category",
+              "label": "Prometheus",
+              "items": ["greptimecloud/integrations/prometheus/quick-setup", "greptimecloud/integrations/prometheus/rule-management"]
+            },
+            "greptimecloud/integrations/grafana",
+            "greptimecloud/integrations/mysql",
+            "greptimecloud/integrations/postgresql",
+            "greptimecloud/integrations/influxdb",
+            "greptimecloud/integrations/otlp",
+            "greptimecloud/integrations/vector",
+            "greptimecloud/integrations/emqx",
+            "greptimecloud/integrations/streamlit",
+            "greptimecloud/integrations/mindsdb",
+            {
+              "type": "category",
+              "label": "SDK Libraries",
+              "items": ["greptimecloud/integrations/sdk-libraries/go", "greptimecloud/integrations/sdk-libraries/java"]
+            }
+          ]
+        },
+        { "type": "category", "label": "Migrate to GreptimeCloud", "items": ["greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb"] },
+        {
+          "type": "category",
+          "label": "Usage & Billing",
+          "items": [
+            "greptimecloud/usage-&-billing/overview",
+            "greptimecloud/usage-&-billing/request-capacity-unit",
+            "greptimecloud/usage-&-billing/hobby",
+            "greptimecloud/usage-&-billing/serverless",
+            "greptimecloud/usage-&-billing/dedicated",
+            "greptimecloud/usage-&-billing/byoc",
+            "greptimecloud/usage-&-billing/billing"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Tutorials",
+          "items": [
+            {
+              "type": "category",
+              "label": "Monitor Host Metrics",
+              "items": [
+                "greptimecloud/tutorials/monitor-host-metrics/prometheus",
+                "greptimecloud/tutorials/monitor-host-metrics/mysql",
+                "greptimecloud/tutorials/monitor-host-metrics/influxdb",
+                "greptimecloud/tutorials/monitor-host-metrics/go",
+                "greptimecloud/tutorials/monitor-host-metrics/java",
+                "greptimecloud/tutorials/monitor-host-metrics/python",
+                "greptimecloud/tutorials/monitor-host-metrics/node-js"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Reference",
+      "items": [
+        "reference/command-lines",
+        {
+          "type": "category",
+          "label": "SQL",
+          "items": [
+            "reference/sql/overview",
+            "reference/sql/data-types",
+            "reference/sql/http-api",
+            "reference/sql/insert",
+            "reference/sql/cast",
+            "reference/sql/copy",
+            "reference/sql/drop",
+            "reference/sql/select",
+            "reference/sql/distinct",
+            "reference/sql/where",
+            "reference/sql/order_by",
+            "reference/sql/group_by",
+            "reference/sql/limit",
+            "reference/sql/join",
+            "reference/sql/functions",
+            "reference/sql/range",
+            "reference/sql/delete",
+            "reference/sql/show",
+            "reference/sql/tql",
+            "reference/sql/create",
+            "reference/sql/describe_table",
+            "reference/sql/alter",
+            "reference/sql/explain",
+            "reference/sql/compatibility",
+            {
+              "type": "category",
+              "label": "Information Schema",
+              "items": [
+                "reference/sql/information-schema/overview",
+                "reference/sql/information-schema/build-info",
+                "reference/sql/information-schema/character-sets",
+                "reference/sql/information-schema/collations",
+                "reference/sql/information-schema/collation-character-set-applicability",
+                "reference/sql/information-schema/columns",
+                "reference/sql/information-schema/engines",
+                "reference/sql/information-schema/key-column-usage",
+                "reference/sql/information-schema/partitions",
+                "reference/sql/information-schema/schemata",
+                "reference/sql/information-schema/tables",
+                "reference/sql/information-schema/region-peers",
+                "reference/sql/information-schema/runtime-metrics",
+                "reference/sql/information-schema/cluster-info"
+              ]
+            }
+          ]
+        },
+        "reference/telemetry",
+        "reference/gtctl"
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Contributor Guide",
+      "items": [
+        "contributor-guide/overview",
+        "contributor-guide/getting-started",
+        {
+          "type": "category",
+          "label": "Frontend",
+          "items": [
+            "contributor-guide/frontend/overview",
+            "contributor-guide/frontend/table-sharding",
+            "contributor-guide/frontend/distributed-querying"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Datanode",
+          "items": [
+            "contributor-guide/datanode/overview",
+            "contributor-guide/datanode/storage-engine",
+            "contributor-guide/datanode/query-engine",
+            "contributor-guide/datanode/data-persistence-indexing",
+            "contributor-guide/datanode/wal",
+            "contributor-guide/datanode/python-scripts",
+            "contributor-guide/datanode/metric-engine"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Metasrv",
+          "items": [
+            "contributor-guide/metasrv/overview",
+            "contributor-guide/metasrv/admin-api",
+            "contributor-guide/metasrv/dist-lock",
+            "contributor-guide/metasrv/selector"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Flownode",
+          "items": ["contributor-guide/flownode/overview", "contributor-guide/flownode/dataflow", "contributor-guide/flownode/arrangement"]
+        },
+        {
+          "type": "category",
+          "label": "Tests",
+          "items": [
+            "contributor-guide/tests/overview",
+            "contributor-guide/tests/unit-test",
+            "contributor-guide/tests/integration-test",
+            "contributor-guide/tests/sqlness-test"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "How To",
+          "items": [
+            "contributor-guide/how-to/how-to-write-sdk",
+            "contributor-guide/how-to/how-to-use-tokio-console",
+            "contributor-guide/how-to/how-to-trace-greptimedb"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Release Notes",
+      "href": "/release-notes"
+    },
+    { "type": "category", "label": "FAQ and Others", "items": ["faq-and-others/overview", "faq-and-others/faq"] }
+  ]
+  
+}

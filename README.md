@@ -1,7 +1,7 @@
 # GreptimeDB Documentation
 
 <p align="center">
-    <img src="./docs/public/logo-text-padding.png" alt="GreptimeDB Logo" width="400">
+    <img src="./docs/public/logo-text-padding.png" alt="GreptimeDB Logo" width="400"/>
 </p>
 
 This directory contains sources of all content published at [docs.greptime.com][1]
@@ -49,3 +49,4 @@ Provides a detailed overview of how GreptimeDB operates and assists you in parti
 - [Metasrv](https://docs.greptime.com/contributor-guide/metasrv/overview)
 
 Please refer to [contribution guidelines](CONTRIBUTING.md) for more information.
+

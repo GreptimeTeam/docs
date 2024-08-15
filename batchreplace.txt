@@ -1,0 +1,109 @@
+// filter "**/version-0.6/**/*.md"
+
+filter "**/*.md"
+
+// replace template inject
+replace-regex "\{template ([\w-]*)%%\}"
+with "<InjectContent id="$1" content={props.children}/>"
+
+//replace template provide start
+replace-regex "\{template ([\w-]*)%"
+with "<div id="$1">"
+
+// replace template provide end
+replace-regex "%\}"
+with "</div>"
+
+
+
+// replace template import
+replace-regex "---(\n)template:.(.*)(\n)---"
+with "import DocTemplate from '$2' \n"
+
+// replace doctemplate declare start
+replace-regex "<docs-template>"
+with "<DocTemplate>"
+
+// replace doctemplate declare end
+replace-regex "</docs-template>"
+with "</DocTemplate>"
+
+
+// replace file include
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3$4$5 from '$1/$2-$3-$4-$5.md' \n\n<Include$2$3$4$5/>"
+
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3$4 from '$1/$2-$3-$4.md' \n\n<Include$2$3$4/>"
+
+
+replace-regex "<!--@include: (.*)/([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$2$3 from '$1/$2-$3.md' \n\n<Include$2$3/>"
+
+replace-regex "<!--@include: (.*)/([a-zA-Z0-9]*)\.md-->"
+with "import Include$2 from '$1/$2.md' \n\n<Include$2/>"
+
+replace-regex "from '([a-z])"
+with "from './$1"
+
+replace-regex "<!--@include: ([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)\.md-->"
+with "import Include$1$2$3 from './$1-$2-$3.md' \n\n<Include$1$2$3/>"
+
+
+replace "<https://n9e.github.io/>"
+with "[https://n9e.github.io](https://n9e.github.io)"
+
+replace-regex "<img (.*)">"
+with "<img $1"/>"
+
+replace ""10 <= a < 20""
+with ""10 \<= a < 20""
+
+replace "start <= x < end"
+with "start \<= x < end"
+
+replace "<http://127.0.0.1:6669>"
+with "\<http://127.0.0.1:6669\>"
+
+replace "- [FAQ][5]: Presents"
+with " [FAQ][5]: Presents"
+
+replace "style="text-align: center;""
+with "style={{"textAlign": "center"}}"
+
+// variable replace
+replace "<%greptimedb-version%>"
+with "v0.10.0-nightly-20240722"
+
+replace "<%prometheus-version%>"
+with "v2.52.0"
+
+replace "<%node-exporter-version%>"
+with "v1.8.0"
+
+replace "<%go-sdk-version%>"
+with "v0.5.0"
+
+replace "<%java-sdk-version%>"
+with "0.7.3"
+
+replace "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
+with "[https://hub.docker.com/r/greptime/greptimedb](https://hub.docker.com/r/greptime/greptimedb)"
+
+replace-regex "\]\(/([a-z0-9-/]*)#(.*)\)"
+with "](/$1.md#$2)"
+
+replace-regex "\]\(/([^\.#]*)\)"
+with "](/$1.md)"
+
+
+replace-regex "::: (\w*)"
+with ":::$1"
+
+
+// replace-regex "```(\w*) \[(.*)\]([\s\S\n]*?)```"
+// with "<TabItem value="$1" label="$2">
+// 
+// ```$1$3```
+// 
+// </TabItem>"
