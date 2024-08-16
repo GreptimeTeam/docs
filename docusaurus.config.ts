@@ -205,7 +205,7 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
       additionalLanguages: ['java'],
     },
-    // algolia: algoliaMap[locale]
+    algolia: algoliaMap[locale]
    //,
   } satisfies Preset.ThemeConfig,
 };
