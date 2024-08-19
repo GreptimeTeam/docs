@@ -17,7 +17,7 @@ concurrent-safe library that is easy to use with the metric struct.
 Use the following command to install the GreptimeDB client library for Go:
 
 ```shell
-go get -u github.com/GreptimeTeam/greptimedb-ingester-go@v0.5.0
+go get -u github.com/GreptimeTeam/greptimedb-ingester-go@VAR::goSdkVersion
 ```
 
 Import the library in your code:

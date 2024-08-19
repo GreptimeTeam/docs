@@ -1,7 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-
+import variablePlaceholder from './src/plugins/variable-placeholder'
 const locale = process.env.DOC_LANG || 'en'
 
 const metaMap = {
@@ -141,7 +141,10 @@ const config: Config = {
             '0.6': {
               path: 'v0.6'
             }
-          }
+          },
+          remarkPlugins: [
+            [variablePlaceholder, {}]
+          ]
         },
         blog: {
           showReadingTime: true,
