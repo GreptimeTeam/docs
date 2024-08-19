@@ -350,7 +350,7 @@ Examples:
 [wal.tls]
 ```
 
-**TLS (with system ca cert)**
+**TLS (with specified ca cert)**
 
 ```toml
 [wal.tls]
