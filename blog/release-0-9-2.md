@@ -8,7 +8,8 @@ Release date: August 19, 2024
 
 ## 👍 Highlights
 
-- [#4545](https://github.com/GreptimeTeam/greptimedb/pull/4545): improve the performance of `count(*)` for append-only tables.
+- [#4545](https://github.com/GreptimeTeam/greptimedb/pull/4545): Improve the performance of `count(*)` for append-only tables.
+- [#4552](https://github.com/GreptimeTeam/greptimedb/pull/4552): Allow more than one segment for full-text index to handle a large number of rows.
 
 ### 🚀 Features
 
