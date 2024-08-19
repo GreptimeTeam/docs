@@ -73,7 +73,7 @@ Release date: August 19, 2024
 * chore: use `configData` by [@WenyXu](https://github.com/WenyXu) in [#4522](https://github.com/GreptimeTeam/greptimedb/pull/4522)
 * chore: update snafu to make clippy happy by [@MichaelScofield](https://github.com/MichaelScofield) in [#4507](https://github.com/GreptimeTeam/greptimedb/pull/4507)
 * ci: download the latest stable released version by default and do some small refactoring by [@zyy17](https://github.com/zyy17) in [#4529](https://github.com/GreptimeTeam/greptimedb/pull/4529)
-* chore: make mysql server version changable by [@MichaelScofield](https://github.com/MichaelScofield) in [#4531](https://github.com/GreptimeTeam/greptimedb/pull/4531)
+* chore: make mysql server version changeable by [@MichaelScofield](https://github.com/MichaelScofield) in [#4531](https://github.com/GreptimeTeam/greptimedb/pull/4531)
 * chore: upload kind logs by [@WenyXu](https://github.com/WenyXu) in [#4544](https://github.com/GreptimeTeam/greptimedb/pull/4544)
 * chore: update validator signature by [@shuiyisong](https://github.com/shuiyisong) in [#4548](https://github.com/GreptimeTeam/greptimedb/pull/4548)
 * chore: Helper function to convert `Vec<Value>` to VectorRef by [@discord9](https://github.com/discord9) in [#4546](https://github.com/GreptimeTeam/greptimedb/pull/4546)
