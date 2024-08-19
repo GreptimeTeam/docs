@@ -105,6 +105,7 @@
     - compaction
     - monitoring
     - tracing
+    - performance-tuning-tips
     # TODO
     # - import-data
     # - export-data
