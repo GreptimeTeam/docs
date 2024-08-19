@@ -148,7 +148,7 @@
     "description": "The label for version 0.7"
   },
   "sidebar.docs.category.Quick Start": {
-    "message": "立即开始",
+    "message": "快速开始",
     "description": "The label for category Quick Start in sidebar docs"
   },
   "sidebar.docs.category.Benchmarks": {
