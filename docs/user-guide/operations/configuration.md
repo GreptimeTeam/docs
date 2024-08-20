@@ -320,6 +320,52 @@ backoff_deadline = "5mins"
 - `backoff_base`: The exponential backoff rate.
 - `backoff_deadline`: The deadline of retries.
 
+##### Remote WAL Authentication (Optional)
+
+```toml
+[wal.sasl]
+type = "SCRAM-SHA-512"
+username = "user"
+password = "secret"
+```
+
+The SASL configuration for Kafka client, available SASL mechanisms: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
+
+##### Remote WAL TLS (Optional)
+
+```toml
+[wal.tls]
+server_ca_cert_path = "/path/to/server_cert"
+client_cert_path = "/path/to/client_cert"
+client_key_path = "/path/to/key"
+```
+
+The TLS configuration for Kafka client, support modes: TLS (using system ca certs), TLS (with specified ca certs), mTLS.
+
+Examples:
+
+**TLS (using system ca certs)**
+
+```toml
+[wal.tls]
+```
+
+**TLS (with specified ca cert)**
+
+```toml
+[wal.tls]
+server_ca_cert_path = "/path/to/server_cert"
+```
+
+**mTLS**
+
+```toml
+[wal.tls]
+server_ca_cert_path = "/path/to/server_cert"
+client_cert_path = "/path/to/client_cert"
+client_key_path = "/path/to/key"
+```
+
 ### Logging options
 
 `frontend`, `metasrv`, `datanode` and `standalone` can all configure log and tracing related parameters in the `[logging]` section:
@@ -602,42 +648,69 @@ backoff_base = 2
 
 ## Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.
 backoff_deadline = "5mins"
+
+# The Kafka SASL configuration.
+# **It's only used when the provider is `kafka`**.
+# Available SASL mechanisms:
+# - `PLAIN`
+# - `SCRAM-SHA-256`
+# - `SCRAM-SHA-512`
+# [wal.sasl]
+# type = "SCRAM-SHA-512"
+# username = "user_kafka"
+# password = "secret"
+
+# The Kafka TLS configuration.
+# **It's only used when the provider is `kafka`**.
+# [wal.tls]
+# server_ca_cert_path = "/path/to/server_cert"
+# client_cert_path = "/path/to/client_cert"
+# client_key_path = "/path/to/key"
+
 ```
 
-| Key                                           | Type    | Default                | Descriptions                                                                                                                                                                                                                                                                                                     |
-| --------------------------------------------- | ------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data_home`                                   | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                                                                                                                                                      |
-| `bind_addr`                                   | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                                                                                                                                                     |
-| `server_addr`                                 | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                                                                                                                                                     |
-| `store_addr`                                  | String  | `127.0.0.1:2379`       | Etcd server address.                                                                                                                                                                                                                                                                                             |
-| `selector`                                    | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                                                                                                                                                          |
-| `use_memory_store`                            | Bool    | `false`                | Store data in memory.                                                                                                                                                                                                                                                                                            |
-| `enable_region_failover`                      | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3).                                                                                                                                    |
-| `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                                                                                                                                                       |
-| `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                                                                                                                                                        |
-| `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                                                                                                                                                       |
-| `failure_detector`                            | --      | --                     | --                                                                                                                                                                                                                                                                                                               |
-| `failure_detector.threshold`                  | Float   | `8.0`                  | The threshold value used by the failure detector to determine failure conditions.                                                                                                                                                                                                                                |
-| `failure_detector.min_std_deviation`          | String  | `100ms`                | The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.                                                                                                                                                                                                              |
-| `failure_detector.acceptable_heartbeat_pause` | String  | `10000ms`              | The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.                                                                                                                                                                                                       |
-| `failure_detector.first_heartbeat_estimate`   | String  | `1000ms`               | The initial estimate of the heartbeat interval used by the failure detector.                                                                                                                                                                                                                                     |
-| `datanode`                                    | --      | --                     | Datanode options.                                                                                                                                                                                                                                                                                                |
-| `datanode.client`                             | --      | --                     | Datanode client options.                                                                                                                                                                                                                                                                                         |
-| `datanode.client.timeout`                     | String  | `10s`                  | Operation timeout.                                                                                                                                                                                                                                                                                               |
-| `datanode.client.connect_timeout`             | String  | `10s`                  | Connect server timeout.                                                                                                                                                                                                                                                                                          |
-| `datanode.client.tcp_nodelay`                 | Bool    | `true`                 | `TCP_NODELAY` option for accepted connections.                                                                                                                                                                                                                                                                   |
-| `wal`                                         | --      | --                     | --                                                                                                                                                                                                                                                                                                               |
-| `wal.provider`                                | String  | `raft_engine`          | --                                                                                                                                                                                                                                                                                                               |
-| `wal.broker_endpoints`                        | Array   | --                     | The broker endpoints of the Kafka cluster.                                                                                                                                                                                                                                                                       |
-| `wal.num_topics`                              | Integer | `64`                   | Number of topics to be created upon start.                                                                                                                                                                                                                                                                       |
-| `wal.selector_type`                           | String  | `round_robin`          | Topic selector type.<br/>Available selector types:<br/>- `round_robin` (default)                                                                                                                                                                                                                                 |
-| `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                                                                                                                                                                |
-| `wal.replication_factor`                      | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                                                                                                                                                   |
-| `wal.create_topic_timeout`                    | String  | `30s`                  | Above which a topic creation operation will be cancelled.                                                                                                                                                                                                                                                        |
-| `wal.backoff_init`                            | String  | `500ms`                | The initial backoff for kafka clients.                                                                                                                                                                                                                                                                           |
-| `wal.backoff_max`                             | String  | `10s`                  | The maximum backoff for kafka clients.                                                                                                                                                                                                                                                                           |
-| `wal.backoff_base`                            | Integer | `2`                    | Exponential backoff rate, i.e. next backoff = base \* current backoff.                                                                                                                                                                                                                                           |
-| `wal.backoff_deadline`                        | String  | `5mins`                | Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.                                                                                                                                                                                      |
+| Key                                           | Type    | Default                | Descriptions                                                                                                                                                                  |
+| --------------------------------------------- | ------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data_home`                                   | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                   |
+| `bind_addr`                                   | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                  |
+| `server_addr`                                 | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                  |
+| `store_addr`                                  | String  | `127.0.0.1:2379`       | Etcd server address.                                                                                                                                                          |
+| `selector`                                    | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
+| `use_memory_store`                            | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
+| `enable_region_failover`                      | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
+| `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                    |
+| `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                     |
+| `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                    |
+| `failure_detector`                            | --      | --                     | --                                                                                                                                                                            |
+| `failure_detector.threshold`                  | Float   | `8.0`                  | The threshold value used by the failure detector to determine failure conditions.                                                                                             |
+| `failure_detector.min_std_deviation`          | String  | `100ms`                | The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.                                                                           |
+| `failure_detector.acceptable_heartbeat_pause` | String  | `10000ms`              | The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.                                                                    |
+| `failure_detector.first_heartbeat_estimate`   | String  | `1000ms`               | The initial estimate of the heartbeat interval used by the failure detector.                                                                                                  |
+| `datanode`                                    | --      | --                     | Datanode options.                                                                                                                                                             |
+| `datanode.client`                             | --      | --                     | Datanode client options.                                                                                                                                                      |
+| `datanode.client.timeout`                     | String  | `10s`                  | Operation timeout.                                                                                                                                                            |
+| `datanode.client.connect_timeout`             | String  | `10s`                  | Connect server timeout.                                                                                                                                                       |
+| `datanode.client.tcp_nodelay`                 | Bool    | `true`                 | `TCP_NODELAY` option for accepted connections.                                                                                                                                |
+| `wal`                                         | --      | --                     | --                                                                                                                                                                            |
+| `wal.provider`                                | String  | `raft_engine`          | --                                                                                                                                                                            |
+| `wal.broker_endpoints`                        | Array   | --                     | The broker endpoints of the Kafka cluster.                                                                                                                                    |
+| `wal.num_topics`                              | Integer | `64`                   | Number of topics to be created upon start.                                                                                                                                    |
+| `wal.selector_type`                           | String  | `round_robin`          | Topic selector type.<br/>Available selector types:<br/>- `round_robin` (default)                                                                                              |
+| `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                             |
+| `wal.replication_factor`                      | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                |
+| `wal.create_topic_timeout`                    | String  | `30s`                  | Above which a topic creation operation will be cancelled.                                                                                                                     |
+| `wal.backoff_init`                            | String  | `500ms`                | The initial backoff for kafka clients.                                                                                                                                        |
+| `wal.backoff_max`                             | String  | `10s`                  | The maximum backoff for kafka clients.                                                                                                                                        |
+| `wal.backoff_base`                            | Integer | `2`                    | Exponential backoff rate, i.e. next backoff = base \* current backoff.                                                                                                        |
+| `wal.backoff_deadline`                        | String  | `5mins`                | Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.                                                   |
+| `wal.sasl`                                    | String  | --                     | The Kafka SASL configuration.                                                                                                                                                 |
+| `wal.sasl.type`                               | String  | --                     | The SASL mechanisms, available values: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.                                                                                             |
+| `wal.sasl.username`                           | String  | --                     | The SASL username.                                                                                                                                                            |
+| `wal.sasl.password`                           | String  | --                     | The SASL password.                                                                                                                                                            |
+| `wal.tls`                                     | String  | --                     | The Kafka TLS configuration.                                                                                                                                                  |
+| `wal.tls.server_ca_cert_path`                 | String  | --                     | The path of trusted server ca certs.                                                                                                                                          |
+| `wal.tls.client_cert_path`                    | String  | --                     | The path of client cert (Used for enable mTLS).                                                                                                                               |
+| `wal.tls.client_key_path`                     | String  | --                     | The path of client key (Used for enable mTLS).                                                                                                                                |
 
 ### Datanode-only configuration
 
