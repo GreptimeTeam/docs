@@ -84,7 +84,9 @@ scan_parallelism = 8
 
 ### Using append-only table if possible
 
-In general, append-only tables have a higher scan performance as the storage engine can skip merging and deduplication. We recommend enabling the [append_mode](/reference/sql/create.md#create-an-append-only-table) for the table if it doesn't require deduplication. For example, a log table should be append-only as log messages may have the same timestamp.
+In general, append-only tables have a higher scan performance as the storage engine can skip merging and deduplication. What's more, the query engine can use statistics to speed up some queries if the table is append-only.
+
+We recommend enabling the [append_mode](/reference/sql/create.md##create-an-append-only-table) for the table if it doesn't require deduplication or performance is prioritized over deduplication. For example, a log table should be append-only as log messages may have the same timestamp.
 
 ## Ingestion
 
