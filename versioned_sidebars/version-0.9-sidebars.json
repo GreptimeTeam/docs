@@ -91,7 +91,13 @@
             "user-guide/query-data/query-external-data"
           ]
         },
-        { "type": "category", "label": "Manage Data", "items": ["user-guide/manage-data/overview"] },
+        {
+          "type": "category",
+          "label": "Manage Data",
+          "items": [
+            "user-guide/manage-data/overview"
+          ]
+        },
         {
           "type": "category",
           "label": "Clients",
@@ -110,7 +116,13 @@
             "user-guide/clients/emqx"
           ]
         },
-        { "type": "category", "label": "Migrate to GreptimeDB", "items": ["user-guide/migrate-to-greptimedb/migrate-from-influxdb"] },
+        {
+          "type": "category",
+          "label": "Migrate to GreptimeDB",
+          "items": [
+            "user-guide/migrate-to-greptimedb/migrate-from-influxdb"
+          ]
+        },
         {
           "type": "category",
           "label": "Continuous Aggregation",
@@ -168,7 +180,10 @@
             {
               "type": "category",
               "label": "Remote WAL",
-              "items": ["user-guide/operations/remote-wal/quick-start", "user-guide/operations/remote-wal/cluster-deployment"]
+              "items": [
+                "user-guide/operations/remote-wal/quick-start",
+                "user-guide/operations/remote-wal/cluster-deployment"
+              ]
             },
             "user-guide/operations/region-migration",
             "user-guide/operations/region-failover",
@@ -207,7 +222,10 @@
             {
               "type": "category",
               "label": "Prometheus",
-              "items": ["greptimecloud/integrations/prometheus/quick-setup", "greptimecloud/integrations/prometheus/rule-management"]
+              "items": [
+                "greptimecloud/integrations/prometheus/quick-setup",
+                "greptimecloud/integrations/prometheus/rule-management"
+              ]
             },
             "greptimecloud/integrations/grafana",
             "greptimecloud/integrations/mysql",
@@ -221,11 +239,20 @@
             {
               "type": "category",
               "label": "SDK Libraries",
-              "items": ["greptimecloud/integrations/sdk-libraries/go", "greptimecloud/integrations/sdk-libraries/java"]
+              "items": [
+                "greptimecloud/integrations/sdk-libraries/go",
+                "greptimecloud/integrations/sdk-libraries/java"
+              ]
             }
           ]
         },
-        { "type": "category", "label": "Migrate to GreptimeCloud", "items": ["greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb"] },
+        {
+          "type": "category",
+          "label": "Migrate to GreptimeCloud",
+          "items": [
+            "greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb"
+          ]
+        },
         {
           "type": "category",
           "label": "Usage & Billing",
@@ -293,7 +320,14 @@
             "reference/sql/with",
             "reference/sql/alter",
             "reference/sql/explain",
-            { "type": "category", "label": "Functions", "items": ["reference/sql/functions/overview", "reference/sql/functions/df-functions"] },
+            {
+              "type": "category",
+              "label": "Functions",
+              "items": [
+                "reference/sql/functions/overview",
+                "reference/sql/functions/df-functions"
+              ]
+            },
             "reference/sql/compatibility",
             {
               "type": "category",
@@ -365,7 +399,11 @@
         {
           "type": "category",
           "label": "Flownode",
-          "items": ["contributor-guide/flownode/overview", "contributor-guide/flownode/dataflow", "contributor-guide/flownode/arrangement"]
+          "items": [
+            "contributor-guide/flownode/overview",
+            "contributor-guide/flownode/dataflow",
+            "contributor-guide/flownode/arrangement"
+          ]
         },
         {
           "type": "category",
@@ -393,6 +431,13 @@
       "label": "Release Notes",
       "href": "/release-notes"
     },
-    { "type": "category", "label": "FAQ and Others", "items": ["faq-and-others/overview", "faq-and-others/faq"] }
+    {
+      "type": "category",
+      "label": "FAQ and Others",
+      "items": [
+        "faq-and-others/overview",
+        "faq-and-others/faq"
+      ]
+    }
   ]
 }

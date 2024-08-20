@@ -16,21 +16,21 @@ You can find the GreptimeDB URL, database name, as well as the username and pass
 
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
-```shell
+ ```shell
 curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
-
+ 
 </TabItem>
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
-```shell
+ ```shell
 curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
-
+ 
 </TabItem>
 
 </Tabs>
@@ -44,7 +44,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
-```toml
+ ```toml
 [[outputs.influxdb_v2]]
   urls = ["https://<host>/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -52,19 +52,19 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
   ## Leave empty
   organization = ""
 ```
-
+ 
 </TabItem>
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
-```toml
+ ```toml
 [[outputs.influxdb]]
   urls = ["https://<host>/v1/influxdb"]
   database = "<db-name>"
   username = "<greptime_user>"
   password = "<greptimedb_password>"
 ```
-
+ 
 </TabItem>
 </Tabs>
 
@@ -75,7 +75,9 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <TabItem value="Node.js" label="Node.js">
 
-```js
+<TabItem value="Node.js" label="Node.js">
+
+ ```js
 'use strict'
 /** @module write
 **/
@@ -97,11 +99,12 @@ const point1 = new Point('temperature')
 writeApi.writePoint(point1)
 
 ```
+ 
+</TabItem>
 
 </TabItem>
 
-
-<TabItem value="Python" label="Python">
+<TabItem value="python" label="Python">
 
 ```python
 import influxdb_client
@@ -128,7 +131,7 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 </TabItem>
 
-<TabItem value="Go" label="Go">
+<TabItem value="go" label="Go">
 
 ```go
 bucket := "<db-name>"
@@ -149,7 +152,7 @@ client.Close()
 
 </TabItem>
 
-<TabItem value="Java" label="Java">
+<TabItem value="java" label="Java">
 
 ```java
 private static String url = "https://<host>/v1/influxdb";
@@ -173,7 +176,7 @@ public static void main(final String[] args) {
 
 </TabItem>
 
-<TabItem value="PHP" label="PHP">
+<TabItem value="php" label="PHP">
 
 ```php
 $client = new Client([

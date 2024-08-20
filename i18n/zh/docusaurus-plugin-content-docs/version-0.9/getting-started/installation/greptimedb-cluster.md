@@ -11,13 +11,13 @@ GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以�
 ### 步骤 1: 下载 Docker Compose 的 YAML 文件
 
 ```
-wget https://raw.githubusercontent.com/GreptimeTeam/greptimedb/v0.9.1/docker/docker-compose/cluster-with-etcd.yaml
+wget https://raw.githubusercontent.com/GreptimeTeam/greptimedb/VAR::greptimedbVersion/docker/docker-compose/cluster-with-etcd.yaml
 ```
 
 ### 步骤 2: 启动集群
 
 ```
-GREPTIMEDB_VERSION=v0.9.1 \
+GREPTIMEDB_VERSION=VAR::greptimedbVersion \
 GREPTIMEDB_REGISTRY=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
 ETCD_REGISTRY=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   docker compose -f ./cluster-with-etcd.yaml up 

@@ -168,7 +168,7 @@ The result of each `FILL` option is as follows:
 
 <TabItem value="FILL Constant Value 6.0" label="FILL Constant Value 6.0">
 
-```sql
+```sql [FILL Constant Value 6.0]
 
 > SELECT ts, host, min(val) RANGE '5s' FILL 6 FROM host ALIGN '5s';
 
@@ -187,6 +187,8 @@ The result of each `FILL` option is as follows:
 ```
 
 </TabItem>
+
+
 
 </Tabs>
 
