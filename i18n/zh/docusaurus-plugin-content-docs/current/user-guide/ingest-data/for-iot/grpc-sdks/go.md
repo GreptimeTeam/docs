@@ -16,7 +16,7 @@ GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使
 使用下方的命令安装 Go Ingest SDK：
 
 ```shell
-go get -u github.com/GreptimeTeam/greptimedb-ingester-go@v0.5.0
+go get -u github.com/GreptimeTeam/greptimedb-ingester-go@VAR::goSdkVersion
 ```
 
 引入到代码中：

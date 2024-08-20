@@ -14,7 +14,7 @@ For Linux and macOS users, you can download the latest build of the `greptime` b
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s v0.10.0-nightly-20240722
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s VAR::greptimedbVersion
 ```
 
 Once the download is completed, the binary file `greptime` will be stored in your current directory.
@@ -45,7 +45,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+greptime/greptimedb:VAR::greptimedbVersion standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
@@ -72,7 +72,7 @@ You can:
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+   greptime/greptimedb:VAR::greptimedbVersion standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
@@ -110,7 +110,7 @@ If the computer running GreptimeDB is directly exposed to the internet, binding 
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.10.0-nightly-20240722 standalone start \
+greptime/greptimedb:VAR::greptimedbVersion standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
