@@ -12,13 +12,13 @@
 
 1. 使用 MySQL cli 连接到 Frontend。
 
-   ```shell
+  ```shell
    mysql -h 127.0.0.1 -P 4002
-   ```
+  ```
 
 2. 通过 `CREATE` 语句创建一个分布式表。
 
-   ```SQL
+  ```SQL
    CREATE TABLE dist_table(
        ts TIMESTAMP DEFAULT current_timestamp(),
        n INT,
@@ -32,11 +32,11 @@
       n >= 9
    )
    engine=mito;
-   ```
+  ```
 
    结果如下：
 
-   ```shell
+  ```shell
    mysql> CREATE TABLE dist_table(
        ->     ts TIMESTAMP DEFAULT current_timestamp(),
        ->     n INT,
@@ -51,13 +51,13 @@
        -> )
        -> engine=mito;
    Query OK, 3 rows affected (0.09 sec)
-   ```
+  ```
 
    `dist_table` 被分布在 `Datanode` 中。你可以参考 ["Table Sharding"](/contributor-guide/frontend/table-sharding.md) 了解更多细节。
 
 3. 通过 `INSERT` 语句输入一些数据。
 
-   ```SQL
+  ```SQL
    INSERT INTO dist_table(n, row_id) VALUES (1, 1);
    INSERT INTO dist_table(n, row_id) VALUES (2, 2);
    INSERT INTO dist_table(n, row_id) VALUES (3, 3);
@@ -70,15 +70,15 @@
    INSERT INTO dist_table(n, row_id) VALUES (10, 10);
    INSERT INTO dist_table(n, row_id) VALUES (11, 11);
    INSERT INTO dist_table(n, row_id) VALUES (12, 12);
-   ```
+  ```
 
 4. 通过 `SELECT` 语句执行查询：
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table ORDER BY n LIMIT 5;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
@@ -89,39 +89,39 @@
    | 2022-11-14 12:02:32 |    5 |      5 |
    +---------------------+------+--------+
    5 rows in set (0.081 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT MAX(n) FROM dist_table;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +-------------------+
    | MAX(dist_table.n) |
    +-------------------+
    |                12 |
    +-------------------+
    1 row in set (0.057 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT MIN(n) FROM dist_table;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +-------------------+
    | MIN(dist_table.n) |
    +-------------------+
    |                 1 |
    +-------------------+
    1 row in set (0.079 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table WHERE n > 2 AND n < 10 ORDER BY row_id;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
@@ -134,18 +134,18 @@
    | 2022-11-14 12:02:32 |    9 |      9 |
    +---------------------+------+--------+
    7 rows in set (0.02 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table WHERE row_id = 10;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
    | 2022-11-14 12:02:32 |   10 |     10 |
    +---------------------+------+--------+
    1 row in set (0.03 sec)
-   ```
+  ```
 
