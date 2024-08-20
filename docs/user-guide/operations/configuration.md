@@ -54,11 +54,11 @@ including all available configurations.
 In actual scenarios,
 you only need to configure the required options and do not need to configure all options as in the sample file.
 
-- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/standalone.example.toml)
-- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/frontend.example.toml)
-- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/datanode.example.toml)
-- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/flownode.example.toml)
-- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/metasrv.example.toml)
+- [standalone](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/standalone.example.toml)
+- [frontend](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/frontend.example.toml)
+- [datanode](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/datanode.example.toml)
+- [flownode](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
+- [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
 ### Environment variable
 
@@ -98,7 +98,7 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 ## Options
 
 In this section, we will introduce some main configuration options.
-For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/v0.10.0-nightly-20240722/config/config.md) on Github.
+For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md) on Github.
 
 ### Protocol options
 
