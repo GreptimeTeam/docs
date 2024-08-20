@@ -68,7 +68,7 @@ You can:
 
 1. Set `--security-opt seccomp=unconfined`, for example:
 
-   ```shell
+  ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
@@ -77,7 +77,7 @@ You can:
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003
-   ```
+  ```
 
 2. Upgrade the Docker version to v23.0.0 or higher;
    :::

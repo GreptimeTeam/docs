@@ -14,7 +14,7 @@
 
 ```shell
 curl -fsSL \
-  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s v0.9.1
+  https://raw.githubusercontent.com/greptimeteam/greptimedb/main/scripts/install.sh | sh -s VAR::greptimedbVersion
 ```
 
 下载完成后，binary 文件 `greptime` 将存储在当前的目录中。
@@ -45,7 +45,7 @@ curl -fsSL \
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.9.1 standalone start \
+greptime/greptimedb:VAR::greptimedbVersion standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \
@@ -68,16 +68,16 @@ greptime/greptimedb:v0.9.1 standalone start \
 
 1. 设置 `--security-opt seccomp=unconfined`：
 
-   ```shell
+  ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
-   greptime/greptimedb:v0.9.1 standalone start \
+   greptime/greptimedb:VAR::greptimedbVersion standalone start \
    --http-addr 0.0.0.0:4000 \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003
-   ```
+  ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
    :::
@@ -110,7 +110,7 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
 -v "$(pwd)/greptimedb:/tmp/greptimedb" \
 --name greptime --rm \
-greptime/greptimedb:v0.9.1 standalone start \
+greptime/greptimedb:VAR::greptimedbVersion standalone start \
 --http-addr 0.0.0.0:4000 \
 --rpc-addr 0.0.0.0:4001 \
 --mysql-addr 0.0.0.0:4002 \

@@ -12,13 +12,13 @@ You can follow the steps to use SQL to play with distributed insertions and quer
 
 1. Use MySQL cli to connect to Frontend.
 
-   ```shell
+  ```shell
    mysql -h 127.0.0.1 -P 4002
-   ```
+  ```
 
 2. Create a distributed table via `CREATE` statement.
 
-   ```SQL
+  ```SQL
    CREATE TABLE dist_table(
        ts TIMESTAMP DEFAULT current_timestamp(),
        n INT,
@@ -32,11 +32,11 @@ You can follow the steps to use SQL to play with distributed insertions and quer
       n >= 9
    )
    engine=mito;
-   ```
+  ```
 
    The result looks like the following:
 
-   ```shell
+  ```shell
    mysql> CREATE TABLE dist_table(
        ->     ts TIMESTAMP DEFAULT current_timestamp(),
        ->     n INT,
@@ -51,13 +51,13 @@ You can follow the steps to use SQL to play with distributed insertions and quer
        -> )
        -> engine=mito;
    Query OK, 3 rows affected (0.09 sec)
-   ```
+  ```
 
    The `dist_table` is distributed among the `Datanode`s. You can refer to ["Table Sharding"](/contributor-guide/frontend/table-sharding.md) for more details.
 
 3. Insert some data via `INSERT` statement.
 
-   ```SQL
+  ```SQL
    INSERT INTO dist_table(n, row_id) VALUES (1, 1);
    INSERT INTO dist_table(n, row_id) VALUES (2, 2);
    INSERT INTO dist_table(n, row_id) VALUES (3, 3);
@@ -70,15 +70,15 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    INSERT INTO dist_table(n, row_id) VALUES (10, 10);
    INSERT INTO dist_table(n, row_id) VALUES (11, 11);
    INSERT INTO dist_table(n, row_id) VALUES (12, 12);
-   ```
+  ```
 
 4. Execute some queries via `SELECT` statement:
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table ORDER BY n LIMIT 5;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
@@ -89,39 +89,39 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    | 2022-11-14 12:02:32 |    5 |      5 |
    +---------------------+------+--------+
    5 rows in set (0.081 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT MAX(n) FROM dist_table;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +-------------------+
    | MAX(dist_table.n) |
    +-------------------+
    |                12 |
    +-------------------+
    1 row in set (0.057 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT MIN(n) FROM dist_table;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +-------------------+
    | MIN(dist_table.n) |
    +-------------------+
    |                 1 |
    +-------------------+
    1 row in set (0.079 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table WHERE n > 2 AND n < 10 ORDER BY row_id;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
@@ -134,17 +134,17 @@ You can follow the steps to use SQL to play with distributed insertions and quer
    | 2022-11-14 12:02:32 |    9 |      9 |
    +---------------------+------+--------+
    7 rows in set (0.02 sec)
-   ```
+  ```
 
-   ```sql
+  ```sql
    SELECT * FROM dist_table WHERE row_id = 10;
-   ```
+  ```
 
-   ```sql
+  ```sql
    +---------------------+------+--------+
    | ts                  | n    | row_id |
    +---------------------+------+--------+
    | 2022-11-14 12:02:32 |   10 |     10 |
    +---------------------+------+--------+
    1 row in set (0.03 sec)
-   ```
+  ```

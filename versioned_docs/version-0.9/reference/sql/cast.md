@@ -17,9 +17,9 @@ CAST (expression AS data_type)
 
  Convert a string to an integer:
 
- ```sql
+```sql
  SELECT CAST('123' AS INT) ;
- ```
+```
 
 ```sql
 +-------------+

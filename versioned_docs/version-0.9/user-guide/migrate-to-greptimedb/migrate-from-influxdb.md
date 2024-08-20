@@ -42,7 +42,7 @@ For detailed configuration instructions, please refer to the [Ingest Data via Te
 
 <TabItem value="Node.js" label="Node.js">
 
-```js
+```js [Node.js]
 'use strict'
 /** @module write
 **/
@@ -66,7 +66,6 @@ writeApi.writePoint(point1)
 ```
 
 </TabItem>
-
 
 <TabItem value="Python" label="Python">
 

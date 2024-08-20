@@ -16,7 +16,7 @@ You can find the GreptimeDB URL, database name, as well as the username and pass
 
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
- ```shell
+```shell
 curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
@@ -26,7 +26,7 @@ curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
- ```shell
+```shell
 curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
@@ -44,7 +44,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
- ```toml
+```toml
 [[outputs.influxdb_v2]]
   urls = ["https://<host>/v1/influxdb"]
   token = "<greptime_user>:<greptimedb_password>"
@@ -57,7 +57,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
- ```toml
+```toml
 [[outputs.influxdb]]
   urls = ["https://<host>/v1/influxdb"]
   database = "<db-name>"
@@ -77,7 +77,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <TabItem value="Node.js" label="Node.js">
 
- ```js
+```js
 'use strict'
 /** @module write
 **/

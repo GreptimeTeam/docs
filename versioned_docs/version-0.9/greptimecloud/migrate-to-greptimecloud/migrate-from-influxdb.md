@@ -21,7 +21,7 @@ curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
   -H 'authorization: token <greptime_user:greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
-
+ 
 </TabItem>
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
@@ -30,7 +30,7 @@ curl -X POST 'https://<host>/v1/influxdb/api/v2/write?bucket=<db-name>' \
 curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
-
+ 
 </TabItem>
 
 </Tabs>
@@ -52,7 +52,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
   ## Leave empty
   organization = ""
 ```
-
+ 
 </TabItem>
 
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
@@ -64,7 +64,7 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
   username = "<greptime_user>"
   password = "<greptimedb_password>"
 ```
-
+ 
 </TabItem>
 </Tabs>
 
@@ -72,6 +72,8 @@ curl 'https://<host>/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptim
 
 <div id="write-data-client-libs">
 <Tabs>
+
+<TabItem value="Node.js" label="Node.js">
 
 <TabItem value="Node.js" label="Node.js">
 
@@ -97,11 +99,12 @@ const point1 = new Point('temperature')
 writeApi.writePoint(point1)
 
 ```
+ 
+</TabItem>
 
 </TabItem>
 
-
-<TabItem value="Python" label="Python">
+<TabItem value="python" label="Python">
 
 ```python
 import influxdb_client
@@ -128,7 +131,7 @@ write_api.write(bucket=bucket, org=org, record=p)
 
 </TabItem>
 
-<TabItem value="Go" label="Go">
+<TabItem value="go" label="Go">
 
 ```go
 bucket := "<db-name>"
@@ -149,7 +152,7 @@ client.Close()
 
 </TabItem>
 
-<TabItem value="Java" label="Java">
+<TabItem value="java" label="Java">
 
 ```java
 private static String url = "https://<host>/v1/influxdb";
@@ -173,7 +176,7 @@ public static void main(final String[] args) {
 
 </TabItem>
 
-<TabItem value="PHP" label="PHP">
+<TabItem value="php" label="PHP">
 
 ```php
 $client = new Client([

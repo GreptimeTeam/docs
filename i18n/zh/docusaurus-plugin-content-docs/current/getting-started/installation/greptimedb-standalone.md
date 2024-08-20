@@ -68,7 +68,7 @@ greptime/greptimedb:VAR::greptimedbVersion standalone start \
 
 1. 设置 `--security-opt seccomp=unconfined`：
 
-   ```shell
+  ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
    -v "$(pwd)/greptimedb:/tmp/greptimedb" \
    --name greptime --rm \
@@ -77,7 +77,7 @@ greptime/greptimedb:VAR::greptimedbVersion standalone start \
    --rpc-addr 0.0.0.0:4001 \
    --mysql-addr 0.0.0.0:4002 \
    --postgres-addr 0.0.0.0:4003
-   ```
+  ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
    :::
