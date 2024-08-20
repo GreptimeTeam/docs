@@ -94,4 +94,35 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 <InjectContent id="ingester-lib-reference" content={props.children}/>
 
+<!-- ## Query data
+
+GreptimeDB uses SQL as the main query language and is compatible with MySQL and PostgreSQL.
+Therefore, we recommend using mature SQL drivers to query data.
+
+### Recommended library
+
+<InjectContent id="recommended-query-library" content={props.children}/>
+
+### Installation
+
+<InjectContent id="query-library-installation" content={props.children}/>
+
+### Connect to database
+
+The following example shows how to connect to GreptimeDB:
+
+<InjectContent id="query-library-connect" content={props.children}/>
+
+### Raw SQL
+
+We recommend you using raw SQL to experience the full features of GreptimeDB.
+The following example shows how to use raw SQL to query data.
+
+<InjectContent id="query-library-raw-sql" content={props.children}/>
+
+### Query library reference
+
+For more information about how to use the query library, please see the documentation of the corresponding library:
+
+<InjectContent id="query-lib-doc-link" content={props.children}/> -->
 
