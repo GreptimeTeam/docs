@@ -177,6 +177,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/operations/compaction',
             'user-guide/operations/monitoring',
             'user-guide/operations/tracing',
+            'user-guide/operations/performance-tuning-tips',
           ],
         },
         'user-guide/upgrade',
