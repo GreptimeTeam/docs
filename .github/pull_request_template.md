@@ -11,5 +11,5 @@
 ## Checklist
 
 - [ ] Please confirm that all corresponding versions of the documents have been revised.
-- [ ] Please ensure that the content in `summary.yml` matches the current document structure when you changed the document structure.
+- [ ] Please ensure that the content in `sidebars.ts` matches the current document structure when you changed the document structure.
 - [ ] This change requires follow-up update in localized docs.
