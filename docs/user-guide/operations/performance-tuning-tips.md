@@ -19,7 +19,7 @@ The following metrics help diagnose query performance issues:
 
 ### Using cache for object stores
 
-While using object stores, it's highly recommended to enable the object store read cache and the write cache in the storage engine. This could reduce query time by more than 10 times.
+It's highly recommended to enable the object store read cache and the write cache in the storage engine. This could reduce query time by more than 10 times.
 
 The read cache stores objects or ranges on the local disk to avoid fetching the same range from the remote again. The following example shows how to enable the read cache for S3.
 - The `cache_path` is the directory to store cached objects.
@@ -56,11 +56,11 @@ experimental_write_cache_ttl = "8h"
 
 ### Enlarging cache size
 
-The `greptime_mito_cache_bytes` and `greptime_mito_cache_miss` metrics can indicate whether we need to enlarge the cache size:
-- The `greptime_mito_cache_miss` is high and increasing
-- The `greptime_mito_cache_bytes` reaches the cache capacity
+You can monitor the `greptime_mito_cache_bytes` and `greptime_mito_cache_miss` metrics to determine if you need to increase the cache size. The `type` label in these metrics indicates the type of cache.
 
-The `type` label in these metrics shows the type of cache. The storage engine supports configuring the size of each cache. The following is an example:
+If the `greptime_mito_cache_miss` metric is consistently high and increasing, or if the `greptime_mito_cache_bytes` metric reaches the cache capacity, you may need to adjust the cache size configurations of the storage engine.
+
+Here's an example:
 
 ```toml
 [[region_engine]]
