@@ -123,10 +123,10 @@ The content structure should remain consistency as the previous release notes.
 
 ### Updating `df-functions.md`
 
-Use the following command to generate `/en/reference/sql/functions/df-functions.md`:
+Use the following command to generate `./docs/reference/sql/functions/df-functions.md`.
 
 ```shell
-ruby misc/update_functions.rb [nightly | v0.x]
+ruby src/misc/update_functions.rb
 ```
 
 Then copy the English content to the corresponding localized file.
