@@ -23,7 +23,7 @@ It's highly recommended to enable the object store read cache and the write cach
 
 The read cache stores objects or ranges on the local disk to avoid fetching the same range from the remote again. The following example shows how to enable the read cache for S3.
 - The `cache_path` is the directory to store cached objects.
-- The `cache_capacity` is the capacity of the cache.
+- The `cache_capacity` is the capacity of the cache. It's recommended to leave at least 1/10 of the total disk space for it.
 
 ```toml
 [storage]
@@ -65,12 +65,28 @@ Here's an example:
 ```toml
 [[region_engine]]
 [region_engine.mito]
+# Cache size for the write cache. The `type` label value for this cache is `file`.
 experimental_write_cache_size = "10G"
+# Cache size for SST metadata. The `type` label value for this cache is `sst_meta`.
 sst_meta_cache_size = "128MB"
+# Cache size for vectors and arrow arrays. The `type` label value for this cache is `vector`.
 vector_cache_size = "512MB"
+# Cache size for pages of SST row groups. The `type` label value for this cache is `page`.
 page_cache_size = "512MB"
+# Cache size for time series selector (e.g. `last_value()`). The `type` label value for this cache is `selector_result`.
 selector_result_cache_size = "512MB"
+
+[region_engine.mito.index]
+## The max capacity of the index staging directory.
+staging_size = "10GB"
 ```
+
+Some tips:
+- 1/10 of disk space for the `experimental_write_cache_size` at least
+- 1/4 of total memory for the `page_cache_size` at least if the memory usage is under 20%
+- Double the cache size if the cache hit ratio is less than 50%
+- If using full-text index, leave 1/10 of disk space for the `staging_size` at least
+
 
 ### Enlarging scan parallelism
 
