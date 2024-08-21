@@ -131,6 +131,21 @@ Remove the document and update the `sidebars.ts` configuration.
 
 Remove the document and update the corresponding json file of the sidebar configuration.
 
+### Update `df-functions.md`
+
+Use the following command to generate `/en/reference/sql/functions/df-functions.md`:
+
+```shell
+ruby misc/update_functions.rb [nightly | v0.x]
+```
+
+Then copy the English content to the corresponding localized file.
+
+## Adding a new release note
+
+Add a new Markdown file to the `/blog` dictionary.
+The content structure should remain consistency as the previous release notes.
+
 ## Images
 
 ### Adding images
@@ -155,16 +170,6 @@ For example, link to the `Ingest Data` document in the `./docs` directory:
 ```markdown
 [Ingest Data](/user-guide/ingest-data/overview.md)
 ```
-
-## Update `df-functions.md`
-
-Use the following command to generate `/en/reference/sql/functions/df-functions.md`:
-
-```shell
-ruby misc/update_functions.rb [nightly | v0.x]
-```
-
-Then copy the English content to the corresponding localized file.
 
 ## Build and preview the docs locally
 
