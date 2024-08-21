@@ -57,18 +57,18 @@ docs/
 ```
 ### Key Directories and files
 
-- `/blog/` - Release note Markdown files.
-- `/docs/` - Nightly version documentation files.
-- `sidebars.ts` - Contains the navigation sidebar metadata configuration of the documentation.
+- `/blog/` - Markdown files for release notes.
+- `/docs/` - Documentation files for the nightly version.
+- `sidebars.ts` - Configuration file for the navigation sidebar metadata for the nightly version of the documentation.
 - `/versioned_docs/` - Documentation files for older versions.
-- `/versioned_docs` - Contains the documentation Markdown files of old versions.
-- `/versioned_sidebars` - Contains the navigation sidebar metadata configuration of the documentation of old versions.
-- `/i18n/zh/docusaurus-plugin-content-docs` - Contains the localized zh documentation Markdown files.
-  - `/current/` - Contains the nightly version of the localized documentation.
-  - `/version-<doc-version>` - Contains the localized documentation of the specified version.
-  - `/current.json` - Contains the navigation sidebar metadata of the nightly version localized documentation.
-  - `/version-<doc-version>.json` - Contains the navigation sidebar metadata of the specified version localized documentation.
-- `/src/plugins/variable-placeholder.ts` - Contains the custom plugin to replace variables in the documentation.
+- `/versioned_docs` - Markdown files for the documentation of old versions.
+- `/versioned_sidebars` - Configuration file for the navigation sidebar metadata of the documentation of old versions.
+- `/i18n/zh/docusaurus-plugin-content-docs` - Localized documentation Markdown files for the Chinese language.
+  - `/current/` - Nightly version of the localized documentation.
+  - `/version-<doc-version>` - Localized documentation for the specified version.
+  - `/current.json` - Navigation sidebar metadata for the nightly version of the localized documentation.
+  - `/version-<doc-version>.json` - Navigation sidebar metadata for the specified version of the localized documentation.
+- `/src/plugins/variable-placeholder.ts` - Custom plugin that replaces variables in the documentation.
 
 ## Documentation Versioning
 
@@ -143,7 +143,7 @@ Place images in the `./static/img` directory and reference them with a relative 
 
 ### Image style
 
-Please use the [`example.drawio.svg`](docs/example.drawio.svg) template for diagrams, maintaining consistency in colors and style.
+Please use the [`example.drawio.svg`](static/img/example.drawio.svg) template for diagrams, maintaining consistency in colors and style.
 
 ## Markdown links
 
