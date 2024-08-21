@@ -111,27 +111,17 @@ Documentation versions align with GreptimeDB versions:
 },
 ```
 
+## Adding a new release note
+
+Add a new Markdown file to the `/blog` dictionary.
+The content structure should remain consistency as the previous release notes.
+
 ## Modifying existing documents
 
-### English documents
+- English documents: Modify documents in `./docs` and ensure consistency across all relevant versions in `./versioned_docs`.
+- Localized documents: Modify localized documents in `./i18n/<locale>/docusaurus-plugin-content-docs/<version>` and ensure consistency across versions.
 
-Modify documents in `./docs` and ensure consistency across all relevant versions in `./versioned_docs`.
-
-### Modify the localized document
-
-Modify localized documents in `./i18n/<locale>/docusaurus-plugin-content-docs/<version>` and ensure consistency across versions.
-
-## Deleting documents
-
-### English documents
-
-Remove the document and update the `sidebars.ts` configuration.
-
-### Localized documents
-
-Remove the document and update the corresponding json file of the sidebar configuration.
-
-### Update `df-functions.md`
+### Updating `df-functions.md`
 
 Use the following command to generate `/en/reference/sql/functions/df-functions.md`:
 
@@ -141,10 +131,10 @@ ruby misc/update_functions.rb [nightly | v0.x]
 
 Then copy the English content to the corresponding localized file.
 
-## Adding a new release note
+## Deleting documents
 
-Add a new Markdown file to the `/blog` dictionary.
-The content structure should remain consistency as the previous release notes.
+- English documents: Remove the document and update the `sidebars.ts` configuration.
+- Localized documents: Remove the document and update the corresponding json file of the sidebar configuration.
 
 ## Images
 
@@ -171,28 +161,6 @@ For example, link to the `Ingest Data` document in the `./docs` directory:
 [Ingest Data](/user-guide/ingest-data/overview.md)
 ```
 
-## Build and preview the docs locally
-
-We highly encourage you to preview your changes locally before submitting a pull request.
-This project requires Node.js version 18.0.0 or higher.
-Use `npm install -g pnpm` to install package manager, and start a local server with the following commands:
-
-```shell
-pnpm install
-pnpm run start
-```
-
-You can also use `pnpm run build` to check dead links.
-
-### Preview the localized documentation
-
-To preview the documentation in a specific language, use command `pnpm run start --locale <localize language>`.
-For example:
-
-```cmd
-pnpm run start --locale zh
-```
-
 ## Using tabs
 
 You can the `Tabs` component to display different content in the same position.
@@ -214,6 +182,27 @@ Document templates can help you reuse the same outlines and structures in multip
 
 For an example, please refer to the [gRPC-SDK dictionary](docs/user-guide/ingest-data/for-iot/grpc-sdks).
 
+## Build and preview the docs locally
+
+We highly encourage you to preview your changes locally before submitting a pull request.
+This project requires Node.js version 18.0.0 or higher.
+Use `npm install -g pnpm` to install package manager, and start a local server with the following commands:
+
+```shell
+pnpm install
+pnpm run start
+```
+
+You can also use `pnpm run build` to check dead links.
+
+### Preview the localized documentation
+
+To preview the documentation in a specific language, use command `pnpm run start --locale <localize language>`.
+For example:
+
+```cmd
+pnpm run start --locale zh
+```
 
 ## PR title check
 
