@@ -513,7 +513,7 @@ use_memory_store = false
 ## - 使用 Remote WAL
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
-# metasrv的数据库类型.
+# metasrv 的数据库类型.
 backend = "EtcdStore"
 
 ## Procedure 选项
