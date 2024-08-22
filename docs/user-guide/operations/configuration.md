@@ -557,7 +557,7 @@ data_home = "/tmp/metasrv/"
 bind_addr = "127.0.0.1:3002"
 # The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
 server_addr = "127.0.0.1:3002"
-# Etcd server addresses, "127.0.0.1:2379" by default.
+# Store server address, "127.0.0.1:2379" by default with etcd store.
 store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
@@ -571,6 +571,8 @@ use_memory_store = false
 ## - Using Remote WAL
 ## - Using shared storage (e.g., s3).
 enable_region_failover = false
+# The datastore for meta server.
+backend = "EtcdStore"
 
 ## Procedure storage options.
 [procedure]

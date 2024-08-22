@@ -546,7 +546,7 @@ data_home = "/tmp/metasrv/"
 bind_addr = "127.0.0.1:3002"
 # frontend 和 datanode 连接到 metasrv 的通信服务器地址，本地默认为 "127.0.0.1:3002"。
 server_addr = "127.0.0.1:3002"
-# Etcd 服务器地址，默认为 "127.0.0.1:2379"。
+# metasrv 存储端服务器地址，默认为 "127.0.0.1:2379"。
 store_addr = "127.0.0.1:2379"
 # Datanode 选择器类型。
 # - "lease_based" (默认值)
@@ -560,6 +560,8 @@ use_memory_store = false
 ## - 使用 Remote WAL
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
+# metasrv 的数据库类型.
+backend = "EtcdStore"
 
 ## Procedure 选项
 [procedure]
