@@ -119,7 +119,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/GreptimeTeam/docs/',
+            'https://github.com/GreptimeTeam/docs/tree/main',
           routeBasePath: '/',
           exclude: [
             'db-cloud-shared/**',
