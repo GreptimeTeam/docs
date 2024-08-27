@@ -433,8 +433,8 @@ fork_dictionary_bytes = "1GiB"
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
 | `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
 | `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
-| `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                              |
-| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                                  |
+| `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
+| `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
@@ -613,10 +613,15 @@ provider = "raft_engine"
 ## Kafka 集群的代理端点。
 broker_endpoints = ["127.0.0.1:9092"]
 
-## 启动时创建的 topic 数量。
+## 自动为 WAL 创建 topics
+## 设置为 `true` 则自动为 WAL 创建 topics
+## 否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics
+auto_create_topics = true
+
+## Topic 数量。
 num_topics = 64
 
-## topic selector 类型。
+## Topic selector 类型。
 ## 可用的 selector 类型：
 ## - `round_robin`（默认）
 selector_type = "round_robin"
@@ -643,48 +648,49 @@ backoff_base = 2
 backoff_deadline = "5mins"
 ```
 
-| 键                                            | 类型    | 默认值               | 描述                                                                                                                               |
-| --------------------------------------------- | ------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `data_home`                                   | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                         |
-| `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                               |
-| `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                               |
-| `store_addr`                                  | String  | `127.0.0.1:2379`     | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                         |
-| `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                    |
-| `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                             |
-| enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。 |
-| `procedure`                                   | --      | --                   |                                                                                                                                    |
-| `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                         |
-| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                           |
-| `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                     |
-| `failure_detector.threshold`                  | 浮点数  | `8.0`                | Failure detector 用来判断故障条件的阈值。                                                                                          |
-| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                                   |
-| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 允许的最大心跳暂停时间，用于确定心跳间隔是否可接受。                                                                               |
-| `failure_detector.first_heartbeat_estimate`   | 字符串  | `1000ms`             | 初始心跳间隔估算值。                                                                                                               |
-| `datanode`                                    | --      | --                   |                                                                                                                                    |
-| `datanode.client`                             | --      | --                   | Datanode 客户端选项。                                                                                                              |
-| `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                         |
-| `datanode.client.connect_timeout`             | 字符串  | `10s`                | 连接服务器超时。                                                                                                                   |
-| `datanode.client.tcp_nodelay`                 | 布尔值  | `true`               | 接受连接的 `TCP_NODELAY` 选项。                                                                                                    |
-| wal                                           | --      | --                   | --                                                                                                                                 |
-| wal.provider                                  | String  | raft_engine          | --                                                                                                                                 |
-| wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                   |
-| wal.num_topics                                | Integer | 64                   | 启动时创建的 topic数                                                                                                               |
-| wal.selector_type                             | String  | round_robin          | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                            |
-| wal.topic_name_prefix                         | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                   |
-| wal.replication_factor                        | Integer | 1                    | 每个分区的副本数                                                                                                                   |
-| wal.create_topic_timeout                      | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                               |
-| wal.backoff_init                              | String  | 500ms                | Kafka 客户端的 backoff 初始时间                                                                                                    |
-| wal.backoff_max                               | String  | 10s                  | Kafka 客户端的 backoff 最大时间                                                                                                    |
-| wal.backoff_base                              | Integer | 2                    | backoff 指数，即下一个 backoff 时间 = 该指数 \* 当前 backoff 时间                                                                  |
-| wal.backoff_deadline                          | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                     |
-| `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                             |
-| `wal.sasl.type`                               | String  | --                   | SASL 机制, 可选值: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                       |
-| `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                    |
-| `wal.sasl.password`                           | String  | --                   | SASL 鉴权密码                                                                                                                      |
-| `wal.tls`                                     | String  | --                   | Kafka 客户端 TLS 配置                                                                                                              |
-| `wal.tls.server_ca_cert_path`                 | String  | --                   | 服务器 CA 证书地址                                                                                                                 |
-| `wal.tls.client_cert_path`                    | String  | --                   | 客户端证书地址（用于启用 mTLS）                                                                                                    |
-| `wal.tls.client_key_path`                     | String  | --                   | 客户端密钥地址（用于启用 mTLS）                                                                                                    |
+| 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
+| --------------------------------------------- | ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `data_home`                                   | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                           |
+| `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
+| `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
+| `store_addr`                                  | String  | `127.0.0.1:2379`     | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                           |
+| `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
+| `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
+| enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
+| `procedure`                                   | --      | --                   |                                                                                                                                      |
+| `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
+| `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
+| `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
+| `failure_detector.threshold`                  | 浮点数  | `8.0`                | Failure detector 用来判断故障条件的阈值。                                                                                            |
+| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                                     |
+| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 允许的最大心跳暂停时间，用于确定心跳间隔是否可接受。                                                                                 |
+| `failure_detector.first_heartbeat_estimate`   | 字符串  | `1000ms`             | 初始心跳间隔估算值。                                                                                                                 |
+| `datanode`                                    | --      | --                   |                                                                                                                                      |
+| `datanode.client`                             | --      | --                   | Datanode 客户端选项。                                                                                                                |
+| `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                           |
+| `datanode.client.connect_timeout`             | 字符串  | `10s`                | 连接服务器超时。                                                                                                                     |
+| `datanode.client.tcp_nodelay`                 | 布尔值  | `true`               | 接受连接的 `TCP_NODELAY` 选项。                                                                                                      |
+| wal                                           | --      | --                   | --                                                                                                                                   |
+| wal.provider                                  | String  | raft_engine          | --                                                                                                                                   |
+| wal.broker_endpoints                          | Array   | --                   | Kafka 集群的端点                                                                                                                     |
+| `wal.auto_create_topics`                      | Bool    | `true`               | 自动为 WAL 创建 topics <br/>设置为 `true` 则自动为 WAL 创建 topics <br/>否则，使用名为 `topic_name_prefix_[0..num_topics)` 的 topics |
+| `wal.num_topics`                              | Integer | `64`                 | Topic 数量                                                                                                                           |
+| wal.selector_type                             | String  | round_robin          | topic selector 类型 <br/>可用 selector 类型：<br/>- round_robin（默认）                                                              |
+| wal.topic_name_prefix                         | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
+| wal.replication_factor                        | Integer | 1                    | 每个分区的副本数                                                                                                                     |
+| wal.create_topic_timeout                      | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                                 |
+| wal.backoff_init                              | String  | 500ms                | Kafka 客户端的 backoff 初始时间                                                                                                      |
+| wal.backoff_max                               | String  | 10s                  | Kafka 客户端的 backoff 最大时间                                                                                                      |
+| wal.backoff_base                              | Integer | 2                    | backoff 指数，即下一个 backoff 时间 = 该指数 \* 当前 backoff 时间                                                                    |
+| wal.backoff_deadline                          | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                       |
+| `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
+| `wal.sasl.type`                               | String  | --                   | SASL 机制, 可选值: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
+| `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                      |
+| `wal.sasl.password`                           | String  | --                   | SASL 鉴权密码                                                                                                                        |
+| `wal.tls`                                     | String  | --                   | Kafka 客户端 TLS 配置                                                                                                                |
+| `wal.tls.server_ca_cert_path`                 | String  | --                   | 服务器 CA 证书地址                                                                                                                   |
+| `wal.tls.client_cert_path`                    | String  | --                   | 客户端证书地址（用于启用 mTLS）                                                                                                      |
+| `wal.tls.client_key_path`                     | String  | --                   | 客户端密钥地址（用于启用 mTLS）                                                                                                      |
 
 ### 仅限于 `Datanode` 的配置
 

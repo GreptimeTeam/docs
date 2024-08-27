@@ -624,7 +624,12 @@ provider = "raft_engine"
 ## The broker endpoints of the Kafka cluster.
 broker_endpoints = ["127.0.0.1:9092"]
 
-## Number of topics to be created upon start.
+## Automatically create topics for WAL.
+## Set to `true` to automatically create topics for WAL.
+## Otherwise, use topics named `topic_name_prefix_[0..num_topics)`
+auto_create_topics = true
+
+## Number of topics.
 num_topics = 64
 
 ## Topic selector type.
@@ -697,7 +702,8 @@ backoff_deadline = "5mins"
 | `wal`                                         | --      | --                     | --                                                                                                                                                                            |
 | `wal.provider`                                | String  | `raft_engine`          | --                                                                                                                                                                            |
 | `wal.broker_endpoints`                        | Array   | --                     | The broker endpoints of the Kafka cluster.                                                                                                                                    |
-| `wal.num_topics`                              | Integer | `64`                   | Number of topics to be created upon start.                                                                                                                                    |
+| `wal.auto_create_topics`                      | Bool    | `true`                 | Automatically create topics for WAL.<br/>Set to `true` to automatically create topics for WAL.<br/>Otherwise, use topics named `topic_name_prefix_[0..num_topics)`            |
+| `wal.num_topics`                              | Integer | `64`                   | Number of topics.                                                                                                                                                             |
 | `wal.selector_type`                           | String  | `round_robin`          | Topic selector type.<br/>Available selector types:<br/>- `round_robin` (default)                                                                                              |
 | `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                             |
 | `wal.replication_factor`                      | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                |
