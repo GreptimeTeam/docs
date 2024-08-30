@@ -126,7 +126,8 @@ const config: Config = {
             'user-guide/client-libraries/template.md',
             'getting-started/quick-start/quick-start-template.md',
             '**/template.md',
-            'user-guide/python-scripts/**'
+            'user-guide/python-scripts/**',
+            'user-guide/ingest-data/for-iot/grpc-sdks/template.md'
           ],
           versions: {
             current: {
