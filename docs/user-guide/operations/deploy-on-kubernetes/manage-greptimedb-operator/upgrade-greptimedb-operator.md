@@ -1,5 +1,5 @@
 # Upgrade GreptimeDB Operator
-You can upgrade the GreptimeDB Operator at any time without impacting your managed GreptimeDB instances. This guide details the steps to upgrade an existing GreptimeDB Operator installation using Helm, specifically from version 0.2.1 to the lastest version.
+You can upgrade the GreptimeDB Operator at any time without impacting your managed GreptimeDB instances. This guide details the steps to upgrade an existing GreptimeDB Operator installation using Helm, specifically from version 0.2.1 to the latest version.
 
 ### Verify the existing Operator installation.
 
