@@ -43,13 +43,13 @@ curl -fsSL \
 
 ```shell
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
--v "$(pwd)/greptimedb:/tmp/greptimedb" \
---name greptime --rm \
-greptime/greptimedb:VAR::greptimedbVersion standalone start \
---http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
---mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003
+  -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+  --name greptime --rm \
+  greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:VAR::greptimedbVersion standalone start \
+  --http-addr 0.0.0.0:4000 \
+  --rpc-addr 0.0.0.0:4001 \
+  --mysql-addr 0.0.0.0:4002 \
+  --postgres-addr 0.0.0.0:4003
 ```
 
 :::tip 注意事项
@@ -70,17 +70,17 @@ greptime/greptimedb:VAR::greptimedbVersion standalone start \
 
   ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-   -v "$(pwd)/greptimedb:/tmp/greptimedb" \
-   --name greptime --rm \
-   greptime/greptimedb:VAR::greptimedbVersion standalone start \
-   --http-addr 0.0.0.0:4000 \
-   --rpc-addr 0.0.0.0:4001 \
-   --mysql-addr 0.0.0.0:4002 \
-   --postgres-addr 0.0.0.0:4003
+     -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+     --name greptime --rm \
+     greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:VAR::greptimedbVersion standalone start \
+     --http-addr 0.0.0.0:4000 \
+     --rpc-addr 0.0.0.0:4001 \
+     --mysql-addr 0.0.0.0:4002 \
+     --postgres-addr 0.0.0.0:4003
   ```
 
 2. 将 Docker 版本升级到 v23.0.0 或更高;
-   :::
+:::
 
 ## 绑定地址
 
@@ -108,13 +108,13 @@ GreptimeDB 默认绑定地址为 `127.0.0.1`。如果你需要能够接收来自
 
 ```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
--v "$(pwd)/greptimedb:/tmp/greptimedb" \
---name greptime --rm \
-greptime/greptimedb:VAR::greptimedbVersion standalone start \
---http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
---mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003
+  -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+  --name greptime --rm \
+  greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:VAR::greptimedbVersion standalone start \
+  --http-addr 0.0.0.0:4000 \
+  --rpc-addr 0.0.0.0:4001 \
+  --mysql-addr 0.0.0.0:4002 \
+  --postgres-addr 0.0.0.0:4003
 ```
 
 </TabItem>

@@ -2,61 +2,46 @@
 
 本指南提供了在 Kubernetes 上部署 GreptimeDB 集群的步骤。
 
-## 准备工作
+## 前置条件
 
-在开始部署 GreptimeDB 到 Kubernetes 之前，
-请确保你已经下载了必要的工具，
-准备好 Kubernetes，并创建了命名空间。
+- Kubernetes >= 1.18
 
-### 工具
+  :::tip 注意
+  你可以使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 或 [Minikube](https://minikube.sigs.k8s.io/docs/start/) 创建一个用于测试的本地 Kubernetes 集群。
+  :::
 
-在部署过程中，除了 [Kubernetes](https://kubernetes.io/) 之外，
-你还需要使用以下工具：
+- [Helm v3](https://helm.sh/docs/intro/install/)：Kubernetes 的包管理器。
 
-- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)：用于创建 Kubernetes 集群。
-- [Helm](https://helm.sh/docs/intro/install/)：用于 Kubernetes 的包管理器。
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)：用于与 Kubernetes 集群交互的命令行工具。
 
-### 创建 Kubernetes 集群
+## 添加 Helm 仓库
 
-你可以使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 创建一个用于 GreptimeDB 的 Kubernetes 集群：
-
-```shell
-kind create cluster --name greptime
-```
-
-### 创建 namespace
-
-为了更好地隔离和扩展性，
-建议给 GreptimeDB Operator、etcd 集群和 GreptimeDB 集群使用单独的命名空间。
+你使用以下命令添加 GreptimeDB Helm chart 仓库。
 
 ```shell
-kubectl create namespace greptimedb-admin
-kubectl create namespace etcd
-kubectl create namespace greptimedb-cluster
-```
-
-### 添加 Helm 仓库
-
-使用以下命令添加GreptimeDB Helm chart仓库。
-
-```shell
-helm repo add greptime https://downloads.greptime.cn/releases/charts/package
-```
-
-```shell
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 ```
 
 你可以在 Github 仓库中找到维护的 [Helm charts](https://github.com/GreptimeTeam/helm-charts)。
+
+或者你也可以直接使用阿里云的 OCI 仓库，比如：
+
+```shell
+helm upgrade --install mycluster \
+  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
+  --values ./values.yaml
+```
+
+当使用 OCI 仓库的时候**无需显式**地添加 Helm 仓库。**中文文档会以阿里云的 OCI 仓库为主以提升网络速度**，如果有其他仓库，会在文档中说明。
 
 ## 组件
 
 在 Kubernetes 上部署 GreptimeDB 涉及以下组件：
 
 - GreptimeDB Operator：帮助工程师在 Kubernetes 上有效地管理 GreptimeDB 集群。
-- etcd 集群：etcd 是用于 GreptimeDB 集群元数据存储的一致且高可用的键值存储。
 - GreptimeDB 集群：主数据库集群。
+- etcd 集群：etcd 是用于 GreptimeDB 集群元数据存储的一致且高可用的键值存储。
 
 ## 下一步
 

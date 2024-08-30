@@ -6,47 +6,35 @@
 
 ### 创建 etcd 集群
 
-为了避免遇到网络问题，先拉取 chart 到本地：
-
-```shell
-wget https://downloads.greptime.cn/releases/charts/etcd/10.2.4/etcd-10.2.4.tgz
-tar -zxvf etcd-10.2.4.tgz
-```
-
-然后执行以下命令来建立一个支持 GreptimeDB 的 etcd 集群：
+首先，执行以下命令来建立一个 etcd 集群以支持 GreptimeDB：
 
 ```shell
 helm upgrade \
-  --install etcd etcd \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --set image.registry="greptime-registry.cn-hangzhou.cr.aliyuncs.com" \
+  --set image.repository="bitnami/etcd" \
+  --set image.tag="3.5.11" \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
-  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set image.tag=3.5.12 \
   --create-namespace \
-  -n etcd
+  -n etcd-cluster
 ```
 
-安装完成后，你可以从安装日志中获取 etcd 集群的 endpoint `etcd.etcd.svc.cluster.local:2379`。
+
+安装完成后，你可以从安装日志中获取 etcd 集群的 endpoint `etcd.etcd-cluster.svc.cluster.local:2379`。
 该 endpoint 在后续步骤部署 GreptimeDB 集群时需要使用。
 
-### 创建 GretpimeDB 集群
+### 创建 GreptimeDB 集群
 
-为了避免遇到网络问题，先拉取 chart 到本地：
-
-```shell
-wget https://downloads.greptime.cn/releases/charts/greptimedb-cluster/latest/greptimedb-cluster-latest.tgz
-tar -zxvf greptimedb-cluster-latest.tgz
-```
-
-然后部署 GreptimeDB 集群，确保它连接到先前建立的 etcd 集群：
+使用如下命令镜像部署：
 
 ```shell
 helm upgrade \
-  --install greptimedb greptimedb-cluster \
+  --install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --create-namespace \
   -n greptimedb-cluster
 ```
@@ -57,8 +45,11 @@ GreptimeDB Helm charts 能够为部署中的每个组件指定资源请求和限
 以下是如何配置这些设置的示例：
 
 ```shell
-helm install greptimedb greptimedb-cluster \
-  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+helm upgrade \ 
+  --install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
   --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
   --set datanode.podTemplate.main.resources.requests.cpu=<cpu-resource> \
@@ -86,13 +77,13 @@ metadata:
 spec:
   base:
     main:
-      image: greptime/greptimedb
+      image: greptime-registry.cn-hangzhou.cr.aliyuncs.com/greptime/greptimedb:latest
   frontend:
     replicas: 1
   meta:
     replicas: 1
     etcdEndpoints:
-      - "etcd.etcd.svc.cluster.local:2379"
+      - "etcd.etcd-cluster.svc.cluster.local:2379"
   datanode:
     replicas: 3
 ```
@@ -105,14 +96,15 @@ kubectl apply -f greptimedb-cluster.yaml
 
 ## 连接到集群
 
-安装完成后，你可以使用 `kubectl port-forward` 转发 GreptimeDB 集群的 MySQL 协议端口：
+安装完成后，你可以使用 `kubectl port-forward` 转发 GreptimeDB 集群的服务端口：
 
 ```shell
-# 你可以使用 MySQL 客户端连接集群，例如：'mysql -h 127.0.0.1 -P 4002'。
-kubectl port-forward svc/greptimedb-frontend 4002:4002 -n greptimedb-cluster > connections.out &
-
-# 你可以使用 PostgreSQL 客户端连接集群，例如：'psql -h 127.0.0.1 -p 4003 -d public'。
-kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > connections.out &
+# 你可以使用 MySQL 或者 PostgreSQL 客户端连接集群，例如：'mysql -h 127.0.0.1 -P 4002'。
+# HTTP port: 4000
+# gRPC port: 4001
+# MySQL port: 4002
+# PostgreSQL port: 4003
+kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4001:4001 4002:4002 4003:4003 4000:4000 > connections.out &
 ```
 
 然后就可以使用 MySQL 客户端来[连接到集群](/user-guide/clients/mysql.md#连接到服务端)。
