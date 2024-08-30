@@ -23,7 +23,9 @@ NAME               	NAMESPACE          	REVISION	UPDATED                        
 operator	        greptimedb-operator	1       	2024-08-30 08:04:53.388756424 +0000 UTC	deployed	greptimedb-operator-0.2.1	0.1.0-alpha.28
 ```
 
-### Update the Operator Repository
+The Operator is currently installed with version `0.1.0-alpha.28` using the `greptimedb-operator-0.2.1` chart.
+
+### Update the Operator repository
 
 Update the GreptimeDB Operator Helm repository to fetch the latest charts:
 
@@ -66,4 +68,9 @@ The command should return a successful upgrade with an incremented `REVISION` va
 To confirm the upgrade, run the following command:
 ```bash
 kubectl get pod -l 'app.kubernetes.io/name=operator' -n greptimedb-operator -o json | jq '.items[0].spec.containers[0].image'
+```
+
+You should see the following output, indicating that the Operator has been successfully upgraded to the latest version:
+```bash
+"docker.io/greptime/greptimedb-operator:v0.1.0-alpha.29"
 ```
