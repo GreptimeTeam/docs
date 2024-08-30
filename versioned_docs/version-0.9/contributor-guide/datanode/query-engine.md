@@ -44,8 +44,10 @@ will make more use of this feature, and develop our separated index to handle mo
 
 ## Extensibility
 
-Extending operations in GreptimeDB is extremely simple. There are two ways to do it: 1. via the [Python Coprocessor][4] interface; 2. implement your operator like
-[this][5].
+<!-- Extending operations in GreptimeDB is extremely simple. There are two ways to do it: 1. via the [Python Coprocessor][4] interface; 2. implement your operator like
+[this][5]. -->
+
+Extending operations in GreptimeDB is extremely simple. You can implement your operator like [this][5].
 
 ## Distributed Execution
 
