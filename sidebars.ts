@@ -157,7 +157,14 @@ const sidebars: SidebarsConfig = {
               label: 'Deploy on Kubernetes',
               items: [
                 'user-guide/operations/deploy-on-kubernetes/overview',
-                'user-guide/operations/deploy-on-kubernetes/greptimedb-operator',
+                {
+                  type: 'category',
+                  label: 'Manage GreptimeDB Operator',
+                  items: [
+                    'user-guide/operations/deploy-on-kubernetes/manage-greptimedb-operator/deploy-greptimedb-operator',
+                    'user-guide/operations/deploy-on-kubernetes/manage-greptimedb-operator/upgrade-greptimedb-operator',
+                  ]
+                },
                 'user-guide/operations/deploy-on-kubernetes/deploy-greptimedb-cluster',
                 'user-guide/operations/deploy-on-kubernetes/destroy-cluster',
               ],
