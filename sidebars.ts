@@ -351,7 +351,6 @@ const sidebars: SidebarsConfig = {
             'contributor-guide/datanode/query-engine',
             'contributor-guide/datanode/data-persistence-indexing',
             'contributor-guide/datanode/wal',
-            'contributor-guide/datanode/python-scripts',
             'contributor-guide/datanode/metric-engine',
           ],
         },

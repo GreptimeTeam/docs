@@ -26,7 +26,9 @@ GreptimeDB 使用 [Apache Arrow][2]作为内存中的数据表示格式。它是
 
 ## 拓展性
 
-在 GreptimeDB 中扩展操作非常简单。有两种方法可以做到：1. 通过 [Python Coprocessor][4] 接口；2. 像 [这样][5] 实现你的算子。
+<!-- 在 GreptimeDB 中扩展操作非常简单。有两种方法可以做到：1. 通过 [Python Coprocessor][4] 接口；2. 像 [这样][5] 实现你的算子。 -->
+
+在 GreptimeDB 中扩展操作非常简单。你可以像 [这样][5] 实现你的算子。
 
 ## 分布式查询
 

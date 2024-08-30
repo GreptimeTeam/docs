@@ -65,6 +65,5 @@ ALIGN '5s' BY (host) FILL PREV
 * [数据写入](./ingest-data/overview.md)
 * [数据查询](./query-data/overview.md)
 * [持续聚合](./continuous-aggregation/overview.md)
-* [Python 脚本](./python-scripts/overview.md)
 * [运维操作](./operations/overview.md)
 * [集群](./cluster.md)

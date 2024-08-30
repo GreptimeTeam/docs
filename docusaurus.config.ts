@@ -127,7 +127,8 @@ const config: Config = {
             'getting-started/quick-start/quick-start-template.md',
             '**/template.md',
             'user-guide/python-scripts/**',
-            'user-guide/ingest-data/for-iot/grpc-sdks/template.md'
+            'user-guide/ingest-data/for-iot/grpc-sdks/template.md',
+            'contributor-guide/datanode/python-scripts.md',
           ],
           versions: {
             current: {
