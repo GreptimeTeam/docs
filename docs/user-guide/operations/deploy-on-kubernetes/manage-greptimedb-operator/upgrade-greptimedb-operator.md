@@ -56,7 +56,7 @@ greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operato
 Use Helm to upgrade the GreptimeDB Operator to the latest version:
 ```bash
 helm upgrade -n greptimedb-operator \
-operator greptime/greptimedb-operator
+  operator greptime/greptimedb-operator
 ```
 
 If the Operator is installed in a different namespace, specify it with the `-n` argument. Additionally, if you used a different installation name than operator, replace `operator` in the command.
