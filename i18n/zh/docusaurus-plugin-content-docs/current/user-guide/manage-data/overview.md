@@ -277,4 +277,35 @@ TRUNCATE TABLE monitor;
 
 有关 `TRUNCATE TABLE` 语句的更多信息，请参阅 [SQL TRUNCATE TABLE](/reference/sql/truncate.md) 文档。
 
+## 使用 TTL 策略保留数据
+
+Time to Live (TTL) 允许你设置定期删除表中数据的策略，
+你可以使用 TTL 自动删除数据库中的过期数据。
+设置 TTL 策略具有以下好处：
+
+- 通过清理过期数据来降低存储成本。
+- 减少数据库在某些查询中需要扫描的行数，从而提高查询性能。
+
+你可以在创建每个表时设置 TTL。
+例如，以下 SQL 语句创建了一个名为 `monitor` 的表，并设置了 7 天的 TTL 策略：
+
+```sql
+CREATE TABLE monitor (
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64,
+    memory FLOAT64,
+    PRIMARY KEY(host)
+) WITH ('ttl'='7d');
+```
+
+你还可以创建数据库级别的 TTL 策略。
+例如，以下 SQL 语句创建了一个名为 `test` 的数据库，并设置了 7 天的 TTL 策略：
+
+```sql
+CREATE DATABASE test WITH ('ttl'='7d');
+```
+
+有关 TTL 策略的更多信息，请参阅 [CREATE](/reference/sql/create.md) 语句。
+
 

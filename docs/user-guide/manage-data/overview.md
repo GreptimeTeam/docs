@@ -281,3 +281,30 @@ TRUNCATE TABLE monitor;
 ```
 
 For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation.
+
+## Manage data retention with TTL policies
+
+You can use Time to Live (TTL) policies to automatically remove stale data from your databases. TTL allows you to set policies to periodically delete data from tables. Setting TTL policies has the following benefits:
+
+- Decrease storage costs by cleaning out obsolete data.
+- Reduce the number of rows the database has to scan for some queries, potentially increasing query performance.
+
+You can set TTL for every table when creating it. For example, the following SQL statement creates a table named `monitor` with a TTL policy of 7 days:
+
+```sql
+CREATE TABLE monitor (
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64,
+    memory FLOAT64,
+    PRIMARY KEY(host)
+) WITH ('ttl'='7d');
+```
+
+You can also create a database-level TTL policy. For example, the following SQL statement creates a database named `test` with a TTL policy of 7 days:
+
+```sql
+CREATE DATABASE test WITH ('ttl'='7d');
+```
+
+For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
