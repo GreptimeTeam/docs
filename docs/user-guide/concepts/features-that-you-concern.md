@@ -16,24 +16,7 @@ Yes, it does. Please refer to the [delete data](/user-guide/manage-data/overview
 
 ## Can I set TTL or retention policy for different tables or measurements?
 
-Of course, you can set TTL for every table when creating it:
-
-```sql
-CREATE TABLE IF NOT EXISTS temperatures(
-  ts TIMESTAMP TIME INDEX,
-  temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
-```
-
-The TTL of temperatures is set to be seven days. 
-
-Since 0.8, the database level `TTL` is supported too.
-
-```sql
-CREATE DATABASE test with(ttl='7d');
-```
-
-You can refer to the TTL option of the database and table create statement [here](/reference/sql/create.md).
+Of course. Please refer to the document [on managing data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
 
 ## What are the compression rates of GreptimeDB?
 
