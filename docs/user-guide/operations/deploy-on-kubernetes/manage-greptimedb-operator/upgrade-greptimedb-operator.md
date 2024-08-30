@@ -1,7 +1,7 @@
 # Upgrade GreptimeDB Operator
-You can upgrade the GreptimeDB Operator at any time without impacting your managed GreptimeDB instances. This guide details the steps to upgrade an existing GreptimeDB Operator installation using Helm, specifically from version 0.2.1 to 0.2.3.
+You can upgrade the GreptimeDB Operator at any time without impacting your managed GreptimeDB instances. This guide details the steps to upgrade an existing GreptimeDB Operator installation using Helm, specifically from version 0.2.1 to the lastest version.
 
-### 1. Verify the existing Operator installation.
+### Verify the existing Operator installation.
 
 First, verify the health and status of all Operator pods and services using:
 
@@ -20,10 +20,10 @@ helm list -n greptimedb-operator
 You should see output similar to this:
 ```
 NAME               	NAMESPACE          	REVISION	UPDATED                                	STATUS  	CHART                    	APP VERSION
-greptimedb-operator	greptimedb-operator	1       	2024-08-30 08:04:53.388756424 +0000 UTC	deployed	greptimedb-operator-0.2.1	0.1.0-alpha.28
+operator	        greptimedb-operator	1       	2024-08-30 08:04:53.388756424 +0000 UTC	deployed	greptimedb-operator-0.2.1	0.1.0-alpha.28
 ```
 
-### 2. Update the Operator Repository
+### Update the Operator Repository
 
 Update the GreptimeDB Operator Helm repository to fetch the latest charts:
 
@@ -49,7 +49,7 @@ NAME                        	CHART VERSION	APP VERSION   	DESCRIPTION
 greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operator Helm chart for Kubernetes.
 ```
 
-### 3. Run helm upgrade
+### Upgrade the Operator version
 
 Use Helm to upgrade the GreptimeDB Operator to the latest version:
 ```bash
@@ -61,14 +61,9 @@ If the Operator is installed in a different namespace, specify it with the `-n` 
 
 The command should return a successful upgrade with an incremented `REVISION` value.
 
-### 4. Validate the Operator upgrade
+### Verify the Operator upgrade
 
-To confirm the upgrade, run the same helm list command as before:
+To confirm the upgrade, run the following command:
 ```bash
-helm list -n greptimedb-operator
+kubectl get pod -l 'app.kubernetes.io/name=operator' -n greptimedb-operator -o json | jq '.items[0].spec.containers[0].image'
 ```
-
-You should see output similar to this:
-```
-NAME               	NAMESPACE          	REVISION	UPDATED                                	STATUS  	CHART                    	APP VERSION
-greptimedb-operator	greptimedb-operator	2       	2024-08-30 08:18:14.115248532 +0000 UTC	deployed	greptimedb-operator-0.2.3	0.1.0-alpha.29```

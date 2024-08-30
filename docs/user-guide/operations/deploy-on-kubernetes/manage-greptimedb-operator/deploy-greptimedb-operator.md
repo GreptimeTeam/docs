@@ -11,10 +11,8 @@ The GreptimeDB Kubernetes Operator simplifies deploying GreptimeDB on both priva
 
 GreptimeDB provides a Helm-compatible repository for easy deployment. Follow these steps to install the Operator using Helm:
 
-### 1. Add the GreptimeDB Operator Repository
+### Add the GreptimeDB Operator repository
 First, add the GreptimeDB Operator Helm repository:
-
-1. Add the GreptimeDB Operator Repo to Helm
 ```bash
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
 ```
@@ -30,16 +28,16 @@ NAME                        	CHART VERSION	APP VERSION   	DESCRIPTION
 greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operator Helm chart for Kubernetes.
 ```
 
-### 2. Install the Operator
+### Install the Operator
 To install the Operator, run the following `helm install` command. This command also creates a dedicated namespace `greptimedb-operator` for the installation. It's recommended to use a dedicated namespace for the Operator:
 ```bash
 helm install \
+  operator greptime/greptimedb-operator \
   --create-namespace \
-  greptimedb-operator greptime/greptimedb-operator \
   -n greptimedb-operator
 ```
 
-### 3. Verify the Operator installation
+### Verify the Operator installation
 After installation, check the contents of the `greptimedb-operator` namespace to confirm that all pods and services are running correctly:
 ```bash
 kubectl get all -n greptimedb-operator
@@ -48,11 +46,11 @@ kubectl get all -n greptimedb-operator
 You should see output similar to this:
 ```bash
 NAME                                       READY   STATUS    RESTARTS   AGE
-pod/greptimedb-operator-8495fcb545-jpz2m   1/1     Running   0          17s
+pod/operator-8495fcb545-jpz2m              1/1     Running   0          17s
 
 NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/greptimedb-operator   1/1     1            1           17s
+deployment.apps/operator              1/1     1            1           17s
 
 NAME                                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/greptimedb-operator-8495fcb545   1         1         1       17s
+replicaset.apps/operator-8495fcb545              1         1         1       17s
 ```
