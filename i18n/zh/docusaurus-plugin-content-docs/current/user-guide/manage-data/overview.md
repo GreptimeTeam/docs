@@ -306,6 +306,8 @@ CREATE TABLE monitor (
 CREATE DATABASE test WITH ('ttl'='7d');
 ```
 
+你可以同时为 table 和 database 设置 TTL 策略。
+如果 table 有自己的 TTL 策略，则该策略将优先于 database 的 TTL 策略，
+否则 database 的 TTL 策略将被应用于 table。
+
 有关 TTL 策略的更多信息，请参阅 [CREATE](/reference/sql/create.md) 语句。
-
-

@@ -307,4 +307,9 @@ You can also create a database-level TTL policy. For example, the following SQL 
 CREATE DATABASE test WITH ('ttl'='7d');
 ```
 
+You can set TTL policies at both the table level and the database level simultaneously.
+If a table has its own TTL policy,
+it will take precedence over the database TTL policy.
+Otherwise, the database TTL policy will be applied to the table.
+
 For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
