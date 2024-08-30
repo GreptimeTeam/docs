@@ -166,6 +166,31 @@ For example, link to the `Ingest Data` document in the `./docs` directory:
 You can the `Tabs` component to display different content in the same position.
 Please refer to the [Docusaurus documentation](https://docusaurus.io/docs/markdown-features/tabs) for more information.
 
+## Variable Placeholders
+
+You can utilize variable placeholders in the documentation to replace the variables with actual values.
+These placeholders are defined in the `./variables` directory.
+The variable file name must match the version name in the `versioned_docs` directory.
+For instance, `version-0.9` should have a corresponding `variables-0.9.ts` file.
+
+To use a variable placeholder in the documentation, follow this syntax:
+
+```markdown
+VAR::<variableName>
+```
+
+Add the variable name to the corresponding variable file:
+
+```ts
+export const variables = {
+  // ...
+  variableName: 'name',
+  // ...
+};
+```
+
+For a practical example, please refer to the [GreptimeDB Standalone installation document](docs/getting-started/installation/greptimedb-standalone.md#linux-and-macos).
+
 ## Include other Markdown files
 
 You can include other Markdown files in the current Markdown file.
