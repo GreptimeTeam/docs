@@ -239,7 +239,7 @@ For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports 
 | `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
 You can use these alias types when creating tables.
-For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, and `Timestamp(0)` instead of `TimestampMillisecond`.
+For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, and `Timestamp(0)` instead of `TimestampSecond`.
 
 ```sql
 CREATE TABLE alias_types (

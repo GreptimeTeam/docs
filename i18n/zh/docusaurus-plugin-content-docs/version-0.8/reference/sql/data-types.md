@@ -109,7 +109,7 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 | `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
 在创建表时也可以使用这些别名类型。
-例如，使用 `Varchar` 代替 `String`，使用 `Double` 代替 `Float64`，使用 `Timestamp(0)` 代替 `TimestampMillisecond`。
+例如，使用 `Varchar` 代替 `String`，使用 `Double` 代替 `Float64`，使用 `Timestamp(0)` 代替 `TimestampSecond`。
 
 ```sql
 CREATE TABLE alias_types (
