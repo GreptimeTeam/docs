@@ -42,7 +42,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
     // WithInsecure(false).
     // 设置鉴权信息
-    // 如果数据库不需要鉴权，将用户名和密码留空即可
+    // 如果数据库不需要鉴权，移除 WithAuth 方法即可
     WithAuth("username", "password")
 
 cli, _ := greptime.NewClient(cfg)
