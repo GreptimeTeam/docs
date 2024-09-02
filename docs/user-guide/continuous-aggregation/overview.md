@@ -133,6 +133,8 @@ Here is the explanation of the columns in the `ngx_statistics` table:
 - `time_window`: The time window of the aggregation.
 - `update_at`: The time when the aggregation is updated.
 
+NOTE: if you don't manually create sink table, the Flow engine will automatically create it for you based on the query(i.e. using columns in `GROUP BY` as primary tags and time index), however, sometimes you may want to create the sink table manually to have more control over the schema.
+
 ## Next Steps
 
 Congratulations you already have a preliminary understanding of the continuous aggregation feature.
