@@ -64,7 +64,7 @@ SELECT
     min(size) as min_size,
     max(size) as max_size,
     avg(size) as avg_size,
-    sum(case when `size` > 550::double then 1::double else 0::double end) as high_size_count,
+    sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
     date_bin(INTERVAL '1 minutes', access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
@@ -133,14 +133,15 @@ Here is the explanation of the columns in the `ngx_statistics` table:
 - `time_window`: The time window of the aggregation.
 - `update_at`: The time when the aggregation is updated.
 
-NOTE: if you don't manually create sink table, the Flow engine will automatically create it for you based on the query(i.e. using columns in `GROUP BY` as primary tags and time index), however, sometimes you may want to create the sink table manually to have more control over the schema.
+<!-- TODO(discord9): improve auto create table then add back this feature explain, i.e. for now everything in group by is put to primary key, and time index is always a placeholder -->
+<!-- if you don't manually create sink table, the Flow engine will automatically create it for you based on the query(i.e. using columns in `GROUP BY` as primary tags and time index), however, sometimes you may want to create the sink table manually to have more control over the schema. -->
 
 ## Next Steps
 
 Congratulations you already have a preliminary understanding of the continuous aggregation feature.
 Please refer to the following sections to learn more:
 
+- [Usecase Example](./usecase-example.md) provides more examples of how to use continuous aggregation in real-time analytics, monitoring, and dashboard.
 - [Manage Flows](./manage-flow.md) describes how to create, update, and delete a flow. Each of your continuous aggregation query is a flow.
-- [Write a Query](./query.md) describes how to write a continuous aggregation query.
 - [Define Time Window](./define-time-window.md) describes how to define the time window for the continuous aggregation. Time window is an important attribute of your continuous aggregation query. It defines the time interval for the aggregation.
 - [Expression](./expression.md) is a reference of available expressions in the continuous aggregation query.
