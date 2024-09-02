@@ -16,24 +16,7 @@
 
 ## 我可以为不同的表或指标设置 TTL 或保留策略吗？
 
-当然，你可以在创建表时为每个表设置 TTL：
-
-```sql
-CREATE TABLE IF NOT EXISTS temperatures(
-  ts TIMESTAMP TIME INDEX,
-  temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
-```
-
-在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。
-
-从 0.8 版本开始，也支持数据库级别的 `TTL`。
-
-```sql
-CREATE DATABASE test WITH (ttl='7d');
-```
-
-你可以在[这里](/reference/sql/create.md)参考数据库和表创建语句的 TTL 选项。
+当然。请参考[使用 TTL 策略保留数据](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)。
 
 ## GreptimeDB 的压缩率是多少？
 
