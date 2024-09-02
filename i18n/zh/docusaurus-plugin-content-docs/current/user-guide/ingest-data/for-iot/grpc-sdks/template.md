@@ -11,9 +11,9 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 
 ## 连接数据库
 
-连接 GreptimeDB 时，通常需要用户名和密码。
-关于如何设置 GreptimeDB 的鉴权方式，请参考[鉴权](/user-guide/clients/authentication.md)。
-这里我们在使用 ingester 库连接 GreptimeDB 时设置用户名和密码。
+如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/clients/authentication.md)，
+则需要提供用户名和密码才能连接到 GreptimeDB。
+以下示例显示了使用 SDK 连接到 GreptimeDB 时如何设置用户名和密码。
 
 <InjectContent id="ingester-lib-connect" content={props.children}/>
 

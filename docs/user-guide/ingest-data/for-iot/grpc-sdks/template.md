@@ -12,9 +12,9 @@ For more information, refer to [Automatic Schema Generation](/user-guide/ingest-
 
 ## Connect to database
 
-Username and password are always required to connect to GreptimeDB.
-For how to set authentication to GreptimeDB, see [Authentication](/user-guide/clients/authentication.md).
-Here we set the username and password when using the library to connect to GreptimeDB.
+If you have set the [`--user-provider` configuration](/user-guide/clients/authentication.md) when starting GreptimeDB,
+you will need to provide a username and password to connect to GreptimeDB.
+The following example shows how to set the username and password when using the library to connect to GreptimeDB.
 
 <InjectContent id="ingester-lib-connect" content={props.children}/>
 

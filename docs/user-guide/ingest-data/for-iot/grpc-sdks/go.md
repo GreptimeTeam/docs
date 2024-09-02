@@ -43,6 +43,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     // Enable secure connection if your server is secured by TLS
     // WithInsecure(false).
     // set authentication information
+    // If the database doesn't require authentication, just remove the WithAuth method
     WithAuth("username", "password")
 
 cli, _ := greptime.NewClient(cfg)
