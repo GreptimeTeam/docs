@@ -99,7 +99,6 @@ const sidebars: SidebarsConfig = {
           label: 'Clients',
           items: [
             'user-guide/clients/overview',
-            'user-guide/clients/authentication',
             'user-guide/clients/mysql',
             'user-guide/clients/prometheus',
             'user-guide/clients/influxdb-line',
@@ -143,6 +142,7 @@ const sidebars: SidebarsConfig = {
           label: 'Operations',
           items: [
             'user-guide/operations/overview',
+            'user-guide/operations/authentication',
             'user-guide/operations/admin',
             'user-guide/operations/configuration',
             'user-guide/operations/capacity-plan',
