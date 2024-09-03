@@ -253,8 +253,8 @@ GreptimeDB 提供一些管理数据库和数据的函数：
 例如：
 ```sql
 -- 刷新表 test --
-select flush_table("test");
+admin flush_table("test");
 
 -- 为表 test 安排压缩任务 --
-select compact_table("test".md);
+admin compact_table("test".md);
 ```

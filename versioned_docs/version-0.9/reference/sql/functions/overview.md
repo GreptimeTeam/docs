@@ -260,8 +260,8 @@ GreptimeDB provides some administration functions to manage the database and dat
 For example:
 ```sql
 -- Flush the table test --
-select flush_table("test");
+admin flush_table("test");
 
 -- Schedule a compaction for table test --
-select compact_table("test");
+admin compact_table("test");
 ```
