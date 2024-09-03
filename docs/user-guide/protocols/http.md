@@ -6,14 +6,12 @@ GreptimeDB provides an HTTP API for interacting with the database.
 
 ### Authentication
 
-GreptimeDB supports the built-in `Basic` authentication scheme in HTTP API.
-To set up authentication, do the following:
+GreptimeDB supports the built-in `Basic` authentication scheme in the HTTP API. To set up authentication, follow these steps:
 
-1. Encode your username and password with format `<username>:<password>` using `Base64` algorithm.
-2. Attach your encoded credentials to the HTTP request header using the format `Authorization: Basic <base64-encoded-credentials>`.
+1. Encode your username and password using the `<username>:<password>` format and the `Base64` algorithm.
+2. Attach your encoded credentials to the HTTP request header using the `Authorization: Basic <base64-encoded-credentials>` format.
 
-Here's an example.
-If you want to connect to GreptimeDB using the username `greptime_user` and password `greptime_pwd`, you can use the following command:
+Here's an example. If you want to connect to GreptimeDB using the username `greptime_user` and password `greptime_pwd`, use the following command:
 
 ```shell
 curl -X POST \
@@ -23,7 +21,7 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
-`Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` is `greptime_user:greptime_pwd` encoded using Base64. Remember to replace it with your own configured username and password and encode them using Base64.
+In this example, `Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=` represents the Base64-encoded value of `greptime_user:greptime_pwd`. Make sure to replace it with your own configured username and password, and encode them using Base64.
 
 :::tip NOTE
 InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line-protocol.md) for details.
