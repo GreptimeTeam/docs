@@ -13,6 +13,19 @@ In all these usecases, the continuous aggregation system continuously aggregates
 
 See [Overview](overview.md) for an example of real-time analytics. Which is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
 
+Another exmaple of real-time analytics is to get all distinct values from a column. The query for continuous aggregation would be:
+
+```sql
+CREATE FLOW get_distinct_values
+SINK TO distinct_values
+AS
+SELECT DISTINCT
+    column_name,
+FROM source_table;
+```
+
+The above query continuously aggregates the data from the `source_table` table into the `distinct_values` table. It calculates the distinct values for the `column_name` column and stores them in the `distinct_values` table. The `distinct_values` table will be continuously updated with the distinct values from the `column_name` column, providing real-time insights into the data. Note that due to not have a persistent storage, the `distinct_values` table will be reset when the server restarts.
+
 ## Real-time monitoring example
 
 Consider a usecase where you have a stream of sensor events from a network of temperature sensors that you want to monitor in real-time. The sensor events contain information such as the sensor ID, the temperature reading, the timestamp of the reading, and the location of the sensor. You want to continuously aggregate this data to provide real-time alerts when the temperature exceeds a certain threshold. Then the query for continuous aggregation would be:
