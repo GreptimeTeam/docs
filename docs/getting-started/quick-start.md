@@ -6,7 +6,7 @@ This guide will walk you through creating a metric table and a log table, highli
 
 ## Connect to GreptimeDB
 
-GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md) for interacting with the database.
+GreptimeDB supports [multiple protocols](/user-guide/protocols/overview.md) for interacting with the database.
 In this quick start document, we use SQL for simplicity.
 
 If your GreptimeDB instance is running on `127.0.0.1` with the MySQL client default port `4002` or the PostgreSQL client default port `4003`,
@@ -377,6 +377,6 @@ The `grpc_metrics` table will be created automatically if it does not exist.
 You have now experienced the core features of GreptimeDB.
 To further explore and utilize GreptimeDB:
 
-- [Visualize data using Grafana](/user-guide/clients/grafana.md)
+- [Visualize data using Grafana](/user-guide/integrations/grafana.md)
 - [Explore more demos of GreptimeDB](https://github.com/GreptimeTeam/demo-scene/)
 - [Read the user guide document to learn more details about GreptimeDB](/user-guide/overview.md)

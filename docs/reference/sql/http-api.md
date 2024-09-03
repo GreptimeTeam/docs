@@ -16,9 +16,9 @@ Use the POST method to submit the SQL statement to the server.
 
 ## Header
 
-- `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/clients/http-api.md#authentication).
+- `Authorization`: The credential. Required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/protocols/http.md#authentication).
 - `Content-Type`: `application/x-www-form-urlencoded`.
-- `X-Greptime-Timezone`: The time zone for the current SQL query. Optional. Please refer to [time zone](/user-guide/clients/http-api.md#authentication#time-zone).
+- `X-Greptime-Timezone`: The time zone for the current SQL query. Optional. Please refer to [time zone](/user-guide/protocols/http.md#authentication#time-zone).
 
 ## Query params
 
@@ -37,4 +37,4 @@ The response is a JSON object.
 
 ## Example
 
-Please refer to [POST SQL Statements](/user-guide/clients/http-api.md) in the user guide.
+Please refer to [POST SQL Statements](/user-guide/protocols/http.md) in the user guide.

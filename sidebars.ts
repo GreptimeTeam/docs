@@ -117,23 +117,6 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/opentsdb',
           ],
         },
-        {
-          type: 'category',
-          label: 'Clients',
-          items: [
-            'user-guide/clients/overview',
-            'user-guide/clients/mysql',
-            'user-guide/clients/prometheus',
-            'user-guide/clients/influxdb-line',
-            'user-guide/clients/opentsdb',
-            'user-guide/clients/postgresql',
-            'user-guide/clients/http-api',
-            'user-guide/clients/otlp',
-            'user-guide/clients/vector',
-            'user-guide/clients/grafana',
-            'user-guide/clients/emqx',
-          ],
-        },
         { type: 'category', label: 'Migrate to GreptimeDB', items: ['user-guide/migrate-to-greptimedb/migrate-from-influxdb'] },
         {
           type: 'category',
