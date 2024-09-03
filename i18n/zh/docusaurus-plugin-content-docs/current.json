@@ -166,5 +166,9 @@
   "sidebar.docs.category.Manage Data": {
     "message": "管理数据",
     "description": "The label for category Manage Data in sidebar docs"
+  },
+  "sidebar.docs.category.Protocols": {
+    "message": "协议",
+    "description": "The label for category Manage Data in sidebar docs"
   }
 }
