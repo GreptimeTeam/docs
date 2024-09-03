@@ -2,62 +2,7 @@ This guide will help you understand the differences between the data models of G
 
 ## Data model in difference
 
-While you may already be familiar with [InfluxDB key concepts](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/), the [data model](/user-guide/concepts/data-model.md) of GreptimeDB is something new to explore.
-Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
-
-- Both solutions are [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
-- In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
-In GreptimeDB, it is represented as a row of data in the time-series table,
-where the table name aligns with the measurement,
-and the columns are divided into three types: Tag, Field, and Timestamp.
-- GreptimeDB uses `TimestampNanosecond` as the data type for timestamp data from the [InfluxDB line protocol API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md).
-- GreptimeDB uses `Float64` as the data type for numeric data from the InfluxDB line protocol API.
-
-Consider the following [sample data](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data) borrowed from InfluxDB docs as an example:
-
-|_time|_measurement|location|scientist|_field|_value|
-|---|---|---|---|---|---|
-|2019-08-18T00:00:00Z|census|klamath|anderson|bees|23|
-|2019-08-18T00:00:00Z|census|portland|mullen|ants|30|
-|2019-08-18T00:06:00Z|census|klamath|anderson|bees|28|
-|2019-08-18T00:06:00Z|census|portland|mullen|ants|32|
-
-The data mentioned above is formatted as follows in the InfluxDB line protocol:
-
-
-```shell
-census,location=klamath,scientist=anderson bees=23 1566086400000000000
-census,location=portland,scientist=mullen ants=30 1566086400000000000
-census,location=klamath,scientist=anderson bees=28 1566086760000000000
-census,location=portland,scientist=mullen ants=32 1566086760000000000
-```
-
-In the GreptimeDB data model, the data is represented as follows in the `census` table:
-
-```sql
-+---------------------+----------+-----------+------+------+
-| ts                  | location | scientist | bees | ants |
-+---------------------+----------+-----------+------+------+
-| 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
-| 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
-| 2019-08-18 00:00:00 | portland | mullen    | NULL |   30 |
-| 2019-08-18 00:06:00 | portland | mullen    | NULL |   32 |
-+---------------------+----------+-----------+------+------+
-```
-
-The schema of the `census` table is as follows:
-
-```sql
-+-----------+----------------------+------+------+---------+---------------+
-| Column    | Type                 | Key  | Null | Default | Semantic Type |
-+-----------+----------------------+------+------+---------+---------------+
-| location  | String               | PRI  | YES  |         | TAG           |
-| scientist | String               | PRI  | YES  |         | TAG           |
-| bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| ants      | Float64              |      | YES  |         | FIELD         |
-+-----------+----------------------+------+------+---------+---------------+
-```
+To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol#data-model) in the Ingest Data documentation.
 
 ## Database connection information
 
