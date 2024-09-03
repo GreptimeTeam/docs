@@ -13,18 +13,21 @@ In all these usecases, the continuous aggregation system continuously aggregates
 
 See [Overview](overview.md) for an example of real-time analytics. Which is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
 
-Another exmaple of real-time analytics is to get all distinct values from a column. The query for continuous aggregation would be:
+Another example of real-time analytics is to get all distinct country from the `ngx_access_log` table. The query for continuous aggregation would be:
 
 ```sql
-CREATE FLOW get_distinct_values
-SINK TO distinct_values
+CREATE FLOW calc_ngx_country
+SINK TO ngx_country
 AS
-SELECT DISTINCT
-    column_name,
-FROM source_table;
+SELECT
+    DISTINCT country,
+    date_bin(INTERVAL '1 hour', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    time_window;
 ```
 
-The above query continuously aggregates the data from the `source_table` table into the `distinct_values` table. It calculates the distinct values for the `column_name` column and stores them in the `distinct_values` table. The `distinct_values` table will be continuously updated with the distinct values from the `column_name` column, providing real-time insights into the data. Note that due to not have a persistent storage, the `distinct_values` table will be reset when the server restarts.
+The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. Note that there is currently no persistent storage for flow's internal state(There is persistent storage for the table data however), so it's recommended to use appropriate time window to miniminize data loss, because if the internal state is lost, related time window data will be lost as well.
 
 ## Real-time monitoring example
 
