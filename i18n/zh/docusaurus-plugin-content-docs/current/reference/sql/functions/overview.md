@@ -38,7 +38,7 @@ arrow_cast(expression, datatype)
 DataFusion [字符串函数](./df-functions#string-functions)。GreptimeDB 提供：
 * `matches(expression, pattern)` 用于全文检索。
 
-TODO：链接到全文检索用户指南。
+阅读[查询日志](user-guide/logs/query-logs.md)文档获取更多详情。
 
 ### 数学函数
 
@@ -240,21 +240,4 @@ select database();
 
 ### 管理函数
 
-GreptimeDB 提供一些管理数据库和数据的函数：
-
-* `flush_table(table_name)` 通过表名将表的内存表刷写到 SST 文件。
-* `flush_region(region_id)` 通过 Region Id 将 Region 的内存表刷写到 SST 文件。可以通过 [PARTITIONS](../information-schema/partitions.md) 表查找一张表的所有 Region Id。
-* `compact_table(table_name)` 通过表名为表发起compaction 任务。
-* `compact_region(region_id)` 通过 Region Id 为 Region 发起 compaction 任务。
-* `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [ Region迁移](/user-guide/operations/region-migration)。
-* `procedure_state(procedure_id)` 通过 Procedure Id 查询 Procedure 状态。
-* `flush_flow(flow_name)` 通过 Flow 名称将 Flow 的输出刷写到结果表。
-
-例如：
-```sql
--- 刷新表 test --
-admin flush_table("test");
-
--- 为表 test 安排压缩任务 --
-admin compact_table("test".md);
-```
+GreptimeDB 提供了 `ADMIN` 语句来执行管理函数，请阅读 [ADMIN](./admin.md) 文档。

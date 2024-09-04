@@ -45,6 +45,15 @@ GreptimeDB 通过以下方式解决这个问题：
 
 GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://greptime.cn/product/cloud) 来帮助您管理云中的数据。
 
+## GreptimeDB 对比其他存储或时序数据库的性能如何？
+
+请阅读以下性能报告：
+
+* [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
+* [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2024-08-21-report)
+* [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
+
 ## GreptimeDB 有灾难恢复解决方案吗？
 
 有的，请参阅[灾难恢复文档](/user-guide/operations/disaster-recovery/overview.md)。

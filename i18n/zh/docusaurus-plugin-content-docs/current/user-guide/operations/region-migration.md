@@ -44,13 +44,13 @@ on a.greptime_partition_id = b.region_id where a.table_name='migration_target' o
 最后，你可以通过以下 SQL 请求发起 Region 迁移请求：
 
 ```sql
-select migrate_region(4398046511104, 1, 2, 60);
+ADMIN migrate_region(4398046511104, 1, 2, 60);
 ```
 
 `migrate_region` 参数说明：
 
 ```sql
-select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
+ADMIN migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 ```
 
 | Option           | Description                                                                                                            | Required     |     |
@@ -65,7 +65,7 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 `migrate_region` 函数将返回执行迁移的 Procedure Id，可以通过它查询过程状态：
 
 ```sql
-select procedure_state('538b7476-9f79-4e50-aa9c-b1de90710839')
+ADMIN procedure_state('538b7476-9f79-4e50-aa9c-b1de90710839')
 ```
 
 如果顺利完成，将输出 JSON 格式的状态：

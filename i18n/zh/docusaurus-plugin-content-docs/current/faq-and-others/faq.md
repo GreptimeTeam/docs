@@ -1,4 +1,4 @@
-# 常见问题
+# Frequently Asked Questions
 
 ### What would be the use cases for a time-series database?
 
@@ -13,9 +13,6 @@ Common use cases for time-series database include but are not limited to the fol
 
 Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
 
-### How is GreptimeDB's performance compared to other solutions?
-
-GreptimeDB has released v0.8, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.8.0.md).
 
 ### How is the performance of GreptimeDB when used for non-time-series DB tables?
 
@@ -142,10 +139,10 @@ Of course, please use the `compact_table` function:
 
 ```sql
 -- Schedule a compaction for table test --
-select compact_table("test");
+ADMIN compact_table("test");
 ```
 
-There are many [administration functions](/reference/sql/functions/overview.md#admin-functions) for database management.
+There are many [administration functions](/reference/sql/admin.md#admin-functions) for database management.
 
 ### Can GreptimeDB be used to store logs?
 
