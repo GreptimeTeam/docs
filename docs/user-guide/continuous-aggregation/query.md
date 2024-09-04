@@ -17,7 +17,7 @@ The query should have a `FROM` clause to identify the source table. As the join 
 
 `WHERE` and `HAVING` clauses are supported in the continuous aggregation query. They work as in a normal query. The `WHERE` clause filters the data before aggregation, and the `HAVING` clause filters the data after aggregation.
 
-`DISTINCT` currently only work with `SELECT DISTINCT column1, column2,..` syntax. It is used to remove duplicate rows from the result set. Support for `SELECT count(DISTINCT column1, column2,..)` is not available yet, but it will be added in the future.
+`DISTINCT` currently only work with `SELECT DISTINCT column1 ..` syntax. It is used to remove duplicate rows from the result set. Support for `SELECT count(DISTINCT column1) ...` is not available yet, but it will be added in the future.
 
 `GROUP BY` clause works as in a normal query. It groups the data by the specified columns. One special thing is the time window functions `hop()` and `tumble()` described in [Define Time Window](./define-time-window.md) part. They are used in the `GROUP BY` clause to define the time window for the aggregation. Other expressions in `GROUP BY` can be either literal, column or scalar expressions.
 
