@@ -2,7 +2,7 @@ This guide will help you understand the differences between the data models of G
 
 ## Data model in difference
 
-To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol#data-model) in the Ingest Data documentation.
+To understand the differences between the data models of InfluxDB and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) in the Ingest Data documentation.
 
 ## Database connection information
 

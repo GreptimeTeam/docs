@@ -10,7 +10,7 @@ psql -h <host> -p 4003 -U <username> -d public
 ```
 
 - 请参考[鉴权认证](/user-guide/operations/authentication.md) 来设置 GreptimeDB 的用户名和密码。
-- 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/operations/configuration.md#协议选项)。
+- 如果你想使用其他端口连接 PostgreSQL，请参考配置文档中的[协议选项](/user-guide/operations/configuration.md#协议选项)。
 
 ## 管理表
 
