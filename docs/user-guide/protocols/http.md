@@ -1,6 +1,6 @@
 # HTTP API
 
-GreptimeDB provides an HTTP API for interacting with the database.
+GreptimeDB provides HTTP APIs for interacting with the database.
 
 ## Headers
 

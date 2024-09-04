@@ -8,13 +8,13 @@ You can connect to GreptimeDB using MySQL via port `4002`.
 mysql -h <host> -P 4002 -u <username> -p
 ```
 
-- For how to setup authentication for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
+- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
 - If you want to use other ports for MySQL, please refer to [Protocol options](/user-guide/operations/configuration.md#protocol-options) in the configuration document.
 
 
 ## Table management
 
-Please refer to [Table Management](../table-management.md).
+Please refer to [Table Management](/user-guide/table-management.md).
 
 ## Ingest data
 
@@ -74,4 +74,4 @@ SELECT @@system_time_zone, @@time_zone;
 +--------------------+-------------+
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](../ingest-data/for-iot/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md#time-zone) and [Query Data](/user-guide/query-data/sql.md#time-zone) sections.

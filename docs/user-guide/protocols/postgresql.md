@@ -9,7 +9,7 @@ Simply add the `-U` argument to your command, followed by your username and pass
 psql -h <host> -p 4003 -U <username> -d public
 ```
 
-- For how to setup authentication for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
+- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
 - If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/operations/configuration.md#protocol-options) in the configuration document.
 
 
@@ -23,7 +23,7 @@ Please refer to [SQL](/user-guide/ingest-data/for-iot/sql.md).
 
 ## Query data
 
-Please refer to [SQL](../query-data/sql.md).
+Please refer to [SQL](/user-guide/query-data/sql.md).
 
 ## Time zone
 
@@ -55,5 +55,5 @@ Change the session time zone to `+1:00`:
 SET TIMEZONE TO '+1:00'
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](../ingest-data/for-iot/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md#time-zone) and [Query Data](/user-guide/query-data/sql.md#time-zone) sections.
 

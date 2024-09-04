@@ -63,6 +63,7 @@ ALIGN '5s' BY (host) FILL PREV
 * [迁移到 GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [数据写入](./ingest-data/overview.md)
 * [数据查询](./query-data/overview.md)
+* [数据管理](./manage-data/overview.md)
 * [集成](./integrations/overview.md)
 * [协议](./protocols/overview.md)
 * [持续聚合](./continuous-aggregation/overview.md)
