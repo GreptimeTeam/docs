@@ -16,6 +16,24 @@ See [Overview](overview.md) for an example of real-time analytics. Which is to c
 Another example of real-time analytics is to get all distinct country from the `ngx_access_log` table. The query for continuous aggregation would be:
 
 ```sql
+-- input table
+CREATE TABLE ngx_access_log (
+    client STRING,
+    country STRING,
+    access_time TIMESTAMP TIME INDEX
+);
+-- create flow task to calculate the distinct country
+CREATE FLOW calc_ngx_country
+SINK TO ngx_country
+AS
+SELECT
+    DISTINCT country,
+FROM ngx_access_log;
+```
+
+or if you want to group the data by time window, you can use the following query:
+
+```sql
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
 AS
@@ -24,10 +42,13 @@ SELECT
     date_bin(INTERVAL '1 hour', access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
+    country,
     time_window;
 ```
 
-The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. Note that there is currently no persistent storage for flow's internal state(There is persistent storage for the table data however), so it's recommended to use appropriate time window to miniminize data loss, because if the internal state is lost, related time window data will be lost as well.
+The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. 
+
+Note that there is currently no persistent storage for flow's internal state(There is persistent storage for the table data however), so it's recommended to use appropriate time window to miniminize data loss, because if the internal state is lost, related time window data will be lost as well.
 
 ## Real-time monitoring example
 
@@ -63,19 +84,35 @@ The above query continuously aggregates the data from the `temp_sensor_data` tab
 Consider a usecase in which you need a bar graph that show the distribution of packet sizes for each status code to monitor the health of the system. The query for continuous aggregation would be:
 
 ```sql
-CREATE FLOW calc_ngx_distribution
-SINK TO ngx_distribution
-AS
+-- create input table
+CREATE TABLE ngx_access_log (
+    client STRING,
+    stat INT,
+    size INT,
+    access_time TIMESTAMP TIME INDEX
+);
+-- create output table
+CREATE TABLE ngx_distribution (
+    stat INT,
+    bucket_size INT,
+    total_logs BIGINT,
+    time_window TIMESTAMP TIME INDEX,
+    update_at TIMESTAMP, -- auto generated column to store the last update time
+    PRIMARY KEY(stat, bucket_size)
+);
+-- create flow task to calculate the distribution of packet sizes for each status code
+CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution AS
 SELECT
-    status,
-    trunc(size, -1) as bucket_size,
+    stat,
+    trunc(size, -1)::INT as bucket_size,
     count(client) AS total_logs,
     date_bin(INTERVAL '1 minutes', access_time) as time_window,
-FROM ngx_access_log
+FROM
+    ngx_access_log
 GROUP BY
-    status,
+    stat,
     time_window,
-    bucket;
+    bucket_size;
 ```
 
 The above query puts the data from the `ngx_access_log` table into the `ngx_distribution` table. It calculates the total number of logs for each status code and packet size bucket (in this case, since `trunc`'s second argument is -1, meaning a bucket size of 10) for each time window. The `date_bin` function is used to group the data into one-minute intervals. The `ngx_distribution` table will be continuously updated with the aggregated data, providing real-time insights into the distribution of packet sizes for each status code.
