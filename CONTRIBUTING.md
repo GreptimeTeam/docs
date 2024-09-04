@@ -161,6 +161,10 @@ For example, link to the `Ingest Data` document in the `./docs` directory:
 [Ingest Data](/user-guide/ingest-data/overview.md)
 ```
 
+Always use the `.md` extension when linking to other documentation files.
+This ensures that the files are correctly linked to the corresponding version.
+For example, use `[Ingest Data](/user-guide/ingest-data/overview.md)` instead of `[Ingest Data](/user-guide/ingest-data/overview)`.
+
 ## Using tabs
 
 You can the `Tabs` component to display different content in the same position.
