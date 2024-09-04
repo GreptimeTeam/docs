@@ -247,4 +247,4 @@ select database();
 
 ### Admin Functions
 
-GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](./admin.md) reference.
+GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](.(/reference/sql/admin.md) reference.

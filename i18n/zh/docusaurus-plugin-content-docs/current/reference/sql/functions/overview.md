@@ -240,4 +240,4 @@ select database();
 
 ### 管理函数
 
-GreptimeDB 提供了 `ADMIN` 语句来执行管理函数，请阅读 [ADMIN](./admin.md) 文档。
+GreptimeDB 提供了 `ADMIN` 语句来执行管理函数，请阅读 [ADMIN](/reference/sql/admin.md) 文档。
