@@ -14,11 +14,11 @@ psql -h <host> -p 4003 -U <username> -d public
 
 ## 管理表
 
-请参考 [管理表](/user-guide/table-management.md)。
+请参考[管理表](/user-guide/table-management.md)。
 
 ## 写入数据
 
-请参考 [写入数据](/user-guide/ingest-data/for-iot/sql.md).
+请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md).
 
 ## 读取数据
 

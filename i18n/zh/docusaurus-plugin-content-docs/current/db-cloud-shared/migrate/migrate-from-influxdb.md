@@ -2,7 +2,7 @@
 
 ## 数据模型的区别
 
-要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考从写入数据文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)。
+要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考写入数据文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)。
 
 ## 数据库连接信息
 
