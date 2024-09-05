@@ -104,4 +104,4 @@ After the installation, you can use `kubectl port-forward` to forward the servic
 kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4000:4000 4001:4001 4002:4002 4003:4003 > connections.out &
 ```
 
-Then you can use the MySQL client to [connect to the cluster](/user-guide/clients/mysql.md#connect).
+Then you can use the MySQL client to [connect to the cluster](/user-guide/protocols/mysql.md#connect).

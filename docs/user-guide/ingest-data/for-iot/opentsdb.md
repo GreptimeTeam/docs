@@ -2,10 +2,6 @@
 
 GreptimeDB supports ingesting OpenTSDB via HTTP API.
 
-## Insert
-
-### HTTP API
-
 GreptimeDB also supports inserting OpenTSDB metrics via HTTP endpoints. We use the request and
 response format described in OpenTSDB's `/api/put`.
 

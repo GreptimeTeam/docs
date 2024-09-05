@@ -19,10 +19,6 @@
     "message": "概念",
     "description": "The label for category Concepts in sidebar docs"
   },
-  "sidebar.docs.category.Clients": {
-    "message": "客户端",
-    "description": "The label for category Clients in sidebar docs"
-  },
   "sidebar.docs.category.Migrate to GreptimeDB": {
     "message": "迁移到 GreptimeDB",
     "description": "The label for category Migrate to GreptimeDB in sidebar docs"
@@ -165,6 +161,10 @@
   },
   "sidebar.docs.category.Manage Data": {
     "message": "管理数据",
+    "description": "The label for category Manage Data in sidebar docs"
+  },
+  "sidebar.docs.category.Protocols": {
+    "message": "协议",
     "description": "The label for category Manage Data in sidebar docs"
   }
 }

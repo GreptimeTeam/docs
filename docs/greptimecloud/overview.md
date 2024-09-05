@@ -4,7 +4,7 @@ GreptimeCloud is a cloud service that is powered by fully-managed serverless Gre
 
 ## Integrations
 
-Before reading the following content, you need to read [clients](/user-guide/clients/overview.md) first. You can connect to GreptimeCloud using popular database protocols:
+You can connect to GreptimeCloud using popular database protocols:
 
 - Prometheus [integration](./integrations/prometheus/quick-setup.md) and [rule management](./integrations/prometheus/rule-management.md)
 - [Grafana](./integrations/grafana.md)

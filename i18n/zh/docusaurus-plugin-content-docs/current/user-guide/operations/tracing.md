@@ -45,7 +45,7 @@ enable_otlp_tracing = true
 greptime standalone start -c config.toml
 ```
 
-参考章节 [Mysql](../clients/mysql.md) 如何连接到 GreptimeDB。在 Mysql Client 中运行下面的 SQL 语句：
+参考章节 [Mysql](/user-guide/protocols/mysql.md) 如何连接到 GreptimeDB。在 Mysql Client 中运行下面的 SQL 语句：
 
 ```sql
 CREATE TABLE host (

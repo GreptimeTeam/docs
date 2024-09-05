@@ -9,15 +9,15 @@ The outling of this document is a little strange, as the content is classified b
 Since GreptimeDB's query engine is built based on Apache Arrow DataFusion, GreptimeDB inherits all built-in
 functions in DataFusion. These functions include:
 
-* **Aggregate functions**: such as `COUNT`, `SUM`, `MIN`, `MAX`, etc. For a detailed list, please refer to [Aggregate Functions](./df-functions#aggregate-functions)
-* **Scalar functions**: such as `ABS`, `COS`, `FLOOR`, etc. For a detailed list, please refer to [Scalar Functions](./df-functions#scalar-functions)
-* **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df-functions#window-functions)
+* **Aggregate functions**: such as `COUNT`, `SUM`, `MIN`, `MAX`, etc. For a detailed list, please refer to [Aggregate Functions](./df-functions.md#aggregate-functions)
+* **Scalar functions**: such as `ABS`, `COS`, `FLOOR`, etc. For a detailed list, please refer to [Scalar Functions](./df-functions.md#scalar-functions)
+* **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df-functions.md#window-functions)
 
 To find all the DataFusion functions, please refer to [DataFusion Functions](./df-functions).
 
 ### `arrow_cast`
 
-`arrow_cast` function is from DataFusion's [`arrow_cast`](./df-functions#arrow-cast). It's illustrated as:
+`arrow_cast` function is from DataFusion's [`arrow_cast`](./df-functions.md#arrow-cast). It's illustrated as:
 
 ```sql
 arrow_cast(expression, datatype)
@@ -36,14 +36,14 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 
 ### String Functions
 
-DataFusion [String Function](./df-functions#string-functions).GreptimeDB provides:
+DataFusion [String Function](./df-functions.md#string-functions).GreptimeDB provides:
 * `matches(expression, pattern)` for full text search. 
 
 <!-- TODO: link to full-text searching user guide. -->
 
 ### Math Functions
 
-DataFusion [Math Function](./df-functions#math-functions).
+DataFusion [Math Function](./df-functions.md#math-functions).
 
 GreptimeDB provides:
 
@@ -93,7 +93,7 @@ SELECT pow(2, 10);
 
 ### Date and Time Functions
 
-DataFusion [Time and Date Function](./df-functions#time-and-date-functions).
+DataFusion [Time and Date Function](./df-functions.md#time-and-date-functions).
 GreptimeDB provides:
 
 *  `date_add(expression, interval)` to add an interval value to Timestamp, Date, or DateTime

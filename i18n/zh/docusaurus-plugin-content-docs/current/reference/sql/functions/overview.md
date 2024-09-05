@@ -8,15 +8,15 @@ The outling of this document is a little strange, as the content is classified b
 
 由于 GreptimeDB 的查询引擎是基于 Apache Arrow DataFusion 构建的，GreptimeDB 继承了 DataFusion 中所有内置的函数。这些函数包括：
 
-* **聚合函数**: 如 `COUNT`、`SUM`、`MIN`、`MAX` 等。详细列表请参阅 [聚合函数](./df-functions#aggregate-functions)
-* **标量函数**: 如 `ABS`、`COS`、`FLOOR` 等。详细列表请参阅 [标量函数](./df-functions#scalar-functions)
-* **窗口函数**: 对相关的一组行记录执行计算。详细列表请参阅 [窗口函数](./df-functions#window-functions)
+* **聚合函数**: 如 `COUNT`、`SUM`、`MIN`、`MAX` 等。详细列表请参阅 [聚合函数](./df-functions.md#aggregate-functions)
+* **标量函数**: 如 `ABS`、`COS`、`FLOOR` 等。详细列表请参阅 [标量函数](./df-functions.md#scalar-functions)
+* **窗口函数**: 对相关的一组行记录执行计算。详细列表请参阅 [窗口函数](./df-functions.md#window-functions)
 
 要查看所有 DataFusion 函数，请参阅 [DataFusion 函数](./df-functions)。
 
 ### `arrow_cast`
 
-`arrow_cast` 函数来自 DataFusion 的 [`arrow_cast`](./df-functions#arrow-cast)。其用法如下：
+`arrow_cast` 函数来自 DataFusion 的 [`arrow_cast`](./df-functions.md#arrow-cast)。其用法如下：
 
 ```sql
 arrow_cast(expression, datatype)
@@ -35,14 +35,14 @@ arrow_cast(expression, datatype)
 
 ### 字符串函数
 
-DataFusion [字符串函数](./df-functions#string-functions)。GreptimeDB 提供：
+DataFusion [字符串函数](./df-functions.md#string-functions)。GreptimeDB 提供：
 * `matches(expression, pattern)` 用于全文检索。
 
 TODO：链接到全文检索用户指南。
 
 ### 数学函数
 
-DataFusion [数学函数](./df-functions#math-functions)。GreptimeDB 额外提供：
+DataFusion [数学函数](./df-functions.md#math-functions)。GreptimeDB 额外提供：
 * `clamp(value, lower, upper)` 将给定值限制在上下界之间：
 ```sql
 SELECT CLAMP(10, 0, 1);
@@ -88,7 +88,7 @@ SELECT pow(2, 10);
 
 ### 日期和时间函数
 
-DataFusion [时间和日期函数](./df-functions#time-and-date-functions)。GreptimeDB 额外提供：
+DataFusion [时间和日期函数](./df-functions.md#time-and-date-functions)。GreptimeDB 额外提供：
 
 *  `date_add(expression, interval)` 向 Timestamp、Date 或 DateTime 添加一个间隔值：
 
