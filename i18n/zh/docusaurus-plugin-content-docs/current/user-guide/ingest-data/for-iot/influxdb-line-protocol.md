@@ -142,6 +142,8 @@ GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md) 是值得了解
 下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
 
 - 两者都是 [schemaless 写入](/user-guide/ingest-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
+- GreptimeDB 的表在自动创建时会设置表选项 [`merge_mode`](/reference/sql/create.md#创建带有-merge-模式的表)为 `last_non_null`。
+  这意味着表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行，该行为与 InfluxDB 相同。
 - 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
   在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
   表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。

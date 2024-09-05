@@ -141,6 +141,8 @@ While you may already be familiar with [InfluxDB key concepts](https://docs.infl
 Here are the similarities and differences between the data models of GreptimeDB and InfluxDB:
 
 - Both solutions are [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation), eliminating the need to define a schema before writing data.
+- The GreptimeDB table is automatically created with the [`merge_mode` option](/reference/sql/create.md#create-a-table-with-merge-mode) set to `last_non_null`.
+That means the table merges rows with the same tags and timestamp by keeping the latest value of each field, which is the same behavior as InfluxDB.
 - In InfluxDB, a point represents a single data record with a measurement, tag set, field set, and a timestamp.
 In GreptimeDB, it is represented as a row of data in the time-series table,
 where the table name aligns with the measurement,
