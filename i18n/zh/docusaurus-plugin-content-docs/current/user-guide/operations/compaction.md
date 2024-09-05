@@ -105,7 +105,7 @@ WITH (
 与 TWCS 根据 SST 文件的最大时间戳为每个窗口分配一个 SST 文件不同的是，严格窗口策略（SWCS）将 SST 文件分配给**所有与此文件的时间范围重叠**的窗口，正如其名称所示。因此，一个 SST 文件可能会包含在多个压缩输出中。由于其在压缩期间的高读取放大率，SWCS 并不是默认的压缩策略。然而，当用户需要手动触发压缩以重新组织 SST 文件布局时，它是有用的，特别是当单个 SST 文件跨越较大的时间范围而显著减慢查询速度时。GreptimeDB 提供了一个简单的 SQL 函数来触发手动压缩：
 
 ```sql
-SELECT COMPACT_TABLE(
+ADMIN COMPACT_TABLE(
     <table_name>, 
     <strategy_name>, 
     [<strategy_parameters>]
@@ -116,14 +116,14 @@ SELECT COMPACT_TABLE(
 对于 `swcs` 策略， `<strategy_parameters>` 指定用于拆分 SST 文件的窗口大小（以秒为单位）。例如：
 
 ```sql
-SELECT COMPACT_TABLE(
+ADMIN COMPACT_TABLE(
     "monitor", 
     "swcs", 
     "3600"
 );
 
 +--------------------------------------------------------------------+
-| compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
+| ADMIN compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
 +--------------------------------------------------------------------+
 |                                                                  0 |
 +--------------------------------------------------------------------+

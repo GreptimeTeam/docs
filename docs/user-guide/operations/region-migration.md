@@ -45,13 +45,13 @@ Remember, if you deploy the cluster via the GreptimeDB operator, the `peer_id` o
 Finally, you can do a Region migration request via the following SQL:
 
 ```sql
-select migrate_region(4398046511104, 1, 2, 60);
+ADMIN migrate_region(4398046511104, 1, 2, 60);
 ```
 
 The parameters of `migrate_region`：
 
 ```sql
-select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
+ADMIN migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 ```
 
 | Option           | Description                                                                                                                                                                               | Required     |     |
@@ -66,7 +66,7 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 The `migrate_region` function returns the procedure id that executes the migration, queries the procedure state by it:
 
 ```sql
-select procedure_state('538b7476-9f79-4e50-aa9c-b1de90710839')
+ADMIN procedure_state('538b7476-9f79-4e50-aa9c-b1de90710839')
 ```
 
 If it's done, outputs the state in JSON:

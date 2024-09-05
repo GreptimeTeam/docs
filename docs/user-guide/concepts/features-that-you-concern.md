@@ -46,6 +46,16 @@ The data can be stored in cost-effective cloud storage services such as AWS S3 o
 
 GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.
 
+### How is GreptimeDB's performance compared to other solutions?
+
+Please read the performance benchmark reports:
+
+* [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
+* [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2024-08-22-log-benchmark)
+* [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
+
+
 ## Does GreptimeDB have disaster recovery solutions?
 
 Yes. Please refer to [disaster recovery](/user-guide/operations/disaster-recovery/overview.md).

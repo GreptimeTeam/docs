@@ -106,7 +106,7 @@ WITH (
 Unlike TWCS, which assigns one window per SST file based on their maximum timestamps, SWCS assigns SST files to **all** overlapping windows. Consequently, a single SST file may be included in multiple compaction outputs, as its name suggests. Due to its high read amplification during compaction, SWCS is not the default compaction strategy. However, it is useful when you need to manually trigger compaction to reorganize the layout of SST files—especially if an individual SST file spans a large time range that significantly slows down queries. GreptimeDB offers a simple SQL function for triggering compaction:
 
 ```sql
-SELECT COMPACT_TABLE(
+ADMIN COMPACT_TABLE(
     <table_name>, 
     <strategy_name>, 
     [<strategy_parameters>]
@@ -117,14 +117,14 @@ The `<strategy_name>` parameter can be either `twcs` or `swcs` (case insensitive
 For the `swcs` strategy, the `<strategy_parameters>` specify the window size (in seconds) for splitting SST files. For example:
 
 ```sql
-SELECT COMPACT_TABLE(
+ADMIN COMPACT_TABLE(
     "monitor", 
     "swcs", 
     "3600"
 );
 
 +--------------------------------------------------------------------+
-| compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
+| ADMIN compact_table(Utf8("monitor"),Utf8("swcs"),Utf8("3600")) |
 +--------------------------------------------------------------------+
 |                                                                  0 |
 +--------------------------------------------------------------------+
