@@ -110,6 +110,7 @@ http://<host>:4000/v1/prometheus
 
 然后单击 Save & Test 按钮以测试连接。
 
+有关如何使用 PromQL 查询数据，请参阅 [Prometheus 查询语言](/user-guide/query-data/promql.md)文档。
 
 ## MySQL 数据源
 
@@ -123,7 +124,7 @@ http://<host>:4000/v1/prometheus
 
 然后单击 Save & Test 按钮以测试连接。
 
-注意目前我们只能使用 SQL 创建 Grafana Panel。由于时间戳数据类型的区别，Grafana
+注意目前我们只能使用 raw SQL 创建 Grafana Panel。由于时间戳数据类型的区别，Grafana
 的 SQL Builder 暂时无法选择时间戳字段。
 
-
+关于如何用 SQL 查询数据，请参考[使用 SQL 查询数据](/user-guide/query-data/sql.md)文档。

@@ -2,28 +2,23 @@
 
 ## 连接数据库
 
-GreptimeDB 支持 PostgreSQL 协议。要连接到 GreptimeDB，只需要在 `psql` 命令行工具中添加 `-U` 参数，后面跟上你的用户名。例如：
+你可以通过端口 `4003` 使用 PostgreSQL 连接到 GreptimeDB。
+只需在命令中添加 `-U` 参数，后跟你的用户名和密码。以下是一个示例：
 
 ```shell
-❯ psql -h localhost -p 4003 -U greptime_user -d public
-Password for user greptime_user:
-psql (15.2, server 0.1.1)
-WARNING: psql major version 15, server major version 0.1.
-         Some psql features might not work.
-Type "help" for help.
-
-public=>
+psql -h <host> -p 4003 -U <username> -d public
 ```
 
-记得将示例中的 `greptime_user(username)` 和 `greptime_pwd(password)` 替换成自己的用户名和密码。
+- 请参考[鉴权认证](/user-guide/operations/authentication.md) 来设置 GreptimeDB 的用户名和密码。
+- 如果你想使用其他端口连接 PostgreSQL，请参考配置文档中的[协议选项](/user-guide/operations/configuration.md#协议选项)。
 
 ## 管理表
 
-请参考 [管理表](../table-management.md)。
+请参考[管理表](/user-guide/table-management.md)。
 
 ## 写入数据
 
-请参考 [写入数据](../ingest-data/for-iot/sql.md).
+请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md).
 
 ## 读取数据
 
@@ -59,5 +54,4 @@ SHOW VARIABLES time_zone;
 SET TIMEZONE TO '+1:00'
 ```
 
-有关时区如何影响数据的插入和查询，请参考[写入数据](../ingest-data/for-iot/sql.md#时区)和[查询数据](../query-data/sql.md#时区)中的 SQL 文档。
-
+有关时区如何影响数据的插入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#时区)和[查询数据](/user-guide/query-data/sql.md#时区)中的 SQL 文档。

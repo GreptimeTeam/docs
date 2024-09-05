@@ -107,4 +107,4 @@ kubectl apply -f greptimedb-cluster.yaml
 kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4001:4001 4002:4002 4003:4003 4000:4000 > connections.out &
 ```
 
-然后就可以使用 MySQL 客户端来[连接到集群](/user-guide/clients/mysql.md#连接到服务端)。
+然后就可以使用 MySQL 客户端来[连接到集群](/user-guide/protocols/mysql.md#连接到服务端)。

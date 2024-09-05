@@ -13,6 +13,6 @@
 - [表分片][2]
 - [分布式查询][3]
 
-[1]: /user-guide/clients/overview.md
+[1]: /user-guide/protocols/overview.md
 [2]: ./table-sharding.md
 [3]: ./distributed-querying.md

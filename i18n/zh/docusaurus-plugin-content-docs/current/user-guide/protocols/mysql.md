@@ -1,38 +1,28 @@
 # MySQL
 
-## 连接到服务端
+## 连接数据库
 
-在 MySQL 连接服务器的命令中，使用 `-u` 来设定用户名，使用 `-p` 来表示密码。在下方的示例代码中，请确保用自己的用户名和密码替换 `greptime_user(username)` 和 `greptime_pwd(password)`。
+你可以通过 MySQL 连接到 GreptimeDB，端口为 `4002`。
 
 ```shell
-❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 8
-Server version: 5.1.10-alpha-msql-proxy Greptime
-
-Copyright (c) 2000, 2023, Oracle and/or its affiliates.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql>
+mysql -h <host> -P 4002 -u <username> -p
 ```
+
+- 请参考[鉴权认证](/user-guide/operations/authentication.md) 来设置 GreptimeDB 的用户名和密码。
+- 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/operations/configuration.md#协议选项)。
+
 
 ## 管理表
 
-请参考 [管理表](../table-management.md)。
+请参考[表管理](/user-guide/table-management.md)。
 
 ## 写入数据
 
-请参考 [写入数据](../ingest-data/for-iot/sql.md).
+请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md).
 
-## 读取数据
+## 查询数据
 
-请参考 [读取数据](../query-data/sql.md).
+请参考[查询数据](/user-guide/query-data/sql.md).
 
 ## 时区
 
@@ -80,4 +70,4 @@ SELECT @@system_time_zone, @@time_zone;
 +--------------------+-------------+
 ```
 
-有关时区如何影响数据的插入和查询，请参考 [写入数据](../ingest-data/for-iot/sql.md#时区) 和 [查询数据](../query-data/sql.md#时区) 中的 SQL 文档。
+有关时区如何影响数据的插入和查询，请参考 [写入数据](/user-guide/ingest-data/for-iot/sql.md#时区) 和 [查询数据](/user-guide/query-data/sql.md#时区) 中的 SQL 文档。

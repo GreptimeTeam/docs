@@ -51,7 +51,7 @@ ALIGN '5s' BY (host) FILL PREV
 - **统一存储：** GreptimeDB 是支持同时存储和分析指标及[日志](/user-guide/logs/overview.md)的时序数据库。简化的架构和数据一致性增强了分析和解决问题的能力，并可节省成本且提高系统性能。
 - **独特的数据模型：** 独特的[数据模型](/user-guide/concepts/data-model.md)搭配时间索引和全文索引，大大提升了查询性能，并在超大数据集上也经受住了考验。它不仅支持[数据指标的插入](/user-guide/ingest-data/overview.md)和[查询](/user-guide/query-data/overview.md)，也提供了非常友好的方式便于日志的[写入](/user-guide/logs/write-logs.md)和[查询](/user-guide/logs/query-logs.md)。
 - **范围查询：** GreptimeDB 支持[范围查询](/user-guide/query-data/sql.md#aggregate-data-by-time-window)来计算一段时间内的[表达式](/reference/sql/functions/overview.md)，从而了解指标趋势。你还可以[持续聚合](/user-guide/continuous-aggregation/overview.md)数据以进行进一步分析。
-- **SQL 和多种协议：** GreptimeDB 使用 SQL 作为主要查询语言，并支持[多种协议](/user-guide/clients/overview.md#protocols)，大大降低了学习曲线和接入成本。你可以轻松从 Prometheus 或 [Influxdb 迁移](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md)至 GreptimeDB，或者从 0 接入 GreptimeDB。
+- **SQL 和多种协议：** GreptimeDB 使用 SQL 作为主要查询语言，并支持[多种协议](/user-guide/protocols/overview.md)，大大降低了学习曲线和接入成本。你可以轻松从 Prometheus 或 [Influxdb 迁移](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md)至 GreptimeDB，或者从 0 接入 GreptimeDB。
 - **JOIN 操作：** GreptimeDB 的时间序列表的数据模型，使其具备了支持[JOIN](/reference/sql/join.md)数据指标和日志的能力。
 
 了解了这些功能后，你现在可以直接探索感兴趣的功能，或按顺序继续阅读下一步骤。
@@ -59,11 +59,13 @@ ALIGN '5s' BY (host) FILL PREV
 ## 下一步
 
 * [概念](./concepts/overview.md)
-* [客户端](./clients/overview.md)
 * [表管理](./table-management.md)
 * [迁移到 GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [数据写入](./ingest-data/overview.md)
 * [数据查询](./query-data/overview.md)
+* [数据管理](./manage-data/overview.md)
+* [集成](./integrations/overview.md)
+* [协议](./protocols/overview.md)
 * [持续聚合](./continuous-aggregation/overview.md)
 * [运维操作](./operations/overview.md)
 * [集群](./cluster.md)

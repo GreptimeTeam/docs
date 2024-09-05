@@ -17,7 +17,7 @@
 #### 更新表中的所有字段
 
 在更新数据时，默认情况下所有字段都将被新值覆盖，
-而 [InfluxDB 行协议](/user-guide/clients/influxdb-line.md) 除外，它只会[更新表中的部分字段](#更新表中的部分字段)。
+而 [InfluxDB 行协议](/user-guide/protocols/influxdb-line-protocol.md) 除外，它只会[更新表中的部分字段](#更新表中的部分字段)。
 以下示例使用 SQL 演示了更新表中所有字段的行为。
 
 假设你有一个名为 `monitor` 的表，具有以下 schema。
@@ -106,7 +106,7 @@ SELECT * FROM monitor;
 
 ### 更新表中的部分字段
 
-默认情况下， [InfluxDB 行协议](/user-guide/clients/influxdb-line.md) 支持此种更新策略。
+默认情况下， [InfluxDB 行协议](/user-guide/protocols/influxdb-line-protocol.md) 支持此种更新策略。
 你还可以使用 SQL 在创建表时通过指定 `merge_mode` 选项为 `last_non_null` 来启用此行为。
 示例如下：
 

@@ -16,9 +16,9 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 ## Header
 
-- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。 请参考[鉴权](/user-guide/clients/http-api.md#authentication)。
+- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。 请参考[鉴权](/user-guide/protocols/http.md#authentication)。
 - `Content-Type`: `application/x-www-form-urlencoded`。
-- `X-Greptime-Timezone`: 当前 SQL 语句使用的时区，可选。请参考[时区](/user-guide/clients/http-api.md#authentication#时区).
+- `X-Greptime-Timezone`: 当前 SQL 语句使用的时区，可选。请参考[时区](/user-guide/protocols/http.md#时区).
 
 ## Query 参数
 
@@ -37,4 +37,4 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 ## 示例
 
-请参考用户指南中的 [POST SQL 语句](/user-guide/clients/http-api.md#post-sql-语句)。
+请参考用户指南中的 [POST SQL 语句](/user-guide/protocols/http.md#post-sql-语句)。
