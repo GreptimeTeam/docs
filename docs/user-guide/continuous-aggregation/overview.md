@@ -143,5 +143,6 @@ Please refer to the following sections to learn more:
 
 - [Usecase Examples](./usecase-example.md) provides more examples of how to use continuous aggregation in real-time analytics, monitoring, and dashboard.
 - [Manage Flows](./manage-flow.md) describes how to create, update, and delete a flow. Each of your continuous aggregation query is a flow.
+- [Write a Query](./query.md) describes how to write a continuous aggregation query.
 - [Define Time Window](./define-time-window.md) describes how to define the time window for the continuous aggregation. Time window is an important attribute of your continuous aggregation query. It defines the time interval for the aggregation.
 - [Expression](./expression.md) is a reference of available expressions in the continuous aggregation query.
