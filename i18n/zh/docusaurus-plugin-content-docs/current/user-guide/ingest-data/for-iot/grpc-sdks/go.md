@@ -10,6 +10,11 @@ GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使
 
 </div>
 
+<div id="quick-start-demos">
+
+你可以通过[快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) 来了解如何使用 GreptimeDB Go SDK。
+
+</div>
 
 <div id="ingester-lib-installation">
 
@@ -186,12 +191,6 @@ err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetri
 ```go
 affected, err := cli.CloseStream(ctx)
 ```
-
-</div>
-
-<div id="more-ingestion-examples">
-
-有关更多可运行的代码片段和常用方法的解释，请参阅[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples)。
 
 </div>
 

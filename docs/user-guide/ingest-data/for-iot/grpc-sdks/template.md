@@ -6,6 +6,10 @@ For more information, refer to [Automatic Schema Generation](/user-guide/ingest-
 
 <InjectContent id="ingester-lib-introduction" content={props.children}/>
 
+## Quick start demos
+
+<InjectContent id="quick-start-demos" content={props.children}/>
+
 ## Installation
 
 <InjectContent id="ingester-lib-installation" content={props.children}/>
@@ -83,10 +87,6 @@ Streaming insert is useful when you want to insert a large amount of data such a
 <InjectContent id="high-level-style-streaming-insert" content={props.children}/>
 
 <InjectContent id="high-level-style-update-data" content={props.children}/>
-
-## More examples
-
-<InjectContent id="more-ingestion-examples" content={props.children}/>
 
 <InjectContent id="ingester-lib-debug-logs" content={props.children}/>
 
