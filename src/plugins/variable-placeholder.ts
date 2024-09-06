@@ -18,7 +18,7 @@ interface VariablesMap {
 
 function getVariables(path: string, variablesMap: VariablesMap): Variables | undefined {
   // Check for paths that should be associated with "nightly"
-  if (path.includes('/docs/docs/') || path.includes('/current/')) {
+  if (path.includes('/docs/') || path.includes('/current/')) {
     return variablesMap['nightly'];
   }
 
