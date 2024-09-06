@@ -17,7 +17,7 @@
 #### 更新表中的所有字段
 
 在更新数据时，默认情况下所有字段都将被新值覆盖，
-而 [InfluxDB 行协议](/user-guide/clients/influxdb-line.md) 除外，它只会[更新表中的部分字段](#更新表中的部分字段)。
+而 [InfluxDB 行协议](/user-guide/protocols/influxdb-line-protocol.md) 除外，它只会[更新表中的部分字段](#更新表中的部分字段)。
 以下示例使用 SQL 演示了更新表中所有字段的行为。
 
 假设你有一个名为 `monitor` 的表，具有以下 schema。
@@ -106,7 +106,7 @@ SELECT * FROM monitor;
 
 ### 更新表中的部分字段
 
-默认情况下， [InfluxDB 行协议](/user-guide/clients/influxdb-line.md) 支持此种更新策略。
+默认情况下， [InfluxDB 行协议](/user-guide/protocols/influxdb-line-protocol.md) 支持此种更新策略。
 你还可以使用 SQL 在创建表时通过指定 `merge_mode` 选项为 `last_non_null` 来启用此行为。
 示例如下：
 
@@ -277,4 +277,37 @@ TRUNCATE TABLE monitor;
 
 有关 `TRUNCATE TABLE` 语句的更多信息，请参阅 [SQL TRUNCATE TABLE](/reference/sql/truncate.md) 文档。
 
+## 使用 TTL 策略保留数据
 
+Time to Live (TTL) 允许你设置定期删除表中数据的策略，
+你可以使用 TTL 自动删除数据库中的过期数据。
+设置 TTL 策略具有以下好处：
+
+- 通过清理过期数据来降低存储成本。
+- 减少数据库在某些查询中需要扫描的行数，从而提高查询性能。
+
+你可以在创建每个表时设置 TTL。
+例如，以下 SQL 语句创建了一个名为 `monitor` 的表，并设置了 7 天的 TTL 策略：
+
+```sql
+CREATE TABLE monitor (
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64,
+    memory FLOAT64,
+    PRIMARY KEY(host)
+) WITH ('ttl'='7d');
+```
+
+你还可以创建数据库级别的 TTL 策略。
+例如，以下 SQL 语句创建了一个名为 `test` 的数据库，并设置了 7 天的 TTL 策略：
+
+```sql
+CREATE DATABASE test WITH ('ttl'='7d');
+```
+
+你可以同时为 table 和 database 设置 TTL 策略。
+如果 table 有自己的 TTL 策略，则该策略将优先于 database 的 TTL 策略，
+否则 database 的 TTL 策略将被应用于 table。
+
+有关 TTL 策略的更多信息，请参阅 [CREATE](/reference/sql/create.md) 语句。

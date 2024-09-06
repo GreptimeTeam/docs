@@ -19,7 +19,7 @@ Excessive updates may negatively impact query performance, even though the perfo
 #### Update all fields in a table
 
 By default, when updating data, all fields will be overwritten with the new values,
-except for [InfluxDB line protocol](/user-guide/clients/influxdb-line.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
+except for [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md), which only [updates the specified fields](#overwrite-specific-fields-in-a-table).
 The following example using SQL demonstrates the behavior of overwriting all fields in a table.
 
 Assuming you have a table named `monitor` with the following schema.
@@ -108,7 +108,7 @@ SELECT * FROM monitor;
 
 ### Update specific fields in a table
 
-This update policy is supported by default in the [InfluxDB line protocol](/user-guide/clients/influxdb-line.md).
+This update policy is supported by default in the [InfluxDB line protocol](/user-guide/protocols/influxdb-line-protocol.md).
 You can also enable this behavior by specifying the `merge_mode` option as `last_non_null` when creating a table using SQL.
 Here's an example:
 
@@ -281,3 +281,35 @@ TRUNCATE TABLE monitor;
 ```
 
 For more information about the `TRUNCATE TABLE` statement, refer to the [SQL TRUNCATE TABLE](/reference/sql/truncate.md) documentation.
+
+## Manage data retention with TTL policies
+
+You can use Time to Live (TTL) policies to automatically remove stale data from your databases. TTL allows you to set policies to periodically delete data from tables. Setting TTL policies has the following benefits:
+
+- Decrease storage costs by cleaning out obsolete data.
+- Reduce the number of rows the database has to scan for some queries, potentially increasing query performance.
+
+You can set TTL for every table when creating it. For example, the following SQL statement creates a table named `monitor` with a TTL policy of 7 days:
+
+```sql
+CREATE TABLE monitor (
+    host STRING,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP() TIME INDEX,
+    cpu FLOAT64,
+    memory FLOAT64,
+    PRIMARY KEY(host)
+) WITH ('ttl'='7d');
+```
+
+You can also create a database-level TTL policy. For example, the following SQL statement creates a database named `test` with a TTL policy of 7 days:
+
+```sql
+CREATE DATABASE test WITH ('ttl'='7d');
+```
+
+You can set TTL policies at both the table level and the database level simultaneously.
+If a table has its own TTL policy,
+it will take precedence over the database TTL policy.
+Otherwise, the database TTL policy will be applied to the table.
+
+For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.

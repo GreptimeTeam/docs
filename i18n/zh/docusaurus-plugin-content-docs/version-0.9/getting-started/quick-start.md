@@ -6,12 +6,15 @@
 
 ## 连接到 GreptimeDB
 
-GreptimeDB 支持[多种协议](/user-guide/clients/overview.md)与数据库进行交互。
+GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)与数据库进行交互。
 在本快速入门文档中，我们使用 SQL 作为实例。
 
 如果你的 GreptimeDB 实例运行在 `127.0.0.1` 中，
 并且使用 MySQL 客户端默认端口 `4002` 或 PostgreSQL 客户端默认端口 `4003`，
-你可以使用以下命令连接到数据库：
+你可以使用以下命令连接到数据库。
+
+GreptimeDB 默认不开启[鉴权认证](/user-guide/operations/authentication.md)。
+在本章节中你可以在连接数据库时不提供用户名密码。
 
 ```shell
 mysql -h 127.0.0.1 -P 4002
@@ -369,7 +372,7 @@ grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 17207280210000000
 你现在已经体验了 GreptimeDB 的核心功能。
 要进一步探索和利用 GreptimeDB：
 
-- [使用 Grafana 可视化数据](/user-guide/clients/grafana.md)
+- [使用 Grafana 可视化数据](/user-guide/integrations/grafana.md)
 - [探索更多 GreptimeDB 的 Demo](https://github.com/GreptimeTeam/demo-scene/)
 - [阅读用户指南文档以了解更多关于 GreptimeDB 的详细信息](/user-guide/overview.md)
 

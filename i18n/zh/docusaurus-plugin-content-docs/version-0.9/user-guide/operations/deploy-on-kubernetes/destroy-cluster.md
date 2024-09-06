@@ -30,13 +30,18 @@ kubectl delete greptimedbcluster greptimedb -n greptimedb-cluster
 
 ```shell
 # 卸载 etcd。
-helm uninstall etcd -n etcd
+helm uninstall etcd -n etcd-cluster
 ```
 
 ## 删除自定义资源定义 (CRDs)
 
+:::tip 提示
+除非在 Helm 安装命令中设置了 `crds.keep=false`，否则卸载发布时默认不会删除 CRDs。
+:::
+
 ```shell
 kubectl delete crds greptimedbclusters.greptime.io
+kubectl delete crds greptimedbstandalones.greptime.io
 ```
 
 ## 清理 namespace
@@ -45,6 +50,6 @@ kubectl delete crds greptimedbclusters.greptime.io
 
 ```shell
 kubectl delete namespace greptimedb-admin
-kubectl delete namespace etcd
+kubectl delete namespace etcd-cluster
 kubectl delete namespace greptimedb-cluster
 ```

@@ -25,7 +25,7 @@ npm install @opentelemetry/api@1.4.1 \
 ```
 
 成功安装依赖后，创建一个名为 `app.ts` 的文件，并编写代码创建一个 metric exporter 对象，将 metrics 发送到 GreptimeDB。
-请参考 [GreptimeDB](/user-guide/clients/otlp.md) 或 [GreptimeCloud](/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
+请参考 [GreptimeDB](/user-guide/protocols/opentelemetry.md) 或 [GreptimeCloud](/greptimecloud/integrations/otlp.md) 中的 OTLP 集成文档获取 exporter 的相关配置。
 
 ```ts
 const exporter = new OTLPMetricExporter({

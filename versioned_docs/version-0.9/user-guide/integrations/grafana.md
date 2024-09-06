@@ -1,7 +1,7 @@
 # Grafana
 
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).
-You have the option to connect GreptimeDB with Grafana using one of three data sources: GreptimeDB, Prometheus, or MySQL.
+You have the option to connect GreptimeDB with Grafana using one of three data sources: [GreptimeDB](#greptimedb-data-source-plugin), [Prometheus](#prometheus-data-source), or [MySQL](#mysql-data-source).
 
 ## GreptimeDB data source plugin
 
@@ -89,7 +89,7 @@ GreptimeDB is compatible with most PromQL, but there are some limitations. Pleas
 
 ## Prometheus data source
 
-Click the Add data source button and select Prometheus as the type.
+Click the "Add data source" button and select Prometheus as the type.
 
 Fill in Prometheus server URL in HTTP:
 
@@ -107,11 +107,13 @@ Click Custom HTTP Headers and add one header:
 - Header: `x-greptime-db-name`
 - Value: `<dbname>`
 
-Then click Save & Test button to test the connection.
+Then click "Save & Test" button to test the connection.
+
+For how to query data with PromQL, please refer to the [Prometheus Query Language](/user-guide/query-data/promql.md) document.
 
 ## MySQL data source
 
-Click the Add data source button and select MySQL as the type. Fill in the following information in MySQL Connection:
+Click the "Add data source" button and select MySQL as the type. Fill in the following information in MySQL Connection:
 
 - Host: `<host>:4002`
 - Database: `<dbname>`
@@ -119,10 +121,10 @@ Click the Add data source button and select MySQL as the type. Fill in the follo
 - Password: `<password>`
 - Session timezone: `UTC`
 
-Then click Save & Test button to test the connection.
+Then click "Save & Test" button to test the connection.
 
 Note that you need to use raw SQL editor for panel creation. SQL Builder is not
 supported due to timestamp data type difference between GreptimeDB and vanilla
 MySQL.
 
-
+For how to query data with SQL, please refer to the [Query Data with SQL](/user-guide/query-data/sql.md) document.

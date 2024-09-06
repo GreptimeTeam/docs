@@ -10,6 +10,11 @@ GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使
 
 </div>
 
+<div id="quick-start-demos">
+
+你可以通过[快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) 来了解如何使用 GreptimeDB Go SDK。
+
+</div>
 
 <div id="ingester-lib-installation">
 
@@ -42,6 +47,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
     // WithInsecure(false).
     // 设置鉴权信息
+    // 如果数据库不需要鉴权，移除 WithAuth 方法即可
     WithAuth("username", "password")
 
 cli, _ := greptime.NewClient(cfg)
@@ -185,12 +191,6 @@ err := streamClient.StreamWriteObject(context.Background(), cpuMetrics, memMetri
 ```go
 affected, err := cli.CloseStream(ctx)
 ```
-
-</div>
-
-<div id="more-ingestion-examples">
-
-有关更多可运行的代码片段和常用方法的解释，请参阅[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples)。
 
 </div>
 

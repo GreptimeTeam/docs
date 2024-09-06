@@ -32,10 +32,12 @@ If you are new to Greptime DB, documents below will help you quickly get started
 Explains how to use, integrate or customize GreptimeDB; also includes common issues and solutions
 
 - [Concepts](https://docs.greptime.com/user-guide/concepts/overview)
-- [Clients](https://docs.greptime.com/user-guide/clients/overview)
-- [Table management](https://docs.greptime.com/user-guide/table-management)
-- [Write data](https://docs.greptime.com/user-guide/write-data/overview)
-- [Query data](https://docs.greptime.com/user-guide/query-data/overview)
+- [Table Management](https://docs.greptime.com/user-guide/table-management)
+- [Ingest Data](https://docs.greptime.com/user-guide/ingest-data/overview)
+- [Query Data](https://docs.greptime.com/user-guide/query-data/overview)
+- [Manage Data](https://docs.greptime.com/user-guide/manage-data/overview)
+- [Integrations](https://docs.greptime.com/user-guide/integrations/overview)
+- [Protocols](https://docs.greptime.com/user-guide/protocols/overview)
 - [Python Scripts](https://docs.greptime.com/user-guide/python-scripts/overview)
 - [Cluster](https://docs.greptime.com/user-guide/cluster)
 

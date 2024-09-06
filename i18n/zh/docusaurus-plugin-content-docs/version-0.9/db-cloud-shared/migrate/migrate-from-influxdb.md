@@ -2,61 +2,7 @@
 
 ## 数据模型的区别
 
-你可能已经熟悉了 [InfluxDB 的关键概念](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/)，
-GreptimeDB 的 [数据模型](/user-guide/concepts/data-model.md) 是值得了解的新事物。
-下方解释了 GreptimeDB 和 InfluxDB 数据模型的相似和不同之处：
-
-- 两者都是[schemaless 写入](/user-guide/ingest-data/overview.md#自动生成表结构)的解决方案，这意味着在写入数据之前无需定义表结构。
-- 在 InfluxDB 中，一个点代表一条数据记录，包含一个 measurement、tag 集、field 集和时间戳。
-  在 GreptimeDB 中，它被表示为时间序列表中的一行数据。
-  表名对应于 measurement，列由三种类型组成：Tag、Field 和 Timestamp。
-- GreptimeDB 使用 `TimestampNanosecond` 作为来自 [InfluxDB 行协议 API](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) 的时间戳数据类型。
-- GreptimeDB 使用 `Float64` 作为来自 InfluxDB 行协议 API 的数值数据类型。
-
-以 InfluxDB 文档中的[示例数据](https://docs.influxdata.com/influxdb/v2/reference/key-concepts/data-elements/#sample-data)为例：
-
-|_time|_measurement|location|scientist|_field|_value|
-|---|---|---|---|---|---|
-|2019-08-18T00:00:00Z|census|klamath|anderson|bees|23|
-|2019-08-18T00:00:00Z|census|portland|mullen|ants|30|
-|2019-08-18T00:06:00Z|census|klamath|anderson|bees|28|
-|2019-08-18T00:06:00Z|census|portland|mullen|ants|32|
-
-上述数据的 InfluxDB 行协议格式为：
-
-```shell
-census,location=klamath,scientist=anderson bees=23 1566086400000000000
-census,location=portland,scientist=mullen ants=30 1566086400000000000
-census,location=klamath,scientist=anderson bees=28 1566086760000000000
-census,location=portland,scientist=mullen ants=32 1566086760000000000
-```
-
-在 GreptimeDB 数据模型中，上述数据将被表示为 `census` 表中的以下内容：
-
-```sql
-+---------------------+----------+-----------+------+------+
-| ts                  | location | scientist | bees | ants |
-+---------------------+----------+-----------+------+------+
-| 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
-| 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
-| 2019-08-18 00:00:00 | portland | mullen    | NULL |   30 |
-| 2019-08-18 00:06:00 | portland | mullen    | NULL |   32 |
-+---------------------+----------+-----------+------+------+
-```
-
-`census` 表结构如下：
-
-```sql
-+-----------+----------------------+------+------+---------+---------------+
-| Column    | Type                 | Key  | Null | Default | Semantic Type |
-+-----------+----------------------+------+------+---------+---------------+
-| location  | String               | PRI  | YES  |         | TAG           |
-| scientist | String               | PRI  | YES  |         | TAG           |
-| bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
-| ants      | Float64              |      | YES  |         | FIELD         |
-+-----------+----------------------+------+------+---------+---------------+
-```
+要了解 InfluxDB 和 GreptimeDB 的数据模型之间的差异，请参考写入数据文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)。
 
 ## 数据库连接信息
 
