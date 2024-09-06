@@ -88,3 +88,128 @@ Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 ```
 
 输出的 `Readable timestamp (UTC)` 即为 Pipeline 的创建时间同时也是版本号。
+
+## 测试 Pipeline
+
+首先，使用以下命令创建一个 Pipeline：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" \
+     -H 'Content-Type: application/x-yaml' \
+     -d $'processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+
+transform:
+  - fields:
+      - id1
+      - id2
+    type: int32
+  - fields:
+      - type
+      - log
+      - logger
+    type: string
+  - field: time
+    type: time
+    index: timestamp'
+{"pipelines":[{"name":"test","version":"2024-09-03 08:47:38.686403312"}],"execution_time_ms":2}
+```
+
+然后，使用以下命令测试该 Pipeline：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
+     -H 'Content-Type: application/json' \
+     -d $'{"time":"2024-05-25 20:16:37.217","id1":"2436","id2":"2528","type":"I","logger":"INTERACT.MANAGER","log":"ClusterAdapter:enter sendTextDataToCluster\\n"}'
+```
+
+输出如下：
+
+```json
+{
+    "rows": [
+        [
+            {
+                "data_type": "INT32",
+                "key": "id1",
+                "semantic_type": "FIELD",
+                "value": 2436
+            },
+            {
+                "data_type": "INT32",
+                "key": "id2",
+                "semantic_type": "FIELD",
+                "value": 2528
+            },
+            {
+                "data_type": "STRING",
+                "key": "type",
+                "semantic_type": "FIELD",
+                "value": "I"
+            },
+            {
+                "data_type": "STRING",
+                "key": "log",
+                "semantic_type": "FIELD",
+                "value": "ClusterAdapter:enter sendTextDataToCluster\n"
+            },
+            {
+                "data_type": "STRING",
+                "key": "logger",
+                "semantic_type": "FIELD",
+                "value": "INTERACT.MANAGER"
+            },
+            {
+                "data_type": "TIMESTAMP_NANOSECOND",
+                "key": "time",
+                "semantic_type": "TIMESTAMP",
+                "value": "2024-05-25 20:16:37.217+0000"
+            }
+        ]
+    ],
+    "schema": [
+        {
+            "colume_type": "FIELD",
+            "data_type": "INT32",
+            "fulltext": false,
+            "name": "id1"
+        },
+        {
+            "colume_type": "FIELD",
+            "data_type": "INT32",
+            "fulltext": false,
+            "name": "id2"
+        },
+        {
+            "colume_type": "FIELD",
+            "data_type": "STRING",
+            "fulltext": false,
+            "name": "type"
+        },
+        {
+            "colume_type": "FIELD",
+            "data_type": "STRING",
+            "fulltext": false,
+            "name": "log"
+        },
+        {
+            "colume_type": "FIELD",
+            "data_type": "STRING",
+            "fulltext": false,
+            "name": "logger"
+        },
+        {
+            "colume_type": "TIMESTAMP",
+            "data_type": "TIMESTAMP_NANOSECOND",
+            "fulltext": false,
+            "name": "time"
+        }
+    ]
+}
+```
+
+输出显示该 Pipeline 成功处理了日志数据。`rows` 字段包含已处理数据，`schema` 字段包含已处理数据的模式信息。您可以使用这些信息来验证 Pipeline 配置的正确性。
