@@ -118,7 +118,7 @@ In the above example, the configuration of the `dissect` processor includes the 
 Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`, where `%{key}` is a field name. For example:
 
 ```
-"%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
+"%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6}"
 ```
 
 #### Dissect modifiers
@@ -131,20 +131,19 @@ The dissect pattern supports the following modifiers:
 | `+` and `/n` | Concatenates two or more fields in the specified order | `%{+key/2} %{+key/1}` |
 | `->`       | Ignores any repeating characters on the right side    | `%{key1->} %{key2->}` |
 | `?`        | Ignores matching values                               | `%{?key}`            |
-| `*` and `&` | Sets the output key as \* and the output value as &   | `%{*key} %{&key}`  |
 
 #### `dissect` examples
 
 For example, given the following log data:
 
 ```
-"key1 key2 key3 key4 key5 key6 key7 key8"
+"key1 key2 key3 key4 key5 key6"
 ```
 
 Using the following Dissect pattern:
 
 ```
-"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key} %{&key}"
+"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6}"
 ```
 
 The result will be:
@@ -154,8 +153,7 @@ The result will be:
   "key1": "key1",
   "key2": "key2",
   "key3": "key3 key4",
-  "key5": "key5",
-  "key7": "key8"
+  "key5": "key5"
 }
 ```
 
