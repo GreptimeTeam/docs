@@ -64,6 +64,6 @@ do
 done
 ```
 
-For information on the host, database, username, and password required for the MySQL API, please refer to the MySQL documentation in [GreptimeDB](/user-guide/clients/mysql.md) or [GreptimeCloud](/greptimecloud/integrations/mysql.md).
+For information on the host, database, username, and password required for the MySQL API, please refer to the MySQL documentation in [GreptimeDB](/user-guide/protocols/mysql.md) or [GreptimeCloud](/greptimecloud/integrations/mysql.md).
 
 Congratulations on successfully completing the core section of the demo! You can now run the complete demo by following the instructions in the `README.md` file on the [GitHub repository](https://github.com/GreptimeCloudStarters/quick-start-mysql).

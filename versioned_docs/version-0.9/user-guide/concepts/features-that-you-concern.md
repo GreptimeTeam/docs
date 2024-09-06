@@ -16,24 +16,7 @@ Yes, it does. Please refer to the [delete data](/user-guide/manage-data/overview
 
 ## Can I set TTL or retention policy for different tables or measurements?
 
-Of course, you can set TTL for every table when creating it:
-
-```sql
-CREATE TABLE IF NOT EXISTS temperatures(
-  ts TIMESTAMP TIME INDEX,
-  temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
-```
-
-The TTL of temperatures is set to be seven days. 
-
-Since 0.8, the database level `TTL` is supported too.
-
-```sql
-CREATE DATABASE test with(ttl='7d');
-```
-
-You can refer to the TTL option of the database and table create statement [here](/reference/sql/create.md).
+Of course. Please refer to the document [on managing data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
 
 ## What are the compression rates of GreptimeDB?
 
@@ -62,6 +45,16 @@ Yes, GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apa
 The data can be stored in cost-effective cloud storage services such as AWS S3 or Azure Blob Storage, please refer to storage configuration guide [here](./../operations/configuration.md#storage-options).
 
 GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.
+
+### How is GreptimeDB's performance compared to other solutions?
+
+Please read the performance benchmark reports:
+
+* [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
+* [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2024-08-22-log-benchmark)
+* [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
+
 
 ## Does GreptimeDB have disaster recovery solutions?
 

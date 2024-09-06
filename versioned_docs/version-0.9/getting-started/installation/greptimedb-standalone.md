@@ -43,17 +43,17 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 
 ```shell
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
--v "$(pwd)/greptimedb:/tmp/greptimedb" \
---name greptime --rm \
-greptime/greptimedb:VAR::greptimedbVersion standalone start \
---http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
---mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003
+  -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+  --name greptime --rm \
+  greptime/greptimedb:VAR::greptimedbVersion standalone start \
+  --http-addr 0.0.0.0:4000 \
+  --rpc-addr 0.0.0.0:4001 \
+  --mysql-addr 0.0.0.0:4002 \
+  --postgres-addr 0.0.0.0:4003
 ```
 
 :::tip NOTE
-To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+To avoid accidentally exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
 the `docker run` command.
 :::
 
@@ -70,17 +70,17 @@ You can:
 
   ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-   -v "$(pwd)/greptimedb:/tmp/greptimedb" \
-   --name greptime --rm \
-   greptime/greptimedb:VAR::greptimedbVersion standalone start \
-   --http-addr 0.0.0.0:4000 \
-   --rpc-addr 0.0.0.0:4001 \
-   --mysql-addr 0.0.0.0:4002 \
-   --postgres-addr 0.0.0.0:4003
+     -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+     --name greptime --rm \
+     greptime/greptimedb:VAR::greptimedbVersion standalone start \
+     --http-addr 0.0.0.0:4000 \
+     --rpc-addr 0.0.0.0:4001 \
+     --mysql-addr 0.0.0.0:4002 \
+     --postgres-addr 0.0.0.0:4003
   ```
 
 2. Upgrade the Docker version to v23.0.0 or higher;
-   :::
+:::
 
 ## Binding address
 
@@ -108,13 +108,13 @@ If the computer running GreptimeDB is directly exposed to the internet, binding 
 
 ```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
--v "$(pwd)/greptimedb:/tmp/greptimedb" \
---name greptime --rm \
-greptime/greptimedb:VAR::greptimedbVersion standalone start \
---http-addr 0.0.0.0:4000 \
---rpc-addr 0.0.0.0:4001 \
---mysql-addr 0.0.0.0:4002 \
---postgres-addr 0.0.0.0:4003
+  -v "$(pwd)/greptimedb:/tmp/greptimedb" \
+  --name greptime --rm \
+  greptime/greptimedb:VAR::greptimedbVersion standalone start \
+  --http-addr 0.0.0.0:4000 \
+  --rpc-addr 0.0.0.0:4001 \
+  --mysql-addr 0.0.0.0:4002 \
+  --postgres-addr 0.0.0.0:4003
 ```
 
 </TabItem>

@@ -100,20 +100,27 @@
         },
         {
           "type": "category",
-          "label": "Clients",
+          "label": "Integrations",
           "items": [
-            "user-guide/clients/overview",
-            "user-guide/clients/authentication",
-            "user-guide/clients/mysql",
-            "user-guide/clients/prometheus",
-            "user-guide/clients/influxdb-line",
-            "user-guide/clients/opentsdb",
-            "user-guide/clients/postgresql",
-            "user-guide/clients/http-api",
-            "user-guide/clients/otlp",
-            "user-guide/clients/vector",
-            "user-guide/clients/grafana",
-            "user-guide/clients/emqx"
+            "user-guide/integrations/overview",
+            "user-guide/integrations/prometheus",
+            "user-guide/integrations/vector",
+            "user-guide/integrations/grafana",
+            "user-guide/integrations/emqx"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Protocols",
+          "items": [
+            "user-guide/protocols/overview",
+            "user-guide/protocols/influxdb-line-protocol",
+            "user-guide/protocols/opentelemetry",
+            "user-guide/protocols/mysql",
+            "user-guide/protocols/postgresql",
+            "user-guide/protocols/http",
+            "user-guide/protocols/grpc",
+            "user-guide/protocols/opentsdb"
           ]
         },
         {
@@ -153,6 +160,7 @@
           "label": "Operations",
           "items": [
             "user-guide/operations/overview",
+            "user-guide/operations/authentication",
             "user-guide/operations/admin",
             "user-guide/operations/configuration",
             "user-guide/operations/capacity-plan",
@@ -189,7 +197,8 @@
             "user-guide/operations/region-failover",
             "user-guide/operations/compaction",
             "user-guide/operations/monitoring",
-            "user-guide/operations/tracing"
+            "user-guide/operations/tracing",
+            "user-guide/operations/performance-tuning-tips"
           ]
         },
         "user-guide/upgrade"
@@ -328,6 +337,7 @@
                 "reference/sql/functions/df-functions"
               ]
             },
+            "reference/sql/admin",
             "reference/sql/compatibility",
             {
               "type": "category",

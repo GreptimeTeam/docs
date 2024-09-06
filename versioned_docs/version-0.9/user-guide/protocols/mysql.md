@@ -2,37 +2,27 @@
 
 ## Connect
 
-Use `-u` param to set username, use `-p` to indicate password. Be sure to replace `greptime_user(username)` and `greptime_pwd(password)` with your own username and password:
+You can connect to GreptimeDB using MySQL via port `4002`.
 
 ```shell
-❯ mysql -h 127.0.0.1 -P 4002 -u greptime_user -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 8
-Server version: 5.1.10-alpha-msql-proxy Greptime
-
-Copyright (c) 2000, 2023, Oracle and/or its affiliates.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql>
+mysql -h <host> -P 4002 -u <username> -p
 ```
+
+- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
+- If you want to use other ports for MySQL, please refer to [Protocol options](/user-guide/operations/configuration.md#protocol-options) in the configuration document.
+
 
 ## Table management
 
-Please refer to [Table Management](../table-management.md).
+Please refer to [Table Management](/user-guide/table-management.md).
 
-## Write data
+## Ingest data
 
-Please refer to [SQL](../ingest-data/for-iot/sql.md).
+Please refer to [SQL](/user-guide/ingest-data/for-iot/sql.md).
 
 ## Query data
 
-Please refer to [SQL](../query-data/sql.md).
+Please refer to [SQL](/user-guide/query-data/sql.md).
 
 ## Time zone
 
@@ -84,4 +74,4 @@ SELECT @@system_time_zone, @@time_zone;
 +--------------------+-------------+
 ```
 
-For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](../ingest-data/for-iot/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
+For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md#time-zone) and [Query Data](/user-guide/query-data/sql.md#time-zone) sections.

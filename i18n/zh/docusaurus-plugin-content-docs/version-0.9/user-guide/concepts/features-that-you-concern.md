@@ -16,24 +16,7 @@
 
 ## 我可以为不同的表或指标设置 TTL 或保留策略吗？
 
-当然，你可以在创建表时为每个表设置 TTL：
-
-```sql
-CREATE TABLE IF NOT EXISTS temperatures(
-  ts TIMESTAMP TIME INDEX,
-  temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
-```
-
-在上述 SQL 中 `temperatures` 表的 TTL 被设置为 7 天。
-
-从 0.8 版本开始，也支持数据库级别的 `TTL`。
-
-```sql
-CREATE DATABASE test WITH (ttl='7d');
-```
-
-你可以在[这里](/reference/sql/create.md)参考数据库和表创建语句的 TTL 选项。
+当然。请参考[使用 TTL 策略保留数据](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)。
 
 ## GreptimeDB 的压缩率是多少？
 
@@ -61,6 +44,15 @@ GreptimeDB 通过以下方式解决这个问题：
 数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](./../operations/configuration.md#storage-options)。
 
 GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://greptime.cn/product/cloud) 来帮助您管理云中的数据。
+
+## GreptimeDB 对比其他存储或时序数据库的性能如何？
+
+请阅读以下性能报告：
+
+* [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
+* [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2024-08-21-report)
+* [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
 
 ## GreptimeDB 有灾难恢复解决方案吗？
 

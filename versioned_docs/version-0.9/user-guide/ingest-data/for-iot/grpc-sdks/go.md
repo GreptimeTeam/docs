@@ -11,6 +11,11 @@ concurrent-safe library that is easy to use with the metric struct.
 
 </div>
 
+<div id="quick-start-demos">
+
+To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) to understand how to use the GreptimeDB Go ingester SDK.
+
+</div>
 
 <div id="ingester-lib-installation">
 
@@ -43,6 +48,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     // Enable secure connection if your server is secured by TLS
     // WithInsecure(false).
     // set authentication information
+    // If the database doesn't require authentication, just remove the WithAuth method
     WithAuth("username", "password")
 
 cli, _ := greptime.NewClient(cfg)
@@ -208,12 +214,6 @@ In general, you do not need to close the stream writing when continuously writin
 ```go
 affected, err := cli.CloseStream(ctx)
 ```
-
-</div>
-
-<div id="more-ingestion-examples">
-
-For fully runnable code snippets and explanations for common methods, see the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples).
 
 </div>
 

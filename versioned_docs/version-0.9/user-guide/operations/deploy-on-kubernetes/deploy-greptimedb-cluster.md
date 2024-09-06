@@ -10,25 +10,26 @@ make sure you have already installed [GreptimeDB Operator](greptimedb-operator.m
 First, establish an etcd cluster to support GreptimeDB by executing the following command:
 
 ```shell
-helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+helm upgrade \
+  --install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
-  -n etcd
+  -n etcd-cluster
 ```
 
 After the installation,
 you can get the etcd cluster endpoints `etcd.etcd.svc.cluster.local:2379` from the installation logs.
 The endpoints are required for deploying the GreptimeDB cluster in the subsequent step.
 
-### Create a GretpimeDB cluster
+### Create a GreptimeDB cluster
 
 Deploy the GreptimeDB cluster, ensuring it connects to the previously established etcd cluster:
   
 ```shell
 helm install greptimedb greptime/greptimedb-cluster \
-  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --create-namespace \
   -n greptimedb-cluster
 ```
@@ -41,7 +42,7 @@ Here's how you can configure these settings:
 
 ```shell
 helm install greptimedb greptime/greptimedb-cluster \
-  --set meta.etcdEndpoints=etcd.etcd.svc.cluster.local:2379 \
+  --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
   --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
   --set datanode.podTemplate.main.resources.requests.cpu=<cpu-resource> \
@@ -79,7 +80,7 @@ spec:
   meta:
     replicas: 1
     etcdEndpoints:
-      - "etcd.etcd.svc.cluster.local:2379"
+      - "etcd.etcd-cluster.svc.cluster.local:2379"
   datanode:
     replicas: 3
 ```
@@ -92,14 +93,15 @@ kubectl apply -f greptimedb-cluster.yaml
 
 ## Connect to the cluster
 
-After the installation, you can use `kubectl port-forward` to forward the MySQL protocol port of the GreptimeDB cluster:
+After the installation, you can use `kubectl port-forward` to forward the service ports of the GreptimeDB cluster:
 
 ```shell
-# You can use the MySQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
-kubectl port-forward svc/greptimedb-frontend 4002:4002 -n greptimedb-cluster > connections.out &
-
-# You can use the PostgreSQL client to connect the cluster, for example: 'psql -h 127.0.0.1 -p 4003 -d public'.
-kubectl port-forward svc/greptimedb-frontend 4003:4003 -n greptimedb-cluster > connections.out &
+# You can use the MySQL or PostgreSQL client to connect the cluster, for example: 'mysql -h 127.0.0.1 -P 4002'.
+# HTTP port: 4000
+# gRPC port: 4001
+# MySQL port: 4002
+# PostgreSQL port: 4003
+kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4000:4000 4001:4001 4002:4002 4003:4003 > connections.out &
 ```
 
-Then you can use the MySQL client to [connect to the cluster](/user-guide/clients/mysql.md#connect).
+Then you can use the MySQL client to [connect to the cluster](/user-guide/protocols/mysql.md#connect).

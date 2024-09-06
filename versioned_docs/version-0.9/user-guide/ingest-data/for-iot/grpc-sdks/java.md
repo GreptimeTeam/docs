@@ -15,6 +15,12 @@ The Java ingester SDK provided by GreptimeDB is a lightweight library with the f
 
 </div>
 
+<div id="quick-start-demos">
+
+To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) to understand how to use the GreptimeDB Java ingester SDK.
+
+</div>
+
 <div id="ingester-lib-installation">
 
 1. Install the Java Development Kit(JDK)
@@ -300,16 +306,10 @@ LOG.info("Write result: {}", result);
 
 <div id="ingester-lib-debug-logs">
 
-### Debug logs
+## Debug logs
 
 The ingester SDK provides metrics and logs for debugging.
 Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
-
-</div>
-
-<div id="more-ingestion-examples">
-
-For fully runnable code snippets and the complete code of the demo, please refer to the [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime).
 
 </div>
 
@@ -324,7 +324,7 @@ For fully runnable code snippets and the complete code of the demo, please refer
 Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
 Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API.
-Since GreptimeDB supports [multiple protocols](/user-guide/clients/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
+Since GreptimeDB supports [multiple protocols](/user-guide/protocols/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
 If you want to use other protocols, just replace the MySQL driver with the corresponding driver.
 
 </div>

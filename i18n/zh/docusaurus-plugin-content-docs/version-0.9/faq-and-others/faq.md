@@ -13,9 +13,6 @@ Common use cases for time-series database include but are not limited to the fol
 
 Please refer to [features that you concern](/user-guide/concepts/features-that-you-concern.md).
 
-### How is GreptimeDB's performance compared to other solutions?
-
-GreptimeDB has released v0.8, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/benchmarks/tsbs/v0.8.0.md).
 
 ### How is the performance of GreptimeDB when used for non-time-series DB tables?
 
@@ -25,9 +22,9 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 Yes, you can find our Go SDK here: https://github.com/GreptimeTeam/greptimedb-ingester-go.
 
-Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/clients/mysql.md).
+Currently, we support MySQL protocol, you can check it out on the [user guide](/user-guide/protocols/mysql.md).
 
-HTTP API is also available, please see [this article](/user-guide/clients/http-api.md) for more information.
+HTTP API is also available, please see [this article](/user-guide/protocols/http.md) for more information.
 
 ### Can GreptimeDB be used as a Rust alternative to Prometheus in the observable area?
 
@@ -142,10 +139,10 @@ Of course, please use the `compact_table` function:
 
 ```sql
 -- Schedule a compaction for table test --
-select compact_table("test");
+ADMIN compact_table("test");
 ```
 
-There are many [administration functions](/reference/sql/functions/overview.md#admin-functions) for database management.
+There are many [administration functions](/reference/sql/admin.md#admin-functions) for database management.
 
 ### Can GreptimeDB be used to store logs?
 

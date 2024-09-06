@@ -45,7 +45,7 @@ Then start GreptimeDB using standalone mode
 greptime standalone start -c config.toml
 ```
 
-Refer to the chapter [Mysql](../clients/mysql.md) on how to connect to GreptimeDB. Run the following SQL statement in Mysql Client:
+Refer to the chapter [MySQL](/user-guide/protocols/mysql.md) on how to connect to GreptimeDB. Run the following SQL statement in MySQL Client:
 
 ```sql
 CREATE TABLE host (
