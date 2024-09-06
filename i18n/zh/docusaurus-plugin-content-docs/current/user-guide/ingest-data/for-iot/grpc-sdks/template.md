@@ -5,6 +5,10 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 
 <InjectContent id="ingester-lib-introduction" content={props.children}/>
 
+## 快速开始 Demo
+
+<InjectContent id="quick-start-demos" content={props.children}/>
+
 ## 安装
 
 <InjectContent id="ingester-lib-installation" content={props.children}/>
@@ -81,10 +85,6 @@ SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 <InjectContent id="high-level-style-streaming-insert" content={props.children}/>
 
 <InjectContent id="high-level-style-update-data" content={props.children}/>
-
-## 更多示例
-
-<InjectContent id="more-ingestion-examples" content={props.children}/>
 
 <InjectContent id="ingester-lib-debug-logs" content={props.children}/>
 
