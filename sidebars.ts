@@ -101,6 +101,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/prometheus',
             'user-guide/integrations/vector',
             'user-guide/integrations/grafana',
+            'user-guide/integrations/superset',
             'user-guide/integrations/emqx',
           ],
         },
