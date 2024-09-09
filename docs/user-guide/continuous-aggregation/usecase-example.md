@@ -56,7 +56,13 @@ INSERT INTO ngx_access_log VALUES
     ("client9", "KR", "2022-01-01 00:00:08"),
     ("client10", "KR", "2022-01-01 00:00:09");
 
-/* check the result */
+```
+
+<!-- TODO(discord9): explain what `ADMIN FLUSH_FLOW('calc_ngx_country')` do -->
+Wait for one second for the Flow to write the result to the sink table and then query:
+
+
+```sql
 select * from ngx_country;
 ```
 
@@ -133,20 +139,14 @@ INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, "2022-01-01 00:00:00"),
     (2, "room2", 99.5, "2022-01-01 00:00:01");
 
-/* You may want to flush the flow task to see the result */
-ADMIN FLUSH_FLOW('temp_monitoring');
-
-/* for now sink table will be empty */
+/* table should be empty now, but still wait at least one second for flow to update results to sink table */
 SELECT * FROM temp_alerts;
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
 
-/* You may want to flush the flow task to see the result */
-ADMIN FLUSH_FLOW('temp_monitoring');
-
-/* now sink table will have the max temperature data */
+/* wait at least one second for flow to update results to sink table */
 SELECT * FROM temp_alerts;
 ```
 
@@ -205,6 +205,7 @@ INSERT INTO ngx_access_log VALUES
     ("cli9", 404, 180, "2022-01-01 00:00:08"),
     ("cli10", 404, 190, "2022-01-01 00:00:09");
 
+/* wait at least one second for flow to update results to sink table */
 SELECT * FROM ngx_distribution;
 ```
 
