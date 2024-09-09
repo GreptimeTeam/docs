@@ -1,6 +1,6 @@
 # 部署 GreptimeDB 集群
 
-在部署之前，请确保你已经在 Kubernetes 集群上安装了 [GreptimeDB Operator](greptimedb-operator.md)。
+在部署之前，请确保你已经在 Kubernetes 集群上安装了 [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md)。
 
 ## 使用 Helm 进行部署
 
