@@ -18,7 +18,7 @@ SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WIND
 
 `WHERE` 和 `HAVING` 子句在持续聚合查询中是支持的。它们的工作方式与普通查询中的相同。`WHERE` 子句在聚合之前过滤数据，而 `HAVING` 子句在聚合之后过滤数据。
 
-`DISTINCT` 目前只能使用 `SELECT DISTINCT column1 ..` 语法。它用于从结果集中删除重复行。目前还不支持 `SELECT count(DISTINCT column1) ...`，但将来会添加支持。
+`DISTINCT` 用于从结果集中删除重复行，目前仅支持 `SELECT DISTINCT column1 ..` 语法，不支持 `SELECT count(DISTINCT column1) ...`，但将来会添加支持。
 
 `GROUP BY` 子句与普通查询中的工作方式相同。它根据指定的列对数据进行分组。`GROUP BY` 子句中使用的时间窗口函数 `hop()` 和 `tumble()` 在 [定义时间窗口](./define-time-window.md) 部分中有描述。
 它们用于在聚合中定义时间窗口。
