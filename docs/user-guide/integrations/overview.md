@@ -7,4 +7,5 @@ The subsequent sections offer comprehensive guidance on integrating GreptimeDB w
 - [Vector](./vector.md)
 - [Grafana](./grafana.md)
 - [Superset](./superset.md)
+- [Metabase](./metabase.md)
 - [EMQX](./emqx.md)
