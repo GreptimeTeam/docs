@@ -16,30 +16,34 @@ See [Overview](overview.md) for an example of real-time analytics. Which is to c
 Another example of real-time analytics is to get all distinct country from the `ngx_access_log` table. The query for continuous aggregation would be:
 
 ```sql
--- input table
+/* input table */
 CREATE TABLE ngx_access_log (
     client STRING,
     country STRING,
     access_time TIMESTAMP TIME INDEX
 );
 
--- output table
+/* output table */
 CREATE TABLE ngx_country (
     country STRING,
     update_at TIMESTAMP,
-    __ts_placeholder TIMESTAMP TIME INDEX, -- placeholder column for time index
+    __ts_placeholder TIMESTAMP TIME INDEX, /* placeholder column for time index */
     PRIMARY KEY(country)
 );
 
--- create flow task to calculate the distinct country
+/* create flow task to calculate the distinct country */
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
 AS
 SELECT
     DISTINCT country,
 FROM ngx_access_log;
+```
 
--- insert some data
+now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
+
+```sql
+/* insert some data */
 INSERT INTO ngx_access_log VALUES
     ("client1", "US", "2022-01-01 00:00:00"),
     ("client2", "US", "2022-01-01 00:00:01"),
@@ -52,18 +56,18 @@ INSERT INTO ngx_access_log VALUES
     ("client9", "KR", "2022-01-01 00:00:08"),
     ("client10", "KR", "2022-01-01 00:00:09");
 
--- check the result
+/* check the result */
 select * from ngx_country;
 ```
 
 or if you want to group the data by time window, you can use the following query:
 
 ```sql
--- input table create same as above
--- output table
+/* input table create same as above */
+/* output table */
 CREATE TABLE ngx_country (
     country STRING,
-    time_window TIMESTAMP TIME INDEX,-- no need to use __ts_placeholder here since we have a time window column as time index
+    time_window TIMESTAMP TIME INDEX,/* no need to use __ts_placeholder here since we have a time window column as time index */
     update_at TIMESTAMP,
     PRIMARY KEY(country)
 );
@@ -77,7 +81,7 @@ FROM ngx_access_log
 GROUP BY
     country,
     time_window;
--- insert data using the same data as above
+/* insert data using the same data as above */
 ```
 
 The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. 
@@ -90,7 +94,7 @@ so it's recommended to use appropriate time window(i.e. hourly if you can tolera
 Consider a usecase where you have a stream of sensor events from a network of temperature sensors that you want to monitor in real-time. The sensor events contain information such as the sensor ID, the temperature reading, the timestamp of the reading, and the location of the sensor. You want to continuously aggregate this data to provide real-time alerts when the temperature exceeds a certain threshold. Then the query for continuous aggregation would be:
 
 ```sql
--- input table
+/* create input table */
 CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
@@ -98,7 +102,7 @@ CREATE TABLE temp_sensor_data (
     ts TIMESTAMP TIME INDEX
 );
 
--- output table
+/* create output table */
 CREATE TABLE temp_alerts (
     sensor_id INT,
     loc STRING,
@@ -119,25 +123,30 @@ GROUP BY
     sensor_id,
     loc
 HAVING max_temp > 100;
+```
+
+Now that we have created the flow task, we can insert some data into the source table `temp_sensor_data`:
+
+```sql
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, "2022-01-01 00:00:00"),
     (2, "room2", 99.5, "2022-01-01 00:00:01");
 
--- You may want to flush the flow task to see the result
+/* You may want to flush the flow task to see the result */
 ADMIN FLUSH_FLOW('temp_monitoring');
 
--- for now sink table will be empty
+/* for now sink table will be empty */
 SELECT * FROM temp_alerts;
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
 
--- You may want to flush the flow task to see the result
+/* You may want to flush the flow task to see the result */
 ADMIN FLUSH_FLOW('temp_monitoring');
 
--- now sink table will have the max temperature data
+/* now sink table will have the max temperature data */
 SELECT * FROM temp_alerts;
 ```
 
@@ -149,23 +158,23 @@ The above query continuously aggregates the data from the `temp_sensor_data` tab
 Consider a usecase in which you need a bar graph that show the distribution of packet sizes for each status code to monitor the health of the system. The query for continuous aggregation would be:
 
 ```sql
--- create input table
+/* create input table */
 CREATE TABLE ngx_access_log (
     client STRING,
     stat INT,
     size INT,
     access_time TIMESTAMP TIME INDEX
 );
--- create output table
+/* create output table */
 CREATE TABLE ngx_distribution (
     stat INT,
     bucket_size INT,
     total_logs BIGINT,
     time_window TIMESTAMP TIME INDEX,
-    update_at TIMESTAMP, -- auto generated column to store the last update time
+    update_at TIMESTAMP, /* auto generated column to store the last update time */
     PRIMARY KEY(stat, bucket_size)
 );
--- create flow task to calculate the distribution of packet sizes for each status code
+/* create flow task to calculate the distribution of packet sizes for each status code */
 CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution AS
 SELECT
     stat,
@@ -178,6 +187,11 @@ GROUP BY
     stat,
     time_window,
     bucket_size;
+```
+
+Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
+
+```sql
 
 INSERT INTO ngx_access_log VALUES
     ("cli1", 200, 100, "2022-01-01 00:00:00"),

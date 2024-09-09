@@ -16,30 +16,34 @@
 另外，您还可以使用持续聚合来计算其他类型的实时分析。例如，要从 `ngx_access_log` 表中获取所有不同的国家。持续聚合的查询如下：
 
 ```sql
--- input table
+/* input table */
 CREATE TABLE ngx_access_log (
     client STRING,
     country STRING,
     access_time TIMESTAMP TIME INDEX
 );
 
--- output table
+/* output table */
 CREATE TABLE ngx_country (
     country STRING,
     update_at TIMESTAMP,
-    __ts_placeholder TIMESTAMP TIME INDEX, -- placeholder column for time index
+    __ts_placeholder TIMESTAMP TIME INDEX, /* placeholder column for time index */
     PRIMARY KEY(country)
 );
 
--- create flow task to calculate the distinct country
+/* create flow task to calculate the distinct country */
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
 AS
 SELECT
     DISTINCT country,
 FROM ngx_access_log;
+```
 
--- insert some data
+创建好 flow 任务后，我们可以将一些数据插入源表 `ngx_access_log` 中：
+
+```sql
+/* insert some data */
 INSERT INTO ngx_access_log VALUES
     ("client1", "US", "2022-01-01 00:00:00"),
     ("client2", "US", "2022-01-01 00:00:01"),
@@ -52,18 +56,18 @@ INSERT INTO ngx_access_log VALUES
     ("client9", "KR", "2022-01-01 00:00:08"),
     ("client10", "KR", "2022-01-01 00:00:09");
 
--- check the result
+/* check the result */
 select * from ngx_country;
 ```
 
 或者，如果您想要按时间窗口对数据进行分组，可以使用以下查询：
 
 ```sql
--- input table create same as above
--- output table
+/* input table create same as above */
+/* output table */
 CREATE TABLE ngx_country (
     country STRING,
-    time_window TIMESTAMP TIME INDEX,-- no need to use __ts_placeholder here since we have a time window column as time index
+    time_window TIMESTAMP TIME INDEX,/* no need to use __ts_placeholder here since we have a time window column as time index */
     update_at TIMESTAMP,
     PRIMARY KEY(country)
 );
@@ -77,7 +81,7 @@ FROM ngx_access_log
 GROUP BY
     country,
     time_window;
--- insert data using the same data as above
+/* insert data using the same data as above */
 ```
 
 上述的查询将 `ngx_access_log` 表中的数据放入 `ngx_country` 表中。它计算每个时间窗口的不同国家。`date_bin` 函数用于将数据分组为一小时的间隔。`ngx_country` 表将不断更新聚合数据，提供实时洞察，显示正在访问系统的不同国家。
@@ -89,7 +93,7 @@ GROUP BY
 假设您希望实时监控一个来自温度传感器网络的传感器事件流。传感器事件包含传感器 ID、温度读数、读数的时间戳和传感器的位置等信息。您希望不断聚合这些数据，以在温度超过某个阈值时提供实时警报。那么持续聚合的查询将是：
 
 ```sql
--- input table
+/* create input table */
 CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
@@ -97,7 +101,7 @@ CREATE TABLE temp_sensor_data (
     ts TIMESTAMP TIME INDEX
 );
 
--- output table
+/* create output table */
 CREATE TABLE temp_alerts (
     sensor_id INT,
     loc STRING,
@@ -118,25 +122,30 @@ GROUP BY
     sensor_id,
     loc
 HAVING max_temp > 100;
+```
+
+创建好 flow 任务后，我们可以将一些数据插入源表 `temp_sensor_data` 中：
+
+```sql
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, "2022-01-01 00:00:00"),
     (2, "room2", 99.5, "2022-01-01 00:00:01");
 
--- You may want to flush the flow task to see the result
+/* You may want to flush the flow task to see the result */
 ADMIN FLUSH_FLOW('temp_monitoring');
 
--- for now sink table will be empty
+/* for now sink table will be empty */
 SELECT * FROM temp_alerts;
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
 
--- You may want to flush the flow task to see the result
+/* You may want to flush the flow task to see the result */
 ADMIN FLUSH_FLOW('temp_monitoring');
 
--- now sink table will have the max temperature data
+/* now sink table will have the max temperature data */
 SELECT * FROM temp_alerts;
 ```
 
@@ -147,23 +156,23 @@ SELECT * FROM temp_alerts;
 假设您需要一个柱状图显示每个状态码的数据包大小分布，以监控系统的健康状况。持续聚合的查询将是：
 
 ```sql
--- create input table
+/* create input table */
 CREATE TABLE ngx_access_log (
     client STRING,
     stat INT,
     size INT,
     access_time TIMESTAMP TIME INDEX
 );
--- create output table
+/* create output table */
 CREATE TABLE ngx_distribution (
     stat INT,
     bucket_size INT,
     total_logs BIGINT,
     time_window TIMESTAMP TIME INDEX,
-    update_at TIMESTAMP, -- auto generated column to store the last update time
+    update_at TIMESTAMP, /* auto generated column to store the last update time */
     PRIMARY KEY(stat, bucket_size)
 );
--- create flow task to calculate the distribution of packet sizes for each status code
+/* create flow task to calculate the distribution of packet sizes for each status code */
 CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution AS
 SELECT
     stat,
@@ -176,6 +185,11 @@ GROUP BY
     stat,
     time_window,
     bucket_size;
+```
+
+创建好 flow 任务后，我们可以将一些数据插入源表 `ngx_access_log` 中：
+
+```sql
 
 INSERT INTO ngx_access_log VALUES
     ("cli1", 200, 100, "2022-01-01 00:00:00"),
