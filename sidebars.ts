@@ -102,6 +102,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/vector',
             'user-guide/integrations/grafana',
             'user-guide/integrations/superset',
+            'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
           ],
         },
@@ -227,6 +228,8 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/vector',
             'greptimecloud/integrations/emqx',
             'greptimecloud/integrations/streamlit',
+            'greptimecloud/integrations/superset',
+            'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
             {
               type: 'category',
