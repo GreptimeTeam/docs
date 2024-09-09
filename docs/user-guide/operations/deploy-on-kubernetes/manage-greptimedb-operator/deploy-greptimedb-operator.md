@@ -29,28 +29,36 @@ greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operato
 ```
 
 ### Install the Operator
-To install the Operator, run the following `helm install` command. This command also creates a dedicated namespace `greptimedb-operator` for the installation. It's recommended to use a dedicated namespace for the Operator:
+To install the Operator, run the following `helm install` command. This command also creates a dedicated namespace `greptimedb-admin` for the installation. It's recommended to use a dedicated namespace for the Operator:
 ```bash
 helm install \
   operator greptime/greptimedb-operator \
   --create-namespace \
-  -n greptimedb-operator
+  -n greptimedb-admin
 ```
 
-### Verify the Operator installation
-After installation, check the contents of the `greptimedb-operator` namespace to confirm that all pods and services are running correctly:
+### Verify the CRD installation
+Check the contents of the `greptimedb-admin` namespace to confirm that all Custom Resource Definitions (CRDs) have been installed correctly:
+
 ```bash
-kubectl get all -n greptimedb-operator
+kubectl get crds -n greptimedb-admin
 ```
 
 You should see output similar to this:
 ```bash
-NAME                                       READY   STATUS    RESTARTS   AGE
-pod/operator-8495fcb545-jpz2m              1/1     Running   0          17s
+NAME                                CREATED AT
+greptimedbclusters.greptime.io      2024-09-09T07:54:07Z
+greptimedbstandalones.greptime.io   2024-09-09T07:54:07Z
+```
 
-NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/operator              1/1     1            1           17s
+### Verify the Operator installation
+After installation, check the contents of the `greptimedb-admin` namespace to confirm that all pods are running correctly:
+```bash
+kubectl get pods -n greptimedb-admin
+```
 
-NAME                                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/operator-8495fcb545              1         1         1       17s
+You should see output similar to this:
+```bash
+NAME                                            READY   STATUS    RESTARTS   AGE
+operator-greptimedb-operator-7d58cb8f7c-jz46g   1/1     Running   0          26s
 ```

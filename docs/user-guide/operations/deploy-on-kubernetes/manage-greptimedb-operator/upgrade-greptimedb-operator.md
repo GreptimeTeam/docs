@@ -3,24 +3,24 @@ You can upgrade the GreptimeDB Operator at any time without impacting your manag
 
 ### Verify the existing Operator installation.
 
-First, verify the health and status of all Operator pods and services using:
+First, verify the health and status of all Operator pods using:
 
 ```bash
-kubectl get all -n greptimedb-operator
+kubectl get pods -n greptimedb-admin
 ```
 
-If the Operator was installed in a custom namespace, replace `greptimedb-operator` with your specific namespace using `-n <NAMESPACE>`.
+If the Operator was installed in a custom namespace, replace `greptimedb-admin` with your specific namespace using `-n <NAMESPACE>`.
 
 Next, view the installed Helm charts in the namespace:
 
 ```bash
-helm list -n greptimedb-operator
+helm list -n greptimedb-admin
 ```
 
 You should see output similar to this:
 ```
 NAME               	NAMESPACE          	REVISION	UPDATED                                	STATUS  	CHART                    	APP VERSION
-operator	        greptimedb-operator	1       	2024-08-30 08:04:53.388756424 +0000 UTC	deployed	greptimedb-operator-0.2.1	0.1.0-alpha.28
+operator	        greptimedb-admin    1       	2024-08-30 08:04:53.388756424 +0000 UTC	deployed	greptimedb-operator-0.2.1	0.1.0-alpha.28
 ```
 
 The Operator is currently installed with version `0.1.0-alpha.28` using the `greptimedb-operator-0.2.1` chart.
@@ -55,7 +55,7 @@ greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operato
 
 Use Helm to upgrade the GreptimeDB Operator to the latest version:
 ```bash
-helm upgrade -n greptimedb-operator \
+helm upgrade -n greptimedb-admin \
   operator greptime/greptimedb-operator
 ```
 
@@ -67,7 +67,7 @@ The command should return a successful upgrade with an incremented `REVISION` va
 
 To confirm the upgrade, run the following command:
 ```bash
-kubectl get pod -l 'app.kubernetes.io/name=operator' -n greptimedb-operator -o json | jq '.items[0].spec.containers[0].image'
+kubectl get pod -l 'app.kubernetes.io/name=operator' -n greptimedb-admin -o json | jq '.items[0].spec.containers[0].image'
 ```
 
 You should see the following output, indicating that the Operator has been successfully upgraded to the latest version:
