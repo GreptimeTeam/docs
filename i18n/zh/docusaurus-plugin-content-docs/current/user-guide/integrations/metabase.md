@@ -19,6 +19,7 @@
 进一步添加其他数据库信息：
 
 - 端口请填写 GreptimeDB 的 Postgres 协议端口 `4003`。
-- 如果没有启动认证，用户名和密码字段是可选的。
+- 如果没有开启[认证](/user-guide/operations/authentication.md)，用户名和密码字段
+  是可选的。
 - 默认填写 `public` 作为 *数据库名*。如果是使用 GreptimeCloud 的实例，可以从控制
   台复制数据库名称。
