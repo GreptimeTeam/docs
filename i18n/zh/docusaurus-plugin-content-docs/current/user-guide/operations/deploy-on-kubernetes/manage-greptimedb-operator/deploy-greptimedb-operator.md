@@ -39,6 +39,24 @@ helm install \
   -n greptimedb-admin
 ```
 
+### （可选）使用本地 Helm charts 进行安装
+
+如您遇到网络问题，先拉取 chart 到本地：
+
+```shell
+wget https://downloads.greptime.cn/releases/charts/greptimedb-operator/latest/greptimedb-operator-latest.tgz
+tar -zxvf greptimedb-operator-latest.tgz
+```
+
+然后安装 GreptimeDB Operator：
+
+```shell
+helm install greptimedb-operator greptimedb-operator \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --create-namespace \
+  -n greptimedb-admin
+```
+
 ### 验证 CRD 安装
 检查 `greptimedb-admin` 命名空间的内容，确认所有自定义资源定义 (CRD) 是否已正确安装：
 
