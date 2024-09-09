@@ -23,7 +23,7 @@ CREATE TABLE ngx_access_log (
     access_time TIMESTAMP TIME INDEX
 );
 
-/* output table */
+/* sink table */
 CREATE TABLE ngx_country (
     country STRING,
     update_at TIMESTAMP,
@@ -64,7 +64,7 @@ or if you want to group the data by time window, you can use the following query
 
 ```sql
 /* input table create same as above */
-/* output table */
+/* sink table */
 CREATE TABLE ngx_country (
     country STRING,
     time_window TIMESTAMP TIME INDEX,/* no need to use __ts_placeholder here since we have a time window column as time index */
@@ -102,7 +102,7 @@ CREATE TABLE temp_sensor_data (
     ts TIMESTAMP TIME INDEX
 );
 
-/* create output table */
+/* create sink table */
 CREATE TABLE temp_alerts (
     sensor_id INT,
     loc STRING,
@@ -165,7 +165,7 @@ CREATE TABLE ngx_access_log (
     size INT,
     access_time TIMESTAMP TIME INDEX
 );
-/* create output table */
+/* create sink table */
 CREATE TABLE ngx_distribution (
     stat INT,
     bucket_size INT,
