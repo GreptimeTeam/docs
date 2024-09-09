@@ -34,7 +34,7 @@ to the same environment.
 pip install greptimedb-sqlalchemy
 ```
 
-## Adding GreptimeDB Database
+## Adding GreptimeDB database
 
 To add GreptimeDB database, select *Settings* / *Database Connections*.
 

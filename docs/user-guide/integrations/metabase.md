@@ -12,7 +12,7 @@ page](https://github.com/greptimeteam/greptimedb-metabase-driver/releases/latest
 the jar file to `plugins/` of metabase's working directory. It will be
 discovered by Metabase automatically.
 
-## Add GreptimeDB as Database
+## Add GreptimeDB as database
 
 To add GreptimeDB database, select *Settings* / *Admin Settings* / *Databases*,
 click *Add Database* button and select GreptimeDB from *Database type*.
