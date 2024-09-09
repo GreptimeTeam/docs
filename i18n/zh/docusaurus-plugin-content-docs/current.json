@@ -51,6 +51,10 @@
     "message": "部署到 Kubernetes",
     "description": "The label for category Deploy on Kubernetes in sidebar docs"
   },
+  "sidebar.docs.category.Manage GreptimeDB Operator": {
+    "message": "管理 GreptimeDB Operator",
+    "description": "The label for category Deploy on Kubernetes in sidebar docs"
+  },
   "sidebar.docs.category.Disaster Recovery": {
     "message": "灾难恢复",
     "description": "The label for category Disaster Recovery in sidebar docs"
