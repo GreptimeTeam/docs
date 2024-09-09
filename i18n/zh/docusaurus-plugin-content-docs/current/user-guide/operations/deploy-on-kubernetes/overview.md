@@ -47,6 +47,6 @@ helm upgrade --install mycluster \
 
 请按照以下步骤继续操作：
 
-- [GreptimeDB Operator](greptimedb-operator.md)：本章节指导你安装 GreptimeDB Operator。
+- [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md)：本章节指导你安装 GreptimeDB Operator。
 - [部署GreptimeDB集群](deploy-greptimedb-cluster.md)：本节介绍了如何在 Kubernetes 上部署 etcd 集群和 GreptimeDB 集群。
 - [销毁集群](destroy-cluster.md)：本节介绍如何卸载 GreptimeDB Operator 和 GreptimeDB 集群。
