@@ -22,6 +22,15 @@ CREATE TABLE ngx_access_log (
     country STRING,
     access_time TIMESTAMP TIME INDEX
 );
+
+-- output table
+CREATE TABLE ngx_country (
+    country STRING,
+    update_at TIMESTAMP,
+    __ts_placeholder TIMESTAMP TIME INDEX, -- placeholder column for time index
+    PRIMARY KEY(country)
+);
+
 -- create flow task to calculate the distinct country
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
@@ -29,11 +38,35 @@ AS
 SELECT
     DISTINCT country,
 FROM ngx_access_log;
+
+-- insert some data
+INSERT INTO ngx_access_log VALUES
+    ("client1", "US", "2022-01-01 00:00:00"),
+    ("client2", "US", "2022-01-01 00:00:01"),
+    ("client3", "UK", "2022-01-01 00:00:02"),
+    ("client4", "UK", "2022-01-01 00:00:03"),
+    ("client5", "CN", "2022-01-01 00:00:04"),
+    ("client6", "CN", "2022-01-01 00:00:05"),
+    ("client7", "JP", "2022-01-01 00:00:06"),
+    ("client8", "JP", "2022-01-01 00:00:07"),
+    ("client9", "KR", "2022-01-01 00:00:08"),
+    ("client10", "KR", "2022-01-01 00:00:09");
+
+-- check the result
+select * from ngx_country;
 ```
 
 或者，如果您想要按时间窗口对数据进行分组，可以使用以下查询：
 
 ```sql
+-- input table create same as above
+-- output table
+CREATE TABLE ngx_country (
+    country STRING,
+    time_window TIMESTAMP TIME INDEX,-- no need to use __ts_placeholder here since we have a time window column as time index
+    update_at TIMESTAMP,
+    PRIMARY KEY(country)
+);
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
 AS
@@ -44,22 +77,33 @@ FROM ngx_access_log
 GROUP BY
     country,
     time_window;
+-- insert data using the same data as above
 ```
 
 上述的查询将 `ngx_access_log` 表中的数据放入 `ngx_country` 表中。它计算每个时间窗口的不同国家。`date_bin` 函数用于将数据分组为一小时的间隔。`ngx_country` 表将不断更新聚合数据，提供实时洞察，显示正在访问系统的不同国家。
 
-请注意，目前没有持久存储用于 flow 的内部状态（但是表数据有持久存储），因此建议使用适当的时间窗口来最小化数据丢失，因为如果内部状态丢失，相关时间窗口数据也将丢失。
+请注意，目前 Flow 的内部状态没有持久存储。内部状态指的是用于计算增量查询结果的中间状态，例如聚合查询的累加器值（如count(col)的累加器记录了目前为止的 count 计数）。然而，Sink 表的数据是有持久存储的。因此，建议您使用适当的时间窗口（例如，如果可以接受在重启时丢失一小时的数据，则可以设置为每小时）来最小化数据丢失。因为一旦内部状态丢失，相关时间窗口的数据也将随之丢失。
 
 ## 实时监控示例
 
 假设您希望实时监控一个来自温度传感器网络的传感器事件流。传感器事件包含传感器 ID、温度读数、读数的时间戳和传感器的位置等信息。您希望不断聚合这些数据，以在温度超过某个阈值时提供实时警报。那么持续聚合的查询将是：
 
 ```sql
+-- input table
 CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
     temperature DOUBLE,
     ts TIMESTAMP TIME INDEX
+);
+
+-- output table
+CREATE TABLE temp_alerts (
+    sensor_id INT,
+    loc STRING,
+    max_temp DOUBLE,
+    update_at TIMESTAMP TIME INDEX,
+    PRIMARY KEY(sensor_id, loc)
 );
 
 CREATE FLOW temp_monitoring
@@ -74,6 +118,26 @@ GROUP BY
     sensor_id,
     loc
 HAVING max_temp > 100;
+
+INSERT INTO temp_sensor_data VALUES
+    (1, "room1", 98.5, "2022-01-01 00:00:00"),
+    (2, "room2", 99.5, "2022-01-01 00:00:01");
+
+-- You may want to flush the flow task to see the result
+ADMIN FLUSH_FLOW('temp_monitoring');
+
+-- for now sink table will be empty
+SELECT * FROM temp_alerts;
+
+INSERT INTO temp_sensor_data VALUES
+    (1, "room1", 101.5, "2022-01-01 00:00:02"),
+    (2, "room2", 102.5, "2022-01-01 00:00:03");
+
+-- You may want to flush the flow task to see the result
+ADMIN FLUSH_FLOW('temp_monitoring');
+
+-- now sink table will have the max temperature data
+SELECT * FROM temp_alerts;
 ```
 
 上述的查询将从 `temp_sensor_data` 表中不断聚合数据到 `temp_alerts` 表中。它计算每个传感器和位置的最高温度读数，并过滤出最高温度超过 100 度的数据。`temp_alerts` 表将不断更新聚合数据，并且当温度超过阈值时提供实时警报（即 `temp_alerts` 表中的新行）。
@@ -112,6 +176,20 @@ GROUP BY
     stat,
     time_window,
     bucket_size;
+
+INSERT INTO ngx_access_log VALUES
+    ("cli1", 200, 100, "2022-01-01 00:00:00"),
+    ("cli2", 200, 110, "2022-01-01 00:00:01"),
+    ("cli3", 200, 120, "2022-01-01 00:00:02"),
+    ("cli4", 200, 130, "2022-01-01 00:00:03"),
+    ("cli5", 200, 140, "2022-01-01 00:00:04"),
+    ("cli6", 404, 150, "2022-01-01 00:00:05"),
+    ("cli7", 404, 160, "2022-01-01 00:00:06"),
+    ("cli8", 404, 170, "2022-01-01 00:00:07"),
+    ("cli9", 404, 180, "2022-01-01 00:00:08"),
+    ("cli10", 404, 190, "2022-01-01 00:00:09");
+
+SELECT * FROM ngx_distribution;
 ```
 
 上述查询将从 `ngx_access_log` 表中的数据放入 `ngx_distribution` 表中。它计算每个状态码的数据包大小分布，并将数据分组到每个时间窗口中。`ngx_distribution` 表将不断更新聚合数据，提供实时洞察，显示每个状态码的数据包大小分布。

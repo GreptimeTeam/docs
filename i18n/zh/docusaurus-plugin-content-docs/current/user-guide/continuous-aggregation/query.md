@@ -25,3 +25,5 @@ SELECT AGGR_FUNCTION(column1, column2,..) FROM <source_table> GROUP BY TIME_WIND
 `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
 
 持续聚合查询不支持 `ORDER BY`、`LIMIT`、`OFFSET` 等其他操作。
+
+更多关于如何在实时分析、监控和仪表盘中使用持续聚合的示例，请参考 [用例](./usecase-example.md)。
