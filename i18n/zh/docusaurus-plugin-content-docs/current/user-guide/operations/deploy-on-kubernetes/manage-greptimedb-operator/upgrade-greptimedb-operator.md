@@ -63,6 +63,23 @@ helm upgrade -n greptimedb-admin \
 
 该命令应该会返回一个成功的升级结果，并显示递增的 REVISION 值。
 
+### （可选）使用本地 Helm charts 进行升级
+如您遇到网络问题，先拉取 chart 到本地：
+
+```shell
+wget https://downloads.greptime.cn/releases/charts/greptimedb-operator/latest/greptimedb-operator-latest.tgz
+tar -zxvf greptimedb-operator-latest.tgz
+```
+
+然后安装 GreptimeDB Operator：
+
+```shell
+helm upgrade greptimedb-operator greptimedb-operator \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --create-namespace \
+  -n greptimedb-admin
+```
+
 ### 验证 Operator 升级
 
 要确认升级成功，运行以下命令：
