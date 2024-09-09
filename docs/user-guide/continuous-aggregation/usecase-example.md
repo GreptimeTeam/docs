@@ -27,7 +27,7 @@ CREATE TABLE ngx_access_log (
 CREATE TABLE ngx_country (
     country STRING,
     update_at TIMESTAMP,
-    __ts_placeholder TIMESTAMP TIME INDEX, /* placeholder column for time index */
+    __ts_placeholder TIMESTAMP TIME INDEX,
     PRIMARY KEY(country)
 );
 
@@ -67,7 +67,7 @@ or if you want to group the data by time window, you can use the following query
 /* sink table */
 CREATE TABLE ngx_country (
     country STRING,
-    time_window TIMESTAMP TIME INDEX,/* no need to use __ts_placeholder here since we have a time window column as time index */
+    time_window TIMESTAMP TIME INDEX,
     update_at TIMESTAMP,
     PRIMARY KEY(country)
 );
