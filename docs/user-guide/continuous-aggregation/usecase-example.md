@@ -11,7 +11,7 @@ In all these usecases, the continuous aggregation system continuously aggregates
 
 ## Real-time analytics example
 
-See [Overview](overview.md) for an example of real-time analytics. Which is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
+See [Overview](/user-guide/continuous-aggregation/overview.md#quick-start-with-an-example) for an example of real-time analytics. Which is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
 
 Another example of real-time analytics is to get all distinct country from the `ngx_access_log` table. The query for continuous aggregation would be:
 
@@ -66,7 +66,7 @@ Wait for one second for the Flow to write the result to the sink table and then 
 select * from ngx_country;
 ```
 
-or if you want to group the data by time window, you can use the following query:
+Or if you want to group the data by time window, you can use the following query:
 
 ```sql
 /* input table create same as above */
@@ -92,8 +92,8 @@ GROUP BY
 
 The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. 
 
-Note that there is currently no persistent storage for flow's internal state, internal state refer to intermediate state used in computing incremental query result, like accumulator's value for a aggregation query(i.e. `count(col)`'s accumulator record current count number), there is persistent storage for the sink table data however.
-so it's recommended to use appropriate time window(i.e. hourly if you can tolerate loss one hour of data when rebooting) to miniminize data loss, because if the internal state is lost, related time window data will be lost as well.
+Note that there is currently no persistent storage for the internal state of the flow. The internal state refers to the intermediate state used in computing incremental query results, such as the accumulator's value for an aggregation query (e.g., `count(col)`'s accumulator records the current count number). However, there is persistent storage for the data in the sink table.
+Therefore, it is recommended to use an appropriate time window (e.g., hourly) to minimize data loss. This is because if the internal state is lost, the related data within that time window will also be lost.
 
 ## Real-time monitoring example
 
@@ -145,7 +145,9 @@ SELECT * FROM temp_alerts;
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
-
+```
+wait at least one second for flow to update results to sink table:
+```sql
 /* wait at least one second for flow to update results to sink table */
 SELECT * FROM temp_alerts;
 ```
@@ -192,7 +194,6 @@ GROUP BY
 Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
 
 ```sql
-
 INSERT INTO ngx_access_log VALUES
     ("cli1", 200, 100, "2022-01-01 00:00:00"),
     ("cli2", 200, 110, "2022-01-01 00:00:01"),
@@ -204,8 +205,9 @@ INSERT INTO ngx_access_log VALUES
     ("cli8", 404, 170, "2022-01-01 00:00:07"),
     ("cli9", 404, 180, "2022-01-01 00:00:08"),
     ("cli10", 404, 190, "2022-01-01 00:00:09");
-
-/* wait at least one second for flow to update results to sink table */
+```
+wait at least one second for flow to update results to sink table:
+```sql
 SELECT * FROM ngx_distribution;
 ```
 
