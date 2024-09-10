@@ -7,7 +7,7 @@
 
 从 [发布
 页](https://github.com/greptimeteam/greptimedb-metabase-driver/releases/latest/)
-下载最新的驱动插件文件 `greptimedb.metabase-driver.jar`。并将文件拷贝到 Metabase
+下载最新的驱动插件文件 `greptimedb.metabase-driver.jar`，并将文件拷贝到 Metabase
 的工作目录下 `plugins/` 目录中（如果不存在需要创建 `plugins/`）。当 Metabase 启
 动时，会自动检测到插件。
 

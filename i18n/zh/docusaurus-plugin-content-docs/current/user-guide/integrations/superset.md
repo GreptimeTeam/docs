@@ -25,7 +25,7 @@ docker compose -f docker-compose-non-dev.yml up
 
 ### 本地运行 Superset
 
-加入你通过 [Pypi 包安装和运行
+假如你通过 [Pypi 包安装和运行
 Superset](https://superset.apache.org/docs/installation/pypi)，需要将 GreptimeDB
 的依赖安装到相同的 Python 环境。
 
