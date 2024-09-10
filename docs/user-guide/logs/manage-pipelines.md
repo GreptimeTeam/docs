@@ -158,11 +158,13 @@ transform:
     index: timestamp'
 ```
 
-The Pipeline has been successfully created at this point.
+Now that the Pipeline has been created successfully, you can test the Pipeline using the `dryrun` interface.
 
 ### Debug writing logs
 
 We can test the Pipeline using the `dryrun` interface. We will test it with erroneous log data where the value of the message field is in numeric format, causing the pipeline to fail during processing.
+
+**This API is only used to test the results of the Pipeline and does not write data to GreptimeDB.**
 
 
 ```bash
