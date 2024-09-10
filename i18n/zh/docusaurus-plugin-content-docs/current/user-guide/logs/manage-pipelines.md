@@ -159,7 +159,7 @@ transform:
 
 此时 Pipeline 创建成功，可以使用 `dryrun` 接口测试该 Pipeline。
 
-#### 调试日志写入
+### 调试日志写入
 
 接下来使用一个错误的日志数据来测试，该日志中 message 字段的值为数字类型，这会导致 Pipeline 处理失败。
 

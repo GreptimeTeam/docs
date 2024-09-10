@@ -93,9 +93,9 @@ The output `Readable timestamp (UTC)` represents the creation time of the pipeli
 
 First, please refer to the [Quick Start example](/user-guide/logs/quick-start.md#write-logs-by-pipeline) to see the correct execution of the Pipeline.
 
-### Debug create a Pipeline
+### Debug creating a Pipeline
 
-Assume that the pipeline configuration is as follows:
+You may encounter errors when creating a Pipeline. For example, when creating a Pipeline using the following configuration:
 
 
 ```bash
@@ -160,7 +160,7 @@ transform:
 
 The Pipeline has been successfully created at this point.
 
-#### Debug writing logs
+### Debug writing logs
 
 We can test the Pipeline using the `dryrun` interface. We will test it with erroneous log data where the value of the message field is in numeric format, causing the pipeline to fail during processing.
 
