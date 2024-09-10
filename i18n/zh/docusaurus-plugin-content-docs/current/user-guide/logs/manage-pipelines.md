@@ -123,7 +123,7 @@ transform:
     index: timestamp'
 ```
 
-Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字符串，但当前配置提供了一个数组。因此，管道创建失败，并显示以下错误消息：
+Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字符串，但当前配置提供了一个数组。因此，该 Pipeline 创建失败，并显示以下错误消息：
 
 
 ```json
