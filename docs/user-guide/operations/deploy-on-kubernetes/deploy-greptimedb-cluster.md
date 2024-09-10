@@ -1,7 +1,7 @@
 # Deploy GreptimeDB Cluster
 
 Before the deployment,
-make sure you have already installed [GreptimeDB Operator](greptimedb-operator.md) on your Kubernetes cluster.
+make sure you have already installed [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md) on your Kubernetes cluster.
 
 ## Using Helm for deployment
 
