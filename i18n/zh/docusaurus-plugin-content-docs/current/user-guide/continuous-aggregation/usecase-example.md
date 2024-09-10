@@ -55,7 +55,9 @@ INSERT INTO ngx_access_log VALUES
     ("client8", "JP", "2022-01-01 00:00:07"),
     ("client9", "KR", "2022-01-01 00:00:08"),
     ("client10", "KR", "2022-01-01 00:00:09");
-
+```
+等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
+```sql
 /* check the result */
 select * from ngx_country;
 ```
@@ -86,7 +88,7 @@ GROUP BY
 
 上述的查询将 `ngx_access_log` 表中的数据放入 `ngx_country` 表中。它计算每个时间窗口的不同国家。`date_bin` 函数用于将数据分组为一小时的间隔。`ngx_country` 表将不断更新聚合数据，提供实时洞察，显示正在访问系统的不同国家。
 
-请注意，目前 Flow 的内部状态没有持久存储。内部状态指的是用于计算增量查询结果的中间状态，例如聚合查询的累加器值（如count(col)的累加器记录了目前为止的 count 计数）。然而，Sink 表的数据是有持久存储的。因此，建议您使用适当的时间窗口（例如，如果可以接受在重启时丢失一小时的数据，则可以设置为每小时）来最小化数据丢失。因为一旦内部状态丢失，相关时间窗口的数据也将随之丢失。
+请注意，目前 Flow 的内部状态没有持久存储。内部状态指的是用于计算增量查询结果的中间状态，例如聚合查询的累加器值（如count(col)的累加器记录了目前为止的 count 计数）。然而，Sink 表的数据是有持久存储的。因此，建议您使用适当的时间窗口（例如设置为每小时）来最小化数据丢失。因为一旦内部状态丢失，相关时间窗口的数据也将随之丢失。
 
 ## 实时监控示例
 
@@ -134,17 +136,25 @@ INSERT INTO temp_sensor_data VALUES
 
 /* You may want to flush the flow task to see the result */
 ADMIN FLUSH_FLOW('temp_monitoring');
+```
 
+当前输出表应该为空。您可以在等待一秒后通过以下查询查看结果：
+
+```sql
 /* for now sink table will be empty */
 SELECT * FROM temp_alerts;
+```
+
+```sql
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
 
-/* You may want to flush the flow task to see the result */
-ADMIN FLUSH_FLOW('temp_monitoring');
+```
 
+等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
+```sql
 /* now sink table will have the max temperature data */
 SELECT * FROM temp_alerts;
 ```
@@ -202,7 +212,9 @@ INSERT INTO ngx_access_log VALUES
     ("cli8", 404, 170, "2022-01-01 00:00:07"),
     ("cli9", 404, 180, "2022-01-01 00:00:08"),
     ("cli10", 404, 190, "2022-01-01 00:00:09");
-
+```
+等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
+```sql
 SELECT * FROM ngx_distribution;
 ```
 

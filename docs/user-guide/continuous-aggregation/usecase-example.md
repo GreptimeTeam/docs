@@ -138,9 +138,14 @@ Now that we have created the flow task, we can insert some data into the source 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, "2022-01-01 00:00:00"),
     (2, "room2", 99.5, "2022-01-01 00:00:01");
+```
+table should be empty now, but still wait at least one second for flow to update results to sink table:
 
-/* table should be empty now, but still wait at least one second for flow to update results to sink table */
+```sql
 SELECT * FROM temp_alerts;
+```
+
+```sql
 
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
