@@ -163,7 +163,7 @@ transform:
 
 我们可以使用 `dryrun` 接口测试 Pipeline。我们将使用错误的日志数据对其进行测试，其中消息字段的值为数字格式，会导致 Pipeline 在处理过程中失败。
 
-**此接口仅仅用于测试 Pipeline 的处理结果，不会将数据写入到 GreptimeDB 中。**
+**此接口仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
