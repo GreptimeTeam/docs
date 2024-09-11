@@ -125,6 +125,7 @@ const sidebars: SidebarsConfig = {
           label: 'Continuous Aggregation',
           items: [
             'user-guide/continuous-aggregation/overview',
+            'user-guide/continuous-aggregation/usecase-example',
             'user-guide/continuous-aggregation/manage-flow',
             'user-guide/continuous-aggregation/query',
             'user-guide/continuous-aggregation/define-time-window',

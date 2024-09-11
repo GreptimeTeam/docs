@@ -67,7 +67,7 @@ SELECT
     min(size) as min_size,
     max(size) as max_size,
     avg(size) as avg_size,
-    sum(case when `size` > 550::double then 1::double else 0::double end) as high_size_count,
+    sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
     date_bin(INTERVAL '1 minutes', access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
@@ -141,6 +141,8 @@ SELECT * FROM ngx_statistics;
 恭喜你已经初步了解了持续聚合功能。
 请参考以下章节了解更多：
 
+
+- [用例](./usecase-example.md) 提供了更多关于如何在实时分析、监控和仪表板中使用持续聚合的示例。
 - [管理 Flow](./manage-flow.md) 描述了如何创建、更新和删除 flow。你的每个持续聚合查询都是一个 flow。
 - [编写查询语句](./query.md) 描述了如何编写持续聚合查询。
 - [定义时间窗口](./define-time-window.md) 描述了如何为持续聚合定义时间窗口。时间窗口是持续聚合查询的一个重要属性，它定义了聚合的时间间隔。
