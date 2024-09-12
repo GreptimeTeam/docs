@@ -281,6 +281,7 @@ const sidebars: SidebarsConfig = {
       label: 'Reference',
       items: [
         'reference/command-lines',
+        'reference/sql-tools',
         {
           type: 'category',
           label: 'SQL',
