@@ -12,7 +12,9 @@ Since v0.9, GreptimeDB supports view and CTE just like other databases, used to 
 
 ## Recommended libraries
 
-Since GreptimeDB uses SQL as its main query language, you can use mature SQL drivers that support MySQL or PostgreSQL to query data.
+Since GreptimeDB uses SQL as its main query language and supports both [MySQL](/user-guide/protocols/mysql.md) and [PostgreSQL](/user-guide/protocols/postgresql.md) protocols,
+you can use mature SQL drivers that support MySQL or PostgreSQL to query data.
+
 For more information, please refer to the [SQL Tools](/reference/sql-tools.md) documentation.
 
 ## Query external data
