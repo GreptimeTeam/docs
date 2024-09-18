@@ -10,11 +10,10 @@ Since v0.9, GreptimeDB supports view and CTE just like other databases, used to 
 * [View](./view.md)
 * [Common Table Expression (CTE)](./cte.md)
 
-<!-- ## Client SDK libraries
+## Recommended libraries
 
-Client libraries provide a convenient way to connect to GreptimeDB and interact with data.
-There are mature SQL driver libraries available for querying GreptimeDB.
-For more information, please refer to the [Client Libraries](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) documentation. -->
+Since GreptimeDB uses SQL as its main query language, you can use mature SQL drivers that support MySQL or PostgreSQL to query data.
+For more information, please refer to the [SQL Tools](/reference/sql-tools.md) documentation.
 
 ## Query external data
 

@@ -1,34 +1,32 @@
 # SQL Tools
 
-GreptimeDB uses SQL as main query language, so it supports most famous SQL tools.
+GreptimeDB uses SQL as its main query language and supports many popular SQL tools.
 This document guides you on how to use SQL tools with GreptimeDB.
 
 ## Programming languages
 
-It is recommend to use mature SQL drivers to query data.
+It is recommended to use mature SQL drivers to query data.
 
 ### Recommended libraries
 
 <Tabs groupId="programming-langs">
   <TabItem value="Java" label="Java">
-    Java database connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
+    Java Database Connectivity (JDBC) is the JavaSoft specification of a standard application programming interface (API) that allows Java programs to access database management systems.
 
     Many databases, such as MySQL or PostgreSQL, have implemented their own drivers based on the JDBC API.
     Since GreptimeDB supports [multiple protocols](/user-guide/protocols/overview.md), we use MySQL as an example to demonstrate how to use JDBC.
     If you want to use other protocols, just replace the MySQL driver with the corresponding driver.
   </TabItem>
   <TabItem value="Go" label="Go">
-    It is recommend to using the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
+    It is recommended to use the [GORM](https://gorm.io/) library, which is popular and developer-friendly.
   </TabItem>
 </Tabs>
-
 
 ### Installation
 
 <Tabs groupId="programming-langs">
   <TabItem value="Java" label="Java">
-    If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
-    dependencies list:
+    If you are using [Maven](https://maven.apache.org/), add the following to your `pom.xml` dependencies list:
 
     ```xml
     <dependency>
@@ -46,13 +44,13 @@ It is recommend to use mature SQL drivers to query data.
     go get -u gorm.io/gorm
     ```
 
-    and install the MySQL driver as the example:
+    Then install the MySQL driver:
 
     ```shell
     go get -u gorm.io/driver/mysql
     ```
 
-    Then import the libraries in your code:
+    Import the libraries in your code:
 
     ```go
     import (
@@ -65,20 +63,16 @@ It is recommend to use mature SQL drivers to query data.
 
 ### Connect to database
 
-The following example shows how to connect to GreptimeDB:
+The following use MySQL as an example to demonstrate how to connect to GreptimeDB.
 
 <Tabs groupId="programming-langs">
   <TabItem value="Java" label="Java">
-
-    Here we will use MySQL as an example to demonstrate how to connect to GreptimeDB.
-
     ```java
     public static Connection getConnection() throws IOException, ClassNotFoundException, SQLException {
         Properties prop = new Properties();
         prop.load(QueryJDBC.class.getResourceAsStream("/db-connection.properties"));
 
         String dbName = (String) prop.get("db.database-driver");
-
         String dbConnUrl = (String) prop.get("db.url");
         String dbUserName = (String) prop.get("db.username");
         String dbPassword = (String) prop.get("db.password");
@@ -88,10 +82,9 @@ The following example shows how to connect to GreptimeDB:
 
         return Objects.requireNonNull(dbConn, "Failed to make connection!");
     }
-
     ```
 
-    You need a properties file to store the DB connection information. Place it in the Resources directory and name it `db-connection.properties`. The file content is as follows:
+    You need a properties file to store the DB connection information. Place it in the resources directory and name it `db-connection.properties`. The file content is as follows:
 
     ```txt
     # DataSource
@@ -101,11 +94,9 @@ The following example shows how to connect to GreptimeDB:
     db.password=
     ```
 
-    Or you can just get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
-
+    Or you can get the file from [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties).
   </TabItem>
   <TabItem value="Go" label="Go">
-
     ```go
     type Mysql struct {
       Host     string
@@ -130,11 +121,10 @@ The following example shows how to connect to GreptimeDB:
     dsn = fmt.Sprintf("%s:%s@%s", m.User, m.Password, dsn)
     db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
     if err != nil {
-        //error handling 
+        // error handling 
     }
     m.DB = db
     ```
-
   </TabItem>
 </Tabs>
 
@@ -149,10 +139,10 @@ The following example shows how to connect to GreptimeDB:
     ```
 
     * `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` specifies the connection time zone.
-    * `forceConnectionTimeZoneToSession=true` makes the session `time_zone` variable to be set to the value specified in `connectionTimeZone`. 
+    * `forceConnectionTimeZoneToSession=true` sets the session `time_zone` variable to the value specified in `connectionTimeZone`. 
   </TabItem>
   <TabItem value="Go" label="Go">
-    Set the time zone to the DSN. For example, set the time zone to `Asia/Shanghai`:
+    Set the time zone in the DSN. For example, set the time zone to `Asia/Shanghai`:
 
     ```go
     dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&time_zone=%27Asia%2FShanghai%27",
@@ -160,18 +150,16 @@ The following example shows how to connect to GreptimeDB:
     ```
 
     For more information, see the [MySQL Driver Documentation](https://github.com/go-sql-driver/mysql?tab=readme-ov-file#system-variables).
-
   </TabItem>
 </Tabs>
 
 ### Raw SQL
 
-It is recommend using raw SQL to experience the full features of GreptimeDB.
+It is recommended to use raw SQL to experience the full features of GreptimeDB.
 The following example shows how to use raw SQL to query data.
 
 <Tabs groupId="programming-langs">
   <TabItem value="Java" label="Java">
-
     ```java
     try (Connection conn = getConnection()) {
       Statement statement = conn.createStatement();
@@ -206,15 +194,11 @@ The following example shows how to use raw SQL to query data.
             rs.getDouble("cpu_sys"));
       }
     }
-
     ```
 
     For the complete code of the demo, please refer to [here](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java).
-  
   </TabItem>
-
   <TabItem value="Go" label="Go">
-
     The following code declares a GORM object model:
     
     ```go
@@ -250,9 +234,7 @@ The following example shows how to use raw SQL to query data.
     ```go
     var cpuMetric CpuMetric
     db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
-    
     ```
-
   </TabItem>
 </Tabs>
 
@@ -273,22 +255,35 @@ For more information about how to use the query library, please see the document
 
 ### MySQL
 
-You can use `mysql` command line tool to connect to GreptimeDB MySQL server.
-Please refer to the [MySQL protocol](/user-guide/protocols/mysql.md) document for the connection information.
+You can use the `mysql` command line tool to connect to the GreptimeDB.
+Please refer to the [MySQL protocol](/user-guide/protocols/mysql.md) document for connection information.
 
-After you connect to the MySQL server, you can use all [GreptimeDB SQL commands](/reference/sql/overview.md) to interact with the database.
+After you connect to the server, you can use all [GreptimeDB SQL commands](/reference/sql/overview.md) to interact with the database.
 
 ### PostgreSQL
 
-You can use `psql` command line tool to connect to GreptimeDB PostgreSQL server.
-Please refer to the [PostgreSQL protocol](/user-guide/protocols/postgresql.md) document for the connection information.
+You can use the `psql` command line tool to connect to the GreptimeDB.
+Please refer to the [PostgreSQL protocol](/user-guide/protocols/postgresql.md) document for connection information.
 
-After you connect to the PostgreSQL server, you can use all [GreptimeDB SQL commands](/reference/sql/overview.md) to interact with the database.
+After you connect to the server, you can use all [GreptimeDB SQL commands](/reference/sql/overview.md) to interact with the database.
 
-## Greptime dashboard
+## Greptime Dashboard
+
+You can run SQL and visualize data in the [Greptime Dashboard](/getting-started/installation/greptimedb-dashboard.md).
 
 ## GUI tools
 
-### Navicat
+### Superset
 
-### DBeaver
+Please refer to the [Superset](/user-guide/integrations/superset.md) integration document.
+
+### Metabase
+
+Please refer to the [Metabase](/user-guide/integrations/metabase.md) integration document.
+
+<!-- TODO: Add Navicat, DBeaver, etc. -->
+
+## HTTP API
+
+You can POST SQL queries to the GreptimeDB HTTP API to query data.
+Please refer to the [HTTP API](/user-guide/protocols/http.md) document for more information.
