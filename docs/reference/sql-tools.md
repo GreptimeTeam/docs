@@ -210,7 +210,7 @@ The following example shows how to use raw SQL to query data.
     }
     ```
     
-    If you are using the [ORM API](#orm-api) to insert data, you can declare the model with both GORM and Greptime tags.
+    If you are using the [High-level API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#high-level-api) to insert data, you can declare the model with both GORM and GreptimeDB tags.
     
     ```go
     type CpuMetric struct {
@@ -267,9 +267,9 @@ Please refer to the [PostgreSQL protocol](/user-guide/protocols/postgresql.md) d
 
 After you connect to the server, you can use all [GreptimeDB SQL commands](/reference/sql/overview.md) to interact with the database.
 
-## Greptime Dashboard
+## GreptimeDB Dashboard
 
-You can run SQL and visualize data in the [Greptime Dashboard](/getting-started/installation/greptimedb-dashboard.md).
+You can run SQL and visualize data in the [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md).
 
 ## GUI tools
 
