@@ -101,6 +101,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/prometheus',
             'user-guide/integrations/vector',
             'user-guide/integrations/grafana',
+            'user-guide/integrations/superset',
+            'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
           ],
         },
@@ -123,6 +125,7 @@ const sidebars: SidebarsConfig = {
           label: 'Continuous Aggregation',
           items: [
             'user-guide/continuous-aggregation/overview',
+            'user-guide/continuous-aggregation/usecase-example',
             'user-guide/continuous-aggregation/manage-flow',
             'user-guide/continuous-aggregation/query',
             'user-guide/continuous-aggregation/define-time-window',
@@ -233,6 +236,8 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/vector',
             'greptimecloud/integrations/emqx',
             'greptimecloud/integrations/streamlit',
+            'greptimecloud/integrations/superset',
+            'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
             {
               type: 'category',
