@@ -6,15 +6,15 @@ Before deploying GreptimeDB, you need to [configure the server](configuration.md
 
 ## Authentication
 
-By default, GreptimeDB does not have authentication enabled. Learn how to [configure authentication](/user-guide/operations/authentication.md) for your deployment.
+By default, GreptimeDB does not have authentication enabled. Learn how to [configure authentication](/user-guide/operations/authentication.md) for your deployment manually.
 
 ## Deploy on Kubernetes
 
-Follow step-by-step instructions for [deploying GreptimeDB on a Kubernetes cluster](./deploy-on-kubernetes/overview.md).
+The step-by-step instructions for [deploying GreptimeDB on a Kubernetes cluster](./deploy-on-kubernetes/overview.md).
 
 ## Run on Android
 
-Find guidelines for [running Greptime on Android devices](run-on-android.md).
+Learn how to [run GreptimeDB on Android devices](run-on-android.md).
 
 ## Capacity plan
 
