@@ -12,12 +12,10 @@ GreptimeDB Kubernetes Operator 简化了在私有和公共云基础设施上部�
 GreptimeDB 提供了一个 [兼容 Helm 的仓库](https://github.com/GreptimeTeam/helm-charts)，便于部署。按照以下步骤使用 Helm 安装 Operator：
 
 ### 添加 GreptimeDB Operator 仓库
-首先，添加 GreptimeDB Operator 的 Helm 仓库：
-```bash
-helm repo add greptime https://greptimeteam.github.io/helm-charts/
-```
 
-搜索 Operator chart 以验证仓库：
+确保你已经 [添加了 GreptimeDB Helm 仓库](/user-guide/deployments/deploy-on-kubernetes/overview.md#添加-helm-仓库)，
+然后通过搜索 Operator chart 来验证 GreptimeDB Operator 仓库：
+
 ```bash
 helm search repo greptimedb-operator
 ```
