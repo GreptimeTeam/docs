@@ -148,31 +148,38 @@ const sidebars: SidebarsConfig = {
         'user-guide/table-management',
         {
           type: 'category',
+          label: 'Deployments',
+          items: [
+            'user-guide/deployments/overview',
+            'user-guide/deployments/configuration',
+            {
+              type: 'category',
+              label: 'Deploy on Kubernetes',
+              items: [
+                'user-guide/deployments/deploy-on-kubernetes/overview',
+                {
+                  type: 'category',
+                  label: 'Manage GreptimeDB Operator',
+                  items: [
+                    'user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/deploy-greptimedb-operator',
+                    'user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/upgrade-greptimedb-operator',
+                  ]
+                },
+                'user-guide/deployments/deploy-on-kubernetes/deploy-greptimedb-cluster',
+                'user-guide/deployments/deploy-on-kubernetes/destroy-cluster',
+              ],
+            },
+            'user-guide/deployments/run-on-android',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Operations',
           items: [
             'user-guide/operations/overview',
             'user-guide/operations/authentication',
             'user-guide/operations/admin',
-            'user-guide/operations/configuration',
             'user-guide/operations/capacity-plan',
-            {
-              type: 'category',
-              label: 'Deploy on Kubernetes',
-              items: [
-                'user-guide/operations/deploy-on-kubernetes/overview',
-                {
-                  type: 'category',
-                  label: 'Manage GreptimeDB Operator',
-                  items: [
-                    'user-guide/operations/deploy-on-kubernetes/manage-greptimedb-operator/deploy-greptimedb-operator',
-                    'user-guide/operations/deploy-on-kubernetes/manage-greptimedb-operator/upgrade-greptimedb-operator',
-                  ]
-                },
-                'user-guide/operations/deploy-on-kubernetes/deploy-greptimedb-cluster',
-                'user-guide/operations/deploy-on-kubernetes/destroy-cluster',
-              ],
-            },
-            'user-guide/operations/run-on-android',
             {
               type: 'category',
               label: 'Disaster Recovery',
