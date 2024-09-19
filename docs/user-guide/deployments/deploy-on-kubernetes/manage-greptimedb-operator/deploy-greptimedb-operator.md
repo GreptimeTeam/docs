@@ -12,10 +12,12 @@ The GreptimeDB Kubernetes Operator simplifies deploying GreptimeDB on both priva
 GreptimeDB provides a [Helm-compatible repository](https://github.com/GreptimeTeam/helm-charts) for easy deployment. Follow these steps to install the Operator using Helm:
 
 ### Add the GreptimeDB Operator repository
+First, add the GreptimeDB Operator Helm repository:
+```bash
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
+```
 
-Ensure you have [added the GreptimeDB Helm repository](/user-guide/deployments/deploy-on-kubernetes/overview.md#add-helm-repository).
-You can then validate the GreptimeDB Operator repository by searching for the Operator chart:
-
+Validate the repository by searching for the Operator chart:
 ```bash
 helm search repo greptimedb-operator
 ```
