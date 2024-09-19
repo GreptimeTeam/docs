@@ -1,6 +1,6 @@
 # 表的基本操作
 
-在阅读本文档之前请先阅读 [数据模型](./concepts/data-model.md).
+在阅读本文档之前请先阅读 [数据模型](/user-guide/concepts/data-model.md).
 
 GreptimeDB 通过 SQL 提供了表管理的功能，下面通过 [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) 来演示它。
 
@@ -315,4 +315,4 @@ http://localhost:4000/v1/sql?db=public
 SQL 客户端会话中指定的时区将影响创建或更改表时的默认时间戳值。
 如果将时间戳列的默认值设置为不带时区的字符串，则该默认值会被自动添加客户端的时区信息。
 
-有关客户端时区的影响，请参考 [写入数据](./ingest-data/for-iot/sql.md#时区) 文档中的时区部分。
+有关客户端时区的影响，请参考 [写入数据](/user-guide/ingest-data/for-iot/sql.md#时区) 文档中的时区部分。

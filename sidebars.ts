@@ -145,7 +145,6 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'user-guide/cluster',
-        'user-guide/table-management',
         {
           type: 'category',
           label: 'Deployments',
