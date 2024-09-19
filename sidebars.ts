@@ -179,6 +179,18 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/operations/overview',
             'user-guide/operations/admin',
+            {
+              type: 'category',
+              label: 'Data Management',
+              items: [
+                'user-guide/operations/data-management/overview',
+                'user-guide/operations/data-management/basic-table-operations',
+                'user-guide/operations/data-management/table-partition',
+                'user-guide/operations/data-management/region-failover',
+                'user-guide/operations/data-management/region-migration',
+                'user-guide/operations/data-management/compaction',
+              ],
+            },
             'user-guide/operations/capacity-plan',
             {
               type: 'category',
@@ -190,14 +202,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/operations/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
-            {
-              type: 'category',
-              label: 'Remote WAL',
-              items: ['user-guide/operations/remote-wal/quick-start', 'user-guide/operations/remote-wal/cluster-deployment'],
-            },
-            'user-guide/operations/region-migration',
-            'user-guide/operations/region-failover',
-            'user-guide/operations/compaction',
             'user-guide/operations/monitoring',
             'user-guide/operations/tracing',
             'user-guide/operations/performance-tuning-tips',
