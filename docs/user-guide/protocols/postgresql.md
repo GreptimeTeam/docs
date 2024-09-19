@@ -10,7 +10,7 @@ psql -h <host> -p 4003 -U <username> -d public
 ```
 
 - For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
-- If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/operations/configuration.md#protocol-options) in the configuration document.
+- If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/deployments/configuration.md#protocol-options) in the configuration document.
 
 
 ## Table management

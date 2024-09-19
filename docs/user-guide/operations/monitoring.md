@@ -46,7 +46,7 @@ the `docker run` command.
 
 You can also save metrics to GreptimeDB itself for convenient querying and analysis using SQL statements.
 This section provides some configuration examples.
-For more details about configuration, please refer to the [Monitor metrics options](./configuration.md#monitor-metrics-options).
+For more details about configuration, please refer to the [Monitor metrics options](/user-guide/deployments/configuration.md#monitor-metrics-options).
 
 ### Standalone
 

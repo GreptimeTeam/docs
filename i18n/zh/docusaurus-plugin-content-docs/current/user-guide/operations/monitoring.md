@@ -43,7 +43,7 @@ docker run \
 ## 将指标保存到 GreptimeDB 自身
 
 你还可以将指标保存到 GreptimeDB 本身，以便于使用 SQL 语句进行查询和分析。
-本节提供了相关配置示例，有关配置的更多详细信息，请参阅[监控指标选项](./configuration.md#monitor-metrics-options)。
+本节提供了相关配置示例，有关配置的更多详细信息，请参阅[监控指标选项](/user-guide/deployments/configuration.md#monitor-metrics-options)。
 
 ### 单机模式
 

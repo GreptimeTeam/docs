@@ -375,9 +375,9 @@ default_ratio = 1.0
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](./tracing.md#指南如何配置-tracing-采样率)。
+- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/operations/tracing.md#指南如何配置-tracing-采样率)。
 
-如何使用分布式追踪，请参考 [Tracing](./tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
+如何使用分布式追踪，请参考 [Tracing](/user-guide/operations/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
 ### Region 引擎选项
 

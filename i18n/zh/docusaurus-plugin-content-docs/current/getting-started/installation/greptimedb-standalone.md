@@ -2,7 +2,7 @@
 
 ## 安装
 
-我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/operations/configuration.md)。
+我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/deployments/configuration.md)。
 
 ### 二进制
 
@@ -121,7 +121,7 @@ docker run -p 0.0.0.0:4000-4003:4000-4003 \
 
 </Tabs>
 
-你也可以参考[配置 GreptimeDB](/user-guide/operations/configuration.md)文档在配置文件中修改绑定的地址。
+你也可以参考[配置 GreptimeDB](/user-guide/deployments/configuration.md)文档在配置文件中修改绑定的地址。
 
 ## 下一步
 

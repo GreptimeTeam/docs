@@ -8,12 +8,12 @@ Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢�
 该功能仅在 GreptimeDB 集群模式下可用，并且需要满足以下条件
 
 - 使用 Kafka WAL
-- 使用[共享存储](/user-guide/operations/configuration.md#storage-options) (例如：AWS S3)
+- 使用[共享存储](/user-guide/deployments/configuration.md#storage-options) (例如：AWS S3)
 
 
 ### 通过配置文件
 
-在 [metasrv](/user-guide/operations/configuration.md#metasrv-only-configuration) 配置文件中设置 `enable_region_failover=true`.
+在 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置文件中设置 `enable_region_failover=true`.
 
 ### 通过 GreptimeDB Operator
 
@@ -42,7 +42,7 @@ Region Failover 的恢复时间取决于：
 
 尽管多个 Region 共享同一个 Topic，可以让 Datanode 支持更多的 Region，但这种方法的代价是在 Region 重放过程中产生读取放大。
 
-例如，为 [metasrv](/user-guide/operations/configuration.md#metasrv-only-configuration) 配置 128 个 Topic，如果整个集群包含 1024 个 Region（物理 Region），那么每 8 个 Region 将共享一个 Topic。
+例如，为 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置 128 个 Topic，如果整个集群包含 1024 个 Region（物理 Region），那么每 8 个 Region 将共享一个 Topic。
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 

@@ -1,6 +1,6 @@
 # GreptimeDB Standalone
 
-We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/operations/configuration.md).
+We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/deployments/configuration.md).
 
 ## Binary
 
@@ -120,7 +120,7 @@ docker run -p 0.0.0.0:4000-4003:4000-4003 \
 </TabItem>
 </Tabs>
 
-You can also refer to the [Configuration](/user-guide/operations/configuration.md) document to modify the bind address in the configuration file.
+You can also refer to the [Configuration](/user-guide/deployments/configuration.md) document to modify the bind address in the configuration file.
 
 ## Next Steps
 

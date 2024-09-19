@@ -386,9 +386,9 @@ default_ratio = 1.0
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](./tracing.md#guide-how-to-configure-tracing-sampling-rate).
+- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/operations/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 
-How to use distributed tracing, please reference [Tracing](./tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
+How to use distributed tracing, please reference [Tracing](/user-guide/operations/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
 ### Region engine options
 
