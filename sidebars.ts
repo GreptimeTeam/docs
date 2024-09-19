@@ -152,6 +152,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/deployments/overview',
             'user-guide/deployments/configuration',
+            'user-guide/deployments/authentication',
             {
               type: 'category',
               label: 'Deploy on Kubernetes',
@@ -177,7 +178,6 @@ const sidebars: SidebarsConfig = {
           label: 'Operations',
           items: [
             'user-guide/operations/overview',
-            'user-guide/operations/authentication',
             'user-guide/operations/admin',
             'user-guide/operations/capacity-plan',
             {

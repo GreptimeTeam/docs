@@ -8,7 +8,7 @@
 ## 鉴权
 
 GreptimeDB 默认不启用鉴权认证。
-了解如何为你的部署手动[配置鉴权](/user-guide/operations/authentication.md)。
+了解如何为你的部署手动[配置鉴权](authentication.md)。
 
 ## 部署到 Kubernetes
 
