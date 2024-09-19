@@ -59,7 +59,6 @@ ALIGN '5s' BY (host) FILL PREV
 ## 下一步
 
 * [概念](./concepts/overview.md)
-* [表管理](./table-management.md)
 * [迁移到 GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [数据写入](./ingest-data/overview.md)
 * [数据查询](./query-data/overview.md)

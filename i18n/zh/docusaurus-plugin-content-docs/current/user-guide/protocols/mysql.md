@@ -14,7 +14,7 @@ mysql -h <host> -P 4002 -u <username> -p
 
 ## 管理表
 
-请参考[表管理](/user-guide/table-management.md)。
+请参考[表管理](/user-guide/operations/data-management/basic-table-operations.md)。
 
 ## 写入数据
 
