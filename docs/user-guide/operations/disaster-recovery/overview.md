@@ -36,7 +36,7 @@ Before digging into the specific DR solution, let's explain the architecture of 
 GreptimeDB is designed with a cloud-native architecture based on storage-compute separation：
 * **Frontend**:  the ingestion and query service layer, which forwards requests to Datanode and processes, and merges responses from Datanode.
 * **Datanode**:  the storage layer of GreptimeDB, and is an LSM storage engine. Region is the basic unit for storing and scheduling data in Datanode. A region is a table partition, a collection of data rows. The data in region is saved into Object Storage (such as AWS S3). Unflushed Memtable data is written into WAL and can be recovered in DR.
-* **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based (local WAL) or Kafka cluster-based (remote WAL).
+* **WAL**: persists the unflushed Memtable data in memory. It will be truncated when the Memtable is flushed into SSTable files. It can be local disk-based (local WAL) or [Kafka cluster-based (remote WAL)](./remote-wal/quick-start.md).
 * **Object Storage**: persists the SSTable data and index.
 
 The GreptimeDB stores data in object storage such as [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html) or its compatible services, which is designed to provide 99.999999999% durability and 99.99% availability of objects over a given year. And services such as S3 provide [replications in Single-Region or Cross-Region](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html), which is naturally capable of DR.
@@ -118,6 +118,7 @@ By comparing these DR solutions, you can decide on the final option based on the
 
 ## References
 
+* [Remote WAL](./remote-wal/quick-start.md)
 * [Backup & restore data](./back-up-&-restore-data.md)
 * [DR solution for GreptimeDB Standalone](./dr-solution-for-standalone.md)
 * [DR solution based on Active-Active Failover ](./dr-solution-based-on-active-active-failover.md)

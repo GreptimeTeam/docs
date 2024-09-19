@@ -64,7 +64,7 @@
     "description": "The label for category Disaster Recovery in sidebar docs"
   },
   "sidebar.docs.category.Remote WAL": {
-    "message": "Remote WAL",
+    "message": "远程 WAL",
     "description": "The label for category Remote WAL in sidebar docs"
   },
   "sidebar.docs.category.GreptimeCloud": {

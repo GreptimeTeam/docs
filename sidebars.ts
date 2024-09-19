@@ -185,15 +185,17 @@ const sidebars: SidebarsConfig = {
               label: 'Disaster Recovery',
               items: [
                 'user-guide/operations/disaster-recovery/overview',
+                {
+                  type: 'category',
+                  label: 'Remote WAL',
+                  items: [
+                    'user-guide/operations/disaster-recovery/remote-wal/quick-start',
+                    'user-guide/operations/disaster-recovery/remote-wal/cluster-deployment'],
+                },
                 'user-guide/operations/disaster-recovery/back-up-&-restore-data',
                 'user-guide/operations/disaster-recovery/dr-solution-based-on-active-active-failover',
                 'user-guide/operations/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
-            },
-            {
-              type: 'category',
-              label: 'Remote WAL',
-              items: ['user-guide/operations/remote-wal/quick-start', 'user-guide/operations/remote-wal/cluster-deployment'],
             },
             'user-guide/operations/region-migration',
             'user-guide/operations/region-failover',

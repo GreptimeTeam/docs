@@ -36,7 +36,7 @@ ORDER BY datanode_id ASC
 ## 数据管理
 
 * [存储位置说明](/user-guide/concepts/storage-location.md)。
-* 通过 [设置Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
+* 通过 [设置Remote WAL](/user-guide/operations/disaster-recovery/remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
 * [Table 和 Region 的 Flush 和 Compaction](/reference/sql/admin.md##管理函数)。
 * 通过 Region 对表进行分区，请阅读 [表的分片](/contributor-guide/frontend/table-sharding.md) 参考。
   * [迁移 Region](./region-migration.md) 以实现负载均衡。

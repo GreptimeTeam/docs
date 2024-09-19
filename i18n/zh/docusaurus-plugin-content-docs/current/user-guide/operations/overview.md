@@ -5,5 +5,4 @@
 * [灾难恢复](./disaster-recovery/overview.md)
 * [监控](./monitoring.md)
 * [Tracing](./tracing.md)
-* [Remote WAL](./remote-wal/quick-start.md)
 * [Region 迁移](./region-migration.md)

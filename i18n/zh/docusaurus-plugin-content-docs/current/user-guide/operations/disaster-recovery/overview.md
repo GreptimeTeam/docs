@@ -42,7 +42,7 @@ GreptimeDB 基于存储计算分离的云原生架构设计：
 
 * **Frontend**：数据插入和查询的服务层，将请求转发到 Datanode 并处理和合并 Datanode 的响应。
 * **Datanode**：GreptimeDB 的存储层，是一个 LSM 存储引擎。Region 是在 Datanode 中存储和调度数据的基本单元。Region 是一个表分区，是一组数据行的集合。Region 中的数据保存在对象存储中（例如 AWS S3）。未刷新的 Memtable 数据被写入 WAL，并可以在灾难发生时恢复。
-* **WAL**：持久化内存中未刷新的 Memtable 数据。当 Memtable 被刷新到 SSTable 文件时，WAL 将被截断。它可以是基于本地磁盘的（本地 WAL）或基于 Kafka 集群的（远程 WAL）。
+* **WAL**：持久化内存中未刷新的 Memtable 数据。当 Memtable 被刷新到 SSTable 文件时，WAL 将被截断。它可以是基于本地磁盘的（本地 WAL）或[基于 Kafka 集群的（远程 WAL）](./remote-wal/quick-start.md)。
 * **对象存储**：持久化 SSTable 数据和索引。
 
 GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/DataDurability.html)）或兼容的服务中，这些服务在年度范围内提供了 99.999999999％ 的持久性和 99.99％ 的可用性。像 S3 这样的服务提供了[单区域或跨区域的复制](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)，天然具备灾难恢复能力。
@@ -135,6 +135,7 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 ## 参考资料
 
+* [远程 WAL](./remote-wal/quick-start.md)
 * [备份与恢复数据](./back-up-&-restore-data.md)
 * [GreptimeDB Standalone 的 DR 解决方案](./dr-solution-for-standalone.md)
 * [基于双活-备份的 DR 解决方案](./dr-solution-based-on-active-active-failover.md)

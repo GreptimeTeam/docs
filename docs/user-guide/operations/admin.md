@@ -36,7 +36,7 @@ The `INFORMATION_SCHEMA` database provides access to system metadata, such as th
 ## Data management
 
 * [The Storage Location](/user-guide/concepts/storage-location.md).
-* Cluster Failover for GreptimeDB by [Setting Remote WAL](./remote-wal/quick-start.md).
+* Cluster Failover for GreptimeDB by [Setting Remote WAL](/user-guide/operations/disaster-recovery/remote-wal/quick-start.md).
 * [Flush and Compaction for Table & Region](/reference/sql/admin.md#admin-functions).
 * Partition the table by regions, read the [Table Sharding](/contributor-guide/frontend/table-sharding.md) reference.
   * [Migrate the Region](./region-migration.md) for Load Balance.
