@@ -59,7 +59,6 @@ Having understood these features, you can now go directly to exploring the featu
 ## Next steps
 
 * [Concepts](./concepts/overview.md)
-* [Table Management](./table-management.md)
 * [Migrate to GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [Ingest Data](./ingest-data/overview.md)
 * [Query Data](./query-data/overview.md)

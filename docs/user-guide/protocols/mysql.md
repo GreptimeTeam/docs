@@ -14,7 +14,7 @@ mysql -h <host> -P 4002 -u <username> -p
 
 ## Table management
 
-Please refer to [Table Management](/user-guide/table-management.md).
+Please refer to [Table Management](/user-guide/operations/data-management/basic-table-operations.md).
 
 ## Ingest data
 
