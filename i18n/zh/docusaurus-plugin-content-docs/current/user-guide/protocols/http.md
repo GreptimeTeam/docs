@@ -152,6 +152,24 @@ curl -X POST \
     - `rows`：查询结果的行数据，每行是一个数组，包含 schema 中对应列的值。
 - `execution_time_ms`：该语句的执行时间，以毫秒为单位。
 
+### 其他输出格式
+
+### Alternative formats
+
+除了默认的 JSON 格式外，通过指定 `format` 参数，HTTP API 还支持自定义以下输出格
+式：
+
+- `influxdb_v1`: [influxdb 查询接
+  口](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)兼
+  容格式，支持额外参数：
+  - `epoch`: `[ns,u,µ,ms,s,m,h]`, 控制输出时间戳精度
+- `csv`: CSV 格式
+- `arrow`: [Arrow IPC 格式](https://arrow.apache.org/docs/python/feather.html).
+  支持额外的参数：
+  - `compression`: `zstd` or `lz4`, 默认不设置压缩
+- `table`: 用于终端数据的 ASCII 表格格式
+
+
 ## POST PromQL 查询
 
 GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在当前的 API 路径 `/v1` 的后方拼接 `/promql`，如下示例：
