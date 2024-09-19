@@ -14,7 +14,7 @@ GreptimeDB 默认不启用鉴权认证。
 
 [在 Kubernetes 集群上部署 GreptimeDB](./deploy-on-kubernetes/overview.md)的逐步说明。
 
-## 在 Andriod 上运行
+## 在 Android 上运行
 
 [在 Android 设备上运行 GreptimeDB](run-on-android.md)的指南。
 
