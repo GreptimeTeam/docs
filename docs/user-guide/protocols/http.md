@@ -169,6 +169,26 @@ values:
   - `compression`: `zstd` or `lz4`, default: no compression
 - `table`: ASCII table format for console output
 
+Call the SQL API with `table` format as an example:
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=table
+```
+
+Output
+
+```
+┌─host────────┬─ts────────────┬─cpu─┬─memory─┐
+│ "127.0.0.1" │ 1667446797450 │ 0.1 │ 0.4    │
+│ "127.0.0.1" │ 1667446798450 │ 0.5 │ 0.2    │
+│ "127.0.0.2" │ 1667446798450 │ 0.2 │ 0.3    │
+└─────────────┴───────────────┴─────┴────────┘
+```
+
 ## POST PromQL Queries
 
 GreptimeDB also exposes an custom HTTP API for querying with PromQL, and returning

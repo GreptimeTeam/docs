@@ -168,6 +168,26 @@ curl -X POST \
   - `compression`: `zstd` or `lz4`, 默认不设置压缩
 - `table`: 用于终端数据的 ASCII 表格格式
 
+以输出 `table` 格式为例：
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=table
+```
+
+Output
+
+```
+┌─host────────┬─ts────────────┬─cpu─┬─memory─┐
+│ "127.0.0.1" │ 1667446797450 │ 0.1 │ 0.4    │
+│ "127.0.0.1" │ 1667446798450 │ 0.5 │ 0.2    │
+│ "127.0.0.2" │ 1667446798450 │ 0.2 │ 0.3    │
+└─────────────┴───────────────┴─────┴────────┘
+```
+
 
 ## POST PromQL 查询
 
