@@ -7,10 +7,10 @@ Region Failover provides the ability to recover regions from region failures wit
 This feature is only available on GreptimeDB running on distributed mode and
 
 - Using Kafka WAL
-- Using [shared storage](/user-guide/operations/configuration.md#storage-options) (e.g., AWS S3)
+- Using [shared storage](/user-guide/deployments/configuration.md#storage-options) (e.g., AWS S3)
 
 ### Via configuration file
-Set the `enable_region_failover=true` in [metasrv](/user-guide/operations/configuration.md#metasrv-only-configuration) configuration file.
+Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file.
 
 ### Via GreptimeDB Operator
 
@@ -38,7 +38,7 @@ The data belonging to a specific region consists of data files plus data in the 
 
 Although multiple regions share the same topic, allowing the Datanode to support more regions, the cost of this approach is read amplification during WAL replay.
 
-For example, configure 128 topics for [metasrv](/user-guide/operations/configuration.md#metasrv-only-configuration), and if the whole cluster holds 1024 regions (physical regions), every 8 regions will share one topic.
+For example, configure 128 topics for [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration), and if the whole cluster holds 1024 regions (physical regions), every 8 regions will share one topic.
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 

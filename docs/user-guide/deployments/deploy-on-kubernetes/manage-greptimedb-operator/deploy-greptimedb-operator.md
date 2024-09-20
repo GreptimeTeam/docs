@@ -23,7 +23,8 @@ helm search repo greptimedb-operator
 ```
 
 You should see output similar to this:
-```
+
+```shell
 NAME                        	CHART VERSION	APP VERSION   	DESCRIPTION
 greptime/greptimedb-operator	0.2.3        	0.1.0-alpha.29	The greptimedb-operator Helm chart for Kubernetes.
 ```

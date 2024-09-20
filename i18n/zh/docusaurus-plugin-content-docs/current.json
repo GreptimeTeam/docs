@@ -47,6 +47,10 @@
     "message": "运维操作",
     "description": "The label for category Operations in sidebar docs"
   },
+  "sidebar.docs.category.Deployments": {
+    "message": "部署",
+    "description": "The label for category Deployments in sidebar docs"
+  },
   "sidebar.docs.category.Deploy on Kubernetes": {
     "message": "部署到 Kubernetes",
     "description": "The label for category Deploy on Kubernetes in sidebar docs"
