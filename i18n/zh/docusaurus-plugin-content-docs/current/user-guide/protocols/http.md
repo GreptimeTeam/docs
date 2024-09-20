@@ -154,7 +154,6 @@ curl -X POST \
 
 ### 其他输出格式
 
-### Alternative formats
 
 除了默认的 JSON 格式外，通过指定 `format` 参数，HTTP API 还支持自定义以下输出格
 式：
