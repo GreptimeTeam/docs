@@ -69,7 +69,7 @@ greptimedb-meta-689cb867cd-cwsr5          1/1     Running   0          31s
 To store data on Object Storage (here is example to store on Amazon S3), add the following configuration to your Helm command:
 
 ```bash
-helm install \
+helm install greptimedb \
   --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --set objectStorage.s3.bucket=<your-bucket> \
   --set objectStorage.s3.region=<region-of-bucket> \
@@ -77,6 +77,7 @@ helm install \
   --set objectStorage.credentials.accessKeyId=<your-access-key-id> \
   --set objectStorage.credentials.secretAccessKey=<your-secret-access-key> \
   greptime/greptimedb-cluster \
+  --create-namespace \
   -n greptimedb-cluster
 ```
 
@@ -84,9 +85,9 @@ helm install \
 If you want to enable RemoteWAL and region failover, follow this configuration. You’ll need a Kafka cluster running, and you can use its endpoint like `kafka.kafka-cluster.svc.cluster.local:9092`:
 
 ```bash
-helm install \
+helm install greptimedb \
   --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
-  --set meta.enableRegionFailover=true \ 
+  --set meta.enableRegionFailover=true \
   --set objectStorage.s3.bucket=<your-bucket> \
   --set objectStorage.s3.region=<region-of-bucket> \
   --set objectStorage.s3.root=<root-directory-of-data> \
@@ -95,6 +96,7 @@ helm install \
   --set remoteWal.enable=true \
   --set remoteWal.kafka.brokerEndpoints[0]=kafka.kafka-cluster.svc.cluster.local:9092 \
   greptime/greptimedb-cluster \
+  --create-namespace \
   -n greptimedb-cluster
 ```
 
@@ -108,17 +110,15 @@ helm install greptimedb \
   --set auth.users[0].username=admin \
   --set auth.users[0].password=admin \
   greptime/greptimedb-cluster \
+  --create-namespace \
   -n greptimedb-cluster
 ```
-
-
-
 
 ### Resource requests and limits
 To control resource allocation (CPU and memory), modify the Helm installation command as follows:
 
 ```shell
-helm install greptimedb greptime/greptimedb-cluster \
+helm install greptimedb \
   --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --set meta.podTemplate.main.resources.requests.cpu=<cpu-resource> \
   --set meta.podTemplate.main.resources.requests.memory=<mem-resource> \
@@ -126,6 +126,7 @@ helm install greptimedb greptime/greptimedb-cluster \
   --set datanode.podTemplate.main.resources.requests.memory=<mem-resource> \
   --set frontend.podTemplate.main.resources.requests.cpu=<cpu-resource> \
   --set frontend.podTemplate.main.resources.requests.memory=<mem-resource> \
+  greptime/greptimedb-cluster \
   --create-namespace \
   -n greptimedb-cluster
 ```
