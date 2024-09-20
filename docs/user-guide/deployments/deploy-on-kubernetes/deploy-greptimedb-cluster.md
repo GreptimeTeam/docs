@@ -1,19 +1,19 @@
 # Deploy GreptimeDB Cluster
 
-This guide will walk you through deploying a GreptimeDB cluster on a Kubernetes (K8s) environment. Make sure the [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md) is installed on your cluster before proceeding. We’ll cover everything from setting up an etcd cluster (optional) to configuring options and connecting to the database.
+This guide will walk you through deploying a GreptimeDB cluster on a Kubernetes environment. Make sure the [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md) is installed on your cluster before proceeding. We’ll cover everything from setting up an etcd cluster (optional) to configuring options and connecting to the database.
 
 ## Prerequisites
 - [Helm](https://helm.sh/docs/intro/install/) (Use the Version appropriate for your Kubernetes API version)
 - [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md) (Assumes the local host has a matching installation of the GreptimeDB Operator) 
 
-## Create an etcd cluster (Optional) 
+## Create an etcd cluster
 
-To install the ectd cluster, run the following `helm install` command. This command also creates a dedicated namespace `etcd-cluster` for the installation.
+To install the ectd cluster, run the following `helm install` command. This command also creates a dedicated namespace `etcd-cluster` for the installation. 
 
 ```shell
 helm install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
   --set replicaCount=3 \
-  --set auth.rbac.create=false \****
+  --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
   -n etcd-cluster
@@ -56,11 +56,11 @@ kubectl get pods -n greptimedb-cluster
 You should see output similar to this:
 ```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
-my-greptimedb-datanode-0                  1/1     Running   0          30s
-my-greptimedb-datanode-2                  1/1     Running   0          30s
-my-greptimedb-datanode-1                  1/1     Running   0          30s
-my-greptimedb-frontend-7476dcf45f-tw7mx   1/1     Running   0          16s
-my-greptimedb-meta-689cb867cd-cwsr5       1/1     Running   0          31s
+greptimedb-datanode-0                     1/1     Running   0          30s
+greptimedb-datanode-2                     1/1     Running   0          30s
+greptimedb-datanode-1                     1/1     Running   0          30s
+greptimedb-frontend-7476dcf45f-tw7mx      1/1     Running   0          16s
+greptimedb-meta-689cb867cd-cwsr5          1/1     Running   0          31s
 ```
 
 ## Advanced Configuration Options
@@ -71,11 +71,11 @@ To store data on Object Storage (here is example to store on Amazon S3), add the
 ```bash
 helm install \
   --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
-  --set objectStorage.s3.bucket="your-bucket" \
-  --set objectStorage.s3.region="region-of-bucket" \
-  --set objectStorage.s3.root="root-directory-of-data" \
-  --set objectStorage.credentials.accessKeyId="your-access-key-id" \
-  --set objectStorage.credentials.secretAccessKey="your-secret-access-key" \
+  --set objectStorage.s3.bucket=<your-bucket> \
+  --set objectStorage.s3.region=<region-of-bucket> \
+  --set objectStorage.s3.root=<root-directory-of-data> \
+  --set objectStorage.credentials.accessKeyId=<your-access-key-id> \
+  --set objectStorage.credentials.secretAccessKey=<your-secret-access-key> \
   greptime/greptimedb-cluster \
   -n greptimedb-cluster
 ```
@@ -87,16 +87,32 @@ If you want to enable RemoteWAL and region failover, follow this configuration. 
 helm install \
   --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
   --set meta.enableRegionFailover=true \ 
-  --set objectStorage.s3.bucket="your-bucket" \
-  --set objectStorage.s3.region="region-of-bucket" \
-  --set objectStorage.s3.root="root-directory-of-data" \
-  --set objectStorage.credentials.accessKeyId="your-access-key-id" \
-  --set objectStorage.credentials.secretAccessKey="your-secret-access-key" \
+  --set objectStorage.s3.bucket=<your-bucket> \
+  --set objectStorage.s3.region=<region-of-bucket> \
+  --set objectStorage.s3.root=<root-directory-of-data> \
+  --set objectStorage.credentials.accessKeyId=<your-access-key-id> \
+  --set objectStorage.credentials.secretAccessKey=<your-secret-access-key> \
   --set remoteWal.enable=true \
-  --set remoteWal.kafka.brokerEndpoints=kafka.kafka-cluster.svc.cluster.local:9092 \
+  --set remoteWal.kafka.brokerEndpoints[0]=kafka.kafka-cluster.svc.cluster.local:9092 \
   greptime/greptimedb-cluster \
   -n greptimedb-cluster
 ```
+
+### Static authentication
+To enable static authentication for GreptimeDB cluster, you can configure user credentials during installation by specifying them with the auth settings. Here's an example of how to do this:
+
+```bash
+helm install greptimedb \
+  --set meta.etcdEndpoints=etcd.etcd-cluster.svc.cluster.local:2379 \
+  --set auth.enabled=true \
+  --set auth.users[0].username=admin \
+  --set auth.users[0].password=admin \
+  greptime/greptimedb-cluster \
+  -n greptimedb-cluster
+```
+
+
+
 
 ### Resource requests and limits
 To control resource allocation (CPU and memory), modify the Helm installation command as follows:
@@ -114,15 +130,17 @@ helm install greptimedb greptime/greptimedb-cluster \
   -n greptimedb-cluster
 ```
 
-### Complex Configurations with values.yaml
+### Complex configurations with values.yaml
 
-For more intricate configurations, first download the default values.yaml file and modify it locally.
+For more intricate configurations, first download the default `values.yaml` file and modify it locally.
 
 ```bash
 curl -sLo values.yaml https://raw.githubusercontent.com/GreptimeTeam/helm-charts/main/charts/greptimedb-cluster/values.yaml
 ```
 
-Edit the file to include your custom settings. Here’s an example:
+You can configure each component by specifying custom settings in the `configData` fields. For more details, refer to the [configuration](../configuration.md) documentation. 
+
+Below is an example of how to modify the settings in the `values.yaml` file. This example demonstrates how to configure specific components within GreptimeDB. It sets the metasrv's selector type to `round_robin`, adjusts the datanode’s Mito engine by setting `global_write_buffer_size` to `4GB`, and configures the frontend's meta client `ddl_timeout` to `60s`:
 
 ```yaml
 meta:
@@ -147,10 +165,6 @@ helm install greptimedb greptime/greptimedb-cluster --values values.yaml
 
 For a comprehensive list of configurable values via Helm,
 please refer to the [configuration](../configuration.md), [value configuration](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/README.md#values).
-
-<!-- ### Use a different GreptimeDB version
-
-### Specify the database configuration file -->
 
 ## Connect to the cluster
 
