@@ -144,7 +144,6 @@ const sidebars: SidebarsConfig = {
             'user-guide/logs/query-logs',
           ],
         },
-        'user-guide/cluster',
         {
           type: 'category',
           label: 'Deployments',
