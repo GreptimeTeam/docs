@@ -178,7 +178,7 @@ curl -X POST \
   http://localhost:4000/v1/sql?db=public&format=table
 ```
 
-Output
+结果：
 
 ```
 ┌─host────────┬─ts────────────┬─cpu─┬─memory─┐
