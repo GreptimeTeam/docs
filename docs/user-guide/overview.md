@@ -67,4 +67,4 @@ Having understood these features, you can now go directly to exploring the featu
 * [Protocols](./protocols/overview.md)
 * [Continuous Aggregation](./continuous-aggregation/overview.md)
 * [Operations](./operations/overview.md)
-* [Cluster](./cluster.md)
+
