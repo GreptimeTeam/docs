@@ -184,7 +184,7 @@ const sidebars: SidebarsConfig = {
               items: [
                 'user-guide/operations/data-management/overview',
                 'user-guide/operations/data-management/basic-table-operations',
-                'user-guide/operations/data-management/table-partition',
+                'user-guide/operations/data-management/table-sharding',
                 'user-guide/operations/data-management/region-failover',
                 'user-guide/operations/data-management/region-migration',
                 'user-guide/operations/data-management/compaction',
