@@ -57,7 +57,7 @@ The syntax mainly consists of two parts:
 2. `RULE LIST` is a list of multiple partition rules. Each rule is a combination of a partition name and a partition condition. The expressions here can use `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, column names, and literals.
 
 :::tip Note
-Currently expressions are not supported in "PARTITION BY RANGE" syntax, you can only supply column names.
+Currently expressions are not supported in "PARTITION BY RANGE" syntax.
 :::
 
 ### Example
@@ -131,8 +131,7 @@ VALUES (150, 'West', 24.1, '2023-09-19 17:00:00'),
 
 ## Distributed Read
 
-You can follow these steps to perform distributed insertions and queries using SQL.
-Execute the following `SELECT` statements to run some queries:
+Simply use the `SELECT` statement to query the data:
 
 ```sql
 SELECT * FROM sensor_readings order by reading_value desc LIMIT 5;
