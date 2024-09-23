@@ -200,6 +200,11 @@ const sidebars: SidebarsConfig = {
                 'user-guide/operations/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
+            {
+              type: 'category',
+              label: 'Remote WAL',
+              items: ['user-guide/operations/remote-wal/quick-start', 'user-guide/operations/remote-wal/cluster-deployment'],
+            },
             'user-guide/operations/monitoring',
             'user-guide/operations/tracing',
             'user-guide/operations/performance-tuning-tips',
