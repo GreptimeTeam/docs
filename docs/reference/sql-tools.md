@@ -3,7 +3,7 @@
 GreptimeDB uses SQL as its main query language and supports many popular SQL tools.
 This document guides you on how to use SQL tools with GreptimeDB.
 
-## Programming languages
+## Language drivers
 
 It is recommended to use mature SQL drivers to query data.
 
@@ -271,17 +271,7 @@ After you connect to the server, you can use all [GreptimeDB SQL commands](/refe
 
 You can run SQL and visualize data in the [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md).
 
-## GUI tools
-
-### Superset
-
-Please refer to the [Superset](/user-guide/integrations/superset.md) integration document.
-
-### Metabase
-
-Please refer to the [Metabase](/user-guide/integrations/metabase.md) integration document.
-
-<!-- TODO: Add Navicat, DBeaver, etc. -->
+<!-- TODO: Add GUI tools: Navicat, DBeaver, etc. -->
 
 ## HTTP API
 

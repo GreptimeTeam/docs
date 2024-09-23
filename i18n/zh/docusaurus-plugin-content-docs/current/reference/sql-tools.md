@@ -3,7 +3,7 @@
 GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL 工具。
 本文档指导你如何使用 SQL 工具与 GreptimeDB 交互。
 
-## 编程语言
+## 编程语言 Driver
 
 推荐使用成熟的 SQL driver 来查询数据。
 
@@ -270,17 +270,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
 
 你可以在 [Greptime 控制台](/getting-started/installation/greptimedb-dashboard.md)中运行 SQL 并可视化数据。
 
-## GUI 工具
-
-### Superset
-
-请参考 [Superset](/user-guide/integrations/superset.md) 集成文档。
-
-### Metabase
-
-请参考 [Metabase](/user-guide/integrations/metabase.md) 集成文档。
-
-<!-- TODO: Add Navicat, DBeaver, etc. -->
+<!-- TODO: GUI tools: Add Navicat, DBeaver, etc. -->
 
 ## HTTP API
 
