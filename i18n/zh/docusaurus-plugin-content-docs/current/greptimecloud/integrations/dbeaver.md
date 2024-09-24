@@ -13,10 +13,10 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 接下来输入以下连接信息：
 
 - Connect by Host
-- Host：如果 GreptimeDB 运行在本机，则为 `localhost`
-- Port：如果使用默认的 GreptimeDB 配置，则为 `4002`
-- Database：`public`，你也可以使用你创建的其他数据库名称
-- 如果你的 GreptimeDB 启用了身份验证，请输入 username 和 password，否则留空
+- Host: `<host>`
+- Port: `4002`
+- Database: `<dbname>`
+- 输入用户名 `<username>` 和密码 `<password>`
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 
@@ -29,10 +29,10 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 接下来输入以下连接信息：
 
 - Connect by Host
-- Host：如果 GreptimeDB 运行在本机，则为 `localhost`
-- Port：如果使用默认的 GreptimeDB 配置，则为 `4003`
-- Database：`public`，你也可以使用你创建的其他数据库名称
-- 如果你的 GreptimeDB 启用了身份验证，请输入 username 和 password，否则留空
+- Host: `<host>`
+- Port: `4003`
+- Database: `<dbname>`
+- 选择 `Database Native`, 输入用户名 `<username>` 和密码 `<password>`
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 

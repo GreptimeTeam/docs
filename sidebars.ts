@@ -247,6 +247,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/superset',
             'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
+            'greptimecloud/integrations/dbeaver',
             {
               type: 'category',
               label: 'SDK Libraries',
