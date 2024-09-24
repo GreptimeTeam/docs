@@ -1,6 +1,6 @@
-# Monitoring
+# Export Metrics
 
-Monitoring is a crucial part of database administration. By monitoring metrics, you can assess the state of the database, maintain the deployment without crisis, and diagnose problems when they occur.
+By monitoring metrics, you can assess the state of the database, maintain the deployment without crisis, and diagnose problems when they occur.
 
 For detailed metrics of GreptimeDB, please refer to the [Metrics Detail](#metrics-detail) section.
 
