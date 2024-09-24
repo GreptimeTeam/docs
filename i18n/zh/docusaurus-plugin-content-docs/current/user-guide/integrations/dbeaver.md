@@ -2,7 +2,7 @@
 
 DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流行的数据库。
 由于其易用性和丰富的功能集，它在开发人员和数据库管理员中非常受欢迎。
-你可以使用 DBeaver 通过 MySQL 和 PostgreSQL 数据库 Driver 连接到 GreptimeDB。
+你可以使用 DBeaver 通过 MySQL Driver 连接到 GreptimeDB。
 
 点击 DBeaver 工具栏中的 “New Database Connection” 按钮，以创建 GreptimeDB 的新连接。
 
@@ -22,7 +22,7 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 
 有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](/user-guide/protocols/mysql.md)。
 
-## PostgreSQL
+<!-- ## PostgreSQL
 
 选择 PostgreSQL 并点击“下一步”以配置连接设置。
 如果尚未安装 PostgreSQL Driver，请先安装。
@@ -36,5 +36,5 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 
-有关使用 PostgreSQL 与 GreptimeDB 交互的更多信息，请参阅 [PostgreSQL 协议文档](/user-guide/protocols/postgresql.md)。
+有关使用 PostgreSQL 与 GreptimeDB 交互的更多信息，请参阅 [PostgreSQL 协议文档](/user-guide/protocols/postgresql.md)。 -->
 
