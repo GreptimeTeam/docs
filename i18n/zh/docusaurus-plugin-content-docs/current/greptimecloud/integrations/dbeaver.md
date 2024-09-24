@@ -20,7 +20,7 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 
-有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](/user-guide/protocols/mysql.md)。
+有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](https://docs.greptime.cn/user-guide/protocols/mysql.md)。
 
 <!-- ## PostgreSQL
 
@@ -36,5 +36,5 @@ DBeaver 是一个免费、开源且跨平台的数据库工具，支持所有流
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 
-有关使用 PostgreSQL 与 GreptimeDB 交互的更多信息，请参阅 [PostgreSQL 协议文档](/user-guide/protocols/postgresql.md)。 -->
+有关使用 PostgreSQL 与 GreptimeDB 交互的更多信息，请参阅 [PostgreSQL 协议文档](https://docs.greptime.cn/user-guide/protocols/postgresql.md)。 -->
 
