@@ -104,6 +104,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/superset',
             'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
+            'user-guide/integrations/dbeaver',
           ],
         },
         { type: 'category',
