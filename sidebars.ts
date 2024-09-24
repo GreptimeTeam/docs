@@ -177,6 +177,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/operations/overview',
             'user-guide/operations/admin',
+            'user-guide/operations/capacity-plan',
             {
               type: 'category',
               label: 'Data Management',
@@ -189,7 +190,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/operations/data-management/compaction',
               ],
             },
-            'user-guide/operations/capacity-plan',
             {
               type: 'category',
               label: 'Disaster Recovery',
