@@ -271,7 +271,13 @@ After you connect to the server, you can use all [GreptimeDB SQL commands](/refe
 
 You can run SQL and visualize data in the [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md).
 
-<!-- TODO: Add GUI tools: Navicat, DBeaver, etc. -->
+## GUI tools
+
+### DBeaver
+
+Please refer to the [DBeaver Integration Guide](/user-guide/integrations/dbeaver.md).
+
+<!-- TODO: Add GUI tools: DBeaver, etc. -->
 
 ## HTTP API
 
