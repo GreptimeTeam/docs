@@ -8,6 +8,7 @@
 * 数据库配置，请阅读 [配置](/user-guide/deployments/configuration.md) 参考。
 * GreptimeDB 的 [监控](/user-guide/operations/monitoring.md) 和 [链路追踪](/user-guide/operations/tracing.md)。
 * GreptimeDB 的 [灾难恢复方案](/user-guide/operations/disaster-recovery/overview.md)。
+* 通过[设置 Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
 
 ### 运行时信息
 
@@ -32,15 +33,6 @@ ORDER BY datanode_id ASC
 ```
 
 `INFORMATION_SCHEMA` 数据库提供了对系统元数据的访问，如数据库或表的名称、列的数据类型等。请阅读 [参考文档](/reference/sql/information-schema/overview.md)。
-
-## 数据管理
-
-* [存储位置说明](/user-guide/concepts/storage-location.md)。
-* 通过 [设置Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
-* [Table 和 Region 的 Flush 和 Compaction](/reference/sql/admin.md##管理函数)。
-* 通过 Region 对表进行分区，请阅读 [表的分片](/contributor-guide/frontend/table-sharding.md) 参考。
-  * [迁移 Region](./data-management/region-migration.md) 以实现负载均衡。
-* [通过设置 TTL 过期数据](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements)。
 
 ## 最佳实践
 
