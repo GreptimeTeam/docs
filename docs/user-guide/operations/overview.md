@@ -1,8 +1,8 @@
 # Overview
 
 * [Administration](./admin.md)
-* [Data Management](./data-management/overview.md)
 * [Capacity Plan](./capacity-plan.md) 
+* [Data Management](./data-management/overview.md)
 * [Disaster Recovery](./disaster-recovery/overview.md)
 * [Monitoring](./monitoring.md)
 * [Tracing](./tracing.md)
