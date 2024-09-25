@@ -248,3 +248,63 @@ select database();
 ### Admin Functions
 
 GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](.(/reference/sql/admin.md) reference.
+
+### JSON Functions
+
+GreptimeDB provides the following JSON functions to deal with values of JSON type:
+
+* `parse_json(string)` to parse a JSON string into a JSON value. Illegal JSON strings will return an error.
+* `json_to_string(json)` to convert a JSON value to a string.
+
+```sql
+SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
+
++----------------------------------------------------------+
+| json_to_string(parse_json(Utf8("{\"a\": 1, \"b\": 2}"))) |
++----------------------------------------------------------+
+| {"a":1,"b":2}                                            |
++----------------------------------------------------------+
+```
+
+* `json_get_bool(json, path)` to extract a boolean value from a JSON value by the path.
+* `json_get_int(json, path)` to extract an integer value from a JSON value by the path, while boolean values will be converted to integers.
+* `json_get_float(json, path)` to extract a float value from a JSON value by the path, while integer and boolean values will be converted to floats.
+* `json_get_string(json, path)` to extract a string value from a JSON value by the path. All valid JSON values will be converted to strings, including null values, objects and arrays.
+
+`path` is a string that select and extract elements from a json value. Checkout [SQL/JSONPath](https://github.com/datafuselabs/jsonb?tab=readme-ov-file#sqljsonpath) for supported `path` syntax.
+
+```sql
+SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');
+
++-----------------------------------------------------------------------+
+| json_get_int(parse_json(Utf8("{"a": {"c": 3}, "b": 2}")),Utf8("a.c")) |
++-----------------------------------------------------------------------+
+|                                                                     3 |
++-----------------------------------------------------------------------+
+```
+
+* `json_is_null(json)` to check whether a JSON value is a null value.
+* `json_is_bool(json)` to check whether a JSON value is a boolean value.
+* `json_is_int(json)` to check whether a JSON value is an integer value.
+* `json_is_float(json)` to check whether a JSON value is a float value.
+* `json_is_string(json)` to check whether a JSON value is a string value.
+* `json_is_object(json)` to check whether a JSON value is an object value.
+* `json_is_array(json)` to check whether a JSON value is an array value.
+
+```sql
+SELECT json_is_array(parse_json('[1, 2, 3]'));
+
++----------------------------------------------+
+| json_is_array(parse_json(Utf8("[1, 2, 3]"))) |
++----------------------------------------------+
+|                                            1 |
++----------------------------------------------+
+
+SELECT json_is_object(parse_json('1'));
+
++---------------------------------------+
+| json_is_object(parse_json(Utf8("1"))) |
++---------------------------------------+
+|                                     0 |
++---------------------------------------+
+```
