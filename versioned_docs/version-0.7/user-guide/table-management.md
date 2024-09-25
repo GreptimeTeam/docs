@@ -104,6 +104,31 @@ Therefore, it is important to carefully design your data model before creating t
   to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
+### Constraints of table names
+
+GreptimeDB supports a limited set of special characters in table names, but they must adhere to the following constraints:
+- A valid GreptimeDB table name must start with a letter (either lowercase or uppercase) or `-` / `_` / `:`.
+- The rest part of table name can be alphanumeric or special characters within: `-` / `_` / `:`.
+- When creating tables through MySQL protocol, any table name containing special characters must be quoted with backquotes.
+
+Here are some examples:
+```sql
+-- ✅ Ok
+create table a (ts timestamp time index);
+
+-- ✅ Ok
+create table a0 (ts timestamp time index);
+
+-- 🚫 Invalid table name
+create table 0a (ts timestamp time index);
+
+-- 🚫 Invalid table name
+create table -a (ts timestamp time index);
+
+-- ✅ Ok
+create table `-a` (ts timestamp time index);
+```
+
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
 [2]: https://docs.influxdata.com/influxdb/v1/concepts/glossary/#series
 

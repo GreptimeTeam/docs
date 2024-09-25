@@ -119,6 +119,32 @@ GreptimeDB 目前不支持在创建表后更改 TIME INDEX 约束，
 - 主键：`Primary key`指定的主键列类似于其他时序系统中的 Tag，比如 [InfluxDB][1]。 主键和时间戳列用于唯一地定义一条时间线，这类似于其他时间序列系统中的时间线的概念，如 [InfluxDB][2]。
 - 表选项：当创建一个表时，可以指定一组表选项，点击[这里](/reference/sql/create.md#table-options)了解更多细节。
 
+### 表名的限制条件
+
+GreptimeDB 支持在表名中使用有限的特殊字符，但必须遵守以下约束：
+- 有效的 GreptimeDB 表名必须以字母（小写或大写）或 `-` / `_` / `:` 开头。
+- 表名的其余部分可以是字母数字或以下特殊字符：`-` / `_` / `:`。
+- 通过 MySQL 协议创建表时，任何包含特殊字符的表名都必须用反引号括起来。
+
+以下是有效和无效表名的例子：
+
+```sql
+-- ✅ Ok
+create table a (ts timestamp time index);
+
+-- ✅ Ok
+create table a0 (ts timestamp time index);
+
+-- 🚫 Invalid table name
+create table 0a (ts timestamp time index);
+
+-- 🚫 Invalid table name
+create table -a (ts timestamp time index);
+
+-- ✅ Ok
+create table `-a` (ts timestamp time index);
+```
+
 [1]: https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key
 [2]: https://docs.influxdata.com/influxdb/v1/concepts/glossary/#series
 
