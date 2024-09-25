@@ -104,7 +104,7 @@ Therefore, it is important to carefully design your data model before creating t
   to time series like [InfluxDB][2].
 - Table options: when creating a table, you can specify a set of table options, click [here](../reference/sql/create.md#table-options) for more details.
 
-### Constraints of table names
+### Table name constraints
 
 GreptimeDB supports a limited set of special characters in table names, but they must adhere to the following constraints:
 - A valid GreptimeDB table name must start with a letter (either lowercase or uppercase) or `-` / `_` / `:`.
