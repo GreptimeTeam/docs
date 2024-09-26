@@ -45,7 +45,7 @@ and you must add an extra timestamp for each log.
 
 You can also write logs using the gRPC protocol, which is a more efficient method.
 
-Refer to [Write Data Using gRPC](../ingest-data/for-iot/grpc-sdks/overview.md) to learn how to write logs using the gRPC protocol.
+Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) to learn how to write logs using the gRPC protocol.
 
 ## Write logs by Pipeline
 

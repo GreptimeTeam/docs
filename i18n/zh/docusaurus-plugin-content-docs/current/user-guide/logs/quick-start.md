@@ -44,7 +44,7 @@ INSERT INTO origin_logs (message, time) VALUES
 
 您也可以使用 gRPC 协议写入日志，这是一个更高效的方法。
 
-请参阅[使用 gRPC 写入数据](../ingest-data/for-iot/grpc-sdks/overview.md)以了解如何使用 gRPC 协议写入日志。
+请参阅[使用 gRPC 写入数据](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md)以了解如何使用 gRPC 协议写入日志。
 
 ## 使用 Pipeline 写入日志
 
