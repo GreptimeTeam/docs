@@ -2,7 +2,7 @@
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。
 
-在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](../table-management.md#创建表)和[写入数据](../ingest-data/for-iot/sql.md)。
+在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](/user-guide/operations/data-management/basic-table-operations.md#创建表)和[写入数据](/user-guide/ingest-data/for-iot/sql.md)。
 
 ## 基础查询
 
@@ -253,7 +253,7 @@ SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
 
 GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚合数据。
 
-假设我们有以下数据在 [`monitor` 表](../table-management.md#创建表) 中：
+假设我们有以下数据在 [`monitor` 表](/user-guide/operations/data-management/basic-table-operations.md#创建表) 中：
 
 ```sql
 +-----------+---------------------+------+--------+

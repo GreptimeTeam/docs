@@ -1,6 +1,6 @@
-# Table Management
+# Basic Table Operations
 
-[Data Model](./concepts/data-model.md) should be read before this guide.
+[Data Model](/user-guide/concepts/data-model.md) should be read before this guide.
 
 GreptimeDB provides table management functionalities via SQL. The following guide
 uses [MySQL Command-Line Client](https://dev.mysql.com/doc/refman/8.0/en/mysql.html) to demonstrate it.
@@ -319,4 +319,5 @@ The specified time zone in the SQL client session will affect the default timest
 If you set the default value of a timestamp column to a string without a time zone,
 the client's time zone information will be automatically added.
 
-For more information about the effect of the client time zone, please refer to the [time zone](./ingest-data/for-iot/sql.md#time-zone) section in the write data document.
+For more information about the effect of the client time zone, please refer to the [time zone](/user-guide/ingest-data/for-iot/sql.md#time-zone) section in the write data document.
+

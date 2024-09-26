@@ -59,7 +59,6 @@ Having understood these features, you can now go directly to exploring the featu
 ## Next steps
 
 * [Concepts](./concepts/overview.md)
-* [Table Management](./table-management.md)
 * [Migrate to GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [Ingest Data](./ingest-data/overview.md)
 * [Query Data](./query-data/overview.md)
@@ -68,4 +67,4 @@ Having understood these features, you can now go directly to exploring the featu
 * [Protocols](./protocols/overview.md)
 * [Continuous Aggregation](./continuous-aggregation/overview.md)
 * [Operations](./operations/overview.md)
-* [Cluster](./cluster.md)
+

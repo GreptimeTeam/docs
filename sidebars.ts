@@ -145,8 +145,6 @@ const sidebars: SidebarsConfig = {
             'user-guide/logs/query-logs',
           ],
         },
-        'user-guide/cluster',
-        'user-guide/table-management',
         {
           type: 'category',
           label: 'Deployments',
@@ -183,6 +181,18 @@ const sidebars: SidebarsConfig = {
             'user-guide/operations/capacity-plan',
             {
               type: 'category',
+              label: 'Data Management',
+              items: [
+                'user-guide/operations/data-management/overview',
+                'user-guide/operations/data-management/basic-table-operations',
+                'user-guide/operations/data-management/table-sharding',
+                'user-guide/operations/data-management/region-migration',
+                'user-guide/operations/data-management/region-failover',
+                'user-guide/operations/data-management/compaction',
+              ],
+            },
+            {
+              type: 'category',
               label: 'Disaster Recovery',
               items: [
                 'user-guide/operations/disaster-recovery/overview',
@@ -196,9 +206,6 @@ const sidebars: SidebarsConfig = {
               label: 'Remote WAL',
               items: ['user-guide/operations/remote-wal/quick-start', 'user-guide/operations/remote-wal/cluster-deployment'],
             },
-            'user-guide/operations/region-migration',
-            'user-guide/operations/region-failover',
-            'user-guide/operations/compaction',
             {
               type: 'category',
               label: 'Monitoring',

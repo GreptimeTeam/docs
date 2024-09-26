@@ -171,6 +171,10 @@
     "message": "管理数据",
     "description": "The label for category Manage Data in sidebar docs"
   },
+  "sidebar.docs.category.Data Management": {
+    "message": "管理数据",
+    "description": "The label for category Data Management in sidebar docs"
+  },
   "sidebar.docs.category.Protocols": {
     "message": "协议",
     "description": "The label for category Manage Data in sidebar docs"

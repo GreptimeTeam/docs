@@ -8,6 +8,7 @@ This document addresses strategies and practices used in the operation of Grepti
 * Database Configuration, please read the [Configuration](/user-guide/deployments/configuration.md) reference.
 * [Monitoring metrics](/user-guide/operations/monitoring/export-metrics.md) and [Tracing](/user-guide/operations/monitoring/tracing.md) for GreptimeDB.
 * GreptimeDB [Disaster Recovery](/user-guide/operations/disaster-recovery/overview.md).
+* Cluster Failover for GreptimeDB by [Setting Remote WAL](./remote-wal/quick-start.md).
 
 ### Runtime information
 
@@ -32,15 +33,6 @@ ORDER BY datanode_id ASC
 ```
 
 The `INFORMATION_SCHEMA` database provides access to system metadata, such as the name of a database or table, the data type of a column, etc. Please read the [reference](/reference/sql/information-schema/overview.md).
-
-## Data management
-
-* [The Storage Location](/user-guide/concepts/storage-location.md).
-* Cluster Failover for GreptimeDB by [Setting Remote WAL](./remote-wal/quick-start.md).
-* [Flush and Compaction for Table & Region](/reference/sql/admin.md#admin-functions).
-* Partition the table by regions, read the [Table Sharding](/contributor-guide/frontend/table-sharding.md) reference.
-  * [Migrate the Region](./region-migration.md) for Load Balance.
-* [Expire Data by Setting TTL](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
 
 ## Best Practices
 
