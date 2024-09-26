@@ -26,6 +26,8 @@ CREATE TABLE `origin_logs` (
 
 ### 插入日志
 
+#### 使用 SQL 协议写入
+
 使用 `INSERT` 语句将日志插入表中。
 
 ```sql
@@ -37,6 +39,12 @@ INSERT INTO origin_logs (message, time) VALUES
 ```
 
 上述 SQL 将整个日志文本插入到一个列中，除此之外，您必须为每条日志添加一个额外的时间戳。
+
+#### 使用 gRPC 协议写入
+
+您也可以使用 gRPC 协议写入日志，这是一个更高效的方法。
+
+请参阅[使用 gRPC 写入数据](../ingest-data/for-iot/grpc-sdks/overview.md)以了解如何使用 gRPC 协议写入日志。
 
 ## 使用 Pipeline 写入日志
 

@@ -1,6 +1,6 @@
 # Overview
 
-This guide will demonstrate how to use client libraries to write and query data in GreptimeDB.
+This guide will demonstrate how to use client libraries to write data in GreptimeDB.
 
 - [Go](go.md)
 - [Java](java.md)

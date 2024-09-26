@@ -26,6 +26,8 @@ CREATE TABLE `origin_logs` (
 
 ### Insert logs
 
+#### Write logs using the SQL protocol
+
 Use the `INSERT` statement to insert logs into the table.
 
 ```sql
@@ -38,6 +40,12 @@ INSERT INTO origin_logs (message, time) VALUES
 
 The above SQL inserts the entire log text into a single column,
 and you must add an extra timestamp for each log.
+
+#### Write logs using the gRPC protocol
+
+You can also write logs using the gRPC protocol, which is a more efficient method.
+
+Refer to [Write Data Using gRPC](../ingest-data/for-iot/grpc-sdks/overview.md) to learn how to write logs using the gRPC protocol.
 
 ## Write logs by Pipeline
 
