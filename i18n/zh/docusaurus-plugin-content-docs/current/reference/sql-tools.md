@@ -270,6 +270,12 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
 
 你可以在 [Greptime 控制台](/getting-started/installation/greptimedb-dashboard.md)中运行 SQL 并可视化数据。
 
+## GUI 工具
+
+### DBeaver
+
+请参考 [DBeaver 集成指南](/user-guide/integrations/dbeaver.md)。
+
 <!-- TODO: GUI tools: Add Navicat, DBeaver, etc. -->
 
 ## HTTP API

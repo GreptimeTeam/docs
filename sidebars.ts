@@ -104,6 +104,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/superset',
             'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
+            'user-guide/integrations/dbeaver',
           ],
         },
         { type: 'category',
@@ -246,6 +247,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/superset',
             'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
+            'greptimecloud/integrations/dbeaver',
             {
               type: 'category',
               label: 'SDK Libraries',
