@@ -271,7 +271,23 @@ SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
 * `json_get_float(json, path)` to extract a float value from a JSON value by the path, while integer and boolean values will be converted to floats.
 * `json_get_string(json, path)` to extract a string value from a JSON value by the path. All valid JSON values will be converted to strings, including null values, objects and arrays.
 
-`path` is a string that select and extract elements from a json value. Checkout [SQL/JSONPath](https://github.com/datafuselabs/jsonb?tab=readme-ov-file#sqljsonpath) for supported `path` syntax.
+`path` is a string that select and extract elements from a json value. The following operators in the path are supported:
+
+| Operator                 | Description                                                  | Examples           |
+|--------------------------|--------------------------------------------------------------|--------------------|
+| `$`                      | The root element                                             | `$`                |
+| `@`                      | The current element in the filter expression                 | `$.event?(@ == 1)` |
+| `.*`                     | Selecting all elements in an Object                          | `$.*`              |
+| `.<name>`                | Selecting element that match the name in an Object           | `$.event`          |
+| `:<name>`                | Alias of `.<name>`                                           | `$:event`          |
+| `["<name>"]`             | Alias of `.<name>`                                           | `$["event"]`       |
+| `[*]`                    | Selecting all elements in an Array                           | `$[*]`             |
+| `[<pos>, ..]`            | Selecting 0-based `n-th` elements in an Array                | `$[1, 2]`          |
+| `[last - <pos>, ..]`     | Selecting `n-th` element before the last element in an Array | `$[0, last - 1]`   |
+| `[<pos1> to <pos2>, ..]` | Selecting all elements of a range in an Array                | `$[1 to last - 2]` |
+| `?(<expr>)`              | Selecting all elements that matched the filter expression    | `$?(@.price < 10)` |
+
+If the path is invalid, the function will return a NULL value.
 
 ```sql
 SELECT json_get_int(parse_json('{"a": {"c": 3}, "b": 2}'), 'a.c');
