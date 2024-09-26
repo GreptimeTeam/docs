@@ -375,9 +375,9 @@ default_ratio = 1.0
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/operations/tracing.md#指南如何配置-tracing-采样率)。
+- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/operations/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
-如何使用分布式追踪，请参考 [Tracing](/user-guide/operations/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
+如何使用分布式追踪，请参考 [Tracing](/user-guide/operations/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
 ### Region 引擎选项
 
@@ -471,7 +471,7 @@ tcp_nodelay = true
 ### 指标监控选项
 
 这些选项用于将系统监控指标保存到 GreptimeDB 本身。
-有关如何使用此功能的说明，请参见 [监控](/user-guide/operations/monitoring.md) 指南。
+有关如何使用此功能的说明，请参见 [监控](/user-guide/operations/monitoring/export-metrics.md) 指南。
 
 ```toml
 [export_metrics]

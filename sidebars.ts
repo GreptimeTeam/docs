@@ -199,8 +199,15 @@ const sidebars: SidebarsConfig = {
             'user-guide/operations/region-migration',
             'user-guide/operations/region-failover',
             'user-guide/operations/compaction',
-            'user-guide/operations/monitoring',
-            'user-guide/operations/tracing',
+            {
+              type: 'category',
+              label: 'Monitoring',
+              items: [
+                'user-guide/operations/monitoring/overview',
+                'user-guide/operations/monitoring/export-metrics',
+                'user-guide/operations/monitoring/tracing',
+              ],
+            },
             'user-guide/operations/performance-tuning-tips',
           ],
         },
