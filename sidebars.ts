@@ -104,6 +104,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/superset',
             'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
+            'user-guide/integrations/dbeaver',
           ],
         },
         { type: 'category',
@@ -205,8 +206,15 @@ const sidebars: SidebarsConfig = {
               label: 'Remote WAL',
               items: ['user-guide/operations/remote-wal/quick-start', 'user-guide/operations/remote-wal/cluster-deployment'],
             },
-            'user-guide/operations/monitoring',
-            'user-guide/operations/tracing',
+            {
+              type: 'category',
+              label: 'Monitoring',
+              items: [
+                'user-guide/operations/monitoring/overview',
+                'user-guide/operations/monitoring/export-metrics',
+                'user-guide/operations/monitoring/tracing',
+              ],
+            },
             'user-guide/operations/performance-tuning-tips',
           ],
         },
@@ -253,6 +261,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/superset',
             'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
+            'greptimecloud/integrations/dbeaver',
             {
               type: 'category',
               label: 'SDK Libraries',
@@ -300,6 +309,7 @@ const sidebars: SidebarsConfig = {
       label: 'Reference',
       items: [
         'reference/command-lines',
+        'reference/sql-tools',
         {
           type: 'category',
           label: 'SQL',

@@ -6,7 +6,7 @@
 
 * GreptimeDB 的 [安装](/getting-started/installation/overview.md) 和 [g-t-control](/reference/gtctl.md) 命令行工具。
 * 数据库配置，请阅读 [配置](/user-guide/deployments/configuration.md) 参考。
-* GreptimeDB 的 [监控](/user-guide/operations/monitoring.md) 和 [链路追踪](/user-guide/operations/tracing.md)。
+* GreptimeDB 的 [指标监控](/user-guide/operations/monitoring/export-metrics.md) 和 [链路追踪](/user-guide/operations/monitoring/tracing.md)。
 * GreptimeDB 的 [灾难恢复方案](/user-guide/operations/disaster-recovery/overview.md)。
 * 通过[设置 Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾。
 

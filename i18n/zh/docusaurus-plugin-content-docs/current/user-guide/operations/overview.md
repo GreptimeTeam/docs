@@ -4,6 +4,5 @@
 * [容量规划](./capacity-plan.md)
 * [数据管理](./data-management/overview.md)
 * [灾难恢复](./disaster-recovery/overview.md)
-* [监控](./monitoring.md)
-* [Tracing](./tracing.md)
+* [监控](./monitoring/overview.md)
 * [Remote WAL](./remote-wal/quick-start.md)
