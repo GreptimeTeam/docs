@@ -197,4 +197,4 @@ greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=12
 
 ### 升级 GreptimeDB 版本
 
-请参考具体的[升级步骤](/user-guide/upgrade.md)
+请参考具体的[升级步骤](/user-guide/operations/upgrade.md)

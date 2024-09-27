@@ -216,9 +216,9 @@ const sidebars: SidebarsConfig = {
               ],
             },
             'user-guide/operations/performance-tuning-tips',
+            'user-guide/operations/upgrade',
           ],
         },
-        'user-guide/upgrade',
       ],
     },
     {
