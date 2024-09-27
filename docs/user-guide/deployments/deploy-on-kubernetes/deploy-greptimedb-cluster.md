@@ -81,8 +81,8 @@ helm install greptimedb \
   -n greptimedb-cluster
 ```
 
-### Using RemoteWAL and enable the Region Failover
-If you want to enable RemoteWAL and region failover, follow this configuration. You’ll need a Kafka cluster running, and you can use its endpoint like `kafka.kafka-cluster.svc.cluster.local:9092`:
+### Using Remote WAL and enable the Region Failover
+If you want to enable Remote WAL and region failover, follow this configuration. You’ll need a Kafka cluster running, and you can use its endpoint like `kafka.kafka-cluster.svc.cluster.local:9092`:
 
 ```bash
 helm install greptimedb \
