@@ -6,3 +6,4 @@
 * [灾难恢复](./disaster-recovery/overview.md)
 * [监控](./monitoring/overview.md)
 * [Remote WAL](./remote-wal/quick-start.md)
+* [Upgrade](upgrade.md)

@@ -6,3 +6,4 @@
 * [Disaster Recovery](./disaster-recovery/overview.md)
 * [Monitoring](./monitoring/overview.md)
 * [Remote WAL](./remote-wal/quick-start.md)
+* [Upgrade](./upgrade.md)
