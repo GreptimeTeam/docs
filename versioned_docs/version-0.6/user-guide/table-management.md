@@ -109,7 +109,7 @@ Therefore, it is important to carefully design your data model before creating t
 GreptimeDB supports a limited set of special characters in table names, but they must adhere to the following constraints:
 - A valid GreptimeDB table name must start with a letter (either lowercase or uppercase) or `-` / `_` / `:`.
 - The rest part of table name can be alphanumeric or special characters within: `-` / `_` / `:`.
-- When creating tables through MySQL protocol, any table name containing special characters must be quoted with backquotes.
+- Any table name containing special characters must be quoted with backquotes.
 
 Here are some examples:
 ```sql
