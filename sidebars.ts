@@ -214,6 +214,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/administration/monitoring/tracing',
               ],
             },
+            'user-guide/administration/runtime-info',
             'user-guide/administration/performance-tuning-tips',
             'user-guide/administration/upgrade',
           ],
