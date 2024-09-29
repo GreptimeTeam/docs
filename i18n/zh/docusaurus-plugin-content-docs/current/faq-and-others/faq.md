@@ -58,7 +58,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
 
-For more information, refer to [this document](/user-guide/operations/data-management/basic-table-operations.md#create-table).
+For more information, refer to [this document](/user-guide/administration/data-management/basic-table-operations.md#create-table).
 
 ### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 
@@ -184,7 +184,7 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-For more general advice for deployment, please read [Capacity Plan](/user-guide/operations/capacity-plan.md).
+For more general advice for deployment, please read [Capacity Plan](/user-guide/administration/capacity-plan.md).
 
 ### Does GreptimeDB support inverted indexes, and does it use Tantivy?
 

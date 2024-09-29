@@ -66,4 +66,4 @@ ALIGN '5s' BY (host) FILL PREV
 * [集成](./integrations/overview.md)
 * [协议](./protocols/overview.md)
 * [持续聚合](./continuous-aggregation/overview.md)
-* [运维操作](./operations/overview.md)
+* [运维操作](./administration/overview.md)

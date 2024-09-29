@@ -1,4 +1,4 @@
-# Upgrade
+# 版本升级
 
 从 `v0.4` 开始，我们提供了一个内置的工具来帮助您将以前的 GreptimeDB 部署升级到最新版本。
 如果不同版本之间有 Breaking Change，我们都建议使用此方法在不同版本的 GreptimeDB 之间进行迁移升级。

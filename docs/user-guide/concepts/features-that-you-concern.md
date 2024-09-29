@@ -58,4 +58,4 @@ Please read the performance benchmark reports:
 
 ## Does GreptimeDB have disaster recovery solutions?
 
-Yes. Please refer to [disaster recovery](/user-guide/operations/disaster-recovery/overview.md).
+Yes. Please refer to [disaster recovery](/user-guide/administration/disaster-recovery/overview.md).

@@ -6,8 +6,8 @@ This document addresses strategies and practices used in the operation of Grepti
 
 * [Installation](/getting-started/installation/overview.md) for GreptimeDB and the [g-t-control](/reference/gtctl.md) command line tool.
 * Database Configuration, please read the [Configuration](/user-guide/deployments/configuration.md) reference.
-* [Monitoring metrics](/user-guide/operations/monitoring/export-metrics.md) and [Tracing](/user-guide/operations/monitoring/tracing.md) for GreptimeDB.
-* GreptimeDB [Disaster Recovery](/user-guide/operations/disaster-recovery/overview.md).
+* [Monitoring metrics](/user-guide/administration/monitoring/export-metrics.md) and [Tracing](/user-guide/administration/monitoring/tracing.md) for GreptimeDB.
+* GreptimeDB [Disaster Recovery](/user-guide/administration/disaster-recovery/overview.md).
 * Cluster Failover for GreptimeDB by [Setting Remote WAL](./remote-wal/quick-start.md).
 
 ### Runtime information
@@ -36,4 +36,4 @@ The `INFORMATION_SCHEMA` database provides access to system metadata, such as th
 
 ## Best Practices
 
-* [Performance Tuning Tips](/user-guide/operations/performance-tuning-tips.md)
+* [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips.md)

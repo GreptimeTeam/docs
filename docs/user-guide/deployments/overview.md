@@ -18,7 +18,7 @@ Learn how to [run GreptimeDB on Android devices](run-on-android.md).
 
 ## Capacity plan
 
-Understand how to [plan for capacity](/user-guide/operations/capacity-plan.md) to ensure your GreptimeDB deployment can handle your workload.
+Understand how to [plan for capacity](/user-guide/administration/capacity-plan.md) to ensure your GreptimeDB deployment can handle your workload.
 
 ## GreptimeCloud
 

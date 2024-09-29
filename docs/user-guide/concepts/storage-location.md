@@ -33,7 +33,7 @@ The storage file structure of GreptimeDB includes of the following:
 
 The `data` directory in the file structure can be stored in cloud storage. Please refer to [Storage option](../deployments/configuration.md#storage-options) for more details.
 
-Please note that only storing the data directory in object storage is not sufficient to ensure data reliability and disaster recovery. The `wal` and `metadata` also need to be considered for disaster recovery. Please refer to the [disaster recovery documentation](/user-guide/operations/disaster-recovery/overview.md).
+Please note that only storing the data directory in object storage is not sufficient to ensure data reliability and disaster recovery. The `wal` and `metadata` also need to be considered for disaster recovery. Please refer to the [disaster recovery documentation](/user-guide/administration/disaster-recovery/overview.md).
 
 ## Multiple storage engines
 
