@@ -314,4 +314,4 @@ CREATE DATABASE test WITH ('ttl'='7d');
 
 ## 更多数据管理操作
 
-有关更高级的数据管理操作，例如基本表操作、表分片和 Region 迁移，请参阅 Administration 部分的[数据管理](/user-guide/administration/data-management/overview.md)。
+有关更高级的数据管理操作，例如基本表操作、表分片和 Region 迁移，请参阅 Administration 部分的[数据管理](/user-guide/administration/manage-data/overview.md)。

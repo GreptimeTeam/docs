@@ -1,6 +1,6 @@
 # Region Failover
 
-Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/administration/data-management/region-migration.md).
+Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/administration/manage-data/region-migration.md).
 
 ## Enable the Region Failover
 

@@ -57,7 +57,7 @@ Please check out our initial version on [GitHub Repo](https://github.com/Greptim
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
 
-For more information, refer to [this document](/user-guide/administration/data-management/basic-table-operations.md#create-table).
+For more information, refer to [this document](/user-guide/administration/manage-data/basic-table-operations.md#create-table).
 
 ### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
 

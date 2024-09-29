@@ -180,14 +180,14 @@ const sidebars: SidebarsConfig = {
             'user-guide/administration/capacity-plan',
             {
               type: 'category',
-              label: 'Data Management',
+              label: 'Manage Data',
               items: [
-                'user-guide/administration/data-management/overview',
-                'user-guide/administration/data-management/basic-table-operations',
-                'user-guide/administration/data-management/table-sharding',
-                'user-guide/administration/data-management/region-migration',
-                'user-guide/administration/data-management/region-failover',
-                'user-guide/administration/data-management/compaction',
+                'user-guide/administration/manage-data/overview',
+                'user-guide/administration/manage-data/basic-table-operations',
+                'user-guide/administration/manage-data/table-sharding',
+                'user-guide/administration/manage-data/region-migration',
+                'user-guide/administration/manage-data/region-failover',
+                'user-guide/administration/manage-data/compaction',
               ],
             },
             {

@@ -4,7 +4,7 @@
 
 ## 分区
 
-有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/administration/data-management/table-sharding.md)部分。
+有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/administration/manage-data/table-sharding.md)部分。
 
 ## Region
 

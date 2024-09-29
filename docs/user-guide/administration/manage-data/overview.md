@@ -6,5 +6,5 @@
 * [Expire Data by Setting TTL](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies)
 * [Table Sharding](table-sharding.md): Partition tables by regions
 * [Region Migration](region-migration.md): Migrate regions for load balancing
-* [Region Failover](/user-guide/administration/data-management/region-failover.md)
+* [Region Failover](/user-guide/administration/manage-data/region-failover.md)
 * [Compaction](compaction.md)
