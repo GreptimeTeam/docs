@@ -177,7 +177,6 @@ const sidebars: SidebarsConfig = {
           label: 'Administration',
           items: [
             'user-guide/administration/overview',
-            'user-guide/administration/admin',
             'user-guide/administration/capacity-plan',
             {
               type: 'category',
