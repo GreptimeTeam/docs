@@ -15,7 +15,7 @@ psql -h <host> -p 4003 -U <username> -d public
 
 ## Table management
 
-Please refer to [Table Management](/user-guide/operations/data-management/basic-table-operations.md).
+Please refer to [Table Management](/user-guide/administration/manage-data/basic-table-operations.md).
 
 ## Ingest data
 

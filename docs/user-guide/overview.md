@@ -66,5 +66,5 @@ Having understood these features, you can now go directly to exploring the featu
 * [Integrations](./integrations/overview.md)
 * [Protocols](./protocols/overview.md)
 * [Continuous Aggregation](./continuous-aggregation/overview.md)
-* [Operations](./operations/overview.md)
+* [Operations](./administration/overview.md)
 

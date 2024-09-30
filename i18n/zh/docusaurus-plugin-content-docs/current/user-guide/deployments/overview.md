@@ -20,7 +20,7 @@ GreptimeDB 默认不启用鉴权认证。
 
 ## 容量规划
 
-了解如何[规划容量](/user-guide/operations/capacity-plan.md)以确保你的 GreptimeDB 部署能够处理你的工作负载。
+了解如何[规划容量](/user-guide/administration/capacity-plan.md)以确保你的 GreptimeDB 部署能够处理你的工作负载。
 
 ## GreptimeCloud
 

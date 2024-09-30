@@ -1,6 +1,6 @@
 # Region Failover
 
-Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/operations/data-management/region-migration.md) 实现的。
+Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/administration/manage-data/region-migration.md) 实现的。
 
 ## 开启 Region Failover 
 

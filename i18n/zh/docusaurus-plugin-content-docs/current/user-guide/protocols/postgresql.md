@@ -14,7 +14,7 @@ psql -h <host> -p 4003 -U <username> -d public
 
 ## 管理表
 
-请参考[管理表](/user-guide/operations/data-management/basic-table-operations.md)。
+请参考[管理表](/user-guide/administration/manage-data/basic-table-operations.md)。
 
 ## 写入数据
 
