@@ -8,7 +8,7 @@
 mysql -h <host> -P 4002 -u <username> -p
 ```
 
-- 请参考[鉴权认证](/user-guide/deployments/authentication.md) 来设置 GreptimeDB 的用户名和密码。
+- 请参考[鉴权认证](/user-guide/deployments/authentication/overview.md) 来设置 GreptimeDB 的用户名和密码。
 - 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/deployments/configuration.md#协议选项)。
 
 

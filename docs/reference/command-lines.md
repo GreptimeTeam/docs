@@ -105,7 +105,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/deployments/authentication.md);
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/deployments/authentication/overview.md);
 
 ### Flownode subcommand options
 
