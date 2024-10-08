@@ -12,19 +12,6 @@ This guide provides a walkthrough on how to deploy a GreptimeDB cluster on Kuber
 
 - [Helm v3](https://helm.sh/docs/intro/install/): A package manager for Kubernetes.
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl): A command-line tool for interacting with Kubernetes clusters.
-
-## Add Helm repository
-
-Use the command below to add the GreptimeDB Helm chart repository.
-
-```shell
-helm repo add greptime https://greptimeteam.github.io/helm-charts/
-helm repo update
-```
-
-You can find the maintained [Helm charts](https://github.com/GreptimeTeam/helm-charts) in the GitHub repository.
-
 ## Components
 
 The deployment on Kubernetes involves the following components:
@@ -37,6 +24,6 @@ The deployment on Kubernetes involves the following components:
 
 To deploy GreptimeDB on Kubernetes, follow these steps:
 
-- [GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md): This section guides you on installing the GreptimeDB Operator.
+- [Deploy GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md): This section guides you on installing the GreptimeDB Operator.
 - [Deploy GreptimeDB Cluster](deploy-greptimedb-cluster.md): This section provides instructions on how to deploy etcd cluster and GreptimeDB cluster on Kubernetes.
 - [Destroy Cluster](destroy-cluster.md): This section describes how to uninstall the GreptimeDB Operator and the GreptimeDB cluster.
