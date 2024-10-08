@@ -78,3 +78,4 @@ greptime standalone start --user-provider=ldap_user_provider:/home/greptimedb/ld
 :::tip 注意
 如果你使用 MySQL CLI 连接到配置了 LDAP User Provider 的 GreptimeDB，你需要在 MySQL CLI 中指定
 `--enable-cleartext-plugin`。
+:::
