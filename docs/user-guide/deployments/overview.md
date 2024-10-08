@@ -6,7 +6,7 @@ Before deploying GreptimeDB, you need to [configure the server](configuration.md
 
 ## Authentication
 
-By default, GreptimeDB does not have authentication enabled. Learn how to [configure authentication](authentication.md) for your deployment manually.
+By default, GreptimeDB does not have authentication enabled. Learn how to [configure authentication](./authentication/overview.md) for your deployment manually.
 
 ## Deploy on Kubernetes
 

@@ -151,7 +151,15 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/deployments/overview',
             'user-guide/deployments/configuration',
-            'user-guide/deployments/authentication',
+            {
+              type: 'category',
+              label: 'Authentication',
+              items: [
+                'user-guide/deployments/authentication/overview',
+                'user-guide/deployments/authentication/static',
+                'user-guide/deployments/authentication/ldap',
+              ],
+            },
             {
               type: 'category',
               label: 'Deploy on Kubernetes',

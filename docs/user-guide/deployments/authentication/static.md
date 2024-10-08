@@ -1,6 +1,6 @@
-# Authentication
+# Static User Provider
 
-Authentication occurs when a user attempts to connect to the database. GreptimeDB offers a simple built-in mechanism for authentication, allowing users to configure either a fixed account for convenient usage or an account file for multiple user accounts. By passing in a file, GreptimeDB loads all users listed within it.
+GreptimeDB offers a simple built-in mechanism for authentication, allowing users to configure either a fixed account for convenient usage or an account file for multiple user accounts. By passing in a file, GreptimeDB loads all users listed within it.
 
 GreptimeDB reads the user and password on each line using `=` as a separator, just like a command-line config. For example:
 

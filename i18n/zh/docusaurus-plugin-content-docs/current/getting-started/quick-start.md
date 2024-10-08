@@ -13,7 +13,7 @@ GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)与数据库�
 并且使用 MySQL 客户端默认端口 `4002` 或 PostgreSQL 客户端默认端口 `4003`，
 你可以使用以下命令连接到数据库。
 
-GreptimeDB 默认不开启[鉴权认证](/user-guide/deployments/authentication.md)。
+GreptimeDB 默认不开启[鉴权认证](/user-guide/deployments/authentication/overview.md)。
 在本章节中你可以在连接数据库时不提供用户名密码。
 
 ```shell
