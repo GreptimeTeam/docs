@@ -6,7 +6,7 @@
 
 :::
 
-# LDAP user provider 配置
+## 配置
 
 GreptimeDB 可以使用外部 LDAP 服务以验证用户。与 [PostgreSQL 中的 LDAP 机制相似](https://www.postgresql.org/docs/current/auth-ldap.html)， 在 GreptimeDB 中，LDAP 鉴权也分为两种模式："simple bind" 和 "search bind"。
 
@@ -63,9 +63,9 @@ search_attribute = "cn"
 search_filter = "(cn=$username)"
 ```
 
-# 在 GreptimeDB 中使用 LDAP user provider
+## 在 GreptimeDB 中使用 LDAP User Provider
 
-要使用 LDAP user provider，首先参照上文配置你的 LDAP 鉴权模式，然后在启动 GreptimeDB 时使用 `--user-provider` 参数，将其设置为
+要使用 LDAP User Provider，首先参照上文配置你的 LDAP 鉴权模式，然后在启动 GreptimeDB 时使用 `--user-provider` 参数，将其设置为
 `ldap_user_provider:<ldap 配置文件路径>`。例如，如果你有一个配置文件是 `/home/greptimedb/ldap.toml`，你可以使用以下命令启动一个
 standalone GreptimeDB：
 
@@ -75,5 +75,6 @@ greptime standalone start --user-provider=ldap_user_provider:/home/greptimedb/ld
 
 现在你就可以使用你的 LDAP 用户账户创建一个连接到 GreptimeDB 了。
 
-> 注意：如果你使用 mysql cli 连接到配置了 LDAP user provider 的 GreptimeDB，你需要在 mysql cli 中指定
+:::tip 注意
+如果你使用 MySQL CLI 连接到配置了 LDAP User Provider 的 GreptimeDB，你需要在 MySQL CLI 中指定
 `--enable-cleartext-plugin`。

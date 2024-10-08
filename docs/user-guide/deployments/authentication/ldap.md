@@ -1,4 +1,4 @@
-# LDAP user provider
+# LDAP User Provider
 
 :::tip NOTE
 
@@ -6,7 +6,7 @@
 
 :::
 
-# LDAP user provider configuration
+## Configuration
 
 GreptimeDB can connect to an external LDAP server to authenticate users. Similar to [LDAP in PostgreSQL](https://www.postgresql.org/docs/current/auth-ldap.html), in GreptimeDB, LDAP authentication is
 operated in two modes: "simple bind" and "search bind", too.
@@ -68,11 +68,11 @@ search_attribute = "cn"
 search_filter = "(cn=$username)"
 ```
 
-# Use LDAP user provider in GreptimeDB
+## Use LDAP user provider in GreptimeDB
 
 To use the LDAP user provider, first config your LDAP authentication mode like above, then start GreptimeDB with the
 `--user-provider` parameter set to `ldap_user_provider:<path to your ldap configuration file>`. For example, if you have
-a configuration file in `/home/greptimedb/ldap.toml`, you can start a GreptimeDB standalone server with the following
+a configuration file `/home/greptimedb/ldap.toml`, you can start a GreptimeDB standalone server with the following
 command:
 
 ```shell
@@ -81,5 +81,7 @@ greptime standalone start --user-provider=ldap_user_provider:/home/greptimedb/ld
 
 Now you can create a connection to GreptimeDB using your LDAP user accounts.
 
-> Note that if you are using the mysql cli to connect to GreptimeDB that is configured with LDAP user provider, you need
-> to specify the `--enable-cleartext-plugin` in the mysql cli.
+:::tip NOTE
+If you are using the MySQL CLI to connect to GreptimeDB that is configured with LDAP user provider, you need
+to specify the `--enable-cleartext-plugin` in the MySQL CLI.
+:::
