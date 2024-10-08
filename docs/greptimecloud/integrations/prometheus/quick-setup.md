@@ -1,15 +1,17 @@
-# Quick Setup
+# Prometheus
 
-GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
-This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
-For more information, please refer to the [Prometheus documentation](https://docs.greptime.com/user-guide/integrations/prometheus) in the GreptimeDB user guide.
+GreptimeCloud with GreptimeDB is fully compatible with Prometheus. This ensures
+a seamless transition, allowing you to use GreptimeCloud as a direct replacement
+for Prometheus. For more details, please refer to the [Prometheus
+documentation](https://docs.greptime.com/user-guide/integrations/prometheus) in
+the GreptimeDB user guide.
 
-## Remote Write and Read
+## Prometheus Remote Write
 
 GreptimeCloud instance can be configured as a Prometheus [remote write
-endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) and [remote read endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_read).
+endpoint](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write).
 
-Add the following section to your prometheus configuration.
+Append the following section to your Prometheus configuration.
 
 ```yaml
 remote_write:
@@ -18,28 +20,30 @@ remote_write:
       username: <username>
       password: <password>
 
-remote_read:
-  - url: https://<host>/v1/prometheus/read?db=<dbname>
-    basic_auth:
-      username: <username>
-      password: <password>
 ```
 
-## Rule Management
+## Prometheus HTTP API and PromQL
 
-Each GreptimeCloud service comes with a git repository for storing prometheus
-rules and configurations. By checking your rules, GreptimeCloud's
-prometheus-compatible rule engine evaluates your rules against data stored in
-the database and emits alert when matches. For more details, please refer to [Rule Management](https://docs.greptime.com/greptimecloud/integrations/prometheus/rule-management).
+Directly access this database through Prometheus API endpoint:
+
+- URL root: `https://<host>/v1/prometheus`
+- Database name: include HTTP header `x-greptime-db-name` with value `<dbname>`
+- Authentication: utilize Basic authentication using the instance's username and
+  password
+
+This is an example of invoking the Prometheus HTTP API to ping:
 
 ```shell
-git clone https://<host>/promrules/git/<dbname>.git
-# Copy your prometheus.yml and rules into this repo, and commit them
-git add .
-git commit -m "sync prometheus configuration"
-git push
+curl -X GET \
+  -H "x-greptime-db-name: <dbname>" \
+  -u "<username>:<password>" \
+  "https://<host>/v1/prometheus/api/v1/query?query=1"
 ```
 
-## PromQL
+GreptimeDB supports PromQL (Prometheus Query Language). This means that you can
+use GreptimeDB as a drop-in replacement for Prometheus, with Grafana or any
+other tools.
 
-GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/integrations/prometheus#prometheus-query-language) for more details.
+Please refer to
+[PromQL](https://docs.greptime.com/user-guide/integrations/prometheus#prometheus-query-language)
+for more details.
