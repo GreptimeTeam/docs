@@ -4,10 +4,5 @@
 provider 实现：
 
 - [Static user provider](./static.md)：一个简单的内置 user provider 实现，从静态文件中查找用户。
-- [LDAP user provider](./ldap.md)：使用外部 LDAP 服务进行用户身份验证。
+- [LDAP user provider](./ldap.md)：**企业版功能。**使用外部 LDAP 服务进行用户身份验证。
 
-:::tip NOTE
-
-**LDAP user provider 是 GreptimeDB 企业版的功能。**
-
-:::
