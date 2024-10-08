@@ -193,7 +193,7 @@ helm install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/char
 # gRPC 端口：4001
 # MySQL 端口：4002
 # PostgreSQL 端口：4003
-kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4000:
+kubectl port-forward -n greptimedb-cluster svc/greptimedb-frontend 4000:4000 4001:4001 4002:4002 4003:4003 > connections.out &
 ```
 
 然后就可以使用 MySQL 客户端来[连接到集群](/user-guide/protocols/mysql.md#连接到服务端)。
