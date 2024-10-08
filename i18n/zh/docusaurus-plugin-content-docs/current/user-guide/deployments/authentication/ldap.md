@@ -1,4 +1,4 @@
-# LDAP user provider
+# LDAP User Provider
 
 :::tip NOTE
 
