@@ -111,8 +111,8 @@ helm install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/char
   -n greptimedb-cluster
 ```
 
-### 静态身份验证
-要为 GreptimeDB 集群启用静态身份验证，您可以在安装期间通过 auth 设置配置用户凭据。以下是示例：
+### 鉴权认证
+要为 GreptimeDB 集群启用鉴权认证，您可以在安装期间通过 auth 设置配置用户凭据。以下是示例：
 
 ```bash
 helm install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
@@ -127,7 +127,7 @@ helm install greptimedb oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/char
   -n greptimedb-cluster
 ```
 
-### 资源请求与限制
+### 资源用量与限制
 要控制资源分配（CPU 和内存），请修改 Helm 安装命令，如下所示：
 
 ```bash
@@ -155,7 +155,7 @@ curl -sLo values.yaml https://raw.githubusercontent.com/GreptimeTeam/helm-charts
 
 您可以通过在 `configData` 字段中指定自定义设置来配置各个组件。更多详细信息，请参阅[配置](../configuration.md)文档。
 
-以下是如何修改 `values.yaml` 文件设置的示例。此示例展示了如何配置 GreptimeDB 中的特定组件。它将 metasrv 的选择器类型设置为 `round_robin`，通过将 datanode 的 Mito 引擎的 `global_write_buffer_size` 设置为 `4GB` 来调整配置，并将 frontend 的 meta 客户端 `ddl_timeout` 设置为 `60s`：
+以下是如何修改 `values.yaml` 文件设置的示例。此示例展示了如何配置 GreptimeDB 中的特定组件。它将 metasrv 的 selector 类型设置为 `round_robin`，通过将 datanode 的 Mito 引擎的 `global_write_buffer_size` 设置为 `4GB` 来调整配置，并将 frontend 的 meta 客户端 `ddl_timeout` 设置为 `60s`：
 
 ```yaml
 meta:
