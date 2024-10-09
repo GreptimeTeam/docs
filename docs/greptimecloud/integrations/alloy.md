@@ -1,6 +1,6 @@
 # Alloy
 
-Grafana Alloy is an observability data pipeline as well as an OpenTelemetry
+[Grafana Alloy](https://grafana.com/docs/alloy/latest/) is an observability data pipeline as well as an OpenTelemetry
 collector distribution. You can integrate your GreptimeCloud instance as data
 sinks of Alloy.
 

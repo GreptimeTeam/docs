@@ -1,6 +1,6 @@
 # Kafka
 
-如果您正在使用 Kafka 或兼容 Kafka 的消息队列来传输可观测性数据，可以直接将数据摄取到 GreptimeDB 中。
+如果您正在使用 Kafka 或兼容 Kafka 的消息队列来传输可观测性数据，可以直接将数据写入到 GreptimeDB 中。
 在这里，我们使用 Vector 作为工具，将数据从 Kafka 传输到 GreptimeDB。
 
 ## Logs
