@@ -253,11 +253,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Integrations',
           items: [
-            {
-              type: 'category',
-              label: 'Prometheus',
-              items: ['greptimecloud/integrations/prometheus/quick-setup', 'greptimecloud/integrations/prometheus/rule-management'],
-            },
+            'greptimecloud/integrations/prometheus',
             'greptimecloud/integrations/grafana',
             'greptimecloud/integrations/mysql',
             'greptimecloud/integrations/postgresql',
