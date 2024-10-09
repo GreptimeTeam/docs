@@ -262,6 +262,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/mysql',
             'greptimecloud/integrations/postgresql',
             'greptimecloud/integrations/influxdb',
+            'greptimecloud/integrations/kafka',
             'greptimecloud/integrations/otlp',
             'greptimecloud/integrations/vector',
             'greptimecloud/integrations/emqx',
