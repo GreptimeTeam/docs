@@ -265,6 +265,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/kafka',
             'greptimecloud/integrations/otlp',
             'greptimecloud/integrations/vector',
+            'greptimecloud/integrations/alloy',
             'greptimecloud/integrations/emqx',
             'greptimecloud/integrations/streamlit',
             'greptimecloud/integrations/superset',
