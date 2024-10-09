@@ -20,3 +20,27 @@ The request uses binary protobuf to encode the payload, so you need to use packa
 :::tip NOTE
 The package names may change according to OpenTelemetry, so we recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
 :::
+
+## OpenTelemetry Collector
+
+We recommend [Grafana Alloy](https://grafana.com/docs/alloy/latest/) as Otel
+collector if you use OpenTelemetry transformation or other advanced features.
+
+A sample configuration for exporting to GreptimeDB:
+
+```
+otelcol.exporter.otlphttp "greptimedb" {
+  client {
+    endpoint = "https://<host>/v1/otlp/"
+    headers  = {
+      "X-Greptime-DB-Name" = "<dbname>",
+    }
+    auth     = otelcol.auth.basic.credentials.handler
+  }
+}
+
+otelcol.auth.basic "credentials" {
+  username = "<username>"
+  password = "<password>"
+}
+```
