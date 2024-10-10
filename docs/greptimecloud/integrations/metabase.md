@@ -4,7 +4,7 @@
 written in Clojure. You can configure GreptimeDB as a metabase data source from
 a community driver plugin.
 
-See [our docs](https://docs.greptime.com/user-guide/integrations/metabase) for
+See [our docs](https://docs.greptime.com/nightly/user-guide/integrations/metabase) for
 the instructions of plugin installation.
 
 ## Connection information

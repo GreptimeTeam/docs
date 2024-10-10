@@ -6,7 +6,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 ## GreptimeDB 数据源插件
 
 在使用 GreptimeDB 数据源之前，需要手动安装 GreptimeDB 数据源插件。
-有关更多信息，请参考 [使用 GreptimeDB 数据源文档](https://docs.greptime.cn/user-guide/integrations/grafana#greptimedb-数据源插件)。
+有关更多信息，请参考 [使用 GreptimeDB 数据源文档](https://docs.greptime.cn/nightly/user-guide/integrations/grafana#greptimedb-数据源插件)。
 
 在 Grafana 中单击 Add data source 按钮，选择 GreptimeDB 作为类型。
 
@@ -62,5 +62,3 @@ https://<host>/v1/prometheus
 
 注意目前我们只能使用 SQL 创建 Grafana Panel。由于时间戳数据类型的区别，Grafana
 的 SQL Builder 暂时无法选择时间戳字段。
-
-
