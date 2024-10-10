@@ -6,7 +6,7 @@
 ## Logs
 
 以下是一个示例配置。请注意，您需要创建您的
-[Pipeline](https://docs.greptime.com/user-guide/logs/pipeline-config/) 用于日志
+[Pipeline](https://docs.greptime.com/nightly/user-guide/logs/pipeline-config/) 用于日志
 解析。
 
 ```toml

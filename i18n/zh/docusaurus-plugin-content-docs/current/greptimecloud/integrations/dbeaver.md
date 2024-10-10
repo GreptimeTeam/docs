@@ -18,5 +18,4 @@
 
 点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
 
-有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](https://docs.greptime.cn/user-guide/protocols/mysql.md)。
-
+有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](https://docs.greptime.cn/nightly/user-guide/protocols/mysql.md)。

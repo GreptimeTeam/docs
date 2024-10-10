@@ -4,7 +4,7 @@
 in Python. You can configure GreptimeDB as a metabase data source from python
 package.
 
-See [our docs](https://docs.greptime.com/user-guide/integrations/superset) for
+See [our docs](https://docs.greptime.com/nightly/user-guide/integrations/superset) for
 the instructions of plugin installation.
 
 ## Connection information
