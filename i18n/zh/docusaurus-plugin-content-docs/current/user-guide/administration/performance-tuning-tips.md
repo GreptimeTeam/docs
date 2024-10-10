@@ -65,6 +65,7 @@ experimental_write_cache_ttl = "8h"
 ```toml
 [[region_engine]]
 [region_engine.mito]
+enable_experimental_write_cache = true
 # 写入缓存的缓存大小。此缓存的 `type` 标签值为 `file`。
 experimental_write_cache_size = "10G"
 # SST 元数据的缓存大小。此缓存的 `type` 标签值为 `sst_meta`。

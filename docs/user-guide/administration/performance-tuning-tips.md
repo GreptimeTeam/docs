@@ -65,6 +65,7 @@ Here's an example:
 ```toml
 [[region_engine]]
 [region_engine.mito]
+enable_experimental_write_cache = true
 # Cache size for the write cache. The `type` label value for this cache is `file`.
 experimental_write_cache_size = "10G"
 # Cache size for SST metadata. The `type` label value for this cache is `sst_meta`.
