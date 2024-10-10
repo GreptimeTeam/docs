@@ -23,7 +23,7 @@ The package names may change according to OpenTelemetry, so we recommend that yo
 
 ## OpenTelemetry Collector
 
-We recommend [Grafana Alloy](https://grafana.com/docs/alloy/latest/) as Otel
+We recommend [Grafana Alloy](https://grafana.com/docs/alloy/latest/) as OTel
 collector if you use OpenTelemetry transformation or other advanced features.
 
 A sample configuration for exporting to GreptimeDB:

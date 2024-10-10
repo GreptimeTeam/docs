@@ -19,7 +19,7 @@ The package names may change according to OpenTelemetry, so we recommend that yo
 
 ## OpenTelemetry Collector
 
-如果你使用单独的 Otel 收集器，我们推荐更加成熟的 [Grafana
+如果你使用单独的 OTel 收集器，我们推荐更加成熟的 [Grafana
 Alloy](https://grafana.com/docs/alloy/latest/)
 
 一个简单输出到 GreptimeDB 的配置例子：
