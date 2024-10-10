@@ -233,7 +233,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'GreptimeCloud',
       items: [
-        'greptimecloud/overview',
+        'greptimecloud/index',
         {
           type: 'category',
           label: 'Getting Started',
@@ -253,17 +253,15 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Integrations',
           items: [
-            {
-              type: 'category',
-              label: 'Prometheus',
-              items: ['greptimecloud/integrations/prometheus/quick-setup', 'greptimecloud/integrations/prometheus/rule-management'],
-            },
+            'greptimecloud/integrations/prometheus',
             'greptimecloud/integrations/grafana',
             'greptimecloud/integrations/mysql',
             'greptimecloud/integrations/postgresql',
             'greptimecloud/integrations/influxdb',
+            'greptimecloud/integrations/kafka',
             'greptimecloud/integrations/otlp',
             'greptimecloud/integrations/vector',
+            'greptimecloud/integrations/alloy',
             'greptimecloud/integrations/emqx',
             'greptimecloud/integrations/streamlit',
             'greptimecloud/integrations/superset',

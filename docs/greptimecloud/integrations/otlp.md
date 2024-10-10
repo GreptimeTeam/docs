@@ -1,10 +1,14 @@
-# OpenTelemetry Protocol(OTLP)
+# OpenTelemetry
 
-GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
+GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively
+via [OTLP](https://opentelemetry.io/docs/specs/otlp/) protocol. You can
+configure GreptimeDB as an OpenTelemetery collector for your applications or
+agents.
 
-### API
+## OpenTelemetry API/SDK
 
-To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
+To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries,
+use the following information:
 
 * URL: `https://<host>/v1/otlp/v1/metrics`
 * Headers:
@@ -17,5 +21,26 @@ The request uses binary protobuf to encode the payload, so you need to use packa
 The package names may change according to OpenTelemetry, so we recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
 :::
 
-For more information about the OpenTelemetry SDK, please refer to the official documentation for your preferred programming language.
+## OpenTelemetry Collector
 
+We recommend [Grafana Alloy](https://grafana.com/docs/alloy/latest/) as OTel
+collector if you use OpenTelemetry transformation or other advanced features.
+
+A sample configuration for exporting to GreptimeDB:
+
+```
+otelcol.exporter.otlphttp "greptimedb" {
+  client {
+    endpoint = "https://<host>/v1/otlp/"
+    headers  = {
+      "X-Greptime-DB-Name" = "<dbname>",
+    }
+    auth     = otelcol.auth.basic.credentials.handler
+  }
+}
+
+otelcol.auth.basic "credentials" {
+  username = "<username>"
+  password = "<password>"
+}
+```

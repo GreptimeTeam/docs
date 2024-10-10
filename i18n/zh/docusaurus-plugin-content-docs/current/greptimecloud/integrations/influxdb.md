@@ -6,6 +6,20 @@ GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/inf
 - Username: `<username>`
 - Password: `<password>`
 
+## Telegraf
+
+使用 Telegraf 采集数据
+
+```
+[[outputs.influxdb_v2]]
+  urls = ["https://<host>/v1/influxdb"]
+  token = "<username>:<password>"
+  bucket = "<dbname>"
+  ## Leave empty
+  organization = ""
+```
+
+
 下方的 Java 代码片段展示了如何通过配置 [InfluxDB 客户端](https://github.com/influxdata/influxdb-java)连接到 GreptimeCloud：
 
 ```java

@@ -1,4 +1,4 @@
-# InfluxDB Line Protocol
+# InfluxDB and Telegraf
 
 GreptimeCloud provides [Influxdb line
 protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/)
@@ -11,7 +11,24 @@ Please refer to [InfluxDB line protocol](https://docs.greptime.com/user-guide/in
 - Username: `<username>`
 - Password: `<password>`
 
-The following Java example code demonstrates how to configure the [InfluxDB client](https://github.com/influxdata/influxdb-java) when connecting to GreptimeCloud:
+## Telegraf
+
+To use Telegraf to ingest data, add following configuration.
+
+```
+[[outputs.influxdb_v2]]
+  urls = ["https://<host>/v1/influxdb"]
+  token = "<username>:<password>"
+  bucket = "<dbname>"
+  ## Leave empty
+  organization = ""
+```
+
+## InfluxDB Client Library
+
+The following Java example code demonstrates how to configure the [InfluxDB
+client](https://github.com/influxdata/influxdb-java) when connecting to
+GreptimeCloud:
 
 ```java
 final String serverURL = "https://<host>/v1/influxdb/", username = "<username>", password = "<password>";
