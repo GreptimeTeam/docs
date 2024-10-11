@@ -312,6 +312,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'GreptimeDB Enterprise',
+      items: [
+        'enterprise/overview',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Reference',
       items: [
         'reference/command-lines',
