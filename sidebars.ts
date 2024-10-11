@@ -157,7 +157,6 @@ const sidebars: SidebarsConfig = {
               items: [
                 'user-guide/deployments/authentication/overview',
                 'user-guide/deployments/authentication/static',
-                'user-guide/deployments/authentication/ldap',
               ],
             },
             {
@@ -315,6 +314,11 @@ const sidebars: SidebarsConfig = {
       items: [
         'enterprise/overview',
         {
+          type: 'category',
+          label: 'Deployments',
+          items: ['enterprise/deployments/authentication',],
+        },
+        {
           type: 'category', 
           label: 'Administration',
           items: [
@@ -327,8 +331,7 @@ const sidebars: SidebarsConfig = {
               ]
             }
           ],
-        }
-        
+        },
       ],
     },
     {

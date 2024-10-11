@@ -47,6 +47,10 @@
     "message": "管理",
     "description": "The label for category Operations in sidebar docs"
   },
+  "sidebar.docs.category.Authentication": {
+    "message": "鉴权",
+    "description": "The label for category Authentication in sidebar docs"
+  },
   "sidebar.docs.category.Deployments": {
     "message": "部署",
     "description": "The label for category Deployments in sidebar docs"
