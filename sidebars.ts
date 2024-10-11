@@ -204,7 +204,6 @@ const sidebars: SidebarsConfig = {
               items: [
                 'user-guide/administration/disaster-recovery/overview',
                 'user-guide/administration/disaster-recovery/back-up-&-restore-data',
-                'user-guide/administration/disaster-recovery/dr-solution-based-on-active-active-failover',
                 'user-guide/administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
@@ -315,6 +314,21 @@ const sidebars: SidebarsConfig = {
       label: 'GreptimeDB Enterprise',
       items: [
         'enterprise/overview',
+        {
+          type: 'category', 
+          label: 'Administration',
+          items: [
+            {
+              type: 'category',
+              label: 'Disaster Recovery',
+              items: [
+                'enterprise/administration/disaster-recovery/overview',
+                'enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover',
+              ]
+            }
+          ],
+        }
+        
       ],
     },
     {

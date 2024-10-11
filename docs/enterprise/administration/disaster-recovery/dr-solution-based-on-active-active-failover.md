@@ -1,9 +1,5 @@
 # DR Solution Based on Active-Active Failover
 
-:::tip NOTE
-**Active-Active Failover is only available in GreptimeDB Enterprise.**
-:::
-
 ## RPO
 
 In GreptimeDB's "Active-Active Failover" architecture, there are two nodes. Both nodes can provide the ability to execute reads and writes from clients. However, to achieve the goals of the RTO and RPO, we need to do some configurations about them. First of all, let me introduce the modes to reads and writes.
@@ -50,7 +46,7 @@ To retain the minimality of requirements of our active-active architecture, we d
 - Custom endpoint update mechanism. If you can detect the fall of nodes, you can retroactively update the GreptimeDB's endpoint set in your code.
 
 :::tip NOTE
-To compare the RPO and RTO across different disaster recovery solutions, please refer to "[Solution Comparison](./overview.md#solution-comparison)".
+To compare the RPO and RTO across different disaster recovery solutions, please refer to "[Solution Comparison](/user-guide/administration/disaster-recovery/overview.md#solution-comparison)".
 :::
 
 ## Summary
