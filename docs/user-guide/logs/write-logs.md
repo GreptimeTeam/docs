@@ -102,6 +102,24 @@ processors:
 
 It is recommended to use `dissect` or `regex` processor to split the input line into fields first and then process the fields accordingly.
 
+## Build-in Pipeline
+
+Currently we only have a built-in pipeline called `greptime_identity` that stores user input as is. We'll add an additional `greptime_timestamp` to the user data to indicate when it was written. We'll convert the json data into our table structure, and our conversion follows a few rules
+
+1. we will scan all the records in a batch of data and get a superset of the list of fields to be considered as the table schema of the batch. please be careful to keep the data fields fixed as much as possible. 2. when the same field types are not the same, we will scan the data for all the records.
+2. when the same field type does not match, an error is reported.
+3. we ignore all fields with null value.
+
+### Type conversion rules
+
+- `string` -> `string`
+- `number` -> `int64` or `float64`
+- `boolean` -> `bool`
+- `null` -> ignore
+- `array` -> `json`
+- `object` -> `json`
+
+
 ## Example
 
 Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for an example.
