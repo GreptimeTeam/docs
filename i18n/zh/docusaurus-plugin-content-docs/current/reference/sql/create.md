@@ -111,7 +111,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
+) with(ttl='7d');
 ```
 
 #### 创建自定义存储的表
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', storage="Gcs");
+) with(ttl='7d', storage="Gcs");
 ```
 
 #### 创建自定义 compaction 参数的表
@@ -134,7 +134,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
 )
-engine=mito
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
@@ -149,7 +148,7 @@ with(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 #### 创建带有 merge 模式的表
@@ -165,7 +164,6 @@ create table if not exists metrics(
   TIME INDEX (ts),
   PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_row');
 ```
 
@@ -197,7 +195,6 @@ create table if not exists metrics(
   TIME INDEX (ts),
   PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_non_null');
 ```
 
@@ -288,7 +285,7 @@ CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
   log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
-) ENGINE=mito;
+);
 ```
 
 更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/logs/query-logs.md)。
