@@ -8,6 +8,10 @@ scalar_functions = {
   :name => "DataFusion Scalar Functions",
   :url => "https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md"
 }
+scalar_functions_new = {
+  :name => "DataFusion Scalar Functions (NEW)",
+  :url => "https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions_new.md"
+}
 agg_functions = {
   :name => "DataFusion Aggregate Functions",
   :url => "https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md"
@@ -18,7 +22,7 @@ window_functions = {
 }
 
 ## Apache DataFusion functions
-datafusion_functions = [scalar_functions, agg_functions, window_functions]
+datafusion_functions = [scalar_functions, scalar_functions_new, agg_functions, window_functions]
 
 
 def process_headlines(line)

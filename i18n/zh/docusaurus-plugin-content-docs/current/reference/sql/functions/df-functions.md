@@ -2,6 +2,7 @@
 
 This page is generated from the Apache DataFusion project's documents:
   * [DataFusion Scalar Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md)
+  * [DataFusion Scalar Functions (NEW)](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions_new.md)
   * [DataFusion Aggregate Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md)
   * [DataFusion Window Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/window_functions.md)
 
@@ -26,6 +27,12 @@ This page is generated from the Apache DataFusion project's documents:
 
 ## Scalar Functions
 
+Scalar functions operate on a single row at a time and return a single value.
+
+Note: this documentation is in the process of being migrated to be [automatically created from the codebase].
+Please see the [Scalar Functions (new)](#scalar-functions-new) page for
+the rest of the documentation.
+
 ### Math Functions
 
 - [abs](#abs)
@@ -49,7 +56,6 @@ This page is generated from the Apache DataFusion project's documents:
 - [iszero](#iszero)
 - [lcm](#lcm)
 - [ln](#ln)
-- [log](#log)
 - [log10](#log10)
 - [log2](#log2)
 - [nanvl](#nanvl)
@@ -346,23 +352,6 @@ ln(numeric_expression)
 - **numeric_expression**: Numeric expression to operate on.
   Can be a constant, column, or function, and any combination of arithmetic operators.
 
-##### `log`
-
-Returns the base-x logarithm of a number.
-Can either provide a specified base, or if omitted then takes the base-10 of a number.
-
-```
-log(base, numeric_expression)
-log(numeric_expression)
-```
-
-###### Arguments
-
-- **base**: Base numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **numeric_expression**: Numeric expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
 ##### `log10`
 
 Returns the base-10 logarithm of a number.
@@ -574,876 +563,11 @@ trunc(numeric_expression[, decimal_places])
 
 ### Conditional Functions
 
-- [coalesce](#coalesce)
-- [nullif](#nullif)
-- [nvl](#nvl)
-- [nvl2](#nvl2)
-- [ifnull](#ifnull)
-
-##### `coalesce`
-
-Returns the first of its arguments that is not _null_.
-Returns _null_ if all arguments are _null_.
-This function is often used to substitute a default value for _null_ values.
-
-```
-coalesce(expression1[, ..., expression_n])
-```
-
-###### Arguments
-
-- **expression1, expression_n**:
-  Expression to use if previous expressions are _null_.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  Pass as many expression arguments as necessary.
-
-##### `nullif`
-
-Returns _null_ if _expression1_ equals _expression2_; otherwise it returns _expression1_.
-This can be used to perform the inverse operation of [`coalesce`](#coalesce).
-
-```
-nullif(expression1, expression2)
-```
-
-###### Arguments
-
-- **expression1**: Expression to compare and return if equal to expression2.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Expression to compare to expression1.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `nvl`
-
-Returns _expression2_ if _expression1_ is NULL; otherwise it returns _expression1_.
-
-```
-nvl(expression1, expression2)
-```
-
-###### Arguments
-
-- **expression1**: return if expression1 not is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: return if expression1 is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `nvl2`
-
-Returns _expression2_ if _expression1_ is not NULL; otherwise it returns _expression3_.
-
-```
-nvl2(expression1, expression2, expression3)
-```
-
-###### Arguments
-
-- **expression1**: conditional expression.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: return if expression1 is not NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression3**: return if expression1 is NULL.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `ifnull`
-
-_Alias of [nvl](#nvl)._
+See the new documentation [`here`](https://datafusion.apache.org/user-guide/sql/scalar_functions_new.html)
 
 ### String Functions
 
-- [ascii](#ascii)
-- [bit_length](#bit-length)
-- [btrim](#btrim)
-- [char_length](#char-length)
-- [character_length](#character-length)
-- [concat](#concat)
-- [concat_ws](#concat-ws)
-- [chr](#chr)
-- [ends_with](#ends-with)
-- [initcap](#initcap)
-- [instr](#instr)
-- [left](#left)
-- [length](#length)
-- [lower](#lower)
-- [lpad](#lpad)
-- [ltrim](#ltrim)
-- [octet_length](#octet-length)
-- [repeat](#repeat)
-- [replace](#replace)
-- [reverse](#reverse)
-- [right](#right)
-- [rpad](#rpad)
-- [rtrim](#rtrim)
-- [split_part](#split-part)
-- [starts_with](#starts-with)
-- [strpos](#strpos)
-- [substr](#substr)
-- [to_hex](#to-hex)
-- [translate](#translate)
-- [trim](#trim)
-- [upper](#upper)
-- [uuid](#uuid)
-- [overlay](#overlay)
-- [levenshtein](#levenshtein)
-- [substr_index](#substr-index)
-- [find_in_set](#find-in-set)
-- [position](#position)
-- [contains](#contains)
-
-##### `ascii`
-
-Returns the ASCII value of the first character in a string.
-
-```
-ascii(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[chr](#chr)
-
-##### `bit_length`
-
-Returns the bit length of a string.
-
-```
-bit_length(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[length](#length),
-[octet_length](#octet-length)
-
-##### `btrim`
-
-Trims the specified trim string from the start and end of a string.
-If no trim string is provided, all whitespace is removed from the start and end
-of the input string.
-
-```
-btrim(str[, trim_str])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the beginning and end of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
-
-**Related functions**:
-[ltrim](#ltrim),
-[rtrim](#rtrim)
-
-###### Aliases
-
-- trim
-
-##### `char_length`
-
-_Alias of [length](#length)._
-
-##### `character_length`
-
-_Alias of [length](#length)._
-
-##### `concat`
-
-Concatenates multiple strings together.
-
-```
-concat(str[, ..., str_n])
-```
-
-###### Arguments
-
-- **str**: String expression to concatenate.
-  Can be a constant, column, or function, and any combination of string operators.
-- **str_n**: Subsequent string column or literal string to concatenate.
-
-**Related functions**:
-[concat_ws](#concat-ws)
-
-##### `concat_ws`
-
-Concatenates multiple strings together with a specified separator.
-
-```
-concat(separator, str[, ..., str_n])
-```
-
-###### Arguments
-
-- **separator**: Separator to insert between concatenated strings.
-- **str**: String expression to concatenate.
-  Can be a constant, column, or function, and any combination of string operators.
-- **str_n**: Subsequent string column or literal string to concatenate.
-
-**Related functions**:
-[concat](#concat)
-
-##### `chr`
-
-Returns the character with the specified ASCII or Unicode code value.
-
-```
-chr(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression containing the ASCII or Unicode code value to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
-
-**Related functions**:
-[ascii](#ascii)
-
-##### `ends_with`
-
-Tests if a string ends with a substring.
-
-```
-ends_with(str, substr)
-```
-
-###### Arguments
-
-- **str**: String expression to test.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring to test for.
-
-##### `initcap`
-
-Capitalizes the first character in each word in the input string.
-Words are delimited by non-alphanumeric characters.
-
-```
-initcap(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[lower](#lower),
-[upper](#upper)
-
-##### `instr`
-
-_Alias of [strpos](#strpos)._
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to search for.
-  Can be a constant, column, or function, and any combination of string operators.
-
-##### `left`
-
-Returns a specified number of characters from the left side of a string.
-
-```
-left(str, n)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of characters to return.
-
-**Related functions**:
-[right](#right)
-
-##### `length`
-
-Returns the number of characters in a string.
-
-```
-length(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-###### Aliases
-
-- char_length
-- character_length
-
-**Related functions**:
-[bit_length](#bit-length),
-[octet_length](#octet-length)
-
-##### `lower`
-
-Converts a string to lower-case.
-
-```
-lower(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[initcap](#initcap),
-[upper](#upper)
-
-##### `lpad`
-
-Pads the left side of a string with another string to a specified string length.
-
-```
-lpad(str, n[, padding_str])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: String length to pad to.
-- **padding_str**: String expression to pad with.
-  Can be a constant, column, or function, and any combination of string operators.
-  _Default is a space._
-
-**Related functions**:
-[rpad](#rpad)
-
-##### `ltrim`
-
-Trims the specified trim string from the beginning of a string.
-If no trim string is provided, all whitespace is removed from the start
-of the input string.
-
-```
-ltrim(str[, trim_str])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the beginning of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
-
-**Related functions**:
-[btrim](#btrim),
-[rtrim](#rtrim)
-
-##### `octet_length`
-
-Returns the length of a string in bytes.
-
-```
-octet_length(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[bit_length](#bit-length),
-[length](#length)
-
-##### `repeat`
-
-Returns a string with an input string repeated a specified number.
-
-```
-repeat(str, n)
-```
-
-###### Arguments
-
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of times to repeat the input string.
-
-##### `replace`
-
-Replaces all occurrences of a specified substring in a string with a new substring.
-
-```
-replace(str, substr, replacement)
-```
-
-###### Arguments
-
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to replace in the input string.
-  Can be a constant, column, or function, and any combination of string operators.
-- **replacement**: Replacement substring expression.
-  Can be a constant, column, or function, and any combination of string operators.
-
-##### `reverse`
-
-Reverses the character order of a string.
-
-```
-reverse(str)
-```
-
-###### Arguments
-
-- **str**: String expression to repeat.
-  Can be a constant, column, or function, and any combination of string operators.
-
-##### `right`
-
-Returns a specified number of characters from the right side of a string.
-
-```
-right(str, n)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: Number of characters to return.
-
-**Related functions**:
-[left](#left)
-
-##### `rpad`
-
-Pads the right side of a string with another string to a specified string length.
-
-```
-rpad(str, n[, padding_str])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **n**: String length to pad to.
-- **padding_str**: String expression to pad with.
-  Can be a constant, column, or function, and any combination of string operators.
-  _Default is a space._
-
-**Related functions**:
-[lpad](#lpad)
-
-##### `rtrim`
-
-Trims the specified trim string from the end of a string.
-If no trim string is provided, all whitespace is removed from the end
-of the input string.
-
-```
-rtrim(str[, trim_str])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **trim_str**: String expression to trim from the end of the input string.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-  _Default is whitespace characters._
-
-**Related functions**:
-[btrim](#btrim),
-[ltrim](#ltrim)
-
-##### `split_part`
-
-Splits a string based on a specified delimiter and returns the substring in the
-specified position.
-
-```
-split_part(str, delimiter, pos)
-```
-
-###### Arguments
-
-- **str**: String expression to spit.
-  Can be a constant, column, or function, and any combination of string operators.
-- **delimiter**: String or character to split on.
-- **pos**: Position of the part to return.
-
-##### `starts_with`
-
-Tests if a string starts with a substring.
-
-```
-starts_with(str, substr)
-```
-
-###### Arguments
-
-- **str**: String expression to test.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring to test for.
-
-##### `strpos`
-
-Returns the starting position of a specified substring in a string.
-Positions begin at 1.
-If the substring does not exist in the string, the function returns 0.
-
-```
-strpos(str, substr)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **substr**: Substring expression to search for.
-  Can be a constant, column, or function, and any combination of string operators.
-
-###### Aliases
-
-- instr
-
-##### `substr`
-
-Extracts a substring of a specified number of characters from a specific
-starting position in a string.
-
-```
-substr(str, start_pos[, length])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **start_pos**: Character position to start the substring at.
-  The first character in the string has a position of 1.
-- **length**: Number of characters to extract.
-  If not specified, returns the rest of the string after the start position.
-
-###### Aliases
-
-- substring
-
-##### `substring`
-
-_Alias of [substr](#substr)._
-
-##### `translate`
-
-Translates characters in a string to specified translation characters.
-
-```
-translate(str, chars, translation)
-```
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **chars**: Characters to translate.
-- **translation**: Translation characters. Translation characters replace only
-  characters at the same position in the **chars** string.
-
-##### `to_hex`
-
-Converts an integer to a hexadecimal string.
-
-```
-to_hex(int)
-```
-
-###### Arguments
-
-- **int**: Integer expression to convert.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `trim`
-
-_Alias of [btrim](#btrim)._
-
-##### `upper`
-
-Converts a string to upper-case.
-
-```
-upper(str)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-
-**Related functions**:
-[initcap](#initcap),
-[lower](#lower)
-
-##### `uuid`
-
-Returns UUID v4 string value which is unique per row.
-
-```
-uuid()
-```
-
-##### `overlay`
-
-Returns the string which is replaced by another string from the specified position and specified count length.
-For example, `overlay('Txxxxas' placing 'hom' from 2 for 4) → Thomas`
-
-```
-overlay(str PLACING substr FROM pos [FOR count])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-- **substr**: the string to replace part of str.
-- **pos**: the start position to replace of str.
-- **count**: the count of characters to be replaced from start position of str. If not specified, will use substr length instead.
-
-##### `levenshtein`
-
-Returns the Levenshtein distance between the two given strings.
-For example, `levenshtein('kitten', 'sitting') = 3`
-
-```
-levenshtein(str1, str2)
-```
-
-###### Arguments
-
-- **str1**: String expression to compute Levenshtein distance with str2.
-- **str2**: String expression to compute Levenshtein distance with str1.
-
-##### `substr_index`
-
-Returns the substring from str before count occurrences of the delimiter delim.
-If count is positive, everything to the left of the final delimiter (counting from the left) is returned.
-If count is negative, everything to the right of the final delimiter (counting from the right) is returned.
-For example, `substr_index('www.apache.org', '.', 1) = www`, `substr_index('www.apache.org', '.', -1) = org`
-
-```
-substr_index(str, delim, count)
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-- **delim**: the string to find in str to split str.
-- **count**: The number of times to search for the delimiter. Can be both a positive or negative number.
-
-##### `find_in_set`
-
-Returns a value in the range of 1 to N if the string str is in the string list strlist consisting of N substrings.
-For example, `find_in_set('b', 'a,b,c,d') = 2`
-
-```
-find_in_set(str, strlist)
-```
-
-###### Arguments
-
-- **str**: String expression to find in strlist.
-- **strlist**: A string list is a string composed of substrings separated by , characters.
-
-### Binary String Functions
-
-- [decode](#decode)
-- [encode](#encode)
-
-##### `encode`
-
-Encode binary data into a textual representation.
-
-```
-encode(expression, format)
-```
-
-###### Arguments
-
-- **expression**: Expression containing string or binary data
-
-- **format**: Supported formats are: `base64`, `hex`
-
-**Related functions**:
-[decode](#decode)
-
-##### `decode`
-
-Decode binary data from textual representation in string.
-
-```
-decode(expression, format)
-```
-
-###### Arguments
-
-- **expression**: Expression containing encoded string data
-
-- **format**: Same arguments as [encode](#encode)
-
-**Related functions**:
-[encode](#encode)
-
-### Regular Expression Functions
-
-Apache DataFusion uses a [PCRE-like] regular expression [syntax]
-(minus support for several features including look-around and backreferences).
-The following regular expression functions are supported:
-
-- [regexp_like](#regexp-like)
-- [regexp_match](#regexp-match)
-- [regexp_replace](#regexp-replace)
-
-[pcre-like]: https://en.wikibooks.org/wiki/Regular_Expressions/Perl-Compatible_Regular_Expressions
-[syntax]: https://docs.rs/regex/latest/regex/#syntax
-
-##### `regexp_like`
-
-Returns true if a [regular expression] has at least one match in a string,
-false otherwise.
-
-[regular expression]: https://docs.rs/regex/latest/regex/#syntax
-
-```
-regexp_like(str, regexp[, flags])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to test against the string expression.
-  Can be a constant, column, or function.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
-
-###### Example
-
-```sql
-select regexp_like('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
-+--------------------------------------------------------+
-| regexp_like(Utf8("Köln"),Utf8("[a-zA-Z]ö[a-zA-Z]{2}")) |
-+--------------------------------------------------------+
-| true                                                   |
-+--------------------------------------------------------+
-SELECT regexp_like('aBc', '(b|d)', 'i');
-+--------------------------------------------------+
-| regexp_like(Utf8("aBc"),Utf8("(b|d)"),Utf8("i")) |
-+--------------------------------------------------+
-| true                                             |
-+--------------------------------------------------+
-```
-
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
-
-##### `regexp_match`
-
-Returns a list of [regular expression](https://docs.rs/regex/latest/regex/#syntax) matches in a string.
-
-```
-regexp_match(str, regexp[, flags])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to match against.
-  Can be a constant, column, or function.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
-
-###### Example
-
-```sql
-select regexp_match('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
-+---------------------------------------------------------+
-| regexp_match(Utf8("Köln"),Utf8("[a-zA-Z]ö[a-zA-Z]{2}")) |
-+---------------------------------------------------------+
-| [Köln]                                                  |
-+---------------------------------------------------------+
-SELECT regexp_match('aBc', '(b|d)', 'i');
-+---------------------------------------------------+
-| regexp_match(Utf8("aBc"),Utf8("(b|d)"),Utf8("i")) |
-+---------------------------------------------------+
-| [B]                                               |
-+---------------------------------------------------+
-```
-
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
-
-##### `regexp_replace`
-
-Replaces substrings in a string that match a [regular expression](https://docs.rs/regex/latest/regex/#syntax).
-
-```
-regexp_replace(str, regexp, replacement[, flags])
-```
-
-###### Arguments
-
-- **str**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **regexp**: Regular expression to match against.
-  Can be a constant, column, or function.
-- **replacement**: Replacement string expression.
-  Can be a constant, column, or function, and any combination of string operators.
-- **flags**: Optional regular expression flags that control the behavior of the
-  regular expression. The following flags are supported:
-  - **g**: (global) Search globally and don't return after the first match
-  - **i**: case-insensitive: letters match both upper and lower case
-  - **m**: multi-line mode: ^ and $ match begin/end of line
-  - **s**: allow . to match \n
-  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
-  - **U**: swap the meaning of x* and x*?
-
-###### Example
-
-```sql
-SELECT regexp_replace('foobarbaz', 'b(..)', 'X\\1Y', 'g');
-+------------------------------------------------------------------------+
-| regexp_replace(Utf8("foobarbaz"),Utf8("b(..)"),Utf8("X\1Y"),Utf8("g")) |
-+------------------------------------------------------------------------+
-| fooXarYXazY                                                            |
-+------------------------------------------------------------------------+
-SELECT regexp_replace('aBc', '(b|d)', 'Ab\\1a', 'i');
-+-------------------------------------------------------------------+
-| regexp_replace(Utf8("aBc"),Utf8("(b|d)"),Utf8("Ab\1a"),Utf8("i")) |
-+-------------------------------------------------------------------+
-| aAbBac                                                            |
-+-------------------------------------------------------------------+
-```
-
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+See the new documentation [`here`](https://datafusion.apache.org/user-guide/sql/scalar_functions_new.html)
 
 ##### `position`
 
@@ -1459,19 +583,6 @@ position(substr in origstr)
 - **substr**: The pattern string.
 - **origstr**: The model string.
 
-##### `contains`
-
-Return true if search_string is found within string.
-
-```
-contains(string, search_string)
-```
-
-###### Arguments
-
-- **string**: The pattern string.
-- **search_string**: The model string.
-
 ### Time and Date Functions
 
 - [now](#now)
@@ -1486,7 +597,7 @@ contains(string, search_string)
 - [today](#today)
 - [make_date](#make-date)
 - [to_char](#to-char)
-- [to_date](#to-date)
+- [to_local_time](#to-local-time)
 - [to_timestamp](#to-timestamp)
 - [to_timestamp_millis](#to-timestamp-millis)
 - [to_timestamp_micros](#to-timestamp-micros)
@@ -1717,7 +828,7 @@ to_char(expression, format)
 ###### Example
 
 ```
-> > select to_char('2023-03-01'::date, '%d-%m-%Y');
+> select to_char('2023-03-01'::date, '%d-%m-%Y');
 +----------------------------------------------+
 | to_char(Utf8("2023-03-01"),Utf8("%d-%m-%Y")) |
 +----------------------------------------------+
@@ -1733,50 +844,67 @@ Additional examples can be found [here]
 
 - date_format
 
-##### `to_date`
+##### `to_local_time`
 
-Converts a value to a date (`YYYY-MM-DD`).
-Supports strings, integer and double types as input.
-Strings are parsed as YYYY-MM-DD (e.g. '2023-07-20') if no [Chrono format]s are provided.
-Integers and doubles are interpreted as days since the unix epoch (`1970-01-01T00:00:00Z`).
-Returns the corresponding date.
-
-Note: `to_date` returns Date32. The supported range for integer input is between `-96465293` and `95026237`.
-Supported range for string input is between `1677-09-21` and `2262-04-11` exclusive. To parse dates outside of
-that range use a [Chrono format].
+Converts a timestamp with a timezone to a timestamp without a timezone (with no offset or
+timezone information). This function handles daylight saving time changes.
 
 ```
-to_date(expression[, ..., format_n])
+to_local_time(expression)
 ```
 
 ###### Arguments
 
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **format_n**: Optional [Chrono format] strings to use to parse the expression. Formats will be tried in the order
-  they appear with the first successful one being returned. If none of the formats successfully parse the expression
-  an error will be returned.
-
-[chrono format]: https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+- **expression**: Time expression to operate on. Can be a constant, column, or function.
 
 ###### Example
 
 ```
-> select to_date('2023-01-31');
-+-----------------------------+
-| to_date(Utf8("2023-01-31")) |
-+-----------------------------+
-| 2023-01-31                  |
-+-----------------------------+
-> select to_date('2023/01/31', '%Y-%m-%d', '%Y/%m/%d');
-+---------------------------------------------------------------+
-| to_date(Utf8("2023/01/31"),Utf8("%Y-%m-%d"),Utf8("%Y/%m/%d")) |
-+---------------------------------------------------------------+
-| 2023-01-31                                                    |
-+---------------------------------------------------------------+
-```
+> SELECT to_local_time('2024-04-01T00:00:20Z'::timestamp);
++---------------------------------------------+
+| to_local_time(Utf8("2024-04-01T00:00:20Z")) |
++---------------------------------------------+
+| 2024-04-01T00:00:20                         |
++---------------------------------------------+
 
-Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_date.rs)
+> SELECT to_local_time('2024-04-01T00:00:20Z'::timestamp AT TIME ZONE 'Europe/Brussels');
++---------------------------------------------+
+| to_local_time(Utf8("2024-04-01T00:00:20Z")) |
++---------------------------------------------+
+| 2024-04-01T00:00:20                         |
++---------------------------------------------+
+
+> SELECT
+  time,
+  arrow_typeof(time) as type,
+  to_local_time(time) as to_local_time,
+  arrow_typeof(to_local_time(time)) as to_local_time_type
+FROM (
+  SELECT '2024-04-01T00:00:20Z'::timestamp AT TIME ZONE 'Europe/Brussels' AS time
+);
++---------------------------+------------------------------------------------+---------------------+-----------------------------+
+| time                      | type                                           | to_local_time       | to_local_time_type          |
++---------------------------+------------------------------------------------+---------------------+-----------------------------+
+| 2024-04-01T00:00:20+02:00 | Timestamp(Nanosecond, Some("Europe/Brussels")) | 2024-04-01T00:00:20 | Timestamp(Nanosecond, None) |
++---------------------------+------------------------------------------------+---------------------+-----------------------------+
+
+## combine `to_local_time()` with `date_bin()` to bin on boundaries in the timezone rather
+## than UTC boundaries
+
+> SELECT date_bin(interval '1 day', to_local_time('2024-04-01T00:00:20Z'::timestamp AT TIME ZONE 'Europe/Brussels')) AS date_bin;
++---------------------+
+| date_bin            |
++---------------------+
+| 2024-04-01T00:00:00 |
++---------------------+
+
+> SELECT date_bin(interval '1 day', to_local_time('2024-04-01T00:00:20Z'::timestamp AT TIME ZONE 'Europe/Brussels')) AT TIME ZONE 'Europe/Brussels' AS date_bin_with_timezone;
++---------------------------+
+| date_bin_with_timezone    |
++---------------------------+
+| 2024-04-01T00:00:00+02:00 |
++---------------------------+
+```
 
 ##### `to_timestamp`
 
@@ -2031,12 +1159,14 @@ to_unixtime(expression[, ..., format_n])
 
 ### Array Functions
 
+- [array_any_value](#array-any-value)
 - [array_append](#array-append)
 - [array_sort](#array-sort)
 - [array_cat](#array-cat)
 - [array_concat](#array-concat)
 - [array_contains](#array-contains)
 - [array_dims](#array-dims)
+- [array_distance](#array-distance)
 - [array_distinct](#array-distinct)
 - [array_has](#array-has)
 - [array_has_all](#array-has-all)
@@ -2074,11 +1204,13 @@ to_unixtime(expression[, ..., format_n])
 - [empty](#empty)
 - [flatten](#flatten)
 - [generate_series](#generate-series)
+- [list_any_value](#list-any-value)
 - [list_append](#list-append)
 - [list_sort](#list-sort)
 - [list_cat](#list-cat)
 - [list_concat](#list-concat)
 - [list_dims](#list-dims)
+- [list_distance](#list-distance)
 - [list_distinct](#list-distinct)
 - [list_element](#list-element)
 - [list_except](#list-except)
@@ -2116,6 +1248,30 @@ to_unixtime(expression[, ..., format_n])
 - [trim_array](#trim-array)
 - [unnest](#unnest)
 - [range](#range)
+
+##### `array_any_value`
+
+Returns the first non-null element in the array.
+
+```
+array_any_value(array)
+```
+
+###### Arguments
+
+- **array**: Array expression.
+  Can be a constant, column, or function, and any combination of array operators.
+
+###### Example
+
+```
+> select array_any_value([NULL, 1, 2, 3]);
++--------------------------------------------------------------+
+| array_any_value(List([NULL,1,2,3]))                          |
++--------------------------------------------------------------+
+| 1                                                            |
++--------------------------------------------------------------+
+```
 
 ##### `array_append`
 
@@ -2331,6 +1487,36 @@ array_dims(array)
 ###### Aliases
 
 - list_dims
+
+##### `array_distance`
+
+Returns the Euclidean distance between two input arrays of equal length.
+
+```
+array_distance(array1, array2)
+```
+
+###### Arguments
+
+- **array1**: Array expression.
+  Can be a constant, column, or function, and any combination of array operators.
+- **array2**: Array expression.
+  Can be a constant, column, or function, and any combination of array operators.
+
+###### Example
+
+```
+> select array_distance([1, 2], [1, 4]);
++------------------------------------+
+| array_distance(List([1,2], [1,4])) |
++------------------------------------+
+| 2.0                                |
++------------------------------------+
+```
+
+###### Aliases
+
+- list_distance
 
 ##### `array_distinct`
 
@@ -3137,9 +2323,9 @@ generate_series(start, stop, step)
 
 ###### Arguments
 
-- **start**: start of the range
-- **end**: end of the range (included)
-- **step**: increase by step (can not be 0)
+- **start**: start of the series. Ints, timestamps, dates or string types that can be coerced to Date32 are supported.
+- **end**: end of the series (included). Type must be the same as start.
+- **step**: increase by step (can not be 0). Steps less than a day are supported only for timestamp ranges.
 
 ###### Example
 
@@ -3151,6 +2337,10 @@ generate_series(start, stop, step)
 | [1, 2, 3]                          |
 +------------------------------------+
 ```
+
+##### `list_any_value`
+
+_Alias of [array_any_value](#array-any-value)._
 
 ##### `list_append`
 
@@ -3168,9 +2358,13 @@ _Alias of [array_concat](#array-concat)._
 
 _Alias of [array_dims](#array-dims)._
 
+##### `list_distance`
+
+_Alias of [array_distance](#array-distance)._
+
 ##### `list_distinct`
 
-_Alias of [array_dims](#array-distinct)._
+_Alias of [array_distinct](#array-distinct)._
 
 ##### `list_element`
 
@@ -3422,11 +2616,11 @@ Transforms an array into rows.
 
 Returns an Arrow array between start and stop with step. `SELECT range(2, 10, 3) -> [2, 5, 8]` or `SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);`
 
-The range start..end contains all values with start \<= x < end. It is empty if start >= end.
+The range start..end contains all values with start <= x < end. It is empty if start >= end.
 
 Step can not be 0 (then the range will be nonsense.).
 
-Note that when the required range is a number, it accepts (stop), (start, stop), and (start, stop, step) as parameters, but when the required range is a date, it must be 3 non-NULL parameters.
+Note that when the required range is a number, it accepts (stop), (start, stop), and (start, stop, step) as parameters, but when the required range is a date or timestamp, it must be 3 non-NULL parameters.
 For example,
 
 ```
@@ -3437,10 +2631,11 @@ SELECT range(1,5,1);
 
 are allowed in number ranges
 
-but in date ranges, only
+but in date and timestamp ranges, only
 
 ```
 SELECT range(DATE '1992-09-01', DATE '1993-03-01', INTERVAL '1' MONTH);
+SELECT range(TIMESTAMP '1992-09-01', TIMESTAMP '1993-03-01', INTERVAL '1' MONTH);
 ```
 
 is allowed, and
@@ -3455,9 +2650,9 @@ are not allowed
 
 ###### Arguments
 
-- **start**: start of the range
-- **end**: end of the range (not included)
-- **step**: increase by step (can not be 0)
+- **start**: start of the range. Ints, timestamps, dates or string types that can be coerced to Date32 are supported.
+- **end**: end of the range (not included). Type must be the same as start.
+- **step**: increase by step (can not be 0). Steps less than a day are supported only for timestamp ranges.
 
 ###### Aliases
 
@@ -3465,93 +2660,9 @@ are not allowed
 
 ### Struct Functions
 
-- [struct](#struct)
-- [named_struct](#named-struct)
 - [unnest](#unnest-struct)
 
-##### `struct`
-
-Returns an Arrow struct using the specified input expressions optionally named.
-Fields in the returned struct use the optional name or the `cN` naming convention.
-For example: `c0`, `c1`, `c2`, etc.
-
-```
-struct(expression1[, ..., expression_n])
-```
-
-For example, this query converts two columns `a` and `b` to a single column with
-a struct type of fields `field_a` and `c1`:
-
-```
-select * from t;
-+---+---+
-| a | b |
-+---+---+
-| 1 | 2 |
-| 3 | 4 |
-+---+---+
-
--- use default names `c0`, `c1`
-> select struct(a, b) from t;
-+-----------------+
-| struct(t.a,t.b) |
-+-----------------+
-| {c0: 1, c1: 2}  |
-| {c0: 3, c1: 4}  |
-+-----------------+
-
--- name the first field `field_a`
-select struct(a as field_a, b) from t;
-+--------------------------------------------------+
-| named_struct(Utf8("field_a"),t.a,Utf8("c1"),t.b) |
-+--------------------------------------------------+
-| {field_a: 1, c1: 2}                              |
-| {field_a: 3, c1: 4}                              |
-+--------------------------------------------------+
-```
-
-###### Arguments
-
-- **expression_n**: Expression to include in the output struct.
-  Can be a constant, column, or function, any combination of arithmetic or
-  string operators, or a named expression of previous listed .
-
-##### `named_struct`
-
-Returns an Arrow struct using the specified name and input expressions pairs.
-
-```
-named_struct(expression1_name, expression1_input[, ..., expression_n_name, expression_n_input])
-```
-
-For example, this query converts two columns `a` and `b` to a single column with
-a struct type of fields `field_a` and `field_b`:
-
-```
-select * from t;
-+---+---+
-| a | b |
-+---+---+
-| 1 | 2 |
-| 3 | 4 |
-+---+---+
-
-select named_struct('field_a', a, 'field_b', b) from t;
-+-------------------------------------------------------+
-| named_struct(Utf8("field_a"),t.a,Utf8("field_b"),t.b) |
-+-------------------------------------------------------+
-| {field_a: 1, field_b: 2}                              |
-| {field_a: 3, field_b: 4}                              |
-+-------------------------------------------------------+
-```
-
-###### Arguments
-
-- **expression_n_name**: Name of the column field.
-  Must be a constant string.
-- **expression_n_input**: Expression to include in the output struct.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+For more struct functions see the new documentation [`here`](https://datafusion.apache.org/user-guide/sql/scalar_functions_new.html)
 
 ##### `unnest (struct)`
 
@@ -3580,6 +2691,1606 @@ Unwraps struct fields into columns.
 +-----------------------+-----------------------+
 ```
 
+### Map Functions
+
+- [map](#map)
+- [make_map](#make-map)
+- [map_extract](#map-extract)
+- [map_keys](#map-keys)
+- [map_values](#map-values)
+
+##### `map`
+
+Returns an Arrow map with the specified key-value pairs.
+
+```
+map(key, value)
+map(key: value)
+```
+
+###### Arguments
+
+- **key**: Expression to be used for key.
+  Can be a constant, column, or function, any combination of arithmetic or
+  string operators, or a named expression of previous listed.
+- **value**: Expression to be used for value.
+  Can be a constant, column, or function, any combination of arithmetic or
+  string operators, or a named expression of previous listed.
+
+###### Example
+
+```
+SELECT MAP(['POST', 'HEAD', 'PATCH'], [41, 33, null]);
+----
+{POST: 41, HEAD: 33, PATCH: }
+
+SELECT MAP([[1,2], [3,4]], ['a', 'b']);
+----
+{[1, 2]: a, [3, 4]: b}
+
+SELECT MAP { 'a': 1, 'b': 2 };
+----
+{a: 1, b: 2}
+```
+
+##### `make_map`
+
+Returns an Arrow map with the specified key-value pairs.
+
+```
+make_map(key_1, value_1, ..., key_n, value_n)
+```
+
+###### Arguments
+
+- **key_n**: Expression to be used for key.
+  Can be a constant, column, or function, any combination of arithmetic or
+  string operators, or a named expression of previous listed.
+- **value_n**: Expression to be used for value.
+  Can be a constant, column, or function, any combination of arithmetic or
+  string operators, or a named expression of previous listed.
+
+###### Example
+
+```
+SELECT MAKE_MAP('POST', 41, 'HEAD', 33, 'PATCH', null);
+----
+{POST: 41, HEAD: 33, PATCH: }
+```
+
+##### `map_extract`
+
+Return a list containing the value for a given key or an empty list if the key is not contained in the map.
+
+```
+map_extract(map, key)
+```
+
+###### Arguments
+
+- `map`: Map expression.
+  Can be a constant, column, or function, and any combination of map operators.
+- `key`: Key to extract from the map.
+  Can be a constant, column, or function, any combination of arithmetic or
+  string operators, or a named expression of previous listed.
+
+###### Example
+
+```
+SELECT map_extract(MAP {'a': 1, 'b': NULL, 'c': 3}, 'a');
+----
+[1]
+```
+
+###### Aliases
+
+- element_at
+
+##### `map_keys`
+
+Return a list of all keys in the map.
+
+```
+map_keys(map)
+```
+
+###### Arguments
+
+- `map`: Map expression.
+  Can be a constant, column, or function, and any combination of map operators.
+
+###### Example
+
+```
+SELECT map_keys(MAP {'a': 1, 'b': NULL, 'c': 3});
+----
+[a, b, c]
+
+select map_keys(map([100, 5], [42,43]));
+----
+[100, 5]
+```
+
+##### `map_values`
+
+Return a list of all values in the map.
+
+```
+map_values(map)
+```
+
+###### Arguments
+
+- `map`: Map expression.
+  Can be a constant, column, or function, and any combination of map operators.
+
+###### Example
+
+```
+SELECT map_values(MAP {'a': 1, 'b': NULL, 'c': 3});
+----
+[1, , 3]
+
+select map_values(map([100, 5], [42,43]));
+----
+[42, 43]
+```
+
+### Other Functions
+
+See the new documentation [`here`](https://datafusion.apache.org/user-guide/sql/scalar_functions_new.html)
+<!---
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<!---
+This file was generated by the dev/update_function_docs.sh script.
+Do not edit it manually as changes will be overwritten.
+Instead, edit the ScalarUDFImpl's documentation() function to
+update documentation for an individual UDF or the
+dev/update_function_docs.sh file for updating surrounding text.
+-->
+
+## Scalar Functions (NEW)
+
+Note: this documentation is in the process of being migrated to be [automatically created from the codebase].
+Please see the [Scalar Functions (old)](#aggregate-functions) page for
+the rest of the documentation.
+
+### Math Functions
+
+- [log](#log)
+
+##### `log`
+
+Returns the base-x logarithm of a number. Can either provide a specified base, or if omitted then takes the base-10 of a number.
+
+```
+log(base, numeric_expression)
+log(numeric_expression)
+```
+
+###### Arguments
+
+- **base**: Base numeric expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **numeric_expression**: Numeric expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+### Conditional Functions
+
+- [coalesce](#coalesce)
+- [ifnull](#ifnull)
+- [nullif](#nullif)
+- [nvl](#nvl)
+- [nvl2](#nvl2)
+
+##### `coalesce`
+
+Returns the first of its arguments that is not _null_. Returns _null_ if all arguments are _null_. This function is often used to substitute a default value for _null_ values.
+
+```
+coalesce(expression1[, ..., expression_n])
+```
+
+###### Arguments
+
+- **expression1, expression_n**: Expression to use if previous expressions are _null_. Can be a constant, column, or function, and any combination of arithmetic operators. Pass as many expression arguments as necessary.
+
+###### Example
+
+```sql
+> select coalesce(null, null, 'datafusion');
++----------------------------------------+
+| coalesce(NULL,NULL,Utf8("datafusion")) |
++----------------------------------------+
+| datafusion                             |
++----------------------------------------+
+```
+
+##### `ifnull`
+
+_Alias of [nvl](#nvl)._
+
+##### `nullif`
+
+Returns _null_ if _expression1_ equals _expression2_; otherwise it returns _expression1_.
+This can be used to perform the inverse operation of [`coalesce`](#coalesce).
+
+```
+nullif(expression1, expression2)
+```
+
+###### Arguments
+
+- **expression1**: Expression to compare and return if equal to expression2. Can be a constant, column, or function, and any combination of operators.
+- **expression2**: Expression to compare to expression1. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select nullif('datafusion', 'data');
++-----------------------------------------+
+| nullif(Utf8("datafusion"),Utf8("data")) |
++-----------------------------------------+
+| datafusion                              |
++-----------------------------------------+
+> select nullif('datafusion', 'datafusion');
++-----------------------------------------------+
+| nullif(Utf8("datafusion"),Utf8("datafusion")) |
++-----------------------------------------------+
+|                                               |
++-----------------------------------------------+
+```
+
+##### `nvl`
+
+Returns _expression2_ if _expression1_ is NULL otherwise it returns _expression1_.
+
+```
+nvl(expression1, expression2)
+```
+
+###### Arguments
+
+- **expression1**: Expression to return if not null. Can be a constant, column, or function, and any combination of operators.
+- **expression2**: Expression to return if expr1 is null. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select nvl(null, 'a');
++---------------------+
+| nvl(NULL,Utf8("a")) |
++---------------------+
+| a                   |
++---------------------+\
+> select nvl('b', 'a');
++--------------------------+
+| nvl(Utf8("b"),Utf8("a")) |
++--------------------------+
+| b                        |
++--------------------------+
+```
+
+###### Aliases
+
+- ifnull
+
+##### `nvl2`
+
+Returns _expression2_ if _expression1_ is not NULL; otherwise it returns _expression3_.
+
+```
+nvl2(expression1, expression2, expression3)
+```
+
+###### Arguments
+
+- **expression1**: Expression to test for null. Can be a constant, column, or function, and any combination of operators.
+- **expression2**: Expression to return if expr1 is not null. Can be a constant, column, or function, and any combination of operators.
+- **expression3**: Expression to return if expr1 is null. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select nvl2(null, 'a', 'b');
++--------------------------------+
+| nvl2(NULL,Utf8("a"),Utf8("b")) |
++--------------------------------+
+| b                              |
++--------------------------------+
+> select nvl2('data', 'a', 'b');
++----------------------------------------+
+| nvl2(Utf8("data"),Utf8("a"),Utf8("b")) |
++----------------------------------------+
+| a                                      |
++----------------------------------------+
+```
+
+### String Functions
+
+- [ascii](#ascii)
+- [bit_length](#bit-length)
+- [btrim](#btrim)
+- [char_length](#char-length)
+- [character_length](#character-length)
+- [chr](#chr)
+- [concat](#concat)
+- [concat_ws](#concat-ws)
+- [contains](#contains)
+- [ends_with](#ends-with)
+- [find_in_set](#find-in-set)
+- [initcap](#initcap)
+- [instr](#instr)
+- [left](#left)
+- [length](#length)
+- [levenshtein](#levenshtein)
+- [lower](#lower)
+- [lpad](#lpad)
+- [ltrim](#ltrim)
+- [octet_length](#octet-length)
+- [position](#position)
+- [repeat](#repeat)
+- [replace](#replace)
+- [reverse](#reverse)
+- [right](#right)
+- [rpad](#rpad)
+- [rtrim](#rtrim)
+- [split_part](#split-part)
+- [starts_with](#starts-with)
+- [strpos](#strpos)
+- [substr](#substr)
+- [substr_index](#substr-index)
+- [substring](#substring)
+- [substring_index](#substring-index)
+- [to_hex](#to-hex)
+- [translate](#translate)
+- [trim](#trim)
+- [upper](#upper)
+- [uuid](#uuid)
+
+##### `ascii`
+
+Returns the Unicode character code of the first character in a string.
+
+```
+ascii(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select ascii('abc');
++--------------------+
+| ascii(Utf8("abc")) |
++--------------------+
+| 97                 |
++--------------------+
+> select ascii('🚀');
++-------------------+
+| ascii(Utf8("🚀")) |
++-------------------+
+| 128640            |
++-------------------+
+```
+
+**Related functions**:
+
+- [chr](#chr)
+
+##### `bit_length`
+
+Returns the bit length of a string.
+
+```
+bit_length(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select bit_length('datafusion');
++--------------------------------+
+| bit_length(Utf8("datafusion")) |
++--------------------------------+
+| 80                             |
++--------------------------------+
+```
+
+**Related functions**:
+
+- [length](#length)
+- [octet_length](#octet-length)
+
+##### `btrim`
+
+Trims the specified trim string from the start and end of a string. If no trim string is provided, all whitespace is removed from the start and end of the input string.
+
+```
+btrim(str[, trim_str])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **trim_str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators. _Default is whitespace characters._
+
+###### Example
+
+```sql
+> select btrim('__datafusion____', '_');
++-------------------------------------------+
+| btrim(Utf8("__datafusion____"),Utf8("_")) |
++-------------------------------------------+
+| datafusion                                |
++-------------------------------------------+
+```
+
+###### Aliases
+
+- trim
+
+**Related functions**:
+
+- [ltrim](#ltrim)
+- [rtrim](#rtrim)
+
+##### `char_length`
+
+_Alias of [character_length](#character-length)._
+
+##### `character_length`
+
+Returns the number of characters in a string.
+
+```
+character_length(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select character_length('Ångström');
++------------------------------------+
+| character_length(Utf8("Ångström")) |
++------------------------------------+
+| 8                                  |
++------------------------------------+
+```
+
+###### Aliases
+
+- length
+- char_length
+
+**Related functions**:
+
+- [bit_length](#bit-length)
+- [octet_length](#octet-length)
+
+##### `chr`
+
+Returns the character with the specified ASCII or Unicode code value.
+
+```
+chr(expression)
+```
+
+###### Arguments
+
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select chr(128640);
++--------------------+
+| chr(Int64(128640)) |
++--------------------+
+| 🚀                 |
++--------------------+
+```
+
+**Related functions**:
+
+- [ascii](#ascii)
+
+##### `concat`
+
+Concatenates multiple strings together.
+
+```
+concat(str[, ..., str_n])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **str_n**: Subsequent string expressions to concatenate.
+
+###### Example
+
+```sql
+> select concat('data', 'f', 'us', 'ion');
++-------------------------------------------------------+
+| concat(Utf8("data"),Utf8("f"),Utf8("us"),Utf8("ion")) |
++-------------------------------------------------------+
+| datafusion                                            |
++-------------------------------------------------------+
+```
+
+**Related functions**:
+
+- [concat_ws](#concat-ws)
+
+##### `concat_ws`
+
+Concatenates multiple strings together with a specified separator.
+
+```
+concat_ws(separator, str[, ..., str_n])
+```
+
+###### Arguments
+
+- **separator**: Separator to insert between concatenated strings.
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **str_n**: Subsequent string expressions to concatenate. expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select concat_ws('_', 'data', 'fusion');
++--------------------------------------------------+
+| concat_ws(Utf8("_"),Utf8("data"),Utf8("fusion")) |
++--------------------------------------------------+
+| data_fusion                                      |
++--------------------------------------------------+
+```
+
+**Related functions**:
+
+- [concat](#concat)
+
+##### `contains`
+
+Return true if search_str is found within string (case-sensitive).
+
+```
+contains(str, search_str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **search_str**: The string to search for in str.
+
+###### Example
+
+```sql
+> select contains('the quick brown fox', 'row');
++---------------------------------------------------+
+| contains(Utf8("the quick brown fox"),Utf8("row")) |
++---------------------------------------------------+
+| true                                              |
++---------------------------------------------------+
+```
+
+##### `ends_with`
+
+Tests if a string ends with a substring.
+
+```
+ends_with(str, substr)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **substr**: Substring to test for.
+
+###### Example
+
+```sql
+>  select ends_with('datafusion', 'soin');
++--------------------------------------------+
+| ends_with(Utf8("datafusion"),Utf8("soin")) |
++--------------------------------------------+
+| false                                      |
++--------------------------------------------+
+> select ends_with('datafusion', 'sion');
++--------------------------------------------+
+| ends_with(Utf8("datafusion"),Utf8("sion")) |
++--------------------------------------------+
+| true                                       |
++--------------------------------------------+
+```
+
+##### `find_in_set`
+
+Returns a value in the range of 1 to N if the string str is in the string list strlist consisting of N substrings.
+
+```
+find_in_set(str, strlist)
+```
+
+###### Arguments
+
+- **str**: String expression to find in strlist.
+- **strlist**: A string list is a string composed of substrings separated by , characters.
+
+###### Example
+
+```sql
+> select find_in_set('b', 'a,b,c,d');
++----------------------------------------+
+| find_in_set(Utf8("b"),Utf8("a,b,c,d")) |
++----------------------------------------+
+| 2                                      |
++----------------------------------------+
+```
+
+##### `initcap`
+
+Capitalizes the first character in each word in the input string. Words are delimited by non-alphanumeric characters.
+
+```
+initcap(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select initcap('apache datafusion');
++------------------------------------+
+| initcap(Utf8("apache datafusion")) |
++------------------------------------+
+| Apache Datafusion                  |
++------------------------------------+
+```
+
+**Related functions**:
+
+- [lower](#lower)
+- [upper](#upper)
+
+##### `instr`
+
+_Alias of [strpos](#strpos)._
+
+##### `left`
+
+Returns a specified number of characters from the left side of a string.
+
+```
+left(str, n)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **n**: Number of characters to return.
+
+###### Example
+
+```sql
+> select left('datafusion', 4);
++-----------------------------------+
+| left(Utf8("datafusion"),Int64(4)) |
++-----------------------------------+
+| data                              |
++-----------------------------------+
+```
+
+**Related functions**:
+
+- [right](#right)
+
+##### `length`
+
+_Alias of [character_length](#character-length)._
+
+##### `levenshtein`
+
+Returns the [`Levenshtein distance`](https://en.wikipedia.org/wiki/Levenshtein_distance) between the two given strings.
+
+```
+levenshtein(str1, str2)
+```
+
+###### Arguments
+
+- **str1**: String expression to compute Levenshtein distance with str2.
+- **str2**: String expression to compute Levenshtein distance with str1.
+
+###### Example
+
+```sql
+> select levenshtein('kitten', 'sitting');
++---------------------------------------------+
+| levenshtein(Utf8("kitten"),Utf8("sitting")) |
++---------------------------------------------+
+| 3                                           |
++---------------------------------------------+
+```
+
+##### `lower`
+
+Converts a string to lower-case.
+
+```
+lower(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select lower('Ångström');
++-------------------------+
+| lower(Utf8("Ångström")) |
++-------------------------+
+| ångström                |
++-------------------------+
+```
+
+**Related functions**:
+
+- [initcap](#initcap)
+- [upper](#upper)
+
+##### `lpad`
+
+Pads the left side of a string with another string to a specified string length.
+
+```
+lpad(str, n[, padding_str])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **n**: String length to pad to.
+- **padding_str**: Optional string expression to pad with. Can be a constant, column, or function, and any combination of string operators. _Default is a space._
+
+###### Example
+
+```sql
+> select lpad('Dolly', 10, 'hello');
++---------------------------------------------+
+| lpad(Utf8("Dolly"),Int64(10),Utf8("hello")) |
++---------------------------------------------+
+| helloDolly                                  |
++---------------------------------------------+
+```
+
+**Related functions**:
+
+- [rpad](#rpad)
+
+##### `ltrim`
+
+Trims the specified trim string from the beginning of a string. If no trim string is provided, all whitespace is removed from the start of the input string.
+
+```
+ltrim(str[, trim_str])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **trim_str**: String expression to trim from the beginning of the input string. Can be a constant, column, or function, and any combination of arithmetic operators. _Default is whitespace characters._
+
+###### Example
+
+```sql
+> select ltrim('  datafusion  ');
++-------------------------------+
+| ltrim(Utf8("  datafusion  ")) |
++-------------------------------+
+| datafusion                    |
++-------------------------------+
+> select ltrim('___datafusion___', '_');
++-------------------------------------------+
+| ltrim(Utf8("___datafusion___"),Utf8("_")) |
++-------------------------------------------+
+| datafusion___                             |
++-------------------------------------------+
+```
+
+**Related functions**:
+
+- [btrim](#btrim)
+- [rtrim](#rtrim)
+
+##### `octet_length`
+
+Returns the length of a string in bytes.
+
+```
+octet_length(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select octet_length('Ångström');
++--------------------------------+
+| octet_length(Utf8("Ångström")) |
++--------------------------------+
+| 10                             |
++--------------------------------+
+```
+
+**Related functions**:
+
+- [bit_length](#bit-length)
+- [length](#length)
+
+##### `position`
+
+_Alias of [strpos](#strpos)._
+
+##### `repeat`
+
+Returns a string with an input string repeated a specified number.
+
+```
+repeat(str, n)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **n**: Number of times to repeat the input string.
+
+###### Example
+
+```sql
+> select repeat('data', 3);
++-------------------------------+
+| repeat(Utf8("data"),Int64(3)) |
++-------------------------------+
+| datadatadata                  |
++-------------------------------+
+```
+
+##### `replace`
+
+Replaces all occurrences of a specified substring in a string with a new substring.
+
+```
+replace(str, substr, replacement)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **substr**: Substring expression to replace in the input string. Substring expression expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **replacement**: Replacement substring expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select replace('ABabbaBA', 'ab', 'cd');
++-------------------------------------------------+
+| replace(Utf8("ABabbaBA"),Utf8("ab"),Utf8("cd")) |
++-------------------------------------------------+
+| ABcdbaBA                                        |
++-------------------------------------------------+
+```
+
+##### `reverse`
+
+Reverses the character order of a string.
+
+```
+reverse(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select reverse('datafusion');
++-----------------------------+
+| reverse(Utf8("datafusion")) |
++-----------------------------+
+| noisufatad                  |
++-----------------------------+
+```
+
+##### `right`
+
+Returns a specified number of characters from the right side of a string.
+
+```
+right(str, n)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **n**: Number of characters to return
+
+###### Example
+
+```sql
+> select right('datafusion', 6);
++------------------------------------+
+| right(Utf8("datafusion"),Int64(6)) |
++------------------------------------+
+| fusion                             |
++------------------------------------+
+```
+
+**Related functions**:
+
+- [left](#left)
+
+##### `rpad`
+
+Pads the right side of a string with another string to a specified string length.
+
+```
+rpad(str, n[, padding_str])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **n**: String length to pad to.
+- **padding_str**: String expression to pad with. Can be a constant, column, or function, and any combination of string operators. _Default is a space._
+
+###### Example
+
+```sql
+>  select rpad('datafusion', 20, '_-');
++-----------------------------------------------+
+| rpad(Utf8("datafusion"),Int64(20),Utf8("_-")) |
++-----------------------------------------------+
+| datafusion_-_-_-_-_-                          |
++-----------------------------------------------+
+```
+
+**Related functions**:
+
+- [lpad](#lpad)
+
+##### `rtrim`
+
+Trims the specified trim string from the end of a string. If no trim string is provided, all whitespace is removed from the end of the input string.
+
+```
+rtrim(str[, trim_str])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **trim_str**: String expression to trim from the end of the input string. Can be a constant, column, or function, and any combination of arithmetic operators. _Default is whitespace characters._
+
+###### Example
+
+```sql
+> select rtrim('  datafusion  ');
++-------------------------------+
+| rtrim(Utf8("  datafusion  ")) |
++-------------------------------+
+|   datafusion                  |
++-------------------------------+
+> select rtrim('___datafusion___', '_');
++-------------------------------------------+
+| rtrim(Utf8("___datafusion___"),Utf8("_")) |
++-------------------------------------------+
+| ___datafusion                             |
++-------------------------------------------+
+```
+
+**Related functions**:
+
+- [btrim](#btrim)
+- [ltrim](#ltrim)
+
+##### `split_part`
+
+Splits a string based on a specified delimiter and returns the substring in the specified position.
+
+```
+split_part(str, delimiter, pos)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **delimiter**: String or character to split on.
+- **pos**: Position of the part to return.
+
+###### Example
+
+```sql
+> select split_part('1.2.3.4.5', '.', 3);
++--------------------------------------------------+
+| split_part(Utf8("1.2.3.4.5"),Utf8("."),Int64(3)) |
++--------------------------------------------------+
+| 3                                                |
++--------------------------------------------------+
+```
+
+##### `starts_with`
+
+Tests if a string starts with a substring.
+
+```
+starts_with(str, substr)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **substr**: Substring to test for.
+
+###### Example
+
+```sql
+> select starts_with('datafusion','data');
++----------------------------------------------+
+| starts_with(Utf8("datafusion"),Utf8("data")) |
++----------------------------------------------+
+| true                                         |
++----------------------------------------------+
+```
+
+##### `strpos`
+
+Returns the starting position of a specified substring in a string. Positions begin at 1. If the substring does not exist in the string, the function returns 0.
+
+```
+strpos(str, substr)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **substr**: Substring expression to search for.
+
+###### Example
+
+```sql
+> select strpos('datafusion', 'fus');
++----------------------------------------+
+| strpos(Utf8("datafusion"),Utf8("fus")) |
++----------------------------------------+
+| 5                                      |
++----------------------------------------+
+```
+
+###### Aliases
+
+- instr
+- position
+
+##### `substr`
+
+Extracts a substring of a specified number of characters from a specific starting position in a string.
+
+```
+substr(str, start_pos[, length])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **start_pos**: Character position to start the substring at. The first character in the string has a position of 1.
+- **length**: Number of characters to extract. If not specified, returns the rest of the string after the start position.
+
+###### Example
+
+```sql
+> select substr('datafusion', 5, 3);
++----------------------------------------------+
+| substr(Utf8("datafusion"),Int64(5),Int64(3)) |
++----------------------------------------------+
+| fus                                          |
++----------------------------------------------+
+```
+
+###### Aliases
+
+- substring
+
+##### `substr_index`
+
+Returns the substring from str before count occurrences of the delimiter delim.
+If count is positive, everything to the left of the final delimiter (counting from the left) is returned.
+If count is negative, everything to the right of the final delimiter (counting from the right) is returned.
+
+```
+substr_index(str, delim, count)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **delim**: The string to find in str to split str.
+- **count**: The number of times to search for the delimiter. Can be either a positive or negative number.
+
+###### Example
+
+```sql
+> select substr_index('www.apache.org', '.', 1);
++---------------------------------------------------------+
+| substr_index(Utf8("www.apache.org"),Utf8("."),Int64(1)) |
++---------------------------------------------------------+
+| www                                                     |
++---------------------------------------------------------+
+> select substr_index('www.apache.org', '.', -1);
++----------------------------------------------------------+
+| substr_index(Utf8("www.apache.org"),Utf8("."),Int64(-1)) |
++----------------------------------------------------------+
+| org                                                      |
++----------------------------------------------------------+
+```
+
+###### Aliases
+
+- substring_index
+
+##### `substring`
+
+_Alias of [substr](#substr)._
+
+##### `substring_index`
+
+_Alias of [substr_index](#substr-index)._
+
+##### `to_hex`
+
+Converts an integer to a hexadecimal string.
+
+```
+to_hex(int)
+```
+
+###### Arguments
+
+- **int**: Integer expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select to_hex(12345689);
++-------------------------+
+| to_hex(Int64(12345689)) |
++-------------------------+
+| bc6159                  |
++-------------------------+
+```
+
+##### `translate`
+
+Translates characters in a string to specified translation characters.
+
+```
+translate(str, chars, translation)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **chars**: Characters to translate.
+- **translation**: Translation characters. Translation characters replace only characters at the same position in the **chars** string.
+
+###### Example
+
+```sql
+> select translate('twice', 'wic', 'her');
++--------------------------------------------------+
+| translate(Utf8("twice"),Utf8("wic"),Utf8("her")) |
++--------------------------------------------------+
+| there                                            |
++--------------------------------------------------+
+```
+
+##### `trim`
+
+_Alias of [btrim](#btrim)._
+
+##### `upper`
+
+Converts a string to upper-case.
+
+```
+upper(str)
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select upper('dataFusion');
++---------------------------+
+| upper(Utf8("dataFusion")) |
++---------------------------+
+| DATAFUSION                |
++---------------------------+
+```
+
+**Related functions**:
+
+- [initcap](#initcap)
+- [lower](#lower)
+
+##### `uuid`
+
+Returns [`UUID v4`](<https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)>) string value which is unique per row.
+
+```
+uuid()
+```
+
+###### Example
+
+```sql
+> select uuid();
++--------------------------------------+
+| uuid()                               |
++--------------------------------------+
+| 6ec17ef8-1934-41cc-8d59-d0c8f9eea1f0 |
++--------------------------------------+
+```
+
+### Binary String Functions
+
+- [decode](#decode)
+- [encode](#encode)
+
+##### `decode`
+
+Decode binary data from textual representation in string.
+
+```
+decode(expression, format)
+```
+
+###### Arguments
+
+- **expression**: Expression containing encoded string data
+- **format**: Same arguments as [encode](#encode)
+
+**Related functions**:
+
+- [encode](#encode)
+
+##### `encode`
+
+Encode binary data into a textual representation.
+
+```
+encode(expression, format)
+```
+
+###### Arguments
+
+- **expression**: Expression containing string or binary data
+- **format**: Supported formats are: `base64`, `hex`
+
+**Related functions**:
+
+- [decode](#decode)
+
+### Regular Expression Functions
+
+Apache DataFusion uses a [PCRE-like](https://en.wikibooks.org/wiki/Regular_Expressions/Perl-Compatible_Regular_Expressions)
+regular expression [syntax](https://docs.rs/regex/latest/regex/#syntax)
+(minus support for several features including look-around and backreferences).
+The following regular expression functions are supported:
+
+- [regexp_like](#regexp-like)
+- [regexp_match](#regexp-match)
+- [regexp_replace](#regexp-replace)
+
+##### `regexp_like`
+
+Returns true if a [regular expression](https://docs.rs/regex/latest/regex/#syntax) has at least one match in a string, false otherwise.
+
+```
+regexp_like(str, regexp[, flags])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **regexp**: Regular expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **flags**: Optional regular expression flags that control the behavior of the regular expression. The following flags are supported:
+  - **i**: case-insensitive: letters match both upper and lower case
+  - **m**: multi-line mode: ^ and $ match begin/end of line
+  - **s**: allow . to match \n
+  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
+  - **U**: swap the meaning of x* and x*?
+
+###### Example
+
+```sql
+select regexp_like('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
++--------------------------------------------------------+
+| regexp_like(Utf8("Köln"),Utf8("[a-zA-Z]ö[a-zA-Z]{2}")) |
++--------------------------------------------------------+
+| true                                                   |
++--------------------------------------------------------+
+SELECT regexp_like('aBc', '(b|d)', 'i');
++--------------------------------------------------+
+| regexp_like(Utf8("aBc"),Utf8("(b|d)"),Utf8("i")) |
++--------------------------------------------------+
+| true                                             |
++--------------------------------------------------+
+```
+
+Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+
+##### `regexp_match`
+
+Returns a list of [regular expression](https://docs.rs/regex/latest/regex/#syntax) matches in a string.
+
+```
+regexp_match(str, regexp[, flags])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **regexp**: Regular expression to match against.
+  Can be a constant, column, or function.
+- **flags**: Optional regular expression flags that control the behavior of the regular expression. The following flags are supported:
+  - **i**: case-insensitive: letters match both upper and lower case
+  - **m**: multi-line mode: ^ and $ match begin/end of line
+  - **s**: allow . to match \n
+  - **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
+  - **U**: swap the meaning of x* and x*?
+
+###### Example
+
+```sql
+            > select regexp_match('Köln', '[a-zA-Z]ö[a-zA-Z]{2}');
+            +---------------------------------------------------------+
+            | regexp_match(Utf8("Köln"),Utf8("[a-zA-Z]ö[a-zA-Z]{2}")) |
+            +---------------------------------------------------------+
+            | [Köln]                                                  |
+            +---------------------------------------------------------+
+            SELECT regexp_match('aBc', '(b|d)', 'i');
+            +---------------------------------------------------+
+            | regexp_match(Utf8("aBc"),Utf8("(b|d)"),Utf8("i")) |
+            +---------------------------------------------------+
+            | [B]                                               |
+            +---------------------------------------------------+
+```
+
+Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+
+##### `regexp_replace`
+
+Replaces substrings in a string that match a [regular expression](https://docs.rs/regex/latest/regex/#syntax).
+
+```
+regexp_replace(str, regexp, replacement[, flags])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **regexp**: Regular expression to match against.
+  Can be a constant, column, or function.
+- **replacement**: Replacement string expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **flags**: Optional regular expression flags that control the behavior of the regular expression. The following flags are supported:
+- **g**: (global) Search globally and don't return after the first match
+- **i**: case-insensitive: letters match both upper and lower case
+- **m**: multi-line mode: ^ and $ match begin/end of line
+- **s**: allow . to match \n
+- **R**: enables CRLF mode: when multi-line mode is enabled, \r\n is used
+- **U**: swap the meaning of x* and x*?
+
+###### Example
+
+```sql
+> select regexp_replace('foobarbaz', 'b(..)', 'X\\1Y', 'g');
++------------------------------------------------------------------------+
+| regexp_replace(Utf8("foobarbaz"),Utf8("b(..)"),Utf8("X\1Y"),Utf8("g")) |
++------------------------------------------------------------------------+
+| fooXarYXazY                                                            |
++------------------------------------------------------------------------+
+SELECT regexp_replace('aBc', '(b|d)', 'Ab\\1a', 'i');
++-------------------------------------------------------------------+
+| regexp_replace(Utf8("aBc"),Utf8("(b|d)"),Utf8("Ab\1a"),Utf8("i")) |
++-------------------------------------------------------------------+
+| aAbBac                                                            |
++-------------------------------------------------------------------+
+```
+
+Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/regexp.rs)
+
+### Time and Date Functions
+
+- [to_date](#to-date)
+
+##### `to_date`
+
+Converts a value to a date (`YYYY-MM-DD`).
+Supports strings, integer and double types as input.
+Strings are parsed as YYYY-MM-DD (e.g. '2023-07-20') if no [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)s are provided.
+Integers and doubles are interpreted as days since the unix epoch (`1970-01-01T00:00:00Z`).
+Returns the corresponding date.
+
+Note: `to_date` returns Date32, which represents its values as the number of days since unix epoch(`1970-01-01`) stored as signed 32 bit value. The largest supported date value is `9999-12-31`.
+
+```
+to_date('2017-05-31', '%Y-%m-%d')
+```
+
+###### Arguments
+
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **format_n**: Optional [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) strings to use to parse the expression. Formats will be tried in the order
+  they appear with the first successful one being returned. If none of the formats successfully parse the expression
+  an error will be returned.
+
+###### Example
+
+```sql
+> select to_date('2023-01-31');
++-----------------------------+
+| to_date(Utf8("2023-01-31")) |
++-----------------------------+
+| 2023-01-31                  |
++-----------------------------+
+> select to_date('2023/01/31', '%Y-%m-%d', '%Y/%m/%d');
++---------------------------------------------------------------+
+| to_date(Utf8("2023/01/31"),Utf8("%Y-%m-%d"),Utf8("%Y/%m/%d")) |
++---------------------------------------------------------------+
+| 2023-01-31                                                    |
++---------------------------------------------------------------+
+```
+
+Additional examples can be found [here](https://github.com/apache/datafusion/blob/main/datafusion-examples/examples/to_date.rs)
+
+### Struct Functions
+
+- [named_struct](#named-struct)
+- [row](#row)
+- [struct](#struct)
+
+##### `named_struct`
+
+Returns an Arrow struct using the specified name and input expressions pairs.
+
+```
+named_struct(expression1_name, expression1_input[, ..., expression_n_name, expression_n_input])
+```
+
+###### Arguments
+
+- **expression_n_name**: Name of the column field. Must be a constant string.
+- **expression_n_input**: Expression to include in the output struct. Can be a constant, column, or function, and any combination of arithmetic or string operators.
+
+###### Example
+
+For example, this query converts two columns `a` and `b` to a single column with
+a struct type of fields `field_a` and `field_b`:
+
+```sql
+> select * from t;
++---+---+
+| a | b |
++---+---+
+| 1 | 2 |
+| 3 | 4 |
++---+---+
+> select named_struct('field_a', a, 'field_b', b) from t;
++-------------------------------------------------------+
+| named_struct(Utf8("field_a"),t.a,Utf8("field_b"),t.b) |
++-------------------------------------------------------+
+| {field_a: 1, field_b: 2}                              |
+| {field_a: 3, field_b: 4}                              |
++-------------------------------------------------------+
+```
+
+##### `row`
+
+_Alias of [struct](#struct)._
+
+##### `struct`
+
+Returns an Arrow struct using the specified input expressions optionally named.
+Fields in the returned struct use the optional name or the `cN` naming convention.
+For example: `c0`, `c1`, `c2`, etc.
+
+```
+struct(expression1[, ..., expression_n])
+```
+
+###### Arguments
+
+- **expression1, expression_n**: Expression to include in the output struct. Can be a constant, column, or function, any combination of arithmetic or string operators.
+
+###### Example
+
+For example, this query converts two columns `a` and `b` to a single column with
+a struct type of fields `field_a` and `c1`:
+
+```sql
+> select * from t;
++---+---+
+| a | b |
++---+---+
+| 1 | 2 |
+| 3 | 4 |
++---+---+
+
+-- use default names `c0`, `c1`
+> select struct(a, b) from t;
++-----------------+
+| struct(t.a,t.b) |
++-----------------+
+| {c0: 1, c1: 2}  |
+| {c0: 3, c1: 4}  |
++-----------------+
+
+-- name the first field `field_a`
+select struct(a as field_a, b) from t;
++--------------------------------------------------+
+| named_struct(Utf8("field_a"),t.a,Utf8("c1"),t.b) |
++--------------------------------------------------+
+| {field_a: 1, c1: 2}                              |
+| {field_a: 3, c1: 4}                              |
++--------------------------------------------------+
+```
+
+###### Aliases
+
+- row
+
 ### Hashing Functions
 
 - [digest](#digest)
@@ -3599,19 +4310,27 @@ digest(expression, algorithm)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
-- **algorithm**: String expression specifying algorithm to use.
-  Must be one of:
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **algorithm**: String expression specifying algorithm to use. Must be one of:
+- md5
+- sha224
+- sha256
+- sha384
+- sha512
+- blake2s
+- blake2b
+- blake3
 
-  - md5
-  - sha224
-  - sha256
-  - sha384
-  - sha512
-  - blake2s
-  - blake2b
-  - blake3
+###### Example
+
+```sql
+> select digest('foo', 'sha256');
++------------------------------------------+
+| digest(Utf8("foo"), Utf8("sha256"))      |
++------------------------------------------+
+| <binary_hash_result>                     |
++------------------------------------------+
+```
 
 ##### `md5`
 
@@ -3623,8 +4342,18 @@ md5(expression)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select md5('foo');
++-------------------------------------+
+| md5(Utf8("foo"))                    |
++-------------------------------------+
+| <md5_checksum_result>               |
++-------------------------------------+
+```
 
 ##### `sha224`
 
@@ -3636,8 +4365,18 @@ sha224(expression)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select sha224('foo');
++------------------------------------------+
+| sha224(Utf8("foo"))                      |
++------------------------------------------+
+| <sha224_hash_result>                     |
++------------------------------------------+
+```
 
 ##### `sha256`
 
@@ -3649,8 +4388,18 @@ sha256(expression)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select sha256('foo');
++--------------------------------------+
+| sha256(Utf8("foo"))                  |
++--------------------------------------+
+| <sha256_hash_result>                 |
++--------------------------------------+
+```
 
 ##### `sha384`
 
@@ -3662,8 +4411,18 @@ sha384(expression)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+> select sha384('foo');
++-----------------------------------------+
+| sha384(Utf8("foo"))                     |
++-----------------------------------------+
+| <sha384_hash_result>                    |
++-----------------------------------------+
+```
 
 ##### `sha512`
 
@@ -3675,17 +4434,29 @@ sha512(expression)
 
 ###### Arguments
 
-- **expression**: String expression to operate on.
-  Can be a constant, column, or function, and any combination of string operators.
+- **expression**: String
+
+###### Example
+
+```sql
+> select sha512('foo');
++-------------------------------------------+
+| sha512(Utf8("foo"))                       |
++-------------------------------------------+
+| <sha512_hash_result>                      |
++-------------------------------------------+
+```
 
 ### Other Functions
 
 - [arrow_cast](#arrow-cast)
 - [arrow_typeof](#arrow-typeof)
+- [get_field](#get-field)
+- [version](#version)
 
 ##### `arrow_cast`
 
-Casts a value to a specific Arrow data type:
+Casts a value to a specific Arrow data type.
 
 ```
 arrow_cast(expression, datatype)
@@ -3693,15 +4464,12 @@ arrow_cast(expression, datatype)
 
 ###### Arguments
 
-- **expression**: Expression to cast.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
-- **datatype**: [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) name
-  to cast to, as a string. The format is the same as that returned by [`arrow_typeof`]
+- **expression**: Expression to cast. The expression can be a constant, column, or function, and any combination of operators.
+- **datatype**: [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) name to cast to, as a string. The format is the same as that returned by [`arrow_typeof`]
 
 ###### Example
 
-```
+```sql
 > select arrow_cast(-5, 'Int8') as a,
   arrow_cast('foo', 'Dictionary(Int32, Utf8)') as b,
   arrow_cast('bar', 'LargeUtf8') as c,
@@ -3712,12 +4480,11 @@ arrow_cast(expression, datatype)
 +----+-----+-----+---------------------------+
 | -5 | foo | bar | 2023-01-02T12:53:02+08:00 |
 +----+-----+-----+---------------------------+
-1 row in set. Query took 0.001 seconds.
 ```
 
 ##### `arrow_typeof`
 
-Returns the name of the underlying [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) of the expression:
+Returns the name of the underlying [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) of the expression.
 
 ```
 arrow_typeof(expression)
@@ -3725,20 +4492,79 @@ arrow_typeof(expression)
 
 ###### Arguments
 
-- **expression**: Expression to evaluate.
-  Can be a constant, column, or function, and any combination of arithmetic or
-  string operators.
+- **expression**: Expression to evaluate. The expression can be a constant, column, or function, and any combination of operators.
 
 ###### Example
 
-```
+```sql
 > select arrow_typeof('foo'), arrow_typeof(1);
 +---------------------------+------------------------+
 | arrow_typeof(Utf8("foo")) | arrow_typeof(Int64(1)) |
 +---------------------------+------------------------+
 | Utf8                      | Int64                  |
 +---------------------------+------------------------+
-1 row in set. Query took 0.001 seconds.
+```
+
+##### `get_field`
+
+Returns a field within a map or a struct with the given key.
+Note: most users invoke `get_field` indirectly via field access
+syntax such as `my_struct_col['field_name']` which results in a call to
+`get_field(my_struct_col, 'field_name')`.
+
+```
+get_field(expression1, expression2)
+```
+
+###### Arguments
+
+- **expression1**: The map or struct to retrieve a field for.
+- **expression2**: The field name in the map or struct to retrieve data for. Must evaluate to a string.
+
+###### Example
+
+```sql
+> create table t (idx varchar, v varchar) as values ('data','fusion'), ('apache', 'arrow');
+> select struct(idx, v) from t as c;
++-------------------------+
+| struct(c.idx,c.v)       |
++-------------------------+
+| {c0: data, c1: fusion}  |
+| {c0: apache, c1: arrow} |
++-------------------------+
+> select get_field((select struct(idx, v) from t), 'c0');
++-----------------------+
+| struct(t.idx,t.v)[c0] |
++-----------------------+
+| data                  |
+| apache                |
++-----------------------+
+> select get_field((select struct(idx, v) from t), 'c1');
++-----------------------+
+| struct(t.idx,t.v)[c1] |
++-----------------------+
+| fusion                |
+| arrow                 |
++-----------------------+
+```
+
+##### `version`
+
+Returns the version of DataFusion.
+
+```
+version()
+```
+
+###### Example
+
+```sql
+> select version();
++--------------------------------------------+
+| version()                                  |
++--------------------------------------------+
+| Apache DataFusion 42.0.0, aarch64 on macos |
++--------------------------------------------+
 ```
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
@@ -3763,228 +4589,15 @@ arrow_typeof(expression)
 
 Aggregate functions operate on a set of values to compute a single result.
 
-### General
-
-- [avg](#avg)
-- [bit_and](#bit-and)
-- [bit_or](#bit-or)
-- [bit_xor](#bit-xor)
-- [bool_and](#bool-and)
-- [bool_or](#bool-or)
-- [count](#count)
-- [max](#max)
-- [mean](#mean)
-- [median](#median)
-- [min](#min)
-- [sum](#sum)
-- [array_agg](#array-agg)
-- [first_value](#first-value)
-- [last_value](#last-value)
-
-##### `avg`
-
-Returns the average of numeric values in the specified column.
-
-```
-avg(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-###### Aliases
-
-- `mean`
-
-##### `bit_and`
-
-Computes the bitwise AND of all non-null input values.
-
-```
-bit_and(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `bit_or`
-
-Computes the bitwise OR of all non-null input values.
-
-```
-bit_or(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `bit_xor`
-
-Computes the bitwise exclusive OR of all non-null input values.
-
-```
-bit_xor(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `bool_and`
-
-Returns true if all non-null input values are true, otherwise false.
-
-```
-bool_and(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `bool_or`
-
-Returns true if any non-null input value is true, otherwise false.
-
-```
-bool_or(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `count`
-
-Returns the number of non-null values in the specified column.
-
-To include _null_ values in the total count, use `count(*)`.
-
-```
-count(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `max`
-
-Returns the maximum value in the specified column.
-
-```
-max(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `mean`
-
-_Alias of [avg](#avg)._
-
-##### `median`
-
-Returns the median value in the specified column.
-
-```
-median(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `min`
-
-Returns the minimum value in the specified column.
-
-```
-min(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `sum`
-
-Returns the sum of all values in the specified column.
-
-```
-sum(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `array_agg`
-
-Returns an array created from the expression elements. If ordering requirement is given, elements are inserted in the order of required ordering.
-
-```
-array_agg(expression [ORDER BY expression])
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `first_value`
-
-Returns the first element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
-
-```
-first_value(expression [ORDER BY expression])
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `last_value`
-
-Returns the last element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
-
-```
-last_value(expression [ORDER BY expression])
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
+Note: this documentation is in the process of being migrated to be [automatically created from the codebase].
+Please see the [Aggregate Functions (new)](#aggregate-functions-new) page for
+the rest of the documentation.
+
+[automatically created from the codebase]: https://github.com/apache/datafusion/issues/12740
 
 ### Statistical
 
-- [corr](#corr)
 - [covar](#covar)
-- [covar_pop](#covar-pop)
-- [covar_samp](#covar-samp)
-- [stddev](#stddev)
-- [stddev_pop](#stddev-pop)
-- [stddev_samp](#stddev-samp)
-- [var](#var)
-- [var_pop](#var-pop)
-- [var_samp](#var-samp)
 - [regr_avgx](#regr-avgx)
 - [regr_avgy](#regr-avgy)
 - [regr_count](#regr-count)
@@ -3994,21 +4607,6 @@ last_value(expression [ORDER BY expression])
 - [regr_sxx](#regr-sxx)
 - [regr_syy](#regr-syy)
 - [regr_sxy](#regr-sxy)
-
-##### `corr`
-
-Returns the coefficient of correlation between two numeric values.
-
-```
-corr(expression1, expression2)
-```
-
-###### Arguments
-
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
 
 ##### `covar`
 
@@ -4023,114 +4621,6 @@ covar(expression1, expression2)
 - **expression1**: First expression to operate on.
   Can be a constant, column, or function, and any combination of arithmetic operators.
 - **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `covar_pop`
-
-Returns the population covariance of a set of number pairs.
-
-```
-covar_pop(expression1, expression2)
-```
-
-###### Arguments
-
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `covar_samp`
-
-Returns the sample covariance of a set of number pairs.
-
-```
-covar_samp(expression1, expression2)
-```
-
-###### Arguments
-
-- **expression1**: First expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **expression2**: Second expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `stddev`
-
-Returns the standard deviation of a set of numbers.
-
-```
-stddev(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `stddev_pop`
-
-Returns the population standard deviation of a set of numbers.
-
-```
-stddev_pop(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `stddev_samp`
-
-Returns the sample standard deviation of a set of numbers.
-
-```
-stddev_samp(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `var`
-
-Returns the statistical variance of a set of numbers.
-
-```
-var(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `var_pop`
-
-Returns the statistical population variance of a set of numbers.
-
-```
-var_pop(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `var_samp`
-
-Returns the statistical sample variance of a set of numbers.
-
-```
-var_samp(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
   Can be a constant, column, or function, and any combination of arithmetic operators.
 
 ##### `regr_slope`
@@ -4268,77 +4758,6 @@ regr_sxy(expression_y, expression_x)
   Can be a constant, column, or function, and any combination of arithmetic operators.
 - **expression_x**: Independent variable.
   Can be a constant, column, or function, and any combination of arithmetic operators.
-
-### Approximate
-
-- [approx_distinct](#approx-distinct)
-- [approx_median](#approx-median)
-- [approx_percentile_cont](#approx-percentile-cont)
-- [approx_percentile_cont_with_weight](#approx-percentile-cont-with-weight)
-
-##### `approx_distinct`
-
-Returns the approximate number of distinct input values calculated using the
-HyperLogLog algorithm.
-
-```
-approx_distinct(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `approx_median`
-
-Returns the approximate median (50th percentile) of input values.
-It is an alias of `approx_percentile_cont(x, 0.5)`.
-
-```
-approx_median(expression)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-
-##### `approx_percentile_cont`
-
-Returns the approximate percentile of input values using the t-digest algorithm.
-
-```
-approx_percentile_cont(expression, percentile, centroids)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **percentile**: Percentile to compute. Must be a float value between 0 and 1 (inclusive).
-- **centroids**: Number of centroids to use in the t-digest algorithm. _Default is 100_.
-
-  If there are this number or fewer unique values, you can expect an exact result.
-  A higher number of centroids results in a more accurate approximation, but
-  requires more memory to compute.
-
-##### `approx_percentile_cont_with_weight`
-
-Returns the weighted approximate percentile of input values using the
-t-digest algorithm.
-
-```
-approx_percentile_cont_with_weight(expression, weight, percentile)
-```
-
-###### Arguments
-
-- **expression**: Expression to operate on.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **weight**: Expression to use as weight.
-  Can be a constant, column, or function, and any combination of arithmetic operators.
-- **percentile**: Percentile to compute. Must be a float value between 0 and 1 (inclusive).
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -4360,7 +4779,15 @@ approx_percentile_cont_with_weight(expression, weight, percentile)
 
 ## Window Functions
 
-A _window function_ performs a calculation across a set of table rows that are somehow related to the current row. This is comparable to the type of calculation that can be done with an aggregate function. However, window functions do not cause rows to become grouped into a single output row like non-window aggregate calls would. Instead, the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result
+A _window function_ performs a calculation across a set of table rows that are somehow related to the current row.
+
+Note: this documentation is in the process of being migrated to be [automatically created from the codebase].
+Please see the [Window Functions (new)](#window-functions-new) page for
+the rest of the documentation.
+
+[automatically created from the codebase]: https://github.com/apache/datafusion/issues/12740
+
+Window functions are comparable to the type of calculation that can be done with an aggregate function. However, window functions do not cause rows to become grouped into a single output row like non-window aggregate calls would. Instead, the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result
 
 Here is an example that shows how to compare each employee's salary with the average salary in his or her department:
 
@@ -4481,18 +4908,9 @@ All [aggregate functions](#aggregate-functions) can be used as window functions.
 
 ### Ranking functions
 
-- [row_number](#row-number)
 - [rank](#rank)
 - [dense_rank](#dense-rank)
 - [ntile](#ntile)
-
-##### `row_number`
-
-Number of the current row within its partition, counting from 1.
-
-```sql
-row_number()
-```
 
 ##### `rank`
 
