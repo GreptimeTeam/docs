@@ -23,7 +23,7 @@
 * [WITH](./with.md)
 * [ALTER](./alter.md)
 * [EXPLAIN](./explain.md)
-* [Functions](./functions/overview.md)
+* [Functions](./functions/overview.mdx)
 * [ADMIN](./admin.md)
 * [ANSI Compatibility](./compatibility.md)
 * [INFORMATION_SCHEMA](./information-schema/overview.md)
