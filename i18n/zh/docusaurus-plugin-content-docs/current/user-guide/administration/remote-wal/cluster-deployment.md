@@ -193,7 +193,7 @@ mysql -h 127.0.0.1 -P 4002
 
 创建分布式表：
 
-```
+```sql
 CREATE TABLE dist_table(
     ts TIMESTAMP DEFAULT current_timestamp(),
     n INT,
@@ -205,8 +205,7 @@ PARTITION ON COLUMNS (n) (
     n < 5,
     n >= 5 AND n < 9,
     n >= 9
-)
-engine=mito;
+);
 ```
 
 写入数据：

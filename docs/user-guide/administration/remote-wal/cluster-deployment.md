@@ -190,7 +190,7 @@ mysql -h 127.0.0.1 -P 4002
 
 Create a distributed table:
 
-```
+```sql
 CREATE TABLE dist_table(
     ts TIMESTAMP DEFAULT current_timestamp(),
     n INT,
@@ -202,8 +202,7 @@ PARTITION ON COLUMNS (n) (
     n < 5,
     n >= 5 AND n < 9,
     n >= 9
-)
-engine=mito;
+);
 ```
 
 Write the data:

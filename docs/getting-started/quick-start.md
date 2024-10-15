@@ -37,8 +37,7 @@ CREATE TABLE grpc_latencies (
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
-)
-engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
@@ -56,8 +55,7 @@ CREATE TABLE app_logs (
   log_level STRING,
   log STRING FULLTEXT,
   PRIMARY KEY (host, log_level)
-)
-engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp of the log entry. It is the time index column.
