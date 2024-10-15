@@ -30,4 +30,4 @@ If the GreptimeDB instance is running healthily, you will see a response like th
 
 ## Next steps
 
-- [Quick Start](./quick-start.md): Ingest and query data in GreptimeDB using MySQL or PostgreSQL clients.
+- [Quick Start](/getting-started/quick-start.md): Ingest and query data in GreptimeDB using MySQL or PostgreSQL clients.

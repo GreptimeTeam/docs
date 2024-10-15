@@ -34,4 +34,4 @@ curl http://localhost:4000/status
 
 ## 下一步
 
-- [快速入门](./quick-start.md)：使用 MySQL 或 PostgreSQL 客户端在 GreptimeDB 中写入和查询数据。
+- [快速入门](/getting-started/quick-start.md)：使用 MySQL 或 PostgreSQL 客户端在 GreptimeDB 中写入和查询数据。
