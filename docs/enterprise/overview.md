@@ -1,13 +1,21 @@
 # Overview
 
-GreptimeDB Enterprise is a robust time-series database solution tailored to meet the specific needs of enterprises.
-With customized solutions and 24/7 rapid technical support,
-GreptimeDB Enterprise helps businesses optimize data efficiency and significantly reduce costs to help you make smarter, faster decisions using time-series data.
-
+GreptimeDB Enterprise is a powerful time-series database solution designed to meet the specific needs of enterprises.
 In addition to the features available in the open-source version of GreptimeDB,
-GreptimeDB Enterprise offers the following enhancements:
+the Enterprise edition offers enhancements that help businesses optimize data efficiency and significantly reduce costs, enabling smarter and faster decision-making with time-series data.
 
-- [Active-Active Failover Disaster Recovery Solution](./administration/disaster-recovery/overview.md)
-- [LDAP Authentication](./deployments/authentication.md)
+GreptimeDB Enterprise solutions include:
+
+- [Bring Your Own Cloud (BYOC)](/greptimecloud/usage-&-billing/byoc.md)
+- Fully-managed, dedicated cloud
+- [Edge-Cloud Integrated Solution](https://greptime.com/product/carcloud)
+- Industry-specific solutions for the Internet of Things (IoT), observerbility, and more
+
+This section provides an overview of the advanced features available in GreptimeDB Enterprise. For information on obtaining trial access or purchasing licenses, please [contact us](https://greptime.com/contactus).
+
+## Features
+
+- [Active-Active Failover Disaster Recovery Solution](./administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
+- [LDAP Authentication](./deployments/authentication.md): Secure your system with LDAP-based authentication for access management.
 - More feature documentation coming soon!
 
