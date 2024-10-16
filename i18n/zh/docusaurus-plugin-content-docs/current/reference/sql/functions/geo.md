@@ -2,7 +2,7 @@ import TOCInline from '@theme/TOCInline';
 
 # 地理函数
 
-这个页面列出了GreptimeDB中的所有地理空间相关函数。当您启用了
+这个页面列出了 GreptimeDB 中的所有地理空间相关函数。当您启用了
 `common-function/geo` 特性（默认为开启状态）时，这些函数才会生效。
 
 <TOCInline toc={toc} />
@@ -13,7 +13,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `geohash`
 
-从纬度、经度和分辨率获取geohash编码的字符串。
+从纬度、经度和分辨率获取 geohash 编码的字符串。
 
 ```sql
 SELECT geohash(37.76938, -122.3889, 11);
@@ -69,7 +69,7 @@ h3_string_to_cell(h3_latlng_to_cell_string(37.76938, -122.3889, 8::UInt64));
 
 返回单元中心的纬度和经度。
 
-请注意，此函数返回一个浮点数数组，并且仅在我们的HTTP查询API和Postgres通道上有效。
+请注意，此函数返回一个浮点数数组，并且仅在我们的 HTTP 查询 API 和 Postgres 通道上有效。
 
 ```sql
 SELECT h3_cell_center_latlng(h3_latlng_to_cell(37.76938, -122.3889, 8));
@@ -93,7 +93,7 @@ SELECT h3_cell_base(h3_latlng_to_cell(37.76938, -122.3889, 8));
 
 ### `h3_cell_is_pentagon`
 
-如果单元格是五边形，则返回真。
+如果单元格是五边形，则返回 true。
 
 ```sql
 SELECT h3_cell_is_pentagon(h3_latlng_to_cell(37.76938, -122.3889, 8));
