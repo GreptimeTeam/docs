@@ -166,33 +166,6 @@ select to_unixtime('2023-03-01'::date);
 +---------------------------------+
 ```
 
-* `to_timezone(expression, timezone)` to convert the expression by the timezone. The argument can be integers (Unix timestamp in milliseconds), Timestamp, or String. If the argument is the string type, the function will first try to convert it into a Timestamp.
-
-```sql
-SELECT to_timezone('2022-09-20T14:16:43.012345+08:00', 'Europe/Berlin');
-```
-
-```
-+-----------------------------------------------------------------------------+
-| to_timezone(Utf8("2022-09-20T14:16:43.012345+08:00"),Utf8("Europe/Berlin")) |
-+-----------------------------------------------------------------------------+
-| 2022-09-20 08:16:43.012345                                                  |
-+-----------------------------------------------------------------------------+
-```
-
-
-```sql
-SELECT to_timezone(1709992225000, 'Asia/Shanghai');
-```
-
-```
-+---------------------------------------------------------+
-| to_timezone(Int64(1709992225000),Utf8("Asia/Shanghai")) |
-+---------------------------------------------------------+
-| 2024-03-09 21:50:25                                     |
-+---------------------------------------------------------+
-```
-
 * `timezone()` to retrieve the current session timezone:
 
 ```sql
