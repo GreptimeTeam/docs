@@ -1,6 +1,6 @@
 # SQL
 
-GreptimeDB supports full SQL for querying data from a database.
+GreptimeDB supports full SQL for querying data from a database. 
 
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
@@ -85,7 +85,7 @@ select to_unixtime('2024-01-02 00:00:00');
 select to_unixtime('2024-01-02 00:00:00+08:00');
 ```
 
-Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions/overview.mdx) for more information.
+Please refer to [SELECT](/reference/sql/select.md) and [Functions](/reference/sql/functions/overview.md) for more information.
 
 ## Limit the number of rows returned
 
@@ -165,7 +165,7 @@ For example, use the `now()` function and the `INTERVAL` keyword to retrieve dat
 SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-For date and time functions, please refer to [Functions](/reference/sql/functions/overview.mdx) for more information.
+For date and time functions, please refer to [Functions](/reference/sql/functions/overview.md) for more information.
 
 ### Time zone
 
@@ -283,9 +283,9 @@ Suppose we have the following data in the [`monitor` table](/user-guide/administ
 The following query returns the average CPU usage in a 10-second time range and calculates it every 5 seconds:
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
 ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
@@ -344,20 +344,20 @@ The alignment times default based on the time zone of the current SQL client ses
 You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '1w'
-FROM monitor
+FROM monitor 
 ALIGN '1d' TO NOW BY (host);
 ```
 
 Or use a `ISO 8601` timestamp to align to a specified time:
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '1w'
 FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);

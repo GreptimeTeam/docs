@@ -81,7 +81,7 @@ select to_unixtime('2024-01-02 00:00:00');
 select to_unixtime('2024-01-02 00:00:00+08:00');
 ```
 
-请参考 [SELECT](/reference/sql/select.md) 和 [Functions](/reference/sql/functions/overview.mdx) 获取更多信息。
+请参考 [SELECT](/reference/sql/select.md) 和 [Functions](/reference/sql/functions/overview.md) 获取更多信息。
 
 ## 限制返回的行数
 
@@ -155,7 +155,7 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
 SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
 ```
 
-请参考 [Functions](/reference/sql/functions/overview.mdx) 获取更多时间函数信息。
+请参考 [Functions](/reference/sql/functions/overview.md) 获取更多时间函数信息。
 
 ### 时区
 
@@ -271,9 +271,9 @@ GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚�
 下面的查询返回 10 秒内的平均 CPU 使用率，并且每 5 秒计算一次：
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
 ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
@@ -329,20 +329,20 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 你可以将初始对齐时间设置为任何你想要的时间戳。例如，使用 `NOW` 将对齐到当前时间：
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '1w'
-FROM monitor
+FROM monitor 
 ALIGN '1d' TO NOW BY (host);
 ```
 
 或者使用 `ISO 8601` 时间戳将对齐到指定时间：
 
 ```sql
-SELECT
-    ts,
-    host,
+SELECT 
+    ts, 
+    host, 
     avg(cpu) RANGE '1w'
 FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
