@@ -8,7 +8,7 @@ Release date: October 15, 2024
 
 ## Highlights
 
-- Enhanced support for geo-related functions: [#4770](https://github.com/GreptimeTeam/greptimedb/pull/4770), [#4823](https://github.com/GreptimeTeam/greptimedb/pull/4823), [#4798](https://github.com/GreptimeTeam/greptimedb/pull/4798)
+- Enhanced support for [geo-related functions](https://docs.greptime.com/reference/sql/functions/geo): [#4770](https://github.com/GreptimeTeam/greptimedb/pull/4770), [#4823](https://github.com/GreptimeTeam/greptimedb/pull/4823), [#4798](https://github.com/GreptimeTeam/greptimedb/pull/4798)
 - Expanded support for JSON functions: [#4807](https://github.com/GreptimeTeam/greptimedb/pull/4807)
 - Fixed panic issue in union all queries: [#4796](https://github.com/GreptimeTeam/greptimedb/pull/4796)
 
