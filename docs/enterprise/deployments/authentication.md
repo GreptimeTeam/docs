@@ -1,14 +1,11 @@
-# LDAP User Provider
+# LDAP Authentication
 
-:::tip NOTE
-
-**LDAP user provider is only available in GreptimeDB Enterprise.**
-
-:::
+In addition to the built-in [static user provider](/user-guide/deployments/authentication/static.md) in GreptimeDB OSS,
+GreptimeDB Enterprise offers the capability to connect to an external LDAP server for authentication.
 
 ## Configuration
 
-GreptimeDB can connect to an external LDAP server to authenticate users. Similar to [LDAP in PostgreSQL](https://www.postgresql.org/docs/current/auth-ldap.html), in GreptimeDB, LDAP authentication is
+Similar to [LDAP in PostgreSQL](https://www.postgresql.org/docs/current/auth-ldap.html), in GreptimeDB, LDAP authentication is
 operated in two modes: "simple bind" and "search bind", too.
 
 In the "simple bind" mode, GreptimeDB will bind to the "DN"(distinguished name) constructed as

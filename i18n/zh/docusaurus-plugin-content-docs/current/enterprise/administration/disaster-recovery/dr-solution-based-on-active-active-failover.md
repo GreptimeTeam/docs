@@ -1,9 +1,5 @@
 # 基于双活互备的 DR 解决方案
 
-:::tip NOTE
-**双活互备方案只在 GreptimeDB 企业版中可用。**
-:::
-
 ## RPO
 
 在 GreptimeDB 的“双活互备”架构中，有两个节点，分别独立部署了 GreptimeDB 服务。这两个节点都可以提供客户端执行读写的能力。然而，为了达到
@@ -59,7 +55,7 @@ AZ（可用区，或“数据中心”）内的虚拟机系统中，你可能更
 - 内部的 endpoint 更新机制。如果你可以检测到节点的故障，那么就可以在你的代码中更新 GreptimeDB 的 endpoint。
 
 :::tip NOTE
-请参考 "[解决方案比较](./overview.md#解决方案比较)" 来比较不同灾难恢复解决方案的 RPO 和 RTO。
+请参考 "[解决方案比较](/user-guide/administration/disaster-recovery/overview.md#解决方案比较)" 来比较不同灾难恢复解决方案的 RPO 和 RTO。
 :::
 
 ## 总结

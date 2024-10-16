@@ -1,14 +1,11 @@
-# LDAP User Provider
+# LDAP 鉴权
 
-:::tip NOTE
-
-**LDAP user provider 是 GreptimeDB 企业版的功能。**
-
-:::
+除了 GreptimeDB OSS 中内置的 [Static User Provider](/user-guide/deployments/authentication/static.md)，
+GreptimeDB Enterprise 还提供了连接到外部 LDAP 服务器进行身份验证的功能。
 
 ## 配置
 
-GreptimeDB 可以使用外部 LDAP 服务以验证用户。与 [PostgreSQL 中的 LDAP 机制相似](https://www.postgresql.org/docs/current/auth-ldap.html)， 在 GreptimeDB 中，LDAP 鉴权也分为两种模式："simple bind" 和 "search bind"。
+与 [PostgreSQL 中的 LDAP 机制相似](https://www.postgresql.org/docs/current/auth-ldap.html)， 在 GreptimeDB 中，LDAP 鉴权也分为两种模式："simple bind" 和 "search bind"。
 
 在 "simple bind" 模式下，GreptimeDB 会构造一个格式为 `{prefix}{username}{suffix}` 的 "DN"(distinguished name)
 ，并使用客户端传来的密码向 LDAP 服务发起”绑定 (bind)“。绑定的结果就是鉴权的结果。一个典型配置是，`prefix` 参数指定 `cn=`，
