@@ -12,20 +12,13 @@ Follow these instructions to install GreptimeDB:
 After starting GreptimeDB, you can check its status to ensure it is running.
 
 ```shell
-curl http://localhost:4000/status
+curl http://localhost:4000/health
 ```
 
-If the GreptimeDB instance is running healthily, you will see a response like the following:
+If the GreptimeDB instance is running healthily, you will see the following response:
 
 ```json
-{
-  "source_time": "2024-09-06T04:13:23Z",
-  "commit": "506dc20765f892b3d7ad77af841f6bbf7c1a3892",
-  "branch": "",
-  "rustc_version": "rustc 1.80.0-nightly (72fdf913c 2024-06-05)",
-  "hostname": "7189d0233448",
-  "version": "0.9.3"
-}
+{}
 ```
 
 ## Next steps

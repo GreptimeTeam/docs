@@ -13,23 +13,14 @@
 
 ```shell
 
-curl http://localhost:4000/status
+curl http://localhost:4000/health
 
 ```
 
-如果 GreptimeDB 实例正常运行，你将看到类似下面的响应：
+如果 GreptimeDB 实例正常运行，你将看到下面的响应：
 
 ```json
-
-{
-  "source_time": "2024-09-06T04:13:23Z",
-  "commit": "506dc20765f892b3d7ad77af841f6bbf7c1a3892",
-  "branch": "",
-  "rustc_version": "rustc 1.80.0-nightly (72fdf913c 2024-06-05)",
-  "hostname": "7189d0233448",
-  "version": "0.9.3"
-}
-
+{}
 ```
 
 ## 下一步
