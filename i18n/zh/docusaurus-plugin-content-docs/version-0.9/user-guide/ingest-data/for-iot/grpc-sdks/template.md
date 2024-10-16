@@ -15,7 +15,7 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 
 ## 连接数据库
 
-如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/operations/authentication.md)，
+如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/deployments/authentication/overview.md)，
 则需要提供用户名和密码才能连接到 GreptimeDB。
 以下示例显示了使用 SDK 连接到 GreptimeDB 时如何设置用户名和密码。
 
@@ -92,34 +92,3 @@ SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 
 <InjectContent id="ingester-lib-reference" content={props.children}/>
 
-<!-- ## 查询数据
-
-GreptimeDB 使用 SQL 作为主要查询语言，兼容 MySQL 和 PostgreSQL。
-因此，我们推荐使用成熟的 SQL 驱动来查询数据。
-
-### 推荐的查询库
-
-<InjectContent id="recommended-query-library" content={props.children}/>
-
-### 安装
-
-<InjectContent id="query-library-installation" content={props.children}/>
-
-### 连接数据库
-
-下方的例子展示了如何连接到 GreptimeDB：
-
-<InjectContent id="query-library-connect" content={props.children}/>
-
-### Raw SQL
-
-我们推荐使用 Raw SQL 来体验 GreptimeDB 的全部功能。
-下面的例子展示了如何使用 Raw SQL 查询数据：
-
-<InjectContent id="query-library-raw-sql" content={props.children}/>
-
-### 查询库参考
-
-有关如何使用查询库的更多信息，请参考相应库的文档：
-
-<InjectContent id="query-lib-doc-link" content={props.children}/> -->

@@ -6,5 +6,6 @@ GreptimeDB 可以与流行的数据写入、查询和可视化工具无缝集成
 - [Prometheus](./prometheus.md)
 - [Vector](./vector.md)
 - [Grafana](./grafana.md)
+- [Superset](./superset.md)
+- [Metabase](./metabase.md)
 - [EMQX](./emqx.md)
-

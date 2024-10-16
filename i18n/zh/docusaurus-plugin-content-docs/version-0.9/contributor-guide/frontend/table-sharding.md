@@ -4,46 +4,7 @@
 
 ## 分区
 
-从逻辑上说，在 GreptimeDB 中数据是使用分区进行分片的。我们借用了在 OLTP 数据库中常用的概念“分区”，因为 GreptimeDB 使用“表”来组织数据并使用 SQL 来查询它。
-
-在 GreptimeDB 中，一张表可以通过多种方式横向分区，并且它使用与 MySQL 相同的分区类型（以及相应的语法）。目前，GreptimeDB 支持 “RANGE COLUMNS 分区”。
-
-每个分区仅包含表中的一部分数据，并按某些列值范围进行分组。例如，我们可以使用这样的语法在 GreptimeDB 中对表进行分区：
-
-```sql
-CREATE TABLE (...)
-PARTITION ON COLUMNS (<COLUMN LIST>) (
-    <RULE LIST>
-);
-```
-
-该语法主要包含两部分：
-- `PARTITION ON COLUMNS` 后跟随一个使用逗号分隔的列名列表，用于指定哪些列可能会被用于分区。这里指定的分区列表仅作为“白名单”使用，实际上可能只有其中的一部分列会被用于分区。
-- `RULE LIST` 是一个包含多个分区规则的列表，每个规则都是一个分区名称和一个分区条件的组合。此处的表达式可使用 `=`，`!=`，`>`，`>=`，`<`，`<=`，`AND`, `OR`，列名和字面量。
-
-下面是一个具体的例子：
-
-```sql
-CREATE TABLE my_table (
-  a INT PRIMARY KEY,
-  b STRING,
-  ts TIMESTAMP TIME INDEX,
-)
-PARTITION ON COLUMNS (a) (
-  a < 10,
-  a >= 10 AND a < 20,
-  a >= 20,
-);
-```
-
-我们在上面创建的 `my_table` 有 3 个分区。分别是包含了 "a < 10" 的行；包含了 "10 \<= a < 20" 的行；和 "a >= 20" 的所有行。
-
-:::warning 重要
-
-1. 所有分区的范围不能重叠。
-2. 用于分区的列必须是在 `ON COLUMNS` 中指定。
-
-:::
+有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/administration/manage-data/table-sharding.md)部分。
 
 ## Region
 

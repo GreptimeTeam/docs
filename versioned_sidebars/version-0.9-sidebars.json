@@ -106,7 +106,10 @@
             "user-guide/integrations/prometheus",
             "user-guide/integrations/vector",
             "user-guide/integrations/grafana",
-            "user-guide/integrations/emqx"
+            "user-guide/integrations/superset",
+            "user-guide/integrations/metabase",
+            "user-guide/integrations/emqx",
+            "user-guide/integrations/dbeaver"
           ]
         },
         {
@@ -135,6 +138,7 @@
           "label": "Continuous Aggregation",
           "items": [
             "user-guide/continuous-aggregation/overview",
+            "user-guide/continuous-aggregation/usecase-example",
             "user-guide/continuous-aggregation/manage-flow",
             "user-guide/continuous-aggregation/query",
             "user-guide/continuous-aggregation/define-time-window",
@@ -153,62 +157,96 @@
             "user-guide/logs/query-logs"
           ]
         },
-        "user-guide/cluster",
-        "user-guide/table-management",
         {
           "type": "category",
-          "label": "Operations",
+          "label": "Deployments",
           "items": [
-            "user-guide/operations/overview",
-            "user-guide/operations/authentication",
-            "user-guide/operations/admin",
-            "user-guide/operations/configuration",
-            "user-guide/operations/capacity-plan",
+            "user-guide/deployments/overview",
+            "user-guide/deployments/configuration",
+            {
+              "type": "category",
+              "label": "Authentication",
+              "items": [
+                "user-guide/deployments/authentication/overview",
+                "user-guide/deployments/authentication/static"
+              ]
+            },
             {
               "type": "category",
               "label": "Deploy on Kubernetes",
               "items": [
-                "user-guide/operations/deploy-on-kubernetes/overview",
-                "user-guide/operations/deploy-on-kubernetes/greptimedb-operator",
-                "user-guide/operations/deploy-on-kubernetes/deploy-greptimedb-cluster",
-                "user-guide/operations/deploy-on-kubernetes/destroy-cluster"
+                "user-guide/deployments/deploy-on-kubernetes/overview",
+                {
+                  "type": "category",
+                  "label": "Manage GreptimeDB Operator",
+                  "items": [
+                    "user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/deploy-greptimedb-operator",
+                    "user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/upgrade-greptimedb-operator"
+                  ]
+                },
+                "user-guide/deployments/deploy-on-kubernetes/deploy-greptimedb-cluster",
+                "user-guide/deployments/deploy-on-kubernetes/destroy-cluster"
               ]
             },
-            "user-guide/operations/run-on-android",
+            "user-guide/deployments/run-on-android"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Administration",
+          "items": [
+            "user-guide/administration/overview",
+            "user-guide/administration/capacity-plan",
+            {
+              "type": "category",
+              "label": "Manage Data",
+              "items": [
+                "user-guide/administration/manage-data/overview",
+                "user-guide/administration/manage-data/basic-table-operations",
+                "user-guide/administration/manage-data/table-sharding",
+                "user-guide/administration/manage-data/region-migration",
+                "user-guide/administration/manage-data/region-failover",
+                "user-guide/administration/manage-data/compaction"
+              ]
+            },
             {
               "type": "category",
               "label": "Disaster Recovery",
               "items": [
-                "user-guide/operations/disaster-recovery/overview",
-                "user-guide/operations/disaster-recovery/back-up-&-restore-data",
-                "user-guide/operations/disaster-recovery/dr-solution-based-on-active-active-failover",
-                "user-guide/operations/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster"
+                "user-guide/administration/disaster-recovery/overview",
+                "user-guide/administration/disaster-recovery/back-up-&-restore-data",
+                "user-guide/administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster"
               ]
             },
             {
               "type": "category",
               "label": "Remote WAL",
               "items": [
-                "user-guide/operations/remote-wal/quick-start",
-                "user-guide/operations/remote-wal/cluster-deployment"
+                "user-guide/administration/remote-wal/quick-start",
+                "user-guide/administration/remote-wal/cluster-deployment"
               ]
             },
-            "user-guide/operations/region-migration",
-            "user-guide/operations/region-failover",
-            "user-guide/operations/compaction",
-            "user-guide/operations/monitoring",
-            "user-guide/operations/tracing",
-            "user-guide/operations/performance-tuning-tips"
+            {
+              "type": "category",
+              "label": "Monitoring",
+              "items": [
+                "user-guide/administration/monitoring/overview",
+                "user-guide/administration/monitoring/export-metrics",
+                "user-guide/administration/monitoring/tracing"
+              ]
+            },
+            "user-guide/administration/runtime-info",
+            "user-guide/administration/performance-tuning-tips",
+            "user-guide/administration/upgrade"
           ]
-        },
-        "user-guide/upgrade"
+        }
       ]
     },
     {
       "type": "category",
       "label": "GreptimeCloud",
       "items": [
-        "greptimecloud/overview",
+        "greptimecloud/index",
         {
           "type": "category",
           "label": "Getting Started",
@@ -228,23 +266,21 @@
           "type": "category",
           "label": "Integrations",
           "items": [
-            {
-              "type": "category",
-              "label": "Prometheus",
-              "items": [
-                "greptimecloud/integrations/prometheus/quick-setup",
-                "greptimecloud/integrations/prometheus/rule-management"
-              ]
-            },
+            "greptimecloud/integrations/prometheus",
             "greptimecloud/integrations/grafana",
             "greptimecloud/integrations/mysql",
             "greptimecloud/integrations/postgresql",
             "greptimecloud/integrations/influxdb",
+            "greptimecloud/integrations/kafka",
             "greptimecloud/integrations/otlp",
             "greptimecloud/integrations/vector",
+            "greptimecloud/integrations/alloy",
             "greptimecloud/integrations/emqx",
             "greptimecloud/integrations/streamlit",
+            "greptimecloud/integrations/superset",
+            "greptimecloud/integrations/metabase",
             "greptimecloud/integrations/mindsdb",
+            "greptimecloud/integrations/dbeaver",
             {
               "type": "category",
               "label": "SDK Libraries",
@@ -298,9 +334,38 @@
     },
     {
       "type": "category",
+      "label": "GreptimeDB Enterprise",
+      "items": [
+        "enterprise/overview",
+        {
+          "type": "category",
+          "label": "Deployments",
+          "items": [
+            "enterprise/deployments/authentication"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Administration",
+          "items": [
+            {
+              "type": "category",
+              "label": "Disaster Recovery",
+              "items": [
+                "enterprise/administration/disaster-recovery/overview",
+                "enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "category",
       "label": "Reference",
       "items": [
         "reference/command-lines",
+        "reference/sql-tools",
         {
           "type": "category",
           "label": "SQL",
@@ -334,7 +399,8 @@
               "label": "Functions",
               "items": [
                 "reference/sql/functions/overview",
-                "reference/sql/functions/df-functions"
+                "reference/sql/functions/df-functions",
+                "reference/sql/functions/geo"
               ]
             },
             "reference/sql/admin",

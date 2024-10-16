@@ -35,5 +35,5 @@ Before getting started, please read the following documents that include instruc
 [3]: ./contributor-guide/overview.md
 [4]: /release-notes
 [5]: ./faq-and-others/faq.md
-[6]: ./greptimecloud/overview.md
+[6]: ./greptimecloud/index.mdx
 [7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap

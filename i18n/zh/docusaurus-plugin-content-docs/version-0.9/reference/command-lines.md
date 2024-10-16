@@ -105,7 +105,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: TLS 公钥文件地址
 - `--tls-key-path <TLS_KEY_PATH>`: TLS 私钥文件地址
 - `--tls-mode <TLS_MODE>`: TLS 模式
-- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/operations/authentication.md);
+- `--user-provider <USER_PROVIDER>`: 参考 [鉴权](/user-guide/deployments/authentication/overview.md);
 
 
 ### Flownode 子命令选项
@@ -149,7 +149,7 @@ greptime standalone start --help
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-`standalone.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。您可以在那里找到更多示例配置文件。使用 `-c` 选项可以指定配置文件，有关更多信息，更多信息请查看[配置](../user-guide/operations/configuration.md)。
+`standalone.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。您可以在那里找到更多示例配置文件。使用 `-c` 选项可以指定配置文件，有关更多信息，更多信息请查看[配置](../user-guide/deployments/configuration.md)。
 
 为了以分布式模式启动 GreptimeDB，您需要分别启动每个组件。以下命令显示了如何使用自定义配置或命令行参数启动每个组件：
 
@@ -197,4 +197,4 @@ greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=12
 
 ### 升级 GreptimeDB 版本
 
-请参考具体的[升级步骤](/user-guide/upgrade.md)
+请参考具体的[升级步骤](/user-guide/administration/upgrade.md)

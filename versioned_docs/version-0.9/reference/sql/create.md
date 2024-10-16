@@ -92,7 +92,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | Option              | Description                                   | Value                                                                                                                                                                        |
 | ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | The storage time of the table data            | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                                                 |
-| `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/operations/configuration.md#storage-engine-provider). |
+| `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments/configuration.md#storage-engine-provider). |
 | `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
 | `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.         | String value, such as '1'. Only available when `compaction.type` is `twcs`. |
@@ -109,7 +109,7 @@ For example, to create a table with the storage data TTL(Time-To-Live) is seven 
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
+) with(ttl='7d');
 ```
 
 #### Create a table with custom storage
@@ -119,7 +119,7 @@ Create a table that stores the data in Google Cloud Storage:
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', storage="Gcs");
+) with(ttl='7d', storage="Gcs");
 ```
 
 #### Create a table with custom compaction options
@@ -132,7 +132,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
 )
-engine=mito
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
@@ -147,7 +146,7 @@ Create an append-only table which disables deduplication.
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 #### Create a table with merge mode
@@ -161,7 +160,6 @@ create table if not exists metrics(
     TIME INDEX (ts),
     PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_row');
 ```
 
@@ -191,7 +189,6 @@ create table if not exists metrics(
     TIME INDEX (ts),
     PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_non_null');
 ```
 
@@ -280,7 +277,7 @@ CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
   log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
-) ENGINE=mito;
+);
 ```
 
 For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/logs/query-logs.md).

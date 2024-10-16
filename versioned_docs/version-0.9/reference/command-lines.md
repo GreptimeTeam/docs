@@ -105,7 +105,7 @@ greptime frontend start --help
 - `--tls-cert-path <TLS_CERT_PATH>`: The TLS public key file path;
 - `--tls-key-path <TLS_KEY_PATH>`: The TLS private key file path;
 - `--tls-mode <TLS_MODE>`: TLS Mode;
-- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/operations/authentication.md);
+- `--user-provider <USER_PROVIDER>`: You can refer [authentication](/user-guide/deployments/authentication/overview.md);
 
 ### Flownode subcommand options
 
@@ -149,7 +149,7 @@ Starts GreptimeDB in standalone mode with customized configurations:
 greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
-The `standalone.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](../user-guide/operations/configuration.md).
+The `standalone.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](../user-guide/deployments/configuration.md).
 
 To start GreptimeDB in distributed mode, you need to start each component separately. The following commands show how to start each component with customized configurations or command line arguments.
 
@@ -197,5 +197,5 @@ greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=12
 
 ### Upgrade GreptimeDB version
 
-Please refer to [the upgrade steps](/user-guide/upgrade.md)
+Please refer to [the upgrade steps](/user-guide/administration/upgrade.md)
 

@@ -313,3 +313,9 @@ it will take precedence over the database TTL policy.
 Otherwise, the database TTL policy will be applied to the table.
 
 For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
+
+
+## More data management operations
+
+For more advanced data management operations, such as basic table operations, table sharding and region migration, please refer to the [Data Management](/user-guide/administration/manage-data/overview.md) in the administration section.
+

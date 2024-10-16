@@ -24,16 +24,16 @@ The storage file structure of GreptimeDB includes of the following:
 ```
 
 - `metadata`:  The internal metadata directory that keeps catalog, database and table info, procedure states, etc. In cluster mode, this directory does not exist, because all those states including region route info are saved in `Metasrv`.
-- `data`: The files in data directory store time series data and index files of GreptimeDB. To customize this path, please refer to [Storage option](../operations/configuration.md#storage-options). The directory is organized in a two-level structure of catalog and schema.
+- `data`: The files in data directory store time series data and index files of GreptimeDB. To customize this path, please refer to [Storage option](../deployments/configuration.md#storage-options). The directory is organized in a two-level structure of catalog and schema.
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
 - `wal`: The wal directory contains the write-ahead log files.
 - `index_intermediate`: the temporary intermediate data while indexing.
 
 ## Cloud storage
 
-The `data` directory in the file structure can be stored in cloud storage. Please refer to [Storage option](../operations/configuration.md#storage-options) for more details.
+The `data` directory in the file structure can be stored in cloud storage. Please refer to [Storage option](../deployments/configuration.md#storage-options) for more details.
 
-Please note that only storing the data directory in object storage is not sufficient to ensure data reliability and disaster recovery. The `wal` and `metadata` also need to be considered for disaster recovery. Please refer to the [disaster recovery documentation](/user-guide/operations/disaster-recovery/overview.md).
+Please note that only storing the data directory in object storage is not sufficient to ensure data reliability and disaster recovery. The `wal` and `metadata` also need to be considered for disaster recovery. Please refer to the [disaster recovery documentation](/user-guide/administration/disaster-recovery/overview.md).
 
 ## Multiple storage engines
 

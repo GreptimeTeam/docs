@@ -8,13 +8,13 @@ You can connect to GreptimeDB using MySQL via port `4002`.
 mysql -h <host> -P 4002 -u <username> -p
 ```
 
-- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/operations/authentication.md).
-- If you want to use other ports for MySQL, please refer to [Protocol options](/user-guide/operations/configuration.md#protocol-options) in the configuration document.
+- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments/authentication/overview.md).
+- If you want to use other ports for MySQL, please refer to [Protocol options](/user-guide/deployments/configuration.md#protocol-options) in the configuration document.
 
 
 ## Table management
 
-Please refer to [Table Management](/user-guide/table-management.md).
+Please refer to [Table Management](/user-guide/administration/manage-data/basic-table-operations.md).
 
 ## Ingest data
 
