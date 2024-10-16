@@ -368,7 +368,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/with',
             'reference/sql/alter',
             'reference/sql/explain',
-            { type: 'category', label: 'Functions', items: ['reference/sql/functions/overview', 'reference/sql/functions/df-functions'] },
+            { type: 'category', label: 'Functions', items: ['reference/sql/functions/overview', 'reference/sql/functions/df-functions', 'reference/sql/functions/geo'] },
             'reference/sql/admin',
             'reference/sql/compatibility',
             {

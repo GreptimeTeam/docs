@@ -1,4 +1,8 @@
+import TOCInline from '@theme/TOCInline';
+
 # Overview
+
+<TOCInline toc={toc} />
 
 <!--
 The outling of this document is a little strange, as the content is classified by company functions and feature functions. We plan to tidy up the content in the future when out functions are more stable.
@@ -37,7 +41,7 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 ### String Functions
 
 DataFusion [String Function](./df-functions.md#string-functions).GreptimeDB provides:
-* `matches(expression, pattern)` for full text search. 
+* `matches(expression, pattern)` for full text search.
 
 For details, read the [Query Logs](/user-guide/logs/query-logs.md).
 
@@ -185,7 +189,7 @@ select timezone();
 * `isnull(expression)` to check whether an expression is `NULL`:
 ```sql
  SELECT isnull(1);
- 
+
  +------------------+
 | isnull(Int64(1)) |
 +------------------+
@@ -297,3 +301,8 @@ SELECT json_is_object(parse_json('1'));
 |                                     0 |
 +---------------------------------------+
 ```
+
+## Geospatial Functions
+
+GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
+about these functions](./geo.md)

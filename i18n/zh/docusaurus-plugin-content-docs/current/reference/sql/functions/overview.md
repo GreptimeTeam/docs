@@ -1,4 +1,8 @@
+import TOCInline from '@theme/TOCInline';
+
 # 概述
+
+<TOCInline toc={toc} />
 
 <!--
 The outling of this document is a little strange, as the content is classified by company functions and feature functions. We plan to tidy up the content in the future when out functions are more stable.
@@ -179,7 +183,7 @@ select timezone();
 * `isnull(expression)` 检查表达式是否为 `NULL`：
 ```sql
  SELECT isnull(1);
- 
+
  +------------------+
 | isnull(Int64(1)) |
 +------------------+
@@ -290,3 +294,7 @@ SELECT json_is_object(parse_json('1'));
 |                                     0 |
 +---------------------------------------+
 ```
+
+### 地理函数
+
+[了解 GreptimeDB 中轨迹、地理编码相关的地理函数](./geo.md)。
