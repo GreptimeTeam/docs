@@ -332,4 +332,4 @@ SELECT json_is_object(parse_json('1'));
 ## Geospatial Functions
 
 GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
-about these functions](./geo.mdx)
+about these functions](./geo.md)

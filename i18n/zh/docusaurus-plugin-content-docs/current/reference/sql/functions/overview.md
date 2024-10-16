@@ -324,4 +324,4 @@ SELECT json_is_object(parse_json('1'));
 
 ### 地理函数
 
-[了解 GreptimeDB 中轨迹、地理编码相关的地理函数](./geo.mdx)。
+[了解 GreptimeDB 中轨迹、地理编码相关的地理函数](./geo.md)。
