@@ -15,10 +15,6 @@
     "message": "概念",
     "description": "The label for category Concepts in sidebar docs"
   },
-  "sidebar.docs.category.Clients": {
-    "message": "客户端",
-    "description": "The label for category Clients in sidebar docs"
-  },
   "sidebar.docs.category.Migrate to GreptimeDB": {
     "message": "迁移到 GreptimeDB",
     "description": "The label for category Migrate to GreptimeDB in sidebar docs"
@@ -43,12 +39,24 @@
     "message": "客户端库",
     "description": "The label for category Client Libraries in sidebar docs"
   },
-  "sidebar.docs.category.Operations": {
-    "message": "运维操作",
+  "sidebar.docs.category.Administration": {
+    "message": "管理",
     "description": "The label for category Operations in sidebar docs"
+  },
+  "sidebar.docs.category.Authentication": {
+    "message": "鉴权",
+    "description": "The label for category Authentication in sidebar docs"
+  },
+  "sidebar.docs.category.Deployments": {
+    "message": "部署",
+    "description": "The label for category Deployments in sidebar docs"
   },
   "sidebar.docs.category.Deploy on Kubernetes": {
     "message": "部署到 Kubernetes",
+    "description": "The label for category Deploy on Kubernetes in sidebar docs"
+  },
+  "sidebar.docs.category.Manage GreptimeDB Operator": {
+    "message": "管理 GreptimeDB Operator",
     "description": "The label for category Deploy on Kubernetes in sidebar docs"
   },
   "sidebar.docs.category.Disaster Recovery": {
@@ -90,6 +98,10 @@
   "sidebar.docs.category.Monitor Host Metrics": {
     "message": "监控 Host Metrics",
     "description": "The label for category Monitor Host Metrics in sidebar docs"
+  },
+  "sidebar.docs.category.GreptimeDB Enterprise": {
+    "message": "GreptimeDB 企业版",
+    "description": "The label for category GreptimeDB Enterprise in sidebar docs"
   },
   "sidebar.docs.category.Reference": {
     "message": "Reference",
@@ -143,10 +155,6 @@
     "message": "Release Notes",
     "description": "The label for link Release Notes in sidebar docs, linking to /release-notes"
   },
-  "version.label": {
-    "message": "0.9",
-    "description": "The label for version 0.9"
-  },
   "sidebar.docs.category.Ingest Data": {
     "message": "写入数据",
     "description": "The label for category Ingest Data in sidebar docs"
@@ -166,5 +174,13 @@
   "sidebar.docs.category.Manage Data": {
     "message": "管理数据",
     "description": "The label for category Manage Data in sidebar docs"
+  },
+  "sidebar.docs.category.Protocols": {
+    "message": "协议",
+    "description": "The label for category Manage Data in sidebar docs"
+  },
+  "sidebar.docs.category.Monitoring": {
+    "message": "监控",
+    "description": "The label for category Monitoring in sidebar docs"
   }
 }
