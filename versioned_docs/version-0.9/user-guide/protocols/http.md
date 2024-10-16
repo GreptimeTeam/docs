@@ -151,6 +151,44 @@ The response contains the following fields:
     - `rows`: The rows of the query result, where each row is an array containing the corresponding values of the columns in the schema.
 - `execution_time_ms`: The execution time of the statement in milliseconds.
 
+### Alternative formats
+
+In addition to the default JSON format, the HTTP API also allows you to
+customize output format by providing the `format` query parameter with following
+values:
+
+- `influxdb_v1`: [influxdb query
+  API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
+  compatible format. Additional parameters:
+  - `epoch`: `[ns,u,µ,ms,s,m,h]`, returns epoch timestamps with the specified
+    precision
+- `csv`: output in comma separated values
+- `arrow`: [Arrow IPC
+  format](https://arrow.apache.org/docs/python/feather.html). Additional
+  parameters:
+  - `compression`: `zstd` or `lz4`, default: no compression
+- `table`: ASCII table format for console output
+
+Call the SQL API with `table` format as an example:
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=table
+```
+
+Output
+
+```
+┌─host────────┬─ts────────────┬─cpu─┬─memory─┐
+│ "127.0.0.1" │ 1667446797450 │ 0.1 │ 0.4    │
+│ "127.0.0.1" │ 1667446798450 │ 0.5 │ 0.2    │
+│ "127.0.0.2" │ 1667446798450 │ 0.2 │ 0.3    │
+└─────────────┴───────────────┴─────┴────────┘
+```
+
 ## POST PromQL Queries
 
 GreptimeDB also exposes an custom HTTP API for querying with PromQL, and returning

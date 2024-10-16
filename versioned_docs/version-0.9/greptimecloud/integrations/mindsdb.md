@@ -4,12 +4,12 @@
 enables developers to easily incorporate advanced machine learning capabilities
 with existing databases.
 
-Your GreptimeDB instance work out of box as using MySQL protocol with
+Your GreptimeDB instance work out of box as using GreptimeDB extension with
 MindsDB. To configure GreptimeDB database, run the following SQL:
 
 ```sql
 CREATE DATABASE greptime_datasource
-WITH ENGINE = 'mysql',
+WITH ENGINE = 'greptimedb',
 PARAMETERS = {
   "host": "<host>",
   "port": 4002,

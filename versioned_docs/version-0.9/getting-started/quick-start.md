@@ -12,7 +12,7 @@ In this quick start document, we use SQL for simplicity.
 If your GreptimeDB instance is running on `127.0.0.1` with the MySQL client default port `4002` or the PostgreSQL client default port `4003`,
 you can connect to GreptimeDB using the following commands.
 
-By default, GreptimeDB does not have [authentication](/user-guide/operations/authentication.md) enabled.
+By default, GreptimeDB does not have [authentication](/user-guide/deployments/authentication/overview.md) enabled.
 You can connect to the database without providing a username and password in this section.
 
 ```shell
@@ -37,8 +37,7 @@ CREATE TABLE grpc_latencies (
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
-)
-engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
@@ -56,8 +55,7 @@ CREATE TABLE app_logs (
   log_level STRING,
   log STRING FULLTEXT,
   PRIMARY KEY (host, log_level)
-)
-engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp of the log entry. It is the time index column.

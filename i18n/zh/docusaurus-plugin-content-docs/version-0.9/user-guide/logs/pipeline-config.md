@@ -120,7 +120,7 @@ processors:
 和 Logstash 的 Dissect 模式类似，Dissect 模式由 `%{key}` 组成，其中 `%{key}` 为一个字段名。例如：
 
 ```
-"%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6} %{*key7} %{&key8}"
+"%{key1} %{key2} %{+key3} %{+key4/2} %{key5->} %{?key6}"
 ```
 
 #### Dissect 修饰符
@@ -133,20 +133,19 @@ Dissect 模式支持以下修饰符：
 | `+` 和 `/n` | 按照指定的顺序将两个或多个字段追加到一起 | `%{+key/2} %{+key/1}` |
 | `->`        | 忽略右侧的任何重复字符                   | `%{key1->} %{key2->}` |
 | `?`         | 忽略匹配的值                             | `%{?key}`             |
-| `*` 和 `&`  | 将输出键设置为 \*，输出值设置为 &。      | `%{*key} %{&key}`   |
 
 #### `dissect` 示例
 
 例如，对于以下 log 数据：
 
 ```
-"key1 key2 key3 key4 key5 key6 key7 key8"
+"key1 key2 key3 key4 key5 key6"
 ```
 
 使用以下 Dissect 模式：
 
 ```
-"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6} %{*key} %{&key}"
+"%{key1} %{key2} %{+key3} %{+key3/2} %{key5->} %{?key6}"
 ```
 
 将得到以下结果：
@@ -156,8 +155,7 @@ Dissect 模式支持以下修饰符：
   "key1": "key1",
   "key2": "key2",
   "key3": "key3 key4",
-  "key5": "key5",
-  "key7": "key8"
+  "key5": "key5"
 }
 ```
 

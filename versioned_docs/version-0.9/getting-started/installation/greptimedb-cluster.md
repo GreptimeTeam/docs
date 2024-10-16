@@ -35,7 +35,7 @@ By default, the data will be stored in `/tmp/greptimedb-cluster-docker-compose`.
 
 ## Deploy the GreptimeDB cluster in Kubernetes
 
-Please refer to [Deploy on Kubernetes](/user-guide/operations/deploy-on-kubernetes/overview.md).
+Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
 
 ## Next Steps
 

@@ -2,7 +2,7 @@
 
 GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准客户端和驱动程序在协议级别上兼容，且连接使用TLS加密。
 请注意，我们在 GreptimeDB 中不使用 Postgres 的 SQL 方言，因此可能有一些不支持的语句。
-有关更多信息，请参考 GreptimeDB 的[Postgresql文档](https://docs.greptime.cn/user-guide/protocols/postgresql)。
+有关更多信息，请参考 GreptimeDB 的[Postgresql文档](https://docs.greptime.cn/nightly/user-guide/protocols/postgresql)。
 
 要使用 Postgres 协议连接到 GreptimeCloud，请使用以下信息：
 

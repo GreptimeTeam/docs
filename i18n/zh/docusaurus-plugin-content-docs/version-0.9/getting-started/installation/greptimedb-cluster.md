@@ -37,7 +37,7 @@ docker compose -f ./cluster-with-etcd.yaml down
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 
-请参考 [在 Kubernetes 上部署](/user-guide/operations/deploy-on-kubernetes/overview.md)。
+请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
 
 ## 下一步
 

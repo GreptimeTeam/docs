@@ -8,13 +8,13 @@
 mysql -h <host> -P 4002 -u <username> -p
 ```
 
-- 请参考[鉴权认证](/user-guide/operations/authentication.md) 来设置 GreptimeDB 的用户名和密码。
-- 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/operations/configuration.md#协议选项)。
+- 请参考[鉴权认证](/user-guide/deployments/authentication/overview.md) 来设置 GreptimeDB 的用户名和密码。
+- 如果你想使用其他端口连接 MySQL，请参考配置文档中的[协议选项](/user-guide/deployments/configuration.md#协议选项)。
 
 
 ## 管理表
 
-请参考[表管理](/user-guide/table-management.md)。
+请参考[表管理](/user-guide/administration/manage-data/basic-table-operations.md)。
 
 ## 写入数据
 

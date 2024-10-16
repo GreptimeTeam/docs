@@ -59,7 +59,6 @@ ALIGN '5s' BY (host) FILL PREV
 ## 下一步
 
 * [概念](./concepts/overview.md)
-* [表管理](./table-management.md)
 * [迁移到 GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
 * [数据写入](./ingest-data/overview.md)
 * [数据查询](./query-data/overview.md)
@@ -67,5 +66,4 @@ ALIGN '5s' BY (host) FILL PREV
 * [集成](./integrations/overview.md)
 * [协议](./protocols/overview.md)
 * [持续聚合](./continuous-aggregation/overview.md)
-* [运维操作](./operations/overview.md)
-* [集群](./cluster.md)
+* [运维操作](./administration/overview.md)

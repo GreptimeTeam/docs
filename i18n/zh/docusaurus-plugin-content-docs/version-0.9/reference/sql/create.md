@@ -94,7 +94,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | 选项                | 描述                                     | 值                                                                                                                                                   |
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ttl`               | 表数据的存储时间                         | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                           |
-| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/operations/configuration.md#存储引擎提供商)。 |
+| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。 |
 | `compaction.type` | Compaction 策略         | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略 |
 | `compaction.twcs.max_active_window_files` | 当前活跃时间窗口内的最大文件数         | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用 |
 | `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数         | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用 |
@@ -111,7 +111,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d');
+) with(ttl='7d');
 ```
 
 #### 创建自定义存储的表
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with(ttl='7d', storage="Gcs");
+) with(ttl='7d', storage="Gcs");
 ```
 
 #### 创建自定义 compaction 参数的表
@@ -134,7 +134,6 @@ CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
 )
-engine=mito
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
@@ -149,7 +148,7 @@ with(
 CREATE TABLE IF NOT EXISTS temperatures(
   ts TIMESTAMP TIME INDEX,
   temperature DOUBLE DEFAULT 10,
-) engine=mito with('append_mode'='true');
+) with('append_mode'='true');
 ```
 
 #### 创建带有 merge 模式的表
@@ -165,7 +164,6 @@ create table if not exists metrics(
   TIME INDEX (ts),
   PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_row');
 ```
 
@@ -197,7 +195,6 @@ create table if not exists metrics(
   TIME INDEX (ts),
   PRIMARY KEY(host)
 )
-engine=mito
 with('merge_mode'='last_non_null');
 ```
 
@@ -288,7 +285,7 @@ CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
   log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
-) ENGINE=mito;
+);
 ```
 
 更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/logs/query-logs.md)。

@@ -311,3 +311,7 @@ CREATE DATABASE test WITH ('ttl'='7d');
 否则 database 的 TTL 策略将被应用于 table。
 
 有关 TTL 策略的更多信息，请参阅 [CREATE](/reference/sql/create.md) 语句。
+
+## 更多数据管理操作
+
+有关更高级的数据管理操作，例如基本表操作、表分片和 Region 迁移，请参阅 Administration 部分的[数据管理](/user-guide/administration/manage-data/overview.md)。

@@ -53,7 +53,7 @@ remote_write:
       password: <password>
 ```
 
-通过上面的配置文件，Prometheus 从 node exporter 中抓取指标并将其发送到 GreptimeDB。有关 `<host>`, `<dbname>`, `<username>` 和 `<password>` 的信息，请参考 [GreptimeDB](/user-guide/integrations/prometheus.md) 或 [GreptimeCloud](/greptimecloud/integrations/prometheus/quick-setup.md) 中的 Prometheus 文档。
+通过上面的配置文件，Prometheus 从 node exporter 中抓取指标并将其发送到 GreptimeDB。有关 `<host>`, `<dbname>`, `<username>` 和 `<password>` 的信息，请参考 [GreptimeDB](/user-guide/integrations/prometheus.md) 或 [GreptimeCloud](/greptimecloud/integrations/prometheus.md) 中的 Prometheus 文档。
 
 最后启动 Docker 容器：
 
