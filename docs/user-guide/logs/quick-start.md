@@ -138,6 +138,27 @@ You will see the following output if the command is successful:
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
+### Write logs using GreptimeDB built-in Pipeline
+
+GreptimeDB provides a built-in pipeline for the identified log format.
+You can use the built-in pipeline to write logs without creating a custom pipeline.
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+     -H 'Content-Type: application/json' \
+     -d $'[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]'
+```
+
+You will see the following output if the command is successful:
+
+```json
+{"output":[{"affectedrows":3}],"execution_time_ms":9}
+```
+
 ## Differences between writing logs directly and using a pipeline
 
 In the above examples, the table `origin_logs` is created by writing logs directly,
