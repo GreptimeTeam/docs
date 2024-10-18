@@ -1,9 +1,9 @@
 ---
-date: 2024-10-15
+date: 2024-10-18
 ---
 
-# v0.9.4 (DEPRECATED)
-Release date: October 15, 2024
+# v0.9.5
+Release date: October 18, 2024
 
 ## Highlights
 
