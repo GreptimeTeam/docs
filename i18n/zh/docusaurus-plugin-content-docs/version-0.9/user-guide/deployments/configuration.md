@@ -299,6 +299,7 @@ backoff_init = "500ms"
 backoff_max = "10s"
 backoff_base = 2
 backoff_deadline = "5mins"
+overwrite_entry_start_id = false
 ```
 
 - `broker_endpoints`：Kafka 端点
@@ -308,6 +309,7 @@ backoff_deadline = "5mins"
 - `backoff_max`：：backoff 最大延迟
 - `backoff_base`：：backoff 指数
 - `backoff_deadline`：重试的截止时间
+- `overwrite_entry_start_id`: 该选项确保在 Kafka 消息被删除时，系统仍然能够成功重放内存表数据，而不会抛出超出范围(out-of-range)的错误。然而，启用此选项可能会导致意外的数据丢失，因为系统会跳过缺失的条目，而不是将其视为严重错误。
 
 ##### Remote WAL 鉴权 (Optional)
 
