@@ -101,3 +101,7 @@ processors:
 ```
 
 It is recommended to use `dissect` or `regex` processor to split the input line into fields first and then process the fields accordingly.
+
+## Example
+
+Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for an example.

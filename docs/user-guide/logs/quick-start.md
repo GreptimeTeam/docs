@@ -76,7 +76,11 @@ The `greptime_identity` pipeline will automatically create columns for each fiel
 
 For more details about the `greptime_identity` pipeline, please refer to the [Manage Pipelines](manage-pipelines.md#greptime_identity) document.
 
-### Create a Pipeline
+### Write logs using a custom Pipeline
+
+If your logs follow a specific pattern, you can create a custom pipeline to parse and transform the log messages into multiple columns, and automatically create tables.
+
+#### Create a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating pipelines. Here's how to do it:
 
@@ -141,7 +145,7 @@ You can create multiple versions for the same pipeline name.
 All pipelines are stored at the `greptime_private.pipelines` table.
 Please refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view the pipeline data in the table.
 
-### Write logs
+#### Write logs
 
 The following example writes logs to the `pipeline_logs` table and uses the `nginx_pipeline` pipeline to format and transform the log messages.
 
