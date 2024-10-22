@@ -5,6 +5,73 @@
 
 有关 Pipeline 的具体配置，请阅读 [Pipeline 配置](pipeline-config.md)。
 
+## 内置 Pipeline
+
+GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用而无需创建新的 Pipeline。
+
+请注意，内置 Pipeline 不可编辑。此外，Pipeline 名称的 "greptime_" 前缀是保留的。
+
+### `greptime_identity`
+
+`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动为 JSON 日志中的每个字段创建列。
+
+- JSON 日志中的一级键用作列名。
+- 如果相同字段具有不同类型，则会返回错误。
+- 值为 `null` 的字段将被忽略。
+- 作为时间索引的额外列 `greptime_timestamp` 将被添加到表中，以指示日志写入的时间。
+
+#### 类型转换规则
+
+- `string` -> `string`
+- `number` -> `int64` 或 `float64`
+- `boolean` -> `bool`
+- `null` -> 忽略
+- `array` -> `json`
+- `object` -> `json`
+
+例如，如果我们有以下 JSON 数据：
+
+```json
+[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]
+```
+
+我们将合并每个批次的行模式以获得最终模式。表模式将如下所示：
+
+```sql
+mysql> desc pipeline_logs;
++--------------------+---------------------+------+------+---------+---------------+
+| Column             | Type                | Key  | Null | Default | Semantic Type |
++--------------------+---------------------+------+------+---------+---------------+
+| age                | Int64               |      | YES  |         | FIELD         |
+| is_student         | Boolean             |      | YES  |         | FIELD         |
+| name               | String              |      | YES  |         | FIELD         |
+| object             | Json                |      | YES  |         | FIELD         |
+| score              | Float64             |      | YES  |         | FIELD         |
+| company            | String              |      | YES  |         | FIELD         |
+| array              | Json                |      | YES  |         | FIELD         |
+| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
++--------------------+---------------------+------+------+---------+---------------+
+8 rows in set (0.00 sec)
+```
+
+数据将存储在表中，如下所示：
+
+```sql
+mysql> select * from pipeline_logs;
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+| age  | is_student | name    | object        | score | company | array   | greptime_timestamp         |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+|   22 |          1 | Charlie | NULL          |  95.5 | NULL    | [1,2,3] | 2024-10-18 09:35:48.333020 |
+|   21 |          0 | NULL    | NULL          |  85.5 | A       | NULL    | 2024-10-18 09:35:48.333020 |
+|   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+3 rows in set (0.01 sec)
+```
+
 ## 创建 Pipeline
 
 GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
