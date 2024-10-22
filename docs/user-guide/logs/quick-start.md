@@ -52,6 +52,30 @@ Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overv
 Using a pipeline allows you to automatically parse and transform the log message into multiple columns,
 as well as create tables automatically.
 
+### Write JSON logs using the built-in Pipeline
+
+GreptimeDB offers a built-in pipeline, `greptime_identity`, for handling JSON log formats. This pipeline simplifies the process of writing JSON logs.
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+     -H 'Content-Type: application/json' \
+     -d $'[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]'
+```
+
+- `pipeline_name=greptime_identity` specifies the built-in pipeline.
+- `table=pipeline_logs` specifies the target table. If the table does not exist, it will be created automatically.
+The `greptime_identity` pipeline will automatically create columns for each field in the JSON log. A successful command execution will return:
+
+```json
+{"output":[{"affectedrows":3}],"execution_time_ms":9}
+```
+
+For more details about the `greptime_identity` pipeline, please refer to the [Manage Pipelines](manage-pipelines.md#greptime_identity) document.
+
 ### Create a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating pipelines. Here's how to do it:
@@ -136,27 +160,6 @@ You will see the following output if the command is successful:
 
 ```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
-```
-
-### Write logs using GreptimeDB built-in Pipeline
-
-GreptimeDB provides a built-in pipeline for the identified log format.
-You can use the built-in pipeline to write logs without creating a custom pipeline.
-
-```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
-     -H 'Content-Type: application/json' \
-     -d $'[
-    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
-    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
-    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
-]'
-```
-
-You will see the following output if the command is successful:
-
-```json
-{"output":[{"affectedrows":3}],"execution_time_ms":9}
 ```
 
 ## Differences between writing logs directly and using a pipeline
