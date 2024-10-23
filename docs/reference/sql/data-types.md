@@ -220,6 +220,15 @@ Output:
 +------------------------------------------+---------------------+
 ```
 
+:::warning Limitation
+When using the JSON type in GreptimeDB, there are a few limitations to be aware of:
+
+1. gRPC Protocol
+When writing JSON data through the gRPC protocol, you have the option to write JSON data as a String type. The string will then be parsed into a JSON type within GreptimeDB.
+
+These limitations should be considered when designing and interacting with JSON-type data in GreptimeDB.
+:::
+
 ### Interacting JSON Type
 
 You can query the JSON data directly or extract specific fields using [JSON functions](./functions/overview.md#json-functions) provided by GreptimeDB. Here's an example:

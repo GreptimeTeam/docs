@@ -220,6 +220,15 @@ SELECT * FROM json_data;
 +------------------------------------------+---------------------+
 ```
 
+:::warning 限制
+在 GreptimeDB 中使用 JSON 类型时，有以下几点限制需要注意：
+
+1. gRPC Protocol
+通过 gRPC 协议写入 JSON 数据时，可以选择将 JSON 数据作为 String 类型进行写入。字符串将会在 GreptimeDB 中解析为 JSON 类型。
+
+在设计和使用 GreptimeDB 中的 JSON 数据时，应考虑这些限制。
+:::
+
 ### 交互 JSON 类型
 
 您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
