@@ -194,6 +194,52 @@ Supported abbreviations include:
 | us    | microseconds  |
 | ns    | nanoseconds   |
 
+## JSON Type
+GreptimeDB supports the JSON type, allowing users to store and query JSON-formatted data. The JSON type is highly flexible and can store various forms of structured or unstructured data, making it suitable for use cases such as logging, analytics, and semi-structured data storage.
+
+```sql
+CREATE TABLE json_data(
+    my_json JSON, 
+    ts TIMESTAMP TIME INDEX
+);
+
+INSERT INTO json_data VALUES ('{"key1": "value1", "key2": 10}', 1000), 
+                             ('{"name": "GreptimeDB", "open_source": true}', 2000);
+
+SELECT * FROM json_data;
+```
+
+Output:
+
+```
++------------------------------------------+---------------------+
+| my_json                                  | ts                  |
++------------------------------------------+---------------------+
+| {"key1":"value1","key2":10}              | 1970-01-01 00:00:01 |
+| {"name":"GreptimeDB","open_source":true} | 1970-01-01 00:00:02 |
++------------------------------------------+---------------------+
+```
+
+### Interacting JSON Type
+
+You can query the JSON data directly or extract specific fields using [JSON functions](./functions/overview.md#json-functions) provided by GreptimeDB. Here's an example:
+
+```sql
+SELECT json_get_string(my_json, '$.name') FROM json_data;
+```
+
+Output:
+
+```
++---------------------------------------------------+
+| json_get_string(json_data.my_json,Utf8("$.name")) |
++---------------------------------------------------+
+| NULL                                              |
+| GreptimeDB                                        |
++---------------------------------------------------+
+```
+
+
 ## Boolean Type
 
 | Type Name | Description | Size |
