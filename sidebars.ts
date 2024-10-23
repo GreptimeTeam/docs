@@ -433,7 +433,6 @@ const sidebars: SidebarsConfig = {
           items: [
             'contributor-guide/metasrv/overview',
             'contributor-guide/metasrv/admin-api',
-            'contributor-guide/metasrv/dist-lock',
             'contributor-guide/metasrv/selector',
           ],
         },
