@@ -74,7 +74,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
 
 有关 `greptime_identity` pipeline 的更多详细信息，请参阅 [管理 Pipeline](manage-pipelines.md#greptime_identity) 文档。
 
-### 使用 Pipeline 写入日志
+### 使用自定义 Pipeline 写入日志
 
 #### 创建 Pipeline
 

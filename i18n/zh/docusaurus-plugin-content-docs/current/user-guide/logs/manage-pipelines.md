@@ -9,14 +9,14 @@
 
 GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用而无需创建新的 Pipeline。
 
-请注意，内置 Pipeline 不可编辑。此外，Pipeline 名称的 "greptime_" 前缀是保留的。
+请注意，内置 Pipeline 的名称以 "greptime_" 为前缀，不可编辑。
 
 ### `greptime_identity`
 
 `greptime_identity` Pipeline 适用于写入 JSON 日志，并自动为 JSON 日志中的每个字段创建列。
 
-- JSON 日志中的一级键用作列名。
-- 如果相同字段具有不同类型，则会返回错误。
+- JSON 日志中的第一层级的 key 是表中的列名。
+- 如果相同字段包含不同类型的数据，则会返回错误。
 - 值为 `null` 的字段将被忽略。
 - 作为时间索引的额外列 `greptime_timestamp` 将被添加到表中，以指示日志写入的时间。
 
@@ -39,7 +39,7 @@ GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用
 ]
 ```
 
-我们将合并每个批次的行模式以获得最终模式。表模式将如下所示：
+我们将合并每个批次的行结构以获得最终 schema。表 schema 如下所示：
 
 ```sql
 mysql> desc pipeline_logs;
