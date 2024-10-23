@@ -5,6 +5,74 @@ In GreptimeDB, each `pipeline` is a collection of data processing units used for
 
 For specific pipeline configurations, please refer to the [Pipeline Configuration](pipeline-config.md) documentation.
 
+## Built-in Pipelines
+
+GreptimeDB offers built-in pipelines for common log formats, allowing you to use them directly without creating new pipelines.
+
+Note that the built-in pipelines are not editable. Additionally, the "greptime_" prefix of the pipeline name is reserved.
+
+### `greptime_identity`
+
+The `greptime_identity` pipeline is designed for writing JSON logs and automatically creates columns for each field in the JSON log.
+
+- The first-level keys in the JSON log are used as column names.
+- An error is returned if the same field has different types.
+- Fields with `null` values are ignored.
+- An additional column, `greptime_timestamp`, is added to the table as the time index to indicate when the log was written.
+
+#### Type conversion rules
+
+- `string` -> `string`
+- `number` -> `int64` or `float64`
+- `boolean` -> `bool`
+- `null` -> ignore
+- `array` -> `json`
+- `object` -> `json`
+
+
+For example, if we have the following json data:
+
+```json
+[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]
+```
+
+We'll merge the schema for each row of this batch to get the final schema. The table schema will be:
+
+```sql
+mysql> desc pipeline_logs;
++--------------------+---------------------+------+------+---------+---------------+
+| Column             | Type                | Key  | Null | Default | Semantic Type |
++--------------------+---------------------+------+------+---------+---------------+
+| age                | Int64               |      | YES  |         | FIELD         |
+| is_student         | Boolean             |      | YES  |         | FIELD         |
+| name               | String              |      | YES  |         | FIELD         |
+| object             | Json                |      | YES  |         | FIELD         |
+| score              | Float64             |      | YES  |         | FIELD         |
+| company            | String              |      | YES  |         | FIELD         |
+| array              | Json                |      | YES  |         | FIELD         |
+| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
++--------------------+---------------------+------+------+---------+---------------+
+8 rows in set (0.00 sec)
+```
+
+The data will be stored in the table as follows:
+
+```sql
+mysql> select * from pipeline_logs;
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+| age  | is_student | name    | object        | score | company | array   | greptime_timestamp         |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+|   22 |          1 | Charlie | NULL          |  95.5 | NULL    | [1,2,3] | 2024-10-18 09:35:48.333020 |
+|   21 |          0 | NULL    | NULL          |  85.5 | A       | NULL    | 2024-10-18 09:35:48.333020 |
+|   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+3 rows in set (0.01 sec)
+```
+
 ## Create a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating pipelines.

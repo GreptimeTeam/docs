@@ -50,7 +50,33 @@ INSERT INTO origin_logs (message, time) VALUES
 
 使用 pipeline 可以自动将日志消息格式化并转换为多个列，并自动创建表。
 
-### 创建 Pipeline
+### 使用内置 Pipeline 写入 JSON 日志
+
+GreptimeDB 提供了一个内置 pipeline `greptime_identity` 用于处理 JSON 日志格式。该 pipeline 简化了写入 JSON 日志的过程。
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+     -H 'Content-Type: application/json' \
+     -d $'[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]'
+```
+
+- `pipeline_name=greptime_identity` 指定了内置 pipeline。
+- `table=pipeline_logs` 指定了目标表。如果表不存在，将自动创建。
+`greptime_identity` pipeline 将自动为 JSON 日志中的每个字段创建列。成功执行命令将返回：
+
+```json
+{"output":[{"affectedrows":3}],"execution_time_ms":9}
+```
+
+有关 `greptime_identity` pipeline 的更多详细信息，请参阅 [管理 Pipeline](manage-pipelines.md#greptime_identity) 文档。
+
+### 使用自定义 Pipeline 写入日志
+
+#### 创建 Pipeline
 
 GreptimeDB 提供了一个专用的 HTTP 接口来创建 pipeline。方法如下：
 
@@ -115,7 +141,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "fi
 所有 pipeline 都存储在 `greptime_private.pipelines` 表中。
 请参阅[查询 Pipelines](manage-pipelines.md#查询-pipeline)以查看表中的 pipeline 数据。
 
-### 写入日志
+#### 写入日志
 
 以下示例将日志写入 `pipeline_logs` 表，并使用 `nginx_pipeline` pipeline 格式化和转换日志消息。
 
