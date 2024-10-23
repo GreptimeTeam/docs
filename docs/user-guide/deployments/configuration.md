@@ -320,7 +320,7 @@ overwrite_entry_start_id = false
 - `backoff_max`: The maximum backoff delay.
 - `backoff_base`: The exponential backoff rate.
 - `backoff_deadline`: The deadline of retries.
-- `overwrite_entry_start_id`: This option ensures that when Kafka messages are deleted, the system can still successfully replay memtable data without throwing an out-of-range error. However, enabling this option might lead to unexpected data loss, as the system will skip over missing entries instead of treating them as critical errors.
+- `overwrite_entry_start_id`: This option ensures that when Kafka messages are accidentally deleted, the system can still successfully replay memtable data without throwing an out-of-range error. However, enabling this option might lead to unexpected data loss, as the system will skip over missing entries instead of treating them as critical errors.
 
 ##### Remote WAL Authentication (Optional)
 
