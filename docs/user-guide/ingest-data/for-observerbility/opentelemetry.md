@@ -4,11 +4,11 @@
 
 ## OTLP/HTTP
 
-import Includeotlpintegration from '../../../db-cloud-shared/clients/otlp-integration.md' 
+import Includeotlpmetrycsintegration from '../../../db-cloud-shared/clients/otlp-metrics-integration.md' 
 
-<Includeotlpintegration/>
+<Includeotlpmetrycsintegration/>
 
-### Example Code
+#### Example Code
 
 Here are some example codes about how to setup the request in different languages:
 
@@ -70,6 +70,92 @@ OtlpHttpMetricExporter exporter = OtlpHttpMetricExporter.builder()
 auth = f"{username}:{password}"
 b64_auth = base64.b64encode(auth.encode()).decode("ascii")
 endpoint = f"https://{host}/v1/otlp/v1/metrics"
+exporter = OTLPMetricExporter(
+    endpoint=endpoint,
+    headers={"Authorization": f"Basic {b64_auth}", "X-Greptime-DB-Name": db},
+    timeout=5)
+```
+
+</TabItem>
+
+</Tabs>
+
+You can find executable demos on GitHub at the links: [Go](https://github.com/GreptimeCloudStarters/quick-start-go), [Java](https://github.com/GreptimeCloudStarters/quick-start-java), [Python](https://github.com/GreptimeCloudStarters/quick-start-python), and [Node.js](https://github.com/GreptimeCloudStarters/quick-start-node-js).
+
+:::tip NOTE
+The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
+:::
+
+For more information on the example code, please refer to the official documentation for your preferred programming language.
+
+import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-logs-integration.md' 
+
+<Includeotlplogintegration/>
+
+<Includeotlpmetrycsintegration/>
+
+#### Example Code
+
+Here are some example codes about how to setup the request in different languages:
+
+<Tabs>
+
+<TabItem value="TypeScript" label="TypeScript">
+
+```ts
+const auth = Buffer.from(`${username}:${password}`).toString('base64')
+const exporter = new OTLPMetricExporter({
+    url: `https://${dbHost}/v1/otlp/v1/logs`,
+    headers: {
+        Authorization: `Basic ${auth}`,
+        "X-Greptime-DB-Name": db,
+    },
+    timeoutMillis: 5000,
+})
+```
+
+</TabItem>
+
+<TabItem value="Go" label="Go">
+
+```Go
+auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", *username, *password)))
+exporter, err := otlpmetrichttp.New(
+    context.Background(),
+    otlpmetrichttp.WithEndpoint(*dbHost),
+    otlpmetrichttp.WithURLPath("/v1/otlp/v1/logs"),
+    otlpmetrichttp.WithHeaders(map[string]string{
+        "X-Greptime-DB-Name": *dbName,
+        "Authorization":      "Basic " + auth,
+    }),
+    otlpmetrichttp.WithTimeout(time.Second*5),
+)
+```
+
+</TabItem>
+
+<TabItem value="Java" label="Java">
+
+```Java
+String endpoint = String.format("https://%s/v1/otlp/v1/logs", dbHost);
+String auth = username + ":" + password;
+String b64Auth = new String(Base64.getEncoder().encode(auth.getBytes()));
+OtlpHttpMetricExporter exporter = OtlpHttpMetricExporter.builder()
+                .setEndpoint(endpoint)
+                .addHeader("X-Greptime-DB-Name", db)
+                .addHeader("Authorization", String.format("Basic %s", b64Auth))
+                .setTimeout(Duration.ofSeconds(5))
+                .build();
+```
+
+</TabItem>
+
+<TabItem value="Python" label="Python">
+
+```python
+auth = f"{username}:{password}"
+b64_auth = base64.b64encode(auth.encode()).decode("ascii")
+endpoint = f"https://{host}/v1/otlp/v1/logs"
 exporter = OTLPMetricExporter(
     endpoint=endpoint,
     headers={"Authorization": f"Basic {b64_auth}", "X-Greptime-DB-Name": db},
