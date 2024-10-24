@@ -221,27 +221,25 @@ Output:
 ```
 
 :::warning Limitation
-When using the JSON type in GreptimeDB, there are a few limitations to be aware of:
 
-1. gRPC Protocol
-When writing JSON data through the gRPC protocol, you have the option to write JSON data as a String type. The string will then be parsed into a JSON type within GreptimeDB.
+1. The gRPC protocol does not natively support the JSON type.
+2. The insertion of JSON data using MySQL protocol prepared statements is not supported.
 
-These limitations should be considered when designing and interacting with JSON-type data in GreptimeDB.
 :::
 
-### Interacting JSON Type
+### Query JSON data
 
 You can query the JSON data directly or extract specific fields using [JSON functions](./functions/overview.md#json-functions) provided by GreptimeDB. Here's an example:
 
 ```sql
-SELECT json_get_string(my_json, '$.name') FROM json_data;
+SELECT json_get_string(my_json, '$.name') as name FROM json_data;
 ```
 
 Output:
 
 ```
 +---------------------------------------------------+
-| json_get_string(json_data.my_json,Utf8("$.name")) |
+| name                                              |
 +---------------------------------------------------+
 | NULL                                              |
 | GreptimeDB                                        |

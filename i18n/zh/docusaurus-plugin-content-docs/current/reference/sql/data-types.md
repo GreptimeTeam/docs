@@ -195,7 +195,7 @@ SELECT '-1h5m'::INTERVAL;
 | ns    | nanoseconds   |
 
 ## JSON 类型
-GreptimeDB 支持 JSON 类型，允许用户存储和查询 JSON 格式的数据。JSON 类型非常灵活，可以存储各种形式的结构化或非结构化数据，适合日志记录、分析和半结构化数据存储等用例。
+GreptimeDB 支持 JSON 类型，允许用户存储和查询 JSON 格式的数据。JSON 类型非常灵活，可以存储各种形式的结构化或非结构化数据，适合日志记录、分析和半结构化数据存储等场景。
 
 ```sql
 CREATE TABLE json_data(
@@ -220,16 +220,15 @@ SELECT * FROM json_data;
 +------------------------------------------+---------------------+
 ```
 
-:::warning 限制
-在 GreptimeDB 中使用 JSON 类型时，有以下几点限制需要注意：
+:::warning 限制说明 
 
-1. gRPC Protocol
-通过 gRPC 协议写入 JSON 数据时，可以选择将 JSON 数据作为 String 类型进行写入。字符串将会在 GreptimeDB 中解析为 JSON 类型。
+1. gRPC 协议不原生支持 JSON 类型。
+2. 不支持通过 MySQL 协议预处理语句插入 JSON 数据。
 
-在设计和使用 GreptimeDB 中的 JSON 数据时，应考虑这些限制。
 :::
 
-### 交互 JSON 类型
+
+### 查询 JSON 数据
 
 您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
 
