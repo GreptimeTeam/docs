@@ -17,4 +17,4 @@ Input the following connection details:
 
 Click "Test Connection" to verify the connection settings and click "Finish" to save the connection.
 
-For more information on interacting with GreptimeDB using MySQL, refer to the [MySQL protocol documentation](https://docs.greptime.com/nightly/user-guide/protocols/mysql.md).
+For more information on interacting with GreptimeDB using MySQL, refer to the [MySQL protocol documentation](https://docs.greptime.com/nightly/user-guide/protocols/mysql).
