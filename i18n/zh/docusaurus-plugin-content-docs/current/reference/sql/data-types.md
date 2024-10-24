@@ -222,7 +222,7 @@ SELECT * FROM json_data;
 
 :::warning 限制说明 
 
-1. gRPC 协议不原生支持 JSON 类型。
+1. gRPC 协议不支持 JSON 类型。
 2. 不支持通过 MySQL 协议预处理语句插入 JSON 数据。
 
 :::
@@ -233,14 +233,14 @@ SELECT * FROM json_data;
 您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
 
 ```sql
-SELECT json_get_string(my_json, '$.name') FROM json_data;
+SELECT json_get_string(my_json, '$.name') as name FROM json_data;
 ```
 
 输出:
 
 ```
 +---------------------------------------------------+
-| json_get_string(json_data.my_json,Utf8("$.name")) |
+| name                                              |
 +---------------------------------------------------+
 | NULL                                              |
 | GreptimeDB                                        |

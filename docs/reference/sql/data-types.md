@@ -222,7 +222,7 @@ Output:
 
 :::warning Limitation
 
-1. The gRPC protocol does not natively support the JSON type.
+1. The gRPC protocol does not support the JSON type.
 2. The insertion of JSON data using MySQL protocol prepared statements is not supported.
 
 :::
