@@ -92,8 +92,6 @@ import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-log
 
 <Includeotlplogintegration/>
 
-<Includeotlpmetrycsintegration/>
-
 #### Example Code
 
 Here are some example codes about how to setup the request in different languages:
