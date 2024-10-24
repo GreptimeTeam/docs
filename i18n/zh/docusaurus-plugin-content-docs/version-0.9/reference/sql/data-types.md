@@ -194,6 +194,59 @@ SELECT '-1h5m'::INTERVAL;
 | us    | microseconds  |
 | ns    | nanoseconds   |
 
+## JSON 类型
+GreptimeDB 支持 JSON 类型，允许用户存储和查询 JSON 格式的数据。JSON 类型非常灵活，可以存储各种形式的结构化或非结构化数据，适合日志记录、分析和半结构化数据存储等场景。
+
+```sql
+CREATE TABLE json_data(
+    my_json JSON, 
+    ts TIMESTAMP TIME INDEX
+);
+
+INSERT INTO json_data VALUES ('{"key1": "value1", "key2": 10}', 1000), 
+                             ('{"name": "GreptimeDB", "open_source": true}', 2000);
+
+SELECT * FROM json_data;
+```
+
+输出:
+
+```
++------------------------------------------+---------------------+
+| my_json                                  | ts                  |
++------------------------------------------+---------------------+
+| {"key1":"value1","key2":10}              | 1970-01-01 00:00:01 |
+| {"name":"GreptimeDB","open_source":true} | 1970-01-01 00:00:02 |
++------------------------------------------+---------------------+
+```
+
+:::warning 限制说明 
+
+1. gRPC 协议不支持 JSON 类型。
+2. 不支持通过 MySQL 协议预处理语句插入 JSON 数据。
+
+:::
+
+
+### 查询 JSON 数据
+
+您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
+
+```sql
+SELECT json_get_string(my_json, '$.name') as name FROM json_data;
+```
+
+输出:
+
+```
++---------------------------------------------------+
+| name                                              |
++---------------------------------------------------+
+| NULL                                              |
+| GreptimeDB                                        |
++---------------------------------------------------+
+```
+
 ## 布尔类型
 
 | 类型名称 | 描述 | 大小 |
