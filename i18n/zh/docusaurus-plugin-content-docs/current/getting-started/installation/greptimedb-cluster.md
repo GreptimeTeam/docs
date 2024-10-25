@@ -2,7 +2,17 @@
 
 GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以支持水平扩展。
 
+## 在 Kubernetes 中部署 GreptimeDB 集群
+
+对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 集群。请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
+
 ## 使用 Docker Compose
+
+:::tip 注意
+虽然 Docker Compose 是运行 GreptimeDB 集群的便捷方法，但仅适用于开发和测试目的。
+
+对于生产环境或基准测试，我们建议使用 Kubernetes。
+:::
 
 ### 前置条件
 
@@ -34,10 +44,6 @@ docker compose -f ./cluster-with-etcd.yaml down
 ```
 
 默认情况下，数据将被存储在 `/tmp/greptimedb-cluster-docker-compose`。如果你想清理数据，也可删除该目录。
-
-## 在 Kubernetes 中部署 GreptimeDB 集群
-
-请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
 
 ## 下一步
 

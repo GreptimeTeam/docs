@@ -2,7 +2,17 @@
 
 The GreptimeDB cluster can run in cluster mode to scale horizontally.
 
+## Deploy the GreptimeDB cluster in Kubernetes
+
+For production environments, we recommend deploying the GreptimeDB cluster in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
+
 ## Use Docker Compose
+
+:::tip NOTE
+Although Docker Compose is a convenient way to run the GreptimeDB cluster, it is only for development and testing purposes.
+
+For production environments or benchmarking, we recommend using Kubernetes.
+:::
 
 ###  Prerequisites
 
@@ -33,9 +43,6 @@ docker compose -f ./cluster-with-etcd.yaml down
 
 By default, the data will be stored in `/tmp/greptimedb-cluster-docker-compose`. You also can remove the data directory if you want to clean up the data.
 
-## Deploy the GreptimeDB cluster in Kubernetes
-
-Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
 
 ## Next Steps
 
