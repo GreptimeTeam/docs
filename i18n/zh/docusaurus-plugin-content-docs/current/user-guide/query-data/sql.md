@@ -1,3 +1,5 @@
+import TOCInline from '@theme/TOCInline';
+
 # SQL
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。

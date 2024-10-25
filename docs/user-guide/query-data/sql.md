@@ -1,3 +1,5 @@
+import TOCInline from '@theme/TOCInline';
+
 # SQL
 
 GreptimeDB supports full SQL for querying data from a database.
