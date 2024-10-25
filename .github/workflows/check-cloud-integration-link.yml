@@ -1,0 +1,81 @@
+name: Check GreptimeCloud Integration Links
+
+on:
+  pull_request:
+    paths:
+      - '**/greptimecloud/integrations/**.md'
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v43
+        with:
+          files: '**/greptimecloud/integrations/**.md'
+
+      - name: Check links
+        run: |
+          const fs = require('fs');
+
+          // Regular expressions for finding links
+          const markdownLinkRegex = /\[([^\]]*)\]\(([^)]+)\)/g;  // [text](url)
+          const bareUrlRegex = /<?(https?:\/\/[^\s>]+)>?/g;      // http://url or <http://url>
+
+          // Get the list of changed files
+          const changedFiles = `${{ steps.changed-files.outputs.all_changed_files }}`.split(' ').filter(f => f);
+          let hasErrors = false;
+
+          changedFiles.forEach(file => {
+            if (!file.includes('greptimecloud/integrations')) return;
+
+            try {
+              const content = fs.readFileSync(file, 'utf8');
+              let match;
+
+              // Check markdown style links
+              while ((match = markdownLinkRegex.exec(content)) !== null) {
+                const url = match[2];
+                validateUrl(url, file, match[0]);
+              }
+
+              // Check bare URLs
+              while ((match = bareUrlRegex.exec(content)) !== null) {
+                const url = match[1];
+                validateUrl(url, file, match[0]);
+              }
+
+            } catch (error) {
+              console.error(`::error file=${file}::Error reading file: ${error.message}`);
+              hasErrors = true;
+            }
+          });
+
+          function validateUrl(url, file, fullMatch) {
+            // Remove any trailing parentheses that might have been caught
+            url = url.replace(/\)$/, '');
+
+            // Ignore URLs that are actually reference-style link definitions
+            if (url.startsWith('[')) return;
+
+            // Check if it's a relative link
+            if (!url.startsWith('https://')) {
+              console.error(`::error file=${file}::Found relative link: "${fullMatch}". All links must start with https://`);
+              hasErrors = true;
+            }
+
+            // Check if link ends with .md
+            if (url.toLowerCase().endsWith('.md')) {
+              console.error(`::error file=${file}::Found .md link: "${fullMatch}". Links ending with .md are not allowed`);
+              hasErrors = true;
+            }
+          }
+
+          if (hasErrors) {
+            process.exit(1);
+          }
+        shell: node {0}
