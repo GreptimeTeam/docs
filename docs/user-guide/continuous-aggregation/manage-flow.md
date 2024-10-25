@@ -126,7 +126,7 @@ SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window
 
 Only the following types of expressions are allowed after the `SELECT` keyword:
 - Aggregate functions: Refer to the [Expression](./expression.md) documentation for details.
-- Time window functions: Refer to the [Define Time Window](#define-time-window) section for details.
+- Time window functions: Refer to the [define time window](#define-time-window) section for details.
 - Scalar functions: Such as `col`, `to_lowercase(col)`, `col + 1`, etc. This part is the same as in a standard `SELECT` clause in GreptimeDB.
 
 The query must include a `FROM` clause to specify the source table. As join clauses are currently not supported, the query can only aggregate columns from a single table.
@@ -158,7 +158,7 @@ For example:
 ```sql
 SELECT
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window,
+    date_bin(INTERVAL '10 seconds', ts) as time_window
 FROM temp_sensor_data
 GROUP BY time_window;
 ```
