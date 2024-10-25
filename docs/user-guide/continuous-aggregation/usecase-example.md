@@ -48,9 +48,6 @@ GROUP BY
 
 The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. 
 
-<!-- Note that there is currently no persistent storage for the internal state of the flow. The internal state refers to the intermediate state used in computing incremental query results, such as the accumulator's value for an aggregation query (e.g., `count(col)`'s accumulator records the current count number). However, there is persistent storage for the data in the sink table.
-Therefore, it is recommended to use an appropriate time window (e.g., hourly) to minimize data loss. This is because if the internal state is lost, the related data within that time window will also be lost. -->
-
 You can insert some data into the source table `ngx_access_log`:
 
 ```sql
