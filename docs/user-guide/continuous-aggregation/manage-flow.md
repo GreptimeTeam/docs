@@ -85,7 +85,7 @@ AS
 - `SQL` part defines the continuous aggregation query.
   It defines the source tables provide data for the flow.
   Each flow can have multiple source tables.
-  Please Refer to [Write a Query](./query.md) for the details.
+  Please Refer to [Write a Query](#write-a-sql-query) for the details.
 
 A simple example to create a flow:
 

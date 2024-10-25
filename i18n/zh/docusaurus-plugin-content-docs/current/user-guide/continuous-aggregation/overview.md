@@ -143,7 +143,5 @@ SELECT * FROM ngx_statistics;
 
 
 - [用例](./usecase-example.md) 提供了更多关于如何在实时分析、监控和仪表板中使用持续聚合的示例。
-- [管理 Flow](./manage-flow.md) 描述了如何创建、更新和删除 flow。你的每个持续聚合查询都是一个 flow。
-- [编写查询语句](./query.md) 描述了如何编写持续聚合查询。
-- [定义时间窗口](./define-time-window.md) 描述了如何为持续聚合定义时间窗口。时间窗口是持续聚合查询的一个重要属性，它定义了聚合的时间间隔。
+- [管理 Flow](./manage-flow.md) 描述了如何创建和删除 flow。你的每个持续聚合查询都是一个 flow。
 - [表达式](./expression.md) 是持续聚合查询中可用表达式。

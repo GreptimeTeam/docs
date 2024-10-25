@@ -387,7 +387,7 @@ AS
 <SQL>;
 ```
 
-用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow.md#创建或更新-flow)。
+用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow.md#创建-flow)。
 
 ## 创建 View
 
