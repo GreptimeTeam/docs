@@ -46,7 +46,7 @@ The data can be stored in cost-effective cloud storage services such as AWS S3 o
 
 GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.
 
-### How is GreptimeDB's performance compared to other solutions?
+## How is GreptimeDB's performance compared to other solutions?
 
 Please read the performance benchmark reports:
 
@@ -55,7 +55,14 @@ Please read the performance benchmark reports:
 * [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2024-08-22-log-benchmark)
 * [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
 
-
 ## Does GreptimeDB have disaster recovery solutions?
 
 Yes. Please refer to [disaster recovery](/user-guide/administration/disaster-recovery/overview.md).
+
+## Does GeptimeDB has geospatial index?
+
+Yes. We offer [built-in functions](/reference/sql/functions/geo.md) for Geohash, H3 and S2 index.
+
+## Any JSON support?
+
+See [JSON functions](/reference/sql/functions/overview.md#json-functions).
