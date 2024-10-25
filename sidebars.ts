@@ -231,7 +231,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'GreptimeCloud',
       items: [
-        'greptimecloud/index',
+        'greptimecloud/overview',
         {
           type: 'category',
           label: 'Getting Started',
