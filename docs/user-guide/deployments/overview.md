@@ -25,4 +25,4 @@ Understand how to [plan for capacity](/user-guide/administration/capacity-plan.m
 Instead of managing your own GreptimeDB cluster,
 you can use [GreptimeCloud](https://greptime.cloud) to manage GreptimeDB instances, monitor metrics, and set up alerts.
 GreptimeCloud is a cloud service powered by fully-managed serverless GreptimeDB, providing a scalable and efficient solution for time-series data platforms and Prometheus backends.
-For more information, see the [GreptimeCloud documentation](/greptimecloud/index.mdx).
+For more information, see the [GreptimeCloud documentation](/greptimecloud/overview.md).
