@@ -11,68 +11,30 @@
 
 ## 实时分析示例
 
-请参阅[概述](/user-guide/continuous-aggregation/overview.md#快速开始示例)中的实时分析示例。该示例用于计算日志的总数、包大小的最小、最大和平均值，以及大小大于 550 的数据包数量按照每个状态码在 1 分钟固定窗口中的实时分析。
+请参考[概述](/user-guide/continuous-aggregation/overview.md#quick-start-with-an-example)中的实时分析示例。
+该示例用于计算日志的总数、包大小的最小、最大和平均值，以及大小大于 550 的数据包数量按照每个状态码在 1 分钟固定窗口中的实时分析。
 
-另外，您还可以使用持续聚合来计算其他类型的实时分析。例如，要从 `ngx_access_log` 表中获取所有不同的国家。持续聚合的查询如下：
+另一个实时分析的示例是从 `ngx_access_log` 表中查询所有不同的国家。
+你可以使用以下查询按时间窗口对国家进行分组：
 
 ```sql
-/* input table */
+/* source 表 */
 CREATE TABLE ngx_access_log (
     client STRING,
     country STRING,
-    access_time TIMESTAMP TIME INDEX
+    access_time TIMESTAMP TIME INDEX,
+    PRIMARY KEY(client)
 );
 
-/* sink table */
-CREATE TABLE ngx_country (
-    country STRING,
-    update_at TIMESTAMP,
-    __ts_placeholder TIMESTAMP TIME INDEX,
-    PRIMARY KEY(country)
-);
-
-/* create flow task to calculate the distinct country */
-CREATE FLOW calc_ngx_country
-SINK TO ngx_country
-AS
-SELECT
-    DISTINCT country,
-FROM ngx_access_log;
-```
-
-创建好 flow 任务后，我们可以将一些数据插入源表 `ngx_access_log` 中：
-
-```sql
-/* insert some data */
-INSERT INTO ngx_access_log VALUES
-    ("client1", "US", "2022-01-01 00:00:00"),
-    ("client2", "US", "2022-01-01 00:00:01"),
-    ("client3", "UK", "2022-01-01 00:00:02"),
-    ("client4", "UK", "2022-01-01 00:00:03"),
-    ("client5", "CN", "2022-01-01 00:00:04"),
-    ("client6", "CN", "2022-01-01 00:00:05"),
-    ("client7", "JP", "2022-01-01 00:00:06"),
-    ("client8", "JP", "2022-01-01 00:00:07"),
-    ("client9", "KR", "2022-01-01 00:00:08"),
-    ("client10", "KR", "2022-01-01 00:00:09");
-```
-等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
-```sql
-/* check the result */
-select * from ngx_country;
-```
-
-或者，如果您想要按时间窗口对数据进行分组，可以使用以下查询：
-
-```sql
-/* input table create same as above */
-/* sink table */
+/* sink 表 */
 CREATE TABLE ngx_country (
     country STRING,
     time_window TIMESTAMP TIME INDEX,
     update_at TIMESTAMP,
     PRIMARY KEY(country)
 );
+
+/* 创建 flow 任务以计算不同的国家 */
 CREATE FLOW calc_ngx_country
 SINK TO ngx_country
 AS
@@ -83,19 +45,55 @@ FROM ngx_access_log
 GROUP BY
     country,
     time_window;
-/* insert data using the same data as above */
 ```
 
-上述的查询将 `ngx_access_log` 表中的数据放入 `ngx_country` 表中。它计算每个时间窗口的不同国家。`date_bin` 函数用于将数据分组为一小时的间隔。`ngx_country` 表将不断更新聚合数据，提供实时洞察，显示正在访问系统的不同国家。
+上述查询将 `ngx_access_log` 表中的数据聚合到 `ngx_country` 表中，它计算了每个时间窗口内的不同国家。
+`date_bin` 函数用于将数据聚合到一小时的间隔中。
+`ngx_country` 表将不断更新聚合数据，以监控访问系统的不同国家。
 
-请注意，目前 Flow 的内部状态没有持久存储。内部状态指的是用于计算增量查询结果的中间状态，例如聚合查询的累加器值（如count(col)的累加器记录了目前为止的 count 计数）。然而，Sink 表的数据是有持久存储的。因此，建议您使用适当的时间窗口（例如设置为每小时）来最小化数据丢失。因为一旦内部状态丢失，相关时间窗口的数据也将随之丢失。
+你可以向 source 表 `ngx_access_log` 插入一些数据：
+
+```sql
+INSERT INTO ngx_access_log VALUES
+    ("client1", "US", "2022-01-01 01:00:00"),
+    ("client2", "US", "2022-01-01 01:00:00"),
+    ("client3", "UK", "2022-01-01 01:00:00"),
+    ("client4", "UK", "2022-01-01 02:00:00"),
+    ("client5", "CN", "2022-01-01 02:00:00"),
+    ("client6", "CN", "2022-01-01 02:00:00"),
+    ("client7", "JP", "2022-01-01 03:00:00"),
+    ("client8", "JP", "2022-01-01 03:00:00"),
+    ("client9", "KR", "2022-01-01 03:00:00"),
+    ("client10", "KR", "2022-01-01 03:00:00");
+```
+
+等待一秒钟，让 flow 将结果写入 sink 表，然后查询：
+
+```sql
+select * from ngx_country;
+```
+
+```sql
++---------+---------------------+----------------------------+
+| country | time_window         | update_at                  |
++---------+---------------------+----------------------------+
+| CN      | 2022-01-01 02:00:00 | 2024-10-22 08:17:47.906000 |
+| JP      | 2022-01-01 03:00:00 | 2024-10-22 08:17:47.906000 |
+| KR      | 2022-01-01 03:00:00 | 2024-10-22 08:17:47.906000 |
+| UK      | 2022-01-01 01:00:00 | 2024-10-22 08:17:47.906000 |
+| UK      | 2022-01-01 02:00:00 | 2024-10-22 08:17:47.906000 |
+| US      | 2022-01-01 01:00:00 | 2024-10-22 08:17:47.906000 |
++---------+---------------------+----------------------------+
+```
 
 ## 实时监控示例
 
-假设您希望实时监控一个来自温度传感器网络的传感器事件流。传感器事件包含传感器 ID、温度读数、读数的时间戳和传感器的位置等信息。您希望不断聚合这些数据，以在温度超过某个阈值时提供实时警报。那么持续聚合的查询将是：
+假设你有一个来自温度传感器网络的传感器事件流，你希望实时监控这些事件。
+传感器事件包含传感器 ID、温度读数、读数的时间戳和传感器的位置等信息。
+你希望不断聚合这些数据，以便在温度超过某个阈值时提供实时告警。持续聚合的查询如下：
 
 ```sql
-/* create input table */
+/* 创建 source 表 */
 CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
@@ -103,12 +101,13 @@ CREATE TABLE temp_sensor_data (
     ts TIMESTAMP TIME INDEX
 );
 
-/* create sink table */
+/* 创建 sink 表 */
 CREATE TABLE temp_alerts (
     sensor_id INT,
     loc STRING,
     max_temp DOUBLE,
-    update_at TIMESTAMP TIME INDEX,
+    time_window TIMESTAMP TIME INDEX,
+    update_at TIMESTAMP,
     PRIMARY KEY(sensor_id, loc)
 );
 
@@ -119,70 +118,83 @@ SELECT
     sensor_id,
     loc,
     max(temperature) as max_temp,
+    date_bin(INTERVAL '10 seconds', ts) as time_window,
 FROM temp_sensor_data
 GROUP BY
     sensor_id,
-    loc
+    loc,
+    time_window
 HAVING max_temp > 100;
 ```
 
-创建好 flow 任务后，我们可以将一些数据插入源表 `temp_sensor_data` 中：
+上述查询将 `temp_sensor_data` 表中的数据不断聚合到 `temp_alerts` 表中。
+它计算每个传感器和位置的最大温度读数，并过滤出最大温度超过 100 度的数据。
+`temp_alerts` 表将不断更新聚合数据，
+当温度超过阈值时提供实时警报（即 `temp_alerts` 表中的新行）。
+
+现在我们已经创建了 flow 任务，可以向 source 表 `temp_sensor_data` 插入一些数据：
 
 ```sql
-
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, "2022-01-01 00:00:00"),
     (2, "room2", 99.5, "2022-01-01 00:00:01");
-
-/* You may want to flush the flow task to see the result */
-ADMIN FLUSH_FLOW('temp_monitoring');
 ```
 
-当前输出表应该为空。您可以在等待一秒后通过以下查询查看结果：
+表现在应该是空的，等待至少一秒钟让 flow 将结果更新到输出表：
 
 ```sql
-/* for now sink table will be empty */
 SELECT * FROM temp_alerts;
 ```
 
 ```sql
+Empty set (0.00 sec)
+```
 
+插入一些会触发警报的数据：
+
+```sql
 INSERT INTO temp_sensor_data VALUES
     (1, "room1", 101.5, "2022-01-01 00:00:02"),
     (2, "room2", 102.5, "2022-01-01 00:00:03");
-
 ```
 
-等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
+等待至少一秒钟，让 flow 将结果更新到输出表：
+
 ```sql
-/* now sink table will have the max temperature data */
 SELECT * FROM temp_alerts;
 ```
 
-上述的查询将从 `temp_sensor_data` 表中不断聚合数据到 `temp_alerts` 表中。它计算每个传感器和位置的最高温度读数，并过滤出最高温度超过 100 度的数据。`temp_alerts` 表将不断更新聚合数据，并且当温度超过阈值时提供实时警报（即 `temp_alerts` 表中的新行）。
+```sql
++-----------+-------+----------+---------------------+----------------------------+
+| sensor_id | loc   | max_temp | time_window         | update_at                  |
++-----------+-------+----------+---------------------+----------------------------+
+|         1 | room1 |    101.5 | 2022-01-01 00:00:00 | 2024-10-22 09:13:07.535000 |
+|         2 | room2 |    102.5 | 2022-01-01 00:00:00 | 2024-10-22 09:13:07.535000 |
++-----------+-------+----------+---------------------+----------------------------+
+```
 
-## 实时仪表盘示例
+## 实时仪表盘
 
-假设您需要一个柱状图显示每个状态码的数据包大小分布，以监控系统的健康状况。持续聚合的查询将是：
+假设你需要一个条形图来显示每个状态码的包大小分布，以监控系统的健康状况。持续聚合的查询如下：
 
 ```sql
-/* create input table */
+/* 创建 source 表 */
 CREATE TABLE ngx_access_log (
     client STRING,
     stat INT,
     size INT,
     access_time TIMESTAMP TIME INDEX
 );
-/* create sink table */
+/* 创建 sink 表 */
 CREATE TABLE ngx_distribution (
     stat INT,
     bucket_size INT,
     total_logs BIGINT,
     time_window TIMESTAMP TIME INDEX,
-    update_at TIMESTAMP, /* auto generated column to store the last update time */
+    update_at TIMESTAMP,
     PRIMARY KEY(stat, bucket_size)
 );
-/* create flow task to calculate the distribution of packet sizes for each status code */
+/* 创建 flow 任务以计算每个状态码的包大小分布 */
 CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution AS
 SELECT
     stat,
@@ -197,7 +209,13 @@ GROUP BY
     bucket_size;
 ```
 
-创建好 flow 任务后，我们可以将一些数据插入源表 `ngx_access_log` 中：
+该查询将 `ngx_access_log` 表中的数据汇总到 `ngx_distribution` 表中。
+它计算每个时间窗口内的状态代码和数据包大小存储桶（存储桶大小为 10，由 `trunc` 指定，第二个参数为 -1）的日志总数。
+`date_bin` 函数将数据分组为一分钟的间隔。
+因此，`ngx_distribution` 表会不断更新，
+提供每个状态代码的数据包大小分布的实时洞察。
+
+现在我们已经创建了 flow 任务，可以向 source 表 `ngx_access_log` 插入一些数据：
 
 ```sql
 INSERT INTO ngx_access_log VALUES
@@ -212,13 +230,31 @@ INSERT INTO ngx_access_log VALUES
     ("cli9", 404, 180, "2022-01-01 00:00:08"),
     ("cli10", 404, 184, "2022-01-01 00:00:09");
 ```
-等待一秒钟确保 Flow 有时间将结果写入 sink 表，然后就可以查询结果了：
+
+等待至少一秒钟，让 flow 将结果更新到 sink 表：
+
 ```sql
 SELECT * FROM ngx_distribution;
 ```
 
-上述查询将从 `ngx_access_log` 表中的数据放入 `ngx_distribution` 表中。它计算每个状态码的数据包大小分布，并将数据分组到每个时间窗口中。`ngx_distribution` 表将不断更新聚合数据，提供实时洞察，显示每个状态码的数据包大小分布。
+```sql
++------+-------------+------------+---------------------+----------------------------+
+| stat | bucket_size | total_logs | time_window         | update_at                  |
++------+-------------+------------+---------------------+----------------------------+
+|  200 |         100 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  200 |         120 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  200 |         140 |          1 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  404 |         140 |          1 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  404 |         160 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  404 |         180 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
++------+-------------+------------+---------------------+----------------------------+
+```
 
-## 结论
+## 总结
 
-持续聚合是实时分析、监控和仪表盘的强大工具。它允许您不断聚合来自事件流的数据，并根据聚合数据提供实时洞察和警报。通过将数据降采样到较低分辨率，您可以减少存储和处理的数据量，从而更容易提供实时洞察和警报，同时保持较低的数据存储和处理成本。持续聚合是任何实时数据处理系统的关键组件，可以在各种用例中使用，以提供基于流数据的实时洞察和警报。
+持续聚合是实时分析、监控和仪表盘的强大工具。
+它允许你不断聚合来自事件流的数据，并根据聚合数据提供实时洞察和警报。
+通过将数据降采样到较低分辨率，你可以减少存储和处理的数据量，
+从而更容易提供实时洞察和警报，同时保持较低的数据存储和处理成本。
+持续聚合是任何实时数据处理系统的关键组件，可以在各种用例中使用，
+以提供基于流数据的实时洞察和警报。

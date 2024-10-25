@@ -46,7 +46,11 @@ GROUP BY
     time_window;
 ```
 
-The above query puts the data from the `ngx_access_log` table into the `ngx_country` table. It calculates the distinct country for each time window. The `date_bin` function is used to group the data into one-hour intervals. The `ngx_country` table will be continuously updated with the aggregated data, providing real-time insights into the distinct countries that are accessing the system. 
+The above query puts the data from the `ngx_access_log` table into the `ngx_country` table.
+It calculates the distinct country for each time window.
+The `date_bin` function is used to group the data into one-hour intervals.
+The `ngx_country` table will be continuously updated with the aggregated data,
+providing real-time insights into the distinct countries that are accessing the system. 
 
 You can insert some data into the source table `ngx_access_log`:
 
@@ -122,6 +126,12 @@ GROUP BY
 HAVING max_temp > 100;
 ```
 
+The above query continuously aggregates data from the `temp_sensor_data` table into the `temp_alerts` table.
+It calculates the maximum temperature reading for each sensor and location,
+filtering out data where the maximum temperature exceeds 100 degrees.
+The `temp_alerts` table will be continuously updated with the aggregated data,
+providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold.
+
 Now that we have created the flow task, we can insert some data into the source table `temp_sensor_data`:
 
 ```sql
@@ -163,9 +173,6 @@ SELECT * FROM temp_alerts;
 +-----------+-------+----------+---------------------+----------------------------+
 ```
 
-The above query continuously aggregates the data from the `temp_sensor_data` table into the `temp_alerts` table. It calculates the maximum temperature reading for each sensor and location and filters out the data where the maximum temperature exceeds 100 degrees. The `temp_alerts` table will be continuously updated with the aggregated data, providing real-time alerts (Which is a new row in the `temp_alerts` table) when the temperature exceeds the threshold.
-
-
 ## Real-time dashboard
 
 Consider a usecase in which you need a bar graph that show the distribution of packet sizes for each status code to monitor the health of the system. The query for continuous aggregation would be:
@@ -184,7 +191,7 @@ CREATE TABLE ngx_distribution (
     bucket_size INT,
     total_logs BIGINT,
     time_window TIMESTAMP TIME INDEX,
-    update_at TIMESTAMP, /* auto generated column to store the last update time */
+    update_at TIMESTAMP,
     PRIMARY KEY(stat, bucket_size)
 );
 /* create flow task to calculate the distribution of packet sizes for each status code */
@@ -201,6 +208,11 @@ GROUP BY
     time_window,
     bucket_size;
 ```
+
+The query aggregates data from the `ngx_access_log` table into the `ngx_distribution` table.
+It computes the total number of logs for each status code and packet size bucket (bucket size of 10, as specified by `trunc` with a second argument of -1) within each time window.
+The `date_bin` function groups the data into one-minute intervals.
+Consequently, the `ngx_distribution` table is continuously updated, offering real-time insights into the distribution of packet sizes per status code.
 
 Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
 
@@ -235,8 +247,6 @@ SELECT * FROM ngx_distribution;
 |  404 |         180 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
 +------+-------------+------------+---------------------+----------------------------+
 ```
-
-The above query puts the data from the `ngx_access_log` table into the `ngx_distribution` table. It calculates the total number of logs for each status code and packet size bucket (in this case, since `trunc`'s second argument is -1, meaning a bucket size of 10) for each time window. The `date_bin` function is used to group the data into one-minute intervals. The `ngx_distribution` table will be continuously updated with the aggregated data, providing real-time insights into the distribution of packet sizes for each status code.
 
 ## Conclusion
 
