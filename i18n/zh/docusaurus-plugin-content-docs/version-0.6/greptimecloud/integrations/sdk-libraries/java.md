@@ -1,7 +1,7 @@
 # Java SDK
 
 GreptimeDB Java ingester 库使用 gRPC 协议写入数据，
-请参考 [Java 库文档](https://docs.greptime.cn/user-guide/client-libraries/java)查看更多使用内容。
+请参考 [Java 库文档](https://docs.greptime.cn/v0.6/user-guide/client-libraries/java)查看更多使用内容。
 
 请使用以下信息连接到 GreptimeCloud：
 

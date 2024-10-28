@@ -1,6 +1,6 @@
 # InfluxDB Line Protocol
 
-GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) 的 http 接口。该接口和认证与 [InfluxDB write protocol 1.x](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/#write-data-using-the-influxdb-api) 兼容。更多信息请参考 GreptimeDB 的 [InfluxDB 客户端](https://docs.greptime.cn/user-guide/clients/influxdb-line)。
+GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) 的 http 接口。该接口和认证与 [InfluxDB write protocol 1.x](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/#write-data-using-the-influxdb-api) 兼容。更多信息请参考 GreptimeDB 的 [InfluxDB 客户端](https://docs.greptime.cn/v0.7/user-guide/clients/influxdb-line)。
 
 - URL: `https://<host>/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`
