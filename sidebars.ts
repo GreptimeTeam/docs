@@ -313,7 +313,11 @@ const sidebars: SidebarsConfig = {
       label: 'GreptimeDB Enterprise',
       items: [
         'enterprise/overview',
-        'enterprise/region-balancer',
+        {
+          type: 'category',
+          label: 'Autopilot',
+          items: ['enterprise/autopilot/region-balancer'],
+        },
         {
           type: 'category',
           label: 'Deployments',
