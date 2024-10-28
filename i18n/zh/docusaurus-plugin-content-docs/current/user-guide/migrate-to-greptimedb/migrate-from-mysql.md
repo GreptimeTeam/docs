@@ -11,8 +11,18 @@
 
 ### Step 1：在 GreptimeDB 中创建数据库和表
 
-GreptimeDB 有自己的 SQL 语法用于创建表。我们不能简单地重用 MySQL 生成的创建表的
-SQL。因此，请首先参考我们的“[CREATE](../../reference/sql/create.md) SQL”文档，了解如何在 GreptimeDB 中创建相应的数据库和表。
+GreptimeDB 有自己的 SQL 语法用于创建表。我们不能简单地重用 MySQL 生成的创建表的 SQL。在从 MySQL 迁移数据之前，我们首先需要在
+GreptimeDB 中创建相应的数据库和表。
+
+当您为 GreptimeDB 编写创建表的 SQL 时，首先请了解其“[数据模型](../../user-guide/concepts/data-model.md)”。然后，在创建表的
+SQL 中请考虑以下几点：
+
+1. 仔细选择时间索引列。因为目前时间索引列在表创建后无法更改。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用
+   `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
+2. 选择合适的时间索引的精度也至关重要。和时间索引列的选择一样，一旦表创建完毕，时间索引的精度就无法变更了。请根据您的数据集在[这里](../../reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql)找到最适合的时间戳类型。
+3. 根据您的查询模式选择最适合的主键列。主键列存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特征。主键列具有索引，所以使用主键列的查询具备良好的性能。
+
+最后请参考我们的“[CREATE](../../reference/sql/create.md)” SQL 文档，了解如何选择正确的数据类型以及“ttl”或“compaction”选项等。
 
 ### Step 2：双写 GreptimeDB 和 MySQL
 

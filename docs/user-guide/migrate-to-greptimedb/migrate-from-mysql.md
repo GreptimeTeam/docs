@@ -13,8 +13,28 @@ constraints regarding using SQL in GreptimeDB.
 ### Step 1: Create the databases and tables in GreptimeDB.
 
 GreptimeDB has its own SQL syntax for creating tables. We cannot simply reuse the table creation SQLs that are produced
-by MySQL. So first please refer to our document for "[CREATE](../../reference/sql/create.md)ing" the corresponding
-databases and tables in GreptimeDB.
+by MySQL. Before migrating the data from MySQL, we first need to create the corresponding databases and tables in
+GreptimeDB.
+
+When you write the table creation SQL for GreptimeDB, it's important to understand
+its "[data model](../../user-guide/concepts/data-model.md)" first. Then, please take the following considerations in
+your create table SQL:
+
+1. Choose the time index column carefully. Because as of right now, the time index column cannot be changed after the
+   table was created. The time index is best set to the natural timestamp when the data is generated, as it provides the
+   most intuitive way to query the data, and the best query performance. It's not recommend to create another synthetic
+   timestamp, such as a new column created with `DEFAULT current_timestamp()` as the time index column in this migration
+   process. It's not recommend to use the random timestamp as the time index either.
+2. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
+   column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
+   data set [here](../../reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
+3. Choose the most fit primary key columns based on your query patterns. Primary key columns store the metadata that is
+   commonly queried. The values in primary key columns are labels attached to the collected sources, generally used to
+   describe a particular characteristic of these sources. Primary key columns are indexed, making queries on them
+   performant.
+
+Finally please refer to our "[CREATE](../../reference/sql/create.md)" SQL document for more details for choosing the
+right data types and "ttl" or "compaction" options, etc.
 
 ### Step 2: Write data to both GreptimeDB and MySQL simultaneously.
 
