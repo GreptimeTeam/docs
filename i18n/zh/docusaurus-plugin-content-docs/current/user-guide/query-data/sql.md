@@ -1,8 +1,12 @@
+import TOCInline from '@theme/TOCInline';
+
 # SQL
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。
 
 在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)和[写入数据](/user-guide/ingest-data/for-iot/sql.md)。
+
+<TOCInline toc={toc} />
 
 ## 基础查询
 
@@ -197,6 +201,17 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408+08:00';
 </TabItem>
 </Tabs>
 
+### 函数
+
+GreptimeDB 提供了丰富的内置函数和聚合函数，为数据分析应用开发。其特点包括：
+
++ Apache Datafusion 查询引擎中继承的函数，包括一组符合 Postgres 命名方式和行为的日期/时间函数。
++ JSON、位置信息等特殊数据类型的操作函数。
++ 高级全文匹配能力。
+
+查看 [函数列表](/reference/sql/functions/overview.md)。
+
+
 ## 排序
 
 GreptimeDB 不保证返回数据的顺序。你需要使用 `ORDER BY` 子句来对返回的数据进行排序。
@@ -271,9 +286,9 @@ GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚�
 下面的查询返回 10 秒内的平均 CPU 使用率，并且每 5 秒计算一次：
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
 ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
@@ -329,20 +344,20 @@ ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
 你可以将初始对齐时间设置为任何你想要的时间戳。例如，使用 `NOW` 将对齐到当前时间：
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '1w'
-FROM monitor 
+FROM monitor
 ALIGN '1d' TO NOW BY (host);
 ```
 
 或者使用 `ISO 8601` 时间戳将对齐到指定时间：
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '1w'
 FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);

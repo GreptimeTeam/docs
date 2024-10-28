@@ -1,10 +1,14 @@
+import TOCInline from '@theme/TOCInline';
+
 # SQL
 
-GreptimeDB supports full SQL for querying data from a database. 
+GreptimeDB supports full SQL for querying data from a database.
 
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
 Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
+
+<TOCInline toc={toc} />
 
 ## Basic query
 
@@ -207,6 +211,21 @@ For example, the following code shows the same `ts` value formatted in the clien
 </Tabs>
 
 
+### Functions
+
+GreptimeDB offers an extensive suite of built-in functions and aggregation
+capabilities tailored to meet the demands of data analytics. Its features
+include:
+
+- A comprehensive set of functions inherited from Apache Datafusion query
+  engine, featuring a selection of date/time functions that adhere to Postgres
+  naming conventions and behaviour.
+- Logical data type operations for JSON, Geolocation, and other specialized data
+  types.
+- Advanced full-text matching capabilities.
+
+See [Functions reference](/reference/sql/functions/overview.md) for more details.
+
 ## Order By
 
 The order of the returned data is not guaranteed. You need to use the `ORDER BY` clause to sort the returned data.
@@ -283,9 +302,9 @@ Suppose we have the following data in the [`monitor` table](/user-guide/administ
 The following query returns the average CPU usage in a 10-second time range and calculates it every 5 seconds:
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '10s' FILL LINEAR
 FROM monitor
 ALIGN '5s' TO '2023-12-01T00:00:00' BY (host) ORDER BY ts ASC;
@@ -344,20 +363,20 @@ The alignment times default based on the time zone of the current SQL client ses
 You can change the origin alignment time to any timestamp you want. For example, use `NOW` to align to the current time:
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '1w'
-FROM monitor 
+FROM monitor
 ALIGN '1d' TO NOW BY (host);
 ```
 
 Or use a `ISO 8601` timestamp to align to a specified time:
 
 ```sql
-SELECT 
-    ts, 
-    host, 
+SELECT
+    ts,
+    host,
     avg(cpu) RANGE '1w'
 FROM monitor
 ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
