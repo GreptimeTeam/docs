@@ -150,6 +150,15 @@ const sidebars: SidebarsConfig = {
           label: 'Deployments',
           items: [
             'user-guide/deployments/overview',
+            {
+              type: 'category',
+              label: 'Kubernetes',
+              items: [
+                'user-guide/deployments/deploy-on-kubernetes/overview',
+                'user-guide/deployments/deploy-on-kubernetes/getting-started',
+                'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
+              ],
+            },
             'user-guide/deployments/configuration',
             {
               type: 'category',
@@ -157,23 +166,6 @@ const sidebars: SidebarsConfig = {
               items: [
                 'user-guide/deployments/authentication/overview',
                 'user-guide/deployments/authentication/static',
-              ],
-            },
-            {
-              type: 'category',
-              label: 'Deploy on Kubernetes',
-              items: [
-                'user-guide/deployments/deploy-on-kubernetes/overview',
-                {
-                  type: 'category',
-                  label: 'Manage GreptimeDB Operator',
-                  items: [
-                    'user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/deploy-greptimedb-operator',
-                    'user-guide/deployments/deploy-on-kubernetes/manage-greptimedb-operator/upgrade-greptimedb-operator',
-                  ]
-                },
-                'user-guide/deployments/deploy-on-kubernetes/deploy-greptimedb-cluster',
-                'user-guide/deployments/deploy-on-kubernetes/destroy-cluster',
               ],
             },
             'user-guide/deployments/run-on-android',
