@@ -10,7 +10,7 @@ max_window = "45s"
 
 window_stability_threshold = 2
 
-min_load_threshold = 10485760
+min_load_threshold = "10MB"
 
 tick_interval = "45s"
 ```
@@ -24,9 +24,9 @@ tick_interval = "45s"
 - `window_stability_threshold`: integer
   - **Description**: Specifies the number of consecutive windows that must meet the load-balancing criteria before a region migration is triggered. This threshold helps prevent frequent balancing actions, ensuring region migration only occurs when imbalance is sustained.
   - **Recommendation**: Higher values delay rebalancing triggers and suit environments with volatile loads; a value of 2 means that at least two consecutive windows must meet the threshold before triggering.
-- `min_load_threshold`: integer
-  - **Description**: Minimum load threshold (in bytes) to trigger region migration. Nodes with load below this value will not trigger rebalancing.
-  - **Units**: Bytes (e.g., 10485760 represents 10 MiB).
+- `min_load_threshold`: string
+  - **Description**: Minimum write load threshold (in bytes per second) to trigger region migration. Nodes with load below this value will not trigger rebalancing.
+  - **Units**: Bytes (e.g., `"10MB"` represents 10 MiB).
   - **Recommendation**: Set an appropriate minimum to avoid triggering region migration with low load. Adjust based on typical traffic.
 - `tick_interval`: string
   - **Description**: Interval at which the balancer checks and potentially triggers a rebalancing task.
