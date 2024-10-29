@@ -83,7 +83,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "fi
 ```
 
 创建的 Pipeline 会关联到一个 database，可通过 URL 参数 `db` 来指定，默认为 `public`。
-不同 database 下的 Pipeline 互不相关。在将日志到数据库中时，所使用的 Pipeline 必须和写入的表在同一个 database 下。
+在将日志写入到数据库中时，所使用的 Pipeline 必须和写入的表在同一个 database 下。
 
 ## 删除 Pipeline
 

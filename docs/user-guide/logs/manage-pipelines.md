@@ -84,7 +84,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "fi
 ```
 
 The created Pipeline is associated with a database, which can be specified with the URL parameter `db`, defaulting to `public`.
-Pipelines under different databases are not associated with each other. When writi log to a database, the Pipeline used must be under the same database as the table being written to.
+When writing log to a database, the Pipeline used must be under the same database as the table being written to.
 
 ## Delete a Pipeline
 
