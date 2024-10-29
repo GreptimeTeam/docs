@@ -364,12 +364,14 @@ Forwarding from [::1]:4003 -> 4003
 ```
 </details>
 
-:::note
+:::warning
 If you want to expose the service to the public, you can use the kubectl port-forward command with the `--address` option:
 
 ```bash
 kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
 ```
+
+Please make sure you have the proper security settings in place before exposing the service to the public.
 :::
 
 Open the browser and navigate to `http://localhost:4000/dashboard` to access by the [GreptimeDB Dashboard](https://github.com/GrepTimeTeam/dashboard).

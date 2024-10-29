@@ -1,28 +1,18 @@
 # GreptimeDB Operator Management
 
-## Overview
-
 The GreptimeDB Operator manages the [GreptimeDB](https://github.com/GrepTimeTeam/greptimedb) resources on [Kubernetes](https://kubernetes.io/) using the [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). 
 
 It is like an autopilot that automates the deployment, provisioning, and orchestration of the GreptimeDB cluster and standalone. 
 
 The GreptimeDB Operator includes, but is not limited to, the following features:
 
-- **Automated Provisioning**
+- **Automated Provisioning**: Automates the deployment of the GreptimeDB cluster and standalone on Kubernetes by providing CRD `GreptimeDBCluster` and `GreptimeDBStandalone`.
 
-  Automates the deployment of the GreptimeDB cluster and standalone on Kubernetes by providing CRD `GreptimeDBCluster` and `GreptimeDBStandalone`.
+- **Multi-Cloud Support**: Users can deploy the GreptimeDB on any Kubernetes cluster, including on-premises and cloud environments(like AWS, GCP, Aliyun, etc.).
 
-- **Multi-Cloud Support**
+- **Scaling**: Scale the GreptimeDB cluster as easily as changing the `replicas` field in the `GreptimeDBCluster` CR.
 
-  Users can deploy the GreptimeDB on any Kubernetes cluster, including on-premises and cloud environments(like AWS, GCP, Aliyun, etc.).
-
-- **Scaling**
-
-  Scale the GreptimeDB cluster as easily as changing the `replicas` field in the `GreptimeDBCluster` CR.
-
-- **Monitoring Bootstrap**
-
-  Bootstrap the GreptimeDB monitoring stack for the GreptimeDB cluster by providing the `monitoring` field in the `GreptimeDBCluster` CR.
+- **Monitoring Bootstrap**: Bootstrap the GreptimeDB monitoring stack for the GreptimeDB cluster by providing the `monitoring` field in the `GreptimeDBCluster` CR.
 
 This document will show you how to install, upgrade, configure, and uninstall the GreptimeDB Operator on Kubernetes.
 
@@ -45,7 +35,7 @@ For production deployments, it's recommended to use Helm to install the Greptime
 You can refer [Install the GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#install-the-greptimedb-operator) for detailed instructions.
 
 :::note
-If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) to deploy applications, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply(other GitOps tools may have similar settings).
+If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) to deploy applications, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply (other GitOps tools may have similar settings).
 :::
 
 ### Upgrade
@@ -82,6 +72,12 @@ NAME                        	CHART VERSION	APP VERSION  	DESCRIPTION
 greptime/greptimedb-operator	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
 ```
 </details>
+
+You also can use the following command to list all the available versions:
+
+```bash
+helm search repo greptime/greptimedb-operator --versions
+```
 
 #### Upgrade the GreptimeDB Operator
 
@@ -121,12 +117,6 @@ If you want to upgrade to a specific version, you can use the following command:
 helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
 ```
 
-You can use the following command to list all the available versions:
-
-```bash
-helm search repo greptime/greptimedb-operator --versions
-```
-
 After the upgrade is complete, you can use the following command to verify the installation:
 
 ```bash
@@ -143,7 +133,7 @@ greptimedb-operator	default  	2       	2024-10-28 19:30:52.62097 +0800 CST 	depl
 
 ### CRDs
 
-There are two kind of CRD that are installed with the GreptimeDB Operator: `GreptimeDBCluster` and `GreptimeDBStandalone`.
+There are two kinds of CRD that are installed with the GreptimeDB Operator: `GreptimeDBCluster` and `GreptimeDBStandalone`.
 
 You can use the following command to verify the installation:
 
@@ -163,7 +153,7 @@ By default, the GreptimeDB Operator chart will manage the installation and upgra
 
 ### Configuration
 
-The GreptimeDB Operator chart provides a set of configuration options that allow you to customize the installation, you can refer to the [GreptimeDB Operator Helm Chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/README.md) for more details.
+The GreptimeDB Operator chart provides a set of configuration options that allow you to customize the installation, you can refer to the [GreptimeDB Operator Helm Chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/README.md##values) for more details.
 
 You can create a `values.yaml` to configure the GreptimeDB Operator chart, for example:
 
