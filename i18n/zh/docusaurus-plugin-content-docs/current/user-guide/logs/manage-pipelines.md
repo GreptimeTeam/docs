@@ -79,8 +79,11 @@ GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
 
 ```shell
 ## 上传 pipeline 文件。test 为 Pipeline 的名称
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "file=@pipeline.yaml"
 ```
+
+创建的 Pipeline 会关联到一个 database，可通过 URL 参数 `db` 来指定，默认为 `public`。
+在将日志写入到数据库中时，所使用的 Pipeline 必须和写入的表在同一个 database 下。
 
 ## 删除 Pipeline
 
@@ -88,10 +91,10 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" -F "file=@pipeli
 
 ```shell
 ## test 为 Pipeline 的名称
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z"
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z"
 ```
 
-上面的例子中，我们删除了一个名为 `test` 的 Pipeline。`version` 参数是必须的，用于指定要删除的 Pipeline 的版本号。
+上面的例子中，我们删除了一个在 `public` database 下名为 `test` 的 Pipeline。`version` 参数是必须的，用于指定要删除的 Pipeline 的版本号。
 
 ## 查询 Pipeline
 
