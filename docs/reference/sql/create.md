@@ -380,7 +380,7 @@ AS
 <SQL>;
 ```
 
-For the statement to create or update a flow, please read the [flow management documents](/user-guide/continuous-aggregation/manage-flow.md#create-or-update-a-flow).
+For the statement to create or update a flow, please read the [flow management documents](/user-guide/continuous-aggregation/manage-flow.md#create-a-flow).
 
 ## CREATE VIEW
 
