@@ -14,7 +14,7 @@ The GreptimeDB Operator includes, but is not limited to, the following features:
 
 - **Multi-Cloud Support**
 
-  Users can deploy the GreptimeDB on any Kubernetes cluster, including on-premises and cloud environments(like AWS, GCP, Aliyun etc.).
+  Users can deploy the GreptimeDB on any Kubernetes cluster, including on-premises and cloud environments(like AWS, GCP, Aliyun, etc.).
 
 - **Scaling**
 
@@ -24,7 +24,7 @@ The GreptimeDB Operator includes, but is not limited to, the following features:
 
   Bootstrap the GreptimeDB monitoring stack for the GreptimeDB cluster by providing the `monitoring` field in the `GreptimeDBCluster` CR.
 
-In this document, we will show you how to install, upgrade, configure and uninstall the GreptimeDB Operator on Kubernetes.
+This document will show you how to install, upgrade, configure, and uninstall the GreptimeDB Operator on Kubernetes.
 
 :::note
 The following output may have minor differences depending on the versions of the Helm charts and environment.
@@ -42,73 +42,11 @@ For production deployments, it's recommended to use Helm to install the Greptime
 
 ### Installation
 
-The Greptime team maintains the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator. You can use the following command to add the Greptime Helm repository:
+You can refer [Install the GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#install-the-greptimedb-operator) for detailed instructions.
 
-```bash
-helm repo add greptime https://greptimeteam.github.io/helm-charts/
-helm repo update
-```
-
-Check the charts in the Greptime Helm repository:
-
-```
-helm search repo greptime
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME                          	CHART VERSION	APP VERSION  	DESCRIPTION
-greptime/greptimedb-cluster   	0.2.25       	0.9.5        	A Helm chart for deploying GreptimeDB cluster i...
-greptime/greptimedb-operator  	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
-greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for deploying standalone greptimedb
-```
-</details>
-
-After adding the Greptime Helm repository, you can install the GreptimeDB Operator in `greptimedb-admin` by running the following command:
-
-```bash
-helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin --create-namespace
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME: greptimedb-operator
-LAST DEPLOYED: Tue Oct 29 18:40:10 2024
-NAMESPACE: greptimedb-admin
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-***********************************************************************
- Welcome to use greptimedb-operator
- Chart version: 0.2.9
- GreptimeDB Operator version: 0.1.3-alpha.1
-***********************************************************************
-
-Installed components:
-* greptimedb-operator
-
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.
-```
-</details>
-
-Check the status of the GreptimeDB Operator:
-
-```bash
-kubectl get pods -n greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME                                   READY   STATUS    RESTARTS   AGE
-greptimedb-operator-68d684c6cf-qr4q4   1/1     Running   0          4m8s
-```
-</details>
-
-If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) , please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply(other GitOps tools may have similar settings).
+:::note
+If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) to deploy applications, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply(other GitOps tools may have similar settings).
+:::
 
 ### Upgrade
 

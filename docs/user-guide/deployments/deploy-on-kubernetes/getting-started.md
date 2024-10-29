@@ -2,10 +2,6 @@
 
 In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes using the GreptimeDB Operator.
 
-:::warning
-This guide is for demonstration purposes only. Do not use this setup in a production environment.
-:::
-
 :::note
 The following output may have minor differences depending on the versions of the Helm charts and environment.
 :::
@@ -19,7 +15,11 @@ The following output may have minor differences depending on the versions of the
 
 ## Create a test Kubernetes cluster
 
-There are many ways to create a Kubernetes cluster for testing purposes. In this guide, we will use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local Kubernetes cluster.
+:::warning
+Don't use the `kind` for production use. It's recommended to use a managed Kubernetes service like [Amazon EKS](https://aws.amazon.com/eks/), [Google GKE](https://cloud.google.com/kubernetes-engine/), or [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/).
+:::
+
+There are many ways to create a Kubernetes cluster for testing purposes. In this guide, we will use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local Kubernetes cluster. You can skip this step if you want to use the existing Kubernetes cluster.
 
 Here is an example using `kind` v0.20.0:
 
@@ -64,7 +64,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 ## Add the Greptime Helm repository
 
-We provide the official Helm [repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
+We provide the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
 
 ```bash
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
@@ -260,6 +260,11 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 
 Now that the GreptimeDB Operator and etcd cluster are installed, you can deploy a minimum GreptimeDB cluster with monitoring integration:
 
+:::warning
+The default configuration for the GreptimeDB cluster is not recommended for production use. 
+You should adjust the configuration according to your requirements.
+:::
+
 ```bash
 helm install mycluster \
   --set monitoring.enabled=true \
@@ -333,9 +338,13 @@ The Grafana dashboard is also deployed to visualize the metrics from the standal
 
 ## Explore the GreptimeDB cluster
 
+:::warning
+For production use, you should access the GreptimeDB cluster or Grafana inside the Kubernetes cluster or using the LoadBalancer type service.
+:::
+
 ### Access the GreptimeDB cluster
 
-You can access the GreptimeDB cluster by port-forwarding the frontend service:
+You can access the GreptimeDB cluster by using `kubectl port-forward` the frontend service:
 
 ```bash
 kubectl -n default port-forward svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
@@ -385,7 +394,11 @@ There are three dashboards available:
 - **GreptimeDB Cluster Logs**: Displays the logs of the GreptimeDB cluster.
 - **GreptimeDB Cluster Slow Queries**: Displays the slow queries of the GreptimeDB cluster.
 
-## Clean up
+## Cleanup
+
+:::danger
+The cleanup operation will remove the metadata and data of the GreptimeDB cluster. Please make sure you have backed up the data before proceeding.
+:::
 
 ### Stop the port-forwarding
 
