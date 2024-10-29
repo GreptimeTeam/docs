@@ -42,13 +42,93 @@ For production deployments, it's recommended to use Helm to install the Greptime
 
 ### Installation
 
-You can refer [Install the GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#install-the-greptimedb-operator) for detailed instructions.
+The Greptime team maintains the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator. You can use the following command to add the Greptime Helm repository:
 
-If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) or other GitOps tools to deploy the GreptimeDB Operator, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply.
+```bash
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
+helm repo update
+```
+
+Check the charts in the Greptime Helm repository:
+
+```
+helm search repo greptime
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                          	CHART VERSION	APP VERSION  	DESCRIPTION
+greptime/greptimedb-cluster   	0.2.25       	0.9.5        	A Helm chart for deploying GreptimeDB cluster i...
+greptime/greptimedb-operator  	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
+greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for deploying standalone greptimedb
+```
+</details>
+
+After adding the Greptime Helm repository, you can install the GreptimeDB Operator in `greptimedb-admin` by running the following command:
+
+```bash
+helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin --create-namespace
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME: greptimedb-operator
+LAST DEPLOYED: Mon Oct 28 16:46:27 2024
+NAMESPACE: greptimedb-admin
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+***********************************************************************
+ Welcome to use greptimedb-operator
+ Chart version: 0.2.9
+ GreptimeDB Operator version: 0.1.3-alpha.1
+***********************************************************************
+
+Installed components:
+* greptimedb-operator
+
+The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.NAME: greptimedb-operator
+LAST DEPLOYED: Mon Oct 28 16:46:27 2024
+NAMESPACE: greptimedb-admin
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+***********************************************************************
+Welcome to use greptimedb-operator
+Chart version: 0.2.9
+GreptimeDB Operator version: 0.1.3-alpha.1
+***********************************************************************
+
+Installed components:
+* greptimedb-operator
+
+The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.
+```
+</details>
+
+Check the status of the GreptimeDB Operator:
+
+```bash
+kubectl get pods -n greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                                   READY   STATUS    RESTARTS   AGE
+greptimedb-operator-68d684c6cf-qr4q4   1/1     Running   0          4m8s
+```
+</details>
+
+If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) , please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply(other GitOps tools may have similar settings).
 
 ### Upgrade
 
-We always publish the latest version of the GreptimeDB Operator as a Helm chart in our [official Helm repository](https://github.com/GreptimeTeam/helm-charts/tree/main).
+We always publish the latest version of the GreptimeDB Operator as a Helm chart in our official Helm repository.
 
 When the new version of the GreptimeDB Operator is released, you can upgrade the GreptimeDB Operator by running the following commands.
 
@@ -210,7 +290,7 @@ helm -n greptimedb-admin upgrade --install \
 ```
 :::
 
-## Uninstallation
+### Uninstallation
 
 You can use the `helm` command to uninstall the GreptimeDB Operator:
 
@@ -218,10 +298,10 @@ You can use the `helm` command to uninstall the GreptimeDB Operator:
 helm -n greptimedb-admin uninstall greptimedb-operator
 ```
 
-We don't remove the CRDs by default when you uninstall the GreptimeDB Operator.
+We don't delete the CRDs by default when you uninstall the GreptimeDB Operator.
 
 :::danger
-If you really want to remove the CRDs, you can use the following command:
+If you really want to delete the CRDs, you can use the following command:
 
 ```bash
 kubectl delete crd greptimedbclusters.greptime.io greptimedbstandalones.greptime.io

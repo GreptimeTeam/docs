@@ -2,11 +2,10 @@
 
 ## GreptimeDB Operator
 
-The [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) manages the GreptimeDB resources on Kubernetes using the Operator pattern. 
-It is like an autopilot that automates the deployment, provisioning, and orchestration of the GreptimeDB cluster and standalone.
-With the help of the GreptimeDB Operator, you can quickly deploy, manage, and scale GreptimeDB clusters on Kubernetes on-premises or in the cloud.
+The [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) uses the Operator pattern to manage GreptimeDB on Kubernetes, automating the setup, provisioning, and management of GreptimeDB cluster and standalone instances. 
+ This makes it easy to quickly deploy and scale GreptimeDB in any Kubernetes environment, whether on-premises or in the cloud.
 
-We highly recommend using the GreptimeDB Operator to deploy GreptimeDB on Kubernetes.
+We **highly recommend** using the GreptimeDB Operator to deploy GreptimeDB on Kubernetes.
 
 ## Manage GreptimeDB with the GreptimeDB Operator
 
