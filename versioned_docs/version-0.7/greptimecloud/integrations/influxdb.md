@@ -5,7 +5,7 @@ protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-proto
 ingestion API over http. The API and authentication is compatible with [InfluxDB
 write protocol
 1.x](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/#write-data-using-the-influxdb-api).
-Please refer to [InfluxDB client](https://docs.greptime.com/user-guide/clients/influxdb-line) of GreptimeDB for more information.
+Please refer to [InfluxDB client](https://docs.greptime.com/v0.7/user-guide/clients/influxdb-line) of GreptimeDB for more information.
 
 - URL: `https://<host>/v1/influxdb/write?db=<dbname>`
 - Username: `<username>`

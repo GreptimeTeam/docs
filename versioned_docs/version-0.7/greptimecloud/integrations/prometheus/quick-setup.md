@@ -2,7 +2,7 @@
 
 GreptimeCloud with GreptimeDB is fully compatible with Prometheus.
 This means that you can seamlessly use GreptimeCloud as a replacement for Prometheus.
-For more information, please refer to the [Prometheus documentation](https://docs.greptime.com/user-guide/clients/prometheus) in the GreptimeDB user guide.
+For more information, please refer to the [Prometheus documentation](https://docs.greptime.com/v0.7/user-guide/clients/prometheus) in the GreptimeDB user guide.
 
 ## Remote Write and Read
 
@@ -42,4 +42,4 @@ git push
 
 ## PromQL
 
-GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/user-guide/clients/prometheus#prometheus-query-language) for more details.
+GreptimeDB supports PromQL (Prometheus Query Language). This means that you can use GreptimeDB as a drop-in replacement for Prometheus. Please refer to [PromQL](https://docs.greptime.com/v0.7/user-guide/clients/prometheus#prometheus-query-language) for more details.

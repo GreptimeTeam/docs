@@ -1,6 +1,6 @@
 # 快速设置
 
-GreptimeCloud 与 GreptimeDB 完全兼容 Prometheus。这意味着你可以无缝地将 GreptimeCloud 用作 Prometheus 存储和查询的替代品。有关更多信息，请参阅 GreptimeDB 用户指南中的 [Prometheus 文档](https://docs.greptime.cn/user-guide/clients/prometheus)。
+GreptimeCloud 与 GreptimeDB 完全兼容 Prometheus。这意味着你可以无缝地将 GreptimeCloud 用作 Prometheus 存储和查询的替代品。有关更多信息，请参阅 GreptimeDB 用户指南中的 [Prometheus 文档](https://docs.greptime.cn/v0.7/user-guide/clients/prometheus)。
 
 ## 远程写入和读取
 
@@ -36,4 +36,4 @@ git push
 
 ## PromQL
 
-GreptimeDB 支持 PromQL (Prometheus 查询语言)，这意味着你可以将 GreptimeDB 作为 Prometheus 查询的替代品。有关更多详细信息，请参考 [PromQL](https://docs.greptime.cn/user-guide/clients/prometheus#prometheus-query-language)。
+GreptimeDB 支持 PromQL (Prometheus 查询语言)，这意味着你可以将 GreptimeDB 作为 Prometheus 查询的替代品。有关更多详细信息，请参考 [PromQL](https://docs.greptime.cn/v0.7/user-guide/clients/prometheus#prometheus-query-language)。
