@@ -32,3 +32,4 @@ tick_interval = "45s"
   - **Description**: Interval at which the balancer checks and potentially triggers a rebalancing task.
   - **Units**: Time (e.g., `"45s"` represents 45 seconds).
   - **Recommendation**: Set based on desired responsiveness and load volatility. Shorter intervals allow faster responses but may increase overhead.
+
