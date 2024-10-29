@@ -1,38 +1,40 @@
 # GreptimeDB Operator Management
 
+## Overview
+
+The GreptimeDB Operator manages the [GreptimeDB](https://github.com/GrepTimeTeam/greptimedb) resources on [Kubernetes](https://kubernetes.io/) using the [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). 
+
+It is like an autopilot that automates the deployment, provisioning, and orchestration of the GreptimeDB cluster and standalone. 
+
+The GreptimeDB Operator includes, but is not limited to, the following features:
+
+- **Automated Provisioning**
+
+  Automates the deployment of the GreptimeDB cluster and standalone on Kubernetes by providing CRD `GreptimeDBCluster` and `GreptimeDBStandalone`.
+
+- **Multi-Cloud Support**
+
+  Users can deploy the GreptimeDB on any Kubernetes cluster, including on-premises and cloud environments(like AWS, GCP, Aliyun etc.).
+
+- **Scaling**
+
+  Scale the GreptimeDB cluster as easily as changing the `replicas` field in the `GreptimeDBCluster` CR.
+
+- **Monitoring Bootstrap**
+
+  Bootstrap the GreptimeDB monitoring stack for the GreptimeDB cluster by providing the `monitoring` field in the `GreptimeDBCluster` CR.
+
+In this document, we will show you how to install, upgrade, configure and uninstall the GreptimeDB Operator on Kubernetes.
+
+:::note
+The following output may have minor differences depending on the versions of the Helm charts and environment.
+:::
+
 ## Prerequisites
 
 - Kubernetes >= v1.18.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-
-## Quick Start
-
-:::warning
-It's not recommended to use this method to install the GreptimeDB Operator in a production environment. 
-:::
-
-The fastest way to install the GreptimeDB Operator is to use `bundle.yaml`:
-
-```bash
-kubectl apply -f \
-  https://github.com/GreptimeTeam/greptimedb-operator/releases/latest/download/bundle.yaml \
-  --server-side
-```
-
-The greptimedb-operator will be installed in the `greptimedb-admin` namespace. When the `greptimedb-operator` is running, you can use the following command to verify the installation:
-
-```bash
-kubectl get pods -n greptimedb-admin
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME                                   READY   STATUS    RESTARTS   AGE
-greptimedb-operator-7947d785b5-b668p   1/1     Running   0          2m18s
-```
-</details>
 
 ## Production Deployment
 
@@ -41,6 +43,8 @@ For production deployments, it's recommended to use Helm to install the Greptime
 ### Installation
 
 You can refer [Install the GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#install-the-greptimedb-operator) for detailed instructions.
+
+If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) or other GitOps tools to deploy the GreptimeDB Operator, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply.
 
 ### Upgrade
 
@@ -69,11 +73,6 @@ You can use the following command to search the latest version of the GreptimeDB
 helm search repo greptime/greptimedb-operator
 ```
 
-:::note
-The output may vary depending on the version of the charts.
-:::
-
-
 <details>
 <summary>Expected Output</summary>
 ```bash
@@ -82,25 +81,13 @@ greptime/greptimedb-operator	0.2.9        	0.1.3-alpha.1	The greptimedb-operator
 ```
 </details>
 
-:::tip
-If you want to list all the available versions, you can use the following command:
-
-```
-helm search repo greptime/greptimedb-operator --versions
-```
-:::
-
 #### Upgrade the GreptimeDB Operator
 
 You can upgrade to the latest released version of the GreptimeDB Operator by running the following command:
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator
 ```
-
-:::note
-The output may vary depending on the version of the charts.
-:::
 
 <details>
 <summary>Expected Output</summary>
@@ -129,7 +116,13 @@ The greptimedb-operator is starting, use `kubectl get deployments greptimedb-ope
 If you want to upgrade to a specific version, you can use the following command:
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
+```
+
+You can use the following command to list all the available versions:
+
+```bash
+helm search repo greptime/greptimedb-operator --versions
 ```
 
 After the upgrade is complete, you can use the following command to verify the installation:
@@ -199,20 +192,40 @@ resources:
 You can use the following command to install the GreptimeDB Operator with the custom configuration:
 
 ```bash
-helm --namespace greptimedb-admin install greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin install greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
 
 If you want to upgrade the GreptimeDB Operator with the custom configuration, you can use the following command:
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
 
 :::tip
 You can use one command to install or upgrade the GreptimeDB Operator with the custom configuration:
 
 ```bash
-helm --namespace greptimedb-admin upgrade --install \
+helm -n greptimedb-admin upgrade --install \
   greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
+:::
+
+## Uninstallation
+
+You can use the `helm` command to uninstall the GreptimeDB Operator:
+
+```bash
+helm -n greptimedb-admin uninstall greptimedb-operator
+```
+
+We don't remove the CRDs by default when you uninstall the GreptimeDB Operator.
+
+:::danger
+If you really want to remove the CRDs, you can use the following command:
+
+```bash
+kubectl delete crd greptimedbclusters.greptime.io greptimedbstandalones.greptime.io
+```
+
+The related resources will be removed after you delete the CRDs.
 :::

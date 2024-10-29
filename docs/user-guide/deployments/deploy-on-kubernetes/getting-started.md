@@ -6,6 +6,10 @@ In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes u
 This guide is for demonstration purposes only. Do not use this setup in a production environment.
 :::
 
+:::note
+The following output may have minor differences depending on the versions of the Helm charts and environment.
+:::
+
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
@@ -13,7 +17,7 @@ This guide is for demonstration purposes only. Do not use this setup in a produc
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
 - [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) >= v0.20.0
 
-## Step 1: Create a test Kubernetes cluster
+## Create a test Kubernetes cluster
 
 There are many ways to create a Kubernetes cluster for testing purposes. In this guide, we will use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local Kubernetes cluster.
 
@@ -58,27 +62,20 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 </details>
 
+## Add the Greptime Helm repository
 
-## Step 2: Install the GreptimeDB Operator
-
-It's ready to use Helm to install the GreptimeDB Operator on the Kubernetes cluster.
-
-### Add the Greptime Helm repository
+We provide the official Helm [repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
 
 ```bash
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 ```
 
-You can run the following command to see the charts:
+Check the charts in the Greptime Helm repository:
 
 ```
 helm search repo greptime
 ```
-
-:::note
-The output may vary depending on the version of the charts.
-:::
 
 <details>
   <summary>Expected Output</summary>
@@ -90,17 +87,19 @@ greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for depl
 ```
 </details>
 
+## Install the GreptimeDB Operator
+
+It's ready to use Helm to install the GreptimeDB Operator on the Kubernetes cluster.
+
 ### Install the GreptimeDB Operator
+
+The [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) is a Kubernetes operator that manages the lifecycle of GreptimeDB cluster.
 
 Let's install the latest version of the GreptimeDB Operator in the `greptimedb-admin` namespace:
 
 ```bash
 helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin --create-namespace
 ```
-
-:::note
-The output may vary depending on the version of the charts.
-:::
 
 <details>
   <summary>Expected Output</summary>
@@ -141,12 +140,22 @@ The greptimedb-operator is starting, use `kubectl get deployments greptimedb-ope
 ```
 </details>
 
+:::note
+There is another way to install the GreptimeDB Operator by using `kubectl` and `bundle.yaml` from the latest release:
+
+```bash
+kubectl apply -f \
+  https://github.com/GreptimeTeam/greptimedb-operator/releases/latest/download/bundle.yaml \
+  --server-side
+```
+:::
+
 ### Verify the GreptimeDB Operator installation
 
 Check the status of the GreptimeDB Operator:
 
 ```bash
-kubectl get pods --namespace greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
+kubectl get pods -n greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
 ```
 
 <details>
@@ -173,9 +182,9 @@ greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
 
 The GreptimeDB Operator will use `greptimedbclusters.greptime.io` and `greptimedbstandalones.greptime.io` CRDs to manage GreptimeDB cluster and standalone resources.
 
-## Step 3: Install the etcd cluster
+## Install the etcd cluster
 
-The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm chart.
+The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://hub.docker.com/r/bitnami/etcd).
 
 ```bash
 helm install \
@@ -233,7 +242,7 @@ WARNING: There are "resources" sections in the chart not set. Using "resourcesPr
 Wait for the etcd cluster to be ready:
 
 ```bash
-kubectl get pods --namespace etcd-cluster -l app.kubernetes.io/instance=etcd
+kubectl get pods -n etcd-cluster -l app.kubernetes.io/instance=etcd
 ```
 
 <details>
@@ -249,7 +258,7 @@ etcd-2   1/1     Running   0          2m8s
 You can test the etcd cluster by running the following command:
 
 ```bash
-kubectl --namespace etcd-cluster \
+kubectl -n etcd-cluster \
   exec etcd-0 -- etcdctl endpoint health \
   --endpoints=http://etcd-0.etcd-headless.etcd-cluster.svc.cluster.local:2379,http://etcd-1.etcd-headless.etcd-cluster.svc.cluster.local:2379,http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379
 ```
@@ -263,7 +272,7 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
-## Step 4: Install the GreptimeDB cluster with monitoring integration
+## Install the GreptimeDB cluster with monitoring integration
 
 Now that the GreptimeDB Operator and etcd cluster are installed, you can deploy a minimum GreptimeDB cluster with monitoring integration:
 
@@ -274,10 +283,6 @@ helm install mycluster \
   greptime/greptimedb-cluster \
   -n default
 ```
-
-:::note
-The output may vary depending on the version of the charts.
-:::
 
 <details>
   <summary>Expected Output</summary>
@@ -307,12 +312,8 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 You can check the status of the GreptimeDB cluster:
 
 ```bash
-kubectl --namespace default get greptimedbclusters.greptime.io mycluster
+kubectl -n default get greptimedbclusters.greptime.io mycluster
 ```
-
-:::note
-The output may vary depending on the version of the charts.
-:::
 
 <details>
   <summary>Expected Output</summary>
@@ -325,7 +326,7 @@ mycluster   1          1          1      0          Running    v0.9.5    5m12s
 You can check the Pods status of the GreptimeDB cluster:
 
 ```bash
-kubectl --namespace default get pods
+kubectl -n default get pods
 ```
 
 <details>
@@ -346,14 +347,14 @@ The cluster metrics and logs will be collected by the [vector](https://github.co
 
 The Grafana dashboard is also deployed to visualize the metrics from the standalone instance. 
 
-## Step 5: Explore the GreptimeDB cluster
+## Explore the GreptimeDB cluster
 
 ### Access the GreptimeDB cluster
 
 You can access the GreptimeDB cluster by port-forwarding the frontend service:
 
 ```bash
-kubectl --namespace default port-forward svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
+kubectl -n default port-forward svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
 ```
 
 <details>
@@ -374,7 +375,7 @@ Forwarding from [::1]:4003 -> 4003
 If you want to expose the service to the public, you can use the kubectl port-forward command with the `--address` option:
 
 ```bash
-kubectl --namespace default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
+kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
 ```
 :::
 
@@ -384,10 +385,10 @@ If you want to use other tools like `mysql` or `psql` to connect to the Greptime
 
 ### Access the Grafana dashboard
 
-You can access the Grafana dashboard by port-forwarding the Grafana service:
+You can access the Grafana dashboard by using `kubctl port-forward` the Grafana service:
 
 ```bash
-kubectl --namespace default port-forward svc/mycluster-grafana 18080:80
+kubectl -n default port-forward svc/mycluster-grafana 18080:80
 ```
 
 Then, open your browser and navigate to `http://localhost:18080` to access the Grafana dashboard. The default username and password are `admin` and `gt-operator`:
@@ -400,7 +401,7 @@ There are three dashboards available:
 - **GreptimeDB Cluster Logs**: Displays the logs of the GreptimeDB cluster.
 - **GreptimeDB Cluster Slow Queries**: Displays the slow queries of the GreptimeDB cluster.
 
-## Step 6: Clean up
+## Clean up
 
 ### Stop the port-forwarding
 
@@ -415,7 +416,7 @@ pkill -f kubectl port-forward
 To uninstall the GreptimeDB cluster, you can use the following command:
 
 ```bash
-helm --namespace default uninstall mycluster
+helm -n default uninstall mycluster
 ```
 
 ### Delete the PVCs
@@ -423,8 +424,8 @@ helm --namespace default uninstall mycluster
 The PVCs wouldn't be deleted by default for safety reasons. If you want to delete the PV data, you can use the following command:
 
 ```bash
-kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-datanode
-kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
+kubectl -n default delete pvc -l app.greptime.io/component=mycluster-datanode
+kubectl -n default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
 ```
 
 ### Clean up the etcd cluster
@@ -432,7 +433,7 @@ kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-mo
 You can use the following command to clean up the etcd cluster:
 
 ```bash
-kubectl --namespace etcd-cluster exec etcd-0 -- etcdctl del "" --from-key=true
+kubectl -n etcd-cluster exec etcd-0 -- etcdctl del "" --from-key=true
 ```
 
 ### Destroy the Kubernetes cluster
