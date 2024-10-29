@@ -315,6 +315,11 @@ const sidebars: SidebarsConfig = {
         'enterprise/overview',
         {
           type: 'category',
+          label: 'Autopilot',
+          items: ['enterprise/autopilot/region-balancer'],
+        },
+        {
+          type: 'category',
           label: 'Deployments',
           items: ['enterprise/deployments/authentication',],
         },
