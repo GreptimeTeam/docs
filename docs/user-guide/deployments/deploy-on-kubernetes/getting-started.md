@@ -87,7 +87,7 @@ greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for depl
 ```
 </details>
 
-## Install the GreptimeDB Operator
+## Install and verify the GreptimeDB Operator
 
 It's ready to use Helm to install the GreptimeDB Operator on the Kubernetes cluster.
 
@@ -105,7 +105,7 @@ helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admi
   <summary>Expected Output</summary>
 ```bash
 NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
+LAST DEPLOYED: Tue Oct 29 18:40:10 2024
 NAMESPACE: greptimedb-admin
 STATUS: deployed
 REVISION: 1
@@ -115,22 +115,6 @@ NOTES:
  Welcome to use greptimedb-operator
  Chart version: 0.2.9
  GreptimeDB Operator version: 0.1.3-alpha.1
-***********************************************************************
-
-Installed components:
-* greptimedb-operator
-
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
-NAMESPACE: greptimedb-admin
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-***********************************************************************
-Welcome to use greptimedb-operator
-Chart version: 0.2.9
-GreptimeDB Operator version: 0.1.3-alpha.1
 ***********************************************************************
 
 Installed components:
@@ -381,7 +365,7 @@ kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:40
 
 Open the browser and navigate to `http://localhost:4000/dashboard` to access by the [GreptimeDB Dashboard](https://github.com/GrepTimeTeam/dashboard).
 
-If you want to use other tools like `mysql` or `psql` to connect to the GreptimeDB cluster, you refer to the [Quick Start](/getting-started/quick-start.md).
+If you want to use other tools like `mysql` or `psql` to connect to the GreptimeDB cluster, you can refer to the [Quick Start](/getting-started/quick-start.md).
 
 ### Access the Grafana dashboard
 

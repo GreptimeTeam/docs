@@ -75,7 +75,7 @@ helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admi
   <summary>Expected Output</summary>
 ```bash
 NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
+LAST DEPLOYED: Tue Oct 29 18:40:10 2024
 NAMESPACE: greptimedb-admin
 STATUS: deployed
 REVISION: 1
@@ -85,22 +85,6 @@ NOTES:
  Welcome to use greptimedb-operator
  Chart version: 0.2.9
  GreptimeDB Operator version: 0.1.3-alpha.1
-***********************************************************************
-
-Installed components:
-* greptimedb-operator
-
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
-NAMESPACE: greptimedb-admin
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-***********************************************************************
-Welcome to use greptimedb-operator
-Chart version: 0.2.9
-GreptimeDB Operator version: 0.1.3-alpha.1
 ***********************************************************************
 
 Installed components:
