@@ -155,7 +155,7 @@ By default, the GreptimeDB Operator chart will manage the installation and upgra
 
 The GreptimeDB Operator chart provides a set of configuration options that allow you to customize the installation, you can refer to the [GreptimeDB Operator Helm Chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/README.md##values) for more details.
 
-You can create a `values.yaml` to configure the GreptimeDB Operator chart, for example:
+You can create a `values.yaml` to configure the GreptimeDB Operator chart (the complete configuration of `values.yaml` can be found in the [chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/values.yaml)), for example:
 
 ```yaml
 image:
@@ -193,14 +193,11 @@ If you want to upgrade the GreptimeDB Operator with the custom configuration, yo
 helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
 
-:::tip
-You can use one command to install or upgrade the GreptimeDB Operator with the custom configuration:
+You also can use one command to install or upgrade the GreptimeDB Operator with the custom configuration:
 
 ```bash
-helm -n greptimedb-admin upgrade --install \
-  greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin upgrade --install greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
-:::
 
 ### Uninstallation
 
