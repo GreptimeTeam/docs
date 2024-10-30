@@ -1,38 +1,30 @@
 # GreptimeDB Operator 的管理
 
+GreptimeDB Operator 使用 [Operator 模式](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) 在 [Kubernetes](https://kubernetes.io/) 上管理 [GreptimeDB](https://github.com/GrepTimeTeam/greptimedb) 资源。
+
+就像自动驾驶一样，GreptimeDB Operator 自动化了 GreptimeDB 集群和单机实例的部署、配置和管理。
+
+GreptimeDB Operator 包括但不限于以下功能：
+
+- **自动化部署**: 通过提供 `GreptimeDBCluster` 和 `GreptimeDBStandalone` CRD 来自动化在 Kubernetes 上部署 GreptimeDB 集群和单机实例。
+
+- **多云支持**: 用户可以在任何 Kubernetes 集群上部署 GreptimeDB，包括私有环境和公有云环境（如 AWS、GCP、阿里云等）。
+
+- **扩缩容**: 通过修改 `GreptimeDBCluster` CR 中的 `replicas` 字段即可轻松实现 GreptimeDB 集群的扩缩容。
+
+- **监控**: 通过在 `GreptimeDBCluster` CR 中提供 `monitoring` 字段来自动化部署基于 GreptimeDB 的监控组件。
+
+本指南将展示如何在 Kubernetes 上安装、升级、配置和卸载 GreptimeDB Operator。
+
+:::note
+以下输出可能会因 Helm chart 版本和具体环境的不同而有细微差别。
+:::
+
 ## 前置依赖
 
 - Kubernetes >= v1.18.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-
-## 快速开始
-
-:::warning
-这种安装方式并不推荐在生产环境中使用。
-:::
-
-最快的安装 GreptimeDB Operator 的方式是使用 `bundle.yaml`：
-
-```bash
-kubectl apply -f \
-  https://github.com/GreptimeTeam/greptimedb-operator/releases/latest/download/bundle.yaml \
-  --server-side
-```
-
-`greptimedb-operator` 将会安装在 `greptimedb-admin` 命名空间中。当 `greptimedb-operator` 运行时，您可以使用以下命令来验证安装：
-
-```bash
-kubectl get pods -n greptimedb-admin
-```
-
-<details>
-  <summary>期望输出</summary>
-```bash
-NAME                                   READY   STATUS    RESTARTS   AGE
-greptimedb-operator-7947d785b5-b668p   1/1     Running   0          2m18s
-```
-</details>
 
 ## 生产环境部署
 
@@ -40,7 +32,11 @@ greptimedb-operator-7947d785b5-b668p   1/1     Running   0          2m18s
 
 ### 安装
 
-你可以参考 [安装 GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#安装 GreptimeDB Operator) 获取详细的指导。
+你可以参考 [安装和验证 GreptimeDB Operator](/user-guide/deployments/deploy-on-kubernetes/getting-started.md#安装和验证-greptimedb-operator) 获取详细的指导。
+
+:::note
+如果你使用 [Argo CD](https://argo-cd.readthedocs.io/en/stable/) 来部署应用，请确保 `Application` 已设置 [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) 以启用 server-side apply（其他 GitOps 工具可能也有类似的设置）。
+:::
 
 ### 升级
 
@@ -69,11 +65,6 @@ Update Complete. ⎈Happy Helming!⎈
 helm search repo greptime/greptimedb-operator
 ```
 
-:::note
-以下输出可能会因 Chart 版本而有所不同。
-:::
-
-
 <details>
 <summary>预期输出</summary>
 ```bash
@@ -82,25 +73,19 @@ greptime/greptimedb-operator	0.2.9        	0.1.3-alpha.1	The greptimedb-operator
 ```
 </details>
 
-:::tip
 如果你想列出所有可用的版本，你可以使用以下命令：
 
 ```
 helm search repo greptime/greptimedb-operator --versions
 ```
-:::
 
 #### 升级 GreptimeDB Operator
 
 你可以通过运行以下命令升级到最新发布的 GreptimeDB Operator 版本：
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator
 ```
-
-:::note
-以下输出可能会因 Chart 版本而有所不同。
-:::
 
 <details>
 <summary>期望输出</summary>
@@ -126,13 +111,13 @@ The greptimedb-operator is starting, use `kubectl get deployments greptimedb-ope
 ```
 </details>
 
-If you want to upgrade to a specific version, you can use the following command:
+如果你想升级到特定版本，你可以使用以下命令：
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator --version <version>
 ```
 
-After the upgrade is complete, you can use the following command to verify the installation:
+升级完成后，你可以使用以下命令来验证安装：
 
 ```bash
 helm list -n greptimedb-admin
@@ -148,7 +133,7 @@ greptimedb-operator	default  	2       	2024-10-28 19:30:52.62097 +0800 CST 	depl
 
 ### CRDs
 
-这里有两种类型的 CRD 与 GreptimeDB Operator 一起安装：`GreptimeDBCluster` 和 `GreptimeDBStandalone`。
+这里将有两种类型的 CRD 与 GreptimeDB Operator 一起安装：`GreptimeDBCluster` 和 `GreptimeDBStandalone`。
 
 你可以使用以下命令来验证安装：
 
@@ -170,7 +155,7 @@ greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
 
 GreptimeDB Operator chart 提供了一组配置选项，允许您自行配置，您可以参考 [GreptimeDB Operator Helm Chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/README.md) 来获取更多详细信息。
 
-你可以创建一个 `values.yaml` 来配置 GreptimeDB Operator chart，例如：
+你可以创建一个 `values.yaml` 来配置 GreptimeDB Operator chart (完整的 `values.yaml` 配置可以参考 [chart](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-operator/values.yaml))，例如：
 
 ```yaml
 image:
@@ -199,21 +184,37 @@ resources:
 你可以使用以下命令来安装带有自定义配置的 GreptimeDB Operator：
 
 ```bash
-helm --namespace greptimedb-admin install greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin install greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
 
 如果你想使用自定义配置升级 GreptimeDB Operator，你可以使用以下命令：
 
 ```bash
-helm --namespace greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin upgrade greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
-
-:::tip
 
 你可以使用以下一条同样的命令来安装或升级带有自定义配置的 GreptimeDB Operator：
 
 ```bash
-helm --namespace greptimedb-admin upgrade --install \
-  greptimedb-operator greptime/greptimedb-operator -f values.yaml
+helm -n greptimedb-admin upgrade --install greptimedb-operator greptime/greptimedb-operator -f values.yaml
 ```
+
+### 卸载
+
+你可以使用 `helm` 命令来卸载 GreptimeDB Operator：
+
+```bash
+helm -n greptimedb-admin uninstall greptimedb-operator
+```
+
+默认情况下，卸载 GreptimeDB Operator 时不会删除 CRDs。
+
+:::danger
+如果你确实想要删除 CRDs，你可以使用以下命令：
+
+```bash
+kubectl delete crd greptimedbclusters.greptime.io greptimedbstandalones.greptime.io
+```
+
+删除 CRDs 后，相关资源将被删除。
 :::

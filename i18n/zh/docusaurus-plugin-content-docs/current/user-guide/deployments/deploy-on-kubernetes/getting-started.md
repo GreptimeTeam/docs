@@ -1,19 +1,25 @@
 # 立即开始
 
-:::warning
-这个指南仅用于演示目的。请勿在生产环境中使用此设置。
+在该指南中，你将学会如何使用 GreptimeDB Operator 在 Kubernetes 上部署 GreptimeDB 集群。
+
+:::note
+以下输出可能会因 Helm chart 版本和具体环境的不同而有细微差别。
 :::
 
-## Prerequisites
+## 前置条件
 
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
 - [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) >= v0.20.0
 
-## 步骤 1：创建一个测试 Kubernetes 集群
+## 创建一个测试 Kubernetes 集群
 
-目前有很多方法可以创建一个用于测试的 Kubernetes 集群。在本指南中，我们将使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 来创建一个本地 Kubernetes 集群。
+:::warning
+不要在生产环境中使用 `kind`。建议使用托管的 Kubernetes 服务，如 [Amazon EKS](https://aws.amazon.com/eks/)、[Google GKE](https://cloud.google.com/kubernetes-engine/) 或 [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/)。
+:::
+
+目前有很多方法可以创建一个用于测试的 Kubernetes 集群。在本指南中，我们将使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 来创建一个本地 Kubernetes 集群。如果你想使用已有的 Kubernetes 集群，可以跳过这一步。
 
 这里是一个使用 `kind` v0.20.0 的示例：
 
@@ -56,15 +62,10 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 </details>
 
-
-## 步骤 2：安装 GreptimeDB Operator
-
-目前我们准备使用 Helm 在 Kubernetes 集群上安装 GreptimeDB Operator。
-
-### 添加 Greptime Helm 仓库
+## 添加 Greptime Helm 仓库
 
 :::note
-中国大陆的用户如有网络访问有问题，可跳过这一步骤，直接参考下一步中使用阿里云 OCI 镜像仓库的方式。
+中国大陆用户如有网络访问问题，可跳过这一步骤并直接参考下一步中使用阿里云 OCI 镜像仓库的方式。采用这一方式将无需手动添加 Helm 仓库。
 :::
 
 ```bash
@@ -72,15 +73,11 @@ helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 ```
 
-你可以运行以下命令查看 Helm 仓库中的 GreptimeDB Operator 版本：
+检查 Greptime Helm 仓库中的 charts：
 
 ```bash
 helm search repo greptime
 ```
-
-:::note
-以下输出可能会随着 Chart 版本的不同而有所不同。
-:::
 
 <details>
   <summary>预期输出</summary>
@@ -92,7 +89,13 @@ greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for depl
 ```
 </details>
 
+## 安装和验证 GreptimeDB Operator
+
+现在我们准备使用 Helm 在 Kubernetes 集群上安装 GreptimeDB Operator。
+
 ### 安装 GreptimeDB Operator
+
+[GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) 是一个用于管理 GreptimeDB 集群生命周期的 Kubernetes operator。
 
 让我们在 `greptimedb-admin` 命名空间中安装最新版本的 GreptimeDB Operator：
 
@@ -100,15 +103,11 @@ greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for depl
 helm install greptimedb-operator greptime/greptimedb-operator -n greptimedb-admin --create-namespace
 ```
 
-:::note
-以下输出可能会随着 Chart 版本的不同而有所不同。
-:::
-
 <details>
   <summary>预期输出</summary>
 ```bash
 NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
+LAST DEPLOYED: Tue Oct 29 18:40:10 2024
 NAMESPACE: greptimedb-admin
 STATUS: deployed
 REVISION: 1
@@ -123,37 +122,34 @@ NOTES:
 Installed components:
 * greptimedb-operator
 
-The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.NAME: greptimedb-operator
-LAST DEPLOYED: Mon Oct 28 16:46:27 2024
-NAMESPACE: greptimedb-admin
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-***********************************************************************
-Welcome to use greptimedb-operator
-Chart version: 0.2.9
-GreptimeDB Operator version: 0.1.3-alpha.1
-***********************************************************************
-
-Installed components:
-* greptimedb-operator
-
 The greptimedb-operator is starting, use `kubectl get deployments greptimedb-operator -n greptimedb-admin` to check its status.
 ```
 </details>
 
 :::note
-中国大陆的用户如有网络访问有问题，可直接使用阿里云 OCI 镜像仓库的方式安装 GreptimeDB Operator：
+中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式安装 GreptimeDB Operator：
 
 ```bash
 helm install greptimedb-operator \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-operator \
-  -n greptimedb-admin --create-namespace
+  -n greptimedb-admin \
+  --create-namespace
 ```
 
 此时我们也将镜像仓库设置为 Greptime 官方的阿里云镜像仓库。
+:::
+
+:::note
+我们还可以直接使用 `kubectl` 和 `bundle.yaml` 来安装最新版本的 GreptimeDB Operator：
+
+```bash
+kubectl apply -f \
+  https://github.com/GreptimeTeam/greptimedb-operator/releases/latest/download/bundle.yaml \
+  --server-side
+```
+
+这种方式仅适用于在测试环境快速部署 GreptimeDB Operator，不建议在生产环境中使用。
 :::
 
 ### 验证 GreptimeDB Operator 安装
@@ -188,26 +184,9 @@ greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
 
 GreptimeDB Operator 将会使用 `greptimedbclusters.greptime.io` and `greptimedbstandalones.greptime.io` 这两个 CRD 来管理 GreptimeDB 集群和单机实例。
 
-## 步骤 3：安装 etcd 集群
+## 安装 etcd 集群
 
-
-GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bitnami 的 etcd Helm chart 来安装一个 etcd 集群。
-
-:::note
-中国大陆的用户如有网络访问有问题，可直接使用阿里云 OCI 镜像仓库的方式安装 etcd 集群：
-
-```bash
-helm install \
-  etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
-  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set image.tag=3.5.12 \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
-```
-:::
+GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bitnami 的 etcd Helm [chart](https://hub.docker.com/r/bitnami/etcd) 来安装一个 etcd 集群。
 
 ```bash
 helm install \
@@ -265,7 +244,7 @@ WARNING: There are "resources" sections in the chart not set. Using "resourcesPr
 当 etcd 集群准备好后，你可以使用以下命令检查 Pod 的状态：
 
 ```bash
-kubectl get pods --namespace etcd-cluster -l app.kubernetes.io/instance=etcd
+kubectl get pods -n etcd-cluster -l app.kubernetes.io/instance=etcd
 ```
 
 <details>
@@ -277,6 +256,22 @@ etcd-1   1/1     Running   0          2m8s
 etcd-2   1/1     Running   0          2m8s
 ```
 </details>
+
+:::note
+中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式安装 etcd 集群：
+
+```bash
+helm install \
+  etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set image.tag=3.5.12 \
+  --set replicaCount=3 \
+  --set auth.rbac.create=false \
+  --set auth.rbac.token.enabled=false \
+  --create-namespace \
+  -n etcd-cluster
+```
+:::
 
 你可以通过运行以下命令来测试 etcd 集群：
 
@@ -295,7 +290,7 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
-## 步骤 4：安装带监控集成的 GreptimeDB 集群
+## 安装带有监控集成的 GreptimeDB 集群
 
 目前我们已经准备好了 GreptimeDB Operator 和 etcd 集群，现在我们可以部署一个带监控集成的最小 GreptimeDB 集群：
 
@@ -308,7 +303,7 @@ helm install mycluster \
 ```
 
 :::note
-中国大陆的用户如有网络访问有问题，可直接使用阿里云 OCI 镜像仓库的方式安装 GreptimeDB 集群：
+中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式来安装 GreptimeDB 集群：
 
 ```bash
 helm install \
@@ -321,10 +316,6 @@ helm install \
     --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
     -n default
 ```
-:::
-
-:::note
-以下输出可能会随着 Chart 版本的不同而有所不同。
 :::
 
 <details>
@@ -352,15 +343,11 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-You can check the status of the GreptimeDB cluster:
+检查 GreptimeDB 集群的状态：
 
 ```bash
-kubectl --namespace default get greptimedbclusters.greptime.io mycluster
+kubectl -n default get greptimedbclusters.greptime.io mycluster
 ```
-
-:::note
-以下输出可能会随着 Chart 版本的不同而有所不同。
-:::
 
 <details>
   <summary>预期输出</summary>
@@ -373,7 +360,7 @@ mycluster   1          1          1      0          Running    v0.9.5    5m12s
 你可以检查 GreptimeDB 集群的 Pod 状态：
 
 ```bash
-kubectl --namespace default get pods
+kubectl -n default get pods
 ```
 
 <details>
@@ -388,20 +375,20 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。
+正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。
 
-集群的 metrics 和 logs 将会被 [vector](https://github.com/vectordotdev/vector) sidecar 收集，并发送到 standalone 实例(`mycluster-monitor-standalone-0`) 进行存储。
+集群的 metrics 和 logs 将会被 [Vector](https://github.com/vectordotdev/vector) sidecar 收集，并发送到一个 GreptimeDB Standalone 实例 (`mycluster-monitor-standalone-0`) 进行存储。
 
 Grafana dashboard 也被部署用于可视化集群的监控。
 
-## 步骤 5：探索 GreptimeDB 集群
+## 探索 GreptimeDB 集群
 
 ### 访问 GreptimeDB 集群
 
-你可以通过端口转发前端服务来访问 GreptimeDB 集群：
+你可以通过使用 `kubectl port-forward` 命令转发 frontend 服务来访问 GreptimeDB 集群：
 
 ```bash
-kubectl --namespace default port-forward svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
+kubectl -n default port-forward svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
 ```
 
 <details>
@@ -418,33 +405,31 @@ Forwarding from [::1]:4003 -> 4003
 ```
 </details>
 
-:::note
-
-如果你想将服务暴露给公共网络，你可以使用 `kubectl port-forward` 命令并使用 `--address` 选项：
+:::warning
+如果你想将服务暴露给公网访问，可以使用带有 `--address` 选项的 `kubectl port-forward` 命令：
 
 ```bash
-kubectl --namespace default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
+kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
 ```
+
+在将服务暴露给公网访问之前，请确保你已经配置了适当的安全设置。
 :::
 
 打开浏览器并访问 `http://localhost:4000/dashboard` 来访问 [GreptimeDB Dashboard](https://github.com/GrepTimeTeam/dashboard)。
-
 
 如果你想使用其他工具如 `mysql` 或 `psql` 来连接 GreptimeDB 集群，你可以参考 [快速入门](/getting-started/quick-start.md)。
 
 ### 访问 Grafana dashboard
 
-你可以通过端口转发 Grafana 服务来访问 Grafana 服务：
+你可以使用 `kubectl port-forward` 命令转发 Grafana 服务：
 
 ```bash
-kubectl --namespace default port-forward svc/mycluster-grafana 18080:80
+kubectl -n default port-forward svc/mycluster-grafana 18080:80
 ```
 
 然后，打开浏览器并访问 `http://localhost:18080` 来访问 Grafana dashboard。默认的用户名和密码是 `admin` 和 `gt-operator`：
 
 ![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
-
-There are three dashboards available:
 
 目前有三个可用的 Dashboard：
 
@@ -452,7 +437,7 @@ There are three dashboards available:
 - **GreptimeDB Cluster Logs**: 用于显示 GreptimeDB 集群的日志；
 - **GreptimeDB Cluster Slow Queries**: 用于显示 GreptimeDB 集群的慢查询；
 
-## 步骤 6：清理
+## 清理
 
 ### 停止端口转发
 
@@ -467,7 +452,7 @@ pkill -f kubectl port-forward
 可以使用以下命令卸载 GreptimeDB 集群：
 
 ```bash
-helm --namespace default uninstall mycluster
+helm -n default uninstall mycluster
 ```
 
 ### 删除 PVCs
@@ -475,8 +460,8 @@ helm --namespace default uninstall mycluster
 为了安全起见，PVCs 默认不会被删除。如果你想删除 PV 数据，你可以使用以下命令：
 
 ```bash
-kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-datanode
-kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
+kubectl -n default delete pvc -l app.greptime.io/component=mycluster-datanode
+kubectl -n default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
 ```
 
 ### 清理 etcd 数据
@@ -484,7 +469,7 @@ kubectl --namespace default delete pvc -l app.greptime.io/component=mycluster-mo
 你可以使用以下命令清理 etcd 集群：
 
 ```bash
-kubectl --namespace etcd-cluster exec etcd-0 -- etcdctl del "" --from-key=true
+kubectl -n etcd-cluster exec etcd-0 -- etcdctl del "" --from-key=true
 ```
 
 ### 删除 Kubernetes 集群

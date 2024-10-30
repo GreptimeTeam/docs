@@ -132,6 +132,8 @@ kubectl apply -f \
   https://github.com/GreptimeTeam/greptimedb-operator/releases/latest/download/bundle.yaml \
   --server-side
 ```
+
+This method is only suitable for quickly deploying GreptimeDB Operator in the test environments and is not recommended for production use.
 :::
 
 ### Verify the GreptimeDB Operator installation
@@ -330,9 +332,9 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-As you can see, we create a minimum GreptimeDB cluster with 1 frontend, 1 datanode, and 1 metasrv. 
+As you can see, we create a minimum GreptimeDB cluster with 1 frontend, 1 datanode, and 1 metasrv. For more information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md).
 
-The cluster metrics and logs will be collected by the [vector](https://github.com/vectordotdev/vector) sidecar and sent to the standalone instance(`mycluster-monitor-standalone-0`) for monitoring.
+The cluster metrics and logs will be collected by the [Vector](https://github.com/vectordotdev/vector) sidecar and sent to the GreptimeDB standalone instance (`mycluster-monitor-standalone-0`) for monitoring.
 
 The Grafana dashboard is also deployed to visualize the metrics from the standalone instance. 
 
@@ -365,7 +367,7 @@ Forwarding from [::1]:4003 -> 4003
 </details>
 
 :::warning
-If you want to expose the service to the public, you can use the kubectl port-forward command with the `--address` option:
+If you want to expose the service to the public, you can use the `kubectl port-forward` command with the `--address` option:
 
 ```bash
 kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:4000 4001:4001 4002:4002 4003:4003
@@ -427,7 +429,7 @@ kubectl -n default delete pvc -l app.greptime.io/component=mycluster-datanode
 kubectl -n default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
 ```
 
-### Clean up the etcd cluster
+### Cleanup the etcd cluster
 
 You can use the following command to clean up the etcd cluster:
 
