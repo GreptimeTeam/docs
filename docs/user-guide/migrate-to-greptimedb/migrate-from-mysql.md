@@ -32,6 +32,8 @@ The time index is best set to the natural timestamp when the data is generated, 
    commonly queried. The values in primary key columns are labels attached to the collected sources, generally used to
    describe a particular characteristic of these sources. Primary key columns are indexed, making queries on them
    performant.
+   > Note that in GreptimeDB, "primary key" and "tag" are used interchangeably. Please refer to
+   our "[data model](/user-guide/concepts/data-model.md)" for more details.
 
 Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
 right data types and "ttl" or "compaction" options, etc.
