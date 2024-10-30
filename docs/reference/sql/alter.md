@@ -13,6 +13,7 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | RENAME name
+    | SET <option_name>=<option_value> [, ...]
    ]
 ```
 
@@ -64,6 +65,17 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
 The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+
+### Alter table options
+
+`ALTER TABLE` statements can also be used to change the options of tables. 
+
+Currently following options are supported:
+- `ttl`: the retention time of data in table
+
+```sql
+ALTER TABLE monitor SET 'ttl'='1d';
+```
 
 ### Rename table
 
