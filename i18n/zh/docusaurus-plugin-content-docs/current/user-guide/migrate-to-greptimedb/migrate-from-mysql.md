@@ -17,10 +17,14 @@
 当你为 GreptimeDB 编写创建表的 SQL 时，首先请了解其“[数据模型](/user-guide/concepts/data-model.md)”。然后，在创建表的
 SQL 中请考虑以下几点：
 
-1. 由于 time index  列在表创建后无法更改，所以你需要仔细选择 time index 列。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用
-   `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
-2. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕， time index 的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql)找到最适合的时间戳类型。
-3. 根据您的查询模式选择最适合的主键列。主键列存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特征。主键列具有索引，所以使用主键列的查询具备良好的性能。
+1. 由于 time index 列在表创建后无法更改，所以你需要仔细选择 time index
+   列。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。例如，在 IOT
+   场景中，你可以使用传感器采集数据时的时间作为 time index；或者在可观测场景中使用事件的发生时间。
+2. 不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用 `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
+3. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕，time index
+   的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql)
+   找到最适合的时间戳类型。
+4. 根据您的查询模式选择最适合的主键列。主键列存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特征。主键列具有索引，所以使用主键列的查询具备良好的性能。
    > 注意在 GreptimeDB 内部，”主键” 和 “Tag”
    具有相同的含义。更多细节请参考“[数据模型](/user-guide/concepts/data-model.md)”。
 
