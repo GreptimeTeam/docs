@@ -1,0 +1,35 @@
+name: Weekly GitHub Issue Notifier
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Run every Monday at 2:00 AM UTC
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - run: pnpm install
+
+      - name: Run the notifier script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for API access
+          SLACK_ISSUE_NOTIFY_WEBHOOK_URL: ${{ vars.SLACK_ISSUE_NOTIFY_WEBHOOK_URL }}  # Slack webhook URL
+          DEVELOPER_MANAGER_SLACK_ID: ${{ vars.DEVELOPER_MANAGER_SLACK_ID }}  # Slack ID of the manager
+          GITHUBID_SLACKID_MAPPING: ${{ vars.GITHUBID_SLACKID_MAPPING }}  # JSON string mapping GitHub to Slack usernames
+        run: node .github/scripts/issue-notification.js
+
