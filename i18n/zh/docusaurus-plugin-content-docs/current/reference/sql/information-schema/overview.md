@@ -53,4 +53,4 @@
 | [`RUNTIME_METRICS`](./runtime-metrics.md)| 提供了系统运行时指标。|
 | [`CLUSTER_INFO`](./cluster-info.md)| 提供了集群的节点拓扑信息。|
 | [`FLOWS`](./flows.md) | 提供 Flow 相关信息。|
-  
+| [`PROCEDURE_INFO`](./procedure-info.md) | 提供 Procedure 相关信息。|
