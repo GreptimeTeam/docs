@@ -41,14 +41,14 @@ GreptimeDB。如果需要完整迁移所有历史数据，请按照接下来的�
 
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) 是一个常用的、从 PostgreSQL 导出数据的工具。使用
 pg_dump，我们可以从 PostgreSQL 中导出后续可直接导入到 GreptimeDB 的数据。例如，如果我们想要从 PostgreSQL 的 database
-`postgres` 中导出两个 schema `db1` 和 `db2`，我们可以使用以下命令：
+`postgres` 中导出以 `db` 开头的 schema，我们可以使用以下命令：
 
 ```bash
 pg_dump -h127.0.0.1 -p5432 -Upostgres -ax --column-inserts -n 'db*' postgres | grep -v "^SE" > /path/to/output.sql
 ```
 
-替换 `-h`、`-p` 和 `-U` 参数为 PostgreSQL 服务的正确值。`-n` 参数用于指定要导出的 schema。将 database 放在命令最后。注意这里我们将
-pg_dump 的输出经过了一个特殊的 `grep` 命令以过滤掉不需要的 "`SET`" 和 "`SELECT`" 行。最终输出将写入 `/path/to/output.sql`
+替换 `-h`、`-p` 和 `-U` 参数为 PostgreSQL 服务的正确值。`-n` 参数用于指定要导出的 schema。数据库 `postgres` 被放在了 `pg_dump` 命令的最后。注意这里我们将
+pg_dump 的输出经过了一个特殊的 `grep` 命令以过滤掉不需要的 `SET` 和 `SELECT` 行。最终输出将写入 `/path/to/output.sql`
 文件。
 
 `/path/to/output.sql` 文件应该具有如下内容：
@@ -98,8 +98,7 @@ GreptimeDB。继续上面的示例，假设数据导出到文件 `/path/to/outpu
 psql -h127.0.0.1 -p4003 -d public -f /path/to/output.sql
 ```
 
-替换 `-h` 和 `-p` 参数为你的 GreptimeDB 服务的值。`-d` 参数是为 psql 指定 database。为使 psql 能连接上 GreptimeDB，`-d`
-参数应固定为 "public"。添加 `-a` 以查看详细的执行结果，或使用 `-s` 进入单步执行模式。
+替换 `-h` 和 `-p` 参数为你的 GreptimeDB 服务的值。psql 命令中的 `-d` 参数用于指定数据库，该参数不能省略，`-d` 的值 `public` 是 GreptimeDB 默认使用的数据库。你还可以添加 `-a` 以查看详细的执行结果，或使用 `-s` 进入单步执行模式。
 
 总结一下，数据迁移步骤如下图所示：
 

@@ -57,7 +57,7 @@ steps.
 
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) is a commonly used tool to export data from
 PostgreSQL. Using it, we can export the data that can be later imported into GreptimeDB directly. For example, if we
-want to export two schemas, `db1` and `db2` in the database `postgres` from PostgreSQL, we can use the following
+want to export schemas whose names start with `db` in the database `postgres` from PostgreSQL, we can use the following
 command:
 
 ```bash
@@ -65,8 +65,8 @@ pg_dump -h127.0.0.1 -p5432 -Upostgres -ax --column-inserts --no-comments -n 'db*
 ```
 
 Replace the `-h`, `-p` and `-U` flags with the appropriate values for your PostgreSQL server. The `-n` flag is used to
-specify the schemas to be exported. Add the database in the end. Note that we pipe the pg_dump output through a special
-`grep`, to remove some unnecessary "`SET`" or "`SELECT`" lines. The final output will be written to the
+specify the schemas to be exported. And the database `postgres` is at the end of the `pg_dump` command line. Note that we pipe the `pg_dump` output through a special
+`grep`, to remove some unnecessary `SET` or `SELECT` lines. The final output will be written to the
 `/path/to/output.sql` file.
 
 The content in the `/path/to/output.sql` file should be like this:
@@ -117,8 +117,7 @@ we can use the following command to import the data into GreptimeDB:
 psql -h127.0.0.1 -p4003 -d public -f /path/to/output.sql
 ```
 
-Replace the `-h` and `-p` flags with the appropriate values for your GreptimeDB server. The `-d` flag is the database to
-use for psql. For psql to connecting to GreptimeDB, it should be fixed to "public". Add `-a` to the end to see every
+Replace the `-h` and `-p` flags with the appropriate values for your GreptimeDB server. The `-d` of the psql command is used to specify the database and cannot be omitted. The value `public` of `-d` is the default database used by GreptimeDB. You can also add `-a` to the end to see every
 executed line, or `-s` for entering the single-step mode.
 
 To summarize, data migration steps can be illustrate as follows:
