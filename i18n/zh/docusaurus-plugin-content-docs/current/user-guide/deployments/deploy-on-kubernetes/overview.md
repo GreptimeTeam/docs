@@ -1,31 +1,15 @@
 # 概述
 
-本指南提供了在 Kubernetes 上部署 GreptimeDB 集群的步骤。
+## GreptimeDB Operator
 
-## 前置条件
+[GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) 采用 [Operator 模式](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)运行于 Kubernetes 中，用于自动化管理 GreptimeDB 资源。基于 GreptimeDB Operator，你可以很轻松地部署、升级和管理 GreptimeDB 集群和单机实例。无论是私有还是公有云部署，GreptimeDB Operator 都将快速部署和扩容 GreptimeDB 变得简单易行。
 
-- Kubernetes >= 1.18
+我们**强烈建议**使用 GreptimeDB Operator 在 Kubernetes 上部署 GreptimeDB。
 
-  :::tip 注意
-  你可以使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 或 [Minikube](https://minikube.sigs.k8s.io/docs/start/) 创建一个用于测试的本地 Kubernetes 集群。
-  :::
+## 使用 GreptimeDB Operator 来管理 GreptimeDB
 
-- [Helm v3](https://helm.sh/docs/intro/install/)：Kubernetes 的包管理器。
+你可以将 [立即开始](./getting-started.md) 作为你的第一篇指南以了解整体情况。在该指南中，我们提供了用于在 Kubernetes 上部署 GreptimeDB 集群的完整过程。
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)：用于与 Kubernetes 集群交互的命令行工具。
+在完成**立即开始**章节后，你可以参考以下文档以获取有关生产部署的更多详细信息。
 
-## 组件
-
-在 Kubernetes 上部署 GreptimeDB 涉及以下组件：
-
-- GreptimeDB Operator：帮助工程师在 Kubernetes 上有效地管理 GreptimeDB 集群。
-- GreptimeDB 集群：主数据库集群。
-- etcd 集群：etcd 是用于 GreptimeDB 集群元数据存储的一致且高可用的键值存储。
-
-## 下一步
-
-请按照以下步骤继续操作：
-
-- [部署 GreptimeDB Operator](./manage-greptimedb-operator/deploy-greptimedb-operator.md)：本章节指导你安装 GreptimeDB Operator。
-- [部署 GreptimeDB 集群](deploy-greptimedb-cluster.md)：本节介绍了如何在 Kubernetes 上部署 etcd 集群和 GreptimeDB 集群。
-- [销毁集群](destroy-cluster.md)：本节介绍如何卸载 GreptimeDB Operator 和 GreptimeDB 集群。
+- [GreptimeDB Operator 管理](./greptimedb-operator-management.md)
