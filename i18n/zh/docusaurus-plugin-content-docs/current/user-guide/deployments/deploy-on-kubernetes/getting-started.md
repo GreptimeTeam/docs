@@ -307,14 +307,14 @@ helm install mycluster \
 
 ```bash
 helm install \
-  greptimedb-cluster oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
-    --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-    --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-    --set grafana.enabled=true \
-    --set grafana.image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-    --set monitoring.enabled=true \
-    --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-    -n default
+  mycluster oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set grafana.enabled=true \
+  --set grafana.image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set monitoring.enabled=true \
+  --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  -n default
 ```
 :::
 
