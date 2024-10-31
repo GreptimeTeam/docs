@@ -126,8 +126,8 @@ helm list -n greptimedb-admin
 <details>
 <summary>Expected Output</summary>
 ```bash
-NAME               	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART                    	APP VERSION
-greptimedb-operator	default  	2       	2024-10-28 19:30:52.62097 +0800 CST 	deployed	greptimedb-operator-0.2.9	0.1.3-alpha.1
+NAME                    NAMESPACE               REVISION        UPDATED                                 STATUS          CHART                           APP VERSION  
+greptimedb-operator     greptimedb-admin        1               2024-10-30 17:46:45.570975 +0800 CST    deployed        greptimedb-operator-0.2.9       0.1.3-alpha.1
 ```
 </details>
 
@@ -170,7 +170,7 @@ image:
   # -- The image pull secrets
   pullSecrets: []
 
-replicas: 2
+replicas: 1
 
 resources:
   limits:
