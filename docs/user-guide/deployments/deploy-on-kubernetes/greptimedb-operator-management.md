@@ -149,7 +149,7 @@ greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
 ```
 </details>
 
-By default, the GreptimeDB Operator chart will manage the installation and upgrade of the CRDs and the users don't need to manage them manually.
+By default, the GreptimeDB Operator chart will manage the installation and upgrade of the CRDs and the users don't need to manage them manually. If you want to know the specific definitions of these two types of CRD, you can refer to the GreptimeDB Operator [API documentation](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md).
 
 ### Configuration
 
