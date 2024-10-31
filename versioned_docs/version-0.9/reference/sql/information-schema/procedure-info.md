@@ -24,7 +24,7 @@ DESC TABLE INFORMATION_SCHEMA.PROCEDURE_INFO;
 
 Fields in the `PROCEDURE_INFO` table are described as follows:
 
-- `procedure`: The ID of the Procedure.
+- `procedure_id`: The ID of the Procedure.
 - `procedure_type`: The type of the Procedure.
 - `start_time`: Timestamp indicating when the procedure started.
 - `end_time`: Timestamp indicating when the procedure ended.
