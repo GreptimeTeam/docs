@@ -300,9 +300,7 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-When the `monitoring` option is enabled, the Helm chart configuration will use `mycluster` and `default` as the default cluster name and namespace.
-
-If you want to modify the default cluster name and namespace, you can create a `values.yaml` file like this:
+When the `monitoring` option is enabled, the Helm chart configuration will use `mycluster` and `default` as the default cluster name and namespace in grafana datasources configuration. If you want to monitor clusters with a different name or a different namespace, you can create a `values.yaml` file like this:
 
 ```yaml
 grafana:
@@ -321,6 +319,12 @@ grafana:
           access: proxy
           database: public
 ```
+
+The above configuration will create the default datasources for the GreptimeDB cluster metrics and logs in the Grafana dashboard:
+
+- `greptimedb-metrics`: The metrics of the cluster are stored in the standalone monitoring database and exposed in Prometheus protocol (`type: prometheus`);
+
+- `greptimedb-logs`: The logs of the cluster are stored in the standalone monitoring database and exposed in MySQL protocol (`type: mysql`). It uses the `public` database by default;
 
 Then replace `<cluster>` and `<namespace>` with your desired values and install the GreptimeDB cluster using the following command (please note that `<cluster>` and `<namespace>` in the command also need to be replaced):
 

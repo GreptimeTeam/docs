@@ -63,7 +63,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 </details>
 
 :::note
-中国大陆用户如有网络访问问题，可使用 Greptime 提供的 `kindest/node:v1.27.3` 镜像：
+中国大陆用户如有网络访问问题，可使用 Greptime 提供的位于阿里云镜像仓库的 `kindest/node:v1.27.3` 镜像：
 
 ```bash
 kind create cluster --image greptime-registry.cn-hangzhou.cr.aliyuncs.com/kindest/node:v1.27.3
@@ -357,9 +357,7 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-在启用 `monitoring` 选项时，Helm chart 的配置会默认分别使用 `mycluster` 和 `default` 作为集群名和命名空间。
-
-如果你想修改默认的集群名和命名空间，可以创建如下的 `values.yaml` 文件：
+当启用 `monitoring` 选项时，Helm chart 配置将在 grafana 数据源配置中使用 `mycluster` 和 `default` 作为默认的集群名称和命名空间。如果你想要监控具有不同名称或不同命名空间的集群，可以创建一个如下所示的 `values.yaml` 文件：
 
 ```yaml
 grafana:
@@ -378,6 +376,12 @@ grafana:
           access: proxy
           database: public
 ```
+
+上述配置将在 Grafana dashboard 中为 GreptimeDB 集群的指标和日志创建默认的数据源：
+
+- `greptimedb-metrics`：集群的指标存储在独立的监控数据库中，并对外暴露为 Prometheus 协议（`type: prometheus`）；
+
+- `greptimedb-logs`：集群的日志存储在独立的监控数据库中，并对外暴露为 MySQL 协议（`type: mysql`）。默认使用 `public` 数据库；
 
 然后将上面的 `values.yaml` 中的 `<cluster>` 和 `<namespace>` 替换为你想要的值，并使用以下命令安装 GreptimeDB 集群（请注意命令中的 `<cluster>` 和 `<namespace>` 同样需要替换）：
 
