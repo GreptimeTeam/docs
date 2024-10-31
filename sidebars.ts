@@ -120,7 +120,14 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/opentsdb',
           ],
         },
-        { type: 'category', label: 'Migrate to GreptimeDB', items: ['user-guide/migrate-to-greptimedb/migrate-from-influxdb'] },
+        {
+          type: 'category',
+          label: 'Migrate to GreptimeDB',
+          items: [
+            'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
+            'user-guide/migrate-to-greptimedb/migrate-from-mysql',
+          ],
+        },
         {
           type: 'category',
           label: 'Continuous Aggregation',
