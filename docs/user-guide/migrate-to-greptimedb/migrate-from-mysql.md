@@ -30,12 +30,10 @@ your create table SQL:
 3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
    column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
    data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
-4. Choose the most fit primary key columns based on your query patterns. Primary key columns store the metadata that is
-   commonly queried. The values in primary key columns are labels attached to the collected sources, generally used to
-   describe a particular characteristic of these sources. Primary key columns are indexed, making queries on them
+4. Choose the most fit tag columns based on your query patterns. The tag columns store the metadata that is
+   commonly queried. The values in the tag columns are labels attached to the collected sources, generally used to
+   describe a particular characteristic of these sources. The tag columns are indexed, making queries on them
    performant.
-   > Note that in GreptimeDB, "primary key" and "tag" are used interchangeably. Please refer to
-   our "[data model](/user-guide/concepts/data-model.md)" for more details.
 
 Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
 right data types and "ttl" or "compaction" options, etc.

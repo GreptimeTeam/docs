@@ -24,9 +24,7 @@ SQL 中请考虑以下几点：
 3. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕，time index
    的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql)
    找到最适合的时间戳类型。
-4. 根据您的查询模式选择最适合的主键列。主键列存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特征。主键列具有索引，所以使用主键列的查询具备良好的性能。
-   > 注意在 GreptimeDB 内部，”主键” 和 “Tag”
-   具有相同的含义。更多细节请参考“[数据模型](/user-guide/concepts/data-model.md)”。
+4. 根据您的查询模式选择最适合的 tag 列。tag 列存储经常被查询的元数据，其中的值是数据源的标签，通常用于描述数据的特征。tag 列具有索引，所以使用 tag 列的查询具备良好的性能。
 
 请参考[CREATE](/reference/sql/create.md) SQL 文档，了解如何选择正确的数据类型以及“ttl”或“compaction”选项等。
 
