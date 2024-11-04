@@ -738,3 +738,19 @@ rpc_runtime_size = 8
 | rpc_hostname     | String  | Hostname of this node.                                  |
 | rpc_addr         | String  | gRPC server address, `"127.0.0.1:3001"` by default.     |
 | rpc_runtime_size | Integer | The number of gRPC server worker threads, 8 by default. |
+
+### Frontend-only configuration
+
+```toml
+[datanode]
+[datanode.client]
+connect_timeout = "1s"
+tcp_nodelay = true
+```
+
+| Key                               | Type   | Default | Description                                    |
+|-----------------------------------|--------|---------|------------------------------------------------|
+| `datanode`                        | --     | --      | Datanode options.                              |
+| `datanode.client`                 | --     | --      | Datanode client options.                       |
+| `datanode.client.connect_timeout` | String | `1s`    | Connect server timeout.                        |
+| `datanode.client.tcp_nodelay`     | Bool   | `true`  | `TCP_NODELAY` option for accepted connections. |
