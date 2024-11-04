@@ -562,7 +562,7 @@ retry_interval = "3s"
 |----------------------------|--------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `heartbeat`                | --     | --      | --                                                                                                                                                 |
 | `heartbeat.interval`       | String | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                            |
-| `heartbeat.retry_interval` | String | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation. |
+| `heartbeat.retry_interval` | String | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
 
 ### Metasrv-only configuration
 
