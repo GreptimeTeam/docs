@@ -539,6 +539,20 @@ mode = "distributed"
 mode = "standalone"
 ```
 
+### 心跳配置
+
+```toml
+[heartbeat]
+interval = "3s"
+retry_interval = "3s"
+```
+
+| 键                          | 类型  | 默认值  | 描述                                                       |
+|----------------------------|-----|------|----------------------------------------------------------|
+| `heartbeat`                | --  | --   | --                                                       |
+| `heartbeat.interval`       | 字符串 | `3s` | 向 Metasrv 发送心跳信息的时间间隔                                    |
+| `heartbeat.retry_interval` | 字符串 | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的。） |
+
 ### 仅限于 Metasrv 的配置
 
 ```toml
