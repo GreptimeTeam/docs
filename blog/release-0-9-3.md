@@ -83,7 +83,7 @@ Release date: September 06, 2024
 
 * perf: set simple filter on primary key columns to exact filter by [@waynexia](https://github.com/waynexia) in [#4564](https://github.com/GreptimeTeam/greptimedb/pull/4564)
 * perf: optimize series divide algo by [@waynexia](https://github.com/waynexia) in [#4603](https://github.com/GreptimeTeam/greptimedb/pull/4603)
-* perf: acclerate scatter query by [@waynexia](https://github.com/waynexia) in [#4607](https://github.com/GreptimeTeam/greptimedb/pull/4607)
+* perf: accelerate scatter query by [@waynexia](https://github.com/waynexia) in [#4607](https://github.com/GreptimeTeam/greptimedb/pull/4607)
 * perf(flow): Map&Reduce Operator use batch to reduce alloc by [@discord9](https://github.com/discord9) in [#4567](https://github.com/GreptimeTeam/greptimedb/pull/4567)
 
 ### ⚙️ Miscellaneous Tasks

@@ -709,3 +709,19 @@ rpc_runtime_size = 8
 | rpc_hostname     | 字符串 | 该 `datanode` 的 Hostname。                 |
 | rpc_addr         | 字符串 | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
 | rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+
+### 仅限于 `Frontend` 的配置
+
+```toml
+[datanode]
+[datanode.client]
+connect_timeout = "1s"
+tcp_nodelay = true
+```
+
+| Key                               | Type | Default | Description             |
+|-----------------------------------|------|---------|-------------------------|
+| `datanode`                        | --   | --      |                         |
+| `datanode.client`                 | --   | --      | Datanode 客户端选项。         |
+| `datanode.client.connect_timeout` | 字符串  | `1s`    | 连接服务器超时。                |
+| `datanode.client.tcp_nodelay`     | 布尔值  | `true`  | 接受连接的 `TCP_NODELAY` 选项。 |
