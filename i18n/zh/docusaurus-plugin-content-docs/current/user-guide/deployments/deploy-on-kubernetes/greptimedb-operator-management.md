@@ -149,7 +149,7 @@ greptimedbstandalones.greptime.io   2024-10-28T08:46:27Z
 ```
 </details>
 
-默认情况下，GreptimeDB Operator chart 将管理 CRDs 的安装和升级，用户不需要手动管理它们。
+默认情况下，GreptimeDB Operator chart 将管理 CRDs 的安装和升级，用户不需要手动管理它们。如果你想了解这两类 CRD 的具体定义，可参考 GreptimeDB Operator 的 [API 文档](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md)。
 
 ### 配置
 

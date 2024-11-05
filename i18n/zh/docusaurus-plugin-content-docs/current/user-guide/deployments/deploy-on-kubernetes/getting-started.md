@@ -16,7 +16,7 @@
 ## 创建一个测试 Kubernetes 集群
 
 :::warning
-不要在生产环境中使用 `kind`。建议使用托管的 Kubernetes 服务，如 [Amazon EKS](https://aws.amazon.com/eks/)、[Google GKE](https://cloud.google.com/kubernetes-engine/) 或 [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/)。
+不建议在生产环境或性能测试中使用 `kind`。如有这类需求建议使用公有云托管的 Kubernetes 服务，如 [Amazon EKS](https://aws.amazon.com/eks/)、[Google GKE](https://cloud.google.com/kubernetes-engine/) 或 [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/)，或者自行搭建生产级 Kubernetes 集群。
 :::
 
 目前有很多方法可以创建一个用于测试的 Kubernetes 集群。在本指南中，我们将使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 来创建一个本地 Kubernetes 集群。如果你想使用已有的 Kubernetes 集群，可以跳过这一步。
@@ -62,11 +62,21 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 </details>
 
+:::note
+中国大陆用户如有网络访问问题，可使用 Greptime 提供的位于阿里云镜像仓库的 `kindest/node:v1.27.3` 镜像：
+
+```bash
+kind create cluster --image greptime-registry.cn-hangzhou.cr.aliyuncs.com/kindest/node:v1.27.3
+```
+:::
+
 ## 添加 Greptime Helm 仓库
 
 :::note
 中国大陆用户如有网络访问问题，可跳过这一步骤并直接参考下一步中使用阿里云 OCI 镜像仓库的方式。采用这一方式将无需手动添加 Helm 仓库。
 :::
+
+我们提供了 GreptimeDB Operator 和 GreptimeDB 集群的[官方 Helm 仓库](https://github.com/GreptimeTeam/helm-charts)。你可以通过运行以下命令来添加仓库：
 
 ```bash
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
@@ -131,8 +141,8 @@ The greptimedb-operator is starting, use `kubectl get deployments greptimedb-ope
 
 ```bash
 helm install greptimedb-operator \
-  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-operator \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   -n greptimedb-admin \
   --create-namespace
 ```
@@ -157,7 +167,7 @@ kubectl apply -f \
 检查 GreptimeDB Operator 的状态：
 
 ```bash
-kubectl get pods --namespace greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
+kubectl get pods -n greptimedb-admin -l app.kubernetes.io/instance=greptimedb-operator
 ```
 
 <details>
@@ -189,8 +199,8 @@ GreptimeDB Operator 将会使用 `greptimedbclusters.greptime.io` and `greptimed
 GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bitnami 的 etcd Helm [chart](https://hub.docker.com/r/bitnami/etcd) 来安装一个 etcd 集群。
 
 ```bash
-helm install \
-  etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+helm install etcd \
+  oci://registry-1.docker.io/bitnamicharts/etcd \
   --version 10.2.12 \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
@@ -261,8 +271,8 @@ etcd-2   1/1     Running   0          2m8s
 中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式安装 etcd 集群：
 
 ```bash
-helm install \
-  etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+helm install etcd \
+  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set image.tag=3.5.12 \
   --set replicaCount=3 \
@@ -276,7 +286,7 @@ helm install \
 你可以通过运行以下命令来测试 etcd 集群：
 
 ```bash
-kubectl --namespace etcd-cluster \
+kubectl -n etcd-cluster \
   exec etcd-0 -- etcdctl endpoint health \
   --endpoints=http://etcd-0.etcd-headless.etcd-cluster.svc.cluster.local:2379,http://etcd-1.etcd-headless.etcd-cluster.svc.cluster.local:2379,http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379
 ```
@@ -294,6 +304,10 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 
 目前我们已经准备好了 GreptimeDB Operator 和 etcd 集群，现在我们可以部署一个带监控集成的最小 GreptimeDB 集群：
 
+:::warning
+本文档中的默认配置不适用于生产环境，你应该根据自己的需求调整配置。
+:::
+
 ```bash
 helm install mycluster \
   --set monitoring.enabled=true \
@@ -306,8 +320,8 @@ helm install mycluster \
 中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式来安装 GreptimeDB 集群：
 
 ```bash
-helm install \
-  mycluster oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
+helm install mycluster \
+  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set grafana.enabled=true \
@@ -316,6 +330,8 @@ helm install \
   --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   -n default
 ```
+
+如果你使用了不同的集群名称和命名空间，请将 `mycluster` 和 `default` 替换为你的配置。
 :::
 
 <details>
@@ -343,7 +359,47 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-检查 GreptimeDB 集群的状态：
+当启用 `monitoring` 选项时，我们将会在 cluster 所属的命名空间下部署一个名为 `${cluster}-monitor` 的 GreptimeDB Standalone 实例，用于存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB Standalone 实例。
+
+
+当启用 `grafana` 选项时，我们将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB Standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
+
+```yaml
+grafana:
+  datasources:
+    datasources.yaml:
+      datasources:
+        - name: greptimedb-metrics
+          type: prometheus
+          url: http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
+          access: proxy
+          isDefault: true
+
+        - name: greptimedb-logs
+          type: mysql
+          url: ${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002
+          access: proxy
+          database: public
+```
+
+上述配置将在 Grafana dashboard 中为 GreptimeDB 集群的指标和日志创建默认的数据源：
+
+- `greptimedb-metrics`：集群的指标存储在独立的监控数据库中，并对外暴露为 Prometheus 协议（`type: prometheus`）；
+
+- `greptimedb-logs`：集群的日志存储在独立的监控数据库中，并对外暴露为 MySQL 协议（`type: mysql`）。默认使用 `public` 数据库；
+
+然后将上面的 `values.yaml` 中的 `${cluster}` 和 `${namespace}` 替换为你想要的值，并使用以下命令安装 GreptimeDB 集群：
+
+```bash
+helm install ${cluster} \
+  --set monitoring.enabled=true \
+  --set grafana.enabled=true \
+  greptime/greptimedb-cluster \
+  -f values.yaml \
+  -n ${namespace}
+```
+
+当启动集群安装之后，我们可以用如下命令检查 GreptimeDB 集群的状态。若你使用了不同的集群名和命名空间，可将 `default` 和 `mycluster` 替换为你的配置：
 
 ```bash
 kubectl -n default get greptimedbclusters.greptime.io mycluster
@@ -357,7 +413,9 @@ mycluster   1          1          1      0          Running    v0.9.5    5m12s
 ```
 </details>
 
-你可以检查 GreptimeDB 集群的 Pod 状态：
+上面的命令将会显示 GreptimeDB 集群的状态。当 `PHASE` 为 `Running` 时，表示 GreptimeDB 集群已经成功启动。
+
+你还可以检查 GreptimeDB 集群的 Pod 状态：
 
 ```bash
 kubectl -n default get pods
@@ -375,11 +433,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。
-
-集群的 metrics 和 logs 将会被 [Vector](https://github.com/vectordotdev/vector) sidecar 收集，并发送到一个 GreptimeDB Standalone 实例 (`mycluster-monitor-standalone-0`) 进行存储。
-
-Grafana dashboard 也被部署用于可视化集群的监控。
+正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB Standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
 
 ## 探索 GreptimeDB 集群
 
@@ -405,6 +459,12 @@ Forwarding from [::1]:4003 -> 4003
 ```
 </details>
 
+请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令，并将 `${cluster}` 和 `${namespace}` 替换为你的配置：
+
+```bash
+kubectl -n ${namespace} port-forward svc/${cluster}-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
+```
+
 :::warning
 如果你想将服务暴露给公网访问，可以使用带有 `--address` 选项的 `kubectl port-forward` 命令：
 
@@ -427,7 +487,13 @@ kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:40
 kubectl -n default port-forward svc/mycluster-grafana 18080:80
 ```
 
-然后，打开浏览器并访问 `http://localhost:18080` 来访问 Grafana dashboard。默认的用户名和密码是 `admin` 和 `gt-operator`：
+请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令，并将 `${cluster}` 和 `${namespace}` 替换为你的配置：
+
+```bash
+kubectl -n ${namespace} port-forward svc/${cluster}-grafana 18080:80 
+```
+
+接着打开浏览器并访问 `http://localhost:18080` 来访问 Grafana dashboard。默认的用户名和密码是 `admin` 和 `gt-operator`：
 
 ![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
 
@@ -438,6 +504,10 @@ kubectl -n default port-forward svc/mycluster-grafana 18080:80
 - **GreptimeDB Cluster Slow Queries**: 用于显示 GreptimeDB 集群的慢查询；
 
 ## 清理
+
+:::danger
+清理操作将会删除 GreptimeDB 集群的元数据和数据。请确保在继续操作之前已经备份了数据。
+:::
 
 ### 停止端口转发
 
