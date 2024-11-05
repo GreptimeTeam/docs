@@ -49,7 +49,8 @@ Fields in the `REGION_STATISTICS` table are described as follows:
 Retrieve a table's region statistics information as follows:
 
 ```sql
-SELECT r.* FROM REGION_STATISTICS r LEFT JOIN TABLES t on r.table_id = t.table_id WHERE t.table_name = 'system_metrics';
+SELECT r.* FROM REGION_STATISTICS r LEFT JOIN TABLES t on r.table_id = t.table_id \
+WHERE t.table_name = 'system_metrics';
 ```
 
 

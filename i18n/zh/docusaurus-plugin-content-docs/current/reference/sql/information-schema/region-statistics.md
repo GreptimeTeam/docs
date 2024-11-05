@@ -48,7 +48,8 @@ DESC REGION_STATISTICS;
 获取某张表的 Region 统计信息如下：
 
 ```sql
-SELECT r.* FROM REGION_STATISTICS r LEFT JOIN TABLES t on r.table_id = t.table_id WHERE t.table_name = 'system_metrics';
+SELECT r.* FROM REGION_STATISTICS r LEFT JOIN TABLES t on r.table_id = t.table_id \
+WHERE t.table_name = 'system_metrics';
 ```
 
 输出：
