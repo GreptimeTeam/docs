@@ -126,6 +126,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
+            'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
           ],
         },
         {
