@@ -540,7 +540,7 @@ mode = "standalone"
 ```
 
 ### 心跳配置
-
+心跳配置在 `frontend` 和 `datanode` 中可用。
 ```toml
 [heartbeat]
 interval = "3s"

@@ -551,7 +551,7 @@ mode = "standalone"
 ```
 
 ### Heartbeat configuration
-
+Heartbeat configuration is available in `frontend` and `datanode`.
 ```toml
 [heartbeat]
 interval = "3s"
