@@ -322,7 +322,7 @@ const sidebars: SidebarsConfig = {
           items: ['enterprise/deployments/authentication',],
         },
         {
-          type: 'category', 
+          type: 'category',
           label: 'Administration',
           items: [
             {
@@ -393,6 +393,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/views',
                 'reference/sql/information-schema/flows',
                 'reference/sql/information-schema/region-peers',
+                'reference/sql/information-schema/region-statistics',
                 'reference/sql/information-schema/runtime-metrics',
                 'reference/sql/information-schema/cluster-info',
               ],
