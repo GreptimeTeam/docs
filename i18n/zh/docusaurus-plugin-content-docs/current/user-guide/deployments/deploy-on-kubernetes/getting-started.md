@@ -362,7 +362,7 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 当启用 `monitoring` 选项时，我们将会在 cluster 所属的命名空间下部署一个名为 `${cluster}-monitor` 的 GreptimeDB Standalone 实例，用于存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB Standalone 实例。
 
 
-当启用 `grafana` 选项时，我们将会部署一个 Grafana 实例，并配置 Grafana 使用 GreptimeDB Standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
+当启用 `grafana` 选项时，我们将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB Standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
 
 ```yaml
 grafana:
@@ -433,7 +433,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB Standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
+正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB Standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
 
 ## 探索 GreptimeDB 集群
 

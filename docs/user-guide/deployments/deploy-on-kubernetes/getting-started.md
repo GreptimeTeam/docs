@@ -302,7 +302,7 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 
 When the `monitoring` option is enabled, a GreptimeDB Standalone instance named `${cluster}-monitor` will be deployed in the same namespace as the cluster to store monitoring data such as metrics and logs from the cluster. Additionally, we will deploy a [Vector](https://github.com/vectordotdev/vector) sidecar for each pod in the cluster to collect metrics and logs and send them to the GreptimeDB Standalone instance.
 
-When the `grafana` option is enabled, we will deploy a Grafana instance and configure it to use the GreptimeDB Standalone instance as a data source (using both Prometheus and MySQL protocols), allowing us to visualize the GreptimeDB cluster's monitoring data out of the box. By default, Grafana will use `mycluster` and `default` as the cluster name and namespace to create data sources. If you want to monitor clusters with different names or namespaces, you'll need to create different data source configurations based on the cluster names and namespaces. You can create a `values.yaml` file like this:
+When the `grafana` option is enabled, we will deploy a [Grafana](https://grafana.com/) instance and configure it to use the GreptimeDB Standalone instance as a data source (using both Prometheus and MySQL protocols), allowing us to visualize the GreptimeDB cluster's monitoring data out of the box. By default, Grafana will use `mycluster` and `default` as the cluster name and namespace to create data sources. If you want to monitor clusters with different names or namespaces, you'll need to create different data source configurations based on the cluster names and namespaces. You can create a `values.yaml` file like this:
 
 ```yaml
 grafana:
@@ -373,7 +373,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, and 1 metasrv. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md). Additionally, we have deployed a standalone GreptimeDB instance (`mycluster-monitor-standalone-0`) for storing monitoring data and a Grafana instance (`mycluster-grafana-675b64786-ktqps`) for visualizing the cluster's monitoring data.
+As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, and 1 metasrv by default. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md). Additionally, we have deployed a standalone GreptimeDB instance (`mycluster-monitor-standalone-0`) for storing monitoring data and a Grafana instance (`mycluster-grafana-675b64786-ktqps`) for visualizing the cluster's monitoring data.
 
 ## Explore the GreptimeDB cluster
 
