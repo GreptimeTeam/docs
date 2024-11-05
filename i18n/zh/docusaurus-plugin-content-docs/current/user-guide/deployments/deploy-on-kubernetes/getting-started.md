@@ -330,6 +330,8 @@ helm install mycluster \
   --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   -n default
 ```
+
+如果你使用了不同的集群名称和命名空间，请将 `mycluster` 和 `default` 替换为你的配置。
 :::
 
 <details>
@@ -357,7 +359,10 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-当启用 `monitoring` 选项时，Helm chart 配置将在 grafana 数据源配置中使用 `mycluster` 和 `default` 作为默认的集群名称和命名空间。如果你想要监控具有不同名称或不同命名空间的集群，可以创建一个如下所示的 `values.yaml` 文件：
+当启用 `monitoring` 选项时，我们将会部署一个 GreptimeDB Standalone 实例来存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB Standalone 实例。
+
+
+当启用 `grafana` 选项时，我们将会部署一个 Grafana 实例，并配置 Grafana 使用 GreptimeDB Standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
 
 ```yaml
 grafana:
@@ -366,13 +371,13 @@ grafana:
       datasources:
         - name: greptimedb-metrics
           type: prometheus
-          url: http://<cluster>-monitor-standalone.<namespace>.svc.cluster.local:4000/v1/prometheus
+          url: http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
           access: proxy
           isDefault: true
 
         - name: greptimedb-logs
           type: mysql
-          url: <cluster>-monitor-standalone.<namespace>.svc.cluster.local:4002
+          url: ${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002
           access: proxy
           database: public
 ```
@@ -383,18 +388,18 @@ grafana:
 
 - `greptimedb-logs`：集群的日志存储在独立的监控数据库中，并对外暴露为 MySQL 协议（`type: mysql`）。默认使用 `public` 数据库；
 
-然后将上面的 `values.yaml` 中的 `<cluster>` 和 `<namespace>` 替换为你想要的值，并使用以下命令安装 GreptimeDB 集群（请注意命令中的 `<cluster>` 和 `<namespace>` 同样需要替换）：
+然后将上面的 `values.yaml` 中的 `${cluster}` 和 `${namespace}` 替换为你想要的值，并使用以下命令安装 GreptimeDB 集群：
 
 ```bash
-helm install <cluster> \
+helm install ${cluster} \
   --set monitoring.enabled=true \
   --set grafana.enabled=true \
   greptime/greptimedb-cluster \
   -f values.yaml \
-  -n <namespace>
+  -n ${namespace}
 ```
 
-当启动集群安装之后，我们可以用如下命令检查 GreptimeDB 集群的状态。若你使用了不同的集群名和命名空间，可将 `mycluster` 和 `default` 替换为你的配置：
+当启动集群安装之后，我们可以用如下命令检查 GreptimeDB 集群的状态。若你使用了不同的集群名和命名空间，可将 `default` 和 `mycluster` 替换为你的配置：
 
 ```bash
 kubectl -n default get greptimedbclusters.greptime.io mycluster
@@ -428,11 +433,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。
-
-集群的 metrics 和 logs 将会被 [Vector](https://github.com/vectordotdev/vector) sidecar 收集，并发送到一个 GreptimeDB Standalone 实例 (`mycluster-monitor-standalone-0`) 进行存储。
-
-Grafana dashboard 也被部署用于可视化集群的监控。
+正如你所看到的，我们创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB Standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
 
 ## 探索 GreptimeDB 集群
 
@@ -458,10 +459,10 @@ Forwarding from [::1]:4003 -> 4003
 ```
 </details>
 
-请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令（请将 `<cluster>` 和 `<namespace>` 替换为你的配置）：
+请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令，并将 `${cluster}` 和 `${namespace}` 替换为你的配置：
 
 ```bash
-kubectl -n <namespace> port-forward svc/<cluster>-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
+kubectl -n ${namespace} port-forward svc/${cluster}-frontend 4000:4000 4001:4001 4002:4002 4003:4003 
 ```
 
 :::warning
@@ -486,10 +487,10 @@ kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:40
 kubectl -n default port-forward svc/mycluster-grafana 18080:80
 ```
 
-请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令（请将 `<cluster>` 和 `<namespace>` 替换为你的配置）：
+请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令，并将 `${cluster}` 和 `${namespace}` 替换为你的配置：
 
 ```bash
-kubectl -n <namespace> port-forward svc/<cluster>-grafana 18080:80 
+kubectl -n ${namespace} port-forward svc/${cluster}-grafana 18080:80 
 ```
 
 接着打开浏览器并访问 `http://localhost:18080` 来访问 Grafana dashboard。默认的用户名和密码是 `admin` 和 `gt-operator`：
