@@ -300,7 +300,7 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-When the `monitoring` option is enabled, we will deploy a GreptimeDB Standalone instance to store monitoring data like metrics and logs from the cluster. Additionally, we will deploy a [Vector](https://github.com/vectordotdev/vector) sidecar for each pod in the cluster to collect metrics and logs and send them to the GreptimeDB Standalone instance.
+When the `monitoring` option is enabled, a GreptimeDB Standalone instance named `${cluster}-monitor` will be deployed in the same namespace as the cluster to store monitoring data such as metrics and logs from the cluster. Additionally, we will deploy a [Vector](https://github.com/vectordotdev/vector) sidecar for each pod in the cluster to collect metrics and logs and send them to the GreptimeDB Standalone instance.
 
 When the `grafana` option is enabled, we will deploy a Grafana instance and configure it to use the GreptimeDB Standalone instance as a data source (using both Prometheus and MySQL protocols), allowing us to visualize the GreptimeDB cluster's monitoring data out of the box. By default, Grafana will use `mycluster` and `default` as the cluster name and namespace to create data sources. If you want to monitor clusters with different names or namespaces, you'll need to create different data source configurations based on the cluster names and namespaces. You can create a `values.yaml` file like this:
 
