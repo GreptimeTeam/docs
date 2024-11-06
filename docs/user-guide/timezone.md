@@ -3,7 +3,8 @@
 GreptimeDB supports multiple protocols, each with its own method for configuring time zones.
 This guide provides a comprehensive overview of how to set the time zone for different protocols and languages supported by GreptimeDB.
 
-By default, GreptimeDB operates in the UTC 0 time zone. If you need to change the time zone, please follow the instructions specific to your protocol or client.
+By default, GreptimeDB operates in the UTC 0 time zone.
+If you need to change the time zone, please follow the instructions specific to your protocol or client.
 
 ## MySQL client
 
@@ -27,8 +28,7 @@ For more information, please refer to the [HTTP API documentation](/user-guide/p
 
 ## Impact of rime zone on SQL statements
 
-The time zone setting in the client affects data ingestion and querying processes.
-Below are the details on how time zones influence these operations.
+The client's time zone setting influences both data ingestion and querying.
 
 ### Ingest data
 
