@@ -26,7 +26,7 @@ please refer to the [time zone section](/user-guide/protocols/postgresql.md#time
 When using the HTTP API, you can specify the time zone through the header parameter.
 For more information, please refer to the [HTTP API documentation](/user-guide/protocols/http.md#time-zone).
 
-## Impact of rime zone on SQL statements
+## Impact of time zone on SQL statements
 
 The client's time zone setting influences both data ingestion and querying.
 
