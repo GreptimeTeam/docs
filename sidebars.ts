@@ -120,6 +120,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/opentsdb',
           ],
         },
+        'user-guide/timezone',
         {
           type: 'category',
           label: 'Migrate to GreptimeDB',
