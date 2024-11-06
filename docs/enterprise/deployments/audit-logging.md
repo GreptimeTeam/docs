@@ -24,9 +24,9 @@ audited, of course). This is an example record in the audit log:
 }
 ```
 
-As you can see, the record is formated as a JSON string. It contains the following fields:
+As you can see, the record is formatted as a JSON string. It contains the following fields:
 
-- `time`: The time when the statement was executed. It's formated as an ISO 8601 date and time string with UTC timezone.
+- `time`: The time when the statement was executed. It's formatted as an ISO 8601 date and time string with UTC timezone.
 - `user`: The user who sends the request.
 - `source`: The protocol used to connect to GreptimeDB.
 - `class`: The class of the statement, like "Read", "Write" or "DDL" etc.
