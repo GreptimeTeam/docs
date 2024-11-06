@@ -319,7 +319,10 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Deployments',
-          items: ['enterprise/deployments/authentication',],
+          items: [
+            'enterprise/deployments/authentication',
+            'enterprise/deployments/audit-logging',
+          ],
         },
         {
           type: 'category',
