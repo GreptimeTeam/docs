@@ -297,7 +297,9 @@ SELECT json_is_object(parse_json('1'));
 
 * `json_path_exists(json, path)` 检查 JSON 中是否存在指定的路径。
 
-如果 `path` 是无效的，函数将返回 `NULL`。
+如果 `path` 是无效的，函数将返回错误。
+
+如果 `path` 或 `json` 是 `NULL`，函数将返回 `NULL`。
 
 ```sql
 SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), 'a');
