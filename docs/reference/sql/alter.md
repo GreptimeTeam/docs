@@ -12,6 +12,7 @@ ALTER TABLE [db.]table
    [ADD COLUMN name type [options]
     | DROP COLUMN name
     | MODIFY COLUMN name type
+    | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
    ]
@@ -76,6 +77,27 @@ Currently following options are supported:
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
 ```
+
+### Modify column fulltext index options
+
+Modify the fulltext index options of a column
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', analyzer = 'Chinese', case_sensitive = 'false');
+```
+
+You can specify the following options using `FULLTEXT WITH`:
+
+- `enable`: Determines whether the full-text index is enabled. Supported values are `true` and `false`. Default is `true`.
+- `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
+- `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
+
+If `WITH` is not specified, `FULLTEXT` will use the default values.
+
+Currently, the fulltext index can be altered when:
+
+1. The column is of a string type.
+2. Either the column has no fulltext index and the alter command is to enable it, or the column has a fulltext index and the alter command is to disable it.
 
 ### Rename table
 

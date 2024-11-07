@@ -268,7 +268,7 @@ You can specify the following options using `FULLTEXT WITH`:
 If `WITH` is not specified, `FULLTEXT` will use the following default values:
 
 - `analyzer`: default is `English`
-- `case_sensitive`: default is `true`
+- `case_sensitive`: default is `false`
 
 For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `Chinese` and setting `case_sensitive` to `false`:
 
