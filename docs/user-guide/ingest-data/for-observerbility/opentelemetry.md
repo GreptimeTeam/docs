@@ -113,7 +113,7 @@ import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-log
 
 Here are some example codes about how to use Grafana Alloy to send OpenTelemetry logs to GreptimeDB:
 
-```
+```hcl
 loki.source.file "greptime" {
   targets = [
     {__path__ = "/tmp/foo.txt"},
