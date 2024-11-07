@@ -2,14 +2,15 @@
 
 [OpenTelemetry](https://opentelemetry.io/) 是一个供应商中立的开源可观测性框架，用于检测、生成、收集和导出观测数据，例如 traces, metrics 和 logs。
 OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程（例如收集器和观测后端）之间的编码、传输机制。
+## Metrics
 
-## OTLP/HTTP
+### OTLP/HTTP
 
-import Includeotlpintegration from '../../../db-cloud-shared/clients/otlp-integration.md' 
+import Includeotlpmetrycsintegration from '../../../db-cloud-shared/clients/otlp-metrics-integration.md' 
 
-<Includeotlpintegration/>
+<Includeotlpmetrycsintegration/>
 
-### 示例代码
+#### 示例代码
 
 下面是一些编程语言设置请求的示例代码：
 
@@ -89,7 +90,7 @@ exporter = OTLPMetricExporter(
 
 关于示例代码，请参考 Opentelementry 的官方文档获取它所支持的编程语言获取更多信息。
 
-## 数据模型
+#### 数据模型
 
 OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型中：
 
@@ -100,3 +101,86 @@ OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型
 - Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如  90 / 99 等。
 - Histogram 和 ExponentialHistogram 暂时未被支持，我们可能在后续版本中推出 Histogram 数据类型来原生支持这两种类型。
 
+## Logs
+
+### OTLP/HTTP
+
+import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-logs-integration.md' 
+
+<Includeotlplogintegration/>
+
+#### 示例代码
+
+以下是一些关于如何使用 Grafana Alloy 将 OpenTelemetry 日志发送到 GreptimeDB 的示例代码：
+
+```hcl
+loki.source.file "greptime" {
+  targets = [
+    {__path__ = "/tmp/foo.txt"},
+  ]
+  forward_to = [otelcol.receiver.loki.greptime.receiver]
+}
+
+otelcol.receiver.loki "greptime" {
+  output {
+    logs = [otelcol.exporter.otlphttp.greptimedb_logs.input]
+  }
+}
+
+otelcol.auth.basic "credentials" {
+  username = "${GREPTIME_USERNAME}"
+  password = "${GREPTIME_PASSWORD}"
+}
+
+otelcol.exporter.otlphttp "greptimedb_logs" {
+  client {
+    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
+    headers  = {
+      "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
+      "x-greptime-log-table-name" = "demo_logs",
+      "x-greptime-log-extract-keys" = "filename,log.file.name,loki.attribute.labels",
+    }
+    auth     = otelcol.auth.basic.credentials.handler
+  }
+}
+```
+
+此示例监听文件的变化，并通过 OTLP 协议将最新的值发送到 GreptimeDB。
+
+:::tip 提示
+上述示例代码可能会因 OpenTelemetry 的更新而过时。我们建议您参考 OpenTelemetry 和 Grafana Alloy 的官方文档以获取最新信息。
+:::
+
+有关示例代码的更多信息，请参考您首选编程语言的官方文档。
+
+#### 数据模型
+
+OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
+
+默认表结构：
+
+```sql
++-----------------------+---------------------+------+------+---------+---------------+
+| Column                | Type                | Key  | Null | Default | Semantic Type |
++-----------------------+---------------------+------+------+---------+---------------+
+| timestamp             | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| trace_id              | String              |      | YES  |         | FIELD         |
+| span_id               | String              |      | YES  |         | FIELD         |
+| severity_text         | String              |      | YES  |         | FIELD         |
+| severity_number       | Int32               |      | YES  |         | FIELD         |
+| body                  | String              |      | YES  |         | FIELD         |
+| log_attributes        | Json                |      | YES  |         | FIELD         |
+| trace_flags           | UInt32              |      | YES  |         | FIELD         |
+| scope_name            | String              | PRI  | YES  |         | TAG           |
+| scope_version         | String              |      | YES  |         | FIELD         |
+| scope_attributes      | Json                |      | YES  |         | FIELD         |
+| scope_schema_url      | String              |      | YES  |         | FIELD         |
+| resource_attributes   | Json                |      | YES  |         | FIELD         |
+| resource_schema_url   | String              |      | YES  |         | FIELD         |
++-----------------------+---------------------+------+------+---------+---------------+
+17 rows in set (0.00 sec)
+```
+
+- 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
+- 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
+- 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
