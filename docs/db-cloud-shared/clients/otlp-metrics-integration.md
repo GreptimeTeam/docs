@@ -1,10 +1,8 @@
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
-### API
+#### API
 
 To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
-
-#### Metrics
 
 * URL: `https://<host>/v1/otlp/v1/metrics`
 * Headers:
