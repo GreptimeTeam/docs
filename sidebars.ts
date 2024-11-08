@@ -127,6 +127,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
+            'user-guide/migrate-to-greptimedb/migrate-from-prometheus',
           ],
         },
         {
@@ -271,7 +272,14 @@ const sidebars: SidebarsConfig = {
             },
           ],
         },
-        { type: 'category', label: 'Migrate to GreptimeCloud', items: ['greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb'] },
+        {
+          type: 'category',
+          label: 'Migrate to GreptimeCloud',
+          items: [
+            'greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb',
+            'greptimecloud/migrate-to-greptimecloud/migrate-from-prometheus',
+          ]
+        },
         {
           type: 'category',
           label: 'Usage & Billing',
