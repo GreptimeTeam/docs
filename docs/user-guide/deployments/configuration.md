@@ -192,6 +192,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 | File    |                   |        | Local file storage options, valid when type="File"            |
 |         | data_home         | String | Database storage root directory, "/tmp/greptimedb" by default |
 | S3      |                   |        | AWS S3 storage options, valid when type="S3"                  |
+|         | name            | String | The  storage provider name, default is `S3`               |
 |         | bucket            | String | The S3 bucket name                                            |
 |         | root              | String | The root path in S3 bucket                                    |
 |         | endpoint          | String | The API endpoint of S3                                        |
@@ -199,12 +200,14 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | access_key_id     | String | The S3 access key id                                          |
 |         | secret_access_key | String | The S3 secret access key                                      |
 | Oss     |                   |        | Aliyun OSS storage options, valid when type="Oss"             |
+|         | name            | String | The  storage provider name, default is `Oss`               |
 |         | bucket            | String | The OSS bucket name                                           |
 |         | root              | String | The root path in OSS bucket                                   |
 |         | endpoint          | String | The API endpoint of OSS                                       |
 |         | access_key_id     | String | The OSS access key id                                         |
 |         | secret_access_key | String | The OSS secret access key                                     |
 | Azblob  |                   |        | Azure Blob Storage options, valid when type="Azblob"          |
+|         | name            | String | The  storage provider name, default is `Azblob`               |
 |         | container         | String | The container name                                            |
 |         | root              | String | The root path in container                                    |
 |         | endpoint          | String | The API endpoint of Azure Blob Storage                        |
@@ -212,6 +215,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_key       | String | The access key                                                |
 |         | sas_token         | String | The shared access signature                                   |
 | Gsc     |                   |        | Google Cloud Storage options, valid when type="Gsc"           |
+|         | name            | String | The  storage provider name, default is `Gsc`               |
 |         | root              | String | The root path in Gsc bucket                                   |
 |         | bucket            | String | The Gsc bucket name                                           |
 |         | scope             | String | The Gsc service scope                                         |
@@ -244,6 +248,7 @@ secret_access_key = "<secret access key>"
 ```toml
 # Allows using multiple storages
 [[storage.providers]]
+name = "S3"
 type = "S3"
 bucket = "test_greptimedb"
 root = "/greptimedb"
@@ -251,13 +256,16 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 
 [[storage.providers]]
+name = "Gcs"
 type = "Gcs"
 bucket = "test_greptimedb"
 root = "/greptimedb"
 credential_path = "<gcs credential path>"
 ```
 
-All configured providers can be used as the `storage` option when creating tables.
+All configured providers' names can be used as the `storage` option when creating tables.
+
+For storage from the same provider, if you want to use different S3 buckets as storage engines for different tables, you can set different  `name` values and specify the `storage` option when creating the table.
 
 ### Object storage cache
 
