@@ -38,7 +38,7 @@ dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 table = "demo_logs"
-pipeline_name = "demo_pipeline"
+pipeline_name = "greptime_identity"
 ```
 
 启动 Vector:
