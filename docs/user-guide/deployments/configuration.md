@@ -265,7 +265,7 @@ credential_path = "<gcs credential path>"
 
 All configured providers' names can be used as the `storage` option when creating tables.
 
-For storage from the same provider, if you want to use different S3 buckets as storage engines for different tables, you can set different  `name` values and specify the `storage` option when creating the table.
+For storage from the same provider, if you want to use different S3 buckets as storage engines for different tables, you can set different `name` values and specify the `storage` option when creating the table.
 
 ### Object storage cache
 
