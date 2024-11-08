@@ -29,8 +29,15 @@ tls = {}
 type = "demo_logs"
 format = "json"
 
-[sinks.logs_out]
+[transforms.logs_json]
+type = "remap"
 inputs = ["logs_in"]
+source = '''
+. = parse_json!(.message)
+'''
+
+[sinks.logs_out]
+inputs = ["logs_json"]
 type = "greptimedb_logs"
 endpoint = "https://<host>"
 compression = "gzip"
