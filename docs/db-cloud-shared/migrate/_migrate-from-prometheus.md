@@ -1,4 +1,4 @@
-GreptimeDB can be used to store time series data for Prometheus.
+GreptimeDB can be used to store time series data for [Prometheus](https://prometheus.io/).
 Additionally, GreptimeDB supports the Prometheus query language via its HTTP API.
 This allows for an easy migration of your Prometheus long-term storage to GreptimeDB.
 
@@ -21,3 +21,11 @@ For developers accustomed to using Grafana for visualizing Prometheus data,
 you can continue to use the same Grafana dashboards to visualize data stored in GreptimeDB.
 <InjectContent id="grafana" content={props.children}/>
 
+
+## Reference
+
+For tutorials and user stories on integrating GreptimeDB with Prometheus, please refer to the following blog posts:
+
+- [Setting Up GreptimeDB for Long-Term Prometheus Storage](https://greptime.com/blogs/2024-08-09-prometheus-backend-tutorial)
+- [Scale Prometheus - Deploying GreptimeDB Cluster as Long-Term Storage for Prometheus in K8s](https://greptime.com/blogs/2024-10-07-scale-prometheus)
+- [User Story — Why We Switched from Thanos to GreptimeDB for Prometheus Long-Term Storage](https://greptime.com/blogs/2024-10-16-thanos-migration-to-greptimedb)
