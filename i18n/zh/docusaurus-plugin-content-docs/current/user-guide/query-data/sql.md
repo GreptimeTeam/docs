@@ -369,6 +369,11 @@ ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 
 请参考 [Range Query](/reference/sql/range.md) 获取更多信息。
 
+## 表名约束
+
+如果你的表名包含特殊字符或大写字母，需要将表名用反引号括起来。
+有关示例，请参阅表创建表文档中的[表名约束](/user-guide/administration/manage-data/basic-table-operations.md#表名约束)部分。
+
 ## HTTP API
 
 在 HTTP 请求中使用 `POST` 方法来查询数据：
