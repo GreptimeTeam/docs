@@ -22,7 +22,7 @@ GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从
 
 ### HTTP API
 
-使用 HTTP API 时，你可以通过 header 参数指定时区。有关更多信息，请参阅[HTTP API 文档](/user-guide/protocols/http.md#时区)。
+使用 HTTP API 时，你可以通过 header 参数指定时区。有关更多信息，请参阅 [HTTP API 文档](/user-guide/protocols/http.md#时区)。
 
 ### 其他客户端
 
@@ -34,11 +34,11 @@ GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从
 
 ### 写入数据
 
-客户端中设置的时区会影响数据的写入。有关更多信息，请参阅[写入数据](/user-guide/ingest-data/for-iot/sql.md#time-zone)。
+客户端中设置的时区会影响数据的写入。有关更多信息，请参阅[写入数据](/user-guide/ingest-data/for-iot/sql.md#时区)。
 此外，表 schema 中的默认写入的时间戳值也会受到客户端时区的影响，影响方式与数据写入相同。
 
 ### 查询数据
 
 时区设置也会影响数据的查询。
-有关详细信息，请参阅[查询数据](/user-guide/query-data/sql.md#time-zone)。
+有关详细信息，请参阅[查询数据](/user-guide/query-data/sql.md#时区)。
 
