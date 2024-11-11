@@ -1,30 +1,32 @@
 # Time Zone
 
-GreptimeDB supports multiple protocols, each with its own method for configuring time zones.
-This guide provides a comprehensive overview of how to set the time zone for different protocols and languages supported by GreptimeDB.
+You can specify the time zone in the client session to manage time data conveniently.
+The specified time zone in the client session does not affect the time data stored in the GreptimeDB server,
+it only applies when the client sends a request to the server.
+GreptimeDB converts the time value from a string representation to a datetime according to the specified time zone during ingestion or querying.
 
-By default, GreptimeDB operates in the UTC 0 time zone.
-If you need to change the time zone, please follow the instructions specific to your protocol or client.
+## Specify time zone in clients
 
-## MySQL client
+By default, all clients use [the default time zone configuration](/user-guide/deployments/configuration.md#default-time-zone-configuration), which is UTC.
+You can also specify a time zone in each client session,
+which will override the default time zone configuration.
 
-### Command line
+### MySQL client
 
-For configuring the time zone via the MySQL command line client, please refer to the [time zone section](/user-guide/protocols/mysql.md#time-zone) in the MySQL protocol documentation.
+- **Command Line**: For configuring the time zone via the MySQL command line client, please refer to the [time zone section](/user-guide/protocols/mysql.md#time-zone) in the MySQL protocol documentation.
+- **MySQL Driver**: For applications using the MySQL Driver in Java or Go, detailed instructions can be found in the [time zone section](/reference/sql-tools.md#time-zone) of the SQL tools documentation.
 
-### MySQL driver
+### PostgreSQL client
 
-For applications using the MySQL Driver in Java or Go, detailed instructions can be found in the [time zone section](/reference/sql-tools.md#time-zone) of the SQL tools documentation.
+To configure the time zone for the PostgreSQL client, please refer to the [time zone section](/user-guide/protocols/postgresql.md#time-zone) in the PostgreSQL protocol documentation.
 
-## PostgreSQL client
+### HTTP API
 
-To configure the time zone for the PostgreSQL client,
-please refer to the [time zone section](/user-guide/protocols/postgresql.md#time-zone) in the PostgreSQL protocol documentation.
+When using the HTTP API, you can specify the time zone through the header parameter. For more information, please refer to the [HTTP API documentation](/user-guide/protocols/http.md#time-zone).
 
-## HTTP API
+### Other clients
 
-When using the HTTP API, you can specify the time zone through the header parameter.
-For more information, please refer to the [HTTP API documentation](/user-guide/protocols/http.md#time-zone).
+For other clients, you can change [the default time zone configuration](/user-guide/deployments/configuration.md#default-time-zone-configuration) of GreptimeDB.
 
 ## Impact of time zone on SQL statements
 
