@@ -302,6 +302,38 @@ SELECT json_is_object(parse_json('1'));
 +---------------------------------------+
 ```
 
+* `json_path_exists(json, path)` to check whether a path exists in a JSON value.
+
+If the path is invalid, the function will return an error.
+
+If the path or the JSON value is `NULL`, the function will return a `NULL` value.
+
+```sql
+SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), 'a');
+
++------------------------------------------------------------------+
+| json_path_exists(parse_json(Utf8("{"a": 1, "b": 2}")),Utf8("a")) |
++------------------------------------------------------------------+
+|                                                                1 |
++------------------------------------------------------------------+
+
+SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), 'c.d');
+
++--------------------------------------------------------------------+
+| json_path_exists(parse_json(Utf8("{"a": 1, "b": 2}")),Utf8("c.d")) |
++--------------------------------------------------------------------+
+|                                                                  0 |
++--------------------------------------------------------------------+
+
+SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), NULL);
+
++-------------------------------------------------------------+
+| json_path_exists(parse_json(Utf8("{"a": 1, "b": 2}")),NULL) |
++-------------------------------------------------------------+
+|                                                        NULL |
++-------------------------------------------------------------+
+```
+
 ## Geospatial Functions
 
 GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
