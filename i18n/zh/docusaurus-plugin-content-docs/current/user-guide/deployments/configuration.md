@@ -182,6 +182,7 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
+|         | name            | String |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
 |         | root              | 字符串 | S3 桶中的根路径                                     |
 |         | endpoint          | 字符串 | S3 的 API 端点                                      |
@@ -189,12 +190,14 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 |         | access_key_id     | 字符串 | S3 访问密钥 id                                      |
 |         | secret_access_key | 字符串 | S3 秘密访问密钥                                     |
 | Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效           |
+|         | name            | String |  存储提供商名字，默认为 `Oss`               |
 |         | bucket            | 字符串 | OSS 桶名称                                          |
 |         | root              | 字符串 | OSS 桶中的根路径                                    |
 |         | endpoint          | 字符串 | OSS 的 API 端点                                     |
 |         | access_key_id     | 字符串 | OSS 访问密钥 id                                     |
 |         | secret_access_key | 字符串 | OSS 秘密访问密钥                                    |
 | Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效        |
+|         | name            | String |  存储提供商名字，默认为 `Azblob`               |
 |         | container         | 字符串 | 容器名称                                            |
 |         | root              | 字符串 | 容器中的根路径                                      |
 |         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                          |
@@ -202,6 +205,7 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
 | Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
+|         | name            | String |  存储提供商名字，默认为 `Gsc`               |
 |         | root              | 字符串 | Gsc 桶中的根路径                                    |
 |         | bucket            | 字符串 | Gsc 桶名称                                          |
 |         | scope             | 字符串 | Gsc 权限                                            |
@@ -234,6 +238,7 @@ secret_access_key = "<secret access key>"
 ```toml
 # Allows using multiple storages
 [[storage.providers]]
+name = "S3"
 type = "S3"
 bucket = "test_greptimedb"
 root = "/greptimedb"
@@ -241,13 +246,16 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 
 [[storage.providers]]
+name = "Gcs"
 type = "Gcs"
 bucket = "test_greptimedb"
 root = "/greptimedb"
 credential_path = "<gcs credential path>"
 ```
 
-所有配置的这些存储引擎提供商都可以在创建表时用作 `storage` 选项。
+所有配置的这些存储引擎提供商的 `name` 都可以在创建表时用作 `storage` 选项。
+
+对于同样提供商的存储，比如你希望使用不同 S3 bucket 来作为不同表的存储引擎，你就可以设置不同的 `name`，并在创建表的时候指定 `storage` 选项。
 
 ### 对象存储缓存
 

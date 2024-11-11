@@ -2,13 +2,15 @@
 
 [OpenTelemetry](https://opentelemetry.io/) is a vendor-neutral open-source observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. The OpenTelemetry Protocol (OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such as collectors and telemetry backends.
 
-## OTLP/HTTP
+## Metrics
 
-import Includeotlpintegration from '../../../db-cloud-shared/clients/otlp-integration.md' 
+### OTLP/HTTP
 
-<Includeotlpintegration/>
+import Includeotlpmetrycsintegration from '../../../db-cloud-shared/clients/otlp-metrics-integration.md' 
 
-### Example Code
+<Includeotlpmetrycsintegration/>
+
+#### Example Code
 
 Here are some example codes about how to setup the request in different languages:
 
@@ -88,7 +90,7 @@ The example codes above may be outdated according to OpenTelemetry. We recommend
 
 For more information on the example code, please refer to the official documentation for your preferred programming language.
 
-## Data Model
+#### Data Model
 
 The OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
 
@@ -98,3 +100,87 @@ The OTLP metrics data model is mapped to the GreptimeDB data model according to 
 - The data of Gauge/Sum data types will be used as the field column of GreptimeDB, and the column name is `greptime_value`.
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
 - Histogram and ExponentialHistogram are not supported yet, we may introduce the Histogram data type to natively support these two types in a later version.
+
+## Logs
+
+### OTLP/HTTP
+
+import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-logs-integration.md' 
+
+<Includeotlplogintegration/>
+
+#### Example Code
+
+Here are some example codes about how to use Grafana Alloy to send OpenTelemetry logs to GreptimeDB:
+
+```hcl
+loki.source.file "greptime" {
+  targets = [
+    {__path__ = "/tmp/foo.txt"},
+  ]
+  forward_to = [otelcol.receiver.loki.greptime.receiver]
+}
+
+otelcol.receiver.loki "greptime" {
+  output {
+    logs = [otelcol.exporter.otlphttp.greptimedb_logs.input]
+  }
+}
+
+otelcol.auth.basic "credentials" {
+  username = "${GREPTIME_USERNAME}"
+  password = "${GREPTIME_PASSWORD}"
+}
+
+otelcol.exporter.otlphttp "greptimedb_logs" {
+  client {
+    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
+    headers  = {
+      "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
+      "x-greptime-log-table-name" = "demo_logs",
+      "x-greptime-log-extract-keys" = "filename,log.file.name,loki.attribute.labels",
+    }
+    auth     = otelcol.auth.basic.credentials.handler
+  }
+}
+```
+
+This example listens for changes to the file and sends the latest values to GreptimeDB via the otlp protocol.
+
+:::tip NOTE
+The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation And Grafana Alloy for the most up-to-date information.
+:::
+
+For more information on the example code, please refer to the official documentation for your preferred programming language.
+
+#### Data Model
+
+The OTLP logs data model is mapped to the GreptimeDB data model according to the following rules:
+
+Default table schema:
+
+```sql
++-----------------------+---------------------+------+------+---------+---------------+
+| Column                | Type                | Key  | Null | Default | Semantic Type |
++-----------------------+---------------------+------+------+---------+---------------+
+| timestamp             | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| trace_id              | String              |      | YES  |         | FIELD         |
+| span_id               | String              |      | YES  |         | FIELD         |
+| severity_text         | String              |      | YES  |         | FIELD         |
+| severity_number       | Int32               |      | YES  |         | FIELD         |
+| body                  | String              |      | YES  |         | FIELD         |
+| log_attributes        | Json                |      | YES  |         | FIELD         |
+| trace_flags           | UInt32              |      | YES  |         | FIELD         |
+| scope_name            | String              | PRI  | YES  |         | TAG           |
+| scope_version         | String              |      | YES  |         | FIELD         |
+| scope_attributes      | Json                |      | YES  |         | FIELD         |
+| scope_schema_url      | String              |      | YES  |         | FIELD         |
+| resource_attributes   | Json                |      | YES  |         | FIELD         |
+| resource_schema_url   | String              |      | YES  |         | FIELD         |
++-----------------------+---------------------+------+------+---------+---------------+
+17 rows in set (0.00 sec)
+```
+
+- You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
+- All attributes, including resource attributes, scope attributes, and log attributes, will be stored as a JSON column in the GreptimeDB table.
+- The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.

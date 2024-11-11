@@ -29,8 +29,15 @@ tls = {}
 type = "demo_logs"
 format = "json"
 
-[sinks.logs_out]
+[transforms.logs_json]
+type = "remap"
 inputs = ["logs_in"]
+source = '''
+. = parse_json!(.message)
+'''
+
+[sinks.logs_out]
+inputs = ["logs_json"]
 type = "greptimedb_logs"
 endpoint = "https://<host>"
 compression = "gzip"
@@ -38,7 +45,7 @@ dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 table = "demo_logs"
-pipeline_name = "demo_pipeline"
+pipeline_name = "greptime_identity"
 ```
 
 启动 Vector:

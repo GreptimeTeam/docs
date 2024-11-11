@@ -128,6 +128,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
+            'user-guide/migrate-to-greptimedb/migrate-from-prometheus',
           ],
         },
         {
@@ -272,7 +273,14 @@ const sidebars: SidebarsConfig = {
             },
           ],
         },
-        { type: 'category', label: 'Migrate to GreptimeCloud', items: ['greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb'] },
+        {
+          type: 'category',
+          label: 'Migrate to GreptimeCloud',
+          items: [
+            'greptimecloud/migrate-to-greptimecloud/migrate-from-influxdb',
+            'greptimecloud/migrate-to-greptimecloud/migrate-from-prometheus',
+          ]
+        },
         {
           type: 'category',
           label: 'Usage & Billing',
@@ -320,10 +328,13 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Deployments',
-          items: ['enterprise/deployments/authentication',],
+          items: [
+            'enterprise/deployments/authentication',
+            'enterprise/deployments/audit-logging',
+          ],
         },
         {
-          type: 'category', 
+          type: 'category',
           label: 'Administration',
           items: [
             {
@@ -394,6 +405,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/views',
                 'reference/sql/information-schema/flows',
                 'reference/sql/information-schema/region-peers',
+                'reference/sql/information-schema/region-statistics',
                 'reference/sql/information-schema/runtime-metrics',
                 'reference/sql/information-schema/cluster-info',
               ],

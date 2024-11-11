@@ -2,9 +2,9 @@
 
 GreptimeCloud 与 GreptimeDB 完全兼容 Prometheus。这意味着你可以无缝地将 GreptimeCloud 用作 Prometheus 存储和查询的替代品。有关更多信息，请参阅 GreptimeDB 用户指南中的 [Prometheus 文档](https://docs.greptime.cn/user-guide/clients/prometheus)。
 
-## 远程写入
+## Remote Write
 
-GreptimeCloud 实例可以配置为 Prometheus 的[远程写入端点](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)。
+GreptimeCloud 实例可以配置为 Prometheus 的 [Remote Write 端点](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)。
 
 将以下部分添加到你的 prometheus 配置中：
 
