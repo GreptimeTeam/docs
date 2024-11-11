@@ -128,6 +128,7 @@ GreptimeDB supports a limited set of special characters in table names, but they
 - A valid GreptimeDB table name must start with a letter (either lowercase or uppercase) or `-` / `_` / `:`.
 - The rest part of table name can be alphanumeric or special characters within: `-` / `_` / `:` / `@` / `#`.
 - Any table name containing special characters must be quoted with backquotes.
+- Any table name containing uppercase letters must be quoted with backquotes.
 
 Here are some examples:
 ```sql
@@ -148,6 +149,12 @@ create table `-a` (ts timestamp time index);
 
 -- ✅ Ok
 create table `a@b` (ts timestamp time index);
+
+-- 🚫 Invalid table name
+create table memory_HugePages (ts timestamp time index);
+
+-- ✅ Ok
+create table `memory_HugePages` (ts timestamp time index);
 ```
 
 

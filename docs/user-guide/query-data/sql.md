@@ -1,5 +1,3 @@
-import TOCInline from '@theme/TOCInline';
-
 # SQL
 
 GreptimeDB supports full SQL for querying data from a database.
@@ -7,8 +5,6 @@ GreptimeDB supports full SQL for querying data from a database.
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
 Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
-
-<TOCInline toc={toc} />
 
 ## Basic query
 
@@ -392,6 +388,12 @@ For more information, please refer to the [FILL OPTION](/reference/sql/range.md#
 ### Syntax
 
 Please refer to [Range Query](/reference/sql/range.md) for more information.
+
+## Table name constraints
+
+If your table name contains special characters or uppercase letters,
+you must enclose the table name in backquotes.
+For examples, please refer to the [Table name constraints](/user-guide/administration/manage-data/basic-table-operations.md#table-name-constraints) section in the table creation documentation.
 
 ## HTTP API
 
