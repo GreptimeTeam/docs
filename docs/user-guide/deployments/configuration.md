@@ -576,7 +576,7 @@ retry_interval = "3s"
 
 The `default_timezone` option is applicable in both `frontend` and `standalone` modes, with a default value of `UTC`.
 It specifies the default client timezone for interactions with GreptimeDB.
-If the time zone is [manually specified in the clients](/user-guide/timezone.md#specify-time-zone-in-clients), this option will be overridden for that client session.
+If the time zone is [specified in the clients](/user-guide/timezone.md#specify-time-zone-in-clients), this option will be overridden for that client session.
 
 ```toml
 default_timezone = "UTC"

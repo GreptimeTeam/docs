@@ -3,7 +3,7 @@
 You can specify the time zone in the client session to manage time data conveniently.
 The specified time zone in the client session does not affect the time data stored in the GreptimeDB server,
 it only applies when the client sends a request to the server.
-GreptimeDB converts the time value from a string representation to a datetime according to the specified time zone during ingestion or querying.
+GreptimeDB converts the time value from a string representation to a datetime according to the specified time zone during ingestion or querying, or converts it back.
 
 ## Specify time zone in clients
 
@@ -14,7 +14,7 @@ which will override the default time zone configuration.
 ### MySQL client
 
 - **Command Line**: For configuring the time zone via the MySQL command line client, please refer to the [time zone section](/user-guide/protocols/mysql.md#time-zone) in the MySQL protocol documentation.
-- **MySQL Driver**: For applications using the MySQL Driver in Java or Go, detailed instructions can be found in the [time zone section](/reference/sql-tools.md#time-zone) of the SQL tools documentation.
+- **MySQL Driver**: If you are using MySQL Driver in Java or Go, see the [time zone section](/reference/sql-tools.md#time-zone) of the SQL tools documentation.
 
 ### PostgreSQL client
 

@@ -561,6 +561,19 @@ retry_interval = "3s"
 | `heartbeat.interval`       | 字符串 | `3s` | 向 Metasrv 发送心跳信息的时间间隔                                    |
 | `heartbeat.retry_interval` | 字符串 | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的，因为 Datanode 必须在保活机制的租约期内通过心跳完成续租，也就是说其 retry 有特殊策略不允许自定义配置。） |
 
+### 默认时区配置
+
+`default_timezone` 选项适用于 `frontend` 模块和 `standalone` 模式，默认值为 `UTC`。
+它指定了与 GreptimeDB 交互时的客户端默认时区。
+如果在客户端中[指定了时区](/user-guide/timezone.md#在客户端中指定时区)，此选项将在该客户端会话中被覆盖。
+
+```toml
+default_timezone = "UTC"
+```
+
+`default_timezone` 的值可以是任何时区名称，例如 `Europe/Berlin` 或 `Asia/Shanghai`。
+有关客户端时区如何影响数据的写入和查询，请参阅[时区](/user-guide/timezone.md#时区对-sql-语句的影响)文档。
+
 ### 仅限于 Metasrv 的配置
 
 ```toml

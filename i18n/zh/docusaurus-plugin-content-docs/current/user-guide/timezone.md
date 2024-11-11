@@ -1,28 +1,32 @@
 # 时区
 
-GreptimeDB 支持多种协议，每种协议都有其配置时区的方法。
-本指南是如何为 GreptimeDB 支持的不同协议和语言设置时区的概述。
+你可以在客户端会话中指定时区以方便地管理时间数据。
+客户端会话中指定的时区仅应用在客户端向服务器发送请求时，
+不影响存储在 GreptimeDB 服务器中的时间数据。
+GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从字符串表示转换为日期时间，或转换回来。
 
-默认情况下，GreptimeDB 在 UTC 0 时区运行。
-如果需要更改时区，请按照特定协议或客户端的说明进行操作。
+## 在客户端中指定时区
 
-## MySQL 客户端
+默认情况下，所有客户端使用[默认时区配置](/user-guide/deployments/configuration.md#默认时区配置)，即 UTC。
+你也可以在每个客户端会话中指定时区，
+这将覆盖默认的时区配置。
 
-### 命令行
+### MySQL 客户端
 
-要通过 MySQL 命令行客户端配置时区，请参阅 MySQL 协议文档中的[时区章节](/user-guide/protocols/mysql.md#time-zone)。
+- **命令行**：有关通过 MySQL 命令行客户端配置时区的内容，请参阅 MySQL 协议文档中的[时区部分](/user-guide/protocols/mysql.md#时区)。
+- **MySQL driver**：如果你使用的是 Java 或 Go 中的 MySQL driver，请查看 SQL 工具文档的[时区部分](/reference/sql-tools.md#时区)。
 
-### MySQL 驱动程序
+### PostgreSQL 客户端
 
-对于在 Java 或 Go 中使用 MySQL 驱动程序的应用程序，可以在 SQL 工具文档的[时区章节](/reference/sql-tools.md#time-zone)中找到详细说明。
+要配置 PostgreSQL 客户端的时区，请参阅 PostgreSQL 协议文档中的[时区部分](/user-guide/protocols/postgresql.md#时区)。
 
-## PostgreSQL 客户端
+### HTTP API
 
-要为 PostgreSQL 客户端配置时区，请参阅 PostgreSQL 协议文档中的[时区章节](/user-guide/protocols/postgresql.md#time-zone)。
+使用 HTTP API 时，你可以通过 header 参数指定时区。有关更多信息，请参阅[HTTP API 文档](/user-guide/protocols/http.md#时区)。
 
-## HTTP API
+### 其他客户端
 
-使用 HTTP API 时，可以通过头参数指定时区。有关更多信息，请参阅[HTTP API 文档](/user-guide/protocols/http.md#time-zone)。
+对于其他客户端，你可以更改 GreptimeDB 的[默认时区配置](/user-guide/deployments/configuration.md#默认时区配置)。
 
 ## 时区对 SQL 语句的影响
 
