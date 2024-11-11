@@ -572,6 +572,20 @@ retry_interval = "3s"
 | `heartbeat.interval`       | String | `3s`    | Interval for sending heartbeat messages to the Metasrv.                                                                                            |
 | `heartbeat.retry_interval` | String | `3s`    | Interval for retrying to establish the heartbeat connection to the Metasrv. Note that this option is ignored in Datanode heartbeat implementation because the Datanode must renew its lease through heartbeat within the keep-alive mechanism's lease period. It has a special retry strategy and doesn't allow custom configuration. |
 
+### Default time zone configuration
+
+The `default_timezone` option is applicable in both `frontend` and `standalone` modes, with a default value of `UTC`.
+It specifies the default client timezone for interactions with GreptimeDB.
+If the time zone is [specified in the clients](/user-guide/timezone.md#specify-time-zone-in-clients), this option will be overridden for that client session.
+
+```toml
+default_timezone = "UTC"
+```
+
+The `default_timezone` value can be any named time zone, such as `Europe/Berlin` or `Asia/Shanghai`.
+For information on how the client time zone affects data ingestion and querying,
+refer to the [Time Zone](/user-guide/timezone.md#impact-of-time-zone-on-sql-statements) guide.
+
 ### Metasrv-only configuration
 
 ```toml
