@@ -239,7 +239,7 @@ attributes := Attributes{ Location: "factory-1" }
 jsonData, err := json.Marshal(attributes)
 sensorReadings.AddRow(<other-column-values>... , string(jsonData))
 
-// Write data
+// The following code for writing data is omitted
 // ...
 ```
 
@@ -266,9 +266,11 @@ sensor := SensorReadings{
     Attributes: string(jsonData),
 }
 
-// Write data
+// The following code for writing data is omitted
 // ...
 ```
+
+For the executable code for inserting JSON data, please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) in the SDK repository.
 
 </div>
 

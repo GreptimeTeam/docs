@@ -216,7 +216,7 @@ attributes := Attributes{ Location: "factory-1" }
 jsonData, err := json.Marshal(attributes)
 sensorReadings.AddRow(<other-column-values>... , string(jsonData))
 
-// 写入数据
+// 以下省略了写入数据的代码
 // ...
 ```
 
@@ -243,9 +243,11 @@ sensor := SensorReadings{
     Attributes: string(jsonData),
 }
 
-// 写入数据
+// 以下省略了写入数据的代码
 // ...
 ```
+
+请参考 SDK 仓库中的[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) 获取插入 JSON 数据的可执行代码。
 
 </div>
 

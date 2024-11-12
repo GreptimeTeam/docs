@@ -323,7 +323,7 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
 // Add JSON data as a string value
 sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}");
 
-// Insert data
+// The following code for writing data is omitted
 // ...
 ```
 
@@ -346,7 +346,7 @@ Sensor sensor = new Sensor();
 sensor.setAttributes("{\"action\":\"running\"}");
 
 
-// Insert data
+// The following code for writing data is omitted
 // ...
 ```
 

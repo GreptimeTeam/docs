@@ -314,7 +314,7 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
 // 使用字符串值添加 JSON 数据
 sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}");
 
-// 插入数据
+// 以下省略了写入数据的代码
 // ...
 ```
 
@@ -336,7 +336,7 @@ Sensor sensor = new Sensor();
 // 使用字符串值添加 JSON 数据
 sensor.setAttributes("{\"action\":\"running\"}");
 
-// 插入数据
+// 以下省略了写入数据的代码
 // ...
 ```
 
