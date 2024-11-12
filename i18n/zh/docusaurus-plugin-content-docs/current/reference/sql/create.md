@@ -382,7 +382,7 @@ CREATE EXTERNAL TABLE city (
 CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
-[ COMMENT = "<string>" ]
+[ COMMENT '<string>' ]
 AS
 <SQL>;
 ```

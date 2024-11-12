@@ -59,7 +59,7 @@ sink 表包含列 `sensor_id`、`loc`、`max_temp`、`time_window` 和 `update_a
 CREATE FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
-[ COMMENT = "<string>" ]
+[ COMMENT '<string>' ]
 AS 
 <SQL>;
 ```
@@ -82,7 +82,7 @@ AS
 CREATE FLOW IF NOT EXISTS my_flow
 SINK TO my_sink_table
 EXPIRE AFTER INTERVAL '1 hour'
-COMMENT = "My first flow in GreptimeDB"
+COMMENT 'My first flow in GreptimeDB'
 AS
 SELECT
     max(temperature) as max_temp,

@@ -12,7 +12,7 @@ The grammar to create a flow is:
 CREATE [ OR REPLACE ] FLOW [ IF NOT EXISTS ] <name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
-[ COMMENT = "<string>" ]
+[ COMMENT '<string>' ]
 AS 
 <SQL>;
 ``` -->
@@ -21,7 +21,7 @@ AS
 CREATE FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
-[ COMMENT = "<string>" ]
+[ COMMENT '<string>' ]
 AS 
 <SQL>;
 ```
@@ -46,7 +46,7 @@ A simple example to create a flow:
 CREATE FLOW IF NOT EXISTS my_flow
 SINK TO my_sink_table
 EXPIRE AFTER INTERVAL '1 hour'
-COMMENT = "My first flow in GreptimeDB"
+COMMENT 'My first flow in GreptimeDB'
 AS
 SELECT count(item) from my_source_table GROUP BY tumble(time_index, INTERVAL '5 minutes', '2024-05-20 00:00:00');
 ```

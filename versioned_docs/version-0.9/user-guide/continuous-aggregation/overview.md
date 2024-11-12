@@ -45,7 +45,7 @@ CREATE TABLE `ngx_statistics` (
   `min_size` DOUBLE NULL,
   `max_size` DOUBLE NULL,
   `avg_size` DOUBLE NULL,
-  `high_size_count` DOUBLE NULL,
+  `high_size_count` BIGINT NULL,
   `time_window` TIMESTAMP time index,
   `update_at` TIMESTAMP NULL,
   PRIMARY KEY (`status`)
