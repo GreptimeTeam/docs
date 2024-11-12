@@ -222,8 +222,7 @@ SELECT * FROM json_data;
 
 :::warning 限制说明 
 
-1. gRPC 协议不支持通过自动建表写入 JSON 数据。不过，您可以手动创建表，并将 JSON 数据列设置为 String 类型进行写入。
-2. 不支持通过 MySQL 协议预处理语句插入 JSON 数据。
+不支持通过 MySQL 协议预处理语句插入 JSON 数据。
 
 :::
 

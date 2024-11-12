@@ -304,6 +304,54 @@ LOG.info("Write result: {}", result);
 
 </div>
 
+<div id="ingester-json-type">
+
+In the low-level API,
+you can specify the column type as `DataType.JSON` using the `addField` method to add a JSON column.
+Then, insert JSON data as a string value.
+
+```java
+// Construct the table schema for sensor_readings
+TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
+        // The code for creating other columns is omitted
+        // ...
+        // specify the column type as JSON        
+        .addField("attributes", DataType.JSON)
+        .build();
+
+// ...
+// Add JSON data as a string value
+sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}");
+
+// Insert data
+// ...
+```
+
+In the high-level API, you can specify the column type as `DataType.JSON` within the POJO object.
+
+```go
+@Metric(name = "sensor_readings")
+public class Sensor {
+    // The code for creating other columns is omitted
+    // ...
+    // specify the column type as JSON        
+    @Column(name = "attributes", dataType = DataType.JSON)
+    private string attributes;
+    // ...
+}
+
+Sensor sensor = new Sensor();
+// ...
+// Add JSON data as a string value
+sensor.setAttributes("{\"action\":\"running\"}");
+
+
+// Insert data
+// ...
+```
+
+</div>
+
 <div id="ingester-lib-debug-logs">
 
 ## Debug logs

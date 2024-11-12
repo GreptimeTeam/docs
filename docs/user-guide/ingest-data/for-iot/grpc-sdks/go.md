@@ -217,6 +217,61 @@ affected, err := cli.CloseStream(ctx)
 
 </div>
 
+<div id="ingester-json-type">
+
+In the low-level API,
+you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
+Then, insert JSON data as a string value.
+
+```go
+sensorReadings, err := table.New("sensor_readings")
+// The code for creating other columns is omitted
+// ...
+// specify the column type as JSON
+sensorReadings.AddFieldColumn("attributes", types.JSON)
+
+// Insert JSON data as a string value
+type Attributes struct {
+    Location string `json:"location"`,
+    Action string `json:"action"`,
+}
+attributes := Attributes{ Location: "factory-1" }
+jsonData, err := json.Marshal(attributes)
+sensorReadings.AddRow(<other-column-values>... , string(jsonData))
+
+// Write data
+// ...
+```
+
+In the high-level API, you can specify the column type as JSON using the `greptime:"field;column:details;type:json"` tag.
+
+```go
+type SensorReadings struct {
+    // The code for creating other columns is omitted
+    // ...
+    // specify the column type as JSON
+    Attributes string `greptime:"field;column:details;type:json"`
+    // ...
+}
+
+type Attributes struct {
+    Location string `json:"location"`,
+    Action string `json:"action"`,
+}
+attributes := Attributes{ Action: "running" }
+jsonData, err := json.Marshal(attributes)
+sensor := SensorReadings{
+    // ...
+    // Insert JSON data as a string value
+    Attributes: string(jsonData),
+}
+
+// Write data
+// ...
+```
+
+</div>
+
 <div id="ingester-lib-reference">
 
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
