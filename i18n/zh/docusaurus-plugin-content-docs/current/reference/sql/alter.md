@@ -80,7 +80,7 @@ ALTER TABLE monitor SET 'ttl'='1d';
 
 ### 修改列全文索引选项
 
-修改列的全文索引选项
+修改列的全文索引选项。
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', analyzer = 'Chinese', case_sensitive = 'false');
@@ -97,7 +97,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', an
 目前，修改列的全文索引选项需要：
 
 1. 列必须是字符串类型。
-2. 列已经启用了全文索引时，只能关闭全文索引，不能修改分词器和大小写敏感性；未启用全文索引时，可以启用全文索引并设置分词器和大小写敏感性。
+2. 列已经启用了全文索引且 alter 语句中 `enable` 选项为 `false`，或者列没有启用全文索引。
 
 ### 重命名表
 

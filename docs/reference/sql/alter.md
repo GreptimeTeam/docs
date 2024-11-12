@@ -80,7 +80,7 @@ ALTER TABLE monitor SET 'ttl'='1d';
 
 ### Modify column fulltext index options
 
-Modify the fulltext index options of a column
+Modify the fulltext index options of a column.
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', analyzer = 'Chinese', case_sensitive = 'false');
@@ -94,10 +94,10 @@ You can specify the following options using `FULLTEXT WITH`:
 
 If `WITH` is not specified, `FULLTEXT` will use the default values.
 
-Currently, the fulltext index can be altered when:
+Currently, altering the fulltext index options of a column is supported under the following conditions:
 
 1. The column is of a string type.
-2. Either the column has no fulltext index and the alter command is to enable it, or the column has a fulltext index and the alter command is to disable it.
+2. Either the column has a fulltext index and the `enable` option in the `ALTER` statement is `false`, or the column does not have a fulltext index.
 
 ### Rename table
 
