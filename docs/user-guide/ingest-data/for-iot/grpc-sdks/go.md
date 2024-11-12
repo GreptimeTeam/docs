@@ -219,7 +219,7 @@ affected, err := cli.CloseStream(ctx)
 
 <div id="ingester-json-type">
 
-In the low-level API,
+In the [low-level API](#low-level-api),
 you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
 Then, insert JSON data as a string value.
 
@@ -243,7 +243,7 @@ sensorReadings.AddRow(<other-column-values>... , string(jsonData))
 // ...
 ```
 
-In the high-level API, you can specify the column type as JSON using the `greptime:"field;column:details;type:json"` tag.
+In the [high-level API](#high-level-api), you can specify the column type as JSON using the `greptime:"field;column:details;type:json"` tag.
 
 ```go
 type SensorReadings struct {

@@ -194,6 +194,61 @@ affected, err := cli.CloseStream(ctx)
 
 </div>
 
+<div id="ingester-json-type">
+
+在[低层级 API](#低层级-api) 中，
+你可以使用 `AddFieldColumn` 方法将列类型指定为 `types.JSON` 来添加 JSON 列。
+然后将 JSON 数据作为字符串值插入。
+
+```go
+sensorReadings, err := table.New("sensor_readings")
+// 此处省略了创建其他列的代码
+// ...
+// 将列类型指定为 JSON
+sensorReadings.AddFieldColumn("attributes", types.JSON)
+
+// 使用字符串值插入 JSON 数据
+type Attributes struct {
+    Location string `json:"location"`,
+    Action string `json:"action"`,
+}
+attributes := Attributes{ Location: "factory-1" }
+jsonData, err := json.Marshal(attributes)
+sensorReadings.AddRow(<other-column-values>... , string(jsonData))
+
+// 写入数据
+// ...
+```
+
+在[高层级 API](#高层级-api) 中，你可以使用 `greptime:"field;column:details;type:json"` 标签将列类型指定为 JSON。
+
+```go
+type SensorReadings struct {
+    // 此处省略了创建其他列的代码
+    // ...
+    // 将列类型指定为 JSON
+    Attributes string `greptime:"field;column:details;type:json"`
+    // ...
+}
+
+type Attributes struct {
+    Location string `json:"location"`,
+    Action string `json:"action"`,
+}
+attributes := Attributes{ Action: "running" }
+jsonData, err := json.Marshal(attributes)
+sensor := SensorReadings{
+    // ...
+    // 使用字符串值插入 JSON 数据
+    Attributes: string(jsonData),
+}
+
+// 写入数据
+// ...
+```
+
+</div>
+
 <div id="ingester-lib-reference">
 
 - [API 文档](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)

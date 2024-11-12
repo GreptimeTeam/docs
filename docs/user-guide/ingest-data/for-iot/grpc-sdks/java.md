@@ -306,7 +306,7 @@ LOG.info("Write result: {}", result);
 
 <div id="ingester-json-type">
 
-In the low-level API,
+In the [low-level API](#low-level-api),
 you can specify the column type as `DataType.JSON` using the `addField` method to add a JSON column.
 Then, insert JSON data as a string value.
 
@@ -327,9 +327,9 @@ sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}")
 // ...
 ```
 
-In the high-level API, you can specify the column type as `DataType.JSON` within the POJO object.
+In the [high-level API](#high-level-api), you can specify the column type as `DataType.JSON` within the POJO object.
 
-```go
+```java
 @Metric(name = "sensor_readings")
 public class Sensor {
     // The code for creating other columns is omitted

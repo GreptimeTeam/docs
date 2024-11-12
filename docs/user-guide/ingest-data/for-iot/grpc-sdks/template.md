@@ -90,7 +90,7 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 ## Insert data in JSON type
 
-GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types#json-type).
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
 With this ingester library, you can insert JSON data using string values.
 For instance, if you have a table named `sensor_readings` and wish to add a JSON column named `attributes`,
 refer to the following code snippet.
