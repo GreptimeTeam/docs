@@ -329,6 +329,124 @@ processors:
 - `trim`: 是否去除空格。默认为 `false`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
+### `json_path`（实验性）
+
+注意：`json_path` 处理器目前处于实验阶段，可能会有所变动。
+
+`json_path` 处理器用于从 JSON 数据中提取字段。以下是一个配置示例：
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - complex_object
+      json_path: "$.shop.orders[?(@.active)].id"
+      ignore_missing: true
+      result_index: 1
+```
+
+在上述示例中，`json_path` processor 的配置包括以下字段：
+
+- `fields`：要提取的字段名称列表。
+- `json_path`：要提取的 JSON 路径。
+- `ignore_missing`：忽略字段缺失的情况。默认为 `false`。如果字段缺失且此配置设置为 `false`，将抛出异常。
+- `result_index`：要提取的结果值的下标。默认为所有结果，因为结果是一个数组。
+
+#### JSON 路径语法
+
+JSON 路径语法基于 [jsonpath-rust](https://github.com/besok/jsonpath-rust) 库。
+
+在此阶段，我们仅推荐使用一些简单的字段提取操作，以便将嵌套字段提取到顶层。
+
+#### `json_path` 示例
+
+例如，给定以下日志数据：
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  },
+  "product_array": [
+    "hello",
+    "world"
+  ],
+  "complex_object": {
+    "shop": {
+      "orders": [
+        {
+          "id": 1,
+          "active": true
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4,
+          "active": true
+        }
+      ]
+    }
+  }
+}
+```
+
+使用以下配置：
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - product_object, object_target
+      json_path: "$.hello"
+      result_index: 0
+  - json_path:
+      fields:
+        - product_array, array_target
+      json_path: "$.[1]"
+      result_index: 0
+  - json_path:
+      fields:
+        - complex_object, complex_target_1
+      json_path: "$.shop.orders[?(@.active)].id"
+  - json_path:
+      fields:
+        - complex_target_1, complex_target_2
+      json_path: "$.[1]"
+      result_index: 0
+  - json_path:
+      fields:
+        - complex_object, complex_target_3
+      json_path: "$.shop.orders[?(@.active)].id"
+      result_index: 1
+transform:
+  - fields:
+      - object_target
+      - array_target
+    type: string
+  - fields:
+      - complex_target_3
+      - complex_target_2
+    type: uint32
+  - fields:
+      - complex_target_1
+    type: json
+```
+
+结果将是：
+
+```json
+{
+  "object_target": "world",
+  "array_target": "world",
+  "complex_target_3": 4,
+  "complex_target_2": 4,
+  "complex_target_1": [1, 4]
+}
+```
 
 ## Transform
 
