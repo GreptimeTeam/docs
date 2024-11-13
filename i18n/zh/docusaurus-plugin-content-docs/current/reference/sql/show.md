@@ -34,7 +34,7 @@ SHOW DATABASES WHERE Schemas='test_public_schema';
 展示所有数据库，包括它们的选项：
 
 ```sql
-create database with(ttl='7d');
+CREATE DATABASE test WITH(ttl='7d');
 SHOW FULL DATABASES;
 ```
 
@@ -47,6 +47,26 @@ SHOW FULL DATABASES;
 | public             |             |
 | test               | ttl='7days' |
 +--------------------+-------------+
+```
+
+## SHOW CREATE DATABASE
+
+展示创建指定数据库的 `CREATE DATABASE` 语句：
+
+```sql
+SHOW CREATE DATABASE test;
+```
+
+```sql
++----------+------------------------------------------------------------+
+| Database | Create Database                                            |
++----------+------------------------------------------------------------+
+| test     | CREATE DATABASE IF NOT EXISTS test
+WITH(
+  ttl = '7days'
+) |
++----------+------------------------------------------------------------+
+1 row in set (0.01 sec)
 ```
 
 ## SHOW TABLES

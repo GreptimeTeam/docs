@@ -50,6 +50,9 @@ SHOW FULL DATABASES;
 ```
 
 ## SHOW CREATE DATABASE
+
+Shows the `CREATE DATABASE` statement that creates the named database:
+
 ```sql
 SHOW CREATE DATABASE test;
 ```
