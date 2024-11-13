@@ -30,7 +30,6 @@ You can configure the `Selector` by its name when starting the `Metasrv` service
 - LeasebasedSelector: `lease_based` or `LeaseBased`
 - LoadBasedSelector: `load_based` or `LoadBased`
 - RoundRobinSelector: `round_robin` or `RoundRobin`
-```
 
 For example:
 
