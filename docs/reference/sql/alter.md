@@ -102,7 +102,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
 
 The column must be a string type to alter the fulltext index.
 
-When the fulltext index is disabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but cannot re-enable it or modify the options.
+When the fulltext index is disabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but cannot modify the options.
 
 ### Rename table
 
