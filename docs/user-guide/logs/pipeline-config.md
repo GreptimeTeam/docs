@@ -50,7 +50,7 @@ We currently provide the following built-in Processors:
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
 
-Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If we do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
+Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
 
 When a field name contains `,`, the target field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the processed data will be written to the `req_time_sec` key in the intermediate state. The original `reqTimeSec` field is not affected. If some processors do not support field renaming, the renamed field name will be ignored and noted in the documentation.
 
