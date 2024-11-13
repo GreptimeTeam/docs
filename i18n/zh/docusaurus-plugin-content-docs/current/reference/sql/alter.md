@@ -94,10 +94,9 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', an
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 
-目前，修改列的全文索引选项需要：
+修改列的全文索引选项时，列的数据类型必须是字符串类型。
 
-1. 列必须是字符串类型。
-2. 列已经启用了全文索引且 alter 语句中 `enable` 选项为 `false`，或者列没有启用全文索引。
+当列的全文索引选项已经存在时，可以将 `enable` 设置为 `false` 来关闭全文索引，但不能修改其他选项；当列的全文索引选项不存在时，可以将 `enable` 设置为 `true` 来开启全文索引，并设置 `analyzer` 和 `case_sensitive` 选项。
 
 ### 重命名表
 

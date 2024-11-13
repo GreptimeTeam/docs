@@ -94,10 +94,9 @@ You can specify the following options using `FULLTEXT WITH`:
 
 If `WITH` is not specified, `FULLTEXT` will use the default values.
 
-Currently, altering the fulltext index options of a column is supported under the following conditions:
+The column must be a string type to alter the fulltext index.
 
-1. The column is of a string type.
-2. Either the column has fulltext index and the `enable` option in the `ALTER` statement is `false`, or the column does not have fulltext index.
+When the fulltext index is already enabled on a column, you can disable it by setting `enable` to `false` but cannot change the `analyzer` or `case_sensitive` options. When the fulltext index is disabled, you can enable it by setting `enable` to `true` and specifying the `analyzer` and `case_sensitive` options.
 
 ### Rename table
 
