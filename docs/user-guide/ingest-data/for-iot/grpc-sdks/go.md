@@ -221,7 +221,7 @@ affected, err := cli.CloseStream(ctx)
 
 In the [low-level API](#low-level-api),
 you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
-Then, insert JSON data as a string value.
+Then, use a `struct` or `map` to insert JSON data.
 
 ```go
 sensorReadings, err := table.New("sensor_readings")
@@ -230,14 +230,13 @@ sensorReadings, err := table.New("sensor_readings")
 // specify the column type as JSON
 sensorReadings.AddFieldColumn("attributes", types.JSON)
 
-// Insert JSON data as a string value
+// Use struct to insert JSON data
 type Attributes struct {
-    Location string `json:"location"`,
-    Action string `json:"action"`,
+    Location string `json:"location"`
+    Action   string `json:"action"`
 }
 attributes := Attributes{ Location: "factory-1" }
-jsonData, err := json.Marshal(attributes)
-sensorReadings.AddRow(<other-column-values>... , string(jsonData))
+sensorReadings.AddRow(<other-column-values>... , attributes)
 
 // The following code for writing data is omitted
 // ...
@@ -254,16 +253,15 @@ type SensorReadings struct {
     // ...
 }
 
+// Use struct to insert JSON data
 type Attributes struct {
-    Location string `json:"location"`,
-    Action string `json:"action"`,
+    Location string `json:"location"`
+    Action   string `json:"action"`
 }
 attributes := Attributes{ Action: "running" }
-jsonData, err := json.Marshal(attributes)
 sensor := SensorReadings{
     // ...
-    // Insert JSON data as a string value
-    Attributes: string(jsonData),
+    Attributes: attributes,
 }
 
 // The following code for writing data is omitted

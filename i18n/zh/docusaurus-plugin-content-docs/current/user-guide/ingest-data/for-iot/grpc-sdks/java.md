@@ -298,8 +298,8 @@ LOG.info("Write result: {}", result);
 <div id="ingester-json-type">
 
 在[低层级 API](#低层级-api) 中，
-你可以使用 `addField` 方法将列类型指定为 `DataType.JSON` 来添加 JSON 列。
-然后将 JSON 数据作为字符串值插入。
+你可以使用 `addField` 方法将列类型指定为 `DataType.Json` 来添加 JSON 列，
+然后使用 Map 对象添加 JSON 数据。
 
 ```java
 // 为 sensor_readings 表构建表结构
@@ -307,18 +307,20 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
         // 此处省略了创建其他列的代码
         // ...
         // 将列类型指定为 JSON
-        .addField("attributes", DataType.JSON)
+        .addField("attributes", DataType.Json)
         .build();
 
 // ...
-// 使用字符串值添加 JSON 数据
-sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}");
+// 使用 map 添加 JSON 数据
+Map<String, Object> attr = new HashMap<>();
+attr.put("location", "factory-1");
+sensorReadings.addRow(<other-column-values>... , attr);
 
 // 以下省略了写入数据的代码
 // ...
 ```
 
-在[高层级 API](#高层级-api) 中，你可以在 POJO 对象中指定列类型为 `DataType.JSON`。
+在[高层级 API](#高层级-api) 中，你可以在 POJO 对象中指定列类型为 `DataType.Json`。
 
 ```java
 @Metric(name = "sensor_readings")
@@ -326,15 +328,17 @@ public class Sensor {
     // 此处省略了创建其他列的代码
     // ...
     // 将列类型指定为 JSON
-    @Column(name = "attributes", dataType = DataType.JSON)
-    private string attributes;
+    @Column(name = "attributes", dataType = DataType.Json)
+    private Map<String, Object> attributes;
     // ...
 }
 
 Sensor sensor = new Sensor();
 // ...
-// 使用字符串值添加 JSON 数据
-sensor.setAttributes("{\"action\":\"running\"}");
+// 使用 map 添加 JSON 数据
+Map<String, Object> attr = new HashMap<>();
+attr.put("action", "running");
+sensor.setAttributes(attr);
 
 // 以下省略了写入数据的代码
 // ...

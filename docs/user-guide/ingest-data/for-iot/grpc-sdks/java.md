@@ -307,8 +307,8 @@ LOG.info("Write result: {}", result);
 <div id="ingester-json-type">
 
 In the [low-level API](#low-level-api),
-you can specify the column type as `DataType.JSON` using the `addField` method to add a JSON column.
-Then, insert JSON data as a string value.
+you can specify the column type as `DataType.Json` using the `addField` method to add a JSON column.
+Then use map to insert JSON data.
 
 ```java
 // Construct the table schema for sensor_readings
@@ -316,18 +316,20 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
         // The code for creating other columns is omitted
         // ...
         // specify the column type as JSON        
-        .addField("attributes", DataType.JSON)
+        .addField("attributes", DataType.Json)
         .build();
 
 // ...
-// Add JSON data as a string value
-sensorReadings.addRow(<other-column-values>... , "{\"location\":\"factory-1\"}");
+// Use map to insert JSON data
+Map<String, Object> attr = new HashMap<>();
+attr.put("location", "factory-1");
+sensorReadings.addRow(<other-column-values>... , attr);
 
 // The following code for writing data is omitted
 // ...
 ```
 
-In the [high-level API](#high-level-api), you can specify the column type as `DataType.JSON` within the POJO object.
+In the [high-level API](#high-level-api), you can specify the column type as `DataType.Json` within the POJO object.
 
 ```java
 @Metric(name = "sensor_readings")
@@ -335,16 +337,17 @@ public class Sensor {
     // The code for creating other columns is omitted
     // ...
     // specify the column type as JSON        
-    @Column(name = "attributes", dataType = DataType.JSON)
-    private string attributes;
+    @Column(name = "attributes", dataType = DataType.Json)
+    private Map<String, Object> attributes;
     // ...
 }
 
 Sensor sensor = new Sensor();
 // ...
-// Add JSON data as a string value
-sensor.setAttributes("{\"action\":\"running\"}");
-
+// Use map to insert JSON data
+Map<String, Object> attr = new HashMap<>();
+attr.put("action", "running");
+sensor.setAttributes(attr);
 
 // The following code for writing data is omitted
 // ...

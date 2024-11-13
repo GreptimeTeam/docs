@@ -198,7 +198,7 @@ affected, err := cli.CloseStream(ctx)
 
 在[低层级 API](#低层级-api) 中，
 你可以使用 `AddFieldColumn` 方法将列类型指定为 `types.JSON` 来添加 JSON 列。
-然后将 JSON 数据作为字符串值插入。
+然后使用 `struct` 或 `map` 插入 JSON 数据。
 
 ```go
 sensorReadings, err := table.New("sensor_readings")
@@ -207,14 +207,13 @@ sensorReadings, err := table.New("sensor_readings")
 // 将列类型指定为 JSON
 sensorReadings.AddFieldColumn("attributes", types.JSON)
 
-// 使用字符串值插入 JSON 数据
+// 使用 struct 插入 JSON 数据
 type Attributes struct {
-    Location string `json:"location"`,
-    Action string `json:"action"`,
+    Location string `json:"location"`
+    Action   string `json:"action"`
 }
 attributes := Attributes{ Location: "factory-1" }
-jsonData, err := json.Marshal(attributes)
-sensorReadings.AddRow(<other-column-values>... , string(jsonData))
+sensorReadings.AddRow(<other-column-values>... , attributes)
 
 // 以下省略了写入数据的代码
 // ...
@@ -231,16 +230,15 @@ type SensorReadings struct {
     // ...
 }
 
+// 使用 struct 插入 JSON 数据
 type Attributes struct {
-    Location string `json:"location"`,
-    Action string `json:"action"`,
+    Location string `json:"location"`
+    Action   string `json:"action"`
 }
 attributes := Attributes{ Action: "running" }
-jsonData, err := json.Marshal(attributes)
 sensor := SensorReadings{
     // ...
-    // 使用字符串值插入 JSON 数据
-    Attributes: string(jsonData),
+    Attributes: attributes,
 }
 
 // 以下省略了写入数据的代码
