@@ -92,7 +92,7 @@ You can specify the following options using `FULLTEXT WITH` when enabling fullte
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
 
-If `WITH` is not specified, `FULLTEXT` will use the default values.
+If `WITH <options>` is not specified, `FULLTEXT` will use the default values.
 
 Disable fulltext index on a column:
 
