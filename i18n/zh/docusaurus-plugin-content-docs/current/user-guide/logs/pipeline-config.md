@@ -52,9 +52,9 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
 
-大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
+大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
 
-当字段名称包含 `,` 时，该字段将被重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，处理完成后的数据将写入中间状态的 `req_time_sec` key 中。原始的 `reqTimeSec` 字段不受影响。如果某些 Processor 不支持字段重命名，则重命名字段名称将被忽略，并将在文档中注明。
+当字段名称包含 `,` 时，该字段将被重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，处理完成后的数据将写入中间状态的 `req_time_sec` 字段中。原始的 `reqTimeSec` 字段不受影响。如果某些 Processor 不支持字段重命名，则重命名字段名称将被忽略，并将在文档中注明。
 
 例如：
 
