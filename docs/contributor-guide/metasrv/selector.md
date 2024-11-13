@@ -10,30 +10,35 @@ There is a specific scenario in `Metasrv` service. When a request to create a ta
 
 ## Selector Type
 
-Currently, there are two types of `Selector` available in the `Metasrv` service: `LeasebasedSelector` and `LoadBasedSelector`.
+The `Metasrv` service currently offers the following types of `Selectors`:
 
-### LeasebasedSelector [not recommended]
+### LeasebasedSelector
 
-`LeasebasedSelector` is just a simple implementation of `Selector`, but **it is not recommended**.
-
-It shuffles available `Datanode`s, and returns the list.
+`LeasebasedSelector` randomly selects from all available (in lease) `Datanode`s, its characteristic is simplicity and fast.
 
 ### LoadBasedSelector
 
-`LoadBasedSelector` is another implementation of the `Selector`.
+The `LoadBasedSelector` load value is determined by the number of regions on each `Datanode`; fewer regions indicate lower load, and `LoadBasedSelector` prioritizes selecting low-load `Datanodes`.
 
-It sorts available `Datanode`s according to the load, and returns a sorted list of these `Datanode`s.
+### RoundRobinSelector [default]
+`RoundRobinSelector` selects `Datanode`s in a round-robin fashion. It is recommended and the default option in most cases. If you're unsure which to choose, it's usually the right choice.
 
 ## Configuration
 
-You can configure the `Selector` when starting the `Metasrv` service, with the default being `LoadBasedSelector`.
+You can configure the `Selector` by its name when starting the `Metasrv` service.
+
+```
+LeasebasedSelector -> `lease_based` or `LeaseBased`
+LoadBasedSelector -> `load_based` or `LoadBased`
+RoundRobinSelector -> `round_robin` or `RoundRobin`
+```
 
 For example:
 
 ```shell
-cargo run -- metasrv start --selector load_based
+cargo run -- metasrv start --selector round_robin
 ```
 
 ```shell
-cargo run -- metasrv start --selector lease_based
+cargo run -- metasrv start --selector RoundRobin
 ```
