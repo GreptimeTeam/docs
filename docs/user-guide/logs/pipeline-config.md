@@ -50,6 +50,23 @@ We currently provide the following built-in Processors:
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
 
+Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If we do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
+
+When a field name contains `,`, the target field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the processed data will be written to the `req_time_sec` key in the intermediate state. The original `reqTimeSec` field is not affected. If some processors do not support field renaming, the renamed field name will be ignored and noted in the documentation.
+
+for example
+
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, message_upper
+      method: upper
+      ignore_missing: true
+```
+
+the `message` field will be converted to uppercase and stored in the `message_upper` field.
+
 ### `date`
 
 The `date` processor is used to parse time fields. Here's an example configuration:
@@ -108,7 +125,7 @@ processors:
 
 In the above example, the configuration of the `dissect` processor includes the following fields:
 
-- `fields`: A list of field names to be split.
+- `fields`: A list of field names to be split. does not support field renaming.
 - `patterns`: The dissect pattern for splitting.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `append_separator`: Specifies the separator for concatenating multiple fields with same field name together. Defaults to an empty string. See `+` modifier below.
@@ -260,7 +277,7 @@ processors:
 
 In the above example, the configuration of the `regex` processor includes the following fields:
 
-- `fields`: A list of field names to be matched.
+- `fields`: A list of field names to be matched. If you rename the field, the renamed fields will be combined with the capture groups in `pattens` to generate the result name.
 - `pattern`: The regular expression pattern to match. Named capture groups are required to extract corresponding data from the respective field.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
@@ -347,7 +364,7 @@ In the above example, the configuration of the `json_path` processor includes th
 - `fields`: A list of field names to be extracted.
 - `json_path`: The JSON path to extract.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
-- `result_index`: The index of the result to extract. Defaults to all results. because the result is an array.
+- `result_index`: Specifies the index of the value in the extracted array to be used as the result value. By default, all values are included. The extracted value of the processor is an array containing all the values of the path. If an index is specified, the corresponding value in the extracted array will be used as the final result.
 
 #### JSON path syntax
 

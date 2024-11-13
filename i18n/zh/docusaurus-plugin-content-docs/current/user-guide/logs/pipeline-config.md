@@ -52,6 +52,23 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
 
+大多数 Processor 都有 `field` 或 `fields` 字段。用于指定需要处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果我们不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
+
+当字段名称包含 `,` 时，该字段将被重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，处理完成后的数据将写入中间状态的 `req_time_sec` key 中。原始的 `reqTimeSec` 字段不受影响。如果某些 Processor 不支持字段重命名，则重命名字段名称将被忽略，并将在文档中注明。
+
+例如：
+
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, message_upper
+      method: upper
+      ignore_missing: true
+```
+
+`message` 字段将被转换为大写并存储在 `message_upper` 字段中。
+
 ### `date`
 
 `date` Processor 用于解析时间字段。示例配置如下：
@@ -110,7 +127,7 @@ processors:
 
 如上所示，`dissect` Processor 的配置包含以下字段：
 
-- `fields`: 需要拆分的字段名列表。
+- `fields`: 需要拆分的字段名列表。不支持字段重命名。
 - `patterns`: 拆分的 dissect 模式。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 - `append_separator`: 对于多个追加到一起的字段，指定连接符。默认是一个空字符串。
@@ -262,7 +279,7 @@ processors:
 
 如上所示，`regex` Processor 的配置包含以下字段：
 
-- `fields`: 需要匹配的字段名列表。
+- `fields`: 需要匹配的字段名列表。如果重命名了字段，重命名后的字段名将与 `pattern` 中的命名捕获组名进行拼接。
 - `pattern`: 要进行匹配的正则表达式，需要使用命名捕获组才可以从对应字段中取出对应数据。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
@@ -350,7 +367,7 @@ processors:
 - `fields`：要提取的字段名称列表。
 - `json_path`：要提取的 JSON 路径。
 - `ignore_missing`：忽略字段缺失的情况。默认为 `false`。如果字段缺失且此配置设置为 `false`，将抛出异常。
-- `result_index`：要提取的结果值的下标。默认为所有结果，因为结果是一个数组。
+- `result_index`：指定提取数组中要用作结果值的下标。默认情况下，包含所有值。Processor 提取的结果值是包含 path 中所有值的数组。如果指定了索引，将使用提取数组中对应的下标的值作为最终结果。
 
 #### JSON 路径语法
 
