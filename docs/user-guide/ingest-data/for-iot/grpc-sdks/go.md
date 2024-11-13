@@ -217,6 +217,61 @@ affected, err := cli.CloseStream(ctx)
 
 </div>
 
+<div id="ingester-json-type">
+
+In the [low-level API](#low-level-api),
+you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
+Then, use a `struct` or `map` to insert JSON data.
+
+```go
+sensorReadings, err := table.New("sensor_readings")
+// The code for creating other columns is omitted
+// ...
+// specify the column type as JSON
+sensorReadings.AddFieldColumn("attributes", types.JSON)
+
+// Use struct to insert JSON data
+type Attributes struct {
+    Location string `json:"location"`
+    Action   string `json:"action"`
+}
+attributes := Attributes{ Location: "factory-1" }
+sensorReadings.AddRow(<other-column-values>... , attributes)
+
+// The following code for writing data is omitted
+// ...
+```
+
+In the [high-level API](#high-level-api), you can specify the column type as JSON using the `greptime:"field;column:details;type:json"` tag.
+
+```go
+type SensorReadings struct {
+    // The code for creating other columns is omitted
+    // ...
+    // specify the column type as JSON
+    Attributes string `greptime:"field;column:details;type:json"`
+    // ...
+}
+
+// Use struct to insert JSON data
+type Attributes struct {
+    Location string `json:"location"`
+    Action   string `json:"action"`
+}
+attributes := Attributes{ Action: "running" }
+sensor := SensorReadings{
+    // ...
+    Attributes: attributes,
+}
+
+// The following code for writing data is omitted
+// ...
+```
+
+For the executable code for inserting JSON data, please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) in the SDK repository.
+
+</div>
+
 <div id="ingester-lib-reference">
 
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)

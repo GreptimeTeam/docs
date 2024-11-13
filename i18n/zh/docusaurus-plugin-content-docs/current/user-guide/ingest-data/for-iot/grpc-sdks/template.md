@@ -24,7 +24,7 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 ## 数据模型
 
 表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
-列值的类型可以是 `String`、`Float`、`Int`、`Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
+列值的类型可以是 `String`、`Float`、`Int`、`JSON`, `Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
 
 ## 低层级 API
 
@@ -85,6 +85,15 @@ SDK 的高层级 API 使用 ORM 风格的对象写入数据，
 <InjectContent id="high-level-style-streaming-insert" content={props.children}/>
 
 <InjectContent id="high-level-style-update-data" content={props.children}/>
+
+## 插入 JSON 类型的数据
+
+GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-类型) 存储复杂的数据结构。
+使用此 ingester 库，你可以通过字符串值插入 JSON 数据。
+假如你有一个名为 `sensor_readings` 的表，并希望添加一个名为 `attributes` 的 JSON 列，
+请参考以下代码片段。
+
+<InjectContent id="ingester-json-type" content={props.children}/>
 
 <InjectContent id="ingester-lib-debug-logs" content={props.children}/>
 

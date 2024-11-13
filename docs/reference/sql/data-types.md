@@ -222,8 +222,7 @@ Output:
 
 :::warning Limitation
 
-1. The gRPC protocol does not support inserting JSON data through automatic table creation. However, you can manually create a table and insert JSON data by defining the JSON column as a String type.
-2. The insertion of JSON data using MySQL protocol prepared statements is not supported.
+The insertion of JSON data using MySQL protocol prepared statements is not supported.
 
 :::
 

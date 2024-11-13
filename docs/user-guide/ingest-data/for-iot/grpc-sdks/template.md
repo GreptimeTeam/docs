@@ -25,7 +25,7 @@ The following example shows how to set the username and password when using the 
 ## Data model
 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
-The types of column values could be `String`, `Float`, `Int`, `Timestamp`, etc. For more information, see [Data Types](/reference/sql/data-types.md).
+The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON` etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
 ## Low-level API
 
@@ -87,6 +87,15 @@ Streaming insert is useful when you want to insert a large amount of data such a
 <InjectContent id="high-level-style-streaming-insert" content={props.children}/>
 
 <InjectContent id="high-level-style-update-data" content={props.children}/>
+
+## Insert data in JSON type
+
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
+With this ingester library, you can insert JSON data using string values.
+For instance, if you have a table named `sensor_readings` and wish to add a JSON column named `attributes`,
+refer to the following code snippet.
+
+<InjectContent id="ingester-json-type" content={props.children}/>
 
 <InjectContent id="ingester-lib-debug-logs" content={props.children}/>
 
