@@ -50,6 +50,23 @@ We currently provide the following built-in Processors:
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
 
+Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
+
+When a field name contains `,`, the target field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the processed data will be written to the `req_time_sec` key in the intermediate state. The original `reqTimeSec` field is not affected. If some processors do not support field renaming, the renamed field name will be ignored and noted in the documentation.
+
+for example
+
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, message_upper
+      method: upper
+      ignore_missing: true
+```
+
+the `message` field will be converted to uppercase and stored in the `message_upper` field.
+
 ### `date`
 
 The `date` processor is used to parse time fields. Here's an example configuration:
@@ -108,7 +125,7 @@ processors:
 
 In the above example, the configuration of the `dissect` processor includes the following fields:
 
-- `fields`: A list of field names to be split.
+- `fields`: A list of field names to be split, does not support field renaming.
 - `patterns`: The dissect pattern for splitting.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `append_separator`: Specifies the separator for concatenating multiple fields with same field name together. Defaults to an empty string. See `+` modifier below.
@@ -260,7 +277,7 @@ processors:
 
 In the above example, the configuration of the `regex` processor includes the following fields:
 
-- `fields`: A list of field names to be matched.
+- `fields`: A list of field names to be matched. If you rename the field, the renamed fields will be combined with the capture groups in `patterns` to generate the result name.
 - `pattern`: The regular expression pattern to match. Named capture groups are required to extract corresponding data from the respective field.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
@@ -325,6 +342,125 @@ In the above example, the configuration of the `csv` processor includes the foll
 - `quote`: The quotation mark.
 - `trim`: Whether to trim whitespace. Defaults to `false`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
+
+### `json_path` (experimental)
+
+Note: The `json_path` processor is currently in the experimental stage and may be subject to change.
+
+The `json_path` processor is used to extract fields from JSON data. Here's an example configuration:
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - complex_object
+      json_path: "$.shop.orders[?(@.active)].id"
+      ignore_missing: true
+      result_index: 1
+```
+
+In the above example, the configuration of the `json_path` processor includes the following fields:
+
+- `fields`: A list of field names to be extracted.
+- `json_path`: The JSON path to extract.
+- `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
+- `result_index`: Specifies the index of the value in the extracted array to be used as the result value. By default, all values are included. The extracted value of the processor is an array containing all the values of the path. If an index is specified, the corresponding value in the extracted array will be used as the final result.
+
+#### JSON path syntax
+
+The JSON path syntax is based on the [jsonpath-rust](https://github.com/besok/jsonpath-rust) library.
+
+At this stage we only recommend using some simple field extraction operations to facilitate the extraction of nested fields to the top level.
+
+#### `json_path` example
+
+For example, given the following log data:
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  },
+  "product_array": [
+    "hello",
+    "world"
+  ],
+  "complex_object": {
+    "shop": {
+      "orders": [
+        {
+          "id": 1,
+          "active": true
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4,
+          "active": true
+        }
+      ]
+    }
+  }
+}
+```
+
+Using the following configuration:
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - product_object, object_target
+      json_path: "$.hello"
+      result_index: 0
+  - json_path:
+      fields:
+        - product_array, array_target
+      json_path: "$.[1]"
+      result_index: 0
+  - json_path:
+      fields:
+        - complex_object, complex_target_1
+      json_path: "$.shop.orders[?(@.active)].id"
+  - json_path:
+      fields:
+        - complex_target_1, complex_target_2
+      json_path: "$.[1]"
+      result_index: 0
+  - json_path:
+      fields:
+        - complex_object, complex_target_3
+      json_path: "$.shop.orders[?(@.active)].id"
+      result_index: 1
+transform:
+  - fields:
+      - object_target
+      - array_target
+    type: string
+  - fields:
+      - complex_target_3
+      - complex_target_2
+    type: uint32
+  - fields:
+      - complex_target_1
+    type: json
+```
+
+The result will be:
+
+```json
+{
+  "object_target": "world",
+  "array_target": "world",
+  "complex_target_3": 4,
+  "complex_target_2": 4,
+  "complex_target_1": [1, 4]
+}
+```
 
 
 ## Transform
