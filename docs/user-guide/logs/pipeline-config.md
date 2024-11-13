@@ -277,7 +277,7 @@ processors:
 
 In the above example, the configuration of the `regex` processor includes the following fields:
 
-- `fields`: A list of field names to be matched. If you rename the field, the renamed fields will be combined with the capture groups in `pattens` to generate the result name.
+- `fields`: A list of field names to be matched. If you rename the field, the renamed fields will be combined with the capture groups in `patterns` to generate the result name.
 - `pattern`: The regular expression pattern to match. Named capture groups are required to extract corresponding data from the respective field.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
