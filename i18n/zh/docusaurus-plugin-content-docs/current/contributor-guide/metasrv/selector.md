@@ -21,7 +21,7 @@
 `LoadBasedSelector` 按照负载来选择，负载值则由每个 `Datanode` 上的 region 数量决定，较少的 region 表示较低的负载，`LoadBasedSelector` 优先选择低负载的 `Datanode`。
 
 ### RoundRobinSelector [默认选项]
-`RoundRobinSelector` 以轮询的方式选择 `Datanode`。在大多数情况下，这是默认的且背推荐的选项。如果你不确定选择哪个，通常它就是正确的选择。
+`RoundRobinSelector` 以轮询的方式选择 `Datanode`。在大多数情况下，这是默认的且推荐的选项。如果你不确定选择哪个，通常它就是正确的选择。
 
 ## 配置
 
