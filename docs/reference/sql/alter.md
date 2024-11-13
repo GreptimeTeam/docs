@@ -13,6 +13,7 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
+    | MODIFY COLUMN name UNSET FULLTEXT
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
    ]
@@ -80,23 +81,28 @@ ALTER TABLE monitor SET 'ttl'='1d';
 
 ### Modify column fulltext index options
 
-Modify the fulltext index options of a column.
+Enable fulltext index on a column:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (enable = 'true', analyzer = 'Chinese', case_sensitive = 'false');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese', case_sensitive = 'false');
 ```
 
-You can specify the following options using `FULLTEXT WITH`:
+You can specify the following options using `FULLTEXT WITH` when enabling fulltext options:
 
-- `enable`: Determines whether the full-text index is enabled. Supported values are `true` and `false`. Default is `true`.
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
 
 If `WITH` is not specified, `FULLTEXT` will use the default values.
 
+Disable fulltext index on a column:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
+```
+
 The column must be a string type to alter the fulltext index.
 
-When the fulltext index is already enabled on a column, you can disable it by setting `enable` to `false` but cannot change the `analyzer` or `case_sensitive` options. When the fulltext index is disabled, you can enable it by setting `enable` to `true` and specifying the `analyzer` and `case_sensitive` options.
+When the fulltext index is disabled, you can enable it and specifying the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but cannot re-enable it or modify the options.
 
 ### Rename table
 
