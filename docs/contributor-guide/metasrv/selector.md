@@ -18,7 +18,7 @@ The `Metasrv` service currently offers the following types of `Selectors`:
 
 ### LoadBasedSelector
 
-The `LoadBasedSelector` load value is determined by the number of regions on each `Datanode`; fewer regions indicate lower load, and `LoadBasedSelector` prioritizes selecting low-load `Datanodes`.
+The `LoadBasedSelector` load value is determined by the number of regions on each `Datanode`, fewer regions indicate lower load, and `LoadBasedSelector` prioritizes selecting low-load `Datanodes`.
 
 ### RoundRobinSelector [default]
 `RoundRobinSelector` selects `Datanode`s in a round-robin fashion. It is recommended and the default option in most cases. If you're unsure which to choose, it's usually the right choice.

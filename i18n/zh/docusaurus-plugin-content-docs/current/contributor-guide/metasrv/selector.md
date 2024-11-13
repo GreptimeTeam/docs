@@ -10,30 +10,33 @@
 
 ## Selector 类型
 
-目前，在 `Metasrv` 中有两种类型的 `Selector` 可用：`LeasebasedSelector` 和 `LoadBasedSelector`。
+`Metasrv` 目前提供以下几种类型的 `Selectors`:
 
-### LeasebasedSelector [不推荐]
+### LeasebasedSelector
 
-`LeasebasedSelector` 只是 `Selector` 的一个简单实现，但并不推荐。
-
-它会对可用的 `Datanode`s 进行随机排序，然后返回列表。
+`LeasebasedSelector` 从所有可用的（也就是在租约期间内）`Datanode` 中随机选择，其特点是简单和快速。
 
 ### LoadBasedSelector
 
-`LoadBasedSelector` 是 `Selector` 的另一种实现。
+`LoadBasedSelector` 按照负载来选择，负载值则由每个 `Datanode` 上的 region 数量决定，较少的 region 表示较低的负载，`LoadBasedSelector` 优先选择低负载的 `Datanode`。
 
-它根据负载对可用的 `Datanode`s 进行排序，然后返回一个已排序的 `Datanode` 列表。
+### RoundRobinSelector [默认选项]
+`RoundRobinSelector` 以轮询的方式选择 `Datanode`。在大多数情况下，这是默认的且背推荐的选项。如果你不确定选择哪个，通常它就是正确的选择。
 
 ## 配置
 
-在启动 `Metasrv` 服务时，您可以配置 `Selector`，默认值是 `LoadBasedSelector`。
+您可以在启动 `Metasrv` 服务时通过名称配置 `Selector`。
+
+- LeasebasedSelector: `lease_based` 或 `LeaseBased`
+- LoadBasedSelector: `load_based` 或 `LoadBased`
+- RoundRobinSelector: `round_robin` 或 `RoundRobin`
 
 例如：
 
 ```shell
-cargo run -- metasrv start --selector load_based
+cargo run -- metasrv start --selector round_robin
 ```
 
 ```shell
-cargo run -- metasrv start --selector lease_based
+cargo run -- metasrv start --selector RoundRobin
 ```
