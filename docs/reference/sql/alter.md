@@ -71,7 +71,13 @@ The modified column cannot be a tag (primary key) or time index, and it must be 
 `ALTER TABLE` statements can also be used to change the options of tables. 
 
 Currently following options are supported:
-- `ttl`: the retention time of data in table
+- `ttl`: the retention time of data in table.
+- `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy.
+- `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
+- `compaction.twcs.max_active_window_runs`: the maximum allowed sorted runs in the active window of TWCS compaction strategy.
+- `compaction.twcs.max_inactive_window_runs`: the maximum allowed sorted runs in the inactive windows of TWCS compaction strategy.
+- `compaction.twcs.max_active_window_files`: the maximum allowed number of files in the active window of TWCS compaction strategy.
+- `compaction.twcs.max_inactive_window_files`: the maximum allowed number of files in the inactive windows of TWCS compaction strategy.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
