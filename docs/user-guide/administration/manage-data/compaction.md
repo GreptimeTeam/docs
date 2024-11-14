@@ -66,11 +66,12 @@ It assigns files to be compacted into different time windows. For each window, T
 For window assignment, SST files may span multiple time windows. TWCS assigns SSTs based on their maximum timestamps to ensure they are not affected by stale data. In time-series workloads, out-of-order writes are infrequent, and even when they occur, recent data's query performance is more critical than that of stale data.
 
 
-TWCS provides 4 parameters:
+TWCS provides 5 parameters:
 - `max_active_window_runs`: max allowed sorted runs in the active window (default: 4)
 - `max_active_window_files`: max allowed files in the active window (default: 4)
 - `max_inactive_window_runs`: max allowed sorted runs in inactive windows (default: 1)
 - `max_inactive_window_files`: max allowed files in inactive windows (default: 1)
+- `max_output_file_size`: max allowed compaction output file size (no limit by default).
 
 You can set different thresholds for active and inactive windows. This is important because out-of-order writes typically occur in the active window. By allowing more overlapping files in the active window, TWCS reduces write amplification during ingestion and merges all these files when the active window becomes inactive.
 
@@ -97,7 +98,8 @@ WITH (
     'compaction.twcs.max_active_window_runs'='4', 
     'compaction.twcs.max_active_window_files'='8', 
     'compaction.twcs.max_inactive_window_runs'='1',
-    'compaction.twcs.max_inactive_window_files'='2'
+    'compaction.twcs.max_inactive_window_files'='2',
+    'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
 
