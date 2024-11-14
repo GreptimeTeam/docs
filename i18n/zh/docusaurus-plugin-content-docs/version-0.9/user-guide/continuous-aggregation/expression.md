@@ -18,6 +18,6 @@ Flow 支持大多数 datafusion 中的标量函数，有关支持的标量函数
 
 以下是一些 flow 中最常用的标量函数：
 
-- [`date_bin`](/reference/sql/functions/df-functions.md#date-bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
-- [`date_trunc`](/reference/sql/functions/df-functions.md#date-trunc): truncate a timestamp value to a specified precision.
+- [`date_bin`](/reference/sql/functions/df-functions.md#date_bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
+- [`date_trunc`](/reference/sql/functions/df-functions.md#date_trunc): truncate a timestamp value to a specified precision.
 - [`trunc`](/reference/sql/functions/df-functions.md#trunc): truncate a number to a whole number or truncated to the specified decimal places.

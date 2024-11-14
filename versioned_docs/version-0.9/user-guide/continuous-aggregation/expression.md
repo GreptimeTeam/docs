@@ -18,6 +18,6 @@ Flow support most scalar functions from datafusion, see the full list of support
 
 And here are some of the most commonly used scalar functions in flow:
 
-- [`date_bin`](/reference/sql/functions/df-functions.md#date-bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
-- [`date_trunc`](/reference/sql/functions/df-functions.md#date-trunc): truncate a timestamp value to a specified precision.
+- [`date_bin`](/reference/sql/functions/df-functions.md#date_bin): calculate time intervals and returns the start of the interval nearest to the specified timestamp.
+- [`date_trunc`](/reference/sql/functions/df-functions.md#date_trunc): truncate a timestamp value to a specified precision.
 - [`trunc`](/reference/sql/functions/df-functions.md#trunc): truncate a number to a whole number or truncated to the specified decimal places.
