@@ -81,6 +81,18 @@ Currently following options are supported:
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
+
+ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_files'='2';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_active_window_files'='2';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
 ### Rename table
