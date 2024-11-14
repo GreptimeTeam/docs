@@ -65,11 +65,12 @@ TWCS 主要旨在减少压缩过程中的读 / 写放大。
 
 对于窗口分配，SST 文件可能跨越多个时间窗口。为了确保不受陈旧数据影响，TWCS 根据 SST 的最大时间戳来进行分配。在时间序列工作负载中，无序写入很少发生，即使发生了，最近数据的查询性能也比陈旧数据更为重要。
 
-TWCS 提供了 4 个参数供调整:
+TWCS 提供了 5 个参数供调整:
 - `max_active_window_runs`: 活跃窗口中最大允许存在的有序组数量（默认为 4）
 - `max_active_window_files`: 活跃窗口中最大允许存在的文件数量（默认为 4）
 - `max_inactive_window_runs`: 非活跃窗口中最大允许存在的有序组数量（默认为 1）
 - `max_inactive_window_files`: 非活跃窗口中最大允许存在的文件数量（默认为 1）
+- `max_output_file_size`: compaction 产生文件的最大大小（默认无限制）
 
 您可以为活跃窗口和非活跃窗口设置不同的阈值。这很重要，因为乱序写入通常发生在活跃窗口中。通过允许更多重叠文件存在于活跃窗口，TWCS 在数据摄取过程中减少了写放大，并在活跃窗口变为非活跃时合并所有这些文件。
 
@@ -96,7 +97,8 @@ WITH (
     'compaction.twcs.max_active_window_runs'='4', 
     'compaction.twcs.max_active_window_files'='8', 
     'compaction.twcs.max_inactive_window_runs'='1',
-    'compaction.twcs.max_inactive_window_files'='2'
+    'compaction.twcs.max_inactive_window_files'='2',
+    'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
 
