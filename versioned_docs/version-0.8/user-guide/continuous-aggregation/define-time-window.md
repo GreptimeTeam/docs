@@ -21,8 +21,8 @@ tumble(col, interval, start_time)
 
 - `col` specifies use which column to compute the time window. The provided column must have a timestamp type.
 - `interval` specifies the size of the window. The `tumble` function divides the time column into fixed-size windows and aggregates the data in each window.
-- `start_time` specify the start time of the first window.
-<!-- - `start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender. -->
+<!-- - `start_time` specify the start time of the first window. -->
+- `start_time` is an optional parameter to specify the start time of the first window. If not provided, the start time will be aligned to calender.
 
 ## Hop (not supported yet)
 
