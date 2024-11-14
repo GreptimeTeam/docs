@@ -60,10 +60,15 @@ Output:
 
 | Type Name | Description | Size |
 |-----------|-------------|------|
-| `TimestampSecond` | 64-bit timestamp values with seconds precision | 8 Bytes |
-| `TimestampMillisecond` | 64-bit timestamp values with milliseconds precision | 8 Bytes |
-| `TimestampMicroSecond` | 64-bit timestamp values with microseconds precision | 8 Bytes |
-| `TimestampNanosecond` | 64-bit timestamp values with nanoseconds precision | 8 Bytes |
+| `TimestampSecond` | 64-bit timestamp values with seconds precision, range: `[-262144-01-01 00:00:00, +262143-12-31 23:59:59]` | 8 Bytes |
+| `TimestampMillisecond` | 64-bit timestamp values with milliseconds precision, range: `[-262144-01-01 00:00:00.000, +262143-12-31 23:59:59.999]` | 8 Bytes |
+| `TimestampMicroSecond` | 64-bit timestamp values with microseconds precision, range: `[-262144-01-01 00:00:00.000000, +262143-12-31 23:59:59.999999]` | 8 Bytes |
+| `TimestampNanosecond` | 64-bit timestamp values with nanoseconds precision, range: `[1677-09-21 00:12:43.145225, 2262-04-11 23:47:16.854775807]` | 8 Bytes |
+| `Interval`|  Time interval | 4 Bytes for `YearMonth`, 8 Bytes for `DayTime` and 16 Bytes for `MonthDayNano`|
+
+:::tip NOTE
+When inserting Timestamp string literals to GreptimeDB using MySQL/PostgreSQL protocol, the value range is limited to '0001-01-01 00:00:00' to '9999-12-31 23:59:59'.
+:::
 
 ## Boolean Type
 
