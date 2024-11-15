@@ -122,13 +122,12 @@ greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --data
    - Monitor system performance during operations
 
 2. **Backup Strategy**
-   - Regular schema backups
    - Incremental data backups using time ranges
-   - Periodic full backups for disaster recovery
+   - Periodic backups for disaster recovery
 
 3. **Error Handling**
    - Use `--max-retry` for handling transient failures
-   - Keep logs for troubleshootin
+   - Keep logs for troubleshooting
 
 ## Troubleshooting
 
