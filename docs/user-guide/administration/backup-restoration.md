@@ -17,7 +17,7 @@ greptime export [OPTIONS]
 |--------|----------|---------|-------------|
 | --addr | Yes | - | Server address to connect |
 | --output-dir | Yes | - | Directory to store exported data |
-| --database | No | greptime-* | Name of the database to export |
+| --database | No | all databasses | Name of the database to export |
 | --export-jobs, -j | No | 1 | Number of parallel export jobs |
 | --max-retry | No | 3 | Maximum retry attempts per job |
 | --target, -t | No | all | Export target (schema/data/all) |
@@ -33,7 +33,7 @@ greptime export [OPTIONS]
 ### Output Directory Structure
 ```
 <output-dir>/
-└── <catalog>/
+└── greptime/
     └── <database>/
         ├── create_database.sql
         ├── create_tables.sql
@@ -53,7 +53,7 @@ greptime import [OPTIONS]
 |--------|----------|---------|-------------|
 | --addr | Yes | - | Server address to connect |
 | --input-dir | Yes | - | Directory containing backup data |
-| --database | No | greptime-* | Name of the database to import |
+| --database | No | all databases | Name of the database to import |
 | --import-jobs, -j | No | 1 | Number of parallel import jobs |
 | --max-retry | No | 3 | Maximum retry attempts per job |
 | --target, -t | No | all | Import target (schema/data/all) |
@@ -68,10 +68,10 @@ greptime import [OPTIONS]
 
 ### Full Databases Backup
 ```bash
-# Export all databases(in default catalog) backup
+# Export all databases backup
 greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
 
-# Import all databases(in default catalog)
+# Import all databases
 greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
 ```
 
@@ -93,16 +93,13 @@ greptime export --addr localhost:4000 \
     --end-time "2024-01-31 23:59:59"
 ```
 
-### Specific Catalog/Database Backup
+### Specific Database Backup
 ```bash
-# To export a specific catalog
-greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_catalog_name}-*'
-# To export a specific database from the default catalog
+# To export a specific database
 greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
-# To export a specific database from a particular catalog
-greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_catalog_name}-{my_database_name}'
 
 # The same applies to import tool
+greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
 ```
 
 ## Best Practices
@@ -131,7 +128,6 @@ greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --data
 
 2. **Permission Issues**
    - Verify read/write permissions on output/input directories
-   - Check database user permissions
 
 3. **Resource Constraints**
    - Reduce parallel jobs
