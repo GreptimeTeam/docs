@@ -2,15 +2,6 @@
 
 This guide describes how to use GreptimeDB's Export and Import tools for database backup and restoration.
 
-## Table of Contents
-- [Overview](#overview)
-- [Export Tool](#export-tool)
-- [Import Tool](#import-tool)
-- [Common Usage Scenarios](#common-usage-scenarios)
-- [Best Practices](#best-practices)
-- [Troubleshooting](#troubleshooting)
-
-## Overview
 
 The Export and Import tools provide functionality for backing up and restoring GreptimeDB databases. These tools can handle both schema and data, allowing for complete or selective backup and restoration operations.
 
