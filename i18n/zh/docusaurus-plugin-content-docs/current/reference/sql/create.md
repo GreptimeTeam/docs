@@ -276,7 +276,7 @@ Query OK, 0 rows affected (0.01 sec)
 如果不带 `WITH` 选项，`FULLTEXT` 将使用默认值：
 
 - `analyzer`：默认 `English`
-- `case_sensitive`：默认 `true`
+- `case_sensitive`：默认 `false`
 
 例如，要创建一个带有全文索引的表，配置 `log` 列为全文索引，并指定分析器为 `Chinese` 且不区分大小写：
 
