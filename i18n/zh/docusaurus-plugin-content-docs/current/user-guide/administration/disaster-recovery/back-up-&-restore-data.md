@@ -56,7 +56,7 @@ greptime import [选项]
 | --import-jobs, -j | 否 | 1 | 并行导入任务数量（多个数据库可以并行导入） |
 | --max-retry | 否 | 3 | 每个任务的最大重试次数 |
 | --target, -t | 否 | all | 导入目标（schema/data/all） |
-| --auth-basic | 否 | - | 使用 `<用户名>:<密码>` 格式 |
+| --auth-basic | 否 | - | 使用 `<username>:<password>` 格式 |
 
 ### 导入目标
 - `schema`: 仅导入表结构
