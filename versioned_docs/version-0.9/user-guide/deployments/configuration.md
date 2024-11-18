@@ -179,6 +179,17 @@ The following table describes the options in detail:
 |            | addr               | String  | Server address, "127.0.0.1:4003" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                                                                         |
 
+For MySQL and Postgres interface, TLS can be configured to enable transport
+layer security.
+
+| Option                        | Key         | Type    | Description                                                   |
+|-------------------------------|-------------|---------|---------------------------------------------------------------|
+| `mysql.tls` or `postgres.tls` |             |         | TLS configuration for MySQL and Postgres                      |
+|                               | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
+|                               | `cert_path` | String  | File path for TLS certificate                                 |
+|                               | `key_path`  | String  | File path for TLS private key                                 |
+|                               | `watch`     | boolean | Watch file system changes and reload certificate and key file |
+
 ### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.

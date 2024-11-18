@@ -129,6 +129,7 @@ runtime_size = 2
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [postgres]
 enable = true
@@ -139,6 +140,7 @@ runtime_size = 2
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [opentsdb]
 enable = true
@@ -178,6 +180,17 @@ The following table describes the options in detail:
 |            | enable             | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                   |
 |            | addr               | String  | Server address, "127.0.0.1:4003" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 2 by default                                                                         |
+
+For MySQL and Postgres interface, TLS can be configured to enable transport
+layer security.
+
+| Option                        | Key         | Type    | Description                                                   |
+|-------------------------------|-------------|---------|---------------------------------------------------------------|
+| `mysql.tls` or `postgres.tls` |             |         | TLS configuration for MySQL and Postgres                      |
+|                               | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
+|                               | `cert_path` | String  | File path for TLS certificate                                 |
+|                               | `key_path`  | String  | File path for TLS private key                                 |
+|                               | `watch`     | boolean | Watch file system changes and reload certificate and key file |
 
 ### Storage options
 
