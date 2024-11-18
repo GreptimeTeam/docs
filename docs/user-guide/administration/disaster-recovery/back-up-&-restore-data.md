@@ -18,7 +18,7 @@ greptime export [OPTIONS]
 | --addr | Yes | - | Server address to connect |
 | --output-dir | Yes | - | Directory to store exported data |
 | --database | No | all databasses | Name of the database to export |
-| --export-jobs, -j | No | 1 | Number of parallel export jobs |
+| --export-jobs, -j | No | 1 | Number of parallel export jobs(multiple databases can be exported in parallel) |
 | --max-retry | No | 3 | Maximum retry attempts per job |
 | --target, -t | No | all | Export target (schema/data/all) |
 | --start-time | No | - | Start of time range for data export |
@@ -54,7 +54,7 @@ greptime import [OPTIONS]
 | --addr | Yes | - | Server address to connect |
 | --input-dir | Yes | - | Directory containing backup data |
 | --database | No | all databases | Name of the database to import |
-| --import-jobs, -j | No | 1 | Number of parallel import jobs |
+| --import-jobs, -j | No | 1 | Number of parallel import jobs (multiple databases can be imported in parallel) |
 | --max-retry | No | 3 | Maximum retry attempts per job |
 | --target, -t | No | all | Import target (schema/data/all) |
 | --auth-basic | No | - | Use the '<username>:<password>' format |

@@ -1,90 +1,152 @@
-# 备份和恢复数据
+# GreptimeDB 导出和导入工具
 
-定期备份数据库非常重要。在出现问题时，例如系统崩溃、硬件故障或意外删除数据，你可以使用备份的数据快速恢复服务。
+本指南描述了如何使用 GreptimeDB 的导出和导入工具进行数据库备份和恢复。
 
-本文档提供了使用 [Greptime 命令行](/reference/command-lines.md)和 SQL [`COPY` 命令](/reference/sql/copy.md)备份和恢复数据的操作步骤。
+导出和导入工具提供了备份和恢复 GreptimeDB 数据库的功能。这些工具可以处理 schema（表结构等） 和数据，支持完整或选择性的备份和恢复操作。
 
-## 备份和恢复 schema
+## 导出工具
 
-在备份恢复表或数据库的数据之前，需要备份恢复表 schema 。
-
-### 备份 schema
-
-下面的示例命令行连接到了位于 `127.0.0.1:4000` 的 GreptimeDB 服务器，并将每个表的 `CREATE TABLE` SQL 语句导出到文件夹`/home/backup/schema/`：
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /home/backup/schema/ --target create-table
+### 命令语法
+```bash
+greptime export [选项]
 ```
 
-### 恢复 schema
+### 选项
+| 选项 | 是否必需 | 默认值 | 描述 |
+|--------|----------|---------|-------------|
+| --addr | 是 | - | 要连接的 GreptimeDB 数据库地址 |
+| --output-dir | 是 | - | 存储导出数据的目录 |
+| --database | 否 | 所有数据库 | 要导出的数据库名称 |
+| --export-jobs, -j | 否 | 1 | 并行导出任务数量（多个数据库可以并行导出） |
+| --max-retry | 否 | 3 | 每个任务的最大重试次数 |
+| --target, -t | 否 | all | 导出目标（schema/data/all） |
+| --start-time | 否 | - | 数据导出的开始时间范围 |
+| --end-time | 否 | - | 数据导出的结束时间范围 |
+| --auth-basic | 否 | - | 使用 '<用户名>:<密码>' 格式 |
 
-请使用 PostgreSQL 客户端将 schema 恢复到指定的数据库。
-例如，以下命令行运行了文件 `greptime-public.sql` 中的 `CREATE TABLE` 语句，
-在 `public` 数据库中创建了相应的表 schema：
+### 导出目标
+- `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
+- `data`: 仅导出表数据（`COPY DATABASE TO`）
+- `all`: 导出表结构和数据（默认）
 
-```shell
-psql -h 127.0.0.1 -p 4003 -d public -f /home/backup/schema/greptime-public.sql
+### 输出目录结构
+```
+<output-dir>/
+└── greptime/
+    └── <database>/
+        ├── create_database.sql
+        ├── create_tables.sql
+        ├── copy_from.sql
+        └── <数据文件>
 ```
 
-## 备份和恢复表
+## 导入工具
 
-在恢复数据之前，请确保表存在于数据库中。
-为了避免丢失表 schema ，你可以在备份表数据的同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
-
-### 备份表
-
-以下 SQL 命令将 `monitor` 表以 `parquet` 格式备份到文件 `/home/backup/monitor/monitor.parquet` 中：
-
-```sql
-COPY monitor TO '/home/backup/monitor/monitor.parquet' WITH (FORMAT = 'parquet');
+### 命令语法
+```bash
+greptime import [选项]
 ```
 
-要备份特定时间范围内的数据，可以指定 `START_TIME` 和 `END_TIME` 选项。
-例如，以下命令可以导出日期为 `2024-05-18` 的数据。
+### 选项
+| 选项 | 是否必需 | 默认值 | 描述 |
+|--------|----------|---------|-------------|
+| --addr | 是 | - | 要连接的 GreptimeDB 数据库地址 |
+| --input-dir | 是 | - | 包含备份数据的目录 |
+| --database | 否 | 所有数据库 | 要导入的数据库名称 |
+| --import-jobs, -j | 否 | 1 | 并行导入任务数量（多个数据库可以并行导入） |
+| --max-retry | 否 | 3 | 每个任务的最大重试次数 |
+| --target, -t | 否 | all | 导入目标（schema/data/all） |
+| --auth-basic | 否 | - | 使用 '<用户名>:<密码>' 格式 |
 
-```sql
-COPY monitor TO '/home/backup/monitor/monitor_20240518.parquet' WITH (FORMAT = 'parquet', START_TIME='2024-05-18 00:00:00', END_TIME='2024-05-19 00:00:00');
+### 导入目标
+- `schema`: 仅导入表结构
+- `data`: 仅导入表数据
+- `all`: 导入表结构和数据（默认）
+
+## 常见使用场景
+
+### 完整数据库备份
+```bash
+# 导出所有数据库备份
+greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
+
+# 导入所有数据库
+greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
 ```
 
-### 恢复表
+### 仅表结构操作
+```bash
+# 仅导出表结构
+greptime export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
 
-恢复 `monitor` 表：
-
-```sql
-COPY monitor FROM '/home/backup/monitor/monitor.parquet' WITH (FORMAT = 'parquet');
+# 仅导入表结构
+greptime import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
 ```
 
-如果你以增量方式导出数据，每个文件具有不同的名称但位于同一文件夹中，可以使用 `PATTERN` 选项进行恢复：
-
-```sql
-COPY monitor FROM '/home/backup/monitor/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet');
+### 基于时间范围的备份
+```bash
+# 导出特定时间范围内的数据
+greptime export --addr localhost:4000 \
+    --output-dir /tmp/backup/timerange \
+    --start-time "2024-01-01 00:00:00" \
+    --end-time "2024-01-31 23:59:59"
 ```
 
-## 备份和恢复数据库
+### 指定数据库备份
+```bash
+# 导出指定数据库
+greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
 
-在恢复数据之前，请确保数据库和表存在于数据库中。
-如果数据库不存在，请使用以下 SQL 命令首先创建数据库：
-
-```sql
-CREATE DATABASE <dbname>;
+# 导入工具也同样适用
+greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
 ```
 
-为了避免丢失表 schema ，在备份数据库数据时，你可以同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
+## 最佳实践
 
-### 备份数据库
+1. **并行度配置**
+   - 根据可用系统资源调整 `--export-jobs`/`--import-jobs`
+   - 从较低的值开始，逐步增加
+   - 在操作期间监控系统性能
 
-下面的 SQL 命令将 `public` 数据库以 `parquet` 格式备份到文件夹 `/home/backup/public/` 中：
+2. **备份策略**
+   - 使用时间范围进行增量数据备份
+   - 定期备份用于灾难恢复
 
-```sql
-COPY DATABASE public TO '/home/backup/public/' WITH (FORMAT='parquet');
-```
+3. **错误处理**
+   - 使用 `--max-retry` 处理临时异常
+   - 保留日志以便故障排除
 
-当你查看文件夹 `/home/backup/public/` 时，你会发现每个表都被导出为了单独的文件。
+## 故障排除
 
-### 恢复数据库
+### 常见问题
 
-下面的 SQL 命令从文件夹 `/home/backup/public/` 中恢复 `public` 数据库：
+1. **连接错误**
+   - 验证服务器地址和端口
+   - 检查网络连接
+   - 确保身份验证凭据正确
 
-```sql
-COPY DATABASE public FROM '/home/backup/public/' WITH (FORMAT='parquet');
-```
+2. **权限问题**
+   - 验证输出/输入目录的读写权限
+
+3. **资源限制**
+   - 减少并行任务数
+   - 确保足够的磁盘空间
+   - 在操作期间监控系统资源
+
+### 性能提示
+
+1. **导出性能**
+   - 对大型数据集使用时间范围
+   - 根据 CPU/内存调整并行任务数量
+   - 考虑网络带宽限制
+
+2. **导入性能**
+   - 注意监控数据库资源
+
+1. **导出性能**
+   - 对大型数据集使用时间范围
+   - 根据 CPU/内存调整并行任务
+   - 考虑网络带宽限制
+
+2. **导入性能**
+   - 监控数据库资源
