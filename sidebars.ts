@@ -155,7 +155,7 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Vector',
+          label: 'Vector Storage',
           items: [
             'user-guide/vectors/vector-type',
           ],
