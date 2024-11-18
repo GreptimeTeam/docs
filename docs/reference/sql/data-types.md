@@ -220,12 +220,6 @@ Output:
 +------------------------------------------+---------------------+
 ```
 
-:::warning Limitation
-
-The insertion of JSON data using MySQL protocol prepared statements is not supported.
-
-:::
-
 ### Query JSON data
 
 You can query the JSON data directly or extract specific fields using [JSON functions](./functions/overview.md#json-functions) provided by GreptimeDB. Here's an example:
