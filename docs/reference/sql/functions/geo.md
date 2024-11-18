@@ -434,7 +434,7 @@ FROM
 
 ### `st_area`
 
-Returns area of given geometry object
+Returns area of given geometry object.
 
 Arguments: the spatial object encoded with WKT.
 
