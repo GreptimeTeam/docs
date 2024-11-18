@@ -22,7 +22,7 @@ greptime export [选项]
 | --target, -t | 否 | all | 导出目标（schema/data/all） |
 | --start-time | 否 | - | 数据导出的开始时间范围 |
 | --end-time | 否 | - | 数据导出的结束时间范围 |
-| --auth-basic | 否 | - | 使用 '<用户名>:<密码>' 格式 |
+| --auth-basic | 否 | - | 使用 `<用户名>:<密码>` 格式 |
 
 ### 导出目标
 - `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
@@ -56,7 +56,7 @@ greptime import [选项]
 | --import-jobs, -j | 否 | 1 | 并行导入任务数量（多个数据库可以并行导入） |
 | --max-retry | 否 | 3 | 每个任务的最大重试次数 |
 | --target, -t | 否 | all | 导入目标（schema/data/all） |
-| --auth-basic | 否 | - | 使用 '<用户名>:<密码>' 格式 |
+| --auth-basic | 否 | - | 使用 `<用户名>:<密码>` 格式 |
 
 ### 导入目标
 - `schema`: 仅导入表结构

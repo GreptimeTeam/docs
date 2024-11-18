@@ -23,7 +23,7 @@ greptime export [OPTIONS]
 | --target, -t | No | all | Export target (schema/data/all) |
 | --start-time | No | - | Start of time range for data export |
 | --end-time | No | - | End of time range for data export |
-| --auth-basic | No | - | Use the '<username>:<password>' format |
+| --auth-basic | No | - | Use the `<username>:<password>` format |
 
 ### Export Targets
 - `schema`: Exports table schemas only (`SHOW CREATE TABLE`)
@@ -57,7 +57,7 @@ greptime import [OPTIONS]
 | --import-jobs, -j | No | 1 | Number of parallel import jobs (multiple databases can be imported in parallel) |
 | --max-retry | No | 3 | Maximum retry attempts per job |
 | --target, -t | No | all | Import target (schema/data/all) |
-| --auth-basic | No | - | Use the '<username>:<password>' format |
+| --auth-basic | No | - | Use the `<username>:<password>` format |
 
 ### Import Targets
 - `schema`: Imports table schemas only
