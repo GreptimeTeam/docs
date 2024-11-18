@@ -220,13 +220,6 @@ SELECT * FROM json_data;
 +------------------------------------------+---------------------+
 ```
 
-:::warning 限制说明 
-
-不支持通过 MySQL 协议预处理语句插入 JSON 数据。
-
-:::
-
-
 ### 查询 JSON 数据
 
 您可以直接查询 JSON 数据，也可以使用 GreptimeDB 提供的 [JSON 函数](./functions/overview.md#json-functions) 提取特定字段。以下是一个示例：
