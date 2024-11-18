@@ -22,7 +22,7 @@ greptime export [OPTIONS]
 | --target, -t | 否 | all | 导出目标（schema/data/all） |
 | --start-time | 否 | - | 数据导出的开始时间范围 |
 | --end-time | 否 | - | 数据导出的结束时间范围 |
-| --auth-basic | 否 | - | 使用 `<用户名>:<密码>` 格式 |
+| --auth-basic | 否 | - | 使用 `<username>:<password>` 格式 |
 
 ### 导出目标
 - `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
