@@ -71,6 +71,20 @@ http://localhost:4000/v1/sql
 
 有关时区如何影响数据的写入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#time-zone)和[查询数据](/user-guide/query-data/sql.md#time-zone)部分中的 SQL 文档。
 
+### 请求超时设置
+
+GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定当前 SQL 查询的超时时间。
+
+例如，以下请求为查询设置了 `120s` 的超时时间：
+
+```bash
+curl -X POST \
+-H 'X-Greptime-Timeout: 120s' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'sql=show tables' \
+http://localhost:4000/v1/sql
+```
+
 ## POST SQL 语句
 
 你可以使用 GreptimeDB 的 HTTP API 发送 SQL 语句与数据库进行交互。

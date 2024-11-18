@@ -71,6 +71,21 @@ After the query, the result will be:
 
 For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](../ingest-data/for-iot/sql.md#time-zone) and [Query Data](../query-data/sql.md#time-zone) sections.
 
+### TIMEOUT
+
+GreptimeDB supports the `X-Greptime-Timeout` header in HTTP requests.
+It is used to specify the timeout for the current SQL query.
+
+For example, the following request set `120s` timeout for the query:
+
+```bash
+curl -X POST \
+-H 'X-Greptime-Timeout: 120s' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'sql=show tables' \
+http://localhost:4000/v1/sql
+```
+
 ## POST SQL statements
 
 You can use the GreptimeDB HTTP API to post SQL statements and interact with the database.
