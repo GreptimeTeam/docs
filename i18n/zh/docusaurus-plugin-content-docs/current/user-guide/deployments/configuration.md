@@ -177,7 +177,7 @@ enable = true
 |                               | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
 |                               | `cert_path` | String  | TLS 证书文件路径                                 |
 |                               | `key_path`  | String  | TLS 私钥文件路径                                 |
-|                               | `watch`     | boolean | 监控文件变化，自动重新加载证书或私钥             |
+|                               | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥             |
 
 
 ### 存储选项

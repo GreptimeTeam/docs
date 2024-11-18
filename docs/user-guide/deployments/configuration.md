@@ -190,7 +190,7 @@ layer security.
 |                               | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
 |                               | `cert_path` | String  | File path for TLS certificate                                 |
 |                               | `key_path`  | String  | File path for TLS private key                                 |
-|                               | `watch`     | boolean | Watch file system changes and reload certificate and key file |
+|                               | `watch`     | Boolean | Watch file system changes and reload certificate and key file |
 
 ### Storage options
 
