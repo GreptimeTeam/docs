@@ -1,96 +1,145 @@
-# Back up and Restore Data
+# GreptimeDB Export & Import Tools
 
-It is crucial to back up your databases to ensure that you can recover your data and quickly resume operations in the event of problems such as system crashes, hardware failures, or accidental data deletion by users.
+This guide describes how to use GreptimeDB's Export and Import tools for database backup and restoration.
 
-This document provides instructions on how to back up and restore data using the [Greptime command line](/reference/command-lines.md) and the SQL [`COPY` command](/reference/sql/copy.md).
 
-## Back up and restore schemas
+The Export and Import tools provide functionality for backing up and restoring GreptimeDB databases. These tools can handle both schema and data, allowing for complete or selective backup and restoration operations.
 
-Before backing up and restoring data for tables or databases,
-it is necessary to back up and restore the schemas.
+## Export Tool
 
-### Back up schemas
-
-The following example command line connects to the GreptimeDB server at `127.0.0.1:4000` and exports the `CREATE TABLE` SQL statements to the folder `/home/backup/schema/`:
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /home/backup/schema/ --target create-table
+### Command Syntax
+```bash
+greptime export [OPTIONS]
 ```
 
-### Restore schemas
+### Options
+| Option | Required | Default | Description |
+|--------|----------|---------|-------------|
+| --addr | Yes | - | Server address to connect |
+| --output-dir | Yes | - | Directory to store exported data |
+| --database | No | all databasses | Name of the database to export |
+| --export-jobs, -j | No | 1 | Number of parallel export jobs |
+| --max-retry | No | 3 | Maximum retry attempts per job |
+| --target, -t | No | all | Export target (schema/data/all) |
+| --start-time | No | - | Start of time range for data export |
+| --end-time | No | - | End of time range for data export |
+| --auth-basic | No | - | Use the '<username>:<password>' format |
 
-To restore the schema to a specified database, use the PostgreSQL client.
-For example,
-the following command line runs the `CREATE TABLE` SQL statements in the file `greptime-public.sql` and creates table to the `public` database:
+### Export Targets
+- `schema`: Exports table schemas only (`SHOW CREATE TABLE`)
+- `data`: Exports table data only (`COPY DATABASE TO`)
+- `all`: Exports both schemas and data (default)
 
-```shell
-psql -h 127.0.0.1 -p 4003 -d public -f /home/backup/schema/greptime-public.sql
+### Output Directory Structure
+```
+<output-dir>/
+└── greptime/
+    └── <database>/
+        ├── create_database.sql
+        ├── create_tables.sql
+        ├── copy_from.sql
+        └── <data files>
 ```
 
-## Back up and restore tables
+## Import Tool
 
-Before restoring data, ensure that the table exists in the database.
-To avoid missing the table schema,
-you can also back up the table schemas when backing up the table data.
-Restore the schemas before restoring the data.
-
-### Back up tables
-
-The following SQL command backs up the `monitor` table in `parquet` format to the file `/home/backup/monitor/monitor.parquet`:
-
-```sql
-COPY monitor TO '/home/backup/monitor/monitor.parquet' WITH (FORMAT = 'parquet');
+### Command Syntax
+```bash
+greptime import [OPTIONS]
 ```
 
-To back up the data within a specific time range, you can specify the `START_TIME` and `END_TIME` options.
-For example, the following command exports the data for the date `2024-05-18`.
+### Options
+| Option | Required | Default | Description |
+|--------|----------|---------|-------------|
+| --addr | Yes | - | Server address to connect |
+| --input-dir | Yes | - | Directory containing backup data |
+| --database | No | all databases | Name of the database to import |
+| --import-jobs, -j | No | 1 | Number of parallel import jobs |
+| --max-retry | No | 3 | Maximum retry attempts per job |
+| --target, -t | No | all | Import target (schema/data/all) |
+| --auth-basic | No | - | Use the '<username>:<password>' format |
 
-```sql
-COPY monitor TO '/home/backup/monitor/monitor_20240518.parquet' WITH (FORMAT = 'parquet', START_TIME='2024-05-18 00:00:00', END_TIME='2024-05-19 00:00:00');
+### Import Targets
+- `schema`: Imports table schemas only
+- `data`: Imports table data only
+- `all`: Imports both schemas and data (default)
+
+## Common Usage Scenarios
+
+### Full Databases Backup
+```bash
+# Export all databases backup
+greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
+
+# Import all databases
+greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
 ```
 
-### Restore tables
+### Schema-Only Operations
+```bash
+# Export only schemas
+greptime export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
 
-The following SQL command restores the `monitor` table:
-
-```sql
-COPY monitor FROM '/home/backup/monitor/monitor.parquet' WITH (FORMAT = 'parquet');
+# Import only schemas
+greptime import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
 ```
 
-If you have exported the data incrementally,
-where each file has a different name but is located in the same folder,
-you can restore them using the `PATTERN` option:
-
-```sql
-COPY monitor FROM '/home/backup/monitor/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet');
+### Time-Range Based Backup
+```bash
+# Export data within specific time range
+greptime export --addr localhost:4000 \
+    --output-dir /tmp/backup/timerange \
+    --start-time "2024-01-01 00:00:00" \
+    --end-time "2024-01-31 23:59:59"
 ```
 
-## Back up and restore databases
+### Specific Database Backup
+```bash
+# To export a specific database
+greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
 
-Before restoring data, ensure that the database and tables exist in the database.
-If the database does not exist, create it first using the following SQL command:
-
-```sql
-CREATE DATABASE <dbname>;
+# The same applies to import tool
+greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
 ```
 
-To avoid missing the table schema, you can also back up the table schemas when backing up the database data. Restore the schemas before restoring the data.
+## Best Practices
 
-### Back up databases
+1. **Parallelism Configuration**
+   - Adjust `--export-jobs`/`--import-jobs` based on available system resources
+   - Start with a lower value and increase gradually
+   - Monitor system performance during operations
 
-The following SQL command backs up the `public` database in `parquet` format to the folder `/home/backup/public/`:
+2. **Backup Strategy**
+   - Incremental data backups using time ranges
+   - Periodic backups for disaster recovery
 
-```sql
-COPY DATABASE public TO '/home/backup/public/' WITH (FORMAT='parquet');
-```
+3. **Error Handling**
+   - Use `--max-retry` for handling transient failures
+   - Keep logs for troubleshooting
 
-When you look at the folder `/home/backup/public/`, you will find that each table is exported as a separate file.
+## Troubleshooting
 
-### Restore a database
+### Common Issues
 
-To restore the `public` database from the folder `/home/backup/public/`, use the following SQL command:
+1. **Connection Errors**
+   - Verify server address and port
+   - Check network connectivity
+   - Ensure authentication credentials are correct
 
-```sql
-COPY DATABASE public FROM '/home/backup/public/' WITH (FORMAT='parquet');
-```
+2. **Permission Issues**
+   - Verify read/write permissions on output/input directories
 
+3. **Resource Constraints**
+   - Reduce parallel jobs
+   - Ensure sufficient disk space
+   - Monitor system resources during operations
+
+### Performance Tips
+
+1. **Export Performance**
+   - Use time ranges for large datasets
+   - Adjust parallel jobs based on CPU/memory
+   - Consider network bandwidth limitations
+
+2. **Import Performance**
+   - Monitor database resources
