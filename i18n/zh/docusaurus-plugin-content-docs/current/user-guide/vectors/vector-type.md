@@ -53,7 +53,7 @@ INSERT INTO vecs (ts, vec_col) VALUES
 
 ## 向量的计算
 
-GreptimeDB 支持多种向量计算函数，用于计算向量之间的相似度，包括 `l2sq_distance`、`cos_distance` 和 `dot_product`。这些函数在 AI 应用中用于搜索最接近的内容。
+GreptimeDB 支持多种向量函数，用于计算向量之间的相似度，包括 `l2sq_distance`、`cos_distance` 和 `dot_product`。这些函数在 AI 应用中用于搜索最接近的内容。
 
 可以使用以下 SQL 格式执行向量计算：
 
@@ -80,4 +80,4 @@ SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs 
 
 通过这种方式，GreptimeDB 可以帮助你快速识别和查找相似的数据向量，为 AI 应用提供强大的支持。
 
-更多关于向量计算函数的信息，请参阅[向量计算函数参考文档](/reference/sql/functions/vector.md)。
+更多关于向量计算函数的信息，请参阅[向量函数参考文档](/reference/sql/functions/vector.md)。

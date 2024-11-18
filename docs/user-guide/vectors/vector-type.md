@@ -53,7 +53,7 @@ INSERT INTO vecs (ts, vec_col) VALUES
 
 ## Vector Calculations
 
-GreptimeDB supports various vector computation functions for calculating the similarity between vectors, including `l2sq_distance`, `cos_distance`, and `dot_product`. These functions are used in AI applications to search for the most similar content.
+GreptimeDB supports various vector functions for calculating the similarity between vectors, including `l2sq_distance`, `cos_distance`, and `dot_product`. These functions are used in AI applications to search for the most similar content.
 
 To perform vector calculations, use the following SQL format:
 
@@ -80,4 +80,4 @@ SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs 
 
 Through this approach, GreptimeDB enables you to quickly identify and locate similar data vectors, thus providing robust support for AI applications.
 
-For more information about vector computation functions, please refer to the [Vector Computation Functions Reference](/reference/sql/functions/vector.md).
+For more information about vector functions, please refer to the [Vector Functions Reference](/reference/sql/functions/vector.md).

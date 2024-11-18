@@ -155,10 +155,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Vector Type',
+          label: 'Vector',
           items: [
-            'user-guide/vectors/vector-type'
-          ]
+            'user-guide/vectors/vector-type',
+          ],
         },
         {
           type: 'category',
