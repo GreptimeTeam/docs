@@ -8,9 +8,7 @@ This page lists all vector-related functions supported in GreptimeDB. Vector fun
 * `cos_distance(vec1, vec2)`: Computes the cosine distance between two vectors.  
 * `dot_product(vec1, vec2)`: Computes the dot product of two vectors.  
 
-### Notes:  
-
-The parameters support both vector literals and column values. Vector literals must be enclosed in square brackets `[]` and contain `f32` elements separated by commas, e.g., `[1.0, 2.0, 3.0]`. The dimensions of the vectors involved in the operations must be consistent.
+The parameters support both vector literals and column names. Vector literals must be enclosed in square brackets `[]` and contain `Float32` elements separated by commas, e.g., `[1.0, 2.0, 3.0]`. The dimensions of the vectors involved in the operations must be consistent.
 
 ---
 
@@ -26,8 +24,8 @@ SELECT l2sq_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column values).  
-* Output: A scalar value of type `f64`.  
+* Input: Two vectors with consistent dimensions (as literals or column names).  
+* Output: A scalar value of type `Float64`.  
 
 ---
 
@@ -43,8 +41,8 @@ SELECT cos_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column values).  
-* Output: A scalar value of type `f64`.  
+* Input: Two vectors with consistent dimensions (as literals or column names).  
+* Output: A scalar value of type `Float64`.  
 
 ---
 
@@ -60,5 +58,5 @@ SELECT dot_product('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column values).  
-* Output: A scalar value of type `f64`.  
+* Input: Two vectors with consistent dimensions (as literals or column names).  
+* Output: A scalar value of type `Float64`.  

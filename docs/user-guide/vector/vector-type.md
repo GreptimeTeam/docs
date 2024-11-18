@@ -6,7 +6,7 @@ In the field of artificial intelligence, vectors are an important data type used
 
 ## Basic Introduction to Vector Type
 
-In GreptimeDB, a vector is represented as an array of float32 (32-bit floating-point) with a fixed dimension. When creating a vector type column, the dimension must be specified and cannot be changed afterward.
+In GreptimeDB, a vector is represented as an array of Float32 (32-bit floating-point) with a fixed dimension. When creating a vector type column, the dimension must be specified and cannot be changed afterward.
 
 ## Defining a Vector Type Column
 
@@ -23,8 +23,7 @@ For example, to define a table with a vector type column of dimension 3:
 
 ```sql
 CREATE TABLE vecs (
-  ts TIMESTAMP TIME INDEX DEFAULT CURRENT_TIMESTAMP,
-  id INT PRIMARY KEY,
+  ts TIMESTAMP TIME INDEX,
   vec_col VECTOR(3)
 );
 ```
@@ -46,10 +45,10 @@ INSERT INTO <table> (<vec_col>) VALUES
 For example, to insert three 3-dimensional vectors:
 
 ```sql
-INSERT INTO vecs (id, vec_col) VALUES
-(1, '[1.0, 2.0, 3.0]'),
-(2, '[4.0, 5.0, 6.0]'),
-(3, '[7.0, 8.0, 9.0]');
+INSERT INTO vecs (ts, vec_col) VALUES
+('2024-11-18 00:00:01', '[1.0, 2.0, 3.0]'),
+('2024-11-18 00:00:02', '[4.0, 5.0, 6.0]'),
+('2024-11-18 00:00:03', '[7.0, 8.0, 9.0]');
 ```
 
 ## Vector Calculations
@@ -62,23 +61,23 @@ To perform vector calculations, use the following SQL format:
 SELECT <distance_function>(<vec_col>, <target_vec>) FROM <table>;
 ```
 
-For example, to find the vector with the smallest cosine distance to `[5.0, 5.0, 5.0]` and display the distance:
+For example, to find the vector with the smallest squared L2 distance to `[5.0, 5.0, 5.0]` and display the distance:
 
 ```sql
-SELECT id, vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
+SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
 ```
 
 ```
-+------+---------+----------+
-| id   | vec_col | distance |
-+------+---------+----------+
-|    2 | [4,5,6] |        2 |
-|    1 | [1,2,3] |       29 |
-|    3 | [7,8,9] |       29 |
-+------+---------+----------+
++---------+----------+
+| vec_col | distance |
++---------+----------+
+| [4,5,6] |        2 |
+| [1,2,3] |       29 |
+| [7,8,9] |       29 |
++---------+----------+
 3 rows in set (0.01 sec)
 ```
 
-Through this approach, GreptimeDB enables users to quickly identify and locate similar data vectors, thus providing robust support for AI applications.
+Through this approach, GreptimeDB enables you to quickly identify and locate similar data vectors, thus providing robust support for AI applications.
 
 For more information about vector computation functions, please refer to the [Vector Computation Functions Reference](/reference/sql/functions/vector.md).

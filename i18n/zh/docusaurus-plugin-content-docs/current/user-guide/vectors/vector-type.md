@@ -6,7 +6,7 @@
 
 ## 向量类型的基本介绍
 
-在 GreptimeDB 中，向量表示为固定维度的 float32（32位浮点数）数组。创建向量类型列时，必须指定向量的维度，并且维度在定义后不能更改。
+在 GreptimeDB 中，向量表示为固定维度的 Float32（32位浮点数）数组。创建向量类型列时，必须指定向量的维度，并且维度在定义后不能更改。
 
 ## 定义向量类型列
 
@@ -23,8 +23,7 @@ CREATE TABLE <table_name> (
 
 ```sql
 CREATE TABLE vecs (
-  ts TIMESTAMP TIME INDEX DEFAULT CURRENT_TIMESTAMP,
-  id INT PRIMARY KEY,
+  ts TIMESTAMP TIME INDEX,
   vec_col VECTOR(3)
 );
 ```
@@ -46,10 +45,10 @@ INSERT INTO <table> (<vec_col>) VALUES
 例如，插入三个三维向量：
 
 ```sql
-INSERT INTO vecs (id, vec_col) VALUES
-(1, '[1.0, 2.0, 3.0]'),
-(2, '[4.0, 5.0, 6.0]'),
-(3, '[7.0, 8.0, 9.0]');
+INSERT INTO vecs (ts, vec_col) VALUES
+('2024-11-18 00:00:01', '[1.0, 2.0, 3.0]'),
+('2024-11-18 00:00:02', '[4.0, 5.0, 6.0]'),
+('2024-11-18 00:00:03', '[7.0, 8.0, 9.0]');
 ```
 
 ## 向量的计算
@@ -62,23 +61,23 @@ GreptimeDB 支持多种向量计算函数，用于计算向量之间的相似度
 SELECT <distance_function>(<vec_col>, <target_vec>) FROM <table>;
 ```
 
-例如，查找与向量 `[5.0, 5.0, 5.0]` 具有最小 cosine 距离的向量，并显示距离：
+例如，查找与向量 `[5.0, 5.0, 5.0]` 具有最小平方欧几里得距离的向量，并显示距离：
 
 ```sql
-SELECT id, vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
+SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
 ```
 
 ```
-+------+---------+----------+
-| id   | vec_col | distance |
-+------+---------+----------+
-|    2 | [4,5,6] |        2 |
-|    1 | [1,2,3] |       29 |
-|    3 | [7,8,9] |       29 |
-+------+---------+----------+
++---------+----------+
+| vec_col | distance |
++---------+----------+
+| [4,5,6] |        2 |
+| [1,2,3] |       29 |
+| [7,8,9] |       29 |
++---------+----------+
 3 rows in set (0.01 sec)
 ```
 
-通过这种方式，GreptimeDB 可以帮助用户快速识别和查找相似的数据向量，为 AI 应用提供强大的支持。
+通过这种方式，GreptimeDB 可以帮助你快速识别和查找相似的数据向量，为 AI 应用提供强大的支持。
 
 更多关于向量计算函数的信息，请参阅[向量计算函数参考文档](/reference/sql/functions/vector.md)。
