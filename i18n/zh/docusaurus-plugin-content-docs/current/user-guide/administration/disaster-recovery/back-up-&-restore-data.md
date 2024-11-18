@@ -44,7 +44,7 @@ greptime export [OPTIONS]
 
 ### 命令语法
 ```bash
-greptime import [选项]
+greptime import [OPTIONS]
 ```
 
 ### 选项
