@@ -330,3 +330,7 @@ SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), NULL);
 ### 地理函数
 
 [了解 GreptimeDB 中轨迹、地理编码相关的地理函数](./geo.md)。
+
+### 向量函数
+
+[了解 GreptimeDB 中向量相关的函数](./vector.md)。

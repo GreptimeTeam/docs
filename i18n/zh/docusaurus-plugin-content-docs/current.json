@@ -186,5 +186,9 @@
   "sidebar.docs.category.Monitoring": {
     "message": "监控",
     "description": "The label for category Monitoring in sidebar docs"
+  },
+  "sidebar.docs.category.Vector Storage": {
+    "message": "向量存储",
+    "description": "The label for category Vector Storage in sidebar docs"
   }
 }

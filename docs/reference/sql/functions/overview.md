@@ -338,3 +338,7 @@ SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), NULL);
 
 GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
 about these functions](./geo.md)
+
+## Vector Functions
+
+GreptimeDB supports vector functions for vector operations, such as distance calculation, similarity measurement, etc. [Learn more about these functions](./vector.md)

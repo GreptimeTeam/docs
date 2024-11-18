@@ -155,6 +155,13 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Vector Storage',
+          items: [
+            'user-guide/vectors/vector-type',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Deployments',
           items: [
             'user-guide/deployments/overview',
@@ -383,7 +390,15 @@ const sidebars: SidebarsConfig = {
             'reference/sql/with',
             'reference/sql/alter',
             'reference/sql/explain',
-            { type: 'category', label: 'Functions', items: ['reference/sql/functions/overview', 'reference/sql/functions/df-functions', 'reference/sql/functions/geo'] },
+            { 
+              type: 'category',
+              label: 'Functions',
+              items: [
+                'reference/sql/functions/overview',
+                'reference/sql/functions/df-functions',
+                'reference/sql/functions/geo',
+                'reference/sql/functions/vector',
+              ] },
             'reference/sql/admin',
             'reference/sql/compatibility',
             {
