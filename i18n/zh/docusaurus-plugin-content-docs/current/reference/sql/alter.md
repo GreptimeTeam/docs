@@ -72,10 +72,29 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 
 `ALTER TABLE` 语句也可以用来更改表的选项。
 当前支持修改以下表选项：
-- `ttl`: 表数据的保留时间
+- `ttl`: 表数据的保留时间。
+- `compaction.twcs.time_window`: TWCS compaction 策略的时间窗口。
+- `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
+- `compaction.twcs.max_active_window_runs`: TWCS compaction 策略的活跃窗口中最多允许的有序组数量。
+- `compaction.twcs.max_inactive_window_runs`: TWCS compaction 策略的非活跃窗口中最多允许的有序组数量。
+- `compaction.twcs.max_active_window_files`: TWCS compaction 策略的活跃窗口中最多允许的文件数量。
+- `compaction.twcs.max_inactive_window_files`: TWCS compaction 策略的非活跃窗口中最多允许的文件数量。
+
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
+
+ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_files'='2';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_active_window_files'='2';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
+
+ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
 ### 修改列全文索引选项
