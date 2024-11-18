@@ -7,6 +7,18 @@ import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc} />
 
+## Geo 数据类型函数
+
+地理相关数据类型转换。
+
+### `wkt_point_from_latlng`
+
+将纬度、经度转换成 WKT 点。
+
+```sql
+SELECT wkt_point_from_latlng(37.76938, -122.3889) AS point;
+```
+
 ## Geohash
 
 了解 [更多关于 geohash 编码](https://en.wikipedia.org/wiki/Geohash)。
@@ -148,6 +160,22 @@ h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
 h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
 ```
 
+### `h3_cells_contains`
+
+测试输入的单元集合是否包含指定的单元，或其父单元。
+
+参数：
+
+- 单元集合： 可以是 int64/uint64/string 数组, 或逗号分割的字符串单元 ID
+- 单元索引
+
+```sql
+SELECT
+    h3_cells_contains('86283470fffffff,862834777ffffff, 862834757ffffff, 86283471fffffff, 862834707ffffff', '8b283470d112fff') AS R00,
+    h3_cells_contains(['86283470fffffff', '862834777ffffff', '862834757ffffff', '86283471fffffff', '862834707ffffff'], '8b283470d112fff') AS R11,
+    h3_cells_contains([604189641255419903, 604189643000250367, 604189642463379455, 604189641523855359, 604189641121202175], 604189641792290815) AS R21;
+```
+
 ### `h3_grid_disk`
 
 返回给定单元格的 k 个距离对应的单元格。
@@ -198,6 +226,37 @@ FROM
     );
 ```
 
+### `h3_distance_sphere_km`
+
+返回两个单元中心的大圆距离，单位 千米
+
+```sql
+SELECT
+    round(h3_distance_sphere_km(cell1, cell2), 5) AS sphere_distance
+FROM
+    (
+      SELECT
+          h3_string_to_cell('86283082fffffff') AS cell1,
+          h3_string_to_cell('86283470fffffff') AS cell2
+    );
+
+```
+
+### `h3_distance_degree`
+
+返回两个单元中心的欧式距离，单位 度
+
+```sql
+SELECT
+    round(h3_distance_degree(cell1, cell2), 14) AS euclidean_distance
+FROM
+    (
+      SELECT
+          h3_string_to_cell('86283082fffffff') AS cell1,
+          h3_string_to_cell('86283470fffffff') AS cell2
+    );
+```
+
 ## S2
 
 了解[更多关于 S2 编码的信息](http://s2geometry.io/).
@@ -234,7 +293,7 @@ SELECT s2_cell_level(s2_latlng_to_cell(37.76938, -122.3889));
 SELECT s2_cell_parent(s2_latlng_to_cell(37.76938, -122.3889), 3);
 ```
 
-## Encodings
+## 编码
 
 ### `json_encode_path`
 
@@ -256,4 +315,125 @@ SELECT json_encode_path(lat, lon, ts);
 
 ```json
 [[-122.3888,37.77001],[-122.3839,37.76928],[-122.3889,37.76938],[-122.382,37.7693]]
+```
+
+## 空间关系
+
+### `st_contains`
+
+测试两个空间对象是否为包含关系。
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_contains(polygon1, p1),
+    st_contains(polygon2, p1),
+FROM
+    (
+        SELECT
+            wkt_point_from_latlng(37.383287, -122.01325) AS p1,
+            'POLYGON ((-122.031661 37.428252, -122.139829 37.387072, -122.135365 37.361971, -122.057759 37.332222, -121.987707 37.328946, -121.943754 37.333041, -121.919373 37.349145, -121.945814 37.376705, -121.975689 37.417345, -121.998696 37.409164, -122.031661 37.428252))' AS polygon1,
+            'POLYGON ((-121.491698 38.653343, -121.582353 38.556757, -121.469721 38.449287, -121.315883 38.541721, -121.491698 38.653343))' AS polygon2,
+    );
+
+```
+
+### `st_within`
+
+测试两个空间对象是否为被包含关系。
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_within(p1, polygon1),
+    st_within(p1, polygon2),
+ ROM
+    (
+        SELECT
+            wkt_point_from_latlng(37.383287, -122.01325) AS p1,
+            'POLYGON ((-122.031661 37.428252, -122.139829 37.387072, -122.135365 37.361971, -122.057759 37.332222, -121.987707 37.328946, -121.943754 37.333041, -121.919373 37.349145, -121.945814 37.376705, -121.975689 37.417345, -121.998696 37.409164, -122.031661 37.428252))' AS polygon1,
+            'POLYGON ((-121.491698 38.653343, -121.582353 38.556757, -121.469721 38.449287, -121.315883 38.541721, -121.491698 38.653343))' AS polygon2,
+    );
+
+```
+
+
+### `st_intersects`
+
+测试两个空间对象是否为重叠关系。
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_intersects(polygon1, polygon2),
+    st_intersects(polygon1, polygon3),
+FROM
+    (
+        SELECT
+            'POLYGON ((-122.031661 37.428252, -122.139829 37.387072, -122.135365 37.361971, -122.057759 37.332222, -121.987707 37.328946, -121.943754 37.333041, -121.919373 37.349145, -121.945814 37.376705, -121.975689 37.417345, -121.998696 37.409164, -122.031661 37.428252))' AS polygon1,
+            'POLYGON ((-121.491698 38.653343, -121.582353 38.556757, -121.469721 38.449287, -121.315883 38.541721, -121.491698 38.653343))' AS polygon2,
+            'POLYGON ((-122.089628 37.450332, -122.20535 37.378342, -122.093062 37.36088, -122.044301 37.372886, -122.089628 37.450332))' AS polygon3,
+    );
+
+```
+
+
+## Spatial Measurement
+
+### `st_distance`
+
+返回两个对象的在 WGS84 坐标系下的欧式距离，单位 度
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_distance(p1, p2) AS euclidean_dist,
+    st_distance(p1, polygon1) AS euclidean_dist_pp,
+FROM
+    (
+        SELECT
+            wkt_point_from_latlng(37.76938, -122.3889) AS p1,
+            wkt_point_from_latlng(38.5216, -121.4247) AS p2,
+            'POLYGON ((-121.491698 38.653343, -121.582353 38.556757, -121.469721 38.449287, -121.315883 38.541721, -121.491698 38.653343))' AS polygon1,
+    );
+```
+
+### `st_distance_sphere_m`
+
+返回两点的大圆距离，单位 米
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_distance_sphere_m(p1, p2) AS sphere_dist_m,
+FROM
+    (
+        SELECT
+            wkt_point_from_latlng(37.76938, -122.3889) AS p1,
+            wkt_point_from_latlng(38.5216, -121.4247) AS p2,
+    );
+
+```
+
+### `st_area`
+
+返回地理对象的面积。
+
+参数：WKT 编码的地理对象。
+
+```sql
+SELECT
+    st_area(p1) as area_point,
+    st_area(polygon1) as area_polygon,
+FROM
+    (
+        SELECT
+            wkt_point_from_latlng(37.76938, -122.3889) AS p1,
+            'POLYGON ((-121.491698 38.653343, -121.582353 38.556757, -121.469721 38.449287, -121.315883 38.541721, -121.491698 38.653343))' AS polygon1,
+    );
 ```
