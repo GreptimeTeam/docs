@@ -1,8 +1,9 @@
 # CASE
 
-The CASE statement allows you to perform conditional logic within your queries,
+The `CASE` statement allows you to perform conditional logic within your queries,
 similar to an IF-THEN-ELSE structure in programming languages.
-It enables you to return specific values based on evaluated conditions, making your data retrieval and manipulation more dynamic and context-sensitive.
+It enables you to return specific values based on evaluated conditions,
+making data retrieval and manipulation more dynamic.
 
 ## Syntax
 
