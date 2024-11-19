@@ -223,6 +223,38 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
+## `CASE` 表达式
+
+你可以使用 `CASE` 表达式在查询中执行条件逻辑。
+例如，下面的查询根据 `cpu` 字段的值返回 CPU 的状态：
+
+```sql
+SELECT
+    host,
+    ts,
+    CASE
+        WHEN cpu > 0.5 THEN 'high'
+        WHEN cpu > 0.3 THEN 'medium'
+        ELSE 'low'
+    END AS cpu_status
+FROM monitor;
+```
+
+结果如下：
+
+```sql
++-----------+---------------------+------------+
+| host      | ts                  | cpu_status |
++-----------+---------------------+------------+
+| 127.0.0.1 | 2022-11-03 03:39:57 | low        |
+| 127.0.0.1 | 2022-11-03 03:39:58 | medium     |
+| 127.0.0.2 | 2022-11-03 03:39:58 | low        |
++-----------+---------------------+------------+
+3 rows in set (0.01 sec)
+```
+
+更多信息请参考 [CASE](/reference/sql/case.md)。
+
 ## 按标签聚合数据
 
 你可以使用 `GROUP BY` 语句将具有相同值的行进行分组汇总，例如查询 `idc` 列中的所有不同值的内存均值：

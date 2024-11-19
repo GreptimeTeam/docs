@@ -237,6 +237,38 @@ SELECT * FROM monitor ORDER BY ts ASC;
 SELECT * FROM monitor ORDER BY ts DESC;
 ```
 
+## `CASE` Expression
+
+You can use the `CASE` statement to perform conditional logic within your queries.
+For example, the following query returns the status of the CPU based on the value of the `cpu` field:
+
+```sql
+SELECT
+    host,
+    ts,
+    CASE
+        WHEN cpu > 0.5 THEN 'high'
+        WHEN cpu > 0.3 THEN 'medium'
+        ELSE 'low'
+    END AS cpu_status
+FROM monitor;
+```
+
+The result is shown below:
+
+```sql
++-----------+---------------------+------------+
+| host      | ts                  | cpu_status |
++-----------+---------------------+------------+
+| 127.0.0.1 | 2022-11-03 03:39:57 | low        |
+| 127.0.0.1 | 2022-11-03 03:39:58 | medium     |
+| 127.0.0.2 | 2022-11-03 03:39:58 | low        |
++-----------+---------------------+------------+
+3 rows in set (0.01 sec)
+```
+
+For more information, please refer to [CASE](/reference/sql/case.md).
+
 ## Aggregate data by tag
 
 You can use the `GROUP BY` clause to group rows that have the same values into summary rows.
