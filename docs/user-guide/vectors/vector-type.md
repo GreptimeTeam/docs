@@ -30,9 +30,7 @@ CREATE TABLE vecs (
 
 ## Inserting Vector Data
 
-In GreptimeDB, vector data is inserted as a string surrounded by square brackets `[]`. The number of elements in the string must match the specified vector dimension, otherwise an error will occur.
-
-The SQL format to insert vector data is as follows:
+In GreptimeDB, you can insert vector data into the database in several ways. The simplest method is to use a string format and implicitly convert it to a vector. The string needs to be enclosed in square brackets `[]`. Below is an example of using implicit conversion in SQL:
 
 ```sql
 INSERT INTO <table> (<vec_col>) VALUES
@@ -51,9 +49,18 @@ INSERT INTO vecs (ts, vec_col) VALUES
 ('2024-11-18 00:00:03', '[7.0, 8.0, 9.0]');
 ```
 
+If you wish to have more explicit control over data conversion, you can use the `parse_vec` function to explicitly parse a string into a vector:
+
+```sql
+INSERT INTO vecs (ts, vec_col) VALUES
+('2024-11-18 00:00:01', parse_vec('[1.0, 2.0, 3.0]')),
+('2024-11-18 00:00:02', parse_vec('[4.0, 5.0, 6.0]')),
+('2024-11-18 00:00:03', parse_vec('[7.0, 8.0, 9.0]'));
+```
+
 ## Vector Calculations
 
-GreptimeDB supports various vector functions for calculating the similarity between vectors, including `l2sq_distance`, `cos_distance`, and `dot_product`. These functions are used in AI applications to search for the most similar content.
+GreptimeDB supports various vector functions for calculating the similarity between vectors, including `vec_l2sq_distance`, `vec_cos_distance`, and `vec_dot_product`. These functions are used in AI applications to search for the most similar content.
 
 To perform vector calculations, use the following SQL format:
 
@@ -61,20 +68,24 @@ To perform vector calculations, use the following SQL format:
 SELECT <distance_function>(<vec_col>, <target_vec>) FROM <table>;
 ```
 
-For example, to find the vector with the smallest squared L2 distance to `[5.0, 5.0, 5.0]` and display the distance:
+For example, to find the vector with the smallest squared Euclidean distance to a given vector `[5.0, 5.0, 5.0]` and display the distance, you can use the following query:
 
 ```sql
-SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
+SELECT vec_to_string(vec_col), vec_l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') AS distance 
+FROM vecs 
+ORDER BY distance;
 ```
 
+Upon executing this query, you will get results similar to the following:
+
 ```
-+---------+----------+
-| vec_col | distance |
-+---------+----------+
-| [4,5,6] |        2 |
-| [1,2,3] |       29 |
-| [7,8,9] |       29 |
-+---------+----------+
++-----------------------------+----------+
+| vec_to_string(vecs.vec_col) | distance |
++-----------------------------+----------+
+| [4,5,6]                     |        2 |
+| [1,2,3]                     |       29 |
+| [7,8,9]                     |       29 |
++-----------------------------+----------+
 3 rows in set (0.01 sec)
 ```
 

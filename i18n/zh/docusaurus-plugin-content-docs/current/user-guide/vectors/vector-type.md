@@ -30,9 +30,7 @@ CREATE TABLE vecs (
 
 ## 向量写入
 
-在 GreptimeDB 中，向量数据以字符串形式写入，值需要被方括号 `[]` 包围。字符串中元素的数量必须与指定的向量维度相同，否则会产生错误。
-
-可以使用以下 SQL 格式插入向量数据：
+在 GreptimeDB 中，您可以通过多种方式将向量数据写入数据库。最简单的方法是使用字符串形式，并通过隐式转换将其存储为向量。字符串需要用方括号 `[]` 包围。以下是使用隐式转换的 SQL 示例：
 
 ```sql
 INSERT INTO <table> (<vec_col>) VALUES
@@ -42,7 +40,7 @@ INSERT INTO <table> (<vec_col>) VALUES
 ('[<float32>, <float32>, ...]');
 ```
 
-例如，插入三个三维向量：
+例如，插入 3 个三维向量：
 
 ```sql
 INSERT INTO vecs (ts, vec_col) VALUES
@@ -51,9 +49,18 @@ INSERT INTO vecs (ts, vec_col) VALUES
 ('2024-11-18 00:00:03', '[7.0, 8.0, 9.0]');
 ```
 
+如果您希望更明确地控制数据转换，可以使用 `parse_vec` 函数来显式地解析字符串为向量：
+
+```sql
+INSERT INTO vecs (ts, vec_col) VALUES
+('2024-11-18 00:00:01', parse_vec('[1.0, 2.0, 3.0]')),
+('2024-11-18 00:00:02', parse_vec('[4.0, 5.0, 6.0]')),
+('2024-11-18 00:00:03', parse_vec('[7.0, 8.0, 9.0]'));
+```
+
 ## 向量计算
 
-GreptimeDB 支持多种向量函数，用于计算向量之间的相似度，包括 `l2sq_distance`、`cos_distance` 和 `dot_product`。这些函数在 AI 应用中用于搜索最接近的内容。
+GreptimeDB 支持多种向量函数，用于计算向量之间的相似度，包括 `vec_l2sq_distance`、`vec_cos_distance` 和 `vec_dot_product`。这些函数在 AI 应用中用于搜索最接近的内容。
 
 可以使用以下 SQL 格式执行向量计算：
 
@@ -61,20 +68,24 @@ GreptimeDB 支持多种向量函数，用于计算向量之间的相似度，包
 SELECT <distance_function>(<vec_col>, <target_vec>) FROM <table>;
 ```
 
-例如，查找与向量 `[5.0, 5.0, 5.0]` 具有最小平方欧几里得距离的向量，并显示距离：
+例如，若要查找与给定向量 `[5.0, 5.0, 5.0]` 具有最小平方欧几里得距离的向量，并显示它们之间的距离，可以使用如下查询：
 
 ```sql
-SELECT vec_col, l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') as distance FROM vecs ORDER BY distance;
+SELECT vec_to_string(vec_col), vec_l2sq_distance(vec_col, '[5.0, 5.0, 5.0]') AS distance 
+FROM vecs 
+ORDER BY distance;
 ```
 
+执行此查询后，您将得到类似以下的结果：
+
 ```
-+---------+----------+
-| vec_col | distance |
-+---------+----------+
-| [4,5,6] |        2 |
-| [1,2,3] |       29 |
-| [7,8,9] |       29 |
-+---------+----------+
++-----------------------------+----------+
+| vec_to_string(vecs.vec_col) | distance |
++-----------------------------+----------+
+| [4,5,6]                     |        2 |
+| [1,2,3]                     |       29 |
+| [7,8,9]                     |       29 |
++-----------------------------+----------+
 3 rows in set (0.01 sec)
 ```
 
