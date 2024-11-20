@@ -65,7 +65,7 @@ AS
 ``` -->
 
 ```sql
-CREATE [OR REPLACE] FLOW [ IF NOT EXISTS ] <flow-name>
+CREATE [ OR REPLACE ] FLOW [ IF NOT EXISTS ] <flow-name>
 SINK TO <sink-table-name>
 [ EXPIRE AFTER <expr> ]
 [ COMMENT '<string>' ]
@@ -73,7 +73,10 @@ AS
 <SQL>;
 ```
 
-When `OR REPLACE` is specified, if a flow with the same name already exists, it will be updated to the new one. Notice that this only affects the flow task itself, and both source and sink tables will not be changed. Also note that `OR REPLACE` can't be used together with `IF NOT EXISTS`.
+When `OR REPLACE` is specified, any existing flow with the same name will be updated to the new version. It's important to note that this only affects the flow task itself; the source and sink tables will remain unchanged.
+
+Conversely, when `IF NOT EXISTS` is specified, the command will have no effect if the flow already exists, rather than reporting an error. Additionally, please note that `OR REPLACE` cannot be used in conjunction with `IF NOT EXISTS`.
+
 
 - `flow-name` is an unique identifier in the catalog level.
 - `sink-table-name` is the table name where the materialized aggregated data is stored.
