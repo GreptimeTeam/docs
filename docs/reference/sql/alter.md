@@ -16,6 +16,7 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name UNSET FULLTEXT
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name>[, ...]
    ]
 ```
 
@@ -97,6 +98,12 @@ ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
 ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
+#### Unset options:
+
+```sql
+ALTER TABLE monitor UNSET 'ttl';
+```
+
 ### Modify column fulltext index options
 
 Enable fulltext index on a column:
@@ -112,7 +119,7 @@ You can specify the following options using `FULLTEXT WITH` when enabling fullte
 
 If `WITH <options>` is not specified, `FULLTEXT` will use the default values.
 
-Disable fulltext index on a column:
+#### Disable fulltext index on a column:
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
@@ -120,7 +127,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
 
 The column must be a string type to alter the fulltext index.
 
-When the fulltext index is disabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but cannot modify the options.
+When the fulltext index is disabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options**.
 
 ### Rename table
 

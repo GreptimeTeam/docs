@@ -15,6 +15,7 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name>[, ...]
    ]
 ```
 
@@ -97,6 +98,13 @@ ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
 ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
+#### 删除表的参数
+
+```sql
+ALTER TABLE monitor UNSET 'ttl';
+```
+
+
 ### 修改列全文索引选项
 
 启用列的全文索引：
@@ -112,7 +120,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 
-关闭列的全文索引：
+#### 关闭列的全文索引：
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
@@ -120,7 +128,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
 
 修改列的全文索引选项时，列的数据类型必须是字符串类型。
 
-当列的全文索引关闭时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，但不能修改选项。
+当列的全文索引关闭时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项**。
 
 ### 重命名表
 
