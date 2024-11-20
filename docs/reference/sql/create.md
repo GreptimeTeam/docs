@@ -88,9 +88,8 @@ The statement won't do anything if the table already exists and `IF NOT EXISTS` 
 
 #### Inverted Index
 
-`INVERTED INDEX` specifies the table's [Inverted Index](/contributor-guide/datanode/data-persistence-indexing#inverted-index) column.
+`INVERTED INDEX` specifies the table's [Inverted Index](/contributor-guide/datanode/data-persistence-indexing#inverted-index) column. The inverted index column can be any column. For each specified column, GreptimeDB creates an inverted index to accelerate queries.
 
-The inverted index column can be any column. For each specified column, GreptimeDB creates an inverted index to accelerate queries.
 - If `INVERTED INDEX` is not specified, inverted indexes will be created for the columns in the `PRIMARY KEY`.
 - If `INVERTED INDEX` is specified, inverted indexes will only be created for the columns listed in the `INVERTED INDEX`. Specifically, when `INVERTED INDEX()` is specified, it means that no inverted index will be created for any column.
 
