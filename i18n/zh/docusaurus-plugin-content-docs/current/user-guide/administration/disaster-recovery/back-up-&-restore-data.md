@@ -23,7 +23,7 @@ greptime export [OPTIONS]
 | --start-time | 否 | - | 数据导出的开始时间范围 |
 | --end-time | 否 | - | 数据导出的结束时间范围 |
 | --auth-basic | 否 | - | 使用 `<username>:<password>` 格式 |
-| --timeout | 否 | 0 | 对 DB 进行一次调用的超时时间，默认为 0 代表永不超时 |
+| --timeout | 否 | 0 | 对 DB 进行一次调用的超时时间，默认为 0 代表永不超时 （例如 `30s`, `10min 20s`） |
 
 ### 导出目标
 - `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
