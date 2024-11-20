@@ -92,9 +92,9 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 `INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。
 
-倒排索引列可以是任何列。对于所有指定的列，GreptimeDB 会创建倒排索引以加速查询。
-
-如果没有指定该表约束，则默认为 `PRIMARY KEY` 指定的主键列创建倒排索引。如果指定了空列表，即 `INVERTED INDEX()`，则不会创建倒排索引。
+倒排索引列可以是任何列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询。
+- 如果没有指定 `INVERTED INDEX`，则为 `PRIMARY KEY` 中的列创建倒排索引。
+- 如果指定了 `INVERTED INDEX`，则仅为 `INVERTED INDEX` 中的列创建倒排索引。特别的，当指定为 `INVECTED INDEX()`，代表不会为任何列建倒排索引。
 
 ### 表选项
 
