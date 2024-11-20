@@ -58,7 +58,8 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
-    [PRIMARY KEY(column1, column2, ...)]
+    [PRIMARY KEY(column1, column2, ...)],
+    [INVERTED INDEX(column1, column2, ...)]
 ) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
@@ -86,6 +87,13 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 :::
 
 如果表已经存在且创建表时指定了 `IF NOT EXISTS`，`CREATE` 语句不会返回错误；否则返回错误。
+
+#### 倒排索引
+
+`INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。倒排索引列可以是任何列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询。
+
+- 如果没有指定 `INVERTED INDEX`，则为 `PRIMARY KEY` 中的列创建倒排索引。
+- 如果指定了 `INVERTED INDEX`，则仅为 `INVERTED INDEX` 中的列创建倒排索引。特别的，当指定为 `INVECTED INDEX()`，代表不会为任何列创建倒排索引。
 
 ### 表选项
 
