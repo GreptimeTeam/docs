@@ -3,3 +3,9 @@
 node_modules
 build
 .envrc
+
+# editor and IDE paraphernalia
+.idea
+*.swp
+*.swo
+*~

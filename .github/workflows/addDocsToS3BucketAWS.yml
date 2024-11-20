@@ -37,6 +37,12 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: DOC_LANG=zh pnpm build
+
+      - name: Check the build file
+        shell: bash
+        run: |
+          ls -lhR ./build
+
       - name: Upload to S3
         run: |
           aws s3 sync ./build s3://greptime-document-bucket --delete
