@@ -13,7 +13,6 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | RENAME name
-    | SET <option_name>=<option_value> [, ...]
    ]
 ```
 
@@ -66,16 +65,6 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
 被修改的的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
-
-### 修改表的参数
-
-`ALTER TABLE` 语句也可以用来更改表的选项。
-当前支持修改以下表选项：
-- `ttl`: 表数据的保留时间
-
-```sql
-ALTER TABLE monitor SET 'ttl'='1d';
-```
 
 ### 重命名表
 
