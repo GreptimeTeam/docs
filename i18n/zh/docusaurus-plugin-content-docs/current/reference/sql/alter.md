@@ -98,7 +98,7 @@ ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
 ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
-#### 删除表的参数
+#### 移除设置过的表参数
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
