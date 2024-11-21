@@ -9,6 +9,8 @@
 
 ## ALTER DATABASE
 
+`ALTER DATABASE` statements can be used to modify the options of databases.
+
 ### Syntax
 
 ```sql
@@ -18,14 +20,12 @@ ALTER DATABASE db
    ]
 ```
 
-### Examples
-
-#### Modify database options
-
-`ALTER DATABASE` statements can be used to modify the options of databases.
-
 Currently following options are supported:
 - `ttl`: the default retention time of data in database.
+
+### Examples
+
+#### Modify default retention time of data in database
 
 Change the default retention time of data in the database to 1 day:
 
