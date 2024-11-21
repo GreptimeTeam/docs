@@ -1,13 +1,20 @@
 # ALTER
 
-`ALTER` 可以用来修改表的设置或者表中的数据：
+`ALTER` 可以用来修改数据库和表的设置或者表中的数据：
 
+* 修改数据库选项
 * 添加/删除/修改列
 * 重命名表
+* 修改表选项
 
 ## Syntax
 
 ```sql
+ALTER DATABASE db
+   [SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name> [, ...]
+   ]
+
 ALTER TABLE [db.]table
    [ADD COLUMN name type [options] 
     | DROP COLUMN name
@@ -20,6 +27,25 @@ ALTER TABLE [db.]table
 ```
 
 ## 示例
+
+### 修改数据库选项
+
+`ALTER DATABASE` 语句可以用来修改数据库的选项。
+
+当前支持修改以下数据库选项：
+- `ttl`: 数据库中数据的默认保留时间。
+
+修改数据库中数据的默认保留时间为 1 天：
+
+```sql
+ALTER DATABASE db SET 'ttl'='1d';
+```
+
+取消数据库中数据的默认保留时间：
+
+```sql
+ALTER DATABASE db UNSET 'ttl';
+```
 
 ### 增加列
 

@@ -1,13 +1,20 @@
 # ALTER
 
-`ALTER` can be used to modify any table settings or data within the table:
+`ALTER` can be used to modify any database and table settings or data within the table:
 
+* Modify database options
 * Add/Drop/Modify a column
 * Rename a table
+* Modify table options
 
 ## Syntax
 
 ```sql
+ALTER DATABASE db
+   [SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name> [, ...]
+   ]
+
 ALTER TABLE [db.]table
    [ADD COLUMN name type [options]
     | DROP COLUMN name
@@ -21,6 +28,25 @@ ALTER TABLE [db.]table
 ```
 
 ## Examples
+
+### Modify database options
+
+`ALTER DATABASE` statements can be used to change the options of databases.
+
+Currently following options are supported:
+- `ttl`: the default retention time of data in database.
+
+Change the default retention time of data in the database to 1 day:
+
+```sql
+ALTER DATABASE db SET 'ttl'='1d';
+```
+
+Remove the default retention time of data in the database:
+
+```sql
+ALTER DATABASE db UNSET 'ttl';
+```
 
 ### Add column
 
