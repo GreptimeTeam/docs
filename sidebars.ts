@@ -398,6 +398,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/functions/overview',
                 'reference/sql/functions/df-functions',
                 'reference/sql/functions/geo',
+                'reference/sql/functions/json',
                 'reference/sql/functions/vector',
               ] },
             'reference/sql/admin',
