@@ -128,7 +128,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
 
 修改列的全文索引选项时，列的数据类型必须是字符串类型。
 
-当列的全文索引关闭时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项**。
+当列的全文索引未开启过时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项**。
 
 ### 重命名表
 
