@@ -1,6 +1,6 @@
 # ALTER
 
-`ALTER` 可以用来修改数据库和表的设置或者表中的数据：
+`ALTER` 可以用来修改数据库和表的设置，或者修改表的元数据，包括：
 
 * 修改数据库选项
 * 添加/删除/修改列
@@ -41,7 +41,7 @@ ALTER TABLE [db.]table
 ALTER DATABASE db SET 'ttl'='1d';
 ```
 
-取消数据库中数据的默认保留时间：
+取消数据库中数据的默认保留时间设置：
 
 ```sql
 ALTER DATABASE db UNSET 'ttl';

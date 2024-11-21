@@ -1,6 +1,6 @@
 # ALTER
 
-`ALTER` can be used to modify any database and table settings or data within the table:
+`ALTER` can be used to modify any database and table settings or metadata of the table, including:
 
 * Modify database options
 * Add/Drop/Modify a column
