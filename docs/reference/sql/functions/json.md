@@ -1,10 +1,8 @@
-import TOCInline from '@theme/TOCInline';
 
 # JSON Functions
 
 This page lists all json type related functions in GreptimeDB.
 
-<TOCInline toc={toc} />
 
 ## Conversion
 

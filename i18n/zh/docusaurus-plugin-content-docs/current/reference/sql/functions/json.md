@@ -1,10 +1,8 @@
-import TOCInline from '@theme/TOCInline';
 
 # JSON 函数
 
 本页面列出了 GreptimeDB 中所有 JSON 类型相关的函数。
 
-<TOCInline toc={toc} />
 
 ## 转换
 
