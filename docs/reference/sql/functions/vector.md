@@ -4,28 +4,35 @@ This page lists all vector-related functions supported in GreptimeDB. Vector fun
 
 ## Distance Calculations
 
-* `l2sq_distance(vec1, vec2)`: Computes the squared L2 distance between two vectors.  
-* `cos_distance(vec1, vec2)`: Computes the cosine distance between two vectors.  
-* `dot_product(vec1, vec2)`: Computes the dot product of two vectors.  
+* `vec_l2sq_distance(vec1, vec2)`: Computes the squared L2 distance between two vectors.  
+* `vec_cos_distance(vec1, vec2)`: Computes the cosine distance between two vectors.  
+* `vec_dot_product(vec1, vec2)`: Computes the dot product of two vectors.  
 
-The parameters support both vector literals and column names. Vector literals must be enclosed in square brackets `[]` and contain `Float32` elements separated by commas, e.g., `[1.0, 2.0, 3.0]`. The dimensions of the vectors involved in the operations must be consistent.
+These functions accept vector values as parameters. You can use the `parse_vec` function to convert a string into a vector value, such as `parse_vec('[1.0, 2.0, 3.0]')`. Also, vector strings (e.g., `[1.0, 2.0, 3.0]`) can be used directly and will be automatically converted. Regardless of the method used, the dimensionality of the vectors must remain consistent.
 
 ---
 
-### `l2sq_distance`
+### `vec_l2sq_distance`
 
 Calculates the squared Euclidean distance (squared L2 distance) between two vectors. L2 distance is the straight-line distance between two points in geometric space. This function returns the squared value to improve computational efficiency.
 
 Example:
 
 ```sql
-SELECT l2sq_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
+SELECT vec_l2sq_distance(parse_vec('[1.0, 2.0, 3.0]'), parse_vec('[2.0, 1.0, 4.0]'));
 ```
+
+Or
+
+```sql
+SELECT vec_l2sq_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
+```
+
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column names).  
-* Output: A scalar value of type `Float64`.  
+* Parameters are two vectors with consistent dimensions.  
+* Output: A scalar value of type `Float32`.  
 
 ---
 
@@ -36,13 +43,19 @@ Calculates the cosine distance between two vectors. Cosine distance measures the
 Example:
 
 ```sql
-SELECT cos_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
+SELECT vec_cos_distance(parse_vec('[1.0, 2.0, 3.0]'), parse_vec('[2.0, 1.0, 4.0]'));
+```
+
+Or
+
+```sql
+SELECT vec_cos_distance('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
 ```
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column names).  
-* Output: A scalar value of type `Float64`.  
+* Parameters are two vectors with consistent dimensions.
+* Output: A scalar value of type `Float32`.  
 
 ---
 
@@ -53,10 +66,45 @@ Computes the dot product of two vectors. The dot product is the sum of the eleme
 Example:
 
 ```sql
-SELECT dot_product('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
+SELECT vec_dot_product(parse_vec('[1.0, 2.0, 3.0]'), parse_vec('[2.0, 1.0, 4.0]'));
+```
+
+Or
+
+```sql
+SELECT vec_dot_product('[1.0, 2.0, 3.0]', '[2.0, 1.0, 4.0]');
 ```
 
 Details:
 
-* Input: Two vectors with consistent dimensions (as literals or column names).  
-* Output: A scalar value of type `Float64`.  
+* Parameters are two vectors with consistent dimensions.
+* Output: A scalar value of type `Float32`.  
+
+## Conversion Functions
+
+When dealing with vector data in the database, GreptimeDB provides convenient functions for converting between strings and vector values.
+
+### `parse_vec`
+
+Converts a string to a vector value. The string must be enclosed in square brackets `[]` and contain elements of type `Float32`, separated by commas.
+
+Example:
+
+```sql
+CREATE TABLE vectors (
+    ts TIMESTAMP,
+    vec_col VECTOR(3)
+);
+
+INSERT INTO vectors (ts, vec_col) VALUES ('2024-11-18 00:00:01', parse_vec('[1.0, 2.0, 3.0]'));
+```
+
+### `vec_to_string`
+
+Converts a vector object to a string. The converted string format is `[<float32>, <float32>, ...]`.
+
+Example:
+
+```sql
+SELECT vec_to_string(vec_col) FROM vectors;
+```
