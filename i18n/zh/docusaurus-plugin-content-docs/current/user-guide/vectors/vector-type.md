@@ -49,7 +49,7 @@ INSERT INTO vecs (ts, vec_col) VALUES
 ('2024-11-18 00:00:03', '[7.0, 8.0, 9.0]');
 ```
 
-如果您希望更明确地控制数据转换，可以使用 `parse_vec` 函数来显式地解析字符串为向量：
+如果你希望更明确地控制数据转换，可以使用 `parse_vec` 函数来显式地解析字符串为向量：
 
 ```sql
 INSERT INTO vecs (ts, vec_col) VALUES
