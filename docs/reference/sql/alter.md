@@ -119,7 +119,7 @@ You can specify the following options using `FULLTEXT WITH` when enabling fullte
 
 If `WITH <options>` is not specified, `FULLTEXT` will use the default values.
 
-#### Disable fulltext index on a column:
+#### Disable fulltext index on a column
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;

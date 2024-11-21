@@ -120,7 +120,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 
-#### 关闭列的全文索引：
+#### 关闭列的全文索引
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
