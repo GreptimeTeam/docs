@@ -24,6 +24,7 @@ greptime export [OPTIONS]
 | --start-time | No | - | Start of time range for data export |
 | --end-time | No | - | End of time range for data export |
 | --auth-basic | No | - | Use the `<username>:<password>` format |
+| --timeout | No | 0 | The timeout for a single call to the DB, default is 0 which means never timeout (e.g., `30s`, `10min 20s`) |
 
 ### Export Targets
 - `schema`: Exports table schemas only (`SHOW CREATE TABLE`)
