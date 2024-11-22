@@ -1,11 +1,47 @@
 # ALTER
 
-`ALTER` can be used to modify any table settings or data within the table:
+`ALTER` can be used to modify any database options, table options or metadata of the table, including:
 
+* Modify database options
 * Add/Drop/Modify a column
 * Rename a table
+* Modify table options
 
-## Syntax
+## ALTER DATABASE
+
+`ALTER DATABASE` statements can be used to modify the options of databases.
+
+### Syntax
+
+```sql
+ALTER DATABASE db
+   [SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name> [, ...]
+   ]
+```
+
+Currently following options are supported:
+- `ttl`: the default retention time of data in database.
+
+### Examples
+
+#### Modify default retention time of data in database
+
+Change the default retention time of data in the database to 1 day:
+
+```sql
+ALTER DATABASE db SET 'ttl'='1d';
+```
+
+Remove the default retention time of data in the database:
+
+```sql
+ALTER DATABASE db UNSET 'ttl';
+```
+
+## ALTER TABLE
+
+### Syntax
 
 ```sql
 ALTER TABLE [db.]table
@@ -20,9 +56,9 @@ ALTER TABLE [db.]table
    ]
 ```
 
-## Examples
+### Examples
 
-### Add column
+#### Add column
 
 Adds a new column to the table:
 
@@ -49,7 +85,7 @@ Adds a new column as a tag(primary key) with a default value:
 ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
 
-### Remove column
+#### Remove column
 
 Removes a column from the table:
 
@@ -59,7 +95,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 
 The removed column can't be retrieved immediately by all subsequent queries.
 
-### Modify column type
+#### Modify column type
 
 Modify the date type of a column
 
@@ -69,7 +105,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 
 The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
 
-### Alter table options
+#### Alter table options
 
 `ALTER TABLE` statements can also be used to change the options of tables. 
 
@@ -104,7 +140,7 @@ ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### Modify column fulltext index options
+#### Modify column fulltext index options
 
 Enable fulltext index on a column:
 
@@ -129,7 +165,7 @@ The column must be a string type to alter the fulltext index.
 
 If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options**.
 
-### Rename table
+#### Rename table
 
 Renames the table:
 
