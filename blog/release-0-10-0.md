@@ -83,7 +83,7 @@ Release date: November 22, 2024
 * fix: alter table add column id alloc mismatch by [@discord9](https://github.com/discord9) in [#4972](https://github.com/GreptimeTeam/greptimedb/pull/4972)
 * fix: physical table statistics info by [@killme2008](https://github.com/killme2008) in [#4975](https://github.com/GreptimeTeam/greptimedb/pull/4975)
 * fix: run `install.sh` error by [@zyy17](https://github.com/zyy17) in [#4989](https://github.com/GreptimeTeam/greptimedb/pull/4989)
-* fix: obsolete wal entires while opening a migrated region by [@WenyXu](https://github.com/WenyXu) in [#4993](https://github.com/GreptimeTeam/greptimedb/pull/4993)
+* fix: obsolete wal entries while opening a migrated region by [@WenyXu](https://github.com/WenyXu) in [#4993](https://github.com/GreptimeTeam/greptimedb/pull/4993)
 * fix: ensure Create Or Replace and If Not Exist cannot coexist in create view by [@lyang24](https://github.com/lyang24) in [#5003](https://github.com/GreptimeTeam/greptimedb/pull/5003)
 * fix: correct `unset_maintenance_mode` behavior by [@WenyXu](https://github.com/WenyXu) in [#5009](https://github.com/GreptimeTeam/greptimedb/pull/5009)
 * fix: distinct respect in range by [@discord9](https://github.com/discord9) in [#5015](https://github.com/GreptimeTeam/greptimedb/pull/5015)
