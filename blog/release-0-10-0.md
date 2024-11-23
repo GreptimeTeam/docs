@@ -12,6 +12,7 @@ Release date: November 22, 2024
 * [Free index](https://docs.greptime.com/reference/sql/create#inverted-index): Inverted indexes are no longer tied to primary keys, allowing users to create them on any column, enhancing query flexibility and efficiency across different scenarios.
 * [Alter table options](https://docs.greptime.com/reference/sql/alter): Enhancements include setting TTL for databases and tables, modifying compaction parameters, and enabling/disabling full-text indexes on columns.
 * Loki remote write: GreptimeDB now supports the Loki remote write protocol, allowing users to log data in Loki format through Grafana tools.
+* Performance Optimization: Up to 10x improvement for queries fetching the latest N records by timestamp (`ORDER BY timestamp DESC LIMIT N`).
 
 ## Breaking changes
 
