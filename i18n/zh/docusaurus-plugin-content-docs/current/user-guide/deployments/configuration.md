@@ -242,6 +242,19 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+### 存储服务的 http 客户端
+
+`[storage.http_client]` 设置了向存储服务发送请求的 http 客户端的各种配置。
+
+仅当存储服务类型是 “S3”，“Oss”，“Azblob” 或 “Gcs” 时生效。
+
+| Key                      | 类型  | 默认值        | 含义                                                          |
+|--------------------------|-----|------------|-------------------------------------------------------------|
+| `pool_max_idle_per_host` | 数字  | 1024       | http 连接池中对每个 host 的最大空闲连接数。                                 |
+| `connect_timeout`        | 字符串 | “30s”（30秒） | http 客户端在进行连接时的超时                                           |
+| `timeout`                | 字符串 | “30s”（30秒） | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
+| `pool_idle_timeout`      | 字符串 | “90s”（90秒） | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
+
 ### 存储引擎提供商
 
 `[[storage.providers]]` 用来设置存储引擎的提供商列表。基于这个配置，你可以为每张表指定不同的存储引擎，具体请参考 [create table](/reference/sql/create.md#create-table):

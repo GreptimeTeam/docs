@@ -254,6 +254,19 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ```
 
+### Storage http client
+
+`[storage.http_client]` sets the options for the http client that is used to send requests to the storage service.
+
+Only applied for storage types "S3", "Oss", "Azblob" and "Gcs".
+
+| Key                      | Type    | Default            | Description                                                                                                                                        |
+|--------------------------|---------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `pool_max_idle_per_host` | Integer | 1024               | The maximum idle connection per host allowed in the pool.                                                                                          |
+| `connect_timeout`        | String  | "30s" (30 seconds) | The timeout for only the connect phase of a http client.                                                                                           |
+| `timeout`                | String  | "30s" (30 seconds) | The total request timeout, applied from when the request starts connecting until the response body has finished. Also considered a total deadline. |
+| `pool_idle_timeout`      | String  | "90s" (90 seconds) | The timeout for idle sockets being kept-alive.                                                                                                     |
+
 ### Storage engine provider
 
 `[[storage.providers]]` setups the table storage engine providers. Based on these providers, you can create a table with a specified storage, see [create table](/reference/sql/create.md#create-table):
