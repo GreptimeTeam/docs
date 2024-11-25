@@ -99,7 +99,22 @@ Users can add table options by using `WITH`. The valid options contain the follo
 
 | Option              | Description                                   | Value                                                                                                                                                                        |
 | ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`               | The storage time of the table data            | String value, such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`                                                 |
+| `ttl`               | The storage time of the table data            |
+A time duration string supports the following suffixes:
+
+- `nsec`, `ns` - nanoseconds
+- `usec`, `us` - microseconds
+- `msec`, `ms` - milliseconds
+- `seconds`, `second`, `sec`, `s` - seconds
+- `minutes`, `minute`, `min`, `m` - minutes
+- `hours`, `hour`, `hr`, `h` - hours
+- `days`, `day`, `d` - days
+- `weeks`, `week`, `w` - weeks
+- `months`, `month`, `M` - months
+- `years`, `year`, `y` - years
+
+Multiple units can be combined, e.g., `1hour 12min 5s`.
+|
 | `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments/configuration.md#storage-engine-provider). |
 | `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
 | `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
