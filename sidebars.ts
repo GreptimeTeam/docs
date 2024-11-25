@@ -57,6 +57,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observerbility/vector',
                 'user-guide/ingest-data/for-observerbility/opentelemetry',
                 'user-guide/ingest-data/for-observerbility/influxdb-line-protocol',
+                'user-guide/ingest-data/for-observerbility/loki',
               ],
             },
             {
