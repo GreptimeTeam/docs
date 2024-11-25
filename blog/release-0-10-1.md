@@ -1,10 +1,10 @@
 ---
-date: 2024-11-22
+date: 2024-11-25
 ---
 
-# v0.10.0 (DEPRECATED)
+# v0.10.1
 
-Release date: November 22, 2024
+Release date: November 25, 2024
 
 ## 👍 Highlights
 
@@ -13,6 +13,7 @@ Release date: November 22, 2024
 * [Alter table options](https://docs.greptime.com/reference/sql/alter): Enhancements include setting TTL for databases and tables, modifying compaction parameters, and enabling/disabling full-text indexes on columns.
 * Loki remote write: GreptimeDB now supports the Loki remote write protocol, allowing users to log data in Loki format through Grafana tools.
 * Performance Optimization: Up to 10x improvement for queries fetching the latest N records by timestamp (`ORDER BY timestamp DESC LIMIT N`).
+* Remove the option: `region_engine.mito.max_background_jobs` and add three new options: `region_engine.mito.max_background_flushes`, `region_engine.mito.max_background_compactions`, and `region_engine.mito.max_background_purges` for more detailed configuration.
 
 ## Breaking changes
 
@@ -93,6 +94,7 @@ Release date: November 22, 2024
 * fix: prune memtable/files range independently in each partition by [@evenyag](https://github.com/evenyag) in [#4998](https://github.com/GreptimeTeam/greptimedb/pull/4998)
 * fix: find latest window by [@v0y4g3r](https://github.com/v0y4g3r) in [#5037](https://github.com/GreptimeTeam/greptimedb/pull/5037)
 * fix: prepare param mismatch by [@CookiePieWw](https://github.com/CookiePieWw) in [#5025](https://github.com/GreptimeTeam/greptimedb/pull/5025)
+* fix: prevent metadata region from inheriting database ttl by [@waynexia](https://github.com/waynexia) in [#5044](https://github.com/GreptimeTeam/greptimedb/pull/5044)
 
 ### 🚜 Refactor
 
@@ -146,6 +148,7 @@ Release date: November 22, 2024
 * chore: rename change to modify by [@CookiePieWw](https://github.com/CookiePieWw) in [#5000](https://github.com/GreptimeTeam/greptimedb/pull/5000)
 * chore(cli): set default timeout for cli commands by [@WenyXu](https://github.com/WenyXu) in [#5021](https://github.com/GreptimeTeam/greptimedb/pull/5021)
 * chore: bump version to 0.10.0 by [@zhongzc](https://github.com/zhongzc) in [#5040](https://github.com/GreptimeTeam/greptimedb/pull/5040)
+* chore: bump version to v0.10.1 by [@zhongzc](https://github.com/zhongzc) in [#5048](https://github.com/GreptimeTeam/greptimedb/pull/5048)
 
 ### Build
 
