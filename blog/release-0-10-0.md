@@ -2,7 +2,7 @@
 date: 2024-11-22
 ---
 
-# v0.10.0
+# v0.10.0 (DEPRECATED)
 
 Release date: November 22, 2024
 
