@@ -74,7 +74,7 @@ DESC loki_demo_logs;
 - line: The log message.
 
 if you specify the external labels, we will add them as tags to the table schema. like `job` and `from` in the above example.
-We can't specify tags manually, all lables are treated as tags and string type.
+We can't specify tags manually, all labels are treated as tags and string type.
 
 ### Example
 
