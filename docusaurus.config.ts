@@ -140,9 +140,6 @@ const config: Config = {
             },
             '0.7': {
               path: 'v0.7'
-            },
-            '0.6': {
-              path: 'v0.6'
             }
           },
           remarkPlugins: [
