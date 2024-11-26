@@ -22,4 +22,4 @@ This section provides an overview of the advanced features available in Greptime
 
 ## Release Notes
 
-- [24.11](./release-notes/release_24_11.md)
+- [24.11](./release-notes/release-24_11.md)
