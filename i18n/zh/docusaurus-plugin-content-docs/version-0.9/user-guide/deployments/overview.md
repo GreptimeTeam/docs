@@ -27,4 +27,4 @@ GreptimeDB 默认不启用鉴权认证。
 比起管理自己的 GreptimeDB 集群，
 你可以使用 [GreptimeCloud](https://greptime.cloud) 来管理 GreptimeDB 实例、监控指标和设置警报。
 GreptimeCloud 是由完全托管的无服务器 GreptimeDB 提供支持的云服务，为时间序列数据平台和 Prometheus 后端提供了可扩展和高效的解决方案。
-有关更多信息，请参阅[GreptimeCloud 文档](/greptimecloud/overview.md)。
+有关更多信息，请参阅[GreptimeCloud 文档](https://docs.greptime.cn/nightly/greptimecloud/overview)。

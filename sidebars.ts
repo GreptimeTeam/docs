@@ -297,7 +297,6 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/usage-&-billing/hobby',
             'greptimecloud/usage-&-billing/serverless',
             'greptimecloud/usage-&-billing/dedicated',
-            'greptimecloud/usage-&-billing/byoc',
             'greptimecloud/usage-&-billing/billing',
           ],
         },
