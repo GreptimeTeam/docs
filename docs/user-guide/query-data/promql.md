@@ -26,6 +26,60 @@ of these API.
 
 You can use additional query parameter `db` to specify GreptimeDB database name.
 
+For example, the following query will return the CPU usage of the `process_cpu_seconds_total` metric in the `public` database:
+
+```shell
+curl -X POST \
+    -H 'Authorization: Basic {{authorization if exists}}' \
+    --data-urlencode 'query=irate(process_cpu_seconds_total[1h])' \
+    --data-urlencode 'start=2024-11-24T00:00:00Z' \
+    --data-urlencode 'end=2024-11-25T00:00:00Z' \
+    --data-urlencode 'step=1h' \
+    --data-urlencode 'db=public' \
+    http://localhost:4000/v1/prometheus/api/v1/query_range
+```
+
+The authentication header is required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/protocols/http.md#authentication).
+The query string parameters are the same as the original Prometheus API. The only difference is the additional `db` parameter, which specifies the GreptimeDB database name.
+
+The output compatible with the Prometheus API:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "job": "node",
+          "instance": "node_exporter:9100",
+          "__name__": "process_cpu_seconds_total"
+        },
+        "values": [
+          [
+            1732618800,
+            "0.0022222222222222734"
+          ],
+          [
+            1732622400,
+            "0.0009999999999999788"
+          ],
+          [
+            1732626000,
+            "0.0029999999999997585"
+          ],
+          [
+            1732629600,
+            "0.002222222222222175"
+          ]
+        ]
+      }
+    ]
+  }
+}
+```
+
 ## SQL
 
 GreptimeDB also extends SQL grammar to support PromQL. You can start with the `TQL` (Time-series Query Language) keyword to write parameters and queries. The grammar looks like this:

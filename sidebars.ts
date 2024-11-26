@@ -368,7 +368,6 @@ const sidebars: SidebarsConfig = {
           items: [
             'reference/sql/overview',
             'reference/sql/data-types',
-            'reference/sql/http-api',
             'reference/sql/insert',
             'reference/sql/cast',
             'reference/sql/copy',

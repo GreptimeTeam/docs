@@ -447,4 +447,4 @@ The result is shown below:
 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/user-guide/protocols/http.md#post-sql-statements).

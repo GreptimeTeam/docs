@@ -347,7 +347,7 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-For more information about SQL HTTP request, please refer to [API document](/reference/sql/http-api.md).
+For more information about SQL HTTP request, please refer to [API document](/user-guide/protocols/http.md#post-sql-statements).
 
 ## Time zone
 
