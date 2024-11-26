@@ -6,4 +6,3 @@
 - [Hobby 计划](hobby.md)
 - [Serverless 计划](serverless.md)
 - [Dedicated 计划](dedicated.md)
-- [BYOC](byoc.md)
