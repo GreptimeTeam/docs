@@ -354,6 +354,13 @@ const sidebars: SidebarsConfig = {
             }
           ],
         },
+        {
+          type: 'category',
+          label: 'Releases',
+          items: [
+            'enterprise/release-notes/release-24_11',
+          ]
+        },
       ],
     },
     {
@@ -391,7 +398,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/with',
             'reference/sql/alter',
             'reference/sql/explain',
-            { 
+            {
               type: 'category',
               label: 'Functions',
               items: [

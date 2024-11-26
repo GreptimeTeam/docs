@@ -20,3 +20,6 @@ This section provides an overview of the advanced features available in Greptime
 - [Audit Logging](./deployments/audit-logging.md): Track and monitor user activity with detailed audit logs.
 - More feature documentation coming soon!
 
+## Release Notes
+
+- [24.11](./release-notes/release-24_11.md)

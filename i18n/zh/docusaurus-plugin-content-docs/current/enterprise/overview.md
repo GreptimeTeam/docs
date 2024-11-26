@@ -20,3 +20,6 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 - [审计日志](./deployments/audit-logging.md): 用详细的审计日志追踪并记录用户的行为。
 - 更多功能文档即将推出！
 
+## 发布说明
+
+- [24.11](./release-notes/release-24_11.md)
