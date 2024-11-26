@@ -101,7 +101,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 | 选项                | 描述                                     | 值                                                                                                                                                   |
 | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`               | 表数据的存储时间                         | 字符串值，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                           |
+| `ttl`               | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`|
 | `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。 |
 | `compaction.type` | Compaction 策略         | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略 |
 | `compaction.twcs.max_active_window_files` | 当前活跃时间窗口内的最大文件数         | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用 |
@@ -121,6 +121,21 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) with(ttl='7d');
 ```
+
+`ttl` 值是一个时间范围字符串，支持以下后缀：
+
+- `nsec`, `ns` - 纳秒
+- `usec`, `us` - 微秒
+- `msec`, `ms` - 毫秒
+- `seconds`, `second`, `sec`, `s` - 秒
+- `minutes`, `minute`, `min`, `m` - 分钟
+- `hours`, `hour`, `hr`, `h` - 小时
+- `days`, `day`, `d` - 天
+- `weeks`, `week`, `w` - 周
+- `months`, `month`, `M` - 月
+- `years`, `year`, `y` - 年
+
+可以组合多个单位，例如：`1hour 12min 5s`。
 
 #### 创建自定义存储的表
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
