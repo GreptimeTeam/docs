@@ -7,3 +7,8 @@ datas = "datas"
 ND = "ND"
 RTO = "RTO"
 AKS = "AKS"
+
+[files]
+extend-exclude = [
+  "pnpm-lock.yaml",
+]
