@@ -4,7 +4,7 @@
 
 ### API
 
-To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
+To send Logs to GreptimeDB through Raw HTTP API, use the following information:
 
 * URL: `http{s}://<host>/v1/loki/api/v1/push`
 * Headers:
@@ -12,11 +12,13 @@ To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, us
   * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).
   * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `loki_logs`.
 
+  The request uses binary protobuf to encode the payload, The defined schema is the same as the [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto).
+
 ### Example Code
 
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) is a vendor-neutral distribution of the OpenTelemetry (OTel) Collector. Alloy uniquely combines the very best OSS observability signals in the community.
 
-It suplies a Loki exporter that can be used to send logs to GreptimeDB.
+It suplies a Loki exporter that can be used to send logs to GreptimeDB. Here is an example configuration:
 
 ```hcl
 loki.source.file "greptime" {
@@ -40,6 +42,10 @@ loki.write "greptime_loki" {
     }
 }
 ```
+
+We listen to the file `/tmp/foo.txt` and send the logs to GreptimeDB. The logs are stored in the table `loki_demo_logs` with the external labels `job` and `from`.
+
+For more information, please refer to the [Grafana Alloy loki.write documentation](https://grafana.com/docs/alloy/latest/reference/components/loki/loki.write/).
 
 You can run the following command to check the data in the table:
 
