@@ -1,2 +1,2 @@
 [files]
-extend-exclude = ["*/**/df-functions.md"]
+extend-exclude = ["*/**/df-functions.md", "pnpm-lock.yaml"]
