@@ -14,6 +14,10 @@ To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, us
 
 ### Example Code
 
+[Grafana Alloy](https://grafana.com/docs/alloy/latest/) is a vendor-neutral distribution of the OpenTelemetry (OTel) Collector. Alloy uniquely combines the very best OSS observability signals in the community.
+
+It suplies a Loki exporter that can be used to send logs to GreptimeDB.
+
 ```hcl
 loki.source.file "greptime" {
   targets = [
@@ -40,15 +44,44 @@ loki.write "greptime_loki" {
 You can run the following command to check the data in the table:
 
 ```sql
-mysql> select * from loki_demo_logs;
+SELECT * FROM loki_demo_logs;
 +----------------------------+------------------------+--------------+-------+----------+
 | greptime_timestamp         | line                   | filename     | from  | job      |
 +----------------------------+------------------------+--------------+-------+----------+
 | 2024-11-25 11:02:31.256251 | Greptime is very cool! | /tmp/foo.txt | alloy | greptime |
 +----------------------------+------------------------+--------------+-------+----------+
 1 row in set (0.01 sec)
+```
 
-mysql> desc loki_demo_logs;
+## Data Model
+
+The Loki logs data model is mapped to the GreptimeDB data model according to the following rules:
+
+Default table schema without external labels:
+
+```sql
+DESC loki_demo_logs;
++--------------------+---------------------+------+------+---------+---------------+
+| Column             | Type                | Key  | Null | Default | Semantic Type |
++--------------------+---------------------+------+------+---------+---------------+
+| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| line               | String              |      | YES  |         | FIELD         |
++--------------------+---------------------+------+------+---------+---------------+
+5 rows in set (0.00 sec)
+```
+
+- greptime_timestamp: The timestamp of the log.
+- line: The log message.
+
+if you specify the external labels, we will add them as tags to the table schema. like `job` and `from` in the above example.
+We can't specify tags manually, all lables are treated as tags and string type.
+
+### Example
+
+The following is an example of the table schema:
+
+```sql
+DESC loki_demo_logs;
 +--------------------+---------------------+------+------+---------+---------------+
 | Column             | Type                | Key  | Null | Default | Semantic Type |
 +--------------------+---------------------+------+------+---------+---------------+
@@ -59,8 +92,10 @@ mysql> desc loki_demo_logs;
 | job                | String              | PRI  | YES  |         | TAG           |
 +--------------------+---------------------+------+------+---------+---------------+
 5 rows in set (0.00 sec)
+```
 
-mysql> show create table loki_demo_logs\G
+```sql
+SHOW CREATE TABLE loki_demo_logs\G
 *************************** 1. row ***************************
        Table: loki_demo_logs
 Create Table: CREATE TABLE IF NOT EXISTS `loki_demo_logs` (
@@ -79,25 +114,3 @@ WITH(
 )
 1 row in set (0.00 sec)
 ```
-
-## Data Model
-
-The Loki logs data model is mapped to the GreptimeDB data model according to the following rules:
-
-Default table schema:
-
-```sql
-mysql> desc loki_demo_logs;
-+--------------------+---------------------+------+------+---------+---------------+
-| Column             | Type                | Key  | Null | Default | Semantic Type |
-+--------------------+---------------------+------+------+---------+---------------+
-| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| line               | String              |      | YES  |         | FIELD         |
-+--------------------+---------------------+------+------+---------+---------------+
-5 rows in set (0.00 sec)
-```
-- greptime_timestamp: The timestamp of the log.
-- line: The log message.
-
-if you specify the external labels, we will add them as tags to the table schema. like `job` and `from` in the above example.
-
