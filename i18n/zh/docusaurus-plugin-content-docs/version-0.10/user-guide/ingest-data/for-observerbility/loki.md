@@ -1,24 +1,24 @@
 # Loki
 
-## Usage
+## 使用方法
 
 ### API
 
-To send Logs to GreptimeDB through Raw HTTP API, use the following information:
+要通过原始 HTTP API 将日志发送到 GreptimeDB，请使用以下信息：
 
 * URL: `http{s}://<host>/v1/loki/api/v1/push`
 * Headers:
   * `X-Greptime-DB-Name`: `<dbname>`
-  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).
-  * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `loki_logs`.
+  * `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [认证](https://docs.greptime.com/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)。
+  * `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `loki_logs`。
 
-  The request uses binary protobuf to encode the payload, The defined schema is the same as the [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto).
+请求使用二进制 protobuf 编码负载，定义的格式与 [logproto.proto](https://github.com/grafana/loki/blob/main/pkg/logproto/logproto.proto) 相同。
 
-### Example Code
+### 示例代码
 
-[Grafana Alloy](https://grafana.com/docs/alloy/latest/) is a vendor-neutral distribution of the OpenTelemetry (OTel) Collector. Alloy uniquely combines the very best OSS observability signals in the community.
+[Grafana Alloy](https://grafana.com/docs/alloy/latest/) 是一个供应商中立的 OpenTelemetry (OTel) Collector 发行版。Alloy 独特地结合了社区中最好的开源可观测性信号。
 
-It suplies a Loki exporter that can be used to send logs to GreptimeDB. Here is an example configuration:
+它提供了一个 Loki 导出器，可以用来将日志发送到 GreptimeDB。以下是一个配置示例：
 
 ```hcl
 loki.source.file "greptime" {
@@ -43,11 +43,11 @@ loki.write "greptime_loki" {
 }
 ```
 
-We listen to the file `/tmp/foo.txt` and send the logs to GreptimeDB. The logs are stored in the table `loki_demo_logs` with the external labels `job` and `from`.
+我们监听文件 `/tmp/foo.txt` 并将日志发送到 GreptimeDB。日志存储在表 `loki_demo_logs` 中，并带有 label `job` 和 `from`。
 
-For more information, please refer to the [Grafana Alloy loki.write documentation](https://grafana.com/docs/alloy/latest/reference/components/loki/loki.write/).
+更多信息，请参考 [Grafana Alloy loki.write 文档](https://grafana.com/docs/alloy/latest/reference/components/loki/loki.write/)。
 
-You can run the following command to check the data in the table:
+您可以运行以下命令来检查表中的数据：
 
 ```sql
 SELECT * FROM loki_demo_logs;
@@ -59,11 +59,11 @@ SELECT * FROM loki_demo_logs;
 1 row in set (0.01 sec)
 ```
 
-## Data Model
+## 数据模型
 
-The Loki logs data model is mapped to the GreptimeDB data model according to the following rules:
+Loki 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
-Default table schema without external labels:
+没有标签的默认表结构：
 
 ```sql
 DESC loki_demo_logs;
@@ -76,16 +76,15 @@ DESC loki_demo_logs;
 5 rows in set (0.00 sec)
 ```
 
-- greptime_timestamp: The timestamp of the log.
-- line: The log message.
+- greptime_timestamp: 日志的时间戳。
+- line: 日志消息。
 
-if you specify the external labels, we will add them as tags to the table schema. like `job` and `from` in the above example.
-You can't specify tags manually, all labels are treated as tags and string type.
-Please do not attempt to pre-create the table using SQL to specify tag columns, as this will cause a type mismatch and write failure.
+如果您指定了外部 label，我们会将它们添加为表结构中的 tag。例如上面的 `job` 和 `from`。
+我们不能手动指定 tag，所有 lable 都被视为 tag 并且类型为字符串。请不要尝试使用 SQL 提前创建表来指定 tag 列，这会导致类型不匹配而写入失败。
 
-### Example
+### 示例
 
-The following is an example of the table schema:
+以下是表结构的示例：
 
 ```sql
 DESC loki_demo_logs;
