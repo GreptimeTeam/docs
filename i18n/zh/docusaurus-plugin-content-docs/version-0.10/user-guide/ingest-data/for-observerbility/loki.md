@@ -47,7 +47,7 @@ loki.write "greptime_loki" {
 
 更多信息，请参考 [Grafana Alloy loki.write 文档](https://grafana.com/docs/alloy/latest/reference/components/loki/loki.write/)。
 
-您可以运行以下命令来检查表中的数据：
+你可以运行以下命令来检查表中的数据：
 
 ```sql
 SELECT * FROM loki_demo_logs;
@@ -63,7 +63,7 @@ SELECT * FROM loki_demo_logs;
 
 Loki 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
-没有标签的默认表结构：
+没有 label 的默认表结构：
 
 ```sql
 DESC loki_demo_logs;
@@ -79,7 +79,7 @@ DESC loki_demo_logs;
 - greptime_timestamp: 日志的时间戳。
 - line: 日志消息。
 
-如果您指定了外部 label，我们会将它们添加为表结构中的 tag。例如上面的 `job` 和 `from`。
+如果你指定了外部 label，我们会将它们添加为表结构中的 tag。例如上面的 `job` 和 `from`。
 在这种写入方式下不能手动指定，所有 label 都被视为 tag 并且类型为字符串。请不要尝试使用 SQL 提前创建表来指定 tag 列，这会导致类型不匹配而写入失败。
 
 ### 示例
