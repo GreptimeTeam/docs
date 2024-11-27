@@ -4,7 +4,7 @@ GreptimeDB is an observability backend to consume OpenTelemetry Logs natively vi
 
 To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
-* URL: `https://<host>/v1/otlp/v1/logs`
+* URL: `http{s}://<host>/v1/otlp/v1/logs`
 * Headers:
   * `X-Greptime-DB-Name`: `<dbname>`
   * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).

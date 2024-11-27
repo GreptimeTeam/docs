@@ -137,8 +137,8 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
     endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
     headers  = {
       "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
-      "x-greptime-log-table-name" = "demo_logs",
-      "x-greptime-log-extract-keys" = "filename,log.file.name,loki.attribute.labels",
+      "X-Greptime-Log-Table-Name" = "demo_logs",
+      "X-Greptime-Gog-Extract-Keys" = "filename,log.file.name,loki.attribute.labels",
     }
     auth     = otelcol.auth.basic.credentials.handler
   }

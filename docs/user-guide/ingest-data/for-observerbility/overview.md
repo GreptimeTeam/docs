@@ -8,3 +8,4 @@ GreptimeDB integrates seamlessly with leading observability tools to provide a c
 - [Vector](vector.md): Use GreptimeDB as a sink for Vector, ideal for complex data pipelines and diverse data sources.
 - [OpenTelemetry](opentelemetry.md): Collect and export telemetry data to GreptimeDB for detailed observability insights.
 - [InfluxDB Line Protocol](influxdb-line-protocol.md): A widely-used protocol for time-series data, facilitating migration from InfluxDB to GreptimeDB. The Telegraf integration method is also introduced in this document.
+- [Loki](loki.md): A widely-used log write protocol, facilitating migration from Loki to GreptimeDB. The Alloy integration method is also introduced in this document.
