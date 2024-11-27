@@ -1,10 +1,10 @@
 ---
-date: 2024-11-25
+date: 2024-11-26
 ---
 
-# v0.10.1 (DEPRECATED)
+# v0.10.2
 
-Release date: November 25, 2024
+Release date: November 26, 2024
 
 ## 👍 Highlights
 
@@ -19,6 +19,7 @@ Release date: November 25, 2024
 
 * fix!: replace timeout_millis and connect_timeout_millis with Duration in DatanodeClientOptions by [@WenyXu](https://github.com/WenyXu) in [#4867](https://github.com/GreptimeTeam/greptimedb/pull/4867)
 * feat!: Divide flush and compaction job pool by [@evenyag](https://github.com/evenyag) in [#4871](https://github.com/GreptimeTeam/greptimedb/pull/4871)
+
 
 ### 🚀 Features
 
@@ -61,6 +62,7 @@ Release date: November 25, 2024
 * feat(vector): add conversion between vector and string by [@zhongzc](https://github.com/zhongzc) in [#5029](https://github.com/GreptimeTeam/greptimedb/pull/5029)
 * feat: add unset table options support by [@WenyXu](https://github.com/WenyXu) in [#5034](https://github.com/GreptimeTeam/greptimedb/pull/5034)
 * feat: alter database ttl by [@CookiePieWw](https://github.com/CookiePieWw) in [#5035](https://github.com/GreptimeTeam/greptimedb/pull/5035)
+* feat: use cache kv manager for SchemaMetadataManager by [@v0y4g3r](https://github.com/v0y4g3r) in [#5053](https://github.com/GreptimeTeam/greptimedb/pull/5053)
 
 ### 🐛 Bug Fixes
 
@@ -95,6 +97,8 @@ Release date: November 25, 2024
 * fix: find latest window by [@v0y4g3r](https://github.com/v0y4g3r) in [#5037](https://github.com/GreptimeTeam/greptimedb/pull/5037)
 * fix: prepare param mismatch by [@CookiePieWw](https://github.com/CookiePieWw) in [#5025](https://github.com/GreptimeTeam/greptimedb/pull/5025)
 * fix: prevent metadata region from inheriting database ttl by [@waynexia](https://github.com/waynexia) in [#5044](https://github.com/GreptimeTeam/greptimedb/pull/5044)
+* fix(metric-engine): set ttl also on opening metadata regions by [@v0y4g3r](https://github.com/v0y4g3r) in [#5051](https://github.com/GreptimeTeam/greptimedb/pull/5051)
+* fix: pass series row selector to file range reader by [@evenyag](https://github.com/evenyag) in [#5054](https://github.com/GreptimeTeam/greptimedb/pull/5054)
 
 ### 🚜 Refactor
 
@@ -112,11 +116,7 @@ Release date: November 25, 2024
 * refactor: introduce `MaintenanceModeManager` by [@WenyXu](https://github.com/WenyXu) in [#4994](https://github.com/GreptimeTeam/greptimedb/pull/4994)
 * refactor: split up different stmts by [@CookiePieWw](https://github.com/CookiePieWw) in [#4997](https://github.com/GreptimeTeam/greptimedb/pull/4997)
 * refactor: unify mysql execute through cli and protocol by [@CookiePieWw](https://github.com/CookiePieWw) in [#5038](https://github.com/GreptimeTeam/greptimedb/pull/5038)
-
-### 📚 Documentation
-
-* docs: change cpu/mem panel to time-series by [@evenyag](https://github.com/evenyag) in [#4844](https://github.com/GreptimeTeam/greptimedb/pull/4844)
-* docs: add TOC to readme by [@killme2008](https://github.com/killme2008) in [#4949](https://github.com/GreptimeTeam/greptimedb/pull/4949)
+* refactor: expose configs for http clients used in object store by [@MichaelScofield](https://github.com/MichaelScofield) in [#5041](https://github.com/GreptimeTeam/greptimedb/pull/5041)
 
 ### 🧪 Testing
 
@@ -149,6 +149,7 @@ Release date: November 25, 2024
 * chore(cli): set default timeout for cli commands by [@WenyXu](https://github.com/WenyXu) in [#5021](https://github.com/GreptimeTeam/greptimedb/pull/5021)
 * chore: bump version to 0.10.0 by [@zhongzc](https://github.com/zhongzc) in [#5040](https://github.com/GreptimeTeam/greptimedb/pull/5040)
 * chore: bump version to v0.10.1 by [@zhongzc](https://github.com/zhongzc) in [#5048](https://github.com/GreptimeTeam/greptimedb/pull/5048)
+* chore: bump version to v0.10.2 by [@zhongzc](https://github.com/zhongzc) in [#5056](https://github.com/GreptimeTeam/greptimedb/pull/5056)
 
 ### Build
 
