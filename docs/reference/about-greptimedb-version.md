@@ -1,4 +1,4 @@
-# About GreptimeDB version number
+# About GreptimeDB Version Number
 
 GreptimeDB follows the [Semantic Versioning](https://semver.org/) scheme:
 
