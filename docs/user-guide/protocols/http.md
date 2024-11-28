@@ -58,17 +58,17 @@ http://localhost:4000/v1/sql
 
 ## Admin APIs
 
+:::tip NOTE
+These endpoint cannot be used in GreptimeCloud.
+:::
+
 ### Check database health
 
 You can use the `/health` endpoint to check the health of the GreptimeDB server.
 For more information,
-please refer to [Check Database Status](/getting-started/installation/overview.md#check-database-status).
+please refer to [Check Database Health](/getting-started/installation/overview.md#check-database-health).
 
 ### Check Database Status
-
-:::tip NOTE
-This endpoint cannot be used in GreptimeCloud.
-:::
 
 You can use the `/status` endpoint to check the status of the GreptimeDB server.
 
@@ -98,10 +98,6 @@ which will be similar to the following:
 ```
 
 ### Get GreptimeDB server configuration
-
-:::tip NOTE
-This endpoint cannot be used in GreptimeCloud.
-:::
 
 You can use the `/config` endpoint to get the [TOML configuration](/user-guide/deployments/configuration.md#configuration-file-options) of the GreptimeDB server.
 
@@ -151,7 +147,7 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 - [`Authorization`](#authentication)
 - [`X-Greptime-Timeout`](#timeout)
 - `Content-Type`: `application/x-www-form-urlencoded`.
-- `X-Greptime-Timezone`: The time zone for the current SQL query. Optional. Please refer to [time zone](/user-guide/protocols/http.md#time-zone).
+- `X-Greptime-Timezone`: The time zone for the current SQL query. Optional. Please refer to [time zone](#time-zone).
 
 ### Query string parameters
 
@@ -385,7 +381,9 @@ For all the compatible APIs, please refer to the [Prometheus Query Language](/us
 
 GreptimeDB also exposes an custom HTTP API for querying with PromQL, and returning
 GreptimeDB's data frame output. You can find it on `/promql` path under the
-current stable API version `/v1`. For example:
+current stable API version `/v1`.
+The return value of this API is in GreptimeDB's JSON format, not Prometheus's format.
+For example:
 
 ```shell
 curl -X GET \
@@ -499,7 +497,7 @@ curl -X POST \
 
 ### Headers
 
-- `Authorization`: Unlike other APIs, the InfluxDB line protocol APIs use the InfluxDB authentication format. For V2, it is `token <username>:<password>`.
+- `Authorization`: **Unlike other APIs**, the InfluxDB line protocol APIs use the InfluxDB authentication format. For V2, it is `token <username>:<password>`.
 
 ### Query string parameters
 
@@ -516,8 +514,10 @@ The InfluxDB line protocol data points. Please refer to the [InfluxDB Line Proto
 
 Please refer to [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) in the user guide.
 
-## Mange Pipelines
+## API for managing Pipelines
 
-When writing logs to GreptimeDB, you can use HTTP APIs to manage the pipelines.
-Please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
+When writing logs to GreptimeDB,
+you can use HTTP APIs to manage the pipelines.
+For detailed information,
+please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
 

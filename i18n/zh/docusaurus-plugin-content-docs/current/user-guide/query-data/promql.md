@@ -25,6 +25,60 @@ GreptimeDB 实现了兼容 Prometheus 的一系列 API ，通过 `/v1/prometheus
 
 你可以通过设置 HTTP 请求的 `db` 参数来指定 GreptimeDB 中的数据库名。
 
+例如，以下查询将返回 `public` 数据库中 `process_cpu_seconds_total` 指标的 CPU 使用率：
+
+```shell
+curl -X POST \
+    -H 'Authorization: Basic {{authorization if exists}}' \
+    --data-urlencode 'query=irate(process_cpu_seconds_total[1h])' \
+    --data-urlencode 'start=2024-11-24T00:00:00Z' \
+    --data-urlencode 'end=2024-11-25T00:00:00Z' \
+    --data-urlencode 'step=1h' \
+    --data-urlencode 'db=public' \
+    http://localhost:4000/v1/prometheus/api/v1/query_range
+```
+
+如果你使用启用了身份验证的 GreptimeDB，则需要 Authorization header，请参阅[鉴权](/user-guide/protocols/http.md#鉴权)。
+该 API 的查询字符串参数与原始 Prometheus API 的查询字符串参数相同，但额外的 `db` 参数除外，该参数指定了 GreptimeDB 数据库名称。
+
+输出格式与 Prometheus API 完全兼容：
+
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "job": "node",
+          "instance": "node_exporter:9100",
+          "__name__": "process_cpu_seconds_total"
+        },
+        "values": [
+          [
+            1732618800,
+            "0.0022222222222222734"
+          ],
+          [
+            1732622400,
+            "0.0009999999999999788"
+          ],
+          [
+            1732626000,
+            "0.0029999999999997585"
+          ],
+          [
+            1732629600,
+            "0.002222222222222175"
+          ]
+        ]
+      }
+    ]
+  }
+}
+```
+
 ## SQL
 
 GreptimeDB 还扩展了 SQL 语法以支持 PromQL。可以用 `TQL`（Time-series Query Language）为关键字开始写入参数和进行查询。该语法如下：

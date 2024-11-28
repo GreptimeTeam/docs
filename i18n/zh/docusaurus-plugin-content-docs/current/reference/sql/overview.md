@@ -1,7 +1,6 @@
 # 概述
 
 * [数据类型](./data-types)
-* [HTTP API](./http-api)
 * [INSERT](./insert.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)

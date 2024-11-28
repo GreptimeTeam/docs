@@ -7,7 +7,7 @@
 - [GreptimeDB 单机模式](greptimedb-standalone.md)
 - [GreptimeDB 分布式集群](greptimedb-cluster.md)
 
-## 检查数据库状态
+## 检查数据库健康状态
 
 启动 GreptimeDB 后，你可以检查其状态以确保其正常运行。
 

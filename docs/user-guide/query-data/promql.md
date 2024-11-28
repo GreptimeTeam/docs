@@ -38,11 +38,11 @@ curl -X POST \
     --data-urlencode 'db=public' \
     http://localhost:4000/v1/prometheus/api/v1/query_range
 ```
+If authentication is enabled in GreptimeDB, the authentication header is required. Refer to the [authentication documentation](/user-guide/protocols/http.md#authentication) for more details.
 
-The authentication header is required if you are using GreptimeDB with authentication enabled. Please refer to [authentication](/user-guide/protocols/http.md#authentication).
-The query string parameters are the same as the original Prometheus API. The only difference is the additional `db` parameter, which specifies the GreptimeDB database name.
+The query string parameters for the API are identical to those of the original Prometheus API, with the exception of the additional `db` parameter, which specifies the GreptimeDB database name.
 
-The output compatible with the Prometheus API:
+The output format is compatible with the Prometheus API:
 
 ```json
 {
