@@ -11,4 +11,5 @@ AKS = "AKS"
 [files]
 extend-exclude = [
   "pnpm-lock.yaml",
+  "*/**/df-functions.md"
 ]
