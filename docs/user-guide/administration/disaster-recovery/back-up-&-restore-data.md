@@ -88,7 +88,7 @@ greptime cli import --addr localhost:4000 --input-dir /tmp/backup/schemas --targ
 ### Time-Range Based Backup
 ```bash
 # Export data within specific time range
-greptime export --addr localhost:4000 \
+greptime cli export --addr localhost:4000 \
     --output-dir /tmp/backup/timerange \
     --start-time "2024-01-01 00:00:00" \
     --end-time "2024-01-31 23:59:59"

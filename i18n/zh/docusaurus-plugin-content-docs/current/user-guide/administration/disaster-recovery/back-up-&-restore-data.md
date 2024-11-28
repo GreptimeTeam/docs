@@ -8,7 +8,7 @@
 
 ### 命令语法
 ```bash
-greptime export [OPTIONS]
+greptime cli export [OPTIONS]
 ```
 
 ### 选项
