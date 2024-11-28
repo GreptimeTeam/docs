@@ -503,9 +503,16 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
-      "type": "link",
-      "label": "Release Notes",
-      "href": "/release-notes"
+      type: 'category',
+      label: 'Release Notes',
+      items: [
+        'reference/about-greptimedb-version',
+        {
+          "type": "link",
+          "label": "Releases",
+          "href": "/release-notes"
+        },
+      ],
     },
     { type: 'category', label: 'FAQ and Others', items: ['faq-and-others/overview', 'faq-and-others/faq'] },
   ],
