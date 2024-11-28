@@ -9,7 +9,7 @@ The Export and Import tools provide functionality for backing up and restoring G
 
 ### Command Syntax
 ```bash
-greptime export [OPTIONS]
+greptime cli export [OPTIONS]
 ```
 
 ### Options
@@ -46,7 +46,7 @@ greptime export [OPTIONS]
 
 ### Command Syntax
 ```bash
-greptime import [OPTIONS]
+greptime cli import [OPTIONS]
 ```
 
 ### Options
@@ -70,25 +70,25 @@ greptime import [OPTIONS]
 ### Full Databases Backup
 ```bash
 # Export all databases backup
-greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
+greptime cli export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
 
 # Import all databases
-greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
+greptime cli import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
 ```
 
 ### Schema-Only Operations
 ```bash
 # Export only schemas
-greptime export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
+greptime cli export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
 
 # Import only schemas
-greptime import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
+greptime cli import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
 ```
 
 ### Time-Range Based Backup
 ```bash
 # Export data within specific time range
-greptime export --addr localhost:4000 \
+greptime cli export --addr localhost:4000 \
     --output-dir /tmp/backup/timerange \
     --start-time "2024-01-01 00:00:00" \
     --end-time "2024-01-31 23:59:59"
@@ -97,10 +97,10 @@ greptime export --addr localhost:4000 \
 ### Specific Database Backup
 ```bash
 # To export a specific database
-greptime export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
 
 # The same applies to import tool
-greptime import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
 ```
 
 ## Best Practices
