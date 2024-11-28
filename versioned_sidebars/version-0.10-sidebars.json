@@ -514,9 +514,16 @@
       ]
     },
     {
-      "type": "link",
+      "type": "category",
       "label": "Release Notes",
-      "href": "/release-notes"
+      "items": [
+        "reference/about-greptimedb-version",
+        {
+          "type": "link",
+          "label": "Releases",
+          "href": "/release-notes"
+        }
+      ]
     },
     {
       "type": "category",
