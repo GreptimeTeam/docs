@@ -20,4 +20,4 @@ jobs:
     - name: Check typos
       uses: crate-ci/typos@master
       with:
-        config: .typo.toml
+        config: .typos.toml
