@@ -458,4 +458,4 @@ http://localhost:4000/v1/sql?db=public
 }
 ```
 
-请参考 [API 文档](/reference/sql/http-api.md)获取更详细的 HTTP 请求的内容。
+请参考 [API 文档](/user-guide/protocols/http.md#post-sql-语句)获取更详细的 HTTP 请求的内容。

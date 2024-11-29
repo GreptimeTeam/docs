@@ -2,7 +2,16 @@
 
 GreptimeDB 提供了 HTTP API 用于与数据库进行交互。
 
-## Headers
+## Base URL
+
+API Base URL 是 `http(s)://<host>:<port>/`。
+
+- 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments/configuration#protocol-options)中更改服务的 host 和 port。
+- 对于 GreptimeCloud，Base URL 是 `https://<host>/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
+
+在以下内容中，我们使用 `http://{{API-host}}/` 作为 Base URL 来演示 API。
+
+## 通用 Headers
 
 ### 鉴权
 
@@ -73,7 +82,7 @@ http://localhost:4000/v1/sql
 
 ### 请求超时设置
 
-GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定当前 SQL 查询的超时时间。
+GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定数据库服务器中运行的请求超时时间。
 
 例如，以下请求为查询设置了 `120s` 的超时时间：
 
@@ -85,10 +94,127 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
+## Admin APIs
+
+:::tip 注意
+这些 API 在 GreptimeCloud 中无法使用。
+:::
+
+### 检查数据库健康状态
+
+你可以使用 `/health` 端点检查 GreptimeDB 服务器的健康状况。
+有关更多信息，请参阅[检查数据库健康状态](/getting-started/installation/overview#检查数据库健康状态)。
+
+### 检查数据库状态
+
+你可以使用 `/status` 端点检查 GreptimeDB 服务器的状态。
+
+```shell
+curl http://{{API-host}}/status
+```
+
+例如：
+
+```shell
+curl http://localhost:4000/status
+```
+
+输出包含数据库版本和源代码信息，类似如下：
+
+```json
+{
+  "source_time": "2024-11-08T06:34:49Z",
+  "commit": "0e0c4faf0d784f25fed8f26e7000f1f869c88587",
+  "branch": "main",
+  "rustc_version": "rustc 1.84.0-nightly (e92993dbb 2024-10-18)",
+  "hostname": "local",
+  "version": "0.9.5"
+}
+```
+
+### 获取 GreptimeDB 服务器配置
+
+你可以使用 `/config` 端点获取 GreptimeDB 服务器的 [TOML 配置](/user-guide/deployments/configuration.md#configuration-file-options)。
+
+```shell
+curl http://{{API-host}}/config
+```
+
+例如：
+
+```shell
+curl http://localhost:4000/config
+```
+
+输出包含 GreptimeDB 服务器的配置信息。
+
+```toml
+mode = "standalone"
+enable_telemetry = true
+user_provider = "static_user_provider:file:user"
+init_regions_in_background = false
+init_regions_parallelism = 16
+
+[http]
+addr = "127.0.0.1:4000"
+timeout = "30s"
+body_limit = "64MiB"
+is_strict_mode = false
+
+# ...
+```
+
 ## POST SQL 语句
 
-你可以使用 GreptimeDB 的 HTTP API 发送 SQL 语句与数据库进行交互。
-例如，要将数据插入到 `monitor` 表中，可以使用以下命令：
+要通过 HTTP API 向 GreptimeDB 服务器提交 SQL 语句，请使用以下格式：
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authentication}}' \
+  -H 'X-Greptime-Timeout: {{time precision}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'sql={{SQL-statement}}' \
+http://{{API-host}}/v1/sql
+```
+
+### Headers
+
+- [`Authorization`](#鉴权)
+- [`X-Greptime-Timeout`](#请求超时设置)
+- `Content-Type`: `application/x-www-form-urlencoded`.
+- `X-Greptime-Timezone`: 当前 SQL 查询的时区。可选。请参阅[时区](#时区)。
+
+### Query string parameters
+
+- `db`: 数据库名称。可选。如果未提供，将使用默认数据库 `public`。
+- `format`: 输出格式。可选。
+  除了默认的 JSON 格式外，HTTP API 还允许你通过提供 `format` 查询参数来自定义输出格式，值如下：
+  - `influxdb_v1`: [influxdb 查询
+    API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
+    兼容格式。附加参数：
+    - `epoch`: `[ns,u,µ,ms,s,m,h]`，返回指定精度的时间戳
+  - `csv`: 逗号分隔值输出
+  - `arrow`: [Arrow IPC
+    格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
+    - `compression`: `zstd` 或 `lz4`，默认：无压缩
+  - `table`: 控制台输出的 ASCII 表格格式
+
+### Body
+
+- `sql`: SQL 语句。必填。
+
+### 响应
+
+响应是一个 JSON 对象，包含以下字段：
+
+- `output`: SQL 执行结果，请参阅下面的示例以了解详细信息。
+- `execution_time_ms`: 语句的执行时间（毫秒）。
+
+### 示例
+
+#### `INSERT` 语句
+
+例如，要向数据库 `public` 的 `monitor` 表中插入数据，请使用以下命令：
 
 ```shell
 curl -X POST \
@@ -98,13 +224,15 @@ curl -X POST \
   http://localhost:4000/v1/sql?db=public
 ```
 
-- API endpoint 为 `/v1/sql`。
-- 鉴权 header 可选。有关更多信息，请参考[鉴权](#鉴权)部分。
-- SQL 语句应包含在请求的 body 中作为 `sql` 的参数。
-- URL 中的 `db` 参数可选，用于指定要使用的数据库。默认值为 `public`。
+Response 包含受影响的行数：
 
-你还可以使用 HTTP API 执行其他 SQL 语句。
-例如，从 `monitor` 表中搜索数据：
+```shell
+{"output":[{"affectedrows":3}],"execution_time_ms":11}
+```
+
+#### `SELECT` 语句
+
+你还可以使用 HTTP API 执行其他 SQL 语句。例如，从 `monitor` 表中查询数据：
 
 ```shell
 curl -X POST \
@@ -114,7 +242,7 @@ curl -X POST \
   http://localhost:4000/v1/sql?db=public
 ```
 
-响应 JSON 格式的数据：
+Response 包含 JSON 格式的查询数据：
 
 ```json
 {
@@ -157,32 +285,61 @@ curl -X POST \
 }
 ```
 
+Response 包含以下字段：
 
-结果包含以下字段：
+- `output`: 执行结果。
+  - `records`: 查询结果。
+    - `schema`: 结果的 schema，包括每列的 schema。
+    - `rows`: 查询结果的行，每行是一个包含 schema 中对应列值的数组。
+- `execution_time_ms`: 语句的执行时间（毫秒）。
 
-- `output`：执行结果。
-  - `records`：查询结果。
-    - `schema`：结果的 schema，包括每个列的 schema。
-    - `rows`：查询结果的行数据，每行是一个数组，包含 schema 中对应列的值。
-- `execution_time_ms`：该语句的执行时间，以毫秒为单位。
+#### 时区
 
-### 其他输出格式
+GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` header。
+它用于为当前 SQL 查询指定时区。
 
+例如，以下请求使用时区 `+1:00` 进行查询：
 
-除了默认的 JSON 格式外，通过指定 `format` 参数，HTTP API 还支持自定义以下输出格
-式：
+```bash
+curl -X POST \
+-H 'X-Greptime-Timezone: +1:00' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'sql=SHOW VARIABLES time_zone;' \
+http://localhost:4000/v1/sql
+```
 
-- `influxdb_v1`: [influxdb 查询接
-  口](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)兼
-  容格式，支持额外参数：
-  - `epoch`: `[ns,u,µ,ms,s,m,h]`, 控制输出时间戳精度
-- `csv`: CSV 格式
-- `arrow`: [Arrow IPC 格式](https://arrow.apache.org/docs/python/feather.html).
-  支持额外的参数：
-  - `compression`: `zstd` or `lz4`, 默认不设置压缩
-- `table`: 用于终端数据的 ASCII 表格格式
+查询后的结果为：
 
-以输出 `table` 格式为例：
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "TIME_ZONE",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "+01:00"
+          ]
+        ]
+      }
+    }
+  ],
+  "execution_time_ms": 27
+}
+```
+
+有关时区如何影响数据的写入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#time-zone)和[查询数据](/user-guide/query-data/sql.md#时区)部分中的 SQL 文档。
+
+#### 使用 `table` 格式输出查询数据
+
+你可以在查询字符串参数中使用 `table` 格式，以 ASCII 表格格式获取输出。
 
 ```shell
 curl -X POST \
@@ -192,7 +349,7 @@ curl -X POST \
   http://localhost:4000/v1/sql?db=public&format=table
 ```
 
-结果：
+输出
 
 ```
 ┌─host────────┬─ts────────────┬─cpu─┬─memory─┐
@@ -202,10 +359,59 @@ curl -X POST \
 └─────────────┴───────────────┴─────┴────────┘
 ```
 
+#### 使用 `influxdb_v1` 格式输出查询数据
+
+你可以在查询字符串参数中使用 `influxdb_v1` 格式，以 InfluxDB 查询 API 兼容格式获取输出。
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=influxdb_v1&epoch=ms
+```
+
+```json
+{
+  "results": [
+    {
+      "statement_id": 0,
+      "series": [
+        {
+          "name": "",
+          "columns": [
+            "host",
+            "cpu",
+            "memory",
+            "ts"
+          ],
+          "values": [
+            [
+              ["127.0.0.1", 0.1, 0.4, 1667446797450],
+              ["127.0.0.1", 0.5, 0.2, 1667446798450],
+              ["127.0.0.2", 0.2, 0.3, 1667446798450]
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "execution_time_ms": 2
+}
+```
 
 ## POST PromQL 查询
 
-GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在当前的 API 路径 `/v1` 的后方拼接 `/promql`，如下示例：
+### API 返回 Prometheus 查询结果格式
+
+GreptimeDB 兼容 Prometheus 查询语言 (PromQL)，可以用于查询 GreptimeDB 中的数据。
+有关所有兼容的 API，请参阅 [Prometheus 查询语言](/user-guide/query-data/promql#prometheus-http-api) 文档。
+
+### API 返回 GreptimeDB JSON 格式
+
+GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在当前的 API 路径 `/v1` 的后方拼接 `/promql`。
+该接口的返回值是 GreptimeDB 的 JSON 格式，而不是 Prometheus 的格式。
+如下示例：
 
 ```shell
 curl -X GET \
@@ -290,3 +496,53 @@ curl -X GET \
   "execution_time_ms": 5
 }
 ```
+
+## Post Influxdb line protocol 数据
+
+<Tabs>
+
+<TabItem value="InfluxDB line protocol V2" label="InfluxDB line protocol V2">
+
+```shell
+curl -X POST \
+  -H 'Authorization: token <username>:<password>' \
+  -d '{{Influxdb-line-protocol-data}}' \
+  http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
+```
+
+</TabItem>
+
+<TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
+
+```shell
+curl -X POST \
+  -d '{{Influxdb-line-protocol-data}}' \
+  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&precision={{time-precision}}
+```
+
+</TabItem>
+</Tabs>
+
+### Headers
+
+- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token <username>:<password>`。
+
+### Query string parameters
+
+- `u`: 用户名。可选。它是 V1 的鉴权用户名。
+- `p`: 密码。可选。它是 V1 的鉴权密码。
+- `db`: 数据库名称。可选。默认值是 `public`。
+- `precision`: 定义请求体中提供的时间戳的精度。请参考用户指南中的 [InfluxDB 行协议](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)文档。
+
+### Body
+
+InfluxDB 行协议数据点。请参考 [InfluxDB 行协议](https://docs.influxdata.com/influxdb/v1/write_protocols/line_protocol_tutorial/#syntax) 文档。
+
+### 示例
+
+请参考用户指南中的 [InfluxDB 行协议](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)。
+
+## 管理 Pipeline 的 API
+
+在将日志写入 GreptimeDB 时，你可以使用 HTTP API 来管理 Pipeline。
+请参考 [管理 Pipeline](/user-guide/logs/manage-pipelines.md) 文档。

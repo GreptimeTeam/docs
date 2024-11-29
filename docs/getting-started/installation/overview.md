@@ -7,7 +7,7 @@ Follow these instructions to install GreptimeDB:
 - [GreptimeDB Standalone](greptimedb-standalone.md) runs as a standalone system in a single process.
 - [GreptimeDB Cluster](greptimedb-cluster.md) runs as a distributed, clustered time series database.
 
-## Check database status
+## Check database health
 
 After starting GreptimeDB, you can check its status to ensure it is running.
 

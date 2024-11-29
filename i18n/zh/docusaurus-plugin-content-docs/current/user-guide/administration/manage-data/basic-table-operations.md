@@ -344,7 +344,7 @@ http://localhost:4000/v1/sql?db=public
 { "code": 0, "output": [{ "affectedrows": 1 }], "execution_time_ms": 10 }
 ```
 
-关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/reference/sql/http-api.md)。
+关于 SQL HTTP 请求的更多信息，请参考 [API 文档](/user-guide/protocols/http.md#post-sql-语句)。
 
 ## 时区
 

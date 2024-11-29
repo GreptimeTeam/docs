@@ -1,7 +1,6 @@
 # Overview
 
 * [Data Types](./data-types)
-* [HTTP API](./http-api)
 * [INSERT](./insert.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)
