@@ -44,7 +44,7 @@ InfluxDB uses its own authentication format, see [InfluxDB](./influxdb-line-prot
 ### Timeout
 
 GreptimeDB supports the `X-Greptime-Timeout` header in HTTP requests.
-It is used to specify the timeout for the request.
+It is used to specify the timeout for the request running in the database server.
 
 For example, the following request set `120s` timeout for the request:
 
@@ -139,7 +139,7 @@ curl -X POST \
   -H 'X-Greptime-Timeout: {{time precision}}' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql={{SQL-statement}}' \
-http://{{API-host}}/v1/sql?db={{db-name}}
+http://{{API-host}}/v1/sql
 ```
 
 ### Headers
@@ -479,7 +479,7 @@ The result format is the same as `/sql` interface described in [Post SQL stateme
 curl -X POST \
   -H 'Authorization: token <username>:<password>' \
   -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v2/write?db={{db-name}}&precision={{time-precision}}
+  http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
 ```
 
 </TabItem>
@@ -489,7 +489,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&db={{db-name}}&precision={{time-precision}}
+  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&precision={{time-precision}}
 ```
 
 </TabItem>

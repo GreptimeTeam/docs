@@ -82,7 +82,7 @@ http://localhost:4000/v1/sql
 
 ### 请求超时设置
 
-GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定当前 SQL 查询的超时时间。
+GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定数据库服务器中运行的请求超时时间。
 
 例如，以下请求为查询设置了 `120s` 的超时时间：
 
@@ -174,7 +174,7 @@ curl -X POST \
   -H 'X-Greptime-Timeout: {{time precision}}' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -d 'sql={{SQL-statement}}' \
-http://{{API-host}}/v1/sql?db={{db-name}}
+http://{{API-host}}/v1/sql
 ```
 
 ### Headers
@@ -507,7 +507,7 @@ curl -X GET \
 curl -X POST \
   -H 'Authorization: token <username>:<password>' \
   -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v2/write?db={{db-name}}&precision={{time-precision}}
+  http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
 ```
 
 </TabItem>
@@ -517,7 +517,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   -d '{{Influxdb-line-protocol-data}}' \
-  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&db={{db-name}}&precision={{time-precision}}
+  http://{{API-host}}/v1/influxdb/api/v1/write?u={{username}}&p={{password}}&precision={{time-precision}}
 ```
 
 </TabItem>

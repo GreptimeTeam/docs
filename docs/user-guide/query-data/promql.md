@@ -40,7 +40,7 @@ curl -X POST \
 ```
 If authentication is enabled in GreptimeDB, the authentication header is required. Refer to the [authentication documentation](/user-guide/protocols/http.md#authentication) for more details.
 
-The query string parameters for the API are identical to those of the original Prometheus API, with the exception of the additional `db` parameter, which specifies the GreptimeDB database name.
+The query string parameters for the API are identical to those of the original [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries), with the exception of the additional `db` parameter, which specifies the GreptimeDB database name.
 
 The output format is compatible with the Prometheus API:
 

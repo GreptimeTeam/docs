@@ -39,7 +39,7 @@ curl -X POST \
 ```
 
 如果你使用启用了身份验证的 GreptimeDB，则需要 Authorization header，请参阅[鉴权](/user-guide/protocols/http.md#鉴权)。
-该 API 的查询字符串参数与原始 Prometheus API 的查询字符串参数相同，但额外的 `db` 参数除外，该参数指定了 GreptimeDB 数据库名称。
+该 API 的查询字符串参数与原始 [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 的查询字符串参数相同，但额外的 `db` 参数除外，该参数指定了 GreptimeDB 数据库名称。
 
 输出格式与 Prometheus API 完全兼容：
 
