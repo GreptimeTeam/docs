@@ -1,3 +1,7 @@
+---
+description: Guide on using Python scripts for data analysis in GreptimeDB, including backend options and setup instructions.
+---
+
 # Python Scripts
 
 ## Introduction

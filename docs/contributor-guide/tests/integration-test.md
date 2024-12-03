@@ -1,3 +1,7 @@
+---
+description: Guide on writing and running integration tests in GreptimeDB, covering scenarios involving multiple components.
+---
+
 # Integration Test
 
 ## Introduction

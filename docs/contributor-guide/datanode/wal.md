@@ -1,3 +1,7 @@
+---
+description: Introduction to Write-Ahead Logging (WAL) in GreptimeDB, its purpose, architecture, and operational modes.
+---
+
 # Write-Ahead Logging
 
 ## Introduction

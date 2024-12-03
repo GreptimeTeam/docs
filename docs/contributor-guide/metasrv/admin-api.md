@@ -1,3 +1,7 @@
+---
+description: Details the Admin API for Metasrv, including endpoints for health checks, leader queries, heartbeat data, and maintenance mode.
+---
+
 # Admin API
 
 The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.

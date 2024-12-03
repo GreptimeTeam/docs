@@ -1,3 +1,7 @@
+---
+description: Describes the different types of selectors in the Metasrv service, their characteristics, and how to configure them.
+---
+
 # Selector
 
 ## Introduction

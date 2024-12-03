@@ -1,3 +1,7 @@
+---
+description: Explanation of data persistence and indexing in GreptimeDB, including SST file format, indexing methods, and the use of OpenDAL.
+---
+
 # Data Persistence and Indexing
 
 Similar to all LSMT-like storage engines, data in MemTables is persisted to durable storage, for example, the local disk file system or object storage service. GreptimeDB adopts [Apache Parquet][1] as its persistent file format.

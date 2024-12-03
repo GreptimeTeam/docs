@@ -1,3 +1,7 @@
+---
+description: Guides on using tokio-console in GreptimeDB, including building with specific features and connecting to the tokio console subscriber.
+---
+
 # How to use tokio-console in GreptimeDB
 
 This document introduces how to use the [tokio-console](https://github.com/tokio-rs/console) in GreptimeDB.

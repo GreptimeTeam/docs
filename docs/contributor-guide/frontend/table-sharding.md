@@ -1,3 +1,7 @@
+---
+description: Explains how table data in GreptimeDB is sharded and distributed, including the concepts of partition and region.
+---
+
 # Table Sharding
 
 The sharding of stored data is essential to any distributed database. This document will describe how table's data in GreptimeDB is being sharded, and distributed.
@@ -48,4 +52,3 @@ The relationship between partition and region can be viewed as the following dia
 │                                  │
 └──────────────────────────────────┘
   Could be placed in one Datanode
-```

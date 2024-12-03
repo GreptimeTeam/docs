@@ -1,3 +1,7 @@
+---
+description: Details on the arrangement component in Flownode, which stores state and update streams for querying and updating.
+---
+
 # Arrangement
 
 Arrangement stores the state in the dataflow's process. It stores the streams of update flows for further querying and updating.

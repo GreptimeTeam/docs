@@ -1,3 +1,7 @@
+---
+description: Explanation of the dataflow module in Flownode, its operations, internal data handling, and future enhancements.
+---
+
 # Dataflow
 
 The `dataflow` module (see `flow::compute` module) is the core computing module of `flow`.
