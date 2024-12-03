@@ -164,7 +164,6 @@ The dissect pattern supports the following modifiers:
 | `+` and `/n` | Concatenates two or more fields in the specified order | `%{+key/2} %{+key/1}` |
 | `->`         | Ignores any repeating characters on the right side     | `%{key1->} %{key2->}` |
 | `?`          | Ignores matching values                                | `%{?key}`             |
-| `*` and `&`  | Sets the output key as \* and the output value as &    | `%{*key} %{&value}`   |
 
 #### `dissect` examples
 
