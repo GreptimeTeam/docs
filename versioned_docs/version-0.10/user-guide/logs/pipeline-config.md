@@ -42,6 +42,7 @@ We currently provide the following built-in Processors:
 
 - `date`: parses formatted time string fields, such as `2024-07-12T16:18:53.048`.
 - `epoch`: parses numeric timestamp fields, such as `1720772378893`.
+- `decolorize`: removes ANSI color codes from log data.
 - `dissect`: splits log data fields.
 - `gsub`: replaces log data fields.
 - `join`: merges array-type fields in logs.
@@ -108,6 +109,21 @@ In the above example, the configuration of the `epoch` processor includes the fo
 - `resolution`: Timestamp precision, supports `s`, `sec`, `second`, `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`. Defaults to `ms`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
+### `decolorize`
+
+The `decolorize` processor is used to remove ANSI color codes from log data. Here's an example configuration:
+
+```yaml
+processors:
+  - decolorize:
+      fields: 
+        - message
+```
+
+In the above example, the configuration of the `decolorize` processor includes the following fields:
+
+- `fields`: A list of field names to be decolorized.
+
 ### `dissect`
 
 The `dissect` processor is used to split log data fields. Here's an example configuration:
@@ -142,12 +158,12 @@ Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`,
 
 The dissect pattern supports the following modifiers:
 
-| Modifier   | Description                                          | Example              |
-| ---------- | ---------------------------------------------------- | -------------------- |
-| `+`        | Concatenates two or more fields together             | `%{+key} %{+key}`    |
+| Modifier     | Description                                            | Example               |
+| ------------ | ------------------------------------------------------ | --------------------- |
+| `+`          | Concatenates two or more fields together               | `%{+key} %{+key}`     |
 | `+` and `/n` | Concatenates two or more fields in the specified order | `%{+key/2} %{+key/1}` |
-| `->`       | Ignores any repeating characters on the right side    | `%{key1->} %{key2->}` |
-| `?`        | Ignores matching values                               | `%{?key}`            |
+| `->`         | Ignores any repeating characters on the right side     | `%{key1->} %{key2->}` |
+| `?`          | Ignores matching values                                | `%{?key}`             |
 
 #### `dissect` examples
 

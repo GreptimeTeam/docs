@@ -44,6 +44,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 
 - `date`: 解析格式化的时间字符串字段，例如 `2024-07-12T16:18:53.048`。
 - `epoch`: 解析数字时间戳字段，例如 `1720772378893`。
+- `decolorize`: 移除日志数据中的 ANSI 颜色代码。
 - `dissect`: 对 log 数据字段进行拆分。
 - `gsub`: 对 log 数据字段进行替换。
 - `join`: 对 log 中的 array 类型字段进行合并。
@@ -109,6 +110,21 @@ processors:
 - `fields`: 需要解析的时间戳字段名列表。
 - `resolution`: 时间戳精度，支持 `s`, `sec` , `second` , `ms`, `millisecond`, `milli`, `us`, `microsecond`, `micro`, `ns`, `nanosecond`, `nano`。默认为 `ms`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
+
+### `decolorize`
+
+`decolorize` Processor 用于移除日志数据中的 ANSI 颜色代码。示例配置如下：
+
+```yaml
+processors:
+  - decolorize:
+      fields:
+        - message
+```
+
+如上所示，`decolorize` Processor 的配置包含以下字段：
+
+- `fields`: 需要移除颜色代码的字段名列表。
 
 ### `dissect`
 
