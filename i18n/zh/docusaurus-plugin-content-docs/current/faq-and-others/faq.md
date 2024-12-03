@@ -76,7 +76,7 @@ Yes, beginners can filter issues with ["good first issue"](https://github.com/Gr
 
 You can use the [`COPY TO` command](/reference/sql/copy.md#s3) to dump table-level data to S3.
 
-### Can [https://n9e.github.io](https://n9e.github.io) now be directly integrated with GreptimeDB? How is its compatibility?
+### Can [Nightingale](https://n9e.github.io) now be directly integrated with GreptimeDB? How is its compatibility?
 
 Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
 

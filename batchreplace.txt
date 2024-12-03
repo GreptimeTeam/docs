@@ -51,7 +51,7 @@ with "import Include$1$2$3 from './$1-$2-$3.md' \n\n<Include$1$2$3/>"
 
 
 replace "<https://n9e.github.io/>"
-with "[https://n9e.github.io](https://n9e.github.io)"
+with "[Nightingale](https://n9e.github.io)"
 
 replace-regex "<img (.*)">"
 with "<img $1"/>"
