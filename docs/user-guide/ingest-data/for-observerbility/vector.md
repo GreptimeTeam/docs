@@ -1,3 +1,7 @@
+---
+description: Instructions for integrating Vector with GreptimeDB, including configuration, data model mapping, and example configurations.
+---
+
 import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md' 
 
 

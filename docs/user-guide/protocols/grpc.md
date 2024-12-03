@@ -1,3 +1,7 @@
+---
+description: Overview of using gRPC SDKs for efficient and high-performance data ingestion in GreptimeDB.
+---
+
 # gRPC
 
 GreptimeDB offers [gRPC SDKs](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) for efficient and high-performance data ingestion.

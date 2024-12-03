@@ -1,3 +1,7 @@
+---
+description: Describes how to write logs to GreptimeDB using a pipeline via the HTTP interface, including supported formats and request parameters.
+---
+
 # Writing Logs Using a Pipeline
 
 This document describes how to write logs to GreptimeDB by processing them through a specified pipeline using the HTTP interface.

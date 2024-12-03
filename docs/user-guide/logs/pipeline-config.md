@@ -1,3 +1,7 @@
+---
+description: Explains the configuration of pipelines in GreptimeDB for parsing and transforming log data, including processors and transform rules.
+---
+
 # Pipeline Configuration
 
 Pipeline is a mechanism in GreptimeDB for parsing and transforming log data. It consists of a unique name and a set of configuration rules that define how log data is formatted, split, and transformed. Currently, we support JSON (`application/json`) and plain text (`text/plain`) formats as input for log data.

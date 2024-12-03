@@ -1,3 +1,7 @@
+---
+description: Guide on using HTTP APIs to interact with GreptimeDB, including authentication, timeout settings, health checks, configuration, and SQL queries.
+---
+
 # HTTP API
 
 GreptimeDB provides HTTP APIs for interacting with the database.
@@ -81,7 +85,6 @@ For example:
 ```shell
 curl http://localhost:4000/status
 ```
-
 
 The output contains the database version and source code information,
 which will be similar to the following:

@@ -1,3 +1,7 @@
+---
+description: Guide on connecting to GreptimeDB using MySQL, managing tables, ingesting and querying data, and handling time zones.
+---
+
 # MySQL
 
 ## Connect

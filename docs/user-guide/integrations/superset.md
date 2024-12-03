@@ -1,3 +1,7 @@
+---
+description: Guide to configuring GreptimeDB as a database in Apache Superset, including installation steps and connection settings.
+---
+
 # Superset
 
 [Apache Superset](https://superset.apache.org) is an open source BI tool that

@@ -1,3 +1,7 @@
+---
+description: Overview of vector data type in GreptimeDB, including how to define, insert, and perform calculations with vector type columns in SQL.
+---
+
 # Vector Data Type
 
 ## Overview

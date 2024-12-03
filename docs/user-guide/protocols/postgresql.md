@@ -1,3 +1,7 @@
+---
+description: Guide on connecting to GreptimeDB using PostgreSQL, managing tables, ingesting and querying data, and handling time zones.
+---
+
 # PostgreSQL
 
 ## Connect

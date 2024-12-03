@@ -1,3 +1,7 @@
+---
+description: Introduction to GreptimeDB's features, including unified storage for metrics, logs, and events, SQL and multiple protocol support, and range queries.
+---
+
 # Overview
 
 Welcome to the user guide for GreptimeDB.

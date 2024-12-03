@@ -1,3 +1,7 @@
+---
+description: Guide on using the Java ingester SDK for GreptimeDB, including installation, connection, data model, and examples of low-level and high-level APIs.
+---
+
 import DocTemplate from './template.md' 
 
 # Java

@@ -1,3 +1,7 @@
+---
+description: Provides links to various guides on using GreptimeDB's log service, including quick start, pipeline configuration, managing pipelines, writing logs, and querying logs.
+---
+
 # Overview
 
 - [Quick Start](./quick-start.md): Provides an introduction on how to quickly get started with GreptimeDB log service.

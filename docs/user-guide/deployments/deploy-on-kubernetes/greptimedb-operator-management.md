@@ -1,3 +1,7 @@
+---
+description: Guide to managing the GreptimeDB Operator on Kubernetes, including installation, upgrade, configuration, and uninstallation using Helm.
+---
+
 # GreptimeDB Operator Management
 
 The GreptimeDB Operator manages the [GreptimeDB](https://github.com/GrepTimeTeam/greptimedb) resources on [Kubernetes](https://kubernetes.io/) using the [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/). 

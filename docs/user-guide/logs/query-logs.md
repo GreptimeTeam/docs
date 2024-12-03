@@ -1,3 +1,7 @@
+---
+description: Provides a guide on using GreptimeDB's query language for effective searching and analysis of log data, including full-text search and query statements.
+---
+
 # Query Logs
 
 This document provides a guide on how to use GreptimeDB's query language for effective searching and analysis of log data.

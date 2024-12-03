@@ -1,3 +1,7 @@
+---
+description: Provides major use case examples for continuous aggregation in GreptimeDB, including real-time analytics, monitoring, and dashboards. It includes SQL queries and examples to demonstrate how to set up and use continuous aggregation for various scenarios.
+---
+
 # Usecase Examples
 Following are three major usecase examples for continuous aggregation:
 

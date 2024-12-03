@@ -1,3 +1,7 @@
+---
+description: Guides users through the process of quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
+---
+
 # Quick Start
 
 This guide will walk you through the process of quickly writing and querying logs.

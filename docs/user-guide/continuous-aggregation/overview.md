@@ -1,3 +1,7 @@
+---
+description: Introduction to GreptimeDB's continuous aggregation feature, including real-time data aggregation, use cases, and a quick start example.
+---
+
 # Overview
 
 GreptimeDB provides a continuous aggregation feature that allows you to aggregate data in real-time. This feature is useful when you need to calculate and query the sum, average, or other aggregations on the fly. The continuous aggregation feature is provided by the Flow engine. It continuously updates the aggregated data based on the incoming data and materialize it. So you can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort. Some common use case include:

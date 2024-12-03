@@ -1,3 +1,7 @@
+---
+description: Overview of deploying GreptimeDB, including configuration, authentication, Kubernetes deployment, running on Android, capacity planning, and using GreptimeCloud.
+---
+
 # Overview
 
 ## Configuration

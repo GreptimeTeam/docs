@@ -1,3 +1,7 @@
+---
+description: Comprehensive guide on querying data in GreptimeDB using SQL, covering basic queries, filtering, time zone handling, functions, and advanced features like range queries and aggregations.
+---
+
 # SQL
 
 GreptimeDB supports full SQL for querying data from a database.

@@ -1,3 +1,7 @@
+---
+description: Guide to integrating Loki with GreptimeDB for log storage, including API usage, example configurations, and data model mapping.
+---
+
 # Loki
 
 ## Usage

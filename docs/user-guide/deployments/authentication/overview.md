@@ -1,3 +1,7 @@
+---
+description: Overview of authentication in GreptimeDB, including static user provider and LDAP user provider for authenticating users.
+---
+
 # Overview
 
 Authentication occurs when a user attempts to connect to the database. In GreptimeDB, users are authenticated by "user

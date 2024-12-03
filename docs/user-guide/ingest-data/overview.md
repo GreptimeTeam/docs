@@ -1,3 +1,7 @@
+---
+description: Overview of data ingestion methods in GreptimeDB, including automatic schema generation and recommended methods for different scenarios.
+---
+
 # Overview
 
 ## Automatic Schema Generation

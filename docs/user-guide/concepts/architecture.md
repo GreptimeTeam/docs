@@ -1,3 +1,7 @@
+---
+description: Outlines the architecture of GreptimeDB, including its main components Metasrv, Frontend, and Datanodes. It explains how these components work together to form a robust database cluster and provides links to detailed documentation for each component.
+---
+
 # Architecture
 
 ![architecture](/architecture-3.png)

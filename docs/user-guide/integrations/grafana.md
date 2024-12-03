@@ -1,3 +1,7 @@
+---
+description: Steps to configure GreptimeDB as a data source in Grafana using different plugins and data sources, including installation and connection settings.
+---
+
 # Grafana
 
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).
