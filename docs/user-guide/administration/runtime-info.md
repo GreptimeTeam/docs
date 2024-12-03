@@ -1,3 +1,7 @@
+---
+description: Provides access to system metadata through the INFORMATION_SCHEMA database, including cluster topology and table regions distribution. Examples of SQL queries to retrieve region IDs and distribution are included.
+---
+
 # Runtime Information
 
 The `INFORMATION_SCHEMA` database provides access to system metadata, such as the name of a database or table, the data type of a column, etc.

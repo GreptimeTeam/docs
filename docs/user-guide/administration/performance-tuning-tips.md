@@ -1,3 +1,7 @@
+---
+description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, scan parallelism, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
+---
+
 # Performance Tuning Tips
 
 A GreptimeDB instance's default configuration may not fit all use cases. It's important to tune the database configurations and usage according to the scenario.

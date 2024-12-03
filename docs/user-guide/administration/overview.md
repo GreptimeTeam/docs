@@ -1,3 +1,7 @@
+---
+description: Overview of GreptimeDB administration strategies and practices, including installation, capacity planning, data management, configuration, disaster recovery, remote WAL setup, monitoring, performance tuning, upgrading, and runtime information.
+---
+
 # Overview
 
 This document addresses strategies and practices used in the administration of GreptimeDB.

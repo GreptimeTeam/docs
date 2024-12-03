@@ -1,3 +1,7 @@
+---
+description: Overview of managing data in GreptimeDB, including storage location, basic SQL table operations, data updates, TTL policies, table sharding, region migration, region failover, and compaction.
+---
+
 # Overview
 
 * [Storage Location](/user-guide/concepts/storage-location.md)

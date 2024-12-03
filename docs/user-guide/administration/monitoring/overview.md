@@ -1,3 +1,7 @@
+---
+description: Overview of monitoring methods for GreptimeDB, including exporting metrics and tracing.
+---
+
 # Overview
 
 Effective database administration relies heavily on monitoring. 
