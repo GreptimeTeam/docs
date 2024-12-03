@@ -1,3 +1,7 @@
+---
+description: Frequently Asked Questions about GreptimeDB, covering use cases, performance, compatibility, features, and more.
+---
+
 # Frequently Asked Questions
 
 ### What would be the use cases for a time-series database?

@@ -1,3 +1,7 @@
+---
+description: Guide to configuring audit logging in GreptimeDB Enterprise, including examples and configuration options to monitor and record database activities.
+---
+
 # Audit Logging
 
 Database audit logging is the process of recording the actions performed on the database. The audit logs help monitor

@@ -1,3 +1,7 @@
+---
+description: Release notes for GreptimeDB Enterprise version 24.11, highlighting new features like region rebalancing, management console, LDAP user provider, and audit logs.
+---
+
 # Release 24.11
 
 We are pleased to introduce the 24.11 release of GreptimeDB Enterprise.
