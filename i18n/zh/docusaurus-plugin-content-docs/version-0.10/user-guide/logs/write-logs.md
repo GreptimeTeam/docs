@@ -53,7 +53,6 @@ processors:
       fields:
         # `message` 是 JSON 对象中的 key 名
         - message
-shuiyisong marked this conversation as resolved.
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
@@ -95,7 +94,6 @@ processors:
       fields:
         # 使用 `line` 作为 field 名称
         - line
-shuiyisong marked this conversation as resolved.
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true

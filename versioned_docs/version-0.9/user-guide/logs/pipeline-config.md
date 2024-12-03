@@ -422,7 +422,7 @@ transform:
     type: string
     index: fulltext
   - fields:
-      - time_field_a, bron_time
+      - time_field_a, born_time
     type: epoch, s
     index: timestamp
 ```
@@ -434,6 +434,6 @@ The result will be:
   "name": "john",
   "age": 3,
   "description": "It was snowing when he was born.",
-  "bron_time": 2021-07-08 16:00:00
+  "born_time": 2021-07-08 16:00:00
 }
 ```
