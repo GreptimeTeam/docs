@@ -1,3 +1,7 @@
+---
+description: Describes the LIMIT clause in SQL for restricting the number of rows returned by a query, including syntax and examples.
+---
+
 # LIMIT
 
 `LIMIT` clause is used to limit the number of rows returned by a query. This clause is particularly

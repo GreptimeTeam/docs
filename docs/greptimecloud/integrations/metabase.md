@@ -1,3 +1,7 @@
+---
+description: Instructions on configuring GreptimeCloud as a data source in Metabase using a community driver plugin.
+---
+
 # Metabase
 
 [Metabase](https://github.com/metabase/metabase) is an open source BI tool that

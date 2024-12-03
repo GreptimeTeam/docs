@@ -1,3 +1,7 @@
+---
+description: Instructions for migrating from Prometheus to GreptimeCloud, including configuring remote write, querying with PromQL, and integrating with Grafana.
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md' 
 
 # Migrate from Prometheus

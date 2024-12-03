@@ -1,3 +1,7 @@
+---
+description: Explains the SQL SELECT DISTINCT statement used to retrieve unique values from a dataset, with examples of using DISTINCT with and without filters.
+---
+
 # DISTINCT
 
 `SELECT DISTINCT` is used to select unique values from a set of data. This keyword returns distinct values

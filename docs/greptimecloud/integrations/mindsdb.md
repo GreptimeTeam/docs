@@ -1,3 +1,7 @@
+---
+description: Guide on configuring GreptimeCloud as a data source in MindsDB for machine learning capabilities.
+---
+
 # MindsDB
 
 [MindsDB](https://mindsdb.com/) is an open-source machine learning platform that

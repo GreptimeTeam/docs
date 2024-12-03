@@ -1,3 +1,7 @@
+---
+description: Describes the key constraints of the columns, such as the time index key constraint.
+---
+
 # KEY_COLUMN_USAGE
 
 The `KEY_COLUMN_USAGE` table describes the key constraints of the columns, such as the time index key constraint.

@@ -1,3 +1,7 @@
+---
+description: Provides information on the SQL EXPLAIN statement to obtain the execution plan of a query, including the optional ANALYZE clause to measure execution time and output rows, with examples.
+---
+
 # EXPLAIN
 
 `EXPLAIN` is used to provide the execution plan of a statement.

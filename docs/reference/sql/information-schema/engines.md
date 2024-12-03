@@ -1,3 +1,7 @@
+---
+description: Provides information about storage engines, including their support level, comments, and whether they support transactions, XA transactions, and savepoints.
+---
+
 # ENGINES
 
 The `ENGINES` table provides information about storage engines. This is particularly useful for checking whether a storage engine is supported, or to see what the default engine is.

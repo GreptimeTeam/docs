@@ -1,3 +1,7 @@
+---
+description: Provides an overview of GreptimeCloud, a fully-managed serverless GreptimeDB service for scalable and efficient time-series data management.
+---
+
 import DocCardList from '@theme/DocCardList';
 
 # Overview

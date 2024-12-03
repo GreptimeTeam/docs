@@ -1,3 +1,7 @@
+---
+description: Guide on using Kafka with Vector to ingest logs and metrics data into GreptimeCloud.
+---
+
 # Kafka
 
 If you are using Kafka or Kafka-compatible message queue for observability data

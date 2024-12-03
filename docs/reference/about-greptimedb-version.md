@@ -1,3 +1,7 @@
+---
+description: Explanation of GreptimeDB's version numbering scheme, including the significance of major, minor, and revision numbers.
+---
+
 # About GreptimeDB Version Number
 
 GreptimeDB follows the [Semantic Versioning](https://semver.org/) scheme:

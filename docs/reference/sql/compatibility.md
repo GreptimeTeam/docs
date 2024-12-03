@@ -1,3 +1,7 @@
+---
+description: Describes the subset of ANSI SQL supported by GreptimeDB and its unique extensions, including major incompatibilities and extensions for table creation, data insertion, updates, queries, and deletions.
+---
+
 # ANSI Compatibility
 
 GreptimeDB supports a subset of ANSI SQL and has some unique extensions. Some major incompatibilities and extensions are described below:

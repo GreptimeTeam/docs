@@ -1,3 +1,7 @@
+---
+description: Instructions for using GreptimeCloud with Streamlit to build data apps, including creating a SQL connection and running SQL queries.
+---
+
 # Streamlit
 
 Streamlit is a faster way to build and share data apps. It's possible to build

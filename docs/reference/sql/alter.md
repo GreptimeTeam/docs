@@ -1,3 +1,7 @@
+---
+description: Describes the `ALTER` statement used to modify database options, table options, or metadata, including syntax and examples for altering databases and tables.
+---
+
 # ALTER
 
 `ALTER` can be used to modify any database options, table options or metadata of the table, including:

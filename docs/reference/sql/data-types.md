@@ -1,3 +1,7 @@
+---
+description: Provides an overview of SQL data types supported by GreptimeDB, including string, binary, numeric, decimal, date and time, interval, JSON, and boolean types, with examples and compatibility with MySQL and PostgreSQL.
+---
+
 # Data Types
 
 SQL data types define the type of data that a column can store. When you run the `DESC TABLE` command, you can see the data type of each column.

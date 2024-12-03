@@ -1,3 +1,7 @@
+---
+description: A guide to quickly start with GreptimeDB, including connecting to the database, creating tables, inserting data, querying data, and using the GreptimeDB dashboard.
+---
+
 # Quick Start
 
 Before proceeding, please ensure you have [installed GreptimeDB](./installation/overview.md).

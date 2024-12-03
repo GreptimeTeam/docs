@@ -1,3 +1,7 @@
+---
+description: Explains the WHERE clause in SQL for filtering data based on conditions, including syntax, examples with logical and comparison operators, and list search functionalities.
+---
+
 # WHERE
 
 `WHERE` clause allows to filter the data by specifying conditions.

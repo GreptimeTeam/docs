@@ -1,3 +1,7 @@
+---
+description: Provides the flow task information, including flow name, ID, definition, source table IDs, sink table name, and other details.
+---
+
 # FLOWS
 The `Flows` table provides the flow task information.
 

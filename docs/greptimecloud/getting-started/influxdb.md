@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using InfluxDB Line Protocol, and visualizing data in GreptimeDB.
+---
+
 # InfluxDB Line Protocol
 
 ## Create Service

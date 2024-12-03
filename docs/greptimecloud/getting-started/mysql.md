@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using MySQL, and visualizing data in GreptimeDB.
+---
+
 # MySQL
 
 ## Create Service

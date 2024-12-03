@@ -1,3 +1,7 @@
+---
+description: Explains the usage of SQL JOIN clauses to combine rows from multiple tables based on related columns, including INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN, with examples.
+---
+
 # JOIN
 
 `JOIN` is used to combine rows from two or more tables based on a related column between them.

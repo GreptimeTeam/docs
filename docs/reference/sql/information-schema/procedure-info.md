@@ -1,3 +1,7 @@
+---
+description: Provides detailed information about various procedures, including procedure ID, type, start and end time, status, and locked keys.
+---
+
 # PROCEDURE_INFO
 The `PROCEDURE_INFO` table provides detailed information about various procedures.
 

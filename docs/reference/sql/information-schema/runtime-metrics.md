@@ -1,3 +1,7 @@
+---
+description: Provides information about the `RUNTIME_METRICS` table, which includes system runtime metrics from the `/metrics` HTTP endpoint output in the cluster.
+---
+
 # RUNTIME_METRICS
 
 The `RUNTIME_METRICS` table provides system runtime metrics. It includes all metrics from the `/metrics` HTTP endpoint output in the cluster.

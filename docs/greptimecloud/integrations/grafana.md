@@ -1,3 +1,7 @@
+---
+description: Guide on configuring GreptimeCloud as a data source in Grafana using GreptimeDB, Prometheus, or MySQL data sources.
+---
+
 # Grafana
 
 GreptimeDB can be configured as a [Grafana data source](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/).

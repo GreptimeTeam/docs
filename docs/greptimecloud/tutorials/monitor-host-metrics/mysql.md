@@ -1,3 +1,7 @@
+---
+description: Guide on monitoring host metrics using MySQL, including creating a service, writing data, and visualizing data.
+---
+
 # MySQL
 
 import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 

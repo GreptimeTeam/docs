@@ -1,3 +1,7 @@
+---
+description: Shows detailed information of a single Region node in GreptimeDB, such as whether it is a learner or leader.
+---
+
 # REGION_PEERS
 
 The `REGION_PEERS` table shows detailed information of a single Region node in GreptimeDB, such as whether it is a learner or leader.

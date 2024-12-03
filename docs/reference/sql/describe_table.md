@@ -1,3 +1,7 @@
+---
+description: Describes the SQL DESCRIBE TABLE statement to display the structure of a table, including column names, data types, keys, nullability, default values, and semantic types, with examples.
+---
+
 # DESCRIBE TABLE
 
 `DESCRIBE [TABLE] [db.]table` describes the table structure in the `db` or the current database in-use.

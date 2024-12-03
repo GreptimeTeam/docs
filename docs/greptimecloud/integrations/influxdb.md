@@ -1,3 +1,7 @@
+---
+description: Instructions on using InfluxDB line protocol and Telegraf to ingest data into GreptimeCloud.
+---
+
 # InfluxDB and Telegraf
 
 GreptimeCloud provides [Influxdb line

@@ -1,3 +1,7 @@
+---
+description: Covers the TQL keyword for executing Time-Series Query Language in SQL, including EVAL, EXPLAIN, and ANALYZE commands with syntax and examples.
+---
+
 # TQL
 
 The `TQL` keyword executes TQL language in SQL. The TQL is Time-Series Query Language, which is an extension for Prometheus's [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) in GreptimeDB.

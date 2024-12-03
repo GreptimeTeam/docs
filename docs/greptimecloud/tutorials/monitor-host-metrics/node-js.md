@@ -1,3 +1,7 @@
+---
+description: Guide on monitoring host metrics using Node.js, including creating a service, writing data, and visualizing data.
+---
+
 # Node.js
 
 import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 

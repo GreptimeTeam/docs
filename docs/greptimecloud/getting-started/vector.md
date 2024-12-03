@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Vector, and visualizing data in GreptimeDB.
+---
+
 # Vector
 
 ## Create Service

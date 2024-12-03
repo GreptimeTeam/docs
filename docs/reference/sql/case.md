@@ -1,3 +1,7 @@
+---
+description: Describes the `CASE` statement used for conditional logic within queries, including syntax and examples for usage in `SELECT`, `WHERE`, `GROUP BY`, and `ORDER BY` clauses.
+---
+
 # CASE
 
 The `CASE` statement allows you to perform conditional logic within your queries,

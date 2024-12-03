@@ -1,3 +1,7 @@
+---
+description: Instructions on how to use the GreptimeDB Go SDK to connect to GreptimeCloud using gRPC.
+---
+
 # Go SDK
 
 The GreptimeDB Go ingester library utilizes gRPC for writing data to the database. For how to use the library, please refer to the [Go library documentation](https://docs.greptime.com/user-guide/ingest-data/for-iot/grpc-sdks/go).

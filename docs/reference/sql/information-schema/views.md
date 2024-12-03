@@ -1,3 +1,7 @@
+---
+description: Provides a list of views that the current user has visibility of, including details about each view's catalog, schema, name, definition, and other properties.
+---
+
 # VIEWS
 
 The `VIEWS` table provides a list of views that the current user has visibility of.

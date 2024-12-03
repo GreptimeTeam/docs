@@ -1,3 +1,7 @@
+---
+description: Information on accessing and using the GreptimeDB Dashboard for visualizing time series data.
+---
+
 # GreptimeDB Dashboard
 
 Visualization plays a crucial role in effectively utilizing time series data. To help users leverage the various features of GreptimeDB, Greptime offers a simple [dashboard](https://github.com/GreptimeTeam/dashboard).

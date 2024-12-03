@@ -1,3 +1,7 @@
+---
+description: Details the Dedicated Plan, including dedicated CPUs, storage, resource isolation, and cost calculation for GreptimeCloud.
+---
+
 # Dedicated Plan
 
 The dedicated plan allows you to purchase dedicated CPUs and storage to host GreptimeDB.

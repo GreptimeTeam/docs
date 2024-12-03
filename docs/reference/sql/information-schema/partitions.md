@@ -1,3 +1,7 @@
+---
+description: Provides information about partitioned tables, including partition names, methods, expressions, and other details.
+---
+
 # PARTITIONS
 
 The `PARTITIONS` table provides information about partitioned tables.

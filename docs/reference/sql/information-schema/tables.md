@@ -1,3 +1,7 @@
+---
+description: Provides information about tables in databases, including details about each table's catalog, schema, name, type, and other properties.
+---
+
 # TABLES
 
 The `TABLES` table provides information about tables in databases:

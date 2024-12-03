@@ -1,3 +1,7 @@
+---
+description: Provides details on the character sets available in the SQL information schema, including how to use and manage different character sets.
+---
+
 # CHARACTER_SETS
 
 The `CHARACTER_SETS` provides the available character sets that GreptimeDB supports.

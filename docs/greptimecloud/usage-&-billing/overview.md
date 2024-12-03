@@ -1,3 +1,7 @@
+---
+description: Provides an overview of the usage and billing documents for Greptime Cloud, including links to detailed guides on various plans and capacity units.
+---
+
 # Overview
 
 These documents will help you understand the usage and billing of Greptime Cloud.

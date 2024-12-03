@@ -1,3 +1,7 @@
+---
+description: Details the SQL DELETE statement for removing rows from a table based on a specified condition, including syntax and examples.
+---
+
 # DELETE
 
 `DELETE` is used to remove rows from a table.

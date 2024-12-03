@@ -1,3 +1,7 @@
+---
+description: Describes the SQL INSERT statement for adding records to a table in GreptimeDB, including syntax, examples for inserting single and multiple records, default values, binary data, special numeric values, and the INSERT INTO SELECT statement.
+---
+
 # INSERT
 
 The `INSERT` statement is used to insert one or more records into a table in the GreptimeDB.

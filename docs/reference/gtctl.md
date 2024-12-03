@@ -1,3 +1,7 @@
+---
+description: Instructions for installing and using gtctl, a command-line tool for managing GreptimeDB clusters, including installation methods, autocompletion setup, and deployment modes.
+---
+
 # gtctl
 
 [gtctl][1], g-t-control, is a command-line tool for managing the GreptimeDB clusters. gtctl is the **All-in-One** binary that integrates with multiple operations of GreptimeDB clusters.

@@ -1,3 +1,7 @@
+---
+description: Describes the free tier Hobby Plan, its limitations, and the data retention policy for GreptimeCloud users.
+---
+
 # Hobby Plan
 
 ## Introduction
