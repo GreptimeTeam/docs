@@ -1,0 +1,180 @@
+# HTTP API endpoint list
+
+Here is the full list for the various HTTP paths and their usage in GreptimeDB:
+
+## Miscellaneous
+
+Endpoints that is not versioned (under `/v1`). For miscellaneous usage like health check, status, metrics, etc.
+
+### Health Check
+
+- **Path**: `/health`
+- **Methods**: `GET`, `POST`
+- **Description**: Provides a health check endpoint to verify that the server is running.
+- **Usage**: Access this endpoint to check the health status of the server.
+
+### Status
+
+- **Path**: `/status`
+- **Methods**: `GET`
+- **Description**: Retrieves the current status of the server.
+- **Usage**: Use this endpoint to obtain server status information.
+
+### Metrics
+
+- **Path**: `/metrics`
+- **Methods**: `GET`
+- **Description**: Exposes Prometheus metrics for monitoring purposes.
+- **Usage**: Prometheus can scrape this endpoint to collect metrics data.
+
+### Configuration
+
+- **Path**: `/config`
+- **Methods**: `GET`
+- **Description**: Retrieves the server's configuration options.
+- **Usage**: Access this endpoint to get configuration details.
+
+### Dashboard
+
+- **Paths**:
+  - `/dashboard`
+  - `/dashboard/`
+- **Methods**: `GET`, `POST`
+- **Description**: Provides access to the server's dashboard interface.
+- **Usage**: Access these endpoints to interact with the web-based dashboard.
+
+### Debugging Tools
+
+- **Base Path**: `/debug`
+- **Endpoints**:
+  - `/log_level`
+  - `/pprof/*`
+- **Methods**:
+  - `POST` for changing log levels.
+  - `GET` for profiling endpoints.
+- **Description**: Offers debugging and profiling tools.
+- **Usage**:
+  - Use `/log_level` to adjust the server's log level dynamically.
+  - Use `/pprof/*` endpoints for performance profiling.
+
+## Query Endpoints
+
+Various query APIs for sending query to GreptimeDB.
+
+### SQL API
+
+- **Path**: `/v1/sql`
+- **Methods**: `GET`, `POST`
+- **Description**: Executes SQL queries against the server.
+- **Usage**:
+  - `GET`: Send SQL queries via query parameters.
+  - `POST`: Send SQL queries in the request body.
+
+### PromQL API
+
+- **Path**: `/v1/promql`
+- **Methods**: `GET`, `POST`
+- **Description**: Executes PromQL queries for Prometheus-compatible metrics.
+- **Usage**:
+  - `GET`: Send PromQL queries via query parameters.
+  - `POST`: Send PromQL queries in the request body.
+
+## Protocol Endpoints
+
+Endpoints for various protocols that are compatible with GreptimeDB. Like InfluxDB, Prometheus, OpenTelemetry, etc.
+
+### InfluxDB Compatibility
+
+- **Paths**:
+  - `/v1/influxdb/write`
+  - `/v1/influxdb/api/v2/write`
+  - `/v1/influxdb/ping`
+  - `/v1/influxdb/health`
+- **Methods**:
+  - `POST` for write endpoints.
+  - `GET` for ping and health endpoints.
+- **Description**: Provides endpoints compatible with InfluxDB for data ingestion and health checks.
+- **Usage**:
+  - Ingest data using InfluxDB line protocol.
+  - Use ping and health endpoints to check server status.
+
+### Prometheus Remote Write/Read
+
+- **Paths**:
+  - `/v1/prometheus/write`
+  - `/v1/prometheus/read`
+- **Methods**: `POST`
+- **Description**: Supports Prometheus remote write and read APIs.
+- **Usage**:
+  - Send metric data using Prometheus remote write protocol.
+  - Read metric data using Prometheus remote read protocol.
+
+### Prometheus HTTP API
+
+- **Base Path**: `/v1/prometheus/api/v1`
+- **Endpoints**:
+  - `/format_query`
+  - `/status/buildinfo`
+  - `/query`
+  - `/query_range`
+  - `/labels`
+  - `/series`
+  - `/parse_query`
+  - `/label/{label_name}/values`
+- **Methods**: `GET`, `POST`
+- **Description**: Provides Prometheus HTTP API endpoints for querying and retrieving metric data.
+- **Usage**: Use these endpoints to interact with metrics using standard Prometheus HTTP API.
+
+### OpenTelemetry Protocol (OTLP)
+
+- **Paths**:
+  - `/v1/otlp/v1/metrics`
+  - `/v1/otlp/v1/traces`
+  - `/v1/otlp/v1/logs`
+- **Methods**: `POST`
+- **Description**: Supports OpenTelemetry protocol for ingesting metrics, traces, and logs.
+- **Usage**: Send OpenTelemetry formatted data to these endpoints.
+
+### Loki Compatibility
+
+- **Path**: `/v1/loki/api/v1/push`
+- **Methods**: `POST`
+- **Description**: Compatible with Loki's API for log ingestion.
+- **Usage**: Send log data in Loki's format to this endpoint.
+
+### OpenTSDB Protocol
+
+- **Path**: `/v1/opentsdb/api/put`
+- **Methods**: `POST`
+- **Description**: Supports data ingestion using the OpenTSDB protocol.
+- **Usage**: Ingest time series data using OpenTSDB's JSON format.
+
+## Log Ingestion Endpoints
+
+- **Paths**:
+  - `/v1/events/logs`
+  - `/v1/events/pipelines/{pipeline_name}`
+  - `/v1/events/pipelines/dryrun`
+- **Methods**:
+  - `POST` for ingesting logs and adding pipelines.
+  - `DELETE` for deleting pipelines.
+- **Description**: Provides endpoints for log ingestion and pipeline management.
+- **Usage**:
+  - Ingest logs via the `/logs` endpoint.
+  - Manage log pipelines using the `/pipelines` endpoints.
+
+## Scripts Endpoints
+
+### Scripts Management
+
+- **Path**: `/v1/scripts`
+- **Methods**: `POST`
+- **Description**: Manages scripts on the server.
+- **Usage**: Submit scripts for execution or management.
+
+### Run Script
+
+- **Path**: `/v1/run-script`
+- **Methods**: `POST`
+- **Description**: Executes a script on the server.
+- **Usage**: Send the script content to be executed.
