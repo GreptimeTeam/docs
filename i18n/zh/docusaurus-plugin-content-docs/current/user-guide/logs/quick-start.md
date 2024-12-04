@@ -126,7 +126,7 @@ transform:
 
 该 pipeline 使用指定的模式拆分 `message` 字段以提取 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
 然后，它使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析 `timestamp` 字段，将其转换为数据库可以理解的正确时间戳格式。
-最后，它将每个字段转换为适当的数据类型并相应地建立索引���
+最后，它将每个字段转换为适当的数据类型并相应地建立索引。
 需要注意的是，`request_line` 和 `user_agent` 字段被索引为 `fulltext` 以优化全文搜索查询，且表中必须有一个由 `timestamp` 指定的时间索引列。
 
 执行以下命令上传配置文件：

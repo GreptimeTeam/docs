@@ -32,5 +32,5 @@ import Includesharedstoragecapacity from './shared-storage-capacity.md'
 
 ### 网络流量
 
-网络流量的费用将包含在你的月度账单���。
+网络流量的费用将包含在你的月度账单中。
 流量价格由云服务器提供商（如 AWS）决定，Greptime 不会对流量收取额外费用。

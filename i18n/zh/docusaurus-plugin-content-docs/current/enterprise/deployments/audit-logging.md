@@ -69,7 +69,7 @@ commands = "all"
 # 所有可配置的对象类型是 "Database"、"Table"、"View"、"Flow"、"Index" 和 "Misc"。
 # 一个特殊的 "all"（默认值）表示所有对象类型。
 object_types = "all"
-# 保留的审计日志文件的��大数量。默认为 30。
+# 保留的审计日志文件的最大数量。默认为 30。
 # 审计日志每天生成一个新的。
 max_log_files = 30
 ```

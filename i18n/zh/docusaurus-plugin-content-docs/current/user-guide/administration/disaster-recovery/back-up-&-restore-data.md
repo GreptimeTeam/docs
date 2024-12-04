@@ -29,7 +29,7 @@ greptime cli export [OPTIONS]
 | --auth-basic | 否 | - | 使用 `<username>:<password>` 格式 |
 | --timeout | 否 | 0 | 对 DB 进行一次调用的超时时间，默认为 0 代表永不超时 （例如 `30s`, `10min 20s`） |
 
-### ���出目标
+### 导出目标
 - `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
 - `data`: 仅导出表数据（`COPY DATABASE TO`）
 - `all`: 导出表结构和数据（默认）

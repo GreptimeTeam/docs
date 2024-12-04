@@ -170,7 +170,7 @@ psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptimedb-export/greptime/public/co
 
 ## 推荐流程
 
-该部分给出了一个推��的整体流程，以便平滑升级 GreptimeDB。如果您的环境可以在升级过程中离线，可以跳过此部分。
+该部分给出了一个推荐的整体流程，以便平滑升级 GreptimeDB。如果您的环境可以在升级过程中离线，可以跳过此部分。
 
 1. 创建一个全新的 v0.9.x 集群 
 2. 使用 v0.9.x 版本的 cli 工具导出并导入 `create-table`

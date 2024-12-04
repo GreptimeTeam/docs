@@ -367,7 +367,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 | `ENDPOINT`                  | The bucket endpoint                                             | 可选     |
 | `ACCESS_KEY_ID`             | 用于连接 AWS S3 兼容对象存储的访问密钥 ID                       | 可选     |
 | `SECRET_ACCESS_KEY`         | 用于连接 AWS S3 兼容对象存储的秘密访问密钥                      | 可选     |
-| `ENABLE_VIRTUAL HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | ���选     |
+| `ENABLE_VIRTUAL HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
 | `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                  | 可选     |
 
 ### 时间索引列

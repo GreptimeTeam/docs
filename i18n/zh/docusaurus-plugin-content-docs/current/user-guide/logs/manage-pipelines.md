@@ -17,7 +17,7 @@ GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用
 
 ### `greptime_identity`
 
-`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动�� JSON 日志中的每个字段创建列。
+`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动为 JSON 日志中的每个字段创建列。
 
 - JSON 日志中的第一层级的 key 是表中的列名。
 - 如果相同字段包含不同类型的数据，则会返回错误。

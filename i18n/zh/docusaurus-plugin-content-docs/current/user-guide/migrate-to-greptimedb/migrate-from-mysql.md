@@ -24,7 +24,7 @@ SQL 中请考虑以下几点：
 1. 由于 time index 列在表创建后无法更改，所以你需要仔细选择 time index
    列。时间索引最好设置为数据生成时的自然时间戳，因为它提供了查询数据的最直观方式，以及最佳的查询性能。例如，在 IOT
    场景中，你可以使用传感器采集数据时的时间作为 time index；或者在可观测场景中使用事件的发生时间。
-2. 不建议在此迁移过程中另造一个时间戳用作时间索引，例���使用 `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
+2. 不建议在此迁移过程中另造一个时间戳用作时间索引，例如使用 `DEFAULT current_timestamp()` 创建的新列。也不建议使用具有随机时间戳的列。
 3. 选择合适的 time index 精度也至关重要。和 time index 的选择一样，一旦表创建完毕，time index
    的精度就无法变更了。请根据你的数据集在[这里](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql)
    找到最适合的时间戳类型。

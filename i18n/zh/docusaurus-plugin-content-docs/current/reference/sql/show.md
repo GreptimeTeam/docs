@@ -170,7 +170,7 @@ SHOW FULL TABLES WHERE Table_type='BASE TABLE';
 SHOW CREATE TABLE [table]
 ```
 
-例如���
+例如：
 
 ```sql
 SHOW CREATE TABLE system_metrics;

@@ -23,7 +23,7 @@ https://<host>
 接下来做如下配置：
 
 - Database Name：填写数据库名称 `<dbname>`，留空则使用默认数据库 `public`
-- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户���和密码。未设置可留空：
+- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
 
   - User: `<username>`
   - Password: `<password>`

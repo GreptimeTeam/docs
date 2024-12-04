@@ -41,7 +41,7 @@ cd docker
 docker compose up
 ```
 
-你也可以从 Grafana 的 docker 镜像中试用此插件��
+你也可以从 Grafana 的 docker 镜像中试用此插件：
 
 ```shell
 docker run -d -p 3000:3000 --name=grafana --rm \

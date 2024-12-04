@@ -39,7 +39,7 @@ description: 介绍 Metasrv 的功能、架构和与前端的交互方式。
 1. 前端发送 `CREATE TABLE` 请求到 Metasrv。
 2. 根据请求中包含的分区规则规划 Region 数量。
 3. 检查数据节点可用资源的全局视图（通过心跳收集）并为每个 Region 分配一个节点。
-4. 前端创建表并在���功创建后将 `Schema` 存储到 Metasrv。
+4. 前端创建表并在成功创建后将 `Schema` 存储到 Metasrv。
 
 ### `Insert`
 
