@@ -70,7 +70,7 @@ Various query APIs for sending query to GreptimeDB.
   - `GET`: Send SQL queries via query parameters.
   - `POST`: Send SQL queries in the request body.
   
-For more information on the SQL API, refer to the [SQL documentation](../user-guide/query-data/sql.md).
+For more information on the SQL API, refer to the [SQL documentation](/user-guide/query-data/sql.md).
 
 ### PromQL API
 
@@ -81,7 +81,7 @@ For more information on the SQL API, refer to the [SQL documentation](../user-gu
   - `GET`: Send PromQL queries via query parameters.
   - `POST`: Send PromQL queries in the request body.
   
-For more information on the PromQL API, refer to the [PromQL documentation](../user-guide/query-data/promql.md).
+For more information on the PromQL API, refer to the [PromQL documentation](/user-guide/query-data/promql.md).
 
 ## Protocol Endpoints
 
@@ -102,7 +102,7 @@ Endpoints for various protocols that are compatible with GreptimeDB. Like Influx
   - Ingest data using InfluxDB line protocol.
   - Use ping and health endpoints to check server status.
 
-The detailed documentation for InfluxDB protocol can be found [here](../user-guide/protocols/influxdb-line-protocol.md).
+The detailed documentation for InfluxDB protocol can be found [here](/user-guide/protocols/influxdb-line-protocol.md).
 
 ### Prometheus Remote Write/Read
 
@@ -171,7 +171,7 @@ Refer to the original Prometheus documentation for more information on the [Prom
   - Ingest logs via the `/logs` endpoint.
   - Manage log pipelines using the `/pipelines` endpoints.
 
-For more information on log ingestion and pipeline management, refer to the [log overview](../user-guide/logs/overview.md).
+For more information on log ingestion and pipeline management, refer to the [log overview](/user-guide/logs/overview.md).
 
 ## Script Endpoints
 
