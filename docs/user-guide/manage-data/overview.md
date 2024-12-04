@@ -319,16 +319,16 @@ Otherwise, the database TTL policy will be applied to the table.
 The value of 'ttl' can be one of the following:
 
 - a duration like `1hour 12min 5s`, The duration object is a concatenation of time spans. Where each time span is an integer number and a suffix. Supported suffixes:
-    - nsec, ns – nanoseconds
-    - usec, us – microseconds
-    - msec, ms – milliseconds
-    - seconds, second, sec, s
-    - minutes, minute, min, m
-    - hours, hour, hr, h
-    - days, day, d
-    - weeks, week, w
-    - months, month, M – defined as 30.44 days
-    - years, year, y – defined as 365.25 days
+    - `nsec`, `ns` – nanoseconds
+    - `usec`, `us` – microseconds
+    - `msec`, `ms` – milliseconds
+    - `seconds`, `second`, `sec`, `s`
+    - `minutes`, `minute`, `min`, `m`
+    - `hours`, `hour`, `hr`, `h`
+    - `days`, `day`, `d`
+    - `weeks`, `week`, `w`
+    - `months`, `month`, `M` – defined as 30.44 days
+    - `years`, `year`, `y` – defined as 365.25 days
 - `forever`, `NULL`, a duration which is zero(like `0s`) or a empty string `''`, which means the data will never be deleted.
 - `immediate`, which means the data will be deleted immediately when inserted, useful if you want to send input to a flow task without saving it.
 
