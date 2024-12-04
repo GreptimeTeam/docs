@@ -1,3 +1,7 @@
+---
+description: 概述 GreptimeDB 支持的各种数据写入方法，包括 SQL、gRPC SDK、InfluxDB Line Protocol、EMQX 和 OpenTSDB。
+---
+
 # 概述
 
 数据的写入是物联网数据流程的关键部分。

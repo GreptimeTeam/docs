@@ -1,3 +1,7 @@
+---
+description: Details the ORDER BY clause in SQL for sorting data in ascending or descending order based on one or more columns, with syntax and examples.
+---
+
 # ORDER BY
 
 The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the

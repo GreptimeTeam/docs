@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 在可观测性场景中的应用，包括与 Prometheus、Vector、OpenTelemetry 和 InfluxDB Line Protocol 的集成。
+---
+
 # 概述
 
 在可观测性场景中，实时监控和分析系统性能的能力至关重要。

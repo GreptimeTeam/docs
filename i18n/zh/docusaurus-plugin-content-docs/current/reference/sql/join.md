@@ -1,3 +1,7 @@
+---
+description: JOIN 用于组合两个或多个表中基于相关列的行，支持 INNER JOIN、LEFT JOIN、RIGHT JOIN 和 FULL OUTER JOIN。
+---
+
 # JOIN
 
 `JOIN` 用于组合两个或多个表中基于相关列的行。

@@ -1,3 +1,7 @@
+---
+description: 提供 GreptimeDB 的 CPU、内存和存储需求的一般建议，帮助用户根据工作负载进行容量规划。
+---
+
 # 容量规划
 
 本指南提供了关于 GreptimeDB 的 CPU、内存和存储需求的一般建议。

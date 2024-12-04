@@ -1,3 +1,7 @@
+---
+description: 概述 GreptimeDB Enterprise 中的灾难恢复解决方案，特别是基于双活互备的 DR 解决方案，并提供相关链接以获取更多信息。
+---
+
 # 概述
 
 作为分布式数据库，GreptimeDB 提供了不同的灾难恢复（DR）解决方案。

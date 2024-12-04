@@ -1,3 +1,7 @@
+---
+description: Guide to install and run GreptimeDB in standalone mode using binary or Docker, including binding address configuration.
+---
+
 # GreptimeDB Standalone
 
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/deployments/configuration.md).

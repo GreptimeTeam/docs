@@ -1,3 +1,7 @@
+---
+description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库、创建表、写入数据、查询数据等核心功能。
+---
+
 # 快速开始
 
 在继续阅读之前，请确保你已经[安装了 GreptimeDB](./installation/overview.md)。

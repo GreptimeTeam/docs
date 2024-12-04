@@ -1,3 +1,7 @@
+---
+description: Guide on specifying and managing time zones in GreptimeDB client sessions, including impacts on data ingestion and querying.
+---
+
 # Time Zone
 
 You can specify the time zone in the client session to manage time data conveniently.

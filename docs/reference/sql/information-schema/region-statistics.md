@@ -1,3 +1,7 @@
+---
+description: Provides detailed information about a region's statistics, including the total number of rows, disk size, and more. These statistics are approximate values.
+---
+
 # REGION_STATISTICS
 
 The `REGION_STATISTICS` table provides detailed information about a region's statistics, including the total number of rows, disk size, and more. These statistics are approximate values.

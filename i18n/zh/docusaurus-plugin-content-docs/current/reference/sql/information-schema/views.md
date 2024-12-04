@@ -1,3 +1,7 @@
+---
+description: VIEWS 表提供当前用户可见的视图列表及其字段描述。
+---
+
 # VIEWS
 
 `VIEWS` 表提供了当前用户可见的视图（View）列表。

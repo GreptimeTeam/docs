@@ -1,3 +1,7 @@
+---
+description: Provides information on the SHOW keyword in SQL for displaying database and table details, including various SHOW commands with syntax and examples.
+---
+
 # SHOW
 
 The `SHOW` keyword provides database and table information.

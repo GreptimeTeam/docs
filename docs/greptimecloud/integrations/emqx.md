@@ -1,3 +1,7 @@
+---
+description: Instructions on configuring GreptimeCloud as a data sink in EMQX Platform for IoT data ingestion.
+---
+
 # EMQX Platform
 
 [EMQX Platform](https://www.emqx.io/) is an MQTT Gateway, designed to handle

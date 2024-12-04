@@ -1,3 +1,7 @@
+---
+description: COLUMNS 表提供关于表中每列的详细信息。
+---
+
 # COLUMNS
 
 `COLUMNS` 提供了关于表中每列的详细信息。

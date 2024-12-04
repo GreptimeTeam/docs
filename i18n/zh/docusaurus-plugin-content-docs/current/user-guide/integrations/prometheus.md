@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeDB 作为 Prometheus 的远程存储后端，并支持使用 Prometheus 查询语言 (PromQL) 查询数据。
+---
+
 # Prometheus
 
 ## Remote Write

@@ -1,3 +1,7 @@
+---
+description: Provides an overview of the Frontend component in GreptimeDB, its roles, and typical deployment in the cloud.
+---
+
 # Overview
 
 The `Frontend` executes requests from clients, and performs some tasks in the cloud

@@ -1,3 +1,7 @@
+---
+description: Provides information about databases, including details about each database's catalog, schema name, default character set, collation, and options.
+---
+
 # SCHEMATA
 
 The `SCHEMATA` table provides information about databases. The table data is equivalent to the result of the `SHOW DATABASES` statement.

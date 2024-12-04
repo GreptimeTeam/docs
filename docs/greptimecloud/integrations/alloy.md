@@ -1,3 +1,7 @@
+---
+description: Instructions on integrating GreptimeCloud with Grafana Alloy for Prometheus Remote Write and OpenTelemetry.
+---
+
 # Alloy
 
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) is an observability data pipeline as well as an OpenTelemetry

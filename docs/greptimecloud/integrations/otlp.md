@@ -1,3 +1,7 @@
+---
+description: Guide for using GreptimeDB as an observability backend with OpenTelemetry, including API/SDK configuration and OpenTelemetry Collector setup.
+---
+
 # OpenTelemetry
 
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively

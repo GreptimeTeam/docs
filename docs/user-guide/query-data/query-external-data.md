@@ -1,3 +1,7 @@
+---
+description: Instructions on querying external data files in GreptimeDB, including creating external tables and running queries on various file formats like CSV and Parquet.
+---
+
 # Query External Data
 
 ## Query on a file

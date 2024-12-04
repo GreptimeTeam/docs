@@ -1,3 +1,7 @@
+---
+description: Explains the disaster recovery (DR) solution based on cross-region deployment in a single GreptimeDB cluster, detailing various configurations for metadata and data distribution across regions to achieve high availability and reliability.
+---
+
 # DR Solution Based on Cross-Region Deployment in a Single Cluster
 
 ## How disaster recovery works in GreptimeDB

@@ -1,3 +1,7 @@
+---
+description: Detailed explanation of the active-active failover disaster recovery solution in GreptimeDB Enterprise, including read/write modes, RPO, and RTO configurations.
+---
+
 # DR Solution Based on Active-Active Failover
 
 ## RPO

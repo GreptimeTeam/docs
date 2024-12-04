@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Streamlit 连接 GreptimeCloud 并执行 SQL 查询，展示数据应用的构建示例。
+---
+
 # Streamlit
 
 Streamlit 是一套快速构建数据应用的 Python 框架，目前他也支持构建基于 GreptimeDB

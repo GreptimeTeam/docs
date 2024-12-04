@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Prometheus, and visualizing data in GreptimeDB.
+---
+
 # Prometheus
 
 ## Create Service

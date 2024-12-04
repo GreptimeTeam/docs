@@ -1,3 +1,7 @@
+---
+description: Overview of the GreptimeDB command-line interface, including installation, available commands, options, and examples for starting services and upgrading versions.
+---
+
 # Greptime Command Line Interface
 
 The `greptime` command can start/stop GreptimeDB and pass configuration options. 

@@ -1,3 +1,7 @@
+---
+description: Instructions for connecting to GreptimeCloud using PostgreSQL protocol, including connection details, psql CLI, connection strings, and JDBC URL.
+---
+
 # PostgreSQL
 
 GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 wire protocol. Most

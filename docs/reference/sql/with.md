@@ -1,3 +1,7 @@
+---
+description: Describes the usage of the WITH clause to define Common Table Expressions (CTEs) in SQL, including syntax, examples of non-recursive CTEs, and notes on recursive CTEs.
+---
+
 # WITH
 
 Use `WITH` to specify a Common Table Expression.

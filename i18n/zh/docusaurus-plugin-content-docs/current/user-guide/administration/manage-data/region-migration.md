@@ -1,3 +1,7 @@
+---
+description: 介绍 Region 迁移功能及其在 GreptimeDB 中的应用，包括查询 Region 分布、选择迁移目标节点、发起迁移请求和查询迁移状态等内容。
+---
+
 # Region Migration
 
 Region 迁移允许用户在 Datanode 间移动 Region 数据。

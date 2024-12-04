@@ -1,3 +1,7 @@
+---
+description: 介绍了 `SELECT` 语句的基本语法和用法，包括 `WHERE`、`LIMIT`、`JOIN` 和 `GROUP BY` 子句的示例。
+---
+
 # SELECT
 
 `SELECT` 语句允许你从一个或多个表中选择列。

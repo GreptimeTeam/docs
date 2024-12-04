@@ -1,3 +1,7 @@
+---
+description: Guide for integrating Prometheus with GreptimeCloud, including remote write configuration, HTTP API access, and using PromQL.
+---
+
 # Prometheus
 
 GreptimeCloud with GreptimeDB is fully compatible with Prometheus. This ensures

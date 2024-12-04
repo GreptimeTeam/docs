@@ -1,3 +1,7 @@
+---
+description: Overview of GreptimeDB Enterprise, detailing its advanced features, solutions, and enhancements over the open-source version to optimize data efficiency and reduce costs.
+---
+
 # Overview
 
 GreptimeDB Enterprise is a powerful time-series database solution designed to meet the specific needs of enterprises.

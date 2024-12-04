@@ -1,3 +1,7 @@
+---
+description: Guide on monitoring host metrics using InfluxDB Line Protocol, including creating a service, writing data, and visualizing data.
+---
+
 # InfluxDB Line Protocol
 
 import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 

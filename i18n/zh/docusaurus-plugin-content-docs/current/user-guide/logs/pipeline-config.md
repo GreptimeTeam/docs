@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 中 Pipeline 的配置，包括 Processor 和 Transform 的使用方法，以及各种 Processor 的详细配置示例。
+---
+
 # Pipeline 配置
 
 Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。

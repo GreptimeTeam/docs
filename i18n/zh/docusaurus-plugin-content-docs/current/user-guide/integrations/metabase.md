@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeDB 添加到 Metabase 作为数据源，包括安装 Driver 和添加 GreptimeDB 数据库的方法。
+---
+
 # Metabase
 
 [Metabase](https://github.com/metabase/metabase) 是一个用 Clojure 编写的开源 BI

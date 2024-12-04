@@ -1,3 +1,7 @@
+---
+description: Describes the SELECT statement in SQL for retrieving data from tables, including syntax, filtering with WHERE, limiting results with LIMIT, joining tables, and grouping results with GROUP BY.
+---
+
 # SELECT
 
 The `SELECT` statement allows you to specify a list of columns and expressions to be selected from

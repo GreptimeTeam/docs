@@ -1,3 +1,7 @@
+---
+description: 介绍了 Range 查询的语法和用法，包括 `FILL`、`TO` 和 `BY` 选项的详细说明和示例。
+---
+
 # RANGE QUERY
 
 查询并聚合一个给定长度的时间范围的数据是时序数据常见的一种查询模式，例如 `PromQL` 中的 `Range selector`。而 GreptimeDB 在 SQL 中支持了 Range 查询，用于将时序数据汇总为时间块，并在时间块上进行数据的聚合。Range 查询作为 `SELECT` 语句的一部分，可与 SQL 灵活结合，从而在 SQL 中提供更强大的时序数据查询能力。

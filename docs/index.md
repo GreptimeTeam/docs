@@ -1,3 +1,6 @@
+---
+description: Introduction to GreptimeDB, an open-source unified time-series database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
+---
 # Introduction
 
 <p align="center">

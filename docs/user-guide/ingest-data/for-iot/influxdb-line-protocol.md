@@ -1,3 +1,7 @@
+---
+description: Guide on using InfluxDB Line Protocol to ingest data into GreptimeDB, including examples, authentication, Telegraf integration, and data model differences.
+---
+
 # InfluxDB Line Protocol
 
 GreptimeDB supports HTTP InfluxDB Line protocol.

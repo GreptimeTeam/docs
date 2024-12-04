@@ -1,3 +1,7 @@
+---
+description: Guide for using Vector with GreptimeCloud, including configuration for metrics and logs ingestion, and running Vector with a sample configuration.
+---
+
 # Vector
 
 Vector is [a high performance observability data

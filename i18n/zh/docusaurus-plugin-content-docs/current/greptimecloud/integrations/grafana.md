@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeCloud 配置为 Grafana 数据源，并提供了使用 GreptimeCloud、Prometheus 和 MySQL 数据源的配置示例。
+---
+
 # Grafana
 
 GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/)。

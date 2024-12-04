@@ -1,3 +1,7 @@
+---
+description: Describes the applicability of collation character sets within the SQL information schema, detailing how they can be applied and managed.
+---
+
 # COLLATION_CHARACTER_SET_APPLICABILITY
 
 The `COLLATION_CHARACTER_SET_APPLICABILITY` table indicates what character set is applicable for what collation.

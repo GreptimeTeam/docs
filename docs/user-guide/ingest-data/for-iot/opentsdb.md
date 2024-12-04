@@ -1,3 +1,7 @@
+---
+description: Instructions on ingesting OpenTSDB metrics into GreptimeDB via HTTP API, including examples of inserting single and multiple metric points.
+---
+
 # OpenTSDB
 
 GreptimeDB supports ingesting OpenTSDB via HTTP API.

@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 中排序规则与字符集的适用性，包括如何在 SQL 查询中使用这些规则和字符集。
+---
+
 # COLLATION_CHARACTER_SET_APPLICABILITY
 
 `COLLATION_CHARACTER_SET_APPLICABILITY` 表示了每个排序规则适用的字符集。

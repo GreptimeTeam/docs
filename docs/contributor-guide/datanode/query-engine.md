@@ -1,3 +1,7 @@
+---
+description: Overview of GreptimeDB's query engine, its architecture, data representation, indexing, and extensibility.
+---
+
 # Query Engine
 
 ## Introduction

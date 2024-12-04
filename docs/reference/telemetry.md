@@ -1,3 +1,7 @@
+---
+description: Details on telemetry data collection in GreptimeDB, including what data is collected, how often, and how to enable or disable telemetry.
+---
+
 # Telemetry
 
 To enhance our service, GreptimeDB collects certain telemetry data. This includes information like the GreptimeDB version, the number of nodes, the operating system used, the environment's architecture, and similar technical details. However, we respect your privacy and make sure not to collect any user-specific data, which entails database names, table names, query content, and the like.

@@ -1,3 +1,7 @@
+---
+description: Guide on using SQL tools with GreptimeDB, including recommended libraries, installation, connection setup, and usage examples for Java and Go.
+---
+
 # SQL Tools
 
 GreptimeDB uses SQL as its main query language and supports many popular SQL tools.

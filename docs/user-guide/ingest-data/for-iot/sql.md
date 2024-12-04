@@ -1,3 +1,7 @@
+---
+description: Guide on executing SQL statements to create tables and insert data into GreptimeDB, with examples using the `monitor` table.
+---
+
 # SQL
 
 You can execute SQL statements using [MySQL](/user-guide/protocols/mysql.md) or [PostgreSQL](/user-guide/protocols/postgresql.md) clients, 

@@ -1,3 +1,7 @@
+---
+description: Explains the SQL CREATE statement for creating databases, tables, external tables, flows, and views in GreptimeDB, including syntax, table constraints, options, and examples.
+---
+
 # CREATE
 
 `CREATE` is used to create new databases or tables.

@@ -1,3 +1,7 @@
+---
+description: Instructions to install GreptimeDB, check its health status, and proceed to the quick start guide.
+---
+
 # Overview
 
 ## Installation

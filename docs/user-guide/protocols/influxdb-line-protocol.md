@@ -1,3 +1,7 @@
+---
+description: Instructions on ingesting data to GreptimeDB using InfluxDB Line Protocol and using ping and health APIs.
+---
+
 # InfluxDB Line Protocol
 
 ## Ingest data

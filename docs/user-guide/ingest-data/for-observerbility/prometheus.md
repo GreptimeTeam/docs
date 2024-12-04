@@ -1,3 +1,7 @@
+---
+description: Guide to integrating Prometheus with GreptimeDB for long-term storage, including configuration, data model mapping, and efficiency improvements.
+---
+
 # Prometheus
 
 GreptimeDB can serve as a long-term storage solution for Prometheus,

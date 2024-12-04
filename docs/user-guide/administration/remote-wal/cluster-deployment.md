@@ -1,3 +1,7 @@
+---
+description: Guide for deploying a GreptimeDB cluster with Remote WAL in Kubernetes. Includes steps for deploying the GreptimeDB operator, etcd cluster, Kafka cluster, and GreptimeDB cluster with remote WAL settings, as well as writing and querying data.
+---
+
 # Cluster Deployment
 
 It's highly recommended to deploy the GreptimeDB cluster in Kubernetes. There are the following prerequires:

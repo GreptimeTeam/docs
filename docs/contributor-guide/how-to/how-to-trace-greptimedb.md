@@ -1,3 +1,7 @@
+---
+description: Describes how to use Rust's tracing framework in GreptimeDB for distributed tracing, including defining tracing context in RPC, passing it, and instrumenting code.
+---
+
 # How to trace GreptimeDB
 
 GreptimeDB uses Rust's [tracing](https://docs.rs/tracing/latest/tracing/) framework for code instrument. For the specific details and usage of tracing, please refer to the official documentation of tracing.

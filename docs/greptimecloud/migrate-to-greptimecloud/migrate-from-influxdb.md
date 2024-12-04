@@ -1,3 +1,7 @@
+---
+description: Instructions for migrating from InfluxDB to GreptimeCloud, including database connection, writing data using HTTP API, Telegraf, client libraries, and data visualization.
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
 
 # Migrate from InfluxDB

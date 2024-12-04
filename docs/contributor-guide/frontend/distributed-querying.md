@@ -1,3 +1,7 @@
+---
+description: Describes the process of distributed querying in GreptimeDB, focusing on the dist planner and dist plan.
+---
+
 # Distributed Querying
 
 Most steps of querying in frontend and datanode are identical. The only difference is that

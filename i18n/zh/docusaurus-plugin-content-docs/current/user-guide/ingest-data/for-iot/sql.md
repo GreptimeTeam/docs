@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 SQL 将数据写入 GreptimeDB，包括创建表、插入数据和时区设置等内容。
+---
+
 # SQL
 
 你可以使用 [MySQL](/user-guide/protocols/mysql.md) 或 [PostgreSQL](/user-guide/protocols/postgresql.md) 客户端执行 SQL 语句，

@@ -1,3 +1,7 @@
+---
+description: Overview of query languages supported by GreptimeDB, including PromQL and SQL, and recommended libraries for querying data.
+---
+
 # Overview
 
 ## Query languages

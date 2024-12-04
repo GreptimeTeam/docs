@@ -1,3 +1,7 @@
+---
+description: Instructions for setting up static user authentication in GreptimeDB using a configuration file with user credentials.
+---
+
 # Static User Provider
 
 GreptimeDB offers a simple built-in mechanism for authentication, allowing users to configure either a fixed account for convenient usage or an account file for multiple user accounts. By passing in a file, GreptimeDB loads all users listed within it.

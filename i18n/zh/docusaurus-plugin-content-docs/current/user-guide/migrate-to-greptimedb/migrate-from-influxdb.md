@@ -1,3 +1,7 @@
+---
+description: 指导用户从 InfluxDB 迁移到 GreptimeDB，包括使用 HTTP API 和客户端库写入数据的示例。
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
 
 # 从 InfluxDB 迁移

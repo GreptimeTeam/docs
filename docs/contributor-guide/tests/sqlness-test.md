@@ -1,3 +1,7 @@
+---
+description: Instructions for running SQL tests in GreptimeDB using the `sqlness` test suite, including file types, case organization, and running tests.
+---
+
 # Sqlness Test
 
 ## Introduction

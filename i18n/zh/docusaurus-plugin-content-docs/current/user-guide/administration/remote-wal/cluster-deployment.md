@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 Kubernetes 中部署带有 Remote WAL 配置的 GreptimeDB 集群，包括部署 GreptimeDB Operator、etcd 集群、Kafka 集群和 GreptimeDB 集群。
+---
+
 # 集群部署
 
 我们强烈建议将 GreptimeDB 集群部署在 Kubernetes 中，这里是一些此次部署的前置依赖：

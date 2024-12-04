@@ -1,3 +1,7 @@
+---
+description: Describes how to use GreptimeDB's Export and Import tools for database backup and restoration, including command syntax, options, usage scenarios, best practices, troubleshooting, and performance tips.
+---
+
 # GreptimeDB Export & Import Tools
 
 This guide describes how to use GreptimeDB's Export and Import tools for database backup and restoration.

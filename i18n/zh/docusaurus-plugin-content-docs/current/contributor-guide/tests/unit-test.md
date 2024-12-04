@@ -1,27 +1,27 @@
-# Unit Test
+---
+description: 介绍 GreptimeDB 的单元测试，包括如何编写、运行和检查测试覆盖率。
+---
 
-## Introduction
+# 单元测试
 
-Unit tests are embedded into the codebase, usually placed next to the logic being tested.
-They are written using Rust's `#[test]` attribute and can run with `cargo nextest run`.
+## 介绍
 
-The default test runner ships with `cargo` is not supported in GreptimeDB codebase. It's recommended
-to use [`nextest`](https://nexte.st/) instead. You can install it with
+单元测试嵌入在代码库中，通常放置在被测试逻辑的旁边。它们使用 Rust 的 `#[test]` 属性编写，并可以使用 `cargo nextest run` 运行。
+
+GreptimeDB 代码库不支持默认的 `cargo` 测试运行器。推荐使用 [`nextest`](https://nexte.st/)。你可以通过以下命令安装它：
 
 ```shell
 cargo install cargo-nextest --locked
 ```
 
-And run the tests (here the `--workspace` is not necessary)
+然后运行测试（这里 `--workspace` 不是必须的）
 
 ```shell
 cargo nextest run
 ```
 
-Notes if your Rust is installed via `rustup`, be sure to install `nextest` with `cargo` rather
-than the package manager like `homebrew`. Otherwise it will mess up your local environment.
+注意，如果你的 Rust 是通过 `rustup` 安装的，请确保使用 `cargo` 安装 `nextest`，而不是像 `homebrew` 这样的包管理器，否则会弄乱你的本地环境。
 
-## Coverage
+## 覆盖率
 
-Our continuous integration (CI) jobs have a "coverage checking" step. It will report how many
-codes are covered by unit tests. Please add the necessary unit test to your patch.
+我们的持续集成（CI）作业有一个“覆盖率检查”步骤。它会报告有多少代码被单元测试覆盖。请在你的补丁中添加必要的单元测试。

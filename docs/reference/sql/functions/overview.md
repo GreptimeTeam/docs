@@ -1,3 +1,7 @@
+---
+description: Provides an overview of the SQL functions available in GreptimeDB, including categories and examples of their usage.
+---
+
 import TOCInline from '@theme/TOCInline';
 
 # Overview

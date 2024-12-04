@@ -1,3 +1,7 @@
+---
+description: Lists all geospatial related functions in GreptimeDB, including their usage, examples, and details on geospatial types, geohash, H3, S2, and encodings.
+---
+
 import TOCInline from '@theme/TOCInline';
 
 # Geospatial Functions

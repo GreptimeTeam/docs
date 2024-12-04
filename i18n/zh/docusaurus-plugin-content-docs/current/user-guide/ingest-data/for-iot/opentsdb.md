@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 OpenTSDB 协议通过 HTTP API 将数据写入 GreptimeDB，包括示例代码和注意事项。
+---
+
 # OpenTSDB
 
 GreptimeDB支持通过 HTTP API 使用 OpenTSDB 协议。

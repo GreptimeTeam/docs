@@ -1,3 +1,7 @@
+---
+description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries and ensuring data security.
+---
+
 # View
 
 In SQL, a view is a virtual table based on the result set of an SQL statement.

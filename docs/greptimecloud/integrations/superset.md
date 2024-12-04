@@ -1,3 +1,7 @@
+---
+description: Guide for configuring GreptimeCloud as a data source in Superset, including connection information and SQLAlchemy URL format.
+---
+
 # Superset
 
 [Superset](https://superset.apache.org) is an open source BI tool that written

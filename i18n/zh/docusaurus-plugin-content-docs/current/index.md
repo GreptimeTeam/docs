@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 的核心功能和特点，并提供了相关文档的链接，帮助用户快速上手和深入了解。
+---
+
 # 简介
 
 <p align="center">

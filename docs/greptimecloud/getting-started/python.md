@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Python, and visualizing data in GreptimeDB.
+---
+
 # Python
 
 ## Create Service

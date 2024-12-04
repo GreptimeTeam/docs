@@ -1,3 +1,7 @@
+---
+description: Guide on using DBeaver to connect to GreptimeCloud via MySQL database drivers.
+---
+
 # DBeaver
 
 [DBeaver](https://dbeaver.io/) is a free, open-source, and cross-platform database tool that supports all popular databases. It is a popular choice among developers and database administrators for its ease of use and extensive feature set.

@@ -1,3 +1,7 @@
+---
+description: Explains range queries in SQL for time series data, including syntax, FILL options, TO options, BY options, ORDER BY in aggregate functions, and nested range expressions.
+---
+
 # RANGE QUERY
 
 Querying and aggregating data within a range of time is a common query pattern for time series data, such as the `Range selector` in `PromQL`. GreptimeDB supports Range queries in SQL, which is used to summarize time series data into time chunks and aggregate data on time chunks. As part of the `SELECT` statement, Range query can be flexibly combined with SQL to provide more powerful time series data query capabilities in SQL.

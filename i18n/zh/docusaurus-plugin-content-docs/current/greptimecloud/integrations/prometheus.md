@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeCloud 用作 Prometheus 的存储和查询替代品，包括配置 Remote Write 和使用 Prometheus HTTP API 与 PromQL。
+---
+
 # Prometheus
 
 GreptimeCloud 与 GreptimeDB 完全兼容 Prometheus。这意味着你可以无缝地将 GreptimeCloud 用作 Prometheus 存储和查询的替代品。有关更多信息，请参阅 GreptimeDB 用户指南中的 [Prometheus 文档](https://docs.greptime.cn/user-guide/clients/prometheus)。

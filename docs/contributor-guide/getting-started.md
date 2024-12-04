@@ -1,3 +1,7 @@
+---
+description: Instructions for setting up and running GreptimeDB from source, including prerequisites, build dependencies, and running unit tests.
+---
+
 # Getting started
 
 This page describes how to run GreptimeDB from source in your local environment.

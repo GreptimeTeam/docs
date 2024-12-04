@@ -1,3 +1,7 @@
+---
+description: Introduces the calculation algorithms for request capacity units (WCU and RCU) and provides tips for optimizing CU usage.
+---
+
 # Request Capacity Unit
 
 This document introduces the calculation algorithms for request capacity units. To monitor your service usage, you can visit the [GreptimeCloud Console](https://console.greptime.cloud/).

@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeDB 作为 Prometheus 的长期存储解决方案，包括配置 Remote Write 和数据模型的映射规则。
+---
+
 # Prometheus
 
 GreptimeDB 可以作为 Prometheus 的长期存储解决方案，提供无缝集成体验。

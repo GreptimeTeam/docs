@@ -1,3 +1,7 @@
+---
+description: SELECT DISTINCT 用于从一组数据中选择唯一值，可以与过滤条件结合使用。
+---
+
 # DISTINCT
 
 `SELECT DISTINCT` 用于从一组数据中选择唯一值，从查询的输出中返回唯一值，其基本语法如下：

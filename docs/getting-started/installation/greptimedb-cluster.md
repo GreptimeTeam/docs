@@ -1,3 +1,7 @@
+---
+description: Instructions to deploy GreptimeDB in cluster mode using Kubernetes or Docker Compose, including steps for setup and cleanup.
+---
+
 # GreptimeDB Cluster
 
 The GreptimeDB cluster can run in cluster mode to scale horizontally.

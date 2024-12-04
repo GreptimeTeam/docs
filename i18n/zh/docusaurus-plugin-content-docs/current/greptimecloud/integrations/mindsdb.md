@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 MindsDB 将 GreptimeCloud 实例集成到机器学习平台，并提供了配置示例。
+---
+
 # MindsDB
 
 [MindsDB](https://mindsdb.com/) 是一个开源的机器学习平台，使开发人员能够轻松地将

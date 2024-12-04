@@ -1,3 +1,7 @@
+---
+description: Generated from the Apache DataFusion project's documents, this page lists and describes DataFusion functions, including scalar, window, and array functions.
+---
+
 # DataFusion Functions
 
 This page is generated from the Apache DataFusion project's documents:
@@ -600,9 +604,9 @@ position(substr in origstr)
 - [to_local_time](#to-local-time)
 - [to_timestamp](#to-timestamp)
 - [to_timestamp_millis](#to-timestamp-millis)
-- [to_timestamp_micros](#to-timestamp-micros)
-- [to_timestamp_seconds](#to-timestamp-seconds)
-- [to_timestamp_nanos](#to-timestamp-nanos)
+- [to_timestamp_micros](#to_timestamp-micros)
+- [to_timestamp_seconds](#to_timestamp-seconds)
+- [to_timestamp_nanos](#to_timestamp-nanos)
 - [from_unixtime](#from-unixtime)
 - [to_unixtime](#to-unixtime)
 

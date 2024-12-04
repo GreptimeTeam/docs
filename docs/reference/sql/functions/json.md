@@ -1,3 +1,6 @@
+---
+description: Lists and describes JSON functions available in GreptimeDB, including their usage and examples.
+---
 
 # JSON Functions
 

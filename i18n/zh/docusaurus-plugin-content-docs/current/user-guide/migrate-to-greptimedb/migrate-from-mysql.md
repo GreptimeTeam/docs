@@ -1,3 +1,7 @@
+---
+description: 指导用户从 MySQL 迁移到 GreptimeDB，包括创建数据库和表、双写策略、数据导出和导入等步骤。
+---
+
 # 从 MySQL 迁移
 
 本文档将指引您完成从 MySQL 迁移到 GreptimeDB。

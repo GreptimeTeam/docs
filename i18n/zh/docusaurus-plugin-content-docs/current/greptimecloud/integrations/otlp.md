@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 OpenTelemetry Protocol (OTLP) 将指标数据发送到 GreptimeCloud，包括使用 OpenTelemetry API/SDK 和 OpenTelemetry Collector 的配置示例。
+---
+
 # OpenTelemetry Protocol (OTLP)
 
 你可以通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生消费 OpenTelemetry 指标。

@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 MySQL 协议连接和使用 GreptimeDB。
+---
+
 # MySQL
 
 ## 连接数据库

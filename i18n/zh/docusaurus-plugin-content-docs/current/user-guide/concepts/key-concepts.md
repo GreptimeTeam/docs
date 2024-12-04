@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的核心概念，包括数据库、时序表、数据类型、索引、视图和 Flow 等。
+---
+
 # 核心概念
 
 为了理解 GreptimeDB 如何管理和服务其数据，你需要了解这些 GreptimeDB 的构建模块。

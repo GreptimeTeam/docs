@@ -1,3 +1,7 @@
+---
+description: 介绍 Dedicated 计划的特点、配置方法和费用计算公式。
+---
+
 # Dedicated 计划
 
 Dedicated 计划允许你购买专用的 CPU 和存储来托管 GreptimeDB。

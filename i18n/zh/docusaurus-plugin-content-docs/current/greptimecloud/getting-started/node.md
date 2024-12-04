@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Node.js 收集系统指标数据并将其发送到 GreptimeCloud，包括安装命令和示例代码。
+---
+
 # Node.js
 
 ## 创建服务

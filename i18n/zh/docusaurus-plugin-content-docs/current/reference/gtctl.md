@@ -1,3 +1,7 @@
+---
+description: 介绍 gtctl 工具的安装、使用方法，包括一键安装、通过 Homebrew 安装、从源代码构建、启用自动补全、快速入门、部署等内容。
+---
+
 # gtctl
 
 [gtctl][1]，g-t-control，是一个用于管理 GreptimeDB 集群的命令行工具。gtctl 是集成了 GreptimeDB 集群的多种操作的多合一 binary。

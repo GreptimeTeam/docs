@@ -1,3 +1,7 @@
+---
+description: Provides information about the collations available in the SQL information schema, including details on how to use and manage them.
+---
+
 # COLLATIONS
 
 The `COLLATIONS` provides information about collations for each character set.

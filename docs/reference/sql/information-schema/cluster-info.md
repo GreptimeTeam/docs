@@ -1,3 +1,7 @@
+---
+description: Contains information about the cluster configuration and status within the SQL information schema, including nodes, roles, and other cluster-related details.
+---
+
 # CLUSTER_INFO
 
 The `CLUSTER_INFO` table provides the topology information of the cluster.

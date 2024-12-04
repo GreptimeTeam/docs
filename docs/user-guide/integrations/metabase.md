@@ -1,3 +1,7 @@
+---
+description: Instructions for configuring GreptimeDB as a data source in Metabase, including installation of the driver plugin and connection settings.
+---
+
 # Metabase
 
 [Metabase](https://github.com/metabase/metabase) is an open source BI tool that

@@ -1,3 +1,7 @@
+---
+description: CREATE 用于创建新的数据库或表，支持指定列、主键、时间索引、存储引擎和其他选项。
+---
+
 # CREATE
 
 `CREATE` 用于创建新的数据库或者表。
@@ -341,7 +345,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
   [,ENDPOINT = uri ]
   [,ACCESS_KEY_ID = key_id ]
   [,SECRET_ACCESS_KEY = access_key ]
-  [,ENABLE_VIRTUAL_HOST_STYLE = { TRUE | FALSE }]
+  [,ENABLE_VIRTUAL HOST_STYLE = { TRUE | FALSE }]
   [,SESSION_TOKEN = token ]
   ...
 )
@@ -363,7 +367,7 @@ CREATE EXTERNAL TABLE [IF NOT EXISTS] [db.]table_name
 | `ENDPOINT`                  | The bucket endpoint                                             | 可选     |
 | `ACCESS_KEY_ID`             | 用于连接 AWS S3 兼容对象存储的访问密钥 ID                       | 可选     |
 | `SECRET_ACCESS_KEY`         | 用于连接 AWS S3 兼容对象存储的秘密访问密钥                      | 可选     |
-| `ENABLE_VIRTUAL_HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
+| `ENABLE_VIRTUAL HOST_STYLE` | 如果你想要使用 virtual hosting 来定位 bucket，将其设置为 `true` | 可选     |
 | `SESSION_TOKEN`             | 用于连接 AWS S3 服务的临时凭证                                  | 可选     |
 
 ### 时间索引列

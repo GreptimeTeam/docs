@@ -1,3 +1,7 @@
+---
+description: Configuration guide for LDAP authentication in GreptimeDB Enterprise, detailing both simple bind and search bind modes.
+---
+
 # LDAP Authentication
 
 In addition to the built-in [static user provider](/user-guide/deployments/authentication/static.md) in GreptimeDB OSS,

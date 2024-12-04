@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 MySQL 监控主机指标，包括创建服务、写入数据和数据可视化。
+---
+
 # MySQL
 
 import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 

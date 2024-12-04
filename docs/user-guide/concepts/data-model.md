@@ -1,3 +1,7 @@
+---
+description: Describes the data model of GreptimeDB, focusing on time-series tables. It explains the organization of data into tables with tags, timestamps, and fields, and provides examples of metric and log tables. Design considerations and schema management are also discussed.
+---
+
 # Data Model
 
 ## Model

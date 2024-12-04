@@ -1,3 +1,7 @@
+---
+description: GreptimeDB Enterprise 是为企业设计的时序数据库解决方案，提供了 BYOC、全托管云、边云一体等部署方式，并包含高级功能如双活互备的 DR 解决方案、LDAP 身份验证和审计日志。
+---
+
 # 概述
 
 GreptimeDB Enterprise 是专为满足企业特定需求而设计的强大时序数据库解决方案。

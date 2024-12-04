@@ -1,3 +1,7 @@
+---
+description: 介绍了 `TQL` 关键字及其在 GreptimeDB 中的用法，包括 `EVAL`、`EXPLAIN` 和 `ANALYZE` 的语法和示例。
+---
+
 # TQL
 
 `TQL` 关键字在 SQL 中执行 TQL 语言。TQL 是 Time-Series Query Language 的缩写，是 GreptimeDB 中对 Prometheus 的 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 的扩展。

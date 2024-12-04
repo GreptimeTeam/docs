@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 sink 表、flow 的 SQL 语法和示例。
+---
+
 # 管理 Flows
 
 每一个 `flow` 是 GreptimeDB 中的一个持续聚合查询。

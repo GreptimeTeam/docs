@@ -1,3 +1,7 @@
+---
+description: Covers basic table operations in GreptimeDB, including creating, describing, showing, altering, and dropping tables, as well as executing SQL statements through the HTTP API and understanding time zone effects.
+---
+
 # Basic Table Operations
 
 [Data Model](/user-guide/concepts/data-model.md) should be read before this guide.

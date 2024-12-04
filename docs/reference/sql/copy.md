@@ -1,3 +1,7 @@
+---
+description: Describes the `COPY` statement used to export and import table or database data to and from files, including options for file format, time range, and cloud storage connections.
+---
+
 # COPY
 
 ## COPY TABLE

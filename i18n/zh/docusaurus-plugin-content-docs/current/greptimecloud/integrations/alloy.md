@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeCloud 配置为 Grafana Alloy 的数据目的地，并提供了 Prometheus Remote Write 和 OpenTelemetry 的配置示例。
+---
+
 # Alloy
 
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) 是可观测数据采集器，同时兼容 OpenTelemetry 。 GreptimeDB 可被配置

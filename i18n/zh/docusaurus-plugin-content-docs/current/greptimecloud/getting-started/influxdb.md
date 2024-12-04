@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 InfluxDB line protocol 收集系统指标数据并将其发送到 GreptimeCloud。
+---
+
 # InfluxDB Line Protocol
 
 ## 创建服务

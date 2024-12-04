@@ -1,3 +1,7 @@
+---
+description: 介绍 Greptime 命令行工具的安装、使用方法，包括全局选项、各子命令选项、配置示例、升级 GreptimeDB 版本等内容。
+---
+
 # Greptime 命令行工具
 
 `greptime` 命令行工具可以启动、停止、或传递配置项给 GreptimeDB。

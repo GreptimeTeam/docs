@@ -1,3 +1,7 @@
+---
+description: Provides access to system metadata, such as database or table names, column data types, and INFORMATION_SCHEMA tables for querying GreptimeDB system metadata.
+---
+
 # Overview
 
 `INFORMATION_SCHEMA` provides access to system metadata, such as the name of a database or table, the data type of a column, etc. GreptimeDB also provides some custom `INFORMATION_SCHEMA` tables to query metadata about the GreptimeDB system itself, cluster information, and runtime telemetry for example.

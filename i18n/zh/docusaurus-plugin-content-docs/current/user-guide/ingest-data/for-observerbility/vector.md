@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小配置示例和数据模型的映射规则。
+---
+
 import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md' 
 
 

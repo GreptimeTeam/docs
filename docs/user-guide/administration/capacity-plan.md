@@ -1,3 +1,7 @@
+---
+description: Provides guidelines for CPU, memory, and storage requirements for GreptimeDB based on data points processed per second, query requests per second, data volume, and data retention policy. Includes an example scenario.
+---
+
 # Capacity Plan
 
 This guide provides general advice on the CPU, memory, and storage requirements for GreptimeDB.

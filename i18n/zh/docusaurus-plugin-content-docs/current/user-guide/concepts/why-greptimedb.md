@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的特点、设计原则和优势，包括统一指标、日志和事件，云原生设计，高性能和用户友好等。
+---
+
 # Why GreptimeDB
 
 GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处理、存储和分析海量的指标（metrics）、日志（logs）和事件（events）数据（链路 traces 也在计划中）。

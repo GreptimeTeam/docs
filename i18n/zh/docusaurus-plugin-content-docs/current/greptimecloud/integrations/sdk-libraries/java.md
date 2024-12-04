@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 GreptimeDB Java SDK 通过 gRPC 协议连接到 GreptimeCloud，并提供了连接信息和示例代码。
+---
+
 # Java SDK
 
 GreptimeDB Java ingester 库使用 gRPC 协议写入数据，

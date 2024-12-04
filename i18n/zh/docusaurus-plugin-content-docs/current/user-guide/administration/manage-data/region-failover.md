@@ -1,3 +1,7 @@
+---
+description: 介绍 Region Failover 功能及其在 GreptimeDB 中的应用，包括开启 Region Failover、恢复时间和改进恢复时间的建议等内容。
+---
+
 # Region Failover
 
 Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/administration/manage-data/region-migration.md) 实现的。

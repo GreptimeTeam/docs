@@ -1,3 +1,7 @@
+---
+description: Explanation of the compaction process in GreptimeDB, including concepts like SST files, time windows, sorted runs, and levels, as well as the Time Windowed Compaction Strategy (TWCS) and Strict Window Compaction Strategy (SWCS).
+---
+
 # Compaction
 
 For databases based on the LSM Tree, compaction is extremely critical. It merges overlapping fragmented SST files into a single ordered file, discards deleted data while significantly improves query performance.

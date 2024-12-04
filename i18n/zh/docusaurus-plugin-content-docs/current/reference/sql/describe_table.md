@@ -1,3 +1,7 @@
+---
+description: DESCRIBE TABLE 用于描述数据库中表的结构，包括列名、类型、主键、是否为空、默认值和语义类型。
+---
+
 # DESCRIBE TABLE
 
 `DESCRIBE [TABLE] [db.]table` 描述了 `db` 或当前使用的数据库中的表结构。

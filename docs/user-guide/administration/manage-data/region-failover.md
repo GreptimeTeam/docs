@@ -1,3 +1,7 @@
+---
+description: Covers enabling and understanding region failover in GreptimeDB, which allows for the recovery of regions from failures without data loss, and discusses the impact of read amplification on recovery time.
+---
+
 # Region Failover
 
 Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/administration/manage-data/region-migration.md).

@@ -1,3 +1,7 @@
+---
+description: Lists and describes vector functions available in GreptimeDB, including their usage and examples.
+---
+
 # Vector Functions
 
 This page lists all vector-related functions supported in GreptimeDB. Vector functions are primarily used for operations such as distance calculation, similarity measurement, and more.

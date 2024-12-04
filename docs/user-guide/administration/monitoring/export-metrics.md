@@ -1,3 +1,7 @@
+---
+description: Guide on exporting GreptimeDB metrics to Prometheus and saving metrics to GreptimeDB itself. Includes configuration examples for standalone and distributed cluster modes, and details on various metrics.
+---
+
 # Export Metrics
 
 By monitoring metrics, you can assess the state of the database, maintain the deployment without crisis, and diagnose problems when they occur.

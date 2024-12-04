@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Node.js, and visualizing data in GreptimeDB.
+---
+
 # Node.js
 
 ## Create Service

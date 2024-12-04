@@ -1,3 +1,7 @@
+---
+description: Instructions for connecting to GreptimeCloud using MySQL protocol, including connection details, MySQL CLI, MariaDB CLI, and JDBC URL.
+---
+
 # MySQL
 
 GreptimeCloud exposes GreptimeDB access in MySQL server-client protocol. Most

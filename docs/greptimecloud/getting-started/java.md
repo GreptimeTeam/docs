@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Java, and visualizing data in GreptimeDB.
+---
+
 # Java
 
 ## Create Service

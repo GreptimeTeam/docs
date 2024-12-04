@@ -1,3 +1,7 @@
+---
+description: Explains how to write a gRPC SDK for GreptimeDB, focusing on the GreptimeDatabase service, its methods, and the structure of requests and responses.
+---
+
 # How to write a gRPC SDK for GreptimeDB
 
 A GreptimeDB gRPC SDK only needs to handle the writes. The reads are standard SQL and PromQL, can be handled by any JDBC

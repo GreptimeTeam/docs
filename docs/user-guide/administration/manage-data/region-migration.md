@@ -1,3 +1,7 @@
+---
+description: Explanation of how to perform region migration in GreptimeDB, including querying region distribution, selecting a migration destination, executing migration requests, and querying migration states.
+---
+
 # Region Migration
 
 Region Migration allows users to move regions between the Datanode.

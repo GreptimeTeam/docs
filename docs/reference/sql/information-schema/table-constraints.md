@@ -1,3 +1,7 @@
+---
+description: Describes which tables have constraints, including details about each constraint's catalog, schema, name, type, and enforcement status.
+---
+
 # TABLE_CONSTRAINTS
 
 The `TABLE_CONSTRAINTS` table describes which tables have constraints.
@@ -52,5 +56,4 @@ constraint_catalog: def
         table_name: monitor
    constraint_type: PRIMARY KEY
           enforced: YES
-```
 

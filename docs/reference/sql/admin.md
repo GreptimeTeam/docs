@@ -1,3 +1,7 @@
+---
+description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, migrating regions, and querying procedure states.
+---
+
 # ADMIN
 
 `ADMIN` is used to run administration functions.

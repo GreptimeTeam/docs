@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 的查询引擎架构，基于 Apache DataFusion 构建，涵盖逻辑计划、物理计划、优化和执行过程。
+---
+
 # Query Engine
 
 ## 介绍

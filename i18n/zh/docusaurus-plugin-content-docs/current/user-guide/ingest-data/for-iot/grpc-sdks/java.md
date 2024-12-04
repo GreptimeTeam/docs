@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 GreptimeDB 提供的 Java ingester SDK 写入数据，包括安装、连接、插入数据和调试日志等内容。
+---
+
 import DocTemplate from './template.md' 
 
 # Java

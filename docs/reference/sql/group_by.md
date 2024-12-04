@@ -1,3 +1,7 @@
+---
+description: Details the SQL GROUP BY clause used to group rows with the same values in specified columns, typically used with aggregate functions like COUNT, SUM, and AVG, with examples.
+---
+
 # GROUP BY
 
 The `GROUP BY` clause in SQL is used to group rows that have the same values in one or more columns.

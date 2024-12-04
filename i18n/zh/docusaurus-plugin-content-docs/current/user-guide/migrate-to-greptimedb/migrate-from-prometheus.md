@@ -1,3 +1,7 @@
+---
+description: 介绍从 Prometheus 迁移到 GreptimeDB 的步骤和注意事项。
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md' 
 
 # 从 Prometheus 迁移

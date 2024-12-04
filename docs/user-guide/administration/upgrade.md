@@ -1,3 +1,7 @@
+---
+description: Instructions on upgrading GreptimeDB using the built-in CLI tool, including exporting and importing data and schemas, and a complete example for upgrading.
+---
+
 # Upgrade
 
 From `v0.4`, we provide a built-in utility to help upgrade your previous GreptimeDB deployment to the latest version if there are some breaking changes.

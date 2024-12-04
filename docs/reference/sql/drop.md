@@ -1,3 +1,7 @@
+---
+description: Covers the SQL DROP statement for removing databases, tables, flows, and views in GreptimeDB, including syntax, examples.
+---
+
 # DROP
 
 ## DROP DATABASE

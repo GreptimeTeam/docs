@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 中的字符集，包括字符集的定义、使用方法和相关的 SQL 查询示例。
+---
+
 # CHARACTER_SETS
 
 `CHARACTER_SETS` 提供了 GreptimeDB 支持的可用字符集。

@@ -1,3 +1,7 @@
+---
+description: Overview of the storage engine in GreptimeDB, its architecture, components, and data model.
+---
+
 # Storage Engine
 
 ## Introduction

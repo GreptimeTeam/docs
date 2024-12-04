@@ -1,3 +1,7 @@
+---
+description: Guide on using Prometheus Query Language (PromQL) in GreptimeDB, including HTTP API compatibility, SQL extensions, and supported features and limitations.
+---
+
 # Prometheus Query Language
 
 GreptimeDB can be used as a drop-in replacement for Prometheus in Grafana, because GreptimeDB supports PromQL (Prometheus Query Language). GreptimeDB has reimplemented PromQL natively in Rust and exposes the ability to several interfaces, including the HTTP API of Prometheus, the HTTP API of GreptimeDB, and the SQL interface.

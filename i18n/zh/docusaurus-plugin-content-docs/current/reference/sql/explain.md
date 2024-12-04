@@ -1,3 +1,7 @@
+---
+description: EXPLAIN 用于提供语句的执行计划，ANALYZE 子句将执行语句并测量每个计划节点的时间和输出行数。
+---
+
 # EXPLAIN
 
 `EXPLAIN` 用于提供语句的执行计划。

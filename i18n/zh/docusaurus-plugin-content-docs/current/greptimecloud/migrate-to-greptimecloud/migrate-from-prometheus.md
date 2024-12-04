@@ -1,3 +1,7 @@
+---
+description: 介绍如何从 Prometheus 迁移到 GreptimeCloud，包括配置 Remote Write、使用 PromQL 查询数据以及在 Grafana 中添加数据源。
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md' 
 
 # 从 Prometheus 迁移

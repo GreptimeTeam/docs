@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 支持的 SQL 查询功能，包括基础查询、函数使用、数据过滤、排序、聚合等内容。
+---
+
 # SQL
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。

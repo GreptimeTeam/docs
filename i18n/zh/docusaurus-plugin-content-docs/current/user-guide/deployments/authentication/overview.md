@@ -1,3 +1,7 @@
+---
+description: GreptimeDB 的身份验证概述，介绍了多种用户 Provider 的实现，包括静态用户 Provider 和 LDAP 用户 Provider。
+---
+
 # 概述
 
 当客户端尝试连接到数据库时，将会进行身份验证。GreptimeDB 通过 “user provider” 进行身份验证。GreptimeDB 中有多种 user

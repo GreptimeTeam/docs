@@ -1,3 +1,7 @@
+---
+description: Explains the motivations and benefits of using GreptimeDB, including its unified design for metrics, logs, and events, cloud-native architecture, cost-effectiveness, high performance, and ease of use. It highlights key features and deployment strategies.
+---
+
 # Why GreptimeDB
 
 GreptimeDB is a cloud-native, distributed and open source time series database, it's designed to process, store and analyze vast amounts of metrics, logs & events data (also Traces in plan).

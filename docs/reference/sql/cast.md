@@ -1,3 +1,7 @@
+---
+description: Describes the `CAST` function used to convert an expression of one data type to another, including syntax and examples.
+---
+
 # CAST
 
 `CAST` is used to convert an expression of one data type to another.

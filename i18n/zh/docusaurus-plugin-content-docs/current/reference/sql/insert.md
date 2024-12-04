@@ -1,3 +1,7 @@
+---
+description: INSERT 用于将一条或多条记录插入到 GreptimeDB 中的表中，支持指定列名和使用默认值。
+---
+
 # INSERT
 
 `INSERT` 用于将一条或多条记录插入到 GreptimeDB 中的表中。

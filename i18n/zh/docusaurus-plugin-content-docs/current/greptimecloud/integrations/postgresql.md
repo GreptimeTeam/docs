@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 PostgreSQL 协议连接到 GreptimeCloud，包括连接信息、使用 psql 工具和连接字符串示例。
+---
+
 # PostgreSQL
 
 GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准客户端和驱动程序在协议级别上兼容，且连接使用TLS加密。

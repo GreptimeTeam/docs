@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 控制台的功能和使用方法，包括数据可视化和多种查询语言的支持。
+---
+
 # GreptimeDB 控制台
 
 数据可视化在时间序列数据分析时发挥着关键作用。为了帮助用户充分利用 GreptimeDB 的各种功能，GreptimeDB 提供了一个简单的[控制台](https://github.com/GreptimeTeam/dashboard)。

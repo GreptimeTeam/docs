@@ -1,3 +1,7 @@
+---
+description: Instructions on creating a service, writing data using Go, and visualizing data in GreptimeDB.
+---
+
 # Go
 
 ## Create Service

@@ -1,3 +1,7 @@
+---
+description: Describes how to use GreptimeDB as a remote storage backend for Prometheus and how to query metrics using Prometheus Query Language (PromQL).
+---
+
 # Prometheus
 
 ## Remote Write

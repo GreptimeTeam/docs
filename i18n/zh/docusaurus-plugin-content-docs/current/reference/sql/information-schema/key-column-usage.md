@@ -1,3 +1,7 @@
+---
+description: KEY_COLUMN_USAGE 表描述列的键约束，例如时间索引键的约束。
+---
+
 # KEY_COLUMN_USAGE
 
 `KEY_COLUMN_USAGE` 表描述列的键约束，例如时间索引键的约束。

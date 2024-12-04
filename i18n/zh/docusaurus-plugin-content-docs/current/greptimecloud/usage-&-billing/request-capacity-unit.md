@@ -1,3 +1,7 @@
+---
+description: 详细介绍 GreptimeCloud 的请求容量单位算法，包括 WCU 和 RCU 的计算方法和优化建议。
+---
+
 # 请求容量单位
 
 本文档将介绍 GreptimeCloud 的请求容量单位算法。你可以前往 [GreptimeCloud 控制台](https://console.greptime.cloud/) 监控服务的使用情况。

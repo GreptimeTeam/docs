@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 PostgreSQL 协议连接和使用 GreptimeDB。
+---
+
 # PostgreSQL
 
 ## 连接数据库

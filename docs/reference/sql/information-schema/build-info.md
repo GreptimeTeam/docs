@@ -1,3 +1,7 @@
+---
+description: Contains build information for the SQL information schema, including version details, build date, and other relevant metadata.
+---
+
 # BUILD_INFO
 
 The `BUILD_INFO` table provides the system build info:

@@ -1,3 +1,7 @@
+---
+description: Overview of the Metric engine in GreptimeDB, its concepts, architecture, and design for handling small tables.
+---
+
 # Metric Engine
 
 ## Overview

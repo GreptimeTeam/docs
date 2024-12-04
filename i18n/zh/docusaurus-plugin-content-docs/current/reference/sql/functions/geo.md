@@ -1,3 +1,7 @@
+---
+description: 列出了 GreptimeDB 中的所有地理空间相关函数，包括函数的定义、使用方法和相关的 SQL 查询示例。
+---
+
 import TOCInline from '@theme/TOCInline';
 
 # 地理函数

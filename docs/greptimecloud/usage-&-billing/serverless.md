@@ -1,3 +1,7 @@
+---
+description: Details the Serverless Plan, including request capacities, support, cost calculation, and billing information.
+---
+
 # Serverless Plan
 
 The serverless plan allows you to purchase request capacities according to your needs

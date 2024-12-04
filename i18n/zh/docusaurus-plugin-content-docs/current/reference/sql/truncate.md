@@ -1,3 +1,7 @@
+---
+description: 介绍了 `TRUNCATE TABLE` 语句的用法，用于高效地删除表中的所有数据。
+---
+
 # TRUNCATE
 
 `TRUNCATE TABLE table` 语句用于删除表中的所有数据。它比 `DELETE FROM table` 高效得多。
