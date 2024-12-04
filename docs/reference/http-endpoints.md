@@ -2,9 +2,9 @@
 
 Here is the full list for the various HTTP paths and their usage in GreptimeDB:
 
-## Miscellaneous
+## Admin APIs
 
-Endpoints that is not versioned (under `/v1`). For miscellaneous usage like health check, status, metrics, etc.
+Endpoints that is not versioned (under `/v1`). For admin usage like health check, status, metrics, etc.
 
 ### Health Check
 
@@ -76,7 +76,7 @@ For more information on the SQL API, refer to the [SQL documentation](../user-gu
 
 - **Path**: `/v1/promql`
 - **Methods**: `GET`, `POST`
-- **Description**: Executes PromQL queries for Prometheus-compatible metrics.
+- **Description**: Executes PromQL queries for Prometheus-compatible metrics, and returns data in GreptimeDB's JSON format.
 - **Usage**:
   - `GET`: Send PromQL queries via query parameters.
   - `POST`: Send PromQL queries in the request body.
@@ -173,9 +173,9 @@ Refer to the original Prometheus documentation for more information on the [Prom
 
 For more information on log ingestion and pipeline management, refer to the [log overview](../user-guide/logs/overview.md).
 
-## Scripts Endpoints
+## Script Endpoints
 
-### Scripts Management
+### Script Management
 
 - **Path**: `/v1/scripts`
 - **Methods**: `POST`
