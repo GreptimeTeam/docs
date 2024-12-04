@@ -124,20 +124,21 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) with(ttl='7d');
 ```
 
-The `ttl` value is a time duration string that supports the following suffixes:
+The ttl value can be one of the following:
 
-- `nsec`, `ns` - nanoseconds
-- `usec`, `us` - microseconds
-- `msec`, `ms` - milliseconds
-- `seconds`, `second`, `sec`, `s` - seconds
-- `minutes`, `minute`, `min`, `m` - minutes
-- `hours`, `hour`, `hr`, `h` - hours
-- `days`, `day`, `d` - days
-- `weeks`, `week`, `w` - weeks
-- `months`, `month`, `M` - months
-- `years`, `year`, `y` - years
-
-Multiple units can be combined, e.g., `1hour 12min 5s`. 
+- a duration like `1hour 12min 5s`, The duration object is a concatenation of time spans. Where each time span is an integer number and a suffix. Supported suffixes:
+    - `nsec`, `ns` – nanoseconds
+    - `usec`, `us` – microseconds
+    - `msec`, `ms` – milliseconds
+    - `seconds`, `second`, `sec`, `s`
+    - `minutes`, `minute`, `min`, `m`
+    - `hours`, `hour`, `hr`, `h`
+    - `days`, `day`, `d`
+    - `weeks`, `week`, `w`
+    - `months`, `month`, `M` – defined as 30.44 days
+    - `years`, `year`, `y` – defined as 365.25 days
+- `forever`, `NULL`, a duration which is zero(like `0s`) or a empty string `''`, which means the data will never be deleted.
+- `immediate`, which means the data will be deleted immediately when inserted, useful if you want to send input to a flow task without saving it.
 
 #### Create a table with custom storage
 Create a table that stores the data in Google Cloud Storage:
