@@ -41,7 +41,7 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 - **Description**: Provides access to the server's dashboard interface.
 - **Usage**: Access these endpoints to interact with the web-based dashboard.
 
-This dashboard is packaged with the GreptimeDB server and provides a user-friendly interface for interacting with the server. It requires corresponding compile flags to be enabled when building GreptimeDB. The original source code for the dashboard can be found in https://github.com/GreptimeTeam/dashboard
+This dashboard is packaged with the GreptimeDB server and provides a user-friendly interface for interacting with the server. It requires corresponding compile flags to be enabled when building GreptimeDB. The original source code for the dashboard can be found at https://github.com/GreptimeTeam/dashboard
 
 ### Debugging Tools
 
@@ -102,7 +102,7 @@ Endpoints for various protocols that are compatible with GreptimeDB. Like Influx
   - Ingest data using InfluxDB line protocol.
   - Use ping and health endpoints to check server status.
 
-The detailed documentation for InfluxDB protocol can be found [here](/user-guide/protocols/influxdb-line-protocol.md).
+The detailed documentation for InfluxDB protocol can be found at [here](/user-guide/protocols/influxdb-line-protocol.md).
 
 ### Prometheus Remote Write/Read
 
