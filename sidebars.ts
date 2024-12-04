@@ -95,7 +95,8 @@ const sidebars: SidebarsConfig = {
           ],
         },
         { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview'] },
-        { type: 'category',
+        {
+          type: 'category',
           label: 'Integrations',
           items: [
             'user-guide/integrations/overview',
@@ -108,7 +109,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/dbeaver',
           ],
         },
-        { type: 'category',
+        {
+          type: 'category',
           label: 'Protocols',
           items: [
             'user-guide/protocols/overview',
@@ -406,7 +408,8 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/functions/geo',
                 'reference/sql/functions/json',
                 'reference/sql/functions/vector',
-              ] },
+              ]
+            },
             'reference/sql/admin',
             'reference/sql/compatibility',
             {
@@ -435,6 +438,7 @@ const sidebars: SidebarsConfig = {
             },
           ],
         },
+        'reference/http-endpoints',
         'reference/telemetry',
         'reference/gtctl',
       ],
