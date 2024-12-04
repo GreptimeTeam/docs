@@ -1,5 +1,5 @@
 ---
-description: `TABLE_CONSTRAINTS` 表描述了哪些表具有约束及相关信息。
+description: TABLE_CONSTRAINTS 表描述了哪些表具有约束及相关信息。
 ---
 
 # TABLE_CONSTRAINTS

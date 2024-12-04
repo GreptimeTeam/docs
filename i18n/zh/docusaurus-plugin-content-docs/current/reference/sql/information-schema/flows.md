@@ -1,5 +1,5 @@
 ---
-description: `FLOWS` 表提供 Flow 任务的相关信息。
+description: FLOWS 表提供 Flow 任务的相关信息。
 ---
 
 # FLOWS

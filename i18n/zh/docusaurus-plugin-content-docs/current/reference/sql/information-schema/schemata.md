@@ -1,5 +1,5 @@
 ---
-description: `SCHEMATA` 表提供数据库的相关信息及其字段描述。
+description: SCHEMATA 表提供数据库的相关信息及其字段描述。
 ---
 
 # SCHEMATA

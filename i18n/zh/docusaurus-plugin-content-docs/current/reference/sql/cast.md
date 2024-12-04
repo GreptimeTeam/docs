@@ -1,5 +1,5 @@
 ---
-description: `CAST` 用于将一个数据类型的表达式转换为另一个数据类型。
+description: CAST 用于将一个数据类型的表达式转换为另一个数据类型。
 ---
 
 # CAST

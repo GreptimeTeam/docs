@@ -1,5 +1,5 @@
 ---
-description: `COLUMNS` 表提供关于表中每列的详细信息。
+description: COLUMNS 表提供关于表中每列的详细信息。
 ---
 
 # COLUMNS

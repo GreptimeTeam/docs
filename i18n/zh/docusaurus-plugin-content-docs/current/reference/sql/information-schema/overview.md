@@ -1,5 +1,5 @@
 ---
-description: `INFORMATION_SCHEMA` 提供对系统元数据的访问，例如数据库或表的名称、列的数据类型等。
+description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据库或表的名称、列的数据类型等。
 ---
 
 # 概述

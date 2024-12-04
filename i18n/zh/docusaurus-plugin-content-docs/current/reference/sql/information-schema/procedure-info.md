@@ -1,5 +1,5 @@
 ---
-description: `PROCEDURE_INFO` 表提供各种 Procedure 的详细信息。
+description: PROCEDURE_INFO 表提供各种 Procedure 的详细信息。
 ---
 
 # PROCEDURE_INFO

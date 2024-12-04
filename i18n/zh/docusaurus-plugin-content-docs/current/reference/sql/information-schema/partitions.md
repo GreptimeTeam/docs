@@ -1,5 +1,5 @@
 ---
-description: `PARTITIONS` 表提供关于分区表的信息。
+description: PARTITIONS 表提供关于分区表的信息。
 ---
 
 # PARTITIONS

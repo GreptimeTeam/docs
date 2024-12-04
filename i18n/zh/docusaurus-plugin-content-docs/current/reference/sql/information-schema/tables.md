@@ -1,5 +1,5 @@
 ---
-description: `TABLES` 表提供数据库中表的信息及其字段描述。
+description: TABLES 表提供数据库中表的信息及其字段描述。
 ---
 
 # TABLES

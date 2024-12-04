@@ -1,5 +1,5 @@
 ---
-description: `ALTER` 用于修改数据库的设置、表的设置或表的元数据。
+description: ALTER 用于修改数据库的设置、表的设置或表的元数据。
 ---
 
 # ALTER

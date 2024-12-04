@@ -1,5 +1,5 @@
 ---
-description: `REGION_STATISTICS` 表提供关于某个 Region 统计信息的详细数据，包括总行数、磁盘大小等。
+description: REGION_STATISTICS 表提供关于某个 Region 统计信息的详细数据，包括总行数、磁盘大小等。
 ---
 
 # REGION_STATISTICS

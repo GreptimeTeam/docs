@@ -1,5 +1,5 @@
 ---
-description: `CASE` 语句允许在查询中执行条件逻辑，根据条件返回特定值。
+description: CASE 语句允许在查询中执行条件逻辑，根据条件返回特定值。
 ---
 
 # CASE
