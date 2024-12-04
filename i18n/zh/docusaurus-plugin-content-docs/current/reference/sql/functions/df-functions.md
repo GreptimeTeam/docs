@@ -1,3 +1,7 @@
+---
+description: 介绍了 Apache DataFusion 项目中的函数，包括标量函数和窗口函数的定义、使用方法和相关的 SQL 查询示例。
+---
+
 # DataFusion Functions
 
 This page is generated from the Apache DataFusion project's documents:

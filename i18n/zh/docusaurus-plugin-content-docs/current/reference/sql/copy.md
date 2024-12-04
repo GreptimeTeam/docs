@@ -1,3 +1,7 @@
+---
+description: `COPY` 语句用于导入和导出表或数据库的数据。
+---
+
 # COPY
 
 ## COPY TABLE

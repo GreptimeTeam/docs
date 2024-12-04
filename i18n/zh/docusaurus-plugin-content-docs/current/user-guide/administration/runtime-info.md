@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 INFORMATION_SCHEMA 数据库访问系统元数据，并提供查询集群拓扑信息和表的 Region 分布的示例。
+---
+
 # 运行时信息
 
 `INFORMATION_SCHEMA` 数据库提供了对系统元数据的访问，如数据库或表的名称、列的数据类型等。

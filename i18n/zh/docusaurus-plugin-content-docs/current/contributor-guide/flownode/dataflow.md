@@ -1,3 +1,7 @@
+---
+description: 解释了 Dataflow 模块的核心计算功能，包括 SQL 查询转换、内部执行计划、数据流的触发运行和支持的操作。
+---
+
 # 数据流
 
 Dataflow 模块（参见 `flow::compute` 模块）是 `flow` 的核心计算模块。

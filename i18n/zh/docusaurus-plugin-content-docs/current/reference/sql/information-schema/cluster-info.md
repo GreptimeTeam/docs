@@ -1,3 +1,7 @@
+---
+description: 提供了 GreptimeDB 集群信息的相关内容，包括集群状态、节点信息和相关的 SQL 查询示例。
+---
+
 # CLUSTER_INFO
 
 `CLUSTER_INFO` 表提供了集群的节点拓扑信息。 

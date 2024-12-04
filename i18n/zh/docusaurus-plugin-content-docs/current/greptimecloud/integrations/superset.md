@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 Apache Superset 中将 GreptimeCloud 作为数据源，包括连接信息和 URL 格式。
+---
+
 # Superset
 
 [Apache Superset](https://superset.apache.org) 是开源的 BI 工具，用 Python 编写。

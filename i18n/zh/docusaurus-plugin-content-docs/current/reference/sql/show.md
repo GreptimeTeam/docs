@@ -1,3 +1,7 @@
+---
+description: 介绍了 `SHOW` 关键字的各种用法，包括展示数据库、表、视图和索引等信息的语法和示例。
+---
+
 # SHOW
 
 `SHOW` 关键字提供数据库和表信息。
@@ -166,7 +170,7 @@ SHOW FULL TABLES WHERE Table_type='BASE TABLE';
 SHOW CREATE TABLE [table]
 ```
 
-例如：
+例如���
 
 ```sql
 SHOW CREATE TABLE system_metrics;

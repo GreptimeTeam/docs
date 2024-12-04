@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的数据模型，包括表的结构、列类型和设计考虑，适用于指标、日志和事件数据。
+---
+
 # 数据模型
 
 ## 模型
@@ -75,6 +79,6 @@ GreptimeDB 基于表进行设计，原因如下：
 - Schema 是描述数据特征的元数据，对于用户来说更方便管理和维护。通过引入 Schema 版本的概念，我们可以更好地管理数据兼容性。
 - Schema 通过其类型、长度等信息带来了巨大的优化存储和计算的好处，我们可以进行有针对性的优化。
 - 当我们有了表格 Schema 后，自然而然地引入了 SQL，并用它来处理各种表之间的关联分析和聚合查询，为用户抵消了学习和使用成本。
-- 比起 OpenTSDB 和 Prometheus 采用的单值模型，GreptimeDB 使用多值模型使其中一行数据可以具有多列数据。多值模型面向数据源建模，一个 metric 可以有用 field 表示的值。多值模型的优势在于它可以一次性向数据库写入或读取多个值，从而减少传输流量并简化查询。相比之下，单值模型则需要将数据拆分成多个记录。阅读[博客](https://greptime.com/blogs/2024-05-09-prometheus)以获取更多详情。
+- 比起 OpenTSDB 和 Prometheus 采用的单值模型，GreptimeDB 使用多值模型使其中一行数据可以具有多列数据。多值模型面向数据源建模，一个 metric 可以有用 field 表示的值。多值模型的优势在于它可以一次性向数据库写入或读取多个值，从而减���传输流量并简化查询。相比之下，单值模型则需要将数据拆分成多个记录。阅读[博客](https://greptime.com/blogs/2024-05-09-prometheus)以获取更多详情。
 
 GreptimeDB 使用 SQL 管理表 Schema。有关更多信息，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md)。但是，我们对 Schema 的定义并不是强制性的，而是倾向于 **Schemaless** 的方式，类似于 MongoDB。有关更多详细信息，请参见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。

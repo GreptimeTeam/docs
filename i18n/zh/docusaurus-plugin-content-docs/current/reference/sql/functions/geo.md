@@ -1,3 +1,7 @@
+---
+description: 列出了 GreptimeDB 中的所有地理空间相关函数，包括函数的定义、使用方法和相关的 SQL 查询示例。
+---
+
 import TOCInline from '@theme/TOCInline';
 
 # 地理函数
@@ -140,7 +144,7 @@ h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 
 ### `h3_cell_to_child_pos`
 
-根据给定分辨率，返回单元在其父单元的位置。位置是单元在所有子单元中的索引。
+根据给定分辨率，返回单元在��父单元的位置。位置是单元在所有子单元中的索引。
 
 ```sql
 h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
@@ -190,7 +194,7 @@ h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 
 返回给定单元格范围内所有距离为 *k* 的单元格。
 
-请注意，此函数返回一个 UInt64 数组，并且仅适用于我们的 HTTP 查询 API 和 Postgres 通道。
+请注意，此函数��回一个 UInt64 数组，并且仅适用于我们的 HTTP 查询 API 和 Postgres 通道。
 
 ```sql
 h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
@@ -321,7 +325,7 @@ SELECT json_encode_path(lat, lon, ts);
 
 ### `st_contains`
 
-测试两个空间对象是否为包含关系。
+测��两个空间对象是否为包含关系。
 
 参数：WKT 编码的地理对象。
 

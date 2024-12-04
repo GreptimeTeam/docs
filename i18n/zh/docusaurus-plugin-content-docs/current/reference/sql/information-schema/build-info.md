@@ -1,3 +1,7 @@
+---
+description: 提供了 GreptimeDB 构建信息的相关内容，包括版本信息、构建时间和相关的 SQL 查询示例。
+---
+
 # BUILD_INFO
 
 `BUILD_INFO` 表提供了系统的构建信息：

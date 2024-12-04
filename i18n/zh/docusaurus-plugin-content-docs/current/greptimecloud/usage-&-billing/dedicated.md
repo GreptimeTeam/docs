@@ -1,3 +1,7 @@
+---
+description: 介绍 Dedicated 计划的特点、配置方法和费用计算公式。
+---
+
 # Dedicated 计划
 
 Dedicated 计划允许你购买专用的 CPU 和存储来托管 GreptimeDB。
@@ -28,5 +32,5 @@ import Includesharedstoragecapacity from './shared-storage-capacity.md'
 
 ### 网络流量
 
-网络流量的费用将包含在你的月度账单中。
+网络流量的费用将包含在你的月度账单���。
 流量价格由云服务器提供商（如 AWS）决定，Greptime 不会对流量收取额外费用。

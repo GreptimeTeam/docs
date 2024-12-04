@@ -1,8 +1,12 @@
+---
+description: 介绍 GreptimeDB 中 Pipeline 的配置，包括 Processor 和 Transform 的使用方法，以及各种 Processor 的详细配置示例。
+---
+
 # Pipeline 配置
 
 Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。
 
-这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
+这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询���
 
 ## 整体结构
 
@@ -40,7 +44,7 @@ Processor 用于对 log 数据进行预处理，其配置位于 YAML 文件中�
 Pipeline 会按照多个 Processor 的顺序依次加工数据，每个 Processor 都依赖于上一个 Processor 处理的结果。
 Processor 由一个 name 和多个配置组成，不同类型的 Processor 配置有不同的字段。
 
-我们目前内置了以下几种 Processor：
+我们目���内置了以下几种 Processor：
 
 - `date`: 解析格式化的时间字符串字段，例如 `2024-07-12T16:18:53.048`。
 - `epoch`: 解析数字时间戳字段，例如 `1720772378893`。
@@ -505,7 +509,7 @@ GreptimeDB 支持以下三种字段的索引类型：
 - `fulltext`: 用于指定某列使用 fulltext 类型的索引，该列需要是字符串类型
 - `timestamp`: 用于指定某列是时间索引列
 
-不提供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
+不���供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
 
 在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列，因此一个 Pipeline 有且只有一个时间索引列。
 

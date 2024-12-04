@@ -1,3 +1,7 @@
+---
+description: 介绍 Region Balancer 插件，通过配置窗口大小和负载阈值来均衡 Datanode 上的 Region 写入负载，避免频繁迁移。
+---
+
 # Region Balancer
 
 该插件用于均衡 Datanode 上的 Region 写入负载，通过指定的窗口大小和负载阈值来避免频繁的 Region 迁移。

@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 的静态用户配置，允许通过配置文件设置固定帐户进行身份验证。
+---
+
 # Static User Provider
 
 GreptimeDB 提供了简单的内置身份验证机制，允许用户配置一个固定的帐户以方便使用，或者配置一个帐户文件以支持多个用户帐户。通过传入文件，GreptimeDB 会加载其中的所有用户。

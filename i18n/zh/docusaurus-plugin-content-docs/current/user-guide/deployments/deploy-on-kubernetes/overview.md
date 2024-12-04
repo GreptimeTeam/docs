@@ -1,3 +1,7 @@
+---
+description: 在 Kubernetes 上部署 GreptimeDB 的概述，介绍了 GreptimeDB Operator 的功能和使用方法。
+---
+
 # 概述
 
 ## GreptimeDB Operator

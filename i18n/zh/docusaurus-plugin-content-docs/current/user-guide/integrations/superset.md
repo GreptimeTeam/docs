@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeDB 作为 Apache Superset 的数据源，包括使用 Docker Compose 和本地运行 Superset 的安装步骤，以及添加 GreptimeDB 数据库的方法。
+---
+
 # Superset
 
 [Apache Superset](https://superset.apache.org) 是开源的 BI 工具，用 Python 编写。

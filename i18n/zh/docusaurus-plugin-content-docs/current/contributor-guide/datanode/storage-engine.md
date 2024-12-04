@@ -1,3 +1,7 @@
+---
+description: 详细介绍了 GreptimeDB 的存储引擎架构、数据模型和 region 的概念，重点描述了 Mito 存储引擎的优化和组件。
+---
+
 # 存储引擎
 
 ## 概述

@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 sink 表、flow 的 SQL 语法和示例。
+---
+
 # 管理 Flows
 
 每一个 `flow` 是 GreptimeDB 中的一个持续聚合查询。
@@ -10,7 +14,7 @@
 虽然它与常规的时间序列表相同，但有一些重要的注意事项：
 
 - **列的顺序和类型**：确保 sink 表中列的顺序和类型与 flow 查询结果匹配。
-- **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生成的时间列。
+- **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生��的时间列。
 - **将 `update_at` 指定为 schema 的最后一列**：flow 会自动将数据的更新时间写入 `update_at` 列。请确保此列是 sink 表模式中的最后一列。
 - **Tag**：使用 `PRIMARY KEY` 指定 Tag，与 time index 一起作为行数据的唯一标识，并优化查询性能。
 

@@ -1,23 +1,27 @@
-# Overview
+---
+description: 介绍 Metasrv 的功能、架构和与前端的交互方式。
+---
+
+# 概述
 
 ![meta](/meta.png)
 
-## What's in Metasrv
+## Metasrv 包含什么
 
-- Store metadata (Catalog, Schema, Table, Region, etc.)
-- Request-Router. It tells the Frontend where to write and read data.
-- Load balancing for Datanode, determines who should handle new table creation requests, more precisely, it makes resource allocation decisions.
-- Election & High Availability, GreptimeDB is designed in a Leader-Follower architecture, only Leader nodes can write while Follower nodes can read, the number of Follower nodes is usually >= 1, and Follower nodes need to be able to switch to Leader quickly when Leader is not available.
-- Statistical data collection (reported via Heartbeats on each node), such as CPU, Load, number of Tables on the node, average/peak data read/write size, etc., can be used as the basis for distributed scheduling.
+- 存储元数据（Catalog, Schema, Table, Region 等）
+- 请求路由器。它告诉前端在哪里写入和读取数据。
+- 数据节点的负载均衡，决定谁应该处理新的表创建请求，更准确地说，它做出资源分配决策。
+- 选举与高可用性，GreptimeDB 设计为 Leader-Follower 架构，只有 leader 节点可以写入，而 follower 节点可以读取，follower 节点的数量通常 >= 1，当 leader 不可用时，follower 节点需要能够快速切换为 leader。
+- 统计数据收集（通过每个节点上的心跳报告），如 CPU、负载、节点上的表数量、平均/峰值数据读写大小等，可用作分布式调度的基础。
 
-## How the Frontend interacts with Metasrv
+## 前端如何与 Metasrv 交互
 
-First, the routing table in Request-Router is in the following structure (note that this is only the logical structure, the actual storage structure varies, for example, endpoints may have dictionary compression).
+首先，请求路由器中的路由表结构如下（注意这只是逻辑结构，实际存储结构可能不同，例如端点可能有字典压缩）。
 
-```
+```txt
   table_A
       table_name
-      table_schema // for physical plan
+      table_schema // 用于物理计划
       regions
         region_1
           mutate_endpoint
@@ -30,109 +34,109 @@ First, the routing table in Request-Router is in the following structure (note t
       ...
 ```
 
-### Create Table
+### 创建表
 
-1. The Frontend sends `CREATE TABLE` requests to Metasrv.
-2. Plan the number of Regions according to the partition rules contained in the request.
-3. Check the global view of resources available to Datanodes (collected by Heartbeats) and assign one node to each region.
-4. The Frontend creates the table and stores the `Schema` to Metasrv after successful creation.
+1. 前端发送 `CREATE TABLE` 请求到 Metasrv。
+2. 根据请求中包含的分区规则规划 Region 数量。
+3. 检查数据节点可用资源的全局视图（通过心跳收集）并为每个 Region 分配一个节点。
+4. 前端创建表并在���功创建后将 `Schema` 存储到 Metasrv。
 
-### Insert
+### `Insert`
 
-1. The Frontend fetches the routes of the specified table from Metasrv. Note that the smallest routing unit is the route of the table (several regions), i.e., it contains the addresses of all regions of this table.
-2. The best practice is that the Frontend first fetches the routes from its local cache and forwards the request to the Datanode. If the route is no longer valid, then Datanode is obliged to return an `Invalid Route` error, and the Frontend re-fetches the latest data from Metasrv and updates its cache. Route information does not change frequently, thus, it's sufficient for Frontend uses the Lazy policy to maintain the cache.
-3. The Frontend processes a batch of writes that may contain multiple tables and multiple regions, so the Frontend needs to split user requests based on the 'route table'.
+1. 前端从 Metasrv 获取指定表的路由。注意，最小的路由单元是表的路由（多个 Region），即包含该表所有 Region 的地址。
+2. 最佳实践是前端首先从本地缓存中获取路由并将请求转发到数据节点。如果路由不再有效，则数据节点有义务返回 `Invalid Route` 错误，前端重新从 Metasrv 获取最新数据并更新其缓存。路由信息不经常变化，因此，前端使用惰性策略维护缓存是足够的。
+3. 前端处理可能包含多个表和多个 Region 的一批写入，因此前端需要根据“路由表”拆分用户请求。
 
-### Select
+### `Select`
 
-1. As with `Insert`, the Frontend first fetches the route table from the local cache.
-2. Unlike `Insert`, for `Select`, the Frontend needs to extract the read-only node (follower) from the route table, then dispatch the request to the leader or follower node depending on the priority.
-3. The distributed query engine in the Frontend distributes multiple sub-query tasks based on the routing information and aggregates the query results.
+1. 与 `Insert` 类似，前端首先从本地缓存中获取路由表。
+2. 与 `Insert` 不同，对于 `Select`，前端需要从路由表中提取只读节点（follower），然后根据优先级将请求分发到 leader 或 follower 节点。
+3. 前端的分布式查询引擎根据路由信息分发多个子查询任务并聚合查询结果。
 
-## Metasrv Architecture
+## Metasrv 架构
 
 ![metasrv-architecture](/metasrv-architecture.png)
 
-## Distributed Consensus
+## 分布式共识
 
-As you can see, Metasrv has a dependency on distributed consensus because:
+如你所见，Metasrv 依赖于分布式共识，因为：
 
-1. First, Metasrv has to elect a leader, Datanode only sends heartbeats to the leader, and we only use a single metasrv node to receive heartbeats, which makes it easy to do some calculations or scheduling accurately and quickly based on global information. As for how the Datanode connects to the leader, this is for MetaClient to decide (using a redirect, Heartbeat requests becomes a gRPC stream, and using redirect will be less error-prone than forwarding), and it is transparent to the Datanode.
-2. Second, Metasrv must provide an election API for Datanode to elect "write" and "read-only" nodes and help Datanode achieve high availability.
-3. Finally, `Metadata`, `Schema` and other data must be reliably and consistently stored on Metasrv. Therefore, consensus-based algorithms are the ideal approach for storing them.
+1. 首先，Metasrv 必须选举一个 leader ，数据节点只向 leader 发送心跳，我们只使用单个 Metasrv 节点接收心跳，这使得基于全局信息进行一些计算或调度变得容易且快速。至于数据节点如何连接到 leader ，这由 MetaClient 决定（使用重定向，心跳请求变为 gRPC 流，使用重定向比转发更不容易出错），这对数据节点是透明的。
+2. 其次，Metasrv 必须为数据节点提供选举 API，以选举“写入”和“只读”节点，并帮助数据节点实现高可用性。
+3. 最后，`Metadata`、`Schema` 和其他数据必须在 Metasrv 上可靠且一致地存储。因此，基于共识的算法是存储它们的理想方法。
 
-For the first version of Metasrv, we choose Etcd as the consensus algorithm component (Metasrv is designed to consider adapting different implementations and even creating a new wheel) for the following reasons:
+对于 Metasrv 的第一个版本，我们选择 Etcd 作为共识算法组件（Metasrv 设计时考虑适应不同的实现，甚至创建一个新的轮子），原因如下：
 
-1. Etcd provides exactly the API we need, such as `Watch`, `Election`, `KV`, etc.
-2. We only perform two tasks with distributed consensus: elections (using the `Watch` mechanism) and storing (a small amount of metadata), and neither of them requires us to customize our own state machine, nor do we need to customize our own state machine based on raft; the small amount of data also does not require multi-raft-group support.
-3. The initial version of Metasrv uses Etcd, which allows us to focus on the capabilities of Metasrv and not spend too much effort on distributed consensus algorithms, which improves the design of the system (avoiding coupling with consensus algorithms) and helps with rapid development at the beginning, as well as allows easy access to good consensus algorithm implementations in the future through good architectural designs.
+1. Etcd 提供了我们需要的 API，例如 `Watch`、`Election`、`KV` 等。
+2. 我们只执行两个分布式共识任务：选举（使用 `Watch` 机制）和存储（少量元数据），这两者都不需要我们定制自己的状态机，也不需要基于 raft 定制自己的状态机；少量数据也不需要多 raft 组支持。
+3. Metasrv 的初始版本使用 Etcd，使我们能够专注于 Metasrv 的功能，而不需要在分布式共识算法上花费太多精力，这提高了系统设计（避免与共识算法耦合）并有助于初期的快速开发，同时通过良好的架构设计，未来可以轻松接入优秀的共识算法实现。
 
-## Heartbeat Management
+## 心跳管理
 
-The primary means of communication between Datanode and Metasrv is the Heartbeat Request/Response Stream, and we want this to be the only way to communicate. This idea is inspired by the design of [TiKV PD](https://github.com/tikv/pd), and we have practical experience in [RheaKV](https://github.com/sofastack/sofa-jraft/tree/master/jraft-rheakv/rheakv-pd). The request sends its state, while Metasrv sends different scheduling instructions via Heartbeat Response.
+数据节点与 Metasrv 之间的主要通信方式是心跳请求/响应流，我们希望这是唯一的通信方式。这个想法受到 [TiKV PD](https://github.com/tikv/pd) 设计的启发，我们在 [RheaKV](https://github.com/sofastack/sofa-jraft/tree/master/jraft-rheakv/rheakv-pd) 中有实际经验。请求发送其状态，而 Metasrv 通过心跳响应发送不同的调度指令。
 
-A heartbeat will probably carry the data listed below, but this is not the final design, and we are still discussing and exploring exactly which data should be mostly collected.
+心跳可能携带以下数据，但这不是最终设计，我们仍在讨论和探索究竟应该收集哪些数据。
 
 ```
 service Heartbeat {
-  // Heartbeat, there may be many contents of the heartbeat, such as:
-  // 1. Metadata to be registered to metasrv and discoverable by other nodes.
-  // 2. Some performance metrics, such as Load, CPU usage, etc.
-  // 3. The number of computing tasks being executed.
+  // 心跳，心跳可能有很多内容，例如：
+  // 1. 要注册到 Metasrv 并可被其他节点发现的元数据。
+  // 2. 一些性能指标，例如负载、CPU 使用率等。
+  // 3. 正在执行的计算任务数量。
   rpc Heartbeat(stream HeartbeatRequest) returns (stream HeartbeatResponse) {}
 }
 
 message HeartbeatRequest {
   RequestHeader header = 1;
 
-  // Self peer
+  // 自身节点
   Peer peer = 2;
-  // Leader node
+  //  leader 节点
   bool is_leader = 3;
-  // Actually reported time interval
+  // 实际报告时间间隔
   TimeInterval report_interval = 4;
-  // Node stat
+  // 节点状态
   NodeStat node_stat = 5;
-  // Region stats in this node
+  // 此节点中的 Region 状态
   repeated RegionStat region_stats = 6;
-  // Follower nodes and stats, empty on follower nodes
+  //  follower 节点和状态，在 follower 节点上为空
   repeated ReplicaStat replica_stats = 7;
 }
 
 message NodeStat {
-  // The read capacity units during this period
+  // 此期间的读取容量单位
   uint64 rcus = 1;
-  // The write capacity units during this period
+  // 此期间的写入容量单位
   uint64 wcus = 2;
-  // Table number in this node
+  // 此节点中的表数量
   uint64 table_num = 3;
-  // Region number in this node
+  // 此节点中的 Region 数量
   uint64 region_num = 4;
 
   double cpu_usage = 5;
   double load = 6;
-  // Read disk I/O in the node
+  // 节点中的读取磁盘 I/O
   double read_io_rate = 7;
-  // Write disk I/O in the node
+  // 节点中的写入磁盘 I/O
   double write_io_rate = 8;
 
-  // Others
+  // 其他
   map<string, string> attrs = 100;
 }
 
 message RegionStat {
   uint64 region_id = 1;
   TableName table_name = 2;
-  // The read capacity units during this period
+  // 此期间的读取容量单位
   uint64 rcus = 3;
-  // The write capacity units during this period
+  // 此期间的写入容量单位
   uint64 wcus = 4;
-  // Approximate region size
+  // 近似 Region 大小
   uint64 approximate_size = 5;
-  // Approximate number of rows
+  // 近似行数
   uint64 approximate_rows = 6;
 
-  // Others
+  // 其他
   map<string, string> attrs = 100;
 }
 
@@ -145,12 +149,13 @@ message ReplicaStat {
 
 ## Central Nervous System (CNS)
 
-We are to build an algorithmic system, which relies on real-time and historical heartbeat data from each node, should make some smarter scheduling decisions and send them to Metasrv's Autoadmin unit, which distributes the scheduling decisions, either by the Datanode itself or more likely by the PaaS platform.
+我们要构建一个算法系统，该系统依赖于每个节点的实时和历史心跳数据，应该做出一些更智能的调度决策并将其发送到 Metasrv 的 Autoadmin 单元，该单元分发调度决策，由数据节点本身或更可能由 PaaS 平台执行。
 
-## Abstraction of Workloads
+## 工作负载抽象
 
-The level of workload abstraction determines the efficiency and quality of the scheduling strategy generated by Metasrv such as resource allocation.
+工作负载抽象的级别决定了 Metasrv 生成的调度策略（如资源分配）的效率和质量。
 
-DynamoDB defines RCUs & WCUs (Read Capacity Units / Write Capacity Units), explaining that a RCU is a read request of 4KB data, and a WCU is a write request of 1KB data. When using RCU and WCU to describe workloads, it's easier to achieve performance measurability and get more informative resource preallocation because we can abstract different hardware capabilities as a combination of RCU and WCU.
+DynamoDB 定义了 RCUs 和 WCUs（读取容量单位/写入容量单位），解释说 RCU 是一个 4KB 数据的读取请求，WCU 是一个 1KB 数据的写入请求。当使用 RCU 和 WCU 描述工作负载时，更容易实现性能可测量性并获得更有信息量的资源预分配，因为我们可以将不同的硬件能力抽象为 RCU 和 WCU 的组合。
 
-However, GreptimeDB still faces a more complex situation than DynamoDB, in particular, RCU doesn't fit to describe GreptimeDB's read workloads which require a lot of computation. We are working on that.
+然而，GreptimeDB 面临比 DynamoDB 更复杂的情况，特别是 RCU 不适合描述需要大量计算的 GreptimeDB 读取工作负载。我们正在努力解决这个问题。
+

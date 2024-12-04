@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeCloud 的免费 Hobby 计划及其限制。
+---
+
 # Hobby 计划
 
 ## 简介

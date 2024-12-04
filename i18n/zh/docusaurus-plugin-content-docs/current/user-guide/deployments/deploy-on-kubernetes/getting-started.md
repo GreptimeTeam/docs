@@ -1,3 +1,7 @@
+---
+description: 在 Kubernetes 上使用 GreptimeDB Operator 部署 GreptimeDB 集群的指南，包括前置条件、创建测试集群、安装和验证步骤。
+---
+
 # 立即开始
 
 在该指南中，你将学会如何使用 GreptimeDB Operator 在 Kubernetes 上部署 GreptimeDB 集群。
@@ -46,7 +50,7 @@ Thanks for using kind! 😊
 ```
 </details>
 
-使用以下命令检查集群的状态：
+使用以下命令检查集群的��态：
 
 ```bash
 kubectl cluster-info

@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 版本号的语义化版本控制方案，包括主版本号、次版本号和修订号的定义和影响。
+---
+
 # 关于 GreptimeDB 版本号
 
 GreptimeDB 遵循 [语义化版本控制](https://semver.org/) 方案：

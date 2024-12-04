@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 Kubernetes 和 Docker Compose 中部署 GreptimeDB 集群，以支持水平扩展。
+---
+
 # GreptimeDB 分布式集群
 
 GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以支持水平扩展。

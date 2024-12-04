@@ -1,3 +1,7 @@
+---
+description: INSERT 用于将一条或多条记录插入到 GreptimeDB 中的表中，支持指定列名和使用默认值。
+---
+
 # INSERT
 
 `INSERT` 用于将一条或多条记录插入到 GreptimeDB 中的表中。
@@ -15,7 +19,7 @@ VALUES (value1, value2, value3, ...);
 
 在上述语法中，`table_name` 是要插入数据的表名，`column1`、`column2`、`column3` 等是表中的列名。
 如果你想要插入数据到指定的列中，可以在 `INSERT INTO` 语句中指定列名。
-如果你不指定列名，数据将会插入到表中的所有列中。
+如果你不指定列名，数据将会插入到表中的所有列���。
 
 `VALUES` 关键字后面跟着的是一个值列表，这个值列表的顺序必须和 `INSERT INTO` 语句中的列顺序一致。
 

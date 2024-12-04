@@ -1,3 +1,7 @@
+---
+description: `ADMIN` 语句用于运行管理函数来管理数据库和数据。
+---
+
 # ADMIN
 
 `ADMIN` 语句用于运行管理函数：

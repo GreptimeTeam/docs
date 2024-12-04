@@ -1,3 +1,7 @@
+---
+description: 介绍了 Range 查询的语法和用法，包括 `FILL`、`TO` 和 `BY` 选项的详细说明和示例。
+---
+
 # RANGE QUERY
 
 查询并聚合一个给定长度的时间范围的数据是时序数据常见的一种查询模式，例如 `PromQL` 中的 `Range selector`。而 GreptimeDB 在 SQL 中支持了 Range 查询，用于将时序数据汇总为时间块，并在时间块上进行数据的聚合。Range 查询作为 `SELECT` 语句的一部分，可与 SQL 灵活结合，从而在 SQL 中提供更强大的时序数据查询能力。
@@ -217,7 +221,7 @@ ALIGN '5s';
 `TO` 选项、`RANGE` 选项和 `ALIGN INTERVAL` 共同决定了范围查询的时间窗口。
 请参考[时间范围窗口](/user-guide/query-data/sql.md#时间范围窗口)。
 
-`TO` 选项的默认值为当前查询客户端的时区。如果想要设置时区，请参考 [MySQL 客户端](/user-guide/protocols/mysql.md#时区) 或 [PostgreSQL 客户端](/user-guide/protocols/postgresql.md#时区)文档中的时区设置。其他可用的 `TO` 选项有：
+`TO` 选项的默认值为当前查询客户端的时区。如果想要设置时区，请参考 [MySQL 客户端](/user-guide/protocols/mysql.md#时区) 或 [PostgreSQL 客户端](/user-guide/protocols/postgresql.md#时区)文档���的时区设置。其他可用的 `TO` 选项有：
 
 |     TO      |                                描述                                |
 | :---------: | :----------------------------------------------------------------: |

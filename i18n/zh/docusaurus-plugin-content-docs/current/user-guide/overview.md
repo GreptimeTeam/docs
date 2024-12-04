@@ -1,3 +1,7 @@
+---
+description: 概述了 GreptimeDB 的功能和特点，并通过 SQL 查询示例展示了其强大的数据处理能力。
+---
+
 # 概述
 
 欢迎使用 GreptimeDB 用户指南。

@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 GreptimeDB Go SDK 通过 gRPC 协议连接到 GreptimeCloud，并提供了连接信息和示例代码。
+---
+
 # Go SDK
 
 GreptimeDB Go SDK 使用 gRPC 与数据库通信，

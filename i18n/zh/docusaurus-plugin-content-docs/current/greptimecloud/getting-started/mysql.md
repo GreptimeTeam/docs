@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 MySQL 收集系统指标数据并将其发送到 GreptimeCloud。
+---
+
 # MySQL
 
 ## 创建服务

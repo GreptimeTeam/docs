@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeCloud 配置为 Grafana 数据源，并提供了使用 GreptimeCloud、Prometheus 和 MySQL 数据源的配置示例。
+---
+
 # Grafana
 
 GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/grafana/latest/datasources/add-a-data-source/)。
@@ -19,7 +23,7 @@ https://<host>
 接下来做如下配置：
 
 - Database Name：填写数据库名称 `<dbname>`，留空则使用默认数据库 `public`
-- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
+- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户���和密码。未设置可留空：
 
   - User: `<username>`
   - Password: `<password>`

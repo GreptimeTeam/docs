@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Vector 收集系统指标数据并将其发送到 GreptimeCloud，包括配置文件示例和启动命令。
+---
+
 # Vector
 
 ## 创建服务

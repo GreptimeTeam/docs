@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Vector 将指标数据发送到 GreptimeCloud，包括配置示例和启动 Vector 的步骤。
+---
+
 # Vector
 
 Vector 是高性能的可观测数据管道。

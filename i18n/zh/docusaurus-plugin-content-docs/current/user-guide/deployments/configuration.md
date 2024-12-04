@@ -1,3 +1,7 @@
+---
+description: GreptimeDB 的配置指南，介绍了命令行选项、配置文件、环境变量、协议选项、存储选项、WAL 选项、日志选项等详细配置方法。
+---
+
 # 配置 GreptimeDB
 
 GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置（每个项目都会覆盖下面的项目）：
@@ -184,7 +188,7 @@ enable = true
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持���数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
@@ -705,7 +709,7 @@ backoff_max = "10s"
 ## backoff 指数，即下一个 backoff 时间 = 该指数 * 当前 backoff 时间。
 backoff_base = 2
 
-## 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止。
+## 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接��会终止。
 backoff_deadline = "5mins"
 ```
 
@@ -717,7 +721,7 @@ backoff_deadline = "5mins"
 | `store_addr`                                  | String  | `127.0.0.1:2379`     | etcd 服务器地址，默认值为 `127.0.0.1:2379`，多个服务器地址用逗号分隔，格式为 `"ip1:port1,ip2:port2,..."`。                           |
 | `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
 | `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
-| enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
+| enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群��式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
 | `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |

@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB Enterprise 中的 LDAP 鉴权功能，包括 simple bind 和 search bind 两种模式的配置示例及使用方法。
+---
+
 # LDAP 鉴权
 
 除了 GreptimeDB OSS 中内置的 [Static User Provider](/user-guide/deployments/authentication/static.md)，

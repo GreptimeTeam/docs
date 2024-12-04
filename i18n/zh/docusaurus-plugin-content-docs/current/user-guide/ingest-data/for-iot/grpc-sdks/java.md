@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 GreptimeDB 提供的 Java ingester SDK 写入数据，包括安装、连接、插入数据和调试日志等内容。
+---
+
 import DocTemplate from './template.md' 
 
 # Java
@@ -92,7 +96,7 @@ Table cpuMetric = Table.from(cpuMetricSchema);
 // 单行的示例数据
 String host = "127.0.0.1"; // 主机标识符
 long ts = System.currentTimeMillis(); // 当前时间戳
-double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
+double cpuUser = 0.1; // 用户进程的 CPU 使用率（��分比）
 double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 
 // 将一行数据插入表中

@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 Kafka 将数据传输到 GreptimeCloud，并提供了日志和指标数据的配置示例。
+---
+
 # Kafka
 
 如果您正在使用 Kafka 或兼容 Kafka 的消息队列来传输可观测性数据，可以直接将数据写入到 GreptimeDB 中。

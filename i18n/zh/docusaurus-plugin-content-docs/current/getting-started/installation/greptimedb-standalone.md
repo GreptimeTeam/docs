@@ -1,3 +1,7 @@
+---
+description: 介绍如何在单机模式下安装和运行 GreptimeDB，包括使用二进制文件、Docker 和 Windows 的安装方法。
+---
+
 # GreptimeDB 单机模式
 
 ## 安装

@@ -1,3 +1,7 @@
+---
+description: 描述了 Arrangement 在数据流进程中的状态存储功能，包括键值对存储、查询和删除操作的实现。
+---
+
 # Arrangement
 
 Arrangement 存储数据流进程中的状态，存储 flow 的更新流（stream）以供进一步查询和更新。

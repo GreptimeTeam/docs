@@ -1,56 +1,49 @@
-# Sqlness Test
+---
+description: 介绍 GreptimeDB 的 Sqlness 测试，包括测试文件类型、组织测试案例和运行测试的方法。
+---
 
-## Introduction
+# Sqlness 测试
 
-SQL is an important user interface for `GreptimeDB`. We have a separate test suite for it (named `sqlness`).
+## 介绍
 
-## Sqlness manual
+SQL 是 `GreptimeDB` 的一个重要用户接口。我们为它提供了一个单独的测试套件（名为 `sqlness`）。
 
-### Case file
+## Sqlness 手册
 
-Sqlness has three types of file
+### 测试文件
 
-- `.sql`: test input, SQL only
-- `.result`: expected test output, SQL and its results
-- `.output`: different output, SQL and its results
+Sqlness 有三种类型的文件
 
-Both `.result` and `.output` are output (execution result) files. The difference is that `.result` is the
-the standard (expected) output, and `.output` is the error output. Therefore, if you see `.output` files generated,
-it means this test gets a different result and indicates it fails. You should
-check change logs to solve the problem.  
+- `.sql`：测试输入，仅包含 SQL
+- `.result`：预期的测试输出，包含 SQL 和其结果
+- `.output`：不同的输出，包含 SQL 和其结果
 
-You only need to write test SQL in `.sql` file, and run the test. On the first run it produces
-an `.output` file because there is no `.result` to compare with. If you can make sure the content in
-`.output` is correct, you can rename it to `.result`, which means it is the expected output.
+`.result` 和 `.output` 都是输出（执行结果）文件。区别在于 `.result` 是标准（预期）输出，而 `.output` 是错误输出。因此，如果生成了 `.output` 文件，意味着测试结果不同，测试失败。你应该检查变更日志来解决问题。
 
-And at any time there should only be two file types, `.sql` and `.result` -- otherwise, an existing `.output`
-file means your test fails. That's why we should not ignore `.output` file type in `.gitignore`, instead, track
-it and make sure it doesn't exist.
+你只需要在 `.sql` 文件中编写测试 SQL，然后运行测试。第一次运行时会生成 `.output` 文件，因为没有 `.result` 文件进行比较。如果你确认 `.output` 文件中的内容是正确的，可以将其重命名为 `.result`，这意味着它是预期输出。
 
-### Case organization
+任何时候都应该只有两种文件类型，`.sql` 和 `.result` —— 否则，存在 `.output` 文件意味着测试失败。这就是为什么我们不应该在 `.gitignore` 中忽略 `.output` 文件类型，而是跟踪它并确保它不存在。
 
-The root dir of input cases is `tests/cases`. It contains several sub-directories stand for different test
-modes. E.g., `standalone/` contains all the tests to run under `greptimedb standalone start` mode.
+### 组织测试案例
 
-Under the first level of sub-directory (e.g. the `cases/standalone`), you can organize your cases as you like.
-Sqlness walks through every file recursively and runs them.
+输入案例的根目录是 `tests/cases`。它包含几个子目录，代表不同的测试模式。例如，`standalone/` 包含所有在 `greptimedb standalone start` 模式下运行的测试。
 
-## Run the test
+在第一级子目录下（例如 `cases/standalone`），你可以随意组织你的测试案例。Sqlness 会递归地遍历每个文件并运行它们。
 
-Unlike other tests, this harness is in a binary target form. You can run it with
+## 运行测试
+
+与其他测试不同，这个测试工具是以二进制目标形式存在的。你可以用以下命令运行它
 
 ```shell
 cargo run --bin sqlness-runner
 ```
 
-It automatically finishes the following procedures: compile `GreptimeDB`, start it, grab tests and feed it to
-the server, then collect and compare the results. You only need to check whether there are new `.output` files.
-If not, congratulations, the test is passed 🥳!
+它会自动完成以下步骤：编译 `GreptimeDB`，启动它，抓取测试并将其发送到服务器，然后收集和比较结果。你只需要检查是否有新的 `.output` 文件。如果没有，恭喜你，测试通过了 🥳！
 
-### Run a specific test
+### 运行特定测试
 
 ```shell
 cargo sqlness -t your_test
 ```
 
-If you specify a second argument, only test cases containing the specified string in their names will be executed. Sqlness also supports filtering based on environment. The filter is accepted as a regex string and the case name will be examined in the format of `env:case`.
+如果你指定了第二个参数，则只会执行名称中包含指定字符串的测试案例。Sqlness 还支持基于环境的过滤。过滤器接受正则表达式字符串，并会检查格式为 `env:case` 的案例名称。

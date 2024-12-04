@@ -1,92 +1,96 @@
+---
+description: 介绍 Metasrv 的 Admin API，包括健康检查、leader 查询和心跳检测等功能。
+---
+
 # Admin API
 
-The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
+Admin 提供了一种简单的方法来查看集群信息，包括 metasrv 健康检测、metasrv leader 查询、数据库元数据查询和数据节点心跳检测。
 
-The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
-Available APIs:
+Admin API 是一个 HTTP 服务，提供一组可以通过 HTTP 请求调用的 RESTful API。Admin API 简单、用户友好且安全。
+可用的 API：
 
 - /health
 - /leader
 - /heartbeat
 - /maintenance
 
-All these APIs are under the parent resource `/admin`.
+所有这些 API 都在父资源 `/admin` 下。
 
-In the following sections, we assume that your metasrv instance is running on localhost port 3002.
+在以下部分中，我们假设你的 metasrv 实例运行在本地主机的 3002 端口。
 
-## /health HTTP endpoint  
+## /health HTTP 端点
 
-The `/health` endpoint accepts GET HTTP requests and you can use this endpoint to check the health of your metasrv instance.
+`/health` 端点接受 GET HTTP 请求，你可以使用此端点检查你的 metasrv 实例的健康状况。
 
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/health
-```
-
-### Examples
-
-#### Request
+### 定义
 
 ```bash
 curl -X GET http://localhost:3002/admin/health
 ```
 
-#### Response
+### 示例
+
+#### 请求
+
+```bash
+curl -X GET http://localhost:3002/admin/health
+```
+
+#### 响应
 
 ```json
 OK
 ```
 
-## /leader HTTP endpoint
+## /leader HTTP 端点
 
-The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint to query the leader's addr of your metasrv instance.
+`/leader` 端点接受 GET HTTP 请求，你可以使用此端点查询你的 metasrv 实例的 leader 地址。
 
-### Definition
-
-```bash
-curl -X GET http://localhost:3002/admin/leader
-```
-
-### Examples
-
-#### Request
+### 定义
 
 ```bash
 curl -X GET http://localhost:3002/admin/leader
 ```
 
-#### Response
+### 示例
+
+#### 请求
+
+```bash
+curl -X GET http://localhost:3002/admin/leader
+```
+
+#### 响应
 
 ```json
 127.0.0.1:3002
 ```
 
-## /heartbeat HTTP endpoint
+## /heartbeat HTTP 端点
 
-The `/heartbeat` endpoint accepts GET HTTP requests and you can use this endpoint to query the heartbeat of all datanodes.
+`/heartbeat` 端点接受 GET HTTP 请求，你可以使用此端点查询所有数据节点的心跳。
 
-You can also query the heartbeat data of the datanode for a specified `addr`, however, specifying `addr` in the path is optional.
+你还可以查询指定 `addr` 的数据节点的心跳数据，但在路径中指定 `addr` 是可选的。
 
-### Definition
+### 定义
 
 ```bash
 curl -X GET http://localhost:3002/admin/heartbeat
 ```
 
-| Query String Parameter | Type   | Optional/Required | Definition                |
-|:-----------------------|:-------|:------------------|:--------------------------|
-| addr                   | String | Optional          | The addr of the datanode. |
+| 查询字符串参数 | 类型   | 可选/必选 | 定义                |
+|:---------------|:-------|:----------|:--------------------|
+| addr           | String | 可选      | 数据节点的地址。    |
 
-### Examples
+### 示例
 
-#### Request
+#### 请求
 
 ```bash
 curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 ```
 
-#### Response
+#### 响应
 
 ```json
 [
@@ -244,25 +248,25 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 ]
 ```
 
-## /maintenance HTTP endpoint
+## /maintenance HTTP 端点
 
-The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
+当处于维护状态时，metasrv 将忽略检测到的区域故障。这在数据节点计划短时间不可用时非常有用，例如数据节点的滚动升级时。
 
 ### GET
 
-The `/maintenance` endpoint accepts GET HTTP requests and you can use this endpoint to query the maintenance status of your metasrv instance.
+`/maintenance` 端点接受 GET HTTP 请求，你可以使用此端点查询你的 metasrv 实例的维护状态。
 
 ```bash
 curl -X GET http://localhost:3002/admin/maintenance
 ```
 
-#### Request
+#### 请求
 
 ```bash
 curl -X GET http://localhost:3002/admin/maintenance
 ```
 
-#### Response
+#### 响应
 
 ```text
 Maintenance mode is disabled
@@ -270,23 +274,23 @@ Maintenance mode is disabled
 
 ### PUT
 
-The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
+`/maintenance` 端点接受 PUT HTTP 请求，你可以切换你的 metasrv 实例的维护状态。
 
 ```bash
 curl -X PUT http://localhost:3002/admin/maintenance
 ```
 
-| Query String Parameter | Type   | Optional/Required | Definition                |
-|:-----------------------|:-------|:------------------|:--------------------------|
-| enable                 | String | Required          | 'true' or 'false'         |
+| 查询字符串参数 | 类型   | 可选/必选 | 定义                |
+|:---------------|:-------|:----------|:--------------------|
+| enable         | String | 必选      | 'true' 或 'false'   |
 
-#### Request
+#### 请求
 
 ```bash
 curl -X PUT http://localhost:3002/admin/maintenance?enable=true
 ```
 
-#### Response
+#### 响应
 
 ```text
 Maintenance mode enabled

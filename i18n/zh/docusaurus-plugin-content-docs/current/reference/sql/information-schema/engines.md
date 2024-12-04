@@ -1,3 +1,7 @@
+---
+description: `ENGINES` 表提供关于存储引擎的信息，检查 GreptimeDB 是否支持某个存储引擎或查看默认的存储引擎。
+---
+
 # ENGINES
 
 `ENGINES`表提供了关于存储引擎的信息。当你需要检查 GreptimeDB 是否支持某个存储引擎或者查看默认的存储引擎时，该表非常有用。

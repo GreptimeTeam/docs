@@ -1,3 +1,7 @@
+---
+description: `SCHEMATA` 表提供数据库的相关信息及其字段描述。
+---
+
 # SCHEMATA
 
 `SCHEMATA` 表提供数据库的相关信息。表数据等同于 `SHOW DATABASES` 语句的结果。

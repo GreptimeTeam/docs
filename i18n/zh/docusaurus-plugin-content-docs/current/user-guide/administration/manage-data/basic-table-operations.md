@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 中表的基本操作，包括创建数据库和表、描述表、显示表定义和索引、列出现有表、修改表和删除表等内容。
+---
+
 # 表的基本操作
 
 在阅读本文档之前请先阅读 [数据模型](/user-guide/concepts/data-model.md).

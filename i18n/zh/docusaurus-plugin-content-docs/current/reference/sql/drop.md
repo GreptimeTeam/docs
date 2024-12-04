@@ -1,3 +1,7 @@
+---
+description: DROP 用于删除数据库、表、流或视图，操作不可撤销，需谨慎使用。
+---
+
 # DROP
 
 ## DROP DATABASE

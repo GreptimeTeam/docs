@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 提供的 HTTP API 用于与数据库进行交互。
+---
+
 # HTTP API
 
 GreptimeDB 提供了 HTTP API 用于与数据库进行交互。

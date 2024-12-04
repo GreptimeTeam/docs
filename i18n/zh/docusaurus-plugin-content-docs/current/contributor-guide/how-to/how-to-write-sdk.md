@@ -1,3 +1,7 @@
+---
+description: 介绍如何为 GreptimeDB 开发一个 gRPC SDK，包括 GreptimeDatabase 服务的定义、GreptimeRequest 和 GreptimeResponse 的结构。
+---
+
 # 如何为 GreptimeDB 开发一个 gRPC SDK
 
 GreptimeDB 的 gRPC SDK 只需要处理写请求即可。读请求是标准 SQL 或 PromQL ，可以由任何 JDBC 客户端或 Prometheus

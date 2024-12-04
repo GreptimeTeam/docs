@@ -1,3 +1,7 @@
+---
+description: 介绍如何导出 GreptimeDB 的监控指标到 Prometheus 或 GreptimeDB 自身，并提供各组件的指标详情。
+---
+
 # 导出指标
 
 通过监控指标，你可以评估数据库的状态，维护部署并诊断问题。

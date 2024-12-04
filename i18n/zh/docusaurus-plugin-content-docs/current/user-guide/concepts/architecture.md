@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的基础架构，包括 Metasrv、Frontend 和 Datanodes 三个主要组成部分及其功能。
+---
+
 # 基础架构
 
 ![architecture](/architecture-3.png)

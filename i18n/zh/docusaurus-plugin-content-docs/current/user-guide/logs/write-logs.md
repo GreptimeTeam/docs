@@ -1,3 +1,7 @@
+---
+description: 介绍如何通过 HTTP 接口使用指定的 Pipeline 将日志写入 GreptimeDB，包括请求参数、数据格式和示例。
+---
+
 # 使用 Pipeline 写入日志
 
 本文档介绍如何通过 HTTP 接口使用指定的 Pipeline 进行处理后将日志写入 GreptimeDB。

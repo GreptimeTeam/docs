@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 InfluxDB Line Protocol 连接到 GreptimeCloud，并提供了 Telegraf 和 Java 客户端的配置示例。
+---
+
 # InfluxDB Line Protocol
 
 GreptimeCloud 提供了 [Influxdb line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) 的 http 接口。该接口和认证与 [InfluxDB write protocol 1.x](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/#write-data-using-the-influxdb-api) 兼容。更多信息请参考 GreptimeDB 的 [InfluxDB 客户端](https://docs.greptime.cn/nightly/user-guide/protocols/influxdb-line-protocol)。

@@ -1,3 +1,7 @@
+---
+description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、定义和使用方法。
+---
+
 import TOCInline from '@theme/TOCInline';
 
 # 概述

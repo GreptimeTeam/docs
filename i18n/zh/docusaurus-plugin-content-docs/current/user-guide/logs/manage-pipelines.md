@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 GreptimeDB 中管理 Pipeline，包括创建、删除和查询 Pipeline 的方法，以及内置 Pipeline 的使用。
+---
+
 # 管理 Pipeline
 
 在 GreptimeDB 中，每个 `pipeline` 是一个数据处理单元集合，用于解析和转换写入的日志内容。本文档旨在指导您如何创建和删除 Pipeline，以便高效地管理日志数据的处理流程。
@@ -13,7 +17,7 @@ GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用
 
 ### `greptime_identity`
 
-`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动为 JSON 日志中的每个字段创建列。
+`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动�� JSON 日志中的每个字段创建列。
 
 - JSON 日志中的第一层级的 key 是表中的列名。
 - 如果相同字段包含不同类型的数据，则会返回错误。

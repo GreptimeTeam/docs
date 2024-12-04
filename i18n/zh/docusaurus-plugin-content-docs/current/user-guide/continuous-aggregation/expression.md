@@ -1,3 +1,7 @@
+---
+description: 列出了 GreptimeDB 中 flow 支持的聚合函数和标量函数。
+---
+
 # 表达式
 
 ## 聚合函数

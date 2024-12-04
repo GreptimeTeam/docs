@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 中字符集的排序规则，包括排序规则的定义、使用方法和相关的 SQL 查询示例。
+---
+
 # COLLATIONS
 
 `COLLATIONS` 提供了每个字符集的排序规则信息。

@@ -1,3 +1,7 @@
+---
+description: `COLUMNS` 表提供关于表中每列的详细信息。
+---
+
 # COLUMNS
 
 `COLUMNS` 提供了关于表中每列的详细信息。
@@ -129,7 +133,7 @@ character_maximum_length: NULL
 3 rows in set (0.03 sec)
 ```
 
-`COLUMNS` 表中列的描述如下：
+`COLUMNS` 表中列的描述如��：
 
 - `table_catalog`：列所属的目录的名称。在 OSS 项目中该值始终为 `greptime`。
 - `table_schema`：包含列的表所属的数据库的名称。

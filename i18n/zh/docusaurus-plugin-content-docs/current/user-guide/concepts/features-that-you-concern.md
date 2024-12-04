@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的关键特性，并解答用户关心的常见问题，如日志处理、数据更新和删除、TTL 策略等。
+---
+
 # 关键特性
 
 ## GreptimeDB 支持处理日志或事件吗？
@@ -12,7 +16,7 @@
 
 ## GreptimeDB 支持删除数据吗？
 
-支持，请参考[删除数据](/user-guide/ingest-data/overview.md#删除数据)获取更多信息。
+支持，请参考[删���数据](/user-guide/ingest-data/overview.md#删除数据)获取更多信息。
 
 ## 我可以为不同的表或指标设置 TTL 或保留策略吗？
 
@@ -47,7 +51,7 @@ GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://grept
 
 ## GreptimeDB 对比其他存储或时序数据库的性能如何？
 
-请阅读以下性能报告：
+请阅读��下性能报告：
 
 * [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)

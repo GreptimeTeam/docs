@@ -1,3 +1,7 @@
+---
+description: GreptimeDB Operator 的管理指南，包括安装、升级、配置和卸载的详细步骤。
+---
+
 # GreptimeDB Operator 的管理
 
 GreptimeDB Operator 使用 [Operator 模式](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) 在 [Kubernetes](https://kubernetes.io/) 上管理 [GreptimeDB](https://github.com/GrepTimeTeam/greptimedb) 资源。

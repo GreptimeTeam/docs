@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 GreptimeDB 中启用 tokio-console，包括构建和启动时的配置方法。
+---
+
 # 如何在 GreptimeDB 中启用 tokio-console
 
 本文介绍了如何在 GreptimeDB 中启用 [tokio-console](https://github.com/tokio-rs/console)。

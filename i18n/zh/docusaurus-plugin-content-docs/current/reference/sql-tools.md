@@ -1,3 +1,7 @@
+---
+description: 介绍如何使用 SQL 工具与 GreptimeDB 交互，包括推荐的查询库、安装方法、连接数据库、使用 Raw SQL 查询数据等内容。
+---
+
 # SQL 工具
 
 GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL 工具。

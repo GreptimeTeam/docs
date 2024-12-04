@@ -1,3 +1,7 @@
+---
+description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST 文件格式、数据持久化过程和倒排索引的实现。
+---
+
 # 数据持久化与索引
 
 与所有类似 LSMT 的存储引擎一样，MemTables 中的数据被持久化到耐久性存储，例如本地磁盘文件系统或对象存储服务。GreptimeDB 采用 [Apache Parquet][1] 作为其持久文件格式。

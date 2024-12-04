@@ -1,3 +1,7 @@
+---
+description: 介绍如何将 GreptimeCloud 添加到 Metabase 作为数据源，并提供了连接信息。
+---
+
 # Metabase
 
 [Metabase](https://github.com/metabase/metabase) 是一个用 Clojure 编写的开源 BI

@@ -1,3 +1,7 @@
+---
+description: 介绍 Metasrv 中的 Selector，包括其类型和配置方法。
+---
+
 # Selector
 
 ## 介绍
@@ -6,7 +10,7 @@
 
 [0]: https://github.com/GreptimeTeam/greptimedb/blob/main/src/meta-srv/src/selector.rs
 
-在 `Metasrv` 中存在一个特定的场景。当 `Frontend` 向 `Metasrv` 发送建表请求时，`Metasrv` 会创建一个路由表（表的创建细节不在这里赘述）。在创建路由表时，`Metasrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
+在 `Metasrv` 中存在一个特定的场景。当 `Frontend` 向 `Metasrv` 发送建表请求时，`Metasrv` 会创建一个���由表（表的创建细节不在这里赘述）。在创建路由表时，`Metasrv` 需要选择适当的 `Datanode`s，这时候就需要用到 `Selector`。
 
 ## Selector 类型
 

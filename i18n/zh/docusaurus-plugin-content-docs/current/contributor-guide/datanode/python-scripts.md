@@ -1,3 +1,7 @@
+---
+description: 介绍了在 GreptimeDB 中使用 Python 脚本进行数据分析的两种后端实现：CPython 和嵌入式 RustPython 解释器。
+---
+
 # Python 脚本
 
 ## 简介

@@ -1,3 +1,7 @@
+---
+description: 介绍如何在 GreptimeDB 中使用 Rust 的 tracing 框架进行代码埋点，包括在 RPC 中定义和传递 tracing 上下文的方法。
+---
+
 # How to trace GreptimeDB
 
 GreptimeDB 使用 Rust 的 [tracing](https://docs.rs/tracing/latest/tracing/) 框架进行代码埋点，tracing 的具体原理和使用方法参见 tracing 的官方文档。

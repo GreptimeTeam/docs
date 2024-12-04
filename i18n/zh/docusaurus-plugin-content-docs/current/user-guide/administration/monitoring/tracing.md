@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的分布式链路追踪功能，包括如何使用 Jaeger 进行追踪和配置 tracing 采样率。
+---
+
 # 链路追踪
 
 GreptimeDB 支持分布式链路追踪。 GreptimeDB 使用基于 gRPC 的 OTLP 协议导出所有采集到的 Span。您可以使用 [Jaeger](https://www.jaegertracing.io/)、[Tempo](https://grafana.com/oss/tempo/) 等支持基于 gRPC 的 OTLP 协议后端接收 GreptimeDB 采集到的 Span。 

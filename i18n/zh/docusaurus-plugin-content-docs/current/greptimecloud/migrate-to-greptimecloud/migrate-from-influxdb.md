@@ -1,3 +1,7 @@
+---
+description: 介绍如何从 InfluxDB 迁移到 GreptimeCloud，包括获取数据库连接信息、通过 HTTP API 和 Telegraf 写入数据、使用客户端库写入数据以及数据可视化。
+---
+
 import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
 
 # 从 InfluxDB 迁移
@@ -202,7 +206,7 @@ $writeApi->write($point);
 <div id="visualize-data">
 
 GreptimeCloud 控制台提供了名为 Workbench 的数据可视化工作台。
-打开[控制台](https://greptime.cloud), 在 `Manage Your Data` 下选择 `Web Dashboard`，
+��开[控制台](https://greptime.cloud), 在 `Manage Your Data` 下选择 `Web Dashboard`，
 然后创建一个新的 Workbench 文件，
 即可按需求创建图表。
 

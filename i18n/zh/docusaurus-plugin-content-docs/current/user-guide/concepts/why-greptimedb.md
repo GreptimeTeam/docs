@@ -1,3 +1,7 @@
+---
+description: 介绍 GreptimeDB 的特点、设计原则和优势，包括统一指标、日志和事件，云原生设计，高性能和用户友好等。
+---
+
 # Why GreptimeDB
 
 GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处理、存储和分析海量的指标（metrics）、日志（logs）和事件（events）数据（链路 traces 也在计划中）。
@@ -19,7 +23,7 @@ GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处
 
 ## 统一指标、日志和事件
 
-通过[时序表](./data-model)的模型设计、SQL 的原生支持，以及存算分离架构带来的混合负载，GreptimeDB 可以同时处理指标、日志和事件，增强不同时间序列数据之间的关联分析，并简化用户的架构、部署和 API。
+通过[时序表](./data-model)的模型设计、SQL 的原生支持，以及存算分离架构带来的混合负载���GreptimeDB 可以同时处理指标、日志和事件，增强不同时间序列数据之间的关联分析，并简化用户的架构、部署和 API。
 
 阅读[SQL 示例](/user-guide/overview.md#sql-查询示例)以获取详细信息。
 
@@ -54,7 +58,7 @@ GreptimeDB 专为云而生，充分利用云的优势，如弹性、可扩展性
 
 ![Time-Series Table](/time-series-table.png)
 
-然而，在我们的设计中，对 Schema 的定义并非强制性的，而是更偏向于像 MongoDB 这样的数据库的 Schemaless 方式。当数据被写入时，表将被动态地自动创建，新的列（标签和字段）将也会自动被添加进表中。
+然而，在���们的设计中，对 Schema 的定义并非强制性的，而是更偏向于像 MongoDB 这样的数据库的 Schemaless 方式。当数据被写入时，表将被动态地自动创建，新的列（标签和字段）将也会自动被添加进表中。
 
 ### PromQL、SQL 和 Python
 
