@@ -318,13 +318,13 @@ Otherwise, the database TTL policy will be applied to the table.
 
 The value of 'ttl' can be one of duration(like `1hour 12min 5s`), `immediate` or `forever`. See details in [CREATE](/reference/sql/create.md#create-a-table-with-ttl) statement.
 
-So, if table's ttl is set to `forever`, no matter what the database's ttl is, the data will never be deleted. But if you unset table ttl using:
-```sql
-ALTER TABLE <table-name> UNSET 'ttl';
-```
-Then the database's ttl will be applied to the table. 
+If you want to remove the ttl policy, you can use the following SQL
 
-Note that the default ttl setting for table and database is unset, which also means the data will never be deleted.
+```sql
+ALTER TABLE monitor UNSET 'ttl';
+-- or for database
+ALTER DATABASE db UNSET 'ttl';
+```
 
 For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
 
