@@ -139,6 +139,17 @@ The ttl value can be one of the following:
     - `years`, `year`, `y` – defined as 365.25 days
 - `forever`, `NULL`, a duration which is zero(like `0s`) or a empty string `''`, which means the data will never be deleted.
 - `immediate`, which means the data will be deleted immediately when inserted, useful if you want to send input to a flow task without saving it.
+  
+If a table has its own TTL policy, it will take precedence over the database TTL policy.
+Otherwise, the database TTL policy will be applied to the table. 
+
+So if table's ttl is set to `forever`, no matter what the database's ttl is, the data will never be deleted. But if you unset table ttl using:
+```sql
+ALTER TABLE <table-name> UNSET 'ttl';
+```
+Then the database's ttl will be applied to the table. 
+
+Note that the default ttl setting for table and database is unset, which also means the data will never be deleted.
 
 #### Create a table with custom storage
 Create a table that stores the data in Google Cloud Storage:
