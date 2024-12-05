@@ -626,6 +626,10 @@ use_memory_store = false
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
 # metasrv 的数据库类型.
+## 可选项：
+## - "EtcdStore" (默认值)
+## - "MemoryStore" (纯内存存储 - 仅用于测试)
+## - "PostgresStore"
 backend = "EtcdStore"
 
 ## Procedure 选项
