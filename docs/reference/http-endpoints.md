@@ -71,7 +71,7 @@ Various query APIs for sending query to GreptimeDB.
 ### SQL API
 
 - **Path**: `/v1/sql`
-- **Methods**: `POST`, `GET` (not recommended)
+- **Methods**: `GET`, `POST`
 - **Description**: Executes SQL queries against the server.
 - **Usage**: Send SQL queries in the request body.
   
@@ -80,9 +80,9 @@ For more information on the SQL API, refer to the [HTTP API documentation](/user
 ### PromQL API
 
 - **Path**: `/v1/promql`
-- **Methods**: `POST`, `GET` (not recommended)
+- **Methods**: `GET`, `POST`
 - **Description**: Executes PromQL queries for Prometheus-compatible metrics, and returns data in GreptimeDB's JSON format.
-- **Usage**: `POST` Send PromQL queries in the request body.
+- **Usage**: Send PromQL queries in the request body.
   
 For more information on the PromQL API, refer to the [PromQL documentation](/user-guide/query-data/promql.md).
 
