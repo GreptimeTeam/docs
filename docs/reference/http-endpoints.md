@@ -43,19 +43,26 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 
 This dashboard is packaged with the GreptimeDB server and provides a user-friendly interface for interacting with the server. It requires corresponding compile flags to be enabled when building GreptimeDB. The original source code for the dashboard can be found at https://github.com/GreptimeTeam/dashboard
 
-### Debugging Tools
+### Log Level
 
-- **Base Path**: `/debug`
+- **Path**: `/debug/log_level`
+- **Methods**: `POST`
+- **Description**: Adjusts the server's log level dynamically.
+- **Usage**: Send a log level change request to this endpoint.
+ 
+For more information, refer to the [how-to documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-change-log-level-on-the-fly.md).
+
+### Profiling Tools
+
+- **Base Path**: `/debug/prof/`
 - **Endpoints**:
-  - `/log_level`
-  - `/pprof/*`
-- **Methods**:
-  - `POST` for changing log levels.
-  - `GET` for profiling endpoints.
-- **Description**: Offers debugging and profiling tools.
+  - `cpu`
+  - `mem`
+- **Methods**: `POST` for profiling the database node.
+- **Description**: Runtime profiling for CPU or Memory usage.
 - **Usage**:
-  - Use `/log_level` to adjust the server's log level dynamically.
-  - Use `/pprof/*` endpoints for performance profiling.
+  - Refer to [Profiling CPU](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-cpu.md) for detailed guide for CPU profiling.
+  - Refer to [Profiling Memory](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-profile-memory.md) for detailed guide for Memory profiling.
 
 ## Query Endpoints
 
@@ -64,22 +71,18 @@ Various query APIs for sending query to GreptimeDB.
 ### SQL API
 
 - **Path**: `/v1/sql`
-- **Methods**: `GET`, `POST`
+- **Methods**: `POST`, `GET` (not recommended)
 - **Description**: Executes SQL queries against the server.
-- **Usage**:
-  - `GET`: Send SQL queries via query parameters.
-  - `POST`: Send SQL queries in the request body.
+- **Usage**: Send SQL queries in the request body.
   
 For more information on the SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#post-sql-statements) in the user guide.
 
 ### PromQL API
 
 - **Path**: `/v1/promql`
-- **Methods**: `GET`, `POST`
+- **Methods**: `POST`, `GET` (not recommended)
 - **Description**: Executes PromQL queries for Prometheus-compatible metrics, and returns data in GreptimeDB's JSON format.
-- **Usage**:
-  - `GET`: Send PromQL queries via query parameters.
-  - `POST`: Send PromQL queries in the request body.
+- **Usage**: `POST` Send PromQL queries in the request body.
   
 For more information on the PromQL API, refer to the [PromQL documentation](/user-guide/query-data/promql.md).
 
