@@ -321,6 +321,7 @@ The value of 'ttl' can be one of duration(like `1hour 12min 5s`), `immediate` or
 If you want to remove the ttl policy, you can use the following SQL
 
 ```sql
+-- for table
 ALTER TABLE monitor UNSET 'ttl';
 -- or for database
 ALTER DATABASE db UNSET 'ttl';
