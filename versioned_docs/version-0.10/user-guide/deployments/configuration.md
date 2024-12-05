@@ -622,7 +622,11 @@ use_memory_store = false
 ## - Using Remote WAL
 ## - Using shared storage (e.g., s3).
 enable_region_failover = false
-# The datastore for meta server.
+# The datastore for metasrv.
+## Available datastore:
+## - "EtcdStore" (default)
+## - "MemoryStore" (In memory metadata storage - only used for testing.)
+## - "PostgresStore"
 backend = "EtcdStore"
 
 ## Procedure storage options.
