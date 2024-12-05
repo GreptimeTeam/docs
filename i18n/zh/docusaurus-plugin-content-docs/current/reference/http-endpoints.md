@@ -82,7 +82,7 @@
 - **路径**: `/v1/promql`
 - **方法**: `GET`, `POST`
 - **描述**: 执行 PromQL 查询以获取 Prometheus 兼容的指标，并以 GreptimeDB 的 JSON 格式返回数据。
-- **用法**: 在请求体中发送 PromQL 查询。
+- **用法**: 在请求体中发送 PromQL 语句。
 
 有关 PromQL API 的更多信息，请参阅 [PromQL 文档](/user-guide/query-data/promql.md)。
 
