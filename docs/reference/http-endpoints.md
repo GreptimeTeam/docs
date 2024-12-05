@@ -1,4 +1,4 @@
-# HTTP API endpoint list
+# HTTP API Endpoint List
 
 Here is the full list for the various HTTP paths and their usage in GreptimeDB:
 
@@ -70,7 +70,7 @@ Various query APIs for sending query to GreptimeDB.
   - `GET`: Send SQL queries via query parameters.
   - `POST`: Send SQL queries in the request body.
   
-For more information on the SQL API, refer to the [SQL documentation](/user-guide/query-data/sql.md).
+For more information on the SQL API, refer to the [HTTP API documentation](/user-guide/protocols/http.md#post-sql-statements) in the user guide.
 
 ### PromQL API
 
