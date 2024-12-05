@@ -72,7 +72,7 @@
 
 - **路径**: `/v1/sql`
 - **方法**: `GET`, `POST`
-- **描述**: 对服务器执行 SQL 查询。
+- **描述**: 执行 SQL 查询。
 - **用法**: 在请求体中发送 SQL 查询。
 
 有关 SQL API 的更多信息，请参阅用户指南中的 [HTTP API 文档](/user-guide/protocols/http.md#post-sql-statements)。
