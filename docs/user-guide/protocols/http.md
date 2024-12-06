@@ -4,7 +4,7 @@ description: Guide on using HTTP APIs to interact with GreptimeDB, including aut
 
 # HTTP API
 
-GreptimeDB provides HTTP APIs for interacting with the database.
+GreptimeDB provides HTTP APIs for interacting with the database. For a complete list of available APIs, please refer to the [HTTP Endpoint](/reference/http-endpoints.md).
 
 ## Base URL
 
