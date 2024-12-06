@@ -1,6 +1,6 @@
 # HTTP API
 
-GreptimeDB 提供了 HTTP API 用于与数据库进行交互。
+GreptimeDB 提供了 HTTP API 用于与数据库进行交互。如需查看完整的 API 端点列表，请查看 [HTTP Endpoints](/reference/http-endpoints.md)。
 
 ## Base URL
 
