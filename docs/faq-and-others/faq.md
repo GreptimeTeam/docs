@@ -143,7 +143,7 @@ Please refer in this issue: [db#3363](https://github.com/GreptimeTeam/greptimedb
 
 ### Can GreptimeDB be used to store logs?
 
-Yes, please refer to this documentation for detailed infomation. https://docs.greptime.com/zh/user-guide/logs/overview/ 
+Yes, please refer to this documentation for detailed information. https://docs.greptime.com/zh/user-guide/logs/overview/ 
 
 ### How is the query performance for non-primary key fields? Can inverted indexes be set? Will the storage cost be lower compared to Elasticsearch?
 
