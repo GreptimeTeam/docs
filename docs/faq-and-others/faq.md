@@ -64,7 +64,7 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ### Are there any retention policy? 
 
-GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/reference/sql/create.md#syntax).
+GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/reference/sql/create.md).
 
 ### Where’s the name “Greptime” coming from?
 
