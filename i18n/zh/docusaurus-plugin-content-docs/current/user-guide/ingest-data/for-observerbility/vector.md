@@ -2,7 +2,7 @@
 description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小配置示例和数据模型的映射规则。
 ---
 
-import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md' 
+import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md'
 
 
 # Vector
@@ -30,6 +30,7 @@ endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
+new_naming = true
 ```
 
 GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端口是 `4001`。
