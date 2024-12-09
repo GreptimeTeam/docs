@@ -64,7 +64,7 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ### Are there any retention policy? 
 
-We have implemented table level Time-To-Live (TTL) in [this PR](https://github.com/GreptimeTeam/greptimedb/pull/1052). You can refer to the TTL option of the table build statement [here](/user-guide/concepts/features-that-you-concern.md#can-i-set-ttl-or-retention-policy-for-different-tables-or-measurements).
+GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](https://docs.greptime.com/reference/sql/create/#syntax).
 
 ### Where’s the name “Greptime” coming from?
 
@@ -194,3 +194,30 @@ The latest version of GreptimeDB now supports PostgreSQL as the storage backend 
 ### What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
 
 Using a flow table is the appropriate tool for this task. A simple flow task should suffice. The output of a flow task is stored in a normal table, allowing it to be kept indefinitely.
+
+### Can GreptimeDB create dynamic day partitions?
+
+Yes. Time-based data partitioning is available by default without additional configuration.
+
+### Which parts of DataFusion are customized in GreptimeDB?
+
+GreptimeDB customizes the following aspects of DataFusion:
+- PromQL query support.
+- Distributed query execution.
+- Custom UDFs (User-Defined Functions) and UDAFs (User-Defined Aggregate Functions).
+
+### Does the open-source version of GreptimeDB support fine-grained access control?
+
+The open-source version supports basic username-password authentication only. Fine-grained access control like RBAC is available in the enterprise edition.
+
+### Does writing TIMESTAMP values in datetime format affect query performance?
+
+No, writing in datetime format (e.g., yyyy-MM-dd HH:mm:ss) does not affect query performance. The underlying storage format remains consistent.
+
+### When assessing data compression, should I consider only the data directory size or include the wal directory?
+
+You only need to consider the data directory size. The WAL directory is cyclically reused and does not factor into data compression metrics.
+
+### In cluster mode, without using PARTITION during table creation, does data automatically balance across datanodes?
+
+Currently, data does not automatically balance across datanodes without the PARTITION feature. This capability requires the implementation of region split and auto-rebalance, which is planned for versions v1.2 or v1.3.
