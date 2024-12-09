@@ -48,3 +48,18 @@ If you are using clients from Python, you might be able to use following URL
 ```text
 postgresql://<username>:<password>@<host>:4003/<dbname>
 ```
+
+## Postgres Foreign Data Wrapper
+
+Configure your GreptimeCloud instance as Postgres FDW. Change server name and
+username to your own.
+
+```sql
+CREATE SERVER greptimedb
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host '<host>', dbname '<dbname>', port '4003');
+
+CREATE USER MAPPING FOR postgres
+SERVER greptimedb
+OPTIONS (user '<username>', password '<password>');
+```
