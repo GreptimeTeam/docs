@@ -5,7 +5,7 @@ description: 介绍如何使用 Vector 收集系统指标数据并将其发送�
 # Vector
 
 ## 创建服务
-import Includecreateservice from './create-service.md' 
+import Includecreateservice from './create-service.md'
 
 <Includecreateservice/>
 
@@ -21,10 +21,12 @@ scrape_interval_secs = 30
 [sinks.cloud]
 inputs = ["in"]
 type = "greptimedb"
-endpoint = "<host>:4001"
+endpoint = "<host>:5001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
+tls = {}
+new_naming = true
 ```
 
 然后使用配置文件启动 Vector：
@@ -34,6 +36,6 @@ vector --config vector.toml
 ```
 
 ## 数据可视化
-import Includevisualizedata from './visualize-data.md' 
+import Includevisualizedata from './visualize-data.md'
 
 <Includevisualizedata/>

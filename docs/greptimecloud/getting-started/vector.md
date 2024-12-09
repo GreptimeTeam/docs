@@ -5,7 +5,7 @@ description: Instructions on creating a service, writing data using Vector, and 
 # Vector
 
 ## Create Service
-import Includecreateservice from './create-service.md' 
+import Includecreateservice from './create-service.md'
 
 <Includecreateservice/>
 
@@ -21,10 +21,12 @@ scrape_interval_secs = 30
 [sinks.greptime]
 inputs = ["in"]
 type = "greptimedb"
-endpoint = "<host>:4001"
+endpoint = "<host>:5001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
+new_naming = true
+tls = {}
 ```
 
 Then start vector with the specified configuration file:
@@ -34,6 +36,6 @@ vector --config vector.toml
 ```
 
 ## Visualize Data
-import Includevisualizedata from './visualize-data.md' 
+import Includevisualizedata from './visualize-data.md'
 
 <Includevisualizedata/>
