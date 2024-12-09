@@ -27,6 +27,7 @@ dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 tls = {}
+new_naming = true
 
 ## logs
 [sources.logs_in]

@@ -2,7 +2,7 @@
 description: Instructions for integrating Vector with GreptimeDB, including configuration, data model mapping, and example configurations.
 ---
 
-import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md' 
+import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md'
 
 
 # Vector
@@ -28,6 +28,7 @@ endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
+new_naming = true
 ```
 
 GreptimeDB uses gRPC to communicate with Vector, so the default port for the Vector sink is `4001`.
