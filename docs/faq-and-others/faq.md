@@ -15,10 +15,10 @@ GreptimeDB now supports log data types and has introduced compatibility with var
 We plan to further refine the log engine, focusing on improving query performance and user experience. Future enhancements will include (but are not limited to) extending the functionality of GreptimeDB's log query DSL and implementing compatibility with some Elasticsearch/Loki APIs, providing users with more efficient and flexible log query capabilities.
 
 For more information about using GreptimeDB with logs, refer to the documentation:
-- [Log Overview](https://docs.greptime.com/nightly/user-guide/logs/overview/)
-- [OpenTelemetry compatibility](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observerbility/opentelemetry)
-- [Loki protocol compatibility](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observerbility/opentelemetry)
-- [Vector compatibility](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observerbility/vector)
+- [Log Overview](/user-guide/logs/overview.md)
+- [OpenTelemetry compatibility](/user-guide/ingest-data/for-observerbility/opentelemetry.md)
+- [Loki protocol compatibility](/user-guide/ingest-data/for-observerbility/opentelemetry.md)
+- [Vector compatibility](/user-guide/ingest-data/for-observerbility/vector.md)
 
 ### What would be the use cases for a time-series database?
 
@@ -64,7 +64,7 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ### Are there any retention policy? 
 
-GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](https://docs.greptime.com/reference/sql/create/#syntax).
+GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/sql/create.md#syntax).
 
 ### Where’s the name “Greptime” coming from?
 
@@ -76,7 +76,7 @@ There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to 
 
 ### Does GreptimeDB support schemaless?
 
-Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB, OpentsDB, Prometheus remote write.
+Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB Line Protocol, OpenTSDB, Prometheus Remote Write.
 
 ### Does GreptimeDB support dumping table-level data to S3?
 
@@ -92,7 +92,7 @@ GreptimeDB supports asynchronous WAL and is developing a per-table WAL toggle fo
 
 ### If I delete the database, can I use the `DROP DATABASE` command?
 
-Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](https://docs.greptime.com/reference/sql/drop#drop).
+Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](/reference/sql/drop.md#drop).
 
 ### What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
 
@@ -127,7 +127,7 @@ As mentioned, the cloud version offers more ready-to-use features to help you ge
 
 ### Where can I find documentation related to on-premises deployment and performance benchmark reports?
 
-You can find the public TSBS benchmark results [here](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs) and the deployment documentation [here](https://docs.greptime.com/getting-started/installation/overview/).
+You can find the public TSBS benchmark results [here](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs) and the deployment documentation [here](/getting-started/installation/overview.md).
 
 ### What should I do if the region becomes `DOWNGRADED` and the tables on that node become read-only after the datanode restarts? Is there a way to automatically reactivate it?
 
@@ -139,17 +139,17 @@ We have prebuilt binaries for Android ARM64 platforms, which have been successfu
 
 ### Is there a built-in SQL command like `compaction table t1` that can be used for manual compaction?
 
-Please refer in this issue: [db#3363](https://github.com/GreptimeTeam/greptimedb/pull/3363).
+Please refer [here](/reference/sql/admin).
 
 ### Can GreptimeDB be used to store logs?
 
-Yes, please refer to this documentation for detailed information. https://docs.greptime.com/zh/user-guide/logs/overview/ 
+Yes, please refer [here](/user-guide/logs/overview.md ) for detailed information.
 
 ### How is the query performance for non-primary key fields? Can inverted indexes be set? Will the storage cost be lower compared to Elasticsearch?
 
 Currently, non-primary key fields (or non-tag fields) do not have default inverted indexes, and we have not yet provided a `CREATE INDEX` syntax. Inverted index support will be released in an upcoming iteration along with full-text indexing. Without indexes, queries rely on MPP brute-force scanning. Although there is some parallel processing, the efficiency may not be optimal.
 
-As for storage costs, they will certainly be lower. You can use containers and object storage directly without relying on disks, using small local disks for buffering/caching to speed up performance. GreptimeDB employs a tiered storage architecture. For more details, please refer to our documentation on [architecture](https://docs.greptime.cn/user-guide/concepts/architecture) and [storage location](https://docs.greptime.cn/en/user-guide/concepts/storage-location).
+As for storage costs, they will certainly be lower. You can use containers and object storage directly without relying on disks, using small local disks for buffering/caching to speed up performance. GreptimeDB employs a tiered storage architecture. For more details, please refer to our documentation on [architecture](/user-guide/concepts/architecture.md) and [storage location](/user-guide/concepts/storage-location.md).
 
 ### Is the Log-Structured Merge-Tree engine similar to Kafka's engine model?
 
@@ -185,7 +185,7 @@ This is a good suggestion. Currently, the Flow Engine does not support PromQL sy
 
 ### Will Metasrv support storage backends like MySQL or PostgreSQL?
 
-The latest version of GreptimeDB now supports PostgreSQL as the storage backend for Metasrv. For details, please refer to [here](https://docs.greptime.com/user-guide/deployments/configuration#metasrv-only-configuration).
+The latest version of GreptimeDB now supports PostgreSQL as the storage backend for Metasrv. For details, please refer to [here](/user-guide/deployments/configuration.md#metasrv-only-configuration).
 
 ### What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
 
