@@ -314,6 +314,17 @@ CREATE DATABASE test WITH ('ttl'='7d');
 如果 table 有自己的 TTL 策略，则该策略将优先于 database 的 TTL 策略，
 否则 database 的 TTL 策略将被应用于 table。
 
+`'ttl'` 参数的值可以是持续时间（例如 `1hour 12min 5s`）、`instant` 或 `forever`。有关详细信息，请参阅 [CREATE](/reference/sql/create.md#create-a-table-with-ttl) 语句的文档。
+
+如果你想移除 TTL 策略，可以使用如下 SQL 语句：
+
+```sql
+-- 针对表移除 'ttl' 设置
+ALTER TABLE monitor UNSET 'ttl';
+-- 针对数据库移除 'ttl' 设置
+ALTER DATABASE test UNSET 'ttl';
+```
+
 有关 TTL 策略的更多信息，请参阅 [CREATE](/reference/sql/create.md) 语句。
 
 ## 更多数据管理操作

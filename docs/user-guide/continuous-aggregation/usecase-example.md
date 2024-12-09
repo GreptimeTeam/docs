@@ -101,7 +101,8 @@ CREATE TABLE temp_sensor_data (
     sensor_id INT,
     loc STRING,
     temperature DOUBLE,
-    ts TIMESTAMP TIME INDEX
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY(sensor_id, loc)
 );
 
 /* create sink table */

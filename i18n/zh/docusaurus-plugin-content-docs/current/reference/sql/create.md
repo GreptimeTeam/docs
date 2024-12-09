@@ -22,7 +22,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
 - 否则，返回错误。
 
-数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
+数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用（一个例外是数据库的 TTL 不能为 `instant`）。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
 
 ### 示例
 
@@ -125,21 +125,32 @@ CREATE TABLE IF NOT EXISTS temperatures(
   temperature DOUBLE DEFAULT 10,
 ) with(ttl='7d');
 ```
+`ttl` 值是一个字符串，支持以下类型的值：
 
-`ttl` 值是一个时间范围字符串，支持以下后缀：
+- 一个时间范围字符串，如 `1hour 12min 5s`，时间范围对象是时间段的连接。每个时间段由一个整数和一个后缀组成。支持的后缀有：
+    - `nsec`, `ns` – 纳秒（nanoseconds）
+    - `usec`, `us` – 微秒（microseconds）
+    - `msec`, `ms` – 毫秒（milliseconds）
+    - `seconds`, `second`, `sec`, `s` - 秒
+    - `minutes`, `minute`, `min`, `m` - 分钟
+    - `hours`, `hour`, `hr`, `h` - 小时
+    - `days`, `day`, `d` - 天
+    - `weeks`, `week`, `w` - 周
+    - `months`, `month`, `M` – 月，定义为 30.44 天
+    - `years`, `year`, `y` – 年，定义为 365.25 天
+- `forever`, `NULL`, `0s` （或任何长度为 0 的时间范围，如 `0d`）或空字符串 `''`，表示数据永远不会被删除。
+- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/continuous-aggregation/manage-flow.md#manage-flows)了解更多细节。
+- 未设置，可以使用 `ALTER TABLE <table-name> UNSET 'ttl'` 来取消表的 `ttl` 设置，这样表将继承数据库的 `ttl` 策略（如果有的话）。
 
-- `nsec`, `ns` - 纳秒
-- `usec`, `us` - 微秒
-- `msec`, `ms` - 毫秒
-- `seconds`, `second`, `sec`, `s` - 秒
-- `minutes`, `minute`, `min`, `m` - 分钟
-- `hours`, `hour`, `hr`, `h` - 小时
-- `days`, `day`, `d` - 天
-- `weeks`, `week`, `w` - 周
-- `months`, `month`, `M` - 月
-- `years`, `year`, `y` - 年
+如果一张表有自己的 TTL 策略，那么它将使用该 TTL 策略。否则，数据库的 TTL 策略将被应用到表上。
 
-可以组合多个单位，例如：`1hour 12min 5s`。
+比如说，如果表的 TTL 设置为 `forever`，那么无论数据库的 TTL 是什么，数据都不会被删除。但是如果你取消表的 TTL 设置：
+```sql
+ALTER TABLE <table-name> UNSET 'ttl';
+```
+那么数据库的 TTL 将会被应用到表上。
+
+请注意表和数据库的默认 TTL 策略都是未设置，也就是没有设置 TTL，代表着数据永远不会删除。
 
 #### 创建自定义存储的表
 或者创建一个表单独将数据存储在 Google Cloud Storage 服务上：
