@@ -179,10 +179,6 @@ It is not necessary to deploy all three services on each node. A small-sized clu
 
 For more general advice for deployment, please read [Capacity Plan](/user-guide/administration/capacity-plan.md).
 
-### Does GreptimeDB support inverted indexes, and does it use Tantivy?
-
-Yes, we have tested Tantivy, and it meets our current requirements very well.
-
 ### In the latest version, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
 
 This is a good suggestion. Currently, the Flow Engine does not support PromQL syntax for calculations. We will evaluate this, as it seems theoretically feasible.
