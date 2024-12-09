@@ -16,7 +16,7 @@ CREATE TABLE temp_sensor_data (
   sensor_id INT,
   loc STRING,
   temperature DOUBLE,
-  ts TIMESTAMP
+  ts TIMESTAMP TIME INDEX
 );
 ```
 However, if you don't want to store the raw data, you can use a temporary table as the source table by creating table using `WITH ('ttl' = 'instant')` table option:
@@ -25,10 +25,10 @@ CREATE TABLE temp_sensor_data (
   sensor_id INT,
   loc STRING,
   temperature DOUBLE,
-  ts TIMESTAMP
+  ts TIMESTAMP TIME INDEX
 ) WITH ('ttl' = 'instant');
 ```
-setting `'ttl'` to `'instant'` will make the table a temporary table, which means it will automatically discard all inserted data and the table will always be empty, only sending them to flow task for computation.
+Setting `'ttl'` to `'instant'` will make the table a temporary table, which means it will automatically discard all inserted data and the table will always be empty, only sending them to flow task for computation.
 
 ## Create a sink table
 
