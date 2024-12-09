@@ -64,7 +64,7 @@ GreptimeDB supports SQL and can deal with non-time-series data, especially effic
 
 ### Are there any retention policy? 
 
-GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/sql/create.md#syntax).
+GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/reference/sql/create.md#syntax).
 
 ### Where’s the name “Greptime” coming from?
 
@@ -139,7 +139,7 @@ We have prebuilt binaries for Android ARM64 platforms, which have been successfu
 
 ### Is there a built-in SQL command like `compaction table t1` that can be used for manual compaction?
 
-Please refer [here](/reference/sql/admin).
+Please refer [here](/reference/sql/admin.md).
 
 ### Can GreptimeDB be used to store logs?
 
