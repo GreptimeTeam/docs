@@ -16,7 +16,8 @@ CREATE TABLE temp_sensor_data (
   sensor_id INT,
   loc STRING,
   temperature DOUBLE,
-  ts TIMESTAMP TIME INDEX
+  ts TIMESTAMP TIME INDEX,
+  PRIMARY KEY(sensor_id, loc)
 );
 ```
 但是如果你不想存储输入数据，可以在创建输入表时设置表选项 `WITH ('ttl' = 'instant')` 如下：
@@ -25,7 +26,8 @@ CREATE TABLE temp_sensor_data (
   sensor_id INT,
   loc STRING,
   temperature DOUBLE,
-  ts TIMESTAMP TIME INDEX
+  ts TIMESTAMP TIME INDEX,
+  PRIMARY KEY(sensor_id, loc)
 ) WITH ('ttl' = 'instant');
 ```
 
