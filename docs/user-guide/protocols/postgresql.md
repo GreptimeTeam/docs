@@ -78,7 +78,7 @@ To setup GreptimeDB for Postgres FDW, make sure you enabled postgres protocol
 support in GreptimeDB and it's accessible from your Postgres server.
 
 To create and configuration GreptimeDB in Postgres, first enable the
-`postgres_fdw` entension.
+`postgres_fdw` extension.
 
 ```sql
 CREATE EXTENSION postgres_fdw;
