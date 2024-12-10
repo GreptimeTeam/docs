@@ -75,11 +75,6 @@ Release date: December 10, 2024
 * ci: set meta replicas to 1 by [@WenyXu](https://github.com/WenyXu) in [#5111](https://github.com/GreptimeTeam/greptimedb/pull/5111)
 * chore:  Reduce FETCH_OPTION_TIMEOUT from 10 to 3 seconds in config.rs by [@v0y4g3r](https://github.com/v0y4g3r) in [#5117](https://github.com/GreptimeTeam/greptimedb/pull/5117)
 
-## New Contributors
-
-* [@sunng87](https://github.com/sunng87) made their first contribution in [#5113](https://github.com/GreptimeTeam/greptimedb/pull/5113)
-* [@MichaelScofield](https://github.com/MichaelScofield) made their first contribution in [#5041](https://github.com/GreptimeTeam/greptimedb/pull/5041)
-
 ## All Contributors
 
 We would like to thank the following contributors from the GreptimeDB community:
