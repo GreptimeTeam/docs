@@ -330,7 +330,10 @@ experimental_write_cache_path = "/var/data/s3_write_cache"
 experimental_write_cache_size = "5GiB"
 ```
 
+The default value of `experimental_write_cache_path` is `{data_home}/object_cache/write`.
 To disable the write cache, set `enable_experimental_write_cache` to `false`.
+
+Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
 
 ### WAL options
 
