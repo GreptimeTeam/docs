@@ -297,7 +297,7 @@ All configured providers' names can be used as the `storage` option when creatin
 
 For storage from the same provider, if you want to use different S3 buckets as storage engines for different tables, you can set different `name` values and specify the `storage` option when creating the table.
 
-### Object Storage Cache
+### Object storage cache
 
 When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a local cache mechanism to speed up repeated data access.
 
