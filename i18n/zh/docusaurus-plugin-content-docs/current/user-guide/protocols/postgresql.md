@@ -47,7 +47,7 @@ SHOW VARIABLES time_zone;
 ```
 
 ```sql
- TIME_ZONE 
+ TIME_ZONE
 -----------
  UTC
 ```
@@ -59,3 +59,102 @@ SET TIMEZONE TO '+1:00'
 ```
 
 有关时区如何影响数据的插入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#时区)和[查询数据](/user-guide/query-data/sql.md#时区)中的 SQL 文档。
+
+## 外部数据
+
+利用 Postgres 的 [FDW 扩
+展](https://www.postgresql.org/docs/current/postgres-fdw.html)， GreptimeDB 可以
+被配置为 Postgres 的外部数据服务。 这使得我们可以用 Postgres 服务器上无缝地查询
+GreptimeDB 里的时序数据，并且可以利用 join 查询同时关联两边的数据。
+
+举个例子，类似设备信息类的物联网元数据，通常存储在 Postgres 这样的关系型数据库中。
+现在我们可以利用这个功能，先在 Postgres 利用关系查询过滤出满足条件的设备 ID，然
+后直接关联的 GreptimeDB 承载的外部表上查询设备的时序数据。
+
+### 配置
+
+首先要确保 GreptimeDB 打开了 Postgres 协议，并且她可以被 Postgres 服务器访问到。
+
+在 Postgres 上开启 fdw 扩展。
+
+```sql
+CREATE EXTENSION postgres_fdw;
+```
+
+将 GreptimeDB 添加为远程服务器。
+
+```sql
+CREATE SERVER greptimedb
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host 'greptimedb_host', dbname 'public', port '4003');
+```
+
+把 Postgres 用户映射到 GreptimeDB 上。这一步是必须步骤。如果你没有在 GreptimeDB
+开源版本上启用认证，这里可以填写任意的认证信息。
+
+```sql
+CREATE USER MAPPING FOR postgres
+SERVER greptimedb
+OPTIONS (user 'greptime', password '...');
+```
+
+在 Postgres 创建与 GreptimeDB 映射的外部表。这一步是为了告知 Postgres 相应表的数
+据结构。注意需要将 GreptimeDB 的数据类型映射到 Postgres 类型上。
+
+对于这样的 GreptimeDB 表：
+
+```sql
+CREATE TABLE grpc_latencies (
+  ts TIMESTAMP TIME INDEX,
+  host STRING,
+  method_name STRING,
+  latency DOUBLE,
+  PRIMARY KEY (host, method_name)
+) with('append_mode'='true');
+
+CREATE TABLE app_logs (
+  ts TIMESTAMP TIME INDEX,
+  host STRING,
+  api_path STRING FULLTEXT,
+  log_level STRING,
+  log STRING FULLTEXT,
+  PRIMARY KEY (host, log_level)
+) with('append_mode'='true');
+```
+
+其 Postgres 外部表定义如下：
+
+```sql
+CREATE FOREIGN TABLE ft_grpc_latencies (
+  ts TIMESTAMP,
+  host VARCHAR,
+  method_name VARCHAR,
+  latency DOUBLE precision
+)
+SERVER greptimedb
+OPTIONS (table_name 'grpc_latencies');
+
+CREATE FOREIGN TABLE ft_app_logs (
+  ts TIMESTAMP,
+  host VARCHAR,
+  api_path VARCHAR,
+  log_level VARCHAR,
+  log VARCHAR
+)
+SERVER greptimedb
+OPTIONS (table_name 'app_logs');
+```
+
+至此你可以通过 Postgres 发起查询。并且可以使用一些同时存在在 GreptimeDB 和
+Postgres 上的函数，如 `date_trunc` 等。
+
+```sql
+SELECT * FROM ft_app_logs ORDER BY ts DESC LIMIT 100;
+
+SELECT
+    date_trunc('MINUTE', ts) as t,
+    host,
+    avg(latency),
+    count(latency)
+FROM ft_grpc_latencies GROUP BY host, t;
+```

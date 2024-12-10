@@ -48,7 +48,7 @@ SHOW VARIABLES time_zone;
 ```
 
 ```sql
- TIME_ZONE 
+ TIME_ZONE
 -----------
  UTC
 ```
@@ -61,3 +61,104 @@ SET TIMEZONE TO '+1:00'
 
 For information on how the time zone affects data inserts and queries, please refer to the SQL documents in the [Ingest Data](/user-guide/ingest-data/for-iot/sql.md#time-zone) and [Query Data](/user-guide/query-data/sql.md#time-zone) sections.
 
+## Foreign Data Wrapper
+
+GreptimeDB can be configured as a foreign data server for Postgres' built-in
+[FDW extension](https://www.postgresql.org/docs/current/postgres-fdw.html). This
+allows user to query GreptimeDB tables seamlessly from Postgres server. It's
+also possible to join Postgres tables with GreptimeDB tables.
+
+For example, your IoT metadata, like device information, is stored in a
+relational data model in Postgres. It's possible to use filter queries to find
+out device IDs and join with time-series data from GreptimeDB.
+
+### Setup
+
+To setup GreptimeDB for Postgres FDW, make sure you enabled postgres protocol
+support in GreptimeDB and it's accessible from your Postgres server.
+
+To create and configuration GreptimeDB in Postgres, first enable the
+`postgres_fdw` extension.
+
+```sql
+CREATE EXTENSION postgres_fdw;
+```
+
+Add GreptimeDB instance as remote server.
+
+```sql
+CREATE SERVER greptimedb
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host 'greptimedb_host', dbname 'public', port '4003');
+```
+
+Configure user mapping for Postgres user and GreptimeDB user. This step is
+required. But if you don't have authentication enabled in GreptimeDB OSS
+version, just fill the credential with random data.
+
+```sql
+CREATE USER MAPPING FOR postgres
+SERVER greptimedb
+OPTIONS (user 'greptime', password '...');
+```
+
+Create foreign table in Postgres to map GreptimeDB's schema. Note that you will
+need to use Postgres' corresponding data types for GreptimeDB's.
+
+For GreptimeDB's tables
+
+```sql
+CREATE TABLE grpc_latencies (
+  ts TIMESTAMP TIME INDEX,
+  host STRING,
+  method_name STRING,
+  latency DOUBLE,
+  PRIMARY KEY (host, method_name)
+) with('append_mode'='true');
+
+CREATE TABLE app_logs (
+  ts TIMESTAMP TIME INDEX,
+  host STRING,
+  api_path STRING FULLTEXT,
+  log_level STRING,
+  log STRING FULLTEXT,
+  PRIMARY KEY (host, log_level)
+) with('append_mode'='true');
+```
+
+You will need to define them like this in Postgres.
+
+```sql
+CREATE FOREIGN TABLE ft_grpc_latencies (
+  ts TIMESTAMP,
+  host VARCHAR,
+  method_name VARCHAR,
+  latency DOUBLE precision
+)
+SERVER greptimedb
+OPTIONS (table_name 'grpc_latencies');
+
+CREATE FOREIGN TABLE ft_app_logs (
+  ts TIMESTAMP,
+  host VARCHAR,
+  api_path VARCHAR,
+  log_level VARCHAR,
+  log VARCHAR
+)
+SERVER greptimedb
+OPTIONS (table_name 'app_logs');
+```
+
+You can now send query from Postgres. It's also possible to use functions that
+are available in both Postgres and GreptimeDB, like `date_trunc`.
+
+```sql
+SELECT * FROM ft_app_logs ORDER BY ts DESC LIMIT 100;
+
+SELECT
+    date_trunc('MINUTE', ts) as t,
+    host,
+    avg(latency),
+    count(latency)
+FROM ft_grpc_latencies GROUP BY host, t;
+```

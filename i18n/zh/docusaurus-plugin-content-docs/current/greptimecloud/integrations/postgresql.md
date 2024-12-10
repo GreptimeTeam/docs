@@ -45,3 +45,18 @@ jdbc:postgresql://<host>:4003/<dbname>?user=<username>&password=<password>&ssl=t
 ```
 postgresql://<username>:<password>@<host>:4003/<dbname>
 ```
+
+## Postgres 外部表
+
+将 GreptimeCloud 实例配置外 Postgres 外部数据源。注意依据你的配置修改下方的服务
+器名和用户名 。
+
+```sql
+CREATE SERVER greptimedb
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host '<host>', dbname '<dbname>', port '4003');
+
+CREATE USER MAPPING FOR postgres
+SERVER greptimedb
+OPTIONS (user '<username>', password '<password>');
+```
