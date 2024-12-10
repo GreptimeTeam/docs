@@ -8,6 +8,31 @@ description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 s
 它根据传入的数据持续更新并聚合数据。
 本文档描述了如何创建和删除一个 flow。
 
+## 创建输入表
+
+在创建 `flow` 之前，你需要先创建一张输入表来存储原始的输入数据，比如：
+```sql
+CREATE TABLE temp_sensor_data (
+  sensor_id INT,
+  loc STRING,
+  temperature DOUBLE,
+  ts TIMESTAMP TIME INDEX,
+  PRIMARY KEY(sensor_id, loc)
+);
+```
+但是如果你不想存储输入数据，可以在创建输入表时设置表选项 `WITH ('ttl' = 'instant')` 如下：
+```sql
+CREATE TABLE temp_sensor_data (
+  sensor_id INT,
+  loc STRING,
+  temperature DOUBLE,
+  ts TIMESTAMP TIME INDEX,
+  PRIMARY KEY(sensor_id, loc)
+) WITH ('ttl' = 'instant');
+```
+
+将 `ttl` 设置为 `'instant'` 会使得输入表成为一张临时的表，也就是说它会自动丢弃一切插入的数据，而表本身一直会是空的，插入数据只会被送到 `flow` 任务处用作计算用途。
+
 ## 创建 sink 表
 
 在创建 flow 之前，你需要有一个 sink 表来存储 flow 生成的聚合数据。
