@@ -8,9 +8,9 @@ Release date: December 10, 2024
 
 ## 👍 Highlights
 
-* Dashboard supports using a log view to expore logs.
+* Dashboard supports using a log view to explore logs.
 * Fixes performance regressions in v0.10.
-* Supports tables with TTL=instant as source tables for flow tasks.
+* Supports tables with `TTL=instant` as source tables for flow tasks.
 * Supports `postgres_fdw` to integrate GreptimeDB with existing PostgreSQL databases.
 
 
