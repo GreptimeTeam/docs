@@ -1,6 +1,6 @@
 # MySQL
 
-GreptimeCloud 可以通过 MySQL 协议访问，兼容大多数标准客户端和驱动程序，其连接使用 TLS 加密。有关更多信息，请参阅 GreptimeDB 的 [MySQL 客户端](https://docs.greptime.cn/nightly/user-guide/clients/mysql)。
+GreptimeCloud 可以通过 MySQL 协议访问，兼容大多数标准客户端和驱动程序，其连接使用 TLS 加密。有关更多信息，请参阅 GreptimeDB 的 [MySQL 客户端](https://docs.greptime.cn/nightly/user-guide/protocols/mysql)。
 
 要连接到 GreptimeCloud，使用以下信息：
 
