@@ -25,9 +25,11 @@ The following metrics help diagnose query performance issues:
 
 It's highly recommended to enable the object store read cache and the write cache in the storage engine. This could reduce query time by more than 10 times.
 
+> Note: Starting from v0.11, when using remote object storage services, local caching (both read and write) is enabled by default. In most cases, you only need to adjust the cache capacity according to your needs.
+
 The read cache stores objects or ranges on the local disk to avoid fetching the same range from the remote again. The following example shows how to enable the read cache for S3.
-- The `cache_path` is the directory to store cached objects.
-- The `cache_capacity` is the capacity of the cache. It's recommended to leave at least 1/10 of the total disk space for it.
+- The `cache_path` is the directory to store cached objects, defaults to `{data_home}/object_cache/read` since `v0.11`.
+- The `cache_capacity` is the capacity of the cache, defaults to `5Gib` since `v0.11`. It's recommended to leave at least 1/10 of the total disk space for it.
 
 ```toml
 [storage]
@@ -43,9 +45,9 @@ cache_capacity = "10G"
 ```
 
 The write cache acts as a write-through cache that stores files on the local disk before uploading them to the object store. This reduces the first query latency. The following example shows how to enable the write cache.
-- The `enable_experimental_write_cache` flag enables the write cache
-- The `experimental_write_cache_size` sets the capacity of the cache
-- The `experimental_write_cache_path` sets the path to store cached files. It is under the data home by default.
+- The `enable_experimental_write_cache` flag enables the write cache, enabled by default when configuring remote object stores since `v0.11`.
+- The `experimental_write_cache_size` sets the capacity of the cache, defaults to `5Gib` since `v0.11`.
+- The `experimental_write_cache_path` sets the path to store cached files, defaults to `{data_home}/object_cache/write` since `v0.11`.
 - The `experimental_write_cache_ttl` sets the TTL of the cached files.
 
 
