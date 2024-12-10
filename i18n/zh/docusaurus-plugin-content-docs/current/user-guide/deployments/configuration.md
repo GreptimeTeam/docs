@@ -287,7 +287,11 @@ credential_path = "<gcs credential path>"
 
 ### 对象存储缓存
 
-当使用 S3、阿里云 OSS 等对象存储的时候，最好开启缓存来加速查询：
+在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据可能会很耗时。为了解决这个问题，GreptimeDB 提供了本地缓存机制来加速重复数据的访问。
+
+从 `v0.11` 版本开始，GreptimeDB 会默认为远程对象存储启用本地文件缓存，默认的缓存目录位于 `{data_home}/object_cache`。默认的读取和写入缓存容量都是 `5GiB`。
+
+在 v0.11 版本之前，你需要通过在存储设置中配置 `cache_path` 来启用读取缓存：
 
 ```toml
 [storage]
@@ -296,12 +300,25 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
-## 开启对象存储缓存
-cache_path = "/var/data/s3_local_cache"
-cache_capacity = "256MiB"
+## 启用对象存储缓存
+cache_path = "/var/data/s3_read_cache"
+cache_capacity = "5Gib"
 ```
 
-`cache_path` 指定本地的缓存目录， `cache_capacity` 指定缓存的最大大小（字节）。
+其中 `cache_path` 是存储缓存文件的本地目录路径，`cache_capacity` 是缓存目录中允许的最大文件总大小，字节为单位。将 `cache_path` 设置为空字符串即可关闭读缓存。
+
+在 v0.11 版本之前，要启用写入缓存，你需要在 `[region_engine.mito]` 中将 `enable_experimental_write_cache` 设置为 `true`：
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+
+enable_experimental_write_cache = true
+experimental_write_cache_path = "/var/data/s3_write_cache"
+experimental_write_cache_size = "5GiB"
+```
+
+将 `enable_experimental_write_cache` 设置为 `false` 就可以关闭写缓存。
 
 ### WAL 选项
 

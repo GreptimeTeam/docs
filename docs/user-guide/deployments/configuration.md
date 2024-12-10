@@ -297,9 +297,13 @@ All configured providers' names can be used as the `storage` option when creatin
 
 For storage from the same provider, if you want to use different S3 buckets as storage engines for different tables, you can set different `name` values and specify the `storage` option when creating the table.
 
-### Object storage cache
+### Object Storage Cache
 
-When using S3, OSS or Azure Blob Storage, it's better to enable object storage caching for speedup data querying:
+When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a local cache mechanism to speed up repeated data access.
+
+Since version `v0.11`, GreptimeDB enables local file caching for remote object storage by default. The default cache directory is located at `{data_home}/object_cache`, with both read and write cache capacity set to `5GiB`.
+
+For versions before v0.11, you need to manually enable the read cache by configuring `cache_path` in the storage settings:
 
 ```toml
 [storage]
@@ -309,11 +313,24 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ## Enable object storage caching
-cache_path = "/var/data/s3_local_cache"
-cache_capacity = "256MiB"
+cache_path = "/var/data/s3_read_cache"
+cache_capacity = "5Gib"
 ```
 
-The `cache_path` is the local file directory that keeps cache files, and the `cache_capacity` is the maximum total file size in the cache directory.
+The `cache_path` specifies the local directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string.
+
+For write cache in versions before v0.11, you need to enable it by setting `enable_experimental_write_cache` to `true` in the `[region_engine.mito]` section:
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+
+enable_experimental_write_cache = true
+experimental_write_cache_path = "/var/data/s3_write_cache"
+experimental_write_cache_size = "5GiB"
+```
+
+To disable the write cache, set `enable_experimental_write_cache` to `false`.
 
 ### WAL options
 
