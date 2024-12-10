@@ -316,6 +316,17 @@ If a table has its own TTL policy,
 it will take precedence over the database TTL policy.
 Otherwise, the database TTL policy will be applied to the table.
 
+The value of `'ttl'` can be one of duration (like `1hour 12min 5s`), `instant` or `forever`. See details in [CREATE](/reference/sql/create.md#create-a-table-with-ttl) statement.
+
+If you want to remove the TTL policy, you can use the following SQL
+
+```sql
+-- for table
+ALTER TABLE monitor UNSET 'ttl';
+-- or for database
+ALTER DATABASE test UNSET 'ttl';
+```
+
 For more information about TTL policies, please refer to the [CREATE](/reference/sql/create.md) statement.
 
 

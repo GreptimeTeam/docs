@@ -22,7 +22,7 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 - Doesn't return an error when the clause `IF NOT EXISTS` is presented.
 - Otherwise, returns an error.
 
-The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. All options available in [Table Options](#table-options) can be utilized here as well. When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
+The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. All options available in [Table Options](#table-options) can be utilized here as well (one exception is that database's TTL can't be `instant`). When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
 
 ### Examples
 
@@ -124,20 +124,33 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ) with(ttl='7d');
 ```
 
-The `ttl` value is a time duration string that supports the following suffixes:
+The `ttl` value can be one of the following:
 
-- `nsec`, `ns` - nanoseconds
-- `usec`, `us` - microseconds
-- `msec`, `ms` - milliseconds
-- `seconds`, `second`, `sec`, `s` - seconds
-- `minutes`, `minute`, `min`, `m` - minutes
-- `hours`, `hour`, `hr`, `h` - hours
-- `days`, `day`, `d` - days
-- `weeks`, `week`, `w` - weeks
-- `months`, `month`, `M` - months
-- `years`, `year`, `y` - years
+- A duration like `1hour 12min 5s`, The duration object is a concatenation of time spans. Where each time span is an integer number and a suffix. Supported suffixes:
+    - `nsec`, `ns` – nanoseconds
+    - `usec`, `us` – microseconds
+    - `msec`, `ms` – milliseconds
+    - `seconds`, `second`, `sec`, `s`
+    - `minutes`, `minute`, `min`, `m`
+    - `hours`, `hour`, `hr`, `h`
+    - `days`, `day`, `d`
+    - `weeks`, `week`, `w`
+    - `months`, `month`, `M` – defined as 30.44 days
+    - `years`, `year`, `y` – defined as 365.25 days
+- `forever`, `NULL`, an empty string `''` and `0s` (or any zero length duration, like `0d`), means the data will never be deleted.
+- `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/continuous-aggregation/manage-flow.md#manage-flows).
+- Unset, `ttl` can be unset by using `ALTER TABLE <table-name> UNSET 'ttl'`, which means the table will inherit the database's ttl policy (if any).
+  
+If a table has its own TTL policy, it will take precedence over the database TTL policy.
+Otherwise, the database TTL policy will be applied to the table. 
 
-Multiple units can be combined, e.g., `1hour 12min 5s`. 
+So if table's TTL is set to `forever`, no matter what the database's TTL is, the data will never be deleted. But if you unset table TTL using:
+```sql
+ALTER TABLE <table-name> UNSET 'ttl';
+```
+Then the database's TTL will be applied to the table. 
+
+Note that the default TTL setting for table and database is unset, which also means the data will never be deleted.
 
 #### Create a table with custom storage
 Create a table that stores the data in Google Cloud Storage:
