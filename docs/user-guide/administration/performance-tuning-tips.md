@@ -1,5 +1,5 @@
 ---
-description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, scan parallelism, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
+description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, primary keys, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
 ---
 
 # Performance Tuning Tips
@@ -96,21 +96,15 @@ Some tips:
 - If using full-text index, leave 1/10 of disk space for the `staging_size` at least
 
 
-### Enlarging scan parallelism
+### Avoid adding high cardinality columns to the primary key
+Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance. Instead, consider using an [append-only table]((/reference/sql/create.md#create-an-append-only-table)) and setting these high cardinality columns as fields.
 
-The storage engine limits the number of concurrent scan tasks to 1/4 of CPU cores for each query. Enlarging the parallelism can reduce the query latency if the machine's workload is relatively low.
-
-```toml
-[[region_engine]]
-[region_engine.mito]
-scan_parallelism = 8
-```
 
 ### Using append-only table if possible
 
 In general, append-only tables have a higher scan performance as the storage engine can skip merging and deduplication. What's more, the query engine can use statistics to speed up some queries if the table is append-only.
 
-We recommend enabling the [append_mode](/reference/sql/create.md##create-an-append-only-table) for the table if it doesn't require deduplication or performance is prioritized over deduplication. For example, a log table should be append-only as log messages may have the same timestamp.
+We recommend enabling the [append_mode](/reference/sql/create.md#create-an-append-only-table) for the table if it doesn't require deduplication or performance is prioritized over deduplication. For example, a log table should be append-only as log messages may have the same timestamp.
 
 ## Ingestion
 
