@@ -1,22 +1,141 @@
----
-description: 持续聚合的用例示例，包括实时分析、实时监控和实时仪表盘的详细示例。
----
+# 持续聚合
 
-# 用例
+持续聚合是处理时间序列数据以提供实时洞察的关键方面。
+Flow 引擎使开发人员能够无缝地执行持续聚合，例如计算总和、平均值和其他指标。
+它在指定的时间窗口内高效地更新聚合数据，使其成为分析的宝贵工具。
+
 持续聚合的三个主要用例示例如下：
 
 1. **实时分析**：一个实时分析平台，不断聚合来自事件流的数据，提供即时洞察，同时可选择将数据降采样到较低分辨率。例如，此系统可以编译来自高频日志事件流（例如，每毫秒发生一次）的数据，以提供每分钟的请求数、平均响应时间和每分钟的错误率等最新洞察。
-
 2. **实时监控**：一个实时监控系统，不断聚合来自事件流的数据，根据聚合数据提供实时警报。例如，此系统可以处理来自传感器事件流的数据，以提供当温度超过某个阈值时的实时警报。
-
 3. **实时仪表盘**：一个实时仪表盘，显示每分钟的请求数、平均响应时间和每分钟的错误数。此仪表板可用于监控系统的健康状况，并检测系统中的任何异常。
 
 在所有这些用例中，持续聚合系统不断聚合来自事件流的数据，并根据聚合数据提供实时洞察和警报。系统还可以将数据降采样到较低分辨率，以减少存储和处理的数据量。这使得系统能够提供实时洞察和警报，同时保持较低的数据存储和处理成本。
 
 ## 实时分析示例
 
-请参考[概述](/user-guide/continuous-aggregation/overview.md#quick-start-with-an-example)中的实时分析示例。
-该示例用于计算日志的总数、数据包大小的最小、最大和平均值，以及大小大于 550 的数据包数量按照每个状态码在 1 分钟固定窗口中的实时分析。
+### 日志统计
+
+这个例子是根据输入表中的数据计算一系列统计数据，包括一分钟时间窗口内的总日志数、最小大小、最大大小、平均大小以及大小大于 550 的数据包数。
+
+首先，创建一个 source 表 `ngx_access_log` 和一个 sink 表 `ngx_statistics`，如下所示：
+
+```sql
+CREATE TABLE `ngx_access_log` (
+  `client` STRING NULL,
+  `ua_platform` STRING NULL,
+  `referer` STRING NULL,
+  `method` STRING NULL,
+  `endpoint` STRING NULL,
+  `trace_id` STRING NULL FULLTEXT,
+  `protocol` STRING NULL,
+  `status` SMALLINT UNSIGNED NULL,
+  `size` DOUBLE NULL,
+  `agent` STRING NULL,
+  `access_time` TIMESTAMP(3) NOT NULL,
+  TIME INDEX (`access_time`)
+)
+WITH(
+  append_mode = 'true'
+);
+```
+
+```sql
+CREATE TABLE `ngx_statistics` (
+  `status` SMALLINT UNSIGNED NULL,
+  `total_logs` BIGINT NULL,
+  `min_size` DOUBLE NULL,
+  `max_size` DOUBLE NULL,
+  `avg_size` DOUBLE NULL,
+  `high_size_count` BIGINT NULL,
+  `time_window` TIMESTAMP time index,
+  `update_at` TIMESTAMP NULL,
+  PRIMARY KEY (`status`)
+);
+```
+
+然后创建名为 `ngx_aggregation` 的 flow 任务，包括 `count`、`min`、`max`、`avg` `size` 列的聚合函数，以及大于 550 的所有数据包的大小总和。聚合是在 `access_time` 列的 1 分钟固定窗口中计算的，并且还按 `status` 列分组。因此，你可以实时了解有关数据包大小和对其的操作的信息，例如，如果 `high_size_count` 在某个时间点变得太高，你可以进一步检查是否有任何问题，或者如果 `max_size` 列在 1 分钟时间窗口内突然激增，你可以尝试定位该数据包并进一步检查。
+
+```sql
+CREATE FLOW ngx_aggregation
+SINK TO ngx_statistics
+AS
+SELECT
+    status,
+    count(client) AS total_logs,
+    min(size) as min_size,
+    max(size) as max_size,
+    avg(size) as avg_size,
+    sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window;
+```
+
+要检查持续聚合是否正常工作，首先插入一些数据到源表 `ngx_access_log` 中。
+
+```sql
+INSERT INTO ngx_access_log 
+VALUES
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", "2021-07-01 00:00:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:00:30.500"),
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", "2021-07-01 00:01:01.500");
+```
+
+则 `ngx_access_log` 表将被增量更新以包含以下数据：
+
+```sql
+SELECT * FROM ngx_statistics;
+```
+
+```sql
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          1 |      600 |      600 |      600 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+    404 |          1 |      700 |      700 |      700 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+(3 rows)
+```
+
+尝试向 `ngx_access_log` 表中插入更多数据：
+
+```sql
+INSERT INTO ngx_access_log
+VALUES
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", "2021-07-01 00:01:01.500");
+```
+
+结果表 `ngx_statistics` 将被增量更新，注意 `max_size`、`avg_size` 和 `high_size_count` 是如何更新的：
+
+```sql
+SELECT * FROM ngx_statistics;
+```
+
+```sql
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          2 |      500 |      600 |      550 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+    404 |          2 |      700 |      800 |      750 |               2 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+(3 rows)
+```
+
+`ngx_statistics` 表中的列解释如下：
+
+- `status`: HTTP 响应的状态码。
+- `total_logs`: 相同状态码的日志总数。
+- `min_size`: 相同状态码的数据包的最小大小。
+- `max_size`: 相同状态码的数据包的最大大小。
+- `avg_size`: 相同状态码的数据包的平均大小。
+- `high_size_count`: 包大小大于 550 的数据包数。
+- `time_window`: 聚合的时间窗口。
+- `update_at`: 聚合结果更新的时间。
+
+### 按时间窗口查询国家
 
 另一个实时分析的示例是从 `ngx_access_log` 表中查询所有不同的国家。
 你可以使用以下查询按时间窗口对国家进行分组：
@@ -254,12 +373,8 @@ SELECT * FROM ngx_distribution;
 +------+-------------+------------+---------------------+----------------------------+
 ```
 
-## 总结
+## 下一步
 
-持续聚合是实时分析、监控和仪表盘的强大工具。
-它允许你不断聚合来自事件流的数据，并根据聚合数据提供实时洞察和警报。
-通过将数据降采样到较低分辨率，你可以减少存储和处理的数据量，
-从而更容易提供实时洞察和警报，同时保持较低的数据存储和处理成本。
-持续聚合是任何实时数据处理系统的关键组件，可以在各种用例中使用，
-以提供基于流数据的实时洞察和警报。
+- [管理 Flow](manage-flow.md)：深入了解 Flow 引擎的机制和定义 Flow 的 SQL 语法。
+- [表达式](expressions.md)：了解 Flow 引擎支持的数据转换表达式。
 

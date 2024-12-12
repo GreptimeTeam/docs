@@ -8,8 +8,7 @@ GreptimeDB's Flow engine enables real-time computation of data streams.
 It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing on-the-fly calculations and queries such as sum, average, and other aggregations.
 The Flow engine ensures that data is processed incrementally and continuously,
 updating the final results as new streaming data arrives.
-It functions similarly to materialized views,
-determining when and how to update the result view table with minimal effort.
+You can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort.
 
 Use cases include:
 
@@ -87,7 +86,7 @@ GROUP BY
 Once the Flow is created,
 the Flow engine will continuously process data from the `ngx_access_log` table and update the `user_agent_statistics` table with the computed results.
 
-To observe the continuous aggregation results,
+To observe the results,
 insert sample data into the `ngx_access_log` table.
 
 ```sql
