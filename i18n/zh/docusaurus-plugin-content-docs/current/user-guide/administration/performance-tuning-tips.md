@@ -96,9 +96,7 @@ staging_size = "10GB"
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
 
 
-
-
-### 避免将高基数的列加入主键
+### 避免将高基数的列放到主键中
 
 将高基数的列，如 `trace_id` 和 `uuid` 等列设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#create-an-append-only-table) 表并将这些高基数的列设置为 fields。
 
