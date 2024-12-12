@@ -55,15 +55,16 @@ CREATE TABLE ngx_access_log (
 ```
 
 Next, create the sink table `user_agent_statistics`.
-Note that all tables in GreptimeDB are time-series tables,
-hence the inclusion of the `__ts_placeholder` column as a timestamp placeholder.
+The `update_at` column tracks the last update time of the record, which is automatically updated by the Flow engine.
+Although all tables in GreptimeDB are time-series tables, this computation does not require time windows.
+Therefore, the `__ts_placeholder` column is included as a time index placeholder.
 
 ```sql
 CREATE TABLE user_agent_statistics (
   user_agent STRING,
-  total_count INT32,
-  __ts_placeholder TIMESTAMP TIME INDEX,
+  total_count INT64,
   update_at TIMESTAMP,
+  __ts_placeholder TIMESTAMP TIME INDEX,
   PRIMARY KEY (user_agent)
 );
 ```
@@ -108,12 +109,12 @@ SELECT * FROM user_agent_statistics;
 The query results will display the total count of each user agent in the `user_agent_statistics` table.
 
 ```sql
-+-----------------+-------------+
-| user_agent      | total_count |
-+-----------------+-------------+
-| Mozilla/5.0     | 2           |
-| curl/7.68.0     | 2           |
-+-----------------+-------------+
++-------------+-------------+----------------------------+---------------------+
+| user_agent  | total_count | update_at                  | __ts_placeholder    |
++-------------+-------------+----------------------------+---------------------+
+| Mozilla/5.0 |           2 | 2024-12-12 06:45:33.228000 | 1970-01-01 00:00:00 |
+| curl/7.68.0 |           2 | 2024-12-12 06:45:33.228000 | 1970-01-01 00:00:00 |
++-------------+-------------+----------------------------+---------------------+
 ```
 
 ## Next Steps
