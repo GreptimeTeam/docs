@@ -146,7 +146,7 @@ SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window
 ```
 
 在 `SELECT` 关键字之后只允许以下类型的表达式：
-- 聚合函数：有关详细信息，请参阅[表达式](./expression.md)文档。
+- 聚合函数：有关详细信息，请参阅[表达式](./expressions.md)文档。
 - 时间窗口函数：有关详细信息，请参阅[定义时间窗口](#define-time-window)部分。
 - 标量函数：例如 `col`、`to_lowercase(col)`、`col + 1` 等。这部分与 GreptimeDB 中的标准 `SELECT` 子句相同。
 
@@ -158,7 +158,7 @@ SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window
   `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
 - 不支持`ORDER BY`、`LIMIT` 和 `OFFSET`。
 
-有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[用例示例](./usecase-example.md)。
+有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
 
 ### 定义时间窗口
 
