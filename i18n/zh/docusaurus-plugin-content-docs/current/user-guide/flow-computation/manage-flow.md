@@ -142,7 +142,7 @@ GROUP BY time_window;
 flow 的 `SQL` 部分类似于标准的 `SELECT` 子句，但有一些不同之处。查询的语法如下：
 
 ```sql
-SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window FROM <source_table> GROUP BY time_window;
+SELECT AGGR_FUNCTION(column1, column2,..) [, TIME_WINDOW_FUNCTION() as time_window] FROM <source_table> GROUP BY {time_window | column1, column2,.. };
 ```
 
 在 `SELECT` 关键字之后只允许以下类型的表达式：
