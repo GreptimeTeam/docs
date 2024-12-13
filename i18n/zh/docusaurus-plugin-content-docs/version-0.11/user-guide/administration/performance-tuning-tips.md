@@ -21,7 +21,7 @@ GreptimeDB 提供了各种指标来帮助监控和排查性能问题。官方仓
 | greptime_mito_cache_miss | counter | 缓存未命中总数 |
 
 
-## 为对象存储开启缓存
+### 为对象存储开启缓存
 
 我们推荐在使用对象存储时启用读取缓存和写入缓存。这可以将查询耗时缩短 10 倍以上。
 
@@ -60,7 +60,7 @@ experimental_write_cache_ttl = "8h"
 # experimental_write_cache_path = "/path/to/write/cache"
 ```
 
-## 增大缓存大小
+### 增大缓存大小
 
 可以监控 `greptime_mito_cache_bytes` 和 `greptime_mito_cache_miss` 指标来确定是否需要增加缓存大小。这些指标中的 `type` 标签表示缓存的类型。
 
@@ -95,21 +95,17 @@ staging_size = "10GB"
 - 如果缓存命中率低于 50%，则可以将缓存大小翻倍
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
 
-## 扩大扫描并行度
 
-存储引擎将每个查询的并发扫描任务数限制为 CPU 内核数的 1/4。如果机器的工作负载相对较低，扩大并行度可以减少查询延迟。
+### 避免将高基数的列放到主键中
 
-```toml
-[[region_engine]]
-[region_engine.mito]
-scan_parallelism = 8
-```
+将高基数的列，如 `trace_id` 和 `uuid` 等列设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#create-an-append-only-table) 表并将这些高基数的列设置为 fields。
 
-## 尽可能使用 append-only 表
+
+### 尽可能使用 append-only 表
 
 一般来说，append-only 表具有更高的扫描性能，因为存储引擎可以跳过合并和去重操作。此外，如果表是 append-only 表，查询引擎可以使用统计信息来加速某些查询。
 
-如果表不需要去重或性能优先于去重，我们建议为表启用 [append_mode](/reference/sql/create.md##create-an-append-only-table)。例如，日志表应该是 append-only 表，因为日志消息可能具有相同的时间戳。
+如果表不需要去重或性能优先于去重，我们建议为表启用 [append_mode](/reference/sql/create.md#create-an-append-only-table)。例如，日志表应该是 append-only 表，因为日志消息可能具有相同的时间戳。
 
 
 ## 写入
