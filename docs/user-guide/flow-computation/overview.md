@@ -5,7 +5,7 @@ description: Discover how GreptimeDB's Flow engine enables real-time computation
 # Overview
 
 GreptimeDB's Flow engine enables real-time computation of data streams.
-It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing on-the-fly calculations and queries such as sum, average, and other aggregations.
+It is particularly beneficial for Extract-Transform-Load (ETL) processes or for performing on-the-fly filtering, calculations and queries such as sum, average, and other aggregations.
 The Flow engine ensures that data is processed incrementally and continuously,
 updating the final results as new streaming data arrives.
 You can think of it as a clever materialized views that know when to update result view table and how to update it with minimal effort.

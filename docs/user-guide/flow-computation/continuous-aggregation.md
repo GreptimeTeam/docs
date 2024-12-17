@@ -1,5 +1,5 @@
 ---
-description: Explore continuous aggregation in GreptimeDB for real-time insights. This guide explains how to perform continuous aggregations using the Flow engine, including calculating sums, averages, and other metrics within specified time windows. Learn through examples of real-time analytics, monitoring, and dashboard use cases. Understand how to create source and sink tables, define flows, and write SQL queries for continuous aggregation. Discover how to calculate log statistics, retrieve distinct countries by time window, and monitor sensor data in real-time. This comprehensive guide is essential for developers looking to leverage GreptimeDB's continuous aggregation capabilities for efficient data processing and real-time analytics.
+description: Learn how to use GreptimeDB's continuous aggregation for real-time analytics. Master Flow engine basics, time-window calculations, and SQL queries through practical examples of log analysis and sensor monitoring.
 ---
 
 # Continuous Aggregation
