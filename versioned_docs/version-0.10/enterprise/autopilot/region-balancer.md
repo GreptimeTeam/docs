@@ -6,7 +6,7 @@ This plugin balances the write load of regions across datanodes, using specified
 [[plugins]]
 [plugins.region_balancer]
 
-max_window = "45s"
+window_size = "45s"
 
 window_stability_threshold = 2
 
@@ -17,7 +17,7 @@ tick_interval = "45s"
 
 ## Configuration Parameters
 
-- `max_window`: string
+- `window_size`: string
   - **Description**: Defines the time span for the sliding window used to calculate the short-term average load of a region. This window helps smooth out temporary spikes in load, reducing the chance of unnecessary rebalancing.
   - **Units**: Time (e.g., `"45s"` represents 45 seconds).
   - **Recommendation**: Adjust according to load volatility. Larger values smooth more effectively but may delay load balancing responses.

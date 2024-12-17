@@ -10,7 +10,7 @@ description: 介绍 Region Balancer 插件，通过配置窗口大小和负载�
 [[plugins]]
 [plugins.region_balancer]
 
-max_window = "45s"
+window_size = "45s"
 
 window_stability_threshold = 2
 
@@ -21,7 +21,7 @@ tick_interval = "45s"
 
 ## 配置项说明
 
-- `max_window`: string
+- `window_size`: string
   - **说明**: 滑动窗口的时间跨度，用于计算区域负载的短期平均值。窗口期内的负载变化会被平滑，减轻短期突增对负载均衡的影响。
   - **单位**: 时间（支持格式：`"45s"` 表示 45 秒）。
   - **建议**: 根据集群负载波动情况配置，较大的窗口会使负载均衡响应更平稳。
