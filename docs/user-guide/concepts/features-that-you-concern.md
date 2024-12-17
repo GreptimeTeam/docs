@@ -41,7 +41,7 @@ GreptimeDB resolves this issue by:
 
 ## Does GreptimeDB support continuous aggregate or downsampling?
 
-Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/continuous-aggregation/overview.md).
+Since 0.8, GreptimeDB added a new function called `Flow`, which is used for continuous aggregation.  Please read the [user guide](/user-guide/flow-computation/overview.md).
 
 ## Can I store data in object storage in the cloud?
 

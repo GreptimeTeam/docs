@@ -313,7 +313,7 @@ ORDER BY
 
 ### Continuous aggregation
 
-For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the [continuous aggregation](/user-guide/continuous-aggregation/overview.md) feature of GreptimeDB.
+For further analysis or reduce the scan cost when aggregating data frequently, you can save the aggregation results to another tables. This can be implemented by using the [continuous aggregation](/user-guide/flow-computation/overview.md) feature of GreptimeDB.
 
 For example, aggregate the API error number by 5-second and save the data to table `api_error_count`.
 

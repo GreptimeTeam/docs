@@ -47,4 +47,4 @@ GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-ind
 
 ## Flow
 
-GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/continuous-aggregation/overview.md)过程，该过程根据传入数据持续更新和聚合数据。
+GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/flow-computation/overview.md)过程，该过程根据传入数据持续更新和聚合数据。
