@@ -167,14 +167,89 @@ Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 
 首先，请参考 [快速入门示例](/user-guide/logs/quick-start.md#使用-pipeline-写入日志)来查看 Pipeline 正确的执行情况。
 
-### 调试创建 Pipeline
+### 调试 Pipeline 配置
 
-在创建 Pipeline 的时候你可能会遇到错误，例如使用如下配置创建 Pipeline：
+由于 Pipeline 的配置文件和需要处理的数据需要同时上传，且数据格式不一致
+会导致一些在命令行中调试困难的问题。因此我们在 Dashboard 的 logview 中提供了图形化的调试界面。
+如果需要在命令行中进行调试，可以使用如下脚本进行调试：
+
+**此脚本仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
-     -d $'processors:
+#! /bin/bash
+
+PIPELINE_TYPE=$1
+P1=$2
+P2=$3
+P3=$4
+HOST="http://localhost:4000"
+
+function usage {
+    echo "Usage: $0 <pipeline_type> <param1> <param2> [param3]"
+    echo "pipeline_type: 'name' or 'content'"
+    echo "  - 'name': requires param1 (pipeline_name), param2 (data), and param3 (pipeline_version)"
+    echo "  - 'content': requires param1 (pipeline_content_file) and param2 (data)"
+    exit 1
+}
+
+function test_pipeline_name {
+    local PIPELINE_NAME=$P1
+    local DATA="$P2"
+    local PIPELINE_VERSION="$P3"
+    if [[ -z "$PIPELINE_VERSION" ]]; then
+        PIPELINE_VERSION="null"
+    else
+        PIPELINE_VERSION="\"$PIPELINE_VERSION\""
+    fi
+
+    local BODY=$(jq -nc --argjson data "$DATA" --arg pipeline_name "$PIPELINE_NAME" --argjson pipeline_version "$PIPELINE_VERSION" '{"pipeline_name": $pipeline_name, "pipeline_version": $pipeline_version, "data": $data}')
+    local result=$(curl --silent -X POST -H "Content-Type: application/json" "$HOST/v1/events/pipelines/dryrun" --data "$BODY")
+    echo "$result" | jq
+}
+
+function test_pipeline_content {
+    local PIPELINE_CONTENT=$(cat "$P1")
+    local DATA="$P2"
+    local BODY=$(jq -nc --arg pipeline_content "$PIPELINE_CONTENT" --argjson data "$DATA" '{"pipeline": $pipeline_content, "data": $data}')
+    local result=$(curl --silent -X POST -H "Content-Type: application/json" "$HOST/v1/events/pipelines/dryrun" --data "$BODY")
+    echo "$result" | jq
+}
+
+if [[ -z "$PIPELINE_TYPE" || -z "$P1" || -z "$P2" ]]; then
+    usage
+fi
+
+case $PIPELINE_TYPE in
+  "name")
+    test_pipeline_name
+    ;;
+  "content")
+    test_pipeline_content
+    ;;
+  *)
+    usage
+    ;;
+esac
+```
+
+我们后续的调试都会使用这个脚本，首先将脚本保存为 `test_pipeline.sh`，然后使用 `chmod +x test_pipeline.sh` 添加执行权限。此脚本依赖 `curl`, `jq`。请确保你的系统已经安装了这两个工具。
+如果需要更换 endpoint，请修改脚本中的 $HOST 为你的 GreptimeDB 的地址。
+
+#### 调试 Pipeline
+
+假设我们需要将如下数据中的，`message` 字段中的 `.` 替换为 `-`，同时将 `time` 字段解析为时间格式。
+
+```json
+{
+    "message": "1998.08",
+    "time": "2024-05-25 20:16:37.217"
+}
+```
+
+所以我们编写了如下的 Pipeline 配置文件，保存为 `pipeline.yaml`：
+
+```yaml
+processors:
   - date:
       field: time
       formats:
@@ -183,7 +258,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
   - gsub:
       fields:
         - message
-      pattern: "\\\."
+      pattern: "\\."
       replacement:
         - "-"
       ignore_missing: true
@@ -194,22 +269,27 @@ transform:
     type: string
   - field: time
     type: time
-    index: timestamp'
+    index: timestamp
 ```
 
-Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字符串，但当前配置提供了一个数组。因此，该 Pipeline 创建失败，并显示以下错误消息：
-
-
-```json
-{"error":"Failed to parse pipeline: 'replacement' must be a string"}
-```
-
-因此，你需要修改 `gsub` processor 的配置，将 `replacement` 字段的值更改为字符串类型。
+然后使用 `test_pipeline.sh` 脚本进行测试：
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
-     -d $'processors:
+./test_pipeline.sh content pipeline.yaml '[{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}]'
+```
+
+输入如下：
+
+```json
+{
+  "error": "Failed to build pipeline: Field replacement must be a string"
+}
+```
+
+根据错误内容，我们需要修改 `gsub` processor 的配置，将 `replacement` 字段的值更改为字符串类型。
+
+```yaml
+processors:
   - date:
       field: time
       formats:
@@ -218,7 +298,8 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
   - gsub:
       fields:
         - message
-      pattern: "\\\."
+      pattern: "\\."
+      # 修改为字符串类型
       replacement: "-"
       ignore_missing: true
 
@@ -228,69 +309,115 @@ transform:
     type: string
   - field: time
     type: time
-    index: timestamp'
+    index: timestamp
 ```
 
-此时 Pipeline 创建成功，可以使用 `dryrun` 接口测试该 Pipeline。
-
-### 调试日志写入
-
-我们可以使用 `dryrun` 接口测试 Pipeline。我们将使用错误的日志数据对其进行测试，其中消息字段的值为数字格式，会导致 Pipeline 在处理过程中失败。
-
-**此接口仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
+此时再次测试 Pipeline：
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
-     -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
-
-{"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
+./test_pipeline.sh content pipeline.yaml '[{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}]'
 ```
 
-输出显示 Pipeline 处理失败，因为 `gsub` Processor 期望的是字符串类型，而不是浮点数类型。我们需要修改日志数据的格式，确保 Pipeline 能够正确处理。
-我们再将 message 字段的值修改为字符串类型，然后再次测试该 Pipeline。
+输入如下：
+
+```json
+{
+  "error": "Failed to exec pipeline: Processor gsub: expect string value, but got Float64(1998.08)"
+}
+```
+
+根据错误内容，我们需要修改测试数据的格式，将 `message` 字段的值更改为字符串类型。
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
-     -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
+./test_pipeline.sh content pipeline.yaml '[{"message": "1998.08","time":"2024-05-25 20:16:37.217"}]'
 ```
 
 此时 Pipeline 处理成功，输出如下：
 
 ```json
 {
-    "rows": [
-        [
-            {
-                "data_type": "STRING",
-                "key": "message",
-                "semantic_type": "FIELD",
-                "value": "1998-08"
-            },
-            {
-                "data_type": "TIMESTAMP_NANOSECOND",
-                "key": "time",
-                "semantic_type": "TIMESTAMP",
-                "value": "2024-05-25 20:16:37.217+0000"
-            }
-        ]
-    ],
-    "schema": [
-        {
-            "colume_type": "FIELD",
-            "data_type": "STRING",
-            "fulltext": false,
-            "name": "message"
-        },
-        {
-            "colume_type": "TIMESTAMP",
-            "data_type": "TIMESTAMP_NANOSECOND",
-            "fulltext": false,
-            "name": "time"
-        }
+  "rows": [
+    [
+      {
+        "data_type": "STRING",
+        "key": "message",
+        "semantic_type": "FIELD",
+        "value": "1998-08"
+      },
+      {
+        "data_type": "TIMESTAMP_NANOSECOND",
+        "key": "time",
+        "semantic_type": "TIMESTAMP",
+        "value": "2024-05-25 20:16:37.217+0000"
+      }
     ]
+  ],
+  "schema": [
+    {
+      "colume_type": "FIELD",
+      "data_type": "STRING",
+      "fulltext": false,
+      "name": "message"
+    },
+    {
+      "colume_type": "TIMESTAMP",
+      "data_type": "TIMESTAMP_NANOSECOND",
+      "fulltext": false,
+      "name": "time"
+    }
+  ]
 }
 ```
 
-可以看到，`1998.08` 字符串中的 `.` 已经被替换为 `-`，Pipeline 处理成功。
+#### 调试 Pipeline 接口信息
+
+**此接口仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
+
+```bash
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun" \
+     -H 'Content-Type: application/json' \
+     -d 'data here'
+```
+
+body 为固定格式的 json 字符串，其中包含 `pipeline`，`pipeline_name`，`pipeline_version` 和 `data` 字段。
+`pipeline` 和 `pipeline_name` 二选一，`pipeline_version` 为可选字段。当所有字段都存在时，优先使用 `pipeline` 字段。
+`pipeline_name` 为已经存储在 GreptimeDB 中的 Pipeline 的名称，`pipeline_version`（可选） 为 Pipeline 的版本号。
+
+* `pipeline`：字符串，Pipeline 的配置内容。
+* `pipeline_name`：字符串，Pipeline 的名称。
+* `pipeline_version`：字符串，当 `pipeline_name` 存在时，Pipeline 的版本号。
+* `data`：一个 JSON 数组，每个元素为一个 JSON 对象或者字符串，需要处理的数据。
+
+例如，我们使用调试 Pipeline 的配置文件 `pipeline.yaml`，测试数据如下，则 curl 命令为：
+
+```bash
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun" \
+     -H 'Content-Type: application/json' \
+     -d '{
+  "pipeline": "processors:\n  - date:\n      field: time\n      formats:\n        - \"%Y-%m-%d %H:%M:%S%.3f\"\n      ignore_missing: true\n  - gsub:\n      fields:\n        - message\n      pattern: \"\\\\.\"\n      # 修改为字符串类型\n      replacement: \"-\"\n      ignore_missing: true\n\ntransform:\n  - fields:\n      - message\n    type: string\n  - field: time\n    type: time\n    index: timestamp",
+  "data": [
+    {
+      "message": "1998.08",
+      "time": "2024-05-25 20:16:37.217"
+    }
+  ]
+}'
+```
+
+如果我们使用 Pipeline 的名称 `test_pipeline`，不提供 `pipeline_version` 参数，则 curl 命令为：
+
+```bash
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun" \
+     -H 'Content-Type: application/json' \
+     -d '{
+  "pipeline_name": "test_pipeline",
+  "data": [
+    {
+      "message": "1998.08",
+      "time": "2024-05-25 20:16:37.217"
+    }
+  ]
+}'
+```
+
+这会使用名为 `test_pipeline` 的的最新版本 Pipeline 来处理数据。
