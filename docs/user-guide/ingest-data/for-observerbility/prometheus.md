@@ -1,4 +1,5 @@
 ---
+keywords: [Prometheus, integration, remote write, data model, efficiency]
 description: Guide to integrating Prometheus with GreptimeDB for long-term storage, including configuration, data model mapping, and efficiency improvements.
 ---
 

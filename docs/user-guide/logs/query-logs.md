@@ -1,4 +1,5 @@
 ---
+keywords: [query logs, full-text search, MATCHES function, query statements, log analysis]
 description: Provides a guide on using GreptimeDB's query language for effective searching and analysis of log data, including full-text search and query statements.
 ---
 

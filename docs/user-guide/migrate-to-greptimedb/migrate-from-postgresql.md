@@ -1,4 +1,5 @@
 ---
+keywords: [migrate from PostgreSQL, create databases, write data, export data, import data]
 description: Step-by-step guide on migrating from PostgreSQL to GreptimeDB, including creating databases, writing data, exporting and importing data.
 ---
 

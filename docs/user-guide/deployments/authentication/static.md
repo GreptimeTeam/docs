@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB, static user authentication, user credentials, configuration file, database authentication]
 description: Instructions for setting up static user authentication in GreptimeDB using a configuration file with user credentials.
 ---
 

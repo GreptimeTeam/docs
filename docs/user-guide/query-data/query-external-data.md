@@ -1,4 +1,5 @@
 ---
+keywords: [query external data, external tables, CSV, Parquet, ORC, NDJson, data files, SQL queries]
 description: Instructions on querying external data files in GreptimeDB, including creating external tables and running queries on various file formats like CSV and Parquet.
 ---
 

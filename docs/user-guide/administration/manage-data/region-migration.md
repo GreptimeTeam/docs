@@ -1,4 +1,5 @@
 ---
+keywords: [region migration, GreptimeDB, data migration, distributed mode, Kafka WAL, shared storage, SQL]
 description: Explanation of how to perform region migration in GreptimeDB, including querying region distribution, selecting a migration destination, executing migration requests, and querying migration states.
 ---
 

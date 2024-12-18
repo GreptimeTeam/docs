@@ -1,4 +1,5 @@
 ---
+keywords: [manage flows, create flow, delete flow, source table, sink table, SQL queries]
 description: Describes how to manage flows in GreptimeDB, including creating, updating, and deleting flows. It explains the syntax for creating flows, the importance of sink tables, and how to use the EXPIRE AFTER clause. Examples of SQL queries for managing flows are provided.
 ---
 

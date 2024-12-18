@@ -1,4 +1,5 @@
 ---
+keywords: [migrate from MySQL, create databases, write data, export data, import data]
 description: Step-by-step guide on migrating from MySQL to GreptimeDB, including creating databases, writing data, exporting and importing data.
 ---
 

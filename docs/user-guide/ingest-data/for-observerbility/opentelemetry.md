@@ -1,4 +1,5 @@
 ---
+keywords: [OpenTelemetry, OTLP, metrics, logs, integration, data model]
 description: Instructions for integrating OpenTelemetry with GreptimeDB, including metrics and logs data model mapping, example configurations, and supported protocols.
 ---
 

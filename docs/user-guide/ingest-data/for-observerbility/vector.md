@@ -1,4 +1,5 @@
 ---
+keywords: [Vector, integration, configuration, data model, metrics]
 description: Instructions for integrating Vector with GreptimeDB, including configuration, data model mapping, and example configurations.
 ---
 

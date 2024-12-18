@@ -1,4 +1,5 @@
 ---
+keywords: [key concepts, databases, time-series tables, table regions, data types]
 description: Introduces the key concepts of GreptimeDB, including databases, time-series tables, table regions, data types, indexes, views, and flows. It explains how these components work together to manage and serve data in GreptimeDB.
 ---
 

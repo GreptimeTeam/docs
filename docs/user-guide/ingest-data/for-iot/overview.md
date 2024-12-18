@@ -1,4 +1,5 @@
 ---
+keywords: [data ingestion, IoT, SQL INSERT, gRPC SDK, InfluxDB Line Protocol, EMQX, OpenTSDB]
 description: Overview of data ingestion methods in GreptimeDB for IoT, including SQL INSERT, gRPC SDK, InfluxDB Line Protocol, EMQX, and OpenTSDB.
 ---
 

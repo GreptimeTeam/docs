@@ -1,4 +1,5 @@
 ---
+keywords: [expressions, aggregate functions, scalar functions, data transformation, SQL functions]
 description: Lists supported aggregate and scalar functions in GreptimeDB's flow, including count, sum, avg, min, max, and various scalar functions. It provides links to detailed documentation for each function.
 ---
 

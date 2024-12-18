@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB Line Protocol, data ingestion, ping API, health API]
 description: Instructions on ingesting data to GreptimeDB using InfluxDB Line Protocol and using ping and health APIs.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB cluster deployment, Kubernetes, remote WAL, Kafka setup, etcd cluster, Helm, kubectl]
 description: Guide for deploying a GreptimeDB cluster with Remote WAL in Kubernetes. Includes steps for deploying the GreptimeDB operator, etcd cluster, Kafka cluster, and GreptimeDB cluster with remote WAL settings, as well as writing and querying data.
 ---
 

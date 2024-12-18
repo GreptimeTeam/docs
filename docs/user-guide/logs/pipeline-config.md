@@ -1,4 +1,5 @@
 ---
+keywords: [pipeline configuration, log parsing, log transformation, processors, transform rules]
 description: Explains the configuration of pipelines in GreptimeDB for parsing and transforming log data, including processors and transform rules.
 ---
 

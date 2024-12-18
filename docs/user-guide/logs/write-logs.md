@@ -1,4 +1,5 @@
 ---
+keywords: [write logs, HTTP interface, log formats, request parameters, JSON logs]
 description: Describes how to write logs to GreptimeDB using a pipeline via the HTTP interface, including supported formats and request parameters.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [cloud-native, time series database, high performance, cost-effective, unified design]
 description: Explains the motivations and benefits of using GreptimeDB, including its unified design for metrics, logs, and events, cloud-native architecture, cost-effectiveness, high performance, and ease of use. It highlights key features and deployment strategies.
 ---
 

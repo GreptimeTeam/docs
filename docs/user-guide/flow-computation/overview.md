@@ -1,4 +1,5 @@
 ---
+keywords: [Flow engine, real-time computation, ETL, data streams, user agent statistics, nginx logs]
 description: Discover how GreptimeDB's Flow engine enables real-time computation of data streams for ETL processes and on-the-fly calculations. Learn about its programming model, use cases, and a quick start example for calculating user agent statistics from nginx logs.
 ---
 

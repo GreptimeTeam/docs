@@ -1,4 +1,5 @@
 ---
+keywords: [manage pipelines, create pipeline, delete pipeline, built-in pipelines, pipeline debugging]
 description: Guides on creating, deleting, and managing pipelines in GreptimeDB for parsing and transforming log data, including built-in pipelines and debugging.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB upgrade, CLI tool, data export, data import, schema export, schema import, upgrade example]
 description: Instructions on upgrading GreptimeDB using the built-in CLI tool, including exporting and importing data and schemas, and a complete example for upgrading.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Apache Superset, BI tool, database configuration, installation steps, connection settings]
 description: Guide to configuring GreptimeDB as a database in Apache Superset, including installation steps and connection settings.
 ---
 

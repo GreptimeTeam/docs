@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB, features, data model, architecture, storage locations, key concepts]
 description: Provides an overview of GreptimeDB, including its features, data model, architecture, storage locations, key concepts, and notable features.
 ---
 

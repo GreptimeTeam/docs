@@ -1,4 +1,5 @@
 ---
+keywords: [Grafana, data source, plugin, installation, connection settings, Prometheus, MySQL]
 description: Steps to configure GreptimeDB as a data source in Grafana using different plugins and data sources, including installation and connection settings.
 ---
 

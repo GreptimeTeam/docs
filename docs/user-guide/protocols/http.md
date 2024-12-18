@@ -1,4 +1,5 @@
 ---
+keywords: [HTTP API, authentication, timeout settings, health checks, configuration, SQL queries]
 description: Guide on using HTTP APIs to interact with GreptimeDB, including authentication, timeout settings, health checks, configuration, and SQL queries.
 ---
 

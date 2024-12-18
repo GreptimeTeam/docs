@@ -1,4 +1,5 @@
 ---
+keywords: [continuous aggregation, real-time analytics, time-series data, Flow engine, log analysis, sensor monitoring]
 description: Learn how to use GreptimeDB's continuous aggregation for real-time analytics. Master Flow engine basics, time-window calculations, and SQL queries through practical examples of log analysis and sensor monitoring.
 ---
 
