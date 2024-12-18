@@ -2,7 +2,7 @@
 description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 sink 表、flow 的 SQL 语法和示例。
 ---
 
-# 管理 Flows
+# 管理 Flow
 
 每一个 `flow` 是 GreptimeDB 中的一个持续聚合查询。
 它根据传入的数据持续更新并聚合数据。
@@ -40,7 +40,7 @@ CREATE TABLE temp_sensor_data (
 
 - **列的顺序和类型**：确保 sink 表中列的顺序和类型与 flow 查询结果匹配。
 - **时间索引**：为 sink 表指定 `TIME INDEX`，通常使用时间窗口函数生成的时间列。
-- **将 `update_at` 指定为 schema 的最后一列**：flow 会自动将数据的更新时间写入 `update_at` 列。请确保此列是 sink 表模式中的最后一列。
+- **更新时间**：Flow 引擎会自动将更新时间附加到每个计算结果行的末尾。此更新时间存储在 `updated_at` 列中。请确保在 sink 表的 schema 中包含此列。
 - **Tag**：使用 `PRIMARY KEY` 指定 Tag，与 time index 一起作为行数据的唯一标识，并优化查询性能。
 
 例如：
@@ -142,11 +142,11 @@ GROUP BY time_window;
 flow 的 `SQL` 部分类似于标准的 `SELECT` 子句，但有一些不同之处。查询的语法如下：
 
 ```sql
-SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window FROM <source_table> GROUP BY time_window;
+SELECT AGGR_FUNCTION(column1, column2,..) [, TIME_WINDOW_FUNCTION() as time_window] FROM <source_table> GROUP BY {time_window | column1, column2,.. };
 ```
 
 在 `SELECT` 关键字之后只允许以下类型的表达式：
-- 聚合函数：有关详细信息，请参阅[表达式](./expression.md)文档。
+- 聚合函数：有关详细信息，请参阅[表达式](./expressions.md)文档。
 - 时间窗口函数：有关详细信息，请参阅[定义时间窗口](#define-time-window)部分。
 - 标量函数：例如 `col`、`to_lowercase(col)`、`col + 1` 等。这部分与 GreptimeDB 中的标准 `SELECT` 子句相同。
 
@@ -158,7 +158,7 @@ SELECT AGGR_FUNCTION(column1, column2,..), TIME_WINDOW_FUNCTION() as time_window
   `GROUP BY` 中的其他表达式可以是 literal、列名或 scalar 表达式。
 - 不支持`ORDER BY`、`LIMIT` 和 `OFFSET`。
 
-有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[用例示例](./usecase-example.md)。
+有关如何在实时分析、监控和仪表板中使用持续聚合的更多示例，请参阅[持续聚合](./continuous-aggregation.md)。
 
 ### 定义时间窗口
 

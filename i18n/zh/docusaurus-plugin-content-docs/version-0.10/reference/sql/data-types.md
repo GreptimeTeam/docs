@@ -277,9 +277,9 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 | `Int16`                | `SmallInt`                                                      |
 | `Int32`                | `Int`                                                           |
 | `Int64`                | `BigInt`                                                        |
-| `UInt8`                | `UnsignedInt`                                                   |
-| `UInt16`               | `UnsignedTinyInt`                                               |
-| `UInt32`               | `UnsignedSmallInt`                                              |
+| `UInt8`                | `UnsignedTinyInt`                                               |
+| `UInt16`               | `UnsignedSmallInt`                                              |
+| `UInt32`               | `UnsignedInt`                                                   |
 | `UInt64`               | `UnsignedBigInt`                                                |
 | `Float32`              | `Float`                                                         |
 | `Float64`              | `Double`                                                        |

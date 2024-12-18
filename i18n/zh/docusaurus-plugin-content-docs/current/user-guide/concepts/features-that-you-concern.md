@@ -40,7 +40,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持持续聚合或降采样吗？
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview.md)获取更多信息。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/flow-computation/overview.md)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 

@@ -136,13 +136,13 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Continuous Aggregation',
+          label: 'Flow Computation',
           items: [
-            'user-guide/continuous-aggregation/overview',
-            'user-guide/continuous-aggregation/usecase-example',
-            'user-guide/continuous-aggregation/manage-flow',
-            'user-guide/continuous-aggregation/expression',
-          ],
+            'user-guide/flow-computation/overview',
+            'user-guide/flow-computation/continuous-aggregation',
+            'user-guide/flow-computation/manage-flow',
+            'user-guide/flow-computation/expressions',
+          ]
         },
         {
           type: 'category',

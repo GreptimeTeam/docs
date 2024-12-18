@@ -1,8 +1,14 @@
 ---
-description: Provides major use case examples for continuous aggregation in GreptimeDB, including real-time analytics, monitoring, and dashboards. It includes SQL queries and examples to demonstrate how to set up and use continuous aggregation for various scenarios.
+description: Learn how to use GreptimeDB's continuous aggregation for real-time analytics. Master Flow engine basics, time-window calculations, and SQL queries through practical examples of log analysis and sensor monitoring.
 ---
 
-# Usecase Examples
+# Continuous Aggregation
+
+Continuous aggregation is a crucial aspect of processing time-series data to deliver real-time insights.
+The Flow engine empowers developers to perform continuous aggregations,
+such as calculating sums, averages, and other metrics, seamlessly.
+It efficiently updates the aggregated data within specified time windows, making it an invaluable tool for analytics.
+
 Following are three major usecase examples for continuous aggregation:
 
 1. **Real-time Analytics**: A real-time analytics platform that continuously aggregates data from a stream of events, delivering immediate insights while optionally downsampling the data to a lower resolution. For instance, this system can compile data from a high-frequency stream of log events (e.g., occurring every millisecond) to provide up-to-the-minute insights such as the number of requests per minute, average response times, and error rates per minute.
@@ -13,9 +19,130 @@ Following are three major usecase examples for continuous aggregation:
 
 In all these usecases, the continuous aggregation system continuously aggregates data from a stream of events and provides real-time insights and alerts based on the aggregated data. The system can also downsample the data to a lower resolution to reduce the amount of data stored and processed. This allows the system to provide real-time insights and alerts while keeping the data storage and processing costs low.
 
-## Real-time analytics example
 
-See [Overview](/user-guide/continuous-aggregation/overview.md#quick-start-with-an-example) for an example of real-time analytics. Which is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
+## Real-time Analytics Example
+
+### Calculate the Log Statistics
+
+This use case is to calculate the total number of logs, the minimum size, the maximum size, the average size, and the number of packets with the size greater than 550 for each status code in a 1-minute fixed window for access logs.
+First, create a source table `ngx_access_log` and a sink table `ngx_statistics` with following clauses:
+
+```sql
+CREATE TABLE `ngx_access_log` (
+  `client` STRING NULL,
+  `ua_platform` STRING NULL,
+  `referer` STRING NULL,
+  `method` STRING NULL,
+  `endpoint` STRING NULL,
+  `trace_id` STRING NULL FULLTEXT,
+  `protocol` STRING NULL,
+  `status` SMALLINT UNSIGNED NULL,
+  `size` DOUBLE NULL,
+  `agent` STRING NULL,
+  `access_time` TIMESTAMP(3) NOT NULL,
+  TIME INDEX (`access_time`)
+)
+WITH(
+  append_mode = 'true'
+);
+```
+
+```sql
+CREATE TABLE `ngx_statistics` (
+  `status` SMALLINT UNSIGNED NULL,
+  `total_logs` BIGINT NULL,
+  `min_size` DOUBLE NULL,
+  `max_size` DOUBLE NULL,
+  `avg_size` DOUBLE NULL,
+  `high_size_count` BIGINT NULL,
+  `time_window` TIMESTAMP time index,
+  `update_at` TIMESTAMP NULL,
+  PRIMARY KEY (`status`)
+);
+```
+
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
+
+```sql
+CREATE FLOW ngx_aggregation
+SINK TO ngx_statistics
+AS
+SELECT
+    status,
+    count(client) AS total_logs,
+    min(size) as min_size,
+    max(size) as max_size,
+    avg(size) as avg_size,
+    sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
+    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+FROM ngx_access_log
+GROUP BY
+    status,
+    time_window;
+```
+
+To observe the outcome of the continuous aggregation in the `ngx_statistics` table, insert some data into the source table `ngx_access_log`.
+
+```sql
+INSERT INTO ngx_access_log 
+VALUES
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", "2021-07-01 00:00:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:00:30.500"),
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", "2021-07-01 00:01:01.500");
+```
+
+Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
+
+```sql
+SELECT * FROM ngx_statistics;
+```
+
+```sql
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          1 |      600 |      600 |      600 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+    404 |          1 |      700 |      700 |      700 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
+(3 rows)
+```
+
+Try to insert more data into the `ngx_access_log` table:
+
+```sql
+INSERT INTO ngx_access_log 
+VALUES
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:01:01.000"),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", "2021-07-01 00:01:01.500");
+```
+
+The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
+
+```sql
+SELECT * FROM ngx_statistics;
+```
+
+```sql
+ status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
+--------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
+    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
+    200 |          2 |      500 |      600 |      550 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+    404 |          2 |      700 |      800 |      750 |               2 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
+(3 rows)
+```
+
+Here is the explanation of the columns in the `ngx_statistics` table:
+
+- `status`: The status code of the HTTP response.
+- `total_logs`: The total number of logs with the same status code.
+- `min_size`: The minimum size of the packets with the same status code.
+- `max_size`: The maximum size of the packets with the same status code.
+- `avg_size`: The average size of the packets with the same status code.
+- `high_size_count`: The number of packets with the size greater than 550.
+- `time_window`: The time window of the aggregation.
+- `update_at`: The time when the aggregation is updated.
+
+### Retrieve Distinct Countries by Time Window
 
 Another example of real-time analytics is to retrieve all distinct countries from the `ngx_access_log` table.
 You can use the following query to group countries by time window:
@@ -91,7 +218,7 @@ select * from ngx_country;
 +---------+---------------------+----------------------------+
 ```
 
-## Real-time monitoring example
+## Real-Time Monitoring Example
 
 Consider a usecase where you have a stream of sensor events from a network of temperature sensors that you want to monitor in real-time. The sensor events contain information such as the sensor ID, the temperature reading, the timestamp of the reading, and the location of the sensor. You want to continuously aggregate this data to provide real-time alerts when the temperature exceeds a certain threshold. Then the query for continuous aggregation would be:
 
@@ -178,7 +305,7 @@ SELECT * FROM temp_alerts;
 +-----------+-------+----------+---------------------+----------------------------+
 ```
 
-## Real-time dashboard
+## Real-Time Dashboard
 
 Consider a usecase in which you need a bar graph that show the distribution of packet sizes for each status code to monitor the health of the system. The query for continuous aggregation would be:
 
@@ -253,6 +380,8 @@ SELECT * FROM ngx_distribution;
 +------+-------------+------------+---------------------+----------------------------+
 ```
 
-## Conclusion
+## Next Steps
 
-Continuous aggregation is a powerful tool for real-time analytics, monitoring, and dashboarding. It allows you to continuously aggregate data from a stream of events and provide real-time insights and alerts based on the aggregated data. By downsampling the data to a lower resolution, you can reduce the amount of data stored and processed, making it easier to provide real-time insights and alerts while keeping the data storage and processing costs low. Continuous aggregation is a key component of any real-time data processing system and can be used in a wide range of usecases to provide real-time insights and alerts based on streaming data.
+- [Manage Flow](manage-flow.md): Gain insights into the mechanisms of the Flow engine and the SQL syntax for defining a Flow.
+- [Expressions](expressions.md): Learn about the expressions supported by the Flow engine for data transformation.
+
