@@ -1,4 +1,5 @@
 ---
+keywords: [DataFusion functions, scalar functions, window functions, array functions]
 description: Generated from the Apache DataFusion project's documents, this page lists and describes DataFusion functions, including scalar, window, and array functions.
 ---
 

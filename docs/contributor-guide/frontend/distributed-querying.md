@@ -1,4 +1,5 @@
 ---
+keywords: [distributed querying, dist planner, dist plan, logical plan, substrait format]
 description: Describes the process of distributed querying in GreptimeDB, focusing on the dist planner and dist plan.
 ---
 

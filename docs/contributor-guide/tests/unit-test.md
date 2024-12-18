@@ -1,4 +1,5 @@
 ---
+keywords: [unit tests, Rust, cargo nextest, test runner, coverage]
 description: Guide on writing and running unit tests in GreptimeDB using Rust's `#[test]` attribute and `cargo nextest`.
 ---
 

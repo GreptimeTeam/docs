@@ -1,4 +1,5 @@
 ---
+keywords: [architecture, key components, user requests, data processing, database components]
 description: Overview of GreptimeDB's architecture, key components, and how they interact to process user requests.
 ---
 

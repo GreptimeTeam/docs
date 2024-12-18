@@ -1,4 +1,5 @@
 ---
+keywords: [cluster mode, Kubernetes, Docker Compose, deployment]
 description: Instructions to deploy GreptimeDB in cluster mode using Kubernetes or Docker Compose, including steps for setup and cleanup.
 ---
 

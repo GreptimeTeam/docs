@@ -1,4 +1,5 @@
 ---
+keywords: [cluster information, cluster configuration, SQL information schema, cluster status, cluster nodes]
 description: Contains information about the cluster configuration and status within the SQL information schema, including nodes, roles, and other cluster-related details.
 ---
 

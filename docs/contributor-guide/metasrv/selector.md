@@ -1,4 +1,5 @@
 ---
+keywords: [selector, metasrv, datanode, leasebased, loadbased, roundrobin]
 description: Describes the different types of selectors in the Metasrv service, their characteristics, and how to configure them.
 ---
 

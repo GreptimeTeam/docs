@@ -1,4 +1,5 @@
 ---
+keywords: [storage engine, LSMT, Mito engine, data model, architecture, compaction]
 description: Overview of the storage engine in GreptimeDB, its architecture, components, and data model.
 ---
 

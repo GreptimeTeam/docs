@@ -1,4 +1,5 @@
 ---
+keywords: [partitions, partitioned tables, partition names, partition methods, partition expressions]
 description: Provides information about partitioned tables, including partition names, methods, expressions, and other details.
 ---
 

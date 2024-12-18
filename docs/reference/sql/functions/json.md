@@ -1,4 +1,5 @@
 ---
+keywords: [JSON functions, JSON conversion, JSON extraction, JSON validation, SQL functions]
 description: Lists and describes JSON functions available in GreptimeDB, including their usage and examples.
 ---
 

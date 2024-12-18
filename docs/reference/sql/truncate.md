@@ -1,4 +1,5 @@
 ---
+keywords: [SQL TRUNCATE, delete all data, TRUNCATE TABLE, SQL syntax, efficient deletion]
 description: Details the TRUNCATE TABLE statement in SQL, used for efficiently deleting all data from a table, with syntax and example.
 ---
 

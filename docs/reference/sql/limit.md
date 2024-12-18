@@ -1,4 +1,5 @@
 ---
+keywords: [SQL LIMIT, SQL query optimization, SQL syntax, SQL examples, SQL performance]
 description: Describes the LIMIT clause in SQL for restricting the number of rows returned by a query, including syntax and examples.
 ---
 

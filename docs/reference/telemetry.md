@@ -1,4 +1,5 @@
 ---
+keywords: [telemetry data, data collection, privacy, configuration, disable telemetry, enable telemetry]
 description: Details on telemetry data collection in GreptimeDB, including what data is collected, how often, and how to enable or disable telemetry.
 ---
 

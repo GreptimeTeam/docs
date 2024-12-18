@@ -1,4 +1,5 @@
 ---
+keywords: [Java SDK, gRPC, database connection, authentication]
 description: Instructions on how to use the GreptimeDB Java SDK to connect to GreptimeCloud using gRPC.
 ---
 

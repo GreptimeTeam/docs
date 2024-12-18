@@ -1,4 +1,5 @@
 ---
+keywords: [CTE, Common Table Expression, SQL WITH clause, non-recursive CTE, SQL syntax]
 description: Describes the usage of the WITH clause to define Common Table Expressions (CTEs) in SQL, including syntax, examples of non-recursive CTEs, and notes on recursive CTEs.
 ---
 

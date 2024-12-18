@@ -1,4 +1,5 @@
 ---
+keywords: [frontend, tenant management, authorization, flow control, cloud deployment, endpoints]
 description: Provides an overview of the Frontend component in GreptimeDB, its roles, and typical deployment in the cloud.
 ---
 

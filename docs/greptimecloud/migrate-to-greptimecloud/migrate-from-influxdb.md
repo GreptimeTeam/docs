@@ -1,4 +1,5 @@
 ---
+keywords: [migration, InfluxDB, GreptimeCloud, HTTP API, Telegraf, client libraries, data visualization]
 description: Instructions for migrating from InfluxDB to GreptimeCloud, including database connection, writing data using HTTP API, Telegraf, client libraries, and data visualization.
 ---
 

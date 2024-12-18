@@ -1,4 +1,5 @@
 ---
+keywords: [Go SDK, system metrics, data visualization, OpenTelemetry]
 description: Instructions on creating a service, writing data using Go, and visualizing data in GreptimeDB.
 ---
 

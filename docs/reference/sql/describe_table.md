@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DESCRIBE TABLE, SQL table structure, SQL syntax, SQL examples, SQL column details]
 description: Describes the SQL DESCRIBE TABLE statement to display the structure of a table, including column names, data types, keys, nullability, default values, and semantic types, with examples.
 ---
 

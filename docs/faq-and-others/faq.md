@@ -1,4 +1,5 @@
 ---
+keywords: [performance, compatibility, features, use cases, drivers, Prometheus, Grafana, retention policy, schemaless, S3, integration, metrics, WAL, SQL, DataFusion]
 description: Frequently Asked Questions about GreptimeDB, covering use cases, performance, compatibility, features, and more.
 ---
 

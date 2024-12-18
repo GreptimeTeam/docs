@@ -1,4 +1,5 @@
 ---
+keywords: [create statement, SQL, create database, create table, create view, create flow]
 description: Explains the SQL CREATE statement for creating databases, tables, external tables, flows, and views in GreptimeDB, including syntax, table constraints, options, and examples.
 ---
 

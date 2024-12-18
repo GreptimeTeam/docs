@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, Go, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using Go, including creating a service, writing data, and visualizing data.
 ---
 

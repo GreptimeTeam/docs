@@ -1,3 +1,8 @@
+---
+keywords: [HTTP API, endpoints, health check, status, metrics, configuration, query APIs, PromQL, InfluxDB, OpenTelemetry]
+description: Provides a full list of HTTP paths and their usage in GreptimeDB, including admin APIs, query endpoints, and protocol endpoints.
+---
+
 # HTTP API Endpoint List
 
 Here is the full list for the various HTTP paths and their usage in GreptimeDB:

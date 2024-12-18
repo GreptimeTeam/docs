@@ -1,4 +1,5 @@
 ---
+keywords: [gRPC SDK, GreptimeDatabase, Handle, HandleRequests, GreptimeRequest, GreptimeResponse]
 description: Explains how to write a gRPC SDK for GreptimeDB, focusing on the GreptimeDatabase service, its methods, and the structure of requests and responses.
 ---
 
