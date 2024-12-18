@@ -1,4 +1,5 @@
 ---
+keywords: [OpenTelemetry, OTLP, 指标数据, 配置示例, GreptimeCloud]
 description: 介绍如何通过 OpenTelemetry Protocol (OTLP) 将指标数据发送到 GreptimeCloud，包括使用 OpenTelemetry API/SDK 和 OpenTelemetry Collector 的配置示例。
 ---
 

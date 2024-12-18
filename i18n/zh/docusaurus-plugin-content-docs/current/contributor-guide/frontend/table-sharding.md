@@ -1,4 +1,5 @@
 ---
+keywords: [表分片, 分区, Region, 数据存储, Region 自动移动]
 description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Region 的定义及其关系。
 ---
 

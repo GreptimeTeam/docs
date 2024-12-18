@@ -1,4 +1,5 @@
 ---
+keywords: [控制台, 数据可视化, 查询语言, SQL 查询, PromQL 查询]
 description: 介绍 GreptimeDB 控制台的功能和使用方法，包括数据可视化和多种查询语言的支持。
 ---
 

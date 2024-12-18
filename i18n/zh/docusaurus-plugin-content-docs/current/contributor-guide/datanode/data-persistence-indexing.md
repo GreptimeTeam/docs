@@ -1,4 +1,5 @@
 ---
+keywords: [数据持久化, 索引机制, SST 文件, 倒排索引]
 description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST 文件格式、数据持久化过程和倒排索引的实现。
 ---
 

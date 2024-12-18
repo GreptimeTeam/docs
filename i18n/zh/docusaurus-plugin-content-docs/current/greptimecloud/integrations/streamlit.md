@@ -1,4 +1,5 @@
 ---
+keywords: [Streamlit, 数据应用, SQL 查询, Python 框架, GreptimeCloud]
 description: 介绍如何使用 Streamlit 连接 GreptimeCloud 并执行 SQL 查询，展示数据应用的构建示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [请求容量单位, WCU, RCU, 计算方法, 优化建议, 数据类型, HTTP 响应]
 description: 详细介绍 GreptimeCloud 的请求容量单位算法，包括 WCU 和 RCU 的计算方法和优化建议。
 ---
 

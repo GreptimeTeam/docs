@@ -1,4 +1,5 @@
 ---
+keywords: [系统指标, 数据收集, 配置示例, 启动命令, 数据可视化]
 description: 介绍如何使用 Vector 收集系统指标数据并将其发送到 GreptimeCloud，包括配置文件示例和启动命令。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB, Line Protocol, 数据库连接, Telegraf, Java 客户端]
 description: 介绍如何使用 InfluxDB Line Protocol 连接到 GreptimeCloud，并提供了 Telegraf 和 Java 客户端的配置示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Grafana, 数据源, 配置示例, Prometheus, MySQL]
 description: 介绍如何将 GreptimeCloud 配置为 Grafana 数据源，并提供了使用 GreptimeCloud、Prometheus 和 MySQL 数据源的配置示例。
 ---
 

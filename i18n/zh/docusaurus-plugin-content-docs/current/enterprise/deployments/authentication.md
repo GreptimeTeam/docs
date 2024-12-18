@@ -1,4 +1,5 @@
 ---
+keywords: [LDAP 鉴权, simple bind, search bind, 配置示例, 身份验证]
 description: 介绍 GreptimeDB Enterprise 中的 LDAP 鉴权功能，包括 simple bind 和 search bind 两种模式的配置示例及使用方法。
 ---
 

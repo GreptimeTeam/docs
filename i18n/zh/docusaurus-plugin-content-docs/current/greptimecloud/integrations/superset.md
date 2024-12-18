@@ -1,4 +1,5 @@
 ---
+keywords: [Superset, 数据源, 连接信息, URL 格式, GreptimeCloud]
 description: 介绍如何在 Apache Superset 中将 GreptimeCloud 作为数据源，包括连接信息和 URL 格式。
 ---
 

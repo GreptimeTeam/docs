@@ -1,4 +1,5 @@
 ---
+keywords: [Region Balancer, Datanode, 负载均衡, 窗口大小, 负载阈值, 迁移]
 description: 介绍 Region Balancer 插件，通过配置窗口大小和负载阈值来均衡 Datanode 上的 Region 写入负载，避免频繁迁移。
 ---
 

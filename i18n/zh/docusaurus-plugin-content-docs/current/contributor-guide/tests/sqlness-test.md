@@ -1,4 +1,5 @@
 ---
+keywords: [Sqlness 测试, SQL, 测试套件, 测试文件, 测试案例]
 description: 介绍 GreptimeDB 的 Sqlness 测试，包括测试文件类型、组织测试案例和运行测试的方法。
 ---
 

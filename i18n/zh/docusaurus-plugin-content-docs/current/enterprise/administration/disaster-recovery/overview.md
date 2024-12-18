@@ -1,4 +1,5 @@
 ---
+keywords: [灾难恢复, DR 解决方案, 双活互备, 数据库, 恢复方案]
 description: 概述 GreptimeDB Enterprise 中的灾难恢复解决方案，特别是基于双活互备的 DR 解决方案，并提供相关链接以获取更多信息。
 ---
 
