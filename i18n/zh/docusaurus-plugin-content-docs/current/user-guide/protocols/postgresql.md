@@ -146,6 +146,18 @@ SERVER greptimedb
 OPTIONS (table_name 'app_logs');
 ```
 
+为了帮助用户生成这些语句，我们在 GreptimeDB 里增强了 `SHOW CREATE TABLE` 来直接
+输出可执行的语句。
+
+```sql
+SHOW CREATE TABLE grpc_latencies FOR postgres_foreign_table;
+```
+
+注意在输出的语句中你需要把服务器名 `greptimedb` 替换为之前在 `CREATE SERVER` 语句
+里使用的名字。
+
+### 执行查询
+
 至此你可以通过 Postgres 发起查询。并且可以使用一些同时存在在 GreptimeDB 和
 Postgres 上的函数，如 `date_trunc` 等。
 
