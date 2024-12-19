@@ -1,4 +1,5 @@
 ---
+keywords: [数据导入, 数据导出, COPY 语句, SQL COPY, 数据库复制, 表复制]
 description: COPY 语句用于导入和导出表或数据库的数据。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [CHARACTER_SETS 表, 字符集, SQL 查询, 数据库字符集, 字符集信息]
 description: 介绍了 GreptimeDB 中的字符集，包括字符集的定义、使用方法和相关的 SQL 查询示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DISTINCT 语句, 唯一值选择, 数据去重, SQL 示例, 数据分析]
 description: SELECT DISTINCT 用于从一组数据中选择唯一值，可以与过滤条件结合使用。
 ---
 

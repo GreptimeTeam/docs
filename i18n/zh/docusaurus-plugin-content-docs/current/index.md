@@ -1,4 +1,5 @@
 ---
+keywords: [简介, 核心功能, 特点, 文档链接, 时序数据库, 实时数据洞察, GreptimeCloud]
 description: 介绍了 GreptimeDB 的核心功能和特点，并提供了相关文档的链接，帮助用户快速上手和深入了解。
 ---
 

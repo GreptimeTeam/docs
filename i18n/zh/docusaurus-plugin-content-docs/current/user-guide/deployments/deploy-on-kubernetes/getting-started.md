@@ -1,4 +1,5 @@
 ---
+keywords: [Kubernetes 部署, GreptimeDB Operator, 测试集群, 安装, 验证, etcd 集群, 监控集成]
 description: 在 Kubernetes 上使用 GreptimeDB Operator 部署 GreptimeDB 集群的指南，包括前置条件、创建测试集群、安装和验证步骤。
 ---
 

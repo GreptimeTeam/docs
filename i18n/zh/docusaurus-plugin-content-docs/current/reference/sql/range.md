@@ -1,4 +1,5 @@
 ---
+keywords: [Range 查询, 时间范围查询, 聚合查询, SQL 示例, FILL 选项]
 description: 介绍了 Range 查询的语法和用法，包括 `FILL`、`TO` 和 `BY` 选项的详细说明和示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [核心概念, 数据库, 时序表, 数据类型, 索引, 视图, Flow]
 description: 介绍 GreptimeDB 的核心概念，包括数据库、时序表、数据类型、索引、视图和 Flow 等。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [SQL INSERT 语句, 插入数据, 多条记录插入, 默认值插入, 二进制数据插入, 特殊数值插入]
 description: INSERT 用于将一条或多条记录插入到 GreptimeDB 中的表中，支持指定列名和使用默认值。
 ---
 

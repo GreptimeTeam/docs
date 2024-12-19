@@ -1,4 +1,5 @@
 ---
+keywords: [外部数据查询, 创建外部表, 查询目录数据, Parquet 文件, CSV 文件, ORC 文件, NDJson 文件]
 description: 介绍如何查询外部数据文件，包括创建外部表和查询目录中的数据。
 ---
 

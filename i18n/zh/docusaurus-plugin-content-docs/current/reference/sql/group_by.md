@@ -1,4 +1,5 @@
 ---
+keywords: [SQL GROUP BY 子句, 数据分组, 聚合函数, 数据汇总, SQL 示例]
 description: GROUP BY 语句用于对具有相同值的行进行分组，通常与聚合函数一起使用。
 ---
 

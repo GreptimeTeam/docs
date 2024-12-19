@@ -1,4 +1,5 @@
 ---
+keywords: [Operator 管理, 安装, 升级, 配置, 卸载, 自动化部署, 多云支持, 扩缩容, 监控]
 description: GreptimeDB Operator 的管理指南，包括安装、升级、配置和卸载的详细步骤。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [创建 flow, 删除 flow, 输入表, sink 表, SQL 语法, 时间窗口, 刷新 flow]
 description: 介绍如何在 GreptimeDB 中创建和删除 flow，包括创建 sink 表、flow 的 SQL 语法和示例。
 ---
 

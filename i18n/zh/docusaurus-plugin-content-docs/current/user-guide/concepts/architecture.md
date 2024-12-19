@@ -1,4 +1,5 @@
 ---
+keywords: [基础架构, Metasrv, Frontend, Datanodes, 集群, 路由, 监测, 伸缩扩容, 数据存储, 读写请求]
 description: 介绍 GreptimeDB 的基础架构，包括 Metasrv、Frontend 和 Datanodes 三个主要组成部分及其功能。
 ---
 

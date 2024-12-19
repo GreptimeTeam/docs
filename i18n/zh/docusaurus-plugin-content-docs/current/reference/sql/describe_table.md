@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DESCRIBE TABLE 语句, 表结构描述, 列信息, 数据库表, SQL 示例]
 description: DESCRIBE TABLE 用于描述数据库中表的结构，包括列名、类型、主键、是否为空、默认值和语义类型。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [时序数据库, 云原生, 分布式, 高性能, 用户友好, 存算分离, PromQL, SQL, Python]
 description: 介绍 GreptimeDB 的特点、设计原则和优势，包括统一指标、日志和事件，云原生设计，高性能和用户友好等。
 ---
 

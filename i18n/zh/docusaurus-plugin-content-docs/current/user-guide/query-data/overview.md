@@ -1,4 +1,5 @@
 ---
+keywords: [查询语言, SQL, PromQL, 查询库, 外部数据查询, 公共表表达式, 视图]
 description: 介绍 GreptimeDB 支持的查询语言和推荐的查询库。
 ---
 

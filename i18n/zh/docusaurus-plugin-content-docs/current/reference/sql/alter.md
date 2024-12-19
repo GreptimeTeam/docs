@@ -1,4 +1,5 @@
 ---
+keywords: [修改数据库, 修改表, ALTER 语句, SQL ALTER, 数据库设置, 表设置]
 description: ALTER 用于修改数据库的设置、表的设置或表的元数据。
 ---
 

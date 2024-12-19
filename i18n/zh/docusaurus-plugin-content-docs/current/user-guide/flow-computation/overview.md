@@ -1,4 +1,5 @@
 ---
+keywords: [Flow 引擎, 实时计算, ETL 过程, 即时计算, 程序模型, 使用案例, 快速入门]
 description: 了解 GreptimeDB 的 Flow 引擎如何实现数据流的实时计算，如何用于 ETL 过程和即时计算。了解其程序模型、使用案例以及从 nginx 日志计算 user_agent 统计信息的快速入门示例。
 ---
 

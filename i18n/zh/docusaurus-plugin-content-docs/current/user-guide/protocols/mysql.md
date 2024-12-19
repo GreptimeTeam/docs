@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL 协议, 连接数据库, 管理表, 写入数据, 查询数据, 时区]
 description: 介绍如何通过 MySQL 协议连接和使用 GreptimeDB。
 ---
 

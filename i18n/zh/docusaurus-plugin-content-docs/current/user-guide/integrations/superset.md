@@ -1,4 +1,5 @@
 ---
+keywords: [Superset, 数据源, Docker Compose, 本地运行, 添加数据库, SQLAlchemy URI, BI 工具]
 description: 介绍如何将 GreptimeDB 作为 Apache Superset 的数据源，包括使用 Docker Compose 和本地运行 Superset 的安装步骤，以及添加 GreptimeDB 数据库的方法。
 ---
 

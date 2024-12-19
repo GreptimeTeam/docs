@@ -1,4 +1,5 @@
 ---
+keywords: [Procedure 信息, PROCEDURE_INFO表, Procedure 类型, 时间戳, 锁定键]
 description: PROCEDURE_INFO 表提供各种 Procedure 的详细信息。
 ---
 
