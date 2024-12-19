@@ -127,7 +127,8 @@ CREATE TABLE app_logs (
 ) with('append_mode'='true');
 ```
 
-You will need to define them like this in Postgres.
+The foreign table DDL is like this. You need to run them in Postgres to create
+these tables;
 
 ```sql
 CREATE FOREIGN TABLE ft_grpc_latencies (
@@ -149,6 +150,18 @@ CREATE FOREIGN TABLE ft_app_logs (
 SERVER greptimedb
 OPTIONS (table_name 'app_logs');
 ```
+
+To help you to generate statements in Postgres, we enhanced `SHOW CREATE TABLE`
+in GreptimeDB to dump the Postgres DDL for you. For example:
+
+```sql
+SHOW CREATE TABLE grpc_latencies FOR postgres_foreign_table;
+```
+
+Note that you will need to replace server name `greptimedb` with the name you
+defined in `CREATE SERVER` statement.
+
+### Run Queries
 
 You can now send query from Postgres. It's also possible to use functions that
 are available in both Postgres and GreptimeDB, like `date_trunc`.
