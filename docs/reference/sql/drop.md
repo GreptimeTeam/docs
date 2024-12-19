@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DROP, DROP DATABASE, DROP TABLE, DROP VIEW, SQL syntax, SQL examples]
 description: Covers the SQL DROP statement for removing databases, tables, flows, and views in GreptimeDB, including syntax, examples.
 ---
 

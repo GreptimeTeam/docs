@@ -1,4 +1,5 @@
 ---
+keywords: [ANSI SQL, SQL 兼容性, SQL 扩展, SQL 语法, 数据库兼容性, SQL 特性]
 description: GreptimeDB 支持的 SQL 是 ANSI SQL 的子集，并且拥有一些特有的扩展。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Metabase, BI tool, data source, driver plugin, connection settings]
 description: Instructions for configuring GreptimeDB as a data source in Metabase, including installation of the driver plugin and connection settings.
 ---
 

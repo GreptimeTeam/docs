@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL, 系统指标, 数据收集, Bash 脚本, 数据可视化]
 description: 介绍如何通过 MySQL 收集系统指标数据并将其发送到 GreptimeCloud。
 ---
 

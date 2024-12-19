@@ -1,4 +1,5 @@
 ---
+keywords: [observability, integration, Prometheus, Vector, OpenTelemetry, InfluxDB, Loki]
 description: Overview of integrating GreptimeDB with observability tools like Prometheus, Vector, OpenTelemetry, InfluxDB, and Loki for real-time monitoring and analysis.
 ---
 

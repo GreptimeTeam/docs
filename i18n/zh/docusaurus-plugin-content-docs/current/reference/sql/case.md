@@ -1,4 +1,5 @@
 ---
+keywords: [条件逻辑, CASE 语句, SQL CASE, 条件查询, 数据检索, SQL 语法]
 description: CASE 语句允许在查询中执行条件逻辑，根据条件返回特定值。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Loki, 日志数据, API 信息, 示例代码, 数据模型]
 description: 介绍如何使用 Loki 将日志数据发送到 GreptimeDB，包括 API 信息、示例代码和数据模型映射。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, MySQL, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using MySQL, including creating a service, writing data, and visualizing data.
 ---
 

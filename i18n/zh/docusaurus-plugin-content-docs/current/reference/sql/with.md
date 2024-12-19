@@ -1,4 +1,5 @@
 ---
+keywords: [公共表表达式, CTE, SQL 查询, WITH 关键字, SQL 示例]
 description: 介绍了如何使用 `WITH` 关键字定义公共表表达式（CTE），包括基本语法和示例。
 ---
 

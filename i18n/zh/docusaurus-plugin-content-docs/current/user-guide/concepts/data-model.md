@@ -1,4 +1,5 @@
 ---
+keywords: [数据模型, 表结构, 列类型, 设计考虑, 时序表, Tag 列, Timestamp 列, Field 列, Metric 表, Log 表]
 description: 介绍 GreptimeDB 的数据模型，包括表的结构、列类型和设计考虑，适用于指标、日志和事件数据。
 ---
 

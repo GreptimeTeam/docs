@@ -1,4 +1,5 @@
 ---
+keywords: [SQL SHOW commands, database information, table details, SHOW DATABASES, SHOW TABLES, SHOW CREATE]
 description: Provides information on the SHOW keyword in SQL for displaying database and table details, including various SHOW commands with syntax and examples.
 ---
 

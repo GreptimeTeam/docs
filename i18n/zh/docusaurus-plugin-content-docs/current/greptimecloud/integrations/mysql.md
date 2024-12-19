@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL 协议, 数据库连接, CLI 工具, JDBC 客户端, 认证信息]
 description: 介绍如何通过 MySQL 协议连接到 GreptimeCloud，并提供了连接信息和使用 MySQL、MariaDB CLI 及 JDBC 客户端的示例。
 ---
 

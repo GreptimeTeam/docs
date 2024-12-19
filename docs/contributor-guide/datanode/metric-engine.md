@@ -1,4 +1,5 @@
 ---
+keywords: [Metric engine, small tables, logical table, physical table, storage optimization]
 description: Overview of the Metric engine in GreptimeDB, its concepts, architecture, and design for handling small tables.
 ---
 

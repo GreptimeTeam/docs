@@ -1,4 +1,5 @@
 ---
+keywords: [Grafana Alloy, 数据目的地, Prometheus Remote Write, OpenTelemetry, 配置示例]
 description: 介绍如何将 GreptimeCloud 配置为 Grafana Alloy 的数据目的地，并提供了 Prometheus Remote Write 和 OpenTelemetry 的配置示例。
 ---
 

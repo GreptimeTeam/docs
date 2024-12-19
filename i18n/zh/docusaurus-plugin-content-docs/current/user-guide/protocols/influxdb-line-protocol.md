@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB Line Protocol, 写入数据, PING, health API]
 description: 介绍如何使用 InfluxDB Line Protocol 向 GreptimeDB 写入数据。
 ---
 

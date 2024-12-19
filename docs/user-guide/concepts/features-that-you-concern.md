@@ -1,4 +1,5 @@
 ---
+keywords: [features, logs, events, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, JSON support]
 description: Answers common questions about GreptimeDB's features, including support for logs, events, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, and JSON support.
 ---
 

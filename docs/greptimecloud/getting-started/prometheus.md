@@ -1,4 +1,5 @@
 ---
+keywords: [Prometheus, data ingestion, remote write, Docker, GreptimeCloud]
 description: Instructions on creating a service, writing data using Prometheus, and visualizing data in GreptimeDB.
 ---
 

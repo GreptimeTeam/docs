@@ -1,4 +1,5 @@
 ---
+keywords: [SQL SELECT statement, data retrieval, filtering with WHERE, LIMIT clause, JOIN tables, GROUP BY clause]
 description: Describes the SELECT statement in SQL for retrieving data from tables, including syntax, filtering with WHERE, limiting results with LIMIT, joining tables, and grouping results with GROUP BY.
 ---
 

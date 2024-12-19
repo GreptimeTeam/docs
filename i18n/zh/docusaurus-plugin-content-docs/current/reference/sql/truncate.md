@@ -1,4 +1,5 @@
 ---
+keywords: [TRUNCATE TABLE, SQL 删除, 高效删除, 数据库操作, SQL 示例]
 description: 介绍了 `TRUNCATE TABLE` 语句的用法，用于高效地删除表中的所有数据。
 ---
 

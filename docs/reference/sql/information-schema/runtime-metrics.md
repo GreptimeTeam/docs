@@ -1,4 +1,5 @@
 ---
+keywords: [runtime metrics, system metrics, HTTP endpoint, cluster metrics]
 description: Provides information about the `RUNTIME_METRICS` table, which includes system runtime metrics from the `/metrics` HTTP endpoint output in the cluster.
 ---
 

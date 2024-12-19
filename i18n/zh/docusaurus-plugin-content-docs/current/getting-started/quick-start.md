@@ -1,4 +1,5 @@
 ---
+keywords: [快速开始, 数据库连接, 创建表, 写入数据, 查询数据, 数据可视化]
 description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库、创建表、写入数据、查询数据等核心功能。
 ---
 
@@ -368,7 +369,6 @@ grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 17207280210000000
 ```
 
 然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果改表不存在，将会自动创建该表。
-
 ## 下一步
 
 你现在已经体验了 GreptimeDB 的核心功能。

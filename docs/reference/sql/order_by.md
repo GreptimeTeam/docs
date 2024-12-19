@@ -1,4 +1,5 @@
 ---
+keywords: [SQL ORDER BY clause, sorting data, ascending order, descending order, SQL syntax]
 description: Details the ORDER BY clause in SQL for sorting data in ascending or descending order based on one or more columns, with syntax and examples.
 ---
 

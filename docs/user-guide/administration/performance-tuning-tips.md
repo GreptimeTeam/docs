@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB performance tuning, query optimization, caching, primary keys, append-only tables, metrics]
 description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, primary keys, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
 ---
 

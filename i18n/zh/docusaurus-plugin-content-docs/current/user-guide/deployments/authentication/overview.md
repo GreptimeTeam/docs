@@ -1,4 +1,5 @@
 ---
+keywords: [身份验证, 用户 Provider, 静态用户, LDAP 用户, 连接数据库]
 description: GreptimeDB 的身份验证概述，介绍了多种用户 Provider 的实现，包括静态用户 Provider 和 LDAP 用户 Provider。
 ---
 

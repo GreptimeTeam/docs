@@ -1,4 +1,5 @@
 ---
+keywords: [DBeaver, database tool, MySQL drivers, connection settings, verification]
 description: Guide to connecting GreptimeDB to DBeaver using MySQL database drivers, including connection settings and verification steps.
 ---
 

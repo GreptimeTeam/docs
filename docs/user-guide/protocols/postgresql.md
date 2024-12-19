@@ -1,4 +1,5 @@
 ---
+keywords: [PostgreSQL connection, table management, data ingestion, querying data, time zones, foreign data wrapper]
 description: Guide on connecting to GreptimeDB using PostgreSQL, managing tables, ingesting and querying data, and handling time zones.
 ---
 

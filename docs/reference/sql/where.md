@@ -1,4 +1,5 @@
 ---
+keywords: [SQL WHERE clause, filtering data, logical operators, comparison operators, list search]
 description: Explains the WHERE clause in SQL for filtering data based on conditions, including syntax, examples with logical and comparison operators, and list search functionalities.
 ---
 

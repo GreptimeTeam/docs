@@ -1,4 +1,5 @@
 ---
+keywords: [tokio-console, GreptimeDB, tokio_unstable, build, connect, subscriber]
 description: Guides on using tokio-console in GreptimeDB, including building with specific features and connecting to the tokio console subscriber.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [HTTP API, 数据库交互, 鉴权, 时区, 请求超时, 管理 Pipeline]
 description: 介绍 GreptimeDB 提供的 HTTP API 用于与数据库进行交互。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [OpenTelemetry, OTLP, metrics, logs, 数据模型]
 description: 介绍如何使用 OpenTelemetry Protocol (OTLP) 将观测数据（如 metrics 和 logs）导出到 GreptimeDB，包括示例代码和数据模型的映射规则。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [COLLATIONS 表, 排序规则, 字符集, SQL 查询, 数据库排序]
 description: 介绍了 GreptimeDB 中字符集的排序规则，包括排序规则的定义、使用方法和相关的 SQL 查询示例。
 ---
 

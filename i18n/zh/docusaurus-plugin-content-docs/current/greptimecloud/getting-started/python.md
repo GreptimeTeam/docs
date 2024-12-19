@@ -1,4 +1,5 @@
 ---
+keywords: [Python, 系统指标, 数据收集, 安装命令, 示例代码, 数据可视化]
 description: 介绍如何使用 Python 收集系统指标数据并将其发送到 GreptimeCloud，包括安装命令和示例代码。
 ---
 

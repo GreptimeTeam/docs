@@ -1,4 +1,5 @@
 ---
+keywords: [Metabase, 数据源, 数据库连接, 配置示例, 认证信息]
 description: 介绍如何将 GreptimeCloud 添加到 Metabase 作为数据源，并提供了连接信息。
 ---
 

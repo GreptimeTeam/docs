@@ -1,4 +1,5 @@
 ---
+keywords: [PostgreSQL, connection details, psql CLI, JDBC URL, wire protocol]
 description: Instructions for connecting to GreptimeCloud using PostgreSQL protocol, including connection details, psql CLI, connection strings, and JDBC URL.
 ---
 

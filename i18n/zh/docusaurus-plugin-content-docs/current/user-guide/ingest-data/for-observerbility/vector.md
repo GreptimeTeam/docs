@@ -1,4 +1,5 @@
 ---
+keywords: [Vector, 数据写入, gRPC 通信, 数据模型, 配置示例]
 description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小配置示例和数据模型的映射规则。
 ---
 

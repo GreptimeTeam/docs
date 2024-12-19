@@ -1,4 +1,5 @@
 ---
+keywords: [tracing, 分布式追踪, tracing 上下文, RPC 调用, 代码埋点]
 description: 介绍如何在 GreptimeDB 中使用 Rust 的 tracing 框架进行代码埋点，包括在 RPC 中定义和传递 tracing 上下文的方法。
 ---
 

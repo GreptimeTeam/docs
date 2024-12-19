@@ -1,4 +1,5 @@
 ---
+keywords: [admin api, health check, leader query, heartbeat, maintenance mode, RESTful API]
 description: Details the Admin API for Metasrv, including endpoints for health checks, leader queries, heartbeat data, and maintenance mode.
 ---
 

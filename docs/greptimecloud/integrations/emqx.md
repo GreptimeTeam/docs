@@ -1,4 +1,5 @@
 ---
+keywords: [EMQX, MQTT, IoT, data ingestion, GreptimeCloud]
 description: Instructions on configuring GreptimeCloud as a data sink in EMQX Platform for IoT data ingestion.
 ---
 

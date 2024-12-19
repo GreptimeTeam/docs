@@ -1,4 +1,5 @@
 ---
+keywords: [quick start, SQL, create tables, insert data, query data, GreptimeDB dashboard]
 description: A guide to quickly start with GreptimeDB, including connecting to the database, creating tables, inserting data, querying data, and using the GreptimeDB dashboard.
 ---
 

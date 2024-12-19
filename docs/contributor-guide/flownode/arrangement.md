@@ -1,4 +1,5 @@
 ---
+keywords: [arrangement component, state storage, update streams, key-value pairs, querying and updating]
 description: Details on the arrangement component in Flownode, which stores state and update streams for querying and updating.
 ---
 

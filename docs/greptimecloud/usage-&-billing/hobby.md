@@ -1,4 +1,5 @@
 ---
+keywords: [hobby plan, free tier, limitations, data retention, GreptimeCloud]
 description: Describes the free tier Hobby Plan, its limitations, and the data retention policy for GreptimeCloud users.
 ---
 

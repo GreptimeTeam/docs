@@ -1,4 +1,5 @@
 ---
+keywords: [data persistence, indexing, SST file format, Apache Parquet, inverted index, OpenDAL]
 description: Explanation of data persistence and indexing in GreptimeDB, including SST file format, indexing methods, and the use of OpenDAL.
 ---
 

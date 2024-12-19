@@ -1,4 +1,5 @@
 ---
+keywords: [DBeaver, 数据库工具, MySQL Driver, 数据库连接, 配置步骤]
 description: 介绍如何使用 DBeaver 通过 MySQL Driver 连接到 GreptimeCloud，并提供了连接信息和配置步骤。
 ---
 

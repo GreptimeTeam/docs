@@ -1,4 +1,5 @@
 ---
+keywords: [分区表信息, PARTITIONS 表, 分区方法, 分区表达式, Region Id]
 description: PARTITIONS 表提供关于分区表的信息。
 ---
 

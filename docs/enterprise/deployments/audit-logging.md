@@ -1,4 +1,5 @@
 ---
+keywords: [audit logging, configuration, monitoring, compliance, user activity]
 description: Guide to configuring audit logging in GreptimeDB Enterprise, including examples and configuration options to monitor and record database activities.
 ---
 

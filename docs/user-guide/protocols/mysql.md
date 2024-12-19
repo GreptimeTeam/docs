@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL connection, table management, data ingestion, querying data, time zones]
 description: Guide on connecting to GreptimeDB using MySQL, managing tables, ingesting and querying data, and handling time zones.
 ---
 

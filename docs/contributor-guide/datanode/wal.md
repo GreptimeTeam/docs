@@ -1,4 +1,5 @@
 ---
+keywords: [write-ahead logging, WAL, data durability, LSMT, synchronous flush, asynchronous flush]
 description: Introduction to Write-Ahead Logging (WAL) in GreptimeDB, its purpose, architecture, and operational modes.
 ---
 

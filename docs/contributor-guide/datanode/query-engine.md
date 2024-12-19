@@ -1,4 +1,5 @@
 ---
+keywords: [query engine, Apache DataFusion, logical plan, physical plan, data representation, indexing]
 description: Overview of GreptimeDB's query engine, its architecture, data representation, indexing, and extensibility.
 ---
 

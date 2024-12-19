@@ -6,27 +6,30 @@ const locale = process.env.DOC_LANG || 'en'
 
 const metaMap = {
   'en': [
+    { name: 'keywords', content: 'time series database, open source time series database, time series data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB' },
+    { name: 'description', content: 'GreptimeDB is an open-source unified time-series database for Metrics, Logs, Events, and Traces. Learn how to gain real-time insights from edge to cloud at any scale with GreptimeDB and GreptimeCloud.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://docs.greptime.com/' },
-    { property: 'og:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' },
-    { property: 'og:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' },
+    { property: 'og:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
+    { property: 'og:title', content: 'GreptimeDB Documentation | Unified Time-Series Database' },
+    { property: 'og:description', content: 'Discover how GreptimeDB unifies metrics, logs, events, and traces with SQL and PromQL. Real-time insights, high scalability, and cloud-native flexibility.' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:url', content: 'https://greptime.com/' },
-    { property: 'twitter:title', content: 'Cloud-scale, Fast and Efficient Time Series Data Infrastructure' },
-    { property: 'twitter:description', content: 'Greptime provides cloud-scale, fast and efficient Time Series Data Infrastructure' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
-
   ],
   'zh': [
+    { name: 'keywords', content: '时序数据库, 开源时序数据库, 时序数据, 可观测性工具, 云原生数据库, 数据可观测性, 可观测性平台, 边缘数据库, 物联网边缘计算, 边缘云计算, 日志管理, 日志聚合, 高基数, SQL查询示例, OpenTelemetry 收集器, GreptimeDB' },
+    { name: 'description', content: 'GreptimeDB 是一个开源的统一时序数据库，用于处理指标、日志、事件和追踪。了解如何使用 GreptimeDB 和 GreptimeCloud 从边缘到云端在任何规模上获得实时洞察。' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://docs.greptime.cn/' },
-    { property: 'og:title', content: '分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
-    { property: 'og:description', content: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'og:url', content: 'https://docs.greptime.com/' },
+    { property: 'og:image', content: 'https://greptime.com/logo/img/logo-routine-level.png' },
+    { property: 'og:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
+    { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一指标、日志、事件和追踪。实时洞察，高可扩展性和云原生灵活性。' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:url', content: 'https://greptime.com/' },
-    { property: 'twitter:title', content: '分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
-    { property: 'twitter:description', content: 'Greptime: 分布式、云原生、融合时序和分析为一体的时序数据实时处理平台' },
+    { property: 'twitter:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
+    { property: 'twitter:description', content: '探索 GreptimeDB，这个开源的时序数据库，用于处理指标、日志、事件和追踪。无缝扩展，实时洞察和可观测性工作流。' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ]
@@ -84,8 +87,8 @@ const algoliaMap = {
 }
 
 const config: Config = {
-  title: 'GreptimeDB',
-  tagline: 'Dinosaurs are cool',
+  title: 'GreptimeDB Documentation | Unified Time-Series Database',
+  tagline: 'Open-source unified time-series database for Metrics, Logs, Events, and Traces.',
   favicon: '/favicon.ico',
 
   // Set the production url of your site here

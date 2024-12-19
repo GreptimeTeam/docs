@@ -1,4 +1,5 @@
 ---
+keywords: [ANSI SQL, SQL compatibility, SQL extensions, table creation, data insertion]
 description: Describes the subset of ANSI SQL supported by GreptimeDB and its unique extensions, including major incompatibilities and extensions for table creation, data insertion, updates, queries, and deletions.
 ---
 

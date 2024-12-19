@@ -1,4 +1,5 @@
 ---
+keywords: [运行时指标, RUNTIME_METRICS 表, 系统指标, 集群指标, HTTP 端点]
 description: RUNTIME_METRICS 表提供系统运行时指标，包括集群中 `/metrics` HTTP 端点输出的所有指标。
 ---
 

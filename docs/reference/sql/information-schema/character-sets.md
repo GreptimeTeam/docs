@@ -1,4 +1,5 @@
 ---
+keywords: [character sets, SQL information schema, character set details, character set management, available character sets]
 description: Provides details on the character sets available in the SQL information schema, including how to use and manage different character sets.
 ---
 

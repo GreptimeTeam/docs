@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, Node.js, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using Node.js, including creating a service, writing data, and visualizing data.
 ---
 

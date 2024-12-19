@@ -1,4 +1,5 @@
 ---
+keywords: [Node.js, data ingestion, system metrics, OpenTelemetry, GreptimeCloud]
 description: Instructions on creating a service, writing data using Node.js, and visualizing data in GreptimeDB.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [分布式集群, Kubernetes, Docker Compose, 水平扩展, 快速开始]
 description: 介绍如何在 Kubernetes 和 Docker Compose 中部署 GreptimeDB 集群，以支持水平扩展。
 ---
 

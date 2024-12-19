@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DISTINCT, SQL unique values, SQL syntax, SQL examples, SQL data filtering]
 description: Explains the SQL SELECT DISTINCT statement used to retrieve unique values from a dataset, with examples of using DISTINCT with and without filters.
 ---
 

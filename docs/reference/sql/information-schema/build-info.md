@@ -1,4 +1,5 @@
 ---
+keywords: [build information, SQL information schema, version details, build metadata, system build info]
 description: Contains build information for the SQL information schema, including version details, build date, and other relevant metadata.
 ---
 

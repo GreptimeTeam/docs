@@ -1,4 +1,5 @@
 ---
+keywords: [集成测试, Rust, HTTP, gRPC, 测试工具]
 description: 介绍 GreptimeDB 的集成测试，包括测试范围和如何运行这些测试。
 ---
 

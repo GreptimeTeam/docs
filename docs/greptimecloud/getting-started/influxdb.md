@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB, line protocol, system metrics, data visualization]
 description: Instructions on creating a service, writing data using InfluxDB Line Protocol, and visualizing data in GreptimeDB.
 ---
 

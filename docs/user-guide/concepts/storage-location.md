@@ -1,4 +1,5 @@
 ---
+keywords: [storage options, local file system, cloud storage, AWS S3, Azure Blob Storage]
 description: Describes the storage options for GreptimeDB, including local file systems, cloud storage services like AWS S3, Azure Blob Storage, and more. It explains the local file structure and considerations for disaster recovery and multiple storage engines.
 ---
 

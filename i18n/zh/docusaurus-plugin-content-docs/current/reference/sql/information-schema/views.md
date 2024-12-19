@@ -1,4 +1,5 @@
 ---
+keywords: [视图, VIEWS 表, SQL 视图, 数据库视图, 视图定义, 视图字段]
 description: VIEWS 表提供当前用户可见的视图列表及其字段描述。
 ---
 

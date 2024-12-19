@@ -1,4 +1,5 @@
 ---
+keywords: [gtctl, command-line tool, cluster management, installation, Kubernetes, bare-metal, deployment, autocompletion]
 description: Instructions for installing and using gtctl, a command-line tool for managing GreptimeDB clusters, including installation methods, autocompletion setup, and deployment modes.
 ---
 

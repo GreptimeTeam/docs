@@ -1,4 +1,5 @@
 ---
+keywords: [region balancer, load balancing, configuration, datanodes, migration]
 description: Configuration guide for the region balancer plugin in GreptimeDB Enterprise, which balances write loads across datanodes to prevent frequent region migrations.
 ---
 

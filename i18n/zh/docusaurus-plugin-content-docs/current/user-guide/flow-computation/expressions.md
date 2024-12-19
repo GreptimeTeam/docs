@@ -1,4 +1,5 @@
 ---
+keywords: [聚合函数, 标量函数, count, sum, avg, min, max, date_bin, date_trunc, trunc]
 description: 列出了 GreptimeDB 中 flow 支持的聚合函数和标量函数。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Datanode, region server, data storage, gRPC service, heartbeat task, region manager]
 description: Overview of Datanode in GreptimeDB, its responsibilities, components, and interaction with other parts of the system.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Kubernetes, deployment, getting started, GreptimeDB Operator, prerequisites, cluster creation, installation, verification]
 description: Step-by-step guide to deploying a GreptimeDB cluster on Kubernetes using the GreptimeDB Operator, including prerequisites, cluster creation, installation, and verification.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [ALTER statement, SQL, modify database, modify table, alter column, table options]
 description: Describes the `ALTER` statement used to modify database options, table options, or metadata, including syntax and examples for altering databases and tables.
 ---
 

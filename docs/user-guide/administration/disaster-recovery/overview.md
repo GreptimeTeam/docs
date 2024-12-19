@@ -1,4 +1,5 @@
 ---
+keywords: [disaster recovery, GreptimeDB, DR solutions, backup and restore, active-active failover, cross-region deployment, RTO, RPO]
 description: Overview of disaster recovery (DR) solutions in GreptimeDB, including basic concepts, component architecture, and various DR solutions such as standalone, active-active failover, cross-region deployment, and backup & restore.
 ---
 

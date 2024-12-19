@@ -1,4 +1,5 @@
 ---
+keywords: [time series database, metrics, logs, events, real-time insights, cloud-native, SQL, PromQL]
 description: Introduction to GreptimeDB, an open-source unified time-series database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
 ---
 # Introduction

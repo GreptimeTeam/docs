@@ -1,4 +1,5 @@
 ---
+keywords: [flows, flow task, flow definition, source table IDs, sink table name]
 description: Provides the flow task information, including flow name, ID, definition, source table IDs, sink table name, and other details.
 ---
 

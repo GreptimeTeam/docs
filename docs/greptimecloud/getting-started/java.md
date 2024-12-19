@@ -1,4 +1,5 @@
 ---
+keywords: [Java, JVM metrics, data visualization, GreptimeDB service, OpenTelemetry]
 description: Instructions on creating a service, writing data using Java, and visualizing data in GreptimeDB.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Metric 引擎, 逻辑表, 物理表, DDL 操作]
 description: 介绍了 Metric 引擎的概念、架构及设计，重点描述了逻辑表与物理表的区别和批量 DDL 操作的实现。
 ---
 

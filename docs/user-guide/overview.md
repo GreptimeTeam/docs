@@ -1,4 +1,5 @@
 ---
+keywords: [time series database, metrics, logs, events, SQL support, range queries, data model, protocols]
 description: Introduction to GreptimeDB's features, including unified storage for metrics, logs, and events, SQL and multiple protocol support, and range queries.
 ---
 

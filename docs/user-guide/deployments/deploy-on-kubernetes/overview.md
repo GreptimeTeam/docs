@@ -1,4 +1,5 @@
 ---
+keywords: [Kubernetes, deployment, GreptimeDB Operator, setup, provisioning, management]
 description: Overview of deploying GreptimeDB on Kubernetes using the GreptimeDB Operator, including setup, provisioning, and management of clusters and standalone instances.
 ---
 

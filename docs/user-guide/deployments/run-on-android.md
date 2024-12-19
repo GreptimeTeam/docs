@@ -1,4 +1,5 @@
 ---
+keywords: [Android, Termux, installation, configuration, database, ARM64]
 description: Instructions for running GreptimeDB on Android platforms, including installation of Termux, downloading the GreptimeDB binary, creating a configuration file, starting the database, and connecting to it from another device.
 ---
 

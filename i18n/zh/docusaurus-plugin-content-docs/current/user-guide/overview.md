@@ -1,4 +1,5 @@
 ---
+keywords: [概述, 功能, 特点, SQL 查询, 数据处理, GreptimeDB, 数据模型, 范围查询]
 description: 概述了 GreptimeDB 的功能和特点，并通过 SQL 查询示例展示了其强大的数据处理能力。
 ---
 
