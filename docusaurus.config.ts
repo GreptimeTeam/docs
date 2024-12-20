@@ -9,12 +9,11 @@ const metaMap = {
     { name: 'keywords', content: 'time series database, open source time series database, time series data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB' },
     { name: 'description', content: 'GreptimeDB is an open-source unified time-series database for Metrics, Logs, Events, and Traces. Learn how to gain real-time insights from edge to cloud at any scale with GreptimeDB and GreptimeCloud.' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://docs.greptime.com/' },
+   
     { property: 'og:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { property: 'og:title', content: 'GreptimeDB Documentation | Unified Time-Series Database' },
     { property: 'og:description', content: 'Discover how GreptimeDB unifies metrics, logs, events, and traces with SQL and PromQL. Real-time insights, high scalability, and cloud-native flexibility.' },
     { property: 'twitter:card', content: 'summary_large_image' },
-    { property: 'twitter:url', content: 'https://greptime.com/' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ],
