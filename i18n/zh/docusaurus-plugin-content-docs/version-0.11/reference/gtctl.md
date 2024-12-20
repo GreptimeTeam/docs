@@ -1,4 +1,5 @@
 ---
+keywords: [gtctl, 安装, Homebrew, 源代码构建, 自动补全, 快速入门, 部署, Kubernetes, 裸机模式]
 description: 介绍 gtctl 工具的安装、使用方法，包括一键安装、通过 Homebrew 安装、从源代码构建、启用自动补全、快速入门、部署等内容。
 ---
 

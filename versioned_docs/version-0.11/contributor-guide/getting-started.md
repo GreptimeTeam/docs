@@ -1,4 +1,5 @@
 ---
+keywords: [setup, running from source, prerequisites, build dependencies, unit tests]
 description: Instructions for setting up and running GreptimeDB from source, including prerequisites, build dependencies, and running unit tests.
 ---
 

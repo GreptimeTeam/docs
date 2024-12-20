@@ -1,4 +1,5 @@
 ---
+keywords: [PromQL, Prometheus Query Language, HTTP API, SQL extensions, Grafana, Prometheus compatibility]
 description: Guide on using Prometheus Query Language (PromQL) in GreptimeDB, including HTTP API compatibility, SQL extensions, and supported features and limitations.
 ---
 

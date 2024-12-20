@@ -1,4 +1,5 @@
 ---
+keywords: [SQL INSERT, SQL syntax, SQL examples, inserting records, SQL data manipulation]
 description: Describes the SQL INSERT statement for adding records to a table in GreptimeDB, including syntax, examples for inserting single and multiple records, default values, binary data, special numeric values, and the INSERT INTO SELECT statement.
 ---
 

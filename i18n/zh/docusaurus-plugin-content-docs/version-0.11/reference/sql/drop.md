@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DROP 语句, 删除数据库, 删除表, 删除视图, 删除流, SQL 示例]
 description: DROP 用于删除数据库、表、流或视图，操作不可撤销，需谨慎使用。
 ---
 

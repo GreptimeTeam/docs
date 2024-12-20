@@ -1,4 +1,5 @@
 ---
+keywords: [核心概念, 数据库, 时序表, 数据类型, 索引, 视图, Flow]
 description: 介绍 GreptimeDB 的核心概念，包括数据库、时序表、数据类型、索引、视图和 Flow 等。
 ---
 
@@ -47,4 +48,4 @@ GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-ind
 
 ## Flow
 
-GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/continuous-aggregation/overview.md)过程，该过程根据传入数据持续更新和聚合数据。
+GreptimeDB 中的 Flow 是指[持续聚合](/user-guide/flow-computation/overview.md)过程，该过程根据传入数据持续更新和聚合数据。

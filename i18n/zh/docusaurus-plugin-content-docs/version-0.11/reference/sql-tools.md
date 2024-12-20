@@ -1,4 +1,5 @@
 ---
+keywords: [SQL 工具, 查询库, 编程语言 Driver, 数据库连接, Raw SQL, 命令行工具, GUI 工具, HTTP API]
 description: 介绍如何使用 SQL 工具与 GreptimeDB 交互，包括推荐的查询库、安装方法、连接数据库、使用 Raw SQL 查询数据等内容。
 ---
 

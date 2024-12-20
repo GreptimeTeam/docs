@@ -1,4 +1,5 @@
 ---
+keywords: [disaster recovery, GreptimeDB, cross-region deployment, single cluster, high availability, metadata distribution, data distribution]
 description: Explains the disaster recovery (DR) solution based on cross-region deployment in a single GreptimeDB cluster, detailing various configurations for metadata and data distribution across regions to achieve high availability and reliability.
 ---
 

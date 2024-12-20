@@ -1,4 +1,5 @@
 ---
+keywords: [Kubernetes, GreptimeDB Operator, management, installation, upgrade, configuration, Helm]
 description: Guide to managing the GreptimeDB Operator on Kubernetes, including installation, upgrade, configuration, and uninstallation using Helm.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [运行时信息, INFORMATION_SCHEMA, 系统元数据, 集群拓扑, Region 分布, 查询示例, 元数据访问]
 description: 介绍如何通过 INFORMATION_SCHEMA 数据库访问系统元数据，并提供查询集群拓扑信息和表的 Region 分布的示例。
 ---
 

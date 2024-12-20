@@ -1,4 +1,5 @@
 ---
+keywords: [Metabase, 数据源, 安装 Driver, 添加数据库, BI 工具, 数据分析]
 description: 介绍如何将 GreptimeDB 添加到 Metabase 作为数据源，包括安装 Driver 和添加 GreptimeDB 数据库的方法。
 ---
 

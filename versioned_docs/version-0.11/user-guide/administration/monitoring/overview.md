@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB monitoring, metrics export, tracing, database monitoring]
 description: Overview of monitoring methods for GreptimeDB, including exporting metrics and tracing.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [配置指南, 命令行选项, 配置文件, 环境变量, 协议选项, 存储选项, WAL 选项, 日志选项]
 description: GreptimeDB 的配置指南，介绍了命令行选项、配置文件、环境变量、协议选项、存储选项、WAL 选项、日志选项等详细配置方法。
 ---
 
@@ -501,6 +502,9 @@ fork_dictionary_bytes = "1GiB"
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
 | `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
+| `inverted_index.metadata_cache_size`     | 字符串 | `64MiB`       | 倒排索引元数据缓存大小 |
+| `inverted_index.content_cache_size`      | 字符串 | `128MiB`      | 倒排索引文件内容缓存大小 |
+| `inverted_index.content_cache_page_size` | 字符串 | `8MiB`        | 倒排索引文件内容缓存页大小。倒排索引文件内容以页为单位进行读取和缓存，该配置项用于调整读取和缓存的粒度，优化缓存命中率。 |
 | `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |

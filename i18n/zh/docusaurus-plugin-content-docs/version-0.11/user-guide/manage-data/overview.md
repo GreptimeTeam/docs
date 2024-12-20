@@ -1,4 +1,5 @@
 ---
+keywords: [数据管理, 数据更新, 数据删除, TTL 策略, 数据保留]
 description: 介绍如何在 GreptimeDB 中更新和删除数据，包括使用相同的 tag 和 time index 更新数据、删除数据、使用 TTL 策略保留数据等。
 ---
 

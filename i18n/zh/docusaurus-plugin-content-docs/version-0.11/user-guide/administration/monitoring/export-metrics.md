@@ -1,4 +1,5 @@
 ---
+keywords: [导出指标, Prometheus, 监控指标, self_import, remote_write]
 description: 介绍如何导出 GreptimeDB 的监控指标到 Prometheus 或 GreptimeDB 自身，并提供各组件的指标详情。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [SHOW 关键字, 数据库信息, 表信息, SQL 示例, SHOW DATABASES]
 description: 介绍了 `SHOW` 关键字的各种用法，包括展示数据库、表、视图和索引等信息的语法和示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [快速开始, Remote WAL, Docker, Kafka 服务, Standalone GreptimeDB, 数据写入, 数据查询, Kafka Topics]
 description: 介绍如何使用 Docker 快速启动带有 Remote WAL 的 Standalone GreptimeDB，包括创建自定义 Docker bridge、启动 Kafka 服务和 GreptimeDB。
 ---
 

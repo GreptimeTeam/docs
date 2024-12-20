@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, InfluxDB, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using InfluxDB Line Protocol, including creating a service, writing data, and visualizing data.
 ---
 

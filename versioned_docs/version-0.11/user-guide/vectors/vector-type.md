@@ -1,4 +1,5 @@
 ---
+keywords: [vector data type, AI applications, machine learning, deep learning, vector storage, vector computation, SQL vector functions]
 description: Overview of vector data type in GreptimeDB, including how to define, insert, and perform calculations with vector type columns in SQL.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, migrate region]
 description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, migrating regions, and querying procedure states.
 ---
 

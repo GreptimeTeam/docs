@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB tracing, Jaeger, distributed tracing, tracing configuration, tracing sampling rates]
 description: Guide on using distributed tracing in GreptimeDB with Jaeger. Includes steps for deploying Jaeger, configuring GreptimeDB for tracing, obtaining trace information, and configuring tracing sampling rates.
 ---
 

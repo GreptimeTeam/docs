@@ -1,4 +1,5 @@
 ---
+keywords: [usage and billing, Greptime Cloud, capacity units, service plans, billing guides]
 description: Provides an overview of the usage and billing documents for Greptime Cloud, including links to detailed guides on various plans and capacity units.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [OpenTSDB, HTTP API, metrics, data ingestion, insert data, multiple metric points]
 description: Instructions on ingesting OpenTSDB metrics into GreptimeDB via HTTP API, including examples of inserting single and multiple metric points.
 ---
 

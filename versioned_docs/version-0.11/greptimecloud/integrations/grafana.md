@@ -1,4 +1,5 @@
 ---
+keywords: [Grafana, data source, Prometheus, MySQL, GreptimeCloud]
 description: Guide on configuring GreptimeCloud as a data source in Grafana using GreptimeDB, Prometheus, or MySQL data sources.
 ---
 

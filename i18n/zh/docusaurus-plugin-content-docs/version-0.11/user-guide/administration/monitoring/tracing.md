@@ -1,4 +1,5 @@
 ---
+keywords: [链路追踪, 分布式追踪, Jaeger, OTLP 协议, tracing 采样率]
 description: 介绍 GreptimeDB 的分布式链路追踪功能，包括如何使用 Jaeger 进行追踪和配置 tracing 采样率。
 ---
 

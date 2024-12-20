@@ -1,4 +1,5 @@
 ---
+keywords: [Admin API, 健康检查, leader 查询, 心跳检测, 维护模式]
 description: 介绍 Metasrv 的 Admin API，包括健康检查、leader 查询和心跳检测等功能。
 ---
 

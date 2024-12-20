@@ -1,4 +1,5 @@
 ---
+keywords: [快速开始, 数据库连接, 创建表, 写入数据, 查询数据, 数据可视化]
 description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库、创建表、写入数据、查询数据等核心功能。
 ---
 
@@ -306,7 +307,7 @@ ORDER BY
 
 ### 持续聚合
 
-为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的[持续聚合](/user-guide/continuous-aggregation/overview.md)功能来实现。
+为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的[持续聚合](/user-guide/flow-computation/overview.md)功能来实现。
 
 例如，按照 5 秒钟的时间窗口聚合 API 错误数量，并将数据保存到 `api_error_count` 表中。
 
@@ -368,7 +369,6 @@ grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 17207280210000000
 ```
 
 然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果改表不存在，将会自动创建该表。
-
 ## 下一步
 
 你现在已经体验了 GreptimeDB 的核心功能。

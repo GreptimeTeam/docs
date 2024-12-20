@@ -1,4 +1,5 @@
 ---
+keywords: [Common Table Expressions, CTE, SQL queries, simplify queries, complex queries, temporary result set]
 description: Explanation of Common Table Expressions (CTEs) in GreptimeDB, including syntax, examples, and how to use CTEs to simplify complex queries.
 ---
 

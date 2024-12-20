@@ -1,4 +1,5 @@
 ---
+keywords: [SQL views, create view, query view, update view, manage views, data security, complex queries]
 description: Explanation of SQL views in GreptimeDB, including how to create, query, update, and manage views for simplifying complex queries and ensuring data security.
 ---
 

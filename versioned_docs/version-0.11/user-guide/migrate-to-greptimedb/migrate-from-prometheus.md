@@ -1,4 +1,5 @@
 ---
+keywords: [migrate from Prometheus, remote write configuration, PromQL queries, Grafana integration]
 description: Instructions on migrating from Prometheus to GreptimeDB, including remote write configuration, PromQL queries, and Grafana integration.
 ---
 

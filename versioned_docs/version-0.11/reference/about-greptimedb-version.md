@@ -1,4 +1,5 @@
 ---
+keywords: [version numbering, Semantic Versioning, major release, minor release, revision number]
 description: Explanation of GreptimeDB's version numbering scheme, including the significance of major, minor, and revision numbers.
 ---
 

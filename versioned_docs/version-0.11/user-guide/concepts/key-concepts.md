@@ -1,4 +1,5 @@
 ---
+keywords: [key concepts, databases, time-series tables, table regions, data types]
 description: Introduces the key concepts of GreptimeDB, including databases, time-series tables, table regions, data types, indexes, views, and flows. It explains how these components work together to manage and serve data in GreptimeDB.
 ---
 
@@ -52,4 +53,4 @@ The data displayed in a view is retrieved dynamically from the underlying tables
 
 ## Flow
 
-A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/continuous-aggregation/overview.md) process that continuously updates and materializes aggregated data based on incoming data.
+A `flow` in GreptimeDB refers to a [continuous aggregation](/user-guide/flow-computation/overview.md) process that continuously updates and materializes aggregated data based on incoming data.

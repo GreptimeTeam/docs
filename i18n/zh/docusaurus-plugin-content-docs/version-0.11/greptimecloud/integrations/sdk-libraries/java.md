@@ -1,4 +1,5 @@
 ---
+keywords: [Java SDK, gRPC 协议, 数据库连接, 示例代码, 认证信息]
 description: 介绍如何使用 GreptimeDB Java SDK 通过 gRPC 协议连接到 GreptimeCloud，并提供了连接信息和示例代码。
 ---
 

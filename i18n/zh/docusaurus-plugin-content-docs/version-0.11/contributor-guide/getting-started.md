@@ -1,4 +1,5 @@
 ---
+keywords: [编译, 运行, 源代码, 系统要求, 依赖项, Docker]
 description: 介绍如何在本地环境中从源代码编译和运行 GreptimeDB，包括系统要求和依赖项。
 ---
 

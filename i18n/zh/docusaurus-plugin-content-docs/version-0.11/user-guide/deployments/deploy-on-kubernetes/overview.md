@@ -1,4 +1,5 @@
 ---
+keywords: [Kubernetes 部署, Operator 模式, 自动化管理, 集群部署, 单机实例, 私有云, 公有云]
 description: 在 Kubernetes 上部署 GreptimeDB 的概述，介绍了 GreptimeDB Operator 的功能和使用方法。
 ---
 

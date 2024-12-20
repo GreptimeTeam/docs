@@ -1,4 +1,5 @@
 ---
+keywords: [TQL, Time-Series Query Language, PromQL extension, EVAL command, EXPLAIN command, ANALYZE command]
 description: Covers the TQL keyword for executing Time-Series Query Language in SQL, including EVAL, EXPLAIN, and ANALYZE commands with syntax and examples.
 ---
 

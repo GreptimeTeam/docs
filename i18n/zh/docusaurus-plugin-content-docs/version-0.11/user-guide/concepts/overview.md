@@ -1,4 +1,5 @@
 ---
+keywords: [特点, 优势, 数据模型, 基础架构, 存储位置, 核心概念, 关键特性]
 description: 概述 GreptimeDB 的特点和优势，并提供相关文档链接，帮助用户了解 GreptimeDB 的设计和功能。
 ---
 

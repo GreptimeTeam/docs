@@ -1,4 +1,5 @@
 ---
+keywords: [quick start, write logs, query logs, pipeline, structured data, log ingestion, log collection, log management tools]
 description: Guides users through the process of quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
 ---
 

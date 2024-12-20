@@ -1,4 +1,5 @@
 ---
+keywords: [release notes, region rebalancing, management console, LDAP, audit logs, new features]
 description: Release notes for GreptimeDB Enterprise version 24.11, highlighting new features like region rebalancing, management console, LDAP user provider, and audit logs.
 ---
 

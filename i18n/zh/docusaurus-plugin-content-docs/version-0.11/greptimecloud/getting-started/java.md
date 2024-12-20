@@ -1,4 +1,5 @@
 ---
+keywords: [Java, JVM 指标, 数据收集, 下载命令, 示例代码, 数据可视化]
 description: 介绍如何使用 Java 收集 JVM 运行时指标数据并将其发送到 GreptimeCloud，包括下载命令和示例代码。
 ---
 

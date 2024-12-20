@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeCloud, serverless service, time-series data management, Prometheus backend, scalable solution]
 description: Provides an overview of GreptimeCloud, a fully-managed serverless GreptimeDB service for scalable and efficient time-series data management.
 ---
 

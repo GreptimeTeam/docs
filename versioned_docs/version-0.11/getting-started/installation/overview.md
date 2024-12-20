@@ -1,4 +1,5 @@
 ---
+keywords: [installation, health check, quick start, GreptimeDB standalone, GreptimeDB cluster]
 description: Instructions to install GreptimeDB, check its health status, and proceed to the quick start guide.
 ---
 

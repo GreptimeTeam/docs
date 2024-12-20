@@ -1,4 +1,5 @@
 ---
+keywords: [Region Failover, 故障恢复, 恢复时间, 共享存储, Kafka WAL]
 description: 介绍 Region Failover 功能及其在 GreptimeDB 中的应用，包括开启 Region Failover、恢复时间和改进恢复时间的建议等内容。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [time zone management, SQL time zone, data ingestion, querying, client session, time zone configuration]
 description: Guide on specifying and managing time zones in GreptimeDB client sessions, including impacts on data ingestion and querying.
 ---
 

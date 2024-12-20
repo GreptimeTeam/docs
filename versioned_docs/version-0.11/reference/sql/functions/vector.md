@@ -1,4 +1,5 @@
 ---
+keywords: [vector functions, distance calculations, similarity measurement, vector operations, SQL functions]
 description: Lists and describes vector functions available in GreptimeDB, including their usage and examples.
 ---
 

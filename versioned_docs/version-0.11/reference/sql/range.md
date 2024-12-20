@@ -1,4 +1,5 @@
 ---
+keywords: [range queries, time series data, SQL syntax, FILL options, TO options, BY options, ORDER BY, nested range expressions]
 description: Explains range queries in SQL for time series data, including syntax, FILL options, TO options, BY options, ORDER BY in aggregate functions, and nested range expressions.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [tables, information schema, SQL, database tables, table properties]
 description: Provides information about tables in databases, including details about each table's catalog, schema, name, type, and other properties.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [管理函数, ADMIN 语句, SQL ADMIN, 数据库管理, 表管理, 数据管理]
 description: ADMIN 语句用于运行管理函数来管理数据库和数据。
 ---
 

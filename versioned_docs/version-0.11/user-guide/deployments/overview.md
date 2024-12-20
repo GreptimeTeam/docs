@@ -1,4 +1,5 @@
 ---
+keywords: [deployment, configuration, authentication, Kubernetes, Android, capacity planning, GreptimeCloud]
 description: Overview of deploying GreptimeDB, including configuration, authentication, Kubernetes deployment, running on Android, capacity planning, and using GreptimeCloud.
 ---
 

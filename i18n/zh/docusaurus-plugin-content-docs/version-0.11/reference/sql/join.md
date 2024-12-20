@@ -1,4 +1,5 @@
 ---
+keywords: [SQL JOIN 子句, 表连接, INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN, SQL 示例]
 description: JOIN 用于组合两个或多个表中基于相关列的行，支持 INNER JOIN、LEFT JOIN、RIGHT JOIN 和 FULL OUTER JOIN。
 ---
 

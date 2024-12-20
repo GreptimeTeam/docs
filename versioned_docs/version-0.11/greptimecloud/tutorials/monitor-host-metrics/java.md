@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, Java, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using Java, including creating a service, writing data, and visualizing data.
 ---
 

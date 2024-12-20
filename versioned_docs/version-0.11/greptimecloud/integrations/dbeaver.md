@@ -1,4 +1,5 @@
 ---
+keywords: [DBeaver, MySQL, database connection, database tool, GreptimeCloud]
 description: Guide on using DBeaver to connect to GreptimeCloud via MySQL database drivers.
 ---
 

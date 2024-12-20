@@ -1,4 +1,5 @@
 ---
+keywords: [BUILD_INFO 表, 构建信息, 版本信息, SQL查询, 数据库构建]
 description: 提供了 GreptimeDB 构建信息的相关内容，包括版本信息、构建时间和相关的 SQL 查询示例。
 ---
 

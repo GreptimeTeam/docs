@@ -1,4 +1,5 @@
 ---
+keywords: [数据库信息, SCHEMATA 表, SHOW DATABASES, 字段描述, 数据库目录]
 description: SCHEMATA 表提供数据库的相关信息及其字段描述。
 ---
 

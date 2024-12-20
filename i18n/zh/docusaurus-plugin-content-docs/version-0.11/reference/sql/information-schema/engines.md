@@ -1,4 +1,5 @@
 ---
+keywords: [存储引擎信息, ENGINES 表, 支持级别, 默认存储引擎, 事务支持]
 description: ENGINES 表提供关于存储引擎的信息，检查 GreptimeDB 是否支持某个存储引擎或查看默认的存储引擎。
 ---
 

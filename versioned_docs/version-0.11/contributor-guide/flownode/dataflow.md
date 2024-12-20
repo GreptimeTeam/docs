@@ -1,4 +1,5 @@
 ---
+keywords: [dataflow module, SQL query transformation, execution plan, DAG, map and reduce operations]
 description: Explanation of the dataflow module in Flownode, its operations, internal data handling, and future enhancements.
 ---
 

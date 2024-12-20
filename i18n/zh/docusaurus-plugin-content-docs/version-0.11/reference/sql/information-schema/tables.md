@@ -1,4 +1,5 @@
 ---
+keywords: [表信息, TABLES 表, SQL 表, 数据库表, 表字段, 表描述]
 description: TABLES 表提供数据库中表的信息及其字段描述。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [日志写入, HTTP 接口, Pipeline 配置, 数据格式, 请求参数]
 description: 介绍如何通过 HTTP 接口使用指定的 Pipeline 将日志写入 GreptimeDB，包括请求参数、数据格式和示例。
 ---
 

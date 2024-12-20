@@ -1,4 +1,5 @@
 ---
+keywords: [Vector, GreptimeCloud, metrics ingestion, logs ingestion, data pipeline]
 description: Guide for using Vector with GreptimeCloud, including configuration for metrics and logs ingestion, and running Vector with a sample configuration.
 ---
 

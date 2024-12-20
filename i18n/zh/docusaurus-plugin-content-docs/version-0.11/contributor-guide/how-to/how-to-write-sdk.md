@@ -1,4 +1,5 @@
 ---
+keywords: [gRPC SDK, GreptimeDatabase, GreptimeRequest, GreptimeResponse, 插入请求]
 description: 介绍如何为 GreptimeDB 开发一个 gRPC SDK，包括 GreptimeDatabase 服务的定义、GreptimeRequest 和 GreptimeResponse 的结构。
 ---
 

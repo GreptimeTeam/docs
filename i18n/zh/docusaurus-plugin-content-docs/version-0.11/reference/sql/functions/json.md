@@ -1,4 +1,5 @@
 ---
+keywords: [JSON函数, 数据转换, SQL 查询, 数据库 JSON, JSON 操作]
 description: 列出了 GreptimeDB 中的所有 JSON 函数，包括函数的定义、使用方法和相关的 SQL 查询示例。
 ---
 

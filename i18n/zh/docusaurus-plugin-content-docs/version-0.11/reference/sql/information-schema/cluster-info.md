@@ -1,4 +1,5 @@
 ---
+keywords: [CLUSTER_INFO 表, 集群信息, 节点信息, SQL查询, 数据库集群]
 description: 提供了 GreptimeDB 集群信息的相关内容，包括集群状态、节点信息和相关的 SQL 查询示例。
 ---
 

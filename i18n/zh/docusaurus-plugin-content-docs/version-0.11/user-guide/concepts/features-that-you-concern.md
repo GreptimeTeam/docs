@@ -1,4 +1,5 @@
 ---
+keywords: [关键特性, 日志处理, 数据更新, 数据删除, TTL 策略, 压缩率, 高基数问题, 持续聚合, 云存储, 性能对比, 灾难恢复, 地理空间索引, JSON 数据]
 description: 介绍 GreptimeDB 的关键特性，并解答用户关心的常见问题，如日志处理、数据更新和删除、TTL 策略等。
 ---
 
@@ -40,7 +41,7 @@ GreptimeDB 通过以下方式解决这个问题：
 
 ## GreptimeDB 支持持续聚合或降采样吗？
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/continuous-aggregation/overview.md)获取更多信息。
+从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/flow-computation/overview.md)获取更多信息。
 
 ## 我可以在云的对象存储中存储数据吗？
 

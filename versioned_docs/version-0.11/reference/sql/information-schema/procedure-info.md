@@ -1,4 +1,5 @@
 ---
+keywords: [procedure info, procedure ID, procedure type, status]
 description: Provides detailed information about various procedures, including procedure ID, type, start and end time, status, and locked keys.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [tokio-console, GreptimeDB, 构建配置, 启动配置, 调试工具]
 description: 介绍如何在 GreptimeDB 中启用 tokio-console，包括构建和启动时的配置方法。
 ---
 

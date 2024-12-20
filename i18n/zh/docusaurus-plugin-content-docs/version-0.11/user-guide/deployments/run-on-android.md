@@ -1,4 +1,5 @@
 ---
+keywords: [安卓平台, ARM64 CPU, Android API 23, Termux 终端模拟器, 二进制文件, 配置文件, 启动服务, 连接数据库]
 description: 在安卓平台运行 GreptimeDB 的指南，包括安装终端模拟器、下载二进制文件、创建配置文件、启动服务和连接数据库的步骤。
 ---
 

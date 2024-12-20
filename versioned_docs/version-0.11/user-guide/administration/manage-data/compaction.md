@@ -1,4 +1,5 @@
 ---
+keywords: [compaction, GreptimeDB, SST files, time windows, sorted runs, levels, TWCS, SWCS, database performance]
 description: Explanation of the compaction process in GreptimeDB, including concepts like SST files, time windows, sorted runs, and levels, as well as the Time Windowed Compaction Strategy (TWCS) and Strict Window Compaction Strategy (SWCS).
 ---
 

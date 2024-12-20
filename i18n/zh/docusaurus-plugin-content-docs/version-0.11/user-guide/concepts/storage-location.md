@@ -1,4 +1,5 @@
 ---
+keywords: [存储位置, 本地文件系统, 云存储, AWS S3, Azure Blob Storage, 阿里云 OSS, 存储文件结构]
 description: 介绍 GreptimeDB 支持的存储位置，包括本地文件系统和各种云存储服务，以及存储文件结构。
 ---
 

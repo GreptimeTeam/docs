@@ -1,4 +1,5 @@
 ---
+keywords: [region peers, region node, leader, learner, status]
 description: Shows detailed information of a single Region node in GreptimeDB, such as whether it is a learner or leader.
 ---
 

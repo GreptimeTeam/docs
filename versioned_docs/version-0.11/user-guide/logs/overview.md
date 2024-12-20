@@ -1,4 +1,5 @@
 ---
+keywords: [log service, quick start, pipeline configuration, manage pipelines, query logs]
 description: Provides links to various guides on using GreptimeDB's log service, including quick start, pipeline configuration, managing pipelines, writing logs, and querying logs.
 ---
 

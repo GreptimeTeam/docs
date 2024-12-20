@@ -1,4 +1,5 @@
 ---
+keywords: [PromQL, Prometheus 查询语言, HTTP API, SQL 扩展, Grafana, Prometheus 替代品]
 description: 介绍 GreptimeDB 对 Prometheus 查询语言（PromQL）的支持，包括 HTTP API 和 SQL 扩展。
 ---
 

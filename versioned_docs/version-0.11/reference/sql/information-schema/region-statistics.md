@@ -1,4 +1,5 @@
 ---
+keywords: [region statistics, rows, disk size, memtable size, sst size, index size]
 description: Provides detailed information about a region's statistics, including the total number of rows, disk size, and more. These statistics are approximate values.
 ---
 

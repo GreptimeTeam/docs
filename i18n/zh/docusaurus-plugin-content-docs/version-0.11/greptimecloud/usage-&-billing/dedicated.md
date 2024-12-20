@@ -1,4 +1,5 @@
 ---
+keywords: [Dedicated 计划, 专用 CPU, 存储, 费用计算, 计算节点, 网络流量, 数据保留策略]
 description: 介绍 Dedicated 计划的特点、配置方法和费用计算公式。
 ---
 

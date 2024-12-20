@@ -1,4 +1,5 @@
 ---
+keywords: [表约束, TABLE_CONSTRAINTS 表, SQL 约束, 数据库约束, 约束类型, 约束描述]
 description: TABLE_CONSTRAINTS 表描述了哪些表具有约束及相关信息。
 ---
 

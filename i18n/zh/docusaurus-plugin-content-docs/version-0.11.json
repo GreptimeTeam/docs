@@ -27,9 +27,9 @@
     "message": "读取数据",
     "description": "The label for category Query Data in sidebar docs"
   },
-  "sidebar.docs.category.Continuous Aggregation": {
-    "message": "持续聚合",
-    "description": "The label for category Continuous Aggregation in sidebar docs"
+  "sidebar.docs.category.Flow Computation": {
+    "message": "流计算",
+    "description": "The label for category Flow Computation in sidebar docs"
   },
   "sidebar.docs.category.Logs": {
     "message": "日志",
