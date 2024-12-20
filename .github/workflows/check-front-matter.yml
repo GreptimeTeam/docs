@@ -1,0 +1,27 @@
+name: Check Markdown Front Matter
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'  # Only trigger on markdown files
+
+jobs:
+  check-markdown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run JavaScript check
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+        
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Check for required front matter
+        run: node .github/scripts/check-front-matter.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

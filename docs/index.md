@@ -1,5 +1,5 @@
 ---
-keywords: [time series database, metrics, logs, events, real-time insights, cloud-native, SQL, PromQL]
+keywords: [time series database, open source time series database, time series data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
 description: Introduction to GreptimeDB, an open-source unified time-series database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
 ---
 # Introduction
