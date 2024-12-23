@@ -29,6 +29,10 @@ directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafa
   ```shell
   grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
   ```
+- Use our [prebuilt Grafana docker
+  image](https://hub.docker.com/r/greptime/grafana-greptimedb), which ships the
+  plugin by default: `docker run -p 3000:3000
+  greptime/grafana-greptimedb:latest`
 
 Note that you may need to restart your grafana server after installing the plugin.
 
