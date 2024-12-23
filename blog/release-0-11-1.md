@@ -1,10 +1,19 @@
 ---
+keywords: [release, GreptimeDB, changelog, v0.11.1]
+description: GreptimeDB v0.11.1 Changelog
 date: 2024-12-21
 ---
 
 # v0.11.1
 
 Release date: December 21, 2024
+
+### 👍 Highlights
+
+* Supports `label_join()` and `label_replace()` for PromQL.
+* Supports pushing down `IN` filters.
+* Updates dashboard to [v0.7.3](https://github.com/GreptimeTeam/dashboard/releases/tag/v0.7.3)
+
 
 ### 🚀 Features
 
@@ -29,7 +38,6 @@ Release date: December 21, 2024
 * feat: do not remove time filters in ScanRegion by [@evenyag](https://github.com/evenyag) in [#5180](https://github.com/GreptimeTeam/greptimedb/pull/5180)
 * feat: extract hints from http header by [@fengjiachun](https://github.com/fengjiachun) in [#5128](https://github.com/GreptimeTeam/greptimedb/pull/5128)
 * feat: show create postgresql foreign table by [@sunng87](https://github.com/sunng87) in [#5143](https://github.com/GreptimeTeam/greptimedb/pull/5143)
-* feat: bump opendal and switch prometheus layer to the upstream impl by [@waynexia](https://github.com/waynexia) in [#5179](https://github.com/GreptimeTeam/greptimedb/pull/5179)
 * feat: show flow's mem usage in INFORMATION_SCHEMA.FLOWS by [@discord9](https://github.com/discord9) in [#4890](https://github.com/GreptimeTeam/greptimedb/pull/4890)
 
 ### 🐛 Bug Fixes
