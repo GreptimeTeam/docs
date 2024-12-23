@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB 迁移, 数据迁移, HTTP API, 数据写入, 客户端库]
 description: 指导用户从 InfluxDB 迁移到 GreptimeDB，包括使用 HTTP API 和客户端库写入数据的示例。
 ---
 

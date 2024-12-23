@@ -1,4 +1,5 @@
 ---
+keywords: [enterprise, features, solutions, cloud, edge, IoT, observability, LDAP, audit logging]
 description: Overview of GreptimeDB Enterprise, detailing its advanced features, solutions, and enhancements over the open-source version to optimize data efficiency and reduce costs.
 ---
 

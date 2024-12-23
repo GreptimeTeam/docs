@@ -1,4 +1,5 @@
 ---
+keywords: [Prometheus, 长期存储, Remote Write, 数据模型, 配置示例]
 description: 介绍如何将 GreptimeDB 作为 Prometheus 的长期存储解决方案，包括配置 Remote Write 和数据模型的映射规则。
 ---
 

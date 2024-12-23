@@ -1,4 +1,5 @@
 ---
+keywords: [Metabase, data source, community driver, configuration, BI tool]
 description: Instructions on configuring GreptimeCloud as a data source in Metabase using a community driver plugin.
 ---
 

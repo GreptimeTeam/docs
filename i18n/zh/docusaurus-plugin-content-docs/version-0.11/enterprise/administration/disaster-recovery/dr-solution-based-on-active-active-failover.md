@@ -1,4 +1,5 @@
 ---
+keywords: [双活互备, 灾难恢复, RPO, RTO, 故障转移, 读写模式]
 description: 介绍 GreptimeDB 中基于双活互备的灾难恢复解决方案，包括不同读写模式的 RPO 和 RTO 目标，以及故障转移的处理方法。
 ---
 

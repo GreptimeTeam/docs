@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL, connection details, MySQL CLI, MariaDB CLI, JDBC URL]
 description: Instructions for connecting to GreptimeCloud using MySQL protocol, including connection details, MySQL CLI, MariaDB CLI, and JDBC URL.
 ---
 

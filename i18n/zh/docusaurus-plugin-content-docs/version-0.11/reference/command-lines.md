@@ -1,4 +1,5 @@
 ---
+keywords: [命令行工具, 安装 Greptime, 启动服务, 配置示例, 升级版本]
 description: 介绍 Greptime 命令行工具的安装、使用方法，包括全局选项、各子命令选项、配置示例、升级 GreptimeDB 版本等内容。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [OpenTSDB, HTTP API, 数据写入, 示例代码, 注意事项]
 description: 介绍如何使用 OpenTSDB 协议通过 HTTP API 将数据写入 GreptimeDB，包括示例代码和注意事项。
 ---
 

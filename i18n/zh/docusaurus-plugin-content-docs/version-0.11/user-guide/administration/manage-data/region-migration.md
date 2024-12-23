@@ -1,4 +1,5 @@
 ---
+keywords: [Region 迁移, 数据迁移, 负载均衡, 迁移请求, 迁移状态]
 description: 介绍 Region 迁移功能及其在 GreptimeDB 中的应用，包括查询 Region 分布、选择迁移目标节点、发起迁移请求和查询迁移状态等内容。
 ---
 

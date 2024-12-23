@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL, system metrics, data visualization, GreptimeDB service, MySQL CLI]
 description: Instructions on creating a service, writing data using MySQL, and visualizing data in GreptimeDB.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [databases, catalog, schema, character set, collation, options]
 description: Provides information about databases, including details about each database's catalog, schema name, default character set, collation, and options.
 ---
 

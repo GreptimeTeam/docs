@@ -1,4 +1,5 @@
 ---
+keywords: [region failover, GreptimeDB, data recovery, Kafka WAL, read amplification, distributed mode, region migration, recovery time, shared storage, configuration]
 description: Covers enabling and understanding region failover in GreptimeDB, which allows for the recovery of regions from failures without data loss, and discusses the impact of read amplification on recovery time.
 ---
 

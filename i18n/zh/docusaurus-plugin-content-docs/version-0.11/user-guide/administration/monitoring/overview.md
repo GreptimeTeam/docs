@@ -1,4 +1,5 @@
 ---
+keywords: [监控, 数据库监控, 导出指标, 链路追踪, Prometheus]
 description: 介绍监控 GreptimeDB 的方法，包括导出指标和链路追踪。
 ---
 

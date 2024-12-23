@@ -1,4 +1,5 @@
 ---
+keywords: [单元测试, Rust, nextest, 测试覆盖率, CI]
 description: 介绍 GreptimeDB 的单元测试，包括如何编写、运行和检查测试覆盖率。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [gRPC SDKs, data ingestion, high-performance, create SDK]
 description: Overview of using gRPC SDKs for efficient and high-performance data ingestion in GreptimeDB.
 ---
 

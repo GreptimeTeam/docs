@@ -1,4 +1,5 @@
 ---
+keywords: [向量, 数据类型, AI 应用, 特征表示, 相似度计算, GreptimeDB, 向量存储, 向量计算]
 description: 介绍了向量数据类型在 GreptimeDB 中的定义、写入和计算方法，适用于 AI 应用中的特征表示和相似度计算。
 ---
 

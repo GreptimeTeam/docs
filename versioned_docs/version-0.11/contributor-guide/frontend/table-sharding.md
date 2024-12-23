@@ -1,4 +1,5 @@
 ---
+keywords: [table sharding, partition, region, datanode, metasrv, data distribution]
 description: Explains how table data in GreptimeDB is sharded and distributed, including the concepts of partition and region.
 ---
 

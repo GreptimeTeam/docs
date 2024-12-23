@@ -1,4 +1,5 @@
 ---
+keywords: [Region Rebalance, 管理控制台, LDAP User Provider, 审计日志, 开源版改进]
 description: GreptimeDB 企业版 24.11 版本介绍了 Region Rebalance、管理控制台、LDAP User Provider、审计日志等新特性，并基于开源版 v0.10 引入了多项改进。
 ---
 

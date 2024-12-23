@@ -1,4 +1,5 @@
 ---
+keywords: [键约束, KEY_COLUMN_USAGE 表, 时间索引键, 外键约束, 列位置]
 description: KEY_COLUMN_USAGE 表描述列的键约束，例如时间索引键的约束。
 ---
 

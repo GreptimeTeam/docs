@@ -1,4 +1,5 @@
 ---
+keywords: [key column usage, key constraints, time index key, primary key]
 description: Describes the key constraints of the columns, such as the time index key constraint.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [create statement, SQL, create database, create table, create view, create flow]
 description: Explains the SQL CREATE statement for creating databases, tables, external tables, flows, and views in GreptimeDB, including syntax, table constraints, options, and examples.
 ---
 
@@ -138,7 +139,7 @@ The `ttl` value can be one of the following:
     - `months`, `month`, `M` – defined as 30.44 days
     - `years`, `year`, `y` – defined as 365.25 days
 - `forever`, `NULL`, an empty string `''` and `0s` (or any zero length duration, like `0d`), means the data will never be deleted.
-- `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/continuous-aggregation/manage-flow.md#manage-flows).
+- `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/flow-computation/manage-flow.md#manage-flows).
 - Unset, `ttl` can be unset by using `ALTER TABLE <table-name> UNSET 'ttl'`, which means the table will inherit the database's ttl policy (if any).
   
 If a table has its own TTL policy, it will take precedence over the database TTL policy.
@@ -420,7 +421,7 @@ AS
 <SQL>;
 ```
 
-For the statement to create or update a flow, please read the [flow management documents](/user-guide/continuous-aggregation/manage-flow.md#create-a-flow).
+For the statement to create or update a flow, please read the [flow management documents](/user-guide/flow-computation/manage-flow.md#create-a-flow).
 
 ## CREATE VIEW
 

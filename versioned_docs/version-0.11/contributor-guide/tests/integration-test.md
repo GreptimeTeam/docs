@@ -1,4 +1,5 @@
 ---
+keywords: [integration tests, Rust test harness, multiple components, HTTP testing, gRPC testing]
 description: Guide on writing and running integration tests in GreptimeDB, covering scenarios involving multiple components.
 ---
 

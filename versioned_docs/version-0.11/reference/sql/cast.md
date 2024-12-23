@@ -1,4 +1,5 @@
 ---
+keywords: [CAST function, SQL, data type conversion, syntax, examples]
 description: Describes the `CAST` function used to convert an expression of one data type to another, including syntax and examples.
 ---
 

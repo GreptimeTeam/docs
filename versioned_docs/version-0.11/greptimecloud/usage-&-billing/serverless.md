@@ -1,4 +1,5 @@
 ---
+keywords: [serverless plan, request capacities, cost calculation, billing information, data storage]
 description: Details the Serverless Plan, including request capacities, support, cost calculation, and billing information.
 ---
 

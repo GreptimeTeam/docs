@@ -1,4 +1,5 @@
 ---
+keywords: [数据管理, 存储位置, 表操作, 数据更新, TTL 策略]
 description: 提供 GreptimeDB 数据管理的概述，包括存储位置说明、表的基本操作、更新或删除数据、TTL 策略、表分片、Region 迁移、Region Failover 和 Compaction 等内容。
 ---
 

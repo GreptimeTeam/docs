@@ -1,4 +1,5 @@
 ---
+keywords: [tracing, distributed tracing, trace_id, RPC, instrument, span, runtime]
 description: Describes how to use Rust's tracing framework in GreptimeDB for distributed tracing, including defining tracing context in RPC, passing it, and instrumenting code.
 ---
 

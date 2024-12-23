@@ -1,4 +1,5 @@
 ---
+keywords: [SQL LIMIT 子句, 查询行数限制, SQL 性能优化, 数据库查询优化, SQL 示例]
 description: 介绍了 `LIMIT` 子句的用法，通过示例展示了如何限制查询返回的行数。
 ---
 

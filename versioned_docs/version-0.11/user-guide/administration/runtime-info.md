@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB runtime information, system metadata, cluster topology, table regions distribution, SQL queries]
 description: Provides access to system metadata through the INFORMATION_SCHEMA database, including cluster topology and table regions distribution. Examples of SQL queries to retrieve region IDs and distribution are included.
 ---
 

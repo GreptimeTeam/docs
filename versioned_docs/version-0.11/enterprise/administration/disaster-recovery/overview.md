@@ -1,4 +1,5 @@
 ---
+keywords: [disaster recovery, high availability, data protection, active-active failover, architecture]
 description: Overview of disaster recovery solutions in GreptimeDB Enterprise, focusing on the active-active failover architecture for high availability and data protection.
 ---
 

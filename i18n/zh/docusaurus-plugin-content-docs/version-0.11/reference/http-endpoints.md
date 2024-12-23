@@ -1,3 +1,8 @@
+---
+keywords: [HTTP API, 管理 API, 健康检查, 状态, 指标, 配置, 仪表盘, 日志级别, 性能分析]
+description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表。
+---
+
 # HTTP API 端点列表
 
 以下是 GreptimeDB 中各种 HTTP 路径及其用法的完整列表：

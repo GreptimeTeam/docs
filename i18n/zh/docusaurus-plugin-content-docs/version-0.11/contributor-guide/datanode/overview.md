@@ -1,4 +1,5 @@
 ---
+keywords: [Datanode, gRPC 服务, HTTP 服务, Heartbeat Task, Region Manager]
 description: 介绍了 Datanode 的主要职责和组件，包括 gRPC 服务、HTTP 服务、Heartbeat Task 和 Region Manager。
 ---
 

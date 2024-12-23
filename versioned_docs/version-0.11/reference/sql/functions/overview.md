@@ -1,4 +1,5 @@
 ---
+keywords: [SQL functions, DataFusion functions, aggregate functions, scalar functions, window functions]
 description: Provides an overview of the SQL functions available in GreptimeDB, including categories and examples of their usage.
 ---
 

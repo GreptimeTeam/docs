@@ -1,4 +1,5 @@
 ---
+keywords: [Flownode, 流处理, FlownodeManager, FlowWorker]
 description: 介绍了 Flownode 的基本概念、组件和当前版本的支持情况，包括 FlownodeManager、FlowWorker 和 Flow 的功能。
 ---
 

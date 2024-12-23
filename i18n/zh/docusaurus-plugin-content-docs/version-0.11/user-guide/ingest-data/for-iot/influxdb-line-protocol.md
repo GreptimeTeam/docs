@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB Line Protocol, 数据写入, Telegraf 集成, 数据模型, 鉴权]
 description: 详细介绍如何使用 InfluxDB Line Protocol 将数据写入 GreptimeDB，包括协议、鉴权、Telegraf 集成和数据模型映射。
 ---
 

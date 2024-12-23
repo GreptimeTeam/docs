@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB Line Protocol, HTTP API, data ingestion, Telegraf integration, data model, authentication]
 description: Guide on using InfluxDB Line Protocol to ingest data into GreptimeDB, including examples, authentication, Telegraf integration, and data model differences.
 ---
 

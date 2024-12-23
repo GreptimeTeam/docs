@@ -1,4 +1,5 @@
 ---
+keywords: [Grafana, 数据源, GreptimeDB 插件, Prometheus 数据源, MySQL 数据源, 仪表盘, 数据可视化]
 description: 介绍如何将 GreptimeDB 配置为 Grafana 数据源，包括使用 GreptimeDB 数据源插件、Prometheus 数据源和 MySQL 数据源的方法。
 ---
 

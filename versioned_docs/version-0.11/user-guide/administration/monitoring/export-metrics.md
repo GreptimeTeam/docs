@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB metrics, Prometheus, metrics export, monitoring, configuration examples]
 description: Guide on exporting GreptimeDB metrics to Prometheus and saving metrics to GreptimeDB itself. Includes configuration examples for standalone and distributed cluster modes, and details on various metrics.
 ---
 

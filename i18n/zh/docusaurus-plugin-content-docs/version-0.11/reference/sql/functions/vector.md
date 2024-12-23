@@ -1,4 +1,5 @@
 ---
+keywords: [向量函数, 距离计算, 向量运算, SQL 查询, 数据库向量]
 description: 列出了 GreptimeDB 中的所有向量函数，包括函数的定义、使用方法和相关的 SQL 查询示例。
 ---
 

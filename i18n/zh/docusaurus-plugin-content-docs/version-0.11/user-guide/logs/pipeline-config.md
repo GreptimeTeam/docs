@@ -1,4 +1,5 @@
 ---
+keywords: [Pipeline 配置, Processor, Transform, 解析日志, 转换日志, YAML 配置, 数据处理, 时间字段解析, 字段拆分]
 description: 介绍 GreptimeDB 中 Pipeline 的配置，包括 Processor 和 Transform 的使用方法，以及各种 Processor 的详细配置示例。
 ---
 

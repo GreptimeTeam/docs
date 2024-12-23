@@ -1,4 +1,5 @@
 ---
+keywords: [monitoring, host metrics, Prometheus, GreptimeCloud, data visualization]
 description: Guide on monitoring host metrics using Prometheus, including creating a service, writing data, and visualizing data.
 ---
 

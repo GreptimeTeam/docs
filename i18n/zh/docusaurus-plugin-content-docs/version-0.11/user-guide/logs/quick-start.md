@@ -1,4 +1,5 @@
 ---
+keywords: [快速开始, 写入日志, 查询日志, 直接写入, 使用 Pipeline, 创建表, 插入日志, gRPC 协议, JSON 日志, 自定义 Pipeline]
 description: 介绍如何快速开始写入和查询日志，包括直接写入日志和使用 Pipeline 写入日志的方法，以及两者的区别。
 ---
 

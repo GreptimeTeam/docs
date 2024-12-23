@@ -1,4 +1,5 @@
 ---
+keywords: [数据类型转换, CAST 语句, SQL CAST, 类型转换, 数据类型, SQL 语法]
 description: CAST 用于将一个数据类型的表达式转换为另一个数据类型。
 ---
 

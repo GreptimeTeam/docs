@@ -1,4 +1,5 @@
 ---
+keywords: [Java SDK, 数据写入, 安装 JDK, 连接数据库, 插入数据, 调试日志, 性能指标]
 description: 介绍如何使用 GreptimeDB 提供的 Java ingester SDK 写入数据，包括安装、连接、插入数据和调试日志等内容。
 ---
 

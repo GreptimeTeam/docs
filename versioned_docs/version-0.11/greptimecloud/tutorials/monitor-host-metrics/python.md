@@ -1,3 +1,8 @@
+---
+keywords: [monitoring, host metrics, Python, GreptimeCloud, data visualization]
+description: Learn how to monitor host metrics using Python with GreptimeCloud, including creating a service, writing data, and visualizing the data.
+---
+
 # Python
 
 import Includeoverview from '../../../db-cloud-shared/tutorials/monitor-host-metrics/overview.md' 

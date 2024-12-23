@@ -1,4 +1,5 @@
 ---
+keywords: [SQL GROUP BY, SQL aggregate functions, SQL syntax, SQL examples, SQL data grouping]
 description: Details the SQL GROUP BY clause used to group rows with the same values in specified columns, typically used with aggregate functions like COUNT, SUM, and AVG, with examples.
 ---
 

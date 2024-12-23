@@ -1,4 +1,5 @@
 ---
+keywords: [system metadata, database names, table names, column data types, INFORMATION_SCHEMA]
 description: Provides access to system metadata, such as database or table names, column data types, and INFORMATION_SCHEMA tables for querying GreptimeDB system metadata.
 ---
 

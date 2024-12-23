@@ -1,4 +1,5 @@
 ---
+keywords: [LDAP, authentication, configuration, simple bind, search bind, user provider]
 description: Configuration guide for LDAP authentication in GreptimeDB Enterprise, detailing both simple bind and search bind modes.
 ---
 

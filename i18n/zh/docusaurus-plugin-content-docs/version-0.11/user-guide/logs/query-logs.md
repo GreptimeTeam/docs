@@ -1,4 +1,5 @@
 ---
+keywords: [查询日志, GreptimeDB 查询语言, MATCHES 函数, 全文搜索, 查询语句类型, 全文索引, 配置全文索引]
 description: 介绍如何使用 GreptimeDB 提供的查询语言进行日志数据的搜索和分析，包括使用 MATCHES 函数进行全文搜索和配置全文索引。
 ---
 

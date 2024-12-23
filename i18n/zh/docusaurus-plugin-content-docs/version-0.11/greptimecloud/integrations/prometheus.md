@@ -1,4 +1,5 @@
 ---
+keywords: [Prometheus, 存储, 查询, Remote Write, PromQL, GreptimeCloud]
 description: 介绍如何将 GreptimeCloud 用作 Prometheus 的存储和查询替代品，包括配置 Remote Write 和使用 Prometheus HTTP API 与 PromQL。
 ---
 

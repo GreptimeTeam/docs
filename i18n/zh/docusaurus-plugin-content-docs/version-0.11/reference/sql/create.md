@@ -1,4 +1,5 @@
 ---
+keywords: [创建数据库, 创建表, CREATE 语句, SQL 创建, 数据库选项, 表选项]
 description: CREATE 用于创建新的数据库或表，支持指定列、主键、时间索引、存储引擎和其他选项。
 ---
 
@@ -139,7 +140,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
     - `months`, `month`, `M` – 月，定义为 30.44 天
     - `years`, `year`, `y` – 年，定义为 365.25 天
 - `forever`, `NULL`, `0s` （或任何长度为 0 的时间范围，如 `0d`）或空字符串 `''`，表示数据永远不会被删除。
-- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/continuous-aggregation/manage-flow.md#manage-flows)了解更多细节。
+- `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/flow-computation/manage-flow.md#manage-flows)了解更多细节。
 - 未设置，可以使用 `ALTER TABLE <table-name> UNSET 'ttl'` 来取消表的 `ttl` 设置，这样表将继承数据库的 `ttl` 策略（如果有的话）。
 
 如果一张表有自己的 TTL 策略，那么它将使用该 TTL 策略。否则，数据库的 TTL 策略将被应用到表上。
@@ -425,7 +426,7 @@ AS
 <SQL>;
 ```
 
-用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/continuous-aggregation/manage-flow.md#创建-flow)。
+用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/flow-computation/manage-flow.md#创建-flow)。
 
 ## 创建 View
 

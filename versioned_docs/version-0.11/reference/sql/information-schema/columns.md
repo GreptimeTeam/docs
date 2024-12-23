@@ -1,4 +1,5 @@
 ---
+keywords: [table schema, column attributes, SQL information schema, column details]
 description: Provides detailed information about columns in tables, including column names, data types, default values, and other attributes.
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [ORDER BY 语法, 数据排序, 升序排序, 降序排序, SQL 示例]
 description: 介绍了 `ORDER BY` 语法的基本用法，通过示例展示了如何对数据进行升序或降序排序。
 ---
 

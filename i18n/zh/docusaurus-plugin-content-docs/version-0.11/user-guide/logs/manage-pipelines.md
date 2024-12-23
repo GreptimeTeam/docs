@@ -1,4 +1,5 @@
 ---
+keywords: [管理 Pipeline, 创建 Pipeline, 删除 Pipeline, 查询 Pipeline, 内置 Pipeline, 数据处理, 日志解析, 日志转换]
 description: 介绍如何在 GreptimeDB 中管理 Pipeline，包括创建、删除和查询 Pipeline 的方法，以及内置 Pipeline 的使用。
 ---
 

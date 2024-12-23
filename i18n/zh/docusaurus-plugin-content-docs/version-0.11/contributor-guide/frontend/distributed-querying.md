@@ -1,4 +1,5 @@
 ---
+keywords: [分布式查询, 查询拆分, 查询合并, TableScan, 物理计划]
 description: 介绍 GreptimeDB 中的分布式查询方法，包括查询的拆分和合并过程，以及 TableScan 节点的作用。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [Superset, BI tool, data source, SQLAlchemy, connection information]
 description: Guide for configuring GreptimeCloud as a data source in Superset, including connection information and SQLAlchemy URL format.
 ---
 

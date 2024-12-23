@@ -1,4 +1,5 @@
 ---
+keywords: [table constraints, SQL, database constraints, constraint properties, constraint types]
 description: Describes which tables have constraints, including details about each constraint's catalog, schema, name, type, and enforcement status.
 ---
 

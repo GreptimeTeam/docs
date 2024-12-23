@@ -1,4 +1,5 @@
 ---
+keywords: [metasrv, metadata, request-router, load balancing, election, high availability, heartbeat]
 description: Provides an overview of the Metasrv service, its components, interactions with the Frontend, architecture, and key functionalities like distributed consensus and heartbeat management.
 ---
 

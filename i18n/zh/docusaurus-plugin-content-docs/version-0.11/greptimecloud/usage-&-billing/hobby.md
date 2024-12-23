@@ -1,4 +1,5 @@
 ---
+keywords: [Hobby 计划, 免费, 限制, RCU, WCU, 存储容量, 数据保留策略]
 description: 介绍 GreptimeCloud 的免费 Hobby 计划及其限制。
 ---
 

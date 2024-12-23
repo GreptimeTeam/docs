@@ -1,4 +1,5 @@
 ---
+keywords: [Region 节点信息, REGION_PEERS 表, 节点状态, leader, learner]
 description: REGION_PEERS 表显示 GreptimeDB 中单个 Region 节点的详细信息，例如它是 learner 还是 leader。
 ---
 

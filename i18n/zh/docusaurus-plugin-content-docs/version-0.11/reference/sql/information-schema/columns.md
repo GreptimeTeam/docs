@@ -1,4 +1,5 @@
 ---
+keywords: [COLUMNS 表, 列信息, SQL查询, 数据库列, 表结构]
 description: COLUMNS 表提供关于表中每列的详细信息。
 ---
 

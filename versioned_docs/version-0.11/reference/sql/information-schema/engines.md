@@ -1,4 +1,5 @@
 ---
+keywords: [storage engines, engine support, transactions, XA transactions, savepoints]
 description: Provides information about storage engines, including their support level, comments, and whether they support transactions, XA transactions, and savepoints.
 ---
 

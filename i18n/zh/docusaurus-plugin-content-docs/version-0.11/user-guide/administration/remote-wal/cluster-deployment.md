@@ -1,4 +1,5 @@
 ---
+keywords: [集群部署, Kubernetes, GreptimeDB Operator, etcd 集群, Kafka 集群, Remote WAL, 数据写入, 数据查询]
 description: 介绍如何在 Kubernetes 中部署带有 Remote WAL 配置的 GreptimeDB 集群，包括部署 GreptimeDB Operator、etcd 集群、Kafka 集群和 GreptimeDB 集群。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [standalone mode, binary installation, Docker, configuration]
 description: Guide to install and run GreptimeDB in standalone mode using binary or Docker, including binding address configuration.
 ---
 

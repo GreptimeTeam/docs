@@ -1,4 +1,5 @@
 ---
+keywords: [streaming process, flow management, standalone mode, Flownode components, Flownode limitations]
 description: Overview of Flownode, a component providing streaming process capabilities to the database, including its components and current limitations.
 ---
 

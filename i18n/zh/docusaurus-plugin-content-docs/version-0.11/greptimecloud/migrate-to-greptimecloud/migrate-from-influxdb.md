@@ -1,4 +1,5 @@
 ---
+keywords: [InfluxDB, 迁移, HTTP API, Telegraf, 客户端库, 数据可视化]
 description: 介绍如何从 InfluxDB 迁移到 GreptimeCloud，包括获取数据库连接信息、通过 HTTP API 和 Telegraf 写入数据、使用客户端库写入数据以及数据可视化。
 ---
 

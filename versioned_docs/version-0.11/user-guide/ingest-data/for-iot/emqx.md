@@ -1,4 +1,5 @@
 ---
+keywords: [EMQX, MQTT broker, IoT, real-time messaging, data integration, data ingestion]
 description: Overview of integrating GreptimeDB with EMQX, an open-source MQTT broker for IoT and real-time messaging applications.
 ---
 

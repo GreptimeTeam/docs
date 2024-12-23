@@ -1,4 +1,5 @@
 ---
+keywords: [SELECT 语句, SQL 查询, WHERE 子句, LIMIT 子句, JOIN 子句, GROUP BY 子句]
 description: 介绍了 `SELECT` 语句的基本语法和用法，包括 `WHERE`、`LIMIT`、`JOIN` 和 `GROUP BY` 子句的示例。
 ---
 

@@ -1,4 +1,5 @@
 ---
+keywords: [disaster recovery, active-active failover, RPO, RTO, read/write modes, configuration]
 description: Detailed explanation of the active-active failover disaster recovery solution in GreptimeDB Enterprise, including read/write modes, RPO, and RTO configurations.
 ---
 

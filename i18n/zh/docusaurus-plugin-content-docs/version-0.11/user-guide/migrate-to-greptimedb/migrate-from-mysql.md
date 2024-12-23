@@ -1,4 +1,5 @@
 ---
+keywords: [MySQL 迁移, 数据迁移, 数据库创建, 数据导出, 数据导入]
 description: 指导用户从 MySQL 迁移到 GreptimeDB，包括创建数据库和表、双写策略、数据导出和导入等步骤。
 ---
 

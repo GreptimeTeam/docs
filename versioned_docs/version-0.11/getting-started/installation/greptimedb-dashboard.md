@@ -1,4 +1,5 @@
 ---
+keywords: [dashboard, data visualization, SQL queries, PromQL queries, time series data]
 description: Information on accessing and using the GreptimeDB Dashboard for visualizing time series data.
 ---
 

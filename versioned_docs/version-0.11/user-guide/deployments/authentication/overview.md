@@ -1,4 +1,5 @@
 ---
+keywords: [authentication, user providers, static user provider, LDAP user provider]
 description: Overview of authentication in GreptimeDB, including static user provider and LDAP user provider for authenticating users.
 ---
 

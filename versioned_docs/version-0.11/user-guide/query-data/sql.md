@@ -1,4 +1,5 @@
 ---
+keywords: [SQL queries, data filtering, time zone handling, functions, range queries, aggregations, GreptimeDB SQL]
 description: Comprehensive guide on querying data in GreptimeDB using SQL, covering basic queries, filtering, time zone handling, functions, and advanced features like range queries and aggregations.
 ---
 

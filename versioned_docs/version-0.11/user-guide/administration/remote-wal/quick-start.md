@@ -1,4 +1,5 @@
 ---
+keywords: [GreptimeDB remote WAL, Docker setup, Kafka setup, data writing, data querying, quick start guide]
 description: Quick start guide for setting up Remote WAL using Docker and Kafka for GreptimeDB. Includes steps for creating a Docker network, starting Kafka and GreptimeDB containers, writing and querying data, and cleaning up.
 ---
 

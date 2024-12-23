@@ -1,4 +1,5 @@
 ---
+keywords: [CASE statement, SQL, conditional logic, query, syntax, examples]
 description: Describes the `CASE` statement used for conditional logic within queries, including syntax and examples for usage in `SELECT`, `WHERE`, `GROUP BY`, and `ORDER BY` clauses.
 ---
 

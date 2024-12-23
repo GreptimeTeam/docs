@@ -1,4 +1,5 @@
 ---
+keywords: [Prometheus 迁移, 数据迁移, 监控数据, 数据导入, 数据查询]
 description: 介绍从 Prometheus 迁移到 GreptimeDB 的步骤和注意事项。
 ---
 

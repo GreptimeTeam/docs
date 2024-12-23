@@ -1,4 +1,5 @@
 ---
+keywords: [SQL DELETE 语句, 删除行数据, 数据删除, SQL 示例, 数据库操作]
 description: DELETE 用于从表中删除行数据，满足条件的行会立刻被标记，后续查询无法获取这些行数据。
 ---
 

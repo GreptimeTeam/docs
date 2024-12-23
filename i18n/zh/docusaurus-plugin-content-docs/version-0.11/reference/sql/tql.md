@@ -1,4 +1,5 @@
 ---
+keywords: [TQL 关键字, EVAL, EXPLAIN, ANALYZE, 时间序列查询]
 description: 介绍了 `TQL` 关键字及其在 GreptimeDB 中的用法，包括 `EVAL`、`EXPLAIN` 和 `ANALYZE` 的语法和示例。
 ---
 

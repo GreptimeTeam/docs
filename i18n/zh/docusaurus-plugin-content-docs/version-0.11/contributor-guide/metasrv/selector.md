@@ -1,4 +1,5 @@
 ---
+keywords: [Selector, Metasrv, Datanode, 路由表, 负载均衡]
 description: 介绍 Metasrv 中的 Selector，包括其类型和配置方法。
 ---
 

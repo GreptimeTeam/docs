@@ -1,4 +1,5 @@
 ---
+keywords: [Kafka, 数据传输, 日志数据, 指标数据, 配置示例]
 description: 介绍如何使用 Kafka 将数据传输到 GreptimeCloud，并提供了日志和指标数据的配置示例。
 ---
 

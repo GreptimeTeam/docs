@@ -1,4 +1,5 @@
 ---
+keywords: [collation applicability, character sets, SQL information schema, collation management, collation details]
 description: Describes the applicability of collation character sets within the SQL information schema, detailing how they can be applied and managed.
 ---
 
