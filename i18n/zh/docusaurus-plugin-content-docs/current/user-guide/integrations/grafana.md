@@ -26,6 +26,10 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
   ```shell
   grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc
   ```
+- 使用我们 [预构建的 Grafana 镜
+  像](https://hub.docker.com/r/greptime/grafana-greptimedb)，已经提前包含了
+  GreptimeDB 数据源插件 `docker run -p 3000:3000
+  greptime/grafana-greptimedb:latest`
 
 注意，安装插件后可能需要重新启动 Grafana 服务器。
 
