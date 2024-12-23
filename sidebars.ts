@@ -175,6 +175,13 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments/deploy-on-kubernetes/overview',
                 'user-guide/deployments/deploy-on-kubernetes/getting-started',
                 'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
+                {
+                  type: 'category',
+                  label: 'Monitoring',
+                  items: [
+                    'user-guide/deployments/deploy-on-kubernetes/monitoring/cluster-monitoring-deployment',
+                  ],
+                },
               ],
             },
             'user-guide/deployments/configuration',
