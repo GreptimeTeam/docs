@@ -11,7 +11,7 @@ description: Overview of Flownode, a component providing streaming process capab
 `Flownode` provides a simple streaming process (known as `flow`) ability to the database. 
 `Flownode` manages `flows` which are tasks that receive data from the `source` and send data to the `sink`.
 
-In current version, `Flownode` only supports standalone mode. In the future, we will support distributed mode.
+`Flownode` support both `standalone` and `distributed` mode. In `standalone` mode, `Flownode` runs in the same process as the database. In `distributed` mode, `Flownode` runs in a separate process and communicates with the database through the network.
 
 ## Components
 
