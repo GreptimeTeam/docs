@@ -175,6 +175,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments/deploy-on-kubernetes/overview',
                 'user-guide/deployments/deploy-on-kubernetes/getting-started',
                 'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
+                'user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations',
                 {
                   type: 'category',
                   label: 'Monitoring',

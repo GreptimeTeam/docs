@@ -138,7 +138,9 @@ prometheusMonitor:
     release: prometheus
 ```
 
-**此处需要注意的是**：`labels` 字段需要与相应用于创建 Prometheus 实例的 `matchLabels` 字段保持一致，否则将无法正常抓取到 GreptimeDB 集群的 Metrics 数据。
+:::note
+`labels` 字段需要与相应用于创建 Prometheus 实例的 `matchLabels` 字段保持一致，否则将无法正常抓取到 GreptimeDB 集群的 Metrics 数据。
+:::
 
 当我们配置完 `prometheusMonitor` 字段后，GreptimeDB Operator 将会自动创建 Prometheus Operator 的 `PodMonitor` 资源，并将 GreptimeDB 集群的 Metrics 数据导入到 Prometheus 中，比如我们可以用如下命令来查看创建的 `PodMonitor` 资源：
 
@@ -184,7 +186,10 @@ spec:
 - [集群日志 Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json)
 - [慢查询日志 Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-slow-queries.json)
 
-**注意**：其中 **集群日志 Dashboard** 和 **慢查询日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
+
+:::note
+其中 **集群日志 Dashboard** 和 **慢查询日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
+:::
 
 如果你使用 Helm Chart 部署 GreptimeDB 集群，你可以通过启用 `grafana.enabled` 来一键部署 Grafana 实例，并导入相应的 Dashboard（可参考[立即开始](../getting-started.md)），如下所示：
 
