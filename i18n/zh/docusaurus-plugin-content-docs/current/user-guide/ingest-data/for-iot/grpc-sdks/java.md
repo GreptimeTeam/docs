@@ -82,10 +82,15 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 <div id="set-table-options">
 
-你可以
+你可以使用 `Context` 设置表选项。
+例如，使用以下代码设置 `ttl` 选项：
 
 ```java
-TODO
+Context ctx = Context.newDefault();
+ctx.withHint("ttl", "3d");
+// 使用 ctx 对象写入数据
+// `cpuMetric` 和 `memMetric` 是定义的数据对象，之后的章节中有详细描述
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
 ```
 
 </div>
