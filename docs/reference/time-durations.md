@@ -1,3 +1,8 @@
+---
+keywords: [time durations, time spans, time units]
+description: Learn how GreptimeDB utilizes time durations to represent time spans in SQL queries, configuration files, and API requests with supported suffixes and examples.
+---
+
 # Time Durations
 
 GreptimeDB utilizes time durations to represent time spans in various contexts,
