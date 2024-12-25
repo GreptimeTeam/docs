@@ -378,6 +378,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'reference/command-lines',
         'reference/sql-tools',
+        'reference/time-durations',
         {
           type: 'category',
           label: 'SQL',
