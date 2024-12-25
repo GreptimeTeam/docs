@@ -83,6 +83,16 @@ For customizing the connection options, please refer to [API Documentation](#ing
 
 </div>
 
+<div id="set-table-options">
+
+You can set table options using the `ingesterContext` context.
+For example, to set the `ttl` option, use the following code:
+
+```java
+TODO
+```
+
+</div>
 
 <div id="low-level-object">
 

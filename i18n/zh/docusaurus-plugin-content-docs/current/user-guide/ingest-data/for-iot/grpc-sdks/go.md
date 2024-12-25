@@ -34,6 +34,7 @@ go get -u github.com/GreptimeTeam/greptimedb-ingester-go@VAR::goSdkVersion
 ```go
 import (
     greptime "github.com/GreptimeTeam/greptimedb-ingester-go"
+    ingesterContext "github.com/GreptimeTeam/greptimedb-ingester-go/context"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
@@ -57,6 +58,31 @@ cfg := greptime.NewConfig("127.0.0.1").
 
 cli, _ := greptime.NewClient(cfg)
 ```
+</div>
+
+<div id="set-table-options">
+
+你可以使用 `ingesterContext` 设置表选项。
+例如设置 `ttl` 选项：
+
+```go
+hints := []*ingesterContext.Hint{
+    {
+        Key:   "ttl",
+        Value: "3d",
+    },
+}
+
+ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+ctx = ingesterContext.New(ctx, ingesterContext.WithHints(hints))
+// 使用 ingesterContext写入数据到 GreptimeDB 
+// data 对象在之后的章节中描述
+resp, err := c.client.Write(ctx, data)
+if err != nil {
+    return err
+}
+```
+
 </div>
 
 <div id="low-level-object">

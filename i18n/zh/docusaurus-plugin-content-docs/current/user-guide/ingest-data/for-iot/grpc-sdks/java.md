@@ -80,6 +80,16 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 </div>
 
+<div id="set-table-options">
+
+你可以
+
+```java
+TODO
+```
+
+</div>
+
 <div id="low-level-object">
 
 ```java

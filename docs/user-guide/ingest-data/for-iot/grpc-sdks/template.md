@@ -27,6 +27,15 @@ The following example shows how to set the username and password when using the 
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON` etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
+## Set table options
+
+Although the time series table is created automatically when writing data to GreptimeDB via this ingester library,
+you can set [table options](/reference/sql/create.md#table-options) such as retention policy, merge mode, and more.
+
+<InjectContent id="set-table-options" content={props.children}/>
+
+For how to write data to GreptimeDB, see the following sections.
+
 ## Low-level API
 
 The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
