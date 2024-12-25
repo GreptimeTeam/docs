@@ -94,7 +94,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/query-data/query-external-data',
           ],
         },
-        { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview'] },
+        { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview', 'user-guide/manage-data/data-index'] },
         {
           type: 'category',
           label: 'Integrations',
