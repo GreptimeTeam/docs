@@ -28,9 +28,11 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 
 ## 设置表选项
 
-尽管通过此 ingester 库写入数据到 GreptimeDB 时会自动创建时间序列表，
-你依然可以设置[表选项](/reference/sql/create.md#table-options)，
-例如保留策略、合并模式等。
+虽然在通过 SDK 向 GreptimeDB 写入数据时会自动创建时间序列表，但你仍然可以配置表选项。
+SDK 支持以下表选项：
+
+- `auto_create_table`：默认值为 `True`。如果设置为 `False`，则表示表已经存在且不需要自动创建，这可以提高写入性能。
+- `ttl`、`append_mode`、`merge_mode`：更多详情请参考[表选项](/reference/sql/create.md#table-options)。
 
 <InjectContent id="set-table-options" content={props.children}/>
 

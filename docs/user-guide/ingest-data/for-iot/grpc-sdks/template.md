@@ -29,8 +29,12 @@ The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON
 
 ## Set table options
 
-Although the time series table is created automatically when writing data to GreptimeDB via this ingester library,
-you can set [table options](/reference/sql/create.md#table-options) such as retention policy, merge mode, and more.
+Although the time series table is created automatically when writing data to GreptimeDB via the SDK,
+you can still configure table options.
+The SDK supports the following table options:
+
+- `auto_create_table`: Default is `True`. If set to `False`, it indicates that the table already exists and does not need automatic creation, which can improve write performance.
+- `ttl`, `append_mode`, `merge_mode`: For more details, refer to the [table options](/reference/sql/create.md#table-options).
 
 <InjectContent id="set-table-options" content={props.children}/>
 
