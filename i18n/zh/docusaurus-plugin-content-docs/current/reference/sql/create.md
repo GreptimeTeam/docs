@@ -128,17 +128,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 `ttl` 值是一个字符串，支持以下类型的值：
 
-- 一个时间范围字符串，如 `1hour 12min 5s`，时间范围对象是时间段的连接。每个时间段由一个整数和一个后缀组成。支持的后缀有：
-    - `nsec`, `ns` – 纳秒（nanoseconds）
-    - `usec`, `us` – 微秒（microseconds）
-    - `msec`, `ms` – 毫秒（milliseconds）
-    - `seconds`, `second`, `sec`, `s` - 秒
-    - `minutes`, `minute`, `min`, `m` - 分钟
-    - `hours`, `hour`, `hr`, `h` - 小时
-    - `days`, `day`, `d` - 天
-    - `weeks`, `week`, `w` - 周
-    - `months`, `month`, `M` – 月，定义为 30.44 天
-    - `years`, `year`, `y` – 年，定义为 365.25 天
+- [时间范围字符串](/reference/time-durations.md)，如 `1hour 12min 5s`。
 - `forever`, `NULL`, `0s` （或任何长度为 0 的时间范围，如 `0d`）或空字符串 `''`，表示数据永远不会被删除。
 - `instant`, 注意数据库的 TTL 不能设置为 `instant`。`instant` 表示数据在插入时立即删除，如果你想将输入发送到流任务而不保存它，可以使用 `instant`，请参阅[流管理文档](/user-guide/flow-computation/manage-flow.md#manage-flows)了解更多细节。
 - 未设置，可以使用 `ALTER TABLE <table-name> UNSET 'ttl'` 来取消表的 `ttl` 设置，这样表将继承数据库的 `ttl` 策略（如果有的话）。
