@@ -60,10 +60,3 @@ The following rules are used when storing Vector metrics into GreptimeDB:
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
   - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
 
-## Collect logs
-
-### Configuration
-
-### Data Model
-
-
