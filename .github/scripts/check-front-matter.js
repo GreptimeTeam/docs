@@ -46,7 +46,9 @@ async function checkMarkdownFiles() {
     });
 
     // Filter to get only markdown files
-    const markdownFiles = files.filter(file => file.filename.endsWith('.md'));
+    const markdownFiles = files.filter(file =>
+      file.filename.endsWith('.md') && file.status !== 'removed'
+    );
 
     let allValid = true;
 

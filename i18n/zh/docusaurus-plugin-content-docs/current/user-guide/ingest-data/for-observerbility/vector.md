@@ -3,18 +3,16 @@ keywords: [Vector, 数据写入, gRPC 通信, 数据模型, 配置示例]
 description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小配置示例和数据模型的映射规则。
 ---
 
-import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md'
-
-
 # Vector
 
-<DocTemplate>
+Vector 是高性能的可观测数据管道。
+它原生支持 GreptimeDB 指标数据接收端。
+通过 Vector，你可以从各种来源接收指标数据，包括 Prometheus、OpenTelemetry、StatsD 等。
+GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 
-[Vector](https://vector.dev/) 是一种高性能的可以帮助工程师控制可观测性数据的通道工具。我们的 Vector 集成页面在[这里](https://vector.dev/docs/reference/configuration/sinks/greptimedb/)。
+## 收集指标
 
-<div id="toml-config">
-
-## 集成
+### 配置
 
 使用 GreptimeDB 的 Vector 集成的最小配置如下：
 
@@ -26,7 +24,7 @@ type = "host_metrics"
 
 [sinks.my_sink_id]
 inputs = ["in"]
-type = "greptimedb"
+type = "greptimedb_metrics"
 endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
@@ -37,11 +35,15 @@ new_naming = true
 GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端口是 `4001`。
 如果你在使用 [自定义配置](/user-guide/deployments/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
-</div>
+启动 Vector:
 
-<div id="data-model">
+```
+vector -c sample.toml
+```
 
-## 数据模型
+请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) 查看更多配置项。
+
+### 数据模型
 
 我们使用这样的规则将 Vector 指标存入 GreptimeDB：
 
@@ -55,7 +57,3 @@ GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端
   - AggregatedHistoragm 类型，每个 bucket 的数值将被存入 `bxx` 列，其中 xx 是 bucket 数值的上限，此外我们还会记录 `sum/count` 列；
   - AggregatedSummary 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `sum/count` 列；
   - Sketch 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `min/max/avg/sum` 列；
-
-</div>
-
-</DocTemplate>
