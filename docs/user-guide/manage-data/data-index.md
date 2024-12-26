@@ -1,3 +1,8 @@
+---
+keywords: [index, inverted index, skipping index, fulltext index, query performance]
+description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and fulltext index, and how to use them effectively to optimize query performance.
+---
+
 # Data Index
 
 GreptimeDB provides various indexing mechanisms to accelerate query performance. Indexes are essential database structures that help optimize data retrieval operations by creating efficient lookup paths to specific data.
