@@ -75,13 +75,14 @@ CREATE TABLE access_logs (
   http_refer STRING,
   user_agent STRING,
   request STRING FULLTEXT,
-  PRIMARY KEY (remote_addr, http_status, http_method, http_refer, user_agent)
-)
+  PRIMARY KEY (http_status, http_method)
+) with ('append_mode'='true');
 ```
 
 - The time index column is `access_time`.
-- `remote_addr`, `http_status`, `http_method`, `http_refer` and `user_agent` are tags.
-- `request` is a field that enables full-text index by the [`FULLTEXT` column option](/reference/sql/create.md#fulltext-column-option).
+- `http_status`, `http_method` are tags.
+- `remote_addr`, `http_refer`, `user_agent` and `request` are fields. `request` is a field that enables full-text index by the [`FULLTEXT` column option](/reference/sql/create.md#fulltext-column-option).
+- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that may have duplicate timestamps under the same primary key.
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
