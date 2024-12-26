@@ -17,7 +17,7 @@ First, clustering data by column makes file scanning more efficient, especially 
 
 Second, data of the same column tends to be homogeneous which helps with compression when apply techniques like dictionary and Run-Length Encoding (RLE).
 
-![Parquet file format](/parquet-file-format.png)
+<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
 
 ## Data Persistence
 
@@ -29,7 +29,7 @@ When the size of data buffered in MemTables reaches that threshold, GreptimeDB w
 
 Apache Parquet file format provides inherent statistics in headers of column chunks and data pages, which are used for pruning and skipping.
 
-![Column chunk header](/column-chunk-header.png)
+<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
 
 For example, in the above Parquet file, if you want to filter rows where `name` = `Emily`, you can easily skip row group 0 because the max value for `name` field is `Charlie`. This statistical information reduces IO operations.
 
