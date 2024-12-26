@@ -22,3 +22,7 @@ GreptimeDB 是专为云原生环境而设计的时序数据库，自诞生以来
 ## 监控
 
 - [集群监控部署](./monitoring/cluster-monitoring-deployment.md)
+
+## 配置
+
+- [常见 Helm Chart 配置项](./common-helm-chart-configurations.md)

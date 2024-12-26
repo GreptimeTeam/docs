@@ -186,7 +186,9 @@ GreptimeDB cluster currently provides 3 Grafana dashboards:
 - [Cluster Logs Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json) 
 - [Slow Query Logs Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-slow-queries.json)
 
-**Note**: The Cluster Logs Dashboard and Slow Query Logs Dashboard are only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
+:::note
+The Cluster Logs Dashboard and Slow Query Logs Dashboard are only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
+:::
 
 If using Helm Chart, you can enable `grafana.enabled` to deploy Grafana and import dashboards automatically (see [Getting Started](../getting-started.md)):
 
