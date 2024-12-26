@@ -99,14 +99,14 @@ staging_size = "10GB"
 
 ### 避免将高基数的列放到主键中
 
-将高基数的列，如 `trace_id` 和 `uuid` 等列设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#create-an-append-only-table) 表并将这些高基数的列设置为 fields。
+将高基数的列，如 `trace_id` 和 `uuid` 等列设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表并将这些高基数的列设置为 fields。
 
 
 ### 尽可能使用 append-only 表
 
 一般来说，append-only 表具有更高的扫描性能，因为存储引擎可以跳过合并和去重操作。此外，如果表是 append-only 表，查询引擎可以使用统计信息来加速某些查询。
 
-如果表不需要去重或性能优先于去重，我们建议为表启用 [append_mode](/reference/sql/create.md#create-an-append-only-table)。例如，日志表应该是 append-only 表，因为日志消息可能具有相同的时间戳。
+如果表不需要去重或性能优先于去重，我们建议为表启用 [append_mode](/reference/sql/create.md#创建-append-only-表)。例如，日志表应该是 append-only 表，因为日志消息可能具有相同的时间戳。
 
 
 ## 写入
@@ -133,7 +133,7 @@ staging_size = "10GB"
 ### 按时间窗口写入
 虽然 GreptimeDB 可以处理乱序数据，但乱序数据仍然会影响性能。GreptimeDB 从写入的数据中推断出时间窗口的大小，并根据时间戳将数据划分为多个时间窗口。如果写入的行不在同一个时间窗口内，GreptimeDB 需要将它们拆分，这会影响写入性能。
 
-通常，实时数据不会出现上述问题，因为它们始终使用最新的时间戳。如果需要将具有较长时间范围的数据导入数据库，我们建议提前创建表并 [指定 compaction.twcs.time_window 选项](/reference/sql/create.md#create-a-table-with-custom-compaction-options)。
+通常，实时数据不会出现上述问题，因为它们始终使用最新的时间戳。如果需要将具有较长时间范围的数据导入数据库，我们建议提前创建表并 [指定 compaction.twcs.time_window 选项](/reference/sql/create.md#创建自定义-compaction-参数的表)。
 
 
 ## 表结构
