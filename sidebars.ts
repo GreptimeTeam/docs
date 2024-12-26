@@ -58,6 +58,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observerbility/opentelemetry',
                 'user-guide/ingest-data/for-observerbility/influxdb-line-protocol',
                 'user-guide/ingest-data/for-observerbility/loki',
+                'user-guide/ingest-data/for-observerbility/alloy',
               ],
             },
             {
@@ -107,6 +108,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/metabase',
             'user-guide/integrations/emqx',
             'user-guide/integrations/dbeaver',
+            'user-guide/integrations/alloy',
           ],
         },
         {

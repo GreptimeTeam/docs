@@ -9,13 +9,26 @@ description: Instructions for integrating OpenTelemetry with GreptimeDB, includi
 
 ## Metrics
 
-### OTLP/HTTP
+GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
-import Includeotlpmetrycsintegration from '../../../db-cloud-shared/clients/otlp-metrics-integration.md' 
+### OTLP/HTTP API
 
-<Includeotlpmetrycsintegration/>
+To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
-#### Example Code
+* URL: `http{s}://<host>/v1/otlp/v1/metrics`
+* Headers:
+  * `X-Greptime-DB-Name`: `<dbname>`
+  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)
+
+The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`. For example, in Node.js, you can use [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto); in Go, you can use [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp); in Java, you can use [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp); and in Python, you can use [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/).
+
+:::tip NOTE
+The package names may change according to OpenTelemetry, so we recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
+:::
+
+For more information about the OpenTelemetry SDK, please refer to the official documentation for your preferred programming language.
+
+### Example Code
 
 Here are some example codes about how to setup the request in different languages:
 
@@ -95,7 +108,7 @@ The example codes above may be outdated according to OpenTelemetry. We recommend
 
 For more information on the example code, please refer to the official documentation for your preferred programming language.
 
-#### Data Model
+### Data Model
 
 The OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
 
@@ -108,57 +121,34 @@ The OTLP metrics data model is mapped to the GreptimeDB data model according to 
 
 ## Logs
 
-### OTLP/HTTP
+GreptimeDB is an observability backend to consume OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
-import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-logs-integration.md' 
+### OTLP/HTTP API API
 
-<Includeotlplogintegration/>
+To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
-#### Example Code
+* URL: `http{s}://<host>/v1/otlp/v1/logs`
+* Headers:
+  * `X-Greptime-DB-Name`: `<dbname>`
+  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).
+  * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `opentelemetry_logs`.
+  * `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
+  * `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, the extract keys will be used to process the logs.
+  * `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>` (optional) - The pipeline version to process the logs. If not provided, the latest version of the pipeline will be used.
 
-Here are some example codes about how to use Grafana Alloy to send OpenTelemetry logs to GreptimeDB:
-
-```hcl
-loki.source.file "greptime" {
-  targets = [
-    {__path__ = "/tmp/foo.txt"},
-  ]
-  forward_to = [otelcol.receiver.loki.greptime.receiver]
-}
-
-otelcol.receiver.loki "greptime" {
-  output {
-    logs = [otelcol.exporter.otlphttp.greptimedb_logs.input]
-  }
-}
-
-otelcol.auth.basic "credentials" {
-  username = "${GREPTIME_USERNAME}"
-  password = "${GREPTIME_PASSWORD}"
-}
-
-otelcol.exporter.otlphttp "greptimedb_logs" {
-  client {
-    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
-    headers  = {
-      "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
-      "X-Greptime-Log-Table-Name" = "demo_logs",
-      "X-Greptime-Gog-Extract-Keys" = "filename,log.file.name,loki.attribute.labels",
-    }
-    auth     = otelcol.auth.basic.credentials.handler
-  }
-}
-```
-
-This example listens for changes to the file and sends the latest values to GreptimeDB via the otlp protocol.
+The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`.
 
 :::tip NOTE
-The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation And Grafana Alloy for the most up-to-date information.
+The package names may change according to OpenTelemetry, so we recommend that you refer to the official OpenTelemetry documentation for the most up-to-date information.
 :::
 
-For more information on the example code, please refer to the official documentation for your preferred programming language.
+For more information about the OpenTelemetry SDK, please refer to the official documentation for your preferred programming language.
 
-#### Data Model
+### Example Code
+
+Please refer to the [Alloy documentation](alloy.md#logs) for example code on how to send OpenTelemetry logs to GreptimeDB.
+
+### Data Model
 
 The OTLP logs data model is mapped to the GreptimeDB data model according to the following rules:
 
@@ -189,3 +179,4 @@ Default table schema:
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
 - All attributes, including resource attributes, scope attributes, and log attributes, will be stored as a JSON column in the GreptimeDB table.
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
+
