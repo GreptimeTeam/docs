@@ -17,7 +17,7 @@ Parquet 具有层次结构，类似于“行组-列-数据页”。Parquet 文�
 
 其次，相同列的数据往往是同质的（比如具备近似的值），这有助于在采用字典和 Run-Length Encoding（RLE）等技术进行压缩。
 
-![Parquet file format](/parquet-file-format.png)
+<img src="/parquet-file-format.png" alt="Parquet file format" width="500"/>
 
 ## 数据持久化
 
@@ -28,7 +28,7 @@ GreptimeDB 提供了 `storage.flush.global_write_buffer_size` 的配置项来设
 
 Apache Parquet 文件格式在列块和数据页的头部提供了内置的统计信息，用于剪枝和跳过。
 
-![Column chunk header](/column-chunk-header.png)
+<img src="/column-chunk-header.png" alt="Column chunk header" width="350"/>
 
 例如，在上述 Parquet 文件中，如果你想要过滤 `name` 等于 `Emily` 的行，你可以轻松跳过行组 0，因为 `name` 字段的最大值是 `Charlie`。这些统计信息减少了 IO 操作。
 
