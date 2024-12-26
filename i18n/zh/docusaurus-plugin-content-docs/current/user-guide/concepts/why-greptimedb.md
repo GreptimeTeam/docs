@@ -3,96 +3,111 @@ keywords: [时序数据库, 云原生, 分布式, 高性能, 用户友好, 存�
 description: 介绍 GreptimeDB 的特点、设计原则和优势，包括统一指标、日志和事件，云原生设计，高性能和用户友好等。
 ---
 
-# Why GreptimeDB
+# 为什么选择 GreptimeDB
 
-GreptimeDB 是一个云原生、分布式且开源的时序数据库，旨在处理、存储和分析海量的指标（metrics）、日志（logs）和事件（events）数据（链路 traces 也在计划中）。
-关于更多 GreptimeDB 创立背景和所能解决的行业痛点分析，欢迎先阅读[这篇文章](https://mp.weixin.qq.com/s/lTXXsBziCIjJJSCQEW-unw)。
+GreptimeDB 是一个云原生、分布式和开源的时序数据库，旨在处理、存储和分析大量的指标、日志和事件数据（计划中还包括 Trace）。
+它在处理涉及时序和实时分析的混合处理工作负载方面非常高效，同时为开发者提供了极佳的体验。
 
-我们的解决方案能更高效地管理海量的时间序列数据，并且能轻松处理时序数据的写入/查询和分析的混合负载需求。无论你的系统是在本地运行还是在云端，GreptimeDB 都可以轻松处理任何规模的负载。基于过去的经验，我们有信心为用户提供任何符合其需求的解决方案和服务。
+可以阅读博客文章《[This Time, for Real](https://greptime.com/blogs/2022-11-15-this-time-for-real)》和《[Unifying Logs and Metrics](https://greptime.com/blogs/2024-06-25-logs-and-metrics)》了解我们开发 GreptimeDB 的动机。
+在这些文章中，我们深入探讨了 Greptime 高性能背后的原因以及一些突出的功能。
 
-我们在设计和开发 GreptimeDB 时遵循以下原则：
+## 统一的指标、日志和事件
 
-- **统一指标、日志和事件**： 时序数据库应该涵盖广义的时序数据，能同时处理指标（metrics）、日志（logs）和事件（events）等时序数据，简化架构并降低用户的部署成本和使用成本。
-- **云原生**：从设计 GreptimeDB 的第一天起，其就被定位为一款完全利用云的基础设施和能力来运行和服务的云原生数据库，因此具有出色的可扩展性和容错性。
-- **用户友好**：我们明白开发者体验至关重要，GreptimeDB 的设计关键原则是对开发者友好。这不仅体现在开发、部署和运营方面，在与数据生态系统的无缝兼容性，以及不断完善的文档和社区指南方面，都无一不体现了 GreptimeDB 用户友好的特性。
-- **高性能**：处理时间序列数据的特性之一就是大规模的数据摄取、查询和分析。在高并发场景下依然持续进行性能优化也是我们设计 GreptimeDB 时的核心原则之一。
-- **灵活的架构**：通过抽象良好的分层和封装隔离，GreptimeDB 的部署形式可以满足从嵌入式、单机版、传统集群到云原生的各种环境。
+通过[时序表](./data-model.md)的模型设计、对 SQL 的原生支持以及存算分离架构带来的混合工作负载，
+GreptimeDB 可以同时处理指标、日志和事件，
+增强不同时间序列数据之间的关联分析，
+并简化架构、部署成本和 API。
 
-![The architecture of GreptimeDB](/architecture-2.png)
+阅读 [SQL 示例](/user-guide/overview.md#sql-query-example) 了解详细信息。
 
-接下来，我们将逐一展开说明下这些设计原则。
+## 可用性、可扩展性和弹性
 
-## 统一指标、日志和事件
+从第一天起，GreptimeDB 就按照云原生数据库的原则设计，这意味着它能够充分利用云的优势。其一些好处包括：
 
-通过[时序表](./data-model)的模型设计、SQL 的原生支持，以及存算分离架构带来的混合负载，GreptimeDB 可以同时处理指标、日志和事件，增强不同时间序列数据之间的关联分析，并简化用户的架构、部署和 API。
+1. 高可用的按需计算资源，目标是实现 99.999% 的可用性和正常运行时间，即每年大约只有五分钟十五秒的停机时间。
+2. 弹性和可扩展性，允许开发者根据使用情况轻松扩展或缩减、添加或移动资源。
+3. 高可靠性和容错性以防止数据丢失。系统的目标是实现 99.9999% 的可用性率。
 
-阅读[SQL 示例](/user-guide/overview.md#sql-查询示例)以获取详细信息。
+这些功能共同确保 GreptimeDB 始终提供最佳的性能。
+下面是关于如何实现这些功能的额外技术解释。
 
+### 可弹性扩展的资源隔离
 
-## 云原生
+![存储/计算分离，计算/计算分离](/storage-compute-disaggregation-compute-compute-separation.png)
 
-GreptimeDB 专为云而生，充分利用云的优势，如弹性、可扩展性和高可用性。
+存储和计算资源是分离的，允许每个资源独立扩展、消耗和定价。
+这不仅大大提高了计算资源的利用率，还适配了“按需付费”的定价模式，避免了资源未充分利用的浪费。
 
-![Storage/Compute Disaggregation, Compute/Compute separation](/storage-compute-disaggregation-compute-compute-separation.png)
+除了存储和计算隔离，不同的计算资源也被隔离，避免了因数据写入、实时查询以及数据压缩或降采样等任务产生的资源竞争，
+从而实现高效率的大规模实时分析。
 
-### 存算分离
+数据可以在多个应用程序之间共享而无需争用同一资源池，
+这不仅大大提高了效率，
+还可以根据需求提供无限的可扩展性。
 
-在云中分离存储和计算资源有几个好处：
+### 灵活的架构支持多种部署策略
 
-- 存储和计算可以根据需求轻松地、独立地进行扩展
-- 数据可以写入价格较低的云存储服务，如阿里云 OSS、 AWS S3 或 Azure Blob Storage
-- 可以使用 Serverless 容器自动且弹性地扩展计算资源
+![GreptimeDB 的架构](/architecture-2.png)
 
-### 算算分离
+通过灵活的架构设计原则，不同的模块和组件可以通过模块化和分层设计独立切换、组合或分离。
+例如，我们可以将 Frontend、Datanode 和 Metasrc 模块合并为一个独立的二进制文件，也可以为每个表独立启用或禁用 WAL。
 
-算算分离能将不同工作负载的计算资源隔离开：
+灵活的架构允许 GreptimeDB 满足从边缘到云的各种场景中的部署和使用需求，同时仍然使用同一套 API 和控制面板。
+通过良好抽象的分层和封装隔离，GreptimeDB 的部署形式支持从嵌入式、独立、传统集群到云原生的各种环境。
 
-- 隔离不同的计算资源，以避免因数据摄取（Data Ingestion）、实时查询以及数据压缩或降采样等任务产生的资源竞争
-- 在多个应用程序之间共享数据
-- 根据需求提供无限的并发扩展性
+## 优异的成本效益
 
-## 用户友好
+GreptimeDB 利用流行的对象存储解决方案来存储大量的时序数据，例如 AWS S3 和 Azure Blob Storage，允许开发者只为使用的存储资源付费。
 
-### Time-Series Table，schemaless 设计
-
-「GreptimeDB」结合了 Metric (Measurement/Tag/Field/Timestamp) 模型和关系数据模型（表），提供了一个名为 Time-Series Table 的新数据模型，该模型以行和列的形式呈现数据，将 Metric 中的标签和字段映射到列上，同时通过 `Time Index` 约束来指定时间索引所在列。
-
-![Time-Series Table](/time-series-table.png)
-
-然而，在我们的设计中，对 Schema 的定义并非强制性的，而是更偏向于像 MongoDB 这样的数据库的 Schemaless 方式。当数据被写入时，表将被动态地自动创建，新的列（标签和字段）将也会自动被添加进表中。
-
-### PromQL、SQL 和 Python
-
-GreptimeDB 支持 PromQL 和 SQL，它们都依赖于同一查询引擎。该引擎采用向量化执行，这种执行是并行和分布式的。
-
-PromQL 是可观测领域流行的查询语言，用户可以通过 PromQL 查询汇总由 Prometheus 提供的实时的时序数据。与 SQL 相比，它在使用 Grafana 进行可视化和创建警报规则时要简单得多。GreptimeDB 通过解析 PromQL 转化为查询计划，然后由查询引擎优化和执行，从而原生地、高性能地支持 PromQL。
-
-SQL 在分析时间跨度大或来自多个表的数据方面更为强大，例如多表连接查询。SQL 也方便于数据库管理。
-
-Python 在数据科学家和 AI 专家中非常流行，GreptimeDB 允许在数据库中直接运行 Python 脚本。用户可以编写 Python 自定义函数（UDF）并使用 DataFrame API 来加速数据处理。
-
-### 易于部署和维护
-
-为简化部署和维护流程，GreptimeDB 为用户提供了 [K8s operator](https://github.com/GreptimeTeam/greptimedb-operator)、[命令行工具](https://github.com/GreptimeTeam/gtctl)、[内嵌式仪表板](https://github.com/GreptimeTeam/dashboard)以及其他有用的工具，方便轻松配置和管理自己的数据库。如果你需要全托管的云服务，我们也提供了基于 GreptimeDB 的格睿云 GreptimeCloud 数据库云服务方案。
-
-### 易于集成
-
-GreptimeDB 支持多种协议，包括 MySQL，PostgreSQL，InfluxDB，OpenTSDB，Prometheus RemoteStorage 和高性能的 gRPC 等标准开放协议，尽可能的降低数据库接入门槛。此外，我们还为各种编程语言提供了 SDK，例如 Java，Go，Erlang 等。我们持续集成和连接生态系统中的开源软件，以提升开发者的体验。
+GreptimeDB 使用自适应压缩算法，根据数据的类型和基数来减少数据量，以满足时间和空间复杂性约束。
+例如，对于字符串数据类型，当块的基数超过某个阈值时，GreptimeDB 使用字典压缩；
+对于浮点数，GreptimeDB 采用 Chimp 算法，该算法通过分析实际的时间序列数据集来增强 Gorilla（Facebook 的内存 TSDB）的算法，
+并提供比传统算法（如 zstd、Snappy 等）更高的压缩率和空间效率。
 
 ## 高性能
 
-就性能优化而言，GreptimeDB 利用 LSM Tree、数据分片和 基于 Quorum 的 WAL 设计等不同技术，来解决大规模时间序列数据的写入工作。
+在性能优化方面，GreptimeDB 利用 LSM 树、数据分片和基于 Quorum 的 WAL 设计等不同技术来处理大量的时序数据写入时的工作负载。
 
-GreptimeDB 还通过列式存储、自适应压缩算法和智能索引，来降低存储成本，并解决时间序列数据的高基数问题。
+GreptimeDB 的查询引擎强大且快速，得益于矢量化执行和分布式并行处理，并结合了索引功能。
+为了提升数据修剪和过滤效率，GreptimeDB 构建了智能索引和大规模并行处理（MPP）架构。
+该架构使用独立的索引文件记录统计信息，类似于 Apache Parquet 的行组元数据，同时还使用了内置指标记录不同查询的工作负载。
+通过结合基于成本的优化（CBO）和开发者定义的提示，GreptimeDB 能够启发式地构建智能索引，从而进一步提升查询性能。
 
-强大而高效的查询引擎支持向量化执行，查询可以充分利用索引并分布式并行执行。
+## 易于使用
 
-## 灵活的架构
+### 易于部署和维护
 
-通过模块化和分层设计，不同的模块和组件可以独立地开启、组合或分离。例如，我们可以将 Frontend、Datanode 和 Metasrv 合并为一个独立的二进制文件，并且我们也可以独立地为每个表启用或禁用 WAL。
+为了简化部署和维护过程，GreptimeDB 提供了 [K8s operator](https://github.com/GreptimeTeam/greptimedb-operator)、[命令行工具](https://github.com/GreptimeTeam/gtctl)、嵌入式[仪表盘](https://github.com/GreptimeTeam/dashboard)和其他有用的工具，
+使得开发者可以轻松配置和管理数据库。
+请访问我们官网的 [GreptimeCloud](https://greptime.com) 了解更多信息。
 
-这种灵活的架构设计让 GreptimeDB 能在使用相同的 API 编程接口和控制面的条件下，满足从边缘到云各种场景中的部署和使用需求。
+### 易于集成
 
-## 小结
+GreptimeDB 支持多种数据库连接协议，包括 MySQL、PostgreSQL、InfluxDB、OpenTSDB、Prometheus Remote Storage 和高性能 gRPC。
+此外，还提供了多种编程语言的 SDK，如 Java、Go、Erlang 等。
+我们还在不断与生态系统中的其他开源软件进行集成和连接，以增强开发者体验。
+接下来将详细介绍三种流行的语言：PromQL、SQL 和 Python。
 
-随着时间序列数据的管理和分析需求不断增长，我们相信 GreptimeDB 能够提供一种高效、可扩展和用户友好的解决方案。我们将在 6 月初推出分布式可用的版本 v0.3，无论你的应用场景是什么，我们都有信心为您提供满足需求的服务，也期待任何反馈和建议，以便我们不断改进我们的产品和服务。
+PromQL 是一种流行的查询语言，
+允许开发者选择和聚合由 Prometheus 提供的实时时序数据。
+它比 SQL 更简单，适用于使用 Grafana 进行可视化和创建告警规则。
+GreptimeDB 原生支持 PromQL，查询引擎会将其转换为查询计划，对其进行优化和执行。
+
+SQL 是一种高效的工具，
+用于分析跨越较长时间跨度或涉及多个表（如 join）的数据。
+此外，它在数据库管理方面也非常方便。
+
+Python 在数据科学家和 AI 专家中非常流行。
+GreptimeDB 允许直接在数据库中运行 Python 脚本。
+开发者可以编写 UDF 和 DataFrame API，通过嵌入 Python 解释器来加速数据处理。
+
+### 简单的数据模型与自动创建表
+
+结合指标（Tag/Field/Timestamp）模型和关系数据模型（Table），
+GreptimeDB 提供了一种称为时序表的新数据模型（见下图），以表格形式呈现数据，由行和列组成，指标的 Tag 和 Value 映射到列，并强制时间索引约束表示时间戳。
+
+![时序表](/time-series-table.png)
+
+然而，我们对 schema 的定义不是强制性的，而是更倾向于 MongoDB 等数据库的无 schema 方法。
+表将在数据写入时动态自动创建，并自动添加新出现的列（Tag 和 Field）。
+
