@@ -7,15 +7,29 @@ description: 介绍如何使用 OpenTelemetry Protocol (OTLP) 将观测数据（
 
 [OpenTelemetry](https://opentelemetry.io/) 是一个供应商中立的开源可观测性框架，用于检测、生成、收集和导出观测数据，例如 traces, metrics 和 logs。
 OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程（例如收集器和观测后端）之间的编码、传输机制。
+
 ## Metrics
 
-### OTLP/HTTP
+GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议，可以作为后端存储服务来接收 OpenTelemetry 指标数据。
 
-import Includeotlpmetrycsintegration from '../../../db-cloud-shared/clients/otlp-metrics-integration.md' 
+### OTLP/HTTP API
 
-<Includeotlpmetrycsintegration/>
+使用下面的信息通过 Opentelemetry SDK 库发送 Metrics 到 GreptimeDB：
 
-#### 示例代码
+* URL: `https://<host>/v1/otlp/v1/metrics`
+* Headers:
+  * `X-Greptime-DB-Name`: `<dbname>`
+* `Authorization`: `Basic` 认证，是 `<username>:<password>` 的 Base64 编码字符串。更多信息请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
+
+请求中使用 binary protobuf 编码 payload，因此你需要使用支持 `HTTP/protobuf` 的包。例如，在 Node.js 中，可以使用 [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto)；在 Go 中，可以使用 [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp)；在 Java 中，可以使用 [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp)；在 Python 中，可以使用 [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/)。
+
+:::tip 注意
+包名可能会根据 OpenTelemetry 的发展发生变化，因此建议你参考 OpenTelemetry 官方文档以获取最新信息。
+:::
+
+请参考 Opentelementry 的官方文档获取它所支持的编程语言的更多信息。
+
+### 示例代码
 
 下面是一些编程语言设置请求的示例代码：
 
@@ -95,7 +109,7 @@ exporter = OTLPMetricExporter(
 
 关于示例代码，请参考 Opentelementry 的官方文档获取它所支持的编程语言获取更多信息。
 
-#### 数据模型
+### 数据模型
 
 OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型中：
 
@@ -108,57 +122,34 @@ OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型
 
 ## Logs
 
-### OTLP/HTTP
+GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生地消费 OpenTelemetry 日志。
 
-import Includeotlplogintegration from '../../../db-cloud-shared/clients/otlp-logs-integration.md' 
+### OTLP/HTTP API
 
-<Includeotlplogintegration/>
+要通过 OpenTelemetry SDK 库将 OpenTelemetry 日志发送到 GreptimeDB，请使用以下信息：
 
-#### 示例代码
+* **URL:** `https://<host>/v1/otlp/v1/logs`
+* **Headers:**
+  * `X-Greptime-DB-Name`: `<dbname>`
+  * `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
+  * `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
+  * `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
+  * `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，将使用 `X-Greptime-Log-Extract-Keys` 来处理日志。
+  * `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>`（可选）- 处理日志的 pipeline 的版本。如果未提供，将使用 pipeline 的最新版本。
 
-以下是一些关于如何使用 Grafana Alloy 将 OpenTelemetry 日志发送到 GreptimeDB 的示例代码：
-
-```hcl
-loki.source.file "greptime" {
-  targets = [
-    {__path__ = "/tmp/foo.txt"},
-  ]
-  forward_to = [otelcol.receiver.loki.greptime.receiver]
-}
-
-otelcol.receiver.loki "greptime" {
-  output {
-    logs = [otelcol.exporter.otlphttp.greptimedb_logs.input]
-  }
-}
-
-otelcol.auth.basic "credentials" {
-  username = "${GREPTIME_USERNAME}"
-  password = "${GREPTIME_PASSWORD}"
-}
-
-otelcol.exporter.otlphttp "greptimedb_logs" {
-  client {
-    endpoint = "${GREPTIME_SCHEME:=http}://${GREPTIME_HOST:=greptimedb}:${GREPTIME_PORT:=4000}/v1/otlp/"
-    headers  = {
-      "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
-      "x-greptime-log-table-name" = "demo_logs",
-      "x-greptime-log-extract-keys" = "filename,log.file.name,loki.attribute.labels",
-    }
-    auth     = otelcol.auth.basic.credentials.handler
-  }
-}
-```
-
-此示例监听文件的变化，并通过 OTLP 协议将最新的值发送到 GreptimeDB。
+请求使用二进制 protobuf 编码负载，因此您需要使用支持 `HTTP/protobuf` 的包。
 
 :::tip 提示
-上述示例代码可能会因 OpenTelemetry 的更新而过时。我们建议您参考 OpenTelemetry 和 Grafana Alloy 的官方文档以获取最新信息。
+包名可能会根据 OpenTelemetry 的更新而变化，因此我们建议您参考官方 OpenTelemetry 文档以获取最新信息。
 :::
 
-有关示例代码的更多信息，请参考您首选编程语言的官方文档。
+有关 OpenTelemetry SDK 的更多信息，请参考您首选编程语言的官方文档。
 
-#### 数据模型
+### 示例代码
+
+请参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
+
+### 数据模型
 
 OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
@@ -189,3 +180,4 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
+

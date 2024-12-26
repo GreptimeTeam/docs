@@ -121,7 +121,7 @@ The OTLP metrics data model is mapped to the GreptimeDB data model according to 
 
 ## Logs
 
-GreptimeDB is an observability backend to consume OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
+GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
 ### OTLP/HTTP API API
 
