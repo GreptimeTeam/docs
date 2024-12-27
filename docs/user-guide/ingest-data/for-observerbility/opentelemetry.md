@@ -7,6 +7,11 @@ description: Instructions for integrating OpenTelemetry with GreptimeDB, includi
 
 [OpenTelemetry](https://opentelemetry.io/) is a vendor-neutral open-source observability framework for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, logs. The OpenTelemetry Protocol (OTLP) defines the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate processes such as collectors and telemetry backends.
 
+## OpenTelemetry Collectors
+
+You can easily configure GreptimeDB as the target for your OpenTelemetry collector.
+For more information, please refer to the [Grafana Alloy](alloy.md) example.
+
 ## Metrics
 
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
@@ -130,7 +135,7 @@ To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, us
 * URL: `http{s}://<host>/v1/otlp/v1/logs`
 * Headers:
   * `X-Greptime-DB-Name`: `<dbname>`
-  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication).
+  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](/user-guide/deployments/authentication/static.md) and [HTTP API](/user-guide/protocols/http.md#authentication).
   * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `opentelemetry_logs`.
   * `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
   * `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, the extract keys will be used to process the logs.
