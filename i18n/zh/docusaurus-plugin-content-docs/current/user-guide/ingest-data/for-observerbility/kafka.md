@@ -1,3 +1,8 @@
+---
+keywords: [Kafka, 数据提取, 可观察性, 指标, 日志, JSON 日志, 文本日志, Vector, InfluxDB 行协议]
+description: 了解如何使用 Vector 将可观察性数据从 Kafka 写入到 GreptimeDB。本指南涵盖指标和日志提取，包括 JSON 和文本日志格式，并附有详细的配置示例。
+---
+
 # Kafka
 
 如果你使用 Kafka 或兼容 Kafka 的消息队列进行可观测性数据传输，可以直接将数据写入到 GreptimeDB 中。

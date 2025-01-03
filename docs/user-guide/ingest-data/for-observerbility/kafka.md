@@ -1,3 +1,8 @@
+---
+keywords: [Kafka, data ingestion, observability, metrics, logs, JSON logs, text logs, Vector, InfluxDB line protocol]
+description: Learn how to ingest observability data from Kafka into GreptimeDB using Vector. This guide covers metrics and logs ingestion, including JSON and text log formats, with detailed configuration examples.
+---
+
 # Kafka
 
 If you are using Kafka or Kafka-compatible message queue for observability data

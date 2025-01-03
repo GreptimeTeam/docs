@@ -1,3 +1,8 @@
+---
+keywords: [Kafka, data ingestion, observability, metrics, logs]
+description: Learn how to ingest observability data from Kafka into GreptimeDB using Vector.
+---
+
 # Kafka
 
 Vector can be used as a tool to transport data from Kafka to GreptimeDB.
