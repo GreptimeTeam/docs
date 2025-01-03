@@ -38,12 +38,14 @@ inputs = ["metrics_mq"]
 type = "greptimedb_metrics"
 # GreptimeDB 服务器的端点
 # 将 <host> 替换为实际的主机名或 IP 地址
-endpoint = "<host>:5001"
+endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 tls = {}
 ```
+
+有关 InfluxDB 行协议指标如何映射到 GreptimeDB 数据的详细信息，请参阅 InfluxDB 行协议文档中的[数据模型](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#数据模型)部分。
 
 ## 日志
 

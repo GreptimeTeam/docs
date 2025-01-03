@@ -39,12 +39,15 @@ inputs = ["metrics_mq"]
 type = "greptimedb_metrics"
 # The endpoint of the GreptimeDB server.
 # Replace <host> with the actual hostname or IP address.
-endpoint = "<host>:5001"
+endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
 password = "<password>"
 tls = {}
 ```
+
+For details on how InfluxDB line protocol metrics are mapped to GreptimeDB data, please refer to the [Data Model](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#data-model) section in the InfluxDB line protocol documentation.
+
 
 ## Logs
 

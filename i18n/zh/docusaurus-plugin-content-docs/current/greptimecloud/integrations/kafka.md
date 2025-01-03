@@ -60,3 +60,8 @@ username = "<username>"
 password = "<password>"
 tls = {}
 ```
+
+## 参考文档
+
+请参考[通过 Kafka 写入数据](http://docs.greptime.cn/nightly/user-guide/ingest-data/for-observerbility/kafka)获取数据写入过程的详细信息。
+

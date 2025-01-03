@@ -63,3 +63,7 @@ username = "<username>"
 password = "<password>"
 tls = {}
 ```
+
+## Reference
+
+For detailed information on the data ingestion process, please refer to the [Ingest Data via Kafka](http://docs.greptime.com/nightly/user-guide/ingest-data/for-observerbility/kafka) guide.
