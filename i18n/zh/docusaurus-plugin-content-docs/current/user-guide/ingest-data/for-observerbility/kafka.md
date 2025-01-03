@@ -75,7 +75,7 @@ Pipeline 在写入到 GreptimeDB 之前将日志处理为结构化数据。
 ### JSON 格式的日志
 
 对于 JSON 格式的日志（例如 `{"timestamp": "2024-12-23T10:00:00Z", "level": "INFO", "message": "Service started"}`），
-你可以使用内置的 [`greptime_identity`](/logs/manage-pipelines.md#greptime_identity) pipeline 直接写入日志。
+你可以使用内置的 [`greptime_identity`](/user-guide/logs/manage-pipelines.md#greptime_identity) pipeline 直接写入日志。
 此 pipeline 根据 JSON 日志消息中的字段自动创建列。
 
 你只需要配置 Vector 的 `transforms` 设置以解析 JSON 消息，并使用 `greptime_identity` pipeline，如以下示例所示：

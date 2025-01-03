@@ -76,7 +76,7 @@ A pipeline processes the logs into structured data before ingestion into Greptim
 ### Logs with JSON format
 
 For logs in JSON format (e.g., `{"timestamp": "2024-12-23T10:00:00Z", "level": "INFO", "message": "Service started"}`),
-you can use the built-in [`greptime_identity`](/logs/manage-pipelines.md#greptime_identity) pipeline for direct ingestion.
+you can use the built-in [`greptime_identity`](/user-guide/logs/manage-pipelines.md#greptime_identity) pipeline for direct ingestion.
 This pipeline creates columns automatically based on the fields in your JSON log message.
 
 Simply configure Vector's `transforms` settings to parse the JSON message and use the `greptime_identity` pipeline as shown in the following example:

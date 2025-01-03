@@ -6,7 +6,7 @@ date: 2024-04-08
 
 Release date: April 08, 2024
 
-This is a patch release, containing a critial bug fix to avoid wrongly delete data files ([#3635](https://github.com/GreptimeTeam/greptimedb/pull/3635)).
+This is a patch release, containing a critical bug fix to avoid wrongly delete data files ([#3635](https://github.com/GreptimeTeam/greptimedb/pull/3635)).
 
 **It's highly recommended to upgrade to this version if you're using v0.7.**
 
