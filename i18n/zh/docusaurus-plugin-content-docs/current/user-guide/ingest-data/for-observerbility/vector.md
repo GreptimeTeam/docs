@@ -10,7 +10,7 @@ Vector 是高性能的可观测数据管道。
 通过 Vector，你可以从各种来源接收指标数据，包括 Prometheus、OpenTelemetry、StatsD 等。
 GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 
-## 收集指标
+## 收集主机指标
 
 ### 配置
 
@@ -57,3 +57,13 @@ vector -c sample.toml
   - AggregatedHistoragm 类型，每个 bucket 的数值将被存入 `bxx` 列，其中 xx 是 bucket 数值的上限，此外我们还会记录 `sum/count` 列；
   - AggregatedSummary 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `sum/count` 列；
   - Sketch 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `min/max/avg/sum` 列；
+
+## 收集 InfluxDB 行协议格式的指标
+
+Vector 可以收集 InfluxDB 行协议格式的指标并将其发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observerbility/kafka.md#指标)。
+
+
+## 收集日志
+
+Vector 可以收集日志并发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observerbility/kafka.md#日志)。
+
