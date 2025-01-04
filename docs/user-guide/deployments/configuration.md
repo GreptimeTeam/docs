@@ -305,7 +305,7 @@ When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob
 Since version `v0.11`, GreptimeDB enables local file caching for remote object storage by default, with both read and write cache capacity set to `5GiB`.
 
 
-Usually you don't have to configure the cache unless you want to specify the cache capcity.
+Usually you don't have to configure the cache unless you want to specify the cache capacity.
 ```toml
 [storage]
 type = "S3"
