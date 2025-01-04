@@ -59,14 +59,15 @@ CREATE TABLE access_logs (
   http_refer STRING,
   user_agent STRING,
   request STRING FULLTEXT,
-  PRIMARY KEY (remote_addr, http_status, http_method, http_refer, user_agent)
-)
+  PRIMARY KEY (http_status, http_method)
+) with ('append_mode'='true');
 ```
 其中：
 
 - 时间索引列为 `access_time`。
-- `remote_addr`、`http_status`、`http_method`、`http_refer`、`user_agent` 为 Tag。
-- `request` 是通过 [`FULLTEXT` 列选项](/reference/sql/create.md#fulltext-列选项)启用全文索引的字段。
+- `http_status`、`http_method` 为 Tag。
+- `remote_addr`、`http_refer`、`user_agent`、`request` 为 Field。`request` 是通过 [`FULLTEXT` 列选项](/reference/sql/create.md#fulltext-列选项)启用全文索引的字段。
+- 这个表是一个用于存储日志的 [append-only 表](/reference/sql/create.md#创建-append-only-表)。它允许一个主键下存在重复的时间戳。
 
 要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
 
