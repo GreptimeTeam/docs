@@ -302,7 +302,23 @@ For storage from the same provider, if you want to use different S3 buckets as s
 
 When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a local cache mechanism to speed up repeated data access.
 
-Since version `v0.11`, GreptimeDB enables local file caching for remote object storage by default. The default cache directory is located at `{data_home}/object_cache`, with both read and write cache capacity set to `5GiB`.
+Since version `v0.11`, GreptimeDB enables local file caching for remote object storage by default, with both read and write cache capacity set to `5GiB`.
+
+
+Usually you don't have to configure the cache unless you want to specify the cache capcity.
+```toml
+[storage]
+type = "S3"
+bucket = "test_greptimedb"
+root = "/greptimedb"
+access_key_id = "<access key id>"
+secret_access_key = "<secret access key>"
+cache_capacity = "10GiB"
+```
+
+
+We recommend that you don't set the cache directory because the database can choose it automatically. The default cache directory is under the `{data_home}`.
+
 
 For versions before v0.11, you need to manually enable the read cache by configuring `cache_path` in the storage settings:
 
@@ -315,7 +331,7 @@ access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 ## Enable object storage caching
 cache_path = "/var/data/s3_read_cache"
-cache_capacity = "5Gib"
+cache_capacity = "5GiB"
 ```
 
 The `cache_path` specifies the local directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string.
@@ -331,8 +347,7 @@ experimental_write_cache_path = "/var/data/s3_write_cache"
 experimental_write_cache_size = "5GiB"
 ```
 
-The default value of `experimental_write_cache_path` is `{data_home}/object_cache/write`.
-To disable the write cache, set `enable_experimental_write_cache` to `false`.
+The `experimental_write_cache_path` is under `{data_home}` by default. To disable the write cache, set `enable_experimental_write_cache` to `false`.
 
 Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
 
