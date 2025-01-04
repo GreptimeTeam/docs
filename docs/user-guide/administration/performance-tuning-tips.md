@@ -62,7 +62,6 @@ The following example shows how to enable the write cache in versions before `v0
 enable_experimental_write_cache = true
 experimental_write_cache_size = "10G"
 experimental_write_cache_ttl = "8h"
-# Sets the path before v0.11
 # experimental_write_cache_path = "/path/to/write/cache"
 ```
 
