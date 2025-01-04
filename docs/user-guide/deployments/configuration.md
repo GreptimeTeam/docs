@@ -336,6 +336,16 @@ cache_capacity = "5GiB"
 
 The `cache_path` specifies the local directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string.
 
+
+The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
+```toml
+[[region_engine]]
+[region_engine.mito]
+
+write_cache_size = "10GiB"
+```
+
+
 For write cache in versions before v0.11, you need to enable it by setting `enable_experimental_write_cache` to `true` in the `[region_engine.mito]` section:
 
 ```toml
