@@ -1,4 +1,6 @@
 ---
+keywords: [release, GreptimeDB, changelog, v0.7.2]
+description: GreptimeDB v0.7.2 Changelog
 date: 2024-04-08
 ---
 
