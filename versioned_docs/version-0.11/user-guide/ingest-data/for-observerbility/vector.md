@@ -3,16 +3,17 @@ keywords: [Vector, integration, configuration, data model, metrics]
 description: Instructions for integrating Vector with GreptimeDB, including configuration, data model mapping, and example configurations.
 ---
 
-import DocTemplate from '../../../db-cloud-shared/clients/vector-integration.md'
-
-
 # Vector
 
-<DocTemplate>
+Vector is [a high performance observability data
+pipeline](https://vector.dev). It has native support for GreptimeDB metrics data
+sink. With vector, you can ingest metrics data from various sources, including
+Prometheus, OpenTelemetry, StatsD and many more.
+GreptimeDB can be used as a Vector Sink component to receive metrics. 
 
-<div id="toml-config">
+## Collect host metrics
 
-## Integration
+### Configuration
 
 A minimal configuration of when using your GreptimeDB instance can be:
 
@@ -24,7 +25,7 @@ type = "host_metrics"
 
 [sinks.my_sink_id]
 inputs = ["in"]
-type = "greptimedb"
+type = "greptimedb_metrics"
 endpoint = "<host>:4001"
 dbname = "<dbname>"
 username = "<username>"
@@ -35,11 +36,16 @@ new_naming = true
 GreptimeDB uses gRPC to communicate with Vector, so the default port for the Vector sink is `4001`.
 If you have changed the default gRPC port when starting GreptimeDB with [custom configurations](/user-guide/deployments/configuration.md#configuration-file), use your own port instead.
 
-</div>
+Execute Vector with:
 
-<div id="data-model">
+```
+vector -c sample.toml
+```
 
-## Data Model
+For more configuration options, see [Vector GreptimeDB
+Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/).
+
+### Data Model
 
 The following rules are used when storing Vector metrics into GreptimeDB:
 
@@ -54,6 +60,11 @@ The following rules are used when storing Vector metrics into GreptimeDB:
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
   - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
 
-</div>
+## Collect metrics with InfluxDB line protocol format
 
-</DocTemplate>
+Vector can collect metrics in the InfluxDB line protocol format and send them to GreptimeDB. For more information, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#metrics).
+
+## Collect logs
+
+Vector can also collect logs and send them to GreptimeDB. For more details, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#logs).
+

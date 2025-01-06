@@ -127,17 +127,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 
 The `ttl` value can be one of the following:
 
-- A duration like `1hour 12min 5s`, The duration object is a concatenation of time spans. Where each time span is an integer number and a suffix. Supported suffixes:
-    - `nsec`, `ns` – nanoseconds
-    - `usec`, `us` – microseconds
-    - `msec`, `ms` – milliseconds
-    - `seconds`, `second`, `sec`, `s`
-    - `minutes`, `minute`, `min`, `m`
-    - `hours`, `hour`, `hr`, `h`
-    - `days`, `day`, `d`
-    - `weeks`, `week`, `w`
-    - `months`, `month`, `M` – defined as 30.44 days
-    - `years`, `year`, `y` – defined as 365.25 days
+- A [duration](/reference/time-durations.md) like `1hour 12min 5s`.
 - `forever`, `NULL`, an empty string `''` and `0s` (or any zero length duration, like `0d`), means the data will never be deleted.
 - `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/flow-computation/manage-flow.md#manage-flows).
 - Unset, `ttl` can be unset by using `ALTER TABLE <table-name> UNSET 'ttl'`, which means the table will inherit the database's ttl policy (if any).

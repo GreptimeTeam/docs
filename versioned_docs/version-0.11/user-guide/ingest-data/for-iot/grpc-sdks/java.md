@@ -83,6 +83,20 @@ For customizing the connection options, please refer to [API Documentation](#ing
 
 </div>
 
+<div id="set-table-options">
+
+You can set table options using the `Context`.
+For example, to set the `ttl` option, use the following code:
+
+```java
+Context ctx = Context.newDefault();
+ctx.withHint("ttl", "3d");
+// Use the ctx when writing data to GreptimeDB
+// The data object `cpuMetric` and `memMetric` are described in the following sections
+CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
+```
+
+</div>
 
 <div id="low-level-object">
 

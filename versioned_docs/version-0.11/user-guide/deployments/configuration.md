@@ -317,9 +317,7 @@ cache_capacity = "10GiB"
 ```
 
 
-We recommend that you don't set the cache directory because the database can choose it automatically. The default cache root directory is:
-- `{data_home}` (since `v0.11.2`)
-- `{data_home}/object_cache` (before `v0.11.2`)
+We recommend that you don't set the cache directory because the database can choose it automatically. The default cache directory is under the `{data_home}`.
 
 
 For versions before v0.11, you need to manually enable the read cache by configuring `cache_path` in the storage settings:
@@ -338,6 +336,16 @@ cache_capacity = "5GiB"
 
 The `cache_path` specifies the local directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string.
 
+
+The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
+```toml
+[[region_engine]]
+[region_engine.mito]
+
+write_cache_size = "10GiB"
+```
+
+
 For write cache in versions before v0.11, you need to enable it by setting `enable_experimental_write_cache` to `true` in the `[region_engine.mito]` section:
 
 ```toml
@@ -349,11 +357,7 @@ experimental_write_cache_path = "/var/data/s3_write_cache"
 experimental_write_cache_size = "5GiB"
 ```
 
-The default value of `experimental_write_cache_path`:
-- `{data_home}` (since `v0.11.2`)
-- `{data_home}/object_cache/write` (before `v0.11.2`)
-
-To disable the write cache, set `enable_experimental_write_cache` to `false`.
+The `experimental_write_cache_path` is under `{data_home}` by default. To disable the write cache, set `enable_experimental_write_cache` to `false`.
 
 Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
 
@@ -538,7 +542,7 @@ Available options:
 | `inverted_index.intermediate_path`       | String  | `""`          | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`).                                                                         |
 | `inverted_index.metadata_cache_size`     | String  | `64MiB`       | Cache size for inverted index metadata. |
 | `inverted_index.content_cache_size`      | String  | `128MiB`      | Cache size for inverted index content. |
-| `inverted_index.content_cache_page_size`| String  | `8MiB`       | Page size for inverted index content cache. Inverted index content will be read and cached in page size. Adjust this value to change the granularity of cache and optimize the cache hit rate. |
+| `inverted_index.content_cache_page_size`| String  | `64KiB`       | Page size for inverted index content cache. Inverted index content will be read and cached in page size. Adjust this value to change the granularity of cache and optimize the cache hit rate. |
 | `memtable.type`                          | String  | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental)                                                               |
 | `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                |
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                               |
