@@ -14,7 +14,7 @@ This version fixes the following critical issues:
 - Compaction doesn't use files in the local cache.
 
 
-### Notices
+### Notes
 This version modifies the default object storage cache paths:
 - The path for write cache has changed from the default `{data_home}/object_cache/write` to `{data_home}/cache/object/write`.
 - The path for read cache has changed from the default `{data_home}/object_cache/read` to `{data_home}/cache/object/read`.

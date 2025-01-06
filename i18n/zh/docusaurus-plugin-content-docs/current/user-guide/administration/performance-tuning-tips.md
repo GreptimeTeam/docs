@@ -29,8 +29,8 @@ GreptimeDB 提供了各种指标来帮助监控和排查性能问题。官方仓
 > 提示: 从 v0.11 版本开始，在使用远程对象存储服务时，系统会默认启用本地缓存（包括读取和写入）。通常情况下，您只需要根据需求调整缓存容量即可。
 
 读取缓存将对象或一段范围的数据存储在本地磁盘上，以避免再次从远程读取相同的数据。以下示例展示了如何为 S3 启用读取缓存。
-- `cache_path` 是存储缓存对象的目录，从 v0.11 版本开始默认值为 `{data_home}/object_cache/read` 目录。
-- `cache_capacity` 是缓存的容量。从 0.11 版本开始，默认初始值为 `5Gib`，建议至少留出总磁盘空间的 1/10 用于缓存。
+- `cache_path` 是存储缓存对象的目录，从 v0.11 版本开始不再需要手动设置。
+- `cache_capacity` 是缓存的容量。从 0.11 版本开始，默认初始值为 `5GiB`，建议至少留出总磁盘空间的 1/10 用于缓存。
 
 ```toml
 [storage]
@@ -41,13 +41,17 @@ access_key_id = "****"
 secret_access_key = "****"
 endpoint = "https://s3.amazonaws.com/"
 region = "your-region"
-cache_path = "/path/to/s3cache"
+# 在 v0.11 前需要设置该路径
+# cache_path = "/path/to/s3cache"
 cache_capacity = "10G"
 ```
 
-写入缓存起到 write-through 缓存的作用，在将文件上传到对象存储之前，会先将它们存储在本地磁盘上。这可以减少第一次查询的延迟。以下示例展示了如何启用写入缓存。
+写入缓存起到 write-through 缓存的作用，在将文件上传到对象存储之前，会先将它们存储在本地磁盘上。这可以减少第一次查询的延迟。
+
+
+以下示例展示了在 `v0.12` 版本之前如何启用写入缓存。
 - `enable_experimental_write_cache` 开关可用来启用写入缓存。从 `v0.11` 版本开始，当配置对象存储服务的时候，该值将默认设置为 `true`，即启用。
-- `experimental_write_cache_size` 用来设置缓存的容量。从 0.11 版本开始，默认初始值为 `5Gib`。
+- `experimental_write_cache_size` 用来设置缓存的容量。从 0.11 版本开始，默认初始值为 `5GiB`。
 - `experimental_write_cache_path` 用来设置存储缓存文件的路径。默认情况下它位于数据主目录下。
 - `experimental_write_cache_ttl` 用来设置缓存文件的 TTL。
 
@@ -68,6 +72,31 @@ experimental_write_cache_ttl = "8h"
 如果 `greptime_mito_cache_miss` 指标一直很高并不断增加，或者 `greptime_mito_cache_bytes` 指标达到缓存容量，可能需要调整存储引擎的缓存大小配置。
 
 以下是一个例子：
+
+```toml
+```toml
+[[region_engine]]
+[region_engine.mito]
+# 写入缓存的缓存大小。此缓存的 `type` 标签值为 `file`。
+write_cache_size = "10G"
+# SST 元数据的缓存大小。此缓存的 `type` 标签值为 `sst_meta`。
+sst_meta_cache_size = "128MB"
+# 向量和箭头数组的缓存大小。此缓存的 `type` 标签值为 `vector`。
+vector_cache_size = "512MB"
+# SST 行组页面的缓存大小。此缓存的 `type` 标签值为 `page`。
+page_cache_size = "512MB"
+# 时间序列查询结果（例如 `last_value()`）的缓存大小。此缓存的 `type` 标签值为 `selector_result`。
+selector_result_cache_size = "512MB"
+
+[region_engine.mito.index]
+## 索引暂存目录的最大容量。
+staging_size = "10GB"
+```
+
+```
+
+
+对于 `v0.12` 之前的版本
 
 ```toml
 [[region_engine]]
@@ -91,7 +120,7 @@ staging_size = "10GB"
 ```
 
 一些建议：
-- 至少将 `experimental_write_cache_size` 设置为磁盘空间的 1/10
+- 至少将写入缓存设置为磁盘空间的 1/10
 - 如果数据库内存使用率低于 20%，则可以至少将 `page_cache_size` 设置为总内存大小的 1/4
 - 如果缓存命中率低于 50%，则可以将缓存大小翻倍
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
