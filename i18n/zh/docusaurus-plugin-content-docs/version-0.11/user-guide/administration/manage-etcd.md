@@ -1,19 +1,19 @@
 ---
 keywords: [etcd]
-description: a etcd management documentation.
+description: etcd 管理文档.
 ---
 
-# Manage ETCD
+# 管理 ETCD
 
-## Prerequisites
+## 先决条件
 
 - [Kubernetes](https://kubernetes.io/docs/setup/) >= v1.23
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
 
-## Install
+## 安装
 
-The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd).
+GreptimeDB 集群需要 etcd 集群用于元数据存储。让我们使用 Bitnami 的 etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd) 安装 etcd 集群.
 
 ```bash
 helm upgrade --install etcd \
@@ -26,7 +26,7 @@ helm upgrade --install etcd \
   -n etcd-cluster
 ```
 
-Wait for etcd cluster to be running:
+等待 etcd 集群运行:
 
 ```bash
 kubectl get po -n etcd-cluster
@@ -42,12 +42,12 @@ etcd-2   1/1     Running   0          72s
 ```
 </details>
 
-The etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) parameter specifies the initial state of the etcd cluster when starting etcd nodes. It is important for determining how the node will join the cluster. The parameter can take the following two values:
+etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) 参数指定启动 etcd 节点时 etcd 集群的初始状态。它对于确定节点如何加入集群非常重要。该参数可以采用以下两个值:
 
-- **new**: This value indicates that the etcd cluster is new. All nodes will start as part of a new cluster, and any previous state will not be used.
-- **existing**: This value indicates that the node will join an already existing etcd cluster. In this case, you must ensure that the initialCluster parameter is configured with the information of all nodes in the current cluster.
+- **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态.
+- **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息.
 
-After the etcd cluster is running, we need to set the initialClusterState parameter to **existing**:
+etcd集群运行起来后，我们需要设置 initialClusterState 参数为 **existing** :
 
 ```bash
 helm upgrade --install etcd \
@@ -62,7 +62,7 @@ helm upgrade --install etcd \
   -n etcd-cluster
 ```
 
-Wait for etcd cluster to be running, use the following command to check the health status of etcd cluster:
+等待 etcd 集群运行完毕，使用以下命令检查 etcd 集群的健康状态:
 
 ```bash
 kubectl -n etcd-cluster \
@@ -84,9 +84,9 @@ kubectl -n etcd-cluster \
 ```
 </details>
 
-## Backup
+## 备份
 
-Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your nfs pvc name:
+添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 nfs pvc 名称:
 
 ```yaml
 replicaCount: 3
@@ -110,7 +110,7 @@ disasterRecovery:
     existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
 ```
 
-Redeploy etcd cluster:
+重新部署 etcd 集群:
 
 ```bash
 helm upgrade --install etcd \
@@ -120,7 +120,7 @@ helm upgrade --install etcd \
   -n etcd-cluster --values etcd-backup.yaml
 ```
 
-You can see the etcd backup scheduled task:
+你可以看到 etcd 备份计划任务:
 
 ```bash
 kubectl get cronjob -n etcd-cluster
@@ -168,7 +168,7 @@ Snapshot saved at /snapshots/db-2025-01-06_11-18
 ```
 </details>
 
-Next, you can see the etcd backup snapshot in the nfs server:
+接下来，可以在 nfs 服务器中看到 etcd 备份快照:
 
 ```bash
 ls ${NFS_SERVER_DIRECTORY}
@@ -181,9 +181,9 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 ```
 </details>
 
-## Restore
+## 恢复
 
-Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your nfs pvc, and **snapshotFilename** is change to the etcd snapshot file name:
+添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 nfs pvc 的名字，**snapshotFilename** 为 etcd 快照文件名:
 
 ```yaml
 replicaCount: 3
@@ -200,7 +200,7 @@ startFromSnapshot:
   snapshotFilename: "${YOUR_ETCD_SNAPSHOT_FILE_NAME}"
 ```
 
-Deploy etcd recover cluster:
+部署 etcd 恢复集群:
 
 ```bash
 helm upgrade --install etcd-recover \
@@ -210,7 +210,7 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster --values etcd-restore.yaml
 ```
 
-After waiting for the etcd recover cluster to be Running, redeploy the etcd recover cluster:
+等待 etcd 恢复集群运行后，重新部署 etcd 恢复集群:
 
 ```bash
 helm upgrade --install etcd-recover \
@@ -225,4 +225,4 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster
 ```
 
-Next, complete etcd restore.
+接下来完成 etcd 恢复.
