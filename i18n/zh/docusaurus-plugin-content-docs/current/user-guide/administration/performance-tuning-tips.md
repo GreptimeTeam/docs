@@ -73,7 +73,7 @@ experimental_write_cache_ttl = "8h"
 
 以下是一个例子：
 
-```toml
+
 ```toml
 [[region_engine]]
 [region_engine.mito]
@@ -93,7 +93,6 @@ selector_result_cache_size = "512MB"
 staging_size = "10GB"
 ```
 
-```
 
 
 对于 `v0.12` 之前的版本
