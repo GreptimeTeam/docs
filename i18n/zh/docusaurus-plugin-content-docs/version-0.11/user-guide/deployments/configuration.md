@@ -332,6 +332,7 @@ cache_capacity = "5GiB"
 [region_engine.mito]
 
 write_cache_size = "10GiB"
+```
 
 
 对于 v0.11 之前版本的写入缓存，你需要在 `[region_engine.mito]` 部分将 `enable_experimental_write_cache` 设置为 `true` 来启用：
