@@ -531,7 +531,7 @@ fork_dictionary_bytes = "1GiB"
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
 | `inverted_index.metadata_cache_size`     | 字符串 | `64MiB`       | 倒排索引元数据缓存大小 |
 | `inverted_index.content_cache_size`      | 字符串 | `128MiB`      | 倒排索引文件内容缓存大小 |
-| `inverted_index.content_cache_page_size` | 字符串 | `8MiB`        | 倒排索引文件内容缓存页大小。倒排索引文件内容以页为单位进行读取和缓存，该配置项用于调整读取和缓存的粒度，优化缓存命中率。 |
+| `inverted_index.content_cache_page_size` | 字符串 | `64KiB`        | 倒排索引文件内容缓存页大小。倒排索引文件内容以页为单位进行读取和缓存，该配置项用于调整读取和缓存的粒度，优化缓存命中率。 |
 | `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
