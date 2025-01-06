@@ -11,7 +11,7 @@ sink. With vector, you can ingest metrics data from various sources, including
 Prometheus, OpenTelemetry, StatsD and many more.
 GreptimeDB can be used as a Vector Sink component to receive metrics. 
 
-## Collect metrics
+## Collect host metrics
 
 ### Configuration
 
@@ -59,4 +59,12 @@ The following rules are used when storing Vector metrics into GreptimeDB:
   - For AggregatedHistogram metrics, the values of each bucket are stored in the `bxx` column, where xx is the upper limit of the bucket, and the `sum/count` columns are also stored;
   - For AggregatedSummary metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `sum/count` columns are also stored;
   - For Sketch metrics, the values of each percentile are stored in the `pxx` column, where xx is the percentile, and the `min/max/avg/sum` columns are also stored;
+
+## Collect metrics with InfluxDB line protocol format
+
+Vector can collect metrics in the InfluxDB line protocol format and send them to GreptimeDB. For more information, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#metrics).
+
+## Collect logs
+
+Vector can also collect logs and send them to GreptimeDB. For more details, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#logs).
 

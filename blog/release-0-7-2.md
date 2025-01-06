@@ -2,6 +2,8 @@
 keywords: [release, GreptimeDB, changelog, v0.7.2]
 description: GreptimeDB v0.7.2 Changelog
 date: 2024-04-08
+keywords: [release notes, greptimedb, 0.7.2]
+description: GreptimeDB 0.7.2 release notes.
 ---
 
 # v0.7.2
