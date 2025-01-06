@@ -26,6 +26,22 @@ helm upgrade --install etcd \
   -n etcd-cluster
 ```
 
+:::note
+中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式安装 etcd 集群：
+
+```bash
+helm install etcd \
+  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set image.tag=3.5.12 \
+  --set replicaCount=3 \
+  --set auth.rbac.create=false \
+  --set auth.rbac.token.enabled=false \
+  --create-namespace \
+  -n etcd-cluster
+```
+:::
+
 等待 etcd 集群运行:
 
 ```bash
