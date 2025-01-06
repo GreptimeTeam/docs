@@ -26,6 +26,18 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
 列值的类型可以是 `String`、`Float`、`Int`、`JSON`, `Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
 
+## 设置表选项
+
+虽然在通过 SDK 向 GreptimeDB 写入数据时会自动创建时间序列表，但你仍然可以配置表选项。
+SDK 支持以下表选项：
+
+- `auto_create_table`：默认值为 `True`。如果设置为 `False`，则表示表已经存在且不需要自动创建，这可以提高写入性能。
+- `ttl`、`append_mode`、`merge_mode`：更多详情请参考[表选项](/reference/sql/create.md#table-options)。
+
+<InjectContent id="set-table-options" content={props.children}/>
+
+关于如何向 GreptimeDB 写入数据，请参考以下各节。
+
 ## 低层级 API
 
 GreptimeDB 的低层级 API 通过向具有预定义模式的 `table` 对象添加 `row` 来写入数据。

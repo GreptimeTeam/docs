@@ -116,7 +116,7 @@ The modified column cannot be a tag (primary key) or time index, and it must be 
 
 Currently following options are supported:
 - `ttl`: the retention time of data in table.
-- `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy.
+- `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.max_active_window_runs`: the maximum allowed sorted runs in the active window of TWCS compaction strategy.
 - `compaction.twcs.max_inactive_window_runs`: the maximum allowed sorted runs in the inactive windows of TWCS compaction strategy.

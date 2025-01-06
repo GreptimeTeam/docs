@@ -44,7 +44,7 @@ Find all the supported data types in [Data Types](/reference/sql/data-types.md).
 
 ## Index
 
-The `index` is a performance-tuning method that allows faster retrieval of records. GreptimeDB uses the [inverted index](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) to accelerate queries.
+The `index` is a performance-tuning method that allows faster retrieval of records. GreptimeDB provides various kinds of [indexes](/user-guide/manage-data/data-index.md) to accelerate queries.
 
 ## View
 

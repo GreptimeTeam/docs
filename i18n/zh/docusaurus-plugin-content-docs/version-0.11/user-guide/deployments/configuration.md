@@ -305,9 +305,7 @@ cache_capacity = "10GiB"
 ```
 
 
-我们建议你不用设置缓存的目录，因为数据库会自动创建该目录。默认的缓存目录位于
-- `{data_home}`（`v0.11.2` 之后）
-- `{data_home}/object_cache`（`v0.11.2` 之前）
+我们建议你不用设置缓存的目录，因为数据库会自动创建该目录。默认的缓存目录位于 `{data_home}` 目录下。
 
 
 对于 v0.11 之前的版本，你需要通过在存储设置中配置 `cache_path` 来手动启用读取缓存：
@@ -326,6 +324,17 @@ cache_capacity = "5GiB"
 
 `cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。
 
+
+自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小
+
+```toml
+[[region_engine]]
+[region_engine.mito]
+
+write_cache_size = "10GiB"
+````
+
+
 对于 v0.11 之前版本的写入缓存，你需要在 `[region_engine.mito]` 部分将 `enable_experimental_write_cache` 设置为 `true` 来启用：
 
 ```toml
@@ -337,11 +346,7 @@ experimental_write_cache_path = "/var/data/s3_write_cache"
 experimental_write_cache_size = "5GiB"
 ```
 
-`experimental_write_cache_path` 的默认值是
-- `{data_home}`（`v0.11.2` 之后）
-- `{data_home}/object_cache/write`（`v0.11.2` 之前）
-
-
+`experimental_write_cache_path` 默认值位于 `{data_home}` 目录下。
 要禁用写入缓存，请将 `enable_experimental_write_cache` 设置为 `false`。
 
 更详细的信息请参阅[性能调优技巧](/user-guide/administration/performance-tuning-tips)。
@@ -526,7 +531,7 @@ fork_dictionary_bytes = "1GiB"
 | `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
 | `inverted_index.metadata_cache_size`     | 字符串 | `64MiB`       | 倒排索引元数据缓存大小 |
 | `inverted_index.content_cache_size`      | 字符串 | `128MiB`      | 倒排索引文件内容缓存大小 |
-| `inverted_index.content_cache_page_size` | 字符串 | `8MiB`        | 倒排索引文件内容缓存页大小。倒排索引文件内容以页为单位进行读取和缓存，该配置项用于调整读取和缓存的粒度，优化缓存命中率。 |
+| `inverted_index.content_cache_page_size` | 字符串 | `64KiB`        | 倒排索引文件内容缓存页大小。倒排索引文件内容以页为单位进行读取和缓存，该配置项用于调整读取和缓存的粒度，优化缓存命中率。 |
 | `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
