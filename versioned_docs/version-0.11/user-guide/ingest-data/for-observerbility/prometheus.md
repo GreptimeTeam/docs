@@ -10,6 +10,8 @@ providing a seamless integration experience.
 
 ## Remote write configuration
 
+### Prometheus configuration file
+
 To configure Prometheus with GreptimeDB,
 update your [Prometheus configuration file](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) (`prometheus.yml`) as follows:
 
@@ -32,6 +34,10 @@ remote_read:
 - The host and port in the URL represent the GreptimeDB server. In this example, the server is running on `localhost:4000`. You can replace it with your own server address. For the HTTP protocol configuration in GreptimeDB, please refer to the [protocol options](/user-guide/deployments/configuration.md#protocol-options).
 - The `db` parameter in the URL represents the database to which we want to write data. It is optional. By default, the database is set to `public`.
 - `basic_auth` is the authentication configuration. Fill in the username and password if GreptimeDB authentication is enabled. Please refer to the [authentication document](/user-guide/deployments/authentication/overview.md).
+
+### Grafana Alloy configuration file
+
+If you are using Grafana Alloy, configure the remote write endpoint in the Alloy configuration file (`config.alloy`). For more information, refer to the [Alloy documentation](alloy.md#prometheus-remote-write).
 
 ## Data Model
 

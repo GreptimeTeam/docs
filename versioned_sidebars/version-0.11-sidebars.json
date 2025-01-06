@@ -55,7 +55,9 @@
                 "user-guide/ingest-data/for-observerbility/vector",
                 "user-guide/ingest-data/for-observerbility/opentelemetry",
                 "user-guide/ingest-data/for-observerbility/influxdb-line-protocol",
-                "user-guide/ingest-data/for-observerbility/loki"
+                "user-guide/ingest-data/for-observerbility/kafka",
+                "user-guide/ingest-data/for-observerbility/loki",
+                "user-guide/ingest-data/for-observerbility/alloy"
               ]
             },
             {
@@ -74,6 +76,7 @@
                   ]
                 },
                 "user-guide/ingest-data/for-iot/influxdb-line-protocol",
+                "user-guide/ingest-data/for-iot/kafka",
                 "user-guide/ingest-data/for-iot/emqx",
                 "user-guide/ingest-data/for-iot/opentsdb"
               ]
@@ -96,7 +99,8 @@
           "type": "category",
           "label": "Manage Data",
           "items": [
-            "user-guide/manage-data/overview"
+            "user-guide/manage-data/overview",
+            "user-guide/manage-data/data-index"
           ]
         },
         {
@@ -106,11 +110,13 @@
             "user-guide/integrations/overview",
             "user-guide/integrations/prometheus",
             "user-guide/integrations/vector",
+            "user-guide/integrations/kafka",
             "user-guide/integrations/grafana",
             "user-guide/integrations/superset",
             "user-guide/integrations/metabase",
             "user-guide/integrations/emqx",
-            "user-guide/integrations/dbeaver"
+            "user-guide/integrations/dbeaver",
+            "user-guide/integrations/alloy"
           ]
         },
         {
@@ -178,7 +184,15 @@
               "items": [
                 "user-guide/deployments/deploy-on-kubernetes/overview",
                 "user-guide/deployments/deploy-on-kubernetes/getting-started",
-                "user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management"
+                "user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management",
+                "user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations",
+                {
+                  "type": "category",
+                  "label": "Monitoring",
+                  "items": [
+                    "user-guide/deployments/deploy-on-kubernetes/monitoring/cluster-monitoring-deployment"
+                  ]
+                }
               ]
             },
             "user-guide/deployments/configuration",
@@ -383,6 +397,7 @@
       "items": [
         "reference/command-lines",
         "reference/sql-tools",
+        "reference/time-durations",
         {
           "type": "category",
           "label": "SQL",

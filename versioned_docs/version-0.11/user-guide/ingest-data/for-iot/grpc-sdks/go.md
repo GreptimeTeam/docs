@@ -35,6 +35,7 @@ Import the library in your code:
 ```go
 import (
     greptime "github.com/GreptimeTeam/greptimedb-ingester-go"
+    ingesterContext "github.com/GreptimeTeam/greptimedb-ingester-go/context"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table"
     "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
@@ -58,6 +59,31 @@ cfg := greptime.NewConfig("127.0.0.1").
 
 cli, _ := greptime.NewClient(cfg)
 ```
+</div>
+
+<div id="set-table-options">
+
+You can set table options using the `ingesterContext` context.
+For example, to set the `ttl` option, use the following code:
+
+```go
+hints := []*ingesterContext.Hint{
+    {
+        Key:   "ttl",
+        Value: "3d",
+    },
+}
+
+ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+ctx = ingesterContext.New(ctx, ingesterContext.WithHints(hints))
+// Use the ingesterContext when writing data to GreptimeDB.
+// The `data` object is described in the following sections.
+resp, err := c.client.Write(ctx, data)
+if err != nil {
+    return err
+}
+```
+
 </div>
 
 <div id="low-level-object">
@@ -123,7 +149,7 @@ if err != nil {
 <div id="insert-rows">
 
 ```go
-resp, err := cli.Write(context.Background(), cpuMetric, memMetric)
+resp, err := cli.Write(ctx, cpuMetric, memMetric)
 if err != nil {
     // Handle error appropriately
 }
@@ -135,7 +161,7 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 <div id="streaming-insert">
 
 ```go
-err := cli.StreamWrite(context.Background(), cpuMetric, memMetric)
+err := cli.StreamWrite(ctx, cpuMetric, memMetric)
 if err != nil {
     // Handle error appropriately
 }
@@ -201,7 +227,7 @@ memMetrics := []MemMetric{
 <div id="high-level-style-insert-data">
 
 ```go
-resp, err := cli.WriteObject(context.Background(), cpuMetrics)
+resp, err := cli.WriteObject(ctx, cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
@@ -210,7 +236,7 @@ log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 <div id="high-level-style-streaming-insert">
 
 ```go
-err := cli.StreamWriteObject(context.Background(), cpuMetrics)
+err := cli.StreamWriteObject(ctx, cpuMetrics)
 ```
 
 Close the stream writing after all data has been written.

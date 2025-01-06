@@ -39,7 +39,7 @@ GreptimeDB 中的数据是强类型的，当创建表时，Auto-schema 功能提
 ## 索引
 
 索引是一种性能调优方法，可以加快数据的更快地检索速度。
-GreptimeDB 使用[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)来加速查询。
+GreptimeDB 提供多种类型的[索引](/user-guide/manage-data/data-index.md)来加速查询。
 
 ## View
 

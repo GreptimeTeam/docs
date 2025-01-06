@@ -9,6 +9,8 @@ GreptimeDB 可以作为 Prometheus 的长期存储解决方案，提供无缝集
 
 ## 配置 Remote Write
 
+### Prometheus 配置文件
+
 要将 GreptimeDB 集成到 Prometheus 中，
 请按照以下步骤更新你的 [Prometheus 配置文件](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file)（`prometheus.yml`）：
 
@@ -31,6 +33,10 @@ remote_read:
 - URL 中的 host 和 port 表示 GreptimeDB 服务器。在此示例中，服务器运行在 `localhost:4000` 上。你可以将其替换为你自己的服务器地址。有关 GreptimeDB 中 HTTP 协议的配置，请参阅 [协议选项](/user-guide/deployments/configuration.md#protocol-options)。
 - URL 中的 `db` 参数表示要写入的数据库。它是可选的。默认情况下，数据库设置为 `public`。
 - `basic_auth` 是身份鉴权配置。如果 GreptimeDB 启用了鉴权，请填写用户名和密码。请参阅 [鉴权认证文档](/user-guide/deployments/authentication/overview.md)。
+
+### Grafana Alloy 配置文件
+
+如果你使用 Grafana Alloy，请在 Alloy 配置文件（`config.alloy`）中配置 Remote Write。有关更多信息，请参阅 [Alloy 文档](alloy.md#prometheus-remote-write)。
 
 ## 数据模型
 
