@@ -1,0 +1,49 @@
+name: Version Docs
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Version the English docs
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          npm run docusaurus docs:version $VERSION
+
+      - name: Remove oldest English version
+        run: |
+          OLDEST_VERSION=$(ls -1 versions | sort -V | head -n 1)
+          rm -rf versions/$OLDEST_VERSION
+
+      - name: Set default version
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          npm run docusaurus docs:use-version $VERSION
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "Version docs to ${{ github.event.inputs.version }}"
+          title: "Version docs to ${{ github.event.inputs.version }}"
+          body: "This PR updates the docs to version ${{ github.event.inputs.version }}."
+          branch: "version-docs-${{ github.event.inputs.version }}"
+          base: main
+          delete-branch: true
