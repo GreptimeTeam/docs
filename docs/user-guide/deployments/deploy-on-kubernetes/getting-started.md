@@ -175,7 +175,7 @@ The GreptimeDB Operator will use `greptimedbclusters.greptime.io` and `greptimed
 
 ## Install the etcd cluster
 
-The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://hub.docker.com/r/bitnami/etcd).
+The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd).
 
 ```bash
 helm install etcd \

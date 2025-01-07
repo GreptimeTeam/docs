@@ -201,7 +201,7 @@ GreptimeDB Operator 将会使用 `greptimedbclusters.greptime.io` and `greptimed
 
 ## 安装 etcd 集群
 
-GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bitnami 的 etcd Helm [chart](https://hub.docker.com/r/bitnami/etcd) 来安装一个 etcd 集群。
+GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bitnami 的 etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd) 来安装一个 etcd 集群。
 
 ```bash
 helm install etcd \
