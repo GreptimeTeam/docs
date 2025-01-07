@@ -42,7 +42,7 @@ helm install etcd \
 ```
 :::
 
-等待 etcd 集群运行:
+等待 etcd 集群运行：
 
 ```bash
 kubectl get po -n etcd-cluster
@@ -60,10 +60,10 @@ etcd-2   1/1     Running   0          72s
 
 etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) 参数指定启动 etcd 节点时 etcd 集群的初始状态。它对于确定节点如何加入集群非常重要。该参数可以采用以下两个值:
 
-- **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态.
-- **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息.
+- **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态。
+- **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息。
 
-etcd集群运行起来后，我们需要设置 initialClusterState 参数为 **existing** :
+etcd集群运行起来后，我们需要设置 initialClusterState 参数为 **existing**：
 
 ```bash
 helm upgrade --install etcd \
@@ -78,7 +78,7 @@ helm upgrade --install etcd \
   -n etcd-cluster
 ```
 
-等待 etcd 集群运行完毕，使用以下命令检查 etcd 集群的健康状态:
+等待 etcd 集群运行完毕，使用以下命令检查 etcd 集群的健康状态：
 
 ```bash
 kubectl -n etcd-cluster \
@@ -103,7 +103,7 @@ kubectl -n etcd-cluster \
 ## 备份
 在 bitnami etcd chart 中，使用共享存储卷 Network File System (NFS) 存储 etcd 备份数据。通过 Kubernetes 中的 CronJob 进行 etcd 快照备份，并挂载 NFS PersistentVolumeClaim (PVC)，可以将快照传输到 NFS 中。
 
-添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 NFS PVC 名称:
+添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 NFS PVC 名称：
 
 ```yaml
 replicaCount: 3
@@ -127,7 +127,7 @@ disasterRecovery:
     existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
 ```
 
-重新部署 etcd 集群:
+重新部署 etcd 集群：
 
 ```bash
 helm upgrade --install etcd \
@@ -137,7 +137,7 @@ helm upgrade --install etcd \
   -n etcd-cluster --values etcd-backup.yaml
 ```
 
-你可以看到 etcd 备份计划任务:
+你可以看到 etcd 备份计划任务：
 
 ```bash
 kubectl get cronjob -n etcd-cluster
@@ -185,7 +185,7 @@ Snapshot saved at /snapshots/db-2025-01-06_11-18
 ```
 </details>
 
-接下来，可以在 NFS 服务器中看到 etcd 备份快照:
+接下来，可以在 NFS 服务器中看到 etcd 备份快照：
 
 ```bash
 ls ${NFS_SERVER_DIRECTORY}
@@ -204,7 +204,7 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 
 恢复前需要停止向 etcd 集群写入数据（停止 GreptimeDB Metasrv 对 etcd 的写入），并创建最新的快照文件用于恢复。
 
-添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 NFS PVC 的名字，**snapshotFilename** 为 etcd 快照文件名:
+添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 NFS PVC 的名字，**snapshotFilename** 为 etcd 快照文件名：
 
 ```yaml
 replicaCount: 3
@@ -221,7 +221,7 @@ startFromSnapshot:
   snapshotFilename: "${YOUR_ETCD_SNAPSHOT_FILE_NAME}"
 ```
 
-部署 etcd 恢复集群:
+部署 etcd 恢复集群：
 
 ```bash
 helm upgrade --install etcd-recover \
@@ -231,7 +231,7 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster --values etcd-restore.yaml
 ```
 
-等待 etcd 恢复集群运行后，重新部署 etcd 恢复集群:
+等待 etcd 恢复集群运行后，重新部署 etcd 恢复集群：
 
 ```bash
 helm upgrade --install etcd-recover \
@@ -246,7 +246,7 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster
 ```
 
-接着，将 Metasrv的 [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`:
+接着，将 Metasrv的 [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`：
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -260,4 +260,4 @@ spec:
       - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
 ```
 
-然后重启 GreptimeDB Metastv 完成 etcd 恢复.
+然后重启 GreptimeDB Metastv 完成 etcd 恢复。
