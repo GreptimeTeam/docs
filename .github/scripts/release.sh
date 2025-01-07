@@ -22,13 +22,13 @@ sed -i '/^- \[GreptimeCloud\]/d' i18n/zh/docusaurus-plugin-content-docs/version-
 echo "Generating new version"
 npm run docusaurus docs:version $VERSION
 
-echo "Removing oldest version"
-OLDEST_VERSION=$(jq -r '.[-1]' versions.json)
-rm -rf versioned_docs/version-$OLDEST_VERSION
-rm -rf i18n/zh/docusaurus-plugin-content-docs/version-$OLDEST_VERSION/
-rm i18n/zh/docusaurus-plugin-content-docs/version-$OLDEST_VERSION.json
-rm versioned_sidebars/version-$OLDEST_VERSION-sidebars.json
-jq '.[:-1]' versions.json > temp.json && mv temp.json versions.json
+# echo "Removing oldest version"
+# OLDEST_VERSION=$(jq -r '.[-1]' versions.json)
+# rm -rf versioned_docs/version-$OLDEST_VERSION
+# rm -rf i18n/zh/docusaurus-plugin-content-docs/version-$OLDEST_VERSION/
+# rm i18n/zh/docusaurus-plugin-content-docs/version-$OLDEST_VERSION.json
+# rm versioned_sidebars/version-$OLDEST_VERSION-sidebars.json
+# jq '.[:-1]' versions.json > temp.json && mv temp.json versions.json
 
 # echo "Set new default"
 # npm run docusaurus docs:use-version $VERSION
