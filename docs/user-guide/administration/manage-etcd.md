@@ -183,7 +183,7 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 
 ## Restore
 
-Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your nfs pvc, and **snapshotFilename** is change to the etcd snapshot file name:
+Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your NFS PVC, and **snapshotFilename** is change to the etcd snapshot file name:
 
 ```yaml
 replicaCount: 3
