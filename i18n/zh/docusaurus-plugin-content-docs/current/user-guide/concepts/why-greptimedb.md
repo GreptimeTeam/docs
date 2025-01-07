@@ -85,4 +85,4 @@ GreptimeDB 提供了一种称为时序表的新数据模型（见下图），以
 表将在数据写入时动态自动创建，并自动添加新出现的列（Tag 和 Field）。
 
 
-要了解更多关于我们的方法和架构，请查看我们的博客文章：[《专为实时而生》](https://greptime.cn/blogs/2022-11-16-github)、[《GreptimeDB 统一存储架构》](https://greptime.cn/blogs/2024-12-24-observability)和[《事件管理革命：监控系统中统一日志和指标》](https://greptime.cn/blogs/2024-06-14-events)。
+要了解更多关于我们的方法和架构，请查看博客文章：[《专为实时而生》](https://greptime.cn/blogs/2022-11-16-github)、[《GreptimeDB 统一存储架构》](https://greptime.cn/blogs/2024-12-24-observability)和[《事件管理革命：监控系统中统一日志和指标》](https://greptime.cn/blogs/2024-06-14-events)。
