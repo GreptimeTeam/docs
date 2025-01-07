@@ -6,7 +6,7 @@ description: Explains the motivations and benefits of using GreptimeDB, includin
 
 # Why GreptimeDB
 
-GreptimeDB is an open-source time series database built for cloud-native environments. Our core developers have extensive experience building time-series platforms, and GreptimeDB embodies their best practices in three key areas:
+GreptimeDB is an open-source time series database built for cloud-native environments. Our core developers have extensive experience building time-series platforms, and GreptimeDB embodies their best practices in the following key areas:
 
 ## Cost-Effective with Object Storage
 
