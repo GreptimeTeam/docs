@@ -168,7 +168,7 @@ Snapshot saved at /snapshots/db-2025-01-06_11-18
 ```
 </details>
 
-Next, you can see the etcd backup snapshot in the nfs server:
+Next, you can see the etcd backup snapshot in the NFS server:
 
 ```bash
 ls ${NFS_SERVER_DIRECTORY}
