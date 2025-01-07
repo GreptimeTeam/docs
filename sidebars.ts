@@ -112,6 +112,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/emqx',
             'user-guide/integrations/dbeaver',
             'user-guide/integrations/alloy',
+            'user-guide/integrations/streamlit',
+            'user-guide/integrations/mindsdb',
           ],
         },
         {
