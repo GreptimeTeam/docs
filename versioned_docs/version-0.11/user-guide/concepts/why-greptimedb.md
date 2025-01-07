@@ -16,7 +16,7 @@ GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage et
 
 As for performance optimization, GreptimeDB utilizes different techniques such as, LSM Tree, data sharding, and kafka-based WAL design, to handle large workloads of time-series data ingestion.
 
-GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (Thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index) such as inverted index, data skipping index and full-text index, etc. GreptimeDB builds smart indexing and Massively Parallel Processing (MPP) together to boost pruning and filtering. read the [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
+GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (Thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, data skipping index and full-text index, etc. GreptimeDB builds smart indexing and Massively Parallel Processing (MPP) together to boost pruning and filtering. read the [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
 
 ## Elastic Scaling with Kubernetes
 
