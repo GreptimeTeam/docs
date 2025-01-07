@@ -674,7 +674,10 @@ data_home = "/tmp/metasrv/"
 bind_addr = "127.0.0.1:3002"
 # The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
 server_addr = "127.0.0.1:3002"
-# Store server address, "127.0.0.1:2379" by default with etcd store.
+# Store server address
+# Configure the address based on your backend type, for example:
+# - Use "127.0.0.1:2379" to connect to etcd
+# - Use "password=password dbname=postgres user=postgres host=localhost port=5432" to connect to postgres
 store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
@@ -690,10 +693,10 @@ use_memory_store = false
 enable_region_failover = false
 # The datastore for metasrv.
 ## Available datastore:
-## - "EtcdStore" (default)
-## - "MemoryStore" (In memory metadata storage - only used for testing.)
-## - "PostgresStore"
-backend = "EtcdStore"
+## - "etcd_store" (default)
+## - "memory_store" (In memory metadata storage - only used for testing.)
+## - "postgres_store"
+backend = "etcd_store"
 
 ## Procedure storage options.
 [procedure]
@@ -803,10 +806,11 @@ backoff_deadline = "5mins"
 | `data_home`                                   | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                   |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                  |
 | `server_addr`                                 | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                  |
-| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`       | Store server address (default to etcd) store.                                                                                                                                                          |
+| `store_addrs`                                  | Array   | `["127.0.0.1:2379"]`       | Store server address. Configure the address based on your backend type, for example:<br/>- Use `"127.0.0.1:2379"` to connect to etcd<br/>- Use `"password=password dbname=postgres user=postgres host=localhost port=5432"` to connect to postgres |
 | `selector`                                    | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
 | `use_memory_store`                            | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
 | `enable_region_failover`                      | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
+| `backend`                                     | String  | `etcd_store`           | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store` |
 | `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                    |
 | `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                     |
 | `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                    |
