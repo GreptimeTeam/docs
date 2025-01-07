@@ -30,5 +30,5 @@ rm i18n/zh/docusaurus-plugin-content-docs/$OLDEST_VERSION.json
 rm versioned_sidebars/$OLDEST_VERSION-sidebars.json
 jq '.[:-1]' versions.json > temp.json && mv temp.json versions.json
 
-echo "Set new default"
-npm run docusaurus docs:use-version $VERSION
+# echo "Set new default"
+# npm run docusaurus docs:use-version $VERSION
