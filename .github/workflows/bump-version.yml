@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.0)'
+        description: 'Version number without patch (e.g., 1.0 or 0.12)'
         required: true
         type: string
 
@@ -23,22 +23,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Version the English docs
+      - name: Call update scripts
         run: |
           VERSION=${{ github.event.inputs.version }}
-          npm run docusaurus docs:version $VERSION
-
-      - name: Remove oldest version
-        run: |
-          OLDEST_VERSION=$(ls -1 versioned_docs | sort -V | head -n 1)
-          rm -rf versioned_docs/$OLDEST_VERSION
-          rm -rf i18n/zh/docusaurus-plugin-content-docs/$OLDEST_VERSION/
-          rm versioned_sidebars/$OLDEST_VERSION-sidebars.json
-
-      - name: Set default version
-        run: |
-          VERSION=${{ github.event.inputs.version }}
-          npm run docusaurus docs:use-version $VERSION
+          .github/scripts/release.sh $VERSION
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
