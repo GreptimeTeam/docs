@@ -9,7 +9,7 @@ sed -i "s/greptimedbVersion: 'v[^']*'/greptimedbVersion: 'v$VERSION.0'/" variabl
 
 echo "Processing localized sidebars"
 cp i18n/zh/docusaurus-plugin-content-docs/current.json i18n/zh/docusaurus-plugin-content-docs/version-$VERSION.json
-jq 'del(.["version.label"])' version-$VERSION.json > temp.json && mv temp.json version-$VERSION.json
+jq 'del(.["version.label"])' i18n/zh/docusaurus-plugin-content-docs/version-$VERSION.json > temp.json && mv temp.json i18n/zh/docusaurus-plugin-content-docs/version-$VERSION.json
 
 echo "Removing greptimecloud content from current version"
 CURRENT_VERSION=$(jq -r '.[0]' versions.json)
