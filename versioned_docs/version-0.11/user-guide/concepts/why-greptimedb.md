@@ -10,7 +10,7 @@ GreptimeDB is an open-source time series database built for cloud-native environ
 
 ## Cost-Effective with Object Storage
 
-GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency, while the pay-as-you-go model( via [GreptimeCloud](https://greptime.com/product/cloud)) ensures you only pay for what you use.
+GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency, while the pay-as-you-go model (via [GreptimeCloud](https://greptime.com/product/cloud)) ensures you only pay for what you use.
 
 ## High Performance
 
