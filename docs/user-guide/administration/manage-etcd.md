@@ -1,6 +1,6 @@
 ---
 keywords: [etcd, kubernetes, helm, backup, restore]
-description: A comprehensive guide for managing an etcd cluster including installation, backup, and restoration processes using Kubernetes and Helm..
+description: A comprehensive guide for managing an etcd cluster including installation, backup, and restoration processes using Kubernetes and Helm.
 ---
 
 # Manage ETCD
