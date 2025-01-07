@@ -1,9 +1,11 @@
 ---
-keywords: [etcd]
-description: etcd 管理文档.
+keywords: [etcd, kubernetes, helm, 备份, 恢复]
+description: 管理 etcd 集群的综合指南，包括使用 kubernetes 和 helm 的安装、备份和恢复过程。
 ---
 
 # 管理 ETCD
+
+GreptimeDB 集群默认需要一个 etcd 集群用于[元数据存储](https://docs.greptime.com/nightly/contributor-guide/metasrv/overview)。让我们使用 Bitnami 的 etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd) 安装一个 etcd 集群。
 
 ## 先决条件
 
@@ -12,8 +14,6 @@ description: etcd 管理文档.
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
 
 ## 安装
-
-GreptimeDB 集群需要 etcd 集群用于元数据存储。让我们使用 Bitnami 的 etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd) 安装 etcd 集群.
 
 ```bash
 helm upgrade --install etcd \
@@ -101,8 +101,9 @@ kubectl -n etcd-cluster \
 </details>
 
 ## 备份
+在 bitnami etcd chart 中，使用共享存储卷 Network File System (NFS) 存储 etcd 备份数据。通过 Kubernetes 中的 CronJob 进行 etcd 快照备份，并挂载 NFS PersistentVolumeClaim (PVC)，可以将快照传输到 NFS 中。
 
-添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 nfs pvc 名称:
+添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 NFS PVC 名称:
 
 ```yaml
 replicaCount: 3
@@ -184,7 +185,7 @@ Snapshot saved at /snapshots/db-2025-01-06_11-18
 ```
 </details>
 
-接下来，可以在 nfs 服务器中看到 etcd 备份快照:
+接下来，可以在 NFS 服务器中看到 etcd 备份快照:
 
 ```bash
 ls ${NFS_SERVER_DIRECTORY}
@@ -199,7 +200,11 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 
 ## 恢复
 
-添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 nfs pvc 的名字，**snapshotFilename** 为 etcd 快照文件名:
+当您遇到 etcd 数据丢失或损坏（例如，存储在 etcd 中的关键信息被意外删除，或者发生无法恢复的灾难性集群故障）时，您需要执行 etcd 恢复。此外，恢复 etcd 还可用于开发和测试目的。
+
+恢复前需要停止向 etcd 集群写入数据（停止 GreptimeDB Metasrv 对 etcd 的写入），并创建最新的快照文件用于恢复。
+
+添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 NFS PVC 的名字，**snapshotFilename** 为 etcd 快照文件名:
 
 ```yaml
 replicaCount: 3
@@ -241,4 +246,4 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster
 ```
 
-接下来完成 etcd 恢复.
+接着，将 Metasrv的 [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`，完成 etcd restore。

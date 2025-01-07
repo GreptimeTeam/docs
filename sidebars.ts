@@ -208,6 +208,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/administration/overview',
             'user-guide/administration/capacity-plan',
+            'user-guide/administration/manage-etcd',
             {
               type: 'category',
               label: 'Manage Data',

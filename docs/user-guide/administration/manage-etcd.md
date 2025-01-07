@@ -1,9 +1,11 @@
 ---
-keywords: [etcd]
-description: a etcd management documentation.
+keywords: [etcd, kubernetes, helm, backup, restore]
+description: A comprehensive guide for managing an etcd cluster including installation, backup, and restoration processes using Kubernetes and Helm..
 ---
 
 # Manage ETCD
+
+The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://docs.greptime.com/nightly/contributor-guide/metasrv/overview) by default. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd).
 
 ## Prerequisites
 
@@ -12,8 +14,6 @@ description: a etcd management documentation.
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
 
 ## Install
-
-The GreptimeDB cluster requires an etcd cluster for metadata storage. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd).
 
 ```bash
 helm upgrade --install etcd \
@@ -85,8 +85,9 @@ kubectl -n etcd-cluster \
 </details>
 
 ## Backup
+In the bitnami etcd chart, a shared storage volume Network File System (NFS) is used to store etcd backup data. By using CronJob in Kubernetes to perform etcd snapshot backups and mount NFS PersistentVolumeClaim (PVC), snapshots can be transferred to NFS.
 
-Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your nfs pvc name:
+Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
 
 ```yaml
 replicaCount: 3
@@ -183,6 +184,10 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 
 ## Restore
 
+When you encounter etcd data loss or corruption, such as critical information stored in etcd being accidentally deleted, or catastrophic cluster failure that prevents recovery, you need to perform an etcd restore. Additionally, restoring etcd can also be useful for development and testing purposes.
+
+Before recovery, you need to stop writing data to the etcd cluster (stop GreptimeDB Metasrv writing) and create the latest snapshot file use for recovery.
+
 Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your NFS PVC, and **snapshotFilename** is change to the etcd snapshot file name:
 
 ```yaml
@@ -225,4 +230,4 @@ helm upgrade --install etcd-recover \
   -n etcd-cluster
 ```
 
-Next, complete etcd restore.
+Next, change Metasrv [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) to the new etcd recover cluster, in this example is `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`, to complete etcd restore.
