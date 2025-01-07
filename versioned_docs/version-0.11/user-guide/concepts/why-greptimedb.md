@@ -33,9 +33,9 @@ Built from the ground up for Kubernetes, GreptimeDB features a disaggregated sto
 
 GreptimeDB unifies the processing of metrics, logs, and events through:
 
-- A consistent [data model]((./data-model.md) that treats all time series data as timestamped events with context
+- A consistent [data model](./data-model.md) that treats all time series data as timestamped events with context
 - Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
-- Built-in stream processing capabilities([Flow](/user-guide/flow-computation/overview.md)) for real-time analytics
+- Built-in stream processing capabilities([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
 - Seamless correlation analysis across different types of time series data, read the [SQL example](/user-guide/overview.md#sql-query-example) for detailed info.
 
 ## Flexible Architecture: from Edge to Cloud
@@ -58,10 +58,10 @@ To simplify deployment and maintenance processes, GreptimeDB provides [K8s opera
 ### Easy to Integrate
 
 GreptimeDB supports multiple ingestion protocols:
-- Database protocols: MySQL, PostgreSQL
-- Time-series protocols: InfluxDB, OpenTSDB, Prometheus RemoteStorage
-- Observability protocols: OpenTelemetry, Loki, ElasticSearch
-- High-performance gRPC with client SDKs (Java, Go, Erlang, etc.)
+- **Database protocols**: MySQL, PostgreSQL
+- **Time-series protocols**: InfluxDB, OpenTSDB, Prometheus RemoteStorage
+- **Observability protocols**: OpenTelemetry, Loki, ElasticSearch
+- **High-performance gRPC with client SDKs** (Java, Go, Erlang, etc.)
 
 For data querying, GreptimeDB offers:
 - **SQL**: For real-time queries, complex analytics, and database management

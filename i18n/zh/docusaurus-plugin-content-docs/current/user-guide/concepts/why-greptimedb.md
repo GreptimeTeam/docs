@@ -9,7 +9,7 @@ GreptimeDB 是一款为云原生环境打造的开源分布式时序数据库。
 
 ## 基于对象存储的成本优势
 
-GreptimeDB 采用云对象存储（如 AWS S3 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率，而按需付费模式的 [GreptimeCloud](https://greptime.com/product/cloud) 确保您只需为实际使用的资源付费。
+GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率，而按需付费模式的 [GreptimeCloud](https://greptime.com/product/cloud) 确保您只需为实际使用的资源付费。
 
 ## 高性能
 
@@ -26,13 +26,13 @@ GreptimeDB 从底层就是为 Kubernetes 设计的，基于先进的存储计算
 - 不同工作负载（数据写入、查询、压缩、索引）之间的资源隔离
 - 自动故障转移和高可用性
 
-![存储计算分离，计算资源隔离](/storage-compute-disaggregation-compute-compute-separation.png)
+![存储计算分离，计算资源隔离](/storage-compute-disaggregation-compute-compute-separation.png)。
 
 ## 统一处理所有时序数据
 
 GreptimeDB 通过以下方式统一处理指标、日志和事件数据：
 
-- 统一的[数据模型]((./data-model.md)，将所有时序数据视为带有上下文的时间戳事件
+- 统一的[数据模型](./data-model.md)，将所有时序数据视为带有上下文的时间戳事件
 - 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询
 - 内置流处理能力（[Flow](/user-guide/flow-computation/overview.md)）用于实时聚合和分析
 - 无缝关联分析不同类型的时序数据，详见[SQL 示例](/user-guide/overview.md#sql-query-example)
@@ -60,10 +60,10 @@ GreptimeDB 通过以下方式统一处理指标、日志和事件数据：
 ### 易于集成
 
 GreptimeDB 支持多种数据摄入协议：
-- 数据库协议：MySQL、PostgreSQL
-- 时序数据协议：InfluxDB、OpenTSDB、Prometheus RemoteStorage
-- 可观测性协议：OpenTelemetry、Loki、ElasticSearch
-- 高性能 gRPC 协议及客户端 SDK（Java、Go、Erlang 等）
+- **数据库协议**：MySQL、PostgreSQL
+- **时序数据协议**：InfluxDB、OpenTSDB、Prometheus RemoteStorage
+- **可观测数据协议**：OpenTelemetry、Loki、ElasticSearch
+- **高性能 gRPC 协议及客户端 SDK**（Java、Go、Erlang 等）
 
 在数据查询方面，GreptimeDB 提供：
 - **SQL**：用于实时查询、复杂分析和数据库管理
