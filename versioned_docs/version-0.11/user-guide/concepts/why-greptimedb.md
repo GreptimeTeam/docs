@@ -33,7 +33,7 @@ Built from the ground up for Kubernetes, GreptimeDB features a disaggregated sto
 
 GreptimeDB unifies the processing of metrics, logs, and events through:
 
-- A consistent [data model]((./data-model.md)) that treats all time series data as timestamped events with context
+- A consistent [data model]((./data-model.md) that treats all time series data as timestamped events with context
 - Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
 - Built-in stream processing capabilities([Flow](/user-guide/flow-computation/overview.md)) for real-time analytics
 - Seamless correlation analysis across different types of time series data, read the [SQL example](/user-guide/overview.md#sql-query-example) for detailed info.

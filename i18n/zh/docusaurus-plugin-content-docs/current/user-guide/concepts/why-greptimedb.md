@@ -32,7 +32,7 @@ GreptimeDB 从底层就是为 Kubernetes 设计的，基于先进的存储计算
 
 GreptimeDB 通过以下方式统一处理指标、日志和事件数据：
 
-- 统一的[数据模型]((./data-model.md))，将所有时序数据视为带有上下文的时间戳事件
+- 统一的[数据模型]((./data-model.md)，将所有时序数据视为带有上下文的时间戳事件
 - 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询
 - 内置流处理能力（[Flow](/user-guide/flow-computation/overview.md)）用于实时聚合和分析
 - 无缝关联分析不同类型的时序数据，详见[SQL 示例](/user-guide/overview.md#sql-query-example)
