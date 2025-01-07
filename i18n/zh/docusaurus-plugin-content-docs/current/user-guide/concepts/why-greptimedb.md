@@ -59,7 +59,7 @@ GreptimeDB 通过以下方式统一处理指标、日志和事件数据：
 
 ### 易于集成
 
-GreptimeDB 支持多种数据摄入协议：
+GreptimeDB 支持多种数据写入协议：
 - **数据库协议**：MySQL、PostgreSQL
 - **时序数据协议**：InfluxDB、OpenTSDB、Prometheus RemoteStorage
 - **可观测数据协议**：OpenTelemetry、Loki、ElasticSearch
