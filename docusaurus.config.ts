@@ -135,12 +135,6 @@ const config: Config = {
             current: {
               label: 'nightly',
               path: 'nightly',
-            },
-            '0.8': {
-              path: 'v0.8'
-            },
-            '0.7': {
-              path: 'v0.7'
             }
           },
           remarkPlugins: [
