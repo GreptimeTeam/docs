@@ -244,4 +244,4 @@ spec:
       - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
 ```
 
-Restart GreptimeDB Metastv to complete etcd restore.
+Restart GreptimeDB Metasrv to complete etcd restore.
