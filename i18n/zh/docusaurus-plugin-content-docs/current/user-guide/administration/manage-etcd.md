@@ -260,4 +260,4 @@ spec:
       - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
 ```
 
-然后重启 GreptimeDB Metastv 完成 etcd 恢复。
+然后重启 GreptimeDB Metasrv 完成 etcd 恢复。
