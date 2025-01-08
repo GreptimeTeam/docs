@@ -63,7 +63,7 @@ etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) �
 - **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态。
 - **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息。
 
-etcd集群运行起来后，我们需要设置 initialClusterState 参数为 **existing**：
+etcd 集群运行起来后，我们需要设置 initialClusterState 参数为 **existing**：
 
 ```bash
 helm upgrade --install etcd \
