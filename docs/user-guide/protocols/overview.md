@@ -7,3 +7,4 @@
 - [HTTP API](./http.md)
 - [gRPC](./grpc.md)
 - [OpenTSDB](./opentsdb.md)
+- [Loki](./loki.md)
