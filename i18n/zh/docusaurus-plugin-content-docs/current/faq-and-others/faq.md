@@ -1,3 +1,8 @@
+---
+keywords: [常见问题]
+description: 关于 GreptimeDB 的常见问题解答。
+---
+
 # 常见问题
 
 ### What would be the use cases for a time-series database?
