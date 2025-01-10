@@ -1,4 +1,4 @@
-name: Version Docs
+name: Bump Version
 
 on:
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
       - name: Call update scripts
         run: |
           VERSION=${{ github.event.inputs.version }}
-          .github/scripts/release-major.sh $VERSION
+          .github/scripts/release.sh $VERSION
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5

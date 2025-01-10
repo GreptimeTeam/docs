@@ -1,11 +1,10 @@
-## this script is to update for major updates
+## this script is to update for major/minor updates
 ## the input version format should be like: 1.0 or 0.12
 VERSION=$1
 
 echo "Processing variables"
 cp variables/variables-nightly.ts variables/variables-$VERSION.ts
 sed -i "s/greptimedbVersion: 'v[^']*'/greptimedbVersion: 'v$VERSION.0'/" variables/variables-$VERSION.ts
-sed -i "s/greptimedbVersion: 'v[^']*'/greptimedbVersion: 'v$VERSION.0'/" variables/variables-nightly.ts
 
 echo "Processing localized sidebars"
 cp i18n/zh/docusaurus-plugin-content-docs/current.json i18n/zh/docusaurus-plugin-content-docs/version-$VERSION.json

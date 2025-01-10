@@ -1,10 +1,9 @@
-name: Version Docs
-
+name: Bump Nightly Version
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number without patch (e.g., 0.12.0-nightly-20241230)'
+        description: 'Nightly version number (e.g., 0.12.0-nightly-20241230)'
         required: true
         type: string
 
