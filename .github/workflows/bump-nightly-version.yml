@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number without patch (e.g., 1.0.2 or 0.12.2)'
+        description: 'Version number without patch (e.g., 0.12.0-nightly-20241230)'
         required: true
         type: string
 
@@ -26,7 +26,7 @@ jobs:
       - name: Call update scripts
         run: |
           VERSION=${{ github.event.inputs.version }}
-          .github/scripts/release-minor.sh $VERSION
+          .github/scripts/release-nightly.sh $VERSION
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
