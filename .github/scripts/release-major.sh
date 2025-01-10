@@ -1,4 +1,4 @@
-## this script is to update for major/minor updates
+## this script is to update for major updates
 ## the input version format should be like: 1.0 or 0.12
 VERSION=$1
 
