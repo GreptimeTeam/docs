@@ -1,10 +1,9 @@
-name: Bump Version
-
+name: Bump Nightly Version
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number without patch (e.g., 1.0 or 0.12)'
+        description: 'Nightly version number (e.g., 0.12.0-nightly-20241230)'
         required: true
         type: string
 
@@ -26,7 +25,7 @@ jobs:
       - name: Call update scripts
         run: |
           VERSION=${{ github.event.inputs.version }}
-          .github/scripts/release.sh $VERSION
+          .github/scripts/release-nightly.sh $VERSION
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
