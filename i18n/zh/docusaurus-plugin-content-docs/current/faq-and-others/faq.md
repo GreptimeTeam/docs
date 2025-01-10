@@ -190,7 +190,7 @@ For more general advice for deployment, please read [Capacity Plan](/user-guide/
 
 Since v0.7, GreptimeDB supports inverted indexes which are designed by ourselves, read the [Contributor Guide](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) for more information.
 
-We plan to integrate Tantivy into the upcoming 0.9 release for full-text search functionality, although we are not currently using it.
+Tantivy is a full-text search engine library. We are providing it as one of the implementation of FULLTEXT INDEX.
 
 ### In v0.8, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
 
