@@ -31,8 +31,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: "Version docs to ${{ github.event.inputs.version }}"
-          title: "Version docs to ${{ github.event.inputs.version }}"
+          commit-message: "version docs to ${{ github.event.inputs.version }}"
+          title: "chore: bump version ${{ github.event.inputs.version }}"
           body: "This PR updates the docs to version ${{ github.event.inputs.version }}."
           branch: "version-docs-${{ github.event.inputs.version }}"
           base: main
