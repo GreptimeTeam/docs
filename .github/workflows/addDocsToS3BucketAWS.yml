@@ -3,9 +3,8 @@ name: addDocsToS3BucketAWS
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request_target:
+  push:
     branches: ['main']
-    types: [merged]
     paths-ignore:
       - "./docs/**/en/**"
   # Allows you to run this workflow manually from the Actions tab
