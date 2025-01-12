@@ -50,7 +50,7 @@ ALTER DATABASE db UNSET 'ttl';
 
 ```sql
 ALTER TABLE [db.]table
-   [ADD COLUMN name type [options]
+   [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
@@ -72,6 +72,12 @@ ALTER TABLE monitor ADD COLUMN load_15 double;
 ```
 
 Definition of column is the same as in [CREATE](./create.md).
+
+Also, we can add multiple columns to the table at the same time:
+
+```sql
+ALTER TABLE monitor ADD COLUMN disk_usage double, ADD COLUMN disk_free double;
+```
 
 We can set the new column's location. In first position for example:
 
