@@ -128,6 +128,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/http',
             'user-guide/protocols/grpc',
             'user-guide/protocols/opentsdb',
+            'user-guide/protocols/loki',
           ],
         },
         'user-guide/timezone',
