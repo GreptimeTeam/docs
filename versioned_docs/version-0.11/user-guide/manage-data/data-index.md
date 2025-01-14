@@ -87,7 +87,7 @@ For example:
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT WITH(analyzer='Chinese', case_sensitive='true'),
+    message STRING FULLTEXT WITH(analyzer='English', case_sensitive='true'),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
