@@ -79,7 +79,7 @@ CREATE TABLE logs (
 );
 ```
 
-全文索引通过  `WITH`  支持以下选项：
+全文索引通过 `WITH` 支持以下选项：
 * `analyzer`：设置全文索引的语言分析器。支持的值包括 `English`（英语）和 `Chinese`（中文）。默认值为 `English`。
 * `case_sensitive`：决定全文索引是否区分大小写。支持的值为 `true`（是）和 `false`（否）。默认值为 `false`。
 
