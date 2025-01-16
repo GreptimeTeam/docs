@@ -60,6 +60,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observerbility/kafka',
                 'user-guide/ingest-data/for-observerbility/loki',
                 'user-guide/ingest-data/for-observerbility/alloy',
+                'user-guide/ingest-data/for-observerbility/elasticsearch',
               ],
             },
             {
@@ -129,6 +130,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/protocols/grpc',
             'user-guide/protocols/opentsdb',
             'user-guide/protocols/loki',
+            'user-guide/protocols/elasticsearch',
           ],
         },
         'user-guide/timezone',
