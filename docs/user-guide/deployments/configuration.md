@@ -497,6 +497,13 @@ page_cache_size = "512MB"
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
+[region_engine.mito.index]
+aux_path = ""
+staging_size = "2GB"
+metadata_cache_size = "64MiB"
+content_cache_size = "128MiB"
+content_cache_page_size = "64KiB"
+
 [region_engine.mito.inverted_index]
 create_on_flush = "auto"
 create_on_compaction = "auto"
@@ -534,15 +541,18 @@ Available options:
 | `selector_result_cache_size`             | String  | `512MB`       | Cache size for time series selector (e.g. `last_value()`). Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                    |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                          |
 | `scan_parallelism`                       | Integer | `0`           | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n. |
+| `index` | -- | -- | The options for index in Mito engine. |
+| `index.aux_path` | String | `""` | Auxiliary directory path for the index in the filesystem. This path is used to store intermediate files for creating the index and staging files for searching the index. It defaults to `{data_home}/index_intermediate`. The default name for this directory is `index_intermediate` for backward compatibility. This path contains two subdirectories: `__intm` for storing intermediate files used during index creation, and `staging` for storing staging files used during index searching. |
+| `index.staging_size` | String | `2GB` | The maximum capacity of the staging directory. |
+| `index.metadata_cache_size` | String | `64MiB` | Cache size for index metadata. |
+| `index.content_cache_size` | String | `128MiB` | Cache size for index content. |
+| `index.content_cache_page_size` | String | `64KiB` | Page size for index content cache. |
 | `inverted_index`                         | --      | --            | The options for inverted index in Mito engine.                                                                                                                                        |
 | `inverted_index.create_on_flush`         | String  | `auto`        | Whether to create the index on flush.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                              |
 | `inverted_index.create_on_compaction`    | String  | `auto`        | Whether to create the index on compaction.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                         |
 | `inverted_index.apply_on_query`          | String  | `auto`        | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                |
 | `inverted_index.mem_threshold_on_create` | String  | `64M`         | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory.       |
 | `inverted_index.intermediate_path`       | String  | `""`          | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`).                                                                         |
-| `inverted_index.metadata_cache_size`     | String  | `64MiB`       | Cache size for inverted index metadata. |
-| `inverted_index.content_cache_size`      | String  | `128MiB`      | Cache size for inverted index content. |
-| `inverted_index.content_cache_page_size`| String  | `64KiB`       | Page size for inverted index content cache. Inverted index content will be read and cached in page size. Adjust this value to change the granularity of cache and optimize the cache hit rate. |
 | `memtable.type`                          | String  | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental)                                                               |
 | `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                |
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                               |
