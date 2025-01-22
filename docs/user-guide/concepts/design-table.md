@@ -1,3 +1,8 @@
+---
+keywords: [table schema, data model, cardinality, tag columns, field columns, time index, primary key, inverted index, full-text index, skipping index, append-only tables, data updating, wide table, distributed tables, partitioning]
+description: Learn how to design your table schema in GreptimeDB for optimal performance and query efficiency
+---
+
 # Design Your Table Schema
 
 The design of your table schema significantly impacts both write and query performance.
