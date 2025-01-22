@@ -3,7 +3,7 @@
 ## Remote Write
 
 GreptimeDB 可以用作 Prometheus 的远程存储后端。
-详细信息请参考[使用 Prometheus Remote Write 写入数据](/user-guide/ingest-data/for-observerbility/prometheus.md)。
+详细信息请参考[使用 Prometheus Remote Write 写入数据](/user-guide/ingest-data/for-observability/prometheus.md)。
 
 ## Prometheus Query Language (PromQL)
 

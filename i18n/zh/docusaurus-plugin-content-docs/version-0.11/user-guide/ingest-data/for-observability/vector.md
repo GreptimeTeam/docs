@@ -60,10 +60,10 @@ vector -c sample.toml
 
 ## 收集 InfluxDB 行协议格式的指标
 
-Vector 可以收集 InfluxDB 行协议格式的指标并将其发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observerbility/kafka.md#指标)。
+Vector 可以收集 InfluxDB 行协议格式的指标并将其发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observability/kafka.md#指标)。
 
 
 ## 收集日志
 
-Vector 可以收集日志并发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observerbility/kafka.md#日志)。
+Vector 可以收集日志并发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observability/kafka.md#日志)。
 

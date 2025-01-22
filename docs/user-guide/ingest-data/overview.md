@@ -16,7 +16,7 @@ This feature is supported for all protocols and integrations, except [SQL](./for
 
 GreptimeDB supports various data ingestion methods for specific scenarios, ensuring optimal performance and integration flexibility.
 
-- [For Observability Scenarios](./for-observerbility/overview.md): Suitable for real-time monitoring and alerting.
+- [For Observability Scenarios](./for-observability/overview.md): Suitable for real-time monitoring and alerting.
 - [For IoT Scenarios](./for-iot/overview.md): Suitable for real-time data and complex IoT infrastructures.
 
 ## Next Steps

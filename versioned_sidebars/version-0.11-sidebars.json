@@ -48,16 +48,16 @@
             "user-guide/ingest-data/overview",
             {
               "type": "category",
-              "label": "For Observerbility",
+              "label": "For observability",
               "items": [
-                "user-guide/ingest-data/for-observerbility/overview",
-                "user-guide/ingest-data/for-observerbility/prometheus",
-                "user-guide/ingest-data/for-observerbility/vector",
-                "user-guide/ingest-data/for-observerbility/opentelemetry",
-                "user-guide/ingest-data/for-observerbility/influxdb-line-protocol",
-                "user-guide/ingest-data/for-observerbility/kafka",
-                "user-guide/ingest-data/for-observerbility/loki",
-                "user-guide/ingest-data/for-observerbility/alloy"
+                "user-guide/ingest-data/for-observability/overview",
+                "user-guide/ingest-data/for-observability/prometheus",
+                "user-guide/ingest-data/for-observability/vector",
+                "user-guide/ingest-data/for-observability/opentelemetry",
+                "user-guide/ingest-data/for-observability/influxdb-line-protocol",
+                "user-guide/ingest-data/for-observability/kafka",
+                "user-guide/ingest-data/for-observability/loki",
+                "user-guide/ingest-data/for-observability/alloy"
               ]
             },
             {
