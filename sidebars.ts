@@ -37,6 +37,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/concepts/overview',
             'user-guide/concepts/why-greptimedb',
             'user-guide/concepts/data-model',
+            'user-guide/concepts/design-table',
             'user-guide/concepts/architecture',
             'user-guide/concepts/storage-location',
             'user-guide/concepts/key-concepts',
