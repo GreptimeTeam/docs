@@ -145,31 +145,29 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Binary
 
-*目前还不支持像 `1+1` 这样纯粹的 binary 表达式。*
-
 - 支持:
-    | Operator | Example  |
-    | :------- | :------- |
-    | add      | `a + b`  |
-    | sub      | `a - b`  |
-    | mul      | `a * b`  |
-    | div      | `a / b`  |
-    | mod      | `a % b`  |
-    | eqlc     | `a == b` |
-    | neq      | `a != b` |
-    | gtr      | `a > b`  |
-    | lss      | `a < b`  |
-    | gte      | `a >= b` |
-    | lte      | `a <= b` |
+    | Operator |
+    | :------- |
+    | add      |
+    | sub      |
+    | mul      |
+    | div      |
+    | mod      |
+    | eqlc     |
+    | neq      |
+    | gtr      |
+    | lss      |
+    | gte      |
+    | lte      |
+    | power    |
+    | atan2    |
+    | and      |
+    | or       |
+    | unless   |
 
 - 不支持:
-    | Operator | Progress |
-    | :------- | :------- |
-    | power    | TBD      |
-    | atan2    | TBD      |
-    | and      | TBD      |
-    | or       | TBD      |
-    | unless   | TBD      |
+
+无
 
 ### Aggregators
 
@@ -247,3 +245,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
     | reset              | `reset(metric[5m])`            |
+
+- 不支持:
+
+无
