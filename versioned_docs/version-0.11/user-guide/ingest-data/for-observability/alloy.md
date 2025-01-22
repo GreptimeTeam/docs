@@ -29,7 +29,7 @@ prometheus.remote_write "greptimedb" {
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
 - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
 
-For details on the data model transformation from Prometheus to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observerbility/prometheus.md#data-model) section in the Prometheus Remote Write guide.
+For details on the data model transformation from Prometheus to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/prometheus.md#data-model) section in the Prometheus Remote Write guide.
 
 ## OpenTelemetry
 
@@ -58,7 +58,7 @@ otelcol.auth.basic "credentials" {
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
 - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
 
-For details on the metrics data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observerbility/opentelemetry.md#data-model) section in the OpenTelemetry guide.
+For details on the metrics data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model) section in the OpenTelemetry guide.
 
 ### Logs
 
@@ -110,7 +110,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
   - `LOG_TABLE_NAME`: The name of the table to store logs, default table name is `opentelemetry_logs`.
   - `EXTRACT_KEYS`: The keys to extract from the attributes, separated by commas (`,`), e.g., `filename,log.file.name,loki.attribute.labels`, see [HTTP API documentation](opentelemetry.md#otlphttp-api-1) for details.
 
-For details on the log data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observerbility/opentelemetry.md#data-model-1) section in the OpenTelemetry guide.
+For details on the log data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-1) section in the OpenTelemetry guide.
 
 :::tip NOTE
 The example codes above may be outdated according to OpenTelemetry. We recommend that you refer to the official OpenTelemetry documentation And Grafana Alloy for the most up-to-date information.

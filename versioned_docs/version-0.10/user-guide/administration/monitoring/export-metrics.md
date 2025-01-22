@@ -95,7 +95,7 @@ write_interval = "30s"
 url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
 ```
 
-GreptimeDB is compatible with the Prometheus Remote-Write protocol. For more information, please refer to the [Prometheus Remote-Write](/user-guide/ingest-data/for-observerbility/prometheus.md) documentation.
+GreptimeDB is compatible with the Prometheus Remote-Write protocol. For more information, please refer to the [Prometheus Remote-Write](/user-guide/ingest-data/for-observability/prometheus.md) documentation.
 
 ## Metrics Detail
 You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB. We will add more documents of the metrics sooner.

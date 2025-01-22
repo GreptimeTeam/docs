@@ -29,7 +29,7 @@ prometheus.remote_write "greptimedb" {
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
 - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
 
-有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observerbility/prometheus.md#数据模型)部分。
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。
 
 ## OpenTelemetry
 
@@ -58,7 +58,7 @@ otelcol.auth.basic "credentials" {
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
 - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
 
-有关从 OpenTelemetry 到 GreptimeDB 的指标数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observerbility/opentelemetry.md#数据模型)部分。
+有关从 OpenTelemetry 到 GreptimeDB 的指标数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型)部分。
 
 ### 日志
 
@@ -110,7 +110,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
   - `LOG_TABLE_NAME`: 存储日志的表名，默认表名为 `opentelemetry_logs`。
   - `EXTRACT_KEYS`: 从属性中提取对应 key 的值到表的顶级字段，用逗号分隔，例如 `filename,log.file.name,loki.attribute.labels`，详情请看 [HTTP API 文档](opentelemetry.md#otlphttp-api-1)。
 
-有关从 OpenTelemetry 到 GreptimeDB 的日志数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observerbility/opentelemetry.md#数据模型-1)部分。
+有关从 OpenTelemetry 到 GreptimeDB 的日志数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-1)部分。
 
 :::tip 提示
 上述示例代码可能会过时，请参考 OpenTelemetry 和 Grafana Alloy 的官方文档以获取最新信息。

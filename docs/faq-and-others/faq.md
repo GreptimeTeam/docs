@@ -17,9 +17,9 @@ We plan to further refine the log engine, focusing on improving query performanc
 
 For more information about using GreptimeDB with logs, refer to the documentation:
 - [Log Overview](/user-guide/logs/overview.md)
-- [OpenTelemetry compatibility](/user-guide/ingest-data/for-observerbility/opentelemetry.md)
-- [Loki protocol compatibility](/user-guide/ingest-data/for-observerbility/opentelemetry.md)
-- [Vector compatibility](/user-guide/ingest-data/for-observerbility/vector.md)
+- [OpenTelemetry compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md)
+- [Loki protocol compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md)
+- [Vector compatibility](/user-guide/ingest-data/for-observability/vector.md)
 
 ### What would be the use cases for a time-series database?
 

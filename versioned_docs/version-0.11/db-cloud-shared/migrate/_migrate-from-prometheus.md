@@ -4,7 +4,7 @@ This allows for an easy migration of your Prometheus long-term storage to Grepti
 
 ## Data model in difference
 
-To understand the differences between the data models of Prometheus and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-observerbility/prometheus.md#data-model) in the Ingest Data documentation.
+To understand the differences between the data models of Prometheus and GreptimeDB, please refer to the [Data Model](/user-guide/ingest-data/for-observability/prometheus.md#data-model) in the Ingest Data documentation.
 
 ## Prometheus Remote Write
 

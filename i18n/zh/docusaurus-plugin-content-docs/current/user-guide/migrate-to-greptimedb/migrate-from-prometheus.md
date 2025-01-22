@@ -11,7 +11,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.
 
 <div id="remote-write">
 
-有关 Prometheus 将数据写入 GreptimeDB 的配置信息，请参阅 [Remote Write](/user-guide/ingest-data/for-observerbility/prometheus.md#配置-remote-write) 文档。
+有关 Prometheus 将数据写入 GreptimeDB 的配置信息，请参阅 [Remote Write](/user-guide/ingest-data/for-observability/prometheus.md#配置-remote-write) 文档。
 
 </div>
 
