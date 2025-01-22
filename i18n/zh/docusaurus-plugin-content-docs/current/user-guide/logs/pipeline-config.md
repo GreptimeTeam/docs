@@ -57,6 +57,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `regex`: 对 log 数据字段进行正则匹配。
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
+- `json_path`: 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
 
 大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
