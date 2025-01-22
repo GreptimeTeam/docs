@@ -96,6 +96,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/query-data/view',
             'user-guide/query-data/cte',
             'user-guide/query-data/query-external-data',
+            'user-guide/query-data/log-query',
           ],
         },
         { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview', 'user-guide/manage-data/data-index'] },
