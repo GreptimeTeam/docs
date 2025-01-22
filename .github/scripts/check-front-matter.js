@@ -7,6 +7,7 @@ const github = require('@actions/github');
 // Add the special files here, for example, the template files
 const exceptionFiles = [
   'docs/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
+  'docs/db-cloud-shared/migrate/_migrate-from-prometheus.md',
   'i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
   'i18n/zh/docusaurus-plugin-content-docs/version-0.11/user-guide/ingest-data/for-iot/grpc-sdks/template.md'
 ];

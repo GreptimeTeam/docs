@@ -1,3 +1,8 @@
+---
+keywords: [InfluxDB Line Protocol]
+description: 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB
+---
+
 # InfluxDB Line Protocol
 
 
