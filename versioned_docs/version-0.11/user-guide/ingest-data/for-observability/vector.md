@@ -62,9 +62,9 @@ The following rules are used when storing Vector metrics into GreptimeDB:
 
 ## Collect metrics with InfluxDB line protocol format
 
-Vector can collect metrics in the InfluxDB line protocol format and send them to GreptimeDB. For more information, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#metrics).
+Vector can collect metrics in the InfluxDB line protocol format and send them to GreptimeDB. For more information, refer to the [Kafka guide](/user-guide/ingest-data/for-observability/kafka.md#metrics).
 
 ## Collect logs
 
-Vector can also collect logs and send them to GreptimeDB. For more details, refer to the [Kafka guide](/user-guide/ingest-data/for-observerbility/kafka.md#logs).
+Vector can also collect logs and send them to GreptimeDB. For more details, refer to the [Kafka guide](/user-guide/ingest-data/for-observability/kafka.md#logs).
 

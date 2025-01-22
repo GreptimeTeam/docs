@@ -6,7 +6,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.
 
 <div id="remote-write">
 
-For information on configuring Prometheus to write data to GreptimeDB, please refer to the [remote write](/user-guide/ingest-data/for-observerbility/prometheus.md#remote-write-configuration) documentation.
+For information on configuring Prometheus to write data to GreptimeDB, please refer to the [remote write](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) documentation.
 
 </div>
 

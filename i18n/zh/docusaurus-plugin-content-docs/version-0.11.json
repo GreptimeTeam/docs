@@ -159,9 +159,9 @@
     "message": "写入数据",
     "description": "The label for category Ingest Data in sidebar docs"
   },
-  "sidebar.docs.category.For Observerbility": {
+  "sidebar.docs.category.For observability": {
     "message": "可观测场景",
-    "description": "The label for category For Observerbility in sidebar docs"
+    "description": "The label for category For observability in sidebar docs"
   },
   "sidebar.docs.category.For IoT": {
     "message": "物联网（IoT）场景",
