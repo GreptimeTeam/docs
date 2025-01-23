@@ -128,7 +128,7 @@ metric{__field__!~"field_1|field_2"}
 - tag: `String`
 - value: `Double`
 
-目前 GreptimeDB 只支持 PromQL 的一个子集，下方附上了兼容性列表。你也可以在[跟踪问题](https://github.com/GreptimeTeam/greptimedb/issues/1042)中查看我们最新的兼容性报告。
+GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可以在下方查看详细的兼容性列表，或者通过此 [issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) 了解我们最新的功能支持情况。
 
 ### 字符（Literal）
 
@@ -136,8 +136,9 @@ metric{__field__!~"field_1|field_2"}
 
 ### 选择器
 
-- 支持即时和范围选择器，但唯独不支持 `label` 和指标名字的不匹配判断，例如 `{__name__!="request_count}"`，等价匹配的情况是支持的，例如 `{__name__="request_count}"`。
-- 支持时间长度和偏移量，但不支持 `@` 修改器。
+Instant 选择器和 Range 选择器均已支持。需要注意的是，在 Prometheus 和 GreptimeDB 中，指标名称的标签匹配有一个特殊限制：不支持反向匹配（例如 `{__name__!="request_count"}`）。但其他匹配方式，如等值匹配和正则匹配都是完全支持的。
+
+时间区间和时间偏移修饰符均已支持，但目前尚未支持 `@` 修饰符。
 
 ### 时间精度
 
