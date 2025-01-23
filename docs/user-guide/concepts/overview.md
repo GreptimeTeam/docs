@@ -7,6 +7,7 @@ description: Provides an overview of GreptimeDB, including its features, data mo
 
 - [Why GreptimeDB](./why-greptimedb.md): This document outlines the features and benefits of GreptimeDB, including its unified design for metrics, logs, and events; Cloud-Native and flexible architecture that allows for deployment in various environments, from embedded to cloud. GreptimeDB is also cost-effective, high-performance, and user-friendly.
 - [Data Model](./data-model.md): This document describes the data model of GreptimeDB, including table schema, time index constraint, etc.
+- [Design Your Table Schema](./design-table.md): This document describes how to design your table schema in GreptimeDB for optimal performance and query efficiency.
 - [Architecture](./architecture.md): Get the cloud-native architecture of GreptimeDB.
 - [Storage Location](./storage-location.md): This document describes the storage location of GreptimeDB, including local disk, HDFS, and cloud object storage such as S3, Azure Blob Storage, etc.
 - [Key Concepts](./key-concepts.md): This document describes the key concepts of GreptimeDB, including table, time index, table region and data types.
