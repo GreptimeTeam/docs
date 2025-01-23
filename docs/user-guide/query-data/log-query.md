@@ -33,3 +33,72 @@ This endpoint has the same response format as the SQL query endpoint. Please ref
 
 - Maximum result limit: 1000 entries
 - Only supports tables with timestamp and string columns
+
+## Example
+
+The following example demonstrates how to query log data using the log query endpoint.
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/logs" \
+    -H "Content-Type: application/json" \
+    -d $'
+    {
+        "table": {
+            "catalog_name": "greptime",
+            "schema_name": "public",
+            "table_name": "my_logs"
+        },
+        "time_filter": {
+            "start": "2025-01-23"
+        },
+        "limit": {
+            "fetch": 1
+        },
+        "columns": [
+            "message"
+        ],
+        "filters": [
+            {
+                "column_name": "message",
+                "filters": [
+                    {
+                       "Contains": "production"
+                    }
+                ]
+            }
+        ],
+        "context": "None",
+        "exprs": []
+    }
+'
+```
+
+In this query, we are searching for log entries in the `greptime.public.my_logs` table that contain the word `production` in `message` field. We also specify the time filter to fetch logs in `2025-01-23`, and limit the result to 1 entry.
+
+The response will be similar to the following:
+
+```json
+{
+  "output": [
+    {
+      "records": {
+        "schema": {
+          "column_schemas": [
+            {
+              "name": "message",
+              "data_type": "String"
+            }
+          ]
+        },
+        "rows": [
+          [
+            "Everything is in production"
+          ]
+        ],
+        "total_rows": 1
+      }
+    }
+  ],
+  "execution_time_ms": 30
+}
+```
