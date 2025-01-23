@@ -5,9 +5,11 @@ description: Documentation for GreptimeDB's experimental log query endpoint, whi
 
 # Log Query (Experimental)
 
-> Warning: The log query endpoint feature is currently experimental and may change in future releases.
+::: warning
+The log query endpoint feature is currently experimental and may change in future releases.
+:::
 
-GreptimeDB provides a dedicated HTTP endpoint to query log data. This feature allows you to search and processing log entries using a simple query interface. This is an add-on feature to existing GreptimeDB capabilities like SQL queries and Flow computations. You can still use your existing tools and workflows to query log data like before.
+GreptimeDB provides a dedicated HTTP endpoint to query log data. This feature allows you to search and process log entries using a simple query interface. This is an add-on feature to existing GreptimeDB capabilities like SQL queries and Flow computations. You can still use your existing tools and workflows to query log data like before.
 
 ## Endpoint
 
@@ -16,7 +18,7 @@ POST /v1/logs
 ```
 
 ## Headers
-- [Authorization](/user-guide/protocols/http/#authentication)
+- [Authorization](/user-guide/protocols/http.md#authentication)
 - `Content-Type`: `application/json`
 
 ## Request Format
