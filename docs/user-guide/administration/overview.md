@@ -15,5 +15,6 @@ This document addresses strategies and practices used in the administration of G
 * Cluster Failover for GreptimeDB by [Setting Remote WAL](./remote-wal/quick-start.md)
 * [Monitoring metrics](/user-guide/administration/monitoring/export-metrics.md) and [Tracing](/user-guide/administration/monitoring/tracing.md) for GreptimeDB
 * [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips.md)
+* Read [Design Your Table Schema](./design-table.md) to learn how to design your table schema in GreptimeDB for optimal performance and query efficiency
 * [Upgrade](/user-guide/administration/upgrade.md) GreptimeDB to a new version
 * Get the [runtime information](/user-guide/administration/runtime-info.md) of the cluster
