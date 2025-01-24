@@ -129,7 +129,7 @@ Though GreptimeDB supports a rich set of data types, the PromQL implementation i
 - tag: `String`
 - value: `Double`
 
-Currently only a subset of PromQL is supported. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
+Currently only a subset (more than 90%) of PromQL is supported. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
 
 ### Literal
 
@@ -137,7 +137,7 @@ Both string and float literals are supported, with the same [rule](https://prome
 
 ### Selector
 
-Both instant and range selector are supported. The only exception is the label matching on metric name, e.g.: `{__name__!="request_count}"` (but the equal-matching case is supported: `{__name__="request_count}"`).
+Both instant and range selector are supported. But notice that in both Prometheus and GreptimeDB, the label matching on metric name is an exception. Negative matching (e.g. `{__name__!="request_count}"`) is not allowed. Others like equal-matching or regex-matching are supported.
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 
@@ -147,31 +147,29 @@ The timestamp precision in PromQL is limited by its query syntax, only supportin
 
 ### Binary
 
-*Pure literal binary-expr like `1+1` is not supported yet.*
-
 - Supported:
-    | Operator | Example  |
-    | :------- | :------- |
-    | add      | `a + b`  |
-    | sub      | `a - b`  |
-    | mul      | `a * b`  |
-    | div      | `a / b`  |
-    | mod      | `a % b`  |
-    | eqlc     | `a == b` |
-    | neq      | `a != b` |
-    | gtr      | `a > b`  |
-    | lss      | `a < b`  |
-    | gte      | `a >= b` |
-    | lte      | `a <= b` |
+    | Operator |
+    | :------- |
+    | add      |
+    | sub      |
+    | mul      |
+    | div      |
+    | mod      |
+    | eqlc     |
+    | neq      |
+    | gtr      |
+    | lss      |
+    | gte      |
+    | lte      |
+    | power    |
+    | atan2    |
+    | and      |
+    | or       |
+    | unless   |
 
 - Unsupported:
-    | Operator | Progress |
-    | :------- | :------- |
-    | power    | TBD      |
-    | atan2    | TBD      |
-    | and      | TBD      |
-    | or       | TBD      |
-    | unless   | TBD      |
+
+None
 
 ### Aggregators
 
@@ -249,3 +247,7 @@ The timestamp precision in PromQL is limited by its query syntax, only supportin
     | increase           | `increase(metric[5m])`         |
     | irate              | `irate(metric[5m])`            |
     | reset              | `reset(metric[5m])`            |
+
+- Unsupported:
+
+None
