@@ -20,7 +20,6 @@ This version fixes the following issues:
 * feat: overwrites inferred compaction window by region options by [@evenyag](https://github.com/evenyag) in [#5396](https://github.com/GreptimeTeam/greptimedb/pull/5396)
 
 
-
 ### 🐛 Bug Fixes
 
 * fix: handle insert default value by [@discord9](https://github.com/discord9) in [#5307](https://github.com/GreptimeTeam/greptimedb/pull/5307)
