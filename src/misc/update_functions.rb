@@ -38,7 +38,7 @@ end
 
 def fix_links(line)
   ## Fix link: #a_b_c -> #a-b-c
-  line.gsub!(/(#[a-zA-Z0-9_]+)\)/) { |match| match.gsub("_", "-") }
+  # line.gsub!(/(#[a-zA-Z0-9_]+)\)/) { |match| match.gsub("_", "-") }
   ## Fix link: a_b_c.md -> #a-b-c
   line.gsub!(/\]\(([a-zA-Z0-9_]+\.md)\)/) { |match|
     match.gsub("_", "-").gsub(".md", "").gsub("](", "](#")
@@ -69,7 +69,7 @@ File.open("temp.md", "w") do |f|
 
     lines.map! do |line|
       line = process_headlines(line)
-      # line = fix_links(line)
+      line = fix_links(line)
       line
     end
 
