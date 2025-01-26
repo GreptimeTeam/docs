@@ -99,6 +99,15 @@ SELECT pow(2, 10);
 
 DataFusion [时间和日期函数](./df-functions.md#time-and-date-functions)。GreptimeDB 额外提供：
 
+* [date_add](#data_add)
+* [date_sub](#data_sub)
+* [date_format](#date_format)
+* [to_unixtime](#to_unixtime)
+* [timezone](#timezone)
+* [greatest](#greatest)
+
+#### date_add
+
 *  `date_add(expression, interval)` 向 Timestamp、Date 或 DateTime 添加一个间隔值：
 
 ```sql
@@ -113,6 +122,9 @@ SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
 +----------------------------------------------------+
 ```
 
+
+#### date_sub
+
 * `date_sub(expression, interval)` 从 Timestamp、Date 或 DateTime 减去一个间隔值：
 
 ```sql
@@ -126,6 +138,9 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
 | 2023-12-01 07:39:46.222000                                                                                                              |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 ```
+
+
+#### date_format
 
 * `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime格式化：
 
@@ -142,6 +157,8 @@ SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f'
 ```
 
 支持的格式化符号请参阅 [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 模块。
+
+#### to_unixtime
 
 * `to_unixtime(expression)` 将表达式转换为 Unix 时间戳（秒）。参数可以是整数（毫秒 Unix 时间戳）、Timestamp、Date、DateTime 或字符串类型。如果参数是字符串类型，函数将首先尝试将其转换为 DateTime、Timestamp 或 Date。
 
@@ -169,6 +186,8 @@ select to_unixtime('2023-03-01'::date);
 +---------------------------------+
 ```
 
+#### timezone
+
 * `timezone()` 查询当前会话时区：
 
 ```sql
@@ -182,6 +201,24 @@ select timezone();
 | UTC        |
 +------------+
 ```
+
+
+#### greatest
+
+* `greatest(left, right)` 用于获取 `left` 和 `right` 中的最大值，支持 Timestamp、Date 和 Datetime 类型。
+
+```sql
+SELECT GREATEST('2024-12-31'::DATE, '2025-01-26'::DATE);
+```
+
+```sql
++-------------------------------------------------+
+| greatest(Utf8("2024-12-31"),Utf8("2025-01-26")) |
++-------------------------------------------------+
+| 2025-01-26                                      |
++-------------------------------------------------+
+```
+
 
 ### 系统函数
 

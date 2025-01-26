@@ -69,7 +69,7 @@ File.open("temp.md", "w") do |f|
 
     lines.map! do |line|
       line = process_headlines(line)
-      line = fix_links(line)
+      # line = fix_links(line)
       line
     end
 
