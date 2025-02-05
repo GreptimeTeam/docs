@@ -251,3 +251,18 @@ None
 - Unsupported:
 
 None
+
+### Other Functions
+
+- Supported:
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
+    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
+
+- Unsupported:
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | sort_by_label      | TBD           |
+    | sort_by_label_desc | TBD           |
+

@@ -38,7 +38,7 @@ end
 
 def fix_links(line)
   ## Fix link: #a_b_c -> #a-b-c
-  line.gsub!(/(#[a-zA-Z0-9_]+)\)/) { |match| match.gsub("_", "-") }
+  # line.gsub!(/(#[a-zA-Z0-9_]+)\)/) { |match| match.gsub("_", "-") }
   ## Fix link: a_b_c.md -> #a-b-c
   line.gsub!(/\]\(([a-zA-Z0-9_]+\.md)\)/) { |match|
     match.gsub("_", "-").gsub(".md", "").gsub("](", "](#")
@@ -49,6 +49,13 @@ end
 
 
 File.open("temp.md", "w") do |f|
+  f.puts <<EOF
+---
+keywords: [DataFusion functions, scalar functions, window functions, array functions]
+description: Generated from the Apache DataFusion project's documents, this page lists and describes DataFusion functions, including scalar, window, and array functions.
+---
+EOF
+
   f.puts("# DataFusion Functions\n\n")
   f.puts("This page is generated from the Apache DataFusion project's documents:")
 

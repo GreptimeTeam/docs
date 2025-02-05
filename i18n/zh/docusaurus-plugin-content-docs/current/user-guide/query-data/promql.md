@@ -250,3 +250,19 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 - 不支持:
 
 无
+
+### 其他函数
+
+- 支持:
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
+    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
+
+- 不支持:
+    | Function           | Example                        |
+    | :----------------- | :----------------------------- |
+    | sort_by_label      | TBD           |
+    | sort_by_label_desc | TBD           |
+
+
