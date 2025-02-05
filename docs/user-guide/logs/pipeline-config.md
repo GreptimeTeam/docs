@@ -54,6 +54,8 @@ We currently provide the following built-in Processors:
 - `regex`: performs regular expression matching on log data fields.
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
+- `json_path`: extracts fields from JSON data.
+- `digest`: extracts the template from a log message by removing variable content.
 
 Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
 
@@ -147,12 +149,12 @@ Similar to Logstash's dissect pattern, the dissect pattern consists of `%{key}`,
 
 The dissect pattern supports the following modifiers:
 
-| Modifier   | Description                                          | Example              |
-| ---------- | ---------------------------------------------------- | -------------------- |
-| `+`        | Concatenates two or more fields together             | `%{+key} %{+key}`    |
+| Modifier     | Description                                            | Example               |
+| ------------ | ------------------------------------------------------ | --------------------- |
+| `+`          | Concatenates two or more fields together               | `%{+key} %{+key}`     |
 | `+` and `/n` | Concatenates two or more fields in the specified order | `%{+key/2} %{+key/1}` |
-| `->`       | Ignores any repeating characters on the right side    | `%{key1->} %{key2->}` |
-| `?`        | Ignores matching values                               | `%{?key}`            |
+| `->`         | Ignores any repeating characters on the right side     | `%{key1->} %{key2->}` |
+| `?`          | Ignores matching values                                | `%{?key}`             |
 
 #### `dissect` examples
 
@@ -467,6 +469,76 @@ The result will be:
 }
 ```
 
+### `digest`
+
+The `digest` processor is used to extract the template from a log message by removing variable content, such as numbers, UUIDs, IP addresses, quoted strings, and bracketed text. The digested result can be useful for log template grouping and analysis. Here's an example configuration:
+
+```yaml
+processors:
+  - digest:
+      fields: 
+        - message
+      presets:
+        - numbers
+        - uuid 
+        - ip
+        - quoted
+        - bracketed
+      regex:
+        - "foobar"
+      ignore_missing: true
+```
+
+In the above example, the configuration of the `digest` processor includes the following fields:
+
+- `fields`: A list of field names to be digested. The digested result will be stored in a new field with suffix `_digest`.
+- `presets`: A list of preset patterns to remove. The following patterns are supported:
+  - `numbers`: Matches numeric sequences
+  - `uuid`: Matches UUID strings like `123e4567-e89b-12d3-a456-426614174000`
+  - `ip`: Matches IPv4/IPv6 addresses with optional port numbers
+  - `quoted`: Matches text within single/double quotes (including various Unicode quotes)
+  - `bracketed`: Matches text within various types of brackets (including various Unicode brackets)
+- `regex`: A list of custom regex patterns to remove
+- `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
+
+#### `digest` example
+
+For example, given the following log data:
+
+```json
+{
+  "message": "User 'john.doe' from [192.168.1.1] accessed resource 12345 with UUID 123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+Using the following configuration:
+
+```yaml
+processors:
+  - digest:
+      fields:
+        - message 
+      presets:
+        - numbers
+        - uuid
+        - ip
+        - quoted
+        - bracketed
+```
+
+The result will be:
+
+```json
+{
+  "message": "User 'john.doe' from [192.168.1.1] accessed resource 12345 with UUID 123e4567-e89b-12d3-a456-426614174000",
+  "message_digest": "User  from  accessed resource  with UUID "
+}
+```
+
+The digested template can be used to group similar log messages together or analyze log patterns, even when the variable content differs. For example, all these log messages would generate the same template:
+
+- `User 'alice' from [10.0.0.1] accessed resource 54321 with UUID 987fbc97-4bed-5078-9141-2791ba07c9f3`
+- `User 'bob' from [2001:0db8::1] accessed resource 98765 with UUID 550e8400-e29b-41d4-a716-446655440000`
 
 ## Transform
 

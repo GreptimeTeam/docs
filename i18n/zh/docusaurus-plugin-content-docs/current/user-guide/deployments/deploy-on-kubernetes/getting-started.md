@@ -305,9 +305,9 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
-## 安装带有监控集成的 GreptimeDB 集群
+## 安装带有自监控的 GreptimeDB 集群
 
-目前我们已经准备好了 GreptimeDB Operator 和 etcd 集群，现在我们可以部署一个带监控集成的最小 GreptimeDB 集群：
+目前我们已经准备好了 GreptimeDB Operator 和 etcd 集群，现在我们可以部署一个带自监控并启用 Flow 功能的最小 GreptimeDB 集群：
 
 :::warning
 本文档中的默认配置不适用于生产环境，你应该根据自己的需求调整配置。
@@ -315,6 +315,7 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 
 ```bash
 helm install mycluster \
+  --set flownode.enabled=true \
   --set monitoring.enabled=true \
   --set grafana.enabled=true \
   greptime/greptimedb-cluster \
@@ -331,6 +332,7 @@ helm install mycluster \
   --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set grafana.enabled=true \
   --set grafana.image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set flownode.enabled=true \
   --set monitoring.enabled=true \
   --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   -n default
@@ -364,10 +366,11 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-当启用 `monitoring` 选项时，我们将会在 cluster 所属的命名空间下部署一个名为 `${cluster}-monitor` 的 GreptimeDB Standalone 实例，用于存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB Standalone 实例。
+当同时启用 `monitoring` 和 `grafana` 选项时，我们将对 GreptimeDB 集群启动**自监控**：启动一个 GreptimeDB standalone 实例来监控 GreptimeDB 集群，并将相应的监控数据用 Grafana 进行渲染，从而更方便地排查 GreptimeDB 集群使用中的问题。
 
+我们将会在 cluster 所属的命名空间下部署一个名为 `${cluster}-monitor` 的 GreptimeDB standalone 实例，用于存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB standalone 实例。
 
-当启用 `grafana` 选项时，我们将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB Standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
+我们也将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
 
 ```yaml
 grafana:
@@ -438,7 +441,7 @@ mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB Standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
+正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
 
 ## 探索 GreptimeDB 集群
 

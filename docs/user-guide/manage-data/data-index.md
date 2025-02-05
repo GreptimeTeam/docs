@@ -34,8 +34,8 @@ CREATE TABLE monitoring_data (
     host STRING,
     region STRING PRIMARY KEY,
     cpu_usage DOUBLE,
-    timestamp TIMESTAMP TIME INDEX,
-    INDEX INVERTED_INDEX(host, region)
+    `timestamp` TIMESTAMP TIME INDEX,
+    INVERTED INDEX(host, region)
 );
 ```
 
@@ -55,7 +55,7 @@ CREATE TABLE sensor_data (
     domain STRING PRIMARY KEY,
     device_id STRING SKIPPING INDEX,
     temperature DOUBLE,
-    timestamp TIMESTAMP TIME INDEX,
+    `timestamp` TIMESTAMP TIME INDEX,
 );
 ```
 
@@ -73,9 +73,24 @@ Fulltext index is designed for text search operations on string columns. It enab
 Example:
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX,
-    level STRING PRIMARY KEY,
-    timestamp TIMESTAMP TIME INDEX,
+    message STRING FULLTEXT,
+    `level` STRING PRIMARY KEY,
+    `timestamp` TIMESTAMP TIME INDEX,
+);
+```
+
+
+Fulltext index supports options by `WITH`:
+* `analyzer`: Sets the language analyzer for the fulltext index. Supported values are `English` and `Chinese`. Default to `English`.
+* `case_sensitive`: Determines whether the fulltext index is case-sensitive. Supported values are `true` and `false`. Default to `false`.
+
+For example:
+
+```sql
+CREATE TABLE logs (
+    message STRING FULLTEXT WITH(analyzer='English', case_sensitive='true'),
+    `level` STRING PRIMARY KEY,
+    `timestamp` TIMESTAMP TIME INDEX,
 );
 ```
 

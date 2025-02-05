@@ -57,6 +57,8 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `regex`: 对 log 数据字段进行正则匹配。
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
+- `json_path`: 从 JSON 数据中提取字段。
+- `digest`: 提取日志消息模板。
 
 大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
 
@@ -485,6 +487,77 @@ transform:
   "complex_target_1": [1, 4]
 }
 ```
+
+### `digest`
+
+`digest` 处理器用于从日志内容中提取日志模板，它通过识别并移除可变内容（如数字、UUID、IP 地址、引号中的内容和括号中的文本等）来实现。提取出的模板可用于日志的分类和分析。配置示例如下：
+
+```yaml
+processors:
+  - digest:
+      fields: 
+        - message
+      presets:
+        - numbers
+        - uuid 
+        - ip
+        - quoted
+        - bracketed
+      regex:
+        - "foobar"
+      ignore_missing: true
+```
+
+在上述示例中，`digest` 处理器的配置包含以下字段：
+
+- `fields`：要进行摘要处理的字段名列表。处理后的结果将存储在带有 `_digest` 后缀的新字段中。
+- `presets`：要移除的预设模式列表。支持以下模式：
+  - `numbers`：匹配数字序列
+  - `uuid`：匹配 UUID 字符串，如 `123e4567-e89b-12d3-a456-426614174000`
+  - `ip`：匹配 IPv4/IPv6 地址（可选带端口号）
+  - `quoted`：匹配单引号/双引号内的文本（包括各种 Unicode 引号）
+  - `bracketed`：匹配各种类型括号内的文本（包括各种 Unicode 括号）
+- `regex`：要移除的自定义正则表达式列表
+- `ignore_missing`：是否忽略字段不存在的情况。默认为 `false`。如果字段不存在且此配置为 `false`，将抛出异常。
+
+#### `digest` 示例
+
+例如，给定以下日志数据：
+
+```json
+{
+  "message": "User 'john.doe' from [192.168.1.1] accessed resource 12345 with UUID 123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+使用以下配置：
+
+```yaml
+processors:
+  - digest:
+      fields:
+        - message 
+      presets:
+        - numbers
+        - uuid
+        - ip
+        - quoted
+        - bracketed
+```
+
+结果将是：
+
+```json
+{
+  "message": "User 'john.doe' from [192.168.1.1] accessed resource 12345 with UUID 123e4567-e89b-12d3-a456-426614174000",
+  "message_digest": "User  from  accessed resource  with UUID "
+}
+```
+
+提取的模板可用于对相似的日志消息进行分组或分析日志模式，即使可变内容不同。例如，以下所有日志消息都会生成相同的模板：
+
+- `User 'alice' from [10.0.0.1] accessed resource 54321 with UUID 987fbc97-4bed-5078-9141-2791ba07c9f3`
+- `User 'bob' from [2001:0db8::1] accessed resource 98765 with UUID 550e8400-e29b-41d4-a716-446655440000`
 
 ## Transform
 

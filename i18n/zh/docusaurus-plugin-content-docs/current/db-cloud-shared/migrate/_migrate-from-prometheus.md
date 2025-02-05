@@ -4,7 +4,7 @@ GreptimeDB 可以用来存储 [Prometheus](https://prometheus.io/) 的时间序�
 
 ## 数据模型的区别
 
-要了解 Prometheus 和 GreptimeDB 数据模型之间的差异，请参阅 Ingest Data 文档中的[数据模型](/user-guide/ingest-data/for-observerbility/prometheus.md#data-model)部分。
+要了解 Prometheus 和 GreptimeDB 数据模型之间的差异，请参阅 Ingest Data 文档中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#data-model)部分。
 
 ## Prometheus Remote Write
 

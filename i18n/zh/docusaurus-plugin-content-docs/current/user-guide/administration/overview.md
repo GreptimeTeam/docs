@@ -15,5 +15,6 @@ description: 介绍 GreptimeDB 管理中的策略和实践，包括安装、容�
 * 通过[设置 Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾
 * GreptimeDB 的[监控指标](/user-guide/administration/monitoring/export-metrics.md)和[链路追踪](/user-guide/administration/monitoring/tracing.md)
 * [性能调优技巧](/user-guide/administration/performance-tuning-tips.md)
+* 查看[数据建模指南](./design-table.md)了解常见场景下的表结构设计方式。
 * [升级](/user-guide/administration/upgrade.md) GreptimeDB 到新版本
 * 获取集群的[运行时信息](/user-guide/administration/runtime-info.md)

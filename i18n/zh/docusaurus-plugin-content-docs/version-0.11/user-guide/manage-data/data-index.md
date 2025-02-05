@@ -34,8 +34,8 @@ CREATE TABLE monitoring_data (
     host STRING,
     region STRING PRIMARY KEY,
     cpu_usage DOUBLE,
-    timestamp TIMESTAMP TIME INDEX,
-    INDEX INVERTED_INDEX(host, region)
+    `timestamp` TIMESTAMP TIME INDEX,
+    INVERTED INDEX(host, region)
 );
 ```
 
@@ -55,7 +55,7 @@ CREATE TABLE sensor_data (
     domain STRING PRIMARY KEY,
     device_id STRING SKIPPING INDEX,
     temperature DOUBLE,
-    timestamp TIMESTAMP TIME INDEX,
+    `timestamp` TIMESTAMP TIME INDEX,
 );
 ```
 
@@ -73,9 +73,23 @@ CREATE TABLE sensor_data (
 示例：
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX,
-    level STRING PRIMARY KEY,
-    timestamp TIMESTAMP TIME INDEX,
+    message STRING FULLTEXT,
+    `level` STRING PRIMARY KEY,
+    `timestamp` TIMESTAMP TIME INDEX,
+);
+```
+
+全文索引通过 `WITH` 支持以下选项：
+* `analyzer`：设置全文索引的语言分析器。支持的值包括 `English`（英语）和 `Chinese`（中文）。默认值为 `English`。
+* `case_sensitive`：决定全文索引是否区分大小写。支持的值为 `true`（是）和 `false`（否）。默认值为 `false`。
+
+示例：
+
+```sql
+CREATE TABLE logs (
+    message STRING FULLTEXT WITH(analyzer='Chinese', case_sensitive='true'),
+    `level` STRING PRIMARY KEY,
+    `timestamp` TIMESTAMP TIME INDEX,
 );
 ```
 

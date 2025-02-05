@@ -105,6 +105,15 @@ SELECT pow(2, 10);
 DataFusion [Time and Date Function](./df-functions.md#time-and-date-functions).
 GreptimeDB provides:
 
+* [date_add](#data_add)
+* [date_sub](#data_sub)
+* [date_format](#date_format)
+* [to_unixtime](#to_unixtime)
+* [timezone](#timezone)
+* [greatest](#greatest)
+
+#### date_add
+
 *  `date_add(expression, interval)` to add an interval value to Timestamp, Date, or DateTime
 
 ```sql
@@ -119,6 +128,8 @@ SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
 +----------------------------------------------------+
 ```
 
+#### data_sub
+
 * `date_sub(expression, interval)` to subtract an interval value to Timestamp, Date, or DateTime
 
 ```sql
@@ -132,6 +143,8 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
 | 2023-12-01 07:39:46.222000                                                                                                              |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 ```
+
+#### date_format
 
 * `date_format(expression, fmt)` to format Timestamp, Date, or DateTime into string by the format:
 
@@ -148,6 +161,8 @@ SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f'
 ```
 
 Supported specifiers refer to the [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) module.
+
+#### to_unixtime
 
 * `to_unixtime(expression)` to convert the expression into the Unix timestamp in seconds. The argument can be integers (Unix timestamp in milliseconds), Timestamp, Date, DateTime, or String. If the argument is the string type, the function will first try to convert it into a DateTime, Timestamp, or Date.
 
@@ -175,6 +190,8 @@ select to_unixtime('2023-03-01'::date);
 +---------------------------------+
 ```
 
+#### timezone
+
 * `timezone()` to retrieve the current session timezone:
 
 ```sql
@@ -187,6 +204,22 @@ select timezone();
 +------------+
 | UTC        |
 +------------+
+```
+
+#### greatest
+
+* `greatest(left, right)` to retrieve the greatest value of `left` and `right`, supports Timestamp, Date, and Datetime type.
+
+```sql
+SELECT GREATEST('2024-12-31'::DATE, '2025-01-26'::DATE);
+```
+
+```sql
++-------------------------------------------------+
+| greatest(Utf8("2024-12-31"),Utf8("2025-01-26")) |
++-------------------------------------------------+
+| 2025-01-26                                      |
++-------------------------------------------------+
 ```
 
 ### System Functions
@@ -229,7 +262,7 @@ select database();
 
 ### Admin Functions
 
-GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](.(/reference/sql/admin.md) reference.
+GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](/reference/sql/admin.md) reference.
 
 ### JSON Functions
 

@@ -16,7 +16,7 @@ GreptimeDB 支持无 schema 写入，即在数据写入时自动创建表格并�
 
 GreptimeDB 支持针对特定场景的各种数据写入方法，以确保最佳性能和集成灵活性。
 
-- [可观测场景](./for-observerbility/overview.md)：适用于实时监控和警报。
+- [可观测场景](./for-observability/overview.md)：适用于实时监控和警报。
 - [物联网场景](./for-iot/overview.md)：适用于实时数据和复杂的物联网基础设施。
 
 ## 下一步

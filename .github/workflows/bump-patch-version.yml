@@ -1,0 +1,39 @@
+name: Bump Patch Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number with patch (e.g., 1.0.2 or 0.12.2)'
+        required: true
+        type: string
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Call update scripts
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          .github/scripts/release-patch.sh $VERSION
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "version docs to ${{ github.event.inputs.version }}"
+          title: "chore: bump patch version ${{ github.event.inputs.version }}"
+          body: "This PR updates the docs to version ${{ github.event.inputs.version }}."
+          branch: "version-docs-${{ github.event.inputs.version }}"
+          base: main
+          delete-branch: true

@@ -5,7 +5,6 @@ VERSION=$1
 echo "Processing variables"
 cp variables/variables-nightly.ts variables/variables-$VERSION.ts
 sed -i "s/greptimedbVersion: 'v[^']*'/greptimedbVersion: 'v$VERSION.0'/" variables/variables-$VERSION.ts
-sed -i "s/greptimedbVersion: 'v[^']*'/greptimedbVersion: 'v$VERSION.0'/" variables/variables-nightly.ts
 
 echo "Processing localized sidebars"
 cp i18n/zh/docusaurus-plugin-content-docs/current.json i18n/zh/docusaurus-plugin-content-docs/version-$VERSION.json

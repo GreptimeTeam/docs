@@ -56,7 +56,7 @@ ALTER DATABASE db UNSET 'ttl';
 
 ```sql
 ALTER TABLE [db.]table
-   [ADD COLUMN name type [options] 
+   [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
@@ -76,6 +76,12 @@ ALTER TABLE monitor ADD COLUMN load_15 double;
 ```
 
 列的定义和 [CREATE](./create.md) 中的定义方式一样。
+
+我们可以在表中同时增加多个列：
+
+```sql
+ALTER TABLE monitor ADD COLUMN disk_usage double, ADD COLUMN disk_free double;
+```
 
 我们可以设置新列的位置。比如放在第一位：
 

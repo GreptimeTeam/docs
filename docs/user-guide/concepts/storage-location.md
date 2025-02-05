@@ -19,6 +19,7 @@ The storage file structure of GreptimeDB includes of the following:
 ├── data
 │   ├── greptime
 │       └── public
+├── cache
 ├── logs
 ├── index_intermediate
 │   └── staging
@@ -30,6 +31,7 @@ The storage file structure of GreptimeDB includes of the following:
 
 - `metadata`:  The internal metadata directory that keeps catalog, database and table info, procedure states, etc. In cluster mode, this directory does not exist, because all those states including region route info are saved in `Metasrv`.
 - `data`: The files in data directory store time series data and index files of GreptimeDB. To customize this path, please refer to [Storage option](../deployments/configuration.md#storage-options). The directory is organized in a two-level structure of catalog and schema.
+- `cache`: The directory for internal caching, such as object storage cache, etc.
 - `logs`: The log files contains all the logs of operations in GreptimeDB.
 - `wal`: The wal directory contains the write-ahead log files.
 - `index_intermediate`: the temporary intermediate data while indexing.
