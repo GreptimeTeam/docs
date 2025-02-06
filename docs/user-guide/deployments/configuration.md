@@ -122,7 +122,7 @@ timeout = "30s"
 body_limit = "64MB"
 
 [grpc]
-addr = "127.0.0.1:4001"
+bind-addr = "127.0.0.1:4001"
 runtime_size = 8
 
 [mysql]
@@ -168,7 +168,7 @@ The following table describes the options in detail:
 |            | body_limit         | String  | HTTP max body size, "64MB" by default                                                                                     |
 |            | is_strict_mode     | Boolean | Whether to enable the strict verification mode of the protocol, which will slightly affect performance. False by default. |
 | grpc       |                    |         | gRPC server options                                                                                                       |
-|            | addr               | String  | Server address, "127.0.0.1:4001" by default                                                                               |
+|            | bind-addr          | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                                                                         |
 | mysql      |                    |         | MySQL server options                                                                                                      |
 |            | enable             | Boolean | Whether to enable MySQL protocol, true by default                                                                         |
@@ -862,17 +862,18 @@ backoff_deadline = "5mins"
 
 ```toml
 node_id = 42
-rpc_hostname = "127.0.0.1"
-rpc_addr = "127.0.0.1:3001"
-rpc_runtime_size = 8
+[grpc]
+bind_addr = "127.0.0.1:3001"
+server_addr = "127.0.0.1:3001"
+runtime_size = 8
 ```
 
 | Key              | Type    | Description                                             |
 | ---------------- | ------- | ------------------------------------------------------- |
 | node_id          | Integer | The datanode identifier, should be unique.              |
-| rpc_hostname     | String  | Hostname of this node.                                  |
-| rpc_addr         | String  | gRPC server address, `"127.0.0.1:3001"` by default.     |
-| rpc_runtime_size | Integer | The number of gRPC server worker threads, 8 by default. |
+| grpc.bind_addr    | String  | The address to bind the gRPC server, `"127.0.0.1:3001"` by default.     |
+| grpc.server_addr  | String  | The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `grpc.bind_addr`. |
+| grpc.runtime_size | Integer | The number of gRPC server worker threads, 8 by default. |
 
 ### Frontend-only configuration
 
