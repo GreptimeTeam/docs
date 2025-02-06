@@ -26,11 +26,13 @@ Usage: greptime [OPTIONS] <COMMAND>
 
 Commands:
   datanode    Start datanode service
+  flownode    Start flownode service
   frontend    Start frontend service
   metasrv     Start metasrv service
   standalone  Run greptimedb as a standalone service
   cli         Execute the cli tools for greptimedb
   help        Print this message or the help of the given subcommand(s)
+
 
 Options:
       --log-dir <LOG_DIR>
@@ -61,11 +63,11 @@ greptime datanode start --help
 - `--data-home`: Database storage root directory;
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_DATANODE`;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds;
 - `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
 - `--node-id <NODE_ID>`: The datanode ID;
-- `--rpc-addr <RPC_ADDR>`: The datanode RPC addr;
-- `--rpc-hostname <RPC_HOSTNAME>`: The datanode hostname;
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: The address to bind the gRPC server;
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr`;
 - `--wal-dir <WAL_DIR>`: The directory of WAL;
 
 All the `addr` options are in the form of `ip:port`.
@@ -81,11 +83,11 @@ greptime metasrv start --help
 - `-c`/`--config-file`: The configuration file for metasrv;
 - `--enable-region-failover`: Whether to enable region failover, default is `false`.
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`: The bind address of metasrv;
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: The address to bind the gRPC server;
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: The communication server address for the frontend and datanode to connect to metasrv. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr`;
 - `--http-addr <HTTP_ADDR>`: HTTP server address;
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds;
 - `--selector <SELECTOR>`: You can refer [selector-type](/contributor-guide/metasrv/selector.md#selector-type);
-- `--server-addr <SERVER_ADDR>`: The communication server address for frontend and datanode to connect to metasrv;
 - `--store-addrs <STORE_ADDR>`: Comma or space separated key-value storage server (default is etcd) address, used for storing metadata;
 - `--use-memory-store`: Use memory store instead of etcd, for test purpose only;
 
@@ -100,8 +102,8 @@ greptime frontend start --help
 - `-c`/`--config-file`: The configuration file for frontend;
 - `--disable-dashboard`: Disable dashboard http service, default is `false`.
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: GRPC server address;
-- `--http-addr <HTTP_ADDR>`: HTTP server address;
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: The address to bind the gRPC server;
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr`;
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP request timeout in seconds.
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--metasrv-addrs <METASRV_ADDR>`: Metasrv address list;
@@ -121,8 +123,8 @@ greptime flownode start --help
 ```
 
 - `--node-id <NODE_ID>`: Flownode's id
-- `--rpc-addr <RPC_ADDR>`: Bind address for the gRPC server
-- `--rpc-hostname <RPC_HOSTNAME>`: Hostname for the gRPC server
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: The address to bind the gRPC server;
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: The address advertised to the metasrv, and used for connections from outside the host. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr`;
 - `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv address list
 - `-c, --config-file <CONFIG_FILE>`: The configuration file for the flownode
 - `--env-prefix <ENV_PREFIX>`: The prefix of environment variables, default is `GREPTIMEDB_FLOWNODE`
@@ -142,7 +144,7 @@ greptime standalone start --help
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--rpc-addr <RPC_ADDR>`:  gRPC server address;
+- `--rpc-bind-addr <RPC_ADDR>`: The address to bind the gRPC server;
 
 ## Examples
 
@@ -173,7 +175,7 @@ greptime datanode start -c config/datanode.example.toml
 Starts a datanode instance with command line arguments specifying the gRPC service address, the MySQL service address, the address of the metasrv, and the node id of the instance:
 
 ```sh
-greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
+greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 Starts a frontend instance with customized configurations:
@@ -197,7 +199,7 @@ greptime flownode start -c config/flownode.example.toml
 Starts a flownode instance with command line arguments specifying the address of the metasrv:
 
 ```sh
-greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
+greptime flownode start --node-id=0 --rpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
 ```
 
 ### Upgrade GreptimeDB version
