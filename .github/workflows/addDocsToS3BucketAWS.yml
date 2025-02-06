@@ -42,13 +42,21 @@ jobs:
         run: |
           ls -lhR ./build
 
+      - name: Install s5cmd
+        shell: bash
+        run: |
+          wget https://github.com/peak/s5cmd/releases/download/v2.3.0/s5cmd_2.3.0_Linux-64bit.tar.gz
+          tar -xzf s5cmd_2.3.0_Linux-64bit.tar.gz
+          sudo mv s5cmd /usr/local/bin/
+          sudo chmod +x /usr/local/bin/s5cmd       
+
       - name: Upload to S3
         run: |
-          aws s3 sync --checksum-algorithm=SHA256 ./build s3://${{ secrets.DOCUMENT_BUCKET }} --delete
+          s5cmd sync --delete ./build s3://${{ secrets.DOCUMENT_BUCKET }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: cn-northwest-1
+          AWS_REGION: cn-northwest-1
 
       - name: Create cloudfront invalidation
         run: |
