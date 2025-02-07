@@ -26,7 +26,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.0"
+  tag: "v0.11.3"
   # -- The image pull secrets
   pullSecrets: []
 ```
@@ -40,7 +40,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.0"
+  tag: "v0.11.3"
   # -- The image pull secrets
   pullSecrets: []
 
@@ -78,7 +78,7 @@ datanode:
     dataHome: "/data/greptimedb"
 ```
 
-- `storageClassName`: Configures the StorageClass, defaults to Kubernetes' current default StorageClass
+- `storageClassName`: Configures the StorageClass, defaults to Kubernetes current default StorageClass
 - `storageSize`: Configures the storage size, default `10Gi`. You can use common capacity units, such as `10Gi`, `10GB`, etc.
 - `storageRetainPolicy`: Configures the storage retention policy, default `Retain`. If set to `Delete`, the storage will be deleted when the cluster is deleted
 - `dataHome`: Configures the data directory, default `/data/greptimedb/`
@@ -201,7 +201,7 @@ The Helm Chart does not enable User Provider mode authentication by default. You
 auth:
   enabled: true
   users:
-    - name: admin
+    - name: "admin"
       password: "admin"
 ```
 
@@ -298,7 +298,7 @@ Other fields of `flownode` are configured similarly to other Roles, for example:
 
 ```yaml
 flownode:
-  enabled: false
+  enabled: true
   replicas: 1
   podTemplate:
     main:
@@ -309,4 +309,124 @@ flownode:
         limits:
           memory: "2Gi"
           cpu: "2"
+```
+
+### Object Storage Configuration
+
+The `objectStorage` field is used to configure cloud object storage (such as AWS S3 and Azure Blob Storage, etc.) as the GreptimeDB storage layer.
+
+#### AWS S3
+
+```yaml
+objectStorage:
+  credentials:
+    # AWS access key ID
+    accessKeyId: ""
+    # AWS secret access key
+    secretAccessKey: ""
+  s3:
+    # AWS S3 bucket name
+    bucket: ""
+    # AWS S3 region
+    region: ""
+    # The root path in bucket is 's3://<bucket>/<root>/data/...'
+    root: ""
+    # The AWS S3 endpoint, see more detail: https://docs.aws.amazon.com/general/latest/gr/s3.html
+    endpoint: ""
+```
+
+#### Google Cloud Storage
+
+```yaml
+objectStorage:
+  credentials:
+    # GCP serviceAccountKey JSON-formatted base64 value 
+    serviceAccountKey: ""
+  gcs:
+    # Google Cloud Storage bucket name
+    bucket: ""
+    # Google Cloud OAuth 2.0 Scopes, example: "https://www.googleapis.com/auth/devstorage.read_write"
+    scope: ""
+    # The root path in bucket is 'gcs://<bucket>/<root>/data/...'
+    root: ""
+    # Google Cloud Storage endpoint, example: "https://storage.googleapis.com"
+    endpoint: ""
+```
+
+#### Azure Blob
+
+```yaml
+objectStorage:
+  credentials:
+    # Azure account name
+    accountName: ""
+    # Azure account key
+    accountKey: ""
+  azblob:
+    # Azure Blob container name
+    container: ""
+    # The root path in container is 'blob://<bucket>/<root>/data/...'
+    root: ""
+    # Azure Blob endpoint, see: "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-query-endpoint-srp?tabs=dotnet#query-for-the-blob-storage-endpoint"
+    endpoint: ""
+```
+
+#### AliCloud OSS
+
+```yaml
+objectStorage:
+  credentials:
+    # AliCloud access key ID
+    accessKeyId: ""
+    # AliCloud access key secret
+    secretAccessKey: ""
+  oss:
+    # AliCloud OSS bucket name
+    bucket: ""
+    # AliCloud OSS region
+    region: ""
+    # The root path in bucket is 'oss://<bucket>/<root>/data/...'
+    root: ""
+    # The AliCloud OSS endpoint
+    endpoint: ""
+```
+
+### Prometheus Monitor Configuration
+
+If you have [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) installed, you can create Prometheus PodMonitor to monitor GreptimeDB through the `prometheusMonitor.enabled` field as follows:
+
+```yaml
+prometheusMonitor:
+  # -- Create PodMonitor resource for scraping metrics using PrometheusOperator
+  enabled: false
+  # -- Interval at which metrics should be scraped
+  interval: "30s"
+  # -- Add labels to the PodMonitor
+  labels:
+    release: prometheus
+```
+
+### Debug Pod Configuration
+
+The debug pod has various tools installed (such as mysql-client, psql-client, etc.). You can exec into the debug pod for debugging. Create it with the `debugPod.enabled` field as follows:
+
+```yaml
+debugPod:
+  # -- Enable debug pod
+  enabled: false
+
+  # -- The debug pod image
+  image:
+    registry: docker.io
+    repository: greptime/greptime-tool
+    tag: "20241107-9c210d18"
+
+  # -- The debug pod resource
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 256Mi
+      cpu: 200m
 ```
