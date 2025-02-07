@@ -311,7 +311,7 @@ flownode:
           cpu: "2"
 ```
 
-### Object Storage Configuration
+### 对象存储配置
 
 `objectStorage` 字段用于配置云对象存储（例如 AWS S3 和 Azure Blob Storage 等）作为 GreptimeDB 存储层。
 
@@ -391,7 +391,7 @@ objectStorage:
     endpoint: ""
 ```
 
-### Prometheus Monitor Configuration
+### Prometheus 监控配置
 
 如果你已经安装了 [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator)，你可以通过 `prometheusMonitor.enabled` 字段创建 Prometheus PodMonitor 来监控 GreptimeDB，如下所示：
 
@@ -406,7 +406,7 @@ prometheusMonitor:
     release: prometheus
 ```
 
-### Debug Pod Configuration
+### Debug Pod 配置
 
 debug pod 中安装了各种工具（例如 mysql-client、psql-client 等）。你可以 exec 进入调试 debug pod 进行调试。使用 `debugPod.enabled` 字段创建它，如下所示：
 
