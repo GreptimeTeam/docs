@@ -122,7 +122,7 @@ timeout = "30s"
 body_limit = "64MB"
 
 [grpc]
-bind-addr = "127.0.0.1:4001"
+bind_addr = "127.0.0.1:4001"
 runtime_size = 8
 
 [mysql]
