@@ -168,7 +168,7 @@ The following table describes the options in detail:
 |            | body_limit         | String  | HTTP max body size, "64MB" by default                                                                                     |
 |            | is_strict_mode     | Boolean | Whether to enable the strict verification mode of the protocol, which will slightly affect performance. False by default. |
 | grpc       |                    |         | gRPC server options                                                                                                       |
-|            | bind-addr          | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                               |
+|            | bind_addr          | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                                                                         |
 | mysql      |                    |         | MySQL server options                                                                                                      |
 |            | enable             | Boolean | Whether to enable MySQL protocol, true by default                                                                         |
