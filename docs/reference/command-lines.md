@@ -144,7 +144,7 @@ greptime standalone start --help
 - `--influxdb-enable`: Whether to enable InfluxDB protocol in HTTP API;
 - `--mysql-addr <MYSQL_ADDR>`: MySQL server address;
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres server address;
-- `--rpc-bind-addr <RPC_ADDR>`: The address to bind the gRPC server;
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: The address to bind the gRPC server;
 
 ## Examples
 
