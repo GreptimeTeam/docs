@@ -199,7 +199,7 @@ greptime flownode start -c config/flownode.example.toml
 Starts a flownode instance with command line arguments specifying the address of the metasrv:
 
 ```sh
-greptime flownode start --node-id=0 --rpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
+greptime flownode start --node-id=0 --rpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
 
 ### Upgrade GreptimeDB version
