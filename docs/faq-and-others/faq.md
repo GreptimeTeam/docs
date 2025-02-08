@@ -18,7 +18,7 @@ We plan to further refine the log engine, focusing on improving query performanc
 For more information about using GreptimeDB with logs, refer to the documentation:
 - [Log Overview](/user-guide/logs/overview.md)
 - [OpenTelemetry compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md)
-- [Loki protocol compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md)
+- [Loki protocol compatibility](/user-guide/ingest-data/for-observability/loki.md)
 - [Vector compatibility](/user-guide/ingest-data/for-observability/vector.md)
 
 ### What would be the use cases for a time-series database?
@@ -71,10 +71,6 @@ GreptimeDB supports both database-level and table-level TTLs. By default, a tabl
 
 Because `grep` is the most useful command line tool on \*nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
 
-### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
-
-There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to track the PromQL compatibility tests passing rate. It's based on Prometheus's compliance test.
-
 ### Does GreptimeDB support schemaless?
 
 Yes, GreptimeDB is a schemaless database without need for creating tables in advance. The table and columns will be created automatically when writing data with protocol gRPC, InfluxDB Line Protocol, OpenTSDB, Prometheus Remote Write.
@@ -122,7 +118,6 @@ Below are some key points:
 - **Foundational Features**: The foundational features, including the ingestion protocol, SQL capabilities, and storage functions, are largely identical between the two versions. However, GreptimeCloud offers advanced SQL functions and additional features.
 - **Fully Managed Service**: GreptimeCloud is a fully managed service that supports multi-tenancy, data encryption, and security audits for compliance, which are not available in the open-source version.
 - **Enhanced Dashboard**: Another significant advantage of GreptimeCloud is its superior dashboard, which is more user-friendly and includes a unique Prometheus workbench. This workbench facilitates online editing of Prometheus dashboards and alert rules, as well as GitOps integration.
-- **Specialized Solutions**: GreptimeCloud introduces specialized solutions like GreptimeAI, which leverages DBaaS technology. We are also expanding our offerings to include more innovative solutions, such as those for IoT.
 
 As mentioned, the cloud version offers more ready-to-use features to help you get started quickly. The core features are almost identical, especially on our dedicated plan.
 
