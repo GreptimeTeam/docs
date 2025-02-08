@@ -81,7 +81,7 @@ greptime metasrv start --help
 - `-c`/`--config-file`: 指定 `metasrv` 启动配置文件；
 - `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用；
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
-- `--rpc-bind-addr <RPC_BIND_ADDR>`: 服务绑定地址，默认为 `127.0.0.1:3002`;
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: 服务绑定地址，默认为 `127.0.0.1:3002`；
 - `--rpc-server-addr <RPC_SERVER_ADDR>`: 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址；
 - `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒；
