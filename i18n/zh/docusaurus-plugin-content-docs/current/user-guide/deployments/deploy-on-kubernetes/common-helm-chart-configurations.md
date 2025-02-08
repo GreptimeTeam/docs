@@ -26,7 +26,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.0"
+  tag: "v0.11.3"
   # -- The image pull secrets
   pullSecrets: []
 ```
@@ -40,7 +40,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.0"
+  tag: "v0.11.3"
   # -- The image pull secrets
   pullSecrets: []
 
@@ -201,7 +201,7 @@ Helm Chart 默认不启用 User Provider 模式的鉴权，你可以通过 `auth
 auth:
   enabled: true
   users:
-    - name: admin
+    - name: "admin"
       password: "admin"
 ```
 
@@ -298,7 +298,7 @@ flownode:
 
 ```yaml
 flownode:
-  enabled: false
+  enabled: true
   replicas: 1
   podTemplate:
     main:
@@ -311,3 +311,122 @@ flownode:
           cpu: "2"
 ```
 
+### 对象存储配置
+
+`objectStorage` 字段用于配置云对象存储（例如 AWS S3 和 Azure Blob Storage 等）作为 GreptimeDB 存储层。
+
+#### AWS S3
+
+```yaml
+objectStorage:
+  credentials:
+    # AWS access key ID
+    accessKeyId: ""
+    # AWS secret access key
+    secretAccessKey: ""
+  s3:
+    # AWS S3 bucket name
+    bucket: ""
+    # AWS S3 region
+    region: ""
+    # The root path in bucket is 's3://<bucket>/<root>/data/...'
+    root: ""
+    # The AWS S3 endpoint, see more detail: https://docs.aws.amazon.com/general/latest/gr/s3.html
+    endpoint: ""
+```
+
+#### Google Cloud Storage
+
+```yaml
+objectStorage:
+  credentials:
+    # GCP serviceAccountKey JSON-formatted base64 value 
+    serviceAccountKey: ""
+  gcs:
+    # Google Cloud Storage bucket name
+    bucket: ""
+    # Google Cloud OAuth 2.0 Scopes, example: "https://www.googleapis.com/auth/devstorage.read_write"
+    scope: ""
+    # The root path in bucket is 'gcs://<bucket>/<root>/data/...'
+    root: ""
+    # Google Cloud Storage endpoint, example: "https://storage.googleapis.com"
+    endpoint: ""
+```
+
+#### Azure Blob
+
+```yaml
+objectStorage:
+  credentials:
+    # Azure account name
+    accountName: ""
+    # Azure account key
+    accountKey: ""
+  azblob:
+    # Azure Blob container name
+    container: ""
+    # The root path in container is 'blob://<bucket>/<root>/data/...'
+    root: ""
+    # Azure Blob endpoint, see: "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-query-endpoint-srp?tabs=dotnet#query-for-the-blob-storage-endpoint"
+    endpoint: ""
+```
+
+#### AliCloud OSS
+
+```yaml
+objectStorage:
+  credentials:
+    # AliCloud access key ID
+    accessKeyId: ""
+    # AliCloud access key secret
+    secretAccessKey: ""
+  oss:
+    # AliCloud OSS bucket name
+    bucket: ""
+    # AliCloud OSS region
+    region: ""
+    # The root path in bucket is 'oss://<bucket>/<root>/data/...'
+    root: ""
+    # The AliCloud OSS endpoint
+    endpoint: ""
+```
+
+### Prometheus 监控配置
+
+如果你已经安装了 [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator)，你可以通过 `prometheusMonitor.enabled` 字段创建 Prometheus PodMonitor 来监控 GreptimeDB，如下所示：
+
+```yaml
+prometheusMonitor:
+  # -- Create PodMonitor resource for scraping metrics using PrometheusOperator
+  enabled: false
+  # -- Interval at which metrics should be scraped
+  interval: "30s"
+  # -- Add labels to the PodMonitor
+  labels:
+    release: prometheus
+```
+
+### Debug Pod 配置
+
+debug pod 中安装了各种工具（例如 mysql-client、psql-client 等）。你可以 exec 进入调试 debug pod 进行调试。使用 `debugPod.enabled` 字段创建它，如下所示：
+
+```yaml
+debugPod:
+  # -- Enable debug pod
+  enabled: false
+
+  # -- The debug pod image
+  image:
+    registry: docker.io
+    repository: greptime/greptime-tool
+    tag: "20241107-9c210d18"
+
+  # -- The debug pod resource
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 256Mi
+      cpu: 200m
+```
