@@ -1,3 +1,8 @@
+---
+keywords: [configuration, command line options, configuration file, environment variables, default values]
+description: Detailed guide on configuring GreptimeDB, including command line options, configuration file options, environment variables, and default values for various components and features.
+---
+
 # Configuration
 
 GreptimeDB supports **layered configuration** with the following precedence order (where each item overrides the one below it):
