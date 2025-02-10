@@ -214,7 +214,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | root              | String | The root path in OSS bucket                                   |
 |         | endpoint          | String | The API endpoint of OSS                                       |
 |         | access_key_id     | String | The OSS access key id                                         |
-|         | secret_access_key | String | The OSS secret access key                                     |
+|         | access_key_secret | String | The OSS secret access key                                     |
 | Azblob  |                   |        | Azure Blob Storage options, valid when type="Azblob"          |
 |         | container         | String | The container name                                            |
 |         | root              | String | The root path in container                                    |

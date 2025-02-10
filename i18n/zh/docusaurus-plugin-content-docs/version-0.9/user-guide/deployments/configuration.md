@@ -203,7 +203,7 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 |         | root              | 字符串 | OSS 桶中的根路径                                    |
 |         | endpoint          | 字符串 | OSS 的 API 端点                                     |
 |         | access_key_id     | 字符串 | OSS 访问密钥 id                                     |
-|         | secret_access_key | 字符串 | OSS 秘密访问密钥                                    |
+|         | access_key_secret | 字符串 | OSS 秘密访问密钥                                    |
 | Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效        |
 |         | container         | 字符串 | 容器名称                                            |
 |         | root              | 字符串 | 容器中的根路径                                      |
