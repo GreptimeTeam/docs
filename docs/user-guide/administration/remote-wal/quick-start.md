@@ -67,7 +67,7 @@ docker run \
   -e GREPTIMEDB_STANDALONE__WAL__BROKER_ENDPOINTS="kafka:9092" \
   greptime/greptimedb standalone start \
   --http-addr 0.0.0.0:4000 \
-  --rpc-addr 0.0.0.0:4001 \
+  --rpc-bind-addr 0.0.0.0:4001 \
   --mysql-addr 0.0.0.0:4002 \
   --postgres-addr 0.0.0.0:4003
 ```

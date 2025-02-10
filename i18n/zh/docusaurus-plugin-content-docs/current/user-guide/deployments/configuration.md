@@ -113,7 +113,7 @@ timeout = "30s"
 body_limit = "64MB"
 
 [grpc]
-addr = "127.0.0.1:4001"
+bind_addr = "127.0.0.1:4001"
 runtime_size = 8
 
 [mysql]
@@ -156,7 +156,7 @@ enable = true
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
 |            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为 false |
 | grpc       |                    |        | gRPC 服务器选项                                              |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                          |
+|            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
 | mysql      |                    |        | MySQL 服务器选项                                             |
 |            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
@@ -833,17 +833,18 @@ backoff_deadline = "5mins"
 
 ```toml
 node_id = 42
-rpc_hostname = "127.0.0.1"
-rpc_addr = "127.0.0.1:3001"
-rpc_runtime_size = 8
+[grpc]
+bind_addr = "127.0.0.1:3001"
+server_addr = "127.0.0.1:3001"
+runtime_size = 8
 ```
 
 | Key              | Type   | Description                                 |
 | ---------------- | ------ | ------------------------------------------- |
 | node_id          | 整数   | 该 `datanode` 的唯一标识符。                |
-| rpc_hostname     | 字符串 | 该 `datanode` 的 Hostname。                 |
-| rpc_addr         | 字符串 | gRPC 服务端地址，默认为`"127.0.0.1:3001"`。 |
-| rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
+| grpc.bind_addr   | 字符串 | gRPC 服务绑定地址，默认为`"127.0.0.1:3001"`。 |
+| grpc.server_addr | 字符串 | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `grpc.bind_addr` 中指定的相同。 |
+| grpc.rpc_runtime_size | 整数   | gRPC 服务器工作线程数，默认为 8。           |
 
 ### 仅限于 `Frontend` 的配置
 

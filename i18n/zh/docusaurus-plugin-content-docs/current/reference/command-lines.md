@@ -64,8 +64,8 @@ greptime datanode start --help
 - `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
 - `--metasrv-addrs <METASRV_ADDR>`:  Metasrv 服务器列表，用逗号或者空格隔开
 - `--node-id <NODE_ID>`: 节点 ID
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
-- `--rpc-hostname <RPC_HOSTNAME>`:  节点 hostname
+- `--rpc-bind-addr <RPC_BIND_ADDR>`:  gRPC 服务绑定地址
+- `--rpc-server-addr <RPC_SERVER_ADDR>`:  该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；
 - `--wal-dir <WAL_DIR>`: WAL 日志目录;
 
 所有的地址类选项都是 `ip:port` 形式的字符串。
@@ -78,16 +78,16 @@ greptime datanode start --help
 greptime metasrv start --help
 ```
 
-- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件
-- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用。
+- `-c`/`--config-file`: 指定 `metasrv` 启动配置文件；
+- `--enable-region-failover`: 是否启动 region 自动容灾，默认为 `false` 不启用；
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`;
-- `--bind-addr <BIND_ADDR>`:服务监听地址，默认为 `127.0.0.1:3002`.
-- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
-- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: 服务绑定地址，默认为 `127.0.0.1:3002`；
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；
+- `--http-addr <HTTP_ADDR>`: HTTP 服务器地址；
+- `--http-timeout <HTTP_TIMEOUT>`: HTTP 超时设置，单位秒；
 - `--selector <SELECTOR>`: 参考 [selector 类型](/contributor-guide/metasrv/selector.md#selector-type);
-- `--server-addr <SERVER_ADDR>`: 提供给 frontend 和 datanode 的外部通讯服务器地址
 - `--store-addrs <STORE_ADDR>`: 逗号或空格分隔的键值存储服务器（默认为 etcd）地址，用于存储元数据；
-- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试
+- `--use-memory-store`: 是否使用内存存储替代 etcd，仅用于测试；
 
 ### frontend 子命令选项
 
@@ -100,7 +100,8 @@ greptime frontend start --help
 - `-c`/`--config-file`: 指定 `frontend` 启动配置文件
 - `--disable-dashboard`:  是否禁用 dashboard，默认为 `false`。
 - `--env-prefix <ENV_PREFIX>`: 配置的环境变量前缀，默认为`GREPTIMEDB_FRONTEND`;
-- `--rpc-addr <RPC_ADDR>`: gRPC 服务地址
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: gRPC 服务绑定地址
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；
 - `--http-addr <HTTP_ADDR>`: HTTP 服务器地址
 - `--http-timeout <HTTP_TIMEOUT>`:  HTTP 超时设置，单位秒
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
@@ -122,8 +123,8 @@ greptime flownode start --help
 ```
 
 - `--node-id <NODE_ID>`: Flownode的ID
-- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
-- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
+- `--rpc-bind-addr <RPC_BIND_ADDR>`: gRPC服务器的绑定地址
+- `--rpc-server-addr <RPC_SERVER_ADDR>`: 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；
 - `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
 - `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
 - `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
@@ -142,7 +143,7 @@ greptime standalone start --help
 - `--influxdb-enable`:  是否启用 `influxdb` HTTP 接口，默认为 true。
 - `--mysql-addr <MYSQL_ADDR>`:  MySQL 服务地址
 - `--postgres-addr <POSTGRES_ADDR>`: Postgres 服务地址
-- `--rpc-addr <RPC_ADDR>`:  gRPC 服务地址
+- `--rpc-bind-addr <RPC_BIND_ADDR>`:  gRPC 服务绑定地址
 
 ## 配置示例
 
@@ -173,7 +174,7 @@ greptime datanode start -c config/datanode.example.toml
 使用命令行参数启动 datanode，指定 gRPC 服务地址、MySQL 服务地址、metasrv 地址和该 datanode 的 ID：
 
 ```sh
-greptime datanode start --rpc-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
+greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
 
 使用自定义配置启动 frontend：
@@ -197,7 +198,7 @@ greptime flownode start -c config/flownode.example.toml
 使用命令行参数启动 flownode，指定 metasrv 和 frontend 的地址：
 
 ```sh
-greptime flownode start --node-id=0 --rpc-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002;
+greptime flownode start --node-id=0 --rpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
 
 ### 升级 GreptimeDB 版本
