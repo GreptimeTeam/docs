@@ -32,7 +32,7 @@ transform:
       - string_field_b
     type: string
   # 写入的数据必须包含 timestamp 字段
-  - fields: 
+  - fields:
       - reqTimeSec, req_time_sec
     # epoch 是特殊字段类型，必须指定精度
     type: epoch, ms
@@ -84,7 +84,7 @@ processors:
 ```yaml
 processors:
   - date:
-      fields: 
+      fields:
         - time
       formats:
         - '%Y-%m-%d %H:%M:%S%.3f'
@@ -140,7 +140,7 @@ processors:
 ```yaml
 processors:
   - dissect:
-      fields: 
+      fields:
         - message
       patterns:
         - '%{key1} %{key2}'
@@ -206,7 +206,7 @@ Dissect 模式支持以下修饰符：
 ```yaml
 processors:
   - gsub:
-      fields: 
+      fields:
         - message
       pattern: 'old'
       replacement: 'new'
@@ -308,8 +308,8 @@ processors:
 
 #### regex 命名捕获组的规则
 
-`regex` Processor 支持使用 `(?<group-name>...)` 的语法来命名捕获组，最终将数据处理为这种形式： 
-	
+`regex` Processor 支持使用 `(?<group-name>...)` 的语法来命名捕获组，最终将数据处理为这种形式：
+
 ```json
 {
   "<field-name>_<group-name>": "<value>"
@@ -495,11 +495,11 @@ transform:
 ```yaml
 processors:
   - digest:
-      fields: 
+      fields:
         - message
       presets:
         - numbers
-        - uuid 
+        - uuid
         - ip
         - quoted
         - bracketed
@@ -536,7 +536,7 @@ processors:
 processors:
   - digest:
       fields:
-        - message 
+        - message
       presets:
         - numbers
         - uuid
@@ -670,3 +670,34 @@ transform:
   "born_time": 2021-07-08 16:00:00
 }
 ```
+
+## Dispatcher
+
+Dispatcher 允许用户将数据路由到其他 Pipeline 上。这是为了应对当多种日志类型共享
+单一来源且需要存储在不同结构的单独表中。
+
+配置例子如下：
+
+```yaml
+dispatcher:
+  field: type
+  rules:
+    - value: http
+      table_suffix: http
+      pipeline: http
+    - value: db
+      table_suffix: db
+
+```
+
+Dispatcher 在 processor 之后执行。当匹配到相应的规则时，下一个 pipeline 将被执行。
+
+用户可以指定路由数据所依据的字段名 `field`，并指定路由规则 `rules`。假如 `field`
+字段匹配到规则中的 `value`，数据将被路由到 `pipeline`。如果规则中没有指定
+`pipeline`，将会给据当前的数据结构推断表结构。
+
+写入的目标表名由 `table_suffix` 指定，这个后缀将和请求输入的 `table` 参数及下划
+线组合形成最终的表名。例如，请求的表名叫做 `applogs`，当匹配到上面例子中的
+`http` 规则时， 最终的表名叫做 `applogs_http`。
+
+如果没有规则匹配到，数据将执行当前 pipeline 中定一个 transform 规则。

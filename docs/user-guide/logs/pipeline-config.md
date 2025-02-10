@@ -26,13 +26,21 @@ processors:
         - string_field_b
       method: decode
       ignore_missing: true
+dispatcher:
+  field: type
+  rules:
+    - value: http
+      table_suffix: http
+      pipeline: http
+    - value: db
+      table_suffix: db
 transform:
   - fields:
       - string_field_a
       - string_field_b
     type: string
   # The written data must include the timestamp field
-  - fields: 
+  - fields:
       - reqTimeSec, req_time_sec
     # epoch is a special field type and must specify precision
     type: epoch, ms
@@ -81,7 +89,7 @@ The `date` processor is used to parse time fields. Here's an example configurati
 ```yaml
 processors:
   - date:
-      fields: 
+      fields:
         - time
       formats:
         - '%Y-%m-%d %H:%M:%S%.3f'
@@ -92,7 +100,7 @@ processors:
 In the above example, the configuration of the `date` processor includes the following fields:
 
 - `fields`: A list of time field names to be parsed.
-- `formats`: Time format strings, supporting multiple format strings. Parsing is attempted in the order provided until successful. You can find reference [here](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) for formatting syntax. 
+- `formats`: Time format strings, supporting multiple format strings. Parsing is attempted in the order provided until successful. You can find reference [here](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) for formatting syntax.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 - `timezone`: Time zone. Use the time zone identifiers from the [tz_database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to specify the time zone. Defaults to `UTC`.
 
@@ -122,7 +130,7 @@ The `dissect` processor is used to split log data fields. Here's an example conf
 ```yaml
 processors:
   - dissect:
-      fields: 
+      fields:
         - message
       patterns:
         - '%{key1} %{key2}'
@@ -188,7 +196,7 @@ The `gsub` processor is used to replace values in log data fields. Here's an exa
 ```yaml
 processors:
   - gsub:
-      fields: 
+      fields:
         - message
       pattern: 'old'
       replacement: 'new'
@@ -476,11 +484,11 @@ The `digest` processor is used to extract the template from a log message by rem
 ```yaml
 processors:
   - digest:
-      fields: 
+      fields:
         - message
       presets:
         - numbers
-        - uuid 
+        - uuid
         - ip
         - quoted
         - bracketed
@@ -517,7 +525,7 @@ Using the following configuration:
 processors:
   - digest:
       fields:
-        - message 
+        - message
       presets:
         - numbers
         - uuid
@@ -650,3 +658,37 @@ The result will be:
   "born_time": 2021-07-08 16:00:00
 }
 ```
+
+## Dispatcher
+
+The pipeline dispatcher routes requests to other pipelines based on configured
+field values. It is useful when multiple log types share a single source and
+need to be stored in separate tables with different structures.
+
+A sample configuration is like:
+
+```yaml
+dispatcher:
+  field: type
+  rules:
+    - value: http
+      table_suffix: http
+      pipeline: http
+    - value: db
+      table_suffix: db
+
+```
+
+The dispatcher runs after processors and before transformations. It routes data
+to the next pipeline, where the defined processors will execute.
+
+You can specify a `field` and `rules` for routing. If the field value matches a
+rule's `value`, the data is routed to the specified `pipeline`. If no pipeline
+is defined, the current data structure is used as the table structure.
+
+The target table name is determined by `table_suffix`, appended to the current
+`table` and an underscore `_`. For example, if the table is `applogs` and it
+matches the `http` rule, data is stored in `applogs_http`.
+
+If no rules match, data is transformed by the current pipeline's
+transformations.
