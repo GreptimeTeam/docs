@@ -692,7 +692,7 @@ dispatcher:
 
 Dispatcher 在 processor 之后执行。当匹配到相应的规则时，下一个 pipeline 将被执行。
 
-用户可以指定路由数据所依据的字段名 `field`，并指定路由规则 `rules`。假如 `field`
+你可以指定路由数据所依据的字段名 `field`，并指定路由规则 `rules`。假如 `field`
 字段匹配到规则中的 `value`，数据将被路由到 `pipeline`。如果规则中没有指定
 `pipeline`，将会根据当前的数据结构推断表结构。
 
