@@ -684,7 +684,10 @@ to the next pipeline, where the defined processors will execute.
 
 You can specify a `field` and `rules` for routing. If the field value matches a
 rule's `value`, the data is routed to the specified `pipeline`. If no pipeline
-is defined, the current data structure is used as the table structure.
+is defined, the current data structure is used as the table structure. In the
+example configuration above, if the `type` of input data is `http`, we will call
+`http` as next pipeline. And if `type` is `db`, we use current data structure to
+store the data.
 
 The target table name is determined by `table_suffix`, appended to the current
 `table` and an underscore `_`. For example, if the table is `applogs` and it
