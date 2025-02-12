@@ -1,3 +1,8 @@
+---
+keywords: [configuration, command line options, configuration file, environment variables, default values]
+description: Detailed guide on configuring GreptimeDB, including command line options, configuration file options, environment variables, and default values for various components and features.
+---
+
 # Configuration
 
 GreptimeDB supports **layered configuration** and uses the following precedence order(each item takes precedence over the item below it):
@@ -140,7 +145,7 @@ greptime standalone start -c standalone.example.toml
 
 Protocol options are valid in `frontend` and `standalone` sub commands, which specify the protocol server addresses and other protocol-related options.
 
-Below is an example configuration with default values. 
+Below is an example configuration with default values.
 The HTTP and gRPC protocols must be enabled for the database to work correctly.
 The other protocols are optional.
 If you want to disable certain protocols, such as OpenTSDB protocol support, you can set the `enable` parameter to `false`.
@@ -240,8 +245,8 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | bucket            | String | The OSS bucket name                                           |
 |         | root              | String | The root path in OSS bucket                                   |
 |         | endpoint          | String | The API endpoint of OSS                                       |
-|         | access_key_id     | String | The OSS access key id                                         |
-|         | secret_access_key | String | The OSS secret access key                                     |
+|         | access_key_id     | String | The OSS AccessKey ID                                         |
+|         | access_key_secret | String | The OSS AccessKey Secret                                     |
 | Azblob  |                   |        | Azure Blob Storage options, valid when type="Azblob"          |
 |         | container         | String | The container name                                            |
 |         | root              | String | The root path in container                                    |
@@ -509,7 +514,7 @@ In the configuration files of `datanode` and `frontend` of distributed GreptimeD
 
 ```toml
 mode = "distributed"
-``` 
+```
 
 In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
 

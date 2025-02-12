@@ -1,3 +1,8 @@
+---
+keywords: [配置指南, 命令行选项, 配置文件, 环境变量, 协议选项, 存储选项, WAL 选项, 日志选项]
+description: GreptimeDB 的配置指南，介绍了命令行选项、配置文件、环境变量、协议选项、存储选项、WAL 选项、日志选项等详细配置方法。
+---
+
 # 配置 GreptimeDB
 
 GreptimeDB 提供了层次化的配置能力，按照下列优先顺序来生效配置（每个项目都会覆盖下面的项目）：
@@ -206,7 +211,7 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 |         | root              | 字符串 | OSS 桶中的根路径                                    |
 |         | endpoint          | 字符串 | OSS 的 API 端点                                     |
 |         | access_key_id     | 字符串 | OSS 访问密钥 id                                     |
-|         | secret_access_key | 字符串 | OSS 秘密访问密钥                                    |
+|         | access_key_secret | 字符串 | OSS 秘密访问密钥                                    |
 | Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效        |
 |         | name            | String |  存储提供商名字，默认为 `Azblob`               |
 |         | container         | 字符串 | 容器名称                                            |

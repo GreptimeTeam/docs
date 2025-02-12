@@ -1,3 +1,8 @@
+---
+keywords: [configuration, command line options, configuration file, environment variables, default values]
+description: Detailed guide on configuring GreptimeDB, including command line options, configuration file options, environment variables, and default values for various components and features.
+---
+
 # Configuration
 
 GreptimeDB supports **layered configuration** with the following precedence order (where each item overrides the one below it):
@@ -217,8 +222,8 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | bucket            | String | The OSS bucket name                                           |
 |         | root              | String | The root path in OSS bucket                                   |
 |         | endpoint          | String | The API endpoint of OSS                                       |
-|         | access_key_id     | String | The OSS access key id                                         |
-|         | secret_access_key | String | The OSS secret access key                                     |
+|         | access_key_id     | String | The OSS AccessKey ID                                         |
+|         | access_key_secret | String | The OSS AccessKey Secret                                     |
 | Azblob  |                   |        | Azure Blob Storage options, valid when type="Azblob"          |
 |         | name            | String | The  storage provider name, default is `Azblob`               |
 |         | container         | String | The container name                                            |
