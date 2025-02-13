@@ -122,7 +122,7 @@ metric{__field__=~"field_1|field_2"}
 metric{__field__!~"field_1|field_2"}
 ```
 
-## 指定数据库
+### 指定数据库
 
 不同于 Prometheus，GreptimeDB 包含数据库概念。如果要进行跨数据库的 PromQL 查询，
 可以使用 `__database__` 来指定数据库名称。

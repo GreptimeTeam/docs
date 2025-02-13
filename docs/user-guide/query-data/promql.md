@@ -129,7 +129,7 @@ Greptime has its own database concept. In order to run cross-database query, you
 can use `__database__` matcher to specify the database name.
 
 ```promql
-metrics{__database__="mydatabase"}
+metric{__database__="mydatabase"}
 ```
 
 Note that only `=` is supported for database matcher.
