@@ -103,7 +103,9 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 You can write the above command in all places that support SQL, including the GreptimeDB HTTP API, SDK, PostgreSQL and MySQL client etc.
 
-## Multiple fields
+## GreptimeDB's extensions to PromQL
+
+### Specifying value field
 
 Based on the table model, GreptimeDB supports multiple fields in a single table(or metric, in the context of Prometheus). Queries will run on every fields by default. Or you can use the special filter `__field__` to query a specific field(s):
 
@@ -121,6 +123,17 @@ metric{__field__=~"field_1|field_2"}
 metric{__field__!~"field_1|field_2"}
 ```
 
+### Cross-database query
+
+Greptime has its own database concept. In order to run cross-database query, you
+can use `__database__` matcher to specify the database name.
+
+```promql
+metrics{__database__="mydatabase"}
+```
+
+Note that only `=` is supported for database matcher.
+
 ## Limitations
 
 Though GreptimeDB supports a rich set of data types, the PromQL implementation is still limited to the following types:
@@ -129,7 +142,7 @@ Though GreptimeDB supports a rich set of data types, the PromQL implementation i
 - tag: `String`
 - value: `Double`
 
-Currently only a subset (more than 90%) of PromQL is supported. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
+We have over 90% promql supported in GreptimeDB. Here attaches the compatibility list. You can also check our latest compliance report in this [tracking issue](https://github.com/GreptimeTeam/greptimedb/issues/1042).
 
 ### Literal
 
@@ -265,4 +278,3 @@ None
     | :----------------- | :----------------------------- |
     | sort_by_label      | TBD           |
     | sort_by_label_desc | TBD           |
-
