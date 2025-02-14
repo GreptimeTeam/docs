@@ -102,7 +102,9 @@ TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
 
 你可以在所有支持 SQL 的地方编写上述命令，包括 GreptimeDB HTTP API、SDK、PostgreSQL 和 MySQL 客户端等。
 
-## 多列查询
+## GreptimeDB 的扩展
+
+### 指定数值列
 
 基于表模型，GreptimeDB 支持在单个表（或在 Prometheus 中称为指标）中查询多个字段。默认情况下，查询将应用于每个值字段 (field)。或者也可以使用特殊的过滤器 `__field__` 来查询特定的字段：
 
@@ -119,6 +121,17 @@ metric{__field__=~"field_1|field_2"}
 
 metric{__field__!~"field_1|field_2"}
 ```
+
+### 指定数据库
+
+不同于 Prometheus，GreptimeDB 包含数据库概念。如果要进行跨数据库的 PromQL 查询，
+可以使用 `__database__` 来指定数据库名称。
+
+```promql
+metric{__database__="mydatabase"}
+```
+
+注意 `__database__` 仅支持 `=` 匹配。
 
 ## 局限
 
@@ -264,5 +277,3 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | :----------------- | :----------------------------- |
     | sort_by_label      | TBD           |
     | sort_by_label_desc | TBD           |
-
-
