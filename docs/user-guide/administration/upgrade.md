@@ -72,6 +72,108 @@ The legacy cache directory may be located at `${data_home}/object_cache/read`, `
 
 ### Create index manually
 
-Since `v0.12`, GreptimeDB does not create inverted index automatically for a table that uses mito engine.
+Before `v0.12`, GreptimeDB automatically creates inverted index for tags (columns in the primary key).
+You can use `SHOW INDEX` to view the index information.
+The `greptime-inverted-index-v1` is the index type for the inverted index.
 
-You need to create index manually after upgrading to `v0.12`.
+```sql
+CREATE TABLE IF NOT EXISTS `cpu` (
+  `hostname` STRING NULL,
+  `region` STRING NULL,
+  `usage_user` BIGINT NULL,
+  `usage_system` BIGINT NULL,
+  `usage_idle` BIGINT NULL,
+  `ts` TIMESTAMP(9) NOT NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`hostname`, `region`)
+)
+ENGINE=mito;
+
+SHOW INDEX FROM `cpu`;
+```
+
+```bash
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY    |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY    |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                            |         |               | YES     |       NULL |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
+
+Since `v0.12`, GreptimeDB decouples the inverted index from the primary key and does not create inverted index automatically for a table that uses mito engine.
+
+```sql
+SHOW INDEX FROM `cpu`;
+```
+
+The default index type for a primary key column is `greptime-primary-key-v1`.
+
+```bash
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type              | Comment | Index_comment | Visible | Expression |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY    |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY    |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                         |         |               | YES     |       NULL |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+```
+
+When GreptimeDB opens a table created before `v0.12`, it can use the generated index file before `v0.12`, but won't automatically index new data.
+You need to create index manually. You can use the `ALTER TABLE` statement to create a new index for a column on demand.
+
+For example, you can create an inverted index for the `region` column:
+```sql
+ALTER TABLE `cpu` MODIFY COLUMN `region` SET INVERTED INDEX;
+
+SHOW INDEX FROM `cpu`;
+```
+
+```bash
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name                | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                                          | Comment | Index_comment | Visible | Expression |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY                 |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1                             |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY, INVERTED INDEX |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1, greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX              |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                                                     |         |               | YES     |       NULL |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+```
+
+However, if you already created the index for a table manually before upgrading, you can skip this step. You can always use `SHOW INDEXES` to check the index status.
+For example, if a table already has a full-text index, you don't need to create the index again after upgrading.
+
+```bash
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table         | Non_unique | Key_name       | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| test_fulltext |          1 | FULLTEXT INDEX |            1 | message     | A         |        NULL |     NULL |   NULL | YES  | greptime-fulltext-index-v1 |         |               | YES     |       NULL |
+| test_fulltext |          1 | TIME INDEX     |            1 | timestamp   | A         |        NULL |     NULL |   NULL | NO   |                            |         |               | YES     |       NULL |
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
+
+
+### Update CREATE TABLE statement
+
+GreptimeDB changed the `CREATE TABLE` statement in `v0.12`. You can only use column constraints to create inverted, skipping and fulltext index.
+You must specify the `INDEX` keyword after the index type when creating an index.
+
+The following SQL statement creates a full-text index no longer supported in GreptimeDB v0.12.
+
+```sql
+CREATE TABLE IF NOT EXISTS `logs` (
+  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  ts TIMESTAMP(9) NOT NULL,
+  TIME INDEX (ts),
+);
+```
+
+You have to change the SQL to:
+
+```sql
+CREATE TABLE IF NOT EXISTS `logs` (
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
+  ts TIMESTAMP(9) NOT NULL,
+  TIME INDEX (ts),
+);
+```
