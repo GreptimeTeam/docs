@@ -64,7 +64,7 @@ SELECT
   sensor_id,
   loc,
   max(temperature) AS max_temp,
-  date_bin(INTERVAL '10 seconds', ts) AS time_window
+  date_bin('10 seconds'::INTERVAL, ts) AS time_window
 FROM temp_sensor_data
 GROUP BY
   sensor_id,
@@ -75,7 +75,7 @@ HAVING max_temp > 100;
 
 sink 表包含列 `sensor_id`、`loc`、`max_temp`、`time_window` 和 `update_at`。
 
-- 前四列分别对应 flow 的查询结果列 `sensor_id`、`loc`、`max(temperature)` 和 `date_bin(INTERVAL '10 seconds', ts)`。
+- 前四列分别对应 flow 的查询结果列 `sensor_id`、`loc`、`max(temperature)` 和 `date_bin('10 seconds'::INTERVAL, ts)`。
 - `time_window` 列被指定为 sink 表的 `TIME INDEX`。
 - `update_at` 列是 schema 中的最后一列，用于存储数据的更新时间。
 - 最后的 `PRIMARY KEY` 指定 `sensor_id` 和 `loc` 作为 Tag 列。
@@ -113,12 +113,12 @@ AS
 ```sql
 CREATE FLOW IF NOT EXISTS my_flow
 SINK TO my_sink_table
-EXPIRE AFTER INTERVAL '1 hour'
+EXPIRE AFTER '1 hour'::INTERVAL
 COMMENT 'My first flow in GreptimeDB'
 AS
 SELECT
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window,
+    date_bin('10 seconds'::INTERVAL, ts) as time_window,
 FROM temp_sensor_data
 GROUP BY time_window;
 ```
@@ -134,7 +134,7 @@ GROUP BY time_window;
 当 flow 引擎处理聚合操作（`update_at` 时间）时，
 时间索引早于指定间隔的数据将过期。
 
-例如，如果 flow 引擎在 10:00:00 处理聚合，并且设置了 `INTERVAL '1 hour'`，
+例如，如果 flow 引擎在 10:00:00 处理聚合，并且设置了 `'1 hour'::INTERVAL`，
 则早于 09:00:00 的数据将过期。
 只有从 09:00:00 开始的数据将用于聚合。
 
@@ -177,12 +177,12 @@ source 表中的数据将根据时间索引列映射到相应的窗口。
 ```sql
 SELECT
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window
+    date_bin('10 seconds'::INTERVAL, ts) as time_window
 FROM temp_sensor_data
 GROUP BY time_window;
 ```
 
-在此示例中，`date_bin(INTERVAL '10 seconds', ts)` 函数创建从 UTC 00:00:00 开始的 10 秒时间窗口。
+在此示例中，`date_bin('10 seconds'::INTERVAL, ts)` 函数创建从 UTC 00:00:00 开始的 10 秒时间窗口。
 `max(temperature)` 函数计算每个时间窗口内的最大温度值。
 
 有关该函数行为的更多详细信息，
