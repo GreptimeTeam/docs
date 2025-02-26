@@ -4,7 +4,6 @@ Region 迁移允许用户在 Datanode 间移动 Region 数据。
 
 :::warning 注意
 该功能仅在 GreptimeDB 集群模式下可用，并且需要满足以下条件
-- 使用 Kafka WAL
 - 使用共享存储 (例如：AWS S3)
 
 无法在任何上述以外的情况下使用 Region 迁移。
