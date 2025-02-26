@@ -156,13 +156,13 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND job = "job1";
 ```
 
-## Performance tuning
+### Performance tuning
 
 By default, the metrics engine will automatically create a physical table named `physical_metric_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
 
-### Enable skipping index
+#### Enable skipping index
 
-By default, the metrics engine won't create a index for columns. You can enable it by setting the index.type to skipping and index.granularity to a positive integer.
+By default, the metrics engine won't create indexes for columns. You can enable it by setting the `index.type` to `skipping` and `index.granularity` to a positive integer.
 
 Create a physical table with a skipping index. All automatically added columns will have a skipping index applied, with a granularity of 8192.
 
