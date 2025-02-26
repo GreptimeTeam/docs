@@ -114,6 +114,8 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
 | `merge_mode`           | The strategy to merge duplicate rows     | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.     |
 | `comment`           | Table level comment   | String value.      |
+| `index.type`           | Index type   | **Only for metrics engine** String value, supports `none`, `skipping`.      |
+| `index.granularity`           | Index granularity   | **Only for metrics engine and when `index.type` is `skipping`** Number value.      |
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
@@ -236,6 +238,62 @@ SELECT * from metrics ORDER BY host, ts;
 | host1 | 1970-01-01T00:00:00     | 0.0  | 10.0   |
 | host2 | 1970-01-01T00:00:00.001 | 11.0 | 1.0    |
 +-------+-------------------------+------+--------+
+```
+
+#### Create a physical table with metrics engine
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+);
+```
+
+#### Create a physical table with sparse encoding (experimental)
+
+:::warning Warning
+The sparse encoding is an experimental feature. It maybe breaking changes in the future.
+:::
+
+The sparse encoding is a type of primary key encoding that is used to optimize the storage performance of the metrics engine. 
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+    "memtable.type" = "partition_tree",
+    "memtable.partition_tree.primary_key_encoding" = "sparse",
+);
+```
+
+#### Create a physical table with enable skipping index for columns
+
+By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping` and `index.granularity` to a positive integer.
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+    "memtable.type" = "partition_tree",
+    "memtable.partition_tree.primary_key_encoding" = "sparse",
+    "index.type" = "skipping",
+    "index.granularity" = "8192",
+);
 ```
 
 
