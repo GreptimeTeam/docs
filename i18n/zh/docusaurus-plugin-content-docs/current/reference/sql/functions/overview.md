@@ -128,7 +128,7 @@ SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
 * `date_sub(expression, interval)` 从 Timestamp、Date 或 DateTime 减去一个间隔值：
 
 ```sql
-SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
+SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, '5 day'::INTERVAL);
 ```
 
 ```

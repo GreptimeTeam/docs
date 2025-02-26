@@ -29,7 +29,7 @@ SELECT
 FROM
     metrics INNER JOIN logs on metrics.host = logs.host
 WHERE
-    time > now() - INTERVAL '1 hour' AND
+    time > now() - '1 hour'::INTERVAL AND
     matches(path, '/api/v1/avatar')
 ALIGN '5s' BY (host) FILL PREV
 ```
@@ -46,7 +46,7 @@ Break down the query step by step:
 2. FROM clause:
     - `metrics INNER JOIN logs on metrics.host = logs.host`: Joins the metrics and logs tables on the host field.
 3. WHERE clause:
-    - `time > now() - INTERVAL '1 hour'`: Filters the records to include only those from the past hour.
+    - `time > now() - '1 hour'::INTERVAL`: Filters the records to include only those from the past hour.
     - `matches(path, '/api/v1/avatar')`: Filters the records to include only those matching the path `/api/v1/avatar`.
 4. ALIGN clause:
     - `ALIGN '5s' BY (host) FILL PREV`: Aligns the results to every 5 seconds and fills in missing values with the previous non-null value.

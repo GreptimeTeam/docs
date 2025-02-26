@@ -167,7 +167,7 @@ Time and date functions are also supported in the filter condition.
 For example, use the `now()` function and the `INTERVAL` keyword to retrieve data from the last 5 minutes:
 
 ```sql
-SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
+SELECT * FROM monitor WHERE ts >= now() - '5 minutes'::INTERVAL;
 ```
 
 For date and time functions, please refer to [Functions](/reference/sql/functions/overview.md) for more information.

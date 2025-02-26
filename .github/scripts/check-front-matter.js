@@ -8,9 +8,11 @@ const github = require('@actions/github');
 const exceptionFiles = [
   'docs/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
   'docs/db-cloud-shared/migrate/_migrate-from-prometheus.md',
+  'docs/db-cloud-shared/migrate/migrate-from-influxdb.md',
   'i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
   'i18n/zh/docusaurus-plugin-content-docs/version-0.11/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
-  'i18n/zh/docusaurus-plugin-content-docs/current/db-cloud-shared/migrate/_migrate-from-prometheus.md'
+  'i18n/zh/docusaurus-plugin-content-docs/current/db-cloud-shared/migrate/_migrate-from-prometheus.md',
+  'i18n/zh/docusaurus-plugin-content-docs/current/db-cloud-shared/migrate/migrate-from-influxdb.md'
 ];
 
 // This function checks if a markdown file contains the required front matter.

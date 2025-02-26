@@ -93,7 +93,7 @@ SELECT
 FROM
     monitor
 WHERE
-    ts > NOW() - INTERVAL '24 hours'
+    ts > NOW() - '24 hours'::INTERVAL
 ALIGN '1h' TO NOW
 ORDER BY ts DESC;
 ```

@@ -134,7 +134,7 @@ And of course, you can manipulate time with intervals by arithmetics.
 Get the time of 5 minutes go:
 
 ```sql
-SELECT now() - INTERVAL '5 minute';
+SELECT now() - '5 minute'::INTERVAL;
 ```
 
 ```sql
@@ -145,21 +145,13 @@ SELECT now() - INTERVAL '5 minute';
 +----------------------------------------------+
 ```
 
-Note that you can also input the interval type using the `INTERVAL 'literal'` format. Using the syntax `'-1 hour -5 minute'::INTERVAL` explicitly casts the string to an interval type, which is how SQL handles type conversion.
-
 GreptimeDB also supports shorthand forms without spaces, such as `3y2mon4h`:
 
 ```sql
-SELECT INTERVAL '3y2mon4h';
 SELECT '3y2mon4h'::INTERVAL;
 ```
 
 ```
-+---------------------------------------------------------+
-| IntervalMonthDayNano("3010670175542044842954670112768") |
-+---------------------------------------------------------+
-| P3Y2M0DT4H0M0S                                          |
-+---------------------------------------------------------+
 +---------------------------------------------------------+
 | IntervalMonthDayNano("3010670175542044842954670112768") |
 +---------------------------------------------------------+
@@ -170,16 +162,10 @@ SELECT '3y2mon4h'::INTERVAL;
 It also supports signed numbers:
 
 ```sql
-SELECT INTERVAL '-1h5m';
 SELECT '-1h5m'::INTERVAL;
 ```
 
 ```
-+----------------------------------------------+
-| IntervalMonthDayNano("18446740773709551616") |
-+----------------------------------------------+
-| P0Y0M0DT0H-55M0S                             |
-+----------------------------------------------+
 +----------------------------------------------+
 | IntervalMonthDayNano("18446740773709551616") |
 +----------------------------------------------+
