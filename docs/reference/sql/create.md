@@ -92,7 +92,7 @@ The statement won't do anything if the table already exists and `IF NOT EXISTS` 
 
 #### Indexes
 
-GreptimeDB provides various type of indexes to accelerate query. Please refer to [Data Index](./user-guide/manage-data/data-index.md) for more details.
+GreptimeDB provides various type of indexes to accelerate query. Please refer to [Data Index](/user-guide/manage-data/data-index.md) for more details.
 
 ### Table options
 
