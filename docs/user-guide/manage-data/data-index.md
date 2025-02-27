@@ -31,11 +31,10 @@ An inverted index is particularly useful for tag columns. It creates a mapping b
 Example:
 ```sql
 CREATE TABLE monitoring_data (
-    host STRING,
-    region STRING PRIMARY KEY,
+    host STRING INVERTED INDEX,
+    region STRING PRIMARY KEY INVERTED INDEX,
     cpu_usage DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
-    INVERTED INDEX(host, region)
 );
 ```
 

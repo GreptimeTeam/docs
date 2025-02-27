@@ -31,11 +31,10 @@ GreptimeDB 提供了多种索引机制来提升查询性能。作为数据库中
 示例：
 ```sql
 CREATE TABLE monitoring_data (
-    host STRING,
-    region STRING PRIMARY KEY,
+    host STRING INVERTED INDEX,
+    region STRING PRIMARY KEY INVERTED INDEX,
     cpu_usage DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
-    INVERTED INDEX(host, region)
 );
 ```
 
