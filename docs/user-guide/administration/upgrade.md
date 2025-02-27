@@ -1,182 +1,209 @@
 ---
-keywords: [GreptimeDB upgrade, CLI tool, data export, data import, schema export, schema import, upgrade example]
-description: Instructions on upgrading GreptimeDB using the built-in CLI tool, including exporting and importing data and schemas, and a complete example for upgrading.
+keywords: [GreptimeDB upgrade, upgrade example]
+description: Introduce how to upgrade GreptimeDB to the latest version, including some incompatible changes and specific upgrade steps.
 ---
 
 # Upgrade
 
-From `v0.4`, we provide a built-in utility to help upgrade your previous GreptimeDB deployment to the latest version if there are some breaking changes.
-It's recommended to use this method to upgrade your GreptimeDB with different versions.
+Before upgrading to the latest version, it's recommended to upgrade your GreptimeDB deployment to `v0.11` first. You can refer to the upgrade guide for `v0.11` for more details.
+This guide only covers the upgrade process from `v0.11` to the latest version.
 
-The lowest version that can be upgraded by this tool is `v0.3.0`.
 
-## CLI
+## Upgrade from v0.11.x
 
-This tool is in the `greptime` binary. You need to prepare the corresponding binary of target version before start.
+The data format of the latest version is compatible with `v0.11.x`. You don't need to export and import data.
+However, there are some breaking changes between `v0.11.x` and the latest version. You may need some manual operations to upgrade your GreptimeDB deployment.
 
-```shell
-greptime cli export --help
+### Update cache configuration
+
+The cache configuration and default cache path changed in `v0.12`. The default read cache is under the `${data_home}/cache/object/read` and the default write cache is under the `${data_home}/cache/object/write` now.
+
+The `cache_path` configuration only sets the home directory of the read cache.
+GreptimeDB always uses the `cache/object/read` subdirectory under the cache home.
+The default `cache_path` is the `${data_home}`.
+It's recommended not to set the `cache_path` manually and let GreptimeDB manage the cache path.
+You can remove the `cache_path` when you upgrade to `v0.12`.
+
+```toml
+[storage]
+type = "S3"
+bucket = "ap-southeast-1-test-bucket"
+root = "your-root"
+access_key_id = "****"
+secret_access_key = "****"
+endpoint = "https://s3.amazonaws.com/"
+region = "your-region"
+# No need to set cache_path manually.
+# cache_path = "/path/to/cache/home"
+cache_capacity = "10G"
 ```
 
-And the help text is as follows:
+Since `v0.12`, you don't need to add `experimental` to the write cache configuration. If you have the following configuration in `v0.11`:
 
-```shell
-greptime-cli-export 
-
-USAGE:
-    greptime cli export [OPTIONS] --addr <ADDR> --output-dir <OUTPUT_DIR> --target <TARGET>
-
-OPTIONS:
-      --addr <ADDR>
-          Server address to connect
-
-      --output-dir <OUTPUT_DIR>
-          Directory to put the exported data. E.g.: /tmp/greptimedb-export
-
-      --database <DATABASE>
-          The name of the catalog to export
-          
-          [default: greptime-*]
-
-  -j, --export-jobs <EXPORT_JOBS>
-          Parallelism of the export
-          
-          [default: 1]
-
-      --max-retry <MAX_RETRY>
-          Max retry times for each job
-          
-          [default: 3]
-
-  -t, --target <TARGET>
-          Things to export
-          
-          [default: all]
-
-          Possible values:
-          - schema: Export all table schemas, corresponding to `SHOW CREATE TABLE`
-          - data:   Export all table data, corresponding to `COPY DATABASE TO`
-          - all:    Export all table schemas and data at once
-
-      --log-dir <LOG_DIR>
-          
-
-      --start-time <START_TIME>
-          A half-open time range: [start_time, end_time). The start of the time range (time-index column) for data export
-
-      --end-time <END_TIME>
-          A half-open time range: [start_time, end_time). The end of the time range (time-index column) for data export
-
-      --log-level <LOG_LEVEL>
-          
-
-      --auth-basic <AUTH_BASIC>
-          The basic authentication for connecting to the server
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
+```toml
+[[region_engine]]
+[region_engine.mito]
+enable_experimental_write_cache = true
+experimental_write_cache_size = "10G"
+experimental_write_cache_ttl = "8h"
+experimental_write_cache_path = "/path/to/write/cache"
 ```
 
-Here explains the meaning of some important options
+You need to change it to:
 
-- `--addr`: The server address of the Frontend node or Standalone process.
-- `--output-dir`: The directory to put the exported data. Give a path at your current machine. The exported SQL files will be put in that directory.
-- `-target`: Specifies the data to export. The `schema` option exports the `CREATE TABLE` clause for each table. The `data` option exports the data of each database along with the `COPY FROM` clause. By default, all data is exported for both `schema` and `data`. It is recommended not to specify this option that use the default value to export all data.
-
-For a complete upgrade, you will need to execute this tools twice with each target options.
-
-## Upgrade from 0.8.x
-
-Here is a complete example for upgrading from `v0.8.x` to `v0.9.x`.
-
-### Export `CREATE TABLE`s and table data at once
-
-Assuming the HTTP service port of the old database is `4000`.
-
-```shell
-greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export
+```toml
+[[region_engine]]
+[region_engine.mito]
+write_cache_size = "10G"
+write_cache_ttl = "8h"
+# No need to set write_cache_path manually.
+# write_cache_path = "${data_home}"
 ```
 
-If success, you will see something like this
+The `write_cache_path` configuration only sets the home directory of the write cache.
+GreptimeDB always uses the `cache/object/write` subdirectory under the cache home.
+The default `write_cache_path` is the `${data_home}`.
+It's recommended not to set the `write_cache_path` manually and let GreptimeDB manage the cache path.
 
-```log
-2024-08-01T06:32:26.547809Z  INFO cmd: Starting app: greptime-cli
-2024-08-01T06:32:27.239639Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private with 0 table schemas to path: /tmp/greptimedb-export/greptime/greptime_private/
-2024-08-01T06:32:27.540696Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog with 0 table schemas to path: /tmp/greptimedb-export/greptime/pg_catalog/
-2024-08-01T06:32:27.832018Z  INFO cmd::cli::export: Finished exporting greptime.public with 0 table schemas to path: /tmp/greptimedb-export/greptime/public/
-2024-08-01T06:32:28.272054Z  INFO cmd::cli::export: Finished exporting greptime.test with 1 table schemas to path: /tmp/greptimedb-export/greptime/test/
-2024-08-01T06:32:28.272166Z  INFO cmd::cli::export: Success 4/4 jobs, cost: 1.724222791s
-2024-08-01T06:32:28.416532Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."greptime_private" TO '/tmp/greptimedb-export/greptime/greptime_private/' WITH (FORMAT='parquet');
-2024-08-01T06:32:28.556017Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private data into path: /tmp/greptimedb-export/greptime/greptime_private/
-2024-08-01T06:32:28.556330Z  INFO cmd::cli::export: Finished exporting greptime.greptime_private copy_from.sql
-2024-08-01T06:32:28.556424Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."pg_catalog" TO '/tmp/greptimedb-export/greptime/pg_catalog/' WITH (FORMAT='parquet');
-2024-08-01T06:32:28.738719Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog data into path: /tmp/greptimedb-export/greptime/pg_catalog/
-2024-08-01T06:32:28.738998Z  INFO cmd::cli::export: Finished exporting greptime.pg_catalog copy_from.sql
-2024-08-01T06:32:28.739098Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."public" TO '/tmp/greptimedb-export/greptime/public/' WITH (FORMAT='parquet');
-2024-08-01T06:32:28.875600Z  INFO cmd::cli::export: Finished exporting greptime.public data into path: /tmp/greptimedb-export/greptime/public/
-2024-08-01T06:32:28.875888Z  INFO cmd::cli::export: Finished exporting greptime.public copy_from.sql
-2024-08-01T06:32:28.876005Z  INFO cmd::cli::export: Executing sql: COPY DATABASE "greptime"."test" TO '/tmp/greptimedb-export/greptime/test/' WITH (FORMAT='parquet');
-2024-08-01T06:32:29.053681Z  INFO cmd::cli::export: Finished exporting greptime.test data into path: /tmp/greptimedb-export/greptime/test/
-2024-08-01T06:32:29.054104Z  INFO cmd::cli::export: Finished exporting greptime.test copy_from.sql
-2024-08-01T06:32:29.054162Z  INFO cmd::cli::export: Success 4/4 jobs, costs: 781.98875ms
-2024-08-01T06:32:29.054181Z  INFO cmd: Goodbye!
+
+You can also remove the legacy cache directory of your `cache_path` and `experimental_write_cache_path` to release disk space.
+The legacy cache directory may be located at `${data_home}/object_cache/read`, `${data_home}/object_cache/write`, `${data_home}/write_cache`.
+
+## Update gRPC configuration
+
+Before `v0.12`, the gRPC configuration item is as follows:
+
+```toml
+[grpc]
+## The address to bind the gRPC server.
+addr = "127.0.0.1:3001"
+## The hostname advertised to the metasrv,
+## and used for connections from outside the host
+hostname = "127.0.0.1:3001"
+``` 
+
+Since `v0.12`, the gRPC configuration item is as follows:
+
+```toml
+[grpc]
+## The address to bind the gRPC server.
+bind_addr = "127.0.0.1:3001"
+## The address advertised to the metasrv, and used for connections from outside the host.
+## If left empty or unset, the server will automatically use the IP address of the first network interface
+## on the host, with the same port number as the one specified in `grpc.bind_addr`.
+server_addr = "127.0.0.1:3001"
+``` 
+
+The changes involve two configuration item modifications:
+- `addr` is now `bind_addr`, representing the gRPC server's binding address.
+- `hostname` is now `server_addr`, which is the communication address broadcasted to other nodes outside the host for connecting with this node.
+
+These modifications aim to ensure clear and precise semantics of configuration items.
+
+### Create index manually
+
+Before `v0.12`, GreptimeDB automatically creates inverted index for tags (columns in the primary key).
+You can use `SHOW INDEX` to view the index information.
+The `greptime-inverted-index-v1` is the index type for the inverted index.
+
+```sql
+CREATE TABLE IF NOT EXISTS `cpu` (
+  `hostname` STRING NULL,
+  `region` STRING NULL,
+  `usage_user` BIGINT NULL,
+  `usage_system` BIGINT NULL,
+  `usage_idle` BIGINT NULL,
+  `ts` TIMESTAMP(9) NOT NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`hostname`, `region`)
+)
+ENGINE=mito;
+
+SHOW INDEX FROM `cpu`;
 ```
 
-And now the output directory structure is
-
-```plaintext
-/tmp/greptimedb-export/
-├── greptime/public
-│   ├── copy_from.sql
-│   ├── create_tables.sql
-│   ├── up.parquet
-│   └── other-tables.parquet
+```bash
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY    |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY    |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                            |         |               | YES     |       NULL |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
 ```
 
-The content includes `create_tables.sql`, `copy_from.sql`, and the parquet files for each table in the DB `greptime-public`. The `create_tables.sql` contains the create table statements for all tables in the current DB, while `copy_from.sql` includes a single `COPY DATABASE FROM` statement used to copy data files to the target DB. The remaining parquet files are the data files for each table.
+Since `v0.12`, GreptimeDB decouples the inverted index from the primary key and does not create inverted index automatically for a table that uses mito engine.
 
-### Import table schema and data
-
-Then you need to execute SQL files generated by the previous step. First is `create_tables.sql`. SQL generated in previous step is in PostgreSQL dialect, we will use [PostgreSQL protocol](/user-guide/protocols/postgresql.md) in the following steps. This document assumes the client is `psql`.
-
-:::tip NOTICE
-From this step, all the operation is done in the new version of GreptimeDB.
-
-The default port of PostgreSQL protocol is `4003`.
-:::
-
-Before executing the following command, you need first to create the corresponding database in your new deployment (but in this example, the database `greptime-public` is the default one).
-
-This command will create all the tables in the new version of GreptimeDB.
-
-```shell
-psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptimedb-export/greptime/public/create_tables.sql
+```sql
+SHOW INDEX FROM `cpu`;
 ```
 
-And then import the data
+The default index type for a primary key column is `greptime-primary-key-v1`.
 
-```shell
-psql -h 127.0.0.1 -p 4003 -d public -f /tmp/greptimedb-export/greptime/public/copy_from.sql
+```bash
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name   | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type              | Comment | Index_comment | Visible | Expression |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY    |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY    |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                         |         |               | YES     |       NULL |
++-------+------------+------------+--------------+-------------+-----------+-------------+----------+--------+------+-------------------------+---------+---------------+---------+------------+
 ```
 
-### Clean up
+When GreptimeDB opens a table created before `v0.12`, it can use the generated index file before `v0.12`, but won't automatically index new data.
+You can use the `ALTER TABLE` statement to create a new index for a column on demand.
 
-At this step all the data is migrated. You can check the data in the new cluster.
+For example, you can create an inverted index for the `region` column:
+```sql
+ALTER TABLE `cpu` MODIFY COLUMN `region` SET INVERTED INDEX;
 
-After confirming that the data is correct, you can clean up the old cluster and the temporary `--output-dir`. `/tmp/greptimedb-export` at this example.
+SHOW INDEX FROM `cpu`;
+```
 
-## Recommended overall process
+```bash
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+| Table | Non_unique | Key_name                | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                                          | Comment | Index_comment | Visible | Expression |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+| cpu   |          1 | PRIMARY                 |            1 | hostname    | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1                             |         |               | YES     |       NULL |
+| cpu   |          1 | PRIMARY, INVERTED INDEX |            2 | region      | A         |        NULL |     NULL |   NULL | YES  | greptime-primary-key-v1, greptime-inverted-index-v1 |         |               | YES     |       NULL |
+| cpu   |          1 | TIME INDEX              |            1 | ts          | A         |        NULL |     NULL |   NULL | NO   |                                                     |         |               | YES     |       NULL |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+-----------------------------------------------------+---------+---------------+---------+------------+
+```
 
-This section gives a recommended overall process for upgrading GreptimeDB smoothly. You can skip this section if your environment can go offline on the upgrade progress.
+However, if you already created the index for a table manually before upgrading, you can skip this step. You can always use `SHOW INDEXES` to check the index status.
+For example, if a table already has a full-text index, you don't need to create the index again after upgrading.
 
-1. Create a brand new v0.9.x cluster.
-2. Use the v0.9.x CLI tool to export and import `create-table`.
-3. Switch the workload to the new cluster.
-4. Use the v0.9.x CLI tool to export and import `database-data`.
+```bash
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| Table         | Non_unique | Key_name       | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type                 | Comment | Index_comment | Visible | Expression |
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+| test_fulltext |          1 | FULLTEXT INDEX |            1 | message     | A         |        NULL |     NULL |   NULL | YES  | greptime-fulltext-index-v1 |         |               | YES     |       NULL |
+| test_fulltext |          1 | TIME INDEX     |            1 | timestamp   | A         |        NULL |     NULL |   NULL | NO   |                            |         |               | YES     |       NULL |
++---------------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+----------------------------+---------+---------------+---------+------------+
+```
 
-Caveats
-- Changes to table structure between step 2 and 3 will be lost
-- Old data is invisible in new cluster until step 4 is done
+
+### Update CREATE TABLE statement
+
+GreptimeDB changed the `CREATE TABLE` statement in `v0.12`. You can only use column constraints to create inverted, skipping and fulltext index.
+You must specify the `INDEX` keyword after the index type when creating an index.
+
+The following SQL statement creates a full-text index no longer supported in GreptimeDB v0.12.
+
+```sql
+CREATE TABLE IF NOT EXISTS `logs` (
+  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  ts TIMESTAMP(9) NOT NULL,
+  TIME INDEX (ts),
+);
+```
+
+You have to change the SQL to:
+
+```sql
+CREATE TABLE IF NOT EXISTS `logs` (
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
+  ts TIMESTAMP(9) NOT NULL,
+  TIME INDEX (ts),
+);
+```
