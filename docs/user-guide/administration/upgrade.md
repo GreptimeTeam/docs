@@ -151,7 +151,7 @@ The default index type for a primary key column is `greptime-primary-key-v1`.
 ```
 
 When GreptimeDB opens a table created before `v0.12`, it can use the generated index file before `v0.12`, but won't automatically index new data.
-You need to create index manually. You can use the `ALTER TABLE` statement to create a new index for a column on demand.
+You can use the `ALTER TABLE` statement to create a new index for a column on demand.
 
 For example, you can create an inverted index for the `region` column:
 ```sql
