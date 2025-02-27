@@ -157,7 +157,7 @@ SELECT * FROM monitor WHERE ts > '2022-07-25 10:32:16.408';
 例如，使用 `now()` 函数和 `INTERVAL` 关键字来获取最近 5 分钟的数据：
 
 ```sql
-SELECT * FROM monitor WHERE ts >= now() - INTERVAL '5 minutes';
+SELECT * FROM monitor WHERE ts >= now() - '5 minutes'::INTERVAL;
 ```
 
 请参考 [Functions](/reference/sql/functions/overview.md) 获取更多时间函数信息。

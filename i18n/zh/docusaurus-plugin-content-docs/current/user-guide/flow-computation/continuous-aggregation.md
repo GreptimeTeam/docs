@@ -72,7 +72,7 @@ SELECT
     max(size) as max_size,
     avg(size) as avg_size,
     sum(case when `size` > 550 then 1 else 0 end) as high_size_count,
-    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
     status,
@@ -168,7 +168,7 @@ SINK TO ngx_country
 AS
 SELECT
     DISTINCT country,
-    date_bin(INTERVAL '1 hour', access_time) as time_window,
+    date_bin('1 hour'::INTERVAL, access_time) as time_window,
 FROM ngx_access_log
 GROUP BY
     country,
@@ -246,7 +246,7 @@ SELECT
     sensor_id,
     loc,
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window,
+    date_bin('10 seconds'::INTERVAL, ts) as time_window,
 FROM temp_sensor_data
 GROUP BY
     sensor_id,
@@ -328,7 +328,7 @@ SELECT
     stat,
     trunc(size, -1)::INT as bucket_size,
     count(client) AS total_logs,
-    date_bin(INTERVAL '1 minutes', access_time) as time_window,
+    date_bin('1 minutes'::INTERVAL, access_time) as time_window,
 FROM
     ngx_access_log
 GROUP BY

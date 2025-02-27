@@ -66,7 +66,7 @@ SELECT
   sensor_id,
   loc,
   max(temperature) AS max_temp,
-  date_bin(INTERVAL '10 seconds', ts) AS time_window
+  date_bin('10 seconds'::INTERVAL, ts) AS time_window
 FROM temp_sensor_data
 GROUP BY
   sensor_id,
@@ -77,7 +77,7 @@ HAVING max_temp > 100;
 
 The sink table has the columns `sensor_id`, `loc`, `max_temp`, `time_window`, and `update_at`.
 
-- The first four columns correspond to the query result columns of flow: `sensor_id`, `loc`, `max(temperature)` and `date_bin(INTERVAL '10 seconds', ts)` respectively.
+- The first four columns correspond to the query result columns of flow: `sensor_id`, `loc`, `max(temperature)` and `date_bin('10 seconds'::INTERVAL, ts)` respectively.
 - The `time_window` column is specified as the `TIME INDEX` for the sink table.
 - The `update_at` column is the last one in the schema to store the update time of the data.
 - The `PRIMARY KEY` at the end of the schema definition specifies `sensor_id` and `loc` as the tag columns.
@@ -127,12 +127,12 @@ A simple example to create a flow:
 ```sql
 CREATE FLOW IF NOT EXISTS my_flow
 SINK TO my_sink_table
-EXPIRE AFTER INTERVAL '1 hour'
+EXPIRE AFTER '1 hour'::INTERVAL
 COMMENT 'My first flow in GreptimeDB'
 AS
 SELECT
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window,
+    date_bin('10 seconds'::INTERVAL, ts) as time_window,
 FROM temp_sensor_data
 GROUP BY time_window;
 ```
@@ -147,7 +147,7 @@ This expiration only affects the data in the flow engine and does not impact the
 When the flow engine processes the aggregation operation (the `update_at` time),
 data with a time index older than the specified interval will expire.
 
-For example, if the flow engine processes the aggregation at 10:00:00 and the `INTERVAL '1 hour'` is set,
+For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any data older than 1 hour (before 09:00:00) will expire.
 Only data timestamped from 09:00:00 onwards will be used in the aggregation.
 
@@ -199,12 +199,12 @@ For example:
 ```sql
 SELECT
     max(temperature) as max_temp,
-    date_bin(INTERVAL '10 seconds', ts) as time_window
+    date_bin('10 seconds'::INTERVAL, ts) as time_window
 FROM temp_sensor_data
 GROUP BY time_window;
 ```
 
-In this example, the `date_bin(INTERVAL '10 seconds', ts)` function creates 10-second time windows starting from UTC 00:00:00.
+In this example, the `date_bin('10 seconds'::INTERVAL, ts)` function creates 10-second time windows starting from UTC 00:00:00.
 The `max(temperature)` function calculates the maximum temperature value within each time window.
 
 For more details on the behavior of the function,
