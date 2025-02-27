@@ -116,6 +116,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 | `append_mode`           | 该表是否时 append-only 的     | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行    |
 | `merge_mode` | 合并重复行的策略 | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `comment`           | 表级注释     | 字符串值.      |
+| `index.type`                                |  Index 类型                                                     | **仅用于 metric engine**  字符串值, 支持 `none`, `skipping`.                                                                                                                                                                                      |
 
 #### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
@@ -242,6 +243,43 @@ SELECT * from metrics ORDER BY host, ts;
 | host2 | 1970-01-01T00:00:00.001 | 11.0 | 1.0    |
 +-------+-------------------------+------+--------+
 ```
+
+#### 创建 metric engine 的物理表
+
+Metrics engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metrics engine 文档](/contributor-guide/datanode/metric-engine).
+
+创建一个使用 metrics engine 的物理表。
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+);
+```
+
+#### 创建一个带有跳跃索引的物理表
+
+默认情况下，metrics engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
+
+创建一个带有跳跃索引的物理表。所有自动添加的列都将应用跳跃索引。
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",
+    "index.type" = "skipping",
+);
+```
+
 
 ### 列选项
 

@@ -147,6 +147,32 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND job = "job1";
 ```
 
+## 性能优化
+
+默认情况下，metric engine 会自动创建一个名为 `physical_metric_table` 的物理表。
+为了优化性能，你可以选择创建一个具有自定义配置的物理表。
+
+### 启用跳跃索引
+
+默认情况下，metric engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
+
+创建一个带有跳跃索引的物理表。所有自动添加的列都将应用跳跃索引。
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",
+    "index.type" = "skipping"
+);
+```
+有关更多配置，请参阅 [create table](/reference/sql/create.md#create-table) 部分。
+
+
 ## VictoriaMetrics Remote Write
 
 VictoriaMetrics 对 Prometheus 远程写入协议进行了轻微修改，以实现更好的压缩效果。

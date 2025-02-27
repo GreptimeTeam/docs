@@ -162,7 +162,7 @@ By default, the metrics engine will automatically create a physical table named 
 
 ### Enable skipping index
 
-By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
+By default, the metric engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
 
 Create a physical table with a skipping index. All automatically added columns will have a skipping index applied.
 
