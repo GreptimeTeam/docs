@@ -49,7 +49,7 @@ GreptimeDB 可以被视为多值数据模型，自动将多个 Prometheus 指标
 当指标通过远程写入端点写入 GreptimeDB 时，它们将被转换为以下形式：
 
 | Sample Metrics | In GreptimeDB             | GreptimeDB Data Types |
-|----------------|---------------------------|-----------------------|
+| -------------- | ------------------------- | --------------------- |
 | Name           | Table (Auto-created) Name | String                |
 | Value          | Column (Field)            | Double                |
 | Timestamp      | Column (Time Index)       | Timestamp             |
@@ -152,11 +152,11 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
 默认情况下，metric engine 会自动创建一个名为 `physical_metric_table` 的物理表。
 为了优化性能，你可以选择创建一个具有自定义配置的物理表。
 
-### 启用跳跃索引
+### 启用跳数索引
 
 默认情况下，metric engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
 
-创建一个带有跳跃索引的物理表。所有自动添加的列都将应用跳跃索引。
+创建一个带有跳数索引的物理表。所有自动添加的列都将应用跳数索引。
 
 ```sql
 CREATE TABLE greptime_physical_table (
