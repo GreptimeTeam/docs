@@ -133,7 +133,7 @@ const config: Config = {
           ],
           versions: {
             current: {
-              label: 'nightly',
+              label: 'Nightly',
               path: 'nightly',
             }
           },
