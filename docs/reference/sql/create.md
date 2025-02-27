@@ -256,29 +256,6 @@ with (
 );
 ```
 
-#### Create a physical table with sparse encoding (experimental)
-
-:::warning Warning
-The sparse encoding is an experimental feature. It maybe breaking changes in the future.
-:::
-
-Sparse encoding is a primary key encoding technique designed to enhance the storage efficiency of the metrics engine. It is particularly beneficial for handling sparse labels, allowing the engine to optimize storage and improve performance.
-
-Create a physical table with sparse primary key encoding.
-```sql
-CREATE TABLE greptime_physical_table (
-    greptime_timestamp TIMESTAMP(3) NOT NULL,
-    greptime_value DOUBLE NULL,
-    TIME INDEX (greptime_timestamp),
-) 
-engine = metric
-with (
-    "physical_metric_table" = "",   
-    "memtable.type" = "partition_tree",
-    "memtable.partition_tree.primary_key_encoding" = "sparse",
-);
-```
-
 #### Create a physical table with enable skipping index for columns
 
 By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
