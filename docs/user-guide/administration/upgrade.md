@@ -69,6 +69,36 @@ It's recommended not to set the `write_cache_path` manually and let GreptimeDB m
 You can also remove the legacy cache directory of your `cache_path` and `experimental_write_cache_path` to release disk space.
 The legacy cache directory may be located at `${data_home}/object_cache/read`, `${data_home}/object_cache/write`, `${data_home}/write_cache`.
 
+## Update gRPC configuration
+
+Before `v0.12`, the gRPC configuration item is as follows:
+
+```toml
+[grpc]
+## The address to bind the gRPC server.
+addr = "127.0.0.1:3001"
+## The hostname advertised to the metasrv,
+## and used for connections from outside the host
+hostname = "127.0.0.1:3001"
+``` 
+
+Since `v0.12`, the gRPC configuration item is as follows:
+
+```toml
+[grpc]
+## The address to bind the gRPC server.
+bind_addr = "127.0.0.1:3001"
+## The address advertised to the metasrv, and used for connections from outside the host.
+## If left empty or unset, the server will automatically use the IP address of the first network interface
+## on the host, with the same port number as the one specified in `grpc.bind_addr`.
+server_addr = "127.0.0.1:3001"
+``` 
+
+The changes involve two configuration item modifications:
+- `addr` is now `bind_addr`, representing the gRPC server's binding address.
+- `hostname` is now `server_addr`, which is the communication address broadcasted to other nodes outside the host for connecting with this node.
+
+These modifications aim to ensure clear and precise semantics of configuration items.
 
 ### Create index manually
 
