@@ -1,6 +1,6 @@
 ---
-keywords: [query languages, PromQL, SQL, views, CTE, query libraries, external data]
-description: Overview of query languages supported by GreptimeDB, including PromQL and SQL, and recommended libraries for querying data.
+keywords: [query languages, PromQL, SQL, views, CTE, query libraries, external data, log query]
+description: Overview of query languages and features supported by GreptimeDB, including PromQL, SQL, and log query capabilities.
 ---
 
 # Overview
@@ -9,6 +9,7 @@ description: Overview of query languages supported by GreptimeDB, including Prom
 
 - [PromQL](./promql.md)
 - [SQL](./sql.md)
+- [Log Query](./log-query.md) (Experimental)
 
 Since v0.9, GreptimeDB supports view and CTE just like other databases, used to simplify queries:
 
