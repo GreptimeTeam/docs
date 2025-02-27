@@ -2,18 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { minimatch } = require('minimatch')
 
-// List of files to ignore during the front matter check
-// Add the special files here, for example, the template files
-const exceptionFiles = [
-  'docs/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
-  'docs/db-cloud-shared/migrate/_migrate-from-prometheus.md',
-  'docs/db-cloud-shared/migrate/migrate-from-influxdb.md',
-  'i18n/zh/docusaurus-plugin-content-docs/current/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
-  'i18n/zh/docusaurus-plugin-content-docs/version-0.11/user-guide/ingest-data/for-iot/grpc-sdks/template.md',
-  'i18n/zh/docusaurus-plugin-content-docs/current/db-cloud-shared/migrate/_migrate-from-prometheus.md',
-  'i18n/zh/docusaurus-plugin-content-docs/current/db-cloud-shared/migrate/migrate-from-influxdb.md'
+// List of glob patterns to ignore during the front matter check
+const exceptionPatterns = [
+  '**/grpc-sdks/template.md',
+  '**/db-cloud-shared/**',
 ];
+
+// Check if a file matches any of the exception patterns
+function isExceptionFile(filename) {
+  return exceptionPatterns.some(pattern => minimatch(filename, pattern));
+}
 
 // This function checks if a markdown file contains the required front matter.
 function hasFrontMatter(filePath) {
@@ -59,8 +59,8 @@ async function checkMarkdownFiles() {
 
     // Check each markdown file for front matter
     for (const file of markdownFiles) {
-      // Skip files in the exception list
-      if (exceptionFiles.includes(file.filename)) {
+      // Skip files that match exception patterns
+      if (isExceptionFile(file.filename)) {
         console.log(`Skipping front matter check for: ${file.filename}`);
         continue;
       }
