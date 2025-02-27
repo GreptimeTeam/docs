@@ -36,7 +36,7 @@ This endpoint has the same response format as the SQL query endpoint. Please ref
 
 ## Example
 
-The following example demonstrates how to query log data using the log query endpoint.
+The following example demonstrates how to query log data using the log query endpoint (notice that in this experimental phase the following example might be outdated).
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \
