@@ -52,7 +52,7 @@ When the metrics are written into GreptimeDB by remote write endpoint, they will
 follows:
 
 | Sample Metrics | In GreptimeDB             | GreptimeDB Data Types |
-|----------------|---------------------------|-----------------------|
+| -------------- | ------------------------- | --------------------- |
 | Name           | Table (Auto-created) Name | String                |
 | Value          | Column (Field)            | Double                |
 | Timestamp      | Column (Time Index)       | Timestamp             |
@@ -155,6 +155,30 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND device = "device1"
   AND job = "job1";
 ```
+
+## Performance tuning
+
+By default, the metric engine will automatically create a physical table named `physical_metric_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
+
+### Enable skipping index
+
+By default, the metric engine won't create indexes for columns. You can enable it by setting the `index.type` to `skipping`.
+
+Create a physical table with a skipping index; all automatically added columns will have this index applied.
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",
+    "index.type" = "skipping"
+);
+```
+For more configurations, please refer to the [create table](/reference/sql/create.md#create-table) section.
 
 ## VictoriaMetrics remote write
 

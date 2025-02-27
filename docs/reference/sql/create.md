@@ -102,18 +102,19 @@ The statement won't do anything if the table already exists and `IF NOT EXISTS` 
 
 Users can add table options by using `WITH`. The valid options contain the following:
 
-| Option              | Description                                   | Value                                                                                                                                                                        |
-| ------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`               | The storage time of the table data            |  A time duration string such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`. |
-| `storage`           | The name of the table storage engine provider | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments/configuration.md#storage-engine-provider). |
-| `compaction.type` | Compaction strategy of the table         | String value. Only `twcs` is allowed. |
-| `compaction.twcs.max_active_window_files` | Max num of files that can be kept in active writing time window         | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
-| `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.         | String value, such as '1'. Only available when `compaction.type` is `twcs`. |
-| `compaction.twcs.time_window` | Compaction time window    | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.  |
-| `memtable.type` | Type of the memtable.         | String value, supports `time_series`, `partition_tree`. |
-| `append_mode`           | Whether the table is append-only     | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.     |
-| `merge_mode`           | The strategy to merge duplicate rows     | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.     |
-| `comment`           | Table level comment   | String value.      |
+| Option                                      | Description                                                     | Value                                                                                                                                                                                                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ttl`                                       | The storage time of the table data                              | A time duration string such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`.                                                                                                                      |
+| `storage`                                   | The name of the table storage engine provider                   | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments/configuration.md#storage-engine-provider).                                                                            |
+| `compaction.type`                           | Compaction strategy of the table                                | String value. Only `twcs` is allowed.                                                                                                                                                                                                                       |
+| `compaction.twcs.max_active_window_files`   | Max num of files that can be kept in active writing time window | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
+| `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.      | String value, such as '1'. Only available when `compaction.type` is `twcs`.                                                                                                                                                                                 |
+| `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
+| `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
+| `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
+| `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
+| `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
+| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
@@ -238,17 +239,54 @@ SELECT * from metrics ORDER BY host, ts;
 +-------+-------------------------+------+--------+
 ```
 
+#### Create a physical table with metric engine
+
+The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine).
+
+Create a physical table with the metric engine.
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+);
+```
+
+#### Create a physical table with enable skipping index for columns
+
+By default, the metric engine won't create indexes for columns. You can enable it by setting the `index.type` to `skipping`.
+
+Create a physical table with a skipping index; all automatically added columns will have this index applied.
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",
+    "index.type" = "skipping",
+);
+```
+
+
 
 ### Column options
 
 GreptimeDB supports the following column options:
 
-| Option            | Description                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------- |
-| NULL              | The column value can be `null`.                                                       |
-| NOT NULL          | The column value can't be `null`.                                                     |
-| DEFAULT `expr`    | The column's default value is `expr`, which its result type must be the column's type |
-| COMMENT `comment` | The column comment. It must be a string value                                         |
+| Option            | Description                                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| NULL              | The column value can be `null`.                                                                            |
+| NOT NULL          | The column value can't be `null`.                                                                          |
+| DEFAULT `expr`    | The column's default value is `expr`, which its result type must be the column's type                      |
+| COMMENT `comment` | The column comment. It must be a string value                                                              |
 | FULLTEXT          | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :

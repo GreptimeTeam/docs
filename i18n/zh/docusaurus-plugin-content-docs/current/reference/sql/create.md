@@ -104,18 +104,19 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 用户可以使用 `WITH` 添加表选项。有效的选项包括以下内容：
 
-| 选项                | 描述                                     | 值                                                                                                                                                   |
-| ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ttl`               | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`|
-| `storage`           | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。 |
-| `compaction.type` | Compaction 策略         | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略 |
-| `compaction.twcs.max_active_window_files` | 当前活跃时间窗口内的最大文件数         | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用 |
-| `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数         | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用 |
-| `compaction.twcs.time_window` | Compaction 时间窗口    | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用 |
-| `memtable.type` | memtable 的类型         | 字符串值，支持 `time_series`，`partition_tree` |
-| `append_mode`           | 该表是否时 append-only 的     | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行    |
-| `merge_mode` | 合并重复行的策略 | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
-| `comment`           | 表级注释     | 字符串值.      |
+| 选项                                        | 描述                                     | 值                                                                                                                                                                       |
+| ------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ttl`                                       | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                                     |
+| `storage`                                   | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。                 |
+| `compaction.type`                           | Compaction 策略                          | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
+| `compaction.twcs.max_active_window_files`   | 当前活跃时间窗口内的最大文件数           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
+| `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数             | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
+| `compaction.twcs.time_window`               | Compaction 时间窗口                      | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                       |
+| `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
+| `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
+| `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
+| `comment`                                   | 表级注释                                 | 字符串值.                                                                                                                                                                |
+| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值, 支持 `none`, `skipping`.                                                                                                             |
 
 #### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
@@ -243,16 +244,53 @@ SELECT * from metrics ORDER BY host, ts;
 +-------+-------------------------+------+--------+
 ```
 
+#### 创建 metric engine 的物理表
+
+metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine).
+
+创建一个使用 metric engine 的物理表。
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",   
+);
+```
+
+#### 创建一个带有跳数索引的物理表
+
+默认情况下，metric engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
+
+创建一个带有跳数索引的物理表。所有自动添加的列都将应用跳数索引。
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    TIME INDEX (greptime_timestamp),
+) 
+engine = metric
+with (
+    "physical_metric_table" = "",
+    "index.type" = "skipping",
+);
+```
+
+
 ### 列选项
 
 GreptimeDB 支持以下列选项：
 
-| 选项              | 描述                                          |
-| ----------------- | --------------------------------------------- |
-| NULL              | 列值可以为 `null`                             |
-| NOT NULL          | 列值不能为 `null`                             |
-| DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型 |
-| COMMENT `comment` | 列注释，必须为字符串类型                      |
+| 选项              | 描述                                                     |
+| ----------------- | -------------------------------------------------------- |
+| NULL              | 列值可以为 `null`                                        |
+| NOT NULL          | 列值不能为 `null`                                        |
+| DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型            |
+| COMMENT `comment` | 列注释，必须为字符串类型                                 |
 | FULLTEXT          | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
