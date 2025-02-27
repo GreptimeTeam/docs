@@ -53,8 +53,8 @@ ALTER TABLE [db.]table
    [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
-    | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
-    | MODIFY COLUMN name UNSET FULLTEXT
+    | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
+    | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
     | UNSET <option_name>[, ...]
@@ -156,20 +156,20 @@ ALTER TABLE monitor UNSET 'ttl';
 Enable fulltext index on a column:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese', case_sensitive = 'false');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false');
 ```
 
-You can specify the following options using `FULLTEXT WITH` when enabling fulltext options:
+You can specify the following options using `FULLTEXT INDEX WITH` when enabling fulltext options:
 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
 
-If `WITH <options>` is not specified, `FULLTEXT` will use the default values.
+If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 
 #### Disable fulltext index on a column
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
+ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 ```
 
 The column must be a string type to alter the fulltext index.

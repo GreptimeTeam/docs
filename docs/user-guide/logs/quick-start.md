@@ -18,11 +18,11 @@ This is the simplest way to write logs to GreptimeDB.
 ### Create a table
 
 First, create a table named origin_logs to store your logs.
-The `FULLTEXT` specification for the message column in the following SQL creates a full-text index to optimize queries.
+The `FULLTEXT INDEX` specification for the message column in the following SQL creates a full-text index to optimize queries.
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'

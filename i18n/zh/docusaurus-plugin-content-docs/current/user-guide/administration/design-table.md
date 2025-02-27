@@ -135,27 +135,24 @@ IoT 设备可能成千上万，如果将他们的 ip 地址加入主键，
 ## 主键和倒排索引分离
 
 因此，从 `v0.10` 开始， GreptimeDB 支持将主键和索引分离，创建表的时候可以通过 `INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询，这种情况下 `PRIMARY KEY` 将不会自动创建索引，而仅是用于去重和排序：
-- 如果没有指定 `INVERTED INDEX`，则为 P`RIMARY KEY` 中的列创建倒排索引，也就是以前的行为。
-- 如果指定了 `INVERTED INDEX`，则仅为 I`NVERTED INDEX` 中的列创建倒排索引。特别的，当指定为 `INVERTED INDEX()`，代表不会为任何列创建倒排索引。
 
 我们改进前面的例子：
 
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
     host STRING,
-    idc STRING,
+    idc STRING INVERTED INDEX,
     cpu_util DOUBLE,
     memory_util DOUBLE,
     disk_util DOUBLE,
     `load` DOUBLE,
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(host, idc),
-    INVERTED INDEX(idc),
     TIME INDEX(ts)
 );
 ```
 
-`host` 和 `idc` 列仍然是主键列，结合 `ts` 一起做数据去重和排序优化，但是将默认不再自动为它们建立索引。我们通过 `INVERTED INDEX(idc)` 约束，为 `idc` 列建立倒排索引。这样就避免了 `host` 列的高基数可能导致的性能和存储瓶颈。
+`host` 和 `idc` 列仍然是主键列，结合 `ts` 一起做数据去重和排序优化，但是将默认不再自动为它们建立索引。我们通过 `INVERTED INDEX` 列约束为 `idc` 列建立倒排索引。这样就避免了 `host` 列的高基数可能导致的性能和存储瓶颈。
 
 ## 全文索引
 
@@ -163,13 +160,13 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 
 ```sql
 Create Table: CREATE TABLE IF NOT EXISTS `logs` (
-  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
   ts TIMESTAMP(9) NOT NULL,
   TIME INDEX (ts),
 )
 ```
 
-这里的 `message` 字段就通过 `FULLTEXT` 选项设置了全文索引。详见 [fulltext 列选项](/reference/sql/create.md#fulltext-列选项)。
+这里的 `message` 字段就通过 `FULLTEXT INDEX` 选项设置了全文索引。详见 [fulltext 列选项](/reference/sql/create.md#fulltext-列选项)。
 
 ## 跳数索引
 
@@ -191,7 +188,7 @@ CREATE TABLE sensor_data (
 |       | 倒排索引     |    全文索引     |       跳数索引|
 | ----- | ----------- | ------------- |------------- |
 | 适用场景 | - 基于标签值的数据查询 <br/> - 字符串列的过滤操作 <br/>- 标签列的精确查询 | - 文本内容搜索 <br/>- 模式匹配查询<br/>- 大规模文本过滤|- 数据分布稀疏的场景，例如日志中的 MAC 地址 <br/> - 在大规模数据集中查询出现频率较低的值|
-| 创建方式 | - 默认情况下加入 `PRIMARY KEY` 即自动创建 <br/> - 通过 `INVERTED INDEX(column1, column2,...)` 指定 |- 在列选项中指定 `FULLTEXT` | - 在列选项中指定 `SKIPPING INDEX` |
+| 创建方式 | - 通过 `INVERTED INDEX` 指定 |- 在列选项中指定 `FULLTEXT` | - 在列选项中指定 `SKIPPING INDEX` |
 
 
 ## 高基数问题
@@ -221,7 +218,7 @@ CREATE TABLE sensor_data (
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'

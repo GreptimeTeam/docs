@@ -191,9 +191,9 @@ VALUES ("127.0.0.1", "2024-07-11 20:00:01", NULL);
 CREATE TABLE app_logs (
     ts TIMESTAMP TIME INDEX,
     host STRING,
-    api_path STRING FULLTEXT,
+    api_path STRING FULLTEXT INDEX,
     log_level STRING,
-    log STRING FULLTEXT,
+    log STRING FULLTEXT INDEX,
     PRIMARY KEY (host, log_level)
 ) WITH ('append_mode'='true');
 ```

@@ -124,29 +124,26 @@ Therefore, starting from `v0.10`, GreptimeDB supports separating the primary key
 When creating a table, you can specify the [inverted index](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) columns using the `INVERTED INDEX` clause.
 In this case, the `PRIMARY KEY` will not be automatically indexed but will only be used for deduplication and sorting:
 
-- If `INVERTED INDEX` is not specified, inverted indexes are created for the columns in the `PRIMARY KEY`, which is the previous behavior.
-- If `INVERTED INDEX` is specified, inverted indexes are only created for the columns listed in `INVERTED INDEX`. Specifically, when `INVERTED INDEX()` is specified, it means that no inverted index will be created for any column.
 
 Example:
 
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
   host STRING,
-  idc STRING,
+  idc STRING INVERTED INDEX,
   cpu_util DOUBLE,
   memory_util DOUBLE,
   disk_util DOUBLE,
   `load` DOUBLE,
   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(host, idc),
-  INVERTED INDEX(idc),
   TIME INDEX(ts)
 );
 ```
 
 The `host` and `idc` columns remain as primary key columns and are used in conjunction with `ts` for data deduplication and sorting optimization.
 However, they will no longer be automatically indexed by default.
-By using the `INVERTED INDEX(idc)` constraint,
+By using the `INVERTED INDEX` column constraint,
 an inverted index is created specifically for the `idc` column.
 This approach helps to avoid potential performance and storage issues that could arise from the high cardinality of the `host` column.
 
@@ -158,13 +155,13 @@ Example:
 
 ```sql
 CREATE TABLE IF NOT EXISTS `logs` (
-  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
   ts TIMESTAMP(9) NOT NULL,
   TIME INDEX (ts),
 );
 ```
 
-The `message` field is full-text indexed using the `FULLTEXT` option.
+The `message` field is full-text indexed using the `FULLTEXT INDEX` option.
 See [fulltext column options](/reference/sql/create.md#fulltext-column-option) for more information.
 
 ## Skipping Index
@@ -193,7 +190,7 @@ However, note that the query efficiency and capability of the skipping index are
 |       | Inverted Index     |    Full-Text Index     |       Skip Index|
 | ----- | ----------- | ------------- |------------- |
 | Suitable Scenarios | - Data queries based on tag values <br/> - Filtering operations on string columns <br/>- Precise queries on tag columns | - Text content search <br/>- Pattern matching queries<br/>- Large-scale text filtering|- Sparse data distribution scenarios, such as MAC addresses in logs <br/> - Querying infrequent values in large datasets|
-| Creation Method | - Automatically created when added to `PRIMARY KEY` <br/> - Specified using `INVERTED INDEX(column1, column2,...)` |- Specified using `FULLTEXT` in column options | - Specified using `SKIPPING INDEX` in column options |
+| Creation Method | - Specified using `INVERTED INDEX` |- Specified using `FULLTEXT` in column options | - Specified using `SKIPPING INDEX` in column options |
 
 ## High Cardinality Issues
 
@@ -218,7 +215,7 @@ Example:
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'

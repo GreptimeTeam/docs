@@ -58,12 +58,11 @@ Creates a new table in the `db` database or the current database in use:
 ```sql
 CREATE TABLE [IF NOT EXISTS] [db.]table_name
 (
-    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment1],
-    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [FULLTEXT | FULLTEXT WITH options] [COMMENT comment2],
+    column1 type1 [NULL | NOT NULL] [DEFAULT expr1] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment1],
+    column2 type2 [NULL | NOT NULL] [DEFAULT expr2] [TIME INDEX] [PRIMARY KEY] [indexes] [COMMENT comment2],
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)],
-    [INVERTED INDEX(column1, column2, ...)]
 ) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
@@ -91,12 +90,9 @@ Actually, The `PRIMARY KEY` in traditional relational databases is equivalent to
 
 The statement won't do anything if the table already exists and `IF NOT EXISTS` is presented; otherwise returns an error.
 
-#### Inverted Index
+#### Indexes
 
-`INVERTED INDEX` specifies the table's [Inverted Index](/contributor-guide/datanode/data-persistence-indexing#inverted-index) column. The inverted index column can be any column. For each specified column, GreptimeDB creates an inverted index to accelerate queries.
-
-- If `INVERTED INDEX` is not specified, inverted indexes will be created for the columns in the `PRIMARY KEY`.
-- If `INVERTED INDEX` is specified, inverted indexes will only be created for the columns listed in the `INVERTED INDEX`. Specifically, when `INVERTED INDEX()` is specified, it means that no inverted index will be created for any column.
+GreptimeDB provides various type of indexes to accelerate query. Please refer to [Data Index](/user-guide/manage-data/data-index.md) for more details.
 
 ### Table options
 
@@ -329,7 +325,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 The `FULLTEXT` option is used to create a full-text index, accelerating full-text search operations. This option can only be applied to string-type columns.
 
-You can specify the following options using `FULLTEXT WITH`:
+You can specify the following options using `FULLTEXT INDEX WITH`:
 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
@@ -344,7 +340,7 @@ For example, to create a table with a full-text index on the `log` column, confi
 ```sql
 CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
-  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  log STRING FULLTEXT INDEX WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
 );
 ```
