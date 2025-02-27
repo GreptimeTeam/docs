@@ -302,7 +302,7 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 cache_capacity = "10GiB"
-# cache_path = "/path/to/data/home"
+# cache_path = "/path/to/cache/home"
 ```
 
 `cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置 `cache_path`，因为数据库会自动设置该目录。

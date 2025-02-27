@@ -314,7 +314,7 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 cache_capacity = "10GiB"
-# cache_path = "/path/to/data/home"
+# cache_path = "/path/to/cache/home"
 ```
 
 The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
