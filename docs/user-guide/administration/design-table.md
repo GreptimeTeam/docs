@@ -124,8 +124,6 @@ Therefore, starting from `v0.10`, GreptimeDB supports separating the primary key
 When creating a table, you can specify the [inverted index](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) columns using the `INVERTED INDEX` clause.
 In this case, the `PRIMARY KEY` will not be automatically indexed but will only be used for deduplication and sorting:
 
-- If `INVERTED INDEX` is not specified, inverted indexes are created for the columns in the `PRIMARY KEY`, which is the previous behavior.
-- If `INVERTED INDEX` is specified, inverted indexes are only created for the columns listed in `INVERTED INDEX`. Specifically, when `INVERTED INDEX()` is specified, it means that no inverted index will be created for any column.
 
 Example:
 
@@ -145,7 +143,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 
 The `host` and `idc` columns remain as primary key columns and are used in conjunction with `ts` for data deduplication and sorting optimization.
 However, they will no longer be automatically indexed by default.
-By using the `INVERTED INDEX(idc)` constraint,
+By using the `INVERTED INDEX` column constraint,
 an inverted index is created specifically for the `idc` column.
 This approach helps to avoid potential performance and storage issues that could arise from the high cardinality of the `host` column.
 

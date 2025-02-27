@@ -135,8 +135,6 @@ IoT 设备可能成千上万，如果将他们的 ip 地址加入主键，
 ## 主键和倒排索引分离
 
 因此，从 `v0.10` 开始， GreptimeDB 支持将主键和索引分离，创建表的时候可以通过 `INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询，这种情况下 `PRIMARY KEY` 将不会自动创建索引，而仅是用于去重和排序：
-- 如果没有指定 `INVERTED INDEX`，则为 P`RIMARY KEY` 中的列创建倒排索引，也就是以前的行为。
-- 如果指定了 `INVERTED INDEX`，则仅为 I`NVERTED INDEX` 中的列创建倒排索引。特别的，当指定为 `INVERTED INDEX()`，代表不会为任何列创建倒排索引。
 
 我们改进前面的例子：
 
@@ -154,7 +152,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 );
 ```
 
-`host` 和 `idc` 列仍然是主键列，结合 `ts` 一起做数据去重和排序优化，但是将默认不再自动为它们建立索引。我们通过 `INVERTED INDEX(idc)` 约束，为 `idc` 列建立倒排索引。这样就避免了 `host` 列的高基数可能导致的性能和存储瓶颈。
+`host` 和 `idc` 列仍然是主键列，结合 `ts` 一起做数据去重和排序优化，但是将默认不再自动为它们建立索引。我们通过 `INVERTED INDEX` 列约束为 `idc` 列建立倒排索引。这样就避免了 `host` 列的高基数可能导致的性能和存储瓶颈。
 
 ## 全文索引
 
