@@ -317,7 +317,7 @@ cache_capacity = "10GiB"
 # cache_path = "/path/to/data/home"
 ```
 
-The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the cache directory because the database can choose it automatically.
+The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
 
 The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
 ```toml
