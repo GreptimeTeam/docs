@@ -19,7 +19,7 @@ description: 介绍如何将 GreptimeDB 升级到最新版本，包括一些不�
 `cache_path` 配置仅设置读缓存的根目录。默认的 `cache_path` 是 `${data_home}`。
 GreptimeDB 总是使用缓存根目录下的 `cache/object/read` 子目录。
 默认的 `cache_path` 是 `${data_home}`。
-建议不要手动设置 `cache_path`，让 GreptimeDB 管理缓存路径。当你升级到 `v0.12` 时，可以删除 `cache_path`。
+建议不要手动设置 `cache_path`，让 GreptimeDB 管理缓存路径。当你升级到 `v0.12` 时，可以从配置文件中删除 `cache_path` 字段。
 
 ```toml
 [storage]
