@@ -40,6 +40,7 @@ helm upgrade \
   --create-namespace \
   greptimedb-operator greptime/greptimedb-operator \
   --set image.repository=greptime/greptimedb-operator-dev \
+  --version 0.2.16 \
   --set image.tag=dev-20250227-1740669767-13ca6992 \
   --set crds.install=false \
   -n greptimedb-admin
