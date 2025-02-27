@@ -190,7 +190,7 @@ However, note that the query efficiency and capability of the skipping index are
 |       | Inverted Index     |    Full-Text Index     |       Skip Index|
 | ----- | ----------- | ------------- |------------- |
 | Suitable Scenarios | - Data queries based on tag values <br/> - Filtering operations on string columns <br/>- Precise queries on tag columns | - Text content search <br/>- Pattern matching queries<br/>- Large-scale text filtering|- Sparse data distribution scenarios, such as MAC addresses in logs <br/> - Querying infrequent values in large datasets|
-| Creation Method | - Automatically created when added to `PRIMARY KEY` <br/> - Specified using `INVERTED INDEX(column1, column2,...)` |- Specified using `FULLTEXT` in column options | - Specified using `SKIPPING INDEX` in column options |
+| Creation Method | - Specified using `INVERTED INDEX` |- Specified using `FULLTEXT` in column options | - Specified using `SKIPPING INDEX` in column options |
 
 ## High Cardinality Issues
 
