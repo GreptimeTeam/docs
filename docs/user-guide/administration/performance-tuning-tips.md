@@ -21,49 +21,6 @@ The following metrics help diagnose query performance issues:
 | greptime_mito_cache_hit | counter | Total count of cache hit |
 | greptime_mito_cache_miss | counter | Total count of cache miss |
 
-### Using cache for object stores
-
-It's highly recommended to enable the object store read cache and the write cache in the storage engine. This could reduce query time by more than 10 times.
-
-> Note: Starting from v0.11, when using remote object storage services, local caching (both read and write) is enabled by default. In most cases, you only need to adjust the cache capacity according to your needs.
-
-The read cache stores objects or ranges on the local disk to avoid fetching the same range from the remote again. The following example shows how to enable the read cache for S3.
-
-- The `cache_path` is the directory to store cached objects. You don't need to set it since `v0.11`.
-- The `cache_capacity` is the capacity of the cache, defaults to `5GiB` since `v0.11`. It's recommended to leave at least 1/10 of the total disk space for it.
-
-```toml
-[storage]
-type = "S3"
-bucket = "ap-southeast-1-test-bucket"
-root = "your-root"
-access_key_id = "****"
-secret_access_key = "****"
-endpoint = "https://s3.amazonaws.com/"
-region = "your-region"
-# Sets the path before v0.11
-# cache_path = "/path/to/s3cache"
-cache_capacity = "10G"
-```
-
-The write cache acts as a write-through cache that stores files on the local disk before uploading them to the object store. This reduces the first query latency.
-
-
-The following example shows how to enable the write cache in versions before `v0.12`.
-
-- The `enable_experimental_write_cache` flag enables the write cache, enabled by default when configuring remote object stores since `v0.11`.
-- The `experimental_write_cache_size` sets the capacity of the cache, defaults to `5GiB` since `v0.11`.
-- The `experimental_write_cache_path` sets the path to store cached files. You don't need to set it since `v0.11`.
-- The `experimental_write_cache_ttl` sets the TTL of the cached files.
-
-```toml
-[[region_engine]]
-[region_engine.mito]
-enable_experimental_write_cache = true
-experimental_write_cache_size = "10G"
-experimental_write_cache_ttl = "8h"
-# experimental_write_cache_path = "/path/to/write/cache"
-```
 
 ### Enlarging cache size
 
@@ -94,29 +51,6 @@ selector_result_cache_size = "512MB"
 staging_size = "10GB"
 ```
 
-
-For versions before `v0.12`:
-
-```toml
-[[region_engine]]
-[region_engine.mito]
-# Uncomment this option if using object stores.
-# enable_experimental_write_cache = true
-# Cache size for the write cache. The `type` label value for this cache is `file`.
-experimental_write_cache_size = "10G"
-# Cache size for SST metadata. The `type` label value for this cache is `sst_meta`.
-sst_meta_cache_size = "128MB"
-# Cache size for vectors and arrow arrays. The `type` label value for this cache is `vector`.
-vector_cache_size = "512MB"
-# Cache size for pages of SST row groups. The `type` label value for this cache is `page`.
-page_cache_size = "512MB"
-# Cache size for time series selector (e.g. `last_value()`). The `type` label value for this cache is `selector_result`.
-selector_result_cache_size = "512MB"
-
-[region_engine.mito.index]
-## The max capacity of the index staging directory.
-staging_size = "10GB"
-```
 
 Some tips:
 
