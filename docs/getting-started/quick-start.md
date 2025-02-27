@@ -56,18 +56,18 @@ Additionally, there is a table `app_logs` for storing application logs:
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
   host STRING,
-  api_path STRING FULLTEXT,
+  api_path STRING,
   log_level STRING,
-  log STRING FULLTEXT,
+  log STRING,
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp of the log entry. It is the time index column.
 - `host`: The hostname of the application server. It is a tag column.
-- `api_path`: The API path, [indexed with `FULLTEXT`](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for accelerated search..
+- `api_path`: The API path.
 - `log_level`: The log level of the log entry. It is a tag column.
-- `log`: The log message, [indexed with `FULLTEXT`](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) for accelerated search.
+- `log`: The log message.
 
 ## Write data
 
@@ -223,32 +223,6 @@ ALIGN '5s' FILL PREV;
 | 2024-07-11 20:00:20 | host1 |        2500 |
 +---------------------+-------+-------------+
 8 rows in set (0.06 sec)
-```
-
-### Full-text search
-
-You can use `matches` to search for the columns with the `FULLTEXT` index.
-For example, to search for logs with error `timeout`:
-
-```sql
-SELECT 
-  ts,
-  api_path,
-  log
-FROM
-  app_logs
-WHERE
-  matches(log, 'timeout');
-```
-
-```sql
-+---------------------+------------------+--------------------+
-| ts                  | api_path         | log                |
-+---------------------+------------------+--------------------+
-| 2024-07-11 20:00:10 | /api/v1/billings | Connection timeout |
-| 2024-07-11 20:00:10 | /api/v1/resource | Connection timeout |
-+---------------------+------------------+--------------------+
-2 rows in set (0.01 sec)
 ```
 
 ### Correlate Metrics and Logs

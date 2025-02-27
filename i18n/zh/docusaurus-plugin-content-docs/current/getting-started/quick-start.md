@@ -56,18 +56,18 @@ CREATE TABLE grpc_latencies (
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
   host STRING,
-  api_path STRING FULLTEXT,
+  api_path STRING,
   log_level STRING,
-  log STRING FULLTEXT,
+  log STRING,
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
 
 - `ts`：日志条目的时间戳，时间索引列。
 - `host`：主机名，tag 列。
-- `api_path`：API 路径，使用 `FULLTEXT` 进行索引以加速搜索。
+- `api_path`：API 路径。
 - `log_level`：日志级别，tag 列。
-- `log`：日志消息，使用 `FULLTEXT` 进行索引以加速搜索。
+- `log`：日志消息。
 
 ## 写入数据
 
@@ -219,31 +219,6 @@ ALIGN '5s' FILL PREV;
 | 2024-07-11 20:00:20 | host1 |        2500 |
 +---------------------+-------+-------------+
 8 rows in set (0.06 sec)
-```
-
-### 全文搜索
-
-你可以使用 `matches` 函数来搜索具有 `FULLTEXT` 索引的列。例如，搜索包含错误信息 `timeout` 的日志：
-
-```sql
-SELECT 
-  ts,
-  api_path,
-  log
-FROM
-  app_logs
-WHERE
-  matches(log, 'timeout');
-```
-
-```sql
-+---------------------+------------------+--------------------+
-| ts                  | api_path         | log                |
-+---------------------+------------------+--------------------+
-| 2024-07-11 20:00:10 | /api/v1/billings | Connection timeout |
-| 2024-07-11 20:00:10 | /api/v1/resource | Connection timeout |
-+---------------------+------------------+--------------------+
-2 rows in set (0.01 sec)
 ```
 
 ### 指标和日志的关联查询
