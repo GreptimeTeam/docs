@@ -20,14 +20,9 @@ description: ALTER 用于修改数据库的设置、表的设置或表的元数�
 ### 语法
 
 ```sql
-ALTER TABLE [db.]table
-   [ADD COLUMN name type [options] 
-    | DROP COLUMN name
-    | MODIFY COLUMN name type
-    | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
-    | RENAME name
-    | SET <option_name>=<option_value> [, ...]
-    | UNSET <option_name>[, ...]
+ALTER DATABASE db
+   [SET <option_name>=<option_value> [, ...]
+    | UNSET <option_name> [, ...]
    ]
 ```
 
@@ -60,6 +55,7 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
+    | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
    ]
