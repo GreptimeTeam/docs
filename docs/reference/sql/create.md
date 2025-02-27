@@ -325,7 +325,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 The `FULLTEXT` option is used to create a full-text index, accelerating full-text search operations. This option can only be applied to string-type columns.
 
-You can specify the following options using `FULLTEXT WITH`:
+You can specify the following options using `FULLTEXT INDEX WITH`:
 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
@@ -340,7 +340,7 @@ For example, to create a table with a full-text index on the `log` column, confi
 ```sql
 CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
-  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  log STRING FULLTEXT INDEX WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
 );
 ```

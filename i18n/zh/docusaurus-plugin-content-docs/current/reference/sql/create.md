@@ -332,12 +332,12 @@ Query OK, 0 rows affected (0.01 sec)
 
 `FULLTEXT` 用于创建全文索引，加速全文搜索操作。该选项只能应用于字符串类型的列。
 
-使用 `FULLTEXT WITH` 可以指定以下选项：
+使用 `FULLTEXT INDEX WITH` 可以指定以下选项：
 
 - `analyzer`：设置全文索引的分析器语言，支持 `English` 和 `Chinese`。
 - `case_sensitive`：设置全文索引是否区分大小写，支持 `true` 和 `false`。
 
-如果不带 `WITH` 选项，`FULLTEXT` 将使用默认值：
+如果不带 `WITH` 选项，`FULLTEXT INDEX` 将使用默认值：
 
 - `analyzer`：默认 `English`
 - `case_sensitive`：默认 `false`
@@ -347,7 +347,7 @@ Query OK, 0 rows affected (0.01 sec)
 ```sql
 CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
-  log STRING FULLTEXT WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  log STRING FULLTEXT INDEX WITH(analyzer = 'Chinese', case_sensitive = 'false'),
   ts TIMESTAMP TIME INDEX
 );
 ```

@@ -72,7 +72,7 @@ CREATE TABLE sensor_data (
 示例：
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT,
+    message STRING FULLTEXT INDEX,
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -86,7 +86,7 @@ CREATE TABLE logs (
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT WITH(analyzer='Chinese', case_sensitive='true'),
+    message STRING FULLTEXT INDEX WITH(analyzer='Chinese', case_sensitive='true'),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );

@@ -72,7 +72,7 @@ Fulltext index is designed for text search operations on string columns. It enab
 Example:
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT,
+    message STRING FULLTEXT INDEX,
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -87,7 +87,7 @@ For example:
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT WITH(analyzer='English', case_sensitive='true'),
+    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true'),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );

@@ -24,7 +24,7 @@ ALTER TABLE [db.]table
    [ADD COLUMN name type [options] 
     | DROP COLUMN name
     | MODIFY COLUMN name type
-    | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
+    | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
     | UNSET <option_name>[, ...]
@@ -59,7 +59,7 @@ ALTER TABLE [db.]table
    [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
-    | MODIFY COLUMN name SET FULLTEXT [WITH <options>]
+    | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
    ]
@@ -161,10 +161,10 @@ ALTER TABLE monitor UNSET 'ttl';
 启用列的全文索引：
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese', case_sensitive = 'false');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false');
 ```
 
-在启用列的全文索引时，可以使用 `FULLTEXT WITH` 可以指定以下选项：
+在启用列的全文索引时，可以使用 `FULLTEXT INDEX WITH` 可以指定以下选项：
 
 - `analyzer`：设置全文索引的分析器语言，支持 `English` 和 `Chinese`。默认为 `English`。
 - `case_sensitive`：设置全文索引是否区分大小写，支持 `true` 和 `false`。默认为 `false`。
@@ -174,7 +174,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT WITH (analyzer = 'Chinese
 #### 关闭列的全文索引
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT;
+ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 ```
 
 修改列的全文索引选项时，列的数据类型必须是字符串类型。

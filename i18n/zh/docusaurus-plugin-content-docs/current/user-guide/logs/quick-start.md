@@ -18,11 +18,11 @@ description: 介绍如何快速开始写入和查询日志，包括直接写入�
 ### 创建表
 
 首先，创建一个名为 `origin_logs` 的表来存储您的日志。
-以下 SQL 中 `message` 列的 `FULLTEXT` 表示创建了一个全文索引以优化查询。
+以下 SQL 中 `message` 列的 `FULLTEXT INDEX` 表示创建了一个全文索引以优化查询。
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'

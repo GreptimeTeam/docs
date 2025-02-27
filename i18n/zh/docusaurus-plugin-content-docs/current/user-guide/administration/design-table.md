@@ -221,7 +221,7 @@ CREATE TABLE sensor_data (
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'

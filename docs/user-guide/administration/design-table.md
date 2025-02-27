@@ -132,14 +132,13 @@ Example:
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
   host STRING,
-  idc STRING,
+  idc STRING INVERTED INDEX,
   cpu_util DOUBLE,
   memory_util DOUBLE,
   disk_util DOUBLE,
   `load` DOUBLE,
   ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(host, idc),
-  INVERTED INDEX(idc),
   TIME INDEX(ts)
 );
 ```
@@ -158,13 +157,13 @@ Example:
 
 ```sql
 CREATE TABLE IF NOT EXISTS `logs` (
-  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
   ts TIMESTAMP(9) NOT NULL,
   TIME INDEX (ts),
 );
 ```
 
-The `message` field is full-text indexed using the `FULLTEXT` option.
+The `message` field is full-text indexed using the `FULLTEXT INDEX` option.
 See [fulltext column options](/reference/sql/create.md#fulltext-column-option) for more information.
 
 ## Skipping Index
@@ -218,7 +217,7 @@ Example:
 
 ```sql
 CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT,
+  `message` STRING FULLTEXT INDEX,
   `time` TIMESTAMP TIME INDEX
 ) WITH (
   append_mode = 'true'
