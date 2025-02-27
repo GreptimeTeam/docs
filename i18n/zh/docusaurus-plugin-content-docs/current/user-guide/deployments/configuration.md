@@ -302,27 +302,10 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 cache_capacity = "10GiB"
+# cache_path = "/path/to/data/home"
 ```
 
-
-我们建议你不用设置缓存的目录，因为数据库会自动创建该目录。默认的缓存目录位于 `{data_home}` 目录下。
-
-
-对于 v0.11 之前的版本，你需要通过在存储设置中配置 `cache_path` 来手动启用读取缓存：
-
-```toml
-[storage]
-type = "S3"
-bucket = "test_greptimedb"
-root = "/greptimedb"
-access_key_id = "<access key id>"
-secret_access_key = "<secret access key>"
-## 启用对象存储缓存
-cache_path = "/var/data/s3_read_cache"
-cache_capacity = "5GiB"
-```
-
-`cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。
+`cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置缓存的目录，因为数据库会自动设置该目录。
 
 
 自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小
@@ -333,21 +316,6 @@ cache_capacity = "5GiB"
 
 write_cache_size = "10GiB"
 ````
-
-
-对于 v0.11 之前版本的写入缓存，你需要在 `[region_engine.mito]` 部分将 `enable_experimental_write_cache` 设置为 `true` 来启用：
-
-```toml
-[[region_engine]]
-[region_engine.mito]
-
-enable_experimental_write_cache = true
-experimental_write_cache_path = "/var/data/s3_write_cache"
-experimental_write_cache_size = "5GiB"
-```
-
-`experimental_write_cache_path` 默认值位于 `{data_home}` 目录下。
-要禁用写入缓存，请将 `enable_experimental_write_cache` 设置为 `false`。
 
 更详细的信息请参阅[性能调优技巧](/user-guide/administration/performance-tuning-tips)。
 
