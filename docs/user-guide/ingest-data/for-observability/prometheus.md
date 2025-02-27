@@ -162,9 +162,9 @@ By default, the metrics engine will automatically create a physical table named 
 
 ### Enable skipping index
 
-By default, the metrics engine won't create a index for columns. You can enable it by setting the index.type to skipping and index.granularity to a positive integer.
+By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
 
-Create a physical table with a skipping index. All automatically added columns will have a skipping index applied, with a granularity of 8192.
+Create a physical table with a skipping index. All automatically added columns will have a skipping index applied.
 
 ```sql
 CREATE TABLE greptime_physical_table (
@@ -175,8 +175,7 @@ CREATE TABLE greptime_physical_table (
 engine = metric
 with (
     "physical_metric_table" = "",
-    "index.type" = "skipping",
-    "index.granularity" = "8192",
+    "index.type" = "skipping"
 );
 ```
 For more configurations, please refer to the [create table](/reference/sql/create.md#create-table) section.

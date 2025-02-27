@@ -115,7 +115,6 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
 | `index.type`                                | Index type                                                      | **Only for metrics engine** String value, supports `none`, `skipping`.                                                                                                                                                                                      |
-| `index.granularity`                         | Index granularity                                               | **Only for metrics engine and when `index.type` is `skipping`** Number value.                                                                                                                                                                               |
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
@@ -282,9 +281,9 @@ with (
 
 #### Create a physical table with enable skipping index for columns
 
-By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping` and `index.granularity` to a positive integer.
+By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
 
-Create a physical table with a skipping index. All automatically added columns will have a skipping index applied, with a granularity of 8192.
+Create a physical table with a skipping index. All automatically added columns will have a skipping index applied.
 
 ```sql
 CREATE TABLE greptime_physical_table (
@@ -296,7 +295,6 @@ engine = metric
 with (
     "physical_metric_table" = "",
     "index.type" = "skipping",
-    "index.granularity" = "8192",
 );
 ```
 
