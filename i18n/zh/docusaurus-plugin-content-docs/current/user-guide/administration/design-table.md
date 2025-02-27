@@ -143,14 +143,13 @@ IoT 设备可能成千上万，如果将他们的 ip 地址加入主键，
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
     host STRING,
-    idc STRING,
+    idc STRING INVERTED INDEX,
     cpu_util DOUBLE,
     memory_util DOUBLE,
     disk_util DOUBLE,
     `load` DOUBLE,
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(host, idc),
-    INVERTED INDEX(idc),
     TIME INDEX(ts)
 );
 ```
@@ -163,13 +162,13 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 
 ```sql
 Create Table: CREATE TABLE IF NOT EXISTS `logs` (
-  message STRING NULL FULLTEXT WITH(analyzer = 'English', case_sensitive = 'false'),
+  message STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
   ts TIMESTAMP(9) NOT NULL,
   TIME INDEX (ts),
 )
 ```
 
-这里的 `message` 字段就通过 `FULLTEXT` 选项设置了全文索引。详见 [fulltext 列选项](/reference/sql/create.md#fulltext-列选项)。
+这里的 `message` 字段就通过 `FULLTEXT INDEX` 选项设置了全文索引。详见 [fulltext 列选项](/reference/sql/create.md#fulltext-列选项)。
 
 ## 跳数索引
 
