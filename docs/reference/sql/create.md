@@ -114,7 +114,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
-| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                      |
+| `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
 
 #### Create a table with TTL
 For example, to create a table with the storage data TTL(Time-To-Live) is seven days:
@@ -241,9 +241,9 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### Create a physical table with metric engine
 
-The metrics engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metrics engine document](/contributor-guide/datanode/metric-engine).
+The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine).
 
-Create a physical table with the metrics engine.
+Create a physical table with the metric engine.
 ```sql
 CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
@@ -258,7 +258,7 @@ with (
 
 #### Create a physical table with enable skipping index for columns
 
-By default, the metrics engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
+By default, the metric engine won't create a index for columns. You can enable it by setting the `index.type` to `skipping`.
 
 Create a physical table with a skipping index. All automatically added columns will have a skipping index applied.
 

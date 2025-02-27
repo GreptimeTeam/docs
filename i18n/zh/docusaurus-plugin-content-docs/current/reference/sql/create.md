@@ -246,9 +246,9 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### 创建 metric engine 的物理表
 
-Metrics engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metrics engine 文档](/contributor-guide/datanode/metric-engine).
+metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine).
 
-创建一个使用 metrics engine 的物理表。
+创建一个使用 metric engine 的物理表。
 ```sql
 CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
@@ -263,7 +263,7 @@ with (
 
 #### 创建一个带有跳数索引的物理表
 
-默认情况下，metrics engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
+默认情况下，metric engine 不会为列创建索引。你可以通过设置 `index.type` 为 `skipping` 来设置索引类型。
 
 创建一个带有跳数索引的物理表。所有自动添加的列都将应用跳数索引。
 

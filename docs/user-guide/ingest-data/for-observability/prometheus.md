@@ -158,7 +158,7 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
 
 ## Performance tuning
 
-By default, the metrics engine will automatically create a physical table named `physical_metric_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
+By default, the metric engine will automatically create a physical table named `physical_metric_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
 
 ### Enable skipping index
 
