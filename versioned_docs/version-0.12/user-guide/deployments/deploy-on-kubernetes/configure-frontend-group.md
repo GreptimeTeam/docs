@@ -26,7 +26,7 @@ curl -O https://raw.githubusercontent.com/GreptimeTeam/greptimedb-operator/13ca6
 Apply the CRD to your Kubernetes cluster:
 
 ```bash
-kubectl apply -f greptime.io_greptimedbclusters.yaml --server-side
+kubectl apply -f greptime.io_greptimedbclusters.yaml --server-side --force-conflicts
 ```
 
 ## Upgrade operator
