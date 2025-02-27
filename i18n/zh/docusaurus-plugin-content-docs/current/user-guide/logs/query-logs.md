@@ -64,7 +64,7 @@ SELECT * FROM logs WHERE message LIKE '%apple%' AND message LIKE '%fruit%';
 
 ### 复杂模式匹配
 
-您可以组合多个 `LIKE` 条件实现更复杂的搜索需求：
+你可以组合多个 `LIKE` 条件实现更复杂的搜索需求：
 
 ```sql
 SELECT * FROM logs WHERE (message LIKE '%a%' AND message LIKE '%b%') OR message LIKE '%c%';
