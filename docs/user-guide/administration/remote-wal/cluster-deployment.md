@@ -159,7 +159,7 @@ spec:
       - "etcd.metasrv-store:2379"
   datanode:
     replicas: 3
-  remoteWal:
+  wal:
     kafka:
       brokerEndpoints:
         - "kafka-wal-kafka-bootstrap.kafka:9092"
