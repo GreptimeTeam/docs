@@ -8,6 +8,14 @@ date: 2025-02-27
 
 Release date: February 27, 2025
 
+## 👍 Highlights
+- Added PromQL subquery support, series count metrics, and new functions like `sort` and `sort_desc`.
+- Introduced Jaeger Query API
+- Improved performance for LastNonNullIter (10x faster).
+- Optimized metric table creation, deletion and alteration speeds (100x faster).
+- Introduced new functions like `vec_add`, `hll_state`, and `uddsketch` for advanced analytics.
+- Fixed PromQL-related issues, including unescaped matcher values and incorrect behavior for non-existent columns.
+
 ## Breaking changes
 
 * refactor!: unify the option names across all components by [@fengjiachun](https://github.com/fengjiachun) in [#5457](https://github.com/GreptimeTeam/greptimedb/pull/5457)
