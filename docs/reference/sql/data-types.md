@@ -298,7 +298,7 @@ In addition to the `Timestamp` types used as the default time type in GreptimeDB
 | Type name | Description | Size |
 |-----------|-------------|------|
 |`Date`     |32-bit date values represent the days since UNIX Epoch | 4 Bytes |
-|`DateTime` |64-bit datetime values represent the milliseconds since UNIX Epoch| 8 Bytes |
+|`DateTime` |64-bit timestamp values with milliseconds precision, equivalent to `TimestampMicrosecond`| 8 Bytes |
 
 ## Examples
 
@@ -354,7 +354,7 @@ DESC TABLE data_types;
 | d      | Float64              |      | YES  |                     | FIELD         |
 | dm     | Decimal(3, 2)        |      | YES  |                     | FIELD         |
 | dt     | Date                 |      | YES  |                     | FIELD         |
-| dtt    | DateTime             |      | YES  |                     | FIELD         |
+| dtt    | TimestampMicrosecond |      | YES  |                     | FIELD         |
 | ts0    | TimestampSecond      |      | YES  |                     | FIELD         |
 | ts3    | TimestampMillisecond |      | YES  |                     | FIELD         |
 | ts6    | TimestampMicrosecond |      | YES  |                     | FIELD         |
