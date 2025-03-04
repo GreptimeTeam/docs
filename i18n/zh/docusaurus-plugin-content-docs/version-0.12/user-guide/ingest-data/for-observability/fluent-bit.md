@@ -1,0 +1,78 @@
+---
+keywords: [Fluent bit, Prometheus Remote Write, OpenTelemetry, 数据管道]
+description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Write 和 OpenTelemetry 的说明。
+---
+
+# Fluent Bit
+
+[Fluent Bit](http://fluentbit.io/) 是一个快速且轻量级的遥测代理，用于 Linux、macOS、Windows 和 BSD 系列操作系统的日志、指标和跟踪。Fluent Bit 专注于性能，允许从不同来源收集和处理遥测数据而不增加复杂性。
+
+您可以将 GreptimeDB 集成为 Fluent Bit 的 OUTPUT。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
+
+## Http
+
+使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，您可以将日志发送到 GreptimeDB。 Http 接口目前支持日志的写入。
+
+```
+[OUTPUT]
+    Name http
+    Match *
+    Host greptimedb
+    Port 4000
+    Uri /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Format json
+    Json_date_key timestamp
+    Json_date_format iso8601
+    Header Authorization "Bearer <token> if any"
+```
+
+- `uri`: **发送日志的端点。**
+- `format`: 日志的格式，需要是 `json`。
+- `json_date_key`: JSON 对象中包含时间戳的键。
+- `json_date_format`: 时间戳的格式。
+- `header`: 发送请求时的头部信息，例如用于认证的 `Authorization`。如果没有，不要增加 Authorization 头部。
+
+本示例中，使用的是 [Logs Http API](../../logs/write-logs.md#http-api) 接口。如需更多信息，请参阅 [写入日志](../../logs/write-logs.md) 文档。
+
+## OpenTelemetry
+
+GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [OpenTelemetry 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry)，您可以将指标、日志和跟踪发送到 GreptimeDB。
+
+```
+[OUTPUT]
+    Name                 opentelemetry
+    Match                *
+    Host                 127.0.0.1
+    Port                 4000
+    Metrics_uri          /v1/otlp/v1/metrics
+    Logs_uri             /v1/otlp/v1/logs
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+```
+
+- `Metrics_uri`, `Logs_uri`, 和 `Traces_uri`: 发送指标、日志和跟踪的端点。
+
+本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](../../ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](../../ingest-data/for-observability/opentelemetry.md) 文档。
+
+## Prometheus Remote Write
+
+将 GreptimeDB 配置为远程写入目标：
+
+```
+[OUTPUT]
+    Name                 prometheus_remote_write
+    Match                internal_metrics
+    Host                 127.0.0.1
+    Port                 4000
+    Uri                  /v1/prometheus/write?db=public
+    Tls                  Off
+    http_user            <username>
+    http_passwd          <password>
+```
+
+- `Uri`: 发送指标的端点。
+- `http_user` 和 `http_passwd`: GreptimeDB 的认证凭据。
+
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](./prometheus.md#data-model)部分。
