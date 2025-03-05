@@ -585,6 +585,7 @@ GreptimeDB supports the following three types of index for fields:
 
 - `tag`: Specifies a column as a Tag column.
 - `fulltext`: Specifies a column to use the fulltext index type. The column must be of string type.
+- `skipping`: Specifies a column to use the skipping index type. The column must be of string type.
 - `timestamp`: Specifies a column as a timestamp index column.
 
 When `index` field is not provided, GreptimeDB treats the field as a `Field` column.

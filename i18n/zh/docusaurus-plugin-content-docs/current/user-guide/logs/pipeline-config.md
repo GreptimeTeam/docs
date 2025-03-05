@@ -597,6 +597,7 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 - `tag`: 用于指定某列为 Tag 列
 - `fulltext`: 用于指定某列使用 fulltext 类型的索引，该列需要是字符串类型
+- `skipping`: 用于指定某列使用 skipping 类型的索引，该列需要是字符串类型
 - `timestamp`: 用于指定某列是时间索引列
 
 不提供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
