@@ -47,7 +47,7 @@ helm upgrade \
 
 ## Frontend 组配置
 
-定义 frontend group 时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置:
+定义 frontend 组时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置:
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -60,7 +60,7 @@ spec:
     image: greptime/greptimedb-initializer:latest
   base:
     main:
-      image: greptime/greptimedb:latest
+      image: greptime/greptimedb:latest  
   frontends:
   - name: read
     replicas: 2
@@ -84,7 +84,7 @@ spec:
 
 ## 合规配置
 
-设置前端组时，必须设置名称。
+设置 frontend 组时，必须设置名称。
 
 ```yaml
 # 非法配置 !!!

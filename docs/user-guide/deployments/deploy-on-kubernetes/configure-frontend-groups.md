@@ -60,7 +60,7 @@ spec:
     image: greptime/greptimedb-initializer:latest
   base:
     main:
-      image: greptime/greptimedb:latest
+      image: greptime/greptimedb:latest  
   frontends:
   - name: read
     replicas: 2
