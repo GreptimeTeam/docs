@@ -240,13 +240,13 @@ SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 
 ### 全文搜索
 
-对于 `request_line` 和 `user_agent` 文本字段，您可以使用 `MATCHES` 函数查询日志。
-请记得我们在[创建 Pipeline](#创建-pipeline) 时为这两个列创建了全文索引，这提高了全文搜索的性能。
+对于 `request_line` 和 `user_agent` 文本字段，你可以 `LIKE` 语句查询日志。
+为了提高全文搜索的性能，我们在[创建 Pipeline](#创建-pipeline) 时为这两个列创建了全文索引。
 
 例如，查询 `request_line` 包含 `/index.html` 或 `/api/login` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE MATCHES(request_line, 'index.html /api/login');
+SELECT * FROM pipeline_logs WHERE request_line LIKE '%/index.html%' OR request_line LIKE '%/api/login%';
 ```
 
 ```sql
@@ -259,7 +259,7 @@ SELECT * FROM pipeline_logs WHERE MATCHES(request_line, 'index.html /api/login')
 2 rows in set (0.00 sec)
 ```
 
-您可以参阅[全文搜索](query-logs.md#使用-matches-函数进行全文搜索)文档以获取 `MATCHES` 函数的详细用法。
+你可以参阅[全文搜索](query-logs.md)文档以获取 `LIKE` 的详细用法。
 
 ## 下一步
 
