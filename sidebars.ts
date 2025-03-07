@@ -61,6 +61,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observability/loki',
                 'user-guide/ingest-data/for-observability/alloy',
                 'user-guide/ingest-data/for-observability/elasticsearch',
+                'user-guide/ingest-data/for-observability/fluent-bit',
               ],
             },
             {
@@ -116,6 +117,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/alloy',
             'user-guide/integrations/streamlit',
             'user-guide/integrations/mindsdb',
+            'user-guide/integrations/fluent-bit',
           ],
         },
         {
@@ -298,6 +300,7 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/integrations/metabase',
             'greptimecloud/integrations/mindsdb',
             'greptimecloud/integrations/dbeaver',
+            'greptimecloud/integrations/fluent-bit',
             {
               type: 'category',
               label: 'SDK Libraries',
