@@ -43,6 +43,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header               Authorization "Basic <token> if any"
 
 # 仅用于日志
 [OUTPUT]
@@ -57,6 +58,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header               Authorization "Basic <token> if any"
     Header X-Greptime-Log-Table-Name "log_table"
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```

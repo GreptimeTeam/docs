@@ -44,6 +44,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header Authorization "Basic <token> if any"
 
 # Only for logs
 [OUTPUT]
@@ -58,6 +59,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
+    Header Authorization "Basic <token> if any"
     Header X-Greptime-Log-Table-Name "log_table"
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
