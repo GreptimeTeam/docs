@@ -16,7 +16,7 @@ Fluent Bit can be configured to send metrics to GreptimeCloud using the Promethe
 [OUTPUT]
     Name                 prometheus_remote_write
     Match                internal_metrics
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 80
     Uri                  /v1/prometheus/write?db=public
     Tls                  Off
@@ -36,7 +36,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Name                 opentelemetry
     Alias                opentelemetry_metrics
     Match                *_metrics
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
@@ -50,7 +50,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Name                 opentelemetry
     Alias                opentelemetry_logs
     Match                *_logs
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 80
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs

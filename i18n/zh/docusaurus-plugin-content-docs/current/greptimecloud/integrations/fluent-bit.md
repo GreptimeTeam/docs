@@ -1,6 +1,6 @@
 ---
 keywords: [Fluent Bit, GreptimeCloud, 指标摄取, 日志摄取, 数据管道]
-description: 使用 Fluent Bit 和 GreptimeCloud 的指南，包括指标和日志摄取的配置，以及运行 Fluent Bit 的示例配置。
+description: 使用 Fluent Bit 和 GreptimeCloud 的指南，包括指标和日志写入的配置，以及运行 Fluent Bit 的示例配置。
 ---
 
 # Fluent Bit
@@ -15,7 +15,7 @@ Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送�
 [OUTPUT]
     Name                 prometheus_remote_write
     Match                internal_metrics
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 80
     Uri                  /v1/prometheus/write?db=public
     Tls                  Off
@@ -35,7 +35,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Name                 opentelemetry
     Alias                opentelemetry_metrics
     Match                *_metrics
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
@@ -49,7 +49,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Name                 opentelemetry
     Alias                opentelemetry_logs
     Match                *_logs
-    Host                 <your greptimecloud hostname>
+    Host                 <host>
     Port                 80
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
