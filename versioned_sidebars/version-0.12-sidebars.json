@@ -58,7 +58,8 @@
                 "user-guide/ingest-data/for-observability/kafka",
                 "user-guide/ingest-data/for-observability/loki",
                 "user-guide/ingest-data/for-observability/alloy",
-                "user-guide/ingest-data/for-observability/elasticsearch"
+                "user-guide/ingest-data/for-observability/elasticsearch",
+                "user-guide/ingest-data/for-observability/fluent-bit"
               ]
             },
             {
@@ -120,7 +121,8 @@
             "user-guide/integrations/dbeaver",
             "user-guide/integrations/alloy",
             "user-guide/integrations/streamlit",
-            "user-guide/integrations/mindsdb"
+            "user-guide/integrations/mindsdb",
+            "user-guide/integrations/fluent-bit"
           ]
         },
         {
@@ -306,6 +308,7 @@
             "greptimecloud/integrations/metabase",
             "greptimecloud/integrations/mindsdb",
             "greptimecloud/integrations/dbeaver",
+            "greptimecloud/integrations/fluent-bit",
             {
               "type": "category",
               "label": "SDK Libraries",

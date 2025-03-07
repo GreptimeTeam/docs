@@ -63,7 +63,7 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
 
-We recommend not writing metrics, logs, and traces to a single output simultaneously, as each API has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
+We recommend not writing metrics, logs, and traces to a single output simultaneously, as each has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
 
 ```
 # Only for metrics

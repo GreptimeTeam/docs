@@ -1,0 +1,64 @@
+---
+keywords: [Fluent Bit, GreptimeCloud, 指标摄取, 日志摄取, 数据管道]
+description: 使用 Fluent Bit 和 GreptimeCloud 的指南，包括指标和日志摄取的配置，以及运行 Fluent Bit 的示例配置。
+---
+
+# Fluent Bit
+
+Fluent Bit 是一个轻量且快速的日志处理和转发器，可以收集、解析、过滤和转发日志和指标。Fluent Bit 是 Fluentd 项目生态系统的一部分，用 C 语言编写。它设计为内存高效且性能优越，适合在资源受限的环境中使用。
+
+## Prometheus Remote Write
+
+Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送到 GreptimeCloud。这允许您从各种来源收集指标并将其发送到 GreptimeCloud 进行存储、分析和可视化。
+
+```
+[OUTPUT]
+    Name                 prometheus_remote_write
+    Match                internal_metrics
+    Host                 <your greptimecloud hostname>
+    Port                 80
+    Uri                  /v1/prometheus/write?db=public
+    Tls                  Off
+    http_user            <username>
+    http_passwd          <password>
+```
+
+在此示例中，使用 `prometheus_remote_write` 输出插件将指标发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Prometheus Remote Write](./prometheus.md) 指南。
+
+## OpenTelemetry
+
+Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到 GreptimeCloud。这允许您从各种来源收集日志和指标并将其发送到 GreptimeCloud 进行存储、分析和可视化。
+
+```
+# 仅用于指标
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_metrics
+    Match                *_metrics
+    Host                 <your greptimecloud hostname>
+    Port                 4000
+    Metrics_uri          /v1/otlp/v1/metrics
+    Logs_uri             /v1/otlp/v1/logs
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+
+# 仅用于日志
+[OUTPUT]
+    Name                 opentelemetry
+    Alias                opentelemetry_logs
+    Match                *_logs
+    Host                 <your greptimecloud hostname>
+    Port                 80
+    Metrics_uri          /v1/otlp/v1/metrics
+    Logs_uri             /v1/otlp/v1/logs
+    Traces_uri           /v1/otlp/v1/traces
+    Log_response_payload True
+    Tls                  Off
+    Tls.verify           Off
+    Header X-Greptime-Log-Table-Name "log_table"
+    Header X-Greptime-Log-Pipeline-Name "pipeline_name"
+```
+
+在此示例中，使用 [OpenTelemetry OTLP/HTTP API](../../user-guide/ingest-data/for-observability/opentelemetry.md) 接口。有关更多信息和额外选项，请参阅 [OpenTelemetry](../../user-guide/ingest-data/for-observability/opentelemetry.md) 指南。
