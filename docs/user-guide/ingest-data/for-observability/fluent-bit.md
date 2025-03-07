@@ -23,7 +23,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
     Format json
     Json_date_key scrape_timestamp
     Json_date_format iso8601
-    Header Authorization "Bearer <token> if any"
+    Header Authorization "Basic <token> if any"
 ```
 
 - `host`: GreptimeDB host address, e.g., `localhost`.
@@ -58,7 +58,7 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
     Tls                  Off
     Tls.verify           Off
     logs_body_key message
-    Header Authorization "Bearer <token> if any"
+    Header Authorization "Basic <token> if any"
 ```
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.

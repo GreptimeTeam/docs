@@ -23,7 +23,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
     Format json
     Json_date_key timestamp
     Json_date_format iso8601
-    Header Authorization "Bearer <token> if any"
+    Header Authorization "Basic <token> if any"
 ```
 
 - `uri`: **发送日志的端点。**
