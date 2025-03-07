@@ -94,7 +94,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
 
-本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](./user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) 文档。
+本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](/user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) 文档。
 
 ## Prometheus Remote Write
 
