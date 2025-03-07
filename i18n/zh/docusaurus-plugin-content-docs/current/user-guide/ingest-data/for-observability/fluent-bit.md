@@ -60,7 +60,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 
 - `Metrics_uri`, `Logs_uri`, 和 `Traces_uri`: 发送指标、日志和跟踪的端点。
 
-我们建议不要在一个 output 同时写入 metrics log 和 trace ，因为我们的写入接口它们各自有一些特殊的 header 选项用于指定一些参数，我们建议一个为 metrics log 和 trace 单独创建一个 opentelemetry ouput 例如：
+我们建议不要在一个 output 同时写入 metrics log 和 trace ，因为我们的写入接口它们各自有一些特殊的 header 选项用于指定一些参数，我们建议一个为 metrics log 和 trace 单独创建一个 opentelemetry output 例如：
 
 ```
 # Only for metrics
