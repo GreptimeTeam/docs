@@ -38,7 +38,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 - `table` 是您要写入日志的表名称。
 - `pipeline_name` 是您要用于处理日志的管道名称。
 
-本示例中，使用的是 [Logs Http API](../../logs/write-logs.md#http-api) 接口。如需更多信息，请参阅 [写入日志](../../logs/write-logs.md) 文档。
+本示例中，使用的是 [Logs Http API](/user-guide/logs/write-logs.md#http-api) 接口。如需更多信息，请参阅 [写入日志](/user-guide/logs/write-logs.md) 文档。
 
 ## OpenTelemetry
 
@@ -94,7 +94,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
 
-本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](../../ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](../../ingest-data/for-observability/opentelemetry.md) 文档。
+本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](./user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) 文档。
 
 ## Prometheus Remote Write
 
@@ -119,4 +119,4 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 
 - `db` 是您要写入指标的数据库名称。
 
-有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](./prometheus.md#data-model)部分。
+有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#data-model)部分。

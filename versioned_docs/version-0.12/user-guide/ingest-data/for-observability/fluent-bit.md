@@ -7,7 +7,7 @@ description: Instructions on integrating GreptimeDB with Fluent bit for Promethe
 
 [Fluent Bit](http://fluentbit.io/) is a fast and lightweight telemetry agent for logs, metrics, and traces for Linux, macOS, Windows, and BSD family operating systems. Fluent Bit has been made with a strong focus on performance to allow the collection and processing of telemetry data from different sources without complexity.
 
-You can integrate GreptimeDB as a OUTPUT for Fluent Bit.
+You can integrate GreptimeDB as an OUTPUT for Fluent Bit.
 
 ## Http
 
@@ -39,7 +39,7 @@ In params Uri,
 - `table` is the table name you want to write logs to.
 - `pipeline_name` is the pipeline name you want to use for processing logs.
 
-In this example, the [Logs Http API](./write-logs.md#http-api) interface is used. For more information, refer to the [Write Logs](./write-logs.md) guide.
+In this example, the [Logs Http API](/user-guide/logs/write-logs.md#http-api) interface is used. For more information, refer to the [Write Logs](/user-guide/logs/write-logs.md) guide.
 
 ## OpenTelemetry
 
@@ -63,7 +63,7 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
 
-We recommend not writing metrics, logs, and traces to a single output simultaneously, as each API has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
+We recommend not writing metrics, logs, and traces to a single output simultaneously, as each has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
 
 ```
 # Only for metrics
@@ -98,7 +98,7 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
 ```
 
 
-In this example, the [OpenTelemetry OTLP/HTTP API](./opentelemetry.md#opentelemetry-collectors) interface is used. For more information, and extra options, refer to the [OpenTelemetry](./opentelemetry.md) guide.
+In this example, the [OpenTelemetry OTLP/HTTP API](/user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) interface is used. For more information, and extra options, refer to the [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) guide.
 
 ## Prometheus Remote Write
 
@@ -123,4 +123,4 @@ In params Uri,
 
 - `db` is the database name you want to write metrics to.
 
-For details on the data model transformation from Prometheus to GreptimeDB, refer to the [Data Model](./prometheus.md#data-model) section in the Prometheus Remote Write guide.
+For details on the data model transformation from Prometheus to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/prometheus.md#data-model) section in the Prometheus Remote Write guide.

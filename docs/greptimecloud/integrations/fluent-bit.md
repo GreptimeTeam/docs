@@ -24,7 +24,7 @@ Fluent Bit can be configured to send metrics to GreptimeCloud using the Promethe
     http_passwd          <password>
 ```
 
-In this example, the `prometheus_remote_write` output plugin is used to send metrics to GreptimeCloud. For more information, and extra options, refer to the [Prometheus Remote Write](./prometheus.md) guide.
+In this example, the `prometheus_remote_write` output plugin is used to send metrics to GreptimeCloud. For more information, and extra options, refer to the [Prometheus Remote Write](https://docs.greptime.com/user-guide/integrations/prometheus) guide.
 
 ## OpenTelemetry
 
@@ -62,4 +62,4 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
 
-In this example, the [OpenTelemetry OTLP/HTTP API](../../user-guide/ingest-data/for-observability/opentelemetry.md) interface is used. For more information, and extra options, refer to the [OpenTelemetry](../../user-guide/ingest-data/for-observability/opentelemetry.md) guide.
+In this example, the [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) interface is used. For more information, and extra options, refer to the [OpenTelemetry](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) guide.
