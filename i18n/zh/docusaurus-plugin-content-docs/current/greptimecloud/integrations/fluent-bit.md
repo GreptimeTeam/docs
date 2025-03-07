@@ -1,5 +1,5 @@
 ---
-keywords: [Fluent Bit, GreptimeCloud, 指标摄取, 日志摄取, 数据管道]
+keywords: [Fluent Bit, GreptimeCloud, 指标写入, 日志写入, 数据管道]
 description: 使用 Fluent Bit 和 GreptimeCloud 的指南，包括指标和日志写入的配置，以及运行 Fluent Bit 的示例配置。
 ---
 
