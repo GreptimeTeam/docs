@@ -16,7 +16,7 @@ Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送�
     Name                 prometheus_remote_write
     Match                internal_metrics
     Host                 <host>
-    Port                 80
+    Port                 443
     Uri                  /v1/prometheus/write?db=public
     Tls                  Off
     http_user            <username>
@@ -51,7 +51,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Alias                opentelemetry_logs
     Match                *_logs
     Host                 <host>
-    Port                 80
+    Port                 443
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
