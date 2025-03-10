@@ -61,7 +61,6 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Tls.verify           Off
     Header Authorization "Basic <token> if any"
     Header X-Greptime-Log-Table-Name "log_table"
-    Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
 
 In this example, the [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) interface is used. For more information, and extra options, refer to the [OpenTelemetry](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) guide.

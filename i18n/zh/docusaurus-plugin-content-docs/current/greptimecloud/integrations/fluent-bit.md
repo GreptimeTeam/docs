@@ -60,7 +60,6 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Tls.verify           Off
     Header               Authorization "Basic <token> if any"
     Header X-Greptime-Log-Table-Name "log_table"
-    Header X-Greptime-Log-Pipeline-Name "pipeline_name"
 ```
 
 在此示例中，使用 [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 接口。有关更多信息和额外选项，请参阅 [OpenTelemetry](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 指南。
