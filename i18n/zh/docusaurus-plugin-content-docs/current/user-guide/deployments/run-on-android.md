@@ -17,7 +17,11 @@ description: 在安卓平台运行 GreptimeDB 的指南，包括安装终端模�
 
 请执行以下命令来下载安卓平台的 GreptimeDB 二进制：
 ```bash
-VERSION=$(curl -s -XGET "https://api.github.com/repos/GreptimeTeam/greptimedb/releases" | grep tag_name | grep -v nightly | cut -d: -f 2 | sed 's/.*"\(.*\)".*/\1/' | uniq | sort -r | head -n 1)
+VERSION=$(curl -sL \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/GreptimeTeam/greptimedb/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
+
 
 curl -sOL "https://github.com/GreptimeTeam/greptimedb/releases/download/${VERSION}/greptime-android-arm64-${VERSION}.tar.gz"
 tar zxvf ./greptime-android-arm64-${VERSION}.tar.gz
@@ -39,7 +43,7 @@ cat <<EOF > ./config.toml
 addr = "0.0.0.0:4000"
 
 [grpc]
-addr = "0.0.0.0:4001"
+bind_addr = "0.0.0.0:4001"
 
 [mysql]
 addr = "0.0.0.0:4002"
