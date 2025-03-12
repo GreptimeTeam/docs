@@ -1,3 +1,8 @@
+---
+keywords: [配置指南, 命令行选项, 配置文件, 环境变量, Android, 嵌入式]
+description: 介绍如何在 Android 平台上运行 GreptimeDB
+---
+
 # 在安卓平台运行
 
 从 v0.4.0 开始，GreptimeDB 支持在采用了 ARM64 CPU 和 Android API 23 版本以上的安卓平台运行。

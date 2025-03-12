@@ -1,3 +1,7 @@
+---
+keywords: [Configuration, Embedded Platform, Android]
+description: Step-by-step tutorial for running GreptimeDB on Android devices.
+---
 # Run on Android Platforms
 
 Since v0.4.0, GreptimeDB supports running on Android platforms with ARM64 CPU and Android API level >= 23.
