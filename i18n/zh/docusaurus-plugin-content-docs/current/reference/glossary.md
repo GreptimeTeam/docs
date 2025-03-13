@@ -5,286 +5,148 @@ description: 介绍如何使用 SQL 工具与 GreptimeDB 交互，包括推荐�
 
 # Glossary
 
-GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL 工具。
-本文档指导你如何使用 SQL 工具与 GreptimeDB 交互。
+Welcome to the GreptimeDB Glossary! This resource provides clear definitions and explanations of key terms and concepts associated with GreptimeDB, a cloud-native, open-source time-series database designed for metrics, logs, and events. Explore the glossary to better understand the innovative features and technologies behind GreptimeDB.
 
-## 编程语言 Driver
+---
 
-推荐使用成熟的 SQL driver 来查询数据。
+## A
 
-### 推荐的查询库
+### Anomaly Detection
+The process of identifying data points, events, or observations that deviate significantly from the norm. In time-series data, anomaly detection helps in spotting unusual patterns that may indicate critical incidents.
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    Java 数据库连接（JDBC）是 JavaSoft 规范的标准应用程序编程接口（API），它允许 Java 程序访问数据库管理系统。
+---
 
-    许多数据库协议，如 MySQL 或 PostgreSQL，都已经基于 JDBC API 实现了自己的驱动程序。
-    由于 GreptimeDB [支持多种协议](/user-guide/protocols/overview.md)，这里我们使用 MySQL 协议作为示例来演示如何使用 JDBC。
-    如果你希望使用其他协议，只需要将 MySQL driver 换为相应的 driver。
-  </TabItem>
-  <TabItem value="Go" label="Go">
-    推荐使用 [GORM](https://gorm.io/) 库来查询数据。
-  </TabItem>
-</Tabs>
+## C
 
-### 安装
+### Cardinality
+A measure of the uniqueness of data elements in a database, such as the number of unique values in a column. High cardinality can increase the complexity and storage requirements of a database, especially in time-series data.
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    如果你使用的是 [Maven](https://maven.apache.org/)，请将以下内容添加到 `pom.xml` 的依赖项列表中：
+### Cloud-Native Design
+An architectural approach that utilizes cloud computing frameworks and services to build scalable and resilient applications. GreptimeDB's cloud-native design allows it to scale effortlessly from edge deployments to distributed clusters in the cloud.
 
-    ```xml
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.33</version>
-    </dependency>
-    ```
-  </TabItem>
+### Columnar Storage
+A data storage format that stores data tables by columns rather than rows. This format enhances performance for read-heavy operations and is optimized for analytical queries, contributing to GreptimeDB's cost efficiency.
 
-  <TabItem value="Go" label="Go">
-    使用下方的命令安装 GORM：
+---
 
-    ```shell
-    go get -u gorm.io/gorm
-    ```
+## D
 
-    以 MySQL 为例安装 driver：
+### Decoupled Compute and Storage Architecture
+An architectural design where computing resources and storage are managed separately. This separation enables independent scaling and resource optimization, leading to improved performance and flexibility in managing workloads.
 
-    ```shell
-    go get -u gorm.io/driver/mysql
-    ```
+---
 
-    将库引入到代码中：
+## E
 
-    ```go
-    import (
-        "gorm.io/gorm"
-        "gorm.io/driver/mysql"
-    )
-    ```
-  </TabItem>
-</Tabs>
+### Edge Database
+A database deployed at the edge of a network, close to the data source or user, to minimize latency and optimize data processing in real-time.
 
-### Connect to database
+### Edge Deployment
+The practice of deploying applications or services closer to the data source or end-user to reduce latency and bandwidth usage. GreptimeDB supports edge deployment, allowing for real-time data processing in resource-limited environments.
 
-下面以 MySQL 为例演示如何连接到 GreptimeDB。
+### Event Management
+The practice of collecting, organizing, and analyzing events—including metrics, logs, and traces—to monitor and optimize systems. Event management is a critical aspect of maintaining real-time systems and applications.
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    ```java
-    public static Connection getConnection() throws IOException, ClassNotFoundException, SQLException {
-        Properties prop = new Properties();
-        prop.load(QueryJDBC.class.getResourceAsStream("/db-connection.properties"));
+---
 
-        String dbName = (String) prop.get("db.database-driver");
-        String dbConnUrl = (String) prop.get("db.url");
-        String dbUserName = (String) prop.get("db.username");
-        String dbPassword = (String) prop.get("db.password");
+## I
 
-        Class.forName(dbName);
-        Connection dbConn = DriverManager.getConnection(dbConnUrl, dbUserName, dbPassword);
+### IoT Cloud
+A cloud computing platform specifically designed to support Internet of Things (IoT) applications by providing the necessary storage, processing power, and connectivity to manage IoT data at scale.
 
-        return Objects.requireNonNull(dbConn, "Failed to make connection!");
-    }
-    ```
+### IoT Database
+A database optimized for handling Internet of Things (IoT) data, which often involves time-series metrics from sensors and devices. GreptimeDB is suitable for IoT use cases, providing scalable and efficient storage and querying for high-frequency data generated by IoT devices.
 
-    你需要一个 properties 文件来存储数据库连接信息，将其放在 Resources 目录中并命名为 `db-connection.properties`。文件内容如下：
+### IoT Observability
+The ability to monitor, analyze, and gain insights into IoT devices and systems through metrics, logs, and events. IoT observability ensures that devices and applications perform reliably and efficiently.
 
-    ```txt
-    # DataSource
-    db.database-driver=com.mysql.cj.jdbc.Driver
-    db.url=jdbc:mysql://localhost:4002/public
-    db.username=
-    db.password=
-    ```
+### Interoperability
+The ability of different systems, applications, or products to connect and communicate in a coordinated way without effort from the end-user. GreptimeDB supports widely adopted database protocols and APIs, including SQL, InfluxDB, OpenTelemetry, Prometheus, Elasticsearch, and Loki, ensuring seamless integration.
 
-    或者你可以从[这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties)获取文件。
-  </TabItem>
-  <TabItem value="Go" label="Go">
-    ```go
-    type Mysql struct {
-      Host     string
-      Port     string
-      User     string
-      Password string
-      Database string
+---
 
-      DB *gorm.DB
-    }
+## L
 
-    m := &Mysql{
-        Host:     "127.0.0.1",
-        Port:     "4002", // default port for MySQL
-        User:     "username",
-        Password: "password",
-        Database: "public",
-    }
+### Log Aggregation
+The process of collecting and combining log data from multiple sources into a centralized location for easier analysis and troubleshooting.
 
-    dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-        m.Host, m.Port, m.Database)
-    dsn = fmt.Sprintf("%s:%s@%s", m.User, m.Password, dsn)
-    db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-    if err != nil {
-        // error handling 
-    }
-    m.DB = db
-    ```
-  </TabItem>
-</Tabs>
+### Log Management
+The overall process of handling log data, including collection, storage, analysis, and visualization, to ensure system performance and security.
 
-#### 时区
+---
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    通过设置 URL 参数来设置 JDBC 时区:
+## M
 
-    ```txt
-    jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
-    ```
-    * `connectionTimeZone={LOCAL|SERVER|user-defined-time-zone}` 配置连接时区。
-    * `forceConnectionTimeZoneToSession=true` 使 session `time_zone` 变量被设置为 `connectionTimeZone` 指定的值。
-  </TabItem>
-  <TabItem value="Go" label="Go">
-    在 DSN 中设置时区。例如，将时区设置为 `Asia/Shanghai`:
+### Memory Leak
+A type of software bug where a program fails to release unused memory, causing a gradual decrease in available memory and potential system instability over time.
 
-    ```go
-    dsn := fmt.Sprintf("tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&time_zone=%27Asia%2FShanghai%27",
-        m.Host, m.Port, m.Database)
-    ```
+### MetricsQL
+An extension of PromQL (Prometheus Query Language) that introduces additional features for querying time-series data. MetricsQL enhances analytical capabilities, allowing for more complex queries and data manipulations.
 
-    更多信息请参考 [MySQL Driver 文档](https://github.com/go-sql-driver/mysql?tab=readme-ov-file#system-variables)。
-  </TabItem>
-</Tabs>
+---
 
-### Raw SQL
+## O
 
-推荐使用 Raw SQL 来体验 GreptimeDB 的全部功能。
-下面的例子展示了如何使用 Raw SQL 查询数据：
+### Observability
+A measure of how well the internal states of a system can be inferred based on its external outputs. Observability tools, such as GreptimeDB, help engineers monitor, debug, and gain insights into system performance by analyzing metrics, logs, and events.
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    ```java
-    try (Connection conn = getConnection()) {
-      Statement statement = conn.createStatement();
+### OpenTelemetry
+An open-source observability framework for cloud-native software. OpenTelemetry provides APIs and SDKs for collecting, processing, and exporting telemetry data such as traces, metrics, and logs. GreptimeDB integrates with OpenTelemetry to enhance data observability.
 
-      // DESC table;
-      ResultSet rs = statement.executeQuery("DESC cpu_metric");
-      LOG.info("Column | Type | Key | Null | Default | Semantic Type ");
-      while (rs.next()) {
-        LOG.info("{} | {} | {} | {} | {} | {}",
-            rs.getString(1),
-            rs.getString(2),
-            rs.getString(3),
-            rs.getString(4),
-            rs.getString(5),
-            rs.getString(6));
-      }
+---
 
-      // SELECT COUNT(*) FROM cpu_metric;
-      rs = statement.executeQuery("SELECT COUNT(*) FROM cpu_metric");
-      while (rs.next()) {
-        LOG.info("Count: {}", rs.getInt(1));
-      }
+## P
 
-      // SELECT * FROM cpu_metric ORDER BY ts DESC LIMIT 5;
-      rs = statement.executeQuery("SELECT * FROM cpu_metric ORDER BY ts DESC LIMIT 5");
-      LOG.info("host | ts | cpu_user | cpu_sys");
-      while (rs.next()) {
-        LOG.info("{} | {} | {} | {}",
-            rs.getString("host"),
-            rs.getTimestamp("ts"),
-            rs.getDouble("cpu_user"),
-            rs.getDouble("cpu_sys"));
-      }
-    }
-    ```
+### PromQL (Prometheus Query Language)
+A powerful and flexible query language used to retrieve and manipulate time-series data stored in Prometheus. GreptimeDB supports PromQL, enabling users to perform complex queries on their time-series data.
 
-    请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java)获取直接可执行的代码。
-  </TabItem>
-  <TabItem value="Go" label="Go">
-    The following code declares a GORM object model:
-    
-    ```go
-    type CpuMetric struct {
-        Host        string    `gorm:"column:host;primaryKey"`
-        Ts          time.Time `gorm:"column:ts;primaryKey"`
-        CpuUser     float64   `gorm:"column:cpu_user"`
-        CpuSys      float64   `gorm:"column:cpu_sys"`
-    }
-    ```
-    
-    如果你正在使用[高层级 API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#高层级-api) 来插入数据，你可以在模型中同时声明 GORM 和 GreptimeDB Tag。
-    
-    ```go
-    type CpuMetric struct {
-        Host        string    `gorm:"column:host;primaryKey" greptime:"tag;column:host;type:string"`
-        Ts          time.Time `gorm:"column:ts;primaryKey"   greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
-        CpuUser     float64   `gorm:"column:cpu_user"        greptime:"field;column:cpu_user;type:float64"`
-        CpuSys      float64   `gorm:"column:cpu_sys"         greptime:"field;column:cpu_sys;type:float64"`
-    }
-    ```
-    
-    声明表名：
-    
-    ```go
-    func (CpuMetric) TableName() string {
-      return "cpu_metric"
-    }
-    ```
-    
-    使用 Raw SQL 查询数据：
-    
-    ```go
-    var cpuMetric CpuMetric
-    db.Raw("SELECT * FROM cpu_metric LIMIT 10").Scan(&result)
-    ```
-  </TabItem>
-</Tabs>
+---
 
-### 查询库参考
+## R
 
-有关如何使用查询库的更多信息，请参考相应库的文档：
+### Rust
+A modern programming language known for its performance and safety features, particularly in system-level programming. GreptimeDB is built with Rust, contributing to its superior performance and reliability.
 
-<Tabs groupId="programming-langs">
-  <TabItem value="Java" label="Java">
-    - [JDBC 在线教程](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html)
-  </TabItem>
-  <TabItem value="Go" label="Go">
-    - [GORM](https://gorm.io/docs/index.html)
-  </TabItem>
-</Tabs>
+---
 
-## 命令行工具
+## S
 
-### MySQL
+### Scalability
+The capability of a database system to handle growing volumes of data and increasing query loads efficiently by scaling resources either vertically (adding more power to a single server) or horizontally (adding more servers to a cluster). Scalability ensures that the system can accommodate future growth without sacrificing performance or reliability, making it crucial for modern data-intensive applications.
 
-你可以使用 `mysql` 命令行工具连接到 GreptimeDB。
-请参考 [MySQL 协议](/user-guide/protocols/mysql.md) 文档获取连接信息。
+### SQL (Structured Query Language)
+A standardized programming language used for managing and manipulating relational databases. GreptimeDB supports SQL, allowing users to query metrics, logs, and events efficiently.
 
-连接到服务器后，你可以使用所有 [GreptimeDB SQL 命令](/reference/sql/overview.md)与数据库交互。
+### Streaming Processing
+The continuous processing of data streams in real-time. GreptimeDB unifies metrics, logs, and events with native support for streaming processing, enabling real-time analytics and insights.
 
-### PostgreSQL
+---
 
-你可以使用 `psql` 命令行工具连接到 GreptimeDB。
-请参考 [PostgreSQL 协议](/user-guide/protocols/postgresql.md) 文档获取连接信息。
+## T
 
-连接到服务器后，你可以使用所有 [GreptimeDB SQL 命令](/reference/sql/overview.md)与数据库交互。
+### Time Series Database
+A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB is a cloud-native time-series database optimized for analyzing and querying metrics, logs, and events.
 
-## GreptimeDB 控制台
+---
 
-你可以在 [Greptime 控制台](/getting-started/installation/greptimedb-dashboard.md)中运行 SQL 并可视化数据。
+## U
 
-## GUI 工具
+### Unified Analysis
+The integration of various data types and sources into a single platform for analysis. GreptimeDB provides unified analysis by allowing users to query metrics, logs, and events using SQL and PromQL, simplifying data analytics workflows.
 
-### DBeaver
+---
 
-请参考 [DBeaver 集成指南](/user-guide/integrations/dbeaver.md)。
+## V
 
-<!-- TODO: GUI tools: Add Navicat, DBeaver, etc. -->
+### Vector Processing
+A computational method that involves processing data as vectors (arrays of data) to achieve high-performance analytics. GreptimeDB supports vector processing for tasks such as similarity searches and high-dimensional data analysis in time-series and event data.
 
-## HTTP API
+### Vehicle Data Collection
+The process of gathering data generated by vehicles, such as sensor readings, GPS locations, and diagnostics, for analysis and insights. Vehicle data collection is a key component of modern IoT ecosystems.
 
-你可以将 POST SQL 到 GreptimeDB HTTP API 以查询数据。
-请参考 [HTTP API](/user-guide/protocols/http.md) 文档获取更多信息。
+### Vehicle-Cloud Integrated TSDB
+A time-series database designed to work seamlessly with vehicle data and cloud-based systems, enabling efficient data storage, querying, and real-time analysis for connected vehicle applications.
 
+---
+
+*Note: This glossary is a work in progress and will be updated as new features and concepts emerge within the GreptimeDB ecosystem.*
