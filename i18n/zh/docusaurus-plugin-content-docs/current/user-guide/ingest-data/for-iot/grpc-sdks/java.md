@@ -87,7 +87,10 @@ GreptimeDB client = GreptimeDB.create(opts);
 
 ```java
 Context ctx = Context.newDefault();
-ctx.withHint("ttl", "3d");
+// 添加一个 hint，使数据库创建一个具有指定 TTL (time-to-live) 的表
+ctx = ctx.withHint("ttl", "3d");
+// 将压缩算法设置为 Zstd
+ctx = ctx.withCompression(Compression.Zstd)
 // 使用 ctx 对象写入数据
 // `cpuMetric` 和 `memMetric` 是定义的数据对象，之后的章节中有详细描述
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
@@ -98,7 +101,9 @@ CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(
 <div id="low-level-object">
 
 ```java
-// 为 CPU 指标构建表结构
+// 为 `cpu_metric` 构建表结构。
+// schema 是不可变的，可以安全地在多个操作中重复使用。
+// 建议使用蛇形命名法（snake_case）作为列名。
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String) // 主机的标识符
         .addTimestamp("ts", DataType.TimestampMillisecond) // 毫秒级的时间戳
@@ -106,7 +111,10 @@ TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addField("cpu_sys", DataType.Float64) // 系统进程的 CPU 使用率
         .build();
 
-// 根据定义的模式创建表
+// 根据指定的 schema 创建一个 table
+// Table 不可重复使用 - 每次写操作都必须创建一个新实例。
+// 然而，在真正发起写入操作之前，我们可以向单个 table 中添加多行数据，然后一次性执行写入操作，
+// 这比逐行写入更有效率。
 Table cpuMetric = Table.from(cpuMetricSchema);
 
 // 单行的示例数据
@@ -118,6 +126,12 @@ double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
 // 将一行数据插入表中
 // 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
+// 可以继续添加更多行数据到 table 中
+// ..
+
+// 调用 `complete()` 方法使 table 变为不可变状态，为写入操作做最后准备。
+// 如果用户忘记调用此方法，系统会在实际写入数据前自动调用它。
+cpuMetric.complete();
 ```
 
 </div>
@@ -126,6 +140,8 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 
 ```java
 // 创建表结构
+// schema 是不可变的，可以安全地在多个操作中重复使用。
+// 建议使用蛇形命名法（snake_case）作为列名。
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String)
         .addTimestamp("ts", DataType.TimestampMillisecond)
@@ -139,6 +155,9 @@ TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
         .addField("mem_usage", DataType.Float64)
         .build();
 
+// Table 不可重复使用 - 每次写操作都必须创建一个新实例。
+// 然而，在真正发起写入操作之前，我们可以向单个 table 中添加多行数据，然后一次性执行写入操作，
+// 这比逐行写入更有效率。
 Table cpuMetric = Table.from(cpuMetricSchema);
 Table memMetric = Table.from(memMetricSchema);
 
@@ -148,6 +167,8 @@ for (int i = 0; i < 10; i++) {
     long ts = System.currentTimeMillis();
     double cpuUser = i + 0.1;
     double cpuSys = i + 0.12;
+    // 向 `cpu_metric` 表中添加一行数据。
+    // 值的顺序必须与表结构定义匹配。
     cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 }
 
@@ -155,8 +176,15 @@ for (int i = 0; i < 10; i++) {
     String host = "127.0.0." + i;
     long ts = System.currentTimeMillis();
     double memUsage = i + 0.2;
+    // 向 `mem_metric` 表中添加一行数据。
+    // 值的顺序必须与表结构定义匹配。
     memMetric.addRow(host, ts, memUsage);
 }
+
+// 调用 `complete()` 方法使 table 变为不可变状态。即使用户忘记调用此方法，
+// 系统也会在实际写入数据前自动在内部调用它。
+cpuMetric.complete();
+memMetric.complete();
 
 ```
 
@@ -167,8 +195,10 @@ for (int i = 0; i < 10; i++) {
 ```java
 // 插入数据
 
-// 考虑到尽可能提升性能和降低资源占用，SDK 设计为纯异步的。
-// 返回值是一个 future 对象。如果你想立即获取结果，可以调用 `future.get()`。
+// 出于性能考虑，SDK 被设计为纯异步的。
+// 返回值是一个 CompletableFuture 对象。如果你想立即获取结果，
+// 可以调用 `future.get()`，这将阻塞直到操作完成。
+// 对于生产环境，建议使用回调或 CompletableFuture API 等非阻塞方式。
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
 Result<WriteOk, Err> result = future.get();
@@ -187,9 +217,15 @@ if (result.isOk()) {
 
 
 ```java
-StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
+// 设置压缩算法为 Zstd。
+Context ctx = Context.newDefault().withCompression(Compression.Zstd);
+// 创建一个流式写入器，限制速率为每秒 100,000 个数据点。
+// 这有助于控制数据流量，防止数据库过载。
+StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter(100000, ctx);
 
-// 写入数据到流中
+// 将表数据写入流中。数据将立即被刷新到网络中。这使得数据可以高效、低延迟地传输到数据库。
+// 由于这是客户端到服务端的单向流传输，我们无法立即从数据库端获取写入结果。
+// 写入所有数据后，我们可以调用 `completed()` 来完成这个流，并获取结果。
 writer.write(cpuMetric);
 writer.write(memMetric);
 
@@ -203,6 +239,7 @@ writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
 ```java
 // 完成流式写入
 CompletableFuture<WriteOk> future = writer.completed();
+// 现在我们可以获取写入结果。
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```

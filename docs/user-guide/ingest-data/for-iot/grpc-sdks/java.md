@@ -90,7 +90,10 @@ For example, to set the `ttl` option, use the following code:
 
 ```java
 Context ctx = Context.newDefault();
-ctx.withHint("ttl", "3d");
+// Add a hint to make the database create a table with the specified TTL (time-to-live)
+ctx = ctx.withHint("ttl", "3d");
+// Set the compression algorithm to Zstd.
+ctx = ctx.withCompression(Compression.Zstd)
 // Use the ctx when writing data to GreptimeDB
 // The data object `cpuMetric` and `memMetric` are described in the following sections
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
@@ -101,7 +104,9 @@ CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(
 <div id="low-level-object">
 
 ```java
-// Construct the table schema for CPU metrics
+// Construct the table schema for `cpu_metric`.
+// The schema is immutable and can be safely reused across multiple operations.
+// It is recommended to use snake_case for column names.
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String) // Identifier for the host
         .addTimestamp("ts", DataType.TimestampMillisecond) // Timestamp in milliseconds
@@ -109,7 +114,10 @@ TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addField("cpu_sys", DataType.Float64) // CPU usage by system processes
         .build();
 
-// Create the table from the defined schema
+// Create a table from the defined schema.
+// Tables are not reusable - a new instance must be created for each write operation.
+// However, we can add multiple rows to a single table before writing it,
+// which is more efficient than writing rows individually.
 Table cpuMetric = Table.from(cpuMetricSchema);
 
 // Example data for a single row
@@ -121,6 +129,13 @@ double cpuSys = 0.12; // CPU usage by system processes (in percentage)
 // Insert the row into the table
 // NOTE: The arguments must be in the same order as the columns in the defined schema: host, ts, cpu_user, cpu_sys
 cpuMetric.addRow(host, ts, cpuUser, cpuSys);
+// We can add more rows to the table
+// ...
+
+// Complete the table to make it immutable. This finalizes the table for writing.
+// If users forget to call this method, it will automatically be called internally
+// before the table data is written.
+cpuMetric.complete();
 ```
 
 </div>
@@ -129,7 +144,9 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 <div id="create-rows">
 
 ```java
-// Creates schemas
+// Define the schema for tables.
+// The schema is immutable and can be safely reused across multiple operations.
+// It is recommended to use snake_case for column names.
 TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
         .addTag("host", DataType.String)
         .addTimestamp("ts", DataType.TimestampMillisecond)
@@ -143,6 +160,9 @@ TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
         .addField("mem_usage", DataType.Float64)
         .build();
 
+// Tables are not reusable - a new instance must be created for each write operation.
+// However, we can add multiple rows to a single table before writing it,
+// which is more efficient than writing rows individually.
 Table cpuMetric = Table.from(cpuMetricSchema);
 Table memMetric = Table.from(memMetricSchema);
 
@@ -152,6 +172,8 @@ for (int i = 0; i < 10; i++) {
     long ts = System.currentTimeMillis();
     double cpuUser = i + 0.1;
     double cpuSys = i + 0.12;
+    // Add a row to the `cpu_metric` table.
+    // The order of the values must match the schema definition.
     cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 }
 
@@ -159,8 +181,15 @@ for (int i = 0; i < 10; i++) {
     String host = "127.0.0." + i;
     long ts = System.currentTimeMillis();
     double memUsage = i + 0.2;
+    // Add a row to the `mem_metric` table.
+    // The order of the values must match the schema definition.
     memMetric.addRow(host, ts, memUsage);
 }
+
+// Complete the table to make it immutable. If users forget to call this method,
+// it will still be called internally before the table data is written.
+cpuMetric.complete();
+memMetric.complete();
 
 ```
 
@@ -173,8 +202,10 @@ for (int i = 0; i < 10; i++) {
 // Saves data
 
 // For performance reasons, the SDK is designed to be purely asynchronous.
-// The return value is a future object. If you want to immediately obtain
-// the result, you can call `future.get()`.
+// The return value is a CompletableFuture object. If you want to immediately obtain
+// the result, you can call `future.get()`, which will block until the operation completes.
+// For production environments, consider using non-blocking approaches with callbacks or
+// the CompletableFuture API.
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
 
 Result<WriteOk, Err> result = future.get();
@@ -194,9 +225,16 @@ if (result.isOk()) {
 
 
 ```java
-StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter();
+// Set the compression algorithm to Zstd.
+Context ctx = Context.newDefault().withCompression(Compression.Zstd);
+// Create a stream writer with a rate limit of 100,000 points per second.
+// This helps control the data flow and prevents overwhelming the database.
+StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter(100000, ctx);
 
-// write data into stream
+// Write table data to the stream. The data will be immediately flushed to the network.
+// This allows for efficient, low-latency data transmission to the database.
+// Since this is client streaming, we cannot get the write result immediately.
+// After writing all data, we can call `completed()` to finalize the stream and get the result.
 writer.write(cpuMetric);
 writer.write(memMetric);
 
@@ -208,8 +246,9 @@ Close the stream writing after all data has been written.
 In general, you do not need to close the stream writing when continuously writing data.
 
 ```java
-// complete the stream
+// Completes the stream, and the stream will be closed.
 CompletableFuture<WriteOk> future = writer.completed();
+// Now we can get the write result.
 WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
