@@ -391,6 +391,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Reference',
       items: [
+        'reference/glossary',
         'reference/command-lines',
         'reference/sql-tools',
         'reference/time-durations',
