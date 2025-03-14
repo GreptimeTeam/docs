@@ -68,7 +68,7 @@ The ability of different systems, applications, or products to connect and commu
 ## L
 
 ### Log Aggregation
-The process of collecting and combining log data from multiple sources into a centralized location for easier analysis and troubleshooting.
+Perform calculations on a set of logs to generate a single summary statistic for analysis and troubleshooting. For example, SUM, COUNT, etc.
 
 ### Log Management
 The overall process of handling log data, including collection, storage, analysis, and visualization, to ensure system performance and security.
