@@ -139,7 +139,7 @@ The query result is as follows:
       |       - type                     +|
       |       - logger                   +|
       |     type: string                 +|
-      |     index: tag                   +|
+      |     index: inverted              +|
       |   - fields:                      +|
       |       - log                      +|
       |     type: string                 +|

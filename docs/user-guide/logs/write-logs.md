@@ -15,7 +15,7 @@ You can use the following command to write logs via the HTTP interface:
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
-     -H 'Content-Type: application/json' \
+     -H 'Content-Type: application/x-ndjson' \
      -d "$<log-items>"
 ```
 
@@ -32,9 +32,10 @@ This interface accepts the following parameters:
 
 GreptimeDB uses `Content-Type` header to decide how to decode the payload body. Currently the following two format is supported:
 - `application/json`: this includes normal JSON format and NDJSON format.
+- `application/x-ndjson`: specifically uses NDJSON format, which will try to split lines and parse for more accurate error checking.
 - `text/plain`: multiple log lines separated by line breaks.
 
-### `application/json` format
+### `application/json` and `application/x-ndjson` format
 
 Here is an example of JSON format body payload
 
