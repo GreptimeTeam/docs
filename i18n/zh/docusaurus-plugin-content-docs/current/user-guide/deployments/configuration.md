@@ -198,22 +198,23 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
-|         | name            | String |  存储提供商名字，默认为 `S3`               |
+|         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
 |         | root              | 字符串 | S3 桶中的根路径                                     |
 |         | endpoint          | 字符串 | S3 的 API 端点                                      |
 |         | region            | 字符串 | S3 区域                                             |
 |         | access_key_id     | 字符串 | S3 访问密钥 id                                      |
 |         | secret_access_key | 字符串 | S3 秘密访问密钥                                     |
+|         | enable_virtual_host_style | 布尔值 | 使用 virtual-host-style 域名而不是 path-style 域名调用 API，默认为 false |
 | Oss     |                   |        | 阿里云 OSS 存储选项，当 type="Oss" 时有效           |
-|         | name            | String |  存储提供商名字，默认为 `Oss`               |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Oss`               |
 |         | bucket            | 字符串 | OSS 桶名称                                          |
 |         | root              | 字符串 | OSS 桶中的根路径                                    |
 |         | endpoint          | 字符串 | OSS 的 API 端点                                     |
 |         | access_key_id     | 字符串 | OSS 访问密钥 id                                     |
 |         | access_key_secret | 字符串 | OSS 秘密访问密钥                                    |
 | Azblob  |                   |        | Azure Blob 存储选项，当 type="Azblob" 时有效        |
-|         | name            | String |  存储提供商名字，默认为 `Azblob`               |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Azblob`               |
 |         | container         | 字符串 | 容器名称                                            |
 |         | root              | 字符串 | 容器中的根路径                                      |
 |         | endpoint          | 字符串 | Azure Blob 存储的 API 端点                          |
@@ -221,7 +222,7 @@ GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容�
 |         | account_key       | 字符串 | 访问密钥                                            |
 |         | sas_token         | 字符串 | 共享访问签名                                        |
 | Gsc     |                   |        | Google Cloud Storage 存储选项，当 type="Gsc" 时有效 |
-|         | name            | String |  存储提供商名字，默认为 `Gsc`               |
+|         | name            | 字符串 |  存储提供商名字，默认为 `Gsc`               |
 |         | root              | 字符串 | Gsc 桶中的根路径                                    |
 |         | bucket            | 字符串 | Gsc 桶名称                                          |
 |         | scope             | 字符串 | Gsc 权限                                            |

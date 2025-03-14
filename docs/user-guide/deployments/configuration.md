@@ -217,6 +217,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | region            | String | The S3 region                                                 |
 |         | access_key_id     | String | The S3 access key id                                          |
 |         | secret_access_key | String | The S3 secret access key                                      |
+|         | enable_virtual_host_style | Boolean | Send API requests in virtual host style instead of path style. Default is false. |
 | Oss     |                   |        | Aliyun OSS storage options, valid when type="Oss"             |
 |         | name            | String | The  storage provider name, default is `Oss`               |
 |         | bucket            | String | The OSS bucket name                                           |
