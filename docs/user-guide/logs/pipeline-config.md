@@ -11,7 +11,7 @@ These configurations are provided in YAML format, allowing the Pipeline to proce
 
 ## Overall structure
 
-Pipeline consists of three parts: Processors and Transform, both of which are in array format. A Pipeline configuration can contain multiple Processors and multiple Transforms. The data type described by Transform determines the table structure when storing log data in the database.
+Pipeline consists of two parts: Processors and Transform, both of which are in array format. A Pipeline configuration can contain multiple Processors and multiple Transforms. The data type described by Transform determines the table structure when storing log data in the database.
 
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
 - Transform is used for converting data formats, such as converting string types to numeric types.

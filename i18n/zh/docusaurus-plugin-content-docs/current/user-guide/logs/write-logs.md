@@ -15,7 +15,7 @@ description: 介绍如何通过 HTTP 接口使用指定的 Pipeline 将日志写
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
-     -H 'Content-Type: application/json' \
+     -H 'Content-Type: application/x-ndjson' \
      -d "$<log-items>"
 ```
 
@@ -33,9 +33,10 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 
 GreptimeDB 使用 `Content-Type` header 来决定如何解码请求体内容。目前我们支持以下两种格式：
 - `application/json`: 包括普通的 JSON 格式和 NDJSON 格式。
+- `application/x-ndjson`: 指定 NDJSON 格式，会尝试先分割行再进行解析，可以达到精确的错误检查。
 - `text/plain`: 通过换行符分割的多行日志文本行。
 
-### `application/json` 格式
+### `application/json` 和 `application/x-ndjson` 格式
 
 以下是一份 JSON 格式请求体内容的示例：
 
