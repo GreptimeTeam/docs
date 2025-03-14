@@ -110,11 +110,13 @@ transform:
       - ip_address
       - http_method
     type: string
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - status_code
     type: int32
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - request_line
       - user_agent
@@ -213,9 +215,9 @@ From the table structure, you can see that the `origin_logs` table has only two 
 with the entire log message stored in a single column.
 The `pipeline_logs` table stores the log message in multiple columns.
 
-It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Tag matching query proves superior to full-text searching for several key reasons:
+It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Column matching query proves superior to full-text searching for several key reasons:
 
-- **Performance Efficiency**: Tag matching query is typically faster than full-text searching.
+- **Performance Efficiency**: Column matching query is typically faster than full-text searching.
 - **Resource Consumption**: Due to GreptimeDB's columnar storage engine, structured data is more conducive to compression. Additionally, the inverted index used for tag matching query typically consumes significantly fewer resources than a full-text index, especially in terms of storage size.
 - **Maintainability**: Tag matching query is straightforward and easier to understand, write, and debug.
 

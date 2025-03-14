@@ -106,11 +106,13 @@ transform:
       - ip_address
       - http_method
     type: string
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - status_code
     type: int32
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - request_line
       - user_agent
@@ -208,9 +210,9 @@ DESC pipeline_logs;
 而 `pipeline_logs` 表将日志消息存储在多个列中。
 
 推荐使用 pipeline 方法将日志消息拆分为多个列，这样可以精确查询某个特定列中的某个值。
-与全文搜索相比，Tag 匹配查询在处理字符串时具有以下几个优势：
+与全文搜索相比，列匹配查询在处理字符串时具有以下几个优势：
 
-- **性能效率**：Tag 的匹配查询通常都比全文搜索更快。
+- **性能效率**：列的匹配查询通常都比全文搜索更快。
 - **资源消耗**：由于 GreptimeDB 的存储引擎是列存，结构化的数据更利于数据的压缩，并且 Tag 匹配查询使用的倒排索引，其资源消耗通常显著少于全文索引，尤其是在存储大小方面。
 - **可维护性**：精确匹配查询简单明了，更易于理解、编写和调试。
 

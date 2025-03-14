@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB 中 Pipeline 的配置，包括 Processor 和 Tra
 
 # Pipeline 配置
 
-Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json`）和纯文本（`text/plain`）格式的日志数据作为输入。
+Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制， 由一个唯一的名称和一组配置规则组成，这些规则定义了如何对日志数据进行格式化、拆分和转换。目前我们支持 JSON（`application/json` 或者 `application/x-ndjson`， 推荐后者）和纯文本（`text/plain`）格式的日志数据作为输入。
 
 这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
@@ -58,6 +58,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
 - `json_path`: 从 JSON 数据中提取字段。
+- `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
 
 大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
@@ -488,6 +489,68 @@ transform:
 }
 ```
 
+### `simple_extract`
+
+虽然 `json_path` 处理器能够使用复杂表达式从 JSON 对象中提取字段，但它相对较慢且成本较高。`simple_extract` 处理器提供了一种简单的方法，仅使用键名来提取字段。以下是示例配置：
+
+```yaml
+processors:
+  - simple_extract:
+      fields:
+        - complex_object, target_field
+      key: "shop.name"
+      ignore_missing: true
+```
+
+在上述示例中，`simple_extract` 处理器的配置包含以下字段：
+
+- `fields`：对于每个字段，第一个键表示上下文中的输入 JSON 对象，第二个键表示输出键名。上面的示例表示从 `complex_object` 中提取数据并将输出放入 `target_field` 中。
+- `key`：提取键，使用 `x.x` 格式，每个 `.` 表示一个新的嵌套层。
+- `ignore_missing`：忽略字段不存在的情况。默认为 `false`。如果字段不存在且此配置为 `false`，将抛出异常。
+
+#### `simple_extract` 示例
+
+例如，给定以下日志数据：
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  },
+  "product_array": [
+    "hello",
+    "world"
+  ],
+  "complex_object": {
+    "shop": {
+      "name": "some_shop_name"
+    }
+  }
+}
+```
+
+使用以下配置：
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - complex_object, shop_name
+      key: "shop.name"
+transform:
+  - fields:
+      - shop_name
+    type: string
+```
+
+结果将是：
+
+```json
+{
+  "shop_name": "some_shop_name"
+}
+```
+
 ### `digest`
 
 `digest` 处理器用于从日志内容中提取日志模板，它通过识别并移除可变内容（如数字、UUID、IP 地址、引号中的内容和括号中的文本等）来实现。提取出的模板可用于日志的分类和分析。配置示例如下：
@@ -565,9 +628,10 @@ Transform 用于对 log 数据进行转换，其配置位于 YAML 文件中的 `
 
 Transform 由一个或多个配置组成，每个配置包含以下字段：
 
-- `fields`: 需要转换的字段名列表。
+- `fields`: 需要转换的字段名列表
 - `type`: 转换类型
 - `index`: 索引类型（可选）
+- `tag`: 设置列为 tag（可选）
 - `on_failure`: 转换失败时的处理方式（可选）
 - `default`: 默认值（可选）
 
@@ -591,16 +655,17 @@ GreptimeDB 目前内置了以下几种转换类型：
 
 ### `index` 字段
 
-`Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。`index` 字段用于指定哪些字段需要被索引。关于 GreptimeDB 的列类型，请参考[数据模型](/user-guide/concepts/data-model.md)文档。
+`Pipeline` 会将处理后的数据写入到 GreptimeDB 自动创建的数据表中。为了提高查询效率，GreptimeDB 会为表中的某些列创建索引。`index` 字段用于指定哪些字段需要被索引。关于 GreptimeDB 的索引类型，请参考[数据索引](/user-guide/manage-data/data-index.md)文档。
 
-GreptimeDB 支持以下三种字段的索引类型：
+GreptimeDB 支持以下四种字段的索引类型：
 
-- `tag`: 用于指定某列为 Tag 列
-- `fulltext`: 用于指定某列使用 fulltext 类型的索引，该列需要是字符串类型
-- `skipping`: 用于指定某列使用 skipping 类型的索引，该列需要是字符串类型
 - `timestamp`: 用于指定某列是时间索引列
+- `inverted`: 用于指定某列使用 inverted 类型的索引（倒排索引）
+- `fulltext`: 用于指定某列使用 fulltext 类型的索引（全文索引），该列需要是字符串类型
+- `skipping`: 用于指定某列使用 skipping 类型的索引（跳数索引），该列需要是字符串类型
 
-不提供 `index` 字段时，GreptimeDB 会将该字段作为 `Field` 列。
+
+不提供 `index` 字段时，GreptimeDB 将不会在该字段上建立索引。
 
 在 GreptimeDB 中，一张表里必须包含一个 `timestamp` 类型的列作为该表的时间索引列，因此一个 Pipeline 有且只有一个时间索引列。
 
@@ -608,13 +673,21 @@ GreptimeDB 支持以下三种字段的索引类型：
 
 通过 `index: timestamp` 指定哪个字段是时间索引列，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-#### Tag 列
+#### Inverted 索引
 
-通过 `index: tag` 指定哪个字段是 Tag 列，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: inverted` 指定在哪个列上建立倒排索引，写法请参考下方的 [Transform 示例](#transform-示例)。
 
-#### Fulltext 列
+#### Fulltext 索引
 
-通过 `index: fulltext` 指定哪个字段将会被用于全文搜索，该索引可大大提升 [日志搜索](./query-logs.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+通过 `index: fulltext` 指定在哪个列上建立全文索引，该索引可大大提升 [日志搜索](./query-logs.md) 的性能，写法请参考下方的 [Transform 示例](#transform-示例)。
+
+#### Skipping 索引
+
+通过 `index: skipping` 指定在哪个列上建立跳数索引，该索引只需少量存储空间的索引文件即可以加速在高基数列上的查询，写法请参考下方的 [Transform 示例](#transform-示例)。
+
+### `tag` 字段
+
+`Pipeline` 支持手动指定 tag 列。关于 tag 列的更多信息，请参考[数据模型](/user-guide/concepts/data-model.md)文档。写法请参考下方的 [Transform 示例](#transform-示例)。
 
 ### `on_failure` 字段
 
@@ -647,10 +720,12 @@ transform:
   - fields:
       - string_field_a, name
     type: string
-    index: tag
+    index: skipping
+    tag: true
   - fields:
       - num_field_a, age
     type: int32
+    index: inverted
   - fields:
       - string_field_b, description
     type: string

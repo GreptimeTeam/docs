@@ -138,7 +138,7 @@ SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
       |       - type                     +|
       |       - logger                   +|
       |     type: string                 +|
-      |     index: tag                   +|
+      |     index: inverted              +|
       |   - fields:                      +|
       |       - log                      +|
       |     type: string                 +|

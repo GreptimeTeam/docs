@@ -5,7 +5,7 @@ description: Explains the configuration of pipelines in GreptimeDB for parsing a
 
 # Pipeline Configuration
 
-Pipeline is a mechanism in GreptimeDB for parsing and transforming log data. It consists of a unique name and a set of configuration rules that define how log data is formatted, split, and transformed. Currently, we support JSON (`application/json`) and plain text (`text/plain`) formats as input for log data.
+Pipeline is a mechanism in GreptimeDB for parsing and transforming log data. It consists of a unique name and a set of configuration rules that define how log data is formatted, split, and transformed. Currently, we support JSON (`application/json` or `application/x-ndjson`, the latter is preferred) and plain text (`text/plain`) formats as input for log data.
 
 These configurations are provided in YAML format, allowing the Pipeline to process data during the log writing process according to the defined rules and store the processed data in the database for subsequent structured queries.
 
@@ -63,6 +63,7 @@ We currently provide the following built-in Processors:
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
 - `json_path`: extracts fields from JSON data.
+- `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
 
 Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
@@ -80,7 +81,7 @@ processors:
       ignore_missing: true
 ```
 
-the `message` field will be converted to uppercase and stored in the `message_upper` field.
+The `message` field will be converted to uppercase and stored in the `message_upper` field.
 
 ### `date`
 
@@ -477,6 +478,68 @@ The result will be:
 }
 ```
 
+### `simple_extract`
+
+While `json_path` processor is capable of extracting fields from JSON objects using complex expressions, it's relatively slow and costly. The `simple_extract` processor offers a simple way to extract fields by using just key names. Here's an example configuration:
+
+```yaml
+processors:
+  - simple_extract:
+      fields:
+        - complex_object, target_field
+      key: "shop.name"
+      ignore_missing: true
+```
+
+In the above example, the configuration of the `simple_extract` processor includes the following fields:
+
+- `fields`: For each field, the first key represents the entry JSON object in the context, the second key represents the output key name. The example above means extracting from `complex_object` and put the output into `target_field`.
+- `key`: The extracting key, using `x.x` format, each `.` represents a new nested layer.
+- `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
+
+#### `simple_extract` example
+
+For example, given the following log data:
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  },
+  "product_array": [
+    "hello",
+    "world"
+  ],
+  "complex_object": {
+    "shop": {
+      "name": "some_shop_name"
+    }
+  }
+}
+```
+
+Using the following configuration:
+
+```yaml
+processors:
+  - json_path:
+      fields:
+        - complex_object, shop_name
+      key: "shop.name"
+transform:
+  - fields:
+      - shop_name
+    type: string
+```
+
+The result will be:
+
+```json
+{
+  "shop_name": "some_shop_name"
+}
+```
+
 ### `digest`
 
 The `digest` processor is used to extract the template from a log message by removing variable content, such as numbers, UUIDs, IP addresses, quoted strings, and bracketed text. The digested result can be useful for log template grouping and analysis. Here's an example configuration:
@@ -556,7 +619,8 @@ A Transform consists of one or more configurations, and each configuration conta
 
 - `fields`: A list of field names to be transformed.
 - `type`: The transformation type.
-- `index`: Index type (optional).
+- `index`: The index type (optional).
+- `tag`: Specify the field to be a tag field (optional).
 - `on_failure`: Handling method for transformation failures (optional).
 - `default`: Default value (optional).
 
@@ -579,30 +643,38 @@ If a field obtains an illegal value during the transformation process, the Pipel
 
 ### The `index` field
 
-The `Pipeline` will write the processed data to the automatically created table in GreptimeDB. To improve query efficiency, GreptimeDB creates indexes for certain columns in the table. The `index` field is used to specify which fields need to be indexed. For information about GreptimeDB column types, please refer to the [Data Model](/user-guide/concepts/data-model.md) documentation.
+The `Pipeline` will write the processed data to the automatically created table in GreptimeDB. To improve query efficiency, GreptimeDB creates indexes for certain columns in the table. The `index` field is used to specify which fields need to be indexed. For information about GreptimeDB index types, please refer to the [Data Index](/user-guide/manage-data/data-index.md) documentation.
 
-GreptimeDB supports the following three types of index for fields:
+GreptimeDB supports the following four types of index for fields:
 
-- `tag`: Specifies a column as a Tag column.
+- `timestamp`: Specifies a column as a timestamp index column.
+- `inverted`: Specifies a column to use the inverted index type.
 - `fulltext`: Specifies a column to use the fulltext index type. The column must be of string type.
 - `skipping`: Specifies a column to use the skipping index type. The column must be of string type.
-- `timestamp`: Specifies a column as a timestamp index column.
 
-When `index` field is not provided, GreptimeDB treats the field as a `Field` column.
+When `index` field is not provided, GreptimeDB doesn't create index on the column.
 
-In GreptimeDB, a table must include one column of type `timestamp` as the time index column. Therefore, a Pipeline can have only one time index column.
+In GreptimeDB, a table must include exact one column of type `timestamp` as the time index column. Therefore, a Pipeline can have only one time index column.
 
 #### The Timestamp column
 
 Specify which field is the timestamp index column using `index: timestamp`. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### The Tag column
+#### The Inverted Index
 
-Specify which field is the Tag column using `index: tag`. Refer to the [Transform Example](#transform-example) below for syntax.
+Specify which field uses the inverted index. Refer to the [Transform Example](#transform-example) below for syntax.
 
-#### The Fulltext column
+#### The Fulltext Index
 
 Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./query-logs.md). Refer to the [Transform Example](#transform-example) below for syntax.
+
+#### The Skipping Index
+
+Specify which field uses the skipping index. This index speeds up the query on high cardinality fields but consumes far less storage for building index files. Refer to the [Transform Example](#transform-example) below for syntax.
+
+### The `tag` field
+
+The `Pipeline` can also specify a tag field manually. For information about tag field, please refer to the [Data Model](/user-guide/concepts/data-model.md) documentation. Refer to the [Transform Example](#transform-example) below for syntax. 
 
 ### The `on_failure` field
 
@@ -635,10 +707,12 @@ transform:
   - fields:
       - string_field_a, name
     type: string
-    index: tag
+    index: skipping
+    tag: true
   - fields:
       - num_field_a, age
     type: int32
+    index: inverted
   - fields:
       - string_field_b, description
     type: string
