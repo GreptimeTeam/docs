@@ -1,3 +1,8 @@
+---
+keywords: [配置指南, 命令行选项, 配置文件, 环境变量, Android, 嵌入式]
+description: 介绍如何在 Android 平台上运行 GreptimeDB
+---
+
 # 在安卓平台运行
 
 从 v0.4.0 开始，GreptimeDB 支持在采用了 ARM64 CPU 和 Android API 23 版本以上的安卓平台运行。
@@ -12,7 +17,10 @@
 
 请执行以下命令来下载安卓平台的 GreptimeDB 二进制：
 ```bash
-VERSION=$(curl -s -XGET "https://api.github.com/repos/GreptimeTeam/greptimedb/releases" | grep tag_name | grep -v nightly | cut -d: -f 2 | sed 's/.*"\(.*\)".*/\1/' | uniq | sort -r | head -n 1)
+VERSION=$(curl -sL \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/GreptimeTeam/greptimedb/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
 
 curl -sOL "https://github.com/GreptimeTeam/greptimedb/releases/download/${VERSION}/greptime-android-arm64-${VERSION}.tar.gz"
 tar zxvf ./greptime-android-arm64-${VERSION}.tar.gz
