@@ -100,7 +100,7 @@ Release date: March 14, 2025
 * chore: improve `/v1/jaeger/api/trace/{trace_id}`'s resp by [@shuiyisong](https://github.com/shuiyisong) in https://github.com/GreptimeTeam/greptimedb/pull/5663
 * chore: impl ref and ref_mut for json like by [@paomian](https://github.com/paomian) in https://github.com/GreptimeTeam/greptimedb/pull/5679
 * chore: make memorykv write happily by [@fengjiachun](https://github.com/fengjiachun) in https://github.com/GreptimeTeam/greptimedb/pull/5686
-* chore: check region wal provider on startup to avoid inconsistence by [@v0y4g3r](https://github.com/v0y4g3r) in https://github.com/GreptimeTeam/greptimedb/pull/5687
+* chore: check region wal provider on startup to avoid inconsistency by [@v0y4g3r](https://github.com/v0y4g3r) in https://github.com/GreptimeTeam/greptimedb/pull/5687
 * chore: support `application/x-ndjson` for log ingest by [@shuiyisong](https://github.com/shuiyisong) in https://github.com/GreptimeTeam/greptimedb/pull/5697
 * chore: support `tag` in transform by [@shuiyisong](https://github.com/shuiyisong) in https://github.com/GreptimeTeam/greptimedb/pull/5701
 * chore: support `inverted` index in pipeline by [@shuiyisong](https://github.com/shuiyisong) in https://github.com/GreptimeTeam/greptimedb/pull/5700
