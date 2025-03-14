@@ -17,7 +17,7 @@ Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送�
     Match                internal_metrics
     Host                 <host>
     Port                 443
-    Uri                  /v1/prometheus/write?db=public
+    Uri                  /v1/prometheus/write?db=<dbname>
     Tls                  Off
     http_user            <username>
     http_passwd          <password>
@@ -36,14 +36,14 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Alias                opentelemetry_metrics
     Match                *_metrics
     Host                 <host>
-    Port                 4000
+    Port                 443
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header               Authorization "Basic <token> if any"
+    Header               Authorization "Basic <token>"
 
 # 仅用于日志
 [OUTPUT]
@@ -58,7 +58,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header               Authorization "Basic <token> if any"
+    Header               Authorization "Basic <token>"
     Header X-Greptime-Log-Table-Name "log_table"
 ```
 

@@ -18,7 +18,7 @@ Fluent Bit can be configured to send metrics to GreptimeCloud using the Promethe
     Match                internal_metrics
     Host                 <host>
     Port                 443
-    Uri                  /v1/prometheus/write?db=public
+    Uri                  /v1/prometheus/write?db=<dbname>
     Tls                  Off
     http_user            <username>
     http_passwd          <password>
@@ -37,14 +37,14 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Alias                opentelemetry_metrics
     Match                *_metrics
     Host                 <host>
-    Port                 4000
+    Port                 443
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header Authorization "Basic <token> if any"
+    Header Authorization "Basic <token>"
 
 # Only for logs
 [OUTPUT]
@@ -59,7 +59,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header Authorization "Basic <token> if any"
+    Header Authorization "Basic <token>"
     Header X-Greptime-Log-Table-Name "log_table"
 ```
 

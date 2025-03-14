@@ -23,7 +23,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
     Format json
     Json_date_key scrape_timestamp
     Json_date_format iso8601
-    Header Authorization "Basic <token> if any"
+    Header Authorization "Basic <token>"
 ```
 
 - `host`: GreptimeDB host address, e.g., `localhost`.
@@ -58,7 +58,7 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
     Tls                  Off
     Tls.verify           Off
     logs_body_key message
-    Header Authorization "Basic <token> if any"
+    Header Authorization "Basic <token>"
 ```
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
@@ -95,6 +95,7 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
     Tls.verify           Off
     Header X-Greptime-Log-Table-Name "log_table"
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
+    Header X-Greptime-DB-Name "db_name"
 ```
 
 
@@ -110,7 +111,7 @@ Configure GreptimeDB as remote write target:
     Match                internal_metrics
     Host                 127.0.0.1
     Port                 4000
-    Uri                  /v1/prometheus/write?db=public
+    Uri                  /v1/prometheus/write?db=<dbname>
     Tls                  Off
     http_user            <username>
     http_passwd          <password>

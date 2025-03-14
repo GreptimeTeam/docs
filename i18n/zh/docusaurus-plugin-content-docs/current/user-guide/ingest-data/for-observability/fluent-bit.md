@@ -23,7 +23,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
     Format json
     Json_date_key timestamp
     Json_date_format iso8601
-    Header Authorization "Basic <token> if any"
+    Header Authorization "Basic <token>"
 ```
 
 - `uri`: **发送日志的端点。**
@@ -92,6 +92,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Tls.verify           Off
     Header X-Greptime-Log-Table-Name "log_table"
     Header X-Greptime-Log-Pipeline-Name "pipeline_name"
+    Header X-Greptime-DB-Name "db_name"
 ```
 
 本示例中，使用的是 [OpenTelemetry OTLP/HTTP API](/user-guide/ingest-data/for-observability/opentelemetry.md#opentelemetry-collectors) 接口。如需更多信息，请参阅 [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) 文档。
@@ -106,7 +107,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Match                internal_metrics
     Host                 127.0.0.1
     Port                 4000
-    Uri                  /v1/prometheus/write?db=public
+    Uri                  /v1/prometheus/write?db=<dbname>
     Tls                  Off
     http_user            <username>
     http_passwd          <password>
