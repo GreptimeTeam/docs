@@ -15,15 +15,17 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
 
 ```conf
 [OUTPUT]
-    Name http
-    Match *
-    Host greptimedb
-    Port 4000
-    Uri /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
-    Format json
-    Json_date_key scrape_timestamp
+    Name             http
+    Match            *
+    Host             greptimedb
+    Port             4000
+    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Format           json
+    Json_date_key    scrape_timestamp
     Json_date_format iso8601
-    Header Authorization "Basic <token>"
+    compress         gzip
+    http_User        <username>
+    http_Passwd      <password>
 ```
 
 - `host`: GreptimeDB host address, e.g., `localhost`.
@@ -33,6 +35,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
 - `json_date_key`: The key in the JSON object that contains the timestamp.
 - `json_date_format`: The format of the timestamp.
 - `header`: The header to send with the request, e.g., `Authorization` for authentication.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
 
 In params Uri,
 - `db` is the database name you want to write logs to.
@@ -58,10 +61,12 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
     Tls                  Off
     Tls.verify           Off
     logs_body_key message
-    Header Authorization "Basic <token>"
+    http_User <username>
+    http_Passwd <password>
 ```
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
 
 We recommend not writing metrics, logs, and traces to a single output simultaneously, as each has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
 

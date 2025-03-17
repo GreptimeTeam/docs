@@ -8,6 +8,27 @@ description: Guide for using Fluent Bit with GreptimeCloud, including configurat
 
 Fluent Bit is a lightweight and fast log processor and forwarder that can collect, parse, filter, and forward logs and metrics. Fluent Bit is part of the Fluentd project ecosystem and is written in C language. It is designed to be memory-efficient and performant, making it suitable for use in resource-constrained environments.
 
+## HTTP
+
+Fluent Bit can be configured to send logs to GreptimeCloud using the HTTP protocol. This allows you to collect logs from various sources and send them to GreptimeCloud for storage, analysis, and visualization.
+
+```
+[OUTPUT]
+    Name             http
+    Match            *
+    Host             <host>
+    Port             443
+    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Format           json
+    Json_date_key    scrape_timestamp
+    Json_date_format iso8601
+    compress         gzip
+    http_User        <username>
+    http_Passwd      <password>
+```
+
+In this example, the `http` output plugin is used to send logs to GreptimeCloud. For more information, and extra options, refer to the [Logs HTTP API](https://docs.greptime.com/user-guide/ingest-data/for-observability/logs) guide.
+
 ## Prometheus Remote Write
 
 Fluent Bit can be configured to send metrics to GreptimeCloud using the Prometheus Remote Write protocol. This allows you to collect metrics from various sources and send them to GreptimeCloud for storage, analysis, and visualization.
@@ -41,10 +62,11 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
+    http_User            <username>
+    http_Passwd          <password>
     Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-    Header Authorization "Basic <token>"
+    Tls                  On
+    compress             gzip
 
 # Only for logs
 [OUTPUT]
@@ -56,10 +78,11 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
+    http_User            <username>
+    http_Passwd          <password>
     Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-    Header Authorization "Basic <token>"
+    Tls                  On
+    compress             gzip
     Header X-Greptime-Log-Table-Name "log_table"
 ```
 

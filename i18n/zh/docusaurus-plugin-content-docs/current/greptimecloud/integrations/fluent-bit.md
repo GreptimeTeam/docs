@@ -7,6 +7,27 @@ description: 使用 Fluent Bit 和 GreptimeCloud 的指南，包括指标和日�
 
 Fluent Bit 是一个轻量且快速的日志处理和转发器，可以收集、解析、过滤和转发日志和指标。Fluent Bit 是 Fluentd 项目生态系统的一部分，用 C 语言编写。它设计为内存高效且性能优越，适合在资源受限的环境中使用。
 
+## HTTP
+
+Fluent Bit 可以配置为使用 HTTP 协议将日志发送到 GreptimeCloud。这允许您从各种来源收集日志并将其发送到 GreptimeCloud 进行存储、分析和可视化。
+
+```
+[OUTPUT]
+    Name             http
+    Match            *
+    Host             <host>
+    Port             443
+    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Format           json
+    Json_date_key    scrape_timestamp
+    Json_date_format iso8601
+    compress         gzip
+    http_User        <username>
+    http_Passwd      <password>
+```
+
+在此示例中，使用 `http` 输出插件将日志发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Logs HTTP API](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/logs) 指南。
+
 ## Prometheus Remote Write
 
 Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送到 GreptimeCloud。这允许您从各种来源收集指标并将其发送到 GreptimeCloud 进行存储、分析和可视化。
@@ -40,10 +61,11 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
+    http_User            <username>
+    http_Passwd          <password>
     Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-    Header               Authorization "Basic <token>"
+    Tls                  On
+    compress             gzip
 
 # 仅用于日志
 [OUTPUT]
@@ -55,10 +77,11 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
     Traces_uri           /v1/otlp/v1/traces
+    http_User            <username>
+    http_Passwd          <password>
     Log_response_payload True
-    Tls                  Off
-    Tls.verify           Off
-    Header               Authorization "Basic <token>"
+    Tls                  On
+    compress             gzip
     Header X-Greptime-Log-Table-Name "log_table"
 ```
 

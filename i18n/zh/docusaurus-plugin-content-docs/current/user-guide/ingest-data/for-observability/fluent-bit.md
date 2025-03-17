@@ -15,15 +15,17 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 ```
 [OUTPUT]
-    Name http
-    Match *
-    Host greptimedb
-    Port 4000
-    Uri /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
-    Format json
-    Json_date_key timestamp
+    Name             http
+    Match            *
+    Host             greptimedb
+    Port             4000
+    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Format           json
+    Json_date_key    scrape_timestamp
     Json_date_format iso8601
-    Header Authorization "Basic <token>"
+    compress         gzip
+    http_User        <username>
+    http_Passwd      <password>
 ```
 
 - `uri`: **发送日志的端点。**
@@ -31,6 +33,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 - `json_date_key`: JSON 对象中包含时间戳的键。
 - `json_date_format`: 时间戳的格式。
 - `header`: 发送请求时的头部信息，例如用于认证的 `Authorization`。如果没有，不要增加 Authorization 头部。
+- `http_user` 和 `http_passwd`: GreptimeDB 的 [认证凭据](/user-guide/deployments/authentication/static.md)。
 
 在 `uri` 参数中：
 
@@ -114,7 +117,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 ```
 
 - `Uri`: 发送指标的端点。
-- `http_user` 和 `http_passwd`: GreptimeDB 的认证凭据。
+- `http_user` 和 `http_passwd`: GreptimeDB 的 [认证凭据](/user-guide/deployments/authentication/static.md)。
 
 在 `Uri` 参数中：
 
