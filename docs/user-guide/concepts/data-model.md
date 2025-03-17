@@ -7,27 +7,27 @@ description: Describes the data model of GreptimeDB, focusing on time-series tab
 
 ## Model
 
-GreptimeDB uses the time-series table to guide the organization, compression, and expiration management of data.
+GreptimeDB uses the [time-series](https://en.wikipedia.org/wiki/Time_series) table to guide the organization, compression, and expiration management of data.
 The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs, and events data.
 
-All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`.
+All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three semantic types of columns: `Tag`, `Timestamp`, and `Field`.
 
 - Table names are often the same as the indicator names, log source names, or metric names.
-- `Tag` columns store metadata that is commonly queried.
-  The values in `Tag` columns are labels attached to the collected sources,
-  generally used to describe a particular characteristic of these sources.
-  `Tag` columns are indexed, making queries on tags performant.
+- `Tag` columns uniquely identify the time-series.
+  Rows with the same `Tag` values belong to the same time-series.
+  Some TSDBs may also call them labels.
 - `Timestamp` is the root of a metrics, logs, and events database.
   It represents the date and time when the data was generated.
-  Timestamps are indexed, making queries on timestamps performant.
-  A table can only have one timestamp column, which is called time index.
+  A table can only have one column with the `Timestamp` semantic type, which is also called `time index`.
 - The other columns are `Field` columns.
   Fields contain the data indicators or log contents that are collected.
   These fields are generally numerical values or string values,
-  but may also be other types of data, such as geographic locations.
-  Fields are not indexed by default,
-  and queries on field values scan all data in the table. It can be resource-intensive and underperformant.
- However, the string field can turn on the [full-text index](/user-guide/logs/query-logs.md#full-text-index-for-accelerated-search) to speed up queries such as log searching.
+  but may also be other types of data, such as geographic locations, timestamps.
+
+A table clusters rows of the same time-series, and sorts rows of the same time-series by `Timestamp`.
+The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
+GreptimeDB stores and processes data by time-series.
+Choosing the right schema is crucial for efficient data storage and retrieval, please refer to the [schema design guide](/docs/user-guide/administration/design-table.md) for more details.
 
 ### Metric Table
 
@@ -50,18 +50,17 @@ The data model for this table is as follows:
 
 ![time-series-table-model](/time-series-data-model.svg)
 
-Those are very similar to the table model everyone is familiar with. The difference lies in the `Timestamp` constraint, which is used to specify the `ts` column as the time index column of this table.
+Those are very similar to the table model everyone is familiar with. The difference lies in the `TIME INDEX` constraint, which is used to specify the `ts` column as the time index column of this table.
 
 - The table name here is `system_metrics`.
-- For `Tag` columns, the `host` column represents the hostname of the collected standalone machine,
-  while the `idc` column shows the data center where the machine is located.
-  These are queried metadata and can be effectively used to filter data when querying.
+- The `PRIMARY KEY` constraint specifies the `Tag` columns of the table.
+  The `host` column represents the hostname of the collected standalone machine.
+  The `idc` column shows the data center where the machine is located.
 - The `Timestamp` column `ts` represents the time when the data is collected.
-  It can be effectively used when querying data with a time range.
 - The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
   the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as the latest value, maximum/minimum value, average, percentage, and so on. Please avoid using `Field` columns in query conditions,
-  which is highly resource-intensive and underperformant.
+  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as the latest value, maximum/minimum value, average, percentage, and so on.
+- The table sorts and deduplicates rows by `host`, `idc`, `ts`.
 
 ### Log Table
 Another example is creating a log table for access logs:
@@ -74,19 +73,19 @@ CREATE TABLE access_logs (
   http_method STRING,
   http_refer STRING,
   user_agent STRING,
-  request STRING FULLTEXT INDEX,
-  PRIMARY KEY (http_status, http_method)
+  request STRING,
 ) with ('append_mode'='true');
 ```
 
 - The time index column is `access_time`.
-- `http_status`, `http_method` are tags.
-- `remote_addr`, `http_refer`, `user_agent` and `request` are fields. `request` is a field that enables full-text index by the [`FULLTEXT INDEX` column option](/reference/sql/create.md#fulltext-column-option).
-- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that may have duplicate timestamps under the same primary key.
+- There are no tags.
+- `http_status`, `http_method`, `remote_addr`, `http_refer`, `user_agent` and `request` are fields.
+- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that do not need deduplication.
+- The table sorts rows by `access_time`.
+
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
-Of course, you can place metrics and logs in a single table at any time, which is also a key capability provided by GreptimeDB.
 
 ## Design Considerations
 
@@ -101,4 +100,7 @@ GreptimeDB is designed on top of Table for the following reasons:
   The multi-value model is used to model data sources, where a metric can have multiple values represented by fields.
   The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of multi-value mode.
 
-GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md) for more information. However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB. For more details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
+
+GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md) for more information.
+However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.
+For more details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
