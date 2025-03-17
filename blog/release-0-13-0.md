@@ -13,7 +13,6 @@ Release date: March 14, 2025
 * Introduced roaring bitmap to optimize sparse value scenarios
 * Added support for IP-related functions
 * Enhanced PromQL with support for `quantile` and `count_values` functions
-* Improved time series distribution in scanner
 * Added support for exporting data to S3
 
 ## Breaking changes
