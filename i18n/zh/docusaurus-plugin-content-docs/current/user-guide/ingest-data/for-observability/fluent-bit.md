@@ -32,6 +32,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 - `format`: 日志的格式，需要是 `json`。
 - `json_date_key`: JSON 对象中包含时间戳的键。
 - `json_date_format`: 时间戳的格式。
+- `compress`: 使用的压缩方法，例如 `gzip`。
 - `header`: 发送请求时的头部信息，例如用于认证的 `Authorization`。如果没有，不要增加 Authorization 头部。
 - `http_user` 和 `http_passwd`: GreptimeDB 的 [认证凭据](/user-guide/deployments/authentication/static.md)。
 
@@ -85,9 +86,7 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Match                *
     Host                 127.0.0.1
     Port                 4000
-    Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off

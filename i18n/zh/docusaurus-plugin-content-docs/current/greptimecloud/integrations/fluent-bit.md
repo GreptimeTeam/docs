@@ -17,10 +17,11 @@ Fluent Bit 可以配置为使用 HTTP 协议将日志发送到 GreptimeCloud。�
     Match            *
     Host             <host>
     Port             443
-    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Uri              /v1/events/logs?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601
+    Tls              On
     compress         gzip
     http_User        <username>
     http_Passwd      <password>
@@ -39,7 +40,7 @@ Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送�
     Host                 <host>
     Port                 443
     Uri                  /v1/prometheus/write?db=<dbname>
-    Tls                  Off
+    Tls                  On
     http_user            <username>
     http_passwd          <password>
 ```
@@ -83,6 +84,7 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Tls                  On
     compress             gzip
     Header X-Greptime-Log-Table-Name "log_table"
+    Header X-Greptime-DB-Name "<dbname>"
 ```
 
 在此示例中，使用 [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 接口。有关更多信息和额外选项，请参阅 [OpenTelemetry](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 指南。

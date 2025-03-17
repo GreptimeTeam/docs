@@ -34,6 +34,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
 - `format`: The format of the logs, needs to be `json`.
 - `json_date_key`: The key in the JSON object that contains the timestamp.
 - `json_date_format`: The format of the timestamp.
+- `compress`: The compression method to use, e.g., `gzip`.
 - `header`: The header to send with the request, e.g., `Authorization` for authentication.
 - `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
 
@@ -93,9 +94,7 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
     Match                *
     Host                 127.0.0.1
     Port                 4000
-    Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     compress             gzip
     Log_response_payload True
     Tls                  Off

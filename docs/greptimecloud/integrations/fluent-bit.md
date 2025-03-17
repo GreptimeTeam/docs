@@ -18,10 +18,11 @@ Fluent Bit can be configured to send logs to GreptimeCloud using the HTTP protoc
     Match            *
     Host             <host>
     Port             443
-    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Uri              /v1/events/logs?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601
+    Tls              On
     compress         gzip
     http_User        <username>
     http_Passwd      <password>
@@ -40,7 +41,7 @@ Fluent Bit can be configured to send metrics to GreptimeCloud using the Promethe
     Host                 <host>
     Port                 443
     Uri                  /v1/prometheus/write?db=<dbname>
-    Tls                  Off
+    Tls                  On
     http_user            <username>
     http_passwd          <password>
 ```
@@ -82,6 +83,7 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Tls                  On
     compress             gzip
     Header X-Greptime-Log-Table-Name "log_table"
+    Header X-Greptime-DB-Name "<dbname>"
 ```
 
 In this example, the [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) interface is used. For more information, and extra options, refer to the [OpenTelemetry](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) guide.
