@@ -299,7 +299,7 @@ GreptimeDB 还支持与 MySQL 和 PostgreSQL 兼容的 `Date` 和 `DateTime` 类
 | 类型名称 | 描述 | 大小 |
 |-----------|-------------|------|
 |`Date`     |32 位日期值，表示自 UNIX Epoch 以来的天数 | 4 字节 |
-|`DateTime` |64 位日期时间值，表示自 UNIX Epoch 以来的毫秒数| 8 字节 |
+|`DateTime` |64 位毫秒精度的间戳，等同于 `TimestampMicrosecond`| 8 字节 |
 
 ## 示例
 
@@ -355,7 +355,7 @@ DESC TABLE data_types;
 | d      | Float64              |      | YES  |                     | FIELD         |
 | dm     | Decimal(3, 2)        |      | YES  |                     | FIELD         |
 | dt     | Date                 |      | YES  |                     | FIELD         |
-| dtt    | DateTime             |      | YES  |                     | FIELD         |
+| dtt    | TimestampMicrosecond |      | YES  |                     | FIELD         |
 | ts0    | TimestampSecond      |      | YES  |                     | FIELD         |
 | ts3    | TimestampMillisecond |      | YES  |                     | FIELD         |
 | ts6    | TimestampMicrosecond |      | YES  |                     | FIELD         |
