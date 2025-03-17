@@ -83,7 +83,8 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Log_response_payload True
     Tls                  On
     compress             gzip
-    Header X-Greptime-Log-Table-Name "log_table"
+    Header X-Greptime-Log-Table-Name "<log_table_name>"
+    Header X-Greptime-Log-Pipeline-Name "<pipeline_name>"
     Header X-Greptime-DB-Name "<dbname>"
 ```
 

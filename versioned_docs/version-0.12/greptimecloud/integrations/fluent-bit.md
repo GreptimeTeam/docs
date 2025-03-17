@@ -74,15 +74,14 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Match                *_logs
     Host                 <host>
     Port                 443
-    Metrics_uri          /v1/otlp/v1/metrics
     Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     http_User            <username>
     http_Passwd          <password>
     Log_response_payload True
     Tls                  On
     compress             gzip
-    Header X-Greptime-Log-Table-Name "log_table"
+    Header X-Greptime-Log-Table-Name "<log_table_name>"
+    Header X-Greptime-Log-Pipeline-Name "<pipeline_name>"
     Header X-Greptime-DB-Name "<dbname>"
 ```
 

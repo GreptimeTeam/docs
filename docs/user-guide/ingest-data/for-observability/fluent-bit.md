@@ -95,9 +95,9 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
-    Header X-Greptime-Log-Table-Name "log_table"
-    Header X-Greptime-Log-Pipeline-Name "pipeline_name"
-    Header X-Greptime-DB-Name "db_name"
+    Header X-Greptime-Log-Table-Name "<log_table_name>"
+    Header X-Greptime-Log-Pipeline-Name "<pipeline_name>"
+    Header X-Greptime-DB-Name "<dbname>"
 ```
 
 
