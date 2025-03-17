@@ -81,8 +81,6 @@ We recommend not writing metrics, logs, and traces to a single output simultaneo
     Host                 127.0.0.1
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
-    Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     compress             gzip
     Log_response_payload True
     Tls                  Off

@@ -60,8 +60,6 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Host                 <host>
     Port                 443
     Metrics_uri          /v1/otlp/v1/metrics
-    Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     http_User            <username>
     http_Passwd          <password>
     Log_response_payload True

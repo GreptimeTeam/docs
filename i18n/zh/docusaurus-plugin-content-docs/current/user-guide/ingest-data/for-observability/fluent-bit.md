@@ -74,8 +74,6 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
     Host                 127.0.0.1
     Port                 4000
     Metrics_uri          /v1/otlp/v1/metrics
-    Logs_uri             /v1/otlp/v1/logs
-    Traces_uri           /v1/otlp/v1/traces
     Log_response_payload True
     Tls                  Off
     Tls.verify           Off
