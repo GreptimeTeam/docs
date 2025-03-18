@@ -23,7 +23,7 @@ GreptimeDB 的存储文件结构包括以下内容：
     └── LOCK
 ```
 
-- `metadata`: 内部元数据目录，保存 catatalog、数据库以及表的元信息、procedure 状态等内部状态。在集群模式下，此目录不存在，因为所有这些状态（包括区域路由信息）都保存在 `Metasrv` 中。
+- `metadata`: 内部元数据目录，保存 catalog、数据库以及表的元信息、procedure 状态等内部状态。在集群模式下，此目录不存在，因为所有这些状态（包括区域路由信息）都保存在 `Metasrv` 中。
 - `data`: 存储 GreptimeDB 的实际的时间序列数据和索引文件。如果要自定义此路径，请参阅 [存储选项](../deployments/configuration.md#storage-options)。该目录按照 catalog 和 schema 的两级结构组织。
 - `logs`: GreptimeDB 日志文件目录。
 - `wal`:  预写日志文件目录。
