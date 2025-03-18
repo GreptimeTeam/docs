@@ -180,19 +180,3 @@ Refer to the original Prometheus documentation for more information on the [Prom
   - Manage log pipelines using the `/pipelines` endpoints.
 
 For more information on log ingestion and pipeline management, refer to the [log overview](/user-guide/logs/overview.md).
-
-## Script Endpoints
-
-### Script Management
-
-- **Path**: `/v1/scripts`
-- **Methods**: `POST`
-- **Description**: Manages scripts on the server.
-- **Usage**: Submit scripts for execution or management.
-
-### Run Script
-
-- **Path**: `/v1/run-script`
-- **Methods**: `POST`
-- **Description**: Executes a script on the server.
-- **Usage**: Send the script content to be executed.
