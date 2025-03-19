@@ -18,7 +18,7 @@ description: 介绍了 Datanode 的主要职责和组件，包括 gRPC 服务、
 一个 datanode 包含了 region server 所需的全部组件。这里列出了比较重要的部分：
 
 - 一个 gRPC 服务来提供对 `Region` 数据的读写，`Frontend` 便是使用这个服务来从 `Datanode` 读写数据。
-- 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、 配置信息等
+- 一个 HTTP 服务，可以通过它来获得当前节点的 metrics、配置信息等
 - `Heartbeat Task` 用来向 `Metasrv` 发送心跳，心跳在 GreptimeDB 的分布式架构中发挥着至关重要的作用，
   是分布式协调和调度的基础通信通道，心跳的上行消息中包含了重要信息比如 `Region` 的负载，如果 `Metasrv` 做出了调度
   决定（比如 Region 转移），它会通过心跳的下行消息发送指令到 `Datanode`

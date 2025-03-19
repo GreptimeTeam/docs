@@ -39,7 +39,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     WithDatabase("public").
     // 默认端口 4001
     // WithPort(4001).
-    // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
+    // 如果服务配置了 TLS，设置 TLS 选项来启用安全连接
     // WithInsecure(false).
     // 设置鉴权信息
     WithAuth("username", "password")
@@ -210,7 +210,7 @@ affected, err := cli.CloseStream(ctx)
 
 <div id="more-ingestion-examples">
 
-有关更多可运行的代码片段和常用方法的解释，请参阅[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples)。
+有关更多可运行的代码片段和常用方法的解释，请参阅 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples)。
 
 </div>
 

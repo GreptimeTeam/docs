@@ -23,7 +23,7 @@
 
 ## 编译和运行
 
-只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例:
+只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例：
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git

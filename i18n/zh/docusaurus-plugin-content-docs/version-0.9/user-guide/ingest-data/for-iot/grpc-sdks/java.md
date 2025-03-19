@@ -17,7 +17,7 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 
 <div id="quick-start-demos">
 
-你可以通过[快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) 来了解如何使用 GreptimeDB Java SDK。
+你可以通过 [快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) 来了解如何使用 GreptimeDB Java SDK。
 
 </div>
 
@@ -65,7 +65,7 @@ AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
-        // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
+        // 如果服务配置了 TLS，设置 TLS 选项来启用安全连接
         //.tlsOptions(new TlsOptions())
         // 好的开始 ^_^
         .build();

@@ -6,7 +6,7 @@
 
 从逻辑上说，在 GreptimeDB 中数据是使用分区进行分片的。我们借用了在 OLTP 数据库中常用的概念“分区”，因为 GreptimeDB 使用“表”来组织数据并使用 SQL 来查询它。
 
-在 GreptimeDB 中，一张表可以通过多种方式横向分区，并且它使用与 MySQL 相同的分区类型（以及相应的语法）。目前，GreptimeDB 支持 “RANGE COLUMNS 分区”。
+在 GreptimeDB 中，一张表可以通过多种方式横向分区，并且它使用与 MySQL 相同的分区类型（以及相应的语法）。目前，GreptimeDB 支持“RANGE COLUMNS 分区”。
 
 每个分区仅包含表中的一部分数据，并按某些列值范围进行分组。例如，我们可以使用这样的语法在 GreptimeDB 中对表进行分区：
 
@@ -52,7 +52,7 @@ PARTITION ON COLUMNS (a) (
 每个 `Region` 对应一个分区，并保存分区的数据。所有的 `Region` 分布在各个 `Datanode` 之中。我们的 `Metasrv` 会根据 `Datanode`
 的状态在它们之间自动移动 `Region`。此外，`Metasrv` 还可以根据数据量或访问模式拆分或合并 `Region`。
 
-分区和Region的关系参见下图：
+分区和 Region 的关系参见下图：
 
 ```text
                        ┌───────┐

@@ -5,7 +5,7 @@ description: 介绍如何使用 OpenTSDB 协议通过 HTTP API 将数据写入 G
 
 # OpenTSDB
 
-GreptimeDB支持通过 HTTP API 使用 OpenTSDB 协议。
+GreptimeDB 支持通过 HTTP API 使用 OpenTSDB 协议。
 
 ## 写入新数据
 
@@ -29,7 +29,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 '
 ```
 
-插入多个指标数据:
+插入多个指标数据：
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '

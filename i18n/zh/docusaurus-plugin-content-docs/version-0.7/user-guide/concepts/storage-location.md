@@ -1,6 +1,6 @@
 # 存储位置
 
-GreptimeDB 支持将数据存储在本地文件系统、AWS S3 及其兼容服务（包括 minio、digitalocean space、腾讯云对象存储(COS)、百度云对象存储(BOS)等）、Azure Blob Storage 和阿里云 OSS 中。
+GreptimeDB 支持将数据存储在本地文件系统、AWS S3 及其兼容服务（包括 minio、digitalocean space、腾讯云对象存储 (COS)、百度云对象存储 (BOS) 等）、Azure Blob Storage 和阿里云 OSS 中。
 
 ## 本地文件结构
 

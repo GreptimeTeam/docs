@@ -17,14 +17,14 @@
 - Protobuf（[指南][2]）
   - 编译 proto 文件
   - 请注意，版本需要 >= 3.15。你可以使用 `protoc --version` 检查它。
-- 机器：建议内存在16GB以上 或者 使用[mold](https://github.com/rui314/mold)工具以降低链接时的内存使用。
+- 机器：建议内存在 16GB 以上 或者 使用[mold](https://github.com/rui314/mold)工具以降低链接时的内存使用。
 
 [1]: <https://www.rust-lang.org/tools/install/>
 [2]: <https://grpc.io/docs/protoc-installation/>
 
 ## 编译和运行
 
-只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例:
+只需几个命令即可使用以 Standalone 模式启动 GreptimeDB 实例：
 
 ```shell
 git clone https://github.com/GreptimeTeam/greptimedb.git

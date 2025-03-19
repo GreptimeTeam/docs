@@ -12,7 +12,7 @@ GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 
 <!-- Maybe add a section to introduce the simulated interfaces, when there is -->
 <!-- more than one supported -->
 
-GreptimeDB 实现了兼容 Prometheus 的一系列 API ，通过 `/v1/prometheus` 路径对外提
+GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus` 路径对外提
 供服务：
 
 - Instant queries `/api/v1/query`
@@ -94,7 +94,7 @@ TQL [EVAL|EVALUATE] (<START>, <END>, <STEP>) <QUERY>
 
 `<START>` 指定查询开始时间范围，`<END>` 指定查询结束时间。 `<STEP>` 识别查询步幅。它们均可为无引号数字（表示`<START>`和`<END>`的 UNIX 时间戳，以及`<STEP>`的秒数持续时间），或带引号的字符串（表示`<START>`和`<END>`的 RFC3339 时间戳，以及`<STEP>`的字符串格式的持续时间）。
 
-例如:
+例如：
 
 ```sql
 TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
@@ -159,7 +159,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Binary
 
-- 支持:
+- 支持：
     | Operator |
     | :------- |
     | add      |
@@ -179,13 +179,13 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | or       |
     | unless   |
 
-- 不支持:
+- 不支持：
 
 无
 
 ### Aggregators
 
-- 支持:
+- 支持：
     | Aggregator | Example                   |
     | :--------- | :------------------------ |
     | sum        | `sum by (foo)(metric)`    |
@@ -199,7 +199,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | count_values | `count_values("version", build_version)`    |
     | quantile     | `quantile(0.9, cpu_usage)` |
 
-- 不支持:
+- 不支持：
     | Aggregator   | Progress |
     | :----------- | :------- |
     | count        | TBD      |
@@ -207,7 +207,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Instant Functions
 
-- 支持:
+- 支持：
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
     | abs                | `abs(metric)`                     |
@@ -235,7 +235,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
 
-- 不支持:
+- 不支持：
     | Function                   | Progress |
     | :------------------------- | :------- |
     | absent                     | TBD      |
@@ -246,7 +246,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Range Functions
 
-- 支持:
+- 支持：
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | idelta             | `idelta(metric[5m])`           |
@@ -261,19 +261,19 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | irate              | `irate(metric[5m])`            |
     | reset              | `reset(metric[5m])`            |
 
-- 不支持:
+- 不支持：
 
 无
 
 ### 其他函数
 
-- 支持:
+- 支持：
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
     | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
 
-- 不支持:
+- 不支持：
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | sort_by_label      | TBD           |

@@ -20,7 +20,7 @@
 - `metasrv` 服务器存储集群的元数据，例如表、`datanode`、每个表的 `region` 等。它还协调 `frontend` 和 `datanode`。
 - `frontend` 有一个 catalog 实现，它从 `metasrv` 中获取元数据，告诉相应的组件哪个 `table` 的 `region` 由哪个 `datanode` 提供服务。
 - `frontend` 是一个无状态服务，用于接收客户端的请求。它作为 proxy 根据 catalog 中的信息将读取和写入请求转发到相应的 `datanode`。
-- 一个 `table` 的时间线(time-series)由其主键标识。因为 `GreptimeDB` 是一个时间序列数据库，所以每个 `table` 必须有一个时间戳列。`table` 中的数据将按其主键和时间戳排序，但顺序的实际实现方式比较特殊，可能会在将来发生变化。
+- 一个 `table` 的时间线 (time-series) 由其主键标识。因为 `GreptimeDB` 是一个时间序列数据库，所以每个 `table` 必须有一个时间戳列。`table` 中的数据将按其主键和时间戳排序，但顺序的实际实现方式比较特殊，可能会在将来发生变化。
 
 ## 工作原理
 

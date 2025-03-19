@@ -152,7 +152,7 @@ COPY DATABASE <db_name>
 -- 将 public 数据库中所有数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
--- 将 public 数据库中时间范围在 2022-04-11 08:00:00到2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
+-- 将 public 数据库中时间范围在 2022-04-11 08:00:00 到 2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- 从 /tmp/export/ 目录恢复 public 数据库的数据

@@ -35,7 +35,7 @@ SELECT geohash(37.76938, -122.3889, 11);
 
 给定坐标和分辨率获取所有 geohash 邻接点。
 
-请注意，此函数返回一个字符串数组，并且仅在我们的HTTP查询API和Postgres通道上生效。
+请注意，此函数返回一个字符串数组，并且仅在我们的 HTTP 查询 API 和 Postgres 通道上生效。
 
 ```sql
 SELECT geohash_neighbours(37.76938, -122.3889, 11);
@@ -166,7 +166,7 @@ h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
 
 参数：
 
-- 单元集合： 可以是 int64/uint64/string 数组, 或逗号分割的字符串单元 ID
+- 单元集合：可以是 int64/uint64/string 数组，或逗号分割的字符串单元 ID
 - 单元索引
 
 ```sql
@@ -305,7 +305,7 @@ SELECT s2_cell_parent(s2_latlng_to_cell(37.76938, -122.3889), 3);
 - 经度
 - 时间戳
 
-返回一个字符串类型的JSON数组。请注意，结果坐标中的顺序为 [经度, 纬度]，以符合 GeoJSON 规范。
+返回一个字符串类型的 JSON 数组。请注意，结果坐标中的顺序为 [经度，纬度]，以符合 GeoJSON 规范。
 
 ```sql
 SELECT json_encode_path(lat, lon, ts);

@@ -2,7 +2,7 @@
 
 ## 介绍
 
-我们的存储引擎受到了日志结构合并树（Log-structured Merge Tree，LSMT）的启发。对数据的变更操作直接应用于 MemTable 而不是持久化到磁盘上的数据页，这显著提高了性能，但也带来了持久化相关的问题，特别是在 Datanode 意外崩溃时。与所有类似LSMT 的存储引擎一样，GreptimeDB 使用预写日志（Write-Ahead Log，WAL）来确保数据被可靠地持久化，并且保证崩溃时的数据完整性。
+我们的存储引擎受到了日志结构合并树（Log-structured Merge Tree，LSMT）的启发。对数据的变更操作直接应用于 MemTable 而不是持久化到磁盘上的数据页，这显著提高了性能，但也带来了持久化相关的问题，特别是在 Datanode 意外崩溃时。与所有类似 LSMT 的存储引擎一样，GreptimeDB 使用预写日志（Write-Ahead Log，WAL）来确保数据被可靠地持久化，并且保证崩溃时的数据完整性。
 
 预写日志是一个仅提供追加写的文件组。所有的 INSERT、UPDATE 和 DELETE 操作都被转换为操作日志，然后追加到 WAL。一旦操作日志被持久化到底层文件，该操作才可以进一步应用到 MemTable。
 

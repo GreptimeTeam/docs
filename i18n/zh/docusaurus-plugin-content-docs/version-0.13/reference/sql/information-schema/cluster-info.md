@@ -35,7 +35,7 @@ DESC TABLE CLUSTER_INFO;
 每个列的含义：
 
 * `peer_id`: 节点的服务器 ID。对于 standalone 来讲，该字段总是为 `0`，对于集群模式下的 frontend 该字段总为 `-1`。因为在这两种情况下，该字段没有实际含义。
-* `peer_type`: 节点类型, 分布式集群里可能是 `METASRV`、`FRONTEND` 或者 `DATANODE`。单机模式显示为 `STANDALONE`。
+* `peer_type`: 节点类型，分布式集群里可能是 `METASRV`、`FRONTEND` 或者 `DATANODE`。单机模式显示为 `STANDALONE`。
 * `peer_addr`: 节点的 gRPC 服务地址。对于单机部署，该字段总为空。
 * `version`: 节点的版本号，形如 `0.7.2` 的字符串。
 * `git_commit`: 节点编译的 git 版本号。

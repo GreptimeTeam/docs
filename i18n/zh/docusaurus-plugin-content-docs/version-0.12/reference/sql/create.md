@@ -104,16 +104,16 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | 选项                                        | 描述                                     | 值                                                                                                                                                                       |
 | ------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `ttl`                                       | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                                     |
-| `storage`                                   | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。 必须在 `[[storage.providers]]` 列表里配置, 参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。                 |
-| `compaction.type`                           | Compaction 策略                          | 字符串值. 只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
+| `storage`                                   | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。必须在 `[[storage.providers]]` 列表里配置，参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。                 |
+| `compaction.type`                           | Compaction 策略                          | 字符串值。只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
 | `compaction.twcs.max_active_window_files`   | 当前活跃时间窗口内的最大文件数           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
 | `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数             | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
 | `compaction.twcs.time_window`               | Compaction 时间窗口                      | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                       |
 | `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
-| `comment`                                   | 表级注释                                 | 字符串值.                                                                                                                                                                |
-| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值, 支持 `none`, `skipping`.                                                                                                             |
+| `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
+| `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
 
 #### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS logs(
 
 ### Region 分区规则
 
-请参考 [分区](/contributor-guide/frontend/table-sharding.md#partition) 章节.
+请参考 [分区](/contributor-guide/frontend/table-sharding.md#partition) 章节。
 
 ## CREATE EXTERNAL TABLE
 

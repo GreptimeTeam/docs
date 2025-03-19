@@ -107,5 +107,5 @@ access-control-max-age: 1728000
 
 ## 用量统计
 
-你可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/) 查看用量.
+你可以在 [GreptimeCloud 控制台](https://console.greptime.cloud/) 查看用量。
 最大 WCU 和 RCU 的使用情况将按时间范围进行聚合，并在用量图表中呈现。

@@ -6,7 +6,7 @@
 
 ## MySQL 兼容性
 
-|表名|描述|
+|表名 | 描述|
 | --- | --- |
 | [`CHARACTER_SETS`](./character-sets.md) | 提供了可用字符集的信息。 |
 | `CHECK_CONSTRAINTS`| 未实现。返回零行。 |
@@ -46,7 +46,7 @@
 
 ## GreptimeDB 提供的表
 
-|表名|描述|
+|表名 | 描述|
 | --- | --- |
 | [`BUILD_INFO`](./build-info.md) | 提供了系统构建的信息。 |
 | [`GREPTIME_REGION_PEERS`](./greptime-region-peers.md) | 提供了区域存储的详细信息。 |

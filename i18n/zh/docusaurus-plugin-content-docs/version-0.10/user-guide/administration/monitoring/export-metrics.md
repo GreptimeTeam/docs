@@ -10,7 +10,7 @@
 
 ## 导出数据到 Prometheus
 
-GreptimeDB 支持导出数据到 Prometheus。 在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
+GreptimeDB 支持导出数据到 Prometheus。在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
 
 要从 GreptimeDB 中抓取指标，请编写 Prometheus 配置文件并将其保存为 `prometheus.yml`：
 
@@ -37,7 +37,7 @@ docker run \
 ```
 
 :::tip NOTE
-为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+为了防止不小心退出 Docker 容器，你可能想以“detached”模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
 ## 将指标保存到 GreptimeDB 自身

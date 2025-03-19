@@ -91,7 +91,7 @@ INSERT INTO ...
 
 ### 将数据导入 GreptimeDB
 
-”[psql -- PostgreSQL interactive terminal](https://www.postgresql.org/docs/current/app-psql.html)“ 可用于将数据导入
+”[psql -- PostgreSQL interactive terminal](https://www.postgresql.org/docs/current/app-psql.html)“可用于将数据导入
 GreptimeDB。继续上面的示例，假设数据导出到文件 `/path/to/output.sql`，那么我们可以使用以下命令将数据导入 GreptimeDB：
 
 ```bash

@@ -1,6 +1,6 @@
 # OpenTSDB
 
-GreptimeDB支持通过 Telnet 或 HTTP API 使用 OpenTSDB 协议。
+GreptimeDB 支持通过 Telnet 或 HTTP API 使用 OpenTSDB 协议。
 
 ## 写入新数据
 
@@ -28,7 +28,7 @@ Connection closed by foreign host.
 ~ %
 ```
 
-GreptimeDB将每个指标视为单独的表，并将标签作为其列。`greptime_timestamp` 和 `greptime_value` 是两个保留列，对应于 `put` 命令中的时间戳和值。
+GreptimeDB 将每个指标视为单独的表，并将标签作为其列。`greptime_timestamp` 和 `greptime_value` 是两个保留列，对应于 `put` 命令中的时间戳和值。
 
 GreptimeDB 将在您放置指标后自动创建指标表，因此您无需手动创建指标表。
 
@@ -56,7 +56,7 @@ curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
 '
 ```
 
-插入多个指标数据:
+插入多个指标数据：
 
 ```shell
 curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '

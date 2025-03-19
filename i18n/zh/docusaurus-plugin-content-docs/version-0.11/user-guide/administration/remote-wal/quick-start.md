@@ -48,7 +48,7 @@ docker run \
 ```
 
 :::tip NOTE
-为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+为了防止不小心退出 Docker 容器，你可能想以“detached”模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
 数据将保存在 `$(pwd)/kafka-data`.
@@ -73,7 +73,7 @@ docker run \
 ```
 
 :::tip NOTE
-为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+为了防止不小心退出 Docker 容器，你可能想以“detached”模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
 我们使用环境变量来指定 provider：
@@ -138,7 +138,7 @@ docker run \
    docker exec kafka /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
    ```
 
-   默认所有 topic 都以 `greptimedb_wal_topic`  开头，例如:
+   默认所有 topic 都以 `greptimedb_wal_topic`  开头，例如：
 
    ```
    docker exec kafka /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092

@@ -53,6 +53,6 @@ select migrate_region(region_id, from_peer_id, to_peer_id, replay_timeout);
 | Option           | Description                                                                                                            | Required     |     |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------ | --- |
 | `region_id`      | Region Id                                                                                                              | **Required** |     |
-| `from_peer_id`   | 迁移起始节点(Datanode) 的 peer id。                                                                                    | **Required** |     |
-| `to_peer_id`     | 迁移目标节点(Datanode) 的 peer id。                                                                                    | **Required** |     |
+| `from_peer_id`   | 迁移起始节点 (Datanode) 的 peer id。                                                                                    | **Required** |     |
+| `to_peer_id`     | 迁移目标节点 (Datanode) 的 peer id。                                                                                    | **Required** |     |
 | `replay_timeout` | 迁移时回放数据的超时时间（单位：秒）。如果新 Region 未能在指定时间内回放数据，迁移将失败，旧 Region 中的数据不会丢失。 | Optional     |     |

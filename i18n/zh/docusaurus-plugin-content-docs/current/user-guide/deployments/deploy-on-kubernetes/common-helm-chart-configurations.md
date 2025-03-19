@@ -56,10 +56,10 @@ frontend:
 
 你可以使用如下字段来配置服务端口，如下所示：
 
-- `httpServicePort`： 用于配置 HTTP 服务的端口，默认 4000；
-- `grpcServicePort`： 用于配置 SQL 服务的端口，默认 4001；
-- `mysqlServicePort`： 用于配置 MySQL 服务的端口，默认 4002；
-- `postgresServicePort`： 用于配置 PostgreSQL 服务的端口，默认 4003；
+- `httpServicePort`：用于配置 HTTP 服务的端口，默认 4000；
+- `grpcServicePort`：用于配置 SQL 服务的端口，默认 4001；
+- `mysqlServicePort`：用于配置 MySQL 服务的端口，默认 4002；
+- `postgresServicePort`：用于配置 PostgreSQL 服务的端口，默认 4003；
 
 ### Datanode 存储配置
 
@@ -78,10 +78,10 @@ datanode:
     dataHome: "/data/greptimedb"
 ```
 
-- `storageClassName`： 用于配置 StorageClass，默认使用 Kubernetes 当前默认的 StorageClass；
-- `storageSize`： 用于配置 Storage 的大小，默认 10Gi。你可以使用常用的容量单位，如 `10Gi`、`10GB` 等；
-- `storageRetainPolicy`： 用于配置 Storage 的保留策略，默认 `Retain`，如果设置为 `Delete`，则当集群被删除时，相应的 Storage 也会被删除；
-- `dataHome`： 用于配置数据目录，默认 `/data/greptimedb/`；
+- `storageClassName`：用于配置 StorageClass，默认使用 Kubernetes 当前默认的 StorageClass；
+- `storageSize`：用于配置 Storage 的大小，默认 10Gi。你可以使用常用的容量单位，如 `10Gi`、`10GB` 等；
+- `storageRetainPolicy`：用于配置 Storage 的保留策略，默认 `Retain`，如果设置为 `Delete`，则当集群被删除时，相应的 Storage 也会被删除；
+- `dataHome`：用于配置数据目录，默认 `/data/greptimedb/`；
 
 ### 运行资源配置
 
@@ -244,12 +244,12 @@ logging:
 
 其中：
 
-- `logging.level`： 用于配置全局日志级别，支持 `debug`、`info`、`warn`、`error` 四个级别；
-- `logging.format`： 用于配置全局日志格式，支持 `json` 和 `text` 两种格式；
-- `logging.logsDir`： 用于配置全局日志目录，默认位于 `/data/greptimedb/logs`；
-- `logging.onlyLogToStdout`： 用于配置是否仅输出到标准输出，默认不启用；
-- `logging.persistentWithData`： 用于配置是否将日志持久化到数据存储，仅适用于 `datanode` 组件，默认不启用；
-- `logging.filters`： 用于配置全局日志过滤器，支持 `target[span\{field=value\}]=level` 的语法，特步地，如果你希望对某些组件启动 `debug` 级别的日志，可以配置如下：
+- `logging.level`：用于配置全局日志级别，支持 `debug`、`info`、`warn`、`error` 四个级别；
+- `logging.format`：用于配置全局日志格式，支持 `json` 和 `text` 两种格式；
+- `logging.logsDir`：用于配置全局日志目录，默认位于 `/data/greptimedb/logs`；
+- `logging.onlyLogToStdout`：用于配置是否仅输出到标准输出，默认不启用；
+- `logging.persistentWithData`：用于配置是否将日志持久化到数据存储，仅适用于 `datanode` 组件，默认不启用；
+- `logging.filters`：用于配置全局日志过滤器，支持 `target[span\{field=value\}]=level` 的语法，特步地，如果你希望对某些组件启动 `debug` 级别的日志，可以配置如下：
 
    ```yaml
    logging:
@@ -271,9 +271,9 @@ logging:
 
 其中：
 
-- `logging.slowQuery.enabled`： 用于配置是否启用慢查询日志，默认不启用；
-- `logging.slowQuery.threshold`： 用于配置慢查询日志的阈值；
-- `logging.slowQuery.sampleRatio`： 用于配置慢查询日志的采样率，默认 1.0（即全部采样）；
+- `logging.slowQuery.enabled`：用于配置是否启用慢查询日志，默认不启用；
+- `logging.slowQuery.threshold`：用于配置慢查询日志的阈值；
+- `logging.slowQuery.sampleRatio`：用于配置慢查询日志的采样率，默认 1.0（即全部采样）；
 
 如果配置了输出目录 `logging.logsDir`，则慢查询日志会输出到该目录下。
 

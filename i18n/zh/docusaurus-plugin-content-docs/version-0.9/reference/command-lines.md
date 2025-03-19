@@ -116,11 +116,11 @@ greptime frontend start --help
 greptime flownode start --help
 ```
 
-- `--node-id <NODE_ID>`: Flownode的ID
-- `--rpc-addr <RPC_ADDR>`: gRPC服务器的绑定地址
-- `--rpc-hostname <RPC_HOSTNAME>`: gRPC服务器的主机名
-- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv地址列表
-- `-c, --config-file <CONFIG_FILE>`: Flownode的配置文件
+- `--node-id <NODE_ID>`: Flownode 的 ID
+- `--rpc-addr <RPC_ADDR>`: gRPC 服务器的绑定地址
+- `--rpc-hostname <RPC_HOSTNAME>`: gRPC 服务器的主机名
+- `--metasrv-addrs <METASRV_ADDRS>...`: Metasrv 地址列表
+- `-c, --config-file <CONFIG_FILE>`: Flownode 的配置文件
 - `--env-prefix <ENV_PREFIX>`: 环境变量的前缀，默认为 `GREPTIMEDB_FLOWNODE`
 
 ### standalone 子命令选项

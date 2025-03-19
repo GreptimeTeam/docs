@@ -5,9 +5,9 @@ description: 介绍如何使用 PostgreSQL 协议连接到 GreptimeCloud，包�
 
 # PostgreSQL
 
-GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准客户端和驱动程序在协议级别上兼容，且连接使用TLS加密。
+GreptimeCloud 支持用 PostgreSQL v3 协议访问 GreptimeDB。大多数标准客户端和驱动程序在协议级别上兼容，且连接使用 TLS 加密。
 请注意，我们在 GreptimeDB 中不使用 Postgres 的 SQL 方言，因此可能有一些不支持的语句。
-有关更多信息，请参考 GreptimeDB 的[Postgresql文档](https://docs.greptime.cn/nightly/user-guide/protocols/postgresql)。
+有关更多信息，请参考 GreptimeDB 的[Postgresql 文档](https://docs.greptime.cn/nightly/user-guide/protocols/postgresql)。
 
 要使用 Postgres 协议连接到 GreptimeCloud，请使用以下信息：
 
@@ -50,7 +50,7 @@ postgresql://<username>:<password>@<host>:4003/<dbname>
 ## Postgres 外部表
 
 将 GreptimeCloud 实例配置外 Postgres 外部数据源。注意依据你的配置修改下方的服务
-器名和用户名 。
+器名和用户名。
 
 ```sql
 CREATE SERVER greptimedb

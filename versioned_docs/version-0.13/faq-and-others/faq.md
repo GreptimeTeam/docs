@@ -38,7 +38,7 @@ Yes, you can find our Go SDK [here](https://github.com/GreptimeTeam/greptimedb-i
 
 The current version has not yet reached General Availability version standards. We are trying to published v1.0 asap.
 
-### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
+### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc?
 
 Yes, we open sourced the dashboard for users to query and visualize their data.
 
