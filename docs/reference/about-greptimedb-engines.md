@@ -23,3 +23,8 @@ The Metric Engine is built on top of the Mito Engine, meaning that its data is a
 
 # File Engine
 
+The File Engine is a specialized storage engine in GreptimeDB designed for handling file-based data sources. It allows GreptimeDB to directly query and process data stored in external files without requiring data import or conversion.
+
+This engine supports various file formats commonly used in data analytics workflows, enabling seamless integration with existing data pipelines. By treating external files as virtual tables, the File Engine provides SQL query capabilities over file-based data while maintaining the performance optimizations of GreptimeDB's query engine.
+
+The File Engine is particularly useful for scenarios where data already exists in file formats, allowing users to analyze this data alongside time-series data stored in other GreptimeDB engines. This capability makes GreptimeDB more versatile as a unified analytics platform that can work with diverse data sources.
