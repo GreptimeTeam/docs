@@ -15,7 +15,7 @@ Mito seamlessly integrates with various object storage solutions including S3, G
 
 # Metric Engine
 
-As the name suggests, the Metric Engine is designed to efficiently process metric data. It specializes in handling scenarios with a large number of small tables typical in observability and monitoring workloads.
+As the name suggests, the Metric Engine is designed to process metrics data efficiently. It specializes in handling scenarios with a large number of small tables typical in observability and monitoring workloads.
 
 The key innovation of the Metric Engine is its use of synthetic wide physical tables to store data from numerous small tables. This approach enables efficient column and metadata reuse across tables, significantly reducing storage overhead while enhancing columnar compression efficiency. Under the Metric Engine, tables become lightweight logical constructs, making it ideal for cloud-native monitoring scenarios where thousands of small metric tables are common.
 
