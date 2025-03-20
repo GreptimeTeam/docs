@@ -141,6 +141,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Migrate to GreptimeDB',
           items: [
+            'user-guide/migrate-to-greptimedb/overview',
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
