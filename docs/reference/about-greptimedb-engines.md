@@ -2,7 +2,7 @@
 keywords: [greptimedb engine, Mito engine, Metric engine, File engile]
 description: Overview all of the engines in GreptimeDB.
 ---
-
+# GreptimeDB Engines
 # Mito Engine
 
 Mito is the default `storage engine` of GreptimeDB, responsible for efficiently storing and managing database data. Built on the [LSMT][1] (Log-structured Merge-tree) architecture, Mito has been extensively optimized for time-series data workloads.
