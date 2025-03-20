@@ -149,6 +149,8 @@ GreptimeDB 是一个快速发展的开源项目，欢迎社区的反馈和贡献
 
 用户可以查看我们的 [TSBS 基准测试结果](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)并查看相关的[部署文档](https://docs.greptime.com/getting-started/installation/overview)。
 
+更多性能报告请参考[GreptimeDB 对比其他存储或时序数据库的性能如何](/user-guide/concepts/features-that-you-concern.md#greptimedb-对比其他存储或时序数据库的性能如何)。
+
 ### 在 datanode 重启后，某些节点的 region 状态变为 `DOWNGRADED` 且表变为只读，该如何处理？是否可以自动重新激活？
 
 根据用户的配置，metasrv 中的故障转移功能已禁用，这可能导致 region 被标记为 `DOWNGRADED`。此外，region 迁移过程也可能标记 region 为 `DOWNGRADED`。建议尝试运行 region 迁移程序，完成后请反馈具体情况以获得进一步帮助。
