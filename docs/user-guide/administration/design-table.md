@@ -17,10 +17,10 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
 
 ## Basic Concepts
 
-**Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality".:
+**Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality":
 
 - **Low Cardinality**: Low cardinality columns usually have constant values.
-  The total number of unique values usualy no more than 10 thousand.
+  The total number of unique values usually no more than 10 thousand.
   For example, `namespace`, `cluster`, `http_method` are usually low cardinality.
 - **High Cardinality**: High cardinality columns contain a large number of unique values.
   For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id are usually high cardinality.
@@ -29,7 +29,7 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
 
 In GreptimeDB, columns are categorized into three semantic types: `Tag`, `Field`, and `Timestamp`.
 The timestamp usually represents the time of data sampling or the occurrence time of logs/events.
-GreptimeDB use the `TIME INDEX` constraint to identify the `Timestamp` column.
+GreptimeDB uses the `TIME INDEX` constraint to identify the `Timestamp` column.
 So the `Timestamp` column is also called the `TIME INDEX` column.
 If you have multiple columns with timestamp data type, you can only define one as `TIME INDEX` and others as `Field` columns.
 
@@ -39,14 +39,14 @@ In GreptimeDB, tag columns are optional. The main purposes of Tag columns includ
    GreptimeDB reuses the `PRIMARY KEY` constraint to define tag columns and the ordering of tags.
    Unlike traditional databases, in GreptimeDB, primary key and time series are identical.
    Tables in GreptimeDB sort rows by (primary key, timestamp).
-   This improves the locality of data with same tags.
+   This improves the locality of data with the same tags.
    If there are no tag columns, GreptimeDB sorts rows by timestamp.
 2. Identifying a unique time-series.
    When the table is not append-only, GreptimeDB can deduplicate rows by timestamp under the same time-series (primary key).
-3. Smoothing migration from other TSDBs that using tags or labels.
+3. Smoothing migration from other TSDBs that use tags or labels.
 
 
-### Choosing tags columns
+### Choosing tag columns
 
 Usually you don't need tag columns since ordering data by timestamp is sufficient for most use cases.
 If you need deduplication, or your queries can benefit from the ordering, you can define tag columns.
@@ -58,17 +58,17 @@ So it doesn't need to compare the primary key for each row repeatedly.
 This can be a problem if the tag column has high cardinality:
 
 1. Performance degradation since the database can't batch rows efficiently.
-2. It may increase memory and CPU usage as the database have to maintain the metadata for each time-series.
+2. It may increase memory and CPU usage as the database has to maintain the metadata for each time-series.
 3. Deduplication may be too expensive.
 
 
 Recommendations:
 
-- Low cardinality columns that occurs in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
+- Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
   These columns usually remain constant.
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
-- Typically use short string for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
+- Typically use short strings for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
 - Never set high cardinality columns as tags if they change frequently.
   For example, `trace_id`, `span_id`, `user_id` must not be used as tags.
   GreptimeDB works well if you set them as fields instead of tags.
@@ -98,19 +98,18 @@ The `http_logs` table is an example for storing HTTP server logs.
 
 - The `'append_mode'='true'` option creates the table as an append-only table.
   This ensures a log doesn't override another one with the same timestamp.
-- The table sorts logs by time so it is efficent to search logs by time.
+- The table sorts logs by time so it is efficient to search logs by time.
 
+### When to use primary key
 
-### Choosing primary key
-
-In GreptimeDB, primary key is identical to the time-series.
-It defines tags columns and the data ordering.
+In GreptimeDB, the primary key is identical to the time-series.
+It defines tag columns and the data ordering.
 You can use primary key when there are suitable low cardinality columns and one of the following conditions is met:
 
 - Most queries can benefit from the ordering.
 - You need to deduplicate (including delete) rows by the primary key and time index.
 
-For example, If you always only query logs of a specific application, you may set the `application` column as primary key (tag).
+For example, if you always only query logs of a specific application, you may set the `application` column as primary key (tag).
 
 ```sql
 SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
@@ -134,9 +133,9 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-The unique values of the primary key in the table can significantly affects performance.
-Currently, the recommended values of the primary key is no more than 100 thousand.
-So you must not use high cardinality column as the primary key or put too many column in the primary key.
+The unique values of the primary key in the table can significantly affect performance.
+Currently, the recommended number of values for the primary key is no more than 100 thousand.
+So you must not use high cardinality column as the primary key or put too many columns in the primary key.
 
 Besides primary key, you can also use index to accelerate specific queries on demand.
 
@@ -196,7 +195,7 @@ The following query can use the skipping index to filter the `request_id` column
 SELECT message FROM http_logs WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
-However, note that the query capability of the skipping index are generally inferior to those of the inverted index.
+However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
 Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns.
 
 
@@ -224,19 +223,19 @@ It's recommended to [use Pipeline](/user-guide/logs/quick-start.md#create-a-pipe
 ### When to use index
 
 Index in GreptimeDB is flexible and powerful.
-You can create index for any column, no matter the column is a tag or a field.
-It's meaningless to create addtional index for the timestamp column.
-Generally you don't need to create columns for all columns.
-Maintaining index may introduce addtional cost and stall ingestion.
-A bad index may occupy too much disk space and make query slower.
+You can create an index for any column, no matter if the column is a tag or a field.
+It's meaningless to create additional index for the timestamp column.
+Generally you don't need to create indexes for all columns.
+Maintaining indexes may introduce additional cost and stall ingestion.
+A bad index may occupy too much disk space and make queries slower.
 
 
-You can use a table without addtional index as a baseline.
-There is no need to create index for the table if the query performance is already acceptable.
-You can create an index for a column when
+You can use a table without additional index as a baseline.
+There is no need to create an index for the table if the query performance is already acceptable.
+You can create an index for a column when:
 
 - The column occurs in the filter frequently.
-- Filtering the column without index isn't fast enough.
+- Filtering the column without an index isn't fast enough.
 - There is a suitable index for the column.
 
 
@@ -265,11 +264,11 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 ```
 
 GreptimeDB deduplicates rows by the same primary key and timestamp if the table isn't append-only.
-For example, the `system_metrics` table remove duplicate rows by `host` and `ts`.
+For example, the `system_metrics` table removes duplicate rows by `host` and `ts`.
 
 ### Data updating and merging
 
-GreptimeDB supports two different strategy for deduplication: `last_row` and `last_non_null`.
+GreptimeDB supports two different strategies for deduplication: `last_row` and `last_non_null`.
 You can specify the strategy by the `merge_mode` table option.
 
 GreptimeDB uses an LSM Tree-based storage engine,
@@ -307,9 +306,9 @@ If you don't need the following features, you can use append-only tables:
 - Deduplication
 - Deletion
 
-GreptimeDB implements `DELETE` via the deduplicating rows so append-only table doesn't support deletion now.
+GreptimeDB implements `DELETE` via deduplicating rows so append-only tables don't support deletion now.
 Deduplication requires more computation and restricts the parallelism of ingestion and querying.
-Using append-only tables usually have better query performance.
+Using append-only tables usually has better query performance.
 
 
 ## Wide Table vs. Multiple Tables
@@ -338,17 +337,17 @@ with each partition containing all columns.
 
 ### When to Partition and Determining the Number of Partitions
 
-A table can utilize all the resource in the machine, especially during query.
+A table can utilize all the resources in the machine, especially during query.
 Partitioning a table may not always improve the performance:
 
-- A distributed query plan isn't always as efficent as a local query plan.
-- Distributed query may introduce addtional data transmission across network.
+- A distributed query plan isn't always as efficient as a local query plan.
+- Distributed query may introduce additional data transmission across the network.
 
 
 There is no need to partition a table unless a single machine isn't enough to serve the table.
 For example:
 
-- There is no enough local disk space to store the data or to cache the data when using object stores.
+- There is not enough local disk space to store the data or to cache the data when using object stores.
 - You need more CPU cores to improve the query performance or more memory for costly queries.
 - The disk throughput becomes the bottleneck.
 - The ingestion rate is larger than the throughput of a single node.

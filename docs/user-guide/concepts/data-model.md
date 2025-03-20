@@ -18,16 +18,16 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
   Some TSDBs may also call them labels.
 - `Timestamp` is the root of a metrics, logs, and events database.
   It represents the date and time when the data was generated.
-  A table can only have one column with the `Timestamp` semantic type, which is also called `time index`.
+  A table can only have one column with the `Timestamp` semantic type, which is also called the `time index`.
 - The other columns are `Field` columns.
   Fields contain the data indicators or log contents that are collected.
   These fields are generally numerical values or string values,
-  but may also be other types of data, such as geographic locations, timestamps.
+  but may also be other types of data, such as geographic locations or timestamps.
 
-A table clusters rows of the same time-series, and sorts rows of the same time-series by `Timestamp`.
+A table clusters rows of the same time-series and sorts rows of the same time-series by `Timestamp`.
 The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
 GreptimeDB stores and processes data by time-series.
-Choosing the right schema is crucial for efficient data storage and retrieval, please refer to the [schema design guide](/docs/user-guide/administration/design-table.md) for more details.
+Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/docs/user-guide/administration/design-table.md) for more details.
 
 ### Metric Table
 
@@ -50,7 +50,7 @@ The data model for this table is as follows:
 
 ![time-series-table-model](/time-series-data-model.svg)
 
-Those are very similar to the table model everyone is familiar with. The difference lies in the `TIME INDEX` constraint, which is used to specify the `ts` column as the time index column of this table.
+This is very similar to the table model everyone is familiar with. The difference lies in the `TIME INDEX` constraint, which is used to specify the `ts` column as the time index column of this table.
 
 - The table name here is `system_metrics`.
 - The `PRIMARY KEY` constraint specifies the `Tag` columns of the table.
@@ -59,7 +59,7 @@ Those are very similar to the table model everyone is familiar with. The differe
 - The `Timestamp` column `ts` represents the time when the data is collected.
 - The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
   the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as the latest value, maximum/minimum value, average, percentage, and so on.
+  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as for the latest value, maximum/minimum value, average, percentage, and so on.
 - The table sorts and deduplicates rows by `host`, `idc`, `ts`.
 
 ### Log Table
@@ -84,21 +84,21 @@ CREATE TABLE access_logs (
 - The table sorts rows by `access_time`.
 
 
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
+To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
 
 ## Design Considerations
 
-GreptimeDB is designed on top of Table for the following reasons:
+GreptimeDB is designed on top of the Table model for the following reasons:
 
-- The Table model has a broad group of users and it's easy to learn, that we just introduced the concept of time index to the metrics, logs, and events.
-- Schema is meta-data to describe data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
-- Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we could conduct targeted optimizations.
-- When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, offsetting the learning and use costs for users.
-- Use a multi-value model where a row of data can have multiple field columns,
+- The Table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and events.
+- Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
+- Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we can conduct targeted optimizations.
+- When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.
+- We use a multi-value model where a row of data can have multiple field columns,
   instead of the single-value model adopted by OpenTSDB and Prometheus.
-  The multi-value model is used to model data sources, where a metric can have multiple values represented by fields.
-  The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of multi-value mode.
+  The multi-value model is used to model data sources where a metric can have multiple values represented by fields.
+  The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of the multi-value mode.
 
 
 GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md) for more information.
