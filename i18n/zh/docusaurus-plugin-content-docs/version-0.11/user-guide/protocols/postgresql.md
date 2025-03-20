@@ -64,8 +64,8 @@ SET TIMEZONE TO '+1:00'
 ## 外部数据
 
 利用 Postgres 的 [FDW 扩
-展](https://www.postgresql.org/docs/current/postgres-fdw.html)， GreptimeDB 可以
-被配置为 Postgres 的外部数据服务。 这使得我们可以用 Postgres 服务器上无缝地查询
+展](https://www.postgresql.org/docs/current/postgres-fdw.html)，GreptimeDB 可以
+被配置为 Postgres 的外部数据服务。这使得我们可以用 Postgres 服务器上无缝地查询
 GreptimeDB 里的时序数据，并且可以利用 join 查询同时关联两边的数据。
 
 举个例子，类似设备信息类的物联网元数据，通常存储在 Postgres 这样的关系型数据库中。

@@ -13,7 +13,7 @@
 mkdir -p ./benchmarks/data
 ```
 
-接下来，你可以在[这个页面](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)获取测试数据。我们支持自2022年01月起的所有**黄色出租车行程记录**。例如，要获取2022年1月的数据，你可以运行以下命令：
+接下来，你可以在[这个页面](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)获取测试数据。我们支持自 2022 年 01 月起的所有**黄色出租车行程记录**。例如，要获取 2022 年 1 月的数据，你可以运行以下命令：
 
 ```shell
 curl "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet" -o ./benchmarks/data/yellow_tripdata_2022-01.parquet

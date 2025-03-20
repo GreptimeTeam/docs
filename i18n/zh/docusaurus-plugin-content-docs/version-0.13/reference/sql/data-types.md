@@ -68,7 +68,7 @@ SELECT * FROM decimals;
 | `TimestampMillisecond` | 64 位时间戳值，毫秒精度，范围：`[-262144-01-01 00:00:00.000, +262143-12-31 23:59:59.999]` | 8 字节 |
 | `TimestampMicroSecond` | 64 位时间戳值，微秒精度，范围：`[-262144-01-01 00:00:00.000000, +262143-12-31 23:59:59.999999]` | 8 字节 |
 | `TimestampNanosecond` | 64 位时间戳值，纳秒精度，范围： `[1677-09-21 00:12:43.145225, 2262-04-11 23:47:16.854775807]` | 8 字节 |
-| `Interval`| 时间间隔 | 对于 `YearMonth`, 使用4字节，对于 `DayTime`, 使用8字节，对于 `MonthDayNano`, 使用16字节 |
+| `Interval`| 时间间隔 | 对于 `YearMonth`, 使用 4 字节，对于 `DayTime`, 使用 8 字节，对于 `MonthDayNano`, 使用 16 字节 |
 
 :::tip 注意
 使用 MySQL/PostgreSQL 协议写入时间戳字符串字面量时，值的范围限制为 '0001-01-01 00:00:00' 到 '9999-12-31 23:59:59'。
@@ -204,7 +204,7 @@ INSERT INTO json_data VALUES ('{"key1": "value1", "key2": 10}', 1000),
 SELECT * FROM json_data;
 ```
 
-输出:
+输出：
 
 ```
 +------------------------------------------+---------------------+
@@ -223,7 +223,7 @@ SELECT * FROM json_data;
 SELECT json_get_string(my_json, '$.name') as name FROM json_data;
 ```
 
-输出:
+输出：
 
 ```
 +---------------------------------------------------+

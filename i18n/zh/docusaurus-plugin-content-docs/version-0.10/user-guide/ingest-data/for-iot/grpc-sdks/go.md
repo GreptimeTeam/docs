@@ -12,7 +12,7 @@ GreptimeDB 提供的 Go Ingest SDK 是一个轻量级、并发安全的库，使
 
 <div id="quick-start-demos">
 
-你可以通过[快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) 来了解如何使用 GreptimeDB Go SDK。
+你可以通过 [快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) 来了解如何使用 GreptimeDB Go SDK。
 
 </div>
 
@@ -44,7 +44,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     WithDatabase("public").
     // 默认端口 4001
     // WithPort(4001).
-    // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
+    // 如果服务配置了 TLS，设置 TLS 选项来启用安全连接
     // WithInsecure(false).
     // 设置鉴权信息
     // 如果数据库不需要鉴权，移除 WithAuth 方法即可
@@ -196,7 +196,7 @@ affected, err := cli.CloseStream(ctx)
 
 <div id="ingester-json-type">
 
-在[低层级 API](#低层级-api) 中，
+在 [低层级 API](#低层级-api) 中，
 你可以使用 `AddFieldColumn` 方法将列类型指定为 `types.JSON` 来添加 JSON 列。
 然后使用 `struct` 或 `map` 插入 JSON 数据。
 
@@ -219,7 +219,7 @@ sensorReadings.AddRow(<other-column-values>... , attributes)
 // ...
 ```
 
-在[高层级 API](#高层级-api) 中，你可以使用 `greptime:"field;column:details;type:json"` 标签将列类型指定为 JSON。
+在 [高层级 API](#高层级-api) 中，你可以使用 `greptime:"field;column:details;type:json"` 标签将列类型指定为 JSON。
 
 ```go
 type SensorReadings struct {
@@ -245,7 +245,7 @@ sensor := SensorReadings{
 // ...
 ```
 
-请参考 SDK 仓库中的[示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) 获取插入 JSON 数据的可执行代码。
+请参考 SDK 仓库中的 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) 获取插入 JSON 数据的可执行代码。
 
 </div>
 

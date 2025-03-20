@@ -74,7 +74,7 @@ greptime cli export --addr '127.0.0.1:4000' --output-dir /tmp/greptimedb-export 
 
 #### 删除 `WITH` 从句中的 `regions` 选项
 
-修改前:
+修改前：
 ```sql
 CREATE TABLE foo (
     host string,
@@ -87,7 +87,7 @@ WITH( # 删除
 );
 ```
 
-修改后:
+修改后：
 ```sql
 CREATE TABLE foo (
     host string,
@@ -99,7 +99,7 @@ CREATE TABLE foo (
 
 #### 重写分区规则
 
-修改前:
+修改前：
 ```sql
 PARTITION BY RANGE COLUMNS (n) (
      PARTITION r0 VALUES LESS THAN (1),
@@ -109,7 +109,7 @@ PARTITION BY RANGE COLUMNS (n) (
 )
 ```
 
-修改后:
+修改后：
 ```sql
 PARTITION ON COLUMNS (n) (
      n < 1,
@@ -121,7 +121,7 @@ PARTITION ON COLUMNS (n) (
 
 #### 删除内部列
 
-修改前:
+修改前：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(3) NOT NULL,
@@ -139,7 +139,7 @@ WITH(
 );
 ```
 
-修改后:
+修改后：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(3) NOT NULL,
@@ -157,7 +157,7 @@ WITH(
 
 #### 添加缺失的 Time Index 约束
 
-修改前:
+修改前：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(3) NOT NULL,
@@ -172,7 +172,7 @@ WITH(
 );
 ```
 
-修改后:
+修改后：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(3) NOT NULL,
@@ -192,7 +192,7 @@ WITH(
 
 相关 [issue](https://github.com/GreptimeTeam/greptimedb/pull/3794)
 
-修改前:
+修改前：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(6) NOT NULL, # 修改此处
@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS "phy" (
 ENGINE=mito;
 ```
 
-修改后:
+修改后：
 ```sql
 CREATE TABLE IF NOT EXISTS "phy" (
   "ts" TIMESTAMP(9) NOT NULL,

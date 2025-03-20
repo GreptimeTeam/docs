@@ -92,7 +92,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 **双活互备功能仅在 GreptimeDB 企业版中提供。**
 :::
 
-有关此解决方案的更多信息，请参阅[基于双活-备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)。
+有关此解决方案的更多信息，请参阅[基于双活 - 备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)。
 
 ### 基于单集群跨区域部署的 DR 解决方案
 
@@ -127,9 +127,9 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 |     DR 解决方案 | 容错目标 |  RPO | RTO | TCO | 场景 | 远程 WAL 和对象存储 | 备注 |
 | ------------- | ------------------------- | ----- | ----- | ----- | ---------------- | --------- | --------|
-|  独立模式的 DR 解决方案| 单区域 | 备份间隔 | 分钟或小时级 | 低 | 小型场景中对可用性和可靠性要求较低 |  可选 | |
-|  基于双活-备份的 DR 解决方案| 跨区域 | 0 | 分钟级 | 低 | 中小型场景中对可用性和可靠性要求较高 |  可选 | 商业功能 |
-|  基于单集群跨区域部署的 DR 解决方案| 多区域 | 0 | 分钟级 | 高 | 中大型场景中对可用性和可靠性要求较高 |  必需 | |
+|  独立模式的 DR 解决方案 | 单区域 | 备份间隔 | 分钟或小时级 | 低 | 小型场景中对可用性和可靠性要求较低 |  可选 | |
+|  基于双活 - 备份的 DR 解决方案 | 跨区域 | 0 | 分钟级 | 低 | 中小型场景中对可用性和可靠性要求较高 |  可选 | 商业功能 |
+|  基于单集群跨区域部署的 DR 解决方案 | 多区域 | 0 | 分钟级 | 高 | 中大型场景中对可用性和可靠性要求较高 |  必需 | |
 |  基于 BR 的 DR 解决方案 | 单区域 | 备份间隔 | 分钟或小时级 | 低 | 可接受的可用性和可靠性要求 | 可选 | |
 
 
@@ -137,6 +137,6 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 * [备份与恢复数据](./back-up-&-restore-data.md)
 * [GreptimeDB Standalone 的 DR 解决方案](./dr-solution-for-standalone.md)
-* [基于双活-备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
+* [基于双活 - 备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
 * [基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * [S3 对象副本概述](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)

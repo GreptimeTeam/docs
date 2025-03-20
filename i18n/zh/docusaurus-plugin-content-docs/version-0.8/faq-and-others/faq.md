@@ -52,7 +52,7 @@ GreptimeDB has primarily focused on metrics, but will soon offer log storage and
 
 The current version has not yet reached General Availability version standards. In line with our Greptime 2024 Roadmap, we plan to achieve a production-level version with the update to v1.0 in August. More details: https://github.com/GreptimeTeam/greptimedb/issues/3412.
 
-### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
+### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc?
 
 Yes, we open sourced the dashboard for users to query and visualize their data.
 Please check out our initial version on [GitHub Repo](https://github.com/GreptimeTeam/dashboard).
@@ -63,7 +63,7 @@ Yes, GreptimeDB is a schemaless database without need for creating tables in adv
 
 For more information, refer to [this document](/user-guide/table-management.md#create-table).
 
-### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
+### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework?
 
 There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to track the PromQL compatibility tests passing rate. It's based on Prometheus's compliance test.
 

@@ -59,7 +59,7 @@ AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
         .authInfo(authInfo)
-        // 如果服务配置了 TLS ，设置 TLS 选项来启用安全连接
+        // 如果服务配置了 TLS，设置 TLS 选项来启用安全连接
         //.tlsOptions(new TlsOptions())
         // 好的开始 ^_^
         .build();
@@ -341,7 +341,7 @@ Cpu newCpu = new Cpu();
 newCpu.setHost("host1");
 // 相同的时间索引 `1703832681000`
 newCpu.setTs(1703832681000L);
-// 新的值: cpu_user = `0.80`, cpu_sys = `0.11`
+// 新的值：cpu_user = `0.80`, cpu_sys = `0.11`
 cpu.setCpuUser(0.80);
 cpu.setCpuSys(0.11);
 
@@ -365,7 +365,7 @@ ingester SDK 提供了用于调试的指标和日志。
 
 <div id="more-ingestion-examples">
 
-请参考[示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime)获取更多完全可运行的代码片段和常用方法的解释。
+请参考 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) 获取更多完全可运行的代码片段和常用方法的解释。
 
 </div>
 
@@ -434,11 +434,11 @@ db.username=
 db.password=
 ```
 
-或者你可以从[这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties)获取文件。
+或者你可以从 [这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties) 获取文件。
 
 #### 时区
 
-通过设置 URL 参数来设置 JDBC 时区:
+通过设置 URL 参数来设置 JDBC 时区：
 
 ```txt
 jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
@@ -487,7 +487,7 @@ try (Connection conn = getConnection()) {
 
 ```
 
-请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java)获取更多可执行代码。
+请参考 [此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java) 获取更多可执行代码。
 
 </div>
 

@@ -3,8 +3,8 @@
 - [Why GreptimeDB](./why-greptimedb.md)：介绍了 GreptimeDB 的特点和优势，包括其灵活的架构，允许在各种环境中部署，从嵌入式到云原生等。GreptimeDB 还具有成本效益、高性能和用户友好等特点。
 - [数据模型](./data-model.md)：介绍了 GreptimeDB 的数据模型，包括表的模式、索引列等。
 - [基础架构](./architecture.md)：获取 GreptimeDB 的云原生架构。
-- [存储位置](./storage-location.md)：介绍了 GreptimeDB 的存储位置，包括本地磁盘、HDFS 、AWS S3 和阿里云 OSS 等云对象存储。
-- [核心概念](./key-concepts.md)：介绍了 GreptimeDB 的核心概念，包括表、时间索引约束、表Region 和数据类型等。
+- [存储位置](./storage-location.md)：介绍了 GreptimeDB 的存储位置，包括本地磁盘、HDFS、AWS S3 和阿里云 OSS 等云对象存储。
+- [核心概念](./key-concepts.md)：介绍了 GreptimeDB 的核心概念，包括表、时间索引约束、表 Region 和数据类型等。
 - [关键特性](./features-that-you-concern.md): 介绍了一个 TSDB 用户较为关心的主要特性。
 
 ## 阅读更多

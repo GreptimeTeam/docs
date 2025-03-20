@@ -22,7 +22,7 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
 
 你可以任选以下一种安装方式：
 
-- 下载安装包并解压到相关目录：从[发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/)获取最新版本，解压文件到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
+- 下载安装包并解压到相关目录：从 [发布页面](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/) 获取最新版本，解压文件到你的 [grafana 插件目录](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins)。
 - 使用 Grafana Cli 下载并安装：
   ```shell
   grafana cli --pluginUrl https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip plugins install info8fcc

@@ -1,7 +1,7 @@
 # SQL
 
 你可以使用 [MySQL](/user-guide/protocols/mysql.md) 或 [PostgreSQL](/user-guide/protocols/postgresql.md) 客户端执行 SQL 语句，
-使用任何你喜欢的编程语言（如Java JDBC）通过 MySQL 或 PostgreSQL 协议访问 GreptimeDB。
+使用任何你喜欢的编程语言（如 Java JDBC）通过 MySQL 或 PostgreSQL 协议访问 GreptimeDB。
 
 我们将使用 `monitor` 表作为示例来展示如何写入数据。有关如何创建 `monitor` 表的 SQL 示例，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)。
 

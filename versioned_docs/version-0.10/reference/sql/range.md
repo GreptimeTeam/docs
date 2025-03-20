@@ -481,7 +481,7 @@ Take the following table as an example:
 +---------------------+-------+------+
 ```
 
-1. Aggregation functions support calculations both internally and externally：
+1. Aggregation functions support calculations both internally and externally:
 
 ```sql
 SELECT ts, host, 2.0 * min(val * 2.0) RANGE '10s' FROM host_cpu ALIGN '5s';

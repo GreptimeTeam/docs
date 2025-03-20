@@ -6,7 +6,7 @@
 
 ## 备份和恢复 schema
 
-在备份恢复表或数据库的数据之前，需要备份恢复表 schema 。
+在备份恢复表或数据库的数据之前，需要备份恢复表 schema。
 
 ### 备份 schema
 
@@ -29,7 +29,7 @@ psql -h 127.0.0.1 -p 4003 -d public -f /home/backup/schema/greptime-public.sql
 ## 备份和恢复表
 
 在恢复数据之前，请确保表存在于数据库中。
-为了避免丢失表 schema ，你可以在备份表数据的同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
+为了避免丢失表 schema，你可以在备份表数据的同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
 
 ### 备份表
 
@@ -69,7 +69,7 @@ COPY monitor FROM '/home/backup/monitor/' WITH (FORMAT = 'parquet', PATTERN = '.
 CREATE DATABASE <dbname>;
 ```
 
-为了避免丢失表 schema ，在备份数据库数据时，你可以同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
+为了避免丢失表 schema，在备份数据库数据时，你可以同时[备份表 schema](#备份-schema)。在恢复数据之前[恢复 schema](#恢复-schema)。
 
 ### 备份数据库
 

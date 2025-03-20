@@ -7,7 +7,7 @@ GreptimeDB 可以作为 Grafana 中 Prometheus 的替代品，因为 GreptimeDB 
 <!-- Maybe add a section to introduce the simulated interfaces, when there is -->
 <!-- more than one supported -->
 
-GreptimeDB 实现了兼容 Prometheus 的一系列 API ，通过 `/v1/prometheus` 路径对外提
+GreptimeDB 实现了兼容 Prometheus 的一系列 API，通过 `/v1/prometheus` 路径对外提
 供服务：
 
 - Instant queries `/api/v1/query`
@@ -35,7 +35,7 @@ TQL [EVAL|EVALUATE] (<START>, <END>, <STEP>) <QUERY>
 
 `<START>` 指定查询开始时间范围，`<END>` 指定查询结束时间。 `<STEP>` 识别查询步幅。它们均可为无引号数字（表示`<START>`和`<END>`的 UNIX 时间戳，以及`<STEP>`的秒数持续时间），或带引号的字符串（表示`<START>`和`<END>`的 RFC3339 时间戳，以及`<STEP>`的字符串格式的持续时间）。
 
-例如:
+例如：
 
 ```sql
 TQL EVAL (1676738180, 1676738780, '10s') sum(some_metric)
@@ -88,7 +88,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 *目前还不支持像 `1+1` 这样纯粹的 binary 表达式。*
 
-- 支持:
+- 支持：
     | Operator | Example  |
     | :------- | :------- |
     | add      | `a + b`  |
@@ -103,7 +103,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | gte      | `a >= b` |
     | lte      | `a <= b` |
 
-- 不支持:
+- 不支持：
     | Operator | Progress |
     | :------- | :------- |
     | power    | TBD      |
@@ -114,7 +114,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Aggregators
 
-- 支持:
+- 支持：
     | Aggregator | Example                   |
     | :--------- | :------------------------ |
     | sum        | `sum by (foo)(metric)`    |
@@ -124,7 +124,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | stddev     | `stddev by (foo)(metric)` |
     | stdvar     | `stdvar by (foo)(metric)` |
 
-- 不支持:
+- 不支持：
     | Aggregator   | Progress |
     | :----------- | :------- |
     | count        | TBD      |
@@ -135,7 +135,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Instant Functions
 
-- 支持:
+- 支持：
     | Function           | Example                           |
     | :----------------- | :-------------------------------- |
     | abs                | `abs(metric)`                     |
@@ -161,7 +161,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | timestamp          | `timestamp()`                     |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
 
-- 不支持:
+- 不支持：
     | Function                   | Progress |
     | :------------------------- | :------- |
     | absent                     | TBD      |
@@ -174,7 +174,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 
 ### Range Functions
 
-- 支持:
+- 支持：
     | Function           | Example                        |
     | :----------------- | :----------------------------- |
     | idelta             | `idelta(metric[5m])`           |

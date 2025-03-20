@@ -189,12 +189,12 @@ enable = true
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
 | storage |                   |        | 存储选项                                            |
-|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等.            |
+|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
@@ -252,14 +252,14 @@ secret_access_key = "<secret access key>"
 
 `[storage.http_client]` 设置了向存储服务发送请求的 http 客户端的各种配置。
 
-仅当存储服务类型是 “S3”，“Oss”，“Azblob” 或 “Gcs” 时生效。
+仅当存储服务类型是“S3”，“Oss”，“Azblob”或“Gcs”时生效。
 
 | Key                      | 类型  | 默认值        | 含义                                                          |
 |--------------------------|-----|------------|-------------------------------------------------------------|
 | `pool_max_idle_per_host` | 数字  | 1024       | http 连接池中对每个 host 的最大空闲连接数。                                 |
-| `connect_timeout`        | 字符串 | “30s”（30秒） | http 客户端在进行连接时的超时                                           |
-| `timeout`                | 字符串 | “30s”（30秒） | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
-| `pool_idle_timeout`      | 字符串 | “90s”（90秒） | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
+| `connect_timeout`        | 字符串 | “30s”（30 秒） | http 客户端在进行连接时的超时                                           |
+| `timeout`                | 字符串 | “30s”（30 秒） | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
+| `pool_idle_timeout`      | 字符串 | “90s”（90 秒） | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
 
 ### 存储引擎提供商
 
@@ -336,7 +336,7 @@ read_batch_size = 128
 sync_write = false
 ```
 
-- `dir`: WAL 的日志目录， 当使用文件 `File` 存储的时候, 默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
+- `dir`: WAL 的日志目录，当使用文件 `File` 存储的时候，默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
 - `file_size`: 单个日志文件的最大大小，默认为 `256MB`。
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
@@ -387,7 +387,7 @@ client_key_path = "/path/to/key"
 
 Kafka 客户端 TLS 配置，支持 TLS（使用系统 CA 证书），TLS（使用特定 CA 证书），mTLS。
 
-配置示例:
+配置示例：
 
 **TLS (使用系统 CA 证书)**
 
@@ -531,10 +531,10 @@ tcp_nodelay = true
 
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
-- `metasrv_addrs`， Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
-- `timeout`， 操作超时时长，默认为 3 秒。
+- `metasrv_addrs`，Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
+- `timeout`，操作超时时长，默认为 3 秒。
 - `connect_timeout`，连接服务器超时时长，默认为 1 秒。
-- `ddl_timeout`， DDL 执行的超时时间，默认 10 秒。
+- `ddl_timeout`，DDL 执行的超时时间，默认 10 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
 ### 指标监控选项
@@ -659,7 +659,7 @@ use_memory_store = false
 ## - 使用 Remote WAL
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
-# metasrv 的数据库类型.
+# metasrv 的数据库类型。
 ## 可选项：
 ## - "etcd_store" (默认值)
 ## - "memory_store" (纯内存存储 - 仅用于测试)
@@ -790,7 +790,7 @@ backoff_deadline = "5mins"
 | wal.backoff_base                              | Integer | 2                    | backoff 指数，即下一个 backoff 时间 = 该指数 \* 当前 backoff 时间                                                                    |
 | wal.backoff_deadline                          | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                       |
 | `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
-| `wal.sasl.type`                               | String  | --                   | SASL 机制, 可选值: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
+| `wal.sasl.type`                               | String  | --                   | SASL 机制，可选值：`PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
 | `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                      |
 | `wal.sasl.password`                           | String  | --                   | SASL 鉴权密码                                                                                                                        |
 | `wal.tls`                                     | String  | --                   | Kafka 客户端 TLS 配置                                                                                                                |

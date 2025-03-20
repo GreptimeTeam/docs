@@ -58,7 +58,7 @@ etcd-2   1/1     Running   0          72s
 ```
 </details>
 
-etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) 参数指定启动 etcd 节点时 etcd 集群的初始状态。它对于确定节点如何加入集群非常重要。该参数可以采用以下两个值:
+etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) 参数指定启动 etcd 节点时 etcd 集群的初始状态。它对于确定节点如何加入集群非常重要。该参数可以采用以下两个值：
 
 - **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态。
 - **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息。

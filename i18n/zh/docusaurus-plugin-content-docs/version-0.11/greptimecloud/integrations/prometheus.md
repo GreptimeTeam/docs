@@ -26,9 +26,9 @@ remote_write:
 
 用户可以直接通过 Prometheus HTTP API 访问数据库：
 
-- URL 根路径: `https://<host>/v1/prometheus`
-- 数据库名: 添加 HTTP 头 `x-greptime-db-name`， 值 `<dbname>`
-- 认证: HTTP Basic 认证，使用数据库的用户名和密码
+- URL 根路径：`https://<host>/v1/prometheus`
+- 数据库名：添加 HTTP 头 `x-greptime-db-name`，值 `<dbname>`
+- 认证：HTTP Basic 认证，使用数据库的用户名和密码
 
 一个简单的例子，试用 Prometheus API 访问数据库
 

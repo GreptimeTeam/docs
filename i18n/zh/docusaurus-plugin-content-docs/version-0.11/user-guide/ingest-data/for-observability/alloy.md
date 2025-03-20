@@ -27,7 +27,7 @@ prometheus.remote_write "greptimedb" {
 
 - `GREPTIME_HOST`: GreptimeDB 主机地址，例如 `localhost`。
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
-- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
+- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
 
 有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。
 

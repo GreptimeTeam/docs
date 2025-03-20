@@ -116,7 +116,7 @@ GreptimeDB 目前不支持在创建表后更改 TIME INDEX 约束，
 
 - 时间戳列：GreptimeDB 是一个时序数据库系统，在创建表时，必须用 `TIME INDEX` 关键字明确指定时间序列的列。
   时间序列的列的数据类型必须是 `TIMESTAMP`。
-- 主键：`Primary key`指定的主键列类似于其他时序系统中的 Tag，比如 [InfluxDB][1]。 主键和时间戳列用于唯一地定义一条时间线，这类似于其他时间序列系统中的时间线的概念，如 [InfluxDB][2]。
+- 主键：`Primary key`指定的主键列类似于其他时序系统中的 Tag，比如 [InfluxDB][1]。主键和时间戳列用于唯一地定义一条时间线，这类似于其他时间序列系统中的时间线的概念，如 [InfluxDB][2]。
 - 表选项：当创建一个表时，可以指定一组表选项，点击[这里](/reference/sql/create.md#table-options)了解更多细节。
 
 ### 表名约束

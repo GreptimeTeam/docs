@@ -27,11 +27,11 @@ curl -fsSL \
 
 ### Windows
 
-若您的 Windows 系统已开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，您可以直接打开一个最新的 Ubuntu 接着如上所示运行 GreptimeDB ！
+若您的 Windows 系统已开启 WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about))，您可以直接打开一个最新的 Ubuntu 接着如上所示运行 GreptimeDB！
 
 否则请到我们的[官网](https://greptime.com/resources)下载并解压最新的 GreptimeDB for Windows 安装包。
 
-在单机模式下运行 GreptimeDB，您可以在 GreptimeDB 二进制所在的文件夹下打开一个终端（比如 Powershell ），执行：
+在单机模式下运行 GreptimeDB，您可以在 GreptimeDB 二进制所在的文件夹下打开一个终端（比如 Powershell），执行：
 
 ```shell
 .\greptime standalone start
@@ -53,7 +53,7 @@ docker run -p 127.0.0.1:4000-4003:4000-4003 \
 ```
 
 :::tip 注意事项
-为了防止不小心退出 Docker 容器，你可能想以 “detached” 模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
+为了防止不小心退出 Docker 容器，你可能想以“detached”模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
 数据将会存储在当前目录下的 `greptimedb/` 目录中。
@@ -64,7 +64,7 @@ docker run -p 127.0.0.1:4000-4003:4000-4003 \
 
 如果正在使用小于 [v23.0](https://docs.docker.com/engine/release-notes/23.0/) 的 Docker 版本，由于旧版本的 Docker Engine 中存在 [bug](https://github.com/moby/moby/pull/42681)，所以当你尝试运行上面的命令时，可能会遇到权限不足的问题。
 
-你可以:
+你可以：
 
 1. 设置 `--security-opt seccomp=unconfined`：
 

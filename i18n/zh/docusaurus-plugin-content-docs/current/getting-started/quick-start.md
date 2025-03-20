@@ -282,7 +282,7 @@ ORDER BY
 
 ### 持续聚合
 
-为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的[持续聚合](/user-guide/flow-computation/overview.md)功能来实现。
+为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的 [持续聚合](/user-guide/flow-computation/overview.md) 功能来实现。
 
 例如，按照 5 秒钟的时间窗口聚合 API 错误数量，并将数据保存到 `api_error_count` 表中。
 

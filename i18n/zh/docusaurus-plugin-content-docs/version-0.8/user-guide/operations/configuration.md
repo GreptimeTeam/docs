@@ -193,7 +193,7 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                         |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                             |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                            |
-|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为false  |
+|            | is_strict_mode     | 布尔值 | 是否启用协议的严格校验模式，启用会轻微影响性能，默认为 false  |
 | grpc       |                    |        | gRPC 服务器选项                                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4001"                         |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                |
@@ -217,12 +217,12 @@ enable = true
 
 `存储`选项在 `datanode` 和 `standalone` 模式下有效，它指定了数据库数据目录和其他存储相关的选项。
 
-GreptimeDB 支持将数据保存在本地文件系统， AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
+GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
 | 选项    | 键                | 类型   | 描述                                                |
 | ------- | ----------------- | ------ | --------------------------------------------------- |
 | storage |                   |        | 存储选项                                            |
-|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等.            |
+|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
 |         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
@@ -324,7 +324,7 @@ read_batch_size = 128
 sync_write = false
 ```
 
-- `dir`: WAL 的日志目录， 当使用文件 `File` 存储的时候, 默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
+- `dir`: WAL 的日志目录，当使用文件 `File` 存储的时候，默认值为`{data_home}/wal` 。当使用对象存储的时候，必须明确指定。
 - `file_size`: 单个日志文件的最大大小，默认为 `256MB`。
 - `purge_threshold` 和 `purge_interval`: 控制清除任务的触发阈值和间隔
 - `sync_write`: 是否在写入每条日志的时候调用 l `fsync` 刷盘。
@@ -348,7 +348,7 @@ default_ratio = 1.0
 - `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
-- `append_stdout`：是否将日志打印到stdout。默认是`true`。
+- `append_stdout`：是否将日志打印到 stdout。默认是`true`。
 - `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](./tracing.md#指南如何配置-tracing-采样率)。
 
 如何使用分布式追踪，请参考 [Tracing](./tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
@@ -439,10 +439,10 @@ tcp_nodelay = true
 
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
-- `metasrv_addrs`， Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
-- `timeout`， 操作超时时长，默认为 3 秒。
+- `metasrv_addrs`，Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
+- `timeout`，操作超时时长，默认为 3 秒。
 - `connect_timeout`，连接服务器超时时长，默认为 1 秒。
-- `ddl_timeout`， DDL 执行的超时时间，默认 10 秒。
+- `ddl_timeout`，DDL 执行的超时时间，默认 10 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
 
 ### 指标监控选项

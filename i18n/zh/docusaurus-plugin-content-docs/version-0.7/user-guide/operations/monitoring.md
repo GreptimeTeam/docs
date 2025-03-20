@@ -10,7 +10,7 @@
 
 ## 导出数据到 Prometheus
 
-GreptimeDB 支持导出数据到 Prometheus。 在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
+GreptimeDB 支持导出数据到 Prometheus。在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
 
 要从 GreptimeDB 中抓取指标，请编写 Prometheus 配置文件并将其保存为 `prometheus.yml`：
 

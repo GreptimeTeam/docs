@@ -38,7 +38,7 @@ Yes, you can find our Go SDK [here](https://github.com/GreptimeTeam/greptimedb-i
 
 The current version has not yet reached General Availability version standards. We are trying to published v1.0 asap.
 
-### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc？
+### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc?
 
 Yes, we open sourced the dashboard for users to query and visualize their data.
 
@@ -71,7 +71,7 @@ GreptimeDB supports both database-level and table-level TTLs. By default, a tabl
 
 Because `grep` is the most useful command line tool on \*nix platform to search data, and time means time series. So Greptime is to help everybody to search/find value in time series data.
 
-### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework？
+### How do you measure the passing rate of PromQL compatibility tests? Is there any testing framework?
 
 There’s [an issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) to track the PromQL compatibility tests passing rate. It's based on Prometheus's compliance test.
 

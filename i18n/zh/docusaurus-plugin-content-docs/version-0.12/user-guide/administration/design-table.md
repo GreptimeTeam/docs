@@ -23,17 +23,17 @@ description: 详细介绍了 GreptimeDB 的数据模型使用指南，以及常�
 
 ## 列的类型及选择
 
-GreptimeDB 中列区分为三种类型： Tag、Field 和 Time Index。
+GreptimeDB 中列区分为三种类型：Tag、Field 和 Time Index。
 时间戳不用做过多讨论，一般是数据采样的时间或者日志、事件发生的时间作为 Time Index 列。
 GreptimeDB 也会按照 Time Index 来优化数据组织，提升查询性能。
 
-我们重点讨论 Tag 和 Field ，以及如何为列选择正确的类型。
+我们重点讨论 Tag 和 Field，以及如何为列选择正确的类型。
 
 ### Tag 列
 
 Tag 列，也称为标签列（Label），一般来说是携带了度量数据或者日志、事件的元信息。
 举例来说，采集全国的气象温度数据，那么城市（city）就是一个典型的标签列，
-比如 `city="New York"`；监控中，采集系统的 CPU 、内存等指标，
+比如 `city="New York"`；监控中，采集系统的 CPU、内存等指标，
 通常会有 `host` 标签来表示主机名。
 Kubernetes 的 `pod` 容器就带有大量的 label。
 
@@ -60,7 +60,7 @@ Field 列，一般来说就是携带了度量的实际值，仍然以气温数�
 2. 用于计算和聚合，比如求平均值，最大值，P99 等
 3. 可以高频率变化，也就是可以是任意基数（cardinality）的
 
-GreptimeDB 中不在 `PRIMARY KEY` 的非 `TIME INDEX` 列就是 Field 列， GreptimeDB 不会为这些列建索引。
+GreptimeDB 中不在 `PRIMARY KEY` 的非 `TIME INDEX` 列就是 Field 列，GreptimeDB 不会为这些列建索引。
 使用上我们建议：
 
 1. 避免将过滤条件作用在 Field 中
@@ -100,7 +100,7 @@ GreptimeDB 中对数据更新的支持是通过插入覆盖具有相同 `PRIMARY
 
 默认情况下，在建表时候加入 `PRIMARY KEY` 约束的列将被视为 Tag 列，
 没有加入的非 `TIME INDEX` 列即为 Field 列。
-并且默认情况下， GreptimeDB 会为所有 Tag 列建立倒排索引，用于精确和快速的查询和过滤。
+并且默认情况下，GreptimeDB 会为所有 Tag 列建立倒排索引，用于精确和快速的查询和过滤。
 例如：
 
 ```sql
@@ -134,7 +134,7 @@ IoT 设备可能成千上万，如果将他们的 ip 地址加入主键，
 
 ## 主键和倒排索引分离
 
-因此，从 `v0.10` 开始， GreptimeDB 支持将主键和索引分离，创建表的时候可以通过 `INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询，这种情况下 `PRIMARY KEY` 将不会自动创建索引，而仅是用于去重和排序：
+因此，从 `v0.10` 开始，GreptimeDB 支持将主键和索引分离，创建表的时候可以通过 `INVERTED INDEX` 指定表的[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。对于每一个指定的列，GreptimeDB 会创建倒排索引以加速查询，这种情况下 `PRIMARY KEY` 将不会自动创建索引，而仅是用于去重和排序：
 
 我们改进前面的例子：
 
@@ -255,7 +255,7 @@ CREATE TABLE `origin_logs` (
 
 `'merge_mode'='last_non_null'` 默认也是通过 InfluxDB 行协议写入的自动创建表的默认模式，跟 InfluxDB 的更新行为保持一致。
 
-请注意， Append-Only 的表是无法设置 `merge_mode` 的，因为它不会进行合并行为。
+请注意，Append-Only 的表是无法设置 `merge_mode` 的，因为它不会进行合并行为。
 
 ## 宽表 vs.多表
 
@@ -264,7 +264,7 @@ CREATE TABLE `origin_logs` (
 
 ![wide_table](/wide_table.png)
 
-比较遗憾， Prometheus 的存储还是多表单值的方式，不过 GreptimeDB 的 Prometheus Remote Storage 协议支持，通过 [Metric 引擎](/contributor-guide/datanode/metric-engine.md)在底层实现了宽表的数据共享。
+比较遗憾，Prometheus 的存储还是多表单值的方式，不过 GreptimeDB 的 Prometheus Remote Storage 协议支持，通过 [Metric 引擎](/contributor-guide/datanode/metric-engine.md)在底层实现了宽表的数据共享。
 
 ## 分布式表
 

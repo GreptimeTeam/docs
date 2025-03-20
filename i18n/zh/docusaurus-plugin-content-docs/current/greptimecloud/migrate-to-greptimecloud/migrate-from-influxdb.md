@@ -207,7 +207,7 @@ $writeApi->write($point);
 <div id="visualize-data">
 
 GreptimeCloud 控制台提供了名为 Workbench 的数据可视化工作台。
-打开[控制台](https://greptime.cloud), 在 `Manage Your Data` 下选择 `Web Dashboard`，
+打开 [控制台](https://greptime.cloud), 在 `Manage Your Data` 下选择 `Web Dashboard`，
 然后创建一个新的 Workbench 文件，
 即可按需求创建图表。
 

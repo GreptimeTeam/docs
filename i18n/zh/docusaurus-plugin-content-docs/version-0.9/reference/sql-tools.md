@@ -94,7 +94,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
     db.password=
     ```
 
-    或者你可以从[这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties)获取文件。
+    或者你可以从 [这里](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/resources/db-connection.properties) 获取文件。
   </TabItem>
   <TabItem value="Go" label="Go">
     ```go
@@ -132,7 +132,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
 
 <Tabs groupId="programming-langs">
   <TabItem value="Java" label="Java">
-    通过设置 URL 参数来设置 JDBC 时区:
+    通过设置 URL 参数来设置 JDBC 时区：
 
     ```txt
     jdbc:mysql://127.0.0.1:4002?connectionTimeZone=Asia/Shanghai&forceConnectionTimeZoneToSession=true
@@ -195,7 +195,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
     }
     ```
 
-    请参考[此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java)获取直接可执行的代码。
+    请参考 [此处](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/ingester-example/src/main/java/io/greptime/QueryJDBC.java) 获取直接可执行的代码。
   </TabItem>
   <TabItem value="Go" label="Go">
     The following code declares a GORM object model:
@@ -209,7 +209,7 @@ GreptimeDB 使用 SQL 作为主要查询语言，并支持许多流行的 SQL �
     }
     ```
     
-    如果你正在使用[高层级 API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#高层级-api) 来插入数据，你可以在模型中同时声明 GORM 和 GreptimeDB Tag。
+    如果你正在使用 [高层级 API](/user-guide/ingest-data/for-iot/grpc-sdks/go.md#高层级-api) 来插入数据，你可以在模型中同时声明 GORM 和 GreptimeDB Tag。
     
     ```go
     type CpuMetric struct {

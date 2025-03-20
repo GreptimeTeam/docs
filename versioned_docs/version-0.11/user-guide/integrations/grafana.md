@@ -68,7 +68,7 @@ http://<host>:4000
 
 Then do the following configuration:
 
-- Database Name：`<dbname>`, leave it blank to use the default database `public`
+- Database Name:`<dbname>`, leave it blank to use the default database `public`
 - In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
   - User: `<username>`
   - Password: `<password>`

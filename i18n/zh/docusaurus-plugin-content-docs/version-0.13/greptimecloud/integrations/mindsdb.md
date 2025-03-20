@@ -8,8 +8,8 @@ description: 介绍如何使用 MindsDB 将 GreptimeCloud 实例集成到机器�
 [MindsDB](https://mindsdb.com/) 是一个开源的机器学习平台，使开发人员能够轻松地将
 先进的机器学习能力与现有数据库集成。
 
-使用 MindsDB 扩展，您的 GreptimeDB 实例可以开箱即用。要配置GreptimeDB数据库，请
-运行以下SQL：
+使用 MindsDB 扩展，您的 GreptimeDB 实例可以开箱即用。要配置 GreptimeDB 数据库，请
+运行以下 SQL：
 
 ```sql
 CREATE DATABASE greptime_datasource

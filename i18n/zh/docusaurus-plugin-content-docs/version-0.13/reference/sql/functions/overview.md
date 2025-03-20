@@ -142,7 +142,7 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, '5 day'::INTERVAL);
 
 #### date_format
 
-* `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime格式化：
+* `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime 格式化：
 
 ```sql
 SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');

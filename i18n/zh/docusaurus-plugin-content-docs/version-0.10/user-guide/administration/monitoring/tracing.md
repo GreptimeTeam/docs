@@ -1,6 +1,6 @@
 # 链路追踪
 
-GreptimeDB 支持分布式链路追踪。 GreptimeDB 使用基于 gRPC 的 OTLP 协议导出所有采集到的 Span。您可以使用 [Jaeger](https://www.jaegertracing.io/)、[Tempo](https://grafana.com/oss/tempo/) 等支持基于 gRPC 的 OTLP 协议后端接收 GreptimeDB 采集到的 Span。 
+GreptimeDB 支持分布式链路追踪。GreptimeDB 使用基于 gRPC 的 OTLP 协议导出所有采集到的 Span。您可以使用 [Jaeger](https://www.jaegertracing.io/)、[Tempo](https://grafana.com/oss/tempo/) 等支持基于 gRPC 的 OTLP 协议后端接收 GreptimeDB 采集到的 Span。 
 
 在配置中的 [logging 部分](/user-guide/deployments/configuration.md#logging-选项) 有对 tracing 的相关配置项说明，[standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/main/config/standalone.example.toml) 的 logging 部分提供了参考配置项。
 
@@ -8,7 +8,7 @@ GreptimeDB 支持分布式链路追踪。 GreptimeDB 使用基于 gRPC 的 OTLP 
 
 [Jaeger](https://www.jaegertracing.io/) 是一个开源的、端到端的分布式链路追踪系统，最初由 Uber 开发并开源。它的目标是帮助开发人员监测和调试复杂的微服务架构中的请求流程。
 
-Jaeger 支持基于 gRPC 的 OTLP 协议，所以 GreptimeDB 可以将跟踪数据导出到 Jaeger。 以下教程向您展示如何部署和使用 Jaeger 来跟踪 GreptimeDB。
+Jaeger 支持基于 gRPC 的 OTLP 协议，所以 GreptimeDB 可以将跟踪数据导出到 Jaeger。以下教程向您展示如何部署和使用 Jaeger 来跟踪 GreptimeDB。
 
 ### 步骤一：部署 Jaeger
 
