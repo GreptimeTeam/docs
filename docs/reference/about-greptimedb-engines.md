@@ -13,7 +13,7 @@ Mito seamlessly integrates with various object storage solutions including S3, G
 
 [1]: https://en.wikipedia.org/wiki/Log-structured_merge-tree
 
-# Metric Engine
+## Metric Engine
 
 As the name suggests, the Metric Engine is designed to process metrics data efficiently. It specializes in handling scenarios with a large number of small tables typical in observability and monitoring workloads.
 
