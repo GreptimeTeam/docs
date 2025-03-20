@@ -125,7 +125,7 @@ As mentioned, the cloud version offers more ready-to-use features to help you ge
 
 You can find the public TSBS benchmark results [here](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs) and the deployment documentation [here](/getting-started/installation/overview.md).
 
-For more about performance reports please read [How is GreptimeDB's performance compared to other solutions?](/user-guide/concepts/features-that-you-concern#how-is-greptimedbs-performance-compared-to-other-solutions)
+For more about performance reports please read [How is GreptimeDB's performance compared to other solutions?](/user-guide/concepts/features-that-you-concern.md#how-is-greptimedbs-performance-compared-to-other-solutions)
 
 
 ### What should I do if the region becomes `DOWNGRADED` and the tables on that node become read-only after the datanode restarts? Is there a way to automatically reactivate it?

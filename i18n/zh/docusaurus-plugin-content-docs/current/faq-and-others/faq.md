@@ -149,7 +149,7 @@ GreptimeDB 是一个快速发展的开源项目，欢迎社区的反馈和贡献
 
 用户可以查看我们的 [TSBS 基准测试结果](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)并查看相关的[部署文档](https://docs.greptime.com/getting-started/installation/overview)。
 
-更多性能报告请参考[GreptimeDB 对比其他存储或时序数据库的性能如何](/user-guide/concepts/features-that-you-concern#greptimedb-对比其他存储或时序数据库的性能如何)。
+更多性能报告请参考[GreptimeDB 对比其他存储或时序数据库的性能如何](/user-guide/concepts/features-that-you-concern.md#greptimedb-对比其他存储或时序数据库的性能如何)。
 
 ### 在 datanode 重启后，某些节点的 region 状态变为 `DOWNGRADED` 且表变为只读，该如何处理？是否可以自动重新激活？
 
