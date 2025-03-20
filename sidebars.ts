@@ -398,6 +398,7 @@ const sidebars: SidebarsConfig = {
         'reference/command-lines',
         'reference/sql-tools',
         'reference/time-durations',
+        'reference/about-greptimedb-engines',
         {
           type: 'category',
           label: 'SQL',
