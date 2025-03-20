@@ -101,7 +101,16 @@ The `http_logs` table is an example for storing HTTP server logs.
 - The table sorts logs by time so it is efficent to search logs by time.
 
 
-If you always only query logs of a specific application, you may set the `application` column as primary key (tag).
+### Choosing primary key
+
+In GreptimeDB, primary key is identical to the time-series.
+It defines tags columns and the data ordering.
+You can use primary key when there are suitable low cardinality columns and one of the following conditions is met:
+
+- Most queries can benefit from the ordering.
+- You need to deduplicate (including delete) rows by the primary key and time index.
+
+For example, If you always only query logs of a specific application, you may set the `application` column as primary key (tag).
 
 ```sql
 SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
@@ -125,8 +134,11 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-Besides primary key, you can also use index to accelerate specific queries.
+The unique values of the primary key in the table can significantly affects performance.
+Currently, the recommended values of the primary key is no more than 100 thousand.
+So you must not use high cardinality column as the primary key or put too many column in the primary key.
 
+Besides primary key, you can also use index to accelerate specific queries on demand.
 
 ### Inverted Index
 
@@ -215,6 +227,12 @@ Index in GreptimeDB is flexible and powerful.
 You can create index for any column, no matter the column is a tag or a field.
 It's meaningless to create addtional index for the timestamp column.
 Generally you don't need to create columns for all columns.
+Maintaining index may introduce addtional cost and stall ingestion.
+A bad index may occupy too much disk space and make query slower.
+
+
+You can use a table without addtional index as a baseline.
+There is no need to create index for the table if the query performance is already acceptable.
 You can create an index for a column when
 
 - The column occurs in the filter frequently.
