@@ -52,11 +52,13 @@ GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://grept
 
 ## GreptimeDB 对比其他存储或时序数据库的性能如何？
 
+GreptimeDB 在 [ClickHouse 的 JSONBench 测试中 Cold Run 斩获第一](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb)！
+
 请阅读以下性能报告：
 
 * [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
-* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2024-08-21-report)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
 * [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
 
 ## GreptimeDB 有灾难恢复解决方案吗？
