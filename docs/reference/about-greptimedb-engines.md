@@ -19,7 +19,7 @@ As the name suggests, the Metric Engine is designed to process metrics data effi
 
 The key innovation of the Metric Engine is its use of synthetic wide physical tables to store data from numerous small tables. This approach enables efficient column and metadata reuse across tables, significantly reducing storage overhead while enhancing columnar compression efficiency. Under the Metric Engine, tables become lightweight logical constructs, making it ideal for cloud-native monitoring scenarios where thousands of small metric tables are common.
 
-The Metric Engine is built on top of the Mito Engine, meaning that its data is actually stored in the Mito Engine. This architecture leverages Mito's robust storage capabilities while adding specialized optimizations for metric data management.
+The Metric Engine is built on top of the Mito Engine, meaning that its data is actually stored in the Mito Engine. This architecture leverages Mito's robust storage capabilities while adding specialized optimizations for metrics data management.
 
 # File Engine
 
