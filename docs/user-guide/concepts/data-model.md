@@ -29,9 +29,9 @@ The table can also deduplicate rows with the same `Tag` and `Timestamp` values, 
 GreptimeDB stores and processes data by time-series.
 Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/docs/user-guide/administration/design-table.md) for more details.
 
-### Metric Table
+### Metrics
 
-Suppose we have a time-series table called `system_metrics` that monitors the resource usage of a standalone device:
+Suppose we have a table called `system_metrics` that monitors the resource usage of machines in data centers:
 
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
@@ -62,8 +62,9 @@ This is very similar to the table model everyone is familiar with. The differenc
   These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as for the latest value, maximum/minimum value, average, percentage, and so on.
 - The table sorts and deduplicates rows by `host`, `idc`, `ts`.
 
-### Log Table
-Another example is creating a log table for access logs:
+### Events
+
+Another example is creating a table for events like access logs:
 
 ```sql
 CREATE TABLE access_logs (
@@ -89,12 +90,12 @@ To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer t
 
 ## Design Considerations
 
-GreptimeDB is designed on top of the Table model for the following reasons:
+GreptimeDB is designed on top of the table model for the following reasons:
 
-- The Table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and events.
-- Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain. By introducing the concept of schema version, we can better manage data compatibility.
+- The table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and events.
+- Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we can conduct targeted optimizations.
-- When we have the Table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.
+- When we have the table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.
 - We use a multi-value model where a row of data can have multiple field columns,
   instead of the single-value model adopted by OpenTSDB and Prometheus.
   The multi-value model is used to model data sources where a metric can have multiple values represented by fields.
