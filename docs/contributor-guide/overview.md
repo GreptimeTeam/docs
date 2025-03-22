@@ -33,6 +33,7 @@ To better understand `GreptimeDB`, a few concepts need to be introduced:
   `metasrv`, tells which `region` of a `table` is served by which `datanode`.
 - A `frontend` is a stateless service that serves requests from client. It acts as a proxy to
   forward read and write requests to corresponding `datanode`, according to the mapping from catalog.
+- Table engines (also called storage engines) determine how data is stored, managed, and processed within the database. Each engine offers different features, performance characteristics, and trade-offs. See [Table Engines](/reference/about-greptimedb-engines.md) for more information.
 - A timeseries of a `table` is identified by its primary key. Each `table` must have a timestamp
   column, as `GreptimeDB` is a timeseries database. Data in `table` will be sorted by its primary key
   and
