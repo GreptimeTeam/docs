@@ -26,6 +26,10 @@ GreptimeDB 将时序表设计为数据存储的基本单位。
 
 关于时序表的数据模型的更多信息，请参考[数据模型](./data-model.md)。
 
+## Table Engine
+
+表引擎（也称为存储引擎）决定了数据在数据库中的存储、管理和处理方式。每种引擎提供不同的功能特性、性能表现和权衡取舍。GreptimeDB 提供了 `moto` 和 `metric` 引擎，有关更多信息，请参阅[表引擎](/reference/about-greptimedb-engines.md)。
+
 ## Table Region
 
 分布式表的每个分区被称为一个区域。一个区域可能包含一个连续数据的序列，这取决于分区算法，区域信息由 Metasrv 管理。这对发送写入和查询的用户来说是完全透明的。

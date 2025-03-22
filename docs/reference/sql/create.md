@@ -73,6 +73,9 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 ```
 
 The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.
+
+For information on the `engine` option and table engine selection, please refer to the [Table Engines](/reference/about-greptimedb-engines.md) guide.
+
 A column definition includes the column `column_name`, `type`, and options such as nullable or default values, etc. Please see below.
 
 ### Table constraints
@@ -237,7 +240,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### Create a physical table with metric engine
 
-The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine).
+The metric engine use synthetic physical wide tables to store a large amount of small table data, achieving effects such as reuse of the same column and metadata. For details, please refer to the [metric engine document](/contributor-guide/datanode/metric-engine) and [Table Engines](/reference/about-greptimedb-engines.md)  introduction.
 
 Create a physical table with the metric engine.
 ```sql

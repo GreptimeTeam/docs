@@ -76,6 +76,8 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 表 schema 由 `ENGINE` 之前的括号指定，表 schema 是列的定义和表的约束。
 列定义包括列名称和数据类型，以及可选的 `NULL`、`NOT NULL`、`DEFAULT` 等。
 
+关于 `engine` 选项和表引擎的选择，请阅读[表引擎](/reference/about-greptimedb-engines.md)介绍。
+
 ### 表约束
 
 表约束包括以下内容：
@@ -243,7 +245,7 @@ SELECT * from metrics ORDER BY host, ts;
 
 #### 创建 metric engine 的物理表
 
-metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine).
+metric engine 使用合成物理宽表来存储大量的小表数据，实现重用相同列和元数据的效果。详情请参考 [metric engine 文档](/contributor-guide/datanode/metric-engine)和[表引擎](/reference/about-greptimedb-engines.md)介绍。
 
 创建一个使用 metric engine 的物理表。
 ```sql

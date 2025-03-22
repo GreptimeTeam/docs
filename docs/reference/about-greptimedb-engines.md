@@ -1,13 +1,13 @@
 ---
-keywords: [greptimedb engine, Mito engine, Metric engine, File engile]
-description: Overview all of the engines in GreptimeDB.
+keywords: [greptimedb engine, Mito engine, Metric engine, File engine, Table engine]
+description: Overview of all the table engines in GreptimeDB.
 ---
 
-# About GreptimeDB Engines
+# GreptimeDB Table Engines
 
 ## Overview
 
-GreptimeDB offers multiple specialized engines, each designed to excel at specific workloads and use cases. This document provides a comprehensive introduction to these engines and guidance on when to use each one.
+GreptimeDB offers multiple specialized table engines, each designed to excel at specific workloads and use cases. This document provides a comprehensive introduction to these engines and guidance on when to use each one.
 
 ### Mito Engine
 

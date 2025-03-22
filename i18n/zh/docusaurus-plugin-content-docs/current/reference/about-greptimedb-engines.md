@@ -1,13 +1,13 @@
 ---
-keywords: [greptimedb 引擎, Mito 引擎, Metric 引擎, File 引擎]
-description: GreptimeDB 中所有引擎的概述。
+keywords: [greptimedb 引擎, Mito 引擎, Metric 引擎, File 引擎, 表引擎]
+description: GreptimeDB 中所有表引擎的概述。
 ---
 
-# 关于 GreptimeDB 引擎
+# GreptimeDB 表引擎
 
 ## 概述
 
-GreptimeDB 提供多种专业引擎，每种引擎都针对特定工作负载和使用场景进行了优化设计。本文档全面介绍了这些引擎，并提供了何时使用每种引擎的指导。
+GreptimeDB 提供多种专业的表引擎（Table Engine），每种引擎都针对特定工作负载和使用场景进行了优化设计。本文档全面介绍了这些引擎，并提供了何时使用每种引擎的指导。
 
 ### Mito 引擎
 
