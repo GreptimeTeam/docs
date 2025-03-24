@@ -37,8 +37,8 @@ In GreptimeDB, tag columns are optional. The main purposes of Tag columns includ
 
 1. Defining the ordering of data in storage.
    GreptimeDB reuses the `PRIMARY KEY` constraint to define tag columns and the ordering of tags.
-   Unlike traditional databases, in GreptimeDB, primary key and time series are identical.
-   Tables in GreptimeDB sort rows by (primary key, timestamp).
+   Unlike traditional databases, GreptimeDB defines time-series by the primary key.
+   Tables in GreptimeDB sort rows in the order of `(primary key, timestamp)`.
    This improves the locality of data with the same tags.
    If there are no tag columns, GreptimeDB sorts rows by timestamp.
 2. Identifying a unique time-series.
@@ -68,7 +68,7 @@ Recommendations:
   These columns usually remain constant.
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
-- Typically use short strings for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
+- Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
 - Never set high cardinality columns as tags if they change frequently.
   For example, `trace_id`, `span_id`, `user_id` must not be used as tags.
   GreptimeDB works well if you set them as fields instead of tags.
@@ -102,7 +102,7 @@ The `http_logs` table is an example for storing HTTP server logs.
 
 ### When to use primary key
 
-In GreptimeDB, the primary key is identical to the time-series.
+In GreptimeDB, the primary key is identical to the time-series in typical TSDB.
 It defines tag columns and the data ordering.
 You can use primary key when there are suitable low cardinality columns and one of the following conditions is met:
 
@@ -133,7 +133,7 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-The unique values of the primary key in the table can significantly affect performance.
+The unique values (AKA cardinality) of the primary key in the table can significantly affect performance.
 Currently, the recommended number of values for the primary key is no more than 100 thousand.
 So you must not use high cardinality column as the primary key or put too many columns in the primary key.
 
@@ -163,19 +163,29 @@ CREATE TABLE http_logs_v2 (
 The following query can use the inverted index on the `http_method` column.
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT message FROM http_logs_v2 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
 ```
+
+Inverted index supports the following operators:
+- `=`
+- `<`
+- `<=`
+- `>`
+- `>=`
+- `IN`
+- `BETWEEN`
+- `~`
 
 
 ### Skipping Index
 
 For high cardinality columns like `trace_id`, `request_id`, using a [skipping index](/user-guide/manage-data/data-index.md#skipping-index) is more appropriate.
-This method has lower storage overhead and resource usage, particularly in terms of memory consumption.
+This method has lower storage overhead and resource usage, particularly in terms of memory and disk consumption.
 
 Example:
 
 ```sql
-CREATE TABLE http_logs_v2 (
+CREATE TABLE http_logs_v3 (
   access_time TIMESTAMP TIME INDEX,
   application STRING,
   remote_addr STRING,
@@ -192,11 +202,14 @@ CREATE TABLE http_logs_v2 (
 The following query can use the skipping index to filter the `request_id` column.
 
 ```sql
-SELECT message FROM http_logs WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
-Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns.
+Skipping index can't handle complex filter conditions and may have a lower filtering performance on low cardinality columns. It supports the following operators:
+
+- `=`
+- `IN`
 
 
 ### Full-Text Index
