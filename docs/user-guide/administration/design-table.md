@@ -116,7 +116,7 @@ SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time >
 ```
 
 The number of applications is usually limited. Table `http_logs_v2` uses `application` as a tag.
-It sorts logs by application so querying logs under the same application is faster.
+It sorts logs by application so querying logs under the same application is faster as it only has to scan a small number of rows. It may also improve the compression ratio of the table.
 
 ```sql
 CREATE TABLE http_logs_v2 (
