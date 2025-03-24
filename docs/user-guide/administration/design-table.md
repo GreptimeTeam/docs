@@ -118,6 +118,7 @@ SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time >
 The number of applications is usually limited. Table `http_logs_v2` uses `application` as a tag.
 It sorts logs by application so querying logs under the same application is faster as it only has to scan a small number of rows. It may also improve the compression ratio of the table.
 
+
 ```sql
 CREATE TABLE http_logs_v2 (
   access_time TIMESTAMP TIME INDEX,
@@ -135,7 +136,7 @@ CREATE TABLE http_logs_v2 (
 
 The unique values (AKA cardinality) of the primary key in the table can significantly affect performance.
 Currently, the recommended number of values for the primary key is no more than 100 thousand.
-So you must not use high cardinality column as the primary key or put too many columns in the primary key.
+So you must not use high cardinality column as the primary key or put too many columns in the primary key. A long primary key will negatively affect the insert performance and enlarge the memory footprint. A primary key with no more than 5 columns is recommended.
 
 Besides primary key, you can also use index to accelerate specific queries on demand.
 
