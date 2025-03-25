@@ -104,7 +104,7 @@ The `custom_time_index` parameter accepts two formats, depending on the input da
   - For example, if the input data contains a timestamp like `2025-03-24 19:31:37+08:00`, the corresponding format should be `%Y-%m-%d %H:%M:%S%:z`.
 
 With the configuration above, the resulting table will correctly use the specified log data field as the time index.
-```
+```sql
 mysql> desc pipeline_logs;
 +--------+-----------------+------+------+---------+---------------+
 | Column | Type            | Key  | Null | Default | Semantic Type |

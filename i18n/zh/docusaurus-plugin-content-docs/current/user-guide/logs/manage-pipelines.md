@@ -79,7 +79,7 @@ mysql> select * from pipeline_logs;
 
 #### 自定义时间索引列
 
-每个 GreptimeDB 表中都必须有时间索引列。`greptime_identity` pipeline 不需要额外的 YAML 配置，如果用户希望使用写入数据中自带的时间列（而不是日志数据到达服务端的时间戳）作为表的时间索引列，则需要通过参数进行指定。
+每个 GreptimeDB 表中都必须有时间索引列。`greptime_identity` pipeline 不需要额外的 YAML 配置，如果你希望使用写入数据中自带的时间列（而不是日志数据到达服务端的时间戳）作为表的时间索引列，则需要通过参数进行指定。
 
 假设这是一份待写入的日志数据：
 ```JSON
@@ -88,7 +88,7 @@ mysql> select * from pipeline_logs;
 ]
 ```
 
-设置如下的 HTTP 请求头来指定自定义时间索引列：
+设置如下的 URL 参数来指定自定义时间索引列：
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
      -H 'Content-Type: application/json' \
@@ -103,7 +103,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
   - 例如输入的时间字段值为 `2025-03-24 19:31:37+08:00`，则对应的字符串解析格式为 `%Y-%m-%d %H:%M:%S%:z`
 
 通过上述配置，结果表就能正确使用输入字段作为时间索引列
-```
+```sql
 mysql> desc pipeline_logs;
 +--------+-----------------+------+------+---------+---------------+
 | Column | Type            | Key  | Null | Default | Semantic Type |
