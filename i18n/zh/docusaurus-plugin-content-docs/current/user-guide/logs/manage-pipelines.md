@@ -104,7 +104,9 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
 
 通过上述配置，结果表就能正确使用输入字段作为时间索引列
 ```sql
-mysql> desc pipeline_logs;
+DESC pipeline_logs;
+```
+```sql
 +--------+-----------------+------+------+---------+---------------+
 | Column | Type            | Key  | Null | Default | Semantic Type |
 +--------+-----------------+------+------+---------+---------------+

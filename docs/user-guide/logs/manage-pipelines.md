@@ -105,7 +105,9 @@ The `custom_time_index` parameter accepts two formats, depending on the input da
 
 With the configuration above, the resulting table will correctly use the specified log data field as the time index.
 ```sql
-mysql> desc pipeline_logs;
+DESC pipeline_logs;
+```
+```sql
 +--------+-----------------+------+------+---------+---------------+
 | Column | Type            | Key  | Null | Default | Semantic Type |
 +--------+-----------------+------+------+---------+---------------+
