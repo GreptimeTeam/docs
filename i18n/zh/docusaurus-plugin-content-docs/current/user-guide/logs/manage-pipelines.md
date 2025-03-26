@@ -23,7 +23,7 @@ GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用
 - JSON 日志中的第一层级的 key 是表中的列名。
 - 如果相同字段包含不同类型的数据，则会返回错误。
 - 值为 `null` 的字段将被忽略。
-- 作为时间索引的额外列 `greptime_timestamp` 将被添加到表中，以指示日志写入的时间。
+- 如果没有手动指定，一个作为时间索引的额外列 `greptime_timestamp` 将被添加到表中，以指示日志写入的时间。
 
 #### 类型转换规则
 
@@ -75,6 +75,45 @@ mysql> select * from pipeline_logs;
 |   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
 +------+------------+---------+---------------+-------+---------+---------+----------------------------+
 3 rows in set (0.01 sec)
+```
+
+#### 自定义时间索引列
+
+每个 GreptimeDB 表中都必须有时间索引列。`greptime_identity` pipeline 不需要额外的 YAML 配置，如果你希望使用写入数据中自带的时间列（而不是日志数据到达服务端的时间戳）作为表的时间索引列，则需要通过参数进行指定。
+
+假设这是一份待写入的日志数据：
+```JSON
+[
+    {"action": "login", "ts": 1742814853}
+]
+```
+
+设置如下的 URL 参数来指定自定义时间索引列：
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
+     -H 'Content-Type: application/json' \
+     -d $'[{"action": "login", "ts": 1742814853}]'
+```
+
+取决于数据的格式，`custom_time_index` 参数接受两种格式的配置值：
+- Unix 时间戳: `<字段名>;epoch;<精度>`
+  - 该字段需要是整数或者字符串
+  - 精度为这四种选项之一: `s`, `ms`, `us`, or `ns`.
+- 时间戳字符串: `<字段名>;datestr;<字符串解析格式>`
+  - 例如输入的时间字段值为 `2025-03-24 19:31:37+08:00`，则对应的字符串解析格式为 `%Y-%m-%d %H:%M:%S%:z`
+
+通过上述配置，结果表就能正确使用输入字段作为时间索引列
+```sql
+DESC pipeline_logs;
+```
+```sql
++--------+-----------------+------+------+---------+---------------+
+| Column | Type            | Key  | Null | Default | Semantic Type |
++--------+-----------------+------+------+---------+---------------+
+| ts     | TimestampSecond | PRI  | NO   |         | TIMESTAMP     |
+| action | String          |      | YES  |         | FIELD         |
++--------+-----------------+------+------+---------+---------------+
+2 rows in set (0.02 sec)
 ```
 
 ## 创建 Pipeline

@@ -23,7 +23,7 @@ The `greptime_identity` pipeline is designed for writing JSON logs and automatic
 - The first-level keys in the JSON log are used as column names.
 - An error is returned if the same field has different types.
 - Fields with `null` values are ignored.
-- An additional column, `greptime_timestamp`, is added to the table as the time index to indicate when the log was written.
+- If time index is not specified, an additional column, `greptime_timestamp`, is added to the table as the time index to indicate when the log was written.
 
 #### Type conversion rules
 
@@ -76,6 +76,45 @@ mysql> select * from pipeline_logs;
 |   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
 +------+------------+---------+---------------+-------+---------+---------+----------------------------+
 3 rows in set (0.01 sec)
+```
+
+#### Specify time index
+
+A time index is necessary in GreptimeDB. Since the `greptime_identity` pipeline does not require a YAML configuration, you must set the time index in the query parameters if you want to use the timestamp from the log data instead of the automatically generated timestamp when the data arrives.
+
+Example of Incoming Log Data:
+```JSON
+[
+    {"action": "login", "ts": 1742814853}
+]
+```
+
+To instruct the server to use ts as the time index, set the following query parameter in the HTTP header:
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
+     -H 'Content-Type: application/json' \
+     -d $'[{"action": "login", "ts": 1742814853}]'
+```
+
+The `custom_time_index` parameter accepts two formats, depending on the input data format:
+- Epoch number format: `<field_name>;epoch;<resolution>`
+  - The field can be an integer or a string.
+  - The resolution must be one of: `s`, `ms`, `us`, or `ns`.
+- Date string format: `<field_name>;datestr;<format>`
+  - For example, if the input data contains a timestamp like `2025-03-24 19:31:37+08:00`, the corresponding format should be `%Y-%m-%d %H:%M:%S%:z`.
+
+With the configuration above, the resulting table will correctly use the specified log data field as the time index.
+```sql
+DESC pipeline_logs;
+```
+```sql
++--------+-----------------+------+------+---------+---------------+
+| Column | Type            | Key  | Null | Default | Semantic Type |
++--------+-----------------+------+------+---------+---------------+
+| ts     | TimestampSecond | PRI  | NO   |         | TIMESTAMP     |
+| action | String          |      | YES  |         | FIELD         |
++--------+-----------------+------+------+---------+---------------+
+2 rows in set (0.02 sec)
 ```
 
 ## Create a Pipeline
