@@ -150,7 +150,7 @@ ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-### Modify column index options
+### Create an index for a column
 
 Enable inverted index on a column:
 
@@ -206,7 +206,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 
 The column must be a string type to alter the fulltext index.
 
-If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options**.
+If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options, and so does the skipping index**.
 
 #### Rename table
 
