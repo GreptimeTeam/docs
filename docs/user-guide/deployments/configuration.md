@@ -657,6 +657,7 @@ server_addr = "127.0.0.1:3002"
 # Configure the address based on your backend type, for example:
 # - Use "127.0.0.1:2379" to connect to etcd
 # - Use "password=password dbname=postgres user=postgres host=localhost port=5432" to connect to postgres
+# - Use "mysql://user:password@ip:port/dbname" to connect to mysql
 store_addr = "127.0.0.1:2379"
 # Datanode selector type.
 # - "lease_based" (default value).
@@ -675,6 +676,7 @@ enable_region_failover = false
 ## - "etcd_store" (default)
 ## - "memory_store" (In memory metadata storage - only used for testing.)
 ## - "postgres_store"
+## - "mysql_store"
 backend = "etcd_store"
 
 ## Procedure storage options.
@@ -785,13 +787,13 @@ backoff_deadline = "5mins"
 | `data_home`                                   | String  | `/tmp/metasrv/`        | The working home directory.                                                                                                                                                   |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`       | The bind address of metasrv.                                                                                                                                                  |
 | `server_addr`                                 | String  | `127.0.0.1:3002`       | The communication server address for frontend and datanode to connect to metasrv, "127.0.0.1:3002" by default for localhost.                                                  |
-| `store_addrs`                                  | Array   | `["127.0.0.1:2379"]`       | Store server address. Configure the address based on your backend type, for example:<br/>- Use `"127.0.0.1:2379"` to connect to etcd<br/>- Use `"password=password dbname=postgres user=postgres host=localhost port=5432"` to connect to postgres |
+| `store_addrs`                                  | Array   | `["127.0.0.1:2379"]`       | Store server address. Configure the address based on your backend type, for example:<br/>- Use `"127.0.0.1:2379"` to connect to etcd<br/>- Use `"password=password dbname=postgres user=postgres host=localhost port=5432"` to connect to postgres<br/>- Use `"mysql://user:password@ip:port/dbname"` to connect  to mysql |
 | `selector`                                    | String  | `lease_based`          | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
 | `use_memory_store`                            | Bool    | `false`                | Store data in memory.                                                                                                                                                         |
 | `enable_region_failover`                      | Bool    | `false`                | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
 | `backend`                                     | String  | `etcd_store`           | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is `postgres_store` or `mysql_store`.** |
-| `meta_election_lock_id` | Integer | `1` | Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend<br/>**Only used when backend is `postgres_store` or `mysql_store`.** |
+| `meta_election_lock_id` | Integer | `1` | Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend<br/>**Only used when backend is `postgres_store`.** |
 | `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                    |
 | `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                     |
 | `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                    |
