@@ -101,6 +101,10 @@ Fulltext index usually comes with following drawbacks:
 
 Consider using fulltext index only when you need advanced text search capabilities and flexible query patterns.
 
+## Modify indexes
+
+You can always change the index type of columns by the `ALTER TABLE` statement, read the [reference](/reference/sql/alter/#alter-table) for more info.
+
 ## Best Practices
 
 1. Choose the appropriate index type based on your data type and query patterns
