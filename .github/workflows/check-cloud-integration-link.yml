@@ -14,7 +14,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v43
+        uses: tj-actions/changed-files@v46
         with:
           files: '**/greptimecloud/integrations/**.md'
 
