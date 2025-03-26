@@ -178,7 +178,7 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 ```
 
 跳数索引的有效选项包括：
-* `type`: 索引类型，目前仅支持 `BLOOM` 即布隆过滤器，
+* `type`: 索引类型，目前仅支持 `BLOOM` 即布隆过滤器。
 * `granularity`: 每个索引块由 `GRANULARITY` 个粒度组成。例如，如果索引的粒度为 8192 行，而索引粒度为 4，则每个索引”块“将为 32768 行。
 
 #### 移除列的索引

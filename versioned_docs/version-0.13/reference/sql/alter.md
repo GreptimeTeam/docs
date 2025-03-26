@@ -178,7 +178,7 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 ```
 
 The valid options for the skipping index include:
-* `type`: the index type, only supports `BLOOM` type right now,
+* `type`: the index type, only supports `BLOOM` type right now.
 * `granularity`:  Each indexed block consists of `GRANULARITY` granules. For example, if the granularity of the index is 8192 rows, and the index granularity is 4, each indexed "block" will be 32768 rows. 
 
 #### Remove index on a column
