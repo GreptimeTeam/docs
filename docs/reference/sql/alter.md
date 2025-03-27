@@ -61,9 +61,8 @@ ALTER TABLE [db.]table
    ]
 ```
 
-### Examples
 
-#### Add column
+### Add column
 
 Adds a new column to the table:
 
@@ -96,7 +95,7 @@ Adds a new column as a tag(primary key) with a default value:
 ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
 
-#### Remove column
+### Remove column
 
 Removes a column from the table:
 
@@ -106,7 +105,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 
 The removed column can't be retrieved immediately by all subsequent queries.
 
-#### Modify column type
+### Modify column type
 
 Modify the date type of a column
 
@@ -145,13 +144,19 @@ ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
 ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
-#### Unset options:
+### Unset table options
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-#### Modify column fulltext index options
+### Create an index for a column
+
+Enable inverted index on a column:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN host SET INVERTED INDEX;
+```
 
 Enable fulltext index on a column:
 
@@ -166,15 +171,42 @@ You can specify the following options using `FULLTEXT INDEX WITH` when enabling 
 
 If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 
-#### Disable fulltext index on a column
+Enable skipping index on a column:
 
+```sql
+ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 1024, type = 'BLOOM');
+```
+
+The valid options for the skipping index include:
+* `type`: the index type, only supports `BLOOM` type right now.
+* `granularity`:  Each indexed block consists of `GRANULARITY` granules. For example, if the granularity of the index is 8192 rows, and the index granularity is 4, each indexed "block" will be 32768 rows. 
+
+#### Remove index on a column
+
+The syntax is:
+```sql
+ALTER TABLE [table] MODIFY COLUMN [column] UNSET [INVERTED | SKIPPING | FULLTEXT] INDEX;
+```
+
+For example, remove the inverted index:
+```sql
+ALTER TABLE monitor_pk MODIFY COLUMN host UNSET INVERTED INDEX;
+```
+
+
+Remove the skipping index:
+```sql
+ALTER TABLE monitor_pk MODIFY COLUMN host UNSET SKIPPING INDEX;
+```
+
+Remove the fulltext index:
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 ```
 
 The column must be a string type to alter the fulltext index.
 
-If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options**.
+If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options, and so does the skipping index**.
 
 #### Rename table
 

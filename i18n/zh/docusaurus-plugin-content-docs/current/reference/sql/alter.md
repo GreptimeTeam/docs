@@ -61,9 +61,8 @@ ALTER TABLE [db.]table
    ]
 ```
 
-### 示例
 
-#### 增加列
+### 增加列
 
 在表中增加新列：
 
@@ -97,7 +96,7 @@ ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
 
 
-#### 移除列
+### 移除列
 
 从表中移除列：
 
@@ -107,7 +106,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 
 后续的所有查询立刻不能获取到被移除的列。
 
-#### 修改列类型
+### 修改列类型
 
 修改列的数据类型
 
@@ -117,7 +116,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 
 被修改的的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
 
-#### 修改表的参数
+### 修改表的参数
 
 `ALTER TABLE` 语句也可以用来更改表的选项。
 当前支持修改以下表选项：
@@ -146,13 +145,19 @@ ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
 ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
 ```
 
-#### 移除设置过的表参数
+### 移除表参数
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
 ```
 
-#### 修改列全文索引选项
+### 创建列的索引
+
+在列上启用倒排索引：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN host SET INVERTED INDEX;
+```
 
 启用列的全文索引：
 
@@ -167,7 +172,36 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'C
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 
-#### 关闭列的全文索引
+启用列上的跳数索引：
+```sql
+ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 1024, type = 'BLOOM');
+```
+
+跳数索引的有效选项包括：
+* `type`: 索引类型，目前仅支持 `BLOOM` 即布隆过滤器。
+* `granularity`: 每个索引块由 `GRANULARITY` 个粒度组成。例如，如果索引的粒度为 8192 行，而索引粒度为 4，则每个索引”块“将为 32768 行。
+
+#### 移除列的索引
+
+语法如下：
+
+```sql
+ALTER TABLE [table] MODIFY COLUMN [column] UNSET [INVERTED | SKIPPING | FULLTEXT] INDEX;
+```
+
+例如，移除倒排索引：
+
+```sql
+ALTER TABLE monitor_pk MODIFY COLUMN host UNSET INVERTED INDEX;
+```
+
+移除跳数索引：
+
+```sql
+ALTER TABLE monitor_pk MODIFY COLUMN host UNSET SKIPPING INDEX;
+```
+
+移除全文索引：
 
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
@@ -175,7 +209,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 
 修改列的全文索引选项时，列的数据类型必须是字符串类型。
 
-当列的全文索引未开启过时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项**。
+当列的全文索引未开启过时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项，跳数索引也是如此**。
 
 #### 重命名表
 
