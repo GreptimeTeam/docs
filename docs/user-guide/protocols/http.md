@@ -374,6 +374,97 @@ curl -X POST \
 }
 ```
 
+### Parse SQL with GreptimeDB's SQL dialect
+
+To parse and understand queries written in GreptimeDB's SQL dialect for tools like dashboards, etc., you can use the `/v1/sql/parse` endpoint to obtain the structured result of an SQL query:
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql/parse
+```
+
+```json
+[
+  {
+    "Query": {
+      "inner": {
+        "with": null,
+        "body": {
+          "Select": {
+            "distinct": null,
+            "top": null,
+            "top_before_distinct": false,
+            "projection": [
+              {
+                "Wildcard": {
+                  "opt_ilike": null,
+                  "opt_exclude": null,
+                  "opt_except": null,
+                  "opt_replace": null,
+                  "opt_rename": null
+                }
+              }
+            ],
+            "into": null,
+            "from": [
+              {
+                "relation": {
+                  "Table": {
+                    "name": [
+                      {
+                        "value": "monitor",
+                        "quote_style": null
+                      }
+                    ],
+                    "alias": null,
+                    "args": null,
+                    "with_hints": [],
+                    "version": null,
+                    "with_ordinality": false,
+                    "partitions": []
+                  }
+                },
+                "joins": []
+              }
+            ],
+            "lateral_views": [],
+            "prewhere": null,
+            "selection": null,
+            "group_by": {
+              "Expressions": [
+                [],
+                []
+              ]
+            },
+            "cluster_by": [],
+            "distribute_by": [],
+            "sort_by": [],
+            "having": null,
+            "named_window": [],
+            "qualify": null,
+            "window_before_qualify": false,
+            "value_table_mode": null,
+            "connect_by": null
+          }
+        },
+        "order_by": null,
+        "limit": null,
+        "limit_by": [],
+        "offset": null,
+        "fetch": null,
+        "locks": [],
+        "for_clause": null,
+        "settings": null,
+        "format_clause": null
+      }
+    }
+  }
+]
+```
+
 ## POST PromQL queries
 
 ### The API returns Prometheus query result format

@@ -405,6 +405,98 @@ curl -X POST \
 }
 ```
 
+
+### 使用 GreptimeDB 的 SQL 方言解析 SQL
+
+为了解析和理解使用 GreptimeDB SQL 方言编写的查询（例如在仪表盘等工具里，为了更好的用户体验，提前解析 SQL 获取表名等），您可以使用 `/v1/sql/parse` 接口来获取 SQL 查询的结构化结果：
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql/parse
+```
+
+```json
+[
+  {
+    "Query": {
+      "inner": {
+        "with": null,
+        "body": {
+          "Select": {
+            "distinct": null,
+            "top": null,
+            "top_before_distinct": false,
+            "projection": [
+              {
+                "Wildcard": {
+                  "opt_ilike": null,
+                  "opt_exclude": null,
+                  "opt_except": null,
+                  "opt_replace": null,
+                  "opt_rename": null
+                }
+              }
+            ],
+            "into": null,
+            "from": [
+              {
+                "relation": {
+                  "Table": {
+                    "name": [
+                      {
+                        "value": "monitor",
+                        "quote_style": null
+                      }
+                    ],
+                    "alias": null,
+                    "args": null,
+                    "with_hints": [],
+                    "version": null,
+                    "with_ordinality": false,
+                    "partitions": []
+                  }
+                },
+                "joins": []
+              }
+            ],
+            "lateral_views": [],
+            "prewhere": null,
+            "selection": null,
+            "group_by": {
+              "Expressions": [
+                [],
+                []
+              ]
+            },
+            "cluster_by": [],
+            "distribute_by": [],
+            "sort_by": [],
+            "having": null,
+            "named_window": [],
+            "qualify": null,
+            "window_before_qualify": false,
+            "value_table_mode": null,
+            "connect_by": null
+          }
+        },
+        "order_by": null,
+        "limit": null,
+        "limit_by": [],
+        "offset": null,
+        "fetch": null,
+        "locks": [],
+        "for_clause": null,
+        "settings": null,
+        "format_clause": null
+      }
+    }
+  }
+]
+```
+
 ## POST PromQL 查询
 
 ### API 返回 Prometheus 查询结果格式
