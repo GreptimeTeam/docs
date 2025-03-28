@@ -36,7 +36,7 @@ Yes, you can find our Go SDK [here](https://github.com/GreptimeTeam/greptimedb-i
 
 ### When will GreptimeDB release its first GA version?
 
-We expect to release the GA version this June. For detailed plans, please refer to: [GreptimeDB 2025 Roadmap Released!](https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025#greptimedb-2025-roadmap-released)
+We expect to release the GA version this June. For detailed plans, please refer to: [GreptimeDB 2025 Roadmap Released!](https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025)
 
 ### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc?
 
