@@ -646,6 +646,7 @@ server_addr = "127.0.0.1:3002"
 # 根据你的存储服务器类型配置地址，例如：
 # - 使用 "127.0.0.1:2379" 连接到 etcd
 # - 使用 "password=password dbname=postgres user=postgres host=localhost port=5432" 连接到 postgres
+# - 使用 "mysql://user:password@ip:port/dbname" 连接到 mysql
 store_addr = "127.0.0.1:2379"
 # Datanode 选择器类型。
 # - "lease_based" (默认值)
@@ -664,6 +665,7 @@ enable_region_failover = false
 ## - "etcd_store" (默认值)
 ## - "memory_store" (纯内存存储 - 仅用于测试)
 ## - "postgres_store"
+## - "mysql_store"
 backend = "etcd_store"
 
 ## Procedure 选项
@@ -756,12 +758,12 @@ backoff_deadline = "5mins"
 | `data_home`                                   | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
-| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 做为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres |
+| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 做为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
 | `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
 | `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
 | enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
-| `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`|
-| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 时有效。** |
+| `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
+| `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
