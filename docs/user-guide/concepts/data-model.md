@@ -59,7 +59,7 @@ This is very similar to the table model everyone is familiar with. The differenc
 - The `Timestamp` column `ts` represents the time when the data is collected.
 - The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
   the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
-  These columns contain the actual data and are not indexed, but they can be efficiently computed and evaluated, such as for the latest value, maximum/minimum value, average, percentage, and so on.
+  These columns contain the actual data.
 - The table sorts and deduplicates rows by `host`, `idc`, `ts`.
 
 ### Events

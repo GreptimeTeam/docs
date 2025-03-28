@@ -25,7 +25,7 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
   The total number of unique values usually no more than 10 thousand.
   For example, `namespace`, `cluster`, `http_method` are usually low cardinality.
 - **High Cardinality**: High cardinality columns contain a large number of unique values.
-  For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id are usually high cardinality.
+  For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id, timestamps are usually high cardinality.
 
 ### Column Types
 
@@ -35,7 +35,7 @@ GreptimeDB uses the `TIME INDEX` constraint to identify the `Timestamp` column.
 So the `Timestamp` column is also called the `TIME INDEX` column.
 If you have multiple columns with timestamp data type, you can only define one as `TIME INDEX` and others as `Field` columns.
 
-In GreptimeDB, tag columns are optional. The main purposes of Tag columns include:
+In GreptimeDB, tag columns are optional. The main purposes of tag columns include:
 
 1. Defining the ordering of data in storage.
    GreptimeDB reuses the `PRIMARY KEY` constraint to define tag columns and the ordering of tags.
@@ -121,7 +121,7 @@ This can be a problem if the tag column has high cardinality:
 So you must not use high cardinality column as the primary key or put too many columns in the primary key. Currently, the recommended number of values for the primary key is no more than 100 thousand. A long primary key will negatively affect the insert performance and enlarge the memory footprint. A primary key with no more than 5 columns is recommended.
 
 
-Recommendations:
+Recommendations for tags:
 
 - Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
   These columns usually remain constant.
@@ -292,14 +292,10 @@ requiring all Field values to be provided during updates.
 
 For scenarios where only specific Field values need updating while others remain unchanged,
 the `merge_mode` option can be set to `last_non_null`.
-This mode retains the latest value for each field during queries,
+This mode retains the latest non-null value for each field during queries,
 allowing updates to provide only the values that need to change.
 
 ![merge-mode-last-non-null](/merge-mode-last-non-null.png)
-
-In `last_non_null` merge mode,
-the latest value of each field is merged during queries,
-and only the updated values need to be provided.
 
 The `last_non_null` merge mode is the default for tables created automatically via the InfluxDB line protocol,
 aligning with InfluxDB's update behavior.
@@ -326,7 +322,6 @@ We recommend placing metrics collected simultaneously into a single table to imp
 
 ![wide_table](/wide_table.png)
 
-Although Prometheus traditionally uses multiple tables for storage,
 GreptimeDB's Prometheus Remote Storage protocol supports wide table data sharing at the underlying layer through the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
 
 ## Distributed Tables
