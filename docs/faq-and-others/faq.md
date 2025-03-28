@@ -7,7 +7,7 @@ description: Frequently Asked Questions about GreptimeDB, covering use cases, pe
 
 ### How is GreptimeDB's performance compared to other solutions?
 
-GreptimeDB has released v0.10.2, with functionalities set to improve progressively. For detailed TSBS test results, refer to the link [here](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs).
+Please read [How is GreptimeDB's performance compared to other solutions](/user-guide/concepts/features-that-you-concern#how-is-greptimedbs-performance-compared-to-other-solutions).
 
 ### How does this compare to Loki? Is there a crate with Rust bindings available, preferably as a tracing or logging subscriber?
 
@@ -36,7 +36,7 @@ Yes, you can find our Go SDK [here](https://github.com/GreptimeTeam/greptimedb-i
 
 ### When will GreptimeDB release its first GA version?
 
-The current version has not yet reached General Availability version standards. We are trying to published v1.0 asap.
+We expect to release the GA version this June. For detailed plans, please refer to: [GreptimeDB 2025 Roadmap Released!](https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025)
 
 ### Are there any plans/works done for the official UI for GreptimeDB so that it would be possible to check cluster status, list of tables, statistics etc?
 
@@ -54,16 +54,15 @@ Yes, It's compatible with Grafana.
 
 GreptimeDB has an official Grafana plugin: [greptimedb-grafana-datasource](https://github.com/GreptimeTeam/greptimedb-grafana-datasource/)
 
-GreptimeDB also supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana
-plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data.
+GreptimeDB also supports MySQL and PostgreSQL protocol, so you can use [MySQL or PG grafana plugin](https://grafana.com/docs/grafana/latest/datasources/mysql/) to config GreptimeDB as a datasource. Then you can use SQL to query the data.
 
 Also, we are implementing PromQL natively which is frequently used with Grafana.
 
 ### How is the performance of GreptimeDB when used for non-time-series DB tables?
 
-GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain (time-series scenarios), and it doesn't support transactions and can't delete data efficiently.
+GreptimeDB supports SQL and can deal with non-time-series data, especially efficient for high concurrent and throughput data writing. However, we develop GreptimeDB for a specific domain (Iot and Observerbility scenarios), and it doesn't support transactions and can't delete data efficiently.
 
-### Are there any retention policy? 
+### Is there any retention policy? 
 
 GreptimeDB supports both database-level and table-level TTLs. By default, a table inherits the TTL of its database. However, if a table is assigned a specific TTL, the table-level TTL takes precedence. For details, refer to the official documentation on TTL: [TTL Syntax Documentation](/reference/sql/create.md).
 
@@ -79,29 +78,25 @@ Yes, GreptimeDB is a schemaless database without need for creating tables in adv
 
 You can use the [`COPY TO` command](/reference/sql/copy.md#s3) to dump table-level data to S3.
 
-### Can [Nightingale](https://n9e.github.io) now be directly integrated with GreptimeDB? How is its compatibility?
-
-Currently, GreptimeDB's compatibility efforts are primarily focused on the implementation of native PromQL. Going forward, we will continue to enhance compatibility with MetricQL's extended syntax.
-
 ### Can GreptimeDB be used for a large-scale internal metrics collection system similar to Fb's Gorilla or Google's Monarch, with a preference for in-memory data and high availability? Are there plans for asynchronous WAL or optional disk storage, and how is data replication handled without WAL?
 
-GreptimeDB supports asynchronous WAL and is developing a per-table WAL toggle for more control. A tiered storage approach, starting with in-memory caching, is also in development. For data replication, data flushed to remote stores like S3 is replicated independently of WAL. The details for tiered storage are tracked in issue [db#2516](https://github.com/GreptimeTeam/greptimedb/issues/2516). A remote WAL implementation based on Apache Kafka ensures the durability of unflushed data in cluster mode.
+GreptimeDB supports asynchronous WAL and is developing a per-table WAL toggle for more control. A tiered storage approach, starting with in-memory caching, is also in development. For data replication, data flushed to remote stores like S3 is replicated independently of WAL. For more about the details of tiered storage, please read the [blog](https://greptime.com/blogs/2025-03-26-greptimedb-storage-architecture).
 
 ### If I delete the database, can I use the `DROP DATABASE` command?
 
-Yes, the `DROP DATABASE` command has been implemented in version 0.8. You can refer to the official documentation for usage: [`Drop Database`](/reference/sql/drop.md#drop).
+Yes. You can refer to the official documentation for usage: [`Drop Database`](/reference/sql/drop.md#drop).
 
 ### What are the main differences between Greptime and another time-series database built on DataFusion like InfluxDB?
 
 At GreptimeDB, we share some technical similarities with InfluxDB, both using Datafusion, Arrow, Parquet, and built on object storage. However, we differ in several key aspects:
 
-- Open-Source Strategy: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
-- Distributed Architecture: Our architecture is more aligned with HBase's Region/RegionServer design. Our Write-Ahead Log (WAL) uses Kafka, and we're exploring a quorum-based implementation in the future.
-- Workload and Services: We focus on a hybrid workload combining time series and analytics. This integration aims to enhance resource efficiency and real-time performance for users. We also offer [GreptimeCloud](https://greptime.com/product/cloud), a commercial cloud service.
-- Storage Engine Design: Our pluggable storage engine is versatile. For scenarios with many small data tables, like in Prometheus, we have a dedicated Metrics storage engine.
-- Query Language Support: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
+- **Open-Source Strategy**: Unlike InfluxDB, which only open-sources its standalone version, our entire distributed cluster version is open-source. Our architecture can even run on edge Android systems.
+- **Distributed Architecture**: Our architecture is more aligned with HBase's Region/RegionServer design. Our Write-Ahead Log (WAL) uses Kafka, and we're exploring a quorum-based implementation in the future.
+- **Workload and Services**: We specialize in handling various types of observability data—including metrics, logs, traces, and events—while seamlessly integrating them with analytical workloads. This integration aims to enhance resource efficiency and real-time performance for users. We also offer [GreptimeCloud](https://greptime.com/product/cloud), a commercial cloud service.
+- **Storage Engine Design**: Our pluggable storage engine is versatile. For scenarios with many small data tables, like in Prometheus, we have a dedicated Metrics storage engine.
+- **Query Language Support**: We support PromQL for observability and SQL for data analysis, and incorporate Python for complex data processing. InfluxDB, on the other hand, uses InfluxQL and SQL.
 
-We're a young, rapidly evolving project and always looking to improve. For more details, visit [our Blog](https://greptime.com/blogs/) and [Contributor Guide](https://docs.greptime.com/contributor-guide/overview). We welcome your interest and contributions!
+We're a young, rapidly evolving project and always looking to improve. For more details, visit [our Blog](https://greptime.com/blogs/) and [Contributor Guide](/contributor-guide/overview). We welcome your interest and contributions!
 
 ### As a first-timer looking to contribute to GreptimeDB, where can I find a comprehensive guide to get started?
 
@@ -116,7 +111,7 @@ GreptimeDB, like Prometheus, handles counters effectively. Functions like` reset
 Below are some key points:
 
 - **Foundational Features**: The foundational features, including the ingestion protocol, SQL capabilities, and storage functions, are largely identical between the two versions. However, GreptimeCloud offers advanced SQL functions and additional features.
-- **Fully Managed Service**: GreptimeCloud is a fully managed service that supports multi-tenancy, data encryption, and security audits for compliance, which are not available in the open-source version.
+- **Fully Managed Service**: GreptimeCloud is a fully managed service that supports multi-tenancy, data encryption, and security audits for compliance, which are not available in the open-source version. GreptimeCloud supports dedicated deployments as well as a pay-as-you-go serverless model.
 - **Enhanced Dashboard**: Another significant advantage of GreptimeCloud is its superior dashboard, which is more user-friendly and includes a unique Prometheus workbench. This workbench facilitates online editing of Prometheus dashboards and alert rules, as well as GitOps integration.
 
 As mentioned, the cloud version offers more ready-to-use features to help you get started quickly. The core features are almost identical, especially on our dedicated plan.
@@ -146,29 +141,21 @@ Yes, please refer [here](/user-guide/logs/overview.md ) for detailed information
 
 ### How is the query performance for non-primary key fields? Can inverted indexes be set? Will the storage cost be lower compared to Elasticsearch?
 
-Currently, non-primary key fields (or non-tag fields) do not have default inverted indexes, and we have not yet provided a `CREATE INDEX` syntax. Inverted index support will be released in an upcoming iteration along with full-text indexing. Without indexes, queries rely on MPP brute-force scanning. Although there is some parallel processing, the efficiency may not be optimal.
+Non-primary key fields can also have indexes created. For details, refer to [Index Management](/user-guide/manage-data/data-index.md).
 
-As for storage costs, they will certainly be lower. You can use containers and object storage directly without relying on disks, using small local disks for buffering/caching to speed up performance. GreptimeDB employs a tiered storage architecture. For more details, please refer to our documentation on [architecture](/user-guide/concepts/architecture.md) and [storage location](/user-guide/concepts/storage-location.md).
+GreptimeDB's storage cost is significantly lower than Elasticsearch, with the size of persisted data being only 50% of ClickHouse and 12.7% of Elasticsearch. For more information, see the [Performance Benchmark](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb).
 
 ### Is the Log-Structured Merge-Tree engine similar to Kafka's engine model?
 
 From a technical storage perspective, they are similar. However, the actual data formats differ: GreptimeDB reads and writes Parquet format, while Kafka uses its own RecordBatch format. To analyze time-series data temporarily stored in Kafka, it needs to be written into GreptimeDB first.
 
-You can replace Kafka with EMQX, which is also a message queue. Here is a reference example: [EMQX Data Integration with GreptimeDB](https://www.emqx.com/en). The process of writing data from Kafka to GreptimeDB is quite similar.
-
-As mentioned, to analyze the data, it must be written into GreptimeDB first. Consume Kafka messages and write them into GreptimeDB using the provided protocols. If analyzing data directly in Kafka is necessary, you might consider the KSQL project: [KSQL GitHub Repository](https://github.com/confluentinc/ksql). However, our past attempts with KSQL encountered several issues.
-
-We are also working on releasing a Kafka consumer component that will automate the consumption and writing process.
+You can use Vector to consume Kafka messages and write them into GreptimeDB. For more details, refer to [this article](https://greptime.com/blogs/2024-10-29-ingest-data-using-vector).
 
 ### Are there limitations on the number of tables or columns in GreptimeDB? Does having many columns affect read and write performance?
 
 Generally, there are no strict limitations. With a few hundred tables, as long as there aren't many primary key columns, the impact on write performance is minimal (measured by the number of points written per second, not rows).
 
 Similarly, for reads, if queries only involve a subset of columns, the memory and computational load will not be significantly high.
-
-### Can tables be dynamically partitioned by day based on timestamps, or is this unnecessary because the timestamp field already has an index?
-
-GreptimeDB's data is distributed in timestamp order, so there is no need to additionally shard/partition by timestamp. It is recommended to shard by primary key instead.
 
 ### How many servers are generally needed to set up a reliable GreptimeDB cluster, and how should Frontend, Datanode, and Metasrv be deployed? Should each node run all three services regardless of the number of nodes?
 
@@ -192,7 +179,7 @@ Using a flow table is the appropriate tool for this task. A simple flow task sho
 
 ### Can GreptimeDB create dynamic day partitions?
 
-Yes. Time-based data partitioning is available by default without additional configuration.
+Yes. Within a Region, time-series data is dynamically organized by time by default, without requiring any configuration. Please note that this is a different concept from the sharding of distributed tables. One refers to data organization within a shard(called region), while the other refers to the distributed partitioning of the data.
 
 ### Which parts of DataFusion are customized in GreptimeDB?
 
@@ -200,6 +187,7 @@ GreptimeDB customizes the following aspects of DataFusion:
 - PromQL query support.
 - Distributed query execution.
 - Custom UDFs (User-Defined Functions) and UDAFs (User-Defined Aggregate Functions).
+- Custom optimization rules
 
 ### Does the open-source version of GreptimeDB support fine-grained access control?
 
