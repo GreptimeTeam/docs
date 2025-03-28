@@ -17,6 +17,8 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
 
 ## Basic Concepts
 
+### Cardinality
+
 **Cardinality**: Refers to the number of unique values in a dataset. It can be classified as "high cardinality" or "low cardinality":
 
 - **Low Cardinality**: Low cardinality columns usually have constant values.
@@ -25,7 +27,7 @@ Before proceeding, please review the GreptimeDB [Data Model Documentation](/user
 - **High Cardinality**: High cardinality columns contain a large number of unique values.
   For example, `trace_id`, `span_id`, `user_id`, `uri`, `ip`, `uuid`, `request_id`, table auto increment id are usually high cardinality.
 
-## Column Types and Selection
+### Column Types
 
 In GreptimeDB, columns are categorized into three semantic types: `Tag`, `Field`, and `Timestamp`.
 The timestamp usually represents the time of data sampling or the occurrence time of logs/events.
@@ -46,38 +48,12 @@ In GreptimeDB, tag columns are optional. The main purposes of Tag columns includ
 3. Smoothing migration from other TSDBs that use tags or labels.
 
 
-### Choosing tag columns
+## Primary key
 
-Usually you don't need tag columns since ordering data by timestamp is sufficient for most use cases.
-If you need deduplication, or your queries can benefit from the ordering, you can define tag columns.
-Setting tags may also reduce disk space usage as it improves the locality of data.
-
-
-In order to improve sort and deduplication speed under time-series workloads, GreptimeDB buffers and processes rows by time-series internally.
-So it doesn't need to compare the primary key for each row repeatedly.
-This can be a problem if the tag column has high cardinality:
-
-1. Performance degradation since the database can't batch rows efficiently.
-2. It may increase memory and CPU usage as the database has to maintain the metadata for each time-series.
-3. Deduplication may be too expensive.
-
-
-Recommendations:
-
-- Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
-  These columns usually remain constant.
-  For example, `namespace`, `cluster`, or an AWS `region`.
-- No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
-- Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- Never set high cardinality columns as tags if they change frequently.
-  For example, `trace_id`, `span_id`, `user_id` must not be used as tags.
-  GreptimeDB works well if you set them as fields instead of tags.
-
-
-## Primary Key and Index
+### Primary key is optional
 
 Bad primary key or index may significantly degrade performance.
-Generally you can create an append-only table without a primary key for most workloads.
+Generally you can create an append-only table without a primary key since ordering data by timestamp is sufficient for many workloads.
 It can also serve as a baseline.
 
 ```sql
@@ -100,10 +76,9 @@ The `http_logs` table is an example for storing HTTP server logs.
   This ensures a log doesn't override another one with the same timestamp.
 - The table sorts logs by time so it is efficient to search logs by time.
 
+
 ### When to use primary key
 
-In GreptimeDB, the primary key is identical to the time-series in typical TSDB.
-It defines tag columns and the data ordering.
 You can use primary key when there are suitable low cardinality columns and one of the following conditions is met:
 
 - Most queries can benefit from the ordering.
@@ -115,9 +90,8 @@ For example, if you always only query logs of a specific application, you may se
 SELECT message FROM http_logs WHERE application = 'greptimedb' AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
-The number of applications is usually limited. Table `http_logs_v2` uses `application` as a tag.
-It sorts logs by application so querying logs under the same application is faster as it only has to scan a small number of rows. It may also improve the compression ratio of the table.
-
+The number of applications is usually limited. Table `http_logs_v2` uses `application` as the primary key.
+It sorts logs by application so querying logs under the same application is faster as it only has to scan a small number of rows. Setting tags may also reduce disk space usage as it improves the locality of data.
 
 ```sql
 CREATE TABLE http_logs_v2 (
@@ -134,9 +108,32 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-The unique values (AKA cardinality) of the primary key in the table can significantly affect performance.
-Currently, the recommended number of values for the primary key is no more than 100 thousand.
-So you must not use high cardinality column as the primary key or put too many columns in the primary key. A long primary key will negatively affect the insert performance and enlarge the memory footprint. A primary key with no more than 5 columns is recommended.
+
+In order to improve sort and deduplication speed under time-series workloads, GreptimeDB buffers and processes rows by time-series internally.
+So it doesn't need to compare the primary key for each row repeatedly.
+This can be a problem if the tag column has high cardinality:
+
+1. Performance degradation since the database can't batch rows efficiently.
+2. It may increase memory and CPU usage as the database has to maintain the metadata for each time-series.
+3. Deduplication may be too expensive.
+
+
+So you must not use high cardinality column as the primary key or put too many columns in the primary key. Currently, the recommended number of values for the primary key is no more than 100 thousand. A long primary key will negatively affect the insert performance and enlarge the memory footprint. A primary key with no more than 5 columns is recommended.
+
+
+Recommendations:
+
+- Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.
+  These columns usually remain constant.
+  For example, `namespace`, `cluster`, or an AWS `region`.
+- No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
+- Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
+- Never set high cardinality columns as tags if they change frequently.
+  For example, `trace_id`, `span_id`, `user_id` must not be used as tags.
+  GreptimeDB works well if you set them as fields instead of tags.
+
+
+## Index
 
 Besides primary key, you can also use index to accelerate specific queries on demand.
 
@@ -144,10 +141,10 @@ Besides primary key, you can also use index to accelerate specific queries on de
 
 GreptimeDB supports inverted index that may speed up filtering low cardinality columns.
 When creating a table, you can specify the [inverted index](/contributor-guide/datanode/data-persistence-indexing.md#inverted-index) columns using the `INVERTED INDEX` clause.
-For example, `http_logs_v2` adds an inverted index for the `http_method` column.
+For example, `http_logs_v3` adds an inverted index for the `http_method` column.
 
 ```sql
-CREATE TABLE http_logs_v2 (
+CREATE TABLE http_logs_v3 (
   access_time TIMESTAMP TIME INDEX,
   application STRING,
   remote_addr STRING,
@@ -164,7 +161,7 @@ CREATE TABLE http_logs_v2 (
 The following query can use the inverted index on the `http_method` column.
 
 ```sql
-SELECT message FROM http_logs_v2 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND http_method = `GET` AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 Inverted index supports the following operators:
@@ -186,7 +183,7 @@ This method has lower storage overhead and resource usage, particularly in terms
 Example:
 
 ```sql
-CREATE TABLE http_logs_v3 (
+CREATE TABLE http_logs_v4 (
   access_time TIMESTAMP TIME INDEX,
   application STRING,
   remote_addr STRING,
@@ -203,7 +200,7 @@ CREATE TABLE http_logs_v3 (
 The following query can use the skipping index to filter the `request_id` column.
 
 ```sql
-SELECT message FROM http_logs_v3 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
+SELECT message FROM http_logs_v4 WHERE application = 'greptimedb' AND request_id = `25b6f398-41cf-4965-aa19-e1c63a88a7a9` AND access_time > now() - '5 minute'::INTERVAL;
 ```
 
 However, note that the query capabilities of the skipping index are generally inferior to those of the inverted index.
