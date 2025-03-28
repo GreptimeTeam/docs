@@ -96,22 +96,22 @@ GreptimeDB 支持异步 WAL（Write Ahead Log，预写日志），正在开发�
 GreptimeDB 与 InfluxDB 在一些技术上有相似之处，例如都使用了 DataFusion、Arrow、Parquet 并基于对象存储。但在以下几个方面有所不同：
 
 - 开源策略：
-    InfluxDB 只开放其单机版本，而 GreptimeDB 完全开源，包括其分布式集群版本；
-    GreptimeDB 的架构可以运行在边缘设备（如 Android 系统）上。
+  - InfluxDB 只开放其单机版本，而 GreptimeDB 完全开源，包括其分布式集群版本；
+  - GreptimeDB 的架构可以运行在边缘设备（如 Android 系统）上。
 
 - 分布式架构：
-    我们的架构更接近 HBase 的 Region/RegionServer 设计；
-    预写日志（WAL）基于 Kafka，同时也在探索基于 quorum 的实现方案。
+  - 我们的架构更接近 HBase 的 Region/RegionServer 设计；
+  - 预写日志（WAL）基于 Kafka，同时也在探索基于 quorum 的实现方案。
     
 - 混合负载与服务支持：
-    GreptimeDB 聚焦于多种可观测数据的统一处理，以及与分析型负载的结合，以提升资源效率和实时性能；
-    提供商业化云服务 GreptimeCloud，方便用户快速上手。
+  - GreptimeDB 聚焦于多种可观测数据的统一处理，以及与分析型负载的结合，以提升资源效率和实时性能；
+  - 提供商业化云服务 GreptimeCloud，方便用户快速上手。
 
 - 存储引擎设计：
-    可插拔存储引擎适配多种场景，特别是 Prometheus 的小表场景，GreptimeDB 提供专门的 Metrics 存储引擎。
+  - 可插拔存储引擎适配多种场景，特别是 Prometheus 的小表场景，GreptimeDB 提供专门的 Metrics 存储引擎。
 
 - 查询语言支持：
-    支持 PromQL（用于监控）、SQL（用于分析）以及 Python（用于复杂数据处理）；
+  - 支持 PromQL（用于监控）、SQL（用于分析）以及 Python（用于复杂数据处理）；
     相比之下，InfluxDB 使用 InfluxQL 和 SQL。
 
 GreptimeDB 是一个快速发展的开源项目，欢迎社区的反馈和贡献！了解更多细节可以访问我们的 [Blog](https://greptime.cn/blogs/) 和 [Contributor Guide](/contributor-guide/overview/).
@@ -200,7 +200,7 @@ GreptimeDB 采用 Parquet 格式进行读写；Kafka 使用其专有的 RecordBa
 
 ### Metasrv 是否会支持 MySQL 或 PostgreSQL 作为存储后端？
 
-最新版本的 GreptimeDB 已支持 PostgreSQL 作为 Metasrv 的存储后端。具体信息请参考[这里](/user-guide/deployments/configuration#metasrv-only-configuration)。
+最新版本的 GreptimeDB 已支持 PostgreSQL 作为 Metasrv 的存储后端。具体信息请参考[这里](/user-guide/deployments/configuration#仅限于-metasrv-的配置)。
 
 ### 如何最佳地对成千上万台计算机中多个网卡的接口流量速率（每 30 秒取最大值）进行降采样，以便长期保存（如多年的数据）？
 
