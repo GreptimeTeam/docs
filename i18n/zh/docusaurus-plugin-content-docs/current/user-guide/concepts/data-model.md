@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 - `PRIMARY KEY` 约束指定了表的 `Tag` 列。`host` 列表示收集的独立机器的主机名，`idc` 列显示机器所在的数据中心。
 - `Timestamp` 列 `ts` 表示收集数据的时间。
 - `Field` 列中的 `cpu_util`、`memory_util`、`disk_util` 列分别表示机器的 CPU 利用率、内存利用率和磁盘利用率。这些列包含实际的数据。
-- 表按 `host`、`idc`、`ts` 对行进行排序和去重。
+- 表按 `host`、`idc`、`ts` 对行进行排序和去重。因此，查询 `select count(*) from system_metrics` 需要扫描所有的行做统计。
 
 ### 事件
 
@@ -66,8 +66,9 @@ CREATE TABLE access_logs (
 - 时间索引列为 `access_time`。
 - 没有 tag 列。
 - `http_status`、`http_method`、`remote_addr`、`http_refer`、`user_agent` 和 `request` 是字段列。
-- 这个表是一个用于存储不需要去重的日志的[append-only 表](/reference/sql/create.md#创建-append-only-表)。
 - 表按 `access_time` 对行进行排序。
+- 这个表是一个用于存储不需要去重的日志的[append-only 表](/reference/sql/create.md#创建-append-only-表)。
+- 查询 append-only 表一般会更快。例如，`select count(*) from access_logs` 可以直接使用统计信息作为结果而不需要考虑重复。
 
 要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
 

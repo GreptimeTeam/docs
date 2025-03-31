@@ -60,7 +60,7 @@ This is very similar to the table model everyone is familiar with. The differenc
 - The `cpu_util`, `memory_util`, `disk_util`, and `load` columns in the `Field` columns represent
   the CPU utilization, memory utilization, disk utilization, and load of the machine, respectively.
   These columns contain the actual data.
-- The table sorts and deduplicates rows by `host`, `idc`, `ts`.
+- The table sorts and deduplicates rows by `host`, `idc`, `ts`. So `select count(*) from system_metrics` will scan all rows.
 
 ### Events
 
@@ -81,8 +81,9 @@ CREATE TABLE access_logs (
 - The time index column is `access_time`.
 - There are no tags.
 - `http_status`, `http_method`, `remote_addr`, `http_refer`, `user_agent` and `request` are fields.
-- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that do not need deduplication.
 - The table sorts rows by `access_time`.
+- The table is an [append-only table](/reference/sql/create.md#create-an-append-only-table) for storing logs that do not support deletion or deduplication.
+- Querying an append-only table is usually faster. For example, `select count(*) from access_logs` can use the statistics for result without considering deduplication.
 
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
