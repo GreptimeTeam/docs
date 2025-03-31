@@ -322,7 +322,7 @@ We recommend placing metrics collected simultaneously into a single table to imp
 
 ![wide_table](/wide_table.png)
 
-GreptimeDB's Prometheus Remote Storage protocol supports wide table data sharing at the underlying layer through the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
+Although Prometheus uses single-value model for metrics, GreptimeDB's Prometheus Remote Storage protocol supports sharing a wide table for metrics at the underlying layer through the [Metric Engine](/contributor-guide/datanode/metric-engine.md).
 
 ## Distributed Tables
 
