@@ -381,6 +381,23 @@ SHOW COLUMNS FROM monitor WHERE Field = 'cpu';
 +-------+--------+------+------+---------+-------+---------------+
 ```
 
+列出表中的所有 Region：
+
+```sql
+SHOW REGION FROM monitor;
+```
+
+```sql
++----------------+---------------+------+--------+
+| Table          | Region        | Peer | Leader |
++----------------+---------------+------+--------+
+| monitor        | 4398046511104 |    0 | Yes    |
++----------------+---------------+------+--------+
+```
+
+这是 `INFORMATION_SCHEMA.REGION_PEERS` 的扩展。
+
+
 其他 `SHOW` 扩展语句：
 * `SHOW STATUS` 和 `SHOW VARIABLES` 不支持，仅返回空结果。
 * `SHOW TABLE STATUS` 是 `INFORMATION_SCHEMA.TABLES` 的扩展。

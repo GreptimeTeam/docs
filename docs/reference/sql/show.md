@@ -380,6 +380,22 @@ SHOW COLUMNS FROM monitor WHERE Field = 'cpu';
 +-------+--------+------+------+---------+-------+---------------+
 ```
 
+To list all regions in a table:
+```sql
+SHOW REGION FROM monitor;
+```
+
+```sql
++----------------+---------------+------+--------+
+| Table          | Region        | Peer | Leader |
++----------------+---------------+------+--------+
+| monitor        | 4398046511104 |    0 | Yes    |
++----------------+---------------+------+--------+
+```
+
+Which is the extension of `INFORMATION_SCHEMA.REGION_PEERS`.
+
+
 Other `SHOW` statements:
 * `SHOW STATUS`  and `SHOW VARIABLES` are not supported, just return empty results.
 * `SHOW TABLE STATUS` is the extension of  `INFORMATION_SCHEMA.TABLES`.
