@@ -122,7 +122,7 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, INTERVAL '5 day');
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 ```
 
-* `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime格式化：
+* `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime 格式化：
 
 ```sql
 SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');
@@ -252,7 +252,7 @@ SELECT json_to_string(parse_json('{"a": 1, "b": 2}'));
 | `:<name>`                | `.<name>` 的别名                                              | `$:event`          |
 | `["<name>"]`             | `.<name>` 的别名                                              | `$["event"]`       |
 | `[*]`                    | 选择数组中的所有元素                                             | `$[*]`             |
-| `[<pos>, ..]`            | 选择数组中基于0的第 `n` 个元素                                    | `$[1, 2]`         |
+| `[<pos>, ..]`            | 选择数组中基于 0 的第 `n` 个元素                                    | `$[1, 2]`         |
 | `[last - <pos>, ..]`     | 选择数组中最后一个元素之前的第 `n` 个元素                           | `$[0, last - 1]`   |
 | `[<pos1> to <pos2>, ..]` | 选择数组中某个范围内的所有元素                                     | `$[1 to last - 2]` |
 | `?(<expr>)`              | 选择所有匹配过滤表达式的元素                                      | `$?(@.price < 10)` |

@@ -11,7 +11,7 @@ description: 介绍了 GreptimeDB 的数据持久化和索引机制，包括 SST
 
 Parquet 是一种提供快速数据查询的开源列式存储格式，已经被许多项目采用，例如 Delta Lake。
 
-Parquet 具有层次结构，类似于“行组-列-数据页”。Parquet 文件中的数据被水平分区为行组（row group），在其中相同列的所有值一起存储以形成数据页（data pages）。数据页是最小的存储单元。这种结构极大地提高了性能。
+Parquet 具有层次结构，类似于“行组 - 列-数据页”。Parquet 文件中的数据被水平分区为行组（row group），在其中相同列的所有值一起存储以形成数据页（data pages）。数据页是最小的存储单元。这种结构极大地提高了性能。
 
 首先，数据按列聚集，这使得文件扫描更加高效，特别是当查询只涉及少数列时，这在分析系统中非常常见。
 
@@ -80,7 +80,7 @@ GreptimeDB 把一个 SST 文件分割成多个索引数据段，每个数据段�
 
 ## 统一数据访问层：OpenDAL
 
-GreptimeDB使用 [OpenDAL][2] 提供统一的数据访问层，因此，存储引擎无需与不同的存储 API 交互，数据可以无缝迁移到基于云的存储，如 AWS S3。
+GreptimeDB 使用 [OpenDAL][2] 提供统一的数据访问层，因此，存储引擎无需与不同的存储 API 交互，数据可以无缝迁移到基于云的存储，如 AWS S3。
 
 [1]: https://parquet.apache.org
 [2]: https://github.com/datafuselabs/opendal

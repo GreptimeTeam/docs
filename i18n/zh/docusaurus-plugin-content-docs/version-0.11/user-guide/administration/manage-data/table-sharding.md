@@ -64,7 +64,7 @@ PARTITION ON COLUMNS (<COLUMN LIST>) (
 2. `RULE LIST` 是多个分区规则的列表。每个规则是分区名称和分区条件的组合。这里的表达式可以使用 `=`, `!=`, `>`, `>=`, `<`, `<=`, `AND`, `OR`, 列名和字面量。
 
 :::tip 提示
-目前在 “PARTITION BY RANGE” 语法中不支持表达式。
+目前在“PARTITION BY RANGE”语法中不支持表达式。
 :::
 
 ### 示例

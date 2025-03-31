@@ -7,7 +7,12 @@ description: 了解 GreptimeDB 中时间范围对象的表示方法，包括支�
 
 GreptimeDB 使用时间范围对象来表示各种上下文中的时间跨度，
 包括 SQL 查询、配置文件和 API 请求。
-时间持续时间表示为由连接的时间跨度组成的字符串，
+有关如何使用时间范围对象的信息，
+请参阅：
+- [ALTER](/reference/sql/alter.md) 语句中的 TTL 选项和 TWCS compaction 策略的时间窗口设置。
+- [CREATE](/reference/sql/create.md) 语句中的 TTL 选项。
+
+时间范围对象表示为由连接的时间跨度组成的字符串，
 每个时间跨度由一个十进制数字序列和一个单位后缀表示。
 这些后缀不区分大小写，并且支持单数和复数形式。例如，`1hour 12min 5s`。
 

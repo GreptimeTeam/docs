@@ -177,9 +177,9 @@ my-cluster   1          3          1      Running   latest    5m30s
 
 ##  Step 5: 写入和读取数据
 
-你可以参考 [Overview](/getting-started/quick-start/overview.md) 来获得更多案例. 对于这个指南，我们将选用 MySQL 协议来连接数据库集群。
+你可以参考 [Overview](/getting-started/quick-start/overview.md) 来获得更多案例。对于这个指南，我们将选用 MySQL 协议来连接数据库集群。
 
-使用 kubectl 的 port forward 来转发 `4002` 流量:
+使用 kubectl 的 port forward 来转发 `4002` 流量：
 
 ```
 kubectl port-forward svc/my-cluster-frontend 4002:4002 -n default

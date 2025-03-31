@@ -16,7 +16,7 @@ http://{{API-host}}/v1/sql?db={{db-name}}
 
 ## Header
 
-- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。 请参考[鉴权](/user-guide/protocols/http.md#authentication)。
+- `Authorization`: 身份凭证。如果你使用启用了身份验证的 GreptimeDB，则此项为必需。请参考[鉴权](/user-guide/protocols/http.md#authentication)。
 - `Content-Type`: `application/x-www-form-urlencoded`。
 - `X-Greptime-Timezone`: 当前 SQL 语句使用的时区，可选。请参考[时区](/user-guide/protocols/http.md#时区).
 

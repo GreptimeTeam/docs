@@ -37,7 +37,7 @@ curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<gre
 
 <div id="write-data-telegraf">
 
-有关详细的配置说明，请参考[通过 Telegraf 写入数据](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#telegraf)文档。
+有关详细的配置说明，请参考 [通过 Telegraf 写入数据](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md#telegraf) 文档。
 
 </div>
 
@@ -174,7 +174,7 @@ $writeApi->write($point);
 <div id="visualize-data">
 
 推荐使用 Grafana 可视化 GreptimeDB 数据，
-请参考 [Grafana 文档](/user-guide/integrations/grafana.md)了解如何配置 GreptimeDB。
+请参考 [Grafana 文档](/user-guide/integrations/grafana.md) 了解如何配置 GreptimeDB。
 
 </div>
 

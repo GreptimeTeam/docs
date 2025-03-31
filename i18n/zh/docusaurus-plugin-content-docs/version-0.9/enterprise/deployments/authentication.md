@@ -5,7 +5,7 @@ GreptimeDB Enterprise 还提供了连接到外部 LDAP 服务器进行身份验�
 
 ## 配置
 
-与 [PostgreSQL 中的 LDAP 机制相似](https://www.postgresql.org/docs/current/auth-ldap.html)， 在 GreptimeDB 中，LDAP 鉴权也分为两种模式："simple bind" 和 "search bind"。
+与 [PostgreSQL 中的 LDAP 机制相似](https://www.postgresql.org/docs/current/auth-ldap.html)，在 GreptimeDB 中，LDAP 鉴权也分为两种模式："simple bind" 和 "search bind"。
 
 在 "simple bind" 模式下，GreptimeDB 会构造一个格式为 `{prefix}{username}{suffix}` 的 "DN"(distinguished name)
 ，并使用客户端传来的密码向 LDAP 服务发起”绑定 (bind)“。绑定的结果就是鉴权的结果。一个典型配置是，`prefix` 参数指定 `cn=`，

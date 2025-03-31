@@ -53,11 +53,13 @@ GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://gre
 
 ## How is GreptimeDB's performance compared to other solutions?
 
+[GreptimeDB archives 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
+
 Please read the performance benchmark reports:
 
 * [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
-* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2024-08-22-log-benchmark)
+* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
 * [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
 
 ## Does GreptimeDB have disaster recovery solutions?

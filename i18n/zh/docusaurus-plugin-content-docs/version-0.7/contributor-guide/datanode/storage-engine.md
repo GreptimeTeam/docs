@@ -20,7 +20,7 @@
   - 当 `mutable memtable` 已满时，它将变为只读的 `immutable memtable`。
 - SST
   - SST 的全名为有序字符串表（`Sorted String Table`）。
-  - `immutable memtable` 刷到持久存储后形成一个SST文件。
+  - `immutable memtable` 刷到持久存储后形成一个 SST 文件。
 - Compactor
   - `Compactor` 通过 compaction 操作将小的 SST 合并为大的 SST。
   - 默认使用 [TWCS][3] 策略进行合并

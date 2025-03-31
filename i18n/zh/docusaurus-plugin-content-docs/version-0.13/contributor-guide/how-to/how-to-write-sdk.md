@@ -5,7 +5,7 @@ description: 介绍如何为 GreptimeDB 开发一个 gRPC SDK，包括 GreptimeD
 
 # 如何为 GreptimeDB 开发一个 gRPC SDK
 
-GreptimeDB 的 gRPC SDK 只需要处理写请求即可。读请求是标准 SQL 或 PromQL ，可以由任何 JDBC 客户端或 Prometheus
+GreptimeDB 的 gRPC SDK 只需要处理写请求即可。读请求是标准 SQL 或 PromQL，可以由任何 JDBC 客户端或 Prometheus
 客户端处理。这也是为什么所有的 GreptimeDB SDK 都命名为 "`greptimedb-ingester-<language>`"。请确保你的 GreptimeDB SDK
 遵循相同的命名约定。
 

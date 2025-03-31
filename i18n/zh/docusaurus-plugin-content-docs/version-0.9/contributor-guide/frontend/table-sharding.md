@@ -13,7 +13,7 @@
 每个 `Region` 对应一个分区，并保存分区的数据。所有的 `Region` 分布在各个 `Datanode` 之中。我们的 `Metasrv` 会根据 `Datanode`
 的状态在它们之间自动移动 `Region`。此外，`Metasrv` 还可以根据数据量或访问模式拆分或合并 `Region`。
 
-分区和Region的关系参见下图：
+分区和 Region 的关系参见下图：
 
 ```text
                        ┌───────┐

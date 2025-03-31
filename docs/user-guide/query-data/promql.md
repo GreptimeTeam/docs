@@ -189,21 +189,22 @@ None
 - Supported:
     | Aggregator | Example                   |
     | :--------- | :------------------------ |
-    | sum        | `sum by (foo)(metric)`    |
-    | avg        | `avg by (foo)(metric)`    |
-    | min        | `min by (foo)(metric)`    |
-    | max        | `max by (foo)(metric)`    |
-    | stddev     | `stddev by (foo)(metric)` |
-    | stdvar     | `stdvar by (foo)(metric)` |
+    | sum          | `sum by (foo)(metric)`    |
+    | avg          | `avg by (foo)(metric)`    |
+    | min          | `min by (foo)(metric)`    |
+    | max          | `max by (foo)(metric)`    |
+    | stddev       | `stddev by (foo)(metric)` |
+    | stdvar       | `stdvar by (foo)(metric)` |
+    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`   |
+    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))`|
+    | count_values | `count_values("version", build_version)`    |
+    | quantile     | `quantile(0.9, cpu_usage)` |
 
 - Unsupported:
     | Aggregator   | Progress |
     | :----------- | :------- |
     | count        | TBD      |
     | grouping     | TBD      |
-    | topk         | TBD      |
-    | bottomk      | TBD      |
-    | count_values | TBD      |
 
 ### Instant Functions
 
@@ -231,6 +232,8 @@ None
     | scalar             | `scalar(metric)`                  |
     | tanh               | `tanh(metric)`                    |
     | timestamp          | `timestamp()`                     |
+    | sort               | `sort(http_requests_total)`       |
+    | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
 
 - Unsupported:
@@ -238,8 +241,6 @@ None
     | :------------------------- | :----------------- |
     | absent                     | TBD                |
     | sgn                        | TBD                |
-    | sort                       | TBD                |
-    | sort_desc                  | TBD                |
     | deg                        | TBD                |
     | rad                        | TBD                |
     | *other multiple input fns* | TBD                |

@@ -1,6 +1,6 @@
 # RUNTIME_METRICS
 
-`RUNTIME_METRICS`表提供系统运行时指标。它包括集群中`/metrics` HTTP端点输出的所有指标。
+`RUNTIME_METRICS`表提供系统运行时指标。它包括集群中`/metrics` HTTP 端点输出的所有指标。
 
 ```sql
 USE INFORMATION_SCHEMA;

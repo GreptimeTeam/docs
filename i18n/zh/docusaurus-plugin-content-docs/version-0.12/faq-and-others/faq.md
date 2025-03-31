@@ -9,7 +9,7 @@ description: 关于 GreptimeDB 的常见问题解答。
 
 GreptimeDB 已发布 v0.11 版本，其相关功能将在后续版本中持续改进优化。详细的 TSBS 性能测试结果可以[参考这里](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)。
 
-### GreptimeDB 与 Loki 相比有什么区别？是否提供 Rust 绑定的库，能否支持 Traces和 Logs？
+### GreptimeDB 与 Loki 相比有什么区别？是否提供 Rust 绑定的库，能否支持 Traces 和 Logs？
 
 GreptimeDB 现在仅支持日志（Log）数据类型，在 v0.10 版本中引入了对多个行业协议的兼容性。这些协议包括 Loki Remote Write、Vector 插件，以及全范围的 OTLP 数据类型（指标、追踪、日志）。
 
@@ -65,8 +65,8 @@ GreptimeDB 支持数据库级别和表级别的 TTL（Time To Live，存活时�
 
 有关 TTL 的详细信息，请参考官方文档中的 [TTL 语法说明](https://docs.greptime.com/reference/sql/create)。
 
-### “Greptime” 这个名字来源于哪里？
-“Greptime” 由两个部分组成：`grep` 是 `*nix` 系统中最常用的命令行工具，用于搜索数据；而 time 则代表时序数据。因此，Greptime 寓意着帮助每个人在时序数据中查找/搜索有价值的信息。
+### “Greptime”这个名字来源于哪里？
+“Greptime”由两个部分组成：`grep` 是 `*nix` 系统中最常用的命令行工具，用于搜索数据；而 time 则代表时序数据。因此，Greptime 寓意着帮助每个人在时序数据中查找/搜索有价值的信息。
 
 ### GreptimeDB 是否支持 Schemaless？
 
@@ -127,7 +127,7 @@ GreptimeDB 是一个快速发展的开源项目，欢迎社区的反馈和贡献
 
 但是以下几点需要注意：
 - 不建议对计数器使用 `deriv()` 函数（此函数适用于 gauge 类型），可以先对计数器应用 `rate()`，然后使用 `deriv()`。
-在计数器操作方面PromQL 更适合，因为它源于 Prometheus 的生态；
+在计数器操作方面 PromQL 更适合，因为它源于 Prometheus 的生态；
 - 我们也在探索将 PromQL 函数集成到 SQL 中，为用户提供更大的灵活性。如果您对这方面有兴趣，可参考我们的[文档](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md)。
 
 ### GreptimeDB 开源版本与云版本有哪些功能差异？

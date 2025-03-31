@@ -9,6 +9,7 @@ In observability scenarios,
 the ability to monitor and analyze system performance in real-time is crucial.
 GreptimeDB integrates seamlessly with leading observability tools to provide a comprehensive view of your system's health and performance metrics. 
 
+- [Store and analyze trillions of logs in GreptimeDB and gain insights within minutes](/user-guide/logs/overview.md).
 - [Prometheus Remote Write](prometheus.md): Integrate GreptimeDB as remote storage for Prometheus, suitable for real-time monitoring and alerting.
 - [Vector](vector.md): Use GreptimeDB as a sink for Vector, ideal for complex data pipelines and diverse data sources.
 - [OpenTelemetry](opentelemetry.md): Collect and export telemetry data to GreptimeDB for detailed observability insights.

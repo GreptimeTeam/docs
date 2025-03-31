@@ -12,7 +12,7 @@ import Includecreateservice from './create-service.md'
 
 ## 写入数据
 
-将下方配置写在 `vector.toml` 文件中，配置内容为将 [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) 作为 Vector source ，将 GreptimeCloud 作为 Vector sink destination。
+将下方配置写在 `vector.toml` 文件中，配置内容为将 [host_metrics](https://vector.dev/docs/reference/configuration/sources/host_metrics/) 作为 Vector source，将 GreptimeCloud 作为 Vector sink destination。
 
 ```toml
 [sources.in]

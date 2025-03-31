@@ -127,7 +127,7 @@ docker run \
    docker exec kafka /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
    ```
 
-   默认所有 topic 都以 `greptimedb_wal_topic`  开头，例如:
+   默认所有 topic 都以 `greptimedb_wal_topic`  开头，例如：
 
    ```
    docker exec kafka /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092

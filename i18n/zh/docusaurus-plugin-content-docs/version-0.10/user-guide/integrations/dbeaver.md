@@ -4,7 +4,7 @@
 由于其易用性和丰富的功能集，它在开发人员和数据库管理员中非常受欢迎。
 你可以使用 DBeaver 通过 MySQL Driver 连接到 GreptimeDB。
 
-点击 DBeaver 工具栏中的 “New Database Connection” 按钮，以创建 GreptimeDB 的新连接。
+点击 DBeaver 工具栏中的“New Database Connection”按钮，以创建 GreptimeDB 的新连接。
 
 选择 MySQL 并点击“下一步”以配置连接。
 如果你还没有安装 MySQL Driver，请先安装。
@@ -16,7 +16,7 @@
 - Database：`public`，你也可以使用你创建的其他数据库名称
 - 如果你的 GreptimeDB 启用了身份验证，请输入 username 和 password，否则留空
 
-点击 “Test Connection” 以验证连接设置，然后点击 “Finish” 以保存连接。
+点击“Test Connection”以验证连接设置，然后点击“Finish”以保存连接。
 
 有关 MySQL 与 GreptimeDB 交互的更多信息，请参阅 [MySQL 协议文档](/user-guide/protocols/mysql.md)。
 

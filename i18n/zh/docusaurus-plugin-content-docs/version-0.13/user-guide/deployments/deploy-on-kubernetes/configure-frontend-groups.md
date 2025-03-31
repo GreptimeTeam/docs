@@ -23,7 +23,7 @@ description: 在 Kubernetes 上部署带有 frontend groups 的 GreptimeDB 集�
 curl -LO https://github.com/GreptimeTeam/greptimedb-operator/releases/download/v0.2.1-alpha.1/greptimedbclusters.yaml
 ```
 
-将 CRD 应用于 Kubernetes 集群:
+将 CRD 应用于 Kubernetes 集群：
 
 ```bash
 kubectl apply -f greptimedbclusters.yaml --server-side --force-conflicts
@@ -47,7 +47,7 @@ helm upgrade \
 
 ## Frontend 组配置
 
-定义 frontend 组时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置:
+定义 frontend 组时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置：
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -100,7 +100,7 @@ spec:
 
 ## 校验安装
 
-检查 Pod 的状态:
+检查 Pod 的状态：
 
 ```bash
 kubectl get pods -n default
@@ -112,7 +112,7 @@ greptimedb-frontend-write-bdd944b97-pkf9d   1/1     Running   0          21s
 greptimedb-meta-699f74cd9d-42w2c            1/1     Running   0          87s
 ```
 
-检查 services 状态:
+检查 services 状态：
 
 ```bash
 kubectl get service -n default

@@ -22,7 +22,7 @@ psql -h 127.0.0.1 -p 4003 -d public
 ### 建表
 
 :::tip 注意
-**注意: GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。**
+**注意：GreptimeDB 提供了一种 schemaless 的数据写入方法，不用像使用其他协议那样手动创建表。详情请参见 [自动生成表结构](/user-guide/write-data/overview.md#自动生成表结构)。**
 :::
 
 现在我们通过 MySQL 创建一个表。先创建 `system_metrics` 表，其中包含系统资源指标，包括 CPU /内存/磁盘的使用，这些数据每 5 秒就会被抓取一次。
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 );
 ```
 
-Field 描述:
+Field 描述：
 
 | Field       | Type      | Description                            |
 | :---------- | :-------- | :------------------------------------- |

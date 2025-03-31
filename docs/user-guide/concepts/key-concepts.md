@@ -27,6 +27,10 @@ In a distributed deployment, a table can be split into multiple partitions that 
 
 For more information about the data model of the time-series table, please refer to [Data Model](./data-model.md).
 
+## Table Engine
+
+Table engines (also called storage engines) determine how data is stored, managed, and processed within the database. Each engine offers different features, performance characteristics, and trade-offs. GreptimeDB supports `mito` and `metric` engines etc., see [Table Engines](/reference/about-greptimedb-engines.md) for more information.
+
 ## Table Region
 
 Each partition of distributed table is called a region. A region may contain a

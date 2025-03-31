@@ -25,6 +25,6 @@ GreptimeDB 通过其 HTTP API 支持 Prometheus 查询语言 (PromQL)。
 请参考以下博客文章查看 GreptimeDB 与 Prometheus 的集成教程及用户故事：
 
 - [如何配置 GreptimeDB 作为 Prometheus 的长期存储](https://greptime.com/blogs/2024-08-09-prometheus-backend-tutorial)
-- [Scale Prometheus： K8s 部署 GreptimeDB 集群作为 Prometheus 长期存储](https://greptime.com/blogs/2024-10-07-scale-prometheus)
+- [Scale Prometheus：K8s 部署 GreptimeDB 集群作为 Prometheus 长期存储](https://greptime.com/blogs/2024-10-07-scale-prometheus)
 - [「用户故事」从 Thanos 到 GreptimeDB，我们实现了 Prometheus 高效长期存储](https://greptime.com/blogs/2024-10-16-thanos-migration-to-greptimedb)
 

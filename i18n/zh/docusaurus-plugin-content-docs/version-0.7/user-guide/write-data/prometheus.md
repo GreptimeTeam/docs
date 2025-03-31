@@ -76,7 +76,7 @@ show tables;
 
 所有标签列将会被自动创建为主键。当添加新的标签时，它也会自动添加到主键中。
 
-## 举例: GreptimeDB 表中的 Prometheus 指标
+## 举例：GreptimeDB 表中的 Prometheus 指标
 
 ```txt
 prometheus_remote_storage_samples_total{instance="localhost:9090", job="prometheus",

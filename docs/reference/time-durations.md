@@ -7,6 +7,11 @@ description: Learn how GreptimeDB utilizes time durations to represent time span
 
 GreptimeDB utilizes time durations to represent time spans in various contexts,
 including SQL queries, configuration files, and API requests.
+For more information on using time durations, please refer to:
+
+- The TTL options and the `time_window` parameter of the TWCS compaction strategy in the [ALTER](/reference/sql/alter.md) statement.
+- The TTL options in the [CREATE](/reference/sql/create.md) statement.
+
 A time duration is expressed as a string composed of concatenated time spans,
 each represented by a sequence of decimal numbers followed by a unit suffix.
 These suffixes are case-insensitive and support both singular and plural forms. For example, `1hour 12min 5s`.

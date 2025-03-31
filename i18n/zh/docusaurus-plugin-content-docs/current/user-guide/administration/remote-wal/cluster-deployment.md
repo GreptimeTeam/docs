@@ -184,7 +184,7 @@ my-cluster   1          3          1      Running   latest    5m30s
 
 我们将选用 MySQL 协议来连接数据库集群。
 
-使用 kubectl 的 port forward 来转发 `4002` 流量:
+使用 kubectl 的 port forward 来转发 `4002` 流量：
 
 ```
 kubectl port-forward svc/my-cluster-frontend 4002:4002 -n default

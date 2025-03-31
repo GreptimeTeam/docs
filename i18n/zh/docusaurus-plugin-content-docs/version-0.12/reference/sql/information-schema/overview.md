@@ -11,7 +11,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 
 ## MySQL 兼容性
 
-|表名|描述|
+|表名 | 描述|
 | --- | --- |
 | [`CHARACTER_SETS`](./character-sets.md) | 提供了可用字符集的信息。 |
 | `CHECK_CONSTRAINTS`| 未实现。返回零行。 |
@@ -51,7 +51,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 
 ## GreptimeDB 提供的表
 
-|表名|描述|
+|表名 | 描述|
 | --- | --- |
 | [`BUILD_INFO`](./build-info.md) | 提供了系统构建的信息。 |
 | [`REGION_PEERS`](./region-peers.md) | 提供了表的 Region 存储的详细信息。 |

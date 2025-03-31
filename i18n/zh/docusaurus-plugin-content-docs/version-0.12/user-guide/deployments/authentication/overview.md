@@ -5,7 +5,7 @@ description: GreptimeDB 的身份验证概述，介绍了多种用户 Provider �
 
 # 概述
 
-当客户端尝试连接到数据库时，将会进行身份验证。GreptimeDB 通过 “user provider” 进行身份验证。GreptimeDB 中有多种 user
+当客户端尝试连接到数据库时，将会进行身份验证。GreptimeDB 通过“user provider”进行身份验证。GreptimeDB 中有多种 user
 provider 实现：
 
 - [Static User Provider](./static.md)：一个简单的内置 user provider 实现，从静态文件中查找用户。

@@ -49,7 +49,7 @@ Region，无论是否由手动或动态触发。
 - 添加了表选项以更新 TTL、压缩参数和全文索引设置
 - JSON 数据类型和函数的支持
 - Loki Remote Write 的早期支持
-- 更多地理空间的通用函数（UDF）包括空间关系与测量、S2索引等。
+- 更多地理空间的通用函数（UDF）包括空间关系与测量、S2 索引等。
 
 请参阅[这里](https://docs.greptime.com/release-notes/release-0-10-0)以获取完整的
 变更日志。

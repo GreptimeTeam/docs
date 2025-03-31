@@ -10,7 +10,7 @@ description: 介绍 GreptimeDB 支持的查询语言和推荐的查询库。
 - [SQL](./sql.md)
 - [PromQL](promql.md)
 
-从 v0.9 开始， GreptimeDB 开始支持查询视图和公共表表达式（CTE），用于简化查询语句：
+从 v0.9 开始，GreptimeDB 开始支持查询视图和公共表表达式（CTE），用于简化查询语句：
 
 * [View](./view.md)
 * [公共表表达式（CTE）](./cte.md)

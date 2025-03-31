@@ -16,11 +16,6 @@ description: 详细介绍了 GreptimeDB 的数据模型使用指南，以及常�
 
 ## 基本概念
 
-基数（Cardinality）：是指数据集中唯一值的数量。我们可以通过"高基数"和"低基数"来分类：
-
-- 低基数（Low Cardinality）示例：订单状态包括 "待付款/已付款/已发货/已完成"等，约 4~5 个唯一的值，星期几固定是 7 个，城市和省份的数量也是有限。
-- 高基数（High Cardinality）示例：用户 ID 是典型的，比如可能是百万到千万的用户数量；设备 IP 地址，也可能是数百万个；商品 SKU 也是一个典型的高基数数据。
-
 **基数（Cardinality）**：指数据集中唯一值的数量。可以分为"高基数"和"低基数"：
 
 - **低基数（Low Cardinality）**：低基数列通常具有固定值。
@@ -314,8 +309,7 @@ GreptimeDB 通过去重功能实现 `DELETE`，因此 append-only 表目前不�
 
 ![wide_table](/wide_table.png)
 
-GreptimeDB 的 Prometheus Remote Storage protocol 通过[Metric Engine](/contributor-guide/datanode/metric-engine.md)在底层使用宽表数据共享。
-
+比较遗憾，Prometheus 的存储还是多表单值的方式，不过 GreptimeDB 的 Prometheus Remote Storage protocol 通过[Metric Engine](/contributor-guide/datanode/metric-engine.md)在底层使用宽表数据共享。
 
 ## 分布式表
 

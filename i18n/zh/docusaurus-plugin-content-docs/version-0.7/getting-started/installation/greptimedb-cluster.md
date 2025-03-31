@@ -4,7 +4,7 @@ GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以�
 
 ## 安装 gtctl 并运行 playground
 
-[gtctl](https://github.com/GreptimeTeam/gtctl) 是用于管理 GreptimeDB 的命令行工具。 你可以用如下命令进行安装（只适用于 Linux 和 macOS）:
+[gtctl](https://github.com/GreptimeTeam/gtctl) 是用于管理 GreptimeDB 的命令行工具。你可以用如下命令进行安装（只适用于 Linux 和 macOS）:
 
 ```
 curl -fsSL https://downloads.greptime.cn/releases/scripts/gtctl/install.sh | sh -s -- -s aws
