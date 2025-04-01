@@ -784,7 +784,7 @@ transformations.
 This experimental feature may contain unexpected behavior, have its functionality change in the future.
 :::
 
-There are cases where the user want to split and insert log data into different target table
+There are cases where you want to split and insert log data into different target table
 based on some certain values of input data. For example, if you want to divide and store the log data 
 based on the application where the log is produced, thus adding an app name suffix to the target table.
 
