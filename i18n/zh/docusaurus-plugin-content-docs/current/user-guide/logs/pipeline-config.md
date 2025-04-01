@@ -11,10 +11,16 @@ Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制，
 
 ## 整体结构
 
-Pipeline 由两部分组成：Processors 和 Transform，这两部分均为数组形式。一个 Pipeline 配置可以包含多个 Processor 和多个 Transform。Transform 所描述的数据类型会决定日志数据保存到数据库时的表结构。
+Pipeline 由四部分组成：Processors、Dispatcher、Transform 和 Table suffix。
+Processors 对数据进行预处理。
+Dispatcher 可以将 pipeline 执行上下文转发到不同的后续 pipeline 上。
+Transform 决定最终保存在数据库中的数据类型和表结构。
+Table suffix 支持将数据保存到不同的表中。
 
 - Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
+- Dispatcher(可选) 用于将执行上下文转发到另一个 pipeline，同一个输入批次的数据可以基于特定的值被不同的 pipeline 进行处理。 
 - Transform 用于对数据进行格式转换，例如将字符串类型转换为数字类型。
+- Table suffix（可选） 用于将数据存储到不同的表中，以便后续使用。
 
 一个包含 Processor 和 Transform 的简单配置示例如下：
 
@@ -26,6 +32,14 @@ processors:
         - string_field_b
       method: decode
       ignore_missing: true
+dispatcher:
+  field: type
+  rules:
+    - value: http
+      table_suffix: http
+      pipeline: http
+    - value: db
+      table_suffix: db
 transform:
   - fields:
       - string_field_a
@@ -37,6 +51,7 @@ transform:
     # epoch 是特殊字段类型，必须指定精度
     type: epoch, ms
     index: timestamp
+table_suffix: _${string_field_a}
 ```
 
 ## Processor
@@ -779,3 +794,44 @@ Dispatcher 在 processor 之后执行。当匹配到相应的规则时，下一�
 `http` 规则时，最终的表名叫做 `applogs_http`。
 
 如果没有规则匹配到，数据将执行当前 pipeline 中定一个 transform 规则。
+
+## Table suffix
+
+:::warning 实验性特性
+此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::
+
+在一些场景下，你可能需要将写入的日志数据基于输入的字段值保存到不同表上。
+比如你可能希望按照产生的应用名将日志保存到不同的表上，在表名上添加这个应用名的后缀。
+
+一个配置示例如下:
+```yaml
+table_suffix: _${app_name}
+```
+
+语法非常简单： 使用 `${}` 来引用 pipeline 执行上下文中的变量。
+该变量可以是输入数据中直接存在的，也可以是前序处理流程中产生的。
+变量替换完成之后，整个字符串会被添加到输入的表名后。
+
+注意：
+1. 引用的变量必须是一个整数或者字符串类型的数据
+2. 如果在执行过程中遇到任何错误（例如变量不存在或者无效数据类型），输入的表名会被作为最终表名
+
+下面举一个例子。以下是输入数据：
+```JSON
+[
+  {"type": "db"},
+  {"type": "http"},
+  {"t": "test"}
+]
+```
+
+输入的表名为 `persist_app`，pipeline 配置如下：
+```YAML
+table_suffix: _${type}
+```
+
+这三行输入数据会被写入到三张不同的表中：
+1. `persist_app_db`
+2. `persist_app_http`
+3. `persist_app`, 因为输入的数据中并没有 `type` 字段，所以使用了默认的表名

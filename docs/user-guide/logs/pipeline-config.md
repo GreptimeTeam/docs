@@ -11,10 +11,16 @@ These configurations are provided in YAML format, allowing the Pipeline to proce
 
 ## Overall structure
 
-Pipeline consists of two parts: Processors and Transform, both of which are in array format. A Pipeline configuration can contain multiple Processors and multiple Transforms. The data type described by Transform determines the table structure when storing log data in the database.
+Pipeline consists of four parts: Processors, Dispatcher, Transform, and Table suffix.
+Processors pre-processes input log data.
+Dispatcher forwards pipeline execution context onto different subsequent pipeline.
+Transform decides the final datatype and table structure in the database.
+Table suffix allows storing the data into different tables.
 
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
+- Dispatcher(optional) is used for forwarding the context into another pipeline, so that the same batch of input data can be divided and processed by different pipeline based on certain fields.
 - Transform is used for converting data formats, such as converting string types to numeric types.
+- Table suffix(optional) is used for storing data into different table for later convenience.
 
 Here is an example of a simple configuration that includes Processors and Transform:
 
@@ -45,6 +51,7 @@ transform:
     # epoch is a special field type and must specify precision
     type: epoch, ms
     index: timestamp
+table_suffix: _${string_field_a}
 ```
 
 ## Processor
@@ -770,3 +777,46 @@ matches the `http` rule, data is stored in `applogs_http`.
 
 If no rules match, data is transformed by the current pipeline's
 transformations.
+
+## Table suffix
+
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior, have its functionality change in the future.
+:::
+
+There are cases where you want to split and insert log data into different target table
+based on some certain values of input data. For example, if you want to divide and store the log data 
+based on the application where the log is produced, thus adding an app name suffix to the target table.
+
+A sample configuration is like:
+```yaml
+table_suffix: _${app_name}
+```
+
+The syntax is simple: use `${}` to include the variable in the pipeline execution context.
+The variable can be directly from the input data or a product of former process.
+After the table suffix is formatted, the whole string will be added to the input table name.
+
+Note:
+1. The variable must be an integer number or a string type of data.
+2. If any error occurs in runtime(e.g: the variable is missing or not a valid type), the input table
+name will be used.
+
+Here is an example of how it works. The input data is like following:
+```JSON
+[
+  {"type": "db"},
+  {"type": "http"},
+  {"t": "test"}
+]
+```
+
+The input table name is `persist_app`, and the pipeline config is like
+```YAML
+table_suffix: _${type}
+```
+
+These three lines of input log will be inserted into three tables:
+1. `persist_app_db`
+2. `persist_app_http`
+3. `persist_app`, for it doesn't have a `type` field, thus the default table name will be used.
