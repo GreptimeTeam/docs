@@ -816,3 +816,22 @@ table_suffix: _${app_name}
 注意：
 1. 引用的变量必须是一个整数或者字符串类型的数据
 2. 如果在执行过程中遇到任何错误（例如变量不存在或者无效数据类型），输入的表名会被作为最终表名
+
+下面举一个例子。以下是输入数据：
+```JSON
+[
+  {"type": "db"},
+  {"type": "http"},
+  {"t": "test"}
+]
+```
+
+输入的表名为 `persist_app`，pipeline 配置如下：
+```YAML
+table_suffix: _${type}
+```
+
+这三行输入数据会被写入到三张不同的表中：
+1. `persist_app_db`
+2. `persist_app_http`
+3. `persist_app`, 因为输入的数据中并没有 `type` 字段，所以使用了默认的表名

@@ -801,3 +801,22 @@ Note:
 1. The variable must be an integer number or a string type of data.
 2. If any error occurs in runtime(e.g: the variable is missing or not a valid type), the input table
 name will be used.
+
+Here is an example of how it works. The input data is like following:
+```JSON
+[
+  {"type": "db"},
+  {"type": "http"},
+  {"t": "test"}
+]
+```
+
+The input table name is `persist_app`, and the pipeline config is like
+```YAML
+table_suffix: _${type}
+```
+
+These three lines of input log will be inserted into three tables:
+1. `persist_app_db`
+2. `persist_app_http`
+3. `persist_app`, for it doesn't have a `type` field, thus the default table name will be used.
