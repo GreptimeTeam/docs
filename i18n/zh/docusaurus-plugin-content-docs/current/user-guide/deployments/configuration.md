@@ -677,6 +677,12 @@ max_retry_times = 12
 ## 程序的初始重试延迟
 retry_delay = "500ms"
 
+## 最大运行程序数。
+## 同一时间可以运行的程序最大数量。
+## 如果运行的程序数量超过此限制，程序将被拒绝。
+max_running_procedures = 128
+
+
 # Failure detector 选项
 [failure_detector]
 
@@ -768,6 +774,7 @@ backoff_deadline = "5mins"
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
 | `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
+| `procedure.max_running_procedures`            | Integer | `128`                  | 同一时间可以运行的程序最大数量。如果运行的程序数量超过此限制，程序将被拒绝。 |
 | `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
 | `failure_detector.threshold`                  | 浮点数  | `8.0`                | Failure detector 用来判断故障条件的阈值。                                                                                            |
 | `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                                     |

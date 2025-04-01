@@ -688,6 +688,11 @@ max_retry_times = 12
 ## Initial retry delay of procedures, increases exponentially
 retry_delay = "500ms"
 
+## Max running procedures.
+## The maximum number of procedures that can be running at the same time.
+## If the number of running procedures exceeds this limit, the procedure will be rejected.
+max_running_procedures = 128
+
 # Failure detectors options.
 [failure_detector]
 
@@ -797,6 +802,7 @@ backoff_deadline = "5mins"
 | `procedure`                                   | --      | --                     | Procedure storage options.                                                                                                                                                    |
 | `procedure.max_retry_times`                   | Integer | `12`                   | Procedure max retry time.                                                                                                                                                     |
 | `procedure.retry_delay`                       | String  | `500ms`                | Initial retry delay of procedures, increases exponentially                                                                                                                    |
+| `procedure.max_running_procedures`            | Integer | `128`                  | The maximum number of procedures that can be running at the same time. If the number of running procedures exceeds this limit, the procedure will be rejected. |
 | `failure_detector`                            | --      | --                     | --                                                                                                                                                                            |
 | `failure_detector.threshold`                  | Float   | `8.0`                  | The threshold value used by the failure detector to determine failure conditions.                                                                                             |
 | `failure_detector.min_std_deviation`          | String  | `100ms`                | The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.                                                                           |
