@@ -355,7 +355,7 @@ For example:
 - The disk throughput becomes the bottleneck.
 - The ingestion rate is larger than the throughput of a single node.
 
-GreptimeDB releases a [benchmark report](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs) with each major version update,
+GreptimeDB releases a [benchmark report](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/docs/benchmarks/tsbs) with each major version update,
 detailing the ingestion throughput of a single partition.
 Use this report alongside your target scenario to estimate if the write volume approaches the single partition's limit.
 

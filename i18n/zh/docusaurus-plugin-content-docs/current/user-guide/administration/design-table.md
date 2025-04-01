@@ -132,7 +132,7 @@ CREATE TABLE http_logs_v2 (
 
 除了主键外，你还可以使用倒排索引按需加速特定查询。
 
-GreptimeDB 支持倒排索引，可能加速对低基数列的过滤。
+GreptimeDB 支持倒排索引，可以加速对低基数列的过滤。
 创建表时，可以使用 `INVERTED INDEX` 子句指定[倒排索引](/contributor-guide/datanode/data-persistence-indexing.md#倒排索引)列。
 例如，`http_logs_v3` 为 `http_method` 列添加了倒排索引。
 
@@ -342,7 +342,7 @@ GreptimeDB 支持对数据表进行分区，以分散读写热点并实现水平
 - 磁盘吞吐量成为瓶颈。
 - 写入速率大于单个节点的吞吐量。
 
-GreptimeDB 在每次主要版本更新时都会发布[benchmark report](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)，
+GreptimeDB 在每次主要版本更新时都会发布[benchmark report](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/docs/benchmarks/tsbs)，
 里面提供了单个分区的写入吞吐量作为参考。
 你可以在你的的目标场景根据该报告来估计写入量是否接近单个分区的限制。
 
