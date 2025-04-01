@@ -40,7 +40,7 @@ DESC REGION_PEERS;
 - `table_catalog`：表所属的目录。
 - `table_schema`：表所属的数据库。
 - `table_name`：表的名称。
-- - `region_id`：Region 的 ID。
+- `region_id`：Region 的 ID。
 - `peer_id`：Region peer 的 ID。
 - `peer_addr`：peer 的地址。
 - `is_leader`：peer 是否为 leader。
