@@ -186,3 +186,62 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
+## Traces
+
+GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 OpenTelemetry 的 traces 的表模型来让用户方便地查询和分析 traces 数据。
+
+### OTLP/HTTP API
+
+你可以使用 [OpenTelemetry SDK](https://opentelemetry.io/docs/languages/) 或其他类似的技术方案来为应用添加 traces 数据。你还可以用 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 来收集 traces 数据，并使用 GreptimeDB 作为后端存储。
+
+要通过 OpenTelemetry SDK 库将 OpenTelemetry 的 traces 数据发送到 GreptimeDB，请使用以下信息：
+
+* URL: `http{s}://<host>/v1/otlp/v1/traces`
+* Headers: headers 与 [Logs](#Logs) 部分相同，你可以参考 [Logs](#Logs) 部分获取更多信息。
+
+默认地，GreptimeDB 会将 traces 数据写入到 `public` 数据库中的 `opentelemetry_traces` 表中。
+
+GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议** 发送，并且 `content-type` 头部信息应该为 `application/x-protobuf`。
+
+
+### 示例代码
+
+请参考 [OpenTelemetry Collector 文档](./opentelemetry-collector.md)中的示例代码，了解如何将 OpenTelemetry traces 数据发送到 GreptimeDB。
+
+### 数据模型
+
+OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
+
+默认表结构：
+
+```sql
++------------------------------------+---------------------+------+------+---------+---------------+
+| Column                             | Type                | Key  | Null | Default | Semantic Type |
++------------------------------------+---------------------+------+------+---------+---------------+
+| timestamp                          | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| timestamp_end                      | TimestampNanosecond |      | YES  |         | FIELD         |
+| duration_nano                      | UInt64              |      | YES  |         | FIELD         |
+| parent_span_id                     | String              |      | YES  |         | FIELD         |
+| trace_id                           | String              |      | YES  |         | FIELD         |
+| span_id                            | String              |      | YES  |         | FIELD         |
+| span_kind                          | String              |      | YES  |         | FIELD         |
+| span_name                          | String              |      | YES  |         | FIELD         |
+| span_status_code                   | String              |      | YES  |         | FIELD         |
+| span_status_message                | String              |      | YES  |         | FIELD         |
+| trace_state                        | String              |      | YES  |         | FIELD         |
+| scope_name                         | String              |      | YES  |         | FIELD         |
+| scope_version                      | String              |      | YES  |         | FIELD         |
+| service_name                       | String              | PRI  | YES  |         | TAG           |
+| span_attributes.net.sock.peer.addr | String              |      | YES  |         | FIELD         |
+| span_attributes.peer.service       | String              |      | YES  |         | FIELD         |
+| span_events                        | Json                |      | YES  |         | FIELD         |
+| span_links                         | Json                |      | YES  |         | FIELD         |
++------------------------------------+---------------------+------+------+---------+---------------+
+```
+
+- 每一行代表一个单一的 span；
+- 核心的 OpenTelemetry 字段，如 `trace_id`, `span_id`, 和 `service_name` 等将被单独作为表的列；
+- Resource Attributes 和 Span Attributes 将被自动展平为单独的列，列名为其 JSON 格式表示时的 key（多层嵌套时将用 `.` 连接）；    
+- `span_events` 和 `span_links` 默认存储为 JSON 数据类型；
+
+默认地，表会根据 `trace_id` 均匀划分为 16 个 Region 以高效地存储和查询所有的 traces 数据。
