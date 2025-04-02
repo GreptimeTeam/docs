@@ -395,7 +395,7 @@ SHOW REGION FROM monitor;
 +----------------+---------------+------+--------+
 ```
 
-这是 `INFORMATION_SCHEMA.REGION_PEERS` 的扩展。
+这是 `INFORMATION_SCHEMA.REGION_PEERS` 的扩展，并且支持 `WHERE` 子句。
 
 
 其他 `SHOW` 扩展语句：
