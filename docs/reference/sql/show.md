@@ -398,7 +398,7 @@ It is the extension of `INFORMATION_SCHEMA.REGION_PEERS` and supports `WHERE` to
 The syntax is
 ```sql
 SHOW REGION FROM [table] [IN database] [WHERE where]
-
+```
 
 Other `SHOW` statements:
 * `SHOW STATUS`  and `SHOW VARIABLES` are not supported, just return empty results.

@@ -397,6 +397,10 @@ SHOW REGION FROM monitor;
 
 这是 `INFORMATION_SCHEMA.REGION_PEERS` 的扩展，并且支持 `WHERE` 子句。
 
+语法是：
+```sql
+SHOW REGION FROM [table] [IN database] [WHERE where]
+```
 
 其他 `SHOW` 扩展语句：
 * `SHOW STATUS` 和 `SHOW VARIABLES` 不支持，仅返回空结果。
