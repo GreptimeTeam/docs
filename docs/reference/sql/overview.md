@@ -13,6 +13,7 @@
 * [LIMIT](./limit.md)
 * [JOIN](./join.md)
 * [RANGE](./range.md)
+* [REPLACE](./replace.md)
 * [DELETE](./delete.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
