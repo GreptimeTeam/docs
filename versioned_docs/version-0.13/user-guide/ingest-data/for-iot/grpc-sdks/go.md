@@ -75,7 +75,7 @@ hints := []*ingesterContext.Hint{
 }
 
 ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-ctx = ingesterContext.New(ctx, ingesterContext.WithHints(hints))
+ctx = ingesterContext.New(ctx, ingesterContext.WithHint(hints))
 // Use the ingesterContext when writing data to GreptimeDB.
 // The `data` object is described in the following sections.
 resp, err := c.client.Write(ctx, data)
