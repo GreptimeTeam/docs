@@ -207,7 +207,7 @@ GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol** an
 
 ### Example Code
 
-You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTelemetry Collector to collect traces data and use GreptimeDB as the backend storage. Please refer to the example code in the [OpenTelemetry Traces documentation](./opentelemetry-collector.md) to learn how to send OpenTelemetry traces data to GreptimeDB.
+You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTelemetry Collector to collect traces data and use GreptimeDB as the backend storage. Please refer to the example code in the [OpenTelemetry Traces documentation](/user-guide/ingest-data/for-observability/opentelemetry-traces.md) to learn how to send OpenTelemetry traces data to GreptimeDB.
 
 ### Data Model
 
