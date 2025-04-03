@@ -200,11 +200,14 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
 
 By default, GreptimeDB will write traces data to the `opentelemetry_traces` table in the `public` database. If you want to write traces data to a different table, you can use the `X-Greptime-DB-Name` and `X-Greptime-Log-Table-Name` headers to specify the database and table name.
 
-GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol**, and the `content-type` header should be `application/x-protobuf`.
+GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol** and the following headers are required:
+
+- `content-type` should be configured as `application/x-protobuf`;
+- `x-greptime-pipeline-name` should be configured as `greptime_trace_v1`;
 
 ### Example Code
 
-Please refer to the example code in the [OpenTelemetry Traces documentation](./opentelemetry-collector.md) to learn how to send OpenTelemetry traces data to GreptimeDB.
+You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTelemetry Collector to collect traces data and use GreptimeDB as the backend storage. Please refer to the example code in the [OpenTelemetry Traces documentation](./opentelemetry-collector.md) to learn how to send OpenTelemetry traces data to GreptimeDB.
 
 ### Data Model
 

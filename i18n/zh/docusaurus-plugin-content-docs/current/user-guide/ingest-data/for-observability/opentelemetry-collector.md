@@ -43,7 +43,7 @@ exporters:
   otlphttp:
     endpoint: "http://localhost:4000/v1/otlp" # GreptimeDB 的 OTLP 端点
     headers:
-      x-greptime-log-pipeline-name: "greptime_trace_v1"
+      x-greptime-pipeline-name: "greptime_trace_v1"
     tls:
       insecure: true
 
