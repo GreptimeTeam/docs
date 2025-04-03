@@ -1,3 +1,8 @@
+---
+keywords: [SQL syntax, SQL examples]
+description: GreptimeDB SQL statements.
+---
+
 # Overview
 
 * [Data Types](./data-types)
