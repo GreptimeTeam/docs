@@ -5,15 +5,15 @@ description: 介绍如何使用 OpenTelemetry Collector 将 traces 数据写入�
 
 # OpenTelemetry Traces
 
-:::note
-在启动 OpenTelemetry Collector 之前，请确保 GreptimeDB 已经启动并运行。
-:::
-
 ## 概述
 
 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 是一个厂商中立的用于收集和处理 OpenTelemetry 数据的服务。本文我们将介绍如何使用 OpenTelemetry Collector 将 traces 数据写入到 GreptimeDB。
 
 ## 快速开始
+
+:::note
+在启动 OpenTelemetry Collector 之前，请确保 GreptimeDB 已经启动并运行。
+:::
 
 ### 启动 OpenTelemetry Collector
 
