@@ -1,3 +1,8 @@
+---
+keywords: [SQL syntax, SQL examples]
+description: GreptimeDB SQL statements.
+---
+
 # Overview
 
 * [Data Types](./data-types)
@@ -13,6 +18,7 @@
 * [LIMIT](./limit.md)
 * [JOIN](./join.md)
 * [RANGE](./range.md)
+* [REPLACE](./replace.md)
 * [DELETE](./delete.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
