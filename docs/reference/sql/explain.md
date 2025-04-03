@@ -91,4 +91,4 @@ stage: NULL
  plan: Total rows: 0
 ```
 
-The `EXPLAIN ANALYZE VERBOSE` command provides the detial metrics about the execution of scan plans.
+The `EXPLAIN ANALYZE VERBOSE` command provides the detail metrics about the execution of scan plans.
