@@ -67,7 +67,7 @@ stage: NULL
 
 The `EXPLAIN ANALYZE` command provides metrics about the execution of each stage. The `SeqScan` plan scans the data from a single region.
 
-Explains the verbose information of the plan execution.
+Explains the verbose information of the plan execution:
 ```sql
 EXPLAIN ANALYZE VERBOSE SELECT * FROM monitor where host='host1';
 ```
