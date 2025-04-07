@@ -5,7 +5,7 @@ description: Describes the SQL REPLACE statement for adding records to a table i
 
 # REPLACE
 
-The `REPLACE` statement is used to insert a new record into a table. In GreptimeDB, this statement is exactly the same as the `INSERT` statement. Please refer to [`INSERT`](/reference/sql/insert.md) for more details.
+The `REPLACE` statement is used to insert new records into a table. In GreptimeDB, this statement is exactly the same as the `INSERT` statement. Please refer to [`INSERT`](/reference/sql/insert.md) for more details.
 
 ## `REPLACE INTO` Statement
 
