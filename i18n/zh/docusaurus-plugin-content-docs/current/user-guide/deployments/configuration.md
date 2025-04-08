@@ -36,7 +36,7 @@ greptime standalone start --http-addr 127.0.0.1:4000
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "./greptimedb_data/"
 ```
 
 然后使用命令行参数 `-c [file_path]` 指定配置文件。
@@ -196,7 +196,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 | storage |                   |        | 存储选项                                            |
 |         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
-|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
+|         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
 |         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
@@ -234,7 +234,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "./greptimedb_data/"
 ```
 
 s3 配置范例：
@@ -417,7 +417,7 @@ client_key_path = "/path/to/key"
 
 ```toml
 [logging]
-dir = "/tmp/greptimedb/logs"
+dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"

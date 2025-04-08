@@ -37,7 +37,7 @@ For example, create a configuration file `standalone.example.toml` as shown belo
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "greptimedb_data"
 ```
 
 Then, specify the configuration file using the command line argument `-c [file_path]`.
@@ -208,7 +208,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 | storage |                   |        | Storage options                                               |
 |         | type              | String | Storage type, supports "File", "S3" and "Oss" etc.            |
 | File    |                   |        | Local file storage options, valid when type="File"            |
-|         | data_home         | String | Database storage root directory, "/tmp/greptimedb" by default |
+|         | data_home         | String | Database storage root directory, "./greptimedb_data" by default |
 | S3      |                   |        | AWS S3 storage options, valid when type="S3"                  |
 |         | name            | String | The  storage provider name, default is `S3`               |
 |         | bucket            | String | The S3 bucket name                                            |
@@ -246,7 +246,7 @@ A file storage sample configuration:
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "./greptimedb_data/"
 ```
 
 A S3 storage sample configuration:
@@ -427,7 +427,7 @@ client_key_path = "/path/to/key"
 
 ```toml
 [logging]
-dir = "/tmp/greptimedb/logs"
+dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
