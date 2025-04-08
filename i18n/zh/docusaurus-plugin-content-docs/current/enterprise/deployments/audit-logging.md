@@ -48,7 +48,7 @@ GreptimeDB 中审计日志的概述以及如何配置它。
 [plugins.audit_log]
 # 是否启用审计日志，默认为 true。
 enable = true
-# 存储审计日志文件的目录。默认为 "/tmp" 中的一个目录。
+# 存储审计日志文件的目录。默认为 "./greptimedb_data/logs/"。
 dir = "./greptimedb_data/logs/"
 # 允许审计的语句的来源。此选项作为过滤器：如果语句不来自这些配置的来源之一，则不会记录在审计日志中。
 # 多个来源用逗号（","）分隔。

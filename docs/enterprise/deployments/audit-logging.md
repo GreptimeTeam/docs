@@ -51,7 +51,7 @@ GreptimeDB config file:
 [plugins.audit_log]
 # Whether to enable audit logging, defaults to true.
 enable = true
-# The directory to store the audit log files. Defaults to a directory in "/tmp".
+# The directory to store the audit log files. Defaults to "./greptimedb_data/logs".
 dir = "./greptimedb_data/logs/"
 # The allowed auditing sources. This option works as a filter:
 # if a statement is not coming from one of these configured sources, it won't be recorded in the audit logs.
