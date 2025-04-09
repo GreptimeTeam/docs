@@ -39,7 +39,7 @@ Options:
   -V, --version                Print version
 ```
 
-- `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
+- `--log-dir=[dir]` specify logs directory, `./greptimedb_data/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
 
 ### 全局选项
@@ -152,7 +152,7 @@ greptime standalone start --help
 使用自定义配置以 standalone 模式启动 GreptimeDB：
 
 ```sh
-greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
+greptime --log-dir=greptimedb_data/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
 `standalone.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。您可以在那里找到更多示例配置文件。使用 `-c` 选项可以指定配置文件，有关更多信息，更多信息请查看[配置](../user-guide/deployments/configuration.md)。

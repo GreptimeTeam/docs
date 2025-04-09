@@ -41,7 +41,7 @@ Options:
   -V, --version                Print version
 ```
 
-- `--log-dir=[dir]` specify logs directory, `/tmp/greptimedb/logs` by default.
+- `--log-dir=[dir]` specify logs directory, `./greptimedb_data/logs` by default.
 - `--log-level=[info | debug | error | warn | trace]` specify the log level, `info` by default.
 
 ### Global options
@@ -153,7 +153,7 @@ greptime standalone start --help
 Starts GreptimeDB in standalone mode with customized configurations:
 
 ```sh
-greptime --log-dir=/tmp/greptimedb/logs --log-level=info standalone start -c config/standalone.example.toml
+greptime --log-dir=greptimedb_data/logs --log-level=info standalone start -c config/standalone.example.toml
 ```
 
 The `standalone.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](../user-guide/deployments/configuration.md).
