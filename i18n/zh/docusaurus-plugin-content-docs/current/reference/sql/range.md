@@ -26,17 +26,17 @@ INTERVAL :=  TIME_INTERVAL | ( INTERVAL expr )
 ```
 
 - 关键字 `ALIGN`，必选字段，后接参数 `INTERVAL` ，`ALIGN` 指明了 Range 查询的步长。
-  - 子关键字 `TO` ，可选字段，指定 Range 查询对齐到的时间点，合法的 `TO_OPTION` 参数见[TO Option](#to-option) 。
-  - 子关键字 `BY` ，可选字段，后接参数 `(columna, columnb,..)` ，描述了聚合键。详情请见[BY OPTION](#by-option)。
+  - 子关键字 `TO` ，可选字段，指定 Range 查询对齐到的时间点，合法的 `TO_OPTION` 参数见[TO Option](#to-选项) 。
+  - 子关键字 `BY` ，可选字段，后接参数 `(columna, columnb,..)` ，描述了聚合键。详情请见[BY OPTION](#by-选项)。
 - 参数 `INTERVAL` ，主要用于给出一段时间长度，有两种参数形式：
-  - 基于 `PromQL Time Durations` 格式的字符串（例如：`3h`、`1h30m`）。访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#time-durations) 获取该格式更详细的说明。
+  - 基于 `PromQL Time Durations` 格式的字符串（例如：`3h`、`1h30m`）。访问 [Prometheus 文档](https://prometheus.io/docs/prometheus/latest/querying/basics/#float-literals-and-time-durations) 获取该格式更详细的说明。
   - `Interval` 类型，使用 `Interval` 类型需要携带括号，（例如：`('1 year 3 hours 20 minutes'::INTERVAL)`）。访问 [Interval](./data-types.md#interval-type) 获取该格式更详细的说明。
 - `AGGR_FUNCTION(column1, column2,..) RANGE INTERVAL [FILL FILL_OPTION]` 称为一个 Range 表达式。
   - `AGGR_FUNCTION(column1, column2,..)` 是一个聚合函数，代表需要聚合的表达式。
   - 关键字 `RANGE`，必选字段，后接参数 `INTERVAL` 指定了每次数据聚合的时间范围，
-  - 关键字 `FILL`，可选字段，详情请见 [`FILL` Option](#fill-option)。
+  - 关键字 `FILL`，可选字段，详情请见 [`FILL` Option](#fill-选项)。
   - Range 表达式可与其他运算结合，实现更复杂的查询。具体见[嵌套使用 Range 表达式](#嵌套使用-range-表达式) 。
-- 关键字 `FILL`，可以跟在一个 Range 表达式后，详情请见[FILL Option](#fill-option) 。
+- 关键字 `FILL`，可以跟在一个 Range 表达式后，详情请见[FILL Option](#fill-选项) 。
 
 
 ## `FILL` 选项
