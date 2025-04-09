@@ -1,3 +1,8 @@
+---
+keywords: [SQL 语法, SQL 示例]
+description: GreptimeDB SQL 语句.
+---
+
 # 概述
 
 * [数据类型](./data-types)
@@ -13,6 +18,7 @@
 * [LIMIT](./limit.md)
 * [JOIN](./join.md)
 * [RANGE](./range.md)
+* [REPLACE](./replace.md)
 * [DELETE](./delete.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
