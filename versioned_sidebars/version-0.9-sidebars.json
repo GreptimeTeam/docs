@@ -333,6 +333,7 @@
                 "reference/sql/information-schema/engines",
                 "reference/sql/information-schema/key-column-usage",
                 "reference/sql/information-schema/partitions",
+                "reference/sql/information-schema/procedure-info",
                 "reference/sql/information-schema/schemata",
                 "reference/sql/information-schema/tables",
                 "reference/sql/information-schema/table-constraints",
