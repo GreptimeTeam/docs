@@ -424,6 +424,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/limit',
             'reference/sql/order_by',
             'reference/sql/range',
+            'reference/sql/replace',
             'reference/sql/select',
             'reference/sql/show',
             'reference/sql/tql',
