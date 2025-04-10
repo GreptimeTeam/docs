@@ -28,66 +28,30 @@ In the above example, we deleted a pipeline named `test`. The `version` paramete
 
 ## Query Pipelines
 
-Currently, you can use SQL to query pipeline information.
-
-```sql
-SELECT * FROM greptime_private.pipelines;
-```
-
-Please note that if you are using the MySQL or PostgreSQL protocol to connect to GreptimeDB, the precision of the pipeline time information may vary, and nanosecond-level precision may be lost.
-
-To address this issue, you can cast the `created_at` field to a timestamp to view the pipeline's creation time. For example, the following query displays `created_at` in `bigint` format:
-
-```sql
-SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
-```
-
-The query result is as follows:
-
-```
- name |             pipeline              | greptime_private.pipelines.created_at
-------+-----------------------------------+---------------------------------------
- test | processors:                      +|                   1719489754257312110
-      |   - date:                        +|
-      |       field: time                +|
-      |       formats:                   +|
-      |         - "%Y-%m-%d %H:%M:%S%.3f"+|
-      |       ignore_missing: true       +|
-      |                                  +|
-      | transform:                       +|
-      |   - fields:                      +|
-      |       - id1                      +|
-      |       - id2                      +|
-      |     type: int32                  +|
-      |   - fields:                      +|
-      |       - type                     +|
-      |       - logger                   +|
-      |     type: string                 +|
-      |     index: tag                   +|
-      |   - fields:                      +|
-      |       - log                      +|
-      |     type: string                 +|
-      |     index: fulltext              +|
-      |   - field: time                  +|
-      |     type: time                   +|
-      |     index: timestamp             +|
-      |                                   |
-(1 row)
-```
-
-Then, you can use a program to convert the bigint type timestamp from the SQL result into a time string.
+Querying a pipeline with a name through HTTP interface as follow:
 
 ```shell
-timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+## 'test' is the name of the pipeline, it will return a pipeline with latest version if the pipeline named `test` exists.
+curl "http://localhost:4000/v1/events/pipelines/test"
+
+## and with the version, it will return the specify version pipeline.
+curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000"
 ```
 
-Output:
+ If the pipeline exists, the output should be:
 
-```shell
-Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
+```json
+{
+  "pipelines": [
+    {
+      "name": "test",
+      "version": "2025-04-01 06:58:31.335251882+0000",
+      "pipeline": "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+    }
+  ],
+  "execution_time_ms": 92
+}
 ```
-
-The output `Readable timestamp (UTC)` represents the creation time of the pipeline and also serves as the version number.
 
 ## Debug
 
