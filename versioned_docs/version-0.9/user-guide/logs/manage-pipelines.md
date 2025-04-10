@@ -53,6 +53,112 @@ curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A5
 }
 ```
 
+Besides, the `pipeline` field is a YAML format string, due to JSON string can't print it well, but `echo` command can pretty print it:
+
+```shell
+
+$ echo "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+
+
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
+      ignore_missing: true
+  - date:
+      fields:
+        - timestamp
+      formats:
+        - "%d/%b/%Y:%H:%M:%S %z"
+
+transform:
+  - fields:
+      - ip_address
+      - http_method
+    type: string
+    index: tag
+  - fields:
+      - status_code
+    type: int32
+    index: tag
+  - fields:
+      - request_line
+      - user_agent
+    type: string
+    index: fulltext
+  - fields:
+      - response_size
+    type: int32
+  - fields:
+      - timestamp
+    type: time
+    index: timestamp
+
+```
+
+Or you can use SQL to query pipeline information.
+
+```sql
+SELECT * FROM greptime_private.pipelines;
+```
+
+Please note that if you are using the MySQL or PostgreSQL protocol to connect to GreptimeDB, the precision of the pipeline time information may vary, and nanosecond-level precision may be lost.
+
+To address this issue, you can cast the `created_at` field to a timestamp to view the pipeline's creation time. For example, the following query displays `created_at` in `bigint` format:
+
+```sql
+SELECT name, pipeline, created_at::bigint FROM greptime_private.pipelines;
+```
+
+The query result is as follows:
+
+```
+ name |             pipeline              | greptime_private.pipelines.created_at
+------+-----------------------------------+---------------------------------------
+ test | processors:                      +|                   1719489754257312110
+      |   - date:                        +|
+      |       field: time                +|
+      |       formats:                   +|
+      |         - "%Y-%m-%d %H:%M:%S%.3f"+|
+      |       ignore_missing: true       +|
+      |                                  +|
+      | transform:                       +|
+      |   - fields:                      +|
+      |       - id1                      +|
+      |       - id2                      +|
+      |     type: int32                  +|
+      |   - fields:                      +|
+      |       - type                     +|
+      |       - logger                   +|
+      |     type: string                 +|
+      |     index: tag                   +|
+      |   - fields:                      +|
+      |       - log                      +|
+      |     type: string                 +|
+      |     index: fulltext              +|
+      |   - field: time                  +|
+      |     type: time                   +|
+      |     index: timestamp             +|
+      |                                   |
+(1 row)
+```
+
+Then, you can use a program to convert the bigint type timestamp from the SQL result into a time string.
+
+```shell
+timestamp_ns="1719489754257312110"; readable_timestamp=$(TZ=UTC date -d @$((${timestamp_ns:0:10}+0)) +"%Y-%m-%d %H:%M:%S").${timestamp_ns:10}Z; echo "Readable timestamp (UTC): $readable_timestamp"
+```
+
+Output:
+
+```shell
+Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
+```
+
+The output `Readable timestamp (UTC)` represents the creation time of the pipeline and also serves as the version number.
+
 ## Debug
 
 First, please refer to the [Quick Start example](/user-guide/logs/quick-start.md#write-logs-by-pipeline) to see the correct execution of the Pipeline.
