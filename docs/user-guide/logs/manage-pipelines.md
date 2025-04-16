@@ -148,8 +148,10 @@ Querying a pipeline with a name through HTTP interface as follow:
 ```shell
 ## 'test' is the name of the pipeline, it will return a pipeline with latest version if the pipeline named `test` exists.
 curl "http://localhost:4000/v1/events/pipelines/test"
+```
 
-## and with the version, it will return the specify version pipeline.
+```shell
+## with the version parameter, it will return the specify version pipeline.
 curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000"
 ```
 
@@ -171,10 +173,10 @@ curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A5
 In the output above, the `pipeline` field is a YAML-formatted string. Since the JSON format does not display YAML strings well, the `echo` command can be used to present it in a more human-readable way:
 
 ```shell
+echo "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+```
 
-$ echo "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
-
-
+```yml
 processors:
   - dissect:
       fields:
