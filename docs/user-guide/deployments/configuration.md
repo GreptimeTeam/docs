@@ -359,20 +359,12 @@ provider = "kafka"
 broker_endpoints = ["127.0.0.1:9092"]
 max_batch_bytes = "1MB"
 consumer_wait_timeout = "100ms"
-backoff_init = "500ms"
-backoff_max = "10s"
-backoff_base = 2
-backoff_deadline = "5mins"
 overwrite_entry_start_id = false
 ```
 
 - `broker_endpoints`: The Kafka broker endpoints.
 - `max_batch_bytes`: The max size of a single producer batch.
 - `consumer_wait_timeout`: The consumer wait timeout.
-- `backoff_init`: The initial backoff delay.
-- `backoff_max`: The maximum backoff delay.
-- `backoff_base`: The exponential backoff rate.
-- `backoff_deadline`: The deadline of retries.
 - `overwrite_entry_start_id`: This option ensures that when Kafka messages are accidentally deleted, the system can still successfully replay memtable data without throwing an out-of-range error. However, enabling this option might lead to unexpected data loss, as the system will skip over missing entries instead of treating them as critical errors.
 
 ##### Remote WAL Authentication (Optional)
@@ -755,17 +747,6 @@ replication_factor = 1
 
 ## Above which a topic creation operation will be cancelled.
 create_topic_timeout = "30s"
-## The initial backoff for kafka clients.
-backoff_init = "500ms"
-
-## The maximum backoff for kafka clients.
-backoff_max = "10s"
-
-## Exponential backoff rate, i.e. next backoff = base * current backoff.
-backoff_base = 2
-
-## Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.
-backoff_deadline = "5mins"
 
 # The Kafka SASL configuration.
 # **It's only used when the provider is `kafka`**.
@@ -822,10 +803,6 @@ backoff_deadline = "5mins"
 | `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic` | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                             |
 | `wal.replication_factor`                      | Integer | `1`                    | Expected number of replicas of each partition.                                                                                                                                |
 | `wal.create_topic_timeout`                    | String  | `30s`                  | Above which a topic creation operation will be cancelled.                                                                                                                     |
-| `wal.backoff_init`                            | String  | `500ms`                | The initial backoff for kafka clients.                                                                                                                                        |
-| `wal.backoff_max`                             | String  | `10s`                  | The maximum backoff for kafka clients.                                                                                                                                        |
-| `wal.backoff_base`                            | Integer | `2`                    | Exponential backoff rate, i.e. next backoff = base \* current backoff.                                                                                                        |
-| `wal.backoff_deadline`                        | String  | `5mins`                | Stop reconnecting if the total wait time reaches the deadline. If this config is missing, the reconnecting won't terminate.                                                   |
 | `wal.sasl`                                    | String  | --                     | The Kafka SASL configuration.                                                                                                                                                 |
 | `wal.sasl.type`                               | String  | --                     | The SASL mechanisms, available values: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.                                                                                             |
 | `wal.sasl.username`                           | String  | --                     | The SASL username.                                                                                                                                                            |
