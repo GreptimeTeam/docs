@@ -30,6 +30,7 @@ jobs:
         run: |
           touch .env
           echo DOC_LANG=zh >> .env
+          echo BIEL_PROJECT_ID=${{ vars.BIEL_PROJECT_ID }} >> .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
