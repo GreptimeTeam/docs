@@ -3,6 +3,7 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import variablePlaceholder from './src/plugins/variable-placeholder'
 const locale = process.env.DOC_LANG || 'en'
+const biel_project_id = process.env.BIEL_PROJECT_ID
 
 const metaMap = {
   'en': [
@@ -160,6 +161,18 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
+  ],
+  plugins: [
+    [
+      'docusaurus-biel',
+      {
+        project: biel_project_id,
+        headerTitle: 'Greptime AI',
+        version: 'latest',
+        buttonStyle: 'dark',
+        inputPlaceholderText: 'Ask a question about Greptime...',
+      }
+    ]
   ],
 
   themeConfig: {
