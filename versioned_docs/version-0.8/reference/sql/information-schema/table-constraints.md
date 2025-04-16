@@ -1,2 +1,0 @@
-# TABLE_CONSTRAINTS
-todo
