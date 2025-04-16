@@ -349,20 +349,12 @@ provider = "kafka"
 broker_endpoints = ["127.0.0.1:9092"]
 max_batch_bytes = "1MB"
 consumer_wait_timeout = "100ms"
-backoff_init = "500ms"
-backoff_max = "10s"
-backoff_base = 2
-backoff_deadline = "5mins"
 overwrite_entry_start_id = false
 ```
 
 - `broker_endpoints`：Kafka 端点
 - `max_batch_bytes`：单个 producer batch 的最大值
 - `consumer_wait_timeout`：consumer 的等待超时时间
-- `backoff_init`：backoff 初始延迟
-- `backoff_max`：：backoff 最大延迟
-- `backoff_base`：：backoff 指数
-- `backoff_deadline`：重试的截止时间
 - `overwrite_entry_start_id`: 该选项确保在 Kafka 消息被误删除时，系统仍然能够成功重放内存表数据，而不会抛出超出范围（out-of-range）的错误。然而，启用此选项可能会导致意外的数据丢失，因为系统会跳过缺失的条目，而不是将其视为严重错误。
 
 ##### Remote WAL 鉴权 (Optional)
@@ -745,18 +737,6 @@ replication_factor = 1
 
 ## 超过此时间创建 topic 的操作将被取消。
 create_topic_timeout = "30s"
-
-## Kafka 客户端的 backoff 初始时间。
-backoff_init = "500ms"
-
-## Kafka 客户端的 backoff 最大时间。
-backoff_max = "10s"
-
-## backoff 指数，即下一个 backoff 时间 = 该指数 * 当前 backoff 时间。
-backoff_base = 2
-
-## 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止。
-backoff_deadline = "5mins"
 ```
 
 | 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
@@ -794,10 +774,6 @@ backoff_deadline = "5mins"
 | wal.topic_name_prefix                         | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
 | wal.replication_factor                        | Integer | 1                    | 每个分区的副本数                                                                                                                     |
 | wal.create_topic_timeout                      | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                                 |
-| wal.backoff_init                              | String  | 500ms                | Kafka 客户端的 backoff 初始时间                                                                                                      |
-| wal.backoff_max                               | String  | 10s                  | Kafka 客户端的 backoff 最大时间                                                                                                      |
-| wal.backoff_base                              | Integer | 2                    | backoff 指数，即下一个 backoff 时间 = 该指数 \* 当前 backoff 时间                                                                    |
-| wal.backoff_deadline                          | String  | 5mins                | 如果总等待时间达到截止时间，则停止重新连接。如果此配置缺失，则重新连接不会终止                                                       |
 | `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
 | `wal.sasl.type`                               | String  | --                   | SASL 机制，可选值：`PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
 | `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                      |
