@@ -168,7 +168,7 @@ curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A5
 }
 ```
 
-Besides, the `pipeline` field is a YAML format string, due to JSON string can't print it well, but `echo` command can pretty print it:
+In the output above, the `pipeline` field is a YAML-formatted string. Since the JSON format does not display YAML strings well, the `echo` command can be used to present it in a more human-readable way:
 
 ```shell
 
