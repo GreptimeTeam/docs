@@ -142,7 +142,80 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&versi
 
 ## 查询 Pipeline
 
-目前可以使用 SQL 来查询 Pipeline 的信息。
+可以使用以下 HTTP 接口查询 Pipeline：
+
+```shell
+## test 是 Pipeline 的名称，该查询将返回最新版本的 Pipeline。
+curl "http://localhost:4000/v1/events/pipelines/test"
+```
+
+```shell
+## 如果你想查询某个 Pipeline 的历史版本，可以在 URL 中添加 `version` 参数
+curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000"
+```
+
+ If the pipeline exists, the output should be:
+
+```json
+{
+  "pipelines": [
+    {
+      "name": "test",
+      "version": "2025-04-01 06:58:31.335251882+0000",
+      "pipeline": "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+    }
+  ],
+  "execution_time_ms": 92
+}
+```
+
+在上面的输出中，pipeline 字段是 YAML 格式的字符串。
+JSON 格式无法很好地展示 YMAL 字符串，使用 echo 命令可以将其以阅读友好的方式展示出来：
+
+```shell
+echo "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+```
+
+```yml
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
+      ignore_missing: true
+  - date:
+      fields:
+        - timestamp
+      formats:
+        - "%d/%b/%Y:%H:%M:%S %z"
+
+transform:
+  - fields:
+      - ip_address
+      - http_method
+    type: string
+    index: tag
+  - fields:
+      - status_code
+    type: int32
+    index: tag
+  - fields:
+      - request_line
+      - user_agent
+    type: string
+    index: fulltext
+  - fields:
+      - response_size
+    type: int32
+  - fields:
+      - timestamp
+    type: time
+    index: timestamp
+
+```
+
+或者使用 SQL 来查询 Pipeline：
 
 ```sql
 SELECT * FROM greptime_private.pipelines;
