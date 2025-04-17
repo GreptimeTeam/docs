@@ -73,6 +73,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
 - `json_path`: 从 JSON 数据中提取字段。
+- `json_parse`: 将一个字段解析成 JSON 对象。
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
 
@@ -504,6 +505,52 @@ transform:
 }
 ```
 
+### `json_parse`
+
+`json_parse`，如其名字所示，将一个字符串解析成一个 JSON 对象。以下是一份示例配置:
+
+```yaml
+processors:
+  - json_parse:
+      fields:
+        - complex_object, target_field
+      ignore_missing: true
+```
+
+在上述示例中，`json_parse` 处理器的配置包含以下字段：
+
+- `fields`：对于每个字段，第一个 key 表示输入字符串中的 key，第二个 key 表示输出的 key 名称。如果不填写第二个 key，则默认使用第一个 key 名作为输出名，也就是替换第一个 key 中的值。上面的示例表示解析 `complex_object` 并将输出放入 `target_field` 中。
+- `ignore_missing`：忽略字段不存在的情况。默认为 `false`。如果字段不存在且此配置为 `false`，将抛出异常。
+
+#### `json_parse` example
+
+例如，给定以下日志数据：
+
+```json
+{
+  "product_object": "{\"hello\":\"world\"}",
+}
+```
+
+使用以下配置：
+
+```yaml
+processors:
+  - json_parse:
+      fields:
+        - product_object
+```
+
+结果将是：
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  }
+}
+```
+
 ### `simple_extract`
 
 虽然 `json_path` 处理器能够使用复杂表达式从 JSON 对象中提取字段，但它相对较慢且成本较高。`simple_extract` 处理器提供了一种简单的方法，仅使用键名来提取字段。以下是示例配置：
@@ -548,7 +595,7 @@ processors:
 
 ```yaml
 processors:
-  - json_path:
+  - simple_extract:
       fields:
         - complex_object, shop_name
       key: "shop.name"

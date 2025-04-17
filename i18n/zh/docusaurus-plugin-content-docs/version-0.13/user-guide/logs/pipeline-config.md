@@ -533,7 +533,7 @@ processors:
 
 ```yaml
 processors:
-  - json_path:
+  - simple_extract:
       fields:
         - complex_object, shop_name
       key: "shop.name"
