@@ -70,6 +70,7 @@ We currently provide the following built-in Processors:
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
 - `json_path`: extracts fields from JSON data.
+- `json_parse`: parse a field into JSON object.
 - `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
 
@@ -485,6 +486,52 @@ The result will be:
 }
 ```
 
+### `json_parse`
+
+`json_parse`, as its name suggests, parses a string field into a JSON object. Here's an example configuration:
+
+```yaml
+processors:
+  - json_parse:
+      fields:
+        - complex_object, target_field
+      ignore_missing: true
+```
+
+In the above example, the configuration of the `json_parse` processor includes the following fields:
+
+- `fields`: For each field, the first key represents the entry string in the context, the second key represents the output key name. If the second key is not present, it uses the first key as the output key name too, which means in-place replacement of the original value. The example above means parsing `complex_object` and put the output into `target_field`.
+- `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
+
+#### `json_parse` example
+
+For example, given the following log data:
+
+```json
+{
+  "product_object": "{\"hello\":\"world\"}",
+}
+```
+
+Using the following configuration:
+
+```yaml
+processors:
+  - json_parse:
+      fields:
+        - product_object
+```
+
+The result will be:
+
+```json
+{
+  "product_object": {
+    "hello": "world"
+  }
+}
+```
+
 ### `simple_extract`
 
 While `json_path` processor is capable of extracting fields from JSON objects using complex expressions, it's relatively slow and costly. The `simple_extract` processor offers a simple way to extract fields by using just key names. Here's an example configuration:
@@ -529,7 +576,7 @@ Using the following configuration:
 
 ```yaml
 processors:
-  - json_path:
+  - simple_extract:
       fields:
         - complex_object, shop_name
       key: "shop.name"
