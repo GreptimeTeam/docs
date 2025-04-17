@@ -12,26 +12,12 @@ In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes w
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1-alpha.1
+- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1
 - [ETCD](https://github.com/bitnami/charts/tree/main/bitnami/etcd)
-
-## Download the CRD
-
-First, you need to download the Custom Resource Definition (CRD) for GreptimeDB clusters:
-
-```bash
-curl -LO https://github.com/GreptimeTeam/greptimedb-operator/releases/download/v0.2.1-alpha.1/greptimedbclusters.yaml
-```
-
-Apply the CRD to your Kubernetes cluster:
-
-```bash
-kubectl apply -f greptimedbclusters.yaml --server-side --force-conflicts
-```
 
 ## Upgrade operator
 
-Install the GreptimeDB Operator, setting the image version to be greater than `v0.2.1-alpha.1`.
+Install the GreptimeDB Operator, setting the image version to be greater than or equal to `v0.2.1`.
 
 ```bash
 helm repo update

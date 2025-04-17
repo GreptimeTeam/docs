@@ -12,26 +12,12 @@ description: 在 Kubernetes 上部署带有 frontend groups 的 GreptimeDB 集�
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1-alpha.1
+- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1
 - [ETCD](https://github.com/bitnami/charts/tree/main/bitnami/etcd)
-
-## 下载 CRD
-
-首先，需要下载 GreptimeDB 集群的自定义资源 (CRD):
-
-```bash
-curl -LO https://github.com/GreptimeTeam/greptimedb-operator/releases/download/v0.2.1-alpha.1/greptimedbclusters.yaml
-```
-
-将 CRD 应用于 Kubernetes 集群：
-
-```bash
-kubectl apply -f greptimedbclusters.yaml --server-side --force-conflicts
-```
 
 ## 升级 operator
 
-安装 GreptimeDB Operator，将镜像版本设置为大于 `v0.2.1-alpha.1`。
+安装 GreptimeDB Operator，将镜像版本设置为大于或等于 `v0.2.1`。
 
 ```bash
 helm repo update
