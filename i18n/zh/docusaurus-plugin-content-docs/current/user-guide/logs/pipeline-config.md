@@ -517,9 +517,9 @@ processors:
       ignore_missing: true
 ```
 
-In the above example, the configuration of the `json_parse` processor includes the following fields:
+在上述示例中，`json_parse` 处理器的配置包含以下字段：
 
-- `fields`：对于每个字段，第一个键表示上下文中的输输入的字符串，第二个键表示输出键名。如果不填写第二个键，则默认使用第一个键作为输出名，也就是原地替换第一个键的值。上面的示例表示解析 `complex_object` 并将输出放入 `target_field` 中。
+- `fields`：对于每个字段，第一个 key 表示输入字符串中的 key，第二个 key 表示输出的 key 名称。如果不填写第二个 key，则默认使用第一个 key 名作为输出名，也就是替换第一个 key 中的值。上面的示例表示解析 `complex_object` 并将输出放入 `target_field` 中。
 - `ignore_missing`：忽略字段不存在的情况。默认为 `false`。如果字段不存在且此配置为 `false`，将抛出异常。
 
 #### `json_parse` example
