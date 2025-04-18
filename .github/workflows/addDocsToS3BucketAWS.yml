@@ -26,17 +26,16 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8.6.0
-      - name: create env file
-        run: |
-          touch .env
-          echo DOC_LANG=zh >> .env
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - run: pnpm install
-      - run: DOC_LANG=zh pnpm build
+      - run: pnpm build
+        env:
+          BIEL_PROJECT_ID: ${{ secrets.BIEL_PROJECT_ID }}
+          DOC_LANG: zh
 
       - name: Check the built files
         shell: bash
