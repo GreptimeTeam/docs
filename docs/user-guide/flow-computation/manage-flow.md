@@ -143,10 +143,12 @@ The created flow will compute `max(temperature)` for every 10 seconds and store 
 
 The `EXPIRE AFTER` clause specifies the interval after which data will expire from the flow engine. 
 
-By expire, we mean data in sink table that's older than this time will no longer be modified by this flow, nor will it be deleted. This help limit the state size with stateful query(like `GROUP BY`). Hence, setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
+By expire, we mean data in sink table that's older than this time will no longer be modified by this flow, nor will it be deleted. This help limit the state size with stateful query(like `GROUP BY`).
 
-So when the flow engine processes the aggregation operation,
-data with a time index older than the specified interval will expire, that is, no longer be process by flow engine.
+Hence, setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
+
+Internally, when the flow engine processes the aggregation operation,
+data with a time index older than the specified interval will expire, that is, no longer be process by flow engine. This doesn't remove old data from sink table, it's just that flow engine will no longer updating them.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.
