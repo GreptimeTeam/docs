@@ -1,13 +1,13 @@
 ---
-keywords: [features, logs, events, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, JSON support]
-description: Answers common questions about GreptimeDB's features, including support for logs, events, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, and JSON support.
+keywords: [features, logs, events, traces, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, JSON support]
+description: Answers common questions about GreptimeDB's features, including support for metrics,logs, traces, updates, deletions, TTL policies, compression rates, high cardinality, continuous aggregation, cloud storage, performance, disaster recovery, geospatial indexing, and JSON support.
 ---
 
 # Features that You Concern
 
 ## Does GreptimeDB support logs or events?
 
-Yes. Since v0.9.0, GreptimeDB treats all time series as contextual events with timestamps, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and events with SQL, PromQL, and streaming with continuous aggregation.
+Yes. Since v0.9.0, GreptimeDB treats metrics, logs and traces as contextual wide events with timestamps, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and traces with SQL, PromQL, and streaming with continuous aggregation.
 
 Please read the [log user guide](/user-guide/logs/overview.md).
 
@@ -26,7 +26,7 @@ Of course. Please refer to the document [on managing data retention with TTL pol
 ## What are the compression rates of GreptimeDB?
 
 The answer is it depends.
-GreptimeDB uses the columnar storage layout, and compresses time series data by best-in-class algorithms.
+GreptimeDB uses the columnar storage layout, and compresses data by best-in-class algorithms.
 And it will select the most suitable compression algorithm based on the column data's statistics and distribution.
 GreptimeDB will provide rollups that can compress data more compactly but lose accuracy.
 
