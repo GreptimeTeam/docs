@@ -8,7 +8,7 @@ description: Introduction to GreptimeDB, an open-source unified observability da
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
 </p>
 
-**GreptimeDB** is an open-source, cloud-native, unified observability database. You can gain real-time insights from Edge to Cloud at Any Scale.
+**GreptimeDB** is an open-source, cloud-native, unified observability database for metrics, logs and traces. You can gain real-time insights from edge to cloud—at any scale.
 
 GreptimeDB is also on cloud as [GreptimeCloud](https://greptime.com/product/cloud),
 a fully-managed observability database service that features serverless scalability,
@@ -16,11 +16,11 @@ seamless integration with rich ecosystems.
 
 Our core developers have been building observability data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
 
-- **All-in-One Observability Database**: Process metrics, logs, and traces in real-time through a unified database with native SQL, PromQL, and streaming processing support. It replaces complex legacy data stacks with a high-performance single solution.
-- **High-Performance Engine**: Built with Rust for high performance and reliability. Rich indexing technologies (inverted, full-text, skip list, and vector indexing) accelerate queries, enabling sub-second responses on petabyte-scale datasets and handling hundreds of thousands of concurrent requests.
-- **Significant Cost Reduction**: Achieve 50x lower operational and storage costs through a compute-storage separation architecture. Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) with a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud), for simplified management.
-- **Infinity Scalability**: Purpose-built for Kubernetes and cloud environments with industry-leading compute-storage separation. Enables unlimited scaling across cloud environments while efficiently managing cardinality explosion at a massive scale.
-- **Developer-Friendly**: Features standardized SQL and PromQL interfaces, a built-in web dashboard, REST API, and support for MySQL/PostgreSQL protocols. Widely compatible with popular data ingestion protocols for seamless migration and integration.
+- **All-in-One Observability Database**: Process metrics, logs, and traces in real-time through a unified database with native [SQL](/user-guide/query-data/sql.md), [PromQL](/user-guide/query-data/promql.md), and [streaming processing](/user-guide/flow-computation/overview.md) support. It replaces complex legacy data stacks with a high-performance single solution.
+- **High-Performance Engine**: Built with Rust for high performance and reliability. Rich [indexing options](/user-guide/manage-data/data-index.md) (inverted, full-text, skip list, and vector indexing) accelerate queries, enabling sub-second responses on petabyte-scale datasets and handling hundreds of thousands of concurrent requests.
+- **Significant Cost Reduction**: Achieve 50x lower operational and storage costs through a compute-storage separation [architecture](/user-guide/concepts/architecture.md). Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) with a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud), for simplified management.
+- **Infinity Scalability**: Purpose-built for [Kubernetes](/user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management.md) and cloud environments with industry-leading compute-storage separation. Enables unlimited scaling across cloud environments while efficiently managing cardinality explosion at a massive scale.
+- **Developer-Friendly**: Features standardized SQL and PromQL interfaces, a built-in web dashboard, REST API, and support for MySQL/PostgreSQL protocols. Widely compatible with popular data [ingestion protocols](/user-guide/protocols/overview.md) for seamless migration and integration.
 - **Flexible Deployment Options**: Deploy anywhere, from ARM-based edge devices to cloud environments, with unified APIs and bandwidth-efficient data synchronization. Query edge and cloud data seamlessly using identical APIs.
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
@@ -39,4 +39,4 @@ Before getting started, please read the following documents that include instruc
 [4]: /release-notes
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
-[7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap
+[7]: https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025
