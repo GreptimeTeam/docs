@@ -116,4 +116,4 @@ You also can use the [Jaeger](https://www.jaegertracing.io/) query interface to 
 ### Append Only
 
 By default, trace table created by OpenTelemetry API are in [append only
-mode](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).

@@ -115,4 +115,4 @@ Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#w
 ## Append Only
 
 By default, logs table created by HTTP ingestion API are in [append only
-mode](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).

@@ -115,4 +115,4 @@ processors:
 
 ## 追加模式
 
-通过此接口创建的日志表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+通过此接口创建的日志表，默认为[追加模式](/user-guide/administration/design-table.md#when-to-use-append-only-tables).

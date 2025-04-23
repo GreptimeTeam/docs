@@ -188,7 +188,7 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 ### 追加模式
 
-通过此接口创建的表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+通过此接口创建的表，默认为[追加模式](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
 
 ## Traces
 
@@ -254,4 +254,4 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 ### 追加模式
 
-通过此接口创建的表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+通过此接口创建的表，默认为[追加模式](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
