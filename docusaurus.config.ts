@@ -11,7 +11,7 @@ const metaMap = {
     { name: 'description', content: 'GreptimeDB is an open-source unified time-series database for Metrics, Logs, Events, and Traces. Learn how to gain real-time insights from edge to cloud at any scale with GreptimeDB and GreptimeCloud.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
-    { property: 'og:title', content: 'GreptimeDB Documentation | Unified Time-Series Database' },
+    { property: 'og:title', content: 'GreptimeDB Documentation' },
     { property: 'og:description', content: 'Discover how GreptimeDB unifies metrics, logs, events, and traces with SQL and PromQL. Real-time insights, high scalability, and cloud-native flexibility.' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
@@ -23,11 +23,11 @@ const metaMap = {
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://docs.greptime.com/' },
     { property: 'og:image', content: 'https://greptime.com/logo/img/logo-routine-level.png' },
-    { property: 'og:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
+    { property: 'og:title', content: 'GreptimeDB 文档' },
     { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一指标、日志、事件和追踪。实时洞察，高可扩展性和云原生灵活性。' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:url', content: 'https://greptime.com/' },
-    { property: 'twitter:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
+    { property: 'twitter:title', content: 'GreptimeDB 文档' },
     { property: 'twitter:description', content: '探索 GreptimeDB，这个开源的时序数据库，用于处理指标、日志、事件和追踪。无缝扩展，实时洞察和可观测性工作流。' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
@@ -86,7 +86,7 @@ const algoliaMap = {
 }
 
 const config: Config = {
-  title: 'GreptimeDB Documentation | Unified Time-Series Database',
+  title: 'GreptimeDB Documentation',
   tagline: 'Open-source unified time-series database for Metrics, Logs, Events, and Traces.',
   favicon: '/favicon.ico',
 
