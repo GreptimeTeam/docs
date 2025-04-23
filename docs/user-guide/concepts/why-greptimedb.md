@@ -92,7 +92,7 @@ GreptimeDB integrates seamlessly with your observability stack while maintaining
 GreptimeDB introduces a new data model that combines time-series and relational models:
 
 - Data is represented as a table with rows and columns
-- Metrics, logs, and events map to columns with a time index for timestamps
+- Metrics, logs, and traces map to columns with a time index for timestamps
 - Schema is created dynamically and new columns are added automatically as data is ingested
 
 ![Time-Series Table](/time-series-table.png)
