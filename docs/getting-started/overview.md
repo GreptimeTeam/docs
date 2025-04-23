@@ -1,3 +1,8 @@
+---
+keywords: [getting started, overview, installation, quick start]
+description: Get started with GreptimeDB quickly.
+---
+
 # Getting Started
 
 Get started with GreptimeDB quickly by following these steps:
