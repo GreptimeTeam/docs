@@ -3,7 +3,7 @@ keywords: [系统元数据, INFORMATION_SCHEMA, MySQL 兼容性, 自定义表, �
 description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据库或表的名称、列的数据类型等。
 ---
 
-# 概述
+# INFORMATION_SCHEMA
 
 `INFORMATION_SCHEMA` 提供了对系统元数据的访问，例如数据库或表的名称、列的数据类型等。GreptimeDB 还提供了一些自定义的 `INFORMATION_SCHEMA` 表，用于查询有关 GreptimeDB 系统本身、集群信息和运行时指标等元数据。很多 `INFORMATION_SCHEMA` 表都有对应的 `SHOW` 命令，查询 `INFORMATION_SCHEMA` 的好处是可以在表之间进行连接。
 

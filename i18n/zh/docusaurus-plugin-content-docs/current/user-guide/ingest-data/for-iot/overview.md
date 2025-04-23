@@ -3,7 +3,7 @@ keywords: [物联网, 数据写入, SQL, gRPC SDK, InfluxDB Line Protocol, EMQX,
 description: 概述 GreptimeDB 支持的各种数据写入方法，包括 SQL、gRPC SDK、InfluxDB Line Protocol、EMQX 和 OpenTSDB。
 ---
 
-# 概述
+# 物联网（IoT）数据写入
 
 数据的写入是物联网数据流程的关键部分。
 它从各种来源（如传感器、设备和应用程序）收集数据并将其存储在中央位置以供进一步处理和分析。

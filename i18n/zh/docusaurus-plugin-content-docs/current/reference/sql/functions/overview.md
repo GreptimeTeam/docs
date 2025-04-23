@@ -5,7 +5,7 @@ description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、�
 
 import TOCInline from '@theme/TOCInline';
 
-# 概述
+# 函数
 
 <TOCInline toc={toc} />
 

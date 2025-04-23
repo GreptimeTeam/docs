@@ -1,17 +1,12 @@
-# 概述
+---
+keywords: [GreptimeCloud, 立即开始]
+description: 立即开始使用 GreptimeCloud。
+---
 
-使用你熟悉的协议或语言立即开始！
+import DocCardList from '@theme/DocCardList';
 
-## 协议
+# 立即开始
 
-- [Prometheus](prometheus.md)
-- [InfluxDB](influxdb.md)
-- [MySQL](mysql.md)
-- [Vector](vector.md)
+立即使用你熟悉的协议或语言开始！
 
-## 语言
-
-- [Go](go.md)
-- [Python](python.md)
-- [Java](java.md)
-- [Node.js](node.md)
+<DocCardList />

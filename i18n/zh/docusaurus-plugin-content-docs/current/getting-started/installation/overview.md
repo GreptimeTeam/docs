@@ -3,9 +3,7 @@ keywords: [安装, 数据库健康检查, 单机模式, 分布式集群, 快速�
 description: 介绍如何安装 GreptimeDB 以及启动后检查数据库健康状态的方法。
 ---
 
-# 概述
-
-## 安装
+# 安装
 
 根据以下说明安装 GreptimeDB：
 

@@ -32,7 +32,7 @@
     "description": "The label for category Write Data in sidebar docs"
   },
   "sidebar.docs.category.Query Data": {
-    "message": "读取数据",
+    "message": "查询数据",
     "description": "The label for category Query Data in sidebar docs"
   },
   "sidebar.docs.category.Flow Computation": {

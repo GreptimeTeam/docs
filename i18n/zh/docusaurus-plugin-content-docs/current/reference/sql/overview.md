@@ -3,7 +3,7 @@ keywords: [SQL 语法, SQL 示例]
 description: GreptimeDB SQL 语句.
 ---
 
-# 概述
+# SQL
 
 * [数据类型](./data-types)
 * [INSERT](./insert.md)

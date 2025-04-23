@@ -3,7 +3,7 @@ keywords: [特点, 优势, 数据模型, 基础架构, 存储位置, 核心概�
 description: 概述 GreptimeDB 的特点和优势，并提供相关文档链接，帮助用户了解 GreptimeDB 的设计和功能。
 ---
 
-# 概述
+# 概念
 
 - [Why GreptimeDB](./why-greptimedb.md)：介绍了 GreptimeDB 的特点和优势，包括其对指标、日志和事件数据的统一设计，云原生和灵活架构允许在各种环境中部署，从嵌入式到云平台等。GreptimeDB 还具有成本优势、高性能和用户友好等特点。
 - [数据模型](./data-model.md)：介绍了 GreptimeDB 的数据模型，包括表的模式、索引列等。
