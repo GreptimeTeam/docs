@@ -186,6 +186,10 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
+### 追加模式
+
+通过此接口创建的表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
+
 ## Traces
 
 GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 OpenTelemetry 的 traces 的表模型来让用户方便地查询和分析 traces 数据。
@@ -243,7 +247,11 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 - 每一行代表一个单一的 span；
 - 核心的 OpenTelemetry 字段，如 `trace_id`, `span_id`, 和 `service_name` 等将被单独作为表的列；
-- Resource Attributes 和 Span Attributes 将被自动展平为单独的列，列名为其 JSON 格式表示时的 key（多层嵌套时将用 `.` 连接）；    
+- Resource Attributes 和 Span Attributes 将被自动展平为单独的列，列名为其 JSON 格式表示时的 key（多层嵌套时将用 `.` 连接）；
 - `span_events` 和 `span_links` 默认存储为 JSON 数据类型；
 
 默认地，表会根据 `trace_id` 均匀划分为 16 个 Region 以高效地存储和查询所有的 traces 数据。
+
+### 追加模式
+
+通过此接口创建的表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).

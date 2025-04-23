@@ -112,3 +112,7 @@ span_attributes.net.sock.peer.addr: 1.2.3.4
 ```
 
 你也可以使用 [Jaeger](https://www.jaegertracing.io/) 查询界面来查询 traces 数据。更多细节请参考 [Jaeger 文档](/user-guide/query-data/jaeger.md)。
+
+## 追加模式
+
+通过此接口创建的表，默认为[追加模式](https://docs.greptime.com/user-guide/administration/design-table/#when-to-use-append-only-tables).
