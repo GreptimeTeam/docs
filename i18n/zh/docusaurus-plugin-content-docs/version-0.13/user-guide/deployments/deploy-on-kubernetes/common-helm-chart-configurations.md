@@ -26,7 +26,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.3"
+  tag: "v0.13.2"
   # -- The image pull secrets
   pullSecrets: []
 ```
@@ -40,7 +40,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.11.3"
+  tag: "v0.13.2"
   # -- The image pull secrets
   pullSecrets: []
 
@@ -379,7 +379,7 @@ objectStorage:
     # AliCloud access key ID
     accessKeyId: ""
     # AliCloud access key secret
-    secretAccessKey: ""
+    accessKeySecret: ""
   oss:
     # AliCloud OSS bucket name
     bucket: ""
@@ -419,7 +419,7 @@ debugPod:
   image:
     registry: docker.io
     repository: greptime/greptime-tool
-    tag: "20241107-9c210d18"
+    tag: "20250317-5281e66"
 
   # -- The debug pod resource
   resources:

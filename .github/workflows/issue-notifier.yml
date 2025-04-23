@@ -6,6 +6,7 @@ on:
 
 jobs:
   notify:
+    if: ${{ github.repository == 'GreptimeTeam/docs' }}
     runs-on: ubuntu-latest
 
     strategy:
