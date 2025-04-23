@@ -13,10 +13,14 @@ GreptimeDB 支持通过 SQL 语句灵活查询数据。本节将介绍特定的�
 
 ## 使用 `matches_term` 函数进行精确匹配
 
-在 SQL 查询中，您可以使用 `matches_term` 函数执行精确的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行精确匹配。下面是一个典型示例：
+在 SQL 查询中，您可以使用 `matches_term` 函数执行精确的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行精确匹配。您也可以使用 `@@` 操作符作为 `matches_term` 的简写形式。下面是一个典型示例：
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'error') OR matches_term(message, 'fail');
+
+-- 使用 @@ 操作符（matches_term 的简写形式）
+SELECT * FROM logs WHERE message @@ 'error' OR message @@ 'fail';
 ```
 
 `matches_term` 函数专门用于精确匹配，使用方式如下：
@@ -34,7 +38,11 @@ SELECT * FROM logs WHERE matches_term(message, 'error') OR matches_term(message,
 `matches_term` 函数执行精确词语匹配，这意味着它只会匹配由非字母数字字符或文本开头/结尾界定的完整词语。这对于在日志中查找特定的错误消息或状态码特别有用。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'error');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE message @@ 'error';
 ```
 
 此查询将返回所有 `message` 列中包含完整词语 "error" 的记录。该函数确保您不会得到部分匹配或词语内的匹配。
@@ -52,13 +60,17 @@ SELECT * FROM logs WHERE matches_term(message, 'error');
 您可以使用 `OR` 运算符组合多个 `matches_term` 条件来搜索包含多个关键词中任意一个的日志。当您想要查找可能包含不同错误变体或不同类型问题的日志时，这很有用。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'critical') OR matches_term(message, 'error');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE message @@ 'critical' OR message @@ 'error';
 ```
 
 此查询将查找包含完整词语 "critical" 或 "error" 的日志。每个词语都是独立匹配的，结果包括匹配任一条件的日志。
 
 匹配和不匹配的示例：
-- ✅ "Critical error: system failure" - 匹配两个词语
+- ✅ "critical error: system failure" - 匹配两个词语
 - ✅ "An error occurred!" - 匹配 "error"
 - ✅ "critical failure detected" - 匹配 "critical"
 - ❌ "errors" - 不匹配，因为 "error" 是更大词语的一部分
@@ -69,7 +81,11 @@ SELECT * FROM logs WHERE matches_term(message, 'critical') OR matches_term(messa
 您可以使用 `NOT` 运算符与 `matches_term` 结合来从搜索结果中排除某些词语。当您想要查找包含一个词语但不包含另一个词语的日志时，这很有用。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'error') AND NOT matches_term(message, 'critical');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE message @@ 'error' AND NOT message @@ 'critical';
 ```
 
 此查询将查找包含词语 "error" 但不包含词语 "critical" 的日志。这对于过滤掉某些类型的错误或专注于特定的错误类别特别有用。
@@ -84,7 +100,11 @@ SELECT * FROM logs WHERE matches_term(message, 'error') AND NOT matches_term(mes
 您可以使用 `AND` 运算符要求日志消息中必须存在多个词语。这对于查找包含特定词语组合的日志很有用。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'critical') AND matches_term(message, 'error');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE message @@ 'critical' AND message @@ 'error';
 ```
 
 此查询将查找同时包含完整词语 "critical" 和 "error" 的日志。两个条件都必须满足，日志才会包含在结果中。
@@ -99,7 +119,11 @@ SELECT * FROM logs WHERE matches_term(message, 'critical') AND matches_term(mess
 `matches_term` 函数也可以匹配精确的短语，包括带空格的短语。这对于查找包含多个词语的特定错误消息或状态更新很有用。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(message, 'system failure');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE message @@ 'system failure';
 ```
 
 此查询将查找包含精确短语 "system failure" 的日志。整个短语必须完全匹配，包括词语之间的空格。
@@ -115,7 +139,11 @@ SELECT * FROM logs WHERE matches_term(message, 'system failure');
 虽然 `matches_term` 默认区分大小写，但您可以通过在匹配前将文本转换为小写来实现不区分大小写的匹配。
 
 ```sql
+-- 使用 matches_term 函数
 SELECT * FROM logs WHERE matches_term(lower(message), 'warning');
+
+-- 使用 @@ 操作符
+SELECT * FROM logs WHERE lower(message) @@ 'warning';
 ```
 
 此查询将查找包含词语 "warning" 的日志，无论其大小写如何。`lower()` 函数在匹配前将整个消息转换为小写。
