@@ -3,7 +3,7 @@ keywords: [update data, delete data, truncate table, data retention, TTL policie
 description: Provides an overview of managing data in GreptimeDB, including updating, deleting, truncating tables, and managing data retention with TTL policies.
 ---
 
-# Overview
+# Manage Data
 
 ## Update data
 

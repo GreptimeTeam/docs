@@ -3,7 +3,7 @@ keywords: [灾难恢复, DR 解决方案, 备份与恢复, RTO, RPO, 组件架�
 description: 介绍 GreptimeDB 的灾难恢复（DR）解决方案，包括基本概念、组件架构、不同的 DR 解决方案及其比较。
 ---
 
-# 概述
+# 灾难恢复
 
 作为分布式数据库，GreptimeDB 提供了不同的灾难恢复（DR）解决方案。
 

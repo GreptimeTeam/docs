@@ -1,4 +1,9 @@
-# 概述
+---
+keywords: [日志, GreptimeDB, 日志写入, 日志配置, 查询日志]
+description: 提供了使用 GreptimeDB 日志服务的各种指南，包括快速开始、Pipeline 配置、管理 Pipeline、写入日志和查询日志。
+---
+
+# 日志
 
 - [快速开始](./quick-start.md)：介绍了如何快速开始使用 GreptimeDB 日志服务。
 - [Pipeline 配置](./pipeline-config.md)：深入介绍 GreptimeDB 中的 Pipeline 的每项具体配置。

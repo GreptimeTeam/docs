@@ -3,7 +3,7 @@ keywords: [Metasrv, 元数据存储, 请求路由, 负载均衡, 高可用性]
 description: 介绍 Metasrv 的功能、架构和与前端的交互方式。
 ---
 
-# 概述
+# Metasrv
 
 ![meta](/meta.png)
 

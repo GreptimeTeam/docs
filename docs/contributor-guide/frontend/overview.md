@@ -3,7 +3,7 @@ keywords: [frontend, tenant management, authorization, flow control, cloud deplo
 description: Provides an overview of the Frontend component in GreptimeDB, its roles, and typical deployment in the cloud.
 ---
 
-# Overview
+# Frontend
 
 The `Frontend` executes requests from clients, and performs some tasks in the cloud
 , like tenant management, authorization validation, flow control, etc.

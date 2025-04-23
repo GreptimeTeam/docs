@@ -3,7 +3,7 @@ keywords: [migrate from MySQL, migrate from InfluxDB, migrate from PostgreSQL, m
 description: The overview of migrating data to GreptimeDB from various databases, including InfluxDB, MySQL, PostgreSQL, Prometheus, and more.
 ---
 
-# Overview
+# Migrate to GreptimeDB
 
 import DocCardList from '@theme/DocCardList';
 

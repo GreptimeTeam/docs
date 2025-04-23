@@ -3,7 +3,7 @@ keywords: [query languages, PromQL, SQL, views, CTE, query libraries, external d
 description: Overview of query languages and features supported by GreptimeDB, including PromQL, SQL, and log query capabilities.
 ---
 
-# Overview
+# Query Data
 
 ## Query languages
 

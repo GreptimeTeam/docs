@@ -3,7 +3,7 @@ keywords: [time series database, metrics, logs, events, SQL support, range queri
 description: Introduction to GreptimeDB's features, including unified storage for metrics, logs, and events, SQL and multiple protocol support, and range queries.
 ---
 
-# Overview
+# User Guide
 
 Welcome to the user guide for GreptimeDB.
 

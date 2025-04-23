@@ -5,7 +5,7 @@ description: Provides an overview of the SQL functions available in GreptimeDB, 
 
 import TOCInline from '@theme/TOCInline';
 
-# Overview
+# Functions
 
 <TOCInline toc={toc} />
 

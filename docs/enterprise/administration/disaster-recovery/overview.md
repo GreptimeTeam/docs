@@ -3,7 +3,7 @@ keywords: [disaster recovery, high availability, data protection, active-active 
 description: Overview of disaster recovery solutions in GreptimeDB Enterprise, focusing on the active-active failover architecture for high availability and data protection.
 ---
 
-# Overview
+# Disaster Recovery
 
 GreptimeDB is a distributed database designed to withstand disasters.
 

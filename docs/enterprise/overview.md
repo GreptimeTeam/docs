@@ -3,7 +3,7 @@ keywords: [enterprise, features, solutions, cloud, edge, IoT, observability, LDA
 description: Overview of GreptimeDB Enterprise, detailing its advanced features, solutions, and enhancements over the open-source version to optimize data efficiency and reduce costs.
 ---
 
-# Overview
+# Enterprise
 
 GreptimeDB Enterprise is a powerful time-series database solution designed to meet the specific needs of enterprises.
 In addition to the features available in the open-source version of GreptimeDB,

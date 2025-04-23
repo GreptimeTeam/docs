@@ -3,7 +3,7 @@ keywords: [配置项, 鉴权, Kubernetes 部署, Android 运行, 容量规划, G
 description: GreptimeDB 部署概述，包括配置项、鉴权、在 Kubernetes 上部署、在 Android 上运行、容量规划和 GreptimeCloud 的介绍。
 ---
 
-# 概述
+# 部署
 
 ## 配置项
 

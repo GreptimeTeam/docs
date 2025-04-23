@@ -3,7 +3,7 @@ keywords: [SQL syntax, SQL examples]
 description: GreptimeDB SQL statements.
 ---
 
-# Overview
+# SQL
 
 * [Data Types](./data-types)
 * [INSERT](./insert.md)

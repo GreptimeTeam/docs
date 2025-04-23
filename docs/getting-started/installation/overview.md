@@ -3,9 +3,8 @@ keywords: [installation, health check, quick start, GreptimeDB standalone, Grept
 description: Instructions to install GreptimeDB, check its health status, and proceed to the quick start guide.
 ---
 
-# Overview
 
-## Installation
+# Installation
 
 Follow these instructions to install GreptimeDB:
 

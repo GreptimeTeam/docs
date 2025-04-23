@@ -3,7 +3,7 @@ keywords: [Frontend, 客户端请求, 租户管理, 鉴权认证, 流量控制]
 description: 介绍 GreptimeDB 中 Frontend 的功能和部署。
 ---
 
-# 概述
+# Frontend
 
 `Frontend` 执行客户端的请求，也处理云服务中的一些特定任务，例如租户管理、鉴权认证、流量控制等。
 

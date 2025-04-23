@@ -3,7 +3,7 @@ keywords: [data ingestion, automatic schema generation, observability, IoT, real
 description: Overview of data ingestion methods in GreptimeDB, including automatic schema generation and recommended methods for different scenarios.
 ---
 
-# Overview
+# Ingest Data
 
 ## Automatic Schema Generation
 

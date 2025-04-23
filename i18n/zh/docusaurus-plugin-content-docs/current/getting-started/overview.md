@@ -1,4 +1,9 @@
-# 概述
+---
+keywords: [快速开始, 安装]
+description: 快速开始使用 GreptimeDB
+---
+
+# 立即开始
 
 立即开始使用 GreptimeDB！
 
