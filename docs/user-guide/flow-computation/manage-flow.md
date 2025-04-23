@@ -143,14 +143,16 @@ The created flow will compute `max(temperature)` for every 10 seconds and store 
 
 The `EXPIRE AFTER` clause specifies the interval after which data will expire from the flow engine. 
 
-By expire, we mean data in sink table that's older than this time will no longer be modified by this flow, nor will it be deleted. This help limit the state size with stateful query(like `GROUP BY`).
+Data in the source table that exceeds the specified expiration time will no longer be included in the flow's calculations.
+Similarly, data in the sink table that is older than the expiration time will not be updated. 
+This means the flow engine will ignore data older than the specified interval during aggregation.
+This mechanism helps to manage the state size for stateful queries, such as those involving `GROUP BY`.
 
-Hence, setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
+It is important to note that the `EXPIRE AFTER` clause does not delete data from either the source table or the sink table.
+It only controls how the flow engine processes the data.
+If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
 
-Internally, when the flow engine processes the aggregation operation,
-data with a time index older than the specified interval will expire, that is, no longer be process by flow engine. This doesn't remove old data from sink table, it's just that flow engine will no longer updating them.
-
-Note that EXPIRE AFTER` and `ttl` serve different purposes: `ttl` defines the lifespan of data within a table, whereas `EXPIRE AFTER` governs the duration for which data get processed in the flow engine.
+Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.

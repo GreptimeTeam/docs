@@ -64,7 +64,7 @@ CREATE TABLE `ngx_statistics` (
 
 Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it. 
 
-Also notice the `EXPIRE AFTER` clause, it means this flow will reject input data with `access_time` older than `now() - 6` hours, so data in the sink table that is older than 6 hours will no longer be modified by this flow(note the data will **NOT** be deleted),  see more explain in [manage-flow](manage-flow.md#expire-after).
+The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
 
 ```sql
 CREATE FLOW ngx_aggregation
@@ -270,7 +270,7 @@ The above query continuously aggregates data from the `temp_sensor_data` table i
 It calculates the maximum temperature reading for each sensor and location,
 filtering out data where the maximum temperature exceeds 100 degrees.
 The `temp_alerts` table will be continuously updated with the aggregated data,
-providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold. The `EXPIRE AFTER '1h'` makes flow only update for data with `ts` in `(now - 1h, now)` range, see more explain in [manage-flow](manage-flow.md#expire-after).
+providing real-time alerts (in the form of new rows in the `temp_alerts` table) when the temperature exceeds the threshold. The `EXPIRE AFTER '1h'` makes flow only calculate source data with `ts` in `(now - 1h, now)` range, see more explain in [manage-flow](manage-flow.md#expire-after).
 
 Now that we have created the flow task, we can insert some data into the source table `temp_sensor_data`:
 
@@ -354,7 +354,8 @@ GROUP BY
 The query aggregates data from the `ngx_access_log` table into the `ngx_distribution` table.
 It computes the total number of logs for each status code and packet size bucket (bucket size of 10, as specified by `trunc` with a second argument of -1) within each time window.
 The `date_bin` function groups the data into one-minute intervals.
-Consequently, the `ngx_distribution` table is continuously updated, offering real-time insights into the distribution of packet sizes per status code. And data that arrive too late (a too old `access_time` from now, '6h' as declared in `EXPIRE AFTER`) will be safely ignore by flow, see more explain in [manage-flow](manage-flow.md#expire-after).
+The `EXPIRE AFTER '6h'` ensures that the flow computation only uses source data from the last 6 hours. See more details in [manage-flow](manage-flow.md#expire-after).
+Consequently, the `ngx_distribution` table is continuously updated, offering real-time insights into the distribution of packet sizes per status code.
 
 Now that we have created the flow task, we can insert some data into the source table `ngx_access_log`:
 
