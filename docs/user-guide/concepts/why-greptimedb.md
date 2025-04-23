@@ -18,6 +18,7 @@ GreptimeDB unifies the processing of metrics, logs, and traces through:
 
 It replaces complex legacy data stacks with a high-performance single solution.
 
+<img src="/unify-processing.png" alt="drawing" width="400"/>
 
 ## Cost-Effective with Object Storage
 
@@ -29,7 +30,7 @@ As for performance optimization, GreptimeDB utilizes different techniques such a
 
 GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, skipping index, and full-text index. GreptimeDB combines smart indexing and Massively Parallel Processing (MPP) to boost pruning and filtering.
 
-[GreptimeDB achieves 1 billion cold runs #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance), read more [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
+[GreptimeDB achieves 1 billion cold runs #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance) Read more [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
 
 ## Elastic Scaling with Kubernetes
 
