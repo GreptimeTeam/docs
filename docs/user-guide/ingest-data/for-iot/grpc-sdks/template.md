@@ -116,3 +116,6 @@ refer to the following code snippet.
 
 <InjectContent id="ingester-lib-reference" content={props.children}/>
 
+## FAQ
+
+<InjectContent id="faq" content={props.children}/>

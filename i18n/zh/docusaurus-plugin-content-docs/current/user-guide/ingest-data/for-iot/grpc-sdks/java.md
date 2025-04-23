@@ -418,4 +418,60 @@ Java SDK 提供了用于调试的指标和日志。
 
 </div>
 
+<div id="faq">
+
+## 为何我会遇到连接异常？
+
+当你使用 GreptimeDB Java ingester SDK 时，可能会遇到一些连接异常。例如，异常信息为
+"`Caused by: java.nio.channels.UnsupportedAddressTypeException`"，
+"`Caused by: java.net.ConnectException: connect(..) failed: Address family not supported by protocol`" 或
+"`Caused by: java.net.ConnectException: connect(..) failed: Invalid argument`"。而你确定 GreptimeDB 是正常运行的，
+并且其服务地址是可访问的。
+
+这些连接异常可能是因为 GRPC 的 `io.grpc.NameResolverProvider` service provider 未能在打包时被包含到最终的 JAR
+包中。所以修复方法是：
+
+- 如果你使用的是 Maven Assembly 插件，请在你的 assembly 文件中添加 `metaInf-services` container descriptor handler，如下所示：
+  ```xml
+  <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+   ...
+    <containerDescriptorHandlers>
+      <containerDescriptorHandler>
+        <handlerName>metaInf-services</handlerName>
+      </containerDescriptorHandler>
+    </containerDescriptorHandlers>
+  </assembly>
+  ```
+- 如果你使用的是 Maven Shade 插件，你可以添加 `ServicesResourceTransformer`，如下所示：
+  ```xml
+  <project>
+    ...
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.6.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                </transformers>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+    ...
+  </project>
+  ```
+</div>
+
 </DocTemplate>

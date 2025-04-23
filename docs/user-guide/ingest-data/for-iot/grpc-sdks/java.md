@@ -428,4 +428,62 @@ Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-i
 
 </div>
 
+<div id="faq">
+
+### Why am I getting some connection exceptions?
+
+When using the GreptimeDB Java ingester SDK, you may encounter some connection exceptions.
+For example, exceptions that are "`Caused by: java.nio.channels.UnsupportedAddressTypeException`",
+"`Caused by: java.net.ConnectException: connect(..) failed: Address family not supported by protocol`", or
+"`Caused by: java.net.ConnectException: connect(..) failed: Invalid argument`". While you are certain that the
+GreptimeDB server is running, and its endpoint is reachable.
+
+These connection exceptions could be all because the GRPC's `io.grpc.NameResolverProvider` service provider is not
+packaged into the final JAR, during the assembling process. So the fix can be:
+
+- If you are using Maven Assembly plugin, add the `metaInf-services` container descriptor handler to your assembly
+  file, like this:
+  ```xml
+  <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+   ...
+    <containerDescriptorHandlers>
+      <containerDescriptorHandler>
+        <handlerName>metaInf-services</handlerName>
+      </containerDescriptorHandler>
+    </containerDescriptorHandlers>
+  </assembly>
+  ```
+- And if you are using Maven Shade plugin, you can add the `ServicesResourceTransformer` instead:
+  ```xml
+  <project>
+    ...
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.6.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                </transformers>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+    ...
+  </project>
+  ```
+
+</div>
+
 </DocTemplate>
