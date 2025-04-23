@@ -3,6 +3,10 @@
     "message": "Nightly",
     "description": "The label for version current"
   },
+  "sidebar.docs.doc.Overview": {
+    "message": "概述",
+    "description": "The ZH label for Overview"
+  },
   "sidebar.docs.category.Getting Started": {
     "message": "立即开始",
     "description": "The label for category Getting Started in sidebar docs"

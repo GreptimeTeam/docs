@@ -11,12 +11,20 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Getting Started',
       items: [
-        'getting-started/overview',
+        {
+          type: 'doc',
+          id: 'getting-started/overview',
+          label: 'Overview',
+        },
         {
           type: 'category',
           label: 'Installation',
           items: [
-            'getting-started/installation/overview',
+            {
+              type: 'doc',
+              id: 'getting-started/installation/overview',
+              label: 'Overview',
+            },
             'getting-started/installation/greptimedb-standalone',
             'getting-started/installation/greptimedb-cluster',
             'getting-started/installation/greptimedb-dashboard',
@@ -29,12 +37,20 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'User Guide',
       items: [
-        'user-guide/overview',
+        {
+          type: 'doc',
+          id: 'user-guide/overview',
+          label: 'Overview',
+        },
         {
           type: 'category',
           label: 'Concepts',
           items: [
-            'user-guide/concepts/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/concepts/overview',
+              label: 'Overview',
+            },
             'user-guide/concepts/why-greptimedb',
             'user-guide/concepts/data-model',
             'user-guide/concepts/architecture',
@@ -47,12 +63,20 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Ingest Data',
           items: [
-            'user-guide/ingest-data/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/ingest-data/overview',
+              label: 'Overview',
+            },
             {
               type: 'category',
               label: 'For observability',
               items: [
-                'user-guide/ingest-data/for-observability/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/ingest-data/for-observability/overview',
+                  label: 'Overview',
+                },
                 'user-guide/ingest-data/for-observability/prometheus',
                 'user-guide/ingest-data/for-observability/vector',
                 'user-guide/ingest-data/for-observability/opentelemetry',
@@ -69,13 +93,21 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'For IoT',
               items: [
-                'user-guide/ingest-data/for-iot/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/ingest-data/for-iot/overview',
+                  label: 'Overview',
+                },
                 'user-guide/ingest-data/for-iot/sql',
                 {
                   type: 'category',
                   label: 'gRPC SDKs',
                   items: [
-                    'user-guide/ingest-data/for-iot/grpc-sdks/overview',
+                    {
+                      type: 'doc',
+                      id: 'user-guide/ingest-data/for-iot/grpc-sdks/overview',
+                      label: 'Overview',
+                    },
                     'user-guide/ingest-data/for-iot/grpc-sdks/go',
                     'user-guide/ingest-data/for-iot/grpc-sdks/java',
                   ],
@@ -92,7 +124,12 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Query Data',
           items: [
-            'user-guide/query-data/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/query-data/overview',
+              label: 'Overview',
+            
+            },
             'user-guide/query-data/sql',
             'user-guide/query-data/promql',
             'user-guide/query-data/view',
@@ -102,12 +139,23 @@ const sidebars: SidebarsConfig = {
             'user-guide/query-data/jaeger',
           ],
         },
-        { type: 'category', label: 'Manage Data', items: ['user-guide/manage-data/overview', 'user-guide/manage-data/data-index'] },
+        { 
+          type: 'category', 
+          label: 'Manage Data', 
+          items: [
+            {type: 'doc', id: 'user-guide/manage-data/overview', label: 'Overview'},
+            'user-guide/manage-data/data-index'
+          ]
+        },
         {
           type: 'category',
           label: 'Integrations',
           items: [
-            'user-guide/integrations/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/integrations/overview',
+              label: 'Overview',
+            },
             'user-guide/integrations/prometheus',
             'user-guide/integrations/vector',
             'user-guide/integrations/kafka',
@@ -126,7 +174,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Protocols',
           items: [
-            'user-guide/protocols/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/protocols/overview',
+              label: 'Overview',
+            },
             'user-guide/protocols/influxdb-line-protocol',
             'user-guide/protocols/opentelemetry',
             'user-guide/protocols/mysql',
@@ -143,7 +195,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Migrate to GreptimeDB',
           items: [
-            'user-guide/migrate-to-greptimedb/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/migrate-to-greptimedb/overview',
+              label: 'Overview',
+            },
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
@@ -154,7 +210,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Flow Computation',
           items: [
-            'user-guide/flow-computation/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/flow-computation/overview',
+              label: 'Overview',
+            },
             'user-guide/flow-computation/continuous-aggregation',
             'user-guide/flow-computation/manage-flow',
             'user-guide/flow-computation/expressions',
@@ -164,7 +224,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Logs',
           items: [
-            'user-guide/logs/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/logs/overview',
+              label: 'Overview',
+            },
             'user-guide/logs/quick-start',
             'user-guide/logs/pipeline-config',
             'user-guide/logs/manage-pipelines',
@@ -183,12 +247,20 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Deployments',
           items: [
-            'user-guide/deployments/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/deployments/overview',
+              label: 'Overview',
+            },
             {
               type: 'category',
               label: 'Kubernetes',
               items: [
-                'user-guide/deployments/deploy-on-kubernetes/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/deployments/deploy-on-kubernetes/overview',
+                  label: 'Overview',
+                },
                 'user-guide/deployments/deploy-on-kubernetes/getting-started',
                 'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
                 'user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations',
@@ -207,7 +279,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Authentication',
               items: [
-                'user-guide/deployments/authentication/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/deployments/authentication/overview',
+                  label: 'Overview',
+                },
                 'user-guide/deployments/authentication/static',
               ],
             },
@@ -218,14 +294,22 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Administration',
           items: [
-            'user-guide/administration/overview',
+            {
+              type: 'doc',
+              id: 'user-guide/administration/overview',
+              label: 'Overview',
+            },
             'user-guide/administration/capacity-plan',
             'user-guide/administration/manage-etcd',
             {
               type: 'category',
               label: 'Manage Data',
               items: [
-                'user-guide/administration/manage-data/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/administration/manage-data/overview',
+                  label: 'Overview',
+                },
                 'user-guide/administration/manage-data/basic-table-operations',
                 'user-guide/administration/manage-data/table-sharding',
                 'user-guide/administration/manage-data/region-migration',
@@ -237,7 +321,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Disaster Recovery',
               items: [
-                'user-guide/administration/disaster-recovery/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/administration/disaster-recovery/overview',
+                  label: 'Overview',
+                },
                 'user-guide/administration/disaster-recovery/back-up-&-restore-data',
                 'user-guide/administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
@@ -251,7 +339,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Monitoring',
               items: [
-                'user-guide/administration/monitoring/overview',
+                {
+                  type: 'doc',
+                  id: 'user-guide/administration/monitoring/overview',
+                  label: 'Overview',
+                },
                 'user-guide/administration/monitoring/export-metrics',
                 'user-guide/administration/monitoring/tracing',
               ],
@@ -268,12 +360,21 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'GreptimeCloud',
       items: [
-        'greptimecloud/overview',
+        {
+          type: 'doc',
+          id: 'greptimecloud/overview',
+          label: 'Overview',
+        
+        },
         {
           type: 'category',
           label: 'Getting Started',
           items: [
-            'greptimecloud/getting-started/overview',
+            {
+              type: 'doc',
+              id: 'greptimecloud/getting-started/overview',
+              label: 'Overview',
+            },
             'greptimecloud/getting-started/prometheus',
             'greptimecloud/getting-started/mysql',
             'greptimecloud/getting-started/influxdb',
@@ -323,7 +424,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Usage & Billing',
           items: [
-            'greptimecloud/usage-&-billing/overview',
+            {
+              type: 'doc',
+              id: 'greptimecloud/usage-&-billing/overview',
+              label: 'Overview',
+            },
             'greptimecloud/usage-&-billing/request-capacity-unit',
             'greptimecloud/usage-&-billing/hobby',
             'greptimecloud/usage-&-billing/serverless',
@@ -356,7 +461,12 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'GreptimeDB Enterprise',
       items: [
-        'enterprise/overview',
+        {
+          type: 'doc',
+          id: 'enterprise/overview',
+          label: 'Overview',
+        
+        },
         {
           type: 'category',
           label: 'Autopilot',
@@ -378,7 +488,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Disaster Recovery',
               items: [
-                'enterprise/administration/disaster-recovery/overview',
+                {
+                  type: 'doc',
+                  id: 'enterprise/administration/disaster-recovery/overview',
+                  label: 'Overview',
+                },
                 'enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover',
               ]
             }
@@ -406,7 +520,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'SQL',
           items: [
-            'reference/sql/overview',
+            {
+              type: 'doc',
+              id: 'reference/sql/overview',
+              label: 'Overview',
+            },
             'reference/sql/data-types',
             'reference/sql/alter',
             'reference/sql/case',
@@ -435,7 +553,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Functions',
               items: [
-                'reference/sql/functions/overview',
+                {
+                  type: 'doc',
+                  id: 'reference/sql/functions/overview',
+                  label: 'Overview',
+                },
                 'reference/sql/functions/df-functions',
                 'reference/sql/functions/geo',
                 'reference/sql/functions/json',
@@ -448,7 +570,11 @@ const sidebars: SidebarsConfig = {
               type: 'category',
               label: 'Information Schema',
               items: [
-                'reference/sql/information-schema/overview',
+                {
+                  type: 'doc',
+                  id: 'reference/sql/information-schema/overview',
+                  label: 'Overview',
+                },
                 'reference/sql/information-schema/build-info',
                 'reference/sql/information-schema/character-sets',
                 'reference/sql/information-schema/collations',
@@ -480,13 +606,22 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Contributor Guide',
       items: [
-        'contributor-guide/overview',
+        {
+          type: 'doc',
+          id: 'contributor-guide/overview',
+          label: 'Overview',
+        
+        },
         'contributor-guide/getting-started',
         {
           type: 'category',
           label: 'Frontend',
           items: [
-            'contributor-guide/frontend/overview',
+            {
+              type: 'doc',
+              id: 'contributor-guide/frontend/overview',
+              label: 'Overview',
+            },
             'contributor-guide/frontend/table-sharding',
             'contributor-guide/frontend/distributed-querying',
           ],
@@ -495,7 +630,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Datanode',
           items: [
-            'contributor-guide/datanode/overview',
+            {
+              type: 'doc',
+              id: 'contributor-guide/datanode/overview',
+              label: 'Overview',
+            },
             'contributor-guide/datanode/storage-engine',
             'contributor-guide/datanode/query-engine',
             'contributor-guide/datanode/data-persistence-indexing',
@@ -507,7 +646,11 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Metasrv',
           items: [
-            'contributor-guide/metasrv/overview',
+            {
+              type: 'doc',
+              id: 'contributor-guide/metasrv/overview',
+              label: 'Overview',
+            },
             'contributor-guide/metasrv/admin-api',
             'contributor-guide/metasrv/selector',
           ],
@@ -515,13 +658,25 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Flownode',
-          items: ['contributor-guide/flownode/overview', 'contributor-guide/flownode/dataflow', 'contributor-guide/flownode/arrangement'],
+          items: [
+            {
+              type: 'doc',
+              id: 'contributor-guide/flownode/overview',
+              label: 'Overview',
+            },
+            'contributor-guide/flownode/dataflow',
+            'contributor-guide/flownode/arrangement'
+          ],
         },
         {
           type: 'category',
           label: 'Tests',
           items: [
-            'contributor-guide/tests/overview',
+            {
+              type: 'doc',
+              id: 'contributor-guide/tests/overview',
+              label: 'Overview',
+            },
             'contributor-guide/tests/unit-test',
             'contributor-guide/tests/integration-test',
             'contributor-guide/tests/sqlness-test',
@@ -550,7 +705,18 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
-    { type: 'category', label: 'FAQ and Others', items: ['faq-and-others/overview', 'faq-and-others/faq'] },
+    { 
+      type: 'category', 
+      label: 'FAQ and Others',
+      items: [
+        {
+          type: 'doc',
+          id: 'faq-and-others/overview',
+          label: 'Overview',
+        },
+        'faq-and-others/faq'
+      ]
+    },
   ],
 }
 
