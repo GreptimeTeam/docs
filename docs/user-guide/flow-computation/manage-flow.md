@@ -150,6 +150,8 @@ Hence, setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit
 Internally, when the flow engine processes the aggregation operation,
 data with a time index older than the specified interval will expire, that is, no longer be process by flow engine. This doesn't remove old data from sink table, it's just that flow engine will no longer updating them.
 
+Note that EXPIRE AFTER` and `ttl` serve different purposes: `ttl` defines the lifespan of data within a table, whereas `EXPIRE AFTER` governs the duration for which data get processed in the flow engine.
+
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
 any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.
 Only data timestamped from 09:00:00 onwards will be used in the aggregation and update to sink table.

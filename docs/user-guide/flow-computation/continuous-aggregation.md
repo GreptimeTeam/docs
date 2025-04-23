@@ -188,7 +188,7 @@ The above query puts the data from the `ngx_access_log` table into the `ngx_coun
 It calculates the distinct country for each time window.
 The `date_bin` function is used to group the data into one-hour intervals.
 The `ngx_country` table will be continuously updated with the aggregated data,
-providing real-time insights into the distinct countries that are accessing the system. The `EXPIRE AFTER` make flow ignore data with `access_time` older than 7 days and no longer update them, see more explain in [manage-flow](manage-flow.md#expire-after).
+providing real-time insights into the distinct countries that are accessing the system. The `EXPIRE AFTER` make flow ignore data with `access_time` older than 7 days and no longer calculate them anymore, see more explain in [manage-flow](manage-flow.md#expire-after).
 
 You can insert some data into the source table `ngx_access_log`:
 
