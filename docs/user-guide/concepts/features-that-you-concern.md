@@ -7,7 +7,7 @@ description: Answers common questions about GreptimeDB's features, including sup
 
 ## Does GreptimeDB support logs or events?
 
-Yes. Since v0.9.0, GreptimeDB treats metrics, logs and traces as contextual wide events with timestamps, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and traces with SQL, PromQL, and streaming with continuous aggregation.
+Yes. Since v0.9.0, GreptimeDB treats metrics, logs and traces as contextual wide events with timestamps, and thus unifies the processing of metrics, logs, and traces. It supports analyzing metrics, logs, and traces with SQL, PromQL, and streaming with continuous aggregation.
 
 Please read the [log user guide](/user-guide/logs/overview.md).
 
