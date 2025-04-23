@@ -3,7 +3,7 @@ keywords: [disaster recovery, GreptimeDB, DR solutions, backup and restore, acti
 description: Overview of disaster recovery (DR) solutions in GreptimeDB, including basic concepts, component architecture, and various DR solutions such as standalone, active-active failover, cross-region deployment, and backup & restore.
 ---
 
-# Overview
+# Disaster Recovery
 
 GreptimeDB is a distributed database designed to withstand disasters. It provides different solutions for disaster recovery (DR).
 

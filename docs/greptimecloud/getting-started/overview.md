@@ -1,17 +1,13 @@
-# Overview
+---
+keywords: [GreptimeCloud, Getting Started]
+description: Overview of getting started with GreptimeCloud.
+---
+
+import DocCardList from '@theme/DocCardList';
+
+# Getting Started
 
 Getting Started with your familiar protocols or languages!
 
-## Protocols
+<DocCardList />
 
-- [Prometheus](prometheus.md)
-- [InfluxDB](influxdb.md)
-- [MySQL](mysql.md)
-- [Vector](vector.md)
-
-## Languages
-
-- [Go](go.md)
-- [Python](python.md)
-- [Java](java.md)
-- [Node.js](node.md)

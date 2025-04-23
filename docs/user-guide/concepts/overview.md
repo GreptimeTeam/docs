@@ -3,7 +3,7 @@ keywords: [GreptimeDB, features, data model, architecture, storage locations, ke
 description: Provides an overview of GreptimeDB, including its features, data model, architecture, storage locations, key concepts, and notable features.
 ---
 
-# Overview
+# Concepts
 
 - [Why GreptimeDB](./why-greptimedb.md): This document outlines the features and benefits of GreptimeDB, including its unified design for metrics, logs, and events; Cloud-Native and flexible architecture that allows for deployment in various environments, from embedded to cloud. GreptimeDB is also cost-effective, high-performance, and user-friendly.
 - [Data Model](./data-model.md): This document describes the data model of GreptimeDB, including table schema, time index constraint, etc.

@@ -3,7 +3,7 @@ keywords: [log service, quick start, pipeline configuration, manage pipelines, q
 description: Provides links to various guides on using GreptimeDB's log service, including quick start, pipeline configuration, managing pipelines, writing logs, and querying logs.
 ---
 
-# Overview
+# Logs
 
 - [Quick Start](./quick-start.md): Provides an introduction on how to quickly get started with GreptimeDB log service.
 - [Pipeline Configuration](./pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.

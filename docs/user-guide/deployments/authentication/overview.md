@@ -3,7 +3,7 @@ keywords: [authentication, user providers, static user provider, LDAP user provi
 description: Overview of authentication in GreptimeDB, including static user provider and LDAP user provider for authenticating users.
 ---
 
-# Overview
+# Authentication
 
 Authentication occurs when a user attempts to connect to the database. In GreptimeDB, users are authenticated by "user
 provider"s. There are various implementations of user providers in GreptimeDB:
