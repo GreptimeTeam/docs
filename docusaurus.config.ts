@@ -15,7 +15,7 @@ const metaMap = {
     { property: 'og:description', content: 'Discover how GreptimeDB unifies metrics, logs, and traces with SQL and PromQL. Fast, Efficient, and Real-Time.' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
-    { property: 'twitter:description', content: 'Explore GreptimeDB—an open-source, real-time observability database that unifies metrics, logs, events, and traces. It delivers fast, cost-efficient insights at any scale with seamless edge-to-cloud data integration.' },
+    { property: 'twitter:description', content: 'Explore GreptimeDB—an open-source, real-time observability database that unifies metrics, logs, and traces. It delivers fast, cost-efficient insights at any scale with seamless edge-to-cloud data integration.' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ],
   'zh': [
@@ -25,11 +25,11 @@ const metaMap = {
     { property: 'og:url', content: 'https://docs.greptime.com/' },
     { property: 'og:image', content: 'https://greptime.com/logo/img/logo-routine-level.png' },
     { property: 'og:title', content: 'GreptimeDB 文档' },
-    { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一处理指标、日志、事件和链路追踪。快速、高效、实时。' },
+    { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一处理指标、日志和链路追踪。快速、高效、实时。' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:url', content: 'https://greptime.com/' },
     { property: 'twitter:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
-    { property: 'twitter:description', content: '探索 GreptimeDB——开源、实时的可观测数据库，统一处理指标、日志、事件和链路追踪。您可以在从边缘到云的任意规模下，实现快速且高性价比的数据洞察。' },
+    { property: 'twitter:description', content: '探索 GreptimeDB——开源、实时的可观测数据库，统一处理指标、日志和链路追踪。您可以在从边缘到云的任意规模下，实现快速且高性价比的数据洞察。' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ]
@@ -88,7 +88,7 @@ const algoliaMap = {
 
 const config: Config = {
   title: 'GreptimeDB Documentation',
-  tagline: 'Open-source unified time-series database for Metrics, Logs, Events, and Traces.',
+  tagline: 'Open-source unified time-series database for Metrics, Logs, and Traces.',
   favicon: '/favicon.ico',
 
   // Set the production url of your site here
