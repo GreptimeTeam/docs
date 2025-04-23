@@ -30,7 +30,7 @@ FROM
   metrics INNER JOIN logs on metrics.host = logs.host
 WHERE
   time > now() - '1 hour'::INTERVAL AND
-  matches(path, '/api/v1/avatar')
+  matches_term(path, '/api/v1/avatar')
 ALIGN '5s' BY (host) FILL PREV
 ```
 
@@ -47,7 +47,7 @@ ALIGN '5s' BY (host) FILL PREV
   - `metrics INNER JOIN logs on metrics.host = logs.host`：在 host 字段上将 metrics 和 logs 表进行连接。
 3. WHERE 子句：
   - `time > now() - '1 hour'::INTERVAL`：筛选出过去一小时内的记录。
-  - `matches(path, '/api/v1/avatar')`：筛选出特定 API 路径 `/api/v1/avatar` 的记录。
+  - `matches_term(path, '/api/v1/avatar')`：筛选出特定 API 路径 `/api/v1/avatar` 的记录。
 4. ALIGN 子句：
   - `ALIGN '5s' BY (host) FILL PREV`：将结果对齐到每 5 秒，并使用前一个非空值填充缺失值。
 

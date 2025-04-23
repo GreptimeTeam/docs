@@ -44,8 +44,10 @@ arrow_cast(expression, datatype)
 
 ### 字符串函数
 
-DataFusion [字符串函数](./df-functions.md#string-functions)。GreptimeDB 提供：
-* `matches(expression, pattern)` 用于全文检索。
+DataFusion [字符串函数](./df-functions.md#string-functions)。
+
+GreptimeDB 提供：
+* `matches_term(expression, term)` 用于全文检索。
 
 阅读[查询日志](/user-guide/logs/query-logs.md)文档获取更多详情。
 
