@@ -629,7 +629,7 @@ default_timezone = "UTC"
 
 ```toml
 # 工作主目录。
-data_home = "/tmp/metasrv/"
+data_home = "./greptimedb_data/metasrv/"
 # metasrv 的绑定地址，默认为 "127.0.0.1:3002"。
 bind_addr = "127.0.0.1:3002"
 # frontend 和 datanode 连接到 metasrv 的通信服务器地址，本地默认为 "127.0.0.1:3002"。
@@ -741,7 +741,7 @@ create_topic_timeout = "30s"
 
 | 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
 | --------------------------------------------- | ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `data_home`                                   | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                           |
+| `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
 | `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 做为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |

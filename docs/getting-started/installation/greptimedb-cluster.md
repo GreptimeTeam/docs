@@ -46,7 +46,7 @@ You can use the following command to stop the cluster:
 docker compose -f ./cluster-with-etcd.yaml down
 ```
 
-By default, the data will be stored in `/tmp/greptimedb-cluster-docker-compose`. You also can remove the data directory if you want to clean up the data.
+By default, the data will be stored in `./greptimedb-cluster-docker-compose`. You also can remove the data directory if you want to clean up the data.
 
 
 ## Next Steps

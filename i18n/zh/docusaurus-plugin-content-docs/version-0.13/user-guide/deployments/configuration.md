@@ -36,7 +36,7 @@ greptime standalone start --http-addr 127.0.0.1:4000
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "./greptimedb_data/"
 ```
 
 然后使用命令行参数 `-c [file_path]` 指定配置文件。
@@ -196,7 +196,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 | storage |                   |        | 存储选项                                            |
 |         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
 | File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
-|         | data_home         | 字符串 | 数据库存储根目录，默认为 "/tmp/greptimedb"          |
+|         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data/"          |
 | S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
 |         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
@@ -234,7 +234,7 @@ GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容�
 ```toml
 [storage]
 type = "File"
-data_home = "/tmp/greptimedb/"
+data_home = "./greptimedb_data/"
 ```
 
 s3 配置范例：
@@ -417,7 +417,7 @@ client_key_path = "/path/to/key"
 
 ```toml
 [logging]
-dir = "/tmp/greptimedb/logs"
+dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
 otlp_endpoint = "localhost:4317"
@@ -637,7 +637,7 @@ default_timezone = "UTC"
 
 ```toml
 # 工作主目录。
-data_home = "/tmp/metasrv/"
+data_home = "./greptimedb_data/metasrv/"
 # metasrv 的绑定地址，默认为 "127.0.0.1:3002"。
 bind_addr = "127.0.0.1:3002"
 # frontend 和 datanode 连接到 metasrv 的通信服务器地址，本地默认为 "127.0.0.1:3002"。
@@ -753,7 +753,7 @@ backoff_deadline = "5mins"
 
 | 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
 | --------------------------------------------- | ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `data_home`                                   | String  | `/tmp/metasrv/`      | 工作目录。                                                                                                                           |
+| `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
 | `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 做为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres |

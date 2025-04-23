@@ -48,7 +48,7 @@ ETCD_REGISTRY=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
 docker compose -f ./cluster-with-etcd.yaml down
 ```
 
-默认情况下，数据将被存储在 `/tmp/greptimedb-cluster-docker-compose`。如果你想清理数据，也可删除该目录。
+默认情况下，数据将被存储在 `./greptimedb-cluster-docker-compose`。如果你想清理数据，也可删除该目录。
 
 ## 下一步
 
