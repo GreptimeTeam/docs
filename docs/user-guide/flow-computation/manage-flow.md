@@ -139,17 +139,24 @@ GROUP BY time_window;
 
 The created flow will compute `max(temperature)` for every 10 seconds and store the result in `my_sink_table`. All data comes within 1 hour will be used in the flow.
 
-### `EXPIRE AFTER` clause
+### EXPIRE AFTER
 
-The `EXPIRE AFTER` clause specifies the interval after which data will expire from the flow engine.
-This expiration only affects the data in the flow engine and does not impact the data in the source table.
+The `EXPIRE AFTER` clause specifies the interval after which data will expire from the flow engine. 
 
-When the flow engine processes the aggregation operation (the `update_at` time),
-data with a time index older than the specified interval will expire.
+Data in the source table that exceeds the specified expiration time will no longer be included in the flow's calculations.
+Similarly, data in the sink table that is older than the expiration time will not be updated. 
+This means the flow engine will ignore data older than the specified interval during aggregation.
+This mechanism helps to manage the state size for stateful queries, such as those involving `GROUP BY`.
+
+It is important to note that the `EXPIRE AFTER` clause does not delete data from either the source table or the sink table.
+It only controls how the flow engine processes the data.
+If you want to delete data from the source or sink table, please [set the `TTL` option](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) when creating tables.
+
+Setting a reasonable time interval for `EXPIRE AFTER` is helpful to limit state size and avoid memory overflow. This is somewhere similar to the ["Watermarks"](https://docs.risingwave.com/processing/watermarks) concept in streaming processing.
 
 For example, if the flow engine processes the aggregation at 10:00:00 and the `'1 hour'::INTERVAL` is set,
-any data older than 1 hour (before 09:00:00) will expire.
-Only data timestamped from 09:00:00 onwards will be used in the aggregation.
+any input data that arrive now with a time index older than 1 hour (before 09:00:00) will expire and be ignore.
+Only data timestamped from 09:00:00 onwards will be used in the aggregation and update to sink table.
 
 ### Write a SQL query
 
