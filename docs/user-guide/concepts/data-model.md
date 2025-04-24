@@ -8,7 +8,7 @@ description: Describes the data model of GreptimeDB, focusing on time-series tab
 ## Model
 
 GreptimeDB uses the [time-series](https://en.wikipedia.org/wiki/Time_series) table to guide the organization, compression, and expiration management of data.
-The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs, and events data.
+The data model is mainly based on the table model in relational databases while considering the characteristics of metrics, logs, and traces data.
 
 All data in GreptimeDB is organized into tables with names. Each data item in a table consists of three semantic types of columns: `Tag`, `Timestamp`, and `Field`.
 
@@ -16,7 +16,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 - `Tag` columns uniquely identify the time-series.
   Rows with the same `Tag` values belong to the same time-series.
   Some TSDBs may also call them labels.
-- `Timestamp` is the root of a metrics, logs, and events database.
+- `Timestamp` is the root of a metrics, logs, and traces database.
   It represents the date and time when the data was generated.
   A table can only have one column with the `Timestamp` semantic type, which is also called the `time index`.
 - The other columns are `Field` columns.
@@ -62,9 +62,9 @@ This is very similar to the table model everyone is familiar with. The differenc
   These columns contain the actual data.
 - The table sorts and deduplicates rows by `host`, `idc`, `ts`. So `select count(*) from system_metrics` will scan all rows.
 
-### Events
+### Logs
 
-Another example is creating a table for events like access logs:
+Another example is creating a table for logs like web server access logs:
 
 ```sql
 CREATE TABLE access_logs (
@@ -88,12 +88,15 @@ CREATE TABLE access_logs (
 
 To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
+### Traces
+
+GreptimeDB supports writing OpenTelemetry traces data directly via the OTLP/HTTP protocol, refer to the [OLTP traces data model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-2) for detail.
 
 ## Design Considerations
 
 GreptimeDB is designed on top of the table model for the following reasons:
 
-- The table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and events.
+- The table model has a broad group of users and it's easy to learn; we have simply introduced the concept of time index to metrics, logs, and traces.
 - Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we can conduct targeted optimizations.
 - When we have the table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.

@@ -1,6 +1,6 @@
 ---
-keywords: [time series database, open source time series database, time series data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
-description: Introduction to GreptimeDB, an open-source unified time-series database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
+keywords: [observability database, open source observability database, observability data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
+description: Introduction to GreptimeDB, an open-source unified observability database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
 ---
 # Introduction
 
@@ -8,31 +8,30 @@ description: Introduction to GreptimeDB, an open-source unified time-series data
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
 </p>
 
-**GreptimeDB** is an open-source unified time-series database for **Metrics**, **Logs**, and **Events** (also **Traces** in plan). You can gain real-time insights from Edge to Cloud at any scale.
+**GreptimeDB** is an open-source, cloud-native, unified observability database for metrics, logs and traces. You can gain real-time insights from edge to cloud—at any scale.
 
 GreptimeDB is also on cloud as [GreptimeCloud](https://greptime.com/product/cloud),
-a fully-managed time-series database service that features serverless scalability,
-seamless integration with ecoystem and improved Prometheus compatibility.
+a fully-managed observability database service that features serverless scalability,
+seamless integration with rich ecosystems.
 
-Our core developers have been building time-series data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
+Our core developers have been building observability data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
 
-- Unified all kinds of time series; GreptimeDB treats all time series as contextual events with timestamp, and thus unifies the processing of metrics, logs, and events. It supports analyzing metrics, logs, and events with SQL and PromQL, and doing streaming with continuous aggregation.
-- Optimized columnar layout for handling time-series data; compacted, compressed, and stored on various storage backends, particularly cloud object storage with 50x cost efficiency.
-- Fully open-source distributed cluster architecture that harnesses the power of cloud-native elastic computing resources.
-- Seamless scalability from a standalone binary at edge to a robust, highly available distributed cluster in cloud, with a transparent experience for both developers and administrators.
-- Flexible indexing capabilities and distributed, parallel-processing query engine, tackling high cardinality issues down.
-- Widely adopted database protocols and APIs, including MySQL, PostgreSQL, and Prometheus Remote Storage, etc.
-- Schemaless writing that automatically creates tables for data.
+- **All-in-One Observability Database**: Process metrics, logs, and traces in real-time through a unified database with native [SQL](/user-guide/query-data/sql.md), [PromQL](/user-guide/query-data/promql.md), and [streaming processing](/user-guide/flow-computation/overview.md) support. It replaces complex legacy data stacks with a high-performance single solution.
+- **High-Performance Engine**: Built with Rust for high performance and reliability. Rich [indexing options](/user-guide/manage-data/data-index.md) (inverted, full-text, skip list, and vector indexing) accelerate queries, enabling sub-second responses on petabyte-scale datasets and handling hundreds of thousands of concurrent requests.
+- **Significant Cost Reduction**: Achieve 50x lower operational and storage costs through a compute-storage separation [architecture](/user-guide/concepts/architecture.md). Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) with a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud), for simplified management.
+- **Infinity Scalability**: Purpose-built for [Kubernetes](/user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management.md) and cloud environments with industry-leading compute-storage separation. Enables unlimited scaling across cloud environments while efficiently managing cardinality explosion at a massive scale.
+- **Developer-Friendly**: Features standardized SQL and PromQL interfaces, a built-in web dashboard, REST API, and support for MySQL/PostgreSQL protocols. Widely compatible with popular data [ingestion protocols](/user-guide/protocols/overview.md) for seamless migration and integration.
+- **Flexible Deployment Options**: Deploy anywhere, from ARM-based edge devices to cloud environments, with unified APIs and bandwidth-efficient data synchronization. Query edge and cloud data seamlessly using identical APIs.
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
 - [Getting Started][1]: Provides an introduction to GreptimeDB for those who are new to it, including installation and database operations.
 - [User Guide][2]: For application developers to use GreptimeDB or build custom integration.
 - [GreptimeCloud][6]: For users of GreptimeCloud to get started.
-- [Contributor Guide][3]: For contributor interested in learning more about the technical details and enhancing GreptimeDB as a contributor.
+- [Contributor Guide][3]: For contributors interested in learning more about the technical details and enhancing GreptimeDB.
 - [Roadmap][7]: The latest GreptimeDB roadmap.
-- [Release Notes][4]: Presents all the historical version release notes.
- [FAQ][5]: Presents the most frequently asked questions.
+- [Release Notes][4]: Presents all historical version release notes.
+- [FAQ][5]: Provides answers to the most frequently asked questions.
 
 [1]: ./getting-started/overview.md
 [2]: ./user-guide/overview.md
@@ -40,4 +39,4 @@ Before getting started, please read the following documents that include instruc
 [4]: /release-notes
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
-[7]: https://www.greptime.com/blogs/2024-02-29-greptimedb-2024-roadmap
+[7]: https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025

@@ -1,12 +1,23 @@
 ---
-keywords: [cloud-native, time series database, high performance, cost-effective, unified design]
-description: Explains the motivations and benefits of using GreptimeDB, including its unified design for metrics, logs, and events, cloud-native architecture, cost-effectiveness, high performance, and ease of use. It highlights key features and deployment strategies.
+keywords: [cloud-native, observability database, high performance, cost-effective, unified design]
+description: Explains the motivations and benefits of using GreptimeDB, including its unified design for metrics, logs, and traces, cloud-native architecture, cost-effectiveness, high performance, and ease of use. It highlights key features and deployment strategies.
 ---
-
 
 # Why GreptimeDB
 
-GreptimeDB is an open-source time series database built for cloud-native environments. Our core developers have extensive experience building time-series platforms, and GreptimeDB embodies their best practices in the following key areas:
+GreptimeDB is an open-source observability database built for cloud-native environments. Our core developers have extensive experience building observability platforms, and GreptimeDB embodies their best practices in the following key areas:
+
+## Unified Processing for Observability Data
+
+GreptimeDB unifies the processing of metrics, logs, and traces through:
+- A consistent [data model](./data-model.md) that treats all observability data as timestamped wide events with context
+- Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
+- Built-in stream processing capabilities ([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
+- Seamless correlation analysis across different types of observability data (read the [SQL example](/user-guide/overview.md#sql-query-example) for detailed info)
+
+It replaces complex legacy data stacks with a high-performance single solution.
+
+<p align='center'><img src="/unify-processing.png" alt="Replaces complex legacy data stacks with a high-performance single solution" width="400"/></p>
 
 ## Cost-Effective with Object Storage
 
@@ -14,16 +25,15 @@ GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage et
 
 ## High Performance
 
-As for performance optimization, GreptimeDB utilizes different techniques such as, LSM Tree, data sharding, and kafka-based WAL design, to handle large workloads of time-series data ingestion.
+As for performance optimization, GreptimeDB utilizes different techniques such as LSM Tree, data sharding, and kafka-based WAL design, to handle large workloads of observability data ingestion.
 
-GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (Thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, data skipping index and full-text index, etc. GreptimeDB builds smart indexing and Massively Parallel Processing (MPP) together to boost pruning and filtering.
+GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, skipping index, and full-text index. GreptimeDB combines smart indexing and Massively Parallel Processing (MPP) to boost pruning and filtering.
 
-[GreptimeDB archives 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance), read more [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
+[GreptimeDB achieves 1 billion cold runs #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance) Read more [benchmark reports](https://www.greptime.com/blogs/2024-09-09-report-summary).
 
 ## Elastic Scaling with Kubernetes
 
 Built from the ground up for Kubernetes, GreptimeDB features a disaggregated storage and compute architecture that enables true elastic scaling:
-
 - Independent scaling of storage and compute resources
 - Unlimited horizontal scalability through Kubernetes
 - Resource isolation between different workloads (ingestion, querying, compaction)
@@ -31,56 +41,59 @@ Built from the ground up for Kubernetes, GreptimeDB features a disaggregated sto
 
 ![Storage/Compute Disaggregation, Compute/Compute separation](/storage-compute-disaggregation-compute-compute-separation.png)
 
-## Unified Processing for All Time Series Data
-
-GreptimeDB unifies the processing of metrics, logs, and events through:
-
-- A consistent [data model](./data-model.md) that treats all time series data as timestamped events with context
-- Native support for both [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md) queries
-- Built-in stream processing capabilities([Flow](/user-guide/flow-computation/overview.md)) for real-time aggregation and analytics
-- Seamless correlation analysis across different types of time series data, read the [SQL example](/user-guide/overview.md#sql-query-example) for detailed info.
-
-## Flexible Architecture: from Edge to Cloud
+## Flexible Architecture: From Edge to Cloud
 
 ![The architecture of GreptimeDB](/architecture-2.png)
 
-With flexible architecture design principles, different modules and components can be independently switched on, combined, or separated through modularization and layered design.
-For example, we can merge the frontend, datanode, and metasrv modules into a standalone binary, and we can also independently enable or disable the WAL for every table.
+GreptimeDB’s modularized architecture allows different components to operate independently or in unison as needed. Its flexible design supports a wide variety of deployment scenarios, from edge devices to cloud environments, while still using consistent APIs for operations. For example:
+- Frontend, datanode, and metasrv can be merged into a standalone binary
+- Components like WAL or indexing can be enabled or disabled per table
 
-Flexible architecture allows GreptimeDB to meet deployment and usage requirements in scenarios from the edge to the cloud, while still using the same set of APIs and control panels, learn the [Edge-Cloud Integrated Solution](https://greptime.com/product/carcloud).
+This flexibility ensures that GreptimeDB meets deployment requirements for edge-to-cloud solutions, like the [Edge-Cloud Integrated Solution](https://greptime.com/product/carcloud).
 
-Through well-abstracted layering and encapsulation isolation, GreptimeDB's deployment form supports various environments from embedded, standalone, and traditional clusters to cloud-native.
+From embedded and standalone deployments to cloud-native clusters, GreptimeDB adapts to various environments easily.
 
 ## Easy to Use
 
 ### Easy to Deploy and Maintain
 
-To simplify deployment and maintenance processes, GreptimeDB provides [K8s operator](https://github.com/GreptimeTeam/greptimedb-operator), [command-line tool](https://github.com/GreptimeTeam/gtctl), embedded [dashboard](https://github.com/GreptimeTeam/dashboard), and other useful tools for users to configure and manage their databases easily. Check [GreptimeCloud](https://greptime.com/product/cloud) on our official website for more information.
+GreptimeDB simplifies deployment and maintenance with tools like:
+- [K8s Operator](https://github.com/GreptimeTeam/greptimedb-operator)
+- [Command-line Tool](https://github.com/GreptimeTeam/gtctl)
+- Embedded [Dashboard](https://github.com/GreptimeTeam/dashboard)
+
+For an even simpler experience, check out the fully managed [GreptimeCloud](https://greptime.com/product/cloud).
 
 ### Easy to Integrate
 
-GreptimeDB supports multiple ingestion protocols:
+GreptimeDB supports multiple data ingestion protocols, making integration with existing observability stacks seamless:
 - **Database protocols**: MySQL, PostgreSQL
 - **Time-series protocols**: InfluxDB, OpenTSDB, Prometheus RemoteStorage
 - **Observability protocols**: OpenTelemetry, Loki, ElasticSearch
-- **High-performance gRPC with client SDKs** (Java, Go, Erlang, etc.)
+- **gRPC with SDKs**: Java, Go, Erlang, etc.
 
-For data querying, GreptimeDB offers:
-- **SQL**: For real-time queries, complex analytics, and database management
+For data querying, GreptimeDB provides:
+- **SQL**: For real-time queries, analytics, and database management
 - **PromQL**: Native support for real-time metrics querying and Grafana integration
-- **Python**: (Planned) In-database UDF and DataFrame operations for data science workloads
+- **Python** *(Planned)*: For in-database UDFs and DataFrame operations
 
-This unified approach enables seamless integration with existing observability stacks while maintaining high performance and flexibility.
+GreptimeDB integrates seamlessly with your observability stack while maintaining high performance and flexibility.
 
 ![Greptime Ecosystem](/greptime-ecosystem.png)
-￼
+
 ### Simple Data Model with Automatic Schema
 
-Combining the metrics (Measurement/Tag/Field/Timestamp) model and the relational data model (Table), GreptimeDB provides a new data model called a time-series table (see below), which presents data in the form of tables consisting of rows and columns, with tags and fields of the metrics, logs and events mapped to columns, and an enforced time index constraint that represents the timestamp.
+GreptimeDB introduces a new data model that combines time-series and relational models:
+- Data is represented as a table with rows and columns
+- Metrics, logs, and traces map to columns with a time index for timestamps
+- Schema is created dynamically and new columns are added automatically as data is ingested
 
 ![Time-Series Table](/time-series-table.png)
 
-Nevertheless, our definition of a schema is not mandatory but leans more towards the schemaless approach of databases like MongoDB.
-The table will be created dynamically and automatically when data is ingested, and new columns (tags and fields) will be added as they appear.
+However, our definition of schema is not mandatory, but rather leans towards the schema-less approach of databases like MongoDB. Tables will be created automatically and dynamically as data is written, and newly appearing columns (Tag and Field) will be added automatically. For a more detailed explanation, please read the [Data Model](./data-model.md).
 
-To learn more about our approach and architecture, check out our blog posts ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real), ["Unified Storage for Observability - GreptimeDB's Approach"](https://greptime.com/blogs/2024-12-24-observability) and ["Unifying Logs and Metrics"](https://greptime.com/blogs/2024-06-25-logs-and-metrics).
+
+For more details, explore our blogs:
+- ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real)
+- ["Unified Storage for Observability - GreptimeDB's Approach"](https://greptime.com/blogs/2024-12-24-observability)
+- ["Unifying Logs and Metrics"](https://greptime.com/blogs/2024-06-25-logs-and-metrics)
