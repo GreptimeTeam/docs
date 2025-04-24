@@ -185,6 +185,11 @@ Default table schema:
 - All attributes, including resource attributes, scope attributes, and log attributes, will be stored as a JSON column in the GreptimeDB table.
 - The timestamp of the log will be used as the timestamp index in GreptimeDB, with the column name `timestamp`. It is preferred to use `time_unix_nano` as the timestamp column. If `time_unix_nano` is not provided, `observed_time_unix_nano` will be used instead.
 
+### Append Only
+
+By default, log table created by OpenTelemetry API are in [append only
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
+
 ## Traces
 
 GreptimeDB supports writing OpenTelemetry traces data directly via the [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol, and it also provides a table model of OpenTelemetry traces for users to query and analyze traces data conveniently.
@@ -196,7 +201,7 @@ You can use [OpenTelemetry SDK](https://opentelemetry.io/docs/languages/) or oth
 To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK libraries, please use the following information:
 
 * URL: `http{s}://<host>/v1/otlp/v1/traces`
-* Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information. 
+* Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information.
 
 By default, GreptimeDB will write traces data to the `opentelemetry_traces` table in the `public` database. If you want to write traces data to a different table, you can use the `X-Greptime-DB-Name` and `X-Greptime-Log-Table-Name` headers to specify the database and table name.
 
@@ -244,3 +249,8 @@ GreptimeDB will map the OTLP traces data model to the following table schema:
 - `span_events` and `span_links` are stored as JSON data types by default
 
 By default, the table is partitioned into 16 uniform regions based on the `trace_id` to efficiently store and query all trace data.
+
+### Append Only
+
+By default, log table created by OpenTelemetry API are in [append only
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).

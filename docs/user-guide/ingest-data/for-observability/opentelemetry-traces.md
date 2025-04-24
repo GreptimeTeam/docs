@@ -112,3 +112,8 @@ span_attributes.net.sock.peer.addr: 1.2.3.4
 ```
 
 You also can use the [Jaeger](https://www.jaegertracing.io/) query interface to query traces data. Please refer to the [Jaeger](/user-guide/query-data/jaeger.md) documentation for more details.
+
+### Append Only
+
+By default, trace table created by OpenTelemetry API are in [append only
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).

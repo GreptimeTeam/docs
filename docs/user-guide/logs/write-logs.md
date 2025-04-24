@@ -48,9 +48,9 @@ Here is an example of JSON format body payload
 ]
 ```
 
-Note the whole JSON is an array (log lines). Each JSON object represents one line to be processed by Pipeline engine. 
+Note the whole JSON is an array (log lines). Each JSON object represents one line to be processed by Pipeline engine.
 
-The name of the key in JSON objects, which is `message` here, is used as field name in Pipeline processors. For example: 
+The name of the key in JSON objects, which is `message` here, is used as field name in Pipeline processors. For example:
 
 ```yaml
 processors:
@@ -111,3 +111,8 @@ It is recommended to use `dissect` or `regex` processor to split the input line 
 ## Example
 
 Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for an example.
+
+## Append Only
+
+By default, logs table created by HTTP ingestion API are in [append only
+mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
