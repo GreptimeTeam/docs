@@ -94,7 +94,7 @@ VALUES
     ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", now());
 ```
 
-则 `ngx_access_log` 表将被增量更新以包含以下数据（时间戳可能不同）：
+则 `ngx_access_log` 表将被增量更新以包含以下数据：
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -120,7 +120,7 @@ VALUES
     ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", now());
 ```
 
-结果表 `ngx_statistics` 将被增量更新，注意 `max_size`、`avg_size` 和 `high_size_count` 是如何更新的（时间戳和时间窗口可能不同）：
+结果表 `ngx_statistics` 将被增量更新，注意 `max_size`、`avg_size` 和 `high_size_count` 是如何更新的：
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -207,7 +207,7 @@ INSERT INTO ngx_access_log VALUES
     ("client10", "KR", now());
 ```
 
-等待一秒钟，让 flow 将结果写入 sink 表，然后查询（时间戳可能不同）：
+等待一秒钟，让 flow 将结果写入 sink 表，然后查询：
 
 ```sql
 select * from ngx_country;
@@ -378,7 +378,7 @@ INSERT INTO ngx_access_log VALUES
     ("cli10", 404, 184, now());
 ```
 
-等待至少一秒钟，让 flow 将结果更新到 sink 表（时间戳可能不同）：
+等待至少一秒钟，让 flow 将结果更新到 sink 表：
 
 ```sql
 SELECT * FROM ngx_distribution;

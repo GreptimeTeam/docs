@@ -97,7 +97,7 @@ VALUES
     ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", now());
 ```
 
-Then the sink table `ngx_statistics` will be incremental updated and contain the following data(Timestamp may vary):
+Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -123,7 +123,7 @@ VALUES
     ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", now());
 ```
 
-The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated(Timestamp and time window may vary):
+The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
 
 ```sql
 SELECT * FROM ngx_statistics;
@@ -213,7 +213,7 @@ INSERT INTO ngx_access_log VALUES
     ("client10", "KR", now());
 ```
 
-Wait for one second for the Flow to write the result to the sink table and then query(Timestamp may vary):
+Wait for one second for the Flow to write the result to the sink table and then query:
 
 ```sql
 select * from ngx_country;
@@ -387,7 +387,7 @@ INSERT INTO ngx_access_log VALUES
     ("cli9", 404, 180, now()),
     ("cli10", 404, 184, now());
 ```
-wait at least one second for flow to update results to sink table(Timestamp may vary):
+wait at least one second for flow to update results to sink table:
 
 ```sql
 SELECT * FROM ngx_distribution;
