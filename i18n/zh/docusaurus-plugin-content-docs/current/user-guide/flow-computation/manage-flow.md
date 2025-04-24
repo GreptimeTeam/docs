@@ -126,17 +126,23 @@ GROUP BY time_window;
 创建的 flow 将每 10 秒计算一次 `max(temperature)` 并将结果存储在 `my_sink_table` 中。
 所有在 1 小时内的数据都将用于 flow 计算。
 
-### `EXPIRE AFTER` 子句
+### EXPIRE AFTER
 
 `EXPIRE AFTER` 子句指定数据将在 flow 引擎中过期的时间间隔。
-此过期仅影响 flow 引擎中的数据，不影响 source 表中的数据。
 
-当 flow 引擎处理聚合操作（`update_at` 时间）时，
-时间索引早于指定间隔的数据将过期。
+源表中超出指定过期时间的数据将不再被包含在 flow 的计算范围内。  
+同理，目标表中超过过期时间的历史数据也不会被更新。  
+这意味着 flow 引擎在聚合计算时会自动忽略早于该时间间隔的数据。这一机制有助于管理有状态查询（例如涉及 `GROUP BY` 的查询）的状态存储规模。
+
+需特别注意的是：  
+- `EXPIRE AFTER` 子句**不会删除**源表或目标表中的数据，它仅控制 flow 引擎对数据的处理范围  
+- 若需删除表数据，请在创建表时通过 [`TTL` 策略](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies)实现  
+
+为 `EXPIRE AFTER` 设置合理的时间间隔，可有效限制 flow 的状态存储规模并避免内存溢出。该机制与流处理中的 ["水位线"](https://docs.risingwave.com/processing/watermarks) 概念有相似之处——两者均通过时间边界定义计算的有效数据范围，过期数据将不再参与流式计算过程。
 
 例如，如果 flow 引擎在 10:00:00 处理聚合，并且设置了 `'1 hour'::INTERVAL`，
-则早于 09:00:00 的数据将过期。
-只有从 09:00:00 开始的数据将用于聚合。
+当前时刻若输入数据的 Time Index 超过 1 小时（即早于 09:00:00），则会被判定为过期数据并被忽略。
+仅时间戳为 09:00:00 及之后的数据会参与聚合计算，并更新到目标表。
 
 ### 编写 SQL 查询
 
