@@ -116,6 +116,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
 | `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
+| `skip_wal`                                | 是否关闭表的预写日志                               | 布尔类型。当设置为 `true` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
 
 #### 创建指定 TTL 的表
 例如，创建一个存储数据 TTL(Time-To-Live) 为七天的表：
