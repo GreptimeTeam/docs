@@ -28,7 +28,9 @@ In the following sections, we use `http://{{API-host}}/` as the base URL to demo
 GreptimeDB supports the built-in `Basic` authentication scheme in the HTTP API. To set up authentication, follow these steps:
 
 1. Encode your username and password using the `<username>:<password>` format and the `Base64` algorithm.
-2. Attach your encoded credentials to the HTTP request header using the `Authorization: Basic <base64-encoded-credentials>` format.
+2. Attach your encoded credentials to the one of the following HTTP header:
+-  `Authorization: Basic <base64-encoded-credentials>` 
+-  `x-greptime-auth: Basic <base64-encoded-credentials>` 
 
 Here's an example. If you want to connect to GreptimeDB using the username `greptime_user` and password `greptime_pwd`, use the following command:
 
