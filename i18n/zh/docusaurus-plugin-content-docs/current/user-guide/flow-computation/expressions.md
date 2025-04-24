@@ -7,19 +7,13 @@ description: 列出了 GreptimeDB 中 flow 支持的聚合函数和标量函数�
 
 ## 聚合函数
 
-此处列出了 flow 中所有支持的聚合函数。
+Flow 支持标准 SQL 查询所支持的所有聚合函数，例如 `COUNT`、`SUM`、`MIN`、`MAX` 等。
 
-- `count(column)`: 行数。
-- `sum(column)`: 列的和。
-- `avg(column)`: 列的平均值。
-- `min(column)`: 列的最小值。
-- `max(column)`: 列的最大值。
+有关详细的函数列表，请参阅 [聚合函数](/reference/sql/functions/df-functions.md#aggregate-functions)。
 
-未来将添加更多聚合函数。
+## 标量函数
 
-## Scalar functions
-
-Flow 支持大多数 datafusion 中的标量函数，有关支持的标量函数的完整列表，请参见[datafusion](/reference/sql/functions/df-functions.md#scalar-functions)。
+Flow 支持标准 SQL 查询所支持的所有标量函数，详见我们的 [SQL 参考](/reference/sql/functions/overview.md)。
 
 以下是一些 flow 中最常用的标量函数：
 

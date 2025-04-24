@@ -195,15 +195,12 @@ GROUP BY time_window;
 请参阅 [`date_bin`](/reference/sql/functions/df-functions.md#date_bin)。
 
 :::tip 提示
-目前，flow 的内部状态（例如记录当前计数的 `count(col)` 的累加值）没有持久存储。
-为了在内部状态故障时尽量减少数据丢失，建议使用较小的时间窗口。
-
-这种内部状态丢失不会影响 sink 表中的现有数据。
+目前，flow 依赖时间窗口表达式来确定如何增量更新结果。因此，建议尽可能使用相对较小的时间窗口。
 :::
 
 ## 刷新 flow
 
-当 source 表中有新数据到达时，flow 引擎会在 1 秒内自动处理聚合操作。
+当 source 表中有新数据到达时，flow 引擎会在短时间内（比如数秒）自动处理聚合操作。
 但你依然可以使用 `ADMIN FLUSH_FLOW` 命令手动触发 flow 引擎立即执行聚合操作。
 
 ```sql
