@@ -113,4 +113,6 @@ GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-�
 
 <InjectContent id="ingester-lib-reference" content={props.children}/>
 
+## FAQ
 
+<InjectContent id="faq" content={props.children}/>
