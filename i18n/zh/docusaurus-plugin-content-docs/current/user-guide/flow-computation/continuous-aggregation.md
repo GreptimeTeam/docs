@@ -207,7 +207,7 @@ INSERT INTO ngx_access_log VALUES
     ("client10", "KR", now());
 ```
 
-等待一秒钟，让 flow 将结果写入 sink 表，然后查询：
+等待几秒钟，让 flow 将结果写入 sink 表，然后查询：
 
 ```sql
 select * from ngx_country;
@@ -283,7 +283,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, "room2", 99.5, now());
 ```
 
-表现在应该是空的，等待至少一秒钟让 flow 将结果更新到输出表：
+表现在应该是空的，等待几秒钟让 flow 将结果更新到输出表：
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -301,7 +301,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, "room2", 102.5, now());
 ```
 
-等待至少一秒钟，让 flow 将结果更新到输出表：
+等待几秒钟，让 flow 将结果更新到输出表：
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -378,7 +378,7 @@ INSERT INTO ngx_access_log VALUES
     ("cli10", 404, 184, now());
 ```
 
-等待至少一秒钟，让 flow 将结果更新到 sink 表：
+等待几秒钟，让 flow 将结果更新到 sink 表：
 
 ```sql
 SELECT * FROM ngx_distribution;

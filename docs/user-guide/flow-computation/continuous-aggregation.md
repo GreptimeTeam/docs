@@ -213,7 +213,7 @@ INSERT INTO ngx_access_log VALUES
     ("client10", "KR", now());
 ```
 
-Wait for one second for the Flow to write the result to the sink table and then query:
+Wait for few seconds for the Flow to write the result to the sink table and then query:
 
 ```sql
 select * from ngx_country;
@@ -291,7 +291,7 @@ INSERT INTO temp_sensor_data VALUES
     (1, "room1", 98.5, now() - '10 second'::INTERVAL),
     (2, "room2", 99.5, now());
 ```
-table should be empty now, but still wait at least one second for flow to update results to sink table:
+table should be empty now, but still wait at least few seconds for flow to update results to sink table:
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -309,7 +309,7 @@ INSERT INTO temp_sensor_data VALUES
     (2, "room2", 102.5, now());
 ```
 
-wait at least one second for flow to update results to sink table:
+wait at least few seconds for flow to update results to sink table:
 
 ```sql
 SELECT * FROM temp_alerts;
@@ -387,7 +387,7 @@ INSERT INTO ngx_access_log VALUES
     ("cli9", 404, 180, now()),
     ("cli10", 404, 184, now());
 ```
-wait at least one second for flow to update results to sink table:
+wait at least few seconds for flow to update results to sink table:
 
 ```sql
 SELECT * FROM ngx_distribution;
