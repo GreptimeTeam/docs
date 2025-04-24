@@ -1,3 +1,8 @@
+---
+keywords: [table sharding, GreptimeDB, partitioning methods, distributed tables, data management, SQL, query performance]
+description: Explains table sharding in GreptimeDB, including when to shard a table, partitioning methods, creating distributed tables, inserting data, querying data, and inspecting sharded tables.
+---
+
 # Table Sharding
 
 Table sharding is a technique used to distribute a large table into multiple smaller tables.
@@ -128,6 +133,10 @@ VALUES (150, 'West', 24.1, '2023-09-19 17:00:00'),
        (170, 'West', 22.9, '2023-09-19 18:15:00'),
        (180, 'West', 23.7, '2023-09-19 19:30:00');
 ```
+
+:::tip NOTE
+Note that when the written data does not meet any of the rules in the partitioning scheme, it will be assigned to the default partition (i.e., the first partition 0 of the table).
+:::
 
 ## Distributed Read
 
