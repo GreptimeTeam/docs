@@ -186,9 +186,9 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 - 所有属性，包括资源属性、范围属性和日志属性，将作为 JSON 列存储在 GreptimeDB 表中。
 - 日志的时间戳将用作 GreptimeDB 中的时间戳索引，列名为 `timestamp`。建议使用 `time_unix_nano` 作为时间戳列。如果未提供 `time_unix_nano`，将使用 `observed_time_unix_nano`。
 
-### 追加模式
+### Append 模式
 
-通过此接口创建的表，默认为[追加模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
 
 ## Traces
 
@@ -252,6 +252,6 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 默认地，表会根据 `trace_id` 均匀划分为 16 个 Region 以高效地存储和查询所有的 traces 数据。
 
-### 追加模式
+### Append 模式
 
-通过此接口创建的表，默认为[追加模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).

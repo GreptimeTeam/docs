@@ -113,6 +113,6 @@ processors:
 
 请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
 
-## 追加模式
+## Append 模式
 
-通过此接口创建的日志表，默认为[追加模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的日志表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
