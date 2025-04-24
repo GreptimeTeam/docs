@@ -61,7 +61,7 @@ CREATE TABLE `ngx_statistics` (
 
 然后创建名为 `ngx_aggregation` 的 flow 任务，包括 `count`、`min`、`max`、`avg` `size` 列的聚合函数，以及大于 550 的所有数据包的大小总和。聚合是在 `access_time` 列的 1 分钟固定窗口中计算的，并且还按 `status` 列分组。因此，你可以实时了解有关数据包大小和对其的操作的信息，例如，如果 `high_size_count` 在某个时间点变得太高，你可以进一步检查是否有任何问题，或者如果 `max_size` 列在 1 分钟时间窗口内突然激增，你可以尝试定位该数据包并进一步检查。
 
-下方 SQL 语句中的 `EXPIRE AFTER '6h'` 参数确保 flow 计算仅使用过去 6 小时内的源数据。对于接收表中超过 6 小时的历史数据，本流程不会对其进行修改。有关`EXPIRE AFTER`的详细信息，请参阅[管理 Flow](manage-flow.md#expire-after)
+下方 SQL 语句中的 `EXPIRE AFTER '6h'` 参数确保 flow 计算仅使用过去 6 小时内的源数据。对于 sink 表中超过 6 小时的历史数据，本 flow 不会对其进行修改。有关`EXPIRE AFTER`的详细信息，请参阅[管理 Flow](manage-flow.md#expire-after)
 
 ```sql
 CREATE FLOW ngx_aggregation
