@@ -129,6 +129,10 @@ VALUES (150, 'West', 24.1, '2023-09-19 17:00:00'),
        (180, 'West', 23.7, '2023-09-19 19:30:00');
 ```
 
+:::tip NOTE
+Note that when the written data does not meet any of the rules in the partitioning scheme, it will be assigned to the default partition (i.e., the first partition 0 of the table).
+:::
+
 ## Distributed Read
 
 Simply use the `SELECT` statement to query the data:
