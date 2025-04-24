@@ -1,3 +1,8 @@
+---
+keywords: [table sharding, GreptimeDB, partitioning methods, distributed tables, data management, SQL, query performance]
+description: Explains table sharding in GreptimeDB, including when to shard a table, partitioning methods, creating distributed tables, inserting data, querying data, and inspecting sharded tables.
+---
+
 # Table Sharding
 
 Table sharding is a technique used to distribute a large table into multiple smaller tables.
