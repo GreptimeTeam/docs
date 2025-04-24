@@ -58,7 +58,7 @@ CREATE TABLE app_logs (
   host STRING,
   api_path STRING,
   log_level STRING,
-  log STRING,
+  `log` STRING,
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
