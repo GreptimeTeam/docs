@@ -161,13 +161,16 @@ ALTER TABLE monitor MODIFY COLUMN host SET INVERTED INDEX;
 Enable fulltext index on a column:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false', backend = 'bloom');
 ```
 
 You can specify the following options using `FULLTEXT INDEX WITH` when enabling fulltext options:
 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
+- `backend`: Sets the backend for the full-text index. Supported values are `bloom` and `tantivy`. Default is `bloom`.
+
+For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/logs/fulltext-index-config.md).
 
 If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 

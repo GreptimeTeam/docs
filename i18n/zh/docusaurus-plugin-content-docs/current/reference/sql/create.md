@@ -23,7 +23,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
 - 否则，返回错误。
 
-数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用（一个例外是数据库的 TTL 不能为 `instant`）。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
+数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用（一个例外是数据库的 TTL 不能为 `instant`）。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
 
 ### 示例
 
@@ -337,25 +337,27 @@ Query OK, 0 rows affected (0.01 sec)
 
 使用 `FULLTEXT INDEX WITH` 可以指定以下选项：
 
-- `analyzer`：设置全文索引的分析器语言，支持 `English` 和 `Chinese`。
-- `case_sensitive`：设置全文索引是否区分大小写，支持 `true` 和 `false`。
+- `analyzer`：设置全文索引的分析器语言。支持的值为 `English` 和 `Chinese`。
+- `case_sensitive`：设置全文索引是否区分大小写。支持的值为 `true` 和 `false`。
+- `backend`：设置全文索引的后端实现。支持的值为 `bloom` 和 `tantivy`。
 
-如果不带 `WITH` 选项，`FULLTEXT INDEX` 将使用默认值：
+如果不指定 `WITH`，`FULLTEXT` 将使用以下默认值：
 
-- `analyzer`：默认 `English`
-- `case_sensitive`：默认 `false`
+- `analyzer`：默认为 `English`
+- `case_sensitive`：默认为 `false`
+- `backend`：默认为 `bloom`
 
-例如，要创建一个带有全文索引的表，配置 `log` 列为全文索引，并指定分析器为 `Chinese` 且不区分大小写：
+例如，要创建一个带有全文索引的表，配置 `log` 列为全文索引，并指定分析器为 `English`，不区分大小写且使用 `bloom` 后端：
 
 ```sql
 CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
-  log STRING FULLTEXT INDEX WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  log STRING FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false', backend = 'bloom'),
   ts TIMESTAMP TIME INDEX
 );
 ```
 
-更多关于全文索引和全文搜索的使用，请参阅 [日志查询文档](/user-guide/logs/query-logs.md)。
+更多关于全文索引配置、性能对比和使用指南的信息，请参考[全文索引配置指南](/user-guide/logs/fulltext-index-config.md)和[日志查询文档](/user-guide/logs/query-logs.md)。
 
 ### Region 分区规则
 
