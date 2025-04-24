@@ -23,7 +23,9 @@ API Base URL 是 `http(s)://<host>:<port>/`。
 GreptimeDB 支持 HTTP API 中内置的 `Basic` 鉴权机制。要设置鉴权，请按照以下步骤操作：
 
 1. 使用 `<username:password>` 格式和 `Base64` 算法对用户名和密码进行编码。
-2. 使用 `Authorization : Basic <base64-encoded-credentials>` 格式将编码后的凭据附加到 HTTP 请求头中。
+2. 将编码后的凭据附加到下列 HTTP 请求头之一中:
+- `Authorization : Basic <base64-encoded-credentials>`
+- `x-greptime-auth : Basic <base64-encoded-credentials>`
 
 以下是一个示例。如果要使用用户名 `greptime_user` 和密码 `greptime_pwd` 连接到 GreptimeDB，请使用以下命令：
 
