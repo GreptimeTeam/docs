@@ -91,25 +91,27 @@ To observe the outcome of the continuous aggregation in the `ngx_statistics` tab
 ```sql
 INSERT INTO ngx_access_log 
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", "2021-07-01 00:00:01.000"),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:00:30.500"),
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", "2021-07-01 00:01:01.000"),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", "2021-07-01 00:01:01.500");
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", now() - INTERVAL '1' minute),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now() - INTERVAL '1' minute),
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", now()),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", now());
 ```
 
-Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
+Then the sink table `ngx_statistics` will be incremental updated and contain the following data(Timestamp may vary):
 
 ```sql
 SELECT * FROM ngx_statistics;
 ```
 
 ```sql
- status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
---------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
-    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
-    200 |          1 |      600 |      600 |      600 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
-    404 |          1 |      700 |      700 |      700 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:17.439000
-(3 rows)
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+| status | total_logs | min_size | max_size | avg_size | high_size_count | time_window         | update_at                  |
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+|    200 |          2 |      500 |     1000 |      750 |               1 | 2025-04-24 06:46:00 | 2025-04-24 06:47:06.680000 |
+|    200 |          1 |      600 |      600 |      600 |               1 | 2025-04-24 06:47:00 | 2025-04-24 06:47:06.680000 |
+|    404 |          1 |      700 |      700 |      700 |               1 | 2025-04-24 06:47:00 | 2025-04-24 06:47:06.680000 |
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+3 rows in set (0.01 sec)
 ```
 
 Try to insert more data into the `ngx_access_log` table:
@@ -117,23 +119,25 @@ Try to insert more data into the `ngx_access_log` table:
 ```sql
 INSERT INTO ngx_access_log 
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", "2021-07-01 00:01:01.000"),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", "2021-07-01 00:01:01.500");
+    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now()),
+    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", now());
 ```
 
-The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
+The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated(Timestamp and time window may vary):
 
 ```sql
 SELECT * FROM ngx_statistics;
 ```
 
 ```sql
- status | total_logs | min_size | max_size | avg_size | high_size_count |        time_window         |         update_at          
---------+------------+----------+----------+----------+-----------------+----------------------------+----------------------------
-    200 |          2 |      500 |     1000 |      750 |               1 | 2021-07-01 00:00:00.000000 | 2024-07-24 08:36:17.439000
-    200 |          2 |      500 |      600 |      550 |               1 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
-    404 |          2 |      700 |      800 |      750 |               2 | 2021-07-01 00:01:00.000000 | 2024-07-24 08:36:46.495000
-(3 rows)
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+| status | total_logs | min_size | max_size | avg_size | high_size_count | time_window         | update_at                  |
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+|    200 |          2 |      500 |     1000 |      750 |               1 | 2025-04-24 06:46:00 | 2025-04-24 06:47:06.680000 |
+|    200 |          2 |      500 |      600 |      550 |               1 | 2025-04-24 06:47:00 | 2025-04-24 06:47:21.720000 |
+|    404 |          2 |      700 |      800 |      750 |               2 | 2025-04-24 06:47:00 | 2025-04-24 06:47:21.720000 |
++--------+------------+----------+----------+----------+-----------------+---------------------+----------------------------+
+3 rows in set (0.01 sec)
 ```
 
 Here is the explanation of the columns in the `ngx_statistics` table:
@@ -159,6 +163,9 @@ CREATE TABLE ngx_access_log (
     country STRING,
     access_time TIMESTAMP TIME INDEX,
     PRIMARY KEY(client)
+)
+WITH(
+  append_mode = 'true'
 );
 
 /* sink table */
@@ -194,19 +201,19 @@ You can insert some data into the source table `ngx_access_log`:
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("client1", "US", "2022-01-01 01:00:00"),
-    ("client2", "US", "2022-01-01 01:00:00"),
-    ("client3", "UK", "2022-01-01 01:00:00"),
-    ("client4", "UK", "2022-01-01 02:00:00"),
-    ("client5", "CN", "2022-01-01 02:00:00"),
-    ("client6", "CN", "2022-01-01 02:00:00"),
-    ("client7", "JP", "2022-01-01 03:00:00"),
-    ("client8", "JP", "2022-01-01 03:00:00"),
-    ("client9", "KR", "2022-01-01 03:00:00"),
-    ("client10", "KR", "2022-01-01 03:00:00");
+    ("client1", "US", now() - '2 hour'::INTERVAL),
+    ("client2", "US", now() - '2 hour'::INTERVAL),
+    ("client3", "UK", now() - '2 hour'::INTERVAL),
+    ("client4", "UK", now() - '1 hour'::INTERVAL),
+    ("client5", "CN", now() - '1 hour'::INTERVAL),
+    ("client6", "CN", now() - '1 hour'::INTERVAL),
+    ("client7", "JP", now()),
+    ("client8", "JP", now()),
+    ("client9", "KR", now()),
+    ("client10", "KR", now());
 ```
 
-Wait for one second for the Flow to write the result to the sink table and then query:
+Wait for one second for the Flow to write the result to the sink table and then query(Timestamp may vary):
 
 ```sql
 select * from ngx_country;
@@ -216,13 +223,14 @@ select * from ngx_country;
 +---------+---------------------+----------------------------+
 | country | time_window         | update_at                  |
 +---------+---------------------+----------------------------+
-| CN      | 2022-01-01 02:00:00 | 2024-10-22 08:17:47.906000 |
-| JP      | 2022-01-01 03:00:00 | 2024-10-22 08:17:47.906000 |
-| KR      | 2022-01-01 03:00:00 | 2024-10-22 08:17:47.906000 |
-| UK      | 2022-01-01 01:00:00 | 2024-10-22 08:17:47.906000 |
-| UK      | 2022-01-01 02:00:00 | 2024-10-22 08:17:47.906000 |
-| US      | 2022-01-01 01:00:00 | 2024-10-22 08:17:47.906000 |
+| CN      | 2025-04-24 05:00:00 | 2025-04-24 06:55:17.217000 |
+| JP      | 2025-04-24 06:00:00 | 2025-04-24 06:55:17.217000 |
+| KR      | 2025-04-24 06:00:00 | 2025-04-24 06:55:17.217000 |
+| UK      | 2025-04-24 04:00:00 | 2025-04-24 06:55:17.217000 |
+| UK      | 2025-04-24 05:00:00 | 2025-04-24 06:55:17.217000 |
+| US      | 2025-04-24 04:00:00 | 2025-04-24 06:55:17.217000 |
 +---------+---------------------+----------------------------+
+6 rows in set (0.00 sec)
 ```
 
 ## Real-Time Monitoring Example
@@ -237,6 +245,9 @@ CREATE TABLE temp_sensor_data (
     temperature DOUBLE,
     ts TIMESTAMP TIME INDEX,
     PRIMARY KEY(sensor_id, loc)
+)
+WITH(
+  append_mode = 'true'
 );
 
 /* create sink table */
@@ -277,8 +288,8 @@ Now that we have created the flow task, we can insert some data into the source 
 ```sql
 
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 98.5, "2022-01-01 00:00:00"),
-    (2, "room2", 99.5, "2022-01-01 00:00:01");
+    (1, "room1", 98.5, now() - '10 second'::INTERVAL),
+    (2, "room2", 99.5, now());
 ```
 table should be empty now, but still wait at least one second for flow to update results to sink table:
 
@@ -294,8 +305,8 @@ Now insert some data that will trigger the alert:
 
 ```sql
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 101.5, "2022-01-01 00:00:02"),
-    (2, "room2", 102.5, "2022-01-01 00:00:03");
+    (1, "room1", 101.5, now()),
+    (2, "room2", 102.5, now());
 ```
 
 wait at least one second for flow to update results to sink table:
@@ -308,9 +319,10 @@ SELECT * FROM temp_alerts;
 +-----------+-------+----------+---------------------+----------------------------+
 | sensor_id | loc   | max_temp | time_window         | update_at                  |
 +-----------+-------+----------+---------------------+----------------------------+
-|         1 | room1 |    101.5 | 2022-01-01 00:00:00 | 2024-10-22 09:13:07.535000 |
-|         2 | room2 |    102.5 | 2022-01-01 00:00:00 | 2024-10-22 09:13:07.535000 |
+|         1 | room1 |    101.5 | 2025-04-24 06:58:20 | 2025-04-24 06:58:32.379000 |
+|         2 | room2 |    102.5 | 2025-04-24 06:58:20 | 2025-04-24 06:58:32.379000 |
 +-----------+-------+----------+---------------------+----------------------------+
+2 rows in set (0.01 sec)
 ```
 
 ## Real-Time Dashboard
@@ -324,6 +336,9 @@ CREATE TABLE ngx_access_log (
     stat INT,
     size INT,
     access_time TIMESTAMP TIME INDEX
+)
+WITH(
+  append_mode = 'true'
 );
 /* create sink table */
 CREATE TABLE ngx_distribution (
@@ -361,18 +376,18 @@ Now that we have created the flow task, we can insert some data into the source 
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("cli1", 200, 100, "2022-01-01 00:00:00"),
-    ("cli2", 200, 104, "2022-01-01 00:00:01"),
-    ("cli3", 200, 120, "2022-01-01 00:00:02"),
-    ("cli4", 200, 124, "2022-01-01 00:00:03"),
-    ("cli5", 200, 140, "2022-01-01 00:00:04"),
-    ("cli6", 404, 144, "2022-01-01 00:00:05"),
-    ("cli7", 404, 160, "2022-01-01 00:00:06"),
-    ("cli8", 404, 164, "2022-01-01 00:00:07"),
-    ("cli9", 404, 180, "2022-01-01 00:00:08"),
-    ("cli10", 404, 184, "2022-01-01 00:00:09");
+    ("cli1", 200, 100, now()),
+    ("cli2", 200, 104, now()),
+    ("cli3", 200, 120, now()),
+    ("cli4", 200, 124, now()),
+    ("cli5", 200, 140, now()),
+    ("cli6", 404, 144, now()),
+    ("cli7", 404, 160, now()),
+    ("cli8", 404, 164, now()),
+    ("cli9", 404, 180, now()),
+    ("cli10", 404, 184, now());
 ```
-wait at least one second for flow to update results to sink table:
+wait at least one second for flow to update results to sink table(Timestamp may vary):
 
 ```sql
 SELECT * FROM ngx_distribution;
@@ -382,13 +397,14 @@ SELECT * FROM ngx_distribution;
 +------+-------------+------------+---------------------+----------------------------+
 | stat | bucket_size | total_logs | time_window         | update_at                  |
 +------+-------------+------------+---------------------+----------------------------+
-|  200 |         100 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
-|  200 |         120 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
-|  200 |         140 |          1 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
-|  404 |         140 |          1 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
-|  404 |         160 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
-|  404 |         180 |          2 | 2022-01-01 00:00:00 | 2024-10-22 09:17:09.592000 |
+|  200 |         100 |          2 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
+|  200 |         120 |          2 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
+|  200 |         140 |          1 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
+|  404 |         140 |          1 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
+|  404 |         160 |          2 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
+|  404 |         180 |          2 | 2025-04-24 07:05:00 | 2025-04-24 07:05:56.308000 |
 +------+-------------+------------+---------------------+----------------------------+
+6 rows in set (0.00 sec)
 ```
 
 ## Next Steps
