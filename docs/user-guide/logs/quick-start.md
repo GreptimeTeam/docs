@@ -248,14 +248,14 @@ SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 
 ### Full-Text Search
 
-For the text fields `request_line` and `user_agent`, you can use `LIKE` statement to search logs.
+For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
 Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline). \
 This allows for high-performance full-text searches.
 
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE request_line LIKE '%/index.html%' OR request_line LIKE '%/api/login%';
+SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
 ```
 
 ```sql
@@ -268,7 +268,7 @@ SELECT * FROM pipeline_logs WHERE request_line LIKE '%/index.html%' OR request_l
 2 rows in set (0.00 sec)
 ```
 
-You can refer to the [Query Logs](query-logs.md) document for detailed usage of the `LIKE` statement.
+You can refer to the [Query Logs](query-logs.md) document for detailed usage of the `matches_term` function.
 
 ## Next steps
 
