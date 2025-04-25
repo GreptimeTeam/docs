@@ -162,13 +162,16 @@ ALTER TABLE monitor MODIFY COLUMN host SET INVERTED INDEX;
 启用列的全文索引：
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'English', case_sensitive = 'false', backend = 'bloom');
 ```
 
-在启用列的全文索引时，可以使用 `FULLTEXT INDEX WITH` 可以指定以下选项：
+在启用列的全文索引时，可以使用 `FULLTEXT INDEX WITH` 指定以下选项：
 
-- `analyzer`：设置全文索引的分析器语言，支持 `English` 和 `Chinese`。默认为 `English`。
-- `case_sensitive`：设置全文索引是否区分大小写，支持 `true` 和 `false`。默认为 `false`。
+- `analyzer`：设置全文索引的分析器语言。支持的值为 `English` 和 `Chinese`。默认为 `English`。
+- `case_sensitive`：设置全文索引是否区分大小写。支持的值为 `true` 和 `false`。默认为 `false`。
+- `backend`：设置全文索引的后端实现。支持的值为 `bloom` 和 `tantivy`。默认为 `bloom`。
+
+更多关于全文索引配置和性能对比的信息，请参考[全文索引配置指南](/user-guide/logs/fulltext-index-config.md)。
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 

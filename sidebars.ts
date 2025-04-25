@@ -234,6 +234,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/logs/manage-pipelines',
             'user-guide/logs/write-logs',
             'user-guide/logs/query-logs',
+            'user-guide/logs/fulltext-index-config',
           ],
         },
         {

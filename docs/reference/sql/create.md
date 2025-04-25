@@ -74,7 +74,7 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
 
 The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.
 
-For information on the `engine` option and table engine selection, please refer to the [Table Engines](/reference/about-greptimedb-engines.md) guide.
+For information on the `engine` option and table engine selection, please refer to the [Table Engines](/reference/about-greptimedb-engines.md) guide.
 
 A column definition includes the column `column_name`, `type`, and options such as nullable or default values, etc. Please see below.
 
@@ -333,23 +333,25 @@ You can specify the following options using `FULLTEXT INDEX WITH`:
 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
+- `backend`: Sets the backend for the full-text index. Supported values are `bloom` and `tantivy`.
 
 If `WITH` is not specified, `FULLTEXT` will use the following default values:
 
 - `analyzer`: default is `English`
 - `case_sensitive`: default is `false`
+- `backend`: default is `bloom`
 
-For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `Chinese` and setting `case_sensitive` to `false`:
+For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `English`, `case_sensitive` to `false` and `backend` to `bloom`:
 
 ```sql
 CREATE TABLE IF NOT EXISTS logs(
   host STRING PRIMARY KEY,
-  log STRING FULLTEXT INDEX WITH(analyzer = 'Chinese', case_sensitive = 'false'),
+  log STRING FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false', backend = 'bloom'),
   ts TIMESTAMP TIME INDEX
 );
 ```
 
-For more information on using full-text indexing and search, refer to the [Log Query Documentation](/user-guide/logs/query-logs.md).
+For comprehensive information on full-text index configuration, performance comparison, and usage guidelines, please refer to the [Full-Text Index Configuration Guide](/user-guide/logs/fulltext-index-config.md) and [Log Query Documentation](/user-guide/logs/query-logs.md).
 
 ### Region partition rules
 
