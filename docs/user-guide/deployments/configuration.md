@@ -197,6 +197,23 @@ layer security.
 |                               | `key_path`  | String  | File path for TLS private key                                 |
 |                               | `watch`     | Boolean | Watch file system changes and reload certificate and key file |
 
+### Query options
+
+The `query` options are valid in standalone, datanode and frontend modes, which controls the query engine's behavior.
+
+The following table describes the options in detail:
+
+| Option     | Key                | Type    | Description                                                                                                               |
+| ---------- | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| parallelism | Integer | `0` | Parallelism of the query engine. Default to 0, which means the number of CPU cores. |
+
+A sample configuration:
+
+```toml
+[query]
+parallelism = 0
+```
+
 ### Storage options
 
 The `storage` options are valid in datanode and standalone mode, which specify the database data directory and other storage-related options.
