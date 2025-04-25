@@ -128,7 +128,7 @@ const sidebars: SidebarsConfig = {
               type: 'doc',
               id: 'user-guide/query-data/overview',
               label: 'Overview',
-            
+
             },
             'user-guide/query-data/sql',
             'user-guide/query-data/promql',
@@ -139,11 +139,11 @@ const sidebars: SidebarsConfig = {
             'user-guide/query-data/jaeger',
           ],
         },
-        { 
-          type: 'category', 
-          label: 'Manage Data', 
+        {
+          type: 'category',
+          label: 'Manage Data',
           items: [
-            {type: 'doc', id: 'user-guide/manage-data/overview', label: 'Overview'},
+            { type: 'doc', id: 'user-guide/manage-data/overview', label: 'Overview' },
             'user-guide/manage-data/data-index'
           ]
         },
@@ -365,7 +365,7 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'greptimecloud/overview',
           label: 'Overview',
-        
+
         },
         {
           type: 'category',
@@ -466,7 +466,7 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'enterprise/overview',
           label: 'Overview',
-        
+
         },
         {
           type: 'category',
@@ -561,6 +561,7 @@ const sidebars: SidebarsConfig = {
                 },
                 'reference/sql/functions/df-functions',
                 'reference/sql/functions/geo',
+                'reference/sql/functions/ip',
                 'reference/sql/functions/json',
                 'reference/sql/functions/vector',
               ]
@@ -611,7 +612,7 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'contributor-guide/overview',
           label: 'Overview',
-        
+
         },
         'contributor-guide/getting-started',
         {
@@ -706,8 +707,8 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
-    { 
-      type: 'category', 
+    {
+      type: 'category',
       label: 'FAQ and Others',
       items: [
         {
