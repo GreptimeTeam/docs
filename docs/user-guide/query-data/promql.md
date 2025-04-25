@@ -154,7 +154,7 @@ Both instant and range selector are supported. But notice that in both Prometheu
 
 Time duration and offset are supported, but `@` modifier is not supported yet.
 
-When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`).
+When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
 
 ### Timestamp precision
 
