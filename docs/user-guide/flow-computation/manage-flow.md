@@ -218,14 +218,12 @@ For more details on the behavior of the function,
 please refer to [`date_bin`](/reference/sql/functions/df-functions.md#date_bin).
 
 :::tip NOTE
-Currently, the internal state of the flow, such as the accumulator's value for incremental query results (e.g., the accumulator for `count(col)` which records the current count), is not persistently stored. To minimize data loss in case of internal state failure, it is advisable to use smaller time windows.
-
-This internal state loss does not affect the existing data in the sink table.
+Currently, flow rely on the time window expr to determine how to incrementally update the result. So it's better to use a relatively small time window when possible.
 :::
 
 ## Flush a flow
 
-The flow engine automatically processes aggregation operations within 1 second when new data arrives in the source table.
+The flow engine automatically processes aggregation operations within a short period(i.e. few seconds) when new data arrives in the source table.
 However, you can manually trigger the flow engine to process the aggregation operation immediately using the `ADMIN FLUSH_FLOW` command.
 
 ```sql

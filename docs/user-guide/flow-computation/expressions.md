@@ -7,19 +7,12 @@ description: Lists supported aggregate and scalar functions in GreptimeDB's flow
 
 ## Aggregate functions
 
-This part list all supported aggregate functions in flow:
+Flow support all aggregate functions that a normal sql query supports such as `COUNT`, `SUM`, `MIN`, `MAX`, etc. For a detailed list, please refer to [Aggregate Functions](/reference/sql/functions/df-functions.md#aggregate-functions).
 
-- `count(column)`: count the number of rows.
-- `sum(column)`: sum the values of the column.
-- `avg(column)`: calculate the average value of the column.
-- `min(column)`: find the minimum value of the column.
-- `max(column)`: find the maximum value of the column.
-
-more aggregate functions will be added in the future.
 
 ## Scalar functions
 
-Flow support most scalar functions from datafusion, see the full list of supported scalar functions in [datafusion](/reference/sql/functions/df-functions.md#scalar-functions).
+Flow support all scalar functions that a normal sql query supports in our [SQL reference](/reference/sql/functions/overview.md).
 
 And here are some of the most commonly used scalar functions in flow:
 
