@@ -55,7 +55,11 @@ INSERT INTO origin_logs (message, time) VALUES
 
 使用 pipeline 可以自动将日志消息格式化并转换为多个列，并自动创建表。
 
-### 使用内置 Pipeline 写入 JSON 日志
+### 使用内置 Pipeline 写入 JSON 日志（试验功能）
+
+:::warning
+JSON 类型目前仍处于实验阶段，在未来的版本中可能会有所调整。
+:::
 
 GreptimeDB 提供了一个内置 pipeline `greptime_identity` 用于处理 JSON 日志格式。该 pipeline 简化了写入 JSON 日志的过程。
 

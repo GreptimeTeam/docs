@@ -57,7 +57,11 @@ Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overv
 Using a pipeline allows you to automatically parse and transform the log message into multiple columns,
 as well as create tables automatically.
 
-### Write JSON logs using the built-in Pipeline
+### Write JSON logs using the built-in Pipeline (Experimental)
+
+:::warning
+The JSON feature is currently experimental and may change in future releases.
+:::
 
 GreptimeDB offers a built-in pipeline, `greptime_identity`, for handling JSON log formats. This pipeline simplifies the process of writing JSON logs.
 
