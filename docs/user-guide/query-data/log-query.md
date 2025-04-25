@@ -5,7 +5,7 @@ description: Documentation for GreptimeDB's experimental log query endpoint, whi
 
 # Log Query (Experimental)
 
-::: warning
+:::warning
 The log query endpoint feature is currently experimental and may change in future releases.
 :::
 

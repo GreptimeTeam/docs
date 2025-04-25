@@ -3,10 +3,13 @@ keywords: [JSON functions, JSON conversion, JSON extraction, JSON validation, SQ
 description: Lists and describes JSON functions available in GreptimeDB, including their usage and examples.
 ---
 
-# JSON Functions
+# JSON Functions (Experimental)
 
 This page lists all json type related functions in GreptimeDB.
 
+:::warning
+The JSON feature is currently experimental and may change in future releases.
+:::
 
 ## Conversion
 
@@ -37,7 +40,7 @@ Extracts values with specific types from JSON values through specific paths.
 `path` is a string that select and extract elements from a json value. The following operators in the path are supported:
 
 | Operator                 | Description                                                  | Examples           |
-|--------------------------|--------------------------------------------------------------|--------------------|
+| ------------------------ | ------------------------------------------------------------ | ------------------ |
 | `$`                      | The root element                                             | `$`                |
 | `@`                      | The current element in the filter expression                 | `$.event?(@ == 1)` |
 | `.*`                     | Selecting all elements in an Object                          | `$.*`              |

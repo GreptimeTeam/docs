@@ -9,27 +9,27 @@ SQL data types define the type of data that a column can store. When you run the
 
 ## String and Binary Data Types
 
-| Type Name | Description | Size |
-|-----------|-------------|------|
-| `String`   | UTF-8 encoded strings. Holds up to 2,147,483,647 bytes of data | The length of the strings |
-| `Binary`   | Variable-length binary values. Holds up to 2,147,483,647 bytes of data | The length of the data + 2 bytes |
+| Type Name | Description                                                            | Size                             |
+| --------- | ---------------------------------------------------------------------- | -------------------------------- |
+| `String`  | UTF-8 encoded strings. Holds up to 2,147,483,647 bytes of data         | The length of the strings        |
+| `Binary`  | Variable-length binary values. Holds up to 2,147,483,647 bytes of data | The length of the data + 2 bytes |
 
 The maximum capacities of `String` and `Binary` are determined by their encodings and how the storage engine handles them. For example, `String` values are encoded into UTF-8. If all characters are 3 bytes in length, this field can store up to 715,827,882 characters. As for `Binary` types, they can store a maximum of 2,147,483,647 bytes.
 
 ## Numeric Data Types
 
-| Type Name | Description | Size |
-|-----------|-------------|------|
-| `Int8`     | -128 ~ 127   | 1 Byte |
-| `Int16`    | -32768 ~ 32767 | 2 Bytes |
-| `Int32`    | -2147483648 ~ 2147483647 | 4 Bytes |
-| `Int64`    | -9223372036854775808 ~ 9223372036854775807 | 8 Bytes |
-| `UInt8`    | 0 ~ 255      | 1 Byte |
-| `UInt16`   | 0 ~ 65535    | 2 Bytes |
-| `UInt32`   | 0 ~ 4294967295 | 4 Bytes |
-| `UInt64`   | 0 ~ 18446744073709551615 | 8 Bytes |
-| `Float32`  | 32-bit IEEE754 floating point values | 4 Bytes |
-| `Float64`  | Double precision IEEE 754 floating point values | 8 Bytes |
+| Type Name | Description                                     | Size    |
+| --------- | ----------------------------------------------- | ------- |
+| `Int8`    | -128 ~ 127                                      | 1 Byte  |
+| `Int16`   | -32768 ~ 32767                                  | 2 Bytes |
+| `Int32`   | -2147483648 ~ 2147483647                        | 4 Bytes |
+| `Int64`   | -9223372036854775808 ~ 9223372036854775807      | 8 Bytes |
+| `UInt8`   | 0 ~ 255                                         | 1 Byte  |
+| `UInt16`  | 0 ~ 65535                                       | 2 Bytes |
+| `UInt32`  | 0 ~ 4294967295                                  | 4 Bytes |
+| `UInt64`  | 0 ~ 18446744073709551615                        | 8 Bytes |
+| `Float32` | 32-bit IEEE754 floating point values            | 4 Bytes |
+| `Float64` | Double precision IEEE 754 floating point values | 8 Bytes |
 
 ## Decimal Type
 
@@ -63,13 +63,13 @@ Output:
 
 ## Date and Time Types
 
-| Type Name | Description | Size |
-|-----------|-------------|------|
-| `TimestampSecond` | 64-bit timestamp values with seconds precision, range: `[-262144-01-01 00:00:00, +262143-12-31 23:59:59]` | 8 Bytes |
-| `TimestampMillisecond` | 64-bit timestamp values with milliseconds precision, range: `[-262144-01-01 00:00:00.000, +262143-12-31 23:59:59.999]` | 8 Bytes |
-| `TimestampMicroSecond` | 64-bit timestamp values with microseconds precision, range: `[-262144-01-01 00:00:00.000000, +262143-12-31 23:59:59.999999]` | 8 Bytes |
-| `TimestampNanosecond` | 64-bit timestamp values with nanoseconds precision, range: `[1677-09-21 00:12:43.145225, 2262-04-11 23:47:16.854775807]` | 8 Bytes |
-| `Interval`|  Time interval | 4 Bytes for `YearMonth`, 8 Bytes for `DayTime` and 16 Bytes for `MonthDayNano`|
+| Type Name              | Description                                                                                                                  | Size                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `TimestampSecond`      | 64-bit timestamp values with seconds precision, range: `[-262144-01-01 00:00:00, +262143-12-31 23:59:59]`                    | 8 Bytes                                                                        |
+| `TimestampMillisecond` | 64-bit timestamp values with milliseconds precision, range: `[-262144-01-01 00:00:00.000, +262143-12-31 23:59:59.999]`       | 8 Bytes                                                                        |
+| `TimestampMicroSecond` | 64-bit timestamp values with microseconds precision, range: `[-262144-01-01 00:00:00.000000, +262143-12-31 23:59:59.999999]` | 8 Bytes                                                                        |
+| `TimestampNanosecond`  | 64-bit timestamp values with nanoseconds precision, range: `[1677-09-21 00:12:43.145225, 2262-04-11 23:47:16.854775807]`     | 8 Bytes                                                                        |
+| `Interval`             | Time interval                                                                                                                | 4 Bytes for `YearMonth`, 8 Bytes for `DayTime` and 16 Bytes for `MonthDayNano` |
 
 :::tip NOTE
 When inserting Timestamp string literals to GreptimeDB using MySQL/PostgreSQL protocol, the value range is limited to '0001-01-01 00:00:00' to '9999-12-31 23:59:59'.
@@ -175,21 +175,26 @@ SELECT '-1h5m'::INTERVAL;
 
 Supported abbreviations include:
 
-| Abbreviation | Full name |
-|-------|---------------|
-| y     | years         |
-| mon   | months        |
-| w     | weeks         |
-| d     | days          |
-| h     | hours         |
-| m     | minutes       |
-| s     | seconds       |
-| millis| milliseconds  |
-| ms    | milliseconds  |
-| us    | microseconds  |
-| ns    | nanoseconds   |
+| Abbreviation | Full name    |
+| ------------ | ------------ |
+| y            | years        |
+| mon          | months       |
+| w            | weeks        |
+| d            | days         |
+| h            | hours        |
+| m            | minutes      |
+| s            | seconds      |
+| millis       | milliseconds |
+| ms           | milliseconds |
+| us           | microseconds |
+| ns           | nanoseconds  |
 
-## JSON Type
+## JSON Type (Experimental)
+
+:::warning
+The JSON feature is currently experimental and may change in future releases.
+:::
+
 GreptimeDB supports the JSON type, allowing users to store and query JSON-formatted data. The JSON type is highly flexible and can store various forms of structured or unstructured data, making it suitable for use cases such as logging, analytics, and semi-structured data storage.
 
 ```sql
@@ -237,8 +242,8 @@ Output:
 
 ## Boolean Type
 
-| Type Name | Description | Size |
-|-----------|-------------|------|
+| Type Name | Description | Size   |
+| --------- | ----------- | ------ |
 | `Boolean` | Bool values | 1 Byte |
 
 Use `TRUE` or `FALSE` to represent boolean values in SQL statements. For example:
@@ -295,10 +300,10 @@ CREATE TABLE alias_types (
 
 In addition to the `Timestamp` types used as the default time type in GreptimeDB, GreptimeDB also supports `Date` and `DateTime` types for compatibility with MySQL and PostgreSQL.
 
-| Type name | Description | Size |
-|-----------|-------------|------|
-|`Date`     |32-bit date values represent the days since UNIX Epoch | 4 Bytes |
-|`DateTime` |64-bit timestamp values with milliseconds precision, equivalent to `TimestampMicrosecond`| 8 Bytes |
+| Type name  | Description                                                                               | Size    |
+| ---------- | ----------------------------------------------------------------------------------------- | ------- |
+| `Date`     | 32-bit date values represent the days since UNIX Epoch                                    | 4 Bytes |
+| `DateTime` | 64-bit timestamp values with milliseconds precision, equivalent to `TimestampMicrosecond` | 8 Bytes |
 
 ## Examples
 
