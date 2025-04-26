@@ -56,7 +56,7 @@ Release date: April 25, 2025
 * feat: alter region follower by [@fengjiachun](https://github.com/fengjiachun) in [#5676](https://github.com/GreptimeTeam/greptimedb/pull/5676)
 * feat: support export command export data to s3 by [@yihong0618](https://github.com/yihong0618) in [#5585](https://github.com/GreptimeTeam/greptimedb/pull/5585)
 * feat: enhancement information_schema.flows by [@AntiTopQuark](https://github.com/AntiTopQuark) in [#5623](https://github.com/GreptimeTeam/greptimedb/pull/5623)
-*  by [@CookiePieWw](https://github.com/CookiePieWw)
+* feat: add mysql kvbackend by [@CookiePieWw](https://github.com/CookiePieWw) in [#5528](https://github.com/GreptimeTeam/greptimedb/pull/5528)
 * feat: add Docker image tag information to step summary in dev-build workflow by [@waynexia](https://github.com/waynexia) in [#5692](https://github.com/GreptimeTeam/greptimedb/pull/5692)
 * feat: expose virtual_host_style config for s3 storage by [@evenyag](https://github.com/evenyag) in [#5696](https://github.com/GreptimeTeam/greptimedb/pull/5696)
 * feat: make empty parent_span_id null for v1 by [@sunng87](https://github.com/sunng87) in [#5690](https://github.com/GreptimeTeam/greptimedb/pull/5690)
@@ -232,7 +232,7 @@ Release date: April 25, 2025
 * docs: tsbs update by [@discord9](https://github.com/discord9) in [#5608](https://github.com/GreptimeTeam/greptimedb/pull/5608)
 * docs: update cluster dashboard to make opendal panel works by [@evenyag](https://github.com/evenyag) in [#5661](https://github.com/GreptimeTeam/greptimedb/pull/5661)
 * docs: adds news to readme by [@killme2008](https://github.com/killme2008) in [#5735](https://github.com/GreptimeTeam/greptimedb/pull/5735)
-*  by [@CookiePieWw](https://github.com/CookiePieWw)
+* docs: rfc for wal purge by [@CookiePieWw](https://github.com/CookiePieWw) in [#5475](https://github.com/GreptimeTeam/greptimedb/pull/5475)
 * docs: update readme by [@killme2008](https://github.com/killme2008) in [#5891](https://github.com/GreptimeTeam/greptimedb/pull/5891)
 * docs: memory profile scripts by [@discord9](https://github.com/discord9) in [#5922](https://github.com/GreptimeTeam/greptimedb/pull/5922)
 * docs: fix some units and adds the opendal errors panel by [@evenyag](https://github.com/evenyag) in [#5962](https://github.com/GreptimeTeam/greptimedb/pull/5962)
@@ -260,7 +260,7 @@ Release date: April 25, 2025
 
 * chore: bump version to 0.13.0 by [@WenyXu](https://github.com/WenyXu) in [#5611](https://github.com/GreptimeTeam/greptimedb/pull/5611)
 * chore: support specifying `skipping` index in pipeline by [@shuiyisong](https://github.com/shuiyisong) in [#5635](https://github.com/GreptimeTeam/greptimedb/pull/5635)
-*  by [@sunng87](https://github.com/sunng87)
+* ci: remove ubuntu 20.04 runners by [@sunng87](https://github.com/sunng87) in [#5545](https://github.com/GreptimeTeam/greptimedb/pull/5545)
 * ci: bump dev-builder image version to 2024-12-25-a71b93dd-20250305072908 by [@daviderli614](https://github.com/daviderli614) in [#5651](https://github.com/GreptimeTeam/greptimedb/pull/5651)
 * chore: improve `/v1/jaeger/api/trace/{trace_id}`'s resp by [@shuiyisong](https://github.com/shuiyisong) in [#5663](https://github.com/GreptimeTeam/greptimedb/pull/5663)
 * chore: impl ref and ref_mut for json like by [@paomian](https://github.com/paomian) in [#5679](https://github.com/GreptimeTeam/greptimedb/pull/5679)
@@ -301,7 +301,7 @@ Release date: April 25, 2025
 
 ### Build
 
-*  by [@daviderli614](https://github.com/daviderli614)
+* build: use ubuntu-22.04 base image release `dev-build` image by [@daviderli614](https://github.com/daviderli614) in [#5554](https://github.com/GreptimeTeam/greptimedb/pull/5554)
 
 ## New Contributors
 
