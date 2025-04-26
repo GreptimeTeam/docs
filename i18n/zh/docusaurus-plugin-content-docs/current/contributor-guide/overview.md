@@ -5,6 +5,10 @@ description: 介绍 GreptimeDB 的架构、关键概念和工作原理，包括�
 
 # 贡献者指南
 
+DeepWiki 对 GreptimeDB 的架构和实现进行了详细且清晰的描述，强烈推荐阅读：
+
+[https://deepwiki.com/GreptimeTeam/greptimedb](https://deepwiki.com/GreptimeTeam/greptimedb)
+
 ## 架构
 
 `GreptimeDB` 由以下关键组件组成：

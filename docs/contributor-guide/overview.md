@@ -5,6 +5,10 @@ description: Overview of GreptimeDB's architecture, key components, and how they
 
 # Contributor Guide
 
+DeepWiki provides a detailed and clear explanation of GreptimeDB's architecture and implementation. Highly recommended:
+
+[https://deepwiki.com/GreptimeTeam/greptimedb](https://deepwiki.com/GreptimeTeam/greptimedb)
+
 ## Architecture
 
 `GreptimeDB` consists of the following key components:
