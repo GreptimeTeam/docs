@@ -11,6 +11,7 @@ Release date: April 25, 2025
 ## 👍 Highlights
 
 - **Bulk Insert**: Adds support for high-performance bulk data ingestion.
+- **Otel Traces**: Official releases [otel traces](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry#traces).
 - **Fulltext Enhancements**: Improves fulltext search with new functions (e.g., `matches_term`, `@@` operator), backend switching, and term optimizations.
 - **Flow Engine**: Introduces batching mode and dual engine capability for more flexible data processing.
 - **Partitioning**: Supports column-wise and UUID-based partition rules for better scalability.
