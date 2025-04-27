@@ -7,7 +7,7 @@ description: 介绍 GreptimeDB 的关键特性，并解答用户关心的常见�
 
 ## GreptimeDB 支持处理日志或事件吗？
 
-是的。从 v0.9.0 版本开始，GreptimeDB 将指标、日志和链路追踪视为带有时间戳的上下文“宽”事件（Wide Event），从而统一了指标、日志和链路追踪的处理。它支持使用 SQL、PromQL 和通过连续聚合进行流式处理来分析指标、日志和追踪。
+是的。从 v0.9.0 版本开始，GreptimeDB 将指标、日志和链路追踪视为带有时间戳的上下文“宽”事件（Wide Events），从而统一了指标、日志和链路追踪的处理。它支持使用 SQL、PromQL 和通过连续聚合进行流式处理来分析指标、日志和追踪。
 
 请阅读[日志处理使用指南](/user-guide/logs/overview.md)。
 

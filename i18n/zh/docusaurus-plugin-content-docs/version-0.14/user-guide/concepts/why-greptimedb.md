@@ -10,7 +10,7 @@ GreptimeDB 是一款为云原生环境设计的开源可观测数据库。我们
 ## 统一处理可观测数据
 
 GreptimeDB 通过以下方式统一处理指标、日志和链路追踪：
-- 一致的[数据模型](./data-model.md)，将所有可观测数据视为带有上下文的时间戳“宽”事件（Wide Event）
+- 一致的[数据模型](./data-model.md)，将所有可观测数据视为带有上下文的时间戳“宽”事件（Wide Events）
 - 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询
 - 内置流处理功能 ([Flow](/user-guide/flow-computation/overview.md))，用于实时聚合和分析等
 - 跨不同类型的可观测数据进行无缝关联分析（阅读 [SQL 示例](/user-guide/overview.md#sql-查询示例) 了解详细信息）
@@ -95,6 +95,6 @@ GreptimeDB 引入了一种新的数据模型，该模型结合了时序和关系
 表将在数据写入时动态自动创建，并自动添加新出现的列（Tag 和 Field）。更详细的说明，请阅读[数据模型](./data-model.md)。
 
 要了解更多关于我们的方法和架构，请查看博客文章：
+* [《什么是可观测性 2.0？什么是可观测性 2.0 原生数据库？》](https://greptime.cn/blogs/2025-04-24-observability2.0-greptimedb.html)
 * [《专为实时而生》](https://greptime.cn/blogs/2022-11-16-github)
 * [《GreptimeDB 统一存储架构》](https://greptime.cn/blogs/2024-12-24-observability)
-* [《事件管理革命：监控系统中统一日志和指标》](https://greptime.cn/blogs/2024-06-14-events)。
