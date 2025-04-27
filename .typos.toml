@@ -8,6 +8,10 @@ ND = "ND"
 RTO = "RTO"
 AKS = "AKS"
 
+# tech terms
+excluder = "excluder"
+flate = "flate"
+
 [files]
 extend-exclude = [
   "pnpm-lock.yaml",
