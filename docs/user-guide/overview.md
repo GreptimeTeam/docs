@@ -13,8 +13,8 @@ providing real-time insights from Edge to Cloud at any scale.
 ## Understanding GreptimeDB Concepts
 
 Before diving into GreptimeDB,
-it's essential to familiarize yourself with its data model, key concepts, and features.
-For a detailed overview,
+it is recommended to familiarize yourself with its data model, key concepts, and features.
+For a comprehensive overview, 
 refer to the [Concepts Documentation](./concepts/overview.md).
 
 ## Ingesting Data Based on Your Use Case
