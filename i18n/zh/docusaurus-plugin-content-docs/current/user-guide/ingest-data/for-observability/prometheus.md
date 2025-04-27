@@ -149,7 +149,7 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
 
 ## 性能优化
 
-默认情况下，metric engine 会自动创建一个名为 `physical_metric_table` 的物理表。
+默认情况下，metric engine 会自动创建一个名为 `greptime_physical_table` 的物理表。
 为了优化性能，你可以选择创建一个具有自定义配置的物理表。
 
 ### 启用跳数索引
