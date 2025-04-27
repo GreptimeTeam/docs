@@ -94,6 +94,6 @@ However, our definition of schema is not mandatory, but rather leans towards the
 
 
 For more details, explore our blogs:
+- ["Observability 2.0 and the Database for It"](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database)
 - ["This Time, for Real"](https://greptime.com/blogs/2022-11-15-this-time-for-real)
 - ["Unified Storage for Observability - GreptimeDB's Approach"](https://greptime.com/blogs/2024-12-24-observability)
-- ["Unifying Logs and Metrics"](https://greptime.com/blogs/2024-06-25-logs-and-metrics)
