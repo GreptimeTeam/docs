@@ -1,3 +1,8 @@
+---
+keywords: [migrate from ClickHouse, ClickHouse,GreptimeDB,write data, export data, import data,migration]
+description: Step-by-step guide on migrating from ClickHouse to GreptimeDB, including data model adjustments, table structure reconstruction,, exporting and importing data.
+---
+
 # Migrate from ClickHouse
 
 This guide provides a detailed explanation on how to smoothly migrate your business from ClickHouse to GreptimeDB. It covers pre-migration preparation, data model adjustments, table structure reconstruction, dual-write assurance, and specific methods for data export and import, aiming to achieve a seamless system transition.
