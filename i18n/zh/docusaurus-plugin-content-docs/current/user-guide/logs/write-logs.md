@@ -109,6 +109,112 @@ processors:
 
 对于 `text/plain` 格式的输入，推荐首先使用 `dissect` 或者 `regex` processor 将整行文本分割成不同的字段，以便进行后续的处理。
 
+## 内置 Pipeline
+
+GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用而无需创建新的 Pipeline。
+
+请注意，内置 Pipeline 的名称以 "greptime_" 为前缀，不可编辑。
+
+### `greptime_identity`
+
+`greptime_identity` Pipeline 适用于写入 JSON 日志，并自动为 JSON 日志中的每个字段创建列。
+
+- JSON 日志中的第一层级的 key 是表中的列名。
+- 如果相同字段包含不同类型的数据，则会返回错误。
+- 值为 `null` 的字段将被忽略。
+- 如果没有手动指定，一个作为时间索引的额外列 `greptime_timestamp` 将被添加到表中，以指示日志写入的时间。
+
+#### 类型转换规则
+
+- `string` -> `string`
+- `number` -> `int64` 或 `float64`
+- `boolean` -> `bool`
+- `null` -> 忽略
+- `array` -> `json`
+- `object` -> `json`
+
+例如，如果我们有以下 JSON 数据：
+
+```json
+[
+    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
+    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
+    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+]
+```
+
+我们将合并每个批次的行结构以获得最终 schema。表 schema 如下所示：
+
+```sql
+mysql> desc pipeline_logs;
++--------------------+---------------------+------+------+---------+---------------+
+| Column             | Type                | Key  | Null | Default | Semantic Type |
++--------------------+---------------------+------+------+---------+---------------+
+| age                | Int64               |      | YES  |         | FIELD         |
+| is_student         | Boolean             |      | YES  |         | FIELD         |
+| name               | String              |      | YES  |         | FIELD         |
+| object             | Json                |      | YES  |         | FIELD         |
+| score              | Float64             |      | YES  |         | FIELD         |
+| company            | String              |      | YES  |         | FIELD         |
+| array              | Json                |      | YES  |         | FIELD         |
+| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
++--------------------+---------------------+------+------+---------+---------------+
+8 rows in set (0.00 sec)
+```
+
+数据将存储在表中，如下所示：
+
+```sql
+mysql> select * from pipeline_logs;
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+| age  | is_student | name    | object        | score | company | array   | greptime_timestamp         |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+|   22 |          1 | Charlie | NULL          |  95.5 | NULL    | [1,2,3] | 2024-10-18 09:35:48.333020 |
+|   21 |          0 | NULL    | NULL          |  85.5 | A       | NULL    | 2024-10-18 09:35:48.333020 |
+|   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
++------+------------+---------+---------------+-------+---------+---------+----------------------------+
+3 rows in set (0.01 sec)
+```
+
+#### 自定义时间索引列
+
+每个 GreptimeDB 表中都必须有时间索引列。`greptime_identity` pipeline 不需要额外的 YAML 配置，如果你希望使用写入数据中自带的时间列（而不是日志数据到达服务端的时间戳）作为表的时间索引列，则需要通过参数进行指定。
+
+假设这是一份待写入的日志数据：
+```JSON
+[
+    {"action": "login", "ts": 1742814853}
+]
+```
+
+设置如下的 URL 参数来指定自定义时间索引列：
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
+     -H 'Content-Type: application/json' \
+     -d $'[{"action": "login", "ts": 1742814853}]'
+```
+
+取决于数据的格式，`custom_time_index` 参数接受两种格式的配置值：
+- Unix 时间戳: `<字段名>;epoch;<精度>`
+  - 该字段需要是整数或者字符串
+  - 精度为这四种选项之一: `s`, `ms`, `us`, or `ns`.
+- 时间戳字符串: `<字段名>;datestr;<字符串解析格式>`
+  - 例如输入的时间字段值为 `2025-03-24 19:31:37+08:00`，则对应的字符串解析格式为 `%Y-%m-%d %H:%M:%S%:z`
+
+通过上述配置，结果表就能正确使用输入字段作为时间索引列
+```sql
+DESC pipeline_logs;
+```
+```sql
++--------+-----------------+------+------+---------+---------------+
+| Column | Type            | Key  | Null | Default | Semantic Type |
++--------+-----------------+------+------+---------+---------------+
+| ts     | TimestampSecond | PRI  | NO   |         | TIMESTAMP     |
+| action | String          |      | YES  |         | FIELD         |
++--------+-----------------+------+------+---------+---------------+
+2 rows in set (0.02 sec)
+```
+
 ## 示例
 
 请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
