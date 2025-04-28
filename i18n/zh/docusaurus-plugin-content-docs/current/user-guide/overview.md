@@ -1,74 +1,71 @@
 ---
-keywords: [概述, 功能, 特点, SQL 查询, 数据处理, GreptimeDB, 数据模型, 范围查询]
-description: 概述了 GreptimeDB 的功能和特点，并通过 SQL 查询示例展示了其强大的数据处理能力。
+keywords: [概述, 可观测, 物联网, 日志存储, 边缘计算, SQL 查询, 数据处理, 数据模型, 范围查询]
+description: 了解如何根据你的使用场景使用 GreptimeDB，包括数据写入、查询和管理。
 ---
 
 # 用户指南
 
 欢迎使用 GreptimeDB 用户指南。
 
-GreptimeDB 是用于指标、事件和日志的统一时间序列数据库，
+GreptimeDB 是用于指标、事件和日志的统一可观测数据库，
 可提供从边缘到云的任何规模的实时洞察。
-本指南将帮助你探索 GreptimeDB 的每个强大功能。
 
-## SQL 查询示例
+## 理解 GreptimeDB 的概念
 
-让我们从一个 SQL 查询示例开始。
+在深入了解 GreptimeDB 之前，
+建议先熟悉数据模型、关键概念和功能。
+请参阅 [概念文档](./concepts/overview.md)。
 
-为了监控特定指标的性能和可靠性，
-工程师通常定期查询并分析一段时间内的数据。
-在分析过程中通常涉及到 JOIN 两个数据源，
-但如下方的查询在之前是不可能的，
-而现在使用 GreptimeDB 就可以做到：
+## 根据你的使用场景写入数据
 
-```sql
-SELECT
-  host,
-  approx_percentile_cont(latency, 0.95) RANGE '15s' as p95_latency,
-  count(error) RANGE '15s' as num_errors,
-FROM
-  metrics INNER JOIN logs on metrics.host = logs.host
-WHERE
-  time > now() - '1 hour'::INTERVAL AND
-  matches_term(path, '/api/v1/avatar')
-ALIGN '5s' BY (host) FILL PREV
-```
+GreptimeDB 支持[多种协议](./protocols/overview.md)和[集成工具](./integrations/overview.md)，
+以便根据你的需求写入数据。
 
-该查询分析了过去一小时内特定 API 路径 (`/api/v1/avatar`) 的性能和错误。
-它计算了每个 15 秒间隔内的第 95 百分位延迟和错误数量，并将结果对齐到每个 5 秒间隔以保持连续性和可读性。
+### 可观测性指标场景
 
-逐步解析该查询：
+如果你计划将 GreptimeDB 用于存储可观测性指标、日志和链路追踪，
+请参阅[可观测性文档](./ingest-data/for-observability/overview.md)。
+该文档解释了如何使用 Otel-Collector, Vector、Kafka、Prometheus 和 InfluxDB 行协议等工具导入数据。
 
-1. SELECT 子句：
-  - `host`：选择 host 字段。
-  - `approx_percentile_cont(latency, 0.95) RANGE '15s' as p95_latency`：计算 15 秒范围内的第 95 百分位延迟，并将其标记为 p95_latency。
-  - `count(error) RANGE '15s' as num_errors`：计算 15 秒范围内的错误数量，并将其标记为 num_errors。
-2. FROM 子句：
-  - `metrics INNER JOIN logs on metrics.host = logs.host`：在 host 字段上将 metrics 和 logs 表进行连接。
-3. WHERE 子句：
-  - `time > now() - '1 hour'::INTERVAL`：筛选出过去一小时内的记录。
-  - `matches_term(path, '/api/v1/avatar')`：筛选出特定 API 路径 `/api/v1/avatar` 的记录。
-4. ALIGN 子句：
-  - `ALIGN '5s' BY (host) FILL PREV`：将结果对齐到每 5 秒，并使用前一个非空值填充缺失值。
+对于将 GreptimeDB 用作日志存储解决方案，
+请参考 [日志文档](./logs/overview.md)。
+该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
 
-接下来解析一下该查询示例展示的 GreptimeDB 关键功能：
+### 物联网和边缘计算场景
 
-- **统一存储：** GreptimeDB 是支持同时存储和分析指标及[日志](/user-guide/logs/overview.md)的时序数据库。简化的架构和数据一致性增强了分析和解决问题的能力，并可节省成本且提高系统性能。
-- **独特的数据模型：** 独特的[数据模型](/user-guide/concepts/data-model.md)搭配时间索引和全文索引，大大提升了查询性能，并在超大数据集上也经受住了考验。它不仅支持[数据指标的插入](/user-guide/ingest-data/overview.md)和[查询](/user-guide/query-data/overview.md)，也提供了非常友好的方式便于日志的[写入](/user-guide/logs/write-logs.md)和[查询](/user-guide/logs/query-logs.md)，以及[向量类型数据](/user-guide/vectors/vector-type.md)的处理。
-- **范围查询：** GreptimeDB 支持[范围查询](/user-guide/query-data/sql.md#aggregate-data-by-time-window)来计算一段时间内的[表达式](/reference/sql/functions/overview.md)，从而了解指标趋势。你还可以[持续聚合](/user-guide/flow-computation/overview.md)数据以进行进一步分析。
-- **SQL 和多种协议：** GreptimeDB 使用 SQL 作为主要查询语言，并支持[多种协议](/user-guide/protocols/overview.md)，大大降低了学习曲线和接入成本。你可以轻松从 Prometheus 或 [Influxdb 迁移](/user-guide/migrate-to-greptimedb/migrate-from-influxdb.md)至 GreptimeDB，或者从 0 接入 GreptimeDB。
-- **JOIN 操作：** GreptimeDB 的时间序列表的数据模型，使其具备了支持[JOIN](/reference/sql/join.md)数据指标和日志的能力。
+对于物联网和边缘计算场景，
+[物联网文档](./ingest-data/for-iot/overview.md)提供了从多种来源导入数据的全面指导。
 
-了解了这些功能后，你现在可以直接探索感兴趣的功能，或按顺序继续阅读下一步骤。
+## 查询数据以获取洞察
 
-## 下一步
+GreptimeDB 提供了强大的[数据查询](./query-data/overview.md)功能。
 
-* [概念](./concepts/overview.md)
-* [迁移到 GreptimeDB](./migrate-to-greptimedb/migrate-from-influxdb.md)
-* [数据写入](./ingest-data/overview.md)
-* [数据查询](./query-data/overview.md)
-* [数据管理](./manage-data/overview.md)
-* [集成](./integrations/overview.md)
-* [协议](./protocols/overview.md)
-* [持续聚合](./flow-computation/overview.md)
-* [运维操作](./administration/overview.md)
+### SQL 支持
+
+你可以使用 SQL 进行范围查询、聚合等操作。
+有关详细说明，请参阅 [SQL 查询文档](./query-data/sql.md)。
+
+### Prometheus 查询语言 (PromQL)
+
+GreptimeDB 支持使用 PromQL 查询数据。
+请参考 [PromQL 文档](./query-data/promql.md) 以获取指导。
+
+### 流计算
+
+对于实时数据处理和分析，GreptimeDB 提供了[流计算](./flow-computation/overview.md)，
+支持对数据流进行复杂计算。
+
+## 使用索引加速查询
+
+倒排索引、跳数索引和全文索引等索引可以显著提升查询性能。
+有关如何有效使用这些索引的更多信息，请参阅[数据索引文档](./manage-data/data-index.md)。
+
+## 从其他数据库迁移到 GreptimeDB
+
+你可以轻松从其他数据库迁移数据到 GreptimeDB，
+请按照[迁移文档](./migrate-to-greptimedb/overview.md)中的分步说明进行操作。
+
+## 管理和部署 GreptimeDB
+
+当你准备好部署 GreptimeDB 时，
+请查阅[部署文档](./deployments/overview.md)和[管理文档](./administration/overview.md)获取有关部署和管理的详细指南。
