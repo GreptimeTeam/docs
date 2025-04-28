@@ -201,6 +201,7 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/migrate-to-greptimedb/migrate-from-influxdb',
+            'user-guide/migrate-to-greptimedb/migrate-from-clickhouse',
             'user-guide/migrate-to-greptimedb/migrate-from-mysql',
             'user-guide/migrate-to-greptimedb/migrate-from-postgresql',
             'user-guide/migrate-to-greptimedb/migrate-from-prometheus',
