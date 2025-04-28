@@ -7,7 +7,7 @@ description: Learn how to use GreptimeDB according to your use case, including d
 
 Welcome to the user guide for GreptimeDB.
 
-GreptimeDB is the unified time series database for metrics, logs, and traces,
+GreptimeDB is the unified observability database for metrics, logs, and traces,
 providing real-time insights from Edge to Cloud at any scale.
 
 ## Understanding GreptimeDB Concepts
@@ -21,13 +21,13 @@ refer to the [Concepts Documentation](./concepts/overview.md).
 
 GreptimeDB supports [multiple protocols](./protocols/overview.md) and [various integration tools](./integrations/overview.md) to simplify data ingestion tailored to your requirements.
 
-### For Observability Metrics
+### For Observability Scenarios
 
-If you plan to use GreptimeDB as metrics storage for observability purposes,
+If you plan to use GreptimeDB as metrics, logs and traces storage for observability purposes,
 see the [Observability Documentation](./ingest-data/for-observability/overview.md).
-It explains how to ingest data using tools like Vector, Kafka, Prometheus, and the InfluxDB line protocol.
+It explains how to ingest data using tools like Otel-Collector, Vector, Kafka, Prometheus, and the InfluxDB line protocol.
 
-### For IoT and Edge Computing
+### For IoT and Edge Computing Scenarios
 
 For IoT and Edge Computing scenarios,
 the [IoT Documentation](./ingest-data/for-iot/overview.md) provides comprehensive guidance on ingesting data from diverse sources.
