@@ -7,7 +7,7 @@ description: 了解如何根据你的使用场景使用 GreptimeDB，包括数�
 
 欢迎使用 GreptimeDB 用户指南。
 
-GreptimeDB 是用于指标、事件和日志的统一时间序列数据库，
+GreptimeDB 是用于指标、事件和日志的统一可观测数据库，
 可提供从边缘到云的任何规模的实时洞察。
 
 ## 理解 GreptimeDB 的概念
@@ -23,25 +23,18 @@ GreptimeDB 支持[多种协议](./protocols/overview.md)和[集成工具](./inte
 
 ### 可观测性指标场景
 
-如果你计划将 GreptimeDB 用作可观测性指标存储，
+如果你计划将 GreptimeDB 用于存储可观测性指标、日志和链路追踪，
 请参阅[可观测性文档](./ingest-data/for-observability/overview.md)。
-该文档解释了如何使用 Vector、Kafka、Prometheus 和 InfluxDB 行协议等工具导入数据。
+该文档解释了如何使用 Otel-Collector, Vector、Kafka、Prometheus 和 InfluxDB 行协议等工具导入数据。
+
+对于将 GreptimeDB 用作日志存储解决方案，
+请参考 [日志文档](./logs/overview.md)。
+该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
 
 ### 物联网和边缘计算场景
 
 对于物联网和边缘计算场景，
 [物联网文档](./ingest-data/for-iot/overview.md)提供了从多种来源导入数据的全面指导。
-
-### 日志存储场景
-
-将 GreptimeDB 用作日志存储解决方案，
-请参考 [日志文档](./logs/overview.md)。
-该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
-
-### 使用索引加速查询
-
-倒排索引、跳数索引和全文索引等索引可以显著提升查询性能。
-有关如何有效使用这些索引的更多信息，请参阅[数据索引文档](./manage-data/data-index.md)。
 
 ## 查询数据以获取洞察
 
@@ -61,6 +54,11 @@ GreptimeDB 支持使用 PromQL 查询数据。
 
 对于实时数据处理和分析，GreptimeDB 提供了[流计算](./flow-computation/overview.md)，
 支持对数据流进行复杂计算。
+
+## 使用索引加速查询
+
+倒排索引、跳数索引和全文索引等索引可以显著提升查询性能。
+有关如何有效使用这些索引的更多信息，请参阅[数据索引文档](./manage-data/data-index.md)。
 
 ## 从其他数据库迁移到 GreptimeDB
 

@@ -27,21 +27,14 @@ If you plan to use GreptimeDB as metrics, logs and traces storage for observabil
 see the [Observability Documentation](./ingest-data/for-observability/overview.md).
 It explains how to ingest data using tools like Otel-Collector, Vector, Kafka, Prometheus, and the InfluxDB line protocol.
 
-### For IoT and Edge Computing Scenarios
-
-For IoT and Edge Computing scenarios,
-the [IoT Documentation](./ingest-data/for-iot/overview.md) provides comprehensive guidance on ingesting data from diverse sources.
-
-### For Log Storage
-
 To use GreptimeDB as a log storage solution,
 refer to the [Logs Documentation](./logs/overview.md).
 It details how to ingest pattern text logs using pipelines.
 
-### Accelerating Queries with Indexes
+### For IoT and Edge Computing Scenarios
 
-Indexes such as inverted indexes, skipping indexes, and full-text indexes can significantly enhance query performance.
-Learn more about effectively using these indexes in the [Data Index Documentation](./manage-data/data-index.md).
+For IoT and Edge Computing scenarios,
+the [IoT Documentation](./ingest-data/for-iot/overview.md) provides comprehensive guidance on ingesting data from diverse sources.
 
 ## Querying Data for Insights
 
@@ -59,6 +52,11 @@ GreptimeDB supports PromQL for querying data. Refer to the [PromQL Documentation
 ### Flow Computation
 
 For real-time data processing and analysis, GreptimeDB provides [Flow Computation](./flow-computation/overview.md), enabling complex computations on data streams.
+
+## Accelerating Queries with Indexes
+
+Indexes such as inverted indexes, skipping indexes, and full-text indexes can significantly enhance query performance.
+Learn more about effectively using these indexes in the [Data Index Documentation](./manage-data/data-index.md).
 
 ## Migrating to GreptimeDB from Other Databases
 
