@@ -9,7 +9,7 @@ This document provides a comprehensive guide for configuring full-text index in 
 
 ## Overview
 
-GreptimeDB provides full-text indexing capabilities to accelerate text search operations. You can configure full-text index when creating or altering tables, with various options to optimize for different use cases.
+GreptimeDB provides full-text indexing capabilities to accelerate text search operations. You can configure full-text index when creating or altering tables, with various options to optimize for different use cases. For a general introduction to different types of indexes in GreptimeDB, including inverted index and skipping index, please refer to the [Data Index](/user-guide/manage-data/data-index) guide.
 
 ## Configuration Options
 
