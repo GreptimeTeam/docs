@@ -161,7 +161,7 @@ CREATE TABLE traces (
 **Notes:**  
 - `service` and `operation` serve as tags, supporting trace scheduling and aggregate queries by service or operations.
 - `trace_id`, `span_id`, and `parent_span_id` use skip indexes but are not part of the primary key.
-- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, JSON storage is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/quick-start/#write-logs-by-pipeline) if necessary.
+- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, JSON storage is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) if necessary.
 - Depending on overall business volume, consider whether to partition traces into multiple tables (such as in massive multi-service environments).
 
 ---
