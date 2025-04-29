@@ -78,16 +78,16 @@ CREATE TABLE logs (
 );
 ```
 
-
 Fulltext index supports options by `WITH`:
 * `analyzer`: Sets the language analyzer for the fulltext index. Supported values are `English` and `Chinese`. Default to `English`.
 * `case_sensitive`: Determines whether the fulltext index is case-sensitive. Supported values are `true` and `false`. Default to `false`.
+* `backend`: Sets the backend for the fulltext index. Supported values are `bloom` and `tantivy`. Default to `bloom`.
 
 For example:
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true'),
+    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true', backend='bloom'),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -100,6 +100,8 @@ Fulltext index usually comes with following drawbacks:
 - May not be optimal for simple prefix or suffix matching operations
 
 Consider using fulltext index only when you need advanced text search capabilities and flexible query patterns.
+
+For more detailed information about fulltext index configuration and backend selection, please refer to the [Full-Text Index Configuration](/user-guide/logs/fulltext-index-config) guide.
 
 ## Modify indexes
 

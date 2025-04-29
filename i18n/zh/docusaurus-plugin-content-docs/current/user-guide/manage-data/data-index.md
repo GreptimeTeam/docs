@@ -81,12 +81,13 @@ CREATE TABLE logs (
 全文索引通过 `WITH` 支持以下选项：
 * `analyzer`：设置全文索引的语言分析器。支持的值包括 `English`（英语）和 `Chinese`（中文）。默认值为 `English`。
 * `case_sensitive`：决定全文索引是否区分大小写。支持的值为 `true`（是）和 `false`（否）。默认值为 `false`。
+* `backend`：设置全文索引的后端引擎。支持的值包括 `bloom` 和 `tantivy`。默认值为 `bloom`。
 
 示例：
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX WITH(analyzer='Chinese', case_sensitive='true'),
+    message STRING FULLTEXT INDEX WITH(analyzer='Chinese', case_sensitive='true', backend='bloom'),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -99,6 +100,8 @@ CREATE TABLE logs (
 - 对于简单的前缀或后缀匹配可能不是最优选择
 
 建议仅在需要高级文本搜索功能和灵活查询模式时使用全文索引。
+
+有关全文索引配置和后端选择的更多详细信息，请参考[全文索引配置](/user-guide/logs/fulltext-index-config)指南。
 
 ## 修改索引
 
