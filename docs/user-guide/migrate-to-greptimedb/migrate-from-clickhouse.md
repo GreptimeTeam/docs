@@ -69,7 +69,7 @@ CREATE TABLE example (
 
 ### Migrating Typical Log Tables
 
-> GreptimeDB already provides built-in modeling for otel log ingestion, so please refer to the [official documentation](/user-guide/ingest-data/for-observability/opentelemetry/#logs).
+> GreptimeDB already provides built-in modeling for otel log ingestion, so please refer to the [official documentation](/user-guide/ingest-data/for-observability/opentelemetry.md#logs).
 
 Common ClickHouse log table structure:
 ```sql
