@@ -3,7 +3,7 @@ keywords: [migrate from Prometheus, remote write configuration, PromQL queries, 
 description: Instructions on migrating from Prometheus to GreptimeDB, including remote write configuration, PromQL queries, and Grafana integration.
 ---
 
-import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md' 
+import DocTemplate from '../../db-cloud-shared/migrate/_migrate-from-prometheus.md'
 
 # Migrate from Prometheus
 
@@ -28,5 +28,3 @@ To add GreptimeDB as a Prometheus data source in Grafana, please refer to the [G
 </div>
 
 </DocTemplate>
-
-If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).

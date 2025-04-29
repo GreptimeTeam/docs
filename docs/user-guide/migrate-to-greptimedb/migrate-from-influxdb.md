@@ -3,7 +3,7 @@ keywords: [migrate from InfluxDB, write data, HTTP API, Telegraf, client librari
 description: Instructions on migrating from InfluxDB to GreptimeDB, including writing data using HTTP API, Telegraf, and client libraries.
 ---
 
-import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md' 
+import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 
 # Migrate from InfluxDB
 
@@ -190,5 +190,3 @@ done
 </div>
 
 </DocTemplate>
-
-If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).

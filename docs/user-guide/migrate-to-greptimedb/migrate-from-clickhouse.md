@@ -10,30 +10,30 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 
 ## Pre-Migration Notes
 
-- **Compatibility**  
+- **Compatibility**
   Although GreptimeDB is SQL protocol compatible, the two databases have fundamental differences in data modeling, index design, and compression mechanisms. Be sure to refer to the [SQL compatibility](/reference/sql/compatibility.md) documentation and official [modeling guidelines](/user-guide/administration/design-table.md) to refactor table structures and data flows during migration.
 
-- **Data Model Differences**  
+- **Data Model Differences**
   ClickHouse is a general-purpose big data analytics engine, while GreptimeDB is optimized for time-series, metrics, and log observability scenarios. There are differences in their data models, index systems, and compression algorithms, so it’s important to take these differences and the actual business scenario into account during model design and compatibility considerations.
 
 ---
 
 ## Refactoring Data Model and Table Structure
 
-**1. Time Index**  
+**1. Time Index**
 - ClickHouse tables do not always have a `time index` field. During migration, you need to clearly select the primary time field for your business to serve as the time index and specify it when creating the table in GreptimeDB. For example, typical log or trace print times.
 - The time precision (such as second, millisecond, microsecond, etc.) should be assessed based on real-world requirements and cannot be changed once set.
 
-**2. Choose Between Tag and Field Columns**  
+**2. Choose Between Tag and Field Columns**
 - Selecting tag columns (TAG): It is recommended to use highly reused and frequently filtered fields—such as host name, service name, region, or instance ID—as tag columns.
   - Tags are suitable for low-cardinality and well-categorized fields, and can significantly accelerate filtering.
 - Field (data column): Actual observations, metrics, log message fields, etc. are suitable as fields; high-cardinality fields should be avoided for use as primary keys or tags.
 
-**3. Primary Key and Wide Table Recommendations**  
+**3. Primary Key and Wide Table Recommendations**
 - Primary Key: Combine tag columns and the timestamp. It’s not recommended to include high-cardinality fields such as log IDs,user IDs or UUIDs to avoid primary key bloat, excessive write amplification, and inefficient queries.
 - Wide Table vs. Multiple Tables: For multiple metrics collected at the same observation point (such as on the same host), it’s better to use a wide table, which improves batch write efficiency and compression ratio.
 
-**4. Index Planning**  
+**4. Index Planning**
 - Inverted Index: Build indexes for low-cardinality tag columns to improve filter efficiency.
 - Skipping/Fulltext Index: Use as needed; avoid building unnecessary indexes on high-cardinality or highly variable fields.
 - Read [Data Index](/user-guide/manage-data/data-index.md) for more info.
@@ -110,7 +110,7 @@ CREATE TABLE logs (
  );
 ```
 
-**Notes:**  
+**Notes:**
 - `host` and `service` serve as common query filters and are included in the primary key to optimize filtering. If there are very many hosts, you might not want to include `host` in the primary key but instead create a skip index.
 - `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/query-logs.md) for details
 - Since `trace_id` and `span_id` are mostly high-cardinality fields, it is not recommended to use them as tags or in the primary key, but skip indexes have been added.
@@ -119,7 +119,7 @@ CREATE TABLE logs (
 
 ### Migrating Typical Traces Tables
 
-> GreptimeDB also provides built-in modeling for otel trace ingestion, please read the [official documentation](/user-guide/ingest-data/for-observability/opentelemetry/#traces).
+> GreptimeDB also provides built-in modeling for otel trace ingestion, please read the [official documentation](/user-guide/ingest-data/for-observability/opentelemetry.md#traces).
 
 Common ClickHouse trace table structure design:
 ```sql
@@ -158,7 +158,7 @@ CREATE TABLE traces (
  );
 ```
 
-**Notes:**  
+**Notes:**
 - `service` and `operation` serve as tags, supporting trace scheduling and aggregate queries by service or operations.
 - `trace_id`, `span_id`, and `parent_span_id` use skip indexes but are not part of the primary key.
 - High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, JSON storage is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) if necessary.
@@ -176,10 +176,10 @@ During the migration process, to avoid data loss or inconsistent writes, adopt a
 
 ## Exporting and Importing Historical Data
 
-1. **Enable dual-write before migration**  
+1. **Enable dual-write before migration**
 The application should write to both ClickHouse and GreptimeDB. Check for data consistency to reduce the risk of missing data.
 
-2. **Data export from ClickHouse**  
+2. **Data export from ClickHouse**
 Use ClickHouse’s native command to export data as CSV, TSV, Parquet, or other formats. For example:
 ```sh
 clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORMAT CSVWithNames"
@@ -201,9 +201,9 @@ The exported CSV will look like:
 "2024-04-25 10:04:00","host03","postgres","cpu_usage",15.1
 ```
 
-3. **Data import into GreptimeDB**  
-GreptimeDB currently supports batch data import via SQL commands or [REST API](/reference/http-endpoints/#protocol-endpoints). For large datasets, import in batches.
-Use the [`COPY FROM` command](/reference/sql/copy/#copy-from) to import:
+3. **Data import into GreptimeDB**
+GreptimeDB currently supports batch data import via SQL commands or [REST API](/reference/http-endpoints.md#protocol-endpoints). For large datasets, import in batches.
+Use the [`COPY FROM` command](/reference/sql/copy.md#copy-from) to import:
 ```sql
   COPY example FROM "/path/to/example.csv" WITH (FORMAT = 'CSV');
 ```
@@ -220,16 +220,16 @@ Alternatively, you can convert the CSV to standard INSERT statements for batch i
 
 ## Frequently Asked Questions and Optimization Tips
 
-- **What if SQL/types are incompatible?**  
-  Before migration, audit all query SQL and rewrite or translate as necessary, referring to the [official documentation](/user-guide/query-data/sql) (especially for [log query](/user-guide/logs/query-logs)) for any incompatible syntax or data types.
+- **What if SQL/types are incompatible?**
+  Before migration, audit all query SQL and rewrite or translate as necessary, referring to the [official documentation](/user-guide/query-data/sql.md) (especially for [log query](/user-guide/logs/query-logs.md)) for any incompatible syntax or data types.
 
-- **How do I efficiently import very large datasets in batches?**  
+- **How do I efficiently import very large datasets in batches?**
   For large tables or full historical data, export and import by partition or shard as appropriate. Monitor write speed and import progress closely.
 
-- **How should high-cardinality fields be handled?**  
+- **How should high-cardinality fields be handled?**
   Avoid using high-cardinality fields as primary key or tags. Store them as fields instead, and split into multiple tables if necessary.
 
-- **How should wide tables be planned?**  
+- **How should wide tables be planned?**
   For each monitoring entity or collection endpoint, consolidate all metrics into a single table. For example, use a `host_metrics` table to store all server statistics.
 
 ---
