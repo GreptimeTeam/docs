@@ -36,7 +36,7 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 **4. Index Planning**  
 - Inverted Index: Build indexes for low-cardinality tag columns to improve filter efficiency.
 - Skipping/Fulltext Index: Use as needed; avoid building unnecessary indexes on high-cardinality or highly variable fields.
-- Read [Data Index](/user-guide/manage-data/data-index) for more info.
+- Read [Data Index](/user-guide/manage-data/data-index.md) for more info.
 
 Example ClickHouse table structure:
 ```sql
