@@ -112,7 +112,7 @@ CREATE TABLE logs (
 
 **Notes:**  
 - `host` and `service` serve as common query filters and are included in the primary key to optimize filtering. If there are very many hosts, you might not want to include `host` in the primary key but instead create a skip index.
-- `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/query-logs) for details
+- `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/query-logs.md) for details
 - Since `trace_id` and `span_id` are mostly high-cardinality fields, it is not recommended to use them as tags or in the primary key, but skip indexes have been added.
 
 ---
