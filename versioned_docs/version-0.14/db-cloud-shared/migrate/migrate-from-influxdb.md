@@ -61,13 +61,13 @@ Suppose you are querying the maximum cpu usage from the `monitor` table, recorde
 In influxQL, the query might look something like this:
 
 ```sql [InfluxQL]
-SELECT 
-   MAX("cpu") 
-FROM 
-   "monitor" 
-WHERE 
-   time > now() - 24h 
-GROUP BY 
+SELECT
+   MAX("cpu")
+FROM
+   "monitor"
+WHERE
+   time > now() - 24h
+GROUP BY
    time(1h)
 ```
 
@@ -135,7 +135,7 @@ you can set up two client instances - one for GreptimeDB and another for InfluxD
 For guidance on writing data to GreptimeDB using the InfluxDB line protocol, please refer to the [Ingest Data](#ingest-data) section.
 
 If retaining all historical data isn't necessary,
-you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data. 
+you can simultaneously write data to both GreptimeDB and InfluxDB for a specific period to accumulate the required recent data.
 Subsequently, cease writing to InfluxDB and continue exclusively with GreptimeDB.
 If a complete migration of all historical data is needed, please proceed with the following steps.
 
@@ -151,7 +151,7 @@ Use the [`influx_inspect export` command](https://docs.influxdata.com/influxdb/v
 
 ```shell
 influx_inspect export \
-  -database <db-name> \ 
+  -database <db-name> \
   -end <end-time> \
   -lponly \
   -datadir /var/lib/influxdb/data \
@@ -255,3 +255,5 @@ export GREPTIME_DB=<db-name>
 Import the data from the files into GreptimeDB:
 
 <InjectContent id="import-data-shell" content={props.children}/>
+
+If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).
