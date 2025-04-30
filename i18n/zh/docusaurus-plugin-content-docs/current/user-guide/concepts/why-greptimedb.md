@@ -13,7 +13,7 @@ GreptimeDB 通过以下方式统一处理指标、日志和链路追踪：
 - 一致的[数据模型](./data-model.md)，将所有可观测数据视为带有上下文的时间戳“宽”事件（Wide Events）
 - 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 查询
 - 内置流处理功能 ([Flow](/user-guide/flow-computation/overview.md))，用于实时聚合和分析等
-- 跨不同类型的可观测数据进行无缝关联分析（阅读 [SQL 示例](/user-guide/overview.md#sql-查询示例) 了解详细信息）
+- 跨不同类型的可观测数据进行无缝关联分析（阅读 [SQL 示例](/getting-started/quick-start.md#指标和日志的关联查询) 了解详细信息）
 
 它用高性能的单一解决方案取代了复杂的传统数据栈。
 
