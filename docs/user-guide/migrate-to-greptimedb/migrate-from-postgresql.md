@@ -51,7 +51,7 @@ your create table SQL:
 right data types and "ttl" or "compaction" options, etc.
 5. Choose proper indexes to speed up queries.
     * Inverted index: is ideal for filtering by low-cardinality columns and quickly finding rows with specific values.
-    * Skipping index: works well for range queries and skipping irrelevant data blocks, especially with sparse data.
+    * Skipping index: works well with sparse data.
     * Fulltext index: enables efficient keyword and pattern search in large text columns.
 
     For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
