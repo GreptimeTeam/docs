@@ -20,23 +20,22 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 
 ## Refactoring Data Model and Table Structure
 
-**1. Time Index**
+### Time Index
 - ClickHouse tables do not always have a `time index` field. During migration, you need to clearly select the primary time field for your business to serve as the time index and specify it when creating the table in GreptimeDB. For example, typical log or trace print times.
 - The time precision (such as second, millisecond, microsecond, etc.) should be assessed based on real-world requirements and cannot be changed once set.
 
-**2. Choose Between Tag and Field Columns**
-- Selecting tag columns (TAG): It is recommended to use highly reused and frequently filtered fields—such as host name, service name, region, or instance ID—as tag columns.
-  - Tags are suitable for low-cardinality and well-categorized fields, and can significantly accelerate filtering.
-- Field (data column): Actual observations, metrics, log message fields, etc. are suitable as fields; high-cardinality fields should be avoided for use as primary keys or tags.
-
-**3. Primary Key and Wide Table Recommendations**
-- Primary Key: Combine tag columns. It’s not recommended to include high-cardinality fields such as log IDs, user IDs or UUIDs to avoid primary key bloat, excessive write amplification, and inefficient queries.
+### Primary Key and Wide Table Recommendations
+- Primary Key: Just like the `order by` in ClickHouse without the timestamp column. It’s not recommended to include high-cardinality fields such as log IDs, user IDs or UUIDs to avoid primary key bloat, excessive write amplification, and inefficient queries.
 - Wide Table vs. Multiple Tables: For multiple metrics collected at the same observation point (such as on the same host), it’s better to use a wide table, which improves batch write efficiency and compression ratio.
 
-**4. Index Planning**
-- Inverted Index: Build indexes for low-cardinality tag columns to improve filter efficiency.
-- Skipping/Fulltext Index: Use as needed; avoid building unnecessary indexes on high-cardinality or highly variable fields.
+### Index Planning
+- Inverted Index: Build indexes for low-cardinality columns to improve filter efficiency.
+- Skipping Index:  Use as needed;  Used when certain values are sparse or querying specific values that occur infrequently within large datasets.
+- Fulltext Index: Use as needed; Designed for text search operations on string columns; avoid building unnecessary indexes on high-cardinality or highly variable fields.
 - Read [Data Index](/user-guide/manage-data/data-index.md) for more info.
+
+### Partitioning Table
+ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](user-guide/administration/manage-data/table-sharding.d) documentation for details.
 
 Example ClickHouse table structure:
 ```sql
@@ -47,6 +46,7 @@ CREATE TABLE example (
  metric String,
  value Float64
  ) ENGINE = MergeTree()
+ TTL timestamp + INTERVAL 30 DAY
  ORDER BY (timestamp, host, app, metric);
 ```
 
@@ -60,10 +60,12 @@ CREATE TABLE example (
  `value` DOUBLE,
  PRIMARY KEY (app, metric),
  TIME INDEX (`timestamp`)
- );
+ ) with(ttl='30d');
 ```
 
-> The choice of tags and the granularity of the time index should be carefully planned in light of your business’s data volume and query scenarios. If the host cardinality is not high (e.g., only a few thousand monitored hosts), you can add it to the primary key and create an inverted index.
+GreptimeDB supports TTL (Time-to-live) through the table option ttl. For more information, please refer to [Manage data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
+
+> The choice of primary key and the granularity of the time index should be carefully planned in light of your business’s data volume and query scenarios. If the host cardinality is not high (e.g., only a few thousand monitored hosts), you can add it to the primary key and create an inverted index.
 
 ---
 
@@ -89,7 +91,7 @@ CREATE TABLE logs
 
 Recommended GreptimeDB table structure:
 - Time index: `timestamp` (precision set based on logging frequency)
-- Tag columns: `host`, `service` (fields often used in queries/aggregations)
+- Primary key: `host`, `service` (fields often used in queries/aggregations)
 - Field columns: `log_message`, `trace_id`, `span_id` (high-cardinality, unique identifiers, or raw content)
 
 ```sql
@@ -113,7 +115,7 @@ CREATE TABLE logs (
 **Notes:**
 - `host` and `service` serve as common query filters and are included in the primary key to optimize filtering. If there are very many hosts, you might not want to include `host` in the primary key but instead create a skip index.
 - `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/query-logs.md) for details
-- Since `trace_id` and `span_id` are mostly high-cardinality fields, it is not recommended to use them as tags or in the primary key, but skip indexes have been added.
+- Since `trace_id` and `span_id` are mostly high-cardinality fields, it is not recommended to use them in the primary key, but skip indexes have been added.
 
 ---
 
@@ -139,7 +141,7 @@ CREATE TABLE traces (
 
 Recommended GreptimeDB table structure:
 - Time index: `timestamp` (e.g., collection/start time)
-- Tag columns: `service`, `operation` (commonly filtered/aggregated properties)
+- Primary key: `service`, `operation` (commonly filtered/aggregated properties)
 - Field columns: `trace_id`, `span_id`, `parent_span_id`, `duration`, `tags` (high-cardinality or Map type)
 
 ```sql
@@ -159,9 +161,9 @@ CREATE TABLE traces (
 ```
 
 **Notes:**
-- `service` and `operation` serve as tags, supporting trace scheduling and aggregate queries by service or operations.
+- `service` and `operation` serve as primary key, supporting trace scheduling and aggregate queries by service or operations.
 - `trace_id`, `span_id`, and `parent_span_id` use skip indexes but are not part of the primary key.
-- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, JSON storage is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) if necessary.
+- High-cardinality fields are set as fields for efficient writes. For complex properties like `tags`, [JSON storage](/reference/sql/data-types/#json-type-experimental) or string is recommended, and they can be expanded using GreptimeDB’s ETL - [Pipeline](/user-guide/logs/quick-start.md#write-logs-by-pipeline) if necessary.
 - Depending on overall business volume, consider whether to partition traces into multiple tables (such as in massive multi-service environments).
 
 ---
@@ -202,6 +204,7 @@ The exported CSV will look like:
 ```
 
 3. **Data import into GreptimeDB**
+> The table must be created in GreptimeDB before importing data.
 GreptimeDB currently supports batch data import via SQL commands or [REST API](/reference/http-endpoints.md#protocol-endpoints). For large datasets, import in batches.
 Use the [`COPY FROM` command](/reference/sql/copy.md#copy-from) to import:
 ```sql
@@ -220,16 +223,16 @@ Alternatively, you can convert the CSV to standard INSERT statements for batch i
 
 ## Frequently Asked Questions and Optimization Tips
 
-- **What if SQL/types are incompatible?**
+### What if SQL/types are incompatible?
   Before migration, audit all query SQL and rewrite or translate as necessary, referring to the [official documentation](/user-guide/query-data/sql.md) (especially for [log query](/user-guide/logs/query-logs.md)) for any incompatible syntax or data types.
 
-- **How do I efficiently import very large datasets in batches?**
+### How do I efficiently import very large datasets in batches?
   For large tables or full historical data, export and import by partition or shard as appropriate. Monitor write speed and import progress closely.
 
-- **How should high-cardinality fields be handled?**
-  Avoid using high-cardinality fields as primary key or tags. Store them as fields instead, and split into multiple tables if necessary.
+### How should high-cardinality fields be handled?
+  Avoid using high-cardinality fields as primary key. Store them as fields instead, and split into multiple tables if necessary.
 
-- **How should wide tables be planned?**
+### How should wide tables be planned?
   For each monitoring entity or collection endpoint, consolidate all metrics into a single table. For example, use a `host_metrics` table to store all server statistics.
 
 ---
