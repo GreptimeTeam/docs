@@ -11,8 +11,11 @@ This document will guide you through the migration process from PostgreSQL to Gr
 
 Please be aware that though GreptimeDB supports the wire protocol of PostgreSQL, it does not mean GreptimeDB implements
 all
-PostgreSQL's features. You may refer to the "[ANSI Compatibility](/reference/sql/compatibility.md)" to see the
-constraints regarding using SQL in GreptimeDB.
+PostgreSQL's features. You may refer to:
+* The [ANSI Compatibility](/reference/sql/compatibility.md) to see the constraints regarding using SQL in GreptimeDB.
+* The [Data Modeling Guide](/user-guide/administration/design-table.md) to create proper table schemas.
+* The [Data Index Guide](/user-guide/manage-data/data-index.md) for index planning.
+
 
 ## Migration steps
 
@@ -38,13 +41,20 @@ your create table SQL:
 3. It's vital to set the most fit timestamp precision for your time index column, too. Like the chosen of time index
    column, the precision of it cannot be changed as well. Find the most fit timestamp type for your
    data set [here](/reference/sql/data-types#data-types-compatible-with-mysql-and-postgresql).
-4. Choose the most fit tag columns based on your query patterns. The tag columns store the metadata that is
-   commonly queried. The values in the tag columns are labels attached to the collected sources, generally used to
-   describe a particular characteristic of these sources. The tag columns are indexed, making queries on them
-   performant.
-
-Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
+4. Choose a primary key only when it is truly needed. The primary key in GreptimeDB is different from that in PostgreSQL. You should use a primary key only when:
+    * Most queries can benefit from the ordering.
+    * You need to deduplicate (including delete) rows by the primary key and time index.
+    
+    Otherwise, setting a primary key is optional and it may hurt performance. Read [Primary Key](/user-guide/administration/design-table.md#primary-key) for details.
+    
+    Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
 right data types and "ttl" or "compaction" options, etc.
+5. Choose proper indexes to speed up queries.
+    * Inverted index: is ideal for filtering by low-cardinality columns and quickly finding rows with specific values.
+    * Skipping index: works well with sparse data.
+    * Fulltext index: enables efficient keyword and pattern search in large text columns.
+
+    For details and best practices, refer to the [data index](user-guide/manage-data/data-index.md) documentation.
 
 ### Write data to both GreptimeDB and PostgreSQL simultaneously
 
