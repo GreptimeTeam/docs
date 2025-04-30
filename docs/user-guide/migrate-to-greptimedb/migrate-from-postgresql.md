@@ -141,3 +141,5 @@ To summarize, data migration steps can be illustrate as follows:
 
 After the data migration is completed, you can stop writing data to PostgreSQL and continue using GreptimeDB
 exclusively!
+
+If you need a more detailed migration plan or example scripts, please provide the specific table structure and data volume. The [GreptimeDB official community](https://github.com/orgs/GreptimeTeam/discussions) will offer further support. Welcome to join the [Greptime Slack](http://greptime.com/slack).
