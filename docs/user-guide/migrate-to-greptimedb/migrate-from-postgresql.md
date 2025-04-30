@@ -12,7 +12,7 @@ This document will guide you through the migration process from PostgreSQL to Gr
 Please be aware that though GreptimeDB supports the wire protocol of PostgreSQL, it does not mean GreptimeDB implements
 all
 PostgreSQL's features. You may refer to:
-* The "[ANSI Compatibility](/reference/sql/compatibility.md)" to see the constraints regarding using SQL in GreptimeDB.
+* The [ANSI Compatibility](/reference/sql/compatibility.md) to see the constraints regarding using SQL in GreptimeDB.
 * The [Data Modeling Guide](/user-guide/administration/design-table.md) to create proper table schemas.
 * The [Data Index Guide](/user-guide/manage-data/data-index.md) for index planning.
 
