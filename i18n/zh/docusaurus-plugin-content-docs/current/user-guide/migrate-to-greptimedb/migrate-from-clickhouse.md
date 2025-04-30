@@ -24,14 +24,14 @@ description: 分步指南，指导如何从 ClickHouse 迁移到 GreptimeDB，�
 - 时间精度（秒、毫秒、微秒等）应按实际需求选定，且一旦设定不可更改。
 
 ### 主键与宽表建议
-- 主键：类似 ClickHouse 的 `order by`，但不建议包含 log_id、user_id 或 UUID 等高基数字段，以避免主键膨胀、写放大和低效查询。
+- 主键：类似 ClickHouse 的 `order by`，去掉时间戳列；但不建议包含 log_id、user_id 或 UUID 等高基数字段，以避免主键膨胀、写放大和低效查询。
 - 宽表 vs 多表：同一个观测点采集多种指标时建议采用宽表，有助于提升批量写入效率和压缩比。
 
 ### 索引规划
 - 倒排索引：为低基数列建立索引，提高筛选效率。
 - 跳数索引：按需使用，适用于稀疏值或大表中偶尔查询的特定值。
 - 全文索引：按需使用，适用于字符串字段的文本检索，避免在高基数或高变动字段上建立无用索引。
-- 更多信息详见 [数据索引](/user-guide/manage-data/data-index.md)。
+- 更多信息详见[数据索引](/user-guide/manage-data/data-index.md)。
 
 ### 表分区
 ClickHouse 通过 `PARTITION BY` 语法支持分区，GreptimeDB 提供类似能力，语法不同，请参阅[表分片](user-guide/administration/manage-data/table-sharding.md)文档。
