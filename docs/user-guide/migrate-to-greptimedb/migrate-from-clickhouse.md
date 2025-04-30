@@ -30,7 +30,7 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 - Field (data column): Actual observations, metrics, log message fields, etc. are suitable as fields; high-cardinality fields should be avoided for use as primary keys or tags.
 
 **3. Primary Key and Wide Table Recommendations**
-- Primary Key: Combine tag columns and the timestamp. It’s not recommended to include high-cardinality fields such as log IDs,user IDs or UUIDs to avoid primary key bloat, excessive write amplification, and inefficient queries.
+- Primary Key: Combine tag columns. It’s not recommended to include high-cardinality fields such as log IDs, user IDs or UUIDs to avoid primary key bloat, excessive write amplification, and inefficient queries.
 - Wide Table vs. Multiple Tables: For multiple metrics collected at the same observation point (such as on the same host), it’s better to use a wide table, which improves batch write efficiency and compression ratio.
 
 **4. Index Planning**
