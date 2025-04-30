@@ -37,6 +37,11 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 ### Partitioning Table
 ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](user-guide/administration/manage-data/table-sharding.md) documentation for details.
 
+### TTL
+GreptimeDB supports TTL (Time-to-live) through the table option `ttl`. For more information, please refer to [Manage data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
+
+### Example Table
+
 Example ClickHouse table structure:
 ```sql
 CREATE TABLE example (
@@ -58,14 +63,12 @@ CREATE TABLE example (
  app STRING INVERTED INDEX,
  metric STRING INVERTED INDEX,
  `value` DOUBLE,
- PRIMARY KEY (app, metric),
+ PRIMARY KEY (host, app, metric),
  TIME INDEX (`timestamp`)
  ) with(ttl='30d');
 ```
 
-GreptimeDB supports TTL (Time-to-live) through the table option ttl. For more information, please refer to [Manage data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).
-
-> The choice of primary key and the granularity of the time index should be carefully planned in light of your business’s data volume and query scenarios. If the host cardinality is not high (e.g., only a few thousand monitored hosts), you can add it to the primary key and create an inverted index.
+> The choice of primary key and the granularity of the time index should be carefully planned based on your business's data volume and query scenarios. If the host cardinality is high (e.g., hundreds of thousands of monitored hosts), you should remove it from the primary key and consider creating a skipping index for it.
 
 ---
 
@@ -205,6 +208,7 @@ The exported CSV will look like:
 
 3. **Data import into GreptimeDB**
 > The table must be created in GreptimeDB before importing data.
+
 GreptimeDB currently supports batch data import via SQL commands or [REST API](/reference/http-endpoints.md#protocol-endpoints). For large datasets, import in batches.
 Use the [`COPY FROM` command](/reference/sql/copy.md#copy-from) to import:
 ```sql
