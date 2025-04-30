@@ -30,12 +30,12 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 
 ### Index Planning
 - Inverted Index: Build indexes for low-cardinality columns to improve filter efficiency.
-- Skipping Index:  Use as needed;  Used when certain values are sparse or querying specific values that occur infrequently within large datasets.
+- Skipping Index:  Use as needed; Used when certain values are sparse or querying specific values that occur infrequently within large datasets.
 - Fulltext Index: Use as needed; Designed for text search operations on string columns; avoid building unnecessary indexes on high-cardinality or highly variable fields.
 - Read [Data Index](/user-guide/manage-data/data-index.md) for more info.
 
 ### Partitioning Table
-ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](user-guide/administration/manage-data/table-sharding.d) documentation for details.
+ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](user-guide/administration/manage-data/table-sharding.md) documentation for details.
 
 Example ClickHouse table structure:
 ```sql
