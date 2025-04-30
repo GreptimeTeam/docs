@@ -28,3 +28,4 @@ GreptimeDB 通过其 HTTP API 支持 Prometheus 查询语言 (PromQL)。
 - [Scale Prometheus：K8s 部署 GreptimeDB 集群作为 Prometheus 长期存储](https://greptime.com/blogs/2024-10-07-scale-prometheus)
 - [「用户故事」从 Thanos 到 GreptimeDB，我们实现了 Prometheus 高效长期存储](https://greptime.com/blogs/2024-10-16-thanos-migration-to-greptimedb)
 
+如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。

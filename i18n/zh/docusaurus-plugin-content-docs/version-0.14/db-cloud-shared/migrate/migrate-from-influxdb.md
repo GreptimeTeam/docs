@@ -255,3 +255,5 @@ export GREPTIME_DB=<db-name>
 将数据导入到 GreptimeDB：
 
 <InjectContent id="import-data-shell" content={props.children}/>
+
+如果您需要更详细的迁移方案或示例脚本，请提供具体的表结构和数据量信息。[GreptimeDB 官方社区](https://github.com/orgs/GreptimeTeam/discussions)将为您提供进一步的支持。欢迎加入 [Greptime Slack](http://greptime.com/slack) 社区交流。
