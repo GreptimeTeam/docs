@@ -61,7 +61,7 @@ docker run -p 127.0.0.1:4000-4003:4000-4003 \
 为了防止不小心退出 Docker 容器，你可能想以“detached”模式运行它：在 `docker run` 命令中添加 `-d` 参数即可。
 :::
 
-数据将会存储在当前目录下的 `greptimedb/` 目录中。
+数据将会存储在当前目录下的 `greptimedb_data/` 目录中。
 
 如果你想要使用另一个版本的 GreptimeDB 镜像，可以从我们的 [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb) 下载。
 
