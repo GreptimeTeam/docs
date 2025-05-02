@@ -61,7 +61,7 @@ Use the Kafka wal provider to start the standalone GreptimeDB:
 docker run \
   --network greptimedb-remote-wal \
   -p 4000-4003:4000-4003 \
-  -v "./greptimedb_data:greptimedb_data" \
+  -v "$(pwd)/greptimedb_data:/greptimedb_data" \
   --name greptimedb --rm \
   -e GREPTIMEDB_STANDALONE__WAL__PROVIDER="kafka" \
   -e GREPTIMEDB_STANDALONE__WAL__BROKER_ENDPOINTS="kafka:9092" \

@@ -48,7 +48,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 
 ```shell
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
-  -v "./greptimedb_data:greptimedb_data" \
+  -v "$(pwd)/greptimedb_data:/greptimedb_data" \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
@@ -62,7 +62,7 @@ To avoid accidentally exit the Docker container, you may want to run it in the "
 the `docker run` command.
 :::
 
-The data will be stored in the `greptimedb/` directory in your current directory.
+The data will be stored in the `greptimedb_data/` directory in your current directory.
 
 If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb). In particular, we support GreptimeDB based on CentOS, and you can try image `greptime/greptimedb-centos`.
 
@@ -75,7 +75,7 @@ You can:
 
   ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-     -v "./greptimedb_data:greptimedb_data" \
+     -v "$(pwd)/greptimedb_data:/greptimedb_data" \
      --name greptime --rm \
      greptime/greptimedb:VAR::greptimedbVersion standalone start \
      --http-addr 0.0.0.0:4000 \
@@ -112,7 +112,7 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 
 ```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
-  -v "./greptimedb_data:greptimedb_data" \
+  -v "$(pwd)/greptimedb_data:/greptimedb_data" \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
