@@ -48,7 +48,7 @@ Make sure the [Docker](https://www.docker.com/) is already installed. If not, yo
 
 ```shell
 docker run -p 127.0.0.1:4000-4003:4000-4003 \
-  -v "./greptimedb_data:greptimedb_data" \
+  -v "${pwd}/greptimedb_data:/greptimedb_data" \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
@@ -75,7 +75,7 @@ You can:
 
   ```shell
    docker run --security-opt seccomp=unconfined -p 4000-4003:4000-4003 \
-     -v "./greptimedb_data:greptimedb_data" \
+     -v "${pwd}/greptimedb_data:/greptimedb_data" \
      --name greptime --rm \
      greptime/greptimedb:VAR::greptimedbVersion standalone start \
      --http-addr 0.0.0.0:4000 \
@@ -112,7 +112,7 @@ GreptimeDB binds to `127.0.0.1` by default. If you need to accept connections fr
 
 ```shell
 docker run -p 0.0.0.0:4000-4003:4000-4003 \
-  -v "./greptimedb_data:greptimedb_data" \
+  -v "${pwd}/greptimedb_data:/greptimedb_data" \
   --name greptime --rm \
   greptime/greptimedb:VAR::greptimedbVersion standalone start \
   --http-addr 0.0.0.0:4000 \
