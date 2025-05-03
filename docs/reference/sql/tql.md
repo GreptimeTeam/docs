@@ -12,7 +12,7 @@ The `TQL` keyword executes TQL language in SQL. The TQL is Time-Series Query Lan
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step) expr 
+TQL [EVAL | EVALUATE] (start, end, step) expr
 ```
 
 The `start`, `end` and `step` are the query parameters just like [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/):
@@ -96,7 +96,7 @@ The result should be like the following:
 TQL also supports `ANALYZE` keyword to analyze the given PromQL query's execution. The syntax is as follows:
 
 ```
-TQL ANALYZE (start, end, step) expr;
+TQL ANALYZE [VERBOSE] (start, end, step) expr;
 ```
 
 For example:
@@ -120,4 +120,10 @@ will get a result like
             ExecutionPlan(PlaceHolder), metrics=[]
       |
 +-------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+```
+
+Using `TQL ANALYZE VERBOSE` will get a verbose result of the execution.
+
+```
+TQL ANALYZE VERBOSE (0, 10, '5s') test;
 ```
