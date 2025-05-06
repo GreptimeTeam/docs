@@ -32,8 +32,6 @@ Telemetry will be enabled by default starting from v0.4.0. You can disable it by
 Set `enable_telemetry` in the standalone config file to `false`:
 
 ```toml
-# Node running mode, "standalone" or "distributed".
-mode = "standalone"
 # Whether to enable greptimedb telemetry, true by default.
 enable_telemetry = false
 ```

@@ -120,7 +120,6 @@ curl http://localhost:4000/config
 The output contains the configuration information of the GreptimeDB server.
 
 ```toml
-mode = "standalone"
 enable_telemetry = true
 user_provider = "static_user_provider:file:user"
 init_regions_in_background = false

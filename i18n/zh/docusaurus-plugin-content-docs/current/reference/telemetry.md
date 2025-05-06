@@ -32,8 +32,6 @@ description: 介绍 GreptimeDB 的指标收集功能，包括收集的数据类�
 将独立配置文件中的 `enable_telemetry` 设置为 `false`：
 
 ```toml
-# Node running mode, "standalone" or "distributed".
-mode = "standalone"
 # Whether to enable greptimedb telemetry, true by default.
 enable_telemetry = false
 ```
