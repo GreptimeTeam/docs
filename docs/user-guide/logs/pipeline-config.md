@@ -681,11 +681,14 @@ A Transform consists of one or more configurations, and each configuration conta
 - `default`: Default value (optional).
 
 ### Auto-transform
-If no transform section is specified in the pipeline config, the pipeline engine will try to infer the datatype for the fields from the context and preserve them into database, much like the `identity_pipeline` does.
+If no transform section is specified in the pipeline configuration, the pipeline engine will attempt to infer the data types of the fields from the context and preserve them in the database, much like the `identity_pipeline` does.
 
-To create a table in the GreptimeDB, one time index column must be specified. In this case, the pipeline engine will try to find a `timestamp` type of field in the context and set it as time index column. The `timestamp` type field is a product of `date` or `epoch` processor, so in the processor section, one processor of `date` or `epoch` must exist. Also, only one `timestamp` field is allowed. Multiple `timestamp` field would lead to an error for ambiguity.
+To create a table in GreptimeDB, a time index column must be specified.
+In this case, the pipeline engine will try to find a field of type `timestamp` in the context and set it as the time index column.
+A `timestamp` field is produced by a `date` or `epoch` processor, so at least one `date` or `epoch` processor must be defined in the processors section.
+Additionally, only one `timestamp` field is allowed, multiple `timestamp` fields would lead to an error due to ambiguity.
 
-For example, the following pipeline config is now a valid config file.
+For example, the following pipeline configuration is now valid.
 ```YAML
 processors:
   - dissect:
@@ -701,7 +704,7 @@ processors:
         - "%d/%b/%Y:%H:%M:%S %z"
 ```
 
-And it result to the table schema below: 
+And it result to the following table schema: 
 ```
 mysql> desc auto_trans;
 +---------------+---------------------+------+------+---------+---------------+
@@ -723,8 +726,8 @@ mysql> desc auto_trans;
 12 rows in set (0.03 sec)
 ```
 
-We can see that all fields are preserved, even the original `message` field.
-Note all fields are saved as `String` type, and `timestamp` is automatically set to be the time index.
+We can see that all fields are preserved, including the original `message` field.
+Note that all fields are saved as `String` type, and the `timestamp` field is automatically set as the time index.
 
 ### The `fields` field
 
