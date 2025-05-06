@@ -19,7 +19,7 @@ Table suffix 支持将数据保存到不同的表中。
 
 - Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
 - Dispatcher(可选) 用于将执行上下文转发到另一个 pipeline，同一个输入批次的数据可以基于特定的值被不同的 pipeline 进行处理。 
-- Transform 用于对数据进行格式转换，例如将字符串类型转换为数字类型。
+- Transform(可选) 用于对数据进行格式转换，例如将字符串类型转换为数字类型，并且指定数据库中的索引信息。
 - Table suffix（可选） 用于将数据存储到不同的表中，以便后续使用。
 
 一个包含 Processor 和 Transform 的简单配置示例如下：
@@ -686,7 +686,9 @@ processors:
 
 ## Transform
 
-Transform 用于对 log 数据进行转换，其配置位于 YAML 文件中的 `transform` 字段下。
+Transform 用于对 log 数据进行转换，并且指定在数据库中的索引信息。其配置位于 YAML 文件中的 `transform` 字段下。
+
+从 `v0.15` 开始，新增了一种自动 transform 模式用于简化配置。具体详情见下。
 
 Transform 由一个或多个配置组成，每个配置包含以下字段：
 
@@ -696,6 +698,51 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 - `tag`: 设置列为 tag（可选）
 - `on_failure`: 转换失败时的处理方式（可选）
 - `default`: 默认值（可选）
+
+### 自动 transform
+如果 pipeline 的配置中没有 transform 信息，那么 pipeline 引擎会尝试为上下文中的字段自动推导类型并保存到数据库中，类似 `identity pipeline` 的行为。
+
+在 GreptimeDB 中创建表，必须指定一个时间索引列。在这个场景中，pipeline 引擎会从上下文中尝试寻找一个 `timestamp` 类型的字段，并将其设置成时间索引列。`timestamp` 类型的字段是 `date` 或者 `epoch` processor 的产物。所以在 processor 声明中，必须存在一个 `date` 或者 `epoch` processor。同时，只允许存在一个 `timestamp` 字段，多个 `timestamp` 字段会因无法判断哪一个是时间索引列而报错。
+
+例如，以下 pipeline 配置现在是一份有效的配置。
+```YAML
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - '%{ip_address} - %{username} [%{timestamp}] "%{http_method} %{request_line} %{protocol}" %{status_code} %{response_size}'
+      ignore_missing: true
+  - date:
+      fields:
+        - timestamp
+      formats:
+        - "%d/%b/%Y:%H:%M:%S %z"
+```
+
+其产生的表结构如下
+```
+mysql> desc auto_trans;
++---------------+---------------------+------+------+---------+---------------+
+| Column        | Type                | Key  | Null | Default | Semantic Type |
++---------------+---------------------+------+------+---------+---------------+
+| timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| host          | String              |      | YES  |         | FIELD         |
+| http_method   | String              |      | YES  |         | FIELD         |
+| ip_address    | String              |      | YES  |         | FIELD         |
+| message       | String              |      | YES  |         | FIELD         |
+| protocol      | String              |      | YES  |         | FIELD         |
+| request_line  | String              |      | YES  |         | FIELD         |
+| response_size | String              |      | YES  |         | FIELD         |
+| service       | String              |      | YES  |         | FIELD         |
+| source_type   | String              |      | YES  |         | FIELD         |
+| status_code   | String              |      | YES  |         | FIELD         |
+| username      | String              |      | YES  |         | FIELD         |
++---------------+---------------------+------+------+---------+---------------+
+12 rows in set (0.03 sec)
+```
+
+可以看到所有的字段都被保存下来了，包括原始的 `message` 字段。注意所有的字段都被保存成 `String` 类型，`timestamp` 字段自动被设置成时间索引列。
 
 ### `fields` 字段
 
