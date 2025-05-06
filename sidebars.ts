@@ -240,6 +240,20 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
+          label: 'Trace',
+          items: [
+            {
+              type: 'doc',
+              id: 'user-guide/trace/overview',
+              label: 'Overview',
+            },
+            'user-guide/trace/read-write',
+            'user-guide/trace/data-model',
+            'user-guide/trace/extend-trace',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Vector Storage',
           items: [
             'user-guide/vectors/vector-type',
