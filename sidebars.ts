@@ -84,7 +84,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observability/kafka',
                 'user-guide/ingest-data/for-observability/loki',
                 'user-guide/ingest-data/for-observability/alloy',
-                'user-guide/ingest-data/for-observability/opentelemetry-traces',
                 'user-guide/ingest-data/for-observability/elasticsearch',
                 'user-guide/ingest-data/for-observability/fluent-bit',
               ],
