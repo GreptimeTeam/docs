@@ -74,7 +74,7 @@ GROUP BY
 The sink table will be filled with aggregated data as trace data ingested. We
 can use following SQL to get p90 latency of the each span.
 
-```
+```sql
 SELECT
     span_name,
     time_window,
