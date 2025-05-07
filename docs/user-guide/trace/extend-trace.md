@@ -11,8 +11,8 @@ some examples.
 ## Generate Aggregated Metrics from Trace
 
 The span contains `duration_nano` field for span processing time. In this
-example, we will create [Flow](/flow-computation/overview.md) task to generate
-latency metrics from trace data.
+example, we will create [Flow](/user-guide/flow-computation/overview.md) task to
+generate latency metrics from trace data.
 
 We will use OpenTelemetry Django instruments for source data. But the source
 data doesn't really matter because fields used in this example are all generic
