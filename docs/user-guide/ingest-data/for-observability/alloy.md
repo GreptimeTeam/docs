@@ -89,7 +89,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
     headers  = {
       "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
       "X-Greptime-Log-Table-Name" = "demo_logs",
-      "X-Greptime-Gog-Extract-Keys" = "filename,log.file.name,loki.attribute.labels",
+      "X-Greptime-Log-Extract-Keys" = "filename,log.file.name,loki.attribute.labels",
     }
     auth     = otelcol.auth.basic.credentials.handler
   }
@@ -117,4 +117,3 @@ The example codes above may be outdated according to OpenTelemetry. We recommend
 :::
 
 For more information on the example code, please refer to the official documentation for your preferred programming language.
-
