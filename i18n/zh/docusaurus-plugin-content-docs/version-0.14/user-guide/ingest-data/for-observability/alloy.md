@@ -89,7 +89,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
   headers  = {
     "X-Greptime-DB-Name" = "${GREPTIME_DB:=public}",
     "X-Greptime-Log-Table-Name" = "${LOG_TABLE_NAME}",
-    "X-Greptime-Gog-Extract-Keys" = "${EXTRACT_KEYS}",
+    "X-Greptime-Log-Extract-Keys" = "${EXTRACT_KEYS}",
   }
   auth     = otelcol.auth.basic.credentials.handler
   }
@@ -117,4 +117,3 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
 :::
 
 有关示例代码的更多信息，请参阅你首选编程语言的官方文档。
-
