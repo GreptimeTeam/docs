@@ -5,6 +5,12 @@ description: Covers internals of how trace data is stored in GreptimeDB.
 
 # Trace Data Modeling
 
+:::warning
+
+This section currently in the experimental stage and may be adjusted in future versions.
+
+:::
+
 In this section, we will cover how trace data is modeled in GreptimeDB as
 tables.
 

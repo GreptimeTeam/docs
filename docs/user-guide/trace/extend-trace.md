@@ -5,6 +5,12 @@ description: Introduces additional features to generate more data insights from 
 
 # Extending Trace Data
 
+:::warning
+
+This section currently in the experimental stage and may be adjusted in future versions.
+
+:::
+
 You can also generate derived data from trace. In this chapter, we will show you
 some examples.
 

@@ -5,6 +5,12 @@ description: Covers basics of trace data ingestion and query in GreptimeDB.
 
 # Ingestion and Query
 
+:::warning
+
+This section currently in the experimental stage and may be adjusted in future versions.
+
+:::
+
 In this section, we will get started with trace data in GreptimeDB from
 ingestion and query.
 
