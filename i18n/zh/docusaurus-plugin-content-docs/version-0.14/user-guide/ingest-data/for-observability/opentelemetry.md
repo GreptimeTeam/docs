@@ -203,7 +203,7 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
 * URL: `http{s}://<host>/v1/otlp/v1/traces`
 * Headers: headers 与 [Logs](#Logs) 部分相同，你可以参考 [Logs](#Logs) 部分获取更多信息。
 
-默认地，GreptimeDB 会将 traces 数据写入到 `public` 数据库中的 `opentelemetry_traces` 表中。如果想要将 traces 数据写入到不同的表中，你可以使用 `X-Greptime-DB-Name` 和 `X-Greptime-Log-Table-Name` 头部信息来指定数据库和表名。
+默认地，GreptimeDB 会将 traces 数据写入到 `public` 数据库中的 `opentelemetry_traces` 表中。如果想要将 traces 数据写入到不同的表中，你可以使用 `X-Greptime-DB-Name` 和 `X-Greptime-Trace-Table-Name` 头部信息来指定数据库和表名。
 
 GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议** 发送，其中对 HTTP header 有如下要求：
 
