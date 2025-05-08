@@ -598,22 +598,6 @@ headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 - `url`: Prometheus Remote-Write 协议指定的 URL。
 - `headers`: 一些可选的 HTTP 参数，比如认证信息。
 
-### Mode 选项
-
-`mode` 选项在 `datanode`、`frontend` 和 `standalone` 中可用，它指定了组件的运行模式。
-
-在分布式 GreptimeDB 的 `datanode` 和 `frontend` 的配置文件中，需要将值设置为 `distributed`：
-
-```toml
-mode = "distributed"
-```
-
-在 standalone GreptimeDB 的配置文件中，需要将值设置为 `standalone`：
-
-```toml
-mode = "standalone"
-```
-
 ### 心跳配置
 心跳配置在 `frontend` 和 `datanode` 中可用。
 ```toml
