@@ -343,7 +343,7 @@ grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 17207280210000000
 grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
 ```
 
-然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果改表不存在，将会自动创建该表。
+然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果该表不存在，将会自动创建该表。
 ## 下一步
 
 你现在已经体验了 GreptimeDB 的核心功能。
