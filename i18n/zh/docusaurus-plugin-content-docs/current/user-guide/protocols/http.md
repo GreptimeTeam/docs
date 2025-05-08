@@ -156,7 +156,6 @@ curl http://localhost:4000/config
 输出包含 GreptimeDB 服务器的配置信息。
 
 ```toml
-mode = "standalone"
 enable_telemetry = true
 user_provider = "static_user_provider:file:user"
 init_regions_in_background = false

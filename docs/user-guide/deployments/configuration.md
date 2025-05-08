@@ -609,22 +609,6 @@ headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
 - `url`: URL specified by Prometheus Remote-Write protocol.
 - `headers`: Some optional HTTP parameters, such as authentication information.
 
-### Mode option
-
-The `mode` option is valid in `datanode`, `frontend` and `standalone`, which specify the running mode of the component.
-
-In the configuration files of `datanode` and `frontend` of distributed GreptimeDB, the value needs to be set as `distributed`:
-
-```toml
-mode = "distributed"
-```
-
-In the configuration files of standalone GreptimeDB, the value needs to be set as `standalone`:
-
-```toml
-mode = "standalone"
-```
-
 ### Heartbeat configuration
 Heartbeat configuration is available in `frontend` and `datanode`.
 ```toml
