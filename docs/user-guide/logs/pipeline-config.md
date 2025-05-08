@@ -19,7 +19,7 @@ Table suffix allows storing the data into different tables.
 
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
 - Dispatcher(optional) is used for forwarding the context into another pipeline, so that the same batch of input data can be divided and processed by different pipeline based on certain fields.
-- Transform is used for converting data formats, such as converting string types to numeric types.
+- Transform(optional) is used for converting data formats, such as converting string types to numeric types, and specifying indexes.
 - Table suffix(optional) is used for storing data into different table for later convenience.
 
 Here is an example of a simple configuration that includes Processors and Transform:
@@ -56,7 +56,7 @@ table_suffix: _${string_field_a}
 
 ## Processor
 
-The Processor is used for preprocessing log data, and its configuration is located under the `processors` field in the YAML file. The Pipeline processes data by applying multiple Processors in sequential order, where each Processor depends on the result of the previous Processor. A Processor consists of a name and multiple configurations, and different types of Processors have different fields in their configuration.
+The Processor is used for preprocessing log data, and its configuration is located under the `processors` section in the YAML file. The Pipeline processes data by applying multiple Processors in sequential order, where each Processor depends on the result of the previous Processor. A Processor consists of a name and multiple configurations, and different types of Processors have different fields in their configuration.
 
 We currently provide the following built-in Processors:
 
@@ -667,7 +667,9 @@ The digested template can be used to group similar log messages together or anal
 
 ## Transform
 
-Transform is used to convert log data, and its configuration is located under the `transform` field in the YAML file.
+Transform is used to convert data formats and specify indexes upon columns. It is located under the `transform` section in the YAML file.
+
+Starting from `v0.15`, an auto-transform mode is added to simplify the configuration. See below for details. 
 
 A Transform consists of one or more configurations, and each configuration contains the following fields:
 
@@ -677,6 +679,55 @@ A Transform consists of one or more configurations, and each configuration conta
 - `tag`: Specify the field to be a tag field (optional).
 - `on_failure`: Handling method for transformation failures (optional).
 - `default`: Default value (optional).
+
+### Auto-transform
+If no transform section is specified in the pipeline configuration, the pipeline engine will attempt to infer the data types of the fields from the context and preserve them in the database, much like the `identity_pipeline` does.
+
+To create a table in GreptimeDB, a time index column must be specified.
+In this case, the pipeline engine will try to find a field of type `timestamp` in the context and set it as the time index column.
+A `timestamp` field is produced by a `date` or `epoch` processor, so at least one `date` or `epoch` processor must be defined in the processors section.
+Additionally, only one `timestamp` field is allowed, multiple `timestamp` fields would lead to an error due to ambiguity.
+
+For example, the following pipeline configuration is now valid.
+```YAML
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - '%{ip_address} - %{username} [%{timestamp}] "%{http_method} %{request_line} %{protocol}" %{status_code} %{response_size}'
+      ignore_missing: true
+  - date:
+      fields:
+        - timestamp
+      formats:
+        - "%d/%b/%Y:%H:%M:%S %z"
+```
+
+And it result to the following table schema: 
+```
+mysql> desc auto_trans;
++---------------+---------------------+------+------+---------+---------------+
+| Column        | Type                | Key  | Null | Default | Semantic Type |
++---------------+---------------------+------+------+---------+---------------+
+| timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| host          | String              |      | YES  |         | FIELD         |
+| http_method   | String              |      | YES  |         | FIELD         |
+| ip_address    | String              |      | YES  |         | FIELD         |
+| message       | String              |      | YES  |         | FIELD         |
+| protocol      | String              |      | YES  |         | FIELD         |
+| request_line  | String              |      | YES  |         | FIELD         |
+| response_size | String              |      | YES  |         | FIELD         |
+| service       | String              |      | YES  |         | FIELD         |
+| source_type   | String              |      | YES  |         | FIELD         |
+| status_code   | String              |      | YES  |         | FIELD         |
+| username      | String              |      | YES  |         | FIELD         |
++---------------+---------------------+------+------+---------+---------------+
+12 rows in set (0.03 sec)
+```
+
+We can see that all fields are preserved, including the original `message` field.
+Note that all fields are saved as `String` type, and the `timestamp` field is automatically set as the time index.
 
 ### The `fields` field
 
