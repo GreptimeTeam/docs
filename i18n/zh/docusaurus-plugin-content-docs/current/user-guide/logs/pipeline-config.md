@@ -700,7 +700,7 @@ Transform 由一个或多个配置组成，每个配置包含以下字段：
 - `default`: 默认值（可选）
 
 ### 自动 transform
-如果 pipeline 的配置中没有 transform，那么 pipeline 引擎会尝试为上下文中的字段自动推导类型并将其保存到数据库中,该行为类似 `identity` pipeline 的效果。
+如果 pipeline 的配置中没有 transform，那么 pipeline 引擎会尝试为上下文中的字段自动推导类型并将其保存到数据库中，该行为类似 `identity` pipeline 的效果。
 
 当在 GreptimeDB 中创建表时，必须指定一个时间索引列。在这个场景中，pipeline 引擎会尝试从上下文中寻找一个 `timestamp`
 类型的字段，并将其设置成时间索引列。`timestamp` 类型的字段是 `date` 或者 `epoch` processor 的产物。所以在 processors 声明中，必须存在一个
@@ -722,7 +722,7 @@ processors:
         - "%d/%b/%Y:%H:%M:%S %z"
 ```
 
-其产生的表结构如下
+其产生的表结构如下：
 ```
 mysql> desc auto_trans;
 +---------------+---------------------+------+------+---------+---------------+
