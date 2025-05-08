@@ -76,6 +76,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `json_parse`: 将一个字段解析成 JSON 对象。
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
+- `select`: 从 pipeline 执行上下文中保留或移除字段。
 
 大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
 
@@ -683,6 +684,52 @@ processors:
 
 - `User 'alice' from [10.0.0.1] accessed resource 54321 with UUID 987fbc97-4bed-5078-9141-2791ba07c9f3`
 - `User 'bob' from [2001:0db8::1] accessed resource 98765 with UUID 550e8400-e29b-41d4-a716-446655440000`
+
+### `select`
+
+`select` 处理器用于从 pipeline 执行上下文中保留或者移除字段。
+
+从 `v0.15` 开始，我们引入了[`自动 transform`](#自动-transform)用来简化配置。
+`自动 transform`会尝试将 pipeline 执行上下文中所有的字段都保存下来。
+`select` 处理器在这里能选择上下文中的字段并保留或者移除，在`自动 transform`模式下即反映了最终的表结构。
+
+`select` 处理器的选项非常简单：
+- `type` （可选）
+  - `include` （默认）: 只保留选中的字段列表
+  - `exclude`: 从当前的上下文中移除选中的字段列表
+- `fields`: 选择的字段列表
+
+以下是一个简单的示例：
+```YAML
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - "%{+ts} %{+ts} %{http_status_code} %{content}"
+  - date:
+      fields:
+        - ts
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+  - select:
+      fields:
+        - http_status_code
+        - ts
+```
+
+通过 `dissect` 和 `date` 处理器之后，现在上下文中有四个字段： `ts`，`http_status_code`，`content` 和最初的 `message`。
+在没有 `select` 处理器的情况下，四个字段都会被保存下来。
+`select` 处理器在这里选择了 `http_status_code` 和 `ts` 两个字段来保存（默认 `include` 行为），等效于从 pipeline 执行上下文中删除了 `content` 和 `message` 字段，使得最终只有 `http_status_code` 和 `ts` 这两个字段被保存到数据库中。
+
+上述的示例也可以用以下 `select` 处理器配置来达成效果：
+```YAML
+  - select:
+      type: exclude
+      fields:
+        - content
+        - message
+```
 
 ## Transform
 

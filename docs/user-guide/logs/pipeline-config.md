@@ -73,6 +73,7 @@ We currently provide the following built-in Processors:
 - `json_parse`: parse a field into JSON object.
 - `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
+- `select`: retain(include) or exclude fields from the pipeline context.
 
 Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
 
@@ -664,6 +665,52 @@ The digested template can be used to group similar log messages together or anal
 
 - `User 'alice' from [10.0.0.1] accessed resource 54321 with UUID 987fbc97-4bed-5078-9141-2791ba07c9f3`
 - `User 'bob' from [2001:0db8::1] accessed resource 98765 with UUID 550e8400-e29b-41d4-a716-446655440000`
+
+### `select`
+
+The `select` processor is used to retain or exclude fields from the pipeline execution context.
+
+Starting from `v0.15` release, we are introducing [`auto-transform`](#auto-transform) for simplicity.
+The `auto-transform` mode will try to preserve all fields from the pipeline execution context.
+The `select` processor can be used here to select fields to include or exclude, which will reflects the final table schema if `auto-transform` is used.
+
+The configuration options for `select` is simple:
+- `type` （optional）
+  - `include` （default）: only keeps the selected fields
+  - `exclude`: removes the selected fields from the current context
+- `fields`: fields selected from the pipeline execution context
+
+Here is an example:
+```YAML
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - "%{+ts} %{+ts} %{http_status_code} %{content}"
+  - date:
+      fields:
+        - ts
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+  - select:
+      fields:
+        - http_status_code
+        - ts
+```
+
+With `dissect` and `date` processor, there are four fields in the context: `ts`, `http_status_code`, `content` and the original `message`.
+Without the `select` processor, all four fields are preserved.
+The `select` processor here selects `http_status_code` and `ts` fields to include (by default), which effectively removes `content` and `message` in the pipeline execution context, resulting the `http_status_code` and `ts` to be preserved into the database.
+
+The above example can also be done in the following `select` processor's configuration:
+```YAML
+  - select:
+      type: exclude
+      fields:
+        - content
+        - message
+```
 
 ## Transform
 
