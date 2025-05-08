@@ -675,8 +675,8 @@ The `auto-transform` mode will try to preserve all fields from the pipeline exec
 The `select` processor can be used here to select fields to include or exclude, which will reflects the final table schema if `auto-transform` is used.
 
 The configuration options for `select` is simple:
-- `type` （optional）
-  - `include` （default）: only keeps the selected fields
+- `type`(optional)
+  - `include`(default): only keeps the selected fields
   - `exclude`: removes the selected fields from the current context
 - `fields`: fields selected from the pipeline execution context
 
