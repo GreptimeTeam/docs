@@ -10,7 +10,7 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-The GreptimeDB data source plugin is based on the ClickHouse data source and adds GreptimeDB-specific features.
+The [GreptimeDB data source plugin (v2.0)](https://github.com/GreptimeTeam/greptimedb-grafana-datasource) is based on the ClickHouse data source and adds GreptimeDB-specific features.
 The plugin adapts perfectly to the GreptimeDB data model,
 thus providing a better user experience.
 In addition, it also solves some compatibility issues compared to using the Prometheus data source directly.
@@ -76,13 +76,13 @@ Then do the following configuration:
 Then click the Save & Test button to test the connection.
 
 ### Use the query builder
-* Table: Presents data in a structured table format. Optimized for datasets without a timestamp field.
+* Table: Query for datasets without a timestamp field.
   ![Table Query](/grafana/table.png)
-* Time Series: Provides data that includes a timestamp field, for time series visualization.
+* Time Series: Query for datasets has a timestamp field.
   ![Time Series](/grafana/series.png)
-* Logs: Supplies data formatted for log analysis.
+* Logs: Query for logs. Need specify the `timestamp` field and the `message` field.
   ![Logs](/grafana/logs.png)
-* Traces: Provides detailed trace data.
+* Traces: Query for trace data. Need specify the columns in the table as the screenshot to get trace list.
   ![Traces](/grafana/traceconfig.png)
 
 
