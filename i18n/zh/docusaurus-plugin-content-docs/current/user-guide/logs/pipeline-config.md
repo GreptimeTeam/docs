@@ -78,22 +78,45 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `digest`: 提取日志消息模板。
 - `select`: 从 pipeline 执行上下文中保留或移除字段。
 
-大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
+### Processor 的输入和输出
 
-当字段名称包含 `,` 时，该字段将被重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，处理完成后的数据将写入中间状态的 `req_time_sec` 字段中。原始的 `reqTimeSec` 字段不受影响。如果某些 Processor 不支持字段重命名，则重命名字段名称将被忽略，并将在文档中注明。
+大多数 Processor 接收一个 `field` 或者 `fields` 参数（一个串行处理的 `field` 列表）作为输入数据。
+Processor 会产出一个或者多个输出数据。
+对于那些只产出一个输出数据的 processor，输出的数据会替换上下文中原始 key 所关联的数据。
 
-例如：
-
+下述的示例中，在 `letter` processor 之后，一个大写版本的字符串会被保存在 `message` 字段中。
 ```yaml
 processors:
   - letter:
       fields:
-        - message, message_upper
+        - message
       method: upper
-      ignore_missing: true
 ```
 
-`message` 字段将被转换为大写并存储在 `message_upper` 字段中。
+我们可以将输出数据保存到另一个字段中，使得原有的字段不变。
+下述的示例中，我们依然使用 `message` 字段作为 `letter` processor 的输入，但是将输出保存到一个名为 `upper_message` 的新字段中。
+```yaml
+processors:
+  - letter:
+      fields:
+        - key: message
+          rename_to: upper_message
+      method: upper
+```
+
+这个重命名的语法有一种便捷的书写方式：通过 `,` 将两个字段分割即可。
+以下是一个示例：
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, upper_message
+      method: upper
+```
+
+重命名主要有两个场景：
+1. 保持原字段不变，使得它可以被多个 processor 使用，或者作为原始记录被保存到数据库中。
+2. 统一命名。例如为了一致性，将驼峰命名法的变量重命名为蛇形命名法。
 
 ### `date`
 
@@ -795,8 +818,9 @@ mysql> desc auto_trans;
 
 ### `fields` 字段
 
-每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，
-最终数据将被写入到 GreptimeDB 的 `req_time_sec` 列。
+每个字段名都是一个字符串。
+在 transform 中 `fields` 也可以使用重命名，语法参考[这里](#processor-的输入和输出)。
+字段的最终命名会被作为数据库表中的列的名字。
 
 ### `type` 字段
 

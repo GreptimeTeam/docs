@@ -75,22 +75,45 @@ We currently provide the following built-in Processors:
 - `digest`: extracts the template from a log message by removing variable content.
 - `select`: retain(include) or exclude fields from the pipeline context.
 
-Most processors have `field` or `fields` fields to specify the fields that need to be processed. Most processors will overwrite the original field after processing. If you do not want to affect the corresponding field in the original data, we can output the result to another field to avoid overwriting.
+### Input and output of Processors
 
-When a field name contains `,`, the target field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the processed data will be written to the `req_time_sec` key in the intermediate state. The original `reqTimeSec` field is not affected. If some processors do not support field renaming, the renamed field name will be ignored and noted in the documentation.
+Most processors accept a `field` or `fields` parameter, which is a list of fields processed sequentially, as input data.
+Processors produce one or more output based on the input.
+For processors that produce a single output, the result will overwrite the original input key in the context.
 
-for example
-
+In the following example, after the `letter` processor, an upper-case version of the original string is saved back to the `message` field.
 ```yaml
 processors:
   - letter:
       fields:
-        - message, message_upper
+        - message
       method: upper
-      ignore_missing: true
 ```
 
-The `message` field will be converted to uppercase and stored in the `message_upper` field.
+We can save the output data to another field, leaving the original field unchanged.
+In the following example, we still use the `message` field as the input of the `letter` processor, but saving the output to a new field named `upper_message`.
+```yaml
+processors:
+  - letter:
+      fields:
+        - key: message
+          rename_to: upper_message
+      method: upper
+```
+
+This renaming syntax also has a shortcut form: simply separate the two field names with a `,`.
+Here is an example of this shortcut:
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, upper_message
+      method: upper
+```
+
+There are mainly two reasons why renaming is needed:
+1. Leaving the original field unchanged, so it can be reused in more than one processors, or be saved into the database as well.
+2. Unifying naming. For example rename camel-case names to snake-case names for consistency.
 
 ### `date`
 
@@ -778,7 +801,9 @@ Note that all fields are saved as `String` type, and the `timestamp` field is au
 
 ### The `fields` field
 
-Each field name is a string. When a field name contains `,`, the field will be renamed. For example, `reqTimeSec, req_time_sec` means renaming the `reqTimeSec` field to `req_time_sec`, and the final data will be written to the `req_time_sec` column in GreptimeDB.
+Each field name is a string.
+`fields` in transform can also use renaming, refer to the docs [here](#input-and-output-of-processors).
+The final name of the field will be used as the column name in the database table.
 
 ### The `type` field
 
