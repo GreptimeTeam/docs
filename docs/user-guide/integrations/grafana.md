@@ -10,7 +10,7 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-The GreptimeDB data source plugin is based on the Prometheus data source and adds GreptimeDB-specific features.
+The [GreptimeDB data source plugin (v2.0)](https://github.com/GreptimeTeam/greptimedb-grafana-datasource) is based on the ClickHouse data source and adds GreptimeDB-specific features.
 The plugin adapts perfectly to the GreptimeDB data model,
 thus providing a better user experience.
 In addition, it also solves some compatibility issues compared to using the Prometheus data source directly.
@@ -75,26 +75,16 @@ Then do the following configuration:
 
 Then click the Save & Test button to test the connection.
 
-### Create a dashboard
+### Use the query builder
+* Table: Query for datasets without a timestamp field.
+  ![Table Query](/grafana/table.png)
+* Time Series: Query for datasets has a timestamp field.
+  ![Time Series](/grafana/series.png)
+* Logs: Query for logs. Need specify the `timestamp` field and the `message` field.
+  ![Logs](/grafana/logs.png)
+* Traces: Query for trace data. Need specify the columns in the table as the screenshot to get trace list.
+  ![Traces](/grafana/traceconfig.png)
 
-Create a new dashboard in Grafana by clicking the `Create your first dashboard` button.
-Then click `Add visualization`, select `GreptimeDB` as the data source.
-
-Select a metric from the `Metric` dropdown list, then click `Run queries` to view the metric data.
-When you see the data and confirm it is correct, click `Save` to save the panel.
-
-![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.png)
-
-You can also create a panel using PromQL.
-Click the `code` button on the right side of the `Query` tab to switch to the PromQL editor.
-Then enter a PromQL statement, such as `system_memory_usage{state="used"}`, click `Run query` to view the metric data.
-
-![grafana-create-panel-with-promql](/grafana-create-panel-with-promql.png)
-
-
-:::tip NOTE
-GreptimeDB is compatible with most PromQL, but there are some limitations. Please refer to the [PromQL limitations](/user-guide/query-data/promql.md#limitations) document for more information.
-:::
 
 ## Prometheus data source
 
