@@ -28,7 +28,7 @@ GreptimeDB 目前支持以下 [Jaeger](https://www.jaegertracing.io/) 查询接�
 
 ### 启动应用生成 traces 数据并写入 GreptimeDB
 
-你可以参考 [OpenTelemetry 官方文档](https://opentelemetry.io/docs/languages/) 来选择任意你熟悉的编程语言来生成 traces 并将其写入到 GreptimeDB 中。你也可以参考[配置 OpenTelemetry Traces](/user-guide/ingest-data/for-observability/opentelemetry-traces.md) 文档。
+你可以参考 [OpenTelemetry 官方文档](https://opentelemetry.io/docs/languages/) 来选择任意你熟悉的编程语言来生成 traces 并将其写入到 GreptimeDB 中。你也可以参考[配置 OpenTelemetry Collector](/user-guide/trace/read-write.md#opentelemetry-collector) 文档。
 
 ### 配置 Jaeger 插件
 

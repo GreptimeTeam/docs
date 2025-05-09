@@ -84,7 +84,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observability/kafka',
                 'user-guide/ingest-data/for-observability/loki',
                 'user-guide/ingest-data/for-observability/alloy',
-                'user-guide/ingest-data/for-observability/opentelemetry-traces',
                 'user-guide/ingest-data/for-observability/elasticsearch',
                 'user-guide/ingest-data/for-observability/fluent-bit',
               ],
@@ -236,6 +235,20 @@ const sidebars: SidebarsConfig = {
             'user-guide/logs/write-logs',
             'user-guide/logs/query-logs',
             'user-guide/logs/fulltext-index-config',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Trace',
+          items: [
+            {
+              type: 'doc',
+              id: 'user-guide/trace/overview',
+              label: 'Overview',
+            },
+            'user-guide/trace/read-write',
+            'user-guide/trace/data-model',
+            'user-guide/trace/extend-trace',
           ],
         },
         {
