@@ -76,23 +76,47 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `json_parse`: 将一个字段解析成 JSON 对象。
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
+- `select`: 从 pipeline 执行上下文中保留或移除字段。
 
-大多数 Processor 都有 `field` 或 `fields` 字段，用于指定需要被处理的字段。大部分 Processor 处理完成后会覆盖掉原先的 field。如果你不想影响到原数据中的对应字段，我们可以把结果输出到其他字段来避免覆盖。
+### Processor 的输入和输出
 
-当字段名称包含 `,` 时，该字段将被重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，处理完成后的数据将写入中间状态的 `req_time_sec` 字段中。原始的 `reqTimeSec` 字段不受影响。如果某些 Processor 不支持字段重命名，则重命名字段名称将被忽略，并将在文档中注明。
+大多数 Processor 接收一个 `field` 或者 `fields` 参数（一个串行处理的 `field` 列表）作为输入数据。
+Processor 会产出一个或者多个输出数据。
+对于那些只产出一个输出数据的 processor，输出的数据会替换上下文中原始 key 所关联的数据。
 
-例如：
-
+下述的示例中，在 `letter` processor 之后，一个大写版本的字符串会被保存在 `message` 字段中。
 ```yaml
 processors:
   - letter:
       fields:
-        - message, message_upper
+        - message
       method: upper
-      ignore_missing: true
 ```
 
-`message` 字段将被转换为大写并存储在 `message_upper` 字段中。
+我们可以将输出数据保存到另一个字段中，使得原有的字段不变。
+下述的示例中，我们依然使用 `message` 字段作为 `letter` processor 的输入，但是将输出保存到一个名为 `upper_message` 的新字段中。
+```yaml
+processors:
+  - letter:
+      fields:
+        - key: message
+          rename_to: upper_message
+      method: upper
+```
+
+这个重命名的语法有一种便捷的书写方式：通过 `,` 将两个字段分割即可。
+以下是一个示例：
+```yaml
+processors:
+  - letter:
+      fields:
+        - message, upper_message
+      method: upper
+```
+
+重命名主要有两个场景：
+1. 保持原字段不变，使得它可以被多个 processor 使用，或者作为原始记录被保存到数据库中。
+2. 统一命名。例如为了一致性，将驼峰命名法的变量重命名为蛇形命名法。
 
 ### `date`
 
@@ -684,6 +708,52 @@ processors:
 - `User 'alice' from [10.0.0.1] accessed resource 54321 with UUID 987fbc97-4bed-5078-9141-2791ba07c9f3`
 - `User 'bob' from [2001:0db8::1] accessed resource 98765 with UUID 550e8400-e29b-41d4-a716-446655440000`
 
+### `select`
+
+`select` 处理器用于从 pipeline 执行上下文中保留或者移除字段。
+
+从 `v0.15` 开始，我们引入了[`自动 transform`](#自动-transform)用来简化配置。
+`自动 transform`会尝试将 pipeline 执行上下文中所有的字段都保存下来。
+`select` 处理器在这里能选择上下文中的字段并保留或者移除，在`自动 transform`模式下即反映了最终的表结构。
+
+`select` 处理器的选项非常简单：
+- `type` （可选）
+  - `include` （默认）: 只保留选中的字段列表
+  - `exclude`: 从当前的上下文中移除选中的字段列表
+- `fields`: 选择的字段列表
+
+以下是一个简单的示例：
+```YAML
+processors:
+  - dissect:
+      fields:
+        - message
+      patterns:
+        - "%{+ts} %{+ts} %{http_status_code} %{content}"
+  - date:
+      fields:
+        - ts
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+  - select:
+      fields:
+        - http_status_code
+        - ts
+```
+
+通过 `dissect` 和 `date` 处理器之后，现在上下文中有四个字段： `ts`，`http_status_code`，`content` 和最初的 `message`。
+在没有 `select` 处理器的情况下，四个字段都会被保存下来。
+`select` 处理器在这里选择了 `http_status_code` 和 `ts` 两个字段来保存（默认 `include` 行为），等效于从 pipeline 执行上下文中删除了 `content` 和 `message` 字段，使得最终只有 `http_status_code` 和 `ts` 这两个字段被保存到数据库中。
+
+上述的示例也可以用以下 `select` 处理器配置来达成效果：
+```YAML
+  - select:
+      type: exclude
+      fields:
+        - content
+        - message
+```
+
 ## Transform
 
 Transform 用于对 log 数据进行转换，并且指定在数据库表中列的索引信息。其配置位于 YAML 文件中的 `transform` 字段下。
@@ -748,8 +818,9 @@ mysql> desc auto_trans;
 
 ### `fields` 字段
 
-每个字段名都是一个字符串，当字段名称包含 `,` 时，会进行字段重命名。例如，`reqTimeSec, req_time_sec` 表示将 `reqTimeSec` 字段重命名为 `req_time_sec`，
-最终数据将被写入到 GreptimeDB 的 `req_time_sec` 列。
+每个字段名都是一个字符串。
+在 transform 中 `fields` 也可以使用重命名，语法参考[这里](#processor-的输入和输出)。
+字段的最终命名会被作为数据库表中的列的名字。
 
 ### `type` 字段
 
