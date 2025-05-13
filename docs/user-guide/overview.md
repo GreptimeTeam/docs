@@ -31,6 +31,10 @@ To use GreptimeDB as a log storage solution,
 refer to the [Logs Documentation](./logs/overview.md).
 It details how to ingest pattern text logs using pipelines.
 
+To use GreptimeDB as a trace storage solution,
+refer to the [Traces Documentation](./traces/overview.md).
+It explains how to ingest trace data using OpenTelemetry and query it with Jaeger.
+
 ### For IoT and Edge Computing Scenarios
 
 For IoT and Edge Computing scenarios,

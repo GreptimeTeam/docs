@@ -31,6 +31,10 @@ GreptimeDB 支持[多种协议](./protocols/overview.md)和[集成工具](./inte
 请参考 [日志文档](./logs/overview.md)。
 该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
 
+对于将 GreptimeDB 用作链路追踪（trace）存储解决方案，
+请参考 [trace 文档](./traces/overview.md)。
+该文档解释了使用 OpenTelemetry 导入数据以及使用 Jaeger 查询数据的方法。
+
 ### 物联网和边缘计算场景
 
 对于物联网和边缘计算场景，
