@@ -3950,7 +3950,7 @@ _Alias of [make_array](#make_array)._
 
 ##### `range`
 
-Returns an Arrow array between start and stop with step. The range start..end contains all values with start <= x < end. It is empty if start >= end. Step cannot be 0.
+Returns an Arrow array between start and stop with step. The range start..end contains all values with `start <= x < end`. It is empty if `start >= end`. Step cannot be 0.
 
 ```sql
 range(start, stop, step)
