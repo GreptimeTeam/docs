@@ -28,7 +28,7 @@ We will use the Jaeger plugin in Grafana as an example to demonstrate how to que
 
 ### Start an application to generate traces data and write it to GreptimeDB
 
-You can refer to the [OpenTelemetry official documentation](https://opentelemetry.io/docs/languages/) to choose any programming language you are familiar with to generate traces data. You can also refer to the [Configure OpenTelemetry Collector](/user-guide/trace/read-write.md#opentelemetry-collector) document.
+You can refer to the [OpenTelemetry official documentation](https://opentelemetry.io/docs/languages/) to choose any programming language you are familiar with to generate traces data. You can also refer to the [Configure OpenTelemetry Collector](/user-guide/traces/read-write.md#opentelemetry-collector) document.
 
 ### Configure the Grafana Jaeger plugin
 
