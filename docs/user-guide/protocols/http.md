@@ -25,6 +25,7 @@ In the following sections, we use `http://{{API-host}}/` as the base URL to demo
 
 ### Authentication
 
+Assume that you have already configured the database [authentication](/user-guide/deployments/authentication/overview.md) correctly,
 GreptimeDB supports the built-in `Basic` authentication scheme in the HTTP API. To set up authentication, follow these steps:
 
 1. Encode your username and password using the `<username>:<password>` format and the `Base64` algorithm.
