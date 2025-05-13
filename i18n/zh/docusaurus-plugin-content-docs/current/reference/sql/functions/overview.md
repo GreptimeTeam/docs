@@ -106,7 +106,6 @@ DataFusion [时间和日期函数](./df-functions.md#time-and-date-functions)。
 * [date_format](#date_format)
 * [to_unixtime](#to_unixtime)
 * [timezone](#timezone)
-* [greatest](#greatest)
 
 #### date_add
 
@@ -203,24 +202,6 @@ select timezone();
 | UTC        |
 +------------+
 ```
-
-
-#### greatest
-
-* `greatest(left, right)` 用于获取 `left` 和 `right` 中的最大值，支持 Timestamp、Date 和 Datetime 类型。
-
-```sql
-SELECT GREATEST('2024-12-31'::DATE, '2025-01-26'::DATE);
-```
-
-```sql
-+-------------------------------------------------+
-| greatest(Utf8("2024-12-31"),Utf8("2025-01-26")) |
-+-------------------------------------------------+
-| 2025-01-26                                      |
-+-------------------------------------------------+
-```
-
 
 ### 系统函数
 

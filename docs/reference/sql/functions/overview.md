@@ -112,7 +112,6 @@ GreptimeDB provides:
 * [date_format](#date_format)
 * [to_unixtime](#to_unixtime)
 * [timezone](#timezone)
-* [greatest](#greatest)
 
 #### date_add
 
@@ -206,22 +205,6 @@ select timezone();
 +------------+
 | UTC        |
 +------------+
-```
-
-#### greatest
-
-* `greatest(left, right)` to retrieve the greatest value of `left` and `right`, supports Timestamp, Date, and Datetime type.
-
-```sql
-SELECT GREATEST('2024-12-31'::DATE, '2025-01-26'::DATE);
-```
-
-```sql
-+-------------------------------------------------+
-| greatest(Utf8("2024-12-31"),Utf8("2025-01-26")) |
-+-------------------------------------------------+
-| 2025-01-26                                      |
-+-------------------------------------------------+
 ```
 
 ### System Functions

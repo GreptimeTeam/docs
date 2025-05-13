@@ -2,7 +2,6 @@
 keywords: [DataFusion functions, scalar functions, window functions, array functions]
 description: 介绍了 Apache DataFusion 项目中的函数，包括标量函数和窗口函数的定义、使用方法和相关的 SQL 查询示例。
 ---
-
 # DataFusion Functions
 
 This page is generated from the Apache DataFusion project's documents:
@@ -88,7 +87,7 @@ Scalar functions operate on a single row at a time and return a single value.
 
 Returns the absolute value of a number.
 
-```
+```sql
 abs(numeric_expression)
 ```
 
@@ -100,7 +99,7 @@ abs(numeric_expression)
 
 Returns the arc cosine or inverse cosine of a number.
 
-```
+```sql
 acos(numeric_expression)
 ```
 
@@ -112,7 +111,7 @@ acos(numeric_expression)
 
 Returns the area hyperbolic cosine or inverse hyperbolic cosine of a number.
 
-```
+```sql
 acosh(numeric_expression)
 ```
 
@@ -124,7 +123,7 @@ acosh(numeric_expression)
 
 Returns the arc sine or inverse sine of a number.
 
-```
+```sql
 asin(numeric_expression)
 ```
 
@@ -136,7 +135,7 @@ asin(numeric_expression)
 
 Returns the area hyperbolic sine or inverse hyperbolic sine of a number.
 
-```
+```sql
 asinh(numeric_expression)
 ```
 
@@ -148,7 +147,7 @@ asinh(numeric_expression)
 
 Returns the arc tangent or inverse tangent of a number.
 
-```
+```sql
 atan(numeric_expression)
 ```
 
@@ -160,7 +159,7 @@ atan(numeric_expression)
 
 Returns the arc tangent or inverse tangent of `expression_y / expression_x`.
 
-```
+```sql
 atan2(expression_y, expression_x)
 ```
 
@@ -175,7 +174,7 @@ atan2(expression_y, expression_x)
 
 Returns the area hyperbolic tangent or inverse hyperbolic tangent of a number.
 
-```
+```sql
 atanh(numeric_expression)
 ```
 
@@ -187,7 +186,7 @@ atanh(numeric_expression)
 
 Returns the cube root of a number.
 
-```
+```sql
 cbrt(numeric_expression)
 ```
 
@@ -199,7 +198,7 @@ cbrt(numeric_expression)
 
 Returns the nearest integer greater than or equal to a number.
 
-```
+```sql
 ceil(numeric_expression)
 ```
 
@@ -211,7 +210,7 @@ ceil(numeric_expression)
 
 Returns the cosine of a number.
 
-```
+```sql
 cos(numeric_expression)
 ```
 
@@ -223,7 +222,7 @@ cos(numeric_expression)
 
 Returns the hyperbolic cosine of a number.
 
-```
+```sql
 cosh(numeric_expression)
 ```
 
@@ -235,7 +234,7 @@ cosh(numeric_expression)
 
 Returns the cotangent of a number.
 
-```
+```sql
 cot(numeric_expression)
 ```
 
@@ -247,7 +246,7 @@ cot(numeric_expression)
 
 Converts radians to degrees.
 
-```
+```sql
 degrees(numeric_expression)
 ```
 
@@ -259,7 +258,7 @@ degrees(numeric_expression)
 
 Returns the base-e exponential of a number.
 
-```
+```sql
 exp(numeric_expression)
 ```
 
@@ -271,7 +270,7 @@ exp(numeric_expression)
 
 Factorial. Returns 1 if value is less than 2.
 
-```
+```sql
 factorial(numeric_expression)
 ```
 
@@ -283,7 +282,7 @@ factorial(numeric_expression)
 
 Returns the nearest integer less than or equal to a number.
 
-```
+```sql
 floor(numeric_expression)
 ```
 
@@ -295,7 +294,7 @@ floor(numeric_expression)
 
 Returns the greatest common divisor of `expression_x` and `expression_y`. Returns 0 if both inputs are zero.
 
-```
+```sql
 gcd(expression_x, expression_y)
 ```
 
@@ -308,7 +307,7 @@ gcd(expression_x, expression_y)
 
 Returns true if a given number is +NaN or -NaN otherwise returns false.
 
-```
+```sql
 isnan(numeric_expression)
 ```
 
@@ -320,7 +319,7 @@ isnan(numeric_expression)
 
 Returns true if a given number is +0.0 or -0.0 otherwise returns false.
 
-```
+```sql
 iszero(numeric_expression)
 ```
 
@@ -332,7 +331,7 @@ iszero(numeric_expression)
 
 Returns the least common multiple of `expression_x` and `expression_y`. Returns 0 if either input is zero.
 
-```
+```sql
 lcm(expression_x, expression_y)
 ```
 
@@ -345,7 +344,7 @@ lcm(expression_x, expression_y)
 
 Returns the natural logarithm of a number.
 
-```
+```sql
 ln(numeric_expression)
 ```
 
@@ -357,7 +356,7 @@ ln(numeric_expression)
 
 Returns the base-x logarithm of a number. Can either provide a specified base, or if omitted then takes the base-10 of a number.
 
-```
+```sql
 log(base, numeric_expression)
 log(numeric_expression)
 ```
@@ -371,7 +370,7 @@ log(numeric_expression)
 
 Returns the base-10 logarithm of a number.
 
-```
+```sql
 log10(numeric_expression)
 ```
 
@@ -383,7 +382,7 @@ log10(numeric_expression)
 
 Returns the base-2 logarithm of a number.
 
-```
+```sql
 log2(numeric_expression)
 ```
 
@@ -396,7 +395,7 @@ log2(numeric_expression)
 Returns the first argument if it's not _NaN_.
 Returns the second argument otherwise.
 
-```
+```sql
 nanvl(expression_x, expression_y)
 ```
 
@@ -409,7 +408,7 @@ nanvl(expression_x, expression_y)
 
 Returns an approximate value of π.
 
-```
+```sql
 pi()
 ```
 
@@ -421,7 +420,7 @@ _Alias of [power](#power)._
 
 Returns a base expression raised to the power of an exponent.
 
-```
+```sql
 power(base, exponent)
 ```
 
@@ -438,7 +437,7 @@ power(base, exponent)
 
 Converts degrees to radians.
 
-```
+```sql
 radians(numeric_expression)
 ```
 
@@ -451,7 +450,7 @@ radians(numeric_expression)
 Returns a random float value in the range [0, 1).
 The random seed is unique to each row.
 
-```
+```sql
 random()
 ```
 
@@ -459,7 +458,7 @@ random()
 
 Rounds a number to the nearest integer.
 
-```
+```sql
 round(numeric_expression[, decimal_places])
 ```
 
@@ -474,7 +473,7 @@ Returns the sign of a number.
 Negative numbers return `-1`.
 Zero and positive numbers return `1`.
 
-```
+```sql
 signum(numeric_expression)
 ```
 
@@ -486,7 +485,7 @@ signum(numeric_expression)
 
 Returns the sine of a number.
 
-```
+```sql
 sin(numeric_expression)
 ```
 
@@ -498,7 +497,7 @@ sin(numeric_expression)
 
 Returns the hyperbolic sine of a number.
 
-```
+```sql
 sinh(numeric_expression)
 ```
 
@@ -510,7 +509,7 @@ sinh(numeric_expression)
 
 Returns the square root of a number.
 
-```
+```sql
 sqrt(numeric_expression)
 ```
 
@@ -522,7 +521,7 @@ sqrt(numeric_expression)
 
 Returns the tangent of a number.
 
-```
+```sql
 tan(numeric_expression)
 ```
 
@@ -534,7 +533,7 @@ tan(numeric_expression)
 
 Returns the hyperbolic tangent of a number.
 
-```
+```sql
 tanh(numeric_expression)
 ```
 
@@ -546,7 +545,7 @@ tanh(numeric_expression)
 
 Truncates a number to a whole number or truncated to the specified decimal places.
 
-```
+```sql
 trunc(numeric_expression[, decimal_places])
 ```
 
@@ -573,7 +572,7 @@ trunc(numeric_expression[, decimal_places])
 
 Returns the first of its arguments that is not _null_. Returns _null_ if all arguments are _null_. This function is often used to substitute a default value for _null_ values.
 
-```
+```sql
 coalesce(expression1[, ..., expression_n])
 ```
 
@@ -596,7 +595,7 @@ coalesce(expression1[, ..., expression_n])
 
 Returns the greatest value in a list of expressions. Returns _null_ if all expressions are _null_.
 
-```
+```sql
 greatest(expression1[, ..., expression_n])
 ```
 
@@ -623,7 +622,7 @@ _Alias of [nvl](#nvl)._
 
 Returns the smallest value in a list of expressions. Returns _null_ if all expressions are _null_.
 
-```
+```sql
 least(expression1[, ..., expression_n])
 ```
 
@@ -647,7 +646,7 @@ least(expression1[, ..., expression_n])
 Returns _null_ if _expression1_ equals _expression2_; otherwise it returns _expression1_.
 This can be used to perform the inverse operation of [`coalesce`](#coalesce).
 
-```
+```sql
 nullif(expression1, expression2)
 ```
 
@@ -677,7 +676,7 @@ nullif(expression1, expression2)
 
 Returns _expression2_ if _expression1_ is NULL otherwise it returns _expression1_.
 
-```
+```sql
 nvl(expression1, expression2)
 ```
 
@@ -711,7 +710,7 @@ nvl(expression1, expression2)
 
 Returns _expression2_ if _expression1_ is not NULL; otherwise it returns _expression3_.
 
-```
+```sql
 nvl2(expression1, expression2, expression3)
 ```
 
@@ -760,6 +759,7 @@ nvl2(expression1, expression2, expression3)
 - [lpad](#lpad)
 - [ltrim](#ltrim)
 - [octet_length](#octet_length)
+- [overlay](#overlay)
 - [position](#position)
 - [repeat](#repeat)
 - [replace](#replace)
@@ -784,7 +784,7 @@ nvl2(expression1, expression2, expression3)
 
 Returns the Unicode character code of the first character in a string.
 
-```
+```sql
 ascii(str)
 ```
 
@@ -817,7 +817,7 @@ ascii(str)
 
 Returns the bit length of a string.
 
-```
+```sql
 bit_length(str)
 ```
 
@@ -845,7 +845,7 @@ bit_length(str)
 
 Trims the specified trim string from the start and end of a string. If no trim string is provided, all whitespace is removed from the start and end of the input string.
 
-```
+```sql
 btrim(str[, trim_str])
 ```
 
@@ -892,7 +892,7 @@ _Alias of [character_length](#character_length)._
 
 Returns the number of characters in a string.
 
-```
+```sql
 character_length(str)
 ```
 
@@ -925,7 +925,7 @@ character_length(str)
 
 Returns the character with the specified ASCII or Unicode code value.
 
-```
+```sql
 chr(expression)
 ```
 
@@ -952,7 +952,7 @@ chr(expression)
 
 Concatenates multiple strings together.
 
-```
+```sql
 concat(str[, ..., str_n])
 ```
 
@@ -980,7 +980,7 @@ concat(str[, ..., str_n])
 
 Concatenates multiple strings together with a specified separator.
 
-```
+```sql
 concat_ws(separator, str[, ..., str_n])
 ```
 
@@ -1009,7 +1009,7 @@ concat_ws(separator, str[, ..., str_n])
 
 Return true if search_str is found within string (case-sensitive).
 
-```
+```sql
 contains(str, search_str)
 ```
 
@@ -1033,7 +1033,7 @@ contains(str, search_str)
 
 Tests if a string ends with a substring.
 
-```
+```sql
 ends_with(str, substr)
 ```
 
@@ -1063,7 +1063,7 @@ ends_with(str, substr)
 
 Returns a value in the range of 1 to N if the string str is in the string list strlist consisting of N substrings.
 
-```
+```sql
 find_in_set(str, strlist)
 ```
 
@@ -1087,7 +1087,7 @@ find_in_set(str, strlist)
 
 Capitalizes the first character in each word in the input string. Words are delimited by non-alphanumeric characters.
 
-```
+```sql
 initcap(str)
 ```
 
@@ -1119,7 +1119,7 @@ _Alias of [strpos](#strpos)._
 
 Returns a specified number of characters from the left side of a string.
 
-```
+```sql
 left(str, n)
 ```
 
@@ -1151,7 +1151,7 @@ _Alias of [character_length](#character_length)._
 
 Returns the [`Levenshtein distance`](https://en.wikipedia.org/wiki/Levenshtein_distance) between the two given strings.
 
-```
+```sql
 levenshtein(str1, str2)
 ```
 
@@ -1175,7 +1175,7 @@ levenshtein(str1, str2)
 
 Converts a string to lower-case.
 
-```
+```sql
 lower(str)
 ```
 
@@ -1203,7 +1203,7 @@ lower(str)
 
 Pads the left side of a string with another string to a specified string length.
 
-```
+```sql
 lpad(str, n[, padding_str])
 ```
 
@@ -1232,7 +1232,7 @@ lpad(str, n[, padding_str])
 
 Trims the specified trim string from the beginning of a string. If no trim string is provided, all whitespace is removed from the start of the input string.
 
-```
+```sql
 ltrim(str[, trim_str])
 ```
 
@@ -1273,7 +1273,7 @@ trim(LEADING trim_str FROM str)
 
 Returns the length of a string in bytes.
 
-```
+```sql
 octet_length(str)
 ```
 
@@ -1297,6 +1297,32 @@ octet_length(str)
 - [bit_length](#bit_length)
 - [length](#length)
 
+##### `overlay`
+
+Returns the string which is replaced by another string from the specified position and specified count length.
+
+```sql
+overlay(str PLACING substr FROM pos [FOR count])
+```
+
+###### Arguments
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **substr**: Substring to replace in str.
+- **pos**: The start position to start the replace in str.
+- **count**: The count of characters to be replaced from start position of str. If not specified, will use substr length instead.
+
+###### Example
+
+```sql
+> select overlay('Txxxxas' placing 'hom' from 2 for 4);
++--------------------------------------------------------+
+| overlay(Utf8("Txxxxas"),Utf8("hom"),Int64(2),Int64(4)) |
++--------------------------------------------------------+
+| Thomas                                                 |
++--------------------------------------------------------+
+```
+
 ##### `position`
 
 _Alias of [strpos](#strpos)._
@@ -1305,7 +1331,7 @@ _Alias of [strpos](#strpos)._
 
 Returns a string with an input string repeated a specified number.
 
-```
+```sql
 repeat(str, n)
 ```
 
@@ -1329,7 +1355,7 @@ repeat(str, n)
 
 Replaces all occurrences of a specified substring in a string with a new substring.
 
-```
+```sql
 replace(str, substr, replacement)
 ```
 
@@ -1354,7 +1380,7 @@ replace(str, substr, replacement)
 
 Reverses the character order of a string.
 
-```
+```sql
 reverse(str)
 ```
 
@@ -1377,7 +1403,7 @@ reverse(str)
 
 Returns a specified number of characters from the right side of a string.
 
-```
+```sql
 right(str, n)
 ```
 
@@ -1405,7 +1431,7 @@ right(str, n)
 
 Pads the right side of a string with another string to a specified string length.
 
-```
+```sql
 rpad(str, n[, padding_str])
 ```
 
@@ -1434,7 +1460,7 @@ rpad(str, n[, padding_str])
 
 Trims the specified trim string from the end of a string. If no trim string is provided, all whitespace is removed from the end of the input string.
 
-```
+```sql
 rtrim(str[, trim_str])
 ```
 
@@ -1475,7 +1501,7 @@ trim(TRAILING trim_str FROM str)
 
 Splits a string based on a specified delimiter and returns the substring in the specified position.
 
-```
+```sql
 split_part(str, delimiter, pos)
 ```
 
@@ -1500,7 +1526,7 @@ split_part(str, delimiter, pos)
 
 Tests if a string starts with a substring.
 
-```
+```sql
 starts_with(str, substr)
 ```
 
@@ -1524,7 +1550,7 @@ starts_with(str, substr)
 
 Returns the starting position of a specified substring in a string. Positions begin at 1. If the substring does not exist in the string, the function returns 0.
 
-```
+```sql
 strpos(str, substr)
 ```
 
@@ -1559,7 +1585,7 @@ position(substr in origstr)
 
 Extracts a substring of a specified number of characters from a specific starting position in a string.
 
-```
+```sql
 substr(str, start_pos[, length])
 ```
 
@@ -1596,7 +1622,7 @@ Returns the substring from str before count occurrences of the delimiter delim.
 If count is positive, everything to the left of the final delimiter (counting from the left) is returned.
 If count is negative, everything to the right of the final delimiter (counting from the right) is returned.
 
-```
+```sql
 substr_index(str, delim, count)
 ```
 
@@ -1639,7 +1665,7 @@ _Alias of [substr_index](#substr_index)._
 
 Converts an integer to a hexadecimal string.
 
-```
+```sql
 to_hex(int)
 ```
 
@@ -1662,7 +1688,7 @@ to_hex(int)
 
 Translates characters in a string to specified translation characters.
 
-```
+```sql
 translate(str, chars, translation)
 ```
 
@@ -1691,7 +1717,7 @@ _Alias of [btrim](#btrim)._
 
 Converts a string to upper-case.
 
-```
+```sql
 upper(str)
 ```
 
@@ -1719,7 +1745,7 @@ upper(str)
 
 Returns [`UUID v4`](<https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)>) string value which is unique per row.
 
-```
+```sql
 uuid()
 ```
 
@@ -1743,7 +1769,7 @@ uuid()
 
 Decode binary data from textual representation in string.
 
-```
+```sql
 decode(expression, format)
 ```
 
@@ -1760,7 +1786,7 @@ decode(expression, format)
 
 Encode binary data into a textual representation.
 
-```
+```sql
 encode(expression, format)
 ```
 
@@ -1789,7 +1815,7 @@ The following regular expression functions are supported:
 
 Returns the number of matches that a [regular expression](https://docs.rs/regex/latest/regex/#syntax) has in a string.
 
-```
+```sql
 regexp_count(str, regexp[, start, flags])
 ```
 
@@ -1820,7 +1846,7 @@ regexp_count(str, regexp[, start, flags])
 
 Returns true if a [regular expression](https://docs.rs/regex/latest/regex/#syntax) has at least one match in a string, false otherwise.
 
-```
+```sql
 regexp_like(str, regexp[, flags])
 ```
 
@@ -1858,7 +1884,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Returns the first [regular expression](https://docs.rs/regex/latest/regex/#syntax) matches in a string.
 
-```
+```sql
 regexp_match(str, regexp[, flags])
 ```
 
@@ -1897,7 +1923,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Replaces substrings in a string that match a [regular expression](https://docs.rs/regex/latest/regex/#syntax).
 
-```
+```sql
 regexp_replace(str, regexp, replacement[, flags])
 ```
 
@@ -1965,7 +1991,7 @@ Returns the current UTC date.
 
 The `current_date()` return value is determined at query time and will return the same date, no matter when in the query plan the function executes.
 
-```
+```sql
 current_date()
 ```
 
@@ -1979,7 +2005,7 @@ Returns the current UTC time.
 
 The `current_time()` return value is determined at query time and will return the same time, no matter when in the query plan the function executes.
 
-```
+```sql
 current_time()
 ```
 
@@ -1993,7 +2019,7 @@ Calculates time intervals and returns the start of the interval nearest to the s
 
 For example, if you "bin" or "window" data into 15 minute intervals, an input timestamp of `2023-01-01T18:18:18Z` will be updated to the start time of the 15 minute bin it is in: `2023-01-01T18:15:00Z`.
 
-```
+```sql
 date_bin(interval, expression, origin-timestamp)
 ```
 
@@ -2049,7 +2075,7 @@ _Alias of [to_char](#to_char)._
 
 Returns the specified part of the date as an integer.
 
-```
+```sql
 date_part(part, expression)
 ```
 
@@ -2088,7 +2114,7 @@ extract(field FROM source)
 
 Truncates a timestamp value to a specified precision.
 
-```
+```sql
 date_trunc(precision, expression)
 ```
 
@@ -2121,9 +2147,9 @@ _Alias of [date_trunc](#date_trunc)._
 
 ##### `from_unixtime`
 
-Converts an integer to RFC3339 timestamp format (`YYYY-MM-DDT00:00:00.000000000Z`). Integers and unsigned integers are interpreted as nanoseconds since the unix epoch (`1970-01-01T00:00:00Z`) return the corresponding timestamp.
+Converts an integer to RFC3339 timestamp format (`YYYY-MM-DDT00:00:00.000000000Z`). Integers and unsigned integers are interpreted as seconds since the unix epoch (`1970-01-01T00:00:00Z`) return the corresponding timestamp.
 
-```
+```sql
 from_unixtime(expression[, timezone])
 ```
 
@@ -2147,7 +2173,7 @@ from_unixtime(expression[, timezone])
 
 Make a date from year/month/day component parts.
 
-```
+```sql
 make_date(year, month, day)
 ```
 
@@ -2182,7 +2208,7 @@ Returns the current UTC timestamp.
 
 The `now()` return value is determined at query time and will return the same timestamp, no matter when in the query plan the function executes.
 
-```
+```sql
 now()
 ```
 
@@ -2194,7 +2220,7 @@ now()
 
 Returns a string representation of a date, time, timestamp or duration based on a [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html). Unlike the PostgreSQL equivalent of this function numerical formatting is not supported.
 
-```
+```sql
 to_char(expression, format)
 ```
 
@@ -2231,7 +2257,7 @@ Returns the corresponding date.
 
 Note: `to_date` returns Date32, which represents its values as the number of days since unix epoch(`1970-01-01`) stored as signed 32 bit value. The largest supported date value is `9999-12-31`.
 
-```
+```sql
 to_date('2017-05-31', '%Y-%m-%d')
 ```
 
@@ -2265,7 +2291,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a timestamp with a timezone to a timestamp without a timezone (with no offset or timezone information). This function handles daylight saving time changes.
 
-```
+```sql
 to_local_time(expression)
 ```
 
@@ -2328,7 +2354,7 @@ Converts a value to a timestamp (`YYYY-MM-DDT00:00:00Z`). Supports strings, inte
 
 Note: `to_timestamp` returns `Timestamp(Nanosecond)`. The supported range for integer input is between `-9223372037` and `9223372036`. Supported range for string input is between `1677-09-21T00:12:44.0` and `2262-04-11T23:47:16.0`. Please use `to_timestamp_seconds` for the input outside of supported bounds.
 
-```
+```sql
 to_timestamp(expression[, ..., format_n])
 ```
 
@@ -2360,7 +2386,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000000Z`). Supports strings, integer, and unsigned integer types as input. Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)s are provided. Integers and unsigned integers are interpreted as microseconds since the unix epoch (`1970-01-01T00:00:00Z`) Returns the corresponding timestamp.
 
-```
+```sql
 to_timestamp_micros(expression[, ..., format_n])
 ```
 
@@ -2392,7 +2418,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000Z`). Supports strings, integer, and unsigned integer types as input. Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono formats](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) are provided. Integers and unsigned integers are interpreted as milliseconds since the unix epoch (`1970-01-01T00:00:00Z`). Returns the corresponding timestamp.
 
-```
+```sql
 to_timestamp_millis(expression[, ..., format_n])
 ```
 
@@ -2424,7 +2450,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000000000Z`). Supports strings, integer, and unsigned integer types as input. Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)s are provided. Integers and unsigned integers are interpreted as nanoseconds since the unix epoch (`1970-01-01T00:00:00Z`). Returns the corresponding timestamp.
 
-```
+```sql
 to_timestamp_nanos(expression[, ..., format_n])
 ```
 
@@ -2456,7 +2482,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a value to a timestamp (`YYYY-MM-DDT00:00:00.000Z`). Supports strings, integer, and unsigned integer types as input. Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono format](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)s are provided. Integers and unsigned integers are interpreted as seconds since the unix epoch (`1970-01-01T00:00:00Z`). Returns the corresponding timestamp.
 
-```
+```sql
 to_timestamp_seconds(expression[, ..., format_n])
 ```
 
@@ -2488,7 +2514,7 @@ Additional examples can be found [here](https://github.com/apache/datafusion/blo
 
 Converts a value to seconds since the unix epoch (`1970-01-01T00:00:00Z`). Supports strings, dates, timestamps and double types as input. Strings are parsed as RFC3339 (e.g. '2023-07-20T05:44:00') if no [Chrono formats](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) are provided.
 
-```
+```sql
 to_unixtime(expression[, ..., format_n])
 ```
 
@@ -2539,6 +2565,7 @@ _Alias of [current_date](#current_date)._
 - [array_intersect](#array_intersect)
 - [array_join](#array_join)
 - [array_length](#array_length)
+- [array_max](#array_max)
 - [array_ndims](#array_ndims)
 - [array_pop_back](#array_pop_back)
 - [array_pop_front](#array_pop_front)
@@ -2560,6 +2587,7 @@ _Alias of [current_date](#current_date)._
 - [array_sort](#array_sort)
 - [array_to_string](#array_to_string)
 - [array_union](#array_union)
+- [arrays_overlap](#arrays_overlap)
 - [cardinality](#cardinality)
 - [empty](#empty)
 - [flatten](#flatten)
@@ -2583,6 +2611,7 @@ _Alias of [current_date](#current_date)._
 - [list_intersect](#list_intersect)
 - [list_join](#list_join)
 - [list_length](#list_length)
+- [list_max](#list_max)
 - [list_ndims](#list_ndims)
 - [list_pop_back](#list_pop_back)
 - [list_pop_front](#list_pop_front)
@@ -2614,7 +2643,7 @@ _Alias of [current_date](#current_date)._
 
 Returns the first non-null element in the array.
 
-```
+```sql
 array_any_value(array)
 ```
 
@@ -2641,7 +2670,7 @@ array_any_value(array)
 
 Appends an element to the end of an array.
 
-```
+```sql
 array_append(array, element)
 ```
 
@@ -2675,7 +2704,7 @@ _Alias of [array_concat](#array_concat)._
 
 Concatenates arrays.
 
-```
+```sql
 array_concat(array[, ..., array_n])
 ```
 
@@ -2709,7 +2738,7 @@ _Alias of [array_has](#array_has)._
 
 Returns an array of the array's dimensions.
 
-```
+```sql
 array_dims(array)
 ```
 
@@ -2736,7 +2765,7 @@ array_dims(array)
 
 Returns the Euclidean distance between two input arrays of equal length.
 
-```
+```sql
 array_distance(array1, array2)
 ```
 
@@ -2764,7 +2793,7 @@ array_distance(array1, array2)
 
 Returns distinct values from the array after removing duplicates.
 
-```
+```sql
 array_distinct(array)
 ```
 
@@ -2791,7 +2820,7 @@ array_distinct(array)
 
 Extracts the element with the index n from the array.
 
-```
+```sql
 array_element(array, index)
 ```
 
@@ -2825,7 +2854,7 @@ _Alias of [empty](#empty)._
 
 Returns an array of the elements that appear in the first array but not in the second.
 
-```
+```sql
 array_except(array1, array2)
 ```
 
@@ -2863,7 +2892,7 @@ _Alias of [array_element](#array_element)._
 
 Returns true if the array contains the element.
 
-```
+```sql
 array_has(array, element)
 ```
 
@@ -2893,7 +2922,7 @@ array_has(array, element)
 
 Returns true if all elements of sub-array exist in array.
 
-```
+```sql
 array_has_all(array, sub-array)
 ```
 
@@ -2921,7 +2950,7 @@ array_has_all(array, sub-array)
 
 Returns true if any elements exist in both arrays.
 
-```
+```sql
 array_has_any(array, sub-array)
 ```
 
@@ -2944,6 +2973,7 @@ array_has_any(array, sub-array)
 ###### Aliases
 
 - list_has_any
+- arrays_overlap
 
 ##### `array_indexof`
 
@@ -2953,7 +2983,7 @@ _Alias of [array_position](#array_position)._
 
 Returns an array of elements in the intersection of array1 and array2.
 
-```
+```sql
 array_intersect(array1, array2)
 ```
 
@@ -2991,7 +3021,7 @@ _Alias of [array_to_string](#array_to_string)._
 
 Returns the length of the array dimension.
 
-```
+```sql
 array_length(array, dimension)
 ```
 
@@ -3015,11 +3045,38 @@ array_length(array, dimension)
 
 - list_length
 
+##### `array_max`
+
+Returns the maximum value in the array.
+
+```sql
+array_max(array)
+```
+
+###### Arguments
+
+- **array**: Array expression. Can be a constant, column, or function, and any combination of array operators.
+
+###### Example
+
+```sql
+> select array_max([3,1,4,2]);
++-----------------------------------------+
+| array_max(List([3,1,4,2]))              |
++-----------------------------------------+
+| 4                                       |
++-----------------------------------------+
+```
+
+###### Aliases
+
+- list_max
+
 ##### `array_ndims`
 
 Returns the number of dimensions of the array.
 
-```
+```sql
 array_ndims(array, element)
 ```
 
@@ -3047,7 +3104,7 @@ array_ndims(array, element)
 
 Returns the array without the last element.
 
-```
+```sql
 array_pop_back(array)
 ```
 
@@ -3074,7 +3131,7 @@ array_pop_back(array)
 
 Returns the array without the first element.
 
-```
+```sql
 array_pop_front(array)
 ```
 
@@ -3101,7 +3158,7 @@ array_pop_front(array)
 
 Returns the position of the first occurrence of the specified element in the array.
 
-```
+```sql
 array_position(array, element)
 array_position(array, element, index)
 ```
@@ -3139,7 +3196,7 @@ array_position(array, element, index)
 
 Searches for an element in the array, returns all occurrences.
 
-```
+```sql
 array_positions(array, element)
 ```
 
@@ -3167,7 +3224,7 @@ array_positions(array, element)
 
 Prepends an element to the beginning of an array.
 
-```
+```sql
 array_prepend(element, array)
 ```
 
@@ -3205,7 +3262,7 @@ _Alias of [array_prepend](#array_prepend)._
 
 Removes the first element from the array equal to the given value.
 
-```
+```sql
 array_remove(array, element)
 ```
 
@@ -3233,7 +3290,7 @@ array_remove(array, element)
 
 Removes all elements from the array equal to the given value.
 
-```
+```sql
 array_remove_all(array, element)
 ```
 
@@ -3261,7 +3318,7 @@ array_remove_all(array, element)
 
 Removes the first `max` elements from the array equal to the given value.
 
-```
+```sql
 array_remove_n(array, element, max))
 ```
 
@@ -3290,7 +3347,7 @@ array_remove_n(array, element, max))
 
 Returns an array containing element `count` times.
 
-```
+```sql
 array_repeat(element, count)
 ```
 
@@ -3324,7 +3381,7 @@ array_repeat(element, count)
 
 Replaces the first occurrence of the specified element with another specified element.
 
-```
+```sql
 array_replace(array, from, to)
 ```
 
@@ -3353,7 +3410,7 @@ array_replace(array, from, to)
 
 Replaces all occurrences of the specified element with another specified element.
 
-```
+```sql
 array_replace_all(array, from, to)
 ```
 
@@ -3382,7 +3439,7 @@ array_replace_all(array, from, to)
 
 Replaces the first `max` occurrences of the specified element with another specified element.
 
-```
+```sql
 array_replace_n(array, from, to, max)
 ```
 
@@ -3412,7 +3469,7 @@ array_replace_n(array, from, to, max)
 
 Resizes the list to contain size elements. Initializes new elements with value or empty if value is not set.
 
-```
+```sql
 array_resize(array, size, value)
 ```
 
@@ -3441,7 +3498,7 @@ array_resize(array, size, value)
 
 Returns the array with the order of the elements reversed.
 
-```
+```sql
 array_reverse(array)
 ```
 
@@ -3468,7 +3525,7 @@ array_reverse(array)
 
 Returns a slice of the array based on 1-indexed start and end positions.
 
-```
+```sql
 array_slice(array, begin, end)
 ```
 
@@ -3498,7 +3555,7 @@ array_slice(array, begin, end)
 
 Sort array.
 
-```
+```sql
 array_sort(array, desc, nulls_first)
 ```
 
@@ -3527,7 +3584,7 @@ array_sort(array, desc, nulls_first)
 
 Converts each element to its text representation.
 
-```
+```sql
 array_to_string(array, delimiter[, null_string])
 ```
 
@@ -3558,7 +3615,7 @@ array_to_string(array, delimiter[, null_string])
 
 Returns an array of elements that are present in both arrays (all elements from both arrays) with out duplicates.
 
-```
+```sql
 array_union(array1, array2)
 ```
 
@@ -3588,11 +3645,15 @@ array_union(array1, array2)
 
 - list_union
 
+##### `arrays_overlap`
+
+_Alias of [array_has_any](#array_has_any)._
+
 ##### `cardinality`
 
 Returns the total number of elements in the array.
 
-```
+```sql
 cardinality(array)
 ```
 
@@ -3615,7 +3676,7 @@ cardinality(array)
 
 Returns 1 for an empty array or 0 for a non-empty array.
 
-```
+```sql
 empty(array)
 ```
 
@@ -3648,7 +3709,7 @@ Converts an array of arrays to a flat array.
 
 The flattened array contains all the elements from all source arrays.
 
-```
+```sql
 flatten(array)
 ```
 
@@ -3671,7 +3732,7 @@ flatten(array)
 
 Similar to the range function, but it includes the upper bound.
 
-```
+```sql
 generate_series(start, stop, step)
 ```
 
@@ -3768,6 +3829,10 @@ _Alias of [array_to_string](#array_to_string)._
 
 _Alias of [array_length](#array_length)._
 
+##### `list_max`
+
+_Alias of [array_max](#array_max)._
+
 ##### `list_ndims`
 
 _Alias of [array_ndims](#array_ndims)._
@@ -3856,7 +3921,7 @@ _Alias of [array_union](#array_union)._
 
 Returns an array using the specified input expressions.
 
-```
+```sql
 make_array(expression1[, ..., expression_n])
 ```
 
@@ -3885,9 +3950,9 @@ _Alias of [make_array](#make_array)._
 
 ##### `range`
 
-Returns an Arrow array between start and stop with step. The range start..end contains all values with `start <= x < end`. It is empty if `start >= end`. Step cannot be 0.
+Returns an Arrow array between start and stop with step. The range start..end contains all values with start <= x < end. It is empty if start >= end. Step cannot be 0.
 
-```
+```sql
 range(start, stop, step)
 ```
 
@@ -3919,7 +3984,7 @@ range(start, stop, step)
 
 Splits a string into an array of substrings based on a delimiter. Any substrings matching the optional `null_str` argument are replaced with NULL.
 
-```
+```sql
 string_to_array(str, delimiter[, null_str])
 ```
 
@@ -3964,7 +4029,7 @@ _Alias of [string_to_array](#string_to_array)._
 
 Returns an Arrow struct using the specified name and input expressions pairs.
 
-```
+```sql
 named_struct(expression1_name, expression1_input[, ..., expression_n_name, expression_n_input])
 ```
 
@@ -4005,7 +4070,7 @@ Returns an Arrow struct using the specified input expressions optionally named.
 Fields in the returned struct use the optional name or the `cN` naming convention.
 For example: `c0`, `c1`, `c2`, etc.
 
-```
+```sql
 struct(expression1[, ..., expression_n])
 ```
 
@@ -4068,7 +4133,7 @@ Returns an Arrow map with the specified key-value pairs.
 
 The `make_map` function creates a map from two lists: one for keys and one for values. Each key must be unique and non-null.
 
-```
+```sql
 map(key, value)
 map(key: value)
 make_map(['key1', 'key2'], ['value1', 'value2'])
@@ -4115,7 +4180,7 @@ SELECT MAKE_MAP(['key1', 'key2'], ['value1', null]);
 
 Returns a list containing the value for the given key or an empty list if the key is not present in the map.
 
-```
+```sql
 map_extract(map, key)
 ```
 
@@ -4148,7 +4213,7 @@ SELECT map_extract(MAP {'x': 10, 'y': NULL, 'z': 30}, 'y');
 
 Returns a list of all keys in the map.
 
-```
+```sql
 map_keys(map)
 ```
 
@@ -4172,7 +4237,7 @@ SELECT map_keys(map([100, 5], [42, 43]));
 
 Returns a list of all values in the map.
 
-```
+```sql
 map_values(map)
 ```
 
@@ -4205,7 +4270,7 @@ SELECT map_values(map([100, 5], [42, 43]));
 
 Computes the binary hash of an expression using the specified algorithm.
 
-```
+```sql
 digest(expression, algorithm)
 ```
 
@@ -4237,7 +4302,7 @@ digest(expression, algorithm)
 
 Computes an MD5 128-bit checksum for a string expression.
 
-```
+```sql
 md5(expression)
 ```
 
@@ -4260,7 +4325,7 @@ md5(expression)
 
 Computes the SHA-224 hash of a binary string.
 
-```
+```sql
 sha224(expression)
 ```
 
@@ -4283,7 +4348,7 @@ sha224(expression)
 
 Computes the SHA-256 hash of a binary string.
 
-```
+```sql
 sha256(expression)
 ```
 
@@ -4306,7 +4371,7 @@ sha256(expression)
 
 Computes the SHA-384 hash of a binary string.
 
-```
+```sql
 sha384(expression)
 ```
 
@@ -4329,7 +4394,7 @@ sha384(expression)
 
 Computes the SHA-512 hash of a binary string.
 
-```
+```sql
 sha512(expression)
 ```
 
@@ -4348,6 +4413,68 @@ sha512(expression)
 +-------------------------------------------+
 ```
 
+### Union Functions
+
+Functions to work with the union data type, also know as tagged unions, variant types, enums or sum types. Note: Not related to the SQL UNION operator
+
+- [union_extract](#union_extract)
+- [union_tag](#union_tag)
+
+##### `union_extract`
+
+Returns the value of the given field in the union when selected, or NULL otherwise.
+
+```sql
+union_extract(union, field_name)
+```
+
+###### Arguments
+
+- **union**: Union expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **field_name**: String expression to operate on. Must be a constant.
+
+###### Example
+
+```sql
+❯ select union_column, union_extract(union_column, 'a'), union_extract(union_column, 'b') from table_with_union;
++--------------+----------------------------------+----------------------------------+
+| union_column | union_extract(union_column, 'a') | union_extract(union_column, 'b') |
++--------------+----------------------------------+----------------------------------+
+| {a=1}        | 1                                |                                  |
+| {b=3.0}      |                                  | 3.0                              |
+| {a=4}        | 4                                |                                  |
+| {b=}         |                                  |                                  |
+| {a=}         |                                  |                                  |
++--------------+----------------------------------+----------------------------------+
+```
+
+##### `union_tag`
+
+Returns the name of the currently selected field in the union
+
+```sql
+union_tag(union_expression)
+```
+
+###### Arguments
+
+- **union**: Union expression to operate on. Can be a constant, column, or function, and any combination of operators.
+
+###### Example
+
+```sql
+❯ select union_column, union_tag(union_column) from table_with_union;
++--------------+-------------------------+
+| union_column | union_tag(union_column) |
++--------------+-------------------------+
+| {a=1}        | a                       |
+| {b=3.0}      | b                       |
+| {a=4}        | a                       |
+| {b=}         | b                       |
+| {a=}         | a                       |
++--------------+-------------------------+
+```
+
 ### Other Functions
 
 - [arrow_cast](#arrow_cast)
@@ -4359,7 +4486,7 @@ sha512(expression)
 
 Casts a value to a specific Arrow data type.
 
-```
+```sql
 arrow_cast(expression, datatype)
 ```
 
@@ -4387,7 +4514,7 @@ arrow_cast(expression, datatype)
 
 Returns the name of the underlying [Arrow data type](https://docs.rs/arrow/latest/arrow/datatypes/enum.DataType.html) of the expression.
 
-```
+```sql
 arrow_typeof(expression)
 ```
 
@@ -4413,7 +4540,7 @@ Note: most users invoke `get_field` indirectly via field access
 syntax such as `my_struct_col['field_name']` which results in a call to
 `get_field(my_struct_col, 'field_name')`.
 
-```
+```sql
 get_field(expression1, expression2)
 ```
 
@@ -4453,7 +4580,7 @@ get_field(expression1, expression2)
 
 Returns the version of DataFusion.
 
-```
+```sql
 version()
 ```
 
@@ -4527,8 +4654,9 @@ Aggregate functions operate on a set of values to compute a single result.
 ##### `array_agg`
 
 Returns an array created from the expression elements. If ordering is required, elements are inserted in the specified order.
+This aggregation function can only mix DISTINCT and ORDER BY if the ordering expression is exactly the same as the argument expression.
 
-```
+```sql
 array_agg(expression [ORDER BY expression])
 ```
 
@@ -4545,13 +4673,19 @@ array_agg(expression [ORDER BY expression])
 +-----------------------------------------------+
 | [element1, element2, element3]                |
 +-----------------------------------------------+
+> SELECT array_agg(DISTINCT column_name ORDER BY column_name) FROM table_name;
++--------------------------------------------------------+
+| array_agg(DISTINCT column_name ORDER BY column_name)  |
++--------------------------------------------------------+
+| [element1, element2, element3]                         |
++--------------------------------------------------------+
 ```
 
 ##### `avg`
 
 Returns the average of numeric values in the specified column.
 
-```
+```sql
 avg(expression)
 ```
 
@@ -4578,7 +4712,7 @@ avg(expression)
 
 Computes the bitwise AND of all non-null input values.
 
-```
+```sql
 bit_and(expression)
 ```
 
@@ -4590,7 +4724,7 @@ bit_and(expression)
 
 Computes the bitwise OR of all non-null input values.
 
-```
+```sql
 bit_or(expression)
 ```
 
@@ -4602,7 +4736,7 @@ bit_or(expression)
 
 Computes the bitwise exclusive OR of all non-null input values.
 
-```
+```sql
 bit_xor(expression)
 ```
 
@@ -4614,7 +4748,7 @@ bit_xor(expression)
 
 Returns true if all non-null input values are true, otherwise false.
 
-```
+```sql
 bool_and(expression)
 ```
 
@@ -4637,7 +4771,7 @@ bool_and(expression)
 
 Returns true if all non-null input values are true, otherwise false.
 
-```
+```sql
 bool_and(expression)
 ```
 
@@ -4660,7 +4794,7 @@ bool_and(expression)
 
 Returns the number of non-null values in the specified column. To include null values in the total count, use `count(*)`.
 
-```
+```sql
 count(expression)
 ```
 
@@ -4690,7 +4824,7 @@ count(expression)
 
 Returns the first element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
 
-```
+```sql
 first_value(expression [ORDER BY expression])
 ```
 
@@ -4713,7 +4847,7 @@ first_value(expression [ORDER BY expression])
 
 Returns 1 if the data is aggregated across the specified column, or 0 if it is not aggregated in the result set.
 
-```
+```sql
 grouping(expression)
 ```
 
@@ -4740,7 +4874,7 @@ grouping(expression)
 
 Returns the last element in an aggregation group according to the requested ordering. If no ordering is given, returns an arbitrary element from the group.
 
-```
+```sql
 last_value(expression [ORDER BY expression])
 ```
 
@@ -4763,7 +4897,7 @@ last_value(expression [ORDER BY expression])
 
 Returns the maximum value in the specified column.
 
-```
+```sql
 max(expression)
 ```
 
@@ -4790,7 +4924,7 @@ _Alias of [avg](#avg)._
 
 Returns the median value in the specified column.
 
-```
+```sql
 median(expression)
 ```
 
@@ -4813,7 +4947,7 @@ median(expression)
 
 Returns the minimum value in the specified column.
 
-```
+```sql
 min(expression)
 ```
 
@@ -4834,10 +4968,10 @@ min(expression)
 
 ##### `string_agg`
 
-Concatenates the values of string expressions and places separator values between them.
+Concatenates the values of string expressions and places separator values between them. If ordering is required, strings are concatenated in the specified order. This aggregation function can only mix DISTINCT and ORDER BY if the ordering expression is exactly the same as the first argument expression.
 
-```
-string_agg(expression, delimiter)
+```sql
+string_agg([DISTINCT] expression, delimiter [ORDER BY expression])
 ```
 
 ###### Arguments
@@ -4853,7 +4987,21 @@ string_agg(expression, delimiter)
 +--------------------------+
 | names_list               |
 +--------------------------+
-| Alice, Bob, Charlie      |
+| Alice, Bob, Bob, Charlie |
++--------------------------+
+> SELECT string_agg(name, ', ' ORDER BY name DESC) AS names_list
+  FROM employee;
++--------------------------+
+| names_list               |
++--------------------------+
+| Charlie, Bob, Bob, Alice |
++--------------------------+
+> SELECT string_agg(DISTINCT name, ', ' ORDER BY name DESC) AS names_list
+  FROM employee;
++--------------------------+
+| names_list               |
++--------------------------+
+| Charlie, Bob, Alice |
 +--------------------------+
 ```
 
@@ -4861,7 +5009,7 @@ string_agg(expression, delimiter)
 
 Returns the sum of all values in the specified column.
 
-```
+```sql
 sum(expression)
 ```
 
@@ -4884,7 +5032,7 @@ sum(expression)
 
 Returns the statistical sample variance of a set of numbers.
 
-```
+```sql
 var(expression)
 ```
 
@@ -4901,7 +5049,7 @@ var(expression)
 
 Returns the statistical population variance of a set of numbers.
 
-```
+```sql
 var_pop(expression)
 ```
 
@@ -4949,7 +5097,7 @@ _Alias of [var](#var)._
 
 Returns the coefficient of correlation between two numeric values.
 
-```
+```sql
 corr(expression1, expression2)
 ```
 
@@ -4977,7 +5125,7 @@ _Alias of [covar_samp](#covar_samp)._
 
 Returns the sample covariance of a set of number pairs.
 
-```
+```sql
 covar_samp(expression1, expression2)
 ```
 
@@ -5001,7 +5149,7 @@ covar_samp(expression1, expression2)
 
 Returns the sample covariance of a set of number pairs.
 
-```
+```sql
 covar_samp(expression1, expression2)
 ```
 
@@ -5029,7 +5177,7 @@ covar_samp(expression1, expression2)
 
 Returns the nth value in a group of values.
 
-```
+```sql
 nth_value(expression, n ORDER BY expression)
 ```
 
@@ -5058,7 +5206,7 @@ nth_value(expression, n ORDER BY expression)
 
 Computes the average of the independent variable (input) expression_x for the non-null paired data points.
 
-```
+```sql
 regr_avgx(expression_y, expression_x)
 ```
 
@@ -5071,7 +5219,7 @@ regr_avgx(expression_y, expression_x)
 
 Computes the average of the dependent variable (output) expression_y for the non-null paired data points.
 
-```
+```sql
 regr_avgy(expression_y, expression_x)
 ```
 
@@ -5084,7 +5232,7 @@ regr_avgy(expression_y, expression_x)
 
 Counts the number of non-null paired data points.
 
-```
+```sql
 regr_count(expression_y, expression_x)
 ```
 
@@ -5097,7 +5245,7 @@ regr_count(expression_y, expression_x)
 
 Computes the y-intercept of the linear regression line. For the equation (y = kx + b), this function returns b.
 
-```
+```sql
 regr_intercept(expression_y, expression_x)
 ```
 
@@ -5110,7 +5258,7 @@ regr_intercept(expression_y, expression_x)
 
 Computes the square of the correlation coefficient between the independent and dependent variables.
 
-```
+```sql
 regr_r2(expression_y, expression_x)
 ```
 
@@ -5123,7 +5271,7 @@ regr_r2(expression_y, expression_x)
 
 Returns the slope of the linear regression line for non-null pairs in aggregate columns. Given input column Y and X: regr_slope(Y, X) returns the slope (k in Y = k\*X + b) using minimal RSS fitting.
 
-```
+```sql
 regr_slope(expression_y, expression_x)
 ```
 
@@ -5136,7 +5284,7 @@ regr_slope(expression_y, expression_x)
 
 Computes the sum of squares of the independent variable.
 
-```
+```sql
 regr_sxx(expression_y, expression_x)
 ```
 
@@ -5149,7 +5297,7 @@ regr_sxx(expression_y, expression_x)
 
 Computes the sum of products of paired data points.
 
-```
+```sql
 regr_sxy(expression_y, expression_x)
 ```
 
@@ -5162,7 +5310,7 @@ regr_sxy(expression_y, expression_x)
 
 Computes the sum of squares of the dependent variable.
 
-```
+```sql
 regr_syy(expression_y, expression_x)
 ```
 
@@ -5175,7 +5323,7 @@ regr_syy(expression_y, expression_x)
 
 Returns the standard deviation of a set of numbers.
 
-```
+```sql
 stddev(expression)
 ```
 
@@ -5202,7 +5350,7 @@ stddev(expression)
 
 Returns the population standard deviation of a set of numbers.
 
-```
+```sql
 stddev_pop(expression)
 ```
 
@@ -5236,7 +5384,7 @@ _Alias of [stddev](#stddev)._
 
 Returns the approximate number of distinct input values calculated using the HyperLogLog algorithm.
 
-```
+```sql
 approx_distinct(expression)
 ```
 
@@ -5257,9 +5405,9 @@ approx_distinct(expression)
 
 ##### `approx_median`
 
-Returns the approximate median (50th percentile) of input values. It is an alias of `approx_percentile_cont(x, 0.5)`.
+Returns the approximate median (50th percentile) of input values. It is an alias of `approx_percentile_cont(0.5) WITHIN GROUP (ORDER BY x)`.
 
-```
+```sql
 approx_median(expression)
 ```
 
@@ -5282,8 +5430,8 @@ approx_median(expression)
 
 Returns the approximate percentile of input values using the t-digest algorithm.
 
-```
-approx_percentile_cont(expression, percentile, centroids)
+```sql
+approx_percentile_cont(percentile, centroids) WITHIN GROUP (ORDER BY expression)
 ```
 
 ###### Arguments
@@ -5295,20 +5443,20 @@ approx_percentile_cont(expression, percentile, centroids)
 ###### Example
 
 ```sql
-> SELECT approx_percentile_cont(column_name, 0.75, 100) FROM table_name;
-+-------------------------------------------------+
-| approx_percentile_cont(column_name, 0.75, 100)  |
-+-------------------------------------------------+
-| 65.0                                            |
-+-------------------------------------------------+
+> SELECT approx_percentile_cont(0.75, 100) WITHIN GROUP (ORDER BY column_name) FROM table_name;
++-----------------------------------------------------------------------+
+| approx_percentile_cont(0.75, 100) WITHIN GROUP (ORDER BY column_name) |
++-----------------------------------------------------------------------+
+| 65.0                                                                  |
++-----------------------------------------------------------------------+
 ```
 
 ##### `approx_percentile_cont_with_weight`
 
 Returns the weighted approximate percentile of input values using the t-digest algorithm.
 
-```
-approx_percentile_cont_with_weight(expression, weight, percentile)
+```sql
+approx_percentile_cont_with_weight(weight, percentile) WITHIN GROUP (ORDER BY expression)
 ```
 
 ###### Arguments
@@ -5320,12 +5468,12 @@ approx_percentile_cont_with_weight(expression, weight, percentile)
 ###### Example
 
 ```sql
-> SELECT approx_percentile_cont_with_weight(column_name, weight_column, 0.90) FROM table_name;
-+----------------------------------------------------------------------+
-| approx_percentile_cont_with_weight(column_name, weight_column, 0.90) |
-+----------------------------------------------------------------------+
-| 78.5                                                                 |
-+----------------------------------------------------------------------+
+> SELECT approx_percentile_cont_with_weight(weight_column, 0.90) WITHIN GROUP (ORDER BY column_name) FROM table_name;
++---------------------------------------------------------------------------------------------+
+| approx_percentile_cont_with_weight(weight_column, 0.90) WITHIN GROUP (ORDER BY column_name) |
++---------------------------------------------------------------------------------------------+
+| 78.5                                                                                        |
++---------------------------------------------------------------------------------------------+
 ```
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
@@ -5444,7 +5592,7 @@ WINDOW w AS (PARTITION BY depname ORDER BY salary DESC);
 
 The syntax for the OVER-clause is
 
-```
+```sql
 function([expr])
   OVER(
     [PARTITION BY expr[, …]]
@@ -5455,7 +5603,7 @@ function([expr])
 
 where **frame_clause** is one of:
 
-```
+```sql
   { RANGE | ROWS | GROUPS } frame_start
   { RANGE | ROWS | GROUPS } BETWEEN frame_start AND frame_end
 ```
@@ -5489,17 +5637,36 @@ All [aggregate functions](#aggregate-functions) can be used as window functions.
 
 ##### `cume_dist`
 
-Relative rank of the current row: (number of rows preceding or peer with current row) / (total rows).
+Relative rank of the current row: (number of rows preceding or peer with the current row) / (total rows).
 
-```
+```sql
 cume_dist()
+```
+
+###### Example
+
+```sql
+    --Example usage of the cume_dist window function:
+    SELECT salary,
+       cume_dist() OVER (ORDER BY salary) AS cume_dist
+    FROM employees;
+```
+
+```sql
++--------+-----------+
+| salary | cume_dist |
++--------+-----------+
+| 30000  | 0.33      |
+| 50000  | 0.67      |
+| 70000  | 1.00      |
++--------+-----------+
 ```
 
 ##### `dense_rank`
 
 Returns the rank of the current row without gaps. This function ranks rows in a dense manner, meaning consecutive ranks are assigned even for identical values.
 
-```
+```sql
 dense_rank()
 ```
 
@@ -5507,7 +5674,7 @@ dense_rank()
 
 Integer ranging from 1 to the argument value, dividing the partition as equally as possible
 
-```
+```sql
 ntile(expression)
 ```
 
@@ -5519,7 +5686,7 @@ ntile(expression)
 
 Returns the percentage rank of the current row within its partition. The value ranges from 0 to 1 and is computed as `(rank - 1) / (total_rows - 1)`.
 
-```
+```sql
 percent_rank()
 ```
 
@@ -5527,7 +5694,7 @@ percent_rank()
 
 Returns the rank of the current row within its partition, allowing gaps between ranks. This function provides a ranking similar to `row_number`, but skips ranks for identical values.
 
-```
+```sql
 rank()
 ```
 
@@ -5535,7 +5702,7 @@ rank()
 
 Number of the current row within its partition, counting from 1.
 
-```
+```sql
 row_number()
 ```
 
@@ -5551,7 +5718,7 @@ row_number()
 
 Returns value evaluated at the row that is the first row of the window frame.
 
-```
+```sql
 first_value(expression)
 ```
 
@@ -5563,7 +5730,7 @@ first_value(expression)
 
 Returns value evaluated at the row that is offset rows before the current row within the partition; if there is no such row, instead return default (which must be of the same type as value).
 
-```
+```sql
 lag(expression, offset, default)
 ```
 
@@ -5577,7 +5744,7 @@ lag(expression, offset, default)
 
 Returns value evaluated at the row that is the last row of the window frame.
 
-```
+```sql
 last_value(expression)
 ```
 
@@ -5589,7 +5756,7 @@ last_value(expression)
 
 Returns value evaluated at the row that is offset rows after the current row within the partition; if there is no such row, instead return default (which must be of the same type as value).
 
-```
+```sql
 lead(expression, offset, default)
 ```
 
@@ -5601,13 +5768,45 @@ lead(expression, offset, default)
 
 ##### `nth_value`
 
-Returns value evaluated at the row that is the nth row of the window frame (counting from 1); null if no such row.
+Returns the value evaluated at the nth row of the window frame (counting from 1). Returns NULL if no such row exists.
 
-```
+```sql
 nth_value(expression, n)
 ```
 
 ###### Arguments
 
-- **expression**: The name the column of which nth value to retrieve
-- **n**: Integer. Specifies the n in nth
+- **expression**: The column from which to retrieve the nth value.
+- **n**: Integer. Specifies the row number (starting from 1) in the window frame.
+
+###### Example
+
+```sql
+-- Sample employees table:
+CREATE TABLE employees (id INT, salary INT);
+INSERT INTO employees (id, salary) VALUES
+(1, 30000),
+(2, 40000),
+(3, 50000),
+(4, 60000),
+(5, 70000);
+
+-- Example usage of nth_value:
+SELECT nth_value(salary, 2) OVER (
+  ORDER BY salary
+  ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+) AS nth_value
+FROM employees;
+```
+
+```text
++-----------+
+| nth_value |
++-----------+
+| 40000     |
+| 40000     |
+| 40000     |
+| 40000     |
+| 40000     |
++-----------+
+```
