@@ -27,9 +27,13 @@ GreptimeDB 支持[多种协议](./protocols/overview.md)和[集成工具](./inte
 请参阅[可观测性文档](./ingest-data/for-observability/overview.md)。
 该文档解释了如何使用 Otel-Collector, Vector、Kafka、Prometheus 和 InfluxDB 行协议等工具导入数据。
 
-对于将 GreptimeDB 用作日志存储解决方案，
+对于日志存储解决方案，
 请参考 [日志文档](./logs/overview.md)。
 该文档详细说明了如何使用 Pipeline 写入结构化的文本日志。
+
+对于链路追踪（trace）存储解决方案，
+请参考 [trace 文档](./traces/overview.md)。
+该文档解释了使用 OpenTelemetry 导入数据以及使用 Jaeger 查询数据的方法。
 
 ### 物联网和边缘计算场景
 

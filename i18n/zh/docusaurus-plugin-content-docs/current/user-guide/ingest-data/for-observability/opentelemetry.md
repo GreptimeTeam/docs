@@ -212,7 +212,7 @@ GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议**
 
 ### 示例代码
 
-你可以直接将 OpenTelemetry traces 数据发送到 GreptimeDB，也可以使用 OpenTelemetry Collector 来收集 traces 数据，并使用 GreptimeDB 作为后端存储，请参考 [OpenTelemetry Collector 文档](/user-guide/trace/read-write.md#opentelemetry-collector)中的示例代码，了解如何将 OpenTelemetry traces 数据发送到 GreptimeDB。
+你可以直接将 OpenTelemetry traces 数据发送到 GreptimeDB，也可以使用 OpenTelemetry Collector 来收集 traces 数据，并使用 GreptimeDB 作为后端存储，请参考 [OpenTelemetry Collector 文档](/user-guide/traces/read-write.md#opentelemetry-collector)中的示例代码，了解如何将 OpenTelemetry traces 数据发送到 GreptimeDB。
 
 ### 数据模型
 

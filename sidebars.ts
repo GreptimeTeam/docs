@@ -239,16 +239,16 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Trace',
+          label: 'Traces',
           items: [
             {
               type: 'doc',
-              id: 'user-guide/trace/overview',
+              id: 'user-guide/traces/overview',
               label: 'Overview',
             },
-            'user-guide/trace/read-write',
-            'user-guide/trace/data-model',
-            'user-guide/trace/extend-trace',
+            'user-guide/traces/read-write',
+            'user-guide/traces/data-model',
+            'user-guide/traces/extend-trace',
           ],
         },
         {

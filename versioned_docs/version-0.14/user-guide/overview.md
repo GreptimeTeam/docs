@@ -27,9 +27,13 @@ If you plan to use GreptimeDB as metrics, logs and traces storage for observabil
 see the [Observability Documentation](./ingest-data/for-observability/overview.md).
 It explains how to ingest data using tools like Otel-Collector, Vector, Kafka, Prometheus, and the InfluxDB line protocol.
 
-To use GreptimeDB as a log storage solution,
+For a log storage solution,
 refer to the [Logs Documentation](./logs/overview.md).
 It details how to ingest pattern text logs using pipelines.
+
+For a trace storage solution,
+refer to the [Traces Documentation](./traces/overview.md).
+It explains how to ingest trace data using OpenTelemetry and query it with Jaeger.
 
 ### For IoT and Edge Computing Scenarios
 
