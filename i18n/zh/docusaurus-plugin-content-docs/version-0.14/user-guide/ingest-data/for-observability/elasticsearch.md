@@ -39,12 +39,18 @@ GreptimeDB 支持通过以下两个 HTTP endpoint 来实现 Elasticsearch 协议
   {"name": "Jane", "age": 25}
   ```
 
-用户还可以使用以下 HTTP URL 参数：
+### 请求参数
+
+你可以使用以下 HTTP URL 参数：
 
 - `db`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
 - `pipeline_name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
 - `version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
 - `msg_field`：`msg_field` 可指定包含原始日志数据的 JSON 字段名。比如在 Logstash 和 Filebeat 中，该字段通常为 `message`。如果用户指定了该参数，则 GreptimeDB 会尝试将该字段中的数据以 JSON 格式进行展开，如果展开失败，则该字段会被当成字符串进行处理；
+
+### 鉴权 Header
+
+关于鉴权 Header 的详细信息，请参考 [Authorization](/user-guide/protocols/http.md#鉴权) 文档。
   
 ## 使用方法
 
@@ -63,6 +69,7 @@ GreptimeDB 支持通过以下两个 HTTP endpoint 来实现 Elasticsearch 协议
 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
+  -H "Authorization: Basic {{authentication}}" \
   -H "Content-Type: application/json" -d @request.json
 ```
 

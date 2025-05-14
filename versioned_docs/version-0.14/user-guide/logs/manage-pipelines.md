@@ -7,8 +7,12 @@ description: Guides on creating, deleting, and managing pipelines in GreptimeDB 
 
 In GreptimeDB, each `pipeline` is a collection of data processing units used for parsing and transforming the ingested log content. This document provides guidance on creating and deleting pipelines to efficiently manage the processing flow of log data.
 
-
 For specific pipeline configurations, please refer to the [Pipeline Configuration](pipeline-config.md) documentation.
+
+## Authentication
+
+The HTTP API for managing pipelines requires authentication.  
+For more information, see the [Authentication](/user-guide/protocols/http.md#authentication) documentation.
 
 ## Create a Pipeline
 
@@ -17,7 +21,9 @@ Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use th
 
 ```shell
 ## Upload the pipeline file. 'test' is the name of the pipeline
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" \
+  -H "Authorization: Basic {{authentication}}" \
+  -F "file=@pipeline.yaml"
 ```
 
 The created Pipeline is associated with a database, which can be specified with the URL parameter `db`, defaulting to `public`.
@@ -29,7 +35,8 @@ You can use the following HTTP interface to delete a pipeline:
 
 ```shell
 ## 'test' is the name of the pipeline
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z"
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
 In the above example, we deleted a pipeline named `test` in `public` database. The `version` parameter is required to specify the version of the pipeline to be deleted.
@@ -40,12 +47,14 @@ Querying a pipeline with a name through HTTP interface as follow:
 
 ```shell
 ## 'test' is the name of the pipeline, it will return a pipeline with latest version if the pipeline named `test` exists.
-curl "http://localhost:4000/v1/events/pipelines/test"
+curl "http://localhost:4000/v1/events/pipelines/test" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
 ```shell
 ## with the version parameter, it will return the specify version pipeline.
-curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000"
+curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
  If the pipeline exists, the output should be:
@@ -180,7 +189,8 @@ You may encounter errors when creating a Pipeline. For example, when creating a 
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
+     -H "Content-Type: application/x-yaml" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
   - date:
       field: time
@@ -215,7 +225,8 @@ Therefore, We need to modify the configuration of the `gsub` Processor and chang
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
+     -H "Content-Type: application/x-yaml" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
   - date:
       field: time
@@ -249,7 +260,8 @@ We can test the Pipeline using the `dryrun` interface. We will test it with erro
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
 
 {"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
@@ -260,7 +272,8 @@ Let's change the value of the message field to a string type and test the pipeli
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
 ```
 

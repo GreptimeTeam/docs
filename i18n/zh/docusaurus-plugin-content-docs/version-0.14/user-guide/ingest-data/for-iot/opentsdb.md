@@ -16,44 +16,48 @@ GreptimeDB 还支持通过 HTTP 接口插入 OpenTSDB 数据，接口是 `/opent
 GreptimeDB 的 HTTP Server 默认监听 `4000` 端口。例如使用 curl 写入一个指标数据：
 
 ```shell
-curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
-{
-    "metric": "sys.cpu.nice",
-    "timestamp": 1667898896,
-    "value": 18,
-    "tags": {
-       "host": "web01",
-       "dc": "hz"
+curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
+    -H 'Authorization: Basic {{authentication}}' \
+    -d '
+    {
+        "metric": "sys.cpu.nice",
+        "timestamp": 1667898896,
+        "value": 18,
+        "tags": {
+        "host": "web01",
+        "dc": "hz"
+        }
     }
-}
-'
+    '
 ```
 
 插入多个指标数据：
 
 ```shell
-curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
-[
-    {
-        "metric": "sys.cpu.nice",
-        "timestamp": 1667898896,
-        "value": 1,
-        "tags": {
-           "host": "web02",
-           "dc": "hz"
+curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
+    -H 'Authorization: Basic {{authentication}}' \
+    -d '
+    [
+        {
+            "metric": "sys.cpu.nice",
+            "timestamp": 1667898896,
+            "value": 1,
+            "tags": {
+            "host": "web02",
+            "dc": "hz"
+            }
+        },
+        {
+            "metric": "sys.cpu.nice",
+            "timestamp": 1667898897,
+            "value": 9,
+            "tags": {
+            "host": "web03",
+            "dc": "sh"
+            }
         }
-    },
-    {
-        "metric": "sys.cpu.nice",
-        "timestamp": 1667898897,
-        "value": 9,
-        "tags": {
-           "host": "web03",
-           "dc": "sh"
-        }
-    }
-]
-'
+    ]
+    '
 ```
 
 :::tip 注意

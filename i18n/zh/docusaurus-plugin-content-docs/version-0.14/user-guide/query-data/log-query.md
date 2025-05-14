@@ -40,6 +40,7 @@ POST /v1/logs
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \
+    -H "Authorization: Basic {{authentication}}" \
     -H "Content-Type: application/json" \
     -d $'
     {
