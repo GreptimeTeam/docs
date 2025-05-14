@@ -39,8 +39,8 @@ importers:
         specifier: ^2.0.0
         version: 2.1.1
       docusaurus-biel:
-        specifier: ^1.0.4
-        version: 1.0.4(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2))
+        specifier: ^1.0.5
+        version: 1.0.5(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2))
       minimatch:
         specifier: ^10.0.1
         version: 10.0.1
@@ -3363,8 +3363,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  docusaurus-biel@1.0.4:
-    resolution: {integrity: sha512-XqK2pGvuqBegMmFjVhZ6ccnlaguAB5/vic18nLo+JR63Z8vUZr1CLe4iTfEeQbv3wI2lF7trku+7Ij1BT+wgGw==}
+  docusaurus-biel@1.0.5:
+    resolution: {integrity: sha512-S5WnPyfk32kaf1N4E3S5G1S6RbGm6oxkprpa9zexKStLc79kl2sjJPuXrJh/B+b6HiEQZ5nTaW6RBduLm0cDGw==}
     peerDependencies:
       '@docusaurus/core': 3.x
 
@@ -12994,7 +12994,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  docusaurus-biel@1.0.4(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)):
+  docusaurus-biel@1.0.5(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)):
     dependencies:
       '@docusaurus/core': 3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
 

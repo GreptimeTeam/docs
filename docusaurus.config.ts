@@ -172,6 +172,7 @@ const config: Config = {
         version: 'latest',
         buttonStyle: 'dark',
         inputPlaceholderText: 'Ask a question about Greptime...',
+        footerText: 'AI-generated answers may contain errors. <br> You can also communicate with engineers through <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b>.',
       }
     ]
   ],
