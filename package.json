@@ -24,7 +24,7 @@
     "@octokit/rest": "^21.0.2",
     "axios": "^1.7.7",
     "clsx": "^2.0.0",
-    "docusaurus-biel": "^1.0.4",
+    "docusaurus-biel": "^1.0.5",
     "minimatch": "^10.0.1",
     "prism-react-renderer": "^2.3.0",
     "react": "^18.0.0",
