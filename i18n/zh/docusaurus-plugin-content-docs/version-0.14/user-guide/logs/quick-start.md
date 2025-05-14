@@ -53,7 +53,7 @@ INSERT INTO origin_logs (message, time) VALUES
 
 ## 使用 Pipeline 写入日志
 
-使用 pipeline 可以自动将日志消息格式化并转换为多个列，并自动创建表。
+使用 pipeline 可以自动将日志消息格式化并转换为多个列，并自动创建和修改表结构。
 
 ### 使用内置 Pipeline 写入 JSON 日志（试验功能）
 
@@ -64,15 +64,36 @@ JSON 类型目前仍处于实验阶段，在未来的版本中可能会有所调
 GreptimeDB 提供了一个内置 pipeline `greptime_identity` 用于处理 JSON 日志格式。该 pipeline 简化了写入 JSON 日志的过程。
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
-     -H 'Content-Type: application/json' \
-     -d $'[
-    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
-    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
-    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
-]'
+curl -X POST \
+  "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Basic {{authentication}}" \
+  -d '[
+    {
+      "name": "Alice",
+      "age": 20,
+      "is_student": true,
+      "score": 90.5,
+      "object": { "a": 1, "b": 2 }
+    },
+    {
+      "age": 21,
+      "is_student": false,
+      "score": 85.5,
+      "company": "A",
+      "whatever": null
+    },
+    {
+      "name": "Charlie",
+      "age": 22,
+      "is_student": true,
+      "score": 95.5,
+      "array": [1, 2, 3]
+    }
+  ]'
 ```
 
+- [`鉴权`](/user-guide/protocols/http.md#鉴权) HTTP header。
 - `pipeline_name=greptime_identity` 指定了内置 pipeline。
 - `table=pipeline_logs` 指定了目标表。如果表不存在，将自动创建。
 `greptime_identity` pipeline 将自动为 JSON 日志中的每个字段创建列。成功执行命令将返回：
@@ -139,7 +160,10 @@ transform:
 执行以下命令上传配置文件：
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "file=@pipeline.yaml"
+curl -X "POST" \
+  "http://localhost:4000/v1/events/pipelines/nginx_pipeline" \
+     -H 'Authorization: Basic {{authentication}}' \
+     -F "file=@pipeline.yaml"
 ```
 
 成功执行此命令后，将创建一个名为 `nginx_pipeline` 的 pipeline，返回的结果如下：
@@ -154,17 +178,27 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/nginx_pipeline" -F "fi
 
 #### 写入日志
 
-以下示例将日志写入 `pipeline_logs` 表，并使用 `nginx_pipeline` pipeline 格式化和转换日志消息。
+以下示例将日志写入 `custom_pipeline_logs` 表，并使用 `nginx_pipeline` pipeline 格式化和转换日志消息。
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=nginx_pipeline" \
-     -H 'Content-Type: application/json' \
-     -d $'[
-{"message":"127.0.0.1 - - [25/May/2024:20:16:37 +0000] \\"GET /index.html HTTP/1.1\\" 200 612 \\"-\\" \\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\\""},
-{"message":"192.168.1.1 - - [25/May/2024:20:17:37 +0000] \\"POST /api/login HTTP/1.1\\" 200 1784 \\"-\\" \\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\\""},
-{"message":"10.0.0.1 - - [25/May/2024:20:18:37 +0000] \\"GET /images/logo.png HTTP/1.1\\" 304 0 \\"-\\" \\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\\""},
-{"message":"172.16.0.1 - - [25/May/2024:20:19:37 +0000] \\"GET /contact HTTP/1.1\\" 404 162 \\"-\\" \\"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\\""}
-]'
+curl -X POST \
+  "http://localhost:4000/v1/events/logs?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Basic {{authentication}}" \
+  -d '[
+    {
+      "message": "127.0.0.1 - - [25/May/2024:20:16:37 +0000] \"GET /index.html HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\""
+    },
+    {
+      "message": "192.168.1.1 - - [25/May/2024:20:17:37 +0000] \"POST /api/login HTTP/1.1\" 200 1784 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36\""
+    },
+    {
+      "message": "10.0.0.1 - - [25/May/2024:20:18:37 +0000] \"GET /images/logo.png HTTP/1.1\" 304 0 \"-\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0\""
+    },
+    {
+      "message": "172.16.0.1 - - [25/May/2024:20:19:37 +0000] \"GET /contact HTTP/1.1\" 404 162 \"-\" \"Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1\""
+    }
+  ]'
 ```
 
 如果命令执行成功，您将看到以下输出：

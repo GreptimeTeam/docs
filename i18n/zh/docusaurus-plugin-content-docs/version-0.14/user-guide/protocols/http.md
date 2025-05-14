@@ -20,6 +20,7 @@ API Base URL 是 `http(s)://<host>:<port>/`。
 
 ### 鉴权
 
+假设你已经正确设置了数据库[鉴权](/user-guide/deployments/authentication/overview.md)，
 GreptimeDB 支持 HTTP API 中内置的 `Basic` 鉴权机制。要设置鉴权，请按照以下步骤操作：
 
 1. 使用 `<username:password>` 格式和 `Base64` 算法对用户名和密码进行编码。
@@ -156,7 +157,6 @@ curl http://localhost:4000/config
 输出包含 GreptimeDB 服务器的配置信息。
 
 ```toml
-mode = "standalone"
 enable_telemetry = true
 user_provider = "static_user_provider:file:user"
 init_regions_in_background = false

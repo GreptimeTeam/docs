@@ -64,6 +64,7 @@ exporters:
     endpoint: "http://greptimedb:4000/v1/otlp" # GreptimeDB 的 OTLP 路径
     headers:
       x-greptime-pipeline-name: "greptime_trace_v1"
+      #authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
 
@@ -104,6 +105,10 @@ telemetrygen traces --otlp-insecure --traces 3
 
 上面这条命令将生成 3 条 traces 数据，并通过 gRPC 协议写入到 OpenTelemetry Collector 中。
 
+
+### 认证
+
+GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-guide/protocols/http.md#鉴权) 文档。
 
 ### GreptimeDB Pipeline
 

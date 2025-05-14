@@ -68,6 +68,7 @@ exporters:
     endpoint: "http://greptimedb:4000/v1/otlp" # Replace greptimedb with your setup
     headers:
       x-greptime-pipeline-name: "greptime_trace_v1"
+      #authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
 
@@ -110,6 +111,10 @@ telemetrygen traces --otlp-insecure --traces 3
 
 The above command will generate 3 traces data and write it to the OpenTelemetry
 Collector via gRPC protocol, and eventually stored into GreptimeDB.
+
+### Authorization
+
+The GreptimeDB OTEL endpoint supports Basic authentication. For details, please refer to the [authentication](/user-guide/protocols/http.md#authentication) documentation.
 
 ### GreptimeDB Pipeline
 
