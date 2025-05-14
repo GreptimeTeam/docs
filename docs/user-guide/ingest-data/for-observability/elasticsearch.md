@@ -63,8 +63,11 @@ Then use the `curl` command to send this file as a request body to GreptimeDB:
 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
+  -H "Authorization: Basic {{authentication}}" \
   -H "Content-Type: application/json" -d @request.json
 ```
+
+For detailed information about the authentication header, please refer to the [Authorization](/user-guide/protocols/http.md#authentication) documentation.
 
 We can use a `mysql` client to connect to GreptimeDB and execute the following SQL to view the inserted data:
 

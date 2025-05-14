@@ -40,6 +40,7 @@ The following example demonstrates how to query log data using the log query end
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/logs" \
+    -H "Authorization: Basic {{authentication}}" \
     -H "Content-Type: application/json" \
     -d $'
     {

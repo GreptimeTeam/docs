@@ -58,6 +58,7 @@ For example, the following request set `120s` timeout for the request:
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timeout: 120s' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=show tables' \
@@ -278,6 +279,7 @@ For example, the following request uses the time zone `+1:00` for the query:
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timezone: +1:00' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=SHOW VARIABLES time_zone;' \
