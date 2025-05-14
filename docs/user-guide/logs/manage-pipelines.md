@@ -35,7 +35,6 @@ You can use the following HTTP interface to delete a pipeline:
 
 ```shell
 ## 'test' is the name of the pipeline
-```shell
 curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z" \
   -H "Authorization: Basic {{authentication}}"
 ```

@@ -44,50 +44,6 @@ http://localhost:4000/v1/sql
 InfluxDB 使用自己的鉴权格式，请参阅 [InfluxDB](./influxdb-line-protocol.md) 获取详细信息。
 :::
 
-### 时区
-
-GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` 头部。
-它用于为当前 SQL 查询指定时区。
-
-例如，以下请求使用时区 `+1:00` 进行查询：
-
-```bash
-curl -X POST \
--H 'X-Greptime-Timezone: +1:00' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'sql=SHOW VARIABLES time_zone;' \
-http://localhost:4000/v1/sql
-```
-
-结果为：
-
-```json
-{
-  "output": [
-    {
-      "records": {
-        "schema": {
-          "column_schemas": [
-            {
-              "name": "TIME_ZONE",
-              "data_type": "String"
-            }
-          ]
-        },
-        "rows": [
-          [
-            "+01:00"
-          ]
-        ]
-      }
-    }
-  ],
-  "execution_time_ms": 27
-}
-```
-
-有关时区如何影响数据的写入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#time-zone)和[查询数据](/user-guide/query-data/sql.md#time-zone)部分中的 SQL 文档。
-
 ### 请求超时设置
 
 GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定数据库服务器中运行的请求超时时间。
@@ -96,6 +52,7 @@ GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用�
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timeout: 120s' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=show tables' \
@@ -309,6 +266,7 @@ GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` header。
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timezone: +1:00' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=SHOW VARIABLES time_zone;' \
