@@ -11,11 +11,13 @@ Region Failover provides the ability to recover regions from region failures wit
 
 This feature is only available on GreptimeDB running on distributed mode and
 
-- Using Kafka WAL
+- Using Kafka WAL (Remote WAL) or Local WAL (Enable region failover on local WAL may lead to data loss during failover)
 - Using [shared storage](/user-guide/deployments/configuration.md#storage-options) (e.g., AWS S3)
 
+If you want to enable region failover on local WAL, you need to set `allow_region_failover_on_local_wal=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file. It's not recommended to enable this option, because it may lead to data loss.
+
 ### Via configuration file
-Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file.
+Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file. 
 
 ### Via GreptimeDB Operator
 
@@ -25,6 +27,8 @@ helm install greptimedb greptime/greptimedb-cluster \
   --set meta.enableRegionFailover=true \ 
   ...
 ```
+
+If you want to enable region failover on local WAL, ensure your operator version is greater than or equal to v0.2.2.
 
 ## The recovery time of Region Failover
 
