@@ -576,7 +576,7 @@ The result format is the same as `/sql` interface described in [Post SQL stateme
 
 ```shell
 curl -X POST \
-  -H 'Authorization: token <username>:<password>' \
+  -H 'Authorization: token {{username:password}}' \
   -d '{{Influxdb-line-protocol-data}}' \
   http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
 ```
@@ -596,7 +596,7 @@ curl -X POST \
 
 ### Headers
 
-- `Authorization`: **Unlike other APIs**, the InfluxDB line protocol APIs use the InfluxDB authentication format. For V2, it is `token <username>:<password>`.
+- `Authorization`: **Unlike other APIs**, the InfluxDB line protocol APIs use the InfluxDB authentication format. For V2, it is `token {{username:password}}`.
 
 ### Query string parameters
 

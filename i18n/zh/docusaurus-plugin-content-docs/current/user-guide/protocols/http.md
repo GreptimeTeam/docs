@@ -562,7 +562,7 @@ curl -X GET \
 
 ```shell
 curl -X POST \
-  -H 'Authorization: token <username>:<password>' \
+  -H 'Authorization: token {{username:password}}' \
   -d '{{Influxdb-line-protocol-data}}' \
   http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
 ```
@@ -582,7 +582,7 @@ curl -X POST \
 
 ### Headers
 
-- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token <username>:<password>`。
+- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token {{username:password}}`。
 
 ### Query string parameters
 
