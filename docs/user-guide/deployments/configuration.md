@@ -664,6 +664,10 @@ use_memory_store = false
 ## - Using Remote WAL
 ## - Using shared storage (e.g., s3).
 enable_region_failover = false
+## Whether to allow region failover on local WAL.
+## **This option is not recommended to be set to true,
+## because it may lead to data loss during failover.**
+allow_region_failover_on_local_wal = false
 # The datastore for metasrv.
 ## Available datastore:
 ## - "etcd_store" (default)
@@ -778,6 +782,7 @@ create_topic_timeout = "30s"
 | `selector`                                    | String  | `lease_based`                    | Datanode selector type.<br/>- `lease_based` (default value).<br/>- `load_based`<br/>For details, see [Selector](/contributor-guide/metasrv/selector.md)                       |
 | `use_memory_store`                            | Bool    | `false`                          | Store data in memory.                                                                                                                                                         |
 | `enable_region_failover`                      | Bool    | `false`                          | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3). |
+| `allow_region_failover_on_local_wal` | Bool | `false` | Whether to allow region failover on local WAL.<br/>**This option is not recommended to be set to true, because it may lead to data loss during failover.** |
 | `backend`                                     | String  | `etcd_store`                     | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv`                | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is `postgres_store` or `mysql_store`.** |
 | `meta_election_lock_id` | Integer | `1`                              | Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend<br/>**Only used when backend is `postgres_store`.** |
