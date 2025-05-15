@@ -273,14 +273,14 @@ receivers:
 
 exporters:
   otlphttp/traces:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 路径
+    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 地址
     headers:
       x-greptime-pipeline-name: 'greptime_trace_v1'
       # authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
   otlphttp/logs:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 路径
+    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 地址
     headers:
       # x-greptime-log-table-name: "<pipeline_name>"
       # authorization: "Basic <base64(username:password)>"
@@ -288,7 +288,7 @@ exporters:
       insecure: true
 
   otlphttp/metrics:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 路径
+    endpoint: 'http://127.0.0.1:4000/v1/otlp' # GreptimeDB 的 OTLP 地址
     headers:
       # authorization: "Basic <base64(username:password)>"
     tls:
