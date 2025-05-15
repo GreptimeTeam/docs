@@ -22,7 +22,7 @@ GreptimeDB 支持 HTTP InfluxDB Line 协议。
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precision=ms" \
- -H "authorization: token <greptime_user:greptimedb_password>" \
+ -H "authorization: token {{greptime_user:greptimedb_password}}" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -56,7 +56,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
-  -H "authorization: token <greptime_user:greptimedb_password>" \
+  -H "authorization: token {{greptime_user:greptimedb_password}}" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3
@@ -90,7 +90,7 @@ InfluxDB 的 [V2 协议](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=
 
 ```shell
 curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
-    -H 'authorization: token <username>:<password>' \
+    -H 'authorization: token {{username:password}}' \
     -d 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
 

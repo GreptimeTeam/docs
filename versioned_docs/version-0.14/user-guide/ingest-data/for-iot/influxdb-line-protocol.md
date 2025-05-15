@@ -22,7 +22,7 @@ Here's an example of how to use this API:
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precision=ms" \
-  -H "authorization: token <greptime_user:greptimedb_password>" \
+  -H "authorization: token {{greptime_user:greptimedb_password}}" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -56,7 +56,7 @@ You can also omit the timestamp when sending requests. GreptimeDB will use the c
 
 ```shell
 curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
-  -H "authorization: token <greptime_user:greptimedb_password>" \
+  -H "authorization: token {{greptime_user:greptimedb_password}}" \
   --data-binary \
   'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
   monitor,host=127.0.0.2 cpu=0.2,memory=0.3
@@ -90,7 +90,7 @@ InfluxDB's [V2 protocol](https://docs.influxdata.com/influxdb/v1.8/tools/api/?t=
 
 ```shell
 curl 'http://localhost:4000/v1/influxdb/api/v2/write?db=public' \
-    -H 'authorization: token <username>:<password>' \
+    -H 'authorization: token {{username:password}}' \
     -d 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4'
 ```
 

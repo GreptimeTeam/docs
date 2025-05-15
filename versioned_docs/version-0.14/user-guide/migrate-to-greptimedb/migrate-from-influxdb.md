@@ -16,7 +16,7 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 
 ```shell
 curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
-  -H 'authorization: token <greptime_user:greptimedb_password>' \
+  -H 'authorization: token {{greptime_user:greptimedb_password}}' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 

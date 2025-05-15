@@ -9,14 +9,14 @@ GreptimeDB provides HTTP APIs for interacting with the database. For a complete 
 
 ## Base URL
 
-The base URL of API is `http(s)://<host>:<port>/`.
+The base URL of API is `http(s)://{{host}}:{{port}}/`.
 
 - For the GreptimeDB instance running on the local machine,
   with default port configuration `4000`,
   the base URL is `http://localhost:4000/`.
   You can change the server host and port in the [configuration](/user-guide/deployments/configuration#protocol-options) file.
 
-- For GreptimeCloud, the base URL is `https://<host>/`.
+- For GreptimeCloud, the base URL is `https://{{host}}/`.
   You can find the host in 'Connection Information' at the GreptimeCloud console.
 
 In the following sections, we use `http://{{API-host}}/` as the base URL to demonstrate the API usage.
