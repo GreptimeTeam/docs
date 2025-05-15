@@ -652,6 +652,10 @@ use_memory_store = false
 ## - 使用 Remote WAL
 ## - 使用共享存储（例如 s3）。
 enable_region_failover = false
+## 是否允许在本地 WAL 上进行 region failover。
+## **此选项不建议设置为 true，
+## 因为这可能会在故障转移期间导致数据丢失。**
+allow_region_failover_on_local_wal = false
 # metasrv 的数据库类型。
 ## 可选项：
 ## - "etcd_store" (默认值)
@@ -748,6 +752,7 @@ create_topic_timeout = "30s"
 | `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
 | `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
 | enable_region_failover                        | Bool    | false                | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
+| `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
