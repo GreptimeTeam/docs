@@ -32,6 +32,12 @@ OpenTelemetry Collector is a vendor-agnostic implementation of OpenTelemetry, be
 exporting to GreptimeDB. You can use the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) to send metrics, logs, and traces to GreptimeDB.
 
 ```yaml
+extensions:
+  basicauth/client:
+    client_auth:
+      username: <your_username>
+      password: <your_password>
+
 receivers:
   otlp:
     protocols:
@@ -42,31 +48,29 @@ receivers:
 
 exporters:
   otlphttp/traces:
-    endpoint: 'https:///<host>/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
+      x-greptime-db-name: '<your_db_name>'
       x-greptime-pipeline-name: 'greptime_trace_v1'
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
   otlphttp/logs:
-    endpoint: 'https://<host>/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
+      x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: "<pipeline_name>"
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
 
   otlphttp/metrics:
-    endpoint: 'https://<host>/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
+      x-greptime-db-name: '<your_db_name>'
 
 service:
+  extensions: [basicauth/client]
   pipelines:
     traces:
       receivers: [otlp]

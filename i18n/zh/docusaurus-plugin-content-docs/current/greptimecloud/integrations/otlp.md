@@ -27,6 +27,12 @@ description: 介绍如何通过 OpenTelemetry Protocol (OTLP) 将指标数据发
 OpenTelemetry Collector 是 OpenTelemetry 的一个与厂商无关的实现，下面是一个导出到 GreptimeDB 的示例配置。你可以使用 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 将指标、日志和追踪数据发送到 GreptimeDB。
 
 ```yaml
+extensions:
+  basicauth/client:
+    client_auth:
+      username: <your_username>
+      password: <your_password>
+
 receivers:
   otlp:
     protocols:
@@ -37,31 +43,29 @@ receivers:
 
 exporters:
   otlphttp/traces:
-    endpoint: 'https:///<host>/v1/otlp' # OTLP 的 GreptimeDB 地址
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
+      x-greptime-db-name: '<your_db_name>'
       x-greptime-pipeline-name: 'greptime_trace_v1'
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
   otlphttp/logs:
-    endpoint: 'https://<host>/v1/otlp' # OTLP 的 GreptimeDB 地址
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
+      x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: "<pipeline_name>"
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
 
   otlphttp/metrics:
-    endpoint: 'https://<host>/v1/otlp' # OTLP 的 GreptimeDB 地址
+    endpoint: 'https://<your_db_host>/v1/otlp'
+    auth:
+      authenticator: basicauth/client
     headers:
-      x-greptime-db-name: 'public'
-      # authorization: "Basic <base64(username:password)>"
-    tls:
-      insecure: true
+      x-greptime-db-name: '<your_db_name>'
 
 service:
+  extensions: [basicauth/client]
   pipelines:
     traces:
       receivers: [otlp]

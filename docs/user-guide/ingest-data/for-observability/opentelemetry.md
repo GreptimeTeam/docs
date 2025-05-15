@@ -262,6 +262,12 @@ OpenTelemetry Collector is an extensible service for receiving, processing, and 
 Below is a sample configuration for sending data to GreptimeDB using OpenTelemetry Collector.
 
 ```yaml
+extensions:
+  basicauth/client:
+    client_auth:
+      username: <your_username>
+      password: <your_password>
+
 receivers:
   otlp:
     protocols:
@@ -272,28 +278,35 @@ receivers:
 
 exporters:
   otlphttp/traces:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
     headers:
+      # x-greptime-db-name: '<your_db_name>'
       x-greptime-pipeline-name: 'greptime_trace_v1'
-      # authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
   otlphttp/logs:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
     headers:
+      # x-greptime-db-name: '<your_db_name>'
       # x-greptime-log-table-name: "<pipeline_name>"
-      # authorization: "Basic <base64(username:password)>"
     tls:
       insecure: true
 
   otlphttp/metrics:
-    endpoint: 'http://127.0.0.1:4000/v1/otlp' # OTLP endpoint of GreptimeDB
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
     headers:
-      # authorization: "Basic <base64(username:password)>"
+      # x-greptime-db-name: '<your_db_name>'
     tls:
       insecure: true
 
 service:
+  # extensions: [basicauth/client]
   pipelines:
     traces:
       receivers: [otlp]
@@ -308,5 +321,5 @@ service:
 
 In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlphttp/traces`, `otlphttp/logs`, and `otlphttp/metrics`, which send data to the OTLP endpoint of GreptimeDB.
 Based on the otlphttp protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`. The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and the `x-greptime-log-table-name` header is used to specify the table name in GreptimeDB where the data will be written.
-The `authorization` header is used to specify authentication information for GreptimeDB.
+If you have enabled authentication in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.
 Here, we strongly recommend using different exporters to handle traces, logs, and metrics separately. On one hand, GreptimeDB supports some specific headers to customize processing flows; on the other hand, this also helps with data isolation.
