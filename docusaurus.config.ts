@@ -11,7 +11,7 @@ const metaMap = {
     { name: 'description', content: 'GreptimeDB is a cloud-native, real-time observability database for metrics, logs, and traces. Learn how to gain fast, cost-efficient insights at any scale from edge to cloud with GreptimeDB and GreptimeCloud.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
-    { property: 'og:title', content: 'GreptimeDB Documentation' },
+    { property: 'og:title', content: 'GreptimeDB Documentation | Unified observability database' },
     { property: 'og:description', content: 'Discover how GreptimeDB unifies metrics, logs, and traces with SQL and PromQL. Fast, Efficient, and Real-Time.' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
@@ -23,11 +23,10 @@ const metaMap = {
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://docs.greptime.com/' },
     { property: 'og:image', content: 'https://greptime.com/logo/img/logo-routine-level.png' },
-    { property: 'og:title', content: 'GreptimeDB 文档' },
+    { property: 'og:title', content: 'GreptimeDB 文档 | 可观测数据库' },
     { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一处理指标、日志和链路追踪。快速、高效、实时。' },
     { property: 'twitter:card', content: 'summary_large_image' },
     { property: 'twitter:url', content: 'https://greptime.com/' },
-    { property: 'twitter:title', content: 'GreptimeDB 文档 | 统一时序数据库' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ]
