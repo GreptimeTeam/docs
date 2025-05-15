@@ -33,7 +33,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public&precisi
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u=<greptime_user>&p=<greptimedb_password>" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u={{greptime_user}}&p={{greptimedb_password}}" \
 --data-binary \
 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4 1667446797450
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3 1667446798450
@@ -67,7 +67,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/api/v2/write?db=public" \
 <TabItem value="InfluxDB line protocol V1" label="InfluxDB line protocol V1">
 
 ```shell
-curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u=<greptime_user>&p=<greptimedb_password>" \
+curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u={{greptime_user}}&p={{greptimedb_password}}" \
 --data-binary \
 'monitor,host=127.0.0.1 cpu=0.1,memory=0.4
  monitor,host=127.0.0.2 cpu=0.2,memory=0.3
