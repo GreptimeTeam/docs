@@ -19,43 +19,47 @@ Starting GreptimeDB, the HTTP server is listening on port `4000` by default.
 Use curl to insert one metric point:
 
 ```shell
-curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
-{
-    "metric": "sys.cpu.nice",
-    "timestamp": 1667898896,
-    "value": 18,
-    "tags": {
-       "host": "web01",
-       "dc": "hz"
+curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
+    -H 'Authorization: Basic {{authentication}}' \
+    -d '
+    {
+        "metric": "sys.cpu.nice",
+        "timestamp": 1667898896,
+        "value": 18,
+        "tags": {
+        "host": "web01",
+        "dc": "hz"
+        }
     }
-}
-'
+    '
 ```
 
 Or insert multiple metric points:
 
 ```shell
-curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put -d '
-[
-    {
-        "metric": "sys.cpu.nice",
-        "timestamp": 1667898896,
-        "value": 1,
-        "tags": {
-           "host": "web02",
-           "dc": "hz"
+curl -X POST http://127.0.0.1:4000/v1/opentsdb/api/put \
+    -H 'Authorization: Basic {{authentication}}' \
+    -d '
+    [
+        {
+            "metric": "sys.cpu.nice",
+            "timestamp": 1667898896,
+            "value": 1,
+            "tags": {
+            "host": "web02",
+            "dc": "hz"
+            }
+        },
+        {
+            "metric": "sys.cpu.nice",
+            "timestamp": 1667898897,
+            "value": 9,
+            "tags": {
+            "host": "web03",
+            "dc": "sh"
+            }
         }
-    },
-    {
-        "metric": "sys.cpu.nice",
-        "timestamp": 1667898897,
-        "value": 9,
-        "tags": {
-           "host": "web03",
-           "dc": "sh"
-        }
-    }
-]
-'
+    ]
+    '
 ```
 

@@ -9,10 +9,10 @@ GreptimeDB 提供了 HTTP API 用于与数据库进行交互。如需查看完�
 
 ## Base URL
 
-API Base URL 是 `http(s)://<host>:<port>/`。
+API Base URL 是 `http(s)://{{host}}:{{port}}/`。
 
 - 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments/configuration#protocol-options)中更改服务的 host 和 port。
-- 对于 GreptimeCloud，Base URL 是 `https://<host>/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
+- 对于 GreptimeCloud，Base URL 是 `https://{{host}}/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
 
 在以下内容中，我们使用 `http://{{API-host}}/` 作为 Base URL 来演示 API。
 
@@ -44,50 +44,6 @@ http://localhost:4000/v1/sql
 InfluxDB 使用自己的鉴权格式，请参阅 [InfluxDB](./influxdb-line-protocol.md) 获取详细信息。
 :::
 
-### 时区
-
-GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` 头部。
-它用于为当前 SQL 查询指定时区。
-
-例如，以下请求使用时区 `+1:00` 进行查询：
-
-```bash
-curl -X POST \
--H 'X-Greptime-Timezone: +1:00' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'sql=SHOW VARIABLES time_zone;' \
-http://localhost:4000/v1/sql
-```
-
-结果为：
-
-```json
-{
-  "output": [
-    {
-      "records": {
-        "schema": {
-          "column_schemas": [
-            {
-              "name": "TIME_ZONE",
-              "data_type": "String"
-            }
-          ]
-        },
-        "rows": [
-          [
-            "+01:00"
-          ]
-        ]
-      }
-    }
-  ],
-  "execution_time_ms": 27
-}
-```
-
-有关时区如何影响数据的写入和查询，请参考[写入数据](/user-guide/ingest-data/for-iot/sql.md#time-zone)和[查询数据](/user-guide/query-data/sql.md#time-zone)部分中的 SQL 文档。
-
 ### 请求超时设置
 
 GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用于指定数据库服务器中运行的请求超时时间。
@@ -96,6 +52,7 @@ GreptimeDB 支持在 HTTP 请求中使用 `X-Greptime-Timeout` 请求头，用�
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timeout: 120s' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=show tables' \
@@ -309,6 +266,7 @@ GreptimeDB 支持 HTTP 请求中的 `X-Greptime-Timezone` header。
 
 ```bash
 curl -X POST \
+-H 'Authorization: Basic {{authentication}}' \
 -H 'X-Greptime-Timezone: +1:00' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'sql=SHOW VARIABLES time_zone;' \
@@ -604,7 +562,7 @@ curl -X GET \
 
 ```shell
 curl -X POST \
-  -H 'Authorization: token <username>:<password>' \
+  -H 'Authorization: token {{username:password}}' \
   -d '{{Influxdb-line-protocol-data}}' \
   http://{{API-host}}/v1/influxdb/api/v2/write?precision={{time-precision}}
 ```
@@ -624,7 +582,7 @@ curl -X POST \
 
 ### Headers
 
-- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token <username>:<password>`。
+- `Authorization`: **与其他 API 不同**，InfluxDB 行协议 API 使用 InfluxDB 鉴权格式。对于 V2 协议，Authorization 是 `token {{username:password}}`。
 
 ### Query string parameters
 

@@ -15,8 +15,8 @@ import DocTemplate from '../../db-cloud-shared/migrate/migrate-from-influxdb.md'
 <TabItem value="InfluxDB line protocol v2" label="InfluxDB line protocol v2">
 
 ```shell
-curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
-  -H 'authorization: token <greptime_user:greptimedb_password>' \
+curl -X POST 'http://{{host}}:4000/v1/influxdb/api/v2/write?db={{db-name}}' \
+  -H 'authorization: token {{greptime_user:greptimedb_password}}' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 
@@ -25,7 +25,7 @@ curl -X POST 'http://<host>:4000/v1/influxdb/api/v2/write?db=<db-name>' \
 <TabItem value="InfluxDB line protocol v1" label="InfluxDB line protocol v1">
 
 ```shell
-curl 'http://<host>:4000/v1/influxdb/write?db=<db-name>&u=<greptime_user>&p=<greptimedb_password>' \
+curl 'http://{{host}}:4000/v1/influxdb/write?db={{db-name}}&u={{greptime_user}}&p={{greptimedb_password}}' \
   -d 'census,location=klamath,scientist=anderson bees=23 1566086400000000000'
 ```
 

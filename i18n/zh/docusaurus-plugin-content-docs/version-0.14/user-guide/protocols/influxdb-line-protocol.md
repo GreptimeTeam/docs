@@ -9,6 +9,10 @@ description: 介绍如何使用 InfluxDB Line Protocol 向 GreptimeDB 写入数�
 
 请参考[写入数据](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)文档来了解如何使用 InfluxDB Line Protocol 向 GreptimeDB 写入数据。
 
+## HTTP API
+
+请参考 [HTTP API](http.md#post-influxdb-line-protocol-数据) 文档来了解 Influxdb Line Protocol 的接口详情。
+
 ## PING
 
 GreptimeDB 同样支持 InfluxDB 的 `ping` 和 `health` API。

@@ -10,6 +10,11 @@ description: 介绍如何在 GreptimeDB 中管理 Pipeline，包括创建、删�
 
 有关 Pipeline 的具体配置，请阅读 [Pipeline 配置](pipeline-config.md)。
 
+## 鉴权
+
+在使用 HTTP API 进行 Pipeline 管理时，你需要提供有效的鉴权信息。
+请参考[鉴权](/user-guide/protocols/http.md#鉴权)文档了解详细信息。
+
 ## 创建 Pipeline
 
 GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
@@ -17,7 +22,9 @@ GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
 
 ```shell
 ## 上传 pipeline 文件。test 为 Pipeline 的名称
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" \
+  -H "Authorization: Basic {{authentication}}" \
+  -F "file=@pipeline.yaml"
 ```
 
 创建的 Pipeline 会关联到一个 database，可通过 URL 参数 `db` 来指定，默认为 `public`。
@@ -29,7 +36,8 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" -F "fi
 
 ```shell
 ## test 为 Pipeline 的名称
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z"
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
 上面的例子中，我们删除了一个在 `public` database 下名为 `test` 的 Pipeline。`version` 参数是必须的，用于指定要删除的 Pipeline 的版本号。
@@ -40,12 +48,14 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&versi
 
 ```shell
 ## test 是 Pipeline 的名称，该查询将返回最新版本的 Pipeline。
-curl "http://localhost:4000/v1/events/pipelines/test"
+curl "http://localhost:4000/v1/events/pipelines/test" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
 ```shell
 ## 如果你想查询某个 Pipeline 的历史版本，可以在 URL 中添加 `version` 参数
-curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000"
+curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
+  -H "Authorization: Basic {{authentication}}"
 ```
 
  If the pipeline exists, the output should be:
@@ -180,7 +190,8 @@ Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
+     -H "Content-Type: application/x-yaml" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
   - date:
       field: time
@@ -215,7 +226,8 @@ Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
-     -H 'Content-Type: application/x-yaml' \
+     -H "Content-Type: application/x-yaml" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
   - date:
       field: time
@@ -248,7 +260,8 @@ transform:
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
 
 {"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
@@ -259,7 +272,8 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
-     -H 'Content-Type: application/json' \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
 ```
 

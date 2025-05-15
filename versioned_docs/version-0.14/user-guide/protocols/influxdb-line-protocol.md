@@ -10,6 +10,10 @@ description: Instructions on ingesting data to GreptimeDB using InfluxDB Line Pr
 For how to ingest data to GreptimeDB using InfluxDB Line Protocol, 
 please refer to the [Ingest Data](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) document.
 
+## HTTP API
+
+Please refer to the [HTTP API](http.md#post-influxdb-line-protocol-data) document for details on the InfluxDB Line Protocol API.
+
 ## PING
 
 Additionally, GreptimeDB also provides support for the `ping` and `health` APIs of InfluxDB.

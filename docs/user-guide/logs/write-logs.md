@@ -15,7 +15,8 @@ You can use the following command to write logs via the HTTP interface:
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
-     -H 'Content-Type: application/x-ndjson' \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
      -d "$<log-items>"
 ```
 
@@ -190,7 +191,8 @@ Example of Incoming Log Data:
 To instruct the server to use ts as the time index, set the following query parameter in the HTTP header:
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
-     -H 'Content-Type: application/json' \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic {{authentication}}" \
      -d $'[{"action": "login", "ts": 1742814853}]'
 ```
 

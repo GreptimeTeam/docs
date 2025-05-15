@@ -39,12 +39,18 @@ GreptimeDB supports data ingestion via the Elasticsearch protocol through two HT
   {"name": "Jane", "age": 25}
   ```
 
-Users can also use the following HTTP URL parameters:
+### Request Parameters
+
+You can use the following HTTP URL parameters:
 
 - `db`: Specifies the database name. Defaults to `public` if not specified
 - `pipeline_name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified
 - `version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified
 - `msg_field`: Specifies the JSON field name containing the original log data. For example, in Logstash and Filebeat, this field is typically `message`. If specified, GreptimeDB will attempt to parse the data in this field as JSON format. If parsing fails, the field will be treated as a string
+
+### Authentication Header
+
+For detailed information about the authentication header, please refer to the [Authorization](/user-guide/protocols/http.md#authentication) documentation.
 
 ## Usage
 
@@ -63,6 +69,7 @@ Then use the `curl` command to send this file as a request body to GreptimeDB:
 
 ```bash
 curl -XPOST http://localhost:4000/v1/elasticsearch/_bulk \
+  -H "Authorization: Basic {{authentication}}" \
   -H "Content-Type: application/json" -d @request.json
 ```
 
