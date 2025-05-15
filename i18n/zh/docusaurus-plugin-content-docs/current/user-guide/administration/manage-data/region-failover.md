@@ -12,9 +12,10 @@ Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢�
 
 该功能仅在 GreptimeDB 集群模式下可用，并且需要满足以下条件
 
-- 使用 Kafka WAL
+- 使用 Kafka WAL (Remote WAL) 或 Local WAL (在本地 WAL 上启用 Region Failover ，在 Failover 过程中可能会导致数据丢失)
 - 使用[共享存储](/user-guide/deployments/configuration.md#storage-options) (例如：AWS S3)
 
+如果想要在本地 WAL 上启用 Region Failover，需要设置 `allow_region_failover_on_local_wal=true` 在 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置文件中。不建议启用此选项，因为它可能会导致数据丢失。
 
 ### 通过配置文件
 
@@ -29,6 +30,8 @@ helm install greptimedb greptime/greptimedb-cluster \
   --set meta.enableRegionFailover=true \
   ...
 ```
+
+如果想要在本地 WAL 上启用 Region Failover，确保你的 GreptimeDB Operator 版本大于或等于 v0.2.2。
 
 ## Region Failover 的恢复用时
 
