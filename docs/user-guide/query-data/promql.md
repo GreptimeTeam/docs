@@ -156,6 +156,8 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
 
 When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
 
+For selectors referencing non-existent columns, the behavior aligns with Prometheus: no error is raised, and the selector is silently ignored. However, for `__name__` selectors referencing non-existent metrics (or equivalent forms), GreptimeDB will report an error.
+
 ### Timestamp precision
 
 The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
@@ -189,24 +191,24 @@ None
 ### Aggregators
 
 - Supported:
-    | Aggregator | Example                   |
-    | :--------- | :------------------------ |
-    | sum          | `sum by (foo)(metric)`    |
-    | avg          | `avg by (foo)(metric)`    |
-    | min          | `min by (foo)(metric)`    |
-    | max          | `max by (foo)(metric)`    |
-    | stddev       | `stddev by (foo)(metric)` |
-    | stdvar       | `stdvar by (foo)(metric)` |
-    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`   |
-    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))`|
-    | count_values | `count_values("version", build_version)`    |
-    | quantile     | `quantile(0.9, cpu_usage)` |
+    | Aggregator   | Example                                      |
+    | :----------- | :------------------------------------------- |
+    | sum          | `sum by (foo)(metric)`                       |
+    | avg          | `avg by (foo)(metric)`                       |
+    | min          | `min by (foo)(metric)`                       |
+    | max          | `max by (foo)(metric)`                       |
+    | stddev       | `stddev by (foo)(metric)`                    |
+    | stdvar       | `stdvar by (foo)(metric)`                    |
+    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`    |
+    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))` |
+    | count_values | `count_values("version", build_version)`     |
+    | quantile     | `quantile(0.9, cpu_usage)`                   |
 
 - Unsupported:
-    | Aggregator   | Progress |
-    | :----------- | :------- |
-    | count        | TBD      |
-    | grouping     | TBD      |
+    | Aggregator | Progress |
+    | :--------- | :------- |
+    | count      | TBD      |
+    | grouping   | TBD      |
 
 ### Instant Functions
 
@@ -271,13 +273,13 @@ None
 ### Other Functions
 
 - Supported:
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
-    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
+    | Function      | Example                                                                                           |
+    | :------------ | :------------------------------------------------------------------------------------------------ |
+    | label_join    | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")` |
+    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
 
 - Unsupported:
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | sort_by_label      | TBD           |
-    | sort_by_label_desc | TBD           |
+    | Function           | Example |
+    | :----------------- | :------ |
+    | sort_by_label      | TBD     |
+    | sort_by_label_desc | TBD     |

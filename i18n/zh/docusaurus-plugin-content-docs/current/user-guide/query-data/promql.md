@@ -143,7 +143,7 @@ metric{__database__="mydatabase"}
 
 GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可以在下方查看详细的兼容性列表，或者通过此 [issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) 了解我们最新的功能支持情况。
 
-### 字符（Literal）
+选择器引用不存在的列时，其行为与 Prometheus 一致：不报错且选择器会被静默忽略。但若 `__name__` 选择器引用了不存在的指标（或等效形式），GreptimeDB 则会报告错误。
 
 支持字符串和浮点数，与 PromQL 的[规则](https://prometheus.io/docs/prometheus/latest/querying/basics/#literals)相同。
 
@@ -188,24 +188,24 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 ### Aggregators
 
 - 支持：
-    | Aggregator | Example                   |
-    | :--------- | :------------------------ |
-    | sum        | `sum by (foo)(metric)`    |
-    | avg        | `avg by (foo)(metric)`    |
-    | min        | `min by (foo)(metric)`    |
-    | max        | `max by (foo)(metric)`    |
-    | stddev     | `stddev by (foo)(metric)` |
-    | stdvar     | `stdvar by (foo)(metric)` |
-    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`   |
-    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))`|
-    | count_values | `count_values("version", build_version)`    |
-    | quantile     | `quantile(0.9, cpu_usage)` |
+    | Aggregator   | Example                                      |
+    | :----------- | :------------------------------------------- |
+    | sum          | `sum by (foo)(metric)`                       |
+    | avg          | `avg by (foo)(metric)`                       |
+    | min          | `min by (foo)(metric)`                       |
+    | max          | `max by (foo)(metric)`                       |
+    | stddev       | `stddev by (foo)(metric)`                    |
+    | stdvar       | `stdvar by (foo)(metric)`                    |
+    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`    |
+    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))` |
+    | count_values | `count_values("version", build_version)`     |
+    | quantile     | `quantile(0.9, cpu_usage)`                   |
 
 - 不支持：
-    | Aggregator   | Progress |
-    | :----------- | :------- |
-    | count        | TBD      |
-    | grouping     | TBD      |
+    | Aggregator | Progress |
+    | :--------- | :------- |
+    | count      | TBD      |
+    | grouping   | TBD      |
 
 ### Instant Functions
 
@@ -270,13 +270,13 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
 ### 其他函数
 
 - 支持：
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
-    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
+    | Function      | Example                                                                                           |
+    | :------------ | :------------------------------------------------------------------------------------------------ |
+    | label_join    | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")` |
+    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
 
 - 不支持：
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | sort_by_label      | TBD           |
-    | sort_by_label_desc | TBD           |
+    | Function           | Example |
+    | :----------------- | :------ |
+    | sort_by_label      | TBD     |
+    | sort_by_label_desc | TBD     |
