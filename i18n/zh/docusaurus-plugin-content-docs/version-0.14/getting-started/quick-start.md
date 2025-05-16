@@ -74,7 +74,7 @@ CREATE TABLE app_logs (
 - `log_msg`：日志消息内容，设置了[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
 
 它也采用了 Append Only 模式。
-::::提示
+::::tip
 我们在下面使用 SQL 来导入数据，因此需要手动创建表。但 GreptimeDB 本身是 [schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 的，在使用其他写入方法时可以自动生成 schema。
 ::::
 
