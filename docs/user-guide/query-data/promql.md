@@ -189,24 +189,24 @@ None
 ### Aggregators
 
 - Supported:
-    | Aggregator | Example                   |
-    | :--------- | :------------------------ |
-    | sum          | `sum by (foo)(metric)`    |
-    | avg          | `avg by (foo)(metric)`    |
-    | min          | `min by (foo)(metric)`    |
-    | max          | `max by (foo)(metric)`    |
-    | stddev       | `stddev by (foo)(metric)` |
-    | stdvar       | `stdvar by (foo)(metric)` |
-    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`   |
-    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))`|
-    | count_values | `count_values("version", build_version)`    |
-    | quantile     | `quantile(0.9, cpu_usage)` |
+    | Aggregator   | Example                                      |
+    | :----------- | :------------------------------------------- |
+    | sum          | `sum by (foo)(metric)`                       |
+    | avg          | `avg by (foo)(metric)`                       |
+    | min          | `min by (foo)(metric)`                       |
+    | max          | `max by (foo)(metric)`                       |
+    | stddev       | `stddev by (foo)(metric)`                    |
+    | stdvar       | `stdvar by (foo)(metric)`                    |
+    | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`    |
+    | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))` |
+    | count_values | `count_values("version", build_version)`     |
+    | count        | `count (metric)`                             |
+    | quantile     | `quantile(0.9, cpu_usage)`                   |
 
 - Unsupported:
-    | Aggregator   | Progress |
-    | :----------- | :------- |
-    | count        | TBD      |
-    | grouping     | TBD      |
+    | Aggregator | Progress |
+    | :--------- | :------- |
+    | grouping   | TBD      |
 
 ### Instant Functions
 
@@ -237,6 +237,7 @@ None
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
+    | clamp              | `clamp(metric, 0, 1)`             |
 
 - Unsupported:
     | Function                   | Progress / Example |
@@ -271,13 +272,13 @@ None
 ### Other Functions
 
 - Supported:
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | label_join             | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")`           |
-    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`  |
+    | Function      | Example                                                                                           |
+    | :------------ | :------------------------------------------------------------------------------------------------ |
+    | label_join    | `label_join(up{job="api-server",src1="a",src2="b",src3="c"}, "foo", ",", "src1", "src2", "src3")` |
+    | label_replace | `label_replace(up{job="api-server",service="a:c"}, "foo", "$1", "service", "(.*):.*")`            |
 
 - Unsupported:
-    | Function           | Example                        |
-    | :----------------- | :----------------------------- |
-    | sort_by_label      | TBD           |
-    | sort_by_label_desc | TBD           |
+    | Function           | Example |
+    | :----------------- | :------ |
+    | sort_by_label      | TBD     |
+    | sort_by_label_desc | TBD     |
