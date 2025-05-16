@@ -274,7 +274,7 @@ WITH
     SELECT 
       ts, 
       host,
-      count(log_msg) RANGE '5s' AS num_errors, 
+      count(log_msg) RANGE '5s' AS num_errors,
     FROM
       app_logs 
     WHERE

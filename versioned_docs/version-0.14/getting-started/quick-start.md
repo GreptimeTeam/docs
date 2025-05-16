@@ -30,15 +30,17 @@ Or
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
+You can also use your browser to access the built-in DB dashboard at `http://{db_host}:4000/dashboard` to run the SQL queries in this document.
+
 ## Create tables
 
-Suppose you have a table named `grpc_latencies` that stores the gRPC latencies of your application.
+Suppose you have a wide event table named `grpc_latencies` that stores the gRPC services and processing latencies of your application.
 The table schema is as follows:
 
 ```sql
 CREATE TABLE grpc_latencies (
   ts TIMESTAMP TIME INDEX,
-  host STRING,
+  host STRING INVERTED INDEX,
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
@@ -46,29 +48,35 @@ CREATE TABLE grpc_latencies (
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
-- `host`: The hostname of the application server. It is a tag column.
-- `method_name`: The name of the RPC request method. It is a tag column.
+- `host`: The hostname of the application server, enabling [inverted index](/user-guide/manage-data/data-index.md#inverted-index).
+- `method_name`: The name of the RPC request method.
 - `latency`: The latency of the RPC request.
+
+And it's [append only](/user-guide/administration/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
 
 Additionally, there is a table `app_logs` for storing application logs:
 
 ```sql
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
-  host STRING,
+  host STRING INVERTED INDEX,
   api_path STRING,
   log_level STRING,
-  `log` STRING,
+  log_msg STRING FULLTEXT INDEX WITH('case_sensitive' = 'false'),
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
 
 - `ts`: The timestamp of the log entry. It is the time index column.
-- `host`: The hostname of the application server. It is a tag column.
+- `host`: The hostname of the application server, enabling inverted index.
 - `api_path`: The API path.
-- `log_level`: The log level of the log entry. It is a tag column.
-- `log`: The log message.
+- `log_level`: The log level of the log entry.
+- `log_msg`: The log message, enabling [fulltext index](/user-guide/manage-data/data-index.md#fulltext-index).
 
+ It's append only, too.
+ ::::tip
+We use SQL to ingest the data below, so we need to create the tables manually. However, GreptimeDB is [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation) and can automatically generate schemas when using other ingestion methods.
+::::
 ## Write data
 
 Let's insert some mocked data to simulate collected metrics and error logs.
@@ -97,7 +105,7 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:09', 'host2', 'GetUser', 114.0);
 ```
 
-After `2024-07-11 20:00:10`, `host1`'s latencies becomes unstable:
+After `2024-07-11 20:00:10`, `host1`'s latencies becomes unstable, fluctuating greatly with occasional spikes of several thousand milliseconds:
 
 ```sql
 
@@ -126,10 +134,10 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:20', 'host2', 'GetUser', 95.0);
 ```
 
-Some error logs were collected when the `host1` latencies of RPC requests encounter latency issues.
+Some error logs were collected when the `host1` latencies of RPC requests encounter latency issues:
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log) VALUES
+INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
   ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection timeout'),
   ('2024-07-11 20:00:10', 'host1', '/api/v1/billings', 'ERROR', 'Connection timeout'),
   ('2024-07-11 20:00:11', 'host1', '/api/v1/resource', 'ERROR', 'Database unavailable'),
@@ -194,6 +202,26 @@ GROUP BY host;
 2 rows in set (0.11 sec)
 ```
 
+### Search logs by keyword
+
+Filter the log messages by keyword `timeout`:
+```sql
+SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20:00:00';
+```
+
+```sql
++---------------------+-------+------------------+-----------+--------------------+
+| ts                  | host  | api_path         | log_level | log_msg            |
++---------------------+-------+------------------+-----------+--------------------+
+| 2024-07-11 20:00:10 | host1 | /api/v1/billings | ERROR     | Connection timeout |
+| 2024-07-11 20:00:10 | host1 | /api/v1/resource | ERROR     | Connection timeout |
+| 2024-07-11 20:00:14 | host1 | /api/v1/billings | ERROR     | Timeout            |
+| 2024-07-11 20:00:14 | host1 | /api/v1/resource | ERROR     | Timeout            |
++---------------------+-------+------------------+-----------+--------------------+
+```
+
+The `@@` operator is used for [term searching](/user-guide/logs/query-logs.md).
+
 ### Range query
 
 You can use [range queries](/reference/sql/range.md#range-query) to monitor latencies in real-time.
@@ -246,7 +274,7 @@ WITH
     SELECT 
       ts, 
       host,
-      count(log) RANGE '5s' AS num_errors, 
+      count(log_msg) RANGE '5s' AS num_errors,
     FROM
       app_logs 
     WHERE
@@ -359,4 +387,4 @@ To further explore and utilize GreptimeDB:
 
 - [Visualize data using Grafana](/user-guide/integrations/grafana.md)
 - [Explore more demos of GreptimeDB](https://github.com/GreptimeTeam/demo-scene/)
-- [Read the user guide document to learn more details about GreptimeDB](/user-guide/overview.md)
+- [Learn GreptimeDB by user guide](/user-guide/overview.md)

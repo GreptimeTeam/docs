@@ -59,10 +59,10 @@ CREATE TABLE grpc_latencies (
 ```sql
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
-  host STRING INVERTED INDEX,,
+  host STRING INVERTED INDEX,
   api_path STRING,
   log_level STRING,
-  log_msg STRING FULLTEXT INDEX WITH('case_sensitive' = 'false'),,
+  log_msg STRING FULLTEXT INDEX WITH('case_sensitive' = 'false'),
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
