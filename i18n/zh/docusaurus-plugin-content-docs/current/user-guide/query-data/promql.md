@@ -143,7 +143,7 @@ metric{__database__="mydatabase"}
 
 GreptimeDB 目前已实现了大部分（超过 90%）的 PromQL 功能。您可以在下方查看详细的兼容性列表，或者通过此 [issue](https://github.com/GreptimeTeam/greptimedb/issues/1042) 了解我们最新的功能支持情况。
 
-### 字符（Literal）
+选择器引用不存在的列时，其行为与 Prometheus 一致：不报错且选择器会被静默忽略。但若 `__name__` 选择器引用了不存在的指标（或等效形式），GreptimeDB 则会报告错误。
 
 支持字符串和浮点数，与 PromQL 的[规则](https://prometheus.io/docs/prometheus/latest/querying/basics/#literals)相同。
 
@@ -238,7 +238,6 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predicate_linear   | `predict_linear(metric, 120)`     |
-    | clamp              | `clamp(metric, 0, 1)`             |
 
 - 不支持：
     | Function                   | Progress |

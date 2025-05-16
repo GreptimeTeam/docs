@@ -156,6 +156,8 @@ Time duration and offset are supported, but `@` modifier is not supported yet.
 
 When selecting non-existent columns, they will be treated as columns filled with empty string values (`""`). This behavior aligns with both Prometheus and VictoriaMetrics.
 
+For selectors referencing non-existent columns, the behavior aligns with Prometheus: no error is raised, and the selector is silently ignored. However, for `__name__` selectors referencing non-existent metrics (or equivalent forms), GreptimeDB will report an error.
+
 ### Timestamp precision
 
 The timestamp precision in PromQL is limited by its query syntax, only supporting calculations up to millisecond precision. However, GreptimeDB supports storing high-precision timestamps, such as microseconds and nanoseconds. When using PromQL for calculations, these high-precision timestamps are implicitly converted to millisecond precision.
@@ -238,7 +240,6 @@ None
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predicate_linear   | `predict_linear(metric, 120)`     |
-    | clamp              | `clamp(metric, 0, 1)`             |
 
 - Unsupported:
     | Function                   | Progress / Example |
