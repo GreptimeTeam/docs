@@ -30,9 +30,11 @@ Or
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
+You can also use your browser to access the built-in DB dashboard at `http://{db_host}:4000/dashboard` to run the SQL queries in this document.
+
 ## Create tables
 
-Suppose you have a wide event table named `grpc_latencies` that stores the gRPC latencies of your application.
+Suppose you have a wide event table named `grpc_latencies` that stores the gRPC services and processing latencies of your application.
 The table schema is as follows:
 
 ```sql

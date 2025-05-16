@@ -31,14 +31,16 @@ mysql -h 127.0.0.1 -P 4002
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
+你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://{db_host}:4000/dashbaord` 运行本文档中的 SQL。
+
 ## 创建表
 
-假设你有一个名为 `grpc_latencies` 的表，用于存储的 gRPC 延迟。表 schema 如下：
+假设你有一个名为 `grpc_latencies` 的“宽”事件（Wide Events）表，用于存储的 gRPC 调用接口以及它的处理时间。表 schema 如下：
 
 ```sql
 CREATE TABLE grpc_latencies (
   ts TIMESTAMP TIME INDEX,
-  host STRING,
+  host STRING INVERTED INDEX,
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
@@ -46,28 +48,35 @@ CREATE TABLE grpc_latencies (
 ```
 
 - `ts`：收集指标时的时间戳，时间索引列。
-- `host`：主机名，tag 列。
+- `host`：主机名，设置了[倒排索引](/user-guide/manage-data/data-index.md#倒排索引)。
 - `method_name`：RPC 请求方法的名称，tag 列。
-- `latency`：RPC 请求的延迟。
+- `latency`：RPC 请求的响应时间。
+
+并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/administration/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
 
 此外，还有一个名为 `app_logs` 的表用于存储日志：
 
 ```sql
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
-  host STRING,
+  host STRING INVERTED INDEX,,
   api_path STRING,
   log_level STRING,
-  `log` STRING,
+  log_msg STRING FULLTEXT INDEX WITH('case_sensitive' = 'false'),,
   PRIMARY KEY (host, log_level)
 ) with('append_mode'='true');
 ```
 
 - `ts`：日志条目的时间戳，时间索引列。
-- `host`：主机名，tag 列。
+- `host`：主机名，设置了倒排索引。
 - `api_path`：API 路径。
 - `log_level`：日志级别，tag 列。
-- `log`：日志消息。
+- `log_msg`：日志消息内容，设置了[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
+
+它也采用了 Append Only 模式。
+::::提示
+我们在下面使用 SQL 来导入数据，因此需要手动创建表。但 GreptimeDB 本身是 [schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 的，在使用其他写入方法时可以自动生成 schema。
+::::
 
 ## 写入数据
 
@@ -96,7 +105,7 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:09', 'host2', 'GetUser', 114.0);
 ```
 
-在 `2024-07-11 20:00:10` 之后，`host1` 的延迟变得不稳定：
+在 `2024-07-11 20:00:10` 之后，`host1` 的响应时间变得不稳定，处理时间大幅波动，偶尔会出现数千毫秒的峰值：
 
 ```sql
 
@@ -125,10 +134,10 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:20', 'host2', 'GetUser', 95.0);
 ```
 
-当 `host1` 的 gRPC 请求的延迟遇到问题时，收集了一些错误日志。
+当 `host1` 的 gRPC 请求的响应时间遇到问题时，收集了一些错误日志：
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log) VALUES
+INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
   ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection timeout'),
   ('2024-07-11 20:00:10', 'host1', '/api/v1/billings', 'ERROR', 'Connection timeout'),
   ('2024-07-11 20:00:11', 'host1', '/api/v1/resource', 'ERROR', 'Database unavailable'),
@@ -170,7 +179,7 @@ SELECT *
 5 rows in set (0.14 sec)
 ```
 
-你还可以在过滤数据时使用函数。例如，你可以使用 `approx_percentile_cont` 函数按主机分组计算延迟的第 95 百分位数：
+你还可以在过滤数据时使用函数。例如，你可以使用 `approx_percentile_cont` 函数按主机分组计算响应时间的 95 百分位数：
 
 ```sql
 SELECT 
@@ -190,6 +199,27 @@ GROUP BY host;
 +-------------------+-------+
 2 rows in set (0.11 sec)
 ```
+
+
+### 通过关键词搜索日志
+
+通过关键词  `timeout`  过滤日志消息：
+```sql
+SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20:00:00';
+```
+
+```sql
++---------------------+-------+------------------+-----------+--------------------+
+| ts                  | host  | api_path         | log_level | log_msg            |
++---------------------+-------+------------------+-----------+--------------------+
+| 2024-07-11 20:00:10 | host1 | /api/v1/billings | ERROR     | Connection timeout |
+| 2024-07-11 20:00:10 | host1 | /api/v1/resource | ERROR     | Connection timeout |
+| 2024-07-11 20:00:14 | host1 | /api/v1/billings | ERROR     | Timeout            |
+| 2024-07-11 20:00:14 | host1 | /api/v1/resource | ERROR     | Timeout            |
++---------------------+-------+------------------+-----------+--------------------+
+```
+
+`@@` 操作符用于[短语搜索](/user-guide/logs/query-logs.md)。
 
 ### Range query
 
@@ -240,7 +270,7 @@ WITH
     SELECT 
       ts, 
       host,
-      count(log) RANGE '5s' AS num_errors, 
+      count(log_msg) RANGE '5s' AS num_errors,
     FROM
       app_logs 
     WHERE
@@ -351,5 +381,5 @@ grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 17207280210000000
 
 - [使用 Grafana 可视化数据](/user-guide/integrations/grafana.md)
 - [探索更多 GreptimeDB 的 Demo](https://github.com/GreptimeTeam/demo-scene/)
-- [阅读用户指南文档以了解更多关于 GreptimeDB 的详细信息](/user-guide/overview.md)
+- [阅读用户指南学习 GreptimeDB](/user-guide/overview.md)
 
