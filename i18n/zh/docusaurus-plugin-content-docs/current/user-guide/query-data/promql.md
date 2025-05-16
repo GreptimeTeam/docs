@@ -237,6 +237,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
+    | predicate_linear   | `predict_linear(metric, 120)`     |
     | clamp              | `clamp(metric, 0, 1)`             |
 
 - 不支持：
