@@ -199,6 +199,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | topk         | `topk(3, rate(instance_cpu_time_ns[5m]))`    |
     | bottomk      | `bottomk(3, rate(instance_cpu_time_ns[5m]))` |
     | count_values | `count_values("version", build_version)`     |
+    | count        | `count (metric)`                             |
     | quantile     | `quantile(0.9, cpu_usage)`                   |
 
 - 不支持：
@@ -236,6 +237,7 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | sort               | `sort(http_requests_total)`       |
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
+    | predicate_linear   | `predict_linear(metric, 120)`     |
 
 - 不支持：
     | Function                   | Progress |
