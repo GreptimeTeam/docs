@@ -256,6 +256,7 @@ ALIGN '5s' FILL PREV;
 通过组合两个表的数据，你可以快速地确定故障时间和相应的日志。以下 SQL 查询使用 `JOIN` 操作关联指标和日志：
 
 ```sql
+--- CTE 分别使用 Range Query 查询指标和日志，时间窗口对齐 --
 WITH
   metrics AS (
     SELECT 
@@ -308,6 +309,7 @@ ORDER BY
 8 rows in set (0.02 sec)
 ```
 
+我们可以看到当 gRPC 响应时间增大的时间窗口内，错误日志也显著增多，并且确定问题在 `host1`。
 <!-- TODO need to fix bug
 
 ### 持续聚合

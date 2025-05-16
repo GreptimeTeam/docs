@@ -260,6 +260,7 @@ you can easily and quickly determine the time of failure and the corresponding l
 The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
 
 ```sql
+--- CTE using Range Query to query metrics and logs with aligned time windows ---
 WITH
   metrics AS (
     SELECT 
@@ -312,6 +313,7 @@ ORDER BY
 8 rows in set (0.02 sec)
 ```
 
+We can see that during the time window when the gRPC latencies increases, the number of error logs also increases significantly, and we've identified that the problem is on `host1`.
 <!-- TODO need to fix bug
 
 ### Continuous aggregation
