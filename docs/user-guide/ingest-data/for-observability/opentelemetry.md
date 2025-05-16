@@ -20,10 +20,10 @@ GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively
 
 To send OpenTelemetry Metrics to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
-* URL: `http{s}://<host>/v1/otlp/v1/metrics`
-* Headers:
-  * `X-Greptime-DB-Name`: `<dbname>`
-  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)
+- URL: `http{s}://<host>/v1/otlp/v1/metrics`
+- Headers:
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/deployments/authentication/static/) and [HTTP API](https://docs.greptime.com/user-guide/protocols/http#authentication)
 
 The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`. For example, in Node.js, you can use [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto); in Go, you can use [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp); in Java, you can use [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp); and in Python, you can use [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/).
 
@@ -44,12 +44,12 @@ Here are some example codes about how to setup the request in different language
 ```ts
 const auth = Buffer.from(`${username}:${password}`).toString('base64')
 const exporter = new OTLPMetricExporter({
-    url: `https://${dbHost}/v1/otlp/v1/metrics`,
-    headers: {
-        Authorization: `Basic ${auth}`,
-        "X-Greptime-DB-Name": db,
-    },
-    timeoutMillis: 5000,
+  url: `https://${dbHost}/v1/otlp/v1/metrics`,
+  headers: {
+    Authorization: `Basic ${auth}`,
+    'X-Greptime-DB-Name': db,
+  },
+  timeoutMillis: 5000,
 })
 ```
 
@@ -132,14 +132,14 @@ GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentele
 
 To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
-* URL: `http{s}://<host>/v1/otlp/v1/logs`
-* Headers:
-  * `X-Greptime-DB-Name`: `<dbname>`
-  * `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](/user-guide/deployments/authentication/static.md) and [HTTP API](/user-guide/protocols/http.md#authentication).
-  * `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `opentelemetry_logs`.
-  * `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
-  * `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, the extract keys will be used to process the logs.
-  * `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>` (optional) - The pipeline version to process the logs. If not provided, the latest version of the pipeline will be used.
+- URL: `http{s}://<host>/v1/otlp/v1/logs`
+- Headers:
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Authorization`: `Basic` authentication, which is a Base64 encoded string of `<username>:<password>`. For more information, please refer to [Authentication](/user-guide/deployments/authentication/static.md) and [HTTP API](/user-guide/protocols/http.md#authentication).
+  - `X-Greptime-Log-Table-Name`: `<table_name>` (optional) - The table name to store the logs. If not provided, the default table name is `opentelemetry_logs`.
+  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>` (optional) - The keys to extract from the attributes. The keys should be separated by commas (`,`). For example, `key1,key2,key3` will extract the keys `key1`, `key2`, and `key3` from the attributes and promote them to the top level of the log, setting them as tags. If the field type is array, float, or object, an error will be returned. If a pipeline is provided, this setting will be ignored.
+  - `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>` (optional) - The pipeline name to process the logs. If not provided, the extract keys will be used to process the logs.
+  - `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>` (optional) - The pipeline version to process the logs. If not provided, the latest version of the pipeline will be used.
 
 The request uses binary protobuf to encode the payload, so you need to use packages that support `HTTP/protobuf`.
 
@@ -151,7 +151,8 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 ### Example Code
 
-Please refer to the [Alloy documentation](alloy.md#logs) for example code on how to send OpenTelemetry logs to GreptimeDB.
+Please refer to the sample code in [opentelemetry-collector](#opentelemetry-collector), which includes how to send OpenTelemetry logs to GreptimeDB.  
+You can also refer to the sample code in the [Alloy documentation](alloy.md#logs) to learn how to send OpenTelemetry logs to GreptimeDB.
 
 ### Data Model
 
@@ -200,8 +201,8 @@ You can use [OpenTelemetry SDK](https://opentelemetry.io/docs/languages/) or oth
 
 To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK libraries, please use the following information:
 
-* URL: `http{s}://<host>/v1/otlp/v1/traces`
-* Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information.
+- URL: `http{s}://<host>/v1/otlp/v1/traces`
+- Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information.
 
 By default, GreptimeDB will write traces data to the `opentelemetry_traces` table in the `public` database. If you want to write traces data to a different table, you can use the `X-Greptime-DB-Name` and `X-Greptime-Trace-Table-Name` headers to specify the database and table name.
 
@@ -254,3 +255,71 @@ By default, the table is partitioned into 16 uniform regions based on the `trace
 
 By default, log table created by OpenTelemetry API are in [append only
 mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
+
+# Sending Data to GreptimeDB Using OpenTelemetry Collector
+
+OpenTelemetry Collector is an extensible service for receiving, processing, and exporting OpenTelemetry data. It can act as an intermediate layer to send data from different sources to GreptimeDB.
+Below is a sample configuration for sending data to GreptimeDB using OpenTelemetry Collector.
+
+```yaml
+extensions:
+  basicauth/client:
+    client_auth:
+      username: <your_username>
+      password: <your_password>
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  otlphttp/traces:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+      x-greptime-pipeline-name: 'greptime_trace_v1'
+    tls:
+      insecure: true
+  otlphttp/logs:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+      # x-greptime-log-table-name: "<pipeline_name>"
+    tls:
+      insecure: true
+
+  otlphttp/metrics:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+    tls:
+      insecure: true
+
+service:
+  # extensions: [basicauth/client]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlphttp/traces]
+    logs:
+      receivers: [otlp]
+      exporters: [otlphttp/logs]
+    metrics:
+      receivers: [otlp]
+      exporters: [otlphttp/metrics]
+```
+
+In the above configuration, we define a receiver `otlp` that can receive data from OpenTelemetry. We also define three exporters: `otlphttp/traces`, `otlphttp/logs`, and `otlphttp/metrics`, which send data to the OTLP endpoint of GreptimeDB.
+Based on the otlphttp protocol, we have added some headers to specify certain parameters, such as `x-greptime-pipeline-name` and `x-greptime-log-table-name`. The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and the `x-greptime-log-table-name` header is used to specify the table name in GreptimeDB where the data will be written.
+If you have enabled authentication in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.
+Here, we strongly recommend using different exporters to handle traces, logs, and metrics separately. On one hand, GreptimeDB supports some specific headers to customize processing flows; on the other hand, this also helps with data isolation.
