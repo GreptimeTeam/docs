@@ -35,8 +35,8 @@ exporting to GreptimeDB. You can use the [OpenTelemetry Collector](https://opent
 extensions:
   basicauth/client:
     client_auth:
-      username: <your_username>
-      password: <your_password>
+      username: <username>
+      password: <password>
 
 receivers:
   otlp:
@@ -48,26 +48,26 @@ receivers:
 
 exporters:
   otlphttp/traces:
-    endpoint: 'https://<your_db_host>/v1/otlp'
+    endpoint: 'https://<host>/v1/otlp'
     auth:
       authenticator: basicauth/client
     headers:
-      x-greptime-db-name: '<your_db_name>'
+      x-greptime-db-name: '<dbname>'
       x-greptime-pipeline-name: 'greptime_trace_v1'
   otlphttp/logs:
-    endpoint: 'https://<your_db_host>/v1/otlp'
+    endpoint: 'https://<host>/v1/otlp'
     auth:
       authenticator: basicauth/client
     headers:
-      x-greptime-db-name: '<your_db_name>'
+      x-greptime-db-name: '<dbname>'
       # x-greptime-log-table-name: "<pipeline_name>"
 
   otlphttp/metrics:
-    endpoint: 'https://<your_db_host>/v1/otlp'
+    endpoint: 'https://<host>/v1/otlp'
     auth:
       authenticator: basicauth/client
     headers:
-      x-greptime-db-name: '<your_db_name>'
+      x-greptime-db-name: '<dbname>'
 
 service:
   extensions: [basicauth/client]
