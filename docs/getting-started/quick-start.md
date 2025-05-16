@@ -46,11 +46,11 @@ CREATE TABLE grpc_latencies (
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
-- `host`: The hostname of the application server, enabling [inverted index](/user-guide/manage-data/data-index#inverted-index).
+- `host`: The hostname of the application server, enabling [inverted index](/user-guide/manage-data/data-index.md#inverted-index).
 - `method_name`: The name of the RPC request method.
 - `latency`: The latency of the RPC request.
 
-And it's append only.
+And it's [append only](/user-guide/administration/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
 
 Additionally, there is a table `app_logs` for storing application logs:
 
@@ -69,11 +69,11 @@ CREATE TABLE app_logs (
 - `host`: The hostname of the application server, enabling inverted index.
 - `api_path`: The API path.
 - `log_level`: The log level of the log entry.
-- `log_msg`: The log message, enabling [fulltext index](/user-guide/manage-data/data-index#fulltext-index).
+- `log_msg`: The log message, enabling [fulltext index](/user-guide/manage-data/data-index.md#fulltext-index).
 
  It's append only, too.
  ::::tip
-We use SQL to ingest the data below, so we need to create the tables manually. However, GreptimeDB is [schemaless](/user-guide/ingest-data/overview/#automatic-schema-generation) and can automatically generate schemas when using other ingestion methods.
+We use SQL to ingest the data below, so we need to create the tables manually. However, GreptimeDB is [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation) and can automatically generate schemas when using other ingestion methods.
 ::::
 ## Write data
 
@@ -217,6 +217,8 @@ SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20
 | 2024-07-11 20:00:14 | host1 | /api/v1/resource | ERROR     | Timeout            |
 +---------------------+-------+------------------+-----------+--------------------+
 ```
+
+The `@@` operator is used for [term searching](/user-guide/logs/query-logs.md).
 
 ### Range query
 
