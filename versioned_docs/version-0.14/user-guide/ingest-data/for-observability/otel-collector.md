@@ -1,3 +1,8 @@
+---
+keywords: [OpenTelemetry, OTLP, metrics, logs, traces, integration, 'otel-collector']
+description: Instructions for integrating OpenTelemetry Collector with GreptimeDB.
+---
+
 # OTel Collector
 
 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) offers a vendor-agnostic implementation of how to receive, process and export telemetry data. It can act as an intermediate layer to send data from different sources to GreptimeDB.

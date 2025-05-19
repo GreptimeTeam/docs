@@ -1,3 +1,8 @@
+---
+keywords: [OpenTelemetry, OTLP, metrics, logs, traces, integration, 'otel-collector', 集成]
+description: 与 GreptimeDB 集成 OpenTelemetry Collector 的指南。
+---
+
 # OTel Collector
 
 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 提供了一种与供应商无关的 OTEL 实现，用于接收、处理和导出可观测数据。它可以作为数据的中间层，将数据从不同的源发送到 GreptimeDB。
