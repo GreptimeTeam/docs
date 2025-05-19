@@ -21,10 +21,10 @@ GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/ot
 
 使用下面的信息通过 Opentelemetry SDK 库发送 Metrics 到 GreptimeDB：
 
-* URL: `https://<host>/v1/otlp/v1/metrics`
-* Headers:
-  * `X-Greptime-DB-Name`: `<dbname>`
-* `Authorization`: `Basic` 认证，是 `<username>:<password>` 的 Base64 编码字符串。更多信息请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
+- URL: `https://<host>/v1/otlp/v1/metrics`
+- Headers:
+  - `X-Greptime-DB-Name`: `<dbname>`
+- `Authorization`: `Basic` 认证，是 `<username>:<password>` 的 Base64 编码字符串。更多信息请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
 
 请求中使用 binary protobuf 编码 payload，因此你需要使用支持 `HTTP/protobuf` 的包。例如，在 Node.js 中，可以使用 [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto)；在 Go 中，可以使用 [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp)；在 Java 中，可以使用 [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp)；在 Python 中，可以使用 [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/)。
 
@@ -45,12 +45,12 @@ GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/ot
 ```ts
 const auth = Buffer.from(`${username}:${password}`).toString('base64')
 const exporter = new OTLPMetricExporter({
-    url: `https://${dbHost}/v1/otlp/v1/metrics`,
-    headers: {
-        Authorization: `Basic ${auth}`,
-        "X-Greptime-DB-Name": db,
-    },
-    timeoutMillis: 5000,
+  url: `https://${dbHost}/v1/otlp/v1/metrics`,
+  headers: {
+    Authorization: `Basic ${auth}`,
+    'X-Greptime-DB-Name': db,
+  },
+  timeoutMillis: 5000,
 })
 ```
 
@@ -122,7 +122,7 @@ OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型
 - 所有的 Attribute，包含 resource 级别、scope 级别和 data_point 级别，都被作为 GreptimeDB 表的 tag 列。
 - 数据点的时间戳被作为 GreptimeDB 的时间戳索引，列名 `greptime_timestamp`。
 - Gauge/Sum 两种类型的数据点数据被作为 field 列，列名 `greptime_value`。
-- Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如  90 / 99 等。
+- Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如 90 / 99 等。
 - Histogram 和 ExponentialHistogram 暂时未被支持，我们可能在后续版本中推出 Histogram 数据类型来原生支持这两种类型。
 
 ## Logs
@@ -133,14 +133,14 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 要通过 OpenTelemetry SDK 库将 OpenTelemetry 日志发送到 GreptimeDB，请使用以下信息：
 
-* **URL:** `https://<host>/v1/otlp/v1/logs`
-* **Headers:**
-  * `X-Greptime-DB-Name`: `<dbname>`
-  * `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](/user-guide/deployments/authentication/static.md) 和 [HTTP API](/user-guide/protocols/http.md#鉴权)。
-  * `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
-  * `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
-  * `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，将使用 `X-Greptime-Log-Extract-Keys` 来处理日志。
-  * `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>`（可选）- 处理日志的 pipeline 的版本。如果未提供，将使用 pipeline 的最新版本。
+- **URL:** `https://<host>/v1/otlp/v1/logs`
+- **Headers:**
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](/user-guide/deployments/authentication/static.md) 和 [HTTP API](/user-guide/protocols/http.md#鉴权)。
+  - `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
+  - `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
+  - `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，将使用 `X-Greptime-Log-Extract-Keys` 来处理日志。
+  - `X-Greptime-Log-Pipeline-Version`: `<pipeline_version>`（可选）- 处理日志的 pipeline 的版本。如果未提供，将使用 pipeline 的最新版本。
 
 请求使用二进制 protobuf 编码负载，因此您需要使用支持 `HTTP/protobuf` 的包。
 
@@ -152,7 +152,8 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 ### 示例代码
 
-请参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
+请参考 [opentelemetry-collector](#opentelemetry-collector) 中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
+也可参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
 
 ### 数据模型
 
@@ -200,15 +201,15 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
 
 要通过 OpenTelemetry SDK 库将 OpenTelemetry 的 traces 数据发送到 GreptimeDB，请使用以下信息：
 
-* URL: `http{s}://<host>/v1/otlp/v1/traces`
-* Headers: headers 与 [Logs](#Logs) 部分相同，你可以参考 [Logs](#Logs) 部分获取更多信息。
+- URL: `http{s}://<host>/v1/otlp/v1/traces`
+- Headers: headers 与 [Logs](#Logs) 部分相同，你可以参考 [Logs](#Logs) 部分获取更多信息。
 
 默认地，GreptimeDB 会将 traces 数据写入到 `public` 数据库中的 `opentelemetry_traces` 表中。如果想要将 traces 数据写入到不同的表中，你可以使用 `X-Greptime-DB-Name` 和 `X-Greptime-Log-Table-Name` 头部信息来指定数据库和表名。
 
 GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议** 发送，其中对 HTTP header 有如下要求：
 
--  `content-type` 应配置为 `application/x-protobuf`；
--  `x-greptime-pipeline-name` 应配置为 `greptime_trace_v1`；
+- `content-type` 应配置为 `application/x-protobuf`；
+- `x-greptime-pipeline-name` 应配置为 `greptime_trace_v1`；
 
 ### 示例代码
 
@@ -255,3 +256,71 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 ### Append 模式
 
 通过此接口创建的表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+
+# 使用 OpenTelemetry Collector 将数据发送到 GreptimeDB
+
+OpenTelemetry Collector 是一个可扩展的服务，用于接收、处理和导出 OpenTelemetry 数据。它可以作为数据的中间层，将数据从不同的源发送到 GreptimeDB。
+以下是使用 OpenTelemetry Collector 将数据发送到 GreptimeDB 的配置示例。
+
+```yaml
+extensions:
+  basicauth/client:
+    client_auth:
+      username: <your_username>
+      password: <your_password>
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  otlphttp/traces:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+      x-greptime-pipeline-name: 'greptime_trace_v1'
+    tls:
+      insecure: true
+  otlphttp/logs:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+      # x-greptime-log-table-name: "<pipeline_name>"
+    tls:
+      insecure: true
+
+  otlphttp/metrics:
+    endpoint: 'http://127.0.0.1:4000/v1/otlp'
+    # auth:
+    #   authenticator: basicauth/client
+    headers:
+      # x-greptime-db-name: '<your_db_name>'
+    tls:
+      insecure: true
+
+service:
+  # extensions: [basicauth/client]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlphttp/traces]
+    logs:
+      receivers: [otlp]
+      exporters: [otlphttp/logs]
+    metrics:
+      receivers: [otlp]
+      exporters: [otlphttp/metrics]
+```
+
+在上面的配置中，我们定义了一个接收器 `otlp`，它可以接收来自 OpenTelemetry 的数据。我们还定义了三个导出器 `otlphttp/traces`、`otlphttp/logs` 和 `otlphttp/metrics`，它们将数据发送到 GreptimeDB 的 OTLP 路径。
+在 otlphttp 协议的基础上，我们增加了一些 header 用来指定一些参数，比如 `x-greptime-pipeline-name` 和 `x-greptime-log-table-name`，`x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称，`x-greptime-log-table-name` 用来指定数据将要写入 GreptimeDB 的表名。
+如果你在 GreptimeDB 设置了鉴权。则需要使用 `basicauth/client` 扩展来处理基本的身份验证。
+这里我们强烈建议使用不同的导出器来分别处理 traces、logs 和 metrics 数据，一方面是因为 GreptimeDB 会支持一些特定的 header 来自定义一些处理流程，另一方面也可以做好数据隔离。
