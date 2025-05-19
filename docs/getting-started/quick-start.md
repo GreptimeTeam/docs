@@ -34,7 +34,7 @@ You can also use your browser to access the built-in DB dashboard at `http://127
 
 ## Create tables
 
-Suppose you have a wide event table named `grpc_latencies` that stores the gRPC services and processing latencies of your application.
+Suppose you have an event table named `grpc_latencies` that stores the gRPC services and processing latencies of your application.
 The table schema is as follows:
 
 ```sql

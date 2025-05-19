@@ -31,11 +31,11 @@ mysql -h 127.0.0.1 -P 4002
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://{db_host}:4000/dashbaord` 运行本文档中的 SQL。
+你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://127.0.0.1:4000/dashbaord` 运行本文档中的 SQL。
 
 ## 创建表
 
-假设你有一个名为 `grpc_latencies` 的“宽”事件（Wide Events）表，用于存储的 gRPC 调用接口以及它的处理时间。表 schema 如下：
+假设你有一个名为 `grpc_latencies` 的事件（Events）表，用于存储的 gRPC 调用接口以及它的处理时间。表 schema 如下：
 
 ```sql
 CREATE TABLE grpc_latencies (
