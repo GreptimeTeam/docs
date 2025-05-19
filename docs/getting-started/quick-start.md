@@ -30,7 +30,7 @@ Or
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-You can also use your browser to access the built-in DB dashboard at `http://{db_host}:4000/dashboard` to run the SQL queries in this document.
+You can also use your browser to access the built-in DB dashboard at `http://127.0.0.1:4000/dashboard` to run the SQL queries in this document.
 
 ## Create tables
 
