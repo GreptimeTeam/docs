@@ -1,4 +1,4 @@
-#  OTel Collector
+# OTel Collector
 
 [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) 提供了一种与供应商无关的 OTEL 实现，用于接收、处理和导出可观测数据。它可以作为数据的中间层，将数据从不同的源发送到 GreptimeDB。
 以下是使用 OpenTelemetry Collector 将数据发送到 GreptimeDB 的配置示例。
