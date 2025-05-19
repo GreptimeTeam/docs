@@ -15,37 +15,63 @@ GreptimeDB 集群默认需要一个 etcd 集群用于[元数据存储](https://d
 
 ## 安装
 
-```bash
-helm upgrade --install etcd \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
+将以下配置保存为文件 `etcd.yaml`:
+
+```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: bitnami/etcd
+  tag: 3.5.21-debian-12-r5
+  
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
 ```
 
-:::note
-中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式安装 etcd 集群：
+安装 etcd 集群:
 
 ```bash
-helm install etcd \
-  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
-  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set image.tag=3.5.12 \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
+helm upgrade \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  -n etcd-cluster
+  --version 11.3.4 \
+  -n etcd-cluster \
+  --values etcd.yaml
 ```
-:::
 
 等待 etcd 集群运行：
 
 ```bash
-kubectl get po -n etcd-cluster
+kubectl get pod -n etcd-cluster
 ```
 
 <details>
@@ -57,26 +83,6 @@ etcd-1   1/1     Running   0          65s
 etcd-2   1/1     Running   0          72s
 ```
 </details>
-
-etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) 参数指定启动 etcd 节点时 etcd 集群的初始状态。它对于确定节点如何加入集群非常重要。该参数可以采用以下两个值：
-
-- **new**: 表示 etcd 集群是新的。所有节点将作为新集群的一部分启动，并且不会使用任何先前的状态。
-- **existing**: 表示该节点将加入一个已经存在的 etcd 集群，这种情况下必须确保 initialCluster 参数配置了当前集群所有节点的信息。
-
-etcd 集群运行起来后，我们需要设置 initialClusterState 参数为 **existing**：
-
-```bash
-helm upgrade --install etcd \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
-```
 
 等待 etcd 集群运行完毕，使用以下命令检查 etcd 集群的健康状态：
 
@@ -101,11 +107,21 @@ kubectl -n etcd-cluster \
 </details>
 
 ## 备份
+
 在 bitnami etcd chart 中，使用共享存储卷 Network File System (NFS) 存储 etcd 备份数据。通过 Kubernetes 中的 CronJob 进行 etcd 快照备份，并挂载 NFS PersistentVolumeClaim (PVC)，可以将快照传输到 NFS 中。
 
 添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 NFS PVC 名称：
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: bitnami/etcd
+  tag: 3.5.21-debian-12-r5
+  
 replicaCount: 3
 
 auth:
@@ -114,8 +130,26 @@ auth:
   token:
     enabled: false
 
-initialClusterState: "existing"
-removeMemberOnContainerTermination: false
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
 
 disasterRecovery:
   enabled: true
@@ -130,11 +164,12 @@ disasterRecovery:
 重新部署 etcd 集群：
 
 ```bash
-helm upgrade --install etcd \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+helm upgrade \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  -n etcd-cluster --values etcd-backup.yaml
+  --version 11.3.4 \
+  -n etcd-cluster \
+  --values etcd-backup.yaml
 ```
 
 你可以看到 etcd 备份计划任务：
@@ -207,6 +242,15 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 NFS PVC 的名字，**snapshotFilename** 为 etcd 快照文件名：
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: bitnami/etcd
+  tag: 3.5.21-debian-12-r5
+  
 replicaCount: 3
 
 auth:
@@ -214,6 +258,27 @@ auth:
     create: false
   token:
     enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
 
 startFromSnapshot:
   enabled: true
@@ -224,27 +289,29 @@ startFromSnapshot:
 部署 etcd 恢复集群：
 
 ```bash
-helm upgrade --install etcd-recover \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+helm upgrade \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  -n etcd-cluster --values etcd-restore.yaml
+  --version 11.3.4 \
+  -n etcd-cluster \
+  --values etcd-restore.yaml
 ```
 
-等待 etcd 恢复集群运行后，重新部署 etcd 恢复集群：
+等待 etcd 恢复集群运行：
 
 ```bash
-helm upgrade --install etcd-recover \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
+kubectl get pod -n etcd-cluster -l app.kubernetes.io/instance=etcd-recover
 ```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME             READY   STATUS    RESTARTS   AGE
+etcd-recover-0   1/1     Running   0          91s
+etcd-recover-1   1/1     Running   0          91s
+etcd-recover-2   1/1     Running   0          91s
+```
+</details>
 
 接着，将 Metasrv 的 [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`：
 
@@ -261,3 +328,81 @@ spec:
 ```
 
 然后重启 GreptimeDB Metasrv 完成 etcd 恢复。
+
+## Monitoring
+
+- 安装 Prometheus Operator (例如: [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+- 安装 podmonitor CRD.
+
+将以下配置保存为文件 `etcd-monitoring.yaml`:
+
+```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: bitnami/etcd
+  tag: 3.5.21-debian-12-r5
+  
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+
+metrics:
+  enabled: true
+  podMonitor:
+    enabled: true
+    namespace: etcd-cluster
+    interval: 10s
+    scrapeTimeout: 10s
+    additionalLabels:
+      release: prometheus
+```
+
+部署并监控 etcd:
+
+```bash
+helm upgrade \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --create-namespace \
+  --version 11.3.4 \
+  -n etcd-cluster \
+  --values etcd-monitoring.yaml
+```
+
+### Grafana dashboard
+
+使用 [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards/15308-etcd-cluster-overview/) (ID: 15308) 来监控 etcd 的指标.
+
+1. 登录你的 Grafana.
+2. 导航至 Dashboards -> New -> Import.
+3. 输入 Dashboard ID: 15308, 选择数据源并加载图表.
+
+![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)

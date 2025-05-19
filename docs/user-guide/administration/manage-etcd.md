@@ -15,21 +15,53 @@ The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://d
 
 ## Install
 
+Save the following configuration as a file `etcd.yaml`:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+```
+
+Install etcd cluster:
+
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
   --create-namespace \
-  -n etcd-cluster
+  -n etcd-cluster \
+  --values etcd.yaml
 ```
 
 Wait for etcd cluster to be running:
 
 ```bash
-kubectl get po -n etcd-cluster
+kubectl get pod -n etcd-cluster
 ```
 
 <details>
@@ -42,27 +74,7 @@ etcd-2   1/1     Running   0          72s
 ```
 </details>
 
-The etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) parameter specifies the initial state of the etcd cluster when starting etcd nodes. It is important for determining how the node will join the cluster. The parameter can take the following two values:
-
-- **new**: This value indicates that the etcd cluster is new. All nodes will start as part of a new cluster, and any previous state will not be used.
-- **existing**: This value indicates that the node will join an already existing etcd cluster. In this case, you must ensure that the initialCluster parameter is configured with the information of all nodes in the current cluster.
-
-After the etcd cluster is running, we need to set the initialClusterState parameter to **existing**:
-
-```bash
-helm upgrade --install etcd \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
-```
-
-Wait for etcd cluster to be running, use the following command to check the health status of etcd cluster:
+When the etcd cluster is running, use the following command to check the health status of etcd cluster:
 
 ```bash
 kubectl -n etcd-cluster \
@@ -85,6 +97,7 @@ kubectl -n etcd-cluster \
 </details>
 
 ## Backup
+
 In the bitnami etcd chart, a shared storage volume Network File System (NFS) is used to store etcd backup data. By using CronJob in Kubernetes to perform etcd snapshot backups and mount NFS PersistentVolumeClaim (PVC), snapshots can be transferred to NFS.
 
 Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
@@ -98,8 +111,26 @@ auth:
   token:
     enabled: false
 
-initialClusterState: "existing"
-removeMemberOnContainerTermination: false
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
 
 disasterRecovery:
   enabled: true
@@ -116,9 +147,9 @@ Redeploy etcd cluster:
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
   --create-namespace \
-  -n etcd-cluster --values etcd-backup.yaml
+  -n etcd-cluster \
+  --values etcd-backup.yaml
 ```
 
 You can see the etcd backup scheduled task:
@@ -199,6 +230,27 @@ auth:
   token:
     enabled: false
 
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+
 startFromSnapshot:
   enabled: true
   existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
@@ -210,25 +262,26 @@ Deploy etcd recover cluster:
 ```bash
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
   --create-namespace \
-  -n etcd-cluster --values etcd-restore.yaml
+  -n etcd-cluster \
+  --values etcd-restore.yaml
 ```
 
-After waiting for the etcd recover cluster to be Running, redeploy the etcd recover cluster:
+After waiting for the etcd recover cluster to be Running:
 
 ```bash
-helm upgrade --install etcd-recover \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
+kubectl get pod -n etcd-cluster -l app.kubernetes.io/instance=etcd-recover
 ```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME             READY   STATUS    RESTARTS   AGE
+etcd-recover-0   1/1     Running   0          91s
+etcd-recover-1   1/1     Running   0          91s
+etcd-recover-2   1/1     Running   0          91s
+```
+</details>
 
 Next, change Metasrv [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) to the new etcd recover cluster, in this example is `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`:
 
@@ -245,3 +298,71 @@ spec:
 ```
 
 Restart GreptimeDB Metasrv to complete etcd restore.
+
+## Monitoring
+
+- Prometheus Operator installed (e.g. via [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+- podmonitor CRD installed (automatically installed with Prometheus Operator).
+
+Add the following to your `etcd-monitoring.yaml` to enable monitoring:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+
+metrics:
+  enabled: true
+  podMonitor:
+    enabled: true
+    namespace: etcd-cluster
+    interval: 10s
+    scrapeTimeout: 10s
+    additionalLabels:
+      release: prometheus
+```
+
+Deploy etcd with Monitoring:
+
+```bash
+helm upgrade --install etcd \
+  oci://registry-1.docker.io/bitnamicharts/etcd \
+  --create-namespace \
+  -n etcd-cluster \
+  --values etcd-monitoring.yaml
+```
+
+### Grafana dashboard
+
+Use the [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards/15308-etcd-cluster-overview/) (ID: 15308) for monitoring key metrics.
+
+1. Log in your Grafana.
+2. Navigate to Dashboards -> New -> Import.
+3. Enter Dashboard ID: 15308, select the data source and load.
+
+![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
