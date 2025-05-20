@@ -372,7 +372,7 @@ Use the [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards
 
 ## Defrag
 
-ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multiple versions of keys. Over time, as data is updated and deleted, the backend database can become fragmented, leading to increased storage usage and reduced performance. Defragmentation is the process of compacting this storage to reclaim space and improve performance.
+ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multiple versions of KV. Over time, as data is updated and deleted, the backend database can become fragmented, leading to increased storage usage and reduced performance. Defragmentation is the process of compacting this storage to reclaim space and improve performance.
 
 Add the following defrag-related configuration to `etcd-defrag.yaml` file:
 
