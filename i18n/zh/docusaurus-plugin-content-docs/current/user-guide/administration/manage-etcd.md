@@ -41,11 +41,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -136,11 +136,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -266,11 +266,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -362,11 +362,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -410,7 +410,15 @@ helm upgrade \
 
 ![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
 
-## Defrag
+## ⚠️ Defrag - Critical Warning
+
+Defrag 是一项高风险操作，可能会严重影响您的 ETCD 集群及其依赖系统（例如 GreptimeDB）：
+
+1. 执行期间会阻止所有读/写操作（集群将不可用）。
+2. 高 I/O 使用率可能导致客户端应用程序超时。
+3. 如果碎片整理耗时过长，可能会触发领导者选举。
+4. 如果资源分配不当，可能会导致 OOM 终止。
+5. 如果在过程中中断，可能会损坏数据。
 
 ETCD 使用多版本并发控制 (MVCC) 机制，用于存储多个版本的 KV。随着时间的推移，随着数据的更新和删除，后端数据库可能会变得碎片化，从而增加存储空间并降低性能。Defrag 是指压缩这些存储空间以回收空间并提高性能的过程。
 
@@ -440,11 +448,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"

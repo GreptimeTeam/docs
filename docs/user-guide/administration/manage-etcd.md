@@ -32,11 +32,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -117,11 +117,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -237,11 +237,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -323,11 +323,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -370,7 +370,15 @@ Use the [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards
 
 ![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
 
-## Defrag
+## ⚠️ Defrag - Critical Warning
+
+Defragmentation is a HIGH-RISK operation that can severely impact your ETCD cluster and dependent systems (like GreptimeDB):
+
+1. Blocks ALL read/write operations during execution (cluster becomes unavailable).
+2. High I/O usage may cause timeouts in client applications.
+3. May trigger leader elections if defrag takes too long.
+4. Can cause OOM kills if not properly resourced.
+5. May corrupt data if interrupted mid-process.
 
 ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multiple versions of KV. Over time, as data is updated and deleted, the backend database can become fragmented, leading to increased storage usage and reduced performance. Defragmentation is the process of compacting this storage to reclaim space and improve performance.
 
@@ -391,11 +399,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '2'
+    cpu: '1'
     memory: 2Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: '1'
+    memory: 2Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
