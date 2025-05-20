@@ -83,6 +83,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/ingest-data/for-observability/influxdb-line-protocol',
                 'user-guide/ingest-data/for-observability/kafka',
                 'user-guide/ingest-data/for-observability/loki',
+                'user-guide/ingest-data/for-observability/otel-collector',
                 'user-guide/ingest-data/for-observability/alloy',
                 'user-guide/ingest-data/for-observability/elasticsearch',
                 'user-guide/ingest-data/for-observability/fluent-bit',
