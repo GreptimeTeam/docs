@@ -41,11 +41,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
   requests:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -55,6 +55,8 @@ extraEnvVars:
     value: "8589934592"
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
 ```
 
 安装 etcd 集群:
@@ -136,11 +138,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
   requests:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -150,6 +152,8 @@ extraEnvVars:
     value: "8589934592"
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
 
 # Backup settings
 disasterRecovery:
@@ -266,11 +270,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
   requests:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -280,6 +284,8 @@ extraEnvVars:
     value: "8589934592"
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
 
 # Restore settings
 startFromSnapshot:
@@ -362,11 +368,11 @@ persistence:
 
 resources:
   limits:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
   requests:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
@@ -376,6 +382,8 @@ extraEnvVars:
     value: "8589934592"
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
 
 # Monitoring settings
 metrics:
@@ -448,14 +456,22 @@ persistence:
 
 resources:
   limits:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
   requests:
-    cpu: '1'
-    memory: 2Gi
+    cpu: '2'
+    memory: 8Gi
 
 autoCompactionMode: "periodic"
 autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
 
 # Defragmentation settings
 defrag:
@@ -465,12 +481,6 @@ defrag:
     suspend: false
     successfulJobsHistoryLimit: 1
     failedJobsHistoryLimit: 1
-
-extraEnvVars:
-  - name: ETCD_QUOTA_BACKEND_BYTES
-    value: "8589934592"
-  - name: ETCD_ELECTION_TIMEOUT
-    value: "2000"
 ```
 
 部署 etcd 集群并开启 defrag 功能:
