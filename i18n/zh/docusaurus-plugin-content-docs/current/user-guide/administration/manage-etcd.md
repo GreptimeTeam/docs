@@ -151,6 +151,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Backup settings
 disasterRecovery:
   enabled: true
   cronjob:
@@ -280,6 +281,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Restore settings
 startFromSnapshot:
   enabled: true
   existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
@@ -375,6 +377,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Monitoring settings
 metrics:
   enabled: true
   podMonitor:
@@ -406,3 +409,111 @@ helm upgrade \
 3. 输入 Dashboard ID: 15308, 选择数据源并加载图表.
 
 ![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
+
+## Defrag
+
+ETCD 使用多版本并发控制 (MVCC) 机制，用于存储多个版本的密钥。随着时间的推移，随着数据的更新和删除，后端数据库可能会变得碎片化，从而增加存储空间并降低性能。Defrag 是指压缩这些存储空间以回收空间并提高性能的过程。
+
+在 `etcd-defrag.yaml` 文件中添加以下与 defrag 相关的配置：
+
+```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: bitnami/etcd
+  tag: 3.5.21-debian-12-r5
+  
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+# Defragmentation settings
+defrag:
+  enabled: true
+  cronjob:
+    schedule: "0 3 * * *"  # Daily at 3:00 AM
+    suspend: false
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+```
+
+部署 etcd 集群并开启 defrag 功能:
+
+```bash
+helm upgrade \
+  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --create-namespace \
+  --version 11.3.4 \
+  -n etcd-cluster \
+  --values etcd-defrag.yaml
+```
+
+你可以看到 etcd defrag 定时任务:
+
+```bash
+kubectl get cronjob -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME          SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+etcd-defrag   0 3 * * *     <none>     False     0        <none>          34s
+```
+</details>
+
+```bash
+kubectl get pod -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                         READY   STATUS      RESTARTS   AGE
+etcd-0                       1/1     Running     0          4m30s
+etcd-1                       1/1     Running     0          4m29s
+etcd-2                       1/1     Running     0          4m29s
+etcd-defrag-29128518-sstbf   0/1     Completed   0          90s
+```
+</details>
+
+```bash
+kubectl logs etcd-defrag-29128518-sstbf -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```log
+Finished defragmenting etcd member[http://etcd-0.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-1.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+```
+</details>

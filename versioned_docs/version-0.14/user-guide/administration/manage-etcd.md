@@ -97,6 +97,7 @@ kubectl -n etcd-cluster \
 </details>
 
 ## Backup
+
 In the bitnami etcd chart, a shared storage volume Network File System (NFS) is used to store etcd backup data. By using CronJob in Kubernetes to perform etcd snapshot backups and mount NFS PersistentVolumeClaim (PVC), snapshots can be transferred to NFS.
 
 Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
@@ -131,6 +132,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Backup settings
 disasterRecovery:
   enabled: true
   cronjob:
@@ -250,6 +252,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Restore settings
 startFromSnapshot:
   enabled: true
   existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
@@ -335,6 +338,7 @@ extraEnvVars:
   - name: ETCD_ELECTION_TIMEOUT
     value: "2000"
 
+# Monitoring settings
 metrics:
   enabled: true
   podMonitor:
@@ -365,3 +369,101 @@ Use the [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards
 3. Enter Dashboard ID: 15308, select the data source and load.
 
 ![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
+
+## Defrag
+
+ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multiple versions of keys. Over time, as data is updated and deleted, the backend database can become fragmented, leading to increased storage usage and reduced performance. Defragmentation is the process of compacting this storage to reclaim space and improve performance.
+
+Add the following defrag-related configuration to `etcd-defrag.yaml` file:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+# Defragmentation settings
+defrag:
+  enabled: true
+  cronjob:
+    schedule: "0 3 * * *"  # Daily at 3:00 AM
+    suspend: false
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+```
+
+Deploying with Defrag Configuration:
+
+```bash
+helm upgrade --install etcd \
+  oci://registry-1.docker.io/bitnamicharts/etcd \
+  --create-namespace \
+  -n etcd-cluster \
+  --values etcd-defrag.yaml
+```
+
+You can see the etcd defrag scheduled task:
+
+```bash
+kubectl get cronjob -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME          SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+etcd-defrag   0 3 * * *     <none>     False     0        <none>          34s
+```
+</details>
+
+```bash
+kubectl get pod -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                         READY   STATUS      RESTARTS   AGE
+etcd-0                       1/1     Running     0          4m30s
+etcd-1                       1/1     Running     0          4m29s
+etcd-2                       1/1     Running     0          4m29s
+etcd-defrag-29128518-sstbf   0/1     Completed   0          90s
+```
+</details>
+
+```bash
+kubectl logs etcd-defrag-29128518-sstbf -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```log
+Finished defragmenting etcd member[http://etcd-0.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-1.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+```
+</details>
