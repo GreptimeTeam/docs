@@ -101,7 +101,7 @@ AS
   它可以是一个现有的表或一个新表。如果目标表不存在，`flow` 将创建目标表。
   <!-- 如果表已经存在，其 schema 必须与查询结果的 schema 匹配。 -->
 - `EXPIRE AFTER` 是一个可选的时间间隔，用于从 Flow 引擎中过期数据。
-  有关更多详细信息，请参考 [`EXPIRE AFTER`](#expire-after-语句) 部分。
+  有关更多详细信息，请参考 [`EXPIRE AFTER`](#expire-after) 部分。
 - `COMMENT` 是 flow 的描述。
 - `SQL` 部分定义了用于持续聚合的查询。
   它定义了为 flow 提供数据的源表。
