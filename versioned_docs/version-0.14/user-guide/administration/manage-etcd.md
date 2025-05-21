@@ -15,21 +15,55 @@ The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://d
 
 ## Install
 
+Save the following configuration as a file `etcd.yaml`:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 8Gi
+  requests:
+    cpu: '2'
+    memory: 8Gi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
+```
+
+Install etcd cluster:
+
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
   --create-namespace \
-  -n etcd-cluster
+  -n etcd-cluster \
+  --values etcd.yaml
 ```
 
 Wait for etcd cluster to be running:
 
 ```bash
-kubectl get po -n etcd-cluster
+kubectl get pod -n etcd-cluster
 ```
 
 <details>
@@ -42,27 +76,7 @@ etcd-2   1/1     Running   0          72s
 ```
 </details>
 
-The etcd [initialClusterState](https://etcd.io/docs/v3.5/op-guide/configuration/) parameter specifies the initial state of the etcd cluster when starting etcd nodes. It is important for determining how the node will join the cluster. The parameter can take the following two values:
-
-- **new**: This value indicates that the etcd cluster is new. All nodes will start as part of a new cluster, and any previous state will not be used.
-- **existing**: This value indicates that the node will join an already existing etcd cluster. In this case, you must ensure that the initialCluster parameter is configured with the information of all nodes in the current cluster.
-
-After the etcd cluster is running, we need to set the initialClusterState parameter to **existing**:
-
-```bash
-helm upgrade --install etcd \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
-```
-
-Wait for etcd cluster to be running, use the following command to check the health status of etcd cluster:
+When the etcd cluster is running, use the following command to check the health status of etcd cluster:
 
 ```bash
 kubectl -n etcd-cluster \
@@ -85,6 +99,7 @@ kubectl -n etcd-cluster \
 </details>
 
 ## Backup
+
 In the bitnami etcd chart, a shared storage volume Network File System (NFS) is used to store etcd backup data. By using CronJob in Kubernetes to perform etcd snapshot backups and mount NFS PersistentVolumeClaim (PVC), snapshots can be transferred to NFS.
 
 Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
@@ -98,9 +113,30 @@ auth:
   token:
     enabled: false
 
-initialClusterState: "existing"
-removeMemberOnContainerTermination: false
+persistence:
+  storageClass: null
+  size: 8Gi
 
+resources:
+  limits:
+    cpu: '2'
+    memory: 8Gi
+  requests:
+    cpu: '2'
+    memory: 8Gi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
+
+# Backup settings
 disasterRecovery:
   enabled: true
   cronjob:
@@ -116,9 +152,9 @@ Redeploy etcd cluster:
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
   --create-namespace \
-  -n etcd-cluster --values etcd-backup.yaml
+  -n etcd-cluster \
+  --values etcd-backup.yaml
 ```
 
 You can see the etcd backup scheduled task:
@@ -199,6 +235,30 @@ auth:
   token:
     enabled: false
 
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 8Gi
+  requests:
+    cpu: '2'
+    memory: 8Gi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
+
+# Restore settings
 startFromSnapshot:
   enabled: true
   existingClaim: "${YOUR_NFS_PVC_NAME_HERE}"
@@ -210,25 +270,26 @@ Deploy etcd recover cluster:
 ```bash
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
   --create-namespace \
-  -n etcd-cluster --values etcd-restore.yaml
+  -n etcd-cluster \
+  --values etcd-restore.yaml
 ```
 
-After waiting for the etcd recover cluster to be Running, redeploy the etcd recover cluster:
+After waiting for the etcd recover cluster to be Running:
 
 ```bash
-helm upgrade --install etcd-recover \
-  oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
-  --set initialClusterState="existing" \
-  --set removeMemberOnContainerTermination=false \
-  --set replicaCount=3 \
-  --set auth.rbac.create=false \
-  --set auth.rbac.token.enabled=false \
-  --create-namespace \
-  -n etcd-cluster
+kubectl get pod -n etcd-cluster -l app.kubernetes.io/instance=etcd-recover
 ```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME             READY   STATUS    RESTARTS   AGE
+etcd-recover-0   1/1     Running   0          91s
+etcd-recover-1   1/1     Running   0          91s
+etcd-recover-2   1/1     Running   0          91s
+```
+</details>
 
 Next, change Metasrv [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) to the new etcd recover cluster, in this example is `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`:
 
@@ -245,3 +306,182 @@ spec:
 ```
 
 Restart GreptimeDB Metasrv to complete etcd restore.
+
+## Monitoring
+
+- Prometheus Operator installed (e.g. via [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)).
+- podmonitor CRD installed (automatically installed with Prometheus Operator).
+
+Add the following to your `etcd-monitoring.yaml` to enable monitoring:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 8Gi
+  requests:
+    cpu: '2'
+    memory: 8Gi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
+
+# Monitoring settings
+metrics:
+  enabled: true
+  podMonitor:
+    enabled: true
+    namespace: etcd-cluster
+    interval: 10s
+    scrapeTimeout: 10s
+    additionalLabels:
+      release: prometheus
+```
+
+Deploy etcd with Monitoring:
+
+```bash
+helm upgrade --install etcd \
+  oci://registry-1.docker.io/bitnamicharts/etcd \
+  --create-namespace \
+  -n etcd-cluster \
+  --values etcd-monitoring.yaml
+```
+
+### Grafana dashboard
+
+Use the [ETCD Cluster Overview dashboard](https://grafana.com/grafana/dashboards/15308-etcd-cluster-overview/) (ID: 15308) for monitoring key metrics.
+
+1. Log in your Grafana.
+2. Navigate to Dashboards -> New -> Import.
+3. Enter Dashboard ID: 15308, select the data source and load.
+
+![ETCD Cluster Overview dashboard](/etcd-cluster-overview-dashboard.png)
+
+## ⚠️ Defrag - Critical Warning
+
+Defragmentation is a HIGH-RISK operation that can severely impact your ETCD cluster and dependent systems (like GreptimeDB):
+
+1. Blocks ALL read/write operations during execution (cluster becomes unavailable).
+2. High I/O usage may cause timeouts in client applications.
+3. May trigger leader elections if defrag takes too long.
+4. Can cause OOM kills if not properly resourced.
+5. May corrupt data if interrupted mid-process.
+
+ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multiple versions of KV. Over time, as data is updated and deleted, the backend database can become fragmented, leading to increased storage usage and reduced performance. Defragmentation is the process of compacting this storage to reclaim space and improve performance.
+
+Add the following defrag-related configuration to `etcd-defrag.yaml` file:
+
+```yaml
+replicaCount: 3
+
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+persistence:
+  storageClass: null
+  size: 8Gi
+
+resources:
+  limits:
+    cpu: '2'
+    memory: 8Gi
+  requests:
+    cpu: '2'
+    memory: 8Gi
+
+autoCompactionMode: "periodic"
+autoCompactionRetention: "1h"
+
+extraEnvVars:
+  - name: ETCD_QUOTA_BACKEND_BYTES
+    value: "8589934592"
+  - name: ETCD_ELECTION_TIMEOUT
+    value: "2000"
+  - name: ETCD_SNAPSHOT_COUNT
+    value: "10000"
+
+# Defragmentation settings
+defrag:
+  enabled: true
+  cronjob:
+    schedule: "0 3 * * *"  # Daily at 3:00 AM
+    suspend: false
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 1
+```
+
+Deploying with Defrag Configuration:
+
+```bash
+helm upgrade --install etcd \
+  oci://registry-1.docker.io/bitnamicharts/etcd \
+  --create-namespace \
+  -n etcd-cluster \
+  --values etcd-defrag.yaml
+```
+
+You can see the etcd defrag scheduled task:
+
+```bash
+kubectl get cronjob -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME          SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+etcd-defrag   0 3 * * *     <none>     False     0        <none>          34s
+```
+</details>
+
+```bash
+kubectl get pod -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                         READY   STATUS      RESTARTS   AGE
+etcd-0                       1/1     Running     0          4m30s
+etcd-1                       1/1     Running     0          4m29s
+etcd-2                       1/1     Running     0          4m29s
+etcd-defrag-29128518-sstbf   0/1     Completed   0          90s
+```
+</details>
+
+```bash
+kubectl logs etcd-defrag-29128518-sstbf -n etcd-cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```log
+Finished defragmenting etcd member[http://etcd-0.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-1.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+Finished defragmenting etcd member[http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379]
+```
+</details>
