@@ -1,6 +1,7 @@
 .DS_Store
 .docusaurus
 node_modules
+node_modules/
 build
 .envrc
 
