@@ -5,6 +5,6 @@ description: GreptimeDB 监控概述，介绍 GreptimeDB 的监控指标、配�
 
 # Monitoring
 
-- [Audit logging](audit-log.md)：Monitor user activities, detect suspicious actions, and ensure compliance with regulations inside or outside of an organization.
+- [Audit logging](audit-logging.md)：Monitor user activities, detect suspicious actions, and ensure compliance with regulations inside or outside of an organization.
 
 

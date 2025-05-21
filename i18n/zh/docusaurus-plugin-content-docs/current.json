@@ -48,7 +48,7 @@
     "description": "The label for category Client Libraries in sidebar docs"
   },
   "sidebar.docs.category.Administration": {
-    "message": "管理",
+    "message": "运维管理",
     "description": "The label for category Operations in sidebar docs"
   },
   "sidebar.docs.category.Authentication": {

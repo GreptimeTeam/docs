@@ -13,7 +13,7 @@ description: GreptimeDB 企业版的部署指南，包括鉴权认证、Kubernet
 
 ## 将 GreptimeDB 部署到 Kubernetes
 
-请前往 [在 Kubernetes 上部署 GreptimeDB](./kubernetes/overview.md) 页面了解如何部署及升级 GreptimeDB。
+请前往 [在 Kubernetes 上部署 GreptimeDB](./deploy-on-kubernetes/overview.md) 页面了解如何部署及升级 GreptimeDB。
 
 ## 监控
 

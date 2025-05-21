@@ -22,10 +22,10 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 
 有关开源版和企业版之间的功能对比，请参考官网的[价格页面](https://greptime.cn/pricing)。
 
-## 功能介绍
+## 使用指南
 
 - [基于双活互备的 DR 解决方案](./administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
-- [部署 GreptimeDB](./deployments/kubernetes/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
+- [部署 GreptimeDB](./deployments/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
 
 ## 发布说明
 

@@ -13,7 +13,7 @@ GreptimeDB Enterprise supports all [authentication methods available in the open
 
 ## Kubernetes Deployment
 
-Refer to our [Kubernetes Deployment Guide](./kubernetes/overview.md) for detailed instructions on deploying,
+Refer to our [Kubernetes Deployment Guide](./deploy-on-kubernetes/overview.md) for detailed instructions on deploying,
 configuring, and upgrading GreptimeDB Enterprise clusters.
 
 ## Monitoring
