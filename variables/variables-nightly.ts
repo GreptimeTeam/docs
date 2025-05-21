@@ -4,4 +4,5 @@ export const variables = {
   nodeExporterVersion: 'v1.8.0',
   goSdkVersion: 'v0.6.1',
   javaSdkVersion: '0.11.0',
+  debugPodVersion: '20250421-94c4b8d',
 };

@@ -26,7 +26,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.13.2"
+  tag: "VAR::greptimedbVersion"
   # -- The image pull secrets
   pullSecrets: []
 ```
@@ -40,7 +40,7 @@ image:
   # -- The image repository
   repository: greptime/greptimedb
   # -- The image tag
-  tag: "v0.13.2"
+  tag: "VAR::greptimedbVersion"
   # -- The image pull secrets
   pullSecrets: []
 
@@ -419,7 +419,7 @@ debugPod:
   image:
     registry: docker.io
     repository: greptime/greptime-tool
-    tag: "20250317-5281e66"
+    tag: "VAR::debugPodVersion"
 
   # -- The debug pod resource
   resources:
