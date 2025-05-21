@@ -490,23 +490,48 @@
         },
         {
           "type": "category",
-          "label": "Autopilot",
-          "items": [
-            "enterprise/autopilot/region-balancer"
-          ]
-        },
-        {
-          "type": "category",
           "label": "Deployments",
           "items": [
             "enterprise/deployments/authentication",
-            "enterprise/deployments/audit-logging"
+            {
+              "type": "category",
+              "label": "Kubernetes",
+              "items": [
+                {
+                  "type": "doc",
+                  "id": "enterprise/deployments/deploy-on-kubernetes/overview",
+                  "label": "Overview"
+                },
+                "enterprise/deployments/deploy-on-kubernetes/installation",
+                "enterprise/deployments/deploy-on-kubernetes/upgrade"
+              ]
+            },
+            {
+              "type": "category",
+              "label": "Monitoring",
+              "items": [
+                {
+                  "type": "doc",
+                  "id": "enterprise/deployments/monitoring/overview",
+                  "label": "Overview"
+                },
+                "enterprise/deployments/monitoring/check-db-status",
+                "enterprise/deployments/monitoring/key-metrics",
+                "enterprise/deployments/monitoring/key-logs",
+                "enterprise/deployments/monitoring/audit-logging"
+              ]
+            }
           ]
         },
         {
           "type": "category",
           "label": "Administration",
           "items": [
+            {
+              "type": "doc",
+              "id": "enterprise/administration/overview",
+              "label": "Overview"
+            },
             {
               "type": "category",
               "label": "Disaster Recovery",
@@ -518,9 +543,17 @@
                 },
                 "enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover"
               ]
-            }
+            },
+            "enterprise/administration/backup",
+            "enterprise/administration/performance-tuning",
+            "enterprise/administration/troubleshooting"
           ]
         },
+        {
+          "type": "category",
+          "label": "Autopilot",
+          "items": ["enterprise/autopilot/region-balancer"]
+        },        
         {
           "type": "category",
           "label": "Releases",
