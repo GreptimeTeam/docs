@@ -17,10 +17,6 @@ interface VariablesMap {
 }
 
 function getVariables(path: string, variablesMap: VariablesMap): Variables | undefined {
-  // Check for paths that should be associated with "nightly"
-  if (path.includes('/docs/') || path.includes('/current/')) {
-    return variablesMap['nightly'];
-  }
 
   // Extract the version from paths like 'version-0.9'
   const versionMatch = path.match(/version-(\d+\.\d+)/);
@@ -30,7 +26,7 @@ function getVariables(path: string, variablesMap: VariablesMap): Variables | und
   }
 
   // If no match, return undefined
-  return undefined;
+  return variablesMap['nightly'];
 }
 
 const plugin = (options: Options) => {
