@@ -1,6 +1,6 @@
 ---
 keywords: [Monitoring]
-description: GreptimeDB 监控概述，介绍 GreptimeDB 的监控指标、配置和日志等内容。
+description: Overview of GreptimeDB Enterprise monitoring.
 ---
 
 # Monitoring
