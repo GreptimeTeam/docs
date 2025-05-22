@@ -10,7 +10,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 
 ## GreptimeDB 数据源插件
 
-GreptimeDB 数据源插件基于 Prometheus 数据源开发并附加了特定于 GreptimeDB 的功能。
+[GreptimeDB 数据源插件（v2.x）](https://github.com/GreptimeTeam/greptimedb-grafana-datasource)基于 ClickHouse 插件开发并附加了特定于 GreptimeDB 的功能。
 该插件完美适配了 GreptimeDB 的数据模型，
 从而提供了更好的用户体验。
 此外，和直接使用 Prometheus 数据源相比，它还解决了一些兼容性问题。
@@ -77,25 +77,15 @@ http://<host>:4000
 
 然后单击 Save & Test 按钮以测试连接。
 
-### 创建仪表盘
-
-在 Grafana 中创建一个新的仪表盘，点击 `Create your first dashboard` 按钮。
-然后，点击 `Add visualization`，选择 `GreptimeDB` 作为数据源。
-
-在 `Metric` 下拉列表中选择一个指标，然后点击 `Run query` 查看指标数据。
-当你查看数据并确认无误后，点击 `Save` 保存面板。
-
-![grafana-create-panel-with-selecting-metric](/create-panel-with-selecting-metric-greptimedb.png)
-
-你还可以使用 PromQL 创建面板。
-点击 `Query` 标签页右侧的 `code` 按钮，切换到 PromQL 编辑器。
-然后输入一个 PromQL 语句，例如 `system_memory_usage{state="used"}`，点击 `Run queries` 查看指标数据。
-
-![grafana-create-panel-with-promql](/grafana-create-panel-with-promql.png)
-
-:::tip 注意
-GreptimeDB 兼容大部分 PromQL，但是有一些限制。请参考 [PromQL 限制](/user-guide/query-data/promql.md#局限) 文档获取更多信息。
-:::
+### 使用 Query Builder 构建查询
+* Table: 对无时间戳字段的数据进行查询
+  ![Table Query](/grafana/table.png)
+* Time Series: 对包含时间戳字段的数据进行查询.
+  ![Time Series](/grafana/series.png)
+* Logs: 对日志数据进行查询。需要设置 `Time` 列和 `Message` 列。
+  ![Logs](/grafana/logs.png)
+* Traces: 对 Trace 类型数据进行查询。需要设置截图中数据表的对应列进行 trace 列表查询。
+  ![Traces](/grafana/traceconfig.png)
 
 ## Prometheus 数据源
 
