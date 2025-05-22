@@ -35,6 +35,12 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      biel-react:
+        specifier: ^0.1.5
+        version: 0.1.5
+      biel-search:
+        specifier: ^0.1.43
+        version: 0.1.43
       clsx:
         specifier: ^2.0.0
         version: 2.1.1
@@ -2047,6 +2053,9 @@ packages:
   '@types/supports-color@8.1.3':
     resolution: {integrity: sha512-Hy6UMpxhE3j1tLpl27exp1XqHD7n8chAiNPzWfz16LPZoMMoSc4dzLl6w9qijkEb/r5O1ozdu1CWGA2L83ZeZg==}
 
+  '@types/trusted-types@2.0.7':
+    resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
+
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
 
@@ -2648,6 +2657,12 @@ packages:
 
   before-after-hook@3.0.2:
     resolution: {integrity: sha512-Nik3Sc0ncrMK4UUdXQmAnRtzmNQTAAXmXIopizwZ1W1t8QmfJj+zL4OA2I7XPTPW5z5TDqv4hRo/JzouDJnX3A==}
+
+  biel-react@0.1.5:
+    resolution: {integrity: sha512-ZtOr0rG3LDrFiv/EDzc3eXnrze8Lb+klv4aEK/Z3vVH4xM9EZM/SLa/zCWo0eZ0oRAGi2av4ZJgxiTihihQbVA==}
+
+  biel-search@0.1.43:
+    resolution: {integrity: sha512-K9UNaflY0DTAB4ITnrF7JF27KUymaberZSDJtSXqu4SQqLfB/7X4ADSKgbC6N9vB+C0tsFlmgr7MzgNcECloaw==}
 
   big.js@5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
@@ -3390,6 +3405,9 @@ packages:
   domhandler@5.0.3:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
+
+  dompurify@3.2.6:
+    resolution: {integrity: sha512-/2GogDQlohXPZe6D6NOgQvXLPSYBqIWMnZ8zzOhn09REE4eyAzb+Hed3jhoM9OkuaJ8P6ZGTTVWQKAi8ieIzfQ==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -4382,6 +4400,10 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
+  highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
+
   history@4.10.1:
     resolution: {integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==}
 
@@ -5227,6 +5249,11 @@ packages:
 
   markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
+
+  marked@14.1.4:
+    resolution: {integrity: sha512-vkVZ8ONmUdPnjCKc5uTRvmkRbx4EAi2OkTOXmfTDhZz3OFqMNBM1oTTWwTr4HY4uAEojhzPf+Fy8F1DWa3Sndg==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   markuplint-angular-parser@2.0.0:
     resolution: {integrity: sha512-MoC3/tKhhisdH9pbNaPV9sa1PEyTfp7aEXfduEegTDLkebM249zQEwZP2h6C1S4gig/T68/3XgPY0cQsVXwhtg==}
@@ -11446,6 +11473,9 @@ snapshots:
 
   '@types/supports-color@8.1.3': {}
 
+  '@types/trusted-types@2.0.7':
+    optional: true
+
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
@@ -12216,6 +12246,16 @@ snapshots:
   before-after-hook@2.2.3: {}
 
   before-after-hook@3.0.2: {}
+
+  biel-react@0.1.5:
+    dependencies:
+      biel-search: 0.1.43
+
+  biel-search@0.1.43:
+    dependencies:
+      dompurify: 3.2.6
+      highlight.js: 11.11.1
+      marked: 14.1.4
 
   big.js@5.2.2: {}
 
@@ -13025,6 +13065,10 @@ snapshots:
   domhandler@5.0.3:
     dependencies:
       domelementtype: 2.3.0
+
+  dompurify@3.2.6:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
 
   domutils@2.8.0:
     dependencies:
@@ -14439,6 +14483,8 @@ snapshots:
 
   he@1.2.0: {}
 
+  highlight.js@11.11.1: {}
+
   history@4.10.1:
     dependencies:
       '@babel/runtime': 7.25.6
@@ -15221,6 +15267,8 @@ snapshots:
   markdown-extensions@2.0.0: {}
 
   markdown-table@3.0.3: {}
+
+  marked@14.1.4: {}
 
   markuplint-angular-parser@2.0.0:
     dependencies:

@@ -23,6 +23,8 @@
     "@mdx-js/react": "^3.0.0",
     "@octokit/rest": "^21.0.2",
     "axios": "^1.7.7",
+    "biel-react": "^0.1.5",
+    "biel-search": "^0.1.43",
     "clsx": "^2.0.0",
     "docusaurus-biel": "^1.0.5",
     "minimatch": "^10.0.1",
