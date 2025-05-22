@@ -10,7 +10,7 @@ import 'biel-search/dist/biel-search/biel-search.css';
 function BielWidget() {
   const { i18n } = useDocusaurusContext();
   const language = i18n.currentLocale;
-  const projectId = '<PROJECT_ID>'; // Replace with your actual project ID
+  const projectId = process.env.BIEL_PROJECT_ID; // Replace with your actual project ID
 
   const placeholders = {
       en: {
