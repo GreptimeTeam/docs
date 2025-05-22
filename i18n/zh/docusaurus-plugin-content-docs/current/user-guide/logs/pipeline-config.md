@@ -9,6 +9,46 @@ Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制，
 
 这些配置以 YAML 格式提供，使得 Pipeline 能够在日志写入过程中，根据设定的规则对数据进行处理，并将处理后的数据存储到数据库中，便于后续的结构化查询。
 
+## 输入格式
+
+一般情况下，Pipeline 接收一组键值对形式的 map 作为 Pipeline 的输入。比如
+
+### JSON 格式
+
+```json
+[
+  {"message": "hello world", "time": "2024-07-12T16:18:53.048"},
+  {"message": "hello greptime", "time": "2024-07-12T16:18:53.048"}
+]
+```
+
+### NDJSON 格式
+
+当输入为 NDJSON 格式时，每行数据会被视为一个独立的 JSON 对象。
+
+```json
+{"message": "hello world", "time": "2024-07-12T16:18:53.048"}
+{"message": "hello greptime", "time": "2024-07-12T16:18:53.048"}
+```
+
+### 纯文本格式
+
+```
+hello world 2024-07-12T16:18:53.048
+hello greptime 2024-07-12T16:18:53.048
+```
+
+当输入为纯文本格式时，每行数据会被视为一条独立的对象。并且会将整行数据视为一个字符串，存储在一个只包含 `message` 字段的 map 对象中
+
+比如上述的纯文本格式数据会被转换为如下的等价形式：
+
+```json
+{"message": "hello world 2024-07-12T16:18:53.048"}
+{"message": "hello greptime 2024-07-12T16:18:53.048"}
+```
+
+也就是说，当输入内容为纯文本格式时，需要再编写 `Processor` 和 `Transform` 的过程中，使用 `message` 来指代每行数据的内容。
+
 ## 整体结构
 
 Pipeline 由四部分组成：Processors、Dispatcher、Transform 和 Table suffix。

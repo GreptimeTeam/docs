@@ -9,6 +9,46 @@ Pipeline is a mechanism in GreptimeDB for parsing and transforming log data. It 
 
 These configurations are provided in YAML format, allowing the Pipeline to process data during the log writing process according to the defined rules and store the processed data in the database for subsequent structured queries.
 
+## Input Formats
+
+In general, a pipeline receives a set of key-value pairs in the form of a map as its input. For example:
+
+### JSON Format
+
+```json
+[
+  {"message": "hello world", "time": "2024-07-12T16:18:53.048"},
+  {"message": "hello greptime", "time": "2024-07-12T16:18:53.048"}
+]
+```
+
+### NDJSON Format
+
+When the input is in NDJSON format, each line is treated as a separate JSON object.
+
+```json
+{"message": "hello world", "time": "2024-07-12T16:18:53.048"}
+{"message": "hello greptime", "time": "2024-07-12T16:18:53.048"}
+```
+
+### Plain Text Format
+
+```
+hello world 2024-07-12T16:18:53.048
+hello greptime 2024-07-12T16:18:53.048
+```
+
+When the input is in plain text format, each line is treated as a separate object. The entire line is treated as a string and stored in a map object containing only the `message` field.
+
+For example, the above plain text data would be converted to the following equivalent form:
+
+```json
+{"message": "hello world 2024-07-12T16:18:53.048"}
+{"message": "hello greptime 2024-07-12T16:18:53.048"}
+```
+
+In other words, when the input is plain text, you need to use `message` to refer to the content of each line when writing `Processor` and `Transform` configurations.
+
 ## Overall structure
 
 Pipeline consists of four parts: Processors, Dispatcher, Transform, and Table suffix.
