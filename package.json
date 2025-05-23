@@ -1,3 +1,4 @@
+
 {
   "name": "my-website",
   "version": "0.0.0",
@@ -12,7 +13,9 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "backport": "node scripts/backport-docs.js",
+    "backport:dry": "node scripts/backport-docs.js --dry-run --verbose"
   },
   "dependencies": {
     "@1stg/common-config": "^10.0.0",
