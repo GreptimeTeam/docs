@@ -11,9 +11,11 @@ Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制，
 
 ## 输入格式
 
-一般情况下，Pipeline 接收一组键值对形式的 map 作为 Pipeline 的输入。比如
+一般情况下，Pipeline 接收一组键值对形式的 map 作为 Pipeline 的输入。如下三种格式均可作为 Pipeline 的输入：
 
 ### JSON 格式
+
+当请求的 Content-Type 为 `application/json` 时，请求的数据格式为标准的 JSON 格式。
 
 ```json
 [
@@ -24,7 +26,7 @@ Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制，
 
 ### NDJSON 格式
 
-当输入为 NDJSON 格式时，每行数据会被视为一个独立的 JSON 对象。
+当请求的 Content-Type 为 `application/x-ndjson` 时，每行数据会被视为一条独立的标准 JSON 对象。
 
 ```json
 {"message": "hello world", "time": "2024-07-12T16:18:53.048"}
@@ -33,14 +35,14 @@ Pipeline 是 GreptimeDB 中对 log 数据进行解析和转换的一种机制，
 
 ### 纯文本格式
 
+当请求的 Content-Type 为 `text/plain` 时，每行数据会被视为一条独立的对象。并且会将整行数据视为一个字符串，存储在一个只包含 `message` 字段的 map 对象中
+
 ```
 hello world 2024-07-12T16:18:53.048
 hello greptime 2024-07-12T16:18:53.048
 ```
 
-当输入为纯文本格式时，每行数据会被视为一条独立的对象。并且会将整行数据视为一个字符串，存储在一个只包含 `message` 字段的 map 对象中
-
-比如上述的纯文本格式数据会被转换为如下的等价形式：
+上述的纯文本格式数据会被转换为如下的等价形式：
 
 ```json
 {"message": "hello world 2024-07-12T16:18:53.048"}

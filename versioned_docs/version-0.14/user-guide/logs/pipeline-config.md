@@ -11,9 +11,11 @@ These configurations are provided in YAML format, allowing the Pipeline to proce
 
 ## Input Formats
 
-In general, a pipeline receives a set of key-value pairs in the form of a map as its input. For example:
+In general, a pipeline receives a set of key-value pairs in the form of a map as its input. The following three formats can all be used as pipeline input:
 
 ### JSON Format
+
+When the request's Content-Type is `application/json`, the data format should be standard JSON.
 
 ```json
 [
@@ -24,7 +26,7 @@ In general, a pipeline receives a set of key-value pairs in the form of a map as
 
 ### NDJSON Format
 
-When the input is in NDJSON format, each line is treated as a separate JSON object.
+When the request's Content-Type is `application/x-ndjson`, each line is treated as a separate standard JSON object.
 
 ```json
 {"message": "hello world", "time": "2024-07-12T16:18:53.048"}
@@ -33,21 +35,21 @@ When the input is in NDJSON format, each line is treated as a separate JSON obje
 
 ### Plain Text Format
 
+When the request's Content-Type is `text/plain`, each line is treated as a separate object. The entire line is treated as a string and stored in a map object containing only the `message` field.
+
 ```
 hello world 2024-07-12T16:18:53.048
 hello greptime 2024-07-12T16:18:53.048
 ```
 
-When the input is in plain text format, each line is treated as a separate object. The entire line is treated as a string and stored in a map object containing only the `message` field.
-
-For example, the above plain text data would be converted to the following equivalent form:
+The above plain text data will be converted to the following equivalent form:
 
 ```json
 {"message": "hello world 2024-07-12T16:18:53.048"}
 {"message": "hello greptime 2024-07-12T16:18:53.048"}
 ```
 
-In other words, when the input is plain text, you need to use `message` to refer to the content of each line when writing `Processor` and `Transform` configurations.
+In other words, when the input is in plain text format, you need to use `message` to refer to the content of each line when writing `Processor` and `Transform` configurations.
 
 ## Overall structure
 
