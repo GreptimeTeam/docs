@@ -11,7 +11,7 @@ class DocusaurusVersionSync {
     this.versionsDir = options.versionsDir || 'versioned_docs';
     this.i18nDir = options.i18nDir || 'i18n';
     this.defaultLocale = options.defaultLocale || 'en';
-    this.targetVersion = options.targetVersion;
+    this.targetVersion = options.targetVersion || this.getLatestVersion();
     this.dryRun = options.dryRun || false;
     this.verbose = options.verbose || false;
 
@@ -28,23 +28,25 @@ class DocusaurusVersionSync {
   }
 
   /**
-   * Get all available versions from versioned_docs directory
+   * Gets the latest version from versions.json file
+   * @param {string} docusaurusDir - Path to the Docusaurus directory
+   * @returns {string} The first (latest) version from the versions array
    */
-  getAvailableVersions() {
-    const versionsPath = path.join(this.rootDir, this.versionsDir);
+  getLatestVersion() {
+    try {
+      // Construct the path to versions.json
+      const versionsPath = path.join(this.rootDir, 'versions.json');
 
-    if (!fs.existsSync(versionsPath)) {
-      this.log('No versioned_docs directory found', 'error');
-      return [];
+      // Read and parse the versions file
+      const versionsContent = fs.readFileSync(versionsPath, 'utf8');
+      const versions = JSON.parse(versionsContent);
+
+      // Return the first item of the array (or undefined if empty)
+      return versions[0];
+    } catch (error) {
+      console.error('Error reading versions.json:', error);
+      return null;
     }
-
-    return fs.readdirSync(versionsPath)
-      .filter(item => {
-        const itemPath = path.join(versionsPath, item);
-        return fs.statSync(itemPath).isDirectory();
-      })
-      .filter(version => version.startsWith('version-'))
-      .sort();
   }
 
   /**
@@ -201,11 +203,11 @@ class DocusaurusVersionSync {
     const targets = [];
     const locales = this.getAvailableLocales();
 
-    // Remove source directory prefix from source file
-    const relativePath = sourceFile.replace(/^[^/]+\//, '');
-
-    // Check if this is a default locale docs file or i18n current file
+    // Check if this is a default locale docs file
     if (sourceFile.startsWith(`${this.docsDir}/`)) {
+      // Remove source directory prefix from source file
+      const relativePath = sourceFile.replace(`${this.docsDir}/`, '');
+
       // Source is default locale current docs -> target is versioned docs
       const versionedPath = `${this.versionsDir}/version-${this.targetVersion}/${relativePath}`;
       targets.push(versionedPath);
@@ -216,6 +218,9 @@ class DocusaurusVersionSync {
       if (locale !== this.defaultLocale) {
         const i18nCurrentPath = `${this.i18nDir}/${locale}/docusaurus-plugin-content-docs/current/`;
         if (sourceFile.startsWith(i18nCurrentPath)) {
+          // Calculate relative path from i18nCurrentPath instead of sourceFile
+          const relativePath = sourceFile.replace(i18nCurrentPath, '');
+
           // Source is i18n current -> target is i18n versioned
           const versionedI18nPath = `${this.i18nDir}/${locale}/docusaurus-plugin-content-docs/version-${this.targetVersion}/${relativePath}`;
           targets.push(versionedI18nPath);
@@ -350,10 +355,8 @@ Docusaurus Documentation Backport Script
 
 Usage: node backport-docs.js --version <version> [options]
 
-Required:
-  --version <version>    Target version to sync to (e.g., 2.0, 1.5)
-
 Options:
+  --version <version>    Target version to sync to (e.g., 2.0, 1.5)
   --dry-run             Show what would be changed without making changes
   --verbose             Show detailed logging
   --since <ref>         Git reference to compare against (default: HEAD~1)
@@ -373,12 +376,6 @@ Examples:
         `);
         process.exit(0);
     }
-  }
-
-  if (!options.targetVersion) {
-    console.error('Error: --version is required');
-    console.error('Use --help for usage information');
-    process.exit(1);
   }
 
   const syncer = new DocusaurusVersionSync(options);
