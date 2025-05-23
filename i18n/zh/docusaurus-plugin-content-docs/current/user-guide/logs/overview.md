@@ -5,6 +5,9 @@ description: 提供了使用 GreptimeDB 日志服务的各种指南，包括快�
 
 # 日志
 
+本节内容将涵盖 GreptimeDB 针对日志的功能介绍，从基本的写入查询，到高级功能，诸如
+数据变换、全文索引等。
+
 - [快速开始](./quick-start.md)：介绍了如何快速开始使用 GreptimeDB 日志服务。
 - [Pipeline 配置](./pipeline-config.md)：深入介绍 GreptimeDB 中的 Pipeline 的每项具体配置。
 - [管理 Pipeline](./manage-pipelines.md)：介绍了如何创建、删除 Pipeline。

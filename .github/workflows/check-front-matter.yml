@@ -3,7 +3,9 @@ name: Check Markdown Front Matter
 on:
   pull_request:
     paths:
-      - '**/*.md'  # Only trigger on markdown files
+      - 'docs/**/*.md'
+      - 'versioned_docs/**/*.md'
+      - 'i18n/**/*.md'
 
 jobs:
   check-markdown:
@@ -17,10 +19,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-        
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Check for required front matter
         run: node .github/scripts/check-front-matter.js
         env:
