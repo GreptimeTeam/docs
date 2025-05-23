@@ -252,7 +252,7 @@ This command will apply all the changes from git `HEAD~1` to last release
 versioned docs. Then are several options to customize this behavior
 
 ```sh
-pnpm run backport -- --help
+pnpm run backport --help
 ```
 
 Note that we cannot guarantee success of this command because sometimes there
