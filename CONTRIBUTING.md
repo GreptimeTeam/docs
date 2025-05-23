@@ -156,7 +156,7 @@ Relative path and absolute path are both supported in the markdown links.
 The absolute file paths are resolved relative to the content root, usually `docs/` or localized ones like `i18n/<localize>/plugin-content-docs/current`.
 
 For example, link to the `Ingest Data` document in the `./docs` directory:
-  
+
 ```markdown
 [Ingest Data](/user-guide/ingest-data/overview.md)
 ```
@@ -201,7 +201,7 @@ You can include other Markdown files in the current Markdown file.
 For example, if you want to include the `shared-content.md` file in the current file, you can use the following code:
 
 ```markdown
-import IncludesharedContent from './shared-content.md' 
+import IncludesharedContent from './shared-content.md'
 <IncludesharedContent/>
 ```
 
@@ -237,3 +237,24 @@ pnpm run start --locale zh
 
 We use [action-semantic-pull-request](https://github.com/amannn/action-semantic-pull-request) to ensure that PR titles follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
+## Backport nightly changes to versioned docs
+
+Some doc modifications on latest nightly (current) are required to backport to
+released docs. We created a script to simplify this process.
+
+To backport the changes, first commit your changes on nightly docs. Then execute
+
+```sh
+pnpm run backport
+```
+
+This command will apply all the changes from git `HEAD~1` to last release
+versioned docs. Then are several options to customize this behavior
+
+```sh
+pnpm run backport -- --help
+```
+
+Note that we cannot guarantee success of this command because sometimes there
+are more changes to versioned docs that blocks us from apply it. You will need
+to resolve the conflicts manually.
