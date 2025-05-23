@@ -13,7 +13,7 @@ description: 介绍如何导出 GreptimeDB 的监控指标到 Prometheus 或 Gre
 
 GreptimeDB 支持导出数据到 Prometheus。在配置导出数据之前，你需要按照 Prometheus 的[官方文档](https://prometheus.io/docs/prometheus/latest/installation/)安装 Prometheus.
 
-要从 GreptimeDB 抓取指标，您需要配置 Prometheus，具体请参考这份[文档](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana#deployment)。该文档介绍了通过内置监控与 Grafana 的 Helm Chart 部署，或者手动配置 Prometheus 抓取指标，并将相应仪表盘导入 Grafana 的方法。**这是我们推荐的方式**。
+要从 GreptimeDB 抓取指标，您需要配置 Prometheus，具体请参考 [GreptimeDB 的Grafana 仪表板](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana#deployment)的部署文档。该文档介绍了通过内置监控与 Grafana 的 Helm Chart 部署，或者手动配置 Prometheus 抓取指标，并将相应仪表盘导入 Grafana 的方法。**这是我们推荐的方式**。
 
 ## 将指标保存到 GreptimeDB 自身
 
@@ -75,7 +75,7 @@ url = "http://127.0.0.1:4000/v1/prometheus/write?db=greptime_metrics"
 请参考 [Prometheus Remote-Write](/user-guide/ingest-data/for-observability/prometheus.md) 获取更多信息。
 
 ## Grafana 仪表盘
-GreptimeDB 开源版（OSS）为单机与集群部署模式都提供了 Grafana 仪表盘。请参考这份[文档](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana)。
+GreptimeDB 开源版（OSS）为单机与集群部署模式都提供了 Grafana 仪表盘。请参考 [GreptimeDB 的Grafana 仪表板](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana)文档。
 
 GreptimeDB 企业版提供了更强大的监控功能，包括告警和故障诊断等。[联系我们](https://greptime.cn/contactus)申请演示。
 
