@@ -49,7 +49,7 @@ hello greptime 2024-07-12T16:18:53.048
 {"message": "hello greptime 2024-07-12T16:18:53.048"}
 ```
 
-也就是说，当输入内容为纯文本格式时，需要再编写 `Processor` 和 `Transform` 的过程中，使用 `message` 来指代每行数据的内容。
+也就是说，当输入内容为纯文本格式时，需要在编写 `Processor` 和 `Transform` 的过程中，使用 `message` 来指代每行数据的内容。
 
 ## 整体结构
 
