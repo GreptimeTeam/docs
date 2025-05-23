@@ -14,7 +14,7 @@ For detailed metrics of GreptimeDB, please refer to the [Metrics Detail](#metric
 GreptimeDB supports exporting metrics to Prometheus.
 Before configuring export of metrics, you need to setup Prometheus by following their official [documentation](https://prometheus.io/docs/prometheus/latest/installation/).
 
-To scrape metrics from GreptimeDB, you must configure the Prometheus, please refer to this [document](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana#helm), which explains how to deploy GreptimeDB monitoring either through Helm charts with built-in monitoring and Grafana, or by manually configuring Prometheus to scrape metrics and importing appropriate dashboards into Grafana. **This is our recommended approach**.
+To scrape metrics from GreptimeDB, you must configure the Prometheus, please refer to this [document](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana#deployment), which explains how to deploy GreptimeDB monitoring either through Helm charts with built-in monitoring and Grafana, or by manually configuring Prometheus to scrape metrics and importing appropriate dashboards into Grafana. **This is our recommended approach**.
 
 ## Save metrics to GreptimeDB itself
 
