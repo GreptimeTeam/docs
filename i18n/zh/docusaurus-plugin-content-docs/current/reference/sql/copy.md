@@ -70,6 +70,10 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
 
+:::tip NOTE
+CSV 文件必须带有 header，包含表的列名。
+:::
+
 #### Connection 选项
 
 `COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
