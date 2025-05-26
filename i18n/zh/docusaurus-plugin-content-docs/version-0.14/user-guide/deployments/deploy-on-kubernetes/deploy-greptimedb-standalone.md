@@ -33,8 +33,8 @@ kind create cluster
 ```
 
 <details>
-  <summary>预期输出</summary>
-```bash
+  <summary>Expected Output</summary>
+```log
 Creating cluster "kind" ...
  ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
  ✓ Preparing nodes 📦
@@ -44,26 +44,8 @@ Creating cluster "kind" ...
  ✓ Installing StorageClass 💾
 Set kubectl context to "kind-kind"
 You can now use your cluster with:
-
 kubectl cluster-info --context kind-kind
-
-Thanks for using kind! 😊
-```
-</details>
-
-使用以下命令检查集群的状态：
-
-```bash
-kubectl cluster-info
-```
-
-<details>
-  <summary>预期输出</summary>
-```bash
-Kubernetes control plane is running at https://127.0.0.1:60495
-CoreDNS is running at https://127.0.0.1:60495/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
 ```
 </details>
 

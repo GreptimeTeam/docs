@@ -34,7 +34,7 @@ kind create cluster
 
 <details>
   <summary>Expected Output</summary>
-```bash
+```log
 Creating cluster "kind" ...
  ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
  ✓ Preparing nodes 📦
@@ -44,26 +44,8 @@ Creating cluster "kind" ...
  ✓ Installing StorageClass 💾
 Set kubectl context to "kind-kind"
 You can now use your cluster with:
-
 kubectl cluster-info --context kind-kind
-
-Thanks for using kind! 😊
-```
-</details>
-
-Check the status of the cluster:
-
-```bash
-kubectl cluster-info
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-Kubernetes control plane is running at https://127.0.0.1:60495
-CoreDNS is running at https://127.0.0.1:60495/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
 ```
 </details>
 
@@ -71,7 +53,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 We provide the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
 
-```bash
+```
 helm repo add greptime https://greptimeteam.github.io/helm-charts/
 helm repo update
 ```
