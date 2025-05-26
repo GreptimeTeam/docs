@@ -253,6 +253,7 @@ public=>
 ```bash
 kubectl port-forward svc/greptimedb-standalone 4000:4000 -n default > connections.out &
 ```
+
 ```bash
 curl -X POST \
   -d 'sql=show tables' \
