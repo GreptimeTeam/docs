@@ -9,43 +9,12 @@ By monitoring metrics, you can assess the state of the database, maintain the de
 
 For detailed metrics of GreptimeDB, please refer to the [Metrics Detail](#metrics-detail) section.
 
-## Start GreptimeDB
-
-Please refer to the [documentation](/getting-started/installation/overview.md) to learn how to start GreptimeDB.
-
 ## Export metrics to Prometheus
 
 GreptimeDB supports exporting metrics to Prometheus.
 Before configuring export of metrics, you need to setup Prometheus by following their official [documentation](https://prometheus.io/docs/prometheus/latest/installation/).
 
-To scrape metrics from GreptimeDB, write a Prometheus configuration file and save it as `prometheus.yml`:
-
-```yml
-global:
-  scrape_interval: 15s 
-
-scrape_configs:
-  - job_name: 'greptimedb'
-    static_configs:
-      # Assuming that GreptimeDB is running locally.
-      # The default HTTP port of 4000.
-      - targets: ['localhost:4000']
-```
-
-Start Prometheus using the configuration file.
-For example, bind-mount the configuration file when starting Prometheus using Docker:
-
-```bash
-docker run \
-  -p 9090:9090 \
-  -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
-  prom/prometheus
-```
-
-:::tip NOTE
-To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
-the `docker run` command.
-:::
+To scrape metrics from GreptimeDB, you must configure the Prometheus, please refer to this [Grafana dashboards for GreptimeDB](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana#deployment) document, which explains how to deploy GreptimeDB monitoring either through Helm charts with built-in monitoring and Grafana, or by manually configuring Prometheus to scrape metrics and importing appropriate dashboards into Grafana. **This is our recommended approach**.
 
 ## Save metrics to GreptimeDB itself
 
@@ -64,14 +33,18 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-db = "information_schema"
+db = "greptime_metrics"
 ```
 
-The `db` option specifies the database where metrics are saved. You can change it to a different database.
+The `db` option specifies the database where metrics are saved. You can change it to a different database. You must create the database `greptime_metrics` manually in advance.
 
 ### Distributed cluster
 
 Configuration files need to be written for each component in the cluster.
+
+::::tip
+You must create the database manually in advance before configuration.
+::::
 
 #### Frontend
 
@@ -83,7 +56,7 @@ enable=true
 # The interval of writing metrics.
 write_interval = "30s"
 [export_metrics.self_import]
-db = "information_schema"
+db = "greptime_metrics"
 ```
 
 The `db` option specifies the database where metrics are saved. You can change it to a different database.
@@ -97,67 +70,59 @@ To export metrics for Datanode and Metasrv, you can use the `remote_write` confi
 enable=true
 write_interval = "30s"
 [export_metrics.remote_write]
-url = "http://127.0.0.1:4000/v1/prometheus/write?db=system"
+url = "http://127.0.0.1:4000/v1/prometheus/write?db=greptime_metrics"
 ```
 
-GreptimeDB is compatible with the Prometheus Remote-Write protocol. For more information, please refer to the [Prometheus Remote-Write](/user-guide/ingest-data/for-observability/prometheus.md) documentation.
+You can specify the address as any frontend node in the cluster. GreptimeDB is compatible with the Prometheus Remote-Write protocol. For more information, please refer to the [Prometheus Remote-Write](/user-guide/ingest-data/for-observability/prometheus.md) documentation.
+
+## Grafana Dashboard
+
+The OSS version of GreptimeDB provides Grafana dashboards for both standalone and cluster deployments. Please refer to the [Grafana dashboards for GreptimeDB](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana) document.
+
+The GreptimeDB Enterprise offers more advanced monitoring features, including alerting and fault diagnosis etc. [Contact us](https://greptime.com/contactus) to request a demo.
 
 ## Metrics Detail
-You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB. We will add more documents of the metrics sooner.
 
-### Frontend
+You can check the output of `curl http://<host>:<port>/metrics` by getting the latest metrics of GreptimeDB.
 
-| Key                                          | Type    |
-|----------------------------------------------|---------|
-| greptime_table_operator_ingest_rows          | counter |
-| greptime_servers_error                       | counter |
-| greptime_servers_http_requests_total         | counter |
-| greptime_servers_postgres_connection_count   | gauge   |
-| greptime_servers_mysql_connection_count      | gauge   |
-| greptime_query_merge_scan_regions            | summary |
-| greptime_servers_http_sql_elapsed            | summary |
-| greptime_query_optimize_physicalplan_elapsed | summary |
-| greptime_frontend_handle_sql_elapsed         | summary |
-| greptime_http_track_metrics                  | summary |
-| greptime_query_create_physicalplan_elapsed   | summary |
-| greptime_servers_mysql_query_elapsed         | summary |
-| greptime_servers_http_requests_elapsed       | summary |
-| greptime_query_execute_plan_elapsed          | summary |
-| greptime_catalog_kv_get_remote               | summary |
-| greptime_grpc_region_request                 | summary |
-| greptime_query_merge_scan_poll_elapsed       | summary |
-| greptime_catalog_kv_get                      | summary |
-| greptime_table_operator_create_table         | summary |
+For example:
 
+```bash
+curl http://localhost:4000/metrics
+```
 
-### Datanode
-
-| Key                                        | Type    |
-|--------------------------------------------|---------|
-| greptime_opendal_bytes_total               | counter |
-| greptime_servers_http_requests_total       | counter |
-| greptime_opendal_requests_total            | counter |
-| greptime_catalog_catalog_count             | gauge   |
-| greptime_catalog_schema_count              | gauge   |
-| greptime_opendal_requests_duration_seconds | summary |
-| greptime_http_track_metrics                | summary |
-| greptime_servers_http_requests_elapsed     | summary |
-
-
-### Meta
-
-| Key                                    | Type    |
-|----------------------------------------|---------|
-| greptime_meta_create_schema            | counter |
-| greptime_servers_http_requests_total   | counter |
-| greptime_meta_create_catalog           | counter |
-| greptime_meta_heartbeat_connection_num | gauge   |
-| greptime_meta_txn_request              | summary |
-| greptime_meta_kv_request               | summary |
-| greptime_meta_create_schema            | summary |
-| greptime_meta_create_catalog           | summary |
-| greptime_meta_handler_execute          | summary |
-| greptime_servers_http_requests_elapsed | summary |
-| greptime_http_track_metrics            | summary |
-| greptime_meta_procedure_create_table   | summary |
-| greptime_grpc_region_request           | summary |
+```text
+# TYPE greptime_app_version gauge
+greptime_app_version{app="greptime-standalone",short_version="main-864cc117",version="0.15.0"} 1
+# HELP greptime_catalog_catalog_count catalog catalog count
+# TYPE greptime_catalog_catalog_count gauge
+greptime_catalog_catalog_count 1
+# HELP greptime_catalog_schema_count catalog schema count
+# TYPE greptime_catalog_schema_count gauge
+greptime_catalog_schema_count 3
+# HELP greptime_datanode_handle_region_request_elapsed datanode handle region request elapsed
+# TYPE greptime_datanode_handle_region_request_elapsed histogram
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.005"} 0
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.01"} 0
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.025"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.05"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.1"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.25"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="0.5"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="1"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="2.5"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="5"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="10"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)",le="+Inf"} 1
+greptime_datanode_handle_region_request_elapsed_sum{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)"} 0.015692709
+greptime_datanode_handle_region_request_elapsed_count{datanode_region_request_type="Create",region_id="4569845202944(1064, 0)"} 1
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.005"} 0
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.01"} 0
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.025"} 8
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.05"} 104
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.1"} 108
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.25"} 108
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="0.5"} 108
+greptime_datanode_handle_region_request_elapsed_bucket{datanode_region_request_type="Put",region_id="4574140170240(1065, 0)",le="1"} 108
+......
+```
