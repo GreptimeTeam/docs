@@ -39,6 +39,7 @@ const bielMetaMap = {
     bielButtonText: "Ask AI",
     version: 'latest',
     buttonStyle: 'dark',
+    sourcesText: 'Related Documents',
     inputPlaceholderText: 'Ask a question about Greptime...',
     footerText: 'AI-generated answers may contain errors. <br> You can also communicate with engineers through <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> or join <a href="https://greptime.com/slack">Slack community</a>.',
     welcomeMessage: 'Hi! I’m Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
@@ -49,6 +50,7 @@ const bielMetaMap = {
     bielButtonText: "向 AI 提问",
     version: 'latest',
     buttonStyle: 'dark',
+    sourcesText: '相关文档',
     inputPlaceholderText: '请输入和 Greptime 相关的问题...',
     footerText: 'AI 生成的答案可能包含错误。<br> 你还可以通过 <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> 或加入 <a href="https://greptime.com/slack">Slack 社区</a>与工程师沟通。',
     welcomeMessage: '你好，我是 Greptime AI。你可以问我关于 GreptimeDB 的问题，例如我可以帮助你编写 SQL、Pipeline 或其他与 GreptimeDB 相关的代码。',
