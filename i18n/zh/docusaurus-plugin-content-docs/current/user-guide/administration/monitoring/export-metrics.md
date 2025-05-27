@@ -75,7 +75,7 @@ url = "http://127.0.0.1:4000/v1/prometheus/write?db=greptime_metrics"
 请参考 [Prometheus Remote-Write](/user-guide/ingest-data/for-observability/prometheus.md) 获取更多信息。
 
 ## Grafana 仪表盘
-GreptimeDB 开源版（OSS）为单机与集群部署模式都提供了 Grafana 仪表盘。请参考 [GreptimeDB 的Grafana 仪表板](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana)文档。
+GreptimeDB 开源版（OSS）为单机与集群部署模式都提供了 Grafana 仪表盘。请参考 [GreptimeDB 的 Grafana 仪表板](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana)文档。
 
 GreptimeDB 企业版提供了更强大的监控功能，包括告警和故障诊断等。[联系我们](https://greptime.cn/contactus)申请演示。
 
