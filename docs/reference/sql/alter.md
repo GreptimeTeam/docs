@@ -115,7 +115,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 
 The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
 
-#### Alter table options
+### Alter table options
 
 `ALTER TABLE` statements can also be used to change the options of tables. 
 
@@ -184,7 +184,7 @@ The valid options for the skipping index include:
 * `type`: the index type, only supports `BLOOM` type right now.
 * `granularity`:  Each indexed block consists of `GRANULARITY` granules. For example, if the granularity of the index is 8192 rows, and the index granularity is 4, each indexed "block" will be 32768 rows. 
 
-#### Remove index on a column
+### Remove index on a column
 
 The syntax is:
 ```sql
@@ -211,7 +211,7 @@ The column must be a string type to alter the fulltext index.
 
 If the fulltext index has never been enabled, you can enable it and specify the `analyzer` and `case_sensitive` options. When the fulltext index is already enabled on a column, you can disable it but **cannot modify the options, and so does the skipping index**.
 
-#### Rename table
+### Rename table
 
 Renames the table:
 

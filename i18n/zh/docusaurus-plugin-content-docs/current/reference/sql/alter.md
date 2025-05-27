@@ -184,7 +184,7 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 * `type`: 索引类型，目前仅支持 `BLOOM` 即布隆过滤器。
 * `granularity`: 每个索引块由 `GRANULARITY` 个粒度组成。例如，如果索引的粒度为 8192 行，而索引粒度为 4，则每个索引”块“将为 32768 行。
 
-#### 移除列的索引
+### 移除列的索引
 
 语法如下：
 
@@ -214,7 +214,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 
 当列的全文索引未开启过时，可以启用全文索引，并设置 `analyzer` 和 `case_sensitive` 选项；当列的全文索引选项已经启用时，可以关闭全文索引，**但不能修改选项，跳数索引也是如此**。
 
-#### 重命名表
+### 重命名表
 
 ```sql
 ALTER TABLE monitor RENAME monitor_new;
