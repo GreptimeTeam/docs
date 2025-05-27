@@ -7,6 +7,10 @@ description: Guide to install and run GreptimeDB in standalone mode using binary
 
 We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/deployments/configuration.md).
 
+## Deploy the GreptimeDB standalone in Kubernetes
+
+For production environments, we recommend deploying the GreptimeDB standalone in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
+
 ## Binary
 
 ### Download from website
