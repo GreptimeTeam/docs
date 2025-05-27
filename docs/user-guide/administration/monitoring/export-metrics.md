@@ -36,7 +36,7 @@ write_interval = "30s"
 db = "greptime_metrics"
 ```
 
-The `db` option specifies the database where metrics are saved. You can change it to a different database. You must create the database manually in advance.
+The `db` option specifies the database where metrics are saved. You can change it to a different database. You must create the database `greptime_metrics` manually in advance.
 
 ### Distributed cluster
 
