@@ -7,9 +7,9 @@ description: A comprehensive guide to quickly writing and querying logs in Grept
 
 This guide provides step-by-step instructions for quickly writing and querying logs in GreptimeDB.
 
-GreptimeDB supports a pipeline mechanism to parse and transform structured log messages into multiple columns for efficient storage and querying. Alternatively, logs can be written directly into a table without using a pipeline.
+GreptimeDB supports a pipeline mechanism to parse and transform structured log messages into multiple columns for efficient storage and querying. 
 
-The following sections explain these two methods in detail.
+For unstructured logs, you can write them directly into a table without utilizing a pipeline.
 
 ## Write logs by Pipeline
 
@@ -182,8 +182,7 @@ However, this method limits the ability to perform high-performance analysis.
 
 ### Create a table for unstructured logs
 
-For this simplest case,
-you need to create a table to store the logs before inserting.
+You need to create a table to store the logs before inserting.
 Use the following SQL statement to create a table named `origin_logs`:
 
 * The `FULLTEXT INDEX` on the `message` column optimizes text search queries
