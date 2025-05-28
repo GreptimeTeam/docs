@@ -3,7 +3,7 @@ keywords: [Kubernetes 部署, GreptimeDB 单机版, 安装]
 description: 在 Kubernetes 上部署 GreptimeDB 单机版的指南。
 ---
 
-# 立即开始
+# 部署 GreptimeDB 单机版
 
 在该指南中，你将学会如何在 Kubernetes 上部署 GreptimeDB 单机版。
 

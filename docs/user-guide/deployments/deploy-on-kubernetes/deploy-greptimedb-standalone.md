@@ -3,7 +3,7 @@ keywords: [Kubernetes, deployment, getting started, prerequisites, installation]
 description: Step-by-step guide to deploying a GreptimeDB standalone on Kubernetes.
 ---
 
-# Getting Started
+# Deploy GreptimeDB Standalone
 
 In this guide, you will learn how to deploy a GreptimeDB standalone on Kubernetes.
 
