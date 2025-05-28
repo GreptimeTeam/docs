@@ -36,23 +36,7 @@ directory](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafa
 
 Note that you may need to restart your grafana server after installing the plugin.
 
-### Quick preview using Docker
 
-Greptime provides a docker compose file that integrates GreptimeDB, Prometheus, Prometheus Node Exporter, Grafana, and this plugin together so you can quickly experience the GreptimeDB data source plugin.
-
-```shell
-git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git
-cd docker
-docker compose up
-```
-
-You can also try out this plugin from a Grafana docker image:
-
-```shell
-docker run -d -p 3000:3000 --name=grafana --rm \
-  -e "GF_INSTALL_PLUGINS=https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip;info8fcc" \
-  grafana/grafana-oss
-```
 
 ### Connection settings
 
@@ -66,24 +50,82 @@ Fill in the following URL in the GreptimeDB server URL:
 http://<host>:4000
 ```
 
-Then do the following configuration:
-
-- Database Name:`<dbname>`, leave it blank to use the default database `public`
 - In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
   - User: `<username>`
   - Password: `<password>`
 
 Then click the Save & Test button to test the connection.
 
-### Use the query builder
-* Table: Query for datasets without a timestamp field.
-  ![Table Query](/grafana/table.png)
-* Time Series: Query for datasets has a timestamp field.
-  ![Time Series](/grafana/series.png)
-* Logs: Query for logs. Need specify the `timestamp` field and the `message` field.
-  ![Logs](/grafana/logs.png)
-* Traces: Query for trace data. Need specify the columns in the table as the screenshot to get trace list.
-  ![Traces](/grafana/traceconfig.png)
+### General Query Settings
+Before selecting any query type, you first need to configure the **Database** and **Table** to query from.
+
+| Setting   | Description                               |
+| :-------- | :---------------------------------------- |
+| **Database** | Select the database you want to query.     |
+| **Table** | Select the table you want to query from. |
+
+---
+
+### Table Query
+
+Choose the `Table` query type when your query results **do not include a time column**. This is suitable for displaying tabular data.
+
+
+| Setting   | Description                                     |
+| :-------- | :---------------------------------------------- |
+| **Columns** | Select the columns you want to retrieve. Multiple selections are allowed. |
+| **Filters** | Set conditions to filter your data.             |
+
+![Table Query](/grafana/table.png)
+
+---
+
+### Metrics Query
+
+Select the `Time Series` query type when your query results **include both a time column and a numerical value column**. This is ideal for visualizing metrics over time.
+
+| Main Setting | Description           |
+| :----------- | :-------------------- |
+| **Time** | Select the time column. |
+| **Columns** | Select the numerical value column(s). |
+
+![Time Series](/grafana/series1.png)
+
+---
+
+### Logs Query
+
+Choose the `Logs` query type when you want to query log data. You'll need to specify a **Time** column and a **Message** column.
+
+| Main Setting | Description                   |
+| :----------- | :---------------------------- |
+| **Time** | Select the timestamp column for your logs. |
+| **Message** | Select the column containing the log content. |
+| **Log Level**| (Optional) Select the column representing the log level. |
+
+![Logs](/grafana/logs.png)
+
+---
+
+### Traces Query
+
+Select the `Traces` query type when you want to query distributed tracing data.
+
+| Main Setting          | Description                                                                                             |
+| :-------------------- | :------------------------------------------------------------------------------------------------------ |
+| **Trace Model** | Select `Trace Search` to query a list of traces.                                                        |
+| **Trace Id Column** | Default value: `trace_id`                                                                               |
+| **Span Id Column** | Default value: `span_id`                                                                                |
+| **Parent Span ID Column** | Default value: `parent_span_id`                                                                       |
+| **Service Name Column** | Default value: `service_name`                                                                         |
+| **Operation Name Column** | Default value: `span_name`                                                                            |
+| **Start Time Column** | Default value: `timestamp`                                                                              |
+| **Duration Time Column** | Default value: `duration_nano`                                                                          |
+| **Duration Unit** | Default value: `nano_seconds`                                                                           |
+| **Tags Column** | Multiple selections allowed. Corresponds to columns starting with `span_attributes` (e.g., `span_attributes.http.method`). |
+| **Service Tags Column** | Multiple selections allowed. Corresponds to columns starting with `resource_attributes` (e.g., `resource_attributes.host.name`). |
+
+![Traces](/grafana/traceconfig.png)
 
 
 ## Prometheus data source
