@@ -1,61 +1,20 @@
 ---
 keywords: [quick start, write logs, query logs, pipeline, structured data, log ingestion, log collection, log management tools]
-description: Guides users through the process of quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
+description: A comprehensive guide to quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
 ---
 
 # Quick Start
 
-This guide will walk you through the process of quickly writing and querying logs.
+This guide provides step-by-step instructions for quickly writing and querying logs in GreptimeDB.
 
-You can write logs directly or use pipeline to write logs.
-Writing logs directly is simple but cannot split log text to structured data as the pipeline method does.
-The following sections will help you understand the differences between these two methods.
+GreptimeDB supports a pipeline mechanism to parse and transform structured log messages into multiple columns for efficient storage and querying. 
 
-## Write logs directly
-
-This is the simplest way to write logs to GreptimeDB. 
-
-### Create a table
-
-First, create a table named origin_logs to store your logs.
-The `FULLTEXT INDEX` specification for the message column in the following SQL creates a full-text index to optimize queries.
-
-```sql
-CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT INDEX,
-  `time` TIMESTAMP TIME INDEX
-) WITH (
-  append_mode = 'true'
-);
-```
-
-### Insert logs
-
-#### Write logs using the SQL protocol
-
-Use the `INSERT` statement to insert logs into the table.
-
-```sql
-INSERT INTO origin_logs (message, time) VALUES
-('127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"', '2024-05-25 20:16:37.217'),
-('192.168.1.1 - - [25/May/2024:20:17:37 +0000] "POST /api/login HTTP/1.1" 200 1784 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"', '2024-05-25 20:17:37.217'),
-('10.0.0.1 - - [25/May/2024:20:18:37 +0000] "GET /images/logo.png HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"', '2024-05-25 20:18:37.217'),
-('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
-```
-
-The above SQL inserts the entire log text into a single column,
-and you must add an extra timestamp for each log.
-
-#### Write logs using the gRPC protocol
-
-You can also write logs using the gRPC protocol, which is a more efficient method.
-
-Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) to learn how to write logs using the gRPC protocol.
+For unstructured logs, you can write them directly into a table without utilizing a pipeline.
 
 ## Write logs by Pipeline
 
-Using a pipeline allows you to automatically parse and transform the log message into multiple columns,
-as well as create and alter tables automatically.
+Pipelines enable automatic parsing and transformation of log messages into multiple columns,
+as well as automatic table creation and alteration.
 
 ### Write JSON logs using the built-in Pipeline (Experimental)
 
@@ -98,7 +57,9 @@ curl -X POST \
 - [`Authorization`](/user-guide/protocols/http.md#authentication) header.
 - `pipeline_name=greptime_identity` specifies the built-in pipeline.
 - `table=pipeline_logs` specifies the target table. If the table does not exist, it will be created automatically.
-The `greptime_identity` pipeline will automatically create columns for each field in the JSON log. A successful command execution will return:
+
+The `greptime_identity` pipeline automatically creates columns for each field in the JSON log.
+A successful command execution returns:
 
 ```json
 {"output":[{"affectedrows":3}],"execution_time_ms":9}
@@ -108,11 +69,13 @@ For more details about the `greptime_identity` pipeline, please refer to the [Ma
 
 ### Write logs using a custom Pipeline
 
-If your logs follow a specific pattern, you can create a custom pipeline to parse and transform the log messages into multiple columns, and automatically create tables.
+Custom pipelines allow you to parse and transform log messages into multiple columns based on specific patterns,
+and automatically create tables.
 
 #### Create a Pipeline
 
-GreptimeDB provides a dedicated HTTP interface for creating pipelines. Here's how to do it:
+GreptimeDB provides an HTTP interface for creating pipelines.
+Here is how to do it:
 
 First, create a pipeline file, for example, `pipeline.yaml`.
 
@@ -211,27 +174,60 @@ You will see the following output if the command is successful:
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-## Differences between writing logs directly and using a pipeline
+## Write unstructured logs directly
 
-In the above examples, the table `origin_logs` is created by writing logs directly,
-and the table `pipeline_logs` is automatically created by writing logs using pipeline.
+When your log messages are unstructured text,
+you can write them directly to the database.
+However, this method limits the ability to perform high-performance analysis.
+
+### Create a table for unstructured logs
+
+You need to create a table to store the logs before inserting.
+Use the following SQL statement to create a table named `origin_logs`:
+
+* The `FULLTEXT INDEX` on the `message` column optimizes text search queries
+* Setting `append_mode` to `true` optimizes log insertion by only appending new rows to the table
+
+```sql
+CREATE TABLE `origin_logs` (
+  `message` STRING FULLTEXT INDEX,
+  `time` TIMESTAMP TIME INDEX
+) WITH (
+  append_mode = 'true'
+);
+```
+
+### Insert logs
+
+#### Write logs using the SQL protocol
+
+Use the `INSERT` statement to insert logs into the table.
+
+```sql
+INSERT INTO origin_logs (message, time) VALUES
+('127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"', '2024-05-25 20:16:37.217'),
+('192.168.1.1 - - [25/May/2024:20:17:37 +0000] "POST /api/login HTTP/1.1" 200 1784 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"', '2024-05-25 20:17:37.217'),
+('10.0.0.1 - - [25/May/2024:20:18:37 +0000] "GET /images/logo.png HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"', '2024-05-25 20:18:37.217'),
+('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
+```
+
+The above SQL inserts the entire log text into a single column,
+and you must add an extra timestamp for each log.
+
+#### Write logs using the gRPC protocol
+
+You can also write logs using the gRPC protocol, which is a more efficient method.
+
+Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md) to learn how to write logs using the gRPC protocol.
+
+## Differences between using a pipeline and writing unstructured logs directly
+
+In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline, 
+and the table `origin_logs` is created by writing logs directly.
 Let's explore the differences between these two tables.
 
 ```sql
-DESC origin_logs;
-```
-
-```sql
-+---------+----------------------+------+------+---------+---------------+
-| Column  | Type                 | Key  | Null | Default | Semantic Type |
-+---------+----------------------+------+------+---------+---------------+
-| message | String               |      | YES  |         | FIELD         |
-| time    | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
-+---------+----------------------+------+------+---------+---------------+
-```
-
-```sql
-DESC pipeline_logs;
+DESC custom_pipeline_logs;
 ```
 
 ```sql
@@ -249,9 +245,22 @@ DESC pipeline_logs;
 7 rows in set (0.00 sec)
 ```
 
+```sql
+DESC origin_logs;
+```
+
+```sql
++---------+----------------------+------+------+---------+---------------+
+| Column  | Type                 | Key  | Null | Default | Semantic Type |
++---------+----------------------+------+------+---------+---------------+
+| message | String               |      | YES  |         | FIELD         |
+| time    | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
++---------+----------------------+------+------+---------+---------------+
+```
+
 From the table structure, you can see that the `origin_logs` table has only two columns,
 with the entire log message stored in a single column.
-The `pipeline_logs` table stores the log message in multiple columns.
+The `custom_pipeline_logs` table stores the log message in multiple columns.
 
 It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Column matching query proves superior to full-text searching for several key reasons:
 
@@ -263,16 +272,16 @@ Of course, if you need keyword searching within large text blocks, you must use 
 
 ## Query logs
 
-We use the `pipeline_logs` table as an example to query logs.
+We use the `custom_pipeline_logs` table as an example to query logs.
 
 ### Query logs by tags
 
-With the multiple tag columns in `pipeline_logs`,
+With the multiple tag columns in `custom_pipeline_logs`,
 you can query data by tags flexibly.
 For example, query the logs with `status_code` 200 and `http_method` GET.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
+SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
@@ -293,7 +302,7 @@ This allows for high-performance full-text searches.
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
+SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
 ```
 
 ```sql
