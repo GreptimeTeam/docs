@@ -219,12 +219,12 @@ INSERT INTO origin_logs (message, time) VALUES
 ## 使用 Pipeline 与直接写入非结构化日志的区别
 
 在上述示例中，
-使用 pipeline 写入日志的方式自动创建了表 `pipeline_logs`，
+使用 pipeline 写入日志的方式自动创建了表 `custom_pipeline_logs`，
 直接写入日志的方式创建了表 `origin_logs`，
 让我们来探讨这两个表之间的区别。
 
 ```sql
-DESC pipeline_logs;
+DESC custom_pipeline_logs;
 ```
 
 ```sql
@@ -256,7 +256,7 @@ DESC origin_logs;
 ```
 
 从表结构中可以看到，`origin_logs` 表只有两列，整个日志消息存储在一个列中。
-而 `pipeline_logs` 表将日志消息存储在多个列中。
+而 `custom_pipeline_logs` 表将日志消息存储在多个列中。
 
 推荐使用 pipeline 方法将日志消息拆分为多个列，这样可以精确查询某个特定列中的某个值。
 与全文搜索相比，列匹配查询在处理字符串时具有以下几个优势：
@@ -269,15 +269,15 @@ DESC origin_logs;
 
 ## 查询日志
 
-以 `pipeline_logs` 表为例查询日志。
+以 `custom_pipeline_logs` 表为例查询日志。
 
 ### 按 Tag 查询日志
 
-对于 `pipeline_logs` 中的多个 Tag 列，你可以灵活地按 Tag 查询数据。
+对于 `custom_pipeline_logs` 中的多个 Tag 列，你可以灵活地按 Tag 查询数据。
 例如，查询 `status_code` 为 `200` 且 `http_method` 为 `GET` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
+SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
@@ -297,7 +297,7 @@ SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 例如，查询 `request_line` 包含 `/index.html` 或 `/api/login` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
+SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
 ```
 
 ```sql

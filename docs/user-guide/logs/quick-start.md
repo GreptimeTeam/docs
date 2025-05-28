@@ -222,12 +222,12 @@ Refer to [Write Data Using gRPC](/user-guide/ingest-data/for-iot/grpc-sdks/overv
 
 ## Differences between using a pipeline and writing unstructured logs directly
 
-In the above examples, the table `pipeline_logs` is automatically created by writing logs using pipeline, 
+In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline, 
 and the table `origin_logs` is created by writing logs directly.
 Let's explore the differences between these two tables.
 
 ```sql
-DESC pipeline_logs;
+DESC custom_pipeline_logs;
 ```
 
 ```sql
@@ -260,7 +260,7 @@ DESC origin_logs;
 
 From the table structure, you can see that the `origin_logs` table has only two columns,
 with the entire log message stored in a single column.
-The `pipeline_logs` table stores the log message in multiple columns.
+The `custom_pipeline_logs` table stores the log message in multiple columns.
 
 It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Column matching query proves superior to full-text searching for several key reasons:
 
@@ -272,16 +272,16 @@ Of course, if you need keyword searching within large text blocks, you must use 
 
 ## Query logs
 
-We use the `pipeline_logs` table as an example to query logs.
+We use the `custom_pipeline_logs` table as an example to query logs.
 
 ### Query logs by tags
 
-With the multiple tag columns in `pipeline_logs`,
+With the multiple tag columns in `custom_pipeline_logs`,
 you can query data by tags flexibly.
 For example, query the logs with `status_code` 200 and `http_method` GET.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
+SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
@@ -302,7 +302,7 @@ This allows for high-performance full-text searches.
 For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
 
 ```sql
-SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
+SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
 ```
 
 ```sql
