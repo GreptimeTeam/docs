@@ -50,9 +50,9 @@ Fill in the following URL in the GreptimeDB server URL:
 http://<host>:4000
 ```
 
-- In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
-  - User: `<username>`
-  - Password: `<password>`
+In the Auth section, click basic auth, and fill in the username and password for GreptimeDB in the Basic Auth Details section (not set by default, no need to fill in).
+- User: `<username>`
+- Password: `<password>`
 
 Then click the Save & Test button to test the connection.
 
