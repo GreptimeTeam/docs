@@ -64,6 +64,8 @@ Before selecting any query type, you first need to configure the **Database** an
 | **Database** | Select the database you want to query.     |
 | **Table** | Select the table you want to query from. |
 
+![DB Table Config](/grafana/dbtable.png)
+
 ---
 
 ### Table Query

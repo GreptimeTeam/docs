@@ -64,6 +64,8 @@ http://<host>:4000
 | Database| 选择数据库
 | Table   | 选择表格
 
+![DB Table Config](/grafana/dbtable.png)
+
 ---
 
 ### Table 查询
