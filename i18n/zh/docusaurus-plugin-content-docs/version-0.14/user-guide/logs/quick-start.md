@@ -5,51 +5,12 @@ description: 介绍如何快速开始写入和查询日志，包括直接写入�
 
 # 快速开始
 
-本指南将引导您快速完成写入并查询日志的过程。
+本指南逐步讲解如何在 GreptimeDB 中快速写入和查询日志。
 
-您可以直接写入日志或使用 pipeline 写入日志。
-直接写入日志很简单，但不能像 pipeline 方法那样将日志文本拆分为结构化数据。
-以下部分将帮助您了解这两种方法之间的区别。
+GreptimeDB 支持可以将结构化日志消息解析并转换为多列的 Pipeline 机制，
+以实现高效的存储和查询。
 
-## 直接写入日志
-
-这是将日志写入 GreptimeDB 的最简单方法。
-
-### 创建表
-
-首先，创建一个名为 `origin_logs` 的表来存储您的日志。
-以下 SQL 中 `message` 列的 `FULLTEXT INDEX` 表示创建了一个全文索引以优化查询。
-
-```sql
-CREATE TABLE `origin_logs` (
-  `message` STRING FULLTEXT INDEX,
-  `time` TIMESTAMP TIME INDEX
-) WITH (
-  append_mode = 'true'
-);
-```
-
-### 插入日志
-
-#### 使用 SQL 协议写入
-
-使用 `INSERT` 语句将日志插入表中。
-
-```sql
-INSERT INTO origin_logs (message, time) VALUES
-('127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"', '2024-05-25 20:16:37.217'),
-('192.168.1.1 - - [25/May/2024:20:17:37 +0000] "POST /api/login HTTP/1.1" 200 1784 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"', '2024-05-25 20:17:37.217'),
-('10.0.0.1 - - [25/May/2024:20:18:37 +0000] "GET /images/logo.png HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"', '2024-05-25 20:18:37.217'),
-('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
-```
-
-上述 SQL 将整个日志文本插入到一个列中，除此之外，您必须为每条日志添加一个额外的时间戳。
-
-#### 使用 gRPC 协议写入
-
-您也可以使用 gRPC 协议写入日志，这是一个更高效的方法。
-
-请参阅[使用 gRPC 写入数据](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md)以了解如何使用 gRPC 协议写入日志。
+对于非结构化的日志，你可以不使用 Pipeline，直接将日志写入表。
 
 ## 使用 Pipeline 写入日志
 
@@ -105,6 +66,8 @@ curl -X POST \
 有关 `greptime_identity` pipeline 的更多详细信息，请参阅 [管理 Pipeline](manage-pipelines.md#greptime_identity) 文档。
 
 ### 使用自定义 Pipeline 写入日志
+
+自定义 pipeline 允许你解析结构的日志消息并将其转换为多列，并自动创建表。
 
 #### 创建 Pipeline
 
@@ -172,7 +135,7 @@ curl -X "POST" \
 {"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
 ```
 
-您可以为同一 pipeline 名称创建多个版本。
+你可以为同一 pipeline 名称创建多个版本。
 所有 pipeline 都存储在 `greptime_private.pipelines` 表中。
 请参阅[查询 Pipelines](manage-pipelines.md#查询-pipeline)以查看表中的 pipeline 数据。
 
@@ -201,32 +164,67 @@ curl -X POST \
   ]'
 ```
 
-如果命令执行成功，您将看到以下输出：
+如果命令执行成功，你将看到以下输出：
 
 ```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-## 直接写入日志与使用 Pipeline 的区别
+## 直接写入非结构化的日志
 
-在上述示例中，直接写入日志的方式创建了表 `origin_logs`，使用 pipeline 写入日志的方式自动创建了表 `pipeline_logs`，让我们来探讨这两个表之间的区别。
+如果你的日志消息是非结构化文本，
+你可以将其直接写入数据库。
+但是这种方法限制了数据库执行高性能分析的能力。
 
+### 创建表
+
+你需要在插入日志之前创建一个表来存储日志。
+使用以下 SQL 语句创建一个名为 `origin_logs` 的表：
+
+* `message` 列上的 `FULLTEXT INDEX` 可优化文本搜索查询
+* 将 `append_mode` 设置为 `true` 表示以附加行的方式写入数据，不对历史数据做覆盖。
 
 ```sql
-DESC origin_logs;
+CREATE TABLE `origin_logs` (
+  `message` STRING FULLTEXT INDEX,
+  `time` TIMESTAMP TIME INDEX
+) WITH (
+  append_mode = 'true'
+);
 ```
 
-```sql
-+---------+----------------------+------+------+---------+---------------+
-| Column  | Type                 | Key  | Null | Default | Semantic Type |
-+---------+----------------------+------+------+---------+---------------+
-| message | String               |      | YES  |         | FIELD         |
-| time    | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
-+---------+----------------------+------+------+---------+---------------+
-```
+### 插入日志
+
+#### 使用 SQL 协议写入
+
+使用 `INSERT` 语句将日志插入表中。
 
 ```sql
-DESC pipeline_logs;
+INSERT INTO origin_logs (message, time) VALUES
+('127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"', '2024-05-25 20:16:37.217'),
+('192.168.1.1 - - [25/May/2024:20:17:37 +0000] "POST /api/login HTTP/1.1" 200 1784 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"', '2024-05-25 20:17:37.217'),
+('10.0.0.1 - - [25/May/2024:20:18:37 +0000] "GET /images/logo.png HTTP/1.1" 304 0 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"', '2024-05-25 20:18:37.217'),
+('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
+```
+
+上述 SQL 将整个日志文本插入到一个列中，除此之外，你必须为每条日志添加一个额外的时间戳。
+
+#### 使用 gRPC 协议写入
+
+你也可以使用 gRPC 协议写入日志，这是一个更高效的方法。
+
+请参阅[使用 gRPC 写入数据](/user-guide/ingest-data/for-iot/grpc-sdks/overview.md)以了解如何使用 gRPC 协议写入日志。
+
+
+## 使用 Pipeline 与直接写入非结构化日志的区别
+
+在上述示例中，
+使用 pipeline 写入日志的方式自动创建了表 `custom_pipeline_logs`，
+直接写入日志的方式创建了表 `origin_logs`，
+让我们来探讨这两个表之间的区别。
+
+```sql
+DESC custom_pipeline_logs;
 ```
 
 ```sql
@@ -244,8 +242,21 @@ DESC pipeline_logs;
 7 rows in set (0.00 sec)
 ```
 
+```sql
+DESC origin_logs;
+```
+
+```sql
++---------+----------------------+------+------+---------+---------------+
+| Column  | Type                 | Key  | Null | Default | Semantic Type |
++---------+----------------------+------+------+---------+---------------+
+| message | String               |      | YES  |         | FIELD         |
+| time    | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
++---------+----------------------+------+------+---------+---------------+
+```
+
 从表结构中可以看到，`origin_logs` 表只有两列，整个日志消息存储在一个列中。
-而 `pipeline_logs` 表将日志消息存储在多个列中。
+而 `custom_pipeline_logs` 表将日志消息存储在多个列中。
 
 推荐使用 pipeline 方法将日志消息拆分为多个列，这样可以精确查询某个特定列中的某个值。
 与全文搜索相比，列匹配查询在处理字符串时具有以下几个优势：
@@ -258,15 +269,15 @@ DESC pipeline_logs;
 
 ## 查询日志
 
-以 `pipeline_logs` 表为例查询日志。
+以 `custom_pipeline_logs` 表为例查询日志。
 
 ### 按 Tag 查询日志
 
-对于 `pipeline_logs` 中的多个 Tag 列，您可以灵活地按 Tag 查询数据。
+对于 `custom_pipeline_logs` 中的多个 Tag 列，你可以灵活地按 Tag 查询数据。
 例如，查询 `status_code` 为 `200` 且 `http_method` 为 `GET` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
+SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 ```
 
 ```sql
@@ -286,7 +297,7 @@ SELECT * FROM pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
 例如，查询 `request_line` 包含 `/index.html` 或 `/api/login` 的日志。
 
 ```sql
-SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
+SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
 ```
 
 ```sql
@@ -303,7 +314,7 @@ SELECT * FROM pipeline_logs WHERE matches_term(request_line, '/index.html') OR m
 
 ## 下一步
 
-您现在已经体验了 GreptimeDB 的日志记录功能，可以通过以下文档进一步探索：
+你现在已经体验了 GreptimeDB 的日志记录功能，可以通过以下文档进一步探索：
 
 - [Pipeline 配置](./pipeline-config.md): 提供 GreptimeDB 中每个 pipeline 配置的深入信息。
 - [管理 Pipeline](./manage-pipelines.md): 解释如何创建和删除 pipeline。
