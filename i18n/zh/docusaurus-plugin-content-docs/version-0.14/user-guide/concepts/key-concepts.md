@@ -28,7 +28,7 @@ GreptimeDB 将时序表设计为数据存储的基本单位。
 
 ## Table Engine
 
-表引擎（也称为存储引擎）决定了数据在数据库中的存储、管理和处理方式。每种引擎提供不同的功能特性、性能表现和权衡取舍。GreptimeDB 提供了 `moto` 和 `metric` 引擎，有关更多信息，请参阅[表引擎](/reference/about-greptimedb-engines.md)。
+表引擎（也称为存储引擎）决定了数据在数据库中的存储、管理和处理方式。每种引擎提供不同的功能特性、性能表现和权衡取舍。GreptimeDB 提供了 `mito` 和 `metric` 引擎，有关更多信息，请参阅[表引擎](/reference/about-greptimedb-engines.md)。
 
 ## Table Region
 
