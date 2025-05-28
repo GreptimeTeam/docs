@@ -281,6 +281,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
                 'user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations',
                 'user-guide/deployments/deploy-on-kubernetes/configure-frontend-groups',
+                'user-guide/deployments/deploy-on-kubernetes/deploy-greptimedb-standalone',
                 {
                   type: 'category',
                   label: 'Monitoring',

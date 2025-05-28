@@ -9,6 +9,10 @@ description: 介绍如何在单机模式下安装和运行 GreptimeDB，包括�
 
 我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/deployments/configuration.md)。
 
+## 在 Kubernetes 中部署 GreptimeDB 单机版
+
+对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 单机版。请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
+
 ### 二进制
 
 你可以在[下载页面](https://greptime.cn/download)通过发布的最新稳定版本尝试使用 GreptimeDB。
