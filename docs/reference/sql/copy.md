@@ -77,6 +77,10 @@ COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
 
+:::tip NOTE
+The CSV file must have a header row to be imported correctly. The header row should contain the column names of the table.
+:::
+
 #### `CONNECTION` Option
 
 `COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
