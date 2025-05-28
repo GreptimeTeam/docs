@@ -48,10 +48,10 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
 http://<host>:4000
 ```
 
-- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
+在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
 
-  - User: `<username>`
-  - Password: `<password>`
+- User: `<username>`
+- Password: `<password>`
 
 然后单击 Save & Test 按钮以测试连接。
 
