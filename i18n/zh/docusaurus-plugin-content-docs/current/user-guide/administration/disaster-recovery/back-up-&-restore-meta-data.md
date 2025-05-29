@@ -21,12 +21,12 @@ greptime cli meta-snapshot [OPTIONS]
 
 | 选项               | 是否必需 | 默认值            | 描述                                                                                      |
 | ------------------ | -------- | ----------------- | ----------------------------------------------------------------------------------------- |
-| --store-addrs      | 是       | -                 | 要连接的 meta 地址（仅仅支持 etcd MySQL PostgreSQL）格式与 meta 配置中的 store-addrs 一致 |
-| --backend          | 是       | -                 | meta 的类型，为 etcd-store, postgres-store, mysql-store 中之一                            |
-| --store-key-prefix | 否       | ""                | meta 中的数据的统一前缀，可参考 meta 配置                                                 |
-| --meta-table-name  | 否       | greptime_metakv   | 当 backend 为 postgres-store, mysql-store 之一时，meta 在 backend 中对应的表名称          |
+| --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（仅仅支持 etcd MySQL PostgreSQL）格式与 metasrv 配置中的 store-addrs 一致 |
+| --backend          | 是       | -                 | 元数据存储后端的类型，为 `etcd-store`, `postgres-store`, `mysql-store` 中之一                            |
+| --store-key-prefix | 否       | ""                | metasrv 中的数据的统一前缀，可参考 metasrv 配置                                                 |
+| --meta-table-name  | 否       | greptime_metakv   | 当 backend 为 `postgres-store`, `mysql-store` 之一时，存储元数据的表的名称          |
 | --max-txn-ops      | 否       | 128               | 最大 txn 数量                                                                             |
-| --file-name        | 否       | metadata_snapshot | meta 数据导出的文件名称，会自动添加 `.metadata.fb` 后缀                                   |
+| --file-name        | 否       | metadata_snapshot | 元数据导出的文件名称，会自动添加 `.metadata.fb` 后缀                                   |
 | --output-dir       | 否       | ""                | 存储导出数据的目录                                                                        |
 | --s3               | 否       | false             | 是否使用 s3 作为导出数据存放介质                                                          |
 | --s3-bucket        | 否       | -                 | 当 s3 为 true 时有效， s3 bucket 名称                                                     |
