@@ -110,6 +110,10 @@ For all options, refer to the [Configuration Reference](https://github.com/Grept
 Protocol options are valid in `frontend` and `standalone` subcommands,
 specifying protocol server addresses and other protocol-related options.
 
+:::tip NOTE
+The HTTP protocol configuration is available for all GreptimeDB components: `frontend`, `datanode`, `flownode`, and `metasrv`.
+:::
+
 Below is an example configuration with default values.
 You can change the values or disable certain protocols in your configuration file.
 For example, to disable OpenTSDB protocol support, set the `enable` parameter to `false`.
