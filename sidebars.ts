@@ -548,11 +548,12 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
-        },        
+        },
         {
           type: 'category',
           label: 'Releases',
           items: [
+            'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
           ]
         },
