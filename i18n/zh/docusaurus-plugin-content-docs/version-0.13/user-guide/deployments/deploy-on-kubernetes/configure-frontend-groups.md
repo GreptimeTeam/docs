@@ -12,12 +12,12 @@ description: 在 Kubernetes 上部署带有 frontend groups 的 GreptimeDB 集�
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1
+- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.3.0
 - [ETCD](https://github.com/bitnami/charts/tree/main/bitnami/etcd)
 
 ## 升级 operator
 
-安装 GreptimeDB Operator，将镜像版本设置为大于或等于 `v0.2.1`。
+安装 GreptimeDB Operator，将镜像版本设置为大于或等于 `v0.3.0`。
 
 ```bash
 helm repo update
@@ -47,7 +47,7 @@ spec:
   base:
     main:
       image: greptime/greptimedb:latest  
-  frontends:
+  frontendGroups:
   - name: read
     replicas: 2
     config: |
@@ -79,7 +79,7 @@ kind: GreptimeDBCluster
 metadata:
   name: greptimedb
 spec:
-  frontends: 
+  frontendGroups: 
   #  - name: read #<=========The name must be set=============>
     - replicas: 1
 ```    

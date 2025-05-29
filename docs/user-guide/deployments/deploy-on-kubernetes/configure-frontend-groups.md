@@ -12,12 +12,12 @@ In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes w
 - [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
 - [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.2.1
+- [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) >= v0.3.0
 - [ETCD](https://github.com/bitnami/charts/tree/main/bitnami/etcd)
 
 ## Upgrade operator
 
-Install the GreptimeDB Operator, setting the image version to be greater than or equal to `v0.2.1`.
+Install the GreptimeDB Operator, setting the image version to be greater than or equal to `v0.3.0`.
 
 ```bash
 helm repo update
@@ -31,9 +31,9 @@ helm upgrade \
   -n greptimedb-admin
 ```
 
-## Frontend Group Configuration
+## Frontend Groups Configuration
 
-When defining the frontend group, you must specify the name field for each frontend instance. Below is an example configuration that creates read and write frontend replicas:
+When defining the frontend groups, you must specify the name field for each frontend instance. Below is an example configuration that creates read and write frontend replicas:
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -47,7 +47,7 @@ spec:
   base:
     main:
       image: greptime/greptimedb:latest  
-  frontends:
+  frontendGroups:
   - name: read
     replicas: 2
     config: |
@@ -70,7 +70,7 @@ spec:
 
 ## Validity
 
-When setting the frontend group, the name must be set.
+When setting the frontend groups, the name must be set.
 
 ```yaml
 # This is an illegal configuration !!!
@@ -79,7 +79,7 @@ kind: GreptimeDBCluster
 metadata:
   name: greptimedb
 spec:
-  frontends: 
+  frontendGroups: 
   #  - name: read #<=========The name must be set=============>
     - replicas: 1
 ```    
