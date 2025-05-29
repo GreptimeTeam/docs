@@ -298,7 +298,7 @@ startFromSnapshot:
 
 ```bash
 helm upgrade \
-  --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --install etcd-recover oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
   --version 11.3.4 \
   -n etcd-cluster \
