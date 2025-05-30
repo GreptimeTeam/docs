@@ -3,7 +3,7 @@ keywords: [etcd, kubernetes, helm, backup, restore]
 description: A comprehensive guide for managing an etcd cluster including installation, backup, and restoration processes using Kubernetes and Helm.
 ---
 
-# Manage ETCD
+# Manage etcd
 
 The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://docs.greptime.com/nightly/contributor-guide/metasrv/overview) by default. Let's install an etcd cluster using Bitnami's etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd).
 
