@@ -26,7 +26,10 @@ ALTER DATABASE db
 ```
 
 Currently following options are supported:
-- `ttl`: the default retention time of data in database.
+- `ttl`: Specifies the default retention time for data in the database, which is applied immediately upon modification.
+   - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
+   - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
+   - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
 
 ### Examples
 
