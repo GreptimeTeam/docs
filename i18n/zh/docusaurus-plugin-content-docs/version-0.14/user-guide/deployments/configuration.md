@@ -101,6 +101,10 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
 
+:::tip 提示
+HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`flownode` 和 `metasrv`。
+:::
+
 下面的示例配置包含了所有协议选项的默认值。
 你可以在配置文件中更改这些值或禁用某些协议。
 例如禁用 OpenTSDB 协议支持，可以将 `enable` 参数设置为 `false`。
