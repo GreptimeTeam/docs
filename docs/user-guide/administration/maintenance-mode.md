@@ -14,9 +14,6 @@ This mode is particularly useful during:
 - Planned downtime
 - Any operation that might temporarily affect cluster stability
 
-:::tip
-The maintenance mode can be enabled and disabled through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/maintenance?enable=true`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
-:::
 
 ## When to Use Maintenance Mode
 
@@ -30,14 +27,6 @@ When upgrading a cluster without using GreptimeDB Operator, **you must manually 
 3. Frontend upgrades
 4. Any operation that might cause temporary node unavailability
 
-:::warning
-After enabling maintenance mode, verify that:
-1. The HTTP status code is 200
-2. The response contains `{"enabled":true}`
-3. No automatic region scheduling is occurring
-
-If you encounter any issues or unexpected behavior, do not proceed with maintenance operations.
-:::
 
 ## Impact of Maintenance Mode
 
@@ -49,7 +38,7 @@ When maintenance mode is enabled:
 - Monitoring and metrics collection continue to function
 
 ## Managing Maintenance Mode
-
+The maintenance mode can be enabled and disabled through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/maintenance?enable=true`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
 ### Enable Maintenance Mode
 
 ```bash
@@ -58,14 +47,14 @@ curl -X POST 'localhost:3002/admin/maintenance?enable=true'
 // expected output
 {"enabled":true}
 ```
+After enabling maintenance mode, verify that no automatic region scheduling is occurring
 
+If you encounter any issues or unexpected behavior, do not proceed with maintenance operations.
 ### Disable Maintenance Mode
 
-:::warning
 Before disabling maintenance mode:
 1. Ensure all components are healthy and operational
 2. Verify that all nodes are properly joined to the cluster
-:::
 
 ```bash
 curl -X POST 'localhost:3002/admin/maintenance?enable=false'
