@@ -10,4 +10,5 @@ You can monitor GreptimeDB using the following methods:
 
 - [Export Metrics](export-metrics.md)
 - [Tracing](tracing.md)
+- [Slow Query](slow-query.md)
 
