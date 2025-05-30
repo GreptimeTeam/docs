@@ -344,6 +344,7 @@ const sidebars: SidebarsConfig = {
                   label: 'Overview',
                 },
                 'user-guide/administration/disaster-recovery/back-up-&-restore-data',
+                'user-guide/administration/disaster-recovery/back-up-&-restore-meta-data',
                 'user-guide/administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
