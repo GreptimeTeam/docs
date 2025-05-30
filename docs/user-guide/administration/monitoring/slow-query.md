@@ -35,7 +35,7 @@ The schema of the `greptime_private.slow_queries` table is as follows:
 - `promql_start`: The start time of the query. Only used when `is_promql` is `true`.
 - `promql_end`: The end time of the query. Only used when `is_promql` is `true`.
 
-In cluster mode, you can configure the slow query in frontend configs(same as in standalone mode), for example:
+In cluster mode, you can configure the slow query in frontend configs (same as in standalone mode), for example:
 
 ```toml
 [slow_query]

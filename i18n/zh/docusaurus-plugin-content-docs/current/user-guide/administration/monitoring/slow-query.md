@@ -35,7 +35,7 @@ GreptimeDB 提供了慢查询日志功能，帮助您发现和修复慢查询。
 - `promql_start`: 查询的开始时间。仅当 `is_promql` 为 `true` 时使用。
 - `promql_end`: 查询的结束时间。仅当 `is_promql` 为 `true` 时使用。
 
-在集群模式下，您可以在前端配置中配置慢查询（与单机模式相同），例如：
+在集群模式下，你可以在 frontend 配置中配置慢查询（与单机模式相同），例如：
 
 ```toml
 [slow_query]
@@ -57,7 +57,7 @@ sample_ratio = 1.0
 ttl = "30d"
 ```
 
-如果您使用 Helm 部署 GreptimeDB，可以在 `values.yaml` 文件中配置慢查询，例如：
+如果你使用 Helm 部署 GreptimeDB，可以在 `values.yaml` 文件中配置慢查询，例如：
 
 ```yaml
 slowQuery:
