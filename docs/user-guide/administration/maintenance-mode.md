@@ -39,17 +39,22 @@ When maintenance mode is enabled:
 
 ## Managing Maintenance Mode
 The maintenance mode can be enabled and disabled through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/maintenance?enable=true`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
+
 ### Enable Maintenance Mode
 
-```bash
-curl -X POST 'localhost:3002/admin/maintenance?enable=true'
+Enable maintenance mode by sending a POST request to the `/admin/maintenance` endpoint. For more details, please refer to [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint).
 
-// expected output
+```bash
+curl -X POST 'http://localhost:3002/admin/maintenance?enable=true'
+```
+
+The expected output is:
+```bash
 {"enabled":true}
 ```
-After enabling maintenance mode, verify that no automatic region scheduling is occurring
 
 If you encounter any issues or unexpected behavior, do not proceed with maintenance operations.
+
 ### Disable Maintenance Mode
 
 Before disabling maintenance mode:
@@ -57,18 +62,24 @@ Before disabling maintenance mode:
 2. Verify that all nodes are properly joined to the cluster
 
 ```bash
-curl -X POST 'localhost:3002/admin/maintenance?enable=false'
+curl -X POST 'http://localhost:3002/admin/maintenance?enable=false'
+```
 
-// expected output
+The expected output is:
+```bash
 {"enabled":false}
 ```
 
 ### Check Maintenance Mode Status
 
-```bash 
-curl -X GET localhost:3002/admin/maintenance
+Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint. For more details, please refer to [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint).
 
-// expected output
+```bash
+curl -X GET http:://localhost:3002/admin/maintenance
+```
+
+The expected output is:
+```bash
 {"enabled":false}
 ```
 

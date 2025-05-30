@@ -5,6 +5,10 @@ description: Details the Admin API for Metasrv, including endpoints for health c
 
 # Admin API
 
+:::tip
+Note that all Admin API endpoints in this document listen on Metasrv's `RPC_PORT`, which defaults to `3002`.
+:::
+
 The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
 
 The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
@@ -270,10 +274,10 @@ curl -X GET http://localhost:3002/admin/maintenance
 #### Response
 
 ```text
-Maintenance mode is disabled
+{"enabled":false}
 ```
 
-### PUT
+### POST
 
 The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
 
@@ -294,5 +298,5 @@ curl -X PUT http://localhost:3002/admin/maintenance?enable=true
 #### Response
 
 ```text
-Maintenance mode enabled
+{"enabled":true}
 ```
