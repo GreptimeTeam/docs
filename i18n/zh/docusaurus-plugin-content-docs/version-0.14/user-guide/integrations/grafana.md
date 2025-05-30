@@ -34,25 +34,6 @@ GreptimeDB 数据源插件目前仅支持在本地 Grafana 中的安装，
 
 注意，安装插件后可能需要重新启动 Grafana 服务器。
 
-### 使用 Docker 快速预览
-
-Greptime 提供了一个 docker compose 文件，
-将 GreptimeDB、Prometheus、Prometheus Node Exporter、Grafana 和该插件集成在一起，
-以便你能够快速体验 GreptimeDB 数据源插件。
-
-```shell
-git clone https://github.com/GreptimeTeam/greptimedb-grafana-datasource.git
-cd docker
-docker compose up
-```
-
-你也可以从 Grafana 的 docker 镜像中试用此插件：
-
-```shell
-docker run -d -p 3000:3000 --name=grafana --rm \
-  -e "GF_INSTALL_PLUGINS=https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/latest/download/info8fcc-greptimedb-datasource.zip;info8fcc" \
-  grafana/grafana-oss
-```
 
 ### Connection 配置
 
@@ -67,25 +48,82 @@ docker run -d -p 3000:3000 --name=grafana --rm \
 http://<host>:4000
 ```
 
-接下来做如下配置：
+在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
 
-- Database Name：填写数据库名称 `<dbname>`，留空则使用默认数据库 `public`
-- 在 Auth 部分中单击 basic auth，并在 Basic Auth Details 中填写 GreptimeDB 的用户名和密码。未设置可留空：
-
-  - User: `<username>`
-  - Password: `<password>`
+- User: `<username>`
+- Password: `<password>`
 
 然后单击 Save & Test 按钮以测试连接。
 
-### 使用 Query Builder 构建查询
-* Table: 对无时间戳字段的数据进行查询
-  ![Table Query](/grafana/table.png)
-* Time Series: 对包含时间戳字段的数据进行查询.
-  ![Time Series](/grafana/series.png)
+
+### 基础查询设置
+在进行所有类型查询选择前，需要先设置要查询的数据库和表
+
+| 设置项 | 对应值 |
+|-----------|-------------|
+| Database| 选择数据库
+| Table   | 选择表格
+
+![DB Table Config](/grafana/dbtable.png)
+
+---
+
+### Table 查询
+当查询结果不包含`时间列`时可以选择 `Table` 类型进行查询
+
+| 设置项 | 对应值 |
+|-----------|-------------|
+| Columns | 选择要查询的列，可多选
+| Filters | 设置筛选条件
+
+![Table Query](/grafana/table.png)
+
+---
+
+### Metrics 查询
+当查询结果包含`时间列`和`数值列`时可以选择 `Time Series` 类型进行查询
+
+| 主要设置项 | 对应值 |
+|-----------|-------------|
+| Time | 选择时间列
+| Columns | 选择数值列
+
+![Time Series](/grafana/series1.png)
+
+---
+
+### Logs 查询
+当要查询 Logs 数据时选择 `Logs` 类型进行查询
 * Logs: 对日志数据进行查询。需要设置 `Time` 列和 `Message` 列。
-  ![Logs](/grafana/logs.png)
-* Traces: 对 Trace 类型数据进行查询。需要设置截图中数据表的对应列进行 trace 列表查询。
-  ![Traces](/grafana/traceconfig.png)
+
+| 主要设置项 | 对应值 |
+|-----------|--------------------|
+| Time | 选择时间列
+| Message | 选择日志内容列
+| Log Level| 日志等级（非必填）
+
+![Logs](/grafana/logs.png)
+
+---
+
+### Traces 查询
+当要查询 Traces 数据时选择 `Traces` 类型进行查询
+
+| 主要设置项 | 对应值 |
+|-----------|---------------------|
+| Trace Model | 选择 `Trace Search` 以查询 Trace 列表
+| Trace Id Column | 初始值 `trace_id`
+| Span Id Column | 初始值 `span_id`
+| Parent Span ID Column | 初始值 `parent_span_id`
+| Service Name Column | 初始值 `service_name`
+| Operation Name Column | 初始值 `span_name`
+| Start Time Column | 初始值 `timestamp`
+| Duration Time Column | 初始值 `duration_nano`
+| Duration Unit | 初始值 `nano_seconds`
+| Tags Column | 可多选，对应以 `span_attributes` 开头的列
+| Service Tags Column| 可多选，对应以 `resource_attributes` 开头的列
+
+![Traces](/grafana/traceconfig.png)
 
 ## Prometheus 数据源
 
