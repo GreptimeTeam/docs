@@ -430,3 +430,87 @@ debugPod:
       memory: 256Mi
       cpu: 200m
 ```
+
+### Configuring Metasrv Backend Storage
+
+#### Using MySQL and PostgreSQL as Backend Storage
+
+You can configure the backend storage for the metasrv through the `meta.backendStorage` field.
+
+Let's take MySQL as an example.
+
+```yaml
+meta:
+  backendStorage:
+    mysql:
+      # -- MySQL host
+      host: "mysql.default.svc.cluster.local"
+      # -- MySQL port
+      port: 3306
+      # -- MySQL database
+      database: "metasrv"
+      # -- MySQL table
+      table: "greptime_metakv"
+      # -- MySQL credentials
+      credentials:
+        # -- MySQL credentials secret name
+        secretName: "meta-mysql-credentials"
+        # -- MySQL credentials existing secret name
+        existingSecretName: ""
+        # -- MySQL credentials username
+        username: "root"
+        # -- MySQL credentials password
+        password: "test"
+```
+
+- `mysql.host`: The MySQL host.
+- `mysql.port`: The MySQL port.
+- `mysql.database`: The MySQL database.
+- `mysql.table`: The MySQL table.
+- `mysql.credentials.secretName`: The MySQL credentials secret name.
+- `mysql.credentials.existingSecretName`: The MySQL credentials existing secret name. If you want to use an existing secret, you should make sure the secret contains the following keys: `username` and `password`.
+- `mysql.credentials.username`: The MySQL credentials username. It will be ignored if `mysql.credentials.existingSecretName` is set. The `username` will be stored in the `username` key of the secret with `mysql.credentials.secretName`.
+- `mysql.credentials.password`: The MySQL credentials password. It will be ignored if `mysql.credentials.existingSecretName` is set. The `password` will be stored in the `password` key of the secret with `mysql.credentials.secretName`.
+
+Most of the fields of `meta.backendStorage.postgresql` are the same as the fields of `meta.backendStorage.mysql`. For example:
+
+```yaml
+meta:
+  backendStorage:
+    postgresql:
+      # -- PostgreSQL host
+      host: "postgres.default.svc.cluster.local"
+      # -- PostgreSQL port
+      port: 5432
+      # -- PostgreSQL database
+      database: "metasrv"
+      # -- PostgreSQL table
+      table: "greptime_metakv"
+      # -- PostgreSQL credentials
+      credentials:
+        # -- PostgreSQL credentials secret name
+        secretName: "meta-postgresql-credentials"
+        # -- PostgreSQL credentials existing secret name
+        existingSecretName: ""
+        # -- PostgreSQL credentials username
+        username: "root"
+        # -- PostgreSQL credentials password
+        password: "root"
+```
+
+#### Using etcd as Backend Storage
+
+The etcd backend storage can be configured through the `meta.backendStorage.etcd` field.
+
+```yaml
+meta:
+  backendStorage:
+    etcd:
+      # -- Etcd endpoints
+      etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      # -- Etcd store key prefix
+      storeKeyPrefix: ""
+```
+
+- `etcd.etcdEndpoints`: The etcd endpoints.
+- `etcd.storeKeyPrefix`: The etcd store key prefix. All keys will be stored with this prefix. If you want to use one etcd cluster for multiple GreptimeDB clusters, you can configure different store key prefixes for each GreptimeDB cluster. It's only for testing and debugging purposes.
