@@ -229,17 +229,6 @@ logging:
 
   # -- The log filters, use the syntax of `target[span\{field=value\}]=level` to filter the logs.
   filters: []
-
-  # -- The slow query log configuration.
-  slowQuery:
-    # -- Enable slow query log.
-    enabled: false
-
-    # -- The threshold of slow query log in seconds.
-    threshold: "10s"
-
-    # -- Sample ratio of slow query log.
-    sampleRatio: "1.0"
 ```
 
 Where:
@@ -258,24 +247,6 @@ Where:
      filters:
      - mito2=debug
    ```
-
-You can also enable slow query logging through the `logging.slowQuery` field configuration, as shown below:
-
-```yaml
-logging:
-  slowQuery:
-    enabled: true
-    threshold: "100ms"
-    sampleRatio: "1.0"
-```
-
-Where:
-
-- `logging.slowQuery.enabled`: Configures whether to enable slow query logging, disabled by default.
-- `logging.slowQuery.threshold`: Configures the threshold for slow query logging.   
-- `logging.slowQuery.sampleRatio`: Configures the sampling ratio for slow query logging, default `1.0` (full sampling).
-
-If the output directory `logging.logsDir` is configured, slow query logs will be output to that directory.
 
 Each role's logging configuration can be configured through the `${role}.logging` field, with fields consistent with the top-level `logging` and will **override** the top-level `logging` configuration, for example:
 

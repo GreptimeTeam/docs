@@ -364,6 +364,7 @@ const sidebars: SidebarsConfig = {
                 },
                 'user-guide/administration/monitoring/export-metrics',
                 'user-guide/administration/monitoring/tracing',
+                'user-guide/administration/monitoring/slow-query',
               ],
             },
             'user-guide/administration/runtime-info',
@@ -550,7 +551,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
-        },        
+        },
         {
           type: 'category',
           label: 'Releases',
