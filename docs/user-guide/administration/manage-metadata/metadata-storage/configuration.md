@@ -21,7 +21,6 @@ GreptimeDB supports the following metadata storage backends:
 etcd is only recommended for development and testing environments.
 :::
 
-### Configuration file
 
 Configure the metasrv component to use etcd as metadata storage:
 
@@ -43,7 +42,6 @@ For production environments, we strongly recommend using cloud providers' Relati
 MySQL can be used as a metadata storage backend. This is useful when you want to leverage existing MySQL infrastructure or have specific requirements for MySQL.
 
 
-### Configuration file
 
 Configure the metasrv component to use MySQL as metadata storage:
 
@@ -72,7 +70,6 @@ For production environments, we strongly recommend using cloud providers' Relati
 
 PostgreSQL can be used as an alternative metadata storage backend. This is useful when you want to leverage existing PostgreSQL infrastructure or have specific requirements for PostgreSQL.
 
-### Configuration file
 
 Configure the metasrv component to use PostgreSQL as metadata storage:
 
