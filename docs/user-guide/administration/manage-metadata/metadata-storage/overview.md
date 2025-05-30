@@ -23,6 +23,15 @@ For test and development environments, [etcd](https://etcd.io/) provides a light
 - Reduced operational complexity compared to self-hosted solutions
 - Seamless integration with other cloud services
 
+## Best Practices
+
+- Implement regular backup schedules for your metadata storage
+- Set up comprehensive monitoring for storage health and performance metrics
+- Establish clear disaster recovery procedures
+- Document your metadata storage configuration and maintenance procedures
+
+
+
 ## Next steps 
 - To configure the metadata storage backend, please refer to [Configuration](/user-guide/administration/manage-metadata/metadata-storage/configuration.md).
 - To setup etcd for testing and development environments, please refer to [Manage etcd](/user-guide/administration/manage-metadata/metadata-storage/manage-etcd.md).
