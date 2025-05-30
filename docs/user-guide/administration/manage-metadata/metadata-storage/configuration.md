@@ -11,16 +11,12 @@ This section describes how to configure different metadata storage backends for 
 
 GreptimeDB supports the following metadata storage backends:
 
-- **etcd**: The default and recommended backend for development and testing environments
-- **MySQL**: Alternative backend for users who prefer MySQL
-- **PostgreSQL**: Alternative backend for users who prefer PostgreSQL
+- **etcd**: The default and recommended backend for development and testing environments, offering simplicity and ease of setup
+- **MySQL/PostgreSQL**: Production-ready backend options that integrate well with existing database infrastructure and cloud RDS services
 
 ## Use etcd as metadata storage
 
-:::warning
-etcd is only recommended for development and testing environments.
-:::
-
+While etcd is suitable for development and testing environments, it may not be ideal for production deployments requiring high availability and scalability.
 
 Configure the metasrv component to use etcd as metadata storage:
 
@@ -33,21 +29,25 @@ backend = "etcd_store"
 store_addrs = ["127.0.0.1:2379"]
 ```
 
+### Best Practices
+
+While etcd can be used as metadata storage, we recommend against using it in production environments unless you have extensive experience with etcd operations and maintenance. For detailed guidance on etcd management, including installation, backup, and maintenance procedures, please refer to [Manage etcd](/user-guide/administration/manage-metadata/metadata-storage/manage-etcd.md).
+
+When using etcd as metadata storage:
+
+- Deploy multiple endpoints across different availability zones for high availability
+- Configure appropriate auto-compaction settings to manage storage growth
+- Implement regular maintenance procedures:
+  - Run `Defrag` command periodically to reclaim disk space
+  - Monitor etcd cluster health metrics
+  - Review and adjust resource limits based on usage patterns
+
+
 ## Use MySQL as metadata storage
 
-:::tip
-For production environments, we strongly recommend using cloud providers' Relational Database Service (RDS) for metadata storage.
-:::
-
-MySQL can be used as a metadata storage backend. This is useful when you want to leverage existing MySQL infrastructure or have specific requirements for MySQL.
-
-
+MySQL serves as a viable metadata storage backend option. This choice is particularly beneficial when you need to integrate with existing MySQL infrastructure or have specific MySQL-related requirements. For production deployments, we strongly recommend utilizing cloud providers' Relational Database Service (RDS) solutions for enhanced reliability and managed service benefits.
 
 Configure the metasrv component to use MySQL as metadata storage:
-
-:::warning
-If you want use same MySQL instance for metadata storage and application data, you need to configure the `meta_table_name` to avoid conflicts.
-:::
 
 ```toml
 # The metadata storage backend for metasrv
@@ -62,20 +62,13 @@ store_addrs = ["mysql://user:password@ip:port/dbname"]
 meta_table_name = "greptime_metakv"
 ```
 
+When sharing a MySQL instance between multiple GreptimeDB clusters, you must set a unique `meta_table_name` for each GreptimeDB cluster to avoid metadata conflicts.
+
 ## Use PostgreSQL as metadata storage
 
-:::tip
-For production environments, we strongly recommend using cloud providers' Relational Database Service (RDS) for metadata storage.
-:::
-
-PostgreSQL can be used as an alternative metadata storage backend. This is useful when you want to leverage existing PostgreSQL infrastructure or have specific requirements for PostgreSQL.
-
+PostgreSQL serves as a viable metadata storage backend option. This choice is particularly beneficial when you need to integrate with existing PostgreSQL infrastructure or have specific PostgreSQL-related requirements. For production deployments, we strongly recommend utilizing cloud providers' Relational Database Service (RDS) solutions for enhanced reliability and managed service benefits.
 
 Configure the metasrv component to use PostgreSQL as metadata storage:
-
-:::warning
-If you want use same PostgreSQL instance for metadata storage and application data, you need to configure the `meta_table_name` and `meta_election_lock_id` to avoid conflicts.
-:::
 
 ```toml
 # The metadata storage backend for metasrv
@@ -93,37 +86,7 @@ meta_table_name = "greptime_metakv"
 # Default: 1
 meta_election_lock_id = 1
 ```
+When sharing a PostgreSQL instance between multiple GreptimeDB clusters or with other applications, you must configure two unique identifiers to prevent conflicts:
 
-## Best Practices
-
-### General Guidelines
-
-- Implement regular backup schedules for your metadata storage
-- Set up comprehensive monitoring for storage health and performance metrics
-- Establish clear disaster recovery procedures
-- Document your metadata storage configuration and maintenance procedures
-
-### Relational Database Service (RDS)
-
-For production deployments, we strongly recommend using cloud providers' Relational Database Service (RDS) for metadata storage. The RDS service typically offers:
-
-- Built-in high availability and automatic failover
-- Automated backup and point-in-time recovery
-- Managed maintenance and updates
-- Professional monitoring and support
-- Seamless integration with cloud services
-
-### etcd
-
-:::warning
-We don't recommend using etcd as metadata storage for production environments if you don't have deep experience in operating etcd.
-:::
-
-When using etcd as metadata storage:
-
-- Deploy multiple endpoints across different availability zones for high availability
-- Configure appropriate auto-compaction settings to manage storage growth
-- Implement regular maintenance procedures:
-  - Run `Defrag` command periodically to reclaim disk space
-  - Monitor etcd cluster health metrics
-  - Review and adjust resource limits based on usage patterns
+1. Set a unique `meta_table_name` for each GreptimeDB cluster to avoid metadata conflicts
+2. Assign a unique `meta_election_lock_id` to each GreptimeDB cluster to prevent advisory lock conflicts with other applications using the same PostgreSQL instance
