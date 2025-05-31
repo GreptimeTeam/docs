@@ -51,7 +51,7 @@ designed it to work with Prometheus AlertManager.
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS cpu_monitor
-    ON (SELECT host AS host_label, cpu, memory FROM machine_monitor WHERE cpu > 1)
+    ON (SELECT host AS host_label, cpu, memory FROM machine_monitor WHERE cpu > 1 and ts >= now() - '5 minutes'::INTERVAL)
         EVERY '5 minute'::INTERVAL
     LABELS (severity = 'warning')
     ANNOTATIONS (summary = 'CPU utilization is too high', link = 'http://...')
