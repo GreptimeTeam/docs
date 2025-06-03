@@ -229,17 +229,6 @@ logging:
 
   # -- The log filters, use the syntax of `target[span\{field=value\}]=level` to filter the logs.
   filters: []
-
-  # -- The slow query log configuration.
-  slowQuery:
-    # -- Enable slow query log.
-    enabled: false
-
-    # -- The threshold of slow query log in seconds.
-    threshold: "10s"
-
-    # -- Sample ratio of slow query log.
-    sampleRatio: "1.0"
 ```
 
 其中：
@@ -258,24 +247,6 @@ logging:
      filters:
      - mito2=debug
    ```
-
-你还可以通过 `logging.slowQuery` 字段配置来启用慢查询日志，如下所示：
-
-```yaml
-logging:
-  slowQuery:
-    enabled: true
-    threshold: "100ms"
-    sampleRatio: "1.0"
-```
-
-其中：
-
-- `logging.slowQuery.enabled`：用于配置是否启用慢查询日志，默认不启用；
-- `logging.slowQuery.threshold`：用于配置慢查询日志的阈值；
-- `logging.slowQuery.sampleRatio`：用于配置慢查询日志的采样率，默认 1.0（即全部采样）；
-
-如果配置了输出目录 `logging.logsDir`，则慢查询日志会输出到该目录下。
 
 每一个 Role 的日志配置都可以通过 `${role}.logging` 字段进行配置，其字段与顶层 `logging` 一致，并会**覆盖**顶层变量 `logging` 的配置，比如：
 

@@ -10,4 +10,5 @@ description: 介绍监控 GreptimeDB 的方法，包括导出指标和链路追�
 
 - [导出指标](export-metrics.md)
 - [链路追踪](tracing.md)
+- [慢查询](slow-query.md)
 
