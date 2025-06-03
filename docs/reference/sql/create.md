@@ -63,13 +63,14 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)],
-) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
+)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
     <PARTITION EXPR>,
     ...
   )
 ]
+ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 ```
 
 The table schema is specified by the brackets before the `ENGINE`. The table schema is a list of column definitions and table constraints.

@@ -64,13 +64,14 @@ CREATE TABLE [IF NOT EXISTS] [db.]table_name
     ...
     [TIME INDEX (column)],
     [PRIMARY KEY(column1, column2, ...)],
-) ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
+)
 [
   PARTITION ON COLUMNS(column1, column2, ...) (
     <PARTITION EXPR>,
     ...
   )
 ]
+ENGINE = engine WITH([TTL | storage | ...] = expr, ...)
 ```
 
 表 schema 由 `ENGINE` 之前的括号指定，表 schema 是列的定义和表的约束。
