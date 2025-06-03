@@ -24,7 +24,7 @@ GreptimeDB 总是使用缓存根目录下的 `cache/object/read` 子目录。
 ```toml
 [storage]
 type = "S3"
-bucket = "ap-southeast-1-test-bucket"
+bucket = "test-bucket"
 root = "your-root"
 access_key_id = "****"
 secret_access_key = "****"

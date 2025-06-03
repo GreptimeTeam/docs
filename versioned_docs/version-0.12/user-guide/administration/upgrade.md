@@ -27,7 +27,7 @@ You can remove the `cache_path` when you upgrade to `v0.12`.
 ```toml
 [storage]
 type = "S3"
-bucket = "ap-southeast-1-test-bucket"
+bucket = "test-bucket"
 root = "your-root"
 access_key_id = "****"
 secret_access_key = "****"
