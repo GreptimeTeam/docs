@@ -3,7 +3,7 @@ keywords: [GreptimeDB, metadata storage, configuration, etcd, MySQL, PostgreSQL,
 description: Comprehensive guide for configuring metadata storage backends (etcd, MySQL, PostgreSQL) in GreptimeDB's metasrv component, including setup instructions and best practices.
 ---
 
-# Configuration
+# Metadata Storage Configuration
 
 This section describes how to configure different metadata storage backends for the GreptimeDB Metasrv component. The metadata storage is used to store critical system information including catalogs, schemas, tables, regions, and other metadata that are essential for the operation of GreptimeDB.
 

@@ -317,26 +317,15 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/administration/capacity-plan',
-            
+
             {
               type: 'category',
               label: 'Manage Metadata',
               items: [
-                {
-                  type: 'doc',
-                  id: 'user-guide/administration/manage-metadata/overview',
-                  label: 'Overview',
-                },
-                {
-                  type: 'category',
-                  label: 'Metadata Storage',
-                  items: [
-                    'user-guide/administration/manage-metadata/metadata-storage/overview',
-                    'user-guide/administration/manage-metadata/metadata-storage/configuration',
-                    'user-guide/administration/manage-metadata/metadata-storage/manage-etcd',
-                  ],
-                },
+                'user-guide/administration/manage-metadata/overview',
+                'user-guide/administration/manage-metadata/configuration',
                 'user-guide/administration/manage-metadata/restore-backup',
+                'user-guide/administration/manage-metadata/manage-etcd',
               ],
             },
             {
