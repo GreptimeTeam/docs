@@ -282,7 +282,7 @@ curl -X GET http://localhost:3002/admin/maintenance
 The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
 
 ```bash
-curl -X PUT http://localhost:3002/admin/maintenance
+curl -X POST http://localhost:3002/admin/maintenance
 ```
 
 | Query String Parameter | Type   | Optional/Required | Definition                |
@@ -292,7 +292,7 @@ curl -X PUT http://localhost:3002/admin/maintenance
 #### Request
 
 ```bash
-curl -X PUT http://localhost:3002/admin/maintenance?enable=true
+curl -X POST http://localhost:3002/admin/maintenance?enable=true
 ```
 
 #### Response
