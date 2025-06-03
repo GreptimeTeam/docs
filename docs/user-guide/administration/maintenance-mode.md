@@ -40,7 +40,7 @@ The maintenance mode can be enabled and disabled through Metasrv's HTTP interfac
 
 ### Enable Maintenance Mode
 
-Enable maintenance mode by sending a POST request to the `/admin/maintenance` endpoint. For more details, please refer to [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint).
+Enable maintenance mode by sending a POST request to the `/admin/maintenance` endpoint. 
 
 ```bash
 curl -X POST 'http://localhost:3002/admin/maintenance?enable=true'
@@ -70,7 +70,7 @@ The expected output is:
 
 ### Check Maintenance Mode Status
 
-Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint. For more details, please refer to [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint).
+Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint.
 
 ```bash
 curl -X GET http:://localhost:3002/admin/maintenance

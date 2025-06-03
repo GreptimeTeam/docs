@@ -255,48 +255,4 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 
 ## /maintenance HTTP endpoint
 
-The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
-
-### GET
-
-The `/maintenance` endpoint accepts GET HTTP requests and you can use this endpoint to query the maintenance status of your metasrv instance.
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### Request
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### Response
-
-```text
-{"enabled":false}
-```
-
-### POST
-
-The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
-
-```bash
-curl -X POST http://localhost:3002/admin/maintenance
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition                |
-|:-----------------------|:-------|:------------------|:--------------------------|
-| enable                 | String | Required          | 'true' or 'false'         |
-
-#### Request
-
-```bash
-curl -X POST http://localhost:3002/admin/maintenance?enable=true
-```
-
-#### Response
-
-```text
-{"enabled":true}
-```
+Maintenance mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Maintenance Mode](/user-guide/administration/maintenance-mode.md).
