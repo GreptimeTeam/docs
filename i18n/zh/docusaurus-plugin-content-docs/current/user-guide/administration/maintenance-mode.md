@@ -1,11 +1,11 @@
 ---
-keywords: [GreptimeDB, 维护模式, metasrv, 集群管理, 区域调度, 自动平衡, 故障转移, 升级, 维护]
-description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止自动区域调度和故障转移的同时安全地执行升级和维护等操作。
+keywords: [GreptimeDB, 维护模式, metasrv, 集群管理, region 调度, 自动平衡, 故障转移, 升级, 维护]
+description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止自动 region 调度和故障转移的同时安全地执行升级和维护等操作。
 ---
 
 # 集群维护模式
 
-集群维护模式是 GreptimeDB 中的一个安全特性，用于临时禁用自动集群管理操作。
+集群维护模式是 GreptimeDB 中的一个安全特性，用于临时禁止集群的自动调度操作。
 
 该模式在以下情况下特别有用：
 - 集群升级
@@ -31,8 +31,8 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 当维护模式启用时：
 - Region Balancer（如果启用）将暂停
 - Region Failover（如果启用）将暂停
-- 手动区域操作仍然可行
-- 读写操作继续正常工作
+- 手动操作/迁移 Region 仍然可行
+- 集群读、写服务正常工作
 - 监控和指标收集继续运行
 
 ## 管理维护模式
