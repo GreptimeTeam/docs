@@ -5,7 +5,7 @@ description: Overview of metadata storage options in GreptimeDB, including etcd,
 
 # Overview
 
-GreptimeDB cluster requires a metadata storage to store metadata. GreptimeDB offers flexible metadata storage options with [etcd](https://etcd.io/), [MySQL](https://www.mysql.com/), and [PostgreSQL](https://www.postgresql.org/). Each option is designed for different deployment scenarios, balancing factors like scalability, reliability, and operational overhead.
+GreptimeDB cluster Metasrv component requires a metadata storage to store metadata. GreptimeDB offers flexible metadata storage options with [etcd](https://etcd.io/), [MySQL](https://www.mysql.com/), and [PostgreSQL](https://www.postgresql.org/). Each option is designed for different deployment scenarios, balancing factors like scalability, reliability, and operational overhead.
 
 - [etcd](https://etcd.io/): A lightweight distributed key-value store perfect for metadata management. Its simplicity and ease of setup make it an excellent choice for development and testing environments.
 

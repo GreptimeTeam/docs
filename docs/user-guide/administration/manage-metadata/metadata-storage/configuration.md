@@ -5,7 +5,7 @@ description: Comprehensive guide for configuring metadata storage backends (etcd
 
 # Configuration
 
-This section describes how to configure different metadata storage backends for the GreptimeDB metasrv component. The metadata storage is used to store critical system information including catalogs, schemas, tables, regions, and other metadata that are essential for the operation of GreptimeDB.
+This section describes how to configure different metadata storage backends for the GreptimeDB Metasrv component. The metadata storage is used to store critical system information including catalogs, schemas, tables, regions, and other metadata that are essential for the operation of GreptimeDB.
 
 ## Available Storage Backends
 
