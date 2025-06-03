@@ -40,7 +40,7 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 
 ### 启用维护模式
 
-通过发送 POST 请求到 `/admin/maintenance` 端点启用维护模式。更多详情，请参考 [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint)。
+通过发送 POST 请求到 `/admin/maintenance` 端点启用维护模式。
 
 ```bash
 curl -X POST 'http://localhost:3002/admin/maintenance?enable=true'
@@ -70,7 +70,7 @@ curl -X POST 'http://localhost:3002/admin/maintenance?enable=false'
 
 ### 检查维护模式状态
 
-通过发送 GET 请求到 `/admin/maintenance` 端点检查维护模式状态。更多详情，请参考 [Metasrv Admin API](/contributor-guide/metasrv/admin-api.md#maintenance-http-endpoint)。
+通过发送 GET 请求到 `/admin/maintenance` 端点检查维护模式状态。
 
 ```bash
 curl -X GET http:://localhost:3002/admin/maintenance
