@@ -31,7 +31,7 @@ store_addrs = ["127.0.0.1:2379"]
 
 ### Best Practices
 
-While etcd can be used as metadata storage, we recommend against using it in production environments unless you have extensive experience with etcd operations and maintenance. For detailed guidance on etcd management, including installation, backup, and maintenance procedures, please refer to [Manage etcd](/user-guide/administration/manage-metadata/metadata-storage/manage-etcd.md).
+While etcd can be used as metadata storage, we recommend against using it in production environments unless you have extensive experience with etcd operations and maintenance. For detailed guidance on etcd management, including installation, backup, and maintenance procedures, please refer to [Manage etcd](/user-guide/administration/manage-metadata/manage-etcd.md).
 
 When using etcd as metadata storage:
 

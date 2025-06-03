@@ -31,7 +31,7 @@ store_addrs = ["127.0.0.1:2379"]
 
 ### 最佳实践
 
-虽然 etcd 可以用作元数据存储，但我们不建议在生产环境中使用它，除非你对 etcd 的操作和维护有丰富的经验。有关 etcd 管理的详细指南，包括安装、备份和维护程序，请参阅[管理 etcd](/user-guide/administration/manage-metadata/metadata-storage/manage-etcd.md)。
+虽然 etcd 可以用作元数据存储，但我们不建议在生产环境中使用它，除非你对 etcd 的操作和维护有丰富的经验。有关 etcd 管理的详细指南，包括安装、备份和维护程序，请参阅[管理 etcd](/user-guide/administration/manage-metadata/manage-etcd.md)。
 
 使用 etcd 作为元数据存储时：
 
