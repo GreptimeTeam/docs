@@ -155,9 +155,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 
 #### Create a table with custom compaction options
-Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data.
-- It merges files within the latest time window if they exceed 8 files
-- It merges files within inactive windows into a single file
+Create a table with custom compaction options. The table will attempt to partition data into 1-day time window based on the timestamps of the data and merges files within each time window if they exceed 8 files.
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(

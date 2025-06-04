@@ -90,10 +90,7 @@ CREATE TABLE monitor (
   PRIMARY KEY(host))
 WITH (
     'compaction.type'='twcs', 
-    'compaction.twcs.max_active_window_runs'='4', 
-    'compaction.twcs.max_active_window_files'='8', 
-    'compaction.twcs.max_inactive_window_runs'='1',
-    'compaction.twcs.max_inactive_window_files'='2',
+    'compaction.twcs.trigger_file_num'='8', 
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
