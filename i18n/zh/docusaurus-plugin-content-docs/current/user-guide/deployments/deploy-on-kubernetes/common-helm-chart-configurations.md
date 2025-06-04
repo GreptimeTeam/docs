@@ -401,3 +401,87 @@ debugPod:
       memory: 256Mi
       cpu: 200m
 ```
+
+### 配置 Metasrv 后端存储
+
+#### 使用 MySQL 和 PostgreSQL 作为后端存储
+
+你可以通过 `meta.backendStorage` 字段配置 Metasrv 的后端存储。
+
+以 MySQL 为例。
+
+```yaml
+meta:
+  backendStorage:
+    mysql:
+      # -- MySQL host
+      host: "mysql.default.svc.cluster.local"
+      # -- MySQL port
+      port: 3306
+      # -- MySQL database
+      database: "metasrv"
+      # -- MySQL table
+      table: "greptime_metakv"
+      # -- MySQL credentials
+      credentials:
+        # -- MySQL credentials secret name
+        secretName: "meta-mysql-credentials"
+        # -- MySQL credentials existing secret name
+        existingSecretName: ""
+        # -- MySQL credentials username
+        username: "root"
+        # -- MySQL credentials password
+        password: "test"
+```
+
+- `mysql.host`: MySQL 主机。
+- `mysql.port`: MySQL 端口。
+- `mysql.database`: MySQL 数据库。
+- `mysql.table`: MySQL 表。
+- `mysql.credentials.secretName`: MySQL 凭证 secret 名称。
+- `mysql.credentials.existingSecretName`: MySQL 凭证 secret 名称。如果你希望使用已有的 secret，你需要确保该 secret 包含 `username` 和 `password` 两个 key。
+- `mysql.credentials.username`: MySQL 凭证用户名。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`username` 将会被存储在 `username` key 中，该 key 的值为 `mysql.credentials.secretName`。
+- `mysql.credentials.password`: MySQL 凭证密码。如果 `mysql.credentials.existingSecretName` 被设置，该字段将被忽略。`password` 将会被存储在 `password` key 中，该 key 的值为 `mysql.credentials.secretName`。
+
+`meta.backendStorage.postgresql` 的大部分字段与 `meta.backendStorage.mysql` 的相同。例如：
+
+```yaml
+meta:
+  backendStorage:
+    postgresql:
+      # -- PostgreSQL host
+      host: "postgres.default.svc.cluster.local"
+      # -- PostgreSQL port
+      port: 5432
+      # -- PostgreSQL database
+      database: "metasrv"
+      # -- PostgreSQL table
+      table: "greptime_metakv"
+      # -- PostgreSQL credentials
+      credentials:
+        # -- PostgreSQL credentials secret name
+        secretName: "meta-postgresql-credentials"
+        # -- PostgreSQL credentials existing secret name
+        existingSecretName: ""
+        # -- PostgreSQL credentials username
+        username: "root"
+        # -- PostgreSQL credentials password
+        password: "root"
+```
+
+#### 使用 etcd 作为后端存储
+
+你可以通过 `meta.backendStorage.etcd` 字段配置 etcd 作为后端存储。
+
+```yaml
+meta:
+  backendStorage:
+    etcd:
+      # -- Etcd endpoints
+      etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      # -- Etcd store key prefix
+      storeKeyPrefix: ""
+```
+
+- `etcd.etcdEndpoints`: etcd 服务地址。
+- `etcd.storeKeyPrefix`: etcd 存储 key 前缀。所有 key 都会被存储在这个前缀下。如果你希望使用一个 etcd 集群为多个 GreptimeDB 集群提供服务，你可以为每个 GreptimeDB 集群配置不同的存储 key 前缀。这仅用于测试和调试目的。
