@@ -1,3 +1,8 @@
+# Allow Algolia to index all versions
+User-agent: Algolia Crawler
+Allow: /
+
+# General rules for all other user-agents
 User-agent: *
 Allow: /
 Allow: /nightly/
@@ -12,7 +17,3 @@ Disallow: /6.*/
 Disallow: /7.*/
 Disallow: /8.*/
 Disallow: /9.*/
-
-# Allow Algolia to index all versions
-User-agent: Algolia
-Allow: /
