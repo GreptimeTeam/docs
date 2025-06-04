@@ -183,6 +183,10 @@
     "message": "管理数据",
     "description": "The label for category Manage Data in sidebar docs"
   },
+  "sidebar.docs.category.Manage Metadata": {
+    "message": "管理元数据",
+    "description": "The label for category Manage Metadata in sidebar docs"
+  },
   "sidebar.docs.category.Protocols": {
     "message": "协议",
     "description": "The label for category Manage Data in sidebar docs"

@@ -3,7 +3,7 @@ keywords: [etcd, kubernetes, helm, 备份, 恢复]
 description: 管理 etcd 集群的综合指南，包括使用 kubernetes 和 helm 的安装、备份和恢复过程。
 ---
 
-# 管理 ETCD
+# 管理 etcd
 
 GreptimeDB 集群默认需要一个 etcd 集群用于[元数据存储](https://docs.greptime.com/nightly/contributor-guide/metasrv/overview)。让我们使用 Bitnami 的 etcd Helm [chart](https://github.com/bitnami/charts/tree/main/bitnami/etcd) 安装一个 etcd 集群。
 
