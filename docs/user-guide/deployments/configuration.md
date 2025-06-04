@@ -170,7 +170,7 @@ The following table describes the options in detail:
 |            | addr               | String  | Server address, "127.0.0.1:4000" by default                                                                               |
 |            | timeout            | String  | HTTP request timeout, "30s" by default                                                                                    |
 |            | body_limit         | String  | HTTP max body size, "64MB" by default                                                                                     |
-|            | is_strict_mode     | Boolean | Whether to enable the strict verification mode of the protocol, which will slightly affect performance. False by default. |
+|            | prom_validation_mode     | String | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with UTF-8 REPLACEMENT CHARACTER), `unchecked`(do not validate strings). |
 | grpc       |                    |         | gRPC server options                                                                                                       |
 |            | bind_addr          | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                               |
 |            | runtime_size       | Integer | The number of server worker threads, 8 by default                                                                         |
