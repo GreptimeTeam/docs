@@ -1,2 +1,18 @@
 User-agent: *
 Allow: /
+Allow: /nightly/
+Allow: /next/
+Disallow: /0.*/
+Disallow: /1.*/
+Disallow: /2.*/
+Disallow: /3.*/
+Disallow: /4.*/
+Disallow: /5.*/
+Disallow: /6.*/
+Disallow: /7.*/
+Disallow: /8.*/
+Disallow: /9.*/
+
+# Allow Algolia to index all versions
+User-agent: Algolia
+Allow: /
