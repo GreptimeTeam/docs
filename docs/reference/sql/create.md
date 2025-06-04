@@ -107,8 +107,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `ttl`                                       | The storage time of the table data                              | A time duration string such as `'60m'`, `'1h'` for one hour, `'14d'` for 14 days etc. Supported time units are: `s` / `m` / `h` / `d`.                                                                                                                      |
 | `storage`                                   | The name of the table storage engine provider                   | String value, such as `S3`, `Gcs`, etc. It must be configured in `[[storage.providers]]`, see [configuration](/user-guide/deployments/configuration.md#storage-engine-provider).                                                                            |
 | `compaction.type`                           | Compaction strategy of the table                                | String value. Only `twcs` is allowed.                                                                                                                                                                                                                       |
-| `compaction.twcs.max_active_window_files`   | Max num of files that can be kept in active writing time window | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
-| `compaction.twcs.max_inactive_window_files` | Max num of files that can be kept in inactive time window.      | String value, such as '1'. Only available when `compaction.type` is `twcs`.                                                                                                                                                                                 |
+| `compaction.twcs.trigger_file_num`          | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
 | `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
@@ -168,8 +167,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
-  'compaction.twcs.max_active_window_files'='8',
-  'compaction.twcs.max_inactive_window_files'='1',
+  'compaction.twcs.trigger_file_num'='8',
 );
 ```
 
