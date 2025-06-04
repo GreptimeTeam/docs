@@ -251,48 +251,4 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 
 ## /maintenance HTTP 端点
 
-当处于维护状态时，metasrv 将忽略检测到的区域故障。这在数据节点计划短时间不可用时非常有用，例如数据节点的滚动升级时。
-
-### GET
-
-`/maintenance` 端点接受 GET HTTP 请求，你可以使用此端点查询你的 metasrv 实例的维护状态。
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### 请求
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### 响应
-
-```text
-Maintenance mode is disabled
-```
-
-### PUT
-
-`/maintenance` 端点接受 PUT HTTP 请求，你可以切换你的 metasrv 实例的维护状态。
-
-```bash
-curl -X PUT http://localhost:3002/admin/maintenance
-```
-
-| 查询字符串参数 | 类型   | 可选/必选 | 定义                |
-|:---------------|:-------|:----------|:--------------------|
-| enable         | String | 必选      | 'true' 或 'false'   |
-
-#### 请求
-
-```bash
-curl -X PUT http://localhost:3002/admin/maintenance?enable=true
-```
-
-#### 响应
-
-```text
-Maintenance mode enabled
-```
+维护模式是 GreptimeDB 中的一项安全功能，它可以临时禁用自动集群管理操作。此模式在集群升级、计划停机以及任何可能暂时影响集群稳定性的操作期间特别有用。有关更多详细信息，请参阅[维护模式](/user-guide/administration/maintenance-mode.md)。

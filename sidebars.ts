@@ -370,6 +370,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/administration/runtime-info',
             'user-guide/administration/performance-tuning-tips',
             'user-guide/administration/design-table',
+            'user-guide/administration/maintenance-mode',
             'user-guide/administration/upgrade',
           ],
         },

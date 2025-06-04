@@ -5,6 +5,10 @@ description: Details the Admin API for Metasrv, including endpoints for health c
 
 # Admin API
 
+:::tip
+Note that all Admin API endpoints in this document listen on Metasrv's `RPC_PORT`, which defaults to `3002`.
+:::
+
 The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
 
 The Admin API is an HTTP service that provides a set of RESTful APIs that can be called through HTTP requests. The Admin API is simple, user-friendly and safe.
@@ -251,48 +255,4 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 
 ## /maintenance HTTP endpoint
 
-The metasrv will ignore detected region failures when under maintenance. This is useful when the datanodes are planned to be unavailable for a short period of time; for example, rolling upgrade for datanodes.
-
-### GET
-
-The `/maintenance` endpoint accepts GET HTTP requests and you can use this endpoint to query the maintenance status of your metasrv instance.
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### Request
-
-```bash
-curl -X GET http://localhost:3002/admin/maintenance
-```
-
-#### Response
-
-```text
-Maintenance mode is disabled
-```
-
-### PUT
-
-The `/maintenance` endpoint accepts PUT HTTP requests and you can toggle the maintenance status of your metasrv instance.
-
-```bash
-curl -X PUT http://localhost:3002/admin/maintenance
-```
-
-| Query String Parameter | Type   | Optional/Required | Definition                |
-|:-----------------------|:-------|:------------------|:--------------------------|
-| enable                 | String | Required          | 'true' or 'false'         |
-
-#### Request
-
-```bash
-curl -X PUT http://localhost:3002/admin/maintenance?enable=true
-```
-
-#### Response
-
-```text
-Maintenance mode enabled
-```
+Maintenance mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Maintenance Mode](/user-guide/administration/maintenance-mode.md).
