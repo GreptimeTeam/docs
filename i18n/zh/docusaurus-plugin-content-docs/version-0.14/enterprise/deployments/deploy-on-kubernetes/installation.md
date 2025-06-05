@@ -129,6 +129,15 @@ helm install etcd \
 
 ### 配置 `values.yaml`
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 `values.yaml` 文件设置了 GreptimeDB 的一些参数和配置，是定义 helm chart 的关键。例如一个最小规模的 GreptimeDB 集群定义如下：
 
 ```yaml
@@ -147,7 +156,9 @@ frontend:
 
 meta:
   replicas: 1
-  etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
 
 datanode:
   replicas: 1

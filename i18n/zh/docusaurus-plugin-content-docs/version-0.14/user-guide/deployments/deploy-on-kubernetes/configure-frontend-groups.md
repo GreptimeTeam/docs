@@ -33,6 +33,15 @@ helm upgrade \
 
 ## Frontend 组配置
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 定义 frontend 组时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置：
 
 ```yaml
@@ -62,8 +71,10 @@ spec:
       timeout = "60s"
   meta:
     replicas: 1
-    etcdEndpoints:
-      - "etcd.etcd-cluster.svc.cluster.local:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd.etcd-cluster.svc.cluster.local:2379"
   datanode:
     replicas: 1
 ```

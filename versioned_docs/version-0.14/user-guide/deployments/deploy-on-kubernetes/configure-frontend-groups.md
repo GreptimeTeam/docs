@@ -33,6 +33,15 @@ helm upgrade \
 
 ## Frontend Groups Configuration
 
+:::tip NOTE
+The configuration structure has changed between chart versions:
+
+- In older version: `meta.etcdEndpoints`
+- In newer version: `meta.backendStorage.etcd.endpoints`
+
+Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
+:::
+
 When defining the frontend groups, you must specify the name field for each frontend instance. Below is an example configuration that creates read and write frontend replicas:
 
 ```yaml
@@ -62,8 +71,10 @@ spec:
       timeout = "60s"
   meta:
     replicas: 1
-    etcdEndpoints:
-      - "etcd.etcd-cluster.svc.cluster.local:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd.etcd-cluster.svc.cluster.local:2379"
   datanode:
     replicas: 1
 ```

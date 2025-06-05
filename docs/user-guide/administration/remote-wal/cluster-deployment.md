@@ -138,6 +138,15 @@ kafka-wal                                                  True    KRaft
 
 ## Step 4: Deploy the GreptimeDB Cluster with Remote WAL Settings
 
+:::tip NOTE
+The configuration structure has changed between chart versions:
+
+- In older version: `meta.etcdEndpoints`
+- In newer version: `meta.backendStorage.etcd.endpoints`
+
+Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
+:::
+
 Create a GreptimeDB cluster with remote WAL settings:
 
 ```
@@ -155,8 +164,10 @@ spec:
     replicas: 1
   meta:
     replicas: 1
-    etcdEndpoints:
-      - "etcd.metasrv-store:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd.metasrv-store:2379"
   datanode:
     replicas: 3
   wal:

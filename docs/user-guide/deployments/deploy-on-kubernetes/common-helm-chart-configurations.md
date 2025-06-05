@@ -471,6 +471,15 @@ meta:
 
 #### Using etcd as Backend Storage
 
+:::tip NOTE
+The configuration structure has changed between chart versions:
+
+- In older version: `meta.etcdEndpoints`
+- In newer version: `meta.backendStorage.etcd.endpoints`
+
+Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
+:::
+
 The etcd backend storage can be configured through the `meta.backendStorage.etcd` field.
 
 ```yaml
@@ -478,10 +487,10 @@ meta:
   backendStorage:
     etcd:
       # -- Etcd endpoints
-      etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
       # -- Etcd store key prefix
       storeKeyPrefix: ""
 ```
 
-- `etcd.etcdEndpoints`: The etcd endpoints.
+- `etcd.endpoints`: The etcd endpoints.
 - `etcd.storeKeyPrefix`: The etcd store key prefix. All keys will be stored with this prefix. If you want to use one etcd cluster for multiple GreptimeDB clusters, you can configure different store key prefixes for each GreptimeDB cluster. It's only for testing and debugging purposes.

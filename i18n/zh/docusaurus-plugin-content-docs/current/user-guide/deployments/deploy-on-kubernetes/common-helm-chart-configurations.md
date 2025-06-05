@@ -471,6 +471,15 @@ meta:
 
 #### 使用 etcd 作为后端存储
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 你可以通过 `meta.backendStorage.etcd` 字段配置 etcd 作为后端存储。
 
 ```yaml
@@ -478,10 +487,10 @@ meta:
   backendStorage:
     etcd:
       # -- Etcd endpoints
-      etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
       # -- Etcd store key prefix
       storeKeyPrefix: ""
 ```
 
-- `etcd.etcdEndpoints`: etcd 服务地址。
+- `etcd.endpoints`: etcd 服务地址。
 - `etcd.storeKeyPrefix`: etcd 存储 key 前缀。所有 key 都会被存储在这个前缀下。如果你希望使用一个 etcd 集群为多个 GreptimeDB 集群提供服务，你可以为每个 GreptimeDB 集群配置不同的存储 key 前缀。这仅用于测试和调试目的。
