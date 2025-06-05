@@ -94,6 +94,15 @@ monitoring:
         memory: "64Mi"
 ```
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 :::note
 如果你没有使用 Helm Chart 进行部署，你也可以通过如下 `GreptimeDBCluster` 的 YAML 来手动配置自监控模式，如下所示：
 
@@ -149,6 +158,15 @@ prometheusMonitor:
 ```
 kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
 ```
+
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
 
 :::note
 如果你没有使用 Helm Chart 进行部署，你也可以通过如下 `GreptimeDBCluster` 的 YAML 来手动配置 Prometheus 监控，如下所示：

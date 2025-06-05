@@ -471,6 +471,15 @@ meta:
 
 #### 使用 etcd 作为后端存储
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 你可以通过 `meta.backendStorage.etcd` 字段配置 etcd 作为后端存储。
 
 ```yaml

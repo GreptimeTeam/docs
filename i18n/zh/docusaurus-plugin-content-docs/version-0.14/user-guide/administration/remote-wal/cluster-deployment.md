@@ -139,6 +139,15 @@ kafka-wal                                                  True    KRaft
 
 ## Step 4: 部署 Remote WAL 配置下的 GrpetimeDB 集群
 
+:::tip NOTE
+chart 版本之间的配置结构已发生变化:
+
+- 旧版本: `meta.etcdEndpoints`
+- 新版本: `meta.backendStorage.etcd.endpoints`
+
+请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
+:::
+
 使用如下 remote WAL 配置来创建 GreptimeDB 集群：
 
 ```

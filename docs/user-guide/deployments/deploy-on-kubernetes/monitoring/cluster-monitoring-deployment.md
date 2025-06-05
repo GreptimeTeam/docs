@@ -94,6 +94,15 @@ monitoring:
         memory: "64Mi"
 ```
 
+:::tip NOTE
+The configuration structure has changed between chart versions:
+
+- In older version: `meta.etcdEndpoints`
+- In newer version: `meta.backendStorage.etcd.endpoints`
+
+Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
+:::
+
 :::note
 If you're not using Helm Chart, you can manually configure self-monitoring mode in the `GreptimeDBCluster` YAML:
 
@@ -149,6 +158,15 @@ After configuring `prometheusMonitor`, GreptimeDB Operator will automatically cr
 ```
 kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
 ```
+
+:::tip NOTE
+The configuration structure has changed between chart versions:
+
+- In older version: `meta.etcdEndpoints`
+- In newer version: `meta.backendStorage.etcd.endpoints`
+
+Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
+:::
 
 :::note
 If not using Helm Chart, you can manually configure Prometheus monitoring in the `GreptimeDBCluster` YAML:
