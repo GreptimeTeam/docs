@@ -1,3 +1,8 @@
+---
+keywords: [GreptimeDB performance tuning, query optimization, caching, primary keys, append-only tables, metrics]
+description: Tips for tuning GreptimeDB performance, including query optimization, caching, enlarging cache size, primary keys, and using append-only tables. Also covers metrics for diagnosing query and ingestion issues.
+---
+
 # Performance Tuning Tips
 
 A GreptimeDB instance's default configuration may not fit all use cases. It's important to tune the database configurations and usage according to the scenario.
@@ -28,7 +33,7 @@ The read cache stores objects or ranges on the local disk to avoid fetching the 
 ```toml
 [storage]
 type = "S3"
-bucket = "ap-southeast-1-test-bucket"
+bucket = "your-bucket-name"
 root = "your-root"
 access_key_id = "****"
 secret_access_key = "****"

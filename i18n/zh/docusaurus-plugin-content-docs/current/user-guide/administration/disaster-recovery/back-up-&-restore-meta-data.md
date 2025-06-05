@@ -37,10 +37,10 @@ greptime cli meta-snapshot [OPTIONS]
 
 ### 示例
 
-从 PostgreSQL 中导出元数据到 s3 。此命令会导出到 `ap-southeast-1-test-bucket` 的 `metadata_snapshot.metadata.fb` 文件中：
+从 PostgreSQL 中导出元数据到 s3 。此命令会导出到 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中：
 
 ```bash
-greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket ap-southeast-1-test-bucket --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 从 PostgreSQL 导出元数据到本地目录。此命令会导出到当前目录下的 `metadata_snapshot.metadata.fb` 文件中：
@@ -84,10 +84,10 @@ greptime cli meta-restore [OPTIONS]
 
 ### 示例
 
-将导出的元数据从 s3 导入到 PostgreSQL 存储后端。此命令会导入 `ap-southeast-1-test-bucket` 的 `metadata_snapshot.metadata.fb` 文件中的数据：
+将导出的元数据从 s3 导入到 PostgreSQL 存储后端。此命令会导入 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中的数据：
 
 ```bash
-greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket ap-southeast-1-test-bucket --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 将导出的元数据从本地文件导入到 PostgreSQL 存储后端。此命令会导入当前目录下的 `metadata_snapshot.metadata.fb` 文件中的数据：
