@@ -155,8 +155,10 @@ spec:
     replicas: 1
   meta:
     replicas: 1
-    etcdEndpoints:
-      - "etcd.metasrv-store:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd.metasrv-store:2379"
   datanode:
     replicas: 3
   wal:

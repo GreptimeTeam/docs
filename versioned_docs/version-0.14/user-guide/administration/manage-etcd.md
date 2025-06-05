@@ -291,7 +291,7 @@ etcd-recover-2   1/1     Running   0          91s
 ```
 </details>
 
-Next, change Metasrv [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) to the new etcd recover cluster, in this example is `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`:
+Next, change Metasrv [meta.backendStorage.etcd.endpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) to the new etcd recover cluster, in this example is `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`:
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -301,8 +301,10 @@ metadata:
 spec:
   # Other configuration here
   meta:
-    etcdEndpoints:
-      - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
 ```
 
 Restart GreptimeDB Metasrv to complete etcd restore.

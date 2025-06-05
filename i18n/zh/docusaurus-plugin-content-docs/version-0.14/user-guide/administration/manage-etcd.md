@@ -321,7 +321,7 @@ etcd-recover-2   1/1     Running   0          91s
 ```
 </details>
 
-接着，将 Metasrv 的 [etcdEndpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`：
+接着，将 Metasrv 的 [backendStorage.etcd.endpoints](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-cluster) 改成新的 etcd recover 集群，本例中为 `"etcd-recover.etcd-cluster.svc.cluster.local:2379"`：
 
 ```yaml
 apiVersion: greptime.io/v1alpha1
@@ -331,7 +331,7 @@ metadata:
 spec:
   # 其他配置
   meta:
-    etcdEndpoints:
+    endpoints:
       - "etcd-recover.etcd-cluster.svc.cluster.local:2379"
 ```
 

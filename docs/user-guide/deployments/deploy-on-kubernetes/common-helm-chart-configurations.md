@@ -478,10 +478,10 @@ meta:
   backendStorage:
     etcd:
       # -- Etcd endpoints
-      etcdEndpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
       # -- Etcd store key prefix
       storeKeyPrefix: ""
 ```
 
-- `etcd.etcdEndpoints`: The etcd endpoints.
+- `etcd.endpoints`: The etcd endpoints.
 - `etcd.storeKeyPrefix`: The etcd store key prefix. All keys will be stored with this prefix. If you want to use one etcd cluster for multiple GreptimeDB clusters, you can configure different store key prefixes for each GreptimeDB cluster. It's only for testing and debugging purposes.

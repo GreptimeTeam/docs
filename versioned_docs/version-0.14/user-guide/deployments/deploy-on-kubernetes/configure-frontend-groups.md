@@ -62,8 +62,10 @@ spec:
       timeout = "60s"
   meta:
     replicas: 1
-    etcdEndpoints:
-      - "etcd.etcd-cluster.svc.cluster.local:2379"
+    backendStorage:
+      etcd:
+        endpoints:
+          - "etcd.etcd-cluster.svc.cluster.local:2379"
   datanode:
     replicas: 1
 ```
