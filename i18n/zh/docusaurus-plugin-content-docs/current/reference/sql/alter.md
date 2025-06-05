@@ -126,10 +126,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 - `ttl`: 表数据的保留时间。
 - `compaction.twcs.time_window`: TWCS compaction 策略的时间窗口，其值是一个[时间范围字符段](/reference/time-durations.md)。
 - `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
-- `compaction.twcs.max_active_window_runs`: TWCS compaction 策略的活跃窗口中最多允许的有序组数量。
-- `compaction.twcs.max_inactive_window_runs`: TWCS compaction 策略的非活跃窗口中最多允许的有序组数量。
-- `compaction.twcs.max_active_window_files`: TWCS compaction 策略的活跃窗口中最多允许的文件数量。
-- `compaction.twcs.max_inactive_window_files`: TWCS compaction 策略的非活跃窗口中最多允许的文件数量。
+- `compaction.twcs.trigger_file_num`: 某个窗口内触发 compaction 的最小文件数量阈值。
 
 
 ```sql
@@ -139,13 +136,7 @@ ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 
 ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
 
-ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_files'='2';
-
-ALTER TABLE monitor SET 'compaction.twcs.max_active_window_files'='2';
-
-ALTER TABLE monitor SET 'compaction.twcs.max_active_window_runs'='6';
-
-ALTER TABLE monitor SET 'compaction.twcs.max_inactive_window_runs'='6';
+ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
 ```
 
 ### 移除表参数

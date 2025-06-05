@@ -36,14 +36,11 @@ GreptimeDB has a preset collection of window sizes that are:
 - 12 hours
 - 1 day
 - 1 week
-- 1 year
-- 10 years
 
-If time window is not specified, GreptimeDB will infer it when the first compaction happens by selecting the minimum time window size for the above collection that can cover the whole time span of all files to be compacted.
+If time window is not specified, GreptimeDB will use `1hour` as the initial time window size and split all inserted rows to those time windows and will infer a proper time window size when the first compaction happens by selecting the minimum time window size for the above collection that can cover the whole time span of all files to be compacted.
 
 For example, during the first compaction, the time span for all SST files is 4 hours, then GreptimeDB will choose 12 hours as the time window for that table and persist it for later compactions.
 
-GreptimeDB considers the window contains most recently inserted timestamps as **active window** and those previous windows as **inactive windows**.
 
 ### Sorted runs
 Sorted runs is a collection of SST files that have sorted and non-overlapping time ranges. 
@@ -66,27 +63,23 @@ GreptimeDB provides two compaction strategies as mentioned above, but only Time 
 
 TWCS primarily aims to reduce read/write amplification during compaction.
 
-It assigns files to be compacted into different time windows. For each window, TWCS identifies the sorted runs. If the number of sorted runs exceeds the maximum allowed, TWCS finds a solution to reduce them to the threshold while considering merging penalties. If the number of sorted runs does not exceed the threshold, TWCS checks for excessive file fragmentation and merges fragmented files if necessary since SST file count also impacts query performance.
+It assigns files to be compacted into different time windows. For each window, TWCS identifies the sorted runs. If there are more than 1 sorted runs, TWCS finds a solution to merge the overlapping files in those runs with merging penalties taken into consideration. If there's only 1 sorted run, TWCS checks for excessive file fragmentation and merges fragmented files if necessary since SST file count also impacts query performance.
 
 For window assignment, SST files may span multiple time windows. TWCS assigns SSTs based on their maximum timestamps to ensure they are not affected by stale data. In time-series workloads, out-of-order writes are infrequent, and even when they occur, recent data's query performance is more critical than that of stale data.
 
 
-TWCS provides 5 parameters:
-- `max_active_window_runs`: max allowed sorted runs in the active window (default: 4)
-- `max_active_window_files`: max allowed files in the active window (default: 4)
-- `max_inactive_window_runs`: max allowed sorted runs in inactive windows (default: 1)
-- `max_inactive_window_files`: max allowed files in inactive windows (default: 1)
+TWCS provides 2 parameters:
+- `trigger_file_num`: number of files in a specific time window to trigger a compaction (default 4).
 - `max_output_file_size`: max allowed compaction output file size (no limit by default).
 
-You can set different thresholds for active and inactive windows. This is important because out-of-order writes typically occur in the active window. By allowing more overlapping files in the active window, TWCS reduces write amplification during ingestion and merges all these files when the active window becomes inactive.
 
-Following diagrams show how files in an active window get compacted when `max_sorted_runs = 1`:
+Following diagrams show how files in a window get compacted when `trigger_file_num = 3`:
 - In A, there're two SST files `[0, 3]` and `[5, 6, 9]` but there's only one sorted run since those two files have disjoint time ranges. 
 - In B, a new SST file `[1, 4]` is flushed therefore forms two sorted runs that exceeds the threshold. Then `[0, 3]` and `[1, 4]` are merged to `[0, 1, 3, 4]`.
-- In C, a new SST file `[9, 10]` is flushed, and it will be merged with `[5, 6, 10]` to create `[5, 6, 9, 10]`.
-- D is the final state, in two compacted files form one sorted run.
+- In C, a new SST file `[9, 10]` is flushed, and it will be merged with `[5, 6, 10]` to create `[5, 6, 9, 10]`, and after compaction the files will be like D.
+- In E, a new file `[11, 12]` is flushed. Though there's still only one sorted run, but the number of files reaches `trigger_file_num`(3), so `[5, 6, 9, 10]` will be merged with `[11, 12]` to form `[5, 6, 9, 10, 11, 12]`.
 
-![compaction-twcs-active.jpg](/compaction-twcs-active.jpg)
+![compaction-trigger-file-num.png](/compaction-trigger-file-num.png)
 
 ### Specifying TWCS parameters
 You can specify TWCS parameters mentioned above while creating tables, for example:
@@ -100,10 +93,7 @@ CREATE TABLE monitor (
   PRIMARY KEY(host))
 WITH (
     'compaction.type'='twcs', 
-    'compaction.twcs.max_active_window_runs'='4', 
-    'compaction.twcs.max_active_window_files'='8', 
-    'compaction.twcs.max_inactive_window_runs'='1',
-    'compaction.twcs.max_inactive_window_files'='2',
+    'compaction.twcs.trigger_file_num'='8', 
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```

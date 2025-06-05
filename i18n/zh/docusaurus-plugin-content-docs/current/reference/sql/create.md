@@ -109,8 +109,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `ttl`                                       | 表数据的存储时间                         | 一个时间范围字符串，例如 `'60m'`, `'1h'` 代表 1 小时， `'14d'` 代表 14 天等。支持的时间单位有：`s` / `m` / `h` / `d`                                                     |
 | `storage`                                   | 自定义表的存储引擎，存储引擎提供商的名字 | 字符串，类似 `S3`、`Gcs` 等。必须在 `[[storage.providers]]` 列表里配置，参考 [configuration](/user-guide/deployments/configuration.md#存储引擎提供商)。                 |
 | `compaction.type`                           | Compaction 策略                          | 字符串值。只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
-| `compaction.twcs.max_active_window_files`   | 当前活跃时间窗口内的最大文件数           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
-| `compaction.twcs.max_inactive_window_files` | 非活跃时间窗口内的最大文件数             | 字符串值，如 '1'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
+| `compaction.twcs.trigger_file_num`   | 某个窗口内触发 compaction 的最小文件数量阈值           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
 | `compaction.twcs.time_window`               | Compaction 时间窗口                      | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                       |
 | `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
@@ -156,9 +155,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 ```
 
 #### 创建自定义 compaction 参数的表
-创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区。
-- 它会在最新时间窗口内的文件超过 8 个时合并该窗口的文件
-- 它会将非最新窗口内的文件合并为一个文件
+创建带自定义 twcs compaction 参数的表。这个表会尝试根据数据的时间戳将数据按 1 天的时间窗口分区，并会在最新时间窗口内的文件超过 8 个时合并该窗口的文件
 
 ```sql
 CREATE TABLE IF NOT EXISTS temperatures(
@@ -168,8 +165,7 @@ CREATE TABLE IF NOT EXISTS temperatures(
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
-  'compaction.twcs.max_active_window_files'='8',
-  'compaction.twcs.max_inactive_window_files'='1',
+  'compaction.twcs.trigger_file_num'='8', 
 );
 ```
 
