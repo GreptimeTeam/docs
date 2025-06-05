@@ -33,7 +33,7 @@ GreptimeDB 提供了各种指标来帮助监控和排查性能问题。官方仓
 ```toml
 [storage]
 type = "S3"
-bucket = "test-bucket"
+bucket = "your-bucket-name"
 root = "your-root"
 access_key_id = "****"
 secret_access_key = "****"

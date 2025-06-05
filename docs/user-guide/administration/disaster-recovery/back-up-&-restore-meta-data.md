@@ -37,10 +37,10 @@ greptime cli meta-snapshot [OPTIONS]
 
 ### Examples
 
-Exporting metadata from PostgreSQL to s3. This command will export to the `metadata_snapshot.metadata.fb` file in `test-bucket`:
+Exporting metadata from PostgreSQL to s3. This command will export to the `metadata_snapshot.metadata.fb` file in `your-bucket-name`:
 
 ```bash
-greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket test-bucket --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 Exporting metadata from PostgreSQL to local directory. This command will export to the `metadata_snapshot.metadata.fb` file in the current directory:
@@ -84,10 +84,10 @@ greptime cli meta-restore [OPTIONS]
 
 ### Examples
 
-Importing exported metadata from s3 to PostgreSQL storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in `test-bucket`:
+Importing exported metadata from s3 to PostgreSQL storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in `your-bucket-name`:
 
 ```bash
-greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket test-bucket --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 Importing exported metadata from local file to PostgreSQL storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in the current directory:

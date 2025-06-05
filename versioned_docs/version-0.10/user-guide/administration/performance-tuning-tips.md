@@ -33,7 +33,7 @@ The read cache stores objects or ranges on the local disk to avoid fetching the 
 ```toml
 [storage]
 type = "S3"
-bucket = "test-bucket"
+bucket = "your-bucket-name"
 root = "your-root"
 access_key_id = "****"
 secret_access_key = "****"
