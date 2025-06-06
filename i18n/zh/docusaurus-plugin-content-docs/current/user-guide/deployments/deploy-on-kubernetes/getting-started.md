@@ -315,7 +315,6 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 
 ```bash
 helm install mycluster \
-  --set flownode.enabled=true \
   --set monitoring.enabled=true \
   --set grafana.enabled=true \
   greptime/greptimedb-cluster \
@@ -332,7 +331,6 @@ helm install mycluster \
   --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   --set grafana.enabled=true \
   --set grafana.image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set flownode.enabled=true \
   --set monitoring.enabled=true \
   --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   -n default
@@ -507,9 +505,8 @@ kubectl -n ${namespace} port-forward svc/${cluster}-grafana 18080:80
 
 目前有三个可用的 Dashboard：
 
-- **GreptimeDB Cluster Metrics**: 用于显示 GreptimeDB 集群的 Metrics；
-- **GreptimeDB Cluster Logs**: 用于显示 GreptimeDB 集群的日志；
-- **GreptimeDB Cluster Slow Queries**: 用于显示 GreptimeDB 集群的慢查询；
+- **GreptimeDB**: 用于显示 GreptimeDB 集群的 Metrics；
+- **GreptimeDB Logs**: 用于显示 GreptimeDB 集群的日志；
 
 ## 清理
 

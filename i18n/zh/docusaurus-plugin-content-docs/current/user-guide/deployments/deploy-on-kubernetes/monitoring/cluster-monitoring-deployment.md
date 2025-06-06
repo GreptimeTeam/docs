@@ -69,7 +69,7 @@ monitoring:
 GreptimeDB Standalone 实例将会使用 `${cluster}-monitoring-standalone` 作为 Kubernetes Service 的名称来暴露相应的服务，你可以使用如下地址来用于监控数据的读取：
 
 - **Prometheus 协议的指标监控**：`http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`。
-- **SQL 协议的日志监控**：`${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认集群日志会存储于 `public._gt_logs` 表，而将慢查询日志存储于 `public._gt_slow_queries` 表。
+- **SQL 协议的日志监控**：`${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认集群日志会存储于 `public._gt_logs` 表。
 
 GreptimeDB 自监控模式将使用 Vector Sidecar 来收集日志数据，你可以通过 `monitoring.vector` 字段来配置 Vector 的配置，如下所示：
 
@@ -206,11 +206,9 @@ spec:
 
 - [集群指标 Dashboard](https://github.com/GreptimeTeam/greptimedb/blob/main/grafana/greptimedb-cluster.json)
 - [集群日志 Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json)
-- [慢查询日志 Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-slow-queries.json)
-
 
 :::note
-其中 **集群日志 Dashboard** 和 **慢查询日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
+其中 **集群日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
 :::
 
 如果你使用 Helm Chart 部署 GreptimeDB 集群，你可以通过启用 `grafana.enabled` 来一键部署 Grafana 实例，并导入相应的 Dashboard（可参考[立即开始](../getting-started.md)），如下所示：
@@ -236,7 +234,7 @@ grafana:
 
    - **`logs` 数据源**
   
-     这部分数据源用于使用 SQL 协议导入集群的日志和慢查询日志，**仅适用于自监控模式**。此时我们可以用 `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` 作为 SQL 协议的地址，并使用 `public` 作为数据库名称进行连接。
+     这部分数据源用于使用 SQL 协议导入集群的日志，**仅适用于自监控模式**。此时我们可以用 `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` 作为 SQL 协议的地址，并使用 `public` 作为数据库名称进行连接。
  
 
 2. **导入相应的 Dashboard**

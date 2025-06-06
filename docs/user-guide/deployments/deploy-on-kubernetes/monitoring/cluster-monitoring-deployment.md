@@ -16,7 +16,7 @@ Users can choose the appropriate monitoring approach based on their needs.
 
 ## Enable GreptimeDB Self-Monitoring
 
-In self-monitoring mode, GreptimeDB Operator will launch an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster, including cluster logs and slow query logs. To collect log data, GreptimeDB Operator will start a [Vector](https://vector.dev/) sidecar container in each Pod. When this mode is enabled, JSON format logging will be automatically enabled for the cluster.
+In self-monitoring mode, GreptimeDB Operator will launch an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster, including cluster logs. To collect log data, GreptimeDB Operator will start a [Vector](https://vector.dev/) sidecar container in each Pod. When this mode is enabled, JSON format logging will be automatically enabled for the cluster.
 
 If you deploy the GreptimeDB cluster using Helm Chart (refer to [Getting Started](../getting-started.md)), you can configure the `values.yaml` file as follows:
 
@@ -69,7 +69,7 @@ monitoring:
 The GreptimeDB Standalone instance will expose services using `${cluster}-monitoring-standalone` as the Kubernetes Service name. You can use the following addresses to read monitoring data:
 
 - **Prometheus metrics**: `http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
-- **SQL logs**: `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in `public._gt_logs` table and slow query logs are stored in `public._gt_slow_queries` table.
+- **SQL logs**: `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in `public._gt_logs` table.
 
 The Vector sidecar configuration for log collection can be customized via the `monitoring.vector` field:
 
@@ -206,10 +206,9 @@ GreptimeDB cluster currently provides 3 Grafana dashboards:
 
 - [Cluster Metrics Dashboard](https://github.com/GreptimeTeam/greptimedb/blob/main/grafana/greptimedb-cluster.json)
 - [Cluster Logs Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json) 
-- [Slow Query Logs Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-slow-queries.json)
 
 :::note
-The Cluster Logs Dashboard and Slow Query Logs Dashboard are only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
+The Cluster Logs Dashboard is only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
 :::
 
 If using Helm Chart, you can enable `grafana.enabled` to deploy Grafana and import dashboards automatically (see [Getting Started](../getting-started.md)):
@@ -235,7 +234,7 @@ If you already have Grafana deployed, follow these steps to import the dashboard
 
    - **`logs` data source**
     
-     For importing cluster and slow query logs via SQL, **only works with self-monitoring mode**. Use `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` as the SQL address with database `public`.
+     For importing cluster logs via SQL, **only works with self-monitoring mode**. Use `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` as the SQL address with database `public`.
 
 2. **Import Dashboards**
    
