@@ -276,7 +276,6 @@ You should adjust the configuration according to your requirements.
 helm install mycluster \
   --set monitoring.enabled=true \
   --set grafana.enabled=true \
-  --set flownode.enabled=true \
   greptime/greptimedb-cluster \
   -n default
 ```
@@ -451,9 +450,8 @@ Then open your browser and navigate to `http://localhost:18080` to access the Gr
 
 There are three dashboards available:
 
-- **GreptimeDB Cluster Metrics**: Displays the metrics of the GreptimeDB cluster.
-- **GreptimeDB Cluster Logs**: Displays the logs of the GreptimeDB cluster.
-- **GreptimeDB Cluster Slow Queries**: Displays the slow queries of the GreptimeDB cluster.
+- **GreptimeDB**: Displays the metrics of the GreptimeDB cluster.
+- **GreptimeDB Logs**: Displays the logs of the GreptimeDB cluster.
 
 ## Cleanup
 
