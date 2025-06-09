@@ -110,7 +110,6 @@ GreptimeDB provides:
 * [date_add](#data_add)
 * [date_sub](#data_sub)
 * [date_format](#date_format)
-* [to_unixtime](#to_unixtime)
 * [timezone](#timezone)
 
 #### date_add
@@ -162,34 +161,6 @@ SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f'
 ```
 
 Supported specifiers refer to the [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) module.
-
-#### to_unixtime
-
-* `to_unixtime(expression)` to convert the expression into the Unix timestamp in seconds. The argument can be integers (Unix timestamp in milliseconds), Timestamp, Date, DateTime, or String. If the argument is the string type, the function will first try to convert it into a DateTime, Timestamp, or Date.
-
-```sql
-select to_unixtime('2023-03-01T06:35:02Z');
-```
-
-```
-+-------------------------------------------+
-| to_unixtime(Utf8("2023-03-01T06:35:02Z")) |
-+-------------------------------------------+
-|                                1677652502 |
-+-------------------------------------------+
-```
-
-```sql
-select to_unixtime('2023-03-01'::date);
-```
-
-```
-+---------------------------------+
-| to_unixtime(Utf8("2023-03-01")) |
-+---------------------------------+
-|                      1677628800 |
-+---------------------------------+
-```
 
 #### timezone
 

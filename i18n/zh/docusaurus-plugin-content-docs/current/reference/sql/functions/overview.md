@@ -104,7 +104,6 @@ DataFusion [时间和日期函数](./df-functions.md#time-and-date-functions)。
 * [date_add](#data_add)
 * [date_sub](#data_sub)
 * [date_format](#date_format)
-* [to_unixtime](#to_unixtime)
 * [timezone](#timezone)
 
 #### date_add
@@ -158,34 +157,6 @@ SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f'
 ```
 
 支持的格式化符号请参阅 [chrono::format::strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 模块。
-
-#### to_unixtime
-
-* `to_unixtime(expression)` 将表达式转换为 Unix 时间戳（秒）。参数可以是整数（毫秒 Unix 时间戳）、Timestamp、Date、DateTime 或字符串类型。如果参数是字符串类型，函数将首先尝试将其转换为 DateTime、Timestamp 或 Date。
-
-```sql
-select to_unixtime('2023-03-01T06:35:02Z');
-```
-
-```
-+-------------------------------------------+
-| to_unixtime(Utf8("2023-03-01T06:35:02Z")) |
-+-------------------------------------------+
-|                                1677652502 |
-+-------------------------------------------+
-```
-
-```sql
-select to_unixtime('2023-03-01'::date);
-```
-
-```
-+---------------------------------+
-| to_unixtime(Utf8("2023-03-01")) |
-+---------------------------------+
-|                      1677628800 |
-+---------------------------------+
-```
 
 #### timezone
 
