@@ -633,40 +633,45 @@ default_timezone = "UTC"
 
 ```toml
 # 工作主目录。
-data_home = "./greptimedb_data/metasrv/"
-# metasrv 的绑定地址，默认为 "127.0.0.1:3002"。
-bind_addr = "127.0.0.1:3002"
-# frontend 和 datanode 连接到 metasrv 的通信服务器地址，本地默认为 "127.0.0.1:3002"。
-server_addr = "127.0.0.1:3002"
-# metasrv 存储端服务器地址，默认为 "127.0.0.1:2379"。
-# 根据你的存储服务器类型配置地址，例如：
-# - 使用 "127.0.0.1:2379" 连接到 etcd
-# - 使用 "password=password dbname=postgres user=postgres host=localhost port=5432" 连接到 postgres
-# - 使用 "mysql://user:password@ip:port/dbname" 连接到 mysql
-store_addr = "127.0.0.1:2379"
+data_home = "./greptimedb_data"
+# metasrv 存储后端服务器地址，默认为 etcd 实现。
+# 对于 postgres 存储后端，格式为：
+# "password=password dbname=postgres user=postgres host=localhost port=5432"
+# 对于 etcd 存储后端，格式为：
+# "127.0.0.1:2379"
+store_addrs = ["127.0.0.1:2379"]
+# 如果不为空，metasrv 将使用此键前缀存储所有数据。
+store_key_prefix = ""
+# metasrv 的存储后端类型。
+# 可选项：
+# - `etcd_store`（默认值）
+# - `memory_store`
+# - `postgres_store`
+# - `mysql_store`
+backend = "etcd_store"
+# 在 RDS 中存储元数据的表名。仅在使用 RDS kvbackend 时生效。
+# **仅当后端为 RDS kvbackend 时使用。**
+meta_table_name = "greptime_metakv"
+## PostgreSQL 选举的咨询锁 ID。仅在使用 PostgreSQL 作为 kvbackend 时生效。
+## 仅当后端为 `postgres_store` 时使用。
+meta_election_lock_id = 1
 # Datanode 选择器类型。
 # - "lease_based" (默认值)
+# - `lease_based`
 # - "load_based"
 # 详情请参阅 "https://docs.greptime.com/contributor-guide/meta/selector"
 selector = "lease_based"
 # 将数据存储在内存中，默认值为 false。
 use_memory_store = false
-## 是否启用 region failover。
-## 该功能仅适用于运行在集群模式下的 GreptimeDB，并且
-## - 使用 Remote WAL
-## - 使用共享存储（例如 s3）。
+# 是否启用 region failover。
+# 该功能仅适用于运行在集群模式下的 GreptimeDB，并且
+# - 使用 Remote WAL
+# - 使用共享存储（例如 s3）。
 enable_region_failover = false
-## 是否允许在本地 WAL 上进行 region failover。
-## **此选项不建议设置为 true，
-## 因为这可能会在故障转移期间导致数据丢失。**
+# 是否允许在本地 WAL 上进行 region failover。
+# **此选项不建议设置为 true，
+# 因为这可能会在故障转移期间导致数据丢失。**
 allow_region_failover_on_local_wal = false
-# metasrv 的数据库类型。
-## 可选项：
-## - "etcd_store" (默认值)
-## - "memory_store" (纯内存存储 - 仅用于测试)
-## - "postgres_store"
-## - "mysql_store"
-backend = "etcd_store"
 
 ## Procedure 选项
 [procedure]
