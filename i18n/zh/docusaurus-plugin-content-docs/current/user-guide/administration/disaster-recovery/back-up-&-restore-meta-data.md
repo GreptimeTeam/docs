@@ -14,7 +14,7 @@ description: 介绍 GreptimeDB 的元数据导出和导入工具，用于数据�
 ### 命令语法
 
 ```bash
-greptime cli meta-snapshot [OPTIONS]
+greptime cli meta snapshot [OPTIONS]
 ```
 
 ### 选项
@@ -40,19 +40,19 @@ greptime cli meta-snapshot [OPTIONS]
 从 PostgreSQL 中导出元数据到 s3 。此命令会导出到 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中：
 
 ```bash
-greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 从 PostgreSQL 导出元数据到本地目录。此命令会导出到当前目录下的 `metadata_snapshot.metadata.fb` 文件中：
 
 ```bash
-greptime cli meta-snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta snapshot --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
 ```
 
 从 etcd 导出元数据到本地目录。此命令会导出到当前目录下的 `metadata_snapshot.metadata.fb` 文件中：
 
 ```bash
-greptime cli meta-snapshot --store-addrs 127.0.0.1:2379 --backend etcd-store
+greptime cli meta snapshot --store-addrs 127.0.0.1:2379 --backend etcd-store
 ```
 
 ## 导入工具
@@ -60,7 +60,7 @@ greptime cli meta-snapshot --store-addrs 127.0.0.1:2379 --backend etcd-store
 ### 命令语法
 
 ```bash
-greptime cli meta-restore [OPTIONS]
+greptime cli meta restore [OPTIONS]
 ```
 
 ### 选项
@@ -87,19 +87,19 @@ greptime cli meta-restore [OPTIONS]
 将导出的元数据从 s3 导入到 PostgreSQL 存储后端。此命令会导入 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中的数据：
 
 ```bash
-greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
 ```
 
 将导出的元数据从本地文件导入到 PostgreSQL 存储后端。此命令会导入当前目录下的 `metadata_snapshot.metadata.fb` 文件中的数据：
 
 ```bash
-greptime cli meta-restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
 ```
 
 将导出的元数据从本地文件导入到 etcd 存储后端。此命令会导入当前目录下的 `metadata_snapshot.metadata.fb` 文件的数据：
 
 ```bash
-greptime cli meta-restore --store-addrs 127.0.0.1:2379 --backend etcd-store
+greptime cli meta restore --store-addrs 127.0.0.1:2379 --backend etcd-store
 ```
 
 ### 注意事项
