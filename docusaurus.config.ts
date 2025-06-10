@@ -1,9 +1,15 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import variablePlaceholder from './src/plugins/variable-placeholder'
-const locale = process.env.DOC_LANG || 'en'
-const biel_project_id = process.env.BIEL_PROJECT_ID
+import variablePlaceholder from './src/plugins/variable-placeholder';
+import versions from './versions.json';
+
+const locale = process.env.DOC_LANG || 'en';
+const biel_project_id = process.env.BIEL_PROJECT_ID;
+
+// Get the latest version (first item in versions array)
+const latestVersion = versions[0];
+const latestVersionNumber = parseFloat(latestVersion);
 
 const metaMap = {
   'en': [
@@ -30,7 +36,7 @@ const metaMap = {
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ]
-}
+};
 
 const bielMetaMap = {
   'en': {
@@ -42,7 +48,7 @@ const bielMetaMap = {
     sourcesText: 'Related Documents',
     inputPlaceholderText: 'Ask a question about Greptime...',
     footerText: 'AI-generated answers may contain errors. <br> You can also communicate with engineers through <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> or join <a href="https://greptime.com/slack">Slack community</a>.',
-    welcomeMessage: 'Hi! I’m Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
+    welcomeMessage: 'Hi! I\'m Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
   },
   'zh': {
     project: biel_project_id,
@@ -55,58 +61,57 @@ const bielMetaMap = {
     footerText: 'AI 生成的答案可能包含错误。<br> 你还可以通过 <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> 或加入 <a href="https://greptime.com/slack">Slack 社区</a>与工程师沟通。',
     welcomeMessage: '你好，我是 Greptime AI。你可以问我关于 GreptimeDB 的问题，例如我可以帮助你编写 SQL、Pipeline 或其他与 GreptimeDB 相关的代码。',
   }
-
-}
+};
 
 const hostMap = {
   'en': 'https://greptime.com',
   'zh': 'https://greptime.cn'
-}
+};
 
 const algoliaMap = {
-  'en':  {
-      // The application ID provided by Algolia
-      appId: 'SRGB68Y6CW',
+  'en': {
+    // The application ID provided by Algolia
+    appId: 'SRGB68Y6CW',
 
-      // Public API key: it is safe to commit it
-      apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
+    // Public API key: it is safe to commit it
+    apiKey: 'eacb3d367f08bb200e8dbfc2470984d8',
 
-      indexName: 'greptime',
+    indexName: 'greptime',
 
-      // Optional: see doc section below
-      contextualSearch: true,
+    // Optional: see doc section below
+    contextualSearch: true,
 
-      // Optional: Algolia search parameters
-      searchParameters: {},
+    // Optional: Algolia search parameters
+    searchParameters: {},
 
-      // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: 'search',
+    // Optional: path for search page that enabled by default (`false` to disable it)
+    searchPagePath: 'search',
 
-      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-      insights: false,
-    },
-    'zh': {
-      // The application ID provided by Algolia
-      appId: 'SCVT6GSUZV',
+    // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+    insights: false,
+  },
+  'zh': {
+    // The application ID provided by Algolia
+    appId: 'SCVT6GSUZV',
 
-      // Public API key: it is safe to commit it
-      apiKey: '450bf5e5a3c1ecd3c4154530e25678c5',
+    // Public API key: it is safe to commit it
+    apiKey: '450bf5e5a3c1ecd3c4154530e25678c5',
 
-      indexName: 'greptime',
+    indexName: 'greptime',
 
-      // Optional: see doc section below
-      contextualSearch: true,
+    // Optional: see doc section below
+    contextualSearch: true,
 
-      // Optional: Algolia search parameters
-      searchParameters: {},
+    // Optional: Algolia search parameters
+    searchParameters: {},
 
-      // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: 'search',
+    // Optional: path for search page that enabled by default (`false` to disable it)
+    searchPagePath: 'search',
 
-      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-      insights: false,
-    }
-}
+    // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+    insights: false,
+  }
+};
 
 const config: Config = {
   title: 'GreptimeDB Documentation',
@@ -182,16 +187,41 @@ const config: Config = {
           trackingID: 'G-BYNN8J57JZ',
           anonymizeIP: false,
         },
+        sitemap: {
+          priority: 0.8, // Default priority
+          createSitemapItems: async (params) => {
+            const { defaultCreateSitemapItems, ...rest } = params;
+            const items = await defaultCreateSitemapItems(rest);
+            
+            return items.map((item) => {
+              // Check for historical version patterns in URL
+              const isHistoricalVersion = versions.slice(1).some(version => 
+                item.url.includes(`/${version}/`)
+              );
+              
+              if (isHistoricalVersion) {
+                return {
+                  ...item,
+                  priority: 0.1, // Low priority for historical versions
+                };
+              }
+              
+              return {
+                ...item,
+                priority: 0.8, // Normal priority for current version and nightly
+              };
+            });
+          },
+        },
       } satisfies Preset.Options,
     ],
   ],
   plugins: [
-    ['docusaurus-biel', bielMetaMap[locale]]
+    ['docusaurus-biel', bielMetaMap[locale]],
   ],
 
   themeConfig: {
     // Replace with your project's social card
-
     metadata: metaMap[locale],
     navbar: {
       title: 'GreptimeDB',
@@ -231,7 +261,6 @@ const config: Config = {
       additionalLanguages: ['java', 'toml'],
     },
     algolia: algoliaMap[locale]
-   //,
   } satisfies Preset.ThemeConfig,
 };
 
