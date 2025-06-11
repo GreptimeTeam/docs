@@ -119,6 +119,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
 - `select`: 从 pipeline 执行上下文中保留或移除字段。
+- `vrl`: 使用 pipeline 上下文执行 [vrl](https://vector.dev/docs/reference/vrl/) 脚本。
 
 ### Processor 的输入和输出
 
@@ -795,6 +796,38 @@ processors:
         - content
         - message
 ```
+
+### `vrl`
+
+:::warning 实验性特性
+此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::
+
+`vrl` 处理器使用 pipeline 上下文作为环境来运行 vrl 编程脚本。
+相比于简单的处理器，它功能更加强大，允许用户编写编程代码来此操作上下文中的变量；不过执行 vrl 脚本会消耗更多的资源。
+更多的 vrl 语言介绍和使用，请参考[官方网站](https://vector.dev/docs/reference/vrl/)。
+
+`vrl` 处理器目前只有一个配置项，就是 `source`（源码）。以下是一个示例：
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .log_id = .id
+        del(.id)
+        .
+```
+
+这份配置使用 `|` 在 YAML 中开启一个多行的文本。随后即可编写整个脚本。
+
+在使用 `vrl` 处理器时，有一些主要注意的点：
+1. 整个脚本必须以一个单独的 `.` 行作为结尾，表示将整个上下文作为脚本的返回值。
+2. vrl 脚本的返回值中不能包含任何的 `regex` 类型的变量。在脚本的过程中可以使用这种类型，但是在返回之前需要 `del`（删除） 掉。
+3. 由于 pipeline 的类型和 vrl 的类型之前存在转换，经过 vrl 处理的类型会变成最大的容量类型，即 `i64`， `u64` 和 `Timestamp::nanoseconds`。
 
 ## Transform
 
