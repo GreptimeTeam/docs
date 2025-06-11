@@ -5,30 +5,48 @@ description: GreptimeDB 部署概述，包括配置项、鉴权、在 Kubernetes
 
 # 运维部署及管理
 
-## 自行部署及管理
+GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管云服务 GreptimeCloud 进行管理。
+本指南概述了部署策略、配置、监控和管理的相关内容。
 
-本文档介绍了部署和管理 GreptimeDB 中使用的策略和实践。
+## 自托管 GreptimeDB 部署
 
-- 配置项：在部署 GreptimeDB 之前，你需要[配置服务器](configuration.md)以满足需求，其中包括设置协议选项、存储选项等。
-- 鉴权：GreptimeDB 默认不启用鉴权认证。了解如何为你的部署手动[配置鉴权](./authentication/overview.md)。
-- 部署到 Kubernetes：[在 Kubernetes 集群上部署 GreptimeDB](./deploy-on-kubernetes/overview.md)的逐步说明。
-- 在 Android 上运行：[在 Android 设备上运行 GreptimeDB](run-on-android.md)的指南。
-- 容量规划：[规划容量](/user-guide/deployments-administration/capacity-plan.md)以确保你的 GreptimeDB 部署能够处理你的工作负载。
-- [安装](/getting-started/installation/overview.md) GreptimeDB 和 [g-t-control](/reference/gtctl.md) 命令行工具
-- 根据工作负载进行 GreptimeDB 的[容量规划](/user-guide/deployments-administration/capacity-plan.md)
-- [管理数据](/user-guide/deployments-administration/manage-data/overview.md) 以避免数据丢失、降低成本和提高性能
-- 数据库配置，请阅读[配置](/user-guide/deployments-administration/configuration.md)参考文档
-- GreptimeDB 的[灾难恢复方案](/user-guide/deployments-administration/disaster-recovery/overview.md)
-- 通过[设置 Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾
-- GreptimeDB 的[监控指标](/user-guide/deployments-administration/monitoring/export-metrics.md)和[链路追踪](/user-guide/deployments-administration/monitoring/tracing.md)
-- [性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)
-- 查看[数据建模指南](/user-guide/deployments-administration/performance-tuning/design-table.md)了解常见场景下的表结构设计方式。
-- [升级](/user-guide/deployments-administration/upgrade.md) GreptimeDB 到新版本
-- 获取集群的[运行时信息](/user-guide/deployments-administration/monitoring/runtime-info.md)
+本节概述了自托管环境中部署和管理 GreptimeDB 的关键点。
+
+### 配置和部署
+
+- **配置：** 在部署 GreptimeDB 前，[检查配置](configuration.md)以确保满足你的相关需要，包括协议设置、存储选项等。
+- **鉴权：** 默认情况下鉴权没有被启动。了解如何[启用和配置鉴权](./authentication/overview.md)。
+- **Kubernetes 部署：** 按照[部署指南](./deploy-on-kubernetes/overview.md)在 Kubernetes 上部署 GreptimeDB。
+- **容量规划：** 通过[容量规划](/user-guide/deployments-administration/capacity-plan.md)确保集群能够处理业务所需的工作负载。
+
+### 组件管理
+
+- **Cluster Failover：** 通过设置 [Remote WAL](./remote-wal/quick-start.md) 以实现高可用性。
+- **管理元数据：** 为 GreptimeDB 设置[元数据存储](./manage-data/overview.md)。
+
+### 监控
+
+- **监控：** 通过指标、Traces 和运行时信息[监控集群的健康状况和性能](./monitoring/overview.md)。
+
+### 数据管理和性能
+
+- **数据管理：** 通过[管理数据策略](/user-guide/deployments-administration/manage-data/overview.md) 以防止数据丢失、降低成本并优化性能。
+- **性能调优：** 查看[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)并学习如何[设计表结构](/user-guide/deployments-administration/performance-tuning/design-table.md)以提高性能。
+
+### 灾难恢复
+
+- **灾难恢复：** 实施[灾难恢复策略](/user-guide/deployments-administration/disaster-recovery/overview.md)以保护你的数据并确保业务连续性。
+
+### 其他
+
+- **在 Android 上运行：** 了解如何[在 Android 设备上运行 GreptimeDB](run-on-android.md)。
+- **升级：** 按照[升级指南](/user-guide/deployments-administration/upgrade.md)升级 GreptimeDB。
 
 ## GreptimeCloud
 
-比起管理自己的 GreptimeDB 集群，
-你可以使用 [GreptimeCloud](https://greptime.cloud) 来管理 GreptimeDB 实例、监控指标和设置警报。
-GreptimeCloud 是由完全托管的无服务器 GreptimeDB 提供支持的云服务，为时间序列数据平台和 Prometheus 后端提供了可扩展和高效的解决方案。
-有关更多信息，请参阅[GreptimeCloud 文档](https://docs.greptime.cn/nightly/greptimecloud/overview)。
+对于完全托管的体验，
+请考虑 [GreptimeCloud](https://greptime.cloud)。
+GreptimeCloud 使你能够轻松部署、监控和扩展 GreptimeDB 实例，内置指标监控和告警功能。
+它旨在为时序数据平台和 Prometheus 后端提供可扩展、高效的无服务器解决方案。
+
+更多详情，请参阅 [GreptimeCloud 文档](https://docs.greptime.com/nightly/greptimecloud/overview)。

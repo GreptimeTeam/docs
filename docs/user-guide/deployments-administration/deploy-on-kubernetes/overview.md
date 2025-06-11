@@ -13,10 +13,7 @@ We **highly recommend** using the GreptimeDB Operator to deploy GreptimeDB on Ku
 
 ## Getting Started
 
-- GreptimeDB Cluster
-
-You can take [Getting Started](./getting-started.md) as your first guide to understand the whole picture. This guide provides the complete process of deploying the GreptimeDB cluster on Kubernetes.
-
+- GreptimeDB Cluster: You can take [Getting Started](./getting-started.md) as your first guide to understand the whole picture. This guide provides the complete process of deploying the GreptimeDB cluster on Kubernetes.
 - [GreptimeDB Standalone](./deploy-greptimedb-standalone.md)
 
 ## GreptimeDB Operator
