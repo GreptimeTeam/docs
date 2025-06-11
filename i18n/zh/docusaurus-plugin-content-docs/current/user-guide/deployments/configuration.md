@@ -637,6 +637,8 @@ data_home = "./greptimedb_data"
 # metasrv 存储后端服务器地址，默认为 etcd 实现。
 # 对于 postgres 存储后端，格式为：
 # "password=password dbname=postgres user=postgres host=localhost port=5432"
+# 对于 mysql 存储后端，格式为：
+# "mysql://user:password@ip:port/dbname"
 # 对于 etcd 存储后端，格式为：
 # "127.0.0.1:2379"
 store_addrs = ["127.0.0.1:2379"]

@@ -649,8 +649,7 @@ data_home = "./greptimedb_data"
 # Store server address default to etcd store.
 # For postgres store, the format is:
 # "password=password dbname=postgres user=postgres host=localhost port=5432"
-
-# - For mysql store, the format is:
+# For mysql store, the format is:
 # "mysql://user:password@ip:port/dbname"
 # For etcd store, the format is:
 # "127.0.0.1:2379"
