@@ -224,4 +224,4 @@ Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#w
 ## Append Only
 
 By default, logs table created by HTTP ingestion API are in [append only
-mode](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).

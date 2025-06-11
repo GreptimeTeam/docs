@@ -23,10 +23,6 @@ You can take [Getting Started](./getting-started.md) as your first guide to unde
 
 - [GreptimeDB Operator Management](./greptimedb-operator-management.md)
 
-## Monitoring
-
-- [Cluster Monitoring Deployment](./monitoring/cluster-monitoring-deployment.md)
-
 ## Configurations
 
 - [Common Helm Chart Configurations](./common-helm-chart-configurations.md)

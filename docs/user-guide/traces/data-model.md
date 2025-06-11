@@ -191,7 +191,7 @@ on new data.
 ### Append Only
 
 By default, trace table created by OpenTelemetry API are in [append only
-mode](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
 
 ### TTL
 

@@ -119,7 +119,7 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 ### Append 模式
 
 通过此接口创建的表，默认为[Append 模
-式](/user-guide/deployments-administration/design-table.md#何时使用-append-only-表).
+式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
 
 ## 查询
 

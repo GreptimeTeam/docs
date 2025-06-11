@@ -178,7 +178,7 @@ table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。�
 ### Append 模式
 
 通过此接口创建的表，默认为[Append 模
-式](/user-guide/deployments-administration/design-table.md#何时使用-append-only-表)。
+式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
 
 ### TTL
 

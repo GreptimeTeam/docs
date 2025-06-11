@@ -16,7 +16,7 @@ GreptimeDB 中的所有数据都被组织成具有名称的表，每个表中的
 - `Timestamp` 是指标、日志和链路追踪数据库的基础。它表示数据生成的日期和时间。一个表只能有一个具有 `Timestamp` 语义类型的列，也称为时间索引（`Time Index`）列。
 - 其他列是 `Field` 列。字段包含收集的数据指标或日志内容。这些字段通常是数值或字符串，但也可能是其他类型的数据，例如地理位置或时间戳。
 
-表按时间序列对行进行组织，并按 `Timestamp` 对同一时间序列的行进行排序。表还可以根据应用的需求对具有相同 `Tag` 和 `Timestamp` 值的行进行去重。GreptimeDB 按时间序列存储和处理数据。选择正确的表结构对于高效的数据存储和查询至关重要；请参阅[表设计指南](/user-guide/deployments-administration/design-table.md)了解更多详情。
+表按时间序列对行进行组织，并按 `Timestamp` 对同一时间序列的行进行排序。表还可以根据应用的需求对具有相同 `Tag` 和 `Timestamp` 值的行进行去重。GreptimeDB 按时间序列存储和处理数据。选择正确的表结构对于高效的数据存储和查询至关重要；请参阅[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)了解更多详情。
 
 ### 指标
 

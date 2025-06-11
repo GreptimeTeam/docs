@@ -10,7 +10,7 @@ description: 分步指南，指导如何从 ClickHouse 迁移到 GreptimeDB，�
 ## 迁移前须知
 
 - **兼容性**
-  虽然 GreptimeDB 支持 SQL 协议，但与 ClickHouse 在数据建模、索引设计和压缩机制等方面存在根本差异。请查阅 [SQL 兼容性](/reference/sql/compatibility.md) 文档以及官方[建模建议](/user-guide/deployments-administration/design-table.md)，在迁移过程中重构表结构与数据流。
+  虽然 GreptimeDB 支持 SQL 协议，但与 ClickHouse 在数据建模、索引设计和压缩机制等方面存在根本差异。请查阅 [SQL 兼容性](/reference/sql/compatibility.md) 文档以及官方[建模建议](/user-guide/deployments-administration/performance-tuning/design-table.md)，在迁移过程中重构表结构与数据流。
 
 - **数据模型差异**
   ClickHouse 属于通用大数据分析引擎，GreptimeDB 则重点优化时序、指标及日志可观测场景。两者在数据模型、索引体系与压缩算法等方面均有差别，模型设计时需充分考虑业务场景及兼容性。

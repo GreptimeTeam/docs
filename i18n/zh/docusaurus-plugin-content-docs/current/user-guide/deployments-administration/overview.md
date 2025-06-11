@@ -21,10 +21,10 @@ description: GreptimeDB 部署概述，包括配置项、鉴权、在 Kubernetes
 - GreptimeDB 的[灾难恢复方案](/user-guide/deployments-administration/disaster-recovery/overview.md)
 - 通过[设置 Remote WAL](./remote-wal/quick-start.md) 实现 GreptimeDB 的集群容灾
 - GreptimeDB 的[监控指标](/user-guide/deployments-administration/monitoring/export-metrics.md)和[链路追踪](/user-guide/deployments-administration/monitoring/tracing.md)
-- [性能调优技巧](/user-guide/deployments-administration/performance-tuning-tips.md)
-- 查看[数据建模指南](./design-table.md)了解常见场景下的表结构设计方式。
+- [性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)
+- 查看[数据建模指南](/user-guide/deployments-administration/performance-tuning/design-table.md)了解常见场景下的表结构设计方式。
 - [升级](/user-guide/deployments-administration/upgrade.md) GreptimeDB 到新版本
-- 获取集群的[运行时信息](/user-guide/deployments-administration/runtime-info.md)
+- 获取集群的[运行时信息](/user-guide/deployments-administration/monitoring/runtime-info.md)
 
 ## GreptimeCloud
 

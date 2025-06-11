@@ -52,7 +52,7 @@ CREATE TABLE grpc_latencies (
 - `method_name`: The name of the RPC request method.
 - `latency`: The latency of the RPC request.
 
-And it's [append only](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
+And it's [append only](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
 
 Additionally, there is a table `app_logs` for storing application logs:
 

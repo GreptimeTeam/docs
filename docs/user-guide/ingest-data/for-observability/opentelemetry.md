@@ -189,7 +189,7 @@ Default table schema:
 ### Append Only
 
 By default, log table created by OpenTelemetry API are in [append only
-mode](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
 
 ## Traces
 
@@ -254,4 +254,4 @@ By default, the table is partitioned into 16 uniform regions based on the `trace
 ### Append Only
 
 By default, log table created by OpenTelemetry API are in [append only
-mode](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).

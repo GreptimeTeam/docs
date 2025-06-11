@@ -27,7 +27,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 A table clusters rows of the same time-series and sorts rows of the same time-series by `Timestamp`.
 The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
 GreptimeDB stores and processes data by time-series.
-Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/design-table.md) for more details.
+Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/performance-tuning/design-table.md) for more details.
 
 ### Metrics
 

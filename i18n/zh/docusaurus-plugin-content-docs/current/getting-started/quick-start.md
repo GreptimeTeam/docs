@@ -52,7 +52,7 @@ CREATE TABLE grpc_latencies (
 - `method_name`：RPC 请求方法的名称，tag 列。
 - `latency`：RPC 请求的响应时间。
 
-并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
+并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
 
 此外，还有一个名为 `app_logs` 的表用于存储日志：
 

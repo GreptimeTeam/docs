@@ -18,7 +18,7 @@ description: 在 Kubernetes 上部署 GreptimeDB 集群的监控指南，包括�
 
 自监控模式下 GreptimeDB Operator 将会额外启动一个 GreptimeDB Standalone 实例，用于收集 GreptimeDB 集群的指标和日志数据，其中日志数据将包括集群日志和慢查询日志。为了收集日志数据，GreptimeDB Operator 会在每一个 Pod 中启动一个 [Vector](https://vector.dev/) 的 Sidecar 容器，用于收集 Pod 的日志数据。启用该模式后，集群将自动开启 JSON 格式的日志输出。
 
-如果你使用 Helm Chart 部署 GreptimeDB 集群（可参考[立即开始](../getting-started.md)），可对 Helm Chart 的 `values.yaml` 文件进行如下配置：
+如果你使用 Helm Chart 部署 GreptimeDB 集群（可参考[立即开始](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md)），可对 Helm Chart 的 `values.yaml` 文件进行如下配置：
 
 ```yaml
 monitoring:
@@ -211,7 +211,7 @@ spec:
 其中 **集群日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
 :::
 
-如果你使用 Helm Chart 部署 GreptimeDB 集群，你可以通过启用 `grafana.enabled` 来一键部署 Grafana 实例，并导入相应的 Dashboard（可参考[立即开始](../getting-started.md)），如下所示：
+如果你使用 Helm Chart 部署 GreptimeDB 集群，你可以通过启用 `grafana.enabled` 来一键部署 Grafana 实例，并导入相应的 Dashboard（可参考[立即开始](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md)），如下所示：
 
 ```yaml
 grafana:
