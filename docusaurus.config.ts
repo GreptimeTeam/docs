@@ -48,7 +48,7 @@ const bielMetaMap = {
     sourcesText: 'Related Documents',
     inputPlaceholderText: 'Ask a question about Greptime...',
     footerText: 'AI-generated answers may contain errors. <br> You can also communicate with engineers through <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> or join <a href="https://greptime.com/slack">Slack community</a>.',
-    welcomeMessage: 'Hi! I\'m Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
+    welcomeMessage: 'Hi! I am Greptime AI. You can ask me questions about GreptimeDB. For example, I can help you write SQL, Pipelines, or other GreptimeDB-related code.'
   },
   'zh': {
     project: biel_project_id,
