@@ -262,11 +262,11 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Deployments',
+          label: 'Deployments & Administration',
           items: [
             {
               type: 'doc',
-              id: 'user-guide/deployments/overview',
+              id: 'user-guide/deployments-administration/overview',
               label: 'Overview',
             },
             {
@@ -275,58 +275,46 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'user-guide/deployments/deploy-on-kubernetes/overview',
+                  id: 'user-guide/deployments-administration/deploy-on-kubernetes/overview',
                   label: 'Overview',
                 },
-                'user-guide/deployments/deploy-on-kubernetes/getting-started',
-                'user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management',
-                'user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations',
-                'user-guide/deployments/deploy-on-kubernetes/configure-frontend-groups',
-                'user-guide/deployments/deploy-on-kubernetes/deploy-greptimedb-standalone',
+                'user-guide/deployments-administration/deploy-on-kubernetes/getting-started',
+                'user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management',
+                'user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations',
+                'user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups',
+                'user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone',
                 {
                   type: 'category',
                   label: 'Monitoring',
                   items: [
-                    'user-guide/deployments/deploy-on-kubernetes/monitoring/cluster-monitoring-deployment',
+                    'user-guide/deployments-administration/deploy-on-kubernetes/monitoring/cluster-monitoring-deployment',
                   ],
                 },
               ],
             },
-            'user-guide/deployments/configuration',
+            'user-guide/deployments-administration/configuration',
             {
               type: 'category',
               label: 'Authentication',
               items: [
                 {
                   type: 'doc',
-                  id: 'user-guide/deployments/authentication/overview',
+                  id: 'user-guide/deployments-administration/authentication/overview',
                   label: 'Overview',
                 },
-                'user-guide/deployments/authentication/static',
+                'user-guide/deployments-administration/authentication/static',
               ],
             },
-            'user-guide/deployments/run-on-android',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Administration',
-          items: [
-            {
-              type: 'doc',
-              id: 'user-guide/administration/overview',
-              label: 'Overview',
-            },
-            'user-guide/administration/capacity-plan',
-
+            'user-guide/deployments-administration/run-on-android',
+            'user-guide/deployments-administration/capacity-plan',
             {
               type: 'category',
               label: 'Manage Metadata',
               items: [
-                'user-guide/administration/manage-metadata/overview',
-                'user-guide/administration/manage-metadata/configuration',
-                'user-guide/administration/manage-metadata/restore-backup',
-                'user-guide/administration/manage-metadata/manage-etcd',
+                'user-guide/deployments-administration/manage-metadata/overview',
+                'user-guide/deployments-administration/manage-metadata/configuration',
+                'user-guide/deployments-administration/manage-metadata/restore-backup',
+                'user-guide/deployments-administration/manage-metadata/manage-etcd',
               ],
             },
             {
@@ -335,14 +323,14 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'user-guide/administration/manage-data/overview',
+                  id: 'user-guide/deployments-administration/manage-data/overview',
                   label: 'Overview',
                 },
-                'user-guide/administration/manage-data/basic-table-operations',
-                'user-guide/administration/manage-data/table-sharding',
-                'user-guide/administration/manage-data/region-migration',
-                'user-guide/administration/manage-data/region-failover',
-                'user-guide/administration/manage-data/compaction',
+                'user-guide/deployments-administration/manage-data/basic-table-operations',
+                'user-guide/deployments-administration/manage-data/table-sharding',
+                'user-guide/deployments-administration/manage-data/region-migration',
+                'user-guide/deployments-administration/manage-data/region-failover',
+                'user-guide/deployments-administration/manage-data/compaction',
               ],
             },
             {
@@ -351,18 +339,18 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'user-guide/administration/disaster-recovery/overview',
+                  id: 'user-guide/deployments-administration/disaster-recovery/overview',
                   label: 'Overview',
                 },
-                'user-guide/administration/disaster-recovery/back-up-&-restore-data',
-                'user-guide/administration/disaster-recovery/back-up-&-restore-meta-data',
-                'user-guide/administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
+                'user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data',
+                'user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data',
+                'user-guide/deployments-administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
             {
               type: 'category',
               label: 'Remote WAL',
-              items: ['user-guide/administration/remote-wal/quick-start', 'user-guide/administration/remote-wal/cluster-deployment'],
+              items: ['user-guide/deployments-administration/remote-wal/quick-start', 'user-guide/deployments-administration/remote-wal/cluster-deployment'],
             },
             {
               type: 'category',
@@ -370,19 +358,19 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'user-guide/administration/monitoring/overview',
+                  id: 'user-guide/deployments-administration/monitoring/overview',
                   label: 'Overview',
                 },
-                'user-guide/administration/monitoring/export-metrics',
-                'user-guide/administration/monitoring/tracing',
-                'user-guide/administration/monitoring/slow-query',
+                'user-guide/deployments-administration/monitoring/export-metrics',
+                'user-guide/deployments-administration/monitoring/tracing',
+                'user-guide/deployments-administration/monitoring/slow-query',
               ],
             },
-            'user-guide/administration/runtime-info',
-            'user-guide/administration/performance-tuning-tips',
-            'user-guide/administration/design-table',
-            'user-guide/administration/maintenance-mode',
-            'user-guide/administration/upgrade',
+            'user-guide/deployments-administration/runtime-info',
+            'user-guide/deployments-administration/performance-tuning-tips',
+            'user-guide/deployments-administration/design-table',
+            'user-guide/deployments-administration/maintenance-mode',
+            'user-guide/deployments-administration/upgrade',
           ],
         },
       ],
