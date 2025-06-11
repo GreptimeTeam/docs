@@ -116,6 +116,7 @@ We currently provide the following built-in Processors:
 - `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
 - `select`: retain(include) or exclude fields from the pipeline context.
+- `vrl`: runs the [vrl](https://vector.dev/docs/reference/vrl/) script against the pipeline context.
 
 ### Input and output of Processors
 
@@ -776,6 +777,39 @@ The above example can also be done in the following `select` processor's configu
         - content
         - message
 ```
+
+### `vrl`
+
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior, have its functionality change in the future.
+:::
+
+The `vrl` processor run the vrl programming script against the pipeline context.
+It's more powerful than simple processors, for it allows you to write actual programming codes to manipulate the context; however, it also costs more resource to execute.
+Refer to the [official website](https://vector.dev/docs/reference/vrl/) for more language introduction and usage.
+
+The `vrl` processor only takes one configuration, that is the `source` field. Here's an example:
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .log_id = .id
+        del(.id)
+        .
+```
+
+The configuration uses a `|` to start a multi-line content in the YAML file.
+The whole script is then written below.
+
+Some notes regarding the `vrl` processor:
+1. The script have to end with a newline of `.`, indicating returning the whole context as the returning value of the script.
+2. The returning value of the vrl script should not contain any regex-type variables. They can be used in the script, but have to be `del`ed before returning.
+3. Due to type conversion between pipeline's value type and vrl's, the value type that comes out of the vrl script will be the ones with max capacity, meaning `i64`, `f64`, and `Timestamp::nanoseconds`.
 
 ## Transform
 
