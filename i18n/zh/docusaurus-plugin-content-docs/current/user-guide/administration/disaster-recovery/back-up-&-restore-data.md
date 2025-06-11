@@ -13,7 +13,7 @@ description: 介绍 GreptimeDB 的导出和导入工具，用于数据库备份�
 
 ### 命令语法
 ```bash
-greptime cli export [OPTIONS]
+greptime cli data export [OPTIONS]
 ```
 
 ### 选项
@@ -50,7 +50,7 @@ greptime cli export [OPTIONS]
 
 ### 命令语法
 ```bash
-greptime cli import [OPTIONS]
+greptime cli data import [OPTIONS]
 ```
 
 ### 选项
@@ -74,25 +74,25 @@ greptime cli import [OPTIONS]
 ### 完整数据库备份
 ```bash
 # 导出所有数据库备份
-greptime cli export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
+greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
 
 # 导入所有数据库
-greptime cli import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
+greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
 ```
 
 ### 仅表结构操作
 ```bash
 # 仅导出表结构
-greptime cli export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
+greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
 
 # 仅导入表结构
-greptime cli import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
+greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
 ```
 
 ### 基于时间范围的备份
 ```bash
 # 导出特定时间范围内的数据
-greptime cli export --addr localhost:4000 \
+greptime cli data export --addr localhost:4000 \
     --output-dir /tmp/backup/timerange \
     --start-time "2024-01-01 00:00:00" \
     --end-time "2024-01-31 23:59:59"
@@ -101,10 +101,10 @@ greptime cli export --addr localhost:4000 \
 ### 指定数据库备份
 ```bash
 # 导出指定数据库
-greptime cli export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
 
 # 导入工具也同样适用
-greptime cli import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
 ```
 
 ## 最佳实践
