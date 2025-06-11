@@ -11,6 +11,10 @@ description: 介绍 GreptimeDB 的导出和导入工具，用于数据库备份�
 
 ## 导出工具
 
+:::warning Note
+为了更好的组织命令行工具，从 v0.14.4 开始，此命令已被移动到 `greptime cli data export`。命令行参数保持不变。
+:::
+
 ### 命令语法
 ```bash
 greptime cli export [OPTIONS]
@@ -47,6 +51,10 @@ greptime cli export [OPTIONS]
 ```
 
 ## 导入工具
+
+:::warning Note
+为了更好的组织命令行工具，从 v0.14.4 开始，此命令已被移动到 `greptime cli data import`。命令行参数保持不变。
+:::
 
 ### 命令语法
 ```bash
