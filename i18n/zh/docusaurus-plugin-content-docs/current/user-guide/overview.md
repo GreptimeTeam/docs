@@ -72,4 +72,4 @@ GreptimeDB 支持使用 PromQL 查询数据。
 ## 管理和部署 GreptimeDB
 
 当你准备好部署 GreptimeDB 时，
-请查阅[部署文档](./deployments/overview.md)和[管理文档](./administration/overview.md)获取有关部署和管理的详细指南。
+请查阅[部署文档](/user-guide/deployments-administration/overview.md)和[管理文档](/user-guide/deployments-administration/overview.md)获取有关部署和管理的详细指南。

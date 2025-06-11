@@ -34,7 +34,7 @@ description: 分步指南，指导如何从 ClickHouse 迁移到 GreptimeDB，�
 - 更多信息详见[数据索引](/user-guide/manage-data/data-index.md)。
 
 ### 表分区
-ClickHouse 通过 `PARTITION BY` 语法支持分区，GreptimeDB 提供类似能力，语法不同，请参阅[表分片](user-guide/administration/manage-data/table-sharding.md)文档。
+ClickHouse 通过 `PARTITION BY` 语法支持分区，GreptimeDB 提供类似能力，语法不同，请参阅[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)文档。
 
 ### TTL
 GreptimeDB 支持通过表选项 `ttl` 设置生命周期，详见[使用 TTL 策略管理数据存储](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)。

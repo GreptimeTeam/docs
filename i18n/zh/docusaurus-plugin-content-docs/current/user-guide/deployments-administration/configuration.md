@@ -338,7 +338,7 @@ cache_capacity = "10GiB"
 write_cache_size = "10GiB"
 ```
 
-更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning-tips)。
+更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning-tips.md)。
 
 
 ### WAL 选项

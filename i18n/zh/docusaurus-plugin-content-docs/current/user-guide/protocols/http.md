@@ -11,7 +11,7 @@ GreptimeDB 提供了 HTTP API 用于与数据库进行交互。如需查看完�
 
 API Base URL 是 `http(s)://{{host}}:{{port}}/`。
 
-- 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments-administration/configuration#protocol-options)中更改服务的 host 和 port。
+- 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments-administration/configuration.md#protocol-options)中更改服务的 host 和 port。
 - 对于 GreptimeCloud，Base URL 是 `https://{{host}}/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
 
 在以下内容中，我们使用 `http://{{API-host}}/` 作为 Base URL 来演示 API。
