@@ -645,40 +645,47 @@ refer to the [Time Zone](/user-guide/timezone.md#impact-of-time-zone-on-sql-stat
 
 ```toml
 # The working home directory.
-data_home = "./greptimedb_data/metasrv/"
-# The bind address of metasrv, "127.0.0.1:3002" by default.
-bind_addr = "127.0.0.1:3002"
-# The communication server address for frontend and datanode to connect to metasrv,  "127.0.0.1:3002" by default for localhost.
-server_addr = "127.0.0.1:3002"
-# Store server address
-# Configure the address based on your backend type, for example:
-# - Use "127.0.0.1:2379" to connect to etcd
-# - Use "password=password dbname=postgres user=postgres host=localhost port=5432" to connect to postgres
-# - Use "mysql://user:password@ip:port/dbname" to connect to mysql
-store_addr = "127.0.0.1:2379"
+data_home = "./greptimedb_data"
+# Store server address default to etcd store.
+# For postgres store, the format is:
+# "password=password dbname=postgres user=postgres host=localhost port=5432"
+# For mysql store, the format is:
+# "mysql://user:password@ip:port/dbname"
+# For etcd store, the format is:
+# "127.0.0.1:2379"
+store_addrs = ["127.0.0.1:2379"]
+# If it's not empty, the metasrv will store all data with this key prefix.
+store_key_prefix = ""
+# The datastore for meta server.
+# Available values:
+# - `etcd_store` (default value)
+# - `memory_store`
+# - `postgres_store`
+# - `mysql_store`
+backend = "etcd_store"
+# Table name in RDS to store metadata. Effect when using a RDS kvbackend.
+# **Only used when backend is RDS kvbacken.**
+meta_table_name = "greptime_metakv"
+# Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend
+# Only used when backend is `postgres_store`.
+meta_election_lock_id = 1
 # Datanode selector type.
-# - "lease_based" (default value).
-# - "load_based"
-# For details, please see "https://docs.greptime.com/contributor-guide/meta/selector".
-selector = "LeaseBased"
+# - `round_robin` (default value)
+# - `lease_based`
+# - `load_based`
+# For details, please see "https://docs.greptime.com/developer-guide/metasrv/selector".
+selector = "round_robin"
 # Store data in memory, false by default.
 use_memory_store = false
-## Whether to enable region failover.
-## This feature is only available on GreptimeDB running on cluster mode and
-## - Using Remote WAL
-## - Using shared storage (e.g., s3).
+# Whether to enable region failover.
+# This feature is only available on GreptimeDB running on cluster mode and
+# - Using Remote WAL
+# - Using shared storage (e.g., s3).
 enable_region_failover = false
-## Whether to allow region failover on local WAL.
-## **This option is not recommended to be set to true,
-## because it may lead to data loss during failover.**
+# Whether to allow region failover on local WAL.
+# **This option is not recommended to be set to true,
+# because it may lead to data loss during failover.**
 allow_region_failover_on_local_wal = false
-# The datastore for metasrv.
-## Available datastore:
-## - "etcd_store" (default)
-## - "memory_store" (In memory metadata storage - only used for testing.)
-## - "postgres_store"
-## - "mysql_store"
-backend = "etcd_store"
 
 ## Procedure storage options.
 [procedure]
