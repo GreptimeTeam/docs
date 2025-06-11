@@ -12,6 +12,10 @@ The Export and Import tools provide functionality for backing up and restoring G
 
 ## Export Tool
 
+:::warning Note
+To better organize the command-line tools, this command has been moved to `greptime cli data export` since v0.14.4. The command-line parameters remain unchanged.
+:::
+
 ### Command Syntax
 ```bash
 greptime cli export [OPTIONS]
@@ -48,6 +52,10 @@ greptime cli export [OPTIONS]
 ```
 
 ## Import Tool
+
+:::warning Note
+To better organize the command-line tools, this command has been moved to `greptime cli data export` since v0.14.4. The command-line parameters remain unchanged.
+:::
 
 ### Command Syntax
 ```bash
