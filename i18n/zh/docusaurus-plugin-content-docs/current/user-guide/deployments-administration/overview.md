@@ -21,7 +21,7 @@ GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管
 
 ### 组件管理
 
-- **Cluster Failover：** 通过设置 [Remote WAL](./remote-wal/quick-start.md) 以实现高可用性。
+- **Cluster Failover：** 通过设置 [Remote WAL](./wal/remote-wal/quick-start.md) 以实现高可用性。
 - **管理元数据：** 为 GreptimeDB 设置[元数据存储](./manage-data/overview.md)。
 
 ### 监控

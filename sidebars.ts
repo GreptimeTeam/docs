@@ -297,10 +297,16 @@ const sidebars: SidebarsConfig = {
             },
             {
               type: 'category',
-              label: 'Remote WAL',
+              label: 'Write-Ahead Logging (WAL)',
               items: [
-                'user-guide/deployments-administration/remote-wal/quick-start',
-                'user-guide/deployments-administration/remote-wal/cluster-deployment',
+                {
+                  type: 'category',
+                  label: 'Remote WAL',
+                  items: [
+                    'user-guide/deployments-administration/wal/remote-wal/quick-start',
+                    'user-guide/deployments-administration/wal/remote-wal/cluster-deployment',
+                  ]
+                },
               ],
             },
             'user-guide/deployments-administration/configuration',
