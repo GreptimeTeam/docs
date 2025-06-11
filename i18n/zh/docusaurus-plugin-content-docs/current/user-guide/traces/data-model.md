@@ -158,7 +158,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "web_trace_demo" (                    
 ### 分区规则
 
 Trace 表包含了默认的 [分区规
-则](/user-guide/administration/manage-data/table-sharding.md#partition)，在
+则](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)，在
 `trace_id` 列上根据首个字符的取值划分区间。
 
 这个规则默认将引入 16 个分区，适合在 3-5 个 datanode 的部署规模下使用。
@@ -178,7 +178,7 @@ table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。�
 ### Append 模式
 
 通过此接口创建的表，默认为[Append 模
-式](/user-guide/administration/design-table.md#何时使用-append-only-表)。
+式](/user-guide/deployments-administration/design-table.md#何时使用-append-only-表)。
 
 ### TTL
 

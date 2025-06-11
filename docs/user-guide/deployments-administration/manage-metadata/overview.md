@@ -33,5 +33,5 @@ For test and development environments, [etcd](https://etcd.io/) provides a light
 
 
 ## Next steps 
-- To configure the metadata storage backend, please refer to [Configuration](/user-guide/administration/manage-metadata/configuration.md).
-- To setup etcd for testing and development environments, please refer to [Manage etcd](/user-guide/administration/manage-metadata/manage-etcd.md).
+- To configure the metadata storage backend, please refer to [Configuration](/user-guide/deployments-administration/manage-metadata/configuration.md).
+- To setup etcd for testing and development environments, please refer to [Manage etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md).

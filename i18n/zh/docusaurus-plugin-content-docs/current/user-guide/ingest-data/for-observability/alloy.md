@@ -27,7 +27,7 @@ prometheus.remote_write "greptimedb" {
 
 - `GREPTIME_HOST`: GreptimeDB 主机地址，例如 `localhost`。
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
-- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
+- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
 
 有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#数据模型)部分。
 
@@ -56,7 +56,7 @@ otelcol.auth.basic "credentials" {
 
 - `GREPTIME_HOST`: GreptimeDB 主机地址，例如 `localhost`。
 - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
-- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
+- `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
 
 有关从 OpenTelemetry 到 GreptimeDB 的指标数据模型转换的详细信息，请参阅 OpenTelemetry 指南中的[数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型)部分。
 
@@ -106,7 +106,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
   - `otelcol.exporter.otlphttp "greptimedb_logs"` 块配置了一个 HTTP Exporter，将日志发送到 GreptimeDB。
   - `GREPTIME_HOST`: GreptimeDB 主机地址，例如 `localhost`。
   - `GREPTIME_DB`: GreptimeDB 数据库名称，默认是 `public`。
-  - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments/authentication/static.md)。
+  - `GREPTIME_USERNAME` 和 `GREPTIME_PASSWORD`: GreptimeDB 的[鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
   - `LOG_TABLE_NAME`: 存储日志的表名，默认表名为 `opentelemetry_logs`。
   - `EXTRACT_KEYS`: 从属性中提取对应 key 的值到表的顶级字段，用逗号分隔，例如 `filename,log.file.name,loki.attribute.labels`，详情请看 [HTTP API 文档](opentelemetry.md#otlphttp-api-1)。
 

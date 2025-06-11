@@ -14,13 +14,13 @@ Simply add the `-U` argument to your command, followed by your username and pass
 psql -h <host> -p 4003 -U <username> -d public
 ```
 
-- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments/authentication/overview.md).
-- If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/deployments/configuration.md#protocol-options) in the configuration document.
+- For how to setup username and password for GreptimeDB, please refer to [Authentication](/user-guide/deployments-administration/authentication/overview.md).
+- If you want to use other ports for PostgreSQL, please refer to [Protocol options](/user-guide/deployments-administration/configuration.md#protocol-options) in the configuration document.
 
 
 ## Table management
 
-Please refer to [Table Management](/user-guide/administration/manage-data/basic-table-operations.md).
+Please refer to [Table Management](/user-guide/deployments-administration/manage-data/basic-table-operations.md).
 
 ## Ingest data
 

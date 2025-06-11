@@ -18,7 +18,7 @@ GreptimeDB 具备超轻量级的启动基准，
 - 数据保留策略
 - 硬件成本
 
-要监控 GreptimeDB 的各种指标，请参阅[监控](/user-guide/administration/monitoring/export-metrics.md)。
+要监控 GreptimeDB 的各种指标，请参阅[监控](/user-guide/deployments-administration/monitoring/export-metrics.md)。
 
 ## CPU
 
@@ -46,7 +46,7 @@ GreptimeDB 具有高效的数据压缩机制，可将原始数据大小减少到
 
 数据可以存储在本地文件系统或云存储中，例如 AWS S3。
 有关存储选项的更多信息，
-请参阅[存储配置](/user-guide/deployments/configuration.md#存储选项)文档。
+请参阅[存储配置](/user-guide/deployments-administration/configuration.md#存储选项)文档。
 
 由于云存储在存储管理方面的简单性，强烈推荐使用云存储进行数据存储。
 使用云存储时，本地存储空间只需要大约 200GB 用于查询相关的缓存和 Write-Ahead Log (WAL)。

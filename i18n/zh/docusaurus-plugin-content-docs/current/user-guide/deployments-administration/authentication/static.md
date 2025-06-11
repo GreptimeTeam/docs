@@ -33,5 +33,5 @@ bob=bbb
 ## Kubernetes 集群
 
 你可以在 `values.yaml` 文件中配置鉴权用户。
-更多详情，请参考 [Helm Chart 配置](/user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。
+更多详情，请参考 [Helm Chart 配置](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#鉴权配置)。
 

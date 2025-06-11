@@ -80,7 +80,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u={{greptime_u
 #### Authentication
 
 GreptimeDB is compatible with InfluxDB's line protocol authentication format, both V1 and V2.
-If you have [configured authentication](/user-guide/deployments/authentication/overview.md) in GreptimeDB, you need to provide the username and password in the HTTP request.
+If you have [configured authentication](/user-guide/deployments-administration/authentication/overview.md) in GreptimeDB, you need to provide the username and password in the HTTP request.
 
 <Tabs>
 

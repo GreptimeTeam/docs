@@ -27,7 +27,7 @@ All data in GreptimeDB is organized into tables with names. Each data item in a 
 A table clusters rows of the same time-series and sorts rows of the same time-series by `Timestamp`.
 The table can also deduplicate rows with the same `Tag` and `Timestamp` values, depending on the requirements of the application.
 GreptimeDB stores and processes data by time-series.
-Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/administration/design-table.md) for more details.
+Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/design-table.md) for more details.
 
 ### Metrics
 
@@ -86,7 +86,7 @@ CREATE TABLE access_logs (
 - Querying an append-only table is usually faster. For example, `select count(*) from access_logs` can use the statistics for result without considering deduplication.
 
 
-To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
+To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and [CREATE statement](/reference/sql/create.md).
 
 ### Traces
 
@@ -106,6 +106,6 @@ GreptimeDB is designed on top of the table model for the following reasons:
   The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of the multi-value mode.
 
 
-GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md) for more information.
+GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) for more information.
 However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.
 For more details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).

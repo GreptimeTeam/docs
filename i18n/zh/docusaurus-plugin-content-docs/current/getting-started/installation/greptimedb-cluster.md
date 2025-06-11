@@ -9,7 +9,7 @@ GreptimeDB 可以运行于 [cluster](/contributor-guide/overview.md) 模式以�
 
 ## 在 Kubernetes 中部署 GreptimeDB 集群
 
-对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 集群。请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
+对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 集群。请参考 [在 Kubernetes 上部署](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)。
 
 ## 使用 Docker Compose
 

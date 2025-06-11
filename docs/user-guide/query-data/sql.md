@@ -9,7 +9,7 @@ GreptimeDB supports full SQL for querying data from a database.
 
 In this document, we will use the `monitor` table to demonstrate how to query data.
 For instructions on creating the `monitor` table and inserting data into it,
-Please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
+Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table) and [Ingest Data](/user-guide/ingest-data/for-iot/sql.md).
 
 ## Basic query
 
@@ -317,7 +317,7 @@ SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
 
 GreptimeDB supports [Range Query](/reference/sql/range.md) to aggregate data by time window.
 
-Suppose we have the following data in the [`monitor` table](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table):
+Suppose we have the following data in the [`monitor` table](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table):
 
 ```sql
 +-----------+---------------------+------+--------+
@@ -430,7 +430,7 @@ Please refer to [Range Query](/reference/sql/range.md) for more information.
 
 If your table name contains special characters or uppercase letters,
 you must enclose the table name in backquotes.
-For examples, please refer to the [Table name constraints](/user-guide/administration/manage-data/basic-table-operations.md#table-name-constraints) section in the table creation documentation.
+For examples, please refer to the [Table name constraints](/user-guide/deployments-administration/manage-data/basic-table-operations.md#table-name-constraints) section in the table creation documentation.
 
 ## HTTP API
 

@@ -192,7 +192,7 @@ GreptimeDB 采用 Parquet 格式进行读写；Kafka 使用其专有的 RecordBa
 
 并不需要在每个节点上同时部署所有服务。对于小型集群，可以单独使用 3 台节点运行 Metasrv，而 Frontend 和 Datanode 可以部署在其他等量节点上，每个容器运行两个进程。
 
-更多部署建议请参考[容量规划文档](/user-guide/administration/capacity-plan)。
+更多部署建议请参考[容量规划文档](/user-guide/deployments-administration/capacity-plan)。
 
 ### 最新版本的 Flow Engine（预计算功能）是否支持 PromQL 语法进行计算？
 
@@ -200,7 +200,7 @@ GreptimeDB 采用 Parquet 格式进行读写；Kafka 使用其专有的 RecordBa
 
 ### Metasrv 是否会支持 MySQL 或 PostgreSQL 作为存储后端？
 
-最新版本的 GreptimeDB 已支持 PostgreSQL 作为 Metasrv 的存储后端。具体信息请参考[这里](/user-guide/deployments/configuration#仅限于-metasrv-的配置)。
+最新版本的 GreptimeDB 已支持 PostgreSQL 作为 Metasrv 的存储后端。具体信息请参考[这里](/user-guide/deployments-administration/configuration#仅限于-metasrv-的配置)。
 
 ### 如何最佳地对成千上万台计算机中多个网卡的接口流量速率（每 30 秒取最大值）进行降采样，以便长期保存（如多年的数据）？
 

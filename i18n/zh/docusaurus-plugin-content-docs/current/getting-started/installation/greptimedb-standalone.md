@@ -7,11 +7,11 @@ description: 介绍如何在单机模式下安装和运行 GreptimeDB，包括�
 
 ## 安装
 
-我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/deployments/configuration.md)。
+我们先通过最简单的配置来开始。有关 GreptimeDB 中可用的所有配置选项的详细列表，请参考[配置文档](/user-guide/deployments-administration/configuration.md)。
 
 ## 在 Kubernetes 中部署 GreptimeDB 单机版
 
-对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 单机版。请参考 [在 Kubernetes 上部署](/user-guide/deployments/deploy-on-kubernetes/overview.md)。
+对于生产环境，我们建议在 Kubernetes 中部署 GreptimeDB 单机版。请参考 [在 Kubernetes 上部署](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)。
 
 ### 二进制
 
@@ -129,7 +129,7 @@ docker run -p 0.0.0.0:4000-4003:4000-4003 \
 
 </Tabs>
 
-你也可以参考[配置 GreptimeDB](/user-guide/deployments/configuration.md)文档在配置文件中修改绑定的地址。
+你也可以参考[配置 GreptimeDB](/user-guide/deployments-administration/configuration.md)文档在配置文件中修改绑定的地址。
 
 ## 下一步
 

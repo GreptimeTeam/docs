@@ -5,7 +5,7 @@ description: 介绍 Region Failover 功能及其在 GreptimeDB 中的应用，�
 
 # Region Failover
 
-Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/administration/manage-data/region-migration.md) 实现的。
+Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢复的能力。这是通过 [Region 迁移](/user-guide/deployments-administration/manage-data/region-migration.md) 实现的。
 
 ## 开启 Region Failover 
 
@@ -13,13 +13,13 @@ Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢�
 该功能仅在 GreptimeDB 集群模式下可用，并且需要满足以下条件
 
 - 使用 Kafka WAL (Remote WAL) 或 Local WAL (在本地 WAL 上启用 Region Failover ，在 Failover 过程中可能会导致数据丢失)
-- 使用[共享存储](/user-guide/deployments/configuration.md#storage-options) (例如：AWS S3)
+- 使用[共享存储](/user-guide/deployments-administration/configuration.md#storage-options) (例如：AWS S3)
 
-如果想要在本地 WAL 上启用 Region Failover，需要设置 `allow_region_failover_on_local_wal=true` 在 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置文件中。不建议启用此选项，因为它可能会导致数据丢失。
+如果想要在本地 WAL 上启用 Region Failover，需要设置 `allow_region_failover_on_local_wal=true` 在 [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) 配置文件中。不建议启用此选项，因为它可能会导致数据丢失。
 
 ### 通过配置文件
 
-在 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置文件中设置 `enable_region_failover=true`.
+在 [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) 配置文件中设置 `enable_region_failover=true`.
 
 ### 通过 GreptimeDB Operator
 
@@ -50,7 +50,7 @@ Region Failover 的恢复时间取决于：
 
 尽管多个 Region 共享同一个 Topic，可以让 Datanode 支持更多的 Region，但这种方法的代价是在 Region 重放过程中产生读取放大。
 
-例如，为 [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) 配置 128 个 Topic，如果整个集群包含 1024 个 Region（物理 Region），那么每 8 个 Region 将共享一个 Topic。
+例如，为 [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) 配置 128 个 Topic，如果整个集群包含 1024 个 Region（物理 Region），那么每 8 个 Region 将共享一个 Topic。
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 

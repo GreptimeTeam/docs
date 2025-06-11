@@ -363,4 +363,4 @@ GreptimeDB 使用表达式定义分区规则。
 分区键应该尽量贴合查询条件。
 例如，如果大多数查询针对特定数据中心的数据，那么可以使用数据中心名称作为分区键。
 如果不了解数据分布，可以对现有数据执行聚合查询以收集相关信息。
-更多详情，请参考[表分区指南](/user-guide/administration/manage-data/table-sharding.md#partition)
+更多详情，请参考[表分区指南](/user-guide/deployments-administration/manage-data/table-sharding.md#partition)

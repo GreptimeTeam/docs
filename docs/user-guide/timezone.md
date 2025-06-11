@@ -12,7 +12,7 @@ GreptimeDB converts the time value from a string representation to a datetime ac
 
 ## Specify time zone in clients
 
-By default, all clients use [the default time zone configuration](/user-guide/deployments/configuration.md#default-time-zone-configuration), which is UTC.
+By default, all clients use [the default time zone configuration](/user-guide/deployments-administration/configuration.md#default-time-zone-configuration), which is UTC.
 You can also specify a time zone in each client session,
 which will override the default time zone configuration.
 
@@ -31,7 +31,7 @@ When using the HTTP API, you can specify the time zone through the header parame
 
 ### Other clients
 
-For other clients, you can change [the default time zone configuration](/user-guide/deployments/configuration.md#default-time-zone-configuration) of GreptimeDB.
+For other clients, you can change [the default time zone configuration](/user-guide/deployments-administration/configuration.md#default-time-zone-configuration) of GreptimeDB.
 
 ## Impact of time zone on SQL statements
 

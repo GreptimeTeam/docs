@@ -60,7 +60,7 @@ AZ（可用区，或“数据中心”）内的虚拟机系统中，你可能更
 - 内部的 endpoint 更新机制。如果你可以检测到节点的故障，那么就可以在你的代码中更新 GreptimeDB 的 endpoint。
 
 :::tip NOTE
-请参考 "[解决方案比较](/user-guide/administration/disaster-recovery/overview.md#解决方案比较)" 来比较不同灾难恢复解决方案的 RPO 和 RTO。
+请参考 "[解决方案比较](/user-guide/deployments-administration/disaster-recovery/overview.md#解决方案比较)" 来比较不同灾难恢复解决方案的 RPO 和 RTO。
 :::
 
 ## 总结

@@ -383,4 +383,4 @@ For instance, if most queries target data from a specific data center,
 using the data center name as a partition key is appropriate.
 If the data distribution is not well understood, perform aggregate queries on existing data to gather relevant information.
 
-For more details, refer to the [table partition guide](/user-guide/administration/manage-data/table-sharding.md#partition).
+For more details, refer to the [table partition guide](/user-guide/deployments-administration/manage-data/table-sharding.md#partition).

@@ -14,7 +14,7 @@ GreptimeDB supports the following metadata storage backends:
 - **etcd**: The default and recommended backend for development and testing environments, offering simplicity and ease of setup
 - **MySQL/PostgreSQL**: Production-ready backend options that integrate well with existing database infrastructure and cloud RDS services
 
-If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm Chart Configurations](/user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) for more details.
+If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) for more details.
 
 ## Use etcd as metadata storage
 
@@ -33,7 +33,7 @@ store_addrs = ["127.0.0.1:2379"]
 
 ### Best Practices
 
-While etcd can be used as metadata storage, we recommend against using it in production environments unless you have extensive experience with etcd operations and maintenance. For detailed guidance on etcd management, including installation, backup, and maintenance procedures, please refer to [Manage etcd](/user-guide/administration/manage-metadata/manage-etcd.md).
+While etcd can be used as metadata storage, we recommend against using it in production environments unless you have extensive experience with etcd operations and maintenance. For detailed guidance on etcd management, including installation, backup, and maintenance procedures, please refer to [Manage etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md).
 
 When using etcd as metadata storage:
 

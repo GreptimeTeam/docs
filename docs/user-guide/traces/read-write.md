@@ -126,7 +126,7 @@ as the pipeline for tracing. No custom pipeline is allowed for the moment.
 ### Append Only
 
 By default, trace table created by OpenTelemetry API are in [append only
-mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables).
 
 ## Query
 

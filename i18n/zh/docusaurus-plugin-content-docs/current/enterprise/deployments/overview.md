@@ -9,7 +9,7 @@ description: GreptimeDB 企业版的部署指南，包括鉴权认证、Kubernet
 
 ## 鉴权认证
 
-除了支持[开源版本的认证方式](/user-guide/deployments/authentication/static.md)，GreptimeDB 企业版还支持 [LDAP 鉴权](authentication.md)。
+除了支持[开源版本的认证方式](/user-guide/deployments-administration/authentication/static.md)，GreptimeDB 企业版还支持 [LDAP 鉴权](authentication.md)。
 
 ## 将 GreptimeDB 部署到 Kubernetes
 

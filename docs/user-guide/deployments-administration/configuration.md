@@ -349,7 +349,7 @@ The write cache is no more experimental since `v0.12`. You can configure the cac
 write_cache_size = "10GiB"
 ```
 
-Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
+Read [Performance Tuning Tips](/user-guide/deployments-administration/performance-tuning-tips.md) for more detailed info.
 
 ### WAL options
 
@@ -454,9 +454,9 @@ default_ratio = 1.0
 - `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
 - `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
 - `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
+- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
 
-How to use distributed tracing, please reference [Tracing](/user-guide/administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
+How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
 ### Region engine options
 
@@ -563,7 +563,7 @@ The `meta_client` configures the Metasrv client, including:
 ### Monitor metrics options
 
 These options are used to save system metrics to GreptimeDB itself.
-For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/administration/monitoring/export-metrics.md) guide.
+For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/deployments-administration/monitoring/export-metrics.md) guide.
 
 ```toml
 [export_metrics]

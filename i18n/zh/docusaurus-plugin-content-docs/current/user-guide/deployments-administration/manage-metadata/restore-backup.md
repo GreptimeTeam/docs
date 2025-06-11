@@ -5,7 +5,7 @@
 
 # 备份、恢复和迁移
 
-GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能支持所有主要的元数据存储后端，包括 etcd、MySQL 和 PostgreSQL。有关使用这些功能的详细说明，请参阅[备份和恢复](/user-guide/administration/disaster-recovery/back-up-&-restore-data.md)指南。
+GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能支持所有主要的元数据存储后端，包括 etcd、MySQL 和 PostgreSQL。有关使用这些功能的详细说明，请参阅[备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)指南。
 
 ## 备份
 
@@ -14,14 +14,14 @@ GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能�
 执行备份的步骤：
 
 1. 确认 GreptimeDB 集群处于正常运行状态
-2. 使用 CLI 工具执行备份，按照[备份和恢复](/user-guide/administration/disaster-recovery/back-up-&-restore-meta-data.md)指南中的导出元数据步骤操作
+2. 使用 CLI 工具执行备份，按照[备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)指南中的导出元数据步骤操作
 3. 确保备份输出文件已创建，且文件大小大于 0
 
 ## 恢复
 
 从备份恢复的步骤：
 
-1. 使用 CLI 工具恢复元数据，按照[备份和恢复](/user-guide/administration/disaster-recovery/back-up-&-restore-meta-data.md)指南中的导入元数据步骤操作
+1. 使用 CLI 工具恢复元数据，按照[备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)指南中的导入元数据步骤操作
 2. 重启 GreptimeDB 集群以应用恢复的元数据
 
 ## 迁移

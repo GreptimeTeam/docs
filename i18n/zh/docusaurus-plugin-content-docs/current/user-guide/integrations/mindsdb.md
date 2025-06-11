@@ -27,7 +27,7 @@ PARAMETERS = {
 
 - `<host>` 是你的 GreptimeDB 实例的主机名或 IP 地址。
 - `<dbname>` 是你想要连接的数据库名称。
-- `<username>` 和 `<password>` 是你 [GreptimeDB 的鉴权信息](/user-guide/deployments/authentication/static.md)。
+- `<username>` 和 `<password>` 是你 [GreptimeDB 的鉴权信息](/user-guide/deployments-administration/authentication/static.md)。
 
 MindsDB 是许多机器学习功能的优秀门户，包括您存储在我们实例中的时间序列数据的时间序列预测。
 访问 [MindsDB docs](https://docs.mindsdb.com/what-is-mindsdb) 了解更多。

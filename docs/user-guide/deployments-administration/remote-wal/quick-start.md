@@ -77,7 +77,7 @@ To avoid accidently exit the Docker container, you may want to run it in the "de
 the `docker run` command.
 :::
 
-We use the [environment variables](/user-guide/deployments/configuration.md#environment-variable) to specify the provider:
+We use the [environment variables](/user-guide/deployments-administration/configuration.md#environment-variable) to specify the provider:
 
 - `GREPTIMEDB_STANDALONE__WAL__PROVIDER`: Set `kafka` to use Kafka remote WAL;
 - `GREPTIMEDB_STANDALONE__WAL__BROKER_ENDPOINTS`: Specify the advertised listeners for all brokers in the Kafka cluster. In this example, we will use the Kafka container name, and the bridge network will resolve it into IPv4;

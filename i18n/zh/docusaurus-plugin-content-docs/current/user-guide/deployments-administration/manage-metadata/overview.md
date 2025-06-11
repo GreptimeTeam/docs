@@ -30,5 +30,5 @@ GreptimeDB 集群 Metasrv 组件需要一个元数据存储来保存元数据。
 - 记录元数据存储配置和维护程序
 
 ## 后续步骤
-- 要配置元数据存储后端，请参阅[配置](/user-guide/administration/manage-metadata/configuration.md)。
-- 要为测试和开发环境设置 etcd，请参阅[管理 etcd](/user-guide/administration/manage-metadata/manage-etcd.md)。
+- 要配置元数据存储后端，请参阅[配置](/user-guide/deployments-administration/manage-metadata/configuration.md)。
+- 要为测试和开发环境设置 etcd，请参阅[管理 etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md)。

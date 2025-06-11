@@ -5,19 +5,19 @@ description: Covers enabling and understanding region failover in GreptimeDB, wh
 
 # Region Failover
 
-Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/administration/manage-data/region-migration.md).
+Region Failover provides the ability to recover regions from region failures without losing data. This is implemented via [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md).
 
 ## Enable the Region Failover
 
 This feature is only available on GreptimeDB running on distributed mode and
 
 - Using Kafka WAL (Remote WAL) or Local WAL (Enable region failover on local WAL may lead to data loss during failover)
-- Using [shared storage](/user-guide/deployments/configuration.md#storage-options) (e.g., AWS S3)
+- Using [shared storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3)
 
-If you want to enable region failover on local WAL, you need to set `allow_region_failover_on_local_wal=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file. It's not recommended to enable this option, because it may lead to data loss.
+If you want to enable region failover on local WAL, you need to set `allow_region_failover_on_local_wal=true` in [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) configuration file. It's not recommended to enable this option, because it may lead to data loss.
 
 ### Via configuration file
-Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration) configuration file. 
+Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) configuration file. 
 
 ### Via GreptimeDB Operator
 
@@ -47,7 +47,7 @@ The data belonging to a specific region consists of data files plus data in the 
 
 Although multiple regions share the same topic, allowing the Datanode to support more regions, the cost of this approach is read amplification during WAL replay.
 
-For example, configure 128 topics for [metasrv](/user-guide/deployments/configuration.md#metasrv-only-configuration), and if the whole cluster holds 1024 regions (physical regions), every 8 regions will share one topic.
+For example, configure 128 topics for [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration), and if the whole cluster holds 1024 regions (physical regions), every 8 regions will share one topic.
 
 ![Read Amplification](/remote-wal-read-amplification.png)
 

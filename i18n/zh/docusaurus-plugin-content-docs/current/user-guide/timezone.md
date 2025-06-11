@@ -12,7 +12,7 @@ GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从
 
 ## 在客户端中指定时区
 
-默认情况下，所有客户端使用[默认时区配置](/user-guide/deployments/configuration.md#默认时区配置)，即 UTC。
+默认情况下，所有客户端使用[默认时区配置](/user-guide/deployments-administration/configuration.md#默认时区配置)，即 UTC。
 你也可以在每个客户端会话中指定时区，
 这将覆盖默认的时区配置。
 
@@ -31,7 +31,7 @@ GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从
 
 ### 其他客户端
 
-对于其他客户端，你可以更改 GreptimeDB 的[默认时区配置](/user-guide/deployments/configuration.md#默认时区配置)。
+对于其他客户端，你可以更改 GreptimeDB 的[默认时区配置](/user-guide/deployments-administration/configuration.md#默认时区配置)。
 
 ## 时区对 SQL 语句的影响
 

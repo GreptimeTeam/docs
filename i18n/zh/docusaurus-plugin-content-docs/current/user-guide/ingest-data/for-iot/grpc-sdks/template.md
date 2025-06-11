@@ -15,7 +15,7 @@ GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
 
 ## 连接数据库
 
-如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/deployments/authentication/overview.md)，
+如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/deployments-administration/authentication/overview.md)，
 则需要提供用户名和密码才能连接到 GreptimeDB。
 以下示例显示了使用 SDK 连接到 GreptimeDB 时如何设置用户名和密码。
 

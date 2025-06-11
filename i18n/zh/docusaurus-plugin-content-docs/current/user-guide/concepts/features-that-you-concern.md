@@ -63,7 +63,7 @@ GreptimeDB 在 [ClickHouse 的 JSONBench 测试中 Cold Run 斩获第一](https:
 
 ## GreptimeDB 有灾难恢复解决方案吗？
 
-有的，请参阅[灾难恢复文档](/user-guide/administration/disaster-recovery/overview.md)。
+有的，请参阅[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
 
 ## GeptimeDB 有地理空间索引吗？
 

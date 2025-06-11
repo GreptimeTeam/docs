@@ -51,7 +51,7 @@ To retain the minimality of requirements of our active-active architecture, we d
 - Custom endpoint update mechanism. If you can detect the fall of nodes, you can retroactively update the GreptimeDB's endpoint set in your code.
 
 :::tip NOTE
-To compare the RPO and RTO across different disaster recovery solutions, please refer to "[Solution Comparison](/user-guide/administration/disaster-recovery/overview.md#solution-comparison)".
+To compare the RPO and RTO across different disaster recovery solutions, please refer to "[Solution Comparison](/user-guide/deployments-administration/disaster-recovery/overview.md#solution-comparison)".
 :::
 
 ## Summary

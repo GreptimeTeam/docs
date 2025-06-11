@@ -40,7 +40,7 @@ GreptimeDB 的存储文件结构包括以下内容：
 
 文件结构中的 `data` 目录可以存储在云存储中。请参考[存储选项](../deployments/configuration.md#存储选项)了解更多细节。
 
-请注意，仅将 `data` 目录存储在对象存储中不足以确保数据可靠性和灾难恢复，`wal` 和 `metadata` 也需要考虑灾难恢复，更详细地请参阅[灾难恢复文档](/user-guide/administration/disaster-recovery/overview.md)。
+请注意，仅将 `data` 目录存储在对象存储中不足以确保数据可靠性和灾难恢复，`wal` 和 `metadata` 也需要考虑灾难恢复，更详细地请参阅[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
 
 ## 多存储引擎支持
 

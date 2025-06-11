@@ -5,7 +5,7 @@ description: Configuration guide for LDAP authentication in GreptimeDB Enterpris
 
 # LDAP Authentication
 
-In addition to the built-in [static user provider](/user-guide/deployments/authentication/static.md) in GreptimeDB OSS,
+In addition to the built-in [static user provider](/user-guide/deployments-administration/authentication/static.md) in GreptimeDB OSS,
 GreptimeDB Enterprise offers the capability to connect to an external LDAP server for authentication.
 
 ## Configuration

@@ -163,7 +163,7 @@ A minimum of 3 nodes is required, with each node running the 3 services: metasrv
 
 It is not necessary to deploy all three services on each node. A small-sized cluster can be set up with 3 nodes dedicated to metasrv. Frontend and datanode can be deployed on equal nodes, with one container running two processes.
 
-For more general advice for deployment, please read [Capacity Plan](/user-guide/administration/capacity-plan.md).
+For more general advice for deployment, please read [Capacity Plan](/user-guide/deployments-administration/capacity-plan.md).
 
 ### In the latest version, does the Flow Engine (pre-computation) feature support PromQL syntax for calculations?
 
@@ -171,7 +171,7 @@ This is a good suggestion. Currently, the Flow Engine does not support PromQL sy
 
 ### Will Metasrv support storage backends like MySQL or PostgreSQL?
 
-The latest version of GreptimeDB now supports PostgreSQL as the storage backend for Metasrv. For details, please refer to [here](/user-guide/deployments/configuration.md#metasrv-only-configuration).
+The latest version of GreptimeDB now supports PostgreSQL as the storage backend for Metasrv. For details, please refer to [here](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration).
 
 ### What is the best way to downsample interface traffic rates (maximum rate within every hour) from multiple NICs(network interface controller) across thousands of computers every 30 seconds, so that the data can be kept for many years?
 

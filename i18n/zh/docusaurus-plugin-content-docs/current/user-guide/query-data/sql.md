@@ -7,7 +7,7 @@ description: 介绍 GreptimeDB 支持的 SQL 查询功能，包括基础查询�
 
 GreptimeDB 在查询数据时支持完整的 `SQL` 语法。
 
-在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)和[写入数据](/user-guide/ingest-data/for-iot/sql.md)。
+在这篇文档中，我们将使用 `monitor` 表中的数据作为示例来演示如何查询数据。关于如何创建 `monitor` 表格并向其中插入数据，请参考[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)和[写入数据](/user-guide/ingest-data/for-iot/sql.md)。
 
 ## 基础查询
 
@@ -301,7 +301,7 @@ SELECT DISTINCT ON (host) * FROM monitor ORDER BY host, ts DESC;
 
 GreptimeDB 支持 [Range Query](/reference/sql/range.md) 来按时间窗口聚合数据。
 
-假设我们有以下数据在 [`monitor` 表](/user-guide/administration/manage-data/basic-table-operations.md#创建表) 中：
+假设我们有以下数据在 [`monitor` 表](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表) 中：
 
 ```sql
 +-----------+---------------------+------+--------+
@@ -409,7 +409,7 @@ ALIGN '1d' TO '2023-12-01T00:00:00+08:00' BY (host);
 ## 表名约束
 
 如果你的表名包含特殊字符或大写字母，需要将表名用反引号括起来。
-有关示例，请参阅表创建表文档中的[表名约束](/user-guide/administration/manage-data/basic-table-operations.md#表名约束)部分。
+有关示例，请参阅表创建表文档中的[表名约束](/user-guide/deployments-administration/manage-data/basic-table-operations.md#表名约束)部分。
 
 ## HTTP API
 

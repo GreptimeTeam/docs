@@ -18,7 +18,7 @@ there are several key considerations:
 - Data retention policy
 - Hardware costs
 
-To monitor the various metrics of GreptimeDB, please refer to [Monitoring](/user-guide/administration/monitoring/export-metrics.md).
+To monitor the various metrics of GreptimeDB, please refer to [Monitoring](/user-guide/deployments-administration/monitoring/export-metrics.md).
 
 ## CPU
 
@@ -47,7 +47,7 @@ This allows GreptimeDB to store large amounts of data in a significantly smaller
 
 Data can be stored either in a local file system or in cloud storage, such as AWS S3.
 FOr more information on storage options,
-please refer to the [storage configuration](/user-guide/deployments/configuration.md#storage-options) documentation.
+please refer to the [storage configuration](/user-guide/deployments-administration/configuration.md#storage-options) documentation.
 
 Cloud storage is highly recommended for data storage due to its simplicity in managing storage.
 With cloud storage, only about 200GB of local storage space is needed for query-related caches and Write-Ahead Log (WAL).

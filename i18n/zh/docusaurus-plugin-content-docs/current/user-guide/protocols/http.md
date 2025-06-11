@@ -11,7 +11,7 @@ GreptimeDB 提供了 HTTP API 用于与数据库进行交互。如需查看完�
 
 API Base URL 是 `http(s)://{{host}}:{{port}}/`。
 
-- 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments/configuration#protocol-options)中更改服务的 host 和 port。
+- 对于在本地机器上运行的 GreptimeDB 实例，Base URL 是 `http://localhost:4000/`，默认端口配置为 `4000`。你可以在[配置文件](/user-guide/deployments-administration/configuration#protocol-options)中更改服务的 host 和 port。
 - 对于 GreptimeCloud，Base URL 是 `https://{{host}}/`。你可以在 GreptimeCloud 控制台的 "Connection Information" 中找到 host。
 
 在以下内容中，我们使用 `http://{{API-host}}/` 作为 Base URL 来演示 API。
@@ -20,7 +20,7 @@ API Base URL 是 `http(s)://{{host}}:{{port}}/`。
 
 ### 鉴权
 
-假设你已经正确设置了数据库[鉴权](/user-guide/deployments/authentication/overview.md)，
+假设你已经正确设置了数据库[鉴权](/user-guide/deployments-administration/authentication/overview.md)，
 GreptimeDB 支持 HTTP API 中内置的 `Basic` 鉴权机制。要设置鉴权，请按照以下步骤操作：
 
 1. 使用 `<username:password>` 格式和 `Base64` 算法对用户名和密码进行编码。
@@ -99,7 +99,7 @@ curl http://localhost:4000/status
 
 ### 获取 GreptimeDB 服务器配置
 
-你可以使用 `/config` 端点获取 GreptimeDB 服务器的 [TOML 配置](/user-guide/deployments/configuration.md#configuration-file-options)。
+你可以使用 `/config` 端点获取 GreptimeDB 服务器的 [TOML 配置](/user-guide/deployments-administration/configuration.md#configuration-file-options)。
 
 ```shell
 curl http://{{API-host}}/config

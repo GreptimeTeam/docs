@@ -17,7 +17,7 @@ In this quick start document, we use SQL for simplicity.
 If your GreptimeDB instance is running on `127.0.0.1` with the MySQL client default port `4002` or the PostgreSQL client default port `4003`,
 you can connect to GreptimeDB using the following commands.
 
-By default, GreptimeDB does not have [authentication](/user-guide/deployments/authentication/overview.md) enabled.
+By default, GreptimeDB does not have [authentication](/user-guide/deployments-administration/authentication/overview.md) enabled.
 You can connect to the database without providing a username and password in this section.
 
 ```shell
@@ -52,7 +52,7 @@ CREATE TABLE grpc_latencies (
 - `method_name`: The name of the RPC request method.
 - `latency`: The latency of the RPC request.
 
-And it's [append only](/user-guide/administration/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
+And it's [append only](/user-guide/deployments-administration/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
 
 Additionally, there is a table `app_logs` for storing application logs:
 

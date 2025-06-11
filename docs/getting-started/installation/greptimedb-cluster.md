@@ -9,7 +9,7 @@ The GreptimeDB cluster can run in cluster mode to scale horizontally.
 
 ## Deploy the GreptimeDB cluster in Kubernetes
 
-For production environments, we recommend deploying the GreptimeDB cluster in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
+For production environments, we recommend deploying the GreptimeDB cluster in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md).
 
 ## Use Docker Compose
 

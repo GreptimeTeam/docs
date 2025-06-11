@@ -73,7 +73,7 @@ service:
 * `x-greptime-pipeline-name` 用来指定要使用的 pipeline 名称
 * `x-greptime-log-table-name` 用来指定数据将要写入 GreptimeDB 的表名。
 
-如果你在 GreptimeDB 设置了[鉴权](/user-guide/deployments/authentication/overview.md)。则需要使用 `basicauth/client` 扩展来处理基本的身份验证。
+如果你在 GreptimeDB 设置了[鉴权](/user-guide/deployments-administration/authentication/overview.md)。则需要使用 `basicauth/client` 扩展来处理基本的身份验证。
 
 这里我们强烈建议使用不同的导出器来分别处理 traces、logs 和 metrics 数据，一方面是因为 GreptimeDB 会支持一些特定的 header 来自定义一些处理流程，另一方面也可以做好数据隔离。
 

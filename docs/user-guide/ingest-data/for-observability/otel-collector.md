@@ -73,7 +73,7 @@ Based on the otlphttp protocol, we have added some headers to specify certain pa
 * The `x-greptime-pipeline-name` header is used to specify the pipeline name to use, and,
 * the `x-greptime-log-table-name` header is used to specify the table name in GreptimeDB where the data will be written.
 
-If you have enabled [authentication](/user-guide/deployments/authentication/overview.md) in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.
+If you have enabled [authentication](/user-guide/deployments-administration/authentication/overview.md) in GreptimeDB, you need to use the `basicauth/client` extension to handle basic authentication.
 
 Here, we strongly recommend using different exporters to handle traces, logs, and metrics separately. On one hand, GreptimeDB supports some specific headers to customize processing flows; on the other hand, this also helps with data isolation.
 

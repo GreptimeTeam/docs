@@ -7,7 +7,7 @@ description: Guide on using distributed tracing in GreptimeDB with Jaeger. Inclu
 
 GreptimeDB supports distributed tracing. GreptimeDB exports all collected spans using the gRPC-based OTLP protocol. Users can use [Jaeger](https://www.jaegertracing.io/), [Tempo](https://grafana.com/oss/tempo/) and other OTLP protocol backends that support gRPC to collect the span instrument by GreptimeDB.
 
-In the [logging section](/user-guide/deployments/configuration.md#logging-options) in the configuration, there are descriptions of configuration items related to tracing, [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/standalone.example.toml) provide a reference configuration in the logging section.
+In the [logging section](/user-guide/deployments-administration/configuration.md#logging-options) in the configuration, there are descriptions of configuration items related to tracing, [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/standalone.example.toml) provide a reference configuration in the logging section.
 
 ## Tutorial: Use Jaeger to trace GreptimeDB
 

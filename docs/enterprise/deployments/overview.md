@@ -9,7 +9,7 @@ This chapter provides a comprehensive guide for deploying GreptimeDB Enterprise 
 
 ## Authentication
 
-GreptimeDB Enterprise supports all [authentication methods available in the open-source version](/user-guide/deployments/authentication/static.md) while extending capabilities with [LDAP authentication](authentication.md) for enterprise GreptimedB.
+GreptimeDB Enterprise supports all [authentication methods available in the open-source version](/user-guide/deployments-administration/authentication/static.md) while extending capabilities with [LDAP authentication](authentication.md) for enterprise GreptimedB.
 
 ## Kubernetes Deployment
 

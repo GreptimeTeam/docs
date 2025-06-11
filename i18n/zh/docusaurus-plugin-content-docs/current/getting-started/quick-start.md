@@ -18,7 +18,7 @@ GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)与数据库�
 并且使用 MySQL 客户端默认端口 `4002` 或 PostgreSQL 客户端默认端口 `4003`，
 你可以使用以下命令连接到数据库。
 
-GreptimeDB 默认不开启[鉴权认证](/user-guide/deployments/authentication/overview.md)。
+GreptimeDB 默认不开启[鉴权认证](/user-guide/deployments-administration/authentication/overview.md)。
 在本章节中你可以在连接数据库时不提供用户名密码。
 
 ```shell
@@ -52,7 +52,7 @@ CREATE TABLE grpc_latencies (
 - `method_name`：RPC 请求方法的名称，tag 列。
 - `latency`：RPC 请求的响应时间。
 
-并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/administration/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
+并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
 
 此外，还有一个名为 `app_logs` 的表用于存储日志：
 

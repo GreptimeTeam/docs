@@ -11,5 +11,5 @@ description: 提供 GreptimeDB 数据管理的概述，包括存储位置说明�
 * [通过设置 TTL 过期数据](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)
 * [表分片](table-sharding.md): 按 Region 对表进行分区
 * [Region Migration](region-migration.md): 为负载均衡迁移 Region
-* [Region Failover](/user-guide/administration/manage-data/region-failover.md)
+* [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md)
 * [Compaction](compaction.md)

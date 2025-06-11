@@ -338,7 +338,7 @@ cache_capacity = "10GiB"
 write_cache_size = "10GiB"
 ```
 
-更详细的信息请参阅[性能调优技巧](/user-guide/administration/performance-tuning-tips)。
+更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning-tips)。
 
 
 ### WAL 选项
@@ -443,9 +443,9 @@ default_ratio = 1.0
 - `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
 - `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
 - `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
+- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
 
-如何使用分布式追踪，请参考 [Tracing](/user-guide/administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
+如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
 ### Region 引擎选项
 
@@ -552,7 +552,7 @@ tcp_nodelay = true
 ### 指标监控选项
 
 这些选项用于将系统监控指标保存到 GreptimeDB 本身。
-有关如何使用此功能的说明，请参见 [监控](/user-guide/administration/monitoring/export-metrics.md) 指南。
+有关如何使用此功能的说明，请参见 [监控](/user-guide/deployments-administration/monitoring/export-metrics.md) 指南。
 
 ```toml
 [export_metrics]

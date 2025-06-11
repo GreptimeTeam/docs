@@ -14,7 +14,7 @@ GreptimeDB 支持以下元数据存储后端：
 - **etcd**：开发和测试环境的默认推荐后端，提供简单性和易用性
 - **MySQL/PostgreSQL**：适合生产环境的后端选择，能够无缝对接现有的数据库基础设施和云服务商提供的 RDS 服务
 
-如果你使用 Helm Chart 部署 GreptimeDB，可以参考 [Common Helm Chart Configurations](/user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) 了解更多详情。
+如果你使用 Helm Chart 部署 GreptimeDB，可以参考 [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) 了解更多详情。
 
 ## 使用 etcd 作为元数据存储
 
@@ -33,7 +33,7 @@ store_addrs = ["127.0.0.1:2379"]
 
 ### 最佳实践
 
-虽然 etcd 可以用作元数据存储，但我们不建议在生产环境中使用它，除非你对 etcd 的操作和维护有丰富的经验。有关 etcd 管理的详细指南，包括安装、备份和维护程序，请参阅[管理 etcd](/user-guide/administration/manage-metadata/manage-etcd.md)。
+虽然 etcd 可以用作元数据存储，但我们不建议在生产环境中使用它，除非你对 etcd 的操作和维护有丰富的经验。有关 etcd 管理的详细指南，包括安装、备份和维护程序，请参阅[管理 etcd](/user-guide/deployments-administration/manage-metadata/manage-etcd.md)。
 
 使用 etcd 作为元数据存储时：
 

@@ -31,5 +31,5 @@ Note: The content of the file is loaded into the database while starting up. Mod
 ## Kubernetes Cluster
 
 You can configure the authentication users in the `values.yaml` file.
-For more details, please refer to the [Helm Chart Configuration](/user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations.md#authentication-configuration).
+For more details, please refer to the [Helm Chart Configuration](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#authentication-configuration).
 
