@@ -219,8 +219,6 @@ DESC pipeline_logs;
 
 ## Pipeline 上下文中的 hint 变量
 
-Starting from `v0.15`, the pipeline engine now recognizes certain variables, and can set corresponding table options based on the value of the variables.
-Combined with the `vrl` processor, it's now easy to create and set table options during the pipeline execution based on input data.
 
 从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
 通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
@@ -232,7 +230,7 @@ Combined with the `vrl` processor, it's now easy to create and set table options
 - `greptime_merge_mode`
 - `greptime_physical_table`
 - `greptime_skip_wal`
-关于这些表选项的含义，可以参考[这份文档](reference/sql/create#table-options)。
+关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
 
 以下是 pipeline 特有的变量：
 - `greptime_table_suffix`: 在给定的目标表后增加后缀

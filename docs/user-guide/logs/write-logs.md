@@ -229,7 +229,7 @@ Here is a list of supported common table option variables:
 - `greptime_merge_mode`
 - `greptime_physical_table`
 - `greptime_skip_wal`
-You can find the explanation [here](reference/sql/create#table-options).
+You can find the explanation [here](/reference/sql/create.md#table-options).
 
 Here are some pipeline specific variables:
 - `greptime_table_suffix`: add suffix to the destined table name.
