@@ -5,7 +5,7 @@ description: 介绍 GreptimeDB Enterprise 中的 LDAP 鉴权功能，包括 simp
 
 # LDAP 鉴权
 
-除了 GreptimeDB OSS 中内置的 [Static User Provider](/user-guide/deployments/authentication/static.md)，
+除了 GreptimeDB OSS 中内置的 [Static User Provider](/user-guide/deployments-administration/authentication/static.md)，
 GreptimeDB Enterprise 还提供了连接到外部 LDAP 服务器进行身份验证的功能。
 
 ## 配置

@@ -27,7 +27,7 @@ prometheus.remote_write "greptimedb" {
 
 - `GREPTIME_HOST`: GreptimeDB host address, e.g., `localhost`.
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
-- `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+- `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
 For details on the data model transformation from Prometheus to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/prometheus.md#data-model) section in the Prometheus Remote Write guide.
 
@@ -56,7 +56,7 @@ otelcol.auth.basic "credentials" {
 
 - `GREPTIME_HOST`: GreptimeDB host address, e.g., `localhost`.
 - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
-- `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+- `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
 For details on the metrics data model transformation from OpenTelemetry to GreptimeDB, refer to the [Data Model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model) section in the OpenTelemetry guide.
 
@@ -106,7 +106,7 @@ otelcol.exporter.otlphttp "greptimedb_logs" {
   - The `otelcol.exporter.otlphttp "greptimedb_logs"` block configures an HTTP exporter to send logs to GreptimeDB.
   - `GREPTIME_HOST`: GreptimeDB host address, e.g., `localhost`.
   - `GREPTIME_DB`: GreptimeDB database name, default is `public`.
-  - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+  - `GREPTIME_USERNAME` and `GREPTIME_PASSWORD`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
   - `LOG_TABLE_NAME`: The name of the table to store logs, default table name is `opentelemetry_logs`.
   - `EXTRACT_KEYS`: The keys to extract from the attributes, separated by commas (`,`), e.g., `filename,log.file.name,loki.attribute.labels`, see [HTTP API documentation](opentelemetry.md#otlphttp-api-1) for details.
 

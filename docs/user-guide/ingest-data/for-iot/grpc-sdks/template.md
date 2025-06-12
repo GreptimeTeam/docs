@@ -16,7 +16,7 @@ For more information, refer to [Automatic Schema Generation](/user-guide/ingest-
 
 ## Connect to database
 
-If you have set the [`--user-provider` configuration](/user-guide/deployments/authentication/overview.md) when starting GreptimeDB,
+If you have set the [`--user-provider` configuration](/user-guide/deployments-administration/authentication/overview.md) when starting GreptimeDB,
 you will need to provide a username and password to connect to GreptimeDB.
 The following example shows how to set the username and password when using the library to connect to GreptimeDB.
 

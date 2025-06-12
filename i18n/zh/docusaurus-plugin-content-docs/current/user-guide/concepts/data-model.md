@@ -16,7 +16,7 @@ GreptimeDB 中的所有数据都被组织成具有名称的表，每个表中的
 - `Timestamp` 是指标、日志和链路追踪数据库的基础。它表示数据生成的日期和时间。一个表只能有一个具有 `Timestamp` 语义类型的列，也称为时间索引（`Time Index`）列。
 - 其他列是 `Field` 列。字段包含收集的数据指标或日志内容。这些字段通常是数值或字符串，但也可能是其他类型的数据，例如地理位置或时间戳。
 
-表按时间序列对行进行组织，并按 `Timestamp` 对同一时间序列的行进行排序。表还可以根据应用的需求对具有相同 `Tag` 和 `Timestamp` 值的行进行去重。GreptimeDB 按时间序列存储和处理数据。选择正确的表结构对于高效的数据存储和查询至关重要；请参阅[表设计指南](/user-guide/administration/design-table.md)了解更多详情。
+表按时间序列对行进行组织，并按 `Timestamp` 对同一时间序列的行进行排序。表还可以根据应用的需求对具有相同 `Tag` 和 `Timestamp` 值的行进行去重。GreptimeDB 按时间序列存储和处理数据。选择正确的表结构对于高效的数据存储和查询至关重要；请参阅[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)了解更多详情。
 
 ### 指标
 
@@ -70,7 +70,7 @@ CREATE TABLE access_logs (
 - 这个表是一个用于存储不需要去重的日志的[append-only 表](/reference/sql/create.md#创建-append-only-表)。
 - 查询 append-only 表一般会更快。例如，`select count(*) from access_logs` 可以直接使用统计信息作为结果而不需要考虑重复。
 
-要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
+要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
 
 ### 链路追踪
 
@@ -86,4 +86,4 @@ GreptimeDB 基于表进行设计，原因如下：
 - 当我们有了表格 Schema 后，自然而然地引入了 SQL，并用它来处理各种表之间的关联分析和聚合查询，为用户抵消了学习和使用成本。
 - 比起 OpenTSDB 和 Prometheus 采用的单值模型，GreptimeDB 使用多值模型使其中一行数据可以具有多列数据。多值模型面向数据源建模，一个指标或者事件可以使用多个 field 表示值。多值模型的优势在于它可以一次性向数据库写入或读取多个值，从而减少传输流量并简化查询。相比之下，单值模型则需要将数据拆分成多个记录。阅读[博客](https://greptime.com/blogs/2024-05-09-prometheus)以获取更多详情。
 
-GreptimeDB 使用 SQL 管理表 Schema。有关更多信息，请参见[表管理](/user-guide/administration/manage-data/basic-table-operations.md)。但是，我们对 Schema 的定义并不是强制性的，而是倾向于 **Schemaless** 的方式，类似于 MongoDB。有关更多详细信息，请参见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。
+GreptimeDB 使用 SQL 管理表 Schema。有关更多信息，请参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)。但是，我们对 Schema 的定义并不是强制性的，而是倾向于 **Schemaless** 的方式，类似于 MongoDB。有关更多详细信息，请参见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。

@@ -24,7 +24,7 @@ GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/ot
 - URL: `https://<host>/v1/otlp/v1/metrics`
 - Headers:
   - `X-Greptime-DB-Name`: `<dbname>`
-- `Authorization`: `Basic` 认证，是 `<username>:<password>` 的 Base64 编码字符串。更多信息请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
+- `Authorization`: `Basic` 认证，是 `<username>:<password>` 的 Base64 编码字符串。更多信息请参考 [鉴权](https://docs.greptime.cn/user-guide/deployments-administration/authentication/static/) 和 [HTTP API](https://docs.greptime.cn/user-guide/protocols/http#authentication)。
 
 请求中使用 binary protobuf 编码 payload，因此你需要使用支持 `HTTP/protobuf` 的包。例如，在 Node.js 中，可以使用 [`exporter-trace-otlp-proto`](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-proto)；在 Go 中，可以使用 [`go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp`](https://pkg.go.dev/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp)；在 Java 中，可以使用 [`io.opentelemetry:opentelemetry-exporter-otlp`](https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp)；在 Python 中，可以使用 [`opentelemetry-exporter-otlp-proto-http`](https://pypi.org/project/opentelemetry-exporter-otlp-proto-http/)。
 
@@ -136,7 +136,7 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 - **URL:** `https://<host>/v1/otlp/v1/logs`
 - **Headers:**
   - `X-Greptime-DB-Name`: `<dbname>`
-  - `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](/user-guide/deployments/authentication/static.md) 和 [HTTP API](/user-guide/protocols/http.md#鉴权)。
+  - `Authorization`: `Basic` 认证，这是一个 Base64 编码的 `<username>:<password>` 字符串。更多信息，请参考 [鉴权](/user-guide/deployments-administration/authentication/static.md) 和 [HTTP API](/user-guide/protocols/http.md#鉴权)。
   - `X-Greptime-Log-Table-Name`: `<table_name>`（可选）- 存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。
   - `X-Greptime-Log-Extract-Keys`: `<extract_keys>`（可选）- 从属性中提取对应 key 的值到表的顶级字段。key 应以逗号（`,`）分隔。例如，`key1,key2,key3` 将从属性中提取 `key1`、`key2` 和 `key3`，并将它们提升到日志的顶层，设置为标签。如果提取的字段类型是数组、浮点数或对象，将返回错误。如果提供了 pipeline name，此设置将被忽略。
   - `X-Greptime-Log-Pipeline-Name`: `<pipeline_name>`（可选）- 处理日志的 pipeline 名称。如果未提供，将使用 `X-Greptime-Log-Extract-Keys` 来处理日志。
@@ -189,7 +189,7 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 ### Append 模式
 
-通过此接口创建的表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
 
 ## Traces
 
@@ -255,4 +255,4 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 
 ### Append 模式
 
-通过此接口创建的表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).

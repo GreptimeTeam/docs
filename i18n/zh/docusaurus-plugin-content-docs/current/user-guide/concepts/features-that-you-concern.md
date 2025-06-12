@@ -46,7 +46,7 @@ GreptimeDB 通过以下方式解决这个问题：
 ## 我可以在云的对象存储中存储数据吗？
 
 可以，GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，它支持大多数类型的对象存储服务。
-数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](./../deployments/configuration.md#storage-options)。
+数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](/user-guide/deployments-administration/configuration.md#storage-options)。
 
 GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://greptime.cn/product/cloud) 来帮助您管理云中的数据。
 
@@ -63,7 +63,7 @@ GreptimeDB 在 [ClickHouse 的 JSONBench 测试中 Cold Run 斩获第一](https:
 
 ## GreptimeDB 有灾难恢复解决方案吗？
 
-有的，请参阅[灾难恢复文档](/user-guide/administration/disaster-recovery/overview.md)。
+有的，请参阅[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
 
 ## GeptimeDB 有地理空间索引吗？
 

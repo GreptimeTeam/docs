@@ -52,7 +52,7 @@ greptimedb://<username>:<password>@<host>:<port>/<database>
 ```
 
 - Ignore `<username>:<password>@` if you don't have
-  [authentication](/user-guide/deployments/authentication/overview.md) enabled.
+  [authentication](/user-guide/deployments-administration/authentication/overview.md) enabled.
 - Use `4003` for default port (this extension uses Postgres protocol).
 - Use `public` as default `database`. When using GreptimeCloud instance, use the
   database name from your instance.

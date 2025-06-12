@@ -25,7 +25,7 @@ df = conn.query("SELECT * FROM ...")
 
 - The `<host>` is the hostname or IP address of your GreptimeDB instance.
 - The `<dbname>` is the name of the database you want to connect to.
-- The `<username>` and `<password>` are your [GreptimeDB credentials](/user-guide/deployments/authentication/static.md).
+- The `<username>` and `<password>` are your [GreptimeDB credentials](/user-guide/deployments-administration/authentication/static.md).
 
 Once you have created the connection, you can run SQL query against your
 GreptimeDB instance. The resultset is automatically converted to Pandas

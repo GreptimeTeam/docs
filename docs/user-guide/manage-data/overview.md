@@ -333,5 +333,5 @@ For more information about TTL policies, please refer to the [CREATE](/reference
 
 ## More data management operations
 
-For more advanced data management operations, such as basic table operations, table sharding and region migration, please refer to the [Data Management](/user-guide/administration/manage-data/overview.md) in the administration section.
+For more advanced data management operations, such as basic table operations, table sharding and region migration, please refer to the [Data Management](/user-guide/deployments-administration/manage-data/overview.md) in the administration section.
 

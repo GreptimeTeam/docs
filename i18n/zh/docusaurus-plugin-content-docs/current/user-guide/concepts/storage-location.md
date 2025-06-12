@@ -30,7 +30,7 @@ GreptimeDB 的存储文件结构包括以下内容：
 ```
 
 - `metadata`: 内部元数据目录，保存 catalog、数据库以及表的元信息、procedure 状态等内部状态。在集群模式下，此目录不存在，因为所有这些状态（包括区域路由信息）都保存在 `Metasrv` 中。
-- `data`: 存储 GreptimeDB 的实际的时间序列数据和索引文件。如果要自定义此路径，请参阅 [存储选项](../deployments/configuration.md#storage-options)。该目录按照 catalog 和 schema 的两级结构组织。
+- `data`: 存储 GreptimeDB 的实际的时间序列数据和索引文件。如果要自定义此路径，请参阅 [存储选项](/user-guide/deployments-administration/configuration.md#storage-options)。该目录按照 catalog 和 schema 的两级结构组织。
 - `cache`: 内部的数据缓存目录，比如对象存储的本地缓存等。
 - `logs`: GreptimeDB 日志文件目录。
 - `wal`:  预写日志文件目录。
@@ -38,9 +38,9 @@ GreptimeDB 的存储文件结构包括以下内容：
 
 ## 云存储
 
-文件结构中的 `data` 目录可以存储在云存储中。请参考[存储选项](../deployments/configuration.md#存储选项)了解更多细节。
+文件结构中的 `data` 目录可以存储在云存储中。请参考[存储选项](/user-guide/deployments-administration/configuration.md#storage-options)了解更多细节。
 
-请注意，仅将 `data` 目录存储在对象存储中不足以确保数据可靠性和灾难恢复，`wal` 和 `metadata` 也需要考虑灾难恢复，更详细地请参阅[灾难恢复文档](/user-guide/administration/disaster-recovery/overview.md)。
+请注意，仅将 `data` 目录存储在对象存储中不足以确保数据可靠性和灾难恢复，`wal` 和 `metadata` 也需要考虑灾难恢复，更详细地请参阅[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
 
 ## 多存储引擎支持
 

@@ -223,4 +223,4 @@ DESC pipeline_logs;
 
 ## Append 模式
 
-通过此接口创建的日志表，默认为[Append 模式](/user-guide/administration/design-table.md#何时使用-append-only-表).
+通过此接口创建的日志表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).

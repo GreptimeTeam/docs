@@ -55,6 +55,18 @@
     "message": "鉴权",
     "description": "The label for category Authentication in sidebar docs"
   },
+  "sidebar.docs.category.Deployments & Administration": {
+    "message": "运维部署及管理",
+    "description": "The label for category Deployments & Administration in sidebar docs"
+  },
+  "sidebar.docs.category.Write-Ahead Logging (WAL)": {
+    "message": "预写日志（WAL）",
+    "description": "The label for category Write-Ahead Logging (WAL) in sidebar docs"
+  },
+  "sidebar.docs.category.Performance Tuning": {
+    "message": "性能调优",
+    "description": "The label for category Performance Tuning in sidebar docs"
+  },
   "sidebar.docs.category.Deployments": {
     "message": "部署",
     "description": "The label for category Deployments in sidebar docs"

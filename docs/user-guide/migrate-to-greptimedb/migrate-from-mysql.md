@@ -12,7 +12,7 @@ This document will guide you through the migration process from MySQL to Greptim
 Please be aware that though GreptimeDB supports the wire protocol of MySQL, it does not mean GreptimeDB implements all
 MySQL's features. You may refer to:
 * The [ANSI Compatibility](/reference/sql/compatibility.md) to see the constraints regarding using SQL in GreptimeDB.
-* The [Data Modeling Guide](/user-guide/administration/design-table.md) to create proper table schemas.
+* The [Data Modeling Guide](/user-guide/deployments-administration/performance-tuning/design-table.md) to create proper table schemas.
 * The [Data Index Guide](/user-guide/manage-data/data-index.md) for index planning.
 
 ## Migration steps
@@ -41,7 +41,7 @@ your create table SQL:
     * Most queries can benefit from the ordering.
     * You need to deduplicate (including delete) rows by the primary key and time index.
 
-    Otherwise, setting a primary key is optional and it may hurt performance. Read [Primary Key](/user-guide/administration/design-table.md#primary-key) for details.
+    Otherwise, setting a primary key is optional and it may hurt performance. Read [Primary Key](/user-guide/deployments-administration/performance-tuning/design-table.md#primary-key) for details.
     
     Finally please refer to "[CREATE](/reference/sql/create.md)" SQL document for more details for choosing the
 right data types and "ttl" or "compaction" options, etc.

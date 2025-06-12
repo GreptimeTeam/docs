@@ -37,7 +37,7 @@ The above statement will create a table with the following schema:
 ```
 
 For more information about the `CREATE TABLE` statement,
-please refer to [table management](/user-guide/administration/manage-data/basic-table-operations.md#create-a-table).
+please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md#create-a-table).
 
 ## Insert data
 

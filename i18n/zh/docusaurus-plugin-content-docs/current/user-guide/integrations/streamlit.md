@@ -24,6 +24,6 @@ df = conn.query("SELECT * FROM ...")
 
 - `<host>` 是 GreptimeDB 实例的主机名或 IP 地址。
 - `<dbname>` 是要连接的数据库的名称。
-- `<username>` 和 `<password>` 是 [GreptimeDB 鉴权认证信息](/user-guide/deployments/authentication/static.md)。
+- `<username>` 和 `<password>` 是 [GreptimeDB 鉴权认证信息](/user-guide/deployments-administration/authentication/static.md)。
 
 创建连接后，你可以对 GreptimeDB 实例运行 SQL 查询。结果集会自动转换为 Pandas dataframe，就像在 Streamlit 中使用普通数据源一样。

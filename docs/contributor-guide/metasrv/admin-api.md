@@ -255,4 +255,4 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 
 ## /maintenance HTTP endpoint
 
-Maintenance mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Maintenance Mode](/user-guide/administration/maintenance-mode.md).
+Maintenance mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations. This mode is particularly useful during cluster upgrades, planned downtime, and any operation that might temporarily affect cluster stability. For more details, please refer to [Maintenance Mode](/user-guide/deployments-administration/maintenance-mode.md).

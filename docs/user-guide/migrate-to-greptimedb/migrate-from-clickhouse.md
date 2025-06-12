@@ -11,7 +11,7 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 ## Pre-Migration Notes
 
 - **Compatibility**
-  Although GreptimeDB is SQL protocol compatible, the two databases have fundamental differences in data modeling, index design, and compression mechanisms. Be sure to refer to the [SQL compatibility](/reference/sql/compatibility.md) documentation and official [modeling guidelines](/user-guide/administration/design-table.md) to refactor table structures and data flows during migration.
+  Although GreptimeDB is SQL protocol compatible, the two databases have fundamental differences in data modeling, index design, and compression mechanisms. Be sure to refer to the [SQL compatibility](/reference/sql/compatibility.md) documentation and official [modeling guidelines](/user-guide/deployments-administration/performance-tuning/design-table.md) to refactor table structures and data flows during migration.
 
 - **Data Model Differences**
   ClickHouse is a general-purpose big data analytics engine, while GreptimeDB is optimized for time-series, metrics, and log observability scenarios. There are differences in their data models, index systems, and compression algorithms, so it’s important to take these differences and the actual business scenario into account during model design and compatibility considerations.
@@ -35,7 +35,7 @@ This guide provides a detailed explanation on how to smoothly migrate your busin
 - Read [Data Index](/user-guide/manage-data/data-index.md) for more info.
 
 ### Partitioning Table
-ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](user-guide/administration/manage-data/table-sharding.md) documentation for details.
+ClickHouse supports table partitioning via the `PARTITION BY` syntax. GreptimeDB provides a similar feature with a different syntax; see the [table sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) documentation for details.
 
 ### TTL
 GreptimeDB supports TTL (Time-to-live) through the table option `ttl`. For more information, please refer to [Manage data retention with TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies).

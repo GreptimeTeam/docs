@@ -93,7 +93,7 @@ NAME                                   READY   STATUS    RESTARTS   AGE
 greptimedb-operator-68d684c6cf-qr4q4   1/1     Running   0          4m8s
 ```
 
-可参考 [GreptimeDB Operator 的管理文档](/user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management.md) 来了解 GreptimeDB Operator 的更多功能。
+可参考 [GreptimeDB Operator 的管理文档](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md) 来了解 GreptimeDB Operator 的更多功能。
 
 ### 安装 etcd 集群
 
@@ -164,7 +164,7 @@ datanode:
   replicas: 1
 ```
 
-可参考[配置文档](/user-guide/deployments/deploy-on-kubernetes/common-helm-chart-configurations.md)获取完整的 `values.yaml` 的配置项。
+可参考[配置文档](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)获取完整的 `values.yaml` 的配置项。
 
 ### 启动 GreptimeDB
 

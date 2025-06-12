@@ -69,5 +69,5 @@ Follow the step-by-step instructions in the [Migration Documentation](./migrate-
 
 ## Administering and Deploying GreptimeDB
 
-When you're ready to deploy GreptimeDB, consult the [Deployment Documentation](./deployments/overview.md) and the [Administration Documentation](./administration/overview.md) for detailed guidance on deployment and management.
+When you're ready to deploy GreptimeDB, consult the [Deployment & Administration Documentation](/user-guide/deployments-administration/overview.md) for detailed guidance on deployment and management.
 

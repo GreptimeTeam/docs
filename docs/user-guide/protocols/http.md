@@ -14,7 +14,7 @@ The base URL of API is `http(s)://{{host}}:{{port}}/`.
 - For the GreptimeDB instance running on the local machine,
   with default port configuration `4000`,
   the base URL is `http://localhost:4000/`.
-  You can change the server host and port in the [configuration](/user-guide/deployments/configuration#protocol-options) file.
+  You can change the server host and port in the [configuration](/user-guide/deployments-administration/configuration.md#protocol-options) file.
 
 - For GreptimeCloud, the base URL is `https://{{host}}/`.
   You can find the host in 'Connection Information' at the GreptimeCloud console.
@@ -25,7 +25,7 @@ In the following sections, we use `http://{{API-host}}/` as the base URL to demo
 
 ### Authentication
 
-Assume that you have already configured the database [authentication](/user-guide/deployments/authentication/overview.md) correctly,
+Assume that you have already configured the database [authentication](/user-guide/deployments-administration/authentication/overview.md) correctly,
 GreptimeDB supports the built-in `Basic` authentication scheme in the HTTP API. To set up authentication, follow these steps:
 
 1. Encode your username and password using the `<username>:<password>` format and the `Base64` algorithm.
@@ -107,7 +107,7 @@ which will be similar to the following:
 
 ### Get GreptimeDB server configuration
 
-You can use the `/config` endpoint to get the [TOML configuration](/user-guide/deployments/configuration.md#configuration-file-options) of the GreptimeDB server.
+You can use the `/config` endpoint to get the [TOML configuration](/user-guide/deployments-administration/configuration.md#configuration-file-options) of the GreptimeDB server.
 
 ```shell
 curl http://{{API-host}}/config

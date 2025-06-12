@@ -5,11 +5,11 @@ description: Guide to install and run GreptimeDB in standalone mode using binary
 
 # GreptimeDB Standalone
 
-We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/deployments/configuration.md).
+We use the simplest configuration for you to get started. For a comprehensive list of configurations available in GreptimeDB, see the [configuration documentation](/user-guide/deployments-administration/configuration.md).
 
 ## Deploy the GreptimeDB standalone in Kubernetes
 
-For production environments, we recommend deploying the GreptimeDB standalone in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments/deploy-on-kubernetes/overview.md).
+For production environments, we recommend deploying the GreptimeDB standalone in Kubernetes. Please refer to [Deploy on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md).
 
 ## Binary
 
@@ -128,7 +128,7 @@ docker run -p 0.0.0.0:4000-4003:4000-4003 \
 </TabItem>
 </Tabs>
 
-You can also refer to the [Configuration](/user-guide/deployments/configuration.md) document to modify the bind address in the configuration file.
+You can also refer to the [Configuration](/user-guide/deployments-administration/configuration.md) document to modify the bind address in the configuration file.
 
 ## Next Steps
 

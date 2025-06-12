@@ -9,7 +9,7 @@ The sharding of stored data is essential to any distributed database. This docum
 
 ## Partition
 
-For the syntax of creating a partitioned table, please refer to the [Table Sharding](/user-guide/administration/manage-data/table-sharding.md) section in the User Guide.
+For the syntax of creating a partitioned table, please refer to the [Table Sharding](/user-guide/deployments-administration/manage-data/table-sharding.md) section in the User Guide.
 
 ## Region
 

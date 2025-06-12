@@ -164,7 +164,7 @@ Create Table | CREATE TABLE IF NOT EXISTS "web_trace_demo" (                    
 ### Partition Rules
 
 We included default [partition
-rules](/user-guide/administration/manage-data/table-sharding.md#partition) for
+rules](/user-guide/deployments-administration/manage-data/table-sharding.md#partition) for
 trace table on the `trace_id` column based on the first character of it. This is
 optimised for retrieve trace spans by the trace id.
 
@@ -191,7 +191,7 @@ on new data.
 ### Append Only
 
 By default, trace table created by OpenTelemetry API are in [append only
-mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
 
 ### TTL
 

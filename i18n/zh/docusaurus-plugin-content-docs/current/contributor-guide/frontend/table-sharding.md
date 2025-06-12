@@ -9,7 +9,7 @@ description: 介绍 GreptimeDB 中表数据的分片方法，包括分区和 Reg
 
 ## 分区
 
-有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/administration/manage-data/table-sharding.md)部分。
+有关创建分区表的语法，请参阅用户指南中的[表分片](/user-guide/deployments-administration/manage-data/table-sharding.md)部分。
 
 ## Region
 

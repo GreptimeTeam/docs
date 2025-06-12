@@ -80,7 +80,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&u=<greptime_us
 #### 鉴权
 
 GreptimeDB 与 InfluxDB 的行协议鉴权格式兼容，包括 V1 和 V2。
-如果你在 GreptimeDB 中[配置了鉴权](/user-guide/deployments/authentication/overview.md)，需要在 HTTP 请求中提供用户名和密码。
+如果你在 GreptimeDB 中[配置了鉴权](/user-guide/deployments-administration/authentication/overview.md)，需要在 HTTP 请求中提供用户名和密码。
 
 <Tabs>
 

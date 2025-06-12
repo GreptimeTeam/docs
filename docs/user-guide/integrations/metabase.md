@@ -28,6 +28,6 @@ information.
 - Use Greptime's Postgres protocol port `4003` as port. If you changed the
   defaults, use you own settings.
 - Username and password are optional if you didn't enable
-  [authentication](/user-guide/deployments/authentication/overview.md).
+  [authentication](/user-guide/deployments-administration/authentication/overview.md).
 - Use `public` as default *Database name*. When using GreptimeCloud instance,
   use the database name from your instance.

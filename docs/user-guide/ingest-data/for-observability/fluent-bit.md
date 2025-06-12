@@ -36,7 +36,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
 - `json_date_format`: The format of the timestamp.
 - `compress`: The compression method to use, e.g., `gzip`.
 - `header`: The header to send with the request, e.g., `Authorization` for authentication.
-- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
 In params Uri,
 - `db` is the database name you want to write logs to.
@@ -67,7 +67,7 @@ GreptimeDB can also be configured as OpenTelemetry collector. Using Fluent Bit's
 ```
 
 - `Metrics_uri`, `Logs_uri`, and `Traces_uri`: The endpoint to send metrics, logs, and traces to.
-- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
 We recommend not writing metrics, logs, and traces to a single output simultaneously, as each has specific header options for specifying parameters. We suggest creating a separate OpenTelemetry output for metrics, logs, and traces. for example:
 
@@ -120,7 +120,7 @@ Configure GreptimeDB as remote write target:
 ```
 
 - `Uri`: The endpoint to send metrics to.
-- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments/authentication/static.md) for GreptimeDB.
+- `http_user` and `http_passwd`: The [authentication credentials](/user-guide/deployments-administration/authentication/static.md) for GreptimeDB.
 
 In params Uri,
 
