@@ -217,6 +217,50 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+## Pipeline 上下文中的 hint 变量
+
+从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
+通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
+
+以下是支持的表选项变量名：
+- `greptime_auto_create_table`
+- `greptime_ttl`
+- `greptime_append_mode`
+- `greptime_merge_mode`
+- `greptime_physical_table`
+- `greptime_skip_wal`
+关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
+
+以下是 pipeline 特有的变量：
+- `greptime_table_suffix`: 在给定的目标表后增加后缀
+
+以如下 pipeline 文件为例
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .greptime_table_suffix, err = "_" + .id
+        .greptime_table_ttl = "1d"
+        .
+```
+
+在这份 vrl 脚本中，我们将表后缀变量设置为输入字段中的 `id`（通过一个下划线连接），然后将 ttl 设置成 `1d`。
+然后我们使用如下数据执行写入。
+
+```JSON
+{
+  "id": "2436",
+  "time": "2024-05-25 20:16:37.217"
+}
+```
+
+假设给定的表名为 `d_table`，那么最终的表名就会按照预期被设置成 `d_table_2436`。这个表同样的 ttl 同样会被设置成 1 天。
+
 ## 示例
 
 请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
