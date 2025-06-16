@@ -156,6 +156,39 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND job = "job1";
 ```
 
+## Special labels for ingestion options
+
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior, have its functionality change in the future.
+:::
+
+Originally, the whole data of a remote write request is ingested into the database under the same option(e.g, `db_name`).
+For advanced users and large data volume, it might be helpful to split the storage during ingestion to improve query efficiency and speed.
+
+Starting from `v0.15`, GreptimeDB is adding support for special labels.
+There labels(along with there values) will turn into ingest options during the parsing phase, allowing individual metric within a request to be more precisely controlled.
+
+The labels are not mutually exclusive, so they can be combined together to produce more versatile controlling.
+
+Note, if you're not encountering any problems using GreptimeDB with metrics, or you don't quite understand the point of these options, you probably won't need them anyway.
+
+### `__database__`
+
+This option decides which database the metric goes into. Note, the database should be created in advance(for instance, using `create database xxx` SQL).
+
+This is useful if you want to store the same metric into multiple spaces to speed up labeled query.
+
+### `__physical_table__`
+
+If the metric is storing using the metric engine, then there is a physical table behind each metric's logical table.
+By default, the physical table is one wide table, but you can set the metrics to have different physical table.
+
+Note, each metric's logical table is bound to a physical table upon creation.
+So setting different physical table for the same metric within the same database won't work.
+However combined with the `__database__` option above, this is possible.
+
+Storing metrics with different physical tables can also help improve query efficiency.
+
 ## Performance tuning
 
 By default, the metric engine will automatically create a physical table named `greptime_physical_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
