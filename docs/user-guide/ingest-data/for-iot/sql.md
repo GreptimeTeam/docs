@@ -1,5 +1,5 @@
 ---
-keywords: [SQL, MySQL, PostgreSQL, create table, insert data, timestamp, time zone, data ingestion]
+keywords: [pg, pgsql, SQL, MySQL, PostgreSQL, create table, insert data, timestamp, time zone, data ingestion]
 description: Guide on executing SQL statements to create tables and insert data into GreptimeDB, with examples using the `monitor` table.
 ---
 

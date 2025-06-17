@@ -1,5 +1,5 @@
 ---
-keywords: [SQL, 数据写入, 创建表, 插入数据, 时区设置]
+keywords: [pg, pgsql, SQL, 数据写入, 创建表, 插入数据, 时区设置]
 description: 介绍如何使用 SQL 将数据写入 GreptimeDB，包括创建表、插入数据和时区设置等内容。
 ---
 
