@@ -1,5 +1,5 @@
 ---
-keywords: [GreptimeDB, SQL table operations, create table, alter table, drop table, describe table, show tables, HTTP API, time zone]
+keywords: [pg, pgsql, GreptimeDB, SQL table operations, create table, alter table, drop table, describe table, show tables, HTTP API, time zone]
 description: Covers basic table operations in GreptimeDB, including creating, describing, showing, altering, and dropping tables, as well as executing SQL statements through the HTTP API and understanding time zone effects.
 ---
 

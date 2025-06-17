@@ -1,5 +1,5 @@
 ---
-keywords: [PostgreSQL 协议, 连接数据库, 管理表, 写入数据, 读取数据, 时区, 外部数据]
+keywords: [pg, pgsql, PostgreSQL 协议, 连接数据库, 管理表, 写入数据, 读取数据, 时区, 外部数据]
 description: 介绍如何通过 PostgreSQL 协议连接和使用 GreptimeDB。
 ---
 
