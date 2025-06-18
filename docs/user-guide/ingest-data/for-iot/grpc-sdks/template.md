@@ -1,4 +1,3 @@
-
 GreptimeDB offers ingester libraries for high-throughput data writing.
 It utilizes the gRPC protocol,
 which supports schemaless writing and eliminates the need to create tables before writing data.
@@ -6,15 +5,9 @@ For more information, refer to [Automatic Schema Generation](/user-guide/ingest-
 
 <InjectContent id="ingester-lib-introduction" content={props.children}/>
 
-## Quick start demos
-
 <InjectContent id="quick-start-demos" content={props.children}/>
 
-## Installation
-
 <InjectContent id="ingester-lib-installation" content={props.children}/>
-
-## Connect to database
 
 If you have set the [`--user-provider` configuration](/user-guide/deployments-administration/authentication/overview.md) when starting GreptimeDB,
 you will need to provide a username and password to connect to GreptimeDB.
@@ -22,12 +15,8 @@ The following example shows how to set the username and password when using the 
 
 <InjectContent id="ingester-lib-connect" content={props.children}/>
 
-## Data model
-
 Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
 The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON` etc. For more information, see [Data Types](/reference/sql/data-types.md).
-
-## Set table options
 
 Although the time series table is created automatically when writing data to GreptimeDB via the SDK,
 you can still configure table options.
@@ -40,12 +29,8 @@ The SDK supports the following table options:
 
 For how to write data to GreptimeDB, see the following sections.
 
-## Low-level API
-
 The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
 by adding rows to the table object with a predefined schema.
-
-### Create row objects
 
 This following code snippet begins by constructing a table named `cpu_metric`,
 which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
@@ -63,13 +48,9 @@ To improve the efficiency of writing data, you can create multiple rows at once 
 
 <InjectContent id="create-rows" content={props.children}/>
 
-### Insert data
-
 The following example shows how to insert rows to tables in GreptimeDB.
 
 <InjectContent id="insert-rows" content={props.children}/>
-
-### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
@@ -77,31 +58,21 @@ Streaming insert is useful when you want to insert a large amount of data such a
 
 <InjectContent id="update-rows" content={props.children}/>
 
-## High-level API
-
 The high-level API uses an ORM style object to write data to GreptimeDB.
 It allows you to create, insert, and update data in a more object-oriented way,
 providing developers with a friendlier experience.
 However, it is not as efficient as the low-level API.
 This is because the ORM style object may consume more resources and time when converting the objects.
 
-### Create row objects
-
 <InjectContent id="high-level-style-object" content={props.children}/>
 
-### Insert data
-
 <InjectContent id="high-level-style-insert-data" content={props.children}/>
-
-### Streaming insert
 
 Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 <InjectContent id="high-level-style-streaming-insert" content={props.children}/>
 
 <InjectContent id="high-level-style-update-data" content={props.children}/>
-
-## Insert data in JSON type
 
 GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
 With this ingester library, you can insert JSON data using string values.
@@ -112,10 +83,6 @@ refer to the following code snippet.
 
 <InjectContent id="ingester-lib-debug-logs" content={props.children}/>
 
-## Ingester library reference
-
 <InjectContent id="ingester-lib-reference" content={props.children}/>
-
-## FAQ
 
 <InjectContent id="faq" content={props.children}/>

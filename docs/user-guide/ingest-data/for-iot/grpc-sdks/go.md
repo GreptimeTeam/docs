@@ -10,20 +10,18 @@ import DocTemplate from './template.md'
 <DocTemplate>
 
 <div id="ingester-lib-introduction">
-
+## Introduction
 The Go ingester SDK provided by GreptimeDB is a lightweight,
 concurrent-safe library that is easy to use with the metric struct.
-
 </div>
 
 <div id="quick-start-demos">
-
+## Quick start demos
 To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) to understand how to use the GreptimeDB Go ingester SDK.
-
 </div>
 
 <div id="ingester-lib-installation">
-
+## Installation
 Use the following command to install the GreptimeDB client library for Go:
 
 ```shell
@@ -40,11 +38,10 @@ import (
     "github.com/GreptimeTeam/greptimedb-ingester-go/table/types"
 )
 ```
-
 </div>
 
 <div id="ingester-lib-connect">
-
+## Connect to database
 ```go
 cfg := greptime.NewConfig("127.0.0.1").
     // change the database name to your database name
@@ -62,7 +59,7 @@ cli, _ := greptime.NewClient(cfg)
 </div>
 
 <div id="set-table-options">
-
+## Set table options
 You can set table options using the `ingesterContext` context.
 For example, to set the `ttl` option, use the following code:
 
@@ -83,11 +80,11 @@ if err != nil {
     return err
 }
 ```
-
 </div>
 
 <div id="low-level-object">
-
+## Low-level API
+### Create row objects
 ```go
 // Construct the table schema for CPU metrics
 cpuMetric, err := table.New("cpu_metric")
@@ -112,11 +109,10 @@ if err != nil {
 }
 
 ```
-
 </div>
 
 <div id="create-rows">
-
+### Create multiple rows
 ```go
 cpuMetric, err := table.New("cpu_metric")
 if err != nil {
@@ -143,11 +139,10 @@ if err != nil {
     // Handle error appropriately
 }
 ```
-
 </div>
 
 <div id="insert-rows">
-
+### Insert data
 ```go
 resp, err := cli.Write(ctx, cpuMetric, memMetric)
 if err != nil {
@@ -155,30 +150,27 @@ if err != nil {
 }
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
-
 </div>
 
 <div id="streaming-insert">
-
+### Streaming insert
 ```go
 err := cli.StreamWrite(ctx, cpuMetric, memMetric)
 if err != nil {
     // Handle error appropriately
 }
 ```
-
 Close the stream writing after all data has been written.
 In general, you do not need to close the stream writing when continuously writing data.
 
 ```go
 affected, err := cli.CloseStream(ctx)
 ```
-
 </div>
 
-
 <div id="high-level-style-object">
-
+## High-level API
+### Create row objects
 ```go
 type CpuMetric struct {
     Host            string    `greptime:"tag;column:host;type:string"`
@@ -225,31 +217,28 @@ memMetrics := []MemMetric{
 </div>
 
 <div id="high-level-style-insert-data">
-
+### Insert data
 ```go
 resp, err := cli.WriteObject(ctx, cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
-
 </div>
 
 <div id="high-level-style-streaming-insert">
-
+### Streaming insert
 ```go
 err := cli.StreamWriteObject(ctx, cpuMetrics)
 ```
-
 Close the stream writing after all data has been written.
 In general, you do not need to close the stream writing when continuously writing data.
 
 ```go
 affected, err := cli.CloseStream(ctx)
 ```
-
 </div>
 
 <div id="ingester-json-type">
-
+## Insert data in JSON type
 In the [low-level API](#low-level-api),
 you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
 Then, use a `struct` or `map` to insert JSON data.
@@ -300,13 +289,19 @@ sensor := SensorReadings{
 ```
 
 For the executable code for inserting JSON data, please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) in the SDK repository.
+</div>
 
+<div id="ingester-lib-debug-logs">
+## Debug logs
 </div>
 
 <div id="ingester-lib-reference">
-
+## Ingester library reference
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
+</div>
 
+<div id="faq">
+## FAQ
 </div>
 
 </DocTemplate>
