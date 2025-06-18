@@ -73,7 +73,7 @@ curl -X POST 'http://localhost:3002/admin/maintenance?enable=false'
 通过发送 GET 请求到 `/admin/maintenance` 端点检查维护模式状态。
 
 ```bash
-curl -X GET http:://localhost:3002/admin/maintenance
+curl -X GET http://localhost:3002/admin/maintenance
 ```
 
 预期输出：

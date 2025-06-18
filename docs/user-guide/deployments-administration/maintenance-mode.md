@@ -73,7 +73,7 @@ The expected output is:
 Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint.
 
 ```bash
-curl -X GET http:://localhost:3002/admin/maintenance
+curl -X GET http://localhost:3002/admin/maintenance
 ```
 
 The expected output is:
