@@ -103,7 +103,7 @@ SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
 
 Notice that due to the approximate nature of the algorithm, the results may not be exact but are usually very close to the actual count distinct, and the larger the dataset, the more accurate the results will be. The relative error of the HyperLogLog algorithm is about 1.04/sqrt(m), where m is the number of registers used in the algorithm. GreptimeDB uses 16384 registers by default, which gives a relative error of about 0.008125(or 0.8125%).
 
-### Usage Example
+### Full Usage Example
 This example demonstrates how to use the `hll` functions to calculate the approximate count distinct of user visits.
 
 ```sql
@@ -303,7 +303,7 @@ GROUP BY
 
 ### Caveats
 
-Notice that the UDDSketch algorithm is designed to provide approximate quantiles with a tunable error rate, which allows for efficient memory usage and fast calculations. The error rate is the maximum relative error allowed in the quantile calculation, and it can be adjusted based on the requirements of the application. The `bucket_num` parameter determines the number of buckets used in the sketch, which also affects the accuracy and memory usage of the algorithm. The larger the `bucket_num`, the more accurate the results will be, but it will also consume more memory.
+Notice that the UDDSketch algorithm is designed to provide approximate quantiles with a tunable error rate, which allows for efficient memory usage and fast calculations. The error rate is the maximum relative error allowed in the quantile calculation, and it can be adjusted based on the requirements of the application. The `bucket_num` parameter determines the number of buckets used in the sketch, which also affects the accuracy and memory usage of the algorithm. The larger the `bucket_num`, the more accurate the results will be, but it will also consume more memory. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. The error rate can be set to a small value, such as 0.01 (1%), to achieve high accuracy in the quantile calculations.
 
 ### Full Usage Example
 This example demonstrates how to use three `uddsketch` functions describe above to calculate the approximate quantile of a set of values.
