@@ -5,7 +5,7 @@ description: Lists and describes approximate functions available in GreptimeDB, 
 
 # Approximate Functions
 
-This page lists two approximate functions in GreptimeDB, `hll` and `uddsketch`, which are used for approximate data analysis.
+This page lists approximate functions in GreptimeDB, which are used for approximate data analysis.
 
 :::warning
 The following approximate functions is currently experimental and may change in future releases.
@@ -53,7 +53,7 @@ GROUP BY
 
 ### `hll_merge`
 
-`hll_merge(hll_state)` merges multiple HyperLogLog states into one. This is useful when you want to combine the results of multiple HLL calculations, such as when aggregating data from different time windows or sources. The `hll_state` parameter is the binary representation of the HLL state created by `hll`. The merged state can then be used to calculate the approximate count distinct across all the merged states.
+`hll_merge(hll_state)` merges multiple HyperLogLog states into one. This is useful when you want to combine the results of multiple HLL calculations, such as when aggregating data from different time windows or sources. The `hll_state` parameter is the binary representation of the HLL state created by [`hll`](#hll). The merged state can then be used to calculate the approximate count distinct across all the merged states.
 
 For example, if you have multiple HLL states from different time windows, you can merge them into a single state to calculate the count distinct across all the data.
 
@@ -301,7 +301,7 @@ GROUP BY
 -- +---------------------+--------------------+
 ```
 
-### Caveats
+### How to determine `bucket_num` value
 
 Notice that the UDDSketch algorithm is designed to provide approximate quantiles with a tunable error rate, which allows for efficient memory usage and fast calculations. The error rate is the maximum relative error allowed in the quantile calculation, and it can be adjusted based on the requirements of the application. The `bucket_num` parameter determines the number of buckets used in the sketch, which also affects the accuracy and memory usage of the algorithm. The larger the `bucket_num`, the more accurate the results will be, but it will also consume more memory. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. The error rate can be set to a small value, such as 0.01 (1%), to achieve high accuracy in the quantile calculations.
 
