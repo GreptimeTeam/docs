@@ -185,6 +185,14 @@ Here is a list of supported label names:
 - `__database__`
 - `__physical_table__`
 
+### Setting labels
+
+How to set labels to the metrics is very dependent on the tools (or code) that collects the metrics and send them over to the database. 
+
+If you're using Prometheus to scrape metrics from the source and send them to GreptimeDB using remote write, you can add `external_labels` in the global config.
+Refer to the [docs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) here.
+It's the same for other collecting tools. You may have to find the relevant configuration for your tool of choice.
+
 ### `__database__`
 
 This option decides which database the metric goes into. Note, the database should be created in advance(for instance, using `create database xxx` SQL).
