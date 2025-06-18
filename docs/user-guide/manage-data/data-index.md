@@ -23,7 +23,8 @@ Notice that in this chapter we are narrowing the word "index" to those related t
 
 An inverted index is particularly useful for tag columns. It creates a mapping between unique tag values and their corresponding rows, enabling fast lookups for specific tag values.
 
-**Typical Use Cases:**
+The inverted index is not automatically applied to tag columns.
+You need to manually create an inverted index by considering the following typical use cases:
 - Querying data by tag values
 - Filtering operations on string columns
 - Point queries on tag columns
