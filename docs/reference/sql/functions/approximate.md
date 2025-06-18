@@ -181,7 +181,7 @@ Three functions are provided for approximate quantile calculation using the [UDD
 ### `uddsketch_state`
 
 The `uddsketch_state` function is used to create a UDDSketch state in binary from a given column. It takes three parameters: 
-- `bucket_num`, which is the number of buckets to use for the sketch, 
+- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number](#How_to_determine_`bucket_num`_value) for how to decide the value of `bucket_num`.
 - `error_rate`, which is the desired error rate for the quantile calculation. 
 - `value` parameter is the column from which the sketch will be created.
 
