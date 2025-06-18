@@ -162,32 +162,52 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
 This experimental feature may contain unexpected behavior, have its functionality change in the future.
 :::
 
-Originally, the whole data of a remote write request is ingested into the database under the same option(e.g, `db_name`).
-For advanced users and large data volume, it might be helpful to split the storage during ingestion to improve query efficiency and speed.
+Normally, the complete dataset of a remote write request is ingested into the database under the same option, for example, a default physical table with metric engine enabled.
+All the logical tables(i.e, the metrics) is backed with the same physical table, even when the number of metrics grows.
+It's probably fine for data ingestion. However, this set-up might slow down the query speed if you just want to query for a small group of metrics, but the database have to scan the complete dataset because they are all in the same physical table.
+
+If you can foresee a large data volume and incremental queries upon a small group of metrics each time, then it might be useful to split the storage during the ingestion to reduce the query overhead later. This fine-grade level of control can be achieved using ingest options for each metric within a remote request.
 
 Starting from `v0.15`, GreptimeDB is adding support for special labels.
 There labels(along with there values) will turn into ingest options during the parsing phase, allowing individual metric within a request to be more precisely controlled.
-
 The labels are not mutually exclusive, so they can be combined together to produce more versatile controlling.
 
-Note, if you're not encountering any problems using GreptimeDB with metrics, or you don't quite understand the point of these options, you probably won't need them anyway.
+Here is a representative diagram of special labels for a metric. Note this is not the actual data model of a metric.
+| `__name__`       | `__database__` | `__physical_table__` | `pod_name_label`    | `__normal_label_with_underscore_prefix__` | `timestamp`             | `value` |
+|------------------|----------------|----------------------|---------------------|-------------------------------------------|-------------------------|---------|
+| some_metric_name | public         | p_1                  | random_k8s_pod_name | true                                      | 2025-06-17 16:31:52.000 | 12.1    |
+
+The special labels you see above are just normal valid labels in Prometheus.
+GreptimeDB recognizes some of the label names and turns them into ingest options.
+It's much like the custom HTTP headers, where you just set a valid HTTP header and its value to indicate following operations, only the header pair means nothing outside your program.
+
+Here is a list of supported metrics names:
+- `__database__`
+- `__physical_table__`
 
 ### `__database__`
 
 This option decides which database the metric goes into. Note, the database should be created in advance(for instance, using `create database xxx` SQL).
 
-This is useful if you want to store the same metric into multiple spaces to speed up labeled query.
+Metrics from the same tech stack can have same metric names.
+For example, if you have two Kubernetes clusters with very different content, and you deploy a single collector on both clusters, they will generate metrics with same names but with different labels or values.
+If the metrics are collected and ingested into the same database, then on a Grafana dashboard you will have to manually set every label selection on every diagram to view the two clusters' metrics separately. This can be very tedious and painful.
+
+In this case, you might want to store the metrics on different databases during ingestion and use two dashboards to view the metrics separately.
 
 ### `__physical_table__`
 
 If the metric is storing using the metric engine, then there is a physical table behind each metric's logical table.
-By default, the physical table is one wide table, but you can set the metrics to have different physical table.
+By default, all metrics using the same physical table.
+With the number of the metrics growing, this physical table becomes a super wide table.
+If the metric frequency is different, then the table will be sparse.
+Finding a certain metric or a certain label in the complete metrics dataset would be very time-consuming since the database have to scan all the 'irrelevant' data.
+
+In this case, you might want to split the metrics into different physical tables to ease the pressure on a single physical table.
+It can also be helpful to group metrics by their frequency.
 
 Note, each metric's logical table is bound to a physical table upon creation.
 So setting different physical table for the same metric within the same database won't work.
-However combined with the `__database__` option above, this is possible.
-
-Storing metrics with different physical tables can also help improve query efficiency.
 
 ## Performance tuning
 
