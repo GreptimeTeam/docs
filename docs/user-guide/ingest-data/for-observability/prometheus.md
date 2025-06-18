@@ -163,13 +163,13 @@ This experimental feature may contain unexpected behavior, have its functionalit
 :::
 
 Normally, the complete dataset of a remote write request is ingested into the database under the same option, for example, a default physical table with metric engine enabled.
-All the logical tables(i.e, the metrics) is backed with the same physical table, even when the number of metrics grows.
+All the logical tables (i.e, the metrics) is backed with the same physical table, even when the number of metrics grows.
 It's probably fine for data ingestion. However, this set-up might slow down the query speed if you just want to query for a small group of metrics, but the database have to scan the complete dataset because they are all in the same physical table.
 
 If you can foresee a large data volume and incremental queries upon a small group of metrics each time, then it might be useful to split the storage during the ingestion to reduce the query overhead later. This fine-grade level of control can be achieved using ingest options for each metric within a remote request.
 
 Starting from `v0.15`, GreptimeDB is adding support for special labels.
-There labels(along with there values) will turn into ingest options during the parsing phase, allowing individual metric within a request to be more precisely controlled.
+There labels (along with there values) will turn into ingest options during the parsing phase, allowing individual metric within a request to be more precisely controlled.
 The labels are not mutually exclusive, so they can be combined together to produce more versatile controlling.
 
 Here is a representative diagram of special labels for a metric. Note this is not the actual data model of a metric.
@@ -181,7 +181,7 @@ The special labels you see above are just normal valid labels in Prometheus.
 GreptimeDB recognizes some of the label names and turns them into ingest options.
 It's much like the custom HTTP headers, where you just set a valid HTTP header and its value to indicate following operations, only the header pair means nothing outside your program.
 
-Here is a list of supported metrics names:
+Here is a list of supported label names:
 - `__database__`
 - `__physical_table__`
 
