@@ -13,7 +13,7 @@ The following approximate functions is currently experimental and may change in 
 
 ## Approximate Count Distinct (HLL)
 
-The `hll` function is used to calculate the approximate count distinct of a set of values. It uses [HyperLogLog](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) (HLL) algorithm for efficient memory usage and speed. Three functions are provided for this purpose, described in following chapters:
+The [HyperLogLog]((https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf)) (HLL) algorithm is used to calculate the approximate count distinct of a set of values. It provides efficient memory usage and speed for this purpose. Three functions are provided to work with the HLL algorithm, described in following chapters:
 
 :::warning
 Notice that due to the approximate nature of the algorithm, the results may not be exact but are usually very close to the actual count distinct. The relative standard error of the HyperLogLog algorithm is about 1.04/sqrt(m), where m is the number of registers used in the algorithm. GreptimeDB uses 16384 registers by default, which gives a relative standard error of about 0.008125(or 0.8125%).
@@ -58,8 +58,12 @@ INSERT INTO access_log VALUES
         ("/dashboard", 1, "2025-03-04 00:00:00"),
         ("/dashboard", 1, "2025-03-04 00:00:01"),
         ("/dashboard", 2, "2025-03-04 00:00:05"),
+        ("/dashboard", 2, "2025-03-04 00:00:10"),
+        ("/dashboard", 2, "2025-03-04 00:00:13"),
+        ("/dashboard", 4, "2025-03-04 00:00:15"),
+        ("/not_found", 1, "2025-03-04 00:00:10"),
         ("/not_found", 3, "2025-03-04 00:00:11"),
-        ("/dashboard", 4, "2025-03-04 00:00:15");
+        ("/not_found", 4, "2025-03-04 00:00:12");
 ```
 
 Now we can use the `hll` function to create a HyperLogLog state for the `user_id` column with a 10-second time window. The output will be a binary representation of the HLL state, which contains the necessary information to calculate approximate count distinct later. The `date_bin` function is used to group the data into 10-second time windows. Hence this `INSERT INTO` statement will create a HyperLogLog state for each 10-second time window in the `access_log` table, and insert it into the `access_log_10s` table:
@@ -90,8 +94,8 @@ SELECT `url`, `time_window`, hll_count(state) FROM access_log_10s;
 -- | url        | time_window         | hll_count(access_log_10s.state) |
 -- +------------+---------------------+---------------------------------+
 -- | /dashboard | 2025-03-04 00:00:00 |                               2 |
--- | /dashboard | 2025-03-04 00:00:10 |                               1 |
--- | /not_found | 2025-03-04 00:00:10 |                               1 |
+-- | /dashboard | 2025-03-04 00:00:10 |                               2 |
+-- | /not_found | 2025-03-04 00:00:10 |                               3 |
 -- +------------+---------------------+---------------------------------+
 ```
 
@@ -113,7 +117,7 @@ GROUP BY
 -- | url        | time_window_1m      | uv_per_min |
 -- +------------+---------------------+------------+
 -- | /dashboard | 2025-03-04 00:00:00 |          3 |
--- | /not_found | 2025-03-04 00:00:00 |          1 |
+-- | /not_found | 2025-03-04 00:00:00 |          3 |
 -- +------------+---------------------+------------+
 ```
 
