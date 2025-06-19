@@ -627,6 +627,7 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/functions/ip',
                 'reference/sql/functions/json',
                 'reference/sql/functions/vector',
+                'reference/sql/functions/approximate',
               ]
             },
             'reference/sql/admin',
