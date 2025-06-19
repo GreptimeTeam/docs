@@ -54,6 +54,10 @@ kubectl -n metasrv-store \
 
 ## Step 3: Deploy the Kafka Cluster
 
+:::tip NOTE
+If you already have a working Kafka endpoint available, you can skip Step 3 and proceed directly to Step 4, using your existing Kafka endpoint in the GreptimeDB cluster configuration.
+:::
+
 We recommend using [strimzi-kafka-operator](https://github.com/strimzi/strimzi-kafka-operator) to deploy the Kafka cluster in KRaft mode.
 
 Create the `kafka` namespace and install the strimzi-kafka-operator:
@@ -116,6 +120,15 @@ spec:
     topicOperator: {}
     userOperator: {}
 ```
+
+:::warning IMPORTANT: Kafka Retention Policy Configuration
+Please configure Kafka retention policy very carefully to avoid data loss. GreptimeDB will automatically recycle unneeded WAL data, so in most cases you don't need to set the retention policy. However, if you do set it, please ensure the following:
+
+- **Size-based retention**: Typically not needed, as the database manages its own data lifecycle
+- **Time-based retention**: If you choose to set this, ensure it's **greater than the auto-flush-interval** to prevent premature data deletion
+
+Improper retention settings can lead to data loss if WAL data is deleted before GreptimeDB has processed it.
+:::
 
 Save the spec as `kafka-wal.yaml` and apply in the Kubernetes:
 

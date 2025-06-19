@@ -53,6 +53,10 @@ kubectl -n metasrv-store \
   endpoint status
 ```
 
+:::tip NOTE
+如果您已经有可用的 Kafka 端点，可以跳过步骤 3，直接进入步骤 4，在 GreptimeDB 集群配置中使用您现有的 Kafka 端点。
+:::
+
 ## Step 3: 部署 Kafka 集群
 
 我们建议使用 [strimzi-kafka-operator](https://github.com/strimzi/strimzi-kafka-operator) 来部署 KRaft 模式的 Kafka 集群。
@@ -117,6 +121,15 @@ spec:
     topicOperator: {}
     userOperator: {}
 ```
+
+:::warning 重要：Kafka 保留策略配置
+请非常小心地配置 Kafka 保留策略以避免数据丢失。GreptimeDB 会自动回收不需要的 WAL 数据，因此在大多数情况下你不需要设置保留策略。但是如果您确实需要设置，请确保以下几点：
+
+- **基于大小的保留策略**：通常不需要设置，因为数据库会管理自己的数据生命周期
+- **基于时间的保留策略**：如果您选择设置此项，请确保它**大于自动刷新间隔（auto-flush-interval）**以防止过早删除数据
+
+不当的保留设置可能导致数据丢失，如果 WAL 数据在 GreptimeDB 处理之前被删除。
+:::
 
 将上述 spec 保存为 `kafka-wal.yaml` 并 apply 到 Kubernetes 中：
 
