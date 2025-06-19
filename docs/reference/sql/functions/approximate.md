@@ -21,16 +21,16 @@ Notice that due to the approximate nature of the algorithm, the results may not 
 
 ### `hll`
 
-`hll(value)` creates a HyperLogLog state in binary from a given column. The `value` can be any column that you want to calculate the approximate count distinct for. It returns a binary representation of the HLL state, which can be stored in a table or used in further calculations. See [Full Usage Example](#Full_Usage_Example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll(value)` creates a HyperLogLog state in binary from a given column. The `value` can be any column that you want to calculate the approximate count distinct for. It returns a binary representation of the HLL state, which can be stored in a table or used in further calculations. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
 
 ### `hll_merge`
 
-`hll_merge(hll_state)` merges multiple HyperLogLog states into one. This is useful when you want to combine the results of multiple HLL calculations, such as when aggregating data from different time windows or sources. The `hll_state` parameter is the binary representation of the HLL state created by [`hll`](#hll). The merged state can then be used to calculate the approximate count distinct across all the merged states. See [Full Usage Example](#Full_Usage_Example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll_merge(hll_state)` merges multiple HyperLogLog states into one. This is useful when you want to combine the results of multiple HLL calculations, such as when aggregating data from different time windows or sources. The `hll_state` parameter is the binary representation of the HLL state created by [`hll`](#hll). The merged state can then be used to calculate the approximate count distinct across all the merged states. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
 
 
 ### `hll_count`
 
-`hll_count(hll_state)` retrieves the approximate count distinct from a HyperLogLog state. This function takes the HLL state created by `hll` or merged by `hll_merge` and returns the approximate count of distinct values. See [Full Usage Example](#Full_Usage_Example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
+`hll_count(hll_state)` retrieves the approximate count distinct from a HyperLogLog state. This function takes the HLL state created by `hll` or merged by `hll_merge` and returns the approximate count of distinct values. See [Full Usage Example](#full-usage-example) for a full example of how to use this function in combination with other functions to calculate approximate count distinct.
 
 ### Full Usage Example
 This example demonstrates how to use these functions in combination to calculate the approximate count distinct user id.
@@ -137,24 +137,24 @@ Notice that the UDDSketch algorithm is designed to provide approximate quantiles
 ### `uddsketch_state`
 
 The `uddsketch_state` function is used to create a UDDSketch state in binary from a given column. It takes three parameters: 
-- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#How_to_determine_`bucket_num`_value_and_`error_rate`) for how to decide the value.
+- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#how-to-determine-bucket_num-and-error_rate) for how to decide the value.
 - `error_rate`, which is the desired error rate for the quantile calculation. 
 - `value` parameter is the column from which the sketch will be created.
 
 for example, for a simple table `percentile_base` shown below, we can create a `uddsketch_state` for the `value` column with a bucket number of 128 and an error rate of 0.01 (1%). The output will be a binary representation of the UDDSketch state, which contains the necessary information to calculate approximate quantiles later. 
 
-This output binary state can be think of as a histogram of the values in the `value` column, which can then be merged using `uddsketch_merge` or used to calculate quantiles using `uddsketch_calc` as shown later. See [UDDSketch Full Usage Example](#UDDSketch_Full_Usage_Example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+This output binary state can be think of as a histogram of the values in the `value` column, which can then be merged using `uddsketch_merge` or used to calculate quantiles using `uddsketch_calc` as shown later. See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
 
 ### `uddsketch_merge`
 
 The `uddsketch_merge` function is used to merge multiple UDDSketch states into one. It takes three parameters:
-- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#How_to_determine_`bucket_num`_value_and_`error_rate`) for how to decide the value.
+- `bucket_num`, which is the number of buckets to use for the sketch, see [How to determine bucket number and error rate](#how-to-determine-bucket_num-and-error_rate) for how to decide the value.
 - `error_rate`, which is the desired error rate for the quantile calculation. 
 - `udd_state`, which is the binary representation of the UDDSketch state created by `uddsketch_state`.
 
 This is useful when you want to combine results from different time windows or sources. Notice that the `bucket_num` and `error_rate` must match the original sketch where the state was created, or else the merge will fail.
 
-For example, if you have multiple UDDSketch states from different time windows, you can merge them into a single state to calculate the overall quantile across all the data.This output binary state can then be used to calculate quantiles using `uddsketch_calc`. See [UDDSketch Full Usage Example](#UDDSketch_Full_Usage_Example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+For example, if you have multiple UDDSketch states from different time windows, you can merge them into a single state to calculate the overall quantile across all the data.This output binary state can then be used to calculate quantiles using `uddsketch_calc`. See [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
 
 
 ### `uddsketch_calc`
@@ -163,7 +163,7 @@ The `uddsketch_calc` function is used to calculate the approximate quantile from
 - `quantile`, which is a value between 0 and 1 representing the desired quantile to calculate, i.e., 0.99 for the 99th percentile.
 - `udd_state`, which is the binary representation of the UDDSketch state created by `uddsketch_state` or merged by `uddsketch_merge`.
 
-see [UDDSketch Full Usage Example](#UDDSketch_Full_Usage_Example) for a full example of how to use these functions in combination to calculate approximate quantiles.
+see [UDDSketch Full Usage Example](#uddsketch-full-usage-example) for a full example of how to use these functions in combination to calculate approximate quantiles.
 
 ### How to determine `bucket_num` and `error_rate`
 
