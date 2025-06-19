@@ -13,7 +13,7 @@ The following approximate functions is currently experimental and may change in 
 
 ## Approximate Count Distinct (HLL)
 
-The [HyperLogLog]((https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf)) (HLL) algorithm is used to calculate the approximate count distinct of a set of values. It provides efficient memory usage and speed for this purpose. Three functions are provided to work with the HLL algorithm, described in following chapters:
+The [HyperLogLog](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) (HLL) algorithm is used to calculate the approximate count distinct of a set of values. It provides efficient memory usage and speed for this purpose. Three functions are provided to work with the HLL algorithm, described in following chapters:
 
 :::warning
 Notice that due to the approximate nature of the algorithm, the results may not be exact but are usually very close to the actual count distinct. The relative standard error of the HyperLogLog algorithm is about 1.04/sqrt(m), where m is the number of registers used in the algorithm. GreptimeDB uses 16384 registers by default, which gives a relative standard error of about 0.008125(or 0.8125%).
@@ -167,11 +167,11 @@ see [UDDSketch Full Usage Example](#UDDSketch_Full_Usage_Example) for a full exa
 
 ### How to determine `bucket_num` and `error_rate`
 
-The `bucket_num` parameter sets the maximum number of internal containers the sketch can use, directly controlling its memory footprint. Think of it as the physical storage capacity for tracking different value ranges. A larger `bucket_num` allows the sketch to accurately represent a wider dynamic range of data (i.e., a larger ratio between the maximum and minimum values). If this limit is too small for your data, the sketch will be forced to merge very high or low values, which degrades its accuracy. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. 
+The `bucket_num` parameter sets the maximum number of internal containers the sketch can use, directly controlling its memory footprint. Think of it as the physical storage capacity for tracking different value ranges. A larger `bucket_num` allows the sketch to accurately represent a wider dynamic range of data (i.e. a larger ratio between the maximum and minimum values). If this limit is too small for your data, the sketch will be forced to merge very high or low values, which degrades its accuracy. A recommended value for `bucket_num` is 128, which provides a good balance between accuracy and memory usage for most use cases. 
 
 The `error_rate` defines the desired precision for your quantile calculations. It guarantees that any computed quantile (e.g., p99) is within a certain *relative* percentage of the true value. For example, an `error_rate` of `0.01` ensures the result is within 1% of the actual value. A smaller `error_rate` provides higher accuracy, as it forces the sketch to use more granular buckets to distinguish between closer numbers.
 
-These two parameters create a direct trade-off. To achieve the high precision promised by a small `error_rate`, the sketch needs a sufficient `bucket_num`, especially for data that spans a wide range. `bucket_num` acts as the physical limit on accuracy. If your `bucket_num` is restricted by memory constraints, setting the `error_rate` to an extremely small value will not improve precision beyond the limit imposed by the available buckets.
+These two parameters create a direct trade-off. To achieve the high precision promised by a small `error_rate`, the sketch needs a sufficient `bucket_num`, especially for data that spans a wide range. `bucket_num` acts as the physical limit on accuracy. If your `bucket_num` is restricted by memory constraints, setting the `error_rate` to an extremely small value will not improve precision because the limit imposed by the available buckets.
 
 ### UDDSketch Full Usage Example
 This example demonstrates how to use three `uddsketch` functions describe above to calculate the approximate quantile of a set of values.
