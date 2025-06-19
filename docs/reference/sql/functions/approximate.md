@@ -123,6 +123,9 @@ GROUP BY
 
 Note how the `hll_merge` function is used to merge the HyperLogLog states from the `access_log_10s` table, and then the `hll_count` function is used to calculate the approximate count distinct for each 1-minute time window. If only use `hll_merge` without `hll_count`, the result will just be a unreadable binary representation of the merged HyperLogLog state, which is not very useful for analysis. Hence we use `hll_count` to retrieve the approximate count distinct from the merged state.
 
+This following flowchart illustrates above usage of the HyperLogLog functions. First raw event data is first group by time window and url, then the `hll` function is used to create a HyperLogLog state for each time window and url, then the `hll_count` function is used to retrieve the approximate count distinct for each time window and url. Finally, the `hll_merge` function is used to merge the HyperLogLog states for each url, and then the `hll_count` function is used again to retrieve the approximate count distinct for the 1-minute time window.
+![HLL Usage Flowchart](/hll.svg)
+
 ## Approximate Quantile (UDDSketch)
 
 Three functions are provided for approximate quantile calculation using the [UDDSketch](https://arxiv.org/abs/2004.08604) algorithm.
@@ -257,3 +260,6 @@ GROUP BY
 -- +---------------------+--------------------+
 ```
 Notice how the `uddsketch_merge` function is used to merge the UDDSketch states from the `percentile_5s` table, and then the `uddsketch_calc` function is used to calculate the approximate 99th percentile (p99) for each 1-minute time window.
+
+This following flowchart illustrates above usage of the UDDSketch functions. First raw event data is first group by time window, then the `uddsketch_state` function is used to create a UDDSketch state for each time window, then the `uddsketch_calc` function is used to retrieve the approximate 99th quantile for each time window. Finally, the `uddsketch_merge` function is used to merge the UDDSketch states for each time window, and then the `uddsketch_calc` function is used again to retrieve the approximate 99th quantile for the 1-minute time window.
+![UDDSketch Usage Flowchart](/udd.svg)
