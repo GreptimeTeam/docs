@@ -457,6 +457,8 @@ meta:
       database: "metasrv"
       # -- PostgreSQL table
       table: "greptime_metakv"
+      # -- PostgreSQL Advisory lock id used for election, shouldn't be used in other clusters or applications.
+      electionLockID: 1
       # -- PostgreSQL credentials
       credentials:
         # -- PostgreSQL credentials secret name
@@ -468,6 +470,16 @@ meta:
         # -- PostgreSQL credentials password
         password: "root"
 ```
+
+- `postgresql.host`: The PostgreSQL host.
+- `postgresql.port`: The PostgreSQL port.
+- `postgresql.database`: The PostgreSQL database.
+- `postgresql.table`: The PostgreSQL table.
+- `postgresql.electionLockID`: The Advisory lock id in PostgreSQL for election.
+- `postgresql.credentials.secretName`: The PostgreSQL credentials secret name.
+- `postgresql.credentials.existingSecretName`: The PostgreSQL credentials existing secret name. If you want to use an existing secret, you should make sure the secret contains the following keys: `username` and `password`.
+- `postgresql.credentials.username`: The PostgreSQL credentials username. It will be ignored if `mysql.credentials.existingSecretName` is set. The `username` will be stored in the `username` key of the secret with `mysql.credentials.secretName`.
+- `postgresql.credentials.password`: The PostgreSQL credentials password. It will be ignored if `mysql.credentials.existingSecretName` is set. The `password` will be stored in the `password` key of the secret with `mysql.credentials.secretName`.
 
 #### Using etcd as Backend Storage
 
