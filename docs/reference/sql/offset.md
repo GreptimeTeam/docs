@@ -5,7 +5,7 @@ description: Describes the OFFSET clause in SQL, which specifies how many rows t
 
 # OFFSET
 
-The `OFFSET` cluase specifies how many rows to skip before starting to return rows from a query. It's commonly used with LIMIT for paginating through large result sets.
+The `OFFSET` clause specifies how many rows to skip before starting to return rows from a query. It's commonly used with LIMIT for paginating through large result sets.
 
 For example:
 ```sql
