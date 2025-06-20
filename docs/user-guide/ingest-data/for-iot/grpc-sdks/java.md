@@ -10,7 +10,7 @@ import DocTemplate from './template.md'
 <DocTemplate>
 
 <div id="ingester-lib-introduction">
-
+## Introduction
 The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
 
 - SPI-based extensible network transport layer, which provides the default implementation using the gRPC framework.
@@ -21,13 +21,12 @@ The Java ingester SDK provided by GreptimeDB is a lightweight library with the f
 </div>
 
 <div id="quick-start-demos">
-
+## Quick start demos
 To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) to understand how to use the GreptimeDB Java ingester SDK.
-
 </div>
 
 <div id="ingester-lib-installation">
-
+## Installation
 1. Install the Java Development Kit(JDK)
 
 Make sure that your system has JDK 8 or later installed. For more information on how to
@@ -53,7 +52,7 @@ After configuring your dependencies, make sure they are available to your projec
 </div>
 
 <div id="ingester-lib-connect">
-
+## Connect to database
 The following code demonstrates how to connect to GreptimeDB with the simplest configuration.
 For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
 Please pay attention to the accompanying comments for each option, as they provide detailed explanations of their respective roles.
@@ -84,7 +83,7 @@ For customizing the connection options, please refer to [API Documentation](#ing
 </div>
 
 <div id="set-table-options">
-
+## Set table options
 You can set table options using the `Context`.
 For example, to set the `ttl` option, use the following code:
 
@@ -102,7 +101,8 @@ CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(
 </div>
 
 <div id="low-level-object">
-
+## Low-level API
+### Create row objects
 ```java
 // Construct the table schema for `cpu_metric`.
 // The schema is immutable and can be safely reused across multiple operations.
@@ -140,9 +140,8 @@ cpuMetric.complete();
 
 </div>
 
-
 <div id="create-rows">
-
+### Create multiple rows
 ```java
 // Define the schema for tables.
 // The schema is immutable and can be safely reused across multiple operations.
@@ -195,9 +194,8 @@ memMetric.complete();
 
 </div>
 
-
 <div id="insert-rows">
-
+### Insert data
 ```java
 // Saves data
 
@@ -220,10 +218,8 @@ if (result.isOk()) {
 
 </div>
 
-
 <div id="streaming-insert">
-
-
+### Streaming insert
 ```java
 // Set the compression algorithm to Zstd.
 Context ctx = Context.newDefault().withCompression(Compression.Zstd);
@@ -256,7 +252,8 @@ LOG.info("Write result: {}", result);
 </div>
 
 <div id="high-level-style-object">
-
+## High-level API
+### Create row objects
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
 ```java
@@ -314,10 +311,8 @@ for (int i = 0; i < 10; i++) {
 
 </div>
 
-
 <div id="high-level-style-insert-data">
-
-
+### Insert data
 Write data with POJO objects:
 
 ```java
@@ -336,9 +331,8 @@ if (result.isOk()) {
 
 </div>
 
-
 <div id="high-level-style-streaming-insert">
-
+### Streaming insert
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
 
@@ -363,7 +357,7 @@ LOG.info("Write result: {}", result);
 </div>
 
 <div id="ingester-json-type">
-
+## Insert data in JSON type
 In the [low-level API](#low-level-api),
 you can specify the column type as `DataType.Json` using the `addField` method to add a JSON column.
 Then use map to insert JSON data.
@@ -414,24 +408,21 @@ sensor.setAttributes(attr);
 </div>
 
 <div id="ingester-lib-debug-logs">
-
 ## Debug logs
-
 The ingester SDK provides metrics and logs for debugging.
 Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
 
 </div>
 
 <div id="ingester-lib-reference">
-
+## Ingester library reference
 - [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
 
 </div>
 
 <div id="faq">
-
+## FAQ
 ### Why am I getting some connection exceptions?
-
 When using the GreptimeDB Java ingester SDK, you may encounter some connection exceptions.
 For example, exceptions that are "`Caused by: java.nio.channels.UnsupportedAddressTypeException`",
 "`Caused by: java.net.ConnectException: connect(..) failed: Address family not supported by protocol`", or
