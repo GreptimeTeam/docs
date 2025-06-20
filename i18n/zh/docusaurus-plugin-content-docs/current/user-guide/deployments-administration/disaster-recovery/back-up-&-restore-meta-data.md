@@ -7,101 +7,94 @@ description: 介绍 GreptimeDB 的元数据导出和导入工具，用于数据�
 
 本指南描述了如何使用 GreptimeDB 的元信息导出和导入工具进行元数据库备份和恢复。
 
-导出和导入工具提供了备份和恢复 GreptimeDB 元信息的功能。
+有关详细的命令行选项和高级配置，请参阅 [元数据导出和导入](/reference/command-lines/utilities/metadata.md)。
 
-## 导出工具
+## 概述
 
-### 命令语法
+## 导出操作
 
-```bash
-greptime cli meta snapshot save [OPTIONS]
-```
+### 导出到 S3 云存储
 
-### 选项
-
-| 选项               | 是否必需 | 默认值            | 描述                                                                                                 |
-| ------------------ | -------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| --store-addrs      | 是       | -                 | 要连接的元数据存储服务地址（仅仅支持 etcd MySQL PostgreSQL）格式与 metasrv 配置中的 store-addrs 一致 |
-| --backend          | 是       | -                 | 元数据存储后端的类型，为 `etcd-store`, `postgres-store`, `mysql-store` 中之一                        |
-| --store-key-prefix | 否       | ""                | metasrv 中的数据的统一前缀，可参考 metasrv 配置                                                      |
-| --meta-table-name  | 否       | greptime_metakv   | 当 backend 为 `postgres-store`, `mysql-store` 之一时，存储元数据的表的名称                           |
-| --max-txn-ops      | 否       | 128               | 最大 txn 数量                                                                                        |
-| --file-name        | 否       | metadata_snapshot | 元数据导出的文件名称，会自动添加 `.metadata.fb` 后缀                                                 |
-| --output-dir       | 否       | ""                | 存储导出数据的目录                                                                                   |
-| --s3               | 否       | false             | 是否使用 s3 作为导出数据存放介质                                                                     |
-| --s3-bucket        | 否       | -                 | 当 s3 为 true 时有效，s3 bucket 名称                                                                 |
-| --s3-region        | 否       | -                 | 当 s3 为 true 时有效，s3 region 名称                                                                 |
-| --s3-access-key    | 否       | -                 | 当 s3 为 true 时有效，s3 access key 的名称                                                           |
-| --s3-secret-key    | 否       | -                 | 当 s3 为 true 时有效，s3 secret key 的名称                                                           |
-| --s3-endpoint      | 否       | -                 | 当 s3 为 true 时有效，s3 endpoint 的名称，默认会根据 bucket region 得出，一般不需要设置              |
-
-### 示例
-
-从 PostgreSQL 中导出元数据到 s3 。此命令会导出到 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中：
+将元数据从 PostgreSQL 导出到 S3 云存储，用于云备份存储：
 
 ```bash
-greptime cli meta snapshot save --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta snapshot save \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store \
+    --s3 \
+    --s3-bucket your-bucket-name \
+    --s3-region ap-southeast-1 \
+    --s3-access-key <your-s3-access-key> \
+    --s3-secret-key <your-s3-secret-key>
 ```
 
-从 PostgreSQL 导出元数据到本地目录。此命令会导出到当前目录下的 `metadata_snapshot.metadata.fb` 文件中：
+**输出**: 在指定的 S3 桶中创建 `metadata_snapshot.metadata.fb` 文件。
+
+### 导出到本地目录
+
+#### 从 PostgreSQL 后端导出
+
+将元数据从 PostgreSQL 导出到本地目录：
 
 ```bash
-greptime cli meta snapshot save --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta snapshot save \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store
 ```
 
-从 etcd 导出元数据到本地目录。此命令会导出到当前目录下的 `metadata_snapshot.metadata.fb` 文件中：
+#### 从 etcd 后端导出
+
+将元数据从 etcd 导出到本地目录：
 
 ```bash
-greptime cli meta snapshot save --store-addrs 127.0.0.1:2379 --backend etcd-store
+greptime cli meta snapshot save \
+    --store-addrs 127.0.0.1:2379 \
+    --backend etcd-store
 ```
 
-## 导入工具
+**输出**: 在当前工作目录中创建 `metadata_snapshot.metadata.fb` 文件。
 
-### 命令语法
+## 导入操作
+
+:::warning
+**重要**: 在导入元数据之前，请确保目标存储后端的对应表中没有**任何数据**，否则可能会导致元数据损坏。
+
+如果你需要导入到具有现有数据的后端，请使用 `--force` 标志绕过此安全检查。但是，请谨慎操作，因为这可能导致数据损坏。
+:::
+
+### 从 S3 云存储导入
+
+从 S3 备份恢复元数据到 PostgreSQL 存储后端：
 
 ```bash
-greptime cli meta snapshot restore [OPTIONS]
+greptime cli meta snapshot restore \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store \
+    --s3 \
+    --s3-bucket your-bucket-name \
+    --s3-region ap-southeast-1 \
+    --s3-access-key <your-s3-access-key> \
+    --s3-secret-key <your-s3-secret-key>
 ```
 
-### 选项
+### 从本地文件导入
 
-| 选项               | 是否必需 | 默认值                        | 描述                                                                                                 |
-| ------------------ | -------- | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
-| --store-addrs      | 是       | -                             | 要连接的元数据存储服务地址（仅仅支持 etcd MySQL PostgreSQL）格式与 metasrv 配置中的 store-addrs 一致 |
-| --backend          | 是       | -                             | 元数据存储后端的类型，为 `etcd-store`, `postgres-store`, `mysql-store` 中之一                        |
-| --store-key-prefix | 否       | ""                            | metasrv 中的数据的统一前缀，可参考 metasrv 配置                                                      |
-| --meta-table-name  | 否       | greptime_metakv               | 当 backend 为 `postgres-store`, `mysql-store` 存储元数据的表的名称                                   |
-| --max-txn-ops      | 否       | 128                           | 最大 txn 数量                                                                                        |
-| --file-name        | 否       | metadata_snapshot.metadata.fb | 要导入的元数据导出的文件名称，会自动添加 `.metadata.fb` 后缀                                         |
-| --input-dir        | 否       | ""                            | 存储导出数据的目录                                                                                   |
-| --s3               | 否       | false                         | 是否使用 s3 作为导出数据存放介质                                                                     |
-| --s3-bucket        | 否       | -                             | 当 s3 为 true 时有效，s3 bucket 名称                                                                 |
-| --s3-region        | 否       | -                             | 当 s3 为 true 时有效，s3 region 名称                                                                 |
-| --s3-access-key    | 否       | -                             | 当 s3 为 true 时有效，s3 access key 的名称                                                           |
-| --s3-secret-key    | 否       | -                             | 当 s3 为 true 时有效，s3 secret key 的名称                                                           |
-| --s3-endpoint      | 否       | -                             | 当 s3 为 true 时有效，s3 endpoint 的名称，默认会根据 bucket region 得出，一般不需要设置              |
-| --force            | 否       | false                         | 是否强制导入，当检测到目标 backend 不是干净的状态时，默认无法导入，如果想强制导入可开启此标志        |
+#### 导入到 PostgreSQL 后端
 
-### 示例
-
-将导出的元数据从 s3 导入到 PostgreSQL 存储后端。此命令会导入 `your-bucket-name` 的 `metadata_snapshot.metadata.fb` 文件中的数据：
+从本地备份文件恢复元数据到 PostgreSQL：
 
 ```bash
-greptime cli meta snapshot restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta snapshot restore \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store
 ```
 
-将导出的元数据从本地文件导入到 PostgreSQL 存储后端。此命令会导入当前目录下的 `metadata_snapshot.metadata.fb` 文件中的数据：
+#### 导入到 etcd 后端
+
+从本地备份文件恢复元数据到 etcd：
 
 ```bash
-greptime cli meta snapshot restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta snapshot restore \
+    --store-addrs 127.0.0.1:2379 \
+    --backend etcd-store
 ```
-
-将导出的元数据从本地文件导入到 etcd 存储后端。此命令会导入当前目录下的 `metadata_snapshot.metadata.fb` 文件的数据：
-
-```bash
-greptime cli meta snapshot restore --store-addrs 127.0.0.1:2379 --backend etcd-store
-```
-
-### 注意事项
-
-- 一般情况下，请确认导入的目标 backend 是干净的状态，即没有任何数据。如果目标 backend 中已经存在数据，导入操作可能会污染数据

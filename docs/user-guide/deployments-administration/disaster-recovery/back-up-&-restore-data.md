@@ -3,40 +3,25 @@ keywords: [backup and restore, GreptimeDB, export tool, import tool, database ba
 description: Describes how to use GreptimeDB's Export and Import tools for database backup and restoration, including command syntax, options, usage scenarios, best practices, troubleshooting, and performance tips.
 ---
 
-# GreptimeDB Export & Import Tools
+# Data Export & Import
 
-This guide describes how to use GreptimeDB's Export and Import tools for database backup and restoration.
+This guide describes how to use GreptimeDB's Export and Import tools for database data backup and restoration operations. 
 
+For detailed command-line options and advanced configurations, please refer to [Data Export & Import](/reference/command-lines/utilities/data.md).
 
-The Export and Import tools provide functionality for backing up and restoring GreptimeDB databases. These tools can handle both schema and data, allowing for complete or selective backup and restoration operations.
+## Overview
 
-## Export Tool
+## Export Operations
 
-### Command Syntax
+### Full Databases Backup
+Export all databases backup. This operation exports each database into a single directory, including all tables and their data. 
 ```bash
-greptime cli data export [OPTIONS]
+# Export all databases backup
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb
 ```
-
-### Options
-| Option | Required | Default | Description |
-|--------|----------|---------|-------------|
-| --addr | Yes | - | Server address to connect |
-| --output-dir | Yes | - | Directory to store exported data |
-| --database | No | all databasses | Name of the database to export |
-| --export-jobs, -j | No | 1 | Number of parallel export jobs(multiple databases can be exported in parallel) |
-| --max-retry | No | 3 | Maximum retry attempts per job |
-| --target, -t | No | all | Export target (schema/data/all) |
-| --start-time | No | - | Start of time range for data export |
-| --end-time | No | - | End of time range for data export |
-| --auth-basic | No | - | Use the `<username>:<password>` format |
-| --timeout | No | 0 | The timeout for a single call to the DB, default is 0 which means never timeout (e.g., `30s`, `10min 20s`) |
-
-### Export Targets
-- `schema`: Exports table schemas only (`SHOW CREATE TABLE`)
-- `data`: Exports table data only (`COPY DATABASE TO`)
-- `all`: Exports both schemas and data (default)
-
-### Output Directory Structure
+The output directory structure is as follows:
 ```
 <output-dir>/
 └── greptime/
@@ -47,47 +32,14 @@ greptime cli data export [OPTIONS]
         └── <data files>
 ```
 
-## Import Tool
-
-### Command Syntax
-```bash
-greptime cli data import [OPTIONS]
-```
-
-### Options
-| Option | Required | Default | Description |
-|--------|----------|---------|-------------|
-| --addr | Yes | - | Server address to connect |
-| --input-dir | Yes | - | Directory containing backup data |
-| --database | No | all databases | Name of the database to import |
-| --import-jobs, -j | No | 1 | Number of parallel import jobs (multiple databases can be imported in parallel) |
-| --max-retry | No | 3 | Maximum retry attempts per job |
-| --target, -t | No | all | Import target (schema/data/all) |
-| --auth-basic | No | - | Use the `<username>:<password>` format |
-
-### Import Targets
-- `schema`: Imports table schemas only
-- `data`: Imports table data only
-- `all`: Imports both schemas and data (default)
-
-## Common Usage Scenarios
-
-### Full Databases Backup
-```bash
-# Export all databases backup
-greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/greptimedb
-
-# Import all databases
-greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimedb
-```
-
 ### Schema-Only Operations
+Export only schemas without data. This operation exports `CREATE TABLE` statements into SQL files, allowing you to backup table structures without the actual data.
 ```bash
 # Export only schemas
-greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/schemas --target schema
-
-# Import only schemas
-greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/schemas --target schema
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/schemas \
+    --target schema
 ```
 
 ### Time-Range Based Backup
@@ -102,10 +54,40 @@ greptime cli data export --addr localhost:4000 \
 ### Specific Database Backup
 ```bash
 # To export a specific database
-greptime cli data export --addr localhost:4000 --output-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli data export \
+    --addr localhost:4000 \
+    --output-dir /tmp/backup/greptimedb \
+    --database '{my_database_name}'
+```
 
+## Import Operations
+
+### Full Databases Backup
+Import all databases backup.
+```bash
+# Import all databases
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb
+```
+
+### Schema-Only Operations
+Import only schemas without data. This operation imports `CREATE TABLE` statements from SQL files, allowing you to restore table structures without the actual data.
+```bash
+# Import only schemas
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/schemas \
+    --target schema
+```
+
+### Specific Database Backup
+```bash
 # The same applies to import tool
-greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimedb --database '{my_database_name}'
+greptime cli data import \
+    --addr localhost:4000 \
+    --input-dir /tmp/backup/greptimedb \
+    --database '{my_database_name}'
 ```
 
 ## Best Practices
@@ -123,9 +105,17 @@ greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimed
    - Use `--max-retry` for handling transient failures
    - Keep logs for troubleshooting
 
-## Troubleshooting
+## Performance Tips
 
-### Common Issues
+1. **Export Performance**
+   - Use time ranges for large datasets
+   - Adjust parallel jobs based on CPU/Memory
+   - Consider network bandwidth limitations
+
+2. **Import Performance**
+   - Monitor database resources
+
+## Troubleshooting
 
 1. **Connection Errors**
    - Verify server address and port
@@ -140,12 +130,3 @@ greptime cli data import --addr localhost:4000 --input-dir /tmp/backup/greptimed
    - Ensure sufficient disk space
    - Monitor system resources during operations
 
-### Performance Tips
-
-1. **Export Performance**
-   - Use time ranges for large datasets
-   - Adjust parallel jobs based on CPU/memory
-   - Consider network bandwidth limitations
-
-2. **Import Performance**
-   - Monitor database resources
