@@ -3,7 +3,7 @@ keywords: [GreptimeDB CLI, backup, restore, export tool, import tool, database b
 description: Introduction to GreptimeDB's data export and import tools for backing up and restoring database data, including command syntax, options.
 ---
 
-# Data Export & Import Tools
+# Data Export & Import
 
 The Export and Import tools provide functionality for backing up and restoring GreptimeDB databases. These tools can handle both schema and data, allowing for complete or selective backup and restoration operations.
 

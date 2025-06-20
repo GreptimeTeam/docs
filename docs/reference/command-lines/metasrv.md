@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB metasrv, command-line interface, metasrv configuration, metasrv startup, metasrv options, metasrv examples]
-description: Comprehensive guide to GreptimeDB metasrv command-line interface, including configuration options, startup commands, and practical examples for deploying and managing metasrv instances.
+description: Comprehensive guide to GreptimeDB metasrv command-line interface, including configuration options, startup commands, and practical examples for deploying instances.
 ---
 
 # Metasrv
@@ -16,7 +16,7 @@ greptime metasrv start --help
 | Option                                | Description                                                                                                                                                                                                                                                                  |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `-c`/`--config-file`                  | The configuration file for metasrv                                                                                                                                                                                                                                           |
-| `--enable-region-failover`            | Whether to enable region failover, default is `false`                                                                                                                                                                                                                        |
+| `--enable-region-failover`            | Whether to enable region failover, default is `false`. Please refer to [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) for the conditions to enable it.                                                                             |
 | `--env-prefix <ENV_PREFIX>`           | The prefix of environment variables, default is `GREPTIMEDB_METASRV`                                                                                                                                                                                                         |
 | `--rpc-bind-addr <RPC_BIND_ADDR>`     | The address to bind the gRPC server                                                                                                                                                                                                                                          |
 | `--rpc-server-addr <RPC_SERVER_ADDR>` | The communication server address for the frontend and datanode to connect to metasrv. If left empty or unset, the server will automatically use the IP address of the first network interface on the host, with the same port number as the one specified in `rpc_bind_addr` |

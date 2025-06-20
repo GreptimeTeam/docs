@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB frontend, command-line interface, frontend configuration, frontend startup, frontend options, frontend examples]
-description: Comprehensive guide to GreptimeDB frontend command-line interface, including configuration options, startup commands, and practical examples for deploying and managing frontend instances.
+description: Comprehensive guide to GreptimeDB frontend command-line interface, including configuration options, startup commands, and practical examples for deploying frontend instances.
 ---
 
 # Frontend

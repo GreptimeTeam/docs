@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB datanode, command-line interface, datanode configuration, datanode startup, datanode options, datanode examples]
-description: Comprehensive guide to GreptimeDB datanode command-line interface, including configuration options, startup commands, and practical examples for deploying and managing datanode instances.
+description: Comprehensive guide to GreptimeDB datanode command-line interface, including configuration options, startup commands, and practical examples for deploying datanode instances.
 ---
 
 # Datanode

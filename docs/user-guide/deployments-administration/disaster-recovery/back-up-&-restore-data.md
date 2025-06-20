@@ -5,9 +5,9 @@ description: Describes how to use GreptimeDB's Export and Import tools for datab
 
 # Data Export & Import
 
-This guide describes how to use GreptimeDB's Export and Import tools for database data backup and recovery operations. 
+This guide describes how to use GreptimeDB's Export and Import tools for database data backup and restoration operations. 
 
-For detailed command-line options and advanced configurations, please refer to [Data Export & Import Tools](/reference/command-lines/utilities/data.md).
+For detailed command-line options and advanced configurations, please refer to [Data Export & Import](/reference/command-lines/utilities/data.md).
 
 ## Overview
 
@@ -41,7 +41,6 @@ greptime cli data export \
     --output-dir /tmp/backup/schemas \
     --target schema
 ```
-The output directory structure is as follows:
 
 ### Time-Range Based Backup
 ```bash

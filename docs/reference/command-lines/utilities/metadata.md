@@ -3,9 +3,9 @@ keywords: [metadata backup, metadata restore, export tool, import tool, database
 description: Comprehensive guide to GreptimeDB's metadata export and import tools for backing up and restoring database metadata, including command syntax, options.
 ---
 
-# Metadata Export & Import Tools
+# Metadata Export & Import
 
-The export and import tools provide functionality for backing up and restoring GreptimeDB metadata.
+The Export and Import tools provide functionality for backing up and restoring GreptimeDB metadata. These tools allow for metadata backup and restoration operations.
 
 ## Export Tool
 

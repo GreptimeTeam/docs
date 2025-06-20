@@ -1,13 +1,13 @@
 ---
-keywords: [backup, restore, export tool, import tool, database metadata backup, data recovery, command line tool, disaster recovery]
+keywords: [backup, restore, export tool, import tool, database metadata backup, medata restoration, command line tool, disaster recovery]
 description: Learn how to use GreptimeDB's metadata export and import tools for backing up and restoring database metadata, including comprehensive examples and best practices
 ---
 
 # Metadata Export & Import
 
-This guide describes how to use GreptimeDB's metadata export and import tools for metadata backup and recovery operations.
+This guide describes how to use GreptimeDB's metadata export and import tools for metadata backup and restoration operations.
 
-For detailed command-line options and advanced configurations, please refer to [Metadata Export & Import Tools](/reference/command-lines/utilities/metadata.md).
+For detailed command-line options and advanced configurations, please refer to [Metadata Export & Import](/reference/command-lines/utilities/metadata.md).
 
 ## Overview
 

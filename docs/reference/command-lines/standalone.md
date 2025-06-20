@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB standalone, command-line interface, standalone configuration, standalone startup, standalone options, standalone examples]
-description: Comprehensive guide to GreptimeDB standalone command-line interface, including configuration options, startup commands, and practical examples for deploying and managing standalone instances.
+description: Comprehensive guide to GreptimeDB standalone command-line interface, including configuration options, startup commands, and practical examples for deploying standalone instances.
 ---
 
 # Standalone

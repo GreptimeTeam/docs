@@ -1,6 +1,6 @@
 ---
 keywords: [GreptimeDB flownode, command-line interface, flownode configuration, flownode startup, flownode options, flownode examples]
-description: Comprehensive guide to GreptimeDB flownode command-line interface, including configuration options, startup commands, and practical examples for deploying and managing flownode instances.
+description: Comprehensive guide to GreptimeDB flownode command-line interface, including configuration options, startup commands, and practical examples for deploying flownode instances.
 ---
 
 # Flownode
