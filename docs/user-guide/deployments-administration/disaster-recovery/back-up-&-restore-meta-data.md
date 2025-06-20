@@ -1,107 +1,101 @@
 ---
-keywords: [backup, restore, export tool, import tool, database metadata backup, data recovery, command line tool]
-description: Introduction to GreptimeDB's metadata export and import tools for backing up and restoring database metadata, including command syntax, options, and common use cases
+keywords: [backup, restore, export tool, import tool, database metadata backup, data recovery, command line tool, disaster recovery]
+description: Learn how to use GreptimeDB's metadata export and import tools for backing up and restoring database metadata, including comprehensive examples and best practices
 ---
 
-# GreptimeDB Metadata Export and Import Tools
+# Metadata Export & Import
 
-This guide describes how to use GreptimeDB's metadata export and import tools for metadata backup and recovery.
+This guide describes how to use GreptimeDB's metadata export and import tools for metadata backup and recovery operations.
 
-The export and import tools provide functionality for backing up and restoring GreptimeDB metadata.
+For detailed command-line options and advanced configurations, please refer to [Metadata Export & Import Tools](/reference/command-lines/utilities/metadata.md).
 
-## Export Tool
+## Overview
 
-### Command Syntax
+## Export Operations
 
-```bash
-greptime cli meta snapshot save [OPTIONS]
-```
+### Export to S3 Cloud Storage
 
-### Options
-
-| Option             | Required | Default           | Description                                                                                                                                        |
-| ------------------ | -------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Yes      | -                 | Metadata storage service addresses to connect to (only supports etcd MySQL PostgreSQL) format consistent with store-addrs in metasrv configuration |
-| --backend          | Yes      | -                 | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`                                                             |
-| --store-key-prefix | No       | ""                | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                 |
-| --meta-table-name  | No       | greptime_metakv   | When backend is one of `postgres-store`, `mysql-store`, the table name storing metadata                                                            |
-| --max-txn-ops      | No       | 128               | Maximum number of txn operations                                                                                                                   |
-| --file-name        | No       | metadata_snapshot | File name for metadata export, will automatically add `.metadata.fb` suffix                                                                        |
-| --output-dir       | No       | ""                | Directory to store exported data                                                                                                                   |
-| --s3               | No       | false             | Whether to use s3 as storage medium for exported data                                                                                              |
-| --s3-bucket        | No       | -                 | Valid when s3 is true, s3 bucket name                                                                                                              |
-| --s3-region        | No       | -                 | Valid when s3 is true, s3 region name                                                                                                              |
-| --s3-access-key    | No       | -                 | Valid when s3 is true, s3 access key name                                                                                                          |
-| --s3-secret-key    | No       | -                 | Valid when s3 is true, s3 secret key name                                                                                                          |
-| --s3-endpoint      | No       | -                 | Valid when s3 is true, s3 endpoint name, defaults based on bucket region, generally not needed                                                     |
-
-### Examples
-
-Exporting metadata from PostgreSQL to s3. This command will export to the `metadata_snapshot.metadata.fb` file in `your-bucket-name`:
+Export metadata from PostgreSQL to S3 for cloud-based backup storage:
 
 ```bash
-greptime cli meta snapshot save --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta snapshot save \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store \
+    --s3 \
+    --s3-bucket your-bucket-name \
+    --s3-region ap-southeast-1 \
+    --s3-access-key <your-s3-access-key> \
+    --s3-secret-key <your-s3-secret-key>
 ```
 
-Exporting metadata from PostgreSQL to local directory. This command will export to the `metadata_snapshot.metadata.fb` file in the current directory:
+**Output**: Creates `metadata_snapshot.metadata.fb` file in the specified S3 bucket.
+
+### Export to Local Directory
+
+#### From PostgreSQL Backend
+
+Export metadata from PostgreSQL to local directory:
 
 ```bash
-greptime cli meta snapshot save --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta snapshot save \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store
 ```
 
-Exporting metadata from etcd to local directory. This command will export to the `metadata_snapshot.metadata.fb` file in the current directory:
+#### From etcd Backend
+
+Export metadata from etcd to local directory:
 
 ```bash
-greptime cli meta snapshot save --store-addrs 127.0.0.1:2379 --backend etcd-store
+greptime cli meta snapshot save \
+    --store-addrs 127.0.0.1:2379 \
+    --backend etcd-store
 ```
 
-## Import Tool
+**Output**: Creates `metadata_snapshot.metadata.fb` file in the current working directory.
 
-### Command Syntax
+## Import Operations
+
+:::warning
+**Important**: Before importing metadata, ensure the target backend is in a **clean state** (contains no existing data). Importing to a non-empty backend may result in data corruption or conflicts. 
+
+If you need to import to a backend with existing data, use the `--force` flag to bypass this safety check. However, exercise extreme caution as this can lead to data loss or inconsistencies.
+
+:::
+
+### Import from S3 Cloud Storage
+
+Restore metadata from S3 backup to PostgreSQL storage backend:
 
 ```bash
-greptime cli meta snapshot restore [OPTIONS]
+greptime cli meta snapshot restore \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store \
+    --s3 \
+    --s3-bucket your-bucket-name \
+    --s3-region ap-southeast-1 \
+    --s3-access-key <your-s3-access-key> \
+    --s3-secret-key <your-s3-secret-key>
 ```
 
-### Options
+### Import from Local File
 
-| Option             | Required | Default                       | Description                                                                                                                                          |
-| ------------------ | -------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Yes      | -                             | Metadata storage service addresses to connect to (only supports etcd MySQL PostgreSQL) format consistent with store-addrs in metasrv configuration   |
-| --backend          | Yes      | -                             | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`                                                               |
-| --store-key-prefix | No       | ""                            | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                   |
-| --meta-table-name  | No       | greptime_metakv               | When backend is `postgres-store`, `mysql-store`, the table name storing metadata                                                                     |
-| --max-txn-ops      | No       | 128                           | Maximum number of txn operations                                                                                                                     |
-| --file-name        | No       | metadata_snapshot.metadata.fb | File name of metadata export to import, will automatically add `.metadata.fb` suffix                                                                 |
-| --input-dir        | No       | ""                            | Directory storing exported data                                                                                                                      |
-| --s3               | No       | false                         | Whether to use s3 as storage medium for exported data                                                                                                |
-| --s3-bucket        | No       | -                             | Valid when s3 is true, s3 bucket name                                                                                                                |
-| --s3-region        | No       | -                             | Valid when s3 is true, s3 region name                                                                                                                |
-| --s3-access-key    | No       | -                             | Valid when s3 is true, s3 access key name                                                                                                            |
-| --s3-secret-key    | No       | -                             | Valid when s3 is true, s3 secret key name                                                                                                            |
-| --s3-endpoint      | No       | -                             | Valid when s3 is true, s3 endpoint name, defaults based on bucket region, generally not needed                                                       |
-| --force            | No       | false                         | Whether to force import, when target backend is detected to not be in a clean state, import is disabled by default, enable this flag to force import |
+#### To PostgreSQL Backend
 
-### Examples
-
-Importing exported metadata from s3 to PostgreSQL storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in `your-bucket-name`:
+Restore metadata from local backup file to PostgreSQL:
 
 ```bash
-greptime cli meta snapshot restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store --s3 --s3-bucket your-bucket-name --s3-region ap-southeast-1 --s3-access-key <s3-access-key> --s3-secret-key <s3-secret-key>
+greptime cli meta snapshot restore \
+    --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
+    --backend postgres-store
 ```
 
-Importing exported metadata from local file to PostgreSQL storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in the current directory:
+#### To etcd Backend
+
+Restore metadata from local backup file to etcd:
 
 ```bash
-greptime cli meta snapshot restore --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' --backend postgres-store
+greptime cli meta snapshot restore \
+    --store-addrs 127.0.0.1:2379 \
+    --backend etcd-store
 ```
-
-Importing exported metadata from local file to etcd storage backend. This command will import data from the `metadata_snapshot.metadata.fb` file in the current directory:
-
-```bash
-greptime cli meta snapshot restore --store-addrs 127.0.0.1:2379 --backend etcd-store
-```
-
-### Notes
-
-- Generally, please ensure that the target backend for import is in a clean state, i.e., contains no data. If the target backend already contains data, the import operation may contaminate the data
