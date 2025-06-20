@@ -255,3 +255,8 @@ GreptimeDB 提供了 `ADMIN` 语句来执行管理函数，请阅读 [ADMIN](/re
 ### 向量函数
 
 [了解 GreptimeDB 中向量相关的函数](./vector.md)。
+
+### 近似函数
+
+GreptimeDB 支持一些近似函数用于数据分析，例如近似去重计数(hll)、近似分位数(uddsketch)等。[了解 GreptimeDB 中近似函数](./approximate.md)。
+
