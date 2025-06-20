@@ -157,7 +157,7 @@ GROUP BY column1, column2, ...;
 示例：
 ```sql
 -- 查询每个 idc 的 idc 总数
-SELECT idc, COUNT(host) as host_mun
+SELECT idc, COUNT(host) as host_num
 FROM system_metrics
 GROUP BY idc;
 

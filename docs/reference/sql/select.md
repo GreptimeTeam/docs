@@ -166,7 +166,7 @@ For more functions, see [Aggregate Functions](/reference/sql/functions/df-functi
 For example:
 ```sql
 -- Select the total number of idc for each idc
-SELECT idc, COUNT(host) as host_mun
+SELECT idc, COUNT(host) as host_num
 FROM system_metrics
 GROUP BY idc;
 
