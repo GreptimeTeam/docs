@@ -576,6 +576,20 @@ const sidebars: SidebarsConfig = {
       label: 'Reference',
       items: [
         'reference/glossary',
+        {
+          type: 'category',
+          label: 'GreptimeDB Command Line Interface',
+          items: [
+            {
+              type: 'category',
+              label: 'Utilities',
+              items: [
+                'reference/command-lines/utilities/metadata-interaction',
+                'reference/command-lines/utilities/repair-logical-tables',
+              ],
+            },
+          ],
+        },
         'reference/command-lines',
         'reference/sql-tools',
         'reference/time-durations',
