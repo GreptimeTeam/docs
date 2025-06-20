@@ -7,7 +7,7 @@ description: GreptimeDB datanode 命令行界面完整指南，包括配置选�
 
 ## 子命令选项
 
-您可以通过以下命令列出所有选项：
+你可以通过以下命令列出所有选项：
 
 ```
 greptime datanode start --help
@@ -44,3 +44,5 @@ greptime datanode start -c config/datanode.example.toml
 ```sh
 greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 --metasrv-addrs=0.0.0.0:3002 --node-id=1
 ```
+
+`datanode.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。你可以在那里找到更多示例配置文件。`-c` 选项指定配置文件，更多信息请参考 [Configuration](/user-guide/deployments-administration/configuration.md)。

@@ -46,3 +46,5 @@ Starts a frontend instance with command line arguments specifying the address of
 ```sh
 greptime frontend start --metasrv-addrs=0.0.0.0:3002
 ```
+
+The `frontend.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).

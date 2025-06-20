@@ -7,7 +7,7 @@ description: GreptimeDB metasrv 命令行界面完整指南，包括配置选项
 
 ## 子命令选项
 
-您可以通过以下命令列出所有选项：
+你可以通过以下命令列出所有选项：
 
 ```
 greptime metasrv start --help
@@ -24,7 +24,7 @@ greptime metasrv start --help
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 请求超时时间（秒）                                                                                                                            |
 | `--selector <SELECTOR>`               | 您可以参考 [selector-type](/contributor-guide/metasrv/selector.md#selector-type)                                                                   |
 | `--store-addrs <STORE_ADDR>`          | 逗号或空格分隔的键值存储服务器（默认是 etcd）地址，用于存储元数据                                                                                  |
-| `--use-memory-store`                  | 使用内存存储而不是 etcd，仅用于测试目的                                                                                                            |
+| `--use-memory-store`                  | 用内存存储而不是其他持久化的存储后端，仅用于测试目的的                                                                                             |
 
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
 
@@ -37,3 +37,5 @@ greptime metasrv start --help
 ```sh
 greptime metasrv start -c config/metasrv.example.toml
 ```
+
+`metasrv.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。你可以在那里找到更多示例配置文件。`-c` 选项指定配置文件，更多信息请参考 [Configuration](/user-guide/deployments-administration/configuration.md)。

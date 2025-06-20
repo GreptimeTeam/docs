@@ -109,7 +109,7 @@ greptime cli data import \
 
 1. **Export Performance**
    - Use time ranges for large datasets
-   - Adjust parallel jobs based on CPU/memory
+   - Adjust parallel jobs based on CPU/Memory
    - Consider network bandwidth limitations
 
 2. **Import Performance**

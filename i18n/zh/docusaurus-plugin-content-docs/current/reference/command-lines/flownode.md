@@ -7,7 +7,7 @@ description: GreptimeDB flownode 命令行界面完整指南，包括配置选�
 
 ## 子命令选项
 
-您可以通过以下命令列出所有选项：
+你可以通过以下命令列出所有选项：
 
 ```
 greptime flownode start --help
@@ -39,3 +39,5 @@ greptime flownode start -c config/flownode.example.toml
 ```sh
 greptime flownode start --node-id=0 --rpc-bind-addr=127.0.0.1:6800 --metasrv-addrs=127.0.0.1:3002
 ```
+
+`flownode.example.toml` 配置文件来自 `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` 仓库的 `config` 目录。你可以在那里找到更多示例配置文件。`-c` 选项指定配置文件，更多信息请参考 [Configuration](/user-guide/deployments-administration/configuration.md)。
