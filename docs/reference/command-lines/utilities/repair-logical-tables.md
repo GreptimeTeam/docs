@@ -26,8 +26,8 @@ greptime cli repair logical-tables [OPTIONS]
 | `--backend <BACKEND>`                                         | The metadata store backend                                                                                                                                                                                                                                                                                          | etcd-store      | etcd-store, memory-store, postgres-store, mysql-store |
 | `--store-key-prefix <STORE_KEY_PREFIX>`                       | The key prefix of the metadata store                                                                                                                                                                                                                                                                                | -               | -                                                     |
 | `--meta-table-name <META_TABLE_NAME>`                         | The table name in RDS to store metadata. Only used when using [postgres-store] or [mysql-store]                                                                                                                                                                                                                     | greptime_metakv | -                                                     |
-| `--table-names <TABLE_NAMES>`                                 | The names of the tables to repair                                                                                                                                                                                                                                                                                   | -               |
-| `--table-ids <TABLE_IDS>`                                     | The id of the table to repair                                                                                                                                                                                                                                                                                       | -               |
+| `--table-names <TABLE_NAMES>`                                 | The names of the tables to repair, separated by comma                                                                                                                                                                                                                                                               | -               |
+| `--table-ids <TABLE_IDS>`                                     | The id of the table to repair, separated by comma                                                                                                                                                                                                                                                                   | -               |
 | `--schema-name <SCHEMA_NAME>`                                 | The schema of the tables to repair                                                                                                                                                                                                                                                                                  | public          |
 | `--catalog-name <CATALOG_NAME>`                               | The catalog of the tables to repair                                                                                                                                                                                                                                                                                 | greptime        |
 | `--fail-fast`                                                 | Whether to fail fast if any repair operation fails                                                                                                                                                                                                                                                                  | -               |
@@ -42,7 +42,7 @@ greptime cli repair logical-tables [OPTIONS]
 ```bash
 greptime cli repair logical-tables --store-addrs=$ENDPOINT \
     --backend=postgres-store \
-    --table-names=metric_table_1 \
+    --table-names=metric_table_1,metric_table_2 \
     --schema-name=public \
     --catalog-name=greptime
 ```
@@ -50,5 +50,6 @@ greptime cli repair logical-tables --store-addrs=$ENDPOINT \
 Output:
 ```bash
 2025-06-20T08:31:43.904497Z  INFO cli::metadata::repair: All alter table requests sent successfully for table: greptime.public.metric_table_1
-2025-06-20T08:31:43.904539Z  INFO cli::metadata::repair: Repair logical tables result: 1 tables repaired, 0 tables skipped
+2025-06-20T08:31:43.904499Z  INFO cli::metadata::repair: All alter table requests sent successfully for table: greptime.public.metric_table_2
+2025-06-20T08:31:43.904539Z  INFO cli::metadata::repair: Repair logical tables result: 2 tables repaired, 0 tables skipped
 ```
