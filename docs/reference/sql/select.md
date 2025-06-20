@@ -35,7 +35,7 @@ FROM table_name;
 
 ## Conditional Filtering (WHERE clause)
 
-The   `WHERE` clause is used to filter the results of a `SELECT` statement based on a specified condition. The
+The `WHERE` clause is used to filter the results of a `SELECT` statement based on a specified condition. The
 syntax for using WHERE clause is as follows:
 
 ```sql
@@ -69,8 +69,10 @@ FROM system_metrics
 WHERE idc IN ('idc0', 'idc1') AND cpu_util > 0.6;
 ```
 
+Please refer to [WHERE](where.md) for more information.
 
 ## Order Results(ORDER BY clause)
+
 The `ORDER BY` clause is used to order the data in ascending or descending order based on one or more columns in the SELECT statement.
 
 For example:
@@ -84,6 +86,8 @@ FROM system_metrics ORDER BY cpu_util ASC;
 SELECT *
 FROM system_metrics ORDER BY cpu_util DESC;
 ```
+
+Please refer to [ORDER](order_by.md) for more information.
 
 ## Limiting Results (LIMIT clause)
 
@@ -107,7 +111,6 @@ FROM system_metrics
 ORDER BY cpu_util DESC
 LIMIT 10;
 ```
-
 
 ## Pagination Results (LIMIT and OFFSET)
 
@@ -193,6 +196,8 @@ HAVING error_count > 10;
 Explanation:
 * Groups logs by day and counts occurrences where the log level is `'ERROR'`.
 * Only dates where the number of errors exceeds 10 are returned.
+
+Please refer to [HAVING](having.md) for more information.
 
 ## RANGE query
 

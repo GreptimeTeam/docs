@@ -9,7 +9,6 @@ description: GreptimeDB SQL statements.
 * [Data Types](./data-types)
 
 ## Statements and Clauses
-
 * [ADMIN](./admin.md)
 * [ALTER](./alter.md)
 * [ANSI Compatibility](./compatibility.md)
@@ -25,7 +24,6 @@ description: GreptimeDB SQL statements.
 * [Functions](./functions/overview.md)
 * [GROUP BY](./group_by.md)
 * [HAVING](./having.md)
-* [INFORMATION_SCHEMA](./information-schema/overview.md)
 * [INSERT](./insert.md)
 * [JOIN](./join.md)
 * [LIMIT](./limit.md)
@@ -39,3 +37,6 @@ description: GreptimeDB SQL statements.
 * [TRUNCATE](./truncate.md)
 * [WHERE](./where.md)
 * [WITH](./with.md)
+
+## Information Schema
+* [INFORMATION_SCHEMA](./information-schema/overview.md)

@@ -31,7 +31,7 @@ ORDER BY ts DESC
 LIMIT 10;
 ```
 
-Second Page (Using Last Timestamp from Previous Page): If the last record from the first page has a `ts` value of `'2024-07-01 16:03:00'`, you can get the next page like this:
+Second Page (Using Last Timestamp from Previous Page):If the last record from the first page has a `ts` value of `'2024-07-01 16:03:00'`, you can get the next page like this:
 
 ```sql
 SELECT *
