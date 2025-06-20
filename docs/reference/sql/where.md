@@ -58,3 +58,23 @@ SELECT * FROM system_metrics WHERE idc IN ('idc_a', 'idc_b');
 ```sql
 SELECT * FROM system_metrics WHERE idc NOT IN ('idc_a', 'idc_b');
 ```
+
+### String
+
+For string columns, we can use  the `LIKE` operator to  search for a specified pattern in a column. There are two wildcards often used in conjunction with the LIKE operator:
+* The percent sign `%` represents zero, one, or multiple characters
+* The underscore sign `_` represents a single character
+
+Select all records that the `host` column starts with the letter "a":
+```sql
+SELECT * FROM system_metrics WHERE host LIKE 'a%';
+```
+
+ Selects all records from the `go_info` table where the instance column matches the pattern `'localhost:____'`, meaning `'localhost:'` followed by exactly four characters.
+
+```sql
+SELECT * FROM go_info
+WHERE instance LIKE 'localhost:____';
+```
+
+For searching terms in logs, please read [Query Logs](/user-guide/logs/query-logs.md).
