@@ -64,9 +64,9 @@ greptime cli meta del key [OPTIONS] [KEY]
 ### Options
 
 
-| Option     | Description                                                                                                        | Default |
-| ---------- | ------------------------------------------------------------------------------------------------------------------ | ------- |
-| `--prefix` | Whether to perform a prefix query. If true, returns all key-value pairs where the key starts with the given prefix | false   |
+| Option     | Description                                   | Default |
+| ---------- | --------------------------------------------- | ------- |
+| `--prefix` | Delete key-value pairs with the given prefix. | false   |
 
 
 ## Delete table metadata
