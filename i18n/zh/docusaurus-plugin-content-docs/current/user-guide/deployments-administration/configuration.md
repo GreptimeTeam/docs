@@ -26,7 +26,7 @@ GreptimeDB 将为未配置的任何设置分配默认值。
 greptime standalone start --http-addr 127.0.0.1:4000
 ```
 
-有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines.md)。
+有关 Greptime 命令行支持的所有选项，请参阅 [GreptimeDB 命令行界面](/reference/command-lines/overview.md)。
 
 ### 配置文件选项
 

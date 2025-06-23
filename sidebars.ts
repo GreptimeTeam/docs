@@ -576,7 +576,26 @@ const sidebars: SidebarsConfig = {
       label: 'Reference',
       items: [
         'reference/glossary',
-        'reference/command-lines',
+        {
+          type: 'category',
+          label: 'GreptimeDB Command Line Interface',
+          items: [
+            'reference/command-lines/overview',
+            'reference/command-lines/metasrv',
+            'reference/command-lines/datanode',
+            'reference/command-lines/flownode',
+            'reference/command-lines/frontend',
+            'reference/command-lines/standalone',
+            {
+              type: 'category',
+              label: 'Utilities',
+              items: [
+                'reference/command-lines/utilities/data',
+                'reference/command-lines/utilities/metadata',
+              ],
+            },
+          ],
+        },
         'reference/sql-tools',
         'reference/time-durations',
         'reference/about-greptimedb-engines',

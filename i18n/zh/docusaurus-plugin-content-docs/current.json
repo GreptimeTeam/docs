@@ -127,6 +127,14 @@
     "message": "Reference",
     "description": "The label for category Reference in sidebar docs"
   },
+  "sidebar.docs.category.GreptimeDB Command Line Interface": {
+    "message": "GreptimeDB 命令行工具",
+    "description": "The label for category GreptimeDB Command Line Interface in sidebar docs"
+  },
+  "sidebar.docs.category.Utilities": {
+    "message": "实用工具",
+    "description": "The label for category Utilities in sidebar docs"
+  },
   "sidebar.docs.category.SQL": {
     "message": "SQL",
     "description": "The label for category SQL in sidebar docs"
