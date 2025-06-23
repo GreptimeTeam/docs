@@ -43,7 +43,7 @@ greptime cli meta snapshot restore [OPTIONS]
 
 ### 选项
 
-| Option             | Required | Default                       | Description                                                                                            |
+| 选项             | 是否必需 | 默认值                       | 描述                                                                                            |
 | ------------------ | -------- | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
 | --store-addrs      | 是       | -                             | 要连接的元数据存储服务地址（仅支持 etcd、MySQL、PostgreSQL），格式与 Metasrv 配置中的 store-addrs 一致 |
 | --backend          | 是       | -                             | 元数据存储后端类型，支持 `etcd-store`、`postgres-store`、`mysql-store`                                 |

@@ -592,6 +592,8 @@ const sidebars: SidebarsConfig = {
               items: [
                 'reference/command-lines/utilities/data',
                 'reference/command-lines/utilities/metadata',
+                'reference/command-lines/utilities/metadata-interaction',
+                'reference/command-lines/utilities/repair-logical-tables',
               ],
             },
           ],
