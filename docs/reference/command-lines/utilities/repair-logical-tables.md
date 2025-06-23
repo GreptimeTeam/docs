@@ -1,6 +1,6 @@
 ---
-keywords: [GreptimeDB CLI, metadata interaction, key-value operations, table metadata, store backends]
-description: Guide for interacting with GreptimeDB metadata using the CLI, including key-value, table metadata retrieval, and deletion.
+keywords: [GreptimeDB CLI, logical table repair, metadata repair, table metadata, storage backend]
+description: Guide for using CLI to repair logical tables in GreptimeDB cluster, including metadata consistency repair.
 ---
 
 # Repair logical tables
