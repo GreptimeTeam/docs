@@ -85,4 +85,4 @@ Fluent Bit can be configured to send logs and metrics to GreptimeCloud using the
     Header X-Greptime-DB-Name "<dbname>"
 ```
 
-In this example, the [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) interface is used. For more information, and extra options, refer to the [OpenTelemetry](https://docs.greptime.com/nightly/user-guide/ingest-data/for-observability/opentelemetry) guide.
+In this example, the [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry) interface is used. For more information, and extra options, refer to the [OpenTelemetry](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry) guide.

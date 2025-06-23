@@ -12,7 +12,7 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 Before using the GreptimeDB data source, it is necessary to manually install the GreptimeDB data source plugin.
 For more information,
-please refer to the [GreptimeDB data source plugin](https://docs.greptime.com/nightly/user-guide/integrations/grafana##greptimedb-data-source-plugin) document.
+please refer to the [GreptimeDB data source plugin](https://docs.greptime.com/user-guide/integrations/grafana##greptimedb-data-source-plugin) document.
 
 Click the Add data source button and select GreptimeDB as the type. Fill in the following URL in the GreptimeDB server URL:
 
