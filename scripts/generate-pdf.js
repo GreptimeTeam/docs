@@ -158,6 +158,22 @@ function findMarkdownFiles(docIds) {
   }).filter(Boolean);
 }
 
+// Function to remove outbound links and convert them to plain text
+function removeOutboundLinks(content) {
+  // Remove markdown links that start with http:// or https://
+  // Pattern: [link text](http://example.com) or [link text](https://example.com)
+  content = content.replace(/\[([^\]]+)\]\(https?:\/\/[^\)]+\)/g, '$1');
+  
+  // Remove reference-style links that start with http:// or https://
+  // Pattern: [link text][ref] where [ref]: http://example.com
+  content = content.replace(/^\s*\[[^\]]+\]:\s*https?:\/\/.*$/gm, '');
+  
+  // Remove bare URLs that start with http:// or https://
+  content = content.replace(/https?:\/\/[^\s\)]+/g, '');
+  
+  return content;
+}
+
 async function generatePDFFromMarkdown(file, outputPath) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -166,6 +182,9 @@ async function generatePDFFromMarkdown(file, outputPath) {
     // Read and preprocess markdown
     let content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
+    
+    // Remove outbound links
+    content = removeOutboundLinks(content);
     
     // Convert markdown to HTML
     const htmlContent = marked(content);
