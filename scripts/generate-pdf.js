@@ -52,17 +52,38 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 function getOrderedDocIds() {
   // All versioned sidebars are in JSON format, current English sidebar might be JS
   let sidebars;
-  if (version === 'current' && LOCALE === 'en' && SIDEBAR_PATH.endsWith('.js')) {
-    sidebars = require(SIDEBAR_PATH);
-  } else {
-    sidebars = JSON.parse(fs.readFileSync(SIDEBAR_PATH, 'utf8'));
+  try {
+    if (version === 'current' && LOCALE === 'en' && SIDEBAR_PATH.endsWith('.js')) {
+      sidebars = require(SIDEBAR_PATH);
+    } else {
+      sidebars = JSON.parse(fs.readFileSync(SIDEBAR_PATH, 'utf8'));
+    }
+    
+    if (!sidebars) {
+      throw new Error('Sidebar file is empty');
+    }
+    
+    const docsSidebar = sidebars.docsSidebar || sidebars.defaultSidebar || sidebars;
+    if (!docsSidebar) {
+      throw new Error('Could not find docs sidebar in sidebar file');
+    }
+    
+    return docsSidebar;
+  } catch (error) {
+    console.error(`Error parsing sidebar file at ${SIDEBAR_PATH}:`, error);
+    process.exit(1);
   }
-  const docsSidebar = sidebars.docsSidebar || sidebars.defaultSidebar || sidebars;
   
   const docIds = [];
   
   function processItems(items) {
     if (!items) return;
+    
+    // Ensure items is an array before forEach
+    if (!Array.isArray(items)) {
+      console.warn(`Warning: Expected array but got ${typeof items} for sidebar items`);
+      return;
+    }
     
     items.forEach(item => {
       // Simple doc link (string ID)
