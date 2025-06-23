@@ -3,6 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const { PDFDocument } = require('pdf-lib');
+const { marked } = require('marked');
 
 // Get version from command line
 const version = process.argv[2] || 'current'; // Default to current docs
@@ -54,18 +55,35 @@ function getOrderedDocIds() {
   let sidebars;
   try {
     if (version === 'current' && LOCALE === 'en' && SIDEBAR_PATH.endsWith('.js')) {
+      // Clear require cache to ensure fresh load
+      delete require.cache[require.resolve(SIDEBAR_PATH)];
       sidebars = require(SIDEBAR_PATH);
     } else {
-      sidebars = JSON.parse(fs.readFileSync(SIDEBAR_PATH, 'utf8'));
+      const sidebarContent = fs.readFileSync(SIDEBAR_PATH, 'utf8');
+      sidebars = JSON.parse(sidebarContent);
     }
     
     if (!sidebars) {
       throw new Error('Sidebar file is empty');
     }
     
-    const docsSidebar = sidebars.docsSidebar || sidebars.defaultSidebar || sidebars;
-    if (!docsSidebar) {
-      throw new Error('Could not find docs sidebar in sidebar file');
+    // Handle different sidebar structures
+    let docsSidebar;
+    if (sidebars.docsSidebar) {
+      docsSidebar = sidebars.docsSidebar;
+    } else if (sidebars.defaultSidebar) {
+      docsSidebar = sidebars.defaultSidebar;
+    } else if (Array.isArray(sidebars)) {
+      docsSidebar = sidebars;
+    } else {
+      // Try to find the first array in the sidebar object
+      const sidebarKeys = Object.keys(sidebars);
+      const firstArrayKey = sidebarKeys.find(key => Array.isArray(sidebars[key]));
+      if (firstArrayKey) {
+        docsSidebar = sidebars[firstArrayKey];
+      } else {
+        throw new Error('Could not find docs sidebar in sidebar file');
+      }
     }
     
   } catch (error) {
@@ -123,8 +141,15 @@ function findMarkdownFiles(docIds) {
   return docIds.map(id => {
     // Convert doc ID to file path (Docusaurus convention) - try both .md and .mdx
     const basePath = path.join(DOCS_DIR, id);
-    const filePath = ['.mdx', '.md'].map(ext => `${basePath}${ext}`).find(fs.existsSync);
-    if (fs.existsSync(filePath)) {
+    const possiblePaths = [
+      `${basePath}.mdx`,
+      `${basePath}.md`,
+      path.join(basePath, 'index.mdx'),
+      path.join(basePath, 'index.md')
+    ];
+    
+    const filePath = possiblePaths.find(p => fs.existsSync(p));
+    if (filePath) {
       return filePath;
     }
     console.warn(`Warning: Could not find file for doc ID ${id}`);
@@ -136,35 +161,68 @@ async function generatePDFFromMarkdown(file, outputPath) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   
-  // Read and preprocess markdown
-  let content = fs.readFileSync(file, 'utf8');
-  content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
-  
-  // Create simple HTML wrapper
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          body { font-family: Arial; line-height: 1.6; padding: 20px; }
-          pre { background: #f5f5f5; padding: 10px; border-radius: 3px; }
-        </style>
-      </head>
-      <body>
-        ${content}
-      </body>
-    </html>
-  `;
+  try {
+    // Read and preprocess markdown
+    let content = fs.readFileSync(file, 'utf8');
+    content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
+    
+    // Convert markdown to HTML
+    const htmlContent = marked(content);
+    
+    // Create simple HTML wrapper
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.6; 
+              padding: 20px; 
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            pre { 
+              background: #f5f5f5; 
+              padding: 10px; 
+              border-radius: 3px; 
+              overflow-x: auto;
+            }
+            code {
+              background: #f5f5f5;
+              padding: 2px 4px;
+              border-radius: 3px;
+            }
+            table {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+            }
+          </style>
+        </head>
+        <body>
+          ${htmlContent}
+        </body>
+      </html>
+    `;
 
-  await page.setContent(html);
-  await page.pdf({
-    path: outputPath,
-    format: 'A4',
-    margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
-  });
-
-  await browser.close();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.pdf({
+      path: outputPath,
+      format: 'A4',
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+    });
+  } finally {
+    await browser.close();
+  }
 }
 
 async function combinePDFs(pdfFiles, outputPath) {
@@ -184,25 +242,48 @@ async function combinePDFs(pdfFiles, outputPath) {
 // Main execution
 async function main() {
   try {
-    console.log(`Generating PDF for version: ${version}`);
+    console.log(`Generating PDF for version: ${version}, locale: ${LOCALE}`);
+    console.log(`Docs directory: ${DOCS_DIR}`);
+    console.log(`Sidebar path: ${SIDEBAR_PATH}`);
+    
+    // Verify directories exist
+    if (!fs.existsSync(DOCS_DIR)) {
+      throw new Error(`Docs directory does not exist: ${DOCS_DIR}`);
+    }
+    if (!fs.existsSync(SIDEBAR_PATH)) {
+      throw new Error(`Sidebar file does not exist: ${SIDEBAR_PATH}`);
+    }
     
     const docIds = getOrderedDocIds();
+    if (docIds.length === 0) {
+      throw new Error('No documents found in sidebar');
+    }
+    
     const markdownFiles = findMarkdownFiles(docIds);
+    if (markdownFiles.length === 0) {
+      throw new Error('No markdown files found');
+    }
+    
+    console.log(`Processing ${markdownFiles.length} files...`);
     
     // Generate individual PDFs
     const tempPdfDir = path.join(OUTPUT_DIR, 'temp');
-    if (!fs.existsSync(tempPdfDir)) fs.mkdirSync(tempPdfDir);
+    if (!fs.existsSync(tempPdfDir)) {
+      fs.mkdirSync(tempPdfDir, { recursive: true });
+    }
     
     const pdfFiles = [];
     for (const [index, file] of markdownFiles.entries()) {
-      const pdfPath = path.join(tempPdfDir, `${index}.pdf`);
+      const pdfPath = path.join(tempPdfDir, `${String(index).padStart(3, '0')}.pdf`);
+      console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
       await generatePDFFromMarkdown(file, pdfPath);
       pdfFiles.push(pdfPath);
-      console.log(`Generated PDF for ${path.basename(file)}`);
     }
     
     // Combine PDFs
-    const outputPath = path.join(OUTPUT_DIR, `combined-${version}.pdf`);
+    const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
+    const outputPath = path.join(OUTPUT_DIR, outputFilename);
+    console.log('Combining PDFs...');
     await combinePDFs(pdfFiles, outputPath);
     
     // Clean up temp files
@@ -211,7 +292,7 @@ async function main() {
     console.log('Successfully generated combined PDF');
     console.log(`Output file: ${outputPath}`);
   } catch (error) {
-    console.error('Error generating PDF preparation:', error);
+    console.error('Error generating PDF:', error);
     process.exit(1);
   }
 }
