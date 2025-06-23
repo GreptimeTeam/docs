@@ -11,7 +11,7 @@ GreptimeDB 服务可以配置为 [Grafana 数据源](https://grafana.com/docs/gr
 ## GreptimeDB 数据源插件
 
 在使用 GreptimeDB 数据源之前，需要手动安装 GreptimeDB 数据源插件。
-有关更多信息，请参考 [使用 GreptimeDB 数据源文档](https://docs.greptime.cn/nightly/user-guide/integrations/grafana#greptimedb-数据源插件)。
+有关更多信息，请参考 [使用 GreptimeDB 数据源文档](https://docs.greptime.cn/user-guide/integrations/grafana#greptimedb-数据源插件)。
 
 在 Grafana 中单击 Add data source 按钮，选择 GreptimeDB 作为类型。
 

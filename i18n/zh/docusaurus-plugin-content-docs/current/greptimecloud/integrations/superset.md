@@ -9,7 +9,7 @@ description: 介绍如何在 Apache Superset 中将 GreptimeCloud 作为数据�
 以下内容可以帮助你把 GreptimeDB 作为 Superset 的数据源。
 
 关于插件的安装，请[查看文
-档](https://docs.greptime.com/nightly/user-guide/integrations/superset).
+档](https://docs.greptime.cn/user-guide/integrations/superset).
 
 ## 连接信息
 

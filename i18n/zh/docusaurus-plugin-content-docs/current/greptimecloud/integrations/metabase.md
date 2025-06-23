@@ -9,7 +9,7 @@ description: 介绍如何将 GreptimeCloud 添加到 Metabase 作为数据源，
 工具，可以通过社区维护的数据库驱动将 GreptimeDB 添加到 Metabase。
 
 关于插件的安装，请[查看文
-档](https://docs.greptime.com/nightly/user-guide/integrations/metabase).
+档](https://docs.greptime.cn/user-guide/integrations/metabase).
 
 ## 连接信息
 
