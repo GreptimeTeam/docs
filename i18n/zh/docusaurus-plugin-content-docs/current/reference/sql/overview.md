@@ -5,30 +5,41 @@ description: GreptimeDB SQL 语句.
 
 # SQL
 
+## 数据类型
+
 * [数据类型](./data-types)
-* [INSERT](./insert.md)
+
+## 语句和子句
+
+* [ADMIN](./admin.md)
+* [ALTER](./alter.md)
+* [ANSI Compatibility](./compatibility.md)
+* [CASE](./case.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)
-* [DROP](./drop.md)
-* [SELECT](./select.md)
+* [CREATE](./create.md)
+* [DELETE](./delete.md)
+* [DESCRIBE TABLE](./describe_table.md)
 * [DISTINCT](./distinct.md)
-* [WHERE](./where.md)
-* [ORDER BY](./order_by.md)
+* [DROP](./drop.md)
+* [EXPLAIN](./explain.md)
+* [Functions](./functions/overview.md)
 * [GROUP BY](./group_by.md)
-* [LIMIT](./limit.md)
+* [HAVING](./having.md)
+* [INSERT](./insert.md)
 * [JOIN](./join.md)
+* [LIMIT](./limit.md)
+* [OFFSET](./offset.md)
+* [ORDER BY](./order_by.md)
 * [RANGE](./range.md)
 * [REPLACE](./replace.md)
-* [DELETE](./delete.md)
+* [SELECT](./select.md)
 * [SHOW](./show.md)
 * [TQL](./tql.md)
 * [TRUNCATE](./truncate.md)
-* [CREATE](./create.md)
-* [DESCRIBE TABLE](./describe_table.md)
+* [WHERE](./where.md)
 * [WITH](./with.md)
-* [ALTER](./alter.md)
-* [EXPLAIN](./explain.md)
-* [Functions](./functions/overview.md)
-* [ADMIN](./admin.md)
-* [ANSI Compatibility](./compatibility.md)
+
+## 系统表
+
 * [INFORMATION_SCHEMA](./information-schema/overview.md)
