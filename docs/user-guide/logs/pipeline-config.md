@@ -993,17 +993,18 @@ The result will be:
 
 ### Transform in doc version 2
 
-The pipeline engine (which is the version 1) currently supports a fully-set transform mode and an auto-transform mode: 
+Before `v0.15`, the pipeline engine only supports a fully-set transform mode and an auto-transform mode: 
 - Fully-set transform: only fields explicitly noted in the transform section will be persisted into the database
 - Auto-transform: no transform section is written, and the pipeline engine will try to set all the fields from the pipeline context. But in this case, there is no way to set other indexes other than the time index.
 
-What might come in handy is a new transform combining the advantages of the two existing ones.
+Starting from `v0.15`, GreptimeDB introduces a new transform mode combining the advantages of the existing two, which make it easier to write pipeline configuration.
 You only set necessary fields in the transform section, specifying particular datatype and index for them; the rest of the fields from the pipeline context are set automatically by the pipeline engine.
 With the `select` processor, you can decide what field is wanted and what isn't in the final table.
 
-However, this new mode is incompatible with the current version. If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string gets immediately inserted into the database and there's no way to stop this behavior.
+However, this is a breaking change to the existing pipeline configuration files.
+If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string, which is still in the pipeline context, gets immediately inserted into the database and there's no way to stop this behavior.
 
-Therefore, GreptimeDB has to introduce the concept of the pipeline doc version, just like the version in a Docker Compose file. Here is an example:
+Therefore, GreptimeDB introduces the concept of doc version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
 ```YAML
 version: 2
 processors:
@@ -1017,8 +1018,8 @@ transform:
     type: time
 ```
 
-Simply add a version field at the top of the config file, and the pipeline engine will treat the transform process as the combine mode:
-1. Process any written transform rules. This will remove the corresponding field from the pipeline context.
+Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
+1. Process all written transform rules sequentially. The corresponding field is removed from the pipeline context once the transform rule is executed.
 2. Set the remaining fields of the pipeline context to the final table.
 
 Note:

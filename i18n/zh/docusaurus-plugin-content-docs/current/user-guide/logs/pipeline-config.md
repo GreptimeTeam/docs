@@ -1010,17 +1010,16 @@ transform:
 
 ### 版本 2 中的 Transform
 
-v0.15 版本之前的 pipeline 引擎（即版本 1）仅支持全设置 transform 模式和自动 transform 模式:
+v0.15 版本之前的 pipeline 引擎仅支持全设置 transform 模式和自动 transform 模式:
 - 全设置 transform：只有在 transform 区块中明确写明的字段才会被持久化到数据库中
 - 自动 transform：transform 区块无需设置。pipeline 引擎会尝试自动将 pipeline 上下文中的所有字段都进行保存。但是在这种场景下，除了自动推导的时间索引列，无法为其他字段设置索引。
 
-从 v0.15 起，GreptimeDB 推出了结合了以上两种 transform 优点的一种新模式，这使写入日志更加方便。
+从 v0.15 起，GreptimeDB 推出了结合了以上两种 transform 优点的一种新模式，这使编写 pipeline 配置文件更加方便。
 你只需要在 transform 模块中指定必要的字段，为它们设置特定的数据类型和索引，其他 pipeline 上下文中的字段将会被 pipeline 引擎自动设置。
 通过和 `select` 处理器结合使用，你可以决定在最终数据表中保留或去除哪些字段。
 
-但是这种新的模式与过去版本 1 中的模式不兼容。
-如果你已经在 pipeline 配置中使用了 `dissect` 或者 `regex` 处理器，那么在升级数据库版本后，日志会被按照版本 1 的 transform 逻辑写入到数据库中。
-这个行为无法被避免。
+但是这无法兼容已经存在的 pipeline 配置文件。
+如果你已经在 pipeline 配置中使用了 `dissect` 或者 `regex` 处理器，那么在升级数据库版本后，原始的日志文本，因为还留存于 pipeline 上下文中，会被立刻写入到数据库中。
 
 因此，GreptimeDB pipeline 引入了 `version` 字段来执行要使用的 transform 版本，就像 Docker Compose 文件的版本号字段一样。
 以下是一个示例：
@@ -1037,8 +1036,8 @@ transform:
     type: time
 ```
 
-只需要在配置文件的开头加上 `version` 字段，pipeline 引擎就会以新的 transform 模式来处理数据：
-1. 执行所有配置的 transform 规则，将对应的字段从 pipeline 上下文中移除
+只需要在配置文件的开头加上 `version: 2`，pipeline 引擎就会以新的 transform 模式来处理数据：
+1. 顺序执行所有配置的 transform 规则。当一个 transform 规则执行完成，对应的字段会从 pipeline 上下文中被移除。
 2. 将 pipeline 上下文中的剩余字段保存到最终的结果表中
 
 注意：
