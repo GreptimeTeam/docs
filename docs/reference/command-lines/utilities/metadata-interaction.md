@@ -128,16 +128,80 @@ __table_name/greptime/public/metric_table_2
 ```bash
 greptime cli meta get table --table-id=1059 \
     --store-addrs=$ENDPOINT \
-    --backend=postgres-store
+    --backend=postgres-store \
+    --pretty
 ```
 
 Output: 
 
 ```json
 __table_info/1059
-{"table_info":{"ident":{"table_id":1059,"version":0},"name":"metric_table_2","desc":null,"catalog_name":"greptime","schema_name":"public","meta":{"schema":{"column_schemas":[{"name":"app","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"env","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"greptime_timestamp","data_type":{"Timestamp":{"Millisecond":null}},"is_nullable":false,"is_time_index":true,"default_constraint":null,"metadata":{"greptime:time_index":"true"}},{"name":"greptime_value","data_type":{"Float64":{}},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"host","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"instance","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"job","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}},{"name":"namespace","data_type":{"String":null},"is_nullable":true,"is_time_index":false,"default_constraint":null,"metadata":{}}],"timestamp_index":2,"version":0},"primary_key_indices":[0,1,4,5,6,7],"value_indices":[3],"engine":"metric","next_column_id":8,"region_numbers":[0,1,2,3,4,5,6,7,8,9],"options":{"write_buffer_size":null,"ttl":null,"skip_wal":false,"extra_options":{"on_physical_table":"greptime_physical_table"}},"created_on":"2025-06-17T14:53:14.639207075Z","partition_key_indices":[]},"table_type":"Base"},"version":0}
+{
+  "table_info": {
+    "ident": {
+      "table_id": 1059,
+      "version": 0
+    },
+    "name": "metric_table_2",
+    "desc": null,
+    "catalog_name": "greptime",
+    "schema_name": "public",
+    "meta": {
+      "schema": {
+        "column_schemas": [
+          {
+            "name": "app",
+            "data_type": {
+              "String": null
+            },
+            "is_nullable": true,
+            "is_time_index": false,
+            "default_constraint": null,
+            "metadata": {}
+          },
+          ...
+        ],
+        "timestamp_index": 2,
+        "version": 0
+      },
+      "primary_key_indices": [
+        0,
+        ...
+      ],
+      "value_indices": [
+        3
+      ],
+      "engine": "metric",
+      "next_column_id": 8,
+      "region_numbers": [
+        0,
+        ...
+      ],
+      "options": {
+        "write_buffer_size": null,
+        "ttl": null,
+        "skip_wal": false,
+        "extra_options": {
+          "on_physical_table": "greptime_physical_table"
+        }
+      },
+      "created_on": "2025-06-17T14:53:14.639207075Z",
+      "partition_key_indices": []
+    },
+    "table_type": "Base"
+  },
+  "version": 0
+}
 __table_route/1059
-{"type":"logical","physical_table_id":1057,"region_ids":[4548370366464,4548370366465,4548370366466,4548370366467,4548370366468,4548370366469,4548370366470,4548370366471,4548370366472,4548370366473]}
+{
+  "type": "logical",
+  "physical_table_id": 1057,
+  "region_ids": [
+    4548370366464,
+    4548370366465,
+    ...
+  ]
+}
 ```
 
 ### Get table metadata by table name
