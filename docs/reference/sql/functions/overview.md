@@ -253,11 +253,15 @@ GreptimeDB provides `ADMIN` statement to run the administration functions, pleas
 
 GreptimeDB provide functions for jsons. [Learn more about these functions](./json.md)
 
-## Geospatial Functions
+### Geospatial Functions
 
 GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
 about these functions](./geo.md)
 
-## Vector Functions
+### Vector Functions
 
 GreptimeDB supports vector functions for vector operations, such as distance calculation, similarity measurement, etc. [Learn more about these functions](./vector.md)
+
+### Approximate Functions
+
+GreptimeDB supports some approximate functions for data analysis, such as approximate count distinct(hll), approximate quantile(uddsketch), etc. [Learn more about these functions](./approximate.md)
