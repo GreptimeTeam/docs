@@ -68,12 +68,11 @@ function getOrderedDocIds() {
       throw new Error('Could not find docs sidebar in sidebar file');
     }
     
-    return docsSidebar;
   } catch (error) {
     console.error(`Error parsing sidebar file at ${SIDEBAR_PATH}:`, error);
     process.exit(1);
   }
-  
+
   const docIds = [];
   
   function processItems(items) {
@@ -114,7 +113,9 @@ function getOrderedDocIds() {
   }
   
   processItems(docsSidebar);
-  return docIds.filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
+  const uniqueDocIds = docIds.filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
+  console.log(`Found ${uniqueDocIds.length} documents to process`);
+  return uniqueDocIds;
 }
 
 // 2. Find corresponding markdown files
