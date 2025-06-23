@@ -5,16 +5,16 @@ description: Guide for using CLI to repair logical tables in GreptimeDB cluster,
 
 # Repair logical tables
 
-The `greptime` command can be used to repair logical tables for GreptimeDB cluster. In some cases, the logical tables metadata may be inconsistent with metadata stored in the metadata store. This command can be used to repair the logical tables metadata.
+The `greptime cli meta repair-logical-tables` command can be used to repair logical tables for GreptimeDB cluster. In some cases, the logical tables metadata may be inconsistent with metadata stored in the metadata store. This command can be used to repair the logical tables metadata.
 
 :::tip
-The tool needs to connect to both the metadata store and datanode. Ensure that the cluster is running and the network is accessible.
+The tool needs to connect to both the metadata store and datanode. Ensure that the cluster is running and the tool can communicate with the datanode.
 :::
 
 ## Command syntax
 
 ```bash
-greptime cli repair logical-tables [OPTIONS]
+greptime cli meta repair-logical-tables [OPTIONS]
 ```
 
 ## Options
@@ -40,7 +40,7 @@ greptime cli repair logical-tables [OPTIONS]
 ### Repair logical tables by table names
 
 ```bash
-greptime cli repair logical-tables --store-addrs=$ENDPOINT \
+greptime cli meta repair-logical-tables --store-addrs=$ENDPOINT \
     --backend=postgres-store \
     --table-names=metric_table_1,metric_table_2 \
     --schema-name=public \

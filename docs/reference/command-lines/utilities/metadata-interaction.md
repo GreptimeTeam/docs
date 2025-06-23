@@ -5,7 +5,7 @@ description: Guide for interacting with GreptimeDB metadata using the CLI, inclu
 
 # Metadata Interaction
 
-The `greptime` command can be used to interact with the metadata of GreptimeDB cluster.
+The `greptime cli meta` command can be used to interact with the metadata of GreptimeDB cluster.
 
 
 ## Common options
