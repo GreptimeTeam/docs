@@ -53,6 +53,8 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 function getOrderedDocIds() {
   // All versioned sidebars are in JSON format, current English sidebar might be JS
   let sidebars;
+  let docsSidebar;
+  
   try {
     if (version === 'current' && LOCALE === 'en' && SIDEBAR_PATH.endsWith('.js')) {
       // Clear require cache to ensure fresh load
@@ -68,7 +70,6 @@ function getOrderedDocIds() {
     }
     
     // Handle different sidebar structures
-    let docsSidebar;
     if (sidebars.docsSidebar) {
       docsSidebar = sidebars.docsSidebar;
     } else if (sidebars.defaultSidebar) {
