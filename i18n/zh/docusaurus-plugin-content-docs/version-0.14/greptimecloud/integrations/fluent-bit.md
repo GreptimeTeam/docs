@@ -27,7 +27,7 @@ Fluent Bit 可以配置为使用 HTTP 协议将日志发送到 GreptimeCloud。�
     http_Passwd      <password>
 ```
 
-在此示例中，使用 `http` 输出插件将日志发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Logs HTTP API](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/logs) 指南。
+在此示例中，使用 `http` 输出插件将日志发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Logs HTTP API](https://docs.greptime.cn/user-guide/logs/write-logs#http-api) 指南。
 
 ## Prometheus Remote Write
 
@@ -45,7 +45,7 @@ Fluent Bit 可以配置为使用 Prometheus Remote Write 协议将指标发送�
     http_passwd          <password>
 ```
 
-在此示例中，使用 `prometheus_remote_write` 输出插件将指标发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Prometheus Remote Write](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/prometheus) 指南。
+在此示例中，使用 `prometheus_remote_write` 输出插件将指标发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Prometheus Remote Write](https://docs.greptime.cn/user-guide/ingest-data/for-observability/prometheus) 指南。
 
 ## OpenTelemetry
 
@@ -88,4 +88,4 @@ Fluent Bit 可以配置为使用 OpenTelemetry 协议将日志和指标发送到
     Header X-Greptime-DB-Name "<dbname>"
 ```
 
-在此示例中，使用 [OpenTelemetry OTLP/HTTP API](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 接口。有关更多信息和额外选项，请参阅 [OpenTelemetry](https://docs.greptime.com/zh/nightly/user-guide/ingest-data/for-observability/opentelemetry/) 指南。
+在此示例中，使用 [OpenTelemetry OTLP/HTTP API](https://docs.greptime.cn/user-guide/ingest-data/for-observability/opentelemetry/) 接口。有关更多信息和额外选项，请参阅 [OpenTelemetry](https://docs.greptime.cn/user-guide/ingest-data/for-observability/opentelemetry/) 指南。

@@ -9,7 +9,7 @@ GreptimeCloud exposes GreptimeDB access in PostgreSQL v3 wire protocol. Most
 standard clients and drivers are compatible at wire protocol level, and the connection is encrypted with TLS.
 Note that we don't use Postgres' SQL dialect in GreptimeDB, so there can be some statements
 that are unsupported.
-For more information, please refer to [Postgresql documentation](https://docs.greptime.com/nightly/user-guide/protocols/postgresql) of GreptimeDB.
+For more information, please refer to [Postgresql documentation](https://docs.greptime.com/user-guide/protocols/postgresql) of GreptimeDB.
 
 To connect to GreptimeCloud in Postgres wire protocol, using information below:
 
