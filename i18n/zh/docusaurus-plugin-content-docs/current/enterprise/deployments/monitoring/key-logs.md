@@ -153,7 +153,7 @@ Closing staled region:
 Detects region failures:
 
 // 某一个 region 迁移失败
-Failed to wait region migration procedure 
+Failed to wait region migration procedure
 
 // Info 级别，当维护模式打开时，failover procedure 会被跳过。
 Maintenance mode is enabled, skip failover
@@ -166,7 +166,7 @@ Maintenance mode is enabled, skip failover
 Starting region migration procedure
 
 // error 级别，某一个 region 迁移失败
-Failed to wait region migration procedure 
+Failed to wait region migration procedure
 ```
 
 #### Procedure
@@ -185,3 +185,23 @@ Failed to execute procedure
 Failed to execute procedure metasrv-procedure:: CreateFlow
 ```
 
+#### License 过期
+企业版的 license 过期时，metasrv 会打印如下 warning 日志。这时需要及时联系 Greptime 获取新的 license
+
+```bash
+License is expired at xxx, please coontact your GreptimeDB vendor to renew it
+```
+
+### Datanode
+
+#### Compaction
+
+在 compaction 开始和结束时，datanode 上会有如下日志：
+
+```bash
+2025-05-16T06:01:08.794415Z  INFO mito2::compaction::task: Compacted SST files, region_id: 4612794875904(1074, 0), input: [FileMeta { region_id: 4612794875904(1074, 0), file_id: FileId(a29500fb-cae0-4f3f-8376-cb3f14653378), time_range: (1686455010000000000::Nanosecond, 1686468410000000000::Nanosecond), level: 0, file_size: 45893329, available_indexes: [], index_file_size: 0, num_rows: 5364000, num_row_groups: 53, sequence: Some(114408000) }, FileMeta { region_id: 4612794875904(1074, 0), file_id: FileId(a31dcb1b-19ae-432f-8482-9e1b7db7b53b), time_range: (1686468420000000000::Nanosecond, 1686481820000000000::Nanosecond), level: 0, file_size: 45900506, available_indexes: [], index_file_size: 0, num_rows: 5364000, num_row_groups: 53, sequence: Some(119772000) }], output: [FileMeta { region_id: 4612794875904(1074, 0), file_id: FileId(5d105ca7-9e3c-4298-afb3-e85baae3b2e8), time_range: (1686455010000000000::Nanosecond, 1686481820000000000::Nanosecond), level: 1, file_size: 91549797, available_indexes: [], index_file_size: 0, num_rows: 10728000, num_row_groups: 105, sequence: Some(119772000) }], window: Some(86400), waiter_num: 0, merge_time: 3.034328293s
+```
+
+```bash
+2025-05-16T06:01:08.805366Z  INFO mito2::request: Successfully compacted region: 4612794875904(1074, 0)
+```
