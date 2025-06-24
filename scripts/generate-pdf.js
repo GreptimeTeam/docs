@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
-const PDFDocument = require('pdfkit');
 const { default: PDFMerger } = require('pdf-merger-js');
 const { marked } = require('marked');
 
@@ -31,19 +30,19 @@ OPTIONS:
 EXAMPLES:
   # Generate PDF for current English docs
   node scripts/generate-pdf.js current
-  
+
   # Generate PDF for version 0.14 English docs
   node scripts/generate-pdf.js 0.14
-  
+
   # Generate PDF for current Chinese docs
   node scripts/generate-pdf.js current --locale zh
-  
+
   # Generate PDF for version 0.14 with blacklisted categories
   node scripts/generate-pdf.js 0.14 --blacklist changelog,roadmap
-  
+
   # Generate PDF for Chinese version 0.14 with blacklisted categories
   node scripts/generate-pdf.js 0.14 --locale zh --blacklist changelog,roadmap
-  
+
   # Generate PDF and keep temporary files for debugging
   node scripts/generate-pdf.js current --keep-temp
 
@@ -78,8 +77,8 @@ const LOCALE = localeIndex !== -1 && localeIndex + 1 < args.length ? args[locale
 
 // Parse blacklist option
 const blacklistIndex = args.indexOf('--blacklist');
-const BLACKLISTED_CATEGORIES = blacklistIndex !== -1 && blacklistIndex + 1 < args.length 
-  ? args[blacklistIndex + 1].split(',') 
+const BLACKLISTED_CATEGORIES = blacklistIndex !== -1 && blacklistIndex + 1 < args.length
+  ? args[blacklistIndex + 1].split(',')
   : [];
 
 // Get version (first non-option argument)
@@ -125,7 +124,7 @@ function getOrderedDocIds() {
   // All versioned sidebars are in JSON format, current English sidebar might be JS
   let sidebars;
   let docsSidebar;
-  
+
   try {
     if (version === 'current' && LOCALE === 'en' && SIDEBAR_PATH.endsWith('.js')) {
       // Clear require cache to ensure fresh load
@@ -135,11 +134,11 @@ function getOrderedDocIds() {
       const sidebarContent = fs.readFileSync(SIDEBAR_PATH, 'utf8');
       sidebars = JSON.parse(sidebarContent);
     }
-    
+
     if (!sidebars) {
       throw new Error('Sidebar file is empty');
     }
-    
+
     // Handle different sidebar structures
     if (sidebars.docsSidebar) {
       docsSidebar = sidebars.docsSidebar;
@@ -157,7 +156,7 @@ function getOrderedDocIds() {
         throw new Error('Could not find docs sidebar in sidebar file');
       }
     }
-    
+
   } catch (error) {
     console.error(`Error parsing sidebar file at ${SIDEBAR_PATH}:`, error);
     process.exit(1);
@@ -165,16 +164,16 @@ function getOrderedDocIds() {
 
   const docIds = [];
   const sidebarStructure = [];
-  
+
   function processItems(items, level = 0) {
     if (!items) return;
-    
+
     // Ensure items is an array before forEach
     if (!Array.isArray(items)) {
       console.warn(`Warning: Expected array but got ${typeof items} for sidebar items`);
       return;
     }
-    
+
     items.forEach(item => {
       // Simple doc link (string ID)
       if (typeof item === 'string') {
@@ -185,7 +184,7 @@ function getOrderedDocIds() {
           label: item,
           level: level
         });
-      } 
+      }
       // Doc link with custom label {type: 'doc', id: '...'}
       else if (item.type === 'doc' && item.id) {
         docIds.push(item.id);
@@ -203,13 +202,13 @@ function getOrderedDocIds() {
           console.log(`Skipping blacklisted category: ${item.label}`);
           return;
         }
-        
+
         sidebarStructure.push({
           type: 'category',
           label: item.label,
           level: level
         });
-        
+
         if (item.link && item.link.type === 'doc') {
           // Category with index page
           docIds.push(item.link.id);
@@ -226,7 +225,7 @@ function getOrderedDocIds() {
       // External links and other types are ignored
     });
   }
-  
+
   processItems(docsSidebar);
   const uniqueDocIds = docIds.filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
   console.log(`Found ${uniqueDocIds.length} documents to process`);
@@ -244,7 +243,7 @@ function findMarkdownFiles(docIds) {
       path.join(basePath, 'index.mdx'),
       path.join(basePath, 'index.md')
     ];
-    
+
     const filePath = possiblePaths.find(p => fs.existsSync(p));
     if (filePath) {
       return filePath;
@@ -258,19 +257,19 @@ function findMarkdownFiles(docIds) {
 function extractTitle(content) {
   // Remove front matter first
   const withoutFrontMatter = content.replace(/^---[\s\S]+?---/, '');
-  
+
   // Look for first H1 heading
   const h1Match = withoutFrontMatter.match(/^#\s+(.+)$/m);
   if (h1Match) {
     return h1Match[1].trim();
   }
-  
+
   // Look for first H2 heading if no H1
   const h2Match = withoutFrontMatter.match(/^##\s+(.+)$/m);
   if (h2Match) {
     return h2Match[1].trim();
   }
-  
+
   return 'Untitled';
 }
 
@@ -280,11 +279,11 @@ function removeOutboundLinks(content) {
   // Remove markdown links that start with http:// or https://
   // Pattern: [link text](http://example.com) or [link text](https://example.com)
   content = content.replace(/\[([^\]]+)\]\(https?:\/\/[^\)]+\)/g, '$1');
-  
+
   // Remove reference-style links that start with http:// or https://
   // Pattern: [link text][ref] where [ref]: http://example.com
   content = content.replace(/^\s*\[[^\]]+\]:\s*https?:\/\/.*$/gm, '');
-  
+
   return content;
 }
 
@@ -296,7 +295,7 @@ function convertImagesToBase64(content) {
     if (imagePath.startsWith('data:') || imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return match;
     }
-    
+
     // For paths starting from root, convert to base64
     if (imagePath.startsWith('/')) {
       const absolutePath = path.join(BASE_DIR, 'static', imagePath.substring(1));
@@ -305,12 +304,12 @@ function convertImagesToBase64(content) {
           const imageBuffer = fs.readFileSync(absolutePath);
           const ext = path.extname(absolutePath).toLowerCase();
           let mimeType = 'image/png'; // default
-          
+
           if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
           else if (ext === '.gif') mimeType = 'image/gif';
           else if (ext === '.svg') mimeType = 'image/svg+xml';
           else if (ext === '.webp') mimeType = 'image/webp';
-          
+
           const base64 = imageBuffer.toString('base64');
           const dataUrl = `data:${mimeType};base64,${base64}`;
           return `![${alt}](${dataUrl})`;
@@ -319,17 +318,17 @@ function convertImagesToBase64(content) {
         console.warn(`Warning: Could not read image file ${absolutePath}: ${error.message}`);
       }
     }
-    
+
     return match;
   });
-  
+
   // Fix HTML img tags: <img src="path" />
   content = content.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/g, (match, beforeSrc, imagePath, afterSrc) => {
     // Skip if it's already a data URL or external URL
     if (imagePath.startsWith('data:') || imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return match;
     }
-    
+
     // For paths starting from root, convert to base64
     if (imagePath.startsWith('/')) {
       const absolutePath = path.join(BASE_DIR, 'static', imagePath.substring(1));
@@ -338,12 +337,12 @@ function convertImagesToBase64(content) {
           const imageBuffer = fs.readFileSync(absolutePath);
           const ext = path.extname(absolutePath).toLowerCase();
           let mimeType = 'image/png'; // default
-          
+
           if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
           else if (ext === '.gif') mimeType = 'image/gif';
           else if (ext === '.svg') mimeType = 'image/svg+xml';
           else if (ext === '.webp') mimeType = 'image/webp';
-          
+
           const base64 = imageBuffer.toString('base64');
           const dataUrl = `data:${mimeType};base64,${base64}`;
           return `<img${beforeSrc} src="${dataUrl}"${afterSrc}>`;
@@ -352,31 +351,31 @@ function convertImagesToBase64(content) {
         console.warn(`Warning: Could not read image file ${absolutePath}: ${error.message}`);
       }
     }
-    
+
     return match;
   });
-  
+
   return content;
 }
 
 async function generatePDFFromMarkdown(file, outputPath) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  
+
   try {
     // Read and preprocess markdown
     let content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
-    
+
     // Remove outbound links
     content = removeOutboundLinks(content);
-    
+
     // Convert images to base64 data URLs
     content = convertImagesToBase64(content);
-    
+
     // Convert markdown to HTML
     const htmlContent = marked(content);
-    
+
     // Create simple HTML wrapper
     const html = `
       <!DOCTYPE html>
@@ -384,17 +383,17 @@ async function generatePDFFromMarkdown(file, outputPath) {
         <head>
           <meta charset="UTF-8">
           <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              line-height: 1.6; 
-              padding: 20px; 
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              padding: 20px;
               max-width: 800px;
               margin: 0 auto;
             }
-            pre { 
-              background: #f5f5f5; 
-              padding: 10px; 
-              border-radius: 3px; 
+            pre {
+              background: #f5f5f5;
+              padding: 10px;
+              border-radius: 3px;
               overflow-x: auto;
             }
             code {
@@ -442,57 +441,57 @@ async function generatePDFFromMarkdown(file, outputPath) {
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
   try {
     console.log('Creating table of contents...');
-    
+
     // Create table of contents with heading titles
     const tocItems = [];
     let estimatedPage = 2; // Start from page 2 (after TOC)
-    
+
     for (let i = 0; i < markdownFiles.length; i++) {
       const markdownFile = markdownFiles[i];
-      
+
       // Extract title from markdown content
       const content = fs.readFileSync(markdownFile, 'utf8');
       const title = extractTitle(content);
-      
+
       tocItems.push({
         title: title,
         page: estimatedPage
       });
-      
+
       // Estimate pages for this document (rough estimate based on file size)
       const stats = fs.statSync(pdfFiles[i]);
       const estimatedPagesForDoc = Math.max(1, Math.ceil(stats.size / 50000)); // Rough estimate
       estimatedPage += estimatedPagesForDoc;
-      
+
       console.log(`TOC entry: "${title}" - Page ${tocItems[i].page}`);
     }
-    
+
     // Create TOC PDF
     const tocPdfPath = path.join(OUTPUT_DIR, 'toc.pdf');
     await createTableOfContentsPDF(tocItems, tocPdfPath);
-    
+
     console.log('Merging PDF files with table of contents...');
-    
+
     // Use pdf-merger-js to merge TOC + all PDFs
     const merger = new PDFMerger();
-    
+
     // Add TOC first
     await merger.add(tocPdfPath);
-    
+
     // Add all document PDFs
     for (const pdfFile of pdfFiles) {
       console.log(`Adding ${path.basename(pdfFile)} to merger...`);
       await merger.add(pdfFile);
     }
-    
+
     // Save the merged PDF
     await merger.save(outputPath);
-    
+
     // Clean up TOC file
     fs.unlinkSync(tocPdfPath);
-    
+
     console.log(`Successfully combined ${pdfFiles.length} PDFs with table of contents into ${outputPath}`);
-    
+
   } catch (error) {
     console.error('Error combining PDFs:', error);
     throw error;
@@ -503,7 +502,7 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
 async function createTableOfContentsPDF(tocItems, outputPath) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  
+
   try {
     // Create HTML for table of contents
     const tocHtml = `
@@ -512,10 +511,10 @@ async function createTableOfContentsPDF(tocItems, outputPath) {
         <head>
           <meta charset="UTF-8">
           <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              line-height: 1.6; 
-              padding: 40px; 
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              padding: 40px;
               max-width: 800px;
               margin: 0 auto;
             }
@@ -576,7 +575,7 @@ async function main() {
     console.log(`Generating PDF for version: ${version}, locale: ${LOCALE}`);
     console.log(`Docs directory: ${DOCS_DIR}`);
     console.log(`Sidebar path: ${SIDEBAR_PATH}`);
-    
+
     // Verify directories exist
     if (!fs.existsSync(DOCS_DIR)) {
       throw new Error(`Docs directory does not exist: ${DOCS_DIR}`);
@@ -584,22 +583,22 @@ async function main() {
     if (!fs.existsSync(SIDEBAR_PATH)) {
       throw new Error(`Sidebar file does not exist: ${SIDEBAR_PATH}`);
     }
-    
+
     const { docIds, structure } = getOrderedDocIds();
     if (docIds.length === 0) {
       throw new Error('No documents found in sidebar');
     }
-    
+
     const markdownFiles = findMarkdownFiles(docIds);
     if (markdownFiles.length === 0) {
       throw new Error('No markdown files found');
     }
-    
+
     console.log(`Processing ${markdownFiles.length} files...`);
-    
+
     const tempPdfDir = path.join(OUTPUT_DIR, 'temp');
     let pdfFiles = [];
-    
+
     if (skipGeneration) {
       console.log('Skipping individual PDF generation as requested');
       if (!fs.existsSync(tempPdfDir)) {
@@ -609,7 +608,7 @@ async function main() {
         .filter(file => file.endsWith('.pdf'))
         .sort()
         .map(file => path.join(tempPdfDir, file));
-      
+
       if (pdfFiles.length === 0) {
         throw new Error('No PDF files found in temp directory');
       }
@@ -619,7 +618,7 @@ async function main() {
       if (!fs.existsSync(tempPdfDir)) {
         fs.mkdirSync(tempPdfDir, { recursive: true });
       }
-      
+
       for (const [index, file] of markdownFiles.entries()) {
         const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
         console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
@@ -627,20 +626,20 @@ async function main() {
         pdfFiles.push(pdfPath);
       }
     }
-    
+
     // Combine PDFs with bookmarks
     const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
     console.log('Combining PDFs...');
     await combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles);
-    
+
     // Clean up temp files unless --keep-temp is specified
     if (keepTemp) {
       console.log(`Temporary files preserved in: ${tempPdfDir}`);
     } else {
       fs.rmSync(tempPdfDir, { recursive: true, force: true });
     }
-    
+
     console.log('Successfully generated combined PDF');
     console.log(`Output file: ${outputPath}`);
   } catch (error) {
