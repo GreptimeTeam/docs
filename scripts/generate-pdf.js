@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const { default: PDFMerger } = require('pdf-merger-js');
-const hummus = require('hummus-pdf-writer');
+const { PDFDocument } = require('pdf-lib');
 const { marked } = require('marked');
 
 // Help function
@@ -457,17 +457,18 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
 
     console.log('Calculating page offsets for bookmarks...');
 
-    // Calculate page offsets for each document using hummus-pdf-writer
+    // Calculate page offsets for each document using pdf-lib
     let currentPage = 0;
     const pageOffsets = [];
 
     for (let i = 0; i < pdfFiles.length; i++) {
       pageOffsets.push(currentPage);
 
-      // Get page count using hummus-pdf-writer
+      // Get page count using pdf-lib
       try {
-        const pdfReader = hummus.createReader(pdfFiles[i]);
-        const pageCount = pdfReader.getPagesCount();
+        const pdfBytes = fs.readFileSync(pdfFiles[i]);
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const pageCount = pdfDoc.getPageCount();
         currentPage += pageCount;
       } catch (error) {
         console.warn(`Warning: Could not read page count for ${pdfFiles[i]}, estimating 1 page`);
@@ -508,88 +509,65 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
   }
 }
 
-// Function to add outline/bookmarks to PDF using hummus-pdf-writer
+// Function to add outline/bookmarks to PDF using pdf-lib
 async function addOutlineToPDF(inputPath, outputPath, outlineItems) {
   try {
-    console.log('Adding PDF outline/bookmarks using hummus-pdf-writer...');
+    console.log('Adding PDF outline/bookmarks using pdf-lib...');
     
-    const pdfWriter = hummus.createWriterToModify(inputPath, {
-      modifiedFilePath: outputPath
+    // Read the merged PDF
+    const pdfBytes = fs.readFileSync(inputPath);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    
+    // Create the root outline dictionary
+    const rootOutlineDict = pdfDoc.context.obj({
+      Type: 'Outlines',
+      Count: outlineItems.length,
     });
     
-    // Get the document context
-    const documentContext = pdfWriter.getDocumentContext();
-    
-    // Create outline dictionary
-    const outlineDict = documentContext.getObjectsContext().startDictionary();
-    outlineDict.writeKey('Type').writeNameValue('Outlines');
-    outlineDict.writeKey('Count').writeNumberValue(outlineItems.length);
-    
-    let firstOutlineRef = null;
-    let lastOutlineRef = null;
-    let prevOutlineRef = null;
+    let firstOutline = null;
+    let lastOutline = null;
+    let prevOutline = null;
     
     // Create outline items
-    for (let i = 0; i < outlineItems.length; i++) {
-      const item = outlineItems[i];
+    for (const item of outlineItems) {
+      const outlineDict = pdfDoc.context.obj({
+        Title: item.title,
+        Parent: rootOutlineDict,
+        Dest: [
+          pdfDoc.getPage(item.page), 
+          'XYZ',
+          null, // left
+          null, // top
+          null  // zoom
+        ]
+      });
       
-      // Create outline item dictionary
-      const outlineItemDict = documentContext.getObjectsContext().startDictionary();
-      outlineItemDict.writeKey('Title').writeLiteralStringValue(item.title);
-      outlineItemDict.writeKey('Parent').writeObjectReferenceValue(outlineDict.getObjectReference());
-      
-      // Create destination array [page /XYZ left top zoom]
-      const destArray = documentContext.getObjectsContext().startArray();
-      destArray.writeIndirectObjectReference(documentContext.getPageTree().getPageObjectID(item.page));
-      destArray.writeName('XYZ');
-      destArray.writeNull(); // left
-      destArray.writeNull(); // top  
-      destArray.writeNull(); // zoom
-      destArray.endArray();
-      
-      outlineItemDict.writeKey('Dest').writeObjectReferenceValue(destArray.getObjectReference());
-      
-      // Link to previous item
-      if (prevOutlineRef) {
-        // Update previous item to point to this one
-        const prevDict = documentContext.getObjectsContext().startModifiedIndirectObject(prevOutlineRef);
-        prevDict.writeKey('Next').writeObjectReferenceValue(outlineItemDict.getObjectReference());
-        prevDict.endDictionary();
-        documentContext.getObjectsContext().endIndirectObject();
-        
-        // This item points back to previous
-        outlineItemDict.writeKey('Prev').writeObjectReferenceValue(prevOutlineRef);
+      // Link outline items
+      if (prevOutline) {
+        outlineDict.set('Prev', prevOutline);
+        prevOutline.set('Next', outlineDict);
       } else {
-        // First item
-        firstOutlineRef = outlineItemDict.getObjectReference();
+        firstOutline = outlineDict;
       }
       
-      outlineItemDict.endDictionary();
-      const outlineItemRef = documentContext.getObjectsContext().endIndirectObject();
-      
-      lastOutlineRef = outlineItemRef;
-      prevOutlineRef = outlineItemRef;
+      prevOutline = outlineDict;
+      lastOutline = outlineDict;
     }
     
-    // Set first and last references in outline dictionary
-    if (firstOutlineRef) {
-      outlineDict.writeKey('First').writeObjectReferenceValue(firstOutlineRef);
+    // Set first and last references
+    if (firstOutline) {
+      rootOutlineDict.set('First', firstOutline);
     }
-    if (lastOutlineRef) {
-      outlineDict.writeKey('Last').writeObjectReferenceValue(lastOutlineRef);
+    if (lastOutline) {
+      rootOutlineDict.set('Last', lastOutline);
     }
-    
-    outlineDict.endDictionary();
-    const outlineRef = documentContext.getObjectsContext().endIndirectObject();
     
     // Add outline to document catalog
-    const catalog = documentContext.getCatalogInformation().getCatalogObject();
-    const modifiedCatalog = documentContext.getObjectsContext().startModifiedIndirectObject(catalog.getObjectReference());
-    modifiedCatalog.writeKey('Outlines').writeObjectReferenceValue(outlineRef);
-    modifiedCatalog.endDictionary();
-    documentContext.getObjectsContext().endIndirectObject();
+    pdfDoc.catalog.set('Outlines', rootOutlineDict);
     
-    pdfWriter.end();
+    // Save the modified PDF
+    const modifiedPdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPath, modifiedPdfBytes);
     
     console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
     
