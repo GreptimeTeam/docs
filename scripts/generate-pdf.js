@@ -25,6 +25,8 @@ OPTIONS:
                          Examples: en, zh, ja, fr
   --blacklist CATEGORIES Comma-separated list of categories to exclude from PDF
                          Examples: changelog,roadmap,api-reference
+  --cover FILE           Path to PDF file to use as cover page (prepended to output)
+                         Example: --cover docs/cover.pdf
 
 
 EXAMPLES:
@@ -43,14 +45,11 @@ EXAMPLES:
   # Generate PDF for Chinese version 0.14 with blacklisted categories
   node scripts/generate-pdf.js 0.14 --locale zh --blacklist changelog,roadmap
 
-  # Generate PDF with cover page
-  node scripts/generate-pdf.js current --cover path/to/cover.pdf
+  # Generate PDF with custom cover page
+  node scripts/generate-pdf.js current --cover docs/cover.pdf
 
   # Generate PDF and keep temporary files for debugging
   node scripts/generate-pdf.js current --keep-temp
-
-  # Generate PDF with cover page
-  node scripts/generate-pdf.js current --cover path/to/cover.pdf
 
 OUTPUT:
   PDF files are generated in the 'pdf-build' directory with the naming pattern:
