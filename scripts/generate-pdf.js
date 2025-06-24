@@ -43,8 +43,14 @@ EXAMPLES:
   # Generate PDF for Chinese version 0.14 with blacklisted categories
   node scripts/generate-pdf.js 0.14 --locale zh --blacklist changelog,roadmap
 
+  # Generate PDF with cover page
+  node scripts/generate-pdf.js current --cover path/to/cover.pdf
+
   # Generate PDF and keep temporary files for debugging
   node scripts/generate-pdf.js current --keep-temp
+
+  # Generate PDF with cover page
+  node scripts/generate-pdf.js current --cover path/to/cover.pdf
 
 OUTPUT:
   PDF files are generated in the 'pdf-build' directory with the naming pattern:
@@ -70,6 +76,10 @@ if (args.includes('--help') || args.includes('-h')) {
 
 const skipGeneration = args.includes('--skip-generation');
 const keepTemp = args.includes('--keep-temp');
+
+// Parse cover option
+const coverIndex = args.indexOf('--cover');
+const COVER_PATH = coverIndex !== -1 && coverIndex + 1 < args.length ? args[coverIndex + 1] : null;
 
 // Parse locale option
 const localeIndex = args.indexOf('--locale');
@@ -444,6 +454,16 @@ async function combinePDFs(pdfFiles, outputPath) {
 
     const merger = new PDFMerger();
 
+    // Add cover page if specified
+    if (COVER_PATH) {
+      if (!fs.existsSync(COVER_PATH)) {
+        throw new Error(`Cover PDF file not found: ${COVER_PATH}`);
+      }
+      console.log(`Adding cover page: ${path.basename(COVER_PATH)}`);
+      await merger.add(COVER_PATH);
+    }
+
+    // Add content pages
     for (const pdfFile of pdfFiles) {
       console.log(`Adding ${path.basename(pdfFile)} to merger...`);
       await merger.add(pdfFile);
