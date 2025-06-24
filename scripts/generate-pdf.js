@@ -107,7 +107,7 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR);
 }
 
-// 1. Parse the sidebar to get ordered doc IDs
+// 1. Parse the sidebar to get ordered doc IDs and structure
 function getOrderedDocIds() {
   // All versioned sidebars are in JSON format, current English sidebar might be JS
   let sidebars;
@@ -151,8 +151,9 @@ function getOrderedDocIds() {
   }
 
   const docIds = [];
+  const sidebarStructure = [];
   
-  function processItems(items) {
+  function processItems(items, level = 0) {
     if (!items) return;
     
     // Ensure items is an array before forEach
@@ -165,10 +166,22 @@ function getOrderedDocIds() {
       // Simple doc link (string ID)
       if (typeof item === 'string') {
         docIds.push(item);
+        sidebarStructure.push({
+          type: 'doc',
+          id: item,
+          label: item,
+          level: level
+        });
       } 
       // Doc link with custom label {type: 'doc', id: '...'}
       else if (item.type === 'doc' && item.id) {
         docIds.push(item.id);
+        sidebarStructure.push({
+          type: 'doc',
+          id: item.id,
+          label: item.label || item.id,
+          level: level
+        });
       }
       // Category with items
       else if (item.type === 'category') {
@@ -178,12 +191,24 @@ function getOrderedDocIds() {
           return;
         }
         
+        sidebarStructure.push({
+          type: 'category',
+          label: item.label,
+          level: level
+        });
+        
         if (item.link && item.link.type === 'doc') {
           // Category with index page
           docIds.push(item.link.id);
+          sidebarStructure.push({
+            type: 'doc',
+            id: item.link.id,
+            label: item.link.label || item.label,
+            level: level + 1
+          });
         }
         // Process nested items
-        processItems(item.items);
+        processItems(item.items, level + 1);
       }
       // External links and other types are ignored
     });
@@ -192,7 +217,7 @@ function getOrderedDocIds() {
   processItems(docsSidebar);
   const uniqueDocIds = docIds.filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
   console.log(`Found ${uniqueDocIds.length} documents to process`);
-  return uniqueDocIds;
+  return { docIds: uniqueDocIds, structure: sidebarStructure };
 }
 
 // 2. Find corresponding markdown files
@@ -214,6 +239,132 @@ function findMarkdownFiles(docIds) {
     console.warn(`Warning: Could not find file for doc ID ${id}`);
     return null;
   }).filter(Boolean);
+}
+
+// Function to extract title from markdown content
+function extractTitle(content) {
+  // Remove front matter first
+  const withoutFrontMatter = content.replace(/^---[\s\S]+?---/, '');
+  
+  // Look for first H1 heading
+  const h1Match = withoutFrontMatter.match(/^#\s+(.+)$/m);
+  if (h1Match) {
+    return h1Match[1].trim();
+  }
+  
+  // Look for first H2 heading if no H1
+  const h2Match = withoutFrontMatter.match(/^##\s+(.+)$/m);
+  if (h2Match) {
+    return h2Match[1].trim();
+  }
+  
+  return 'Untitled';
+}
+
+// Function to generate table of contents HTML
+function generateTableOfContents(structure, docIds, markdownFiles) {
+  let tocHtml = '<div class="table-of-contents"><h1>Table of Contents</h1>';
+  let currentPage = 1; // Start from page 1 (after TOC)
+  
+  const docIdToFileMap = {};
+  docIds.forEach((id, index) => {
+    if (markdownFiles[index]) {
+      docIdToFileMap[id] = markdownFiles[index];
+    }
+  });
+  
+  structure.forEach(item => {
+    if (item.type === 'category') {
+      const indent = '  '.repeat(item.level);
+      tocHtml += `<div class="toc-category" style="margin-left: ${item.level * 20}px; font-weight: bold; margin-top: 10px;">${item.label}</div>`;
+    } else if (item.type === 'doc' && docIdToFileMap[item.id]) {
+      const indent = '  '.repeat(item.level);
+      const filePath = docIdToFileMap[item.id];
+      const content = fs.readFileSync(filePath, 'utf8');
+      const title = extractTitle(content);
+      
+      tocHtml += `<div class="toc-item" style="margin-left: ${item.level * 20}px; margin-top: 5px;">
+        <span class="toc-title">${title}</span>
+        <span class="toc-dots">................................................................................................</span>
+        <span class="toc-page">${currentPage}</span>
+      </div>`;
+      
+      currentPage++;
+    }
+  });
+  
+  tocHtml += '</div>';
+  return tocHtml;
+}
+
+// Function to generate TOC PDF
+async function generateTOCPDF(structure, docIds, markdownFiles, outputPath) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  try {
+    const tocContent = generateTableOfContents(structure, docIds, markdownFiles);
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.6; 
+              padding: 20px; 
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            .table-of-contents h1 {
+              text-align: center;
+              margin-bottom: 30px;
+              border-bottom: 2px solid #333;
+              padding-bottom: 10px;
+            }
+            .toc-item {
+              display: flex;
+              align-items: baseline;
+              margin-bottom: 3px;
+            }
+            .toc-title {
+              flex-shrink: 0;
+            }
+            .toc-dots {
+              flex-grow: 1;
+              overflow: hidden;
+              white-space: nowrap;
+              margin: 0 5px;
+              color: #ccc;
+              font-size: 12px;
+            }
+            .toc-page {
+              flex-shrink: 0;
+              font-weight: bold;
+            }
+            .toc-category {
+              color: #333;
+              font-size: 16px;
+            }
+          </style>
+        </head>
+        <body>
+          ${tocContent}
+        </body>
+      </html>
+    `;
+
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.pdf({
+      path: outputPath,
+      format: 'A4',
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+    });
+  } finally {
+    await browser.close();
+  }
 }
 
 // Function to remove outbound links and convert them to plain text
@@ -409,7 +560,7 @@ async function main() {
       throw new Error(`Sidebar file does not exist: ${SIDEBAR_PATH}`);
     }
     
-    const docIds = getOrderedDocIds();
+    const { docIds, structure } = getOrderedDocIds();
     if (docIds.length === 0) {
       throw new Error('No documents found in sidebar');
     }
@@ -427,9 +578,14 @@ async function main() {
       fs.mkdirSync(tempPdfDir, { recursive: true });
     }
     
-    const pdfFiles = [];
+    // Generate table of contents PDF first
+    const tocPdfPath = path.join(tempPdfDir, '000-toc.pdf');
+    console.log('Generating table of contents...');
+    await generateTOCPDF(structure, docIds, markdownFiles, tocPdfPath);
+    
+    const pdfFiles = [tocPdfPath];
     for (const [index, file] of markdownFiles.entries()) {
-      const pdfPath = path.join(tempPdfDir, `${String(index).padStart(3, '0')}.pdf`);
+      const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
       console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
       await generatePDFFromMarkdown(file, pdfPath);
       pdfFiles.push(pdfPath);
@@ -444,7 +600,7 @@ async function main() {
     // Clean up temp files
     fs.rmSync(tempPdfDir, { recursive: true, force: true });
     
-    console.log('Successfully generated combined PDF');
+    console.log('Successfully generated combined PDF with table of contents');
     console.log(`Output file: ${outputPath}`);
   } catch (error) {
     console.error('Error generating PDF:', error);
