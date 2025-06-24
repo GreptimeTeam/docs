@@ -463,20 +463,50 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
     currentPageIndex += pages.length;
   }
   
-  // Add bookmarks to PDF
-  bookmarks.forEach(bookmark => {
+  // Create bookmarks using pdf-lib's proper API
+  if (bookmarks.length > 0) {
     const pages = mergedPdf.getPages();
-    if (pages[bookmark.pageIndex]) {
-      mergedPdf.catalog.set('Outlines', mergedPdf.context.obj({
-        Type: 'Outlines',
-        Count: bookmarks.length,
-        First: mergedPdf.context.obj({
+    const outlineDict = mergedPdf.context.obj({
+      Type: 'Outlines',
+      Count: bookmarks.length
+    });
+    
+    let prevOutlineItem = null;
+    let firstOutlineItem = null;
+    
+    bookmarks.forEach((bookmark, index) => {
+      if (pages[bookmark.pageIndex]) {
+        const outlineItem = mergedPdf.context.obj({
           Title: mergedPdf.context.obj(bookmark.title),
-          Dest: [pages[bookmark.pageIndex].ref, 'XYZ', null, null, null]
-        })
-      }));
+          Parent: outlineDict,
+          Dest: mergedPdf.context.obj([
+            pages[bookmark.pageIndex].ref,
+            'XYZ',
+            null,
+            null,
+            null
+          ])
+        });
+        
+        if (index === 0) {
+          firstOutlineItem = outlineItem;
+        }
+        
+        if (prevOutlineItem) {
+          prevOutlineItem.set('Next', outlineItem);
+          outlineItem.set('Prev', prevOutlineItem);
+        }
+        
+        prevOutlineItem = outlineItem;
+      }
+    });
+    
+    if (firstOutlineItem) {
+      outlineDict.set('First', firstOutlineItem);
+      outlineDict.set('Last', prevOutlineItem);
+      mergedPdf.catalog.set('Outlines', outlineDict);
     }
-  });
+  }
 
   const mergedPdfBytes = await mergedPdf.save();
   fs.writeFileSync(outputPath, mergedPdfBytes);
