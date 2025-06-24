@@ -528,30 +528,43 @@ async function addOutlineToPDF(inputPath, outputPath, outlineItems) {
     let lastOutline = null;
     let prevOutline = null;
     
-    // Create outline items
-    for (const item of outlineItems) {
-      const outlineDict = pdfDoc.context.obj({
-        Title: item.title,
-        Parent: rootOutlineDict,
-        Dest: [
-          pdfDoc.getPage(item.page), 
-          'XYZ',
-          null, // left
-          null, // top
-          null  // zoom
-        ]
-      });
+    // Track titles to handle duplicates
+    const titleCounts = {};
+    
+    // Create outline items in batches to prevent stack overflow
+    const batchSize = 100;
+    for (let i = 0; i < outlineItems.length; i += batchSize) {
+      const batch = outlineItems.slice(i, i + batchSize);
       
-      // Link outline items
-      if (prevOutline) {
-        outlineDict.set('Prev', prevOutline);
-        prevOutline.set('Next', outlineDict);
-      } else {
-        firstOutline = outlineDict;
+      for (const item of batch) {
+        // Handle duplicate titles by appending numbers
+        const titleCount = (titleCounts[item.title] || 0) + 1;
+        titleCounts[item.title] = titleCount;
+        const uniqueTitle = titleCount > 1 ? `${item.title} (${titleCount})` : item.title;
+
+        const outlineDict = pdfDoc.context.obj({
+          Title: uniqueTitle,
+          Parent: rootOutlineDict,
+          Dest: [
+            pdfDoc.getPage(item.page), 
+            'XYZ',
+            null, // left
+            null, // top
+            null  // zoom
+          ]
+        });
+        
+        // Link outline items
+        if (prevOutline) {
+          outlineDict.set('Prev', prevOutline);
+          prevOutline.set('Next', outlineDict);
+        } else {
+          firstOutline = outlineDict;
+        }
+        
+        prevOutline = outlineDict;
+        lastOutline = outlineDict;
       }
-      
-      prevOutline = outlineDict;
-      lastOutline = outlineDict;
     }
     
     // Set first and last references
@@ -565,8 +578,12 @@ async function addOutlineToPDF(inputPath, outputPath, outlineItems) {
     // Add outline to document catalog
     pdfDoc.catalog.set('Outlines', rootOutlineDict);
     
-    // Save the modified PDF
-    const modifiedPdfBytes = await pdfDoc.save();
+    // Save the modified PDF with reduced memory usage
+    const modifiedPdfBytes = await pdfDoc.save({
+      useObjectStreams: true,
+      useCompression: true
+    });
+    
     fs.writeFileSync(outputPath, modifiedPdfBytes);
     
     console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
