@@ -229,20 +229,36 @@ function removeOutboundLinks(content) {
   return content;
 }
 
-// Function to fix image paths to point to the static directory
-function fixImagePaths(content) {
+// Function to convert images to base64 data URLs
+function convertImagesToBase64(content) {
   // Fix markdown image syntax: ![alt](path)
   content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, imagePath) => {
-    // Skip if it's already an absolute path or URL
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('file://')) {
+    // Skip if it's already a data URL or external URL
+    if (imagePath.startsWith('data:') || imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return match;
     }
     
-    // For paths starting from root, prepend BASE_DIR and static
+    // For paths starting from root, convert to base64
     if (imagePath.startsWith('/')) {
       const absolutePath = path.join(BASE_DIR, 'static', imagePath.substring(1));
-      const fileUrl = `file://${absolutePath}`;
-      return `![${alt}](${fileUrl})`;
+      try {
+        if (fs.existsSync(absolutePath)) {
+          const imageBuffer = fs.readFileSync(absolutePath);
+          const ext = path.extname(absolutePath).toLowerCase();
+          let mimeType = 'image/png'; // default
+          
+          if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
+          else if (ext === '.gif') mimeType = 'image/gif';
+          else if (ext === '.svg') mimeType = 'image/svg+xml';
+          else if (ext === '.webp') mimeType = 'image/webp';
+          
+          const base64 = imageBuffer.toString('base64');
+          const dataUrl = `data:${mimeType};base64,${base64}`;
+          return `![${alt}](${dataUrl})`;
+        }
+      } catch (error) {
+        console.warn(`Warning: Could not read image file ${absolutePath}: ${error.message}`);
+      }
     }
     
     return match;
@@ -250,16 +266,32 @@ function fixImagePaths(content) {
   
   // Fix HTML img tags: <img src="path" />
   content = content.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/g, (match, beforeSrc, imagePath, afterSrc) => {
-    // Skip if it's already an absolute path or URL
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('file://')) {
+    // Skip if it's already a data URL or external URL
+    if (imagePath.startsWith('data:') || imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return match;
     }
     
-    // For paths starting from root, prepend BASE_DIR and static
+    // For paths starting from root, convert to base64
     if (imagePath.startsWith('/')) {
       const absolutePath = path.join(BASE_DIR, 'static', imagePath.substring(1));
-      const fileUrl = `file://${absolutePath}`;
-      return `<img${beforeSrc} src="${fileUrl}"${afterSrc}>`;
+      try {
+        if (fs.existsSync(absolutePath)) {
+          const imageBuffer = fs.readFileSync(absolutePath);
+          const ext = path.extname(absolutePath).toLowerCase();
+          let mimeType = 'image/png'; // default
+          
+          if (ext === '.jpg' || ext === '.jpeg') mimeType = 'image/jpeg';
+          else if (ext === '.gif') mimeType = 'image/gif';
+          else if (ext === '.svg') mimeType = 'image/svg+xml';
+          else if (ext === '.webp') mimeType = 'image/webp';
+          
+          const base64 = imageBuffer.toString('base64');
+          const dataUrl = `data:${mimeType};base64,${base64}`;
+          return `<img${beforeSrc} src="${dataUrl}"${afterSrc}>`;
+        }
+      } catch (error) {
+        console.warn(`Warning: Could not read image file ${absolutePath}: ${error.message}`);
+      }
     }
     
     return match;
@@ -269,9 +301,7 @@ function fixImagePaths(content) {
 }
 
 async function generatePDFFromMarkdown(file, outputPath) {
-  const browser = await puppeteer.launch({
-    args: ['--allow-file-access-from-files', '--disable-web-security']
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   
   try {
@@ -282,8 +312,8 @@ async function generatePDFFromMarkdown(file, outputPath) {
     // Remove outbound links
     content = removeOutboundLinks(content);
     
-    // Fix image paths to point to static directory
-    content = fixImagePaths(content);
+    // Convert images to base64 data URLs
+    content = convertImagesToBase64(content);
     
     // Convert markdown to HTML
     const htmlContent = marked(content);
@@ -332,13 +362,6 @@ async function generatePDFFromMarkdown(file, outputPath) {
         </body>
       </html>
     `;
-
-    // Debug: Output HTML content for the first file to see image paths
-    if (file.includes('getting-started') || file.includes('overview') || file.includes('index')) {
-      console.log('\n=== DEBUG: Generated HTML content ===');
-      console.log(html);
-      console.log('=== END DEBUG ===\n');
-    }
 
     await page.setContent(html, { waitUntil: 'networkidle0' });
     await page.pdf({
