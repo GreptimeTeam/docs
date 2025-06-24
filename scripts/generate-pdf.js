@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const { default: PDFMerger } = require('pdf-merger-js');
-const { PDFDocument, PDFName, PDFDict, PDFArray, PDFRef } = require('pdf-lib');
+const hummus = require('hummus-pdf-writer');
 const { marked } = require('marked');
 
 // Help function
@@ -455,23 +455,24 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
     const tempMergedPath = path.join(OUTPUT_DIR, 'temp_merged.pdf');
     await merger.save(tempMergedPath);
 
-    console.log('Adding PDF bookmarks/outline...');
+    console.log('Calculating page offsets for bookmarks...');
 
-    // Load the merged PDF with pdf-lib to add bookmarks
-    const pdfBytes = fs.readFileSync(tempMergedPath);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-
-    // Calculate page offsets for each document
+    // Calculate page offsets for each document using hummus-pdf-writer
     let currentPage = 0;
     const pageOffsets = [];
 
     for (let i = 0; i < pdfFiles.length; i++) {
       pageOffsets.push(currentPage);
 
-      // Load individual PDF to get accurate page count
-      const individualPdfBytes = fs.readFileSync(pdfFiles[i]);
-      const individualPdf = await PDFDocument.load(individualPdfBytes);
-      currentPage += individualPdf.getPageCount();
+      // Get page count using hummus-pdf-writer
+      try {
+        const pdfReader = hummus.createReader(pdfFiles[i]);
+        const pageCount = pdfReader.getPagesCount();
+        currentPage += pageCount;
+      } catch (error) {
+        console.warn(`Warning: Could not read page count for ${pdfFiles[i]}, estimating 1 page`);
+        currentPage += 1;
+      }
     }
 
     // Create outline entries using heading titles from markdown files
@@ -493,12 +494,8 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
       console.log(`Outline entry: "${title}" - Page ${pageOffset + 1}`);
     }
 
-    // Add outline/bookmarks to PDF
-    await addOutlineToPDF(pdfDoc, outlineItems);
-
-    // Save the final PDF with bookmarks
-    const finalPdfBytes = await pdfDoc.save();
-    fs.writeFileSync(outputPath, finalPdfBytes);
+    // Add outline/bookmarks to PDF using hummus-pdf-writer
+    await addOutlineToPDF(tempMergedPath, outputPath, outlineItems);
 
     // Clean up temp file
     fs.unlinkSync(tempMergedPath);
@@ -511,18 +508,96 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
   }
 }
 
-// Function to add outline/bookmarks to PDF
-async function addOutlineToPDF(pdfDoc, outlineItems) {
+// Function to add outline/bookmarks to PDF using hummus-pdf-writer
+async function addOutlineToPDF(inputPath, outputPath, outlineItems) {
   try {
-    console.log('Skipping PDF outline generation due to complexity with pdf-lib');
-    console.log('PDF will be generated without bookmarks');
-    // For now, skip outline generation to avoid circular reference issues
-    // This can be implemented later with a different approach or library
-    return;
+    console.log('Adding PDF outline/bookmarks using hummus-pdf-writer...');
+    
+    const pdfWriter = hummus.createWriterToModify(inputPath, {
+      modifiedFilePath: outputPath
+    });
+    
+    // Get the document context
+    const documentContext = pdfWriter.getDocumentContext();
+    
+    // Create outline dictionary
+    const outlineDict = documentContext.getObjectsContext().startDictionary();
+    outlineDict.writeKey('Type').writeNameValue('Outlines');
+    outlineDict.writeKey('Count').writeNumberValue(outlineItems.length);
+    
+    let firstOutlineRef = null;
+    let lastOutlineRef = null;
+    let prevOutlineRef = null;
+    
+    // Create outline items
+    for (let i = 0; i < outlineItems.length; i++) {
+      const item = outlineItems[i];
+      
+      // Create outline item dictionary
+      const outlineItemDict = documentContext.getObjectsContext().startDictionary();
+      outlineItemDict.writeKey('Title').writeLiteralStringValue(item.title);
+      outlineItemDict.writeKey('Parent').writeObjectReferenceValue(outlineDict.getObjectReference());
+      
+      // Create destination array [page /XYZ left top zoom]
+      const destArray = documentContext.getObjectsContext().startArray();
+      destArray.writeIndirectObjectReference(documentContext.getPageTree().getPageObjectID(item.page));
+      destArray.writeName('XYZ');
+      destArray.writeNull(); // left
+      destArray.writeNull(); // top  
+      destArray.writeNull(); // zoom
+      destArray.endArray();
+      
+      outlineItemDict.writeKey('Dest').writeObjectReferenceValue(destArray.getObjectReference());
+      
+      // Link to previous item
+      if (prevOutlineRef) {
+        // Update previous item to point to this one
+        const prevDict = documentContext.getObjectsContext().startModifiedIndirectObject(prevOutlineRef);
+        prevDict.writeKey('Next').writeObjectReferenceValue(outlineItemDict.getObjectReference());
+        prevDict.endDictionary();
+        documentContext.getObjectsContext().endIndirectObject();
+        
+        // This item points back to previous
+        outlineItemDict.writeKey('Prev').writeObjectReferenceValue(prevOutlineRef);
+      } else {
+        // First item
+        firstOutlineRef = outlineItemDict.getObjectReference();
+      }
+      
+      outlineItemDict.endDictionary();
+      const outlineItemRef = documentContext.getObjectsContext().endIndirectObject();
+      
+      lastOutlineRef = outlineItemRef;
+      prevOutlineRef = outlineItemRef;
+    }
+    
+    // Set first and last references in outline dictionary
+    if (firstOutlineRef) {
+      outlineDict.writeKey('First').writeObjectReferenceValue(firstOutlineRef);
+    }
+    if (lastOutlineRef) {
+      outlineDict.writeKey('Last').writeObjectReferenceValue(lastOutlineRef);
+    }
+    
+    outlineDict.endDictionary();
+    const outlineRef = documentContext.getObjectsContext().endIndirectObject();
+    
+    // Add outline to document catalog
+    const catalog = documentContext.getCatalogInformation().getCatalogObject();
+    const modifiedCatalog = documentContext.getObjectsContext().startModifiedIndirectObject(catalog.getObjectReference());
+    modifiedCatalog.writeKey('Outlines').writeObjectReferenceValue(outlineRef);
+    modifiedCatalog.endDictionary();
+    documentContext.getObjectsContext().endIndirectObject();
+    
+    pdfWriter.end();
+    
+    console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
+    
   } catch (error) {
     console.error('Error adding outline to PDF:', error);
     console.log('Continuing without bookmarks...');
-    // Don't throw - continue without bookmarks if there's an issue
+    // Copy the input file to output if outline generation fails
+    fs.copyFileSync(inputPath, outputPath);
   }
 }
 
