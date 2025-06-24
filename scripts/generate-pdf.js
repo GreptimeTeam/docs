@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
-const { PDFDocument, PDFName } = require('pdf-lib');
+const PDFDocument = require('pdfkit');
 const { marked } = require('marked');
 
 // Help function
@@ -427,68 +427,57 @@ async function generatePDFFromMarkdown(file, outputPath) {
 }
 
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
-  const mergedPdf = await PDFDocument.create();
-  
-  // First pass - copy all pages
-  for (const file of pdfFiles) {
-    const pdfBytes = fs.readFileSync(file);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
-    pages.forEach(page => mergedPdf.addPage(page));
-  }
+  return new Promise((resolve, reject) => {
+    const mergedPdf = new PDFDocument();
+    const output = fs.createWriteStream(outputPath);
+    
+    // Track bookmarks and page numbers
+    const bookmarks = [];
+    let currentPage = 0;
+    let currentCategory = null;
+    let currentCategoryBookmark = null;
+    
+    // Pipe output to file
+    mergedPdf.pipe(output);
+    
+    // Process each PDF file
+    (async function processFiles() {
+      for (const [index, file] of pdfFiles.entries()) {
+        const docId = docIds[index];
+        const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
+        const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
+        
+        // Add bookmark for this document
+        const bookmark = mergedPdf.outline.addItem(title, {
+          page: currentPage,
+          expanded: false,
+          parent: currentCategoryBookmark
+        });
+        bookmarks.push(bookmark);
+        
+        // Add pages from this PDF
+        const pdfBytes = fs.readFileSync(file);
+        const pdfDoc = new PDFDocument();
+        pdfDoc.on('data', chunk => mergedPdf.write(chunk));
+        pdfDoc.on('end', () => {
+          currentPage += getPageCount(pdfBytes);
+          if (index === pdfFiles.length - 1) {
+            mergedPdf.end();
+          }
+        });
+        pdfDoc.end(pdfBytes);
+      }
+    })().catch(reject);
+    
+    output.on('finish', resolve);
+    output.on('error', reject);
+  });
+}
 
-  // Create outline structure
-  const bookmarks = [];
-  let currentPage = 0;
-  let currentCategory = null;
-  let currentCategoryBookmark = null;
-  
-  for (const [index, file] of pdfFiles.entries()) {
-    const pdfDoc = await PDFDocument.load(fs.readFileSync(file));
-    const pages = pdfDoc.getPageCount();
-    
-    // Get the corresponding docId and structure item
-    const docId = docIds[index];
-    const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
-    const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
-    
-    // Create bookmark for this document
-    const dest = mergedPdf.context.obj(
-      mergedPdf.getPages()[currentPage].ref,
-      'XYZ',
-      null,
-      null,
-      null
-    );
-    
-    const bookmarkRef = mergedPdf.context.nextRef();
-    const bookmarkDict = mergedPdf.context.obj({
-      Title: new String(title),
-      Parent: currentCategoryBookmark,
-      Dest: dest
-    });
-    
-    bookmarks.push(bookmarkRef);
-    mergedPdf.context.assign(bookmarkRef, bookmarkDict);
-    
-    currentPage += pages;
-  }
-
-  // Create outline dictionary if we have bookmarks
-  if (bookmarks.length > 0) {
-    const outlineDictRef = mergedPdf.context.nextRef();
-    const outlineDict = {
-      Type: 'Outlines',
-      First: bookmarks[0],
-      Last: bookmarks[bookmarks.length - 1],
-      Count: bookmarks.length
-    };
-    mergedPdf.context.assign(outlineDictRef, outlineDict);
-    mergedPdf.catalog.set(PDFName.of('Outlines'), outlineDictRef);
-  }
-
-  const mergedPdfBytes = await mergedPdf.save();
-  fs.writeFileSync(outputPath, mergedPdfBytes);
+// Helper function to get page count from PDF buffer
+function getPageCount(pdfBuffer) {
+  const match = pdfBuffer.toString().match(/\/Type\s*\/Page[^s]/g);
+  return match ? match.length : 0;
 }
 
 // Main execution
