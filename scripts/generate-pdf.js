@@ -229,6 +229,73 @@ function removeOutboundLinks(content) {
   return content;
 }
 
+// Function to fix image paths to point to the static directory
+function fixImagePaths(content) {
+  const staticDir = path.join(BASE_DIR, 'static');
+  
+  // Fix markdown image syntax: ![alt](path)
+  content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, imagePath) => {
+    // Skip if it's already an absolute path or URL
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || path.isAbsolute(imagePath)) {
+      return match;
+    }
+    
+    let absolutePath;
+    
+    // Handle different path patterns
+    if (imagePath.startsWith('/img/') || imagePath.startsWith('/static/')) {
+      // Remove leading slash and convert to absolute path
+      absolutePath = path.join(BASE_DIR, 'static', imagePath.replace(/^\/(?:img\/|static\/)/, ''));
+    } else if (imagePath.startsWith('../static/')) {
+      // Handle relative paths to static
+      absolutePath = path.join(BASE_DIR, 'static', imagePath.replace('../static/', ''));
+    } else if (imagePath.startsWith('./') || !imagePath.startsWith('/')) {
+      // Handle relative paths - assume they're in static
+      const cleanPath = imagePath.replace(/^\.\//, '');
+      absolutePath = path.join(staticDir, cleanPath);
+    } else {
+      // Default case - assume it's in static
+      absolutePath = path.join(staticDir, imagePath);
+    }
+    
+    // Convert to file:// URL for proper loading in browser
+    const fileUrl = `file://${absolutePath}`;
+    return `![${alt}](${fileUrl})`;
+  });
+  
+  // Fix HTML img tags: <img src="path" />
+  content = content.replace(/<img([^>]*)\ssrc=["']([^"']+)["']([^>]*)>/g, (match, beforeSrc, imagePath, afterSrc) => {
+    // Skip if it's already an absolute path or URL
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || path.isAbsolute(imagePath)) {
+      return match;
+    }
+    
+    let absolutePath;
+    
+    // Handle different path patterns
+    if (imagePath.startsWith('/img/') || imagePath.startsWith('/static/')) {
+      // Remove leading slash and convert to absolute path
+      absolutePath = path.join(BASE_DIR, 'static', imagePath.replace(/^\/(?:img\/|static\/)/, ''));
+    } else if (imagePath.startsWith('../static/')) {
+      // Handle relative paths to static
+      absolutePath = path.join(BASE_DIR, 'static', imagePath.replace('../static/', ''));
+    } else if (imagePath.startsWith('./') || !imagePath.startsWith('/')) {
+      // Handle relative paths - assume they're in static
+      const cleanPath = imagePath.replace(/^\.\//, '');
+      absolutePath = path.join(staticDir, cleanPath);
+    } else {
+      // Default case - assume it's in static
+      absolutePath = path.join(staticDir, imagePath);
+    }
+    
+    // Convert to file:// URL for proper loading in browser
+    const fileUrl = `file://${absolutePath}`;
+    return `<img${beforeSrc} src="${fileUrl}"${afterSrc}>`;
+  });
+  
+  return content;
+}
+
 async function generatePDFFromMarkdown(file, outputPath) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -240,6 +307,9 @@ async function generatePDFFromMarkdown(file, outputPath) {
     
     // Remove outbound links
     content = removeOutboundLinks(content);
+    
+    // Fix image paths to point to static directory
+    content = fixImagePaths(content);
     
     // Convert markdown to HTML
     const htmlContent = marked(content);
