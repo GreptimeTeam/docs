@@ -514,67 +514,11 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
 // Function to add outline/bookmarks to PDF
 async function addOutlineToPDF(pdfDoc, outlineItems) {
   try {
-    const context = pdfDoc.context;
-    const pages = pdfDoc.getPages();
-
-    if (outlineItems.length === 0) {
-      console.log('No outline items to add');
-      return;
-    }
-
-    // Create outline dictionary
-    const outlineDict = context.obj({
-      Type: PDFName.of('Outlines'),
-      Count: outlineItems.length,
-    });
-
-    let prevOutlineItem = null;
-    const outlineItemRefs = [];
-
-    // Create outline items
-    for (let i = 0; i < outlineItems.length; i++) {
-      const item = outlineItems[i];
-      
-      if (item.page >= pages.length) {
-        console.warn(`Warning: Page ${item.page} not found for outline item "${item.title}" (total pages: ${pages.length})`);
-        continue;
-      }
-
-      const pageRef = pages[item.page].ref;
-
-      // Create destination array [page /XYZ left top zoom]
-      const dest = context.obj([pageRef, PDFName.of('XYZ'), null, null, null]);
-
-      // Create outline item dictionary
-      const outlineItemDict = context.obj({
-        Title: context.obj(item.title),
-        Parent: outlineDict,
-        Dest: dest,
-      });
-
-      // Link to previous item
-      if (prevOutlineItem) {
-        prevOutlineItem.set(PDFName.of('Next'), outlineItemDict);
-        outlineItemDict.set(PDFName.of('Prev'), prevOutlineItem);
-      } else {
-        // First item
-        outlineDict.set(PDFName.of('First'), outlineItemDict);
-      }
-
-      outlineItemRefs.push(outlineItemDict);
-      prevOutlineItem = outlineItemDict;
-    }
-
-    // Set last item reference
-    if (prevOutlineItem) {
-      outlineDict.set(PDFName.of('Last'), prevOutlineItem);
-    }
-
-    // Add outline to document catalog
-    const catalog = pdfDoc.catalog;
-    catalog.set(PDFName.of('Outlines'), outlineDict);
-
-    console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
+    console.log('Skipping PDF outline generation due to complexity with pdf-lib');
+    console.log('PDF will be generated without bookmarks');
+    // For now, skip outline generation to avoid circular reference issues
+    // This can be implemented later with a different approach or library
+    return;
   } catch (error) {
     console.error('Error adding outline to PDF:', error);
     console.log('Continuing without bookmarks...');
