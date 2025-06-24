@@ -22,13 +22,11 @@ OPTIONS:
   --help, -h             Show this help message
   --skip-generation      Skip individual PDF generation and combine existing temp files
   --keep-temp            Keep temporary PDF files after successful generation
-
-ENVIRONMENT VARIABLES:
-  LOCALE                 Language locale for the documentation (default: 'en')
+  --locale LOCALE        Language locale for the documentation (default: 'en')
                          Examples: en, zh, ja, fr
-                         
-  BLACKLISTED_CATEGORIES Comma-separated list of categories to exclude from PDF
+  --blacklist CATEGORIES Comma-separated list of categories to exclude from PDF
                          Examples: changelog,roadmap,api-reference
+
 
 EXAMPLES:
   # Generate PDF for current English docs
@@ -38,13 +36,13 @@ EXAMPLES:
   node scripts/generate-pdf.js 0.14
   
   # Generate PDF for current Chinese docs
-  LOCALE=zh node scripts/generate-pdf.js current
+  node scripts/generate-pdf.js current --locale zh
   
   # Generate PDF for version 0.14 with blacklisted categories
-  BLACKLISTED_CATEGORIES=changelog,roadmap node scripts/generate-pdf.js 0.14
+  node scripts/generate-pdf.js 0.14 --blacklist changelog,roadmap
   
   # Generate PDF for Chinese version 0.14 with blacklisted categories
-  LOCALE=zh BLACKLISTED_CATEGORIES=changelog,roadmap node scripts/generate-pdf.js 0.14
+  node scripts/generate-pdf.js 0.14 --locale zh --blacklist changelog,roadmap
   
   # Generate PDF and keep temporary files for debugging
   node scripts/generate-pdf.js current --keep-temp
@@ -73,14 +71,22 @@ if (args.includes('--help') || args.includes('-h')) {
 
 const skipGeneration = args.includes('--skip-generation');
 const keepTemp = args.includes('--keep-temp');
-const version = args.find(arg => !arg.startsWith('-')) || 'current'; // Default to current docs
+
+// Parse locale option
+const localeIndex = args.indexOf('--locale');
+const LOCALE = localeIndex !== -1 && localeIndex + 1 < args.length ? args[localeIndex + 1] : 'en';
+
+// Parse blacklist option
+const blacklistIndex = args.indexOf('--blacklist');
+const BLACKLISTED_CATEGORIES = blacklistIndex !== -1 && blacklistIndex + 1 < args.length 
+  ? args[blacklistIndex + 1].split(',') 
+  : [];
+
+// Get version (first non-option argument)
+const version = args.find(arg => !arg.startsWith('-') && arg !== LOCALE && !BLACKLISTED_CATEGORIES.includes(arg)) || 'current';
 
 // Configuration - can be moved to a config file if needed
-const BLACKLISTED_CATEGORIES = process.env.BLACKLISTED_CATEGORIES 
-  ? process.env.BLACKLISTED_CATEGORIES.split(',') 
-  : []; // Example: 'changelog,roadmap'
 const BASE_DIR = path.join(__dirname, '..');
-const LOCALE = process.env.LOCALE || 'en'; // Default to English
 
 const getDocsDir = () => {
   if (LOCALE === 'en') {
