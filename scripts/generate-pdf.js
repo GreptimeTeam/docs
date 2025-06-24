@@ -3,6 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const { default: PDFMerger } = require('pdf-merger-js');
+const { PDFDocument, PDFName, PDFDict, PDFArray, PDFRef } = require('pdf-lib');
 const { marked } = require('marked');
 
 // Help function
@@ -440,57 +441,69 @@ async function generatePDFFromMarkdown(file, outputPath) {
 
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
   try {
-    console.log('Creating table of contents...');
+    console.log('Merging PDF files...');
 
-    // Create table of contents with heading titles
-    const tocItems = [];
-    let estimatedPage = 2; // Start from page 2 (after TOC)
-
-    for (let i = 0; i < markdownFiles.length; i++) {
-      const markdownFile = markdownFiles[i];
-
-      // Extract title from markdown content
-      const content = fs.readFileSync(markdownFile, 'utf8');
-      const title = extractTitle(content);
-
-      tocItems.push({
-        title: title,
-        page: estimatedPage
-      });
-
-      // Estimate pages for this document (rough estimate based on file size)
-      const stats = fs.statSync(pdfFiles[i]);
-      const estimatedPagesForDoc = Math.max(1, Math.ceil(stats.size / 50000)); // Rough estimate
-      estimatedPage += estimatedPagesForDoc;
-
-      console.log(`TOC entry: "${title}" - Page ${tocItems[i].page}`);
-    }
-
-    // Create TOC PDF
-    const tocPdfPath = path.join(OUTPUT_DIR, 'toc.pdf');
-    await createTableOfContentsPDF(tocItems, tocPdfPath);
-
-    console.log('Merging PDF files with table of contents...');
-
-    // Use pdf-merger-js to merge TOC + all PDFs
+    // First, merge PDFs using pdf-merger-js
     const merger = new PDFMerger();
 
-    // Add TOC first
-    await merger.add(tocPdfPath);
-
-    // Add all document PDFs
     for (const pdfFile of pdfFiles) {
       console.log(`Adding ${path.basename(pdfFile)} to merger...`);
       await merger.add(pdfFile);
     }
 
-    // Save the merged PDF
-    await merger.save(outputPath);
+    // Save to temporary file
+    const tempMergedPath = path.join(OUTPUT_DIR, 'temp_merged.pdf');
+    await merger.save(tempMergedPath);
 
-    // Clean up TOC file
-    fs.unlinkSync(tocPdfPath);
+    console.log('Adding PDF bookmarks/outline...');
 
-    console.log(`Successfully combined ${pdfFiles.length} PDFs with table of contents into ${outputPath}`);
+    // Load the merged PDF with pdf-lib to add bookmarks
+    const pdfBytes = fs.readFileSync(tempMergedPath);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+
+    // Calculate page offsets for each document
+    let currentPage = 0;
+    const pageOffsets = [];
+
+    for (let i = 0; i < pdfFiles.length; i++) {
+      pageOffsets.push(currentPage);
+
+      // Load individual PDF to get accurate page count
+      const individualPdfBytes = fs.readFileSync(pdfFiles[i]);
+      const individualPdf = await PDFDocument.load(individualPdfBytes);
+      currentPage += individualPdf.getPageCount();
+    }
+
+    // Create outline entries using heading titles from markdown files
+    const outlineItems = [];
+
+    for (let i = 0; i < markdownFiles.length; i++) {
+      const markdownFile = markdownFiles[i];
+      const pageOffset = pageOffsets[i];
+
+      // Extract title from markdown content
+      const content = fs.readFileSync(markdownFile, 'utf8');
+      const title = extractTitle(content);
+
+      outlineItems.push({
+        title: title,
+        page: pageOffset
+      });
+
+      console.log(`Outline entry: "${title}" - Page ${pageOffset + 1}`);
+    }
+
+    // Add outline/bookmarks to PDF
+    await addOutlineToPDF(pdfDoc, outlineItems);
+
+    // Save the final PDF with bookmarks
+    const finalPdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPath, finalPdfBytes);
+
+    // Clean up temp file
+    fs.unlinkSync(tempMergedPath);
+
+    console.log(`Successfully combined ${pdfFiles.length} PDFs with bookmarks into ${outputPath}`);
 
   } catch (error) {
     console.error('Error combining PDFs:', error);
@@ -498,73 +511,67 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
   }
 }
 
-// Function to create a table of contents PDF
-async function createTableOfContentsPDF(tocItems, outputPath) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
+// Function to add outline/bookmarks to PDF
+async function addOutlineToPDF(pdfDoc, outlineItems) {
   try {
-    // Create HTML for table of contents
-    const tocHtml = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              padding: 40px;
-              max-width: 800px;
-              margin: 0 auto;
-            }
-            h1 {
-              text-align: center;
-              color: #333;
-              border-bottom: 2px solid #333;
-              padding-bottom: 10px;
-              margin-bottom: 30px;
-            }
-            .toc-item {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              padding: 8px 0;
-              border-bottom: 1px dotted #ccc;
-            }
-            .toc-title {
-              flex: 1;
-              padding-right: 20px;
-            }
-            .toc-page {
-              font-weight: bold;
-              color: #666;
-            }
-            .toc-item:hover {
-              background-color: #f5f5f5;
-            }
-          </style>
-        </head>
-        <body>
-          <h1>Table of Contents</h1>
-          ${tocItems.map(item => `
-            <div class="toc-item">
-              <div class="toc-title">${item.title}</div>
-              <div class="toc-page">${item.page}</div>
-            </div>
-          `).join('')}
-        </body>
-      </html>
-    `;
+    const context = pdfDoc.context;
+    const pages = pdfDoc.getPages();
 
-    await page.setContent(tocHtml, { waitUntil: 'networkidle0' });
-    await page.pdf({
-      path: outputPath,
-      format: 'A4',
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+    // Create outline dictionary
+    const outlineDict = context.obj({
+      Type: 'Outlines',
+      Count: outlineItems.length,
     });
-  } finally {
-    await browser.close();
+
+    let prevOutlineItem = null;
+    const outlineItemRefs = [];
+
+    // Create outline items
+    for (let i = 0; i < outlineItems.length; i++) {
+      const item = outlineItems[i];
+      const pageRef = pages[item.page]?.ref;
+
+      if (!pageRef) {
+        console.warn(`Warning: Page ${item.page} not found for outline item "${item.title}"`);
+        continue;
+      }
+
+      // Create destination array [page /XYZ left top zoom]
+      const dest = context.obj([pageRef, 'XYZ', null, null, null]);
+
+      // Create outline item dictionary
+      const outlineItemDict = context.obj({
+        Title: PDFName.of(item.title),
+        Parent: outlineDict.ref,
+        Dest: dest,
+      });
+
+      // Link to previous item
+      if (prevOutlineItem) {
+        prevOutlineItem.set(PDFName.of('Next'), outlineItemDict.ref);
+        outlineItemDict.set(PDFName.of('Prev'), prevOutlineItem.ref);
+      } else {
+        // First item
+        outlineDict.set(PDFName.of('First'), outlineItemDict.ref);
+      }
+
+      outlineItemRefs.push(outlineItemDict.ref);
+      prevOutlineItem = outlineItemDict;
+    }
+
+    // Set last item reference
+    if (prevOutlineItem) {
+      outlineDict.set(PDFName.of('Last'), prevOutlineItem.ref);
+    }
+
+    // Add outline to document catalog
+    const catalog = pdfDoc.catalog;
+    catalog.set(PDFName.of('Outlines'), outlineDict.ref);
+
+    console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
+  } catch (error) {
+    console.error('Error adding outline to PDF:', error);
+    // Don't throw - continue without bookmarks if there's an issue
   }
 }
 
