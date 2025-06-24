@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, PDFName } = require('pdf-lib');
 const { marked } = require('marked');
 
 // Help function
@@ -437,16 +437,9 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
     pages.forEach(page => mergedPdf.addPage(page));
   }
 
-  // Second pass - create outline (bookmarks)
-  let currentPage = 0;
-  const outlineDict = mergedPdf.context.obj({
-    Type: 'Outlines',
-    First: null,
-    Last: null,
-    Count: 0
-  });
-  
+  // Create outline structure
   const bookmarks = [];
+  let currentPage = 0;
   let currentCategory = null;
   let currentCategoryBookmark = null;
   
@@ -460,18 +453,39 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
     const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
     
     // Create bookmark for this document
-    const bookmark = {
-      title: title,
-      pageIndex: currentPage,
-      parent: currentCategoryBookmark
-    };
-    bookmarks.push(bookmark);
+    const dest = mergedPdf.context.obj(
+      mergedPdf.getPages()[currentPage].ref,
+      'XYZ',
+      null,
+      null,
+      null
+    );
+    
+    const bookmarkRef = mergedPdf.context.nextRef();
+    const bookmarkDict = mergedPdf.context.obj({
+      Title: new String(title),
+      Parent: currentCategoryBookmark,
+      Dest: dest
+    });
+    
+    bookmarks.push(bookmarkRef);
+    mergedPdf.context.assign(bookmarkRef, bookmarkDict);
     
     currentPage += pages;
   }
 
-  // Add outline dictionary to document catalog
-  mergedPdf.catalog.set(PDFName.of('Outlines'), outlineDict);
+  // Create outline dictionary if we have bookmarks
+  if (bookmarks.length > 0) {
+    const outlineDictRef = mergedPdf.context.nextRef();
+    const outlineDict = {
+      Type: 'Outlines',
+      First: bookmarks[0],
+      Last: bookmarks[bookmarks.length - 1],
+      Count: bookmarks.length
+    };
+    mergedPdf.context.assign(outlineDictRef, outlineDict);
+    mergedPdf.catalog.set(PDFName.of('Outlines'), outlineDictRef);
+  }
 
   const mergedPdfBytes = await mergedPdf.save();
   fs.writeFileSync(outputPath, mergedPdfBytes);
