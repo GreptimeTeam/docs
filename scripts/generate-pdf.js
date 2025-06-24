@@ -166,9 +166,6 @@ function removeOutboundLinks(content) {
   // Pattern: [link text][ref] where [ref]: http://example.com
   content = content.replace(/^\s*\[[^\]]+\]:\s*https?:\/\/.*$/gm, '');
   
-  // Remove bare URLs that start with http:// or https://
-  content = content.replace(/https?:\/\/[^\s\)]+/g, '');
-  
   return content;
 }
 
