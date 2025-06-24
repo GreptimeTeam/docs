@@ -441,36 +441,51 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
     mergedPdf.pipe(output);
     
     // Process each PDF file
-    (async function processFiles() {
-      for (const [index, file] of pdfFiles.entries()) {
-        const docId = docIds[index];
-        const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
-        const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
-        
-        // Add bookmark for this document
-        const bookmark = mergedPdf.outline.addItem(title, {
-          page: currentPage,
-          expanded: false,
-          parent: currentCategoryBookmark
-        });
-        bookmarks.push(bookmark);
-        
-        // Add pages from this PDF
-        const pdfBytes = fs.readFileSync(file);
-        const pdfDoc = new PDFDocument();
-        pdfDoc.on('data', chunk => mergedPdf.write(chunk));
-        pdfDoc.on('end', () => {
-          currentPage += getPageCount(pdfBytes);
-          if (index === pdfFiles.length - 1) {
-            mergedPdf.end();
-          }
-        });
-        pdfDoc.end(pdfBytes);
+    const processNextFile = async (index) => {
+      if (index >= pdfFiles.length) {
+        mergedPdf.end();
+        return;
       }
-    })().catch(reject);
+
+      const file = pdfFiles[index];
+      const docId = docIds[index];
+      const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
+      const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
+      
+      // Add bookmark for this document
+      const bookmark = mergedPdf.outline.addItem(title, {
+        page: currentPage,
+        expanded: false,
+        parent: currentCategoryBookmark
+      });
+      bookmarks.push(bookmark);
+      
+      // Add pages from this PDF
+      const pdfBytes = fs.readFileSync(file);
+      const pageCount = getPageCount(pdfBytes);
+      
+      // Create a transform stream to pipe the PDF into our merged document
+      const { Readable } = require('stream');
+      const pdfStream = new Readable();
+      pdfStream.push(pdfBytes);
+      pdfStream.push(null); // Signal end of stream
+      
+      pdfStream.pipe(mergedPdf, { end: false });
+      
+      pdfStream.on('end', () => {
+        currentPage += pageCount;
+        processNextFile(index + 1);
+      });
+      
+      pdfStream.on('error', reject);
+    };
+
+    // Start processing
+    processNextFile(0);
     
     output.on('finish', resolve);
     output.on('error', reject);
+    mergedPdf.on('error', reject);
   });
 }
 
