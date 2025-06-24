@@ -3,7 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const PDFDocument = require('pdfkit');
-const PDFMerger = require('pdf-merger-js');
+const { default: PDFMerger } = require('pdf-merger-js');
 const { marked } = require('marked');
 
 // Help function
