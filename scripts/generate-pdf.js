@@ -269,7 +269,9 @@ function fixImagePaths(content) {
 }
 
 async function generatePDFFromMarkdown(file, outputPath) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--allow-file-access-from-files', '--disable-web-security']
+  });
   const page = await browser.newPage();
   
   try {
@@ -330,6 +332,13 @@ async function generatePDFFromMarkdown(file, outputPath) {
         </body>
       </html>
     `;
+
+    // Debug: Output HTML content for the first file to see image paths
+    if (file.includes('getting-started') || file.includes('overview') || file.includes('index')) {
+      console.log('\n=== DEBUG: Generated HTML content ===');
+      console.log(html);
+      console.log('=== END DEBUG ===\n');
+    }
 
     await page.setContent(html, { waitUntil: 'networkidle0' });
     await page.pdf({
