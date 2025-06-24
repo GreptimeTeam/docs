@@ -465,20 +465,30 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
       const pdfBytes = fs.readFileSync(file);
       const pageCount = getPageCount(pdfBytes);
       
-      // Create a transform stream to pipe the PDF into our merged document
-      const { Readable } = require('stream');
-      const pdfStream = new Readable();
-      pdfStream.push(pdfBytes);
-      pdfStream.push(null); // Signal end of stream
+      // Create a temporary file to write the PDF to
+      const tempFile = path.join(OUTPUT_DIR, `temp_${index}.pdf`);
+      fs.writeFileSync(tempFile, pdfBytes);
       
-      pdfStream.pipe(mergedPdf, { end: false });
+      // Create a read stream from the temporary file
+      const pdfStream = fs.createReadStream(tempFile);
+      
+      // Pipe the PDF content into our merged document
+      pdfStream.on('data', (chunk) => {
+        mergedPdf.addPage().text(chunk.toString());
+      });
       
       pdfStream.on('end', () => {
+        // Clean up temporary file
+        fs.unlinkSync(tempFile);
         currentPage += pageCount;
         processNextFile(index + 1);
       });
       
-      pdfStream.on('error', reject);
+      pdfStream.on('error', (err) => {
+        // Clean up temporary file
+        fs.unlinkSync(tempFile);
+        reject(err);
+      });
     };
 
     // Start processing
