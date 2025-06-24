@@ -2,6 +2,7 @@
 .docusaurus
 node_modules
 node_modules/
+pdf-build/
 build
 .envrc
 
@@ -10,3 +11,5 @@ build
 *.swp
 *.swo
 *~
+.aider*
+.env
