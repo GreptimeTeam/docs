@@ -517,9 +517,14 @@ async function addOutlineToPDF(pdfDoc, outlineItems) {
     const context = pdfDoc.context;
     const pages = pdfDoc.getPages();
 
+    if (outlineItems.length === 0) {
+      console.log('No outline items to add');
+      return;
+    }
+
     // Create outline dictionary
     const outlineDict = context.obj({
-      Type: 'Outlines',
+      Type: PDFName.of('Outlines'),
       Count: outlineItems.length,
     });
 
@@ -529,48 +534,50 @@ async function addOutlineToPDF(pdfDoc, outlineItems) {
     // Create outline items
     for (let i = 0; i < outlineItems.length; i++) {
       const item = outlineItems[i];
-      const pageRef = pages[item.page]?.ref;
-
-      if (!pageRef) {
-        console.warn(`Warning: Page ${item.page} not found for outline item "${item.title}"`);
+      
+      if (item.page >= pages.length) {
+        console.warn(`Warning: Page ${item.page} not found for outline item "${item.title}" (total pages: ${pages.length})`);
         continue;
       }
 
+      const pageRef = pages[item.page].ref;
+
       // Create destination array [page /XYZ left top zoom]
-      const dest = context.obj([pageRef, 'XYZ', null, null, null]);
+      const dest = context.obj([pageRef, PDFName.of('XYZ'), null, null, null]);
 
       // Create outline item dictionary
       const outlineItemDict = context.obj({
-        Title: PDFName.of(item.title),
-        Parent: outlineDict.ref,
+        Title: context.obj(item.title),
+        Parent: outlineDict,
         Dest: dest,
       });
 
       // Link to previous item
       if (prevOutlineItem) {
-        prevOutlineItem.set(PDFName.of('Next'), outlineItemDict.ref);
-        outlineItemDict.set(PDFName.of('Prev'), prevOutlineItem.ref);
+        prevOutlineItem.set(PDFName.of('Next'), outlineItemDict);
+        outlineItemDict.set(PDFName.of('Prev'), prevOutlineItem);
       } else {
         // First item
-        outlineDict.set(PDFName.of('First'), outlineItemDict.ref);
+        outlineDict.set(PDFName.of('First'), outlineItemDict);
       }
 
-      outlineItemRefs.push(outlineItemDict.ref);
+      outlineItemRefs.push(outlineItemDict);
       prevOutlineItem = outlineItemDict;
     }
 
     // Set last item reference
     if (prevOutlineItem) {
-      outlineDict.set(PDFName.of('Last'), prevOutlineItem.ref);
+      outlineDict.set(PDFName.of('Last'), prevOutlineItem);
     }
 
     // Add outline to document catalog
     const catalog = pdfDoc.catalog;
-    catalog.set(PDFName.of('Outlines'), outlineDict.ref);
+    catalog.set(PDFName.of('Outlines'), outlineDict);
 
     console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
   } catch (error) {
     console.error('Error adding outline to PDF:', error);
+    console.log('Continuing without bookmarks...');
     // Don't throw - continue without bookmarks if there's an issue
   }
 }
