@@ -31,13 +31,11 @@ const getSidebarPath = () => {
     if (LOCALE === 'en') {
       return path.join(BASE_DIR, 'sidebars.js');
     }
-    return path.join(BASE_DIR, `i18n/${LOCALE}/docusaurus-plugin-content-docs/current/sidebars.json`);
+    // For current localized docs, use the main sidebars.js (same structure for all locales)
+    return path.join(BASE_DIR, 'sidebars.js');
   }
-  // For versioned docs, always use JSON format
-  if (LOCALE === 'en') {
-    return path.join(BASE_DIR, `versioned_sidebars/version-${version}-sidebars.json`);
-  }
-  return path.join(BASE_DIR, `i18n/${LOCALE}/docusaurus-plugin-content-docs/version-${version}/sidebars.json`);
+  // For versioned docs, always use the versioned sidebar (same for all locales)
+  return path.join(BASE_DIR, `versioned_sidebars/version-${version}-sidebars.json`);
 };
 
 const DOCS_DIR = getDocsDir();
