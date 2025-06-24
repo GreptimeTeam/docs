@@ -19,6 +19,7 @@ ARGUMENTS:
 
 OPTIONS:
   --help, -h             Show this help message
+  --skip-generation      Skip individual PDF generation and combine existing temp files
 
 ENVIRONMENT VARIABLES:
   LOCALE                 Language locale for the documentation (default: 'en')
@@ -65,8 +66,8 @@ if (args.includes('--help') || args.includes('-h')) {
   process.exit(0);
 }
 
-// Get version from command line
-const version = args[0] || 'current'; // Default to current docs
+const skipGeneration = args.includes('--skip-generation');
+const version = args.find(arg => !arg.startsWith('-')) || 'current'; // Default to current docs
 
 // Configuration - can be moved to a config file if needed
 const BLACKLISTED_CATEGORIES = process.env.BLACKLISTED_CATEGORIES 
@@ -522,18 +523,35 @@ async function main() {
     
     console.log(`Processing ${markdownFiles.length} files...`);
     
-    // Generate individual PDFs
     const tempPdfDir = path.join(OUTPUT_DIR, 'temp');
-    if (!fs.existsSync(tempPdfDir)) {
-      fs.mkdirSync(tempPdfDir, { recursive: true });
-    }
+    let pdfFiles = [];
     
-    const pdfFiles = [];
-    for (const [index, file] of markdownFiles.entries()) {
-      const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
-      console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
-      await generatePDFFromMarkdown(file, pdfPath);
-      pdfFiles.push(pdfPath);
+    if (skipGeneration) {
+      console.log('Skipping individual PDF generation as requested');
+      if (!fs.existsSync(tempPdfDir)) {
+        throw new Error('Temp directory not found - cannot skip generation');
+      }
+      pdfFiles = fs.readdirSync(tempPdfDir)
+        .filter(file => file.endsWith('.pdf'))
+        .sort()
+        .map(file => path.join(tempPdfDir, file));
+      
+      if (pdfFiles.length === 0) {
+        throw new Error('No PDF files found in temp directory');
+      }
+      console.log(`Found ${pdfFiles.length} existing PDF files to combine`);
+    } else {
+      // Generate individual PDFs
+      if (!fs.existsSync(tempPdfDir)) {
+        fs.mkdirSync(tempPdfDir, { recursive: true });
+      }
+      
+      for (const [index, file] of markdownFiles.entries()) {
+        const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
+        console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
+        await generatePDFFromMarkdown(file, pdfPath);
+        pdfFiles.push(pdfPath);
+      }
     }
     
     // Combine PDFs with bookmarks
