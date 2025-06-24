@@ -429,83 +429,11 @@ async function generatePDFFromMarkdown(file, outputPath) {
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
   const mergedPdf = await PDFDocument.create();
   
-  // Create document outline/bookmarks
-  const docIdToFileMap = {};
-  docIds.forEach((id, index) => {
-    if (markdownFiles[index]) {
-      docIdToFileMap[id] = markdownFiles[index];
-    }
-  });
-  
-  let currentPageIndex = 0;
-  const bookmarks = [];
-  
   for (const file of pdfFiles) {
     const pdfBytes = fs.readFileSync(file);
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
     pages.forEach(page => mergedPdf.addPage(page));
-    
-    // Find corresponding structure item for this PDF
-    const fileIndex = pdfFiles.indexOf(file);
-    if (fileIndex >= 0 && markdownFiles[fileIndex]) {
-      const filePath = markdownFiles[fileIndex];
-      const content = fs.readFileSync(filePath, 'utf8');
-      const title = extractTitle(content);
-      
-      // Add bookmark for this document
-      bookmarks.push({
-        title: title,
-        pageIndex: currentPageIndex
-      });
-    }
-    
-    currentPageIndex += pages.length;
-  }
-  
-  // Create bookmarks using pdf-lib's proper API
-  if (bookmarks.length > 0) {
-    const pages = mergedPdf.getPages();
-    const outlineDict = mergedPdf.context.obj({
-      Type: 'Outlines',
-      Count: bookmarks.length
-    });
-    
-    let prevOutlineItem = null;
-    let firstOutlineItem = null;
-    
-    bookmarks.forEach((bookmark, index) => {
-      if (pages[bookmark.pageIndex]) {
-        const outlineItem = mergedPdf.context.obj({
-          Title: mergedPdf.context.obj(bookmark.title),
-          Parent: outlineDict,
-          Dest: mergedPdf.context.obj([
-            pages[bookmark.pageIndex].ref,
-            'XYZ',
-            null,
-            null,
-            null
-          ])
-        });
-        
-        if (index === 0) {
-          firstOutlineItem = outlineItem;
-        }
-        
-        if (prevOutlineItem) {
-          prevOutlineItem.set('Next', outlineItem);
-          outlineItem.set('Prev', prevOutlineItem);
-        }
-        
-        prevOutlineItem = outlineItem;
-      }
-    });
-    
-    if (firstOutlineItem) {
-      outlineDict.set('First', firstOutlineItem);
-      outlineDict.set('Last', prevOutlineItem);
-      mergedPdf.catalog.set('Outlines', outlineDict);
-    }
   }
 
   const mergedPdfBytes = await mergedPdf.save();
@@ -556,13 +484,13 @@ async function main() {
     // Combine PDFs with bookmarks
     const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
-    console.log('Combining PDFs with bookmarks...');
-    await combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles);
+    console.log('Combining PDFs...');
+    await combinePDFs(pdfFiles, outputPath);
     
     // Clean up temp files
     fs.rmSync(tempPdfDir, { recursive: true, force: true });
     
-    console.log('Successfully generated combined PDF with bookmarks');
+    console.log('Successfully generated combined PDF');
     console.log(`Output file: ${outputPath}`);
   } catch (error) {
     console.error('Error generating PDF:', error);
