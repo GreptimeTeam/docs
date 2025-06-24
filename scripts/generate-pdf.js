@@ -429,11 +429,64 @@ async function generatePDFFromMarkdown(file, outputPath) {
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
   const mergedPdf = await PDFDocument.create();
   
-  for (const file of pdfFiles) {
+  // Track page numbers and bookmarks
+  let currentPage = 0;
+  const bookmarks = [];
+  let currentCategory = null;
+  let currentCategoryBookmark = null;
+  
+  for (const [index, file] of pdfFiles.entries()) {
     const pdfBytes = fs.readFileSync(file);
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+    
+    // Get the corresponding docId and structure item
+    const docId = docIds[index];
+    const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
+    const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
+    
+    // Add pages to merged PDF
     pages.forEach(page => mergedPdf.addPage(page));
+    
+    // Create bookmark for this document
+    const docBookmark = mergedPdf.addBookmark(title, currentPage, {
+      parent: currentCategoryBookmark
+    });
+    
+    // Update current page count
+    currentPage += pages.length;
+  }
+
+  // Second pass to add category bookmarks
+  currentPage = 0;
+  currentCategoryBookmark = null;
+  let lastCategoryLevel = 0;
+  
+  for (const [index, file] of pdfFiles.entries()) {
+    const pdfDoc = await PDFDocument.load(fs.readFileSync(file));
+    const pages = pdfDoc.getPageCount();
+    
+    // Get structure info
+    const docId = docIds[index];
+    const docIndexInStructure = structure.findIndex(item => item.type === 'doc' && item.id === docId);
+    
+    // Check for categories before this doc
+    if (docIndexInStructure > 0) {
+      let i = docIndexInStructure - 1;
+      while (i >= 0 && structure[i].type === 'category') {
+        const category = structure[i];
+        
+        // Only add category bookmark if it's new or at a higher level
+        if (!currentCategoryBookmark || category.level < lastCategoryLevel) {
+          currentCategoryBookmark = mergedPdf.addBookmark(category.label, currentPage);
+          lastCategoryLevel = category.level;
+        }
+        
+        i--;
+      }
+    }
+    
+    currentPage += pages;
   }
 
   const mergedPdfBytes = await mergedPdf.save();
@@ -485,7 +538,7 @@ async function main() {
     const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
     console.log('Combining PDFs...');
-    await combinePDFs(pdfFiles, outputPath);
+    await combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles);
     
     // Clean up temp files
     fs.rmSync(tempPdfDir, { recursive: true, force: true });
