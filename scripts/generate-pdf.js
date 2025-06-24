@@ -21,6 +21,7 @@ ARGUMENTS:
 OPTIONS:
   --help, -h             Show this help message
   --skip-generation      Skip individual PDF generation and combine existing temp files
+  --keep-temp            Keep temporary PDF files after successful generation
 
 ENVIRONMENT VARIABLES:
   LOCALE                 Language locale for the documentation (default: 'en')
@@ -44,6 +45,9 @@ EXAMPLES:
   
   # Generate PDF for Chinese version 0.14 with blacklisted categories
   LOCALE=zh BLACKLISTED_CATEGORIES=changelog,roadmap node scripts/generate-pdf.js 0.14
+  
+  # Generate PDF and keep temporary files for debugging
+  node scripts/generate-pdf.js current --keep-temp
 
 OUTPUT:
   PDF files are generated in the 'pdf-build' directory with the naming pattern:
@@ -68,6 +72,7 @@ if (args.includes('--help') || args.includes('-h')) {
 }
 
 const skipGeneration = args.includes('--skip-generation');
+const keepTemp = args.includes('--keep-temp');
 const version = args.find(arg => !arg.startsWith('-')) || 'current'; // Default to current docs
 
 // Configuration - can be moved to a config file if needed
@@ -623,8 +628,12 @@ async function main() {
     console.log('Combining PDFs...');
     await combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles);
     
-    // Clean up temp files
-    fs.rmSync(tempPdfDir, { recursive: true, force: true });
+    // Clean up temp files unless --keep-temp is specified
+    if (keepTemp) {
+      console.log(`Temporary files preserved in: ${tempPdfDir}`);
+    } else {
+      fs.rmSync(tempPdfDir, { recursive: true, force: true });
+    }
     
     console.log('Successfully generated combined PDF');
     console.log(`Output file: ${outputPath}`);
