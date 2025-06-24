@@ -5,8 +5,68 @@ const puppeteer = require('puppeteer');
 const { PDFDocument } = require('pdf-lib');
 const { marked } = require('marked');
 
+// Help function
+function showHelp() {
+  console.log(`
+Docusaurus PDF Generator
+
+USAGE:
+  node scripts/generate-pdf.js [VERSION] [OPTIONS]
+
+ARGUMENTS:
+  VERSION                 Version to generate PDF for (default: 'current')
+                         Examples: current, 0.14, 0.13, 0.12
+
+OPTIONS:
+  --help, -h             Show this help message
+
+ENVIRONMENT VARIABLES:
+  LOCALE                 Language locale for the documentation (default: 'en')
+                         Examples: en, zh, ja, fr
+                         
+  BLACKLISTED_CATEGORIES Comma-separated list of categories to exclude from PDF
+                         Examples: changelog,roadmap,api-reference
+
+EXAMPLES:
+  # Generate PDF for current English docs
+  node scripts/generate-pdf.js current
+  
+  # Generate PDF for version 0.14 English docs
+  node scripts/generate-pdf.js 0.14
+  
+  # Generate PDF for current Chinese docs
+  LOCALE=zh node scripts/generate-pdf.js current
+  
+  # Generate PDF for version 0.14 with blacklisted categories
+  BLACKLISTED_CATEGORIES=changelog,roadmap node scripts/generate-pdf.js 0.14
+  
+  # Generate PDF for Chinese version 0.14 with blacklisted categories
+  LOCALE=zh BLACKLISTED_CATEGORIES=changelog,roadmap node scripts/generate-pdf.js 0.14
+
+OUTPUT:
+  PDF files are generated in the 'pdf-build' directory with the naming pattern:
+  - docs-current.pdf (for current English docs)
+  - docs-0.14.pdf (for version 0.14 English docs)
+  - docs-current-zh.pdf (for current Chinese docs)
+  - docs-0.14-zh.pdf (for version 0.14 Chinese docs)
+
+NOTES:
+  - The script follows the sidebar order defined in sidebars.js or versioned sidebar files
+  - Outbound links (http://, https://) are converted to plain text in the PDF
+  - Front matter is automatically removed from markdown files
+  - Individual PDFs are generated first, then combined into a single document
+`);
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+if (args.includes('--help') || args.includes('-h')) {
+  showHelp();
+  process.exit(0);
+}
+
 // Get version from command line
-const version = process.argv[2] || 'current'; // Default to current docs
+const version = args[0] || 'current'; // Default to current docs
 
 // Configuration - can be moved to a config file if needed
 const BLACKLISTED_CATEGORIES = process.env.BLACKLISTED_CATEGORIES 
