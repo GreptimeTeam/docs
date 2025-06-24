@@ -3,6 +3,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const PDFDocument = require('pdfkit');
+const PDFMerger = require('pdf-merger-js');
 const { marked } = require('marked');
 
 // Help function
@@ -428,83 +429,28 @@ async function generatePDFFromMarkdown(file, outputPath) {
 }
 
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
-  return new Promise((resolve, reject) => {
-    const mergedPdf = new PDFDocument();
-    const output = fs.createWriteStream(outputPath);
+  try {
+    console.log('Merging PDF files...');
     
-    // Track bookmarks and page numbers
-    const bookmarks = [];
-    let currentPage = 0;
-    let currentCategory = null;
-    let currentCategoryBookmark = null;
+    // Use pdf-merger-js to properly merge the PDFs
+    const merger = new PDFMerger();
     
-    // Pipe output to file
-    mergedPdf.pipe(output);
+    for (const pdfFile of pdfFiles) {
+      console.log(`Adding ${path.basename(pdfFile)} to merger...`);
+      await merger.add(pdfFile);
+    }
     
-    // Process each PDF file
-    const processNextFile = async (index) => {
-      if (index >= pdfFiles.length) {
-        mergedPdf.end();
-        return;
-      }
-
-      const file = pdfFiles[index];
-      const docId = docIds[index];
-      const structureItem = structure.find(item => item.type === 'doc' && item.id === docId);
-      const title = structureItem?.label || extractTitle(fs.readFileSync(markdownFiles[index], 'utf8'));
-      
-      // Add bookmark for this document
-      const bookmark = mergedPdf.outline.addItem(title, {
-        page: currentPage,
-        expanded: false,
-        parent: currentCategoryBookmark
-      });
-      bookmarks.push(bookmark);
-      
-      // Add pages from this PDF
-      const pdfBytes = fs.readFileSync(file);
-      const pageCount = getPageCount(pdfBytes);
-      
-      // Create a temporary file to write the PDF to
-      const tempFile = path.join(OUTPUT_DIR, `temp_${index}.pdf`);
-      fs.writeFileSync(tempFile, pdfBytes);
-      
-      // Create a read stream from the temporary file
-      const pdfStream = fs.createReadStream(tempFile);
-      
-      // Pipe the PDF content into our merged document
-      pdfStream.on('data', (chunk) => {
-        mergedPdf.addPage().text(chunk.toString());
-      });
-      
-      pdfStream.on('end', () => {
-        // Clean up temporary file
-        fs.unlinkSync(tempFile);
-        currentPage += pageCount;
-        processNextFile(index + 1);
-      });
-      
-      pdfStream.on('error', (err) => {
-        // Clean up temporary file
-        fs.unlinkSync(tempFile);
-        reject(err);
-      });
-    };
-
-    // Start processing
-    processNextFile(0);
+    // Save the merged PDF directly
+    await merger.save(outputPath);
     
-    output.on('finish', resolve);
-    output.on('error', reject);
-    mergedPdf.on('error', reject);
-  });
+    console.log(`Successfully combined ${pdfFiles.length} PDFs into ${outputPath}`);
+    
+  } catch (error) {
+    console.error('Error combining PDFs:', error);
+    throw error;
+  }
 }
 
-// Helper function to get page count from PDF buffer
-function getPageCount(pdfBuffer) {
-  const match = pdfBuffer.toString().match(/\/Type\s*\/Page[^s]/g);
-  return match ? match.length : 0;
-}
 
 // Main execution
 async function main() {
