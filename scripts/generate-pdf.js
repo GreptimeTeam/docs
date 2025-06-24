@@ -430,24 +430,131 @@ async function generatePDFFromMarkdown(file, outputPath) {
 
 async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
   try {
-    console.log('Merging PDF files...');
+    console.log('Creating table of contents...');
     
-    // Use pdf-merger-js to properly merge the PDFs
+    // Create table of contents with heading titles
+    const tocItems = [];
+    let estimatedPage = 2; // Start from page 2 (after TOC)
+    
+    for (let i = 0; i < markdownFiles.length; i++) {
+      const markdownFile = markdownFiles[i];
+      
+      // Extract title from markdown content
+      const content = fs.readFileSync(markdownFile, 'utf8');
+      const title = extractTitle(content);
+      
+      tocItems.push({
+        title: title,
+        page: estimatedPage
+      });
+      
+      // Estimate pages for this document (rough estimate based on file size)
+      const stats = fs.statSync(pdfFiles[i]);
+      const estimatedPagesForDoc = Math.max(1, Math.ceil(stats.size / 50000)); // Rough estimate
+      estimatedPage += estimatedPagesForDoc;
+      
+      console.log(`TOC entry: "${title}" - Page ${tocItems[i].page}`);
+    }
+    
+    // Create TOC PDF
+    const tocPdfPath = path.join(OUTPUT_DIR, 'toc.pdf');
+    await createTableOfContentsPDF(tocItems, tocPdfPath);
+    
+    console.log('Merging PDF files with table of contents...');
+    
+    // Use pdf-merger-js to merge TOC + all PDFs
     const merger = new PDFMerger();
     
+    // Add TOC first
+    await merger.add(tocPdfPath);
+    
+    // Add all document PDFs
     for (const pdfFile of pdfFiles) {
       console.log(`Adding ${path.basename(pdfFile)} to merger...`);
       await merger.add(pdfFile);
     }
     
-    // Save the merged PDF directly
+    // Save the merged PDF
     await merger.save(outputPath);
     
-    console.log(`Successfully combined ${pdfFiles.length} PDFs into ${outputPath}`);
+    // Clean up TOC file
+    fs.unlinkSync(tocPdfPath);
+    
+    console.log(`Successfully combined ${pdfFiles.length} PDFs with table of contents into ${outputPath}`);
     
   } catch (error) {
     console.error('Error combining PDFs:', error);
     throw error;
+  }
+}
+
+// Function to create a table of contents PDF
+async function createTableOfContentsPDF(tocItems, outputPath) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  try {
+    // Create HTML for table of contents
+    const tocHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              line-height: 1.6; 
+              padding: 40px; 
+              max-width: 800px;
+              margin: 0 auto;
+            }
+            h1 {
+              text-align: center;
+              color: #333;
+              border-bottom: 2px solid #333;
+              padding-bottom: 10px;
+              margin-bottom: 30px;
+            }
+            .toc-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 8px 0;
+              border-bottom: 1px dotted #ccc;
+            }
+            .toc-title {
+              flex: 1;
+              padding-right: 20px;
+            }
+            .toc-page {
+              font-weight: bold;
+              color: #666;
+            }
+            .toc-item:hover {
+              background-color: #f5f5f5;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Table of Contents</h1>
+          ${tocItems.map(item => `
+            <div class="toc-item">
+              <div class="toc-title">${item.title}</div>
+              <div class="toc-page">${item.page}</div>
+            </div>
+          `).join('')}
+        </body>
+      </html>
+    `;
+
+    await page.setContent(tocHtml, { waitUntil: 'networkidle0' });
+    await page.pdf({
+      path: outputPath,
+      format: 'A4',
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+    });
+  } finally {
+    await browser.close();
   }
 }
 
