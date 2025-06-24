@@ -52,6 +52,7 @@ username = "<username>"
 password = "<password>"
 table = "demo_logs"
 pipeline_name = "greptime_identity"
+healthcheck.enabled = false
 ```
 
 启动 Vector:
