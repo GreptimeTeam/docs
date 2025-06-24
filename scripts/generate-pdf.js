@@ -3,7 +3,6 @@ const path = require('path');
 const { execSync } = require('child_process');
 const puppeteer = require('puppeteer');
 const { default: PDFMerger } = require('pdf-merger-js');
-const { PDFDocument } = require('pdf-lib');
 const { marked } = require('marked');
 
 // Help function
@@ -439,11 +438,10 @@ async function generatePDFFromMarkdown(file, outputPath) {
   }
 }
 
-async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles) {
+async function combinePDFs(pdfFiles, outputPath) {
   try {
     console.log('Merging PDF files...');
 
-    // First, merge PDFs using pdf-merger-js
     const merger = new PDFMerger();
 
     for (const pdfFile of pdfFiles) {
@@ -451,148 +449,12 @@ async function combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFile
       await merger.add(pdfFile);
     }
 
-    // Save to temporary file
-    const tempMergedPath = path.join(OUTPUT_DIR, 'temp_merged.pdf');
-    await merger.save(tempMergedPath);
-
-    console.log('Calculating page offsets for bookmarks...');
-
-    // Calculate page offsets for each document using pdf-lib
-    let currentPage = 0;
-    const pageOffsets = [];
-
-    for (let i = 0; i < pdfFiles.length; i++) {
-      pageOffsets.push(currentPage);
-
-      // Get page count using pdf-lib
-      try {
-        const pdfBytes = fs.readFileSync(pdfFiles[i]);
-        const pdfDoc = await PDFDocument.load(pdfBytes);
-        const pageCount = pdfDoc.getPageCount();
-        currentPage += pageCount;
-      } catch (error) {
-        console.warn(`Warning: Could not read page count for ${pdfFiles[i]}, estimating 1 page`);
-        currentPage += 1;
-      }
-    }
-
-    // Create outline entries using heading titles from markdown files
-    const outlineItems = [];
-
-    for (let i = 0; i < markdownFiles.length; i++) {
-      const markdownFile = markdownFiles[i];
-      const pageOffset = pageOffsets[i];
-
-      // Extract title from markdown content
-      const content = fs.readFileSync(markdownFile, 'utf8');
-      const title = extractTitle(content);
-
-      outlineItems.push({
-        title: title,
-        page: pageOffset
-      });
-
-      console.log(`Outline entry: "${title}" - Page ${pageOffset + 1}`);
-    }
-
-    // Add outline/bookmarks to PDF using hummus-pdf-writer
-    await addOutlineToPDF(tempMergedPath, outputPath, outlineItems);
-
-    // Clean up temp file
-    fs.unlinkSync(tempMergedPath);
-
-    console.log(`Successfully combined ${pdfFiles.length} PDFs with bookmarks into ${outputPath}`);
+    await merger.save(outputPath);
+    console.log(`Successfully combined ${pdfFiles.length} PDFs into ${outputPath}`);
 
   } catch (error) {
     console.error('Error combining PDFs:', error);
     throw error;
-  }
-}
-
-// Function to add outline/bookmarks to PDF using pdf-lib
-async function addOutlineToPDF(inputPath, outputPath, outlineItems) {
-  try {
-    console.log('Adding PDF outline/bookmarks using pdf-lib...');
-    
-    // Read the merged PDF
-    const pdfBytes = fs.readFileSync(inputPath);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    
-    // Create the root outline dictionary
-    const rootOutlineDict = pdfDoc.context.obj({
-      Type: 'Outlines',
-      Count: outlineItems.length,
-    });
-    
-    let firstOutline = null;
-    let lastOutline = null;
-    let prevOutline = null;
-    
-    // Track titles to handle duplicates
-    const titleCounts = {};
-    
-    // Create outline items in batches to prevent stack overflow
-    const batchSize = 100;
-    for (let i = 0; i < outlineItems.length; i += batchSize) {
-      const batch = outlineItems.slice(i, i + batchSize);
-      
-      for (const item of batch) {
-        // Handle duplicate titles by appending numbers
-        const titleCount = (titleCounts[item.title] || 0) + 1;
-        titleCounts[item.title] = titleCount;
-        const uniqueTitle = titleCount > 1 ? `${item.title} (${titleCount})` : item.title;
-
-        const outlineDict = pdfDoc.context.obj({
-          Title: uniqueTitle,
-          Parent: rootOutlineDict,
-          Dest: [
-            pdfDoc.getPage(item.page), 
-            'XYZ',
-            null, // left
-            null, // top
-            null  // zoom
-          ]
-        });
-        
-        // Link outline items
-        if (prevOutline) {
-          outlineDict.set('Prev', prevOutline);
-          prevOutline.set('Next', outlineDict);
-        } else {
-          firstOutline = outlineDict;
-        }
-        
-        prevOutline = outlineDict;
-        lastOutline = outlineDict;
-      }
-    }
-    
-    // Set first and last references
-    if (firstOutline) {
-      rootOutlineDict.set('First', firstOutline);
-    }
-    if (lastOutline) {
-      rootOutlineDict.set('Last', lastOutline);
-    }
-    
-    // Add outline to document catalog
-    pdfDoc.catalog.set('Outlines', rootOutlineDict);
-    
-    // Save the modified PDF with reduced memory usage
-    const modifiedPdfBytes = await pdfDoc.save({
-      useObjectStreams: true,
-      useCompression: true
-    });
-    
-    fs.writeFileSync(outputPath, modifiedPdfBytes);
-    
-    console.log(`Added ${outlineItems.length} bookmark entries to PDF`);
-    
-  } catch (error) {
-    console.error('Error adding outline to PDF:', error);
-    console.log('Continuing without bookmarks...');
-    // Copy the input file to output if outline generation fails
-    fs.copyFileSync(inputPath, outputPath);
   }
 }
 
@@ -659,7 +521,7 @@ async function main() {
     const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
     console.log('Combining PDFs...');
-    await combinePDFs(pdfFiles, outputPath, structure, docIds, markdownFiles);
+    await combinePDFs(pdfFiles, outputPath);
 
     // Clean up temp files unless --keep-temp is specified
     if (keepTemp) {
