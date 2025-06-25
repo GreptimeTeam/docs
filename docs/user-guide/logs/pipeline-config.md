@@ -96,6 +96,10 @@ transform:
 table_suffix: _${string_field_a}
 ```
 
+Starting from `v0.15`, the GreptimeDB introduce a version `2` format.
+The main change is the transform process.
+Refer to [the following documentation](#transform-in-doc-version-2) for detailed changes.
+
 ## Processor
 
 The Processor is used for preprocessing log data, and its configuration is located under the `processors` section in the YAML file. The Pipeline processes data by applying multiple Processors in sequential order, where each Processor depends on the result of the previous Processor. A Processor consists of a name and multiple configurations, and different types of Processors have different fields in their configuration.
@@ -986,6 +990,41 @@ The result will be:
   "born_time": 2021-07-08 16:00:00
 }
 ```
+
+### Transform in doc version 2
+
+Before `v0.15`, the pipeline engine only supports a fully-set transform mode and an auto-transform mode: 
+- Fully-set transform: only fields explicitly noted in the transform section will be persisted into the database
+- Auto-transform: no transform section is written, and the pipeline engine will try to set all the fields from the pipeline context. But in this case, there is no way to set other indexes other than the time index.
+
+Starting from `v0.15`, GreptimeDB introduces a new transform mode combining the advantages of the existing two, which make it easier to write pipeline configuration.
+You only set necessary fields in the transform section, specifying particular datatype and index for them; the rest of the fields from the pipeline context are set automatically by the pipeline engine.
+With the `select` processor, you can decide what field is wanted and what isn't in the final table.
+
+However, this is a breaking change to the existing pipeline configuration files.
+If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string, which is still in the pipeline context, gets immediately inserted into the database and there's no way to stop this behavior.
+
+Therefore, GreptimeDB introduces the concept of doc version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
+```YAML
+version: 2
+processors:
+  - date:
+    field: input_str
+    formats:
+      - "%Y-%m-%dT%H:%M:%S%.3fZ"
+
+transform:
+  - field: input_str, ts
+    type: time
+```
+
+Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
+1. Process all written transform rules sequentially.
+2. Write all fields of the pipeline context to the final table.
+
+Note:
+- If the transform section is explicitly written, it must contain a time index field. Otherwise the time-index field will be inferred by the pipeline engine just like the auto-transform mode.
+- The transform process in the version 2 will consume the original field in the pipeline context, so you can't transform the same field twice.
 
 ## Dispatcher
 
