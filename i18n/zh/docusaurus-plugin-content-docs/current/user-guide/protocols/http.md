@@ -151,13 +151,15 @@ http://{{API-host}}/v1/sql
 ### Query string parameters
 
 - `db`: 数据库名称。可选。如果未提供，将使用默认数据库 `public`。
-- `format`: 输出格式。可选。
+- `format`: 输出格式。可选。默认为 `greptimedb_v1` 的 JSON 格式。
   除了默认的 JSON 格式外，HTTP API 还允许你通过提供 `format` 查询参数来自定义输出格式，值如下：
   - `influxdb_v1`: [influxdb 查询
     API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
     兼容格式。附加参数：
     - `epoch`: `[ns,u,µ,ms,s,m,h]`，返回指定精度的时间戳
-  - `csv`: 逗号分隔值输出
+  - `csv`: 以逗号分隔值格式输出
+  - `csvWithNames`: 以逗号分隔值格式输出，包含列名标题
+  - `csvWithNamesAndTypes`: 以逗号分隔值格式输出，包含列名和数据类型标题
   - `arrow`: [Arrow IPC
     格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
     - `compression`: `zstd` 或 `lz4`，默认：无压缩
@@ -322,6 +324,43 @@ curl -X POST \
 │ "127.0.0.1" │ 1667446798450 │ 0.5 │ 0.2    │
 │ "127.0.0.2" │ 1667446798450 │ 0.2 │ 0.3    │
 └─────────────┴───────────────┴─────┴────────┘
+```
+
+
+#### 使用 `csvWithNames` 格式输出查询数据
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNames
+```
+
+输出：
+```csv
+host,ts,cpu,memory
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
+将 `format` 改为 `csvWithNamesAndTypes`：
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes
+```
+
+输出：
+```csv
+host,ts,cpu,memory
+String,TimestampMillisecond,Float64,Float64
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
 ```
 
 #### 使用 `influxdb_v1` 格式输出查询数据

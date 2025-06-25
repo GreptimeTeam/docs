@@ -159,7 +159,7 @@ http://{{API-host}}/v1/sql
 ### Query string parameters
 
 - `db`: The database name. Optional. If not provided, the default database `public` will be used.
-- `format`: The output format. Optional. 
+- `format`: The output format. Optional. `greptimedb_v1` by default.
   In addition to the default JSON format, the HTTP API also allows you to
   customize output format by providing the `format` query parameter with following
   values:
@@ -168,7 +168,9 @@ http://{{API-host}}/v1/sql
     compatible format. Additional parameters:
     - `epoch`: `[ns,u,µ,ms,s,m,h]`, returns epoch timestamps with the specified
       precision
-  - `csv`: output in comma separated values
+  - `csv`: outputs as comma-separated values
+  - `csvWithNames`: outputs as comma-separated values with a column names header
+  - `csvWithNamesAndTypes`: outputs as comma-separated values with column names and data types headers
   - `arrow`: [Arrow IPC
     format](https://arrow.apache.org/docs/python/feather.html). Additional
     parameters:
@@ -335,6 +337,43 @@ Output
 │ "127.0.0.1" │ 1667446798450 │ 0.5 │ 0.2    │
 │ "127.0.0.2" │ 1667446798450 │ 0.2 │ 0.3    │
 └─────────────┴───────────────┴─────┴────────┘
+```
+
+
+#### Query data with `csvWithNames` format output
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNames
+```
+
+Output:
+```csv
+host,ts,cpu,memory
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
+Changes `format` to `csvWithNamesAndTypes`:
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes
+```
+
+Output:
+```csv
+host,ts,cpu,memory
+String,TimestampMillisecond,Float64,Float64
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
 ```
 
 #### Query data with `influxdb_v1` format output
