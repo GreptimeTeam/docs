@@ -21,14 +21,7 @@ Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments-admin
 
 ### Via GreptimeDB Operator
 
-Set the `meta.enableRegionFailover=true`, e.g.,
-```bash
-helm install greptimedb greptime/greptimedb-cluster \
-  --set meta.enableRegionFailover=true \ 
-  ...
-```
-
-If you want to enable region failover on local WAL, ensure your operator version is greater than or equal to v0.2.2.
+To enable region failover via GreptimeDB Operator, you can refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#enable-region-failover) for more details.
 
 ## The recovery time of Region Failover
 

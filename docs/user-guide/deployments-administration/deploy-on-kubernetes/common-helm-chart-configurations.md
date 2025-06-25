@@ -506,3 +506,27 @@ meta:
 
 - `etcd.endpoints`: The etcd endpoints.
 - `etcd.storeKeyPrefix`: The etcd store key prefix. All keys will be stored with this prefix. If you want to use one etcd cluster for multiple GreptimeDB clusters, you can configure different store key prefixes for each GreptimeDB cluster. It's only for testing and debugging purposes.
+
+### Enable Region Failover
+
+You can enable Region Failover through the `meta.enableRegionFailover` field. Before enabling Region Failover, ensure your deployment meets the prerequisites outlined in the [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) documentation. If your configuration does not meet the prerequisites, the **Operator will fail to deploy the cluster components**.
+
+```yaml
+meta: 
+  enableRegionFailover: true
+```
+
+#### Enable Region Failover on Local WAL
+
+To enable Region Failover on local WAL, you need to set both `meta.enableRegionFailover: true` and add `allow_region_failover_on_local_wal = true` in the `meta.configData` field.
+
+:::warning WARNING
+Enabling Region Failover on local WAL may lead to data loss during failover. Ensure your operator version is greater than or equal to v0.2.2.
+:::
+
+```yaml
+meta: 
+  enableRegionFailover: true
+  configData: |
+    allow_region_failover_on_local_wal = true
+```
