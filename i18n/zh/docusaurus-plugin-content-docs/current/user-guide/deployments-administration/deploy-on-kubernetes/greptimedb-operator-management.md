@@ -37,7 +37,7 @@ GreptimeDB Operator 包括但不限于以下功能：
 
 ### 安装
 
-你可以参考 [安装和验证 GreptimeDB Operator](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md#安装和验证-greptimedb-operator) 获取详细的指导。
+你可以参考 [安装和验证 GreptimeDB Operator](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#安装和验证-greptimedb-operator) 获取详细的指导。
 
 :::note
 如果你使用 [Argo CD](https://argo-cd.readthedocs.io/en/stable/) 来部署应用，请确保 `Application` 已设置 [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) 以启用 server-side apply（其他 GitOps 工具可能也有类似的设置）。
