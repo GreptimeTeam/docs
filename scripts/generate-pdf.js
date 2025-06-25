@@ -196,7 +196,7 @@ function getOrderedDocIds() {
   // Helper function to check if a category should be included based on whitelist/blacklist
   function shouldIncludeCategory(categoryLabel, parentCategories = []) {
     const categoryLower = categoryLabel?.toLowerCase();
-    const allCategories = [...parentCategories, categoryLower];
+    const allCategories = [...parentCategories, categoryLower].filter(Boolean);
     
     // If whitelist is specified, check if this category or any parent is whitelisted
     if (WHITELISTED_CATEGORIES.length > 0) {
@@ -221,6 +221,23 @@ function getOrderedDocIds() {
     return !isBlacklisted;
   }
 
+  // Helper function to check if a standalone document should be included
+  function shouldIncludeStandaloneDoc(docId) {
+    // If no whitelist is specified, include all docs (subject to blacklist)
+    if (WHITELISTED_CATEGORIES.length === 0) {
+      return true;
+    }
+    
+    // Check if the doc ID matches any whitelisted category or is specifically "index"
+    const docLower = docId?.toLowerCase();
+    return docLower === 'index' || 
+           WHITELISTED_CATEGORIES.some(whiteCat => 
+             docLower === whiteCat || 
+             docLower?.startsWith(whiteCat + '/') ||
+             whiteCat === 'index'
+           );
+  }
+
   function processItems(items, level = 0, parentCategories = []) {
     if (!items) return;
 
@@ -233,8 +250,12 @@ function getOrderedDocIds() {
     items.forEach(item => {
       // Simple doc link (string ID)
       if (typeof item === 'string') {
-        // Check if parent categories allow this doc
-        if (shouldIncludeCategory('', parentCategories)) {
+        // For standalone docs (no parent categories), check if they should be included
+        const shouldInclude = parentCategories.length === 0 
+          ? shouldIncludeStandaloneDoc(item)
+          : shouldIncludeCategory('', parentCategories);
+          
+        if (shouldInclude) {
           docIds.push(item);
           sidebarStructure.push({
             type: 'doc',
@@ -246,8 +267,12 @@ function getOrderedDocIds() {
       }
       // Doc link with custom label {type: 'doc', id: '...'}
       else if (item.type === 'doc' && item.id) {
-        // Check if parent categories allow this doc
-        if (shouldIncludeCategory('', parentCategories)) {
+        // For standalone docs (no parent categories), check if they should be included
+        const shouldInclude = parentCategories.length === 0 
+          ? shouldIncludeStandaloneDoc(item.id)
+          : shouldIncludeCategory('', parentCategories);
+          
+        if (shouldInclude) {
           docIds.push(item.id);
           sidebarStructure.push({
             type: 'doc',
