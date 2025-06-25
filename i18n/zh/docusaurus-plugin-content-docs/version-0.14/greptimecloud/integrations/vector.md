@@ -20,7 +20,7 @@ GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 [sources.metrics_in]
 type = "host_metrics"
 
-[sinks.metrics_in]
+[sinks.metrics_out]
 inputs = ["metrics_in"]
 type = "greptimedb"
 endpoint = "<host>:5001"
@@ -52,6 +52,7 @@ username = "<username>"
 password = "<password>"
 table = "demo_logs"
 pipeline_name = "greptime_identity"
+healthcheck.enabled = false
 ```
 
 启动 Vector:
