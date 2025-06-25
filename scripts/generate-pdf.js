@@ -441,18 +441,6 @@ async function addBookmarksToPDF(inputPath, outputPath, bookmarkData, startPage 
 }
 
 
-// Function to remove outbound links and convert them to plain text
-function removeOutboundLinks(content) {
-  // Remove markdown links that start with http:// or https://
-  // Pattern: [link text](http://example.com) or [link text](https://example.com)
-  content = content.replace(/\[([^\]]+)\]\(https?:\/\/[^\)]+\)/g, '$1');
-
-  // Remove reference-style links that start with http:// or https://
-  // Pattern: [link text][ref] where [ref]: http://example.com
-  content = content.replace(/^\s*\[[^\]]+\]:\s*https?:\/\/.*$/gm, '');
-
-  return content;
-}
 
 // Function to convert images to base64 data URLs
 function convertImagesToBase64(content) {
@@ -534,8 +522,6 @@ async function generatePDFFromMarkdown(file, outputPath) {
     let content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
 
-    // Remove outbound links
-    content = removeOutboundLinks(content);
 
     // Convert images to base64 data URLs
     content = convertImagesToBase64(content);
@@ -586,6 +572,13 @@ async function generatePDFFromMarkdown(file, outputPath) {
               display: block;
               margin: 10px 0;
             }
+            a {
+              color: #0066cc;
+              text-decoration: underline;
+            }
+            a:hover {
+              color: #004499;
+            }
           </style>
         </head>
         <body>
@@ -598,7 +591,8 @@ async function generatePDFFromMarkdown(file, outputPath) {
     await page.pdf({
       path: outputPath,
       format: 'A4',
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
+      printBackground: true
     });
   } finally {
     await browser.close();
