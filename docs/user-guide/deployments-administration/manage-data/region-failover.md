@@ -17,7 +17,11 @@ This feature is only available on GreptimeDB running on distributed mode and
 If you want to enable region failover on local WAL, you need to set `allow_region_failover_on_local_wal=true` in [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) configuration file. It's not recommended to enable this option, because it may lead to data loss.
 
 ### Via configuration file
-Set the `enable_region_failover=true` in [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) configuration file. 
+Set `enable_region_failover=true` in the [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) configuration file. Additionally, set `region_failure_detector_initialization_delay` to a larger value and enable [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance-mode.md) within the `region_failure_detector_initialization_delay` period to avoid triggering unnecessary Region Failover during datanode startup or upgrades.
+
+:::warning
+If you are not using GreptimeDB Operator to deploy/upgrade your cluster, please refer to [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance-mode.md) for required operations during deployment and cluster upgrades. 
+:::
 
 ### Via GreptimeDB Operator
 

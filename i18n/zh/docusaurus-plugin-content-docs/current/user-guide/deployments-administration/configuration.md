@@ -670,6 +670,12 @@ use_memory_store = false
 # - 使用 Remote WAL
 # - 使用共享存储（例如 s3）。
 enable_region_failover = false
+## 推迟注册 region failure detectors 的时间。
+## 有助于防止在 metasrv 启动后未立即启用集群维护模式的情况下过早初始化 region failure detectors，
+## 特别是当集群不是通过 GreptimeDB Operator 部署时。
+## 如果没有此延迟，metasrv 可能会在所有 datanode 完全启动之前注册 region failure detectors，
+## 从而导致触发不必要的 region failover。
+region_failure_detector_initialization_delay = "10m"
 # 是否允许在本地 WAL 上进行 region failover。
 # **此选项不建议设置为 true，
 # 因为这可能会在故障转移期间导致数据丢失。**
