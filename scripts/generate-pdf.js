@@ -427,6 +427,11 @@ function convertInternalLinks(content, docMapping) {
     let cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
     cleanPath = cleanPath.replace(/\/$/, ''); // Remove trailing slash
     
+    // Remove .md extension if present (Docusaurus pattern)
+    if (cleanPath.endsWith('.md')) {
+      cleanPath = cleanPath.slice(0, -3);
+    }
+    
     // Try multiple variations of the path
     const pathVariations = [
       cleanPath,
@@ -446,7 +451,7 @@ function convertInternalLinks(content, docMapping) {
       }
     }
     
-    console.log(`No mapping found for internal link: ${cleanPath}`);
+    console.log(`No mapping found for internal link: ${cleanPath} (original: ${linkPath})`);
     // If no mapping found, keep the original link
     return match;
   });
@@ -456,6 +461,11 @@ function convertInternalLinks(content, docMapping) {
     // Clean up the path (remove anchors, query params, trailing slashes)
     let cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
     cleanPath = cleanPath.replace(/\/$/, ''); // Remove trailing slash
+    
+    // Remove .md extension if present (Docusaurus pattern)
+    if (cleanPath.endsWith('.md')) {
+      cleanPath = cleanPath.slice(0, -3);
+    }
     
     // Try multiple variations of the path
     const pathVariations = [
@@ -476,7 +486,7 @@ function convertInternalLinks(content, docMapping) {
       }
     }
     
-    console.log(`No mapping found for internal HTML link: ${cleanPath}`);
+    console.log(`No mapping found for internal HTML link: ${cleanPath} (original: ${linkPath})`);
     // If no mapping found, keep the original link
     return match;
   });
