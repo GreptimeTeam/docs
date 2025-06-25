@@ -282,6 +282,68 @@ function extractTitle(content) {
   return 'Untitled';
 }
 
+// Function to get page count of a PDF using pdftk via Docker
+async function getPageCount(pdfPath) {
+  try {
+    const result = execSync(`docker run --rm -v "${path.dirname(pdfPath)}:/work" -w /work mnuessler/pdftk "${path.basename(pdfPath)}" dump_data | grep NumberOfPages`, { encoding: 'utf8' });
+    const match = result.match(/NumberOfPages:\s*(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  } catch (error) {
+    console.warn(`Could not get page count for ${pdfPath}: ${error.message}`);
+    return 1;
+  }
+}
+
+// Function to create pdftk bookmark file format
+function createBookmarkFile(bookmarkData, startPage = 1) {
+  let bookmarkContent = '';
+  let currentPage = startPage;
+
+  for (const bookmark of bookmarkData) {
+    bookmarkContent += `BookmarkBegin\n`;
+    bookmarkContent += `BookmarkTitle: ${bookmark.title}\n`;
+    bookmarkContent += `BookmarkLevel: ${bookmark.level}\n`;
+    bookmarkContent += `BookmarkPageNumber: ${currentPage}\n`;
+    currentPage += bookmark.pageCount || 1;
+  }
+
+  return bookmarkContent;
+}
+
+// Function to add bookmarks to PDF using pdftk via Docker
+async function addBookmarksToPDF(inputPath, outputPath, bookmarkData, startPage = 1) {
+  try {
+    console.log('Adding bookmarks to PDF...');
+    
+    const bookmarkContent = createBookmarkFile(bookmarkData, startPage);
+    const bookmarkFilePath = path.join(path.dirname(inputPath), 'bookmarks.txt');
+    
+    // Write bookmark file
+    fs.writeFileSync(bookmarkFilePath, bookmarkContent);
+    
+    // Use pdftk via Docker to add bookmarks
+    const inputDir = path.dirname(inputPath);
+    const inputFile = path.basename(inputPath);
+    const outputFile = path.basename(outputPath);
+    const bookmarkFile = path.basename(bookmarkFilePath);
+    
+    const command = `docker run --rm -v "${inputDir}:/work" -w /work mnuessler/pdftk "${inputFile}" update_info "${bookmarkFile}" output "${outputFile}"`;
+    
+    console.log('Running pdftk via Docker to add bookmarks...');
+    execSync(command, { stdio: 'inherit' });
+    
+    // Clean up bookmark file
+    fs.unlinkSync(bookmarkFilePath);
+    
+    console.log('Successfully added bookmarks to PDF');
+  } catch (error) {
+    console.error('Error adding bookmarks to PDF:', error);
+    console.warn('Continuing without bookmarks...');
+    // Fallback: just copy the input to output
+    fs.copyFileSync(inputPath, outputPath);
+  }
+}
+
 
 // Function to remove outbound links and convert them to plain text
 function removeOutboundLinks(content) {
@@ -447,11 +509,12 @@ async function generatePDFFromMarkdown(file, outputPath) {
   }
 }
 
-async function combinePDFs(pdfFiles, outputPath) {
+async function combinePDFs(pdfFiles, outputPath, bookmarkData = []) {
   try {
     console.log('Merging PDF files...');
 
     const merger = new PDFMerger();
+    let currentPage = 1;
 
     // Add cover page if specified
     if (COVER_PATH) {
@@ -460,6 +523,15 @@ async function combinePDFs(pdfFiles, outputPath) {
       }
       console.log(`Adding cover page: ${path.basename(COVER_PATH)}`);
       await merger.add(COVER_PATH);
+      
+      // Count pages in cover PDF to adjust bookmark page numbers
+      try {
+        const coverPageCount = await getPageCount(COVER_PATH);
+        currentPage += coverPageCount;
+      } catch (error) {
+        console.warn('Could not determine cover page count, assuming 1 page');
+        currentPage += 1;
+      }
     }
 
     // Add content pages
@@ -468,8 +540,19 @@ async function combinePDFs(pdfFiles, outputPath) {
       await merger.add(pdfFile);
     }
 
-    await merger.save(outputPath);
-    console.log(`Successfully combined ${pdfFiles.length} PDFs into ${outputPath}`);
+    const tempOutputPath = outputPath.replace('.pdf', '_temp.pdf');
+    await merger.save(tempOutputPath);
+    console.log(`Successfully combined ${pdfFiles.length} PDFs`);
+
+    // Add bookmarks if we have bookmark data
+    if (bookmarkData.length > 0) {
+      await addBookmarksToPDF(tempOutputPath, outputPath, bookmarkData, currentPage);
+      // Clean up temp file
+      fs.unlinkSync(tempOutputPath);
+    } else {
+      // No bookmarks, just rename temp file
+      fs.renameSync(tempOutputPath, outputPath);
+    }
 
   } catch (error) {
     console.error('Error combining PDFs:', error);
@@ -507,6 +590,7 @@ async function main() {
 
     const tempPdfDir = path.join(OUTPUT_DIR, 'temp');
     let pdfFiles = [];
+    let bookmarkData = [];
 
     if (skipGeneration) {
       console.log('Skipping individual PDF generation as requested');
@@ -522,6 +606,20 @@ async function main() {
         throw new Error('No PDF files found in temp directory');
       }
       console.log(`Found ${pdfFiles.length} existing PDF files to combine`);
+      
+      // Try to recreate bookmark data from existing files
+      for (const [index, file] of markdownFiles.entries()) {
+        const content = fs.readFileSync(file, 'utf8');
+        const title = extractTitle(content);
+        const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
+        const pageCount = await getPageCount(pdfPath);
+        
+        bookmarkData.push({
+          title: title,
+          level: 1,
+          pageCount: pageCount
+        });
+      }
     } else {
       // Generate individual PDFs
       if (!fs.existsSync(tempPdfDir)) {
@@ -531,8 +629,21 @@ async function main() {
       for (const [index, file] of markdownFiles.entries()) {
         const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
         console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
+        
+        // Extract title before generating PDF
+        const content = fs.readFileSync(file, 'utf8');
+        const title = extractTitle(content);
+        
         await generatePDFFromMarkdown(file, pdfPath);
         pdfFiles.push(pdfPath);
+        
+        // Get page count and add to bookmark data
+        const pageCount = await getPageCount(pdfPath);
+        bookmarkData.push({
+          title: title,
+          level: 1,
+          pageCount: pageCount
+        });
       }
     }
 
@@ -540,7 +651,7 @@ async function main() {
     const outputFilename = `docs-${version}${LOCALE !== 'en' ? `-${LOCALE}` : ''}.pdf`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
     console.log('Combining PDFs...');
-    await combinePDFs(pdfFiles, outputPath);
+    await combinePDFs(pdfFiles, outputPath, bookmarkData);
 
     // Clean up temp files unless --keep-temp is specified
     if (keepTemp) {
