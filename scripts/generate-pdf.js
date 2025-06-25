@@ -451,9 +451,9 @@ function convertInternalLinks(content, docMapping) {
       }
     }
     
-    console.log(`No mapping found for internal link: ${cleanPath} (original: ${linkPath})`);
-    // If no mapping found, keep the original link
-    return match;
+    console.log(`No mapping found for internal link: ${cleanPath} (original: ${linkPath}) - removing link, keeping text`);
+    // If no mapping found, remove the link and keep only the text
+    return linkText;
   });
 
   // Convert HTML links <a href="/path">text</a> to bookmark references
@@ -486,9 +486,9 @@ function convertInternalLinks(content, docMapping) {
       }
     }
     
-    console.log(`No mapping found for internal HTML link: ${cleanPath} (original: ${linkPath})`);
-    // If no mapping found, keep the original link
-    return match;
+    console.log(`No mapping found for internal HTML link: ${cleanPath} (original: ${linkPath}) - removing link, keeping text`);
+    // If no mapping found, remove the link and keep only the text
+    return linkText;
   });
 
   return content;
