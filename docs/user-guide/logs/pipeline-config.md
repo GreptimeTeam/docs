@@ -1019,8 +1019,8 @@ transform:
 ```
 
 Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
-1. Process all written transform rules sequentially. The corresponding field is removed from the pipeline context once the transform rule is executed.
-2. Set the remaining fields of the pipeline context to the final table.
+1. Process all written transform rules sequentially.
+2. Write all fields of the pipeline context to the final table.
 
 Note:
 - If the transform section is explicitly written, it must contain a time index field. Otherwise the time-index field will be inferred by the pipeline engine just like the auto-transform mode.
