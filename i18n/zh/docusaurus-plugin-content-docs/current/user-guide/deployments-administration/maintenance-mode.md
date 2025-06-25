@@ -8,6 +8,7 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 集群维护模式是 GreptimeDB 中的一个安全特性，用于临时禁止集群的自动调度操作。
 
 该模式在以下情况下特别有用：
+- 集群部署
 - 集群升级
 - 计划停机
 - 任何可能暂时影响集群稳定性的操作
@@ -20,10 +21,11 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 
 ### 不使用 GreptimeDB Operator
 当不使用 GreptimeDB Operator 升级集群时，**在以下情况下必须手动启用 Metasrv 的维护模式**：
-1. Datanode 节点滚动升级
-2. Metasrv 节点升级
-3. Frontend 节点升级
-4. 任何可能暂时影响节点可用性的操作
+1. 部署新集群（在 metasrv 节点就绪后启用维护模式）
+2. Datanode 节点滚动升级
+3. Metasrv 节点升级
+4. Frontend 节点升级
+5. 任何可能暂时影响节点可用性的操作
 
 
 ## 维护模式的影响

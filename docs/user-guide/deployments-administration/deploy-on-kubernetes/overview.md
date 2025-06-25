@@ -11,6 +11,10 @@ GreptimeDB is a time-series database built for cloud-native environments and can
 
 We **highly recommend** using the GreptimeDB Operator to deploy GreptimeDB on Kubernetes.
 
+:::warning
+If you are not using GreptimeDB Operator to deploy/upgrades the cluster, please refer to [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance-mode.md) for required operations during deployment and cluster upgrades.
+:::
+
 ## Getting Started
 
 - GreptimeDB Cluster: You can take [Getting Started](./getting-started.md) as your first guide to understand the whole picture. This guide provides the complete process of deploying the GreptimeDB cluster on Kubernetes.
