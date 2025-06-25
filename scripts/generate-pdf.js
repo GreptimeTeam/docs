@@ -371,6 +371,65 @@ function extractTitle(content) {
   return 'Untitled';
 }
 
+// Function to build a mapping of document paths to bookmark titles
+function buildDocumentMapping(docIds, structure) {
+  const docMapping = new Map();
+  let docIndex = 0;
+  
+  for (const structureItem of structure) {
+    if (structureItem.type === 'doc') {
+      if (docIndex < docIds.length) {
+        const docId = docIds[docIndex];
+        // Map various possible URL formats to the bookmark title
+        docMapping.set(`/${docId}`, structureItem.label);
+        docMapping.set(`/${docId}/`, structureItem.label);
+        docMapping.set(docId, structureItem.label);
+        docMapping.set(`${docId}/`, structureItem.label);
+        docIndex++;
+      }
+    }
+  }
+  
+  return docMapping;
+}
+
+// Function to convert internal links to bookmark references
+function convertInternalLinks(content, docMapping) {
+  // Convert markdown links [text](/path) to bookmark references
+  content = content.replace(/\[([^\]]+)\]\(\/([^)]+)\)/g, (match, linkText, linkPath) => {
+    // Clean up the path (remove anchors, query params)
+    const cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    
+    // Check if we have a mapping for this path
+    if (docMapping.has(cleanPath)) {
+      const bookmarkTitle = docMapping.get(cleanPath);
+      // Return a special marker that we can process later for PDF bookmarks
+      return `[${linkText}](#bookmark:${bookmarkTitle})`;
+    }
+    
+    // If no mapping found, keep the original link
+    return match;
+  });
+
+  // Convert HTML links <a href="/path">text</a> to bookmark references
+  content = content.replace(/<a\s+href=["']\/([^"']+)["'][^>]*>([^<]+)<\/a>/g, (match, linkPath, linkText) => {
+    // Clean up the path (remove anchors, query params)
+    const cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    
+    // Check if we have a mapping for this path
+    if (docMapping.has(cleanPath)) {
+      const bookmarkTitle = docMapping.get(cleanPath);
+      // Return a special marker that we can process later for PDF bookmarks
+      return `[${linkText}](#bookmark:${bookmarkTitle})`;
+    }
+    
+    // If no mapping found, keep the original link
+    return match;
+  });
+
+  return content;
+}
+
 // Function to get page count of a PDF using pdftk via Docker
 async function getPageCount(pdfPath) {
   try {
@@ -513,7 +572,7 @@ function convertImagesToBase64(content) {
   return content;
 }
 
-async function generatePDFFromMarkdown(file, outputPath) {
+async function generatePDFFromMarkdown(file, outputPath, docMapping = new Map()) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -522,6 +581,8 @@ async function generatePDFFromMarkdown(file, outputPath) {
     let content = fs.readFileSync(file, 'utf8');
     content = content.replace(/^---[\s\S]+?---/, ''); // Remove front matter
 
+    // Convert internal links to bookmark references
+    content = convertInternalLinks(content, docMapping);
 
     // Convert images to base64 data URLs
     content = convertImagesToBase64(content);
@@ -578,6 +639,12 @@ async function generatePDFFromMarkdown(file, outputPath) {
             }
             a:hover {
               color: #004499;
+            }
+            /* Style for internal bookmark links */
+            a[href^="#bookmark:"] {
+              color: #0066cc;
+              text-decoration: underline;
+              font-weight: normal;
             }
           </style>
         </head>
@@ -676,6 +743,10 @@ async function main() {
       throw new Error('No markdown files found');
     }
 
+    // Build document mapping for internal links
+    const docMapping = buildDocumentMapping(docIds, structure);
+    console.log(`Built mapping for ${docMapping.size} document paths`);
+
     console.log(`Processing ${markdownFiles.length} files...`);
 
     const tempPdfDir = path.join(OUTPUT_DIR, 'temp');
@@ -743,7 +814,7 @@ async function main() {
             const content = fs.readFileSync(file, 'utf8');
             const title = extractTitle(content);
             
-            await generatePDFFromMarkdown(file, pdfPath);
+            await generatePDFFromMarkdown(file, pdfPath, docMapping);
             pdfFiles.push(pdfPath);
             
             // Get page count and add to bookmark data
