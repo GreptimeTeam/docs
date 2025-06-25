@@ -372,19 +372,43 @@ function extractTitle(content) {
 }
 
 // Function to build a mapping of document paths to bookmark titles
-function buildDocumentMapping(docIds, structure) {
+function buildDocumentMapping(docIds, structure, markdownFiles) {
   const docMapping = new Map();
   let docIndex = 0;
+  
+  // Create a mapping from docId to actual title from markdown content
+  const docIdToTitle = new Map();
+  for (let i = 0; i < docIds.length && i < markdownFiles.length; i++) {
+    const file = markdownFiles[i];
+    const content = fs.readFileSync(file, 'utf8');
+    const title = extractTitle(content);
+    docIdToTitle.set(docIds[i], title);
+  }
   
   for (const structureItem of structure) {
     if (structureItem.type === 'doc') {
       if (docIndex < docIds.length) {
         const docId = docIds[docIndex];
+        // Use the actual title from markdown content, not the structure label
+        const title = docIdToTitle.get(docId) || structureItem.label;
+        
         // Map various possible URL formats to the bookmark title
-        docMapping.set(`/${docId}`, structureItem.label);
-        docMapping.set(`/${docId}/`, structureItem.label);
-        docMapping.set(docId, structureItem.label);
-        docMapping.set(`${docId}/`, structureItem.label);
+        docMapping.set(`/${docId}`, title);
+        docMapping.set(`/${docId}/`, title);
+        docMapping.set(`/${docId}.html`, title);
+        docMapping.set(`/${docId}.html/`, title);
+        docMapping.set(docId, title);
+        docMapping.set(`${docId}/`, title);
+        docMapping.set(`${docId}.html`, title);
+        
+        // Handle nested paths (e.g., /user-guide/concepts/overview)
+        const pathParts = docId.split('/');
+        if (pathParts.length > 1) {
+          docMapping.set(`/${docId}`, title);
+          docMapping.set(`/${docId}/`, title);
+          docMapping.set(`/${docId}.html`, title);
+        }
+        
         docIndex++;
       }
     }
@@ -395,34 +419,64 @@ function buildDocumentMapping(docIds, structure) {
 
 // Function to convert internal links to bookmark references
 function convertInternalLinks(content, docMapping) {
+  console.log(`Converting internal links. Available mappings: ${docMapping.size}`);
+  
   // Convert markdown links [text](/path) to bookmark references
   content = content.replace(/\[([^\]]+)\]\(\/([^)]+)\)/g, (match, linkText, linkPath) => {
-    // Clean up the path (remove anchors, query params)
-    const cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    // Clean up the path (remove anchors, query params, trailing slashes)
+    let cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    cleanPath = cleanPath.replace(/\/$/, ''); // Remove trailing slash
     
-    // Check if we have a mapping for this path
-    if (docMapping.has(cleanPath)) {
-      const bookmarkTitle = docMapping.get(cleanPath);
-      // Return a special marker that we can process later for PDF bookmarks
-      return `[${linkText}](#bookmark:${bookmarkTitle})`;
+    // Try multiple variations of the path
+    const pathVariations = [
+      cleanPath,
+      `${cleanPath}/`,
+      `${cleanPath}.html`,
+      `${cleanPath}.html/`,
+      cleanPath.replace(/^\//, ''), // without leading slash
+      `${cleanPath.replace(/^\//, '')}/`, // without leading slash but with trailing
+      `${cleanPath.replace(/^\//, '')}.html` // without leading slash but with .html
+    ];
+    
+    for (const variation of pathVariations) {
+      if (docMapping.has(variation)) {
+        const bookmarkTitle = docMapping.get(variation);
+        console.log(`Converting link: ${match} -> [${linkText}](#bookmark:${bookmarkTitle})`);
+        return `[${linkText}](#bookmark:${bookmarkTitle})`;
+      }
     }
     
+    console.log(`No mapping found for internal link: ${cleanPath}`);
     // If no mapping found, keep the original link
     return match;
   });
 
   // Convert HTML links <a href="/path">text</a> to bookmark references
   content = content.replace(/<a\s+href=["']\/([^"']+)["'][^>]*>([^<]+)<\/a>/g, (match, linkPath, linkText) => {
-    // Clean up the path (remove anchors, query params)
-    const cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    // Clean up the path (remove anchors, query params, trailing slashes)
+    let cleanPath = `/${linkPath.split('#')[0].split('?')[0]}`;
+    cleanPath = cleanPath.replace(/\/$/, ''); // Remove trailing slash
     
-    // Check if we have a mapping for this path
-    if (docMapping.has(cleanPath)) {
-      const bookmarkTitle = docMapping.get(cleanPath);
-      // Return a special marker that we can process later for PDF bookmarks
-      return `[${linkText}](#bookmark:${bookmarkTitle})`;
+    // Try multiple variations of the path
+    const pathVariations = [
+      cleanPath,
+      `${cleanPath}/`,
+      `${cleanPath}.html`,
+      `${cleanPath}.html/`,
+      cleanPath.replace(/^\//, ''), // without leading slash
+      `${cleanPath.replace(/^\//, '')}/`, // without leading slash but with trailing
+      `${cleanPath.replace(/^\//, '')}.html` // without leading slash but with .html
+    ];
+    
+    for (const variation of pathVariations) {
+      if (docMapping.has(variation)) {
+        const bookmarkTitle = docMapping.get(variation);
+        console.log(`Converting HTML link: ${match} -> [${linkText}](#bookmark:${bookmarkTitle})`);
+        return `[${linkText}](#bookmark:${bookmarkTitle})`;
+      }
     }
     
+    console.log(`No mapping found for internal HTML link: ${cleanPath}`);
     // If no mapping found, keep the original link
     return match;
   });
@@ -744,8 +798,20 @@ async function main() {
     }
 
     // Build document mapping for internal links
-    const docMapping = buildDocumentMapping(docIds, structure);
+    const docMapping = buildDocumentMapping(docIds, structure, markdownFiles);
     console.log(`Built mapping for ${docMapping.size} document paths`);
+    
+    // Debug: log some mappings
+    if (docMapping.size > 0) {
+      console.log('Sample mappings:');
+      let count = 0;
+      for (const [path, title] of docMapping.entries()) {
+        if (count < 5) {
+          console.log(`  ${path} -> ${title}`);
+          count++;
+        }
+      }
+    }
 
     console.log(`Processing ${markdownFiles.length} files...`);
 
