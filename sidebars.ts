@@ -278,11 +278,11 @@ const sidebars: SidebarsConfig = {
                   id: 'user-guide/deployments-administration/deploy-on-kubernetes/overview',
                   label: 'Overview',
                 },
-                'user-guide/deployments-administration/deploy-on-kubernetes/getting-started',
+                'user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone',
+                'user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster',
                 'user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management',
                 'user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations',
                 'user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups',
-                'user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-standalone',
               ],
             },
             {

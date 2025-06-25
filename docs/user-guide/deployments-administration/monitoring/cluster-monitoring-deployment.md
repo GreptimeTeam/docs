@@ -18,7 +18,7 @@ Users can choose the appropriate monitoring approach based on their needs.
 
 In self-monitoring mode, GreptimeDB Operator will launch an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster, including cluster logs. To collect log data, GreptimeDB Operator will start a [Vector](https://vector.dev/) sidecar container in each Pod. When this mode is enabled, JSON format logging will be automatically enabled for the cluster.
 
-If you deploy the GreptimeDB cluster using Helm Chart (refer to [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md)), you can configure the `values.yaml` file as follows:
+If you deploy the GreptimeDB cluster using Helm Chart (refer to [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)), you can configure the `values.yaml` file as follows:
 
 ```yaml
 monitoring:
@@ -211,7 +211,7 @@ GreptimeDB cluster currently provides 3 Grafana dashboards:
 The Cluster Logs Dashboard is only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
 :::
 
-If using Helm Chart, you can enable `grafana.enabled` to deploy Grafana and import dashboards automatically (see [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md)):
+If using Helm Chart, you can enable `grafana.enabled` to deploy Grafana and import dashboards automatically (see [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)):
 
 ```yaml
 grafana:
