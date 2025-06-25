@@ -285,7 +285,7 @@ function extractTitle(content) {
 // Function to get page count of a PDF using pdftk via Docker
 async function getPageCount(pdfPath) {
   try {
-    const result = execSync(`docker run --rm -v "${path.dirname(pdfPath)}:/work" -w /work mnuessler/pdftk "${path.basename(pdfPath)}" dump_data | grep NumberOfPages`, { encoding: 'utf8' });
+    const result = execSync(`docker run --rm -v "${path.dirname(pdfPath)}:/work" -w /work docker.io/pdftk/pdftk:latest "${path.basename(pdfPath)}" dump_data | grep NumberOfPages`, { encoding: 'utf8' });
     const match = result.match(/NumberOfPages:\s*(\d+)/);
     return match ? parseInt(match[1]) : 1;
   } catch (error) {
@@ -303,8 +303,15 @@ function createBookmarkFile(bookmarkData, startPage = 1) {
     bookmarkContent += `BookmarkBegin\n`;
     bookmarkContent += `BookmarkTitle: ${bookmark.title}\n`;
     bookmarkContent += `BookmarkLevel: ${bookmark.level}\n`;
-    bookmarkContent += `BookmarkPageNumber: ${currentPage}\n`;
-    currentPage += bookmark.pageCount || 1;
+    
+    // Only add page number for items that have actual content (pageCount > 0)
+    if (bookmark.pageCount > 0) {
+      bookmarkContent += `BookmarkPageNumber: ${currentPage}\n`;
+      currentPage += bookmark.pageCount;
+    } else {
+      // For categories, use the current page (they don't advance the page counter)
+      bookmarkContent += `BookmarkPageNumber: ${currentPage}\n`;
+    }
   }
 
   return bookmarkContent;
@@ -327,7 +334,7 @@ async function addBookmarksToPDF(inputPath, outputPath, bookmarkData, startPage 
     const outputFile = path.basename(outputPath);
     const bookmarkFile = path.basename(bookmarkFilePath);
     
-    const command = `docker run --rm -v "${inputDir}:/work" -w /work mnuessler/pdftk "${inputFile}" update_info "${bookmarkFile}" output "${outputFile}"`;
+    const command = `docker run --rm -v "${inputDir}:/work" -w /work docker.io/pdftk/pdftk:latest "${inputFile}" update_info "${bookmarkFile}" output "${outputFile}"`;
     
     console.log('Running pdftk via Docker to add bookmarks...');
     execSync(command, { stdio: 'inherit' });
@@ -607,18 +614,32 @@ async function main() {
       }
       console.log(`Found ${pdfFiles.length} existing PDF files to combine`);
       
-      // Try to recreate bookmark data from existing files
-      for (const [index, file] of markdownFiles.entries()) {
-        const content = fs.readFileSync(file, 'utf8');
-        const title = extractTitle(content);
-        const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
-        const pageCount = await getPageCount(pdfPath);
-        
-        bookmarkData.push({
-          title: title,
-          level: 1,
-          pageCount: pageCount
-        });
+      // Try to recreate bookmark data from existing files using sidebar structure
+      let fileIndex = 0;
+      for (const structureItem of structure) {
+        if (structureItem.type === 'doc') {
+          if (fileIndex < markdownFiles.length) {
+            const file = markdownFiles[fileIndex];
+            const content = fs.readFileSync(file, 'utf8');
+            const title = extractTitle(content);
+            const pdfPath = path.join(tempPdfDir, `${String(fileIndex + 1).padStart(3, '0')}.pdf`);
+            const pageCount = await getPageCount(pdfPath);
+            
+            bookmarkData.push({
+              title: title,
+              level: structureItem.level + 1, // pdftk levels start from 1
+              pageCount: pageCount
+            });
+            fileIndex++;
+          }
+        } else if (structureItem.type === 'category') {
+          // Add category as bookmark without page count
+          bookmarkData.push({
+            title: structureItem.label,
+            level: structureItem.level + 1, // pdftk levels start from 1
+            pageCount: 0 // Categories don't consume pages
+          });
+        }
       }
     } else {
       // Generate individual PDFs
@@ -626,24 +647,39 @@ async function main() {
         fs.mkdirSync(tempPdfDir, { recursive: true });
       }
 
-      for (const [index, file] of markdownFiles.entries()) {
-        const pdfPath = path.join(tempPdfDir, `${String(index + 1).padStart(3, '0')}.pdf`);
-        console.log(`Processing ${index + 1}/${markdownFiles.length}: ${path.basename(file)}`);
-        
-        // Extract title before generating PDF
-        const content = fs.readFileSync(file, 'utf8');
-        const title = extractTitle(content);
-        
-        await generatePDFFromMarkdown(file, pdfPath);
-        pdfFiles.push(pdfPath);
-        
-        // Get page count and add to bookmark data
-        const pageCount = await getPageCount(pdfPath);
-        bookmarkData.push({
-          title: title,
-          level: 1,
-          pageCount: pageCount
-        });
+      // Generate individual PDFs and build bookmark data following sidebar structure
+      let fileIndex = 0;
+      for (const structureItem of structure) {
+        if (structureItem.type === 'doc') {
+          if (fileIndex < markdownFiles.length) {
+            const file = markdownFiles[fileIndex];
+            const pdfPath = path.join(tempPdfDir, `${String(fileIndex + 1).padStart(3, '0')}.pdf`);
+            console.log(`Processing ${fileIndex + 1}/${markdownFiles.length}: ${path.basename(file)}`);
+            
+            // Extract title before generating PDF
+            const content = fs.readFileSync(file, 'utf8');
+            const title = extractTitle(content);
+            
+            await generatePDFFromMarkdown(file, pdfPath);
+            pdfFiles.push(pdfPath);
+            
+            // Get page count and add to bookmark data
+            const pageCount = await getPageCount(pdfPath);
+            bookmarkData.push({
+              title: title,
+              level: structureItem.level + 1, // pdftk levels start from 1
+              pageCount: pageCount
+            });
+            fileIndex++;
+          }
+        } else if (structureItem.type === 'category') {
+          // Add category as bookmark without page count
+          bookmarkData.push({
+            title: structureItem.label,
+            level: structureItem.level + 1, // pdftk levels start from 1
+            pageCount: 0 // Categories don't consume pages
+          });
+        }
       }
     }
 
