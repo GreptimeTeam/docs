@@ -25,6 +25,8 @@ OPTIONS:
                          Examples: en, zh, ja, fr
   --blacklist CATEGORIES Comma-separated list of categories to exclude from PDF
                          Examples: changelog,roadmap,api-reference
+  --whitelist CATEGORIES Comma-separated list of categories to include in PDF (excludes all others)
+                         Examples: user-guide,getting-started
   --cover FILE           Path to PDF file to use as cover page (prepended to output)
                          Example: --cover docs/cover.pdf
 
@@ -44,6 +46,12 @@ EXAMPLES:
 
   # Generate PDF for Chinese version 0.14 with blacklisted categories
   node scripts/generate-pdf.js 0.14 --locale zh --blacklist changelog,roadmap
+
+  # Generate PDF with only specific categories (whitelist)
+  node scripts/generate-pdf.js current --whitelist user-guide,getting-started
+
+  # Generate PDF with whitelist and blacklist (blacklist takes precedence within whitelisted items)
+  node scripts/generate-pdf.js current --whitelist user-guide --blacklist deprecated
 
   # Generate PDF with custom cover page
   node scripts/generate-pdf.js current --cover docs/cover.pdf
@@ -87,11 +95,22 @@ const LOCALE = localeIndex !== -1 && localeIndex + 1 < args.length ? args[locale
 // Parse blacklist option
 const blacklistIndex = args.indexOf('--blacklist');
 const BLACKLISTED_CATEGORIES = blacklistIndex !== -1 && blacklistIndex + 1 < args.length
-  ? args[blacklistIndex + 1].split(',')
+  ? args[blacklistIndex + 1].split(',').map(cat => cat.trim().toLowerCase())
+  : [];
+
+// Parse whitelist option
+const whitelistIndex = args.indexOf('--whitelist');
+const WHITELISTED_CATEGORIES = whitelistIndex !== -1 && whitelistIndex + 1 < args.length
+  ? args[whitelistIndex + 1].split(',').map(cat => cat.trim().toLowerCase())
   : [];
 
 // Get version (first non-option argument)
-const version = args.find(arg => !arg.startsWith('-') && arg !== LOCALE && !BLACKLISTED_CATEGORIES.includes(arg)) || 'current';
+const version = args.find(arg => 
+  !arg.startsWith('-') && 
+  arg !== LOCALE && 
+  !BLACKLISTED_CATEGORIES.some(cat => cat === arg.toLowerCase()) &&
+  !WHITELISTED_CATEGORIES.some(cat => cat === arg.toLowerCase())
+) || 'current';
 
 // Configuration - can be moved to a config file if needed
 const BASE_DIR = path.join(__dirname, '..');
@@ -174,7 +193,35 @@ function getOrderedDocIds() {
   const docIds = [];
   const sidebarStructure = [];
 
-  function processItems(items, level = 0) {
+  // Helper function to check if a category should be included based on whitelist/blacklist
+  function shouldIncludeCategory(categoryLabel, parentCategories = []) {
+    const categoryLower = categoryLabel?.toLowerCase();
+    const allCategories = [...parentCategories, categoryLower];
+    
+    // If whitelist is specified, check if this category or any parent is whitelisted
+    if (WHITELISTED_CATEGORIES.length > 0) {
+      const isWhitelisted = allCategories.some(cat => 
+        WHITELISTED_CATEGORIES.some(whiteCat => cat === whiteCat || cat?.startsWith(whiteCat + '/'))
+      ) || WHITELISTED_CATEGORIES.some(whiteCat => 
+        allCategories.some(cat => whiteCat === cat || whiteCat?.startsWith(cat + '/'))
+      );
+      
+      if (!isWhitelisted) {
+        return false;
+      }
+    }
+    
+    // Check blacklist - if any parent or current category is blacklisted, exclude
+    const isBlacklisted = allCategories.some(cat => 
+      BLACKLISTED_CATEGORIES.some(blackCat => cat === blackCat || cat?.startsWith(blackCat + '/'))
+    ) || BLACKLISTED_CATEGORIES.some(blackCat => 
+      allCategories.some(cat => blackCat === cat || blackCat?.startsWith(cat + '/'))
+    );
+    
+    return !isBlacklisted;
+  }
+
+  function processItems(items, level = 0, parentCategories = []) {
     if (!items) return;
 
     // Ensure items is an array before forEach
@@ -186,29 +233,38 @@ function getOrderedDocIds() {
     items.forEach(item => {
       // Simple doc link (string ID)
       if (typeof item === 'string') {
-        docIds.push(item);
-        sidebarStructure.push({
-          type: 'doc',
-          id: item,
-          label: item,
-          level: level
-        });
+        // Check if parent categories allow this doc
+        if (shouldIncludeCategory('', parentCategories)) {
+          docIds.push(item);
+          sidebarStructure.push({
+            type: 'doc',
+            id: item,
+            label: item,
+            level: level
+          });
+        }
       }
       // Doc link with custom label {type: 'doc', id: '...'}
       else if (item.type === 'doc' && item.id) {
-        docIds.push(item.id);
-        sidebarStructure.push({
-          type: 'doc',
-          id: item.id,
-          label: item.label || item.id,
-          level: level
-        });
+        // Check if parent categories allow this doc
+        if (shouldIncludeCategory('', parentCategories)) {
+          docIds.push(item.id);
+          sidebarStructure.push({
+            type: 'doc',
+            id: item.id,
+            label: item.label || item.id,
+            level: level
+          });
+        }
       }
       // Category with items
       else if (item.type === 'category') {
-        // Skip blacklisted categories
-        if (BLACKLISTED_CATEGORIES.includes(item.label?.toLowerCase())) {
-          console.log(`Skipping blacklisted category: ${item.label}`);
+        const categoryLabel = item.label;
+        const currentCategories = [...parentCategories, categoryLabel?.toLowerCase()];
+        
+        // Check if this category should be included
+        if (!shouldIncludeCategory(categoryLabel, parentCategories)) {
+          console.log(`Skipping filtered category: ${categoryLabel}`);
           return;
         }
 
@@ -228,14 +284,22 @@ function getOrderedDocIds() {
             level: level + 1
           });
         }
-        // Process nested items
-        processItems(item.items, level + 1);
+        // Process nested items with updated parent categories
+        processItems(item.items, level + 1, currentCategories);
       }
       // External links and other types are ignored
     });
   }
 
   processItems(docsSidebar);
+  
+  // Log filtering results
+  if (WHITELISTED_CATEGORIES.length > 0) {
+    console.log(`Whitelist applied: ${WHITELISTED_CATEGORIES.join(', ')}`);
+  }
+  if (BLACKLISTED_CATEGORIES.length > 0) {
+    console.log(`Blacklist applied: ${BLACKLISTED_CATEGORIES.join(', ')}`);
+  }
   const uniqueDocIds = docIds.filter((id, index, self) => self.indexOf(id) === index); // Remove duplicates
   console.log(`Found ${uniqueDocIds.length} documents to process`);
   return { docIds: uniqueDocIds, structure: sidebarStructure };
