@@ -513,7 +513,6 @@ GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在
 curl -X GET \
   -H 'Authorization: Basic {{authorization if exists}}' \
   -G \
-  --data-urlencode 'db=public' \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
   --data-urlencode 'end=1667446799' \
