@@ -24,15 +24,7 @@ Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢�
 
 ### 通过 GreptimeDB Operator
 
-通过设置 `meta.enableRegionFailover=true`, 例如
-
-```bash
-helm install greptimedb greptime/greptimedb-cluster \
-  --set meta.enableRegionFailover=true \
-  ...
-```
-
-如果想要在本地 WAL 上启用 Region Failover，确保你的 GreptimeDB Operator 版本大于或等于 v0.2.2。
+要通过 GreptimeDB Operator 启用 Region Failover，可以参考 [常见 Helm Chart 配置项](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#enable-region-failover) 了解更多详细信息。
 
 ## Region Failover 的恢复用时
 
