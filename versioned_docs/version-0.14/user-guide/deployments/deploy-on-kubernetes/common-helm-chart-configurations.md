@@ -165,7 +165,7 @@ frontend:
 For different Role services, youcan inject custom TOML configuration files through the `${role}.configData` field, as shown below:
 
 ```yaml
-frontend:
+datanode:
   configData: |
     [[region_engine]]
     [region_engine.mito]

@@ -165,7 +165,7 @@ frontend:
 对于不同 Role 的服务，你可以通过 `${role}.configData` 字段注入自定义的 TOML 配置文件，如下所示：
 
 ```yaml
-frontend:
+datanode:
   configData: |
     [[region_engine]]
     [region_engine.mito]
