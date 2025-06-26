@@ -55,7 +55,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -63,7 +63,7 @@ jobs:
 
       - name: Run backport command
         run: |
-          npm run backport --version ${{ steps.extract_version.outputs.version }} --since main
+          npm run backport -- --version ${{ steps.extract_version.outputs.version }} --since main
 
       - name: Check for changes
         id: check_changes
