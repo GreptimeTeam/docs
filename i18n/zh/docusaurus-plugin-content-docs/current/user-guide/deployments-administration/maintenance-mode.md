@@ -39,14 +39,14 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 - 监控和指标收集继续运行
 
 ## 管理维护模式
-维护模式可以通过 Metasrv 的 HTTP 接口启用和禁用：`http://{METASRV}:{RPC_PORT}/admin/maintenance?enable=true`。请注意，此接口监听 Metasrv 的 `RPC_PORT`，默认为 `3002`。
+维护模式可以通过 Metasrv 的 HTTP 接口启用和禁用：`http://{METASRV}:{RPC_PORT}/admin/maintenance/enable` 和 `http://{METASRV}:{RPC_PORT}/admin/maintenance/disable`。请注意，此接口监听 Metasrv 的 `RPC_PORT`，默认为 `3002`。
 
 ### 启用维护模式
 
-通过发送 POST 请求到 `/admin/maintenance` 端点启用维护模式。
+通过发送 POST 请求到 `/admin/maintenance/enable` 端点启用维护模式。
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/maintenance?enable=true'
+curl -X POST 'http://localhost:3002/admin/maintenance/enable'
 ```
 
 预期输出：
@@ -58,12 +58,14 @@ curl -X POST 'http://localhost:3002/admin/maintenance?enable=true'
 
 ### 停用维护模式
 
+通过发送 POST 请求到 `/admin/maintenance/disable` 端点停用维护模式。
+
 在停用维护模式之前：
 1. 确保所有组件健康且正常运行
 2. 验证所有节点是否正确加入集群
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/maintenance?enable=false'
+curl -X POST 'http://localhost:3002/admin/maintenance/disable'
 ```
 
 预期输出：
@@ -73,10 +75,10 @@ curl -X POST 'http://localhost:3002/admin/maintenance?enable=false'
 
 ### 检查维护模式状态
 
-通过发送 GET 请求到 `/admin/maintenance` 端点检查维护模式状态。
+通过发送 GET 请求到 `/admin/maintenance/status` 端点检查维护模式状态。
 
 ```bash
-curl -X GET http://localhost:3002/admin/maintenance
+curl -X GET http://localhost:3002/admin/maintenance/status
 ```
 
 预期输出：
