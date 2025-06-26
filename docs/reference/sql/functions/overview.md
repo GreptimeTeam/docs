@@ -91,17 +91,6 @@ SELECT mod(18, 4);
 +-------------------------+
 ```
 
-* `pow(x, y)` to get the value of a number raised to the power of another number:
-```sql
-SELECT pow(2, 10);
-
-+-------------------------+
-| pow(Int64(2),Int64(10)) |
-+-------------------------+
-|                    1024 |
-+-------------------------+
-```
-
 ### Date and Time Functions
 
 DataFusion [Time and Date Function](./df-functions.md#time-and-date-functions).
