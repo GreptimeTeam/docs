@@ -536,7 +536,7 @@ curl -X GET \
 
 The input parameters are similar to the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in Prometheus' HTTP API:
 
-- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database. Note this parameter should bet set in the query param, or using a dedicated header `--header 'x-greptime-db-name: <database name>'`.
+- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database. Note this parameter should bet set in the query param, or using a HTTP header `--header 'x-greptime-db-name: <database name>'`.
 - `query=<string>`: Required. Prometheus expression query string.
 - `start=<rfc3339 | unix_timestamp>`: Required. The start timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
 - `end=<rfc3339 | unix_timestamp>`: Required. The end timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
