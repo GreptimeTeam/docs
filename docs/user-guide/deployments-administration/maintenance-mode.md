@@ -27,6 +27,7 @@ When upgrading a cluster without using GreptimeDB Operator, **you must manually 
 4. Frontend nodes upgrades
 5. Any operation that might cause temporary node unavailability
 
+After the cluster is deployed/upgraded, you can disable the maintenance mode.
 
 ## Impact of Maintenance Mode
 
