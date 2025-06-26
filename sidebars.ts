@@ -295,10 +295,13 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/manage-metadata/manage-etcd',
               ],
             },
+
             {
               type: 'category',
               label: 'Write-Ahead Logging (WAL)',
               items: [
+                'user-guide/deployments-administration/wal/overview',
+                'user-guide/deployments-administration/wal/configuration',
                 {
                   type: 'category',
                   label: 'Remote WAL',
