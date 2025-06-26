@@ -42,6 +42,16 @@ greptime cli meta snapshot save \
     --backend postgres-store
 ```
 
+### 从 MySQL 后端导出
+
+将元数据从 MySQL 导出到本地目录：
+
+```bash
+greptime cli meta snapshot save \
+    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
+    --backend mysql-store
+```
+
 #### 从 etcd 后端导出
 
 将元数据从 etcd 导出到本地目录：
@@ -87,6 +97,16 @@ greptime cli meta snapshot restore \
 greptime cli meta snapshot restore \
     --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
     --backend postgres-store
+```
+
+### 导入到 MySQL 后端
+
+从本地备份文件恢复元数据到 MySQL:
+
+```bash
+greptime cli meta snapshot restore \
+    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
+    --backend mysql-store
 ```
 
 #### 导入到 etcd 后端
