@@ -52,6 +52,11 @@ jobs:
           ref: ${{ steps.pr_info.outputs.head_ref }}
           fetch-depth: 0
 
+      - name: Fetch main branch
+        run: |
+          git fetch origin main:main
+          git branch -a
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
