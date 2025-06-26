@@ -5,10 +5,10 @@ description: 管理 GreptimeDB 暂停元数据变更的指南，用于安全执�
 
 # 防止元数据变更
 
-要防止元数据变更，您可以暂停 procedure manager。此机制拒绝所有新 procedure（即新的元数据变更操作），同时允许现有 procedure 继续运行。
-一旦启用，Metasrv 将拒绝以下 procedures：
+要防止元数据变更，你可以暂停 procedure manager。此机制拒绝所有新 procedure（即新的元数据变更操作），同时允许现有 procedure 继续运行。
+一旦启用，Metasrv 将拒绝以下 procedure 操作：
 
-**DDL procedures:**
+**DDL 操作:**
 - 创建表
 - 删除表
 - 修改表
@@ -18,12 +18,12 @@ description: 管理 GreptimeDB 暂停元数据变更的指南，用于安全执�
 - 创建流
 - 删除流
 
-**Region procedures:**
+**Region 调度操作:**
 - Region Migration
 - Region Failover (if enabled)
 - Region 自动负载均衡 (if enabled)
 
-您在启用暂停元数据变更功能后尝试执行这些操作时，可能会看到错误消息。对于 Region 操作，您可以启用 [集群维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md) 来临时暂时它们。
+你在启用暂停元数据变更功能后尝试执行这些操作时，可能会看到错误消息。对于 Region 调度操作，你可以启用 [集群维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md) 来临时暂时它们。
 
 ## 管理 procedure manager
 procedure manager 可以通过 Metasrv 的 HTTP 接口暂停和恢复：`http://{METASRV}:{RPC_PORT}/admin/procedure-manager/pause` 和 `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/resume`。请注意，此接口监听 Metasrv 的 `RPC_PORT`，默认为 `3002`。
