@@ -29,10 +29,6 @@ The table can also deduplicate rows with the same `Tag` and `Timestamp` values, 
 GreptimeDB stores and processes data by time-series.
 Choosing the right schema is crucial for efficient data storage and retrieval; please refer to the [schema design guide](/user-guide/deployments-administration/performance-tuning/design-table.md) for more details.
 
-THIS CHANGE IS TO TEST BACKPORT.
-=====
-
-
 ### Metrics
 
 Suppose we have a table called `system_metrics` that monitors the resource usage of machines in data centers:
