@@ -42,6 +42,16 @@ greptime cli meta snapshot save \
     --backend postgres-store
 ```
 
+### From MySQL Backend
+
+Export metadata from MySQL to local directory:
+
+```bash
+greptime cli meta snapshot save \
+    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
+    --backend mysql-store
+```
+
 #### From etcd Backend
 
 Export metadata from etcd to local directory:
@@ -88,6 +98,16 @@ Restore metadata from local backup file to PostgreSQL:
 greptime cli meta snapshot restore \
     --store-addrs 'password=password dbname=postgres user=postgres host=localhost port=5432' \
     --backend postgres-store
+```
+
+### From MySQL Backend
+
+Export metadata from MySQL to local directory:
+
+```bash
+greptime cli meta snapshot restore \
+    --store-addrs 'mysql://user:password@127.0.0.1:3306/database' \
+    --backend mysql-store
 ```
 
 #### To etcd Backend
