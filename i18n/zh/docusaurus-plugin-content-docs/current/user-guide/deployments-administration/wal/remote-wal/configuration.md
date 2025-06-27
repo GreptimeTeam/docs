@@ -83,7 +83,7 @@ overwrite_entry_start_id = true
 请非常小心地配置 Kafka 保留策略以避免数据丢失。GreptimeDB 会自动回收不需要的 WAL 数据，因此在大多数情况下你不需要设置保留策略。但是如果你确实需要设置，请确保以下几点：
 
 - **基于大小的保留策略**：通常不需要设置，因为数据库会管理自己的数据生命周期
-- **基于时间的保留策略**：如果你选择设置此项，请确保它**远大于自动刷新间隔（auto-flush-interval）**以防止过早删除数据
+- **基于时间的保留策略**：如果你选择设置此项，请确保保留时间**远大于自动刷新间隔** **(auto-flush-interval)** 以防止过早删除数据。
 
 不当的保留设置可能导致数据丢失，如果 WAL 数据在 GreptimeDB 处理之前被删除。
 :::
@@ -91,7 +91,7 @@ overwrite_entry_start_id = true
 - 如果 `overwrite_entry_start_id = true`：
   - 确保 Metasrv 中的 `auto_prune_interval` 已启用，以允许自动清理 WAL；
   - Kafka topics 不应使用**基于大小保留策略**；
-  - 如果启用基于时间的保留策略，请确保保留期**远大于自动刷新间隔（auto-flush-interval）**，至少是它的两倍。
+  - 如果启用基于时间的保留策略，请确保保留时间**远大于自动刷新间隔（auto-flush-interval）**，至少是它的两倍。
 
 - 确保 Datanode 使用的 Kafka 用户具有以下权限：
   - 对 topics 追加数据；
