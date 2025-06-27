@@ -42,7 +42,7 @@ greptime cli meta snapshot save \
     --backend postgres-store
 ```
 
-### From MySQL Backend
+#### From MySQL Backend
 
 Export metadata from MySQL to local directory:
 
@@ -100,9 +100,9 @@ greptime cli meta snapshot restore \
     --backend postgres-store
 ```
 
-### From MySQL Backend
+#### To MySQL Backend
 
-Export metadata from MySQL to local directory:
+Restore metadata from local backup file to MySQL:
 
 ```bash
 greptime cli meta snapshot restore \
