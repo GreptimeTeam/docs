@@ -532,6 +532,21 @@ meta:
 
 ```
 
+### Dedicated WAL Volume
+
+Configuring a dedicated WAL volume allows you to use a separate disk with a custom `StorageClass` for the WAL directory when deploying a GreptimeDB Datanode.
+
+```yaml
+dedicatedWAL:
+  enabled: true
+  raftEngine:
+    fs:
+      storageClassName: io2 # Use aws ebs io2 storage class for WAL for better performance.
+      name: wal
+      storageSize: 20Gi
+      mountPath: /wal
+```
+
 ### Enable Remote WAL
 
 To enable Remote WAL, both Metasrv and Datanode must be properly configured. Before proceeding, make sure to read the [Remote WAL Configuration](/user-guide/deployments-administration/wal/remote-wal/configuration.md) documentation for a complete overview of configuration options and important considerations.

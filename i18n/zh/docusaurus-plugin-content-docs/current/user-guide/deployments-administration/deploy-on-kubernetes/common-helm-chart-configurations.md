@@ -531,8 +531,23 @@ meta:
     allow_region_failover_on_local_wal = true
 ```
 
-### 启用 Remote WAL
+### 专用 WAL 卷
 
+配置专用 WAL 卷时，可以为 GreptimeDB Datanode 的 WAL（预写日志）目录使用单独的磁盘，并指定自定义的 `StorageClass`。
+
+```yaml
+dedicatedWAL:
+  enabled: true
+  raftEngine:
+    fs:
+      storageClassName: io2 # 使用 AWS ebs io2 存储以获得更好的性能
+      name: wal
+      storageSize: 20Gi
+      mountPath: /wal
+```
+
+
+### 启用 Remote WAL
 
 在启用前，请务必查阅 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md)文档，以了解完整的配置项说明及相关注意事项。
 
