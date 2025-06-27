@@ -305,6 +305,7 @@ const sidebars: SidebarsConfig = {
                   items: [
                     'user-guide/deployments-administration/wal/remote-wal/quick-start',
                     'user-guide/deployments-administration/wal/remote-wal/cluster-deployment',
+                    'user-guide/deployments-administration/wal/remote-wal/configuration',
                   ]
                 },
               ],
