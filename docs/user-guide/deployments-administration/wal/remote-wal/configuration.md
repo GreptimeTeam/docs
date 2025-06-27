@@ -13,12 +13,12 @@ If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm 
 
 ## Metasrv Configuration
 
-On the Metasrv side, Remote WAL is primarily responsible for managing Kafka topics and periodically pruning stale WAL records.
+On the Metasrv side, Remote WAL is primarily responsible for managing Kafka topics and periodically pruning stale WAL data.
 
 ```toml
 [wal]
 provider = "kafka"
-broker_endpoints = ["127.0.0.1:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 
 # WAL data pruning options
 auto_prune_interval = "0s"
@@ -37,7 +37,7 @@ topic_name_prefix = "greptimedb_wal_topic"
 | ------------------------ | ---------------------------------------------------------------------------------------- |
 | `provider`               | Set to "kafka" to enable Remote WAL via Kafka.                                           |
 | `broker_endpoints`       | List of Kafka broker addresses.                                                          |
-| `auto_prune_interval`    | Interval to automatically prune stale WAL entries. Set to "0s" to disable.               |
+| `auto_prune_interval`    | Interval to automatically prune stale WAL data. Set to "0s" to disable.                  |
 | `auto_prune_parallelism` | Maximum number of concurrent pruning tasks.                                              |
 | `auto_create_topics`     | Whether to automatically create Kafka topics. If false, topics must be created manually. |
 | `num_topics`             | Number of Kafka topics used for WAL.                                                     |

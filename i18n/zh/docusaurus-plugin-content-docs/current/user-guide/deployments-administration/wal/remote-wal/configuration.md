@@ -4,7 +4,7 @@ description: 本节介绍如何配置 GreptimeDB 集群的 Remote WAL。
 ---
 # 配置
 
-GreptimeDB 支持使用 Kafka 实现远程 WAL 存储。要启用远程 WAL，需要分别配置 Metasrv 和 Datanode。
+GreptimeDB 支持使用 Kafka 实现 Remote WAL 存储。要启用 Remote WAL，需要分别配置 Metasrv 和 Datanode。
 
 如果你使用 Helm Chart 部署 GreptimeDB，可以参考[常见 Helm Chart 配置项](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)了解如何配置 Remote WAL。
 
@@ -32,7 +32,7 @@ topic_name_prefix = "greptimedb_wal_topic"
 
 | 配置项                   | 说明                                                                   |
 | ------------------------ | ---------------------------------------------------------------------- |
-| `provider`               | 设置为 `"kafka"` 以启用远程 WAL。                                      |
+| `provider`               | 设置为 `"kafka"` 以启用 Remote WAL。                                   |
 | `broker_endpoints`       | Kafka broker 的地址列表。                                              |
 | `auto_prune_interval`    | 自动清理过期 WAL 的间隔时间，设为 `"0s"` 表示禁用。                    |
 | `auto_prune_parallelism` | 并发清理任务的最大数量。                                               |
@@ -43,7 +43,7 @@ topic_name_prefix = "greptimedb_wal_topic"
 
 #### Kafka Topic 与权限要求
 
-请确保以下设置正确，以保证远程 WAL 正常运行：
+请确保以下设置正确，以保证 Remote WAL 正常运行：
 
 - 如果 `auto_create_topics = false`：
   - 必须**在启动 Metasrv 之前**手动创建好所有 WAL topics；
@@ -71,7 +71,7 @@ overwrite_entry_start_id = true
 
 | 配置项                     | 说明                                                                                         |
 | -------------------------- | -------------------------------------------------------------------------------------------- |
-| `provider`                 | 设置为 `"kafka"` 以启用远程 WAL。                                                            |
+| `provider`                 | 设置为 `"kafka"` 以启用 Remote WAL。                                                         |
 | `broker_endpoints`         | Kafka broker 的地址列表。                                                                    |
 | `max_batch_bytes`          | 每个写入批次的最大大小，默认不能超过 Kafka 配置的单条消息上限（通常为 1MB）。                |
 | `overwrite_entry_start_id` | 若设为 `true`，在 WAL 回放时跳过缺失的 entry，避免 out-of-range 错误（但可能掩盖数据丢失）。 |
