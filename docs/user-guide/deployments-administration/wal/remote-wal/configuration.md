@@ -9,7 +9,7 @@ The configuration of Remote WAL contains two parts:
 - Metasrv Configuration
 - Datanode Configuration
 
-If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) to learn how to configure Remote WAL.
+If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) to learn how to configure Remote WAL. 
 
 ## Metasrv Configuration
 
