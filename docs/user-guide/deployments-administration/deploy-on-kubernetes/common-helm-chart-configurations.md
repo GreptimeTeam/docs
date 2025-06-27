@@ -529,4 +529,27 @@ meta:
   enableRegionFailover: true
   configData: |
     allow_region_failover_on_local_wal = true
+
+```
+
+### Enable Remote WAL
+
+To enable Remote WAL, both Metasrv and Datanode must be properly configured. Before proceeding, make sure to read the [Remote WAL Configuration](/user-guide/deployments-administration/wal/remote-wal/configuration.md) documentation for a complete overview of configuration options and important considerations.
+
+```yaml
+remoteWal:
+  enabled: true
+  kafka:
+    brokerEndpoints: ["kafka.kafka-cluster.svc:9092"]
+meta:
+  configData: |
+    [wal]
+    provider = "kafka"
+    replication_factor = 1
+    auto_prune_interval = "300s"
+datanode:
+  configData: |
+    [wal]
+    provider = "kafka"
+    overwrite_entry_start_id = true
 ```

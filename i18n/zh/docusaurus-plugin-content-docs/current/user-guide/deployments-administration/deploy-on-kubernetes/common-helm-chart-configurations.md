@@ -530,3 +530,26 @@ meta:
   configData: |
     allow_region_failover_on_local_wal = true
 ```
+
+### 启用 Remote WAL
+
+
+在启用前，请务必查阅 [Remote WAL 配置](/user-guide/deployments-administration/wal/remote-wal/configuration.md)文档，以了解完整的配置项说明及相关注意事项。
+
+```yaml
+remoteWal:
+  enabled: true
+  kafka:
+    brokerEndpoints: ["kafka.kafka-cluster.svc:9092"]
+meta:
+  configData: |
+    [wal]
+    provider = "kafka"
+    replication_factor = 1
+    auto_prune_interval = "300s"
+datanode:
+  configData: |
+    [wal]
+    provider = "kafka"
+    overwrite_entry_start_id = true
+```
