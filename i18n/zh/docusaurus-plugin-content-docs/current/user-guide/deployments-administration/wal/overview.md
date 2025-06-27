@@ -31,8 +31,6 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 ### 优点
 
-- **零 RPO**: WAL 数据独立于 Datanode 存储，确保零[恢复点目标](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Point_Objective)（RPO），即使系统发生故障也不会丢失数据。
-
 - **低 RTO**: 通过将 WAL 与 Datanode 解耦，[恢复时间目标](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Time_Objective) (RTO) 得以最小化。当 Datanode 崩溃时，Metasrv 会发起 [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) ，将受影响 Region 迁移至健康节点，无需本地重放 WAL。
 
 

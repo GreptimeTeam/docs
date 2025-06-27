@@ -30,8 +30,6 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 ### Advantages
 
-- **Zero RPO**: WAL data is stored independently of the Datanode, ensuring zero [Recovery Point Objective](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Point_Objective) (RPO)—meaning no data loss, even in the event of system failure.
-
 - **Low RTO**: By decoupling WAL from the Datanode, [Recovery Time Objective](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Time_Objective) (RTO) is minimized. If a Datanode crashes, the Metasrv can quickly trigger a [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) to migrate affected regions to healthy nodes—without the need to replay WAL locally.
 
 - **Multi-Consumer Subscriptions**: Remote WAL supports multiple consumers subscribing to WAL logs simultaneously, enabling features such as region hot standby and [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md), thereby enhancing system availability and flexibility.

@@ -21,15 +21,15 @@ sync_write = false
 
 如果你使用 Helm Chart 部署 GreptimeDB，可以参考[常见 Helm Chart 配置项](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)了解如何通过注入配置文件以配置 Datanode。
 
-| Configuration Option | Description                                                                                                          | Default Value     | Provider      |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------- |
-| `provider`           | The provider of the WAL. Options: `raft_engine` (local file system storage) or `kafka` (remote WAL storage in Kafka) | `"raft_engine"`   | All           |
-| `dir`                | The directory where to write logs                                                                                    | `{data_home}/wal` | `raft_engine` |
-| `file_size`          | The maximum size of the WAL log file                                                                                 | `128MB`           | `raft_engine` |
-| `purge_threshold`    | The threshold of the WAL size to trigger purging                                                                     | `1GB`             | `raft_engine` |
-| `purge_interval`     | The interval to trigger purging                                                                                      | `1m`              | `raft_engine` |
-| `read_batch_size`    | The read batch size                                                                                                  | `128`             | `raft_engine` |
-| `sync_write`         | Whether to call fsync when writing every log                                                                         | `false`           | `raft_engine` |
+| 配置项            | 描述                                                                                            | 默认值            |
+| ----------------- | ----------------------------------------------------------------------------------------------- | ----------------- |
+| `provider`        | WAL 的提供者。可选项：`raft_engine`（本地文件系统存储）或 `kafka`（使用 Kafka 的远程 WAL 存储） | `"raft_engine"`   |
+| `dir`             | 日志写入目录                                                                                    | `{data_home}/wal` |
+| `file_size`       | 单个 WAL 日志文件的大小                                                                         | `128MB`           |
+| `purge_threshold` | 触发清理的 WAL 总大小阈值                                                                       | `1GB`             |
+| `purge_interval`  | 触发清理的时间间隔                                                                              | `1m`              |
+| `read_batch_size` | 读取批次大小                                                                                    | `128`             |
+| `sync_write`      | 是否在每次写入日志时调用 fsync                                                                  | `false`           |
 
 ## 最佳实践
 
