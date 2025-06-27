@@ -513,17 +513,16 @@ GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在
 curl -X GET \
   -H 'Authorization: Basic {{authorization if exists}}' \
   -G \
-  --data-urlencode 'db=public' \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
   --data-urlencode 'end=1667446799' \
   --data-urlencode 'step=1s' \
-  http://localhost:4000/v1/promql
+  'http://localhost:4000/v1/promql?db=public'
 ```
 
 接口中的参数和 Prometheus' HTTP API 的 [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 接口相似：
 
-- `db=<database>`：在使用 GreptimeDB 进行鉴权操作时必填。
+- `db=<database>`：在使用 GreptimeDB 进行鉴权操作时必填，如果使用的是 `public` 数据库则可以忽略该参数。注意这个参数需要被设置在 query param 中，或者通过 `--header 'x-greptime-db-name: <database name>'` 设置在 HTTP 请求头中。
 - `query=<string>`：必填。Prometheus 表达式查询字符串。
 - `start=<rfc3339 | unix_timestamp>`：必填。开始时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
 - `end=<rfc3339 | unix_timestamp>`：必填。结束时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。

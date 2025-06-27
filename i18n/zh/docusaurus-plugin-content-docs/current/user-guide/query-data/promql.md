@@ -39,12 +39,12 @@ curl -X POST \
     --data-urlencode 'start=2024-11-24T00:00:00Z' \
     --data-urlencode 'end=2024-11-25T00:00:00Z' \
     --data-urlencode 'step=1h' \
-    --data-urlencode 'db=public' \
-    http://localhost:4000/v1/prometheus/api/v1/query_range
+    'http://localhost:4000/v1/prometheus/api/v1/query_range?db=public'
 ```
 
 如果你使用启用了身份验证的 GreptimeDB，则需要 Authorization header，请参阅[鉴权](/user-guide/protocols/http.md#鉴权)。
-该 API 的查询字符串参数与原始 [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 的查询字符串参数相同，但额外的 `db` 参数除外，该参数指定了 GreptimeDB 数据库名称。
+该 API 的查询字符串参数与原始 [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 的查询字符串参数相同。
+你需要在 HTTP 的 query param 设置 `db` 参数，或者通过 `--header 'x-greptime-db-name: <database name>'` 设置在 HTTP 请求头中。
 
 输出格式与 Prometheus API 完全兼容：
 

@@ -40,10 +40,10 @@ curl -X POST \
     --data-urlencode 'start=2024-11-24T00:00:00Z' \
     --data-urlencode 'end=2024-11-25T00:00:00Z' \
     --data-urlencode 'step=1h' \
-    --data-urlencode 'db=public' \
-    http://localhost:4000/v1/prometheus/api/v1/query_range
+    'http://localhost:4000/v1/prometheus/api/v1/query_range?db=public'
 ```
 If authentication is enabled in GreptimeDB, the authentication header is required. Refer to the [authentication documentation](/user-guide/protocols/http.md#authentication) for more details.
+You need to either set it in the HTTP URL query param `db` like the example above, or set it using `--header 'x-greptime-db-name: <database name>'` as HTTP header.
 
 The query string parameters for the API are identical to those of the original [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries), with the exception of the additional `db` parameter, which specifies the GreptimeDB database name.
 
