@@ -151,13 +151,15 @@ http://{{API-host}}/v1/sql
 ### Query string parameters
 
 - `db`: 数据库名称。可选。如果未提供，将使用默认数据库 `public`。
-- `format`: 输出格式。可选。
+- `format`: 输出格式。可选。默认为 `greptimedb_v1` 的 JSON 格式。
   除了默认的 JSON 格式外，HTTP API 还允许你通过提供 `format` 查询参数来自定义输出格式，值如下：
   - `influxdb_v1`: [influxdb 查询
     API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
     兼容格式。附加参数：
     - `epoch`: `[ns,u,µ,ms,s,m,h]`，返回指定精度的时间戳
-  - `csv`: 逗号分隔值输出
+  - `csv`: 以逗号分隔值格式输出
+  - `csvWithNames`: 以逗号分隔值格式输出，包含列名标题
+  - `csvWithNamesAndTypes`: 以逗号分隔值格式输出，包含列名和数据类型标题
   - `arrow`: [Arrow IPC
     格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
     - `compression`: `zstd` 或 `lz4`，默认：无压缩
@@ -324,6 +326,43 @@ curl -X POST \
 └─────────────┴───────────────┴─────┴────────┘
 ```
 
+
+#### 使用 `csvWithNames` 格式输出查询数据
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNames
+```
+
+输出：
+```csv
+host,ts,cpu,memory
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
+将 `format` 改为 `csvWithNamesAndTypes`：
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes
+```
+
+输出：
+```csv
+host,ts,cpu,memory
+String,TimestampMillisecond,Float64,Float64
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
 #### 使用 `influxdb_v1` 格式输出查询数据
 
 你可以在查询字符串参数中使用 `influxdb_v1` 格式，以 InfluxDB 查询 API 兼容格式获取输出。
@@ -474,17 +513,16 @@ GreptimeDB 同样暴露了一个自己的 HTTP API 用于 PromQL 查询，即在
 curl -X GET \
   -H 'Authorization: Basic {{authorization if exists}}' \
   -G \
-  --data-urlencode 'db=public' \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
   --data-urlencode 'end=1667446799' \
   --data-urlencode 'step=1s' \
-  http://localhost:4000/v1/promql
+  'http://localhost:4000/v1/promql?db=public'
 ```
 
 接口中的参数和 Prometheus' HTTP API 的 [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) 接口相似：
 
-- `db=<database>`：在使用 GreptimeDB 进行鉴权操作时必填。
+- `db=<database>`：在使用 GreptimeDB 进行鉴权操作时必填，如果使用的是 `public` 数据库则可以忽略该参数。注意这个参数需要被设置在 query param 中，或者通过 `--header 'x-greptime-db-name: <database name>'` 设置在 HTTP 请求头中。
 - `query=<string>`：必填。Prometheus 表达式查询字符串。
 - `start=<rfc3339 | unix_timestamp>`：必填。开始时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
 - `end=<rfc3339 | unix_timestamp>`：必填。结束时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。

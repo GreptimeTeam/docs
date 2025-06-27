@@ -8,6 +8,7 @@ description: Guide for managing GreptimeDB cluster maintenance mode to safely pe
 Maintenance mode is a safety feature in GreptimeDB that temporarily disables automatic cluster management operations.
 
 This mode is particularly useful during:
+- Cluster deployment
 - Cluster upgrades
 - Planned downtime
 - Any operation that might temporarily affect cluster stability
@@ -20,11 +21,13 @@ If you are upgrading a cluster using GreptimeDB Operator, you don't need to enab
 
 ### Without GreptimeDB Operator
 When upgrading a cluster without using GreptimeDB Operator, **you must manually enable Metasrv's maintenance mode before**:
-1. Rolling upgrades of Datanode nodes
-2. Metasrv nodes upgrades
-3. Frontend nodes upgrades
-4. Any operation that might cause temporary node unavailability
+1. Deploying a new cluster (maintenance mode should be enabled after metasrv nodes are ready)
+2. Rolling upgrades of Datanode nodes
+3. Metasrv nodes upgrades
+4. Frontend nodes upgrades
+5. Any operation that might cause temporary node unavailability
 
+After the cluster is deployed/upgraded, you can disable the maintenance mode.
 
 ## Impact of Maintenance Mode
 

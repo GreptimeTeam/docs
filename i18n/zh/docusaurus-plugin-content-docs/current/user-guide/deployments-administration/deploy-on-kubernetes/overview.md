@@ -11,9 +11,13 @@ GreptimeDB 是专为云原生环境而设计的时序数据库，自诞生以来
 
 我们**强烈建议**使用 GreptimeDB Operator 在 Kubernetes 上部署 GreptimeDB。
 
+:::warning
+如果你不使用 GreptimeDB Operator 来部署/升级集群，请参考[集群维护模式](/user-guide/deployments-administration/maintenance-mode.md)了解部署和集群升级期间所需的操作。
+:::
+
 ## 立即开始
 
-- GreptimeDB Cluster：你可以将 [立即开始](./getting-started.md) 作为你的第一篇指南以了解整体情况。在该指南中，我们提供了用于在 Kubernetes 上部署 GreptimeDB 集群的完整过程。
+- GreptimeDB Cluster：你可以将 [立即开始](./deploy-greptimedb-cluster.md) 作为你的第一篇指南以了解整体情况。在该指南中，我们提供了用于在 Kubernetes 上部署 GreptimeDB 集群的完整过程。
 - [GreptimeDB Standalone](./deploy-greptimedb-standalone.md)
 
 ## GreptimeDB Operator

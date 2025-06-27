@@ -19,7 +19,7 @@ A minimal configuration of when using your GreptimeCloud instance can be:
 [sources.metrics_in]
 type = "host_metrics"
 
-[sinks.metrics_in]
+[sinks.metrics_out]
 inputs = ["metrics_in"]
 type = "greptimedb"
 endpoint = "<host>:5001"
@@ -51,6 +51,7 @@ username = "<username>"
 password = "<password>"
 table = "demo_logs"
 pipeline_name = "greptime_identity"
+healthcheck.enabled = false
 ```
 
 Execute Vector with:

@@ -165,7 +165,7 @@ frontend:
 对于不同 Role 的服务，你可以通过 `${role}.configData` 字段注入自定义的 TOML 配置文件，如下所示：
 
 ```yaml
-frontend:
+datanode:
   configData: |
     [[region_engine]]
     [region_engine.mito]
@@ -506,3 +506,27 @@ meta:
 
 - `etcd.endpoints`: etcd 服务地址。
 - `etcd.storeKeyPrefix`: etcd 存储 key 前缀。所有 key 都会被存储在这个前缀下。如果你希望使用一个 etcd 集群为多个 GreptimeDB 集群提供服务，你可以为每个 GreptimeDB 集群配置不同的存储 key 前缀。这仅用于测试和调试目的。
+
+### 启用 Region Failover
+
+你可以通过 `meta.enableRegionFailover` 字段启用 Region Failover。在启用 Region Failover 之前，请确保你的部署满足 [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) 文档中的先决条件。如果你的配置不满足条件，**Operator 将无法部署集群组件**。
+
+```yaml
+meta: 
+  enableRegionFailover: true
+```
+
+#### 启用 Region Failover 在本地 WAL
+
+在本地 WAL 上启用 Region Failover，你需要设置 `meta.enableRegionFailover: true` 和在 `meta.configData` 字段中添加 `allow_region_failover_on_local_wal = true`。
+
+:::warning WARNING
+在本地 WAL 启用 Region Failover 可能会导致数据丢失。另外，确保你的 Operator 版本大于或等于 v0.2.2。
+:::
+
+```yaml
+meta: 
+  enableRegionFailover: true
+  configData: |
+    allow_region_failover_on_local_wal = true
+```

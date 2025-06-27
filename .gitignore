@@ -13,3 +13,6 @@ build
 *~
 .aider*
 .env
+
+
+.temp_patch

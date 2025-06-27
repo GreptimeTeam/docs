@@ -159,7 +159,7 @@ http://{{API-host}}/v1/sql
 ### Query string parameters
 
 - `db`: The database name. Optional. If not provided, the default database `public` will be used.
-- `format`: The output format. Optional. 
+- `format`: The output format. Optional. `greptimedb_v1` by default.
   In addition to the default JSON format, the HTTP API also allows you to
   customize output format by providing the `format` query parameter with following
   values:
@@ -168,7 +168,9 @@ http://{{API-host}}/v1/sql
     compatible format. Additional parameters:
     - `epoch`: `[ns,u,µ,ms,s,m,h]`, returns epoch timestamps with the specified
       precision
-  - `csv`: output in comma separated values
+  - `csv`: outputs as comma-separated values
+  - `csvWithNames`: outputs as comma-separated values with a column names header
+  - `csvWithNamesAndTypes`: outputs as comma-separated values with column names and data types headers
   - `arrow`: [Arrow IPC
     format](https://arrow.apache.org/docs/python/feather.html). Additional
     parameters:
@@ -337,6 +339,43 @@ Output
 └─────────────┴───────────────┴─────┴────────┘
 ```
 
+
+#### Query data with `csvWithNames` format output
+
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNames
+```
+
+Output:
+```csv
+host,ts,cpu,memory
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
+Changes `format` to `csvWithNamesAndTypes`:
+```shell
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d "sql=SELECT * FROM monitor" \
+  http://localhost:4000/v1/sql?db=public&format=csvWithNamesAndTypes
+```
+
+Output:
+```csv
+host,ts,cpu,memory
+String,TimestampMillisecond,Float64,Float64
+127.0.0.1,1667446797450,0.1,0.4
+127.0.0.1,1667446798450,0.5,0.2
+127.0.0.2,1667446798450,0.2,0.3
+```
+
 #### Query data with `influxdb_v1` format output
 
 You can use the `influxdb_v1` format in the query string parameters to get the output in InfluxDB query API compatible format.
@@ -488,17 +527,16 @@ For example:
 curl -X GET \
   -H 'Authorization: Basic {{authorization if exists}}' \
   -G \
-  --data-urlencode 'db=public' \
   --data-urlencode 'query=avg(system_metrics{idc="idc_a"})' \
   --data-urlencode 'start=1667446797' \
   --data-urlencode 'end=1667446799' \
   --data-urlencode 'step=1s' \
-  http://localhost:4000/v1/promql
+  'http://localhost:4000/v1/promql?db=public'
 ```
 
 The input parameters are similar to the [`range_query`](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in Prometheus' HTTP API:
 
-- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database.
+- `db=<database name>`: Required when using GreptimeDB with authorization, otherwise can be omitted if you are using the default `public` database. Note this parameter should bet set in the query param, or using a HTTP header `--header 'x-greptime-db-name: <database name>'`.
 - `query=<string>`: Required. Prometheus expression query string.
 - `start=<rfc3339 | unix_timestamp>`: Required. The start timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
 - `end=<rfc3339 | unix_timestamp>`: Required. The end timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.

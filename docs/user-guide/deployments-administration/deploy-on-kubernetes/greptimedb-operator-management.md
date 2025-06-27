@@ -37,7 +37,7 @@ For production deployments, it's recommended to use Helm to install the Greptime
 
 ### Installation
 
-You can refer [Install and verify the GreptimeDB Operator](/user-guide/deployments-administration/deploy-on-kubernetes/getting-started.md#install-and-verify-the-greptimedb-operator) for detailed instructions.
+You can refer [Install and verify the GreptimeDB Operator](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#install-and-verify-the-greptimedb-operator) for detailed instructions.
 
 :::note
 If you are using [Argo CD](https://argo-cd.readthedocs.io/en/stable/) to deploy applications, please make sure that the `Application` has set the [`ServerSideApply=true`](https://argo-cd.readthedocs.io/en/latest/user-guide/sync-options/#server-side-apply) to enable the server-side apply (other GitOps tools may have similar settings).

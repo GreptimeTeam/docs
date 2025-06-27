@@ -96,6 +96,10 @@ transform:
 table_suffix: _${string_field_a}
 ```
 
+从 `v0.15` 开始， GreptimeDB 引入了一个新的文件格式版本。
+其主要的差别在于 Transform 的处理逻辑。
+请参考[下述章节](#版本-2-中的-transform)查看更多细节。
+
 ## Processor
 
 Processor 用于对 log 数据进行预处理，其配置位于 YAML 文件中的 `processors` 字段下。
@@ -1003,6 +1007,42 @@ transform:
   "born_time": 2021-07-08 16:00:00
 }
 ```
+
+### 版本 2 中的 Transform
+
+v0.15 版本之前的 pipeline 引擎仅支持全设置 transform 模式和自动 transform 模式:
+- 全设置 transform：只有在 transform 区块中明确写明的字段才会被持久化到数据库中
+- 自动 transform：transform 区块无需设置。pipeline 引擎会尝试自动将 pipeline 上下文中的所有字段都进行保存。但是在这种场景下，除了自动推导的时间索引列，无法为其他字段设置索引。
+
+从 v0.15 起，GreptimeDB 推出了结合了以上两种 transform 优点的一种新模式，这使编写 pipeline 配置文件更加方便。
+你只需要在 transform 模块中指定必要的字段，为它们设置特定的数据类型和索引，其他 pipeline 上下文中的字段将会被 pipeline 引擎自动设置。
+通过和 `select` 处理器结合使用，你可以决定在最终数据表中保留或去除哪些字段。
+
+但是这无法兼容已经存在的 pipeline 配置文件。
+如果你已经在 pipeline 配置中使用了 `dissect` 或者 `regex` 处理器，那么在升级数据库版本后，原始的日志文本，因为还留存于 pipeline 上下文中，会被立刻写入到数据库中。
+
+因此，GreptimeDB pipeline 引入了 `version` 字段来执行要使用的 transform 版本，就像 Docker Compose 文件的版本号字段一样。
+以下是一个示例：
+```YAML
+version: 2
+processors:
+  - date:
+    field: input_str
+    formats:
+      - "%Y-%m-%dT%H:%M:%S%.3fZ"
+
+transform:
+  - field: input_str, ts
+    type: time
+```
+
+只需要在配置文件的开头加上 `version: 2`，pipeline 引擎就会以新的 transform 模式来处理数据：
+1. 顺序执行所有配置的 transform 规则。
+2. 将 pipeline 上下文中的所有字段保存到最终的结果表中
+
+注意：
+- 如果明确配置了 transform 规则，那么它必须要包含时间索引列。否则时间索引列会由 pipeline 引擎进行推导，该行为和 auto-transform 模式一致
+- 版本 2 中的 transform 规则执行会将原始字段从 pipeline 上下文中移除，故你无法在 transform 规则对同一个字段引用多次
 
 ## Dispatcher
 

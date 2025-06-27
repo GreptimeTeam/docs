@@ -1,0 +1,151 @@
+name: Auto Backport
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  backport:
+    # Only run on pull request comments
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'backport!')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract version from comment
+        id: extract_version
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          # Extract version using regex pattern matching
+          if [[ $COMMENT_BODY =~ backport![[:space:]]+([^[:space:]]+) ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Found version: $VERSION"
+          else
+            echo "No valid backport command found"
+            exit 1
+          fi
+
+      - name: Get PR information
+        id: pr_info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('head_sha', pr.head.sha);
+            core.setOutput('base_ref', pr.base.ref);
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_info.outputs.head_ref }}
+          fetch-depth: 0
+
+      - name: Fetch main branch
+        run: |
+          git fetch origin main:main
+          git branch -a
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run backport command
+        run: |
+          npm run backport -- --version ${{ steps.extract_version.outputs.version }} --since main
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected"
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          git add .
+          git commit -m "Auto backport for version ${{ steps.extract_version.outputs.version }}
+
+          Triggered by: ${{ github.event.comment.html_url }}"
+
+          git push origin ${{ steps.pr_info.outputs.head_ref }}
+
+      - name: Add reaction to comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success = '${{ steps.check_changes.outputs.changes }}' === 'true';
+            const reaction = success ? '+1' : 'confused';
+
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: reaction
+            });
+
+      - name: Comment on PR with results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success = '${{ steps.check_changes.outputs.changes }}' === 'true';
+            const version = '${{ steps.extract_version.outputs.version }}';
+
+            let message;
+            if (success) {
+              message = `✅ Backport completed successfully for version \`${version}\`\n\nChanges have been committed to this PR branch.`;
+            } else {
+              message = `ℹ️ Backport command executed for version \`${version}\`, but no changes were detected.\n\nThis might mean:\n- No changes needed to be backported\n- The backport command didn't produce any modifications`;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: message
+            });
+
+      - name: Handle errors
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ steps.extract_version.outputs.version }}' || 'unknown';
+
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: '-1'
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `❌ Backport failed for version \`${version}\`\n\nPlease check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`
+            });
