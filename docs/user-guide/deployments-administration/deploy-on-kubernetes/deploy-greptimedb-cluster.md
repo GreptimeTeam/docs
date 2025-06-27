@@ -453,6 +453,10 @@ There are three dashboards available:
 - **GreptimeDB**: Displays the metrics of the GreptimeDB cluster.
 - **GreptimeDB Logs**: Displays the logs of the GreptimeDB cluster.
 
+## Next Steps
+
+- If you want to deploy a GreptimeDB cluster with Remote WAL, you can refer to [Configure Remote WAL](/user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal.md) for more details.
+
 ## Cleanup
 
 :::danger
