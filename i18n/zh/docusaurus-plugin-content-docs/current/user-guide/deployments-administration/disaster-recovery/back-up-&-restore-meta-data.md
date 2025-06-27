@@ -42,7 +42,7 @@ greptime cli meta snapshot save \
     --backend postgres-store
 ```
 
-### 从 MySQL 后端导出
+#### 从 MySQL 后端导出
 
 将元数据从 MySQL 导出到本地目录：
 
@@ -99,7 +99,7 @@ greptime cli meta snapshot restore \
     --backend postgres-store
 ```
 
-### 导入到 MySQL 后端
+#### 导入到 MySQL 后端
 
 从本地备份文件恢复元数据到 MySQL:
 
