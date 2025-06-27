@@ -2,7 +2,7 @@
 keywords: [Configuration, Local WAL, GreptimeDB Datanode, GreptimeDB]
 description: This section describes how to configure the Local WAL for GreptimeDB Datanode component.
 ---
-# Configuration
+# Local WAL
 
 This section describes how to configure the local WAL for GreptimeDB Datanode component. 
 

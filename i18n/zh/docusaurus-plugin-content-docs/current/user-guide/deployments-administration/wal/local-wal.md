@@ -3,7 +3,7 @@ keywords: [配置, 本地 WAL, GreptimeDB Datanode, GreptimeDB]
 description: 介绍如何配置 GreptimeDB 中的本地 WAL。
 ---
 
-# 配置
+# 本地 WAL
 
 本节介绍如何配置 GreptimeDB Datanode 组件的本地 WAL。
 

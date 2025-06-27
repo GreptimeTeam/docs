@@ -301,7 +301,7 @@ const sidebars: SidebarsConfig = {
               label: 'Write-Ahead Logging (WAL)',
               items: [
                 'user-guide/deployments-administration/wal/overview',
-                'user-guide/deployments-administration/wal/configuration',
+                'user-guide/deployments-administration/wal/local-wal',
                 {
                   type: 'category',
                   label: 'Remote WAL',

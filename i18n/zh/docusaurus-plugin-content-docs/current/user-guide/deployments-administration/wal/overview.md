@@ -46,6 +46,6 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 ## 后续步骤
 
-- 如需配置本地 WAL 存储，请参阅[配置](/user-guide/deployments-administration/wal/configuration.md)。
+- 如需配置本地 WAL 存储，请参阅[本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)。
 
 - 想了解更多 Remote WAL 相关信息，请参阅 [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/quick-start.md)。
