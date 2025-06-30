@@ -32,6 +32,21 @@ greptime cli data export \
         └── <数据文件>
 ```
 
+#### 导出到 S3
+
+导出所有数据库备份到 S3:
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --s3 \
+    --s3-bucket <YOUR_S3_BUCKET> \
+    --s3-access-key <YOUR_S3_ACCESS_KEY> \
+    --s3-secret-key <YOUR_S3_SECRET_KEY> \
+    --s3-region <YOUR_S3_REGION> \
+    --s3-root <YOUR_S3_ROOT> \
+    --s3-endpoint <YOUR_S3_ENDPOINT> 
+```
+
 ### 仅导出表结构
 仅导出表结构而不包含数据。此操作将 `CREATE TABLE` 语句导出到 SQL 文件中，允许您备份表结构而不包含实际数据。
 ```bash

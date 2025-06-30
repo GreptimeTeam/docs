@@ -32,6 +32,21 @@ The output directory structure is as follows:
         └── <data files>
 ```
 
+#### Export to S3
+
+Export all databases backup to S3:
+```bash
+greptime cli data export \
+    --addr localhost:4000 \
+    --s3 \
+    --s3-bucket <YOUR_S3_BUCKET> \
+    --s3-access-key <YOUR_S3_ACCESS_KEY> \
+    --s3-secret-key <YOUR_S3_SECRET_KEY> \
+    --s3-region <YOUR_S3_REGION> \
+    --s3-root <YOUR_S3_ROOT> \
+    --s3-endpoint <YOUR_S3_ENDPOINT>
+```
+
 ### Schema-Only Operations
 Export only schemas without data. This operation exports `CREATE TABLE` statements into SQL files, allowing you to backup table structures without the actual data.
 ```bash
