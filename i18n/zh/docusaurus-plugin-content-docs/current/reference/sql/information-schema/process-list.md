@@ -1,6 +1,6 @@
 ---
-keywords: [query, process_list, processlist, task management]
-description: Provides a view of running queries in cluster.
+keywords: [查询, process_list, processlist, 查询管理]
+description: 提供当前正在运行的查询列表的内部表。
 ---
 
 # PROCESS_LIST
