@@ -18,8 +18,7 @@ description: 本指南将逐步介绍如何在 Kubernetes 上部署启用了 Rem
 
 在部署启用了 Remote WAL 的 GreptimeDB 之前，请确保元数据存储和 Kafka 集群已经部署完成，或者已准备好可用的实例：
 
-- 元数据存储：请参考 [管理元数据概述](/user-guide/deployments-administration/manage-metadata/overview.md) 了解更多详情。
-  - 在本示例中，我们使用 etcd 作为元数据存储。
+- 元数据存储：请参考 [管理元数据概述](/user-guide/deployments-administration/manage-metadata/overview.md) 了解更多详情。在本示例中，我们使用 etcd 作为元数据存储。
 - Kafka 集群：请参考 [管理 Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md) 了解更多详情。
 
 ## Remote WAL 配置

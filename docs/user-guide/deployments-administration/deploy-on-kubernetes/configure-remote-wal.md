@@ -17,8 +17,7 @@ In this guide, you will learn how to deploy GreptimeDB with Remote WAL on Kubern
 
 Before deploying a GreptimeDB cluster with Remote WAL, ensure that the metadata storage and Kafka cluster are properly set up or that existing instances are available.
 
-- Metadata storage: you can refer to [Manage Metadata Overview](/user-guide/deployments-administration/manage-metadata/overview.md) for more details.
-  - In this example, we use etcd as the metadata storage.
+- Metadata storage: you can refer to [Manage Metadata Overview](/user-guide/deployments-administration/manage-metadata/overview.md) for more details. In this example, we use etcd as the metadata storage.
 - Kafka Cluster: you can refer to [Manage Kafka](/user-guide/deployments-administration/wal/remote-wal/manage-kafka.md) for more details.
 
 ## Remote WAL Configuration
