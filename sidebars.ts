@@ -283,6 +283,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management',
                 'user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations',
                 'user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups',
+                'user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal',
               ],
             },
             {
@@ -306,9 +307,8 @@ const sidebars: SidebarsConfig = {
                   type: 'category',
                   label: 'Remote WAL',
                   items: [
-                    'user-guide/deployments-administration/wal/remote-wal/quick-start',
-                    'user-guide/deployments-administration/wal/remote-wal/cluster-deployment',
                     'user-guide/deployments-administration/wal/remote-wal/configuration',
+                    'user-guide/deployments-administration/wal/remote-wal/manage-kafka',
                   ]
                 },
               ],

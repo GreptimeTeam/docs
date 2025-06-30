@@ -45,4 +45,4 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 - To configure the Local WAL storage, please refer to [Local WAL](/user-guide/deployments-administration/wal/local-wal.md).
 
-- To learn more about the Remote WAL, please refer to [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/quick-start.md).
+- To learn more about the Remote WAL, please refer to [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md).
