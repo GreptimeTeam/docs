@@ -15,18 +15,36 @@ greptime cli data export [OPTIONS]
 ```
 
 ### 选项
-| 选项              | 是否必需 | 默认值     | 描述                                                                           |
-| ----------------- | -------- | ---------- | ------------------------------------------------------------------------------ |
-| --addr            | 是       | -          | 要连接的 GreptimeDB 数据库地址                                                 |
-| --output-dir      | 是       | -          | 存储导出数据的目录                                                             |
-| --database        | 否       | 所有数据库 | 要导出的数据库名称                                                             |
-| --export-jobs, -j | 否       | 1          | 并行导出任务数量（多个数据库可以并行导出）                                     |
-| --max-retry       | 否       | 3          | 每个任务的最大重试次数                                                         |
-| --target, -t      | 否       | all        | 导出目标（schema/data/all）                                                    |
-| --start-time      | 否       | -          | 数据导出的开始时间范围                                                         |
-| --end-time        | 否       | -          | 数据导出的结束时间范围                                                         |
-| --auth-basic      | 否       | -          | 使用 `<username>:<password>` 格式                                              |
-| --timeout         | 否       | 0          | 对 DB 进行一次调用的超时时间，默认为 0 代表永不超时（例如 `30s`, `10min 20s`） |
+| 选项                      | 是否必需 | 默认值     | 描述                                                                                                                                                                                                                                                                       |
+| ------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--addr`                  | 是       | -          | 要连接的 GreptimeDB 数据库地址                                                                                                                                                                                                                                             |
+| `--output-dir`            | 是       | -          | 存储导出数据的目录                                                                                                                                                                                                                                                         |
+| `--database`              | 否       | 所有数据库 | 要导出的数据库名称                                                                                                                                                                                                                                                         |
+| `--export-jobs, -j`       | 否       | 1          | 并行导出任务数量（多个数据库可以并行导出）                                                                                                                                                                                                                                 |
+| `--max-retry`             | 否       | 3          | 每个任务的最大重试次数                                                                                                                                                                                                                                                     |
+| `--target, -t`            | 否       | all        | 导出目标（schema/data/all）                                                                                                                                                                                                                                                |
+| `--start-time`            | 否       | -          | 数据导出的开始时间范围                                                                                                                                                                                                                                                     |
+| `--end-time`              | 否       | -          | 数据导出的结束时间范围                                                                                                                                                                                                                                                     |
+| `--auth-basic`            | 否       | -          | 使用 `<username>:<password>` 格式                                                                                                                                                                                                                                          |
+| `--timeout`               | 否       | 0          | 对 DB 进行一次调用的超时时间，默认为 0 代表永不超时（例如 `30s`, `10min 20s`）                                                                                                                                                                                             |
+| `--proxy <PROXY>`         | 否       | -          | The proxy server address to connect, if set, will override the system proxy. The default behavior will use the system proxy if neither `proxy` nor `no_proxy` is set.                                                                                                      |
+| `--no-proxy`              | 否       | -          | Disable proxy server, if set, will not use any proxy                                                                                                                                                                                                                       |
+| `--s3`                    | 否       | -          | If export data to s3                                                                                                                                                                                                                                                       |
+| `--proxy <PROXY>`         | 否       | -          | 代理服务器地址，如设置该参数，将覆盖系统代理。如果未设置 `--proxy` 和 `--no-proxy`，则默认使用系统代理                                                                                                                                                                     |
+| `--no-proxy`              | 否       | -          | 禁用代理服务器，如设置该参数，将完全不使用代理                                                                                                                                                                                                                             |
+| `--s3`                    | 否       | -          | 是否导出数据到 Amazon S3                                                                                                                                                                                                                                                   |
+| `--ddl-local-dir`         | 否       | -          | 当同时设置了 `ddl_local_dir` 和远程存储（如 S3/OSS）时，SQL 文件将导出至本地目录，而数据将导出到远程存储。注意：`ddl_local_dir` 只导出 SQL 文件至**本地文件系统**，适用于导出客户端无法直接访问远程存储的情况。如果未设置 `ddl_local_dir`，则 SQL 和数据都将导出至远程存储 |
+| `--s3-bucket`             | 是\*     | -          | 当设置了 `--s3` 时，必须指定 S3 的 bucket 名称                                                                                                                                                                                                                             |
+| `--s3-root`               | 是\*     | -          | 当设置了 `--s3` 时，必须指定导出在 bucket 中的根路径                                                                                                                                                                                                                       |
+| `--s3-endpoint`           | 否\*     | -          | 当设置了 `--s3` 时，需指定 S3 的 endpoint                                                                                                                                                                                                                                  |
+| `--s3-access-key`         | 是\*     | -          | 当设置了 `--s3` 时，需指定 S3 的 Access Key                                                                                                                                                                                                                                |
+| `--s3-secret-key`         | 是\*     | -          | 当设置了 `--s3` 时，需指定 S3 的 Secret Key                                                                                                                                                                                                                                |
+| `--s3-region`             | 是\*     | -          | 当设置了 `--s3` 时，需指定 S3 的区域（Region）                                                                                                                                                                                                                             |
+| `--oss`                   | 否       | -          | 是否导出数据到阿里云 OSS                                                                                                                                                                                                                                                   |
+| `--oss-bucket`            | 是\*     | -          | 当设置了 `--oss` 时，需指定 OSS 的 bucket 名称                                                                                                                                                                                                                             |
+| `--oss-endpoint`          | 否\*     | -          | 当设置了 `--oss` 时，需指定 OSS 的 endpoint                                                                                                                                                                                                                                |
+| `--oss-access-key-id`     | 是\*     | -          | 当设置了 `--oss` 时，需指定 OSS 的 Access Key ID                                                                                                                                                                                                                           |
+| `--oss-access-key-secret` | 是\*     | -          | 当设置了 `--oss` 时，需指定 OSS 的 Access Key Secret                                                                                                                                                                                                                       |
 
 ### 导出目标
 - `schema`: 仅导出表结构（`SHOW CREATE TABLE`）
@@ -41,15 +59,15 @@ greptime cli data import [OPTIONS]
 ```
 
 ### 选项
-| 选项              | 是否必需 | 默认值     | 描述                                       |
-| ----------------- | -------- | ---------- | ------------------------------------------ |
-| --addr            | 是       | -          | 要连接的 GreptimeDB 数据库地址             |
-| --input-dir       | 是       | -          | 包含备份数据的目录                         |
-| --database        | 否       | 所有数据库 | 要导入的数据库名称                         |
-| --import-jobs, -j | 否       | 1          | 并行导入任务数量（多个数据库可以并行导入） |
-| --max-retry       | 否       | 3          | 每个任务的最大重试次数                     |
-| --target, -t      | 否       | all        | 导入目标（schema/data/all）                |
-| --auth-basic      | 否       | -          | 使用 `<username>:<password>` 格式          |
+| 选项                | 是否必需 | 默认值     | 描述                                       |
+| ------------------- | -------- | ---------- | ------------------------------------------ |
+| `--addr`            | 是       | -          | 要连接的 GreptimeDB 数据库地址             |
+| `--input-dir`       | 是       | -          | 包含备份数据的目录                         |
+| `--database`        | 否       | 所有数据库 | 要导入的数据库名称                         |
+| `--import-jobs, -j` | 否       | 1          | 并行导入任务数量（多个数据库可以并行导入） |
+| `--max-retry`       | 否       | 3          | 每个任务的最大重试次数                     |
+| `--target, -t`      | 否       | all        | 导入目标（schema/data/all）                |
+| `--auth-basic`      | 否       | -          | 使用 `<username>:<password>` 格式          |
 
 ### 导入目标
 - `schema`: 仅导入表结构
