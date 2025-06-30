@@ -43,9 +43,9 @@ Install Kafka cluster:
 ```bash
 helm upgrade --install kafka \
     oci://registry-1.docker.io/bitnamicharts/kafka \
-	--values kafka.yaml \
+    --values kafka.yaml \
     --version 31.5.0 \
-	--create-namespace \
+    --create-namespace \
     -n kafka-cluster
 ```
 
