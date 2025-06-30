@@ -32,7 +32,7 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | `PARAMETERS` | Not implemented. Returns zero rows. |
 | [`PARTITIONS`](./partitions.md) | Provides a list of table partitions. |
 | `PLUGINS` | Not supported.|
-| `PROCESSLIST` | Not supported. |
+| `PROCESSLIST` | Not supported, please use `PROCESS_LIST` instead. |
 | `PROFILING` | Not implemented. Returns zero rows. |
 | `REFERENTIAL_CONSTRAINTS` | Not implemented. Returns zero rows. |
 | `ROUTINES` | Not implemented. Returns zero rows. |
@@ -62,3 +62,4 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`CLUSTER_INFO`](./cluster-info.md)| Provides the topology information of the cluster.|
 | [`FLOWS`](./flows.md) | Provides the flow information.|
 | [`PROCEDURE_INFO`](./procedure-info.md) | Procedure information.|
+| [`PROCESS_LIST`](./process-list.md) | Running queries information.|

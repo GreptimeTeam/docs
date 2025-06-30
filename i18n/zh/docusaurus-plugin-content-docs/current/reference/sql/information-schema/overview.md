@@ -30,7 +30,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | `PARAMETERS` | 未实现。返回零行。 |
 | [`PARTITIONS`](./partitions.md) | 提供了表分区的列表。 |
 | `PLUGINS` | 不支持。|
-| `PROCESSLIST` | 不支持。 |
+| `PROCESSLIST` | 不支持，请使用 `PROCESS_LIST` 表 |
 | `PROFILING` | 未实现。返回零行。 |
 | `REFERENTIAL_CONSTRAINTS` | 未实现。返回零行。 |
 | `ROUTINES` | 未实现。返回零行。 |
@@ -60,3 +60,4 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | [`CLUSTER_INFO`](./cluster-info.md)| 提供了集群的节点拓扑信息。|
 | [`FLOWS`](./flows.md) | 提供 Flow 相关信息。|
 | [`PROCEDURE_INFO`](./procedure-info.md) | 提供 Procedure 相关信息。|
+| [`PROCESS_LIST`](./process-list.md) | 提供集群内正在执行的查询信息|
