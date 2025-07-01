@@ -37,7 +37,7 @@ Fields in the `PROCESS_LIST` table are described as follows:
 
 - `id`: The ID of query.
 - `catalog`: The catalog name of the query.
-- `schemas`: The schema name in which user issues the query.
+- `schemas`: The schema name in which client issues the query.
 - `query`: The query statement.
 - `client`: Client information, including client address and channel.
 - `frontend`: On which frontend instance the query is running.
@@ -45,12 +45,12 @@ Fields in the `PROCESS_LIST` table are described as follows:
 - `elapsed_time`: How long the query has been running.
 
 :::tip NOTE
-Users can also use `SHOW [FULL] PROCESSLIST` statement as an alternative to querying from `INFORMATION_SCHEMA.PROCESS_LIST` table.
+You can also use `SHOW [FULL] PROCESSLIST` statement as an alternative to querying from `INFORMATION_SCHEMA.PROCESS_LIST` table.
 :::
 
 
 # Terminating a query
-When identified a running query from `PROCESS_LIST` table, users can terminate the query using `KILL <PROCESS_ID>` statement, where the `<PROCESS_ID>` is the `id` field in `PROCESS_LIST` table.
+When identified a running query from `PROCESS_LIST` table, you can terminate the query using `KILL <PROCESS_ID>` statement, where the `<PROCESS_ID>` is the `id` field in `PROCESS_LIST` table.
 
 ```sql
 mysql> select * from process_list;

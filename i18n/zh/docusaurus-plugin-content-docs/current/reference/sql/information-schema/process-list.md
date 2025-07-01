@@ -37,7 +37,7 @@ DESC PROCESS_LIST;
 
 - `id`: 查询的 ID。
 - `catalog`: 查询的 catalog 名称。
-- `schemas`: 用户发出查询时所处的 schema 名称。
+- `schemas`: 客户端发出查询时所处的 schema 名称。
 - `query`: 查询语句。
 - `client`: 客户端信息，包括客户端地址和使用的协议。
 - `frontend`: 查询正在运行的 frontend 实例。
@@ -45,13 +45,13 @@ DESC PROCESS_LIST;
 - `elapsed_time`: 查询已运行多长时间。
 
 :::tip NOTE
-用户还可以使用 `SHOW [FULL] PROCESSLIST` 语句作为直接查询 `INFORMATION_SCHEMA.PROCESS_LIST` 表的替代方法。
+你还可以使用 `SHOW [FULL] PROCESSLIST` 语句作为直接查询 `INFORMATION_SCHEMA.PROCESS_LIST` 表的替代方法。
 :::
 
 
 # 终止一个查询
 
-当从 `PROCESS_LIST` 表中识别到正在运行的查询时，用户可以使用 `KILL <PROCESS_ID>` 语句终止该查询，其中 `<PROCESS_ID>` 是 `PROCESS_LIST` 表中的 `id` 字段。
+当从 `PROCESS_LIST` 表中识别到正在运行的查询时，你可以使用 `KILL <PROCESS_ID>` 语句终止该查询，其中 `<PROCESS_ID>` 是 `PROCESS_LIST` 表中的 `id` 字段。
 
 ```sql
 mysql> select * from process_list;
