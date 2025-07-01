@@ -308,6 +308,37 @@ SHOW VIEWS WHERE Views = 'memory_monitor';
 +----------------+
 ```
 
+## SHOW PROCESSLIST
+List all currently running queries, essentially an alias for `SELECT id, catalog, query, elapsed_time FROM INFORMATION_SCHEMA.PROCESS_LIST`:
+
+```sql
+SHOW PROCESSLIST;
+```
+
+Output:
+```
++-----------------------+----------+------------------+-----------------+
+| Id                    | Catalog  | Query            | Elapsed Time    |
++-----------------------+----------+------------------+-----------------+
+| 192.168.50.164:4001/0 | greptime | SHOW PROCESSLIST | 00:00:00.002000 |
++-----------------------+----------+------------------+-----------------+
+1 row in set (0.00 sec)
+```
+
+At the same time, you can specify the `FULL` parameter to output all columns of the `INFORMATION_SCHEMA.PROCESS_LIST` table:
+```sql
+SHOW FULL PROCESSLIST;
+```
+
+Output:
+```sql
++-----------------------+----------+--------------------+------------------------+---------------------+----------------------------+-----------------+-----------------------+
+| Id                    | Catalog  | Schema             | Client                 | Frontend            | Start Time                 | Elapsed Time    | Query                 |
++-----------------------+----------+--------------------+------------------------+---------------------+----------------------------+-----------------+-----------------------+
+| 192.168.50.164:4001/0 | greptime | information_schema | mysql[127.0.0.1:34692] | 192.168.50.164:4001 | 2025-06-30 07:17:46.423000 | 00:00:00.003000 | SHOW FULL PROCESSLIST |
++-----------------------+----------+--------------------+------------------------+---------------------+----------------------------+-----------------+-----------------------+
+```
+
 ## Extensions to SHOW Statements
 
 Some extensions to `SHOW` statements accompany the implementation of [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview.md) just like MySQL, they also accept a `WHERE` clause that provides more flexibility in specifying which rows to display. 
