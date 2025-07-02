@@ -18,18 +18,7 @@ description: 在 Kubernetes 上部署带有 frontend groups 的 GreptimeDB 集�
 ## 升级 operator
 
 安装 GreptimeDB Operator，将镜像版本设置为大于或等于 `v0.3.0`。
-
-```bash
-helm repo update
-```
-
-```bash
-helm upgrade \
-  --install \
-  --create-namespace \
-  greptimedb-operator greptime/greptimedb-operator \
-  -n greptimedb-admin
-```
+请参考 GreptimeDB Operator 文档查看[如何升级 Operator](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management/#升级)。
 
 ## Frontend 组配置
 
