@@ -18,7 +18,7 @@ In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes w
 ## Upgrade operator
 
 Install the GreptimeDB Operator, setting the image version to be greater than or equal to `v0.3.0`.
-For detailed instructions on upgrading the operator, please refer to the [GreptimeDB Operator Management](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management#upgrade) guide.
+For detailed instructions on upgrading the operator, please refer to the [GreptimeDB Operator Management](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md#upgrade) guide.
 
 ## Frontend Groups Configuration
 
