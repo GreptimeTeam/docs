@@ -1,5 +1,5 @@
 ---
-keywords: [Elasticsearch, log storage, API, configuration, data model]
+keywords: [Elasticsearch, log storage, API, configuration, data model, telegraf, logstash, filebeat]
 description: 使用 Elasticsearch 协议写入日志数据。
 ---
 
@@ -11,7 +11,9 @@ GreptimeDB 支持使用 Elasticsearch 的 [`_bulk` API](https://www.elastic.co/g
 
 ## HTTP API
 
-GreptimeDB 支持通过以下两个 HTTP endpoint 来实现 Elasticsearch 协议的数据写入：
+在大多数日志收集器（比如下文中的 Logstash 和 Filebeat）的配置中，你只需要将 HTTP endpoint 配置为 `/v1/elasticsearch` 并加上对应的主机地址和端口配置，比如 `http://localhost:4000/v1/elasticsearch`。
+
+GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 协议的数据写入：
 
 - **`/v1/elasticsearch/_bulk`**：用户可使用 POST 方法将数据以 NDJSON 格式写入到 GreptimeDB 中。
 
@@ -39,14 +41,20 @@ GreptimeDB 支持通过以下两个 HTTP endpoint 来实现 Elasticsearch 协议
   {"name": "Jane", "age": 25}
   ```
 
-### 请求参数
+### HTTP Header 参数
+
+- `x-greptime-db-name`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
+- `x-greptime-pipeline-name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
+- `x-greptime-pipeline-version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
+
+### URL 参数
 
 你可以使用以下 HTTP URL 参数：
 
 - `db`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
 - `pipeline_name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
 - `version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
-- `msg_field`：`msg_field` 可指定包含原始日志数据的 JSON 字段名。比如在 Logstash 和 Filebeat 中，该字段通常为 `message`。如果用户指定了该参数，则 GreptimeDB 会尝试将该字段中的数据以 JSON 格式进行展开，如果展开失败，则该字段会被当成字符串进行处理；
+- `msg_field`：`msg_field` 可指定包含原始日志数据的 JSON 字段名。比如在 Logstash 和 Filebeat 中，该字段通常为 `message`。如果用户指定了该参数，则 GreptimeDB 会尝试将该字段中的数据以 JSON 格式进行展开，如果展开失败，则该字段会被当成字符串进行处理。该配置选项目前仅在 URL 参数中生效。
 
 ### 鉴权 Header
 
@@ -125,3 +133,36 @@ output.elasticsearch:
 ```
 
 其中 `parameters` 是可选项，而 `hosts` 和 `index` 请根据实际情况进行调整。
+
+### Telegraf
+
+如果你正在使用 [Telegraf](https://github.com/influxdata/telegraf) 来收集日志，你可以使用其 Elasticsearch 插件来将数据写入到 GreptimeDB，如下所示：
+
+```toml
+[[outputs.elasticsearch]]
+  urls = [ "http://localhost:4000/v1/elasticsearch" ]
+  index_name = "test_table"
+  health_check_interval = "0s"
+  enable_sniffer = false
+  flush_interval = "1s"
+  manage_template = false
+  template_name = "telegraf"
+  overwrite_template = false
+  namepass = ["tail"]
+
+ [outputs.elasticsearch.headers]
+    "X-GREPTIME-DB-NAME" = "public"
+    "X-GREPTIME-PIPELINE-NAME" = "greptime_identity"
+
+[[inputs.tail]]
+  files = ["/tmp/test.log"]
+  from_beginning = true
+  data_format = "value"
+  data_type = "string"
+  character_encoding = "utf-8"
+  interval = "1s"
+  pipe = false
+  watch_method = "inotify"
+```
+
+其中 `urls`、 `index_name` 和相应的 `outputs.elasticsearch.header` 请根据实际情况进行调整。
