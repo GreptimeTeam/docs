@@ -40,3 +40,6 @@ description: GreptimeDB SQL statements.
 
 ## Information Schema
 * [INFORMATION_SCHEMA](./information-schema/overview.md)
+
+## Greptime Private
+* [Greptime Private](./greptime-private/overview.md)

@@ -661,6 +661,18 @@ const sidebars: SidebarsConfig = {
             'reference/sql/compatibility',
             {
               type: 'category',
+              label: 'Greptime Private',
+              items: [
+                {
+                  type: 'doc',
+                  id: 'reference/sql/greptime-private/overview',
+                  label: 'Overview',
+                },
+                'reference/sql/greptime-private/slow_queries',
+              ],
+            },
+            {
+              type: 'category',
               label: 'Information Schema',
               items: [
                 {
