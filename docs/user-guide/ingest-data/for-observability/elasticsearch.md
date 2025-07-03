@@ -1,5 +1,5 @@
 ---
-keywords: [Elasticsearch, log storage, API, configuration, data model]
+keywords: [Elasticsearch, log storage, API, configuration, data model, telegraf, logstash, filebeat]
 description: Use Elasticsearch protocol to ingest log data.
 ---
 
@@ -11,7 +11,9 @@ GreptimeDB supports data ingestion through Elasticsearch's [`_bulk` API](https:/
 
 ## HTTP API
 
-GreptimeDB supports data ingestion via the Elasticsearch protocol through two HTTP endpoints:
+In most log collectors(such as Logstash and Filebeat mentioned below), you only need to configure the HTTP endpoint like `http://${db_host}:${db_http_port}/v1/elasticsearch`, for example `http://localhost:4000/v1/elasticsearch`.
+
+GreptimeDB supports data ingestion through Elasticsearch protocol by implementing the following two HTTP endpoints:
 
 - **`/v1/elasticsearch/_bulk`**: Users can use the POST method to write data in NDJSON format to GreptimeDB.
 
@@ -39,14 +41,22 @@ GreptimeDB supports data ingestion via the Elasticsearch protocol through two HT
   {"name": "Jane", "age": 25}
   ```
 
-### Request Parameters
+### HTTP Headers
+
+- `x-greptime-db-name`: Specifies the database name. Defaults to `public` if not specified.
+- `x-greptime-pipeline-name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified.
+- `x-greptime-pipeline-version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified.
+
+For more details about Pipeline, please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
+
+### URL Parameters
 
 You can use the following HTTP URL parameters:
 
-- `db`: Specifies the database name. Defaults to `public` if not specified
-- `pipeline_name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified
-- `version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified
-- `msg_field`: Specifies the JSON field name containing the original log data. For example, in Logstash and Filebeat, this field is typically `message`. If specified, GreptimeDB will attempt to parse the data in this field as JSON format. If parsing fails, the field will be treated as a string
+- `db`: Specifies the database name. Defaults to `public` if not specified.
+- `pipeline_name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified.
+- `version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified.
+- `msg_field`: Specifies the JSON field name containing the original log data. For example, in Logstash and Filebeat, this field is typically `message`. If specified, GreptimeDB will attempt to parse the data in this field as JSON format. If parsing fails, the field will be treated as a string. This configuration option currently only takes effect in URL parameters.
 
 ### Authentication Header
 
@@ -109,7 +119,13 @@ output {
 }
 ```
 
-The `parameters` section is optional, while `hosts` and `index` should be adjusted according to your actual setup.
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `hosts`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index`: Specifies the table name that will be written to.
+  
+- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
 
 ### Filebeat
 
@@ -124,4 +140,49 @@ output.elasticsearch:
     msg_field: message
 ```
 
-The `parameters` section is optional, while `hosts` and `index` should be adjusted according to your actual setup.
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `hosts`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index`: Specifies the table name that will be written to.
+  
+- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
+
+### Telegraf
+
+If you are using [Telegraf](https://github.com/influxdata/telegraf) to collect logs, you can use its Elasticsearch plugin to write data to GreptimeDB, as shown below:
+
+```toml
+[[outputs.elasticsearch]]
+  urls = [ "http://localhost:4000/v1/elasticsearch" ]
+  index_name = "test_table"
+  health_check_interval = "0s"
+  enable_sniffer = false
+  flush_interval = "1s"
+  manage_template = false
+  template_name = "telegraf"
+  overwrite_template = false
+  namepass = ["tail"]
+
+ [outputs.elasticsearch.headers]
+    "X-GREPTIME-DB-NAME" = "public"
+    "X-GREPTIME-PIPELINE-NAME" = "greptime_identity"
+
+[[inputs.tail]]
+  files = ["/tmp/test.log"]
+  from_beginning = true
+  data_format = "value"
+  data_type = "string"
+  character_encoding = "utf-8"
+  interval = "1s"
+  pipe = false
+  watch_method = "inotify"
+```
+
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `urls`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index_name`: Specifies the table name that will be written to.
+  
+- `outputs.elasticsearch.header`: Specifies the HTTP Header for writing, where the example above specifies two parameters: `X-GREPTIME-DB-NAME` and `X-GREPTIME-PIPELINE-NAME`.
