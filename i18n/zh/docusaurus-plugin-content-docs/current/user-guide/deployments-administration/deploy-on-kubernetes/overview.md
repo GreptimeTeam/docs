@@ -36,6 +36,6 @@ GreptimeDB 专为云原生环境而构建，从第一天起就可以在 Kubernet
 在熟悉了 [GreptimeDB 的架构和组件](/user-guide/deployments-administration/architecture.md)之后，你可以进一步探索高级部署场景：
 
 - [部署带有 Remote WAL 的 GreptimeDB 集群](configure-remote-wal.md)：将 Kafka 配置为 GreptimeDB 集群的远程预写日志 (WAL)，以持久记录每个数据修改并确保不丢失内存缓存的数据。
-- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/manage-metadata/configuration.md)：集成 MySQL/PostgreSQL 数据库以提供强大的元数据存储功能，增强可靠性和性能。
+- [使用 MySQL/PostgreSQL 作为元数据存储](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#配置-metasrv-后端存储)：集成 MySQL/PostgreSQL 数据库以提供强大的元数据存储功能，增强可靠性和性能。
 - [部署多 Frontend 的 GreptimeDB 集群](configure-frontend-groups.md)：GreptimeDB 集群的 Frontend 组由多个 Frontend 实例组成，以改善负载分配和可用性。
 
