@@ -10,13 +10,13 @@ it's important to understand its architecture and key components.
 
 ## Components
 
-GreptimeDB consists of three key components: `MetaSrv`, `Frontend`, and `Datanode`.
+GreptimeDB consists of three key components: `Metasrv`, `Frontend`, and `Datanode`.
 
 ![Architecture](/architecture-3.png)
 
-### MetaSrv
+### Metasrv
 
-MetaSrv coordinates operations between Frontend and Datanode components,
+Metasrv coordinates operations between Frontend and Datanode components,
 stores cluster metadata including tables, datanodes, and region mappings,
 and provides metadata services to Frontend instances.
 
@@ -25,7 +25,7 @@ and provides metadata services to Frontend instances.
 Frontend is a stateless service that serves client requests via multiple protocols,
 acting as a proxy that forwards read/write requests to appropriate Datanodes.
 It maintains a catalog that maps tables to regions and their corresponding Datanodes,
-caching metadata from MetaSrv for efficient request routing.
+caching metadata from Metasrv for efficient request routing.
 
 ### Datanode
 
