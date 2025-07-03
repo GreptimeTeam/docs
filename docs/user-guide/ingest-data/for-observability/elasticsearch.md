@@ -11,7 +11,7 @@ GreptimeDB supports data ingestion through Elasticsearch's [`_bulk` API](https:/
 
 ## HTTP API
 
-In most log collectors(such as Logstash and Filebeat mentioned below), you only need to configure the HTTP endpoint as `/v1/elasticsearch` and add the corresponding host and port configuration, for example `http://localhost:4000/v1/elasticsearch`.
+In most log collectors(such as Logstash and Filebeat mentioned below), you only need to configure the HTTP endpoint like `http://${db_host}:${db_http_port}/v1/elasticsearch`, for example `http://localhost:4000/v1/elasticsearch`.
 
 GreptimeDB supports data ingestion through Elasticsearch protocol by implementing the following two HTTP endpoints:
 
@@ -46,6 +46,8 @@ GreptimeDB supports data ingestion through Elasticsearch protocol by implementin
 - `x-greptime-db-name`: Specifies the database name. Defaults to `public` if not specified.
 - `x-greptime-pipeline-name`: Specifies the pipeline name. Defaults to GreptimeDB's internal pipeline `greptime_identity` if not specified.
 - `x-greptime-pipeline-version`: Specifies the pipeline version. Defaults to the latest version of the corresponding pipeline if not specified.
+
+For more details about Pipeline, please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
 
 ### URL Parameters
 

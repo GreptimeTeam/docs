@@ -11,7 +11,7 @@ GreptimeDB 支持使用 Elasticsearch 的 [`_bulk` API](https://www.elastic.co/g
 
 ## HTTP API
 
-在大多数日志收集器（比如下文中的 Logstash 和 Filebeat）的配置中，你只需要将 HTTP endpoint 配置为 `/v1/elasticsearch` 并加上对应的主机地址和端口配置，比如 `http://localhost:4000/v1/elasticsearch`。
+在大多数日志收集器（比如下文中的 Logstash 和 Filebeat）的配置中，你只需要将 HTTP endpoint 配置为 `http://${db_host}:${db_http_port}/v1/elasticsearch`，比如 `http://localhost:4000/v1/elasticsearch`。
 
 GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 协议的数据写入：
 
@@ -46,6 +46,8 @@ GreptimeDB 支持通过实现以下两个 HTTP endpoint 来实现 Elasticsearch 
 - `x-greptime-db-name`：指定写入的数据库名。如不指定，则默认使用 `public` 数据库；
 - `x-greptime-pipeline-name`：指定写入的 pipeline 名，如不指定，则默认使用 GreptimeDB 内部的 pipeline `greptime_identity`；
 - `x-greptime-pipeline-version`：指定写入的 pipeline 版本，如不指定，则默认对应 pipeline 的最新版本；
+
+更多关于 Pipeline 的详细信息，请参考 [管理 Pipelines](/user-guide/logs/manage-pipelines.md) 文档。
 
 ### URL 参数
 
