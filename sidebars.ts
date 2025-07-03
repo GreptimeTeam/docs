@@ -669,6 +669,7 @@ const sidebars: SidebarsConfig = {
                   label: 'Overview',
                 },
                 'reference/sql/greptime-private/slow_queries',
+                'reference/sql/greptime-private/pipelines',
               ],
             },
             {
