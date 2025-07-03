@@ -43,3 +43,7 @@ description: GreptimeDB SQL 语句.
 ## 系统表
 
 * [INFORMATION_SCHEMA](./information-schema/overview.md)
+
+## Greptime Private 内的系统表
+
+* [Greptime Private](./greptime-private/overview.md)
