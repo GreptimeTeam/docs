@@ -119,7 +119,11 @@ output {
 }
 ```
 
-其中 `parameters` 是可选项，而 `hosts` 和 `index` 请根据实际情况进行调整， 
+请关注以下与 GreptimeDB 相关的配置：
+
+- `hosts`: 指定 GreptimeDB 的 Elasticsearch 协议的 HTTP 地址，即 `http://${db_host}:${db_http_port}/v1/elasticsearch`；
+- `index`: 指定写入的表名；
+- `parameters`: 指定写入的 URL 参数，上面的例子中指定了 `pipeline_name` 和 `msg_field` 两个参数；
 
 ### Filebeat
 
@@ -134,7 +138,11 @@ output.elasticsearch:
     msg_field: message
 ```
 
-其中 `parameters` 是可选项，而 `hosts` 和 `index` 请根据实际情况进行调整。
+请关注以下与 GreptimeDB 相关的配置：
+
+- `hosts`: 指定 GreptimeDB 的 Elasticsearch 协议的 HTTP 地址，即 `http://${db_host}:${db_http_port}/v1/elasticsearch`，可根据实际情况进行调整；
+- `index`: 指定写入的表名；
+- `parameters`: 指定写入的 URL 参数，上面的例子中指定了 `pipeline_name` 和 `msg_field` 两个参数；
 
 ### Telegraf
 
@@ -167,4 +175,8 @@ output.elasticsearch:
   watch_method = "inotify"
 ```
 
-其中 `urls`、 `index_name` 和相应的 `outputs.elasticsearch.header` 请根据实际情况进行调整。
+请关注以下与 GreptimeDB 相关的配置：
+
+- `urls`: 指定 GreptimeDB 的 Elasticsearch 协议的 HTTP 地址，即 `http://${db_host}:${db_http_port}/v1/elasticsearch`；
+- `index_name`: 指定写入的表名；
+- `outputs.elasticsearch.header`: 指定写入的 HTTP Header，上面的例子中配置了 `X-GREPTIME-DB-NAME` 和 `X-GREPTIME-PIPELINE-NAME` 两个 HTTP Header；

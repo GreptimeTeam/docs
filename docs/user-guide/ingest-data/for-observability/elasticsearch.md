@@ -119,7 +119,13 @@ output {
 }
 ```
 
-The `parameters` section is optional, while `hosts` and `index` should be adjusted according to your actual setup.
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `hosts`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index`: Specifies the table name that will be written to.
+  
+- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
 
 ### Filebeat
 
@@ -134,7 +140,13 @@ output.elasticsearch:
     msg_field: message
 ```
 
-The `parameters` section is optional, while `hosts` and `index` should be adjusted according to your actual setup.
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `hosts`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index`: Specifies the table name that will be written to.
+  
+- `parameters`: Specifies the URL parameters for writing, where the example above specifies two parameters: `pipeline_name` and `msg_field`.
 
 ### Telegraf
 
@@ -167,4 +179,10 @@ If you are using [Telegraf](https://github.com/influxdata/telegraf) to collect l
   watch_method = "inotify"
 ```
 
-Please adjust `urls`, `index_name`, and the corresponding `outputs.elasticsearch.header` according to your actual setup.
+Please pay attention to the following GreptimeDB-related configurations:
+
+- `urls`: Specifies the HTTP address of GreptimeDB's Elasticsearch protocol, which is `http://${db_host}:${db_http_port}/v1/elasticsearch`.
+  
+- `index_name`: Specifies the table name that will be written to.
+  
+- `outputs.elasticsearch.header`: Specifies the HTTP Header for writing, where the example above specifies two parameters: `X-GREPTIME-DB-NAME` and `X-GREPTIME-PIPELINE-NAME`.
