@@ -31,6 +31,14 @@ When creating or modifying a full-text index, you can specify the following opti
   - Supported values: `bloom`, `tantivy`
   - Default: `bloom`
 
+- `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size.
+  - Supported values: positive integer
+  - Default: `10240`
+
+- `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size.
+  - Supported values: float between `0` and `1`
+  - Default: `0.01`
+
 ### Backend Selection
 
 GreptimeDB provides two full-text index backends for efficient log searching:

@@ -155,7 +155,7 @@ ALTER TABLE monitor MODIFY COLUMN host SET INVERTED INDEX;
 Enable fulltext index on a column:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false', backend = 'bloom');
+ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'Chinese', case_sensitive = 'false', backend = 'bloom', granularity = 1024, false_positive_rate = 0.01);
 ```
 
 You can specify the following options using `FULLTEXT INDEX WITH` when enabling fulltext options:
@@ -163,6 +163,8 @@ You can specify the following options using `FULLTEXT INDEX WITH` when enabling 
 - `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`. Default is `English`.
 - `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`. Default is `false`.
 - `backend`: Sets the backend for the full-text index. Supported values are `bloom` and `tantivy`. Default is `bloom`.
+- `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+- `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
 For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/logs/fulltext-index-config.md).
 
@@ -171,12 +173,13 @@ If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default valu
 Enable skipping index on a column:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 1024, type = 'BLOOM');
+ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 1024, type = 'BLOOM', false_positive_rate = 0.01);
 ```
 
 The valid options for the skipping index include:
-* `type`: the index type, only supports `BLOOM` type right now.
-* `granularity`:  Each indexed block consists of `GRANULARITY` granules. For example, if the granularity of the index is 8192 rows, and the index granularity is 4, each indexed "block" will be 32768 rows. 
+* `type`: The index type, only supports `BLOOM` type right now.
+* `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+* `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
 ### Remove index on a column
 
@@ -189,7 +192,6 @@ For example, remove the inverted index:
 ```sql
 ALTER TABLE monitor_pk MODIFY COLUMN host UNSET INVERTED INDEX;
 ```
-
 
 Remove the skipping index:
 ```sql
