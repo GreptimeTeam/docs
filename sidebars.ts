@@ -269,6 +269,7 @@ const sidebars: SidebarsConfig = {
               id: 'user-guide/deployments-administration/overview',
               label: 'Overview',
             },
+            'user-guide/deployments-administration/architecture',
             {
               type: 'category',
               label: 'Kubernetes',

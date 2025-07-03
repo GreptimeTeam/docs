@@ -11,67 +11,9 @@ In this guide, you will learn how to deploy a GreptimeDB standalone on Kubernete
 The following output may have minor differences depending on the versions of the Helm charts and environment.
 :::
 
-## Prerequisites
+import PreKindHelm from './_pre_kind_helm.mdx';
 
-- [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
-- [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
-- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) >= v0.20.0
-
-## Create a test Kubernetes cluster
-
-:::warning
-Using `kind` is not recommended for production environments or performance testing. For such use cases, we recommend using cloud-managed Kubernetes services such as [Amazon EKS](https://aws.amazon.com/eks/), [Google GKE](https://cloud.google.com/kubernetes-engine/), or [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/), or deploying your own production-grade Kubernetes cluster.
-:::
-
-There are many ways to create a Kubernetes cluster for testing purposes. In this guide, we will use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local Kubernetes cluster. You can skip this step if you want to use the existing Kubernetes cluster.
-
-Here is an example using `kind` v0.20.0:
-
-```bash
-kind create cluster
-```
-
-<details>
-  <summary>Expected Output</summary>
-```log
-Creating cluster "kind" ...
- ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
- ✓ Preparing nodes 📦
- ✓ Writing configuration 📜
- ✓ Starting control-plane 🕹️
- ✓ Installing CNI 🔌
- ✓ Installing StorageClass 💾
-Set kubectl context to "kind-kind"
-You can now use your cluster with:
-kubectl cluster-info --context kind-kind
-Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
-```
-</details>
-
-## Add the Greptime Helm repository
-
-We provide the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
-
-```
-helm repo add greptime https://greptimeteam.github.io/helm-charts/
-helm repo update
-```
-
-Check the charts in the Greptime Helm repository:
-
-```bash
-helm search repo greptime/greptimedb-standalone
-```
-
-<details>
-  <summary>Expected Output</summary>
-```bash
-NAME                          	CHART VERSION	APP VERSION	DESCRIPTION
-greptime/greptimedb-standalone	0.1.53       	0.14.3     	A Helm chart for deploying standalone greptimedb
-```
-</details>
-
+<PreKindHelm />
 
 ## Install the GreptimeDB Standalone
 
