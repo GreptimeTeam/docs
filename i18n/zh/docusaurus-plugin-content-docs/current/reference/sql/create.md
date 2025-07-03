@@ -288,7 +288,9 @@ GreptimeDB 支持以下列选项：
 | NOT NULL          | 列值不能为 `null`                                        |
 | DEFAULT `expr`    | 该列的默认值是 `expr`，其类型必须是该列的类型            |
 | COMMENT `comment` | 列注释，必须为字符串类型                                 |
-| FULLTEXT          | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
+| FULLTEXT INDEX    | 创建全文索引，可以加速全文搜索操作。仅适用于字符串类型列 |
+| SKIPPING INDEX    | 创建跳数索引，可以加速查询稀疏数据。                     |
+| INVERTED INDEX    | 创建倒排索引，可以加速查询稠密数据。                     |
 
 表约束 `TIME INDEX` 和 `PRIMARY KEY` 也可以通过列选项设置，但是它们只能在列定义中指定一次，在多个列选项中指定 `PRIMARY KEY` 会报错：
 
@@ -328,33 +330,9 @@ CREATE TABLE system_metrics (
 Query OK, 0 rows affected (0.01 sec)
 ```
 
-#### `FULLTEXT` 列选项
+#### `INDEX` 列选项
 
-`FULLTEXT` 用于创建全文索引，加速全文搜索操作。该选项只能应用于字符串类型的列。
-
-使用 `FULLTEXT INDEX WITH` 可以指定以下选项：
-
-- `analyzer`：设置全文索引的分析器语言。支持的值为 `English` 和 `Chinese`。
-- `case_sensitive`：设置全文索引是否区分大小写。支持的值为 `true` 和 `false`。
-- `backend`：设置全文索引的后端实现。支持的值为 `bloom` 和 `tantivy`。
-
-如果不指定 `WITH`，`FULLTEXT` 将使用以下默认值：
-
-- `analyzer`：默认为 `English`
-- `case_sensitive`：默认为 `false`
-- `backend`：默认为 `bloom`
-
-例如，要创建一个带有全文索引的表，配置 `log` 列为全文索引，并指定分析器为 `English`，不区分大小写且使用 `bloom` 后端：
-
-```sql
-CREATE TABLE IF NOT EXISTS logs(
-  host STRING PRIMARY KEY,
-  log STRING FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false', backend = 'bloom'),
-  ts TIMESTAMP TIME INDEX
-);
-```
-
-更多关于全文索引配置、性能对比和使用指南的信息，请参考[全文索引配置指南](/user-guide/logs/fulltext-index-config.md)和[日志查询文档](/user-guide/logs/query-logs.md)。
+更多关于索引配置、性能对比和使用指南的信息，请参考[索引](/user-guide/manage-data/data-index.md)章节。
 
 ### Region 分区规则
 

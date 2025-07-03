@@ -59,6 +59,22 @@ CREATE TABLE sensor_data (
 );
 ```
 
+跳数索引支持 `WITH` 选项：
+* `type`: 索引类型，目前仅支持 `BLOOM` 类型。
+* `granularity`: （适用于 `BLOOM` 类型）每个过滤器覆盖的数据块大小。粒度越小，过滤效果越好，但索引大小会增加。默认为 `10240`。
+* `false_positive_rate`: （适用于 `BLOOM` 类型）错误识别块的概率。该值越低，准确性越高（过滤效果越好），但索引大小会增加。该值为介于 `0` 和 `1` 之间的浮点数。默认为 `0.01`。
+
+例如：
+
+```sql
+CREATE TABLE sensor_data (
+    domain STRING PRIMARY KEY,
+    device_id STRING SKIPPING INDEX WITH(type='BLOOM', granularity=1024, false_positive_rate=0.01),
+    temperature DOUBLE,
+    `timestamp` TIMESTAMP TIME INDEX,
+);
+```
+
 然而，跳数索引无法处理复杂的过滤条件，并且其过滤性能通常不如倒排索引或全文索引。
 
 ### 全文索引
@@ -83,12 +99,14 @@ CREATE TABLE logs (
 * `analyzer`：设置全文索引的语言分析器。支持的值包括 `English`（英语）和 `Chinese`（中文）。默认值为 `English`。
 * `case_sensitive`：决定全文索引是否区分大小写。支持的值为 `true`（是）和 `false`（否）。默认值为 `false`。
 * `backend`：设置全文索引的后端引擎。支持的值包括 `bloom` 和 `tantivy`。默认值为 `bloom`。
+* `granularity`: （适用于 `bloom` 后端）每个过滤器覆盖的数据块大小。粒度越小，过滤效果越好，但索引大小会增加。默认为 `10240`。
+* `false_positive_rate`: （适用于 `bloom` 后端）错误识别块的概率。该值越低，准确性越高（过滤效果越好），但索引大小会增加。该值为介于 `0` 和 `1` 之间的浮点数。默认为 `0.01`。
 
 示例：
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX WITH(analyzer='Chinese', case_sensitive='true', backend='bloom'),
+    message STRING FULLTEXT INDEX WITH(analyzer='Chinese', case_sensitive='true', backend='bloom', granularity=1024, false_positive_rate=0.01),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );

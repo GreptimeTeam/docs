@@ -284,7 +284,9 @@ GreptimeDB supports the following column options:
 | NOT NULL          | The column value can't be `null`.                                                                          |
 | DEFAULT `expr`    | The column's default value is `expr`, which its result type must be the column's type                      |
 | COMMENT `comment` | The column comment. It must be a string value                                                              |
-| FULLTEXT          | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
+| FULLTEXT INDEX    | Creates a full-text index to speed up full-text search operations. Applicable only to string-type columns. |
+| SKIPPING INDEX    | Creates a skipping index to speed up query on sparse data.                                                 |
+| INVERTED INDEX    | Creates an inverted index to speed up query on dense data.                                                 |
 
 The table constraints `TIME INDEX` and `PRIMARY KEY` can also be set by column option, but they can only be specified once in column definitions. So you can't specify `PRIMARY KEY` for more than one column except by the table constraint `PRIMARY KEY` :
 
@@ -322,33 +324,9 @@ CREATE TABLE system_metrics (
 Query OK, 0 rows affected (0.01 sec)
 ```
 
-#### `FULLTEXT` Column Option
+#### `INDEX` Column Option
 
-The `FULLTEXT` option is used to create a full-text index, accelerating full-text search operations. This option can only be applied to string-type columns.
-
-You can specify the following options using `FULLTEXT INDEX WITH`:
-
-- `analyzer`: Sets the language analyzer for the full-text index. Supported values are `English` and `Chinese`.
-- `case_sensitive`: Determines whether the full-text index is case-sensitive. Supported values are `true` and `false`.
-- `backend`: Sets the backend for the full-text index. Supported values are `bloom` and `tantivy`.
-
-If `WITH` is not specified, `FULLTEXT` will use the following default values:
-
-- `analyzer`: default is `English`
-- `case_sensitive`: default is `false`
-- `backend`: default is `bloom`
-
-For example, to create a table with a full-text index on the `log` column, configuring the analyzer to `English`, `case_sensitive` to `false` and `backend` to `bloom`:
-
-```sql
-CREATE TABLE IF NOT EXISTS logs(
-  host STRING PRIMARY KEY,
-  log STRING FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false', backend = 'bloom'),
-  ts TIMESTAMP TIME INDEX
-);
-```
-
-For comprehensive information on full-text index configuration, performance comparison, and usage guidelines, please refer to the [Full-Text Index Configuration Guide](/user-guide/logs/fulltext-index-config.md) and [Log Query Documentation](/user-guide/logs/query-logs.md).
+For more information on the `INDEX` column option, please refer to the [Data Index](/user-guide/manage-data/data-index.md) document.
 
 ### Region partition rules
 

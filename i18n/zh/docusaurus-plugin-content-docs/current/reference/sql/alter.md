@@ -164,6 +164,8 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'E
 - `analyzer`：设置全文索引的分析器语言。支持的值为 `English` 和 `Chinese`。默认为 `English`。
 - `case_sensitive`：设置全文索引是否区分大小写。支持的值为 `true` 和 `false`。默认为 `false`。
 - `backend`：设置全文索引的后端实现。支持的值为 `bloom` 和 `tantivy`。默认为 `bloom`。
+- `granularity`：（适用于 `bloom` 后端）每个过滤器覆盖的数据块大小。粒度越小，过滤效果越好，但索引大小会增加。默认为 `10240`。
+- `false_positive_rate`：（适用于 `bloom` 后端）错误识别块的概率。该值越低，准确性越高（过滤效果越好），但索引大小会增加。该值为介于 `0` 和 `1` 之间的浮点数。默认为 `0.01`。
 
 更多关于全文索引配置和性能对比的信息，请参考[全文索引配置指南](/user-guide/logs/fulltext-index-config.md)。
 
@@ -176,7 +178,8 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 
 跳数索引的有效选项包括：
 * `type`: 索引类型，目前仅支持 `BLOOM` 即布隆过滤器。
-* `granularity`: 每个索引块由 `GRANULARITY` 个粒度组成。例如，如果索引的粒度为 8192 行，而索引粒度为 4，则每个索引”块“将为 32768 行。
+* `granularity`: （适用于 `BLOOM` 类型）每个过滤器覆盖的数据块大小。粒度越小，过滤效果越好，但索引大小会增加。默认为 `10240`。
+* `false_positive_rate`: （适用于 `BLOOM` 类型）错误识别块的概率。该值越低，准确性越高（过滤效果越好），但索引大小会增加。该值为介于 `0` 和 `1` 之间的浮点数。默认为 `0.01`。
 
 ### 移除列的索引
 

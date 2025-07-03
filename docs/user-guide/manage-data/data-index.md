@@ -59,6 +59,22 @@ CREATE TABLE sensor_data (
 );
 ```
 
+Skipping index supports options by `WITH`:
+* `type`: The index type, only supports `BLOOM` type right now.
+* `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+* `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
+
+For example:
+
+```sql
+CREATE TABLE sensor_data (
+    domain STRING PRIMARY KEY,
+    device_id STRING SKIPPING INDEX WITH(type='BLOOM', granularity=1024, false_positive_rate=0.01),
+    temperature DOUBLE,
+    `timestamp` TIMESTAMP TIME INDEX,
+);
+```
+
 Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or fulltext index.
 
 ### Fulltext Index
@@ -83,12 +99,14 @@ Fulltext index supports options by `WITH`:
 * `analyzer`: Sets the language analyzer for the fulltext index. Supported values are `English` and `Chinese`. Default to `English`.
 * `case_sensitive`: Determines whether the fulltext index is case-sensitive. Supported values are `true` and `false`. Default to `false`.
 * `backend`: Sets the backend for the fulltext index. Supported values are `bloom` and `tantivy`. Default to `bloom`.
+* `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+* `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
 For example:
 
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true', backend='bloom'),
+    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true', backend='bloom', granularity=1024, false_positive_rate=0.01),
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
