@@ -162,6 +162,7 @@ enable = true
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
+|            | flight_compression   | 字符串  | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none`。|
 | mysql      |                    |        | MySQL 服务器选项                                             |
 |            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
