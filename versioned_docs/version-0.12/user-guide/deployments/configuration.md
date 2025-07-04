@@ -327,7 +327,7 @@ The write cache is no more experimental since `v0.12`. You can configure the cac
 write_cache_size = "10GiB"
 ```
 
-Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
+Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips.md) for more detailed info.
 
 ### WAL options
 

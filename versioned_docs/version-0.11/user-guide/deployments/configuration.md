@@ -359,7 +359,7 @@ experimental_write_cache_size = "5GiB"
 
 The `experimental_write_cache_path` is under `{data_home}` by default. To disable the write cache, set `enable_experimental_write_cache` to `false`.
 
-Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips) for more detailed info.
+Read [Performance Tuning Tips](/user-guide/administration/performance-tuning-tips.md) for more detailed info.
 
 ### WAL options
 

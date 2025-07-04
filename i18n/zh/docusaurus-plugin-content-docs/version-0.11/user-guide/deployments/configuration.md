@@ -349,7 +349,7 @@ experimental_write_cache_size = "5GiB"
 `experimental_write_cache_path` 默认值位于 `{data_home}` 目录下。
 要禁用写入缓存，请将 `enable_experimental_write_cache` 设置为 `false`。
 
-更详细的信息请参阅[性能调优技巧](/user-guide/administration/performance-tuning-tips)。
+更详细的信息请参阅[性能调优技巧](/user-guide/administration/performance-tuning-tips.md)。
 
 
 ### WAL 选项
