@@ -272,7 +272,7 @@ processors:
 
 ## 使用 skip_error 跳过错误
 
-如果您希望在写入日志时跳过错误，可以在请求中添加 `skip_error=true` 参数。你可以通过以下命令使用 `skip_error` 参数：
+如果你希望在写入日志时跳过错误，可以在请求中添加 `skip_error=true` 参数。你可以通过以下命令使用 `skip_error` 参数：
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
