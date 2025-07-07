@@ -273,7 +273,7 @@ mode](/user-guide/deployments-administration/performance-tuning/design-table.md#
 
 ## Skip Errors with skip_error
 
-If you want to skip errors when writing logs, you can add the `skip_error=true` parameter to your request. You can use the `skip_error` parameter with the following command:
+If you want to skip errors when writing logs, you can add the `skip_error` parameter to the HTTP request's query params. For example:
 
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
@@ -282,4 +282,4 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
      -d "$<log-items>"
 ```
 
-With this, GreptimeDB will skip the log entry when an error is encountered and continue processing the remaining logs. The entire request will not fail due to an error in a single
+With this, GreptimeDB will skip the log entry when an error is encountered and continue processing the remaining logs. The entire request will not fail due to an error in a single log entry.
