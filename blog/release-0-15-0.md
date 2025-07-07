@@ -8,6 +8,8 @@ date: 2025-07-04
 
 Release date: July 04, 2025
 
+**It is recommended to upgrade to [v0.15.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.15.1)**
+
 ### 👍 Highlights
 
 - **Process Management**: Implements complete process management system with `ProcessManager`,
