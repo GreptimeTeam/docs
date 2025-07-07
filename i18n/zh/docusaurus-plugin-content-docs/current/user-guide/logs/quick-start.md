@@ -63,7 +63,7 @@ curl -X POST \
 {"output":[{"affectedrows":3}],"execution_time_ms":9}
 ```
 
-有关 `greptime_identity` pipeline 的更多详细信息，请参阅 [管理 Pipeline](manage-pipelines.md#greptime_identity) 文档。
+有关 `greptime_identity` pipeline 的更多详细信息，请参阅 [写入日志](write-logs.md#greptime_identity) 文档。
 
 ### 使用自定义 Pipeline 写入日志
 
