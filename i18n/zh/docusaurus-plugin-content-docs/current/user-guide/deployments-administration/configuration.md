@@ -179,15 +179,15 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
 
-对 MySQL 和 Postgres 接口，我们支持 TLS 配置
+对 MySQL，Postgres 和 gRPC 接口，我们支持 TLS 配置
 
-| Option                        | Key         | Type    | Description                                      |
-|-------------------------------|-------------|---------|--------------------------------------------------|
-| `mysql.tls` 或 `postgres.tls` |             |         | MySQL 或 Postgres 的 TLS 配置                    |
-|                               | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
-|                               | `cert_path` | String  | TLS 证书文件路径                                 |
-|                               | `key_path`  | String  | TLS 私钥文件路径                                 |
-|                               | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥             |
+| Option                                   | Key         | Type    | Description                                      |
+|------------------------------------------|-------------|---------|--------------------------------------------------|
+| `mysql.tls`，`postgres.tls` 或 `grpc.tls` |             |         | MySQL 或 Postgres 的 TLS 配置                    |
+|                                          | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
+|                                          | `cert_path` | String  | TLS 证书文件路径                                 |
+|                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
+|                                          | `watch`     | Boolean | 监控文件变化，自动重新加载证书或私钥             |
 
 ### 查询选项
 

@@ -191,16 +191,16 @@ The following table describes the options in detail:
 |            | addr                 | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
 |            | runtime_size         | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
 
-For MySQL and Postgres interface, TLS can be configured to enable transport
+For MySQL, Postgres and gRPC interface, TLS can be configured to enable transport
 layer security.
 
-| Option                        | Key         | Type    | Description                                                   |
-| ----------------------------- | ----------- | ------- | ------------------------------------------------------------- |
-| `mysql.tls` or `postgres.tls` |             |         | TLS configuration for MySQL and Postgres                      |
-|                               | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
-|                               | `cert_path` | String  | File path for TLS certificate                                 |
-|                               | `key_path`  | String  | File path for TLS private key                                 |
-|                               | `watch`     | Boolean | Watch file system changes and reload certificate and key file |
+| Option                                    | Key         | Type    | Description                                                   |
+| ------------------------------------------| ----------- | ------- | ------------------------------------------------------------- |
+| `mysql.tls`, `postgres.tls` or `grpc.tls` |             |         | TLS configuration for MySQL and Postgres                      |
+|                                           | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
+|                                           | `cert_path` | String  | File path for TLS certificate                                 |
+|                                           | `key_path`  | String  | File path for TLS private key                                 |
+|                                           | `watch`     | Boolean | Watch file system changes and reload certificate and key file |
 
 ### Query options
 
