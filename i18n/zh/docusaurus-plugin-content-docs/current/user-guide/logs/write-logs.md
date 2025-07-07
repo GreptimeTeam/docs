@@ -268,3 +268,17 @@ processors:
 ## Append 模式
 
 通过此接口创建的日志表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
+
+
+## 使用 skip_error 跳过错误
+
+如果您希望在写入日志时跳过错误，可以在请求中添加 `skip_error=true` 参数。你可以通过以下命令使用 `skip_error` 参数：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -d "$<log-items>"
+```
+
+这样，GreptimeDB 将在遇到错误时跳过该条日志，并继续处理其他日志。不会因为某一条日志的错误而导致整个请求失败。
