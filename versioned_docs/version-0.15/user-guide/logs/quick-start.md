@@ -65,7 +65,7 @@ A successful command execution returns:
 {"output":[{"affectedrows":3}],"execution_time_ms":9}
 ```
 
-For more details about the `greptime_identity` pipeline, please refer to the [Manage Pipelines](manage-pipelines.md#greptime_identity) document.
+For more details about the `greptime_identity` pipeline, please refer to the [Write Logs](write-logs.md#greptime_identity) document.
 
 ### Write logs using a custom Pipeline
 
