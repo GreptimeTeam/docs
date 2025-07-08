@@ -23,9 +23,20 @@ This section provides an overview of the advanced features available in Greptime
 
 - [Active-Active Failover Disaster Recovery Solution](./administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
 - [LDAP Authentication](./deployments/authentication.md): Secure your system with LDAP-based authentication for access management.
-- [Audit Logging](./deployments/monitoring/audit-logging.md): Track and monitor user activity with detailed audit logs.
-- More feature documentation coming soon!
+- [Audit Logging](./deployments/monitoring/audit-logging.md): Track and monitor
+  user activity with detailed audit logs.
+- [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
+  datanodes workload by moving regions between them.
+- Elasticsearch query compatibility: Use GreptimeDB backed Kibana for your logs.
+- Greptime Enterprise Management UI: An enhanced version of our dashboard UI,
+  carries more cluster management and monitoring features.
+- Read Replicas: Read-only datanode instances for heavy query workloads such as
+  analytical queries.
+- Triggers: Periodically evaluate your rules and trigger external
+  webhook. Compatible with Prometheus AlterManager.
+- Reliability features for Flow.
 
 ## Release Notes
 
+- [25.05](./release-notes/release-25_05.md)
 - [24.11](./release-notes/release-24_11.md)
