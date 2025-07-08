@@ -92,14 +92,14 @@ The equivalent body payload of previous example is like following:
 
 Sending log ingestion request to GreptimeDB requires only modifying the `Content-Type` header to be `text/plain`, and you are good to go!
 
-Please note that, unlike JSON format, where the input data already have key names as field names to be used in Pipeline processors, `text/plain` format just gives the whole line as input to the Pipeline engine. In this case we use `line` as the field name to refer to the input line, for example:
+Please note that, unlike JSON format, where the input data already have key names as field names to be used in Pipeline processors, `text/plain` format just gives the whole line as input to the Pipeline engine. In this case we use `message` as the field name to refer to the input line, for example:
 
 ```yaml
 processors:
   - dissect:
       fields:
-        # use `line` as the field name
-        - line
+        # use `message` as the field name
+        - message
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
