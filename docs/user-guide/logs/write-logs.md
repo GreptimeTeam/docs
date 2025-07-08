@@ -270,3 +270,16 @@ Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#w
 
 By default, logs table created by HTTP ingestion API are in [append only
 mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+
+## Skip Errors with skip_error
+
+If you want to skip errors when writing logs, you can add the `skip_error` parameter to the HTTP request's query params. For example:
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -d "$<log-items>"
+```
+
+With this, GreptimeDB will skip the log entry when an error is encountered and continue processing the remaining logs. The entire request will not fail due to an error in a single log entry.
