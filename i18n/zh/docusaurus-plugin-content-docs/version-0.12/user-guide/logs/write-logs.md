@@ -91,14 +91,14 @@ processors:
 
 仅需要将 `Content-Type` header 设置成 `text/plain`，即可将纯文本请求发送到 GreptimeDB。
 
-主要注意的是，和 JSON 格式自带 key 名可以被 Pipeline processor 识别和处理不同，`text/plain` 格式直接将整行文本输入到 Pipeline engine。在这种情况下我们可以使用 `line` 来指代整行输入文本，例如：
+主要注意的是，和 JSON 格式自带 key 名可以被 Pipeline processor 识别和处理不同，`text/plain` 格式直接将整行文本输入到 Pipeline engine。在这种情况下我们可以使用 `message` 来指代整行输入文本，例如：
 
 ```yaml
 processors:
   - dissect:
       fields:
-        # 使用 `line` 作为 field 名称
-        - line
+        # 使用 `message` 作为 field 名称
+        - message
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
