@@ -802,8 +802,13 @@ processors:
       ignore_missing: true
   - vrl:
       source: |
-        .log_id = .id
-        del(.id)
+        .from_source = "channel_2"
+        cond, err = .id1 > .id2
+        if (cond) {
+            .from_source = "channel_1"
+        }
+        del(.id1)
+        del(.id2)
         .
 ```
 
