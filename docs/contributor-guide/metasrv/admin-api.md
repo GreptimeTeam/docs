@@ -259,4 +259,4 @@ Cluster Maintenance Mode is a safety feature in GreptimeDB that temporarily disa
 
 ## /procedure-manager HTTP endpoint
 
-This endpoint is used to manage the procedure manager status. For more details, please refer to [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).
+This endpoint is used to manage the Procedure Manager status. For more details, please refer to [Prevent Metadata Changes](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md).

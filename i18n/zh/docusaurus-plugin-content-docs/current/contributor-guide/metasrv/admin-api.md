@@ -255,4 +255,4 @@ curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
 
 ## /procedure-manager HTTP 端点
 
-该端点用于管理 procedure manager 状态。有关更多详细信息，请参阅[防止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。
+该端点用于管理 Procedure Manager 状态。有关更多详细信息，请参阅[防止元数据变更](/user-guide/deployments-administration/maintenance/prevent-metadata-changes.md)。

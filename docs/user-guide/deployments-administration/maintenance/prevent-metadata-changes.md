@@ -5,8 +5,8 @@ description: Guide for managing GreptimeDB pause metadata changes to safely perf
 
 # Prevent Metadata Changes
 
-To prevent metadata changes, you can pause the procedure manager. This mechanism rejects all new procedures (i.e., new metadata-changing operations) while allowing existing procedures to continue running.
-Once enabled, the Metasrv will reject the following procedures:
+To prevent metadata changes, you can pause the Procedure Manager. This mechanism rejects all new procedures (i.e., new metadata-changing operations) while allowing existing procedures to continue running.
+Once enabled, the Metasrv will reject the following procedures (including but not limited to):
 
 **DDL procedures:**
 - Create table
@@ -25,12 +25,12 @@ Once enabled, the Metasrv will reject the following procedures:
 
 You may see error messages if you or Metasrv try to perform these procedures after metadata changes are paused. For region procedures, you can enable [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md) to temporarily disable them.
 
-## Managing procedure manager
-The procedure manager can be paused and resumed through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/pause` and `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/resume`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
+## Managing Procedure Manager
+The Procedure Manager can be paused and resumed through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/pause` and `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/resume`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
 
 ### Pause Procedure Manager
 
-Pause procedure manager by sending a POST request to the `/admin/procedure-manager/pause` endpoint. 
+Pause Procedure Manager by sending a POST request to the `/admin/procedure-manager/pause` endpoint. 
 
 ```bash
 curl -X POST 'http://localhost:3002/admin/procedure-manager/pause'
@@ -43,7 +43,7 @@ The expected output is:
 
 ### Resume Procedure Manager
 
-Resume procedure manager by sending a POST request to the `/admin/procedure-manager/resume` endpoint. 
+Resume Procedure Manager by sending a POST request to the `/admin/procedure-manager/resume` endpoint. 
 
 ```bash
 curl -X POST 'http://localhost:3002/admin/procedure-manager/resume'
@@ -56,7 +56,7 @@ The expected output is:
 
 ### Check Procedure Manager Status
 
-Check procedure manager status by sending a GET request to the `/admin/procedure-manager/status` endpoint.
+Check Procedure Manager status by sending a GET request to the `/admin/procedure-manager/status` endpoint.
 
 ```bash
 curl -X GET 'http://localhost:3002/admin/procedure-manager/status'
