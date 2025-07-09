@@ -6,6 +6,7 @@ description: 在 Kubernetes 上部署 GreptimeDB 的概述，介绍了 GreptimeD
 # 在 Kubernetes 上部署 GreptimeDB
 
 GreptimeDB 专为云原生环境而构建，从第一天起就可以在 Kubernetes 上部署。
+你可以在任何云服务提供商上部署 GreptimeDB，包括 AWS、阿里云或谷歌云等。
 
 ## 部署 GreptimeDB 单机版
 
