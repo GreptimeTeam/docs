@@ -115,7 +115,7 @@ We currently provide the following built-in Processors:
 - `regex`: performs regular expression matching on log data fields.
 - `urlencoding`: performs URL encoding/decoding on log data fields.
 - `csv`: parses CSV data fields in logs.
-- `json_path`: extracts fields from JSON data.
+- `json_path`: extracts fields from JSON data. (**deprecated**, please use `vrl` instead)
 - `json_parse`: parse a field into JSON object.
 - `simple_extract`: extracts fields from JSON data using simple key.
 - `digest`: extracts the template from a log message by removing variable content.
@@ -438,9 +438,13 @@ In the above example, the configuration of the `csv` processor includes the foll
 - `trim`: Whether to trim whitespace. Defaults to `false`.
 - `ignore_missing`: Ignores the case when the field is missing. Defaults to `false`. If the field is missing and this configuration is set to `false`, an exception will be thrown.
 
-### `json_path` (experimental)
+### `json_path` (deprecated)
 
-Note: The `json_path` processor is currently in the experimental stage and may be subject to change.
+:::danger Deprecated Feature
+With the addition of the vrl processor, the use cases for the `json_path` processor have been greatly reduced.
+If you need to extract fields from JSON data, it is recommended to use the `vrl` processor for more flexible processing.
+We plan to deprecate the `json_path` processor in future versions.
+:::
 
 The `json_path` processor is used to extract fields from JSON data. Here's an example configuration:
 
