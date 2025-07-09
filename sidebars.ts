@@ -382,7 +382,14 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/disaster-recovery/dr-solution-based-on-cross-region-deployment-in-single-cluster',
               ],
             },
-            'user-guide/deployments-administration/maintenance-mode',
+            {
+              type: 'category',
+              label: 'Maintenance',
+              items: [
+                'user-guide/deployments-administration/maintenance/maintenance-mode',
+                'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
+              ]
+            },
             'user-guide/deployments-administration/run-on-android',
             'user-guide/deployments-administration/upgrade',
           ],

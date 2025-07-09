@@ -20,7 +20,7 @@ Region Failover 提供了在不丢失数据的情况下从 Region 故障中恢�
 ### 通过配置文件
 
 在 [metasrv](/user-guide/deployments-administration/configuration.md#metasrv-only-configuration) 配置文件中设置 `enable_region_failover=true`.
-另外，你还需要将 `region_failure_detector_initialization_delay` 设置为较大的值，并在 `region_failure_detector_initialization_delay` 期间内，启动[集群维护模式](/user-guide/deployments-administration/maintenance-mode.md)，以避免在 Datanode 启动或升级期间触发不必要的 Region Failover。
+另外，你还需要将 `region_failure_detector_initialization_delay` 设置为较大的值，并在 `region_failure_detector_initialization_delay` 期间内，启动[集群维护模式](/user-guide/deployments-administration/maintenance/maintenance-mode.md)，以避免在 Datanode 启动或升级期间触发不必要的 Region Failover。
 
 ### 通过 GreptimeDB Operator
 
