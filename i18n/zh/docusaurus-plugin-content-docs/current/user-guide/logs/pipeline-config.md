@@ -118,7 +118,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `regex`: 对 log 数据字段进行正则匹配。
 - `urlencoding`: 对 log 数据字段进行 URL 编解码。
 - `csv`: 对 log 数据字段进行 CSV 解析。
-- `json_path`: 从 JSON 数据中提取字段。
+- `json_path`: 从 JSON 数据中提取字段。（**已废弃**，请使用 `vrl` ）
 - `json_parse`: 将一个字段解析成 JSON 对象。
 - `simple_extract`: 使用简单的 key 从 JSON 数据中提取字段。
 - `digest`: 提取日志消息模板。
@@ -457,9 +457,13 @@ processors:
 - `trim`: 是否去除空格。默认为 `false`。
 - `ignore_missing`: 忽略字段不存在的情况。默认为 `false`。如果字段不存在，并且此配置为 false，则会抛出异常。
 
-### `json_path`（实验性）
+### `json_path`（废弃）
 
-注意：`json_path` 处理器目前处于实验阶段，可能会有所变动。
+:::danger 废弃特性
+增加 vrl processor 后，`json_path` 处理器的使用场景已经大大减少。
+如果你需要从 JSON 数据中提取字段，建议使用 `vrl` 处理器来实现更灵活的处理。
+我们计划在未来的版本中废弃 `json_path` 处理器。
+:::
 
 `json_path` 处理器用于从 JSON 数据中提取字段。以下是一个配置示例：
 
