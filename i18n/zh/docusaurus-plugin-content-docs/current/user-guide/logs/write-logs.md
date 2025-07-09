@@ -20,19 +20,81 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
      -d "$<log-items>"
 ```
 
-
 ## 请求参数
 
 此接口接受以下参数：
+
+### Query 参数
 
 - `db`：数据库名称。
 - `table`：表名称。
 - `pipeline_name`：[Pipeline](./pipeline-config.md) 名称。
 - `version`：Pipeline 版本号。可选，默认使用最新版本。
+- `custom_time_index` 当使用 [greptime_identity](#greptime_identity) 时可指定自定义时间索引列。详情请参考[自定义时间索引列](#自定义时间索引列)部分。
+- `skip_error` 跳过解析错误的日志行。详情请参考[使用 skip_error 跳过错误](#使用-skip_error-跳过错误)部分。
+
+### Header 参数
+
+- `Content-Type`：请求体内容类型。支持 `application/json`、`application/x-ndjson` 和 `text/plain` 三种格式。
+- `Authorization`：认证信息。使用 Basic 认证方式。
+- 可通过 header `x-greptime-pipeline-params` 指定 Pipeline 参数。可用的的 参数包括：
+  - `flatten_json_object` 用于将 JSON 对象扁平化为单层结构。详情请参考[展开 json 对象](#展开-json-对象)部分。
+
+## Pipeline 上下文中的 hint 变量
+
+从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
+通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
+
+以下是支持的表选项变量名：
+
+- `greptime_auto_create_table`
+- `greptime_ttl`
+- `greptime_append_mode`
+- `greptime_merge_mode`
+- `greptime_physical_table`
+- `greptime_skip_wal`
+  关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
+
+以下是 pipeline 特有的变量：
+
+- `greptime_table_suffix`: 在给定的目标表后增加后缀
+
+以如下 pipeline 文件为例
+
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .greptime_table_suffix, err = "_" + .id
+        .greptime_table_ttl = "1d"
+        .
+```
+
+在这份 vrl 脚本中，我们将表后缀变量设置为输入字段中的 `id`（通过一个下划线连接），然后将 ttl 设置成 `1d`。
+然后我们使用如下数据执行写入。
+
+```JSON
+{
+  "id": "2436",
+  "time": "2024-05-25 20:16:37.217"
+}
+```
+
+假设给定的表名为 `d_table`，那么最终的表名就会按照预期被设置成 `d_table_2436`。这个表同样的 ttl 同样会被设置成 1 天。
+
+## Append 模式
+
+通过此接口创建的日志表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
 
 ## `Content-Type` 和 Body 数据格式
 
 GreptimeDB 使用 `Content-Type` header 来决定如何解码请求体内容。目前我们支持以下两种格式：
+
 - `application/json`: 包括普通的 JSON 格式和 NDJSON 格式。
 - `application/x-ndjson`: 指定 NDJSON 格式，会尝试先分割行再进行解析，可以达到精确的错误检查。
 - `text/plain`: 通过换行符分割的多行日志文本行。
@@ -63,7 +125,6 @@ processors:
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
-
 # pipeline 文件的剩余部分在这里省略
 ```
 
@@ -104,17 +165,87 @@ processors:
       patterns:
         - '%{ip_address} - - [%{timestamp}] "%{http_method} %{request_line}" %{status_code} %{response_size} "-" "%{user_agent}"'
       ignore_missing: true
-
 # pipeline 文件的剩余部分在这里省略
 ```
 
 对于 `text/plain` 格式的输入，推荐首先使用 `dissect` 或者 `regex` processor 将整行文本分割成不同的字段，以便进行后续的处理。
 
+## 使用 skip_error 跳过错误
+
+如果你希望在写入日志时跳过错误，可以在 HTTP 请求的 query params 中添加 `skip_error` 参数。比如：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -d "$<log-items>"
+```
+
+这样，GreptimeDB 将在遇到错误时跳过该条日志，并继续处理其他日志。不会因为某一条日志的错误而导致整个请求失败。
+
+## 展开 json 对象
+
+如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。**请注意，这会在 Pipeline 执行前执行此操作**
+如果你使用了此参数，自定义 Pipeline 或者 `greptime_identity` 会以处理后的结构作为输入。
+
+以下是一个示例请求：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -H "x-greptime-pipeline-params: flatten_json_object=true" \
+     -d "$<log-items>"
+```
+
+这样，GreptimeDB 将自动将 JSON 对象的每个字段展开为单独的列。比如
+
+```JSON
+{
+    "a": {
+        "b": {
+            "c": [1, 2, 3]
+        }
+    },
+    "d": [
+        "foo",
+        "bar"
+    ],
+    "e": {
+        "f": [7, 8, 9],
+        "g": {
+            "h": 123,
+            "i": "hello",
+            "j": {
+                "k": true
+            }
+        }
+    }
+}
+```
+
+将被展开为：
+
+```sql
+{
+    "a.b.c": [1,2,3],
+    "d": ["foo","bar"],
+    "e.f": [7,8,9],
+    "e.g.h": 123,
+    "e.g.i": "hello",
+    "e.g.j.k": true
+}
+```
+
+## 示例
+
+请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
+
 ## 内置 Pipeline
 
 GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用而无需创建新的 Pipeline。
 
-请注意，内置 Pipeline 的名称以 "greptime_" 为前缀，不可编辑。
+请注意，内置 Pipeline 的名称以 "greptime\_" 为前缀，不可编辑。
 
 ### `greptime_identity`
 
@@ -138,9 +269,9 @@ GreptimeDB 提供了常见日志格式的内置 Pipeline，允许您直接使用
 
 ```json
 [
-    {"name": "Alice", "age": 20, "is_student": true, "score": 90.5,"object": {"a":1,"b":2}},
-    {"age": 21, "is_student": false, "score": 85.5, "company": "A" ,"whatever": null},
-    {"name": "Charlie", "age": 22, "is_student": true, "score": 95.5,"array":[1,2,3]}
+  { "name": "Alice", "age": 20, "is_student": true, "score": 90.5, "object": { "a": 1, "b": 2 } },
+  { "age": 21, "is_student": false, "score": 85.5, "company": "A", "whatever": null },
+  { "name": "Charlie", "age": 22, "is_student": true, "score": 95.5, "array": [1, 2, 3] }
 ]
 ```
 
@@ -182,6 +313,7 @@ mysql> select * from pipeline_logs;
 每个 GreptimeDB 表中都必须有时间索引列。`greptime_identity` pipeline 不需要额外的 YAML 配置，如果你希望使用写入数据中自带的时间列（而不是日志数据到达服务端的时间戳）作为表的时间索引列，则需要通过参数进行指定。
 
 假设这是一份待写入的日志数据：
+
 ```JSON
 [
     {"action": "login", "ts": 1742814853}
@@ -189,6 +321,7 @@ mysql> select * from pipeline_logs;
 ```
 
 设置如下的 URL 参数来指定自定义时间索引列：
+
 ```shell
 curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
      -H "Content-Type: application/json" \
@@ -197,6 +330,7 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
 ```
 
 取决于数据的格式，`custom_time_index` 参数接受两种格式的配置值：
+
 - Unix 时间戳: `<字段名>;epoch;<精度>`
   - 该字段需要是整数或者字符串
   - 精度为这四种选项之一: `s`, `ms`, `us`, or `ns`.
@@ -204,9 +338,11 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_lo
   - 例如输入的时间字段值为 `2025-03-24 19:31:37+08:00`，则对应的字符串解析格式为 `%Y-%m-%d %H:%M:%S%:z`
 
 通过上述配置，结果表就能正确使用输入字段作为时间索引列
+
 ```sql
 DESC pipeline_logs;
 ```
+
 ```sql
 +--------+-----------------+------+------+---------+---------------+
 | Column | Type            | Key  | Null | Default | Semantic Type |
@@ -216,69 +352,3 @@ DESC pipeline_logs;
 +--------+-----------------+------+------+---------+---------------+
 2 rows in set (0.02 sec)
 ```
-
-## Pipeline 上下文中的 hint 变量
-
-从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
-通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
-
-以下是支持的表选项变量名：
-- `greptime_auto_create_table`
-- `greptime_ttl`
-- `greptime_append_mode`
-- `greptime_merge_mode`
-- `greptime_physical_table`
-- `greptime_skip_wal`
-关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
-
-以下是 pipeline 特有的变量：
-- `greptime_table_suffix`: 在给定的目标表后增加后缀
-
-以如下 pipeline 文件为例
-```YAML
-processors:
-  - date:
-      field: time
-      formats:
-        - "%Y-%m-%d %H:%M:%S%.3f"
-      ignore_missing: true
-  - vrl:
-      source: |
-        .greptime_table_suffix, err = "_" + .id
-        .greptime_table_ttl = "1d"
-        .
-```
-
-在这份 vrl 脚本中，我们将表后缀变量设置为输入字段中的 `id`（通过一个下划线连接），然后将 ttl 设置成 `1d`。
-然后我们使用如下数据执行写入。
-
-```JSON
-{
-  "id": "2436",
-  "time": "2024-05-25 20:16:37.217"
-}
-```
-
-假设给定的表名为 `d_table`，那么最终的表名就会按照预期被设置成 `d_table_2436`。这个表同样的 ttl 同样会被设置成 1 天。
-
-## 示例
-
-请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
-
-## Append 模式
-
-通过此接口创建的日志表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
-
-
-## 使用 skip_error 跳过错误
-
-如果你希望在写入日志时跳过错误，可以在 HTTP 请求的 query params 中添加 `skip_error` 参数。比如：
-
-```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
-     -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
-     -d "$<log-items>"
-```
-
-这样，GreptimeDB 将在遇到错误时跳过该条日志，并继续处理其他日志。不会因为某一条日志的错误而导致整个请求失败。
