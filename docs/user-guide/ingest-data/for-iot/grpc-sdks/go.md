@@ -58,6 +58,7 @@ cfg := greptime.NewConfig("127.0.0.1").
     WithAuth("username", "password")
 
 cli, _ := greptime.NewClient(cfg)
+defer cli.Close()
 ```
 </div>
 
@@ -78,7 +79,7 @@ ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 ctx = ingesterContext.New(ctx, ingesterContext.WithHint(hints))
 // Use the ingesterContext when writing data to GreptimeDB.
 // The `data` object is described in the following sections.
-resp, err := c.client.Write(ctx, data)
+resp, err := cli.Write(ctx, data)
 if err != nil {
     return err
 }
