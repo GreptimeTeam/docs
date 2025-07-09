@@ -36,14 +36,14 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 ### Header 参数
 
 - `Content-Type`：请求体内容类型。支持 `application/json`、`application/x-ndjson` 和 `text/plain` 三种格式。
-- `Authorization`：认证信息。使用 Basic 认证方式。
-- `x-greptime-pipeline-params` 指定 Pipeline 参数。可用的的参数目前包括：
-  - `flatten_json_object` 当使用 [greptime_identity](#greptime_identity) 时。用于将 JSON 对象扁平化为单层结构。详情请参考[展开 json 对象](#展开-json-对象)部分。
+- `Authorization`：[认证信息](/user-guide/protocols/http.md#鉴权)。使用 Basic 认证方式。
+- `x-greptime-pipeline-params` 指定 Pipeline 参数。可用的的参数：
+  - `flatten_json_object` 当使用 [greptime_identity](#greptime_identity) 时。用于将 JSON 对象扁平化为单层结构。详情请参考[展开 JSON 对象](#展开-json-对象)部分。
 
 ## Pipeline 上下文中的 hint 变量
 
 从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。
-通过与 `vrl` 处理器的结合，现在可以非常轻易地通过输入的数据在 pipeline 的执行过程中设置建表选项。
+通过使用 `vrl` 处理器，可以在 pipeline 的执行过程中为输入的数据设置建表选项。
 
 以下是支持的表选项变量名：
 
@@ -53,9 +53,10 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 - `greptime_merge_mode`
 - `greptime_physical_table`
 - `greptime_skip_wal`
-  关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
 
-以下是 pipeline 特有的变量：
+关于这些表选项的含义，可以参考[这份文档](/reference/sql/create.md#表选项)。
+
+以下变量仅在 pipeline 中支持：
 
 - `greptime_table_suffix`: 在给定的目标表后增加后缀
 
@@ -299,7 +300,7 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
-## 展开 json 对象
+#### 展开 json 对象
 
 如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。
 
