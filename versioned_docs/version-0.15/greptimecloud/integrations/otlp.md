@@ -5,10 +5,12 @@ description: Guide for using GreptimeDB as an observability backend with OpenTel
 
 # OpenTelemetry
 
-GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively
-via [OTLP](https://opentelemetry.io/docs/specs/otlp/) protocol. You can
-configure GreptimeDB as an OpenTelemetery collector for your applications or
-agents.
+GreptimeDB serves as an observability backend that natively consumes OpenTelemetry Metrics
+via the [OTLP](https://opentelemetry.io/docs/specs/otlp/) protocol.
+Please use the `/v1/otlp` endpoint with the HTTP/protobuf protocol and include the following required headers:
+
+- **Authentication**: Basic authentication credentials
+- **x-greptime-db-name**: Your target database name
 
 ## OpenTelemetry Collector
 
@@ -89,3 +91,9 @@ otelcol.auth.basic "credentials" {
   password = "<password>"
 }
 ```
+
+## References
+
+For more information on using GreptimeDB with OpenTelemetry,
+please refer to the [OpenTelemetry Protocol documentation](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry/) in the GreptimeDB user guide.
+
