@@ -37,8 +37,8 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 
 - `Content-Type`：请求体内容类型。支持 `application/json`、`application/x-ndjson` 和 `text/plain` 三种格式。
 - `Authorization`：认证信息。使用 Basic 认证方式。
-- 可通过 header `x-greptime-pipeline-params` 指定 Pipeline 参数。可用的的 参数包括：
-  - `flatten_json_object` 用于将 JSON 对象扁平化为单层结构。详情请参考[展开 json 对象](#展开-json-对象)部分。
+- `x-greptime-pipeline-params` 指定 Pipeline 参数。可用的的参数目前包括：
+  - `flatten_json_object` 当使用 [greptime_identity](#greptime_identity) 时。用于将 JSON 对象扁平化为单层结构。详情请参考[展开 json 对象](#展开-json-对象)部分。
 
 ## Pipeline 上下文中的 hint 变量
 
@@ -183,60 +183,6 @@ curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-n
 
 这样，GreptimeDB 将在遇到错误时跳过该条日志，并继续处理其他日志。不会因为某一条日志的错误而导致整个请求失败。
 
-## 展开 json 对象
-
-如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。**请注意，这会在 Pipeline 执行前执行此操作**
-如果你使用了此参数，自定义 Pipeline 或者 `greptime_identity` 会以处理后的结构作为输入。
-
-以下是一个示例请求：
-
-```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
-     -H "Content-Type: application/x-ndjson" \
-     -H "Authorization: Basic {{authentication}}" \
-     -H "x-greptime-pipeline-params: flatten_json_object=true" \
-     -d "$<log-items>"
-```
-
-这样，GreptimeDB 将自动将 JSON 对象的每个字段展开为单独的列。比如
-
-```JSON
-{
-    "a": {
-        "b": {
-            "c": [1, 2, 3]
-        }
-    },
-    "d": [
-        "foo",
-        "bar"
-    ],
-    "e": {
-        "f": [7, 8, 9],
-        "g": {
-            "h": 123,
-            "i": "hello",
-            "j": {
-                "k": true
-            }
-        }
-    }
-}
-```
-
-将被展开为：
-
-```sql
-{
-    "a.b.c": [1,2,3],
-    "d": ["foo","bar"],
-    "e.f": [7,8,9],
-    "e.g.h": 123,
-    "e.g.i": "hello",
-    "e.g.j.k": true
-}
-```
-
 ## 示例
 
 请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
@@ -351,4 +297,57 @@ DESC pipeline_logs;
 | action | String          |      | YES  |         | FIELD         |
 +--------+-----------------+------+------+---------+---------------+
 2 rows in set (0.02 sec)
+```
+
+## 展开 json 对象
+
+如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。
+
+以下是一个示例请求：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -H "x-greptime-pipeline-params: flatten_json_object=true" \
+     -d "$<log-items>"
+```
+
+这样，GreptimeDB 将自动将 JSON 对象的每个字段展开为单独的列。比如
+
+```JSON
+{
+    "a": {
+        "b": {
+            "c": [1, 2, 3]
+        }
+    },
+    "d": [
+        "foo",
+        "bar"
+    ],
+    "e": {
+        "f": [7, 8, 9],
+        "g": {
+            "h": 123,
+            "i": "hello",
+            "j": {
+                "k": true
+            }
+        }
+    }
+}
+```
+
+将被展开为：
+
+```sql
+{
+    "a.b.c": [1,2,3],
+    "d": ["foo","bar"],
+    "e.f": [7,8,9],
+    "e.g.h": 123,
+    "e.g.i": "hello",
+    "e.g.j.k": true
+}
 ```
