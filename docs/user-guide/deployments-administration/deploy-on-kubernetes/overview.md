@@ -5,7 +5,8 @@ description: Overview of deploying GreptimeDB on Kubernetes using the GreptimeDB
 
 # Deploy GreptimeDB on Kubernetes
 
-GreptimeDB is built for cloud-native environments and can be deployed on Kubernetes since day one.
+GreptimeDB is designed for cloud-native environments and supports Kubernetes deployment from day one.
+You can deploy GreptimeDB on any cloud service provider, including AWS, Alibaba Cloud, or Google Cloud.
 
 ## Deploy GreptimeDB Standalone
 
