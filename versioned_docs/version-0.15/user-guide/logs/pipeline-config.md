@@ -1020,7 +1020,8 @@ processors:
 
 transform:
   - field: input_str, ts
-    type: time
+    type: time, ms
+    index: timestamp
 ```
 
 Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
@@ -1028,7 +1029,7 @@ Simply add a `version: 2` line at the top of the config file, and the pipeline e
 2. Write all fields of the pipeline context to the final table.
 
 Note:
-- If the transform section is explicitly written, it must contain a time index field. Otherwise the time-index field will be inferred by the pipeline engine just like the auto-transform mode.
+- If the transform section is explicitly written, **it must contain a time index field**. Otherwise the time-index field will be inferred by the pipeline engine just like the auto-transform mode.
 - The transform process in the version 2 will consume the original field in the pipeline context, so you can't transform the same field twice.
 
 ## Dispatcher

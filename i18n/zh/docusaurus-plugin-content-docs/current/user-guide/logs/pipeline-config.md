@@ -1042,7 +1042,8 @@ processors:
 
 transform:
   - field: input_str, ts
-    type: time
+    type: time, ms
+    index: timestamp
 ```
 
 只需要在配置文件的开头加上 `version: 2`，pipeline 引擎就会以新的 transform 模式来处理数据：
@@ -1050,7 +1051,7 @@ transform:
 2. 将 pipeline 上下文中的所有字段保存到最终的结果表中
 
 注意：
-- 如果明确配置了 transform 规则，那么它必须要包含时间索引列。否则时间索引列会由 pipeline 引擎进行推导，该行为和 auto-transform 模式一致
+- 如果明确配置了 transform 规则，**那么它必须要包含时间索引列**。否则时间索引列会由 pipeline 引擎进行推导，该行为和 auto-transform 模式一致
 - 版本 2 中的 transform 规则执行会将原始字段从 pipeline 上下文中移除，故你无法在 transform 规则对同一个字段引用多次
 
 ## Dispatcher
