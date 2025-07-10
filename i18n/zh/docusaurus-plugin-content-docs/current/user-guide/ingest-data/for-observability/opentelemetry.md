@@ -13,6 +13,12 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 你可以很简单地将 GreptimeDB 配置为 OpenTelemetry 采集器写入的目标。
 有关更多信息，请参阅 [OTel Collector](otel-collector.md) 和[Grafana Alloy](alloy.md) 示例。
 
+## HTTP 基础端点
+
+适用于所有信号类型的[HTTP 基础端点](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_endpoint) URL：`http{s}://<host>/v1/otlp`
+
+当需要将多种信号类型（指标、日志和链路追踪）发送到同一目标数据库时，这个统一端点非常有用，可以简化你的 OpenTelemetry 配置。
+
 ## Metrics
 
 GreptimeDB 通过原生支持 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议，可以作为后端存储服务来接收 OpenTelemetry 指标数据。

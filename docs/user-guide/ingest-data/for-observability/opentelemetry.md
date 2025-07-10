@@ -12,6 +12,12 @@ description: Instructions for integrating OpenTelemetry with GreptimeDB, includi
 You can easily configure GreptimeDB as the target for your OpenTelemetry collector.
 For more information, please refer to the [OTel Collector](otel-collector.md) and [Grafana Alloy](alloy.md) example.
 
+## HTTP Base Endpoint
+
+[Base endpoint URL](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_endpoint) for all signal types: `http{s}://<host>/v1/otlp`
+
+This unified endpoint is useful when sending multiple signal types (metrics, logs, and traces) to the same destination, simplifying your OpenTelemetry configuration.
+
 ## Metrics
 
 GreptimeDB is an observability backend to consume OpenTelemetry Metrics natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
