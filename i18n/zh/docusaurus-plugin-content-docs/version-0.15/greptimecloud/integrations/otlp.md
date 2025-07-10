@@ -5,11 +5,14 @@ description: 介绍如何通过 OpenTelemetry Protocol (OTLP) 将指标数据发
 
 # OpenTelemetry Protocol (OTLP)
 
-你可以通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生消费 OpenTelemetry 指标。
-请使用 `/v1/otlp` 接口与 HTTP/protobuf 协议，并包含以下必需的头部：
+你可以通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生消费 OpenTelemetry metrics, logs 和 traces。
 
-- **Authentication**: Basic authentication 凭证
-- **x-greptime-db-name**: 你的目标数据库名称
+请使用以下接口和 HTTP/protobuf 协议，并包含必需的 header 参数：
+
+- URL: `https://<host>/v1/otlp/`
+- Headers:
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Authentication`: `Basic <authentication>`, 请参考 [HTTP API 中的认证](https://docs.greptime.cn/user-guide/protocols/http#鉴权)获取更多信息
 
 ## OpenTelemetry Collector
 
