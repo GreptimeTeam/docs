@@ -17,7 +17,7 @@ OpenTelemetry Protocol (OTLP) 定义了观测数据在观测源和中间进程�
 
 适用于所有信号类型的[HTTP 基础端点](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/#otel_exporter_otlp_endpoint) URL：`http{s}://<host>/v1/otlp`
 
-当需要将多种信号类型（指标、日志和链路追踪）发送到同一目标数据库时，这个统一端点非常有用，可以简化您的 OpenTelemetry 配置。
+当需要将多种信号类型（指标、日志和链路追踪）发送到同一目标数据库时，这个统一端点非常有用，可以简化你的 OpenTelemetry 配置。
 
 ## Metrics
 
