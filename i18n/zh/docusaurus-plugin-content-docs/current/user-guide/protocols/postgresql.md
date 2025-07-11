@@ -171,3 +171,13 @@ SELECT
     count(latency)
 FROM ft_grpc_latencies GROUP BY host, t;
 ```
+
+## 语句执行超时
+
+您可以通过 SQL 语句 `SET statement_timeout = <value>` 或 `SET STATEMENT_TIMEOUT = <value>` 为当前会话设置 `statement_timeout` 变量，该变量指定语句执行的最大时间（以毫秒为单位）。如果语句的执行时间超过指定时间，服务器将终止该语句。
+
+例如，将最大执行时间设置为 10 秒：
+
+```SQL
+SET statement_timeout=10000;
+```

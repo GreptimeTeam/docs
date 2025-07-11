@@ -83,7 +83,7 @@ For information on how the time zone affects data inserts and queries, please re
 
 ## Query Timeout
 
-You can set the `max_execution_time` variable for the current session using SQL statement `SET max_execution_time = <value>` or `SET MAX_EXECUTION_TIME = <value>`, which specifies the maximum time in milliseconds for a **read-only statement** to execute.
+You can set the `max_execution_time` variable for the current session using SQL statement `SET max_execution_time = <value>` or `SET MAX_EXECUTION_TIME = <value>`, which specifies the maximum time in milliseconds for a **read-only statement** to execute. The server will terminate the query if it exceeds the specified time.
 
 For example, to set the maximum query execution time to 10 seconds:
 
