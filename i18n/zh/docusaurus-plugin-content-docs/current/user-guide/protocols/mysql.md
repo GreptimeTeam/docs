@@ -76,3 +76,13 @@ SELECT @@system_time_zone, @@time_zone;
 ```
 
 有关时区如何影响数据的插入和查询，请参考 [写入数据](/user-guide/ingest-data/for-iot/sql.md#时区) 和 [查询数据](/user-guide/query-data/sql.md#时区) 中的 SQL 文档。
+
+## 查询超时
+
+可以通过 SQL 语句 `SET max_execution_time = <value>` 或 `SET MAX_EXECUTION_TIME = <value>` 为当前会话设置 `max_execution_time` 变量，该变量指定**只读语句**执行的最大时间（以毫秒为单位）。如果查询的执行时间超过指定时间，服务器将终止该查询。
+
+例如，将最大执行时间设置为 10 秒：
+
+```SQL
+SET max_execution_time=10000;
+```
