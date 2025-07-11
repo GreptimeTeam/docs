@@ -176,3 +176,13 @@ SELECT
     count(latency)
 FROM ft_grpc_latencies GROUP BY host, t;
 ```
+
+## Statement Timeout
+
+You can set the `statement_timeout` variable for the current session using SQL statement `SET statement_timeout = <value>` or `SET STATEMENT_TIMEOUT = <value>`, which specifies the maximum time in milliseconds for a statement to execute.
+
+For example, to set the maximum execution time to 10 seconds:
+
+```SQL
+SET statement_timeout=10000;
+```

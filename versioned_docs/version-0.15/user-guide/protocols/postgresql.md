@@ -176,3 +176,13 @@ SELECT
     count(latency)
 FROM ft_grpc_latencies GROUP BY host, t;
 ```
+
+## Query Timeout
+
+You can set the `max_execution_time` variable for the current session using SQL statement `SET max_execution_time = <value>` or `SET MAX_EXECUTION_TIME = <value>`, which specifies the maximum time in milliseconds for a **read-only statement** to execute.
+
+For example, to set the maximum query execution time to 10 seconds:
+
+```SQL
+SET max_execution_time=10000;
+```
