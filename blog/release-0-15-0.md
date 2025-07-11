@@ -30,6 +30,9 @@ Loki API (#5981, #6390).
 transformation within pipelines, allowing users to write VRL scripts for flexible data
 processing (#6205).
 
+### Dashboard
+* Supports trace view
+* Supports writing logs in the ingest panel
 
 ### Breaking changes
 * fix!: disable append mode in trace services table by [@zyy17](https://github.com/zyy17) in [#6066](https://github.com/GreptimeTeam/greptimedb/pull/6066)
