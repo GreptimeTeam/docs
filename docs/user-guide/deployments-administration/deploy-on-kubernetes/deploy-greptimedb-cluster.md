@@ -186,20 +186,65 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
+## Setup `values.yaml`
+
+The `values.yaml` file contains parameters and configurations for GreptimeDB and is the key to defining the Helm chart.
+For example, a minimal GreptimeDB cluster with self-monitoring configuration is as follows:
+
+```yaml
+image:
+  registry: docker.io
+  # Image repository:
+  # Use `greptime/greptimedb` for OSS GreptimeDB,
+  # consult staff for Enterprise GreptimeDB
+  repository: <repository>
+  # Image tag:
+  # use database version for OSS GreptimeDB, for example, `VAR::greptimedbVersion`
+  # consult staff for Enterprise GreptimeDB
+  tag: <tag>
+  pullSecrets: [ regcred ]
+
+initializer:
+  registry: docker.io
+  repository: greptime/greptimedb-initializer
+
+monitoring:
+  # Enable monitoring
+  enabled: true
+
+grafana:
+  # Enable grafana deployment.
+  # It needs to enable monitoring `monitoring.enabled: true` first.
+  enabled: true
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+
+The configuration above for the GreptimeDB cluster is not recommended for production use. 
+You should adjust the configuration according to your requirements.
+You can refer to the [configuration documentation](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) for the complete `values.yaml` configuration options.
+
+
 ## Install the GreptimeDB cluster with self-monitoring
 
-Now that the GreptimeDB Operator and etcd cluster are installed, you can deploy a minimum GreptimeDB cluster with self-monitoring and Flow enabled:
-
-:::warning
-The default configuration for the GreptimeDB cluster is not recommended for production use. 
-You should adjust the configuration according to your requirements.
-:::
+Now that the GreptimeDB Operator and etcd cluster are installed,
+and `values.yaml` is configured, 
+you can deploy a minimal GreptimeDB cluster with self-monitoring and Flow enabled:
 
 ```bash
-helm install mycluster \
-  --set monitoring.enabled=true \
-  --set grafana.enabled=true \
+helm upgrade --install mycluster \
   greptime/greptimedb-cluster \
+  --values /path/to/values.yaml \
   -n default
 ```
 
@@ -235,7 +280,11 @@ We will deploy a GreptimeDB standalone instance named `${cluster}-monitor` in th
 We will deploy a [Grafana](https://grafana.com/) instance and configure it to use the GreptimeDB standalone instance as a data source (using both Prometheus and MySQL protocols), allowing us to visualize the GreptimeDB cluster's monitoring data out of the box. By default, Grafana will use `mycluster` and `default` as the cluster name and namespace to create data sources. If you want to monitor clusters with different names or namespaces, you'll need to create different data source configurations based on the cluster names and namespaces. You can create a `values.yaml` file like this:
 
 ```yaml
+monitoring:
+  enabled: true
+
 grafana:
+  enabled: true
   datasources:
     datasources.yaml:
       datasources:

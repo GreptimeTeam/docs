@@ -216,39 +216,115 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ```
 </details>
 
-## 安装带有自监控的 GreptimeDB 集群
+## 配置 `values.yaml`
 
-目前我们已经准备好了 GreptimeDB Operator 和 etcd 集群，现在我们可以部署一个带自监控并启用 Flow 功能的最小 GreptimeDB 集群：
+`values.yaml` 文件设置了 GreptimeDB 的一些参数和配置，是定义 helm chart 的关键。
+例如一个带有自监控的最小规模 GreptimeDB 集群定义如下：
 
-:::warning
-本文档中的默认配置不适用于生产环境，你应该根据自己的需求调整配置。
-:::
+```yaml
+image:
+  registry: docker.io
+  # 镜像仓库：
+  # OSS GreptimeDB 使用 `greptime/greptimedb`，
+  # Enterprise GreptimeDB 请咨询工作人员
+  repository: <repository>
+  # 镜像标签：
+  # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
+  # Enterprise GreptimeDB 请咨询工作人员
+  tag: <tag>
+  pullSecrets: [ regcred ]
 
-```bash
-helm install mycluster \
-  --set monitoring.enabled=true \
-  --set grafana.enabled=true \
-  greptime/greptimedb-cluster \
-  -n default
+initializer:
+  registry: docker.io
+  repository: greptime/greptimedb-initializer
+
+monitoring:
+  # 启用监控
+  enabled: true
+
+grafana:
+  # 用于监控面板
+  # 需要先启用监控 `monitoring.enabled: true` 选项
+  enabled: true
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
 ```
 
 :::note
-中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库的方式来安装 GreptimeDB 集群：
+中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库：
+
+```yaml
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  # 镜像仓库：
+  # OSS GreptimeDB 使用 `greptime/greptimedb`，
+  # Enterprise GreptimeDB 请咨询工作人员
+  repository: <repository>
+  # 镜像标签：
+  # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
+  # Enterprise GreptimeDB 请咨询工作人员
+  tag: <tag>
+  pullSecrets: [ regcred ]
+
+initializer:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: greptime/greptimedb-initializer
+
+monitoring:
+  # 启用监控
+  enabled: true
+  vector:
+    # 监控需要使用 Vector
+    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+
+grafana:
+  # 用于监控面板
+  # 需要先启用监控 `monitoring.enabled: true` 选项
+  enabled: true
+  image:
+    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+:::
+
+上述配置不适用于严肃的生产环境，请根据自己的需求调整配置。
+可参考[配置文档](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)获取完整的 `values.yaml` 的配置项。
+
+
+## 安装带有自监控的 GreptimeDB 集群
+
+在上述步骤中我们已经准备好了 GreptimeDB Operator，etcd 集群以及 GreptimeDB 集群相应的配置，
+现在部署一个带自监控并启用 Flow 功能的最小 GreptimeDB 集群：
 
 ```bash
-helm install mycluster \
-  oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/greptimedb-cluster \
-  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set initializer.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set grafana.enabled=true \
-  --set grafana.image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set monitoring.enabled=true \
-  --set monitoring.vector.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+helm upgrade --install mycluster \
+  greptime/greptimedb-cluster \
+  --values /path/to/values.yaml \
   -n default
 ```
 
 如果你使用了不同的集群名称和命名空间，请将 `mycluster` 和 `default` 替换为你的配置。
-:::
 
 <details>
   <summary>预期输出</summary>
@@ -282,7 +358,11 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 我们也将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
 
 ```yaml
+monitoring:
+  enabled: true
+
 grafana:
+  enabled: true
   datasources:
     datasources.yaml:
       datasources:
@@ -309,8 +389,6 @@ grafana:
 
 ```bash
 helm install ${cluster} \
-  --set monitoring.enabled=true \
-  --set grafana.enabled=true \
   greptime/greptimedb-cluster \
   -f values.yaml \
   -n ${namespace}
