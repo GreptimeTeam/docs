@@ -177,12 +177,12 @@ SELECT
 FROM ft_grpc_latencies GROUP BY host, t;
 ```
 
-## Query Timeout
+## Statement Timeout
 
-You can set the `max_execution_time` variable for the current session using SQL statement `SET max_execution_time = <value>` or `SET MAX_EXECUTION_TIME = <value>`, which specifies the maximum time in milliseconds for a **read-only statement** to execute.
+You can set the `statement_timeout` variable for the current session using SQL statement `SET statement_timeout = <value>` or `SET STATEMENT_TIMEOUT = <value>`, which specifies the maximum time in milliseconds for a statement to execute.
 
-For example, to set the maximum query execution time to 10 seconds:
+For example, to set the maximum execution time to 10 seconds:
 
 ```SQL
-SET max_execution_time=10000;
+SET statement_timeout=10000;
 ```
