@@ -1,5 +1,5 @@
 export const variables = {
-  greptimedbVersion: 'v0.16.0-nightly-20250707',
+  greptimedbVersion: 'v0.16.0-nightly-20250714',
   prometheusVersion: 'v2.52.0',
   nodeExporterVersion: 'v1.8.0',
   goSdkVersion: 'v0.6.2',
