@@ -509,20 +509,20 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Deployments',
+          label: 'Deployments & Administration',
           items: [
-            'enterprise/deployments/authentication',
+            'enterprise/deployments-administration/authentication',
             {
               type: 'category',
               label: 'Kubernetes',
               items: [
                 {
                   type: 'doc',
-                  id: 'enterprise/deployments/deploy-on-kubernetes/overview',
+                  id: 'enterprise/deployments-administration/deploy-on-kubernetes/overview',
                   label: 'Overview',
                 },
-                'enterprise/deployments/deploy-on-kubernetes/installation',
-                'enterprise/deployments/deploy-on-kubernetes/upgrade',
+                'enterprise/deployments-administration/deploy-on-kubernetes/installation',
+                'enterprise/deployments-administration/deploy-on-kubernetes/upgrade',
               ]
             },
             {
@@ -531,25 +531,14 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'enterprise/deployments/monitoring/overview',
+                  id: 'enterprise/deployments-administration/monitoring/overview',
                   label: 'Overview',
                 },
-                'enterprise/deployments/monitoring/check-db-status',
-                'enterprise/deployments/monitoring/key-metrics',
-                'enterprise/deployments/monitoring/key-logs',
-                'enterprise/deployments/monitoring/audit-logging',
+                'enterprise/deployments-administration/monitoring/check-db-status',
+                'enterprise/deployments-administration/monitoring/key-metrics',
+                'enterprise/deployments-administration/monitoring/key-logs',
+                'enterprise/deployments-administration/monitoring/audit-logging',
               ]
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Administration',
-          items: [
-            {
-              type: 'doc',
-              id: 'enterprise/administration/overview',
-              label: 'Overview',
             },
             {
               type: 'category',
@@ -557,15 +546,15 @@ const sidebars: SidebarsConfig = {
               items: [
                 {
                   type: 'doc',
-                  id: 'enterprise/administration/disaster-recovery/overview',
+                  id: 'enterprise/deployments-administration/disaster-recovery/overview',
                   label: 'Overview',
                 },
-                'enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover',
+                'enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover',
               ]
             },
-            'enterprise/administration/backup',
-            'enterprise/administration/performance-tuning',
-            'enterprise/administration/troubleshooting',
+            'enterprise/deployments-administration/backup',
+            'enterprise/deployments-administration/performance-tuning',
+            'enterprise/deployments-administration/troubleshooting',
           ],
         },
         {
