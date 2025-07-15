@@ -86,7 +86,7 @@ Deploying nodes in different regions can also meet region-level DR requirements,
 
 :::
 
-For more information about this solution, see [DR solution based on Active-Active Failover](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md).
+For more information about this solution, see [DR solution based on Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md).
 
 ### DR solution  based on cross-region deployment in a single cluster
 
@@ -125,6 +125,6 @@ By comparing these DR solutions, you can decide on the final option based on the
 
 * [Backup & restore data](./back-up-&-restore-data.md)
 * [DR solution for GreptimeDB Standalone](./dr-solution-for-standalone.md)
-* [DR solution based on Active-Active Failover ](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
+* [DR solution based on Active-Active Failover ](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
 * [DR solution based on cross-region deployment in a single cluster](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * [S3 Replicating objects overview](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)

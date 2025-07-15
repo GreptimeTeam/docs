@@ -511,7 +511,6 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Deployments & Administration',
           items: [
-            'enterprise/deployments-administration/authentication',
             {
               type: 'category',
               label: 'Kubernetes',
@@ -525,6 +524,7 @@ const sidebars: SidebarsConfig = {
                 'enterprise/deployments-administration/deploy-on-kubernetes/upgrade',
               ]
             },
+            'enterprise/deployments-administration/authentication',
             {
               type: 'category',
               label: 'Monitoring',

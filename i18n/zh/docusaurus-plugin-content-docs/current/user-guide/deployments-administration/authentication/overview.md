@@ -9,5 +9,5 @@ description: GreptimeDB 的身份验证概述，介绍了多种用户 Provider �
 provider 实现：
 
 - [Static User Provider](./static.md)：一个简单的内置 user provider 实现，从静态文件中查找用户。
-- [LDAP User Provider](/enterprise/deployments/authentication.md)：**企业版功能**，使用外部 LDAP 服务进行用户身份验证。
+- [LDAP User Provider](/enterprise/deployments-administration/authentication.md)：**企业版功能**，使用外部 LDAP 服务进行用户身份验证。
 

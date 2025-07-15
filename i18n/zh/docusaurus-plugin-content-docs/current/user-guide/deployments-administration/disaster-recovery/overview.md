@@ -97,7 +97,7 @@ GreptimeDB 将数据存储在对象存储（如 [AWS S3](https://docs.aws.amazon
 **双活互备功能仅在 GreptimeDB 企业版中提供。**
 :::
 
-有关此解决方案的更多信息，请参阅[基于双活 - 备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)。
+有关此解决方案的更多信息，请参阅[基于双活 - 备份的 DR 解决方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)。
 
 ### 基于单集群跨区域部署的 DR 解决方案
 
@@ -142,6 +142,6 @@ BR 进程持续定期将数据从 Cluster 1 备份到 Region 2。
 
 * [备份与恢复数据](./back-up-&-restore-data.md)
 * [GreptimeDB Standalone 的 DR 解决方案](./dr-solution-for-standalone.md)
-* [基于双活 - 备份的 DR 解决方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
+* [基于双活 - 备份的 DR 解决方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)
 * [基于单集群跨区域部署的 DR 解决方案](./dr-solution-based-on-cross-region-deployment-in-single-cluster.md)
 * [S3 对象副本概述](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html)
