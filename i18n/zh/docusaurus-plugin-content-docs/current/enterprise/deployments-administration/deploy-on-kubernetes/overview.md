@@ -5,9 +5,7 @@ description: 在 Kubernetes 上部署 GreptimeDB 的概述，包括集群的安�
 
 # 在 Kubernetes 上部署 GreptimeDB
 
-GreptimeDB 是专为云原生环境而设计的时序数据库，自诞生以来就支持在 Kubernetes 上部署。我们提供了一个 [GreptimeDB Operator](https://github.com/GrepTimeTeam/greptimedb-operator) 来管理 GreptimeDB 在 Kubernetes 上的部署、配置和扩容。基于 GreptimeDB Operator，你可以很轻松地部署、升级和管理 GreptimeDB 集群和单机实例。无论是私有还是公有云部署，GreptimeDB Operator 都将快速部署和扩容 GreptimeDB 变得简单易行。
-
-我们**强烈建议**使用 GreptimeDB Operator 在 Kubernetes 上部署 GreptimeDB。
+GreptimeDB 企业版在 Kubernetes 上的部署流程与开源版基本一致，本章节将重点介绍企业版特有的部署配置和功能。
 
 ## 安装
 
