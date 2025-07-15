@@ -217,6 +217,44 @@ It can also be helpful to group metrics by their frequency.
 Note, each metric's logical table is bound to a physical table upon creation.
 So setting different physical table for the same metric within the same database won't work.
 
+## Using pipeline in remote write
+
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior, have its functionality change in the future.
+:::
+
+Starting from `v0.15`, GreptimeDB supports using pipeline to process Prometheus remote write requests.
+You can simply set the HTTP header `x-greptime-pipeline-name` to the target pipeline name to enable pipeline processing.
+
+Here is a very simple pipeline configuration, using `vrl` processor to add a `source` label to each metric:
+```YAML
+version: 2
+processors:
+  - vrl:
+      source: |
+        .source = "local_laptop"
+        .
+
+transform:
+  - field: greptime_timestamp
+    type: time, ms
+    index: timestamp
+```
+
+The result looks something like this
+```
+mysql> select * from `go_memstats_mcache_inuse_bytes`;
++----------------------------+----------------+--------------------+---------------+--------------+
+| greptime_timestamp         | greptime_value | instance           | job           | source       |
++----------------------------+----------------+--------------------+---------------+--------------+
+| 2025-07-11 07:42:03.064000 |           1200 | node_exporter:9100 | node-exporter | local_laptop |
+| 2025-07-11 07:42:18.069000 |           1200 | node_exporter:9100 | node-exporter | local_laptop |
++----------------------------+----------------+--------------------+---------------+--------------+
+2 rows in set (0.01 sec)
+```
+
+You can refer to the [pipeline's documentation](../../logs/pipeline-config.md) for more details.
+
 ## Performance tuning
 
 By default, the metric engine will automatically create a physical table named `greptime_physical_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
