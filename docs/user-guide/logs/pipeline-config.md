@@ -121,6 +121,7 @@ We currently provide the following built-in Processors:
 - `digest`: extracts the template from a log message by removing variable content.
 - `select`: retain(include) or exclude fields from the pipeline context.
 - `vrl`: runs the [vrl](https://vector.dev/docs/reference/vrl/) script against the pipeline context.
+- `filter`: filter out lines if the condition check is meet.
 
 ### Input and output of Processors
 
@@ -823,6 +824,39 @@ Some notes regarding the `vrl` processor:
 1. The script have to end with a newline of `.`, indicating returning the whole context as the returning value of the script.
 2. The returning value of the vrl script should not contain any regex-type variables. They can be used in the script, but have to be `del`ed before returning.
 3. Due to type conversion between pipeline's value type and vrl's, the value type that comes out of the vrl script will be the ones with max capacity, meaning `i64`, `f64`, and `Timestamp::nanoseconds`.
+
+### `filter`
+
+The `filter` processor can filter out unneeded lines when the condition is meet.
+
+Here is a simple example of the `filter` processor:
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+  - filter:
+      field: name
+      mode: simple
+      match_op: in
+      case_insensitive: true
+      targets: 
+        - John
+transform:
+  - field: name
+    type: string
+  - field: time
+    type: time
+    index: timestamp
+```
+
+The `filter` processor takes the following options:
+1. `field`(or `fields`): the variable that is used for checking; it can be a list of variables, any match will do the filter.
+2. `mode`(optional): default to `simple`, which means simple string matching. This field is here for future extension.
+3. `match_op`(optional): if the mode is `simple`, this option can be `in` or `not_in`, which means if the target list contains the input value. Default to `in`.
+4. `case_insensitive`(optional): default to `true`.
+5. `targets`: the target string lists that are compared against the variable.
 
 ## Transform
 

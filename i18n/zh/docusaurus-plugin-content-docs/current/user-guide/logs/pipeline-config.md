@@ -124,6 +124,7 @@ Processor 由一个 name 和多个配置组成，不同类型的 Processor 配�
 - `digest`: 提取日志消息模板。
 - `select`: 从 pipeline 执行上下文中保留或移除字段。
 - `vrl`: 使用 pipeline 上下文执行 [vrl](https://vector.dev/docs/reference/vrl/) 脚本。
+- `filter`: 过滤不需要写入的行数据。
 
 ### Processor 的输入和输出
 
@@ -841,6 +842,39 @@ processors:
 1. 整个脚本必须以一个单独的 `.` 行作为结尾，表示将整个上下文作为脚本的返回值。
 2. vrl 脚本的返回值中不能包含任何的 `regex` 类型的变量。在脚本的过程中可以使用这种类型，但是在返回之前需要 `del`（删除） 掉。
 3. 由于 pipeline 的类型和 vrl 的类型之前存在转换，经过 vrl 处理的类型会变成最大的容量类型，即 `i64`， `u64` 和 `Timestamp::nanoseconds`。
+
+### `filter`
+
+`filter` 处理器用于根据指定条件筛选数据行，从而移除不需要的数据。
+
+以下是一个简单的 `filter` 处理器配置：
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+  - filter:
+      field: name
+      mode: simple
+      match_op: in
+      case_insensitive: true
+      targets: 
+        - John
+transform:
+  - field: name
+    type: string
+  - field: time
+    type: time
+    index: timestamp
+```
+
+`filter` 处理器接受以下参数：
+1. `field`（或者 `fields`）：用于比较的上下文变量，可以是一个或者多个；任意一个满足条件即会触发过滤。
+2. `mode`（可选）：默认为 `simple`，即为简单字符串匹配。这个字段是为了将来对 `filter` 处理器的功能进行扩展。
+3. `match_op`（可选）：如果 mode 是 `simple`，这个选项可以设置为 `in` 或者 `not_in`，意为检查目标列表是否包含变量。默认为 `in`。
+4. `case_insensitive`（可选）：默认为 `true`.
+5. `targets`: 用于比较的目标列表。
 
 ## Transform
 
