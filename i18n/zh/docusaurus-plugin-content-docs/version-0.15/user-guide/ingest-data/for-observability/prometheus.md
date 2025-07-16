@@ -208,6 +208,44 @@ GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的
 
 注意，指标的逻辑表在创建时就与物理表一一关联。在同一数据库下为同一指标设定不同的物理表不会生效。
 
+## 在 Remote write 中使用 pipeline
+
+:::warning 实验性特性
+此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::
+
+从 `v0.15` 开始，GreptimeDB 支持在 Prometheus Remote Write 协议入口使用 pipeline 处理数据。
+你可以通过在 HTTP header 中将 `x-greptime-pipeline-name` 的值设置为需要执行的 pipeline 名称来使用 pipeline 处理流程。
+
+以下是一个非常简单的 pipeline 配置例子，使用 `vrl` 处理器来对每个指标增加一个 `source` 标签：
+```YAML
+version: 2
+processors:
+  - vrl:
+      source: |
+        .source = "local_laptop"
+        .
+
+transform:
+  - field: greptime_timestamp
+    type: time, ms
+    index: timestamp
+```
+
+结果如下所示
+```
+mysql> select * from `go_memstats_mcache_inuse_bytes`;
++----------------------------+----------------+--------------------+---------------+--------------+
+| greptime_timestamp         | greptime_value | instance           | job           | source       |
++----------------------------+----------------+--------------------+---------------+--------------+
+| 2025-07-11 07:42:03.064000 |           1200 | node_exporter:9100 | node-exporter | local_laptop |
+| 2025-07-11 07:42:18.069000 |           1200 | node_exporter:9100 | node-exporter | local_laptop |
++----------------------------+----------------+--------------------+---------------+--------------+
+2 rows in set (0.01 sec)
+```
+
+更多配置详情请参考 [pipeline 相关文档](/user-guide/logs/pipeline-config.md)。
+
 ## 性能优化
 
 默认情况下，metric engine 会自动创建一个名为 `greptime_physical_table` 的物理表。
