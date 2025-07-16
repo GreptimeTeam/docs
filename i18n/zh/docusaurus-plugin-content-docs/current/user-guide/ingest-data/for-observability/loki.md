@@ -138,7 +138,7 @@ WITH(
 请注意，如果使用 pipeline 处理流程，GreptimeDB 将会在 label 和 structure metadata 的列名前加上前缀：
 - 对 label 列，加上 `loki_label_` 的前缀
 - 对 structured metadata 列，加上 `loki_metadata_` 的前缀
-Loki 自身的日志行则会被命名为 `loki_line`。
+- Loki 自身的日志行则会被命名为 `loki_line`
 
 一个使用 `greptime_identity` 的数据样例将如下所示：
 ```
@@ -155,4 +155,4 @@ mysql> select * from loki_logs limit 1;
 实际的日志列则被命名为 `loki_line`。
 你可以使用一个自定义的 pipeline 来处理数据，这将和其他 pipeline 处理流程一致。
 
-更多配置详情请参考 [pipeline 相关文档](../../logs/pipeline-config.md)。
+更多配置详情请参考 [pipeline 相关文档](/user-guide/logs/pipeline-config.md)。

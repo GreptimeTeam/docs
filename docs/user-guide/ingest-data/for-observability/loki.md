@@ -139,7 +139,7 @@ You can simply set the HTTP header `x-greptime-pipeline-name` to the target pipe
 Note, if the request data go through the pipeline engine, GreptimeDB will add prefix to the label and metadata column names:
 - `loki_label_` before each label name
 - `loki_metadata_` before each structured metadata name
-The original Loki log line would be named `loki_line`.
+- The original Loki log line would be named `loki_line`
 
 An example of data model using `greptime_identity` would be like the following:
 ```
@@ -156,4 +156,4 @@ You can see that the label column names are prefixed with `loki_label_`.
 The actual log line is named `loki_line`.
 You can use a custom pipeline to process the data. It would be working like a normal pipeline process.
 
-You can refer to the [pipeline's documentation](../../logs/pipeline-config.md) for more details.
+You can refer to the [pipeline's documentation](/user-guide/logs/pipeline-config.md) for more details.
