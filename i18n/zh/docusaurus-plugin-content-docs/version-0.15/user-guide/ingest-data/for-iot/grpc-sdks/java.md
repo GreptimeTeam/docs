@@ -16,4 +16,4 @@ GreptimeDB Java Ingester 是一个轻量级、高性能的客户端，专为向 
 
 ## 快速开始
 
-**📚 完整的文档、安装指南和示例，请访问 [GreptimeDB Java Ingester GitHub 仓库](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/v0.15.0?tab=readme-ov-file#greptimedb-java-ingester)**
+**📚 完整的文档、安装指南和示例，请访问 [GreptimeDB Java Ingester GitHub 仓库](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/vVAR::javaSdkVersion?tab=readme-ov-file#greptimedb-java-ingester)**
