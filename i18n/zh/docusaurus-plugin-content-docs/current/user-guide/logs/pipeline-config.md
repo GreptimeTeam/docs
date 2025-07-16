@@ -868,6 +868,9 @@ transform:
     type: time
     index: timestamp
 ```
+`filter` 处理器在这里会检查 pipeline 上下文中的 `name` 变量的值。
+如果它的值和 targets 列表 `['john', 'wick']` 中的任意值匹配，则认为条件判断成功。
+这条输入数据的处理将会被中止，不会被持久化到数据库中。
 
 `filter` 处理器接受以下参数：
 1. `field`（或者 `fields`）：用于比较的上下文变量，可以是一个或者多个；任意一个满足条件即会触发过滤。
