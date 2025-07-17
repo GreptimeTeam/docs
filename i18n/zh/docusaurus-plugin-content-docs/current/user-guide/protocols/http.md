@@ -164,6 +164,7 @@ http://{{API-host}}/v1/sql
     格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
     - `compression`: `zstd` 或 `lz4`，默认：无压缩
   - `table`: 控制台输出的 ASCII 表格格式
+  - `null`: 简洁的纯文本输出，仅显示行数和执行时间，用于评估查询性能。
 
 ### Body
 

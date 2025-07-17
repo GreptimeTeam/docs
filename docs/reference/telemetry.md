@@ -22,6 +22,21 @@ When telemetry is enabled, GreptimeDB will collect the following information eve
 - Mode in which GreptimeDB is running(standalone, distributed)
 - A randomly generated installation ID
 - The number of datanodes in the GreptimeDB cluster
+- System uptime, not exact figures, only time ranges like `hours`, `weeks` with no numbers
+
+ Sample telemetry data:
+```json
+{
+  "os": "linux",
+  "version": "0.15.1",
+  "arch": "aarch64",
+  "mode": "Standalone",
+  "git_commit": "00d759e828f5e148ec18141904e20cb1cb7577b0",
+  "nodes": 1,
+  "uuid": "43717682-baa8-41e0-b126-67b797b66606",
+  "uptime": "hours"
+}
+```
 
 ## How to disable telemetry?
 
