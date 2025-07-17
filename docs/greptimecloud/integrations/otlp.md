@@ -14,7 +14,7 @@ Please use the following endpoint and include the required headers:
 - Protocol: `HTTP/protobuf`
 - Headers:
   - `X-Greptime-DB-Name`: `<dbname>`
-  - `Authentication`: `Basic <authentication>`, For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/protocols/http#authentication) in HTTP API.
+  - `Authentication`: `<authentication>`, For more information, please refer to [Authentication](https://docs.greptime.com/user-guide/protocols/http#authentication) in HTTP API.
 
 ## OpenTelemetry Collector
 
