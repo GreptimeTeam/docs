@@ -217,6 +217,12 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+Here are some example of using `custom_time_index` assuming the time variable is named `input_ts`:
+- 1742814853: `custom_time_index=input_ts;epoch;s`
+- 1752749137000: `custom_time_index=input_ts;epoch;ms`
+- "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
+- "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
+
 ## Variable hints in the pipeline context
 
 Starting from `v0.15`, the pipeline engine now recognizes certain variables, and can set corresponding table options based on the value of the variables.

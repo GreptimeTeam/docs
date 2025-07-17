@@ -217,6 +217,12 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+假设时间变量名称为 `input_ts`，以下是一些使用 `custom_time_index` 的示例：
+- 1742814853: `custom_time_index=input_ts;epoch;s`
+- 1752749137000: `custom_time_index=input_ts;epoch;ms`
+- "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
+- "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
+
 ## Pipeline 上下文中的 hint 变量
 
 从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。

@@ -217,6 +217,57 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+Here are some example of using `custom_time_index` assuming the time variable is named `input_ts`:
+- 1742814853: `custom_time_index=input_ts;epoch;s`
+- 1752749137000: `custom_time_index=input_ts;epoch;ms`
+- "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
+- "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
+
+## Variable hints in the pipeline context
+
+Starting from `v0.15`, the pipeline engine now recognizes certain variables, and can set corresponding table options based on the value of the variables.
+Combined with the `vrl` processor, it's now easy to create and set table options during the pipeline execution based on input data.
+
+Here is a list of supported common table option variables:
+- `greptime_auto_create_table`
+- `greptime_ttl`
+- `greptime_append_mode`
+- `greptime_merge_mode`
+- `greptime_physical_table`
+- `greptime_skip_wal`
+You can find the explanation [here](/reference/sql/create.md#table-options).
+
+Here are some pipeline specific variables:
+- `greptime_table_suffix`: add suffix to the destined table name.
+
+Let's use the following pipeline file to demonstrate:
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .greptime_table_suffix, err = "_" + .id
+        .greptime_table_ttl = "1d"
+        .
+```
+
+In the vrl script, we set the table suffix variable with the input field `.id`(leading with an underscore), and set the ttl to `1d`.
+Then we run the ingestion using the following JSON data.
+
+```JSON
+{
+  "id": "2436",
+  "time": "2024-05-25 20:16:37.217"
+}
+```
+
+Assuming the given table name being `d_table`, the final table name would be `d_table_2436` as we would expected.
+The table is also set with a ttl of 1 day.
+
 ## Examples
 
 Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for examples.
@@ -224,4 +275,17 @@ Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#w
 ## Append Only
 
 By default, logs table created by HTTP ingestion API are in [append only
-mode](/user-guide/administration/design-table.md#when-to-use-append-only-tables).
+mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+
+## Skip Errors with skip_error
+
+If you want to skip errors when writing logs, you can add the `skip_error` parameter to the HTTP request's query params. For example:
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -d "$<log-items>"
+```
+
+With this, GreptimeDB will skip the log entry when an error is encountered and continue processing the remaining logs. The entire request will not fail due to an error in a single log entry.
