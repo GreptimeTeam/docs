@@ -21,9 +21,9 @@ This section provides an overview of the advanced features available in Greptime
 
 ## Features
 
-- [Active-Active Failover Disaster Recovery Solution](./administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
-- [LDAP Authentication](./deployments/authentication.md): Secure your system with LDAP-based authentication for access management.
-- [Audit Logging](./deployments/monitoring/audit-logging.md): Track and monitor
+- [Active-Active Failover Disaster Recovery Solution](./deployments-administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
+- [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
+- [Audit Logging](./deployments-administration/monitoring/audit-logging.md): Track and monitor
   user activity with detailed audit logs.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
   datanodes workload by moving regions between them.

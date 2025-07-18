@@ -18,12 +18,16 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 提供一个健康检查端点以验证服务器是否正在运行。
 - **用法**: 访问此端点以检查服务器的健康状态。
 
+请参考[检查 GreptimeDB 健康状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-是否正常运行)获取示例。
+
 ### 状态
 
 - **路径**: `/status`
 - **方法**: `GET`
 - **描述**: 检索服务器的当前状态。
 - **用法**: 使用此端点获取服务器状态信息。
+
+请参考[检查 GreptimeDB 状态文档](/enterprise/deployments-administration/monitoring/check-db-status.md#查看-greptimedb-的部署状态)获取示例。
 
 ### 指标
 
@@ -32,12 +36,62 @@ description: 介绍 GreptimeDB 中各种 HTTP 路径及其用法的完整列表�
 - **描述**: 暴露 Prometheus 指标以进行监控。
 - **用法**: Prometheus 可以抓取此端点以收集指标数据。
 
+示例如下：
+
+```bash
+curl -X GET http://127.0.0.1:4000/metrics
+
+# HELP greptime_app_version app version
+# TYPE greptime_app_version gauge
+greptime_app_version{app="greptime-edge",short_version="main-b4bd34c5",version="0.12.0"} 1
+# HELP greptime_catalog_catalog_count catalog catalog count
+# TYPE greptime_catalog_catalog_count gauge
+greptime_catalog_catalog_count 1
+# HELP greptime_catalog_schema_count catalog schema count
+# TYPE greptime_catalog_schema_count gauge
+greptime_catalog_schema_count 3
+# HELP greptime_flow_run_interval_ms flow run interval in ms
+# TYPE greptime_flow_run_interval_ms gauge
+greptime_flow_run_interval_ms 1000
+# HELP greptime_meta_create_catalog meta create catalog
+# TYPE greptime_meta_create_catalog histogram
+greptime_meta_create_catalog_bucket{le="0.005"} 1
+greptime_meta_create_catalog_bucket{le="0.01"} 1
+greptime_meta_create_catalog_bucket{le="0.025"} 1
+greptime_meta_create_catalog_bucket{le="0.05"} 1
+greptime_meta_create_catalog_bucket{le="0.1"} 1
+...
+```
+
 ### 配置
 
 - **路径**: `/config`
 - **方法**: `GET`
 - **描述**: 检索服务器的配置选项。
 - **用法**: 访问此端点以获取配置详细信息。
+
+示例如下：
+
+```shell
+curl http://localhost:4000/config
+```
+
+输出包含 GreptimeDB 服务器的配置信息。
+
+```toml
+enable_telemetry = true
+user_provider = "static_user_provider:file:user"
+init_regions_in_background = false
+init_regions_parallelism = 16
+
+[http]
+addr = "127.0.0.1:4000"
+timeout = "30s"
+body_limit = "64MiB"
+is_strict_mode = false
+
+# ...
+```
 
 ### 仪表盘
 

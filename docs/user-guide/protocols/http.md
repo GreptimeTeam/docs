@@ -71,70 +71,8 @@ http://localhost:4000/v1/sql
 These endpoint cannot be used in GreptimeCloud.
 :::
 
-### Check database health
+Please refer to the [Admin APIs](/reference/http-endpoints.md#admin-apis) documentation for more information.
 
-You can use the `/health` endpoint to check the health of the GreptimeDB server.
-For more information,
-please refer to [Check Database Health](/getting-started/installation/overview.md#check-database-health).
-
-### Check Database Status
-
-You can use the `/status` endpoint to check the status of the GreptimeDB server.
-
-```shell
-curl http://{{API-host}}/status
-```
-
-For example:
-
-```shell
-curl http://localhost:4000/status
-```
-
-The output contains the database version and source code information,
-which will be similar to the following:
-
-```json
-{
-  "source_time": "2024-11-08T06:34:49Z",
-  "commit": "0e0c4faf0d784f25fed8f26e7000f1f869c88587",
-  "branch": "main",
-  "rustc_version": "rustc 1.84.0-nightly (e92993dbb 2024-10-18)",
-  "hostname": "local",
-  "version": "0.9.5"
-}
-```
-
-### Get GreptimeDB server configuration
-
-You can use the `/config` endpoint to get the [TOML configuration](/user-guide/deployments-administration/configuration.md#configuration-file-options) of the GreptimeDB server.
-
-```shell
-curl http://{{API-host}}/config
-```
-
-For example:
-
-```shell
-curl http://localhost:4000/config
-```
-
-The output contains the configuration information of the GreptimeDB server.
-
-```toml
-enable_telemetry = true
-user_provider = "static_user_provider:file:user"
-init_regions_in_background = false
-init_regions_parallelism = 16
-
-[http]
-addr = "127.0.0.1:4000"
-timeout = "30s"
-body_limit = "64MiB"
-is_strict_mode = false
-
-# ...
-```
 
 ## POST SQL statements
 

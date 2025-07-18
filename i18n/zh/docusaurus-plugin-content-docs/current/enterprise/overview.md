@@ -24,9 +24,9 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 
 ## 使用指南
 
-- [基于双活互备的 DR 解决方案](./administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
-- [部署 GreptimeDB](./deployments/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
-- [审计日志](./deployments/monitoring/audit-logging.md)：记录数据库用户行为的日
+- [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
+- [部署 GreptimeDB](./deployments-administration/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
+- [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日
   志。
 - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode
   之间自动平衡负载。
