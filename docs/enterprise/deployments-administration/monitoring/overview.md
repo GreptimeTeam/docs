@@ -1,10 +1,13 @@
 ---
-keywords: [Monitoring]
-description: Overview of GreptimeDB Enterprise monitoring.
+keywords: [monitoring, GreptimeDB monitoring, monitoring metrics, monitoring configuration, monitoring logs]
+description: GreptimeDB monitoring overview, introducing GreptimeDB monitoring metrics, configuration, and logs.
 ---
+
+import DocCardList from '@theme/DocCardList';
 
 # Monitoring
 
-- [Audit logging](audit-logging.md)：Monitor user activities, detect suspicious actions, and ensure compliance with regulations inside or outside of an organization.
+Effective database management relies heavily on monitoring.
+You can monitor GreptimeDB using the following methods:
 
-
+<DocCardList />
