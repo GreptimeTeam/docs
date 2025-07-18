@@ -217,6 +217,13 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+Here are some example of using `custom_time_index` assuming the time variable is named `input_ts`:
+- 1742814853: `custom_time_index=input_ts;epoch;s`
+- 1752749137000: `custom_time_index=input_ts;epoch;ms`
+- "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
+- "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
+
+
 ## Examples
 
 Please refer to the "Writing Logs" section in the [Quick Start](quick-start.md#write-logs) guide for examples.

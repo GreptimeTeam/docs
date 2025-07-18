@@ -217,6 +217,12 @@ DESC pipeline_logs;
 2 rows in set (0.02 sec)
 ```
 
+假设时间变量名称为 `input_ts`，以下是一些使用 `custom_time_index` 的示例：
+- 1742814853: `custom_time_index=input_ts;epoch;s`
+- 1752749137000: `custom_time_index=input_ts;epoch;ms`
+- "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
+- "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
+
 ## 示例
 
 请参考快速开始中的[写入日志](quick-start.md#写入日志)部分。
