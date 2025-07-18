@@ -70,6 +70,29 @@ greptime_meta_create_catalog_bucket{le="0.1"} 1
 - **Description**: Retrieves the server's configuration options.
 - **Usage**: Access this endpoint to get configuration details.
 
+For example:
+
+```shell
+curl http://localhost:4000/config
+```
+
+The output contains the configuration information of the GreptimeDB server.
+
+```toml
+enable_telemetry = true
+user_provider = "static_user_provider:file:user"
+init_regions_in_background = false
+init_regions_parallelism = 16
+
+[http]
+addr = "127.0.0.1:4000"
+timeout = "30s"
+body_limit = "64MiB"
+is_strict_mode = false
+
+# ...
+```
+
 ### Dashboard
 
 - **Paths**: `/dashboard`
