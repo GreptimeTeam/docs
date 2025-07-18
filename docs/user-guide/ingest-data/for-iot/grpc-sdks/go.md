@@ -3,26 +3,21 @@ keywords: [Go SDK, gRPC, data ingestion, installation, connection, low-level API
 description: Guide on using the Go ingester SDK for GreptimeDB, including installation, connection, data model, and examples of low-level and high-level APIs.
 ---
 
-import DocTemplate from './template.md' 
-
 # Go
 
-<DocTemplate>
-
-<div id="ingester-lib-introduction">
+GreptimeDB offers ingester libraries for high-throughput data writing.
+It utilizes the gRPC protocol,
+which supports schemaless writing and eliminates the need to create tables before writing data.
+For more information, refer to [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
 The Go ingester SDK provided by GreptimeDB is a lightweight,
 concurrent-safe library that is easy to use with the metric struct.
 
-</div>
-
-<div id="quick-start-demos">
+## Quick start demos
 
 To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples) to understand how to use the GreptimeDB Go ingester SDK.
 
-</div>
-
-<div id="ingester-lib-installation">
+## Installation
 
 Use the following command to install the GreptimeDB client library for Go:
 
@@ -41,9 +36,11 @@ import (
 )
 ```
 
-</div>
+## Connect to database
 
-<div id="ingester-lib-connect">
+If you have set the [`--user-provider` configuration](/user-guide/deployments-administration/authentication/overview.md) when starting GreptimeDB,
+you will need to provide a username and password to connect to GreptimeDB.
+The following example shows how to set the username and password when using the library to connect to GreptimeDB.
 
 ```go
 cfg := greptime.NewConfig("127.0.0.1").
@@ -60,9 +57,20 @@ cfg := greptime.NewConfig("127.0.0.1").
 cli, _ := greptime.NewClient(cfg)
 defer cli.Close()
 ```
-</div>
 
-<div id="set-table-options">
+## Data model
+
+Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
+The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON` etc. For more information, see [Data Types](/reference/sql/data-types.md).
+
+## Set table options
+
+Although the time series table is created automatically when writing data to GreptimeDB via the SDK,
+you can still configure table options.
+The SDK supports the following table options:
+
+- `auto_create_table`: Default is `True`. If set to `False`, it indicates that the table already exists and does not need automatic creation, which can improve write performance.
+- `ttl`, `append_mode`, `merge_mode`: For more details, refer to the [table options](/reference/sql/create.md#table-options).
 
 You can set table options using the `ingesterContext` context.
 For example, to set the `ttl` option, use the following code:
@@ -85,9 +93,24 @@ if err != nil {
 }
 ```
 
-</div>
+For how to write data to GreptimeDB, see the following sections.
 
-<div id="low-level-object">
+## Low-level API
+
+The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
+by adding rows to the table object with a predefined schema.
+
+### Create row objects
+
+This following code snippet begins by constructing a table named `cpu_metric`,
+which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
+Subsequently, it inserts a single row into the table.
+
+The table consists of three types of columns:
+
+- `Tag`: The `host` column, with values of type `String`.
+- `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
+- `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
 ```go
 // Construct the table schema for CPU metrics
@@ -114,9 +137,7 @@ if err != nil {
 
 ```
 
-</div>
-
-<div id="create-rows">
+To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
 ```go
 cpuMetric, err := table.New("cpu_metric")
@@ -145,9 +166,9 @@ if err != nil {
 }
 ```
 
-</div>
+### Insert data
 
-<div id="insert-rows">
+The following example shows how to insert rows to tables in GreptimeDB.
 
 ```go
 resp, err := cli.Write(ctx, cpuMetric, memMetric)
@@ -157,9 +178,9 @@ if err != nil {
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-</div>
+### Streaming insert
 
-<div id="streaming-insert">
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 ```go
 err := cli.StreamWrite(ctx, cpuMetric, memMetric)
@@ -175,10 +196,15 @@ In general, you do not need to close the stream writing when continuously writin
 affected, err := cli.CloseStream(ctx)
 ```
 
-</div>
+## High-level API
 
+The high-level API uses an ORM style object to write data to GreptimeDB.
+It allows you to create, insert, and update data in a more object-oriented way,
+providing developers with a friendlier experience.
+However, it is not as efficient as the low-level API.
+This is because the ORM style object may consume more resources and time when converting the objects.
 
-<div id="high-level-style-object">
+### Create row objects
 
 ```go
 type CpuMetric struct {
@@ -202,39 +228,16 @@ cpuMetrics := []CpuMetric{
 }
 ```
 
-<!-- SDK TODO -->
-<!-- ```go
-type MemMetric struct {
-    Host        string    `greptime:"tag;column:host;type:string"`
-	Memory      float64   `greptime:"field;column:mem_usage;type:float64"`
-	Ts          time.Time `greptime:"timestamp;column:ts;type:timestamp;precision:millisecond"`
-}
-
-func (MemoryMetric) TableName() string {
-	return "mem_metric"
-}
-
-memMetrics := []MemMetric{
-    {
-        Host:        "127.0.0.1",
-        Memory:      112,
-        Ts:          time.Now(),
-    }
-}
-``` -->
-
-</div>
-
-<div id="high-level-style-insert-data">
+### Insert data
 
 ```go
 resp, err := cli.WriteObject(ctx, cpuMetrics)
 log.Printf("affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-</div>
+### Streaming insert
 
-<div id="high-level-style-streaming-insert">
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 ```go
 err := cli.StreamWriteObject(ctx, cpuMetrics)
@@ -247,9 +250,12 @@ In general, you do not need to close the stream writing when continuously writin
 affected, err := cli.CloseStream(ctx)
 ```
 
-</div>
+## Insert data in JSON type
 
-<div id="ingester-json-type">
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
+With this ingester library, you can insert JSON data using string values.
+For instance, if you have a table named `sensor_readings` and wish to add a JSON column named `attributes`,
+refer to the following code snippet.
 
 In the [low-level API](#low-level-api),
 you can specify the column type as `types.JSON` using the `AddFieldColumn` method to add a JSON column.
@@ -302,12 +308,8 @@ sensor := SensorReadings{
 
 For the executable code for inserting JSON data, please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) in the SDK repository.
 
-</div>
 
-<div id="ingester-lib-reference">
+## Ingester library reference
 
 - [API Documentation](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
 
-</div>
-
-</DocTemplate>

@@ -3,13 +3,12 @@ keywords: [Java SDK, gRPC, data ingestion, installation, connection, low-level A
 description: Guide on using the Java ingester SDK for GreptimeDB, including installation, connection, data model, and examples of low-level and high-level APIs.
 ---
 
-import DocTemplate from './template.md' 
-
 # Java
 
-<DocTemplate>
-
-<div id="ingester-lib-introduction">
+GreptimeDB offers ingester libraries for high-throughput data writing.
+It utilizes the gRPC protocol,
+which supports schemaless writing and eliminates the need to create tables before writing data.
+For more information, refer to [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
 The Java ingester SDK provided by GreptimeDB is a lightweight library with the following features:
 
@@ -18,15 +17,11 @@ The Java ingester SDK provided by GreptimeDB is a lightweight library with the f
 - Automatic collection of various performance metrics by default. You can then configure and write them to local files.
 - Ability to take in-memory snapshots of critical objects, configure them, and write them to local files. This is helpful for troubleshooting complex issues.
 
-</div>
-
-<div id="quick-start-demos">
+## Quick start demos
 
 To quickly get started, you can explore the [quick start demos](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) to understand how to use the GreptimeDB Java ingester SDK.
 
-</div>
-
-<div id="ingester-lib-installation">
+## Installation
 
 1. Install the Java Development Kit(JDK)
 
@@ -50,9 +45,11 @@ The latest version can be viewed [here](https://central.sonatype.com/search?q=io
 
 After configuring your dependencies, make sure they are available to your project. This may require refreshing the project in your IDE or running the dependency manager.
 
-</div>
+## Connect to database
 
-<div id="ingester-lib-connect">
+If you have set the [`--user-provider` configuration](/user-guide/deployments-administration/authentication/overview.md) when starting GreptimeDB,
+you will need to provide a username and password to connect to GreptimeDB.
+The following example shows how to set the username and password when using the library to connect to GreptimeDB.
 
 The following code demonstrates how to connect to GreptimeDB with the simplest configuration.
 For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
@@ -79,11 +76,19 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
-For customizing the connection options, please refer to [API Documentation](#ingester-library-reference).
+## Data model
 
-</div>
+Each row item in a table consists of three types of columns: `Tag`, `Timestamp`, and `Field`. For more information, see [Data Model](/user-guide/concepts/data-model.md).
+The types of column values could be `String`, `Float`, `Int`, `Timestamp`, `JSON` etc. For more information, see [Data Types](/reference/sql/data-types.md).
 
-<div id="set-table-options">
+## Set table options
+
+Although the time series table is created automatically when writing data to GreptimeDB via the SDK,
+you can still configure table options.
+The SDK supports the following table options:
+
+- `auto_create_table`: Default is `True`. If set to `False`, it indicates that the table already exists and does not need automatic creation, which can improve write performance.
+- `ttl`, `append_mode`, `merge_mode`: For more details, refer to the [table options](/reference/sql/create.md#table-options).
 
 You can set table options using the `Context`.
 For example, to set the `ttl` option, use the following code:
@@ -99,9 +104,24 @@ ctx = ctx.withCompression(Compression.Zstd)
 CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
 ```
 
-</div>
+For how to write data to GreptimeDB, see the following sections.
 
-<div id="low-level-object">
+## Low-level API
+
+The GreptimeDB low-level API provides a straightforward method to write data to GreptimeDB 
+by adding rows to the table object with a predefined schema.
+
+### Create row objects
+
+This following code snippet begins by constructing a table named `cpu_metric`,
+which includes columns `host`, `cpu_user`, `cpu_sys`, and `ts`. 
+Subsequently, it inserts a single row into the table.
+
+The table consists of three types of columns:
+
+- `Tag`: The `host` column, with values of type `String`.
+- `Field`: The `cpu_user` and `cpu_sys` columns, with values of type `Float`.
+- `Timestamp`: The `ts` column, with values of type `Timestamp`.
 
 ```java
 // Construct the table schema for `cpu_metric`.
@@ -138,10 +158,7 @@ cpuMetric.addRow(host, ts, cpuUser, cpuSys);
 cpuMetric.complete();
 ```
 
-</div>
-
-
-<div id="create-rows">
+To improve the efficiency of writing data, you can create multiple rows at once to write to GreptimeDB.
 
 ```java
 // Define the schema for tables.
@@ -193,10 +210,9 @@ memMetric.complete();
 
 ```
 
-</div>
+### Insert data
 
-
-<div id="insert-rows">
+The following example shows how to insert rows to tables in GreptimeDB.
 
 ```java
 // Saves data
@@ -218,10 +234,9 @@ if (result.isOk()) {
 
 ```
 
-</div>
+### Streaming insert
 
-
-<div id="streaming-insert">
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 
 ```java
@@ -253,9 +268,15 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-</div>
+## High-level API
 
-<div id="high-level-style-object">
+The high-level API uses an ORM style object to write data to GreptimeDB.
+It allows you to create, insert, and update data in a more object-oriented way,
+providing developers with a friendlier experience.
+However, it is not as efficient as the low-level API.
+This is because the ORM style object may consume more resources and time when converting the objects.
+
+### Create row objects
 
 GreptimeDB Java Ingester SDK allows us to use basic POJO objects for writing. This approach requires the use of Greptime's own annotations, but they are easy to use.
 
@@ -312,11 +333,7 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-</div>
-
-
-<div id="high-level-style-insert-data">
-
+### Insert data
 
 Write data with POJO objects:
 
@@ -334,10 +351,9 @@ if (result.isOk()) {
 }
 ```
 
-</div>
+### Streaming insert
 
-
-<div id="high-level-style-streaming-insert">
+Streaming insert is useful when you want to insert a large amount of data such as importing historical data.
 
 ```java
 StreamWriter<List<?>, WriteOk> writer = greptimeDB.objectsStreamWriter();
@@ -360,9 +376,12 @@ WriteOk result = future.get();
 LOG.info("Write result: {}", result);
 ```
 
-</div>
+## Insert data in JSON type
 
-<div id="ingester-json-type">
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type).
+With this ingester library, you can insert JSON data using string values.
+For instance, if you have a table named `sensor_readings` and wish to add a JSON column named `attributes`,
+refer to the following code snippet.
 
 In the [low-level API](#low-level-api),
 you can specify the column type as `DataType.Json` using the `addField` method to add a JSON column.
@@ -411,24 +430,13 @@ sensor.setAttributes(attr);
 // ...
 ```
 
-</div>
-
-<div id="ingester-lib-debug-logs">
-
 ## Debug logs
 
 The ingester SDK provides metrics and logs for debugging.
 Please refer to [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) and [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) to learn how to enable or disable the logs.
 
-</div>
 
-<div id="ingester-lib-reference">
-
-- [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
-
-</div>
-
-<div id="faq">
+## FAQ
 
 ### Why am I getting some connection exceptions?
 
@@ -484,6 +492,6 @@ packaged into the final JAR, during the assembling process. So the fix can be:
   </project>
   ```
 
-</div>
+## Ingester library reference
 
-</DocTemplate>
+- [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
