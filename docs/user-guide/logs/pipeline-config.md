@@ -852,7 +852,7 @@ transform:
     index: timestamp
 ```
 The `filter` processor is configured to check the `name` variable's value from the pipeline context.
-If the value of `name` is found within the target list `['john', 'wick']`, the input line is considered a match and will be discarded, preventing it from being written to the database.
+If the value of `name` is found within the target list `['John', 'Wick']`, the input line is considered a match and will be discarded, preventing it from being written to the database.
 
 The `filter` processor takes the following options:
 1. `field`(or `fields`): the variable that is used for checking; it can be a list of variables, any match will do the filter.

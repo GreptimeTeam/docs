@@ -861,6 +861,7 @@ processors:
       case_insensitive: true
       targets: 
         - John
+        - Wick
 transform:
   - field: name
     type: string
@@ -869,7 +870,7 @@ transform:
     index: timestamp
 ```
 `filter` 处理器在这里会检查 pipeline 上下文中的 `name` 变量的值。
-如果它的值和 targets 列表 `['john', 'wick']` 中的任意值匹配，则认为条件判断成功。
+如果它的值和 targets 列表 `['John', 'Wick']` 中的任意值匹配，则认为条件判断成功。
 这条输入数据的处理将会被中止，不会被持久化到数据库中。
 
 `filter` 处理器接受以下参数：
