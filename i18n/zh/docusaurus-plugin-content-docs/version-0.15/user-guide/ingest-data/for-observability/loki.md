@@ -125,3 +125,34 @@ WITH(
 )
 1 row in set (0.00 sec)
 ```
+
+## Using pipeline in Loki push API
+
+:::warning 实验性特性
+此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::
+
+从 `v0.15` 开始，GreptimeDB 支持使用 pipeline 来处理 Loki 的写入请求。
+你可以通过在 HTTP header 中将 `x-greptime-pipeline-name` 的值设置为需要执行的 pipeline 名称来使用 pipeline 处理流程。
+
+请注意，如果使用 pipeline 处理流程，GreptimeDB 将会在 label 和 structure metadata 的列名前加上前缀：
+- 对 label 列，加上 `loki_label_` 的前缀
+- 对 structured metadata 列，加上 `loki_metadata_` 的前缀
+- Loki 自身的日志行则会被命名为 `loki_line`
+
+一个使用 `greptime_identity` 的数据样例将如下所示：
+```
+mysql> select * from loki_logs limit 1;
++----------------------------+---------------------+---------------------------+---------------------------------------------------------------------------+
+| greptime_timestamp         | loki_label_platform | loki_label_service_name   | loki_line                                                                 |
++----------------------------+---------------------+---------------------------+---------------------------------------------------------------------------+
+| 2025-07-15 11:40:26.651141 | docker              | docker-monitoring-alloy-1 | ts=2025-07-15T11:40:15.532342849Z level=info "boringcrypto enabled"=false |
++----------------------------+---------------------+---------------------------+---------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+```
+
+可以见到 label 列的名称加上了 `loki_label_` 的前缀。
+实际的日志列则被命名为 `loki_line`。
+你可以使用一个自定义的 pipeline 来处理数据，这将和其他 pipeline 处理流程一致。
+
+更多配置详情请参考 [pipeline 相关文档](/user-guide/logs/pipeline-config.md)。
