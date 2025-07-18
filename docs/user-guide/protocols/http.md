@@ -176,6 +176,7 @@ http://{{API-host}}/v1/sql
     parameters:
     - `compression`: `zstd` or `lz4`, default: no compression
   - `table`: ASCII table format for console output
+  - `null`: Concise text-only output of the row count and elapsed time, useful for evaluating query performance.
 
 ### Body
 
