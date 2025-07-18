@@ -65,68 +65,7 @@ http://localhost:4000/v1/sql
 这些 API 在 GreptimeCloud 中无法使用。
 :::
 
-### 检查数据库健康状态
-
-你可以使用 `/health` 端点检查 GreptimeDB 服务器的健康状况。
-有关更多信息，请参阅[检查数据库健康状态](/getting-started/installation/overview#检查数据库健康状态)。
-
-### 检查数据库状态
-
-你可以使用 `/status` 端点检查 GreptimeDB 服务器的状态。
-
-```shell
-curl http://{{API-host}}/status
-```
-
-例如：
-
-```shell
-curl http://localhost:4000/status
-```
-
-输出包含数据库版本和源代码信息，类似如下：
-
-```json
-{
-  "source_time": "2024-11-08T06:34:49Z",
-  "commit": "0e0c4faf0d784f25fed8f26e7000f1f869c88587",
-  "branch": "main",
-  "rustc_version": "rustc 1.84.0-nightly (e92993dbb 2024-10-18)",
-  "hostname": "local",
-  "version": "0.9.5"
-}
-```
-
-### 获取 GreptimeDB 服务器配置
-
-你可以使用 `/config` 端点获取 GreptimeDB 服务器的 [TOML 配置](/user-guide/deployments-administration/configuration.md#configuration-file-options)。
-
-```shell
-curl http://{{API-host}}/config
-```
-
-例如：
-
-```shell
-curl http://localhost:4000/config
-```
-
-输出包含 GreptimeDB 服务器的配置信息。
-
-```toml
-enable_telemetry = true
-user_provider = "static_user_provider:file:user"
-init_regions_in_background = false
-init_regions_parallelism = 16
-
-[http]
-addr = "127.0.0.1:4000"
-timeout = "30s"
-body_limit = "64MiB"
-is_strict_mode = false
-
-# ...
-```
+请参考 [Admin APIs 接口](/reference/http-endpoints.md#管理-api)文档以获取更多信息。
 
 ## POST SQL 语句
 

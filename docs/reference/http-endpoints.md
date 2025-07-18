@@ -18,12 +18,16 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 - **Description**: Provides a health check endpoint to verify that the server is running.
 - **Usage**: Access this endpoint to check the health status of the server.
 
+Please refer to the [check GreptimeDB health documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-if-greptimedb-is-running-normally) for an example.
+
 ### Status
 
 - **Path**: `/status`
 - **Methods**: `GET`
 - **Description**: Retrieves the current status of the server.
 - **Usage**: Use this endpoint to obtain server status information.
+
+Please refer to the [Check GreptimeDB status documentation](/enterprise/deployments-administration/monitoring/check-db-status.md#check-greptimedb-status) for an example.
 
 ### Metrics
 
@@ -32,12 +36,62 @@ Endpoints that is not versioned (under `/v1`). For admin usage like health check
 - **Description**: Exposes Prometheus metrics for monitoring purposes.
 - **Usage**: Prometheus can scrape this endpoint to collect metrics data.
 
+Example:
+
+```bash
+curl -X GET http://127.0.0.1:4000/metrics
+
+# HELP greptime_app_version app version
+# TYPE greptime_app_version gauge
+greptime_app_version{app="greptime-edge",short_version="main-b4bd34c5",version="0.12.0"} 1
+# HELP greptime_catalog_catalog_count catalog catalog count
+# TYPE greptime_catalog_catalog_count gauge
+greptime_catalog_catalog_count 1
+# HELP greptime_catalog_schema_count catalog schema count
+# TYPE greptime_catalog_schema_count gauge
+greptime_catalog_schema_count 3
+# HELP greptime_flow_run_interval_ms flow run interval in ms
+# TYPE greptime_flow_run_interval_ms gauge
+greptime_flow_run_interval_ms 1000
+# HELP greptime_meta_create_catalog meta create catalog
+# TYPE greptime_meta_create_catalog histogram
+greptime_meta_create_catalog_bucket{le="0.005"} 1
+greptime_meta_create_catalog_bucket{le="0.01"} 1
+greptime_meta_create_catalog_bucket{le="0.025"} 1
+greptime_meta_create_catalog_bucket{le="0.05"} 1
+greptime_meta_create_catalog_bucket{le="0.1"} 1
+...
+```
+
 ### Configuration
 
 - **Path**: `/config`
 - **Methods**: `GET`
 - **Description**: Retrieves the server's configuration options.
 - **Usage**: Access this endpoint to get configuration details.
+
+For example:
+
+```shell
+curl http://localhost:4000/config
+```
+
+The output contains the configuration information of the GreptimeDB server.
+
+```toml
+enable_telemetry = true
+user_provider = "static_user_provider:file:user"
+init_regions_in_background = false
+init_regions_parallelism = 16
+
+[http]
+addr = "127.0.0.1:4000"
+timeout = "30s"
+body_limit = "64MiB"
+is_strict_mode = false
+
+# ...
+```
 
 ### Dashboard
 
