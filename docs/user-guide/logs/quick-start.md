@@ -16,13 +16,7 @@ For unstructured logs, you can write them directly into a table without utilizin
 Pipelines enable automatic parsing and transformation of log messages into multiple columns,
 as well as automatic table creation and alteration.
 
-### Write JSON logs using the built-in Pipeline (Experimental)
-
-:::warning
-The JSON feature is currently experimental and may change in future releases.
-:::
-
-GreptimeDB offers a built-in pipeline, `greptime_identity`, for handling JSON log formats. This pipeline simplifies the process of writing JSON logs.
+### Write JSON logs using the built-in `greptime_identity` Pipeline
 
 ```shell
 curl -X POST \
@@ -80,6 +74,7 @@ Here is how to do it:
 First, create a pipeline file, for example, `pipeline.yaml`.
 
 ```yaml
+version: 2
 processors:
   - dissect:
       fields:
@@ -92,11 +87,14 @@ processors:
         - timestamp
       formats:
         - "%d/%b/%Y:%H:%M:%S %z"
+  - select:
+      type: exclude
+      fields:
+        - message
 
 transform:
   - fields:
       - ip_address
-      - http_method
     type: string
     index: inverted
     tag: true
@@ -121,8 +119,13 @@ transform:
 
 The pipeline splits the message field using the specified pattern to extract the `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 It then parses the `timestamp` field using the format` %d/%b/%Y:%H:%M:%S %z` to convert it into a proper timestamp format that the database can understand.
-Finally, it converts each field to the appropriate data type and indexes it accordingly.
-It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries. And there must be one time index column specified by the `timestamp`.
+Finally, it converts each field to the appropriate datatype and indexes it accordingly.
+Note at the beginning the pipeline is using doc version 2, see [here](./pipeline-config.md#transform-in-doc-version-2) for more details.
+In short, the doc version 2 indicates the pipeline engine to find fields that are not specified in the transform section, and persist them using the default datatype.
+You can see in the [later section](#differences-between-using-a-pipeline-and-writing-unstructured-logs-directly) that although the `http_method` is not specified in the transform, it is persisted as well.
+Also, a `select` processor is used to filter out the original `message` field.
+It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries.
+And there must be one time index column specified by the `timestamp`.
 
 Execute the following command to upload the configuration file:
 
@@ -235,12 +238,12 @@ DESC custom_pipeline_logs;
 | Column        | Type                | Key  | Null | Default | Semantic Type |
 +---------------+---------------------+------+------+---------+---------------+
 | ip_address    | String              | PRI  | YES  |         | TAG           |
-| http_method   | String              | PRI  | YES  |         | TAG           |
 | status_code   | Int32               | PRI  | YES  |         | TAG           |
 | request_line  | String              |      | YES  |         | FIELD         |
 | user_agent    | String              |      | YES  |         | FIELD         |
 | response_size | Int32               |      | YES  |         | FIELD         |
 | timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| http_method   | String              |      | YES  |         | FIELD         |
 +---------------+---------------------+------+------+---------+---------------+
 7 rows in set (0.00 sec)
 ```
@@ -285,11 +288,11 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 ```
 
 ```sql
-+------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| ip_address | http_method | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           |
-+------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1  | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 |
-+------------+-------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| ip_address | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           | http_method |
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| 127.0.0.1  |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 | GET         |
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
 1 row in set (0.02 sec)
 ```
 
@@ -306,12 +309,12 @@ SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html
 ```
 
 ```sql
-+-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| ip_address  | http_method | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           |
-+-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
-| 127.0.0.1   | GET         |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 |
-| 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 |
-+-------------+-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| ip_address  | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           | http_method |
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| 127.0.0.1   |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 | GET         |
+| 192.168.1.1 |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 | POST        |
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
 2 rows in set (0.00 sec)
 ```
 
