@@ -18,6 +18,8 @@ as well as automatic table creation and alteration.
 
 ### Write JSON logs using the built-in `greptime_identity` Pipeline
 
+GreptimeDB offers a built-in pipeline, `greptime_identity`, for handling JSON log formats. This pipeline simplifies the process of writing JSON logs.
+
 ```shell
 curl -X POST \
   "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
