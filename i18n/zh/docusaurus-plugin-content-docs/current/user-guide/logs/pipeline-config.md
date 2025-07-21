@@ -59,6 +59,7 @@ Dispatcher 可以将 pipeline 执行上下文转发到不同的后续 pipeline �
 Transform 决定最终保存在数据库中的数据类型和表结构。
 Table suffix 支持将数据保存到不同的表中。
 
+- Version 用于指定 pipeline 配置的格式。虽然它是可选的，但是我们强烈建议使用 version 2 来编写新配置。更多详情请参考这个[章节](#版本-2-中的-transform)。
 - Processor 用于对 log 数据进行预处理，例如解析时间字段，替换字段等。
 - Dispatcher(可选) 用于将执行上下文转发到另一个 pipeline，同一个输入批次的数据可以基于特定的值被不同的 pipeline 进行处理。 
 - Transform(可选) 用于对数据进行格式转换，例如将字符串类型转换为数字类型，并且指定数据库表中列的索引信息。

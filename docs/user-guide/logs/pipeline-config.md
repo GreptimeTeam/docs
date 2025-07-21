@@ -59,6 +59,7 @@ Dispatcher forwards pipeline execution context onto different subsequent pipelin
 Transform decides the final datatype and table structure in the database.
 Table suffix allows storing the data into different tables.
 
+- Version is used to state the pipeline configuration format. Although it's optional, it's high recommended to start with version 2. See [here](#transform-in-doc-version-2) for more details.
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
 - Dispatcher(optional) is used for forwarding the context into another pipeline, so that the same batch of input data can be divided and processed by different pipeline based on certain fields.
 - Transform(optional) is used for converting data formats, such as converting string types to numeric types, and specifying indexes.
