@@ -172,8 +172,8 @@ partition rules.
 
 To fix this, we recommend you to define your own partition rule based on your
 data model. For example, it can be `namespace` if your are monitoring a
-kubernets cluster. The partition columns should have enough cardinality to
-devide data. Also we recommend you to create 2x-3x partitions on initial
+kubernetes cluster. The partition columns should have enough cardinality to
+divide data. Also we recommend you to create 2x-3x partitions on initial
 datanode count, so when you scaling more datanodes in your cluster, just migrate
 those partitions to new ones.
 
