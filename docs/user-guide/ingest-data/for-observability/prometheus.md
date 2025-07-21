@@ -156,6 +156,52 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND job = "job1";
 ```
 
+### GreptimeDB cluster with metric engine
+
+If you are using GreptimeDB cluster for Prometheus remote write, you may notice
+that only 1 datanode taking all the workload and other datanodes receives no
+traffic. This is because with default settings, there is only 1 metric engine
+physical table, and only 1 partition(region) in that table. The datanode that
+serves the partition will take all the data ingestion.
+
+Why we are not creating more partitions by default? [GreptimeDB's table
+partition](/user-guide/deployments-administration/manage-data/table-sharding.md)
+is based pre-configured partition columns. However, in Prometheus ecosystem,
+there is no common column (label, as in Prometheus) that is suitable for good
+partition rules.
+
+To fix this, we recommend you to define your own partition rule based on your
+data model. For example, it can be `namespace` if your are monitoring a
+kubernets cluster. The partition columns should have enough cardinality to
+devide data. Also we recommend you to create 2x-3x partitions on initial
+datanode count, so when you scaling more datanodes in your cluster, just migrate
+those partitions to new ones.
+
+An example DDL of partitioned physical table based on `namespace` label:
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    namespace STRING PRIMARY KEY,
+    TIME INDEX (greptime_timestamp),
+)
+PARTITION ON COLUMNS (namespace) (
+  namespace <'g',
+  namespace >= 'g' AND namespace < 'n',
+  namespace >= 'n' AND namespace < 't',
+  namespace >= 't'
+)
+ENGINE = metric
+with (
+    "physical_metric_table" = "",
+);
+```
+
+Note that you won't have need add all possible *PRIMARY KEY* (label) here,
+metric engine will add them automatically. Only labels you use for partitioning
+are required to be defined ahead of time.
+
 ## Special labels for ingestion options
 
 :::warning Experimental Feature
@@ -187,7 +233,7 @@ Here is a list of supported label names:
 
 ### Setting labels
 
-How to set labels to the metrics is very dependent on the tools (or code) that collects the metrics and send them over to the database. 
+How to set labels to the metrics is very dependent on the tools (or code) that collects the metrics and send them over to the database.
 
 If you're using Prometheus to scrape metrics from the source and send them to GreptimeDB using remote write, you can add `external_labels` in the global config.
 Refer to the [docs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) here.
@@ -270,7 +316,7 @@ CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-) 
+)
 engine = metric
 with (
     "physical_metric_table" = "",
