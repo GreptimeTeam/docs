@@ -147,6 +147,47 @@ WHERE greptime_timestamp > "2024-08-07 03:27:26.964000"
   AND job = "job1";
 ```
 
+### 在 GreptimeDB 集群上使用 metric engine
+
+在使用 Prometheus remote write 写入 GreptimeDB 集群时，用户可能注意到集群中只有
+一 个 datanode 承载写入压力，其他节点没有流量。这是由于在默认配置下，集群中只有
+一个 metric engine 物理表，且该表只有一个分区。承载此分区的节点将承担所有写入流
+量。
+
+为什么我们没有创建更多的分区呢？[GreptimeDB 的表分
+区](/user-guide/deployments-administration/manage-data/table-sharding.md)基于预
+定义的分区列。然而在 Prometheus 生态中并没有普遍存在的列（Prometheus 中的标签）
+适合作为默认分区列。
+
+因此，我们推荐用户基于自己的数据模型创建分区规则。例如，在监控 Kubernetes 集群的
+场景下，`namespace` 可能是一个比较好的分区键。这个分区键应当具备一定的基数用于区
+分数据。并且我们推荐用户在初始时创建 datanode 数量大约 2 倍至 3 倍的分区数量，为日后
+集群扩容负载均衡做准备。
+
+以下是一个分区的物理表例子：
+
+```sql
+CREATE TABLE greptime_physical_table (
+    greptime_timestamp TIMESTAMP(3) NOT NULL,
+    greptime_value DOUBLE NULL,
+    namespace STRING PRIMARY KEY,
+    TIME INDEX (greptime_timestamp),
+)
+PARTITION ON COLUMNS (namespace) (
+  namespace <'g',
+  namespace >= 'g' AND namespace < 'n',
+  namespace >= 'n' AND namespace < 't',
+  namespace >= 't'
+)
+ENGINE = metric
+with (
+    "physical_metric_table" = "",
+);
+```
+
+注意这里用户并不需要手动指定所有可能的主键（标签），metric engine 将会自动添加。
+只有涉及到分区规则的列需要进行提前指定。
+
 ## 特殊标签
 
 :::warning 实验性特性
@@ -262,7 +303,7 @@ CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-) 
+)
 engine = metric
 with (
     "physical_metric_table" = "",
@@ -283,4 +324,3 @@ GreptimeDB 也支持这个变种。只需将 GreptimeDB 的 Remote Write URL 配
 ```shell
 vmagent -remoteWrite.url=http://localhost:4000/v1/prometheus/write
 ```
-
