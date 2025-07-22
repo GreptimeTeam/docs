@@ -98,7 +98,7 @@ table_suffix: _${string_field_a}
 
 Starting from `v0.15`, the GreptimeDB introduce a version `2` format.
 The main change is the transform process.
-Refer to [the following documentation](#transform-in-doc-version-2) for detailed changes.
+Refer to [the following documentation](#transform-in-version-2) for detailed changes.
 
 ## Processor
 
@@ -996,7 +996,7 @@ The result will be:
 }
 ```
 
-### Transform in doc version 2
+### Transform in version 2
 
 Before `v0.15`, the pipeline engine only supports a fully-set transform mode and an auto-transform mode: 
 - Fully-set transform: only fields explicitly noted in the transform section will be persisted into the database

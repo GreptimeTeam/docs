@@ -886,7 +886,7 @@ transform:
 
 Transform 用于对 log 数据进行转换，并且指定在数据库表中列的索引信息。其配置位于 YAML 文件中的 `transform` 字段下。
 
-从 `v0.15` 开始，GreptimeDB 引入了文档版本 2 和自动 transform，可以大幅简化配置。具体详情见下。
+从 `v0.15` 开始，GreptimeDB 引入了版本 2 格式和自动 transform，可以大幅简化配置。具体详情见下。
 
 Transform 由一个或多个配置组成，每个配置包含以下字段：
 
@@ -936,7 +936,7 @@ transform:
 
 ### 自动 transform
 
-在文档版本 2 中 transform 的配置编写已经进行了大幅的简化。
+在版本 2 中 transform 的配置编写已经进行了大幅的简化。
 即使如此，在某些场景下，我们仍然希望能够结合处理器的处理能力与 `greptime_identity` 的自动字段保存能力，从而无需编写任何转换代码，即可让 pipeline 引擎自动推导并保存字段。
 
 现在自定义 pipeline 支持了这点。

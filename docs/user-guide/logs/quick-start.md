@@ -122,8 +122,8 @@ transform:
 The pipeline splits the message field using the specified pattern to extract the `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 It then parses the `timestamp` field using the format` %d/%b/%Y:%H:%M:%S %z` to convert it into a proper timestamp format that the database can understand.
 Finally, it converts each field to the appropriate datatype and indexes it accordingly.
-Note at the beginning the pipeline is using doc version 2, see [here](./pipeline-config.md#transform-in-doc-version-2) for more details.
-In short, the doc version 2 indicates the pipeline engine to find fields that are not specified in the transform section, and persist them using the default datatype.
+Note at the beginning the pipeline is using version 2 format, see [here](./pipeline-config.md#transform-in-version-2) for more details.
+In short, the version 2 indicates the pipeline engine to find fields that are not specified in the transform section, and persist them using the default datatype.
 You can see in the [later section](#differences-between-using-a-pipeline-and-writing-unstructured-logs-directly) that although the `http_method` is not specified in the transform, it is persisted as well.
 Also, a `select` processor is used to filter out the original `message` field.
 It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries.

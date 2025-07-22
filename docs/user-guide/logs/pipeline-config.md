@@ -59,7 +59,7 @@ Dispatcher forwards pipeline execution context onto different subsequent pipelin
 Transform decides the final datatype and table structure in the database.
 Table suffix allows storing the data into different tables.
 
-- Version is used to state the pipeline configuration format. Although it's optional, it's high recommended to start with version 2. See [here](#transform-in-doc-version-2) for more details.
+- Version is used to state the pipeline configuration format. Although it's optional, it's high recommended to start with version 2. See [here](#transform-in-version-2) for more details.
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
 - Dispatcher(optional) is used for forwarding the context into another pipeline, so that the same batch of input data can be divided and processed by different pipeline based on certain fields.
 - Transform(optional) is used for converting data formats, such as converting string types to numeric types, and specifying indexes.
@@ -100,7 +100,7 @@ table_suffix: _${string_field_a}
 
 Starting from `v0.15`, the GreptimeDB introduce a version `2` format.
 The main change is the transform process.
-Refer to [the following documentation](#transform-in-doc-version-2) for detailed changes.
+Refer to [the following documentation](#transform-in-version-2) for detailed changes.
 
 ## Processor
 
@@ -867,7 +867,7 @@ The `filter` processor takes the following options:
 
 Transform is used to convert data formats and specify indexes upon columns. It is located under the `transform` section in the YAML file.
 
-Starting from `v0.15`, GreptimeDB is introducing doc version 2 and auto-transform to largely simplify the configuration. See below for details.
+Starting from `v0.15`, GreptimeDB is introducing version 2 format and auto-transform to largely simplify the configuration. See below for details.
 
 A Transform consists of one or more configurations, and each configuration contains the following fields:
 
@@ -878,7 +878,7 @@ A Transform consists of one or more configurations, and each configuration conta
 - `on_failure`(optional): Handling method for transformation failures.
 - `default`(optional): Default value.
 
-### Transform in doc version 2
+### Transform in version 2
 
 Originally, you have to manually specify all the fields in the transform section for them to be persisted in the database.
 If a field is not specify in the transform, it will be discards.
@@ -891,7 +891,7 @@ With the `select` processor, you can decide what field is wanted and what isn't 
 However, this is a breaking change to the existing pipeline configuration files.
 If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string, which is still in the pipeline context, gets immediately inserted into the database and there's no way to stop this behavior.
 
-Therefore, GreptimeDB introduces the concept of doc version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
+Therefore, GreptimeDB introduces the concept of version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
 ```YAML
 version: 2
 processors:
@@ -916,7 +916,7 @@ Note:
 
 ### Auto-transform
 
-The transform configuration in doc version 2 is already a large simplification over the original transform.
+The transform configuration in version 2 format is already a large simplification over the original transform.
 However, there are times when you might want to combine the power of processors with the ease of using `greptime_identity`, writing no transform code, letting the pipeline engine auto infer and persist the data.
 
 Now it is possible in custom pipelines. 

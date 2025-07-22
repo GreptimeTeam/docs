@@ -118,8 +118,8 @@ transform:
 该 pipeline 使用指定的模式拆分 `message` 字段以提取 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
 然后，它使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析 `timestamp` 字段，将其转换为数据库可以理解的正确时间戳格式。
 最后，它将每个字段转换为适当的数据类型并相应地建立索引。
-注意到在 pipeline 的最开始我们使用了文档版本 2，详情请参考[这个文档](./pipeline-config.md#版本-2-中的-transform)。
-简而言之，在文档版本 2 下 pipeline 引擎会自动查找所有没有在 transform 模块中指定的字段，并使用默认的数据类型将他们持久化到数据库中。
+注意到在 pipeline 的最开始我们使用了版本 2 格式，详情请参考[这个文档](./pipeline-config.md#版本-2-中的-transform)。
+简而言之，在版本 2 下 pipeline 引擎会自动查找所有没有在 transform 模块中指定的字段，并使用默认的数据类型将他们持久化到数据库中。
 你可以在[后续章节](#使用-pipeline-与直接写入非结构化日志的区别)中看到，虽然 `http_method` 没有在 transform 模块中被指定，但它依然被写入到了数据库中。
 另外，`select` 处理器被用于过滤原始的 `message` 字段。
 需要注意的是，`request_line` 和 `user_agent` 字段被索引为 `fulltext` 以优化全文搜索查询，且表中必须有一个由 `timestamp` 指定的时间索引列。
