@@ -336,6 +336,7 @@ const sidebars: SidebarsConfig = {
                   id: 'user-guide/deployments-administration/monitoring/overview',
                   label: 'Overview',
                 },
+                'user-guide/deployments-administration/monitoring/check-db-status',
                 'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
                 'user-guide/deployments-administration/monitoring/export-metrics',
                 'user-guide/deployments-administration/monitoring/tracing',
