@@ -18,7 +18,6 @@
     "pdf": "node scripts/generate-pdf.js"
   },
   "dependencies": {
-    "@1stg/common-config": "^10.0.0",
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
     "@docusaurus/core": "3.4.0",
