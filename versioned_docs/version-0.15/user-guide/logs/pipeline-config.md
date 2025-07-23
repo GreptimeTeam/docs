@@ -59,6 +59,7 @@ Dispatcher forwards pipeline execution context onto different subsequent pipelin
 Transform decides the final datatype and table structure in the database.
 Table suffix allows storing the data into different tables.
 
+- Version is used to state the pipeline configuration format. Although it's optional, it's high recommended to start with version 2. See [here](#transform-in-version-2) for more details.
 - Processors are used for preprocessing log data, such as parsing time fields and replacing fields.
 - Dispatcher(optional) is used for forwarding the context into another pipeline, so that the same batch of input data can be divided and processed by different pipeline based on certain fields.
 - Transform(optional) is used for converting data formats, such as converting string types to numeric types, and specifying indexes.
@@ -67,6 +68,7 @@ Table suffix allows storing the data into different tables.
 Here is an example of a simple configuration that includes Processors and Transform:
 
 ```yaml
+version: 2
 processors:
   - urlencoding:
       fields:
@@ -824,27 +826,69 @@ Some notes regarding the `vrl` processor:
 
 Transform is used to convert data formats and specify indexes upon columns. It is located under the `transform` section in the YAML file.
 
-Starting from `v0.15`, an auto-transform mode is added to simplify the configuration. See below for details. 
+Starting from `v0.15`, GreptimeDB is introducing version 2 format and auto-transform to largely simplify the configuration. See below for details.
 
 A Transform consists of one or more configurations, and each configuration contains the following fields:
 
 - `fields`: A list of field names to be transformed.
-- `type`: The transformation type.
-- `index`: The index type (optional).
-- `tag`: Specify the field to be a tag field (optional).
-- `on_failure`: Handling method for transformation failures (optional).
-- `default`: Default value (optional).
+- `type`: The target transformation type in the database.
+- `index`(optional): The index type.
+- `tag`(optional): Specify the field to be a tag field.
+- `on_failure`(optional): Handling method for transformation failures.
+- `default`(optional): Default value.
+
+### Transform in version 2
+
+Originally, you have to manually specify all the fields in the transform section for them to be persisted in the database.
+If a field is not specify in the transform, it will be discards.
+With the number of field growing, this can make the configuration both tedious and error-prone.
+
+Starting from `v0.15`, GreptimeDB introduces a new transform mode which make it easier to write pipeline configuration.
+You only set necessary fields in the transform section, specifying particular datatype and index for them; the rest of the fields from the pipeline context are set automatically by the pipeline engine.
+With the `select` processor, you can decide what field is wanted and what isn't in the final table.
+
+However, this is a breaking change to the existing pipeline configuration files.
+If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string, which is still in the pipeline context, gets immediately inserted into the database and there's no way to stop this behavior.
+
+Therefore, GreptimeDB introduces the concept of version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
+```YAML
+version: 2
+processors:
+  - date:
+    field: input_str
+    formats:
+      - "%Y-%m-%dT%H:%M:%S%.3fZ"
+
+transform:
+  - field: input_str, ts
+    type: time, ms
+    index: timestamp
+```
+
+Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
+1. Process all written transform rules sequentially.
+2. Write all fields of the pipeline context to the final table.
+
+Note:
+- The transform section **must contains one timestamp index field**.
+- The transform process in the version 2 will consume the original field in the pipeline context, so you can't transform the same field twice.
 
 ### Auto-transform
-If no transform section is specified in the pipeline configuration, the pipeline engine will attempt to infer the data types of the fields from the context and preserve them in the database, much like the `identity_pipeline` does.
 
-To create a table in GreptimeDB, a time index column must be specified.
+The transform configuration in version 2 format is already a large simplification over the original transform.
+However, there are times when you might want to combine the power of processors with the ease of using `greptime_identity`, writing no transform code, letting the pipeline engine auto infer and persist the data.
+
+Now it is possible in custom pipelines. 
+If no transform section is specified, the pipeline engine will attempt to infer the datatype of the fields from the pipeline context and preserve them into the database, much like what the `identity_pipeline` does.
+
+To create a table in GreptimeDB, a timestamp index column must be specified.
 In this case, the pipeline engine will try to find a field of type `timestamp` in the context and set it as the time index column.
-A `timestamp` field is produced by a `date` or `epoch` processor, so at least one `date` or `epoch` processor must be defined in the processors section.
+A `timestamp` field is produced by a `date` or `epoch` processor, so at least one `date` or `epoch` processor must be defined in the processor's section.
 Additionally, only one `timestamp` field is allowed, multiple `timestamp` fields would lead to an error due to ambiguity.
 
 For example, the following pipeline configuration is now valid.
 ```YAML
+version: 2
 processors:
   - dissect:
       fields:
@@ -995,42 +1039,6 @@ The result will be:
   "born_time": 2021-07-08 16:00:00
 }
 ```
-
-### Transform in version 2
-
-Before `v0.15`, the pipeline engine only supports a fully-set transform mode and an auto-transform mode: 
-- Fully-set transform: only fields explicitly noted in the transform section will be persisted into the database
-- Auto-transform: no transform section is written, and the pipeline engine will try to set all the fields from the pipeline context. But in this case, there is no way to set other indexes other than the time index.
-
-Starting from `v0.15`, GreptimeDB introduces a new transform mode combining the advantages of the existing two, which make it easier to write pipeline configuration.
-You only set necessary fields in the transform section, specifying particular datatype and index for them; the rest of the fields from the pipeline context are set automatically by the pipeline engine.
-With the `select` processor, you can decide what field is wanted and what isn't in the final table.
-
-However, this is a breaking change to the existing pipeline configuration files.
-If you has already used pipeline with `dissect` or `regex` processors, after upgrading the database, the original message string, which is still in the pipeline context, gets immediately inserted into the database and there's no way to stop this behavior.
-
-Therefore, GreptimeDB introduces the concept of doc version to decide which transform mode you want to use, just like the version in a Docker Compose file. Here is an example:
-```YAML
-version: 2
-processors:
-  - date:
-    field: input_str
-    formats:
-      - "%Y-%m-%dT%H:%M:%S%.3fZ"
-
-transform:
-  - field: input_str, ts
-    type: time, ms
-    index: timestamp
-```
-
-Simply add a `version: 2` line at the top of the config file, and the pipeline engine will run the transform in combined mode:
-1. Process all written transform rules sequentially.
-2. Write all fields of the pipeline context to the final table.
-
-Note:
-- If the transform section is explicitly written, **it must contain a time index field**. Otherwise the time-index field will be inferred by the pipeline engine just like the auto-transform mode.
-- The transform process in the version 2 will consume the original field in the pipeline context, so you can't transform the same field twice.
 
 ## Dispatcher
 
