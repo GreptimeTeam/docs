@@ -58,18 +58,18 @@ curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A5
   -H "Authorization: Basic {{authentication}}"
 ```
 
- If the pipeline exists, the output should be:
+ 如果这个 pipeline 存在，输出会如下所示：
 
 ```json
 {
   "pipelines": [
     {
       "name": "test",
-      "version": "2025-04-01 06:58:31.335251882+0000",
-      "pipeline": "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+      "version": "2025-04-01 06:58:31.335251882",
+      "pipeline": "version: 2\nprocessors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n  - select:\n      type: exclude\n      fields:\n        - message\n\ntransform:\n  - fields:\n      - ip_address\n    type: string\n    index: inverted\n    tag: true\n  - fields:\n      - status_code\n    type: int32\n    index: inverted\n    tag: true\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
     }
   ],
-  "execution_time_ms": 92
+  "execution_time_ms": 7
 }
 ```
 
@@ -77,10 +77,11 @@ curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A5
 JSON 格式无法很好地展示 YMAL 字符串，使用 echo 命令可以将其以阅读友好的方式展示出来：
 
 ```shell
-echo "processors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n\ntransform:\n  - fields:\n      - ip_address\n      - http_method\n    type: string\n    index: tag\n  - fields:\n      - status_code\n    type: int32\n    index: tag\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+echo -e "version: 2\nprocessors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n  - select:\n      type: exclude\n      fields:\n        - message\n\ntransform:\n  - fields:\n      - ip_address\n    type: string\n    index: inverted\n    tag: true\n  - fields:\n      - status_code\n    type: int32\n    index: inverted\n    tag: true\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
 ```
 
 ```yml
+version: 2
 processors:
   - dissect:
       fields:
@@ -93,17 +94,22 @@ processors:
         - timestamp
       formats:
         - "%d/%b/%Y:%H:%M:%S %z"
+  - select:
+      type: exclude
+      fields:
+        - message
 
 transform:
   - fields:
       - ip_address
-      - http_method
     type: string
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - status_code
     type: int32
-    index: tag
+    index: inverted
+    tag: true
   - fields:
       - request_line
       - user_agent
@@ -116,7 +122,6 @@ transform:
       - timestamp
     type: time
     index: timestamp
-
 ```
 
 或者使用 SQL 来查询 Pipeline：
@@ -212,7 +217,7 @@ transform:
     type: string
   - field: time
     type: time
-    index: timestamp'
+    index: timestamp
 ```
 
 Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字符串，但当前配置提供了一个数组。因此，该 Pipeline 创建失败，并显示以下错误消息：
@@ -247,7 +252,7 @@ transform:
     type: string
   - field: time
     type: time
-    index: timestamp'
+    index: timestamp
 ```
 
 此时 Pipeline 创建成功，可以使用 `dryrun` 接口测试该 Pipeline。
