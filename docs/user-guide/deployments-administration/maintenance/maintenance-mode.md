@@ -43,6 +43,13 @@ The maintenance mode can be enabled and disabled through Metasrv's HTTP interfac
 
 ### Enable Maintenance Mode
 
+:::danger
+After calling the maintenance mode interface,
+ensure you check that the HTTP status code returned is 200 and confirm that the response content meets expectations.
+If there are any exceptions or the interface behavior does not meet expectations,
+proceed with caution and avoid continuing with high-risk operations such as cluster upgrades.
+:::
+
 Enable maintenance mode by sending a POST request to the `/admin/maintenance/enable` endpoint. 
 
 ```bash
@@ -57,6 +64,11 @@ The expected output is:
 If you encounter any issues or unexpected behavior, do not proceed with maintenance operations.
 
 ### Disable Maintenance Mode
+
+:::danger
+Before disabling maintenance mode,
+you must confirm that **all components have returned to normal status**.
+:::
 
 Disable maintenance mode by sending a POST request to the `/admin/maintenance/disable` endpoint. 
 

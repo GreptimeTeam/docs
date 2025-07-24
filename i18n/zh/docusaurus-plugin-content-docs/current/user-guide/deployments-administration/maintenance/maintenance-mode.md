@@ -43,6 +43,10 @@ description: 介绍如何管理 GreptimeDB 集群维护模式，以便在防止�
 
 ### 启用维护模式
 
+:::danger
+调用运维模式接口后，请务必检查接口返回的 HTTP 状态码为 200，并确认响应内容符合预期。如果出现异常或接口行为不符合预期，请谨慎操作，并避免继续执行集群升级等高风险操作。
+:::
+
 通过发送 POST 请求到 `/admin/maintenance/enable` 端点启用维护模式。
 
 ```bash
@@ -57,6 +61,10 @@ curl -X POST 'http://localhost:3002/admin/maintenance/enable'
 如果遇到任何问题或意外行为，请不要继续进行维护操作。
 
 ### 停用维护模式
+
+:::danger
+在关闭运维模式之前，必须确认**所有组件均已恢复至正常状态**。
+:::
 
 通过发送 POST 请求到 `/admin/maintenance/disable` 端点停用维护模式。
 
