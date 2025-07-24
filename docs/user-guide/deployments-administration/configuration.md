@@ -500,7 +500,7 @@ write_interval = "30s"
 
 #### `self_import` method
 
-Only `frontend` and `standalone` support exporting metrics using `self_import` method.
+If you are using `standalone`, you can use the `self_import` method to export metrics to GreptimeDB itself.
 
 ```toml
 [export_metrics]
