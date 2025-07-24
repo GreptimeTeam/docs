@@ -490,7 +490,7 @@ write_interval = "30s"
 
 #### `self_import` 方法
 
-仅 `frontend` 和 `standalone` 支持使用 `self_import` 方法导出指标。
+如果你使用的是 GreptimeDB 单机版，可以使用 `self_import` 方法将指标导入到自身的数据库中。
 
 ```toml
 [export_metrics]
