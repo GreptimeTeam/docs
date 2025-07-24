@@ -29,6 +29,7 @@ DESC REGION_STATISTICS;
 | disk_size     | UInt64 |      | YES  |         | FIELD         |
 | memtable_size | UInt64 |      | YES  |         | FIELD         |
 | manifest_size | UInt64 |      | YES  |         | FIELD         |
+| sst_num       | UInt64 |      | YES  |         | FIELD         |
 | sst_size      | UInt64 |      | YES  |         | FIELD         |
 | index_size    | UInt64 |      | YES  |         | FIELD         |
 | engine        | String |      | YES  |         | FIELD         |
@@ -45,6 +46,7 @@ DESC REGION_STATISTICS;
 - `disk_size`: Region 中数据文件的总大小，包括数据、索引及元信息等。
 - `memtable_size`: Region 中内存 memtables 的总大小。
 - `manifest_size`: Region 中元信息 manifest 文件的总大小。
+- `sst_num`: Region 中 SST 文件的总数量。
 - `sst_size`: Region 中 SST 文件的总大小。
 - `index_size`: Region 中索引文件的总大小。
 - `engine`: Region 的引擎类型，可以是 `mito` 或 `metric`。
@@ -59,9 +61,9 @@ WHERE t.table_name = 'system_metrics';
 
 输出：
 ```sql
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+------------+--------+-------------+
-| region_id     | table_id | region_number | region_rows | disk_size | memtable_size | manifest_size | sst_size | index_size | engine | region_role |
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+------------+--------+-------------+
-| 4398046511104 |     1024 |             0 |           8 |      4922 |             0 |          1338 |     3249 |        335 | mito   | Leader      |
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+------------+--------+-------------+
++---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| region_id     | table_id | region_number | region_rows | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
++---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| 4398046511104 |     1024 |             0 |           8 |      4922 |             0 |          1338 |     3249 |     1   |     335    | mito   | Leader      |
++---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
 ```
