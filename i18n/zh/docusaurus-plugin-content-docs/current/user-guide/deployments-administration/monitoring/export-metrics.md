@@ -17,24 +17,7 @@ GreptimeDB 支持导出数据到 Prometheus。在配置导出数据之前，你�
 
 ## 将指标保存到 GreptimeDB 自身
 
-你还可以将指标保存到 GreptimeDB 本身，以便于使用 SQL 语句进行查询和分析。
-本节提供了相关配置示例，有关配置的更多详细信息，请参阅[监控指标选项](/user-guide/deployments-administration/configuration.md#monitor-metrics-options)。
 
-### 单机模式
-
-在单机模式下，你可以简单地使用 `self_import` 来导出指标。
-相关配置如下：
-
-```toml
-[export_metrics]
-enable=true
-# The interval of writing metrics.
-write_interval = "30s"
-[export_metrics.self_import]
-db = "greptime_metrics"
-```
-
-`db` 选项指定了保存指标的数据库，你可以将其修改为其他数据库。请注意，你必须提前手工创建数据库。
 
 ### 分布式集群
 

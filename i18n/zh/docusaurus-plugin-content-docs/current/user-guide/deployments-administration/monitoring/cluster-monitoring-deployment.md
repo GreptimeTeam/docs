@@ -5,7 +5,7 @@ description: 在 Kubernetes 上部署 GreptimeDB 集群的监控指南，包括�
 
 # 集群监控部署
 
-当你使用 GreptimeDB Operator 部署 GreptimeDB 集群后，默认其对应组件（如 Metasrv / Datanode / Frontend）的 HTTP 端口（默认为 `4000`）将会暴露 `/metrics` 端点用于暴露 Prometheus 指标。
+当你使用 GreptimeDB Operator 部署 GreptimeDB 集群后，默认其对应组件（如 Metasrv / Datanode / Frontend）的 HTTP 端口（默认为 `4000`）将会暴露 `/metrics` 端点用于暴露 [Prometheus 指标](/reference/http-endpoints.md#指标)。
 
 我们将提供两种方式来监控 GreptimeDB 集群：
 
@@ -158,15 +158,6 @@ prometheusMonitor:
 ```
 kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
 ```
-
-:::tip NOTE
-chart 版本之间的配置结构已发生变化:
-
-- 旧版本: `meta.etcdEndpoints`
-- 新版本: `meta.backendStorage.etcd.endpoints`
-
-请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
-:::
 
 :::note
 如果你没有使用 Helm Chart 进行部署，你也可以通过如下 `GreptimeDBCluster` 的 YAML 来手动配置 Prometheus 监控，如下所示：
