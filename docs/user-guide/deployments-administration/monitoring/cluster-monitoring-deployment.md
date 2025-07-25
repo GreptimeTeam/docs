@@ -5,7 +5,7 @@ description: Guide to deploying monitoring for GreptimeDB clusters on Kubernetes
 
 # Cluster Monitoring Deployment
 
-After deploying a GreptimeDB cluster using GreptimeDB Operator, by default, its components (Metasrv / Datanode / Frontend) expose a `/metrics` endpoint on their HTTP port (default `4000`) for Prometheus metrics.
+After deploying a GreptimeDB cluster using GreptimeDB Operator, by default, its components (Metasrv / Datanode / Frontend) expose a `/metrics` endpoint on their HTTP port (default `4000`) for [Prometheus metrics](/reference/http-endpoints.md#metrics).
 
 We provide two approaches to monitor the GreptimeDB cluster:
 
@@ -158,15 +158,6 @@ After configuring `prometheusMonitor`, GreptimeDB Operator will automatically cr
 ```
 kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
 ```
-
-:::tip NOTE
-The configuration structure has changed between chart versions:
-
-- In older version: `meta.etcdEndpoints`
-- In newer version: `meta.backendStorage.etcd.endpoints`
-
-Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
-:::
 
 :::note
 If not using Helm Chart, you can manually configure Prometheus monitoring in the `GreptimeDBCluster` YAML:
