@@ -23,7 +23,26 @@ If the `db_name` database already exists, then GreptimeDB has the following beha
 - Doesn't return an error when the clause `IF NOT EXISTS` is presented.
 - Otherwise, returns an error.
 
-The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. All options available in [Table Options](#table-options) can be utilized here as well (one exception is that database's TTL can't be `instant`). When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
+The database can also carry options similar to the `CREATE TABLE` statement by using the `WITH` keyword. The following options are available for databases:
+
+- `ttl` - Time-To-Live for data in all tables within the database (cannot be set to `instant`)
+- `memtable.type` - Type of memtable (`time_series`, `partition_tree`)
+- `append_mode` - Whether tables in the database should be append-only (`true`/`false`)
+- `merge_mode` - Strategy for merging duplicate rows (`last_row`, `last_non_null`)
+- `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`true`/`false`)
+- `compaction.*` - Compaction-related settings (e.g., `compaction.type`, `compaction.twcs.time_window`)
+
+Read more about [table options](#table-options).
+
+:::note Important Behavior Differences
+Database options behave differently:
+
+- **TTL**: This option has ongoing effect. Tables without a specified TTL will continuously inherit this database-level value. Changing the database TTL will immediately impact all tables that don't have their own TTL setting.
+
+- **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`, `compaction.*`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
+:::
+
+When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
 
 ### Examples
 
@@ -46,7 +65,26 @@ CREATE DATABASE IF NOT EXISTS test;
 Create a database with a `TTL` (Time-To-Live) of seven days, which means all the tables in this database will inherit this option if they don't have their own `TTL` setting:
 
 ```sql
-CREATE DATABASE test with(ttl='7d');
+CREATE DATABASE test WITH (ttl='7d');
+```
+
+Create a database with multiple options, including append mode and custom memtable type:
+
+```sql
+CREATE DATABASE test WITH (
+  ttl='30d',
+  'memtable.type'='partition_tree',
+  'append_mode'='true'
+);
+```
+
+Create a database with Write-Ahead-Log disabled and custom merge mode:
+
+```sql
+CREATE DATABASE test WITH (
+  'skip_wal'='true',
+  'merge_mode'='last_non_null'
+);
 ```
 
 ## CREATE TABLE
@@ -109,6 +147,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `compaction.type`                           | Compaction strategy of the table                                | String value. Only `twcs` is allowed.                                                                                                                                                                                                                       |
 | `compaction.twcs.trigger_file_num`          | Number of files in a specific time window to trigger a compaction | String value, such as '8'. Only available when `compaction.type` is `twcs`. You can refer to this [document](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html) to learn more about the `twcs` compaction strategy. |
 | `compaction.twcs.time_window`               | Compaction time window                                          | String value, such as '1d' for 1 day. The table usually partitions rows into different time windows by their timestamps. Only available when `compaction.type` is `twcs`.                                                                                   |
+| `compaction.twcs.max_output_file_size`      | Maximum allowed output file size for TWCS compaction           | String value, such as '1GB', '512MB'. Sets the maximum size for files produced by TWCS compaction. Only available when `compaction.type` is `twcs`.                                                                                                        |
 | `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
@@ -166,6 +205,7 @@ with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
   'compaction.twcs.trigger_file_num'='8',
+  'compaction.twcs.max_output_file_size'='1GB'
 );
 ```
 

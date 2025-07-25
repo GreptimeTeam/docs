@@ -23,7 +23,26 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - 当 `IF NOT EXISTS` 子句被指定时，不会返回错误。
 - 否则，返回错误。
 
-数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。[表选项](#表选项) 中提供的所有选项也可以在此处使用（一个例外是数据库的 TTL 不能为 `instant`）。在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
+数据库也可以通过使用 `WITH` 关键字配置与 `CREATE TABLE` 语句类似的选项。数据库支持以下选项：
+
+- `ttl` - 数据库中所有表的数据存活时间（不能设置为 `instant`）
+- `memtable.type` - 内存表类型（`time_series`、`partition_tree`）
+- `append_mode` - 数据库中的表是否为仅追加模式（`true`/`false`）
+- `merge_mode` - 合并重复行的策略（`last_row`、`last_non_null`）
+- `skip_wal` - 是否为数据库中的表禁用预写日志（`true`/`false`）
+- `compaction.*` - 压缩相关设置（如 `compaction.type`、`compaction.twcs.time_window`）
+
+阅读更多关于[表选项](#表选项)的信息。
+
+:::note 重要的行为差异
+数据库选项的行为有所不同：
+
+- **TTL**：此选项具有**持续影响**。没有指定 TTL 的表会持续继承这个数据库级别的值。更改数据库 TTL 会立即影响所有没有明确自行设置 TTL 的表。
+
+- **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`、`compaction.*`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
+:::
+
+在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
 
 ### 示例
 
@@ -47,6 +66,25 @@ CREATE DATABASE IF NOT EXISTS test;
 
 ```sql
 CREATE DATABASE test WITH (ttl='7d');
+```
+
+创建一个带有多个选项的数据库，包括仅追加模式和自定义内存表类型：
+
+```sql
+CREATE DATABASE test WITH (
+  ttl='30d',
+  'memtable.type'='partition_tree',
+  'append_mode'='true'
+);
+```
+
+创建一个禁用预写日志并设置自定义合并模式的数据库：
+
+```sql
+CREATE DATABASE test WITH (
+  'skip_wal'='true',
+  'merge_mode'='last_non_null'
+);
 ```
 
 
@@ -111,6 +149,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `compaction.type`                           | Compaction 策略                          | 字符串值。只支持 `twcs`。你可以阅读这篇[文章](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/twcs.html)来了解 `twcs` compaction 策略    |
 | `compaction.twcs.trigger_file_num`   | 某个窗口内触发 compaction 的最小文件数量阈值           | 字符串值，如 '8'。只在 `compaction.type` 为 `twcs` 时可用                                                                                                                |
 | `compaction.twcs.time_window`               | Compaction 时间窗口                      | 字符串值，如 '1d' 表示 1 天。该表会根据时间戳将数据分区到不同的时间窗口中。只在 `compaction.type` 为 `twcs` 时可用                                                       |
+| `compaction.twcs.max_output_file_size`      | TWCS compaction 的最大输出文件大小          | 字符串值，如 '1GB'、'512MB'。设置 TWCS compaction 产生的文件的最大大小。只在 `compaction.type` 为 `twcs` 时可用                                                        |
 | `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
@@ -165,7 +204,8 @@ CREATE TABLE IF NOT EXISTS temperatures(
 with(
   'compaction.type'='twcs',
   'compaction.twcs.time_window'='1d',
-  'compaction.twcs.trigger_file_num'='8', 
+  'compaction.twcs.trigger_file_num'='8',
+  'compaction.twcs.max_output_file_size'='1GB'
 );
 ```
 
