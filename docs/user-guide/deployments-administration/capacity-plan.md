@@ -18,7 +18,7 @@ there are several key considerations:
 - Data retention policy
 - Hardware costs
 
-To monitor the various metrics of GreptimeDB, please refer to [Monitoring](/user-guide/deployments-administration/monitoring/export-metrics.md).
+To monitor the various metrics of GreptimeDB, please refer to [Monitoring](/user-guide/deployments-administration/monitoring/overview.md).
 
 ## CPU
 

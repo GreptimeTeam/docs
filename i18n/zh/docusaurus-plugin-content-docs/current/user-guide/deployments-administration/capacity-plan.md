@@ -18,7 +18,7 @@ GreptimeDB 具备超轻量级的启动基准，
 - 数据保留策略
 - 硬件成本
 
-要监控 GreptimeDB 的各种指标，请参阅[监控](/user-guide/deployments-administration/monitoring/export-metrics.md)。
+要监控 GreptimeDB 的各种指标，请参阅[监控](/user-guide/deployments-administration/monitoring/overview.md)。
 
 ## CPU
 
