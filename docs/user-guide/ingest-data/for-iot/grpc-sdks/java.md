@@ -239,7 +239,7 @@ For how to write data to GreptimeDB, see the following sections.
 
 ### Batching Write
 
-Batching write allows you to write data to multiple tables in a single request. It returns a CompletableFuture<Result<WriteOk, Err>> and provides good performance through asynchronous execution.
+Batching write allows you to write data to multiple tables in a single request. It returns a `CompletableFuture<Result<WriteOk, Err>>` and provides good performance through asynchronous execution.
 
 This is the recommended way to write data to GreptimeDB for most use cases.
 
