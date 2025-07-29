@@ -364,6 +364,8 @@ objectStorage:
 
 #### Volcengine TOS
 
+TOS ([Torch Object Storage](https://www.volcengine.com/docs/6349)) 是[火山引擎](https://www.volcengine.com)提供的海量、安全、低成本、易用、高可靠、高可用的对象存储服务。
+
 ```yaml
 objectStorage:
   credentials:

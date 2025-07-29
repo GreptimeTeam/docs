@@ -364,6 +364,8 @@ objectStorage:
 
 #### Volcengine TOS
 
+TOS ([Torch Object Storage](https://www.volcengine.com/docs/6349)) is a massive, secure, cost-effective, user-friendly, highly reliable, and highly available object storage service provided by [Volcengine](https://www.volcengine.com).
+
 ```yaml
 objectStorage:
   credentials:
