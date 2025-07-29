@@ -411,7 +411,7 @@ For example, exceptions that are "`Caused by: java.nio.channels.UnsupportedAddre
 "`Caused by: java.net.ConnectException: connect(..) failed: Invalid argument`". While you are certain that the
 GreptimeDB server is running, and its endpoint is reachable.
 
-These connection exceptions could be all because the GRPC's `io.grpc.NameResolverProvider` service provider is not
+These connection exceptions could be all because the gRPC's `io.grpc.NameResolverProvider` service provider is not
 packaged into the final JAR, during the assembling process. So the fix can be:
 
 - If you are using Maven Assembly plugin, add the `metaInf-services` container descriptor handler to your assembly
