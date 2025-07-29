@@ -186,14 +186,7 @@ sensorReadings.addRow(<other-column-values>... , attr);
 
 ##### TableSchema
 
-The `TableSchema` defines the structure for writing data to GreptimeDB. It includes information about column names, semantic types, and data types.
-
-##### Column Types
-In GreptimeDB, columns are categorized into three semantic types:
-
-- **Tag**: Columns uniquely identify the time-series. Rows with the same `Tag` values belong to the same time-series. Some TSDBs may also call them labels
-- **Timestamp**: Represents the date and time when the data was generated. A table can only have one column with the `Timestamp` semantic type, which is designated as the TIME INDEX column. If your schema contains multiple timestamp-type columns, only one can be the TIME INDEX, while others must be defined as `Field` columns.
-- **Field**: The other columns are `Field` columns. Fields contain the data indicators or log contents that are collected. These fields are generally numerical values or string values, but may also be other types of data, such as geographic locations or timestamps.
+The `TableSchema` defines the structure for writing data to GreptimeDB. It specifies the table structure including column names, semantic types, and data types. For detailed information about column semantic types (`Tag`, `Timestamp`, `Field`), refer to the [Data Model](/user-guide/concepts/data-model.md) documentation.
 
 ##### Table
 
