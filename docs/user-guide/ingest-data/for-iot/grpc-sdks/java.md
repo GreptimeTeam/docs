@@ -166,9 +166,7 @@ table.complete();
 CompletableFuture<Result<WriteOk, Err>> future = client.write(table);
 ```
 
-Insert data in JSON type
-
-GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type). Here's an example of adding a JSON column:
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type). You can define JSON columns in your table schema and insert data using Map objects:
 
 ```java
 // Construct the table schema for sensor_readings
