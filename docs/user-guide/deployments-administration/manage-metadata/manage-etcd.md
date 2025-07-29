@@ -56,6 +56,7 @@ Install etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version 12.0.8 \
   -n etcd-cluster \
   --values etcd.yaml
 ```
@@ -153,6 +154,7 @@ Redeploy etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version 12.0.8 \
   -n etcd-cluster \
   --values etcd-backup.yaml
 ```
@@ -271,6 +273,7 @@ Deploy etcd recover cluster:
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version 12.0.8 \
   -n etcd-cluster \
   --values etcd-restore.yaml
 ```
@@ -375,6 +378,7 @@ Deploy etcd with Monitoring:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version 12.0.8 \
   -n etcd-cluster \
   --values etcd-monitoring.yaml
 ```
@@ -451,6 +455,7 @@ Deploying with Defrag Configuration:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version 12.0.8 \
   -n etcd-cluster \
   --values etcd-defrag.yaml
 ```
