@@ -125,6 +125,8 @@ GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
         .build();
 
 // Initialize the client
+// NOTE: The client instance is thread-safe and should be reused as a global singleton
+// for better performance and resource utilization.
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
