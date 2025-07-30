@@ -275,7 +275,7 @@ StreamWriter<Table, WriteOk> writer = client.streamWriter(1000);
 
 ### Bulk 写入
 
-Bulk 写入 API 提供了一种高性能、内存高效的机制，用于将大量时间序列数据摄入到 GreptimeDB 中。它利用堆外内存管理，在写入大批量数据时实现最佳吞吐量。
+Bulk 写入 API 提供了一种高性能、内存高效的机制，用于将大量时间序列数据写入到 GreptimeDB 中。它利用堆外内存管理，在写入大批量数据时实现最佳吞吐量。
 
 **重要说明**：
 1. **需要手动创建表**：Bulk API **不会**自动创建表。你必须事先创建表，使用以下方法之一：
