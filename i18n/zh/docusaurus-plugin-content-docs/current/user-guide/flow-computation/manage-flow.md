@@ -211,8 +211,6 @@ ADMIN FLUSH_FLOW('<flow-name>')
 
 请使用以下 `DROP FLOW` 子句删除 flow：
 
-To delete a flow, use the following `DROP FLOW` clause:
-
 ```sql
 DROP FLOW [IF EXISTS] <name>
 ```
