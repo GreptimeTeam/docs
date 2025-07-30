@@ -3,24 +3,79 @@ keywords: [Java SDK, 数据写入, 安装 JDK, 连接数据库, 插入数据, �
 description: 介绍如何使用 GreptimeDB 提供的 Java ingester SDK 写入数据，包括安装、连接、插入数据和调试日志等内容。
 ---
 
-# Java
+# Java Ingester for GreptimeDB
 
 GreptimeDB 提供了用于高吞吐量数据写入的 ingester 库。
-它使用 gRPC 协议，支持自动生成表结构，无需在写入数据前创建表。
+它使用 gRPC 协议，支持无 schema 写入，无需在写入数据前创建表。
 更多信息请参考 [自动生成表结构](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
-GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特点：
+GreptimeDB 提供的 Java ingester SDK 是一个轻量级、高性能的客户端，专为高效的时间序列数据写入而设计。它利用 gRPC 协议提供非阻塞、纯异步的 API，在保持与应用程序无缝集成的同时提供高吞吐数据写入。
 
-- 基于 SPI 的可扩展网络传输层，提供了使用 gRPC 框架的默认实现。
-- 非阻塞、纯异步的易于使用的 API。
-- 默认情况下自动收集各种性能指标，然后可以配置并将其写入本地文件。
-- 能够对关键对象进行内存快照，配置并将其写入本地文件。这对于解决复杂问题很有帮助。
+该客户端提供针对各种性能要求和使用场景优化的多种写入方法。你可以选择最适合你特定需求的方法——无论你需要低延迟操作的简单一元写入，还是处理大量时间序列数据时最大效率的高吞吐量批量流式传输。
 
-## 快速开始 Demo
+## 架构
 
-你可以通过 [快速开始 Demo](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/src/main/java/io/greptime) 来了解如何使用 GreptimeDB Java SDK。
+```
++-----------------------------------+
+|      Client Applications          |
+|     +------------------+          |
+|     | Application Code |          |
+|     +------------------+          |
++-------------+---------------------+
+              |
+              v
++-------------+---------------------+
+|           API Layer               |
+|      +---------------+            |
+|      |   GreptimeDB  |            |
+|      +---------------+            |
+|         /          \              |
+|        v            v             |
+| +-------------+  +-------------+  |        +------------------+
+| |  BulkWrite  |  |    Write    |  |        |    Data Model    |
+| |  Interface  |  |  Interface  |  |------->|                  |
+| +-------------+  +-------------+  |        |  +------------+  |
++-------|----------------|----------+        |  |    Table   |  |
+        |                |                   |  +------------+  |
+        v                v                   |        |         |
++-------|----------------|----------+        |        v         |
+|        Transport Layer            |        |  +------------+  |
+| +-------------+  +-------------+  |        |  | TableSchema|  |
+| |  BulkWrite  |  |    Write    |  |        |  +------------+  |
+| |   Client    |  |    Client   |  |        +------------------+
+| +-------------+  +-------------+  |
+|     |    \          /    |        |
+|     |     \        /     |        |
+|     |      v      v      |        |
+|     |  +-------------+   |        |
+|     |  |RouterClient |   |        |
++-----|--+-------------|---+--------+
+      |                |   |        |
+      |                |   |        |
+      v                v   v        |
++-----|----------------|---|--------+
+|       Network Layer               |
+| +-------------+  +-------------+  |
+| | Arrow Flight|  | gRPC Client |  |
+| |   Client    |  |             |  |
+| +-------------+  +-------------+  |
+|     |                |            |
++-----|----------------|------------+
+      |                |
+      v                v
+   +-------------------------+
+   |    GreptimeDB Server    |
+   +-------------------------+
+```
 
-## 安装
+- **API Layer**：为客户端应用程序提供与 GreptimeDB 交互的上层接口
+- **Data Model**：定义时间序列数据的结构和组织，包括表和 schemas
+- **Transport Layer**：处理通信逻辑、请求路由和客户端管理
+- **Network Layer**：使用 Arrow Flight 和 gRPC 底层协议通信
+
+## 使用方法
+
+### 安装
 
 1. 安装 Java 开发工具包（JDK）
 
@@ -40,407 +95,323 @@ GreptimeDB 提供的 Java ingester SDK 是一个轻量级库，具有以下特�
 
 最新版本可以在 [这里](https://central.sonatype.com/search?q=io.greptime&name=ingester-all) 查看。
 
-配置依赖项后，请确保它们对项目可用，这可能需要在 IDE 中刷新项目或运行依赖项管理器。
+配置依赖项后，请确保它们对项目可用。这可能需要在 IDE 中刷新项目或运行依赖项管理器。
 
-## 连接数据库
+### 客户端初始化
 
-如果你在启动 GreptimeDB 时设置了 [`--user-provider`](/user-guide/deployments-administration/authentication/overview.md)，
-则需要提供用户名和密码才能连接到 GreptimeDB。
-以下示例显示了使用 SDK 连接到 GreptimeDB 时如何设置用户名和密码。
-
-下方的代码展示了以最简单的配置连接到 GreptimeDB 的方法。
-如果想要自定义连接选项，请参考 [API 文档](#ingester-库参考)。
-请注意每个选项的注释，它们提供了对其各自角色的详细解释。
+GreptimeDB Ingester Java 客户端的入口点是 `GreptimeDB` 类。你可以通过调用静态创建方法并传入适当的配置选项来创建客户端实例。
 
 ```java
-// GreptimeDB 默认 database 为 "public"，默认 catalog 为 "greptime"，
-// 我们可以将其作为测试数据库使用
+// GreptimeDB 在默认目录 "greptime" 中有一个名为 "public" 的默认数据库，
+// 我们可以将其用作测试数据库
 String database = "public";
-// 默认情况下，GreptimeDB 使用 gRPC 协议在监听端口 4001。
-// 我们可以提供多个指向同一 GreptimeDB 集群的 endpoints，
-// 客户端将根据负载均衡策略调用这些 endpoints。
+// 默认情况下，GreptimeDB 使用 gRPC 协议在端口 4001 上监听。
+// 我们可以提供多个指向同一 GreptimeDB 集群的端点。
+// 客户端将基于负载均衡策略调用这些端点。
+// 客户端执行定期健康检查并自动将请求路由到健康节点，
+// 为你的应用程序提供容错能力和改进的可靠性。
 String[] endpoints = {"127.0.0.1:4001"};
-// 设置鉴权信息
+// 设置认证信息。
 AuthInfo authInfo = new AuthInfo("username", "password");
 GreptimeOptions opts = GreptimeOptions.newBuilder(endpoints, database)
-        // 如果数据库不需要鉴权，我们可以使用 AuthInfo.noAuthorization() 作为参数。
+        // 如果数据库不需要认证，我们可以使用 `AuthInfo.noAuthorization()` 作为参数。
         .authInfo(authInfo)
-        // 如果服务配置了 TLS，设置 TLS 选项来启用安全连接
+        // 如果你的服务器由 TLS 保护，请启用安全连接
         //.tlsOptions(new TlsOptions())
         // 好的开始 ^_^
         .build();
 
+// 初始化客户端
+// 注意：客户端实例是线程安全的，应作为全局单例重用
+// 以获得更好的性能和资源利用率。
 GreptimeDB client = GreptimeDB.create(opts);
 ```
 
-## 数据模型
+### 写入数据
 
-表中的每条行数据包含三种类型的列：`Tag`、`Timestamp` 和 `Field`。更多信息请参考 [数据模型](/user-guide/concepts/data-model.md)。
-列值的类型可以是 `String`、`Float`、`Int`、`JSON`, `Timestamp` 等。更多信息请参考 [数据类型](/reference/sql/data-types.md)。
+Ingester 通过 `Table` 抽象为写入数据到 GreptimeDB 提供了统一的方法。所有数据写入操作，包括高级 API，都建立在这个基础结构之上。要写入数据，你需要创建一个 `Table` 为其填充时间序列数据，最后将其写入数据库。
 
-## 设置表选项
+#### 创建和写入表
 
-虽然在通过 SDK 向 GreptimeDB 写入数据时会自动创建时间序列表，但你仍然可以配置表选项。
-SDK 支持以下表选项：
-
-- `auto_create_table`：默认值为 `True`。如果设置为 `False`，则表示表已经存在且不需要自动创建，这可以提高写入性能。
-- `ttl`、`append_mode`、`merge_mode`：更多详情请参考[表选项](/reference/sql/create.md#table-options)。
-
-
-你可以使用 `Context` 设置表选项。
-例如，使用以下代码设置 `ttl` 选项：
-
-```java
-Context ctx = Context.newDefault();
-// 添加一个 hint，使数据库创建一个具有指定 TTL (time-to-live) 的表
-ctx = ctx.withHint("ttl", "3d");
-// 将压缩算法设置为 Zstd
-ctx = ctx.withCompression(Compression.Zstd)
-// 使用 ctx 对象写入数据
-// `cpuMetric` 和 `memMetric` 是定义的数据对象，之后的章节中有详细描述
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(Arrays.asList(cpuMetric, memMetric), WriteOp.Insert, ctx);
-```
-
-关于如何向 GreptimeDB 写入数据，请参考以下各节。
-
-## 低级 API
-
-GreptimeDB 的低级 API 通过向具有预定义模式的 `table` 对象添加 `row` 来写入数据。
-
-### 创建行数据
-
-以下代码片段首先构建了一个名为 `cpu_metric` 的表，其中包括 `host`、`cpu_user`、`cpu_sys` 和 `ts` 列。
-随后，它向表中插入了一行数据。
-
-该表包含三种类型的列：
-
-- `Tag`：`host` 列，值类型为 `String`。
-- `Field`：`cpu_user` 和 `cpu_sys` 列，值类型为 `Float`。
-- `Timestamp`：`ts` 列，值类型为 `Timestamp`。
-
-```java
-// 为 `cpu_metric` 构建表结构。
-// schema 是不可变的，可以安全地在多个操作中重复使用。
-// 建议使用蛇形命名法（snake_case）作为列名。
-TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String) // 主机的标识符
-        .addTimestamp("ts", DataType.TimestampMillisecond) // 毫秒级的时间戳
-        .addField("cpu_user", DataType.Float64) // 用户进程的 CPU 使用率
-        .addField("cpu_sys", DataType.Float64) // 系统进程的 CPU 使用率
-        .build();
-
-// 根据指定的 schema 创建一个 table
-// Table 不可重复使用 - 每次写操作都必须创建一个新实例。
-// 然而，在真正发起写入操作之前，我们可以向单个 table 中添加多行数据，然后一次性执行写入操作，
-// 这比逐行写入更有效率。
-Table cpuMetric = Table.from(cpuMetricSchema);
-
-// 单行的示例数据
-String host = "127.0.0.1"; // 主机标识符
-long ts = System.currentTimeMillis(); // 当前时间戳
-double cpuUser = 0.1; // 用户进程的 CPU 使用率（百分比）
-double cpuSys = 0.12; // 系统进程的 CPU 使用率（百分比）
-
-// 将一行数据插入表中
-// 注意：参数必须按照定义的表结构的列顺序排列：host, ts, cpu_user, cpu_sys
-cpuMetric.addRow(host, ts, cpuUser, cpuSys);
-// 可以继续添加更多行数据到 table 中
-// ..
-
-// 调用 `complete()` 方法使 table 变为不可变状态，为写入操作做最后准备。
-// 如果用户忘记调用此方法，系统会在实际写入数据前自动调用它。
-cpuMetric.complete();
-```
-
-为了提高写入数据的效率，你可以一次创建多行数据以便写入到 GreptimeDB。
+定义表结构并创建表：
 
 ```java
 // 创建表结构
-// schema 是不可变的，可以安全地在多个操作中重复使用。
-// 建议使用蛇形命名法（snake_case）作为列名。
-TableSchema cpuMetricSchema = TableSchema.newBuilder("cpu_metric")
-        .addTag("host", DataType.String)
-        .addTimestamp("ts", DataType.TimestampMillisecond)
-        .addField("cpu_user", DataType.Float64)
-        .addField("cpu_sys", DataType.Float64)
-        .build();
+TableSchema schema = TableSchema.newBuilder("metrics")
+    .addTag("host", DataType.String)
+    .addTag("region", DataType.String)
+    .addField("cpu_util", DataType.Float64)
+    .addField("memory_util", DataType.Float64)
+    .addTimestamp("ts", DataType.TimestampMillisecond)
+    .build();
 
-TableSchema memMetricSchema = TableSchema.newBuilder("mem_metric")
-        .addTag("host", DataType.String)
-        .addTimestamp("ts", DataType.TimestampMillisecond)
-        .addField("mem_usage", DataType.Float64)
-        .build();
+// 从 schema 创建表数据容器
+Table table = Table.from(schema);
 
-// Table 不可重复使用 - 每次写操作都必须创建一个新实例。
-// 然而，在真正发起写入操作之前，我们可以向单个 table 中添加多行数据，然后一次性执行写入操作，
-// 这比逐行写入更有效率。
-Table cpuMetric = Table.from(cpuMetricSchema);
-Table memMetric = Table.from(memMetricSchema);
+// 向表中添加行
+// 值必须按照结构中定义的顺序提供
+// 在这种情况下：addRow(host, region, cpu_util, memory_util, ts)
+table.addRow("host1", "us-west-1", 0.42, 0.78, System.currentTimeMillis());
+table.addRow("host2", "us-west-2", 0.46, 0.66, System.currentTimeMillis());
+// 添加更多行
+// ..
 
-// 添加行数据
-for (int i = 0; i < 10; i++) {
-    String host = "127.0.0." + i;
-    long ts = System.currentTimeMillis();
-    double cpuUser = i + 0.1;
-    double cpuSys = i + 0.12;
-    // 向 `cpu_metric` 表中添加一行数据。
-    // 值的顺序必须与表结构定义匹配。
-    cpuMetric.addRow(host, ts, cpuUser, cpuSys);
-}
+// 把表标记为完成以使其不可变。这将最终确定表的数据内容以进行写入。
+// 如果你忘记了调用此方法，它将在表数据写入前自动在内部调用
+table.complete();
 
-for (int i = 0; i < 10; i++) {
-    String host = "127.0.0." + i;
-    long ts = System.currentTimeMillis();
-    double memUsage = i + 0.2;
-    // 向 `mem_metric` 表中添加一行数据。
-    // 值的顺序必须与表结构定义匹配。
-    memMetric.addRow(host, ts, memUsage);
-}
-
-// 调用 `complete()` 方法使 table 变为不可变状态。即使用户忘记调用此方法，
-// 系统也会在实际写入数据前自动在内部调用它。
-cpuMetric.complete();
-memMetric.complete();
-
+// 写入数据库
+CompletableFuture<Result<WriteOk, Err>> future = client.write(table);
 ```
 
-### 插入数据
-
-下方示例展示了如何向 GreptimeDB 的表中插入行数据。
+GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-类型) 存储复杂的数据结构。你可以在表结构中定义 JSON 列，并使用 Map 对象插入数据：
 
 ```java
-// 插入数据
-
-// 出于性能考虑，SDK 被设计为纯异步的。
-// 返回值是一个 CompletableFuture 对象。如果你想立即获取结果，
-// 可以调用 `future.get()`，这将阻塞直到操作完成。
-// 对于生产环境，建议使用回调或 CompletableFuture API 等非阻塞方式。
-CompletableFuture<Result<WriteOk, Err>> future = greptimeDB.write(cpuMetric, memMetric);
-
-Result<WriteOk, Err> result = future.get();
-
-if (result.isOk()) {
-    LOG.info("Write result: {}", result.getOk());
-} else {
-    LOG.error("Failed to write: {}", result.getErr());
-}
-
-```
-
-### 流式插入
-
-当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
-
-```java
-// 设置压缩算法为 Zstd。
-Context ctx = Context.newDefault().withCompression(Compression.Zstd);
-// 创建一个流式写入器，限制速率为每秒 100,000 个数据点。
-// 这有助于控制数据流量，防止数据库过载。
-StreamWriter<Table, WriteOk> writer = greptimeDB.streamWriter(100000, ctx);
-
-// 将表数据写入流中。数据将立即被刷新到网络中。这使得数据可以高效、低延迟地传输到数据库。
-// 由于这是客户端到服务端的单向流传输，我们无法立即从数据库端获取写入结果。
-// 写入所有数据后，我们可以调用 `completed()` 来完成这个流，并获取结果。
-writer.write(cpuMetric);
-writer.write(memMetric);
-
-// 你可以对流执行操作，例如删除前 5 行
-writer.write(cpuMetric.subRange(0, 5), WriteOp.Delete);
-```
-
-在所有数据写入完毕后关闭流式写入。
-一般情况下，连续写入数据时不需要关闭流式写入。
-
-```java
-// 完成流式写入
-CompletableFuture<WriteOk> future = writer.completed();
-// 现在我们可以获取写入结果。
-WriteOk result = future.get();
-LOG.info("Write result: {}", result);
-```
-
-## 高级 API
-
-SDK 的高级 API 使用 ORM 风格的对象写入数据，
-它允许你以更面向对象的方式创建、插入和更新数据，为开发者提供了更友好的体验。
-然而，高级 API 不如低级 API 高效。
-这是因为 ORM 风格的对象在转换对象时可能会消耗更多的资源和时间。
-
-### 创建行数据
-
-GreptimeDB Java Ingester SDK 允许我们使用基本的 POJO 对象进行写入。虽然这种方法需要使用 Greptime 的注解，但它们很容易使用。
-
-```java
-@Metric(name = "cpu_metric")
-public class Cpu {
-    @Column(name = "host", tag = true, dataType = DataType.String)
-    private String host;
-
-    @Column(name = "ts", timestamp = true, dataType = DataType.TimestampMillisecond)
-    private long ts;
-
-    @Column(name = "cpu_user", dataType = DataType.Float64)
-    private double cpuUser;
-    @Column(name = "cpu_sys", dataType = DataType.Float64)
-    private double cpuSys;
-
-    // getters and setters
-    // ...
-}
-
-@Metric(name = "mem_metric")
-public class Memory {
-    @Column(name = "host", tag = true, dataType = DataType.String)
-    private String host;
-
-    @Column(name = "ts", timestamp = true, dataType = DataType.TimestampMillisecond)
-    private long ts;
-
-    @Column(name = "mem_usage", dataType = DataType.Float64)
-    private double memUsage;
-    // getters and setters
-    // ...
-}
-
-// 添加行
-List<Cpu> cpus = new ArrayList<>();
-for (int i = 0; i < 10; i++) {
-    Cpu c = new Cpu();
-    c.setHost("127.0.0." + i);
-    c.setTs(System.currentTimeMillis());
-    c.setCpuUser(i + 0.1);
-    c.setCpuSys(i + 0.12);
-    cpus.add(c);
-}
-
-List<Memory> memories = new ArrayList<>();
-for (int i = 0; i < 10; i++) {
-    Memory m = new Memory();
-    m.setHost("127.0.0." + i);
-    m.setTs(System.currentTimeMillis());
-    m.setMemUsage(i + 0.2);
-    memories.add(m);
-}
-```
-
-### 插入数据
-
-写入 POJO 对象：
-
-```java
-// 插入数据
-
-CompletableFuture<Result<WriteOk, Err>> puts = greptimeDB.writePOJOs(cpus, memories);
-
-Result<WriteOk, Err> result = puts.get();
-
-if (result.isOk()) {
-    LOG.info("Write result: {}", result.getOk());
-} else {
-    LOG.error("Failed to write: {}", result.getErr());
-}
-```
-
-### 流式插入
-
-当你需要插入大量数据时，例如导入历史数据，流式插入是非常有用的。
-
-```java
-StreamWriter<List<?>, WriteOk> writer = greptimeDB.streamWriterPOJOs();
-
-// 写入数据到流中
-writer.write(cpus);
-writer.write(memories);
-
-// 你可以对流执行操作，例如删除前 5 行
-writer.write(cpus.subList(0, 5), WriteOp.Delete);
-```
-
-在所有数据写入完毕后关闭流式写入。
-一般情况下，连续写入数据时不需要关闭流式写入。
-
-```java
-// 完成流式写入
-CompletableFuture<WriteOk> future = writer.completed();
-WriteOk result = future.get();
-LOG.info("Write result: {}", result);
-```
-
-## 插入 JSON 类型的数据
-
-GreptimeDB 支持使用 [JSON 类型数据](/reference/sql/data-types.md#json-类型) 存储复杂的数据结构。
-使用此 ingester 库，你可以通过字符串值插入 JSON 数据。
-假如你有一个名为 `sensor_readings` 的表，并希望添加一个名为 `attributes` 的 JSON 列，
-请参考以下代码片段。
-
-在[低级 API](#低级-api) 中，
-你可以使用 `addField` 方法将列类型指定为 `DataType.Json` 来添加 JSON 列，
-然后使用 Map 对象添加 JSON 数据。
-
-```java
-// 为 sensor_readings 表构建表结构
+// 为 sensor_readings 构建表结构
 TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
-        // 此处省略了创建其他列的代码
+        // 省略创建其他列的代码
         // ...
-        // 将列类型指定为 JSON
+        // 将列类型指定为 JSON        
         .addField("attributes", DataType.Json)
         .build();
 
 // ...
-// 使用 map 添加 JSON 数据
+// 使用 map 插入 JSON 数据
 Map<String, Object> attr = new HashMap<>();
 attr.put("location", "factory-1");
 sensorReadings.addRow(<other-column-values>... , attr);
-
-// 以下省略了写入数据的代码
-// ...
 ```
 
-在[高级 API](#高级-api) 中，你可以在 POJO 对象中指定列类型为 `DataType.Json`。
+##### TableSchema
+
+`TableSchema` 定义了写入数据到 GreptimeDB 的结构。它指定表结构，包括列名、语义类型和数据类型。有关列语义类型（`Tag`、`Timestamp`、`Field`）的详细信息，请参考 [数据模型](/user-guide/concepts/data-model.md) 文档。
+
+##### Table
+
+`Table` 接口表示可以写入到 GreptimeDB 的数据。它提供添加行和操作数据的方法。本质上，`Table` 将数据临时存储在内存中，允许你在将数据发送到数据库之前累积多行进行批处理，这比写入单个行显著提高了写入效率。
+
+表经历几个不同的生命周期阶段：
+
+1. **创建**：使用 `Table.from(schema)` 从 schema 初始化表
+2. **数据添加**：使用 `addRow()` 方法用行填充表
+3. **完成**：添加所有行后使用 `complete()` 冻结表不允许再修改
+4. **写入**：将完成的表发送到数据库
+
+重要提醒：
+- 表不是线程安全的，应该单线程访问
+- 写入后不能重用表 - 需要为每个写入操作创建新实例
+- 关联的 `TableSchema` 是不可变的，可以在多个操作中安全地复用
+
+### 写入操作
+
+虽然在通过 SDK 向 GreptimeDB 写入数据时会自动创建时间序列表，
+但你仍然可以配置表选项。
+SDK 支持以下表选项：
+
+- `auto_create_table`：默认为 `True`。如果设置为 `False`，表示表已经存在且不需要自动创建，这可以提高写入性能。
+- `ttl`、`append_mode`、`merge_mode`：更多详情请参考 [表选项](/reference/sql/create.md#table-options)。
+
+你可以使用 `Context` 设置表选项。
+例如，要设置 `ttl` 选项，请使用以下代码：
 
 ```java
-@Metric(name = "sensor_readings")
-public class Sensor {
-    // 此处省略了创建其他列的代码
-    // ...
-    // 将列类型指定为 JSON
-    @Column(name = "attributes", dataType = DataType.Json)
-    private Map<String, Object> attributes;
-    // ...
-}
-
-Sensor sensor = new Sensor();
-// ...
-// 使用 map 添加 JSON 数据
-Map<String, Object> attr = new HashMap<>();
-attr.put("action", "running");
-sensor.setAttributes(attr);
-
-// 以下省略了写入数据的代码
-// ...
+Context ctx = Context.newDefault();
+// 添加提示使数据库创建具有指定 TTL（生存时间）的表
+ctx = ctx.withHint("ttl", "3d");
+// 将压缩算法设置为 Zstd。
+ctx = ctx.withCompression(Compression.Zstd);
+// 写入数据到 GreptimeDB 时使用 ctx
+CompletableFuture<Result<WriteOk, Err>> future = client.write(Arrays.asList(table1, table2), WriteOp.Insert, ctx);
 ```
 
-## 调试日志
+有关如何向 GreptimeDB 写入数据，请参阅以下部分。
 
-Java SDK 提供了用于调试的指标和日志。
-请参考 [Metrics & Display](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/metrics-display.md) 和 [Magic Tools](https://github.com/GreptimeTeam/greptimedb-ingester-java/blob/main/docs/magic-tools.md) 了解如何启用或禁用日志。
+### 批量写入
 
+批量写入允许你在单个请求中向多个表写入数据。它返回 `CompletableFuture<Result<WriteOk, Err>>` 是一个典型的异步编程方式。
 
+对于大多数使用场景，这是向 GreptimeDB 写入数据的推荐方式。
+
+```java
+// 批量写入 API
+CompletableFuture<Result<WriteOk, Err>> future = client.write(table1, table2, table3);
+
+// 出于性能考虑，SDK 被设计为纯异步的。
+// 返回值是一个 CompletableFuture 对象。如果你想立即获取
+// 结果，可以调用 `future.get()`，这将阻塞直到操作完成。
+// 对于生产环境，建议使用回调或
+// CompletableFuture API 等非阻塞方法。
+Result<WriteOk, Err> result = future.get();
+```
+
+### 流式写入
+
+流式写入 API 维护到 GreptimeDB 的持久连接，以便进行具有速率限制的连续数据写入。它允许通过单个流向多个表写入数据。
+
+以下场景推荐使用此 API：
+- 中小规模的连续数据收集
+- 通过一个连接管道写入多个表的数据
+- 简单性和便利性比最大吞吐量更重要的情况
+
+```java
+// 创建流写入器
+StreamWriter<Table, WriteOk> writer = client.streamWriter();
+
+// 写入多个表
+writer.write(table1)
+      .write(table2)
+      .write(table3);
+
+// 完成流并获取结果
+CompletableFuture<WriteOk> result = writer.completed();
+```
+
+你还可以为流式写入设置速率限制：
+
+```java
+// 限制为每秒 1000 个数据点
+StreamWriter<Table, WriteOk> writer = client.streamWriter(1000);
+```
+
+### Bulk 写入
+
+Bulk 写入 API 提供了一种高性能、内存高效的机制，用于将大量时间序列数据写入到 GreptimeDB 中。它利用堆外内存管理，在写入大批量数据时实现最佳吞吐量。
+
+**重要说明**：
+1. **需要手动创建表**：Bulk API **不会**自动创建表。你必须事先创建表，使用以下方法之一：
+   - 常规写入 API（支持自动创建表），或
+   - SQL DDL 语句（CREATE TABLE）
+2. **Schema 匹配**：Bulk API 中的表模板必须与现有表结构完全匹配。
+3. **列类型**：对于 Bulk API，目前要求使用 `addField()` 而不是 `addTag()`。`Tag` 列是 GreptimeDB 中主键的一部分，但 Bulk API 尚不支持带有 `Tag` 列的表。此限制将在未来版本中得到解决。
+
+此 API 仅支持每个流写入一个表，并处理大数据量（每次写入可高达 200MB+），具有自适应流量控制。性能优势包括：
+- 使用 Arrow 缓冲区的堆外内存管理减少不必要的内置拷贝
+- 高效的二进制序列化和数据传输
+- 可选压缩选项
+- 批量操作
+
+此方法特别适用于：
+- 大规模批处理和数据迁移
+- 高吞吐量日志和传感器数据写入
+- 具有苛刻性能要求的时间序列应用程序
+- 处理高频数据收集的系统
+
+以下是使用批处理写入 API 的典型模式：
+
+```java
+// 使用表结构创建 BulkStreamWriter
+try (BulkStreamWriter writer = greptimeDB.bulkStreamWriter(schema)) {
+    // 写入多个批次
+    for (int batch = 0; batch < batchCount; batch++) {
+        // 为此批次获取 TableBufferRoot
+        Table.TableBufferRoot table = writer.tableBufferRoot(1000); // 列缓冲区大小
+
+        // 向批次添加行
+        for (int row = 0; row < rowsPerBatch; row++) {
+            Object[] rowData = generateRow(batch, row);
+            table.addRow(rowData);
+        }
+
+        // 完成表以准备传输
+        table.complete();
+
+        // 发送批次并获取完成的 future
+        CompletableFuture<Integer> future = writer.writeNext();
+
+        // 等待批次被处理（可选）
+        Integer affectedRows = future.get();
+
+        System.out.println("Batch " + batch + " wrote " + affectedRows + " rows");
+    }
+
+    // 发出流完成信号
+    writer.completed();
+}
+```
+
+#### 配置
+
+可以使用多个选项配置 Bulk API 以优化性能：
+
+```java
+BulkWrite.Config cfg = BulkWrite.Config.newBuilder()
+        .allocatorInitReservation(64 * 1024 * 1024L) // 自定义内存分配：64MB 初始保留
+        .allocatorMaxAllocation(4 * 1024 * 1024 * 1024L) // 自定义内存分配：4GB 最大分配
+        .timeoutMsPerMessage(60 * 1000) // 每个请求 60 秒超时
+        .maxRequestsInFlight(8) // 并发控制：配置 8 个最大并发请求
+        .build();
+// 启用 Zstd 压缩
+Context ctx = Context.newDefault().withCompression(Compression.Zstd);
+
+BulkStreamWriter writer = greptimeDB.bulkStreamWriter(schema, cfg, ctx);
+```
+
+### 资源管理
+
+使用完客户端后正确关闭客户端很重要：
+
+```java
+// 优雅地关闭客户端
+client.shutdownGracefully();
+```
+
+### 性能调优
+
+#### 压缩选项
+
+Ingester 支持各种压缩算法以降低网络带宽占用并提高吞吐量。
+
+```java
+// 将压缩算法设置为 Zstd
+Context ctx = Context.newDefault().withCompression(Compression.Zstd);
+```
+
+#### 写入操作比较
+
+了解不同写入方法的性能特征对于优化数据写入至关重要。
+
+| 写入方法 | API | 吞吐量 | 延迟 | 内存效率 | CPU 使用 | 最佳用途 | 限制 |
+|----------|-----|---------|------|----------|----------|----------|------|
+| Batching Write | `write(tables)` | 较好 | 良好 | 高 | 较高 | 简单应用程序，低延迟需求 | 大量数据的吞吐量较低 |
+| Streaming Write | `streamWriter()` | 中等 | 良好 | 中等 | 中等 | 连续数据流，中等吞吐量 | 比常规写入更复杂 |
+| Bulk Write | `bulkStreamWriter()` | 最佳 | 较高 | 最佳 | 中等 | 最大吞吐量，大批量操作 | 延迟较高，需要手动创建表 |
+
+#### 缓冲区大小优化
+
+使用 `BulkStreamWriter` 时，你可以配置列缓冲区大小：
+
+```java
+// 获取具有特定列缓冲区大小的表缓冲区
+Table.TableBufferRoot table = bulkStreamWriter.tableBufferRoot(columnBufferSize);
+```
+
+此选项可以显著提高数据转换为底层格式的速度。为了获得最佳性能，我们建议将列缓冲区大小设置为 1024 或更大，具体取决于你的特定工作负载特征和可用内存。
+
+### 导出指标
+
+Ingester 公开全面的指标，使你能够监控其性能、健康状况和操作状态。
+
+有关可用指标及其使用的详细信息，请参考 [Ingester Prometheus Metrics](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-prometheus-metrics) 文档。
+
+## API 文档和示例
+- [API 参考](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+- [示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/)
 
 ## FAQ
 
-### 为何我会遇到连接异常？
+### 为什么我会遇到一些连接异常？
 
-当你使用 GreptimeDB Java ingester SDK 时，可能会遇到一些连接异常。例如，异常信息为
-"`Caused by: java.nio.channels.UnsupportedAddressTypeException`"，
+使用 GreptimeDB Java ingester SDK 时，你可能会遇到一些连接异常。
+例如，异常是"`Caused by: java.nio.channels.UnsupportedAddressTypeException`"、
 "`Caused by: java.net.ConnectException: connect(..) failed: Address family not supported by protocol`" 或
-"`Caused by: java.net.ConnectException: connect(..) failed: Invalid argument`"。而你确定 GreptimeDB 是正常运行的，
-并且其服务地址是可访问的。
+"`Caused by: java.net.ConnectException: connect(..) failed: Invalid argument`"。当你确定
+GreptimeDB 服务器正在运行，并且其端点可达时。
 
-这些连接异常可能是因为 GRPC 的 `io.grpc.NameResolverProvider` service provider 未能在打包时被包含到最终的 JAR
-包中。所以修复方法是：
+这些连接异常可能都是因为在打包过程中，gRPC 的 `io.grpc.NameResolverProvider` 服务提供程序没有
+打包到最终的 JAR 中。所以修复方法可以是：
 
-- 如果你使用的是 Maven Assembly 插件，请在你的 assembly 文件中添加 `metaInf-services` container descriptor handler，如下所示：
+- 如果你使用 Maven Assembly 插件，请将 `metaInf-services` 容器描述符处理程序添加到你的 assembly 
+  文件中，如下所示：
   ```xml
   <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -453,7 +424,7 @@ Java SDK 提供了用于调试的指标和日志。
     </containerDescriptorHandlers>
   </assembly>
   ```
-- 如果你使用的是 Maven Shade 插件，你可以添加 `ServicesResourceTransformer`，如下所示：
+- 如果你使用 Maven Shade 插件，可以添加 `ServicesResourceTransformer`：
   ```xml
   <project>
     ...
@@ -485,4 +456,3 @@ Java SDK 提供了用于调试的指标和日志。
 ## Ingester 库参考
 
 - [API 文档](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
-
