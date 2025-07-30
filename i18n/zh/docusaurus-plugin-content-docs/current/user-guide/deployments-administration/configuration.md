@@ -475,7 +475,7 @@ tcp_nodelay = true
 ### 指标监控选项
 
 这些选项用于将系统监控指标保存到 GreptimeDB 本身。
-有关如何使用此功能的说明，请参见 [监控](/user-guide/deployments-administration/monitoring/export-metrics.md) 指南。
+有关如何使用此功能的说明，请参见 [监控](/user-guide/deployments-administration/monitoring/overview.md) 指南。
 
 ```toml
 [export_metrics]

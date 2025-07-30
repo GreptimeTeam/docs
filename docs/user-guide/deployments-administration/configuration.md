@@ -485,7 +485,7 @@ The `meta_client` configures the Metasrv client, including:
 ### Monitor metrics options
 
 These options are used to save system metrics to GreptimeDB itself.
-For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/deployments-administration/monitoring/export-metrics.md) guide.
+For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/deployments-administration/monitoring/overview.md) guide.
 
 ```toml
 [export_metrics]
