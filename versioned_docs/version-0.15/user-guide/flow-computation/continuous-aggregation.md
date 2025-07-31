@@ -62,7 +62,7 @@ CREATE TABLE `ngx_statistics` (
 );
 ```
 
-Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it. 
+Then create the flow `ngx_aggregation` to aggregate a series of aggregate functions, including `count`, `min`, `max`, `avg` of the `size` column, and the sum of all packets of size great than 550. The aggregation is calculated in 1-minute fixed windows of `access_time` column and also grouped by the `status` column. So you can be made aware in real time the information about packet size and action upon it, i.e. if the `high_size_count` became too high at a certain point, you can further examine if anything goes wrong, or if the `max_size` column suddenly spike in a 1 minute time window, you can then trying to locate that packet and further inspect it.
 
 The `EXPIRE AFTER '6h'` in the following SQL ensures that the flow computation only uses source data from the last 6 hours. Data older than 6 hours in the sink table will not be modified by this flow. For more details, see [manage-flow](manage-flow.md#expire-after).
 
@@ -89,12 +89,12 @@ GROUP BY
 To observe the outcome of the continuous aggregation in the `ngx_statistics` table, insert some data into the source table `ngx_access_log`.
 
 ```sql
-INSERT INTO ngx_access_log 
+INSERT INTO ngx_access_log
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", now() - INTERVAL '1' minute),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now() - INTERVAL '1' minute),
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", now()),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", now());
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 1000, 'agent', now() - INTERVAL '1' minute),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 500, 'agent', now() - INTERVAL '1' minute),
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 600, 'agent', now()),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 700, 'agent', now());
 ```
 
 Then the sink table `ngx_statistics` will be incremental updated and contain the following data:
@@ -117,10 +117,10 @@ SELECT * FROM ngx_statistics;
 Try to insert more data into the `ngx_access_log` table:
 
 ```sql
-INSERT INTO ngx_access_log 
+INSERT INTO ngx_access_log
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now()),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", now());
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 500, 'agent', now()),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 800, 'agent', now());
 ```
 
 The sink table `ngx_statistics` now have corresponding rows updated, notes how `max_size`, `avg_size` and `high_size_count` are updated:
@@ -201,16 +201,16 @@ You can insert some data into the source table `ngx_access_log`:
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("client1", "US", now() - '2 hour'::INTERVAL),
-    ("client2", "US", now() - '2 hour'::INTERVAL),
-    ("client3", "UK", now() - '2 hour'::INTERVAL),
-    ("client4", "UK", now() - '1 hour'::INTERVAL),
-    ("client5", "CN", now() - '1 hour'::INTERVAL),
-    ("client6", "CN", now() - '1 hour'::INTERVAL),
-    ("client7", "JP", now()),
-    ("client8", "JP", now()),
-    ("client9", "KR", now()),
-    ("client10", "KR", now());
+    ('client1', 'US', now() - '2 hour'::INTERVAL),
+    ('client2', 'US', now() - '2 hour'::INTERVAL),
+    ('client3', 'UK', now() - '2 hour'::INTERVAL),
+    ('client4', 'UK', now() - '1 hour'::INTERVAL),
+    ('client5', 'CN', now() - '1 hour'::INTERVAL),
+    ('client6', 'CN', now() - '1 hour'::INTERVAL),
+    ('client7', 'JP', now()),
+    ('client8', 'JP', now()),
+    ('client9', 'KR', now()),
+    ('client10', 'KR', now());
 ```
 
 Wait for few seconds for the Flow to write the result to the sink table and then query:
@@ -288,8 +288,8 @@ Now that we have created the flow task, we can insert some data into the source 
 ```sql
 
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 98.5, now() - '10 second'::INTERVAL),
-    (2, "room2", 99.5, now());
+    (1, 'room1', 98.5, now() - '10 second'::INTERVAL),
+    (2, 'room2', 99.5, now());
 ```
 table should be empty now, but still wait at least few seconds for flow to update results to sink table:
 
@@ -305,8 +305,8 @@ Now insert some data that will trigger the alert:
 
 ```sql
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 101.5, now()),
-    (2, "room2", 102.5, now());
+    (1, 'room1', 101.5, now()),
+    (2, 'room2', 102.5, now());
 ```
 
 wait at least few seconds for flow to update results to sink table:
@@ -350,7 +350,7 @@ CREATE TABLE ngx_distribution (
     PRIMARY KEY(stat, bucket_size)
 );
 /* create flow task to calculate the distribution of packet sizes for each status code */
-CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution 
+CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution
 EXPIRE AFTER '6h'
 AS
 SELECT
@@ -376,16 +376,16 @@ Now that we have created the flow task, we can insert some data into the source 
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("cli1", 200, 100, now()),
-    ("cli2", 200, 104, now()),
-    ("cli3", 200, 120, now()),
-    ("cli4", 200, 124, now()),
-    ("cli5", 200, 140, now()),
-    ("cli6", 404, 144, now()),
-    ("cli7", 404, 160, now()),
-    ("cli8", 404, 164, now()),
-    ("cli9", 404, 180, now()),
-    ("cli10", 404, 184, now());
+    ('cli1', 200, 100, now()),
+    ('cli2', 200, 104, now()),
+    ('cli3', 200, 120, now()),
+    ('cli4', 200, 124, now()),
+    ('cli5', 200, 140, now()),
+    ('cli6', 404, 144, now()),
+    ('cli7', 404, 160, now()),
+    ('cli8', 404, 164, now()),
+    ('cli9', 404, 180, now()),
+    ('cli10', 404, 184, now());
 ```
 wait at least few seconds for flow to update results to sink table:
 
@@ -411,4 +411,3 @@ SELECT * FROM ngx_distribution;
 
 - [Manage Flow](manage-flow.md): Gain insights into the mechanisms of the Flow engine and the SQL syntax for defining a Flow.
 - [Expressions](expressions.md): Learn about the expressions supported by the Flow engine for data transformation.
-
