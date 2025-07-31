@@ -504,11 +504,6 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'doc',
-          id: 'enterprise/read-replica',
-          label: 'Read Replica',
-        },
-        {
-          type: 'doc',
           id: 'enterprise/overview',
           label: 'Overview',
 
@@ -575,6 +570,11 @@ const sidebars: SidebarsConfig = {
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
           ]
+        },
+        {
+          type: 'doc',
+          id: 'enterprise/read-replica',
+          label: 'Read Replica',
         },
       ],
     },
