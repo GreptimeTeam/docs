@@ -25,7 +25,7 @@ global:
 image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: bitnami/etcd
-  tag: 3.5.21-debian-12-r5
+  tag: VAR::etcdImageVersion
   
 replicaCount: 3
 
@@ -65,7 +65,7 @@ extraEnvVars:
 helm upgrade \
   --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  --version 11.3.4 \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd.yaml
 ```
@@ -122,7 +122,7 @@ global:
 image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: bitnami/etcd
-  tag: 3.5.21-debian-12-r5
+  tag: VAR::etcdImageVersion
   
 replicaCount: 3
 
@@ -172,7 +172,7 @@ disasterRecovery:
 helm upgrade \
   --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  --version 11.3.4 \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-backup.yaml
 ```
@@ -254,7 +254,7 @@ global:
 image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: bitnami/etcd
-  tag: 3.5.21-debian-12-r5
+  tag: VAR::etcdImageVersion
   
 replicaCount: 3
 
@@ -300,7 +300,7 @@ startFromSnapshot:
 helm upgrade \
   --install etcd-recover oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  --version 11.3.4 \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-restore.yaml
 ```
@@ -363,7 +363,7 @@ global:
 image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: bitnami/etcd
-  tag: 3.5.21-debian-12-r5
+  tag: VAR::etcdImageVersion
   
 replicaCount: 3
 
@@ -414,7 +414,7 @@ metrics:
 helm upgrade \
   --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  --version 11.3.4 \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-monitoring.yaml
 ```
@@ -451,7 +451,7 @@ global:
 image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: bitnami/etcd
-  tag: 3.5.21-debian-12-r5
+  tag: VAR::etcdImageVersion
   
 replicaCount: 3
 
@@ -500,7 +500,7 @@ defrag:
 helm upgrade \
   --install etcd oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --create-namespace \
-  --version 11.3.4 \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-defrag.yaml
 ```

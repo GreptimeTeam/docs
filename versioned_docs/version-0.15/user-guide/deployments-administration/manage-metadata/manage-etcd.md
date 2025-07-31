@@ -20,6 +20,11 @@ Save the following configuration as a file `etcd.yaml`:
 ```yaml
 replicaCount: 3
 
+image:
+  registry: docker.io
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
+
 auth:
   rbac:
     create: false
@@ -56,6 +61,7 @@ Install etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd.yaml
 ```
@@ -107,6 +113,11 @@ Add the following configuration and name it `etcd-backup.yaml` file, Note that y
 ```yaml
 replicaCount: 3
 
+image:
+  registry: docker.io
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
+
 auth:
   rbac:
     create: false
@@ -153,6 +164,7 @@ Redeploy etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-backup.yaml
 ```
@@ -229,6 +241,11 @@ Add the following configuration file and name it `etcd-restore.yaml`. Note that 
 ```yaml
 replicaCount: 3
 
+image:
+  registry: docker.io
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
+
 auth:
   rbac:
     create: false
@@ -271,6 +288,7 @@ Deploy etcd recover cluster:
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-restore.yaml
 ```
@@ -328,6 +346,11 @@ Add the following to your `etcd-monitoring.yaml` to enable monitoring:
 ```yaml
 replicaCount: 3
 
+image:
+  registry: docker.io
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
+
 auth:
   rbac:
     create: false
@@ -375,6 +398,7 @@ Deploy etcd with Monitoring:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-monitoring.yaml
 ```
@@ -405,6 +429,11 @@ Add the following defrag-related configuration to `etcd-defrag.yaml` file:
 
 ```yaml
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -451,6 +480,7 @@ Deploying with Defrag Configuration:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-defrag.yaml
 ```
