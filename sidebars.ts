@@ -504,6 +504,11 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'doc',
+          id: 'enterprise/read-replica',
+          label: 'Read Replica',
+        },
+        {
+          type: 'doc',
           id: 'enterprise/overview',
           label: 'Overview',
 
