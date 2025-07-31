@@ -1,3 +1,8 @@
+---
+keywords: [企业版, 集群, 读副本, leader region, follower region]
+description: GreptimeDB 企业版的读副本功能的概述, 原理, 和"如何".
+---
+
 # 概述
 
 读副本（Read Replica）是 GreptimeDB 企业集群版中的一项重要功能，旨在提高数据库系统的整体读写性能和可扩展性。在读副本功能中，客户端将数据写入 “Leader” Region。Leader Region 再将数据同步到 “Follower” Region。Follower Region 只提供读功能，是为 Leader Region 的读副本。Leader Region 和 Follower Region 分别部署在不同的 Datanode 节点上，可有效分隔读写请求对于系统资源的互相抢占，带来更平滑的整体读写体验：
