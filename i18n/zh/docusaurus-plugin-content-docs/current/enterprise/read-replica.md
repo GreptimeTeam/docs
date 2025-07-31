@@ -20,7 +20,7 @@ GreptimeDB 企业集群版基于自身架构的特点，可以使数据在副本
 
 在实际的实现中，SST 文件元信息持久化在一个特殊的 manifest 文件中。manifest 文件和 SST 文件一样，也保存在对象存储中。每个 manifest 文件有一个唯一的版本号。在 Leader Region 和 Follower Region 之间同步 SST 文件元信息实际就是同步这个 manifest 文件的版本号。这个版本号只是一个整形数字，所以同步的成本非常低。Follower Region 在得到 manifest 文件版本号后，就可以去对象存储获取 manifest 文件了，从而就获取了 Leader Region 生成的 SST 文件元信息。
 
-manifest 文件版本号是通过 Region 与 Metasrv 之间的心跳进行同步的。Leader Region 在向 Metasrv 的心跳中带上 这个版本号。Metasrv 再在回复 Follower Region 的心跳时，将这个版本号返回。如下图：
+manifest 文件版本号是通过 Region 与 Metasrv 之间的心跳进行同步的。Leader Region 在向 Metasrv 的心跳中带上这个版本号。Metasrv 再在回复 Follower Region 的心跳时，将这个版本号返回。如下图：
 
 ![read-replica-heartbeat](/read-replica-heartbeat.png)
 
