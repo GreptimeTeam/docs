@@ -169,6 +169,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/streamlit',
             'user-guide/integrations/mindsdb',
             'user-guide/integrations/fluent-bit',
+            'user-guide/integrations/coroot',
           ],
         },
         {
