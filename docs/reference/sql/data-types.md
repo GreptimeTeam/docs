@@ -189,6 +189,43 @@ Supported abbreviations include:
 | us           | microseconds |
 | ns           | nanoseconds  |
 
+#### INTERVAL keyword
+In the examples above, we used the cast operation `'{quantity unit}'::INTERVAL` to demonstrate the interval type. In fact, the interval type can also be used with the syntax supported by the `INTERVAL` keyword, though the behavior varies between database dialects:
+
+1. In MySQL, the syntax is `INTERVAL {quantity} {unit}`, where `quantity` can be a number or a string depending on the context. For example:
+```sql
+mysql> SELECT INTERVAL 1 YEAR;
++--------------------------------------------------------------------------------------+
+| IntervalMonthDayNano("IntervalMonthDayNano { months: 12, days: 0, nanoseconds: 0 }") |
++--------------------------------------------------------------------------------------+
+| P1Y0M0DT0H0M0S                                                                       |
++--------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT INTERVAL '1 YEAR 2' MONTH;
++--------------------------------------------------------------------------------------+
+| IntervalMonthDayNano("IntervalMonthDayNano { months: 14, days: 0, nanoseconds: 0 }") |
++--------------------------------------------------------------------------------------+
+| P1Y2M0DT0H0M0S                                                                       |
++--------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+```
+
+2. In PostgreSQL and the default GreptimeDB dialect, it is `INTERVAL '{quantity unit}'`, where the INTERVAL keyword is followed by the interval string:
+```sql
+public=> SELECT INTERVAL '1 year';
+ IntervalMonthDayNano("IntervalMonthDayNano { months: 12, days: 0, nanoseconds: 0 }")
+--------------------------------------------------------------------------------------
+ 1 year
+(1 row)
+
+public=> SELECT INTERVAL '1 year 2 month';
+ IntervalMonthDayNano("IntervalMonthDayNano { months: 14, days: 0, nanoseconds: 0 }")
+--------------------------------------------------------------------------------------
+ 1 year 2 mons
+(1 row)
+```
+
 ## JSON Type (Experimental)
 
 :::warning

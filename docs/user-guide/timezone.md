@@ -29,6 +29,10 @@ To configure the time zone for the PostgreSQL client, please refer to the [time 
 
 When using the HTTP API, you can specify the time zone through the header parameter. For more information, please refer to the [HTTP API documentation](/user-guide/protocols/http.md#time-zone).
 
+### Dashboard
+
+The dashboard will use the local timezone as the default timezone value. You can change it in settings menu.
+
 ### Other clients
 
 For other clients, you can change [the default time zone configuration](/user-guide/deployments-administration/configuration.md#default-time-zone-configuration) of GreptimeDB.

@@ -29,6 +29,10 @@ GreptimeDB 在数据写入或查询时，会根据指定的时区将时间值从
 
 使用 HTTP API 时，你可以通过 header 参数指定时区。有关更多信息，请参阅 [HTTP API 文档](/user-guide/protocols/http.md#时区)。
 
+### Dashboard
+
+Dashboard 将使用本地时区作为默认时区值。您可以在 settings 菜单中更改它。
+
 ### 其他客户端
 
 对于其他客户端，你可以更改 GreptimeDB 的[默认时区配置](/user-guide/deployments-administration/configuration.md#默认时区配置)。
