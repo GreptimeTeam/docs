@@ -1,8 +1,6 @@
 ---
 keywords: [Trigger, Alert, GreptimeDB Enterprise, SQL, Webhook, Alertmanager, Slack]
-description: This guide demonstrates how GreptimeDB Triggers enable seamless 
-integration with the Prometheus Alertmanager ecosystem for comprehensive monitoring
-and alerting.
+description: This guide demonstrates how GreptimeDB Triggers enable seamless integration with the Prometheus Alertmanager ecosystem for comprehensive monitoring and alerting.
 ---
 
 # Trigger
