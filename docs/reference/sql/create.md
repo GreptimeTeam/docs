@@ -29,7 +29,7 @@ The database can also carry options similar to the `CREATE TABLE` statement by u
 - `memtable.type` - Type of memtable (`time_series`, `partition_tree`)
 - `append_mode` - Whether tables in the database should be append-only (`true`/`false`)
 - `merge_mode` - Strategy for merging duplicate rows (`last_row`, `last_non_null`)
-- `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`true`/`false`)
+- `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`'true'`/`'false'`)
 - `compaction.*` - Compaction-related settings (e.g., `compaction.type`, `compaction.twcs.time_window`)
 
 Read more about [table options](#table-options).
@@ -152,7 +152,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
-| `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | Boolean type. When set to `true`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
+| `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
 | `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
 
 #### Create a table with TTL

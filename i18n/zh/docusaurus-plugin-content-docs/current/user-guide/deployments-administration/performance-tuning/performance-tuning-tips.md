@@ -69,6 +69,20 @@ staging_size = "10GB"
 
 如果表不需要去重或性能优先于去重，我们建议为表启用 [append_mode](/reference/sql/create.md#创建-append-only-表)。例如，日志表应该是 append-only 表，因为日志消息可能具有相同的时间戳。
 
+### 禁用预写式日志(WAL)
+
+如果您是从 Kafka 等可以重放的数据源消费并写入到 GreptimeDB，可以通过禁用 WAL 来进一步提升写入吞吐量。
+
+请注意，当 WAL 被禁用后，未刷新到磁盘或对象存储的数据将无法恢复，需要从原始数据源重新恢复，比如重新从 Kafka 读取或重新抓取日志。
+
+通过设置表选项 `skip_wal='true'` 来禁用 WAL：
+
+```sql
+CREATE TABLE logs(
+  message STRING,
+  ts TIMESTAMP TIME INDEX
+) WITH (skip_wal = 'true');
+```
 
 ## 写入
 

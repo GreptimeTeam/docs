@@ -189,6 +189,44 @@ SELECT '-1h5m'::INTERVAL;
 | us     | microseconds |
 | ns     | nanoseconds  |
 
+#### INTERVAL 关键字
+
+在上述示例中，我们使用了 `cast` 类型转换操作 `'{quantity unit}'::INTERVAL` 来演示 interval 类型。实际上，interval 类型也可以使用 `INTERVAL` 关键字支持的语法，不过不同数据库方言之间的行为有所差异：
+
+1. 在 MySQL 中，语法为 `INTERVAL {quantity} {unit}`，其中 `quantity` 可以是数字或字符串，具体取决于上下文。例如：
+```sql
+mysql> SELECT INTERVAL 1 YEAR;
++--------------------------------------------------------------------------------------+
+| IntervalMonthDayNano("IntervalMonthDayNano { months: 12, days: 0, nanoseconds: 0 }") |
++--------------------------------------------------------------------------------------+
+| P1Y0M0DT0H0M0S                                                                       |
++--------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT INTERVAL '1 YEAR 2' MONTH;
++--------------------------------------------------------------------------------------+
+| IntervalMonthDayNano("IntervalMonthDayNano { months: 14, days: 0, nanoseconds: 0 }") |
++--------------------------------------------------------------------------------------+
+| P1Y2M0DT0H0M0S                                                                       |
++--------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+```
+
+2. 在 PostgreSQL 和默认的 GreptimeDB 方言中，语法为 `INTERVAL '{quantity unit}'`，即 INTERVAL 关键字后跟 interval 字符串：
+```sql
+public=> SELECT INTERVAL '1 year';
+ IntervalMonthDayNano("IntervalMonthDayNano { months: 12, days: 0, nanoseconds: 0 }")
+--------------------------------------------------------------------------------------
+ 1 year
+(1 row)
+
+public=> SELECT INTERVAL '1 year 2 month';
+ IntervalMonthDayNano("IntervalMonthDayNano { months: 14, days: 0, nanoseconds: 0 }")
+--------------------------------------------------------------------------------------
+ 1 year 2 mons
+(1 row)
+```
+
 ## JSON 类型（实验功能）
 
 :::warning
