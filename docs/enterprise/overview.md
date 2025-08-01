@@ -30,7 +30,7 @@ This section provides an overview of the advanced features available in Greptime
 - Elasticsearch query compatibility: Use GreptimeDB backed Kibana for your logs.
 - Greptime Enterprise Management UI: An enhanced version of our dashboard UI,
   carries more cluster management and monitoring features.
-- Read Replicas: Read-only datanode instances for heavy query workloads such as
+- [Read Replica](./read-replica.md): Read-only datanode instances for heavy query workloads such as
   analytical queries.
 - Triggers: Periodically evaluate your rules and trigger external
   webhook. Compatible with Prometheus AlterManager.

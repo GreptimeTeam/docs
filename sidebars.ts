@@ -563,6 +563,7 @@ const sidebars: SidebarsConfig = {
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
         },
+        'enterprise/read-replica',
         {
           type: 'category',
           label: 'Releases',
