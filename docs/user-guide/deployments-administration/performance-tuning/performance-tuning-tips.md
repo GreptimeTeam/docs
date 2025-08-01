@@ -69,6 +69,22 @@ In general, append-only tables have a higher scan performance as the storage eng
 
 We recommend enabling the [append_mode](/reference/sql/create.md#create-an-append-only-table) for the table if it doesn't require deduplication or performance is prioritized over deduplication. For example, a log table should be append-only as log messages may have the same timestamp.
 
+### Disable Write-Ahead-Log(WAL)
+
+If you are consuming and writing to GreptimeDB from replayable data sources such as Kafka, you can further improve write throughput by disabling WAL.
+
+Please note that when WAL is disabled, unflushed data to disk or object storage will not be recoverable and will need to be restored from the original data source, such as re-reading from Kafka or re-fetching logs.
+
+Disable WAL by setting the table option `skip_wal='true'`:
+
+```sql
+CREATE TABLE logs(
+  message STRING,
+  ts TIMESTAMP TIME INDEX
+) WITH (skip_wal = 'true');
+```
+
+
 ## Ingestion
 
 ### Metrics
