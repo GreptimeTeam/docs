@@ -22,7 +22,7 @@ The diagram illustrates the complete end-to-end workflow of the example.
 
 1. Vector continuously scrapes host metrics and writes it to GreptimeDB.
 2. A Trigger in GreptimeDB evaluates the rule `load1 > 10` every minute; whenever
-    the condition is met, it sneds a notification to Alertmanager.
+    the condition is met, it sends a notification to Alertmanager.
 3. Alertmanager applies its own policies and finally delivers the alert to Slack.
 
 > The payload of GreptimeDB Trigger's Webhook is compatible with Prometheus
@@ -46,7 +46,7 @@ endpoint = "localhost:4001"
 ```
 
 GreptimeDB auto-creates tables on the first write. The resulting `host_load1`
-table stores the load1 metric; its schema is shown below:
+table stores the load1 metrics; its schema is shown below:
 
 ```sql
 +-----------+----------------------+------+------+---------+---------------+

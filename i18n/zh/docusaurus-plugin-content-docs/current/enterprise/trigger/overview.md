@@ -25,7 +25,7 @@ Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这�
     发送至指定频道。
 
 
-> GreptimeDB 的 Webhook 输出格式与 Prometheus Alertmanager 完全兼容，能够直接接
+> GreptimeDB 的 Webhook 输出格式与 Prometheus Alertmanager 完全兼容，可以直接接
 入 Alertmanager 生态。
 
 ### 前置工作
@@ -44,7 +44,7 @@ type = "greptimedb"
 endpoint = "localhost:4001"
 ```
 
-GreptimeDB 会在数据写入的时候自动创建表，其中，host_load1 表记录了 load1 数据，
+GreptimeDB 会在数据写入的时候自动创建表，其中，`host_load1`表记录了 load1 数据，
 表结构如下所示：
 
 ```sql
@@ -87,7 +87,7 @@ Labels:
 
 ### 演示示例
 
-在 GreptimeDB 中创建 Trigger。使用MySql客户端连接 GreptimeDB 并执行以下 SQL：
+在 GreptimeDB 中创建 Trigger。使用 MySql 客户端连接 GreptimeDB 并执行以下 SQL：
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS load1_monitor
@@ -105,7 +105,8 @@ CREATE TRIGGER IF NOT EXISTS load1_monitor
 ```
 
 上述SQL将创建一个名为`load1_monitor`的触发器，每分钟运行一次。它会评估 `host_load1`
-表中最近 60 秒的数据；如果任何 load1 值超过10，就会向 Alertmanager 发送通知。
+表中最近 60 秒的数据；如果任何 load1 值超过10，就会触发 GreptimeDB 向 Alertmanager
+发送通知。
 
 执行`SHOW TRIGGERS`查看已创建的触发器列表。
 
@@ -123,7 +124,7 @@ SHOW TRIGGERS;
 +---------------+
 ```
 
-使用 stress-ng 模拟 60 秒的高CPU负载：
+使用 stress-ng 模拟 60 秒的高 CPU 负载：
 
 ```bash
 stress-ng --cpu 100 --cpu-load 10 --timeout 60
@@ -131,3 +132,5 @@ stress-ng --cpu 100 --cpu-load 10 --timeout 60
 
 load1 值将快速上升，Trigger 将被触发，在一分钟之内，指定的 Slack 频道将收到如下
 告警：
+
+![Slack 告警示意图](/trigger-slack-alert.png)
