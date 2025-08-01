@@ -31,7 +31,7 @@ When using the HTTP API, you can specify the time zone through the header parame
 
 ### Dashboard
 
-The dashboard will use the local timezone as the default timezone value. You can change it in settings menu.
+The dashboard will use the local timezone as the default timezone value. You can change it in the settings menu.
 
 ### Other clients
 
