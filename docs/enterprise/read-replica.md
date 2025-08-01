@@ -3,7 +3,7 @@ keywords: [enterprise, cluster, read replica, leader region, follower region]
 description: Overview, principles, and how-tos of read replica feature in GreptimeDB Enterprise.
 ---
 
-# Overview
+# Read Replica
 
 Read Replica is a key feature in GreptimeDB's Enterprise Cluster Edition, designed to enhance the overall read-write performance and scalability of the database system.
 
@@ -15,11 +15,11 @@ In the Read Replica mechanism, clients write data to the Leader Region, which th
 The Read Replica feature is exclusive to the GreptimeDB Enterprise Cluster Edition.
 :::
 
-# Principles
+## Principles
 
 GreptimeDB's Enterprise Cluster Edition leverages its architecture to enable near-zero-cost data synchronization between replicas. Additionally, Read Replicas can access newly written data with minimal latency. Below is a brief explanation of the data synchronization and read mechanisms.
 
-## Data Synchronization
+### Data Synchronization
 
 In GreptimeDB, storage and compute resources are disaggregated. All data is stored in SST files on object storage. Thus, synchronizing data between Leader and Follower Regions does not require copying SST files -- only their metadata needs to be synced. Metadata is significantly smaller than SST files, making synchronization effortless. Once metadata is synced, the Read Replica "possesses" the same SST files and can access the data:
 
@@ -33,7 +33,7 @@ The manifest version number is synchronized via heartbeats between Regions and M
 
 It's easy to see, if there were only SST files synchronization mechanism in place, the delay for Read Replica to access written data would be the sum of the heartbeat intervals between Leader/Follower Regions and Metasrv. For example, with a default 3-second heartbeat interval, Read Replica would only see the data written in SST files 3 to 6 seconds prior. While this suffices for clients with relaxed freshness requirements, additional mechanisms are needed for near-real-time reads.
 
-## Data Read
+### Data Read
 
 Newly written data are stored in the Leader Region’s memtable. To access the latest data, Follower Region needs to request the memtable data from the Leader Region. By combining this with SST files data (obtained via data sync above), the Follower Region provides clients with a complete dataset, including the most recent writes:
 
@@ -41,7 +41,7 @@ Newly written data are stored in the Leader Region’s memtable. To access the l
 
 Follower Region fetch memtable data from Leader Region via an internal gRPC interface. While this imposes some read load on the Leader Region, the impact is minimal since the memtable data resides in memory and is finite in size.
 
-# Adding Read Replicas
+## Adding Read Replicas
 
 Adding a Read Replica is as simple as executing one SQL command:
 
@@ -107,7 +107,7 @@ SELECT table_name, region_id, peer_id, is_leader FROM information_schema.region_
 
 Now, Follower Regions can be found on Datanodes 0 and 1.
 
-# Using Read Replicas
+## Using Read Replicas
 
 Clients can specify whether to read from Read Replicas like this (for JDBC connections):
 

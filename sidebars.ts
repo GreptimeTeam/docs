@@ -571,11 +571,7 @@ const sidebars: SidebarsConfig = {
             'enterprise/release-notes/release-24_11',
           ]
         },
-        {
-          type: 'doc',
-          id: 'enterprise/read-replica',
-          label: 'Read Replica',
-        },
+        'enterprise/read-replica',
       ],
     },
     {

@@ -3,7 +3,7 @@ keywords: [企业版, 集群, 读副本, leader region, follower region]
 description: GreptimeDB 企业版的读副本功能的概述, 原理, 和"如何".
 ---
 
-# 概述
+# 读副本
 
 读副本（Read Replica）是 GreptimeDB 企业集群版中的一项重要功能，旨在提高数据库系统的整体读写性能和可扩展性。在读副本功能中，客户端将数据写入 “Leader” Region。Leader Region 再将数据同步到 “Follower” Region。Follower Region 只提供读功能，是为 Leader Region 的读副本。Leader Region 和 Follower Region 分别部署在不同的 Datanode 节点上，可有效分隔读写请求对于系统资源的互相抢占，带来更平滑的整体读写体验：
 
@@ -13,11 +13,11 @@ description: GreptimeDB 企业版的读副本功能的概述, 原理, 和"如何
 读副本功能仅在企业集群版中存在。
 :::
 
-# 原理
+## 原理
 
 GreptimeDB 企业集群版基于自身架构的特点，可以使数据在副本之间以近乎零成本地同步。另外，读副本也可以无延迟地读取到最新写入的数据。下面简单介绍读副本的数据同步和数据读取的原理。
 
-## 数据同步
+### 数据同步
 
 在存算分离的 GreptimeDB 企业集群版中，所有的数据都以一个个 SST 文件存放在对象存储里。那么 Leader Region 和 Follower Region 之间的数据同步，就不需要在两个 Region 之间复制 SST 文件了，而只需要同步 SST 文件的元信息即可。元信息相比 SST 文件小多了，Leader Region 可以很容易地将其同步到 Follower Region 上。一旦元信息同步完成，读副本就“拥有”了一样的 SST 文件，从而读到数据。如下图：
 
@@ -31,7 +31,7 @@ manifest 文件版本号是通过 Region 与 Metasrv 之间的心跳进行同步
 
 容易看出，如果只有 SST 文件的同步，读副本读到写入数据的延迟是 Leader Region 和 Follower Region 与 Metasrv 之间的心跳间隔之和。假如两个 Region 的心跳间隔都是默认的 3 秒，那么读副本只能读到 3 到 6 秒前的 SST 文件的数据。如果客户端对读副本能读到的写入数据的新鲜度要求不高，那么这种数据同步方法就足够了。但如果要求读副本能及时读到最新写入的数据，读副本还需要下面的功能：
 
-## 数据读取
+### 数据读取
 
 最新写入 GreptimeDB 的数据会保存在 Leader Region 的 memtable 里。所以读副本要想读到最新写入的数据，Follower Region 只要能向 Leader Region 发起请求，获取 memtable 中的数据即可。
 
@@ -41,7 +41,7 @@ Follower Region 将 Leader Region 的 memtable 中的数据，和自己通过上
 
 Follower Region 通过我们内部的 GRPC 接口请求 Leader Region。读副本功能会对 Leader Region 造成一定的读负载。但在通常情况下，Leader Region 只需要读取自己 memtable 中的数据，都在内存当中；而且 memtable 大小有限，读的压力不大。
 
-# 增加读副本
+## 增加读副本
 
 增加读副本很简单，一条 SQL 即可：
 
@@ -107,7 +107,7 @@ SELECT table_name, region_id, peer_id, is_leader FROM information_schema.region_
 
 两个 Follower Region 分别在 Datanode 1 和 2 上。
 
-# 使用读副本
+## 使用读副本
 
 客户端如何选择是否读 Follower Region 呢？对于 JDBC 连接（MySQL 和 PostgreSQL 协议），可以执行以下 SQL：
 
