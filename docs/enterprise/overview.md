@@ -32,7 +32,7 @@ This section provides an overview of the advanced features available in Greptime
   carries more cluster management and monitoring features.
 - [Read Replica](./read-replica.md): Read-only datanode instances for heavy query workloads such as
   analytical queries.
-- Triggers: Periodically evaluate your rules and trigger external
+- [Triggers](./trigger/overview.md): Periodically evaluate your rules and trigger external
   webhook. Compatible with Prometheus AlterManager.
 - Reliability features for Flow.
 
