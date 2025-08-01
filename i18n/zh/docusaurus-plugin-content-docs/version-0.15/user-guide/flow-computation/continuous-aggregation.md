@@ -86,12 +86,12 @@ GROUP BY
 要检查持续聚合是否正常工作，首先插入一些数据到源表 `ngx_access_log` 中。
 
 ```sql
-INSERT INTO ngx_access_log 
+INSERT INTO ngx_access_log
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 1000, "agent", now() - INTERVAL '1' minute),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now() - INTERVAL '1' minute),
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 600, "agent", now()),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 700, "agent", now());
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 1000, 'agent', now() - INTERVAL '1' minute),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 500, 'agent', now() - INTERVAL '1' minute),
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 600, 'agent', now()),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 700, 'agent', now());
 ```
 
 则 `ngx_access_log` 表将被增量更新以包含以下数据：
@@ -116,8 +116,8 @@ SELECT * FROM ngx_statistics;
 ```sql
 INSERT INTO ngx_access_log
 VALUES
-    ("android", "Android", "referer", "GET", "/api/v1", "trace_id", "HTTP", 200, 500, "agent", now()),
-    ("ios", "iOS", "referer", "GET", "/api/v1", "trace_id", "HTTP", 404, 800, "agent", now());
+    ('android', 'Android', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 200, 500, 'agent', now()),
+    ('ios', 'iOS', 'referer', 'GET', '/api/v1', 'trace_id', 'HTTP', 404, 800, 'agent', now());
 ```
 
 结果表 `ngx_statistics` 将被增量更新，注意 `max_size`、`avg_size` 和 `high_size_count` 是如何更新的：
@@ -195,16 +195,16 @@ GROUP BY
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("client1", "US", now() - '2 hour'::INTERVAL),
-    ("client2", "US", now() - '2 hour'::INTERVAL),
-    ("client3", "UK", now() - '2 hour'::INTERVAL),
-    ("client4", "UK", now() - '1 hour'::INTERVAL),
-    ("client5", "CN", now() - '1 hour'::INTERVAL),
-    ("client6", "CN", now() - '1 hour'::INTERVAL),
-    ("client7", "JP", now()),
-    ("client8", "JP", now()),
-    ("client9", "KR", now()),
-    ("client10", "KR", now());
+    ('client1', 'US', now() - '2 hour'::INTERVAL),
+    ('client2', 'US', now() - '2 hour'::INTERVAL),
+    ('client3', 'UK', now() - '2 hour'::INTERVAL),
+    ('client4', 'UK', now() - '1 hour'::INTERVAL),
+    ('client5', 'CN', now() - '1 hour'::INTERVAL),
+    ('client6', 'CN', now() - '1 hour'::INTERVAL),
+    ('client7', 'JP', now()),
+    ('client8', 'JP', now()),
+    ('client9', 'KR', now()),
+    ('client10', 'KR', now());
 ```
 
 等待几秒钟，让 flow 将结果写入 sink 表，然后查询：
@@ -279,8 +279,8 @@ HAVING max_temp > 100;
 
 ```sql
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 98.5, now() - '10 second'::INTERVAL),
-    (2, "room2", 99.5, now());
+    (1, 'room1', 98.5, now() - '10 second'::INTERVAL),
+    (2, 'room2', 99.5, now());
 ```
 
 表现在应该是空的，等待几秒钟让 flow 将结果更新到输出表：
@@ -297,8 +297,8 @@ Empty set (0.00 sec)
 
 ```sql
 INSERT INTO temp_sensor_data VALUES
-    (1, "room1", 101.5, now()),
-    (2, "room2", 102.5, now());
+    (1, 'room1', 101.5, now()),
+    (2, 'room2', 102.5, now());
 ```
 
 等待几秒钟，让 flow 将结果更新到输出表：
@@ -340,7 +340,7 @@ CREATE TABLE ngx_distribution (
     PRIMARY KEY(stat, bucket_size)
 );
 /* 创建 flow 任务以计算每个状态码的包大小分布 */
-CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution 
+CREATE FLOW calc_ngx_distribution SINK TO ngx_distribution
 EXPIRE AFTER '6h'
 AS
 SELECT
@@ -366,16 +366,16 @@ GROUP BY
 
 ```sql
 INSERT INTO ngx_access_log VALUES
-    ("cli1", 200, 100, now()),
-    ("cli2", 200, 104, now()),
-    ("cli3", 200, 120, now()),
-    ("cli4", 200, 124, now()),
-    ("cli5", 200, 140, now()),
-    ("cli6", 404, 144, now()),
-    ("cli7", 404, 160, now()),
-    ("cli8", 404, 164, now()),
-    ("cli9", 404, 180, now()),
-    ("cli10", 404, 184, now());
+    ('cli1', 200, 100, now()),
+    ('cli2', 200, 104, now()),
+    ('cli3', 200, 120, now()),
+    ('cli4', 200, 124, now()),
+    ('cli5', 200, 140, now()),
+    ('cli6', 404, 144, now()),
+    ('cli7', 404, 160, now()),
+    ('cli8', 404, 164, now()),
+    ('cli9', 404, 180, now()),
+    ('cli10', 404, 184, now());
 ```
 
 等待几秒钟，让 flow 将结果更新到 sink 表：
@@ -402,4 +402,3 @@ SELECT * FROM ngx_distribution;
 
 - [管理 Flow](manage-flow.md)：深入了解 Flow 引擎的机制和定义 Flow 的 SQL 语法。
 - [表达式](expressions.md)：了解 Flow 引擎支持的数据转换表达式。
-
