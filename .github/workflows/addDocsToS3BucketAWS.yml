@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +49,7 @@ jobs:
           wget https://github.com/peak/s5cmd/releases/download/v2.3.0/s5cmd_2.3.0_Linux-64bit.tar.gz
           tar -xzf s5cmd_2.3.0_Linux-64bit.tar.gz
           sudo mv s5cmd /usr/local/bin/
-          sudo chmod +x /usr/local/bin/s5cmd       
+          sudo chmod +x /usr/local/bin/s5cmd
 
       - name: Upload to S3
         run: |
