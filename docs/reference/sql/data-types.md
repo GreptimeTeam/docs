@@ -190,6 +190,7 @@ Supported abbreviations include:
 | ns           | nanoseconds  |
 
 #### INTERVAL keyword
+
 In the examples above, we used the cast operation `'{quantity unit}'::INTERVAL` to demonstrate the interval type. In fact, the interval type can also be used with the syntax supported by the `INTERVAL` keyword, though the behavior varies between database dialects:
 
 1. In MySQL, the syntax is `INTERVAL {quantity} {unit}`, where `quantity` can be a number or a string depending on the context. For example:
