@@ -577,6 +577,7 @@ const sidebars: SidebarsConfig = {
           label: 'Trigger',
           items: [
             'enterprise/trigger/overview',
+			'enterprise/trigger/quick-start',
           ]
         },
       ],
