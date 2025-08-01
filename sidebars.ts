@@ -563,6 +563,7 @@ const sidebars: SidebarsConfig = {
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
         },
+        'enterprise/read-replica',
         {
           type: 'category',
           label: 'Releases',
@@ -571,7 +572,6 @@ const sidebars: SidebarsConfig = {
             'enterprise/release-notes/release-24_11',
           ]
         },
-        'enterprise/read-replica',
       ],
     },
     {
