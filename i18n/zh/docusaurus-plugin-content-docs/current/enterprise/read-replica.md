@@ -7,7 +7,9 @@ description: GreptimeDB 企业版的读副本功能的概述, 原理, 和"如何
 
 读副本（Read Replica）是 GreptimeDB 企业集群版中的一项重要功能，旨在提高数据库系统的整体读写性能和可扩展性。在读副本功能中，客户端将数据写入 “Leader” Region。Leader Region 再将数据同步到 “Follower” Region。Follower Region 只提供读功能，是为 Leader Region 的读副本。Leader Region 和 Follower Region 分别部署在不同的 Datanode 节点上，可有效分隔读写请求对于系统资源的互相抢占，带来更平滑的整体读写体验：
 
-![read-replica-overview](/read-replica-overview.png)
+<p align="center">
+    <img src="/read-replica-overview.png" alt="read-replica-overview" width="600"/>
+</p>
 
 :::tip NOTE
 读副本功能仅在企业集群版中存在。
@@ -37,7 +39,9 @@ manifest 文件版本号是通过 Region 与 Metasrv 之间的心跳进行同步
 
 Follower Region 将 Leader Region 的 memtable 中的数据，和自己通过上面数据同步的方式获得的 SST 文件中的数据相结合，就得到了客户端想要的完整的包含了最新写入的数据：
 
-![read-replica-data-read](/read-replica-data-read.png)
+<p align="center">
+    <img src="/read-replica-data-read.png" alt="read-replica-data-read" width="600"/>
+</p>
 
 Follower Region 通过我们内部的 GRPC 接口请求 Leader Region。读副本功能会对 Leader Region 造成一定的读负载。但在通常情况下，Leader Region 只需要读取自己 memtable 中的数据，都在内存当中；而且 memtable 大小有限，读的压力不大。
 

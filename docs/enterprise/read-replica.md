@@ -9,7 +9,9 @@ Read Replica is a key feature in GreptimeDB's Enterprise Cluster Edition, design
 
 In the Read Replica mechanism, clients write data to the Leader Region, which then synchronizes the data to Follower Regions. Follower Regions serve as read-only replicas of the Leader Region. Since Leader and Follower Regions are deployed on different Datanode nodes, read and write requests are effectively isolated, preventing resource contention and delivering a smoother experience:
 
-![read-replica-overview](/read-replica-overview.png)
+<p align="center">
+    <img src="/read-replica-overview.png" alt="read-replica-overview" width="600"/>
+</p>
 
 :::tip NOTE
 The Read Replica feature is exclusive to the GreptimeDB Enterprise Cluster Edition.
@@ -37,7 +39,9 @@ It's easy to see, if there were only SST files synchronization mechanism in plac
 
 Newly written data are stored in the Leader Region’s memtable. To access the latest data, Follower Region needs to request the memtable data from the Leader Region. By combining this with SST files data (obtained via data sync above), the Follower Region provides clients with a complete dataset, including the most recent writes:
 
-![read-replica-data-read](/read-replica-data-read.png)
+<p align="center">
+    <img src="/read-replica-data-read.png" alt="read-replica-data-read" width="600"/>
+</p>
 
 Follower Region fetch memtable data from Leader Region via an internal gRPC interface. While this imposes some read load on the Leader Region, the impact is minimal since the memtable data resides in memory and is finite in size.
 
