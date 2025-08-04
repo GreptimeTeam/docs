@@ -5,10 +5,15 @@ description: This guide demonstrates how GreptimeDB Triggers enable seamless int
 
 # Quick Start Example
 
-## Overview
-
 This section walks through a end-to-end example that uses Trigger to monitor
-system load and raise an alert.
+system load(load1) and raise an alert.
+
+"load1" refers to the load average of the Linux system over the past minute.
+It is one of the key performance indicators for measuring how busy the system is.
+
+The payload of GreptimeDB Trigger's Webhook is compatible with Prometheus
+Alertmanager, so we can reuse Alertmanager’s grouping, inhibition, silencing and
+routing features without any extra glue code.
 
 The diagram illustrates the complete end-to-end workflow of the example.
 
@@ -18,10 +23,6 @@ The diagram illustrates the complete end-to-end workflow of the example.
 2. A Trigger in GreptimeDB evaluates the rule `load1 > 10` every minute; whenever
     the condition is met, it sends a notification to Alertmanager.
 3. Alertmanager applies its own policies and finally delivers the alert to Slack.
-
-> The payload of GreptimeDB Trigger's Webhook is compatible with Prometheus
-Alertmanager, so we can reuse Alertmanager’s grouping, inhibition, silencing and
-routing features without any extra glue code.
 
 ## Prerequisites
 
@@ -53,37 +54,35 @@ table stores the load1 metrics; its schema is shown below:
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-> "load1" refers to the load average of the Linux system over the past minute.
-It is one of the key performance indicators for measuring how busy the system is.
-
 Set up Alertmanager with a Slack receiver. Below is a minimal message template
 you can use:
 
 ```text
 {{ define "slack.text" }}
-
-Alert: {{ .CommonLabels.alertname }} (Status: {{ .CommonLabels.status }})
-Severity: {{ .CommonLabels.severity }}
-
-Annotations:
-{{ range .CommonAnnotations.SortedPairs }}
-- {{ .Name }}: {{ .Value }}
-{{ end }}
+{{ range .Alerts }}
 
 Labels:
-{{ range .CommonLabels.SortedPairs }}
+{{- range .Labels.SortedPairs }}
+- {{ .Name }}: {{ .Value }}
+{{ end }}
+
+Annotations:
+{{- range .Annotations.SortedPairs }}
 - {{ .Name }}: {{ .Value }}
 {{ end }}
 
 {{ end }}
+{{ end }}
 ```
+
+Generating a Slack message using the above template will iterate over all alerts
+and display the labels and annotations for each alert.
 
 Start Alertmanager once the configuration is ready.
 
 
-## Demo
+## Create Trigger
 
-Create the Trigger in GreptimeDB.
 Connect to GreptimeDB with MySql client and run the following SQL:
 
 ```sql
@@ -120,6 +119,8 @@ The output should look like this:
 | load1_monitor |
 +---------------+
 ```
+
+## Test Trigger
 
 Use stress-ng to simulate high CPU load for 60 s:
 

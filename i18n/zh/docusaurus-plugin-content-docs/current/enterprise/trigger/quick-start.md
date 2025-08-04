@@ -5,23 +5,23 @@ description: 本指南演示GreptimeDB触发器如何与Prometheus Alertmanager�
 
 ## 快速入门示例
 
-## 概述
+本节将通过一个端到端示例展示如何使用触发器监控系统负载（load1）并触发告警。
 
-本节将通过一个端到端示例展示如何使用触发器监控系统负载并触发告警。
+“load1” 指的是 Linux 系统中过去 1 分钟的平均负载（load average），它是衡量系统
+繁忙程度的关键性能指标之一。
+
+此外，GreptimeDB 的 Webhook 输出格式与 Prometheus Alertmanager 完全兼容，可以直接接
+入 Alertmanager 生态。
 
 下图展示了该示例的完整端到端工作流程。
 
 ![触发器演示架构](/trigger-demo-architecture.png)
 
-1. Vector 持续采集主机指标并写入GreptimeDB。
+1. Vector 持续采集主机指标并写入 GreptimeDB。
 2. GreptimeDB 中的 Trigger 每分钟评估规则`load1 > 10`；当条件满足时，会向 Alertmanager
     发送通知。
 3. Alertmanager 依据自身配置完成告警分组、抑制及路由，最终通过 Slack 集成将消息
     发送至指定频道。
-
-
-> GreptimeDB 的 Webhook 输出格式与 Prometheus Alertmanager 完全兼容，可以直接接
-入 Alertmanager 生态。
 
 ## 前置工作
 
@@ -53,34 +53,32 @@ GreptimeDB 会在数据写入的时候自动创建表，其中，`host_load1`表
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-> “load1” 指的是 Linux 系统中过去 1 分钟的平均负载（load average），它是衡量系统
-繁忙程度的关键性能指标之一。
-
 配置 Alertmanager 的 Slack Receiver 的具体过程不在此赘述。为在 Slack 消息中呈现
 一致、易读的内容，可以配置以下模板。
 
 ```text
 {{ define "slack.text" }}
-
-Alert: {{ .CommonLabels.alertname }} (Status: {{ .CommonLabels.status }})
-Severity: {{ .CommonLabels.severity }}
-
-Annotations:
-{{ range .CommonAnnotations.SortedPairs }}
-- {{ .Name }}: {{ .Value }}
-{{ end }}
+{{ range .Alerts }}
 
 Labels:
-{{ range .CommonLabels.SortedPairs }}
+{{- range .Labels.SortedPairs }}
 - {{ .Name }}: {{ .Value }}
 {{ end }}
 
+Annotations:
+{{- range .Annotations.SortedPairs }}
+- {{ .Name }}: {{ .Value }}
+{{ end }}
+
+{{ end }}
 {{ end }}
 ```
 
+使用上述模板生成 slack 消息会遍历所有的告警，并把每个告警的标签和注解展示出来。
+
 当配置完成之后，启动 Alertmanager。
 
-## 演示示例
+## 创建 Trigger
 
 在 GreptimeDB 中创建 Trigger。使用 MySql 客户端连接 GreptimeDB 并执行以下 SQL：
 
@@ -118,6 +116,8 @@ SHOW TRIGGERS;
 | load1_monitor |
 +---------------+
 ```
+
+## 测试 Trigger
 
 使用 stress-ng 模拟 60 秒的高 CPU 负载：
 

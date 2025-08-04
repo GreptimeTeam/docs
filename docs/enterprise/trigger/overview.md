@@ -5,7 +5,7 @@ description: The overview of GreptimeDB Trigger.
 
 # Trigger
 
-Trigger allows users to define evaluation rules with SQL.
+Trigger allows you to define evaluation rules with SQL.
 GreptimeDB evaluates these rules periodically; once the condition is met, a
 notification is sent out.
 
