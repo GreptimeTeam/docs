@@ -33,3 +33,10 @@ The image below shows the Coroot configuration example:
     <img src="/coroot.jpg" alt="Coroot Configuration Example" width="600"/>
 </p>
 
+
+Once the configuration is saved successfully,
+you can begin using Coroot to monitor your instances.
+The image below shows an example of a Coroot dashboard using GreptimeDB as a data source:
+
+![coroot-cpu](/coroot-cpu.png)
+

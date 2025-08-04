@@ -34,3 +34,11 @@ GreptimeDB 可以配置为 Coroot 中的 Prometheus 数据存储。
 <p align="center">
   <img src="/coroot.jpg" alt="Coroot 配置示例" width="600"/>
 </p>
+
+配置保存成功后，
+你就可以开始使用 Coroot 监控实例了。
+下图展示了使用 GreptimeDB 作为数据源的 Coroot 仪表板示例：
+
+![coroot-cpu](/coroot-cpu.png)
+
+
