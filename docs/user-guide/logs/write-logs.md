@@ -223,6 +223,62 @@ Here are some example of using `custom_time_index` assuming the time variable is
 - "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
 - "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
 
+
+#### Flatten JSON Objects
+
+If flattening a JSON object into a single-level structure is needed, add the `x-greptime-pipeline-params` header to the request and set `flatten_json_object` to `true`.
+
+Here is a sample request:
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -H "x-greptime-pipeline-params: flatten_json_object=true" \
+     -d "$<log-items>"
+```
+
+With this configuration, GreptimeDB will automatically flatten each field of the JSON object into separate columns. For example:
+
+```JSON
+{
+    "a": {
+        "b": {
+            "c": [1, 2, 3]
+        }
+    },
+    "d": [
+        "foo",
+        "bar"
+    ],
+    "e": {
+        "f": [7, 8, 9],
+        "g": {
+            "h": 123,
+            "i": "hello",
+            "j": {
+                "k": true
+            }
+        }
+    }
+}
+```
+
+Will be flattened to:
+
+```json
+{
+    "a.b.c": [1,2,3],
+    "d": ["foo","bar"],
+    "e.f": [7,8,9],
+    "e.g.h": 123,
+    "e.g.i": "hello",
+    "e.g.j.k": true
+}
+```
+
+
+
 ## Variable hints in the pipeline context
 
 Starting from `v0.15`, the pipeline engine now recognizes certain variables, and can set corresponding table options based on the value of the variables.
