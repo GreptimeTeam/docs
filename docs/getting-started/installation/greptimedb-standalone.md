@@ -36,7 +36,7 @@ You can run GreptimeDB in the standalone mode:
 
 ### Windows
 
-If you have WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) enabled, you can lunch a latest Ubuntu and run GreptimeDB like above!
+If you have WSL([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about)) enabled, you can launch a latest Ubuntu and run GreptimeDB like above!
 
 Otherwise please download the GreptimeDB binary for Windows at our [official site](https://greptime.com/resources), and unzip the downloaded artifact.
 
