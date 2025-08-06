@@ -14,7 +14,7 @@ Release date: August 06, 2025
 * feat: move metasrv admin to http server while keep tonic for backward compatibility by [@lyang24](https://github.com/lyang24) in [#6466](https://github.com/GreptimeTeam/greptimedb/pull/6466)
 * feat(mito): replace `Memtable::iter` with `Memtable::ranges`  by [@v0y4g3r](https://github.com/v0y4g3r) in [#6549](https://github.com/GreptimeTeam/greptimedb/pull/6549)
 * feat: supports more db options by [@killme2008](https://github.com/killme2008) in [#6529](https://github.com/GreptimeTeam/greptimedb/pull/6529)
-* feat: allow igoring nonexistent regions in recovery mode by [@WenyXu](https://github.com/WenyXu) in [#6592](https://github.com/GreptimeTeam/greptimedb/pull/6592)
+* feat: allow ignoring nonexistent regions in recovery mode by [@WenyXu](https://github.com/WenyXu) in [#6592](https://github.com/GreptimeTeam/greptimedb/pull/6592)
 * feat: impl some promql scalar functions by [@killme2008](https://github.com/killme2008) in [#6567](https://github.com/GreptimeTeam/greptimedb/pull/6567)
 * feat: poll result stream more often by [@discord9](https://github.com/discord9) in [#6599](https://github.com/GreptimeTeam/greptimedb/pull/6599)
 * feat: fallback when failed to push down using `DistPlanner` by [@discord9](https://github.com/discord9) in [#6574](https://github.com/GreptimeTeam/greptimedb/pull/6574)
