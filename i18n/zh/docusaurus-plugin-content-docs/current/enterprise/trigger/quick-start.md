@@ -54,7 +54,9 @@ GreptimeDB Trigger 的 Webhook 负载与 [Prometheus Alertmanager](https://prome
 兼容，因此我们可以复用 Alertmanager 的分组、抑制、静默和路由功能，而无需任何额外
 的胶水代码。
 
-为在 Slack 消息中呈现一致、易读的内容，可以配置以下消息模板。
+你可以参考 [官方文档](https://prometheus.io/docs/alerting/latest/configuration/)
+对 Prometheus Alertmanager 进行配置。为在 Slack 消息中呈现一致、易读的内容，可以
+配置以下消息模板。
 
 ```text
 {{ define "slack.text" }}

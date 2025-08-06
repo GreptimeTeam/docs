@@ -56,7 +56,9 @@ Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/), so we
 can reuse Alertmanager’s grouping, inhibition, silencing and routing features
 without any extra glue code.
 
-Below is a minimal message template you can use:
+You can refer to the [official documentation](https://prometheus.io/docs/alerting/latest/configuration/)
+to configure Prometheus Alertmanager. Below is a minimal message template you
+can use:
 
 ```text
 {{ define "slack.text" }}
