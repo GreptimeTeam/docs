@@ -240,14 +240,20 @@ None
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predicate_linear   | `predict_linear(metric, 120)`     |
+    | absent             | `absent(nonexistent{job="myjob"})`|
+    | sgn                | `sgn(metric)`                     |
+    | pi                 | `pi()`                            |
+    | deg                | `deg(metric)`                     |
+    | rad                | `rad(metric)`                     |
+    | floor              | `floor(metric)`                   |
+    | clamp              | `clamp(metric, 0, 12)`            |
+    | clamp_max          | `clamp_max(metric, 12)`           |
+    | clamp_min          | `clamp_min(metric, 0)`            |
+
 
 - Unsupported:
     | Function                   | Progress / Example |
     | :------------------------- | :----------------- |
-    | absent                     | TBD                |
-    | sgn                        | TBD                |
-    | deg                        | TBD                |
-    | rad                        | TBD                |
     | *other multiple input fns* | TBD                |
 
 ### Range Functions
