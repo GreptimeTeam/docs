@@ -24,6 +24,8 @@ Release date: August 06, 2025
     LIMIT 10;
     ```
 
+- **PromQL**: Introduces the `absent()` function for detecting missing series (#6618).
+
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
 ### 🚀 Features
