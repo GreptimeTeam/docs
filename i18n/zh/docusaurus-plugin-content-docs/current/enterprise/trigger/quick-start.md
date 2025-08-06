@@ -50,7 +50,7 @@ load1 是衡量系统活动的关键性能指标。我们可以创建监控规�
 
 ## 配置 Alertmanager 与 Slack 集成
 
-GreptimeDB Trigger 的 Webhook 负载与 [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
+GreptimeDB Trigger 的 Webhook payload 与 [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
 兼容，因此我们可以复用 Alertmanager 的分组、抑制、静默和路由功能，而无需任何额外
 的胶水代码。
 
@@ -99,11 +99,11 @@ CREATE TRIGGER IF NOT EXISTS load1_monitor
         );
 ```
 
-上述SQL将创建一个名为`load1_monitor`的触发器，每分钟运行一次。它会评估 `host_load1`
-表中最近 60 秒的数据；如果任何 load1 值超过10，就会触发 GreptimeDB 向 Alertmanager
+上述 SQL 将创建一个名为 `load1_monitor` 的触发器，每分钟运行一次。它会评估 `host_load1`
+表中最近 60 秒的数据；如果任何 load1 值超过 10，就会触发 GreptimeDB 向 Alertmanager
 发送通知。
 
-执行`SHOW TRIGGERS`查看已创建的触发器列表。
+执行 `SHOW TRIGGERS` 查看已创建的触发器列表。
 
 ```sql
 SHOW TRIGGERS;

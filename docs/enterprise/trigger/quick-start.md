@@ -105,7 +105,9 @@ CREATE TRIGGER IF NOT EXISTS load1_monitor
 
 The above SQL will create a trigger named `load1_monitor` that runs every minute.
 It evaluates the last 60 seconds of data in `host_load1`; if any load1 value
-exceeds 10, it sends a notification to Alertmanager.
+exceeds 10, the `WEBHOOK` option in the `NOTIFY` syntax specifies that this
+trigger will send a notification to Alertmanager which running on localhost with
+port 9093.
 
 You can execute `SHOW TRIGGERS` to view the list of created Triggers.
 
