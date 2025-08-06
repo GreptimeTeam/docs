@@ -58,6 +58,7 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET DEFAULT value
+    | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
@@ -131,10 +132,18 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET DEFAULT 0.0;
 Set a string default value:
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN status SET DEFAULT 'active';
+ALTER TABLE monitor MODIFY COLUMN `status` SET DEFAULT 'active';
 ```
 
 The default value will be used for new rows when no explicit value is provided for the column during insertion.
+
+Remove the default value from a column:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
+```
+
+After dropping the default value, new rows will require an explicit value for the column or will use `NULL` if the column allows it.
 
 ### Alter table options
 

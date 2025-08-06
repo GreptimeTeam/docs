@@ -59,6 +59,7 @@ ALTER TABLE [db.]table
     | DROP COLUMN name
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET DEFAULT value
+    | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
@@ -132,10 +133,18 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET DEFAULT 0.0;
 设置字符串默认值：
 
 ```sql
-ALTER TABLE monitor MODIFY COLUMN status SET DEFAULT 'active';
+ALTER TABLE monitor MODIFY COLUMN `status` SET DEFAULT 'active';
 ```
 
 默认值将在插入新行时使用，当该列没有显式提供值时。
+
+移除列的默认值：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
+```
+
+移除默认值后，新行插入时需要显式提供该列的值，或者如果该列允许的话将使用 `NULL`。
 
 ### 修改表的参数
 
