@@ -8,6 +8,24 @@ date: 2025-08-06
 
 Release date: August 06, 2025
 
+### 👍 Highlights
+
+- **Automated Metadata Reconciliation**: Introduces reconcile procedures for catalogs, databases, tables to keep metadata consistent (#6613, #6612, #6584, #6588, #6614).
+
+- **TQL in CTE**: Allows embedding PromQL inside SQL queries (#6645), e.g.:
+
+    ```sql
+    WITH prom_result AS (
+        TQL EVAL (0, 100, '10s') sum(rate(http_requests_total[5m])) BY (job)
+    )
+    SELECT *
+    FROM prom_result
+    ORDER BY sum_rate_http_requests_total_5m
+    LIMIT 10;
+    ```
+
+- **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
+
 ### 🚀 Features
 
 * feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/greptimedb/pull/6410)
