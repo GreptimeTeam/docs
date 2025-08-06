@@ -10,6 +10,7 @@ description: Describes the `ALTER` statement used to modify database options, ta
 * Modify database options
 * Add/Drop/Modify a column
 * Set column default values
+* Drop column default vaules
 * Rename a table
 * Modify table options
 
