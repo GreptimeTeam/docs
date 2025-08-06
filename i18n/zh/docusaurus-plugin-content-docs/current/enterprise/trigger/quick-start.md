@@ -5,25 +5,19 @@ description: 本指南演示GreptimeDB触发器如何与Prometheus Alertmanager�
 
 ## 快速入门示例
 
-本节将通过一个端到端示例展示如何使用触发器监控系统负载（load1）并触发告警。
-
-“load1” 指的是 Linux 系统中过去 1 分钟的平均负载（load average），它是衡量系统
-繁忙程度的关键性能指标之一。
-
-此外，GreptimeDB 的 Webhook 输出格式与 Prometheus Alertmanager 完全兼容，可以直接接
-入 Alertmanager 生态。
+本节将通过一个端到端示例展示如何使用触发器监控系统负载并触发告警。
 
 下图展示了该示例的完整端到端工作流程。
 
 ![触发器演示架构](/trigger-demo-architecture.png)
 
 1. Vector 持续采集主机指标并写入 GreptimeDB。
-2. GreptimeDB 中的 Trigger 每分钟评估规则`load1 > 10`；当条件满足时，会向 Alertmanager
-    发送通知。
+2. GreptimeDB 中的 Trigger 每分钟评估规则；当条件满足时，会向 Alertmanager 发送
+    通知。
 3. Alertmanager 依据自身配置完成告警分组、抑制及路由，最终通过 Slack 集成将消息
     发送至指定频道。
 
-## 前置工作
+## 使用 Vector 采集主机指标
 
 首先，使用 Vector 采集本机的负载数据，并将数据写入 GreptimeDB 中。Vector 的配置
 示例如下所示：
@@ -40,7 +34,8 @@ endpoint = "localhost:4001"
 ```
 
 GreptimeDB 会在数据写入的时候自动创建表，其中，`host_load1`表记录了 load1 数据，
-表结构如下所示：
+load1 是衡量系统活动的关键性能指标。我们可以创建监控规则来跟踪此表中的值。表结构
+如下所示：
 
 ```sql
 +-----------+----------------------+------+------+---------+---------------+
@@ -53,8 +48,13 @@ GreptimeDB 会在数据写入的时候自动创建表，其中，`host_load1`表
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-配置 Alertmanager 的 Slack Receiver 的具体过程不在此赘述。为在 Slack 消息中呈现
-一致、易读的内容，可以配置以下模板。
+## 配置 Alertmanager 与 Slack 集成
+
+GreptimeDB Trigger 的 Webhook 负载与 [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
+兼容，因此我们可以复用 Alertmanager 的分组、抑制、静默和路由功能，而无需任何额外
+的胶水代码。
+
+为在 Slack 消息中呈现一致、易读的内容，可以配置以下消息模板。
 
 ```text
 {{ define "slack.text" }}
@@ -85,15 +85,15 @@ Annotations:
 ```sql
 CREATE TRIGGER IF NOT EXISTS load1_monitor
         ON (
-                SELECT collector AS label_collector, 
-                host as label_host, 
-                val 
+                SELECT collector AS label_collector,
+                host as label_host,
+                val
                 FROM host_load1 WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
-                ) EVERY '1 minute'::INTERVAL
+        ) EVERY '1 minute'::INTERVAL
         LABELS (severity=warning)
         ANNOTATIONS (comment='Your computer is smoking, should take a break.')
         NOTIFY(
-                WEBHOOK alert_manager URL 'http://127.0.0.1localhost:9093' WITH (timeout="1m")
+                WEBHOOK alert_manager URL 'http://localhost:9093' WITH (timeout="1m")
         );
 ```
 
@@ -119,13 +119,13 @@ SHOW TRIGGERS;
 
 ## 测试 Trigger
 
-使用 stress-ng 模拟 60 秒的高 CPU 负载：
+使用 [stress-ng](https://github.com/ColinIanKing/stress-ng) 模拟 60 秒的高 CPU 负载：
 
 ```bash
 stress-ng --cpu 100 --cpu-load 10 --timeout 60
 ```
 
-load1 值将快速上升，Trigger 将被触发，在一分钟之内，指定的 Slack 频道将收到如下
+load1 值将快速上升，Trigger 通知将被触发，在一分钟之内，指定的 Slack 频道将收到如下
 告警：
 
 ![Slack 告警示意图](/trigger-slack-alert.png)
