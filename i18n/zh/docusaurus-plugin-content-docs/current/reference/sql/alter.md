@@ -144,7 +144,7 @@ ALTER TABLE monitor MODIFY COLUMN `status` SET DEFAULT 'active';
 ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 ```
 
-移除默认值后，新行插入时需要显式提供该列的值，或者如果该列允许的话将使用 `NULL`。
+删除默认值后，该列将使用 `NULL` 作为默认值。数据库只允许对可为空的列删除默认值。
 
 ### 修改表的参数
 

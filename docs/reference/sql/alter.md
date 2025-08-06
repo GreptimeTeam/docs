@@ -144,7 +144,7 @@ Remove the default value from a column:
 ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 ```
 
-After dropping the default value, new rows will require an explicit value for the column or will use `NULL` if the column allows it.
+After dropping the default value, the column will use `NULL` as the default. The database only allow dropping defaults for nullable columns.
 
 ### Alter table options
 
