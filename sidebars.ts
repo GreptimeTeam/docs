@@ -339,6 +339,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/monitoring/check-db-status',
                 'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
                 'user-guide/deployments-administration/monitoring/standalone-monitoring',
+                'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
                 'user-guide/deployments-administration/monitoring/runtime-info',
