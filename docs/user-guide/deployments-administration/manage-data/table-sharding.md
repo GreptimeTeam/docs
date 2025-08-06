@@ -99,10 +99,10 @@ CREATE TABLE sensor_readings (
     TIME INDEX (ts)
 )
 PARTITION ON COLUMNS (device_id, area) (
-  device_id < 100 AND area = 'North',
-  device_id < 100 AND area = 'South',
-  device_id >= 100 AND area = 'East',
-  device_id >= 100 AND area = 'West'
+  device_id < 100 AND area < 'Sorth',
+  device_id < 100 AND area >= 'South',
+  device_id >= 100 AND area <= 'East',
+  device_id >= 100 AND area > 'East'
 );
 ```
 
