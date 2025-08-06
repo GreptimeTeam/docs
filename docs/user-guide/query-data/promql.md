@@ -246,9 +246,9 @@ None
     | deg                | `deg(metric)`                     |
     | rad                | `rad(metric)`                     |
     | floor              | `floor(metric)`                   |
-    | clamp              | `clamp(host, 0, 12)`              |
-    | clamp_max          | `clamp_max(host, 12)`             |
-    | clamp              | `clamp_min(host, 0)`              |
+    | clamp              | `clamp(metric, 0, 12)`            |
+    | clamp_max          | `clamp_max(metric, 12)`           |
+    | clamp_min          | `clamp_min(metric, 0)`            |
 
 
 - Unsupported:
