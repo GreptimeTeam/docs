@@ -49,6 +49,7 @@ Release date: August 06, 2025
 * feat: support TQL CTE in planner by [@waynexia](https://github.com/waynexia) in [#6645](https://github.com/GreptimeTeam/greptimedb/pull/6645)
 * feat(log-query): support binary op, scalar fn & is_true/is_false by [@waynexia](https://github.com/waynexia) in [#6659](https://github.com/GreptimeTeam/greptimedb/pull/6659)
 * feat: EncodedBulkPartIter iters flat format and returns RecordBatch by [@evenyag](https://github.com/evenyag) in [#6655](https://github.com/GreptimeTeam/greptimedb/pull/6655)
+* feat: count underscore in English tokenizer and improve performance by [@waynexia](https://github.com/waynexia) in [#6660](https://github.com/GreptimeTeam/greptimedb/pull/6660)
 
 ### 🐛 Bug Fixes
 
@@ -79,6 +80,10 @@ Release date: August 06, 2025
 
 * docs(rfc): repartition by [@waynexia](https://github.com/waynexia) in [#6557](https://github.com/GreptimeTeam/greptimedb/pull/6557)
 * docs(rfc): compatibility test framework by [@waynexia](https://github.com/waynexia) in [#6460](https://github.com/GreptimeTeam/greptimedb/pull/6460)
+
+### ⚡ Performance
+
+* perf: Reduce fulltext bloom load time by [@evenyag](https://github.com/evenyag) in [#6651](https://github.com/GreptimeTeam/greptimedb/pull/6651)
 
 ### ⚙️ Miscellaneous Tasks
 
