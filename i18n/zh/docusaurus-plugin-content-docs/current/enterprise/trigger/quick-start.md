@@ -100,8 +100,8 @@ CREATE TRIGGER IF NOT EXISTS load1_monitor
 ```
 
 上述 SQL 将创建一个名为 `load1_monitor` 的触发器，每分钟运行一次。它会评估 `host_load1`
-表中最近 60 秒的数据；如果任何 load1 值超过 10，就会触发 GreptimeDB 向 Alertmanager
-发送通知。
+表中最近 60 秒的数据；如果任何 load1 值超过 10，则 `NOTIFY` 子句中的 `WEBHOOK`
+选项会指定 Trigger 向在本地主机上运行且端口为 9093 的 Alertmanager 发送通知。
 
 执行 `SHOW TRIGGERS` 查看已创建的触发器列表。
 
