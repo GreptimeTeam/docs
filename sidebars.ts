@@ -572,6 +572,14 @@ const sidebars: SidebarsConfig = {
             'enterprise/release-notes/release-24_11',
           ]
         },
+        {
+          type: 'category',
+          label: 'Trigger',
+          items: [
+            'enterprise/trigger/overview',
+			'enterprise/trigger/quick-start',
+          ]
+        },
       ],
     },
     {
