@@ -9,6 +9,7 @@ description: Describes the `ALTER` statement used to modify database options, ta
 
 * Modify database options
 * Add/Drop/Modify a column
+* Set column default values
 * Rename a table
 * Modify table options
 
@@ -56,6 +57,7 @@ ALTER TABLE [db.]table
    [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
+    | MODIFY COLUMN name SET DEFAULT value
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
@@ -117,6 +119,22 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
 The modified column cannot be a tag (primary key) or time index, and it must be nullable to ensure that the data can be safely converted (returns `NULL` on cast failures).
+
+### Set column default value
+
+Set a default value for an existing column:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 SET DEFAULT 0.0;
+```
+
+Set a string default value:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN status SET DEFAULT 'active';
+```
+
+The default value will be used for new rows when no explicit value is provided for the column during insertion.
 
 ### Alter table options
 
