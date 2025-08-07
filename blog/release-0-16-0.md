@@ -13,7 +13,7 @@ Release date: August 06, 2025
 - **PromQL**:
   * Adds `absent()` function for missing series detection (#6618).
   * Enhances PromQL compatibility with OLTP metrics (#6543).
-  * Supports querying label values from `__schema__` and `__database__` (#6631).
+  * Supports querying label values from internal labels `__schema__` and `__database__` (#6631).
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
