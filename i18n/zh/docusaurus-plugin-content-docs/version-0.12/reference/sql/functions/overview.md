@@ -21,7 +21,7 @@ The outling of this document is a little strange, as the content is classified b
 * **标量函数**: 如 `ABS`、`COS`、`FLOOR` 等。详细列表请参阅 [标量函数](./df-functions.md#scalar-functions)
 * **窗口函数**: 对相关的一组行记录执行计算。详细列表请参阅 [窗口函数](./df-functions.md#window-functions)
 
-要查看所有 DataFusion 函数，请参阅 [DataFusion 函数](./df-functions)。
+要查看所有 DataFusion 函数，请参阅 [DataFusion 函数](df-functions.md)。
 
 ### `arrow_cast`
 

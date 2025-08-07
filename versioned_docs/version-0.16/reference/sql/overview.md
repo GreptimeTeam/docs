@@ -6,7 +6,7 @@ description: GreptimeDB SQL statements.
 # SQL
 
 ## Data Types
-* [Data Types](./data-types)
+* [Data Types](data-types.md)
 
 ## Statements and Clauses
 * [ADMIN](./admin.md)
