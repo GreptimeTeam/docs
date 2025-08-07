@@ -10,8 +10,6 @@ Release date: August 06, 2025
 
 ### 👍 Highlights
 
-- **Automated Metadata Recovery**: Introduces recovery procedures for catalogs, databases, tables to keep metadata consistent from snapshots to get through unexpected disaster (#6613, #6612, #6584, #6588, #6614).
-
 - **PromQL inside SQL**: Allows embedding PromQL (via TQL grammar) inside SQL queries (#6645), e.g.:
 
     ```sql
