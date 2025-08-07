@@ -17,6 +17,12 @@ Release date: August 06, 2025
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
+### 📊  Dashboard v0.10.6
+
+* Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
+* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience
+* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance
+
 ### 🚀 Features
 
 * feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/grepÇtimedb/pull/6410)
