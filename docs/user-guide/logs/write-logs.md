@@ -224,7 +224,7 @@ Here are some example of using `custom_time_index` assuming the time variable is
 - "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
 
 
-#### Flatten JSON Objects
+#### Flatten JSON objects
 
 If flattening a JSON object into a single-level structure is needed, add the `x-greptime-pipeline-params` header to the request and set `flatten_json_object` to `true`.
 

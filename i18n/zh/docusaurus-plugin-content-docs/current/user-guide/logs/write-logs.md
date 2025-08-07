@@ -226,7 +226,7 @@ DESC pipeline_logs;
 
 #### 展开 json 对象
 
-如果用户希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。
+如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。
 
 以下是一个示例请求：
 
