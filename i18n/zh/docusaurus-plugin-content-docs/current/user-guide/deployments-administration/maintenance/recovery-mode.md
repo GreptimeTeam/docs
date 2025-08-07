@@ -5,13 +5,12 @@ description: 介绍如何使用 GreptimeDB 集群恢复模式来解决 Datanode 
 
 # 集群恢复模式
 
-恢复模式是 GreptimeDB 中的一个安全特性，允许用户手动恢复集群从失败状态。
+恢复模式是 GreptimeDB 中的一个安全特性，允许开发者手动恢复集群从失败状态。
 
 ## 何时使用恢复模式
 
-恢复模式在以下情况下特别有用：
-- Datanode 启动失败，通常是由于 "Empty region directory" 错误，这可能是由于：
-- 数据损坏（缺少 region 数据目录）
+恢复模式在 Datanode 启动失败时特别有用，通常是由于 "Empty region directory" 错误，这可能是由于：
+- Datanode 数据损坏（缺少 Region 数据目录）
 - 从元数据快照恢复集群
 
 ## 恢复模式管理

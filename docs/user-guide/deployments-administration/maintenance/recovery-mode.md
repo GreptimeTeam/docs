@@ -5,7 +5,7 @@ description: Guide for using GreptimeDB cluster recovery mode to address datanod
 
 # Cluster Recovery Mode
 
-Recovery mode is a safety feature in GreptimeDB that allows users to manually recover the cluster from a failed state.
+Recovery mode is a safety feature in GreptimeDB that allows developers to manually recover the cluster from a failed state.
 
 ## When to Use Recovery Mode
 
