@@ -22,7 +22,7 @@ functions in DataFusion. These functions include:
 * **Scalar functions**: such as `ABS`, `COS`, `FLOOR`, etc. For a detailed list, please refer to [Scalar Functions](./df-functions.md#scalar-functions)
 * **Window functions**: performs a calculation across a set of table rows that are somehow related to the current row. For a detailed list, please refer to [Window Functions](./df-functions.md#window-functions)
 
-To find all the DataFusion functions, please refer to [DataFusion Functions](./df-functions).
+To find all the DataFusion functions, please refer to [DataFusion Functions](df-functions.md).
 
 ### `arrow_cast`
 

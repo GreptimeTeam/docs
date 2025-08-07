@@ -5,7 +5,7 @@ description: GreptimeDB SQL 语句.
 
 # SQL
 
-* [数据类型](./data-types)
+* [数据类型](data-types.md)
 * [INSERT](./insert.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)

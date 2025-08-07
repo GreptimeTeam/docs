@@ -7,7 +7,7 @@ description: GreptimeDB SQL 语句.
 
 ## 数据类型
 
-* [数据类型](./data-types)
+* [数据类型](data-types.md)
 
 ## 语句和子句
 
