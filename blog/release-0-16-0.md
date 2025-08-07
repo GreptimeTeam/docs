@@ -10,19 +10,10 @@ Release date: August 06, 2025
 
 ### 👍 Highlights
 
-- **PromQL inside SQL**: Allows embedding PromQL (via TQL grammar) inside SQL queries (#6645), e.g.:
-
-    ```sql
-    WITH prom_result AS (
-        TQL EVAL (0, 100, '10s') sum(rate(http_requests_total[5m])) BY (job)
-    )
-    SELECT *
-    FROM prom_result
-    ORDER BY sum_rate_http_requests_total_5m
-    LIMIT 10;
-    ```
-
-- **PromQL**: Adds `absent()` function for missing series detection (#6618) and enhances PromQL compatibility with OLTP metrics (#6543).
+- **PromQL**:
+  * Adds `absent()` function for missing series detection (#6618).
+  * Enhances PromQL compatibility with OLTP metrics (#6543).
+  * Supports querying label values from internal labels `__schema__` and `__database__` (#6631).
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
