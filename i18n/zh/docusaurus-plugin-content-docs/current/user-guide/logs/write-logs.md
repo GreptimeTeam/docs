@@ -223,6 +223,60 @@ DESC pipeline_logs;
 - "2025-07-17T10:00:00+0800": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%z`
 - "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
 
+
+#### 展开 json 对象
+
+如果你希望将 JSON 对象展开为单层结构，可以在请求的 header 中添加 `x-greptime-pipeline-params` 参数，设置 `flatten_json_object` 为 `true`。
+
+以下是一个示例请求：
+
+```shell
+curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
+     -H "Content-Type: application/x-ndjson" \
+     -H "Authorization: Basic {{authentication}}" \
+     -H "x-greptime-pipeline-params: flatten_json_object=true" \
+     -d "$<log-items>"
+```
+
+这样，GreptimeDB 将自动将 JSON 对象的每个字段展开为单独的列。比如
+
+```JSON
+{
+    "a": {
+        "b": {
+            "c": [1, 2, 3]
+        }
+    },
+    "d": [
+        "foo",
+        "bar"
+    ],
+    "e": {
+        "f": [7, 8, 9],
+        "g": {
+            "h": 123,
+            "i": "hello",
+            "j": {
+                "k": true
+            }
+        }
+    }
+}
+```
+
+将被展开为：
+
+```json
+{
+    "a.b.c": [1,2,3],
+    "d": ["foo","bar"],
+    "e.f": [7,8,9],
+    "e.g.h": 123,
+    "e.g.i": "hello",
+    "e.g.j.k": true
+}
+```
+
 ## Pipeline 上下文中的 hint 变量
 
 从 `v0.15` 开始，pipeline 引擎可以识别特定的变量名称，并且通过这些变量对应的值设置相应的建表选项。

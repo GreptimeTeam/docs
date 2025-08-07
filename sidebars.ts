@@ -339,6 +339,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/monitoring/check-db-status',
                 'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
                 'user-guide/deployments-administration/monitoring/standalone-monitoring',
+                'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
                 'user-guide/deployments-administration/monitoring/runtime-info',
@@ -570,6 +571,14 @@ const sidebars: SidebarsConfig = {
           items: [
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'Trigger',
+          items: [
+            'enterprise/trigger/overview',
+			'enterprise/trigger/quick-start',
           ]
         },
       ],

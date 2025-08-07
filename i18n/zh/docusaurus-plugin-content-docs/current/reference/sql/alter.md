@@ -9,6 +9,7 @@ description: ALTER 用于修改数据库的设置、表的设置或表的元数�
 
 * 修改数据库选项
 * 添加/删除/修改列
+* 设置/取消列默认值
 * 重命名表
 * 修改表选项
 
@@ -57,6 +58,8 @@ ALTER TABLE [db.]table
    [ADD COLUMN name1 type1 [options], ADD COLUMN name2 type2 [options], ...
     | DROP COLUMN name
     | MODIFY COLUMN name type
+    | MODIFY COLUMN name SET DEFAULT value
+    | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
@@ -118,6 +121,30 @@ ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
 被修改的的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
+
+### 设置列默认值
+
+为现有列设置默认值：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 SET DEFAULT 0.0;
+```
+
+设置字符串默认值：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN `status` SET DEFAULT 'active';
+```
+
+默认值将在插入新行时使用，当该列没有显式提供值时。
+
+移除列的默认值：
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
+```
+
+删除默认值后，该列将使用 `NULL` 作为默认值。数据库只允许对可为空的列删除默认值。
 
 ### 修改表的参数
 

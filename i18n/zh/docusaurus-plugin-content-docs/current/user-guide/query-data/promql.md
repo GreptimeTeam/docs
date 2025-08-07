@@ -238,14 +238,19 @@ PromQL 的时间戳精度受制于查询语法的限制，最高只支持毫秒�
     | sort_desc          | `sort_desc(http_requests_total)`  |
     | histogram_quantile | `histogram_quantile(phi, metric)` |
     | predicate_linear   | `predict_linear(metric, 120)`     |
+    | absent             | `absent(nonexistent{job="myjob"})`|
+    | sgn                | `sgn(metric)`                     |
+    | pi                 | `pi()`                            |
+    | deg                | `deg(metric)`                     |
+    | rad                | `rad(metric)`                     |
+    | floor              | `floor(metric)`                   |
+    | clamp              | `clamp(metric, 0, 12)`            |
+    | clamp_max          | `clamp_max(metric, 12)`           |
+    | clamp_min          | `clamp_min(metric, 0)`            |
 
 - 不支持：
     | Function                   | Progress |
     | :------------------------- | :------- |
-    | absent                     | TBD      |
-    | sgn                        | TBD      |
-    | deg                        | TBD      |
-    | rad                        | TBD      |
     | *other multiple input fns* | TBD      |
 
 ### Range Functions
