@@ -10,9 +10,9 @@ Release date: August 06, 2025
 
 ### 👍 Highlights
 
-- **Automated Metadata Reconciliation**: Introduces reconcile procedures for catalogs, databases, tables to keep metadata consistent (#6613, #6612, #6584, #6588, #6614).
+- **Automated Metadata Recovery**: Introduces recovery procedures for catalogs, databases, tables to keep metadata consistent from snapshots to get through unexpected disaster (#6613, #6612, #6584, #6588, #6614).
 
-- **TQL in CTE**: Allows embedding PromQL inside SQL queries (#6645), e.g.:
+- **PromQL inside SQL**: Allows embedding PromQL (via TQL grammar) inside SQL queries (#6645), e.g.:
 
     ```sql
     WITH prom_result AS (
