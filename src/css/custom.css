@@ -31,3 +31,11 @@
 .footer__copyright {
   color: #aaa6b2;
 }
+
+
+
+.dropdown__link[href^="http"]::after {
+  content: " ↗";
+  font-size: 0.8em;
+  opacity: 0.7;
+}

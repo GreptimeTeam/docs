@@ -1,0 +1,11 @@
+# Cloudflare redirects for locale-based external redirects
+
+# Redirect Chinese locale to external Chinese site
+/zh/* https://docs.greptime.cn/:splat 301
+/zh https://docs.greptime.cn 301
+
+# Redirect English locale to external English site  
+/en/* https://docs.greptime.com/:splat 301
+/en https://docs.greptime.com 301
+
+
