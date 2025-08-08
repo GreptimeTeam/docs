@@ -19,13 +19,13 @@ Release date: August 06, 2025
 
 ### 📊  Dashboard v0.10.6
 
-* Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
-* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience
-* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance
+* Sidebar Controls – Toggle visibility from left menu and persist tables sidebar width.
+* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience.
+* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance.
 
 ### 🚀 Features
 
-* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/grepÇtimedb/pull/6410)
+* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/greptimedb/pull/6410)
 * feat: move metasrv admin to http server while keep tonic for backward compatibility by [@lyang24](https://github.com/lyang24) in [#6466](https://github.com/GreptimeTeam/greptimedb/pull/6466)
 * feat(mito): replace `Memtable::iter` with `Memtable::ranges`  by [@v0y4g3r](https://github.com/v0y4g3r) in [#6549](https://github.com/GreptimeTeam/greptimedb/pull/6549)
 * feat: supports more db options by [@killme2008](https://github.com/killme2008) in [#6529](https://github.com/GreptimeTeam/greptimedb/pull/6529)
