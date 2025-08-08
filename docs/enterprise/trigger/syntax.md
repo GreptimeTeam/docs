@@ -1,6 +1,6 @@
 ---
-keywords: [Trigger, Alert, GreptimeDB Enterprise, Reference]
-description: This reference provides detailed information about the GreptimeDB Trigger.
+keywords: [Trigger, Alert, GreptimeDB Enterprise, Syntax]
+description: This document provides more details about the greptimedb trigger.
 ---
 
 # Syntax
