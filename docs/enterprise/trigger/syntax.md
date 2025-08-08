@@ -45,7 +45,7 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
     The extraction rules are as follows:
     
     - Extract columns whose name or alias starts with `label_` to `LABELS`. The
-        key of lables is the column name or alias without the `label_` prefix,
+        key of labels is the column name or alias without the `label_` prefix,
         and the value of labels is the column value.
     - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
         column name, and the value of annotations is the column value.
