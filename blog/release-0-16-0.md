@@ -19,9 +19,9 @@ Release date: August 06, 2025
 
 ### 📊  Dashboard v0.10.6
 
-* Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
-* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience
-* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance
+* Sidebar Controls – Toggle visibility from left menu and persist tables sidebar width.
+* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience.
+* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance.
 
 ### 🚀 Features
 
