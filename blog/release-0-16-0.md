@@ -17,6 +17,10 @@ Release date: August 06, 2025
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
+### Breaking changes
+* [refactor: replace `pipeline::value` with `vrl::value`](https://github.com/GreptimeTeam/greptimedb/pull/6430)
+
+  Due to the change of built-in data types, we will no longer write data of the `uint` type. If you have previously written data using the greptime_identity pipeline, this may cause a mismatch of `int` types. Please modify the table structure and change the `uint` type to `int` type.
 ### 📊  Dashboard v0.10.6
 
 * Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
