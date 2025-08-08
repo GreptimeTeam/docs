@@ -25,7 +25,7 @@ Release date: August 06, 2025
 
 ### 🚀 Features
 
-* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/grepÇtimedb/pull/6410)
+* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/greptimedb/pull/6410)
 * feat: move metasrv admin to http server while keep tonic for backward compatibility by [@lyang24](https://github.com/lyang24) in [#6466](https://github.com/GreptimeTeam/greptimedb/pull/6466)
 * feat(mito): replace `Memtable::iter` with `Memtable::ranges`  by [@v0y4g3r](https://github.com/v0y4g3r) in [#6549](https://github.com/GreptimeTeam/greptimedb/pull/6549)
 * feat: supports more db options by [@killme2008](https://github.com/killme2008) in [#6529](https://github.com/GreptimeTeam/greptimedb/pull/6529)
