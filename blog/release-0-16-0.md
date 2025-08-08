@@ -20,7 +20,13 @@ Release date: August 06, 2025
 ### Breaking changes
 * [refactor: replace `pipeline::value` with `vrl::value`](https://github.com/GreptimeTeam/greptimedb/pull/6430)
 
-  Due to the change of built-in data types, we will no longer write data of the `uint` type. If you have previously written data using the greptime_identity pipeline, this may cause a mismatch of `int` types. Please modify the table structure and change the `uint` type to `int` type.
+  If you originally used `greptime_identity` for writing and wrote positive integer data, in the following two cases:
+
+  * Writing in nd-json format (vector greptimedb_logs sink),
+  * Writing in json format, and the value range is between i64::MAX and u64::MAX
+  
+  The data will be recognized as u64 type. You can use `desc table_name` to confirm the actual data type.
+You can directly modify the table structure, or use [Transform in version 2](https://docs.greptime.com/user-guide/logs/pipeline-config/#transform-in-version-2) to define type conversion.
 ### 📊  Dashboard v0.10.6
 
 * Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
