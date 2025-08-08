@@ -1,6 +1,6 @@
 ---
 keywords: [Trigger, Alert, GreptimeDB Enterprise, Syntax]
-description: This document provides more details about the greptimedb trigger.
+description: This document provides more details about the GreptimeDB Trigger.
 ---
 
 # Syntax
