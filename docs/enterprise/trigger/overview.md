@@ -11,3 +11,4 @@ notification is sent out.
 
 - [Quick Start Example](./quick-start.md): A step-by-step guide to set up a
 Trigger that monitors system load and raises alerts.
+- [Syntax](./syntax.md): The syntax of the `TRIGGER` related SQL statements.

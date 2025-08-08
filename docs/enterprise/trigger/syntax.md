@@ -27,65 +27,66 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 
 ### On clause
 
-- Query expression
+#### Query expression
 
-    The SQL query which be executed periodically. The notification will be fired
-    if query result is not empty. If query result has multiple rows, a notification
-    will be fired for each row.
+The SQL query which be executed periodically. The notification will be fired
+if query result is not empty. If query result has multiple rows, a notification
+will be fired for each row.
 
-    In addition, the Trigger will extract the `labels` and `annotations` from
-    the query result, and attach them to the notification message along with the
-    key-value pairs specified in the `LABELS` and `ANNOTATIONS` clauses.
+In addition, the Trigger will extract the `labels` and `annotations` from the
+query result, and attach them to the notification message along with the key-value
+pairs specified in the `LABELS` and `ANNOTATIONS` clauses.
 
-    The extraction rules are as follows:
+The extraction rules are as follows:
 
-    - Extract columns whose name or alias starts with `label_` to `LABELS`. The
-        key of labels is the column name or alias without the `label_` prefix.
-    - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
-        column name.
+- Extract columns whose name or alias starts with `label_` to `LABELS`. The key
+    of labels is the column name or alias without the `label_` prefix.
+- Extract the other columns to `ANNOTATIONS`. The key of annotations is the
+    column name.
 
-    For example, the query expression is as follows:
-    
-    ```sql
-    SELECT collect as label_collector, host as label_host, val
-        FROM host_load1
-        WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
-    ```
+For example, the query expression is as follows:
 
-    Assume the query result is not empty and looks like this:
+```sql
+SELECT collect as label_collector, host as label_host, val
+    FROM host_load1
+    WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
+```
 
-    | label_collector  | label_host | val |
-    |------------------|------------|-----|
-    | collector1       | host1      | 12  |
-    | collector2       | host2      | 15  |
+Assume the query result is not empty and looks like this:
 
-    This will generate two notifications.
+| label_collector  | label_host | val |
+|------------------|------------|-----|
+| collector1       | host1      | 12  |
+| collector2       | host2      | 15  |
 
-    The first notification will have the following labels and annotations:
-    - Labels:
-        - collector: collector1
-        - host: host1
-        - the labels defined in the `LABELS` clause
-    - Annotations:
-        - val: 12
-        - the annotations defined in the `ANNOTATIONS` clause
+This will generate two notifications.
 
-    The second notification will have the following labels and annotations:
-    - Labels:
-        - collector: collector2
-        - host: host2
-        - the labels defined in the `LABELS` clause
-    - Annotations:
-        - val: 15
-        - the annotations defined in the `ANNOTATIONS` clause
+The first notification will have the following labels and annotations:
+
+- Labels:
+    - collector: collector1
+    - host: host1
+    - the labels defined in the `LABELS` clause
+- Annotations:
+    - val: 12
+    - the annotations defined in the `ANNOTATIONS` clause
+
+The second notification will have the following labels and annotations:
+
+- Labels:
+    - collector: collector2
+    - host: host2
+    - the labels defined in the `LABELS` clause
+- Annotations:
+    - val: 15
+    - the annotations defined in the `ANNOTATIONS` clause
         
-- Interval expression
+#### Interval expression
 
-    It indicates how often the query is executed. e.g.,
-    `INTERVAL '1 minute'`, `INTERVAL '1 hour'` etc. For more details, see
-    [interval-type](../../reference/sql/data-types.md#interval-type).
+It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
+`'1 hour'::INTERVAL` etc. For more details, see [interval-type](../../reference/sql/data-types.md#interval-type).
 
-### Labels and Annotations
+### Labels and Annotations clauses
 
 The LABELS and ANNOTATIONS clauses allow you to attach static key-value pairs
 to the notification messages sent by Trigger. These can be used to provide
@@ -100,17 +101,17 @@ The NOTIFY clause allows you to specify one or more notification channels.
 
 Currently, GreptimeDB supports the following notification channel:
 
-- Webhook
+#### Webhook
 
-    The webhook channel will send HTTP requests to a specified URL when the
-    Trigger fires. The payload of the http request is compatible with
-    [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/),
-    which means you can use GreptimeDB's Trigger with Prometheus Alertmanager
-    without any extra glue code.
+The webhook channel will send HTTP requests to a specified URL when the Trigger
+fires. The payload of the http request is compatible with
+[Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/),
+which means you can use GreptimeDB's Trigger with Prometheus Alertmanager
+without any extra glue code.
 
-    The optional `WITH` clause allows you to specify additional parameters:
+The optional `WITH` clause allows you to specify additional parameters:
 
-    - timeout: The timeout for the HTTP request, e.g., `timeout='1m'`.
+- timeout: The timeout for the HTTP request, e.g., `timeout='1m'`.
 
 ## Show Triggers
 
