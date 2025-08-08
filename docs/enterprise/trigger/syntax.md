@@ -40,15 +40,50 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
     The extraction rules are as follows:
 
     - Extract columns whose name or alias starts with `label_` to `LABELS`. The
-        key of labels is the column name or alias without the `label_` prefix,
-        and the value of labels is the column value.
+        key of labels is the column name or alias without the `label_` prefix.
     - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
-        column name, and the value of annotations is the column value.
+        column name.
 
+    For example, the query expression is as follows:
+    
+    ```sql
+    SELECT collect as label_collector, host as label_host, val
+        FROM host_load1
+        WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
+    ```
+
+    Assume the query result is not empty and looks like this:
+
+    | label_collector  | label_host | val |
+    |------------------|------------|-----|
+    | collector1       | host1      | 12  |
+    | collector2       | host2      | 15  |
+
+    This will generate two notifications.
+
+    The first notification will have the following labels and annotations:
+    - Labels:
+        - collector: collector1
+        - host: host1
+        - the labels defined in the `LABELS` clause
+    - Annotations:
+        - val: 12
+        - the annotations defined in the `ANNOTATIONS` clause
+
+    The second notification will have the following labels and annotations:
+    - Labels:
+        - collector: collector2
+        - host: host2
+        - the labels defined in the `LABELS` clause
+    - Annotations:
+        - val: 15
+        - the annotations defined in the `ANNOTATIONS` clause
+        
 - Interval expression
 
-    The time interval at which the query expression is executed. e.g.,
-    `INTERVAL '1 minute'`, `INTERVAL '1 hour'` etc.
+    It indicates how often the query is executed. e.g.,
+    `INTERVAL '1 minute'`, `INTERVAL '1 hour'` etc. For more details, see
+    [interval-type](../../reference/sql/data-types.md#interval-type).
 
 ### Labels and Annotations
 
@@ -57,7 +92,7 @@ to the notification messages sent by Trigger. These can be used to provide
 additional context or metadata about the Trigger.
 
 - LABELS: serve as labels for Alertmanager routing, grouping, and inhibition.
-- ANNOTATIONS: serve as annotations, typically for human-readable descriptions.
+- ANNOTATIONS: typically for human-readable descriptions.
 
 ### Notify clause
 
@@ -69,12 +104,13 @@ Currently, GreptimeDB supports the following notification channel:
 
     The webhook channel will send HTTP requests to a specified URL when the
     Trigger fires. The payload of the http request is compatible with
-    Prometheus Alertmanager, which means you can use GreptimeDB's Trigger with
-    Prometheus Alertmanager without any extra glue code.
+    [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/),
+    which means you can use GreptimeDB's Trigger with Prometheus Alertmanager
+    without any extra glue code.
 
     The optional `WITH` clause allows you to specify additional parameters:
 
-    - timeout: The timeout for the HTTP request.
+    - timeout: The timeout for the HTTP request, e.g., `timeout='1m'`.
 
 ## Show Triggers
 
