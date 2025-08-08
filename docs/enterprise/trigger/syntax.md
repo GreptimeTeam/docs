@@ -22,13 +22,8 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 
 ### Trigger name
 
-- Trigger name
-
-    The trigger name is the unique identifier of the Trigger at the catalog level.
-
-- IF NOT EXISTS
-
-    Prevents an error from occurring if the Trigger exists.
+- Trigger name: the unique identifier of the Trigger at the catalog level.
+- IF NOT EXISTS: prevents an error from occurring if the Trigger exists.
 
 ### On clause
 
@@ -37,22 +32,22 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
     The SQL query which be executed periodically. The notification will be fired
     if query result is not empty. If query result has multiple rows, a notification
     will be fired for each row.
-    
-    In addition, the Trigger will extract the `labels` and `annotations` from 
+
+    In addition, the Trigger will extract the `labels` and `annotations` from
     the query result, and attach them to the notification message along with the
     key-value pairs specified in the `LABELS` and `ANNOTATIONS` clauses.
 
     The extraction rules are as follows:
-    
+
     - Extract columns whose name or alias starts with `label_` to `LABELS`. The
         key of labels is the column name or alias without the `label_` prefix,
         and the value of labels is the column value.
     - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
         column name, and the value of annotations is the column value.
-    
+
 - Interval expression
-    
-    The time interval at which the query expression is executed. e.g., 
+
+    The time interval at which the query expression is executed. e.g.,
     `INTERVAL '1 minute'`, `INTERVAL '1 hour'` etc.
 
 ### Labels and Annotations
@@ -60,7 +55,7 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 The LABELS and ANNOTATIONS clauses allow you to attach static key-value pairs
 to the notification messages sent by Trigger. These can be used to provide
 additional context or metadata about the Trigger.
-    
+
 - LABELS: serve as labels for Alertmanager routing, grouping, and inhibition.
 - ANNOTATIONS: serve as annotations, typically for human-readable descriptions.
 
@@ -72,7 +67,7 @@ Currently, GreptimeDB supports the following notification channel:
 
 - Webhook
 
-    The webhook channel will send HTTP requests to a specified URL when the 
+    The webhook channel will send HTTP requests to a specified URL when the
     Trigger fires. The payload of the http request is compatible with
     Prometheus Alertmanager, which means you can use GreptimeDB's Trigger with
     Prometheus Alertmanager without any extra glue code.
@@ -112,7 +107,6 @@ For example:
 ```sql
 SHOW TRIGGERS WHERE name = 'load1_monitor';
 ```
-
 
 ## Drop Trigger
 
