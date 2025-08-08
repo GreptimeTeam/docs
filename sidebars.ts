@@ -579,7 +579,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'enterprise/trigger/overview',
 			'enterprise/trigger/quick-start',
-			'enterprise/trigger/reference',
+			'enterprise/trigger/syntax',
           ]
         },
       ],
