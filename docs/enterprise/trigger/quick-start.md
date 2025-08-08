@@ -83,7 +83,6 @@ and display the labels and annotations for each alert.
 
 Start Alertmanager once the configuration is ready.
 
-
 ## Create Trigger
 
 Connect to GreptimeDB with MySql client and run the following SQL:
