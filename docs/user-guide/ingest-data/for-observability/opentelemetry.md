@@ -119,17 +119,6 @@ The example codes above may be outdated according to OpenTelemetry. We recommend
 
 For more information on the example code, please refer to the official documentation for your preferred programming language.
 
-### Data Model
-
-The OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
-
-- The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
-- All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
-- The timestamp of the data point will be used as the timestamp index of GreptimeDB, and the column name is `greptime_timestamp`.
-- The data of Gauge/Sum data types will be used as the field column of GreptimeDB, and the column name is `greptime_value`.
-- Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
-- Histogram and ExponentialHistogram are not supported yet, we may introduce the Histogram data type to natively support these two types in a later version.
-
 ### Prometheus Compatibility
 
 Starting from `v0.16`, GreptimeDB is introducing a Prometheus-compatible mode for the OTLP metrics ingestion.
@@ -139,24 +128,38 @@ If you have not ingested any OTLP metrics before, it will automatically use the 
 Otherwise, it will remain the old data format with the existing table, but use the new data format for any newly created tables.
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
-1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`)
+1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
 2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
 
 Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
 GreptimeDB saves their value directly without calculating the cumulative value.
 See [here](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/) for some context.
 
-You can set the HTTP headers to configure the pre-process behaviors. Here are the options:
+You can set the HTTP headers to configure the pre-processing behaviors. Here are the options:
 1. `x-greptime-otlp-metric-promote-all-resource-attrs`: Persist all resource attributes. Default to `false`.
 2. `x-greptime-otlp-metric-promote-resource-attrs`: If not persisting all resource attributes, the attribute name list to be kept. Use `;` to join the name list.
 3. `x-greptime-otlp-metric-ignore-resource-attrs`: If persisting all resource attributes, the attribute name list to be ignored. Use `;` to join the name list.
 4. `x-greptime-otlp-metric-promote-scope-attrs`: Whether to persist the scope attributes. Default to `false`.
 
+### Data Model
+
+The Prometheus-compatible OTLP metrics data model is mapped to the GreptimeDB data model according to the following rules:
+
+- The name of the Metric will be used as the name of the GreptimeDB table, and the table will be automatically created if it does not exist.
+- Only selected resource attributes are kept by default. See above for details and configuration options. Attributes are used as tag columns in the GreptimeDB table.
+- You can refer to the [Prometheus Data Model](./prometheus.md#data-model) for other details.
+- ExponentialHistogram is not supported yet.
+
+If you're using OTLP metrics before `v0.16`, you're ingesting the data without the Prometheus compatibility. Here are some mapping differences:
+
+- All attributes, including resource attributes, scope attributes, and data point attributes, will be used as tag columns of the GreptimeDB table.
+- Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
+
 ## Logs
 
 GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.
 
-### OTLP/HTTP API API
+### OTLP/HTTP API
 
 To send OpenTelemetry Logs to GreptimeDB through OpenTelemetry SDK libraries, use the following information:
 
