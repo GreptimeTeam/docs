@@ -130,6 +130,28 @@ The OTLP metrics data model is mapped to the GreptimeDB data model according to 
 - Each quantile of the Summary data type will be used as a separated data column of GreptimeDB, and the column name is `greptime_pxx`, where xx is the quantile, such as 90/99, etc.
 - Histogram and ExponentialHistogram are not supported yet, we may introduce the Histogram data type to natively support these two types in a later version.
 
+### Prometheus Compatibility
+
+Starting from `v0.16`, GreptimeDB is introducing a Prometheus-compatible mode for the OTLP metrics ingestion.
+If the metrics data is persisted using the Prometheus-compatible format, you should be able to query them using PromQL, just like any Prometheus metrics.
+
+If you have not ingested any OTLP metrics before, it will automatically use the Prometheus-compatible format.
+Otherwise, it will remain the old data format with the existing table, but use the new data format for any newly created tables.
+
+GreptimeDB pre-processes the incoming data before persisting them, including:
+1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`)
+2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
+
+Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
+GreptimeDB saves their value directly without calculating the cumulative value.
+See [here](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/) for some context.
+
+You can set the HTTP headers to configure the pre-process behaviors. Here are the options:
+1. `x-greptime-otlp-metric-promote-all-resource-attrs`: Persist all resource attributes. Default to `false`.
+2. `x-greptime-otlp-metric-promote-resource-attrs`: If not persisting all resource attributes, the attribute name list to be kept. Use `;` to join the name list.
+3. `x-greptime-otlp-metric-ignore-resource-attrs`: If persisting all resource attributes, the attribute name list to be ignored. Use `;` to join the name list.
+4. `x-greptime-otlp-metric-promote-scope-attrs`: Whether to persist the scope attributes. Default to `false`.
+
 ## Logs
 
 GreptimeDB consumes OpenTelemetry Logs natively via [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) protocol.

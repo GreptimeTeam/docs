@@ -131,6 +131,29 @@ OTLP 指标数据模型按照下方的规则被映射到 GreptimeDB 数据模型
 - Summary 类型的每个 quantile 被作为单独的数据列，列名 `greptime_pxx`，其中 xx 是 quantile 的数据，如 90 / 99 等。
 - Histogram 和 ExponentialHistogram 暂时未被支持，我们可能在后续版本中推出 Histogram 数据类型来原生支持这两种类型。
 
+### 兼容 Prometheus
+
+从 `v0.16` 开始，GreptimeDB 为 OTLP 指标写入引入了一种 Prometheus 兼容模式。
+如果指标以这种兼容模式写入，你可以像查询 Prometheus 原生指标一样使用 PromQL 直接查询这些指标。
+
+如果你之前没有使用过 OTLP 指标写入，那么 GreptimeDB 会默认使用新的兼容模式。
+否则，GreptimeDB 会对已经存在的表保留原有的数据模型，只有对新创建的指标表使用兼容模式写入。
+
+GreptimeDB 会首先对数据进行预处理，包括：
+1. 将指标名（表名）和标签名转换成 Prometheus 风格的命名（例如：将 `.` 替换为 `_`）
+2. 默认丢弃一些 resource 属性和全部的 scope 属性。默认保存的 resource 属性列表可以参考[这里](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes)。你可以通过配置项对这个行为进行调整
+
+注意： OTLP 的 `Sum` 和 `Histogram` 指标的数据可能是增量时序（delta temporality）类型的。
+GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value）的计算。
+参考[这里](https://grafana.com/blog/2023/09/26/opentelemetry-metrics-a-guide-to-delta-vs.-cumulative-temporality-trade-offs/)获取更多背景信息。
+
+你可以通过设置 HTTP 请求头来调整预处理的行为。以下是选项列表：
+You can set the HTTP headers to configure the pre-process behaviors. Here are the options:
+1. `x-greptime-otlp-metric-promote-all-resource-attrs`: 保存所有 resource 资源。默认是 `false`。
+2. `x-greptime-otlp-metric-promote-resource-attrs`: 如果不保存所有 resource 资源，需要保存的资源名称列表，用 `；` 连接。
+3. `x-greptime-otlp-metric-ignore-resource-attrs`: 如果保存所有的 resource 资源，需要丢弃的资源名称列表，用 `；` 连接。
+4. `x-greptime-otlp-metric-promote-scope-attrs`: 是否需要保存 scope 资源。默认是 `false`。
+
 ## Logs
 
 GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/#otlphttp) 协议原生地消费 OpenTelemetry 日志。
