@@ -150,8 +150,8 @@ GreptimeDB 将会直接保存它们，不会进行累计值（cumulative value�
 你可以通过设置 HTTP 请求头来调整预处理的行为。以下是选项列表：
 You can set the HTTP headers to configure the pre-process behaviors. Here are the options:
 1. `x-greptime-otlp-metric-promote-all-resource-attrs`: 保存所有 resource 资源。默认是 `false`。
-2. `x-greptime-otlp-metric-promote-resource-attrs`: 如果不保存所有 resource 资源，需要保存的资源名称列表，用 `；` 连接。
-3. `x-greptime-otlp-metric-ignore-resource-attrs`: 如果保存所有的 resource 资源，需要丢弃的资源名称列表，用 `；` 连接。
+2. `x-greptime-otlp-metric-promote-resource-attrs`: 如果不保存所有 resource 资源，需要保存的资源名称列表，用 `;` 连接。
+3. `x-greptime-otlp-metric-ignore-resource-attrs`: 如果保存所有的 resource 资源，需要丢弃的资源名称列表，用 `;` 连接。
 4. `x-greptime-otlp-metric-promote-scope-attrs`: 是否需要保存 scope 资源。默认是 `false`。
 
 ## Logs
