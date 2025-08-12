@@ -17,6 +17,18 @@ Release date: August 06, 2025
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
+### Breaking changes
+* [refactor: replace `pipeline::value` with `vrl::value`](https://github.com/GreptimeTeam/greptimedb/pull/6430)
+
+  If you used greptime_identity to write positive integer data before version 0.16.0, in the following two cases:
+
+  * Writing in nd-json format (vector greptimedb_logs sink),
+  * Writing in json format, with values in the range between i64::MAX and u64::MAX
+  
+  The integer type would be recognized as u64. After version 0.16.0, however, greptime_identity will recognize this data as i64 (please note not to write data greater than i64::MAX).
+  This may cause a mismatch between the written data and the table schema, or an overflow leading to write failures.
+  You can use `desc table_name` to confirm the actual data type.
+  You can directly modify the table structure to fix this issue, or use [Transform in version 2](https://docs.greptime.com/user-guide/logs/pipeline-config/#transform-in-version-2) for custom type conversion.
 ### 📊  Dashboard v0.10.6
 
 * Sidebar Controls – Toggle visibility from left menu and persist tables sidebar width.
