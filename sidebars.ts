@@ -392,6 +392,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
               ]
             },
+            'user-guide/deployments-administration/troubleshooting',
             'user-guide/deployments-administration/run-on-android',
             'user-guide/deployments-administration/upgrade',
           ],
@@ -555,7 +556,6 @@ const sidebars: SidebarsConfig = {
               ]
             },
             'enterprise/deployments-administration/backup',
-            'enterprise/deployments-administration/troubleshooting',
           ],
         },
         {
