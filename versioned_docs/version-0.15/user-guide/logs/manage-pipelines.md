@@ -21,13 +21,12 @@ Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use th
 
 ```shell
 ## Upload the pipeline file. 'test' is the name of the pipeline
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test?db=public" \
+curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
   -H "Authorization: Basic {{authentication}}" \
   -F "file=@pipeline.yaml"
 ```
 
-The created Pipeline is associated with a database, which can be specified with the URL parameter `db`, defaulting to `public`.
-When writing log to a database, the Pipeline used must be under the same database as the table being written to.
+The created Pipeline is shared for all databases.
 
 ## Delete a Pipeline
 
@@ -35,11 +34,11 @@ You can use the following HTTP interface to delete a pipeline:
 
 ```shell
 ## 'test' is the name of the pipeline
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?db=public&version=2024-06-27%2012%3A02%3A34.257312110Z" \
+curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z" \
   -H "Authorization: Basic {{authentication}}"
 ```
 
-In the above example, we deleted a pipeline named `test` in `public` database. The `version` parameter is required to specify the version of the pipeline to be deleted.
+In the above example, we deleted a pipeline named `test`. The `version` parameter is required to specify the version of the pipeline to be deleted.
 
 ## Query Pipelines
 

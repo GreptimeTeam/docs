@@ -362,6 +362,30 @@ objectStorage:
     endpoint: ""
 ```
 
+#### Volcengine TOS
+
+TOS ([Torch Object Storage](https://www.volcengine.com/docs/6349)) 是[火山引擎](https://www.volcengine.com)提供的海量、安全、低成本、易用、高可靠、高可用的对象存储服务。
+
+```yaml
+objectStorage:
+  credentials:
+    # Volcengine access key ID
+    accessKeyId: ""
+    # Volcengine secret access key
+    secretAccessKey: ""
+  s3:
+    # Volcengine TOS bucket name
+    bucket: ""
+    # Volcengine TOS region
+    region: ""
+    # The root path in bucket is 'tos://<bucket>/<root>/data/...'
+    root: ""
+    # The Volcengine TOS endpoint, see more detail: https://www.volcengine.com/docs/6349/107356
+    endpoint: ""
+    # Enable virtual host style so that OpenDAL will send API requests in virtual host style instead of path style.
+    enableVirtualHostStyle: true
+```
+
 ### Prometheus 监控配置
 
 如果你已经安装了 [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator)，你可以通过 `prometheusMonitor.enabled` 字段创建 Prometheus PodMonitor 来监控 GreptimeDB，如下所示：

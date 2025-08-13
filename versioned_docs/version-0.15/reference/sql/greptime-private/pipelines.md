@@ -31,7 +31,7 @@ The output is as follows:
 ```
 
 - `name`: The name of the pipeline;
-- `schema`: The schema of the pipeline;
+- `schema`: Deprecated. If you create the pipeline after `v0.15`, this field should be an empty string.
 - `content_type`: The type of the pipeline;
 - `pipeline`: The content of the pipeline;
 - `created_at`: The creation time of the pipeline;

@@ -31,7 +31,7 @@ SELECT * FROM pipelines;
 ```
 
 - `name`: pipeline 名称；
-- `schema`: pipeline 对应的 schema；
+- `schema`: 已废弃。如果你在 `v0.15` 之后创建 pipeline，这个字段会是一个空字符串。
 - `content_type`: pipeline 的类型；
 - `pipeline`: pipeline 的具体内容；
 - `created_at`: pipeline 的创建时间；

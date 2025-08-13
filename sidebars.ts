@@ -339,7 +339,8 @@ const sidebars: SidebarsConfig = {
                 },
                 'user-guide/deployments-administration/monitoring/check-db-status',
                 'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
-                'user-guide/deployments-administration/monitoring/export-metrics',
+                'user-guide/deployments-administration/monitoring/standalone-monitoring',
+                'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
                 'user-guide/deployments-administration/monitoring/runtime-info',
@@ -389,6 +390,7 @@ const sidebars: SidebarsConfig = {
               label: 'Maintenance',
               items: [
                 'user-guide/deployments-administration/maintenance/maintenance-mode',
+                'user-guide/deployments-administration/maintenance/recovery-mode',
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
               ]
             },
@@ -564,12 +566,21 @@ const sidebars: SidebarsConfig = {
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
         },
+        'enterprise/read-replica',
         {
           type: 'category',
           label: 'Releases',
           items: [
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'Trigger',
+          items: [
+            'enterprise/trigger/overview',
+			'enterprise/trigger/quick-start',
           ]
         },
       ],
