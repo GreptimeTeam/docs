@@ -23,7 +23,7 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 ### Trigger name
 
 - Trigger name: the unique identifier of the Trigger at the catalog level.
-- IF NOT EXISTS: prevents an error from occurring if the Trigger exists.
+- IF NOT EXISTS: prevent errors that would occur if the Trigger being created.
 
 ### On clause
 
@@ -84,7 +84,7 @@ The second notification will have the following labels and annotations:
 #### Interval expression
 
 It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
-`'1 hour'::INTERVAL` etc. For more details, see [interval-type](../../reference/sql/data-types.md#interval-type).
+`'1 hour'::INTERVAL` etc. For more details, see [interval-type](/reference/sql/data-types.md#interval-type).
 
 ### Labels and Annotations clauses
 

@@ -1,6 +1,6 @@
 ---
-keywords: [触发器, 告警, GreptimeDB 企业版, 语法]
-description: 本文档系统描述了 GreptimDB 触发器的完整语法规范。
+keywords: [Trigger, 触发器, 告警, GreptimeDB 企业版, 语法]
+description: 本文档系统描述了 GreptimDB Trigger 的完整语法规范。
 ---
 
 # Syntax
@@ -23,7 +23,7 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 ### Trigger name
 
 - Trigger name：Trigger 在 catalog 级别的唯一标识符。
-- IF NOT EXISTS：如果触发器存在，则防止发生错误。
+- IF NOT EXISTS：阻止 Trigger 已经存在时的报错。
 
 ### On 子句
 
@@ -80,7 +80,7 @@ SELECT collect as label_collector, host as label_host, val
 
 指定查询的执行间隔。它表示查询的执行频率。例如，`INTERVAL '1 minute'`、
 `INTERVAL '1 hour'` 等。更多细节，请参见
-[interval-type](../../reference/sql/data-types.md#interval-type)。
+[interval-type](/reference/sql/data-types.md#interval-type)。
 
 ### Labels 和 Annotations 子句
 
