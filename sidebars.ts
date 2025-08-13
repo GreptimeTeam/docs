@@ -555,7 +555,6 @@ const sidebars: SidebarsConfig = {
               ]
             },
             'enterprise/deployments-administration/backup',
-            'enterprise/deployments-administration/performance-tuning',
             'enterprise/deployments-administration/troubleshooting',
           ],
         },
