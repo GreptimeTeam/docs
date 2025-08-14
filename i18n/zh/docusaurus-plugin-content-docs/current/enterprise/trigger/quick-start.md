@@ -1,6 +1,6 @@
 ---
 keywords: [Trigger, 告警, GreptimeDB 企业版, SQL, Webhook, Alertmanager, Slack]
-description: 本指南演 示GreptimeDB Trigger 如何与 Prometheus Alertmanager 生态系统无缝集成，实现监控和告警功能。
+description: 本指南演示 GreptimeDB Trigger 如何与 Prometheus Alertmanager 生态系统无缝集成，实现监控和告警功能。
 ---
 
 ## 快速入门示例

@@ -1,6 +1,6 @@
 ---
 keywords: [Trigger, 触发器, 告警, GreptimeDB 企业版, 语法]
-description: 本文档系统描述了 GreptimDB Trigger 的完整语法规范。
+description: 本文档系统描述了 GreptimeDB Trigger 的完整语法规范。
 ---
 
 # Syntax
