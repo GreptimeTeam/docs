@@ -1,6 +1,6 @@
 ---
-keywords: [触发器, 告警, GreptimeDB企业版, SQL, Webhook, Alertmanager, Slack]
-description: 本指南演示GreptimeDB触发器如何与Prometheus Alertmanager生态系统无缝集成，实现监控和告警功能。
+keywords: [Trigger, 告警, GreptimeDB 企业版, SQL, Webhook, Alertmanager, Slack]
+description: 本指南演示 GreptimeDB Trigger 如何与 Prometheus Alertmanager 生态系统无缝集成，实现监控和告警功能。
 ---
 
 ## 快速入门示例
