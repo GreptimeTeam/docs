@@ -151,7 +151,7 @@ GreptimeDB 中用于实时处理传入数据的强大解析和转换机制。Pip
 
 
 
-### PromQL (Prometheus Query Language)
+### PromQL (Prometheus 查询语言)
 专为 Prometheus 设计的时序数据查询语言。GreptimeDB 支持 PromQL 且兼容性接近 100%，支持用户执行复杂的时序数据分析操作并使用现有的 Prometheus 仪表盘和告警规则。
 
 ---
