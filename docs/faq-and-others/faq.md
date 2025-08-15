@@ -218,8 +218,8 @@ Choose the appropriate solution based on your availability requirements, deploym
 Learn more about indexing: [Index Management](/user-guide/manage-data/data-index.md)
 
 **Real-Time Processing**:
-- **[Flow Engine](/user-guide/flow-computation/overview.md)**: Stream processing for continuous queries and real-time aggregation
-- **[Pipeline](/user-guide/logs/pipeline-config.md)**: ETL functionality to transform data as it arrives
+- **[Flow Engine](/user-guide/flow-computation/overview.md)**: Real-time stream processing system that enables continuous, incremental computation on streaming data with automatic result table updates
+- **[Pipeline](/user-guide/logs/pipeline-config.md)**: Data parsing and transformation mechanism for processing log data in real-time, with configurable processors for field extraction and data type conversion
 - **Output Tables**: Persist processed results for analysis
 
 

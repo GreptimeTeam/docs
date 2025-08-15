@@ -209,8 +209,8 @@ GreptimeDB 提供多种灾备策略以满足不同的可用性需求：
 了解更多索引信息：[索引管理](/user-guide/manage-data/data-index.md)
 
 **实时处理**：
-- **[Flow Engine](/user-guide/flow-computation/overview.md)**：流处理引擎，支持连续查询和实时聚合
-- **[Pipeline](/user-guide/logs/pipeline-config.md)**：ETL 功能，对到达数据进行转换
+- **[Flow Engine](/user-guide/flow-computation/overview.md)**：实时流数据处理系统，对流式数据进行连续增量计算，自动更新结果表
+- **[Pipeline](/user-guide/logs/pipeline-config.md)**：实时日志数据解析转换机制，通过可配置处理器进行字段提取和数据类型转换
 - **输出表**：持久化处理结果用于分析
 
 ### GreptimeDB 的可扩展性特征是什么？
