@@ -11,6 +11,10 @@ GreptimeDB 提供了各种指标来帮助监控和排查性能问题。官方仓
 
 ## 查询
 
+### ANALYZE QUERY
+
+GreptimeDB 支持查询分析功能，通过 `EXPLAIN ANALYZE [VERBOSE] <SQL>` 语句可以看到逐步的查询耗时。
+
 ### 指标
 
 以下指标可用于诊断查询性能问题：

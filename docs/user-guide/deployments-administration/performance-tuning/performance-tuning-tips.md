@@ -11,6 +11,11 @@ GreptimeDB provides various metrics to help monitor and troubleshoot performance
 
 ## Query
 
+### ANALYZE QUERY
+
+GreptimeDB supports query analysis functionality.
+Using the `EXPLAIN ANALYZE [VERBOSE] <SQL>` statement, you can view step-by-step query execution times.
+
 ### Metrics
 
 The following metrics help diagnose query performance issues:

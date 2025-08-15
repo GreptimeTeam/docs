@@ -18,23 +18,23 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 
 本章节概述了 GreptimeDB Enterprise 中可用的高级功能。有关获取试用或购买，请[联系我们](https://greptime.cn/contactus)。
 
-## 功能对比
+## 功能介绍
 
+GreptimeDB Enterprise 支持开源版中的所有功能，
+你可以阅读[用户指南](/user-guide/overview.md)文档以获取开源版的所有功能详情。
 有关开源版和企业版之间的功能对比，请参考官网的[价格页面](https://greptime.cn/pricing)。
 
-## 使用指南
+GreptimeDB Enterprise 包括以下高级功能，
+详情描述在本章节的文档中：
 
 - [基于双活互备的 DR 解决方案](./deployments-administration/disaster-recovery/overview.md)：通过高级灾难恢复解决方案确保服务不中断和数据保护。
 - [部署 GreptimeDB](./deployments-administration/overview.md)：设置认证信息及其他关键配置后，将 GreptimeDB 部署在 Kubernetes 上并监控关键指标。
-- [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日
-  志。
-- [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode
-  之间自动平衡负载。
+- [审计日志](./deployments-administration/monitoring/audit-logging.md)：记录数据库用户行为的日志。
+- [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
 - Elasticsearch 查询兼容性：在 Kibana 中以 GreptimeDB 作为后端。
 - Greptime 企业版管理控制台：加强版本的管理界面，提供更多的集群管理和监控功能。
 - [读副本](./read-replica.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
-- [触发器](./trigger/overview.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus
-  AlertManager。
+- [Trigger](./trigger/overview.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
 - Flow 的可靠性功能。
 
 ## 发布说明
