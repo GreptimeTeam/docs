@@ -147,14 +147,14 @@ An open-source observability framework for cloud-native software. OpenTelemetry 
 ## P
 
 ### PromQL (Prometheus Query Language)
-A powerful and flexible query language used to retrieve and manipulate time-series data stored in Prometheus. GreptimeDB supports PromQL, enabling users to perform complex queries on their time-series data.
+A powerful and flexible query language used to retrieve and manipulate time-series data stored in Prometheus. GreptimeDB supports PromQL with near 100% compatibility, enabling users to perform complex queries on their time-series data and use existing Prometheus dashboards and alerting rules.
 
 ---
 
 ## P
 
 ### Pipeline
-A powerful data parsing and transformation mechanism in GreptimeDB designed for processing log data in real-time. Pipeline consists of configurable processors that pre-process raw log data, dispatchers that route data to different pipelines, and transform rules that convert data types and define table structures. It supports multiple input formats (JSON, NDJSON, plain text) and provides extensive processing capabilities including timestamp parsing, regex matching, field extraction, and data type conversion, enabling structured storage and efficient querying of log data.
+A powerful data parsing and transformation mechanism in GreptimeDB designed for processing incoming data in real-time. Pipeline consists of configurable processors that pre-process raw data, dispatchers that route data to different pipelines, and transform rules that convert data types and define table structures. It supports multiple input formats and data sources (including logs, Prometheus metrics, and other observability data) and provides extensive processing capabilities including timestamp parsing, regex matching, field extraction, and data type conversion, enabling structured storage and efficient querying of observability data.
 
 ---
 
