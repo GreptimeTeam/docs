@@ -102,6 +102,11 @@ The overall process of handling log data, including collection, storage, analysi
 ### Memory Leak
 A type of software bug where a program fails to release unused memory, causing a gradual decrease in available memory and potential system instability over time.
 
+### Metric Engine
+A specialized storage engine in GreptimeDB designed for efficient processing of metrics data, particularly scenarios with thousands of small tables common in observability workloads. The Metric Engine uses synthetic wide physical tables to store data from numerous logical tables, enabling efficient column and metadata reuse, reducing storage overhead, and enhancing columnar compression. Built on top of the Mito Engine for robust storage capabilities.
+
+### Mito Engine
+The default storage engine in GreptimeDB based on Log-Structured Merge Tree (LSM-Tree) architecture, optimized for time-series workloads. Mito features Write-Ahead Logging (WAL), memory tables, and Time Window Compaction Strategy (TWCS) to handle high-throughput writes while maintaining excellent query performance. It integrates natively with object storage solutions (S3, GCS, Azure Blob) and implements tiered caching for optimal storage costs and access speeds.
 
 ---
 
@@ -171,6 +176,12 @@ The continuous, real-time processing of data streams as they arrive. In Greptime
 
 ## T
 
+### Tag
+A column type in GreptimeDB's data model that uniquely identifies time-series data. Rows with the same Tag values belong to the same time-series, making Tags essential for organizing and querying observability data. Tags are typically used to store metadata like host names, service names, or device IDs, and are specified as PRIMARY KEY columns in table schemas.
+
+### Time Index
+A special timestamp column in GreptimeDB tables that serves as the primary time dimension for time-series data. Every GreptimeDB table requires exactly one Time Index column to organize data chronologically, enable time-based queries, and support efficient time-series operations like downsampling and time-window aggregations.
+
 ### Time Series Database
 A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB is a cloud-native time-series database optimized for analyzing and querying metrics, logs, and events.
 
@@ -188,12 +199,18 @@ An enterprise-grade monitoring and alerting feature in GreptimeDB that enables a
 ### Unified Analysis
 The integration of various data types and sources into a single platform for analysis. GreptimeDB provides unified analysis by allowing users to query metrics, logs, and events using SQL and PromQL, simplifying data analytics workflows.
 
+### Unified Observability
+A database architecture approach that consolidates metrics, logs, and traces into a single system, eliminating data silos and reducing operational complexity. GreptimeDB implements unified observability by treating all telemetry data types as wide events with timestamps, enabling cross-signal correlation, simplified data pipelines, and cost-effective observability infrastructure.
+
 ---
 
 ## W
 
 ### WAL (Write-Ahead Log)
 A logging mechanism used by GreptimeDB to ensure data durability and consistency. WAL records all data changes before they are applied to the main storage, enabling recovery in case of system failures. GreptimeDB supports flexible WAL options including local disk storage or distributed services like Kafka.
+
+### Wide Events
+A foundational concept in Observability 2.0 that represents context-rich, high-dimensional telemetry data combining metrics, logs, and traces into single comprehensive events. Wide Events capture extensive contextual information per service interaction, including high-cardinality fields (user IDs, session IDs), business logic data, infrastructure details, and request metadata. GreptimeDB natively supports Wide Events as timestamped observability data, enabling complex multi-dimensional querying and solving "unknown unknowns" in system behavior analysis.
 
 ---
 
