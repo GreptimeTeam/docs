@@ -52,10 +52,22 @@ The practice of collecting, organizing, and analyzing events—including metrics
 
 ---
 
+## D
+
+### Datanode
+A core component in GreptimeDB's distributed architecture responsible for data storage and processing. Datanodes handle data ingestion, storage management, query execution on local data, and maintain regions containing actual table data. Multiple datanodes can be deployed across a cluster to provide horizontal scalability, fault tolerance, and distributed data processing capabilities.
+
+---
+
 ## F
 
+### Frontend
+The query processing layer in GreptimeDB's distributed architecture that serves as the entry point for client connections. Frontend nodes handle SQL parsing, query planning, distributed query coordination, and result aggregation. They route queries to appropriate datanodes, manage client sessions, and provide protocol compatibility for various database interfaces including MySQL, PostgreSQL, and GreptimeDB's native protocols.
+
+
+
 ### Flow Engine
-GreptimeDB's stream processing component that enables continuous queries and real-time data aggregation. The Flow Engine processes data streams as they arrive, allowing for real-time analytics and event-driven computations on metrics, logs, and traces.
+GreptimeDB's real-time stream processing system that enables continuous, incremental computation on streaming data. Flow Engine works like an intelligent materialized view that automatically updates result tables as new data arrives in source tables. It processes data at configurable intervals (default: one second) with minimal computational overhead, making it ideal for ETL processes, downsampling, real-time analytics, and continuous aggregation scenarios.
 
 ---
 
@@ -100,6 +112,13 @@ A data structure used by GreptimeDB's storage engine that optimizes write perfor
 
 ---
 
+## M
+
+### Metasrv
+The metadata management service in GreptimeDB's distributed architecture that maintains cluster state, table schemas, and region distribution information. Metasrv coordinates cluster operations, manages table creation and modifications, handles region assignments and migrations, and ensures metadata consistency across the cluster. It acts as the central control plane for cluster management and serves as the source of truth for all metadata operations.
+
+---
+
 ## O
 
 ### Observability
@@ -120,11 +139,14 @@ A powerful and flexible query language used to retrieve and manipulate time-seri
 ## P
 
 ### Pipeline
-GreptimeDB's ETL (Extract, Transform, Load) functionality that allows data transformation as it arrives. Pipelines enable users to clean, enrich, and restructure observability data before storage, particularly useful for log processing and data normalization.
+A powerful data parsing and transformation mechanism in GreptimeDB designed for processing log data in real-time. Pipeline consists of configurable processors that pre-process raw log data, dispatchers that route data to different pipelines, and transform rules that convert data types and define table structures. It supports multiple input formats (JSON, NDJSON, plain text) and provides extensive processing capabilities including timestamp parsing, regex matching, field extraction, and data type conversion, enabling structured storage and efficient querying of log data.
 
 ---
 
 ## R
+
+### Read Replica
+An enterprise feature in GreptimeDB that creates additional read-only instances of data to enhance query performance and scalability. Read replicas distribute read workloads across multiple instances, reducing load on primary databases while providing faster query responses. This feature supports geographic distribution of data access points, improves high availability for read operations, and enables efficient scaling of read-intensive workloads in enterprise environments.
 
 ### Region
 A fundamental unit of data distribution in GreptimeDB's architecture. Regions contain a subset of table data and can be distributed across different nodes in a cluster. Each region manages its own storage, indexing, and query processing, enabling horizontal scalability and fault tolerance.
@@ -143,7 +165,7 @@ The capability of a database system to handle growing volumes of data and increa
 A standardized programming language used for managing and manipulating relational databases. GreptimeDB supports SQL, allowing users to query metrics, logs, and events efficiently.
 
 ### Stream Processing
-The continuous processing of data streams in real-time. GreptimeDB provides stream processing capabilities through its Flow Engine, enabling real-time analytics and continuous aggregations on metrics, logs, and events.
+The continuous, real-time processing of data streams as they arrive. In GreptimeDB, stream processing is implemented through the Flow Engine, which performs incremental computation on streaming time-series data. This enables instant filtering, computing, and aggregation of metrics, logs, and events, providing actionable insights with minimal latency.
 
 ---
 
@@ -151,6 +173,13 @@ The continuous processing of data streams in real-time. GreptimeDB provides stre
 
 ### Time Series Database
 A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB is a cloud-native time-series database optimized for analyzing and querying metrics, logs, and events.
+
+---
+
+## T
+
+### Trigger
+An enterprise-grade monitoring and alerting feature in GreptimeDB that enables automated evaluation of time-series data conditions. Triggers continuously monitor data in tables at specified intervals, execute SQL-based rules to check for predefined thresholds or conditions, and send notifications via webhooks when criteria are met. This feature integrates with alerting systems like Alertmanager and supports custom labels and annotations, making it ideal for real-time system monitoring, performance alerting, and automated incident response.
 
 ---
 
