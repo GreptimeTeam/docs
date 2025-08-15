@@ -50,7 +50,7 @@ GreptimeDB 在可观测性工作负载中提供卓越性能：
 - 水平扩展能力（处理 11.5亿+ 行数据）
 - 原生全文搜索和索引
 
-基准测试报告：[vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report) | [vs Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report) | [日志基准测试](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
+基准测试报告：[vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report) | [vs Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html) | [日志基准测试](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
 
 ### GreptimeDB 如何处理 metrics、logs 和 traces？
 
@@ -146,7 +146,7 @@ Kubernetes 部署详情请参见 [Kubernetes 部署指南](/user-guide/deploymen
 - **查询语言**：SQL、PromQL
 
 **可视化与监控**：
-- **Grafana**：[Grafana 集成](/user-guide/integrations/grafana.md)（含官方插件）+ [MySQL/PostgreSQL 数据源支持](/user-guide/integrations/grafana.md#mysql-data-source)
+- **Grafana**：[Grafana 集成](/user-guide/integrations/grafana.md)（含官方插件）+ [MySQL/PostgreSQL 数据源支持](/user-guide/integrations/grafana.md#mysql-数据源)
 - **原生 PromQL**：[直接支持](/user-guide/query-data/promql.md) Prometheus 风格查询和仪表板
 - **任何 SQL 工具**：通过 MySQL/PostgreSQL 协议兼容
 
@@ -194,7 +194,7 @@ GreptimeDB 提供多种灾备策略以满足不同的可用性需求：
 - 通过 [TTL 文档](/reference/sql/create.md#表选项)配置
 
 **数据导出**：
-- 用于 S3、本地文件的 [`COPY TO` 命令](/reference/sql/copy.md#s3)
+- 用于 S3、本地文件的 [`COPY TO` 命令](/reference/sql/copy.md#连接-s3)
 - 通过任何兼容客户端的标准 SQL 查询
 - 备份和灾难恢复的导出功能：[备份与恢复数据](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)
 
@@ -211,7 +211,6 @@ GreptimeDB 提供多种灾备策略以满足不同的可用性需求：
 **实时处理**：
 - **[Flow Engine](/user-guide/flow-computation/overview.md)**：流处理引擎，支持连续查询和实时聚合
 - **[Pipeline](/user-guide/logs/pipeline-config.md)**：ETL 功能，对到达数据进行转换
-- **降采样**：长期存储的自动缩减
 - **输出表**：持久化处理结果用于分析
 
 ### GreptimeDB 的可扩展性特征是什么？
@@ -270,14 +269,14 @@ GreptimeDB 针对可观测性工作负载进行了优化，具有以下设计限
 
 **数据分布策略**：
 - **当前**：通过 PARTITION 子句手动分区（参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)），region 内自动时间组织，支持手动 region 迁移进行负载均衡（参见[Region 迁移指南](/user-guide/deployments-administration/manage-data/region-migration.md)）
-- 自动 region 故障转移容灾（参见[Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover/overview.md)）
+- 自动 region 故障转移容灾（参见[Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover.md)）
 - **路线图**：自动 region 拆分、动态负载均衡
 
 **监控与运维**：
 
 GreptimeDB 提供全面的监控能力，包括指标收集、健康检查和可观测性集成。详细的监控设置和故障排除指南请参见[监控概述](/user-guide/deployments-administration/monitoring/overview.md)。
 
-配置详情：[安装指南](/getting-started/installation/overview.md)
+部署和管理详情：[部署与管理概述](/user-guide/deployments-administration/overview.md)
 
 ## 开源版 vs 企业版 vs 云版本
 
@@ -293,7 +292,7 @@ GreptimeDB 提供全面的监控能力，包括指标收集、健康检查和可
 
 **企业版本**（包含所有开源版功能，另增加）：
 - 基于成本的查询优化器，提升性能
-- 高级读写分离和双活灾备（参见[双机热备灾备方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover/overview.md)）
+- 高级读写分离和双活灾备（参见[双机热备灾备方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)）
 - 自动扩展、索引和负载均衡
 - 分层缓存和企业级管理控制台
 - 企业授权（RBAC/LDAP 集成）
@@ -360,18 +359,18 @@ GreptimeDB 基于 DataFusion 构建：
 **性能考量**：
 - **时间戳**：日期时间格式（yyyy-MM-dd HH:mm:ss）无性能影响
 - **压缩**：仅测量数据目录；WAL 循环重用
-- **仅追加表**：建议使用，对写入和查询性能更友好，尤其适合日志场景
+- **Append Only 表**：建议使用，对写入和查询性能更友好，尤其适合日志场景
 - **Flow Engine**：目前基于 SQL；PromQL 支持正在评估中
 
 ### 特定用例的最佳实践是什么？
 
 **网络监控**（如数千个网卡）：
 - 使用 Flow 表进行连续聚合
-- 带保留策略的自动降采样
+- 通过 Flow Engine 手动降采样进行数据缩减
 - 输出到常规表进行长期存储
 
 **日志分析**：
-- 使用仅追加表获得更好的写入和查询性能
+- 使用 Append Only 表获得更好的写入和查询性能
 - 在频繁查询的字段上创建索引（[索引管理](/user-guide/manage-data/data-index.md)）
 - 存储效率：ClickHouse 的 50%，Elasticsearch 的 12.7%
 
@@ -395,14 +394,14 @@ GreptimeDB 基于 DataFusion 构建：
 - [TSBS 基准测试](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)
 - [性能对比分析](/user-guide/concepts/features-that-you-concern.md#greptimedb-对比其他存储或时序数据库的性能如何)
 - [vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
-- [vs Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
-- [日志基准测试](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
+- [vs Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html)
+- [日志基准测试](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
 
 **🚀 快速上手路径**：
 
 1. **云端体验**：[GreptimeCloud 免费版](https://greptime.cn/product/cloud) - 无需安装即可试用
 2. **本地部署**：按照[安装指南](/getting-started/installation/overview.md)自托管部署
-3. **集成现有系统**：
+3. **集成现有系统**：GreptimeDB 支持与 Prometheus、Vector、Kafka、Telegraf、EMQX、Metabase 等众多系统的广泛集成。完整列表请参见[集成概述](/user-guide/integrations/overview.md)，或从以下开始：
    - [OpenTelemetry 集成](/user-guide/ingest-data/for-observability/opentelemetry.md)
    - [Prometheus 迁移](/user-guide/ingest-data/for-observability/prometheus.md)
    - Grafana 仪表板配置

@@ -220,7 +220,6 @@ Learn more about indexing: [Index Management](/user-guide/manage-data/data-index
 **Real-Time Processing**:
 - **[Flow Engine](/user-guide/flow-computation/overview.md)**: Stream processing for continuous queries and real-time aggregation
 - **[Pipeline](/user-guide/logs/pipeline-config.md)**: ETL functionality to transform data as it arrives
-- **Downsampling**: Automatic reduction for long-term storage
 - **Output Tables**: Persist processed results for analysis
 
 
@@ -281,7 +280,7 @@ GreptimeDB is optimized for observability workloads with intentional limitations
 - **Development**: Local storage for testing
 - **Metadata**: MySQL/PostgreSQL backend support for metasrv
 
-Configuration details: [Installation Guide](/getting-started/installation/overview.md)
+For deployment and administration details: [Deployments & Administration Overview](/user-guide/deployments-administration/overview.md)
 
 ### How does data distribution work?
 
@@ -289,7 +288,7 @@ Configuration details: [Installation Guide](/getting-started/installation/overvi
 - Manual partitioning via PARTITION clause during table creation (see [Table Sharding Guide](/user-guide/deployments-administration/manage-data/table-sharding.md))
 - Time-based automatic organization within regions
 - Manual region migration support for load balancing (see [Region Migration Guide](/user-guide/deployments-administration/manage-data/region-migration.md))
-- Automatic region failover for disaster recovery (see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover/overview.md))
+- Automatic region failover for disaster recovery (see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md))
 
 **Roadmap**:
 - Automatic region splitting and rebalancing
@@ -313,7 +312,7 @@ GreptimeDB provides comprehensive monitoring capabilities including metrics coll
 
 **Enterprise Version** (all Open Source features plus):
 - Cost-based query optimizer for better performance
-- Advanced read-write separation and active-active failover (see [Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover/overview.md))
+- Advanced read-write separation and active-active failover (see [Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md))
 - Automatic scaling, indexing, and load balancing
 - Layered caching and enterprise-level web console
 - Enterprise authorization (RBAC/LDAP integration)
@@ -387,7 +386,7 @@ For detailed comparisons, see [GreptimeDB vs InfluxDB](https://greptime.com/comp
 
 **Network Monitoring** (e.g., thousands of NICs):
 - Use Flow tables for continuous aggregation
-- Automatic downsampling with retention policies
+- Manual downsampling via Flow Engine for data reduction
 - Output to regular tables for long-term storage
 
 **Log Analytics**:
@@ -428,5 +427,5 @@ Welcome to the community! Get started:
 
 1. **Try GreptimeCloud**: [Free serverless tier](https://greptime.com/product/cloud)
 2. **Self-host**: Follow the [installation guide](/getting-started/installation/overview.md)
-3. **Explore Integrations**: Start with [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) or [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)
+3. **Explore Integrations**: GreptimeDB supports extensive integrations with Prometheus, Vector, Kafka, Telegraf, EMQX, Metabase, and many more. See [Integrations Overview](/user-guide/integrations/overview.md) for the complete list, or start with [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) or [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)
 4. **Join Community**: Connect with users and maintainers on [Slack](https://greptime.com/slack)
