@@ -11,6 +11,7 @@ description: Provides an overview of GreptimeDB, including its features, data mo
 - [Storage Location](./storage-location.md): This document describes the storage location of GreptimeDB, including local disk, HDFS, and cloud object storage such as S3, Azure Blob Storage, etc.
 - [Key Concepts](./key-concepts.md): This document describes the key concepts of GreptimeDB, including table, time index, table region and data types.
 - [Features that You Concern](./features-that-you-concern.md): Describes some features that may be concerned about a unified metrics, logs & events database.
+- [Frequently Asked Questions](/faq-and-others/faq.md): Comprehensive FAQ covering common questions about GreptimeDB's capabilities, deployment, and usage.
 
 ## Read More
 

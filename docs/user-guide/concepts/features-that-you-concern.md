@@ -66,10 +66,14 @@ Please read the performance benchmark reports:
 
 Yes. Please refer to [disaster recovery](/user-guide/deployments-administration/disaster-recovery/overview.md).
 
-## Does GeptimeDB has geospatial index?
+## Does GreptimeDB has geospatial index?
 
 Yes. We offer [built-in functions](/reference/sql/functions/geo.md) for Geohash, H3 and S2 index.
 
 ## Any JSON support?
 
 See [JSON functions](/reference/sql/functions/overview.md#json-functions).
+
+## More Questions?
+
+For more comprehensive answers to frequently asked questions about GreptimeDB, including deployment options, migration guides, performance comparisons, and best practices, please visit our [FAQ page](/faq-and-others/faq.md).
