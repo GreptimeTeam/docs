@@ -405,7 +405,7 @@ Details:
 
 ---
 
-### `cos_distance`
+### `vec_cos_distance`
 
 Calculates the cosine distance between two vectors. Cosine distance measures the cosine of the angle between two vectors and is used to quantify similarity.
 
@@ -428,7 +428,7 @@ Details:
 
 ---
 
-### `dot_product`
+### `vec_dot_product`
 
 Computes the dot product of two vectors. The dot product is the sum of the element-wise multiplications of two vectors. It is commonly used to measure similarity or for linear transformations in machine learning.
 
