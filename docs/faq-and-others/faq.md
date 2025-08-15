@@ -203,7 +203,7 @@ Choose the appropriate solution based on your availability requirements, deploym
 - Configurable via [TTL Documentation](/reference/sql/create.md#table-options)
 
 **Data Export**:
-- [`COPY TO` command](/reference/sql/copy.md#s3) for S3, local files
+- [`COPY TO` command](/reference/sql/copy.md#connect-to-s3) for S3, local files
 - Standard SQL queries via any compatible client
 - Export functionality for backup and disaster recovery: [Back up & Restore Data](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)
 
