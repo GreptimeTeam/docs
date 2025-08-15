@@ -169,6 +169,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/streamlit',
             'user-guide/integrations/mindsdb',
             'user-guide/integrations/fluent-bit',
+            'user-guide/integrations/coroot',
           ],
         },
         {
@@ -389,6 +390,7 @@ const sidebars: SidebarsConfig = {
               label: 'Maintenance',
               items: [
                 'user-guide/deployments-administration/maintenance/maintenance-mode',
+                'user-guide/deployments-administration/maintenance/recovery-mode',
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
               ]
             },
@@ -579,6 +581,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'enterprise/trigger/overview',
 			'enterprise/trigger/quick-start',
+			'enterprise/trigger/syntax',
           ]
         },
       ],

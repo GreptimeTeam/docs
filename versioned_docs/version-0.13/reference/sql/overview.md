@@ -1,6 +1,6 @@
 # Overview
 
-* [Data Types](./data-types)
+* [Data Types](data-types.md)
 * [INSERT](./insert.md)
 * [CAST](./cast.md)
 * [COPY](./copy.md)

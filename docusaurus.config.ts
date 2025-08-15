@@ -216,6 +216,7 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+  trailingSlash: true,
   plugins: [
     ['docusaurus-biel', bielMetaMap[locale]],
   ],
