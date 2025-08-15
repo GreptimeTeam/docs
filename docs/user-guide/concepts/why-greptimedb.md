@@ -25,7 +25,7 @@ GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage et
 
 ## High Performance
 
-As for performance optimization, GreptimeDB utilizes different techniques such as LSM Tree, data sharding, and kafka-based WAL design, to handle large workloads of observability data ingestion.
+As for performance optimization, GreptimeDB utilizes different techniques such as LSM Tree, data sharding, and flexible WAL options (local disk or distributed services like Kafka), to handle large workloads of observability data ingestion.
 
 GreptimeDB is written in pure Rust for superior performance and reliability. The powerful and fast query engine is powered by vectorized execution and distributed parallel processing (thanks to [Apache DataFusion](https://datafusion.apache.org/)), and combined with [indexing capabilities](/user-guide/manage-data/data-index.md) such as inverted index, skipping index, and full-text index. GreptimeDB combines smart indexing and Massively Parallel Processing (MPP) to boost pruning and filtering.
 
@@ -75,7 +75,6 @@ GreptimeDB supports multiple data ingestion protocols, making integration with e
 For data querying, GreptimeDB provides:
 - **SQL**: For real-time queries, analytics, and database management
 - **PromQL**: Native support for real-time metrics querying and Grafana integration
-- **Python** *(Planned)*: For in-database UDFs and DataFrame operations
 
 GreptimeDB integrates seamlessly with your observability stack while maintaining high performance and flexibility.
 
