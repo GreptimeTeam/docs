@@ -10,3 +10,4 @@ Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这�
 
 - [快读启动示例](./quick-start.md): 手把手教你使用 Trigger, 用于监控系统负载并在
 负载过高时触发告警。
+- [语法](./syntax.md): `TRIGGER` 相关 SQL 语句的语法。

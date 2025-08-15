@@ -582,7 +582,8 @@
           "label": "Trigger",
           "items": [
             "enterprise/trigger/overview",
-            "enterprise/trigger/quick-start"
+            "enterprise/trigger/quick-start",
+            "enterprise/trigger/syntax"
           ]
         }
       ]
