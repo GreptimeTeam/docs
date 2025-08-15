@@ -157,7 +157,7 @@ GreptimeDB 中用于实时处理日志数据的强大解析和转换机制。Pip
 
 
 
-### Prometheus 查询语言 (PromQL)
+### PromQL (Prometheus Query Language)
 专为 Prometheus 设计的时序数据查询语言。GreptimeDB 完整兼容 PromQL，支持用户执行复杂的时序数据分析操作。
 
 ---
@@ -183,7 +183,7 @@ GreptimeDB 架构中数据分布的基本单元。Region 包含表数据的子�
 ### SQL
 关系型数据库的标准查询语言。GreptimeDB 支持使用 SQL 对指标、日志及事件数据进行高效查询。
 
-### Streaming Processing (流式处理)
+### Stream Processing (流式处理)
 对到达的数据流进行连续实时处理的技术。在 GreptimeDB 中，流式处理通过 Flow Engine 实现，对流式时序数据执行增量计算。支持对 metrics、logs 和 events 进行即时过滤、计算和聚合，以最小延迟提供可操作的洞察。
 
 ---
@@ -196,7 +196,7 @@ GreptimeDB 数据模型中用于唯一标识时序数据的列类型。具有相
 ### Time Index (时间索引)
 GreptimeDB 表中的特殊时间戳列，作为时序数据的主要时间维度。每个 GreptimeDB 表都需要一个 Time Index 列来按时间顺序组织数据，实现基于时间的查询，支持高效的时序操作，如降采样和时间窗口聚合。
 
-### Time-Series Database (时序数据库)
+### Time Series Database (时序数据库)
 专为时间戳索引数据设计的数据库类型。GreptimeDB 作为云原生时序数据库，深度优化了对指标、日志及事件的分析查询性能。
 
 ---

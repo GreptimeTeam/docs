@@ -61,6 +61,9 @@ A core component in GreptimeDB's distributed architecture responsible for data s
 
 ## F
 
+### Field
+A column type in GreptimeDB's data model that contains the actual measurement data or log contents being collected. Fields store the numerical values, text content, or other data indicators that represent the core information in time-series data, complementing Tag and Time Index columns to form the complete data model.
+
 ### Frontend
 The query processing layer in GreptimeDB's distributed architecture that serves as the entry point for client connections. Frontend nodes handle SQL parsing, query planning, distributed query coordination, and result aggregation. They route queries to appropriate datanodes, manage client sessions, and provide protocol compatibility for various database interfaces including MySQL, PostgreSQL, and GreptimeDB's native protocols.
 
@@ -68,6 +71,13 @@ The query processing layer in GreptimeDB's distributed architecture that serves 
 
 ### Flow Engine
 GreptimeDB's real-time stream processing system that enables continuous, incremental computation on streaming data. Flow Engine works like an intelligent materialized view that automatically updates result tables as new data arrives in source tables. It processes data at configurable intervals (default: one second) with minimal computational overhead, making it ideal for ETL processes, downsampling, real-time analytics, and continuous aggregation scenarios.
+
+---
+
+## G
+
+### GreptimeCloud
+The fully managed cloud service offering of GreptimeDB that provides serverless, auto-scaling database-as-a-service (DBaaS) capabilities. GreptimeCloud eliminates operational overhead with features like automatic scaling, pay-as-you-go pricing, enterprise-grade security, and seamless cloud-to-edge deployment, making it ideal for organizations seeking a hassle-free observability database solution.
 
 ---
 
