@@ -137,7 +137,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: locale,
-    locales: ['en', 'zh'],
+    locales: [locale], // Only build the current locale
   },
 
   presets: [
@@ -242,8 +242,21 @@ const config: Config = {
           position: 'right'
         },
         {
-          type: 'localeDropdown',
-          position: 'right'
+          type: 'dropdown',
+          label: locale === 'en' ? 'English' : '中文',
+          position: 'right',
+          items: [
+            {
+              label: locale === 'en' ? 'English' : '中文',
+              to: '#',
+              className: 'dropdown__link',
+            },
+            {
+              label: locale === 'en' ? '中文' : 'English',
+              to: locale === 'en' ? 'https://docs.greptime.cn' : 'https://docs.greptime.com',
+              className: 'dropdown__link',
+            },
+          ],
         },
         {
           href: 'https://github.com/GreptimeTeam/docs/',
