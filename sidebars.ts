@@ -515,6 +515,12 @@ const sidebars: SidebarsConfig = {
           label: 'Deployments & Administration',
           items: [
             {
+              type: 'doc',
+              id: 'enterprise/deployments-administration/overview',
+              label: 'Overview',
+
+            },
+            {
               type: 'category',
               label: 'Kubernetes',
               items: [
