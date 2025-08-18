@@ -24,7 +24,7 @@ This section provides an overview of the advanced features available in Greptime
 GreptimeDB Enterprise supports all features available in the open-source version,
 which you can read about in the [User Guide](/user-guide/overview.md) documentation.
 To understand the differences between the open-source and enterprise versions,
-please visit our [Pricing Page](https://greptime.com/pricing).
+please visit our [Pricing Page](https://greptime.com/pricing) or [contact us](https://greptime.com/contactus).
 
 GreptimeDB Enterprise includes the following advanced features,
 which are described in detail in the documentation in this section:

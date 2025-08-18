@@ -22,7 +22,7 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 
 GreptimeDB Enterprise 支持开源版中的所有功能，
 你可以阅读[用户指南](/user-guide/overview.md)文档以获取开源版的所有功能详情。
-有关开源版和企业版之间的功能对比，请参考官网的[价格页面](https://greptime.cn/pricing)。
+有关开源版和企业版之间的功能对比，请参考官网的[价格页面](https://greptime.cn/pricing)或[联系我们](https://greptime.cn/contactus)。
 
 GreptimeDB Enterprise 包括以下高级功能，
 详情描述在本章节的文档中：
