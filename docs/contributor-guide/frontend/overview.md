@@ -13,7 +13,6 @@ The **Frontend** is a stateless service that serves as the entry point for clien
 - **Request Routing**: Routes requests to appropriate Datanodes based on metadata
 - **Query Distribution**: Splits distributed queries across multiple nodes
 - **Response Aggregation**: Combines results from multiple Datanodes
-- **Tenant Management**: Multi-tenant support and isolation
 - **Authorization**: Security and access control validation
 
 ## Architecture
@@ -26,19 +25,7 @@ The **Frontend** is a stateless service that serves as the entry point for clien
 
 ### Request Flow
 
-```mermaid
-graph TD
-    A[Client Request] --> B[Parse Request]
-    B --> C[Metadata Lookup]
-    C --> D[Split & Route Request]
-    D --> E[Datanode 1]
-    D --> F[Datanode 2]
-    D --> G[Datanode N]
-    E --> H[Aggregate Responses]
-    F --> H
-    G --> H
-    H --> I[Return Result to Client]
-```
+![request flow](/request_flow.png)
 
 ### Deployment
 
