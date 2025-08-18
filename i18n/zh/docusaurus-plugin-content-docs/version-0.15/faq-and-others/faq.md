@@ -292,7 +292,7 @@ GreptimeDB 提供全面的监控能力，包括指标收集、健康检查和可
 
 **企业版本**（包含所有开源版功能，另增加）：
 - 基于成本的查询优化器，提升性能
-- 高级读写分离和双活灾备（参见[双机热备灾备方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)）
+- 高级读写分离和双活灾备（参见[双机热备灾备方案](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)）
 - 自动扩展、索引和负载均衡
 - 分层缓存和企业级管理控制台
 - 企业授权（RBAC/LDAP 集成）

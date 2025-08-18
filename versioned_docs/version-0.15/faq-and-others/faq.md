@@ -312,7 +312,7 @@ GreptimeDB provides comprehensive monitoring capabilities including metrics coll
 
 **Enterprise Version** (all Open Source features plus):
 - Cost-based query optimizer for better performance
-- Advanced read-write separation and active-active failover (see [Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md))
+- Advanced read-write separation and active-active failover (see [Active-Active Failover](/enterprise/administration/disaster-recovery/dr-solution-based-on-active-active-failover.md))
 - Automatic scaling, indexing, and load balancing
 - Layered caching and enterprise-level web console
 - Enterprise authorization (RBAC/LDAP integration)
