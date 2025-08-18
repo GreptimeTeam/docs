@@ -19,7 +19,7 @@ The **Frontend** is a stateless service that serves as the entry point for clien
 
 ### Key Components
 - **Protocol Handlers**: Handle different database protocols
-- **Catalog Manager**: Caches metadata from Metasrv for efficient request routing
+- **Catalog Manager**: Caches metadata from Metasrv to enable efficient request routing and schema validation
 - **Dist Planner**: Converts logical plans to distributed execution plans
 - **Request Router**: Determines target Datanodes for each request
 
