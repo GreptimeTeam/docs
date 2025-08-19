@@ -43,7 +43,7 @@ docker run \
 ```
 
 :::tip NOTE
-To avoid accidently exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
+To avoid accidentally exit the Docker container, you may want to run it in the "detached" mode: add the `-d` flag to
 the `docker run` command.
 :::
 
