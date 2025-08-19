@@ -68,6 +68,11 @@ const hostMap = {
   'zh': 'https://greptime.cn'
 };
 
+const urlMap = {
+  'en': 'https://docs.greptime.com',
+  'zh': 'https://docs.greptime.cn'
+};
+
 const algoliaMap = {
   'en': {
     // The application ID provided by Algolia
@@ -119,7 +124,7 @@ const config: Config = {
   favicon: '/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://docs.greptime.com',
+  url: urlMap[locale],
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
