@@ -10,11 +10,19 @@ Vector 是高性能的可观测数据管道。
 通过 Vector，你可以从各种来源接收指标数据，包括 Prometheus、OpenTelemetry、StatsD 等。
 GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 
-## 收集主机指标
+## 写入指标数据
 
-### 配置
+GreptimeDB 支持多种指标数据写入方式，包括：
 
-使用 GreptimeDB 的 Vector 集成的最小配置如下：
+- 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
+- 使用 InfluxDB 行协议格式
+- 使用 Prometheus Remote Write 协议
+
+### 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
+
+#### 示例
+
+以下是一个使用 `greptimedb_metrics` sink 写入宿主机指标的示例配置：
 
 ```toml
 # sample.toml
@@ -32,18 +40,12 @@ password = "<password>"
 new_naming = true
 ```
 
-GreptimeDB 使用 gRPC 与 Vector 进行通信，因此 Vector sink 的默认端口是 `4001`。
+Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端口是 `4001`。
 如果你在使用 [自定义配置](/user-guide/deployments-administration/configuration.md#configuration-file) 启动 GreptimeDB 时更改了默认的 gRPC 端口，请使用你自己的端口。
 
-启动 Vector:
+如有更多需求请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) 查看更多配置项。
 
-```
-vector -c sample.toml
-```
-
-请前往 [Vector GreptimeDB Configuration](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) 查看更多配置项。
-
-### 数据模型
+#### 数据模型
 
 我们使用这样的规则将 Vector 指标存入 GreptimeDB：
 
@@ -58,12 +60,313 @@ vector -c sample.toml
   - AggregatedSummary 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `sum/count` 列；
   - Sketch 类型，各个百分位数值点分别存入 `pxx` 列，其中 xx 是 quantile 数值，此外我们还会记录 `min/max/avg/sum` 列；
 
-## 收集 InfluxDB 行协议格式的指标
+### 使用 InfluxDB 行协议格式
 
-Vector 可以收集 InfluxDB 行协议格式的指标并将其发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observability/kafka.md#指标)。
+可以使用 `influx` sink 来写入指标数据。我们推荐使用 v2 版本的 InfluxDB 行协议格式。
+
+#### 示例
+
+以下是一个使用 `influx` sink 写入宿主机指标的示例配置：
+
+```toml
+# sample.toml
+
+[sources.my_source_id]
+type = "internal_metrics"
+
+[sinks.my_sink_id]
+type = "influxdb_metrics"
+inputs = [ "my_source_id" ]
+bucket = "public"
+endpoint = "http://localhost:4000/v1/influxdb"
+org = ""
+token = ""
+```
+
+因为 influx 的 sink 是使用配置有哪些字段来判断协议的版本，请务必保证 `bucket`、`org` 和 `token` 字段的存在。
+
+- `bucket`: GreptimeDB 中的 database 名称。
+- `org`: GreptimeDB 中的组织名称。(需置空)
+- `token`: 用于身份验证的令牌。
+
+更多细节请参考 [InfluxDB Line Protocol 文档](../for-iot/influxdb-line-protocol.md) 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB。
+
+### 使用 Otlp 协议
+
+截止到 Vector v0.49.0 版本，Vector 不支持使用 Otlp 协议写入指标数据，这会触发 panic。
+
+### 使用 Prometheus Remote Write 协议
+
+#### 示例
+
+以下是一个使用 Prometheus Remote Write 协议写入宿主机指标的示例配置：
+
+```toml
+# sample.toml
+
+[sources.my_source_id]
+type = "internal_metrics"
+
+[sinks.prometheus_remote_write]
+type = "prometheus_remote_write"
+inputs = [ "my_source_id" ]
+endpoint = "http://localhost:4000/v1/prometheus/write?db=prometheus"
+compression = "snappy"
+```
+
+## 写入日志数据
+
+GreptimeDB 支持多种日志数据写入方式，包括：
+
+- 使用 [`greptimedb_logs` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 将日志数据写入 GreptimeDB。
+- 使用 Otlp 协议将日志数据写入 GreptimeDB。
+- 使用 Loki 协议将日志数据写入 GreptimeDB。
+
+### 使用 [`greptimedb_logs` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) (推荐)
+
+#### 示例
+
+```toml
+# sample.toml
+
+[sources.my_source_id]
+type = "demo_logs"
+count = 10
+format = "apache_common"
+interval = 1
+
+[sinks.my_sink_id]
+type = "greptimedb_logs"
+inputs = [ "my_source_id" ]
+compression = "gzip"
+dbname = "public"
+endpoint = "http://localhost:4000"
+extra_headers = { "skip_error" = "true" }
+pipeline_name = "greptime_identity"
+table = "mytable"
+
+[sinks.my_sink_id.extra_params]
+source = "vector"
+x-greptime-pipeline-params = "flatten_json_object=true"
+```
+
+此示例展示了如何使用 `greptimedb_logs` sink 将宿主机日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。
+
+### 使用 Otlp 协议（不推荐）
+
+由于 GreptimeDB 的 Otlp 协议仅支持 http/protobuf 格式的日志数据，因此 Vector 的 Otlp sink 需要配置为使用 http/protobuf 格式。
+
+但是 Vector 的 Otlp sink 配置较为麻烦无法使用较为简单的配置，本示例仅作参考，
+
+#### 示例
+
+```toml
+[sources.generate_syslog]
+type = "demo_logs"
+format = "syslog"
+count = 100
+interval = 1
+
+[transforms.remap_syslog]
+inputs = ["generate_syslog"]
+type = "remap"
+source = """
+log(., level: "info", rate_limit_secs: 0)
+syslog = parse_syslog!(.message)
+
+severity_text = if includes(["emerg", "err", "crit", "alert"], syslog.severity) {
+  "ERROR"
+} else if syslog.severity == "warning" {
+  "WARN"
+} else if syslog.severity == "debug" {
+  "DEBUG"
+} else if includes(["info", "notice"], syslog.severity) {
+  "INFO"
+} else {
+  syslog.severity
+}
+
+.resource_logs = [{
+  "resource": {
+    "attributes": [
+      { "key": "source_type", "value": { "string_value": .source_type } },
+      { "key": "service.name", "value": { "string_value": syslog.appname } },
+      { "key": "host.hostname", "value": { "string_value": syslog.hostname } }
+    ]
+  },
+  "scope_logs": [{
+    "scope": {
+      "name": syslog.msgid
+    },
+    "log_records": [{
+      "time_unix_nano": to_unix_timestamp!(syslog.timestamp, unit: "nanoseconds"),
+      "body": { "string_value": syslog.message },
+      "severity_text": severity_text,
+      "attributes": [
+        { "key": "syslog.procid", "value": { "string_value": to_string(syslog.procid) } },
+        { "key": "syslog.facility", "value": { "string_value": syslog.facility } },
+        { "key": "syslog.version", "value": { "string_value": to_string(syslog.version) } }
+      ]
+    }]
+  }]
+}]
+
+del(.message)
+del(.timestamp)
+del(.service)
+del(.source_type)
+"""
+
+[sinks.emit_syslog]
+inputs = ["remap_syslog"]
+type = "opentelemetry"
+
+[sinks.emit_syslog.protocol]
+type = "http"
+uri = "http://localhost:4000/v1/otlp/v1/logs"
+method = "post"
+
+[sinks.emit_syslog.protocol.encoding]
+codec = "protobuf"
+
+[sinks.emit_syslog.protocol.encoding.protobuf]
+message_type = "opentelemetry.proto.logs.v1.LogsData"
+desc_file = "opentelemetry.desc"
+
+[sinks.emit_syslog.protocol.framing]
+method = "bytes"
+
+[sinks.emit_syslog.protocol.request.headers]
+content-type = "application/x-protobuf"
+X-Greptime-DB-Name = "public"
+X-Greptime-Log-Table-Name = "otlp_logs"
+```
+
+#### 注意事项
+
+##### Remap
+
+原始的 Log Event 不能直接使用 Opentelemetry sink 写入。Log Event 的原始内容一般如下所示
+
+```json
+{
+  "host": "localhost",
+  "message": "<5>2 2025-08-20T16:49:52.875+08:00 we.itau shaneIxD 7745 ID183 - We're gonna need a bigger boat",
+  "service": "vector",
+  "source_type": "demo_logs",
+  "timestamp": "2025-08-20T08:49:52.875755412Z"
+}
+```
+
+这个格式不符合 Opentelemetry 的格式要求。即使是 Opentelemetry source 所输出的数据，也需要进行重构，一般 Opentelemetry source 接收到 log 后在 Vector 里的格式一般如下所示
+
+```json
+{
+  "attributes": {
+    "log.index": 6
+  },
+  "dropped_attributes_count": 0,
+  "message": "log message 6",
+  "observed_timestamp": "2025-08-20T08:59:03.491518609Z",
+  "resources": {
+    "library": "otlp-generator",
+    "service.name": "example-service"
+  },
+  "scope": {
+    "name": "otlp-generator"
+  },
+  "severity_text": "INFO",
+  "source_type": "opentelemetry",
+  "timestamp": "2025-08-20T08:59:03.481116430Z"
+}
+```
+
+很多字段没有 `AnyValue`, `KeyValue` 的类型包装。所以无法成功写入。所以需要使用 `remap` 转换来重构日志数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。
+
+##### 描述文件
+
+注意在 `sinks.emit_syslog.protocol.encoding.protobuf` 配置中，我们使用了 `opentelemetry.proto.logs.v1.LogsData` 作为消息类型，并指定了描述文件 `opentelemetry.desc`。这个描述文件需要你自己提供，通常可以从 OpenTelemetry 的 proto 定义中获取。以下为编译描述文件的步骤：
+
+1. Clone OpenTelemetry 的 proto 定义库：
+
+   ```bash
+   git clone https://github.com/open-telemetry/opentelemetry-proto.git
+   cd opentelemetry-proto
+   # 之后可能会变化，GreptimeDB 0.16.0 版本的的 proto 定义为此 commit hash
+   git checkout 8654ab7
+
+   ```
+
+2. 安装 `protoc` 命令（可选），可通过发行版包管理器安装，或者直接去 [Protocol Buffers Releases](https://github.com/protocolbuffers/protobuf/releases) 下载预编译的二进制文件。
+
+3. 编译描述文件，注意此时需要在 `opentelemetry-proto` 目录下执行命令：
+
+   ```bash
+   protoc -I . -o otlp.desc opentelemetry/proto/logs/v1/logs.proto opentelemetry/proto/metrics/v1/metrics.proto opentelemetry/proto/trace/v1/trace.proto opentelemetry/proto/resource/v1/resource.proto opentelemetry/proto/common/v1/common.proto
+   ```
+
+此描述文件同时包含了 metrics、logs 和 traces 的定义。
+
+### 使用 Loki 协议
+
+#### 示例
+
+```toml
+[sources.generate_syslog]
+type = "demo_logs"
+format = "syslog"
+count = 100
+interval = 1
 
 
-## 收集日志
+[transforms.remap_syslog]
+inputs = ["generate_syslog"]
+type = "remap"
+source = """
+.labels = {
+    "host": .host,
+    "service": .service,
+}
+.structured_metadata = {
+    "source_type": .source_type
+}
+"""
 
-Vector 可以收集日志并发送到 GreptimeDB。更多信息请参考 [Kafka 指南](/user-guide/ingest-data/for-observability/kafka.md#日志)。
 
+[sinks.my_sink_id]
+type = "loki"
+inputs = ["remap_syslog"]
+compression = "snappy"
+endpoint = "http://localhost:4000"
+out_of_order_action = "accept"
+path = "/v1/loki/api/v1/push"
+encoding = { codec = "raw_message" }
+labels = { "*" = "{{labels}}" }
+structured_metadata = { "*" = "{{structured_metadata}}" }
+```
+
+对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段，structured_metadata 将会整体存储为一个 json 字段。
+
+## 写入 Trace 数据
+
+### 使用 Opentelemetry 协议 （不推荐）
+
+理由同**使用 Opentelemetry 写入日志**，推荐使用 Alloy 或者 Otlp-collector 等组件，本文档仅做展示
+
+#### 示例
+
+```toml
+[sources.my_source_id]
+type = "opentelemetry"
+
+  [sources.my_source_id.grpc]
+  address = "0.0.0.0:4317"
+
+  [sources.my_source_id.http]
+  address = "0.0.0.0:4318"
+  headers = [ ]
+
+    [sources.my_source_id.http.keepalive]
+    max_connection_age_jitter_factor = 0.1
+    max_connection_age_secs = 300
+```
