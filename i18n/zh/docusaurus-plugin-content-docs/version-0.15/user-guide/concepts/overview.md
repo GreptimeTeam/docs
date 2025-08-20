@@ -11,6 +11,7 @@ description: 概述 GreptimeDB 的特点和优势，并提供相关文档链接�
 - [存储位置](./storage-location.md)：介绍了 GreptimeDB 的存储位置，包括本地磁盘、HDFS、AWS S3 和阿里云 OSS 等云对象存储。
 - [核心概念](./key-concepts.md)：介绍了 GreptimeDB 的核心概念，包括表、时间索引约束、表 Region 和数据类型等。
 - [关键特性](./features-that-you-concern.md): 介绍了 TSDB 用户较为关心的指标（metrics）、日志（logs）和事件（events）数据库的特性。
+- [常见问题](/faq-and-others/faq.md): 全面的 FAQ，涵盖关于 GreptimeDB 能力、部署和使用的常见问题。
 
 ## 阅读更多
 

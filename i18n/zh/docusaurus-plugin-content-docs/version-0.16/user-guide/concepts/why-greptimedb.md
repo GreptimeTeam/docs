@@ -25,7 +25,7 @@ GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Sto
 
 ## 高性能
 
-在性能优化方面，GreptimeDB 运用了多种技术，如 LSM Tree、数据分片和基于 Kafka 的 WAL 设计，以处理大规模可观测数据的写入。
+在性能优化方面，GreptimeDB 运用了多种技术，如 LSM Tree、数据分片和灵活的 WAL 选项（本地磁盘或 Kafka 等分布式服务），以处理大规模可观测数据的写入。
 
 GreptimeDB 使用纯 Rust 编写，具有卓越的性能和可靠性。强大而快速的查询引擎由向量化执行和分布式并行处理（感谢 [Apache DataFusion](https://datafusion.apache.org/)）驱动，并结合了丰富的[索引选项](/user-guide/manage-data/data-index.md)，例如倒排索引、调数索引和全文索引等。GreptimeDB将智能索引和大规模并行处理 (MPP) 结合在一起，以提升查询过程中数据剪枝和过滤的效率。
 
@@ -76,7 +76,6 @@ GreptimeDB 支持多种数据摄入协议，从而实现与现有可观测性技
 在数据查询方面，GreptimeDB 提供：
 - **SQL**：用于实时查询、复杂分析和数据库管理
 - **PromQL**：原生支持实时指标查询和 Grafana 集成
-- **Python**：（计划中）支持数据科学场景的数据库内 UDF 和 DataFrame 操作
 
 GreptimeDB 与您的现有可观测性技术栈无缝集成，同时保持高性能和灵活性。
 
