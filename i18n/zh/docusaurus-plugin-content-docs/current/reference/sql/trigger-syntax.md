@@ -5,6 +5,12 @@ description: 本文档系统描述了 GreptimeDB Trigger 的完整语法规范�
 
 # Trigger 语法
 
+:::tip 注意
+
+本功能仅在 GreptimeDB 企业版中可用。
+
+:::
+
 ## CREATE TRIGGER
 
 创建 Trigger 的语法：

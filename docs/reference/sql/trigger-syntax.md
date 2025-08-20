@@ -5,6 +5,13 @@ description: This document provides more details about the GreptimeDB Trigger.
 
 # Trigger Syntax
 
+:::tip NOTE
+
+This feature is only available in the GreptimeDB Enterprise database.
+
+:::
+
+
 ## CREATE TRIGGER
 
 The syntax for creating a Trigger:
