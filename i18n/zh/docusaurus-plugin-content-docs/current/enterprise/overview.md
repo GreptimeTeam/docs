@@ -16,8 +16,6 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 - **[边云一体解决方案](https://greptime.com/product/carcloud)**: 用于管理从边缘设备到云的时序数据，实现整个基础设施的实时分析和洞察的全面解决方案。
 - 针对物联网 (IoT)、可观测等行业的特定解决方案。
 
-本章节概述了 GreptimeDB Enterprise 中可用的高级功能。有关获取试用或购买，请[联系我们](https://greptime.cn/contactus)。
-
 ## 功能介绍
 
 GreptimeDB Enterprise 支持开源版中的所有功能，
@@ -34,7 +32,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - Elasticsearch 查询兼容性：在 Kibana 中以 GreptimeDB 作为后端。
 - Greptime 企业版管理控制台：加强版本的管理界面，提供更多的集群管理和监控功能。
 - [读副本](./read-replica.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
-- [Trigger](./trigger/overview.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
+- [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
 - Flow 的可靠性功能。
 
 ## 发布说明

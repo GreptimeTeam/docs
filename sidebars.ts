@@ -572,21 +572,13 @@ const sidebars: SidebarsConfig = {
           items: ['enterprise/autopilot/region-balancer'],
         },
         'enterprise/read-replica',
+        'enterprise/trigger',
         {
           type: 'category',
           label: 'Releases',
           items: [
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
-          ]
-        },
-        {
-          type: 'category',
-          label: 'Trigger',
-          items: [
-            'enterprise/trigger/overview',
-			'enterprise/trigger/quick-start',
-			'enterprise/trigger/syntax',
           ]
         },
       ],
@@ -656,6 +648,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/truncate',
             'reference/sql/where',
             'reference/sql/with',
+            'reference/sql/trigger-syntax',
             {
               type: 'category',
               label: 'Functions',

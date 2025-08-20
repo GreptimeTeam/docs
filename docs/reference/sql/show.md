@@ -339,6 +339,10 @@ Output:
 +-----------------------+----------+--------------------+------------------------+---------------------+----------------------------+-----------------+-----------------------+
 ```
 
+## SHOW TRIGGERS
+
+Please refer to the [Trigger syntax](/reference/sql/trigger-syntax.md#show-triggers) documentation.
+
 ## Extensions to SHOW Statements
 
 Some extensions to `SHOW` statements accompany the implementation of [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview.md) just like MySQL, they also accept a `WHERE` clause that provides more flexibility in specifying which rows to display. 

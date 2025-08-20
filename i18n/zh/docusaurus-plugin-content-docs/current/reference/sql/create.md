@@ -481,3 +481,8 @@ AS select_statement
 ```
 
 用于创建或更新视图，请阅读[视图用户指南](/user-guide/query-data/view.md#视图)。
+
+## 创建 Trigger
+
+请参考 [CREATE TRIGGER](/reference/sql/trigger-syntax.md#create-trigger) 文档。
+

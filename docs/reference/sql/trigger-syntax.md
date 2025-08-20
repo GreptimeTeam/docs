@@ -3,9 +3,16 @@ keywords: [Trigger, Alert, GreptimeDB Enterprise, Syntax]
 description: This document provides more details about the GreptimeDB Trigger.
 ---
 
-# Syntax
+# Trigger Syntax
 
-## Create Trigger
+:::tip NOTE
+
+This feature is only available in the GreptimeDB Enterprise database.
+
+:::
+
+
+## CREATE TRIGGER
 
 The syntax for creating a Trigger:
 
@@ -19,8 +26,6 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
         );
 ```
-
-### Trigger name
 
 - Trigger name: the unique identifier of the Trigger at the catalog level.
 - IF NOT EXISTS: prevent errors that would occur if the Trigger being created.
@@ -113,7 +118,7 @@ The optional `WITH` clause allows you to specify additional parameters:
 
 - timeout: The timeout for the HTTP request, e.g., `timeout='1m'`.
 
-## Show Triggers
+## SHOW TRIGGERS
 
 Show all triggers:
 
@@ -145,7 +150,7 @@ For example:
 SHOW TRIGGERS WHERE name = 'load1_monitor';
 ```
 
-## Drop Trigger
+## DROP TRIGGER
 
 To delete a trigger, use the following `DROP TRIGGER` clause:
 
@@ -158,3 +163,8 @@ For example:
 ```sql
 DROP TRIGGER IF EXISTS load1_monitor;
 ```
+
+## Example
+
+Please refer to the [Trigger](/enterprise/trigger.md) documentation in the enterprise user guide for examples.
+

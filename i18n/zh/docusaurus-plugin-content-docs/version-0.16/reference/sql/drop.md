@@ -59,7 +59,7 @@ DROP TABLE [ IF EXISTS ] table_name
 DROP TABLE monitor;
 ```
 
-## 删除 Flow
+## DROP FLOW
 
 ```sql
 DROP FLOW [ IF EXISTS ] flow_name;
@@ -76,7 +76,7 @@ DROP FLOW IF EXISTS test_flow;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
-## 删除 View
+## DROP VIEW
 
 ```sql
 DROP VIEW [ IF EXISTS ] view_name;
@@ -92,3 +92,8 @@ DROP VIEW IF EXISTS test_view;
 ```
 Query OK, 0 rows affected (0.00 sec)
 ```
+
+## DROP TRIGGER
+
+请参考 [Trigger 语法](/reference/sql/trigger-syntax.md#drop-trigger)文档。
+
