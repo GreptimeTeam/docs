@@ -3,9 +3,9 @@ keywords: [Trigger, 触发器, 告警, GreptimeDB 企业版, 语法]
 description: 本文档系统描述了 GreptimeDB Trigger 的完整语法规范。
 ---
 
-# Syntax
+# Trigger 语法
 
-## 创建 Trigger
+## CREATE TRIGGER
 
 创建 Trigger 的语法：
 
@@ -19,8 +19,6 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
         );
 ```
-
-### Trigger name
 
 - Trigger name：Trigger 在 catalog 级别的唯一标识符。
 - IF NOT EXISTS：阻止 Trigger 已经存在时的报错。
@@ -105,7 +103,7 @@ NOTIFY 子句允许指定一个或多个通知通道。目前，GreptimeDB 支�
 
 - timeout：HTTP 请求的超时时间，例如 `timeout='1m'`。
 
-## Show Triggers
+## SHOW TRIGGERS
 
 列出所有的 Triggers：
 
@@ -137,7 +135,7 @@ SHOW TRIGGERS WHERE <condition>;
 SHOW TRIGGERS WHERE name = 'load1_monitor';
 ```
 
-## Drop Trigger
+## DROP TRIGGER
 
 请使用以下 `DROP TRIGGER` 语句删除 Trigger：
 
@@ -150,3 +148,7 @@ For example:
 ```sql
 DROP TRIGGER IF EXISTS load1_monitor;
 ```
+
+## 示例
+
+请参考企业版用户指南中的 [Trigger](/enterprise/trigger.md) 文档。

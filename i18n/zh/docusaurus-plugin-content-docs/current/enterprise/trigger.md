@@ -1,9 +1,17 @@
 ---
-keywords: [Trigger, 告警, GreptimeDB 企业版, SQL, Webhook, Alertmanager, Slack]
-description: 本指南演示 GreptimeDB Trigger 如何与 Prometheus Alertmanager 生态系统无缝集成，实现监控和告警功能。
+keywords: [触发器, 告警, GreptimeDB 企业版, SQL, Webhook]
+description: GreptimeDB 触发器概述。
 ---
 
-## 快速入门示例
+# Trigger
+
+Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这些触发规则进行周期性
+计算，当满足条件后对外发出通知。
+
+本篇文档的下述内容通过一个示例来展示如何使用 Trigger 监控系统负载并触发告警。
+如果想了解如何撰写 Trigger 的具体语法，请参考[语法](/reference/sql/trigger-syntax.md)文档。
+
+# 快速入门示例
 
 本节将通过一个端到端示例展示如何使用触发器监控系统负载并触发告警。
 
@@ -131,3 +139,8 @@ load1 值将快速上升，Trigger 通知将被触发，在一分钟之内，指
 告警：
 
 ![Slack 告警示意图](/trigger-slack-alert.png)
+
+## 参考资料
+
+- [Trigger 语法](/reference/sql/trigger-syntax.md): 与 `TRIGGER` 相关的 SQL 语句的语法细节。
+

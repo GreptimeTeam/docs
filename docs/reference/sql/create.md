@@ -476,3 +476,8 @@ AS select_statement
 ```
 
 For the statement to create or update a view, please read the [view user guide](/user-guide/query-data/view.md#view).
+
+## CREATE TRIGGER
+
+Please refer to the [CREATE TRIGGER](/reference/sql/trigger-syntax.md#create-trigger) documentation.
+
