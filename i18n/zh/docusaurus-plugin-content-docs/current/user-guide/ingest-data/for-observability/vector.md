@@ -364,9 +364,75 @@ type = "opentelemetry"
 
   [sources.my_source_id.http]
   address = "0.0.0.0:4318"
-  headers = [ ]
+  headers = {}
 
     [sources.my_source_id.http.keepalive]
     max_connection_age_jitter_factor = 0.1
     max_connection_age_secs = 300
+
+[transforms.remap_traces_1]
+inputs = ["my_source_id.traces"]
+type = "remap"
+source = """
+resource_spans = [{
+  "resource": {"attributes":[
+    {"key": "service.name", "value": {"string_value": .resources.service.name}},
+    {"key": "library", "value": {"string_value": .resources.library}},
+  ]},
+  "scope_spans": [{
+    "scope": {"name": "example-scope"},
+    "spans": [{
+      "span_id": .span_id,
+      "trace_id": .trace_id,
+      "name": .name,
+      "kind": .kind,
+      "start_time_unix_nano": to_unix_timestamp!(.start_time_unix_nano, unit: "nanoseconds"),
+      "end_time_unix_nano": to_unix_timestamp!(.end_time_unix_nano, unit: "nanoseconds"),
+      "attributes": [
+        { "key": "example.attr", "value": { "string_value": .attributes."example.attr" } },
+        { "key": "span.index", "value": { "int_value": .attributes."span.index" } }
+      ],
+      "events": [],
+      "links": [],
+      "parent_span_id": .parent_span_id,
+      "trace_state": .trace_state,
+      "status": {
+        "code": .status.code,
+        "message": .status.message
+      },
+      "dropped_attributes_count": .dropped_attributes_count,
+      "dropped_events_count": .dropped_events_count,
+      "dropped_links_count": .dropped_links_count,
+    }]
+  }]
+}]
+
+. = {
+  "resource_spans": resource_spans,
+}
+"""
+
+[sinks.emit_syslog]
+inputs = ["remap_traces"]
+type = "opentelemetry"
+
+[sinks.emit_syslog.protocol]
+type = "http"
+uri = "http://localhost:4000/v1/otlp/v1/traces"
+method = "post"
+
+[sinks.emit_syslog.protocol.encoding]
+codec = "protobuf"
+
+[sinks.emit_syslog.protocol.encoding.protobuf]
+message_type = "opentelemetry.proto.trace.v1.TracesData"
+desc_file = "opentelemetry.desc"
+
+[sinks.emit_syslog.protocol.framing]
+method = "bytes"
+
+[sinks.emit_syslog.protocol.request.headers]
+content-type = "application/x-protobuf"
 ```
+
+基本框架同使用 Opentelemetry 写入 Logs 一致，由于 Trace 数据的格式较为复杂，通常需要使用 `remap` 转换来重构数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。但是重构过程非常复杂，且 Vrl 语言的表达能力有限，可能无法完全满足需求。比如 attributes 字段的处理需要手动进行转换，且需要确保每个字段都符合 OpenTelemetry 的要求。并且可能会有递归转换的情况，Vrl 无法满足需求。
