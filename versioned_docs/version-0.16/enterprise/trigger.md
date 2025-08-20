@@ -1,9 +1,19 @@
 ---
-keywords: [Trigger, Alert, GreptimeDB Enterprise, SQL, Webhook, Alertmanager, Slack]
-description: This guide demonstrates how GreptimeDB Triggers enable seamless integration with the Prometheus Alertmanager ecosystem for comprehensive monitoring and alerting.
+keywords: [Trigger, GreptimeDB Enterprise, SQL, Webhook]
+description: The overview of GreptimeDB Trigger.
 ---
 
-# Quick Start Example
+# Trigger
+
+Trigger allows you to define evaluation rules with SQL.
+GreptimeDB evaluates these rules periodically; once the condition is met, a
+notification is sent out.
+
+The following content is a quick start example that sets up a Trigger to monitor system load and raise alerts step by step.
+For details on how to write a Trigger,
+please refer to the [Syntax](/reference/sql/trigger-syntax.md) documentation.
+
+## Quick Start Example
 
 This section walks through an end-to-end example that uses Trigger to monitor
 system load and raise an alert.
@@ -17,7 +27,7 @@ The diagram illustrates the complete end-to-end workflow of the example.
     is met, it sends a notification to Alertmanager.
 3. Alertmanager applies its own policies and finally delivers the alert to Slack.
 
-## Use Vector to Scrape Host Metrics
+### Use Vector to Scrape Host Metrics
 
 Use Vector to scrape host metrics and write it to GreptimeDB. Below is a Vector
 configuration example:
@@ -49,7 +59,7 @@ in this table. The schema of this table is shown below:
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-## Set up Alertmanager with a Slack Receiver
+### Set up Alertmanager with a Slack Receiver
 
 The payload of GreptimeDB Trigger's Webhook is compatible with [Prometheus
 Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/), so we
@@ -83,7 +93,7 @@ and display the labels and annotations for each alert.
 
 Start Alertmanager once the configuration is ready.
 
-## Create Trigger
+### Create Trigger
 
 Connect to GreptimeDB with MySql client and run the following SQL:
 
@@ -124,7 +134,7 @@ The output should look like this:
 +---------------+
 ```
 
-## Test Trigger
+### Test Trigger
 
 Use [stress-ng](https://github.com/ColinIanKing/stress-ng) to simulate high CPU
 load for 60s:
@@ -137,3 +147,8 @@ The load1 will rise quickly, the Trigger notification will fire, and within a
 minute Slack channel will receive an alert like:
 
 ![Trigger slack alert](/trigger-slack-alert.png)
+
+## Reference
+
+- [Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements related to `TRIGGER`.
+

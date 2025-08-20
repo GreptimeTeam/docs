@@ -95,3 +95,9 @@ DROP VIEW IF EXISTS test_view;
 ```
 Query OK, 0 rows affected (0.00 sec)
 ```
+
+## DROP TRIGGER
+
+Please refer to the [Trigger syntax](/reference/sql/trigger-syntax.md#drop-trigger) documentation.
+
+

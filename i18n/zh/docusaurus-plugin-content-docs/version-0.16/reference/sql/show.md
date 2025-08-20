@@ -340,6 +340,9 @@ SHOW FULL PROCESSLIST;
 +-----------------------+----------+--------------------+------------------------+---------------------+----------------------------+-----------------+-----------------------+
 ```
 
+## SHOW TRIGGERS
+
+请参考 [Trigger 语法](/reference/sql/trigger-syntax.md#show-triggers)文档。
 
 ## SHOW 语句的扩展
 
@@ -437,3 +440,4 @@ SHOW REGION FROM [table] [IN database] [WHERE where]
 其他 `SHOW` 扩展语句：
 * `SHOW STATUS` 和 `SHOW VARIABLES` 不支持，仅返回空结果。
 * `SHOW TABLE STATUS` 是 `INFORMATION_SCHEMA.TABLES` 的扩展。
+
