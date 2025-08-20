@@ -124,7 +124,7 @@
     "description": "The label for category GreptimeDB Enterprise in sidebar docs"
   },
   "sidebar.docs.category.Reference": {
-    "message": "Reference",
+    "message": "参考资料",
     "description": "The label for category Reference in sidebar docs"
   },
   "sidebar.docs.category.GreptimeDB Command Line Interface": {
@@ -179,8 +179,12 @@
     "message": "常见问题及其他",
     "description": "The label for category FAQ and Others in sidebar docs"
   },
-  "sidebar.docs.link.Release Notes": {
-    "message": "Release Notes",
+  "sidebar.docs.category.Release Notes": {
+    "message": "发版说明",
+    "description": "The label for link Release Notes in sidebar docs, linking to /release-notes"
+  },
+  "sidebar.docs.link.Releases": {
+    "message": "版本列表",
     "description": "The label for link Release Notes in sidebar docs, linking to /release-notes"
   },
   "sidebar.docs.category.Ingest Data": {
