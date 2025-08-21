@@ -5,6 +5,13 @@ description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小
 
 # Vector
 
+::::
+本文档基于 Vector v0.49.0 版本编写。
+以下的所有示例配置均基于此版本。对于各个 sink 的 host 和 port 配置请根据自己 GreptimeDB 实例的实际情况进行调整。
+下文中的所有 port 值均为默认值。
+并且我们强烈建议使用 GreptimeDB 官方组件（`greptimedb_metrics`, `greptimedb_logs`）作为 Vector 的 Sink 组件。
+::::
+
 Vector 是高性能的可观测数据管道。
 它原生支持 GreptimeDB 指标数据接收端。
 通过 Vector，你可以从各种来源接收指标数据，包括 Prometheus、OpenTelemetry、StatsD 等。
@@ -15,8 +22,8 @@ GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 GreptimeDB 支持多种指标数据写入方式，包括：
 
 - 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
-- 使用 InfluxDB 行协议格式
-- 使用 Prometheus Remote Write 协议
+- 使用 InfluxDB 行协议格式将指标数据写入 GreptimeDB
+- 使用 Prometheus Remote Write 协议将指标数据写入 GreptimeDB
 
 ### 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
 
@@ -78,7 +85,7 @@ type = "internal_metrics"
 type = "influxdb_metrics"
 inputs = [ "my_source_id" ]
 bucket = "public"
-endpoint = "http://localhost:4000/v1/influxdb"
+endpoint = "http://<host>:4000/v1/influxdb"
 org = ""
 token = ""
 ```
@@ -86,14 +93,14 @@ token = ""
 因为 influx 的 sink 是使用配置有哪些字段来判断协议的版本，请务必保证 `bucket`、`org` 和 `token` 字段的存在。
 
 - `bucket`: GreptimeDB 中的 database 名称。
-- `org`: GreptimeDB 中的组织名称。(需置空)
-- `token`: 用于身份验证的令牌。
+- `org`: GreptimeDB 中的组织名称（需置空）。
+- `token`: 用于身份验证的令牌（需置空）。由于 Influx 行协议的 token 有特殊形式，必须以 `Token ` 开头。这和 GreptimeDB 的鉴权方式有所不同，且目前不兼容。如果使用的是含有鉴权的 GreptimeDB 实例，请使用 `greptimedb_metrics`。
 
 更多细节请参考 [InfluxDB Line Protocol 文档](../for-iot/influxdb-line-protocol.md) 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB。
 
 ### 使用 Otlp 协议
 
-截止到 Vector v0.49.0 版本，Vector 不支持使用 Otlp 协议写入指标数据，这会触发 panic。
+截止到 Vector v0.49.0 版本，Vector 不支持使用 Otlp 协议写入指标数据，请不要尝试使用 Otlp sink 写入 metrics 数据，这会触发 Vector 的 panic。
 
 ### 使用 Prometheus Remote Write 协议
 
@@ -110,8 +117,9 @@ type = "internal_metrics"
 [sinks.prometheus_remote_write]
 type = "prometheus_remote_write"
 inputs = [ "my_source_id" ]
-endpoint = "http://localhost:4000/v1/prometheus/write?db=prometheus"
+endpoint = "http://<host>:4000/v1/prometheus/write?db=<dbname>"
 compression = "snappy"
+auth = { strategy = "basic", username = "<username>", password = "<password>" }
 ```
 
 ## 写入日志数据
@@ -140,10 +148,12 @@ type = "greptimedb_logs"
 inputs = [ "my_source_id" ]
 compression = "gzip"
 dbname = "public"
-endpoint = "http://localhost:4000"
+endpoint = "http://<host>:4000"
 extra_headers = { "skip_error" = "true" }
 pipeline_name = "greptime_identity"
-table = "mytable"
+table = "<table>"
+username = "<username>"
+password = "<password>"
 
 [sinks.my_sink_id.extra_params]
 source = "vector"
@@ -346,6 +356,7 @@ structured_metadata = { "*" = "{{structured_metadata}}" }
 ```
 
 对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段，structured_metadata 将会整体存储为一个 json 字段。
+由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline，如果需要使用 pipeline 功能请考虑使用 `greptimedb_logs` sink。
 
 ## 写入 Trace 数据
 
