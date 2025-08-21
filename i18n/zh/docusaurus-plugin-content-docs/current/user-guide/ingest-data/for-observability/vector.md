@@ -5,12 +5,12 @@ description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小
 
 # Vector
 
-::::
+:::tip 注意
 本文档基于 Vector v0.49.0 版本编写。
 以下的所有示例配置均基于此版本。对于各个 sink 的 host 和 port 配置请根据自己 GreptimeDB 实例的实际情况进行调整。
 下文中的所有 port 值均为默认值。
 并且我们强烈建议使用 GreptimeDB 官方组件（`greptimedb_metrics`, `greptimedb_logs`）作为 Vector 的 Sink 组件。
-::::
+:::
 
 Vector 是高性能的可观测数据管道。
 它原生支持 GreptimeDB 指标数据接收端。
@@ -25,7 +25,7 @@ GreptimeDB 支持多种指标数据写入方式，包括：
 - 使用 InfluxDB 行协议格式将指标数据写入 GreptimeDB
 - 使用 Prometheus Remote Write 协议将指标数据写入 GreptimeDB
 
-### 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
+### 使用 `greptimedb_metrics` sink（推荐）
 
 #### 示例
 
@@ -71,7 +71,6 @@ Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端
 
 可以使用 `influx` sink 来写入指标数据。我们推荐使用 v2 版本的 InfluxDB 行协议格式。
 
-#### 示例
 
 以下是一个使用 `influx` sink 写入宿主机指标的示例配置：
 
@@ -90,21 +89,20 @@ org = ""
 token = ""
 ```
 
-因为 influx 的 sink 是使用配置有哪些字段来判断协议的版本，请务必保证 `bucket`、`org` 和 `token` 字段的存在。
-
+上述配置使用的是 InfluxDB 行协议的 v2 版本。GreptimeDB 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+- `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
 - `bucket`: GreptimeDB 中的 database 名称。
 - `org`: GreptimeDB 中的组织名称（需置空）。
 - `token`: 用于身份验证的令牌（需置空）。由于 Influx 行协议的 token 有特殊形式，必须以 `Token ` 开头。这和 GreptimeDB 的鉴权方式有所不同，且目前不兼容。如果使用的是含有鉴权的 GreptimeDB 实例，请使用 `greptimedb_metrics`。
 
 更多细节请参考 [InfluxDB Line Protocol 文档](../for-iot/influxdb-line-protocol.md) 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB。
 
-### 使用 Otlp 协议
+### 使用 OTLP 协议
 
-截止到 Vector v0.49.0 版本，Vector 不支持使用 Otlp 协议写入指标数据，请不要尝试使用 Otlp sink 写入 metrics 数据，这会触发 Vector 的 panic。
+截止到 Vector v0.49.0 版本，Vector 不支持使用 OTLP 协议写入指标数据，请不要尝试使用 OTLP sink 写入 metrics 数据，这会触发 Vector 的 panic。
 
 ### 使用 Prometheus Remote Write 协议
 
-#### 示例
 
 以下是一个使用 Prometheus Remote Write 协议写入宿主机指标的示例配置：
 
@@ -130,9 +128,8 @@ GreptimeDB 支持多种日志数据写入方式，包括：
 - 使用 Otlp 协议将日志数据写入 GreptimeDB。
 - 使用 Loki 协议将日志数据写入 GreptimeDB。
 
-### 使用 [`greptimedb_logs` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) (推荐)
+### 使用 `greptimedb_logs` sink (推荐)
 
-#### 示例
 
 ```toml
 # sample.toml
@@ -162,11 +159,10 @@ x-greptime-pipeline-params = "flatten_json_object=true"
 
 此示例展示了如何使用 `greptimedb_logs` sink 将宿主机日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。
 
-### 使用 Otlp 协议（不推荐）
+### 使用 OTLP 协议（不推荐）
 
-由于 GreptimeDB 的 Otlp 协议仅支持 http/protobuf 格式的日志数据，因此 Vector 的 Otlp sink 需要配置为使用 http/protobuf 格式。
-
-但是 Vector 的 Otlp sink 配置较为麻烦无法使用较为简单的配置，本示例仅作参考，
+GreptimeDB 的 OTLP 协议仅支持 HTTP/Protobuf 格式的日志数据。
+由于 Vector 的 OTLP sink 配置较为麻烦无法使用简单的配置，以下示例仅作参考。
 
 #### 示例
 
@@ -256,7 +252,7 @@ X-Greptime-Log-Table-Name = "otlp_logs"
 
 ##### Remap
 
-原始的 Log Event 不能直接使用 Opentelemetry sink 写入。Log Event 的原始内容一般如下所示
+Vector 的 Log Event 原始内容不符合 Opentelemetry 的格式要求，因此无法直接写入到 GreptimeDB 中。其内容如下：
 
 ```json
 {
@@ -268,7 +264,7 @@ X-Greptime-Log-Table-Name = "otlp_logs"
 }
 ```
 
-这个格式不符合 Opentelemetry 的格式要求。即使是 Opentelemetry source 所输出的数据，也需要进行重构，一般 Opentelemetry source 接收到 log 后在 Vector 里的格式一般如下所示
+即使是 Opentelemetry source 输出的日志数据也需要修改后才能写入，该日志数据在 Vector 里的格式如下所示：
 
 ```json
 {
@@ -291,7 +287,7 @@ X-Greptime-Log-Table-Name = "otlp_logs"
 }
 ```
 
-很多字段没有 `AnyValue`, `KeyValue` 的类型包装。所以无法成功写入。所以需要使用 `remap` 转换来重构日志数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。
+由于很多字段没有 `AnyValue`, `KeyValue` 的类型包装，所以需要使用 `remap` 转换来重构日志数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。
 
 ##### 描述文件
 
