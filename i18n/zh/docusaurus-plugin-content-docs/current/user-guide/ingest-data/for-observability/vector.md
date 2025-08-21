@@ -71,7 +71,6 @@ Vector 使用 gRPC 与 GreptimeDB 进行通信，因此 Vector sink 的默认端
 
 可以使用 `influx` sink 来写入指标数据。我们推荐使用 v2 版本的 InfluxDB 行协议格式。
 
-
 以下是一个使用 `influx` sink 写入宿主机指标的示例配置：
 
 ```toml
@@ -90,6 +89,7 @@ token = ""
 ```
 
 上述配置使用的是 InfluxDB 行协议的 v2 版本。GreptimeDB 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+
 - `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
 - `bucket`: GreptimeDB 中的 database 名称。
 - `org`: GreptimeDB 中的组织名称（需置空）。
@@ -102,7 +102,6 @@ token = ""
 截止到 Vector v0.49.0 版本，Vector 不支持使用 OTLP 协议写入指标数据，请不要尝试使用 OTLP sink 写入 metrics 数据，这会触发 Vector 的 panic。
 
 ### 使用 Prometheus Remote Write 协议
-
 
 以下是一个使用 Prometheus Remote Write 协议写入宿主机指标的示例配置：
 
@@ -128,8 +127,10 @@ GreptimeDB 支持多种日志数据写入方式，包括：
 - 使用 Otlp 协议将日志数据写入 GreptimeDB。
 - 使用 Loki 协议将日志数据写入 GreptimeDB。
 
-### 使用 `greptimedb_logs` sink (推荐)
+我们强烈建议所有的用户使用 `greptimedb_logs` sink 来写入日志数据，因为它是为 GreptimeDB 优化的，能够更好地支持 GreptimeDB 的特性。
+并且推荐开启各种协议的压缩功能，以提高数据传输效率。
 
+### 使用 `greptimedb_logs` sink (推荐)
 
 ```toml
 # sample.toml
@@ -157,7 +158,7 @@ source = "vector"
 x-greptime-pipeline-params = "flatten_json_object=true"
 ```
 
-此示例展示了如何使用 `greptimedb_logs` sink 将宿主机日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。
+此示例展示了如何使用 `greptimedb_logs` sink 将生成的 demo 日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。
 
 ### 使用 OTLP 协议（不推荐）
 
@@ -343,16 +344,31 @@ source = """
 type = "loki"
 inputs = ["remap_syslog"]
 compression = "snappy"
-endpoint = "http://localhost:4000"
+endpoint = "http://<host>:4000"
 out_of_order_action = "accept"
 path = "/v1/loki/api/v1/push"
 encoding = { codec = "raw_message" }
 labels = { "*" = "{{labels}}" }
 structured_metadata = { "*" = "{{structured_metadata}}" }
+auth = {strategy = "basic", user = "<username>", password = "<password>"}
 ```
 
-对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段，structured_metadata 将会整体存储为一个 json 字段。
-由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline，如果需要使用 pipeline 功能请考虑使用 `greptimedb_logs` sink。
+上述配置为使用 Loki 协议将日志数据写入 GreptimeDB。具体的配置项说明如下：
+
+- `compression`：设置了数据传输时的压缩算法，这里使用了 `snappy`。
+- `endpoint`：指定了 Loki 的接收地址。
+- `out_of_order_action`：设置了如何处理乱序的日志，这里选择了 `accept`，表示接受乱序日志。GreptimeDB 支持乱序日志的写入。
+- `path`：指定了 Loki 的 API 路径。
+- `encoding`：设置了数据的编码方式，这里使用了 `raw_message`。
+- `labels`：指定了日志的标签，这里将 `labels` 的内容映射为 `{{labels}}`。即 remap_syslog 中的 `labels` 字段。
+- `structured_metadata`：指定了结构化元数据，这里将 `structured_metadata` 的内容映射为 `{{structured_metadata}}`。即 remap_syslog 中的 `structured_metadata` 字段。
+
+关于 `labels` 和 `structured_metadata` 的含义，请参考 [Loki 文档](https://grafana.com/docs/loki/latest/get-started/labels/bp-labels/)。
+
+对于 loki 协议，`labels` 默认会使用时序场景下的 Tag 类型，请注意这部分字段不要使用高基数字段。
+`structured_metadata` 将会整体存储为一个 json 字段。
+请注意，由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline。
+如果需要使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。
 
 ## 写入 Trace 数据
 
