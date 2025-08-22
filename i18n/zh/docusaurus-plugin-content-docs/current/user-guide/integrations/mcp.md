@@ -48,7 +48,7 @@ MCP 服务器可以通过环境变量或命令行参数进行配置。主要配�
       "args": ["-m", "greptimedb_mcp_server"],
       "env": {
         "GREPTIMEDB_HOST": "localhost",
-        "GREPTIMEDB_PORT": "4000",
+        "GREPTIMEDB_PORT": "4002",
         "GREPTIMEDB_USERNAME": "your_username",
         "GREPTIMEDB_PASSWORD": "your_password",
         "GREPTIMEDB_DATABASE": "your_database"
