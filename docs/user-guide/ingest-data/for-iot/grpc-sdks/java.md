@@ -403,7 +403,7 @@ For detailed information about available metrics and their usage, refer to the [
 
 ## GreptimeOptions Configuration Guide
 
-`GreptimeOptions` is the main configuration class for the GreptimeDB Java client, used to configure client connections, write options, RPC settings, and various other parameters. This document provides detailed information about all configuration options, their usage, and default values.
+`GreptimeOptions` is the main configuration class for the GreptimeDB Java client, used to configure client connections, write options, RPC settings, and various other parameters.
 
 ### Basic Usage
 
