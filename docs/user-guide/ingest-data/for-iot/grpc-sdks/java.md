@@ -426,7 +426,7 @@ GreptimeOptions options = GreptimeOptions.newBuilder(
 ##### endpoints (Endpoint List)
 - **Type**: `List<Endpoint>`
 - **Required**: Yes
-- **Description**: List of GreptimeDB server endpoints
+- **Description**: List of GreptimeDB gRPC server endpoints
 - **Example**:
 ```java
 // Single endpoint
@@ -438,7 +438,7 @@ GreptimeOptions options = GreptimeOptions.newBuilder(
 
 ##### database (Database Name)
 - **Type**: `String`
-- **Required**: Yes
+- **Default**: `public`
 - **Description**: Target database name. When a database name is provided, the DB will attempt to parse catalog and schema from it. We assume the format is `[<catalog>-]<schema>`:
    - If the `[<catalog>-]` part is not provided, we will use the entire database name as the schema name
    - If `[<catalog>-]` is provided, we will split the database name using `-` and use `<catalog>` and `<schema>`
@@ -476,17 +476,6 @@ The following configurations only apply to Regular API, not to Bulk API
   - `keepAliveTimeSeconds`: Time without read activity before sending keep-alive ping, default Long.MAX_VALUE (disabled)
   - `keepAliveTimeoutSeconds`: Time waiting for read activity after keep-alive ping, default 3 seconds
   - `keepAliveWithoutCalls`: Whether to perform keep-alive when no outstanding RPC, default false
-  - `limitKind`: gRPC layer concurrency limit algorithm, default None. Not recommended to enable without special requirements, suggest using SDK upper-layer flow control mechanisms (continue reading this document, mentioned below)
-    - `None`: No concurrency limiting (default)
-    - `Vegas`: TCP Vegas-based concurrency limiting algorithm
-    - `Gradient`: Gradient-based concurrency limiting algorithm
-  - **The following parameters only take effect when `limitKind` is set to `Vegas` or `Gradient`:**
-    - `initialLimit`: Initial concurrency limit, default 64
-    - `maxLimit`: Maximum concurrency limit, default 1024
-    - `longRttWindow`: Long RTT window for gradient limiter, default 100 (only for Gradient algorithm)
-    - `smoothing`: Smoothing factor for limit adjustment, default 0.2
-    - `blockOnLimit`: Block on limit instead of failing fast, default false
-    - `logOnLimitChange`: Log when limit changes, default true
   - `enableMetricInterceptor`: Enable metric interceptor, default false, will collect some gRPC layer metrics
 
 **Example**:
@@ -496,10 +485,7 @@ RpcOptions rpcOpts = RpcOptions.newDefault()
     .setMaxInboundMessageSize(128 * 1024 * 1024)  // 128MB
     .setKeepAliveTimeSeconds(30)  // Enable keep-alive every 30 seconds
     .setKeepAliveTimeoutSeconds(5)  // 5 seconds keep-alive timeout
-    .setKeepAliveWithoutCalls(true)  // Keep-alive even without calls
-    .setLimitKind(RpcOptions.LimitKind.Vegas)  // Use Vegas flow limiter
-    .setInitialLimit(32)  // Start with 32 concurrent requests
-    .setMaxLimit(512);  // Max 512 concurrent requests
+    .setKeepAliveWithoutCalls(true);  // Keep-alive even without calls
 
 .rpcOptions(rpcOpts)
 ```
@@ -596,7 +582,7 @@ This configuration is effective for Bulk API
 ##### routeTableRefreshPeriodSeconds (Route Table Refresh Period)
 - **Type**: `long`
 - **Default**: `600` (10 minutes)
-- **Description**: Background refresh period for route tables (seconds). Route tables will not be refreshed if value is <= 0
+- **Description**: Background refresh period for route tables (seconds). Route tables will not be refreshed if value is `<= 0`
 - **Example**:
 ```java
 .routeTableRefreshPeriodSeconds(300)  // Refresh every 5 minutes

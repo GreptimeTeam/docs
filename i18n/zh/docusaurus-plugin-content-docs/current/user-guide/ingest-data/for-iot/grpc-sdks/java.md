@@ -399,7 +399,7 @@ Ingester 公开全面的指标，使你能够监控其性能、健康状况和�
 
 ## GreptimeOptions 配置指南
 
-`GreptimeOptions` 是 GreptimeDB Java 客户端的主要配置类，用于配置客户端连接、写入选项、RPC 设置以及其他各种参数。本文档提供了所有配置选项的详细信息，包括其用法和默认值。
+`GreptimeOptions` 是 GreptimeDB Java 客户端的主要配置类，用于配置客户端连接、写入选项、RPC 设置以及其他各种参数。
 
 ### 基本用法
 
@@ -421,7 +421,7 @@ GreptimeOptions options = GreptimeOptions.newBuilder(
 ##### endpoints (端点列表)
 - **类型**: `List<Endpoint>`
 - **必需**: 是
-- **描述**: GreptimeDB 服务器端点列表
+- **描述**: GreptimeDB 的 gRPC 端点列表
 - **示例**:
 ```java
 // 单个端点
@@ -433,7 +433,7 @@ GreptimeOptions options = GreptimeOptions.newBuilder(
 
 ##### database (数据库名称)
 - **类型**: `String`
-- **必需**: 是
+- **默认值**: `public`
 - **描述**: 目标数据库名称，当提供数据库名称时，DB 端会尝试从中解析 catalog 和 schema。我们假设格式为 `[<catalog>-]<schema>`：
    - 如果未提供 `[<catalog>-]` 部分，我们将整个数据库名称用作 schema 名称
    - 如果提供了 `[<catalog>-]`，我们将使用 `-` 分割数据库名称，并使用 `<catalog>` 和 `<schema>`。
@@ -471,17 +471,6 @@ GreptimeOptions options = GreptimeOptions.newBuilder(
   - `keepAliveTimeSeconds`: 发送保活 ping 前的无读取活动时间，默认 Long.MAX_VALUE（禁用）
   - `keepAliveTimeoutSeconds`: 保活 ping 后等待读取活动的时间，默认 3 秒
   - `keepAliveWithoutCalls`: 无未完成 RPC 时是否执行保活，默认 false
-  - `limitKind`: gRPC 层的并发限制算法，默认 None，没有特殊需求不建议开启，建议使用 SDK 上层的限流机制（可继续阅读该文档，下面会提到）
-    - `None`: 无并发限制（默认）
-    - `Vegas`: 基于 TCP Vegas 的并发限制算法
-    - `Gradient`: 基于梯度的并发限制算法
-  - **以下参数仅在 `limitKind` 设置为 `Vegas` 或 `Gradient` 时生效：**
-    - `initialLimit`: 初始并发限制，默认 64
-    - `maxLimit`: 最大并发限制，默认 1024
-    - `longRttWindow`: 梯度限制器的长 RTT 窗口，默认 100（仅用于 Gradient 算法）
-    - `smoothing`: 限制调整的平滑因子，默认 0.2
-    - `blockOnLimit`: 达到限制时阻塞而非快速失败，默认 false
-    - `logOnLimitChange`: 限制变化时记录日志，默认 true
   - `enableMetricInterceptor`: 启用指标拦截器，默认 false，会采集部分 gRPC 层的指标
 
 **示例**:
@@ -491,10 +480,7 @@ RpcOptions rpcOpts = RpcOptions.newDefault()
     .setMaxInboundMessageSize(128 * 1024 * 1024)  // 128 MB
     .setKeepAliveTimeSeconds(30)  // 每 30 秒启用保活
     .setKeepAliveTimeoutSeconds(5)  // 5 秒保活超时
-    .setKeepAliveWithoutCalls(true)  // 即使没有调用也保活
-    .setLimitKind(RpcOptions.LimitKind.Vegas)  // 使用 Vegas 限流器
-    .setInitialLimit(32)  // 从 32 个并发请求开始
-    .setMaxLimit(512);  // 最大 512 个并发请求
+    .setKeepAliveWithoutCalls(true);  // 即使没有调用也保活
 
 .rpcOptions(rpcOpts)
 ```
@@ -591,7 +577,7 @@ tlsOpts.setRootCerts(new File("ca.crt"));
 ##### routeTableRefreshPeriodSeconds (路由表刷新周期)
 - **类型**: `long`
 - **默认值**: `600`（10 分钟）
-- **描述**: 后台刷新路由表的周期（秒）。如果值 <= 0，则不会刷新路由表
+- **描述**: 后台刷新路由表的周期（秒）。如果值 `<= 0`，则不会刷新路由表
 - **示例**:
 ```java
 .routeTableRefreshPeriodSeconds(300)  // 每 5 分钟刷新一次
