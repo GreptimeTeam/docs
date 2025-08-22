@@ -11,6 +11,8 @@ The GreptimeDB MCP Server is currently in experimental stage and under active de
 
 The [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) provides a Model Context Protocol implementation that enables AI assistants like Claude to securely explore and analyze your GreptimeDB databases.
 
+Watch our [demo video on YouTube](https://www.youtube.com/watch?v=EBTc46yamFI) to see the MCP Server in action and get a better understanding of its capabilities.
+
 ## What is MCP?
 
 Model Context Protocol (MCP) is a standard protocol that allows AI assistants to interact with external data sources and tools. With the GreptimeDB MCP Server, you can enable AI assistants to:

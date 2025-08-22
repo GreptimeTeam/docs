@@ -11,6 +11,8 @@ GreptimeDB MCP Server 目前处于实验阶段并在积极开发中。API 和功
 
 [GreptimeDB MCP Server](https://github.com/GreptimeTeam/greptimedb-mcp-server) 提供了模型上下文协议的实现，使 Claude 等 AI 助手能够安全地探索和分析您的 GreptimeDB 数据库。
 
+查看我们的[演示视频和文章](https://mp.weixin.qq.com/s/gbTuMLoG4b151Hs8KCSGxg)，了解 MCP Server 的实际应用效果，更直观地理解其功能。
+
 ## 什么是 MCP？
 
 模型上下文协议（MCP）是一种标准协议，允许 AI 助手与外部数据源和工具进行交互。通过 GreptimeDB MCP Server，您可以让 AI 助手实现：
