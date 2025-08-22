@@ -88,7 +88,7 @@ org = ""
 token = ""
 ```
 
-上述配置使用的是 InfluxDB 行协议的 v2 版本。GreptimeDB 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
 
 - `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
 - `bucket`: GreptimeDB 中的 database 名称。
@@ -458,4 +458,4 @@ method = "bytes"
 content-type = "application/x-protobuf"
 ```
 
-基本框架同使用 Opentelemetry 写入 Logs 一致，由于 Trace 数据的格式较为复杂，通常需要使用 `remap` 转换来重构数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。但是重构过程非常复杂，且 Vrl 语言的表达能力有限，可能无法完全满足需求。比如 attributes 字段的处理需要手动进行转换，且需要确保每个字段都符合 OpenTelemetry 的要求。并且可能会有递归转换的情况，Vrl 无法满足需求。
+使用 Opentelemetry 协议写入 Traces 和写入 Logs 的配置结构基本一致，由于 Trace 数据的格式较为复杂，通常需要使用 `remap` 转换来重构数据，以符合 OpenTelemetry 的要求。请根据实际情况调整字段映射。但是重构过程非常复杂，且 Vrl 语言的表达能力有限，可能无法完全满足需求。比如 attributes 字段的处理需要手动进行转换，且需要确保每个字段都符合 OpenTelemetry 的要求。并且可能会有递归转换的情况，Vrl 无法满足需求。
