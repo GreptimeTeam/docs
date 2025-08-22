@@ -48,7 +48,7 @@ To integrate with Claude Desktop, add the following configuration to your `claud
       "args": ["-m", "greptimedb_mcp_server"],
       "env": {
         "GREPTIMEDB_HOST": "localhost",
-        "GREPTIMEDB_PORT": "4000",
+        "GREPTIMEDB_PORT": "4002",
         "GREPTIMEDB_USERNAME": "your_username",
         "GREPTIMEDB_PASSWORD": "your_password",
         "GREPTIMEDB_DATABASE": "your_database"
