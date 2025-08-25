@@ -397,9 +397,38 @@ The ingester exposes comprehensive metrics that enable you to monitor its perfor
 
 For detailed information about available metrics and their usage, refer to the [Ingester Prometheus Metrics](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-prometheus-metrics) documentation.
 
-## API Documentation and Examples
-- [API Reference](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
-- [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/)
+
+## Key Configuration Options
+
+`GreptimeOptions` is the main configuration class for the GreptimeDB Java client, used to configure client connections, write options, RPC settings, and various other parameters.
+
+For production environments, you may need to configure these commonly used options. Complete reference: [GreptimeOptions JavaDoc](https://javadoc.io/static/io.greptime/ingester-protocol/VAR::javaSdkVersion/io/greptime/options/GreptimeOptions.html).
+
+**Key Options:**
+- `database`: Target database name, format `[catalog-]schema` (default: `public`)
+- `authInfo`: Authentication credentials for production environments
+- `rpcOptions.defaultRpcTimeout`: RPC request timeout (default: 60 seconds)
+- `writeMaxRetries`: Maximum retries for failed writes (default: 1)
+- `maxInFlightWritePoints`: Maximum data points in-flight for write flow control (default: 655360)
+- `writeLimitedPolicy`: Policy when write flow limit exceeded (default: AbortOnBlockingTimeoutPolicy 3s)
+- `defaultStreamMaxWritePointsPerSecond`: Rate limit for StreamWriter (default: 655360)
+
+```java
+// Production-ready configuration
+RpcOptions rpcOpts = RpcOptions.newDefault();
+rpcOpts.setDefaultRpcTimeout(30000);  // 30 seconds timeout
+
+AuthInfo authInfo = new AuthInfo("username", "password");
+
+GreptimeOptions options = GreptimeOptions.newBuilder("127.0.0.1:4001", "production_db")
+    .authInfo(authInfo)
+    .rpcOptions(rpcOpts)
+    .writeMaxRetries(3)
+    .maxInFlightWritePoints(1000000)
+    .writeLimitedPolicy(new LimitedPolicy.AbortOnBlockingTimeoutPolicy(5, TimeUnit.SECONDS))
+    .defaultStreamMaxWritePointsPerSecond(50000)
+    .build();
+```
 
 ## FAQ
 
@@ -457,6 +486,6 @@ packaged into the final JAR, during the assembling process. So the fix can be:
   </project>
   ```
 
-## Ingester library reference
-
-- [API Documentation](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+## API Documentation and Examples
+- [API Reference](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+- [Examples](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/)
