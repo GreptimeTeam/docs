@@ -42,7 +42,7 @@ sink 表是 `user_agent_statistics`。
 使用 `PRIMARY KEY` 关键字将其指定为 `TAG` 列类型。
 
 ```sql
-CREATE TABLE ngx_access_log (
+CREATE TABLE ngx_http_log (
   ip_address STRING,
   http_method STRING,
   request STRING,
@@ -70,7 +70,7 @@ CREATE TABLE user_agent_statistics (
 );
 ```
 
-最后，创建 Flow `user_agent_flow` 以计算 `nginx_access_log` 表中每个 user_agent 的出现次数。
+最后，创建 Flow `user_agent_flow` 以计算 `ngx_http_log` 表中每个 user_agent 的出现次数。
 
 ```sql
 CREATE FLOW user_agent_flow
@@ -80,7 +80,7 @@ SELECT
   user_agent,
   COUNT(user_agent) AS total_count
 FROM
-  ngx_access_log
+  ngx_http_log
 GROUP BY
   user_agent;
 ```
@@ -92,7 +92,7 @@ Flow 引擎将持续处理 `nginx_access_log` 表中的数据，并使用计算�
 将示例数据插入 `nginx_access_log` 表。
 
 ```sql
-INSERT INTO ngx_access_log
+INSERT INTO ngx_http_log
 VALUES
   ('192.168.1.1', 'GET', '/index.html', 200, 512, 'Mozilla/5.0', 1024, '2023-10-01T10:00:00Z'),
   ('192.168.1.2', 'POST', '/submit', 201, 256, 'curl/7.68.0', 512, '2023-10-01T10:01:00Z'),
