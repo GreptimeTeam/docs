@@ -39,6 +39,10 @@ remote_read:
 
 If you are using Grafana Alloy, configure the remote write endpoint in the Alloy configuration file (`config.alloy`). For more information, refer to the [Alloy documentation](alloy.md#prometheus-remote-write).
 
+### Vector configuration file
+
+If you use Vector, configure Remote Write in Vector's configuration file (vector.toml). For more information, see the [Vector documentation](vector.md#using-prometheus-remote-write-protocol).
+
 ## Data Model
 
 In the [data model](/user-guide/concepts/data-model.md) of GreptimeDB, data is organized into tables with columns for tags, time index, and fields.
