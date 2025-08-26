@@ -16,8 +16,8 @@ Vector is a high-performance observability data pipeline. It natively supports G
 GreptimeDB supports multiple ways to write metrics data:
 
 - Using [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) (recommended)
-- Writing metrics data to GreptimeDB using InfluxDB line protocol format
-- Writing metrics data to GreptimeDB using Prometheus Remote Write protocol
+- Using InfluxDB line protocol format
+- Using Prometheus Remote Write protocol
 
 ### Using `greptimedb_metrics` sink (recommended)
 
