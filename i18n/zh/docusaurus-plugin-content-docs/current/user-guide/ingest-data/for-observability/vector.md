@@ -21,11 +21,11 @@ GreptimeDB 可以作为 Vector 的 Sink 组件来接收指标数据。
 
 GreptimeDB 支持多种指标数据写入方式，包括：
 
-- 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/) （推荐）
+- 使用 [`greptimedb_metrics` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_metrics/)
 - 使用 InfluxDB 行协议格式将指标数据写入 GreptimeDB
 - 使用 Prometheus Remote Write 协议将指标数据写入 GreptimeDB
 
-### 使用 `greptimedb_metrics` sink（推荐）
+### 使用 `greptimedb_metrics` sink
 
 #### 示例
 
