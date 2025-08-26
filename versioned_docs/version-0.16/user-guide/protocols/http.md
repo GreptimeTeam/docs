@@ -30,8 +30,8 @@ GreptimeDB supports the built-in `Basic` authentication scheme in the HTTP API. 
 
 1. Encode your username and password using the `<username>:<password>` format and the `Base64` algorithm.
 2. Attach your encoded credentials to the one of the following HTTP header:
--  `Authorization: Basic <base64-encoded-credentials>` 
--  `x-greptime-auth: Basic <base64-encoded-credentials>` 
+-  `Authorization: Basic <base64-encoded-credentials>`
+-  `x-greptime-auth: Basic <base64-encoded-credentials>`
 
 Here's an example. If you want to connect to GreptimeDB using the username `greptime_user` and password `greptime_pwd`, use the following command:
 
@@ -480,6 +480,25 @@ The input parameters are similar to the [`range_query`](https://prometheus.io/do
 - `start=<rfc3339 | unix_timestamp>`: Required. The start timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
 - `end=<rfc3339 | unix_timestamp>`: Required. The end timestamp, which is inclusive. It is used to set the range of time in `TIME INDEX` column.
 - `step=<duration | float>`: Required. Query resolution step width in duration format or float number of seconds.
+- `format`: The output format. Optional. `greptimedb_v1` by default.
+  In addition to the default JSON format, the HTTP API also allows you to
+  customize output format by providing the `format` query parameter with following
+  values:
+  - `influxdb_v1`: [influxdb query
+    API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
+    compatible format. Additional parameters:
+    - `epoch`: `[ns,u,µ,ms,s,m,h]`, returns epoch timestamps with the specified
+      precision
+  - `csv`: outputs as comma-separated values
+  - `csvWithNames`: outputs as comma-separated values with a column names header
+  - `csvWithNamesAndTypes`: outputs as comma-separated values with column names and data types headers
+  - `arrow`: [Arrow IPC
+    format](https://arrow.apache.org/docs/python/feather.html). Additional
+    parameters:
+    - `compression`: `zstd` or `lz4`, default: no compression
+  - `table`: ASCII table format for console output
+  - `null`: Concise text-only output of the row count and elapsed time, useful for evaluating query performance.
+
 
 Here are some examples for each type of parameter:
 
@@ -596,4 +615,3 @@ When writing logs to GreptimeDB,
 you can use HTTP APIs to manage the pipelines.
 For detailed information,
 please refer to the [Manage Pipelines](/user-guide/logs/manage-pipelines.md) documentation.
-
