@@ -39,7 +39,7 @@ When maintenance mode is enabled:
 - Monitoring and metrics collection continue to function
 
 ## Managing Maintenance Mode
-The maintenance mode can be enabled and disabled through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/maintenance/enable` and `http://{METASRV}:{RPC_PORT}/admin/maintenance/disable`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
+The maintenance mode can be enabled and disabled through Metasrv's HTTP interface at: `http://{METASRV}:{HTTP_PORT}/admin/maintenance/enable` and `http://{METASRV}:{HTTP_PORT}/admin/maintenance/disable`. Note that this interface listens on Metasrv's `HTTP_PORT`, which defaults to `4000`.
 
 ### Enable Maintenance Mode
 
@@ -53,7 +53,7 @@ proceed with caution and avoid continuing with high-risk operations such as clus
 Enable maintenance mode by sending a POST request to the `/admin/maintenance/enable` endpoint. 
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/maintenance/enable'
+curl -X POST 'http://localhost:4000/admin/maintenance/enable'
 ```
 
 The expected output is:
@@ -77,7 +77,7 @@ Before disabling maintenance mode:
 2. Verify that all nodes are properly joined to the cluster
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/maintenance/disable'
+curl -X POST 'http://localhost:4000/admin/maintenance/disable'
 ```
 
 The expected output is:
@@ -90,7 +90,7 @@ The expected output is:
 Check maintenance mode status by sending a GET request to the `/admin/maintenance` endpoint.
 
 ```bash
-curl -X GET http://localhost:3002/admin/maintenance/status
+curl -X GET http://localhost:4000/admin/maintenance/status
 ```
 
 The expected output is:
