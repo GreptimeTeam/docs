@@ -100,7 +100,7 @@ The description of columns in the `TABLES` table is as follows:
   - `TEMPORARY` for a temporary result set.
   - `VIEW`  for a view.
 - `table_id`: The ID of the table.
-- `data_length`: The total length of the table's SST files in bytes, which is an approximate value.
+- `data_length`: The table size, representing the total length of the table's SST files in bytes. This is an approximate value.
 - `index_length`: The total length of the table's index files in bytes, which is an approximate value.
 - `table_rows`: The table's total row number, which is an approximate value.
 - `avg_row_length`: The average row length in bytes, which is an approximate value.
