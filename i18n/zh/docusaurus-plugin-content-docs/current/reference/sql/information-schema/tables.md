@@ -101,7 +101,7 @@ SHOW TABLES
   - `TEMPORARY`：临时结果集
   - `VIEW`：视图表
 - `table_id`：表 ID。
-- `data_length`: 表中 SST 文件的总长度（以字节为单位），近似值。
+- `data_length`: 表大小，即表中 SST 文件的总长度（以字节为单位），近似值。
 - `index_length`: 表中索引文件的总长度（以字节为单位），近似值。
 - `table_rows`: 表中总的记录行数，近似值。
 - `avg_row_length`: 表中记录的平均大小（以字节为单位），近似值。
