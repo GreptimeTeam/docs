@@ -31,7 +31,7 @@ manifest 文件版本号是通过 Region 与 Metasrv 之间的心跳进行同步
 
 ![read-replica-heartbeat](/read-replica-heartbeat.png)
 
-容易看出，如果只有 SST 文件的同步，读副本读到写入数据的延迟是 Leader Region 和 Follower Region 与 Metasrv 之间的心跳间隔之和。假如两个 Region 的心跳间隔都是默认的 3 秒，那么读副本只能读到 3 到 6 秒前的 SST 文件的数据。如果客户端对读副本能读到的写入数据的新鲜度要求不高，那么这种数据同步方法就足够了。但如果要求读副本能及时读到最新写入的数据，读副本还需要下面的功能：
+容易看出，如果只有 SST 文件的同步，读副本读到写入数据的延迟是 Leader Region 和 Follower Region 与 Metasrv 之间的心跳间隔之和。假如两个 Region 的心跳间隔都是默认的 3 秒，那么读副本只能读到 3 到 6 秒前写入 SST 文件并 flush 到对象存储的数据。如果客户端对读副本能读到的写入数据的新鲜度要求不高，那么这种数据同步方法就足够了。但如果要求读副本能及时读到最新写入的数据，读副本还需要下面的功能：
 
 ### 数据读取
 
