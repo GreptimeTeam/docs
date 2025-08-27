@@ -6,7 +6,7 @@ description: Instructions for integrating Vector with GreptimeDB, including conf
 # Vector
 
 :::tip NOTE
-This document is based on Vector v0.49.0. All example configurations below are based on this version. Please adjust the host and port configurations for each sink according to your actual GreptimeDB instance. All port values below are defaults. We strongly recommend using GreptimeDB official components (`greptimedb_metrics`, `greptimedb_logs`) as Vector sink components.
+This document is based on Vector v0.49.0. All example configurations below are based on this version. Please adjust the host and port configurations for each sink according to your actual GreptimeDB instance. All port values below are defaults.
 :::
 
 Vector is a high-performance observability data pipeline. It natively supports GreptimeDB as a metrics data receiver. Through Vector, you can receive metrics data from various sources including Prometheus, OpenTelemetry, StatsD, etc. GreptimeDB can serve as a sink component for Vector to receive metrics data.
@@ -89,10 +89,6 @@ The above configuration uses v2 version of InfluxDB line protocol. Vector determ
 - `token`: Token for authentication (needs to be empty). Since Influx line protocol token has special format and must start with `Token `, this differs from GreptimeDB's authentication method and is currently not compatible. If using GreptimeDB instance with authentication, please use `greptimedb_metrics`.
 
 For more details, please refer to [InfluxDB Line Protocol documentation](../for-iot/influxdb-line-protocol.md) to learn how to write data to GreptimeDB using InfluxDB Line Protocol.
-
-### Using OTLP Protocol
-
-As of Vector v0.49.0, Vector does not support writing metrics data using OTLP protocol. Please do not attempt to use OTLP sink to write metrics data, as this will trigger Vector's panic. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.
 
 ### Using Prometheus Remote Write Protocol
 
@@ -203,11 +199,3 @@ For meanings of `labels` and `structured_metadata`, please refer to [Loki docume
 For Loki protocol, `labels` will use Tag type in time series scenarios by default, please avoid using high-cardinality fields for these fields. `structured_metadata` will be stored as a complete JSON field.
 
 Note that since Vector's configuration doesn't allow setting headers, you cannot specify pipeline. If you need to use pipeline functionality, please consider using `greptimedb_logs` sink.
-
-### Using OTLP Protocol
-
-As of Vector v0.49.0, Vector has limited support for Log data. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.
-
-## Writing Trace Data
-
-As of Vector v0.49.0, Vector has limited support for Trace data. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.

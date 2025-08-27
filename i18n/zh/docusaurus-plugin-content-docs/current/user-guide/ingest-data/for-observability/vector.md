@@ -9,7 +9,6 @@ description: 介绍如何使用 Vector 将数据写入 GreptimeDB，包括最小
 本文档基于 Vector v0.49.0 版本编写。
 以下的所有示例配置均基于此版本。对于各个 sink 的 host 和 port 配置请根据自己 GreptimeDB 实例的实际情况进行调整。
 下文中的所有 port 值均为默认值。
-并且我们强烈建议使用 GreptimeDB 官方组件（`greptimedb_metrics`, `greptimedb_logs`）作为 Vector 的 Sink 组件。
 :::
 
 Vector 是高性能的可观测数据管道。
@@ -96,10 +95,6 @@ token = ""
 - `token`: 用于身份验证的令牌（需置空）。由于 Influx 行协议的 token 有特殊形式，必须以 `Token ` 开头。这和 GreptimeDB 的鉴权方式有所不同，且目前不兼容。如果使用的是含有鉴权的 GreptimeDB 实例，请使用 `greptimedb_metrics`。
 
 更多细节请参考 [InfluxDB Line Protocol 文档](../for-iot/influxdb-line-protocol.md) 了解如何使用 InfluxDB Line Protocol 将数据写入到 GreptimeDB。
-
-### 使用 OTLP 协议
-
-截止到 Vector v0.49.0 版本，Vector 不支持使用 OTLP 协议写入指标数据，请不要尝试使用 OTLP sink 写入 metrics 数据，这会触发 Vector 的 panic。建议使用 Grafana Alloy 或 OpenTelemetry Collector 等更全面的组件。
 
 ### 使用 Prometheus Remote Write 协议
 
@@ -214,11 +209,3 @@ auth = {strategy = "basic", user = "<username>", password = "<password>"}
 `structured_metadata` 将会整体存储为一个 json 字段。
 请注意，由于 Vector 的配置里不允许设置 header 所以无法指定 pipeline。
 如果需要使用 pipeline 功能，请考虑使用 `greptimedb_logs` sink。
-
-### 使用 OTLP 协议
-
-截止到 Vector v0.49.0 版本，Vector 对 Log 数据的支持较为有限，建议使用 Grafana Alloy 或 OpenTelemetry Collector 等更全面的组件。
-
-## 写入 Trace 数据
-
-截止到 Vector v0.49.0 版本，Vector 对 Trace 数据的支持较为有限，建议使用 Grafana Alloy 或 OpenTelemetry Collector 等更全面的组件。
