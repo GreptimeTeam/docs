@@ -33,7 +33,7 @@ The manifest version number is synchronized via heartbeats between Regions and M
 
 ![read-replica-heartbeat](/read-replica-heartbeat.png)
 
-It's easy to see, if there were only SST files synchronization mechanism in place, the delay for Read Replica to access written data would be the sum of the heartbeat intervals between Leader/Follower Regions and Metasrv. For example, with a default 3-second heartbeat interval, Read Replica would only see the data written in SST files 3 to 6 seconds prior. While this suffices for clients with relaxed freshness requirements, additional mechanisms are needed for near-real-time reads.
+It's easy to see, if there were only SST files synchronization mechanism in place, the delay for Read Replica to access written data would be the sum of the heartbeat intervals between Leader/Follower Regions and Metasrv. For example, with a default 3-second heartbeat interval, Read Replica would only see the data that are written to SST files and flushed to object store 3 to 6 seconds prior. While this suffices for clients with relaxed freshness requirements, additional mechanisms are needed for near-real-time reads.
 
 ### Data Read
 
