@@ -467,6 +467,21 @@ curl -X GET \
 - `start=<rfc3339 | unix_timestamp>`：必填。开始时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
 - `end=<rfc3339 | unix_timestamp>`：必填。结束时间戳，包含在内。它用于设置 `TIME INDEX` 列中的时间范围。
 - `step=<duration | float>`：必填。查询步长，可以使用持续时间格式或秒数的浮点数。
+- `format`: 输出格式。可选。默认为 `greptimedb_v1` 的 JSON 格式。
+  除了默认的 JSON 格式外，HTTP API 还允许你通过提供 `format` 查询参数来自定义输出格式，值如下：
+  - `influxdb_v1`: [influxdb 查询
+    API](https://docs.influxdata.com/influxdb/v1/tools/api/#query-http-endpoint)
+    兼容格式。附加参数：
+    - `epoch`: `[ns,u,µ,ms,s,m,h]`，返回指定精度的时间戳
+  - `csv`: 以逗号分隔值格式输出
+  - `csvWithNames`: 以逗号分隔值格式输出，包含列名标题
+  - `csvWithNamesAndTypes`: 以逗号分隔值格式输出，包含列名和数据类型标题
+  - `arrow`: [Arrow IPC
+    格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
+    - `compression`: `zstd` 或 `lz4`，默认：无压缩
+  - `table`: 控制台输出的 ASCII 表格格式
+  - `null`: 简洁的纯文本输出，仅显示行数和执行时间，用于评估查询性能。
+
 
 以下是每种参数的类型的示例：
 
