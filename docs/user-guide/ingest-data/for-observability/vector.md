@@ -92,7 +92,7 @@ For more details, please refer to [InfluxDB Line Protocol documentation](../for-
 
 ### Using OTLP Protocol
 
-As of Vector v0.49.0, Vector does not support writing metrics data using OTLP protocol. Please do not attempt to use OTLP sink to write metrics data, as this will trigger Vector's panic.
+As of Vector v0.49.0, Vector does not support writing metrics data using OTLP protocol. Please do not attempt to use OTLP sink to write metrics data, as this will trigger Vector's panic. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.
 
 ### Using Prometheus Remote Write Protocol
 
@@ -117,7 +117,6 @@ auth = { strategy = "basic", username = "<username>", password = "<password>" }
 GreptimeDB supports multiple ways to write logs data:
 
 - Using [`greptimedb_logs` sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) to write logs data to GreptimeDB.
-- Using OTLP protocol to write logs data to GreptimeDB.
 - Using Loki protocol to write logs data to GreptimeDB.
 
 We strongly recommend all users to use `greptimedb_logs` sink to write logs data, as it is optimized for GreptimeDB and better supports GreptimeDB features. We also recommend enabling compression for various protocols to improve data transmission efficiency.
@@ -151,158 +150,6 @@ x-greptime-pipeline-params = "flatten_json_object=true"
 ```
 
 This example demonstrates how to use `greptimedb_logs` sink to write generated demo logs data to GreptimeDB. For more information, please refer to [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) documentation.
-
-### Using OTLP Protocol (not recommended)
-
-GreptimeDB's OTLP protocol only supports HTTP/Protobuf format for logs data. Due to Vector's OTLP sink configuration being complex and not usable with simple configuration, the following example is for reference only.
-
-#### Example
-
-```toml
-[sources.generate_syslog]
-type = "demo_logs"
-format = "syslog"
-count = 100
-interval = 1
-
-[transforms.remap_syslog]
-inputs = ["generate_syslog"]
-type = "remap"
-source = """
-log(., level: "info", rate_limit_secs: 0)
-syslog = parse_syslog!(.message)
-
-severity_text = if includes(["emerg", "err", "crit", "alert"], syslog.severity) {
-  "ERROR"
-} else if syslog.severity == "warning" {
-  "WARN"
-} else if syslog.severity == "debug" {
-  "DEBUG"
-} else if includes(["info", "notice"], syslog.severity) {
-  "INFO"
-} else {
-  syslog.severity
-}
-
-.resource_logs = [{
-  "resource": {
-    "attributes": [
-      { "key": "source_type", "value": { "string_value": .source_type } },
-      { "key": "service.name", "value": { "string_value": syslog.appname } },
-      { "key": "host.hostname", "value": { "string_value": syslog.hostname } }
-    ]
-  },
-  "scope_logs": [{
-    "scope": {
-      "name": syslog.msgid
-    },
-    "log_records": [{
-      "time_unix_nano": to_unix_timestamp!(syslog.timestamp, unit: "nanoseconds"),
-      "body": { "string_value": syslog.message },
-      "severity_text": severity_text,
-      "attributes": [
-        { "key": "syslog.procid", "value": { "string_value": to_string(syslog.procid) } },
-        { "key": "syslog.facility", "value": { "string_value": syslog.facility } },
-        { "key": "syslog.version", "value": { "string_value": to_string(syslog.version) } }
-      ]
-    }]
-  }]
-}]
-
-del(.message)
-del(.timestamp)
-del(.service)
-del(.source_type)
-"""
-
-[sinks.emit_syslog]
-inputs = ["remap_syslog"]
-type = "opentelemetry"
-
-[sinks.emit_syslog.protocol]
-type = "http"
-uri = "http://localhost:4000/v1/otlp/v1/logs"
-method = "post"
-
-[sinks.emit_syslog.protocol.encoding]
-codec = "protobuf"
-
-[sinks.emit_syslog.protocol.encoding.protobuf]
-message_type = "opentelemetry.proto.logs.v1.LogsData"
-desc_file = "opentelemetry.desc"
-
-[sinks.emit_syslog.protocol.framing]
-method = "bytes"
-
-[sinks.emit_syslog.protocol.request.headers]
-content-type = "application/x-protobuf"
-X-Greptime-DB-Name = "public"
-X-Greptime-Log-Table-Name = "otlp_logs"
-```
-
-#### Notes
-
-##### Remap
-
-Vector's Log Event original content does not meet OpenTelemetry format requirements, so it cannot be directly written to GreptimeDB. Its content is as follows:
-
-```json
-{
-  "host": "localhost",
-  "message": "<5>2 2025-08-20T16:49:52.875+08:00 we.itau shaneIxD 7745 ID183 - We're gonna need a bigger boat",
-  "service": "vector",
-  "source_type": "demo_logs",
-  "timestamp": "2025-08-20T08:49:52.875755412Z"
-}
-```
-
-Even log data output by OpenTelemetry source needs modification before writing. The format of this log data in Vector is as follows:
-
-```json
-{
-  "attributes": {
-    "log.index": 6
-  },
-  "dropped_attributes_count": 0,
-  "message": "log message 6",
-  "observed_timestamp": "2025-08-20T08:59:03.491518609Z",
-  "resources": {
-    "library": "otlp-generator",
-    "service.name": "example-service"
-  },
-  "scope": {
-    "name": "otlp-generator"
-  },
-  "severity_text": "INFO",
-  "source_type": "opentelemetry",
-  "timestamp": "2025-08-20T08:59:03.481116430Z"
-}
-```
-
-Since many fields don't have `AnyValue`, `KeyValue` type wrapping, you need to use `remap` transformation to reconstruct log data to meet OpenTelemetry requirements. Please adjust field mapping according to actual situation.
-
-##### Descriptor File
-
-Note in `sinks.emit_syslog.protocol.encoding.protobuf` configuration, we use `opentelemetry.proto.logs.v1.LogsData` as message type and specify descriptor file `opentelemetry.desc`. This descriptor file needs to be provided by yourself, usually obtained from OpenTelemetry's proto definitions. Here are the steps to compile the descriptor file:
-
-1. Clone OpenTelemetry's proto definition repository:
-
-   ```bash
-   git clone https://github.com/open-telemetry/opentelemetry-proto.git
-   cd opentelemetry-proto
-   # This may change later, proto definition for GreptimeDB 0.16.0 uses this commit hash
-   git checkout 8654ab7
-   ```
-
-2. Install `protoc` command (optional), can be installed through distribution package manager or download precompiled binaries from [Protocol Buffers Releases](https://github.com/protocolbuffers/protobuf/releases).
-
-3. Compile descriptor file, note this needs to be executed in `opentelemetry-proto` directory:
-
-   ```bash
-   protoc -I . -o otlp.desc opentelemetry/proto/logs/v1/logs.proto opentelemetry/proto/metrics/v1/metrics.proto opentelemetry/proto/trace/v1/trace.proto opentelemetry/proto/resource/v1/resource.proto opentelemetry/proto/common/v1/common.proto
-   ```
-
-This descriptor file contains definitions for metrics, logs, and traces.
 
 ### Using Loki Protocol
 
@@ -357,92 +204,10 @@ For Loki protocol, `labels` will use Tag type in time series scenarios by defaul
 
 Note that since Vector's configuration doesn't allow setting headers, you cannot specify pipeline. If you need to use pipeline functionality, please consider using `greptimedb_logs` sink.
 
+### Using OTLP Protocol
+
+As of Vector v0.49.0, Vector has limited support for Log data. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.
+
 ## Writing Trace Data
 
-### Using OpenTelemetry Protocol (not recommended)
-
-Same reasons as **writing logs using OpenTelemetry**, we recommend using components like Alloy or Otlp-collector. This document is for demonstration only.
-
-#### Example
-
-```toml
-[sources.my_source_id]
-type = "opentelemetry"
-
-  [sources.my_source_id.grpc]
-  address = "0.0.0.0:4317"
-
-  [sources.my_source_id.http]
-  address = "0.0.0.0:4318"
-  headers = {}
-
-    [sources.my_source_id.http.keepalive]
-    max_connection_age_jitter_factor = 0.1
-    max_connection_age_secs = 300
-
-[transforms.remap_traces_1]
-inputs = ["my_source_id.traces"]
-type = "remap"
-source = """
-resource_spans = [{
-  "resource": {"attributes":[
-    {"key": "service.name", "value": {"string_value": .resources.service.name}},
-    {"key": "library", "value": {"string_value": .resources.library}},
-  ]},
-  "scope_spans": [{
-    "scope": {"name": "example-scope"},
-    "spans": [{
-      "span_id": .span_id,
-      "trace_id": .trace_id,
-      "name": .name,
-      "kind": .kind,
-      "start_time_unix_nano": to_unix_timestamp!(.start_time_unix_nano, unit: "nanoseconds"),
-      "end_time_unix_nano": to_unix_timestamp!(.end_time_unix_nano, unit: "nanoseconds"),
-      "attributes": [
-        { "key": "example.attr", "value": { "string_value": .attributes."example.attr" } },
-        { "key": "span.index", "value": { "int_value": .attributes."span.index" } }
-      ],
-      "events": [],
-      "links": [],
-      "parent_span_id": .parent_span_id,
-      "trace_state": .trace_state,
-      "status": {
-        "code": .status.code,
-        "message": .status.message
-      },
-      "dropped_attributes_count": .dropped_attributes_count,
-      "dropped_events_count": .dropped_events_count,
-      "dropped_links_count": .dropped_links_count,
-    }]
-  }]
-}]
-
-. = {
-  "resource_spans": resource_spans,
-}
-"""
-
-[sinks.emit_syslog]
-inputs = ["remap_traces"]
-type = "opentelemetry"
-
-[sinks.emit_syslog.protocol]
-type = "http"
-uri = "http://localhost:4000/v1/otlp/v1/traces"
-method = "post"
-
-[sinks.emit_syslog.protocol.encoding]
-codec = "protobuf"
-
-[sinks.emit_syslog.protocol.encoding.protobuf]
-message_type = "opentelemetry.proto.trace.v1.TracesData"
-desc_file = "opentelemetry.desc"
-
-[sinks.emit_syslog.protocol.framing]
-method = "bytes"
-
-[sinks.emit_syslog.protocol.request.headers]
-content-type = "application/x-protobuf"
-```
-
-The configuration for writing Traces via the OpenTelemetry protocol is largely the same as for writing Logs. Because trace data has a more complex format, a `remap` transform is usually required to reconstruct the data to meet OpenTelemetry's requirements. Adjust field mappings according to the actual scenario. However, the reconstruction process can be very complex and VRL's expressive power is limited, so it may not fully satisfy the requirements. For example, handling the `attributes` field often requires manual conversion and ensuring each attribute conforms to OpenTelemetry's expectations. Recursive conversions may also be needed, which VRL cannot handle.
+As of Vector v0.49.0, Vector has limited support for Trace data. It is recommended to use more fully-featured components such as Grafana Alloy or the OpenTelemetry Collector.
