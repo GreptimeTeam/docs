@@ -8,6 +8,11 @@ description: Overview of deploying GreptimeDB, including configuration, authenti
 GreptimeDB can be deployed and managed either on your own infrastructure or through GreptimeCloud.
 This guide provides an overview of deployment strategies, configuration, monitoring, and administration.
 
+## GreptimeDB Architecture
+
+Before diving into the deployment and administration of GreptimeDB,
+it's important to understand its [architecture](/user-guide/concepts/architecture.md).
+
 ## Self-Managed GreptimeDB Deployment
 
 This section outlines the key aspects of deploying and administering GreptimeDB in your own environment.
