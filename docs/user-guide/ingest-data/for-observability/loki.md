@@ -25,7 +25,7 @@ The request uses binary protobuf to encode the payload. The defined schema is th
 
 It supplies a Loki exporter that can be used to send logs to GreptimeDB. Here is an example configuration:
 
-```hcl
+```
 loki.source.file "greptime" {
   targets = [
     {__path__ = "/tmp/foo.txt"},

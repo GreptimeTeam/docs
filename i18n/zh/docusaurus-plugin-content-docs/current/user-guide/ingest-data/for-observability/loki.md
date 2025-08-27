@@ -25,7 +25,7 @@ description: 介绍如何使用 Loki 将日志数据发送到 GreptimeDB，包�
 
 它提供了一个 Loki 导出器，可以用来将日志发送到 GreptimeDB。以下是一个配置示例：
 
-```hcl
+```
 loki.source.file "greptime" {
   targets = [
     {__path__ = "/tmp/foo.txt"},
@@ -188,7 +188,7 @@ transform:
 **步骤 3：配置 Grafana Alloy**
 
 准备一个 Alloy 配置文件来读取日志文件并将其发送到 GreptimeDB：
-```hcl
+```
 loki.source.file "greptime" {
   targets = [
     {__path__ = "/logs.json"},
