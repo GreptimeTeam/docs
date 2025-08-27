@@ -183,6 +183,9 @@ transform:
     index: timestamp
 ```
 
+pipeline 的配置相对直观:我们使用 `vrl` 处理器将日志行解析为 JSON 对象，然后将其中的字段提取到根目录。
+`log_time` 在 transform 部分中被指定为时间索引，其他字段将由 pipeline 引擎自动推导，详见 [pipeline version 2](../../logs/pipeline-config.md#版本-2-中的-transform)。
+
 请注意，输入字段名为 `loki_line`，它包含来自 Loki 的原始日志行。
 
 **步骤 3：配置 Grafana Alloy**
@@ -210,11 +213,13 @@ loki.write "greptime_loki" {
 }
 ```
 
+在 `greptime_loki` 中，通过 `x-greptime-pipeline-name` 的 HTTP 头来指示输入数据需要被 pipeline 引擎处理。
+
 **步骤 4：部署和运行**
 
-1. 首先，启动您的 GreptimeDB 实例。
+1. 首先，启动您的 GreptimeDB 实例。参见[这里](../../../getting-started/installation/overview.md)快速启动。
 
-2. 上传 pipeline 配置：
+2. [上传](../../logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/pp" -F "file=@pipeline.yaml"
