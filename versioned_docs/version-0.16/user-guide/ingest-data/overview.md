@@ -5,6 +5,9 @@ description: Overview of data ingestion methods in GreptimeDB, including automat
 
 # Ingest Data
 
+GreptimeDB supports automatic schema generation and flexible data ingestion methods,
+enabling you to easily write data tailored to your specific scenarios.
+
 ## Automatic Schema Generation
 
 GreptimeDB supports schemaless writing, automatically creating tables and adding necessary columns as data is ingested.
