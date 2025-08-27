@@ -17,7 +17,7 @@ Admin API 是一个 HTTP 服务，提供一组可以通过 HTTP 请求调用的 
 
 所有这些 API 都在父资源 `/admin` 下。
 
-在以下部分中，我们假设你的 metasrv 实例运行在本地主机的 3002 端口。
+在以下部分中，我们假设你的 metasrv 实例运行在本地主机的 4000 端口。
 
 ## /health HTTP 端点
 
@@ -26,7 +26,7 @@ Admin API 是一个 HTTP 服务，提供一组可以通过 HTTP 请求调用的 
 ### 定义
 
 ```bash
-curl -X GET http://localhost:3002/admin/health
+curl -X GET http://localhost:4000/admin/health
 ```
 
 ### 示例
@@ -34,7 +34,7 @@ curl -X GET http://localhost:3002/admin/health
 #### 请求
 
 ```bash
-curl -X GET http://localhost:3002/admin/health
+curl -X GET http://localhost:4000/admin/health
 ```
 
 #### 响应
@@ -50,7 +50,7 @@ OK
 ### 定义
 
 ```bash
-curl -X GET http://localhost:3002/admin/leader
+curl -X GET http://localhost:4000/admin/leader
 ```
 
 ### 示例
@@ -58,13 +58,13 @@ curl -X GET http://localhost:3002/admin/leader
 #### 请求
 
 ```bash
-curl -X GET http://localhost:3002/admin/leader
+curl -X GET http://localhost:4000/admin/leader
 ```
 
 #### 响应
 
 ```json
-127.0.0.1:3002
+127.0.0.1:4000
 ```
 
 ## /heartbeat HTTP 端点
@@ -76,7 +76,7 @@ curl -X GET http://localhost:3002/admin/leader
 ### 定义
 
 ```bash
-curl -X GET http://localhost:3002/admin/heartbeat
+curl -X GET http://localhost:4000/admin/heartbeat
 ```
 
 | 查询字符串参数 | 类型   | 可选/必选 | 定义                |
@@ -88,7 +88,7 @@ curl -X GET http://localhost:3002/admin/heartbeat
 #### 请求
 
 ```bash
-curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
+curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
 ```
 
 #### 响应

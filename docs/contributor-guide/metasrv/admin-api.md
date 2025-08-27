@@ -6,7 +6,7 @@ description: Details the Admin API for Metasrv, including endpoints for health c
 # Admin API
 
 :::tip
-Note that all Admin API endpoints in this document listen on Metasrv's `RPC_PORT`, which defaults to `3002`.
+Note that all Admin API endpoints in this document listen on Metasrv's `HTTP_PORT`, which defaults to `4000`.
 :::
 
 The Admin API provides a simple way to view cluster information, including metasrv health detection, metasrv leader query, database metadata query, and datanode heartbeat detection.
@@ -21,7 +21,7 @@ Available APIs:
 
 All these APIs are under the parent resource `/admin`.
 
-In the following sections, we assume that your metasrv instance is running on localhost port 3002.
+In the following sections, we assume that your metasrv instance is running on localhost port 4000.
 
 ## /health HTTP endpoint  
 
@@ -30,7 +30,7 @@ The `/health` endpoint accepts GET HTTP requests and you can use this endpoint t
 ### Definition
 
 ```bash
-curl -X GET http://localhost:3002/admin/health
+curl -X GET http://localhost:4000/admin/health
 ```
 
 ### Examples
@@ -38,7 +38,7 @@ curl -X GET http://localhost:3002/admin/health
 #### Request
 
 ```bash
-curl -X GET http://localhost:3002/admin/health
+curl -X GET http://localhost:4000/admin/health
 ```
 
 #### Response
@@ -54,7 +54,7 @@ The `/leader` endpoint accepts GET HTTP requests and you can use this endpoint t
 ### Definition
 
 ```bash
-curl -X GET http://localhost:3002/admin/leader
+curl -X GET http://localhost:4000/admin/leader
 ```
 
 ### Examples
@@ -62,13 +62,13 @@ curl -X GET http://localhost:3002/admin/leader
 #### Request
 
 ```bash
-curl -X GET http://localhost:3002/admin/leader
+curl -X GET http://localhost:4000/admin/leader
 ```
 
 #### Response
 
 ```json
-127.0.0.1:3002
+127.0.0.1:4000
 ```
 
 ## /heartbeat HTTP endpoint
@@ -80,7 +80,7 @@ You can also query the heartbeat data of the datanode for a specified `addr`, ho
 ### Definition
 
 ```bash
-curl -X GET http://localhost:3002/admin/heartbeat
+curl -X GET http://localhost:4000/admin/heartbeat
 ```
 
 | Query String Parameter | Type   | Optional/Required | Definition                |
@@ -92,7 +92,7 @@ curl -X GET http://localhost:3002/admin/heartbeat
 #### Request
 
 ```bash
-curl -X GET 'http://localhost:3002/admin/heartbeat?addr=127.0.0.1:4100'
+curl -X GET 'http://localhost:4000/admin/heartbeat?addr=127.0.0.1:4100'
 ```
 
 #### Response

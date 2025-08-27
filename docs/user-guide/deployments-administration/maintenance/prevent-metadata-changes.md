@@ -26,14 +26,14 @@ Once enabled, the Metasrv will reject the following procedures (including but no
 You may see error messages if you or Metasrv try to perform these procedures after metadata changes are paused. For region procedures, you can enable [Cluster Maintenance Mode](/user-guide/deployments-administration/maintenance/maintenance-mode.md) to temporarily disable them.
 
 ## Managing Procedure Manager
-The Procedure Manager can be paused and resumed through Metasrv's HTTP interface at: `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/pause` and `http://{METASRV}:{RPC_PORT}/admin/procedure-manager/resume`. Note that this interface listens on Metasrv's `RPC_PORT`, which defaults to `3002`.
+The Procedure Manager can be paused and resumed through Metasrv's HTTP interface at: `http://{METASRV}:{HTTP_PORT}/admin/procedure-manager/pause` and `http://{METASRV}:{HTTP_PORT}/admin/procedure-manager/resume`. Note that this interface listens on Metasrv's `HTTP_PORT`, which defaults to `4000`.
 
 ### Pause Procedure Manager
 
 Pause Procedure Manager by sending a POST request to the `/admin/procedure-manager/pause` endpoint. 
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/procedure-manager/pause'
+curl -X POST 'http://localhost:4000/admin/procedure-manager/pause'
 ```
 
 The expected output is:
@@ -46,7 +46,7 @@ The expected output is:
 Resume Procedure Manager by sending a POST request to the `/admin/procedure-manager/resume` endpoint. 
 
 ```bash
-curl -X POST 'http://localhost:3002/admin/procedure-manager/resume'
+curl -X POST 'http://localhost:4000/admin/procedure-manager/resume'
 ```
 
 The expected output is:
@@ -59,7 +59,7 @@ The expected output is:
 Check Procedure Manager status by sending a GET request to the `/admin/procedure-manager/status` endpoint.
 
 ```bash
-curl -X GET 'http://localhost:3002/admin/procedure-manager/status'
+curl -X GET 'http://localhost:4000/admin/procedure-manager/status'
 ```
 
 The expected output is:
