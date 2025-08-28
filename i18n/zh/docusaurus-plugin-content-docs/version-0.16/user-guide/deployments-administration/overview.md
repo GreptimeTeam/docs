@@ -8,6 +8,10 @@ description: GreptimeDB 部署概述，包括配置项、鉴权、在 Kubernetes
 GreptimeDB 可以部署在你自己的基础设施上，也可以通过全托管云服务 GreptimeCloud 进行管理。
 本指南概述了部署策略、配置、监控和管理的相关内容。
 
+## GreptimeDB 架构
+
+在进行 GreptimeDB 的部署和管理之前，有必要了解其[架构](/user-guide/concepts/architecture.md)。
+
 ## 自托管 GreptimeDB 部署
 
 本节概述了自托管环境中部署和管理 GreptimeDB 的关键点。

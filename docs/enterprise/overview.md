@@ -16,10 +16,15 @@ GreptimeDB Enterprise solutions include:
 - **[Edge-Cloud Integrated Solution](https://greptime.com/product/carcloud)**: A comprehensive solution for managing time-series data from edge devices to the cloud, enabling real-time analytics and insights across your entire infrastructure.
 - Industry-specific solutions for the Internet of Things (IoT), observability, and more.
 
-
-This section provides an overview of the advanced features available in GreptimeDB Enterprise. For information on obtaining trial access or purchasing licenses, please [contact us](https://greptime.com/contactus).
-
 ## Features
+
+GreptimeDB Enterprise supports all features available in the open-source version,
+which you can read about in the [User Guide](/user-guide/overview.md) documentation.
+To understand the differences between the open-source and enterprise versions,
+please visit our [Pricing Page](https://greptime.com/pricing) or [contact us](https://greptime.com/contactus).
+
+GreptimeDB Enterprise includes the following advanced features,
+which are described in detail in the documentation in this section:
 
 - [Active-Active Failover Disaster Recovery Solution](./deployments-administration/disaster-recovery/overview.md): Ensure uninterrupted service and data protection with advanced disaster recovery solution.
 - [LDAP Authentication](./deployments-administration/authentication.md): Secure your system with LDAP-based authentication for access management.
@@ -32,7 +37,7 @@ This section provides an overview of the advanced features available in Greptime
   carries more cluster management and monitoring features.
 - [Read Replica](./read-replica.md): Read-only datanode instances for heavy query workloads such as
   analytical queries.
-- [Triggers](./trigger/overview.md): Periodically evaluate your rules and trigger external
+- [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
   webhook. Compatible with Prometheus AlterManager.
 - Reliability features for Flow.
 

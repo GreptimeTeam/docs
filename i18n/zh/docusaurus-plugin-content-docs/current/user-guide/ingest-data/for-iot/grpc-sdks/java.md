@@ -393,9 +393,37 @@ Ingester 公开全面的指标，使你能够监控其性能、健康状况和�
 
 有关可用指标及其使用的详细信息，请参考 [Ingester Prometheus Metrics](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-prometheus-metrics) 文档。
 
-## API 文档和示例
-- [API 参考](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
-- [示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/)
+## 主要配置选项
+
+`GreptimeOptions` 是 GreptimeDB Java 客户端的主要配置类，用于配置客户端连接、写入选项、RPC 设置和各种其他参数。
+
+对于生产环境，你可能需要配置这些常用选项。完整参考：[GreptimeOptions JavaDoc](https://javadoc.io/static/io.greptime/ingester-protocol/VAR::javaSdkVersion/io/greptime/options/GreptimeOptions.html)。
+
+**主要选项：**
+- `database`：目标数据库名称，格式为 `[catalog-]schema`（默认值：`public`）
+- `authInfo`：生产环境的身份验证凭据
+- `rpcOptions.defaultRpcTimeout`：RPC 请求超时时间（默认值：60 秒）
+- `writeMaxRetries`：写入失败时的最大重试次数（默认值：1）
+- `maxInFlightWritePoints`：写入流控制的最大在途数据点数（默认值：655360）
+- `writeLimitedPolicy`：写入流量限制超出时的策略（默认值：AbortOnBlockingTimeoutPolicy 3秒）
+- `defaultStreamMaxWritePointsPerSecond`：StreamWriter 的速率限制（默认值：655360）
+
+```java
+// Production-ready configuration
+RpcOptions rpcOpts = RpcOptions.newDefault();
+rpcOpts.setDefaultRpcTimeout(30000);  // 30 seconds timeout
+
+AuthInfo authInfo = new AuthInfo("username", "password");
+
+GreptimeOptions options = GreptimeOptions.newBuilder("127.0.0.1:4001", "production_db")
+    .authInfo(authInfo)
+    .rpcOptions(rpcOpts)
+    .writeMaxRetries(3)
+    .maxInFlightWritePoints(1000000)
+    .writeLimitedPolicy(new LimitedPolicy.AbortOnBlockingTimeoutPolicy(5, TimeUnit.SECONDS))
+    .defaultStreamMaxWritePointsPerSecond(50000)
+    .build();
+```
 
 ## FAQ
 
@@ -453,6 +481,6 @@ GreptimeDB 服务器正在运行，并且其端点可达时。
   </project>
   ```
 
-## Ingester 库参考
-
-- [API 文档](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+## API 文档和示例
+- [API 参考](https://javadoc.io/doc/io.greptime/ingester-protocol/latest/index.html)
+- [示例](https://github.com/GreptimeTeam/greptimedb-ingester-java/tree/main/ingester-example/)

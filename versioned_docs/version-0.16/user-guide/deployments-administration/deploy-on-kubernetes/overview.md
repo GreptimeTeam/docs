@@ -36,7 +36,7 @@ including installation and upgrades.
 
 ## Advanced Deployments
 
-After familiarizing yourself with [the architecture and components of GreptimeDB](/user-guide/deployments-administration/architecture.md), you can explore advanced deployment scenarios:
+After familiarizing yourself with [the architecture and components of GreptimeDB](/user-guide/concepts/architecture.md), you can explore advanced deployment scenarios:
 
 - [Deploy GreptimeDB Cluster with Remote WAL](configure-remote-wal.md): Configure Kafka as a remote write-ahead log (WAL) for your GreptimeDB cluster to persistently record every data modification and ensure no loss of memory-cached data.
 - [Use MySQL/PostgreSQL as Metadata Store](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage): Integrate MySQL/PostgreSQL databases to provide robust metadata storage capabilities for enhanced reliability and performance.

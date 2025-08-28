@@ -169,6 +169,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/streamlit',
             'user-guide/integrations/mindsdb',
             'user-guide/integrations/fluent-bit',
+            'user-guide/integrations/coroot',
+            'user-guide/integrations/mcp',
           ],
         },
         {
@@ -269,7 +271,6 @@ const sidebars: SidebarsConfig = {
               id: 'user-guide/deployments-administration/overview',
               label: 'Overview',
             },
-            'user-guide/deployments-administration/architecture',
             {
               type: 'category',
               label: 'Kubernetes',
@@ -389,9 +390,12 @@ const sidebars: SidebarsConfig = {
               label: 'Maintenance',
               items: [
                 'user-guide/deployments-administration/maintenance/maintenance-mode',
+                'user-guide/deployments-administration/maintenance/recovery-mode',
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
+                'user-guide/deployments-administration/maintenance/sequence-management',
               ]
             },
+            'user-guide/deployments-administration/troubleshooting',
             'user-guide/deployments-administration/run-on-android',
             'user-guide/deployments-administration/upgrade',
           ],
@@ -514,6 +518,12 @@ const sidebars: SidebarsConfig = {
           label: 'Deployments & Administration',
           items: [
             {
+              type: 'doc',
+              id: 'enterprise/deployments-administration/overview',
+              label: 'Overview',
+
+            },
+            {
               type: 'category',
               label: 'Kubernetes',
               items: [
@@ -555,8 +565,6 @@ const sidebars: SidebarsConfig = {
               ]
             },
             'enterprise/deployments-administration/backup',
-            'enterprise/deployments-administration/performance-tuning',
-            'enterprise/deployments-administration/troubleshooting',
           ],
         },
         {
@@ -565,20 +573,13 @@ const sidebars: SidebarsConfig = {
           items: ['enterprise/autopilot/region-balancer'],
         },
         'enterprise/read-replica',
+        'enterprise/trigger',
         {
           type: 'category',
           label: 'Releases',
           items: [
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
-          ]
-        },
-        {
-          type: 'category',
-          label: 'Trigger',
-          items: [
-            'enterprise/trigger/overview',
-			'enterprise/trigger/quick-start',
           ]
         },
       ],
@@ -648,6 +649,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/truncate',
             'reference/sql/where',
             'reference/sql/with',
+            'reference/sql/trigger-syntax',
             {
               type: 'category',
               label: 'Functions',

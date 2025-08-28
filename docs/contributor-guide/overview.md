@@ -11,7 +11,7 @@ DeepWiki provides a detailed and clear explanation of GreptimeDB's architecture 
 
 ## Architecture
 
-For the architecture and components of GreptimeDB, please see the [Architecture](/user-guide/deployments-administration/architecture.md) document in the user guide.
+For the architecture and components of GreptimeDB, please see the [Architecture](/user-guide/concepts/architecture.md) document in the user guide.
 
 For more details on each component, see the following guides:
 

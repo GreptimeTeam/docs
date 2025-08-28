@@ -38,6 +38,10 @@ remote_read:
 
 如果你使用 Grafana Alloy，请在 Alloy 配置文件（`config.alloy`）中配置 Remote Write。有关更多信息，请参阅 [Alloy 文档](alloy.md#prometheus-remote-write)。
 
+### Vector 配置文件
+
+如果你使用 Vector ，请在 Vector 配置文件（`vector.toml`）中配置 Remote Write。有关更多信息，请参阅 [Vector 文档](vector.md#使用-prometheus-remote-write-协议).
+
 ## 数据模型
 
 在 GreptimeDB 的[数据模型](/user-guide/concepts/data-model.md)中，数据被组织成具有 tag、time index 和 field 的表。

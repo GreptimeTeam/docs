@@ -17,15 +17,27 @@ Release date: August 06, 2025
 
 - **Observability Improvements**: Provides a panic logger, HTTP API to toggle heap profiling (enabled by default), and more verbose logs/metrics in `EXPLAIN ANALYZE VERBOSE` (#6633, #6593, #6575).
 
+### Breaking changes
+* [refactor: replace `pipeline::value` with `vrl::value`](https://github.com/GreptimeTeam/greptimedb/pull/6430)
+
+  If you used greptime_identity to write positive integer data before version 0.16.0, in the following two cases:
+
+  * Writing in nd-json format (vector greptimedb_logs sink),
+  * Writing in json format, with values in the range between i64::MAX and u64::MAX
+  
+  The integer type would be recognized as u64. After version 0.16.0, however, greptime_identity will recognize this data as i64 (please note not to write data greater than i64::MAX).
+  This may cause a mismatch between the written data and the table schema, or an overflow leading to write failures.
+  You can use `desc table_name` to confirm the actual data type.
+  You can directly modify the table structure to fix this issue, or use [Transform in version 2](https://docs.greptime.com/user-guide/logs/pipeline-config/#transform-in-version-2) for custom type conversion.
 ### 📊  Dashboard v0.10.6
 
-* Sidebar Personalization - Toggle sidebar visibility and adjust width with persistent user preference settings
-* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience
-* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance
+* Sidebar Controls – Toggle visibility from left menu and persist tables sidebar width.
+* Data View Fullscreen Mode - Query results can be displayed in fullscreen for enhanced data analysis experience.
+* Refactored Log/Trace View - Improved log and trace viewing functionality with better user interface and performance.
 
 ### 🚀 Features
 
-* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/grepÇtimedb/pull/6410)
+* feat: add `RegionId` to `FileId` by [@waynexia](https://github.com/waynexia) in [#6410](https://github.com/GreptimeTeam/greptimedb/pull/6410)
 * feat: move metasrv admin to http server while keep tonic for backward compatibility by [@lyang24](https://github.com/lyang24) in [#6466](https://github.com/GreptimeTeam/greptimedb/pull/6466)
 * feat(mito): replace `Memtable::iter` with `Memtable::ranges`  by [@v0y4g3r](https://github.com/v0y4g3r) in [#6549](https://github.com/GreptimeTeam/greptimedb/pull/6549)
 * feat: supports more db options by [@killme2008](https://github.com/killme2008) in [#6529](https://github.com/GreptimeTeam/greptimedb/pull/6529)

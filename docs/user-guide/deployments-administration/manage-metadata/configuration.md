@@ -14,7 +14,8 @@ GreptimeDB supports the following metadata storage backends:
 - **etcd**: The default and recommended backend for development and testing environments, offering simplicity and ease of setup
 - **MySQL/PostgreSQL**: Production-ready backend options that integrate well with existing database infrastructure and cloud RDS services
 
-If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) for more details.
+This documentation describes the TOML configuration for each backend. You can use these configurations when deploying GreptimeDB without Helm Chart.
+If you are using Helm Chart to deploy GreptimeDB, please refer to [Common Helm Chart Configurations](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#configuring-metasrv-backend-storage) for more details.
 
 ## Use etcd as metadata storage
 
@@ -29,6 +30,25 @@ backend = "etcd_store"
 # Store server addresses
 # You can specify multiple etcd endpoints for high availability
 store_addrs = ["127.0.0.1:2379"]
+
+[backend_tls]
+# - "disable" - No TLS
+# - "require" - Require TLS
+mode = "prefer"
+
+# Path to client certificate file (for client authentication)
+# Like "/path/to/client.crt"
+cert_path = ""
+
+# Path to client private key file (for client authentication)
+# Like "/path/to/client.key"
+key_path = ""
+
+# Path to CA certificate file (for server certificate verification)
+# Required when using custom CAs or self-signed certificates
+# Leave empty to use system root certificates only
+# Like "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 
 ### Best Practices
@@ -62,6 +82,8 @@ store_addrs = ["mysql://user:password@ip:port/dbname"]
 # Optional: Custom table name for storing metadata
 # Default: greptime_metakv
 meta_table_name = "greptime_metakv"
+
+# TLS is not supported for MySQL currently.
 ```
 
 When sharing a MySQL instance between multiple GreptimeDB clusters, you must set a unique `meta_table_name` for each GreptimeDB cluster to avoid metadata conflicts.
@@ -84,9 +106,37 @@ store_addrs = ["password=password dbname=postgres user=postgres host=localhost p
 # Default: greptime_metakv
 meta_table_name = "greptime_metakv"
 
+# Optional: The schema for metadata table and election table name.
+# In PostgreSQL 15 and later, the default public schema is restricted by default,
+# and non-superusers are no longer allowed to create tables in the public schema.
+# When encountering permission restrictions, use this parameter to specify a writable schema.
+meta_schema_name = "greptime_schema"
+
 # Optional: Advisory lock ID for election
 # Default: 1
 meta_election_lock_id = 1
+
+[backend_tls]
+# - "disable" - No TLS
+# - "prefer" (default) - Try TLS, fallback to plain
+# - "require" - Require TLS
+# - "verify_ca" - Require TLS and verify CA
+# - "verify_full" - Require TLS and verify hostname
+mode = "prefer"
+
+# Path to client certificate file (for client authentication)
+# Like "/path/to/client.crt"
+cert_path = ""
+
+# Path to client private key file (for client authentication)
+# Like "/path/to/client.key"
+key_path = ""
+
+# Path to CA certificate file (for server certificate verification)
+# Required when using custom CAs or self-signed certificates
+# Leave empty to use system root certificates only
+# Like "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 When sharing a PostgreSQL instance between multiple GreptimeDB clusters or with other applications, you must configure two unique identifiers to prevent conflicts:
 

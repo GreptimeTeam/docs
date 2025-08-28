@@ -21,8 +21,10 @@ provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 
 # WAL data pruning options
-auto_prune_interval = "0s"
+auto_prune_interval = "30m"
 auto_prune_parallelism = 10
+flush_trigger_size = "512MB"
+checkpoint_trigger_size = "128MB"
 
 # Topic creation options
 auto_create_topics = true
@@ -33,16 +35,19 @@ topic_name_prefix = "greptimedb_wal_topic"
 
 ### Options
 
-| Configuration Option     | Description                                                                              |
-| ------------------------ | ---------------------------------------------------------------------------------------- |
-| `provider`               | Set to "kafka" to enable Remote WAL via Kafka.                                           |
-| `broker_endpoints`       | List of Kafka broker addresses.                                                          |
-| `auto_prune_interval`    | Interval to automatically prune stale WAL data. Set to "0s" to disable.                  |
-| `auto_prune_parallelism` | Maximum number of concurrent pruning tasks.                                              |
-| `auto_create_topics`     | Whether to automatically create Kafka topics. If false, topics must be created manually. |
-| `num_topics`             | Number of Kafka topics used for WAL.                                                     |
-| `replication_factor`     | Kafka replication factor for each topic.                                                 |
-| `topic_name_prefix`      | Prefix for Kafka topic names. Must match regex `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`.        |
+| Configuration Option        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Configuration Option        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `provider`                 | The WAL provider to use. Set to `"kafka"` to enable Remote WAL with Kafka.                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `broker_endpoints`         | List of Kafka broker addresses to connect to. Example: `["kafka.kafka-cluster.svc:9092"]`.                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `auto_prune_interval`      | How often to automatically prune (delete) stale WAL data. Specify as a duration string (e.g., `"30m"`). Set to `"0s"` to disable automatic pruning.                                                                                                                                                                                                                                                                                                                                             |
+| `auto_prune_parallelism`   | Maximum number of concurrent pruning tasks. Increasing this value may speed up pruning but will use more resources.                                                                                                                                                                                                                                                                                                                                                                              |
+| `auto_create_topics`       | If `true`, Metasrv will automatically create required Kafka topics. If `false`, you must manually create all topics before starting Metasrv.                                                                                                                                                                                                                                                                                                                                                    |
+| `num_topics`               | Number of Kafka topics to use for WAL storage. More topics can improve scalability and performance.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `replication_factor`       | Replication factor for Kafka topics. Determines how many Kafka brokers will store copies of each topic's data.                                                                                                                                                                                                                                                                                                                                            |
+| `topic_name_prefix`        | Prefix for Kafka topic names. WAL topics will be named as `{topic_name_prefix}_{index}` (e.g., `greptimedb_wal_topic_0`). The prefix must match the regex `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`.                                                                                                                                                                                                                                                               |
+| `flush_trigger_size`       | Estimated size threshold (e.g., `"512MB"`) for triggering a flush operation in a region. Calculated as `(latest_entry_id - flushed_entry_id) * avg_record_size`. When this value exceeds `flush_trigger_size`, MetaSrv initiates a flush. Set to `"0"` to let the system automatically determine the flush trigger size. This also controls the maximum replay size from a topic during region replay; using a smaller value can help reduce region replay time during Datanode startup.                |
+| `checkpoint_trigger_size`  | Estimated size threshold (e.g., `"128MB"`) for triggering a checkpoint operation in a region. Calculated as `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`. When this value exceeds `checkpoint_trigger_size`, MetaSrv initiates a checkpoint. Set to `"0"` to let the system automatically determine the checkpoint trigger size. Using a smaller value can help reduce region replay time during Datanode startup.                                                        |
 
 #### Topic Setup and Kafka Permissions 
 

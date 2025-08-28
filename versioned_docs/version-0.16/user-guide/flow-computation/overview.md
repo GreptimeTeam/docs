@@ -41,7 +41,7 @@ To optimize performance for counting the `user_agent` field,
 specify it as a `TAG` column type using the `PRIMARY KEY` keyword.
 
 ```sql
-CREATE TABLE ngx_access_log (
+CREATE TABLE ngx_http_log (
   ip_address STRING,
   http_method STRING,
   request STRING,
@@ -69,7 +69,7 @@ CREATE TABLE user_agent_statistics (
 );
 ```
 
-Finally, create the Flow `user_agent_flow` to count the occurrences of each user agent in the `nginx_access_log` table.
+Finally, create the Flow `user_agent_flow` to count the occurrences of each user agent in the `ngx_http_log` table.
 
 ```sql
 CREATE FLOW user_agent_flow
@@ -79,19 +79,19 @@ SELECT
   user_agent,
   COUNT(user_agent) AS total_count
 FROM
-  ngx_access_log
+  ngx_http_log
 GROUP BY
   user_agent;
 ```
 
 Once the Flow is created,
-the Flow engine will continuously process data from the `ngx_access_log` table and update the `user_agent_statistics` table with the computed results.
+the Flow engine will continuously process data from the `ngx_http_log` table and update the `user_agent_statistics` table with the computed results.
 
 To observe the results,
-insert sample data into the `ngx_access_log` table.
+insert sample data into the `ngx_http_log` table.
 
 ```sql
-INSERT INTO ngx_access_log
+INSERT INTO ngx_http_log
 VALUES
   ('192.168.1.1', 'GET', '/index.html', 200, 512, 'Mozilla/5.0', 1024, '2023-10-01T10:00:00Z'),
   ('192.168.1.2', 'POST', '/submit', 201, 256, 'curl/7.68.0', 512, '2023-10-01T10:01:00Z'),
