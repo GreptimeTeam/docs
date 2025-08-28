@@ -18,8 +18,10 @@ provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 
 # WAL 数据清理策略
-auto_prune_interval = "0s"
+auto_prune_interval = "30m"
 auto_prune_parallelism = 10
+flush_trigger_size = "512MB"
+checkpoint_trigger_size = "128MB"
 
 # Topic 自动创建配置
 auto_create_topics = true
@@ -30,16 +32,18 @@ topic_name_prefix = "greptimedb_wal_topic"
 
 ### 配置
 
-| 配置项                   | 说明                                                                   |
-| ------------------------ | ---------------------------------------------------------------------- |
-| `provider`               | 设置为 `"kafka"` 以启用 Remote WAL。                                   |
-| `broker_endpoints`       | Kafka broker 的地址列表。                                              |
-| `auto_prune_interval`    | 自动清理过期 WAL 的间隔时间，设为 `"0s"` 表示禁用。                    |
-| `auto_prune_parallelism` | 并发清理任务的最大数量。                                               |
-| `auto_create_topics`     | 是否自动创建 Kafka topic，设为 `false` 时需手动预创建。                |
-| `num_topics`             | 用于存储 WAL 的 Kafka topic 数量。                                     |
-| `replication_factor`     | 每个 topic 的副本数量。                                                |
-| `topic_name_prefix`      | Kafka topic 名称前缀，必须匹配正则 `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`。 |
+| 配置项                     | 说明                                                                                                                                                                                                                                                                                                                                                      |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `provider`                 | 设置为 `"kafka"` 以启用 Remote WAL。                                                                                                                                                                                                                                                                                                                     |
+| `broker_endpoints`         | Kafka broker 的地址列表。                                                                                                                                                                                                                                                                                                                               |
+| `auto_prune_interval`      | 自动清理过期 WAL 的间隔时间，设为 `"0s"` 表示禁用。                                                                                                                                                                                                                                                               |
+| `auto_prune_parallelism`   | 并发清理任务的最大数量。                                                                                                                                                                                                                                                                                         |
+| `auto_create_topics`       | 是否自动创建 Kafka topic，设为 `false` 时需手动预创建。                                                                                                                                                                                                                                                           |
+| `num_topics`               | 用于存储 WAL 的 Kafka topic 数量。                                                                                                                                                                                                                                                                                |
+| `replication_factor`       | 每个 topic 的副本数量。                                                                                                                                                                                                                                                                                           |
+| `topic_name_prefix`        | Kafka topic 名称前缀，必须匹配正则 `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`。                                                                                                                                                                                                                                            |
+| `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
+| `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
 
 #### Kafka Topic 与权限要求
 
