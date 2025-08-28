@@ -84,10 +84,10 @@ DESC loki_demo_logs;
 - `greptime_timestamp`: 日志条目的时间戳
 - `line`: 日志消息内容
 
-如果你指定了 label，它们将作为 tag 添加到表结构中（如上例中的 `job` 和 `from`）。
+如果 Loki 请求数据中含有 label，它们将作为 tag 添加到表结构中（如上例中的 `job` 和 `from`）。
 
 **重要说明：**
-- 您不能手动指定 label；所有 label 都被视为字符串类型的 tag
+- 所有 label 都被视为字符串类型的 tag
 - 请不要尝试使用 SQL 预先创建表来指定 tag 列，这会导致类型不匹配和写入失败
 
 ### 表结构示例

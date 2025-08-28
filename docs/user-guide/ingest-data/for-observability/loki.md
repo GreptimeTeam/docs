@@ -84,10 +84,10 @@ DESC loki_demo_logs;
 - `greptime_timestamp`: The timestamp of the log entry
 - `line`: The log message content
 
-If you specify external labels, they will be added as tags to the table schema (like `job` and `from` in the above example).
+If the Loki Push request contains labels, they will be added as tags to the table schema (like `job` and `from` in the above example).
 
 **Important notes:**
-- You cannot specify tags manually; all labels are treated as tags with string type
+- All labels are treated as tags with string type
 - Do not attempt to pre-create the table using SQL to specify tag columns, as this will cause a type mismatch and write failure
 
 ### Example Table Schema
