@@ -18,7 +18,6 @@ In GreptimeDB:
 - When creating a new table, the system assigns ID 1004 to the new table and updates the `next table ID` to 1005
 - If during backup restoration, the `next table ID` is still 1002, it would conflict with existing table IDs 1002 and 1003 (you would encounter the error `Region 1024 is corrupted, reason: ` when starting the Datanode)
 
-:::warning
 
 Under normal circumstances, resource IDs are automatically maintained by the database and require no manual intervention. However, in certain special scenarios (such as restoring a cluster from metadata backup where new tables were created after the backup), the `next table ID` in the backup may lag behind the actual cluster state, requiring manual adjustment.
 
@@ -27,7 +26,6 @@ Under normal circumstances, resource IDs are automatically maintained by the dat
 2. Get the current `next table ID` via API (see interface description below)
 3. If the maximum existing table ID is greater than or equal to the current `next table ID`, you need to manually set the `next table ID` to a larger value, typically the maximum existing table ID plus 1.
 
-:::
 
 
 You can get or set the `next table ID` using Metasrv's HTTP interface at the following endpoints: `http://{METASRV}:{HTTP_PORT}/admin/sequence/table/next-id` (to get) and `http://{METASRV}:{HTTP_PORT}/admin/sequence/table/set-next-id` (to set). This interface listens on Metasrv's `HTTP_PORT`, which defaults to `4000`.

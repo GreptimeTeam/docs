@@ -19,7 +19,6 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
 - 当创建新表时，系统分配 ID 1004 给新表，并将`待分配表 ID`更新为 1005
 - 如果从备份恢复时，`待分配表 ID`仍然是 1002，就会与现有表 ID 1002、1003 产生冲突（通常你会在 Datanode 启动时遇到 `Region 1024 is corrupted, reason: ` 的错误）
 
-:::warning
 
 通常情况下，资源标识（ID）由数据库自动维护，无需人工干预。但在某些特殊场景下（如从元数据备份恢复集群，且备份后集群又创建了新表），备份中的`待分配表 ID`可能已经落后于实际集群状态，此时需要手动调整。
 
@@ -28,7 +27,6 @@ description: 介绍如何维护和更新 GreptimeDB 集群中的资源标识（I
 2. 通过 API 获取当前的`待分配表 ID`（见下方接口说明）
 3. 如果现有表 ID 的最大值大于等于当前的`待分配表 ID`，则需要手动设置`待分配表 ID`为一个更大的值。通常为现有表 ID 的最大值加 1。
 
-:::
 
 你可以通过 Metasrv 的 HTTP 接口获取或设置`待分配的表 ID`：`http://{METASRV}:{HTTP_PORT}/admin/sequence/table/next-id`（获取）和 `http://{METASRV}:{HTTP_PORT}/admin/sequence/table/set-next-id`（设置）。请注意，此接口监听 Metasrv 的 `HTTP_PORT`，默认为 `4000`。
 
