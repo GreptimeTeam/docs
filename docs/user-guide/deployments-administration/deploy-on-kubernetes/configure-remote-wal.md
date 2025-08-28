@@ -43,7 +43,7 @@ meta:
     provider = "kafka"
     replication_factor = 1
     topic_name_prefix = "gtp_greptimedb_wal_topic"
-    auto_prune_interval = "300s"
+    auto_prune_interval = "30m"
 datanode:
   configData: |
     [wal]

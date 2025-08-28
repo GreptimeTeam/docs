@@ -585,7 +585,7 @@ meta:
     [wal]
     provider = "kafka"
     replication_factor = 1
-    auto_prune_interval = "300s"
+    auto_prune_interval = "30m"
 datanode:
   configData: |
     [wal]
