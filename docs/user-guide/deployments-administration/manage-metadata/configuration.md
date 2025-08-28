@@ -106,6 +106,12 @@ store_addrs = ["password=password dbname=postgres user=postgres host=localhost p
 # Default: greptime_metakv
 meta_table_name = "greptime_metakv"
 
+# Optional: The schema for metadata table and election table name.
+# In PostgreSQL 15 and later, the default public schema is restricted by default,
+# and non-superusers are no longer allowed to create tables in the public schema.
+# When encountering permission restrictions, use this parameter to specify a writable schema.
+meta_schema_name = "greptime_schema"
+
 # Optional: Advisory lock ID for election
 # Default: 1
 meta_election_lock_id = 1
