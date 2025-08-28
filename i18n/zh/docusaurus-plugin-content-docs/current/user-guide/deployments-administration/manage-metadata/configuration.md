@@ -30,6 +30,25 @@ backend = "etcd_store"
 # 存储服务器地址
 # 可以指定多个 etcd 端点以实现高可用性
 store_addrs = ["127.0.0.1:2379"]
+
+[backend_tls]
+# - "disable" - 不使用 TLS
+# - "require" - 要求 TLS
+mode = "prefer"
+
+# 客户端证书文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.crt"
+cert_path = ""
+
+# 客户端私钥文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.key"
+key_path = ""
+
+# CA 证书文件路径（用于服务器证书验证）
+# 使用自定义 CA 或自签名证书时必需
+# 留空则仅使用系统根证书
+# 例如 "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 
 ### 最佳实践
@@ -41,9 +60,9 @@ store_addrs = ["127.0.0.1:2379"]
 - 在不同可用区部署多个端点以实现高可用性
 - 配置适当的自动压缩设置以管理存储增长
 - 实施定期维护程序：
-- 定期运行 `Defrag` 命令以回收磁盘空间
-- 监控 etcd 集群健康指标
-- 根据使用模式审查和调整资源限制
+  - 定期运行 `Defrag` 命令以回收磁盘空间
+  - 监控 etcd 集群健康指标
+  - 根据使用模式审查和调整资源限制
 
 
 ## 使用 MySQL 作为元数据存储
@@ -63,6 +82,8 @@ store_addrs = ["mysql://user:password@ip:port/dbname"]
 # 可选：自定义元数据存储表名
 # 默认值: greptime_metakv
 meta_table_name = "greptime_metakv"
+
+# MySQL 暂不支持 TLS。
 ```
 
 当多个 GreptimeDB 集群共享同一个 MySQL 实例时，必须为每个 GreptimeDB 集群设置一个唯一的 `meta_table_name` 以避免元数据冲突。
@@ -88,6 +109,28 @@ meta_table_name = "greptime_metakv"
 # 可选: 用于选举的 Advisory lock ID
 # 默认值: 1
 meta_election_lock_id = 1
+
+[backend_tls]
+# - "disable" - 不使用 TLS
+# - "prefer" (默认) - 尝试 TLS，失败时回退到明文连接
+# - "require" - 要求 TLS
+# - "verify_ca" - 要求 TLS 并验证 CA
+# - "verify_full" - 要求 TLS 并验证主机名
+mode = "prefer"
+
+# 客户端证书文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.crt"
+cert_path = ""
+
+# 客户端私钥文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.key"
+key_path = ""
+
+# CA 证书文件路径（用于服务器证书验证）
+# 使用自定义 CA 或自签名证书时必需
+# 留空则仅使用系统根证书
+# 例如 "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 当多个 GreptimeDB 集群共享同一个 PostgreSQL 实例或与其他应用程序共享时，必须配置两个唯一标识符以防止冲突：
 
