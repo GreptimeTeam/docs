@@ -84,7 +84,7 @@ DESC loki_demo_logs;
 - `greptime_timestamp`: 日志条目的时间戳
 - `line`: 日志消息内容
 
-如果您指定了 label，它们将作为 tag 添加到表结构中（如上例中的 `job` 和 `from`）。
+如果你指定了 label，它们将作为 tag 添加到表结构中（如上例中的 `job` 和 `from`）。
 
 **重要说明：**
 - 您不能手动指定 label；所有 label 都被视为字符串类型的 tag
@@ -136,7 +136,7 @@ WITH(
 :::
 
 从 `v0.15` 版本开始，GreptimeDB 支持使用 pipeline 来处理 Loki Push 请求。
-您可以简单地设置 HTTP 头 `x-greptime-pipeline-name` 为目标 pipeline 名称来启用 pipeline 处理。
+你可以简单地设置 HTTP 头 `x-greptime-pipeline-name` 为目标 pipeline 名称来启用 pipeline 处理。
 
 **注意：** 当请求数据通过 pipeline 引擎时，GreptimeDB 会为 label 和元数据列名添加前缀：
 - 每个 label 名前添加 `loki_label_` 前缀
@@ -183,8 +183,8 @@ transform:
     index: timestamp
 ```
 
-pipeline 的配置相对直观:我们使用 `vrl` 处理器将日志行解析为 JSON 对象，然后将其中的字段提取到根目录。
-`log_time` 在 transform 部分中被指定为时间索引，其他字段将由 pipeline 引擎自动推导，详见 [pipeline version 2](../../logs/pipeline-config.md#版本-2-中的-transform)。
+pipeline 的配置相对直观: 使用 `vrl` 处理器将日志行解析为 JSON 对象，然后将其中的字段提取到根目录。
+`log_time` 在 transform 部分中被指定为时间索引，其他字段将由 pipeline 引擎自动推导，详见 [pipeline version 2](/user-guide/logs/pipeline-config.md#版本-2-中的-transform)。
 
 请注意，输入字段名为 `loki_line`，它包含来自 Loki 的原始日志行。
 
@@ -213,13 +213,13 @@ loki.write "greptime_loki" {
 }
 ```
 
-在 `greptime_loki` 中，通过 `x-greptime-pipeline-name` 的 HTTP 头来指示输入数据需要被 pipeline 引擎处理。
+在 `greptime_loki` 中，通过 `x-greptime-pipeline-name` 的 HTTP 头来指示写入的数据需要被 pipeline 引擎处理。
 
 **步骤 4：部署和运行**
 
-1. 首先，启动您的 GreptimeDB 实例。参见[这里](../../../getting-started/installation/overview.md)快速启动。
+1. 首先，启动你的 GreptimeDB 实例。参见[这里](/getting-started/installation/overview.md)快速启动。
 
-2. [上传](../../logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
+2. [上传](/user-guide/logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/pp" -F "file=@pipeline.yaml"

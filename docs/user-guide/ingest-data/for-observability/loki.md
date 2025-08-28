@@ -183,8 +183,8 @@ transform:
     index: timestamp
 ```
 
-The pipeline content is straightforward: we use `vrl` processor to parse the line into a JSON object, than extract the fields to the root level.
-`log_time` is specified as the time index in the transform section, other fields will be auto-inferred by the pipeline engine, see [pipeline version 2](../../logs/pipeline-config.md#transform-in-version-2) for details.
+The pipeline content is straightforward: we use `vrl` processor to parse the line into a JSON object, then extract the fields to the root level.
+`log_time` is specified as the time index in the transform section, other fields will be auto-inferred by the pipeline engine, see [pipeline version 2](/user-guide/logs/pipeline-config.md#transform-in-version-2) for details.
 
 Note that the input field name is `loki_line`, which contains the original log line from Loki.
 
@@ -217,9 +217,9 @@ In the `greptime_loki`, the `x-greptime-pipeline-name` header is added to indica
 
 **Step 4: Deploy and run**
 
-1. First, start your GreptimeDB instance. See [here](../../../getting-started/installation/overview.md) for quick startup.
+1. First, start your GreptimeDB instance. See [here](/getting-started/installation/overview.md) for quick startup.
 
-2. [Upload](../../logs/manage-pipelines.md#create-a-pipeline) the pipeline configuration to the database using `curl`:
+2. [Upload](/user-guide/logs/manage-pipelines.md#create-a-pipeline) the pipeline configuration to the database using `curl`:
 
 ```bash
 curl -X "POST" "http://localhost:4000/v1/events/pipelines/pp" -F "file=@pipeline.yaml"
