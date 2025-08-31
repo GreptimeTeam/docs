@@ -87,17 +87,8 @@ SELECT collect as label_collector, host as label_host, val
 [interval-type](/reference/sql/data-types.md#interval-type)。
 
 :::warning IMPORTANT
-- `Years` and `months` are prohibited in interval expressions. Because the
-    duration of a month or year is variable and depends on the specific month 
-    or year,
-- The minimum interval is 1 second. Any interval specified less than 1 second 
-    will be automatically rounded up to 1 second.
-:::
-
-
-:::warning IMPORTANT
-- interval 表达式中禁止使用 `years` 和 `months`。因为月和年的时长是可变的，取决于
-    具体的月份或年份。
+- interval 表达式中禁止使用 `years` 和 `months`。月和年的时长是可变的，取决于
+    具体的月份或年份，因此不适合用来定义固定的间隔。
 - 最小间隔为 1 秒。任何小于 1 秒的间隔都会被自动向上取整为 1 秒。
 :::
 
