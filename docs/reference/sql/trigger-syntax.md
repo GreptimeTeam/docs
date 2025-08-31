@@ -91,6 +91,14 @@ The second notification will have the following labels and annotations:
 It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
 `'1 hour'::INTERVAL` etc. For more details, see [interval-type](/reference/sql/data-types.md#interval-type).
 
+:::warning IMPORTANT
+- `Years` and `months` are prohibited in interval expressions. Because the
+    duration of a month or year is variable and depends on the specific month 
+    or year,
+- The minimum interval is 1 second. Any interval specified less than 1 second 
+    will be automatically rounded up to 1 second.
+:::
+
 ### Labels and Annotations clauses
 
 The LABELS and ANNOTATIONS clauses allow you to attach static key-value pairs
