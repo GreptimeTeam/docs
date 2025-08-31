@@ -18,11 +18,15 @@ GreptimeDB 集群默认需要一个 etcd 集群用于[元数据存储](https://d
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=public.ecr.aws/i8k6a5e1 \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
 
@@ -32,12 +36,14 @@ helm upgrade --install etcd \
 ```bash
 helm install etcd \
   oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
+  --version VAR::etcdChartVersion \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set image.tag=3.5.12 \
+  --set image.tag=VAR::etcdImageVersion \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
+  --set global.security.allowInsecureImages=true \
   -n etcd-cluster
 ```
 :::
@@ -68,13 +74,17 @@ etcd 集群运行起来后，我们需要设置 initialClusterState 参数为 **
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --set initialClusterState="existing" \
   --set removeMemberOnContainerTermination=false \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=public.ecr.aws/i8k6a5e1 \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
 
@@ -106,7 +116,16 @@ kubectl -n etcd-cluster \
 添加以下配置，并将其命名为 `etcd-backup.yaml` 文件，注意需要将 **existingClaim** 修改为你的 NFS PVC 名称：
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: public.ecr.aws/i8k6a5e1
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -132,7 +151,7 @@ disasterRecovery:
 ```bash
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --create-namespace \
   -n etcd-cluster --values etcd-backup.yaml
 ```
@@ -207,7 +226,16 @@ db-2025-01-06_11-18  db-2025-01-06_11-20  db-2025-01-06_11-22
 添加以下配置文件，命名为 `etcd-restore.yaml`。注意，**existingClaim** 是你的 NFS PVC 的名字，**snapshotFilename** 为 etcd 快照文件名：
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: public.ecr.aws/i8k6a5e1
+  repository: bitnami/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -226,7 +254,7 @@ startFromSnapshot:
 ```bash
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --create-namespace \
   -n etcd-cluster --values etcd-restore.yaml
 ```
@@ -236,13 +264,17 @@ helm upgrade --install etcd-recover \
 ```bash
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --set initialClusterState="existing" \
   --set removeMemberOnContainerTermination=false \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=public.ecr.aws/i8k6a5e1 \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
 

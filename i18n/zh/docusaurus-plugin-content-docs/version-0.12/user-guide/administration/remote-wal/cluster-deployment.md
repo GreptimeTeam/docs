@@ -38,9 +38,14 @@ GreptimeDB 集群需要使用 etcd 集群来作为 metasrv 的后端存储。我
 ``` 
 kubectl create ns metasrv-store
 helm upgrade --install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+  --version VAR::etcdChartVersion
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=public.ecr.aws/i8k6a5e1 \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n metasrv-store
 ```
 

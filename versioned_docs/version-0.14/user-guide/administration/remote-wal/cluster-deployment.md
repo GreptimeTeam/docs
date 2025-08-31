@@ -37,9 +37,14 @@ The GreptimeDB cluster needs the etcd cluster as the backend storage of the meta
 ``` 
 kubectl create ns metasrv-store
 helm upgrade --install etcd oci://registry-1.docker.io/bitnamicharts/etcd \
+  --version VAR::etcdChartVersion
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=public.ecr.aws/i8k6a5e1 \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n metasrv-store
 ```
 

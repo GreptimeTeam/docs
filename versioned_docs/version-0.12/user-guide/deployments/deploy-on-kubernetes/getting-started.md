@@ -210,7 +210,7 @@ etcd can be accessed via port 2379 on the following DNS name from within your cl
 
 To create a pod that you can use as a etcd client run the following command:
 
-    kubectl run etcd-client --restart='Never' --image docker.io/bitnami/etcd:3.5.15-debian-12-r6 --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
+    kubectl run etcd-client --restart='Never' --image public.ecr.aws/i8k6a5e1/bitnami/etcd:3.5.15-debian-12-r6 --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
 
 Then, you can set/get a key using the commands below:
 

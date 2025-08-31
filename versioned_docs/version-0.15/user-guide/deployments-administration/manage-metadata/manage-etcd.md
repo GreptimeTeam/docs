@@ -18,10 +18,14 @@ The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://d
 Save the following configuration as a file `etcd.yaml`:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+    
 replicaCount: 3
 
 image:
-  registry: docker.io
+  registry: public.ecr.aws/i8k6a5e1
   repository: bitnami/etcd
   tag: VAR::etcdImageVersion
 
@@ -111,10 +115,14 @@ In the bitnami etcd chart, a shared storage volume Network File System (NFS) is 
 Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
 
 image:
-  registry: docker.io
+  registry: public.ecr.aws/i8k6a5e1
   repository: bitnami/etcd
   tag: VAR::etcdImageVersion
 
@@ -239,10 +247,14 @@ Before recovery, you need to stop writing data to the etcd cluster (stop Greptim
 Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your NFS PVC, and **snapshotFilename** is change to the etcd snapshot file name:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
 
 image:
-  registry: docker.io
+  registry: public.ecr.aws/i8k6a5e1
   repository: bitnami/etcd
   tag: VAR::etcdImageVersion
 
@@ -344,10 +356,14 @@ Restart GreptimeDB Metasrv to complete etcd restore.
 Add the following to your `etcd-monitoring.yaml` to enable monitoring:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
 
 image:
-  registry: docker.io
+  registry: public.ecr.aws/i8k6a5e1
   repository: bitnami/etcd
   tag: VAR::etcdImageVersion
 
@@ -428,10 +444,14 @@ ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multi
 Add the following defrag-related configuration to `etcd-defrag.yaml` file:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
 
 image:
-  registry: docker.io
+  registry: public.ecr.aws/i8k6a5e1
   repository: bitnami/etcd
   tag: VAR::etcdImageVersion
 
