@@ -66,7 +66,7 @@ Datanode 负责将数据写入 Kafka 并从中读取数据。
 ```toml
 [wal]
 provider = "kafka"
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 max_batch_bytes = "1MB"
 overwrite_entry_start_id = true
 ```
@@ -112,7 +112,7 @@ Kafka 的认证参数在 Metasrv 和 Datanode 的 `[wal]` 段中配置。
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.sasl]
 type = "SCRAM-SHA-512"
@@ -130,7 +130,7 @@ password = "secret"
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.tls]
 ```
@@ -141,7 +141,7 @@ broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.tls]
 server_ca_cert_path = "/path/to/server.crt"
@@ -153,7 +153,7 @@ server_ca_cert_path = "/path/to/server.crt"
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 [wal.tls]
 server_ca_cert_path = "/path/to/server_cert"
 client_cert_path = "/path/to/client_cert"
