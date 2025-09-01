@@ -85,6 +85,8 @@ kubectl get pods -n kafka-cluster
 ```bash
 NAME                 READY   STATUS    RESTARTS   AGE
 kafka-controller-0   1/1     Running   0          64s
+kafka-controller-1   1/1     Running   0          64s
+kafka-controller-2   1/1     Running   0          64s
 kafka-broker-0       1/1     Running   0          63s
 kafka-broker-1       1/1     Running   0          62s
 kafka-broker-2       1/1     Running   0          61s
