@@ -23,6 +23,9 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` to migrate regions between datanodes, please read the [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md).
 * `procedure_state(procedure_id)` to query a procedure state by its id.
 * `flush_flow(flow_name)` to flush a flow's output into the sink table.
+* `reconcile_table(table_name)` to reconcile the metadata inconsistency of a table, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
+* `reconcile_database(database_name)` to reconcile the metadata inconsistency of all tables in a database, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
+* `reconcile_catalog()` to reconcile the metadata inconsistency of all tables in the entire cluster, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
 
 For example:
 ```sql

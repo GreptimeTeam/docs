@@ -22,6 +22,9 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 * `migrate_region(region_id, from_peer, to_peer, [timeout])` 在 Datanode 之间迁移 Region，请阅读 [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md)。
 * `procedure_state(procedure_id)` 根据 ID 查询 Procedure 状态。
 * `flush_flow(flow_name)` 将 Flow 的输出刷新到目标接收表。
+* `reconcile_table(table_name)` 修复指定表的元数据不一致问题，详细信息请阅读 [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md)。
+* `reconcile_database(database_name)` 修复指定数据库中所有表的元数据不一致问题，详细信息请阅读 [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md)。
+* `reconcile_catalog()` 修复整个集群中所有表的元数据不一致问题，详细信息请阅读 [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md)。
 
 例如：
 ```sql
