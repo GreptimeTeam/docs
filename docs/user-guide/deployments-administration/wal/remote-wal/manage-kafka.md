@@ -17,34 +17,42 @@ The GreptimeDB cluster uses Kafka as the [Remote WAL](/user-guide/deployments-ad
 Save the following configuration as a file `kafka.yaml`:
 
 ```yaml
-global:
-  security:
-    allowInsecureImages: true
-
-image:
-  registry: docker.io
-  repository: greptime/kafka
-  tag: 3.9.0-debian-12-r12
-  
 controller:
-  replicaCount: 1
-  persistence:
-    enabled: true
-    size: 200Gi 
+  replicaCount: 3
+
   resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
+
+  persistence:
+    enabled: true
+    size: 200Gi
 
 broker:
-  replicaCount: 3 # Set to the number of brokers you want to deploy.
-  persistence:
-    enabled: true
-    size: 200Gi 
+  replicaCount: 3
+
   resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
+
+  persistence:
+    enabled: true
+    size: 200Gi
+
+listeners:
+  client:
+    # When deploying on production environment, you normally want to use a more secure protocol like SASL.
+    # Please refer to the chart's docs for the "how-to": https://artifacthub.io/packages/helm/bitnami/kafka#enable-security-for-kafka
+    # Here for the sake of example's simplicity, we use plaintext (no authentications).
+    protocol: plaintext
 ```
 
 Install Kafka cluster:
@@ -53,7 +61,7 @@ Install Kafka cluster:
 helm upgrade --install kafka \
     oci://registry-1.docker.io/bitnamicharts/kafka \
     --values kafka.yaml \
-    --version 31.5.0 \
+    --version 32.4.3 \
     --create-namespace \
     -n kafka-cluster
 ```
