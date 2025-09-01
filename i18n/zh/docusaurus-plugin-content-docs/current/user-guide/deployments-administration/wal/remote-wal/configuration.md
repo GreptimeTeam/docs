@@ -15,7 +15,7 @@ Metasrv 负责 Kafka topics 的管理及过期 WAL 数据的自动清理。
 ```toml
 [wal]
 provider = "kafka"
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 # WAL 数据清理策略
 auto_prune_interval = "30m"
