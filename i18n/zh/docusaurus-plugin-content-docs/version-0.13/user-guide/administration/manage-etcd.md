@@ -24,8 +24,8 @@ helm upgrade --install etcd \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
   --set global.security.allowInsecureImages=true \
-  --set image.registry=public.ecr.aws/i8k6a5e1 \
-  --set image.repository=bitnami/etcd \
+  --set image.registry=docker.io \
+  --set image.repository=greptime/etcd \
   --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
@@ -82,8 +82,8 @@ helm upgrade --install etcd \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
   --set global.security.allowInsecureImages=true \
-  --set image.registry=public.ecr.aws/i8k6a5e1 \
-  --set image.repository=bitnami/etcd \
+  --set image.registry=docker.io \
+  --set image.repository=greptime/etcd \
   --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
@@ -123,8 +123,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:
@@ -233,8 +233,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:

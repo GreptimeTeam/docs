@@ -186,8 +186,8 @@ helm install etcd \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
   --set global.security.allowInsecureImages=true \
-  --set image.registry=public.ecr.aws/i8k6a5e1 \
-  --set image.repository=bitnami/etcd \
+  --set image.registry=docker.io \
+  --set image.repository=greptime/etcd \
   --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
@@ -214,7 +214,7 @@ etcd can be accessed via port 2379 on the following DNS name from within your cl
 
 To create a pod that you can use as a etcd client run the following command:
 
-    kubectl run etcd-client --restart='Never' --image public.ecr.aws/i8k6a5e1/bitnami/etcd:VAR::etcdImageVersion --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
+    kubectl run etcd-client --restart='Never' --image greptime/etcd:VAR::etcdImageVersion --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
 
 Then, you can set/get a key using the commands below:
 

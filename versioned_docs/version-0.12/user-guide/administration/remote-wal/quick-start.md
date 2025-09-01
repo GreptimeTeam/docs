@@ -43,7 +43,7 @@ docker run \
   -e KAFKA_BROKER_ID="1" \
   -e KAFKA_CFG_LOG_DIRS="/bitnami/kafka/data" \
   -v $(pwd)/kafka-data:/bitnami/kafka/data \
-  public.ecr.aws/i8k6a5e1/bitnami/kafka:3.6.0
+  greptime/kafka:3.6.0
 ```
 
 :::tip NOTE

@@ -25,8 +25,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:
@@ -122,8 +122,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:
@@ -254,8 +254,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:
@@ -363,8 +363,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:
@@ -451,8 +451,8 @@ global:
 replicaCount: 3
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/etcd
+  registry: docker.io
+  repository: greptime/etcd
   tag: VAR::etcdImageVersion
 
 auth:

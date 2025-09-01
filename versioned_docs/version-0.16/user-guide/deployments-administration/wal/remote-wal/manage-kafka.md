@@ -22,8 +22,8 @@ global:
     allowInsecureImages: true
 
 image:
-  registry: public.ecr.aws/i8k6a5e1
-  repository: bitnami/kafka
+  registry: docker.io
+  repository: greptime/kafka
   tag: 3.9.0-debian-12-r12
   
 controller:
