@@ -7,9 +7,6 @@ description: GreptimeDB 企业版管理控制台提供集群状态、区域管�
 
 GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本，为企业用户提供更全面的集群可观测性与运维能力。
 
-:::tip NOTE
-管理控制台功能仅在 GreptimeDB 企业版中可用。
-:::
 
 ## 集群概览
 
