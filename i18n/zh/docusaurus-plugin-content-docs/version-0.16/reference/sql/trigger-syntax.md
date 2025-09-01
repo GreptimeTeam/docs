@@ -83,8 +83,12 @@ SELECT collect as label_collector, host as label_host, val
 #### Interval expression
 
 指定查询的执行间隔。它表示查询的执行频率。例如，`INTERVAL '1 minute'`、
-`INTERVAL '1 hour'` 等。更多细节，请参见
-[interval-type](/reference/sql/data-types.md#interval-type)。
+`INTERVAL '1 hour'` 等。
+
+- INTERVAL 表达式中**禁止**使用 `years` 和 `months`。月和年的时长是可变的，取决于具体的月份或年份，因此不适合用来定义固定的间隔。
+- 最小间隔为 1 秒。任何小于 1 秒的间隔都会被自动向上取整为 1 秒。
+
+有关 INTERVA L表达式的更多语法细节，请参见 [interval-type](/reference/sql/data-types.md#interval-type)。
 
 ### Labels 和 Annotations 子句
 
