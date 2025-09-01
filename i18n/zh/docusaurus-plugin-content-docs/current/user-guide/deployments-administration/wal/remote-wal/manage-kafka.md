@@ -18,34 +18,42 @@ GreptimeDB 集群在启用 [Remote WAL](/user-guide/deployments-administration/w
 将以下内容保存为配置文件 `kafka.yaml`：
 
 ```yaml
-global:
-  security:
-    allowInsecureImages: true
-
-image:
-  registry: docker.io
-  repository: greptime/kafka
-  tag: 3.9.0-debian-12-r12
-  
 controller:
-  replicaCount: 1
-  persistence:
-    enabled: true
-    size: 200Gi 
+  replicaCount: 3
+
   resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
+
+  persistence:
+    enabled: true
+    size: 200Gi
 
 broker:
-  replicaCount: 3 # 设置为你希望部署的 broker 数量
-  persistence:
-    enabled: true
-    size: 200Gi 
+  replicaCount: 3
+
   resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
     limits:
       cpu: 2
-      memory: 2G
+      memory: 2Gi
+
+  persistence:
+    enabled: true
+    size: 200Gi
+
+listeners:
+  client:
+    # 部署到生产环境时，通常会使用一个更安全的协议，例如 SASL。
+    # 请参考 chart 的文档获取配置方法：https://artifacthub.io/packages/helm/bitnami/kafka#enable-security-for-kafka
+    # 此处为了例子的简单，我们使用 plaintext 协议（无权限验证）。
+    protocol: plaintext
 ```
 
 安装 Kafka 集群：
@@ -54,7 +62,7 @@ broker:
 helm upgrade --install kafka \
     oci://registry-1.docker.io/bitnamicharts/kafka \
     --values kafka.yaml \
-    --version 31.5.0 \
+    --version 32.4.3 \
     --create-namespace \
     -n kafka-cluster
 ```
