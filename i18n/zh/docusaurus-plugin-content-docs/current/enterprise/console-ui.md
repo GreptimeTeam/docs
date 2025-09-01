@@ -12,7 +12,7 @@ GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本
 
 **Overview** 页面展示集群整体运行状态和资源使用情况。
 
-- **Service Overview**：CPU、内存、存储使用率；数据摄取速率；各协议请求速率。
+- **Service Overview**：CPU、内存、存储使用率；数据写入速率；各协议请求速率。
 - **Storage Overview**：数据库数、表数、区域数；Manifest、WAL、Index 文件大小。
 - **Cluster**：节点类型；节点运行状态与资源使用率。
 
