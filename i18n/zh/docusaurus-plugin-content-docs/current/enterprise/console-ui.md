@@ -20,12 +20,12 @@ GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本
 
 ## 运维操作
 
-**Region Management** 提供区域级别的运维能力。
+**Region Management** 提供 Region 级别的运维能力。
 
-- **Datanodes 视角**：查看各数据节点及区域详情，包括 Region ID、所属表、存储大小、WAL/Manifest/Index 占用、行数。
-- **Tables 视角**：按表查看区域分布，支持展开查看 Region 信息。
-- **区域维护**：支持 Flush 与 Compact。
-- **区域迁移**：将 Region 从一个节点迁移到另一个节点，支持超时配置和实时迁移状态展示。
+- **Datanodes 视角**：查看各数据节点及 Region 详情，包括 Region ID、所属表、存储大小、WAL/Manifest/Index 占用、行数。
+- **Tables 视角**：按表查看 Region 分布，支持展开查看 Region 信息。
+- **Region 维护**：支持 Flush 与 Compact。
+- **Region 迁移**：将 Region 从一个节点迁移到另一个节点，支持超时配置和实时迁移状态展示。
 
 ![Region Management - Datanodes](/enterprise-console-region-datanodes.png)
 
