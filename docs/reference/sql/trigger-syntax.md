@@ -89,15 +89,15 @@ The second notification will have the following labels and annotations:
 #### Interval expression
 
 It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
-`'1 hour'::INTERVAL` etc. For more details, see [interval-type](/reference/sql/data-types.md#interval-type).
+`'1 hour'::INTERVAL` etc.
 
-:::warning IMPORTANT
-- `Years` and `months` are prohibited in interval expressions. Because the
+- `Years` and `months` are **prohibited** in INTERVAL expressions. Because the
     duration of a month or year is variable and depends on the specific month 
     or year, it is not suitable for defining fixed intervals.
 - The minimum interval is 1 second. Any interval specified less than 1 second 
     will be automatically rounded up to 1 second.
-:::
+
+For more details about how to write INTERVAL time, see [interval-type](/reference/sql/data-types.md#interval-type).
 
 ### Labels and Annotations clauses
 
