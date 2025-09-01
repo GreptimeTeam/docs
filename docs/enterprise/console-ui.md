@@ -33,8 +33,7 @@ The **Overview** page displays the overall cluster status and resource usage.
 
 ## Data Management
 
-The **Data Management** page provides SQL queries, data ingestion, log queries, and trace analysis.  
-These features are consistent with the open-source Dashboard and Cloud Dashboard, and are not described in detail here.
+The **Data Management** page provides SQL/PromQL queries, data ingestion, logs queries, logs pipelines, traces queries, and Flow management. These features are consistent with the open-source dashboard and Cloud Dashboard.
 
 ## Monitoring
 

@@ -33,8 +33,7 @@ GreptimeDB 企业版管理控制台是标准 GreptimeDB 仪表板的增强版本
 
 ## 数据管理
 
-**Data Management** 页面提供 SQL 查询、数据写入、日志查询和链路追踪等功能。  
-这些功能与开源版 Dashboard 和 Cloud Dashboard 保持一致，此处不再展开说明。
+**Data Management** 页面提供 SQL/PromQL 查询、数据写入、日志查询、日志管道、链路追踪和 Flow 管理等功能。这些功能与开源版 Dashboard 和 Cloud Dashboard 保持一致，此处不再展开说明。
 
 ## 监控功能
 
