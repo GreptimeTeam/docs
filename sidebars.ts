@@ -393,6 +393,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/maintenance/recovery-mode',
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
                 'user-guide/deployments-administration/maintenance/sequence-management',
+                'user-guide/deployments-administration/maintenance/table-reconciliation',
               ]
             },
             'user-guide/deployments-administration/troubleshooting',
