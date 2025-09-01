@@ -416,9 +416,13 @@ TQL (Time Query Language) can be seamlessly integrated with Flow to perform adva
 First, let's create a source table to store HTTP request metrics:
 
 ```sql
-CREATE TABLE http_requests (
-  ts timestamp(3) time index,
-  val DOUBLE,
+CREATE TABLE http_requests_total (
+    host STRING,
+    job STRING,
+    instance STRING,
+    byte DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY (host, job, instance)
 );
 ```
 
@@ -426,11 +430,13 @@ This table will serve as the data source for our TQL-based Flow computations. Th
 
 ### Creating a Rate Calculation Flow
 
-Now we'll create a Flow that uses TQL to calculate the rate of change over time:
+Now we'll create a Flow that uses TQL to calculate the rate of `byte` over time:
 
 ```sql
-CREATE FLOW calc_rate SINK TO rate_reqs EVAL INTERVAL '1m' AS
-TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests[1m]);
+CREATE FLOW calc_rate 
+SINK TO rate_reqs 
+EVAL INTERVAL '1m' AS
+TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my_service"}[1m]);
 ```
 
 This Flow definition includes several key components:
@@ -448,18 +454,22 @@ SHOW CREATE TABLE rate_reqs;
 ```
 
 ```sql
-+-----------+------------------------------------------+
-| Table     | Create Table                             |
-+-----------+------------------------------------------+
-| rate_reqs | CREATE TABLE IF NOT EXISTS "rate_reqs" ( |
-|           |   "ts" TIMESTAMP(3) NOT NULL,            |
-|           |   "val" DOUBLE NULL,                     |
-|           |   TIME INDEX ("ts")                      |
-|           | )                                        |
-|           |                                          |
-|           | ENGINE=mito                              |
-|           |                                          |
-+-----------+------------------------------------------+
++-----------+-------------------------------------+
+| Table     | Create Table                        |
++-----------+-------------------------------------+
+| rate_reqs | CREATE TABLE IF NOT EXISTS `rate_reqs` (
+  `ts` TIMESTAMP(3) NOT NULL,
+  `prom_rate(ts_range,byte,ts,Int64(60000))` DOUBLE NULL,
+  `host` STRING NULL,
+  `job` STRING NULL,
+  `instance` STRING NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`host`, `job`, `instance`)
+)
+
+ENGINE=mito
+ |
++-----------+-------------------------------------+
 ```
 
 This shows how GreptimeDB automatically generates the appropriate schema for storing TQL computation results, creating a table with the same structure as the prom ql query result.
@@ -469,14 +479,12 @@ This shows how GreptimeDB automatically generates the appropriate schema for sto
 Let's insert some test data to see the Flow in action:
 
 ```sql
-INSERT INTO TABLE http_requests VALUES
-    (now() - '1m'::interval, 0),
-    (now() - '30s'::interval, 1),
-    (now(), 2);
-```
-
-```sql
-Affected Rows: 3
+INSERT INTO TABLE http_requests_total VALUES
+    ('localhost', 'my_service', 'instance1', 100, now() - INTERVAL '2' minute),
+    ('localhost', 'my_service', 'instance1', 200, now() - INTERVAL '1' minute),
+    ('remotehost', 'my_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('remotehost', 'their_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('localhost', 'my_service', 'instance1', 400, now());
 ```
 
 This creates a simple increasing sequence of values over time, which will produce a measurable rate when processed by our TQL Flow.
@@ -516,12 +524,12 @@ SELECT * FROM rate_reqs;
 ```
 
 ```sql
-+---------------------+----------------------+
-| ts                  | val                  |
-+---------------------+----------------------+
-| 2025-08-29 11:58:49 | 0.018665555555555553 |
-| 2025-08-29 11:59:19 |  0.03333333333333333 |
-+---------------------+----------------------+
++---------------------+------------------------------------------+-----------+------------+-----------+
+| ts                  | prom_rate(ts_range,byte,ts,Int64(60000)) | host      | job        | instance  |
++---------------------+------------------------------------------+-----------+------------+-----------+
+| 2025-09-01 13:14:34 |                        4.166666666666666 | localhost | my_service | instance1 |
+| 2025-09-01 13:15:04 |                        4.444444444444444 | localhost | my_service | instance1 |
++---------------------+------------------------------------------+-----------+------------+-----------+
 2 rows in set (0.03 sec)
 ```
 
