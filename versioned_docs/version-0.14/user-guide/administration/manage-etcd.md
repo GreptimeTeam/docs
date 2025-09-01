@@ -18,7 +18,16 @@ The GreptimeDB cluster requires an etcd cluster for [metadata storage](https://d
 Save the following configuration as a file `etcd.yaml`:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+    
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: greptime/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -56,6 +65,7 @@ Install etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd.yaml
 ```
@@ -105,7 +115,16 @@ In the bitnami etcd chart, a shared storage volume Network File System (NFS) is 
 Add the following configuration and name it `etcd-backup.yaml` file, Note that you need to modify **existingClaim** to your NFS PVC name:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: greptime/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -153,6 +172,7 @@ Redeploy etcd cluster:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-backup.yaml
 ```
@@ -227,7 +247,16 @@ Before recovery, you need to stop writing data to the etcd cluster (stop Greptim
 Add the following configuration file and name it `etcd-restore.yaml`. Note that **existingClaim** is the name of your NFS PVC, and **snapshotFilename** is change to the etcd snapshot file name:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: greptime/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -271,6 +300,7 @@ Deploy etcd recover cluster:
 helm upgrade --install etcd-recover \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-restore.yaml
 ```
@@ -326,7 +356,16 @@ Restart GreptimeDB Metasrv to complete etcd restore.
 Add the following to your `etcd-monitoring.yaml` to enable monitoring:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: greptime/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -375,6 +414,7 @@ Deploy etcd with Monitoring:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-monitoring.yaml
 ```
@@ -404,7 +444,16 @@ ETCD uses a multi-version concurrency control (MVCC) mechanism that stores multi
 Add the following defrag-related configuration to `etcd-defrag.yaml` file:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
 replicaCount: 3
+
+image:
+  registry: docker.io
+  repository: greptime/etcd
+  tag: VAR::etcdImageVersion
 
 auth:
   rbac:
@@ -451,6 +500,7 @@ Deploying with Defrag Configuration:
 helm upgrade --install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
   --create-namespace \
+  --version VAR::etcdChartVersion \
   -n etcd-cluster \
   --values etcd-defrag.yaml
 ```

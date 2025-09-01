@@ -17,6 +17,15 @@ The GreptimeDB cluster uses Kafka as the [Remote WAL](/user-guide/deployments-ad
 Save the following configuration as a file `kafka.yaml`:
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: docker.io
+  repository: greptime/kafka
+  tag: 3.9.0-debian-12-r12
+  
 controller:
   replicaCount: 1
   persistence:
@@ -54,7 +63,7 @@ Wait for Kafka cluster to be ready:
 ```bash
 kubectl wait --for=condition=ready pod \
     -l app.kubernetes.io/instance=kafka \
-    -n kafka-cluster \
+    -n kafka-cluster
 ```
 
 Check the status of the Kafka cluster:

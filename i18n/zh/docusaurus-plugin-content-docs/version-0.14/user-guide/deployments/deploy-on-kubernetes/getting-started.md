@@ -206,11 +206,15 @@ GreptimeDB 集群需要一个 etcd 集群来存储元数据。让我们使用 Bi
 ```bash
 helm install etcd \
   oci://registry-1.docker.io/bitnamicharts/etcd \
-  --version 10.2.12 \
+  --version VAR::etcdChartVersion \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
   --create-namespace \
+  --set global.security.allowInsecureImages=true \
+  --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   -n etcd-cluster
 ```
 
@@ -236,7 +240,7 @@ etcd can be accessed via port 2379 on the following DNS name from within your cl
 
 To create a pod that you can use as a etcd client run the following command:
 
-    kubectl run etcd-client --restart='Never' --image docker.io/bitnami/etcd:3.5.15-debian-12-r6 --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
+    kubectl run etcd-client --restart='Never' --image greptime-registry.cn-hangzhou.cr.aliyuncs.com/bitnami/etcd:VAR::etcdImageVersion --env ETCDCTL_ENDPOINTS="etcd.etcd-cluster.svc.cluster.local:2379" --namespace etcd-cluster --command -- sleep infinity
 
 Then, you can set/get a key using the commands below:
 

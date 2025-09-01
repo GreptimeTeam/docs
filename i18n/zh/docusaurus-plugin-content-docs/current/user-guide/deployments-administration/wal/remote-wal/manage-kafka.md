@@ -18,6 +18,15 @@ GreptimeDB 集群在启用 [Remote WAL](/user-guide/deployments-administration/w
 将以下内容保存为配置文件 `kafka.yaml`：
 
 ```yaml
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: docker.io
+  repository: greptime/kafka
+  tag: 3.9.0-debian-12-r12
+  
 controller:
   replicaCount: 1
   persistence:
