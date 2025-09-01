@@ -89,6 +89,7 @@ SELECT collect as label_collector, host as label_host, val
 - 最小间隔为 1 秒。任何小于 1 秒的间隔都会被自动向上取整为 1 秒。
 
 有关 INTERVA L表达式的更多语法细节，请参见 [interval-type](/reference/sql/data-types.md#interval-type)。
+
 ### Labels 和 Annotations 子句
 
 LABELS 和 ANNOTATIONS 子句用于在 Trigger 发送的通知消息中附加静态的键值对，以提
