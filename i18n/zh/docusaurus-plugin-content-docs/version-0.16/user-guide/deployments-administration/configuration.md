@@ -62,6 +62,14 @@ greptime standalone start -c standalone.example.toml
 - [流节点](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [元服务](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
+### Helm 配置
+
+当使用 Helm 在 Kubernetes 上部署 GreptimeDB 时，你可以直接在 Helm `values.yaml` 文件中做相应的设置。
+请参阅 [Helm 配置项文档](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)了解所有 Helm 支持的配置项。
+
+对于仅在本篇文档中[可用的配置项](#配置项)，你可以通过[注入 TOML 配置文件](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#注入配置文件)来设置配置。
+
+
 ### 环境变量
 
 配置文件中的每个项目都可以映射到环境变量。
@@ -96,6 +104,10 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
 ```
 GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003
 ```
+
+## 配置项
+
+本节将介绍主要的配置项，请前往 GitHub 查看[所有配置项](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md)。
 
 ### 协议选项
 
