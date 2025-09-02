@@ -411,6 +411,16 @@ SELECT * FROM ngx_distribution;
 
 TQL (Time Query Language) can be seamlessly integrated with Flow to perform advanced time-series computations like rate calculations, moving averages, and other complex time-window operations. This combination allows you to create continuous aggregation flows that leverage TQL's powerful analytical functions for real-time insights.
 
+
+### Understanding TQL Flow Components
+
+The TQL integration with Flow provides several advantages:
+
+1. **Time Range Specification**: The `EVAL (start_time, end_time, step)` syntax allows precise control over the evaluation window, see [TQL](/reference/sql/tql.md).
+2. **Automatic Schema Generation**: GreptimeDB creates appropriate sink tables based on TQL function outputs
+3. **Continuous Processing**: Combined with Flow's scheduling, TQL functions run continuously on incoming data
+4. **Advanced Analytics**: Access to sophisticated time-series functions like `rate()`, `increase()`, and statistical aggregations
+
 ### Setting Up the Source Table
 
 First, let's create a source table to store HTTP request metrics:
@@ -426,7 +436,7 @@ CREATE TABLE http_requests_total (
 );
 ```
 
-This table will serve as the data source for our TQL-based Flow computations. The `ts` column acts as the time index, while `val` represents the metric values we want to analyze.
+This table will serve as the data source for our TQL-based Flow computations. The `ts` column acts as the time index, while `byte` represents the metric values we want to analyze.
 
 ### Creating a Rate Calculation Flow
 
@@ -440,7 +450,7 @@ TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my
 ```
 
 This Flow definition includes several key components:
-- **TQL EVAL**: Specifies the time range for evaluation from 1 minute ago to now, see [TQL](../../reference/sql/tql.md).
+- **TQL EVAL**: Specifies the time range for evaluation from 1 minute ago to now, see [TQL](/reference/sql/tql.md).
 - **rate()**: TQL function that calculates the rate of change
 - **[1m]**: Defines a 1-minute lookback window for the rate calculation
 - **EVAL INTERVAL '1m'**: Executes the Flow every minute for continuous updates
@@ -534,15 +544,6 @@ SELECT * FROM rate_reqs;
 ```
 
 Note that the timestamps and exact rate values may vary depending on when you run the example, but you should see similar rate calculations based on the input data pattern.
-
-### Understanding TQL Flow Components
-
-The TQL integration with Flow provides several advantages:
-
-1. **Time Range Specification**: The `EVAL (start_time, end_time, step)` syntax allows precise control over the evaluation window
-2. **Automatic Schema Generation**: GreptimeDB creates appropriate sink tables based on TQL function outputs
-3. **Continuous Processing**: Combined with Flow's scheduling, TQL functions run continuously on incoming data
-4. **Advanced Analytics**: Access to sophisticated time-series functions like `rate()`, `increase()`, and statistical aggregations
 
 ### Cleanup
 
