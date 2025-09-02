@@ -11,7 +11,7 @@ GreptimeDB uses a layered metadata management architecture in distributed enviro
 - **Metasrv**: Acts as the metadata management layer, responsible for maintaining metadata information for all tables in the cluster
 - **Datanode**: Handles actual data storage and query execution, while also persisting some table metadata
 
-Under ideal conditions, table metadata between Metasrv and Datanode should remain perfectly consistent. However, in real production environments, [restore from a metadata backup](/user-guide/deployments-administration/manage-metadata/restore-backup.md) may cause metadata inconsistencies.
+Under ideal conditions, table metadata between Metasrv and Datanode should remain perfectly consistent. However, in real production environments, restore from a [metadata backup](/user-guide/deployments-administration/manage-metadata/restore-backup.md) may cause metadata inconsistencies.
 
 **Table Reconciliation** is a table metadata repair mechanism provided by GreptimeDB that:
 - Detects metadata differences between Metasrv and Datanode
@@ -20,46 +20,8 @@ Under ideal conditions, table metadata between Metasrv and Datanode should remai
 
 ## Before starting
 Before starting the table reconciliation process, you need to:
-1. Restore the cluster from a specific metadata backup
+1. Restore the cluster from a specific [metadata backup](/user-guide/deployments-administration/manage-metadata/restore-backup.md)
 2. Set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to the original cluster's next table ID
-
-
-## Perform the repair operation
-
-GreptimeDB provides the following Admin functions to trigger table metadata repair:
-
-### Repair a Specific Table
-
-Repair the metadata inconsistency of a single table:
-
-```sql
-ADMIN reconcile_table(table_name)
-```
-
-### Repair a Specific Database
-
-Repair the metadata inconsistency of all tables in a specific database:
-
-```sql
-ADMIN reconcile_database(database_name)
-```
-
-### Repair All Tables
-
-Repair the metadata inconsistency of all tables in the entire cluster:
-
-```sql
-ADMIN reconcile_catalog()
-```
-
-### View Repair Progress
-
-After the Admin function is executed, it will return a `ProcedureID`, you can use the following command to view the progress of the repair task:
-
-```sql
-ADMIN procedure_state(procedure_id)
-```
-
 
 ## Repair Scenarios
 
@@ -94,6 +56,43 @@ After a cluster is restored from specific metadata, write and query operations m
 
 After a cluster is restored from specific metadata, write and query operations may run normally, but `SHOW CREATE TABLE`/`SHOW INDEX FROM [table_name]` shows that certain columns don't include expected indexes. This occurs because the original cluster modified indexes (executed `MODIFY INDEX [column_name] SET [index_type] INDEX`) after the metadata backup, causing the index change metadata to not be included in the backup. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
 
+## Perform the repair operation
+
+GreptimeDB provides the following Admin functions to trigger table metadata repair:
+
+### Repair All Tables
+
+Repair the metadata inconsistency of all tables in the entire cluster:
+
+```sql
+ADMIN reconcile_catalog()
+```
+
+### Repair a Specific Database
+
+Repair the metadata inconsistency of all tables in a specific database:
+
+```sql
+ADMIN reconcile_database(database_name)
+```
+
+### Repair a Specific Table
+
+Repair the metadata inconsistency of a single table:
+
+```sql
+ADMIN reconcile_table(table_name)
+```
+
+### View Repair Progress
+
+After the Admin function is executed, it will return a `ProcedureID`, you can use the following command to view the progress of the repair task:
+
+```sql
+ADMIN procedure_state(procedure_id)
+```
+
+When `procedure_state` returns Done, it indicates that the repair task has completed.
 
 ## Important Notes
 

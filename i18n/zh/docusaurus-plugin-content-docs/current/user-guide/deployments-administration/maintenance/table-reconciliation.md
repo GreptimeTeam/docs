@@ -19,44 +19,8 @@ description: 了解 GreptimeDB 的表协调机制，该机制可检测并修复 
 
 ## 在开始之前
 在开始表元数据修复之前，你需要：
-1. 从元数据备份中恢复集群
+1. 从[元数据备份](/user-guide/deployments-administration/manage-metadata/restore-backup.md)中恢复集群
 2. 将[待分配表 ID](/user-guide/deployments-administration/maintenance/sequence-management.md) 设置为原集群的待分配表 ID
-
-## 进行修复操作
-
-GreptimeDB 提供了以下 Admin 函数用于触发表元数据修复：
-
-### 修复指定表
-
-修复单个表的元数据不一致问题：
-
-```sql
-ADMIN reconcile_table(table_name)
-```
-
-### 修复指定数据库
-
-修复指定数据库中所有表的元数据不一致问题：
-
-```sql
-ADMIN reconcile_database(database_name)
-```
-
-### 修复所有表
-
-修复整个集群中所有表的元数据不一致问题：
-
-```sql
-ADMIN reconcile_catalog()
-```
-
-### 查看修复进度
-
-上述 Admin 函数执行后会返回一个 `ProcedureID`，你可以通过以下命令查看修复任务的执行进度：
-
-```sql
-ADMIN procedure_state(procedure_id)
-```
 
 ## 修复场景
 
@@ -91,7 +55,43 @@ ADMIN procedure_state(procedure_id)
 
 当集群从特定元数据恢复后，写入和查询可能正常运行，但是 `SHOW CREATE TABLE`/`SHOW INDEX FROM [table_name]` 显示某些列未包含预期索引。这是因为原集群在备份元数据后修改了索引（即执行 `MODIFY INDEX [column_name] SET [index_type] INDEX`），导致索引变更后的元数据未包含在备份中。针对这种情况，你需要手动执行 `ADMIN reconcile_table(table_name)` 命令修复表元信息。
 
+## 进行修复操作
 
+GreptimeDB 提供了以下 Admin 函数用于触发表元数据修复：
+
+### 修复所有表
+
+修复整个集群中所有表的元数据不一致问题：
+
+```sql
+ADMIN reconcile_catalog()
+```
+
+### 修复指定数据库
+
+修复指定数据库中所有表的元数据不一致问题：
+
+```sql
+ADMIN reconcile_database(database_name)
+```
+
+### 修复指定表
+
+修复单个表的元数据不一致问题：
+
+```sql
+ADMIN reconcile_table(table_name)
+```
+
+### 查看修复进度
+
+上述 Admin 函数执行后会返回一个 `ProcedureID`，你可以通过以下命令查看修复任务的执行进度：
+
+```sql
+ADMIN procedure_state(procedure_id)
+```
+
+当 `procedure_state` 返回 Done 时，标识修复任务完成。
 
 ## 注意事项
 
