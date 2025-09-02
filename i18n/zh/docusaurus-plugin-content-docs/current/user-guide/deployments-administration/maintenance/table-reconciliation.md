@@ -28,7 +28,7 @@ description: 了解 GreptimeDB 的表协调机制，该机制可检测并修复 
 
 当集群从特定元数据恢复后，写入和查询可能出现 `Table not found` 错误。
 
-- **场景一**：原集群在备份元数据后新增了表，导致新增表的元数据没有包含在备份中，从而查询这些新增表时出现 `Table not found` 错误。这种情况下，新建表将丢失。同时你必须手动设置 [待分配表 ID](/user-guide/deployments-administration/maintenance/sequence-management.md)，确保恢复后的集群在新创建表时不会因为表 ID 冲突导致创建失败。
+- **场景一**：原集群在备份元数据后新增了表，导致新增表的元数据没有包含在备份中，从而查询这些新增表时出现 `Table not found` 错误。这种情况下，新建表将丢失，同时你必须手动设置 [待分配表 ID](/user-guide/deployments-administration/maintenance/sequence-management.md)，确保恢复后的集群在新创建表时不会因为表 ID 冲突导致创建失败。
 
 - **场景二**：原集群在备份元数据后将原有表重命名，这种情况下新表名将丢失。
 

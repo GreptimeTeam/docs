@@ -29,7 +29,7 @@ Before starting the table reconciliation process, you need to:
 
 After a cluster is restored from specific metadata, write and query operations may encounter `Table not found` errors.
 
-- **Scenario 1**: The original cluster created new tables after the metadata backup, causing the new table metadata to not be included in the backup. This results in `Table not found` errors when querying these new tables. In this case, the new created table will be lost。 And you must to manually set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to ensure that the restored cluster won't fail to create tables due to table ID conflicts when creating new tables.
+- **Scenario 1**: The original cluster created new tables after the metadata backup, causing the new table metadata to not be included in the backup. This results in `Table not found` errors when querying these new tables. In this case, the new created table will be lost, and you must to manually set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to ensure that the restored cluster won't fail to create tables due to table ID conflicts when creating new tables.
 
 - **Scenario 2**: The original cluster renamed existing tables after the metadata backup. In this case, the new table names will be lost.
 
