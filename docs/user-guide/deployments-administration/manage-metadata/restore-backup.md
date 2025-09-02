@@ -23,6 +23,8 @@ To restore from a backup:
 
 1. Use the CLI tool to restore the metadata, follows the import metadata steps in [Backup and Restore](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md) guide.
 2. Restart the GreptimeDB cluster to apply the restored metadata.
+3. Set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to the original cluster's next table ID.
+4. Call the [Table Reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) function to repair the table metadata inconsistency.
 
 ## Migrate
 

@@ -23,6 +23,8 @@ GreptimeDB 通过其 CLI 工具提供元数据备份和恢复功能。该功能�
 
 1. 使用 CLI 工具恢复元数据，按照[备份和恢复](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-meta-data.md)指南中的导入元数据步骤操作
 2. 重启 GreptimeDB 集群以应用恢复的元数据
+3. 将[待分配表 ID](/user-guide/deployments-administration/maintenance/sequence-management.md) 设置为原集群的待分配表 ID
+4. 调用[表元数据修复](/user-guide/deployments-administration/maintenance/table-reconciliation.md)函数，修复表元数据不一致问题
 
 ## 迁移
 
