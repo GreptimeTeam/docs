@@ -29,7 +29,7 @@ Before starting the table reconciliation process, you need to:
 
 After a cluster is restored from specific metadata, write and query operations may encounter `Table not found` errors.
 
-- **Scenario 1**: The original cluster created new tables after the metadata backup, causing the new table metadata to not be included in the backup. This results in `Table not found` errors when querying these new tables. For this situation, you need to manually set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to ensure that the restored cluster won't fail to create tables due to table ID conflicts when creating new tables.
+- **Scenario 1**: The original cluster created new tables after the metadata backup, causing the new table metadata to not be included in the backup. This results in `Table not found` errors when querying these new tables. In this case, the new created table will be lost。 And you must to manually set the [Next Table ID](/user-guide/deployments-administration/maintenance/sequence-management.md) to ensure that the restored cluster won't fail to create tables due to table ID conflicts when creating new tables.
 
 - **Scenario 2**: The original cluster renamed existing tables after the metadata backup. In this case, the new table names will be lost.
 
@@ -56,7 +56,7 @@ After a cluster is restored from specific metadata, write and query operations m
 
 After a cluster is restored from specific metadata, write and query operations may run normally, but `SHOW CREATE TABLE`/`SHOW INDEX FROM [table_name]` shows that certain columns don't include expected indexes. This occurs because the original cluster modified indexes (executed `MODIFY INDEX [column_name] SET [index_type] INDEX`) after the metadata backup, causing the index change metadata to not be included in the backup. For this situation, you need to manually execute the `ADMIN reconcile_table(table_name)` command to repair the table metadata.
 
-## Perform the repair operation
+## Repair operations
 
 GreptimeDB provides the following Admin functions to trigger table metadata repair:
 
