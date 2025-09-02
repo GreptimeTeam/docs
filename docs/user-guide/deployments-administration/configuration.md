@@ -65,6 +65,16 @@ you only need to configure the required options and do not need to configure all
 - [flownode](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/flownode.example.toml)
 - [metasrv](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/metasrv.example.toml)
 
+### Helm Configurations
+
+When deploying GreptimeDB on Kubernetes using Helm charts,
+you can configure certain settings directly in the Helm `values.yaml` file.
+Please refer to the [Helm configuration documentation](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) for all Helm-supported configurations.
+
+For configurations that are available only in the [options](#options) section of this document,
+you can [inject complete TOML configuration files](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#injecting-configuration-files) into your deployment.
+
+
 ### Environment variable
 
 Every item in the configuration file can be mapped to environment variables.
