@@ -3,7 +3,7 @@ keywords: [ES, Elasticsearch, GreptimeDB, QueryDSL]
 description: GreptimeDB 企业版所支持的 QueryDSL 语法
 ---
 
-# 概述
+# 查询
 
 由于 GreptimeDB 和 Elasticsearch 的设计的目的有多不同，有众多的功能无法兼容，我们尽可能地提供了相应的替代方案。在各个具体的接口中，我们会说明 GreptimeDB 的实现方式和 Elasticsearch 的区别。
 

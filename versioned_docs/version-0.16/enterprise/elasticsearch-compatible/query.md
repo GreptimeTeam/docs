@@ -3,7 +3,7 @@ keywords: [ES, Elasticsearch, GreptimeDB, QueryDSL]
 description: QueryDSL syntax supported by GreptimeDB Enterprise Edition
 ---
 
-# Overview
+# Query
 
 Since GreptimeDB and Elasticsearch are designed for different purposes, many features are not compatible. We have provided corresponding alternatives as much as possible. For each specific interface, we will explain GreptimeDB's implementation and the differences from Elasticsearch.
 
