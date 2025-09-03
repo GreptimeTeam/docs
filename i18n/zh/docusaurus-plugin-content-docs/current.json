@@ -119,10 +119,6 @@
     "message": "教程",
     "description": "The label for category Tutorials in sidebar docs"
   },
-  "sidebar.docs.category.Monitor Host Metrics": {
-    "message": "监控 Host Metrics",
-    "description": "The label for category Monitor Host Metrics in sidebar docs"
-  },
   "sidebar.docs.category.GreptimeDB Enterprise": {
     "message": "GreptimeDB 企业版",
     "description": "The label for category GreptimeDB Enterprise in sidebar docs"
