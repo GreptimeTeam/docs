@@ -125,6 +125,26 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
 | `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。 | 可选 |
 
+## COPY 查询结果
+
+你可以使用 `COPY` 语句将查询结果导出到文件中。语法如下：
+
+```sql
+COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
+```
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
+| `PATH` | 输出文件的路径 | **是** |
+| `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
+
+例如，以下语句将查询结果导出到 CSV 文件中：
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
 ## COPY DATABASE
 
 `COPY` 语句除可以导入/导出表之外，也可以导入/导出指定的数据库，其语法如下：
