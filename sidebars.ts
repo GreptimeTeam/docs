@@ -483,25 +483,6 @@ const sidebars: SidebarsConfig = {
             'greptimecloud/usage-&-billing/billing',
           ],
         },
-        {
-          type: 'category',
-          label: 'Tutorials',
-          items: [
-            {
-              type: 'category',
-              label: 'Monitor Host Metrics',
-              items: [
-                'greptimecloud/tutorials/monitor-host-metrics/prometheus',
-                'greptimecloud/tutorials/monitor-host-metrics/mysql',
-                'greptimecloud/tutorials/monitor-host-metrics/influxdb',
-                'greptimecloud/tutorials/monitor-host-metrics/go',
-                'greptimecloud/tutorials/monitor-host-metrics/java',
-                'greptimecloud/tutorials/monitor-host-metrics/python',
-                'greptimecloud/tutorials/monitor-host-metrics/node-js',
-              ],
-            },
-          ],
-        },
       ],
     },
     {
