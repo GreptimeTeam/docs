@@ -409,6 +409,10 @@ SELECT * FROM ngx_distribution;
 
 ## Using TQL with Flow for Advanced Time-Series Analysis
 
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior and have its functionality change in the future.
+:::
+
 TQL (Time Query Language) can be seamlessly integrated with Flow to perform advanced time-series computations like rate calculations, moving averages, and other complex time-window operations. This combination allows you to create continuous aggregation flows that leverage TQL's powerful analytical functions for real-time insights.
 
 
