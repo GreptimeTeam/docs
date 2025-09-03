@@ -38,16 +38,16 @@ Essentially, GreptimeDB receives Elasticsearch QueryDSL syntax, converts it to G
 
 ## Supported Aggregation List
 
-| Aggregation    | Status            | Description    |
-| -------------- | ----------------- | -------------- |
-| avg            | Not supported yet | Average value  |
-| sum            | Not supported yet | Sum            |
-| min            | Not supported yet | Minimum value  |
-| max            | Not supported yet | Maximum value  |
-| count          | ✅                | Count          |
-| date_histogram | ✅                | Date histogram |
-| histogram      | Not supported yet | Histogram      |
-| terms          | Not supported yet | Terms          |
+| Aggregation    | Status | Description    |
+| -------------- | ------ | -------------- |
+| avg            |        | Average value  |
+| sum            |        | Sum            |
+| min            |        | Minimum value  |
+| max            |        | Maximum value  |
+| count          | ✅     | Count          |
+| date_histogram | ✅     | Date histogram |
+| histogram      |        | Histogram      |
+| terms          |        | Terms          |
 
 ## Querying GreptimeDB with Kibana
 

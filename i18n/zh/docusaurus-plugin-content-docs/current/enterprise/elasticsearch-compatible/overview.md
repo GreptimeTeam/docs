@@ -40,14 +40,14 @@ GreptimeDB 的 Elasticsearch 兼容层旨在提供与 Elasticsearch 的在一定
 
 | Aggregation    | 实现情况 | Description |
 | -------------- | -------- | ----------- |
-| avg            | 暂不支持 | 平均值      |
-| sum            | 暂不支持 | 求和        |
-| min            | 暂不支持 | 最小值      |
-| max            | 暂不支持 | 最大值      |
+| avg            |          | 平均值      |
+| sum            |          | 求和        |
+| min            |          | 最小值      |
+| max            |          | 最大值      |
 | count          | ✅       | 计数        |
 | date_histogram | ✅       | 日期直方图  |
-| histogram      | 暂不支持 | 直方图      |
-| terms          | 暂不支持 | 词条聚合    |
+| histogram      |          | 直方图      |
+| terms          |          | 词条聚合    |
 
 ## 使用 Kibana 查询 GreptimeDB
 
