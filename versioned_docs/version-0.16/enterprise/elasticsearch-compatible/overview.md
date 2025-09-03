@@ -17,10 +17,10 @@ Essentially, GreptimeDB receives Elasticsearch QueryDSL syntax, converts it to G
 
 | API                            | Method | Description          |
 | ------------------------------ | ------ | -------------------- |
-| /{table_name}/\_search         | POST   | Execute search query |
-| /{table_name}/\_async_search   | POST   | Execute search query |
-| /\_resolve/index/{schema_name} | POST   | Index document       |
-| /{table_name}/\_field_caps     | GET    | Get field info       |
+| /\{table_name\}/\_search         | POST   | Execute search query |
+| /\{table_name\}/\_async_search   | POST   | Execute search query |
+| /\_resolve/index/\{schema_name\} | POST   | Index document       |
+| /\{table_name\}/\_field_caps     | GET    | Get field info       |
 
 ## Supported Query List
 

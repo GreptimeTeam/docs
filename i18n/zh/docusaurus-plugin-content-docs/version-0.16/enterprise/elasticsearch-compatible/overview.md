@@ -17,10 +17,10 @@ GreptimeDB 的 Elasticsearch 兼容层旨在提供与 Elasticsearch 的在一定
 
 | API                            | Method | Description  |
 | ------------------------------ | ------ | ------------ |
-| /{table_name}/\_search         | POST   | 执行搜索查询 |
-| /{table_name}/\_async_search   | POST   | 执行搜索查询 |
-| /\_resolve/index/{schema_name} | POST   | 索引文档     |
-| /{table_name}/\_field_caps     | GET    | 获取字段信息 |
+| /\{table_name\}/\_search         | POST   | 执行搜索查询 |
+| /\{table_name\}/\_async_search   | POST   | 执行搜索查询 |
+| /\_resolve/index/\{schema_name\} | POST   | 索引文档     |
+| /\{table_name\}/\_field_caps     | GET    | 获取字段信息 |
 
 ## 查询支持列表
 
