@@ -32,7 +32,7 @@ which are described in detail in the documentation in this section:
   user activity with detailed audit logs.
 - [Automatic region load balance](./autopilot/region-balancer.md): Auto balance
   datanodes workload by moving regions between them.
-- Elasticsearch query compatibility: Use GreptimeDB backed Kibana for your logs.
+- [Elasticsearch query compatibility](./elasticsearch-compatible/overview.md): Use GreptimeDB backed Kibana for your logs.
 - [Greptime Enterprise Management Console](./console-ui.md): An enhanced version of our dashboard UI,
   carries more cluster management and monitoring features.
 - [Read Replica](./read-replica.md): Read-only datanode instances for heavy query workloads such as
