@@ -83,6 +83,10 @@
     "message": "灾难恢复",
     "description": "The label for category Disaster Recovery in sidebar docs"
   },
+  "sidebar.docs.category.Elasticsearch Compatibility": {
+    "message": "Elasticsearch 兼容性",
+    "description": "The label for category Elasticsearch Compatibility in sidebar docs"
+  },
   "sidebar.docs.category.Remote WAL": {
     "message": "Remote WAL",
     "description": "The label for category Remote WAL in sidebar docs"
