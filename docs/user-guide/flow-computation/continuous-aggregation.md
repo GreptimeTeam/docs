@@ -454,10 +454,10 @@ TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my
 ```
 
 This Flow definition includes several key components:
+- **EVAL INTERVAL '1m'**: Executes the Flow every minute for continuous updates
 - **TQL EVAL**: Specifies the time range for evaluation from 1 minute ago to now, see [TQL](/reference/sql/tql.md).
 - **rate()**: TQL function that calculates the rate of change
 - **[1m]**: Defines a 1-minute lookback window for the rate calculation
-- **EVAL INTERVAL '1m'**: Executes the Flow every minute for continuous updates
 
 ### Examining the Generated Sink Table
 
