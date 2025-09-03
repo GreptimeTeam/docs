@@ -132,6 +132,26 @@ You can set the following **CONNECTION** options:
 
 You can use `LIMIT` to restrict maximum number of rows inserted at once.
 
+## COPY Query Results
+
+You can use the `COPY` statement to export the results of a query to a file. The syntax is as follows:
+
+```sql
+COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
+```
+
+| Option  | Description  | Required |
+|---|---|---|
+| `QUERY` | The SQL SELECT statement to execute | **Required** |
+| `PATH` | The file path where the output will be written | **Required** |
+| `FORMAT` | The output file format: 'CSV', 'JSON', or 'PARQUET' | **Required** |
+
+For example, the following statement exports query results to a CSV file:
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
 ## COPY DATABASE
 
 Beside copying specific table to/from some path, `COPY` statement can also be used to copy whole database to/from some path. The syntax for copying databases is:
