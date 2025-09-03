@@ -18,7 +18,7 @@ On the Metasrv side, Remote WAL is primarily responsible for managing Kafka topi
 ```toml
 [wal]
 provider = "kafka"
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 # WAL data pruning options
 auto_prune_interval = "30m"
@@ -116,7 +116,7 @@ Kafka supports several SASL mechanisms: `PLAIN`, `SCRAM-SHA-256`, and `SCRAM-SHA
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.sasl]
 type = "SCRAM-SHA-512"
@@ -134,7 +134,7 @@ To use system-wide trusted CAs, enable TLS without providing any certificate pat
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.tls]
 ```
@@ -145,7 +145,7 @@ If your Kafka cluster uses a private CA, specify the server CA certificate expli
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 
 [wal.tls]
 server_ca_cert_path = "/path/to/server.crt"
@@ -157,7 +157,7 @@ To enable mutual authentication, provide both the client certificate and private
 
 ```toml
 [wal]
-broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
+broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 [wal.tls]
 server_ca_cert_path = "/path/to/server_cert"
 client_cert_path = "/path/to/client_cert"
