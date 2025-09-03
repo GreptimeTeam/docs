@@ -573,6 +573,15 @@ const sidebars: SidebarsConfig = {
           label: 'Autopilot',
           items: ['enterprise/autopilot/region-balancer'],
         },
+        {
+          type: 'category',
+          label: 'Elasticsearch Compatibility',
+          items: [
+            'enterprise/elasticsearch-compatible/overview',
+            'enterprise/elasticsearch-compatible/query',
+            'enterprise/elasticsearch-compatible/aggregate',
+          ],
+        },
         'enterprise/console-ui',
         'enterprise/read-replica',
         'enterprise/trigger',

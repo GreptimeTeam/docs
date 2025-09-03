@@ -567,6 +567,15 @@
             "enterprise/autopilot/region-balancer"
           ]
         },
+        {
+          "type": "category",
+          "label": "Elasticsearch Compatibility",
+          "items": [
+            "enterprise/elasticsearch-compatible/overview",
+            "enterprise/elasticsearch-compatible/query",
+            "enterprise/elasticsearch-compatible/aggregate"
+          ]
+        },
         "enterprise/read-replica",
         "enterprise/trigger",
         {
