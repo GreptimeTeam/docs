@@ -47,6 +47,7 @@ GreptimeDB 的 Elasticsearch 兼容层旨在提供与 Elasticsearch 的在一定
 | count          | ✅       | 计数        |
 | date_histogram | ✅       | 日期直方图  |
 | histogram      | 暂不支持 | 直方图      |
+| terms          | 暂不支持 | 词条聚合    |
 
 ## 使用 Kibana 查询 GreptimeDB
 
