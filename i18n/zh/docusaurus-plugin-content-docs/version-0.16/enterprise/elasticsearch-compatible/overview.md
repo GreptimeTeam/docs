@@ -51,8 +51,4 @@ GreptimeDB 的 Elasticsearch 兼容层旨在提供与 Elasticsearch 的在一定
 
 ## 使用 Kibana 查询 GreptimeDB
 
-![alt text](image.png)
-
-如图所示，我们使用一个 proxy 来区分元信息请求和真正的数据查询请求，从而实现对 GreptimeDB 的查询。
-
 如需了解更多信息，请联系我们。

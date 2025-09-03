@@ -51,8 +51,4 @@ Essentially, GreptimeDB receives Elasticsearch QueryDSL syntax, converts it to G
 
 ## Querying GreptimeDB with Kibana
 
-![alt text](image.png)
-
-As shown in the figure, we use a proxy to distinguish between metadata requests and actual data query requests, enabling queries to GreptimeDB.
-
-For more information,
+For more information, please contact us.
