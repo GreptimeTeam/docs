@@ -412,13 +412,13 @@ TQL（时序查询语言）可以与 Flow 无缝集成，以执行高级时序�
 TQL 与 Flow 的集成提供了以下几个优势：
 
 1. **时间范围指定**：`EVAL (start_time, end_time, step)` 语法允许精确控制计算窗口，详见 [TQL](/reference/sql/tql.md)。
-2. **自动模式生成**：GreptimeDB 根据 TQL 函数输出创建适当的 Sink 表。
+2. **自动生成表结构**：GreptimeDB 根据 TQL 函数输出创建适当的 Sink 表。
 3. **连续处理**：结合 Flow 的调度，TQL 函数在传入数据上持续运行。
 4. **高级分析**：使用复杂的时序函数，如 `rate()`、`increase()` 和统计聚合。
 
-### 设置源表
+### 设置 Source 表
 
-首先，让我们创建一个源表来存储 HTTP 请求指标：
+首先，让我们创建一个 Source 表来存储 HTTP 请求指标：
 
 ```sql
 CREATE TABLE http_requests_total (
@@ -431,7 +431,7 @@ CREATE TABLE http_requests_total (
 );
 ```
 
-此表将作为我们基于 TQL 的 Flow 计算的数据源。`ts` 列作为时间索引，而 `byte` 表示我们想要分析的指标值。
+此表将作为基于 TQL 的 Flow 计算的数据源。`ts` 列作为时间索引， `byte` 表示想要分析的指标值。
 
 ### 创建速率计算 Flow
 
@@ -445,10 +445,10 @@ TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my
 ```
 
 此 Flow 定义包含几个关键组件：
+- **EVAL INTERVAL '1m'**：每分钟执行 Flow 以进行连续更新。
 - **TQL EVAL**：指定从 1 分钟前到现在的时间范围进行评估，详见 [TQL](/reference/sql/tql.md)。
 - **rate()**：计算变化率的 TQL 函数。
 - **[1m]**：定义速率计算的 1 分钟回溯窗口。
-- **EVAL INTERVAL '1m'**：每分钟执行 Flow 以进行连续更新。
 
 ### 检查生成的 Sink 表
 
@@ -477,7 +477,7 @@ ENGINE=mito
 +-----------+-------------------------------------+
 ```
 
-这展示了 GreptimeDB 如何自动生成了用于存储 TQL 计算结果的合适 Schema，即创建一个与 PromQL 查询结果具有相同结构的表。
+上述结果展示了 GreptimeDB 自动生成了用于存储 TQL 计算结果的合适 Schema，即创建一个与 PromQL 查询结果具有相同结构的表。
 
 ### 使用示例数据进行测试
 
@@ -520,9 +520,9 @@ SELECT count(*) > 0 FROM rate_reqs;
 +---------------------+
 ```
 
-此查询确认速率计算已产生结果，并使用计算出的速率值填充了 Sink 表。
+此查询确认速率计算的 FLow 已产生结果并将结果写入了 Sink 表。
 
-你还可以检查实际计算出的速率值：
+你还可以查询实际计算出的速率值：
 
 ```sql
 SELECT * FROM rate_reqs;
@@ -538,7 +538,7 @@ SELECT * FROM rate_reqs;
 2 rows in set (0.03 sec)
 ```
 
-请注意，时间戳和确切的速率值可能会因你运行示例的时间而异，但你应该会看到基于输入数据模式的类似速率计算。
+请注意，时间戳和确切的速率值可能会因你运行示例的时间而不同，但此示例的速率计算是相同的。
 
 ### 清理
 
@@ -550,7 +550,6 @@ DROP TABLE http_requests;
 DROP TABLE rate_reqs;
 ```
 
-此方法演示了 TQL 和 Flow 如何协同工作以实现复杂的连续聚合场景，为时序数据处理提供实时分析功能。
 ## 下一步
 
 - [管理 Flow](manage-flow.md)：深入了解 Flow 引擎的机制和定义 Flow 的 SQL 语法。
