@@ -559,7 +559,6 @@ DROP TABLE http_requests;
 DROP TABLE rate_reqs;
 ```
 
-This approach demonstrates how TQL and Flow work together to enable sophisticated continuous aggregation scenarios, providing real-time analytical capabilities for time-series data processing.
 ## Next Steps
 
 - [Manage Flow](manage-flow.md): Gain insights into the mechanisms of the Flow engine and the SQL syntax for defining a Flow.
