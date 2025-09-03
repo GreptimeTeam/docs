@@ -407,6 +407,158 @@ SELECT * FROM ngx_distribution;
 6 rows in set (0.00 sec)
 ```
 
+## Using TQL with Flow for Advanced Time-Series Analysis
+
+:::warning Experimental Feature
+This experimental feature may contain unexpected behavior and have its functionality change in the future.
+:::
+
+TQL (Time Query Language) can be seamlessly integrated with Flow to perform advanced time-series computations like rate calculations, moving averages, and other complex time-window operations. This combination allows you to create continuous aggregation flows that leverage TQL's powerful analytical functions for real-time insights.
+
+
+### Understanding TQL Flow Components
+
+The TQL integration with Flow provides several advantages:
+
+1. **Time Range Specification**: The `EVAL (start_time, end_time, step)` syntax allows precise control over the evaluation window, see [TQL](/reference/sql/tql.md).
+2. **Automatic Schema Generation**: GreptimeDB creates appropriate sink tables based on TQL function outputs
+3. **Continuous Processing**: Combined with Flow's scheduling, TQL functions run continuously on incoming data
+4. **Advanced Analytics**: Access to sophisticated time-series functions like `rate()`, `increase()`, and statistical aggregations
+
+### Setting Up the Source Table
+
+First, let's create a source table to store HTTP request metrics:
+
+```sql
+CREATE TABLE http_requests_total (
+    host STRING,
+    job STRING,
+    instance STRING,
+    byte DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY (host, job, instance)
+);
+```
+
+This table will serve as the data source for our TQL-based Flow computations. The `ts` column acts as the time index, while `byte` represents the metric values we want to analyze.
+
+### Creating a Rate Calculation Flow
+
+Now we'll create a Flow that uses TQL to calculate the rate of `byte` over time:
+
+```sql
+CREATE FLOW calc_rate 
+SINK TO rate_reqs 
+EVAL INTERVAL '1m' AS
+TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my_service"}[1m]);
+```
+
+This Flow definition includes several key components:
+- **EVAL INTERVAL '1m'**: Executes the Flow every minute for continuous updates
+- **TQL EVAL**: Specifies the time range for evaluation from 1 minute ago to now, see [TQL](/reference/sql/tql.md).
+- **rate()**: TQL function that calculates the rate of change
+- **[1m]**: Defines a 1-minute lookback window for the rate calculation
+
+### Examining the Generated Sink Table
+
+You can inspect the automatically created sink table structure:
+
+```sql
+SHOW CREATE TABLE rate_reqs;
+```
+
+```sql
++-----------+-------------------------------------+
+| Table     | Create Table                        |
++-----------+-------------------------------------+
+| rate_reqs | CREATE TABLE IF NOT EXISTS `rate_reqs` (
+  `ts` TIMESTAMP(3) NOT NULL,
+  `prom_rate(ts_range,byte,ts,Int64(60000))` DOUBLE NULL,
+  `host` STRING NULL,
+  `job` STRING NULL,
+  `instance` STRING NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`host`, `job`, `instance`)
+)
+
+ENGINE=mito
+ |
++-----------+-------------------------------------+
+```
+
+This shows how GreptimeDB automatically generates the appropriate schema for storing TQL computation results, creating a table with the same structure as the prom ql query result.
+
+### Testing with Sample Data
+
+Let's insert some test data to see the Flow in action:
+
+```sql
+INSERT INTO TABLE http_requests_total VALUES
+    ('localhost', 'my_service', 'instance1', 100, now() - INTERVAL '2' minute),
+    ('localhost', 'my_service', 'instance1', 200, now() - INTERVAL '1' minute),
+    ('remotehost', 'my_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('remotehost', 'their_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('localhost', 'my_service', 'instance1', 400, now());
+```
+
+This creates a simple increasing sequence of values over time, which will produce a measurable rate when processed by our TQL Flow.
+
+### Triggering Flow Execution
+
+To manually trigger the Flow computation and see immediate results:
+
+```sql
+ADMIN FLUSH_FLOW('calc_rate');
+```
+
+This command forces the Flow to process all available data immediately, rather than waiting for the next scheduled interval.
+
+### Verifying Results
+
+Finally, verify that the Flow has successfully processed the data:
+
+```sql
+SELECT count(*) > 0 FROM rate_reqs;
+```
+
+```sql
++---------------------+
+| count(*) > Int64(0) |
++---------------------+
+| true                |
++---------------------+
+```
+
+This query confirms that the rate calculation has produced results and populated the sink table with computed rate values.
+
+You can also examine the actual computed rate values:
+
+```sql
+SELECT * FROM rate_reqs;
+```
+
+```sql
++---------------------+------------------------------------------+-----------+------------+-----------+
+| ts                  | prom_rate(ts_range,byte,ts,Int64(60000)) | host      | job        | instance  |
++---------------------+------------------------------------------+-----------+------------+-----------+
+| 2025-09-01 13:14:34 |                        4.166666666666666 | localhost | my_service | instance1 |
+| 2025-09-01 13:15:04 |                        4.444444444444444 | localhost | my_service | instance1 |
++---------------------+------------------------------------------+-----------+------------+-----------+
+2 rows in set (0.03 sec)
+```
+
+Note that the timestamps and exact rate values may vary depending on when you run the example, but you should see similar rate calculations based on the input data pattern.
+
+### Cleanup
+
+When you're done experimenting, clean up the resources:
+
+```sql
+DROP FLOW calc_rate;
+DROP TABLE http_requests;
+DROP TABLE rate_reqs;
+```
+
 ## Next Steps
 
 - [Manage Flow](manage-flow.md): Gain insights into the mechanisms of the Flow engine and the SQL syntax for defining a Flow.

@@ -398,6 +398,158 @@ SELECT * FROM ngx_distribution;
 6 rows in set (0.00 sec)
 ```
 
+## 将 TQL 与 Flow 结合使用进行高级时序分析
+
+:::warning 实验性特性
+此实验性功能可能存在预期外的行为，其功能未来可能发生变化。
+:::
+
+TQL（时序查询语言）可以与 Flow 无缝集成，以执行高级时序计算，如速率计算、移动平均值和其他复杂的时间窗口操作。这种组合允许你创建连续聚合的 Flow，利用 TQL 强大的分析功能来获取实时洞察。
+
+
+### 理解 TQL Flow 组件
+
+TQL 与 Flow 的集成提供了以下几个优势：
+
+1. **时间范围指定**：`EVAL (start_time, end_time, step)` 语法允许精确控制计算窗口，详见 [TQL](/reference/sql/tql.md)。
+2. **自动生成表结构**：GreptimeDB 根据 TQL 函数输出创建适当的 Sink 表。
+3. **连续处理**：结合 Flow 的调度，TQL 函数在传入数据上持续运行。
+4. **高级分析**：使用复杂的时序函数，如 `rate()`、`increase()` 和统计聚合。
+
+### 设置 Source 表
+
+首先，让我们创建一个 Source 表来存储 HTTP 请求指标：
+
+```sql
+CREATE TABLE http_requests_total (
+    host STRING,
+    job STRING,
+    instance STRING,
+    byte DOUBLE,
+    ts TIMESTAMP TIME INDEX,
+    PRIMARY KEY (host, job, instance)
+);
+```
+
+此表将作为基于 TQL 的 Flow 计算的数据源。`ts` 列作为时间索引， `byte` 表示想要分析的指标值。
+
+### 创建速率计算 Flow
+
+现在我们将创建一个 Flow，它使用 TQL 来计算 `byte` 随时间的速率：
+
+```sql
+CREATE FLOW calc_rate
+SINK TO rate_reqs
+EVAL INTERVAL '1m' AS
+TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my_service"}[1m]);
+```
+
+此 Flow 定义包含几个关键组件：
+- **EVAL INTERVAL '1m'**：每分钟执行 Flow 以进行连续更新。
+- **TQL EVAL**：指定从 1 分钟前到现在的时间范围进行评估，详见 [TQL](/reference/sql/tql.md)。
+- **rate()**：计算变化率的 TQL 函数。
+- **[1m]**：定义速率计算的 1 分钟回溯窗口。
+
+### 检查生成的 Sink 表
+
+你可以检查自动创建的 Sink 表结构：
+
+```sql
+SHOW CREATE TABLE rate_reqs;
+```
+
+```sql
++-----------+-------------------------------------+
+| Table     | Create Table                        |
++-----------+-------------------------------------+
+| rate_reqs | CREATE TABLE IF NOT EXISTS `rate_reqs` (
+  `ts` TIMESTAMP(3) NOT NULL,
+  `prom_rate(ts_range,byte,ts,Int64(60000))` DOUBLE NULL,
+  `host` STRING NULL,
+  `job` STRING NULL,
+  `instance` STRING NULL,
+  TIME INDEX (`ts`),
+  PRIMARY KEY (`host`, `job`, `instance`)
+)
+
+ENGINE=mito
+ |
++-----------+-------------------------------------+
+```
+
+上述结果展示了 GreptimeDB 自动生成了用于存储 TQL 计算结果的合适 Schema，即创建一个与 PromQL 查询结果具有相同结构的表。
+
+### 使用示例数据进行测试
+
+现在可以插入一些测试数据，看看 Flow 的实际效果：
+
+```sql
+INSERT INTO TABLE http_requests_total VALUES
+    ('localhost', 'my_service', 'instance1', 100, now() - INTERVAL '2' minute),
+    ('localhost', 'my_service', 'instance1', 200, now() - INTERVAL '1' minute),
+    ('remotehost', 'my_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('remotehost', 'their_service', 'instance1', 300, now() - INTERVAL '30' second),
+    ('localhost', 'my_service', 'instance1', 400, now());
+```
+
+这将创建一个随时间递增的简单值序列，当由我们的 TQL Flow 处理时，将产生对应的速率结果。
+
+### 触发 Flow 执行
+
+要手动触发 Flow 计算并查看即时结果：
+
+```sql
+ADMIN FLUSH_FLOW('calc_rate');
+```
+
+此命令强制 Flow 立即处理所有可用数据，而不是等待下一个计划的间隔。
+
+### 验证结果
+
+最后，验证 Flow 是否已成功处理数据：
+
+```sql
+SELECT count(*) > 0 FROM rate_reqs;
+```
+
+```sql
++---------------------+
+| count(*) > Int64(0) |
++---------------------+
+| true                |
++---------------------+
+```
+
+此查询确认速率计算的 FLow 已产生结果并将结果写入了 Sink 表。
+
+你还可以查询实际计算出的速率值：
+
+```sql
+SELECT * FROM rate_reqs;
+```
+
+```sql
++---------------------+------------------------------------------+-----------+------------+-----------+
+| ts                  | prom_rate(ts_range,byte,ts,Int64(60000)) | host      | job        | instance  |
++---------------------+------------------------------------------+-----------+------------+-----------+
+| 2025-09-01 13:14:34 |                        4.166666666666666 | localhost | my_service | instance1 |
+| 2025-09-01 13:15:04 |                        4.444444444444444 | localhost | my_service | instance1 |
++---------------------+------------------------------------------+-----------+------------+-----------+
+2 rows in set (0.03 sec)
+```
+
+请注意，时间戳和确切的速率值可能会因你运行示例的时间而不同，但此示例的速率计算是相同的。
+
+### 清理
+
+完成实验后，清理资源：
+
+```sql
+DROP FLOW calc_rate;
+DROP TABLE http_requests;
+DROP TABLE rate_reqs;
+```
+
 ## 下一步
 
 - [管理 Flow](manage-flow.md)：深入了解 Flow 引擎的机制和定义 Flow 的 SQL 语法。
