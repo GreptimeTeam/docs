@@ -183,7 +183,7 @@ SELECT *
 
 ```sql
 SELECT 
-  approx_percentile_cont(latency, 0.95) AS p95_latency, 
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) AS p95_latency, 
   host
 FROM grpc_latencies
 WHERE ts >= '2024-07-11 20:00:10'
@@ -229,7 +229,7 @@ SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20
 SELECT 
   ts, 
   host, 
-  approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
 FROM 
   grpc_latencies
 ALIGN '5s' FILL PREV;
@@ -262,7 +262,7 @@ WITH
     SELECT 
       ts, 
       host, 
-      approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency 
+      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency 
     FROM 
       grpc_latencies 
     ALIGN '5s' FILL PREV

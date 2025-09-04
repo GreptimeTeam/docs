@@ -73,7 +73,7 @@ metrics AS (
     SELECT 
         ts, 
         host, 
-        approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency
+        approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
     FROM 
         grpc_latencies
     ALIGN '5s' FILL PREV
@@ -123,7 +123,7 @@ ORDER BY
           SELECT 
             ts, 
             host, 
-            approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency
+            approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
           FROM 
             grpc_latencies
           ALIGN '5s' FILL PREV
