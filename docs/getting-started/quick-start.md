@@ -185,7 +185,7 @@ For example, you can use `approx_percentile_cont` to calculate the 95th percenti
 
 ```sql
 SELECT 
-  approx_percentile_cont(latency, 0.95) AS p95_latency, 
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) AS p95_latency, 
   host
 FROM grpc_latencies
 WHERE ts >= '2024-07-11 20:00:10'
@@ -231,7 +231,7 @@ For example, to calculate the p95 latency of requests using a 5-second window:
 SELECT 
   ts, 
   host, 
-  approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
 FROM 
   grpc_latencies
 ALIGN '5s' FILL PREV;
@@ -266,7 +266,7 @@ WITH
     SELECT 
       ts, 
       host, 
-      approx_percentile_cont(latency, 0.95) RANGE '5s' AS p95_latency 
+      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency 
     FROM 
       grpc_latencies 
     ALIGN '5s' FILL PREV
