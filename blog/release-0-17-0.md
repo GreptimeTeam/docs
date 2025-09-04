@@ -23,7 +23,7 @@ Release date: September 03, 2025
   - Optimize sparse encoder with a 235% performance boost ([#6809](https://github.com/GreptimeTeam/greptimedb/pull/6809))
   - Introduced region pruning ([#6729](https://github.com/GreptimeTeam/greptimedb/pull/6729), [#6752](https://github.com/GreptimeTeam/greptimedb/pull/6752)).
 - **Procedure:**
-  - Introduced table reconciliation procedures to automatically detect and repair metadata inconsistencies between MetaSrv and DataNode. For more information, refer to the [table reconciliation documentation](/user-guide/deployments-administration/maintenance/table-reconciliation/).
+  - Introduced table reconciliation procedures to automatically detect and repair metadata inconsistencies between Metasrv and Datanode. For more information, refer to the [table reconciliation documentation](/user-guide/deployments-administration/maintenance/table-reconciliation/).
 - **Remote WAL:**
   - Replace offset-based remote WAL pruning with size-based pruning strategy and other optimizations ([#6730](https://github.com/GreptimeTeam/greptimedb/pull/6730), [#6732](https://github.com/GreptimeTeam/greptimedb/pull/6732), [#6741](https://github.com/GreptimeTeam/greptimedb/pull/6741), [#6782](https://github.com/GreptimeTeam/greptimedb/pull/6782), [#6816](https://github.com/GreptimeTeam/greptimedb/pull/6816), [#6856](https://github.com/GreptimeTeam/greptimedb/pull/6856)).
 
