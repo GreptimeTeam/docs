@@ -7,6 +7,13 @@ import versions from './versions.json';
 const locale = process.env.DOC_LANG || 'en';
 const biel_project_id = process.env.BIEL_PROJECT_ID;
 
+// For versioning commands, we need all locales available
+// For building, we only need the current locale
+const isVersioningCommand = process.argv.some(arg => 
+  arg.includes('docs:version') || arg.includes('write-translations')
+);
+const availableLocales = isVersioningCommand ? ['en', 'zh'] : [locale];
+
 // Get the latest version (first item in versions array)
 const latestVersion = versions[0];
 const latestVersionNumber = parseFloat(latestVersion);
@@ -142,7 +149,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: locale,
-    locales: [locale], // Only build the current locale
+    locales: availableLocales, // All locales for versioning, current locale for building
   },
 
   presets: [
