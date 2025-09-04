@@ -86,7 +86,7 @@ OpenTelemetry Collector. For example, you can use the environment variable
 `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` to configure the endpoint of the exporter:
 
 ```shell
-export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp"
+export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT="http://localhost:4318/v1/otlp/v1/traces"
 ```
 
 For convenience, you can use the tool
