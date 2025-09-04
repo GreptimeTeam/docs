@@ -256,7 +256,7 @@ ALIGN '5s' FILL PREV;
 通过组合两个表的数据，你可以快速地确定故障时间和相应的日志。以下 SQL 查询使用 `JOIN` 操作关联指标和日志：
 
 ```sql
---- CTE 分别使用 Range Query 查询指标和日志，时间窗口对齐 --
+-- CTE 分别使用 Range Query 查询指标和日志，时间窗口对齐
 WITH
   metrics AS (
     SELECT 
@@ -278,7 +278,7 @@ WITH
       log_level = 'ERROR'
     ALIGN '5s'
 ) 
---- 关联 metric 和日志 ---
+-- 关联 metric 和日志
 SELECT 
   metrics.ts,
   p95_latency, 

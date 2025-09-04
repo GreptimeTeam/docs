@@ -73,7 +73,7 @@ PARTITION ON COLUMNS (a) (
   a >= 20
 );
 
---- 查询表的分区信息---
+-- 查询表的分区信息
 SELECT * FROM PARTITIONS WHERE table_schema='public' AND table_name='test_p'\G
 ```
 

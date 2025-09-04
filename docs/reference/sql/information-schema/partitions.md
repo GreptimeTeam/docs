@@ -73,7 +73,7 @@ PARTITION ON COLUMNS (a) (
   a >= 20
 );
 
---- Query the partitions of the table --
+-- Query the partitions of the table
 SELECT * FROM PARTITIONS WHERE table_schema='public' AND table_name='test_p'\G
 ```
 
