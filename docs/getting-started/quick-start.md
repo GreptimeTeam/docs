@@ -260,7 +260,7 @@ you can easily and quickly determine the time of failure and the corresponding l
 The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
 
 ```sql
---- CTE using Range Query to query metrics and logs with aligned time windows ---
+-- CTE using Range Query to query metrics and logs with aligned time windows
 WITH
   metrics AS (
     SELECT 
@@ -282,7 +282,7 @@ WITH
       log_level = 'ERROR'
     ALIGN '5s'
 ) 
---- Analyze and correlate metrics and logs ---
+-- Analyze and correlate metrics and logs
 SELECT 
   metrics.ts,
   p95_latency, 
