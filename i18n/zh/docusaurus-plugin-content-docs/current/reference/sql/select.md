@@ -73,11 +73,11 @@ WHERE idc IN ('idc0', 'idc1') AND cpu_util > 0.6;
 例如：
 
 ```sql
---- 按 cpu_util 升序排序结果
+-- 按 cpu_util 升序排序结果
 SELECT *
 FROM system_metrics ORDER BY cpu_util ASC;
 
---- 按 cpu_util 降序排序结果
+-- 按 cpu_util 降序排序结果
 SELECT *
 FROM system_metrics ORDER BY cpu_util DESC;
 ```
