@@ -13,14 +13,13 @@ Release date: September 03, 2025
 - **Ordered-set aggregate functions**  
   - Now require a `WITHIN GROUP (ORDER BY …)` clause (e.g., old: `approx_percentile_cont(latency, 0.95)`, new: `approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency)`).
 - **MySQL protocol**  
-  - Comment styling issue has been fixed, comments must start with `--` instead of `---`.
-
+  - Incorrect comment styling is no longer allowed; comments must start with `--` instead of `---`.
 
 ### 👍 Highlights
 
 - **PromQL:**
   - Support TQL CTE in planner ([#6645](https://github.com/GreptimeTeam/greptimedb/pull/6645), [#6671](https://github.com/GreptimeTeam/greptimedb/pull/6671))
-- **Perf:**
+- **Performance:**
   - Optimize sparse encoder with a 235% performance boost ([#6809](https://github.com/GreptimeTeam/greptimedb/pull/6809))
   - Introduced region pruning ([#6729](https://github.com/GreptimeTeam/greptimedb/pull/6729), [#6752](https://github.com/GreptimeTeam/greptimedb/pull/6752)).
 - **Procedure:**
