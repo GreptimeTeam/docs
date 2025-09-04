@@ -78,11 +78,11 @@ The `ORDER BY` clause is used to order the data in ascending or descending order
 For example:
 
 ```sql
---- Sort the results by cpu_util in ascending order
+-- Sort the results by cpu_util in ascending order
 SELECT *
 FROM system_metrics ORDER BY cpu_util ASC;
 
---- Sort the results by cpu_util in descending order
+-- Sort the results by cpu_util in descending order
 SELECT *
 FROM system_metrics ORDER BY cpu_util DESC;
 ```
