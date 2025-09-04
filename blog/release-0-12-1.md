@@ -1,7 +1,7 @@
 ---
 keywords: [release, GreptimeDB, changelog, v0.12.1]
 description: GreptimeDB v0.12.1 Changelog
-date: 2025-02-27
+date: 2025-06-21
 ---
 
 # v0.12.1
