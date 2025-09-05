@@ -104,6 +104,12 @@ http://<host>:4000
 
 ![Logs](/grafana/logs.png)
 
+#### logs Context 查询
+根据日志行的 context 列的值进行近似时间范围查询
+* 需要先设置 context 相关的列。
+![Context Config](/grafana/context2.png)
+* 然后查询的时候包含 context 相关列。
+![Logs Query Config](/grafana/context1.png)
 ---
 
 ### Traces 查询

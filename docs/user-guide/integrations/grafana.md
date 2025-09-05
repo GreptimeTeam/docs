@@ -107,7 +107,16 @@ Choose the `Logs` query type when you want to query log data. You'll need to spe
 
 ![Logs](/grafana/logs.png)
 
+#### logs Context Query
+Logs Context Query
+Performs an approximate time range query based on the value of context columns in a log row.
+
+* First, set the context column in Connection Page.
+![Context Config](/grafana/context2.png)
+* Then, when making a query, include the context column in the query.
+![Context Config](/grafana/context1.png)
 ---
+
 
 ### Traces Query
 
