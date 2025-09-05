@@ -114,9 +114,8 @@ Performs an approximate time range query based on the value of context columns i
 * First, set the context column in Connection Page.
 ![Context Config](/grafana/context2.png)
 * Then, when making a query, include the context column in the query.
-![Context Config](/grafana/context1.png)
+![Query Config](/grafana/context1.png)
 ---
-
 
 ### Traces Query
 
