@@ -22,7 +22,7 @@ GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
 
 ```shell
 ## 上传 pipeline 文件。test 为 Pipeline 的名称
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
   -H "Authorization: Basic {{authentication}}" \
   -F "file=@pipeline.yaml"
 ```
@@ -35,7 +35,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
 
 ```shell
 ## test 为 Pipeline 的名称
-curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z" \
+curl -X "DELETE" "http://localhost:4000/v1/pipelines/test?version=2024-06-27%2012%3A02%3A34.257312110Z" \
   -H "Authorization: Basic {{authentication}}"
 ```
 
@@ -47,13 +47,13 @@ curl -X "DELETE" "http://localhost:4000/v1/events/pipelines/test?version=2024-06
 
 ```shell
 ## test 是 Pipeline 的名称，该查询将返回最新版本的 Pipeline。
-curl "http://localhost:4000/v1/events/pipelines/test" \
+curl "http://localhost:4000/v1/pipelines/test" \
   -H "Authorization: Basic {{authentication}}"
 ```
 
 ```shell
 ## 如果你想查询某个 Pipeline 的历史版本，可以在 URL 中添加 `version` 参数
-curl "http://localhost:4000/v1/events/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
+curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
   -H "Authorization: Basic {{authentication}}"
 ```
 
@@ -193,7 +193,7 @@ Readable timestamp (UTC): 2024-06-27 12:02:34.257312110Z
 在创建 Pipeline 的时候你可能会遇到错误，例如使用如下配置创建 Pipeline：
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
      -H "Content-Type: application/x-yaml" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
@@ -229,7 +229,7 @@ Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字
 因此，你需要修改 `gsub` processor 的配置，将 `replacement` 字段的值更改为字符串类型。
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
      -H "Content-Type: application/x-yaml" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'processors:
@@ -263,7 +263,7 @@ transform:
 **此接口仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
@@ -275,7 +275,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 我们再将 message 字段的值修改为字符串类型，然后再次测试该 Pipeline。
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'

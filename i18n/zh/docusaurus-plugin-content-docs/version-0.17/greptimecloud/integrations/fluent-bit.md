@@ -17,7 +17,7 @@ Fluent Bit 可以配置为使用 HTTP 协议将日志发送到 GreptimeCloud。�
     Match            *
     Host             <host>
     Port             443
-    Uri              /v1/events/logs?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
+    Uri              /v1/ingest?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601

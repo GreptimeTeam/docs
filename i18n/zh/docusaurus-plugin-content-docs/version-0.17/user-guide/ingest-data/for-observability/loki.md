@@ -222,7 +222,7 @@ loki.write "greptime_loki" {
 2. [上传](/user-guide/logs/manage-pipelines.md#create-a-pipeline) pipeline 配置到数据库：
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/pp" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
 ```
 
 3. 启动 Alloy Docker 容器来处理日志：
