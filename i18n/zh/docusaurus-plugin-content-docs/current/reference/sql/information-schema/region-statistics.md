@@ -19,22 +19,23 @@ DESC REGION_STATISTICS;
 输出如下：
 
 ```sql
-+---------------+--------+------+------+---------+---------------+
-| Column        | Type   | Key  | Null | Default | Semantic Type |
-+---------------+--------+------+------+---------+---------------+
-| region_id     | UInt64 |      | NO   |         | FIELD         |
-| table_id      | UInt32 |      | NO   |         | FIELD         |
-| region_number | UInt32 |      | NO   |         | FIELD         |
-| region_rows   | UInt64 |      | YES  |         | FIELD         |
-| disk_size     | UInt64 |      | YES  |         | FIELD         |
-| memtable_size | UInt64 |      | YES  |         | FIELD         |
-| manifest_size | UInt64 |      | YES  |         | FIELD         |
-| sst_num       | UInt64 |      | YES  |         | FIELD         |
-| sst_size      | UInt64 |      | YES  |         | FIELD         |
-| index_size    | UInt64 |      | YES  |         | FIELD         |
-| engine        | String |      | YES  |         | FIELD         |
-| region_role   | String |      | YES  |         | FIELD         |
-+---------------+--------+------+------+---------+---------------+
++--------------------------+--------+------+------+---------+---------------+
+| Column                   | Type   | Key  | Null | Default | Semantic Type |
++--------------------------+--------+------+------+---------+---------------+
+| region_id                | UInt64 |      | NO   |         | FIELD         |
+| table_id                 | UInt32 |      | NO   |         | FIELD         |
+| region_number            | UInt32 |      | NO   |         | FIELD         |
+| region_rows              | UInt64 |      | YES  |         | FIELD         |
+| written_bytes_since_open | UInt64 |      | YES  |         | FIELD         |
+| disk_size                | UInt64 |      | YES  |         | FIELD         |
+| memtable_size            | UInt64 |      | YES  |         | FIELD         |
+| manifest_size            | UInt64 |      | YES  |         | FIELD         |
+| sst_size                 | UInt64 |      | YES  |         | FIELD         |
+| sst_num                  | UInt64 |      | YES  |         | FIELD         |
+| index_size               | UInt64 |      | YES  |         | FIELD         |
+| engine                   | String |      | YES  |         | FIELD         |
+| region_role              | String |      | YES  |         | FIELD         |
++--------------------------+--------+------+------+---------+---------------+
 ```
 
 `REGION_STATISTICS` 表中的字段描述如下：
@@ -43,6 +44,7 @@ DESC REGION_STATISTICS;
 - `table_id`: 表的 ID。
 - `region_number`: Region 在表中的编号。
 - `region_rows`: Region 中的记录行数。
+- `written_bytes_since_open`: Region 自打开以来写入的字节数。
 - `disk_size`: Region 中数据文件的总大小，包括数据、索引及元信息等。
 - `memtable_size`: Region 中内存 memtables 的总大小。
 - `manifest_size`: Region 中元信息 manifest 文件的总大小。
@@ -61,9 +63,9 @@ WHERE t.table_name = 'system_metrics';
 
 输出：
 ```sql
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| region_id     | table_id | region_number | region_rows | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
-| 4398046511104 |     1024 |             0 |           8 |      4922 |             0 |          1338 |     3249 |     1   |     335    | mito   | Leader      |
-+---------------+----------+---------------+-------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
++---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| region_id     | table_id | region_number | region_rows | written_bytes_since_open | disk_size | memtable_size | manifest_size | sst_size | sst_num | index_size | engine | region_role |
++---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
+| 4398046511104 |     1024 |             0 |           8 |                        0 |      4922 |             0 |          1338 |     3249 |       1 |        335 | mito   | Leader      |
++---------------+----------+---------------+-------------+--------------------------+-----------+---------------+---------------+----------+---------+------------+--------+-------------+
 ```
