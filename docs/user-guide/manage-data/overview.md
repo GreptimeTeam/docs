@@ -296,7 +296,7 @@ You can use Time to Live (TTL) policies to automatically remove stale data from 
 
 > Please note that the deletion of expired data due to TTL policy takes effect during compaction.
 > If you are testing the TTL policy, be sure to trigger data flush and compaction before querying the data.
-> You can use our "[ADMIN](/reference/sql/admin)" functions to manually run them.
+> You can use our "[ADMIN](/reference/sql/admin.md)" functions to manually run them.
 
 You can set TTL for every table when creating it. For example, the following SQL statement creates a table named `monitor` with a TTL policy of 7 days:
 
