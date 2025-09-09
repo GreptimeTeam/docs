@@ -291,7 +291,7 @@ Time to Live (TTL) 允许你设置定期删除表中数据的策略，
 - 通过清理过期数据来降低存储成本。
 - 减少数据库在某些查询中需要扫描的行数，从而提高查询性能。
 
-> 请注意，TTL 策略对过期数据的删除发生在 compaction 时。
+> 请注意，因 TTL 策略而过期的数据，并不是在 TTL 到期时立刻删除的，而是发生在 compaction 时。compaction 是一个后台任务。
 > 如果你在测试 TTL 策略，查询过期数据之前请确保 flush 和 compaction 都已触发过了。
 > 你可以使用我们的 ”[ADMIN](/reference/sql/admin.md)“ 函数来手动触发。
 
