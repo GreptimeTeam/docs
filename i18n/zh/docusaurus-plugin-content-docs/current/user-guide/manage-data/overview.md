@@ -293,7 +293,7 @@ Time to Live (TTL) 允许你设置定期删除表中数据的策略，
 
 > 请注意，TTL 策略对过期数据的删除发生在 compaction 时。
 > 如果你在测试 TTL 策略，查询过期数据之前请确保 flush 和 compaction 都已触发过了。
-> 你可以使用我们的 ”[ADMIN](/reference/sql/admin)“ 函数来手动触发。
+> 你可以使用我们的 ”[ADMIN](/reference/sql/admin.md)“ 函数来手动触发。
 
 你可以在创建每个表时设置 TTL。
 例如，以下 SQL 语句创建了一个名为 `monitor` 的表，并设置了 7 天的 TTL 策略：
