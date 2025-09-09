@@ -19,7 +19,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
     Match            *
     Host             greptimedb
     Port             4000
-    Uri              /v1/events/logs?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=pipeline_if_any
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601

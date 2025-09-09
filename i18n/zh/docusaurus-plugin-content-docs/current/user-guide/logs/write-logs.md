@@ -14,7 +14,7 @@ description: 介绍如何通过 HTTP 接口使用指定的 Pipeline 将日志写
 您可以使用以下命令通过 HTTP 接口写入日志：
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -d "$<log-items>"
@@ -190,7 +190,7 @@ mysql> select * from pipeline_logs;
 
 设置如下的 URL 参数来指定自定义时间索引列：
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'[{"action": "login", "ts": 1742814853}]'
@@ -231,7 +231,7 @@ DESC pipeline_logs;
 以下是一个示例请求：
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -H "x-greptime-pipeline-params: flatten_json_object=true" \
@@ -335,7 +335,7 @@ processors:
 如果你希望在写入日志时跳过错误，可以在 HTTP 请求的 query params 中添加 `skip_error` 参数。比如：
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -d "$<log-items>"

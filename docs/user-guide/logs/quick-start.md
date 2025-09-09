@@ -22,7 +22,7 @@ GreptimeDB offers a built-in pipeline, `greptime_identity`, for handling JSON lo
 
 ```shell
 curl -X POST \
-  "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+  "http://localhost:4000/v1/ingest?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic {{authentication}}" \
   -d '[
@@ -133,7 +133,7 @@ Execute the following command to upload the configuration file:
 
 ```shell
 curl -X "POST" \
-  "http://localhost:4000/v1/events/pipelines/nginx_pipeline" \
+  "http://localhost:4000/v1/pipelines/nginx_pipeline" \
      -H 'Authorization: Basic {{authentication}}' \
      -F "file=@pipeline.yaml"
 ```
@@ -154,7 +154,7 @@ The following example writes logs to the `custom_pipeline_logs` table and uses t
 
 ```shell
 curl -X POST \
-  "http://localhost:4000/v1/events/logs?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
+  "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic {{authentication}}" \
   -d '[

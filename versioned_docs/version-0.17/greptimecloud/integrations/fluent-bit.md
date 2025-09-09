@@ -18,7 +18,7 @@ Fluent Bit can be configured to send logs to GreptimeCloud using the HTTP protoc
     Match            *
     Host             <host>
     Port             443
-    Uri              /v1/events/logs?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
+    Uri              /v1/ingest?db=<dbname>&table=<table_name>&pipeline_name=<pipeline_name>
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601

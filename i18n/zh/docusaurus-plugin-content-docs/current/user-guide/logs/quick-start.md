@@ -22,7 +22,7 @@ GreptimeDB 提供了一个内置 pipeline `greptime_identity` 用于处理 JSON 
 
 ```shell
 curl -X POST \
-  "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
+  "http://localhost:4000/v1/ingest?db=public&table=pipeline_logs&pipeline_name=greptime_identity" \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic {{authentication}}" \
   -d '[
@@ -128,7 +128,7 @@ transform:
 
 ```shell
 curl -X "POST" \
-  "http://localhost:4000/v1/events/pipelines/nginx_pipeline" \
+  "http://localhost:4000/v1/pipelines/nginx_pipeline" \
      -H 'Authorization: Basic {{authentication}}' \
      -F "file=@pipeline.yaml"
 ```
@@ -149,7 +149,7 @@ curl -X "POST" \
 
 ```shell
 curl -X POST \
-  "http://localhost:4000/v1/events/logs?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
+  "http://localhost:4000/v1/ingest?db=public&table=custom_pipeline_logs&pipeline_name=nginx_pipeline" \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic {{authentication}}" \
   -d '[

@@ -222,9 +222,9 @@ Refer to the original Prometheus documentation for more information on the [Prom
 ## Log Ingestion Endpoints
 
 - **Paths**:
-  - `/v1/events/logs`
-  - `/v1/events/pipelines/{pipeline_name}`
-  - `/v1/events/pipelines/dryrun`
+  - `/v1/ingest`
+  - `/v1/pipelines/{pipeline_name}`
+  - `/v1/pipelines/dryrun`
 - **Methods**:
   - `POST` for ingesting logs and adding pipelines.
   - `DELETE` for deleting pipelines.

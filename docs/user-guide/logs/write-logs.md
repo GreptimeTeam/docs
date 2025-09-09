@@ -14,7 +14,7 @@ Before writing logs, please read the [Pipeline Configuration](pipeline-config.md
 You can use the following command to write logs via the HTTP interface:
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -d "$<log-items>"
@@ -190,7 +190,7 @@ Example of Incoming Log Data:
 
 To instruct the server to use ts as the time index, set the following query parameter in the HTTP header:
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=public&table=pipeline_logs&pipeline_name=greptime_identity&custom_time_index=ts;epoch;s" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'[{"action": "login", "ts": 1742814853}]'
@@ -231,7 +231,7 @@ If flattening a JSON object into a single-level structure is needed, add the `x-
 Here is a sample request:
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -H "x-greptime-pipeline-params: flatten_json_object=true" \
@@ -338,7 +338,7 @@ mode](/user-guide/deployments-administration/performance-tuning/design-table.md#
 If you want to skip errors when writing logs, you can add the `skip_error` parameter to the HTTP request's query params. For example:
 
 ```shell
-curl -X "POST" "http://localhost:4000/v1/events/logs?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
+curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=<pipeline-name>&version=<pipeline-version>&skip_error=true" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
      -d "$<log-items>"

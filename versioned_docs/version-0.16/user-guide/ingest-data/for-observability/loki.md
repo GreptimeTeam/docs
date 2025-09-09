@@ -222,7 +222,7 @@ In the `greptime_loki`, the `x-greptime-pipeline-name` header is added to indica
 2. [Upload](/user-guide/logs/manage-pipelines.md#create-a-pipeline) the pipeline configuration to the database using `curl`:
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/events/pipelines/pp" -F "file=@pipeline.yaml"
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
 ```
 
 3. Start the Alloy Docker container to process the logs:
