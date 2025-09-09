@@ -319,3 +319,116 @@ At this point, the Pipeline processing is successful, and the output is as follo
 ```
 
 It can be seen that the `.` in the string `1998.08` has been replaced with `-`, indicating a successful processing of the Pipeline.
+
+## Get Table DDL from a Pipeline Configuration
+
+While using Pipeline, the target table is auto-created by default upon first data ingestion.
+You can manually create the table beforehand to add some custom table options.
+For example, you might want to add some partition rules for better performance.
+
+The auto-created table's schema is almost deterministic for a certain pipeline configuration.
+However, it can be tedious to hand-write the table DDL according to the configuration.
+The new `/ddl` API comes into help.
+
+For an existing pipeline, now you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the create table SQL.
+This API will look into the transform definition of the pipeline configuration, and infer the table schema.
+
+Here is an example of how to use this API. Following is a pipeline configuration:
+```YAML
+# pipeline.yaml
+processors:
+- dissect:
+    fields:
+      - message
+    patterns:
+      - '%{ip_address} - %{username} [%{timestamp}] "%{http_method} %{request_line} %{protocol}" %{status_code} %{response_size}'
+    ignore_missing: true
+- date:
+    fields:
+      - timestamp
+    formats:
+      - "%d/%b/%Y:%H:%M:%S %z"
+
+transform:
+  - fields:
+      - timestamp
+    type: time
+    index: timestamp
+  - fields:
+      - ip_address
+    type: string
+    index: skipping
+  - fields:
+      - username
+    type: string
+    tag: true
+  - fields:
+      - http_method
+    type: string
+    index: inverted
+  - fields:
+      - request_line
+    type: string
+    index: fulltext
+  - fields:
+      - protocol
+    type: string
+  - fields:
+      - status_code
+    type: int32
+    index: inverted
+    tag: true
+  - fields:
+      - response_size
+    type: int64
+    on_failure: default
+    default: 0
+  - fields:
+      - message
+    type: string
+```
+
+Firstly, upload the pipeline to the database using the following command:
+```bash
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
+```
+Then, you can use the following command to query the table DDL:
+```bash
+curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
+```
+You can see the following output in JSON format:
+```JSON
+{
+  "sql": {
+    "sql": "CREATE TABLE IF NOT EXISTS `test_table` (\n  `timestamp` TIMESTAMP(9) NOT NULL,\n  `ip_address` STRING NULL SKIPPING INDEX WITH(false_positive_rate = '0.01', granularity = '10240', type = 'BLOOM'),\n  `username` STRING NULL,\n  `http_method` STRING NULL INVERTED INDEX,\n  `request_line` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', backend = 'bloom', case_sensitive = 'false', false_positive_rate = '0.01', granularity = '10240'),\n  `protocol` STRING NULL,\n  `status_code` INT NULL INVERTED INDEX,\n  `response_size` BIGINT NULL,\n  `message` STRING NULL,\n  TIME INDEX (`timestamp`),\n  PRIMARY KEY (`username`, `status_code`)\n)\nENGINE=mito\nWITH(\n  append_mode = 'true'\n)"
+  },
+  "execution_time_ms": 3
+}
+```
+After formatting the `sql` in the response, you can see the inferred table schema as following:
+```SQL
+CREATE TABLE IF NOT EXISTS `test_table` (
+  `timestamp` TIMESTAMP(9) NOT NULL,
+  `ip_address` STRING NULL SKIPPING INDEX WITH(false_positive_rate = '0.01', granularity = '10240', type = 'BLOOM'),
+  `username` STRING NULL,
+  `http_method` STRING NULL INVERTED INDEX,
+  `request_line` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', backend = 'bloom', case_sensitive = 'false', false_positive_rate = '0.01', granularity = '10240'),
+  `protocol` STRING NULL,
+  `status_code` INT NULL INVERTED INDEX,
+  `response_size` BIGINT NULL,
+  `message` STRING NULL,
+  TIME INDEX (`timestamp`),
+  PRIMARY KEY (`username`, `status_code`)
+  )
+ENGINE=mito
+WITH(
+  append_mode = 'true'
+)
+```
+
+You can use the inferred table DDL as a starting point, see [here](/docs//reference//sql/create.md#table-options) for some insights.
+After tweaking the DDL, execute it manually before data ingestion through the pipeline to take efforts.
+
+Note:
+1. The API doesn't check if the table is already exist. It only infer table schema from the pipeline configuration.
+2. The API doesn't check for table suffix. If you're using `dispatcher`, `table_suffix` or table suffix hint in the pipeline configuration, you'll have to adjust the table name manually. 
