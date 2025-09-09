@@ -322,18 +322,18 @@ It can be seen that the `.` in the string `1998.08` has been replaced with `-`, 
 
 ## Get Table DDL from a Pipeline Configuration
 
-While using Pipeline, the target table is auto-created by default upon first data ingestion.
-You can manually create the table beforehand to add some custom table options.
-For example, you might want to add some partition rules for better performance.
+When using pipelines, GreptimeDB automatically creates target tables upon first data ingestion by default.
+However, you may want to manually create tables beforehand to add custom table options,
+such as partition rules for better performance.
 
-The auto-created table's schema is almost deterministic for a certain pipeline configuration.
-However, it can be tedious to hand-write the table DDL according to the configuration.
-The new `/ddl` API comes into help.
+While the auto-created table schema is deterministic for a given pipeline configuration,
+manually writing the table DDL according to the configuration can be tedious.
+The `/ddl` API endpoint simplifies this process.
 
-For an existing pipeline, now you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the create table SQL.
-This API will look into the transform definition of the pipeline configuration, and infer the table schema.
+For an existing pipeline, you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the CREATE TABLE SQL.
+This API examines the transform definition in the pipeline configuration and infers the appropriate table schema.
 
-Here is an example of how to use this API. Following is a pipeline configuration:
+Here is an example demonstrating how to use this API. Consider the following pipeline configuration:
 ```YAML
 # pipeline.yaml
 processors:
@@ -388,15 +388,15 @@ transform:
     type: string
 ```
 
-Firstly, upload the pipeline to the database using the following command:
+First, upload the pipeline to the database using the following command:
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
 ```
-Then, you can use the following command to query the table DDL:
+Then, query the table DDL using the following command:
 ```bash
 curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
 ```
-You can see the following output in JSON format:
+The API returns the following output in JSON format:
 ```JSON
 {
   "sql": {
@@ -405,7 +405,7 @@ You can see the following output in JSON format:
   "execution_time_ms": 3
 }
 ```
-After formatting the `sql` in the response, you can see the inferred table schema as following:
+After formatting the `sql` field in the response, you can see the inferred table schema:
 ```SQL
 CREATE TABLE IF NOT EXISTS `test_table` (
   `timestamp` TIMESTAMP(9) NOT NULL,
@@ -426,9 +426,9 @@ WITH(
 )
 ```
 
-You can use the inferred table DDL as a starting point, see [here](/docs//reference//sql/create.md#table-options) for some insights.
-After tweaking the DDL, execute it manually before data ingestion through the pipeline to take efforts.
+You can use the inferred table DDL as a starting point. See [here](/docs//reference//sql/create.md#table-options) for more information about table options.
+After customizing the DDL to meet your requirements, execute it manually before ingesting data through the pipeline.
 
-Note:
-1. The API doesn't check if the table is already exist. It only infer table schema from the pipeline configuration.
-2. The API doesn't check for table suffix. If you're using `dispatcher`, `table_suffix` or table suffix hint in the pipeline configuration, you'll have to adjust the table name manually. 
+**Notes:**
+1. The API only infers the table schema from the pipeline configuration; it doesn't check if the table already exists.
+2. The API doesn't account for table suffixes. If you're using `dispatcher`, `table_suffix`, or table suffix hints in your pipeline configuration, you'll need to adjust the table name manually. 
