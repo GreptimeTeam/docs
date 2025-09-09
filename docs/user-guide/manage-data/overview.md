@@ -294,7 +294,7 @@ You can use Time to Live (TTL) policies to automatically remove stale data from 
 - Decrease storage costs by cleaning out obsolete data.
 - Reduce the number of rows the database has to scan for some queries, potentially increasing query performance.
 
-> Please note that the deletion of expired data due to TTL policy takes effect during compaction.
+> Please note that the expired data due to TTL policy may not be deleted right after the expiration time. Instead, they are deleted during the compaction, which is a background job ran asynchronously.
 > If you are testing the TTL policy, be sure to trigger data flush and compaction before querying the data.
 > You can use our "[ADMIN](/reference/sql/admin.md)" functions to manually run them.
 
