@@ -320,7 +320,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 
 可以看到，`1998.08` 字符串中的 `.` 已经被替换为 `-`，Pipeline 处理成功。
 
-## 从 Pipeline 配置生成表 DDL
+## 从 Pipeline 配置生成表的建表语句
 
 使用 Pipeline 时，GreptimeDB 默认会在首次数据写入时自动创建目标表。
 但是，你可能希望预先手动创建表以添加自定义表选项，例如添加分区规则以获得更好的性能。
@@ -424,7 +424,7 @@ WITH(
 )
 ```
 
-你可以将推断出的表 DDL 作为起点。有关表选项的更多信息，请参见[此处](/reference/sql/create.md#table-options)。
+你可以将推断出的表的建表语句作为起点。有关表选项的更多信息，请参见[此处](/reference/sql/create.md#table-options)。
 根据你的需求自定义建表语句后，在通过 Pipeline 写入数据之前手动执行它。
 
 **注意事项：**
