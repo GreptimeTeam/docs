@@ -5,7 +5,7 @@ description: Configuration guide for the region balancer plugin in GreptimeDB En
 
 # Region Balancer
 
-This plugin balances the write load of regions across datanodes, using specified window sizes and load thresholds to prevent frequent region migrations.
+This plugin balances the write load of regions across datanodes, using specified window sizes and load thresholds to prevent frequent region migrations. You can enable the Auto Rebalancer feature by adding the following configuration to Metasrv.
 
 ```toml
 [[plugins]]
