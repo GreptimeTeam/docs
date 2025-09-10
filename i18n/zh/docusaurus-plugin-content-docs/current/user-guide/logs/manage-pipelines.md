@@ -326,7 +326,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 但是，你可能希望预先手动创建表以添加自定义表选项，例如添加分区规则以获得更好的性能。
 
 虽然自动创建的表结构对于给定的 Pipeline 配置是确定的，
-但根据配置手动编写表 DDL 可能会很繁琐。`/ddl` API 简化了这一过程。
+但根据配置手动编写表的建表语句可能会很繁琐。`/ddl` API 简化了这一过程。
 
 对于现有的 Pipeline，你可以使用 `/v1/pipelines/{pipeline_name}/ddl` 来生成建表语句。
 此 API 会检查 Pipeline 配置中的 transform 定义并推断出相应的表结构。
@@ -390,7 +390,7 @@ transform:
 ```bash
 curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
 ```
-然后，使用以下命令查询表 DDL：
+然后，使用以下命令查询表的建表语句：
 ```bash
 curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
 ```
@@ -424,8 +424,8 @@ WITH(
 )
 ```
 
-你可以将推断出的表 DDL 作为起点。有关表选项的更多信息，请参见[此处](/docs//reference//sql/create.md#table-options)。
-根据你的需求自定义 DDL 后，在通过 Pipeline 写入数据之前手动执行它。
+你可以将推断出的表 DDL 作为起点。有关表选项的更多信息，请参见[此处](/reference/sql/create.md#table-options)。
+根据你的需求自定义建表语句后，在通过 Pipeline 写入数据之前手动执行它。
 
 **注意事项：**
 1. 该 API 仅从 Pipeline 配置推断表结构；它不会检查表是否已存在。

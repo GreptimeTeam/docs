@@ -327,10 +327,10 @@ However, you may want to manually create tables beforehand to add custom table o
 such as partition rules for better performance.
 
 While the auto-created table schema is deterministic for a given pipeline configuration,
-manually writing the table DDL according to the configuration can be tedious.
+manually writing the table DDL (Data Definition Language) according to the configuration can be tedious.
 The `/ddl` API endpoint simplifies this process.
 
-For an existing pipeline, you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the CREATE TABLE SQL.
+For an existing pipeline, you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the `CREATE TABLE` SQL.
 This API examines the transform definition in the pipeline configuration and infers the appropriate table schema.
 
 Here is an example demonstrating how to use this API. Consider the following pipeline configuration:
@@ -426,7 +426,7 @@ WITH(
 )
 ```
 
-You can use the inferred table DDL as a starting point. See [here](/docs//reference//sql/create.md#table-options) for more information about table options.
+You can use the inferred table DDL as a starting point. See [here](/reference/sql/create.md#table-options) for more information about table options.
 After customizing the DDL to meet your requirements, execute it manually before ingesting data through the pipeline.
 
 **Notes:**
