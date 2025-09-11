@@ -332,6 +332,10 @@ The `/ddl` API endpoint simplifies this process.
 
 For an existing pipeline, you can use the `/v1/pipelines/{pipeline_name}/ddl` endpoint to generate the `CREATE TABLE` SQL.
 This API examines the transform definition in the pipeline configuration and infers the appropriate table schema.
+You can use this API to generate the basic table DDL, fine-tune table options and manually create the table before ingesting data. Some common cases would be:
+- Add [partition rules](/user-guide/deployments-administration/manage-data/table-sharding.md)
+- Modify [index options](/user-guide/manage-data/data-index.md)
+- Add other [table options](/reference/sql/create.md#table-options)
 
 Here is an example demonstrating how to use this API. Consider the following pipeline configuration:
 ```YAML
@@ -426,7 +430,7 @@ WITH(
 )
 ```
 
-You can use the inferred table DDL as a starting point. See [here](/reference/sql/create.md#table-options) for more information about table options.
+You can use the inferred table DDL as a starting point.
 After customizing the DDL to meet your requirements, execute it manually before ingesting data through the pipeline.
 
 **Notes:**

@@ -330,6 +330,11 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 
 对于现有的 Pipeline，你可以使用 `/v1/pipelines/{pipeline_name}/ddl` 来生成建表语句。
 此 API 会检查 Pipeline 配置中的 transform 定义并推断出相应的表结构。
+你可以在第一次写入数据之前使用此 API 来生成基础的建表语句，进行参数调整并手动建表。
+常见的调整选项包括：
+- 增加[数据分区规则](/user-guide/deployments-administration/manage-data/table-sharding.md)
+- 调整[索引的参数](/user-guide/manage-data/data-index.md)
+- 增加其他[表选项](/reference/sql/create.md#table-options)
 
 以下是演示如何使用此 API 的示例。考虑以下 Pipeline 配置：
 ```YAML
@@ -424,7 +429,7 @@ WITH(
 )
 ```
 
-你可以将推断出的表的建表语句作为起点。有关表选项的更多信息，请参见[此处](/reference/sql/create.md#table-options)。
+你可以将推断出的表的建表语句作为起点。
 根据你的需求自定义建表语句后，在通过 Pipeline 写入数据之前手动执行它。
 
 **注意事项：**
