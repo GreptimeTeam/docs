@@ -334,7 +334,7 @@ curl -X "POST" "http://localhost:4000/v1/events/pipelines/dryrun?pipeline_name=t
 常见的调整选项包括：
 - 增加[数据分区规则](/user-guide/deployments-administration/manage-data/table-sharding.md)
 - 调整[索引的参数](/user-guide/manage-data/data-index.md)
-- 增加其他[表选项](/reference/sql/create.md#table-options)
+- 增加其他[表选项](/reference/sql/create.md#表选项)
 
 以下是演示如何使用此 API 的示例。考虑以下 Pipeline 配置：
 ```YAML
