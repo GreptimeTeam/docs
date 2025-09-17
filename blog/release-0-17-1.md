@@ -4,6 +4,8 @@ description: GreptimeDB v0.17.1 Changelog
 date: 2025-09-17
 ---
 
+# v0.17.1
+
 Release date: September 17, 2025
 
 **If you are using [v0.17.0](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.1), we recommend upgrading to [v0.17.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.1).**
