@@ -28,7 +28,7 @@ Release date: September 17, 2025
 * fix: deadlock in dashmap by [@shuiyisong](https://github.com/shuiyisong) in [#6978](https://github.com/GreptimeTeam/greptimedb/pull/6978)
 * fix: clean intm ignore notfound by [@zhongzc](https://github.com/zhongzc) in [#6971](https://github.com/GreptimeTeam/greptimedb/pull/6971)
 * fix: avoid truncating SST statistics during flush by [@v0y4g3r](https://github.com/v0y4g3r) in [#6977](https://github.com/GreptimeTeam/greptimedb/pull/6977)
-* fix: OTel metrics naming wiht Prometheus style by [@shuiyisong](https://github.com/shuiyisong) in [#6982](https://github.com/GreptimeTeam/greptimedb/pull/6982)
+* fix: OTel metrics naming with Prometheus style by [@shuiyisong](https://github.com/shuiyisong) in [#6982](https://github.com/GreptimeTeam/greptimedb/pull/6982)
 
 ### 🧪 Testing
 
