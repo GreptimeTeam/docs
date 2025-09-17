@@ -6,6 +6,10 @@ date: 2025-09-17
 
 Release date: September 17, 2025
 
+**If you are using [v0.17.0](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.1), we recommend upgrading to [v0.17.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.1).**
+
+v0.17.1 improves overall reliability and includes important bug fixes, addressing critical issues such as SST metadata truncation that could lead to process panics, deadlocks during OpenTelemetry ingestion, and correcting SubqueryAlias pushdown to resolve subquery alias performance issues.
+
 ### 🚀 Features
 
 * feat: skip compaction on large file on append only mode by [@waynexia](https://github.com/waynexia) in [#6838](https://github.com/GreptimeTeam/greptimedb/pull/6838)
