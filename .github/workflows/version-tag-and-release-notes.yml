@@ -1,0 +1,180 @@
+name: Version Tag and Release Notes
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 0.17.0)'
+        required: true
+        type: string
+
+jobs:
+  create-tag-and-release:
+    runs-on: ubuntu-latest
+    if: (github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'bump version')) || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for release notes
+
+      - name: Extract version from versions.json
+        id: extract_version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            # Extract version from versions.json
+            VERSION=$(jq -r '.[0]' versions.json)
+            echo "Extracted version from versions.json: $VERSION"
+          fi
+          
+          if [[ -z "$VERSION" ]]; then
+            echo "Could not extract version"
+            exit 1
+          fi
+          
+          # Ensure version has patch number (add .0 if missing)
+          if [[ ! "$VERSION" =~ \.[0-9]+$ ]]; then
+            VERSION="${VERSION}.0"
+          fi
+          
+          echo "Final version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          TAG_NAME="v${{ steps.extract_version.outputs.version }}"
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag $TAG_NAME already exists"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag $TAG_NAME does not exist"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get previous tag for release notes
+        id: previous_tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          # Get the previous tag
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          if [[ -z "$PREVIOUS_TAG" ]]; then
+            # If no previous tag, use the first commit
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          echo "Previous tag: $PREVIOUS_TAG"
+
+      - name: Create tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          TAG_NAME="${{ steps.extract_version.outputs.tag_name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
+          git push origin "$TAG_NAME"
+
+      - name: Generate release notes
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ steps.extract_version.outputs.tag_name }}',
+              name: 'Release ${{ steps.extract_version.outputs.tag_name }}',
+              body: '', // Will be auto-generated
+              draft: false,
+              prerelease: false,
+              generate_release_notes: true
+            });
+            
+            console.log(`Created release: ${release.html_url}`);
+            
+            // Output release info
+            core.setOutput('release_url', release.html_url);
+            core.setOutput('release_id', release.id);
+
+      - name: Update release with additional info
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get the release that was just created
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1
+            });
+            
+            if (releases.length === 0) {
+              console.log('No releases found');
+              return;
+            }
+            
+            const release = releases[0];
+            
+            // Get commits between previous tag and current tag
+            const previousTag = '${{ steps.previous_tag.outputs.previous_tag }}';
+            const currentTag = '${{ steps.extract_version.outputs.tag_name }}';
+            
+            let commits = [];
+            try {
+              const { data: compareData } = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: previousTag,
+                head: currentTag
+              });
+              commits = compareData.commits;
+            } catch (error) {
+              console.log(`Error comparing commits: ${error.message}`);
+              // Fallback: get recent commits
+              const { data: recentCommits } = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 50
+              });
+              commits = recentCommits;
+            }
+            
+            // Get unique contributors
+            const contributors = [...new Set(commits.map(commit => commit.author?.login).filter(Boolean))];
+            
+            // Prepare additional release notes content
+            let additionalContent = '\n\n## Contributors\n\n';
+            contributors.forEach(contributor => {
+              additionalContent += `* @${contributor}\n`;
+            });
+            
+            additionalContent += `\n**Full Changelog**: https://github.com/${context.repo.owner}/${context.repo.repo}/compare/${previousTag}...${currentTag}`;
+            
+            // Update the release with additional content
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body: release.body + additionalContent
+            });
+            
+            console.log(`Updated release with contributors and changelog link`);
+
+      - name: Notify completion
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          echo "✅ Successfully created tag ${{ steps.extract_version.outputs.tag_name }} and generated release notes!"
+          echo "🔗 Release URL will be available in the GitHub repository releases page"
+      
+      - name: Skip notification
+        if: steps.check_tag.outputs.tag_exists == 'true'
+        run: |
+          echo "ℹ️  Tag ${{ steps.extract_version.outputs.tag_name }} already exists, skipping release creation"
