@@ -73,7 +73,7 @@ helm upgrade --install ${release-name} ${chart-name} --namespace ${namespace} -f
 ```yaml
 # 非法配置 !!!
 frontendGroups: 
-#  - name: read #<=========The name must be set=============>
+#  - name: read #<=========必须指定该字段=============>
   - replicas: 1
 ```    
 
