@@ -31,41 +31,42 @@ chart 版本之间的配置结构已发生变化:
 请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
 :::
 
-定义 frontend 组时，必须为每个 frontend 实例指定名称字段。以下是创建读写 frontend 实例的示例配置：
+在配置 frontend 组时，确保每个组都包含 `name` 字段。以下 `values.yaml` 示例展示了如何为读写操作分别定义不同的 frontend 组：
 
 ```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: greptimedb
-  namespace: default
-spec:
-  initializer:
-    image: greptime/greptimedb-initializer:latest
-  base:
-    main:
-      image: greptime/greptimedb:latest  
-  frontendGroups:
+frontend:
+  enabled: false # 禁用默认 frontend 组
+
+frontendGroups:
   - name: read
-    replicas: 2
+    replicas: 1
     config: |
       default_timezone = "UTC"
       [http]
       timeout = "60s"
+    template:
+      main:
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2048Mi
   - name: write
     replicas: 1
-    config: |
-      default_timezone = "UTC"
-      [http]
-      timeout = "60s"
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints:
+        - "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+
+你可以使用以下命令应用上述配置：
+```
+helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace ${namespace} -f values.yaml
 ```
 
 ## 合规配置
@@ -74,14 +75,9 @@ spec:
 
 ```yaml
 # 非法配置 !!!
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: greptimedb
-spec:
-  frontendGroups: 
-  #  - name: read #<=========The name must be set=============>
-    - replicas: 1
+frontendGroups: 
+#  - name: read #<=========必须指定该字段=============>
+  - replicas: 1
 ```    
 
 ## 校验安装
