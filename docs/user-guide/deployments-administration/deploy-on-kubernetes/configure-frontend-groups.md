@@ -31,41 +31,39 @@ The configuration structure has changed between chart versions:
 Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
 :::
 
-When defining the frontend groups, you must specify the name field for each frontend instance. Below is an example configuration that creates read and write frontend replicas:
+When configuring frontend groups, ensure that each group includes a `name` field. The following `values.yaml` example demonstrates how to define separate frontend groups for read and write operations:
 
 ```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: greptimedb
-  namespace: default
-spec:
-  initializer:
-    image: greptime/greptimedb-initializer:latest
-  base:
-    main:
-      image: greptime/greptimedb:latest  
-  frontendGroups:
-  - name: read
-    replicas: 2
-    config: |
-      default_timezone = "UTC"
-      [http]
-      timeout = "60s"
-  - name: write
-    replicas: 1
-    config: |
-      default_timezone = "UTC"
-      [http]
-      timeout = "60s"
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
+frontendGroups: 
+ - name: read
+   replicas: 1
+   config: |
+    default_timezone = "UTC"
+    [http]
+    timeout = "60s"
+   template:
+     main:
+       resources:
+         limits:
+           cpu: 2000m
+           memory: 2048Mi
+ - name: write
+   replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints:
+        - "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+
+You can use the following command to apply the configuration:
+```
+helm upgrade --install ${release-name} ${chart-name} --namespace ${namespace} -f values.yaml
 ```
 
 ## Validity
@@ -73,15 +71,9 @@ spec:
 When setting the frontend groups, the name must be set.
 
 ```yaml
-# This is an illegal configuration !!!
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: greptimedb
-spec:
-  frontendGroups: 
+frontendGroups: 
   #  - name: read #<=========The name must be set=============>
-    - replicas: 1
+  - replicas: 1
 ```    
 
 ## Verify the Installation
