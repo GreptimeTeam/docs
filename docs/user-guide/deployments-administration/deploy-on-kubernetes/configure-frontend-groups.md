@@ -34,6 +34,8 @@ Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-ch
 When configuring frontend groups, ensure that each group includes a `name` field. The following `values.yaml` example demonstrates how to define separate frontend groups for read and write operations:
 
 ```yaml
+frontend:
+  enabled: false # Disable default frontend group
 frontendGroups: 
  - name: read
    replicas: 1

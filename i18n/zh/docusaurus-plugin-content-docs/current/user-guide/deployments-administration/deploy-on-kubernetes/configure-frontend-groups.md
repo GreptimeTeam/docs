@@ -34,6 +34,8 @@ chart 版本之间的配置结构已发生变化:
 在配置 frontend 组时，确保每个组都包含 `name` 字段。以下 `values.yaml` 示例展示了如何为读写操作分别定义不同的 frontend 组：
 
 ```yaml
+frontend:
+  enabled: false # 禁用默认 frontend 组
 frontendGroups: 
  - name: read
    replicas: 1
