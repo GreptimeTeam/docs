@@ -35,22 +35,23 @@ When configuring frontend groups, ensure that each group includes a `name` field
 
 ```yaml
 frontend:
-  enabled: false # Disable default frontend group
-frontendGroups: 
- - name: read
-   replicas: 1
-   config: |
-    default_timezone = "UTC"
-    [http]
-    timeout = "60s"
-   template:
-     main:
-       resources:
-         limits:
-           cpu: 2000m
-           memory: 2048Mi
- - name: write
-   replicas: 1
+  enabled: false  # Disable default frontend group
+
+frontendGroups:
+  - name: read
+    replicas: 1
+    config: |
+      default_timezone = "UTC"
+      [http]
+      timeout = "60s"
+    template:
+      main:
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2048Mi
+  - name: write
+    replicas: 1
 
 meta:
   replicas: 1

@@ -36,21 +36,22 @@ chart 版本之间的配置结构已发生变化:
 ```yaml
 frontend:
   enabled: false # 禁用默认 frontend 组
-frontendGroups: 
- - name: read
-   replicas: 1
-   config: |
-    default_timezone = "UTC"
-    [http]
-    timeout = "60s"
-   template:
-     main:
-       resources:
-         limits:
-           cpu: 2000m
-           memory: 2048Mi
- - name: write
-   replicas: 1
+
+frontendGroups:
+  - name: read
+    replicas: 1
+    config: |
+      default_timezone = "UTC"
+      [http]
+      timeout = "60s"
+    template:
+      main:
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2048Mi
+  - name: write
+    replicas: 1
 
 meta:
   replicas: 1
