@@ -83,7 +83,27 @@ store_addrs = ["mysql://user:password@ip:port/dbname"]
 # 默认值: greptime_metakv
 meta_table_name = "greptime_metakv"
 
-# MySQL 暂不支持 TLS。
+[backend_tls]
+# - "disable" - 不使用 TLS
+# - "prefer" (默认) - 尝试 TLS，失败时回退到明文连接
+# - "require" - 要求 TLS
+# - "verify_ca" - 要求 TLS 并验证 CA
+# - "verify_full" - 要求 TLS 并验证主机名
+mode = "prefer"
+
+# 客户端证书文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.crt"
+cert_path = ""
+
+# 客户端私钥文件路径（用于客户端身份验证）
+# 例如 "/path/to/client.key"
+key_path = ""
+
+# CA 证书文件路径（用于服务器证书验证）
+# 使用自定义 CA 或自签名证书时必需
+# 留空则仅使用系统根证书
+# 例如 "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 
 当多个 GreptimeDB 集群共享同一个 MySQL 实例时，必须为每个 GreptimeDB 集群设置一个唯一的 `meta_table_name` 以避免元数据冲突。

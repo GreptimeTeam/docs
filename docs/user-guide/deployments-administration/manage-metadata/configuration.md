@@ -83,7 +83,27 @@ store_addrs = ["mysql://user:password@ip:port/dbname"]
 # Default: greptime_metakv
 meta_table_name = "greptime_metakv"
 
-# TLS is not supported for MySQL currently.
+[backend_tls]
+# - "disable" - No TLS
+# - "prefer" (default) - Try TLS, fallback to plain
+# - "require" - Require TLS
+# - "verify_ca" - Require TLS and verify CA
+# - "verify_full" - Require TLS and verify hostname
+mode = "prefer"
+
+# Path to client certificate file (for client authentication)
+# Like "/path/to/client.crt"
+cert_path = ""
+
+# Path to client private key file (for client authentication)
+# Like "/path/to/client.key"
+key_path = ""
+
+# Path to CA certificate file (for server certificate verification)
+# Required when using custom CAs or self-signed certificates
+# Leave empty to use system root certificates only
+# Like "/path/to/ca.crt"
+ca_cert_path = ""
 ```
 
 When sharing a MySQL instance between multiple GreptimeDB clusters, you must set a unique `meta_table_name` for each GreptimeDB cluster to avoid metadata conflicts.
