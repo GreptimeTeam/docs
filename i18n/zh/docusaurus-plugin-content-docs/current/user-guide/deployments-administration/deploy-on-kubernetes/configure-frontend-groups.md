@@ -66,7 +66,7 @@ datanode:
 
 你可以使用以下命令应用上述配置：
 ```
-helm upgrade --install ${release-name} ${chart-name} --namespace ${namespace} -f values.yaml
+helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace ${namespace} -f values.yaml
 ```
 
 ## 合规配置

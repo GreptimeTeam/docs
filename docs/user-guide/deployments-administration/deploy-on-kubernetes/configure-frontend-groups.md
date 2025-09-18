@@ -66,7 +66,7 @@ datanode:
 
 You can use the following command to apply the configuration:
 ```
-helm upgrade --install ${release-name} ${chart-name} --namespace ${namespace} -f values.yaml
+helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace ${namespace} -f values.yaml
 ```
 
 ## Validity
