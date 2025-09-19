@@ -1,5 +1,5 @@
 ---
-keywords: [可观测数据库,开源可观测数据库,时序数据库, 开源时序数据库, 可观测数据,时序数据, 可观测性工具, 云原生数据库, 数据可观测性, 可观测性平台, 边缘数据库, 物联网边缘计算, 边缘云计算, 日志管理, 日志聚合, 高基数, SQL查询示例, OpenTelemetry 收集器, GreptimeDB]
+keywords: [可观测性数据库,开源可观测性数据库,时序数据库, 开源时序数据库, 可观测数据,时序数据, 可观测性工具, 云原生数据库, 数据可观测性, 可观测性平台, 边缘数据库, 物联网边缘计算, 边缘云计算, 日志管理, 日志聚合, 高基数, SQL查询示例, OpenTelemetry 收集器, GreptimeDB]
 description: 介绍了 GreptimeDB，一个开源的统一可观测性数据库，用于存储指标、日志和事件，包含入门指南、用户指南、贡献者指南等链接，帮助用户快速上手和深入了解。
 ---
 
@@ -12,12 +12,12 @@ description: 介绍了 GreptimeDB，一个开源的统一可观测性数据库�
 **GreptimeDB** 是一个开源、云原生、统一的可观测性数据库，用于存储指标、日志和链路追踪数据。您可以从边缘到云端获得实时洞察——无论规模大小。
 
 GreptimeDB 经由 [GreptimeCloud](https://greptime.cn/product/cloud) 提供云服务。
-GreptimeCloud 是一个完全托管的可观测数据库服务，具有无服务器（Serverless）的可扩展性、与丰富的 IoT 和可观测软件生态系统的无缝集成。
+GreptimeCloud 是一个完全托管的可观测性数据库服务，具有无服务器（Serverless）的可扩展性、与丰富的 IoT 和可观测软件生态系统的无缝集成。
 
 我们的核心开发人员多年深耕于建立可观测（监控）数据平台。基于他们的丰富经验，GreptimeDB 应运而生，并为用户提供：
 
 
-- **All-in-One 的可观测数据库**：通过统一数据库实时处理指标、日志和链路追踪，原生支持 [SQL](/user-guide/query-data/sql.md)、[PromQL](/user-guide/query-data/promql.md) 和 [流式处理](/user-guide/flow-computation/overview.md)。用高性能单一解决方案取代复杂的传统数据堆栈。
+- **All-in-One 的可观测性数据库**：通过统一数据库实时处理指标、日志和链路追踪，原生支持 [SQL](/user-guide/query-data/sql.md)、[PromQL](/user-guide/query-data/promql.md) 和 [流式处理](/user-guide/flow-computation/overview.md)。用高性能单一解决方案取代复杂的传统数据堆栈。
 - **高性能引擎**：采用 Rust 语言打造，具备卓越的性能和可靠性。丰富的[索引选择](/user-guide/manage-data/data-index.md)（倒排、全文、调数和向量索引）加速查询，实现 PB 级数据的亚秒级响应，并能处理数十万并发请求。
 - **显著的成本降低**：凭借计算与存储分离的[架构](/user-guide/concepts/architecture.md)，运营和存储成本降低 50 倍。可灵活扩展至各类云存储系统（如 S3、Azure Blob Storage），配合全托管云服务 [GreptimeCloud](https://greptime.cn/product/cloud) ，极大简化运维管理。
 - **无限扩展性**：专为 [Kubernetes](/user-guide/deployments/deploy-on-kubernetes/greptimedb-operator-management.md) 和云环境而设计，采用业界领先的计算与存储分离架构，实现无限制的跨云扩展。高效应对高基数爆炸问题。
