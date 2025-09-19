@@ -35,18 +35,7 @@ datanode 接受 `workload_types` 字段来区分其工作负载类型。支持�
 danodata:
     enabled: false
 
-datanodeGroups:
-  - name: read
-    replicas: 1
-    config: |
-      workload_types = ["query"]
-    template:
-      main:
-        resources:
-          limits:
-            cpu: 8
-            memory: 16Gi
-    
+datanodeGroups:    
   - name: write
     replicas: 1
     config: |
@@ -61,6 +50,16 @@ datanodeGroups:
       fs:
         storageClassName: ${storageClassName}
         storageSize: 100Gi
+  - name: read
+    replicas: 1
+    config: |
+      workload_types = ["query"]
+    template:
+      main:
+        resources:
+          limits:
+            cpu: 8
+            memory: 16Gi
 
 meta:
   replicas: 1

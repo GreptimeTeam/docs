@@ -3,7 +3,7 @@ keywords: [Kubernetes, deployment, GreptimeDB, datanode groups, CRD, installatio
 description: Step-by-step guide to deploying a GreptimeDB cluster with datanode groups on Kubernetes, including prerequisites, configuration, installation, and verification.
 ---
 
-# Deploying a GreptimeDB Cluster with Datanode Groups
+# Deploy a GreptimeDB Cluster with Datanode Groups
 
 In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes with a datanode group consisting of multiple datanode instances.
 
@@ -37,17 +37,6 @@ danodata:
     enabled: false
 
 datanodeGroups:
-  - name: read
-    replicas: 1
-    config: |
-      workload_types = ["query"]
-    template:
-      main:
-        resources:
-          limits:
-            cpu: 8
-            memory: 16Gi
-    
   - name: write
     replicas: 1
     config: |
@@ -62,6 +51,16 @@ datanodeGroups:
       fs:
         storageClassName: ${storageClassName}
         storageSize: 100Gi
+  - name: read
+    replicas: 1
+    config: |
+      workload_types = ["query"]
+    template:
+      main:
+        resources:
+          limits:
+            cpu: 8
+            memory: 16Gi
 
 meta:
   replicas: 1
