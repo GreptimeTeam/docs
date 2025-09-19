@@ -28,7 +28,7 @@ The datanode accepts a `workload_types` field to distinguish its workload type. 
 * **`query`** is optimized for read workloads, datanode only handle read workload.
 * **`ingest`** is optimized for write workloads, datanode only handle write workload.
 
-While `hybrid` is convenient, running both reads and writes on the same datanode may cause them to interfere with each other. For best performance, it is recommended to separate read and write workloads into different datanode groups.
+While `hybrid` is convenient, running both reads and writes on the same datanode may cause them to interfere with each other, for example, a large query may occupy too many resources, thus affecting the online ingestion. For best performance, it is recommended to separate read and write workloads into different datanode groups.
 
 When configuring datanode groups, ensure that each group includes a `name` field. The following `values.yaml` example demonstrates how to define separate datanode groups:
 

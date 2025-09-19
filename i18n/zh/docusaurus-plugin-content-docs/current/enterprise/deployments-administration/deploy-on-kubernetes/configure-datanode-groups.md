@@ -28,8 +28,7 @@ datanode 接受 `workload_types` 字段来区分其工作负载类型。支持�
 * **`query`** 为读负载优化，datanode 只处理读负载。
 * **`ingest`** 为写负载优化，datanode 只处理写负载。
 
-虽然 `hybrid` 很方便，但在同一个 datanode 上同时运行读写操作可能会相互干扰。为了获得最佳性能，建议将读写工作负载分离到不同的 datanode 组中。
-
+虽然 `hybrid` 很方便，但在同一个 datanode 上同时进行读写操作可能会相互干扰，例如，一个大查询可能占用过多资源，从而影响在线写入。为了获得最佳性能，建议将读写工作负载分离到不同的 datanode 组中。
 在配置 datanode 组时，确保每个组都包含 `name` 字段。以下 `values.yaml` 示例展示了如何定义单独的 datanode 组：
 
 ```yaml
