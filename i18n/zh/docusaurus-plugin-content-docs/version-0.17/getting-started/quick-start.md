@@ -9,6 +9,14 @@ description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库�
 
 本指南通过引导你创建一个 metric 表和一个 log 表来介绍 GreptimeDB 的核心功能。
 
+你将学习（10-15 分钟）
+* 在本地启动并连接到 GreptimeDB
+* 创建 metrics 和 logs 表；插入示例数据
+* 查询和聚合数据
+* 计算 5 秒窗口内的 p95 和 ERROR 计数并对齐它们
+* 关联 metrics 和 logs 来发现异常主机和时间点
+* 结合 SQL 和 PromQL 查询数据
+
 ## 连接到 GreptimeDB
 
 GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)与数据库进行交互。
@@ -38,13 +46,14 @@ psql -h 127.0.0.1 -p 4003 -d public
 假设你有一个名为 `grpc_latencies` 的事件（Events）表，用于存储的 gRPC 调用接口以及它的处理时间。表 schema 如下：
 
 ```sql
+-- Metrics: gRPC 调用延迟（毫秒）
 CREATE TABLE grpc_latencies (
   ts TIMESTAMP TIME INDEX,
   host STRING INVERTED INDEX,
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
-) with('append_mode'='true');
+);
 ```
 
 - `ts`：收集指标时的时间戳，时间索引列。
@@ -52,11 +61,10 @@ CREATE TABLE grpc_latencies (
 - `method_name`：RPC 请求方法的名称，tag 列。
 - `latency`：RPC 请求的响应时间。
 
-并且通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。
-
 此外，还有一个名为 `app_logs` 的表用于存储日志：
 
 ```sql
+-- Logs: 应用程序日志
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
   host STRING INVERTED INDEX,
@@ -73,7 +81,8 @@ CREATE TABLE app_logs (
 - `log_level`：日志级别，tag 列。
 - `log_msg`：日志消息内容，设置了[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
 
-它也采用了 Append Only 模式。
+通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。同时也支持其他表选项，如数据保留期等。
+
 ::::tip
 我们在下面使用 SQL 来导入数据，因此需要手动创建表。但 GreptimeDB 本身是 [schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 的，在使用其他写入方法时可以自动生成 schema。
 ::::
@@ -158,7 +167,7 @@ INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
 
 ### 根据 tag 和时间索引进行过滤
 
-你可以使用 WHERE 子句来过滤数据。例如，要查询 `2024-07-11 20:00:15` 之后 `host1` 的延迟：
+你可以使用 `WHERE` 子句来过滤数据。例如，要查询 `2024-07-11 20:00:15` 之后 `host1` 的延迟：
 
 ```sql
 SELECT *
@@ -205,7 +214,15 @@ GROUP BY host;
 
 通过关键词  `timeout`  过滤日志消息：
 ```sql
-SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20:00:00';
+SELECT
+  *
+FROM
+  app_logs
+WHERE
+  lower(log_msg) @@ 'timeout'
+  AND ts > '2024-07-11 20:00:00'
+ORDER BY
+  ts;
 ```
 
 ```sql
@@ -226,70 +243,71 @@ SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20
 你可以使用 [range query](/reference/sql/range.md#range-query)来实时监控延迟。例如，按 5 秒窗口计算请求的 p95 延迟：
 
 ```sql
-SELECT 
-  ts, 
-  host, 
-  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
-FROM 
+SELECT
+  ts,
+  host,
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency)
+    RANGE '5s' AS p95_latency
+FROM
   grpc_latencies
-ALIGN '5s' FILL PREV;
+ALIGN '5s' FILL PREV
+ORDER BY
+  host,ts;
 ```
 
 ```sql
 +---------------------+-------+-------------+
 | ts                  | host  | p95_latency |
 +---------------------+-------+-------------+
-| 2024-07-11 20:00:05 | host2 |         114 |
-| 2024-07-11 20:00:10 | host2 |         111 |
-| 2024-07-11 20:00:15 | host2 |         115 |
-| 2024-07-11 20:00:20 | host2 |          95 |
 | 2024-07-11 20:00:05 | host1 |       104.5 |
 | 2024-07-11 20:00:10 | host1 |        4200 |
 | 2024-07-11 20:00:15 | host1 |        3500 |
 | 2024-07-11 20:00:20 | host1 |        2500 |
+| 2024-07-11 20:00:05 | host2 |         114 |
+| 2024-07-11 20:00:10 | host2 |         111 |
+| 2024-07-11 20:00:15 | host2 |         115 |
+| 2024-07-11 20:00:20 | host2 |          95 |
 +---------------------+-------+-------------+
 8 rows in set (0.06 sec)
 ```
+
+Range query 是一个非常强大的功能，用于基于时间窗口查询和聚合数据，请阅读[手册](/reference/sql/range.md#range-query)以了解更多。
 
 ### 指标和日志的关联查询
 
 通过组合两个表的数据，你可以快速地确定故障时间和相应的日志。以下 SQL 查询使用 `JOIN` 操作关联指标和日志：
 
 ```sql
--- CTE 分别使用 Range Query 查询指标和日志，时间窗口对齐
+-- 将指标和日志对齐到 5 秒时间桶，然后关联
 WITH
+  -- 指标: 每个主机在 5 秒时间桶内的 p95 延迟
   metrics AS (
-    SELECT 
-      ts, 
-      host, 
-      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency 
-    FROM 
-      grpc_latencies 
-    ALIGN '5s' FILL PREV
-  ), 
-  logs AS (
-    SELECT 
-      ts, 
+    SELECT
+      ts,
       host,
-      count(log_msg) RANGE '5s' AS num_errors,
-    FROM
-      app_logs 
-    WHERE
-      log_level = 'ERROR'
+      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
+    FROM grpc_latencies
+    ALIGN '5s' FILL PREV
+  ),
+  -- 日志: 相同 5 秒时间桶内每个主机的 ERROR 计数
+  logs AS (
+    SELECT
+      ts,
+      host,
+      count(log_msg) RANGE '5s' AS num_errors
+    FROM app_logs
+    WHERE log_level = 'ERROR'
     ALIGN '5s'
-) 
--- 关联 metric 和日志
-SELECT 
-  metrics.ts,
-  p95_latency, 
-  coalesce(num_errors, 0) as num_errors,
-  metrics.host
-FROM 
-  metrics 
-  LEFT JOIN logs ON metrics.host = logs.host 
-  AND metrics.ts = logs.ts 
-ORDER BY 
-  metrics.ts;
+  )
+SELECT
+  m.ts,
+  m.p95_latency,
+  COALESCE(l.num_errors, 0) AS num_errors,
+  m.host
+FROM metrics m
+LEFT JOIN logs l
+  ON m.host = l.host AND m.ts = l.ts
+ORDER BY m.ts, m.host;
 ```
 
 
@@ -297,19 +315,140 @@ ORDER BY
 +---------------------+-------------+------------+-------+
 | ts                  | p95_latency | num_errors | host  |
 +---------------------+-------------+------------+-------+
-| 2024-07-11 20:00:05 |         114 |          0 | host2 |
 | 2024-07-11 20:00:05 |       104.5 |          0 | host1 |
+| 2024-07-11 20:00:05 |         114 |          0 | host2 |
 | 2024-07-11 20:00:10 |        4200 |         10 | host1 |
 | 2024-07-11 20:00:10 |         111 |          0 | host2 |
-| 2024-07-11 20:00:15 |         115 |          0 | host2 |
 | 2024-07-11 20:00:15 |        3500 |          4 | host1 |
-| 2024-07-11 20:00:20 |         110 |          0 | host2 |
+| 2024-07-11 20:00:15 |         115 |          0 | host2 |
 | 2024-07-11 20:00:20 |        2500 |          0 | host1 |
+| 2024-07-11 20:00:20 |          95 |          0 | host2 |
 +---------------------+-------------+------------+-------+
 8 rows in set (0.02 sec)
 ```
 
 我们可以看到当 gRPC 响应时间增大的时间窗口内，错误日志也显著增多，并且确定问题在 `host1`。
+
+### 通过 PromQL 查询数据
+
+GreptimeDB 支持 [Prometheus 查询语言及其 API](/user-guide/query-data/promql.md)，允许你使用 PromQL 查询指标。例如，你可以使用以下查询获取每个主机在过去 1 分钟内的 p95 响应时间：
+
+```promql
+quantile_over_time(0.95, grpc_latencies{host!=""}[1m])
+```
+
+要测试这个查询，使用以下 curl 命令：
+```bash
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[1m])' \
+  --data-urlencode 'start=2024-07-11 20:00:00Z' \
+  --data-urlencode 'end=2024-07-11 20:00:20Z' \
+  --data-urlencode 'step=1m' \
+  'http://localhost:4000/v1/prometheus/api/v1/query_range'
+```
+
+这里我们设置 `step` 为 1 分钟。
+
+输出：
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "__name__": "grpc_latencies",
+          "host": "host1",
+          "method_name": "GetUser"
+        },
+        "values": [
+          [
+            1720728000.0,
+            "103"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "grpc_latencies",
+          "host": "host2",
+          "method_name": "GetUser"
+        },
+        "values": [
+          [
+            1720728000.0,
+            "113"
+          ]
+        ]
+      }
+    ]
+  }
+}
+```
+
+更强大的是，你可以使用 SQL 来执行 PromQL 并混合使用两者，例如：
+```sql
+TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','1m')
+    quantile_over_time(0.95, grpc_latencies{host!=""}[1m]);
+```
+
+这个 SQL 查询将输出：
+```sql
++---------------------+---------------------------------------------------------+-------+-------------+
+| ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
++---------------------+---------------------------------------------------------+-------+-------------+
+| 2024-07-11 20:00:00 |                                                     113 | host2 | GetUser     |
+| 2024-07-11 20:00:00 |                                                     103 | host1 | GetUser     |
++---------------------+---------------------------------------------------------+-------+-------------+
+```
+
+重写上面的关联示例：
+```sql
+WITH
+  metrics AS (
+    TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z', '5s')
+      quantile_over_time(0.95, grpc_latencies{host!=""}[5s])
+  ),
+  logs AS (
+    SELECT
+      ts,
+      host,
+      COUNT(log_msg) RANGE '5s' AS num_errors
+    FROM app_logs
+    WHERE log_level = 'ERROR'
+    ALIGN '5s'
+  )
+SELECT
+  m.*,
+  COALESCE(l.num_errors, 0) AS num_errors
+FROM metrics AS m
+LEFT JOIN logs AS l
+  ON m.host = l.host
+ AND m.ts = l.ts
+ORDER BY
+  m.ts,
+  m.host;
+```
+
+```sql
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+| ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name | num_errors |
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+| 2024-07-11 20:00:05 |                                                     103 | host1 | GetUser     |          0 |
+| 2024-07-11 20:00:05 |                                                     113 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:10 |                                      140.89999999999998 | host1 | GetUser     |         10 |
+| 2024-07-11 20:00:10 |                                                   113.8 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |          4 |
+| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:20 |                                                    3375 | host1 | GetUser     |          0 |
+| 2024-07-11 20:00:20 |                                                     115 | host2 | GetUser     |          0 |
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+```
+
+通过使用 [TQL](/reference/sql/tql.md) 命令，你可以结合 SQL 和 PromQL 的强大功能，使关联分析和复杂查询不再困难。
+
 <!-- TODO need to fix bug
 
 ### 持续聚合
