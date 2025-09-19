@@ -201,7 +201,7 @@ Helm Chart 默认不启用 User Provider 模式的鉴权，你可以通过 `auth
 auth:
   enabled: true
   users:
-    - name: "admin"
+    - username: "admin"
       password: "admin"
 ```
 
