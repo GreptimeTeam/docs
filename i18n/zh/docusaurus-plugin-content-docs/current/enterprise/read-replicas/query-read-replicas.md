@@ -5,7 +5,7 @@ description: 在 GreptimeDB 企业版中从读副本查询的用法、读优先�
 
 # 从读副本查询
 
-GreptimeDB 允许从**读副本 (Follower Region)** 读取数据，从而降低写副本 (Leader Region) 的负载并提升查询伸缩性。您可以通过 **SQL** 与 **HTTP** 两种方式设置读优先策略。
+GreptimeDB 允许从**读副本 (Follower Region)** 读取数据，从而降低写副本 (Leader Region) 的负载并提升查询伸缩性。你可以通过 **SQL** 与 **HTTP** 两种方式设置读优先策略。
 
 ## 读优先策略
 
