@@ -13,9 +13,6 @@ In the Read Replica mechanism, clients write data to the **Leader Region (write 
     <img src="/read-replica-overview.png" alt="read-replica-overview" width="600"/>
 </p>
 
-::::tip NOTE
-The Read Replica feature is exclusive to the GreptimeDB Enterprise Cluster Edition.
-::::
 
 ## Principles
 
