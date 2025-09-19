@@ -97,4 +97,4 @@ weny-cluster-meta-58977b7897-8k2sf           1/1     Running   0          90s
 
 - For best performance, it is recommended to [Configure frontend groups](/user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups.md), which ensures complete separation of read and write traffic, achieving maximum isolation. 
 
-- Add Read Replica for your table, please refer to [Read Replica](/enterprise/read-replica.md).
+- Add Read Replica for your table, please refer to [Read Replica](/enterprise/read-replicas/overview.md).

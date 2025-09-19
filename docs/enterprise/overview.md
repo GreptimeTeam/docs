@@ -35,7 +35,7 @@ which are described in detail in the documentation in this section:
 - [Elasticsearch query compatibility](./elasticsearch-compatible/overview.md): Use GreptimeDB backed Kibana for your logs.
 - [Greptime Enterprise Management Console](./console-ui.md): An enhanced version of our dashboard UI,
   carries more cluster management and monitoring features.
-- [Read Replica](./read-replica.md): Read-only datanode instances for heavy query workloads such as
+- [Read Replica](./read-replicas/overview.md): Read-only datanode instances for heavy query workloads such as
   analytical queries.
 - [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
   webhook. Compatible with Prometheus AlterManager.

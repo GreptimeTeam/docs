@@ -31,7 +31,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [自动分区平衡](./autopilot/region-balancer.md)：通过分区监控和迁移在 datanode 之间自动平衡负载。
 - [Elasticsearch 查询兼容性](./elasticsearch-compatible/overview.md)：在 Kibana 中以 GreptimeDB 作为后端。
 - [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
-- [读副本](./read-replica.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
+- [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
 - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
 - Flow 的可靠性功能。
 
