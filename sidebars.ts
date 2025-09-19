@@ -565,7 +565,15 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'enterprise/console-ui',
-        'enterprise/read-replica',
+        {
+          type: 'category',
+          label: 'Read Replicas',
+          items: [
+            'enterprise/read-replicas/overview',
+            'enterprise/read-replicas/manage-read-replicas',
+            'enterprise/read-replicas/query-read-replicas',
+          ],
+        },
         'enterprise/trigger',
         {
           type: 'category',
