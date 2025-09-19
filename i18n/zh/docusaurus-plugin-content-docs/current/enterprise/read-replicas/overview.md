@@ -13,9 +13,6 @@ description: GreptimeDB 企业版读副本功能的概述与原理。
     <img src="/read-replica-overview.png" alt="read-replica-overview" width="600"/>
 </p>
 
-::::tip NOTE
-读副本功能仅在 GreptimeDB 企业集群版中提供。
-::::
 
 ## 原理
 
