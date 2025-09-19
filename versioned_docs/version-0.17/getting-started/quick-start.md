@@ -12,7 +12,7 @@ This guide will walk you through creating a metric table and a log table, highli
 You’ll learn (10–15 minutes)
 * Start and connect to GreptimeDB locally
 * Create metrics and logs tables; insert sample data
-* Query and aggrate data
+* Query and aggregate data
 * Compute p95 and ERROR counts in 5-second windows and align them
 * Join metrics with logs to spot anomalous hosts and time periods
 * Combine SQL and PromQL to query data
