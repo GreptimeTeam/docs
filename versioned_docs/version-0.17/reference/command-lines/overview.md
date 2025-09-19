@@ -9,12 +9,21 @@ The `greptime` command can start/stop GreptimeDB and pass configuration options.
 
 ## Install the Greptime CLI
 
-The Greptime CLI comes bundled with the GreptimeDB binary.
-After [installing GreptimeDB](/getting-started/installation/overview.md),
-you can execute the `./greptime` command within the GreptimeDB directory.
+The Greptime CLI is bundled with the GreptimeDB binary.
 
-For convenience, if you wish to run commands using `greptime` instead of `./greptime`,
-consider moving the CLI binary to your system's `bin` directory or appending the binary's path to your `PATH` environment variable.
+If you start GreptimeDB using the binary file as described in the [installing GreptimeDB](/getting-started/installation/overview.md) documentation,
+you can execute the `./greptime` command from within the GreptimeDB directory.
+For convenience, if you prefer to run commands using `greptime` instead of `./greptime`,
+consider moving the CLI binary to your system's `bin` directory or adding the binary's path to your `PATH` environment variable.
+
+If you deployed GreptimeDB in Kubernetes, you can access the greptime command line through the frontend pod. Use the following command to enter the pod:
+
+```sh
+kubectl exec -it <greptimedb-frontend-pod> -n <namespace> -- /bin/bash
+```
+
+Once inside the pod, you can run `greptime help` to see all available commands.
+
 
 ## CLI Options
 

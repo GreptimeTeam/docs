@@ -7,7 +7,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 [Fluent Bit](http://fluentbit.io/) 是一个快速且轻量级的遥测代理，用于 Linux、macOS、Windows 和 BSD 系列操作系统的日志、指标和跟踪。Fluent Bit 专注于性能，允许从不同来源收集和处理遥测数据而不增加复杂性。
 
-您可以将 GreptimeDB 集成为 Fluent Bit 的 OUTPUT。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
+你可以将 Fluent Bit 数据转发到 GreptimeDB。本文档介绍如何配置 Fluent Bit 以将日志、指标和跟踪发送到 GreptimeDB。
 
 ## Http
 

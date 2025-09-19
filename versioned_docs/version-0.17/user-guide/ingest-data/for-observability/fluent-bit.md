@@ -7,7 +7,7 @@ description: Instructions on integrating GreptimeDB with Fluent bit for Promethe
 
 [Fluent Bit](http://fluentbit.io/) is a fast and lightweight telemetry agent for logs, metrics, and traces for Linux, macOS, Windows, and BSD family operating systems. Fluent Bit has been made with a strong focus on performance to allow the collection and processing of telemetry data from different sources without complexity.
 
-You can integrate GreptimeDB as an OUTPUT for Fluent Bit.
+You can forward Fluent Bit data to GreptimeDB. This document describes how to configure Fluent Bit to send logs, metrics, and traces to GreptimeDB.
 
 ## Http
 
