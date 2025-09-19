@@ -279,7 +279,9 @@ etcd-2   1/1     Running   0          2m8s
 helm install etcd \
   oci://greptime-registry.cn-hangzhou.cr.aliyuncs.com/charts/etcd \
   --set image.registry=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
-  --set image.tag=3.5.12 \
+  --set global.security.allowInsecureImages=true \
+  --set image.repository=bitnami/etcd \
+  --set image.tag=VAR::etcdImageVersion \
   --set replicaCount=3 \
   --set auth.rbac.create=false \
   --set auth.rbac.token.enabled=false \
