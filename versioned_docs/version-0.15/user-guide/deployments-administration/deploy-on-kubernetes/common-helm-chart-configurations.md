@@ -201,7 +201,7 @@ The Helm Chart does not enable User Provider mode authentication by default. You
 auth:
   enabled: true
   users:
-    - name: "admin"
+    - username: "admin"
       password: "admin"
 ```
 
