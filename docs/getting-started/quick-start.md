@@ -9,6 +9,14 @@ Before proceeding, please ensure you have [installed GreptimeDB](./installation/
 
 This guide will walk you through creating a metric table and a log table, highlighting the core features of GreptimeDB.
 
+You’ll learn (10–15 minutes)
+* Start and connect to GreptimeDB locally
+* Create metrics and logs tables and insert sample data
+* Query and aggregate data
+* Compute p95 and ERROR counts in 5-second windows and align them
+* Join metrics with logs to spot anomalous hosts and time periods
+* Combine SQL and PromQL to query data
+
 ## Connect to GreptimeDB
 
 GreptimeDB supports [multiple protocols](/user-guide/protocols/overview.md) for interacting with the database.
@@ -38,13 +46,14 @@ Suppose you have an event table named `grpc_latencies` that stores the gRPC serv
 The table schema is as follows:
 
 ```sql
+-- Metrics: gRPC call latency in milliseconds
 CREATE TABLE grpc_latencies (
   ts TIMESTAMP TIME INDEX,
   host STRING INVERTED INDEX,
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
-) with('append_mode'='true');
+);
 ```
 
 - `ts`: The timestamp when the metric was collected. It is the time index column.
@@ -52,11 +61,10 @@ CREATE TABLE grpc_latencies (
 - `method_name`: The name of the RPC request method.
 - `latency`: The latency of the RPC request.
 
-And it's [append only](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance.
-
 Additionally, there is a table `app_logs` for storing application logs:
 
 ```sql
+-- Logs: application logs
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
   host STRING INVERTED INDEX,
@@ -73,7 +81,8 @@ CREATE TABLE app_logs (
 - `log_level`: The log level of the log entry.
 - `log_msg`: The log message, enabling [fulltext index](/user-guide/manage-data/data-index.md#fulltext-index).
 
- It's append only, too.
+And it's [append only](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables) by setting `append_mode` to true, which is good for performance. Other table options, such as data retention, are supported too.
+
  ::::tip
 We use SQL to ingest the data below, so we need to create the tables manually. However, GreptimeDB is [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation) and can automatically generate schemas when using other ingestion methods.
 ::::
@@ -158,7 +167,7 @@ INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
 
 ### Filter by tags and time index
 
-You can filter data using the WHERE clause.
+You can filter data using the `WHERE` clause.
 For example, to query the latency of `host1` after `2024-07-11 20:00:15`:
 
 ```sql
@@ -206,7 +215,15 @@ GROUP BY host;
 
 Filter the log messages by keyword `timeout`:
 ```sql
-SELECT * FROM app_logs WHERE lower(log_msg) @@ 'timeout' AND ts > '2024-07-11 20:00:00';
+SELECT
+  *
+FROM
+  app_logs
+WHERE
+  lower(log_msg) @@ 'timeout'
+  AND ts > '2024-07-11 20:00:00'
+ORDER BY
+  ts;
 ```
 
 ```sql
@@ -228,30 +245,35 @@ You can use [range queries](/reference/sql/range.md#range-query) to monitor late
 For example, to calculate the p95 latency of requests using a 5-second window:
 
 ```sql
-SELECT 
-  ts, 
-  host, 
-  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
-FROM 
+SELECT
+  ts,
+  host,
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency)
+    RANGE '5s' AS p95_latency
+FROM
   grpc_latencies
-ALIGN '5s' FILL PREV;
+ALIGN '5s' FILL PREV
+ORDER BY
+  host,ts;
 ```
 
 ```sql
 +---------------------+-------+-------------+
 | ts                  | host  | p95_latency |
 +---------------------+-------+-------------+
-| 2024-07-11 20:00:05 | host2 |         114 |
-| 2024-07-11 20:00:10 | host2 |         111 |
-| 2024-07-11 20:00:15 | host2 |         115 |
-| 2024-07-11 20:00:20 | host2 |          95 |
 | 2024-07-11 20:00:05 | host1 |       104.5 |
 | 2024-07-11 20:00:10 | host1 |        4200 |
 | 2024-07-11 20:00:15 | host1 |        3500 |
 | 2024-07-11 20:00:20 | host1 |        2500 |
+| 2024-07-11 20:00:05 | host2 |         114 |
+| 2024-07-11 20:00:10 | host2 |         111 |
+| 2024-07-11 20:00:15 | host2 |         115 |
+| 2024-07-11 20:00:20 | host2 |          95 |
 +---------------------+-------+-------------+
 8 rows in set (0.06 sec)
 ```
+
+The range query is very powerful for querying and aggregating data based on time windows, please read the [manual](/reference/sql/range.md#range-query) to learn more.
 
 ### Correlate Metrics and Logs
 
@@ -260,40 +282,36 @@ you can easily and quickly determine the time of failure and the corresponding l
 The following SQL query uses the `JOIN` operation to correlate the metrics and logs:
 
 ```sql
--- CTE using Range Query to query metrics and logs with aligned time windows
+-- Align metrics and logs into 5s buckets, then join
 WITH
+  -- metrics: per-host p95 latency in 5s buckets
   metrics AS (
-    SELECT 
-      ts, 
-      host, 
-      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency 
-    FROM 
-      grpc_latencies 
-    ALIGN '5s' FILL PREV
-  ), 
-  logs AS (
-    SELECT 
-      ts, 
+    SELECT
+      ts,
       host,
-      count(log_msg) RANGE '5s' AS num_errors,
-    FROM
-      app_logs 
-    WHERE
-      log_level = 'ERROR'
+      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
+    FROM grpc_latencies
+    ALIGN '5s' FILL PREV
+  ),
+  -- logs: per-host ERROR counts in the same 5s buckets
+  logs AS (
+    SELECT
+      ts,
+      host,
+      count(log_msg) RANGE '5s' AS num_errors
+    FROM app_logs
+    WHERE log_level = 'ERROR'
     ALIGN '5s'
-) 
--- Analyze and correlate metrics and logs
-SELECT 
-  metrics.ts,
-  p95_latency, 
-  coalesce(num_errors, 0) as num_errors,
-  metrics.host
-FROM 
-  metrics 
-  LEFT JOIN logs ON metrics.host = logs.host 
-  AND metrics.ts = logs.ts 
-ORDER BY 
-  metrics.ts;
+  )
+SELECT
+  m.ts,
+  m.p95_latency,
+  COALESCE(l.num_errors, 0) AS num_errors,
+  m.host
+FROM metrics m
+LEFT JOIN logs l
+  ON m.host = l.host AND m.ts = l.ts
+ORDER BY m.ts, m.host;
 ```
 
 
@@ -301,19 +319,140 @@ ORDER BY
 +---------------------+-------------+------------+-------+
 | ts                  | p95_latency | num_errors | host  |
 +---------------------+-------------+------------+-------+
-| 2024-07-11 20:00:05 |         114 |          0 | host2 |
 | 2024-07-11 20:00:05 |       104.5 |          0 | host1 |
+| 2024-07-11 20:00:05 |         114 |          0 | host2 |
 | 2024-07-11 20:00:10 |        4200 |         10 | host1 |
 | 2024-07-11 20:00:10 |         111 |          0 | host2 |
-| 2024-07-11 20:00:15 |         115 |          0 | host2 |
 | 2024-07-11 20:00:15 |        3500 |          4 | host1 |
-| 2024-07-11 20:00:20 |         110 |          0 | host2 |
+| 2024-07-11 20:00:15 |         115 |          0 | host2 |
 | 2024-07-11 20:00:20 |        2500 |          0 | host1 |
+| 2024-07-11 20:00:20 |          95 |          0 | host2 |
 +---------------------+-------------+------------+-------+
 8 rows in set (0.02 sec)
 ```
 
 We can see that during the time window when the gRPC latencies increases, the number of error logs also increases significantly, and we've identified that the problem is on `host1`.
+
+### Query data via PromQL
+
+GreptimeDB supports [Prometheus Query Language and its APIs](/user-guide/query-data/promql.md), allowing you to query metrics using PromQL. For example, you can retrieve the p95 latency over the last 1 minute per host with this query:
+
+```promql
+quantile_over_time(0.95, grpc_latencies{host!=""}[1m])
+```
+
+To test this, use the following curl command:
+```bash
+curl -X POST \
+  -H 'Authorization: Basic {{authorization if exists}}' \
+  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[1m])' \
+  --data-urlencode 'start=2024-07-11 20:00:00Z' \
+  --data-urlencode 'end=2024-07-11 20:00:20Z' \
+  --data-urlencode 'step=1m' \
+  'http://localhost:4000/v1/prometheus/api/v1/query_range'
+```
+
+We set the `step` to 1 minute.
+
+Output:
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "__name__": "grpc_latencies",
+          "host": "host1",
+          "method_name": "GetUser"
+        },
+        "values": [
+          [
+            1720728000.0,
+            "103"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "grpc_latencies",
+          "host": "host2",
+          "method_name": "GetUser"
+        },
+        "values": [
+          [
+            1720728000.0,
+            "113"
+          ]
+        ]
+      }
+    ]
+  }
+}
+```
+
+Even more powerful, you can use SQL to execute PromQL and mix the two, for example:
+```sql
+TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','1m')
+    quantile_over_time(0.95, grpc_latencies{host!=""}[1m]);
+```
+
+This SQL query will produce:
+```sql
++---------------------+---------------------------------------------------------+-------+-------------+
+| ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
++---------------------+---------------------------------------------------------+-------+-------------+
+| 2024-07-11 20:00:00 |                                                     113 | host2 | GetUser     |
+| 2024-07-11 20:00:00 |                                                     103 | host1 | GetUser     |
++---------------------+---------------------------------------------------------+-------+-------------+
+```
+
+Rewrite the correlation example:
+```sql
+WITH
+  metrics AS (
+    TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z', '5s')
+      quantile_over_time(0.95, grpc_latencies{host!=""}[5s])
+  ),
+  logs AS (
+    SELECT
+      ts,
+      host,
+      COUNT(log_msg) RANGE '5s' AS num_errors
+    FROM app_logs
+    WHERE log_level = 'ERROR'
+    ALIGN '5s'
+  )
+SELECT
+  m.*,
+  COALESCE(l.num_errors, 0) AS num_errors
+FROM metrics AS m
+LEFT JOIN logs AS l
+  ON m.host = l.host
+ AND m.ts = l.ts
+ORDER BY
+  m.ts,
+  m.host;
+```
+
+```sql
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+| ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name | num_errors |
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+| 2024-07-11 20:00:05 |                                                     103 | host1 | GetUser     |          0 |
+| 2024-07-11 20:00:05 |                                                     113 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:10 |                                      140.89999999999998 | host1 | GetUser     |         10 |
+| 2024-07-11 20:00:10 |                                                   113.8 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |          4 |
+| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:20 |                                                    3375 | host1 | GetUser     |          0 |
+| 2024-07-11 20:00:20 |                                                     115 | host2 | GetUser     |          0 |
++---------------------+---------------------------------------------------------+-------+-------------+------------+
+```
+
+By using [TQL](/reference/sql/tql.md) commands, you can combine the power of SQL and PromQL, making correlation analysis and complex queries no longer difficult.
+
 <!-- TODO need to fix bug
 
 ### Continuous aggregation
