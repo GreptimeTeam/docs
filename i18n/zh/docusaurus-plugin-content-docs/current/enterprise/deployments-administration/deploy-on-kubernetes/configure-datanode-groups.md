@@ -96,6 +96,6 @@ weny-cluster-meta-58977b7897-8k2sf           1/1     Running   0          90s
 
 ## 后续步骤
 
-- 最佳实践：为了获得最佳性能，建议[配置 frontend 组](/user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups.md)，这确保读写流量的完全分离，实现最大隔离。
+- 为了获得最佳性能，建议[配置 frontend 组](/user-guide/deployments-administration/deploy-on-kubernetes/configure-frontend-groups.md)，这确保读写流量的完全分离，实现最大隔离。
 
 - 为你的表添加读副本，请参阅[读副本](/enterprise/read-replica.md)。
