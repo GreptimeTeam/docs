@@ -273,7 +273,7 @@ ORDER BY
 8 rows in set (0.06 sec)
 ```
 
-The  range query is very powerful for querying and aggregating data based on time windows, please read the [manual](/reference/sql/range.md#range-query) to learn more.
+The range query is very powerful for querying and aggregating data based on time windows, please read the [manual](/reference/sql/range.md#range-query) to learn more.
 
 ### Correlate Metrics and Logs
 
