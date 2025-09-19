@@ -11,7 +11,7 @@ description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库�
 
 你将学习（10-15 分钟）
 * 在本地启动并连接到 GreptimeDB
-* 创建 metrics 和 logs 表；插入示例数据
+* 创建 metrics 和 logs 表并插入示例数据
 * 查询和聚合数据
 * 计算 5 秒窗口内的 p95 和 ERROR 计数并对齐它们
 * 关联 metrics 和 logs 来发现异常主机和时间点
