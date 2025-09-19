@@ -516,6 +516,7 @@ const sidebars: SidebarsConfig = {
                 },
                 'enterprise/deployments-administration/deploy-on-kubernetes/installation',
                 'enterprise/deployments-administration/deploy-on-kubernetes/upgrade',
+                'enterprise/deployments-administration/deploy-on-kubernetes/configure-datanode-groups',
               ]
             },
             'enterprise/deployments-administration/authentication',
