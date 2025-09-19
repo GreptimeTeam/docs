@@ -41,7 +41,7 @@ curl -X POST \
 
 ## 示例：从读副本读取
 
-在从读副本读取之前，需要先为表添加读副本。参见[副本管理](/enterprise/read-replicas/replica-management.md)。
+在从读副本读取之前，需要先为表添加读副本。参见[副本管理](/enterprise/read-replicas/manage-read-replicas.md)。
 
 向示例表插入数据：
 

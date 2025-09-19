@@ -46,9 +46,9 @@ curl -X POST \
 
 ---
 
-## Example: Reading from Follower Replicas
+## Example: Reading from Read Replicas
 
-Before reading from Follower Replicas, you need to add Read Replicas to the table. See [Replica Management](/enterprise/read-replicas/replica-management.md) for more details.
+Before reading from Read Replicas, you need to add Read Replicas to the table. See [Replica Management](/enterprise/read-replicas/manage-read-replicas.md) for more details.
 
 Insert some data into a table:
 
