@@ -7,7 +7,7 @@ description: 了解如何根据你的使用场景使用 GreptimeDB，包括数�
 
 欢迎使用 GreptimeDB 用户指南。
 
-GreptimeDB 是用于指标、事件和日志的统一可观测数据库，
+GreptimeDB 是用于指标、事件和日志的统一可观测性数据库，
 可提供从边缘到云的任何规模的实时洞察。
 
 ## 理解 GreptimeDB 的概念
