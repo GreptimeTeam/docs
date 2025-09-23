@@ -162,12 +162,12 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl: ({ locale, version, versionDocsDirPath, docPath }) => {
             if (locale === 'zh') {
-              // For Chinese locale, files are directly under version-{version} folder
+              // Chinese locale: i18n folder, versioned by current|version-<x>
               const versionDir = version === 'current' ? 'current' : `version-${version}`;
               return `https://github.com/GreptimeTeam/docs/edit/main/i18n/zh/docusaurus-plugin-content-docs/${versionDir}/${docPath}`;
             }
-            // For English locale, use the default Docusaurus behavior
-            return `https://github.com/GreptimeTeam/docs/blob/main`;
+            // English locale: use Docusaurus-provided versionDocsDirPath
+            return `https://github.com/GreptimeTeam/docs/edit/main/${versionDocsDirPath}/${docPath}`;
           },
           routeBasePath: '/',
           exclude: [
