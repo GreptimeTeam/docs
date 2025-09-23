@@ -193,10 +193,10 @@ spec:
 
 ## 导入 Grafana Dashboard
 
-目前 GreptimeDB 集群可使用如下 3 个 Grafana Dashboard 来配置监控面板：
+目前 GreptimeDB 集群可使用如下 2 个 Grafana Dashboard 来配置监控面板：
 
-- [集群指标 Dashboard](https://github.com/GreptimeTeam/greptimedb/blob/main/grafana/greptimedb-cluster.json)
-- [集群日志 Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json)
+- [集群指标 Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/metrics/cluster)
+- [集群日志 Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/logs)
 
 :::note
 其中 **集群日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
