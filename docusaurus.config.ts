@@ -160,8 +160,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/GreptimeTeam/docs/blob/main',
+          editUrl: 'https://github.com/GreptimeTeam/docs/blob/main',
           routeBasePath: '/',
           exclude: [
             'db-cloud-shared/**',
@@ -231,6 +230,21 @@ const config: Config = {
   trailingSlash: true,
   plugins: [
     ['docusaurus-biel', bielMetaMap[locale]],
+    function injectLocaleSwitchScript() {
+      return {
+        name: 'inject-locale-switch-script',
+        injectHtmlTags() {
+          return {
+            headTags: [
+              {
+                tagName: 'script',
+                attributes: { src: '/js/locale-switch.js' }
+              }
+            ]
+          };
+        }
+      };
+    }
   ],
 
   themeConfig: {
@@ -266,7 +280,7 @@ const config: Config = {
             {
               label: locale === 'en' ? '中文' : 'English',
               to: locale === 'en' ? 'https://docs.greptime.cn' : 'https://docs.greptime.com',
-              className: 'dropdown__link',
+              className: 'dropdown__link locale-switch-link',
             },
           ],
         },
