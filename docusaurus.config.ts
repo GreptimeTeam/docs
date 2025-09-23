@@ -160,7 +160,15 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/GreptimeTeam/docs/blob/main',
+          editUrl: ({ locale, version, versionDocsDirPath, docPath }) => {
+            if (locale === 'zh') {
+              // For Chinese locale, files are directly under version-{version} folder
+              const versionDir = version === 'current' ? 'current' : `version-${version}`;
+              return `https://github.com/GreptimeTeam/docs/edit/main/i18n/zh/docusaurus-plugin-content-docs/${versionDir}/${docPath}`;
+            }
+            // For English locale, use the default Docusaurus behavior
+            return `https://github.com/GreptimeTeam/docs/blob/main`;
+          },
           routeBasePath: '/',
           exclude: [
             'db-cloud-shared/**',
