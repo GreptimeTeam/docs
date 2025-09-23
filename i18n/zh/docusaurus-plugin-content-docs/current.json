@@ -226,5 +226,9 @@
   "sidebar.docs.category.Vector Storage": {
     "message": "向量存储",
     "description": "The label for category Vector Storage in sidebar docs"
+  },
+  "sidebar.docs.category.Read Replicas": {
+    "message": "读副本",
+    "description": "The label for category Read Replicas in sidebar docs"
   }
 }
