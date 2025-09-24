@@ -230,7 +230,7 @@ To preview the documentation in a specific language, use command `pnpm run start
 For example:
 
 ```cmd
-pnpm run start --locale zh
+DOC_LANG=zh pnpm start
 ```
 
 ## PR title check
