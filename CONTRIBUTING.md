@@ -214,7 +214,7 @@ For an example, please refer to the [gRPC-SDK dictionary](docs/user-guide/ingest
 ## Build and preview the docs locally
 
 We highly encourage you to preview your changes locally before submitting a pull request.
-This project requires Node.js version 18.0.0 or higher.
+This project requires Node.js version 20.x or higher.
 Use `npm install -g pnpm` to install package manager, and start a local server with the following commands:
 
 ```shell
