@@ -225,7 +225,7 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ## 配置 `values.yaml`
 
 `values.yaml` 文件设置了 GreptimeDB 的一些参数和配置，是定义 helm chart 的关键。
-例如一个带有自监控的最小规模 GreptimeDB 集群定义如下：
+例如一个最小规模 GreptimeDB 集群定义如下：
 
 ```yaml
 image:
@@ -243,15 +243,6 @@ image:
 initializer:
   registry: docker.io
   repository: greptime/greptimedb-initializer
-
-monitoring:
-  # 启用监控
-  enabled: true
-
-grafana:
-  # 用于监控面板
-  # 需要先启用监控 `monitoring.enabled: true` 选项
-  enabled: true
 
 frontend:
   replicas: 1
@@ -286,20 +277,6 @@ initializer:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   repository: greptime/greptimedb-initializer
 
-monitoring:
-  # 启用监控
-  enabled: true
-  vector:
-    # 监控需要使用 Vector
-    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
-
-grafana:
-  # 用于监控面板
-  # 需要先启用监控 `monitoring.enabled: true` 选项
-  enabled: true
-  image:
-    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
-
 frontend:
   replicas: 1
 
@@ -318,10 +295,10 @@ datanode:
 可参考[配置文档](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md)获取完整的 `values.yaml` 的配置项。
 
 
-## 安装带有自监控的 GreptimeDB 集群
+## 安装 GreptimeDB 集群
 
 在上述步骤中我们已经准备好了 GreptimeDB Operator，etcd 集群以及 GreptimeDB 集群相应的配置，
-现在部署一个带自监控并启用 Flow 功能的最小 GreptimeDB 集群：
+现在部署一个最小 GreptimeDB 集群：
 
 ```bash
 helm upgrade --install mycluster \
@@ -357,49 +334,6 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-当同时启用 `monitoring` 和 `grafana` 选项时，我们将对 GreptimeDB 集群启动**自监控**：启动一个 GreptimeDB standalone 实例来监控 GreptimeDB 集群，并将相应的监控数据用 Grafana 进行渲染，从而更方便地排查 GreptimeDB 集群使用中的问题。
-
-我们将会在 cluster 所属的命名空间下部署一个名为 `${cluster}-monitor` 的 GreptimeDB standalone 实例，用于存储集群的 metrics 和 logs 这类监控数据。同时，我们也会为集群内的每一个 Pod 部署一个 [Vector](https://github.com/vectordotdev/vector) sidecar  来收集集群的 metrics 和 logs，并发送给 GreptimeDB standalone 实例。
-
-我们也将会部署一个 Grafana 实例，并配置 [Grafana](https://grafana.com/) 使用 GreptimeDB standalone 实例作为数据源（分别使用 Prometheus 和 MySQL 协议），从而我们开箱即可使用 Grafana 来可视化 GreptimeDB 集群的监控数据。默认地，Grafana 将会使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。如果你想要监控具有不同名称或不同命名空间的集群，那就需要基于不同的集群名称和命名空间来创建不同的数据源配置。你可以创建一个如下所示的 `values.yaml` 文件：
-
-```yaml
-monitoring:
-  enabled: true
-
-grafana:
-  enabled: true
-  datasources:
-    datasources.yaml:
-      datasources:
-        - name: greptimedb-metrics
-          type: prometheus
-          url: http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
-          access: proxy
-          isDefault: true
-
-        - name: greptimedb-logs
-          type: mysql
-          url: ${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002
-          access: proxy
-          database: public
-```
-
-上述配置将在 Grafana dashboard 中为 GreptimeDB 集群的指标和日志创建默认的数据源：
-
-- `greptimedb-metrics`：集群的指标存储在独立的监控数据库中，并对外暴露为 Prometheus 协议（`type: prometheus`）；
-
-- `greptimedb-logs`：集群的日志存储在独立的监控数据库中，并对外暴露为 MySQL 协议（`type: mysql`）。默认使用 `public` 数据库；
-
-然后将上面的 `values.yaml` 中的 `${cluster}` 和 `${namespace}` 替换为你想要的值，并使用以下命令安装 GreptimeDB 集群：
-
-```bash
-helm install ${cluster} \
-  greptime/greptimedb-cluster \
-  -f values.yaml \
-  -n ${namespace}
-```
-
 当启动集群安装之后，我们可以用如下命令检查 GreptimeDB 集群的状态。若你使用了不同的集群名和命名空间，可将 `default` 和 `mycluster` 替换为你的配置：
 
 ```bash
@@ -428,13 +362,11 @@ kubectl -n default get pods
 NAME                                 READY   STATUS    RESTARTS   AGE
 mycluster-datanode-0                 2/2     Running   0          77s
 mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
-mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
 mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
-mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。除此之外，我们还部署了一个独立的 GreptimeDB standalone 实例（`mycluster-monitor-standalone-0`）用以存储监控数据和一个 Grafana 实例（`mycluster-grafana-675b64786-ktqps`）用以可视化集群的监控数据。
+正如你所看到的，我们默认创建了一个最小的 GreptimeDB 集群，包括 1 个 frontend、1 个 datanode 和 1 个 metasrv。关于一个完整的 GreptimeDB 集群的组成，你可以参考 [architecture](/user-guide/concepts/architecture.md)。
 
 ## 探索 GreptimeDB 集群
 
@@ -480,30 +412,7 @@ kubectl -n default port-forward --address 0.0.0.0 svc/mycluster-frontend 4000:40
 
 如果你想使用其他工具如 `mysql` 或 `psql` 来连接 GreptimeDB 集群，你可以参考 [快速入门](/getting-started/quick-start.md)。
 
-### 访问 Grafana dashboard
-
-你可以使用 `kubectl port-forward` 命令转发 Grafana 服务：
-
-```bash
-kubectl -n default port-forward svc/mycluster-grafana 18080:80
-```
-
-请注意，当你使用了其他集群名和命名空间时，你可以使用如下命令，并将 `${cluster}` 和 `${namespace}` 替换为你的配置：
-
-```bash
-kubectl -n ${namespace} port-forward svc/${cluster}-grafana 18080:80 
-```
-
-接着打开浏览器并访问 `http://localhost:18080` 来访问 Grafana dashboard。默认的用户名和密码是 `admin` 和 `gt-operator`：
-
-![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
-
-目前有三个可用的 Dashboard：
-
-- **GreptimeDB**: 用于显示 GreptimeDB 集群的 Metrics；
-- **GreptimeDB Logs**: 用于显示 GreptimeDB 集群的日志；
-
-## 清理
+## 删除集群
 
 :::danger
 清理操作将会删除 GreptimeDB 集群的元数据和数据。请确保在继续操作之前已经备份了数据。
@@ -531,7 +440,6 @@ helm -n default uninstall mycluster
 
 ```bash
 kubectl -n default delete pvc -l app.greptime.io/component=mycluster-datanode
-kubectl -n default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
 ```
 
 ### 清理 etcd 数据
