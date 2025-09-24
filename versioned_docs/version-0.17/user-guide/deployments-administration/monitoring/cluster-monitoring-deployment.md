@@ -193,10 +193,10 @@ The `prometheusMonitor` field configures Prometheus monitoring.
 
 ## Import Grafana Dashboards
 
-GreptimeDB cluster currently provides 3 Grafana dashboards:
+GreptimeDB cluster currently provides 2 Grafana dashboards:
 
-- [Cluster Metrics Dashboard](https://github.com/GreptimeTeam/greptimedb/blob/main/grafana/greptimedb-cluster.json)
-- [Cluster Logs Dashboard](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/dashboards/greptimedb-cluster-logs.json) 
+- [Cluster Metrics Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/metrics/cluster)
+- [Cluster Logs Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/logs)
 
 :::note
 The Cluster Logs Dashboard is only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
