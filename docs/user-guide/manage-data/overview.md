@@ -177,7 +177,7 @@ That will not update anything:
 +-----------+---------------------+------+--------+
 ```
 
-For more information about the `merge_mode` option, please refer to the [CREATE TABLE](/reference/sql/create.md##create-a-table-with-merge-mode) statement.
+For more information about the `merge_mode` option, please refer to the [CREATE TABLE](/reference/sql/create.md#create-a-table-with-merge-mode) statement.
 
 ### Avoid updating data by creating table with `append_mode` option
 
@@ -322,6 +322,15 @@ it will take precedence over the database TTL policy.
 Otherwise, the database TTL policy will be applied to the table.
 
 The value of `'ttl'` can be one of duration (like `1hour 12min 5s`), `instant` or `forever`. See details in [CREATE](/reference/sql/create.md#create-a-table-with-ttl) statement.
+
+Use [`ALTER`](/reference/sql/alter.md#alter-table-options) to modify the TTL of an existing table or database:
+
+```sql
+-- for table
+ALTER TABLE monitor SET 'ttl'='1 month';
+-- for database
+ALTER DATABASE test SET 'ttl'='1 month';
+```
 
 If you want to remove the TTL policy, you can use the following SQL
 

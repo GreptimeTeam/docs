@@ -174,7 +174,7 @@ VALUES ("127.0.0.1", "2024-07-11 20:00:01", NULL);
 +-----------+---------------------+------+--------+
 ```
 
-有关 `merge_mode` 选项的更多信息，请参阅 [CREATE TABLE](/reference/sql/create.md##创建带有-merge-模式的表) 语句。
+有关 `merge_mode` 选项的更多信息，请参阅 [CREATE TABLE](/reference/sql/create.md#创建带有-merge-模式的表) 语句。
 
 ### 通过创建带有 `append_mode` 选项的表来避免更新数据
 
@@ -319,7 +319,16 @@ CREATE DATABASE test WITH ('ttl'='7d');
 如果 table 有自己的 TTL 策略，则该策略将优先于 database 的 TTL 策略，
 否则 database 的 TTL 策略将被应用于 table。
 
-`'ttl'` 参数的值可以是持续时间（例如 `1hour 12min 5s`）、`instant` 或 `forever`。有关详细信息，请参阅 [CREATE](/reference/sql/create.md#create-a-table-with-ttl) 语句的文档。
+`'ttl'` 参数的值可以是持续时间（例如 `1hour 12min 5s`）、`instant` 或 `forever`。有关详细信息，请参阅 [CREATE](/reference/sql/create.md#创建指定-ttl-的表) 语句的文档。
+
+使用 [`ALTER`](/reference/sql/alter.md#修改表的参数) 来修改现有表或数据库的 TTL：
+
+```sql
+-- 针对表
+ALTER TABLE monitor SET 'ttl'='1 month';
+-- 针对数据库
+ALTER DATABASE test SET 'ttl'='1 month';
+```
 
 如果你想移除 TTL 策略，可以使用如下 SQL 语句：
 

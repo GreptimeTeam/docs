@@ -261,7 +261,7 @@ create table if not exists metrics(
 with('merge_mode'='last_non_null');
 ```
 
-Under `last_non_null` mode, the table merges rows with the same primary key and timestamp by keeping the latest value of each field.
+Under `last_non_null` mode, the table merges rows with the same primary key and timestamp by keeping the latest non-null value of each field.
 ```sql
 INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);
 INSERT INTO metrics VALUES ('host1', 0, NULL, 10), ('host2', 1, 11, NULL);
