@@ -55,7 +55,7 @@ editor:rw=editor_pwd
 
 ### 启动服务器
 
-在启动服务端时添加 `--user-provider` 参数并设置为 `static_user_provider`：
+在启动服务端时，需添加 `--user-provider` 参数，并将其设置为 `static_user_provider:file:<path_to_file>`（请将 `<path_to_file>` 替换为你的用户配置文件路径）：
 
 ```shell
 ./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
