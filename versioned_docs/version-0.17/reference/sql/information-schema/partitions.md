@@ -36,9 +36,9 @@ The output is as follows:
 | max_data_length               | Int64    |      | YES  |         | FIELD         |
 | index_length                  | Int64    |      | YES  |         | FIELD         |
 | data_free                     | Int64    |      | YES  |         | FIELD         |
-| create_time                   | DateTime |      | YES  |         | FIELD         |
-| update_time                   | DateTime |      | YES  |         | FIELD         |
-| check_time                    | DateTime |      | YES  |         | FIELD         |
+| create_time                   | TimestampSecond |      | YES  |         | FIELD         |
+| update_time                   | TimestampSecond |      | YES  |         | FIELD         |
+| check_time                    | TimestampSecond |      | YES  |         | FIELD         |
 | checksum                      | Int64    |      | YES  |         | FIELD         |
 | partition_comment             | String   |      | YES  |         | FIELD         |
 | nodegroup                     | String   |      | YES  |         | FIELD         |
