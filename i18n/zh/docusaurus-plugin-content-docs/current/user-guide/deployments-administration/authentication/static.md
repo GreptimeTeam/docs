@@ -64,7 +64,7 @@ editor:rw=editor_pwd
 用户及其权限将被载入 GreptimeDB 的内存。使用这些用户账户连接至 GreptimeDB 时，系统会严格执行相应的访问权限控制。
 
 :::tip 注意
-`static_user_provider` 模式下，文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
+`static_user_provider:file` 模式下，文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
 :::
 
 ### 动态文件重载
@@ -76,7 +76,7 @@ editor:rw=editor_pwd
 ```
 
 监控文件提供程序的特点：
-- 使用与 `static_user_provider` 相同的文件格式
+- 使用与 `static_user_provider:file` 相同的文件格式
 - 自动检测文件修改并重新加载凭证
 - 允许在不重启服务器的情况下添加、删除或修改用户
 - 如果文件临时不可用或无效，会保持上次有效的配置

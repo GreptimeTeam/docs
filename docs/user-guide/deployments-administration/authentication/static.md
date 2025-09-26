@@ -55,7 +55,7 @@ In this configuration:
 
 ### Starting the Server
 
-Start the server with the `--user-provider` parameter:
+Start the server with the `--user-provider` parameter and set it to `static_user_provider:file:<path_to_file>` (replace `<path_to_file>` with the path to your user configuration file):
 
 ```shell
 ./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
@@ -64,7 +64,7 @@ Start the server with the `--user-provider` parameter:
 The users and their permissions will be loaded into GreptimeDB's memory. You can create connections to GreptimeDB using these user accounts with their respective access levels enforced.
 
 :::tip Note
-When using `static_user_provider`, the file’s contents are loaded at startup. Changes or additions to the file have no effect while the database is running.
+When using `static_user_provider:file`, the file’s contents are loaded at startup. Changes or additions to the file have no effect while the database is running.
 :::
 
 ### Dynamic File Reloading
@@ -76,7 +76,7 @@ If you need to update user credentials without restarting the server, you can us
 ```
 
 The watch file provider:
-- Uses the same file format as the static provider
+- Uses the same file format as the static file provider
 - Automatically detects file modifications and reloads credentials
 - Allows adding, removing, or modifying users without server restart
 - If the file is temporarily unavailable or invalid, it keeps the last valid configuration
