@@ -1,6 +1,6 @@
 ---
-keywords: [Kubernetes deployment, cluster, monitoring]
-description: Guide to deploying monitoring for GreptimeDB clusters on Kubernetes, including self-monitoring and Prometheus monitoring steps.
+keywords: [cluster, monitoring, Prometheus]
+description: Learn how to monitor a GreptimeDB cluster using an existing Prometheus instance in Kubernetes, including configuration steps and Grafana dashboard setup.
 ---
 
 # Prometheus-Monitoring GreptimeDB Cluster
@@ -18,7 +18,7 @@ GreptimeDB cluster metrics into it, follow the steps below.
 Ensure you have deployed the Prometheus Operator and created a Prometheus instance. For example, you can use [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to deploy the Prometheus stack. Refer to its [official documentation](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for more details.
 
 When deploying the Prometheus instance, ensure you set the labels used for scraping GreptimeDB cluster metrics.
-For example, if you have an existing Prometheus instance configuration like the following:
+For example, your existing Prometheus instance may contain the following configuration:
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1
@@ -107,7 +107,7 @@ After deploying Grafana,
 refer to Grafana's [data sources](https://grafana.com/docs/grafana/latest/datasources/) documentation to add the following two type data sources:
 
 - **Prometheus**: Name it `metrics`. This data source connects to your Prometheus instance, which collects GreptimeDB cluster monitoring metrics. Use your Prometheus instance URL as the connection URL.
-- **MySQL**: Name it `information-schema`. This data source connects to your GreptimeDB cluster to access cluster metadata via the SQL protocol. Use `${cluster-name}-frontend.${namespace}.svc.cluster.local:4002` as the server address with database `information_schema`. Make sure you have deployed GreptimeDB following the [Deploy a GreptimeDB Cluster on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md) guide.
+- **MySQL**: Name it `information-schema`. This data source connects to your GreptimeDB cluster to access cluster metadata via the SQL protocol. If you have deployed GreptimeDB following the [Deploy a GreptimeDB Cluster on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md) guide, use `${cluster-name}-frontend.${namespace}.svc.cluster.local:4002` as the server address with database `information_schema`.
 
 ### Import Dashboards
 

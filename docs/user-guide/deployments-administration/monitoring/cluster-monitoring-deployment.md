@@ -1,6 +1,6 @@
 ---
 keywords: [Kubernetes deployment, cluster, monitoring]
-description: Guide to deploying monitoring for GreptimeDB clusters on Kubernetes, including self-monitoring and Prometheus monitoring steps.
+description: Complete guide to deploying self-monitoring for GreptimeDB clusters on Kubernetes, including Grafana dashboard setup and configuration options
 ---
 
 # Self-Monitoring GreptimeDB Clusters
@@ -179,7 +179,7 @@ monitoring:
         memory: "64Mi"
 ```
 
-### Manual YAML Configuration
+### YAML Configuration with `kubectl` Deployment
 
 If you're not using Helm Chart, you can also use the `monitoring` field to manually configure self-monitoring mode in the `GreptimeDBCluster` YAML:
 
@@ -196,7 +196,7 @@ For detailed configuration options, refer to the [`GreptimeDBCluster` API docume
 ### Enable Grafana
 
 To enable Grafana deployment, add the following configuration to `values.yaml`.
-Note that monitoring must be enabled first (`monitoring.enabled: true`):
+Note that monitoring must be enabled first [(`monitoring.enabled: true`)](#enable-monitoring):
 
 ```yaml
 grafana:
@@ -244,8 +244,8 @@ You can access the Grafana dashboard by port-forwarding the Grafana service to y
 kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80 
 ```
 
-Then open your browser and navigate to `http://localhost:18080` to access the Grafana dashboard.
-The default credentials are:
+Then open `http://localhost:18080` to access the Grafana dashboard.
+The default login credentials for Grafana are:
 
 - **Username**: `admin`
 - **Password**: `gt-operator`

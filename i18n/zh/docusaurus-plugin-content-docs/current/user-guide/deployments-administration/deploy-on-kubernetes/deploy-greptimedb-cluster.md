@@ -257,7 +257,7 @@ datanode:
   replicas: 1
 ```
 
-:::note
+:::note 备注
 中国大陆用户如有网络访问问题，可直接使用阿里云 OCI 镜像仓库：
 
 ```yaml
