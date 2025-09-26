@@ -3,7 +3,7 @@ keywords: [Kubernetes deployment, cluster, monitoring]
 description: Guide to deploying monitoring for GreptimeDB clusters on Kubernetes, including self-monitoring and Prometheus monitoring steps.
 ---
 
-# GreptimeDB Cluster Monitoring
+# Self-Monitoring GreptimeDB Clusters
 
 Before reading this document, ensure you understand how to [deploy a GreptimeDB cluster on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md).
 This guide will walk you through configuring monitoring when deploying a GreptimeDB cluster.
@@ -255,3 +255,15 @@ Navigate to the `Dashboards` section to explore the pre-configured dashboards fo
 ![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
 
 
+## Cleanup the PVCs
+
+:::danger
+The cleanup operation will remove the metadata and data of the GreptimeDB cluster. Please make sure you have backed up the data before proceeding.
+:::
+To uninstall the GreptimeDB cluster, please refer to the [Cleanup GreptimeDB Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup) documentation.
+
+To clean up the Persistent Volume Claims (PVCs) used by the GreptimeDB standalone monitoring instance, delete the PVCs using the following command:
+
+```bash
+kubectl -n default delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
+```
