@@ -69,7 +69,7 @@ When using `static_user_provider`, the file’s contents are loaded at startup. 
 
 ### Dynamic File Reloading
 
-If you need to update user credentials without restarting the server, you can use the `watch_file_user_provider` instead. This provider monitors the credential file for changes and automatically reloads it:
+If you need to update user credentials without restarting the server, you can use the `watch_file_user_provider` instead of `static_user_provider:file`. This provider monitors the credential file for changes and automatically reloads it:
 
 ```shell
 ./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
