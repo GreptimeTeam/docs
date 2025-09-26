@@ -55,28 +55,28 @@ editor:rw=editor_pwd
 
 ### 启动服务器
 
-在启动服务端时添加 `--user-provider` 参数：
+在启动服务端时添加 `--user-provider` 参数并设置为 `static_user_provider`：
 
 ```shell
 ./greptime standalone start --user-provider=static_user_provider:file:<path_to_file>
 ```
 
-用户及其权限将被加载到 GreptimeDB 的内存中。你可以使用这些用户账户连接到 GreptimeDB，相应的访问级别将被强制执行。
+用户及其权限将被载入 GreptimeDB 的内存。使用这些用户账户连接至 GreptimeDB 时，系统会严格执行相应的访问权限控制。
 
 :::tip 注意
-文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
+`static_user_provider` 模式下，文件的内容只会在启动时被加载到数据库中，在数据库运行时修改或追加的内容不会生效。
 :::
 
 ### 动态文件重载
 
-如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代。该提供程序会监控凭证文件的变化并自动重新加载：
+如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代 `static_user_provider`。该 provider 会监控凭证文件的变化并自动重新加载：
 
 ```shell
 ./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
 ```
 
 监控文件提供程序的特点：
-- 使用与静态提供程序相同的文件格式
+- 使用与 `static_user_provider` 相同的文件格式
 - 自动检测文件修改并重新加载凭证
 - 允许在不重启服务器的情况下添加、删除或修改用户
 - 如果文件临时不可用或无效，会保持上次有效的配置

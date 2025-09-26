@@ -63,7 +63,9 @@ Start the server with the `--user-provider` parameter:
 
 The users and their permissions will be loaded into GreptimeDB's memory. You can create connections to GreptimeDB using these user accounts with their respective access levels enforced.
 
-Note: The content of the file is loaded into the database while starting up. Modifying or appending the file won't take effect while the database is up and running.
+:::tip Note
+When using `static_user_provider`, the file’s contents are loaded at startup. Changes or additions to the file have no effect while the database is running.
+:::
 
 ### Dynamic File Reloading
 
