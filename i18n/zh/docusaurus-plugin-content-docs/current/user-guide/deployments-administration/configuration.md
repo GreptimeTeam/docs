@@ -630,19 +630,20 @@ max_running_procedures = 128
 
 
 # Failure detector 选项
+# GreptimeDB 使用 Phi 累积故障检测器算法来检测数据节点故障。
 [failure_detector]
 
-## Failure detector 检测阈值
+## 判定节点故障前可接受的最大 φ 值。
+## 较低的值反应更快但会产生更多误报。
 threshold = 8.0
 
-## 心跳间隔的最小标准差，用于计算可接受的变化。
+## 心跳间隔的最小标准差。
+## 防止微小变化导致 φ 值激增。在心跳间隔变化很小时防止过度敏感。
 min_std_deviation = "100ms"
 
-## 心跳之间可接受的暂停时间长度。
+## 心跳之间可接受的暂停时长。
+## 在 φ 值上升前为学习到的平均间隔提供额外的宽限期，吸收临时网络故障或GC暂停。
 acceptable_heartbeat_pause = "10000ms"
-
-## 首次心跳间隔的估计值。
-first_heartbeat_estimate = "1000ms"
 
 ## Datanode 选项。
 [datanode]
@@ -712,10 +713,9 @@ create_topic_timeout = "30s"
 | `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
 | `procedure.max_running_procedures`            | Integer | `128`                  | 同一时间可以运行的程序最大数量。如果运行的程序数量超过此限制，程序将被拒绝。 |
 | `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
-| `failure_detector.threshold`                  | 浮点数  | `8.0`                | Failure detector 用来判断故障条件的阈值。                                                                                            |
-| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                                     |
-| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 允许的最大心跳暂停时间，用于确定心跳间隔是否可接受。                                                                                 |
-| `failure_detector.first_heartbeat_estimate`   | 字符串  | `1000ms`             | 初始心跳间隔估算值。                                                                                                                 |
+| `failure_detector.threshold`                  | 浮点数  | `8.0`                | 判定节点故障前可接受的最大 φ 值。<br/>较低的值反应更快但会产生更多误报。                                                            |
+| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差。<br/>防止微小变化导致 φ 值激增。在心跳间隔变化很小时防止过度敏感。                                            |
+| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 心跳之间可接受的暂停时长。<br/>在 φ 值上升前为学习到的平均间隔提供额外的宽限期，吸收临时网络故障或GC暂停。                       |
 | `datanode`                                    | --      | --                   |                                                                                                                                      |
 | `datanode.client`                             | --      | --                   | Datanode 客户端选项。                                                                                                                |
 | `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                           |
