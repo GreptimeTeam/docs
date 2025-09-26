@@ -1,39 +1,126 @@
 ---
 keywords: [Kubernetes deployment, cluster, monitoring]
-description: Guide to deploying monitoring for GreptimeDB clusters on Kubernetes, including self-monitoring and Prometheus monitoring steps.
+description: Complete guide to deploying self-monitoring for GreptimeDB clusters on Kubernetes, including Grafana dashboard setup and configuration options
 ---
 
-# Cluster Monitoring Deployment
+# Self-Monitoring GreptimeDB Clusters
 
-After deploying a GreptimeDB cluster using GreptimeDB Operator, by default, its components (Metasrv / Datanode / Frontend) expose a `/metrics` endpoint on their HTTP port (default `4000`) for [Prometheus metrics](/reference/http-endpoints.md#metrics).
+Before reading this document, ensure you understand how to [deploy a GreptimeDB cluster on Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md).
+This guide will walk you through configuring monitoring when deploying a GreptimeDB cluster.
 
-We provide two approaches to monitor the GreptimeDB cluster:
+## Quick Start
 
-1. **Enable GreptimeDB Self-Monitoring**: The GreptimeDB Operator will launch an additional GreptimeDB Standalone instance and Vector Sidecar container to collect and store metrics and logs from the GreptimeDB cluster.
-2. **Use Prometheus Operator to Configure Prometheus Metrics Monitoring**: Users need first to deploy Prometheus Operator and create Prometheus instance, then use Prometheus Operator's `PodMonitor` to write GreptimeDB cluster metrics into Prometheus.
+You can enable monitoring and Grafana by adding configurations to the `values.yaml` file when deploying the GreptimeDB cluster using Helm Chart. 
+Here's a complete example of `values.yaml` for deploying a minimal GreptimeDB cluster with monitoring and Grafana:
 
-Users can choose the appropriate monitoring approach based on their needs.
+```yaml
+image:
+  registry: docker.io
+  # Image repository:
+  # Use `greptime/greptimedb` for OSS GreptimeDB
+  # Consult staff for Enterprise GreptimeDB
+  repository: <repository>
+  # Image tag:
+  # Use database version `VAR::greptimedbVersion` for OSS GreptimeDB
+  # Consult staff for Enterprise GreptimeDB
+  tag: <tag>
+  pullSecrets: [ regcred ]
 
-## Enable GreptimeDB Self-Monitoring
+initializer:
+  registry: docker.io
+  repository: greptime/greptimedb-initializer
 
-In self-monitoring mode, GreptimeDB Operator will launch an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster, including cluster logs. To collect log data, GreptimeDB Operator will start a [Vector](https://vector.dev/) sidecar container in each Pod. When this mode is enabled, JSON format logging will be automatically enabled for the cluster.
+monitoring:
+  # Enable monitoring
+  enabled: true
 
-If you deploy the GreptimeDB cluster using Helm Chart (refer to [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)), you can configure the `values.yaml` file as follows:
+grafana:
+  # Enable Grafana deployment
+  # Requires monitoring to be enabled first (monitoring.enabled: true)
+  enabled: true
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+
+When monitoring is enabled, GreptimeDB Operator launches an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster.
+To collect log data, GreptimeDB Operator starts a [Vector](https://vector.dev/) sidecar container in each Pod.
+
+When Grafana is enabled, a Grafana instance is deployed that uses the GreptimeDB Standalone instance configured for cluster monitoring as its data source.
+This enables visualization of the GreptimeDB cluster's monitoring data out of the box using both Prometheus and MySQL protocols.
+
+Then install the GreptimeDB cluster with the above `values.yaml` file:
+
+```bash
+helm upgrade --install mycluster \
+  greptime/greptimedb-cluster \
+  --values /path/to/values.yaml \
+  -n default
+```
+
+After installation, you can check the Pod status of the GreptimeDB cluster:
+
+```bash
+kubectl -n default get pods
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                                 READY   STATUS    RESTARTS   AGE
+mycluster-datanode-0                 2/2     Running   0          77s
+mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
+mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
+mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
+mycluster-monitor-standalone-0       1/1     Running   0          6m35s
+```
+</details>
+
+You can then access the Grafana dashboard by port-forwarding the Grafana service to your local machine:
+
+```shell
+kubectl -n default port-forward svc/mycluster-grafana 18080:80
+```
+
+Then refer to the [Access Grafana Dashboard](#access-grafana-dashboard) section below for details on accessing Grafana.
+
+## Monitoring Configuration
+
+This section covers the details of monitoring configurations.
+
+### Enable Monitoring
+
+Add the following configuration to [`values.yaml`](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#setup-valuesyaml) to enable monitoring when deploying the GreptimeDB cluster:
 
 ```yaml
 monitoring:
   enabled: true
 ```
 
-This will deploy a GreptimeDB Standalone instance named `${cluster}-monitoring` to collect metrics and logs. You can check it with:
+This deploys a GreptimeDB Standalone instance named `${cluster-name}-monitoring` to collect metrics and logs. You can verify the deployment with:
 
+```bash
+kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitoring -n ${namespace}
 ```
-kubectl get greptimedbstandalones.greptime.io ${cluster}-monitoring -n ${namespace}
-```
 
-By default, this GreptimeDB Standalone instance will store monitoring data using the Kubernetes default StorageClass in local storage. You can adjust this based on your needs.
+The GreptimeDB Standalone instance exposes services using `${cluster-name}-monitoring-standalone` as the Kubernetes Service name. You can use the following addresses to access monitoring data:
 
-The GreptimeDB Standalone instance can be configured via the `monitoring.standalone` field in `values.yaml`, for example:
+- **Prometheus metrics**: `http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
+- **SQL logs**: `${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in the `public._gt_logs` table.
+
+### Customize Monitoring Storage
+
+By default, the GreptimeDB Standalone instance stores monitoring data using the Kubernetes default StorageClass in local storage.
+You can configure the GreptimeDB Standalone instance through the `monitoring.standalone` field in `values.yaml`. For example, the following configuration uses S3 object storage to store monitoring data:
 
 ```yaml
 monitoring:
@@ -66,12 +153,10 @@ monitoring:
         root: "standalone-with-s3-data"
 ```
 
-The GreptimeDB Standalone instance will expose services using `${cluster}-monitoring-standalone` as the Kubernetes Service name. You can use the following addresses to read monitoring data:
+### Customize Vector Sidecar
 
-- **Prometheus metrics**: `http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
-- **SQL logs**: `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`. By default, cluster logs are stored in `public._gt_logs` table.
-
-The Vector sidecar configuration for log collection can be customized via the `monitoring.vector` field:
+The Vector sidecar configuration for log collection can be customized via the `monitoring.vector` field.
+For example, you can adjust the Vector image and resource limits as follows:
 
 ```yaml
 monitoring:
@@ -94,139 +179,91 @@ monitoring:
         memory: "64Mi"
 ```
 
-:::tip NOTE
-The configuration structure has changed between chart versions:
+### YAML Configuration with `kubectl` Deployment
 
-- In older version: `meta.etcdEndpoints`
-- In newer version: `meta.backendStorage.etcd.endpoints`
-
-Always refer to the latest [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) in the Helm chart repository for the most up-to-date configuration structure.
-:::
-
-:::note
-If you're not using Helm Chart, you can manually configure self-monitoring mode in the `GreptimeDBCluster` YAML:
+If you're not using Helm Chart, you can also use the `monitoring` field to manually configure self-monitoring mode in the `GreptimeDBCluster` YAML:
 
 ```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: basic
-spec:
-  base:
-    main:
-      image: greptime/greptimedb:latest
-  frontend:
-    replicas: 1
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
-  monitoring:
-    enabled: true
-```
-
-The `monitoring` field configures self-monitoring mode. See [`GreptimeDBCluster` API docs](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md#monitoringspec) for details.
-:::
-
-## Use Prometheus Operator to Configure Prometheus Metrics Monitoring
-
-Users need to first deploy Prometheus Operator and create Prometheus instance. For example, you can use [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to deploy the Prometheus stack. You can refer to its [official documentation](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for more details.
-
-After deploying Prometheus Operator and instances, you can configure Prometheus monitoring via the `prometheusMonitor` field in `values.yaml`:
-
-```yaml
-prometheusMonitor:
-  # Enable Prometheus monitoring - this will create PodMonitor resources
+monitoring:
   enabled: true
-  # Configure scrape interval
-  interval: "30s"
-  # Configure labels
-  labels:
-    release: prometheus
 ```
 
-:::note
-The `labels` field must match the `matchLabels` field used to create the Prometheus instance, otherwise metrics collection won't work properly.
-:::
+For detailed configuration options, refer to the [`GreptimeDBCluster` API documentation](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md#monitoringspec).
 
-After configuring `prometheusMonitor`, GreptimeDB Operator will automatically create `PodMonitor` resources and import metrics into Prometheus. You can check the `PodMonitor` resources with:
 
-```
-kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
-```
+## Grafana Configuration
 
-:::note
-If not using Helm Chart, you can manually configure Prometheus monitoring in the `GreptimeDBCluster` YAML:
+### Enable Grafana
 
-```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: basic
-spec:
-  base:
-    main:
-      image: greptime/greptimedb:latest
-  frontend:
-    replicas: 1
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
-  prometheusMonitor:
-    enabled: true
-    interval: "30s"
-    labels:
-      release: prometheus
-```
-
-The `prometheusMonitor` field configures Prometheus monitoring.
-:::
-
-## Import Grafana Dashboards
-
-GreptimeDB cluster currently provides 2 Grafana dashboards:
-
-- [Cluster Metrics Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/metrics/cluster)
-- [Cluster Logs Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/logs)
-
-:::note
-The Cluster Logs Dashboard is only for self-monitoring mode, while the Cluster Metrics Dashboard works for both self-monitoring and Prometheus monitoring modes.
-:::
-
-If using Helm Chart, you can enable `grafana.enabled` to deploy Grafana and import dashboards automatically (see [Getting Started](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)):
+To enable Grafana deployment, add the following configuration to `values.yaml`.
+Note that monitoring must be enabled first [(`monitoring.enabled: true`)](#enable-monitoring):
 
 ```yaml
 grafana:
   enabled: true
 ```
 
-If you already have Grafana deployed, follow these steps to import the dashboards:
+### Customize Grafana Data Sources
 
-1. **Add Data Sources**
+By default, Grafana uses `mycluster` and `default` as the cluster name and namespace to create data sources.
+To monitor clusters with different names or namespaces, you need to create custom data source configurations based on the actual cluster names and namespaces.
+Here's an example `values.yaml` configuration:
 
-   You can refer to Grafana's [datasources](https://grafana.com/docs/grafana/latest/datasources/) docs to add the following 3 data sources:
+```yaml
+monitoring:
+  enabled: true
 
-   - **`metrics` data source**
-     
-     For importing Prometheus metrics, works with both monitoring modes. For self-monitoring mode, use `http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus` as the URL. For your own Prometheus instance, use your Prometheus instance URL.
+grafana:
+  enabled: true
+  datasources:
+    datasources.yaml:
+      datasources:
+        - name: greptimedb-metrics
+          type: prometheus
+          url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
+          access: proxy
+          isDefault: true
 
-   - **`information-schema` data source**
-    
-     For importing cluster metadata via SQL, works with both monitoring modes. Use `${cluster}-frontend.${namespace}.svc.cluster.local:4002` as the SQL address with database `information_schema`.
+        - name: greptimedb-logs
+          type: mysql
+          url: ${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002
+          access: proxy
+          database: public
+```
 
-   - **`logs` data source**
-    
-     For importing cluster logs via SQL, **only works with self-monitoring mode**. Use `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` as the SQL address with database `public`.
+This configuration creates the following data sources for GreptimeDB cluster monitoring in Grafana:
 
-2. **Import Dashboards**
-   
-   You can refer to Grafana's [Import dashboards](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) docs.
+- **`greptimedb-metrics`**: Cluster metrics stored in the standalone monitoring database, exposed via Prometheus protocol (`type: prometheus`)
+- **`greptimedb-logs`**: Cluster logs stored in the standalone monitoring database, exposed via MySQL protocol (`type: mysql`). Uses the `public` database by default
+
+### Access Grafana Dashboard
+
+You can access the Grafana dashboard by port-forwarding the Grafana service to your local machine:
+
+```bash
+kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80 
+```
+
+Then open `http://localhost:18080` to access the Grafana dashboard.
+The default login credentials for Grafana are:
+
+- **Username**: `admin`
+- **Password**: `gt-operator`
+
+Navigate to the `Dashboards` section to explore the pre-configured dashboards for monitoring your GreptimeDB cluster.
+
+![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
+
+
+## Cleanup the PVCs
+
+:::danger
+The cleanup operation will remove the metadata and data of the GreptimeDB cluster. Please make sure you have backed up the data before proceeding.
+:::
+To uninstall the GreptimeDB cluster, please refer to the [Cleanup GreptimeDB Cluster](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup) documentation.
+
+To clean up the Persistent Volume Claims (PVCs) used by the GreptimeDB standalone monitoring instance, delete the PVCs using the following command:
+
+```bash
+kubectl -n default delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
+```

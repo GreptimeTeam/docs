@@ -1,39 +1,174 @@
 ---
 keywords: [Kubernetes 部署, 集群, 监控]
-description: 在 Kubernetes 上部署 GreptimeDB 集群的监控指南，包括自监控和 Prometheus 监控的详细步骤。
+description: 在 Kubernetes 上部署 GreptimeDB 集群的自监控完整指南，包括 Grafana 仪表盘设置和配置项。
 ---
 
-# 集群监控部署
+# 自监控 GreptimeDB 集群
 
-当你使用 GreptimeDB Operator 部署 GreptimeDB 集群后，默认其对应组件（如 Metasrv / Datanode / Frontend）的 HTTP 端口（默认为 `4000`）将会暴露 `/metrics` 端点用于暴露 [Prometheus 指标](/reference/http-endpoints.md#指标)。
+在阅读本文档前，请确保你已经了解如何[在 Kubernetes 上部署 GreptimeDB 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)。
+本文将介绍在部署 GreptimeDB 集群时如何配置监控。
 
-我们将提供两种方式来监控 GreptimeDB 集群：
+## 快速开始
 
-1. **启用 GreptimeDB 自监控**：GreptimeDB Operator 将额外启动一个 GreptimeDB Standalone 实例和 Vector Sidecar 容器，分别用于收集和存储 GreptimeDB 集群的指标和日志数据；
-2. **使用 Prometheus Operator 配置 Prometheus 指标监控**：用户需先部署 Prometheus Operator，并创建相应的 Prometheus 实例，然后通过 Prometheus Operator 的 `PodMonitor` 来将 GreptimeDB 集群的 Metrics 数据写入到相应的 Prometheus 中；
+你可以在使用 Helm Chart 部署 GreptimeDB 集群时，通过对 `values.yaml` 文件进行配置来启用监控和 Grafana。下面是一个完整的 `values.yaml` 示例，用于部署一个最小化的带有监控和 Grafana 的 GreptimeDB 集群：
 
-用户可根据自身需求选择合适的监控方式。
+```yaml
+image:
+  registry: docker.io
+  # 镜像仓库：
+  # OSS GreptimeDB 使用 `greptime/greptimedb`，
+  # Enterprise GreptimeDB 请咨询工作人员
+  repository: <repository>
+  # 镜像标签：
+  # OSS GreptimeDB 使用数据库版本，例如 `v0.17.1`
+  # Enterprise GreptimeDB 请咨询工作人员
+  tag: <tag>
+  pullSecrets: [ regcred ]
 
-## 启用 GreptimeDB 自监控
+initializer:
+  registry: docker.io
+  repository: greptime/greptimedb-initializer
 
-自监控模式下 GreptimeDB Operator 将会额外启动一个 GreptimeDB Standalone 实例，用于收集 GreptimeDB 集群的指标和日志数据，其中日志数据将包括集群日志和慢查询日志。为了收集日志数据，GreptimeDB Operator 会在每一个 Pod 中启动一个 [Vector](https://vector.dev/) 的 Sidecar 容器，用于收集 Pod 的日志数据。启用该模式后，集群将自动开启 JSON 格式的日志输出。
+monitoring:
+  # 启用监控
+  enabled: true
 
-如果你使用 Helm Chart 部署 GreptimeDB 集群（可参考[立即开始](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)），可对 Helm Chart 的 `values.yaml` 文件进行如下配置：
+grafana:
+  # 用于监控面板
+  # 需要先启用监控 `monitoring.enabled: true` 选项
+  enabled: true
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+
+:::note 备注
+如果你在中国大陆遇到网络访问问题，可直接使用阿里云 OCI 镜像仓库：
+
+```yaml
+image:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  # 镜像仓库：
+  # OSS GreptimeDB 使用 `greptime/greptimedb`，
+  # Enterprise GreptimeDB 请咨询工作人员
+  repository: <repository>
+  # 镜像标签：
+  # OSS GreptimeDB 使用数据库版本，例如 `v0.17.1`
+  # Enterprise GreptimeDB 请咨询工作人员
+  tag: <tag>
+  pullSecrets: [ regcred ]
+
+initializer:
+  registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+  repository: greptime/greptimedb-initializer
+
+monitoring:
+  # 启用监控
+  enabled: true
+  vector:
+    # 监控需要使用 Vector
+    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+
+grafana:
+  # 用于监控面板
+  # 需要先启用监控 `monitoring.enabled: true` 选项
+  enabled: true
+  image:
+    registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
+
+frontend:
+  replicas: 1
+
+meta:
+  replicas: 1
+  backendStorage:
+    etcd:
+      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+
+datanode:
+  replicas: 1
+```
+:::
+
+当启用监控后，GreptimeDB Operator 会额外启动一个 GreptimeDB Standalone 实例用于收集 GreptimeDB 集群的指标和日志数据。
+为了收集日志数据，GreptimeDB Operator 会在每一个 Pod 中启动一个 [Vector](https://vector.dev/) 的 Sidecar 容器。
+
+当启用 Grafana 后，会部署一个 Grafana 实例，并将用于集群监控的 GreptimeDB Standalone 实例作为其数据源。
+这样就可以开箱即用地通过 Prometheus 和 MySQL 协议来可视化 GreptimeDB 集群的监控数据。
+
+接下来使用上述配置的 `values.yaml` 文件来部署 GreptimeDB 集群：
+
+```bash
+helm upgrade --install mycluster \
+  greptime/greptimedb-cluster \
+  --values /path/to/values.yaml \
+  -n default
+```
+
+部署完成后，你可以用如下命令来查看 GreptimeDB 集群的 Pod 状态：
+
+```bash
+kubectl -n default get pods
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                                 READY   STATUS    RESTARTS   AGE
+mycluster-datanode-0                 2/2     Running   0          77s
+mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
+mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
+mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
+mycluster-monitor-standalone-0       1/1     Running   0          6m35s
+```
+</details>
+
+你可以转发 Grafana 的端口到本地来访问 Grafana 仪表盘：
+
+```bash
+kubectl -n default port-forward svc/mycluster-grafana 18080:80
+```
+
+请参考[访问 Grafana 仪表盘](#访问-grafana仪表盘)章节来查看相应的数据面板。
+
+
+## 配置监控数据的收集
+
+本节将介绍监控配置的细节。
+
+### 启用监控
+
+在使用 Helm Chart 部署 GreptimeDB 集群时，在 [`values.yaml`](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#setup-valuesyaml) 中添加以下配置来启用监控：
 
 ```yaml
 monitoring:
   enabled: true
 ```
 
-此时 Helm Chart 将会部署一个名为 `${cluster}-monitoring` 的 GreptimeDB Standalone 实例，用于收集 GreptimeDB 集群的指标和日志数据，你可以用如下命令进行查看：
+这将部署一个名为 `${cluster-name}-monitoring` 的 GreptimeDB Standalone 实例来收集指标和日志。你可以使用以下命令验证部署：
 
+```bash
+kubectl get greptimedbstandalones.greptime.io ${cluster-name}-monitoring -n ${namespace}
 ```
-kubectl get greptimedbstandalones.greptime.io ${cluster}-monitoring -n ${namespace}
-```
 
-默认该 GreptimeDB Standalone 实例会将监控数据使用 Kubernetes 当前默认的 StorageClass 将数据保存于本地存储，你可以根据实际情况进行调整。
+GreptimeDB Standalone 实例使用 `${cluster-name}-monitoring-standalone` 作为 Kubernetes Service 名称来暴露服务。你可以使用以下地址访问监控数据：
 
-GreptimeDB Standalone 实例的配置可以通过 Helm Chart 的 `values.yaml` 中的 `monitoring.standalone` 字段进行调整，如下例子所示：
+- **Prometheus 指标**：`http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`
+- **SQL 日志**：`${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认情况下，集群日志存储在 `public._gt_logs` 表中。
+
+### 自定义监控数据存储
+
+默认情况下，GreptimeDB Standalone 实例使用 Kubernetes 默认的 StorageClass 将监控数据存储在本地存储中。
+你可以通过 `values.yaml` 中的 `monitoring.standalone` 字段来配置 GreptimeDB Standalone 实例。例如，以下配置使用 S3 对象存储来存储监控数据：
 
 ```yaml
 monitoring:
@@ -65,13 +200,10 @@ monitoring:
         # 用于配置 GreptimeDB Standalone 实例的对象存储的 root
         root: "standalone-with-s3-data"
 ```
+### 自定义 Vector Sidecar
 
-GreptimeDB Standalone 实例将会使用 `${cluster}-monitoring-standalone` 作为 Kubernetes Service 的名称来暴露相应的服务，你可以使用如下地址来用于监控数据的读取：
-
-- **Prometheus 协议的指标监控**：`http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus`。
-- **SQL 协议的日志监控**：`${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002`。默认集群日志会存储于 `public._gt_logs` 表。
-
-GreptimeDB 自监控模式将使用 Vector Sidecar 来收集日志数据，你可以通过 `monitoring.vector` 字段来配置 Vector 的配置，如下所示：
+用于日志收集的 Vector Sidecar 配置可以通过 `monitoring.vector` 字段进行自定义。
+例如，你可以按如下方式调整 Vector 的镜像和资源：
 
 ```yaml
 monitoring:
@@ -94,140 +226,94 @@ monitoring:
         memory: "64Mi"
 ```
 
-:::tip NOTE
-chart 版本之间的配置结构已发生变化:
+### 使用 `kubectl` 部署的 YAML 配置
 
-- 旧版本: `meta.etcdEndpoints`
-- 新版本: `meta.backendStorage.etcd.endpoints`
-
-请参考 chart 仓库中配置 [values.yaml](https://github.com/GreptimeTeam/helm-charts/blob/main/charts/greptimedb-cluster/values.yaml) 以获取最新的结构。
-:::
-
-:::note
-如果你没有使用 Helm Chart 进行部署，你也可以通过如下 `GreptimeDBCluster` 的 YAML 来手动配置自监控模式，如下所示：
+如果你没有使用 Helm Chart 部署 GreptimeDB 集群，
+可以在 `GreptimeDBCluster` 的 YAML 中使用 `monitoring` 字段来手动配置自监控模式：
 
 ```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: basic
-spec:
-  base:
-    main:
-      image: greptime/greptimedb:latest
-  frontend:
-    replicas: 1
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
-  monitoring:
-    enabled: true
-```
-
-其中 `monitoring` 字段用于配置自监控模式，具体可参考 [`GreptimeDBCluster` API 文档](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md#monitoringspec)。
-:::
-
-## 使用 Prometheus Operator 配置 Prometheus 指标监控
-
-用户需先部署 Prometheus Operator 并创建相应的 Prometheus 实例，例如可以使用 [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) 来部署相应的 Prometheus 技术栈，具体过程可参考其对应的[官方文档](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)。
-
-当部署完 Prometheus Operator 和 Prometheus 实例后，用户可通过 Helm Chart 的 `values.yaml` 的 `prometheusMonitor` 字段来配置 Prometheus 监控，如下所示：
-
-```yaml
-prometheusMonitor:
-  # 用于配置是否启用 Prometheus 监控，此时 GreptimeDB Operator 将会自动创建 Prometheus Operator 的 `PodMonitor` 资源
+monitoring:
   enabled: true
-  # 用于配置 Prometheus 监控的抓取间隔
-  interval: "30s"
-  # 用于配置 Prometheus 监控的标签
-  labels:
-    release: prometheus
 ```
 
-:::note
-`labels` 字段需要与相应用于创建 Prometheus 实例的 `matchLabels` 字段保持一致，否则将无法正常抓取到 GreptimeDB 集群的 Metrics 数据。
-:::
+详细的配置选项请参考 [`GreptimeDBCluster` API 文档](https://github.com/GreptimeTeam/greptimedb-operator/blob/main/docs/api-references/docs.md#monitoringspec)。
 
-当我们配置完 `prometheusMonitor` 字段后，GreptimeDB Operator 将会自动创建 Prometheus Operator 的 `PodMonitor` 资源，并将 GreptimeDB 集群的 Metrics 数据导入到 Prometheus 中，比如我们可以用如下命令来查看创建的 `PodMonitor` 资源：
 
-```
-kubectl get podmonitors.monitoring.coreos.com -n ${namespace}
-```
+## Grafana 配置
 
-:::note
-如果你没有使用 Helm Chart 进行部署，你也可以通过如下 `GreptimeDBCluster` 的 YAML 来手动配置 Prometheus 监控，如下所示：
+### 启用 Grafana
 
-```yaml
-apiVersion: greptime.io/v1alpha1
-kind: GreptimeDBCluster
-metadata:
-  name: basic
-spec:
-  base:
-    main:
-      image: greptime/greptimedb:latest
-  frontend:
-    replicas: 1
-  meta:
-    replicas: 1
-    backendStorage:
-      etcd:
-        endpoints:
-          - "etcd.etcd-cluster.svc.cluster.local:2379"
-  datanode:
-    replicas: 1
-  prometheusMonitor:
-    enabled: true
-    interval: "30s"
-    labels:
-      release: prometheus
-```
-
-其中 `prometheusMonitor` 字段用于配置 Prometheus 监控。
-:::
-
-## 导入 Grafana Dashboard
-
-目前 GreptimeDB 集群可使用如下 2 个 Grafana Dashboard 来配置监控面板：
-
-- [集群指标 Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/metrics/cluster)
-- [集群日志 Dashboard](https://github.com/GreptimeTeam/greptimedb/tree/VAR::greptimedbVersion/grafana/dashboards/logs)
-
-:::note
-其中 **集群日志 Dashboard** 仅适用于自监控模式，而 **集群指标 Dashboard** 则适用于自监控模式和 Prometheus 监控模式。
-:::
-
-如果你使用 Helm Chart 部署 GreptimeDB 集群，你可以通过启用 `grafana.enabled` 来一键部署 Grafana 实例，并导入相应的 Dashboard（可参考[立即开始](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md)），如下所示：
+在 `values.yaml` 中添加以下配置启用 Grafana 部署，
+注意该功能必须先启用[监控（`monitoring.enabled: true`）配置](#启用监控)：
 
 ```yaml
 grafana:
   enabled: true
 ```
 
-如果你是已经部署了 Grafana 实例，你可以参考如下步骤来导入相应的 Dashboard：
+### 自定义 Grafana 数据源
 
-1. **添加相应的 Data Sources**
+默认情况下，Grafana 使用 `mycluster` 和 `default` 作为集群名称和命名空间来创建数据源。
+要监控其他名称或命名空间的集群，请根据实际的集群名称和命名空间自定义配置。
+以下是 `values.yaml` 配置示例：
 
-     你可以参考 Grafana 官方文档的 [datasources](https://grafana.com/docs/grafana/latest/datasources/) 来添加如下 3 个数据源：
+```yaml
+monitoring:
+  enabled: true
 
-   - **`metrics` 数据源**
-     
-     用于导入集群的 Prometheus 监控数据，适用于自监控模式和 Prometheus 监控模式。如上文所述，当使用自监控模式时，此时可使使用 `http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus` 作为数据源的 URL。如果使用 Prometheus 监控模式，用户可根据具体 Prometheus 实例的 URL 来配置数据源。
+grafana:
+  enabled: true
+  datasources:
+    datasources.yaml:
+      datasources:
+        - name: greptimedb-metrics
+          type: prometheus
+          url: http://${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
+          access: proxy
+          isDefault: true
 
-   - **`information-schema` 数据源**
-  
-     这部分数据源用于使用 SQL 协议导入集群内部的元数据信息，适用于自监控模式和 Prometheus 监控模式。此时我们可以用 `${cluster}-frontend.${namespace}.svc.cluster.local:4002` 作为 SQL 协议的地址，并使用 `information_schema` 作为数据库名称进行连接。
+        - name: greptimedb-logs
+          type: mysql
+          url: ${cluster-name}-monitor-standalone.${namespace}.svc.cluster.local:4002
+          access: proxy
+          database: public
+```
 
-   - **`logs` 数据源**
-  
-     这部分数据源用于使用 SQL 协议导入集群的日志，**仅适用于自监控模式**。此时我们可以用 `${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002` 作为 SQL 协议的地址，并使用 `public` 作为数据库名称进行连接。
- 
+此配置会在 Grafana 中为 GreptimeDB 集群的监控创建以下数据源：
 
-2. **导入相应的 Dashboard**
-   
-   你可以参考 Grafana 官方文档的 [Import dashboards](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) 来导入相应的 Dashboard。
+- **`greptimedb-metrics`**：用于存储监控数据的单机数据库中的集群指标，通过 Prometheus 协议提供服务（`type: prometheus`）
+- **`greptimedb-logs`**：用于存储监控数据的单机数据库中的集群日志，通过 MySQL 协议提供服务（`type: mysql`），默认使用 `public` 数据库。
+
+### 访问 Grafana 仪表盘
+
+你可以通过将 Grafana 服务端口转发到本地来访问 Grafana 仪表盘：
+
+```bash
+kubectl -n ${namespace} port-forward svc/${cluster-name}-grafana 18080:80 
+```
+
+然后打开 `http://localhost:18080` 来访问 Grafana 仪表盘。
+默认登录凭据为：
+
+- **用户名**：`admin`
+- **密码**：`gt-operator`
+
+接着进入到 `Dashboards` 部分来查看用于监控 GreptimeDB 集群而预配置的仪表盘。
+
+![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
+
+
+## 清理 PVC
+
+:::danger
+清理操作将移除 GreptimeDB 集群的元数据和数据，请确保在操作前已备份数据。
+:::
+
+请参考[清理 GreptimeDB 集群](/user-guide/deployments-administration/deploy-on-kubernetes/deploy-greptimedb-cluster.md#cleanup)文档
+查看如何卸载 GreptimeDB 集群，
+
+要清理 GreptimeDB 用于监控的单机数据库的 PVC，请使用以下命令：
+
+```bash
+kubectl -n default delete pvc -l app.greptime.io/component=${cluster-name}-monitor-standalone
+```
