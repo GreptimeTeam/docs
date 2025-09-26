@@ -69,10 +69,10 @@ editor:rw=editor_pwd
 
 ### 动态文件重载
 
-如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代 `static_user_provider`。该 provider 会监控凭证文件的变化并自动重新加载：
+如果你需要在不重启服务器的情况下更新用户凭证，可以使用 `watch_file_user_provider` 替代 `static_user_provider:file`。该 provider 会监控凭证文件的变化并自动重新加载：
 
 ```shell
-./greptime standalone start --user-provider=watch_file_user_provider:file:<path_to_file>
+./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
 ```
 
 监控文件提供程序的特点：
