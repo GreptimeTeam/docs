@@ -75,7 +75,7 @@ editor:rw=editor_pwd
 ./greptime standalone start --user-provider=watch_file_user_provider:<path_to_file>
 ```
 
-监控文件提供程序的特点：
+`watch_file_user_provider`的特点：
 - 使用与 `static_user_provider:file` 相同的文件格式
 - 自动检测文件修改并重新加载凭证
 - 允许在不重启服务器的情况下添加、删除或修改用户
