@@ -10,7 +10,7 @@ Release date: September 28, 2025
 
 **If you are using [v0.17.1](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.1) or [v0.17.0](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.0), we recommend upgrading to [v0.17.2](https://github.com/GreptimeTeam/greptimedb/releases/tag/v0.17.2).**
 
-v0.17.2 improves overall reliability, fixes critical query issues, and now supports expressions in TQL parameters.
+v0.17.2 enhances overall reliability, resolves critical query bugs, and introduces support for expressions within TQL parameters.
 
 ### 🚀 Features
 
