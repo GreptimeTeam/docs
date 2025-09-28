@@ -5,23 +5,24 @@ description: Covers the TQL keyword for executing Time-Series Query Language in 
 
 # TQL
 
-The `TQL` keyword executes TQL language in SQL. The TQL is Time-Series Query Language, which is an extension for Prometheus's [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) in GreptimeDB.
+The `TQL` keyword executes TQL language in SQL. The TQL is Telemetry Query Language, which is an extension for Prometheus's [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) in GreptimeDB.
 
 ## EVAL
 
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step) expr
+TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr
 ```
 
 The `start`, `end` and `step` are the query parameters just like [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/):
 
-- `start`: `<rfc3339 | unix_timestamp>`: Start timestamp, inclusive.
-- `end`: `<rfc3339 | unix_timestamp>`: End timestamp, inclusive.
-- `step`: `<duration | float>`: Query resolution step width in `duration` format or float number of seconds.
+- `start`: `<rfc3339 | unix_timestamp | expression>`: The start timestamp of the query; the range is inclusive of this value.
+- `end`: `<rfc3339 | unix_timestamp | expression>`: The end timestamp of the query; the range is inclusive of this value.
+- `step`: `<duration | float>`: The query resolution step, specified as a `duration` or a floating-point number of seconds.
+- `lookback`: `<duration | float>`: The maximum lookback duration for evaluation, default is 5 minutes and optional.
 
-The `expr` is the TQL expression query string.
+`expr` is the TQL (PromQL) query string.
 
 ### Examples
 
@@ -32,6 +33,28 @@ TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job=
 ```
 
 will get a result just like other normal SQL queries.
+
+`start` and `end` can also be time expressions that evaluate to constants. For example, to query the past 3 hours:
+
+```sql
+TQL EVAL (now() - interval '3' hours, now(), '1m')
+  sum by (namespace, pod) (
+    increase(kube_pod_container_status_restarts_total[10m:30s])
+  );
+```
+
+To query data for the past day:
+
+```sql
+TQL EVAL (
+  date_trunc('day', now() - interval '1' day),
+  date_trunc('day', now()),
+  '1m'
+)
+  sum by (namespace) (
+    rate(http_requests_total[5m:30s])
+  );
+```
 
 ## EXPLAIN
 
@@ -47,7 +70,7 @@ For example, to explain the PromQL `sum by (instance) (rate(node_disk_written_by
 TQL EXPLAIN sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
 ```
 
-Notice that since the given query won't be actually executed, the triple `(start, end, step)` is not necessary. But you can still provide it like in `TQL EVAL`:
+Notice that since the given query won't be actually executed, the triple `(start, end, step, [lookback])` is not necessary. But you can still provide it like in `TQL EVAL`:
 
 ```
 TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
