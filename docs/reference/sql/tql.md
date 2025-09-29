@@ -12,7 +12,7 @@ The `TQL` keyword executes TQL language in SQL. The TQL is Time-Series Query Lan
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step) expr
+TQL [EVAL | EVALUATE] (start, end, step) expr [AS alias]
 ```
 
 The `start`, `end` and `step` are the query parameters just like [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/):
@@ -23,6 +23,8 @@ The `start`, `end` and `step` are the query parameters just like [Prometheus Que
 
 The `expr` is the TQL expression query string.
 
+The optional `AS alias` clause allows you to provide an alias for the query result. This is useful for giving meaningful names to the output columns.
+
 ### Examples
 
 Return the per-second rate for all time series with the `http_requests_total` metric name, as measured over the last 5 minutes:
@@ -32,6 +34,14 @@ TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job=
 ```
 
 will get a result just like other normal SQL queries.
+
+You can also use value aliasing to give a meaningful name to your query result:
+
+```sql
+TQL eval (0, 10, '5s') {__name__="test"} AS test_series;
+```
+
+This will return the results with the column named `test_series` instead of the default column name.
 
 ## EXPLAIN
 

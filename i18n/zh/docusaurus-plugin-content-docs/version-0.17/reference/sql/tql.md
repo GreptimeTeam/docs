@@ -12,7 +12,7 @@ description: 介绍了 `TQL` 关键字及其在 GreptimeDB 中的用法，包括
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step) expr
+TQL [EVAL | EVALUATE] (start, end, step) expr [AS alias]
 ```
 
 `start`, `end` 和 `step` 是查询参数，就像 [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/) 一样：
@@ -23,6 +23,8 @@ TQL [EVAL | EVALUATE] (start, end, step) expr
 
 `expr` 是 TQL 表达式查询字符串。
 
+可选的 `AS alias` 子句允许你为查询结果提供别名。这有助于为输出列提供有意义的名称。
+
 ### 示例
 
 返回过去 5 分钟内 `http_requests_total` 指标的所有时间序列的每秒值：
@@ -32,6 +34,14 @@ TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job=
 ```
 
 其查询结果和 SQL 查询结果类似。
+
+你也可以使用值别名为查询结果提供有意义的名称：
+
+```sql
+TQL eval (0, 10, '5s') {__name__="test"} AS test_series;
+```
+
+这将返回列名为 `test_series` 而不是默认列名的结果。
 
 ## EXPLAIN
 
