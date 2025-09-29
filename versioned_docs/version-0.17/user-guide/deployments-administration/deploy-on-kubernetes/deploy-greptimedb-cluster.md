@@ -193,7 +193,7 @@ http://etcd-2.etcd-headless.etcd-cluster.svc.cluster.local:2379 is healthy: succ
 ## Setup `values.yaml`
 
 The `values.yaml` file contains parameters and configurations for GreptimeDB and is the key to defining the Helm chart.
-For example, a minimal GreptimeDB cluster with self-monitoring configuration is as follows:
+For example, a minimal GreptimeDB cluster configuration is as follows:
 
 ```yaml
 image:
@@ -211,15 +211,6 @@ image:
 initializer:
   registry: docker.io
   repository: greptime/greptimedb-initializer
-
-monitoring:
-  # Enable monitoring
-  enabled: true
-
-grafana:
-  # Enable grafana deployment.
-  # It needs to enable monitoring `monitoring.enabled: true` first.
-  enabled: true
 
 frontend:
   replicas: 1
@@ -239,11 +230,11 @@ You should adjust the configuration according to your requirements.
 You can refer to the [configuration documentation](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md) for the complete `values.yaml` configuration options.
 
 
-## Install the GreptimeDB cluster with self-monitoring
+## Install the GreptimeDB cluster
 
 Now that the GreptimeDB Operator and etcd cluster are installed,
 and `values.yaml` is configured, 
-you can deploy a minimal GreptimeDB cluster with self-monitoring and Flow enabled:
+you can deploy a minimal GreptimeDB cluster:
 
 ```bash
 helm upgrade --install mycluster \
@@ -277,51 +268,6 @@ The greptimedb-cluster is starting, use `kubectl get pods -n default` to check i
 ```
 </details>
 
-When both `monitoring` and `grafana` options are enabled, we will enable **self-monitoring** for the GreptimeDB cluster: a GreptimeDB standalone instance will be deployed to monitor the GreptimeDB cluster, and the monitoring data will be visualized using Grafana, making it easier to troubleshoot issues in the GreptimeDB cluster.
-
-We will deploy a GreptimeDB standalone instance named `${cluster}-monitor` in the same namespace as the cluster to store monitoring data such as metrics and logs from the cluster. Additionally, we will deploy a [Vector](https://github.com/vectordotdev/vector) sidecar for each pod in the cluster to collect metrics and logs and send them to the GreptimeDB standalone instance.
-
-We will deploy a [Grafana](https://grafana.com/) instance and configure it to use the GreptimeDB standalone instance as a data source (using both Prometheus and MySQL protocols), allowing us to visualize the GreptimeDB cluster's monitoring data out of the box. By default, Grafana will use `mycluster` and `default` as the cluster name and namespace to create data sources. If you want to monitor clusters with different names or namespaces, you'll need to create different data source configurations based on the cluster names and namespaces. You can create a `values.yaml` file like this:
-
-```yaml
-monitoring:
-  enabled: true
-
-grafana:
-  enabled: true
-  datasources:
-    datasources.yaml:
-      datasources:
-        - name: greptimedb-metrics
-          type: prometheus
-          url: http://${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4000/v1/prometheus
-          access: proxy
-          isDefault: true
-
-        - name: greptimedb-logs
-          type: mysql
-          url: ${cluster}-monitor-standalone.${namespace}.svc.cluster.local:4002
-          access: proxy
-          database: public
-```
-
-The above configuration will create the default datasources for the GreptimeDB cluster metrics and logs in the Grafana dashboard:
-
-- `greptimedb-metrics`: The metrics of the cluster are stored in the standalone monitoring database and exposed in Prometheus protocol (`type: prometheus`);
-
-- `greptimedb-logs`: The logs of the cluster are stored in the standalone monitoring database and exposed in MySQL protocol (`type: mysql`). It uses the `public` database by default;
-
-Then replace `{cluster}` and `${namespace}` with your desired values and install the GreptimeDB cluster using the following command (please note that `{cluster}` and `${namespace}` in the command also need to be replaced):
-
-```bash
-helm install {cluster} \
-  --set monitoring.enabled=true \
-  --set grafana.enabled=true \
-  greptime/greptimedb-cluster \
-  -f values.yaml \
-  -n ${namespace}
-```
-
 When starting the cluster installation, we can check the status of the GreptimeDB cluster with the following command. If you use a different cluster name and namespace, you can replace `mycluster` and `default` with your configuration:
 
 ```bash
@@ -350,13 +296,11 @@ kubectl -n default get pods
 NAME                                 READY   STATUS    RESTARTS   AGE
 mycluster-datanode-0                 2/2     Running   0          77s
 mycluster-frontend-6ffdd549b-9s7gx   2/2     Running   0          66s
-mycluster-grafana-675b64786-ktqps    1/1     Running   0          6m35s
 mycluster-meta-58bc88b597-ppzvj      2/2     Running   0          86s
-mycluster-monitor-standalone-0       1/1     Running   0          6m35s
 ```
 </details>
 
-As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, and 1 metasrv by default. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md). Additionally, we have deployed a standalone GreptimeDB instance (`mycluster-monitor-standalone-0`) for storing monitoring data and a Grafana instance (`mycluster-grafana-675b64786-ktqps`) for visualizing the cluster's monitoring data.
+As you can see, we have created a minimal GreptimeDB cluster consisting of 1 frontend, 1 datanode, and 1 metasrv by default. For information about the components of a complete GreptimeDB cluster, you can refer to [architecture](/user-guide/concepts/architecture.md).
 
 ## Explore the GreptimeDB cluster
 
@@ -406,33 +350,6 @@ Open the browser and navigate to `http://localhost:4000/dashboard` to access by 
 
 If you want to use other tools like `mysql` or `psql` to connect to the GreptimeDB cluster, you can refer to the [Quick Start](/getting-started/quick-start.md).
 
-### Access the Grafana dashboard
-
-You can access the Grafana dashboard by using `kubctl port-forward` the Grafana service:
-
-```bash
-kubectl -n default port-forward svc/mycluster-grafana 18080:80
-```
-
-Please note that when you use a different cluster name and namespace, you can use the following command, and replace `${cluster}` and `${namespace}` with your configuration:
-
-```bash
-kubectl -n ${namespace} port-forward svc/${cluster}-grafana 18080:80 
-```
-
-Then open your browser and navigate to `http://localhost:18080` to access the Grafana dashboard. The default username and password are `admin` and `gt-operator`:
-
-![Grafana Dashboard](/kubernetes-cluster-grafana-dashboard.jpg)
-
-There are three dashboards available:
-
-- **GreptimeDB**: Displays the metrics of the GreptimeDB cluster.
-- **GreptimeDB Logs**: Displays the logs of the GreptimeDB cluster.
-
-## Next Steps
-
-- If you want to deploy a GreptimeDB cluster with Remote WAL, you can refer to [Configure Remote WAL](/user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal.md) for more details.
-
 ## Cleanup
 
 :::danger
@@ -461,7 +378,6 @@ The PVCs wouldn't be deleted by default for safety reasons. If you want to delet
 
 ```bash
 kubectl -n default delete pvc -l app.greptime.io/component=mycluster-datanode
-kubectl -n default delete pvc -l app.greptime.io/component=mycluster-monitor-standalone
 ```
 
 ### Cleanup the etcd cluster
@@ -479,3 +395,8 @@ If you are using `kind` to create the Kubernetes cluster, you can use the follow
 ```bash
 kind delete cluster
 ```
+
+## Next Steps
+
+If you want to deploy a GreptimeDB cluster with Remote WAL, you can refer to [Configure Remote WAL](/user-guide/deployments-administration/deploy-on-kubernetes/configure-remote-wal.md) for more details.
+
