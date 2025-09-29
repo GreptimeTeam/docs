@@ -5,33 +5,57 @@ description: 介绍了 `TQL` 关键字及其在 GreptimeDB 中的用法，包括
 
 # TQL
 
-`TQL` 关键字在 SQL 中执行 TQL 语言。TQL 是 Time-Series Query Language 的缩写，是 GreptimeDB 中对 Prometheus 的 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 的扩展。
+`TQL` 关键字在 SQL 中执行 TQL 语言。TQL 是 Telemetry Query Language 的缩写，是 GreptimeDB 中对 Prometheus 的 [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) 的扩展。
 
 ## EVAL
 
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step) expr
+TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr
 ```
 
 `start`, `end` 和 `step` 是查询参数，就像 [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/) 一样：
 
-- `start`: `<rfc3339 | unix_timestamp>`: Start 时间戳，范围中包含该值。
-- `end`: `<rfc3339 | unix_timestamp>`: End 时间戳，范围中包含该值。
+- `start`: `<rfc3339 | unix_timestamp | expression >`: 查询的起始时间戳，范围中包含该值。
+- `end`: `<rfc3339 | unix_timestamp | expression>`: 查询的截止时间戳，范围中包含该值。
 - `step`: `<duration | float>`: 查询分辨率步长，采用 `duration` 格式或浮点秒数。
+- `lookback`: `<duration | float>`: 查询评估的最大过去持续时间，默认 5 分钟，可选参数。
 
-`expr` 是 TQL 表达式查询字符串。
+`expr` 是 TQL (PromQL) 的查询字符串。
 
 ### 示例
 
 返回过去 5 分钟内 `http_requests_total` 指标的所有时间序列的每秒值：
 
 ```sql
-TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job="prometheus"}[5m]);
+TQL EVAL (1677057993, 1677058993, '1m')
+  rate(prometheus_http_requests_total{job="prometheus"}[5m]);
 ```
 
 其查询结果和 SQL 查询结果类似。
+
+`start` 和 `end` 还可以是可以被求值为常量的时间表达式，例如查询过去 3 个小时：
+
+```sql
+TQL EVAL (now() - interval '3' hours, now(), '1m')
+  sum by (namespace, pod) (
+    increase(kube_pod_container_status_restarts_total[10m:30s])
+  );
+```
+
+查询过去一天的数据：
+```sql
+TQL EVAL (
+  date_trunc('day', now() - interval '1' day),
+  date_trunc('day', now()),
+  '1m'
+)
+  sum by (namespace) (
+    rate(http_requests_total[5m:30s])
+  );
+```
+
 
 ## EXPLAIN
 
@@ -47,7 +71,7 @@ TQL EXPLAIN expr;
 TQL EXPLAIN sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
 ```
 
-注意该查询实际上没有被执行，所以 `(start, end, step)` 不是必需的，但你仍然可以像在 `TQL EVAL` 中一样提供这些参数：
+注意该查询实际上没有被执行，所以 `(start, end, step, [lookback])` 不是必需的，但你仍然可以像在 `TQL EVAL` 中一样提供这些参数：
 
 ```
 TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
