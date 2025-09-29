@@ -4,7 +4,7 @@ description: GreptimeDB v0.17.2 Changelog
 date: 2025-09-28
 ---
 
-# 0.17.2
+# v0.17.2
 
 Release date: September 28, 2025
 
