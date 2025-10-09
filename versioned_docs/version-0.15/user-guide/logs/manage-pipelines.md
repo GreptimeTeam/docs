@@ -303,13 +303,13 @@ At this point, the Pipeline processing is successful, and the output is as follo
     ],
     "schema": [
         {
-            "colume_type": "FIELD",
+            "column_type": "FIELD",
             "data_type": "STRING",
             "fulltext": false,
             "name": "message"
         },
         {
-            "colume_type": "TIMESTAMP",
+            "column_type": "TIMESTAMP",
             "data_type": "TIMESTAMP_NANOSECOND",
             "fulltext": false,
             "name": "time"
