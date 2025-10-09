@@ -23,7 +23,7 @@ Release date: July 24, 2025
 * fix: aggr group by all partition cols use partial commutative by [@discord9](https://github.com/discord9) in [#6534](https://github.com/GreptimeTeam/greptimedb/pull/6534)
 * fix: estimate mem size for bulk ingester by [@fengys1996](https://github.com/fengys1996) in [#6550](https://github.com/GreptimeTeam/greptimedb/pull/6550)
 * fix: flow mirror cache by [@discord9](https://github.com/discord9) in [#6551](https://github.com/GreptimeTeam/greptimedb/pull/6551)
-* fix: closee issue #6555 return empty result by [@yihong0618](https://github.com/yihong0618) in [#6569](https://github.com/GreptimeTeam/greptimedb/pull/6569)
+* fix: close issue #6555 return empty result by [@yihong0618](https://github.com/yihong0618) in [#6569](https://github.com/GreptimeTeam/greptimedb/pull/6569)
 
 ### 🚜 Refactor
 * refactor(flow): faster time window expr by [@discord9](https://github.com/discord9) in [#6495](https://github.com/GreptimeTeam/greptimedb/pull/6495)
