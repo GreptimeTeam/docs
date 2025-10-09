@@ -87,15 +87,15 @@ from(bucket: "public")
 
 ```sql [SQL]
 SELECT
-    greptime_timestamp,
+    ts,
     host,
     AVG(cpu) RANGE '1h' as mean_cpu
 FROM
     monitor
 WHERE
-    greptime_timestamp > NOW() - '24 hours'::INTERVAL
+    ts > NOW() - '24 hours'::INTERVAL
 ALIGN '1h' TO NOW
-ORDER BY greptime_timestamp DESC;
+ORDER BY ts DESC;
 ```
 
 在该 SQL 查询中，
