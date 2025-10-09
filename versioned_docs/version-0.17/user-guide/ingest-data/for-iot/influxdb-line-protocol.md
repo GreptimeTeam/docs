@@ -180,7 +180,7 @@ In the GreptimeDB data model, the data is represented as follows in the `census`
 
 ```sql
 +---------------------+----------+-----------+------+------+
-| ts                  | location | scientist | bees | ants |
+| greptime_timestamp  | location | scientist | bees | ants |
 +---------------------+----------+-----------+------+------+
 | 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
 | 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
@@ -192,15 +192,15 @@ In the GreptimeDB data model, the data is represented as follows in the `census`
 The schema of the `census` table is as follows:
 
 ```sql
-+-----------+----------------------+------+------+---------+---------------+
-| Column    | Type                 | Key  | Null | Default | Semantic Type |
-+-----------+----------------------+------+------+---------+---------------+
-| location  | String               | PRI  | YES  |         | TAG           |
-| scientist | String               | PRI  | YES  |         | TAG           |
-| bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
-| ants      | Float64              |      | YES  |         | FIELD         |
-+-----------+----------------------+------+------+---------+---------------+
++--------------------+----------------------+------+------+---------+---------------+
+| Column             | Type                 | Key  | Null | Default | Semantic Type |
++--------------------+----------------------+------+------+---------+---------------+
+| location           | String               | PRI  | YES  |         | TAG           |
+| scientist          | String               | PRI  | YES  |         | TAG           |
+| bees               | Float64              |      | YES  |         | FIELD         |
+| greptime_timestamp | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
+| ants               | Float64              |      | YES  |         | FIELD         |
++--------------------+----------------------+------+------+---------+---------------+
 ```
 
 ## Reference
