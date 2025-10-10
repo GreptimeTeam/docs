@@ -530,6 +530,7 @@ const sidebars: SidebarsConfig = {
                   id: 'enterprise/deployments-administration/monitoring/overview',
                   label: 'Overview',
                 },
+                'enterprise/deployments-administration/monitoring/self-monitor-cluster',
                 'enterprise/deployments-administration/monitoring/check-db-status',
                 'enterprise/deployments-administration/monitoring/key-metrics',
                 'enterprise/deployments-administration/monitoring/key-logs',
