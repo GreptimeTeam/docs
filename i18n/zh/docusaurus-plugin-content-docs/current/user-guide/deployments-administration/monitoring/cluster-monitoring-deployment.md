@@ -17,11 +17,11 @@ image:
   registry: docker.io
   # 镜像仓库：
   # OSS GreptimeDB 使用 `greptime/greptimedb`，
-  # Enterprise GreptimeDB 请咨询工作人员
+  # GreptimeDB 企业版配置请咨询工作人员
   repository: <repository>
   # 镜像标签：
-  # OSS GreptimeDB 使用数据库版本，例如 `v0.17.1`
-  # Enterprise GreptimeDB 请咨询工作人员
+  # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
+  # GreptimeDB 企业版配置请咨询工作人员
   tag: <tag>
   pullSecrets: [ regcred ]
 
@@ -59,11 +59,11 @@ image:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com
   # 镜像仓库：
   # OSS GreptimeDB 使用 `greptime/greptimedb`，
-  # Enterprise GreptimeDB 请咨询工作人员
+  # GreptimeDB 企业版配置请咨询工作人员
   repository: <repository>
   # 镜像标签：
-  # OSS GreptimeDB 使用数据库版本，例如 `v0.17.1`
-  # Enterprise GreptimeDB 请咨询工作人员
+  # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
+  # GreptimeDB 企业版配置请咨询工作人员
   tag: <tag>
   pullSecrets: [ regcred ]
 
@@ -99,10 +99,10 @@ datanode:
 ```
 :::
 
-当启用监控后，GreptimeDB Operator 会额外启动一个 GreptimeDB Standalone 实例用于收集 GreptimeDB 集群的指标和日志数据。
+当启用 `monitoring` 后，GreptimeDB Operator 会额外启动一个 GreptimeDB Standalone 实例用于收集 GreptimeDB 集群的指标和日志数据。
 为了收集日志数据，GreptimeDB Operator 会在每一个 Pod 中启动一个 [Vector](https://vector.dev/) 的 Sidecar 容器。
 
-当启用 Grafana 后，会部署一个 Grafana 实例，并将用于集群监控的 GreptimeDB Standalone 实例作为其数据源。
+当启用 `grafana` 后，会部署一个 Grafana 实例，并将用于集群监控的 GreptimeDB Standalone 实例作为其数据源。
 这样就可以开箱即用地通过 Prometheus 和 MySQL 协议来可视化 GreptimeDB 集群的监控数据。
 
 接下来使用上述配置的 `values.yaml` 文件来部署 GreptimeDB 集群：
@@ -247,6 +247,9 @@ monitoring:
 注意该功能必须先启用[监控（`monitoring.enabled: true`）配置](#启用监控)：
 
 ```yaml
+monitoring:
+  enabled: true
+
 grafana:
   enabled: true
 ```
