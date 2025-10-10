@@ -7,46 +7,6 @@ description: Monitor key metrics of GreptimeDB clusters, including CPU, memory, 
 
 The key metrics for monitoring include CPU, memory, disk I/O, and network bandwidth usage.
 
-## Configuring
-
-To avoid storage system complexity,
-we recommend using GreptimeDB in Standalone mode to store cluster logs and metrics data for monitoring purposes.
-
-- Deploy a Standalone version of GreptimeDB (you can use the Standalone [Helm Chart](https://github.com/GreptimeTeam/helm-charts/tree/main/charts/greptimedb-standalone));
-- Configure Prometheus Remote Write to send data to GreptimeDB;
-- Configure GreptimeDB logs to output in JSON format (logging.log_format=json) and set up Vector or FluentBit to write log data into GreptimeDB. Use the following schema to ensure compatibility with the Enterprise Dashboard for log searching:
-
-```sql
-CREATE TABLE IF NOT EXISTS `_gt_logs` (
-  `pod_ip` STRING NULL,
-  `namespace` STRING NULL,
-  `cluster` STRING NULL,
-  `level` STRING NULL,
-  `target` STRING NULL,
-  `role` STRING NULL,
-  `pod` STRING NULL SKIPPING INDEX WITH(granularity = '10240', type = 'BLOOM'),
-  `message` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
-  `err` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', case_sensitive = 'false'),
-  `timestamp` TIMESTAMP(9) NOT NULL,
-  TIME INDEX (`timestamp`),
-  PRIMARY KEY (`level`, `target`, `role`)
-)
-```
-
-GreptimeDB monitoring can include the following aspects:
-
-- Basic Monitoring
-  - Pod CPU / Memory / Disk usage / Network bandwidth traffic monitoring
-- GreptimeDB Core Business Monitoring
-  - Error log monitoring (such as the error logs listed in the operational [key logs](key-logs.md))
-  - Latency monitoring
-  - API error monitoring
-
-## Importing Monitoring Metrics into Grafana
-
-We have exported GreptimeDB metrics Grafana dashboards as JSON files, which can be downloaded [here](https://github.com/GreptimeTeam/greptimedb/tree/main/grafana).
-Using Grafana's [Import Dashboard](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/) feature, you can easily create the dashboards needed to monitor GreptimeDB.
-
 ## Alert Metrics
 
 Since each company typically has its own alerting system with potentially different configuration methods, this document does not provide specific alert configuration procedures. Instead, it lists key metrics that should be monitored. You can configure alerts based on whether these metrics remain at abnormal values for extended periods (several minutes). You should set alert thresholds according to your specific circumstances.
