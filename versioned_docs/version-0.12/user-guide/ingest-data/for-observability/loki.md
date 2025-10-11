@@ -23,7 +23,7 @@ To send Logs to GreptimeDB through Raw HTTP API, use the following information:
 
 [Grafana Alloy](https://grafana.com/docs/alloy/latest/) is a vendor-neutral distribution of the OpenTelemetry (OTel) Collector. Alloy uniquely combines the very best OSS observability signals in the community.
 
-It suplies a Loki exporter that can be used to send logs to GreptimeDB. Here is an example configuration:
+It supplies a Loki exporter that can be used to send logs to GreptimeDB. Here is an example configuration:
 
 ```hcl
 loki.source.file "greptime" {

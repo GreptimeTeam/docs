@@ -344,6 +344,10 @@ SHOW FULL PROCESSLIST;
 
 请参考 [Trigger 语法](/reference/sql/trigger-syntax.md#show-triggers)文档。
 
+## SHOW CREATE TRIGGER
+
+请参考 [Trigger 语法](/reference/sql/trigger-syntax.md#show-create-trigger)文档。
+
 ## SHOW 语句的扩展
 
 与 MySQL 类似，一些 `SHOW` 语句的扩展伴随着 [`INFORMATION_SCHEMA`](/reference/sql/information-schema/overview.md) 的实现，它们还接受 `WHERE` 子句，提供了在指定显示的行时更大的灵活性。

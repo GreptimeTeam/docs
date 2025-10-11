@@ -145,6 +145,20 @@ SHOW TRIGGERS WHERE <condition>;
 SHOW TRIGGERS WHERE name = 'load1_monitor';
 ```
 
+## SHOW CREATE TRIGGER
+
+用于显示 TRIGGER 的定义：
+
+```sql
+SHOW CREATE TRIGGER <trigger-name>;
+```
+
+例如：
+
+```sql
+SHOW CREATE TRIGGER load1_monitor;
+```
+
 ## DROP TRIGGER
 
 请使用以下 `DROP TRIGGER` 语句删除 Trigger：

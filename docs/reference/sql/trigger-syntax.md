@@ -158,6 +158,20 @@ For example:
 SHOW TRIGGERS WHERE name = 'load1_monitor';
 ```
 
+## SHOW CREATE TRIGGER
+
+To show the Trigger's definition:
+
+```sql
+SHOW CREATE TRIGGER <trigger-name>;
+```
+
+For example:
+
+```sql
+SHOW CREATE TRIGGER load1_monitor;
+```
+
 ## DROP TRIGGER
 
 To delete a trigger, use the following `DROP TRIGGER` clause:

@@ -179,7 +179,7 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 
 ```sql
 +---------------------+----------+-----------+------+------+
-| ts                  | location | scientist | bees | ants |
+| greptime_timestamp  | location | scientist | bees | ants |
 +---------------------+----------+-----------+------+------+
 | 2019-08-18 00:00:00 | klamath  | anderson  |   23 | NULL |
 | 2019-08-18 00:06:00 | klamath  | anderson  |   28 | NULL |
@@ -191,15 +191,15 @@ census,location=portland,scientist=mullen ants=32 1566086760000000000
 `census` 表结构如下：
 
 ```sql
-+-----------+----------------------+------+------+---------+---------------+
-| Column    | Type                 | Key  | Null | Default | Semantic Type |
-+-----------+----------------------+------+------+---------+---------------+
-| location  | String               | PRI  | YES  |         | TAG           |
-| scientist | String               | PRI  | YES  |         | TAG           |
-| bees      | Float64              |      | YES  |         | FIELD         |
-| ts        | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
-| ants      | Float64              |      | YES  |         | FIELD         |
-+-----------+----------------------+------+------+---------+---------------+
++--------------------+----------------------+------+------+---------+---------------+
+| Column             | Type                 | Key  | Null | Default | Semantic Type |
++--------------------+----------------------+------+------+---------+---------------+
+| location           | String               | PRI  | YES  |         | TAG           |
+| scientist          | String               | PRI  | YES  |         | TAG           |
+| bees               | Float64              |      | YES  |         | FIELD         |
+| greptime_timestamp | TimestampNanosecond  | PRI  | NO   |         | TIMESTAMP     |
+| ants               | Float64              |      | YES  |         | FIELD         |
++--------------------+----------------------+------+------+---------+---------------+
 ```
 
 ## 参考
