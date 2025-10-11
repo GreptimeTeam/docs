@@ -29,7 +29,7 @@ TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr [AS alias]
 - 在 SQL 查询中使用 TQL 结果（例如 CTE、JOIN）
 - 提高复杂查询的可读性
 
-**注意**：值别名目前仅支持单字段结果。
+**注意**：值别名目前仅支持单值列结果。
 
 ### 示例
 
