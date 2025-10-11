@@ -79,6 +79,10 @@ TQL EVAL (
   );
 ```
 
+### Using TQL in CTEs
+
+TQL `EVAL` can be used within Common Table Expressions (CTEs) to combine PromQL-style queries with SQL processing. For detailed examples and usage guidelines, see [Using TQL in CTEs](/user-guide/query-data/cte.md#using-tql-in-ctes).
+
 ## EXPLAIN
 
 `EXPLAIN` displays both the logical plan and execution plan for a given PromQL query. The syntax is as follows:

@@ -79,6 +79,9 @@ TQL EVAL (
   );
 ```
 
+### 在 CTE 中使用 TQL
+
+TQL `EVAL` 可以在公共表表达式（CTE）中使用，以便将 PromQL 风格的查询与 SQL 处理相结合。有关详细示例和使用指南，请参阅[在 CTE 中使用 TQL](/user-guide/query-data/cte.md#在-cte-中使用-tql)。
 
 ## EXPLAIN
 
