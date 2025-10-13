@@ -12,7 +12,7 @@ description: 介绍了 `TQL` 关键字及其在 GreptimeDB 中的用法，包括
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr
+TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr [AS alias]
 ```
 
 `start`, `end` 和 `step` 是查询参数，就像 [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/) 一样：
@@ -24,6 +24,13 @@ TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr
 
 `expr` 是 TQL (PromQL) 的查询字符串。
 
+可选的 `AS alias` 子句允许你为结果中的值列指定自定义名称。这对以下场景很有用：
+- 为查询结果提供有意义的名称
+- 在 SQL 查询中使用 TQL 结果（例如 CTE、JOIN）
+- 提高复杂查询的可读性
+
+**注意**：值别名目前仅支持单值列结果。
+
 ### 示例
 
 返回过去 5 分钟内 `http_requests_total` 指标的所有时间序列的每秒值：
@@ -34,6 +41,22 @@ TQL EVAL (1677057993, 1677058993, '1m')
 ```
 
 其查询结果和 SQL 查询结果类似。
+
+使用值别名为结果提供自定义名称：
+
+```sql
+TQL EVAL (0, 30, '10s') http_requests_total AS requests;
+```
+
+这将返回值列名为 `requests` 而不是默认字段名的结果。
+
+值别名与聚合：
+
+```sql
+TQL EVAL (0, 10, '5s') count by (k) (test) AS count_value;
+```
+
+此查询按 `k` 分组计数值，并将结果列命名为 `count_value`。
 
 `start` 和 `end` 还可以是可以被求值为常量的时间表达式，例如查询过去 3 个小时：
 
@@ -56,13 +79,16 @@ TQL EVAL (
   );
 ```
 
+### 在 CTE 中使用 TQL
+
+TQL `EVAL` 可以在公共表表达式（CTE）中使用，以便将 PromQL 风格的查询与 SQL 处理相结合。有关详细示例和使用指南，请参阅[在 CTE 中使用 TQL](/user-guide/query-data/cte.md#在-cte-中使用-tql)。
 
 ## EXPLAIN
 
 `EXPLAIN` 展示特定 PromQL 查询的逻辑计划和执行计划，其语法如下：
 
 ```
-TQL EXPLAIN expr;
+TQL EXPLAIN [VERBOSE] [FORMAT format] [(start, end, step, [lookback])] expr [AS alias];
 ```
 
 例如，我们可以使用下方示例解释 PromQL `sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50`：
@@ -75,6 +101,12 @@ TQL EXPLAIN sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
 
 ```
 TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
+```
+
+你也可以在 EXPLAIN 中使用值别名：
+
+```
+TQL EXPLAIN (0, 10, '5s') test AS series;
 ```
 
 结果如下：
@@ -120,7 +152,7 @@ TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_tota
 TQL 同样支持 `ANALYZE` 关键词来分析给定 PromQL 查询的执行，其语法如下：
 
 ```
-TQL ANALYZE (start, end, step) expr;
+TQL ANALYZE [VERBOSE] [FORMAT format] (start, end, step, [lookback]) expr [AS alias];
 ```
 
 例如：

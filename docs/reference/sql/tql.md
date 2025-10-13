@@ -12,7 +12,7 @@ The `TQL` keyword executes TQL language in SQL. The TQL is Telemetry Query Langu
 ### Syntax
 
 ```sql
-TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr
+TQL [EVAL | EVALUATE] (start, end, step, [lookback]) expr [AS alias]
 ```
 
 The `start`, `end` and `step` are the query parameters just like [Prometheus Query API](https://prometheus.io/docs/prometheus/latest/querying/api/):
@@ -24,6 +24,13 @@ The `start`, `end` and `step` are the query parameters just like [Prometheus Que
 
 `expr` is the TQL (PromQL) query string.
 
+The optional `AS alias` clause allows you to specify a custom name for the value column in the result. This is useful for:
+- Giving meaningful names to query results
+- Using TQL results in SQL queries (e.g., CTEs, JOINs)
+- Improving readability of complex queries
+
+**Note**: Value aliasing currently supports single-field results only.
+
 ### Examples
 
 Return the per-second rate for all time series with the `http_requests_total` metric name, as measured over the last 5 minutes:
@@ -33,6 +40,22 @@ TQL eval (1677057993, 1677058993, '1m') rate(prometheus_http_requests_total{job=
 ```
 
 will get a result just like other normal SQL queries.
+
+Using value aliasing to give a custom name to the result:
+
+```sql
+TQL EVAL (0, 30, '10s') http_requests_total AS requests;
+```
+
+This will return results with the value column named `requests` instead of the default field name.
+
+Value aliasing with aggregation:
+
+```sql
+TQL EVAL (0, 10, '5s') count by (k) (test) AS count_value;
+```
+
+This query counts values grouped by `k` and names the result column `count_value`.
 
 `start` and `end` can also be time expressions that evaluate to constants. For example, to query the past 3 hours:
 
@@ -56,12 +79,16 @@ TQL EVAL (
   );
 ```
 
+### Using TQL in CTEs
+
+TQL `EVAL` can be used within Common Table Expressions (CTEs) to combine PromQL-style queries with SQL processing. For detailed examples and usage guidelines, see [Using TQL in CTEs](/user-guide/query-data/cte.md#using-tql-in-ctes).
+
 ## EXPLAIN
 
 `EXPLAIN` displays both the logical plan and execution plan for a given PromQL query. The syntax is as follows:
 
 ```
-TQL EXPLAIN expr;
+TQL EXPLAIN [VERBOSE] [FORMAT format] [(start, end, step, [lookback])] expr [AS alias];
 ```
 
 For example, to explain the PromQL `sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50`, we can use
@@ -74,6 +101,12 @@ Notice that since the given query won't be actually executed, the triple `(start
 
 ```
 TQL EXPLAIN (0, 100, '10s') sum by (instance) (rate(node_disk_written_bytes_total[2m])) > 50;
+```
+
+You can also use value aliasing with EXPLAIN:
+
+```
+TQL EXPLAIN (0, 10, '5s') test AS series;
 ```
 
 The result should be like the following:
@@ -119,7 +152,7 @@ The result should be like the following:
 TQL also supports `ANALYZE` keyword to analyze the given PromQL query's execution. The syntax is as follows:
 
 ```
-TQL ANALYZE [VERBOSE] (start, end, step) expr;
+TQL ANALYZE [VERBOSE] [FORMAT format] (start, end, step, [lookback]) expr [AS alias];
 ```
 
 For example:
