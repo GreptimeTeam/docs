@@ -24,7 +24,7 @@ image:
   # Use database version `VAR::greptimedbVersion` for OSS GreptimeDB
   # Consult staff for GreptimeDB Enterprise
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 
 initializer:
   registry: docker.io

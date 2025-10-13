@@ -9,43 +9,37 @@ GreptimeDB Enterprise is released as docker images.
 We provide each customer with a separate private docker registry hosted on Cloud,
 which you can pull directly using the docker pull command or configure in helm charts.
 
-## Get GreptimeDB Enterprise
+## Get GreptimeDB Enterprise Image
 
-Upon receiving GreptimeDB Enterprise,
-you will be provided with the docker registry address, username, and password via email.
-Please store this information securely!
-
-Each release of GreptimeDB Enterprise has a unique `tag` identifier.
-With this `tag`, plus the registry address `registry`, username `username`, and password `password` provided by our staff,
-you can pull the GreptimeDB Enterprise image:
-
-- Login to docker registry: `docker login --username=<username> --password=<password> <registry>`
-- Pull docker image: `docker pull <registry>:<tag>`
-
-Then configure GreptimeDB Enterprise in the helm chart:
-
-First, create a pull secret for the image registry in k8s
-(for detailed methods and instructions, please refer to the [k8s official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)).
-
-```bash
-kubectl create secret docker-registry regcred --docker-server=<registry> --docker-username=<username> --docker-password=<password>
-```
-
-For example:
-
-![k8s_pull_secret](/k8s-pull-secret.jpg)
-
-Then add this secret to the helm chart's `values.yaml`:
+You need to configure the image in the `values.yaml` file of the helm chart to obtain the dedicated GreptimeDB Enterprise,
+for example:
 
 ```yaml
+customImageRegistry:
+  enabled: true
+  # -- pull secret name, customizable, must match `image.pullSecrets`
+  secretName: greptimedb-custom-image-pull-secret
+  registry: <registry>
+  username: <username>
+  password: <password>
+
 image:
   registry: <registry>
   repository: <repository>
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets:
+    - greptimedb-custom-image-pull-secret
 ```
 
-Where `<repository>` is the part after `:` in `<registry>`; `<tag>` is the unique identifier for the GreptimeDB Enterprise image.
+In the above configuration,
+the `registry`, `username` and `password` in `customImageRegistry` are used to create the k8s pull secret,
+the `registry`, `repository` and `tag` in `image` are used to specify the GreptimeDB Enterprise image,
+therefore `customImageRegistry.secretName` and `image.pullSecrets` must be consistent to ensure that the correct authentication information can be found when pulling the image.
+
+Please contact Greptime staff to obtain the specific values for the above configuration items.
+When Greptime staff first deliver GreptimeDB Enterprise to you,
+they will inform you of the docker registry address, username and password via email.
+Please keep them safe and do not share them with external personnel!
 
 ## Installation and Startup
 

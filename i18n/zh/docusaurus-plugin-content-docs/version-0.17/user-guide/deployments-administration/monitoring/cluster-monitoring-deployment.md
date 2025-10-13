@@ -23,7 +23,7 @@ image:
   # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
   # GreptimeDB 企业版配置请咨询工作人员
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 
 initializer:
   registry: docker.io
@@ -65,7 +65,7 @@ image:
   # OSS GreptimeDB 使用数据库版本，例如 `VAR::greptimedbVersion`
   # GreptimeDB 企业版配置请咨询工作人员
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 
 initializer:
   registry: greptime-registry.cn-hangzhou.cr.aliyuncs.com

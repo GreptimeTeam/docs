@@ -13,13 +13,20 @@ You can enable monitoring and the [GreptimeDB Enterprise Management Console](/en
 Here's a complete example of a `values.yaml` file for deploying a minimal GreptimeDB cluster with monitoring and the GreptimeDB Enterprise Management Console:
 
 ```yaml
+customImageRegistry:
+  enabled: true
+  # -- pull secret name, customizable, must match `image.pullSecrets`
+  secretName: greptimedb-custom-image-pull-secret
+  registry: <registry>
+  username: <username>
+  password: <password>
+
 image:
   registry: <registry>
-  # Consult GreptimeDB Enterprise staff
   repository: <repository>
-  # Consult GreptimeDB Enterprise staff
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets:
+    - greptimedb-custom-image-pull-secret
 
 initializer:
   # Consult GreptimeDB Enterprise staff

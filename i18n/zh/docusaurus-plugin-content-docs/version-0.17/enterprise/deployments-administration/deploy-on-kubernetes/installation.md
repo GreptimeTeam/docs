@@ -35,7 +35,7 @@ image:
   registry: <registry>
   repository: <repository>
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 ```
 
 其中 `<repository>` 是 `<registry>` 中 `：` 之后的部分；`<tag>` 是 GreptimeDB 企业版镜像的单独标识。

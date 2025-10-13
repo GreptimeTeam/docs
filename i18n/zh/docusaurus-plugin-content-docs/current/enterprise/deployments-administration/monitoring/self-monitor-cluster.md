@@ -14,12 +14,21 @@ description: 在 Kubernetes 上为 GreptimeDB 企业集群部署自监控的完�
 以下是部署带有监控和 GreptimeDB 控制台的最小 GreptimeDB 集群的完整 `values.yaml` 文件示例：
 
 ```yaml
+customImageRegistry:
+  enabled: true
+  # -- pull secret 名称，可自定义，需要和 `image.pullSecrets` 保持一致
+  secretName: greptimedb-custom-image-pull-secret
+  # 请咨询工作人员获得 registry、username 和 password
+  registry: <registry>
+  username: <username>
+  password: <password>
+
 image:
-  # 请咨询工作人员获得 registry、repository 和 tag
   registry: <registry>
   repository: <repository>
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets:
+    - greptimedb-custom-image-pull-secret
 
 initializer:
   # 请咨询工作人员获得 registry、repository 和 tag
