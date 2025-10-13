@@ -15,16 +15,17 @@ description: 在 Kubernetes 上为 GreptimeDB 企业集群部署自监控的完�
 
 ```yaml
 image:
-  registry: docker.io
-  # 请咨询工作人员获取 GreptimeDB 企业版
+  # 请咨询工作人员获得 registry、repository 和 tag
+  registry: <registry>
   repository: <repository>
-  # 请咨询工作人员获取 GreptimeDB 企业版
   tag: <tag>
   pullSecrets: [ regcred ]
 
 initializer:
-  registry: docker.io
+  # 请咨询工作人员获得 registry、repository 和 tag
+  registry: <registry>
   repository: greptime/greptimedb-initializer
+  tag: <tag>
 
 monitoring:
   # 启用监控

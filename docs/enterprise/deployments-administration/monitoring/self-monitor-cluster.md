@@ -14,16 +14,19 @@ Here's a complete example of a `values.yaml` file for deploying a minimal Grepti
 
 ```yaml
 image:
-  registry: docker.io
-  # Consult staff for GreptimeDB Enterprise
+  registry: <registry>
+  # Consult GreptimeDB Enterprise staff
   repository: <repository>
-  # Consult staff for GreptimeDB Enterprise
+  # Consult GreptimeDB Enterprise staff
   tag: <tag>
   pullSecrets: [ regcred ]
 
 initializer:
-  registry: docker.io
+  # Consult GreptimeDB Enterprise staff
+  registry: <registry>
   repository: greptime/greptimedb-initializer
+  # Consult GreptimeDB Enterprise staff
+  tag: <tag>
 
 monitoring:
   # Enable monitoring
