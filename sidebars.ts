@@ -234,11 +234,11 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/logs/quick-start',
-            'user-guide/logs/pipeline-config',
+            'user-guide/logs/create-custom-pipelines',
             'user-guide/logs/manage-pipelines',
             'user-guide/logs/write-logs',
             'user-guide/logs/query-logs',
-            'user-guide/logs/fulltext-index-config',
+            'user-guide/logs/pipeline-config',
           ],
         },
         {
