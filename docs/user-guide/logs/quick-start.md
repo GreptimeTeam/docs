@@ -98,6 +98,6 @@ refer to the [Vector Integration Guide](/user-guide/ingest-data/for-observabilit
 ## Next Steps
 
 - For detailed instructions on integrating GreptimeDB with various log collectors, refer to the [Integrate with Popular Log Collectors](./overview.md#integrate-with-popular-log-collectors) section in the [Logs Overview](./overview.md) guide.
-- To learn more about pipelines and how to create custom ones, refer to the [Create Custom Pipelines](./create-custom-pipelines.md) guide.
+- To learn more about pipelines and how to create custom ones, refer to the [Using Custom Pipelines](./use-custom-pipelines.md) guide.
 
 
