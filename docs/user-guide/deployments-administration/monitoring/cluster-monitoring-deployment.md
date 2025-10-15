@@ -18,13 +18,13 @@ image:
   registry: docker.io
   # Image repository:
   # Use `greptime/greptimedb` for OSS GreptimeDB
-  # Consult staff for Enterprise GreptimeDB
+  # Consult staff for GreptimeDB Enterprise
   repository: <repository>
   # Image tag:
   # Use database version `VAR::greptimedbVersion` for OSS GreptimeDB
-  # Consult staff for Enterprise GreptimeDB
+  # Consult staff for GreptimeDB Enterprise
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 
 initializer:
   registry: docker.io
@@ -52,10 +52,10 @@ datanode:
   replicas: 1
 ```
 
-When monitoring is enabled, GreptimeDB Operator launches an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster.
+When `monitoring` is enabled, GreptimeDB Operator launches an additional GreptimeDB Standalone instance to collect metrics and logs from the GreptimeDB cluster.
 To collect log data, GreptimeDB Operator starts a [Vector](https://vector.dev/) sidecar container in each Pod.
 
-When Grafana is enabled, a Grafana instance is deployed that uses the GreptimeDB Standalone instance configured for cluster monitoring as its data source.
+When `grafana` is enabled, a Grafana instance is deployed that uses the GreptimeDB Standalone instance configured for cluster monitoring as its data source.
 This enables visualization of the GreptimeDB cluster's monitoring data out of the box using both Prometheus and MySQL protocols.
 
 Then install the GreptimeDB cluster with the above `values.yaml` file:
@@ -199,6 +199,9 @@ To enable Grafana deployment, add the following configuration to `values.yaml`.
 Note that monitoring must be enabled first [(`monitoring.enabled: true`)](#enable-monitoring):
 
 ```yaml
+monitoring:
+  enabled: true
+
 grafana:
   enabled: true
 ```

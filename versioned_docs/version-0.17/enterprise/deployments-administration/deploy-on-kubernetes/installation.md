@@ -42,7 +42,7 @@ image:
   registry: <registry>
   repository: <repository>
   tag: <tag>
-  pullSecrets: [ regcred ]
+  pullSecrets: []
 ```
 
 Where `<repository>` is the part after `:` in `<registry>`; `<tag>` is the unique identifier for the GreptimeDB Enterprise image.
