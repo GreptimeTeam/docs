@@ -64,6 +64,25 @@ A successful request returns:
   "execution_time_ms": 15
 }
 ```
+After successful ingestion,
+the corresponding table `demo_logs` is automatically created with columns based on the JSON fields.
+The schema is as follows:
+
+```sql
++--------------------+---------------------+------+------+---------+---------------+
+| Column             | Type                | Key  | Null | Default | Semantic Type |
++--------------------+---------------------+------+------+---------+---------------+
+| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| ip_address         | String              |      | YES  |         | FIELD         |
+| level              | String              |      | YES  |         | FIELD         |
+| message            | String              |      | YES  |         | FIELD         |
+| service            | String              |      | YES  |         | FIELD         |
+| timestamp          | String              |      | YES  |         | FIELD         |
+| user_id            | Int64               |      | YES  |         | FIELD         |
+| error_code         | Int64               |      | YES  |         | FIELD         |
+| retry_count        | Int64               |      | YES  |         | FIELD         |
++--------------------+---------------------+------+------+---------+---------------+
+```
 
 ## Integration with Log Collectors
 
