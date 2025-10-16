@@ -36,7 +36,7 @@ Sqlness 有三种类型的文件
 与其他测试不同，这个测试工具是以二进制目标形式存在的。你可以用以下命令运行它
 
 ```shell
-cargo run --bin sqlness-runner
+cargo run --bin sqlness-runner bare
 ```
 
 它会自动完成以下步骤：编译 `GreptimeDB`，启动它，抓取测试并将其发送到服务器，然后收集和比较结果。你只需要检查是否有新的 `.output` 文件。如果没有，恭喜你，测试通过了 🥳！
@@ -44,7 +44,7 @@ cargo run --bin sqlness-runner
 ### 运行特定测试
 
 ```shell
-cargo sqlness -t your_test
+cargo sqlness bare -t your_test
 ```
 
 如果你指定了第二个参数，则只会执行名称中包含指定字符串的测试案例。Sqlness 还支持基于环境的过滤。过滤器接受正则表达式字符串，并会检查格式为 `env:case` 的案例名称。
