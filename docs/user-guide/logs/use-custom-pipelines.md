@@ -34,6 +34,10 @@ processors:
       type: exclude
       fields:
         - message
+  - vrl:
+      source: |
+        .greptime_table_ttl = "7d"
+        .
 
 transform:
   - fields:
@@ -67,6 +71,7 @@ contains `processors` and `transform` sections that work together to structure y
 - **Data Extraction**: The `dissect` processor uses pattern matching to parse the `message` field and extract structured data including `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
 - **Timestamp Processing**: The `date` processor parses the extracted `timestamp` field using the format `%d/%b/%Y:%H:%M:%S %z` and converts it to a proper timestamp data type.
 - **Field Selection**: The `select` processor excludes the original `message` field from the final output while retaining all other fields.
+- **Table Options**: The `vrl` processor sets the table options based on the extracted fields, such as adding a suffix to the table name and setting the TTL. The `greptime_table_ttl = "7d"` line configures the table data to have a time-to-live of 7 days.
 
 **Transform**: Defines how to convert and index the extracted fields:
 - **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.

@@ -3,7 +3,7 @@ keywords: [write logs, HTTP interface, log formats, request parameters, JSON log
 description: Describes how to write logs to GreptimeDB using a pipeline via the HTTP interface, including supported formats and request parameters.
 ---
 
-# Writing Logs API
+# APIs for Writing Logs
 
 This document describes how to write logs to GreptimeDB by processing them through a specified pipeline using the HTTP interface.
 
@@ -18,7 +18,7 @@ curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&
      -d "$<log-items>"
 ```
 
-## Request parameters
+### Request parameters
 
 This interface accepts the following parameters:
 
@@ -28,14 +28,14 @@ This interface accepts the following parameters:
 - `version`: The version of the pipeline. Optional, default use the latest one.
 - `skip_error`: Whether to skip errors when writing logs. Optional, defaults to `false`. When set to `true`, GreptimeDB will skip individual log entries that encounter errors and continue processing the remaining logs. This prevents the entire request from failing due to a single problematic log entry.
 
-## `Content-Type` and body format
+### `Content-Type` and body format
 
 GreptimeDB uses `Content-Type` header to decide how to decode the payload body. Currently the following two format is supported:
 - `application/json`: this includes normal JSON format and NDJSON format.
 - `application/x-ndjson`: specifically uses NDJSON format, which will try to split lines and parse for more accurate error checking.
 - `text/plain`: multiple log lines separated by line breaks.
 
-### `application/json` and `application/x-ndjson` format
+#### `application/json` and `application/x-ndjson` format
 
 Here is an example of JSON format body payload
 
@@ -76,7 +76,7 @@ We can also rewrite the payload into NDJSON format like following:
 
 Note the outer array is eliminated, and lines are separated by line breaks instead of `,`.
 
-### `text/plain` format
+#### `text/plain` format
 
 Log in plain text format is widely used throughout the ecosystem. GreptimeDB also supports `text/plain` format as log data input, enabling ingesting logs first hand from log producers.
 
@@ -108,10 +108,52 @@ processors:
 
 It is recommended to use `dissect` or `regex` processor to split the input line into fields first and then process the fields accordingly.
 
-### Append Only
+## Set Table Options
 
-By default, logs table created by HTTP ingestion API are in [append only
-mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+The table options need to be set in the pipeline configurations.
+Starting from `v0.15`, the pipeline engine recognizes certain variables, and can set corresponding table options based on the value of the variables.
+Combined with the `vrl` processor, it's now easy to create and set table options during the pipeline execution based on input data.
+
+Here is a list of supported common table option variables:
+- `greptime_auto_create_table`
+- `greptime_ttl`
+- `greptime_append_mode`
+- `greptime_merge_mode`
+- `greptime_physical_table`
+- `greptime_skip_wal`
+
+Please refer to [table options](/reference/sql/create.md#table-options) for the detailed explanation of each option.
+
+Here are some pipeline specific variables:
+- `greptime_table_suffix`: add suffix to the destined table name.
+
+Let's use the following pipeline file to demonstrate:
+```YAML
+processors:
+  - date:
+      field: time
+      formats:
+        - "%Y-%m-%d %H:%M:%S%.3f"
+      ignore_missing: true
+  - vrl:
+      source: |
+        .greptime_table_suffix, err = "_" + .id
+        .greptime_table_ttl = "1d"
+        .
+```
+
+In the vrl script, we set the table suffix variable with the input field `.id`(leading with an underscore), and set the ttl to `1d`.
+Then we run the ingestion using the following JSON data.
+
+```JSON
+{
+  "id": "2436",
+  "time": "2024-05-25 20:16:37.217"
+}
+```
+
+Assuming the given table name being `d_table`, the final table name would be `d_table_2436` as we would expected.
+The table is also set with a ttl of 1 day.
 
 ## Examples
 
