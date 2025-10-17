@@ -718,7 +718,7 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Pipeline',
           items: [
-            'reference/pipeline/builtin-pipelines',
+            'reference/pipeline/built-in-pipelines',
             'reference/pipeline/write-log-api',
             'reference/pipeline/pipeline-config',
           ],

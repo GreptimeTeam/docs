@@ -86,11 +86,15 @@ Please refer to the following guides for detailed instructions on integrating Gr
 ## Learn More About Pipelines
 
 - [Using Custom Pipelines](./use-custom-pipelines.md): Explains how to create and use custom pipelines for log ingestion.
-- [Pipeline Configuration](./pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.
 - [Managing Pipelines](./manage-pipelines.md): Explains how to create and delete pipelines.
-- [Writing Logs with Pipelines](./write-logs.md): Provides detailed instructions on efficiently writing log data by leveraging the pipeline mechanism.
 
 ## Querying Logs
 
-- [Query Logs](./query-logs.md): Describes how to query logs using the GreptimeDB SQL interface.
+- [Fulltext Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
+
+## Reference
+
+- [Built-in Pipelines](/reference/pipeline/built-in-pipelines.md): Lists and describes the built-in pipelines provided by GreptimeDB for log ingestion.
+- [APIs for Writing Logs](/reference/pipeline/write-log-api.md): Describes the HTTP API for writing logs to GreptimeDB.
+- [Pipeline Configuration](/reference/pipeline/pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.
 
