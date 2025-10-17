@@ -128,6 +128,54 @@ The command will return the following output upon success:
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
+## Query Logs
+
+We use the `custom_pipeline_logs` table as an example to query logs.
+
+### Query logs by tags
+
+With the multiple tag columns in `custom_pipeline_logs`,
+you can query data by tags flexibly.
+For example, query the logs with `status_code` 200 and `http_method` GET.
+
+```sql
+SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
+```
+
+```sql
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| ip_address | status_code | request_line         | user_agent                                                                                                          | response_size | timestamp           | http_method |
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| 127.0.0.1  |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 |           612 | 2024-05-25 20:16:37 | GET         |
++------------+-------------+----------------------+---------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+1 row in set (0.02 sec)
+```
+
+### Full-Text Search
+
+For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
+Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline).
+This allows for high-performance full-text searches.
+
+For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
+
+```sql
+SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
+```
+
+```sql
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| ip_address  | status_code | request_line         | user_agent                                                                                                               | response_size | timestamp           | http_method |
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+| 127.0.0.1   |         200 | /index.html HTTP/1.1 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36      |           612 | 2024-05-25 20:16:37 | GET         |
+| 192.168.1.1 |         200 | /api/login HTTP/1.1  | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36 |          1784 | 2024-05-25 20:17:37 | POST        |
++-------------+-------------+----------------------+--------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+-------------+
+2 rows in set (0.00 sec)
+```
+
+You can refer to the [Full-Text Search](query-logs.md) document for detailed usage of the `matches_term` function.
+
+
 ## Pipeline Benefits
 
 Using pipelines to process logs provides structured data and automatic field extraction,
