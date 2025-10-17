@@ -5,18 +5,16 @@ description: A comprehensive guide to quickly writing and querying logs in Grept
 
 # Using Custom Pipelines
 
-Pipelines enable automatic parsing and transformation of log messages into multiple columns,
-as well as automatic table creation and alteration.
-
-Custom pipelines allow you to parse and transform log messages into multiple columns based on specific patterns,
-and automatically create tables.
+Pipelines enable automatic parsing and transformation of log messages into structured data with multiple columns.
+They also handle automatic table creation and schema management based on your pipeline configuration.
 
 ## Create a Pipeline
 
 GreptimeDB provides an HTTP interface for creating pipelines.
-Here is how to do it:
+Here's how to create one.
 
-First, create a pipeline file, for example, `pipeline.yaml`.
+First, create an example pipeline configuration file to process Nginx access logs,
+naming it `pipeline.yaml`:
 
 ```yaml
 version: 2
@@ -62,20 +60,25 @@ transform:
     index: timestamp
 ```
 
-The pipeline splits the message field using the specified pattern to extract the `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
-It then parses the `timestamp` field using the format` %d/%b/%Y:%H:%M:%S %z` to convert it into a proper timestamp format that the database can understand.
-Finally, it converts each field to the appropriate datatype and indexes it accordingly.
+The pipeline configuration above uses the [version 2](./pipeline-config.md#transform-in-version-2) format,
+contains `processors` and `transform` sections that work together to structure your log data:
 
-Note at the beginning the pipeline is using version 2 format, see [here](./pipeline-config.md#transform-in-version-2) for more details.
-In short, the version 2 indicates the pipeline engine to find fields that are not specified in the transform section, and persist them using the default datatype.
+**Processors**: Used to preprocess log data before transformation:
+- **Data Extraction**: The `dissect` processor uses pattern matching to parse the `message` field and extract structured data including `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
+- **Timestamp Processing**: The `date` processor parses the extracted `timestamp` field using the format `%d/%b/%Y:%H:%M:%S %z` and converts it to a proper timestamp data type.
+- **Field Selection**: The `select` processor excludes the original `message` field from the final output while retaining all other fields.
 
-Although the `http_method` is not specified in the transform, it is persisted as well.
-Also, a `select` processor is used to filter out the original `message` field.
+**Transform**: Defines how to convert and index the extracted fields:
+- **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.
+- **Indexing Strategy**:
+  - `ip_address` and `status_code` use inverted indexing as tags for fast filtering
+  - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
+  - `timestamp` serves as the required time index column
 
-It is worth noting that the `request_line` and `user_agent` fields are indexed as `fulltext` to optimize full-text search queries.
-And there must be one time index column specified by the `timestamp`.
 
-Execute the following command to upload the configuration file:
+## Upload Pipeline
+
+Execute the following command to upload the pipeline configuration:
 
 ```shell
 curl -X "POST" \
@@ -84,19 +87,19 @@ curl -X "POST" \
      -F "file=@pipeline.yaml"
 ```
 
-After successfully executing this command, a pipeline named `nginx_pipeline` will be created, and the result will be returned as:
+After successful execution, a pipeline named `nginx_pipeline` will be created and return the following result:
 
 ```json
 {"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
 ```
 
 You can create multiple versions for the same pipeline name.
-All pipelines are stored at the `greptime_private.pipelines` table.
-Please refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view the pipeline data in the table.
+All pipelines are stored in the `greptime_private.pipelines` table.
+Refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view pipeline data.
 
-## Write logs
+## Write Logs
 
-The following example writes logs to the `custom_pipeline_logs` table and uses the `nginx_pipeline` pipeline to format and transform the log messages.
+The following example writes logs to the `custom_pipeline_logs` table using the `nginx_pipeline` pipeline to format and transform the log messages:
 
 ```shell
 curl -X POST \
@@ -119,23 +122,23 @@ curl -X POST \
   ]'
 ```
 
-You will see the following output if the command is successful:
+The command will return the following output upon success:
 
 ```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-## Compared with Not Using Pipeline
+## Pipeline Benefits
 
-When you use a pipeline to process logs, you can take advantage of structured data and automatic field extraction.
-This allows for more efficient querying and analysis of log data.
+Using pipelines to process logs provides structured data and automatic field extraction,
+enabling more efficient querying and analysis.
 
-You can also write logs directly to the database without using a pipeline.
-However, this method limits the ability to perform high-performance analysis.
+You can write logs directly to the database without pipelines,
+but this approach limits high-performance analysis capabilities.
 
-### Insert Logs Directly
+### Direct Log Insertion (Without Pipeline)
 
-For example, you can create a table named `origin_logs` to store the original log messages.
+For comparison, you can create a table to store original log messages:
 
 ```sql
 CREATE TABLE `origin_logs` (
@@ -147,7 +150,7 @@ CREATE TABLE `origin_logs` (
 ```
 
 Use the `INSERT` statement to insert logs into the table.
-Note that you need to add an extra timestamp field for each log.
+Note that you need to manually add a timestamp field for each log:
 
 ```sql
 INSERT INTO origin_logs (message, time) VALUES
@@ -157,9 +160,9 @@ INSERT INTO origin_logs (message, time) VALUES
 ('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
 ```
 
-### Advantages of Using Pipeline
+### Schema Comparison
 
-In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline, 
+In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline,
 and the table `origin_logs` is created by writing logs directly.
 Let's explore the differences between these two tables.
 
@@ -195,15 +198,23 @@ DESC origin_logs;
 +---------+----------------------+------+------+---------+---------------+
 ```
 
-From the table structure, you can see that the `origin_logs` table has only two columns,
-with the entire log message stored in a single column.
-The `custom_pipeline_logs` table stores the log message in multiple columns.
+Comparing the table structures shows the key differences:
 
-It is recommended to use the pipeline method to split the log message into multiple columns, which offers the advantage of explicitly querying specific values within certain columns. Column matching query proves superior to full-text searching for several key reasons:
+The `custom_pipeline_logs` table (created with pipeline) automatically structures log data into multiple columns:
+- `ip_address`, `status_code` as indexed tags for fast filtering
+- `request_line`, `user_agent` with full-text indexing for text search
+- `response_size`, `http_method` as regular fields
+- `timestamp` as the time index
 
-- **Performance Efficiency**: Column matching query is typically faster than full-text searching.
-- **Resource Consumption**: Due to GreptimeDB's columnar storage engine, structured data is more conducive to compression. Additionally, the inverted index used for tag matching query typically consumes significantly fewer resources than a full-text index, especially in terms of storage size.
-- **Maintainability**: Tag matching query is straightforward and easier to understand, write, and debug.
+The `origin_logs` table (direct insertion) stores everything in a single `message` column.
 
-Of course, if you need keyword searching within large text blocks, you must use full-text searching as it is specifically designed for that purpose.
+### Why Use Pipelines?
+
+It is recommended to use the pipeline method to split the log message into multiple columns,
+which offers the advantage of explicitly querying specific values within certain columns.
+Column matching query proves superior to full-text searching for several key reasons:
+
+- **Performance**: Column-based queries are typically faster than full-text searches
+- **Storage Efficiency**: GreptimeDB's columnar storage compresses structured data better; inverted indexes for tags consume less storage than full-text indexes
+- **Query Simplicity**: Tag-based queries are easier to write, understand, and debug
 

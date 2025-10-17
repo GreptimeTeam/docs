@@ -83,9 +83,9 @@ Please refer to the following guides for detailed instructions on integrating Gr
 - [OpenTelemetry Collector](/user-guide/ingest-data/for-observability/otel-collector.md)
 - [Loki](/user-guide/ingest-data/for-observability/loki.md#using-pipeline-with-loki-push-api)
 
-## How to Configure Pipeline
+## Learn More About Pipelines
 
-- [Quick Start](./quick-start.md): Provides an introduction on how to quickly get started with GreptimeDB log service.
+- [Using Custom Pipelines](./use-custom-pipelines.md): Explains how to create and use custom pipelines for log ingestion.
 - [Pipeline Configuration](./pipeline-config.md): Provides in-depth information on each specific configuration of pipelines in GreptimeDB.
 - [Managing Pipelines](./manage-pipelines.md): Explains how to create and delete pipelines.
 - [Writing Logs with Pipelines](./write-logs.md): Provides detailed instructions on efficiently writing log data by leveraging the pipeline mechanism.
@@ -93,4 +93,4 @@ Please refer to the following guides for detailed instructions on integrating Gr
 ## Querying Logs
 
 - [Query Logs](./query-logs.md): Describes how to query logs using the GreptimeDB SQL interface.
-- [Full-Text Index Configuration](./fulltext-index-config.md): Describes how to configure full-text index in GreptimeDB.
+
