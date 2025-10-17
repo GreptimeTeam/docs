@@ -51,10 +51,10 @@ The above plain text data will be converted to the following equivalent form:
 
 In other words, when the input is in plain text format, you need to use `message` to refer to the content of each line when writing `Processor` and `Transform` configurations.
 
-## Overall structure
+## Pipeline Configuration Structure
 
 Pipeline consists of four parts: Processors, Dispatcher, Transform, and Table suffix.
-Processors pre-processes input log data.
+Processors pre-process input log data.
 Dispatcher forwards pipeline execution context onto different subsequent pipeline.
 Transform decides the final datatype and table structure in the database.
 Table suffix allows storing the data into different tables.
@@ -826,6 +826,8 @@ Some notes regarding the `vrl` processor:
 1. The script have to end with a newline of `.`, indicating returning the whole context as the returning value of the script.
 2. The returning value of the vrl script should not contain any regex-type variables. They can be used in the script, but have to be `del`ed before returning.
 3. Due to type conversion between pipeline's value type and vrl's, the value type that comes out of the vrl script will be the ones with max capacity, meaning `i64`, `f64`, and `Timestamp::nanoseconds`.
+
+You can use `vrl` processor to set [table options](/pipeline/write-log-api.md#set-table-options) while writing logs.
 
 ### `filter`
 

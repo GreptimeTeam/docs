@@ -235,10 +235,8 @@ const sidebars: SidebarsConfig = {
             },
             'user-guide/logs/quick-start',
             'user-guide/logs/use-custom-pipelines',
-            'user-guide/logs/query-logs',
+            'user-guide/logs/fulltext-search',
             'user-guide/logs/manage-pipelines',
-            'user-guide/logs/write-logs',
-            'user-guide/logs/pipeline-config',
           ],
         },
         {
@@ -714,6 +712,15 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/process-list',
               ],
             },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Pipeline',
+          items: [
+            'reference/pipeline/builtin-pipelines',
+            'reference/pipeline/write-log-api',
+            'reference/pipeline/pipeline-config',
           ],
         },
         'reference/http-endpoints',
