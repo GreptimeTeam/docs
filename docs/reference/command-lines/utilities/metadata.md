@@ -49,7 +49,7 @@ To use object storage for storing exported metadata, enable one of the following
 | --s3-secret-access-key       | No       | -       | S3 secret access key                                             |
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
-| --s3-enable-virtual-host-style | No     | false   | Enable virtual host style for S3 API requests                    |
+| --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
 
 ##### OSS (Alibaba Cloud)
 
@@ -131,7 +131,7 @@ To use object storage for importing metadata, enable one of the following provid
 | --s3-secret-access-key       | No       | -       | S3 secret access key                                             |
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
-| --s3-enable-virtual-host-style | No     | false   | Enable virtual host style for S3 API requests                    |
+| --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
 
 ##### OSS (Alibaba Cloud)
 
@@ -204,7 +204,7 @@ To inspect snapshots stored in object storage, enable one of the following provi
 | --s3-secret-access-key       | No       | -       | S3 secret access key                                             |
 | --s3-region                  | No       | -       | S3 region name                                                   |
 | --s3-endpoint                | No       | -       | S3 endpoint URL (optional, defaults based on bucket region)      |
-| --s3-enable-virtual-host-style | No     | false   | Enable virtual host style for S3 API requests                    |
+| --s3-enable-virtual-host-style | No       | false   | Enable virtual host style for S3 API requests                    |
 
 ##### OSS (Alibaba Cloud)
 
