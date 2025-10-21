@@ -116,7 +116,9 @@ refer to the [Vector Integration Guide](/user-guide/ingest-data/for-observabilit
 
 ## Next Steps
 
-- For detailed instructions on integrating GreptimeDB with various log collectors, refer to the [Integrate with Popular Log Collectors](./overview.md#integrate-with-popular-log-collectors) section in the [Logs Overview](./overview.md) guide.
-- To learn more about pipelines and how to create custom ones, refer to the [Using Custom Pipelines](./use-custom-pipelines.md) guide.
+You've successfully ingested your first logs, here are the recommended next steps:
 
+- **Integrate with Popular Log Collectors**: For detailed instructions on integrating GreptimeDB with various log collectors like Fluent Bit, Fluentd, and others, refer to the [Integrate with Popular Log Collectors](./overview.md#integrate-with-popular-log-collectors) section in the [Logs Overview](./overview.md) guide.
+- **Using Custom Pipelines**: To learn more about creating custom pipelines for advanced log processing and transformation, refer to the [Using Custom Pipelines](./use-custom-pipelines.md) guide.
+- **Learn more about the behavious of built-in Pipelines**: Refer to the [Built-in Pipelines](/reference/pipeline/built-in-pipelines.md) guide for detailed information on available built-in pipelines and their configurations.
 

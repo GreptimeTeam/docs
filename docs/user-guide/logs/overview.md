@@ -88,9 +88,9 @@ Please refer to the following guides for detailed instructions on integrating Gr
 - [Using Custom Pipelines](./use-custom-pipelines.md): Explains how to create and use custom pipelines for log ingestion.
 - [Managing Pipelines](./manage-pipelines.md): Explains how to create and delete pipelines.
 
-## Querying Logs
+## Query Logs
 
-- [Fulltext Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
+- [Full-Text Search](./fulltext-search.md): Guide on using GreptimeDB's query language for effective searching and analysis of log data.
 
 ## Reference
 

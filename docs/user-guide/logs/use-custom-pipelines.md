@@ -5,10 +5,31 @@ description: A comprehensive guide to quickly writing and querying logs in Grept
 
 # Using Custom Pipelines
 
-Pipelines enable automatic parsing and transformation of log messages into structured data with multiple columns.
-They also handle automatic table creation and schema management based on your pipeline configuration.
+Pipelines enable automatic parsing and transformation of log messages into structured data with multiple columns,
+handling automatic table creation and schema management based on your pipeline configuration.
+When the built-in pipelines cannot process your specific text log formats,
+you can create custom pipelines to define how to parse and transform the log data according to your needs.
 
-## Create a Pipeline
+## Identify Your Log Format
+
+Before creating a custom pipeline, it's essential to understand the format of your log data.
+If you're using log collectors and aren't sure about the log format,
+there are two ways to examine your logs:
+
+1. **Check collector documentation**: Configure your collector to output data to console or file to inspect the log format.
+2. **Use the identity pipeline**: Ingest sample logs directly into GreptimeDB using the built-in `greptime_identity` pipeline.
+  The `greptime_identity` pipeline treats the entire text log as a single `message` field,
+  allowing you to inspect the raw log content stored in GreptimeDB without any processing.
+
+Once you understand the log format you want to process,
+you can create a custom pipeline.
+This document uses the following Nginx access log entry as an example:
+
+```txt
+127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+```
+
+## Create a Custom Pipeline
 
 GreptimeDB provides an HTTP interface for creating pipelines.
 Here's how to create one.
@@ -80,8 +101,10 @@ contains `processors` and `transform` sections that work together to structure y
   - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
   - `timestamp` serves as the required time index column
 
+For detailed information about pipeline configuration options,
+please refer to the [Pipeline Configuration](/reference/pipeline/pipeline-config.md) documentation.
 
-## Upload Pipeline
+## Upload the Pipeline
 
 Execute the following command to upload the pipeline configuration:
 
@@ -102,7 +125,7 @@ You can create multiple versions for the same pipeline name.
 All pipelines are stored in the `greptime_private.pipelines` table.
 Refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view pipeline data.
 
-## Write Logs
+## Ingest Logs Using the Pipeline
 
 The following example writes logs to the `custom_pipeline_logs` table using the `nginx_pipeline` pipeline to format and transform the log messages:
 
@@ -133,6 +156,22 @@ The command will return the following output upon success:
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
+The `custom_pipeline_logs` table content is automatically created based on the pipeline configuration:
+
+```sql
++-------------+-------------+-------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| ip_address  | http_method | status_code | request_line              | user_agent                                                                                                                              | response_size | timestamp           |
++-------------+-------------+-------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+| 10.0.0.1    | GET         |         304 | /images/logo.png HTTP/1.1 | Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0                                                            |             0 | 2024-05-25 20:18:37 |
+| 127.0.0.1   | GET         |         200 | /index.html HTTP/1.1      | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36                     |           612 | 2024-05-25 20:16:37 |
+| 172.16.0.1  | GET         |         404 | /contact HTTP/1.1         | Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1 |           162 | 2024-05-25 20:19:37 |
+| 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1       | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36                |          1784 | 2024-05-25 20:17:37 |
++-------------+-------------+-------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
+```
+For more detailed information about the log ingestion API endpoint `/ingest`,
+including additional parameters and configuration options,
+please refer to the [APIs for Writing Logs](/reference/pipeline/write-log-api.md) documentation.
+
 ## Query Logs
 
 We use the `custom_pipeline_logs` table as an example to query logs.
@@ -156,7 +195,7 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 1 row in set (0.02 sec)
 ```
 
-### Full-Text Search
+### Full‑Text Search
 
 For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
 Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline).
@@ -181,7 +220,7 @@ SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html
 You can refer to the [Full-Text Search](fulltext-search.md) document for detailed usage of the `matches_term` function.
 
 
-## Pipeline Benefits
+## Benefits of Using Pipelines
 
 Using pipelines to process logs provides structured data and automatic field extraction,
 enabling more efficient querying and analysis.
@@ -213,7 +252,7 @@ INSERT INTO origin_logs (message, time) VALUES
 ('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
 ```
 
-### Schema Comparison
+### Schema Comparison: Pipeline vs Raw
 
 In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline,
 and the table `origin_logs` is created by writing logs directly.
@@ -270,4 +309,9 @@ Column matching query proves superior to full-text searching for several key rea
 - **Performance**: Column-based queries are typically faster than full-text searches
 - **Storage Efficiency**: GreptimeDB's columnar storage compresses structured data better; inverted indexes for tags consume less storage than full-text indexes
 - **Query Simplicity**: Tag-based queries are easier to write, understand, and debug
+
+## Next Steps
+
+- **Full-Text Search**: Explore the [Full-Text Search](fulltext-search.md) guide to learn advanced text search capabilities and query techniques in GreptimeDB
+- **Pipeline Configuration**: Explore the [Pipeline Configuration](/reference/pipeline/pipeline-config.md) documentation to learn more about creating and customizing pipelines for various log formats and processing needs
 

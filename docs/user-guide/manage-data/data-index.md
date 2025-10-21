@@ -1,6 +1,6 @@
 ---
-keywords: [index, inverted index, skipping index, fulltext index, query performance]
-description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and fulltext index, and how to use them effectively to optimize query performance.
+keywords: [index, inverted index, skipping index, full-text index, query performance]
+description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and full-text index, and how to use them effectively to optimize query performance.
 ---
 
 # Data Index
@@ -75,11 +75,11 @@ CREATE TABLE sensor_data (
 );
 ```
 
-Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or fulltext index.
+Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or full-text index.
 
-### Fulltext Index
+### Full-Text Index
 
-Fulltext index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
+Full-text index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
 
 **Use Cases:**
 - Text search operations
@@ -218,7 +218,7 @@ Fulltext index usually comes with following drawbacks:
 - Increased flush and compaction latency as each text document needs to be tokenized and indexed
 - May not be optimal for simple prefix or suffix matching operations
 
-Consider using fulltext index only when you need advanced text search capabilities and flexible query patterns.
+Consider using full-text index only when you need advanced text search capabilities and flexible query patterns.
 
 ## Modify indexes
 

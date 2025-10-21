@@ -14,7 +14,7 @@ For specific pipeline configurations, please refer to the [Pipeline Configuratio
 The HTTP API for managing pipelines requires authentication.  
 For more information, see the [Authentication](/user-guide/protocols/http.md#authentication) documentation.
 
-## Create a Pipeline
+## Upload a Pipeline
 
 GreptimeDB provides a dedicated HTTP interface for creating pipelines.
 Assuming you have prepared a pipeline configuration file `pipeline.yaml`, use the following command to upload the configuration file, where `test` is the name you specify for the pipeline:
@@ -27,6 +27,23 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 ```
 
 The created Pipeline is shared for all databases.
+
+## Pipeline Versions
+
+You can upload multiple versions of a pipeline with the same name.
+Each time you upload a pipeline with an existing name, a new version is created automatically.
+You can specify which version to use when [ingesting logs](/reference/pipeline/write-log-api.md#http-api), [querying](#query-pipelines), or [deleting](#delete-a-pipeline) a pipeline.
+The last uploaded version is used by default if no version is specified.
+
+After successfully uploading a pipeline, the response will include version information:
+
+```json
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+```
+
+The version is a timestamp in UTC format that indicates when the pipeline was created.
+This timestamp serves as a unique identifier for each pipeline version.
+
 
 ## Delete a Pipeline
 
