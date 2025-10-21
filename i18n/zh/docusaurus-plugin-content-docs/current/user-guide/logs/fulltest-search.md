@@ -3,17 +3,15 @@ keywords: [日志查询, GreptimeDB 查询语言, matches_term, 模式匹配, �
 description: 详细介绍如何利用 GreptimeDB 的查询语言对日志数据进行高效搜索和分析，包括使用 matches_term 函数进行精确匹配。
 ---
 
-# 日志查询
+# 全文搜索
 
 本文档详细介绍如何利用 GreptimeDB 的查询语言对日志数据进行高效搜索和分析。
 
-## 概述
-
-GreptimeDB 支持通过 SQL 语句灵活查询数据。本节将介绍特定的搜索功能和查询语句，帮助您提升日志查询效率。
+GreptimeDB 支持通过 SQL 语句灵活查询数据。本节将介绍特定的搜索功能和查询语句，帮助你提升日志查询效率。
 
 ## 使用 `matches_term` 函数进行精确匹配
 
-在 SQL 查询中，您可以使用 `matches_term` 函数执行精确的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行精确匹配。您也可以使用 `@@` 操作符作为 `matches_term` 的简写形式。下面是一个典型示例：
+在 SQL 查询中，你可以使用 `matches_term` 函数执行精确的词语/短语匹配，这在日志分析中尤其实用。`matches_term` 函数支持对 `String` 类型列进行精确匹配。你也可以使用 `@@` 操作符作为 `matches_term` 的简写形式。下面是一个典型示例：
 
 ```sql
 -- 使用 matches_term 函数
@@ -45,7 +43,7 @@ SELECT * FROM logs WHERE matches_term(message, 'error');
 SELECT * FROM logs WHERE message @@ 'error';
 ```
 
-此查询将返回所有 `message` 列中包含完整词语 "error" 的记录。该函数确保您不会得到部分匹配或词语内的匹配。
+此查询将返回所有 `message` 列中包含完整词语 "error" 的记录。该函数确保你不会得到部分匹配或词语内的匹配。
 
 匹配和不匹配的示例：
 - ✅ "An error occurred!" - 匹配，因为 "error" 是一个完整词语
@@ -57,7 +55,7 @@ SELECT * FROM logs WHERE message @@ 'error';
 
 ### 多关键词搜索
 
-您可以使用 `OR` 运算符组合多个 `matches_term` 条件来搜索包含多个关键词中任意一个的日志。当您想要查找可能包含不同错误变体或不同类型问题的日志时，这很有用。
+你可以使用 `OR` 运算符组合多个 `matches_term` 条件来搜索包含多个关键词中任意一个的日志。当你想要查找可能包含不同错误变体或不同类型问题的日志时，这很有用。
 
 ```sql
 -- 使用 matches_term 函数
@@ -78,7 +76,7 @@ SELECT * FROM logs WHERE message @@ 'critical' OR message @@ 'error';
 
 ### 排除条件搜索
 
-您可以使用 `NOT` 运算符与 `matches_term` 结合来从搜索结果中排除某些词语。当您想要查找包含一个词语但不包含另一个词语的日志时，这很有用。
+你可以使用 `NOT` 运算符与 `matches_term` 结合来从搜索结果中排除某些词语。当你想要查找包含一个词语但不包含另一个词语的日志时，这很有用。
 
 ```sql
 -- 使用 matches_term 函数
@@ -97,7 +95,7 @@ SELECT * FROM logs WHERE message @@ 'error' AND NOT message @@ 'critical';
 
 ### 多条件必要搜索
 
-您可以使用 `AND` 运算符要求日志消息中必须存在多个词语。这对于查找包含特定词语组合的日志很有用。
+你可以使用 `AND` 运算符要求日志消息中必须存在多个词语。这对于查找包含特定词语组合的日志很有用。
 
 ```sql
 -- 使用 matches_term 函数
@@ -136,7 +134,7 @@ SELECT * FROM logs WHERE message @@ 'system failure';
 
 ### 不区分大小写匹配
 
-虽然 `matches_term` 默认区分大小写，但您可以通过在匹配前将文本转换为小写来实现不区分大小写的匹配。
+虽然 `matches_term` 默认区分大小写，但你可以通过在匹配前将文本转换为小写来实现不区分大小写的匹配。
 
 ```sql
 -- 使用 matches_term 函数
