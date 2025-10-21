@@ -6,22 +6,20 @@ description: Quick start guide for GreptimeDB log service, including basic log i
 # Quick Start
 
 This guide will walk you through the essential steps to get started with GreptimeDB's log service.
-You'll learn how to ingest logs using the built-in `greptime_identity` pipeline and integrate with popular log collectors.
+You'll learn how to ingest logs using the built-in `greptime_identity` pipeline and integrate with log collectors.
 
 GreptimeDB provides a powerful pipeline-based log ingestion system.
 For quick setup with JSON-formatted logs,
 you can use the built-in `greptime_identity` pipeline, which:
 
 - Automatically handles field mapping from JSON to table columns
-- Creates tables dynamically if they don't exist
+- Creates tables automatically if they don't exist
 - Supports flexible schemas for varying log structures
 - Requires minimal configuration to get started
 
-This makes it ideal for getting started quickly or for logs with dynamic schemas.
-
 ## Direct HTTP Ingestion
 
-The simplest way to test GreptimeDB's log ingestion is through a direct HTTP request using the `greptime_identity` pipeline.
+The simplest way to ingest logs into GreptimeDB is through a direct HTTP request using the `greptime_identity` pipeline.
 
 For example, you can use `curl` to send a POST request with JSON log data:
 
@@ -118,7 +116,8 @@ refer to the [Vector Integration Guide](/user-guide/ingest-data/for-observabilit
 
 You've successfully ingested your first logs, here are the recommended next steps:
 
-- **Integrate with Popular Log Collectors**: For detailed instructions on integrating GreptimeDB with various log collectors like Fluent Bit, Fluentd, and others, refer to the [Integrate with Popular Log Collectors](./overview.md#integrate-with-popular-log-collectors) section in the [Logs Overview](./overview.md) guide.
-- **Using Custom Pipelines**: To learn more about creating custom pipelines for advanced log processing and transformation, refer to the [Using Custom Pipelines](./use-custom-pipelines.md) guide.
 - **Learn more about the behaviours of built-in Pipelines**: Refer to the [Built-in Pipelines](/reference/pipeline/built-in-pipelines.md) guide for detailed information on available built-in pipelines and their configurations.
+- **Integrate with Popular Log Collectors**: For detailed instructions on integrating GreptimeDB with various log collectors like Fluent Bit, Fluentd, and others, refer to the [Integrate with Popular Log Collectors](./overview.md#integrate-with-log-collectors) section in the [Logs Overview](./overview.md) guide.
+- **Using Custom Pipelines**: To learn more about creating custom pipelines for advanced log processing and transformation, refer to the [Using Custom Pipelines](./use-custom-pipelines.md) guide.
+
 
