@@ -15,5 +15,6 @@ flate = "flate"
 [files]
 extend-exclude = [
   "pnpm-lock.yaml",
-  "*/**/df-functions.md"
+  "*/**/df-functions.md",
+  "**/*.svg"
 ]
