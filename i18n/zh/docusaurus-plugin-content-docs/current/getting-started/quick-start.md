@@ -236,7 +236,7 @@ ORDER BY
 +---------------------+-------+------------------+-----------+--------------------+
 ```
 
-`@@` 操作符用于[短语搜索](/user-guide/logs/query-logs.md)。
+`@@` 操作符用于[短语搜索](/user-guide/logs/fulltext-search.md)。
 
 ### Range query
 

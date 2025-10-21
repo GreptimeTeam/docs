@@ -42,7 +42,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 - `table` 是您要写入日志的表名称。
 - `pipeline_name` 是您要用于处理日志的管道名称。
 
-本示例中，使用的是 [Logs Http API](/user-guide/logs/write-logs.md#http-api) 接口。如需更多信息，请参阅 [写入日志](/user-guide/logs/write-logs.md) 文档。
+本示例中，使用的是 [Logs Http API](/reference/pipeline/write-log-api.md#http-api) 接口。如需更多信息，请参阅 [写入日志](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志) 文档。
 
 ## OpenTelemetry
 
