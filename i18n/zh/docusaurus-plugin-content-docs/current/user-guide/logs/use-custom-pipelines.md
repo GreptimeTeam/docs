@@ -1,41 +1,40 @@
 ---
-keywords: [quick start, write logs, query logs, pipeline, structured data, log ingestion, log collection, log management tools]
-description: A comprehensive guide to quickly writing and querying logs in GreptimeDB, including direct log writing and using pipelines for structured data.
+keywords: [快速开始, 写入日志, 查询日志, pipeline, 结构化数据, 日志写入, 日志收集, 日志管理工具]
+description: 在 GreptimeDB 中快速写入和查询日志的全面指南，包括直接日志写入和使用 pipeline 处理结构化数据。
 ---
 
-# Using Custom Pipelines
+# 使用自定义 Pipeline
 
-GreptimeDB automatically parses and transforms logs into structured,
-multi-column data based on your pipeline configuration.
-When built-in pipelines cannot handle your specific log format,
-you can create custom pipelines to define exactly how your log data should be parsed and transformed.
+基于你的 pipeline 配置，
+GreptimeDB 能够将日志自动解析和转换为多列的结构化数据，
+当内置 pipeline 无法处理特定的文本日志格式时，
+你可以创建自定义 pipeline 来定义如何根据你的需求解析和转换日志数据。
 
-## Identify Your Original Log Format
+## 识别你的原始日志格式
 
-Before creating a custom pipeline, it's essential to understand the format of original log data.
-If you're using log collectors and aren't sure about the log format,
-there are two ways to examine your logs:
+在创建自定义 pipeline 之前，了解原始日志数据的格式至关重要。
+如果你正在使用日志收集器且不确定日志格式，
+有两种方法可以检查你的日志：
 
-1. **Read the collector official documentation**: Configure your collector to output data to console or file to inspect the log format.
-2. **Use the `greptime_identity` pipeline**: Ingest sample logs directly into GreptimeDB using the built-in `greptime_identity` pipeline.
-  The `greptime_identity` pipeline treats the entire text log as a single `message` field,
-  which makes it very convenient to see the raw log content directly.
+1. **阅读收集器的官方文档**：配置你的收集器将数据输出到控制台或文件以检查日志格式。
+2. **使用 `greptime_identity` pipeline**：使用内置的 `greptime_identity` pipeline 将示例日志直接写入到 GreptimeDB 中。
+  `greptime_identity` pipeline 将整个文本日志视为单个 `message` 字段，方便你直接看到原始日志的内容。
 
-Once understand the log format you want to process,
-you can create a custom pipeline.
-This document uses the following Nginx access log entry as an example:
+一旦了解了要处理的日志格式，
+你就可以创建自定义 pipeline。
+本文档使用以下 Nginx 访问日志条目作为示例：
 
 ```txt
 127.0.0.1 - - [25/May/2024:20:16:37 +0000] "GET /index.html HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 ```
 
-## Create a Custom Pipeline
+## 创建自定义 Pipeline
 
-GreptimeDB provides an HTTP interface for creating pipelines.
-Here's how to create one.
+GreptimeDB 提供 HTTP 接口用于创建 pipeline。
+以下是创建方法。
 
-First, create an example pipeline configuration file to process Nginx access logs,
-naming it `pipeline.yaml`:
+首先，创建一个示例 pipeline 配置文件来处理 Nginx 访问日志，
+将其命名为 `pipeline.yaml`：
 
 ```yaml
 version: 2
@@ -85,28 +84,28 @@ transform:
     index: timestamp
 ```
 
-The pipeline configuration above uses the [version 2](/reference/pipeline/pipeline-config.md#transform-in-version-2) format,
-contains `processors` and `transform` sections that work together to structure your log data:
+上面的 pipeline 配置使用 [version 2](/reference/pipeline/pipeline-config.md#transform-in-version-2) 格式，
+包含 `processors` 和 `transform` 部分来结构化你的日志数据：
 
-**Processors**: Used to preprocess log data before transformation:
-- **Data Extraction**: The `dissect` processor uses pattern matching to parse the `message` field and extract structured data including `ip_address`, `timestamp`, `http_method`, `request_line`, `status_code`, `response_size`, and `user_agent`.
-- **Timestamp Processing**: The `date` processor parses the extracted `timestamp` field using the format `%d/%b/%Y:%H:%M:%S %z` and converts it to a proper timestamp data type.
-- **Field Selection**: The `select` processor excludes the original `message` field from the final output while retaining all other fields.
-- **Table Options**: The `vrl` processor sets the table options based on the extracted fields, such as adding a suffix to the table name and setting the TTL. The `greptime_table_ttl = "7d"` line configures the table data to have a time-to-live of 7 days.
+**Processors**：用于在转换前预处理日志数据：
+- **数据提取**：`dissect` 处理器使用 pattern 匹配来解析 `message` 字段并提取结构化数据，包括 `ip_address`、`timestamp`、`http_method`、`request_line`、`status_code`、`response_size` 和 `user_agent`。
+- **时间戳处理**：`date` 处理器使用格式 `%d/%b/%Y:%H:%M:%S %z` 解析提取的 `timestamp` 字段并将其转换为适当的时间戳数据类型。
+- **字段选择**：`select` 处理器从最终输出中排除原始 `message` 字段，同时保留所有其他字段。
+- **表选项**：`vrl` 处理器根据提取的字段设置表选项，例如向表名添加后缀和设置 TTL。`greptime_table_ttl = "7d"` 配置表数据的保存时间为 7 天。
 
-**Transform**: Defines how to convert and index the extracted fields:
-- **Field Transformation**: Each extracted field is converted to its appropriate data type with specific indexing configurations. Fields like `http_method` retain their default data types when no explicit configuration is provided.
-- **Indexing Strategy**:
-  - `ip_address` and `status_code` use inverted indexing as tags for fast filtering
-  - `request_line` and `user_agent` use full-text indexing for optimal text search capabilities
-  - `timestamp` serves as the required time index column
+**Transform**：定义如何转换和索引提取的字段：
+- **字段转换**：每个提取的字段都转换为适当的数据类型并根据需要配置相应的索引。像 `http_method` 这样的字段在没有提供显式配置时保留其默认数据类型。
+- **索引策略**：
+  - `ip_address` 和 `status_code` 使用倒排索引作为标签进行快速过滤
+  - `request_line` 和 `user_agent` 使用全文索引以获得最佳文本搜索能力
+  - `timestamp` 是必需的时间索引列
 
-For detailed information about pipeline configuration options,
-please refer to the [Pipeline Configuration](/reference/pipeline/pipeline-config.md) documentation.
+有关 pipeline 配置选项的详细信息，
+请参考 [Pipeline 配置](/reference/pipeline/pipeline-config.md) 文档。
 
-## Upload the Pipeline
+## 上传 Pipeline
 
-Execute the following command to upload the pipeline configuration:
+执行以下命令上传 pipeline 配置：
 
 ```shell
 curl -X "POST" \
@@ -115,19 +114,19 @@ curl -X "POST" \
      -F "file=@pipeline.yaml"
 ```
 
-After successful execution, a pipeline named `nginx_pipeline` will be created and return the following result:
+成功执行后，将创建一个名为 `nginx_pipeline` 的 pipeline 并返回以下结果：
 
 ```json
 {"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}.
 ```
 
-You can create multiple versions for the same pipeline name.
-All pipelines are stored in the `greptime_private.pipelines` table.
-Refer to [Query Pipelines](manage-pipelines.md#query-pipelines) to view pipeline data.
+你可以为同一个 pipeline 名称创建多个版本。
+所有 pipeline 都存储在 `greptime_private.pipelines` 表中。
+参考[查询 Pipeline](manage-pipelines.md#查询-pipeline) 来查看 pipeline 数据。
 
-## Ingest Logs Using the Pipeline
+## 使用 Pipeline 写入日志
 
-The following example writes logs to the `custom_pipeline_logs` table using the `nginx_pipeline` pipeline to format and transform the log messages:
+以下示例使用 `nginx_pipeline` pipeline 将日志写入 `custom_pipeline_logs` 表来格式化和转换日志消息：
 
 ```shell
 curl -X POST \
@@ -150,13 +149,13 @@ curl -X POST \
   ]'
 ```
 
-The command will return the following output upon success:
+命令执行成功后将返回以下输出：
 
 ```json
 {"output":[{"affectedrows":4}],"execution_time_ms":79}
 ```
 
-The `custom_pipeline_logs` table content is automatically created based on the pipeline configuration:
+`custom_pipeline_logs` 表内容根据 pipeline 配置自动创建：
 
 ```sql
 +-------------+-------------+-------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
@@ -168,19 +167,20 @@ The `custom_pipeline_logs` table content is automatically created based on the p
 | 192.168.1.1 | POST        |         200 | /api/login HTTP/1.1       | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36                |          1784 | 2024-05-25 20:17:37 |
 +-------------+-------------+-------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+---------------+---------------------+
 ```
-For more detailed information about the log ingestion API endpoint `/ingest`,
-including additional parameters and configuration options,
-please refer to the [APIs for Writing Logs](/reference/pipeline/write-log-api.md) documentation.
 
-## Query Logs
+有关日志写入 API 端点 `/ingest` 的更详细信息，
+包括附加参数和配置选项，
+请参考[日志写入 API](/reference/pipeline/write-log-api.md) 文档。
 
-We use the `custom_pipeline_logs` table as an example to query logs.
+## 查询日志
 
-### Query logs by tags
+我们使用 `custom_pipeline_logs` 表作为示例来查询日志。
 
-With the multiple tag columns in `custom_pipeline_logs`,
-you can query data by tags flexibly.
-For example, query the logs with `status_code` 200 and `http_method` GET.
+### 通过 tag 查询日志
+
+通过 `custom_pipeline_logs` 中的多个 tag 列，
+你可以灵活地通过 tag 查询数据。
+例如，查询 `status_code` 为 200 且 `http_method` 为 GET 的日志。
 
 ```sql
 SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GET';
@@ -195,13 +195,13 @@ SELECT * FROM custom_pipeline_logs WHERE status_code = 200 AND http_method = 'GE
 1 row in set (0.02 sec)
 ```
 
-### Full‑Text Search
+### 全文搜索
 
-For the text fields `request_line` and `user_agent`, you can use `matches_term` function to search logs.
-Remember, we created the full-text index for these two columns when [creating a pipeline](#create-a-pipeline).
-This allows for high-performance full-text searches.
+对于文本字段 `request_line` 和 `user_agent`，你可以使用 `matches_term` 函数来搜索日志。
+还记得我们在[创建 pipeline](#create-a-pipeline) 时为这两列创建了全文索引。
+这带来了高性能的全文搜索。
 
-For example, query the logs with `request_line` containing `/index.html` or `/api/login`.
+例如，查询 `request_line` 列包含 `/index.html` 或 `/api/login` 的日志。
 
 ```sql
 SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html') OR matches_term(request_line, '/api/login');
@@ -217,20 +217,20 @@ SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html
 2 rows in set (0.00 sec)
 ```
 
-You can refer to the [Full-Text Search](fulltext-search.md) document for detailed usage of the `matches_term` function.
+你可以参考[全文搜索](fulltext-search.md) 文档了解 `matches_term` 函数的详细用法。
 
 
-## Benefits of Using Pipelines
+## 使用 Pipeline 的好处
 
-Using pipelines to process logs provides structured data and automatic field extraction,
-enabling more efficient querying and analysis.
+使用 pipeline 处理日志带来了结构化的数据和自动的字段提取，
+这使得查询和分析更加高效。
 
-You can also write logs directly to the database without pipelines,
-but this approach limits high-performance analysis capabilities.
+你也可以在没有 pipeline 的情况下直接将日志写入数据库，
+但这种方法限制了高性能分析能力。
 
-### Direct Log Insertion (Without Pipeline)
+### 直接插入日志（不使用 Pipeline）
 
-For comparison, you can create a table to store original log messages:
+为了比较，你可以创建一个表来存储原始日志消息：
 
 ```sql
 CREATE TABLE `origin_logs` (
@@ -241,8 +241,8 @@ CREATE TABLE `origin_logs` (
 );
 ```
 
-Use the `INSERT` statement to insert logs into the table.
-Note that you need to manually add a timestamp field for each log:
+使用 `INSERT` 语句将日志插入表中。
+注意你需要为每个日志手动添加时间戳字段：
 
 ```sql
 INSERT INTO origin_logs (message, time) VALUES
@@ -252,11 +252,11 @@ INSERT INTO origin_logs (message, time) VALUES
 ('172.16.0.1 - - [25/May/2024:20:19:37 +0000] "GET /contact HTTP/1.1" 404 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"', '2024-05-25 20:19:37.217');
 ```
 
-### Schema Comparison: Pipeline vs Raw
+### 表结构比较：Pipeline 转换后 vs 原始日志
 
-In the above examples, the table `custom_pipeline_logs` is automatically created by writing logs using pipeline,
-and the table `origin_logs` is created by writing logs directly.
-Let's explore the differences between these two tables.
+在上面的示例中，表 `custom_pipeline_logs` 是通过使用 pipeline 写入日志自动创建的，
+而表 `origin_logs` 是通过直接写入日志创建的。
+让我们看一看这两个表之间的差异。
 
 ```sql
 DESC custom_pipeline_logs;
@@ -290,28 +290,29 @@ DESC origin_logs;
 +---------+----------------------+------+------+---------+---------------+
 ```
 
-Comparing the table structures shows the key differences:
+以上表结构显示了关键差异：
 
-The `custom_pipeline_logs` table (created with pipeline) automatically structures log data into multiple columns:
-- `ip_address`, `status_code` as indexed tags for fast filtering
-- `request_line`, `user_agent` with full-text indexing for text search
-- `response_size`, `http_method` as regular fields
-- `timestamp` as the time index
+`custom_pipeline_logs` 表（使用 pipeline 创建）自动将日志数据结构化为多列：
+- `ip_address`、`status_code` 作为索引标签用于快速过滤
+- `request_line`、`user_agent` 具有全文索引用于文本搜索
+- `response_size`、`http_method` 作为常规字段
+- `timestamp` 作为时间索引
 
-The `origin_logs` table (direct insertion) stores everything in a single `message` column.
+`origin_logs` 表（直接插入）将所有内容存储在单个 `message` 列中。
 
-### Why Use Pipelines?
+### 为什么使用 Pipeline？
 
-It is recommended to use the pipeline method to split the log message into multiple columns,
-which offers the advantage of explicitly querying specific values within certain columns.
-Column matching query proves superior to full-text searching for several key reasons:
+建议使用 pipeline 方法将日志消息拆分为多列，
+这具有明确查询特定列中特定值的优势。
+有几个关键原因使得基于列的匹配查询比全文搜索更优越：
 
-- **Performance**: Column-based queries are typically faster than full-text searches
-- **Storage Efficiency**: GreptimeDB's columnar storage compresses structured data better; inverted indexes for tags consume less storage than full-text indexes
-- **Query Simplicity**: Tag-based queries are easier to write, understand, and debug
+- **性能**：基于列的查询通常比全文搜索更快
+- **存储效率**：GreptimeDB 的列式存储能更好地压缩结构化数据；标签的倒排索引比全文索引消耗更少的存储空间
+- **查询简单性**：基于标签的查询更容易编写、理解和调试
 
-## Next Steps
+## 下一步
 
-- **Full-Text Search**: Explore the [Full-Text Search](fulltext-search.md) guide to learn advanced text search capabilities and query techniques in GreptimeDB
-- **Pipeline Configuration**: Explore the [Pipeline Configuration](/reference/pipeline/pipeline-config.md) documentation to learn more about creating and customizing pipelines for various log formats and processing needs
+- **全文搜索**：阅读[全文搜索](fulltext-search.md) 指南，了解 GreptimeDB 中的高级文本搜索功能和查询技术
+- **Pipeline 配置**：阅读 [Pipeline 配置](/reference/pipeline/pipeline-config.md) 文档，了解更多关于为各种日志格式和处理需求创建和自定义 pipeline 的信息
+
 
