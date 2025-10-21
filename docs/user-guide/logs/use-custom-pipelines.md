@@ -64,7 +64,7 @@ transform:
     index: timestamp
 ```
 
-The pipeline configuration above uses the [version 2](./pipeline-config.md#transform-in-version-2) format,
+The pipeline configuration above uses the [version 2](/reference/pipeline/pipeline-config.md#transform-in-version-2) format,
 contains `processors` and `transform` sections that work together to structure your log data:
 
 **Processors**: Used to preprocess log data before transformation:
@@ -178,7 +178,7 @@ SELECT * FROM custom_pipeline_logs WHERE matches_term(request_line, '/index.html
 2 rows in set (0.00 sec)
 ```
 
-You can refer to the [Full-Text Search](query-logs.md) document for detailed usage of the `matches_term` function.
+You can refer to the [Full-Text Search](fulltext-search.md) document for detailed usage of the `matches_term` function.
 
 
 ## Pipeline Benefits

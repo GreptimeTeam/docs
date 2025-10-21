@@ -827,7 +827,7 @@ Some notes regarding the `vrl` processor:
 2. The returning value of the vrl script should not contain any regex-type variables. They can be used in the script, but have to be `del`ed before returning.
 3. Due to type conversion between pipeline's value type and vrl's, the value type that comes out of the vrl script will be the ones with max capacity, meaning `i64`, `f64`, and `Timestamp::nanoseconds`.
 
-You can use `vrl` processor to set [table options](/pipeline/write-log-api.md#set-table-options) while writing logs.
+You can use `vrl` processor to set [table options](./write-log-api.md#set-table-options) while writing logs.
 
 ### `filter`
 
@@ -1015,7 +1015,7 @@ Specify which field uses the inverted index. Refer to the [Transform Example](#t
 
 #### The Fulltext Index
 
-Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](./query-logs.md). Refer to the [Transform Example](#transform-example) below for syntax.
+Specify which field will be used for full-text search using `index: fulltext`. This index greatly improves the performance of [log search](/user-guide/logs/fulltext-search.md). Refer to the [Transform Example](#transform-example) below for syntax.
 
 #### The Skipping Index
 

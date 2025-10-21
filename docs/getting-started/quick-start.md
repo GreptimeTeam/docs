@@ -237,7 +237,7 @@ ORDER BY
 +---------------------+-------+------------------+-----------+--------------------+
 ```
 
-The `@@` operator is used for [term searching](/user-guide/logs/query-logs.md).
+The `@@` operator is used for [term searching](/user-guide/logs/fulltext-search.md).
 
 ### Range query
 

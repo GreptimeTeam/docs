@@ -128,8 +128,8 @@ For logs in text format, such as the access log format below, you'll need to cre
 #### Create a pipeline
 
 To create a custom pipeline,
-please refer to the [Create Pipeline](/user-guide/logs/quick-start.md#create-a-pipeline)
-and [Pipeline Configuration](/user-guide/logs/pipeline-config.md) documentation for detailed instructions.
+please refer to the [using custom pipelines](/user-guide/logs/use-custom-pipelines.md)
+documentation for detailed instructions.
 
 #### Ingest data
 
