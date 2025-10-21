@@ -29,6 +29,22 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 
 你可以在所有 Database 中使用创建的 Pipeline。
 
+## Pipeline 版本
+
+你可以使用相同的名称上传多个版本的 pipeline。
+每次你使用现有名称上传 pipeline 时，都会自动创建一个新版本。
+你可以在[写入日志](/reference/pipeline/write-log-api.md#http-api)、[查询](#查询-pipeline)或[删除](#删除-pipeline) pipeline 时指定要使用的版本。
+如果未指定版本，默认使用最后上传的版本。
+
+成功上传 pipeline 后，响应将包含版本信息：
+
+```json
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+```
+
+版本是 UTC 格式的时间戳，表示 pipeline 的创建时间。
+此时间戳作为每个 pipeline 版本的唯一标识符。
+
 ## 删除 Pipeline
 
 可以使用以下 HTTP 接口删除 Pipeline：
