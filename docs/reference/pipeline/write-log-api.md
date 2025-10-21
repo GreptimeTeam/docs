@@ -5,7 +5,7 @@ description: Describes how to write logs to GreptimeDB using a pipeline via the 
 
 # APIs for Writing Logs
 
-This document describes how to write logs to GreptimeDB by processing them through a specified pipeline using the HTTP interface.
+Before writing logs, please read the [Pipeline Configuration](/user-guide/logs/use-custom-pipelines.md#upload-pipeline) to complete the configuration setup and upload.
 
 ## HTTP API
 
