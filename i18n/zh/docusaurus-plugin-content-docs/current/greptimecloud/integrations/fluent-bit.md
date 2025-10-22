@@ -27,7 +27,7 @@ Fluent Bit 可以配置为使用 HTTP 协议将日志发送到 GreptimeCloud。�
     http_Passwd      <password>
 ```
 
-在此示例中，使用 `http` 输出插件将日志发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Logs HTTP API](https://docs.greptime.cn/user-guide/logs/write-logs#http-api) 指南。
+在此示例中，使用 `http` 输出插件将日志发送到 GreptimeCloud。有关更多信息和额外选项，请参阅 [Logs HTTP API](https://docs.greptime.cn/reference/pipeline/write-log-api.md#http-api) 指南。
 
 ## Prometheus Remote Write
 

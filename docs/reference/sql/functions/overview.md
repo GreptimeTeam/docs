@@ -50,7 +50,7 @@ DataFusion [String Function](./df-functions.md#string-functions).
 GreptimeDB provides:
 * `matches_term(expression, term)` for full text search.
 
-For details, read the [Query Logs](/user-guide/logs/query-logs.md).
+For details, read the [Fulltext Search](/user-guide/logs/fulltext-search.md).
 
 ### Math Functions
 

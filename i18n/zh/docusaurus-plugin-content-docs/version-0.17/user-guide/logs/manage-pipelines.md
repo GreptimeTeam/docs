@@ -5,17 +5,17 @@ description: 介绍如何在 GreptimeDB 中管理 Pipeline，包括创建、删�
 
 # 管理 Pipeline
 
-在 GreptimeDB 中，每个 `pipeline` 是一个数据处理单元集合，用于解析和转换写入的日志内容。本文档旨在指导您如何创建和删除 Pipeline，以便高效地管理日志数据的处理流程。
+在 GreptimeDB 中，每个 `pipeline` 是一个数据处理单元集合，用于解析和转换写入的日志内容。本文档旨在指导你如何创建和删除 Pipeline，以便高效地管理日志数据的处理流程。
 
 
-有关 Pipeline 的具体配置，请阅读 [Pipeline 配置](pipeline-config.md)。
+有关 Pipeline 的具体配置，请阅读 [Pipeline 配置](/reference/pipeline/pipeline-config.md)。
 
 ## 鉴权
 
 在使用 HTTP API 进行 Pipeline 管理时，你需要提供有效的鉴权信息。
 请参考[鉴权](/user-guide/protocols/http.md#鉴权)文档了解详细信息。
 
-## 创建 Pipeline
+## 上传 Pipeline
 
 GreptimeDB 提供了专用的 HTTP 接口用于创建 Pipeline。
 假设你已经准备好了一个 Pipeline 配置文件 pipeline.yaml，使用以下命令上传配置文件，其中 `test` 是你指定的 Pipeline 的名称：
@@ -28,6 +28,22 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/test" \
 ```
 
 你可以在所有 Database 中使用创建的 Pipeline。
+
+## Pipeline 版本
+
+你可以使用相同的名称上传多个版本的 pipeline。
+每次你使用现有名称上传 pipeline 时，都会自动创建一个新版本。
+你可以在[写入日志](/reference/pipeline/write-log-api.md#http-api)、[查询](#查询-pipeline)或[删除](#删除-pipeline) pipeline 时指定要使用的版本。
+如果未指定版本，默认使用最后上传的版本。
+
+成功上传 pipeline 后，响应将包含版本信息：
+
+```json
+{"name":"nginx_pipeline","version":"2024-06-27 12:02:34.257312110Z"}
+```
+
+版本是 UTC 格式的时间戳，表示 pipeline 的创建时间。
+此时间戳作为每个 pipeline 版本的唯一标识符。
 
 ## 删除 Pipeline
 
@@ -129,7 +145,7 @@ transform:
 SELECT * FROM greptime_private.pipelines;
 ```
 
-请注意，如果您使用 MySQL 或者 PostgreSQL 协议作为连接 GreptimeDB 的方式，查询出来的 Pipeline 时间信息精度可能有所不同，可能会丢失纳秒级别的精度。
+请注意，如果你使用 MySQL 或者 PostgreSQL 协议作为连接 GreptimeDB 的方式，查询出来的 Pipeline 时间信息精度可能有所不同，可能会丢失纳秒级别的精度。
 
 为了解决这个问题，可以将 `created_at` 字段强制转换为 timestamp 来查看 Pipeline 的创建时间。例如，下面的查询将 `created_at` 以 `bigint` 的格式展示：
 
@@ -319,3 +335,119 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
 ```
 
 可以看到，`1998.08` 字符串中的 `.` 已经被替换为 `-`，Pipeline 处理成功。
+
+## 从 Pipeline 配置生成表的建表语句
+
+使用 Pipeline 时，GreptimeDB 默认会在首次数据写入时自动创建目标表。
+但是，你可能希望预先手动创建表以添加自定义表选项，例如添加分区规则以获得更好的性能。
+
+虽然自动创建的表结构对于给定的 Pipeline 配置是确定的，
+但根据配置手动编写表的建表语句可能会很繁琐。`/ddl` API 简化了这一过程。
+
+对于现有的 Pipeline，你可以使用 `/v1/pipelines/{pipeline_name}/ddl` 来生成建表语句。
+此 API 会检查 Pipeline 配置中的 transform 定义并推断出相应的表结构。
+你可以在第一次写入数据之前使用此 API 来生成基础的建表语句，进行参数调整并手动建表。
+常见的调整选项包括：
+- 增加[数据分区规则](/user-guide/deployments-administration/manage-data/table-sharding.md)
+- 调整[索引的参数](/user-guide/manage-data/data-index.md)
+- 增加其他[表选项](/reference/sql/create.md#表选项)
+
+以下是演示如何使用此 API 的示例。考虑以下 Pipeline 配置：
+```YAML
+# pipeline.yaml
+processors:
+- dissect:
+    fields:
+      - message
+    patterns:
+      - '%{ip_address} - %{username} [%{timestamp}] "%{http_method} %{request_line} %{protocol}" %{status_code} %{response_size}'
+    ignore_missing: true
+- date:
+    fields:
+      - timestamp
+    formats:
+      - "%d/%b/%Y:%H:%M:%S %z"
+
+transform:
+  - fields:
+      - timestamp
+    type: time
+    index: timestamp
+  - fields:
+      - ip_address
+    type: string
+    index: skipping
+  - fields:
+      - username
+    type: string
+    tag: true
+  - fields:
+      - http_method
+    type: string
+    index: inverted
+  - fields:
+      - request_line
+    type: string
+    index: fulltext
+  - fields:
+      - protocol
+    type: string
+  - fields:
+      - status_code
+    type: int32
+    index: inverted
+    tag: true
+  - fields:
+      - response_size
+    type: int64
+    on_failure: default
+    default: 0
+  - fields:
+      - message
+    type: string
+```
+
+首先，使用以下命令将 Pipeline 上传到数据库：
+```bash
+curl -X "POST" "http://localhost:4000/v1/pipelines/pp" -F "file=@pipeline.yaml"
+```
+然后，使用以下命令查询表的建表语句：
+```bash
+curl -X "GET" "http://localhost:4000/v1/pipelines/pp/ddl?table=test_table"
+```
+API 返回以下 JSON 格式的输出：
+```JSON
+{
+  "sql": {
+    "sql": "CREATE TABLE IF NOT EXISTS `test_table` (\n  `timestamp` TIMESTAMP(9) NOT NULL,\n  `ip_address` STRING NULL SKIPPING INDEX WITH(false_positive_rate = '0.01', granularity = '10240', type = 'BLOOM'),\n  `username` STRING NULL,\n  `http_method` STRING NULL INVERTED INDEX,\n  `request_line` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', backend = 'bloom', case_sensitive = 'false', false_positive_rate = '0.01', granularity = '10240'),\n  `protocol` STRING NULL,\n  `status_code` INT NULL INVERTED INDEX,\n  `response_size` BIGINT NULL,\n  `message` STRING NULL,\n  TIME INDEX (`timestamp`),\n  PRIMARY KEY (`username`, `status_code`)\n)\nENGINE=mito\nWITH(\n  append_mode = 'true'\n)"
+  },
+  "execution_time_ms": 3
+}
+```
+格式化响应中的 `sql` 字段后，你可以看到推断出的表结构：
+```SQL
+CREATE TABLE IF NOT EXISTS `test_table` (
+  `timestamp` TIMESTAMP(9) NOT NULL,
+  `ip_address` STRING NULL SKIPPING INDEX WITH(false_positive_rate = '0.01', granularity = '10240', type = 'BLOOM'),
+  `username` STRING NULL,
+  `http_method` STRING NULL INVERTED INDEX,
+  `request_line` STRING NULL FULLTEXT INDEX WITH(analyzer = 'English', backend = 'bloom', case_sensitive = 'false', false_positive_rate = '0.01', granularity = '10240'),
+  `protocol` STRING NULL,
+  `status_code` INT NULL INVERTED INDEX,
+  `response_size` BIGINT NULL,
+  `message` STRING NULL,
+  TIME INDEX (`timestamp`),
+  PRIMARY KEY (`username`, `status_code`)
+  )
+ENGINE=mito
+WITH(
+  append_mode = 'true'
+)
+```
+
+你可以将推断出的表的建表语句作为起点。
+根据你的需求自定义建表语句后，在通过 Pipeline 写入数据之前手动执行它。
+
+**注意事项：**
+1. 该 API 仅从 Pipeline 配置推断表结构；它不会检查表是否已存在。
+2. 该 API 不考虑表后缀。如果你在 Pipeline 配置中使用 `dispatcher`、`table_suffix` 或表后缀 hint，你需要手动调整表名。

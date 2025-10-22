@@ -219,7 +219,7 @@ Learn more about indexing: [Index Management](/user-guide/manage-data/data-index
 
 **Real-Time Processing**:
 - **[Flow Engine](/user-guide/flow-computation/overview.md)**: Real-time stream processing system that enables continuous, incremental computation on streaming data with automatic result table updates
-- **[Pipeline](/user-guide/logs/pipeline-config.md)**: Data parsing and transformation mechanism for processing incoming data in real-time, with configurable processors for field extraction and data type conversion across multiple data formats
+- **[Pipeline](/reference/pipeline/pipeline-config.md)**: Data parsing and transformation mechanism for processing incoming data in real-time, with configurable processors for field extraction and data type conversion across multiple data formats
 - **Output Tables**: Persist processed results for analysis
 
 

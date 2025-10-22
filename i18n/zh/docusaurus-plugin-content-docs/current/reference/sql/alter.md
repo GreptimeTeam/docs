@@ -194,7 +194,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 SET FULLTEXT INDEX WITH (analyzer = 'E
 - `granularity`：（适用于 `bloom` 后端）每个过滤器覆盖的数据块大小。粒度越小，过滤效果越好，但索引大小会增加。默认为 `10240`。
 - `false_positive_rate`：（适用于 `bloom` 后端）错误识别块的概率。该值越低，准确性越高（过滤效果越好），但索引大小会增加。该值为介于 `0` 和 `1` 之间的浮点数。默认为 `0.01`。
 
-更多关于全文索引配置和性能对比的信息，请参考[全文索引配置指南](/user-guide/logs/fulltext-index-config.md)。
+更多关于全文索引配置和性能对比的信息，请参考[全文索引配置指南](/user-guide/manage-data/data-index.md#全文索引)。
 
 与 `CREATE TABLE` 一样，可以不带 `WITH` 选项，全部使用默认值。
 
