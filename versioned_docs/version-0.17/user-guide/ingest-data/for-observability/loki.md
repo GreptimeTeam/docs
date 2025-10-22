@@ -184,7 +184,7 @@ transform:
 ```
 
 The pipeline content is straightforward: we use `vrl` processor to parse the line into a JSON object, then extract the fields to the root level.
-`log_time` is specified as the time index in the transform section, other fields will be auto-inferred by the pipeline engine, see [pipeline version 2](/user-guide/logs/pipeline-config.md#transform-in-version-2) for details.
+`log_time` is specified as the time index in the transform section, other fields will be auto-inferred by the pipeline engine, see [pipeline version 2](/reference/pipeline/pipeline-config.md#transform-in-version-2) for details.
 
 Note that the input field name is `loki_line`, which contains the original log line from Loki.
 
@@ -264,4 +264,4 @@ log_source: application
 
 This output demonstrates that the pipeline engine has successfully parsed the original JSON log lines and extracted the structured data into separate columns.
 
-For more details about pipeline configuration and features, refer to the [pipeline documentation](/user-guide/logs/pipeline-config.md).
+For more details about pipeline configuration and features, refer to the [pipeline documentation](/reference/pipeline/pipeline-config.md).

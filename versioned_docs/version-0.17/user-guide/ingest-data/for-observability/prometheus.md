@@ -303,7 +303,7 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 2 rows in set (0.01 sec)
 ```
 
-You can refer to the [pipeline's documentation](/user-guide/logs/pipeline-config.md) for more details.
+You can refer to the [pipeline's documentation](/user-guide/logs/use-custom-pipelines.md) for more details.
 
 ## Performance tuning
 

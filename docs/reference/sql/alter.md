@@ -194,7 +194,7 @@ You can specify the following options using `FULLTEXT INDEX WITH` when enabling 
 - `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
 - `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
-For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/manage-data/data-index/#fulltext-index).
+For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/manage-data/data-index.md#fulltext-index).
 
 If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 

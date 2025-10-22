@@ -77,4 +77,4 @@ SELECT * FROM go_info
 WHERE instance LIKE 'localhost:____';
 ```
 
-For searching terms in logs, please read [Query Logs](/user-guide/logs/query-logs.md).
+For searching terms in logs, please read [Query Logs](/user-guide/logs/fulltext-search.md).
