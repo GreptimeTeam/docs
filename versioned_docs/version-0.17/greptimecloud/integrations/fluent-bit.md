@@ -28,7 +28,7 @@ Fluent Bit can be configured to send logs to GreptimeCloud using the HTTP protoc
     http_Passwd      <password>
 ```
 
-In this example, the `http` output plugin is used to send logs to GreptimeCloud. For more information, and extra options, refer to the [Logs HTTP API](https://docs.greptime.com/reference/pipeline/write-log-api.md#http-api) guide.
+In this example, the `http` output plugin is used to send logs to GreptimeCloud. For more information, and extra options, refer to the [Logs HTTP API](https://docs.greptime.com/reference/pipeline/write-log-api#http-api) guide.
 
 ## Prometheus Remote Write
 
