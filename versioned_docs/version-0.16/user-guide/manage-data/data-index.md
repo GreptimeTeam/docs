@@ -120,7 +120,7 @@ Fulltext index usually comes with following drawbacks:
 
 Consider using fulltext index only when you need advanced text search capabilities and flexible query patterns.
 
-For more detailed information about fulltext index configuration and backend selection, please refer to the [Full-Text Index Configuration](/user-guide/logs/fulltext-index-config) guide.
+For more detailed information about fulltext index configuration and backend selection, please refer to the [Full-Text Index Configuration](/user-guide/logs/fulltext-index-config.md) guide.
 
 ## Modify indexes
 

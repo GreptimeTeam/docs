@@ -43,7 +43,7 @@ In params Uri,
 - `table` is the table name you want to write logs to.
 - `pipeline_name` is the pipeline name you want to use for processing logs.
 
-In this example, the [Logs Http API](/user-guide/logs/write-logs.md#http-api) interface is used. For more information, refer to the [Write Logs](/user-guide/logs/write-logs.md) guide.
+In this example, the [Logs Http API](/reference/pipeline/write-log-api.md#http-api) interface is used. For more information, refer to the [Write Logs](/user-guide/logs/use-custom-pipelines.md#ingest-logs-using-the-pipeline) guide.
 
 ## OpenTelemetry
 

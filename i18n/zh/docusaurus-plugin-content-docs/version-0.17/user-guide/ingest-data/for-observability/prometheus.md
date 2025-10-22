@@ -289,7 +289,7 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 2 rows in set (0.01 sec)
 ```
 
-更多配置详情请参考 [pipeline 相关文档](/user-guide/logs/pipeline-config.md)。
+更多配置详情请参考 [pipeline 相关文档](/reference/pipeline/pipeline-config.md)。
 
 ## 性能优化
 

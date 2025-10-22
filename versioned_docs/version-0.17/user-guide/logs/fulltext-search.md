@@ -3,11 +3,9 @@ keywords: [query logs, pattern matching, matches_term, query statements, log ana
 description: Provides a guide on using GreptimeDB's query language for effective searching and analysis of log data, including pattern matching and query statements.
 ---
 
-# Query Logs
+# Full-Text Search
 
 This document provides a guide on how to use GreptimeDB's query language for effective searching and analysis of log data.
-
-## Overview
 
 GreptimeDB allows for flexible querying of data using SQL statements. This section introduces specific search functions and query statements designed to enhance your log querying capabilities.
 
