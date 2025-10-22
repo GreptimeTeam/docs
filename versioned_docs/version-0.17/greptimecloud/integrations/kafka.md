@@ -13,7 +13,7 @@ Here we are using Vector as the tool to transport data from Kafka to GreptimeDB.
 ## Logs
 
 A sample configuration. Note that you will need to [create your
-pipeline](https://docs.greptime.com/user-guide/logs/pipeline-config/) for log
+pipeline](https://docs.greptime.com/reference/pipeline/pipeline-config/) for log
 parsing.
 
 ```toml

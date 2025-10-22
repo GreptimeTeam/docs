@@ -11,7 +11,7 @@ description: 介绍如何使用 Kafka 将数据传输到 GreptimeCloud，并提�
 ## Logs
 
 以下是一个示例配置。请注意，您需要创建您的
-[Pipeline](https://docs.greptime.cn/user-guide/logs/pipeline-config/) 用于日志
+[Pipeline](https://docs.greptime.cn/user-guide/logs/use-custom-pipelines/) 用于日志
 解析。
 
 ```toml
