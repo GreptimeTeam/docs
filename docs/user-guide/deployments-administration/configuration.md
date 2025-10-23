@@ -365,7 +365,8 @@ Read [Performance Tuning Tips](/user-guide/deployments-administration/performanc
 
 ### WAL options
 
-GreptimeDB supports two WAL storage options—Local WAL and Remote WAL. See the [WAL Overview](/user-guide/deployments-administration/wal/overview.md) for a comparison of the two. For detailed configurations, refer to the [Local WAL](/user-guide/deployments-administration/wal/local-wal.md) and [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) documentation.
+GreptimeDB supports three WAL storage options—Local WAL, Remote WAL, and Noop WAL. See the [WAL Overview](/user-guide/deployments-administration/wal/overview.md) for a comparison of the options. For detailed configurations, refer to the [Local WAL](/user-guide/deployments-administration/wal/local-wal.md), [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md), and [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) documentation.
+
 
 ### Logging options
 

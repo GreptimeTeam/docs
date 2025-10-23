@@ -22,7 +22,7 @@ If you are using Helm Chart to deploy GreptimeDB, you can refer to [Common Helm 
 
 | Configuration Option | Description                                                                                                          | Default Value     |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| `provider`           | The provider of the WAL. Options: `raft_engine` (local file system storage) or `kafka` (remote WAL storage in Kafka) | `"raft_engine"`   |
+| `provider`           | The provider of the WAL. Options: `raft_engine` (local file system storage), `kafka` (remote WAL storage in Kafka), or `noop` (no-op WAL provider) | `"raft_engine"`   |
 | `dir`                | The directory where to write logs                                                                                    | `{data_home}/wal` |
 | `file_size`          | The size of single WAL log file                                                                                      | `128MB`           |
 | `purge_threshold`    | The threshold of the WAL size to trigger purging                                                                     | `1GB`             |
