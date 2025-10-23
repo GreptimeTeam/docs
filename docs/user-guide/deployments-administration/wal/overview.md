@@ -10,7 +10,7 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 - **Remote WAL**: Uses [Apache Kafka](https://kafka.apache.org/) as the external(remote) WAL storage component.
 
-- **Noop WAL**: A no-op WAL provider designed for temporary situations where WAL becomes unavailable. It does not store any WAL data. 
+- **Noop WAL**: A no-op WAL provider for emergency situations when WAL becomes unavailable. Does not store any data. 
 
 ## Local WAL
 
@@ -44,16 +44,9 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 ## Noop WAL
 
-Noop WAL is a special WAL provider designed for situations where the configured WAL provider becomes temporarily unavailable. It is a no-operation WAL provider that does not actually store any WAL data. Noop WAL is only available in distributed (cluster) mode, not in standalone mode.
+Noop WAL is a special WAL provider for emergency situations when the configured WAL provider becomes temporarily unavailable. It does not store any WAL data and is only available in cluster mode.
 
-### Key Characteristics
-
-- **No Data Persistence**: Does not store any WAL data.
-- **Data Loss Risk**: All unflushed data will be lost when the Datanode is shutdown or restarted.
-- **Temporary Use Only**: Should only be used temporarily when the normal WAL provider is unavailable.
-- **Cluster Mode Only**: Only available in distributed (cluster) mode, not in standalone mode.
-
-For detailed configuration and usage information, see the [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) page.
+For detailed configuration, see the [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) page.
 
 ## Next steps
 

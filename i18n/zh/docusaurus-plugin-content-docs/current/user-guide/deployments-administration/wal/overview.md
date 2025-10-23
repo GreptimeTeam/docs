@@ -11,7 +11,7 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 - **Remote WAL**: 使用 [Apache Kafka](https://kafka.apache.org/) 作为外部的 WAL 存储组件。
 
-- **Noop WAL**: 无操作 WAL 提供者，专为 WAL 暂时不可用的情况设计。它不存储任何 WAL 数据。
+- **Noop WAL**: 无操作 WAL 提供者，用于 WAL 暂时不可用的紧急情况，不存储任何数据。
 
 ## 本地 WAL
 
@@ -36,7 +36,7 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 - **低 RTO**: 通过将 WAL 与 Datanode 解耦，[恢复时间目标](https://en.wikipedia.org/wiki/Disaster_recovery#Recovery_Time_Objective) (RTO) 得以最小化。当 Datanode 崩溃时，Metasrv 会发起 [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md) ，将受影响 Region 迁移至健康节点，无需本地重放 WAL。
 
 
-- **多消费者订阅**:Remote WAL 支持多个消费者同时订阅 WAL 日志，实现 Region 热备和 [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md) 等功能，提升系统的高可用性和灵活性。
+- **多消费者订阅**: Remote WAL 支持多个消费者同时订阅 WAL 日志，实现 Region 热备和 [Region Migration](/user-guide/deployments-administration/manage-data/region-migration.md) 等功能，提升系统的高可用性和灵活性。
 
 
 ### 缺点
@@ -47,16 +47,9 @@ description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL �
 
 ## Noop WAL
 
-Noop WAL 是专为配置的 WAL 提供者暂时不可用的情况而设计的特殊 WAL 提供者。它是一个无操作 WAL 提供者，实际上不存储任何 WAL 数据。Noop WAL 仅在分布式（集群）模式下可用，不适用于单机模式。
+Noop WAL 是一种特殊的 WAL 提供者，用于 WAL 暂时不可用的紧急情况。它不会存储任何 WAL 数据，仅在集群模式下可用。
 
-### 主要特性
-
-- **无数据持久化**: 不存储任何 WAL 数据。
-- **数据丢失风险**: 所有未刷新的数据将在 Datanode 关闭或重启时丢失。
-- **仅临时使用**: 应仅在正常 WAL 提供者不可用时临时使用。
-- **仅限集群模式**: 仅在分布式（集群）模式下可用，不适用于单机模式。
-
-有关详细配置和使用信息，请参阅 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 页面。
+详细配置说明请参阅 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md)。
 
 ## 后续步骤
 

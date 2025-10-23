@@ -4,42 +4,38 @@ description: This section describes how to configure the Noop WAL for GreptimeDB
 ---
 # Noop WAL
 
-Noop WAL is a special WAL provider designed for emergency situations where the configured WAL provider becomes temporarily unavailable. It is a no-operation WAL provider that does not actually store any WAL data.
+Noop WAL is a special WAL provider for emergency situations when the configured WAL provider becomes temporarily unavailable. It does not store any WAL data.
 
 ## Availability
 
-Noop WAL is **only available in distributed (cluster) mode**, not in standalone mode.
+Noop WAL is **only available in cluster mode**, not in standalone mode.
 
 ## Use Cases
 
-- **Temporary WAL Unavailability**: When your configured WAL provider (e.g., Kafka) becomes temporarily unavailable, you can switch the Datanode to use Noop WAL to keep the cluster operational.
+- **Temporary WAL Unavailability**: When the WAL provider (e.g., Kafka) is temporarily unavailable, switch the Datanode to Noop WAL to keep the cluster running.
 - **Testing and Development**: Useful for testing scenarios where WAL persistence is not required.
 
 ## Data Loss Warning
 
-**When using Noop WAL, all unflushed data will be lost when the Datanode is shutdown or restarted.** This provider should only be used temporarily when the normal WAL provider is unavailable and is not recommended for production use except in emergency situations.
+**When using Noop WAL, all unflushed data will be lost when the Datanode is shutdown or restarted.** Only use this provider temporarily when the normal WAL provider is unavailable. Not recommended for production use except in emergency situations.
 
 ## Configuration
 
-To configure Noop WAL for a Datanode in a cluster:
+To configure Noop WAL for a Datanode:
 
 ```toml
 [wal]
 provider = "noop"
 ```
 
-In a GreptimeDB cluster, WAL provider configuration is needed in two places:
+In a GreptimeDB cluster, WAL configuration has two parts:
 
-1. **Metasrv** - Responsible for generating WAL provider metadata for new regions. The Metasrv WAL provider should be set to either `raft_engine` or `kafka`. Noop WAL cannot be configured on Metasrv.
-2. **Datanode** - Responsible for reading and writing WAL data. This is where you configure Noop WAL.
+- **Metasrv** - Generates WAL metadata for new regions. Should be set to `raft_engine` or `kafka`.
+- **Datanode** - Reads and writes WAL data. Configure as `noop` when the WAL provider is unavailable.
 
-When the WAL provider is temporarily unavailable, you only need to configure the Datanode's WAL provider as `noop` to keep the cluster functional. The Metasrv continues using its configured WAL provider (`raft_engine` or `kafka`).
+Note: Noop WAL can only be configured on Datanode, not on Metasrv. When using Noop WAL on Datanode, Metasrv continues using its configured WAL provider.
 
-## Important Notes
+## Best Practices
 
-- Noop WAL is only available in distributed (cluster) mode. It cannot be used in standalone mode.
-- Noop WAL cannot be configured on Metasrv. It is only available for Datanode configuration.
-- The Metasrv WAL provider should be set to either `raft_engine` or `kafka`.
-- When switching to Noop WAL, ensure that you have a data recovery plan in place.
-- To minimize data loss, flush regions regularly using `admin flush_table()` or `admin flush_region()`.
-- Once the normal WAL provider is available again, switch back to using it as soon as possible.
+- Flush regions regularly using `admin flush_table()` or `admin flush_region()` to minimize data loss.
+- Switch back to the normal WAL provider as soon as it becomes available.
