@@ -221,6 +221,53 @@ please refer to [`date_bin`](/reference/sql/functions/df-functions.md#date_bin).
 Currently, flow rely on the time window expr to determine how to incrementally update the result. So it's better to use a relatively small time window when possible.
 :::
 
+### Write a PromQL query
+
+GreptimeDB Flow also supports using PromQL for continuous aggregation, allowing you to leverage familiar PromQL syntax for time-series analysis. When writing PromQL queries for Flow, it's crucial to specify an `eval interval` as PromQL doesn't have a fixed time window. This interval determines how frequently the PromQL query is evaluated and new aggregated results are generated.
+
+For example, to calculate the 1-minute rate of `http_requests_total` for a specific job, you might use a PromQL query like this:
+
+```promql
+rate(http_requests_total{job="my_service"}[1m])
+```
+
+Here's a full example of using TQL (PromQL with `EVAL` clause) within a Flow:
+
+```sql
+CREATE TABLE http_requests_total (
+    host STRING,
+    job STRING,
+    instance STRING,
+    byte DOUBLE,
+    ts TIMESTAMP TIME INDEX
+);
+
+CREATE TABLE prom_aggregated (
+    host STRING,
+    job STRING,
+    instance STRING,
+    value DOUBLE,
+    timestamp TIMESTAMP TIME INDEX,
+);
+
+CREATE FLOW calc_rate 
+SINK TO rate_reqs 
+EVAL INTERVAL '1m' AS
+TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my_service"}[1m]);
+```
+
+In this example:
+- `prom_metrics` is the source table where raw Prometheus-style metrics are ingested.
+- `prom_aggregated` is the sink table that will store the continuously aggregated results.
+- `TQL EVAL (start, end, '1m')` indicates that the PromQL query `rate(http_requests_total{job="my_service"}[1m])` is evaluated with a `step` of 1 minute. 
+- The `rate` function calculates the per-second average rate of increase of the `http_requests_total` metric over the last 1 minutes.
+- The results, including the calculated `value` and the `timestamp` (which corresponds to the evaluation timestamp), are then written to the `rate_reqs` sink table.
+
+This setup allows you to perform continuous, real-time PromQL-based aggregations on your time-series data, making it readily available for dashboards, alerts, and further analysis.
+
+In the context of Flow, this query would be evaluated every `eval interval` (e.g., every 1 minute, 5 minutes, etc.), and the results would be continuously updated in your sink table. The `eval interval` ensures that the aggregation is performed at regular, defined periods, which is essential for consistent time-series analysis and efficient resource utilization. Without a specified `eval interval`, the Flow engine would not know how often to re-evaluate the PromQL expression, leading to undefined behavior or inefficient processing.
+
+
 ## Flush a flow
 
 The flow engine automatically processes aggregation operations within a short period(i.e. few seconds) when new data arrives in the source table.
