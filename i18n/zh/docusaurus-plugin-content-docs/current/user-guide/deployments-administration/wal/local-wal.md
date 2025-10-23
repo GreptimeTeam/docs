@@ -23,7 +23,7 @@ sync_write = false
 
 | 配置项            | 描述                                                                                            | 默认值            |
 | ----------------- | ----------------------------------------------------------------------------------------------- | ----------------- |
-| `provider`        | WAL 的提供者。可选项：`raft_engine`（本地文件系统存储）或 `kafka`（使用 Kafka 的远程 WAL 存储） | `"raft_engine"`   |
+| `provider`        | WAL 的提供者。可选项：`raft_engine`（本地文件系统存储）、`kafka`（使用 Kafka 的远程 WAL 存储）或 `noop`（无操作 WAL 提供者） | `"raft_engine"`   |
 | `dir`             | 日志写入目录                                                                                    | `{data_home}/wal` |
 | `file_size`       | 单个 WAL 日志文件的大小                                                                         | `128MB`           |
 | `purge_threshold` | 触发清理的 WAL 总大小阈值                                                                       | `1GB`             |

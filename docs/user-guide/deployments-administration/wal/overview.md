@@ -4,11 +4,13 @@ description: This section describes the WAL (Write-Ahead Logging) in GreptimeDB,
 ---
 # Overview
 
-The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) is a crucial component in GreptimeDB that persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides two WAL storage options:
+The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) is a crucial component in GreptimeDB that persistently records every data modification to ensure no memory-cached data loss. GreptimeDB provides three WAL storage options:
 
 - **Local WAL**: Uses an embedded storage engine([raft-engine](https://github.com/tikv/raft-engine)) within the [Datanode](/user-guide/concepts/why-greptimedb.md).
 
-- **Remote WAL**: Uses [Apache Kafka](https://kafka.apache.org/) as the external(remote) WAL storage component. 
+- **Remote WAL**: Uses [Apache Kafka](https://kafka.apache.org/) as the external(remote) WAL storage component.
+
+- **Noop WAL**: A no-op WAL provider designed for temporary situations where WAL becomes unavailable. It does not store any WAL data. 
 
 ## Local WAL
 
@@ -40,9 +42,23 @@ The [Write-Ahead Logging](/contributor-guide/datanode/wal.md#introduction)(WAL) 
 
 - **Network overhead**: Since WAL data needs to be transmitted over the network, careful planning of cluster network bandwidth is required to ensure low latency and high throughput, especially under write-heavy workloads.
 
+## Noop WAL
+
+Noop WAL is a special WAL provider designed for situations where the configured WAL provider becomes temporarily unavailable. It is a no-operation WAL provider that does not actually store any WAL data. Noop WAL is only available in distributed (cluster) mode, not in standalone mode.
+
+### Key Characteristics
+
+- **No Data Persistence**: Does not store any WAL data.
+- **Data Loss Risk**: All unflushed data will be lost when the Datanode is shutdown or restarted.
+- **Temporary Use Only**: Should only be used temporarily when the normal WAL provider is unavailable.
+- **Cluster Mode Only**: Only available in distributed (cluster) mode, not in standalone mode.
+
+For detailed configuration and usage information, see the [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) page.
 
 ## Next steps
 
 - To configure the Local WAL storage, please refer to [Local WAL](/user-guide/deployments-administration/wal/local-wal.md).
 
 - To learn more about the Remote WAL, please refer to [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md).
+
+- To learn more about the Noop WAL, please refer to [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md).

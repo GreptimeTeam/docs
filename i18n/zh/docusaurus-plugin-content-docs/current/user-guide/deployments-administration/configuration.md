@@ -356,7 +356,8 @@ write_cache_size = "10GiB"
 
 ### WAL 选项
 
-GreptimeDB 支持两种 WAL 存储方式：本地 WAL 和 Remote WAL。关于它们的对比，请参见 [WAL 概述](/user-guide/deployments-administration/wal/overview.md)。具体配置可参考 [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md) 和 [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 文档。
+GreptimeDB 支持三种 WAL 存储方式：本地 WAL、Remote WAL 和 Noop WAL。关于它们的对比，请参见 [WAL 概述](/user-guide/deployments-administration/wal/overview.md)。具体配置可参考 [本地 WAL](/user-guide/deployments-administration/wal/local-wal.md)、[Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) 和 [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) 文档。
+
 
 ### Logging 选项
 
