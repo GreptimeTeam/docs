@@ -11,7 +11,8 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 ## Http
 
-使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，您可以将日志发送到 GreptimeDB。Http 接口目前支持日志的写入。
+使用 Fluent Bit 的 [HTTP 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/http)，你可以将日志发送到 GreptimeDB。Http 接口目前支持日志的写入。
+在配置 Fluent Bit 之前，请确保你已经了解[日志写入流程](/user-guide/logs/overview.md)和[如何使用 pipelines](/user-guide/logs/use-custom-pipelines.md)。
 
 ```
 [OUTPUT]
@@ -19,7 +20,7 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
     Match            *
     Host             greptimedb
     Port             4000
-    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=greptime_identity
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601
@@ -38,15 +39,15 @@ description: 将 GreptimeDB 与 Fluent bit 集成以实现 Prometheus Remote Wri
 
 在 `uri` 参数中：
 
-- `db` 是您要写入日志的数据库名称。
-- `table` 是您要写入日志的表名称。
-- `pipeline_name` 是您要用于处理日志的管道名称。
+- `db` 是你要写入日志的数据库名称。
+- `table` 是你要写入日志的表名称。
+- `pipeline_name` 是你要用于处理日志的管道名称。
 
 本示例中，使用的是 [Logs Http API](/reference/pipeline/write-log-api.md#http-api) 接口。如需更多信息，请参阅 [写入日志](/user-guide/logs/use-custom-pipelines.md#使用-pipeline-写入日志) 文档。
 
 ## OpenTelemetry
 
-GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [OpenTelemetry 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry)，您可以将指标、日志和跟踪发送到 GreptimeDB。
+GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [OpenTelemetry 输出插件](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry)，你可以将指标、日志和跟踪发送到 GreptimeDB。
 
 ```
 [OUTPUT]
@@ -118,6 +119,6 @@ GreptimeDB 也可以配置为 OpenTelemetry 收集器。使用 Fluent Bit 的 [O
 
 在 `Uri` 参数中：
 
-- `db` 是您要写入指标的数据库名称。
+- `db` 是你要写入指标的数据库名称。
 
 有关从 Prometheus 到 GreptimeDB 的数据模型转换的详细信息，请参阅 Prometheus Remote Write 指南中的[数据模型](/user-guide/ingest-data/for-observability/prometheus.md#data-model)部分。
