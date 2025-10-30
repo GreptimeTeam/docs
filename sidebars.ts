@@ -792,6 +792,7 @@ const sidebars: SidebarsConfig = {
               id: 'contributor-guide/flownode/overview',
               label: 'Overview',
             },
+            'contributor-guide/flownode/batching_mode',
             'contributor-guide/flownode/dataflow',
             'contributor-guide/flownode/arrangement'
           ],
