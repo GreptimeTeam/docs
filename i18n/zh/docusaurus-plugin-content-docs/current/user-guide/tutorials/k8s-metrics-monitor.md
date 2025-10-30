@@ -67,29 +67,81 @@ kubectl -n greptime-cluster get greptimedbclusters.greptime.io greptimedb
 
 ```bash
 NAME         FRONTEND   DATANODE   META   FLOWNODE   PHASE     VERSION   AGE
-greptimedb   1          1          1      1          Running   v0.17.2   33s
+greptimedb   1          2          1      1          Running   v0.17.2   33s
 ```
 
-检查 Pod：
+检查 Pod 状态：
 
 ```bash
 kubectl get pods -n greptime-cluster
 ```
 
 ```bash
-greptimedb-datanode-0                 1/1     Running   0          44s
-greptimedb-flownode-0                 1/1     Running   0          28s
-greptimedb-frontend-8bf9f558c-7wdmk   1/1     Running   0          34s
-greptimedb-meta-fc4ddb78b-nv944       1/1     Running   0          50s
+NAME                                  READY   STATUS    RESTARTS    AGE
+greptimedb-datanode-0                 1/1     Running   0           71s
+greptimedb-datanode-1                 1/1     Running   0           97s
+greptimedb-flownode-0                 1/1     Running   0           64s
+greptimedb-frontend-8bf9f558c-7wdmk   1/1     Running   0           90s
+greptimedb-meta-fc4ddb78b-nv944       1/1     Running   0           87s
 ```
 
-### GreptimeDB 的服务地址
+### 访问 GreptimeDB
 
-需要使用 GreptimeDB 服务地址来配置 Prometheus Remote Write。
-由于 GreptimeDB 在 Kubernetes 集群内运行，可以使用内部集群地址。
+可以将 frontend 服务的端口转发到本地来连接 GreptimeDB。
+GreptimeDB 支持多种协议，其中 MySQL 协议默认使用端口 `4002`。
 
-GreptimeDB 的 frontend 服务地址遵循以下模式：
+```bash
+kubectl port-forward -n greptime-cluster svc/greptimedb-frontend 4002:4002
+```
 
+使用 MySQL 客户端连接 GreptimeDB：
+
+```bash
+mysql -h 127.0.0.1 -P 4002
+```
+
+### 存储分区
+
+为了提高查询性能并降低存储成本，
+GreptimeDB 会基于 Prometheus 指标标签自动创建列，并将指标存储在物理表中。
+在上方我们部署了具有[多个 datanode 节点](#验证-greptimedb-的部署)的 GreptimeDB 集群，
+你可以对表进行分区将数据分布到各个 datanode 节点上，以获得更好的可扩展性和性能。
+
+在此 Kubernetes 监控场景中，
+可以使用 `namespace` 标签作为分区键。
+例如，对于 `kube-public`、`kube-system`、`monitoring`、`default`、`greptime-cluster` 和 `etcd-cluster` 等命名空间，
+你可以基于命名空间的首字母创建分区方案：
+
+```sql
+CREATE TABLE kube_monitor_physical_table (
+  greptime_value DOUBLE NULL,
+  namespace STRING PRIMARY KEY,
+  greptime_timestamp TIMESTAMP TIME INDEX,
+)
+PARTITION ON COLUMNS (namespace) (
+  namespace < 'f',
+  namespace >= 'f' AND namespace < 'g',
+  namespace >= 'g' AND namespace < 'k',
+  namespace >= 'k'
+)
+ENGINE = metric
+WITH (
+  "physical_metric_table" = ""
+);
+```
+
+有关 Prometheus 指标存储和查询性能优化的更多信息，
+请参阅[使用 metric engine 提高效率](/user-guide/ingest-data/for-observability/prometheus.md#通过使用-metric-engine-提高效率)指南。
+
+### GreptimeDB 中的 Prometheus URL
+
+GreptimeDB 在 HTTP 上下文 `/v1/prometheus/` 下提供了[兼容 Prometheus 的 API](/user-guide/query-data/promql.md#prometheus-http-api)，
+使其能够与现有的 Prometheus 工作流程无缝集成。
+
+你需要 GreptimeDB 服务地址来配置 Prometheus。
+由于 GreptimeDB 在 Kubernetes 集群内运行，所以使用内部集群地址。
+
+GreptimeDB frontend 服务地址遵循以下模式：
 ```
 <greptimedb-name>-frontend.<namespace>.svc.cluster.local:<port>
 ```
@@ -97,26 +149,27 @@ GreptimeDB 的 frontend 服务地址遵循以下模式：
 在本指南中：
 - GreptimeDB 集群名称：`greptimedb`
 - 命名空间：`greptime-cluster`
-- 前端端口：`4000`
+- Frontend 端口：`4000`
 
-因此服务地址是：
+因此服务地址为：
+
 ```bash
 greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 ```
 
-Prometheus 的完整 [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) 是：
+Prometheus 的完整 [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) 为：
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
 ```
 
-### 性能调优
+此 URL 包含：
+- **服务端点**：`greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
+- **API 路径**：`/v1/prometheus/write`
+- **数据库参数**：`?db=public` 指定目标数据库为 `public`
+- **物理表参数**：`&physical_table=kube_monitor_physical_table` 指定我们之前为指标存储创建的物理表 `ube_monitor_physical_table`
 
-为了在使用 GreptimeDB 作为 Prometheus 存储时获得最佳性能，
-请参考[使用 metric engine 提高效率](/user-guide/ingest-data/for-observability/prometheus.md#通过使用-metric-engine-提高效率)指南，
-该指南提供了提高写入吞吐量和查询效率的建议。
-
-## 安装 Prometheus Operator
+## 安装 Prometheus
 
 现在 GreptimeDB 正常运行中，
 我们将安装 Prometheus 收集指标并将其发送到 GreptimeDB。
@@ -134,13 +187,46 @@ helm repo update
 Prometheus、Grafana、kube-state-metrics 和 node-exporter 组件。
 此 stack 自动发现和监控所有 Kubernetes 命名空间，
 收集来自集群组件、节点和工作负载的指标。
-在此部署中，我们将配置 Prometheus 使用 GreptimeDB 作为 Remote Write 目标：
+
+在此部署中，
+我们将配置 Prometheus 使用 GreptimeDB 作为 Remote Write 目标长期存储指标数据，
+并配置 Grafana 的默认 Prometheus 数据源使用 GreptimeDB。
+
+创建一个 `kube-prometheus-values.yaml` 文件，包含以下配置：
+
+```yaml
+# 配置 Prometheus 远程写入到 GreptimeDB
+prometheus:
+  prometheusSpec:
+    remoteWrite:
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+
+# 配置 Grafana 使用 GreptimeDB 作为默认 Prometheus 数据源
+grafana:
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
+          access: proxy
+          editable: true
+          isDefault: true
+```
+
+此配置文件为以下用途指定了[GreptimeDB 服务地址](#greptimedb-中的-prometheus-url)：
+
+- **Prometheus Remote Write**：将收集的指标发送到 GreptimeDB 进行长期存储
+- **Grafana 数据源**：将 GreptimeDB 配置为仪表板查询的默认 Prometheus 数据源
+
+使用 Helm 和自定义配置文件安装 `kube-prometheus-stack`：
 
 ```bash
 helm install kube-prometheus prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
-  --set "prometheus.prometheusSpec.remoteWrite[0].url=http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public" \
-  --create-namespace
+  --create-namespace \
+  --values kube-prometheus-values.yaml
 ```
 
 ### 验证安装
@@ -152,59 +238,21 @@ kubectl get pods -n monitoring
 ```
 
 ```bash
-NAME                                                     READY   STATUS    RESTARTS   AGE
+NAME                                                     READY   STATUS    RESTARTS       AGE
 alertmanager-kube-prometheus-kube-prome-alertmanager-0   2/2     Running        0          60s
 kube-prometheus-grafana-78ccf96696-sghx4                 3/3     Running        0          78s
 kube-prometheus-kube-prome-operator-775fdbfd75-w88n7     1/1     Running        0          78s
 kube-prometheus-kube-state-metrics-5bd5747f46-d2sxs      1/1     Running        0          78s
 kube-prometheus-prometheus-node-exporter-ts9nn           1/1     Running        0          78s
-prometheus-kube-prometheus-kube-prome-prometheus-0       1/2     Running        0          60s
+prometheus-kube-prometheus-kube-prome-prometheus-0       2/2     Running        0          60s
 ```
 
-## 配置 GreptimeDB 作为 Prometheus 存储
+### 验证监控状态
 
-GreptimeDB 的 Remote Write URL 在 [Prometheus 的安装期间](#安装-prometheus-operator)已配置完成。
+使用 [MySQL protocol](#访问-greptimedb) 查询 GreptimeDB，验证 Prometheus 指标是否已写入。
 
-### 验证 Remote Write 配置
-
-检查当前的 Prometheus 配置：
-
-```bash
-kubectl get prometheus kube-prometheus-kube-prome-prometheus -n monitoring -o yaml | grep -A 5 remoteWrite
-```
-
-```yaml
-remoteWrite:
-  - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public
-  replicas: 1
-  ... other configurations ...
-```
-
-### 配置 Remote Read
-
-Remote Read 配置允许 Prometheus 从 GreptimeDB 读取数据。
-向 Prometheus 自定义资源添加 Remote Read 配置：
-
-```bash
-kubectl patch prometheus kube-prometheus-kube-prome-prometheus -n monitoring --type merge -p '
-spec:
-  remoteRead:
-  - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/read?db=public
-'
-```
-
-### 验证配置
-
-检查 Prometheus 是否成功将指标写入 GreptimeDB：
-
-```bash
-kubectl port-forward -n greptime-cluster svc/greptimedb-frontend 4000:4000
-```
-
-在另一个终端中，查询 GreptimeDB：
-
-```bash
-curl http://localhost:4000/v1/sql?sql=SHOW+TABLES
+```sql
+SHOW TABLES;
 ```
 
 你应该能看到为各种 Prometheus 指标创建的表名。
@@ -214,29 +262,37 @@ curl http://localhost:4000/v1/sql?sql=SHOW+TABLES
 Grafana 包含在 kube-prometheus-stack 中，
 并预配置了 Prometheus 作为数据源的仪表盘。
 
-要访问 Grafana：
+### 访问 Grafana
 
-1. **端口转发 Grafana 服务：**
-  ```bash
-  kubectl port-forward -n monitoring svc/kube-prometheus-grafana 3000:80
-  ```
+将 Grafana 服务的端口转发到本地以访问 Web 界面：
 
-2. **在浏览器中打开 Grafana：**
-  导航到 [http://localhost:3000](http://localhost:3000)
+```bash
+kubectl port-forward -n monitoring svc/kube-prometheus-grafana 3000:80
+```
 
-3. **使用默认凭据登录：**
-  - **用户名：** `admin`
-  - **密码：** 使用该命令找到自动生成的密码：
-    ```bash
-    kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-    ```
+### 获取管理员凭证
 
-4. **探索仪表板：**
-  导航到 `Dashboards` 查看预配置的 Kubernetes 监控仪表板，包括：
-  - Kubernetes / Compute Resources / Cluster
-  - Kubernetes / Compute Resources / Namespace (Pods)
-  - Kubernetes / Compute Resources / Node (Pods)
-  - Node Exporter / Nodes
+使用 kubectl 检索登录使用的 admin 密码：
+
+```bash
+kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+### 登录 Grafana
+
+1. 打开浏览器并导航到 [http://localhost:3000](http://localhost:3000)
+2. 使用以下凭证登录：
+  - **用户名**：`admin`
+  - **密码**：从上一步检索到的密码
+
+### 查看预配置的仪表板
+
+登录后，导航到**仪表板**以探索预配置的 Kubernetes 监控仪表板：
+
+- **Kubernetes / Compute Resources / Cluster**：集群范围的资源利用率概览
+- **Kubernetes / Compute Resources / Namespace (Pods)**：按命名空间分解的资源使用情况
+- **Kubernetes / Compute Resources / Node (Pods)**：节点级资源监控
+- **Node Exporter / Nodes**：详细的节点硬件和操作系统指标
 
 ## 总结
 

@@ -66,7 +66,7 @@ kubectl -n greptime-cluster get greptimedbclusters.greptime.io greptimedb
 
 ```bash
 NAME         FRONTEND   DATANODE   META   FLOWNODE   PHASE     VERSION   AGE
-greptimedb   1          1          1      1          Running   v0.17.2   33s
+greptimedb   1          2          1      1          Running   v0.17.2   33s
 ```
 
 Check the pods:
@@ -76,15 +76,66 @@ kubectl get pods -n greptime-cluster
 ```
 
 ```bash
-greptimedb-datanode-0                 1/1     Running   0          44s
-greptimedb-flownode-0                 1/1     Running   0          28s
-greptimedb-frontend-8bf9f558c-7wdmk   1/1     Running   0          34s
-greptimedb-meta-fc4ddb78b-nv944       1/1     Running   0          50s
+NAME                                  READY   STATUS    RESTARTS    AGE
+greptimedb-datanode-0                 1/1     Running   0           71s
+greptimedb-datanode-1                 1/1     Running   0           97s
+greptimedb-flownode-0                 1/1     Running   0           64s
+greptimedb-frontend-8bf9f558c-7wdmk   1/1     Running   0           90s
+greptimedb-meta-fc4ddb78b-nv944       1/1     Running   0           87s
 ```
 
-### The GreptimeDB Service Address
+### Access GreptimeDB
 
-To configure Prometheus Remote Write, you need the GreptimeDB service address.
+To interact with GreptimeDB directly, you can port-forward the frontend service to your local machine.
+GreptimeDB supports multiple protocols, with MySQL protocol available on port `4002` by default.
+
+```bash
+kubectl port-forward -n greptime-cluster svc/greptimedb-frontend 4002:4002
+```
+
+Connect using any MySQL-compatible client:
+
+```bash
+mysql -h 127.0.0.1 -P 4002
+```
+
+### Storage Partitioning
+
+To improve query performance and reduce storage costs,
+GreptimeDB automatically creates columns based on Prometheus metric labels and stores metrics in a physical table.
+Since we deployed a GreptimeDB cluster with [multiple datanodes](#verify-the-greptimedb-installation),
+you can partition the table to distribute data across datanodes for better scalability and performance.
+
+In this Kubernetes monitoring scenario, we can use the `namespace` label as the partition key.
+For example, with namespaces like `kube-public`, `kube-system`, `monitoring`, `default`, `greptime-cluster`, and `etcd-cluster`,
+you can create a partitioning scheme based on the first letter of the namespace:
+
+```sql
+CREATE TABLE kube_monitor_physical_table (
+  greptime_value DOUBLE NULL,
+  namespace STRING PRIMARY KEY,
+  greptime_timestamp TIMESTAMP TIME INDEX,
+)
+PARTITION ON COLUMNS (namespace) (
+  namespace < 'f',
+  namespace >= 'f' AND namespace < 'g',
+  namespace >= 'g' AND namespace < 'k',
+  namespace >= 'k'
+)
+ENGINE = metric
+WITH (
+  "physical_metric_table" = ""
+);
+```
+
+For more information about Prometheus metrics storage and query performance optimization, refer to the [Improve efficiency by using metric engine](/user-guide/ingest-data/for-observability/prometheus.md#improve-efficiency-by-using-metric-engine) guide.
+
+### Prometheus URLs in GreptimeDB
+
+GreptimeDB provides [Prometheus-compatible APIs](/user-guide/query-data/promql.md#prometheus-http-api) under the HTTP context `/v1/prometheus/`,
+enabling seamless integration with existing Prometheus workflows.
+
+To integrate Prometheus with GreptimeDB, you need the GreptimeDB service address.
 Since GreptimeDB runs inside the Kubernetes cluster, use the internal cluster address.
 
 The GreptimeDB frontend service address follows this pattern:
@@ -102,17 +153,19 @@ So the service address is:
 greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 ```
 
-The full [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) for Prometheus is:
+The complete [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) for Prometheus is:
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
 ```
-### Performance Tuning
 
-For optimal performance when using GreptimeDB as Prometheus storage,
-refer to the [Improve efficiency by using metric engine](/user-guide/ingest-data/for-observability/prometheus.md#improve-efficiency-by-using-metric-engine) guide, which provides recommendations for improving write throughput and query efficiency.
+This URL consists of:
+- **Service endpoint**: `greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
+- **API path**: `/v1/prometheus/write`
+- **Database parameter**: `?db=public` specifies the target database `public`
+- **Physical table parameter**: `&physical_table=kube_monitor_physical_table` specifies the physical table that we created earlier for metric storage `kube_monitor_physical_table`
 
-## Install Prometheus Operator
+## Install Prometheus
 
 Now that GreptimeDB is running, we'll install Prometheus to collect metrics and send them to GreptimeDB for long-term storage.
 
@@ -129,13 +182,43 @@ The [`kube-prometheus-stack`](https://github.com/prometheus-operator/kube-promet
 Prometheus, Grafana, kube-state-metrics, and node-exporter components.
 This stack automatically discovers and monitors all Kubernetes namespaces,
 collecting metrics from cluster components, nodes, and workloads.
-In this deployment, we'll configure Prometheus to use GreptimeDB as the remote write destination for long-term metric storage:
+
+In this deployment, we'll configure Prometheus to use GreptimeDB as the remote write destination for long-term metric storage and configure Grafana's default Prometheus data source to use GreptimeDB.
+
+Create a `kube-prometheus-values.yaml` file with the following configuration:
+
+```yaml
+# Configure Prometheus remote write to GreptimeDB
+prometheus:
+  prometheusSpec:
+    remoteWrite:
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+
+# Configure Grafana to use GreptimeDB as the default Prometheus data source
+grafana:
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
+          access: proxy
+          editable: true
+          isDefault: true
+```
+
+This configuration file specifies [the GreptimeDB service address](#prometheus-urls-in-greptimedb) for:
+- **Prometheus remote write**: Sends collected metrics to GreptimeDB for long-term storage
+- **Grafana data source**: Configures GreptimeDB as the default Prometheus data source for dashboard queries
+
+Install the `kube-prometheus-stack` using Helm with the custom values file:
 
 ```bash
 helm install kube-prometheus prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
-  --set "prometheus.prometheusSpec.remoteWrite[0].url=http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public" \
-  --create-namespace
+  --create-namespace \
+  --values kube-prometheus-values.yaml
 ```
 
 ### Verify the Installation
@@ -147,89 +230,60 @@ kubectl get pods -n monitoring
 ```
 
 ```bash
-NAME                                                     READY   STATUS    RESTARTS   AGE
+NAME                                                     READY   STATUS    RESTARTS       AGE
 alertmanager-kube-prometheus-kube-prome-alertmanager-0   2/2     Running        0          60s
 kube-prometheus-grafana-78ccf96696-sghx4                 3/3     Running        0          78s
 kube-prometheus-kube-prome-operator-775fdbfd75-w88n7     1/1     Running        0          78s
 kube-prometheus-kube-state-metrics-5bd5747f46-d2sxs      1/1     Running        0          78s
 kube-prometheus-prometheus-node-exporter-ts9nn           1/1     Running        0          78s
-prometheus-kube-prometheus-kube-prome-prometheus-0       1/2     Running        0          60s
+prometheus-kube-prometheus-kube-prome-prometheus-0       2/2     Running        0          60s
 ```
 
-## Configure GreptimeDB as Prometheus Storage
+### Verify the Monitoring Status
 
-The remote write URL was configured during the [Prometheus installation](#install-the-kube-prometheus-stack).
+Use [MySQL protocol](#access-greptimedb) to query GreptimeDB and verify that Prometheus metrics are being written.
 
-### Verify the Remote Write Configuration
-
-Check the current Prometheus configuration:
-
-```bash
-kubectl get prometheus kube-prometheus-kube-prome-prometheus -n monitoring -o yaml | grep -A 5 remoteWrite
-```
-
-```yaml
-remoteWrite:
-  - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public
-  replicas: 1
-  ... other configurations ...
-```
-### Configure Remote Read
-
-The Remote Read configuration allows Prometheus to read back data from GreptimeDB.
-Add the Remote Read configuration to the Prometheus custom resource:
-
-```bash
-kubectl patch prometheus kube-prometheus-kube-prome-prometheus -n monitoring --type merge -p '
-spec:
-  remoteRead:
-  - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/read?db=public
-'
-```
-
-### Verify the Configuration
-
-Check that Prometheus is successfully writing metrics to GreptimeDB:
-
-```bash
-kubectl port-forward -n greptime-cluster svc/greptimedb-frontend 4000:4000
-```
-
-In another terminal, query GreptimeDB:
-
-```bash
-curl http://localhost:4000/v1/sql?sql=SHOW+TABLES
+```sql
+SHOW TABLES;
 ```
 
 You should see tables created for various Prometheus metrics.
 
 ## Use Grafana for Visualization
 
-Grafana is included in the kube-prometheus-stack and comes pre-configured with dashboards using Prometheus as a data source.
+Grafana is included in the kube-prometheus-stack and comes pre-configured with dashboards for comprehensive Kubernetes monitoring.
 
-To access Grafana:
+### Access Grafana
 
-1. **Port-forward the Grafana service:**
-  ```bash
-  kubectl port-forward -n monitoring svc/kube-prometheus-grafana 3000:80
-  ```
+Port-forward the Grafana service to access the web interface:
 
-2. **Open Grafana in your browser:**
-  Navigate to [http://localhost:3000](http://localhost:3000)
+```bash
+kubectl port-forward -n monitoring svc/kube-prometheus-grafana 3000:80
+```
 
-3. **Log in with default credentials:**
-  - **Username:** `admin`
-  - **Password:** Retrieve the auto-generated password:
-    ```bash
-    kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-    ```
+### Get Admin Credentials
 
-4. **Explore the dashboards:**
-  Navigate to `Dashboards` to view the pre-configured Kubernetes monitoring dashboards, including:
-  - Kubernetes / Compute Resources / Cluster
-  - Kubernetes / Compute Resources / Namespace (Pods)
-  - Kubernetes / Compute Resources / Node (Pods)
-  - Node Exporter / Nodes
+Retrieve the admin password using kubectl:
+
+```bash
+kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+### Login Grafana
+
+1. Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
+2. Login with:
+  - **Username**: `admin`
+  - **Password**: The password retrieved from the previous step
+
+### Explore Pre-configured Dashboards
+
+After logging in, navigate to **Dashboards** to explore the pre-configured Kubernetes monitoring dashboards:
+
+- **Kubernetes / Compute Resources / Cluster**: Overview of cluster-wide resource utilization
+- **Kubernetes / Compute Resources / Namespace (Pods)**: Resource usage breakdown by namespace
+- **Kubernetes / Compute Resources / Node (Pods)**: Node-level resource monitoring
+- **Node Exporter / Nodes**: Detailed node hardware and OS metrics
 
 ## Conclusion
 
