@@ -1,3 +1,8 @@
+---
+keywords: [streaming process, flow management, Flownode components, Flownode limitations, batching mode]
+description: Overview of Flownode's batching mode, a component providing continuous data aggregation capabilities to the database, including its architecture and query execution flow.
+---
+
 # Flownode Batching Mode Developer Guide
 
 This guide provides a brief overview of the batching mode in `flownode`. It's intended for developers who want to understand the internal workings of this mode.
