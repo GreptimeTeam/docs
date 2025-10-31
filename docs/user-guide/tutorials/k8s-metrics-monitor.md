@@ -103,6 +103,7 @@ mysql -h 127.0.0.1 -P 4002
 
 To improve query performance and reduce storage costs,
 GreptimeDB automatically creates columns based on Prometheus metric labels and stores metrics in a physical table.
+The default table name is `greptime_physical_table`.
 Since we deployed a GreptimeDB cluster with [multiple datanodes](#verify-the-greptimedb-installation),
 you can partition the table to distribute data across datanodes for better scalability and performance.
 
@@ -111,7 +112,7 @@ For example, with namespaces like `kube-public`, `kube-system`, `monitoring`, `d
 you can create a partitioning scheme based on the first letter of the namespace:
 
 ```sql
-CREATE TABLE kube_monitor_physical_table (
+CREATE TABLE greptime_physical_table (
   greptime_value DOUBLE NULL,
   namespace STRING PRIMARY KEY,
   greptime_timestamp TIMESTAMP TIME INDEX,
@@ -156,14 +157,14 @@ greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 The complete [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) for Prometheus is:
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 ```
 
 This URL consists of:
 - **Service endpoint**: `greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
 - **API path**: `/v1/prometheus/write`
-- **Database parameter**: `?db=public` specifies the target database `public`
-- **Physical table parameter**: `&physical_table=kube_monitor_physical_table` specifies the physical table that we created earlier for metric storage `kube_monitor_physical_table`
+- **Database parameter**: `?db=public` specifies the target database, default is `public` if not provided
+- **Physical table parameter**: `&physical_table=greptime_physical_table` specifies the physical table, default to `greptime_physical_table` if not provided
 
 ## Install Prometheus
 
@@ -192,7 +193,7 @@ Create a `kube-prometheus-values.yaml` file with the following configuration:
 prometheus:
   prometheusSpec:
     remoteWrite:
-      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 
 # Configure Grafana to use GreptimeDB as the default Prometheus data source
 grafana:

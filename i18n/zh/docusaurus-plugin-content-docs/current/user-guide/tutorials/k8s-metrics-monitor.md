@@ -103,7 +103,7 @@ mysql -h 127.0.0.1 -P 4002
 ### 存储分区
 
 为了提高查询性能并降低存储成本，
-GreptimeDB 会基于 Prometheus 指标标签自动创建列，并将指标存储在物理表中。
+GreptimeDB 会基于 Prometheus 指标标签自动创建列，并将指标存储在物理表中，默认使用的物理表名为 `greptime_physical_table`。
 在上方我们部署了具有[多个 datanode 节点](#验证-greptimedb-的部署)的 GreptimeDB 集群，
 你可以对表进行分区将数据分布到各个 datanode 节点上，以获得更好的可扩展性和性能。
 
@@ -113,7 +113,7 @@ GreptimeDB 会基于 Prometheus 指标标签自动创建列，并将指标存储
 你可以基于命名空间的首字母创建分区方案：
 
 ```sql
-CREATE TABLE kube_monitor_physical_table (
+CREATE TABLE greptime_physical_table (
   greptime_value DOUBLE NULL,
   namespace STRING PRIMARY KEY,
   greptime_timestamp TIMESTAMP TIME INDEX,
@@ -160,14 +160,14 @@ greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 Prometheus 的完整 [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) 为：
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 ```
 
 此 URL 包含：
 - **服务端点**：`greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
 - **API 路径**：`/v1/prometheus/write`
-- **数据库参数**：`?db=public` 指定目标数据库为 `public`
-- **物理表参数**：`&physical_table=kube_monitor_physical_table` 指定我们之前为指标存储创建的物理表 `ube_monitor_physical_table`
+- **数据库参数**：`?db=public` 指定目标数据库，如果不写此参数默认使用 `public` 数据库
+- **物理表参数**：`&physical_table=greptime_physical_table` 指定物理表名，如果不写此参数默认使用 `greptime_physical_table` 物理表
 
 ## 安装 Prometheus
 
@@ -199,7 +199,7 @@ Prometheus、Grafana、kube-state-metrics 和 node-exporter 组件。
 prometheus:
   prometheusSpec:
     remoteWrite:
-      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=kube_monitor_physical_table
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
 
 # 配置 Grafana 使用 GreptimeDB 作为默认 Prometheus 数据源
 grafana:
