@@ -160,14 +160,12 @@ greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 Prometheus 的完整 [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) 为：
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 ```
 
 此 URL 包含：
 - **服务端点**：`greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
 - **API 路径**：`/v1/prometheus/write`
-- **数据库参数**：`?db=public` 指定目标数据库，如果不写此参数默认使用 `public` 数据库
-- **物理表参数**：`&physical_table=greptime_physical_table` 指定物理表名，如果不写此参数默认使用 `greptime_physical_table` 物理表
 
 ## 安装 Prometheus
 
@@ -199,7 +197,7 @@ Prometheus、Grafana、kube-state-metrics 和 node-exporter 组件。
 prometheus:
   prometheusSpec:
     remoteWrite:
-      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 
 # 配置 Grafana 使用 GreptimeDB 作为默认 Prometheus 数据源
 grafana:

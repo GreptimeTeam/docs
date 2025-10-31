@@ -157,14 +157,12 @@ greptimedb-frontend.greptime-cluster.svc.cluster.local:4000
 The complete [Remote Write URL](/user-guide/ingest-data/for-observability/prometheus.md#remote-write-configuration) for Prometheus is:
 
 ```bash
-http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
+http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 ```
 
 This URL consists of:
 - **Service endpoint**: `greptimedb-frontend.greptime-cluster.svc.cluster.local:4000`
 - **API path**: `/v1/prometheus/write`
-- **Database parameter**: `?db=public` specifies the target database, default is `public` if not provided
-- **Physical table parameter**: `&physical_table=greptime_physical_table` specifies the physical table, default to `greptime_physical_table` if not provided
 
 ## Install Prometheus
 
@@ -193,7 +191,7 @@ Create a `kube-prometheus-values.yaml` file with the following configuration:
 prometheus:
   prometheusSpec:
     remoteWrite:
-      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write?db=public&physical_table=greptime_physical_table
+      - url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus/write
 
 # Configure Grafana to use GreptimeDB as the default Prometheus data source
 grafana:
