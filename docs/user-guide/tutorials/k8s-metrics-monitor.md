@@ -204,7 +204,6 @@ grafana:
           url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
           access: proxy
           editable: true
-          isDefault: true
 ```
 
 This configuration file specifies [the GreptimeDB service address](#prometheus-urls-in-greptimedb) for:
@@ -248,6 +247,24 @@ SHOW TABLES;
 
 You should see tables created for various Prometheus metrics.
 
+```sql
++---------------------------------------------------------------------------------+
+| Tables                                                                          |
++---------------------------------------------------------------------------------+
+| :node_memory_MemAvailable_bytes:sum                                             |
+| ALERTS                                                                          |
+| ALERTS_FOR_STATE                                                                |
+| aggregator_discovery_aggregation_count_total                                    |
+| aggregator_unavailable_apiservice                                               |
+| alertmanager_alerts                                                             |
+| alertmanager_alerts_invalid_total                                               |
+| alertmanager_alerts_received_total                                              |
+| alertmanager_build_info                                                         |
+| ......                                                                          |
++---------------------------------------------------------------------------------+
+1553 rows in set (0.18 sec)
+```
+
 ## Use Grafana for Visualization
 
 Grafana is included in the kube-prometheus-stack and comes pre-configured with dashboards for comprehensive Kubernetes monitoring.
@@ -283,6 +300,8 @@ After logging in, navigate to **Dashboards** to explore the pre-configured Kuber
 - **Kubernetes / Compute Resources / Namespace (Pods)**: Resource usage breakdown by namespace
 - **Kubernetes / Compute Resources / Node (Pods)**: Node-level resource monitoring
 - **Node Exporter / Nodes**: Detailed node hardware and OS metrics
+
+![Grafana Dashboard](/k8s-prom-monitor-grafana.jpg)
 
 ## Conclusion
 

@@ -210,7 +210,6 @@ grafana:
           url: http://greptimedb-frontend.greptime-cluster.svc.cluster.local:4000/v1/prometheus
           access: proxy
           editable: true
-          isDefault: true
 ```
 
 此配置文件为以下用途指定了[GreptimeDB 服务地址](#greptimedb-中的-prometheus-url)：
@@ -255,6 +254,24 @@ SHOW TABLES;
 
 你应该能看到为各种 Prometheus 指标创建的表名。
 
+```sql
++---------------------------------------------------------------------------------+
+| Tables                                                                          |
++---------------------------------------------------------------------------------+
+| :node_memory_MemAvailable_bytes:sum                                             |
+| ALERTS                                                                          |
+| ALERTS_FOR_STATE                                                                |
+| aggregator_discovery_aggregation_count_total                                    |
+| aggregator_unavailable_apiservice                                               |
+| alertmanager_alerts                                                             |
+| alertmanager_alerts_invalid_total                                               |
+| alertmanager_alerts_received_total                                              |
+| alertmanager_build_info                                                         |
+| ......                                                                          |
++---------------------------------------------------------------------------------+
+1553 rows in set (0.18 sec)
+```
+
 ## 使用 Grafana 进行可视化
 
 Grafana 包含在 kube-prometheus-stack 中，
@@ -291,6 +308,8 @@ kubectl get secret --namespace monitoring kube-prometheus-grafana -o jsonpath="{
 - **Kubernetes / Compute Resources / Namespace (Pods)**：按命名空间分解的资源使用情况
 - **Kubernetes / Compute Resources / Node (Pods)**：节点级资源监控
 - **Node Exporter / Nodes**：详细的节点硬件和操作系统指标
+
+![Grafana Dashboard](/k8s-prom-monitor-grafana.jpg)
 
 ## 总结
 
