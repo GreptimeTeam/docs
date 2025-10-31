@@ -405,6 +405,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Tutorials',
+      items:[
+        'tutorials/k8s-metrics-monitor'
+      ]
+    },
+    {
+      type: 'category',
       label: 'GreptimeCloud',
       items: [
         {
