@@ -14,7 +14,7 @@ level, there are three main components in GreptimeDB architecture: Datanode,
 Frontend and Metasrv.
 
 - [**Metasrv**](/contributor-guide/metasrv/overview.md) is the central command of
-  GreptimeDB cluster. In a typical cluster deployment, at least three nodes is required to
+  GreptimeDB cluster. In a typical cluster deployment, at least two nodes is required to
   setup a reliable Metasrv mini-cluster. Metasrv manages database and table
   information, including how data spread across the cluster and where to route
   requests to. It also keeps monitoring availability and performance of Datanodes,

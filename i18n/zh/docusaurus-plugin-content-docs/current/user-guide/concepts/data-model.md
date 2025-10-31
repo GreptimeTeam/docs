@@ -7,7 +7,7 @@ description: 介绍 GreptimeDB 的数据模型，包括表的结构、列类型�
 
 ## 模型
 
-GreptimeDB 使用时序表来进行数据的组织、压缩和过期管理。数据模型主要基于关系型数据库中的表模型，同时考虑到了指标（metrics）、日志（logs）及链路追踪（traces）数据的特点。
+GreptimeDB 使用时序表来进行数据的组织、压缩和生命周期管理。数据模型主要基于关系型数据库中的表模型，同时考虑到了指标（metrics）、日志（logs）及链路追踪（traces）数据的特点。
 
 GreptimeDB 中的所有数据都被组织成具有名称的表，每个表中的数据项由三种语义类型的列组成：`Tag`、`Timestamp` 和 `Field`。
 
