@@ -401,14 +401,14 @@ const sidebars: SidebarsConfig = {
             'user-guide/deployments-administration/upgrade',
           ],
         },
-        {
-          type: 'category',
-          label: 'Tutorials',
-          items:[
-            'user-guide/tutorials/k8s-metrics-monitor'
-          ]
-        }
       ],
+    },
+    {
+      type: 'category',
+      label: 'Tutorials',
+      items:[
+        'user-guide/tutorials/k8s-metrics-monitor'
+      ]
     },
     {
       type: 'category',
