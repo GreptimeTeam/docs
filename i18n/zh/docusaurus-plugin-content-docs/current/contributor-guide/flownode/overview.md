@@ -10,7 +10,7 @@ description: 介绍了 Flownode 的基本概念、组件和当前版本的支持
 `Flownode` 为数据库提供了一种简单的流处理（称为 `flow`）能力。
 `Flownode` 管理 `flow`，这些 `flow` 是从 `source` 接收数据并将数据发送到 `sink` 的任务。
 
-在当前版本中，`Flownode` 仅在单机模式中支持，未来将支持分布式模式。
+`Flownode` 支持 `standalone` 和 `distributed` 两种模式。在 `standalone` 模式下，`Flownode` 与数据库运行在同一进程中。在 `distributed` 模式下，`Flownode` 运行在单独的进程中，并通过网络与数据库通信。
 
 ## 组件
 
