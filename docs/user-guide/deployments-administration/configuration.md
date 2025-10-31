@@ -134,15 +134,29 @@ Note that HTTP and gRPC protocols cannot be disabled for the database to functio
 addr = "127.0.0.1:4000"
 timeout = "30s"
 body_limit = "64MB"
+#+ max_total_body_memory = "0"
+enable_cors = true
+prom_validation_mode = "strict"
 
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+#+ max_total_message_memory = "0"
+#+ max_connection_age = "1h"
+flight_compression = "none"
+
+[grpc.tls]
+mode = "disable"
+cert_path = ""
+key_path = ""
+watch = false
 
 [mysql]
 enable = true
 addr = "127.0.0.1:4002"
 runtime_size = 2
+keep_alive = "0s"
+prepared_stmt_cache_size = 10000
 
 [mysql.tls]
 mode = "disable"
@@ -154,6 +168,7 @@ watch = false
 enable = true
 addr = "127.0.0.1:4003"
 runtime_size = 2
+keep_alive = "0s"
 
 [postgres.tls]
 mode = "disable"
@@ -167,6 +182,9 @@ enable = true
 [influxdb]
 enable = true
 
+[jaeger]
+enable = true
+
 [prom_store]
 enable = true
 with_metric_engine = true
@@ -174,33 +192,41 @@ with_metric_engine = true
 
 The following table describes the options in detail:
 
-| Option     | Key                  | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------- | -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| http       |                      |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
-|            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | timeout              | String  | HTTP request timeout, "30s" by default                                                                                                                                                                                                                                                                                                                                                     |
-|            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
-|            | prom_validation_mode | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-| grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
-|            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
-|            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes |
-|            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.|
-| mysql      |                      |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
-|            | enable               | Boolean | Whether to enable MySQL protocol, true by default                                                                                                                                                                                                                                                                                                                                          |
-|            | addr                 | String  | Server address, "127.0.0.1:4002" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | runtime_size         | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
-| influxdb   |                      |         | InfluxDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
-|            | enable               | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
-| opentsdb   |                      |         | OpenTSDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
-|            | enable               | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
-| prom_store |                      |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
-|            | enable               | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
-|            | with_metric_engine   | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
-| postgres   |                      |         | PostgresSQL server options                                                                                                                                                                                                                                                                                                                                                                 |
-|            | enable               | Boolean | Whether to enable PostgresSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                    |
-|            | addr                 | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | runtime_size         | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
+| Option     | Key                      | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| http       |                          |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
+|            | addr                     | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
+|            | timeout                  | String  | HTTP request timeout, "30s" by default                                                                                                                                                                                                                                                                                                                                                     |
+|            | body_limit               | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
+|            | max_total_body_memory    | String  | Maximum total memory for all concurrent HTTP request bodies. "0" (unlimited) by default                                                                                                                                                                                                                                                                                                    |
+|            | enable_cors              | Boolean | Enable HTTP CORS support, true by default                                                                                                                                                                                                                                                                                                                                                  |
+|            | prom_validation_mode     | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
+| grpc       |                          |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
+|            | bind_addr                | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
+|            | runtime_size             | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
+|            | max_total_message_memory | String  | Maximum total memory for all concurrent gRPC request messages. "0" (unlimited) by default                                                                                                                                                                                                                                                                                                  |
+|            | max_connection_age       | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
+|            | flight_compression       | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                         |
+| mysql      |                          |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
+|            | enable                   | Boolean | Whether to enable MySQL protocol, true by default                                                                                                                                                                                                                                                                                                                                          |
+|            | addr                     | String  | Server address, "127.0.0.1:4002" by default                                                                                                                                                                                                                                                                                                                                                |
+|            | runtime_size             | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
+|            | keep_alive               | String  | Server-side keep-alive time. "0s" (disabled) by default                                                                                                                                                                                                                                                                                                                                    |
+|            | prepared_stmt_cache_size | Integer | Maximum entries in the MySQL prepared statement cache, 10000 by default                                                                                                                                                                                                                                                                                                                    |
+| postgres   |                          |         | PostgreSQL server options                                                                                                                                                                                                                                                                                                                                                                  |
+|            | enable                   | Boolean | Whether to enable PostgreSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                     |
+|            | addr                     | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
+|            | runtime_size             | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
+|            | keep_alive               | String  | Server-side keep-alive time. "0s" (disabled) by default                                                                                                                                                                                                                                                                                                                                    |
+| opentsdb   |                          |         | OpenTSDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
+|            | enable                   | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
+| influxdb   |                          |         | InfluxDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
+|            | enable                   | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
+| jaeger     |                          |         | Jaeger Protocol options                                                                                                                                                                                                                                                                                                                                                                    |
+|            | enable                   | Boolean | Whether to enable Jaeger protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                             |
+| prom_store |                          |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
+|            | enable                   | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
+|            | with_metric_engine       | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
 
 For MySQL, Postgres and gRPC interface, TLS can be configured to enable transport
 layer security.
@@ -236,13 +262,16 @@ The `storage` options are valid in datanode and standalone mode, which specify t
 
 GreptimeDB supports storing data in local file system, AWS S3 and compatible services (including MinIO, digitalocean space, Tencent Cloud Object Storage(COS), Baidu Object Storage(BOS) and so on), Azure Blob Storage and Aliyun OSS.
 
-| Option  | Key                       | Type    | Description                                                                      |
-| ------- | ------------------------- | ------- | -------------------------------------------------------------------------------- |
-| storage |                           |         | Storage options                                                                  |
-|         | type                      | String  | Storage type, supports "File", "S3" and "Oss" etc.                               |
-| File    |                           |         | Local file storage options, valid when type="File"                               |
-|         | data_home                 | String  | Database storage root directory, "./greptimedb_data" by default                  |
-| S3      |                           |         | AWS S3 storage options, valid when type="S3"                                     |
+| Option  | Key                 | Type    | Description                                                                                                                                                                                                                                                                    |
+| ------- | ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| storage |                     |         | Storage options                                                                                                                                                                                                                                                                |
+|         | type                | String  | Storage type, supports "File", "S3", "Gcs", "Azblob", and "Oss"                                                                                                                                                                                                                |
+|         | enable_read_cache   | Boolean | Whether to enable read cache. Enabled by default when using object storage. Recommended for better performance with object storage                                                                                                                                             |
+|         | cache_path          | String  | Read cache directory path for object storage. Defaults to `{data_home}/cache`. Set to empty string to disable cache                                                                                                                                                           |
+|         | cache_capacity      | String  | Maximum cache capacity. Recommended to set larger if disk space is sufficient. Examples: "10GB", "512MB"                                                                                                                                                                       |
+| File    |                     |         | Local file storage options, valid when type="File"                                                                                                                                                                                                                             |
+|         | data_home           | String  | Database storage root directory, "./greptimedb_data" by default                                                                                                                                                                                                                |
+| S3      |                     |         | AWS S3 storage options, valid when type="S3"                                                                                                                                                                                                                                   |
 |         | name                      | String  | The  storage provider name, default is `S3`                                      |
 |         | bucket                    | String  | The S3 bucket name                                                               |
 |         | root                      | String  | The root path in S3 bucket                                                       |
@@ -291,6 +320,11 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
+
+# Read cache configuration
+enable_read_cache = true
+#+ cache_path = ""
+cache_capacity = "10GB"
 ```
 
 ### Storage http client
@@ -299,12 +333,13 @@ secret_access_key = "<secret access key>"
 
 Only applied for storage types "S3", "Oss", "Azblob" and "Gcs".
 
-| Key                      | Type    | Default            | Description                                                                                                                                        |
-| ------------------------ | ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pool_max_idle_per_host` | Integer | 1024               | The maximum idle connection per host allowed in the pool.                                                                                          |
-| `connect_timeout`        | String  | "30s" (30 seconds) | The timeout for only the connect phase of a http client.                                                                                           |
-| `timeout`                | String  | "30s" (30 seconds) | The total request timeout, applied from when the request starts connecting until the response body has finished. Also considered a total deadline. |
-| `pool_idle_timeout`      | String  | "90s" (90 seconds) | The timeout for idle sockets being kept-alive.                                                                                                     |
+| Key                      | Type    | Default            | Description                                                                                                                                                                                                                                                                      |
+| ------------------------ | ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pool_max_idle_per_host` | Integer | 1024               | The maximum idle connection per host allowed in the pool.                                                                                                                                                                                                                        |
+| `connect_timeout`        | String  | "30s" (30 seconds) | The timeout for only the connect phase of a http client.                                                                                                                                                                                                                         |
+| `timeout`                | String  | "30s" (30 seconds) | The total request timeout, applied from when the request starts connecting until the response body has finished. Also considered a total deadline.                                                                                                                               |
+| `pool_idle_timeout`      | String  | "90s" (90 seconds) | The timeout for idle sockets being kept-alive.                                                                                                                                                                                                                                   |
+| `skip_ssl_validation`    | Boolean | `false`            | Whether to skip SSL certificate verification. **Security Notice**: Setting `skip_ssl_validation = true` disables certificate verification, making connections vulnerable to man-in-the-middle attacks. Only use this in development or trusted private networks. Default: false |
 
 ### Storage engine provider
 
@@ -348,18 +383,32 @@ root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
 cache_capacity = "10GiB"
-# cache_path = "/path/to/cache/home"
+#+ cache_path = "/path/to/cache/home"
 ```
 
 The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
 
-The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
+The write cache is no longer experimental since `v0.12`. When using object storage, write cache is automatically enabled by default. You can configure it in the mito config:
+
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
+# Write cache is automatically enabled when using object storage
+enable_write_cache = true
+#+ write_cache_path = ""
 write_cache_size = "10GiB"
+#+ write_cache_ttl = ""
 ```
+
+Available write cache options:
+
+| Key                  | Type    | Default | Description                                                                                                 |
+| -------------------- | ------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `enable_write_cache` | Boolean | `false` | Whether to enable write cache. Automatically enabled when using object storage. Recommended for performance |
+| `write_cache_path`   | String  | `""`    | File system path for write cache. Defaults to `{data_home}`. Leave empty for automatic path selection       |
+| `write_cache_size`   | String  | `5GiB`  | Write cache capacity. Recommended to set larger if disk space is sufficient                                  |
+| `write_cache_ttl`    | String  | Unset   | TTL (time-to-live) for write cache entries. Example: "7d" for 7 days                                        |
 
 Read [Performance Tuning Tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) for more detailed info.
 
@@ -376,18 +425,30 @@ GreptimeDB supports two WAL storage options—Local WAL and Remote WAL. See the 
 dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
-otlp_endpoint = "localhost:4317"
+otlp_endpoint = "http://localhost:4318/v1/traces"
+otlp_export_protocol = "http"
 append_stdout = true
+log_format = "text"
+max_log_files = 720
+
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
 
-- `dir`: log output directory.
-- `level`: output log level, available log level are `info`, `debug`, `error`, `warn`, the default level is `info`.
-- `enable_otlp_tracing`: whether to turn on tracing, not turned on by default.
-- `otlp_endpoint`: Export the target endpoint of tracing using gRPC-based OTLP protocol, the default value is `localhost:4317`.
-- `append_stdout`: Whether to append logs to stdout. Defaults to `true`.
-- `tracing_sample_ratio`: This field can configure the sampling rate of tracing. How to use `tracing_sample_ratio`, please refer to [How to configure tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate).
+Available logging options:
+
+| Key                     | Type    | Default                              | Description                                                                                                                   |
+| ----------------------- | ------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `dir`                   | String  | `./greptimedb_data/logs`             | Log output directory. Set to empty string to disable file logging                                                             |
+| `level`                 | String  | `info`                               | Log level. Available: `info`, `debug`, `warn`, `error`                                                                        |
+| `log_format`            | String  | `text`                               | Log format. Available: `text`, `json`                                                                                         |
+| `max_log_files`         | Integer | `720`                                | Maximum number of log files to keep                                                                                           |
+| `append_stdout`         | Boolean | `true`                               | Whether to append logs to stdout                                                                                              |
+| `enable_otlp_tracing`   | Bool    | `false`                              | Whether to enable OTLP tracing                                                                                                |
+| `otlp_endpoint`         | String  | `http://localhost:4318/v1/traces`    | OTLP tracing endpoint URL                                                                                                     |
+| `otlp_export_protocol`  | String  | `http`                               | OTLP export protocol. Available: `http`, `grpc`                                                                               |
+| `tracing_sample_ratio`  | --      | --                                   | Tracing sampling configuration. See [tracing sampling rate](/user-guide/deployments-administration/monitoring/tracing.md#guide-how-to-configure-tracing-sampling-rate) |
+| `tracing_sample_ratio.default_ratio` | Float   | `1.0`                    | Default sampling ratio. Valid range: [0, 1]. 1 means all traces sampled, 0 means none                                        |
 
 How to use distributed tracing, please reference [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#tutorial-use-jaeger-to-trace-greptimedb)
 
@@ -401,30 +462,54 @@ Frequently used options:
 [[region_engine]]
 [region_engine.mito]
 num_workers = 8
+worker_channel_size = 128
+worker_request_batch_size = 64
 manifest_checkpoint_distance = 10
+#+ compress_manifest = false
 max_background_jobs = 4
+#+ max_background_flushes = 4
+#+ max_background_compactions = 2
+#+ max_background_purges = 8
 auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+selector_result_cache_size = "512MB"
 sst_write_buffer_size = "8MB"
+parallel_scan_channel_size = 32
+max_concurrent_scan_files = 384
 scan_parallelism = 0
+#+ min_compaction_interval = "0m"
+#+ allow_stale_entries = false
 
 [region_engine.mito.index]
 aux_path = ""
 staging_size = "2GB"
+staging_ttl = "7d"
 metadata_cache_size = "64MiB"
 content_cache_size = "128MiB"
 content_cache_page_size = "64KiB"
+result_cache_size = "128MiB"
 
 [region_engine.mito.inverted_index]
 create_on_flush = "auto"
 create_on_compaction = "auto"
 apply_on_query = "auto"
-mem_threshold_on_create = "64M"
-intermediate_path = ""
+mem_threshold_on_create = "auto"
+
+[region_engine.mito.fulltext_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "auto"
+
+[region_engine.mito.bloom_filter_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "auto"
 
 [region_engine.mito.memtable]
 type = "time_series"
@@ -445,8 +530,14 @@ Available options:
 | Key                                      | Type    | Default       | Descriptions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ---------------------------------------- | ------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `num_workers`                            | Integer | `8`           | Number of region workers.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `worker_channel_size`                    | Integer | `128`         | Request channel size of each worker.                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `worker_request_batch_size`              | Integer | `64`          | Max batch size for a worker to handle requests.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `manifest_checkpoint_distance`           | Integer | `10`          | Number of meta action updated to trigger a new checkpoint for the manifest.                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `compress_manifest`                      | Boolean | `false`       | Whether to compress manifest and checkpoint file by gzip.                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `max_background_jobs`                    | Integer | `4`           | Max number of running background jobs                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `max_background_flushes`                 | Integer | Auto          | Max number of running background flush jobs. Defaults to 1/2 of cpu cores.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `max_background_compactions`             | Integer | Auto          | Max number of running background compaction jobs. Defaults to 1/4 of cpu cores.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `max_background_purges`                  | Integer | Auto          | Max number of running background purge jobs. Defaults to number of cpu cores.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `auto_flush_interval`                    | String  | `1h`          | Interval to auto flush a region if it has not flushed yet.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `global_write_buffer_size`               | String  | `1GB`         | Global write buffer size for all regions. If not set, it's default to 1/8 of OS memory with a max limitation of 1GB.                                                                                                                                                                                                                                                                                                                                                                               |
 | `global_write_buffer_reject_size`        | String  | `2GB`         | Global write buffer size threshold to reject write requests. If not set, it's default to 2 times of `global_write_buffer_size`                                                                                                                                                                                                                                                                                                                                                                     |
@@ -455,19 +546,34 @@ Available options:
 | `page_cache_size`                        | String  | `512MB`       | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                                    |
 | `selector_result_cache_size`             | String  | `512MB`       | Cache size for time series selector (e.g. `last_value()`). Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                 |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `parallel_scan_channel_size`             | Integer | `32`          | Capacity of the channel to send data from parallel scan tasks to the main task.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `max_concurrent_scan_files`              | Integer | `384`         | Maximum number of SST files to scan concurrently.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `scan_parallelism`                       | Integer | `0`           | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n.                                                                                                                                                                                                                                                                                                              |
+| `min_compaction_interval`                | String  | `0m`          | Minimum time interval between two compactions. Default is 0 (no restrictions).                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `allow_stale_entries`                    | Boolean | `false`       | Whether to allow stale WAL entries read during replay.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `index`                                  | --      | --            | The options for index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `index.aux_path`                         | String  | `""`          | Auxiliary directory path for the index in the filesystem. This path is used to store intermediate files for creating the index and staging files for searching the index. It defaults to `{data_home}/index_intermediate`. The default name for this directory is `index_intermediate` for backward compatibility. This path contains two subdirectories: `__intm` for storing intermediate files used during index creation, and `staging` for storing staging files used during index searching. |
 | `index.staging_size`                     | String  | `2GB`         | The maximum capacity of the staging directory.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `index.staging_ttl`                      | String  | `7d`          | TTL of the staging directory. Defaults to 7 days. Set to "0s" to disable TTL.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `index.metadata_cache_size`              | String  | `64MiB`       | Cache size for index metadata.                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `index.content_cache_size`               | String  | `128MiB`      | Cache size for index content.                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `index.content_cache_page_size`          | String  | `64KiB`       | Page size for index content cache.                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `index.result_cache_size`                | String  | `128MiB`      | Cache size for index result.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `inverted_index`                         | --      | --            | The options for inverted index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `inverted_index.create_on_flush`         | String  | `auto`        | Whether to create the index on flush.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `inverted_index.create_on_compaction`    | String  | `auto`        | Whether to create the index on compaction.<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `inverted_index.apply_on_query`          | String  | `auto`        | Whether to apply the index on query<br/>- `auto`: automatically<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `inverted_index.mem_threshold_on_create` | String  | `64M`         | Memory threshold for performing an external sort during index creation.<br/>Setting to empty will disable external sorting, forcing all sorting operations to happen in memory.                                                                                                                                                                                                                                                                                                                    |
-| `inverted_index.intermediate_path`       | String  | `""`          | File system path to store intermediate files for external sorting (default `{data_home}/index_intermediate`).                                                                                                                                                                                                                                                                                                                                                                                      |
+| `inverted_index.mem_threshold_on_create` | String  | `auto`        | Memory threshold for index creation.<br/>- `auto`: automatically determine based on system memory (default)<br/>- `unlimited`: no memory limit<br/>- `[size]` e.g. `64MB`: fixed memory threshold                                                                                                                                                                                                                                                                                                   |
+| `fulltext_index`                         | --      | --            | The options for full-text index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `fulltext_index.create_on_flush`         | String  | `auto`        | Whether to create the index on flush.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `fulltext_index.create_on_compaction`    | String  | `auto`        | Whether to create the index on compaction.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                            |
+| `fulltext_index.apply_on_query`          | String  | `auto`        | Whether to apply the index on query.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `fulltext_index.mem_threshold_on_create` | String  | `auto`        | Memory threshold for index creation.<br/>- `auto`: automatically determine based on system memory (default)<br/>- `unlimited`: no memory limit<br/>- `[size]` e.g. `64MB`: fixed memory threshold                                                                                                                                                                                                                                                                                                   |
+| `bloom_filter_index`                     | --      | --            | The options for bloom filter index in Mito engine.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `bloom_filter_index.create_on_flush`     | String  | `auto`        | Whether to create the bloom filter on flush.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                          |
+| `bloom_filter_index.create_on_compaction`| String  | `auto`        | Whether to create the bloom filter on compaction.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                     |
+| `bloom_filter_index.apply_on_query`      | String  | `auto`        | Whether to apply the bloom filter on query.<br/>- `auto`: automatically (default)<br/>- `disable`: never                                                                                                                                                                                                                                                                                                                                                                                           |
+| `bloom_filter_index.mem_threshold_on_create` | String  | `auto`    | Memory threshold for bloom filter creation.<br/>- `auto`: automatically determine based on system memory (default)<br/>- `unlimited`: no memory limit<br/>- `[size]` e.g. `64MB`: fixed memory threshold                                                                                                                                                                                                                                                                                            |
 | `memtable.type`                          | String  | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (experimental)                                                                                                                                                                                                                                                                                                                                                                            |
 | `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                            |
@@ -478,20 +584,33 @@ Available options:
 The `meta_client` options are valid in `datanode` and `frontend` mode, which specify the Metasrv client information.
 
 ```toml
+[meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout = "3s"
+heartbeat_timeout = "500ms"
 connect_timeout = "1s"
 ddl_timeout = "10s"
 tcp_nodelay = true
+
+# Metadata cache configuration
+metadata_cache_max_capacity = 100000
+metadata_cache_ttl = "10m"
+metadata_cache_tti = "5m"
 ```
 
-The `meta_client` configures the Metasrv client, including:
+Available meta client options:
 
-- `metasrv_addrs`: The Metasrv address list.
-- `timeout`: operation timeout, `3s` by default.
-- `connect_timeout`, connect server timeout, `1s` by default.
-- `ddl_timeout`, DDL execution timeout, `10s` by default.
-- `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
+| Key                           | Type    | Default   | Description                                               |
+| ----------------------------- | ------- | --------- | --------------------------------------------------------- |
+| `metasrv_addrs`               | Array   | --        | The Metasrv address list                                  |
+| `timeout`                     | String  | `3s`      | Operation timeout                                         |
+| `heartbeat_timeout`           | String  | `500ms`   | Heartbeat timeout                                         |
+| `connect_timeout`             | String  | `1s`      | Connect server timeout                                    |
+| `ddl_timeout`                 | String  | `10s`     | DDL execution timeout                                     |
+| `tcp_nodelay`                 | Boolean | `true`    | `TCP_NODELAY` option for accepted connections             |
+| `metadata_cache_max_capacity` | Integer | `100000`  | Maximum capacity of the metadata cache                    |
+| `metadata_cache_ttl`          | String  | `10m`     | TTL (time-to-live) of the metadata cache                  |
+| `metadata_cache_tti`          | String  | `5m`      | TTI (time-to-idle) of the metadata cache                  |
 
 ### Monitor metrics options
 

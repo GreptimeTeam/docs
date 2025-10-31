@@ -127,30 +127,47 @@ HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`
 addr = "127.0.0.1:4000"
 timeout = "30s"
 body_limit = "64MB"
+#+ max_total_body_memory = "0"
+enable_cors = true
+prom_validation_mode = "strict"
 
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+#+ max_total_message_memory = "0"
+#+ max_connection_age = "1h"
+flight_compression = "none"
+
+[grpc.tls]
+mode = "disable"
+cert_path = ""
+key_path = ""
+watch = false
 
 [mysql]
 enable = true
 addr = "127.0.0.1:4002"
 runtime_size = 2
+keep_alive = "0s"
+prepared_stmt_cache_size = 10000
 
 [mysql.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [postgres]
 enable = true
 addr = "127.0.0.1:4003"
 runtime_size = 2
+keep_alive = "0s"
 
 [postgres.tls]
 mode = "disable"
 cert_path = ""
 key_path = ""
+watch = false
 
 [opentsdb]
 enable = true
@@ -158,39 +175,51 @@ enable = true
 [influxdb]
 enable = true
 
+[jaeger]
+enable = true
+
 [prom_store]
 enable = true
+with_metric_engine = true
 ```
 
 下表描述了每个选项的详细信息：
 
-| 选项       | 键                 | 类型   | 描述                                                         |
-| ---------- | ------------------ | ------ | ------------------------------------------------------------ |
-| http       |                    |        | HTTP 服务器选项                                              |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
-|            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
-| grpc       |                    |        | gRPC 服务器选项                                              |
-|            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
-|            | max_connection_age   | 字符串  | gRPC 连接在服务端保持的最长时间。参见 ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/)。默认不设置。示例："1h" 表示 1 小时，"30m" 表示 30 分钟 |
-|            | flight_compression   | 字符串  | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none`。|
-| mysql      |                    |        | MySQL 服务器选项                                             |
-|            | enable             | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
-| influxdb   |                    |        | InfluxDB 协议选项                                            |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
-| opentsdb   |                    |        | OpenTSDB 协议选项                                            |
-|            | enable             | 布尔值 | 是否启用 OpenTSDB 协议，默认为 true                          |
-| prom_store |                    |        | Prometheus 远程存储选项                                      |
-|            | enable             | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true      |
-|            | with_metric_engine | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true  |
-| postgres   |                    |        | PostgresSQL 服务器选项                                       |
-|            | enable             | 布尔值 | 是否启用 PostgresSQL 协议，默认为 true                       |
-|            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
-|            | runtime_size       | 整数   | 服务器工作线程数量，默认为 2                                 |
+| 选项       | 键                       | 类型   | 描述                                                         |
+| ---------- | ------------------------ | ------ | ------------------------------------------------------------ |
+| http       |                          |        | HTTP 服务器选项                                              |
+|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
+|            | timeout                  | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
+|            | body_limit               | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
+|            | max_total_body_memory    | 字符串 | 所有并发 HTTP 请求体的最大总内存。默认为 "0"（无限制）        |
+|            | enable_cors              | 布尔值 | 启用 HTTP CORS 支持，默认为 true                              |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性） |
+| grpc       |                          |        | gRPC 服务器选项                                              |
+|            | bind_addr                | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                   |
+|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 8                                 |
+|            | max_total_message_memory | 字符串 | 所有并发 gRPC 请求消息的最大总内存。默认为 "0"（无限制）      |
+|            | max_connection_age       | 字符串 | gRPC 连接在服务端保持的最长时间。参见 ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/)。默认不设置。示例："1h" 表示 1 小时，"30m" 表示 30 分钟 |
+|            | flight_compression       | 字符串 | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none` |
+| mysql      |                          |        | MySQL 服务器选项                                             |
+|            | enable                   | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
+|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
+|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive               | 字符串 | 服务端 keep-alive 时间。默认为 "0s"（禁用）                   |
+|            | prepared_stmt_cache_size | 整数   | MySQL 预编译语句缓存的最大条目数，默认为 10000                |
+| postgres   |                          |        | PostgreSQL 服务器选项                                        |
+|            | enable                   | 布尔值 | 是否启用 PostgreSQL 协议，默认为 true                        |
+|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
+|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 2                                 |
+|            | keep_alive               | 字符串 | 服务端 keep-alive 时间。默认为 "0s"（禁用）                   |
+| opentsdb   |                          |        | OpenTSDB 协议选项                                            |
+|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 OpenTSDB 协议，默认为 true            |
+| influxdb   |                          |        | InfluxDB 协议选项                                            |
+|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
+| jaeger     |                          |        | Jaeger 协议选项                                              |
+|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 Jaeger 协议，默认为 true              |
+| prom_store |                          |        | Prometheus 远程存储选项                                      |
+|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true      |
+|            | with_metric_engine       | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true  |
 
 对 MySQL，Postgres 和 gRPC 接口，我们支持 TLS 配置
 
@@ -225,13 +254,16 @@ parallelism = 0
 
 GreptimeDB 支持将数据保存在本地文件系统，AWS S3 以及其兼容服务（比如 MinIO、digitalocean space、腾讯 COS、百度对象存储（BOS）等），Azure Blob Storage 和阿里云 OSS。
 
-| 选项    | 键                | 类型   | 描述                                                |
-| ------- | ----------------- | ------ | --------------------------------------------------- |
-| storage |                   |        | 存储选项                                            |
-|         | type              | 字符串 | 存储类型，支持 "File"，"S3" 和 "Oss" 等。           |
-| File    |                   |        | 本地文件存储选项，当 type="File" 时有效             |
-|         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"          |
-| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                |
+| 选项    | 键                | 类型   | 描述                                                                                                                                                                                        |
+| ------- | ----------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| storage |                   |        | 存储选项                                                                                                                                                                                    |
+|         | type              | 字符串 | 存储类型，支持 "File"、"S3"、"Gcs"、"Azblob" 和 "Oss"                                                                                                                                        |
+|         | enable_read_cache | 布尔值 | 是否启用读缓存。使用对象存储时默认启用。推荐启用以获得更好的性能                                                                                                                              |
+|         | cache_path        | 字符串 | 对象存储的读缓存目录路径。默认为 `{data_home}/cache`。设置为空字符串可禁用缓存                                                                                                               |
+|         | cache_capacity    | 字符串 | 最大缓存容量。如果磁盘空间充足，建议设置更大的值。示例："10GB"、"512MB"                                                                                                                       |
+| File    |                   |        | 本地文件存储选项，当 type="File" 时有效                                                                                                                                                      |
+|         | data_home         | 字符串 | 数据库存储根目录，默认为 "./greptimedb_data"                                                                                                                                                  |
+| S3      |                   |        | AWS S3 存储选项，当 type="S3" 时有效                                                                                                                                                         |
 |         | name            | 字符串 |  存储提供商名字，默认为 `S3`               |
 |         | bucket            | 字符串 | S3 桶名称                                           |
 |         | root              | 字符串 | S3 桶中的根路径                                     |
@@ -271,7 +303,7 @@ type = "File"
 data_home = "./greptimedb_data/"
 ```
 
-s3 配置范例：
+S3 配置范例：
 
 ```toml
 [storage]
@@ -280,6 +312,11 @@ bucket = "test_greptimedb"
 root = "/greptimedb"
 access_key_id = "<access key id>"
 secret_access_key = "<secret access key>"
+
+# 读缓存配置（推荐启用以获得更好的性能）
+enable_read_cache = true
+#+ cache_path = ""
+cache_capacity = "10GB"
 ```
 
 ### 存储服务的 http 客户端
@@ -288,12 +325,13 @@ secret_access_key = "<secret access key>"
 
 仅当存储服务类型是“S3”，“Oss”，“Azblob”或“Gcs”时生效。
 
-| Key                      | 类型  | 默认值        | 含义                                                          |
-|--------------------------|-----|------------|-------------------------------------------------------------|
-| `pool_max_idle_per_host` | 数字  | 1024       | http 连接池中对每个 host 的最大空闲连接数。                                 |
-| `connect_timeout`        | 字符串 | “30s”（30 秒） | http 客户端在进行连接时的超时                                           |
-| `timeout`                | 字符串 | “30s”（30 秒） | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间。 |
-| `pool_idle_timeout`      | 字符串 | “90s”（90 秒） | 对空闲连接进行保活（ "keep-alive" ）的超时。                               |
+| Key                      | 类型   | 默认值           | 含义                                                                                                                                                                              |
+| ------------------------ | ------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pool_max_idle_per_host` | 整数   | 1024             | http 连接池中对每个 host 的最大空闲连接数                                                                                                                                          |
+| `connect_timeout`        | 字符串 | "30s"（30 秒）    | http 客户端在进行连接时的超时                                                                                                                                                       |
+| `timeout`                | 字符串 | "30s"（30 秒）    | 总的 http 请求超时，包括了从建立连接到接收完返回值为止的时间。也可视为一个请求从开始到结束的一个完整的截止时间                                                                         |
+| `pool_idle_timeout`      | 字符串 | "90s"（90 秒）    | 对空闲连接进行保活（"keep-alive"）的超时                                                                                                                                             |
+| `skip_ssl_validation`    | 布尔值 | `false`          | 是否跳过 SSL 证书验证。**安全提示**：设置 `skip_ssl_validation = true` 会禁用证书验证，使连接容易受到中间人攻击。仅在开发环境或可信的私有网络中使用此选项。默认值：false                  |
 
 ### 存储引擎提供商
 
@@ -343,14 +381,27 @@ cache_capacity = "10GiB"
 `cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置 `cache_path`，因为数据库会自动设置该目录。
 
 
-自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小
+自 `v0.12` 之后，写入缓存不再是实验性的功能。使用对象存储时，写入缓存会自动启用。你可以在 mito 配置中进行调整：
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
+# 使用对象存储时会自动启用写入缓存
+enable_write_cache = true
+#+ write_cache_path = ""
 write_cache_size = "10GiB"
+#+ write_cache_ttl = ""
 ```
+
+可用的写入缓存选项：
+
+| 键                    | 类型   | 默认值  | 描述                                                                          |
+| -------------------- | ------ | ------- | ----------------------------------------------------------------------------- |
+| `enable_write_cache` | 布尔值 | `false` | 是否启用写入缓存。使用对象存储时会自动启用。推荐启用以获得更好的性能          |
+| `write_cache_path`   | 字符串 | `""`    | 写入缓存的文件系统路径。默认为 `{data_home}`。留空则自动选择路径              |
+| `write_cache_size`   | 字符串 | `5GiB`  | 写入缓存容量。如果磁盘空间充足，建议设置更大的值                              |
+| `write_cache_ttl`    | 字符串 | 未设置  | 写入缓存条目的 TTL（生存时间）。示例："7d" 表示 7 天                          |
 
 更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)。
 
@@ -368,18 +419,30 @@ GreptimeDB 支持两种 WAL 存储方式：本地 WAL 和 Remote WAL。关于它
 dir = "./greptimedb_data/logs"
 level = "info"
 enable_otlp_tracing = false
-otlp_endpoint = "localhost:4317"
+otlp_endpoint = "http://localhost:4318/v1/traces"
+otlp_export_protocol = "http"
 append_stdout = true
+log_format = "text"
+max_log_files = 720
+
 [logging.tracing_sample_ratio]
 default_ratio = 1.0
 ```
 
-- `dir`: log 输出目录。
-- `level`: log 输出的日志等级，日志等级有 `info`, `debug`, `error`, `warn`，默认等级为 `info`。
-- `enable_otlp_tracing`：是否打开分布式追踪，默认不开启。
-- `otlp_endpoint`：使用基于 gRPC 的 OTLP 协议导出 tracing 的目标端点，默认值为 `localhost:4317`。
-- `append_stdout`：是否将日志打印到 stdout。默认是`true`。
-- `tracing_sample_ratio`：该字段可以配置 tracing 的采样率，如何使用 `tracing_sample_ratio`，请参考 [如何配置 tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)。
+可用的 logging 选项：
+
+| 键                                    | 类型   | 默认值                            | 描述                                                                                                                                      |
+| ------------------------------------- | ------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `dir`                                 | 字符串 | `./greptimedb_data/logs`          | 日志输出目录。设置为空字符串可禁用文件日志                                                                                                 |
+| `level`                               | 字符串 | `info`                            | 日志等级。可用值：`info`、`debug`、`warn`、`error`                                                                                         |
+| `log_format`                          | 字符串 | `text`                            | 日志格式。可用值：`text`、`json`                                                                                                           |
+| `max_log_files`                       | 整数   | `720`                             | 保留的最大日志文件数量                                                                                                                     |
+| `append_stdout`                       | 布尔值 | `true`                            | 是否将日志输出到 stdout                                                                                                                    |
+| `enable_otlp_tracing`                 | 布尔值 | `false`                           | 是否启用 OTLP tracing                                                                                                                      |
+| `otlp_endpoint`                       | 字符串 | `http://localhost:4318/v1/traces` | OTLP tracing 端点 URL                                                                                                                      |
+| `otlp_export_protocol`                | 字符串 | `http`                            | OTLP 导出协议。可用值：`http`、`grpc`                                                                                                      |
+| `tracing_sample_ratio`                | --     | --                                | Tracing 采样配置。参见 [tracing 采样率](/user-guide/deployments-administration/monitoring/tracing.md#指南如何配置-tracing-采样率)          |
+| `tracing_sample_ratio.default_ratio`  | 浮点数 | `1.0`                             | 默认采样比率。有效范围：[0, 1]。1 表示采样所有 trace，0 表示不采样                                                                         |
 
 如何使用分布式追踪，请参考 [Tracing](/user-guide/deployments-administration/monitoring/tracing.md#教程使用-jaeger-追踪-greptimedb-调用链路)
 
@@ -393,30 +456,54 @@ datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引�
 [[region_engine]]
 [region_engine.mito]
 num_workers = 8
+worker_channel_size = 128
+worker_request_batch_size = 64
 manifest_checkpoint_distance = 10
+#+ compress_manifest = false
 max_background_jobs = 4
+#+ max_background_flushes = 4
+#+ max_background_compactions = 2
+#+ max_background_purges = 8
 auto_flush_interval = "1h"
 global_write_buffer_size = "1GB"
 global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+selector_result_cache_size = "512MB"
 sst_write_buffer_size = "8MB"
+parallel_scan_channel_size = 32
+max_concurrent_scan_files = 384
 scan_parallelism = 0
+#+ min_compaction_interval = "0m"
+#+ allow_stale_entries = false
 
 [region_engine.mito.index]
 aux_path = ""
 staging_size = "2GB"
+staging_ttl = "7d"
 metadata_cache_size = "64MiB"
 content_cache_size = "128MiB"
 content_cache_page_size = "64KiB"
+result_cache_size = "128MiB"
 
 [region_engine.mito.inverted_index]
 create_on_flush = "auto"
 create_on_compaction = "auto"
 apply_on_query = "auto"
-mem_threshold_on_create = "64M"
-intermediate_path = ""
+mem_threshold_on_create = "auto"
+
+[region_engine.mito.fulltext_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "auto"
+
+[region_engine.mito.bloom_filter_index]
+create_on_flush = "auto"
+create_on_compaction = "auto"
+apply_on_query = "auto"
+mem_threshold_on_create = "auto"
 
 [region_engine.mito.memtable]
 type = "time_series"
@@ -437,8 +524,14 @@ fork_dictionary_bytes = "1GiB"
 | 键                                       | 类型   | 默认值        | 描述                                                                                                                   |
 | ---------------------------------------- | ------ | ------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `num_workers`                            | 整数   | `8`           | 写入线程数量                                                                                                           |
+| `worker_channel_size`                    | 整数   | `128`         | 每个 worker 的请求通道大小                                                                                              |
+| `worker_request_batch_size`              | 整数   | `64`          | worker 处理请求的最大批量大小                                                                                           |
 | `manifest_checkpoint_distance`           | 整数   | `10`          | 每写入 `manifest_checkpoint_distance` 个 manifest 文件创建一次 checkpoint                                              |
+| `compress_manifest`                      | 布尔值 | `false`       | 是否用 gzip 压缩 manifest 和 checkpoint 文件                                                                            |
 | `max_background_jobs`                    | 整数   | `4`           | 后台线程数量                                                                                                           |
+| `max_background_flushes`                 | 整数   | 自动          | 后台 flush 任务的最大数量。默认为 CPU 核数的 1/2                                                                         |
+| `max_background_compactions`             | 整数   | 自动          | 后台 compaction 任务的最大数量。默认为 CPU 核数的 1/4                                                                    |
+| `max_background_purges`                  | 整数   | 自动          | 后台 purge 任务的最大数量。默认为 CPU 核数                                                                               |
 | `auto_flush_interval`                    | 字符串 | `1h`          | 自动 flush 超过 `auto_flush_interval` 没 flush 的 region                                                               |
 | `global_write_buffer_size`               | 字符串 | `1GB`         | 写入缓冲区大小，默认值为内存总量的 1/8，但不会超过 1GB                                                                 |
 | `global_write_buffer_reject_size`        | 字符串 | `2GB`         | 写入缓冲区内数据的大小超过 `global_write_buffer_reject_size` 后拒绝写入请求，默认为 `global_write_buffer_size` 的 2 倍 |
@@ -447,18 +540,31 @@ fork_dictionary_bytes = "1GiB"
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
 | `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
+| `parallel_scan_channel_size`             | 整数   | `32`          | 从并行扫描任务向主任务发送数据的通道容量                                                                                |
+| `max_concurrent_scan_files`              | 整数   | `384`         | 并发扫描的 SST 文件的最大数量                                                                                           |
 | `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
+| `min_compaction_interval`                | 字符串 | `0m`          | 两次 compaction 之间的最小时间间隔。默认为 0（无限制）                                                                  |
+| `allow_stale_entries`                    | 布尔值 | `false`       | 是否允许在重放时读取过期的 WAL 条目                                                                                     |
 | `index` | -- | -- | Mito 引擎中索引的选项。 |
 | `index.aux_path` | 字符串 | `""` | 文件系统中索引的辅助目录路径，用于存储创建索引的中间文件和搜索索引的暂存文件，默认为 `{data_home}/index_intermediate`。为了向后兼容，该目录的默认名称为 `index_intermediate`。此路径包含两个子目录：- `__intm`: 用于存储创建索引时使用的中间文件。- `staging`: 用于存储搜索索引时使用的暂存文件。 |
 | `index.staging_size` | 字符串 | `2GB` | 暂存目录的最大容量。 |
 | `index.metadata_cache_size` | 字符串 | `64MiB` | 索引元数据的缓存大小。 |
 | `index.content_cache_size` | 字符串 | `128MiB` | 索引内容的缓存大小。 |
 | `index.content_cache_page_size` | 字符串 | `64KiB` | 倒排索引内容缓存的页大小。 |
+| `index.staging_ttl` | 字符串 | `7d` | 暂存目录的 TTL。默认为 7 天。设置为 "0s" 可禁用 TTL |
+| `index.result_cache_size` | 字符串 | `128MiB` | 索引结果的缓存大小 |
 | `inverted_index.create_on_flush`         | 字符串 | `auto`        | 是否在 flush 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                       |
 | `inverted_index.create_on_compaction`    | 字符串 | `auto`        | 是否在 compaction 时构建索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                  |
 | `inverted_index.apply_on_query`          | 字符串 | `auto`        | 是否在查询时使用索引<br/>- `auto`: 自动<br/>- `disable`: 从不                                                          |
-| `inverted_index.mem_threshold_on_create` | 字符串 | `64M`         | 创建索引时如果超过该内存阈值则改为使用外部排序<br/>设置为空会关闭外排，在内存中完成所有排序                            |
-| `inverted_index.intermediate_path`       | 字符串 | `""`          | 存放外排临时文件的路径 (默认 `{data_home}/index_intermediate`).                                                        |
+| `inverted_index.mem_threshold_on_create` | 字符串 | `auto`         | 创建索引时如果超过该内存阈值则改为使用外部排序。- `auto`: 自动确定阈值<br/>- 自定义值: 例如 `64M`<br/>- 空字符串: 关闭外排，在内存中完成所有排序 |
+| `fulltext_index.create_on_flush` | 字符串 | `auto` | 是否在 flush 时构建全文索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `fulltext_index.create_on_compaction` | 字符串 | `auto` | 是否在 compaction 时构建全文索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `fulltext_index.apply_on_query` | 字符串 | `auto` | 是否在查询时使用全文索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `fulltext_index.mem_threshold_on_create` | 字符串 | `auto` | 创建全文索引时如果超过该内存阈值则改为使用外部排序。- `auto`: 自动确定阈值<br/>- 自定义值: 例如 `64M`<br/>- 空字符串: 关闭外排，在内存中完成所有排序 |
+| `bloom_filter_index.create_on_flush` | 字符串 | `auto` | 是否在 flush 时构建 Bloom filter 索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `bloom_filter_index.create_on_compaction` | 字符串 | `auto` | 是否在 compaction 时构建 Bloom filter 索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `bloom_filter_index.apply_on_query` | 字符串 | `auto` | 是否在查询时使用 Bloom filter 索引<br/>- `auto`: 自动<br/>- `disable`: 从不 |
+| `bloom_filter_index.mem_threshold_on_create` | 字符串 | `auto` | 创建 Bloom filter 索引时如果超过该内存阈值则改为使用外部排序。- `auto`: 自动确定阈值<br/>- 自定义值: 例如 `64M`<br/>- 空字符串: 关闭外排，在内存中完成所有排序 |
 | `memtable.type`                          | 字符串 | `time_series` | Memtable type.<br/>- `time_series`: time-series memtable<br/>- `partition_tree`: partition tree memtable (实验性功能)  |
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
@@ -472,18 +578,26 @@ fork_dictionary_bytes = "1GiB"
 [meta_client]
 metasrv_addrs = ["127.0.0.1:3002"]
 timeout = "3s"
+heartbeat_timeout = "500ms"
 connect_timeout = "1s"
 ddl_timeout = "10s"
 tcp_nodelay = true
+metadata_cache_max_capacity = 100000
+metadata_cache_ttl = "10m"
+metadata_cache_tti = "5m"
 ```
 
 通过 `meta_client` 配置 metasrv 客户端，包括：
 
 - `metasrv_addrs`，Metasrv 地址列表，对应 Metasrv 启动配置的 server address。
 - `timeout`，操作超时时长，默认为 3 秒。
+- `heartbeat_timeout`，心跳请求的超时时长，默认为 500 毫秒。
 - `connect_timeout`，连接服务器超时时长，默认为 1 秒。
 - `ddl_timeout`，DDL 执行的超时时间，默认 10 秒。
 - `tcp_nodelay`，接受连接时的 `TCP_NODELAY` 选项，默认为 true。
+- `metadata_cache_max_capacity`，元数据缓存的最大容量，默认为 100000。
+- `metadata_cache_ttl`，元数据缓存的 TTL（生存时间），默认为 10 分钟。
+- `metadata_cache_tti`，元数据缓存的 TTI（空闲超时时间），默认为 5 分钟。
 
 ### 指标监控选项
 
