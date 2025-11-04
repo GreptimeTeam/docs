@@ -17,6 +17,16 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 命令以 `COPY` 关键字开始，后面跟着要导出数据的表名（本例中为 `tbl`）。
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
+例如，可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
+
+```sql
+COPY tbl TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
+  DATE_FORMAT = '%Y-%m-%d'
+);
+```
+
 #### `WITH` 选项
 
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
@@ -25,6 +35,9 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。仅支持 CSV 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
 
 #### `CONNECTION` 选项
 
@@ -138,11 +151,24 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
+| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 
 例如，以下语句将查询结果导出到 CSV 文件中：
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
+也可以在导出到 CSV 时指定自定义日期和时间格式：
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
+  DATE_FORMAT = '%Y/%m/%d'
+);
 ```
 
 ## COPY DATABASE
