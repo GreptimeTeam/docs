@@ -61,3 +61,4 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | [`FLOWS`](./flows.md) | 提供 Flow 相关信息。|
 | [`PROCEDURE_INFO`](./procedure-info.md) | 提供 Procedure 相关信息。|
 | [`PROCESS_LIST`](./process-list.md) | 提供集群内正在执行的查询信息|
+| [`SSTS_INDEX_META`](./ssts-index-meta.md) | 提供 SST 索引元数据，包括倒排索引、全文索引和布隆过滤器。|
