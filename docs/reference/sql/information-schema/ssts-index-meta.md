@@ -98,3 +98,28 @@ SELECT index_type, COUNT(*) as count, SUM(index_file_size) as total_size
 FROM INFORMATION_SCHEMA.SSTS_INDEX_META
 GROUP BY index_type;
 ```
+
+
+Output Example:
+
+```sql
+mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_INDEX_META LIMIT 1\G;
+*************************** 1. row ***************************
+      table_dir: data/greptime/public/1814/
+index_file_path: data/greptime/public/1814/1814_0000000000/data/index/aba4af59-1247-4bfb-a20b-69242cdd9374.puffin
+      region_id: 7791070674944
+       table_id: 1814
+  region_number: 0
+   region_group: 0
+region_sequence: 0
+        file_id: aba4af59-1247-4bfb-a20b-69242cdd9374
+index_file_size: 838
+     index_type: bloom_filter
+    target_type: column
+     target_key: 2147483652
+    target_json: {"column":2147483652}
+      blob_size: 688
+      meta_json: {"bloom":{"bloom_filter_size":640,"row_count":2242,"rows_per_segment":1024,"segment_count":3}}
+        node_id: 0
+1 row in set (0.02 sec)
+```
