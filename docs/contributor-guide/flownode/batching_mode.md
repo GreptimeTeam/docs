@@ -22,7 +22,7 @@ The core idea is to:
 
 The batching mode consists of several key components that work together to achieve this continuous aggregation. As shown in the diagram below:
 
-![batching mode architecture](/batching-mode-arch.png)
+![batching mode architecture](/batching_mode_arch.png)
 
 ### `BatchingEngine`
 
