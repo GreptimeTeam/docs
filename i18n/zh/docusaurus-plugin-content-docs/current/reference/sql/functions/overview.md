@@ -47,9 +47,40 @@ arrow_cast(expression, datatype)
 DataFusion [字符串函数](./df-functions.md#string-functions)。
 
 GreptimeDB 提供：
-* `matches_term(expression, term)` 用于全文检索。
+* `matches_term(expression, term)` 用于全文检索。阅读[查询日志](/user-guide/logs/fulltext-search.md)文档获取更多详情。
+* `regexp_extract(str, regexp)` 提取字符串中与正则表达式匹配的第一个子串。如果没有找到匹配项则返回 `NULL`。
 
-阅读[查询日志](/user-guide/logs/fulltext-search.md)文档获取更多详情。
+#### regexp_extract
+
+提取字符串中与[正则表达式](https://docs.rs/regex/latest/regex/#syntax)匹配的第一个子串。如果没有找到匹配项则返回 `NULL`。
+
+```sql
+regexp_extract(str, regexp)
+```
+
+**参数：**
+
+- **str**: 要操作的字符串表达式。可以是常量、列或函数，以及运算符的任意组合。
+- **regexp**: 要匹配的正则表达式。可以是常量、列或函数。
+
+**关于转义的说明：**
+
+GreptimeDB 在 MySQL 和 PostgreSQL 兼容模式下的正则表达式转义行为有所不同：
+- **MySQL 模式**：转义序列需要使用双反斜杠（例如 `\\d`、`\\s`）
+- **PostgreSQL 模式**：默认情况下单反斜杠即可（例如 `\d`、`\s`），或者使用 `E''` 前缀以与 MySQL 保持一致（例如 `E'\\d'`）
+
+**示例：**
+
+```sql
+SELECT regexp_extract('version 1.2.3', '\d+\.\d+\.\d+');
+-- 返回: 1.2.3
+
+SELECT regexp_extract('Phone: 123-456-7890', '\d{3}-\d{3}-\d{4}');
+-- 返回: 123-456-7890
+
+SELECT regexp_extract('no match here', '\d+\.\d+\.\d+');
+-- 返回: NULL
+```
 
 ### 数学函数
 
@@ -133,6 +164,8 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, '5 day'::INTERVAL);
 #### date_format
 
 * `date_format(expression, fmt)` 将 Timestamp、Date 或 DateTime 格式化：
+
+支持 `Date32`、`Date64` 和所有 `Timestamp` 类型。
 
 ```sql
 SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');
