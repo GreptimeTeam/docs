@@ -23,7 +23,6 @@ description: GreptimeDB SQL 语句.
 * [DISTINCT](./distinct.md)
 * [DROP](./drop.md)
 * [EXPLAIN](./explain.md)
-* [Functions](./functions/overview.md)
 * [GROUP BY](./group_by.md)
 * [HAVING](./having.md)
 * [INSERT](./insert.md)
@@ -39,6 +38,9 @@ description: GreptimeDB SQL 语句.
 * [TRUNCATE](./truncate.md)
 * [WHERE](./where.md)
 * [WITH](./with.md)
+
+## 函数
+* [Functions](./functions/overview.md)
 
 ## 系统表
 

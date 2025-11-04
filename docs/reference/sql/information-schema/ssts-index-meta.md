@@ -100,7 +100,7 @@ GROUP BY index_type;
 ```
 
 
-Output Example:
+Output example:
 
 ```sql
 mysql> SELECT * FROM INFORMATION_SCHEMA.SSTS_INDEX_META LIMIT 1\G;
