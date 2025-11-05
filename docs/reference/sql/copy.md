@@ -21,6 +21,16 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 `TO` specifies the file path and name to save the exported
 data (`/xxx/xxx/output.parquet` in this case).
 
+For example, to export data to CSV with custom timestamp and date formats:
+
+```sql
+COPY tbl TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
+  DATE_FORMAT = '%Y-%m-%d'
+);
+```
+
 #### `WITH` Option
 
 `WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
@@ -29,6 +39,9 @@ data (`/xxx/xxx/output.parquet` in this case).
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
+| `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d %H:%M:%S'`). Only supported for CSV format. | Optional |
+| `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d'`). Only supported for CSV format. | Optional |
+| `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%H:%M:%S'`). Only supported for CSV format. | Optional |
 
 #### `CONNECTION` Option
 
@@ -145,11 +158,24 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | The SQL SELECT statement to execute | **Required** |
 | `PATH` | The file path where the output will be written | **Required** |
 | `FORMAT` | The output file format: 'CSV', 'JSON', or 'PARQUET' | **Required** |
+| `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
+| `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
+| `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
 
 For example, the following statement exports query results to a CSV file:
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
+You can also specify custom date and time formats when exporting to CSV:
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
+  DATE_FORMAT = '%Y/%m/%d'
+);
 ```
 
 ## COPY DATABASE
