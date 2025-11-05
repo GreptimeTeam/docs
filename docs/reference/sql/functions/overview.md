@@ -48,9 +48,40 @@ Where the `datatype` can be any valid Arrow data type in this [list](https://arr
 DataFusion [String Function](./df-functions.md#string-functions).
 
 GreptimeDB provides:
-* `matches_term(expression, term)` for full text search.
+* `matches_term(expression, term)` for full text search. For details, read the [Fulltext Search](/user-guide/logs/fulltext-search.md).
+* `regexp_extract(str, regexp)` to extract the first substring in a string that matches a regular expression. Returns `NULL` if no match is found.
 
-For details, read the [Fulltext Search](/user-guide/logs/fulltext-search.md).
+#### regexp_extract
+
+Extracts the first substring in a string that matches a [regular expression](https://docs.rs/regex/latest/regex/#syntax). Returns `NULL` if no match is found.
+
+```sql
+regexp_extract(str, regexp)
+```
+
+**Arguments:**
+
+- **str**: String expression to operate on. Can be a constant, column, or function, and any combination of operators.
+- **regexp**: Regular expression to match against. Can be a constant, column, or function.
+
+**Note on Escaping:**
+
+GreptimeDB's regex escape behavior differs between MySQL and PostgreSQL compatibility modes:
+- **MySQL mode**: Requires double backslashes for escape sequences (e.g., `\\d`, `\\s`)
+- **PostgreSQL mode**: Single backslashes work by default (e.g., `\d`, `\s`), or use `E''` prefix for consistency with MySQL (e.g., `E'\\d'`)
+
+**Examples:**
+
+```sql
+SELECT regexp_extract('version 1.2.3', '\d+\.\d+\.\d+');
+-- Returns: 1.2.3
+
+SELECT regexp_extract('Phone: 123-456-7890', '\d{3}-\d{3}-\d{4}');
+-- Returns: 123-456-7890
+
+SELECT regexp_extract('no match here', '\d+\.\d+\.\d+');
+-- Returns: NULL
+```
 
 ### Math Functions
 
@@ -137,6 +168,8 @@ SELECT date_sub('2023-12-06 07:39:46.222'::TIMESTAMP_MS, '5 day'::INTERVAL);
 #### date_format
 
 * `date_format(expression, fmt)` to format Timestamp, Date, or DateTime into string by the format:
+
+Supports `Date32`, `Date64`, and all `Timestamp` types.
 
 ```sql
 SELECT date_format('2023-12-06 07:39:46.222'::TIMESTAMP, '%Y-%m-%d %H:%M:%S:%3f');
