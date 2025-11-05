@@ -63,3 +63,4 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`FLOWS`](./flows.md) | Provides the flow information.|
 | [`PROCEDURE_INFO`](./procedure-info.md) | Procedure information.|
 | [`PROCESS_LIST`](./process-list.md) | Running queries information.|
+| [`SSTS_INDEX_META`](./ssts-index-meta.md) | Provides SST index metadata including inverted indexes, fulltext indexes, and bloom filters.|

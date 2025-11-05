@@ -21,7 +21,6 @@ description: GreptimeDB SQL statements.
 * [DISTINCT](./distinct.md)
 * [DROP](./drop.md)
 * [EXPLAIN](./explain.md)
-* [Functions](./functions/overview.md)
 * [GROUP BY](./group_by.md)
 * [HAVING](./having.md)
 * [INSERT](./insert.md)
@@ -37,6 +36,9 @@ description: GreptimeDB SQL statements.
 * [TRUNCATE](./truncate.md)
 * [WHERE](./where.md)
 * [WITH](./with.md)
+
+## Functions
+* [Functions](./functions/overview.md)
 
 ## Information Schema
 * [INFORMATION_SCHEMA](./information-schema/overview.md)
