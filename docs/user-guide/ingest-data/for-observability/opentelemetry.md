@@ -280,7 +280,8 @@ GreptimeDB will map the OTLP traces data model to the following table schema:
 - Resource attributes and span attributes are automatically flattened into separate columns, with column names being their JSON keys (using `.` to connect multiple levels of nesting)
 - `span_events` and `span_links` are stored as JSON data types by default
 
-By default, the table is partitioned into 16 uniform regions based on the `trace_id` to efficiently store and query all trace data.
+Note: 
+1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
 
 ### Append Only
 
