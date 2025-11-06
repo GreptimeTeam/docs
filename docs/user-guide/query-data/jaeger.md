@@ -55,17 +55,3 @@ You can refer to the [OpenTelemetry official documentation](https://opentelemetr
 3. Use Grafana's Jaeger Explore to view the data:
 
    ![Jaeger Explore](/jaeger-explore.png)
-
-### Add Time Range for Getting Operations Endpoints
-
-By default, we don't add time range parameters for the `GET /api/operations` and `GET /api/services/{service}/operations` endpoints. When the volume of traces data is large, this may lead to long query times. You can add a time range parameter by setting the HTTP Header based on your specific scenario, for example:
-
-```
-x-greptime-jaeger-time-range-for-operations: 3 days
-```
-
-This indicates that only the Operations data from the past 3 days will be returned.
-
-This header can be set in the **HTTP Headers** of the Jaeger Data Source, for example:
-
-![Set HTTP Headers](/jaeger-http-header-for-time-range.jpg)

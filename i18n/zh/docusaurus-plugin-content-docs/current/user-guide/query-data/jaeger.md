@@ -55,17 +55,3 @@ const proxyConfig = {
 3. 使用 Jaeger Explore 来查看数据：
 
    ![Jaeger Explore](/jaeger-explore.png)
-
-### 为获取 Operations 接口添加时间范围
-
-默认地，我们没有为 `GET /api/operations` 和 `GET /api/services/{service}/operations` 添加时间范围参数，当 traces 数据量较大时，这可能会导致查询时间过长。此时你可以基于自己的场景以 HTTP Header 的形式添加时间范围参数，比如：
-
-```
-x-greptime-jaeger-time-range-for-operations: 3 days
-```
-
-这表示只返回最近 3 天的 Operations 数据。
-
-这个 Header 可设置在 Jaeger Data Source 的 **HTTP Headers** 中，比如：
-
-![设置 HTTP Headers](/jaeger-http-header-for-time-range.jpg)
