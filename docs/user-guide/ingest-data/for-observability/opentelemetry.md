@@ -282,6 +282,7 @@ GreptimeDB will map the OTLP traces data model to the following table schema:
 
 Note: 
 1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
+2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
 
 ### Append Only
 
