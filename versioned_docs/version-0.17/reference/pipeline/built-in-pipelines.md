@@ -12,12 +12,13 @@ Additionally, the "greptime_" prefix of the pipeline name is reserved.
 
 ## `greptime_identity`
 
-The `greptime_identity` pipeline is designed for writing JSON logs and automatically creates columns for each field in the JSON log.
+The `greptime_identity` pipeline is designed for writing JSON logs and automatically creates columns for each field in the JSON log. Nested JSON objects are automatically flattened into separate columns using dot notation.
 
-- The first-level keys in the JSON log are used as column names.
-- An error is returned if the same field has different types.
-- Fields with `null` values are ignored.
-- If time index is not specified, an additional column, `greptime_timestamp`, is added to the table as the time index to indicate when the log was written.
+- Nested objects are automatically flattened (e.g., `{"a": {"b": 1}}` becomes column `a.b`)
+- Arrays are converted to JSON strings
+- An error is returned if the same field has different types
+- Fields with `null` values are ignored
+- If time index is not specified, an additional column, `greptime_timestamp`, is added to the table as the time index to indicate when the log was written
 
 ### Type conversion rules
 
@@ -25,8 +26,8 @@ The `greptime_identity` pipeline is designed for writing JSON logs and automatic
 - `number` -> `int64` or `float64`
 - `boolean` -> `bool`
 - `null` -> ignore
-- `array` -> `json`
-- `object` -> `json`
+- `array` -> `string` (JSON-stringified)
+- `object` -> automatically flattened into separate columns (see [Flatten JSON objects](#flatten-json-objects))
 
 
 For example, if we have the following json data:
@@ -39,7 +40,7 @@ For example, if we have the following json data:
 ]
 ```
 
-We'll merge the schema for each row of this batch to get the final schema. The table schema will be:
+We'll merge the schema for each row of this batch to get the final schema. Note that nested objects are automatically flattened into separate columns (e.g., `object.a`, `object.b`), and arrays are converted to JSON strings. The table schema will be:
 
 ```sql
 mysql> desc pipeline_logs;
@@ -49,26 +50,27 @@ mysql> desc pipeline_logs;
 | age                | Int64               |      | YES  |         | FIELD         |
 | is_student         | Boolean             |      | YES  |         | FIELD         |
 | name               | String              |      | YES  |         | FIELD         |
-| object             | Json                |      | YES  |         | FIELD         |
+| object.a           | Int64               |      | YES  |         | FIELD         |
+| object.b           | Int64               |      | YES  |         | FIELD         |
 | score              | Float64             |      | YES  |         | FIELD         |
 | company            | String              |      | YES  |         | FIELD         |
-| array              | Json                |      | YES  |         | FIELD         |
+| array              | String              |      | YES  |         | FIELD         |
 | greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
 +--------------------+---------------------+------+------+---------+---------------+
-8 rows in set (0.00 sec)
+9 rows in set (0.00 sec)
 ```
 
 The data will be stored in the table as follows:
 
 ```sql
 mysql> select * from pipeline_logs;
-+------+------------+---------+---------------+-------+---------+---------+----------------------------+
-| age  | is_student | name    | object        | score | company | array   | greptime_timestamp         |
-+------+------------+---------+---------------+-------+---------+---------+----------------------------+
-|   22 |          1 | Charlie | NULL          |  95.5 | NULL    | [1,2,3] | 2024-10-18 09:35:48.333020 |
-|   21 |          0 | NULL    | NULL          |  85.5 | A       | NULL    | 2024-10-18 09:35:48.333020 |
-|   20 |          1 | Alice   | {"a":1,"b":2} |  90.5 | NULL    | NULL    | 2024-10-18 09:35:48.333020 |
-+------+------------+---------+---------------+-------+---------+---------+----------------------------+
++------+------------+---------+----------+----------+-------+---------+-----------+----------------------------+
+| age  | is_student | name    | object.a | object.b | score | company | array     | greptime_timestamp         |
++------+------------+---------+----------+----------+-------+---------+-----------+----------------------------+
+|   22 |          1 | Charlie | NULL     | NULL     |  95.5 | NULL    | [1,2,3]   | 2024-10-18 09:35:48.333020 |
+|   21 |          0 | NULL    | NULL     | NULL     |  85.5 | A       | NULL      | 2024-10-18 09:35:48.333020 |
+|   20 |          1 | Alice   | 1        | 2        |  90.5 | NULL    | NULL      | 2024-10-18 09:35:48.333020 |
++------+------------+---------+----------+----------+-------+---------+-----------+----------------------------+
 3 rows in set (0.01 sec)
 ```
 
@@ -121,7 +123,11 @@ Here are some example of using `custom_time_index` assuming the time variable is
 
 ### Flatten JSON objects
 
-If flattening a JSON object into a single-level structure is needed, add the `x-greptime-pipeline-params` header to the request and set `flatten_json_object` to `true`.
+The `greptime_identity` pipeline **automatically flattens** nested JSON objects into a single-level structure. This behavior is always enabled and creates separate columns for each nested field using dot notation (e.g., `a.b.c`).
+
+#### Controlling flattening depth
+
+You can control how deeply nested objects are flattened using the `max_nested_levels` parameter in the `x-greptime-pipeline-params` header. The default value is 10 levels.
 
 Here is a sample request:
 
@@ -129,25 +135,26 @@ Here is a sample request:
 curl -X "POST" "http://localhost:4000/v1/ingest?db=<db-name>&table=<table-name>&pipeline_name=greptime_identity&version=<pipeline-version>" \
      -H "Content-Type: application/x-ndjson" \
      -H "Authorization: Basic {{authentication}}" \
-     -H "x-greptime-pipeline-params: flatten_json_object=true" \
+     -H "x-greptime-pipeline-params: max_nested_levels=5" \
      -d "$<log-items>"
 ```
 
-With this configuration, GreptimeDB will automatically flatten each field of the JSON object into separate columns. For example:
+When the maximum nesting level is reached, any remaining nested structure is converted to a JSON string and stored in a single column. For example, with `max_nested_levels=3`:
 
 ```JSON
 {
     "a": {
         "b": {
-            "c": [1, 2, 3]
+            "c": {
+                "d": [1, 2, 3]
+            }
         }
     },
-    "d": [
+    "e": [
         "foo",
         "bar"
     ],
-    "e": {
-        "f": [7, 8, 9],
+    "f": {
         "g": {
             "h": 123,
             "i": "hello",
@@ -163,14 +170,18 @@ Will be flattened to:
 
 ```json
 {
-    "a.b.c": [1,2,3],
-    "d": ["foo","bar"],
-    "e.f": [7,8,9],
-    "e.g.h": 123,
-    "e.g.i": "hello",
-    "e.g.j.k": true
+    "a.b.c": "{\"d\":[1,2,3]}",
+    "e": "[\"foo\",\"bar\"]",
+    "f.g.h": 123,
+    "f.g.i": "hello",
+    "f.g.j": "{\"k\":true}"
 }
 ```
+
+Note that:
+- Arrays at any level are always converted to JSON strings (e.g., `"e"` becomes `"[\"foo\",\"bar\"]"`)
+- When the nesting level limit is reached (level 3 in this example), the remaining nested objects are converted to JSON strings (e.g., `"a.b.c"` and `"f.g.j"`)
+- Regular scalar values within the depth limit are stored as their native types (e.g., `"f.g.h"` as integer, `"f.g.i"` as string)
 
 
 
