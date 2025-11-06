@@ -119,7 +119,7 @@ DESC pipeline_logs;
 - "2025-06-27T15:02:23.082253908Z": `custom_time_index=input_ts;datestr;%Y-%m-%dT%H:%M:%S%.9f%#z`
 
 
-### 展开 json 对象
+### 展开 JSON 对象
 
 `greptime_identity` pipeline **自动展开**嵌套的 JSON 对象为单层结构。此行为始终启用，使用点符号（例如 `a.b.c`）为每个嵌套字段创建单独的列。
 
