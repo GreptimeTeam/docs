@@ -5,7 +5,7 @@ description: 提供从 manifest 中获取的 SST（排序字符串表）文件�
 
 # SSTS_MANIFEST
 
-`SSTS_MANIFEST` 表提供从 manifest 中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围和行数。
+`SSTS_MANIFEST` 表提供从清单中收集的 SST（排序字符串表）文件信息。此表显示每个 SST 文件的详细信息，包括文件路径、大小、级别、时间范围和行数。
 
 :::tip 注意
 此表在 [GreptimeCloud](https://greptime.cloud/) 上不可用。
