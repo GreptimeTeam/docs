@@ -283,7 +283,9 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 - Resource Attributes 和 Span Attributes 将被自动展平为单独的列，列名为其 JSON 格式表示时的 key（多层嵌套时将用 `.` 连接）；
 - `span_events` 和 `span_links` 默认存储为 JSON 数据类型；
 
-默认地，表会根据 `trace_id` 均匀划分为 16 个 Region 以高效地存储和查询所有的 traces 数据。
+注意: 
+1. `greptime_trace_v1` 处理方式默认通过 `trace_id` 字段将数据切分成不同的分区以提升性能。**请确保 `trace_id` 的第一个字符是分布均匀的**。
+2. 在非测试的场合下，可以通过设置 `ttl` 以避免持久化数据量过大。通过设置 `x-greptime-hints: ttl=7d` HTTP 请求头，在创建 trace 表时会添加一个 7 天的 `ttl` 表选项。见[此文档](/reference/sql/create.md#表选项)了解更多关于表选项 `ttl` 的信息。
 
 ### Append 模式
 

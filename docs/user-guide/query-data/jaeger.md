@@ -18,7 +18,7 @@ GreptimeDB currently supports the following [Jaeger](https://www.jaegertracing.i
 - `/api/services/{service}/operations`: Get all operations for a service.
 - `/api/traces`: Get traces by query parameters.
 
-You can use [Grafana's Jaeger plugin](https://grafana.com/docs/grafana/latest/datasources/jaeger/) or [Jaeger UI](https://github.com/jaegertracing/jaeger-ui) to query traces data in GreptimeDB. When using Jaeger UI, you can set the `proxyConfig` in `packages/jaeger-ui/vite.config.mts` to the GreptimeDB address, for example:
+You can use [Grafana's Jaeger plugin](https://grafana.com/docs/grafana/latest/datasources/jaeger/)(Recommended) or [Jaeger UI](https://github.com/jaegertracing/jaeger-ui) to query traces data in GreptimeDB. When using Jaeger UI, you can set the `proxyConfig` in `packages/jaeger-ui/vite.config.mts` to the GreptimeDB address, for example:
 
 ```ts
 const proxyConfig = {
@@ -55,17 +55,3 @@ You can refer to the [OpenTelemetry official documentation](https://opentelemetr
 3. Use Grafana's Jaeger Explore to view the data:
 
    ![Jaeger Explore](/jaeger-explore.png)
-
-### Add Time Range for Getting Operations Endpoints
-
-By default, we don't add time range parameters for the `GET /api/operations` and `GET /api/services/{service}/operations` endpoints. When the volume of traces data is large, this may lead to long query times. You can add a time range parameter by setting the HTTP Header based on your specific scenario, for example:
-
-```
-x-greptime-jaeger-time-range-for-operations: 3 days
-```
-
-This indicates that only the Operations data from the past 3 days will be returned.
-
-This header can be set in the **HTTP Headers** of the Jaeger Data Source, for example:
-
-![Set HTTP Headers](/jaeger-http-header-for-time-range.jpg)

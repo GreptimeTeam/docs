@@ -18,7 +18,7 @@ GreptimeDB 目前支持以下 [Jaeger](https://www.jaegertracing.io/) 查询接�
 - `/api/services/{service}/operations`: 获取指定 Service 的所有 Operations。
 - `/api/traces`: 根据查询参数获取 traces 数据。
 
-你可以使用 Grafana 的 [Jaeger 插件](https://grafana.com/docs/grafana/latest/datasources/jaeger/) 或者 [Jaeger UI](https://github.com/jaegertracing/jaeger-ui) 来查询 GreptimeDB 中的 traces 数据。当你在使用 Jaeger UI 的时候，可将 `packages/jaeger-ui/vite.config.mts` 的 `proxyConfig` 配置为 GreptimeDB 的地址，比如：
+你可以使用 Grafana 的 [Jaeger 插件](https://grafana.com/docs/grafana/latest/datasources/jaeger/)（推荐） 或者 [Jaeger UI](https://github.com/jaegertracing/jaeger-ui) 来查询 GreptimeDB 中的 traces 数据。当你在使用 Jaeger UI 的时候，可将 `packages/jaeger-ui/vite.config.mts` 的 `proxyConfig` 配置为 GreptimeDB 的地址，比如：
 
 ```ts
 const proxyConfig = {
@@ -55,17 +55,3 @@ const proxyConfig = {
 3. 使用 Jaeger Explore 来查看数据：
 
    ![Jaeger Explore](/jaeger-explore.png)
-
-### 为获取 Operations 接口添加时间范围
-
-默认地，我们没有为 `GET /api/operations` 和 `GET /api/services/{service}/operations` 添加时间范围参数，当 traces 数据量较大时，这可能会导致查询时间过长。此时你可以基于自己的场景以 HTTP Header 的形式添加时间范围参数，比如：
-
-```
-x-greptime-jaeger-time-range-for-operations: 3 days
-```
-
-这表示只返回最近 3 天的 Operations 数据。
-
-这个 Header 可设置在 Jaeger Data Source 的 **HTTP Headers** 中，比如：
-
-![设置 HTTP Headers](/jaeger-http-header-for-time-range.jpg)
