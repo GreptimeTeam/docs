@@ -124,116 +124,79 @@ specifying protocol server addresses and other protocol-related options.
 The HTTP protocol configuration is available for all GreptimeDB components: `frontend`, `datanode`, `flownode`, and `metasrv`.
 :::
 
-Below is an example configuration with default values.
+Below is an example configuration with the most commonly used options for all protocols that require attention.
 You can change the values or disable certain protocols in your configuration file.
 For example, to disable OpenTSDB protocol support, set the `enable` parameter to `false`.
 Note that HTTP and gRPC protocols cannot be disabled for the database to function correctly.
 
 ```toml
 [http]
+# HTTP server binding address. Defaults to "127.0.0.1:4000" and therefore listens only on the loopback interface, so external hosts cannot reach it.
+# For production, adjust this to an accessible IP address or domain based on your network configuration.
 addr = "127.0.0.1:4000"
 timeout = "30s"
 body_limit = "64MB"
-#+ max_total_body_memory = "0"
+# Maximum total memory (bytes) for all concurrent HTTP request bodies, rejects requests immediately when exceeded, defaults to "0" (unlimited)
+# Limits memory usage for HTTP writes on a single node to prevent OOM from fast writes, only tracks HTTP body size, excludes decompression and internal processing memory
+# Recommended to adjust after evaluating with `greptime_servers_http_memory_usage_bytes` metric, this option provides auxiliary protection only
+max_total_body_memory = "0"
 enable_cors = true
 prom_validation_mode = "strict"
 
 [grpc]
+# gRPC service binding address, defaults to "127.0.0.1:4001".
+# The default configuration only listens on the loopback address and is inaccessible from external hosts. For production, adjust to an accessible IP address or domain based on your network configuration.
 bind_addr = "127.0.0.1:4001"
+# Communication address registered with metasrv for other nodes to discover and connect, can be IP address or domain
+# This value is only for external registration and does not affect the local listening `grpc.bind_addr`; it defaults to 127.0.0.1, so other nodes cannot connect via the metasrv-returned address.
+# If left empty or unset, the server automatically uses the first network interface's IP address with the same port as `grpc.bind_addr`
+server_addr = "127.0.0.1:4001"
 runtime_size = 8
-#+ max_total_message_memory = "0"
-#+ max_connection_age = "1h"
-flight_compression = "none"
-
-[grpc.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# Maximum total memory (bytes) for all concurrent gRPC request messages, rejects requests immediately when exceeded, defaults to "0" (unlimited)
+# Limits memory usage for gRPC writes on a single node to prevent OOM from fast writes, only tracks gRPC message size, excludes decompression and internal processing memory
+# Recommended to adjust after evaluating with `greptime_servers_grpc_memory_usage_bytes` metric, this option provides auxiliary protection only
+max_total_message_memory = "0"
+# To enable TLS for gRPC traffic, add a `[grpc.tls]` section; field details are listed in the TLS table below.
 
 [mysql]
+# Whether to enable the MySQL protocol, defaults to true.
 enable = true
+# MySQL server address. Defaults to "127.0.0.1:4002" and therefore listens only on the loopback interface, so external hosts cannot reach it.
+# For production, adjust this to an accessible IP address or domain based on your network configuration.
 addr = "127.0.0.1:4002"
-runtime_size = 2
-keep_alive = "0s"
-prepared_stmt_cache_size = 10000
-
-[mysql.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# To enable TLS for MySQL, add a `[mysql.tls]` section; field details are listed in the TLS table below.
 
 [postgres]
+# Whether to enable the PostgreSQL protocol, defaults to true.
 enable = true
+# PostgreSQL server address. Defaults to "127.0.0.1:4003" and therefore listens only on the loopback interface, so external hosts cannot reach it.
+# For production, adjust this to an accessible IP address or domain based on your network configuration.
 addr = "127.0.0.1:4003"
-runtime_size = 2
-keep_alive = "0s"
-
-[postgres.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# To enable TLS for PostgreSQL, add a `[postgres.tls]` section; field details are listed in the TLS table below.
 
 [opentsdb]
+# Whether to enable OpenTSDB protocol support over the HTTP API, defaults to true.
 enable = true
 
 [influxdb]
+# Whether to enable InfluxDB line protocol support over the HTTP API, defaults to true.
 enable = true
 
 [jaeger]
+# Whether to enable Jaeger trace ingestion over the HTTP API, defaults to true.
 enable = true
 
 [prom_store]
+# Whether to enable Prometheus remote read/write endpoints, defaults to true.
 enable = true
+# Whether to use Metric Engine when handling Prometheus remote write requests, defaults to true.
 with_metric_engine = true
 ```
-
-The following table describes the options in detail:
-
-| Option     | Key                      | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| http       |                          |         | HTTP server options                                                                                                                                                                                                                                                                                                                                                                        |
-|            | addr                     | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | timeout                  | String  | HTTP request timeout, "30s" by default                                                                                                                                                                                                                                                                                                                                                     |
-|            | body_limit               | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
-|            | max_total_body_memory    | String  | Maximum total memory for all concurrent HTTP request bodies. "0" (unlimited) by default                                                                                                                                                                                                                                                                                                    |
-|            | enable_cors              | Boolean | Enable HTTP CORS support, true by default                                                                                                                                                                                                                                                                                                                                                  |
-|            | prom_validation_mode     | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
-| grpc       |                          |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
-|            | bind_addr                | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
-|            | runtime_size             | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | max_total_message_memory | String  | Maximum total memory for all concurrent gRPC request messages. "0" (unlimited) by default                                                                                                                                                                                                                                                                                                  |
-|            | max_connection_age       | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
-|            | flight_compression       | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                         |
-| mysql      |                          |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
-|            | enable                   | Boolean | Whether to enable MySQL protocol, true by default                                                                                                                                                                                                                                                                                                                                          |
-|            | addr                     | String  | Server address, "127.0.0.1:4002" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | runtime_size             | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | keep_alive               | String  | Server-side keep-alive time. "0s" (disabled) by default                                                                                                                                                                                                                                                                                                                                    |
-|            | prepared_stmt_cache_size | Integer | Maximum entries in the MySQL prepared statement cache, 10000 by default                                                                                                                                                                                                                                                                                                                    |
-| postgres   |                          |         | PostgreSQL server options                                                                                                                                                                                                                                                                                                                                                                  |
-|            | enable                   | Boolean | Whether to enable PostgreSQL protocol, true by default                                                                                                                                                                                                                                                                                                                                     |
-|            | addr                     | String  | Server address, "127.0.0.1:4003" by default                                                                                                                                                                                                                                                                                                                                                |
-|            | runtime_size             | Integer | The number of server worker threads, 2 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | keep_alive               | String  | Server-side keep-alive time. "0s" (disabled) by default                                                                                                                                                                                                                                                                                                                                    |
-| opentsdb   |                          |         | OpenTSDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
-|            | enable                   | Boolean | Whether to enable OpenTSDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
-| influxdb   |                          |         | InfluxDB Protocol options                                                                                                                                                                                                                                                                                                                                                                  |
-|            | enable                   | Boolean | Whether to enable InfluxDB protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                           |
-| jaeger     |                          |         | Jaeger Protocol options                                                                                                                                                                                                                                                                                                                                                                    |
-|            | enable                   | Boolean | Whether to enable Jaeger protocol in HTTP API, true by default                                                                                                                                                                                                                                                                                                                             |
-| prom_store |                          |         | Prometheus remote storage options                                                                                                                                                                                                                                                                                                                                                          |
-|            | enable                   | Boolean | Whether to enable Prometheus Remote Write and read in HTTP API, true by default                                                                                                                                                                                                                                                                                                            |
-|            | with_metric_engine       | Boolean | Whether to use the metric engine on Prometheus Remote Write, true by default                                                                                                                                                                                                                                                                                                               |
-
-For MySQL, Postgres and gRPC interface, TLS can be configured to enable transport
-layer security.
+You can enable TLS for MySQL, Postgres and gRPC by adding `[mysql.tls]`, `[postgres.tls]` or `[grpc.tls]` sections to your configuration. The following table lists the shared fields for these TLS sections:
 
 | Option                                    | Key         | Type    | Description                                                   |
 | ------------------------------------------| ----------- | ------- | ------------------------------------------------------------- |
-| `mysql.tls`, `postgres.tls` or `grpc.tls` |             |         | TLS configuration for MySQL and Postgres                      |
+| `mysql.tls`, `postgres.tls` or `grpc.tls` |             |         | TLS configuration for MySQL / Postgres / gRPC                 |
 |                                           | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
 |                                           | `cert_path` | String  | File path for TLS certificate                                 |
 |                                           | `key_path`  | String  | File path for TLS private key                                 |

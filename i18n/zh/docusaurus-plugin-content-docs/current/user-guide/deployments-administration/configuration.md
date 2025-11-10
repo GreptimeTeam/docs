@@ -117,115 +117,75 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`flownode` 和 `metasrv`。
 :::
 
-下面的示例配置包含了所有协议选项的默认值。
+下面的示例配置包含了所有协议的最常用的并且需要重点关注的选项。
 你可以在配置文件中更改这些值或禁用某些协议。
 例如禁用 OpenTSDB 协议支持，可以将 `enable` 参数设置为 `false`。
 请注意，为了保障数据库的正常工作，无法禁用 HTTP 和 gRPC 协议。
 
 ```toml
 [http]
+# 服务器 HTTP 绑定地址，默认为 "127.0.0.1:4000"，仅监听本地回环地址，外部主机无法访问
+# 生产环境请根据实际网络情况调整为可访问的 IP 地址或者域名
 addr = "127.0.0.1:4000"
-timeout = "30s"
-body_limit = "64MB"
-#+ max_total_body_memory = "0"
-enable_cors = true
-prom_validation_mode = "strict"
+# 所有并发 HTTP 请求体的最大总内存（字节），超过限制时立即拒绝请求，默认为 "0"（无限制）
+# 限制单节点 HTTP 写入时的内存占用，避免写入过快触发 OOM，仅统计 HTTP body 大小，不含解压和内部处理内存
+# 建议结合 `greptime_servers_http_memory_usage_bytes` 监控评估后再调整，此选项仅提供辅助防护
+max_total_body_memory = "0"
 
 [grpc]
+# gRPC 服务绑定地址，默认为 "127.0.0.1:4001"
+# 默认配置仅监听本地回环地址，外部主机无法访问。生产环境请根据实际网络配置调整为合适的 IP 地址或域名
 bind_addr = "127.0.0.1:4001"
-runtime_size = 8
-#+ max_total_message_memory = "0"
-#+ max_connection_age = "1h"
-flight_compression = "none"
-
-[grpc.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# 向 metasrv 注册的通信地址，供其他节点通过 metasrv 获取并建立连接，可配置 IP 地址或域名
+# 该值仅用于对外注册，不影响本地监听的 `grpc.bind_addr`；默认为 127.0.0.1，其他节点无法根据 metasrv 返回的地址连接
+# 若留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，端口号与 `grpc.bind_addr` 保持一致
+server_addr = "127.0.0.1:4001"
+# 所有并发 gRPC 请求消息的最大总内存（字节），超过限制时立即拒绝请求，默认为 "0"（无限制）
+# 限制单节点 gRPC 写入时的内存占用，避免写入过快触发 OOM，仅统计 gRPC 消息大小，不含解压和内部处理内存
+# 建议结合 `greptime_servers_grpc_memory_usage_bytes` 监控评估后再调整，此选项仅提供辅助防护
+max_total_message_memory = "0"
+# 如需启用 TLS，可添加 `[grpc.tls]` 段，字段说明见下方 TLS 配置表
 
 [mysql]
+# 是否启用 MySQL 协议，默认为 true
 enable = true
+# MySQL 协议服务器地址，默认为 "127.0.0.1:4002"，仅监听本地回环地址，外部主机无法访问
+# 生产环境请根据实际网络情况调整为可访问的 IP 地址或域名
 addr = "127.0.0.1:4002"
-runtime_size = 2
-keep_alive = "0s"
-prepared_stmt_cache_size = 10000
-
-[mysql.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# 如需启用 TLS，可添加 `[mysql.tls]` 段，字段说明见下方 TLS 配置表
 
 [postgres]
+# 是否启用 PostgreSQL 协议，默认为 true
 enable = true
+# PostgreSQL 协议服务器地址，默认为 "127.0.0.1:4003"，仅监听本地回环地址，外部主机无法访问
+# 生产环境请根据实际网络情况调整为可访问的 IP 地址或域名
 addr = "127.0.0.1:4003"
-runtime_size = 2
-keep_alive = "0s"
-
-[postgres.tls]
-mode = "disable"
-cert_path = ""
-key_path = ""
-watch = false
+# 如需启用 TLS，可添加 `[postgres.tls]` 段，字段说明见下方 TLS 配置表
 
 [opentsdb]
+# 是否在 HTTP API 中启用 OpenTSDB 协议，默认为 true
 enable = true
 
 [influxdb]
+# 是否在 HTTP API 中启用 InfluxDB Line Protocol，默认为 true
 enable = true
 
 [jaeger]
+# 是否在 HTTP API 中启用 Jaeger Trace 写入，默认为 true
 enable = true
 
 [prom_store]
+# 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true
 enable = true
+# 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true
 with_metric_engine = true
 ```
 
-下表描述了每个选项的详细信息：
-
-| 选项       | 键                       | 类型   | 描述                                                         |
-| ---------- | ------------------------ | ------ | ------------------------------------------------------------ |
-| http       |                          |        | HTTP 服务器选项                                              |
-|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
-|            | timeout                  | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
-|            | body_limit               | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
-|            | max_total_body_memory    | 字符串 | 所有并发 HTTP 请求体的最大总内存。默认为 "0"（无限制）        |
-|            | enable_cors              | 布尔值 | 启用 HTTP CORS 支持，默认为 true                              |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性） |
-| grpc       |                          |        | gRPC 服务器选项                                              |
-|            | bind_addr                | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                   |
-|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 8                                 |
-|            | max_total_message_memory | 字符串 | 所有并发 gRPC 请求消息的最大总内存。默认为 "0"（无限制）      |
-|            | max_connection_age       | 字符串 | gRPC 连接在服务端保持的最长时间。参见 ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/)。默认不设置。示例："1h" 表示 1 小时，"30m" 表示 30 分钟 |
-|            | flight_compression       | 字符串 | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none` |
-| mysql      |                          |        | MySQL 服务器选项                                             |
-|            | enable                   | 布尔值 | 是否启用 MySQL 协议，默认为 true                             |
-|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4002"                          |
-|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 2                                 |
-|            | keep_alive               | 字符串 | 服务端 keep-alive 时间。默认为 "0s"（禁用）                   |
-|            | prepared_stmt_cache_size | 整数   | MySQL 预编译语句缓存的最大条目数，默认为 10000                |
-| postgres   |                          |        | PostgreSQL 服务器选项                                        |
-|            | enable                   | 布尔值 | 是否启用 PostgreSQL 协议，默认为 true                        |
-|            | addr                     | 字符串 | 服务器地址，默认为 "127.0.0.1:4003"                          |
-|            | runtime_size             | 整数   | 服务器工作线程数量，默认为 2                                 |
-|            | keep_alive               | 字符串 | 服务端 keep-alive 时间。默认为 "0s"（禁用）                   |
-| opentsdb   |                          |        | OpenTSDB 协议选项                                            |
-|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 OpenTSDB 协议，默认为 true            |
-| influxdb   |                          |        | InfluxDB 协议选项                                            |
-|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 InfluxDB 协议，默认为 true            |
-| jaeger     |                          |        | Jaeger 协议选项                                              |
-|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 Jaeger 协议，默认为 true              |
-| prom_store |                          |        | Prometheus 远程存储选项                                      |
-|            | enable                   | 布尔值 | 是否在 HTTP API 中启用 Prometheus 远程读写，默认为 true      |
-|            | with_metric_engine       | 布尔值 | 是否在 Prometheus 远程写入中使用 Metric Engine，默认为 true  |
-
-对 MySQL，Postgres 和 gRPC 接口，我们支持 TLS 配置
+对 MySQL、Postgres 和 gRPC 接口，可以通过在配置中添加 `[mysql.tls]`、`[postgres.tls]` 或 `[grpc.tls]` 段来启用 TLS，以下表格列出了这些 TLS 段共享的字段
 
 | Option                                   | Key         | Type    | Description                                      |
 |------------------------------------------|-------------|---------|--------------------------------------------------|
-| `mysql.tls`，`postgres.tls` 或 `grpc.tls` |             |         | MySQL 或 Postgres 的 TLS 配置                    |
+| `mysql.tls`，`postgres.tls` 或 `grpc.tls` |             |         | MySQL / Postgres / gRPC 的 TLS 配置段            |
 |                                          | `mode`      | String  | TLS 模式，支持 `disable`, `prefer` and `require` |
 |                                          | `cert_path` | String  | TLS 证书文件路径                                 |
 |                                          | `key_path`  | String  | TLS 私钥文件路径                                 |
