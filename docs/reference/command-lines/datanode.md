@@ -5,7 +5,13 @@ description: Comprehensive guide to GreptimeDB datanode command-line interface, 
 
 # Datanode
 
-## Subcommand options
+The `greptime datanode` command provides subcommands for managing and benchmarking datanode instances.
+
+## start
+
+Start the datanode service.
+
+### Options
 
 You can list all the options from the following command:
 
@@ -28,9 +34,9 @@ greptime datanode start --help
 
 All the `addr` options are in the form of `ip:port`.
 
-## Examples
+### Examples
 
-### Start service with configurations
+#### Start service with configurations
 
 Starts a datanode instance with customized configurations:
 
@@ -45,3 +51,36 @@ greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 -
 ```
 
 The `datanode.example.toml` configuration file comes from the `config` directory of the `[GreptimeDB](https://github.com/GreptimeTeam/greptimedb/)` repository. You can find more example configuration files there. The `-c` option specifies the configuration file, for more information check [Configuration](/user-guide/deployments-administration/configuration.md).
+
+## objbench
+
+The `objbench` subcommand is a benchmarking tool for measuring read/write performance of specific files on object storage. This is useful for diagnosing performance issues and testing storage layer performance.
+
+### Options
+
+| Option                         | Description                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `--config <FILE>`              | Path to the datanode configuration file (TOML format)                                            |
+| `--source <PATH>`              | Source SST file path in object storage (e.g., `data/greptime/public/1024/1024_0000000000/metadata/<uuid>.parquet`) |
+| `-v`/`--verbose`               | Enable verbose output                                                                            |
+| `--pprof-file <FILE>`          | Output file path for pprof flamegraph (enables profiling). Generates an SVG flamegraph file     |
+
+### Examples
+
+#### Basic benchmark
+
+Measure the read/write performance of a specific file:
+
+```sh
+greptime datanode objbench --config ./datanode.toml --source data/greptime/public/1024/1024_0000000000/metadata/8fb41bc7-a106-4b9e-879b-392da799f958.parquet
+```
+
+#### Benchmark with profiling
+
+Measure performance and generate a flamegraph for performance analysis:
+
+```sh
+greptime datanode objbench --config ./datanode.toml --source data/greptime/public/1024/1024_0000000000/metadata/8fb41bc7-a106-4b9e-879b-392da799f958.parquet --pprof-file=./flamegraph.svg
+```
+
+This will generate a flamegraph in SVG format that can be opened in a web browser for performance analysis.
