@@ -32,6 +32,15 @@ For example:
 -- Flush the table test --
 admin flush_table("test");
 
--- Schedule a compaction for table test --
+-- Schedule a compaction for table test with default parallelism (1) --
 admin compact_table("test");
+
+-- Schedule a regular compaction with parallelism set to 2 --
+admin compact_table("test", "regular", "parallelism=2");
+
+-- Schedule an SWCS compaction with default time window and parallelism set to 2 --
+admin compact_table("test", "swcs", "parallelism=2");
+
+-- Schedule an SWCS compaction with custom time window and parallelism --
+admin compact_table("test", "swcs", "window=1800,parallelism=2");
 ```

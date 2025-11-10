@@ -111,7 +111,11 @@ ADMIN COMPACT_TABLE(
 ```
 
 The `<strategy_name>` parameter can be either `twcs` or `swcs` (case insensitive) which refer to Time Windowed Compaction Strategy and Strict Window Compaction Strategy respectively.
-For the `swcs` strategy, the `<strategy_parameters>` specify the window size (in seconds) for splitting SST files. For example:
+For the `swcs` strategy, the `<strategy_parameters>` can specify:
+- The window size (in seconds) for splitting SST files
+- The `parallelism` parameter to control the level of parallelism for compaction (defaults to 1)
+
+For example, to trigger compaction with a 1-hour window:
 
 ```sql
 ADMIN COMPACT_TABLE(
@@ -129,6 +133,23 @@ ADMIN COMPACT_TABLE(
 ```
 
 When executing this statement, GreptimeDB will split each SST file into segments with a time span of 1 hour (3600 seconds) and merge these segments into a single output, ensuring no overlapping files remain.
+
+You can also specify the `parallelism` parameter to speed up compaction by processing multiple files concurrently:
+
+```sql
+-- SWCS compaction with default time window and parallelism set to 2
+ADMIN COMPACT_TABLE("monitor", "swcs", "parallelism=2");
+
+-- SWCS compaction with custom time window and parallelism
+ADMIN COMPACT_TABLE("monitor", "swcs", "window=1800,parallelism=2");
+```
+
+The `parallelism` parameter is also available for regular compaction:
+
+```sql
+-- Regular compaction with parallelism set to 2
+ADMIN COMPACT_TABLE("monitor", "regular", "parallelism=2");
+```
 
 The following diagram shows the process of strict window compression:
 
