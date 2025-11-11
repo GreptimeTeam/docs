@@ -109,6 +109,7 @@ FROM INFORMATION_SCHEMA.SSTS_MANIFEST
 GROUP BY table_id;
 ```
 
+
 Output example:
 
 ```sql

@@ -80,6 +80,7 @@ FROM INFORMATION_SCHEMA.SSTS_STORAGE
 WHERE file_size IS NOT NULL;
 ```
 
+
 Output example:
 
 ```sql
