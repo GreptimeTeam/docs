@@ -33,7 +33,7 @@ Fields in the `SSTS_STORAGE` table are described as follows:
 
 - `file_path`: The full path to the file in object storage.
 - `file_size`: The size of the file in bytes (if available from storage).
-- `last_modified_ms`: The last modified time in milliseconds since epoch (if available from storage).
+- `last_modified_ms`: The last modified time in milliseconds (if available from storage).
 - `node_id`: The ID of the datanode where the file is located.
 
 ## Use Cases
