@@ -64,3 +64,5 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`PROCEDURE_INFO`](./procedure-info.md) | Procedure information.|
 | [`PROCESS_LIST`](./process-list.md) | Running queries information.|
 | [`SSTS_INDEX_META`](./ssts-index-meta.md) | Provides SST index metadata including inverted indexes, fulltext indexes, and bloom filters.|
+| [`SSTS_MANIFEST`](./ssts-manifest.md) | Provides SST file information from the manifest including file paths, sizes, time ranges, and row counts.|
+| [`SSTS_STORAGE`](./ssts-storage.md) | Provides SST file information from the storage layer for verification and debugging.|

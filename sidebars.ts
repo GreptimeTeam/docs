@@ -720,6 +720,8 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/cluster-info',
                 'reference/sql/information-schema/process-list',
                 'reference/sql/information-schema/ssts-index-meta',
+                'reference/sql/information-schema/ssts-manifest',
+                'reference/sql/information-schema/ssts-storage',
               ],
             },
           ],
