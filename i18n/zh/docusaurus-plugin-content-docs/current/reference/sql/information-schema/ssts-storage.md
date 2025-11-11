@@ -34,7 +34,7 @@ DESC SSTS_STORAGE;
 - `file_path`：对象存储中文件的完整路径。
 - `file_size`：文件的大小（字节，如果存储中可用）。
 - `last_modified_ms`：自纪元以来的最后修改时间（毫秒，如果存储中可用）。
-- `node_id`：文件所在的 datanode ID。
+- `node_id`：文件所在的数据节点 ID。
 
 ## 使用场景
 

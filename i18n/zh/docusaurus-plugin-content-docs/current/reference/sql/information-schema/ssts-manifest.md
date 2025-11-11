@@ -48,11 +48,11 @@ DESC SSTS_MANIFEST;
 `SSTS_MANIFEST` 表中的字段描述如下：
 
 - `table_dir`：表的目录路径。
-- `region_id`：引用该文件的 region ID。
+- `region_id`：引用该文件的 Region ID。
 - `table_id`：表的 ID。
-- `region_number`：表中的 region 编号。
-- `region_group`：region 的组标识符。
-- `region_sequence`：region 的序列号。
+- `region_number`：表中的 Region 编号。
+- `region_group`：Region 的组标识符。
+- `region_sequence`：Region 的序列号。
 - `file_id`：SST 文件的唯一标识符（UUID）。
 - `level`：LSM 树中的 SST 级别（0 表示未压缩，1 表示已压缩）。
 - `file_path`：对象存储中 SST 文件的完整路径。
@@ -64,13 +64,13 @@ DESC SSTS_MANIFEST;
 - `min_ts`：SST 文件中的最小时间戳。
 - `max_ts`：SST 文件中的最大时间戳。
 - `sequence`：与此文件关联的序列号。
-- `origin_region_id`：创建该文件的 region ID。
-- `node_id`：文件所在的 datanode ID。
+- `origin_region_id`：创建该文件的 Region ID。
+- `node_id`：文件所在的数据节点 ID。
 - `visible`：该文件在当前版本中是否可见。
 
 ## 示例
 
-查询 manifest 中的所有 SST 文件：
+查询清单中的所有 SST 文件：
 
 ```sql
 SELECT * FROM INFORMATION_SCHEMA.SSTS_MANIFEST;
