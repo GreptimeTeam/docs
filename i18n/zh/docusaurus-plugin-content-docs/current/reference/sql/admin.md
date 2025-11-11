@@ -31,6 +31,15 @@ GreptimeDB 提供了一些管理函数来管理数据库和数据：
 -- 刷新表 test --
 admin flush_table("test");
 
--- 为表 test 启动 compaction 任务 --
+-- 为表 test 启动 compaction 任务，默认并行度为 1 --
 admin compact_table("test");
+
+-- 启动常规 compaction，并行度设置为 2 --
+admin compact_table("test", "regular", "parallelism=2");
+
+-- 启动 SWCS compaction，使用默认时间窗口，并行度设置为 2 --
+admin compact_table("test", "swcs", "parallelism=2");
+
+-- 启动 SWCS compaction，自定义时间窗口和并行度 --
+admin compact_table("test", "swcs", "window=1800,parallelism=2");
 ```

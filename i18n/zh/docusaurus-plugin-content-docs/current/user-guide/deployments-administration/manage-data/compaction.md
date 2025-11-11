@@ -108,7 +108,11 @@ ADMIN COMPACT_TABLE(
 ```
 
 `<strategy_name>` 参数可以是 `twcs` 或 `swcs`（大小写不敏感），分别指定时间窗口压缩策略和严格窗口压缩策略。
-对于 `swcs` 策略， `<strategy_parameters>` 指定用于拆分 SST 文件的窗口大小（以秒为单位）。例如：
+对于 `swcs` 策略， `<strategy_parameters>` 可以指定：
+- 用于拆分 SST 文件的窗口大小（以秒为单位）
+- `parallelism` 参数用于控制压缩的并行度（默认为 1）
+
+例如，触发使用 1 小时窗口的压缩：
 
 ```sql
 ADMIN COMPACT_TABLE(
@@ -126,6 +130,23 @@ ADMIN COMPACT_TABLE(
 ```
 
 执行此语句时，GreptimeDB 会将每个 SST 文件按 1 小时（3600 秒）的时间跨度拆分成多个分块，并将这些分块合并为一个输出文件，确保没有重叠的文件。
+
+你还可以指定 `parallelism` 参数来通过并发处理多个文件以加速压缩：
+
+```sql
+-- 使用默认时间窗口和并行度为 2 的 SWCS 压缩
+ADMIN COMPACT_TABLE("monitor", "swcs", "parallelism=2");
+
+-- 使用自定义时间窗口和并行度的 SWCS 压缩
+ADMIN COMPACT_TABLE("monitor", "swcs", "window=1800,parallelism=2");
+```
+
+`parallelism` 参数同样适用于常规压缩：
+
+```sql
+-- 并行度为 2 的常规压缩
+ADMIN COMPACT_TABLE("monitor", "regular", "parallelism=2");
+```
 
 下图展示了一次 SWCS 压缩的过程：
 
