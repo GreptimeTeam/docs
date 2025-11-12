@@ -93,7 +93,6 @@ greptime datanode objbench --config datanode.toml --source <path>.parquet
 
 # Generate flame graph
 greptime datanode objbench --config datanode.toml --source <path>.parquet --pprof-file flamegraph.svg
-
 ```
 
 
@@ -338,5 +337,3 @@ greptime datanode objbench --config datanode.toml --source <path>.parquet --ppro
 We would like to thank the following contributors from the GreptimeDB community:
 
 [@MichaelScofield](https://github.com/MichaelScofield), [@SNC123](https://github.com/SNC123), [@Shyamnatesan](https://github.com/Shyamnatesan), [@Standing-Man](https://github.com/Standing-Man), [@WaterWhisperer](https://github.com/WaterWhisperer), [@WenyXu](https://github.com/WenyXu), [@ZonaHex](https://github.com/ZonaHex), [@aaraujo](https://github.com/aaraujo), [@cscnk52](https://github.com/cscnk52), [@daviderli614](https://github.com/daviderli614), [@discord9](https://github.com/discord9), [@evenyag](https://github.com/evenyag), [@fengjiachun](https://github.com/fengjiachun), [@fengys1996](https://github.com/fengys1996), [@github-actions[bot]](https://github.com/github-actions[bot]), [@killme2008](https://github.com/killme2008), [@linyihai](https://github.com/linyihai), [@paomian](https://github.com/paomian), [@shuiyisong](https://github.com/shuiyisong), [@sunng87](https://github.com/sunng87), [@v0y4g3r](https://github.com/v0y4g3r), [@waynexia](https://github.com/waynexia), [@zhongzc](https://github.com/zhongzc), [@zyy17](https://github.com/zyy17)
-
-
