@@ -22,7 +22,7 @@ Release date: November 11, 2025
 #### Dashboard v0.11.7 Released
 - Metrics UI optimization: separated table and chart tabs, independent instant/range queries, support for time picker and multi-value display.
 - Timezone optimization: support for timezone validation and local storage persistence.
-- Pipeline support: added Pipeline DDL functionality, support for creating database tables from Pipeline configuration.
+- Flow management: UI for flow task CRUD operations.
 
 #### Bulk Memtable
 For scenarios with high cardinality primary keys, this release introduces experimental Bulk Memtable and a new data organization format (flat format). Both must be used together. Bulk Memtable offers lower memory usage when dealing with high cardinality primary keys. When primary key cardinality exceeds two million, memory usage can be reduced by more than 75%. Currently, Bulk Memtable performs better with larger write batch sizes, and we recommend setting batch sizes to 1024 rows or more when using Bulk Memtable. Additionally, the new data organization format provides better query performance in high cardinality scenarios compared to the original format.
