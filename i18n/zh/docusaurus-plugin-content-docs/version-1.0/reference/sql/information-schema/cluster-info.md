@@ -1,0 +1,88 @@
+---
+keywords: [CLUSTER_INFO 表, 集群信息, 节点信息, SQL查询, 数据库集群]
+description: 提供了 GreptimeDB 集群信息的相关内容，包括集群状态、节点信息和相关的 SQL 查询示例。
+---
+
+# CLUSTER_INFO
+
+`CLUSTER_INFO` 表提供了集群的节点拓扑信息。 
+
+
+```sql
+USE INFORMATION_SCHEMA;
+
+DESC TABLE CLUSTER_INFO;
+```
+
+输出如下：
+
+```sql
++-----------------------+----------------------+------+------+---------+---------------+
+| Column                | Type                 | Key  | Null | Default | Semantic Type |
++-----------------------+----------------------+------+------+---------+---------------+
+| peer_id               | Int64                |      | NO   |         | FIELD         |
+| peer_type             | String               |      | NO   |         | FIELD         |
+| peer_addr             | String               |      | YES  |         | FIELD         |
+| peer_hostname         | String               |      | YES  |         | FIELD         |
+| total_cpu_millicores  | Int64                |      | NO   |         | FIELD         |
+| total_memory_bytes    | Int64                |      | NO   |         | FIELD         |
+| cpu_usage_millicores  | Int64                |      | NO   |         | FIELD         |
+| memory_usage_bytes    | Int64                |      | NO   |         | FIELD         |
+| version               | String               |      | NO   |         | FIELD         |
+| git_commit            | String               |      | NO   |         | FIELD         |
+| start_time            | TimestampMillisecond |      | YES  |         | FIELD         |
+| uptime                | String               |      | YES  |         | FIELD         |
+| active_time           | String               |      | YES  |         | FIELD         |
+| node_status           | String               |      | YES  |         | FIELD         |
++-----------------------+----------------------+------+------+---------+---------------+
+```
+
+
+每个列的含义：
+
+* `peer_id`: 节点的服务器 ID。对于 standalone 来讲，该字段总是为 `0`，对于集群模式下的 frontend 该字段总为 `-1`。因为在这两种情况下，该字段没有实际含义。
+* `peer_type`: 节点类型，分布式集群里可能是 `METASRV`、`FRONTEND` 或者 `DATANODE`。单机模式显示为 `STANDALONE`。
+* `peer_addr`: 节点的 gRPC 服务地址。对于单机部署，该字段总为空。
+* `peer_hostname`: 节点的主机名。
+* `total_cpu_millicores`: 节点的总 CPU 毫核数。
+* `total_memory_bytes`: 节点的总内存字节数。
+* `cpu_usage_millicores`: 节点的 CPU 使用毫核数。此功能仅在容器化环境 (cgroup v2) 中有效。
+* `memory_usage_bytes`: 节点的内存使用字节数。此功能仅在容器化环境 (cgroup v2) 中有效。
+* `version`: 节点的版本号，形如 `0.7.2` 的字符串。
+* `git_commit`: 节点编译的 git 版本号。
+* `start_time`: 节点的启动时间。
+* `uptime`: 节点的持续运行时间，形如 `24h 10m 59s 150ms` 的字符串。
+* `active_time`: 距离节点上一次活跃（也就是发送心跳请求）过去的时间，形如 `24h 10m 59s 150ms` 的字符串。单机模式下该字段总为空。
+* `node_status`: 节点的状态信息。
+
+尝试查询下这张表：
+
+```sql
+SELECT * FROM CLUSTER_INFO;
+```
+
+一个单机模式的样例输出：
+
+```sql
++---------+------------+-----------+---------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+--------+-------------+-------------+
+| peer_id | peer_type  | peer_addr | peer_hostname | total_cpu_millicores | total_memory_bytes | cpu_usage_millicores | memory_usage_bytes | version | git_commit| start_time                 | uptime | active_time | node_status |
++---------+------------+-----------+---------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+--------+-------------+-------------+
+| 0       | STANDALONE |           |               | 16000                | 17179869184        | 0                    | 0                  | 0.7.2   | 86ab3d9   | 2024-04-30T06:40:02.074    | 18ms   |             | NULL        |
++---------+------------+-----------+---------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+--------+-------------+-------------+
+```
+
+另一个输出来自一个分布式集群，它有三个 Datanode、一个 Frontend 和一个 Metasrv：
+
+```sql
++---------+-----------+----------------+-------------------------------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+----------+-------------+-------------------------------------------------------------------+
+| peer_id | peer_type | peer_addr      | peer_hostname                       | total_cpu_millicores | total_memory_bytes | cpu_usage_millicores | memory_usage_bytes | version | git_commit| start_time                 | uptime   | active_time | node_status                                                       |
++---------+-----------+----------------+-------------------------------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+----------+-------------+-------------------------------------------------------------------+
+| 1       | DATANODE  | 127.0.0.1:4101 | mycluster-datanode-0                | 1000                 | 1073741824         | 1                    | 34570240           | 0.7.2   | 86ab3d9   | 2024-04-30T06:40:04.791    | 4s 478ms | 1s 467ms    | {"workloads":["hybrid"],"leader_regions":46,"follower_regions":0} |
+| 2       | DATANODE  | 127.0.0.1:4102 | mycluster-datanode-1                | 1000                 | 1073741824         | 1                    | 38170624           | 0.7.2   | 86ab3d9   | 2024-04-30T06:40:06.098    | 3s 171ms | 162ms       | {"workloads":["hybrid"],"leader_regions":46,"follower_regions":0} |
+| 3       | DATANODE  | 127.0.0.1:4103 | mycluster-datanode-2                | 1000                 | 1073741824         | 1                    | 37085184           | 0.7.2   | 86ab3d9   | 2024-04-30T06:40:07.425    | 1s 844ms | 1s 839ms    | {"workloads":["hybrid"],"leader_regions":46,"follower_regions":0} |
+| -1      | FRONTEND  | 127.0.0.1:4001 | mycluster-frontend-6c5d4bcf78-m7jtx | 1000                 | 1073741824         | 1                    | 45465600           | 0.7.2   | 86ab3d9   | 2024-04-30T06:40:08.815    | 454ms    | 47ms        | NULL                                                              |
+| 0       | METASRV   | 127.0.0.1:3002 | mycluster-meta-54bd44bd94-g8dzm     | 1000                 | 1073741824         | 0                    | 28368896           | unknown | unknown   |                            |          |             | {"is_leader":true}                                                |
++---------+-----------+----------------+-------------------------------------+----------------------+--------------------+----------------------+--------------------+---------+-----------+----------------------------+----------+-------------+-------------------------------------------------------------------+
+```
+
+
