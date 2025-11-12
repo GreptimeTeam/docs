@@ -19,10 +19,15 @@ Release date: November 11, 2025
 * feat(metric)!: enable sparse primary key encoding by default by [@WenyXu](https://github.com/WenyXu) in [#7195](https://github.com/GreptimeTeam/greptimedb/pull/7195)
 
 ### 👍 Highlights
-#### Bulk Memtable
-For scenarios with high-cardinality primary keys, this release introduces the experimental Bulk Memtable and a new data organization format (flat format). Both must be used together. Bulk Memtable provides more stable performance and lower memory usage when dealing with high-cardinality primary keys. Currently, Bulk Memtable performs better with larger batch sizes, and we recommend users set larger batch sizes when using Bulk Memtable. Additionally, the new data organization format offers better query performance in high-cardinality scenarios compared to the original format.
+#### Dashboard v0.11.7 Released
+- Metrics UI optimization: separated table and chart tabs, independent instant/range queries, support for time picker and multi-value display.
+- Timezone optimization: support for timezone validation and local storage persistence.
+- Pipeline support: added Pipeline DDL functionality, support for creating database tables from Pipeline configuration.
 
-Users can enable the new data format and Bulk Memtable by specifying `sst_format` as `flat` when creating tables.
+#### Bulk Memtable
+针对高基数主键的场景，本版本加入了实验性质的 Bulk Memtable 和新的数据组织方式（flat 格式）。两者必须同时使用。Bulk Memtable 在主键基数高的情况下有着更低的内存占用。在主键基数超过两百万的情况下，内存占用可以降低 75% 以上。目前 Bulk Memtable 在写入批大小（batch size）较大的情况下性能表现更好，建议用户使用 Bulk Memtable 时设置 1024 行以上的批大小。此外，新的数据组织方式在高基数场景下也相比原有数据组织方式有更高的查询性能。
+
+用户可以在建表时指定 sst_format 为 flat 来启用新的数据格式和 Bulk Memtable。
 ```sql
 CREATE TABLE flat_format_table(
     request_id STRING,
@@ -44,24 +49,37 @@ This release implements independent local caching for index files on object stor
 
 In previous versions, when users increased the local disk cache size, only newly generated data files could enter the local write cache, providing limited improvement for querying historical data. In this version, the database loads index files from object storage to local storage in the background after startup, reducing the time required for historical data queries.
 
-#### TQL Supports Value Aliasing
-This release adds `AS` alias syntax to `TQL EVAL / EXPLAIN / ANALYZE`, allowing naming of value columns in results, making query result fields clearer and more readable. It also makes using TQL results in SQL (especially in CTE and JOIN scenarios) more convenient, particularly suitable for complex PromQL functions or aggregation queries.
+#### Read-Write Permission Control Mode
+This release introduces permission mode support for the static user provider, implementing read-write access control with support for read-only, write-only, and read-write permissions. This enhancement enables administrators to create users with specific access levels, improving security and data governance.
 
-Examples
+The static user provider now accepts the format `username:permission_mode=password`, where the optional `permission_mode` can be:
+- `rw` (read-write): Full access to read and write operations
+- `ro` (read-only): Restricted to read operations only
+- `wo` (write-only): Restricted to write operations only
+
+Examples:
+```
+# Read-write user (default, backward compatible)
+greptime_user=greptime_pwd
+# Or explicitly specified
+greptime_user:rw=greptime_pwd
+
+# Read-only user
+greptime_user:ro=greptime_pwd
+
+# Write-only user
+greptime_user:wo=greptime_pwd
+```
+This feature is fully backward compatible with the old format - users without an explicitly specified permission mode default to read-write access (`rw`).
+
+#### TQL Supports Value Aliasing
+TQL now supports `AS` aliases for clearer column names and easier SQL integration.
+
 ```sql
 TQL EVAL (0, 30, '10s') http_requests_total AS requests;
-TQL EVAL (0, 10, '5s') count by (k) (test) AS count_value;
 ```
 
-CTE Example
-```sql
-WITH r AS (
-    TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_per_sec
-)
-SELECT * FROM r WHERE rate_per_sec > 5;
-```
-
-New objbench Subcommand (Datanode)
+#### New objbench Subcommand (Datanode)
 
 This release adds the `greptime datanode objbench` subcommand for conducting read/write performance benchmarks on specified SST files in object storage. This tool can be used to analyze storage layer performance, troubleshoot slow queries or I/O latency issues, and supports generating flame graphs for deeper performance diagnostics.
 Main Features
@@ -77,6 +95,7 @@ greptime datanode objbench --config datanode.toml --source <path>.parquet
 greptime datanode objbench --config datanode.toml --source <path>.parquet --pprof-file flamegraph.svg
 
 ```
+
 
 ### 🚀 Features
 
