@@ -25,9 +25,9 @@ Release date: November 11, 2025
 - Pipeline support: added Pipeline DDL functionality, support for creating database tables from Pipeline configuration.
 
 #### Bulk Memtable
-针对高基数主键的场景，本版本加入了实验性质的 Bulk Memtable 和新的数据组织方式（flat 格式）。两者必须同时使用。Bulk Memtable 在主键基数高的情况下有着更低的内存占用。在主键基数超过两百万的情况下，内存占用可以降低 75% 以上。目前 Bulk Memtable 在写入批大小（batch size）较大的情况下性能表现更好，建议用户使用 Bulk Memtable 时设置 1024 行以上的批大小。此外，新的数据组织方式在高基数场景下也相比原有数据组织方式有更高的查询性能。
+For scenarios with high cardinality primary keys, this release introduces experimental Bulk Memtable and a new data organization format (flat format). Both must be used together. Bulk Memtable offers lower memory usage when dealing with high cardinality primary keys. When primary key cardinality exceeds two million, memory usage can be reduced by more than 75%. Currently, Bulk Memtable performs better with larger write batch sizes, and we recommend setting batch sizes to 1024 rows or more when using Bulk Memtable. Additionally, the new data organization format provides better query performance in high cardinality scenarios compared to the original format.
 
-用户可以在建表时指定 sst_format 为 flat 来启用新的数据格式和 Bulk Memtable。
+Users can enable the new data format and Bulk Memtable by specifying `sst_format` as `flat` when creating tables.
 ```sql
 CREATE TABLE flat_format_table(
     request_id STRING,
