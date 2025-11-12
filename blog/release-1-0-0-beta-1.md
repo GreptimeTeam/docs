@@ -18,6 +18,66 @@ Release date: November 11, 2025
 * refactor!: add a `opentelemetry_traces_operations` table to aggregate `(service_name, span_name, span_kind)` to improve query performance by [@zyy17](https://github.com/zyy17) in [#7144](https://github.com/GreptimeTeam/greptimedb/pull/7144)
 * feat(metric)!: enable sparse primary key encoding by default by [@WenyXu](https://github.com/WenyXu) in [#7195](https://github.com/GreptimeTeam/greptimedb/pull/7195)
 
+### 👍 Highlights
+#### Bulk Memtable
+For scenarios with high-cardinality primary keys, this release introduces the experimental Bulk Memtable and a new data organization format (flat format). Both must be used together. Bulk Memtable provides more stable performance and lower memory usage when dealing with high-cardinality primary keys. Currently, Bulk Memtable performs better with larger batch sizes, and we recommend users set larger batch sizes when using Bulk Memtable. Additionally, the new data organization format offers better query performance in high-cardinality scenarios compared to the original format.
+
+Users can enable the new data format and Bulk Memtable by specifying `sst_format` as `flat` when creating tables.
+```sql
+CREATE TABLE flat_format_table(
+    request_id STRING,
+    content STRING,
+    greptime_timestamp TIMESTAMP TIME INDEX,
+PRIMARY KEY (request_id))
+WITH ('sst_format' = 'flat');
+```
+
+Additionally, for tables using the old format, you can switch to the flat format and Bulk Memtable using an ALTER statement.
+```sql
+ALTER TABLE old_format_table SET 'sst_format' = 'flat';
+```
+
+Tables using the flat format cannot be converted back to the old format. We will gradually switch the default format to the new format in future releases.
+
+#### Independent Index File Caching
+This release implements independent local caching for index files on object storage, allowing index files to be cached in local disk cache as much as possible, reducing the probability of accessing object storage during index queries. By default, the database allocates 20% of disk cache space to index files. Users can adjust this ratio by setting the `index_cache_percent` parameter.
+
+In previous versions, when users increased the local disk cache size, only newly generated data files could enter the local write cache, providing limited improvement for querying historical data. In this version, the database loads index files from object storage to local storage in the background after startup, reducing the time required for historical data queries.
+
+#### TQL Supports Value Aliasing
+This release adds `AS` alias syntax to `TQL EVAL / EXPLAIN / ANALYZE`, allowing naming of value columns in results, making query result fields clearer and more readable. It also makes using TQL results in SQL (especially in CTE and JOIN scenarios) more convenient, particularly suitable for complex PromQL functions or aggregation queries.
+
+Examples
+```sql
+TQL EVAL (0, 30, '10s') http_requests_total AS requests;
+TQL EVAL (0, 10, '5s') count by (k) (test) AS count_value;
+```
+
+CTE Example
+```sql
+WITH r AS (
+    TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_per_sec
+)
+SELECT * FROM r WHERE rate_per_sec > 5;
+```
+
+New objbench Subcommand (Datanode)
+
+This release adds the `greptime datanode objbench` subcommand for conducting read/write performance benchmarks on specified SST files in object storage. This tool can be used to analyze storage layer performance, troubleshoot slow queries or I/O latency issues, and supports generating flame graphs for deeper performance diagnostics.
+Main Features
+- Perform read/write performance tests on individual SST files
+- Support detailed output (-v/--verbose)
+- Support generating SVG flame graphs (--pprof-file)
+- Can load datanode configuration files (--config)
+```bash
+# Basic test
+greptime datanode objbench --config datanode.toml --source <path>.parquet
+
+# Generate flame graph
+greptime datanode objbench --config datanode.toml --source <path>.parquet --pprof-file flamegraph.svg
+
+```
+
 ### 🚀 Features
 
 * feat: Update parquet writer and indexer to support the flat format by [@evenyag](https://github.com/evenyag) in [#6866](https://github.com/GreptimeTeam/greptimedb/pull/6866)
