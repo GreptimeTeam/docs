@@ -331,28 +331,28 @@ ORDER BY m.ts, m.host;
 8 rows in set (0.02 sec)
 ```
 
-We can see that during the time window when the gRPC latencies increases, the number of error logs also increases significantly, and we've identified that the problem is on `host1`.
+We can see that during the time window when the gRPC latencies increases (`2024-07-11 20:00:10` ~ `2024-07-11 20:00:15`), the number of error logs also increases significantly (from 0 to 10 errors), and we've identified that the problem is on `host1`.
 
 ### Query data via PromQL
 
-GreptimeDB supports [Prometheus Query Language and its APIs](/user-guide/query-data/promql.md), allowing you to query metrics using PromQL. For example, you can retrieve the p95 latency over the last 1 minute per host with this query:
+GreptimeDB supports [Prometheus Query Language and its APIs](/user-guide/query-data/promql.md), allowing you to query metrics using PromQL. For example, you can retrieve the p95 latency over the last 5 seconds per host with this query:
 
 ```promql
-quantile_over_time(0.95, grpc_latencies{host!=""}[1m])
+quantile_over_time(0.95, grpc_latencies{host!=""}[5s])
 ```
 
 To test this, use the following curl command:
 ```bash
 curl -X POST \
   -H 'Authorization: Basic {{authorization if exists}}' \
-  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[1m])' \
+  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[5s])' \
   --data-urlencode 'start=2024-07-11 20:00:00Z' \
   --data-urlencode 'end=2024-07-11 20:00:20Z' \
-  --data-urlencode 'step=1m' \
+  --data-urlencode 'step=15s' \
   'http://localhost:4000/v1/prometheus/api/v1/query_range'
 ```
 
-We set the `step` to 1 minute.
+We set the `step` to 15 seconds.
 
 Output:
 ```json
@@ -369,8 +369,8 @@ Output:
         },
         "values": [
           [
-            1720728000.0,
-            "103"
+            1720728015.0,
+            "3400"
           ]
         ]
       },
@@ -382,8 +382,8 @@ Output:
         },
         "values": [
           [
-            1720728000.0,
-            "113"
+            1720728015.0,
+            "114"
           ]
         ]
       }
@@ -394,8 +394,8 @@ Output:
 
 Even more powerful, you can use SQL to execute PromQL and mix the two, for example:
 ```sql
-TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','1m')
-    quantile_over_time(0.95, grpc_latencies{host!=""}[1m]);
+TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','15s')
+    quantile_over_time(0.95, grpc_latencies{host!=""}[5s]);
 ```
 
 This SQL query will produce:
@@ -403,8 +403,8 @@ This SQL query will produce:
 +---------------------+---------------------------------------------------------+-------+-------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
 +---------------------+---------------------------------------------------------+-------+-------------+
-| 2024-07-11 20:00:00 |                                                     113 | host2 | GetUser     |
-| 2024-07-11 20:00:00 |                                                     103 | host1 | GetUser     |
+| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |
+| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |
 +---------------------+---------------------------------------------------------+-------+-------------+
 ```
 
@@ -440,8 +440,6 @@ ORDER BY
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name | num_errors |
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
-| 2024-07-11 20:00:05 |                                                     103 | host1 | GetUser     |          0 |
-| 2024-07-11 20:00:05 |                                                     113 | host2 | GetUser     |          0 |
 | 2024-07-11 20:00:10 |                                      140.89999999999998 | host1 | GetUser     |         10 |
 | 2024-07-11 20:00:10 |                                                   113.8 | host2 | GetUser     |          0 |
 | 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |          4 |
