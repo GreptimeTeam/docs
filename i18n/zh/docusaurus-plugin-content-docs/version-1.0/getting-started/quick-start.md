@@ -327,28 +327,28 @@ ORDER BY m.ts, m.host;
 8 rows in set (0.02 sec)
 ```
 
-我们可以看到当 gRPC 响应时间增大的时间窗口内，错误日志也显著增多，并且确定问题在 `host1`。
+我们可以看到当 gRPC 响应时间增大的时间窗口内（`2024-07-11 20:00:10` ~ `2024-07-11 20:00:15`），错误日志也显著增多（从 0 增长到 10 个错误），并且确定问题在 `host1`。
 
 ### 通过 PromQL 查询数据
 
-GreptimeDB 支持 [Prometheus 查询语言及其 API](/user-guide/query-data/promql.md)，允许你使用 PromQL 查询指标。例如，你可以使用以下查询获取每个主机在过去 1 分钟内的 p95 响应时间：
+GreptimeDB 支持 [Prometheus 查询语言及其 API](/user-guide/query-data/promql.md)，允许你使用 PromQL 查询指标。例如，你可以使用以下查询获取每个主机在过去 5 秒内的 p95 响应时间：
 
 ```promql
-quantile_over_time(0.95, grpc_latencies{host!=""}[1m])
+quantile_over_time(0.95, grpc_latencies{host!=""}[5s])
 ```
 
 要测试这个查询，使用以下 curl 命令：
 ```bash
 curl -X POST \
   -H 'Authorization: Basic {{authorization if exists}}' \
-  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[1m])' \
+  --data-urlencode 'query=quantile_over_time(0.95, grpc_latencies{host!=""}[5s])' \
   --data-urlencode 'start=2024-07-11 20:00:00Z' \
   --data-urlencode 'end=2024-07-11 20:00:20Z' \
-  --data-urlencode 'step=1m' \
+  --data-urlencode 'step=15s' \
   'http://localhost:4000/v1/prometheus/api/v1/query_range'
 ```
 
-这里我们设置 `step` 为 1 分钟。
+这里我们设置 `step` 为 15 秒。
 
 输出：
 ```json
@@ -365,8 +365,8 @@ curl -X POST \
         },
         "values": [
           [
-            1720728000.0,
-            "103"
+            1720728015.0,
+            "3400"
           ]
         ]
       },
@@ -378,8 +378,8 @@ curl -X POST \
         },
         "values": [
           [
-            1720728000.0,
-            "113"
+            1720728015.0,
+            "114"
           ]
         ]
       }
@@ -390,8 +390,8 @@ curl -X POST \
 
 更强大的是，你可以使用 SQL 来执行 PromQL 并混合使用两者，例如：
 ```sql
-TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','1m')
-    quantile_over_time(0.95, grpc_latencies{host!=""}[1m]);
+TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','15s')
+    quantile_over_time(0.95, grpc_latencies{host!=""}[5s]);
 ```
 
 这个 SQL 查询将输出：
@@ -399,8 +399,8 @@ TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','1m')
 +---------------------+---------------------------------------------------------+-------+-------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
 +---------------------+---------------------------------------------------------+-------+-------------+
-| 2024-07-11 20:00:00 |                                                     113 | host2 | GetUser     |
-| 2024-07-11 20:00:00 |                                                     103 | host1 | GetUser     |
+| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |
+| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |
 +---------------------+---------------------------------------------------------+-------+-------------+
 ```
 
@@ -436,8 +436,6 @@ ORDER BY
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name | num_errors |
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
-| 2024-07-11 20:00:05 |                                                     103 | host1 | GetUser     |          0 |
-| 2024-07-11 20:00:05 |                                                     113 | host2 | GetUser     |          0 |
 | 2024-07-11 20:00:10 |                                      140.89999999999998 | host1 | GetUser     |         10 |
 | 2024-07-11 20:00:10 |                                                   113.8 | host2 | GetUser     |          0 |
 | 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |          4 |
