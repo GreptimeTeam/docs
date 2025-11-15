@@ -386,7 +386,7 @@ default_ratio = 1.0
 
 ### Region 引擎选项
 
-datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前只可以配置存储引擎 `mito` 的选项。
+datanode 和 standalone 在 `[region_engine]` 部分可以配置不同存储引擎的对应参数。目前可以配置 `mito` 和 `metric` 存储引擎的选项。
 
 部分常用的选项如下
 
@@ -464,6 +464,20 @@ fork_dictionary_bytes = "1GiB"
 | `memtable.index_max_keys_per_shard`      | 整数   | `8192`        | 一个 shard 内的主键数<br/>只对 `partition_tree` memtable 生效                                                          |
 | `memtable.data_freeze_threshold`         | 整数   | `32768`       | 一个 shard 内写缓存可容纳的最大行数<br/>只对 `partition_tree` memtable 生效                                            |
 | `memtable.fork_dictionary_bytes`         | 字符串 | `1GiB`        | 主键字典的大小<br/>只对 `partition_tree` memtable 生效                                                                 |
+
+`metric` 引擎针对包含大量小表的 metrics 数据进行了优化：
+
+```toml
+[[region_engine]]
+[region_engine.metric]
+sparse_primary_key_encoding = true
+```
+
+可用选项：
+
+| 键                                | 类型   | 默认值  | 描述                                                                                                              |
+| --------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| `sparse_primary_key_encoding`     | 布尔值 | `true`  | 是否使用稀疏主键编码。此优化通过仅编码非空主键列来提高写入和查询性能。                                            |
 
 ### 设定 meta client
 

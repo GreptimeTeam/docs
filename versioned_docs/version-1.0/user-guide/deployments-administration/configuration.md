@@ -394,7 +394,7 @@ How to use distributed tracing, please reference [Tracing](/user-guide/deploymen
 
 ### Region engine options
 
-The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, only options for `mito` region engine is available.
+The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, options for `mito` and `metric` region engines are available.
 
 Frequently used options:
 
@@ -473,6 +473,20 @@ Available options:
 | `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                            |
 | `memtable.fork_dictionary_bytes`         | String  | `1GiB`        | Max dictionary bytes.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+The `metric` engine is optimized for handling metrics data with a large number of small tables:
+
+```toml
+[[region_engine]]
+[region_engine.metric]
+sparse_primary_key_encoding = true
+```
+
+Available options:
+
+| Key                            | Type    | Default | Descriptions                                                                                                                                                 |
+| ------------------------------ | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sparse_primary_key_encoding`  | Boolean | `true`  | Whether to use sparse primary key encoding. This optimization improves write and query performance by encoding only non-null primary key columns.            |
 
 ### Specify meta client
 
