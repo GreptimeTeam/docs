@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 - `Field` 列中的 `cpu_util`、`memory_util`、`disk_util` 列分别表示机器的 CPU 利用率、内存利用率和磁盘利用率。这些列包含实际的数据。
 - 表按 `host`、`idc`、`ts` 对行进行排序和去重。因此，查询 `select count(*) from system_metrics` 需要扫描所有的行做统计。
 
+要了解 GreptimeDB 如何将 Prometheus 指标映射到此模型，请参阅[文档](/user-guide/ingest-data/for-observability/prometheus/#数据模型)。
+
 ### 日志
 
 另一个例子是创建一个用于日志（如 Server 访问日志）的表：

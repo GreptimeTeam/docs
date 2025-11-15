@@ -21,7 +21,7 @@ GreptimeDB 通过以下方式统一处理指标、日志和链路追踪：
 
 ## 基于对象存储的成本优势
 
-GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率，而按需付费模式的 [GreptimeCloud](https://greptime.com/product/cloud) 确保您只需为实际使用的资源付费。
+GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率。可灵活扩展至各类云存储系统（如 S3、Azure Blob Storage），简化运维管理、大幅降低成本，**无厂商锁定**。
 
 ## 高性能
 
@@ -60,17 +60,16 @@ GreptimeDB的模块化架构允许不同的组件根据需要独立运行或协�
 
 GreptimeDB 通过以下工具简化了部署和维护：
 - [K8s Operator](https://github.com/GreptimeTeam/greptimedb-operator)
+- [Helm Charts](https://github.com/GreptimeTeam/helm-charts)
 - [命令行工具](https://github.com/GreptimeTeam/gtctl)
 - 内嵌[仪表盘](https://github.com/GreptimeTeam/dashboard)
-
-为了获得更简便的体验，请查看完全托管的 [GreptimeCloud](https://greptime.cn/product/cloud)。
 
 ### 易于集成
 
 GreptimeDB 支持多种数据摄入协议，从而实现与现有可观测性技术栈的无缝集成：
 - **数据库协议**：MySQL、PostgreSQL
-- **时序数据协议**：InfluxDB、OpenTSDB、Prometheus RemoteStorage
-- **可观测数据协议**：OpenTelemetry、Loki、ElasticSearch
+- **时序数据协议**：InfluxDB、OpenTSDB
+- **可观测数据协议**：OpenTelemetry、Loki、ElasticSearch、Prometheus RemoteStorage
 - **高性能 gRPC 协议及客户端 SDK**（Java、Go、Erlang 等）
 
 在数据查询方面，GreptimeDB 提供：

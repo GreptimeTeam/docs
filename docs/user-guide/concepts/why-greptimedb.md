@@ -21,7 +21,7 @@ It replaces complex legacy data stacks with a high-performance single solution.
 
 ## Cost-Effective with Object Storage
 
-GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency, while the pay-as-you-go model (via [GreptimeCloud](https://greptime.com/product/cloud)) ensures you only pay for what you use.
+GreptimeDB leverages cloud object storage (like AWS S3 and Azure Blob Storage etc.) as its storage layer, dramatically reducing costs compared to traditional storage solutions. Its optimized columnar storage and advanced compression algorithms achieve up to 50x cost efficiency. Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) for simplified management, dramatic cost efficiency, and **no vendor lock‑in**.
 
 ## High Performance
 
@@ -59,17 +59,16 @@ From embedded and standalone deployments to cloud-native clusters, GreptimeDB ad
 
 GreptimeDB simplifies deployment and maintenance with tools like:
 - [K8s Operator](https://github.com/GreptimeTeam/greptimedb-operator)
+- [Helm Charts](https://github.com/GreptimeTeam/helm-charts)
 - [Command-line Tool](https://github.com/GreptimeTeam/gtctl)
 - Embedded [Dashboard](https://github.com/GreptimeTeam/dashboard)
-
-For an even simpler experience, check out the fully managed [GreptimeCloud](https://greptime.com/product/cloud).
 
 ### Easy to Integrate
 
 GreptimeDB supports multiple data ingestion protocols, making integration with existing observability stacks seamless:
 - **Database protocols**: MySQL, PostgreSQL
-- **Time-series protocols**: InfluxDB, OpenTSDB, Prometheus RemoteStorage
-- **Observability protocols**: OpenTelemetry, Loki, ElasticSearch
+- **Time-series protocols**: InfluxDB, OpenTSDB
+- **Observability protocols**: OpenTelemetry, Loki, ElasticSearch, Prometheus RemoteStorage
 - **gRPC with SDKs**: Java, Go, Erlang, etc.
 
 For data querying, GreptimeDB provides:
