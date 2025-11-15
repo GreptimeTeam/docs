@@ -11,7 +11,7 @@ description: 介绍 GreptimeDB 的基础架构，包括 Metasrv、Frontend 和 D
 
 为了形成一个强大的数据库集群，并控制其复杂性，GreptimeDB 架构中有三个主要组成部分：Metasrv，Frontend 和 Datanode。
 
-- [**Metasrv**（元数据服务器）](/contributor-guide/metasrv/overview.md) 控制着 GreptimeDB 集群的核心命令。在典型的部署结构中，至少需要三个节点才能建立一个可靠的 Metasrv 小集群。Metasrv 管理着数据库和表的信息，包括数据如何在集群中传递、请求的转发地址等。它还负责监测 `Datanode` 的可用性和性能，以确保路由表的最新状态和有效性。
+- [**Metasrv**（元数据服务器）](/contributor-guide/metasrv/overview.md) 控制着 GreptimeDB 集群的核心命令。在典型的部署结构中，至少需要两个节点才能建立一个可靠的 Metasrv 小集群。Metasrv 管理着数据库和表的信息，包括数据如何在集群中传递、请求的转发地址等。它还负责监测 `Datanode` 的可用性和性能，以确保路由表的最新状态和有效性。
 
 - [**Frontend**（前端服务）](/contributor-guide/frontend/overview.md) 作为无状态的组件，可以根据需求进行伸缩扩容。它负责接收请求并鉴权，将多种协议转化为 GreptimeDB 集群的内部 gRPC 协议，并根据 Metasrv 中的表的分片路由信息将请求转发到相应的 Datanode。
 

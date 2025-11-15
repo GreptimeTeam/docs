@@ -21,13 +21,13 @@ GreptimeDB 通过以下方式统一处理指标、日志和链路追踪：
 
 ## 基于对象存储的成本优势
 
-GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率，而按需付费模式的 [GreptimeCloud](https://greptime.com/product/cloud) 确保您只需为实际使用的资源付费。
+GreptimeDB 采用云对象存储（如 AWS S3、阿里云 OSS 和 Azure Blob Storage 等）作为存储层，与传统存储方案相比显著降低了成本。通过优化的列式存储和先进的压缩算法，实现了高达 50 倍的成本效率，而按需付费模式的 [GreptimeCloud](https://greptime.com/product/cloud) 确保你只需为实际使用的资源付费。
 
 ## 高性能
 
 在性能优化方面，GreptimeDB 运用了多种技术，如 LSM Tree、数据分片和灵活的 WAL 选项（本地磁盘或 Kafka 等分布式服务），以处理大规模可观测数据的写入。
 
-GreptimeDB 使用纯 Rust 编写，具有卓越的性能和可靠性。强大而快速的查询引擎由向量化执行和分布式并行处理（感谢 [Apache DataFusion](https://datafusion.apache.org/)）驱动，并结合了丰富的[索引选项](/user-guide/manage-data/data-index.md)，例如倒排索引、跳数索引和全文索引等。GreptimeDB将智能索引和大规模并行处理 (MPP) 结合在一起，以提升查询过程中数据剪枝和过滤的效率。
+GreptimeDB 使用纯 Rust 编写，具有卓越的性能和可靠性。强大而快速的查询引擎由向量化执行和分布式并行处理（感谢 [Apache DataFusion](https://datafusion.apache.org/)）驱动，并结合了丰富的[索引选项](/user-guide/manage-data/data-index.md)，例如倒排索引、跳数索引和全文索引等。GreptimeDB 将智能索引和大规模并行处理 (MPP) 结合在一起，以提升查询过程中数据剪枝和过滤的效率。
 
 GreptimeDB 在[ClickHouse 的 JSONBench 测试中 Cold Run 斩获第一！](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb)，更多报告请参阅[性能测试报告](https://greptime.cn/blogs/2024-09-09-report-summary)。
 
@@ -77,7 +77,7 @@ GreptimeDB 支持多种数据摄入协议，从而实现与现有可观测性技
 - **SQL**：用于实时查询、复杂分析和数据库管理
 - **PromQL**：原生支持实时指标查询和 Grafana 集成
 
-GreptimeDB 与您的现有可观测性技术栈无缝集成，同时保持高性能和灵活性。
+GreptimeDB 与你的现有可观测性技术栈无缝集成，同时保持高性能和灵活性。
 
 ![Greptime Ecosystem](/greptime-ecosystem.png)
 
