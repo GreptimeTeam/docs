@@ -181,7 +181,8 @@ COPY DATABASE <db_name>
   WITH (
     FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
     START_TIME = "<START TIMESTAMP>",
-    END_TIME = "<END TIMESTAMP>"
+    END_TIME = "<END TIMESTAMP>",
+    PARALLELISM = <number>
   ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
@@ -196,6 +197,7 @@ COPY DATABASE <db_name>
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `PARALLELISM` | 并行处理的表数量。例如，如果数据库有 30 个表且 `PARALLELISM` 为 8，则同时处理 8 个表。默认值为 CPU 核心总数，最小值为 1。 | 可选 |
 
 > - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
 > - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
@@ -207,11 +209,17 @@ COPY DATABASE <db_name>
 -- 将 public 数据库中所有数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
+-- 使用 4 个并行表操作导出所有表数据
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=4);
+
 -- 将 public 数据库中时间范围在 2022-04-11 08:00:00 到 2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- 从 /tmp/export/ 目录恢复 public 数据库的数据
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
+
+-- 使用 8 个并行表操作导入数据
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=8);
 ```
 
 ## Windows 平台上的路径
