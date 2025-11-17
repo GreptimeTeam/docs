@@ -9,6 +9,26 @@ GreptimeDB supports distributed tracing. GreptimeDB exports all collected spans 
 
 In the [logging section](/user-guide/deployments-administration/configuration.md#logging-options) in the configuration, there are descriptions of configuration items related to tracing, [standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/standalone.example.toml) provide a reference configuration in the logging section.
 
+## Dynamic Tracing Control
+
+GreptimeDB provides the ability to enable or disable tracing dynamically at runtime using the HTTP API without requiring a server restart. This is useful for troubleshooting production issues or temporarily enabling tracing for debugging purposes.
+
+To enable tracing:
+
+```bash
+curl --data "true" http://127.0.0.1:4000/debug/enable_trace
+# Output: trace enabled
+```
+
+To disable tracing:
+
+```bash
+curl --data "false" http://127.0.0.1:4000/debug/enable_trace
+# Output: trace disabled
+```
+
+For more details about this endpoint, refer to the [HTTP API endpoint list](/reference/http-endpoints.md#enabledisable-trace).
+
 ## Tutorial: Use Jaeger to trace GreptimeDB
 
 [Jaeger](https://www.jaegertracing.io/) is an open source, end-to-end distributed tracing system, originally developed and open sourced by Uber. Its goal is to help developers monitor and debug the request flow in complex microservice architectures.
