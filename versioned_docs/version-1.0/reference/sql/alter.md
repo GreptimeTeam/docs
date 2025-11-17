@@ -148,13 +148,14 @@ After dropping the default value, the column will use `NULL` as the default. The
 
 ### Alter table options
 
-`ALTER TABLE` statements can also be used to change the options of tables. 
+`ALTER TABLE` statements can also be used to change the options of tables.
 
 Currently following options are supported:
 - `ttl`: the retention time of data in table.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
+- `sst_format`: the SST format of the table. The value should be `flat`. A table only supports changing the format from `primary_key` to `flat`.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -164,6 +165,8 @@ ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
 
 ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
+
+ALTER TABLE monitor SET 'sst_format'='flat';
 ```
 
 ### Unset table options
