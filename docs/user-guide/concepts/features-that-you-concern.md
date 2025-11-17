@@ -51,7 +51,7 @@ The data can be stored in cost-effective cloud storage services such as AWS S3 o
 
 ## How is GreptimeDB's performance compared to other solutions?
 
-[GreptimeDB archives 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
+[GreptimeDB achieves 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
 
 Please read the performance benchmark reports:
 
