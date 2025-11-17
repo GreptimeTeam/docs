@@ -62,6 +62,8 @@ This is very similar to the table model everyone is familiar with. The differenc
   These columns contain the actual data.
 - The table sorts and deduplicates rows by `host`, `idc`, `ts`. So `select count(*) from system_metrics` will scan all rows.
 
+To learn how GreptimeDB maps Prometheus metrics to this model, see [the documentation](/user-guide/ingest-data/for-observability/prometheus/#data-model).
+
 ### Logs
 
 Another example is creating a table for logs like web server access logs:
@@ -104,7 +106,6 @@ GreptimeDB is designed on top of the table model for the following reasons:
   instead of the single-value model adopted by OpenTSDB and Prometheus.
   The multi-value model is used to model data sources where a metric can have multiple values represented by fields.
   The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of the multi-value mode.
-
 
 GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) for more information.
 However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.

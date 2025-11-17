@@ -9,7 +9,7 @@ description: Answers common questions about GreptimeDB's features, including sup
 
 Yes. Since v0.9.0, GreptimeDB treats metrics, logs and traces as contextual wide events with timestamps, and thus unifies the processing of metrics, logs, and traces. It supports analyzing metrics, logs, and traces with SQL, PromQL, and streaming with continuous aggregation.
 
-Please read the [log user guide](/user-guide/logs/overview.md).
+Please read the [log user guide](/user-guide/logs/overview.md) and [traces user guide](/user-guide/traces/overview.md).
 
 ## Does GreptimeDB support updates?
 
@@ -49,11 +49,9 @@ Since 0.8, GreptimeDB added a new function called `Flow`, which is used for cont
 Yes, GreptimeDB's data access layer is based on [OpenDAL](https://github.com/apache/incubator-opendal), which supports most kinds of object storage services.
 The data can be stored in cost-effective cloud storage services such as AWS S3 or Azure Blob Storage, please refer to storage configuration guide [here](/user-guide/deployments-administration/configuration.md#storage-options).
 
-GreptimeDB also offers a fully-managed cloud service [GreptimeCloud](https://greptime.com/product/cloud) to help you manage data in the cloud.
-
 ## How is GreptimeDB's performance compared to other solutions?
 
-[GreptimeDB archives 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
+[GreptimeDB achieves 1 billion cold run #1 in JSONBench!](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
 
 Please read the performance benchmark reports:
 

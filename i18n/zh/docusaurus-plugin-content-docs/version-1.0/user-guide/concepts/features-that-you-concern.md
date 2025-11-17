@@ -9,7 +9,7 @@ description: 介绍 GreptimeDB 的关键特性，并解答用户关心的常见�
 
 是的。从 v0.9.0 版本开始，GreptimeDB 将指标、日志和链路追踪视为带有时间戳的上下文“宽”事件（Wide Events），从而统一了指标、日志和链路追踪的处理。它支持使用 SQL、PromQL 和通过连续聚合进行流式处理来分析指标、日志和追踪。
 
-请阅读[日志处理使用指南](/user-guide/logs/overview.md)。
+请阅读[日志处理使用指南](/user-guide/logs/overview.md)和[链路追踪使用指南](/user-guide/traces/overview.md)。
 
 ## GreptimeDB 支持更新数据吗？
 
@@ -47,8 +47,6 @@ GreptimeDB 通过以下方式解决这个问题：
 
 可以，GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，它支持大多数类型的对象存储服务。
 数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](/user-guide/deployments-administration/configuration.md#storage-options)。
-
-GreptimeDB 还提供一个完全托管的云服务 [GreptimeCloud](https://greptime.cn/product/cloud) 来帮助您管理云中的数据。
 
 ## GreptimeDB 对比其他存储或时序数据库的性能如何？
 
