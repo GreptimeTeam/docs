@@ -204,7 +204,7 @@ COPY DATABASE <db_name>
 |---|---|---|
 | `FORMAT` | Export file format, available options: JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
-| `PARALLELISM` | The number of tables to process in parallel. For example, if a database has 30 tables and `PARALLELISM` is 8, 8 tables will be processed concurrently. Defaults to the total number of CPU cores. Minimum value is 1. | Optional |
+| `PARALLELISM` | Number of tables to process in parallel. For example, if a database contains 30 tables and `PARALLELISM` is set to 8, then 8 tables will be processed concurrently. Defaults to the total number of CPU cores, with a minimum value of 1. | Optional |
 
 > - When copying databases, `<PATH>` must end with `/`.
 > - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
@@ -215,7 +215,7 @@ COPY DATABASE <db_name>
 -- Export all tables' data to /tmp/export/
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
--- Export all tables' data with 4 parallel table operations
+-- Export all table data using 4 parallel operations
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=4);
 
 -- Export all tables' data within time range 2022-04-11 08:00:00~2022-04-11 09:00:00 to /tmp/export/
@@ -224,7 +224,7 @@ COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-
 -- Import files under /tmp/export/ directory to database named public.
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
 
--- Import files with 8 parallel table operations
+-- Import files using 8 parallel operations
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=8);
 ```
 
