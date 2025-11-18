@@ -40,6 +40,10 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 );
 ```
 
+:::tip NOTE
+When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
+:::
+
 #### `WITH` Option
 
 `WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
@@ -103,6 +107,10 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
   compression_type = 'gzip'
 );
 ```
+
+:::tip NOTE
+When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
+:::
 
 | Option  | Description  | Required |
 |---|---|---|
@@ -197,6 +205,10 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   compression_type = 'gzip'
 );
 ```
+
+:::tip NOTE
+When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
+:::
 
 You can also specify custom date and time formats when exporting to CSV:
 

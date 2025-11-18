@@ -36,6 +36,10 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 );
 ```
 
+:::tip NOTE
+使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
+:::
+
 #### `WITH` 选项
 
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
@@ -96,6 +100,10 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
   compression_type = 'gzip'
 );
 ```
+
+:::tip NOTE
+使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
+:::
 
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
@@ -190,6 +198,10 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   compression_type = 'gzip'
 );
 ```
+
+:::tip NOTE
+使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
+:::
 
 也可以在导出到 CSV 时指定自定义日期和时间格式：
 
