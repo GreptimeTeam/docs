@@ -36,7 +36,7 @@ To export data to a compressed CSV or JSON file:
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  COMPRESSION = 'gzip'
+  compression_type = 'gzip'
 );
 ```
 
@@ -48,7 +48,7 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
-| `COMPRESSION` | Compression algorithm for the exported file. Supported value: `gzip`. Only supported for CSV and JSON formats. | Optional |
+| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d %H:%M:%S'`). Only supported for CSV format. | Optional |
 | `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d'`). Only supported for CSV format. | Optional |
 | `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%H:%M:%S'`). Only supported for CSV format. | Optional |
@@ -168,7 +168,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | The SQL SELECT statement to execute | **Required** |
 | `PATH` | The file path where the output will be written | **Required** |
 | `FORMAT` | The output file format: 'CSV', 'JSON', or 'PARQUET' | **Required** |
-| `COMPRESSION` | Compression algorithm for the exported file. Supported value: `gzip`. Only supported for CSV and JSON formats. | Optional |
+| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 | `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
 | `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
 | `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
@@ -184,7 +184,7 @@ You can also export query results to a compressed file:
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   FORMAT = 'json',
-  COMPRESSION = 'gzip'
+  compression_type = 'gzip'
 );
 ```
 

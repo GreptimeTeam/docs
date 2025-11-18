@@ -32,7 +32,7 @@ COPY tbl TO '/path/to/file.csv' WITH (
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
   FORMAT = 'csv',
-  COMPRESSION = 'gzip'
+  compression_type = 'gzip'
 );
 ```
 
@@ -44,7 +44,7 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
-| `COMPRESSION` | 导出文件的压缩算法。支持的值：`gzip`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。仅支持 CSV 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
@@ -161,7 +161,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
-| `COMPRESSION` | 导出文件的压缩算法。支持的值：`gzip`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
@@ -177,7 +177,7 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMA
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
   FORMAT = 'json',
-  COMPRESSION = 'gzip'
+  compression_type = 'gzip'
 );
 ```
 
