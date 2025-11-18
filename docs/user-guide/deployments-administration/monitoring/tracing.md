@@ -27,8 +27,6 @@ curl --data "false" http://127.0.0.1:4000/debug/enable_trace
 # Output: trace disabled
 ```
 
-For more details about this endpoint, refer to the [HTTP API endpoint list](/reference/http-endpoints.md#enabledisable-trace).
-
 ## Tutorial: Use Jaeger to trace GreptimeDB
 
 [Jaeger](https://www.jaegertracing.io/) is an open source, end-to-end distributed tracing system, originally developed and open sourced by Uber. Its goal is to help developers monitor and debug the request flow in complex microservice architectures.
