@@ -108,10 +108,6 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
-:::tip NOTE
-When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
-:::
-
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
