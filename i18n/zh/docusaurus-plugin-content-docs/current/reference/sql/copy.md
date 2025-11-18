@@ -88,10 +88,20 @@ COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
+从压缩的 CSV 或 JSON 文件导入数据：
+
+```sql
+COPY tbl FROM '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
+| `compression_type` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 
 :::tip NOTE
 CSV 文件必须带有 header，包含表的列名。

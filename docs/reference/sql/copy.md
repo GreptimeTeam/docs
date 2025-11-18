@@ -95,10 +95,20 @@ Specifically, if you only have one file to import, you can use the following syn
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
+To import data from a compressed CSV or JSON file:
+
+```sql
+COPY tbl FROM '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
+| `compression_type` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 
 :::tip NOTE
 The CSV file must have a header row to be imported correctly. The header row should contain the column names of the table.
