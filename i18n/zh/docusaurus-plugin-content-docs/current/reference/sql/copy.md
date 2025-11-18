@@ -17,7 +17,7 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 命令以 `COPY` 关键字开始，后面跟着要导出数据的表名（本例中为 `tbl`）。
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
-例如,可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
+例如，可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
 
 ```sql
 COPY tbl TO '/path/to/file.csv' WITH (
