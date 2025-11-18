@@ -195,10 +195,6 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
 );
 ```
 
-:::tip NOTE
-使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
-:::
-
 也可以在导出到 CSV 时指定自定义日期和时间格式：
 
 ```sql
