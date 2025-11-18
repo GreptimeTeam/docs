@@ -27,7 +27,7 @@ COPY tbl TO '/path/to/file.csv' WITH (
 );
 ```
 
-导出数据到压缩的 CSV 或 JSON 文件：
+也可以将数据导出为压缩的 CSV 或 JSON 文件：
 
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
@@ -88,7 +88,7 @@ COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
-从压缩的 CSV 或 JSON 文件导入数据：
+也可以从压缩的 CSV 或 JSON 文件导入数据：
 
 ```sql
 COPY tbl FROM '/path/to/file.csv.gz' WITH (
@@ -182,7 +182,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
 ```
 
-也可以将查询结果导出到压缩文件：
+也可以将查询结果导出为压缩文件：
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (

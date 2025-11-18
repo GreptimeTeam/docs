@@ -31,7 +31,7 @@ COPY tbl TO '/path/to/file.csv' WITH (
 );
 ```
 
-To export data to a compressed CSV or JSON file:
+You can also export data to a compressed CSV or JSON file:
 
 ```sql
 COPY tbl TO '/path/to/file.csv.gz' WITH (
@@ -95,7 +95,7 @@ Specifically, if you only have one file to import, you can use the following syn
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
-To import data from a compressed CSV or JSON file:
+You can also import data from a compressed CSV or JSON file:
 
 ```sql
 COPY tbl FROM '/path/to/file.csv.gz' WITH (
