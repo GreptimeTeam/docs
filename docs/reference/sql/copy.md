@@ -202,10 +202,6 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
 );
 ```
 
-:::tip NOTE
-When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
-:::
-
 You can also specify custom date and time formats when exporting to CSV:
 
 ```sql
