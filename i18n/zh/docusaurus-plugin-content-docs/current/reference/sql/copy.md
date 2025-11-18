@@ -101,10 +101,6 @@ COPY tbl FROM '/path/to/file.csv.gz' WITH (
 );
 ```
 
-:::tip NOTE
-使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
-:::
-
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
