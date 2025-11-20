@@ -75,9 +75,9 @@ CREATE TABLE http_logs (
 - 该表按时间对日志进行排序，因此按时间搜索日志效率很高。
 
 
-### 何时使用主键
+### 主键设计与 SST 格式
 
-当有适合的低基数列且满足以下条件之一时，可以使用主键：
+当有适合的列且满足以下条件之一时，可以使用主键：
 
 - 大多数查询可以从排序中受益。
 - 你需要通过主键和时间索引对行进行去重（包括删除）。
@@ -106,7 +106,12 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
-为了提高时序场景下的排序和去重速度，GreptimeDB 内部按时间序列缓冲和处理行。
+过长的主键将对插入性能产生负面影响并增加内存占用。主键最好不超过 5 个列。
+
+
+#### 使用 flat 格式表处理高基数主键
+
+为了提高时序场景下的排序和去重速度，在默认 SST 格式下，GreptimeDB 内部按时间序列缓冲和处理行。
 因此，它不需要反复比较每行的主键。
 如果 tag 列具有高基数，这可能会成为问题：
 
@@ -114,7 +119,31 @@ CREATE TABLE http_logs_v2 (
 2. 由于数据库必须为每个时间序列维护元数据，可能会增加内存和 CPU 使用率。
 3. 去重可能会变得过于昂贵。
 
-因此，不能将高基数列作为主键，或在主键中放入过多列。目前，主键值的推荐数量不超过 10 万。过长的主键将对插入性能产生负面影响并增加内存占用。主键最好不超过 5 个列。
+目前，在默认格式下，主键值的推荐数量不超过 10 万。
+
+有时，用户可能希望将高基数列放入主键中：
+
+* 他们必须通过该列对行进行去重，尽管这并不高效。
+* 按该列对行进行排序可以显著提高查询性能。
+
+要将高基数列用作主键，可以将 SST 格式设置为 `flat`。
+该格式在这种工作负载下具有更低的内存使用和更好的性能。
+请注意，在高基数主键上进行去重总是昂贵的。因此，如果可以容忍重复，仍然建议使用 append-only 表。
+
+```sql
+CREATE TABLE http_logs_flat (
+  access_time TIMESTAMP TIME INDEX,
+  application STRING,
+  remote_addr STRING,
+  http_status STRING,
+  http_method STRING,
+  http_refer STRING,
+  user_agent STRING,
+  request_id STRING,
+  request STRING,
+  PRIMARY KEY(application, request_id),
+) with ('append_mode'='true', 'sst_format'='flat');
+```
 
 选取 tag 列的建议：
 
@@ -123,9 +152,8 @@ CREATE TABLE http_logs_v2 (
   例如，`namespace`、`cluster` 或 AWS `region`。
 - 无需将所有低基数列设为 tag，因为这可能影响写入和查询性能。
 - 通常对 tag 使用短字符串和整数，避免 `FLOAT`、`DOUBLE`、`TIMESTAMP`。
-- 如果高基数列经常变化，切勿将其设为 tag。
-例如，`trace_id`、`span_id`、`user_id` 绝不能用作 tag。
-如果将它们设为 field 而非 tag，GreptimeDB 可以有很不错的性能。
+- 如果 tag 经常变化，请将 `sst_format` 设置为 `flat`。
+  例如，当 tag 包含 `trace_id`、`span_id` 和 `user_id` 等列时。
 
 
 ## 索引
