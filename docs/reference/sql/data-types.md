@@ -31,6 +31,12 @@ The maximum capacities of `String` and `Binary` are determined by their encoding
 | `Float32` | 32-bit IEEE754 floating point values            | 4 Bytes |
 | `Float64` | Double precision IEEE 754 floating point values | 8 Bytes |
 
+:::tip NOTE
+The descriptions here refer to **GreptimeDB native type information**, which are measured in **bits**.  
+However, when using **SQL**, follow the conventions of **PostgreSQL** and **MySQL**, where types like `INT2`, `INT4`, `INT8`, `FLOAT4` and `FLOAT8` are defined in **bytes**.  
+For example, in an SQL statement, `INT8` actually corresponds to **BigInt** (8 bytes, 64 bits).
+:::
+
 ## Decimal Type
 
 GreptimeDB supports the `decimal` type, a fixed-point type represented as `decimal(precision, scale)`, where `precision` is the total number of digits, and `scale` is the number of digits in the fractional part. For example, `123.45` has a precision of 5 and a scale of 2.
@@ -303,24 +309,38 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 
 For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports the following alias types.
 
-| Data Type              | Alias Types                                                     |
-| ---------------------- | --------------------------------------------------------------- |
-| `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
-| `Binary`               | `Varbinary`                                                     |
-| `Int8`                 | `TinyInt`                                                       |
-| `Int16`                | `SmallInt`                                                      |
-| `Int32`                | `Int`                                                           |
-| `Int64`                | `BigInt`                                                        |
-| `UInt8`                | `UnsignedTinyInt`                                               |
-| `UInt16`               | `UnsignedSmallInt`                                              |
-| `UInt32`               | `UnsignedInt`                                                   |
-| `UInt64`               | `UnsignedBigInt`                                                |
-| `Float32`              | `Float`                                                         |
-| `Float64`              | `Double`                                                        |
-| `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
-| `TimestampMillisecond` | `Timestamp`, `Timestamp_ms`, `Timestamp(3)`                     |
-| `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
-| `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
+
+| SQL Datatype Alias                                                            | Native Datatype          |
+| --------------------------------------------------------------- | ---------------------- |
+| `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` | `String`               |
+| `Varbinary`                                                     | `Binary`               |
+| `TinyInt`                                                       | `Int8`                 |
+| `SmallInt`, `Int2`                                              | `Int16`                |
+| `Int`, `Int4`                                                   | `Int32`                |
+| `BigInt`, `Int8`                                                | `Int64`                |
+| `UnsignedTinyInt`                                               | `UInt8`                |
+| `UnsignedSmallInt`                                              | `UInt16`               |
+| `UnsignedInt`                                                   | `UInt32`               |
+| `UnsignedBigInt`                                                | `UInt64`               |
+| `Float`, `Float4`                                               | `Float32`              |
+| `Double`, `Float8`                                              | `Float64`              |
+| `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  | `TimestampSecond`      |
+| `Timestamp`, `Timestamp_ms`, `Timestamp(3)`                     | `TimestampMillisecond` |
+| `Timestamp_us`, `Timestamp(6)`                                  | `TimestampMicroSecond` |
+| `Timestamp_ns`, `Timestamp(9)`                                  | `TimestampNanosecond`  |
+
+:::warning Note
+The type aliases `Int2`, `Int4`, `Int8`, `Float4`, and `Float8` follow the PostgreSQL and MySQL convention where these identifiers refer to the number of **bytes** (not bits) in the type.
+
+Specifically:
+- `Int2` = 2 bytes = `SmallInt` (16-bit)
+- `Int4` = 4 bytes = `Int` (32-bit)
+- `Int8` = 8 bytes = `BigInt` (64-bit)
+- `Float4` = 4 bytes = `Float` (32-bit)
+- `Float8` = 8 bytes = `Double` (64-bit)
+
+Note: GreptimeDB's native type names (like `UInt8`, `Int32`, `Int64`) refer to the number of **bits**, while the SQL aliases `Int2`, `Int4`, and `Int8` refer to the number of **bytes** following PostgreSQL/MySQL conventions. For example, the native type `Int8` is an 8-**bit** integer (`TinyInt`, 1 byte), while the SQL alias `INT8` maps to an 8-**byte** integer (`BigInt`, 64-bit).
+:::
 
 You can use these alias types when creating tables.
 For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, and `Timestamp(0)` instead of `TimestampSecond`.
