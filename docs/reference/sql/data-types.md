@@ -308,15 +308,15 @@ For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports 
 | `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
 | `Binary`               | `Varbinary`                                                     |
 | `Int8`                 | `TinyInt`                                                       |
-| `Int16`                | `SmallInt`                                                      |
-| `Int32`                | `Int`                                                           |
-| `Int64`                | `BigInt`                                                        |
+| `Int16`                | `SmallInt`, `Int2`                                              |
+| `Int32`                | `Int`, `Int4`                                                   |
+| `Int64`                | `BigInt`, `Int8`                                                |
 | `UInt8`                | `UnsignedTinyInt`                                               |
 | `UInt16`               | `UnsignedSmallInt`                                              |
 | `UInt32`               | `UnsignedInt`                                                   |
 | `UInt64`               | `UnsignedBigInt`                                                |
-| `Float32`              | `Float`                                                         |
-| `Float64`              | `Double`                                                        |
+| `Float32`              | `Float`, `Float4`                                               |
+| `Float64`              | `Double`, `Float8`                                              |
 | `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
 | `TimestampMillisecond` | `Timestamp`, `Timestamp_ms`, `Timestamp(3)`                     |
 | `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
