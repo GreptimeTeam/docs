@@ -31,6 +31,11 @@ SQL 数据类型定义了列可以存储的数据类型。当您运行 `DESC TAB
 | `Float32` | 32 位 IEEE 754 浮点数                      | 4 字节 |
 | `Float64` | 双精度 IEEE 754 浮点数                     | 8 字节 |
 
+:::tip 注意
+这里的描述指的是 GreptimeDB 原生类型信息，这些类型都是以 位（bits） 为单位的。但是，在使用 SQL 时，请遵循 PostgreSQL 和 MySQL 的惯例，其中 `INT2`、`INT4`、`INT8`、`FLOAT4` 和 `FLOAT8` 等类型都是以 字节（bytes） 为单位定义的。
+例如，在 SQL 语句中，`INT8` 实际上对应 `BigInt`（8 个字节，64 位）。
+:::
+
 ## Decimal 类型
 
 GreptimeDB 支持 `decimal` 类型，这是一种定点类型，表示为 `decimal(precision, scale)`，其中 `precision` 是总位数，`scale` 是小数部分的位数。例如，`123.45` 的总位数为 5，小数位数为 2。
@@ -322,17 +327,17 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 | `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
 | `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
-:::warning 破坏性变更
+:::warning 重要变更
 类型别名 `Int2`、`Int4`、`Int8`、`Float4` 和 `Float8` 遵循 PostgreSQL 和 MySQL 的约定，这些标识符表示类型中的**字节**数（而非位数）。
 
 具体来说：
 - `Int2` = 2 字节 = `SmallInt`（16 位）
 - `Int4` = 4 字节 = `Int`（32 位）
-- `Int8` = 8 字节 = `BigInt`（64 位）- **破坏性变更**：之前映射到 `TinyInt`（8 位）
+- `Int8` = 8 字节 = `BigInt`（64 位）- **不兼容变更**：之前映射到 `TinyInt`（8 位）
 - `Float4` = 4 字节 = `Float`（32 位）
 - `Float8` = 8 字节 = `Double`（64 位）
 
-注意：GreptimeDB 的原生类型名称（如 `UInt8`、`Int32`、`Int64`）表示**位**数，而 SQL 类型别名 `Int2`、`Int4` 和 `Int8` 遵循 PostgreSQL/MySQL 约定表示**字节**数。例如，原生类型 `Int8` 是 8 **位**整数（1 字节），而 SQL 别名 `INT8` 映射到 8 **字节**整数（`BigInt`，64 位）。
+注意：GreptimeDB 的原生类型名称（如 `UInt8`、`Int32`、`Int64`）表示**位**数，而 SQL 类型别名 `Int2`、`Int4` 和 `Int8` 遵循 PostgreSQL/MySQL 约定表示**字节**数。例如，原生类型 `Int8` 是 8 **位**整数（`TinyInt`, 1 字节），而 SQL 别名 `INT8` 映射到 8 **字节**整数（`BigInt`，64 位）。
 :::
 
 在创建表时也可以使用这些别名类型。

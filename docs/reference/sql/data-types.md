@@ -31,6 +31,12 @@ The maximum capacities of `String` and `Binary` are determined by their encoding
 | `Float32` | 32-bit IEEE754 floating point values            | 4 Bytes |
 | `Float64` | Double precision IEEE 754 floating point values | 8 Bytes |
 
+:::tip NOTE
+The descriptions here refer to **GreptimeDB native type information**, which are measured in **bits**.  
+However, when using **SQL**, follow the conventions of **PostgreSQL** and **MySQL**, where types like `INT2`, `INT4`, `INT8`, `FLOAT4` and `FLOAT8` are defined in **bytes**.  
+For example, in an SQL statement, `INT8` actually corresponds to **BigInt** (8 bytes, 64 bits).
+:::
+
 ## Decimal Type
 
 GreptimeDB supports the `decimal` type, a fixed-point type represented as `decimal(precision, scale)`, where `precision` is the total number of digits, and `scale` is the number of digits in the fractional part. For example, `123.45` has a precision of 5 and a scale of 2.
@@ -332,7 +338,7 @@ Specifically:
 - `Float4` = 4 bytes = `Float` (32-bit)
 - `Float8` = 8 bytes = `Double` (64-bit)
 
-Note: GreptimeDB's native type names (like `UInt8`, `Int32`, `Int64`) refer to the number of **bits**, while the SQL aliases `Int2`, `Int4`, and `Int8` refer to the number of **bytes** following PostgreSQL/MySQL conventions. For example, the native type `Int8` is an 8-**bit** integer (1 byte), while the SQL alias `INT8` maps to an 8-**byte** integer (`BigInt`, 64-bit).
+Note: GreptimeDB's native type names (like `UInt8`, `Int32`, `Int64`) refer to the number of **bits**, while the SQL aliases `Int2`, `Int4`, and `Int8` refer to the number of **bytes** following PostgreSQL/MySQL conventions. For example, the native type `Int8` is an 8-**bit** integer (`TinyInt`, 1 byte), while the SQL alias `INT8` maps to an 8-**byte** integer (`BigInt`, 64-bit).
 :::
 
 You can use these alias types when creating tables.
