@@ -327,13 +327,13 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 | `Timestamp_us`, `Timestamp(6)`                                  | `TimestampMicroSecond` |
 | `Timestamp_ns`, `Timestamp(9)`                                  | `TimestampNanosecond`  |
 
-:::warning 重要变更
+:::warning 注意
 类型别名 `Int2`、`Int4`、`Int8`、`Float4` 和 `Float8` 遵循 PostgreSQL 和 MySQL 的约定，这些标识符表示类型中的**字节**数（而非位数）。
 
 具体来说：
 - `Int2` = 2 字节 = `SmallInt`（16 位）
 - `Int4` = 4 字节 = `Int`（32 位）
-- `Int8` = 8 字节 = `BigInt`（64 位）- **不兼容变更**：之前映射到 `TinyInt`（8 位）
+- `Int8` = 8 字节 = `BigInt`（64 位）
 - `Float4` = 4 字节 = `Float`（32 位）
 - `Float8` = 8 字节 = `Double`（64 位）
 

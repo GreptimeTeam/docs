@@ -329,13 +329,13 @@ For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports 
 | `Timestamp_us`, `Timestamp(6)`                                  | `TimestampMicroSecond` |
 | `Timestamp_ns`, `Timestamp(9)`                                  | `TimestampNanosecond`  |
 
-:::warning Breaking Change
+:::warning Note
 The type aliases `Int2`, `Int4`, `Int8`, `Float4`, and `Float8` follow the PostgreSQL and MySQL convention where these identifiers refer to the number of **bytes** (not bits) in the type.
 
 Specifically:
 - `Int2` = 2 bytes = `SmallInt` (16-bit)
 - `Int4` = 4 bytes = `Int` (32-bit)
-- `Int8` = 8 bytes = `BigInt` (64-bit) - **Breaking**: Previously mapped to `TinyInt` (8-bit)
+- `Int8` = 8 bytes = `BigInt` (64-bit)
 - `Float4` = 4 bytes = `Float` (32-bit)
 - `Float8` = 8 bytes = `Double` (64-bit)
 
