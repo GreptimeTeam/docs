@@ -308,19 +308,32 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 | `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
 | `Binary`               | `Varbinary`                                                     |
 | `Int8`                 | `TinyInt`                                                       |
-| `Int16`                | `SmallInt`                                                      |
-| `Int32`                | `Int`                                                           |
-| `Int64`                | `BigInt`                                                        |
+| `Int16`                | `SmallInt`, `Int2`                                              |
+| `Int32`                | `Int`, `Int4`                                                   |
+| `Int64`                | `BigInt`, `Int8`                                                |
 | `UInt8`                | `UnsignedTinyInt`                                               |
 | `UInt16`               | `UnsignedSmallInt`                                              |
 | `UInt32`               | `UnsignedInt`                                                   |
 | `UInt64`               | `UnsignedBigInt`                                                |
-| `Float32`              | `Float`                                                         |
-| `Float64`              | `Double`                                                        |
+| `Float32`              | `Float`, `Float4`                                               |
+| `Float64`              | `Double`, `Float8`                                              |
 | `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
 | `TimestampMillisecond` | `Timestamp`, `Timestamp_ms` , `Timestamp(3)`                    |
 | `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
 | `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
+
+:::warning 破坏性变更
+类型别名 `Int2`、`Int4`、`Int8`、`Float4` 和 `Float8` 遵循 PostgreSQL 和 MySQL 的约定，这些标识符表示类型中的**字节**数（而非位数）。
+
+具体来说：
+- `Int2` = 2 字节 = `SmallInt`（16 位）
+- `Int4` = 4 字节 = `Int`（32 位）
+- `Int8` = 8 字节 = `BigInt`（64 位）- **破坏性变更**：之前映射到 `TinyInt`（8 位）
+- `Float4` = 4 字节 = `Float`（32 位）
+- `Float8` = 8 字节 = `Double`（64 位）
+
+注意：GreptimeDB 的原生类型 `Int8`（8 位整数）与 SQL 别名 `INT8`（映射到 64 位 `BigInt`）不同。
+:::
 
 在创建表时也可以使用这些别名类型。
 例如，使用 `Varchar` 代替 `String`，使用 `Double` 代替 `Float64`，使用 `Timestamp(0)` 代替 `TimestampSecond`。
