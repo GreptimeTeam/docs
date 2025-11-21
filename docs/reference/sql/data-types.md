@@ -322,6 +322,10 @@ For users migrating from MySQL or PostgreSQL to GreptimeDB, GreptimeDB supports 
 | `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
 | `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
 
+:::warning Breaking Change
+The aliases `Int2`, `Int4`, and `Int8` follow the PostgreSQL and MySQL convention, which differs from previous behavior. Specifically, `Int8` now maps to `BigInt` (64-bit) instead of `TinyInt` (8-bit) to align with PostgreSQL and MySQL standards where the number refers to bytes, not bits.
+:::
+
 You can use these alias types when creating tables.
 For example, use `Varchar` instead of `String`, `Double` instead of `Float64`, and `Timestamp(0)` instead of `TimestampSecond`.
 
