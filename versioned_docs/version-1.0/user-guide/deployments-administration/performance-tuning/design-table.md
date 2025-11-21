@@ -77,9 +77,9 @@ The `http_logs` table is an example for storing HTTP server logs.
 - The table sorts logs by time so it is efficient to search logs by time.
 
 
-### When to use primary key
+### Primary key design and SST format
 
-You can use primary key when there are suitable low cardinality columns and one of the following conditions is met:
+You can use primary key when there are suitable columns and one of the following conditions is met:
 
 - Most queries can benefit from the ordering.
 - You need to deduplicate (including delete) rows by the primary key and time index.
@@ -108,8 +108,12 @@ CREATE TABLE http_logs_v2 (
 ) with ('append_mode'='true');
 ```
 
+A long primary key will negatively affect the insert performance and enlarge the memory footprint. It's recommended to define a primary key with no more than 5 columns.
 
-In order to improve sort and deduplication speed under time-series workloads, GreptimeDB buffers and processes rows by time-series internally.
+
+#### Using flat format table for high cardinality primary keys
+
+In order to improve sort and deduplication speed under time-series workloads, GreptimeDB buffers and processes rows by time-series under default SST format.
 So it doesn't need to compare the primary key for each row repeatedly.
 This can be a problem if the tag column has high cardinality:
 
@@ -117,8 +121,31 @@ This can be a problem if the tag column has high cardinality:
 2. It may increase memory and CPU usage as the database has to maintain the metadata for each time-series.
 3. Deduplication may be too expensive.
 
+Currently, the recommended number of values for the primary key is no more than 100 thousand under the default format.
 
-So you must not use high cardinality column as the primary key or put too many columns in the primary key. Currently, the recommended number of values for the primary key is no more than 100 thousand. A long primary key will negatively affect the insert performance and enlarge the memory footprint. A primary key with no more than 5 columns is recommended.
+Sometimes, users may want to put a high cardinality column in the primary key:
+
+* They have to deduplicate rows by that column, although it isn't efficient.
+* Ordering rows by that column can improve query performance significantly.
+
+To use high cardinality columns as the primary key, you could set the SST format to `flat`.
+This format has much lower memory usage and better performance under this workload.
+Note that deduplication on high cardinality primary keys is always expensive. So it's still recommended to use append-only table if you can tolerate duplication.
+
+```sql
+CREATE TABLE http_logs_flat (
+  access_time TIMESTAMP TIME INDEX,
+  application STRING,
+  remote_addr STRING,
+  http_status STRING,
+  http_method STRING,
+  http_refer STRING,
+  user_agent STRING,
+  request_id STRING,
+  request STRING,
+  PRIMARY KEY(application, request_id),
+) with ('append_mode'='true', 'sst_format'='flat');
+```
 
 
 Recommendations for tags:
@@ -128,9 +155,8 @@ Recommendations for tags:
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- Never set high cardinality columns as tags if they change frequently.
-  For example, `trace_id`, `span_id`, `user_id` must not be used as tags.
-  GreptimeDB works well if you set them as fields instead of tags.
+- Set `sst_format` to `flat` if tags change frequently.
+  For example, when tags contain columns like `trace_id`, `span_id`, and `user_id`.
 
 
 ## Index

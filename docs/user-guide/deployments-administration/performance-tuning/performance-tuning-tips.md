@@ -59,14 +59,14 @@ staging_size = "10GB"
 
 Some tips:
 
-- 1/10 of disk space for the write cache at least
+- 1/10 of disk space for the write cache at least. It's recommended to use a large write cache when using object storage.
 - 1/4 of total memory for the `page_cache_size` at least if the memory usage is under 20%
 - Double the cache size if the cache hit ratio is less than 50%
 - If using full-text index, leave 1/10 of disk space for the `staging_size` at least
 
-### Avoid adding high cardinality columns to the primary key
+### Using flat format table for high cardinality primary keys
 
-Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance. Instead, consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) and setting these high cardinality columns as fields.
+Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance under the default format. Instead, consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) and setting the SST format to [`flat` format](/reference/sql/create.md#create-a-table-with-sst-format).
 
 ### Using append-only table if possible
 
