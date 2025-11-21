@@ -18,3 +18,9 @@ build
 .temp_patch
 
 Claude.md
+
+# Transpiled JavaScript files (TypeScript sources are tracked)
+docusaurus.config.js
+sidebars.js
+src/**/*.js
+variables/*.js
