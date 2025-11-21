@@ -332,7 +332,7 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 - `Float4` = 4 字节 = `Float`（32 位）
 - `Float8` = 8 字节 = `Double`（64 位）
 
-注意：GreptimeDB 的原生类型 `Int8`（8 位有符号整数）与 SQL 类型别名 `INT8`（映射到 64 位 `BigInt`）不同。
+注意：GreptimeDB 的原生类型名称（如 `UInt8`、`Int32`、`Int64`）表示**位**数，而 SQL 类型别名 `Int2`、`Int4` 和 `Int8` 遵循 PostgreSQL/MySQL 约定表示**字节**数。例如，原生类型 `Int8` 是 8 **位**整数（1 字节），而 SQL 别名 `INT8` 映射到 8 **字节**整数（`BigInt`，64 位）。
 :::
 
 在创建表时也可以使用这些别名类型。

@@ -332,7 +332,7 @@ Specifically:
 - `Float4` = 4 bytes = `Float` (32-bit)
 - `Float8` = 8 bytes = `Double` (64-bit)
 
-Note: GreptimeDB's native type `Int8` (an 8-bit integer) is different from the SQL alias `INT8` (which maps to 64-bit `BigInt`).
+Note: GreptimeDB's native type names (like `UInt8`, `Int32`, `Int64`) refer to the number of **bits**, while the SQL aliases `Int2`, `Int4`, and `Int8` refer to the number of **bytes** following PostgreSQL/MySQL conventions. For example, the native type `Int8` is an 8-**bit** integer (1 byte), while the SQL alias `INT8` maps to an 8-**byte** integer (`BigInt`, 64-bit).
 :::
 
 You can use these alias types when creating tables.
