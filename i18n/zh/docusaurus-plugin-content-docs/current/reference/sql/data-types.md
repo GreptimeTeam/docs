@@ -308,24 +308,24 @@ INSERT INTO bools(b) VALUES (TRUE), (FALSE);
 
 对于从 MySQL 或 PostgreSQL 迁移到 GreptimeDB 的用户，GreptimeDB 支持以下类型别名。
 
-| 数据类型               | 别名                                                            |
-| ---------------------- | --------------------------------------------------------------- |
-| `String`               | `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` |
-| `Binary`               | `Varbinary`                                                     |
-| `Int8`                 | `TinyInt`                                                       |
-| `Int16`                | `SmallInt`, `Int2`                                              |
-| `Int32`                | `Int`, `Int4`                                                   |
-| `Int64`                | `BigInt`, `Int8`                                                |
-| `UInt8`                | `UnsignedTinyInt`                                               |
-| `UInt16`               | `UnsignedSmallInt`                                              |
-| `UInt32`               | `UnsignedInt`                                                   |
-| `UInt64`               | `UnsignedBigInt`                                                |
-| `Float32`              | `Float`, `Float4`                                               |
-| `Float64`              | `Double`, `Float8`                                              |
-| `TimestampSecond`      | `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  |
-| `TimestampMillisecond` | `Timestamp`, `Timestamp_ms` , `Timestamp(3)`                    |
-| `TimestampMicroSecond` | `Timestamp_us`, `Timestamp(6)`                                  |
-| `TimestampNanosecond`  | `Timestamp_ns`, `Timestamp(9)`                                  |
+| SQL 类型别名                                                            | Native 数据类型          |
+| --------------------------------------------------------------- | ---------------------- |
+| `Text`, `TinyText`, `MediumText`, `LongText`, `Varchar`, `Char` | `String`               |
+| `Varbinary`                                                     | `Binary`               |
+| `TinyInt`                                                       | `Int8`                 |
+| `SmallInt`, `Int2`                                              | `Int16`                |
+| `Int`, `Int4`                                                   | `Int32`                |
+| `BigInt`, `Int8`                                                | `Int64`                |
+| `UnsignedTinyInt`                                               | `UInt8`                |
+| `UnsignedSmallInt`                                              | `UInt16`               |
+| `UnsignedInt`                                                   | `UInt32`               |
+| `UnsignedBigInt`                                                | `UInt64`               |
+| `Float`, `Float4`                                               | `Float32`              |
+| `Double`, `Float8`                                              | `Float64`              |
+| `Timestamp_s`, `Timestamp_sec`, `Timestamp(0)`                  | `TimestampSecond`      |
+| `Timestamp`, `Timestamp_ms`, `Timestamp(3)`                     | `TimestampMillisecond` |
+| `Timestamp_us`, `Timestamp(6)`                                  | `TimestampMicroSecond` |
+| `Timestamp_ns`, `Timestamp(9)`                                  | `TimestampNanosecond`  |
 
 :::warning 重要变更
 类型别名 `Int2`、`Int4`、`Int8`、`Float4` 和 `Float8` 遵循 PostgreSQL 和 MySQL 的约定，这些标识符表示类型中的**字节**数（而非位数）。
