@@ -317,7 +317,7 @@ with (
 Create a table with `flat` SST format.
 
 ```sql
-create table if not exists metrics(
+CREATE TABLE IF NOT EXISTS metrics(
     host string,
     ts timestamp,
     cpu double,

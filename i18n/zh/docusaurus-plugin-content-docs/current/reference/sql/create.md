@@ -323,7 +323,7 @@ with (
 创建一个使用 `flat` SST 格式的表。
 
 ```sql
-create table if not exists metrics(
+CREATE TABLE IF NOT EXISTS metrics(
     host string,
     ts timestamp,
     cpu double,
