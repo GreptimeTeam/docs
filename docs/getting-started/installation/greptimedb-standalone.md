@@ -68,7 +68,9 @@ the `docker run` command.
 
 The data will be stored in the `greptimedb_data/` directory in your current directory.
 
-If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb). In particular, we support GreptimeDB based on CentOS, and you can try image `greptime/greptimedb-centos`.
+If you want to use another version of GreptimeDB's image, you can download it from our [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb). In particular, we support:
+- GreptimeDB based on CentOS: `greptime/greptimedb-centos`
+- GreptimeDB based on Distroless: `greptime/greptimedb-distroless`
 
 :::tip NOTE
 If you are using a Docker version lower than [v23.0](https://docs.docker.com/engine/release-notes/23.0/), you may experience problems with insufficient permissions when trying to run the command above, due to a [bug](https://github.com/moby/moby/pull/42681) in the older version of Docker Engine.
