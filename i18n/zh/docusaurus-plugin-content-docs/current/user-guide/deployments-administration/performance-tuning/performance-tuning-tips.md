@@ -56,15 +56,15 @@ staging_size = "10GB"
 
 
 一些建议：
-- 至少将写入缓存设置为磁盘空间的 1/10
+- 至少将写入缓存设置为磁盘空间的 1/10。使用对象存储时，建议使用较大的写入缓存。
 - 如果数据库内存使用率低于 20%，则可以至少将 `page_cache_size` 设置为总内存大小的 1/4
 - 如果缓存命中率低于 50%，则可以将缓存大小翻倍
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
 
 
-### 避免将高基数的列放到主键中
+### 使用 flat 格式表处理高基数主键
 
-将高基数的列，如 `trace_id` 和 `uuid` 等列设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表并将这些高基数的列设置为 fields。
+在默认格式下，将高基数的列（如 `trace_id` 和 `uuid`）设置为主键会降低写入和查询的性能。建议建表时使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表并将 SST 格式设置为 [`flat` 格式](/reference/sql/create.md#创建指定-sst-格式的表)。
 
 
 ### 尽可能使用 append-only 表

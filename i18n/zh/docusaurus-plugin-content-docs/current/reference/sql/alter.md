@@ -183,7 +183,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 - `compaction.twcs.time_window`: TWCS compaction 策略的时间窗口，其值是一个[时间范围字符段](/reference/time-durations.md)。
 - `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
 - `compaction.twcs.trigger_file_num`: 某个窗口内触发 compaction 的最小文件数量阈值。
-
+- `sst_format`: 表的 SST 格式。值应设置为 `flat`。表只支持从 `primary_key` 格式更改为 `flat` 格式。
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -193,6 +193,8 @@ ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
 
 ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
+
+ALTER TABLE monitor SET 'sst_format'='flat';
 ```
 
 ### 移除表参数
