@@ -203,7 +203,25 @@ auth:
   users:
     - username: "admin"
       password: "admin"
+      permission: "readwrite"
+    - username: "grafana"
+      password: "grafana_pwd"
+      permission: "readonly"
+    - username: "telegraf"
+      password: "telegraf_pwd"
+      permission: "writeonly"
 ```
+
+GreptimeDB supports three permission modes:
+
+| Mode | Shorthand | Allowed Operations | Typical Use Cases |
+|------|-----------|-------------------|-------------------|
+| `readwrite` | `rw` | Read + Write | Administrators, development environments |
+| `readonly` | `ro` | Read only | Dashboards, reporting systems, read replicas |
+| `writeonly` | `wo` | Write only | Data collectors, IoT devices, log aggregators |
+
+:::note
+Users without an explicit permission mode default to `readwrite`, maintaining backward compatibility.
 
 ### Logging Configuration
 
