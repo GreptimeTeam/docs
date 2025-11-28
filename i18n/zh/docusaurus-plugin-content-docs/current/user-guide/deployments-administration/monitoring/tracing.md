@@ -9,6 +9,24 @@ GreptimeDB 支持分布式链路追踪。GreptimeDB 使用基于 gRPC 的 OTLP �
 
 在配置中的 [logging 部分](/user-guide/deployments-administration/configuration.md#logging-选项) 有对 tracing 的相关配置项说明，[standalone.example.toml](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/standalone.example.toml) 的 logging 部分提供了参考配置项。
 
+## 动态链路追踪控制
+
+GreptimeDB 提供了通过 HTTP API 在运行时动态启用或禁用链路追踪的功能，无需重启服务器。这对于排查生产环境问题或临时启用追踪进行调试非常有用。
+
+启用链路追踪：
+
+```bash
+curl --data "true" http://127.0.0.1:4000/debug/enable_trace
+# 输出: trace enabled
+```
+
+禁用链路追踪：
+
+```bash
+curl --data "false" http://127.0.0.1:4000/debug/enable_trace
+# 输出: trace disabled
+```
+
 ## 教程：使用 Jaeger 追踪 GreptimeDB 调用链路
 
 [Jaeger](https://www.jaegertracing.io/) 是一个开源的、端到端的分布式链路追踪系统，最初由 Uber 开发并开源。它的目标是帮助开发人员监测和调试复杂的微服务架构中的请求流程。

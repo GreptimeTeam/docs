@@ -111,6 +111,29 @@ is_strict_mode = false
 
 有关更多信息，请参阅[如何文档](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-change-log-level-on-the-fly.md)。
 
+### 启用/禁用链路追踪
+
+- **路径**: `/debug/enable_trace`
+- **方法**: `POST`
+- **描述**: 在运行时动态启用或禁用分布式链路追踪。
+- **用法**: 发送 `true` 启用链路追踪，或发送 `false` 禁用链路追踪。
+
+启用链路追踪示例：
+
+```bash
+curl --data "true" http://127.0.0.1:4000/debug/enable_trace
+# 输出: trace enabled
+```
+
+禁用链路追踪示例：
+
+```bash
+curl --data "false" http://127.0.0.1:4000/debug/enable_trace
+# 输出: trace disabled
+```
+
+有关链路追踪配置的更多信息，请参阅[链路追踪文档](/user-guide/deployments-administration/monitoring/tracing.md)。
+
 ### 性能分析工具
 
 - **基础路径**: `/debug/prof/`
