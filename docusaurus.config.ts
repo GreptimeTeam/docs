@@ -237,7 +237,8 @@ const config: Config = {
   ],
   trailingSlash: true,
   plugins: [
-    ['docusaurus-biel', bielMetaMap[locale]],
+    // Only load docusaurus-biel plugin if biel_project_id is defined
+    ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
     function injectLocaleSwitchScript() {
       return {
         name: 'inject-locale-switch-script',
