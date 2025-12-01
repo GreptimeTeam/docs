@@ -233,6 +233,7 @@ transform:
   - field: time
     type: time
     index: timestamp
+'
 ```
 
 Pipeline 配置存在错误。`gsub` processor 期望 `replacement` 字段为字符串，但当前配置提供了一个数组。因此，该 Pipeline 创建失败，并显示以下错误消息：
@@ -268,6 +269,7 @@ transform:
   - field: time
     type: time
     index: timestamp
+'
 ```
 
 此时 Pipeline 创建成功，可以使用 `dryrun` 接口测试该 Pipeline。
@@ -279,7 +281,7 @@ transform:
 **此接口仅仅用于测试 Pipeline 的处理结果，不会将日志写入到 GreptimeDB 中。**
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
@@ -291,7 +293,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
 我们再将 message 字段的值修改为字符串类型，然后再次测试该 Pipeline。
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
