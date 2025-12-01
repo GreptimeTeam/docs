@@ -233,6 +233,7 @@ transform:
   - field: time
     type: time
     index: timestamp
+'
 ```
 
 The pipeline configuration contains an error. The `gsub` Processor expects the `replacement` field to be a string, but the current configuration provides an array. As a result, the pipeline creation fails with the following error message:
@@ -268,6 +269,7 @@ transform:
   - field: time
     type: time
     index: timestamp
+'
 ```
 
 Now that the Pipeline has been created successfully, you can test the Pipeline using the `dryrun` interface.
@@ -280,7 +282,7 @@ We can test the Pipeline using the `dryrun` interface. We will test it with erro
 
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
@@ -292,7 +294,7 @@ The output indicates that the pipeline processing failed because the `gsub` Proc
 Let's change the value of the message field to a string type and test the pipeline again.
 
 ```bash
-curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
+curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": "1998.08","time":"2024-05-25 20:16:37.217"}'
