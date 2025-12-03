@@ -32,6 +32,9 @@ ALTER DATABASE db
    - 如果之前未设置 ttl，通过 `ALTER` 设置新的 ttl 后，超过保留时间的数据将被删除。
    - 如果之前已设置过 ttl，通过 `ALTER` 修改 ttl 后，新的保留时间将立即生效，超过新保留时间的数据将被删除。
    - 如果之前已设置过 ttl，通过 `ALTER` 取消 ttl 设置后，新增的数据将不会被删除，但已被删除的数据无法恢复。
+- `compaction.twcs.time_window`: TWCS 压缩策略的时间窗口参数。值应该是一个[时间长度字符串](/reference/time-durations.md)。
+- `compaction.twcs.max_output_file_size`: TWCS 压缩策略的最大允许输出文件大小。
+- `compaction.twcs.trigger_file_num`: 触发压缩的特定时间窗口中的文件数。
 
 ### 示例
 
@@ -47,6 +50,32 @@ ALTER DATABASE db SET 'ttl'='1d';
 
 ```sql
 ALTER DATABASE db UNSET 'ttl';
+```
+
+#### 修改数据库的压缩选项
+
+修改数据库的压缩时间窗口：
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.time_window'='2h';
+```
+
+修改压缩的最大输出文件大小：
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.max_output_file_size'='500MB';
+```
+
+修改触发压缩的文件数：
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.trigger_file_num'='8';
+```
+
+取消压缩选项：
+
+```sql
+ALTER DATABASE db UNSET 'compaction.twcs.time_window';
 ```
 
 ## ALTER TABLE
