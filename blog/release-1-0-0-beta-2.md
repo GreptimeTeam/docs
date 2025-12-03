@@ -84,7 +84,7 @@ Release date: December 02, 2025
 * fix: dynamic reload tracing layer loses trace id by [@waynexia](https://github.com/waynexia) in [#7257](https://github.com/GreptimeTeam/greptimedb/pull/7257)
 * fix: log not print by [@killme2008](https://github.com/killme2008) in [#7272](https://github.com/GreptimeTeam/greptimedb/pull/7272)
 * fix: return sqlalchemy compatible version string in version() by [@sunng87](https://github.com/sunng87) in [#7271](https://github.com/GreptimeTeam/greptimedb/pull/7271)
-* fix: postgres extended query paramater parsing and type check by [@sunng87](https://github.com/sunng87) in [#7276](https://github.com/GreptimeTeam/greptimedb/pull/7276)
+* fix: postgres extended query parameter parsing and type check by [@sunng87](https://github.com/sunng87) in [#7276](https://github.com/GreptimeTeam/greptimedb/pull/7276)
 * fix: unlimit `trace_id` query in jaeger API by [@shuiyisong](https://github.com/shuiyisong) in [#7283](https://github.com/GreptimeTeam/greptimedb/pull/7283)
 * fix: postgres show statement describe and timestamp text parsing by [@sunng87](https://github.com/sunng87) in [#7286](https://github.com/GreptimeTeam/greptimedb/pull/7286)
 * fix: postgres timezone setting by default by [@killme2008](https://github.com/killme2008) in [#7289](https://github.com/GreptimeTeam/greptimedb/pull/7289)
@@ -104,7 +104,7 @@ Release date: December 02, 2025
 * refactor: remove `Vector`s from `RecordBatch` completely by [@MichaelScofield](https://github.com/MichaelScofield) in [#7184](https://github.com/GreptimeTeam/greptimedb/pull/7184)
 * refactor: make json value use json type by [@MichaelScofield](https://github.com/MichaelScofield) in [#7248](https://github.com/GreptimeTeam/greptimedb/pull/7248)
 * refactor: pub `HttpOutputWriter` for external use by [@MichaelScofield](https://github.com/MichaelScofield) in [#7287](https://github.com/GreptimeTeam/greptimedb/pull/7287)
-* refactor: load metadata using offical impl by [@discord9](https://github.com/discord9) in [#7302](https://github.com/GreptimeTeam/greptimedb/pull/7302)
+* refactor: load metadata using official impl by [@discord9](https://github.com/discord9) in [#7302](https://github.com/GreptimeTeam/greptimedb/pull/7302)
 
 ### 📚 Documentation
 
