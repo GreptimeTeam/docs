@@ -67,7 +67,10 @@ docker run -p 127.0.0.1:4000-4003:4000-4003 \
 
 数据将会存储在当前目录下的 `greptimedb_data/` 目录中。
 
-如果你想要使用另一个版本的 GreptimeDB 镜像，可以从我们的 [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb) 下载。
+如果你想要使用另一个版本的 GreptimeDB 镜像，可以从我们的 [GreptimeDB Dockerhub](https://hub.docker.com/r/greptime/greptimedb) 下载。我们支持以下镜像：
+
+- 基于 CentOS 的 GreptimeDB：`greptime/greptimedb-centos`
+- 基于 Distroless 的 GreptimeDB（更小更安全）：`greptime/greptimedb-distroless`
 
 :::tip 注意事项
 
