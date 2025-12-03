@@ -39,7 +39,7 @@ mysql -h 127.0.0.1 -P 4002
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://127.0.0.1:4000/dashbaord` 运行本文档中的 SQL。
+你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://127.0.0.1:4000/dashboard` 运行本文档中的 SQL。
 
 ## 创建表
 
