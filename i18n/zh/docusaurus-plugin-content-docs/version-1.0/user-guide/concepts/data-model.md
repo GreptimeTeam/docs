@@ -76,7 +76,7 @@ CREATE TABLE access_logs (
 
 ### 链路追踪
 
-GreptimeDB 支持通过 OTLP/HTTP 协议直接写入 OpenTelemetry 追踪数据，详细信息请参考 [OLTP 追踪数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-2)。
+GreptimeDB 支持通过 OTLP/HTTP 协议直接写入 OpenTelemetry 追踪数据，详细信息请参考 [OTLP 追踪数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-2)。
 
 ## 设计考虑
 
