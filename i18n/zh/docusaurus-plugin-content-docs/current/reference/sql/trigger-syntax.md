@@ -20,6 +20,8 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
         ON (<query_expression>) EVERY <interval_expression>
         [LABELS (<label_name>=<label_val>, ...)]
         [ANNOTATIONS (<annotation_name>=<annotation_val>, ...)]
+        [FOR <interval_expression>]
+        [KEEP_FIRING_FOR <interval_expression>]
         NOTIFY (
                 WEBHOOK <notify_name1> URL '<url1>' [WITH (<parameter1>=<value1>, ...)],
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
@@ -89,6 +91,34 @@ SELECT collect as label_collector, host as label_host, val
 - 最小间隔为 1 秒。任何小于 1 秒的间隔都会被自动向上取整为 1 秒。
 
 有关 INTERVA L表达式的更多语法细节，请参见 [interval-type](/reference/sql/data-types.md#interval-type)。
+
+### FOR 子句
+
+`FOR <interval_expression>` 子句用于控制某个告警在真正触发前需要保持活跃的持续时
+间，其作用与 Prometheus Alerting Rules 中的 `for` 选项类似。
+
+当评估结果中首次出现某个告警实例时，它首先会进入 `Pending` 状态，此时不会触发通
+知。若该告警实例在 `FOR` 指定的持续时间内的每次评估中均保持活跃（即始终出现在查
+询结果中），则状态将由 `Pending` 转为 `Firing`，并立即发送通知。
+
+若未指定 `FOR` 子句，则告警不会进入 `Pending` 状态，而是在评估结果中首次出现该告
+警实例时立即进入 `Firing` 状态，并马上触发通知。
+
+### KEEP_FIRING_FOR 子句
+
+`KEEP_FIRING_FOR <interval_expression>` 子句用于控制某个告警实例在首次进入`Firing`
+状态后，至少需要保持多长时间处于 `Firing` 状态，其作用与 Prometheus Alerting Rules
+中的 `keep_firing_for` 选项类似。
+
+当某个告警实例满足条件并进入 `Firing` 状态后，即便后续评估中该告警实例不再出现在
+查询结果中，只要距离首次进入 `Firing` 状态尚未超过 `KEEP_FIRING_FOR` 指定的时长，
+该告警实例仍会保持 `Firing` 状态。
+
+一旦超过 `KEEP_FIRING_FOR` 指定的时长，在下一次评估中如果该告警实例仍未出现在查
+询结果中，则会被标记为已恢复，不再处于 Firing 状态。
+
+若未指定 `KEEP_FIRING_FOR` 子句，则告警实例在进入 `Firing` 状态后，只要在后续评
+估中不再出现在查询结果中，就会在该次评估中被标记为已恢复。
 
 ### Labels 和 Annotations 子句
 
