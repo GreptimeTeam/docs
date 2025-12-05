@@ -151,6 +151,7 @@ Users can add table options by using `WITH`. The valid options contain the follo
 | `memtable.type`                             | Type of the memtable.                                           | String value, supports `time_series`, `partition_tree`.                                                                                                                                                                                                     |
 | `append_mode`                               | Whether the table is append-only                                | String value. Default is 'false', which removes duplicate rows by primary keys and timestamps according to the `merge_mode`. Setting it to 'true' to enable append mode and create an append-only table which keeps duplicate rows.                         |
 | `merge_mode`                                | The strategy to merge duplicate rows                            | String value. Only available when `append_mode` is 'false'. Default is `last_row`, which keeps the last row for the same primary key and timestamp. Setting it to `last_non_null` to keep the last non-null field for the same primary key and timestamp.   |
+| `sst_format`                                | The format of SST files                            | String value, supports `primary_key`, `flat`. Default is `primary_key`. `flat` is recommended for tables which have a large number of unique primary keys.   |
 | `comment`                                   | Table level comment                                             | String value.                                                                                                                                                                                                                                               |
 | `skip_wal`                                | Whether to disable Write-Ahead-Log for this table                               | String type. When set to `'true'`, the data written to the table will not be persisted to the write-ahead log, which can avoid storage wear and improve write throughput. However, when the process restarts, any unflushed data will be lost. Please use this feature only when the data source itself can ensure reliability. |
 | `index.type`                                | Index type                                                      | **Only for metric engine** String value, supports `none`, `skipping`.                                                                                                                                                                                       |
@@ -171,15 +172,15 @@ The `ttl` value can be one of the following:
 - `forever`, `NULL`, an empty string `''` and `0s` (or any zero length duration, like `0d`), means the data will never be deleted.
 - `instant`, note that database's TTL can't be set to `instant`. `instant` means the data will be deleted instantly when inserted, useful if you want to send input to a flow task without saving it, see more details in [flow management documents](/user-guide/flow-computation/manage-flow.md#manage-flows).
 - Unset, `ttl` can be unset by using `ALTER TABLE <table-name> UNSET 'ttl'`, which means the table will inherit the database's ttl policy (if any).
-  
+
 If a table has its own TTL policy, it will take precedence over the database TTL policy.
-Otherwise, the database TTL policy will be applied to the table. 
+Otherwise, the database TTL policy will be applied to the table.
 
 So if table's TTL is set to `forever`, no matter what the database's TTL is, the data will never be deleted. But if you unset table TTL using:
 ```sql
 ALTER TABLE <table-name> UNSET 'ttl';
 ```
-Then the database's TTL will be applied to the table. 
+Then the database's TTL will be applied to the table.
 
 Note that the default TTL setting for table and database is unset, which also means the data will never be deleted.
 
@@ -286,10 +287,10 @@ CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-) 
+)
 engine = metric
 with (
-    "physical_metric_table" = "",   
+    "physical_metric_table" = "",
 );
 ```
 
@@ -304,13 +305,31 @@ CREATE TABLE greptime_physical_table (
     greptime_timestamp TIMESTAMP(3) NOT NULL,
     greptime_value DOUBLE NULL,
     TIME INDEX (greptime_timestamp),
-) 
+)
 engine = metric
 with (
     "physical_metric_table" = "",
     "index.type" = "skipping",
 );
 ```
+
+#### Create a table with SST format
+
+Create a table with `flat` SST format.
+
+```sql
+CREATE TABLE IF NOT EXISTS metrics(
+    host string,
+    ts timestamp,
+    cpu double,
+    memory double,
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+)
+with('sst_format'='flat');
+```
+
+The `flat` format is an new format that is optimized for high cardinality primary keys. By default, the SST format of a table is `primary_key` for backward compatibility. The default format will be `flat` once it is stable.
 
 
 
@@ -480,4 +499,3 @@ For the statement to create or update a view, please read the [view user guide](
 ## CREATE TRIGGER
 
 Please refer to the [CREATE TRIGGER](/reference/sql/trigger-syntax.md#create-trigger) documentation.
-

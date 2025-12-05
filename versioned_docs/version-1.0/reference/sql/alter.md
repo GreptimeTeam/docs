@@ -32,6 +32,9 @@ Currently following options are supported:
    - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
    - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
    - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
+- `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
+- `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
+- `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
 
 ### Examples
 
@@ -47,6 +50,32 @@ Remove the default retention time of data in the database:
 
 ```sql
 ALTER DATABASE db UNSET 'ttl';
+```
+
+#### Modify compaction options of database
+
+Change the compaction time window for the database:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.time_window'='2h';
+```
+
+Change the maximum output file size for compaction:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.max_output_file_size'='500MB';
+```
+
+Change the trigger file number for compaction:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.trigger_file_num'='8';
+```
+
+Remove compaction options:
+
+```sql
+ALTER DATABASE db UNSET 'compaction.twcs.time_window';
 ```
 
 ## ALTER TABLE
@@ -148,13 +177,14 @@ After dropping the default value, the column will use `NULL` as the default. The
 
 ### Alter table options
 
-`ALTER TABLE` statements can also be used to change the options of tables. 
+`ALTER TABLE` statements can also be used to change the options of tables.
 
 Currently following options are supported:
 - `ttl`: the retention time of data in table.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
+- `sst_format`: the SST format of the table. The value should be `flat`. A table only supports changing the format from `primary_key` to `flat`.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
@@ -164,6 +194,8 @@ ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
 
 ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
+
+ALTER TABLE monitor SET 'sst_format'='flat';
 ```
 
 ### Unset table options

@@ -15,7 +15,7 @@ description: 介绍了 GreptimeDB，一个开源的统一可观测性数据库�
 
 
 - **All-in-One 的可观测性数据库**：通过统一数据库实时处理指标、日志和链路追踪，原生支持 [SQL](/user-guide/query-data/sql.md)、[PromQL](/user-guide/query-data/promql.md) 和 [流式处理](/user-guide/flow-computation/overview.md)。用高性能单一解决方案取代复杂的传统数据堆栈。
-- **高性能引擎**：采用 Rust 语言打造，具备卓越的性能和可靠性。丰富的[索引选择](/user-guide/manage-data/data-index.md)（倒排、全文、调数和向量索引）加速查询，实现 PB 级数据的亚秒级响应，并能处理数十万并发请求。
+- **高性能引擎**：采用 Rust 语言打造，具备卓越的性能和可靠性。丰富的[索引选择](/user-guide/manage-data/data-index.md)（倒排、全文、跳数和向量索引）加速查询，实现 PB 级数据的亚秒级响应，并能处理数十万并发请求。
 - **显著的成本降低**：凭借计算与存储分离的[架构](/user-guide/concepts/architecture.md)，运营和存储成本降低高达 50 倍。可灵活扩展至各类云存储系统（如 S3、Azure Blob Storage），简化运维管理、大幅降低成本，**无厂商锁定**。
 - **无限扩展性**：专为 [Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md) 和云环境而设计，采用业界领先的计算与存储分离架构，实现无限制的跨云扩展。高效应对高基数爆炸问题。
 - **开发者友好**：支持标准 SQL、PromQL 接口、内置 Web 仪表盘、REST API，并兼容 MySQL/PostgreSQL 协议。广泛适配主流数据 [接入协议](/user-guide/protocols/overview.md)，轻松迁移与集成。

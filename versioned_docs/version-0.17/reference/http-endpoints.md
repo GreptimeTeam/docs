@@ -224,7 +224,7 @@ Refer to the original Prometheus documentation for more information on the [Prom
 - **Paths**:
   - `/v1/ingest`
   - `/v1/pipelines/{pipeline_name}`
-  - `/v1/pipelines/dryrun`
+  - `/v1/pipelines/_dryrun`
 - **Methods**:
   - `POST` for ingesting logs and adding pipelines.
   - `DELETE` for deleting pipelines.

@@ -111,6 +111,29 @@ This dashboard is packaged with the GreptimeDB server and provides a user-friend
  
 For more information, refer to the [how-to documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-change-log-level-on-the-fly.md).
 
+### Enable/Disable Trace
+
+- **Path**: `/debug/enable_trace`
+- **Methods**: `POST`
+- **Description**: Dynamically enables or disables distributed tracing at runtime.
+- **Usage**: Send `true` to enable tracing or `false` to disable tracing.
+
+Example to enable tracing:
+
+```bash
+curl --data "true" http://127.0.0.1:4000/debug/enable_trace
+# Output: trace enabled
+```
+
+Example to disable tracing:
+
+```bash
+curl --data "false" http://127.0.0.1:4000/debug/enable_trace
+# Output: trace disabled
+```
+
+For more information on tracing configuration, refer to the [tracing documentation](/user-guide/deployments-administration/monitoring/tracing.md).
+
 ### Profiling Tools
 
 - **Base Path**: `/debug/prof/`
@@ -224,7 +247,7 @@ Refer to the original Prometheus documentation for more information on the [Prom
 - **Paths**:
   - `/v1/ingest`
   - `/v1/pipelines/{pipeline_name}`
-  - `/v1/pipelines/dryrun`
+  - `/v1/pipelines/_dryrun`
 - **Methods**:
   - `POST` for ingesting logs and adding pipelines.
   - `DELETE` for deleting pipelines.
