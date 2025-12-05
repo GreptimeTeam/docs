@@ -21,6 +21,8 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
         ON (<query_expression>) EVERY <interval_expression>
         [LABELS (<label_name>=<label_val>, ...)]
         [ANNOTATIONS (<annotation_name>=<annotation_val>, ...)]
+        [FOR <interval_expression>]
+        [KEEP_FIRING_FOR <interval_expression>]
         NOTIFY (
                 WEBHOOK <notify_name1> URL '<url1>' [WITH (<parameter1>=<value1>, ...)],
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
@@ -98,6 +100,40 @@ It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
     will be automatically rounded up to 1 second.
 
 For more details about how to write INTERVAL time, see [interval-type](/reference/sql/data-types.md#interval-type).
+
+### FOR clause
+
+The `FOR` clause controls how long an alert must remain active before it fires.
+Its behavior is similar to the `for` option in Prometheus Alerting Rules.
+
+When an alert instance appears in the evaluation results for the first time, it
+enters the `Pending` state, during which no notification is sent. If the alert 
+instance remains active throughout every evaluation within the duration specified
+by `FOR`, its state transitions from `Pending` to `Firing`, and a notification
+is sent immediately.
+
+If the `FOR` clause is not specified, the alert will not enter the `Pending`
+state. Instead, an alert instance transitions to the `Firing` state immediately
+upon its first appearance in the evaluation results, and a notification is sent
+immediately.
+
+### KEEP_FIRING_FOR clause
+
+The `KEEP_FIRING_FOR` clause controls how long an alert instance should remain
+in the `Firing` state after it first enters that state. Its behavior is similar
+to the `keep_firing_for` option in Prometheus Alerting Rules.
+
+Once an alert instance enters the `Firing` state, it will remain firing for at
+least the duration specified by `KEEP_FIRING_FOR`, even if it no longer appears
+in subsequent evaluation results.
+
+After the `KEEP_FIRING_FOR` duration has passed, if the alert instance does not
+appear in the next evaluation, it will be marked as resolved and will no longer
+remain in the `Firing` state.
+
+If the `KEEP_FIRING_FOR` clause is not specified, an alert instance will be 
+marked as resolved in the first evaluation where it no longer appears in the
+query results after entering the `Firing` state.
 
 ### Labels and Annotations clauses
 
@@ -189,4 +225,3 @@ DROP TRIGGER IF EXISTS load1_monitor;
 ## Example
 
 Please refer to the [Trigger](/enterprise/trigger.md) documentation in the enterprise user guide for examples.
-
