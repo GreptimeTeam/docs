@@ -35,17 +35,20 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 
 #### Query expression
 
-指定的 SQL 查询会被定期执行。若查询结果非空，则触发通知；若查询结果包含多行，则
-每一行都会触发一条独立通知。
+指定的 SQL 查询会被定期执行。每次查询的结果可能形成一个或多个告警实例，具体取决
+于返回的行。
 
-此外，Trigger 会从查询结果中提取 labels 与 annotations，并与 `LABELS` 和 `ANNOTATIONS`
-子句中指定的键值对一起附加到通知消息中。
+Trigger 会从查询结果中提取 `labels` 和 `annotations`，并将这些信息附加到每个告警
+实例上。同时，它们也会与 `LABELS` 和 `ANNOTATIONS` 子句中指定的静态键值对合并。
 
 提取规则如下：
 
 - 若列名（或别名）以 `label_` 开头，则将该列提取到 LABELS 中，键名为去掉 `label_`
     前缀后的列名（或别名）。
 - 其余所有列均提取到 ANNOTATIONS 中，键名即为列名（或别名）。
+
+值得注意的是，每个告警实例都由其 Label 集合唯一标识。如果多行查询结果生成的 Label
+集合相同，它们只会形成同一个告警实例。
 
 例如，查询表达式如下：
 
