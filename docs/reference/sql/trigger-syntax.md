@@ -36,12 +36,11 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 
 #### Query expression
 
-The SQL query which be executed periodically. The notification will be fired
-if query result is not empty. If query result has multiple rows, a notification
-will be fired for each row.
+The SQL query specified in the `ON` clause is executed periodically. Its evaluation
+result may produce one or more alert instances, depending on the returned rows.
 
-In addition, the Trigger will extract the `labels` and `annotations` from the
-query result, and attach them to the notification message along with the key-value
+The Trigger extracts `labels` and `annotations` from the query result and attaches
+them to each alert instance. These values are combined with the static key-value
 pairs specified in the `LABELS` and `ANNOTATIONS` clauses.
 
 The extraction rules are as follows:
@@ -50,6 +49,9 @@ The extraction rules are as follows:
     of labels is the column name or alias without the `label_` prefix.
 - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
     column name.
+    
+It is worth noting that each alert instance is uniquely identified by its label
+set. Multiple rows with the same labels will only create a single alert instance.
 
 For example, the query expression is as follows:
 
@@ -66,9 +68,9 @@ Assume the query result is not empty and looks like this:
 | collector1       | host1      | 12  |
 | collector2       | host2      | 15  |
 
-This will generate two notifications.
+This will generate two alert instances.
 
-The first notification will have the following labels and annotations:
+The first alert instance will have the following labels and annotations:
 
 - Labels:
     - collector: collector1
@@ -78,7 +80,7 @@ The first notification will have the following labels and annotations:
     - val: 12
     - the annotations defined in the `ANNOTATIONS` clause
 
-The second notification will have the following labels and annotations:
+The second alert instance will have the following labels and annotations:
 
 - Labels:
     - collector: collector2
