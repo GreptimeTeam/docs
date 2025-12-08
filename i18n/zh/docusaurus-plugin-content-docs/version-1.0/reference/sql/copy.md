@@ -27,6 +27,19 @@ COPY tbl TO '/path/to/file.csv' WITH (
 );
 ```
 
+也可以将数据导出为压缩的 CSV 或 JSON 文件：
+
+```sql
+COPY tbl TO '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
+:::tip NOTE
+使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
+:::
+
 #### `WITH` 选项
 
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
@@ -35,6 +48,7 @@ COPY tbl TO '/path/to/file.csv' WITH (
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。仅支持 CSV 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
@@ -78,10 +92,20 @@ COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
+也可以从压缩的 CSV 或 JSON 文件导入数据：
+
+```sql
+COPY tbl FROM '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
+| `compression_type` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 
 :::tip NOTE
 CSV 文件必须带有 header，包含表的列名。
@@ -151,6 +175,7 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 | `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 | `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 | `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
@@ -159,6 +184,15 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
+也可以将查询结果导出为压缩文件：
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
+  FORMAT = 'json',
+  compression_type = 'gzip'
+);
 ```
 
 也可以在导出到 CSV 时指定自定义日期和时间格式：
@@ -176,13 +210,14 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
 `COPY` 语句除可以导入/导出表之外，也可以导入/导出指定的数据库，其语法如下：
 
 ```sql
-COPY DATABASE <db_name> 
-  [TO | FROM] '<PATH>' 
+COPY DATABASE <db_name>
+  [TO | FROM] '<PATH>'
   WITH (
-    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
+    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' }
     START_TIME = "<START TIMESTAMP>",
-    END_TIME = "<END TIMESTAMP>"
-  ) 
+    END_TIME = "<END TIMESTAMP>",
+    PARALLELISM = <number>
+  )
   [CONNECTION(
     REGION = "<REGION NAME>",
     ENDPOINT = "<ENDPOINT>",
@@ -196,6 +231,7 @@ COPY DATABASE <db_name>
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `PARALLELISM` | 并行处理的表数量。例如，数据库包含 30 个表且 `PARALLELISM` 设置为 8 时，将同时处理 8 个表。默认值为 CPU 核心总数，最小值为 1。 | 可选 |
 
 > - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
 > - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
@@ -207,11 +243,17 @@ COPY DATABASE <db_name>
 -- 将 public 数据库中所有数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
+-- 使用 4 个并行操作导出所有表数据
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=4);
+
 -- 将 public 数据库中时间范围在 2022-04-11 08:00:00 到 2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- 从 /tmp/export/ 目录恢复 public 数据库的数据
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
+
+-- 使用 8 个并行操作导入数据
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=8);
 ```
 
 ## Windows 平台上的路径

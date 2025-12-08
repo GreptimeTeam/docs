@@ -203,7 +203,25 @@ auth:
   users:
     - username: "admin"
       password: "admin"
+      permission: "readwrite"
+    - username: "grafana"
+      password: "grafana_pwd"
+      permission: "readonly"
+    - username: "telegraf"
+      password: "telegraf_pwd"
+      permission: "writeonly"
 ```
+
+GreptimeDB 支持三种权限模式：
+
+| 模式 | 缩写 | 允许的操作 | 典型场景 |
+|------|------|-----------|---------|
+| `readwrite` | `rw` | 读取 + 写入 | 管理员、开发环境 |
+| `readonly` | `ro` | 仅读取 | 仪表盘、报表系统、只读副本 |
+| `writeonly` | `wo` | 仅写入 | 数据采集器、IoT 设备、日志收集 |
+
+:::note
+未指定权限模式的用户默认拥有 `readwrite` 权限，与此前版本行为一致。
 
 ### 日志配置
 

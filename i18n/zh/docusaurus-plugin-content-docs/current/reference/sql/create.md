@@ -153,6 +153,7 @@ GreptimeDB 提供了丰富的索引实现来加速查询，请在[索引](/user-
 | `memtable.type`                             | memtable 的类型                          | 字符串值，支持 `time_series`，`partition_tree`                                                                                                                           |
 | `append_mode`                               | 该表是否时 append-only 的                | 字符串值。默认值为 'false'，根据 'merge_mode' 按主键和时间戳删除重复行。设置为 'true' 可以开启 append 模式和创建 append-only 表，保留所有重复的行                        |
 | `merge_mode`                                | 合并重复行的策略                         | 字符串值。只有当 `append_mode` 为 'false' 时可用。默认值为 `last_row`，保留相同主键和时间戳的最后一行。设置为 `last_non_null` 则保留相同主键和时间戳的最后一个非空字段。 |
+| `sst_format`                                | SST 文件的格式                            | 字符串值，支持 `primary_key`，`flat`。默认为 `primary_key`。`flat` 格式建议用于具有高基数主键的表。   |
 | `comment`                                   | 表级注释                                 | 字符串值。                                                                                                                                                               |
 | `index.type`                                | Index 类型                               | **仅用于 metric engine**  字符串值，支持 `none`, `skipping`.                                                                                                             |
 | `skip_wal`                                | 是否关闭表的预写日志                               | 字符串类型。当设置为 `'true'` 时表的写入数据将不会持久化到预写日志，可以避免存储磨损同时提升写入吞吐。但是当进程重启时，尚未 flush 的数据会丢失。请仅在数据源本身可以确保可靠性的情况下使用此功能。 |
@@ -316,6 +317,24 @@ with (
     "index.type" = "skipping",
 );
 ```
+
+#### 创建指定 SST 格式的表
+
+创建一个使用 `flat` SST 格式的表。
+
+```sql
+CREATE TABLE IF NOT EXISTS metrics(
+    host string,
+    ts timestamp,
+    cpu double,
+    memory double,
+    TIME INDEX (ts),
+    PRIMARY KEY(host)
+)
+with('sst_format'='flat');
+```
+
+`flat` 格式是一种针对高基数主键优化的新格式。为了向后兼容，默认情况下表的 SST 格式为 `primary_key`。一旦 `flat` 格式稳定，默认格式将变为 `flat`。
 
 
 ### 列选项
@@ -485,4 +504,3 @@ AS select_statement
 ## 创建 Trigger
 
 请参考 [CREATE TRIGGER](/reference/sql/trigger-syntax.md#create-trigger) 文档。
-

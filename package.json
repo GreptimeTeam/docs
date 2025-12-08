@@ -27,6 +27,7 @@
     "@octokit/rest": "^21.0.2",
     "axios": "^1.12.0",
     "clsx": "^2.0.0",
+    "copy-text-to-clipboard": "^3.2.2",
     "docusaurus-biel": "^1.0.5",
     "minimatch": "^10.0.1",
     "prism-react-renderer": "^2.3.0",
