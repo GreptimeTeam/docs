@@ -67,4 +67,4 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`SSTS_MANIFEST`](./ssts-manifest.md) | Provides SST file information from the manifest including file paths, sizes, time ranges, and row counts.|
 | [`SSTS_STORAGE`](./ssts-storage.md) | Provides SST file information from the storage layer for verification and debugging.|
 | [`TRIGGERS`](./triggers.md) | Provides the triggers information. |
-| [`ALERTS`](./alerts.md) | Providers the alerts information. |
+| [`ALERTS`](./alerts.md) | Provides the alerts information. |
