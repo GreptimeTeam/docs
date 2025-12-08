@@ -4,7 +4,7 @@ description: Provides metadata about triggers, including name, ID, SQL definitio
 ---
 
 # Triggers
-The `Triggers` table provides metadata information about all triggers.
+The `TRIGGERS` table provides metadata information about all triggers.
 
 ```sql
 DESC TABLE INFORMATION_SCHEMA.TRIGGERS;

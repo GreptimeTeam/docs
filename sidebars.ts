@@ -722,6 +722,8 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/ssts-index-meta',
                 'reference/sql/information-schema/ssts-manifest',
                 'reference/sql/information-schema/ssts-storage',
+                "reference/sql/information-schema/triggers",
+                "reference/sql/information-schema/alerts",
               ],
             },
           ],
