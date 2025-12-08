@@ -35,8 +35,6 @@ DESC TABLE INFORMATION_SCHEMA.ALERTS;
 
 表中的列：
 
-表字段说明
-
 * `trigger_id`：生成该告警实例的 Trigger 的 id。
 * `trigger_name`：生成该告警实例的 Trigger 的名称。
 * `labels`：与告警实例关联的标签（key-value）集合。标签集合用于唯一标识一个告警
