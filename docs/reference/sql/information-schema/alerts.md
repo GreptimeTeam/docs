@@ -28,8 +28,8 @@ DESC TABLE INFORMATION_SCHEMA.ALERTS;
 ```
 
 The columns in table:
-* `trigger_id`: the id of the trigger.
-* `trigger_name`: the name of the trigger.
+* `trigger_id`: the id of the trigger that generated the alert instance.
+* `trigger_name`: the name of the trigger that generated the alert instance.
 * `labels`: the key-value pairs associated with the alert instance. And the label
     set uniquely identifies an alert instance.
 * `annotations`: the key-value pairs associated with the alert instance.
