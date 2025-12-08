@@ -62,7 +62,7 @@ EOF
 
 ## 从局域网连接运行在安卓设备上的 GreptimeDB
 
-> 您可以通过`ifconfig`来获取您所使用的的安卓设备的网络地址。
+> 您可以通过`ifconfig`来获取您所使用的安卓设备的网络地址。
 
 在启动 GreptimeDB 后，您可以从局域网内安装了 MySQL 客户端的设备上通过 MySQL 协议访问 GreptimeDB。
 

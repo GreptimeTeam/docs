@@ -46,7 +46,7 @@ curl -i -XPOST "http://localhost:4000/v1/influxdb/write?db=public&precision=ms&u
 `/influxdb/write` 支持查询参数，包括：
 
 * `db`：指定要写入的数据库。默认值为 `public`。
-* `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
+* `precision`：定义请求体中提供的时间戳的精度，可接受的值为 `ns`（纳秒）、`us`（微秒）、`ms`（毫秒）和 `s`（秒），默认值为 `ns`（纳秒）。该 API 写入的时间戳类型为 `TimestampNanosecond`，因此默认精度为 `ns`（纳秒）。如果你在请求体中使用了其他精度的时间戳，需要使用此参数指定精度。该参数确保时间戳能够被准确解释并以纳秒精度存储。
 
 你还可以在发送请求时省略 timestamp，GreptimeDB 将使用主机机器的当前系统时间（UTC 时间）作为 timestamp。例如：
 

@@ -114,7 +114,7 @@ ALTER TABLE monitor DROP COLUMN load_15;
 ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
 ```
 
-被修改的的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
+被修改的列不能是 tag 列（primary key）或 time index 列，同时该列必须允许空值 `NULL` 存在来保证数据能够安全地进行转换（转换失败时返回 `NULL`）。
 
 ### 修改表的参数
 
