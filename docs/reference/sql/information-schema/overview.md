@@ -66,5 +66,5 @@ There is still lots of work to do for `INFORMATION_SCHEMA`. The tracking [issue]
 | [`SSTS_INDEX_META`](./ssts-index-meta.md) | Provides SST index metadata including inverted indexes, fulltext indexes, and bloom filters.|
 | [`SSTS_MANIFEST`](./ssts-manifest.md) | Provides SST file information from the manifest including file paths, sizes, time ranges, and row counts.|
 | [`SSTS_STORAGE`](./ssts-storage.md) | Provides SST file information from the storage layer for verification and debugging.|
-| [`TRIGGERS`](./triggers.md) | Provides the triggers information. |
-| [`ALERTS`](./alerts.md) | Provides the alerts information. |
+| [`TRIGGERS`](./triggers.md) | Provides the trigger information. |
+| [`ALERTS`](./alerts.md) | Provides the alert information. |
