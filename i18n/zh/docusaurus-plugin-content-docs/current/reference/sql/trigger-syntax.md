@@ -93,7 +93,7 @@ SELECT collect as label_collector, host as label_host, val
 - INTERVAL 表达式中**禁止**使用 `years` 和 `months`。月和年的时长是可变的，取决于具体的月份或年份，因此不适合用来定义固定的间隔。
 - 最小间隔为 1 秒。任何小于 1 秒的间隔都会被自动向上取整为 1 秒。
 
-有关 INTERVA L表达式的更多语法细节，请参见 [interval-type](/reference/sql/data-types.md#interval-type)。
+有关 INTERVAL 表达式的更多语法细节，请参见 [interval-type](/reference/sql/data-types.md#interval-type)。
 
 ### FOR 子句
 
@@ -109,7 +109,7 @@ SELECT collect as label_collector, host as label_host, val
 
 ### KEEP_FIRING_FOR 子句
 
-`KEEP_FIRING_FOR <interval_expression>` 子句用于控制某个告警实例在首次进入`Firing`
+`KEEP_FIRING_FOR <interval_expression>` 子句用于控制某个告警实例在首次进入 `Firing`
 状态后，至少需要保持多长时间处于 `Firing` 状态，其作用与 Prometheus Alerting Rules
 中的 `keep_firing_for` 选项类似。
 
