@@ -42,7 +42,7 @@ description: INFORMATION_SCHEMA 提供对系统元数据的访问，例如数据
 | [`TABLES`](./tables.md) | 提供了当前用户可见的表列表。类似于 `SHOW TABLES`。 |
 | `TABLESPACES` | 不支持。 |
 | `TABLE_PRIVILEGES` | 未实现。返回零行。 |
-| `TRIGGERS` | 未实现。返回零行。 |
+| `TRIGGERS` | 不支持。 |
 | `USER_ATTRIBUTES` | 不支持。 |
 | `USER_PRIVILEGES` | 不支持。|
 | `VARIABLES_INFO` | 不支持。 |
