@@ -5,6 +5,12 @@ description: 提供由 Trigger 生成的告警实例信息，包括标签、时�
 
 # Alerts
 
+:::tip 注意
+
+本功能仅在 GreptimeDB 企业版中可用。
+
+:::
+
 `ALERTS` 表用于展示由 Trigger 生成的所有告警实例的信息。
 
 ```sql

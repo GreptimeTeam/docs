@@ -4,6 +4,13 @@ description: Provides metadata about triggers, including name, ID, SQL definitio
 ---
 
 # Triggers
+
+:::tip NOTE
+
+This feature is only available in the GreptimeDB Enterprise database.
+
+:::
+
 The `TRIGGERS` table provides metadata information about all triggers.
 
 ```sql
