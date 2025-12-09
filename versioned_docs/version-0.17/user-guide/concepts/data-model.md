@@ -90,7 +90,7 @@ To learn how to indicate `Tag`, `Timestamp`, and `Field` columns, please refer t
 
 ### Traces
 
-GreptimeDB supports writing OpenTelemetry traces data directly via the OTLP/HTTP protocol, refer to the [OLTP traces data model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-2) for detail.
+GreptimeDB supports writing OpenTelemetry traces data directly via the OTLP/HTTP protocol, refer to the [OTLP traces data model](/user-guide/ingest-data/for-observability/opentelemetry.md#data-model-2) for detail.
 
 ## Design Considerations
 
