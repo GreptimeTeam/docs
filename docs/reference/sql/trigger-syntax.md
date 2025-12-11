@@ -22,7 +22,7 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
         [LABELS (<label_name>=<label_val>, ...)]
         [ANNOTATIONS (<annotation_name>=<annotation_val>, ...)]
         [FOR <interval_expression>]
-        [KEEP_FIRING_FOR <interval_expression>]
+        [KEEP FIRING FOR <interval_expression>]
         NOTIFY (
                 WEBHOOK <notify_name1> URL '<url1>' [WITH (<parameter1>=<value1>, ...)],
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
@@ -119,21 +119,21 @@ state. Instead, an alert instance transitions to the `Firing` state immediately
 upon its first appearance in the evaluation results, and a notification is sent
 immediately.
 
-### KEEP_FIRING_FOR clause
+### KEEP FIRING FOR clause
 
-The `KEEP_FIRING_FOR` clause controls how long an alert instance should remain
+The `KEEP FIRING FOR` clause controls how long an alert instance should remain
 in the `Firing` state after it first enters that state. Its behavior is similar
 to the `keep_firing_for` option in Prometheus Alerting Rules.
 
 Once an alert instance enters the `Firing` state, it will remain firing for at
-least the duration specified by `KEEP_FIRING_FOR`, even if it no longer appears
+least the duration specified by `KEEP FIRING FOR`, even if it no longer appears
 in subsequent evaluation results.
 
-After the `KEEP_FIRING_FOR` duration has passed, if the alert instance does not
+After the `KEEP FIRING FOR` duration has passed, if the alert instance does not
 appear in the next evaluation, it will be marked as resolved and will no longer
 remain in the `Firing` state.
 
-If the `KEEP_FIRING_FOR` clause is not specified, an alert instance will be 
+If the `KEEP FIRING FOR` clause is not specified, an alert instance will be 
 marked as resolved in the first evaluation where it no longer appears in the
 query results after entering the `Firing` state.
 
