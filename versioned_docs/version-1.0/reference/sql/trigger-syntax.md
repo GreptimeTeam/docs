@@ -21,6 +21,8 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
         ON (<query_expression>) EVERY <interval_expression>
         [LABELS (<label_name>=<label_val>, ...)]
         [ANNOTATIONS (<annotation_name>=<annotation_val>, ...)]
+        [FOR <interval_expression>]
+        [KEEP FIRING FOR <interval_expression>]
         NOTIFY (
                 WEBHOOK <notify_name1> URL '<url1>' [WITH (<parameter1>=<value1>, ...)],
                 WEBHOOK <notify_name2> URL '<url2>' [WITH (<parameter2>=<value2>, ...)]
@@ -34,12 +36,11 @@ CREATE TRIGGER [IF NOT EXISTS] <trigger_name>
 
 #### Query expression
 
-The SQL query which be executed periodically. The notification will be fired
-if query result is not empty. If query result has multiple rows, a notification
-will be fired for each row.
+The SQL query specified in the `ON` clause is executed periodically. Its evaluation
+result may produce one or more alert instances, depending on the returned rows.
 
-In addition, the Trigger will extract the `labels` and `annotations` from the
-query result, and attach them to the notification message along with the key-value
+The Trigger extracts `labels` and `annotations` from the query result and attaches
+them to each alert instance. These values are combined with the static key-value
 pairs specified in the `LABELS` and `ANNOTATIONS` clauses.
 
 The extraction rules are as follows:
@@ -48,6 +49,9 @@ The extraction rules are as follows:
     of labels is the column name or alias without the `label_` prefix.
 - Extract the other columns to `ANNOTATIONS`. The key of annotations is the
     column name.
+    
+It is worth noting that each alert instance is uniquely identified by its label
+set. Multiple rows with the same labels will only create a single alert instance.
 
 For example, the query expression is as follows:
 
@@ -64,9 +68,9 @@ Assume the query result is not empty and looks like this:
 | collector1       | host1      | 12  |
 | collector2       | host2      | 15  |
 
-This will generate two notifications.
+This will generate two alert instances.
 
-The first notification will have the following labels and annotations:
+The first alert instance will have the following labels and annotations:
 
 - Labels:
     - collector: collector1
@@ -76,7 +80,7 @@ The first notification will have the following labels and annotations:
     - val: 12
     - the annotations defined in the `ANNOTATIONS` clause
 
-The second notification will have the following labels and annotations:
+The second alert instance will have the following labels and annotations:
 
 - Labels:
     - collector: collector2
@@ -98,6 +102,40 @@ It indicates how often the query is executed. e.g., `'5 minute'::INTERVAL`,
     will be automatically rounded up to 1 second.
 
 For more details about how to write INTERVAL time, see [interval-type](/reference/sql/data-types.md#interval-type).
+
+### FOR clause
+
+The `FOR` clause controls how long an alert must remain active before it fires.
+Its behavior is similar to the `for` option in Prometheus Alerting Rules.
+
+When an alert instance appears in the evaluation results for the first time, it
+enters the `Pending` state, during which no notification is sent. If the alert 
+instance remains active throughout every evaluation within the duration specified
+by `FOR`, its state transitions from `Pending` to `Firing`, and a notification
+is sent immediately.
+
+If the `FOR` clause is not specified, the alert will not enter the `Pending`
+state. Instead, an alert instance transitions to the `Firing` state immediately
+upon its first appearance in the evaluation results, and a notification is sent
+immediately.
+
+### KEEP FIRING FOR clause
+
+The `KEEP FIRING FOR` clause controls how long an alert instance should remain
+in the `Firing` state after it first enters that state. Its behavior is similar
+to the `keep_firing_for` option in Prometheus Alerting Rules.
+
+Once an alert instance enters the `Firing` state, it will remain firing for at
+least the duration specified by `KEEP FIRING FOR`, even if it no longer appears
+in subsequent evaluation results.
+
+After the `KEEP FIRING FOR` duration has passed, if the alert instance does not
+appear in the next evaluation, it will be marked as resolved and will no longer
+remain in the `Firing` state.
+
+If the `KEEP FIRING FOR` clause is not specified, an alert instance will be 
+marked as resolved in the first evaluation where it no longer appears in the
+query results after entering the `Firing` state.
 
 ### Labels and Annotations clauses
 
@@ -189,4 +227,3 @@ DROP TRIGGER IF EXISTS load1_monitor;
 ## Example
 
 Please refer to the [Trigger](/enterprise/trigger.md) documentation in the enterprise user guide for examples.
-
