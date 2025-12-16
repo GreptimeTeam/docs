@@ -343,14 +343,18 @@ cache_capacity = "10GiB"
 `cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置 `cache_path`，因为数据库会自动设置该目录。
 
 
-自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小
+自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小和行为。
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
 write_cache_size = "10GiB"
+# 在写入缓存未命中时从对象存储下载文件填充缓存
+cache_file_on_write_miss = true
 ```
+
+默认情况下，当查询时发生缓存未命中，GreptimeDB 会自动从对象存储下载文件填充本地缓存（`cache_file_on_write_miss = true`）。这可以提高后续查询性能，使频繁访问的数据保留在本地缓存中。如果你想减少网络流量或存储成本，可以通过设置 `cache_file_on_write_miss = false` 来禁用此行为。
 
 更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)。
 
@@ -402,6 +406,8 @@ global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+write_cache_size = "512MB"
+cache_file_on_write_miss = true
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
@@ -446,6 +452,8 @@ fork_dictionary_bytes = "1GiB"
 | `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
 | `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
+| `write_cache_size`                       | 字符串 | `512MB`       | 写入缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/8<br/>写入缓存在使用对象存储时特别有用，它可以在本地缓存最近写入的数据以提高查询性能。 |
+| `cache_file_on_write_miss`               | 布尔值 | `true`        | 当发生写入缓存未命中时，是否从对象存储下载文件以填充本地缓存。<br/>启用时，如果查询的数据不在缓存中，会自动从对象存储下载文件到本地缓存，从而提高后续查询性能。<br/>此选项在使用 S3 等对象存储后端时最为有用。 |
 | `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
