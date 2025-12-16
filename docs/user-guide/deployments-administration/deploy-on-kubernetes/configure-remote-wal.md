@@ -37,7 +37,7 @@ This example assumes you have a Kafka cluster running in the `kafka-cluster` nam
 meta:
   backendStorage:
     etcd:
-      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
   configData: |
     [wal]
     provider = "kafka"
