@@ -90,7 +90,7 @@ Annotations:
 
 ## 创建 Trigger
 
-在 GreptimeDB 中创建 Trigger。使用 MySql 客户端连接 GreptimeDB 并执行以下 SQL：
+在 GreptimeDB 中创建 Trigger。使用 MySQL 客户端连接 GreptimeDB 并执行以下 SQL：
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS load1_monitor
