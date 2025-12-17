@@ -1,5 +1,5 @@
 ---
-keywords: [ALTER statement, SQL, modify database, modify table, alter column, table options, column comment, table comment]
+keywords: [ALTER statement, SQL, modify database, modify table, alter column, table options]
 description: Describes the `ALTER` statement used to modify database options, table options, or metadata, including syntax and examples for altering databases and tables.
 ---
 
@@ -10,7 +10,7 @@ description: Describes the `ALTER` statement used to modify database options, ta
 * Modify database options
 * Add/Drop/Modify a column
 * Set/Drop column default values
-* Set column comments
+* Drop column default values
 * Rename a table
 * Modify table options
 
@@ -89,7 +89,6 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name type
     | MODIFY COLUMN name SET DEFAULT value
     | MODIFY COLUMN name DROP DEFAULT
-    | MODIFY COLUMN name SET COMMENT comment
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
     | RENAME name
@@ -176,29 +175,12 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 
 After dropping the default value, the column will use `NULL` as the default. The database only allow dropping defaults for nullable columns.
 
-### Set column comment
-
-Set or update a comment for an existing column:
-
-```sql
-ALTER TABLE monitor MODIFY COLUMN load_15 SET COMMENT 'Load average over 15 minutes';
-```
-
-Set a comment for a string column:
-
-```sql
-ALTER TABLE monitor MODIFY COLUMN host SET COMMENT 'Hostname of the server';
-```
-
-The comment is stored in the column metadata and can be viewed through `SHOW CREATE TABLE` or by querying the `INFORMATION_SCHEMA.COLUMNS` table.
-
 ### Alter table options
 
 `ALTER TABLE` statements can also be used to change the options of tables.
 
 Currently following options are supported:
 - `ttl`: the retention time of data in table.
-- `comment`: the table comment.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
@@ -206,8 +188,6 @@ Currently following options are supported:
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
-
-ALTER TABLE monitor SET 'comment'='Monitor metrics table';
 
 ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 
@@ -222,8 +202,6 @@ ALTER TABLE monitor SET 'sst_format'='flat';
 
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
-
-ALTER TABLE monitor UNSET 'comment';
 ```
 
 ### Create an index for a column

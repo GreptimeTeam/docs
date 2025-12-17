@@ -636,6 +636,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/alter',
             'reference/sql/case',
             'reference/sql/cast',
+            'reference/sql/comment',
             'reference/sql/copy',
             'reference/sql/create',
             'reference/sql/delete',
