@@ -10,7 +10,39 @@ Release date: December 17, 2025
 
 ## Breaking changes
 
-* feat!: download file to fill the cache on write cache miss by [@evenyag](https://github.com/evenyag) in [#7294](https://github.com/GreptimeTeam/greptimedb/pull/7294)
+* **Cache Architecture Refactoring:** Replaced generic LRU cache with specialized manifest cache and background downloads by [@evenyag](https://github.com/evenyag) in [#7294](https://github.com/GreptimeTeam/greptimedb/pull/7294), breaking configuration changes:
+  - **NEW:** `region_engine.mito.manifest_cache_size` (default: 256MB)
+  - **REMOVED:** `storage.cache_path`, `storage.enable_read_cache`, `storage.cache_capacity`
+
+
+### 👍 Highlights
+
+#### 🚀 Key New Features
+
+* **Vector Index Support:**
+    * Added foundational types and SQL parsing support for **vector index** functionality.
+* **Memory Management:**
+    * Implemented **memory manager for compaction** operations.
+    * Introduced **per file scan metrics** for better monitoring.
+* **Operations & Monitoring:**
+    * Added ability to **suspend frontend and datanode** components.
+    * Added **Grafana PostgreSQL data source query builder** support.
+    * Implemented **manifest file cache** for improved performance.
+
+#### ⚡ Performance Improvements
+
+* Optimized **DISTINCT operations** by treating them as commutative/partially-commutative.
+* Enhanced **histogram quantile calculations** with safe mode for incomplete data.
+* Improved **part sort behavior** on overlapping time windows.
+* Added **verbose metrics to scanners** for better performance tracking.
+
+#### 🐛 Notable Bug Fixes
+
+* Fixed **network failure detection** with HTTP/2 keep-alive for heartbeat client.
+* Resolved **PostgreSQL extended query regression** with shortcutted statements.
+* Fixed **PromQL histogram issues** with aggregation and offset direction.
+* Corrected **TLS option validation and merging** problems.
+* Fixed **CPU core calculation** that could incorrectly return 0.
 
 ### 🚀 Features
 
