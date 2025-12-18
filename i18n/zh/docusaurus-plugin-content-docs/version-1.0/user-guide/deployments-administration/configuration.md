@@ -325,7 +325,7 @@ credential_path = "<gcs credential path>"
 
 在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据通常会很耗时，尤其在公有云环境。为了解决这个问题，GreptimeDB 提供了写入缓存机制来加速重复数据的访问。
 
-自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小和行为。
+你可以通过修改 mito 的配置调整缓存的大小和行为。
 
 ```toml
 [[region_engine]]
