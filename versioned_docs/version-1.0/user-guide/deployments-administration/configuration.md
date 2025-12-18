@@ -336,7 +336,7 @@ For storage from the same provider, if you want to use different S3 buckets as s
 
 When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a write cache mechanism to speed up repeated data access.
 
-The write cache is no more experimental since `v0.12`. You can configure the cache size and behavior in the mito config if you don't want to use the default values.
+You can configure the cache size and behavior in the mito config if you don't want to use the default values.
 ```toml
 [[region_engine]]
 [region_engine.mito]
