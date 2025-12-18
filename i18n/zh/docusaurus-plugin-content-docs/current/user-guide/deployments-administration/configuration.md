@@ -390,6 +390,7 @@ vector_cache_size = "512MB"
 page_cache_size = "512MB"
 write_cache_size = "512MB"
 cache_file_on_write_miss = true
+manifest_cache_size = "128MB"
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
@@ -436,6 +437,7 @@ fork_dictionary_bytes = "1GiB"
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
 | `write_cache_size`                       | 字符串 | `512MB`       | 写入缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/8<br/>写入缓存在使用对象存储时特别有用，它可以在本地缓存最近写入的数据以提高查询性能。 |
 | `cache_file_on_write_miss`               | 布尔值 | `true`        | 当发生写入缓存未命中时，是否从对象存储下载文件以填充本地缓存。<br/>启用时，如果查询的数据不在缓存中，会自动从对象存储下载文件到本地缓存，从而提高后续查询性能。<br/>此选项在使用 S3 等对象存储后端时最为有用。 |
+| `manifest_cache_size`                    | 字符串 | `128MB`       | Region manifest 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                    |
 | `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
