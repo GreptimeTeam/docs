@@ -323,25 +323,7 @@ credential_path = "<gcs credential path>"
 
 ### 对象存储缓存
 
-在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据通常会很耗时，尤其在公有云环境。为了解决这个问题，GreptimeDB 提供了本地缓存机制来加速重复数据的访问。
-
-从 v0.11 版本开始，GreptimeDB 默认启用远程对象存储的本地文件缓存。读取和写入缓存容量都设置为 `5GiB`。
-
-
-通常你无需专门配置缓存，除非你需要修改缓存的大小
-```toml
-[storage]
-type = "S3"
-bucket = "test_greptimedb"
-root = "/greptimedb"
-access_key_id = "<access key id>"
-secret_access_key = "<secret access key>"
-cache_capacity = "10GiB"
-# cache_path = "/path/to/cache/home"
-```
-
-`cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置 `cache_path`，因为数据库会自动设置该目录。
-
+在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据通常会很耗时，尤其在公有云环境。为了解决这个问题，GreptimeDB 提供了写入缓存机制来加速重复数据的访问。
 
 自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小和行为。
 

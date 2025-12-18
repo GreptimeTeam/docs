@@ -334,24 +334,7 @@ For storage from the same provider, if you want to use different S3 buckets as s
 
 ### Object storage cache
 
-When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a local cache mechanism to speed up repeated data access.
-
-GreptimeDB enables local file caching for remote object storage by default, with both read and write cache capacity set to `5GiB`.
-
-
-Usually you don't have to configure the cache unless you want to specify the cache capacity.
-```toml
-[storage]
-type = "S3"
-bucket = "test_greptimedb"
-root = "/greptimedb"
-access_key_id = "<access key id>"
-secret_access_key = "<secret access key>"
-cache_capacity = "10GiB"
-# cache_path = "/path/to/cache/home"
-```
-
-The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
+When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a write cache mechanism to speed up repeated data access.
 
 The write cache is no more experimental since `v0.12`. You can configure the cache size and behavior in the mito config if you don't want to use the default values.
 ```toml
