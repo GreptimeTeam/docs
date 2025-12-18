@@ -353,13 +353,17 @@ cache_capacity = "10GiB"
 
 The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
 
-The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
+The write cache is no more experimental since `v0.12`. You can configure the cache size and behavior in the mito config if you don't want to use the default values.
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
 write_cache_size = "10GiB"
+# Download files from object storage to fill the cache on write cache miss
+cache_file_on_write_miss = true
 ```
+
+By default, GreptimeDB automatically downloads files from object storage to fill the local cache when there's a cache miss during queries (`cache_file_on_write_miss = true`). This improves subsequent query performance by keeping frequently accessed data in the local cache. You can disable this behavior by setting `cache_file_on_write_miss = false` if you want to minimize network traffic or storage costs.
 
 Read [Performance Tuning Tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) for more detailed info.
 
@@ -410,6 +414,8 @@ global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+write_cache_size = "512MB"
+cache_file_on_write_miss = true
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
@@ -454,6 +460,8 @@ Available options:
 | `sst_meta_cache_size`                    | String  | `128MB`       | Cache size for SST metadata. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB.                                                                                                                                                                                                                                                                                                                                               |
 | `vector_cache_size`                      | String  | `512MB`       | Cache size for vectors and arrow arrays. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                                                                                                                                                                                                                                                                                                                                   |
 | `page_cache_size`                        | String  | `512MB`       | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                                    |
+| `write_cache_size`                       | String  | `512MB`       | Cache size for the write cache. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.<br/>The write cache is particularly useful when using object storage, as it caches recently written data locally to improve query performance.                                                                                                                                                                                                                              |
+| `cache_file_on_write_miss`               | Boolean | `true`        | Whether to download files from object storage to fill the local cache when there's a write cache miss.<br/>When enabled, files are automatically downloaded from object storage to the local cache during queries if not already cached, improving subsequent query performance.<br/>This option is most useful when using object storage backends like S3.                                                                                                                                          |
 | `selector_result_cache_size`             | String  | `512MB`       | Cache size for time series selector (e.g. `last_value()`). Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                 |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `scan_parallelism`                       | Integer | `0`           | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n.                                                                                                                                                                                                                                                                                                              |
