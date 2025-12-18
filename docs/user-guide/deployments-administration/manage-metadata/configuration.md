@@ -130,6 +130,7 @@ meta_table_name = "greptime_metakv"
 # In PostgreSQL 15 and later, the default public schema is restricted by default,
 # and non-superusers are no longer allowed to create tables in the public schema.
 # When encountering permission restrictions, use this parameter to specify a writable schema.
+# Note: This schema must be created manually before it can be used.
 meta_schema_name = "greptime_schema"
 
 # Optional: Advisory lock ID for election

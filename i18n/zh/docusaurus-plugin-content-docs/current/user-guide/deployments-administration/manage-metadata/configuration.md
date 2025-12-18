@@ -134,6 +134,7 @@ meta_election_lock_id = 1
 # 在 PostgreSQL 15 及更高版本中，默认的 public schema 通常被限制写入权限，
 # 非超级用户无法在 public schema 中创建表。
 # 当遇到权限限制时，可通过此参数指定一个具有写入权限的 schema。
+# 注意：该 schema 必须在使用前手动创建。
 meta_schema_name = "greptime_schema"
 
 [backend_tls]
