@@ -38,7 +38,7 @@ chart 版本之间的配置结构已发生变化:
 meta:
   backendStorage:
     etcd:
-      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
   configData: |
     [wal]
     provider = "kafka"
