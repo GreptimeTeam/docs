@@ -9,7 +9,7 @@ description: 关于 GreptimeDB 的常见问题解答 - 统一可观测性数据�
 
 ### 什么是 GreptimeDB？
 
-GreptimeDB 是一个开源、云原生的统一可观测性数据库，旨在通过单一系统中存储和分析 metrics、logs 和 traces。基于 Rust 构建以实现高性能，它提供：
+GreptimeDB 是一个开源、云原生的统一可观测性数据库，旨在通过单一系统存储和分析 metrics、logs 和 traces。基于 Rust 构建以实现高性能，它提供：
 - 高达 50 倍的运营和存储成本降低
 - 在 PB 级数据集上实现亚秒级查询响应
 - 原生 OpenTelemetry 支持
