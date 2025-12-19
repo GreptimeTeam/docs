@@ -170,7 +170,7 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
