@@ -41,7 +41,7 @@ GreptimeDB 支持查询分析功能，通过 `EXPLAIN ANALYZE [VERBOSE] <SQL>` �
 # 写入缓存的缓存大小。此缓存的 `type` 标签值为 `file`。
 write_cache_size = "10G"
 # 在写入缓存未命中时从对象存储下载文件填充缓存
-cache_file_on_write_miss = true
+enable_refill_cache_on_read = true
 # SST 元数据的缓存大小。此缓存的 `type` 标签值为 `sst_meta`。
 sst_meta_cache_size = "128MB"
 # 向量和箭头数组的缓存大小。此缓存的 `type` 标签值为 `vector`。
@@ -59,7 +59,7 @@ staging_size = "10GB"
 
 一些建议：
 - 至少将写入缓存设置为磁盘空间的 1/10。使用对象存储时，建议使用较大的写入缓存。
-- 使用对象存储时，GreptimeDB 默认在缓存未命中时自动下载文件以填充本地缓存（`cache_file_on_write_miss = true`）。这可以提高查询性能，但会增加网络流量。如果你想减少网络使用或存储成本，可以考虑禁用此选项。
+- 使用对象存储时，GreptimeDB 默认在缓存未命中时自动下载文件以填充写入缓存（`enable_refill_cache_on_read = true`）。这可以提高查询性能，但会增加网络流量。如果你想减少网络使用或存储成本，可以考虑禁用此选项。
 - 如果数据库内存使用率低于 20%，则可以至少将 `page_cache_size` 设置为总内存大小的 1/4
 - 如果缓存命中率低于 50%，则可以将缓存大小翻倍
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10

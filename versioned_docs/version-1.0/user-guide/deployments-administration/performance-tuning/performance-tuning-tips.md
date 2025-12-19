@@ -43,7 +43,7 @@ Here is an example:
 # Cache size for the write cache. The `type` label value for this cache is `file`.
 write_cache_size = "10G"
 # Download files from object storage to fill the cache on write cache miss
-cache_file_on_write_miss = true
+enable_refill_cache_on_read = true
 # Cache size for SST metadata. The `type` label value for this cache is `sst_meta`.
 sst_meta_cache_size = "128MB"
 # Cache size for vectors and arrow arrays. The `type` label value for this cache is `vector`.
@@ -62,7 +62,7 @@ staging_size = "10GB"
 Some tips:
 
 - 1/10 of disk space for the write cache at least. It's recommended to use a large write cache when using object storage.
-- When using object storage, GreptimeDB automatically downloads files to fill the local cache on cache misses by default (`cache_file_on_write_miss = true`). This improves query performance but may increase network traffic. Consider disabling this if you want to minimize network usage or storage costs.
+- When using object storage, GreptimeDB automatically downloads files to fill the write cache on cache misses by default (`enable_refill_cache_on_read = true`). This improves query performance but may increase network traffic. Consider disabling this if you want to minimize network usage or storage costs.
 - 1/4 of total memory for the `page_cache_size` at least if the memory usage is under 20%
 - Double the cache size if the cache hit ratio is less than 50%
 - If using full-text index, leave 1/10 of disk space for the `staging_size` at least
