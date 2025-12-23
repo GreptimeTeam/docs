@@ -19,7 +19,6 @@ greptime metasrv start --help
 | `--enable-region-failover`            | 是否启用 Region 自动容灾，默认是 `false`。开启条件请参考：[Region 自动容灾](/user-guide/deployments-administration/manage-data/region-failover.md) |
 | `--env-prefix <ENV_PREFIX>`           | 配置的环境变量前缀，默认为`GREPTIMEDB_METASRV`                                                                                                     |
 | `--rpc-bind-addr <RPC_BIND_ADDR>`     | gRPC 服务绑定地址                                                                                                                                  |
-| `--rpc-server-addr <RPC_SERVER_ADDR>` | 该地址用于来自主机外部的连接和通信。如果留空或未设置，服务器将自动使用主机上第一个网络接口的 IP 地址，其端口号与 `rpc_bind_addr` 中指定的相同；    |
 | `--http-addr <HTTP_ADDR>`             | HTTP 服务器地址                                                                                                                                    |
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 请求超时时间（秒）                                                                                                                            |
 | `--selector <SELECTOR>`               | 您可以参考 [selector-type](/contributor-guide/metasrv/selector.md#selector-type)                                                                   |
