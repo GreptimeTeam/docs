@@ -135,10 +135,6 @@ write_bytes_exhausted_policy = "wait"
 | `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
 | `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
 
-:::tip NOTE
-This unified memory limiter replaces the previous protocol-specific options (`http.max_total_body_memory` and `grpc.max_total_message_memory`), providing a single configuration point for all write protocols.
-:::
-
 ### Protocol options
 
 Protocol options are valid in `frontend` and `standalone` subcommands,
