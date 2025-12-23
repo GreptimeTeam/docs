@@ -670,6 +670,8 @@ create_topic_timeout = "30s"
 | `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
+| `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
+| `auto_create_schema` | Bool | `true` | 如果 PostgreSQL schema 不存在则自动创建。启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。这在生产环境中可能受限于手动创建 schema 的情况下非常有用。注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。<br/>**仅在 backend 为 postgres_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
 | `procedure`                                   | --      | --                   |                                                                                                                                      |
 | `procedure.max_retry_times`                   | 整数    | `12`                 | Procedure 的最大重试次数。                                                                                                           |
