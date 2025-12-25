@@ -9,15 +9,17 @@ description: Introduce how to upgrade GreptimeDB to the latest version, includin
 
 This guide provides upgrade instructions for GreptimeDB, including compatibility information and breaking changes for each version. Before upgrading, ensure you review the relevant breaking changes for your upgrade path.
 
+For complete version history and feature additions, see the [Release Notes](/release-notes/).
+
 ## Upgrade Paths to v1.0
 
 ### From v0.16 to v1.0
 
-If you are currently running v0.16, you can upgrade directly to v1.0. Review all breaking changes from v0.17 and v1.0 releases below.
+If you are currently running v0.16, you can upgrade directly to v1.0. See [Upgrading from v0.16 to v1.0](#upgrading-from-v016-to-v10) for all relevant breaking changes.
 
 ### From v0.17 to v1.0
 
-If you are currently running v0.17, you can upgrade directly to v1.0. Review the v1.0 breaking changes below.
+If you are currently running v0.17, you can upgrade directly to v1.0. See [Upgrading from v0.17 to v1.0](#upgrading-from-v017-to-v10) for breaking changes.
 
 ### From Earlier Versions
 
