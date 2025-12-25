@@ -115,6 +115,26 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 In this section, we will introduce some main configuration options.
 For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md) on Github.
 
+### Write memory limiter options
+
+Memory limiter options control the total memory used by concurrent write requests across all protocols (HTTP, gRPC, and Arrow Flight).
+These options are valid in `frontend` and `standalone` subcommands.
+
+```toml
+# Maximum total memory for all concurrent write request bodies and messages
+# Set to 0 to disable the limit (unlimited by default)
+max_in_flight_write_bytes = "1GB"
+
+# Policy when write bytes quota is exhausted
+# Options: "wait" (default, 10s timeout), "wait(<duration>)" (e.g., "wait(30s)"), "fail"
+write_bytes_exhausted_policy = "wait"
+```
+
+| Option                          | Type   | Default | Description                                                                                                                                                                                                                                           |
+| ------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
+| `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+
 ### Protocol options
 
 Protocol options are valid in `frontend` and `standalone` subcommands,

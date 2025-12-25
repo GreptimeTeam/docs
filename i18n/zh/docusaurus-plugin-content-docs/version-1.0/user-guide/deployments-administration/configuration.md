@@ -109,6 +109,26 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 本节将介绍主要的配置项，请前往 GitHub 查看[所有配置项](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md)。
 
+### 写入内存限制选项
+
+内存限制选项控制所有协议（HTTP、gRPC 和 Arrow Flight）并发写入请求使用的总内存。
+这些选项适用于 `frontend` 和 `standalone` 子命令。
+
+```toml
+# 所有并发写入请求体和消息的最大总内存
+# 设置为 0 表示禁用限制（默认为无限制）
+max_in_flight_write_bytes = "1GB"
+
+# 写入字节配额耗尽时的策略
+# 可选值："wait"（默认，10 秒超时）、"wait(<duration>)"（例如 "wait(30s)"）、"fail"
+write_bytes_exhausted_policy = "wait"
+```
+
+| 配置项                          | 类型   | 默认值    | 描述                                                                                                                                                                                                              |
+| ------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_in_flight_write_bytes`     | 字符串 | `"0"`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `"0"` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`"1GB"` 将并发写入总量限制为 1GB。                              |
+| `write_bytes_exhausted_policy`  | 字符串 | `"wait"`  | 写入字节配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。                                                      |
+
 ### 协议选项
 
 协议选项适用于 `frontend` 和 `standalone` 子命令，它指定了协议服务器地址和其他协议相关的选项。
