@@ -1,5 +1,5 @@
 ---
-keywords: [release notes, elasticsearch, read replicas, triggers]
+keywords: [release notes, greptimedb enterprise]
 description: Release notes for GreptimeDB Enterprise version 25.05, highlighting new features like elasticsearch compatibility, read replicas and triggers.
 ---
 
@@ -31,4 +31,4 @@ management of trigger events.
 
 ## Features From GreptimeDB OSS
 
-This release is based on GreptimeDB OSS v1.0.0-beta.2.
+This release is based on GreptimeDB OSS v1.0.0.
