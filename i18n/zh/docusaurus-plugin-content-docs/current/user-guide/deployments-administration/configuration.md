@@ -343,34 +343,20 @@ credential_path = "<gcs credential path>"
 
 ### 对象存储缓存
 
-在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据通常会很耗时，尤其在公有云环境。为了解决这个问题，GreptimeDB 提供了本地缓存机制来加速重复数据的访问。
+在使用 AWS S3、阿里云 OSS 或 Azure Blob Storage 等远程存储服务时，查询过程中获取数据通常会很耗时，尤其在公有云环境。为了解决这个问题，GreptimeDB 提供了写入缓存机制来加速重复数据的访问。
 
-从 v0.11 版本开始，GreptimeDB 默认启用远程对象存储的本地文件缓存。读取和写入缓存容量都设置为 `5GiB`。
-
-
-通常你无需专门配置缓存，除非你需要修改缓存的大小
-```toml
-[storage]
-type = "S3"
-bucket = "test_greptimedb"
-root = "/greptimedb"
-access_key_id = "<access key id>"
-secret_access_key = "<secret access key>"
-cache_capacity = "10GiB"
-# cache_path = "/path/to/cache/home"
-```
-
-`cache_path` 指定存储缓存文件的本地目录，而 `cache_capacity` 则决定缓存目录中允许的最大文件总大小（以字节为单位）。你可以通过将 `cache_path` 设置为空字符串来禁用读取缓存。默认的缓存目录位于 `{data_home}` 目录下。我们建议你不用配置 `cache_path`，因为数据库会自动设置该目录。
-
-
-自 `v0.12` 之后，写入缓存不再是实验性的功能。你可以通过修改 mito 的配置调整缓存的大小
+你可以通过修改 mito 的配置调整缓存的大小和行为。
 
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
 write_cache_size = "10GiB"
+# 在写入缓存未命中时从对象存储下载文件填充缓存
+enable_refill_cache_on_read = true
 ```
+
+默认情况下，当查询时发生缓存未命中，GreptimeDB 会自动从对象存储下载文件填充写入缓存（`enable_refill_cache_on_read = true`）。这可以提高后续查询性能，使频繁访问的数据保留在写入缓存中。如果你想减少网络流量或存储成本，可以通过设置 `enable_refill_cache_on_read = false` 来禁用此行为。
 
 更详细的信息请参阅[性能调优技巧](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)。
 
@@ -422,6 +408,7 @@ global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+write_cache_size = "5GB"
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
@@ -466,6 +453,12 @@ fork_dictionary_bytes = "1GiB"
 | `sst_meta_cache_size`                    | 字符串 | `128MB`       | SST 元数据缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/32，不超过 128MB                                            |
 | `vector_cache_size`                      | 字符串 | `512MB`       | 内存向量和 arrow array 的缓存大小。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                             |
 | `page_cache_size`                        | 字符串 | `512MB`       | SST 数据页的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/8                                                             |
+| `write_cache_size`                       | 字符串 | `5GiB`        | 写入缓存容量。如果磁盘空间充足，建议设置更大的值。                                                                     |
+| `write_cache_ttl`                        | 字符串 | 未设置        | 写入缓存的 TTL。                                                                                                       |
+| `preload_index_cache`                    | 布尔值 | `true`        | 在 region 打开时预加载索引（puffin）文件到缓存（默认：true）。<br/>启用时，索引文件会在 region 初始化期间加载到写入缓存中，<br/>这可以提高查询性能，但会延长启动时间。 |
+| `index_cache_percent`                    | 整数   | `20`          | 为索引（puffin）文件分配的写入缓存容量百分比（默认：20）。<br/>剩余容量用于数据（parquet）文件。<br/>必须在 0 到 100 之间（不包括边界）。例如，对于 5GiB 的写入缓存和 20% 的分配，<br/>1GiB 保留给索引文件，4GiB 用于数据文件。 |
+| `enable_refill_cache_on_read`            | 布尔值 | `true`        | 启用读取操作时的缓存回填（默认：true）。<br/>禁用时，不会在读取时回填缓存。                                            |
+| `manifest_cache_size`                    | 字符串 | `256MB`       | Manifest 缓存容量（默认：256MB）。                                                                                     |
 | `selector_result_cache_size`             | 字符串 | `512MB`       | `last_value()` 等时间线检索结果的缓存。设为 0 可关闭该缓存<br/>默认为内存的 1/16，不超过 512MB                         |
 | `sst_write_buffer_size`                  | 字符串 | `8MB`         | SST 的写缓存大小                                                                                                       |
 | `scan_parallelism`                       | 整数   | `0`           | 扫描并发度 (默认 1/4 CPU 核数)<br/>- `0`: 使用默认值 (1/4 CPU 核数)<br/>- `1`: 单线程扫描<br/>- `n`: 按并行度 n 扫描   |
