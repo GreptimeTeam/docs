@@ -82,7 +82,20 @@ Following diagrams show how files in a window get compacted when `trigger_file_n
 ![compaction-trigger-file-num.png](/compaction-trigger-file-num.png)
 
 ### Specifying TWCS parameters
-You can specify TWCS parameters mentioned above while creating tables, for example:
+
+TWCS parameters can be specified at two levels:
+
+1. **Table level**: Explicitly set when creating or altering a table
+2. **Database level**: Set as defaults for all tables in the database
+
+The effective compaction settings are resolved dynamically at compaction scheduling time with the following priority:
+- Table-level settings (if specified)
+- Database-level settings (if specified and no table-level override)
+- Built-in defaults
+
+#### Table-level compaction settings
+
+You can specify TWCS parameters when creating tables:
 
 ```sql
 CREATE TABLE monitor (
@@ -97,6 +110,14 @@ WITH (
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
+
+#### Database-level compaction settings
+
+You can also set default compaction parameters for all tables in a database. These settings will be inherited by tables that don't have explicit compaction settings. See [ALTER DATABASE](/reference/sql/alter.md#modify-compaction-options-of-database) for examples.
+
+:::note
+Unlike table-level settings which are stored with the table metadata, database-level compaction settings are dynamically resolved at runtime. Changing database-level compaction options will immediately affect all tables in the database that don't have their own explicit compaction settings. This behavior is similar to how [database-level TTL](/reference/sql/create.md#create-database) works.
+:::
 
 ## Strict Window Compaction Strategy (SWCS) and manual compaction
 

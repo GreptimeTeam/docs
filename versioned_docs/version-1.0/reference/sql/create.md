@@ -37,9 +37,9 @@ Read more about [table options](#table-options).
 :::note Important Behavior Differences
 Database options behave differently:
 
-- **TTL**: This option has ongoing effect. Tables without a specified TTL will continuously inherit this database-level value. Changing the database TTL will immediately impact all tables that don't have their own TTL setting.
+- **TTL and Compaction options** (`ttl`, `compaction.*`): These options have ongoing effect. Tables without specified values will continuously inherit database-level values. Changing the database TTL or compaction options will immediately impact all tables that don't have their own settings.
 
-- **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`, `compaction.*`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
+- **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
 :::
 
 When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.

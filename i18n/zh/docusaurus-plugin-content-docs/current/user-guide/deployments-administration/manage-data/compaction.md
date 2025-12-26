@@ -79,7 +79,20 @@ TWCS 提供了 5 个参数供调整：
 ![compaction-trigger-file-num.png](/compaction-trigger-file-num.png)
 
 ### 指定 TWCS 参数
-用户可以在创建表时指定前述的 TWCS 参数，例如：
+
+TWCS 参数可以在两个级别指定：
+
+1. **表级别**：在创建或修改表时明确设置
+2. **数据库级别**：为数据库中的所有表设置默认值
+
+有效的压缩设置在压缩调度时动态解析，优先级如下：
+- 表级别设置（如果指定）
+- 数据库级别设置（如果指定且没有表级别覆盖）
+- 内置默认值
+
+#### 表级别压缩设置
+
+用户可以在创建表时指定 TWCS 参数：
 
 ```sql
 CREATE TABLE monitor (
@@ -94,6 +107,14 @@ WITH (
     'compaction.twcs.max_output_file_size'='500MB'
     );
 ```
+
+#### 数据库级别压缩设置
+
+您也可以为数据库中的所有表设置默认压缩参数。这些设置将被没有明确设置压缩选项的表继承。参见 [ALTER DATABASE](/reference/sql/alter.md#修改数据库的压缩选项) 获取示例。
+
+:::note
+与存储在表元数据中的表级别设置不同，数据库级别的压缩设置在运行时动态解析。更改数据库级别的压缩选项会立即影响数据库中所有没有明确设置压缩选项的表。此行为类似于[数据库级别的 TTL](/reference/sql/create.md#create-database) 的工作方式。
+:::
 
 ## 严格窗口压缩策略（SWCS）和手动压缩
 
