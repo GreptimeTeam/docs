@@ -597,6 +597,16 @@ region_failure_detector_initialization_delay = "10m"
 # 因为这可能会在故障转移期间导致数据丢失。**
 allow_region_failover_on_local_wal = false
 
+## 从 metasrv 内存中删除节点信息前允许的最大空闲时间。
+node_max_idle_time = "24hours"
+
+## 用于计算分布式时间常量的基础心跳间隔。
+## frontend 的心跳间隔是基础心跳间隔的 6 倍。
+## flownode/datanode 的心跳间隔是基础心跳间隔的 1 倍。
+## 例如，如果基础心跳间隔为 3s，则 frontend 心跳间隔为 18s，flownode/datanode 心跳间隔为 3s。
+## 如果修改此值，需要相应修改 flownode/frontend/datanode 的心跳间隔。
+heartbeat_interval = "3s"
+
 ## Procedure 选项
 [procedure]
 
@@ -688,6 +698,8 @@ create_topic_timeout = "30s"
 | `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
 | `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
+| `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
+| `heartbeat_interval`                          | String  | `3s`                 | 用于计算分布式时间常量的基础心跳间隔。frontend 的心跳间隔是基础心跳间隔的 6 倍。flownode/datanode 的心跳间隔是基础心跳间隔的 1 倍。例如，如果基础心跳间隔为 3s，则 frontend 心跳间隔为 18s，flownode/datanode 心跳间隔为 3s。**如果修改此值，需要相应修改 flownode/frontend/datanode 的心跳间隔。**                                      |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
 | `meta_election_lock_id` | Integer | `1` | 用于领导选举的 PostgreSQL 咨询锁 id。**仅在 backend 为  postgre_store 时有效。** |
