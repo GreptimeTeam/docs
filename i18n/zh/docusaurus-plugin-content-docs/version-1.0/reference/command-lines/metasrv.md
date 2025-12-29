@@ -24,7 +24,6 @@ greptime metasrv start --help
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP 请求超时时间（秒）                                                                                                                            |
 | `--selector <SELECTOR>`               | 您可以参考 [selector-type](/contributor-guide/metasrv/selector.md#selector-type)                                                                   |
 | `--store-addrs <STORE_ADDR>`          | 逗号或空格分隔的键值存储服务器（默认是 etcd）地址，用于存储元数据                                                                                  |
-| `--use-memory-store`                  | 用内存存储而不是其他持久化的存储后端，仅用于测试目的                                                                                             |
 
 所有的 `addr` 类选项都是 `ip:port` 形式的字符串。
 
