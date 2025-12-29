@@ -51,6 +51,16 @@ GreptimeDB provides:
 * `matches_term(expression, term)` for full text search. For details, read the [Fulltext Search](/user-guide/logs/fulltext-search.md).
 * `regexp_extract(str, regexp)` to extract the first substring in a string that matches a regular expression. Returns `NULL` if no match is found.
 
+**MySQL-Compatible String Functions:**
+
+GreptimeDB also provides the following MySQL-compatible string functions:
+* `locate(substr, str[, pos])` - Returns the position of the first occurrence of substring
+* `elt(N, str1, str2, ...)` - Returns the Nth string from the list
+* `field(str, str1, str2, ...)` - Returns the index of the first string that matches
+* `insert(str, pos, len, newstr)` - Inserts a substring at a specified position
+* `space(N)` - Returns a string of N space characters
+* `format(X, D)` - Formats a number with thousand separators and D decimal places
+
 #### regexp_extract
 
 Extracts the first substring in a string that matches a [regular expression](https://docs.rs/regex/latest/regex/#syntax). Returns `NULL` if no match is found.
@@ -81,6 +91,149 @@ SELECT regexp_extract('Phone: 123-456-7890', '\d{3}-\d{3}-\d{4}');
 
 SELECT regexp_extract('no match here', '\d+\.\d+\.\d+');
 -- Returns: NULL
+```
+
+#### locate
+
+Returns the position of the first occurrence of substring `substr` in string `str`. Optionally, you can specify a starting position `pos`. Returns 0 if the substring is not found.
+
+```sql
+locate(substr, str[, pos])
+```
+
+**Arguments:**
+
+- **substr**: The substring to search for.
+- **str**: The string to search in.
+- **pos** (optional): The position to start searching from (1-based). If omitted, searching starts from the beginning.
+
+**Examples:**
+
+```sql
+SELECT locate('world', 'hello world');
+-- Returns: 7
+
+SELECT locate('o', 'hello world', 6);
+-- Returns: 8 (finds the second 'o')
+
+SELECT locate('xyz', 'hello world');
+-- Returns: 0 (not found)
+```
+
+#### elt
+
+Returns the Nth string from a list of strings. Returns `NULL` if N is less than 1, greater than the number of strings, or `NULL`.
+
+```sql
+elt(N, str1, str2, str3, ...)
+```
+
+**Arguments:**
+
+- **N**: The index of the string to return (1-based).
+- **str1, str2, str3, ...**: The list of strings.
+
+**Examples:**
+
+```sql
+SELECT elt(2, 'apple', 'banana', 'cherry');
+-- Returns: banana
+
+SELECT elt(0, 'apple', 'banana', 'cherry');
+-- Returns: NULL
+```
+
+#### field
+
+Returns the index (1-based) of the first string that matches `str` in the list. Returns 0 if no match is found or if `str` is `NULL`.
+
+```sql
+field(str, str1, str2, str3, ...)
+```
+
+**Arguments:**
+
+- **str**: The string to search for.
+- **str1, str2, str3, ...**: The list of strings to search in.
+
+**Examples:**
+
+```sql
+SELECT field('banana', 'apple', 'banana', 'cherry');
+-- Returns: 2
+
+SELECT field('grape', 'apple', 'banana', 'cherry');
+-- Returns: 0 (not found)
+```
+
+#### insert
+
+Inserts a substring into a string at a specified position, replacing a specified number of characters.
+
+```sql
+insert(str, pos, len, newstr)
+```
+
+**Arguments:**
+
+- **str**: The original string.
+- **pos**: The position to start inserting (1-based).
+- **len**: The number of characters to replace.
+- **newstr**: The string to insert.
+
+**Examples:**
+
+```sql
+SELECT insert('Quadratic', 3, 4, 'What');
+-- Returns: QuWhattic
+
+SELECT insert('Quadratic', 3, 100, 'What');
+-- Returns: QuWhat (replaces to end of string)
+```
+
+#### space
+
+Returns a string consisting of N space characters.
+
+```sql
+space(N)
+```
+
+**Arguments:**
+
+- **N**: The number of spaces to return. Returns empty string if N is negative.
+
+**Examples:**
+
+```sql
+SELECT space(5);
+-- Returns: '     ' (5 spaces)
+
+SELECT concat('hello', space(3), 'world');
+-- Returns: 'hello   world'
+```
+
+#### format
+
+Formats a number with thousand separators and a specified number of decimal places.
+
+```sql
+format(X, D)
+```
+
+**Arguments:**
+
+- **X**: The number to format.
+- **D**: The number of decimal places (0-30).
+
+**Examples:**
+
+```sql
+SELECT format(1234567.891, 2);
+-- Returns: 1,234,567.89
+
+SELECT format(1234567.891, 0);
+-- Returns: 1,234,568
 ```
 
 ### Math Functions
