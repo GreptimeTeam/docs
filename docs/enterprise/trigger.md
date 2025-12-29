@@ -85,19 +85,45 @@ for more detail.
 
 ### 3. Check Trigger Status
 
-#### List all Triggers:
+#### List all Triggers
 
 ```sql
 SHOW TRIGGERS;
 ```
 
-#### View the creation statement:
+Output:
+
+```text
++---------------+
+| Triggers      |
++---------------+
+| load1_monitor |
++---------------+
+```
+
+#### View the creation statement
 
 ```sql
 SHOW CREATE TRIGGER `load1_monitor`\G
 ```
 
-#### Query detailed information:
+Output:
+
+```text
+*************************** 1. row ***************************
+       Trigger: load1_monitor
+Create Trigger: CREATE TRIGGER IF NOT EXISTS `load1_monitor`
+  ON (SELECT host AS label_host, avg(load1) AS avg_load1 AS ts ...) EVERY '1 minutes'::INTERVAL
+  FOR '3 minutes'::INTERVAL
+  KEEP FIRING FOR '3 minutes'::INTERVAL
+  LABELS (severity = 'warning')
+  ANNOTATIONS (comment = 'Your computer is smoking, should take a break.')
+  NOTIFY(
+    WEBHOOK `alert_manager` URL `http://localhost:9093` WITH (timeout = '1m'),
+  )
+```
+
+#### View Trigger details
 
 ```sql
 SELECT * FROM information_schema.triggers\G
@@ -119,18 +145,19 @@ keep_firing_for: 180
     flownode_id: 0
 ```
 
-All time-related fields are expressed in seconds.
+All time-related fields are expressed in seconds. For more information about
+the `information_schema.triggers` table, please refer to [Trigger Syntax](https://docs.greptime.com/reference/sql/information-schema/triggers/).
 
-For more information about the `information_schema.triggers` table, please refer
-to [Trigger Syntax](https://docs.greptime.com/reference/sql/information-schema/triggers/).
-
-#### View alert instances:
+#### View alert instances
 
 ```sql
 SELECT * FROM information_schema.alerts;
 ```
 
 With no data written yet, this returns an empty set.
+
+For more information about the `information_schema.alerts` table, please refer
+to [Alerts Information Schema](https://docs.greptime.com/reference/sql/information-schema/alerts/).
 
 ### 4. Write Data and Observe Alert States
 
@@ -175,11 +202,21 @@ SELECT * FROM information_schema.alerts\G
 
 **Phase 1: No alerts**
 
+```sql
+SELECT * FROM information_schema.alerts\G
+```
+
+Output:
+
 ```
 Empty set
 ```
 
-**Phase 2: PENDING** (condition met, FOR duration not reached)
+**Phase 2: PENDING** (condition met, `FOR` duration not reached)
+
+```sql
+SELECT * FROM information_schema.alerts\G
+```
 
 ```text
 *************************** 1. row ***************************
@@ -205,7 +242,11 @@ last_sent_at: NULL
 2 rows in set (0.008 sec)
 ```
 
-**Phase 3: FIRING** (FOR satisfied, notifications sent)
+**Phase 3: FIRING** (`FOR` satisfied, notifications sent)
+
+```sql
+SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
+```
 
 ```text
 *************************** 1. row ***************************
@@ -231,9 +272,13 @@ last_sent_at: 2025-12-14 13:19:29.064195
 2 rows in set (0.008 sec)
 ```
 
-**Phase 4: INACTIVE** (condition cleared + KEEP FIRING FOR expired, recovery sent)
+**Phase 4: INACTIVE** (condition cleared + `KEEP FIRING FOR` expired)
 
+```sql
+SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
 ```
+
+```text
 MySQL [(none)]> select * from information_schema.alerts\G
 *************************** 1. row ***************************
   trigger_id: 1024
