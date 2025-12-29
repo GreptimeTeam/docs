@@ -24,11 +24,11 @@ notification is sent out.
 ## Quick Start Example
 
 This guide walks through an end-to-end alerting scenario: monitor system load
-(load1) and fire alerts when load exceeds a threshold.
+(`load1`) and fire alerts when load exceeds a threshold.
 
 In this quick start, you will:
 
-- Create a load1 table to store host load metrics
+- Create a `load1` table to store host load metrics
 - Define a Trigger with conditions, labels, annotations, and notifications
 - Simulate data ingestion with normal and abnormal values
 - Watch alerts transition through PENDING → FIRING → INACTIVE
@@ -46,6 +46,8 @@ CREATE TABLE `load1` (
 ```
 
 ### 2. Create Trigger
+
+Connect to GreptimeDB with MySQL client and create the `load1_monitor` trigger:
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS `load1_monitor`
