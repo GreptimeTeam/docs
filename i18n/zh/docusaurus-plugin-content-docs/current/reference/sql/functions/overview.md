@@ -10,9 +10,10 @@ description: 提供了 GreptimeDB 中函数的概述，包括函数的分类、�
 ## 文档导航
 
 - [DataFusion 函数](./df-functions.md)
-- [GreptimeDB 函数](./greptimedb.md)
-- [地理空间函数](./geo.md)
-- [IP 函数](./ip.md)
-- [JSON 函数](./json.md)
-- [向量函数](./vector.md)
-- [近似函数](./approximate.md)
+- GreptimeDB 函数
+  - [核心函数（字符串/数学/时间/系统/管理）](./greptimedb.md)
+  - [地理空间函数](./geo.md)
+  - [IP 函数](./ip.md)
+  - [JSON 函数](./json.md)
+  - [向量函数](./vector.md)
+  - [近似函数](./approximate.md)

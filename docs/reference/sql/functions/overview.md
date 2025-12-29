@@ -10,9 +10,10 @@ Use this page as a quick index to GreptimeDB function references.
 ## Function References
 
 - [DataFusion Functions](./df-functions.md)
-- [GreptimeDB Functions](./greptimedb.md)
-- [Geospatial Functions](./geo.md)
-- [IP Functions](./ip.md)
-- [JSON Functions](./json.md)
-- [Vector Functions](./vector.md)
-- [Approximate Functions](./approximate.md)
+- GreptimeDB Functions
+  - [Core Functions (string, math, date/time, system, admin)](./greptimedb.md)
+  - [Geospatial Functions](./geo.md)
+  - [IP Functions](./ip.md)
+  - [JSON Functions](./json.md)
+  - [Vector Functions](./vector.md)
+  - [Approximate Functions](./approximate.md)
