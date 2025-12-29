@@ -110,25 +110,40 @@ Start Alertmanager once the configuration is ready.
 Connect to GreptimeDB with MySQL client and run the following SQL:
 
 ```sql
-CREATE TRIGGER IF NOT EXISTS load1_monitor
-        ON (
-                SELECT collector AS label_collector,
-                host as label_host, 
-                val
-                FROM host_load1 WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
-        ) EVERY '1 minute'::INTERVAL
-        LABELS (severity=warning)
-        ANNOTATIONS (comment='Your computer is smoking, should take a break.')
-        NOTIFY(
-                WEBHOOK alert_manager URL 'http://localhost:9093' WITH (timeout="1m")
-        );
+CREATE TRIGGER IF NOT EXISTS `load1_monitor`
+    ON (
+        SELECT
+            collector     AS label_collector,
+            host          AS label_host,
+            avg(val)      AS avg_load1,
+            max(ts)       AS ts
+        FROM public.host_load1
+        WHERE ts >= NOW() - '1 minutes'::INTERVAL
+        GROUP BY collector, host
+        HAVING avg(val) > 10
+    ) EVERY '1 minutes'::INTERVAL
+    FOR '3 minutes'::INTERVAL
+    KEEP FIRING FOR '3 minutes'::INTERVAL
+    LABELS (severity=warning)
+    ANNOTATIONS (comment='Your computer is smoking, should take a break.')
+    NOTIFY(
+        WEBHOOK alert_manager URL 'http://localhost:9093' WITH (timeout='1m')
+    );
 ```
 
-The above SQL will create a trigger named `load1_monitor` that runs every minute.
-It evaluates the last 60 seconds of data in `host_load1`; if any load1 value
-exceeds 10, the `WEBHOOK` option in the `NOTIFY` syntax specifies that this
-trigger will send a notification to Alertmanager which running on localhost with
-port 9093.
+The above SQL creates a trigger named `load1_monitor` that runs every minute,
+evaluates the average load per collector and host over the last 60 seconds, and
+produces an alert instance for each (collector, host) where `avg(val) > 10`.
+
+The `NOTIFY` clause specifies how alert instances are delivered. In this example,
+notifications are sent to a local Alertmanager instance via a webhook.
+
+Key parameters:
+
+- **FOR**: Specifies how long the condition must continuously hold before an
+    alert instance is emitted.
+- **KEEP FIRING FOR**: Specifies how long an alert instance continues to be
+    emitted after the condition no longer holds.
 
 You can execute `SHOW TRIGGERS` to view the list of created Triggers.
 
