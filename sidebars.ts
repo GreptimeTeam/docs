@@ -668,6 +668,7 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/functions/overview',
                   label: 'Overview',
                 },
+                'reference/sql/functions/greptimedb',
                 'reference/sql/functions/df-functions',
                 'reference/sql/functions/geo',
                 'reference/sql/functions/ip',
