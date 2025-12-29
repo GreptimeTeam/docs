@@ -11,7 +11,7 @@ Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这�
 本篇文档的下述内容通过一个示例来展示如何使用 Trigger 监控系统负载并触发告警。
 如果想了解如何撰写 Trigger 的具体语法，请参考[语法](/reference/sql/trigger-syntax.md)文档。
 
-# 快速入门示例
+## 快速入门示例
 
 本节将通过一个端到端示例展示如何使用触发器监控系统负载并触发告警。
 
@@ -25,7 +25,7 @@ Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这�
 3. Alertmanager 依据自身配置完成告警分组、抑制及路由，最终通过 Slack 集成将消息
     发送至指定频道。
 
-## 使用 Vector 采集主机指标
+### 使用 Vector 采集主机指标
 
 首先，使用 Vector 采集本机的负载数据，并将数据写入 GreptimeDB 中。Vector 的配置
 示例如下所示：
@@ -56,7 +56,7 @@ load1 是衡量系统活动的关键性能指标。我们可以创建监控规�
 +-----------+----------------------+------+------+---------+---------------+
 ```
 
-## 配置 Alertmanager 与 Slack 集成
+### 配置 Alertmanager 与 Slack 集成
 
 GreptimeDB Trigger 的 Webhook payload 与 [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
 兼容，因此我们可以复用 Alertmanager 的分组、抑制、静默和路由功能，而无需任何额外
@@ -88,7 +88,7 @@ Annotations:
 
 当配置完成之后，启动 Alertmanager。
 
-## 创建 Trigger
+### 创建 Trigger
 
 在 GreptimeDB 中创建 Trigger。使用 MySQL 客户端连接 GreptimeDB 并执行以下 SQL：
 
@@ -127,7 +127,7 @@ SHOW TRIGGERS;
 +---------------+
 ```
 
-## 测试 Trigger
+### 测试 Trigger
 
 使用 [stress-ng](https://github.com/ColinIanKing/stress-ng) 模拟 60 秒的高 CPU 负载：
 
