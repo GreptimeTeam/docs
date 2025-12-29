@@ -113,7 +113,7 @@ Output:
 *************************** 1. row ***************************
        Trigger: load1_monitor
 Create Trigger: CREATE TRIGGER IF NOT EXISTS `load1_monitor`
-  ON (SELECT host AS label_host, avg(load1) AS avg_load1 AS ts ...) EVERY '1 minutes'::INTERVAL
+  ON (SELECT host AS label_host, avg(load1) AS avg_load1 ...) EVERY '1 minutes'::INTERVAL
   FOR '3 minutes'::INTERVAL
   KEEP FIRING FOR '3 minutes'::INTERVAL
   LABELS (severity = 'warning')
@@ -262,10 +262,10 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 If you have Prometheus Alertmanager deployed, GreptimeDB automatically pushes
 firing and inactive alerts to it.
 
-After each evaluation, the Trigger injects query result fields into labels and
-annotations. In this example, `avg_load1` appears in annotations—reference it
-in Alertmanager notification templates to include hostname, load values, and
-other context.
+After each evaluation, the Trigger injects fields from the query results into
+labels and annotations. In this example, `host` is included as a label and
+`avg_load1` is included as an annotation. These fields are propagated to
+Alertmanager and can be referenced in notification templates.
 
 Since the payload is Alertmanager-compatible, you can use grouping, inhibition,
 silencing, and routing without adapters.
