@@ -9,9 +9,21 @@ Trigger allows you to define evaluation rules with SQL.
 GreptimeDB evaluates these rules periodically; once the condition is met, a
 notification is sent out.
 
-The following content is a quick start example that sets up a Trigger to monitor system load and raise alerts step by step.
-For details on how to write a Trigger,
+The following content is a quick start example that sets up a Trigger to monitor
+system load and raise alerts step by step. For details on how to write a Trigger,
 please refer to the [Syntax](/reference/sql/trigger-syntax.md) documentation.
+
+## Key Features
+
+- **SQL-native**: Define trigger rules in SQL, reusing GreptimeDB's built-in
+    functions without a learning curve.
+- **Multi-stage** state management: Built-in pending / firing / inactive state
+    machine prevents flapping and duplicate notifications.
+- **Rich context**: Custom labels and annotations with automatic injection of
+    query result fields to pinpoint root causes.
+- **Ecosystem-friendly**: Alert payload fully compatible with Prometheus 
+    Alertmanager—use its grouping, inhibition, silencing, and routing without
+    glue code.
 
 ## Quick Start Example
 
