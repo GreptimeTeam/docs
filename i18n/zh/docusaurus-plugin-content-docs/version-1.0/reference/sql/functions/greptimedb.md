@@ -206,6 +206,8 @@ SELECT format(1234567.891, 0);
 
 DataFusion [数学函数](./df-functions.md#math-functions)。GreptimeDB 额外提供：
 
+### clamp
+
 * `clamp(value, lower, upper)` 限制给定值在上下限之间：
 
 ```sql
@@ -227,6 +229,8 @@ SELECT CLAMP(0.5, 0, 1)
 |                                   0.5 |
 +---------------------------------------+
 ```
+
+### mod
 
 * `mod(x, y)` 计算除法的余数：
 ```sql
@@ -387,19 +391,3 @@ select database();
 ## 管理函数
 
 GreptimeDB 提供 `ADMIN` 语句来运行管理函数，详见 [ADMIN](/reference/sql/admin.md) 文档。
-
-## JSON 函数
-
-GreptimeDB 提供 JSON 相关函数，[了解更多](./json.md)。
-
-## 地理空间函数
-
-GreptimeDB 提供地理索引与轨迹分析函数，[了解更多](./geo.md)。
-
-## 向量函数
-
-GreptimeDB 支持向量操作函数，如距离计算、相似度度量等，[了解更多](./vector.md)。
-
-## 近似函数
-
-GreptimeDB 支持近似分析函数，如近似去重计数（hll）、近似分位数（uddsketch）等，[了解更多](./approximate.md)。

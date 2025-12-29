@@ -208,6 +208,8 @@ DataFusion [Math Function](./df-functions.md#math-functions).
 
 GreptimeDB provides:
 
+### clamp
+
 * `clamp(value, lower, upper)` to restrict a given value between a lower and upper bound:
 
 ```sql
@@ -229,6 +231,8 @@ SELECT CLAMP(0.5, 0, 1)
 |                                   0.5 |
 +---------------------------------------+
 ```
+
+### mod
 
 * `mod(x, y)` to get the remainder of a number divided by another number:
 ```sql
@@ -389,20 +393,3 @@ select database();
 ## Admin Functions
 
 GreptimeDB provides `ADMIN` statement to run the administration functions, please refer to [ADMIN](/reference/sql/admin.md) reference.
-
-## JSON Functions
-
-GreptimeDB provide functions for jsons. [Learn more about these functions](./json.md)
-
-## Geospatial Functions
-
-GreptimeDB provide functions for geo-index, trajectory analytics. [Learn more
-about these functions](./geo.md)
-
-## Vector Functions
-
-GreptimeDB supports vector functions for vector operations, such as distance calculation, similarity measurement, etc. [Learn more about these functions](./vector.md)
-
-## Approximate Functions
-
-GreptimeDB supports some approximate functions for data analysis, such as approximate count distinct(hll), approximate quantile(uddsketch), etc. [Learn more about these functions](./approximate.md)
