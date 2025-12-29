@@ -215,31 +215,16 @@ Empty set
 **Phase 2: PENDING** (condition met, `FOR` duration not reached)
 
 ```sql
-SELECT * FROM information_schema.alerts\G
+SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
 ```
 
 ```text
-*************************** 1. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"}
- annotations: {"avg_load1":"12.100000381469727","comment":"Your computer is smoking, should take a break.","ts":"1765718116619"}
-      status: PENDING
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: NULL
- resolved_at: NULL
-last_sent_at: NULL
-*************************** 2. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"}
- annotations: {"avg_load1":"11.5","comment":"Your computer is smoking, should take a break.","ts":"1765718116619"}
-      status: PENDING
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: NULL
- resolved_at: NULL
-last_sent_at: NULL
-2 rows in set (0.008 sec)
++------------+----------------------------+----------+-------------+
+| trigger_id | active_at                  | fired_at | resolved_at |
++------------+----------------------------+----------+-------------+
+|       1024 | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
+|       1024 | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
++------------+----------------------------+----------+-------------+
 ```
 
 **Phase 3: FIRING** (`FOR` satisfied, notifications sent)
@@ -249,27 +234,12 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 ```
 
 ```text
-*************************** 1. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"}
- annotations: {"avg_load1":"12.100000381469727","comment":"Your computer is smoking, should take a break.","ts":"1765718356823"}
-      status: FIRING
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: 2025-12-14 13:19:29.064195
- resolved_at: NULL
-last_sent_at: 2025-12-14 13:19:29.064195
-*************************** 2. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"}
- annotations: {"avg_load1":"11.5","comment":"Your computer is smoking, should take a break.","ts":"1765718356823"}
-      status: FIRING
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: 2025-12-14 13:19:29.064195
- resolved_at: NULL
-last_sent_at: 2025-12-14 13:19:29.064195
-2 rows in set (0.008 sec)
++------------+----------------------------+----------------------------+-------------+
+| trigger_id | active_at                  | fired_at                   | resolved_at |
++------------+----------------------------+----------------------------+-------------+
+|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
+|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
++------------+----------------------------+----------------------------+-------------+
 ```
 
 **Phase 4: INACTIVE** (condition cleared + `KEEP FIRING FOR` expired)
@@ -279,28 +249,12 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 ```
 
 ```text
-MySQL [(none)]> select * from information_schema.alerts\G
-*************************** 1. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"}
- annotations: {"avg_load1":"12.100000381469727","comment":"Your computer is smoking, should take a break.","ts":"1765718416873"}
-      status: INACTIVE
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: 2025-12-14 13:19:29.064195
- resolved_at: 2025-12-14 13:22:29.064386
-last_sent_at: 2025-12-14 13:22:29.064386
-*************************** 2. row ***************************
-  trigger_id: 1024
-trigger_name: load1_monitor
-      labels: {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"}
- annotations: {"avg_load1":"11.5","comment":"Your computer is smoking, should take a break.","ts":"1765718416873"}
-      status: INACTIVE
-   active_at: 2025-12-14 13:15:29.064475
-    fired_at: 2025-12-14 13:19:29.064195
- resolved_at: 2025-12-14 13:22:29.064386
-last_sent_at: 2025-12-14 13:22:29.064386
-2 rows in set (0.008 sec)
++------------+----------------------------+----------------------------+----------------------------+
+| trigger_id | active_at                  | fired_at                   | resolved_at                |
++------------+----------------------------+----------------------------+----------------------------+
+|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
+|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
++------------+----------------------------+----------------------------+----------------------------+
 ```
 
 ### 5. Alertmanager Integration (Optional)
