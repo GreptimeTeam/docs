@@ -522,6 +522,9 @@ tcp_nodelay = true
 
 ### 心跳配置
 心跳配置在 `frontend` 和 `datanode` 中可用。
+
+心跳客户端使用 HTTP/2 保活（keep-alive）机制来更快地检测网络故障并保持与 Metasrv 的可靠连接。
+
 ```toml
 [heartbeat]
 interval = "3s"

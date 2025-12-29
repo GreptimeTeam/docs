@@ -522,6 +522,9 @@ tcp_nodelay = true
 
 ### 心跳配置
 心跳配置在 `frontend` 和 `datanode` 中可用。
+
+心跳客户端使用 HTTP/2 保活（keep-alive）机制来更快地检测网络故障并保持与 Metasrv 的可靠连接。
+
 ```toml
 [heartbeat]
 interval = "3s"
@@ -532,7 +535,7 @@ retry_interval = "3s"
 |----------------------------|-----|------|----------------------------------------------------------|
 | `heartbeat`                | --  | --   | --                                                       |
 | `heartbeat.interval`       | 字符串 | `3s` | 向 Metasrv 发送心跳信息的时间间隔                                    |
-| `heartbeat.retry_interval` | 字符串 | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的，因为 Datanode 必须在保活机制的租约期内通过心跳完成续租，也就是说其 retry 有特殊策略不允许自定义配置。） |
+| `heartbeat.retry_interval` | 字符串 | `3s` | 向 Metasrv 重试建立心跳连接的时间间隔。（注意在 Datanode 的心跳实现中，这个配置是被忽略的，因为 Datanode 必须在保活机制的租约期内通过心跳完成续租,也就是说其 retry 有特殊策略不允许自定义配置。） |
 
 ### 默认时区配置
 

@@ -530,6 +530,9 @@ The `meta_client` configures the Metasrv client, including:
 
 ### Heartbeat configuration
 Heartbeat configuration is available in `frontend` and `datanode`.
+
+The heartbeat client uses HTTP/2 keep-alive to detect network failures faster and maintain reliable connections to the Metasrv.
+
 ```toml
 [heartbeat]
 interval = "3s"
