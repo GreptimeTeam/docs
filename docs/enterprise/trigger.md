@@ -145,7 +145,9 @@ Key parameters:
 - **KEEP FIRING FOR**: Specifies how long an alert instance continues to be
     emitted after the condition no longer holds.
 
-You can execute `SHOW TRIGGERS` to view the list of created Triggers.
+### Check Trigger Status
+
+#### List all Triggers:
 
 ```sql
 SHOW TRIGGERS;
@@ -160,6 +162,36 @@ The output should look like this:
 | load1_monitor |
 +---------------+
 ```
+
+#### View the details of triggers:
+
+```sql
+SELECT * FROM information_schema.triggers\G
+```
+
+The output should look like this:
+
+```text
+*************************** 1. row ***************************
+   trigger_name: load1_monitor
+     trigger_id: 1024
+        raw_sql: (SELECT collector AS label_collector, host AS label_host, avg(val) AS avg_load1, max(ts) AS ts FROM public.host_load1 WHERE ts >= NOW() - '1 minutes'::INTERVAL GROUP BY collector, host HAVING avg(val) > 10)
+       interval: 60
+         labels: {"severity":"warning"}
+    annotations: {"comment":"Your computer is smoking, should take a break."}
+            for: 180
+keep_firing_for: 180
+       channels: [{"channel_type":{"Webhook":{"opts":{"timeout":"1m"},"url":"http://localhost:9093"}},"name":"alert_manager"}]
+    flownode_id: 0
+```
+
+#### Query alert instances
+
+```sql
+SELECT * FROM information_schema.alerts;
+```
+
+With no alert instances yet, this returns an empty set.
 
 ### Test Trigger
 
