@@ -668,12 +668,23 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/functions/overview',
                   label: 'Overview',
                 },
+                {
+                  type: 'category',
+                  label: 'GreptimeDB Functions',
+                  items: [
+                    {
+                      type: 'doc',
+                      id: 'reference/sql/functions/greptimedb',
+                      label: 'Core Functions',
+                    },
+                    'reference/sql/functions/geo',
+                    'reference/sql/functions/ip',
+                    'reference/sql/functions/json',
+                    'reference/sql/functions/vector',
+                    'reference/sql/functions/approximate',
+                  ],
+                },
                 'reference/sql/functions/df-functions',
-                'reference/sql/functions/geo',
-                'reference/sql/functions/ip',
-                'reference/sql/functions/json',
-                'reference/sql/functions/vector',
-                'reference/sql/functions/approximate',
               ]
             },
             'reference/sql/admin',
