@@ -24,7 +24,6 @@ greptime metasrv start --help
 | `--http-timeout <HTTP_TIMEOUT>`       | HTTP request timeout in seconds                                                                                                                                                                                                                                              |
 | `--selector <SELECTOR>`               | You can refer [selector-type](/contributor-guide/metasrv/selector.md#selector-type)                                                                                                                                                                                          |
 | `--store-addrs <STORE_ADDR>`          | Comma or space separated key-value storage server (default is etcd) address, used for storing metadata                                                                                                                                                                       |
-| `--use-memory-store`                  | Use memory store instead of etcd, for test purpose only                                                                                                                                                                                                                      |
 
 ## Examples
 
