@@ -8,6 +8,8 @@ date: 2025-12-17
 
 Release date: December 17, 2025
 
+It's recommended to upgrade to v1.0.0-beta.4.
+
 ## Breaking changes
 
 * **Cache Architecture Refactoring:** Replaced generic LRU cache with specialized manifest cache and background downloads by [@evenyag](https://github.com/evenyag) in [#7294](https://github.com/GreptimeTeam/greptimedb/pull/7294), breaking configuration changes:
@@ -124,5 +126,3 @@ Release date: December 17, 2025
 We would like to thank the following contributors from the GreptimeDB community:
 
 [@MichaelScofield](https://github.com/MichaelScofield), [@WenyXu](https://github.com/WenyXu), [@ZonaHex](https://github.com/ZonaHex), [@daviderli614](https://github.com/daviderli614), [@discord9](https://github.com/discord9), [@evenyag](https://github.com/evenyag), [@fengjiachun](https://github.com/fengjiachun), [@fengys1996](https://github.com/fengys1996), [@killme2008](https://github.com/killme2008), [@lyang24](https://github.com/lyang24), [@shuiyisong](https://github.com/shuiyisong), [@sunng87](https://github.com/sunng87), [@v0y4g3r](https://github.com/v0y4g3r), [@waynexia](https://github.com/waynexia)
-
-
