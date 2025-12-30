@@ -3,6 +3,10 @@
     "message": "概述",
     "description": "The ZH label for Overview"
   },
+  "sidebar.docs.doc.Core Functions": {
+    "message": "核心函数",
+    "description": "The ZH label for Core Functions"
+  },
   "sidebar.docs.category.Getting Started": {
     "message": "立即开始",
     "description": "The label for category Getting Started in sidebar docs"
@@ -136,8 +140,12 @@
     "description": "The label for category SQL in sidebar docs"
   },
   "sidebar.docs.category.Functions": {
-    "message": "Functions",
+    "message": "函数",
     "description": "The label for category Functions in sidebar docs"
+  },
+  "sidebar.docs.category.GreptimeDB Functions": {
+    "message": "GreptimeDB 函数",
+    "description": "The label for category GreptimeDB Functions in sidebar docs"
   },
   "sidebar.docs.category.Information Schema": {
     "message": "Information Schema",
