@@ -593,13 +593,6 @@ allow_region_failover_on_local_wal = false
 ## 从 metasrv 内存中删除节点信息前允许的最大空闲时间。
 node_max_idle_time = "24hours"
 
-## 用于计算分布式时间常量的基础心跳间隔。
-## frontend 的心跳间隔是基础心跳间隔的 6 倍。
-## flownode/datanode 的心跳间隔是基础心跳间隔的 1 倍。
-## 例如，如果基础心跳间隔为 3s，则 frontend 心跳间隔为 18s，flownode/datanode 心跳间隔为 3s。
-## 如果修改此值，需要相应修改 flownode/frontend/datanode 的心跳间隔。
-heartbeat_interval = "3s"
-
 ## 后端客户端选项。
 ## 目前仅适用于使用 etcd 作为元数据存储时。
 [backend_client]
@@ -720,7 +713,6 @@ timeout = "3s"
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
 | `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
 | `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
-| `heartbeat_interval`                          | String  | `3s`                 | 用于计算分布式时间常量的基础心跳间隔。frontend 的心跳间隔是基础心跳间隔的 6 倍。flownode/datanode 的心跳间隔是基础心跳间隔的 1 倍。例如，如果基础心跳间隔为 3s，则 frontend 心跳间隔为 18s，flownode/datanode 心跳间隔为 3s。**如果修改此值，需要相应修改 flownode/frontend/datanode 的心跳间隔。**                                      |
 | `backend_client`                              | --      | --                   | 后端客户端选项。<br/>目前仅适用于使用 etcd 作为元数据存储时。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `backend_client.keep_alive_timeout`           | String  | `3s`                 | 后端客户端的保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `backend_client.keep_alive_interval`          | String  | `10s`                | 后端客户端的保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
