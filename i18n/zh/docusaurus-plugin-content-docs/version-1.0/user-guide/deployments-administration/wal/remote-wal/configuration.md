@@ -28,6 +28,11 @@ auto_create_topics = true
 num_topics = 64
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
+create_topic_timeout = "30s"
+
+# Kafka 客户端超时配置
+connect_timeout = "3s"
+timeout = "3s"
 ```
 
 ### 配置
@@ -44,6 +49,9 @@ topic_name_prefix = "greptimedb_wal_topic"
 | `topic_name_prefix`        | Kafka topic 名称前缀，必须匹配正则 `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`。                                                                                                                                                                                                                                            |
 | `flush_trigger_size`       | 触发 region flush 操作的预估大小阈值（如 `"512MB"`）。计算公式为 `(latest_entry_id - flushed_entry_id) * avg_record_size`。当此值超过 `flush_trigger_size` 时，MetaSrv 会触发 region flush 操作。设为 `"0"` 时由系统自动控制。该配置还可控制 region 重放期间从 topic 重放的最大数据量，较小的值有助于缩短 Datanode 启动时的重放时间。 |
 | `checkpoint_trigger_size`  | 触发 region checkpoint 操作的预估大小阈值（如 `"128MB"`）。计算公式为 `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`。当此值超过 `checkpoint_trigger_size` 时，MetaSrv 会启动检查点操作。设为 `"0"` 时由系统自动控制。较小的值有助于缩短 Datanode 启动时的重放时间。                                 |
+| `create_topic_timeout`     | 创建 Kafka topic 的超时时间，默认值为 `"30s"`。                                                                                                                                                                                                                                                      |
+| `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                                                                                                                                                                                                                         |
+| `timeout`                  | Kafka 客户端操作的超时时间，默认值为 `"3s"`。                                                                                                                                                                                                                                                         |
 
 #### Kafka Topic 与权限要求
 
@@ -69,6 +77,8 @@ provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc.cluster.local:9092"]
 max_batch_bytes = "1MB"
 overwrite_entry_start_id = true
+connect_timeout = "3s"
+timeout = "3s"
 ```
 
 ### 配置
@@ -79,6 +89,8 @@ overwrite_entry_start_id = true
 | `broker_endpoints`         | Kafka broker 的地址列表。                                                                    |
 | `max_batch_bytes`          | 每个写入批次的最大大小，默认不能超过 Kafka 配置的单条消息上限（通常为 1MB）。                |
 | `overwrite_entry_start_id` | 若设为 `true`，在 WAL 回放时跳过缺失的 entry，避免 out-of-range 错误（但可能掩盖数据丢失）。 |
+| `connect_timeout`          | Kafka 客户端的连接超时时间，默认值为 `"3s"`。                                                 |
+| `timeout`                  | Kafka 客户端操作的超时时间，默认值为 `"3s"`。                                                 |
 
 
 #### 注意事项与限制
