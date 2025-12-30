@@ -202,6 +202,10 @@ WITH(
 * `Table`: the table name.
 * `Create Table`: The SQL to create the table.
 
+:::note
+When a table has no explicit `ttl` or `compaction.*` settings, `SHOW CREATE TABLE` displays the database-level settings in the `WITH(...)` clause. This reflects the actual effective settings for the table, as these options are dynamically resolved at runtime with the following priority: table-level > database-level > defaults.
+:::
+
 ## SHOW CREATE FLOW
 
 Shows the `CREATE FLOW` statement that creates the flow task.

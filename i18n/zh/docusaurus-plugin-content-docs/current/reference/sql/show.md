@@ -202,6 +202,10 @@ WITH(
 * `Table`: 表的名称
 * `Create Table`: 用于创建该表的 SQL
 
+:::note
+当表没有明确设置 `ttl` 或 `compaction.*` 选项时，`SHOW CREATE TABLE` 会在 `WITH(...)` 子句中显示数据库级别的设置。这反映了表的实际有效设置，因为这些选项在运行时动态解析，优先级为：表级别 > 数据库级别 > 默认值。
+:::
+
 ## SHOW CREATE FLOW
 
 展示创建指定 Flow 任务的 `CREATE FLOW` 语句。

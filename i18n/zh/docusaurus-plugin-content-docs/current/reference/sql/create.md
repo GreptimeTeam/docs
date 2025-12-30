@@ -37,9 +37,9 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 :::note 重要的行为差异
 数据库选项的行为有所不同：
 
-- **TTL**：此选项具有**持续影响**。没有指定 TTL 的表会持续继承这个数据库级别的值。更改数据库 TTL 会立即影响所有没有明确自行设置 TTL 的表。
+- **TTL 和 Compaction 选项**（`ttl`、`compaction.*`）：这些选项具有**持续影响**。没有指定这些值的表会持续继承数据库级别的值。更改数据库 TTL 或 compaction 选项会立即影响所有没有明确自行设置这些选项的表。
 
-- **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`、`compaction.*`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
+- **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
 :::
 
 在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
