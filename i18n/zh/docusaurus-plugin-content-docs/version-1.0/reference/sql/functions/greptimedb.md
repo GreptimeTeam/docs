@@ -248,8 +248,8 @@ SELECT mod(18, 4);
 DataFusion [时间函数](./df-functions.md#time-and-date-functions)。
 GreptimeDB 提供：
 
-* [date_add](#data_add)
-* [date_sub](#data_sub)
+* [date_add](#date_add)
+* [date_sub](#date_sub)
 * [date_format](#date_format)
 * [to_unixtime](#to_unixtime)
 * [timezone](#timezone)
@@ -270,7 +270,7 @@ SELECT date_add('2023-12-06'::DATE, '3 month 5 day');
 +----------------------------------------------------+
 ```
 
-### data_sub
+### date_sub
 
 * `date_sub(expression, interval)` 为 Timestamp、Date 或 DateTime 减去一个区间值
 
