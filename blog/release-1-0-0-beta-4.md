@@ -11,7 +11,9 @@ Release date: December 29, 2025
 
 ### 👍 Highlights
 
-This version fixes two critical issues:
+This version applies database-level compaction options to existing tables that don't have table-level compaction options. Now users don't have to set compaction options manually for each table if they want to adjust them.
+
+There are also some important bug fixes:
 
 * Panic when sorting on the time index column.
 * The experimental `flat` format may create incorrect index files.
