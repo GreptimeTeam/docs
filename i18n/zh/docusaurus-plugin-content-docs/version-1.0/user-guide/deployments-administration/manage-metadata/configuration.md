@@ -126,16 +126,22 @@ store_addrs = ["password=password dbname=postgres user=postgres host=localhost p
 # 默认值: greptime_metakv
 meta_table_name = "greptime_metakv"
 
-# 可选: 用于选举的 Advisory lock ID
-# 默认值: 1
-meta_election_lock_id = 1
-
 # 可选：PostgreSQL schema，用于元数据表和选举表名称限定。
 # 在 PostgreSQL 15 及更高版本中，默认的 public schema 通常被限制写入权限，
 # 非超级用户无法在 public schema 中创建表。
 # 当遇到权限限制时，可通过此参数指定一个具有写入权限的 schema。
-# 注意：该 schema 必须在使用前手动创建。
 meta_schema_name = "greptime_schema"
+
+# 可选：如果 PostgreSQL schema 不存在则自动创建。
+# 启用后，系统会在创建元数据表之前执行 `CREATE SCHEMA IF NOT EXISTS <schema_name>`。
+# 这在生产环境中可能受限于手动创建 schema 的情况下非常有用。
+# 默认值：true
+# 注意：PostgreSQL 用户必须具有 CREATE SCHEMA 权限才能使此功能生效。
+auto_create_schema = true
+
+# 可选: 用于选举的 Advisory lock ID
+# 默认值: 1
+meta_election_lock_id = 1
 
 [backend_tls]
 # - "disable" - 不使用 TLS
