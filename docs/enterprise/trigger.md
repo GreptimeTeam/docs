@@ -19,7 +19,7 @@ notification is sent out.
     query result fields to pinpoint root causes
 - **Ecosystem-friendly**: Alert payload fully compatible with Prometheus 
     Alertmanager—use its grouping, inhibition, silencing, and routing without
-    glue code
+    adapters
 
 ## Quick Start Example
 
