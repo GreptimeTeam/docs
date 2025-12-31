@@ -31,6 +31,17 @@ backend = "etcd_store"
 # You can specify multiple etcd endpoints for high availability
 store_addrs = ["127.0.0.1:2379"]
 
+# Backend client options for etcd
+[backend_client]
+# The keep alive timeout for backend client
+keep_alive_timeout = "3s"
+
+# The keep alive interval for backend client
+keep_alive_interval = "10s"
+
+# The connect timeout for backend client
+connect_timeout = "3s"
+
 [backend_tls]
 # - "disable" - No TLS
 # - "require" - Require TLS
