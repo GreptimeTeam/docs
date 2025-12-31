@@ -266,9 +266,9 @@ silencing, and routing without adapters.
 
 ## Reference
 
-- [Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements
-related to `TRIGGER`.
-- [Triggers Information Schema](/reference/sql/information-schema/triggers):
-    View for trigger metadata.
-- [Alerts Information Schema](/reference/sql/information-schema/alerts):
-    View for alert instance metadata.
+- [Trigger Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements
+related to `TRIGGER`
+- [INFORMATION_SCHEMA.TRIGGERS](/reference/sql/information-schema/triggers):
+    View for trigger metadata
+- [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts):
+    View for alert instance metadata

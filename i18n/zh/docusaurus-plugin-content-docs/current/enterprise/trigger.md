@@ -261,5 +261,5 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 ## Reference
 
 - [Trigger 语法](/reference/sql/trigger-syntax.md): 与 `TRIGGER` 相关的 SQL 语句的语法细节
-- [Triggers 信息模式](/reference/sql/information-schema/triggers): 关于 `Trigger` 元数据的视图
-- [Alerts 信息模式](/reference/sql/information-schema/alerts): 关于告警实例元数据的视图
+- [INFORMATION_SCHEMA.TRIGGERS](/reference/sql/information-schema/triggers): 关于 `Trigger` 元数据的视图
+- [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts): 关于告警实例元数据的视图
