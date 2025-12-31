@@ -144,8 +144,7 @@ keep_firing_for: 180
     flownode_id: 0
 ```
 
-See the [Triggers Information Schema](/reference/sql/information-schema/triggers)
-for more details.
+See the [Triggers](/reference/sql/information-schema/triggers) for more details.
 
 #### View alert instances
 
@@ -155,8 +154,7 @@ SELECT * FROM information_schema.alerts;
 
 With no data written yet, this returns an empty set.
 
-See the [Alerts Information Schema](/reference/sql/information-schema/alerts)
-for more details.
+See the [Alerts](/reference/sql/information-schema/alerts) for more details.
 
 ### 4. Write Data and Observe Alert States
 
@@ -191,13 +189,10 @@ for i in {1..24}; do insert_high; sleep 15; done
 # After: back to normal
 while true; do insert_normal; sleep 15; done
 ```
-In another terminal, query alert status:
-
-```sql
-SELECT * FROM information_schema.alerts\G
-```
 
 #### State Transitions
+
+In another terminal, query alert status:
 
 **Phase 1: No alerts**
 
@@ -273,4 +268,7 @@ silencing, and routing without adapters.
 
 - [Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements
 related to `TRIGGER`.
-
+- [Triggers Information Schema](/reference/sql/information-schema/triggers):
+    View for trigger metadata.
+- [Alerts Information Schema](/reference/sql/information-schema/alerts):
+    View for alert instance metadata.
