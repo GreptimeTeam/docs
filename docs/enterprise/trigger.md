@@ -13,7 +13,7 @@ notification is sent out.
 
 - **SQL-native**: Define trigger rules in SQL, reusing GreptimeDB's built-in
     functions without a learning curve
-- **Multi-stage** state management: Built-in pending / firing / inactive state
+- **Multi-stage state management**: Built-in pending / firing / inactive state
     machine prevents flapping and duplicate notifications
 - **Rich context**: Custom labels and annotations with automatic injection of
     query result fields to pinpoint root causes
@@ -76,7 +76,7 @@ This Trigger runs every minute, computes average load per host over the last
 Key parameters:
 
 - **FOR**: Specifies how long the condition must continuously hold before an
-    alert instance enters Firing state.
+    alert instance enters firing state.
 - **KEEP FIRING FOR**: Specifies how long an alert instance stays in the firing
     state after the condition no longer holds.
 
@@ -209,46 +209,46 @@ Empty set
 **Phase 2: pending** (condition met, `FOR` duration not reached)
 
 ```sql
-SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
 ```
 
 ```text
-+------------+----------------------------+----------+-------------+
-| trigger_id | active_at                  | fired_at | resolved_at |
-+------------+----------------------------+----------+-------------+
-|       1024 | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
-|       1024 | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
-+------------+----------------------------+----------+-------------+
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
+| trigger_id | labels                                                                | active_at                  | fired_at | resolved_at |
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
 ```
 
 **Phase 3: firing** (`FOR` satisfied, notifications sent)
 
 ```sql
-SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
 ```
 
 ```text
-+------------+----------------------------+----------------------------+-------------+
-| trigger_id | active_at                  | fired_at                   | resolved_at |
-+------------+----------------------------+----------------------------+-------------+
-|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
-|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
-+------------+----------------------------+----------------------------+-------------+
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
+| trigger_id | labels                                                                | active_at                  | fired_at                   | resolved_at |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
 ```
 
 **Phase 4: inactive** (condition cleared + `KEEP FIRING FOR` expired)
 
 ```sql
-SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
 ```
 
 ```text
-+------------+----------------------------+----------------------------+----------------------------+
-| trigger_id | active_at                  | fired_at                   | resolved_at                |
-+------------+----------------------------+----------------------------+----------------------------+
-|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
-|       1024 | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
-+------------+----------------------------+----------------------------+----------------------------+
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
+| trigger_id | labels                                                                | active_at                  | fired_at                   | resolved_at                |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
 ```
 
 ### 5. Alertmanager Integration (Optional)
