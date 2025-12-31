@@ -12,18 +12,18 @@ notification is sent out.
 ## Key Features
 
 - **SQL-native**: Define trigger rules in SQL, reusing GreptimeDB's built-in
-    functions without a learning curve.
+    functions without a learning curve
 - **Multi-stage** state management: Built-in pending / firing / inactive state
-    machine prevents flapping and duplicate notifications.
+    machine prevents flapping and duplicate notifications
 - **Rich context**: Custom labels and annotations with automatic injection of
-    query result fields to pinpoint root causes.
+    query result fields to pinpoint root causes
 - **Ecosystem-friendly**: Alert payload fully compatible with Prometheus 
     Alertmanager—use its grouping, inhibition, silencing, and routing without
-    glue code.
+    glue code
 
 ## Quick Start Example
 
-This guide walks through an end-to-end alerting scenario: monitor system load
+This section walks through an end-to-end alerting scenario: monitor system load
 (`load1`) and fire alerts when load exceeds a threshold.
 
 In this quick start, you will:
@@ -76,12 +76,11 @@ This Trigger runs every minute, computes average load per host over the last
 Key parameters:
 
 - **FOR**: Specifies how long the condition must continuously hold before an
-    alert instance is emitted.
-- **KEEP FIRING FOR**: Specifies how long an alert instance continues to be
-    emitted after the condition no longer holds.
+    alert instance enters Firing state.
+- **KEEP FIRING FOR**: Specifies how long an alert instance stays in the Firing
+    state after the condition no longer holds.
 
-See the [trigger syntax](https://docs.greptime.com/reference/sql/trigger-syntax/)
-for more detail.
+See the [trigger syntax](/reference/sql/trigger-syntax.md) for more detail.
 
 ### 3. Check Trigger Status
 
@@ -145,8 +144,8 @@ keep_firing_for: 180
     flownode_id: 0
 ```
 
-All time-related fields are expressed in seconds. For more information about
-the `information_schema.triggers` table, please refer to [Trigger Syntax](https://docs.greptime.com/reference/sql/information-schema/triggers/).
+See the [Triggers Information Schema](/reference/sql/information-schema/triggers)
+for more details.
 
 #### View alert instances
 
@@ -156,8 +155,8 @@ SELECT * FROM information_schema.alerts;
 
 With no data written yet, this returns an empty set.
 
-For more information about the `information_schema.alerts` table, please refer
-to [Alerts Information Schema](https://docs.greptime.com/reference/sql/information-schema/alerts/).
+See the [Alerts Information Schema](/reference/sql/information-schema/alerts)
+for more details.
 
 ### 4. Write Data and Observe Alert States
 
