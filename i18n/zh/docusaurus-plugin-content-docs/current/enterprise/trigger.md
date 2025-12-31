@@ -27,7 +27,7 @@ Trigger 允许用户基于 SQL 语句定义触发规则，GreptimeDB 根据这�
 - 创建指标表：建立 `load1` 表存储主机负载指标
 - 定义 Trigger：通过 SQL 设定触发条件，配置 labels、annotations 及通知方式
 - 模拟数据写入：依次注入正常与异常的负载数据，激活告警逻辑
-- 观察状态变化：实时查看告警实例从 PENDING → FIRING → INACTIVE 的完整生命周期
+- 观察状态变化：实时查看告警实例从 pending → firing → inactive 的完整生命周期
 
 ### 1. 创建数据表
 
@@ -71,8 +71,8 @@ CREATE TRIGGER IF NOT EXISTS `load1_monitor`
 
 关键参数说明：
 
-- **FOR**：指定条件需要持续多久才会进入 Firing 状态
-- **KEEP FIRING FOR**：指定条件不再满足后，告警实例在 Firing 状态保持多久
+- **FOR**：指定条件需要持续多久才会进入 firing 状态
+- **KEEP FIRING FOR**：指定条件不再满足后，告警实例在 firing 状态保持多久
 
 详见 [Trigger 语法](/reference/sql/trigger-syntax.md)。
 
@@ -201,7 +201,7 @@ SELECT * FROM information_schema.alerts\G
 Empty set
 ```
 
-**阶段 2：PENDING**（条件首次满足，未达 `FOR` 时长）
+**阶段 2：pending**（条件首次满足，未达 `FOR` 时长）
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
@@ -216,7 +216,7 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 +------------+----------------------------+----------+-------------+
 ```
 
-**阶段 3：FIRING**（满足 `FOR`，开始发送通知）
+**阶段 3：firing**（满足 `FOR`，开始发送通知）
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
@@ -231,7 +231,7 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 +------------+----------------------------+----------------------------+-------------+
 ```
 
-**阶段 4：INACTIVE**（条件不满足 + KEEP FIRING FOR 期满，发送恢复通知）
+**阶段 4：inactive**（条件不满足 + KEEP FIRING FOR 期满，发送恢复通知）
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;

@@ -31,7 +31,7 @@ In this quick start, you will:
 - Create a `load1` table to store host load metrics
 - Define a Trigger with conditions, labels, annotations, and notifications
 - Simulate data ingestion with normal and abnormal values
-- Watch alerts transition through PENDING → FIRING → INACTIVE
+- Watch alerts transition through pending → firing → inactive
 
 ### 1. Create the Data Table
 
@@ -77,7 +77,7 @@ Key parameters:
 
 - **FOR**: Specifies how long the condition must continuously hold before an
     alert instance enters Firing state.
-- **KEEP FIRING FOR**: Specifies how long an alert instance stays in the Firing
+- **KEEP FIRING FOR**: Specifies how long an alert instance stays in the firing
     state after the condition no longer holds.
 
 See the [trigger syntax](/reference/sql/trigger-syntax.md) for more detail.
@@ -206,7 +206,7 @@ Output:
 Empty set
 ```
 
-**Phase 2: PENDING** (condition met, `FOR` duration not reached)
+**Phase 2: pending** (condition met, `FOR` duration not reached)
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
@@ -221,7 +221,7 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 +------------+----------------------------+----------+-------------+
 ```
 
-**Phase 3: FIRING** (`FOR` satisfied, notifications sent)
+**Phase 3: firing** (`FOR` satisfied, notifications sent)
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
@@ -236,7 +236,7 @@ SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.aler
 +------------+----------------------------+----------------------------+-------------+
 ```
 
-**Phase 4: INACTIVE** (condition cleared + `KEEP FIRING FOR` expired)
+**Phase 4: inactive** (condition cleared + `KEEP FIRING FOR` expired)
 
 ```sql
 SELECT trigger_id, active_at, fired_at, resolved_at FROM information_schema.alerts;
