@@ -3,7 +3,7 @@ keywords: [elasticsearch, 读副本, 触发器]
 description: GreptimeDB 企业版 25.05 发布说明，新功能 Elasticsearch 兼容层，读副本，触发器等
 ---
 
-# Release 25.05
+# GreptimeDB 企业版 25.05
 
 我们很高兴向大家介绍 GreptimeDB 企业版的 25.05 版本。
 
