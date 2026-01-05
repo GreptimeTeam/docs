@@ -272,3 +272,4 @@ related to `TRIGGER`
     View for trigger metadata
 - [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts):
     View for alert instance metadata
+
