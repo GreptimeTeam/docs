@@ -9,122 +9,88 @@ Trigger allows you to define evaluation rules with SQL.
 GreptimeDB evaluates these rules periodically; once the condition is met, a
 notification is sent out.
 
-The following content is a quick start example that sets up a Trigger to monitor system load and raise alerts step by step.
-For details on how to write a Trigger,
-please refer to the [Syntax](/reference/sql/trigger-syntax.md) documentation.
+## Key Features
+
+- **SQL-native**: Define trigger rules in SQL, reusing GreptimeDB's built-in
+    functions without a learning curve
+- **Multi-stage state management**: Built-in pending / firing / inactive state
+    machine prevents flapping and duplicate notifications
+- **Rich context**: Custom labels and annotations with automatic injection of
+    query result fields to pinpoint root causes
+- **Ecosystem-friendly**: Alert payload fully compatible with Prometheus 
+    Alertmanager—use its grouping, inhibition, silencing, and routing without
+    adapters
 
 ## Quick Start Example
 
-This section walks through an end-to-end example that uses Trigger to monitor
-system load and raise an alert.
+This section walks through an end-to-end alerting scenario: monitor system load
+(`load1`) and fire alerts when load exceeds a threshold.
 
-The diagram illustrates the complete end-to-end workflow of the example.
+In this quick start, you will:
 
-![Trigger demo architecture](/trigger-demo-architecture.png)
+- Create a `load1` table to store host load metrics
+- Define a Trigger with conditions, labels, annotations, and notifications
+- Simulate data ingestion with normal and abnormal values
+- Watch alerts transition through pending → firing → inactive
 
-1. Vector continuously scrapes host metrics and writes them to GreptimeDB.
-2. A Trigger in GreptimeDB evaluates a rule every minute; whenever the condition
-    is met, it sends a notification to Alertmanager.
-3. Alertmanager applies its own policies and finally delivers the alert to Slack.
+### 1. Create the Data Table
 
-### Use Vector to Scrape Host Metrics
-
-Use Vector to scrape host metrics and write it to GreptimeDB. Below is a Vector
-configuration example:
-
-```toml
-[sources.in]
-type = "host_metrics"
-scrape_interval_secs = 15
-
-[sinks.out]
-inputs = ["in"]
-type = "greptimedb"
-endpoint = "localhost:4001"
-```
-
-GreptimeDB auto-creates tables on the first write. The `host_load1` table stores
-the system load averaged over the last minute. It is a key performance indicator
-for measuring system activity. We can create a monitoring rule to track values
-in this table. The schema of this table is shown below:
+Connect to GreptimeDB with a MySQL client and create the `load1` table:
 
 ```sql
-+-----------+----------------------+------+------+---------+---------------+
-| Column    | Type                 | Key  | Null | Default | Semantic Type |
-+-----------+----------------------+------+------+---------+---------------+
-| ts        | TimestampMillisecond | PRI  | NO   |         | TIMESTAMP     |
-| collector | String               | PRI  | YES  |         | TAG           |
-| host      | String               | PRI  | YES  |         | TAG           |
-| val       | Float64              |      | YES  |         | FIELD         |
-+-----------+----------------------+------+------+---------+---------------+
+CREATE TABLE `load1` (
+    host            STRING,
+    load1           FLOAT32,
+    ts              TIMESTAMP TIME INDEX
+) WITH ('append_mode'='true');
 ```
 
-### Set up Alertmanager with a Slack Receiver
+### 2. Create Trigger
 
-The payload of GreptimeDB Trigger's Webhook is compatible with [Prometheus
-Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/), so we
-can reuse Alertmanager’s grouping, inhibition, silencing and routing features
-without any extra glue code.
-
-You can refer to the [official documentation](https://prometheus.io/docs/alerting/latest/configuration/)
-to configure Prometheus Alertmanager. Below is a minimal message template you
-can use:
-
-```text
-{{ define "slack.text" }}
-{{ range .Alerts }}
-
-Labels:
-{{- range .Labels.SortedPairs }}
-- {{ .Name }}: {{ .Value }}
-{{ end }}
-
-Annotations:
-{{- range .Annotations.SortedPairs }}
-- {{ .Name }}: {{ .Value }}
-{{ end }}
-
-{{ end }}
-{{ end }}
-```
-
-Generating a Slack message using the above template will iterate over all alerts
-and display the labels and annotations for each alert.
-
-Start Alertmanager once the configuration is ready.
-
-### Create Trigger
-
-Connect to GreptimeDB with MySQL client and run the following SQL:
+Connect to GreptimeDB with MySQL client and create the `load1_monitor` trigger:
 
 ```sql
-CREATE TRIGGER IF NOT EXISTS load1_monitor
-        ON (
-                SELECT collector AS label_collector,
-                host as label_host, 
-                val
-                FROM host_load1 WHERE val > 10 and ts >= now() - '1 minutes'::INTERVAL
-        ) EVERY '1 minute'::INTERVAL
-        LABELS (severity=warning)
-        ANNOTATIONS (comment='Your computer is smoking, should take a break.')
-        NOTIFY(
-                WEBHOOK alert_manager URL 'http://localhost:9093' WITH (timeout="1m")
-        );
+CREATE TRIGGER IF NOT EXISTS `load1_monitor`
+    ON (
+        SELECT
+            host          AS label_host,
+            avg(load1)    AS avg_load1,
+            max(ts)       AS ts
+        FROM public.load1
+        WHERE ts >= NOW() - '1 minutes'::INTERVAL
+        GROUP BY host
+        HAVING avg(load1) > 10
+    ) EVERY '1 minutes'::INTERVAL
+    FOR '3 minutes'::INTERVAL
+    KEEP FIRING FOR '3 minutes'::INTERVAL
+    LABELS (severity=warning)
+    ANNOTATIONS (comment='Your computer is smoking, should take a break.')
+    NOTIFY(
+        WEBHOOK alert_manager URL 'http://localhost:9093' WITH (timeout='1m')
+    );
 ```
 
-The above SQL will create a trigger named `load1_monitor` that runs every minute.
-It evaluates the last 60 seconds of data in `host_load1`; if any load1 value
-exceeds 10, the `WEBHOOK` option in the `NOTIFY` syntax specifies that this
-trigger will send a notification to Alertmanager which running on localhost with
-port 9093.
+This Trigger runs every minute, computes average load per host over the last
+60 seconds, and produces an alert instance for each host where `avg(load1) > 10`.
 
-You can execute `SHOW TRIGGERS` to view the list of created Triggers.
+Key parameters:
+
+- **FOR**: Specifies how long the condition must continuously hold before an
+    alert instance enters firing state.
+- **KEEP FIRING FOR**: Specifies how long an alert instance stays in the firing
+    state after the condition no longer holds.
+
+See the [trigger syntax](/reference/sql/trigger-syntax.md) for more detail.
+
+### 3. Check Trigger Status
+
+#### List all Triggers
 
 ```sql
 SHOW TRIGGERS;
 ```
 
-The output should look like this:
+Output:
 
 ```text
 +---------------+
@@ -134,21 +100,176 @@ The output should look like this:
 +---------------+
 ```
 
-### Test Trigger
+#### View the creation statement
 
-Use [stress-ng](https://github.com/ColinIanKing/stress-ng) to simulate high CPU
-load for 60s:
-
-```bash
-stress-ng --cpu 100 --cpu-load 10 --timeout 60
+```sql
+SHOW CREATE TRIGGER `load1_monitor`\G
 ```
 
-The load1 will rise quickly, the Trigger notification will fire, and within a
-minute Slack channel will receive an alert like:
+Output:
 
-![Trigger slack alert](/trigger-slack-alert.png)
+```text
+*************************** 1. row ***************************
+       Trigger: load1_monitor
+Create Trigger: CREATE TRIGGER IF NOT EXISTS `load1_monitor`
+  ON (SELECT host AS label_host, avg(load1) AS avg_load1 ...) EVERY '1 minutes'::INTERVAL
+  FOR '3 minutes'::INTERVAL
+  KEEP FIRING FOR '3 minutes'::INTERVAL
+  LABELS (severity = 'warning')
+  ANNOTATIONS (comment = 'Your computer is smoking, should take a break.')
+  NOTIFY(
+    WEBHOOK `alert_manager` URL `http://localhost:9093` WITH (timeout = '1m'),
+  )
+```
+
+#### View Trigger details
+
+```sql
+SELECT * FROM information_schema.triggers\G
+```
+
+Output:
+
+```text
+*************************** 1. row ***************************
+   trigger_name: load1_monitor
+     trigger_id: 1024
+        raw_sql: (SELECT host AS label_host, avg(load1) AS avg_load1, ...)
+       interval: 60
+         labels: {"severity":"warning"}
+    annotations: {"comment":"Your computer is smoking, should take a break."}
+            for: 180
+keep_firing_for: 180
+       channels: [{"channel_type":{"Webhook":{"opts":{"timeout":"1m"}, ...}]
+    flownode_id: 0
+```
+
+See the [Triggers](/reference/sql/information-schema/triggers) for more details.
+
+#### View alert instances
+
+```sql
+SELECT * FROM information_schema.alerts;
+```
+
+With no data written yet, this returns an empty set.
+
+See the [Alerts](/reference/sql/information-schema/alerts) for more details.
+
+### 4. Write Data and Observe Alert States
+
+This script simulates data ingestion: normal values for the first minute, high
+values for 6 minutes to trigger alerts, then back to normal.
+
+```bash
+#!/usr/bin/env bash
+
+MYSQL="mysql -h 127.0.0.1 -P 4002"
+
+insert_normal() {
+  $MYSQL -e "INSERT INTO load1 (host, load1, ts) VALUES
+    ('newyork1', 1.2, now()),
+    ('newyork2', 1.1, now()),
+    ('newyork3', 1.3, now());"
+}
+
+insert_high() {
+  $MYSQL -e "INSERT INTO load1 (host, load1, ts) VALUES
+    ('newyork1', 1.2, now()),
+    ('newyork2', 12.1, now()),
+    ('newyork3', 11.5, now());"
+}
+
+# First minute: normal data
+for i in {1..4}; do insert_normal; sleep 15; done
+
+# Next 6 minutes: high values
+for i in {1..24}; do insert_high; sleep 15; done
+
+# After: back to normal
+while true; do insert_normal; sleep 15; done
+```
+
+#### State Transitions
+
+In another terminal, query alert status:
+
+**Phase 1: No alerts**
+
+```sql
+SELECT * FROM information_schema.alerts\G
+```
+
+Output:
+
+```
+Empty set
+```
+
+**Phase 2: pending** (condition met, `FOR` duration not reached)
+
+```sql
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
+```
+
+```text
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
+| trigger_id | labels                                                                | active_at                  | fired_at | resolved_at |
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | NULL     | NULL        |
++------------+-----------------------------------------------------------------------+----------------------------+----------+-------------+
+```
+
+**Phase 3: firing** (`FOR` satisfied, notifications sent)
+
+```sql
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
+```
+
+```text
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
+| trigger_id | labels                                                                | active_at                  | fired_at                   | resolved_at |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | NULL        |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+-------------+
+```
+
+**Phase 4: inactive** (condition cleared + `KEEP FIRING FOR` expired)
+
+```sql
+SELECT trigger_id, labels, active_at, fired_at, resolved_at FROM information_schema.alerts;
+```
+
+```text
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
+| trigger_id | labels                                                                | active_at                  | fired_at                   | resolved_at                |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
+|       1024 | {"alert_name":"load1_monitor","host":"newyork3","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
+|       1024 | {"alert_name":"load1_monitor","host":"newyork2","severity":"warning"} | 2025-12-29 11:58:20.992670 | 2025-12-29 12:02:20.991713 | 2025-12-29 12:05:20.991750 |
++------------+-----------------------------------------------------------------------+----------------------------+----------------------------+----------------------------+
+```
+
+### 5. Alertmanager Integration (Optional)
+
+If you have Prometheus Alertmanager deployed, GreptimeDB automatically pushes
+firing and inactive alerts to it.
+
+After each evaluation, the Trigger injects fields from the query results into
+labels and annotations. In this example, `host` is included as a label and
+`avg_load1` is included as an annotation. These fields are propagated to
+Alertmanager and can be referenced in notification templates.
+
+Since the payload is Alertmanager-compatible, you can use grouping, inhibition,
+silencing, and routing without adapters.
 
 ## Reference
 
-- [Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements related to `TRIGGER`.
+- [Trigger Syntax](/reference/sql/trigger-syntax.md): The syntax for SQL statements
+related to `TRIGGER`
+- [INFORMATION_SCHEMA.TRIGGERS](/reference/sql/information-schema/triggers):
+    View for trigger metadata
+- [INFORMATION_SCHEMA.ALERTS](/reference/sql/information-schema/alerts):
+    View for alert instance metadata
 
