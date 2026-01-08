@@ -45,7 +45,7 @@ meta:
   replicas: 1
   backendStorage:
     etcd:
-      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
 
 datanode:
   replicas: 1
@@ -92,7 +92,7 @@ meta:
   replicas: 1
   backendStorage:
     etcd:
-      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
 
 datanode:
   replicas: 1
