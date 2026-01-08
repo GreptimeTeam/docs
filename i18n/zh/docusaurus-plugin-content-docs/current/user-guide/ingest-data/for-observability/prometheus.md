@@ -210,17 +210,17 @@ with (
 这些标签不是互斥的，它们可以通过组合的方式达成更多样化的控制选择。
 
 以下是指标特殊标签的一个示例，注意这不是实际的数据模型。
-| `__name__`       | `__database__` | `__physical_table__` | `pod_name_label`    | `__normal_label_with_underscore_prefix__` | `timestamp`             | `value` |
-|------------------|----------------|----------------------|---------------------|-------------------------------------------|-------------------------|---------|
-| some_metric_name | public         | p_1                  | random_k8s_pod_name | true                                      | 2025-06-17 16:31:52.000 | 12.1    |
+| `__name__`         | `x_greptime_database`   | `x_greptime_physical_table`   | `pod_name_label`      | `__normal_label_with_underscore_prefix__`   | `timestamp`               | `value`   |
+|--------------------|-------------------------|-------------------------------|-----------------------|---------------------------------------------|---------------------------|-----------|
+| `some_metric_name` | `public`                | `p_1`                         | `random_k8s_pod_name` | `true`                                      | `2025-06-17 16:31:52.000` | `12.1`    |
 
 上述特殊标签只是在 Prometheus 中的普通有效标签。
 GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的配置项。
 就像自定义的 HTTP header 一样，你可以通过设定一些有效的 HTTP header 键值对来指示后续的操作，只是这些 header 键值对在特定的程序之外不起任何作用。
 
 以下是所有 GreptimeDB 支持的标签名称：
-- `__database__`
-- `__physical_table__`
+- `x_greptime_database`
+- `x_greptime_physical_table`
 
 ### 设置标签
 
@@ -230,7 +230,7 @@ GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的
 参考这个[文档](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file)。
 对于其他的收集工具也是一样的。对于你所使用的工具，你可能需要查找相应的设置。
 
-### `__database__`
+### `x_greptime_database`
 
 这个选项决定指标数据会被保存到哪个数据库中，该数据库需要被提前创建好（例如通过 `create database xxx` SQL 语句）。
 
@@ -242,7 +242,7 @@ GreptimeDB 可以识别一些标签的名称，并将它们转换成写入时的
 
 在这种情况下，你可以在写入时将指标保存到两个不同的数据库中，然后使用两个大盘分别浏览这些指标。
 
-### `__physical_table__`
+### `x_greptime_physical_table`
 
 如果指标通过 metric engine 进行存储，那么每个指标的逻辑表背后是一张物理表。
 默认下，所有的指标都使用同一张物理表。

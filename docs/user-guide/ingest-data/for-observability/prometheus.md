@@ -223,17 +223,17 @@ There labels (along with there values) will turn into ingest options during the 
 The labels are not mutually exclusive, so they can be combined together to produce more versatile controlling.
 
 Here is a representative diagram of special labels for a metric. Note this is not the actual data model of a metric.
-| `__name__`       | `__database__` | `__physical_table__` | `pod_name_label`    | `__normal_label_with_underscore_prefix__` | `timestamp`             | `value` |
-|------------------|----------------|----------------------|---------------------|-------------------------------------------|-------------------------|---------|
-| some_metric_name | public         | p_1                  | random_k8s_pod_name | true                                      | 2025-06-17 16:31:52.000 | 12.1    |
+| `__name__`         | `x_greptime_database`   | `x_greptime_physical_table`   | `pod_name_label`      | `__normal_label_with_underscore_prefix__`   | `timestamp`               | `value`   |
+|--------------------|-------------------------|-------------------------------|-----------------------|---------------------------------------------|---------------------------|-----------|
+| `some_metric_name` | `public`                | `p_1`                         | `random_k8s_pod_name` | `true`                                      | `2025-06-17 16:31:52.000` | `12.1`    |
 
 The special labels you see above are just normal valid labels in Prometheus.
 GreptimeDB recognizes some of the label names and turns them into ingest options.
 It's much like the custom HTTP headers, where you just set a valid HTTP header and its value to indicate following operations, only the header pair means nothing outside your program.
 
 Here is a list of supported label names:
-- `__database__`
-- `__physical_table__`
+- `x_greptime_database`
+- `x_greptime_physical_table`
 
 ### Setting labels
 
@@ -243,7 +243,7 @@ If you're using Prometheus to scrape metrics from the source and send them to Gr
 Refer to the [docs](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file) here.
 It's the same for other collecting tools. You may have to find the relevant configuration for your tool of choice.
 
-### `__database__`
+### `x_greptime_database`
 
 This option decides which database the metric goes into. Note, the database should be created in advance(for instance, using `create database xxx` SQL).
 
@@ -253,7 +253,7 @@ If the metrics are collected and ingested into the same database, then on a Graf
 
 In this case, you might want to store the metrics on different databases during ingestion and use two dashboards to view the metrics separately.
 
-### `__physical_table__`
+### `x_greptime_physical_table`
 
 If the metric is storing using the metric engine, then there is a physical table behind each metric's logical table.
 By default, all metrics using the same physical table.
