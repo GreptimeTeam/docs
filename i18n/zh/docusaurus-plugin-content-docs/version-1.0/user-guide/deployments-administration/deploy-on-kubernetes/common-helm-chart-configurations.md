@@ -541,7 +541,7 @@ meta:
   backendStorage:
     etcd:
       # -- Etcd endpoints
-      endpoints: "etcd.etcd-cluster.svc.cluster.local:2379"
+      endpoints: ["etcd.etcd-cluster.svc.cluster.local:2379"]
       # -- Etcd store key prefix
       storeKeyPrefix: ""
 ```
