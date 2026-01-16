@@ -165,13 +165,13 @@ Output:
 
 ## Using TQL in CTEs
 
-GreptimeDB supports using [TQL](/reference/sql/tql.md) (Telemetry Query Language) within CTEs, allowing you to leverage PromQL-style queries in your SQL workflows.
+GreptimeDB supports using [TQL](/reference/sql/tql.md) (Telemetry Query Language) within CTEs, allowing you to combine PromQL's time-series computation with SQL's powerful post-processing capabilities like filtering, joining, and aggregation.
 
 ### Basic syntax
 
 ```sql
 WITH cte_name AS (
-    TQL EVAL (start, end, step) promql_expression
+    TQL EVAL (start, end, step) promql_expression AS value_alias
 )
 SELECT * FROM cte_name;
 ```
@@ -189,55 +189,62 @@ SELECT * FROM cte_name;
 
 ### Examples
 
-#### Basic TQL CTE with value aliasing
+The following examples use Kubernetes monitoring metrics to demonstrate practical use cases.
+
+#### Filtering TQL results with SQL
+
+This example calculates CPU usage per pod using PromQL, then filters and sorts the results using SQL:
 
 ```sql
--- Use AS clause in TQL to name the value column
-WITH metrics_data AS (
-    TQL EVAL (0, 40, '10s') metric AS value
+WITH cpu_usage AS (
+    TQL EVAL (now() - interval '1' hour, now(), '5m')
+    sum by (namespace, pod) (rate(container_cpu_usage_seconds_total{container!=""}[5m]))
+    AS cpu_cores
 )
-SELECT * FROM metrics_data WHERE value > 5;
+SELECT
+    greptime_timestamp as ts,
+    namespace,
+    pod,
+    cpu_cores
+FROM cpu_usage
+WHERE cpu_cores > 0.5
+ORDER BY cpu_cores DESC;
 ```
 
-#### TQL with PromQL functions
+#### Correlating multiple metrics
 
-```sql
-WITH request_rate AS (
-    TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_per_sec
-)
-SELECT * FROM request_rate;
-```
-
-#### Combining multiple TQL CTEs
+This example demonstrates a capability that PromQL alone cannot achieve: joining different metrics for correlation analysis. It correlates CPU usage with request rates to analyze resource efficiency:
 
 ```sql
 WITH
-    current AS (
-        TQL EVAL (0, 40, '10s') metric AS current_value
+    cpu_data AS (
+        TQL EVAL (now() - interval '1' hour, now(), '5m')
+        sum by (pod) (rate(container_cpu_usage_seconds_total{container!=""}[5m]))
+        AS cpu_cores
     ),
-    rate AS (
-        TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_value
+    request_data AS (
+        TQL EVAL (now() - interval '1' hour, now(), '5m')
+        sum by (pod) (rate(http_requests_total[5m]))
+        AS req_per_sec
     )
 SELECT
-    c.*,
-    r.rate_value
-FROM current c
-JOIN rate r ON c.ts = r.ts;  -- Note: time column name depends on your table
+    c.greptime_timestamp as ts,
+    c.pod,
+    c.cpu_cores,
+    r.req_per_sec
+FROM cpu_data c
+JOIN request_data r
+    ON c.greptime_timestamp = r.greptime_timestamp
+    AND c.pod = r.pod
+WHERE r.req_per_sec > 1;
 ```
 
-#### Hybrid CTE (TQL + SQL)
-
-```sql
-WITH
-    tql_data AS (
-        TQL EVAL (0, 40, '10s') metric AS val
-    ),
-    filtered AS (
-        SELECT * FROM tql_data WHERE val > 5
-    )
-SELECT count(*) FROM filtered;
-```
+When joining multiple TQL CTEs, ensure:
+- The `by (...)` clauses contain matching dimensions
+- JOIN conditions include both timestamp and label columns
 
 ## Summary
 
 With CTEs, you can break down complex SQL queries into more manageable and understandable parts. In this example, we created two CTEs to calculate the 95th percentile latency and the number of error logs separately and then merged them into the final query for analysis. TQL support in CTEs extends this capability by allowing PromQL-style queries to be integrated seamlessly with SQL processing. Read more about [WITH](/reference/sql/with.md) and [TQL](/reference/sql/tql.md).
+
+For more TQL + CTE examples, see the blog post [When PromQL Meets SQL: Hybrid Queries for Kubernetes Monitoring](https://greptime.com/blogs/2026-01-08-tql-alias-k8s-monitoring).

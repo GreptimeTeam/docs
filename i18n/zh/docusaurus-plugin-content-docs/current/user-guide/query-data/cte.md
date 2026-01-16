@@ -164,13 +164,13 @@ ORDER BY
 
 ## 在 CTE 中使用 TQL
 
-GreptimeDB 支持在 CTE 中使用 [TQL](/reference/sql/tql.md)（Telemetry 查询语言），让你可以在 SQL 工作流中使用 PromQL 风格的查询。
+GreptimeDB 支持在 CTE 中使用 [TQL](/reference/sql/tql.md)（Telemetry 查询语言），将 PromQL 的时序计算能力与 SQL 强大的后处理能力（过滤、JOIN、聚合等）相结合。
 
 ### 基本语法
 
 ```sql
 WITH cte_name AS (
-    TQL EVAL (start, end, step) promql_expression
+    TQL EVAL (start, end, step) promql_expression AS value_alias
 )
 SELECT * FROM cte_name;
 ```
@@ -188,55 +188,62 @@ SELECT * FROM cte_name;
 
 ### 示例
 
-#### 使用值别名的基本 TQL CTE
+以下示例使用 Kubernetes 监控指标来演示实际用例。
+
+#### 使用 SQL 过滤 TQL 结果
+
+此示例使用 PromQL 计算每个 Pod 的 CPU 使用率，然后使用 SQL 过滤和排序结果：
 
 ```sql
--- 使用 TQL 中的 AS 子句为值列命名
-WITH metrics_data AS (
-    TQL EVAL (0, 40, '10s') metric AS value
+WITH cpu_usage AS (
+    TQL EVAL (now() - interval '1' hour, now(), '5m')
+    sum by (namespace, pod) (rate(container_cpu_usage_seconds_total{container!=""}[5m]))
+    AS cpu_cores
 )
-SELECT * FROM metrics_data WHERE value > 5;
+SELECT
+    greptime_timestamp as ts,
+    namespace,
+    pod,
+    cpu_cores
+FROM cpu_usage
+WHERE cpu_cores > 0.5
+ORDER BY cpu_cores DESC;
 ```
 
-#### 带 PromQL 函数的 TQL
+#### 关联多个指标
 
-```sql
-WITH request_rate AS (
-    TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_per_sec
-)
-SELECT * FROM request_rate;
-```
-
-#### 组合多个 TQL CTE
+此示例展示了 PromQL 单独无法实现的能力：关联不同指标进行分析。它将 CPU 使用率与请求速率关联，以分析资源效率：
 
 ```sql
 WITH
-    current AS (
-        TQL EVAL (0, 40, '10s') metric AS current_value
+    cpu_data AS (
+        TQL EVAL (now() - interval '1' hour, now(), '5m')
+        sum by (pod) (rate(container_cpu_usage_seconds_total{container!=""}[5m]))
+        AS cpu_cores
     ),
-    rate AS (
-        TQL EVAL (0, 40, '10s') rate(metric[20s]) AS rate_value
+    request_data AS (
+        TQL EVAL (now() - interval '1' hour, now(), '5m')
+        sum by (pod) (rate(http_requests_total[5m]))
+        AS req_per_sec
     )
 SELECT
-    c.*,
-    r.rate_value
-FROM current c
-JOIN rate r ON c.ts = r.ts;  -- 注意：时间列名取决于您的表
+    c.greptime_timestamp as ts,
+    c.pod,
+    c.cpu_cores,
+    r.req_per_sec
+FROM cpu_data c
+JOIN request_data r
+    ON c.greptime_timestamp = r.greptime_timestamp
+    AND c.pod = r.pod
+WHERE r.req_per_sec > 1;
 ```
 
-#### 混合 CTE（TQL + SQL）
-
-```sql
-WITH
-    tql_data AS (
-        TQL EVAL (0, 40, '10s') metric AS val
-    ),
-    filtered AS (
-        SELECT * FROM tql_data WHERE val > 5
-    )
-SELECT count(*) FROM filtered;
-```
+在 JOIN 多个 TQL CTE 时，请确保：
+- `by (...)` 子句包含匹配的维度
+- JOIN 条件包含时间戳和标签列
 
 ## 总结
 
 通过 CTE，您可以将复杂的 SQL 查询分解为更易于管理和理解的部分。在本示例中，我们分别创建了两个 CTE 来计算第 95 百分位延迟和错误日志的数量，然后将它们合并到最终查询中进行分析。CTE 中的 TQL 支持通过将 PromQL 风格的查询与 SQL 处理无缝集成来扩展这种能力。阅读更多关于 [WITH](/reference/sql/with.md) 和 [TQL](/reference/sql/tql.md) 的内容。
+
+更多 TQL + CTE 示例请参阅博客文章[当 PromQL 遇上 SQL：用混合查询解锁 Kubernetes 监控分析](https://greptime.cn/blogs/2026-01-08-tql-alias-k8s-monitoring)。
