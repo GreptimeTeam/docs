@@ -22,7 +22,7 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 data (`/xxx/xxx/output.parquet` in this case).
 
 :::tip NOTE
-The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3 via `CONNECTION`.
+The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3 or other supported cloud storage services via `CONNECTION`.
 :::
 
 For example, to export data to CSV with custom timestamp and date formats:
