@@ -247,4 +247,4 @@ When joining multiple TQL CTEs, ensure:
 
 With CTEs, you can break down complex SQL queries into more manageable and understandable parts. In this example, we created two CTEs to calculate the 95th percentile latency and the number of error logs separately and then merged them into the final query for analysis. TQL support in CTEs extends this capability by allowing PromQL-style queries to be integrated seamlessly with SQL processing. Read more about [WITH](/reference/sql/with.md) and [TQL](/reference/sql/tql.md).
 
-For more TQL + CTE examples, see the blog post [TQL Alias and K8s Monitoring](https://greptime.com/blogs/2026-01-08-tql-alias-k8s-monitoring).
+For more TQL + CTE examples, see the blog post [When PromQL Meets SQL: Hybrid Queries for Kubernetes Monitoring](https://greptime.com/blogs/2026-01-08-tql-alias-k8s-monitoring).

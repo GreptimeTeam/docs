@@ -246,4 +246,4 @@ WHERE r.req_per_sec > 1;
 
 通过 CTE，您可以将复杂的 SQL 查询分解为更易于管理和理解的部分。在本示例中，我们分别创建了两个 CTE 来计算第 95 百分位延迟和错误日志的数量，然后将它们合并到最终查询中进行分析。CTE 中的 TQL 支持通过将 PromQL 风格的查询与 SQL 处理无缝集成来扩展这种能力。阅读更多关于 [WITH](/reference/sql/with.md) 和 [TQL](/reference/sql/tql.md) 的内容。
 
-更多 TQL + CTE 示例请参阅博客文章 [TQL 别名与 K8s 监控](https://greptime.cn/blogs/2026-01-08-tql-alias-k8s-monitoring)。
+更多 TQL + CTE 示例请参阅博客文章[当 PromQL 遇上 SQL：用混合查询解锁 Kubernetes 监控分析](https://greptime.cn/blogs/2026-01-08-tql-alias-k8s-monitoring)。
