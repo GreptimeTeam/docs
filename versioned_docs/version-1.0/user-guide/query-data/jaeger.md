@@ -55,3 +55,12 @@ You can refer to the [OpenTelemetry official documentation](https://opentelemetr
 3. Use Grafana's Jaeger Explore to view the data:
 
    ![Jaeger Explore](/jaeger-explore.png)
+
+### Custom table
+
+By default, the jaeger compatible API will use the default table name
+`opentelemetry_traces` for its data. If you have multiple tables for trace data,
+you can update this behaviour with HTTP header `x-greptime-trace-table-name` and
+provide table name as the value.
+
+This can be configured via Grafana data source settings.

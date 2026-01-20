@@ -217,14 +217,14 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
 Beside copying specific table to/from some path, `COPY` statement can also be used to copy whole database to/from some path. The syntax for copying databases is:
 
 ```sql
-COPY DATABASE <db_name>
-  [TO | FROM] '<PATH>'
+COPY DATABASE <db_name> 
+  [TO | FROM] '<PATH>' 
   WITH (
     FORMAT = { 'CSV' | 'JSON' | 'PARQUET' },
     START_TIME = "<START TIMESTAMP>",
     END_TIME = "<END TIMESTAMP>",
     PARALLELISM = <number>
-  )
+  ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
     ENDPOINT = "<ENDPOINT>",
