@@ -55,3 +55,10 @@ const proxyConfig = {
 3. 使用 Jaeger Explore 来查看数据：
 
    ![Jaeger Explore](/jaeger-explore.png)
+
+### 自定义数据表
+
+GreptimeDB 的 Jaeger 兼容接口默认使用 `opentelemetry_traces` 表作为其数据源。如
+果用户使用了其他表，可以通过 HTTP 头 `x-greptime-trace-table-name` 进行设置。
+
+Grafana 用户可以在数据源的配置界面进行设置。
