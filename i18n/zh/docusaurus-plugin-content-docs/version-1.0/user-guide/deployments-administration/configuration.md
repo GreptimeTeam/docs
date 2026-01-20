@@ -590,6 +590,29 @@ region_failure_detector_initialization_delay = "10m"
 # 因为这可能会在故障转移期间导致数据丢失。**
 allow_region_failover_on_local_wal = false
 
+## 从 metasrv 内存中删除节点信息前允许的最大空闲时间。
+node_max_idle_time = "24hours"
+
+## 后端客户端选项。
+## 目前仅适用于使用 etcd 作为元数据存储时。
+[backend_client]
+## 后端客户端的保持连接超时时间。
+keep_alive_timeout = "3s"
+## 后端客户端的保持连接间隔。
+keep_alive_interval = "10s"
+## 后端客户端的连接超时时间。
+connect_timeout = "3s"
+
+## gRPC 服务器选项。
+[grpc]
+bind_addr = "127.0.0.1:3002"
+server_addr = "127.0.0.1:3002"
+runtime_size = 8
+## 服务器端 HTTP/2 保持连接间隔
+http2_keep_alive_interval = "10s"
+## 服务器端 HTTP/2 保持连接超时时间。
+http2_keep_alive_timeout = "3s"
+
 ## Procedure 选项
 [procedure]
 
@@ -668,19 +691,38 @@ replication_factor = 1
 
 ## 超过此时间创建 topic 的操作将被取消。
 create_topic_timeout = "30s"
+
+## kafka 客户端的连接超时时间。
+## **仅在 provider 为 `kafka` 时使用。**
+connect_timeout = "3s"
+
+## kafka 客户端的超时时间。
+## **仅在 provider 为 `kafka` 时使用。**
+timeout = "3s"
 ```
 
 | 键                                            | 类型    | 默认值               | 描述                                                                                                                                 |
 | --------------------------------------------- | ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
-| `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
+| `server_addr`                                 | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
 | `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
 | `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
 | `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
 | `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | 设置启动 region 故障检测的延迟时间。该延迟有助于避免在所有 Datanode 尚未完全启动时，Metasrv 过早启动 region 故障检测，从而导致不必要的 region failover。尤其适用于未通过 GreptimeDB Operator 部署的集群，此时可能未正确启用集群维护模式，提前检测可能会引发误判。 |
 | `allow_region_failover_on_local_wal`          | Bool    | false                | 是否允许在本地 WAL 上进行 region failover。<br/>**此选项不建议设置为 true，因为这可能会在故障转移期间导致数据丢失。** |
+| `node_max_idle_time`                          | String  | `24hours`            | 从 metasrv 内存中删除节点信息前允许的最大空闲时间。超过该时间未发送心跳的节点将被视为不活跃并被删除。                 |
+| `backend_client`                              | --      | --                   | 后端客户端选项。<br/>目前仅适用于使用 etcd 作为元数据存储时。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `backend_client.keep_alive_timeout`           | String  | `3s`                 | 后端客户端的保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `backend_client.keep_alive_interval`          | String  | `10s`                | 后端客户端的保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `backend_client.connect_timeout`              | String  | `3s`                 | 后端客户端的连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `grpc`                                        | --      | --                   | gRPC 服务器选项。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `grpc.bind_addr`                              | String  | `127.0.0.1:3002`     | gRPC 服务器的绑定地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `grpc.server_addr`                            | String  | `127.0.0.1:3002`     | frontend 和 datanode 连接到 metasrv 的通信服务器地址。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `grpc.runtime_size`                           | Integer | `8`                  | 服务器工作线程数。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `grpc.http2_keep_alive_interval`              | String  | `10s`                | 服务器端 HTTP/2 保持连接间隔。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `grpc.http2_keep_alive_timeout`               | String  | `3s`                 | 服务器端 HTTP/2 保持连接超时时间。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `backend`                                     | String  | `etcd_store`           | 元数据存储类型。<br/>- `etcd_store` (默认)<br/>- `memory_store` (纯内存存储 - 仅用于测试)<br/>- `postgres_store`<br/>- `mysql_store` |
 | `meta_table_name` | String | `greptime_metakv` | 使用 RDS 存储元数据时的表名。**仅在 backend 为  postgre_store 和 mysql_store 时有效。** |
 | `meta_schema_name` | String | -- | 可选的 PostgreSQL schema，用于元数据表和选举表名称限定。当 PostgreSQL public schema 不可写入时（例如 PostgreSQL 15+ 限制 public schema），可设置此参数为可写入的 schema。GreptimeDB 将使用 `meta_schema_name.meta_table_name`。<br/>**仅在 backend 为 postgres_store 时有效。** |
@@ -711,6 +753,8 @@ create_topic_timeout = "30s"
 | wal.topic_name_prefix                         | String  | greptimedb_wal_topic | 一个 Kafka topic 是通过连接 topic_name_prefix 和 topic_id 构建的                                                                     |
 | wal.replication_factor                        | Integer | 1                    | 每个分区的副本数                                                                                                                     |
 | wal.create_topic_timeout                      | String  | 30s                  | 超过该时间后，topic 创建操作将被取消                                                                                                 |
+| `wal.connect_timeout`                         | String  | `3s`                 | kafka 客户端的连接超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                               |
+| `wal.timeout`                                 | String  | `3s`                 | kafka 客户端的超时时间。<br/>**仅在 provider 为 `kafka` 时使用。**                                                                   |
 | `wal.sasl`                                    | String  | --                   | Kafka 客户端 SASL 配置                                                                                                               |
 | `wal.sasl.type`                               | String  | --                   | SASL 机制，可选值：`PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`                                                                         |
 | `wal.sasl.username`                           | String  | --                   | SASL 鉴权用户名                                                                                                                      |

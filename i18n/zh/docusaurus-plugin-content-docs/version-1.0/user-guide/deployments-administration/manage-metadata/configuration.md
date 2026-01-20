@@ -31,6 +31,17 @@ backend = "etcd_store"
 # 可以指定多个 etcd 端点以实现高可用性
 store_addrs = ["127.0.0.1:2379"]
 
+# etcd 后端客户端选项
+[backend_client]
+# 后端客户端的保持连接超时时间
+keep_alive_timeout = "3s"
+
+# 后端客户端的保持连接间隔
+keep_alive_interval = "10s"
+
+# 后端客户端的连接超时时间
+connect_timeout = "3s"
+
 [backend_tls]
 # - "disable" - 不使用 TLS
 # - "require" - 要求 TLS

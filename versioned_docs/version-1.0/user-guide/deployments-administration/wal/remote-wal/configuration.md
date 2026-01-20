@@ -31,6 +31,11 @@ auto_create_topics = true
 num_topics = 64
 replication_factor = 1
 topic_name_prefix = "greptimedb_wal_topic"
+create_topic_timeout = "30s"
+
+# Kafka client timeout options
+connect_timeout = "3s"
+timeout = "3s"
 ```
 
 ### Options
@@ -48,6 +53,9 @@ topic_name_prefix = "greptimedb_wal_topic"
 | `topic_name_prefix`        | Prefix for Kafka topic names. WAL topics will be named as `{topic_name_prefix}_{index}` (e.g., `greptimedb_wal_topic_0`). The prefix must match the regex `[a-zA-Z_:-][a-zA-Z0-9_:\-\.@#]*`.                                                                                                                                                                                                                                                               |
 | `flush_trigger_size`       | Estimated size threshold (e.g., `"512MB"`) for triggering a flush operation in a region. Calculated as `(latest_entry_id - flushed_entry_id) * avg_record_size`. When this value exceeds `flush_trigger_size`, MetaSrv initiates a flush. Set to `"0"` to let the system automatically determine the flush trigger size. This also controls the maximum replay size from a topic during region replay; using a smaller value can help reduce region replay time during Datanode startup.                |
 | `checkpoint_trigger_size`  | Estimated size threshold (e.g., `"128MB"`) for triggering a checkpoint operation in a region. Calculated as `(latest_entry_id - last_checkpoint_entry_id) * avg_record_size`. When this value exceeds `checkpoint_trigger_size`, MetaSrv initiates a checkpoint. Set to `"0"` to let the system automatically determine the checkpoint trigger size. Using a smaller value can help reduce region replay time during Datanode startup.                                                        |
+| `create_topic_timeout`     | The timeout for creating a Kafka topic. Default is `"30s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `connect_timeout`          | The connect timeout for Kafka client. Default is `"3s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `timeout`                  | The timeout for Kafka client operations. Default is `"3s"`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 #### Topic Setup and Kafka Permissions 
 
@@ -73,6 +81,8 @@ provider = "kafka"
 broker_endpoints = ["kafka.kafka-cluster.svc:9092"]
 max_batch_bytes = "1MB"
 overwrite_entry_start_id = true
+connect_timeout = "3s"
+timeout = "3s"
 ```
 
 ### Options
@@ -83,6 +93,8 @@ overwrite_entry_start_id = true
 | `broker_endpoints`         | List of Kafka broker addresses.                                                                                               |
 | `max_batch_bytes`          | Maximum size for each Kafka producer batch.                                                                                   |
 | `overwrite_entry_start_id` | If true, the Datanode will skip over missing entries during WAL replay. Prevents out-of-range errors, but may hide data loss. |
+| `connect_timeout`          | The connect timeout for Kafka client. Default is `"3s"`.                                                                      |
+| `timeout`                  | The timeout for Kafka client operations. Default is `"3s"`.                                                                   |
 
 
 #### Required Settings and Limitations
