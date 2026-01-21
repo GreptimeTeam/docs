@@ -210,14 +210,14 @@ COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
 `COPY` 语句除可以导入/导出表之外，也可以导入/导出指定的数据库，其语法如下：
 
 ```sql
-COPY DATABASE <db_name> 
-  [TO | FROM] '<PATH>' 
+COPY DATABASE <db_name>
+  [TO | FROM] '<PATH>'
   WITH (
-    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
+    FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' }
     START_TIME = "<START TIMESTAMP>",
     END_TIME = "<END TIMESTAMP>",
     PARALLELISM = <number>
-  ) 
+  )
   [CONNECTION(
     REGION = "<REGION NAME>",
     ENDPOINT = "<ENDPOINT>",
