@@ -111,23 +111,9 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 ### 写入内存限制选项
 
-内存限制选项控制所有协议（HTTP、gRPC 和 Arrow Flight）并发写入请求使用的总内存。
-这些选项适用于 `frontend` 和 `standalone` 子命令。
-
-```toml
-# 所有并发写入请求体和消息的最大总内存
-# 设置为 0 表示禁用限制（默认为无限制）
-max_in_flight_write_bytes = "1GB"
-
-# 写入字节配额耗尽时的策略
-# 可选值："wait"（默认，10 秒超时）、"wait(<duration>)"（例如 "wait(30s)"）、"fail"
-write_bytes_exhausted_policy = "wait"
-```
-
-| 配置项                          | 类型   | 默认值    | 描述                                                                                                                                                                                                              |
-| ------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_in_flight_write_bytes`     | 字符串 | `"0"`     | 所有并发写入请求体和消息（HTTP、gRPC、Flight）的最大总内存。设置为 `"0"` 表示禁用限制（无限制）。支持的单位：`B`、`KB`、`MB`、`GB` 等。示例：`"1GB"` 将并发写入总量限制为 1GB。                              |
-| `write_bytes_exhausted_policy`  | 字符串 | `"wait"`  | 写入字节配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。                                                      |
+:::warning 已弃用
+`max_in_flight_write_bytes` 和 `write_bytes_exhausted_policy` 选项已弃用。请使用特定于协议的 `memory_exhausted_policy` 选项（参见[协议选项](#协议选项)）。
+:::
 
 ### 协议选项
 
@@ -147,10 +133,12 @@ HTTP 协议配置适用于所有 GreptimeDB 组件：`frontend`、`datanode`、`
 addr = "127.0.0.1:4000"
 timeout = "30s"
 body_limit = "64MB"
+memory_exhausted_policy = "wait"
 
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+memory_exhausted_policy = "wait"
 
 [mysql]
 enable = true
@@ -190,10 +178,12 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
+|            | memory_exhausted_policy | 字符串 | 并发写入请求的内存配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。 |
 |            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
+|            | memory_exhausted_policy | 字符串 | 并发写入请求的内存配额耗尽时的策略。可选值：`"wait"`（默认，等待最多 10 秒）、`"wait(<duration>)"`（自定义超时时间，例如 `"wait(30s)"`）、`"fail"`（立即拒绝请求）。 |
 |            | max_connection_age   | 字符串  | gRPC 连接在服务端保持的最长时间。参见 ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/)。默认不设置。示例："1h" 表示 1 小时，"30m" 表示 30 分钟 |
 |            | flight_compression   | 字符串  | Frontend 的 Arrow IPC 服务的压缩模式。可用选项：`none`：禁用所有压缩，`transport`：仅启用 gRPC 传输压缩（zstd），`arrow_ipc`：仅启用 Arrow IPC 压缩（lz4），`all`：启用所有压缩。默认值为 `none`。|
 | mysql      |                    |        | MySQL 服务器选项                                             |
