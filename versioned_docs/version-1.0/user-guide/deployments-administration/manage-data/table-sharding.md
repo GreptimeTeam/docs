@@ -110,7 +110,7 @@ The following content uses the `sensor_readings` table with two partition column
 
 ## Repartition a sharded table
 
-Use repartitioning operations to merge partitions, then split them into new rules.
+You can modify partition rules by first merging existing partitions and then splitting them with new rules. The example below shows how to change the partitioning on the `area` column from `South` to `North` for devices with `device_id < 100`:
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (

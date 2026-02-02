@@ -221,7 +221,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
-Use `MERGE PARTITION` to merge multiple partitions into one:
+Use `MERGE PARTITION` to merge multiple partitions into one. The following example merges two partitions into a single partition covering `device_id < 100`:
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (

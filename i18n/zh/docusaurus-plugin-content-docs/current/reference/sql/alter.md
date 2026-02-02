@@ -220,7 +220,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 );
 ```
 
-使用 `MERGE PARTITION` 将多个分区合并为一个分区：
+使用 `MERGE PARTITION` 将多个分区合并为一个分区。以下示例将两个分区合并为一个覆盖 `device_id < 100` 的分区：
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (

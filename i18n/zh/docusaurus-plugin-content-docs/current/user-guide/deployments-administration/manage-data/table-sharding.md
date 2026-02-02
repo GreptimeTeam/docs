@@ -112,7 +112,7 @@ PARTITION ON COLUMNS (device_id, area) (
 
 ## 重分区（Repartition）
 
-可以先合并分区，再按新的规则拆分为多个分区。
+你可以通过先合并现有分区，然后用新规则拆分它们来修改分区规则。下面的示例展示了如何将 `device_id < 100` 的设备的分区键 `area` 从 `South` 更改为 `North`：
 
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (
