@@ -8,9 +8,10 @@ GreptimeDB GC delays physical deletion of SST/index files until all references (
 
 ## How it works
 
-- **Meta GC scheduler**: Runs every 5 minutes, ranks leader regions by size and removed-file count, respects a per-region cooldown, and triggers datanodes via mailbox. Dropped/repartitioned regions in `table_repart` are force-cleaned with full file listing and route overrides.
-- **Datanode GC worker**: For each region, uses tmp ref manifests from queries plus manifest `removed_files` to decide what can be deleted. Default is fast mode (only manifest-tracked removals). Periodic or forced runs use full listing to find orphan files. Successful deletions clear `removed_files` from the manifest.
-- **Lingering protection**: `lingering_time` keeps known-removed files around so long-running queries or cross-region references can finish; `unknown_file_lingering_time` protects files not tracked with an expel time (rare).
+- **Meta GC scheduler**: Ticks every 5 minutes, considers leader regions above a size threshold, applies per-region cooldown, ranks by size and removed-file count, and triggers datanodes via mailbox. Dropped/repartitioned regions in `table_repart` are force-cleaned with full file listing and route overrides.
+- **Datanode GC worker**: Uses tmp ref manifests plus manifest `removed_files` to decide deletions. Default fast mode deletes only manifest-tracked removals; periodic/forced runs do full listing to clean orphans. Successful deletions clear `removed_files` from the manifest.
+- **Listing modes**: Fast mode is used most cycles for speed; full listing walks the object store directory to discover files not tracked in the manifest (orphans), and is run periodically or when forced (e.g., dropped regions).
+- **Lingering protection**: `lingering_time` keeps known-removed files for long follower-region queries or cross-region references; `unknown_file_lingering_time` guards files without expel time (rare).
 
 ## Configuration
 
@@ -31,17 +32,17 @@ lingering_time = "1m"           # Keep known-removed files this long for active 
 unknown_file_lingering_time = "1h" # Keep files without expel time; rare safeguard.
 ```
 
-**Important**: `gc.enable` must be set consistently on metasrv and all datanodes. Mismatched flags cause GC to be skipped or stuck.
+:::warning
+`gc.enable` must be set consistently on metasrv and all datanodes. Mismatched flags cause GC to be skipped or stuck.
+:::
 
 ## When to enable
 
 - Turn on GC during repartition/region moves so cross-region references can drain safely before deletion.
-- For clusters with long-running queries, increase `lingering_time` to cover worst-case query duration.
+- For clusters with long-running follower-region queries, set `lingering_time` longer than `gc_cooldown_period` so files reference created during a GC cycle stay alive (in-use or lingering) until at least the next cycle.
 - Leave GC off if you are not repartitioning and do not need delayed deletion.
 
 ## Operational notes
 
-- Meta defaults to 5-minute ticks and per-region cooldown; it selects leaders only and skips regions below the size threshold.
-- Full file listing is heavier and runs periodically (or is forced for dropped regions); most cycles use fast mode for speed.
 - Deleted files live in object storage until GC removes them; ensure storage listing/deletion permissions are in place.
 - After enabling, restart metasrv and datanodes to apply config changes.
