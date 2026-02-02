@@ -23,14 +23,31 @@ enable = false              # Turn on meta GC scheduler; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 ```
 
+**Meta options**
+
+| Option | Description |
+| --- | --- |
+| `enable` | Enable the meta GC scheduler. Must match datanode GC enablement. |
+| `gc_cooldown_period` | Minimum interval before the same region is scheduled for GC again; keep datanode `lingering_time` longer than this. |
+
 Datanode (`config/datanode.example.toml`):
 
 ```toml
+[[region_engine]]
+[region_engine.mito]
 [region_engine.mito.gc]
 enable = false                   # Turn on datanode GC worker; must match meta.
 lingering_time = "1m"           # Keep known-removed files this long for active queries.
 unknown_file_lingering_time = "1h" # Keep files without expel time; rare safeguard.
 ```
+
+**Datanode options**
+
+| Option | Description |
+| --- | --- |
+| `enable` | Enable the datanode GC worker. Must match meta GC `enable`. |
+| `lingering_time` | How long to keep manifest-removed files before deletion to protect long follower-region queries/cross-region references; set longer than `gc_cooldown_period`. Use `"None"` to delete immediately. |
+| `unknown_file_lingering_time` | Safety hold for files without expel time (not tracked in manifest). Should be generous; these cases are rare. |
 
 :::warning
 `gc.enable` must be set consistently on metasrv and all datanodes. Mismatched flags cause GC to be skipped or stuck.
@@ -38,7 +55,7 @@ unknown_file_lingering_time = "1h" # Keep files without expel time; rare safegua
 
 ## When to enable
 
-- Turn on GC during repartition/region moves so cross-region references can drain safely before deletion.
+- Turn on GC if need to repartition so cross-region references can drain safely before deletion.
 - For clusters with long-running follower-region queries, set `lingering_time` longer than `gc_cooldown_period` so files reference created during a GC cycle stay alive (in-use or lingering) until at least the next cycle.
 - Leave GC off if you are not repartitioning and do not need delayed deletion.
 
