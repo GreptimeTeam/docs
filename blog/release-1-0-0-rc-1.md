@@ -14,9 +14,7 @@ Release date: February 02, 2026
  * Support for region repartitioning is now available to manage data distribution. Users can dynamically adjust partitions using new SQL syntax:
     *   `ALTER TABLE <table> SPLIT PARTITION (<partition_expr>) TO (<partition_expr_list>);`
     *   `ALTER TABLE <table> MERGE PARTITION (<partition_expr_list>);`
-
-**Vector Search Capabilities**
- * Added comprehensive support for vector data, including index building, scanning, querying, and view-based vector types, significantly enhancing capabilities for AI and high-dimensional data workloads.
+ * Note: This feature is currently supported only in **distributed mode with object storage enabled.**
 
 **Performance & Query Optimization**
  * Optimized query execution with faster primary key filtering, improved PromQL planning using TSID, and enhanced query trace tuning for better observability and speed.
