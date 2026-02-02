@@ -1,7 +1,8 @@
+---
 keywords: [GC, Garbage Collection, Mito, Repartition, GreptimeDB]
 description: GC keeps SST/index files until all references are released, protecting long queries and repartition workflows.
 ---
-# GC Overview
+# Overview
 
 GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, repartition cross-region moves) are released. Enable it when you need safe file cleanup during repartition or other workflows that create temporary references; otherwise you can keep it off.
 
