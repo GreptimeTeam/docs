@@ -2,13 +2,16 @@
 keywords: [GC, Garbage Collection, Mito, Repartition, GreptimeDB]
 description: GC keeps SST/index files until all references are released, protecting long queries and repartition workflows.
 ---
-# Overview
+# Configuration
 
-GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](../manage-data/table-sharding.md#Repartition) cross-region file refs) are released. Turn it on if you need to run repartition or have follower regions serving long-running queries that must keep files available; otherwise you can leave it off.
+GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](../manage-data/table-sharding.md#Repartition) cross-region file refs) are released. The configuration contains two parts:
+
+- Metasrv Configuration
+- Datanode Configuration
 
 ## How it works
 
-- **Roles**: Meta decides *when/where* to clean; datanodes perform the actual delete while keeping in-use files safe.
+- **Roles**: Meta decides when/where to clean; datanodes perform the actual delete while keeping in-use files safe.
 - **Safety windows**: `lingering_time` holds known-removed files a bit longer; `unknown_file_lingering_time` is a rare-case guard.
 - **Listing modes**: Fast mode removes files the system already marked; full listing walks storage to catch stragglers/orphans.
 
@@ -24,9 +27,9 @@ flowchart LR
   G --> H
 ```
 
-## Configuration
+## Metasrv Configuration
 
-Meta (`config/metasrv.example.toml`):
+On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when to run GC.
 
 ```toml
 [gc]
@@ -34,14 +37,16 @@ enable = false              # Turn on meta GC scheduler; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 ```
 
-**Meta options**
+### Options
 
-| Option | Description |
+| Configuration Option | Description |
 | --- | --- |
 | `enable` | Enable the meta GC scheduler. Must match datanode GC enablement. |
 | `gc_cooldown_period` | Minimum interval before the same region is scheduled for GC again; keep datanode `lingering_time` longer than this. |
 
-Datanode (`config/datanode.example.toml`):
+## Datanode Configuration
+
+The Datanode side performs the actual deletion while protecting files still in use.
 
 ```toml
 [[region_engine]]
@@ -52,9 +57,9 @@ lingering_time = "10m"           # Keep known-removed files this long for active
 unknown_file_lingering_time = "1h" # Keep files without expel time; rare safeguard.
 ```
 
-**Datanode options**
+### Options
 
-| Option | Description |
+| Configuration Option | Description |
 | --- | --- |
 | `enable` | Enable the datanode GC worker. Must match meta GC `enable`. |
 | `lingering_time` | How long to keep manifest-removed files before deletion to protect long follower-region queries/cross-region references; set longer than `gc_cooldown_period`. Use `"None"` to delete immediately. |
