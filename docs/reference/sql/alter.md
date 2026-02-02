@@ -93,10 +93,12 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
     | UNSET <option_name>[, ...]
-   ]
+    ]
 ```
 
 
@@ -205,6 +207,50 @@ ALTER TABLE monitor SET 'sst_format'='flat';
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
 ```
+
+### Split or merge partitions
+
+Use `SPLIT PARTITION` to split a partition into multiple partitions:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+Use `MERGE PARTITION` to merge multiple partitions into one. The following example merges two partitions into a single partition covering `device_id < 100`:
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+You can provide DDL options after the statement to control execution behavior:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+) WITH (
+  TIMEOUT = '5m',
+  WAIT = false
+);
+```
+
+When `WAIT = false`, the statement returns a `procedure_id`. You can check the status with `ADMIN procedure_state(procedure_id)` (see [ADMIN](/reference/sql/admin.md)).
+`TIMEOUT` controls the overall time limit for the operation, and it is enforced regardless of whether `WAIT` is `true` or `false`.
+
+:::caution Note
+Repartitioning operations are only supported in distributed clusters.
+You must enable shared object storage and GC, and ensure all datanodes can access the same object store before running these statements.
+:::
 
 ### Create an index for a column
 

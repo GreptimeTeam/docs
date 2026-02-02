@@ -93,9 +93,11 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
-   ]
+    ]
 ```
 
 
@@ -204,6 +206,50 @@ ALTER TABLE monitor SET 'sst_format'='flat';
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
 ```
+
+### 分区拆分与合并
+
+使用 `SPLIT PARTITION` 将一个分区拆分为多个分区：
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+使用 `MERGE PARTITION` 将多个分区合并为一个分区。以下示例将两个分区合并为一个覆盖 `device_id < 100` 的分区：
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+你可以在语句末尾附加 DDL 选项以控制执行行为：
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+) WITH (
+  TIMEOUT = '5m',
+  WAIT = false
+);
+```
+
+当 `WAIT = false` 时，语句会返回 `procedure_id`，可通过 `ADMIN procedure_state(procedure_id)` 查询状态（参见 [ADMIN](/reference/sql/admin.md)）。
+`TIMEOUT` 用于控制整个操作的超时时间，无论 `WAIT` 是否为 `true` 都会生效。
+
+:::caution 注意
+重分区相关操作仅支持在分布式集群中执行。
+必须开启共享对象存储和 GC，并确保所有 datanode 都能访问同一对象存储后再执行这些语句。
+:::
 
 ### 创建列的索引
 

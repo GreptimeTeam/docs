@@ -108,6 +108,29 @@ PARTITION ON COLUMNS (device_id, area) (
 
 The following content uses the `sensor_readings` table with two partition columns as an example.
 
+## Repartition a sharded table
+
+You can modify partition rules by first merging existing partitions and then splitting them with new rules. The example below shows how to change the partitioning on the `area` column from `South` to `North` for devices with `device_id < 100`:
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'North',
+  device_id < 100 AND area >= 'North'
+);
+```
+
+:::caution Note
+Repartitioning is only supported in distributed clusters.
+You must enable shared object storage and GC, and ensure all datanodes can access the same object store before running repartitioning operations.
+:::
+
 ## Insert data into the table
 
 The following code inserts 3 rows into each partition of the `sensor_readings` table.
