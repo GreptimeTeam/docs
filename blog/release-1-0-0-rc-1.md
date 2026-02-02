@@ -97,7 +97,7 @@ As older versions still depend on this field, downgrading from the new version t
 * fix: clear unused range builders eagerly by [@evenyag](https://github.com/evenyag) in [#7569](https://github.com/GreptimeTeam/greptimedb/pull/7569)
 * fix: unit tests for export module by [@fengys1996](https://github.com/fengys1996) in [#7607](https://github.com/GreptimeTeam/greptimedb/pull/7607)
 * fix: correct histogram result by [@waynexia](https://github.com/waynexia) in [#7608](https://github.com/GreptimeTeam/greptimedb/pull/7608)
-* fix: use phy table when need fitler by tsid/table id by [@discord9](https://github.com/discord9) in [#7609](https://github.com/GreptimeTeam/greptimedb/pull/7609)
+* fix: use phy table when need filter by tsid/table id by [@discord9](https://github.com/discord9) in [#7609](https://github.com/GreptimeTeam/greptimedb/pull/7609)
 * fix: unit tests when enterprise feature is enabled by [@fengys1996](https://github.com/fengys1996) in [#7618](https://github.com/GreptimeTeam/greptimedb/pull/7618)
 * fix: flaky compaction test by [@v0y4g3r](https://github.com/v0y4g3r) in [#7627](https://github.com/GreptimeTeam/greptimedb/pull/7627)
 * fix: unit tests when enterprise feature is enabled by [@fengys1996](https://github.com/fengys1996) in [#7625](https://github.com/GreptimeTeam/greptimedb/pull/7625)
