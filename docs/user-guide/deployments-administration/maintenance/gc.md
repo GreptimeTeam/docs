@@ -4,7 +4,7 @@ description: GC keeps SST/index files until all references are released, protect
 ---
 # Overview
 
-GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, repartition cross-region moves) are released. Turn it on if you need to run repartition or have follower regions serving long-running queries that must keep files available; otherwise you can leave it off.
+GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, [repartition](../manage-data/table-sharding.md#Repartition) cross-region file refs) are released. Turn it on if you need to run repartition or have follower regions serving long-running queries that must keep files available; otherwise you can leave it off.
 
 ## How it works
 
