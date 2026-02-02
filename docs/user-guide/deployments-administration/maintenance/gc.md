@@ -4,14 +4,25 @@ description: GC keeps SST/index files until all references are released, protect
 ---
 # Overview
 
-GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, repartition cross-region moves) are released. Enable it when you need safe file cleanup during repartition or other workflows that create temporary references; otherwise you can keep it off.
+GreptimeDB GC delays physical deletion of SST/index files until all references (running queries, repartition cross-region moves) are released. Turn it on if you need to run repartition or have follower regions serving long-running queries that must keep files available; otherwise you can leave it off.
 
 ## How it works
 
-- **Meta GC scheduler**: Ticks every 5 minutes, considers leader regions above a size threshold, applies per-region cooldown, ranks by size and removed-file count, and triggers datanodes via mailbox. Dropped/repartitioned regions in `table_repart` are force-cleaned with full file listing and route overrides.
-- **Datanode GC worker**: Uses tmp ref manifests plus manifest `removed_files` to decide deletions. Default fast mode deletes only manifest-tracked removals; periodic/forced runs do full listing to clean orphans. Successful deletions clear `removed_files` from the manifest.
-- **Listing modes**: Fast mode is used most cycles for speed; full listing walks the object store directory to discover files not tracked in the manifest (orphans), and is run periodically or when forced (e.g., dropped regions).
-- **Lingering protection**: `lingering_time` keeps known-removed files for long follower-region queries or cross-region references; `unknown_file_lingering_time` guards files without expel time (rare).
+- **Roles**: Meta decides *when/where* to clean; datanodes perform the actual delete while keeping in-use files safe.
+- **Safety windows**: `lingering_time` holds known-removed files a bit longer; `unknown_file_lingering_time` is a rare-case guard.
+- **Listing modes**: Fast mode removes files the system already marked; full listing walks storage to catch stragglers/orphans.
+
+```mermaid
+flowchart LR
+  A[Meta schedules GC] --> B[Pick regions]
+  B --> C[Send GC task]
+  C --> D[Datanode cleans files]
+  D --> E{Fast or Full}
+  E --> F[Fast: remove marked files]
+  E --> G[Full: walk storage for orphans]
+  F --> H[Cleanup recorded]
+  G --> H
+```
 
 ## Configuration
 
@@ -37,7 +48,7 @@ Datanode (`config/datanode.example.toml`):
 [region_engine.mito]
 [region_engine.mito.gc]
 enable = false                   # Turn on datanode GC worker; must match meta.
-lingering_time = "1m"           # Keep known-removed files this long for active queries.
+lingering_time = "10m"           # Keep known-removed files this long for active queries.
 unknown_file_lingering_time = "1h" # Keep files without expel time; rare safeguard.
 ```
 
@@ -55,11 +66,13 @@ unknown_file_lingering_time = "1h" # Keep files without expel time; rare safegua
 
 ## When to enable
 
+- GC only applies when tables use object storage; tables on local filesystems ignore GC settings.
 - Turn on GC if need to repartition so cross-region references can drain safely before deletion.
-- For clusters with long-running follower-region queries, set `lingering_time` longer than `gc_cooldown_period` so files reference created during a GC cycle stay alive (in-use or lingering) until at least the next cycle.
+- For clusters with long-running follower-region queries, turn on GC and set `lingering_time` longer than `gc_cooldown_period` so files created or referenced during a GC cycle stay alive (in-use or lingering) until at least the next cycle.
 - Leave GC off if you are not repartitioning and do not need delayed deletion.
 
 ## Operational notes
 
+- GC is designed for object storage backends (with list/delete support); ensure your store credentials and permissions allow listing and deletion.
 - Deleted files live in object storage until GC removes them; ensure storage listing/deletion permissions are in place.
 - After enabling, restart metasrv and datanodes to apply config changes.

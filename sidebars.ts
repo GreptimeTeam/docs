@@ -314,11 +314,6 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/wal/noop-wal',
               ],
             },
-            {
-              type: 'doc',
-              id: 'user-guide/deployments-administration/gc/overview',
-              label: 'GC Configuration',
-            },
             'user-guide/deployments-administration/configuration',
             {
               type: 'category',
@@ -399,6 +394,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/maintenance/prevent-metadata-changes',
                 'user-guide/deployments-administration/maintenance/sequence-management',
                 'user-guide/deployments-administration/maintenance/table-reconciliation',
+                'user-guide/deployments-administration/maintenance/gc',
               ]
             },
             'user-guide/deployments-administration/troubleshooting',
