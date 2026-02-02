@@ -314,6 +314,11 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/wal/noop-wal',
               ],
             },
+            {
+              type: 'doc',
+              id: 'user-guide/deployments-administration/gc/overview',
+              label: 'GC Configuration',
+            },
             'user-guide/deployments-administration/configuration',
             {
               type: 'category',
