@@ -33,7 +33,7 @@ On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when
 
 ```toml
 [gc]
-enable = false              # Turn on meta GC scheduler; must match datanode.
+enable = true              # Turn on meta GC scheduler; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 ```
 
@@ -52,7 +52,7 @@ The Datanode side performs the actual deletion while protecting files still in u
 [[region_engine]]
 [region_engine.mito]
 [region_engine.mito.gc]
-enable = false                   # Turn on datanode GC worker; must match meta.
+enable = true                   # Turn on datanode GC worker; must match meta.
 lingering_time = "10m"           # Keep known-removed files this long for active queries.
 unknown_file_lingering_time = "1h" # Keep files without expel time; rare safeguard.
 ```

@@ -33,7 +33,7 @@ flowchart LR
 
 ```toml
 [gc]
-enable = false              # 开启 meta GC 调度器；必须与 datanode 一致。
+enable = true              # 开启 meta GC 调度器；必须与 datanode 一致。
 gc_cooldown_period = "5m"   # 同一 region 再次 GC 的最小间隔。
 ```
 
@@ -52,7 +52,7 @@ Datanode 负责实际删除，同时保护仍在使用中的文件。
 [[region_engine]]
 [region_engine.mito]
 [region_engine.mito.gc]
-enable = false                   # 开启 datanode GC worker；必须与 meta 一致。
+enable = true                   # 开启 datanode GC worker；必须与 meta 一致。
 lingering_time = "10m"           # 已移除文件在活跃查询期间保留时长。
 unknown_file_lingering_time = "1h" # 未记录 expel time 的文件保留时长；罕见保护。
 ```
