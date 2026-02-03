@@ -25,7 +25,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 ```
 
 * **Merge Partitions**
-Merge multiple small partitions into a single one to reduce overhead:
+Merge multiple small partitions into a single one:
 ```sql
 ALTER TABLE sensor_readings MERGE PARTITION (
   device_id < 100 AND area < 'South',
@@ -34,7 +34,7 @@ ALTER TABLE sensor_readings MERGE PARTITION (
 ```
 
 * **Execution Control with WITH Clause**
-Users can control procedure behavior via WITH options:
+Users can control procedure behavior via `WITH` options:
 ```sql
 ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100
