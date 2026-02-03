@@ -153,7 +153,7 @@ As older versions still depend on this field, downgrading from the new version t
 * fix: clean up staging blob directory on clear by [@WenyXu](https://github.com/WenyXu) in [#7642](https://github.com/GreptimeTeam/greptimedb/pull/7642)
 * fix: get correct table info when insert create/alter table by [@discord9](https://github.com/discord9) in [#7641](https://github.com/GreptimeTeam/greptimedb/pull/7641)
 * fix: send get file ref to all regions by [@discord9](https://github.com/discord9) in [#7640](https://github.com/GreptimeTeam/greptimedb/pull/7640)
-* fix: substract overflow in identity pipeline by [@shuiyisong](https://github.com/shuiyisong) in [#7656](https://github.com/GreptimeTeam/greptimedb/pull/7656)
+* fix: subtract overflow in identity pipeline by [@shuiyisong](https://github.com/shuiyisong) in [#7656](https://github.com/GreptimeTeam/greptimedb/pull/7656)
 * fix(copy): treat null inferred columns as Utf8 to preserve later values by [@WenyXu](https://github.com/WenyXu) in [#7658](https://github.com/GreptimeTeam/greptimedb/pull/7658)
 
 ### 🚜 Refactor
