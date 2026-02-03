@@ -11,13 +11,58 @@ Release date: February 02, 2026
 ### 👍 Highlights
 
 **Region Repartition**
- * Support for region repartitioning is now available to manage data distribution. Users can dynamically adjust partitions using new SQL syntax:
-    *   `ALTER TABLE <table> SPLIT PARTITION (<partition_expr>) TO (<partition_expr_list>);`
-    *   `ALTER TABLE <table> MERGE PARTITION (<partition_expr_list>);`
- * Note: This feature is currently supported only in **distributed mode with object storage enabled.**
+RC.1 introduces **Region Repartition**, allowing users to dynamically adjust partition rules and redistribute data at runtime, without rebuilding tables or performing manual migrations.
 
-**Performance & Query Optimization**
- * Optimized query execution with faster primary key filtering, improved PromQL planning using TSID, and enhanced query trace tuning for better observability and speed.
+* **Split Partitions**
+Split a large or hotspot partition into multiple smaller ones:
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+* **Merge Partitions**
+Merge multiple small partitions into a single one to reduce overhead:
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+* **Execution Control with WITH Clause**
+Users can control procedure behavior via WITH options:
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+) WITH (
+  TIMEOUT = '5m',
+  WAIT = false
+);
+```
+
+ * When `WAIT = false`, the statement returns immediately with a `procedure_id`.
+Progress can be checked via `ADMIN procedure_state(procedure_id)`;
+ * TIMEOUT sets an overall time limit for the operation.
+
+**Note:** Region repartitioning is currently supported only when:
+ * Running in distributed cluster mode
+ * Using object storage and GC are enabled
+
+**Metric Engine Primary Key Filter Acceleration**
+
+RC.1 introduces a fast-path optimization for primary key filtering in the Metric Engine.
+Instead of decoding and materializing values row by row, the engine now performs direct comparisons on **memcomparable-encoded primary key bytes**, significantly reducing CPU overhead.
+ * Dense codec: 20–90× faster
+ * Sparse codec: 3–11× faster
+
+This improvement greatly boosts query performance for high-cardinality metric workloads.
 
 ### Breaking changes
 
