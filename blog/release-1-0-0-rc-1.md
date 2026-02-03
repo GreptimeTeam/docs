@@ -121,6 +121,7 @@ As older versions still depend on this field, downgrading from the new version t
 * feat: impl vector index query by [@killme2008](https://github.com/killme2008) in [#7564](https://github.com/GreptimeTeam/greptimedb/pull/7564)
 * feat: BulkMemtable compact parts without encoding into Parquet by [@evenyag](https://github.com/evenyag) in [#7617](https://github.com/GreptimeTeam/greptimedb/pull/7617)
 * feat: flow last non null by [@discord9](https://github.com/discord9) in [#7646](https://github.com/GreptimeTeam/greptimedb/pull/7646)
+* feat: add recover_sync to ManifestCache::new by [@evenyag](https://github.com/evenyag) in [#7652](https://github.com/GreptimeTeam/greptimedb/pull/7652)
 
 ### 🐛 Bug Fixes
 
@@ -152,6 +153,8 @@ As older versions still depend on this field, downgrading from the new version t
 * fix: clean up staging blob directory on clear by [@WenyXu](https://github.com/WenyXu) in [#7642](https://github.com/GreptimeTeam/greptimedb/pull/7642)
 * fix: get correct table info when insert create/alter table by [@discord9](https://github.com/discord9) in [#7641](https://github.com/GreptimeTeam/greptimedb/pull/7641)
 * fix: send get file ref to all regions by [@discord9](https://github.com/discord9) in [#7640](https://github.com/GreptimeTeam/greptimedb/pull/7640)
+* fix: substract overflow in identity pipeline by [@shuiyisong](https://github.com/shuiyisong) in [#7656](https://github.com/GreptimeTeam/greptimedb/pull/7656)
+* fix(copy): treat null inferred columns as Utf8 to preserve later values by [@WenyXu](https://github.com/WenyXu) in [#7658](https://github.com/GreptimeTeam/greptimedb/pull/7658)
 
 ### 🚜 Refactor
 
@@ -165,6 +168,7 @@ As older versions still depend on this field, downgrading from the new version t
 * perf: avoid boundary checks on accessing array items by [@waynexia](https://github.com/waynexia) in [#7570](https://github.com/GreptimeTeam/greptimedb/pull/7570)
 * perf: accelerate pk filter by [@waynexia](https://github.com/waynexia) in [#7584](https://github.com/GreptimeTeam/greptimedb/pull/7584)
 * perf: skip unnecessary label columns in promql query by [@waynexia](https://github.com/waynexia) in [#7602](https://github.com/GreptimeTeam/greptimedb/pull/7602)
+* perf(mito2): merge last_non_null within memtable batches by [@waynexia](https://github.com/waynexia) in [#7653](https://github.com/GreptimeTeam/greptimedb/pull/7653)
 
 ### 🎨 Styling
 
@@ -195,6 +199,7 @@ As older versions still depend on this field, downgrading from the new version t
 * ci: upgrade GCC in centos dev-builder for cxx crate compatibility by [@killme2008](https://github.com/killme2008) in [#7643](https://github.com/GreptimeTeam/greptimedb/pull/7643)
 * chore: bump version rc.1 by [@WenyXu](https://github.com/WenyXu) in [#7645](https://github.com/GreptimeTeam/greptimedb/pull/7645)
 * ci: remove db driver test from release as well by [@sunng87](https://github.com/sunng87) in [#7650](https://github.com/GreptimeTeam/greptimedb/pull/7650)
+* chore: adjust manifest cache log level by [@evenyag](https://github.com/evenyag) in [#7655](https://github.com/GreptimeTeam/greptimedb/pull/7655)
 
 ## All Contributors
 
