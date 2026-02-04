@@ -1,0 +1,76 @@
+---
+name: greptimedb-trigger
+description: Guide for creating GreptimeDB triggers, by which we can trigger external webhook like alert manager. This feature can be used as alternative to Prometheus alert rule.
+---
+
+# GreptimeDB Trigger Guide
+
+Create GreptimeDB trigger definition as an alternative to Prometheus alert
+rule. GreptimeDB trigger mapped most concepts from Prometheus alerts rule in its
+own DDL.
+
+## The workflow
+
+To create Greptime trigger, we should follow these phases:
+
+### Phase 1. Understanding GreptimeDB Trigger
+
+First, we should read greptimedb trigger definitions and how it works from
+GreptimeDB's documentation.
+
+There are pages available, use WebFetch to load and understand them:
+
+1. High level information of Trigger
+   https://docs.greptime.com/enterprise/trigger/
+2. The trigger syntax reference
+   https://docs.greptime.com/reference/sql/trigger-syntax/
+
+### Phase 2. Create an initial trigger
+
+Create the trigger based on user provided information.
+
+It can be either existing Prometheus alert rule yaml, or detailed requirements
+described by user.
+
+Note that `CREATE TRIGGER` can also use Greptime TQL to define the rule. The TQL
+is Greptime's embedded PromQL in SQL, so using TQL makes migration from
+Prometheus alert rules easier.
+
+Return the `CREATE TRIGGER` SQL statement, with some dummy data for the webhook
+part if user didn't provide webhook information.
+
+### Phase 3. Configure webhook for trigger
+
+If the user already has a Prometheus AlertManager setup, use their AlertManager
+information for webhook.
+
+It's also possible to configure slack directly for the hook. Configure it if user
+has a slack incoming hook url. There can be some other webhook destinations,
+just follow the pattern.
+
+## Reference
+
+### Prometheus Alert Manager
+
+Alert manager is typically configured in `prometheus.yml` like this
+
+```yaml
+...
+# Alerting specifies settings related to the Alertmanager
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        # Alertmanager's default port is 9093
+        - localhost:9093
+```
+
+We can use the target for our webhook destination.
+
+### Step-by-step guide
+
+https://greptime.com/blogs/2025-12-23-trigger-quick-start
+
+### Greptime TQL
+
+https://docs.greptime.com/reference/sql/tql/
