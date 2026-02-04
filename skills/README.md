@@ -1,6 +1,8 @@
 # GreptimeDB Skills
 
-This is the GreptimeDB documentation for agents.
+This is the GreptimeDB documentation for AI agents.
+
+![bot](bot.jpg)
 
 ## Content
 
