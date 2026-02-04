@@ -11,6 +11,7 @@ AKS = "AKS"
 # tech terms
 excluder = "excluder"
 flate = "flate"
+consts = "consts"
 
 [files]
 extend-exclude = [

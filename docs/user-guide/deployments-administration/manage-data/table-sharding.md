@@ -128,7 +128,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 
 :::caution Note
 Repartitioning is only supported in distributed clusters.
-You must enable shared object storage and GC, and ensure all datanodes can access the same object store before running repartitioning operations.
+You must enable shared object storage and [GC](docs/user-guide/deployments-administration/maintenance/gc.md), and ensure all datanodes can access the same object store before running repartitioning operations.
 :::
 
 ## Insert data into the table
