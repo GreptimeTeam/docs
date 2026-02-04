@@ -1,12 +1,12 @@
 ---
 name: greptimedb-flow
-description: Guide for creating GreptimeDB flow tasks, which generating materialized view for continuous aggregation.
+description: Guide for creating GreptimeDB flow tasks, for generates materialized view for continuous aggregation.
 ---
 
 # GreptimeDB Flow Guide
 
 Create GreptimeDB flow definition to do time window based aggregation on the fly
-while data ingested into GreptimeDB. This is how GreptimeDB's light-weighted
+while data ingested into GreptimeDB. This is how GreptimeDB's lightweight
 streaming engine works.
 
 Flow is also known as:
@@ -19,7 +19,7 @@ Flow is also known as:
 
 To create GreptimeDB flow task, we should follow these phases:
 
-### Phase 1. Learn and understand Greptime Flow
+### Phase 1. Learn and understand GreptimeDB Flow
 
 First, we read GreptimeDB flow definitions and how it works from the
 documentation.
@@ -37,8 +37,8 @@ There are doc pages available, use WebFetch to load and understand them:
 
 We should try to understand:
 
-1. time window user want to use
-2. aggregation fields and rules
+1. time window the user wants to use
+2. aggregation fields and group-by rules
 
 Create the flow and sink table DDL. Note that we will always provide `CREATE
 TABLE` statement for sink table, together with the `CREATE FLOW` statement
@@ -46,9 +46,10 @@ because it's required.
 
 ### Phase 3. Verify the tasks
 
-If greptimedb-mcp-server is available, we can use its sql tools to execute the
-DDL. Try to generate some sample data and verify the sink table via SQL
-select. We can use MySQL style SELECT statements on GreptimeDB for most cases.
+If greptimedb-mcp-server is available, we can use its `execute_sql` tools to
+execute the DDL. Try to generate some sample data, insert into source table,
+then verify the sink table via SQL SELECT statements. We can use MySQL style
+SELECT statements on GreptimeDB for most cases.
 
 ## Reference
 
