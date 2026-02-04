@@ -7,6 +7,7 @@ This is the GreptimeDB documentation for AI agents.
 ## Content
 
 - `greptimedb-pipeline`: For creating greptimedb pipeline definition
+- `greptimedb-flow`: For creating greptimedb flow tasks
 
 ## How to install
 
