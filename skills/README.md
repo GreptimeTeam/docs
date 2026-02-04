@@ -4,7 +4,7 @@ This is the GreptimeDB documentation for agents.
 
 ## Content
 
-- `greptime-pipeline`: For creating greptime pipeline definition
+- `greptimedb-pipeline`: For creating greptimedb pipeline definition
 
 ## How to install
 
