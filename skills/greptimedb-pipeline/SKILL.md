@@ -44,7 +44,7 @@ like space or tab. Find out the datetime part and use `date` processor to parse
 it. Try to name each field by its meaning. If it's impossible to understand the
 text line, we try to use a field called `message` for all the line.
 
-For ndjson and json, we will find out a datetime field as use `date` processor
+For ndjson and json, we will find out a datetime field and use `date` processor
 on it to generate the time index. And we will use json key for all other fields.
 
 Provide user a sample of how the initial pipeline definition will look like, as
