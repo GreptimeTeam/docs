@@ -6,7 +6,7 @@ description: Guide for creating GreptimeDB triggers, by which we can trigger ext
 # GreptimeDB Trigger Guide
 
 Create GreptimeDB trigger definition as an alternative to Prometheus alert
-rule. GreptimeDB trigger mapped most concepts from Prometheus alerts rule in its
+rule. GreptimeDB trigger maps most concepts from Prometheus alert rules in its
 own DDL.
 
 ## The workflow

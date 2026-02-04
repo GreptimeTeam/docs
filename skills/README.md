@@ -16,15 +16,12 @@ Using `skills` cli tool to install the skill to your coding agents.
 
 ### `greptimedb-pipeline`
 
-`npx skills add
-https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-pipeline`
+`npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-pipeline`
 
 ### `greptimedb-flow`
 
-`npx skills add
-https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-flow`
+`npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-flow`
 
-### `greptimedb-trigger`:
+### `greptimedb-trigger`
 
-`npx skills add
-https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-trigger`
+`npx skills add https://github.com/GreptimeTeam/docs/tree/main/skills/greptimedb-trigger`
