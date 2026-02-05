@@ -115,23 +115,9 @@ For all options, refer to the [Configuration Reference](https://github.com/Grept
 
 ### Write memory limiter options
 
-Memory limiter options control the total memory used by concurrent write requests across all protocols (HTTP, gRPC, and Arrow Flight).
-These options are valid in `frontend` and `standalone` subcommands.
-
-```toml
-# Maximum total memory for all concurrent write request bodies and messages
-# Set to 0 to disable the limit (unlimited by default)
-max_in_flight_write_bytes = "1GB"
-
-# Policy when write bytes quota is exhausted
-# Options: "wait" (default, 10s timeout), "wait(<duration>)" (e.g., "wait(30s)"), "fail"
-write_bytes_exhausted_policy = "wait"
-```
-
-| Option                          | Type   | Default | Description                                                                                                                                                                                                                                           |
-| ------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
-| `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
+:::warning Deprecated
+The `max_in_flight_write_bytes` and `write_bytes_exhausted_policy` options are deprecated. Use protocol-specific `memory_exhausted_policy` options instead (see [Protocol options](#protocol-options)).
+:::
 
 ### Protocol options
 
@@ -152,10 +138,12 @@ Note that HTTP and gRPC protocols cannot be disabled for the database to functio
 addr = "127.0.0.1:4000"
 timeout = "30s"
 body_limit = "64MB"
+memory_exhausted_policy = "wait"
 
 [grpc]
 bind_addr = "127.0.0.1:4001"
 runtime_size = 8
+memory_exhausted_policy = "wait"
 
 [mysql]
 enable = true
@@ -198,10 +186,12 @@ The following table describes the options in detail:
 |            | addr                 | String  | Server address, "127.0.0.1:4000" by default                                                                                                                                                                                                                                                                                                                                                |
 |            | timeout              | String  | HTTP request timeout, "30s" by default                                                                                                                                                                                                                                                                                                                                                     |
 |            | body_limit           | String  | HTTP max body size, "64MB" by default                                                                                                                                                                                                                                                                                                                                                      |
+|            | memory_exhausted_policy | String  | Policy when memory quota for concurrent write requests is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                                                                                                                                        |
 |            | prom_validation_mode | String  | Whether to check if strings are valid UTF-8 strings in Prometheus remote write requests. Available options: `strict`(reject any request with invalid UTF-8 strings), `lossy`(replace invalid characters with [UTF-8 REPLACEMENT CHARACTER U+FFFD, which looks like �](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)), `unchecked`(do not validate strings). |
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
+|            | memory_exhausted_policy | String  | Policy when memory quota for concurrent write requests is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                                                                                                                                        |
 |            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
 |            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                        |
 | mysql      |                      |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
