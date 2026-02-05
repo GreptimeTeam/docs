@@ -44,10 +44,6 @@ part if user didn't provide webhook information.
 If the user already has a Prometheus Alertmanager setup, use their Alertmanager
 information for webhook.
 
-It's also possible to configure slack directly for the hook. Configure it if user
-has a slack incoming hook url. There can be some other webhook destinations,
-just follow the pattern.
-
 ## Reference
 
 ### Prometheus Alertmanager
