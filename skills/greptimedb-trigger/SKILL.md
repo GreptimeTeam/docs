@@ -29,12 +29,17 @@ There are pages available, use WebFetch to load and understand them:
 
 Create the trigger based on user provided information.
 
-It can be either existing Prometheus alerting rule yaml, or detailed requirements
-described by user.
-
 Note that `CREATE TRIGGER` can also use Greptime TQL to define the rule. The TQL
 is Greptime's embedded PromQL in SQL, so using TQL makes migration from
 Prometheus alert rules easier.
+
+In most case, the query in trigger should use aggregation and `GROUP BY` for
+time-series and time window. This is like using SQL to simulate PromQL
+behaviour. If possible, we can use PromQL as TQL to simplify the query.
+
+It can be either existing Prometheus alerting rule yaml, or detailed requirements
+described by user.
+
 
 Return the `CREATE TRIGGER` SQL statement, with some dummy data for the webhook
 part if user didn't provide webhook information.
