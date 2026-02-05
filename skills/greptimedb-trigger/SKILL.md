@@ -52,7 +52,7 @@ just follow the pattern.
 
 ### Prometheus Alertmanager
 
-Alert manager is typically configured in `prometheus.yml` like this
+Alertmanager is typically configured in `prometheus.yml` like this
 
 ```yaml
 ...
