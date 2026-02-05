@@ -41,7 +41,7 @@ part if user didn't provide webhook information.
 
 ### Phase 3. Configure webhook for trigger
 
-If the user already has a Prometheus AlertManager setup, use their AlertManager
+If the user already has a Prometheus Alertmanager setup, use their Alertmanager
 information for webhook.
 
 It's also possible to configure slack directly for the hook. Configure it if user
