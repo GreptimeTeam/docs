@@ -29,7 +29,7 @@ There are pages available, use WebFetch to load and understand them:
 
 Create the trigger based on user provided information.
 
-It can be either existing Prometheus alert rule yaml, or detailed requirements
+It can be either existing Prometheus alerting rule yaml, or detailed requirements
 described by user.
 
 Note that `CREATE TRIGGER` can also use Greptime TQL to define the rule. The TQL
