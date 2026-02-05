@@ -50,7 +50,7 @@ just follow the pattern.
 
 ## Reference
 
-### Prometheus Alert Manager
+### Prometheus Alertmanager
 
 Alert manager is typically configured in `prometheus.yml` like this
 
