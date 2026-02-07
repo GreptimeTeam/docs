@@ -69,9 +69,9 @@ listeners:
 
 ```bash
 helm upgrade --install kafka \
-    oci://registry-1.docker.io/bitnamicharts/kafka \
+    oci://registry-1.docker.io/soldevelo/kafka-chart \
     --values kafka.yaml \
-    --version 32.4.3 \
+    --version 32.4.4 \
     --create-namespace \
     -n kafka-cluster
 ```
