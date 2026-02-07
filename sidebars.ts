@@ -869,6 +869,7 @@ const sidebars: SidebarsConfig = {
           id: 'faq-and-others/overview',
           label: 'Overview',
         },
+        'faq-and-others/vibecoding',
         'faq-and-others/faq'
       ]
     },
