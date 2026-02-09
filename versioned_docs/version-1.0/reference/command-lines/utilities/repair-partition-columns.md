@@ -11,7 +11,7 @@ The `greptime cli meta repair partition-column` command can be used to repair pa
 
 Before the [PR-6494](https://github.com/GreptimeTeam/greptimedb/pull/6494), the columns for table partitioning could refer to invalid ones in the table metadata. For example, when a new column is added into the table before the partition columns.
 
-If you find that the reads or writes are failed because of wrong partition columns, you can use this tool. This tool will scan all the tables' metadata and set the partition columns to the right ones.
+If you find that reads or writes fail because of incorrect partition columns, you can use this tool. This tool will scan all the tables' metadata and set the partition columns to the right ones.
 
 ## Command syntax
 

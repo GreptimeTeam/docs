@@ -40,7 +40,7 @@ greptime cli meta repair logical-tables [OPTIONS]
 ### 通过表名修复逻辑表
 
 ```bash
-greptime cli repair logical-tables --store-addrs=$ENDPOINT \
+greptime cli meta repair logical-tables --store-addrs=$ENDPOINT \
     --backend=postgres-store \
     --table-names=metric_table_1,metric_table_2 \
     --schema-name=public \
