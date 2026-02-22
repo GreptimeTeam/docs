@@ -29,7 +29,7 @@
     "clsx": "^2.0.0",
     "copy-text-to-clipboard": "^3.2.2",
     "docusaurus-biel": "^1.0.5",
-    "minimatch": "^10.0.1",
+    "minimatch": "^10.2.1",
     "prism-react-renderer": "^2.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
