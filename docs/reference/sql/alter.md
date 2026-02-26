@@ -7,12 +7,12 @@ description: Describes the `ALTER` statement used to modify database options, ta
 
 `ALTER` can be used to modify any database options, table options or metadata of the table, including:
 
-* Modify database options
-* Add/Drop/Modify a column
-* Set/Drop column default values
-* Drop column default values
-* Rename a table
-* Modify table options
+- Modify database options
+- Add/Drop/Modify a column
+- Set/Drop column default values
+- Drop column default values
+- Rename a table
+- Modify table options
 
 ## ALTER DATABASE
 
@@ -28,10 +28,11 @@ ALTER DATABASE db
 ```
 
 Currently following options are supported:
+
 - `ttl`: Specifies the default retention time for data in the database. Data exceeding this retention period will be deleted asynchronously.
-   - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
-   - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
-   - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
+  - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
+  - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
+  - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md). Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
@@ -101,7 +102,6 @@ ALTER TABLE [db.]table
     ]
 ```
 
-
 ### Add column
 
 Adds a new column to the table:
@@ -131,6 +131,7 @@ ALTER TABLE monitor ADD COLUMN load_15 double AFTER memory;
 ```
 
 Adds a new column as a tag(primary key) with a default value:
+
 ```sql
 ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
@@ -184,7 +185,9 @@ After dropping the default value, the column will use `NULL` as the default. The
 `ALTER TABLE` statements can also be used to change the options of tables.
 
 Currently following options are supported:
+
 - `ttl`: the retention time of data in table.
+- `append_mode`: whether the table is append-only. You can change it from `false` to `true`.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
@@ -192,6 +195,8 @@ Currently following options are supported:
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
+
+ALTER TABLE monitor SET 'append_mode'='true';
 
 ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 
@@ -285,28 +290,33 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 ```
 
 The valid options for the skipping index include:
-* `type`: The index type, only supports `BLOOM` type right now.
-* `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
-* `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
+
+- `type`: The index type, only supports `BLOOM` type right now.
+- `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+- `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
 ### Remove index on a column
 
 The syntax is:
+
 ```sql
 ALTER TABLE [table] MODIFY COLUMN [column] UNSET [INVERTED | SKIPPING | FULLTEXT] INDEX;
 ```
 
 For example, remove the inverted index:
+
 ```sql
 ALTER TABLE monitor_pk MODIFY COLUMN host UNSET INVERTED INDEX;
 ```
 
 Remove the skipping index:
+
 ```sql
 ALTER TABLE monitor_pk MODIFY COLUMN host UNSET SKIPPING INDEX;
 ```
 
 Remove the fulltext index:
+
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 ```

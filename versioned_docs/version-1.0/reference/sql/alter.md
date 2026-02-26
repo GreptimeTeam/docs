@@ -185,6 +185,7 @@ After dropping the default value, the column will use `NULL` as the default. The
 
 Currently following options are supported:
 - `ttl`: the retention time of data in table.
+- `append_mode`: whether the table is append-only. You can change it from `false` to `true`.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
@@ -192,6 +193,8 @@ Currently following options are supported:
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
+
+ALTER TABLE monitor SET 'append_mode'='true';
 
 ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 
