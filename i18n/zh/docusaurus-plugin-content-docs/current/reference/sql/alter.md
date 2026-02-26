@@ -184,7 +184,7 @@ ALTER TABLE monitor MODIFY COLUMN load_15 DROP DEFAULT;
 `ALTER TABLE` 语句也可以用来更改表的选项。
 当前支持修改以下表选项：
 - `ttl`: 表数据的保留时间。
-- `append_mode`: 表是否为 append-only。你可以将其从 `false` 更改为 `true`。
+- `append_mode`: 表是否为 append-only。你可以将其从 `false` 更改为 `true`，但之后不能再改回 `false`。
 - `compaction.twcs.time_window`: TWCS compaction 策略的时间窗口，其值是一个[时间范围字符段](/reference/time-durations.md)。
 - `compaction.twcs.max_output_file_size`: TWCS compaction 策略的最大允许输出文件大小。
 - `compaction.twcs.trigger_file_num`: 某个窗口内触发 compaction 的最小文件数量阈值。
