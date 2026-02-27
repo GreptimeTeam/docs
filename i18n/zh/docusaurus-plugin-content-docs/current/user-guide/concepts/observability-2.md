@@ -94,12 +94,12 @@ GreptimeDB 的[架构](/user-guide/concepts/architecture.md)天然适配 Observa
 ```sql
 SELECT
   date_bin('1m', timestamp) AS minute,
-  COUNT(*) FILTER (WHERE status >= 500) AS errors,
+  COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
 WHERE timestamp >= NOW() - INTERVAL '1 hour'
   AND message @@ 'timeout'
-GROUP BY minute;
+GROUP BY date_bin('1m', timestamp);
 ```
 
 不用在系统间切换，所有信号在同一个数据库里。同时支持 [PromQL](/user-guide/query-data/promql.md)，现有 Grafana 仪表板可以直接复用。

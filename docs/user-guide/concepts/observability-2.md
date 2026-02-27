@@ -92,12 +92,12 @@ Use one [SQL query](/user-guide/query-data/sql.md) to correlate metrics spikes, 
 ```sql
 SELECT
   date_bin('1m', timestamp) AS minute,
-  COUNT(*) FILTER (WHERE status >= 500) AS errors,
+  COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
 WHERE timestamp >= NOW() - INTERVAL '1 hour'
   AND message @@ 'timeout'
-GROUP BY minute;
+GROUP BY date_bin('1m', timestamp);
 ```
 
 No context-switching between systems—all signals in one database. GreptimeDB also supports [PromQL](/user-guide/query-data/promql.md) for metrics queries, maintaining compatibility with existing dashboards.
