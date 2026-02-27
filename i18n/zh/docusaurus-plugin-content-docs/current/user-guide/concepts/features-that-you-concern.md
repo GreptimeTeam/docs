@@ -42,7 +42,7 @@ GreptimeDB 通过多层手段解决高基数挑战：
 - **Flat Format（针对极端高基数）**：当 tag 是请求 ID、trace ID、用户 token 这类百万级唯一值时，传统时序数据库为每个序列分配独立 buffer，序列数一多就内存膨胀、性能下降。GreptimeDB 1.0+ 的 Flat Format 引入了 BulkMemtable 和多序列合并路径，消除 per-series 开销，高基数场景下**写入吞吐量提升 4 倍，查询快 10 倍**。详见 [Flat Format 详解](https://greptime.cn/blogs/2025-12-22-flat-format)。
 
 **索引层面：**
-- **智能索引**：不强制为每个 tag 建倒排索引，而是根据列统计和查询模式自动选择最优索引类型（倒排、全文、跳数或不建索引），减少索引开销。详见[博客](https://greptime.cn/blogs/2022-12-21-storage-engine-design#smart-indexing)。
+- **灵活索引**：支持按需手工创建索引。可以为 tag 列和 field 列创建多种索引类型（倒排、全文、跳数），而不是自动为每列建索引。按需创建索引既能优化查询性能，又能降低索引开销。详见[索引文档](/user-guide/manage-data/data-index.md)。
 
 **查询层面：**
 - **MPP（大规模并行处理）**：查询引擎用向量化执行和分布式并行处理，高效处理高基数查询。
@@ -55,7 +55,7 @@ GreptimeDB 通过多层手段解决高基数挑战：
 
 ## 可以把数据存到云上的对象存储吗？
 
-可以。GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，支持主流对象存储服务。数据可以存到 AWS S3、Azure Blob Storage 等，参见[存储配置](/user-guide/deployments-administration/configuration.md#storage-options)。
+可以。GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，支持主流对象存储服务。数据可以存到 AWS S3、Azure Blob Storage 等，参见[存储配置](/user-guide/deployments-administration/configuration.md#存储选项)。
 
 ## 性能对比其他方案怎么样？
 
@@ -66,7 +66,7 @@ GreptimeDB 通过多层手段解决高基数挑战：
 * [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
 * [GreptimeDB vs. TimescaleDB](https://greptime.cn/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
-* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
+* [GreptimeDB vs. ClickHouse vs. Elasticsearch](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
 * [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
 
 ## 有灾难恢复方案吗？

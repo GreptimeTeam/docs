@@ -60,7 +60,7 @@ Instead of precomputing metrics or structuring logs upfront, wide events preserv
 
 Wide events fundamentally change how we think about observability data. Metrics, logs, and traces are not separate data types—they are different projections of the same underlying events:
 
-- **Metrics**: `SELECT COUNT(*) GROUP BY status, date_bin('1m', timestamp)` — aggregated projection
+- **Metrics**: `SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1 minute', timestamp)` — aggregated projection
 - **Logs**: `SELECT message, timestamp WHERE message @@ 'error'` — text projection
 - **Traces**: `SELECT span_id, duration WHERE trace_id = '...'` — relational projection
 
@@ -74,7 +74,7 @@ This is where wide events become essential. Traditional three-pillar approaches 
 
 ## Why GreptimeDB is Built for This
 
-GreptimeDB's [architecture](/user-guide/concepts/architecture.md) naturally aligns with the Observability 2.0 paradigm. Its columnar engine efficiently compresses wide events (achieving 50–90% storage reduction in production), and [native object storage](/user-guide/concepts/storage-location.md) (S3, Azure Blob, GCS) keeps costs low as wide event volumes grow. Below are the capabilities that matter most for wide events.
+GreptimeDB's [architecture](/user-guide/concepts/architecture.md) naturally aligns with the Observability 2.0 paradigm. Its columnar engine efficiently compresses wide events (achieving 50% storage reduction compared to Loki and ~90% compared to Elasticsearch in production), and [native object storage](/user-guide/concepts/storage-location.md) (S3, Azure Blob, GCS) keeps costs low as wide event volumes grow. Below are the capabilities that matter most for wide events.
 
 ### Unified Tag + Timestamp + Field Model
 
@@ -91,13 +91,13 @@ Use one [SQL query](/user-guide/query-data/sql.md) to correlate metrics spikes, 
 
 ```sql
 SELECT
-  date_bin('1m', timestamp) AS minute,
+  date_bin(INTERVAL '1 minute', timestamp) AS minute,
   COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
 WHERE timestamp >= NOW() - INTERVAL '1 hour'
   AND message @@ 'timeout'
-GROUP BY date_bin('1m', timestamp);
+GROUP BY date_bin(INTERVAL '1 minute', timestamp);
 ```
 
 No context-switching between systems—all signals in one database. GreptimeDB also supports [PromQL](/user-guide/query-data/promql.md) for metrics queries, maintaining compatibility with existing dashboards.
@@ -113,7 +113,7 @@ AS
 SELECT
   status,
   COUNT(*) AS count,
-  date_bin('1m', timestamp) AS time_window
+  date_bin('1 minute'::INTERVAL, timestamp) AS time_window
 FROM access_logs
 GROUP BY status, time_window;
 ```
@@ -128,7 +128,7 @@ Wide events are proven in production at scale:
 
 - **OB Cloud**: Replaced Loki for billions of logs daily across 170+ availability zones. 10x query performance, 30% TCO reduction. [Read more →](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
 
-- **Trace Storage**: Replaced Elasticsearch as Jaeger backend. 45x storage cost reduction, 3x faster cold queries, enabled full-volume tracing at 400B rows/day. [Read more →](https://greptime.com/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance)
+- **Trace Storage**: Replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend. 45x storage cost reduction, 3x faster cold queries, enabled full-volume tracing at 400B rows/day. [Read more →](https://greptime.com/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance)
 
 ## Getting Started
 

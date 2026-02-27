@@ -43,7 +43,7 @@ GreptimeDB resolves high cardinality challenges through a multi-layered approach
 - **Flat format for extreme cardinality**: For workloads with millions of unique series (e.g., request IDs, trace IDs, user tokens as tags), GreptimeDB 1.0+ offers a redesigned storage layout. Traditional time-series databases allocate separate buffers per series, causing memory bloat and degraded performance at scale. Flat format introduces BulkMemtable and multi-series merge paths that eliminate per-series overhead, delivering **4x better write throughput and up to 10x faster queries** in high-cardinality scenarios. Learn more in [Scaling Time Series to Millions of Cardinalities](https://greptime.com/blogs/2025-12-22-flat-format).
 
 **At the indexing level:**
-- **Smart Indexing**: GreptimeDB doesn't create inverted indexes for every tag mandatorily. Instead, it selects the optimal index type (inverted, full-text, skipping, or none) based on column statistics and query patterns, reducing index overhead. Find more explanation in this [blog](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing).
+- **Flexible Indexing**: GreptimeDB supports on-demand manual index creation. You can create various index types (inverted, full-text, skipping) for both tag and field columns as needed, rather than automatically indexing every column. This allows you to optimize query performance while minimizing index overhead. Learn more in the [index documentation](/user-guide/manage-data/data-index.md).
 
 **At the query level:**
 - **MPP (Massively Parallel Processing)**: The query engine uses vectorized execution and distributed parallel processing to handle high-cardinality queries efficiently across the cluster.
@@ -68,14 +68,14 @@ Please read the performance benchmark reports:
 * [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
 * [GreptimeDB vs. TimescaleDB](https://greptime.com/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
-* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
+* [GreptimeDB vs. ClickHouse vs. Elasticsearch](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
 * [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
 
 ## Does GreptimeDB have disaster recovery solutions?
 
 Yes. Please refer to [disaster recovery](/user-guide/deployments-administration/disaster-recovery/overview.md).
 
-## Does GreptimeDB has geospatial index?
+## Does GreptimeDB have geospatial index?
 
 Yes. We offer [built-in functions](/reference/sql/functions/geo.md) for Geohash, H3 and S2 index.
 

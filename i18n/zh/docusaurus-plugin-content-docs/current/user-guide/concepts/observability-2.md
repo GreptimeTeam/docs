@@ -23,7 +23,7 @@ Observability 2.0 是可观测性领域从"三支柱"（metrics、logs、traces�
 
 ## 宽事件：统一数据模型
 
-Observability 2.0 用**宽事件（wide events）**来解决这些问题。宽事件是一条上下文丰富、高维度、高基数的记录，在单个事件中捕获完整的应用状态。
+Observability 2.0 用**宽事件（wide events）** 来解决这些问题。宽事件是一条上下文丰富、高维度、高基数的记录，在单个事件中捕获完整的应用状态。
 
 ### 什么是宽事件？
 
@@ -60,7 +60,7 @@ Observability 2.0 用**宽事件（wide events）**来解决这些问题。宽�
 
 宽事件的关键洞察：metrics、logs、traces 不是三种独立的数据类型，而是同一组底层事件的不同投影：
 
-- **Metrics**：`SELECT COUNT(*) GROUP BY status, date_bin('1m', timestamp)` — 聚合投影
+- **Metrics**：`SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1 minute', timestamp)` — 聚合投影
 - **Logs**：`SELECT message, timestamp WHERE message @@ 'error'` — 文本投影
 - **Traces**：`SELECT span_id, duration WHERE trace_id = '...'` — 关系投影
 
@@ -93,13 +93,13 @@ GreptimeDB 的[架构](/user-guide/concepts/architecture.md)天然适配 Observa
 
 ```sql
 SELECT
-  date_bin('1m', timestamp) AS minute,
+  date_bin(INTERVAL '1 minute', timestamp) AS minute,
   COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
 WHERE timestamp >= NOW() - INTERVAL '1 hour'
   AND message @@ 'timeout'
-GROUP BY date_bin('1m', timestamp);
+GROUP BY date_bin(INTERVAL '1 minute', timestamp);
 ```
 
 不用在系统间切换，所有信号在同一个数据库里。同时支持 [PromQL](/user-guide/query-data/promql.md)，现有 Grafana 仪表板可以直接复用。
@@ -115,7 +115,7 @@ AS
 SELECT
   status,
   COUNT(*) AS count,
-  date_bin('1m', timestamp) AS time_window
+  date_bin('1 minute'::INTERVAL, timestamp) AS time_window
 FROM access_logs
 GROUP BY status, time_window;
 ```
@@ -126,11 +126,11 @@ GROUP BY status, time_window;
 
 宽事件不是概念，已经在大规模生产环境中得到验证：
 
-- **得物（Poizon）**：宽事件的早期生产级落地。Flow 引擎 + 多级持续聚合，P99 延迟从秒级降到毫秒级。[详情 →](https://greptime.cn/blogs/2025-05-06-poizon-observability-greptimedb-monitoring-use-case)
+- **得物（Poizon）**：宽事件的早期生产级落地。Flow 引擎 + 多级持续聚合，P99 延迟从秒级降到毫秒级。[详情 →](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability)
 
-- **OB Cloud**：170+ 可用区、日处理数十亿条日志，从 Loki 迁移到 GreptimeDB。查询性能提升 10 倍，TCO 降低 30%。[详情 →](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
+- **OB Cloud**：170+ 可用区、日处理数十亿条日志，从 Loki 迁移到 GreptimeDB。查询性能提升 10 倍，TCO 降低 30%。[详情 →](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb)
 
-- **Traces 存储**：替换 Elasticsearch 作为 Jaeger 后端。存储成本降低 45 倍，冷数据查询快 3 倍，支撑每天 400B 行全量采集。[详情 →](https://greptime.cn/blogs/2025-04-24-elasticsearch-greptimedb-comparison-performance)
+- **Traces 存储**：某出海物流电商企业用 GreptimeDB 替换 [Elasticsearch](/user-guide/protocols/elasticsearch.md) 存储 [Jaeger](/user-guide/query-data/jaeger.md) Trace 数据。存储成本降低 45 倍，冷数据查询快 3 倍。[详情 →](https://greptime.cn/blogs/2026-01-27-logistics-trace-case)
 
 ## 开始使用
 
@@ -140,7 +140,7 @@ GROUP BY status, time_window;
 
 - [什么是可观测性 2.0？什么是可观测性 2.0 原生数据库？](https://greptime.cn/blogs/2025-04-24-observability2.0-greptimedb.html) — 完整愿景和技术深入
 - [让 Observability 更简单 —— GreptimeDB 统一存储架构](https://greptime.cn/blogs/2024-12-24-observability) — GreptimeDB 统一模型的设计哲学
-- [Agent 可观测性：旧剧本能否应对新游戏？](https://greptime.cn/blogs/2025-12-11-agent-observability) — AI agent 为什么需要宽事件
+- [Agent 可观测性：旧瓶装新酒，还是需要新瓶？](https://greptime.cn/blogs/2025-12-11-agent-observability) — AI agent 为什么需要宽事件
 - [得物可观测平台架构升级：基于 GreptimeDB 的全新监控体系实践](https://greptime.cn/blogs/2025-05-06-poizon-greptimedb-observability) — 生产级验证
-- [超越 Loki！性能报告](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report) — Logs 迁移
-- [还在用 Elasticsearch？你已经 Out 了！](https://greptime.cn/blogs/2025-04-17-elasticsearch-greptimedb-comparison) — Traces 迁移
+- [替换 Loki！GreptimeDB 在 OB Cloud 的大规模日志存储实践](https://greptime.cn/blogs/2025-07-22-user-case-obcloud-log-storage-greptimedb) — Logs 迁移
+- [存储成本降低 45 倍！某出海物流电商企业用 GreptimeDB 替换 ES 存储 Trace 数据](https://greptime.cn/blogs/2026-01-27-logistics-trace-case) — Traces 迁移

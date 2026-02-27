@@ -7,7 +7,7 @@ description: Explains the motivations and benefits of using GreptimeDB, includin
 
 ## The Problem: Three Systems for Three Signals
 
-Most observability stacks today look like this: Prometheus (or Thanos/Mimir) for metrics, Grafana Loki (or ELK) for logs, and Elasticsearch (or Tempo) for traces. Each system has its own query language, storage backend, scaling model, and operational overhead.
+Most observability stacks today look like this: [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md) (or Thanos/Mimir) for metrics, [Grafana Loki](/user-guide/ingest-data/for-observability/loki.md) (or ELK) for logs, and [Elasticsearch](/user-guide/protocols/elasticsearch.md) (or Tempo) for traces. Each system has its own query language, storage backend, scaling model, and operational overhead.
 
 This "three pillars" architecture made sense when these were separate concerns. But in practice, it means:
 
@@ -27,7 +27,7 @@ GreptimeDB unifies the processing of metrics, logs, and traces through:
 
 It replaces complex legacy data stacks with a high-performance single solution.
 
-This means you can replace the Prometheus + Loki + Elasticsearch stack with a single database, and use SQL to correlate metrics spikes with log patterns and trace latency — in one query, without context-switching between systems.
+This means you can replace the [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md) + [Loki](/user-guide/ingest-data/for-observability/loki.md) + [Elasticsearch](/user-guide/protocols/elasticsearch.md) stack with a single database, and use SQL to correlate metrics spikes with log patterns and trace latency — in one query, without context-switching between systems.
 
 <p align='center'><img src="/unify-processing.png" alt="Replaces complex legacy data stacks with a high-performance single solution" width="400"/></p>
 
@@ -37,7 +37,7 @@ GreptimeDB leverages [cloud object storage](/user-guide/concepts/storage-locatio
 
 In production deployments, teams have achieved:
 - **Logs**: 10x query performance improvement, 30% TCO reduction (migrated from [Loki](/user-guide/ingest-data/for-observability/loki.md) — processing billions of logs daily across 170+ availability zones)
-- **Traces**: 45x storage cost reduction, 3x faster queries (replaced Elasticsearch as [Jaeger](/user-guide/query-data/jaeger.md) backend — one-week migration)
+- **Traces**: 45x storage cost reduction, 3x faster queries (replaced [Elasticsearch](/user-guide/protocols/elasticsearch.md) as [Jaeger](/user-guide/query-data/jaeger.md) backend — one-week migration)
 - **Metrics**: Replaced Thanos with native compute-storage separation, significantly reducing operational complexity
 
 ## High Performance
@@ -74,9 +74,11 @@ From embedded and standalone deployments to cloud-native clusters, GreptimeDB ad
 
 ## Easy to Integrate
 
-GreptimeDB supports [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), [Jaeger](/user-guide/query-data/jaeger.md), [Loki](/user-guide/ingest-data/for-observability/loki.md), ElasticSearch, [MySQL](/user-guide/protocols/mysql.md), and [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate from your existing stack without rewriting queries or pipelines. Query with [SQL](/user-guide/query-data/sql.md) or PromQL, visualize with [Grafana](/user-guide/integrations/grafana.md).
+GreptimeDB supports [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md), [Jaeger](/user-guide/query-data/jaeger.md), [Loki](/user-guide/ingest-data/for-observability/loki.md), [Elasticsearch](/user-guide/protocols/elasticsearch.md), [MySQL](/user-guide/protocols/mysql.md), and [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate from your existing stack without rewriting queries or pipelines. Query with [SQL](/user-guide/query-data/sql.md) or PromQL, visualize with [Grafana](/user-guide/integrations/grafana.md).
 
 The combination of SQL and PromQL means GreptimeDB can replace the classic "Prometheus + data warehouse" combo — use PromQL for real-time monitoring and alerting, SQL for deep analytics, joins, and aggregations, all in one system. GreptimeDB also supports a [multi-value model](/user-guide/concepts/data-model.md), where a single row can contain multiple field columns, reducing transfer traffic and simplifying queries compared to single-value models.
+
+Beyond querying, SQL is also GreptimeDB's management interface — [create tables](/user-guide/deployments-administration/manage-data/basic-table-operations.md), [manage schemas](/reference/sql/alter.md), set [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), and configure [indexes](/user-guide/manage-data/data-index.md), all through standard SQL. No proprietary config files, no custom APIs, no YAML-driven control planes. This is a key operational difference from systems like Prometheus (configured via YAML + relabeling rules), Loki (LogQL + config files), or Elasticsearch (REST API + JSON mappings). Teams with SQL skills can manage GreptimeDB without learning new tooling.
 
 ## How GreptimeDB Compares
 
@@ -90,6 +92,7 @@ The following comparison is based on general architectural characteristics and t
 | Scaling | Compute-storage separation, compute nodes scale independently | Federation / Thanos / Mimir — multi-component, ops heavy | Stateless + object storage | Shard-based, ops heavy |
 | Cost efficiency | Up to 50x lower storage | High at scale | Moderate | High (inverted index overhead) |
 | OpenTelemetry | Native (metrics + logs + traces) | Partial (metrics only) | Partial (logs only) | Via instrumentation |
+| Management | Standard SQL (DDL, TTL, indexes) | YAML config + relabeling rules | YAML config + LogQL | REST API + JSON mappings |
 
 For more details, explore:
 - [Observability 2.0](./observability-2.md) — Wide events, unified data model, and GreptimeDB's architecture for the next generation of observability
