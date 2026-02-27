@@ -102,10 +102,8 @@ GreptimeDB is designed on top of the table model for the following reasons:
 - Schema is metadata that describes data characteristics, and it's more convenient for users to manage and maintain.
 - Schema brings enormous benefits for optimizing storage and computing with its information like types, lengths, etc., on which we can conduct targeted optimizations.
 - When we have the table model, it's natural for us to introduce SQL and use it to process association analysis and aggregation queries between various tables, reducing the learning and usage costs for users.
-- We use a multi-value model where a row of data can have multiple field columns,
-  instead of the single-value model adopted by OpenTSDB and Prometheus.
-  The multi-value model is used to model data sources where a metric can have multiple values represented by fields.
-  The advantage of the multi-value model is that it can write or read multiple values to the database at once, reducing transfer traffic and simplifying queries. In contrast, the single-value model requires splitting the data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for more detailed benefits of the multi-value mode.
+- GreptimeDB uses a multi-value model where a single row can contain multiple field columns, reducing transfer traffic and simplifying queries compared to single-value models that require splitting data into multiple records. Read the [blog](https://greptime.com/blogs/2024-05-09-prometheus) for detailed benefits.
+- In the Observability 2.0 paradigm, metrics, logs, and traces are seen as different projections of the same underlying "wide events." GreptimeDB's unified table model naturally supports this view — all signal types share the same Tag + Timestamp + Field schema, enabling cross-signal correlation in a single SQL query. Read more in [Observability 2.0](./observability-2.md).
 
 GreptimeDB uses SQL to manage table schema. Please refer to [table management](/user-guide/deployments-administration/manage-data/basic-table-operations.md) for more information.
 However, our definition of schema is not mandatory and leans towards a **schemaless** approach, similar to MongoDB.
