@@ -5,7 +5,7 @@ description: 使用 CLI 修复 GreptimeDB 集群逻辑表的指南，包括元�
 
 # 逻辑表修复
 
-`greptime cli meta repair-logical-tables` 命令可以用于修复 GreptimeDB 集群的逻辑表。在某些情况下，逻辑表元数据可能与存储在元数据存储中的元数据不一致。此命令可用于修复逻辑表元数据。
+`greptime cli meta repair logical-tables` 命令可以用于修复 GreptimeDB 集群的逻辑表。在某些情况下，逻辑表元数据可能与存储在元数据存储中的元数据不一致。此命令可用于修复逻辑表元数据。
 
 :::tip
 该工具需要连接到元数据存储和 Datanode。确保集群正在运行且工具可与 Datanode 通信。
@@ -14,7 +14,7 @@ description: 使用 CLI 修复 GreptimeDB 集群逻辑表的指南，包括元�
 ## 命令语法
 
 ```bash
-greptime cli meta repair-logical-tables [OPTIONS]
+greptime cli meta repair logical-tables [OPTIONS]
 ```
 
 ## 选项
@@ -40,7 +40,7 @@ greptime cli meta repair-logical-tables [OPTIONS]
 ### 通过表名修复逻辑表
 
 ```bash
-greptime cli repair-logical-tables --store-addrs=$ENDPOINT \
+greptime cli meta repair logical-tables --store-addrs=$ENDPOINT \
     --backend=postgres-store \
     --table-names=metric_table_1,metric_table_2 \
     --schema-name=public \
