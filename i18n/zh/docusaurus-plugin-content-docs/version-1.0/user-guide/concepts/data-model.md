@@ -1,26 +1,26 @@
 ---
-keywords: [数据模型, 表结构, 列类型, 设计考虑, 时序表, Tag 列, Timestamp 列, Field 列, Metric 表, Log 表,链路追踪,GreptimeDB 数据模型]
-description: 介绍 GreptimeDB 的数据模型，包括表的结构、列类型和设计考虑，适用于指标、日志和链路追踪数据。
+keywords: [数据模型, 表结构, 列类型, 设计考虑, 时序表, Tag, Timestamp, Field, Metrics, Logs, Traces]
+description: 介绍 GreptimeDB 的数据模型，包括表结构、列类型和设计考虑，适用于 metrics、logs 和 traces 数据。
 ---
 
 # 数据模型
 
 ## 模型
 
-GreptimeDB 使用时序表来进行数据的组织、压缩和过期管理。数据模型主要基于关系型数据库中的表模型，同时考虑到了指标（metrics）、日志（logs）及链路追踪（traces）数据的特点。
+GreptimeDB 使用时序表来组织、压缩和管理数据的过期。数据模型基于关系型数据库的表模型，同时针对 metrics、logs、traces 的特点做了适配。
 
-GreptimeDB 中的所有数据都被组织成具有名称的表，每个表中的数据项由三种语义类型的列组成：`Tag`、`Timestamp` 和 `Field`。
+所有数据按表组织，每个表中的列分为三种语义类型：`Tag`、`Timestamp` 和 `Field`。
 
-- 表名通常与指标、日志的名称相同。
-- `Tag` 列唯一标识时间序列。具有相同 `Tag` 值的行属于同一个时间序列。有些 TSDB 也可能称它们为 label。
-- `Timestamp` 是指标、日志和链路追踪数据库的基础。它表示数据生成的日期和时间。一个表只能有一个具有 `Timestamp` 语义类型的列，也称为时间索引（`Time Index`）列。
-- 其他列是 `Field` 列。字段包含收集的数据指标或日志内容。这些字段通常是数值或字符串，但也可能是其他类型的数据，例如地理位置或时间戳。
+- 表名通常和指标名、日志源名或 metric 名称一致。
+- `Tag` 列标识时间序列的身份。相同 Tag 值的行属于同一条时间序列（有些 TSDB 也叫 label）。
+- `Timestamp` 是时序数据库的根基，表示数据的生成时间。每个表只能有一个 `Timestamp` 类型的列，也叫时间索引（`Time Index`）。
+- 其余列是 `Field` 列，存放实际的数据指标或日志内容，通常是数值或字符串，也可以是地理位置、时间戳等其他类型。
 
-表按时间序列对行进行组织，并按 `Timestamp` 对同一时间序列的行进行排序。表还可以根据应用的需求对具有相同 `Tag` 和 `Timestamp` 值的行进行去重。GreptimeDB 按时间序列存储和处理数据。选择正确的表结构对于高效的数据存储和查询至关重要；请参阅[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)了解更多详情。
+表按时间序列组织行，同一时间序列内按 `Timestamp` 排序。表还可以对相同 `Tag` + `Timestamp` 的行做去重，具体取决于业务需求。选择合适的表结构对查询和存储效率至关重要，详见[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
-### 指标
+### Metrics
 
-假设我们有一个名为 `system_metrics` 的表，用于监控数据中心中机器的资源使用情况：
+假设有一个 `system_metrics` 表，监控数据中心机器的资源使用：
 
 ```sql
 CREATE TABLE IF NOT EXISTS system_metrics (
@@ -35,23 +35,23 @@ CREATE TABLE IF NOT EXISTS system_metrics (
 );
 ```
 
-该表的数据模型如下：
+数据模型如下：
 
 ![time-series-table-model](/time-series-data-model.svg)
 
-这与大家熟悉的表模型非常相似。不同之处在于 `TIME INDEX` 约束，它用于将 `ts` 列指定为此表的时间索引列。
+和常见的关系表模型很像，区别在于 `TIME INDEX` 约束——用来指定 `ts` 列为时间索引。
 
-- 表名为 `system_metrics`。
-- `PRIMARY KEY` 约束指定了表的 `Tag` 列。`host` 列表示收集的独立机器的主机名，`idc` 列显示机器所在的数据中心。
-- `Timestamp` 列 `ts` 表示收集数据的时间。
-- `Field` 列中的 `cpu_util`、`memory_util`、`disk_util` 列分别表示机器的 CPU 利用率、内存利用率和磁盘利用率。这些列包含实际的数据。
-- 表按 `host`、`idc`、`ts` 对行进行排序和去重。因此，查询 `select count(*) from system_metrics` 需要扫描所有的行做统计。
+- 表名 `system_metrics`。
+- `PRIMARY KEY` 指定 Tag 列：`host` 是主机名，`idc` 是数据中心。
+- `ts` 是 Timestamp 列，表示数据采集时间。
+- `cpu_util`、`memory_util`、`disk_util` 是 Field 列，存放实际数据。
+- 表按 `host`、`idc`、`ts` 排序和去重，所以 `select count(*) from system_metrics` 需要扫全表。
 
-要了解 GreptimeDB 如何将 Prometheus 指标映射到此模型，请参阅[文档](/user-guide/ingest-data/for-observability/prometheus/#数据模型)。
+Prometheus metrics 如何映射到这个模型，参见[文档](/user-guide/ingest-data/for-observability/prometheus/#数据模型)。
 
-### 日志
+### Logs
 
-另一个例子是创建一个用于日志（如 Server 访问日志）的表：
+创建一个存 Web Server 访问日志的表：
 
 ```sql
 CREATE TABLE access_logs (
@@ -65,27 +65,28 @@ CREATE TABLE access_logs (
 ) with ('append_mode'='true');
 ```
 
-- 时间索引列为 `access_time`。
-- 没有 tag 列。
-- `http_status`、`http_method`、`remote_addr`、`http_refer`、`user_agent` 和 `request` 是字段列。
-- 表按 `access_time` 对行进行排序。
-- 这个表是一个用于存储不需要去重的日志的[append-only 表](/reference/sql/create.md#创建-append-only-表)。
-- 查询 append-only 表一般会更快。例如，`select count(*) from access_logs` 可以直接使用统计信息作为结果而不需要考虑重复。
+- 时间索引列是 `access_time`。
+- 没有 Tag 列。
+- `http_status`、`http_method`、`remote_addr`、`http_refer`、`user_agent`、`request` 是 Field 列。
+- 按 `access_time` 排序。
+- 这是一个 [append-only 表](/reference/sql/create.md#创建-append-only-表)，不支持去重和删除，适合日志场景。
+- 查询 append-only 表通常更快，比如 `select count(*) from access_logs` 可以直接用统计信息返回结果，不需要考虑去重。
 
-要了解如何指定 `Tag`、`Timestamp` 和 `Field` 列，请参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
+如何指定 `Tag`、`Timestamp`、`Field` 列，参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md#创建表)和 [CREATE 语句](/reference/sql/create.md)。
 
-### 链路追踪
+### Traces
 
-GreptimeDB 支持通过 OTLP/HTTP 协议直接写入 OpenTelemetry 追踪数据，详细信息请参考 [OTLP 追踪数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-2)。
+GreptimeDB 支持通过 OTLP/HTTP 协议直接写入 OpenTelemetry traces 数据，详见 [OTLP traces 数据模型](/user-guide/ingest-data/for-observability/opentelemetry.md#数据模型-2)。
 
 ## 设计考虑
 
-GreptimeDB 基于表进行设计，原因如下：
+GreptimeDB 为什么选择表模型：
 
-- 表格模型易于学习，具有广泛的用户群体，我们只需引入时间索引的概念即可实现对指标、日志和链路跟踪的统一处理。
-- Schema 是描述数据特征的元数据，对于用户来说更方便管理和维护。
-- Schema 通过其类型、长度等信息带来了巨大的优化存储和计算的好处，我们可以进行有针对性的优化。
-- 当我们有了表格 Schema 后，自然而然地引入了 SQL，并用它来处理各种表之间的关联分析和聚合查询，为用户抵消了学习和使用成本。
-- 比起 OpenTSDB 和 Prometheus 采用的单值模型，GreptimeDB 使用多值模型使其中一行数据可以具有多列数据。多值模型面向数据源建模，一个指标或者事件可以使用多个 field 表示值。多值模型的优势在于它可以一次性向数据库写入或读取多个值，从而减少传输流量并简化查询。相比之下，单值模型则需要将数据拆分成多个记录。阅读[博客](https://greptime.com/blogs/2024-05-09-prometheus)以获取更多详情。
+- 表模型用户基础广、学习门槛低。在此基础上加一个时间索引的概念，就能统一处理 metrics、logs、traces。
+- Schema 是描述数据特征的元数据，方便管理和维护。
+- Schema 提供类型、长度等信息，存储和计算引擎可以做针对性优化。
+- 有了表模型，自然引入 SQL，用 SQL 做跨表关联分析和聚合查询，降低用户的学习成本。
+- GreptimeDB 采用多值模型，单行可以有多个 Field 列，相比需要把数据拆成多条记录的单值模型，省传输流量、查询也更简洁。详见[博客](https://greptime.cn/blogs/2024-05-09-prometheus)。
+- 在 Observability 2.0 范式中，metrics、logs、traces 被视为同一组底层"宽事件"的不同投影。GreptimeDB 的统一表模型天然支持这一点——所有信号类型共享 Tag + Timestamp + Field schema，一条 SQL 就能做跨信号关联。详见 [Observability 2.0](./observability-2.md)。
 
-GreptimeDB 使用 SQL 管理表 Schema。有关更多信息，请参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)。但是，我们对 Schema 的定义并不是强制性的，而是倾向于 **Schemaless** 的方式，类似于 MongoDB。有关更多详细信息，请参见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。
+GreptimeDB 用 SQL 管理表 schema，参见[表管理](/user-guide/deployments-administration/manage-data/basic-table-operations.md)。不过 schema 定义不是强制的，更偏向 **Schemaless** 的方式——写入时自动建表、自动加列。详见[自动生成表结构](../ingest-data/overview.md#自动生成表结构)。

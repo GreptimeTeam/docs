@@ -5,6 +5,8 @@ description: Outlines the architecture of GreptimeDB, including its main compone
 
 # Architecture
 
+GreptimeDB uses a compute-storage separation architecture where data persists in object storage (S3, Azure Blob, etc.) and compute nodes can be scaled independently. This enables elastic scaling and significant cost reduction compared to architectures that depend on local disk for primary storage.
+
 ![architecture](/architecture-3.png)
 
 ## Components

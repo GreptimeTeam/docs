@@ -1,78 +1,86 @@
 ---
-keywords: [关键特性, 日志处理, 链路追踪,数据更新, 数据删除, TTL 策略, 压缩率, 高基数问题, 持续聚合, 云存储, 性能对比, 灾难恢复, 地理空间索引, JSON 数据,时序数据库特性,可观测性数据库特性]
-description: 介绍 GreptimeDB 的关键特性，并解答用户关心的常见问题，如日志处理、数据更新和删除、TTL 策略等。
+keywords: [特性, 日志, 事件, 链路追踪, 更新, 删除, TTL 策略, 压缩率, 高基数, 持续聚合, 云存储, 性能, 灾难恢复, 地理空间索引, JSON 支持]
+description: 关于 GreptimeDB 特性的常见问题，包括如何处理 metrics、logs 和 traces，更新、删除、TTL、压缩、高基数、持续聚合、云存储、性能、灾难恢复等。
 ---
 
-# 关键特性
+# 常见问题
 
-## GreptimeDB 支持处理日志或事件吗？
+## GreptimeDB 如何处理 metrics、logs 和 traces？
 
-是的。从 v0.9.0 版本开始，GreptimeDB 将指标、日志和链路追踪视为带有时间戳的上下文“宽”事件（Wide Events），从而统一了指标、日志和链路追踪的处理。它支持使用 SQL、PromQL 和通过连续聚合进行流式处理来分析指标、日志和追踪。
+GreptimeDB 将所有可观测数据——metrics、logs、traces——作为带上下文的时间戳事件，统一存储在列式引擎中。用 SQL 查所有信号类型，用 PromQL 查 metrics，用 Flow 做持续聚合。
 
-请阅读[日志处理使用指南](/user-guide/logs/overview.md)和[链路追踪使用指南](/user-guide/traces/overview.md)。
+详见[日志用户指南](/user-guide/logs/overview.md)和[链路追踪用户指南](/user-guide/traces/overview.md)。
 
-## GreptimeDB 支持更新数据吗？
+## 支持更新数据吗？
 
-支持，请参考[更新数据](/user-guide/manage-data/overview.md#更新数据)获取更多信息。
+支持，参见[更新数据](/user-guide/manage-data/overview.md#更新数据)。
 
-## GreptimeDB 支持删除数据吗？
+## 支持删除数据吗？
 
-支持，请参考[删除数据](/user-guide/ingest-data/overview.md#删除数据)获取更多信息。
+支持，参见[删除数据](/user-guide/ingest-data/overview.md#删除数据)。
 
-## 我可以为不同的表或指标设置 TTL 或保留策略吗？
+## 可以按表设置 TTL 或保留策略吗？
 
-当然。请参考[使用 TTL 策略保留数据](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)。
+可以，参见[使用 TTL 策略保留数据](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)。
 
-## GreptimeDB 的压缩率是多少？
+## 压缩率是多少？
 
-答案是视情况而定。
+取决于数据特征。
 
-GreptimeDB 使用列式存储布局，并通过最佳算法压缩指标、日志等可观测数据，并且它会根据列数据的统计和分布选择最合适的压缩算法。GreptimeDB 还将提供可以更紧凑地压缩数据但会失去精度的 Rollup 功能。
+GreptimeDB 用列式存储，根据列数据的统计分布自动选择最优压缩算法。未来还会提供 Rollup 功能，以损失精度为代价进一步压缩。
 
-因此，GreptimeDB 的数据压缩率可能在 2 倍到几百倍之间，这取决于你的数据特性以及你是否可以接受精度损失。
+实际压缩率在 2 倍到数百倍之间，取决于数据特征和是否接受精度损失。
 
-## GreptimeDB 如何解决高基数问题？
+## 如何解决高基数问题？
 
-GreptimeDB 通过以下方式解决这个问题：
+GreptimeDB 通过多层手段解决高基数挑战：
 
-- **分片**：它将数据和索引分布在不同的 Region 服务器之间。阅读 GreptimeDB 的[架构](./architecture.md)。
-- **智能索引**：它不强制为每个标签创建倒排索引，而是根据标签列的特性和负载类型选择合适的索引类型并自动构建，更多信息可以参考这篇[博客](https://greptime.com/blogs/2022-12-21-storage-engine-design#smart-indexing)。
-- **MPP**: 除了索引之外，查询引擎还会利用向量化执行和分布式并行执行等技术来加速查询。
+**架构层面：**
+- **分片**：数据和索引分布在多个 Region Server 上，单节点不会成为瓶颈。详见 [架构](./architecture.md)。
 
-## GreptimeDB 支持持续聚合或降采样吗？
+**存储层面：**
+- **Flat Format（针对极端高基数）**：当 tag 是请求 ID、trace ID、用户 token 这类百万级唯一值时，传统时序数据库为每个序列分配独立 buffer，序列数一多就内存膨胀、性能下降。GreptimeDB 1.0+ 的 Flat Format 引入了 BulkMemtable 和多序列合并路径，消除 per-series 开销，高基数场景下**写入吞吐量提升 4 倍，查询快 10 倍**。详见 [Flat Format 详解](https://greptime.cn/blogs/2025-12-22-flat-format)。
 
-从 0.8 版本开始，GreptimeDB 添加了一个名为 `Flow` 的新功能，用于持续聚合和降采样等场景。请阅读[用户指南](/user-guide/flow-computation/overview.md)获取更多信息。
+**索引层面：**
+- **灵活索引**：支持按需手工创建索引。可以为 tag 列和 field 列创建多种索引类型（倒排、全文、跳数），而不是自动为每列建索引。按需创建索引既能优化查询性能，又能降低索引开销。详见[索引文档](/user-guide/manage-data/data-index.md)。
 
-## 我可以在云的对象存储中存储数据吗？
+**查询层面：**
+- **MPP（大规模并行处理）**：查询引擎用向量化执行和分布式并行处理，高效处理高基数查询。
 
-可以，GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，它支持大多数类型的对象存储服务。
-数据可以存储在如 AWS S3 或 Azure Blob Storage 等性价比高的云存储服务中，请参考这里的存储[配置指南](/user-guide/deployments-administration/configuration.md#storage-options)。
+**结果：** GreptimeDB 不会遇到 Prometheus 那样的基数上限——在 Prometheus 中，高基数 label 会导致内存耗尽和查询超时。GreptimeDB 可以处理百万级序列，不需要架构层面的妥协。
 
-## GreptimeDB 对比其他存储或时序数据库的性能如何？
+## 支持持续聚合或降采样吗？
 
-GreptimeDB 在 [ClickHouse 的 JSONBench 测试中 Cold Run 斩获第一](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb)！
+支持。GreptimeDB 从 0.8 版本开始提供 Flow 功能，用于持续聚合和降采样等场景。详见[用户指南](/user-guide/flow-computation/overview.md)。
 
-请阅读以下性能报告：
+## 可以把数据存到云上的对象存储吗？
+
+可以。GreptimeDB 的数据访问层基于 [OpenDAL](https://github.com/apache/incubator-opendal)，支持主流对象存储服务。数据可以存到 AWS S3、Azure Blob Storage 等，参见[存储配置](/user-guide/deployments-administration/configuration.md#存储选项)。
+
+## 性能对比其他方案怎么样？
+
+[GreptimeDB 在 ClickHouse JSONBench 10 亿条冷查询中拿下第一！](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb)
+
+性能测试报告：
 
 * [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
+* [GreptimeDB vs. TimescaleDB](https://greptime.cn/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
 * [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
-* [GreptimeDB vs. ClickHouse vs. ElasticSearch](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
+* [GreptimeDB vs. ClickHouse vs. Elasticsearch](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
 * [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
 
-## GreptimeDB 有灾难恢复解决方案吗？
+## 有灾难恢复方案吗？
 
-有的，请参阅[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
+有，参见[灾难恢复文档](/user-guide/deployments-administration/disaster-recovery/overview.md)。
 
-## GreptimeDB 有地理空间索引吗？
+## 支持地理空间索引吗？
 
-我们提供 [内置函数](/reference/sql/functions/geo.md) 支持 Geohash, H3 and S2 索
-引。
+支持，提供 Geohash、H3 和 S2 的[内置函数](/reference/sql/functions/geo.md)。
 
+## 支持 JSON 数据吗？
 
-## GreptimeDB 支持 JSON 数据吗？
-
-我们提供 [内置函数](/reference/sql/functions/overview.md#json-functions) 支持访问 JSON 数据类型。
+支持，参见 [JSON 函数](/reference/sql/functions/overview.md#json-functions)。
 
 ## 更多问题？
 
-有关 GreptimeDB 的更多常见问题解答，包括部署选项、迁移指南、性能对比和最佳实践等，请访问我们的[常见问题页面](/faq-and-others/faq.md)。
+包括部署选项、迁移指南、性能对比、最佳实践等，请访问[常见问题页面](/faq-and-others/faq.md)。

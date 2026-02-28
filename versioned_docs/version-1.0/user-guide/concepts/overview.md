@@ -5,19 +5,21 @@ description: Provides an overview of GreptimeDB, including its features, data mo
 
 # Concepts
 
-- [Why GreptimeDB](./why-greptimedb.md): This document outlines the features and benefits of GreptimeDB, including its unified design for metrics, logs, and traces; Cloud-native and flexible architecture that allows for deployment in various environments, from embedded to cloud. GreptimeDB is also cost-effective, high-performance, and user-friendly.
-- [Data Model](./data-model.md): This document describes the data model of GreptimeDB, including table schema, time index constraint, etc.
-- [Architecture](./architecture.md): Get the cloud-native architecture of GreptimeDB.
-- [Storage Location](./storage-location.md): This document describes the storage location of GreptimeDB, including local disk, HDFS, and cloud object storage such as S3, Azure Blob Storage, etc.
-- [Key Concepts](./key-concepts.md): This document describes the key concepts of GreptimeDB, including table, time index, table region and data types.
-- [Features that You Concern](./features-that-you-concern.md): Describes some features that may be concerned about a unified metrics, logs & events database.
-- [Frequently Asked Questions](/faq-and-others/faq.md): Comprehensive FAQ covering common questions about GreptimeDB's capabilities, deployment, and usage.
+GreptimeDB is an observability database that unifies metrics, logs, and traces in a single engine. This section covers the core concepts you need to understand how GreptimeDB works and why it's designed this way.
 
-## Read More
+**Start here:**
+- [Why GreptimeDB](./why-greptimedb.md) — The problem with three-pillar observability stacks, and how GreptimeDB solves it
+- [Data Model](./data-model.md) — How metrics, logs, and traces are represented as timestamped events with tags and fields
+- [Architecture](./architecture.md) — Compute-storage separation, stateless frontends, and how GreptimeDB scales
 
-Get GreptimeDB roadmap and architecture design from blog posts:
+**Deep dives:**
+- [Observability 2.0](./observability-2.md) — Wide events, unified data model, and the evolution beyond three pillars
+- [Storage Location](./storage-location.md) — Object storage, local disk, and multi-engine storage options
+- [Key Concepts](./key-concepts.md) — Tables, regions, time index, data types, views, and flows
+- [Common Questions](./features-that-you-concern.md) — FAQ on updates, deletions, TTL, compression, high cardinality, and more
 
-- [This Time, for Real - GreptimeDB is Now Open Source](https://greptime.com/blogs/2022-11-15-this-time-for-real)
+## Further Reading
+
+- [Observability 2.0 and the Database for It](https://greptime.com/blogs/2025-04-25-greptimedb-observability2-new-database) — Our vision for the next generation of observability
 - [Unifying Logs and Metrics](https://greptime.com/blogs/2024-06-25-logs-and-metrics)
-- [GreptimeDB Internal Design — Distributed, Cloud-native, and Enhanced Analytical Ability for Time Series](https://greptime.com/blogs/2022-12-08-GreptimeDB-internal-design)
-- [GreptimeDB Storage Engine Design - Catering to Time Series Scenarios](https://greptime.com/blogs/2022-12-21-storage-engine-design)
+- [GreptimeDB Storage Engine Design](https://greptime.com/blogs/2022-12-21-storage-engine-design)
