@@ -52,7 +52,7 @@ GreptimeDB 具有高效的数据压缩机制，可将原始数据大小减少到
 使用云存储时，本地存储空间只需要大约 200GB 用于查询相关的缓存和 Write-Ahead Log (WAL)。
 
 无论你选择云存储还是本地存储，
-建议设置[保留策略](/user-guide/concepts/features-that-you-concern.md#我可以为不同的表或指标设置-ttl-或保留策略吗)以有效管理存储成本。
+建议设置[保留策略](/user-guide/concepts/features-that-you-concern.md#可以按表设置-ttl-或保留策略吗)以有效管理存储成本。
 
 ## 举例
 

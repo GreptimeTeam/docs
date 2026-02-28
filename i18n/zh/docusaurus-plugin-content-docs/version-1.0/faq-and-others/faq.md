@@ -392,7 +392,7 @@ GreptimeDB 基于 DataFusion 构建：
 
 *性能基准*：
 - [TSBS 基准测试](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)
-- [性能对比分析](/user-guide/concepts/features-that-you-concern.md#greptimedb-对比其他存储或时序数据库的性能如何)
+- [性能对比分析](/user-guide/concepts/features-that-you-concern.md#性能对比其他方案怎么样)
 - [vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
 - [vs Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html)
 - [日志基准测试](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
