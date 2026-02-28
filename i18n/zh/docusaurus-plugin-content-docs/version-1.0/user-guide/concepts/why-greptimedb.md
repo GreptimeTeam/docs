@@ -23,7 +23,7 @@ GreptimeDB 通过以下方式统一处理 metrics、logs 和 traces：
 - 一致的[数据模型](./data-model.md)，将所有可观测数据视为带上下文的时间戳宽事件
 - 原生支持 [SQL](/user-guide/query-data/sql.md) 和 [PromQL](/user-guide/query-data/promql.md) 双查询
 - 内置流计算能力（[Flow](/user-guide/flow-computation/overview.md)）做实时聚合和分析
-- 跨信号无缝关联分析（参见 [SQL 示例](/getting-started/quick-start.md#指标和日志的关联查询)）
+- 跨信号无缝关联分析（参见 [SQL 示例](/getting-started/quick-start.md#关联-metricslogs-和-traces)）
 
 一套系统替代原来的多组件栈。
 

@@ -7,7 +7,7 @@ description: Explanation of Common Table Expressions (CTEs) in GreptimeDB, inclu
 
 CTEs are similar to [Views](./view.md) in that they help you reduce the complexity of your queries, break down long and complex SQL statements, and improve readability and reusability.
 
-You already read a CTE in the [quickstart](/getting-started/quick-start.md#correlate-metrics-and-logs) document.
+You already read a CTE in the [quickstart](/getting-started/quick-start.md#correlate-metrics-logs-and-traces) document.
 
 ## What is a Common Table Expression (CTE)?
 

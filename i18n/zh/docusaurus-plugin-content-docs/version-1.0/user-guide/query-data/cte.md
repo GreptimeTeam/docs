@@ -7,7 +7,7 @@ description: 介绍公共表表达式（CTE）的基本概念和使用方法。
 
 CTE 与 [视图](./view.md) 类似，它们帮助您简化查询的复杂性，将长而复杂的 SQL 语句分解，并提高可读性和可重用性。
 
-您已经在 [快速开始](/getting-started/quick-start.md#指标和日志的关联查询) 文档中阅读了一个 CTE 的例子。
+您已经在 [快速开始](/getting-started/quick-start.md#关联-metricslogs-和-traces) 文档中阅读了一个 CTE 的例子。
 
 ## 什么是公共表表达式（CTE）？
 

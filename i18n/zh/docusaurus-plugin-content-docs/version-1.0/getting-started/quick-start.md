@@ -1,106 +1,118 @@
 ---
-keywords: [快速开始, 数据库连接, 创建表, 写入数据, 查询数据, 数据可视化]
-description: 介绍如何快速开始使用 GreptimeDB，包括连接数据库、创建表、写入数据、查询数据等核心功能。
+keywords: [快速开始, SQL, PromQL, 建表, 写入数据, 查询数据, metrics, logs, traces, 关联查询, GreptimeDB Dashboard]
+description: 10 分钟上手 GreptimeDB——从数据写入到 metrics、logs、traces 跨信号关联查询。
 ---
 
 # 快速开始
 
-在继续阅读之前，请确保你已经[安装了 GreptimeDB](./installation/overview.md)。
+开始之前，请确保已[安装 GreptimeDB](./installation/overview.md)。
 
-本指南通过引导你创建一个 metric 表和一个 log 表来介绍 GreptimeDB 的核心功能。
+本指南用 SQL 带你体验 GreptimeDB 的核心能力——从数据写入到 metrics、logs、traces 跨信号关联查询。SQL 同时也是 GreptimeDB 的管理入口，用于建表、设置 TTL 策略、配置索引等。
 
-你将学习（10-15 分钟）
-* 在本地启动并连接到 GreptimeDB
-* 创建 metrics 和 logs 表并插入示例数据
-* 查询和聚合数据
-* 计算 5 秒窗口内的 p95 和 ERROR 计数并对齐它们
-* 关联 metrics 和 logs 来发现异常主机和时间点
-* 结合 SQL 和 PromQL 查询数据
+:::tip 已经在用 Prometheus、OpenTelemetry 或 Loki？
+可以直接用现有工具写入数据，不需要手动建表（GreptimeDB 会[自动建表](/user-guide/ingest-data/overview.md#自动生成表结构)）：
+- [Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md)
+- [OpenTelemetry (OTLP)](/user-guide/ingest-data/for-observability/opentelemetry.md)
+- [Loki 协议](/user-guide/ingest-data/for-observability/loki.md)
+- [Elasticsearch](/user-guide/ingest-data/for-observability/elasticsearch/)
 
-## 连接到 GreptimeDB
+继续阅读本指南，了解数据进来之后能做什么。
+:::
 
-GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)与数据库进行交互。
-在本快速入门文档中，我们使用 SQL 作为实例。
+**你将学到（10–15 分钟）：**
+- 连接 GreptimeDB，创建 metrics、logs、traces 表
+- 用 SQL 查询和聚合数据
+- 全文索引关键词搜索日志
+- 用 Range Query 计算时间窗口内的 p95 延迟
+- **一条 SQL 关联 metrics、logs 和 traces**
+- SQL 和 PromQL 混合查询
 
-如果你的 GreptimeDB 实例运行在 `127.0.0.1` 中，
-并且使用 MySQL 客户端默认端口 `4002` 或 PostgreSQL 客户端默认端口 `4003`，
-你可以使用以下命令连接到数据库。
+## 连接 GreptimeDB
 
-GreptimeDB 默认不开启[鉴权认证](/user-guide/deployments-administration/authentication/overview.md)。
-在本章节中你可以在连接数据库时不提供用户名密码。
+GreptimeDB 支持[多种协议](/user-guide/protocols/overview.md)。本指南使用 SQL。
+
+GreptimeDB 默认运行在 `127.0.0.1`，MySQL 协议端口 `4002`，PostgreSQL 协议端口 `4003`，连接方式：
 
 ```shell
 mysql -h 127.0.0.1 -P 4002
 ```
 
-或者
+或
 
 ```shell
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-你也可以通过浏览器访问 DB 内置的 Dashboard 地址 `http://127.0.0.1:4000/dashboard` 运行本文档中的 SQL。
+也可以用浏览器打开内置 Dashboard `http://127.0.0.1:4000/dashboard`，直接运行本指南中的所有 SQL。
 
-## 创建表
+默认未开启[认证](/user-guide/deployments-administration/authentication/overview.md)，连接时不需要用户名和密码。
 
-假设你有一个名为 `grpc_latencies` 的事件（Events）表，用于存储的 gRPC 调用接口以及它的处理时间。表 schema 如下：
+## 建表
+
+我们创建三张表模拟一个真实场景：gRPC 延迟指标、应用日志和请求链路。两台服务器 `host1` 和 `host2` 在采集数据，从 `2024-07-11 20:00:10` 开始，`host1` 出现异常。
+
+### Metrics 表
 
 ```sql
--- Metrics: gRPC 调用延迟（毫秒）
+-- Metrics：gRPC 调用延迟（毫秒）
 CREATE TABLE grpc_latencies (
   ts TIMESTAMP TIME INDEX,
-  host STRING INVERTED INDEX,
+  host STRING,
   method_name STRING,
   latency DOUBLE,
   PRIMARY KEY (host, method_name)
 );
 ```
 
-- `ts`：收集指标时的时间戳，时间索引列。
-- `host`：主机名，设置了[倒排索引](/user-guide/manage-data/data-index.md#倒排索引)。
-- `method_name`：RPC 请求方法的名称，tag 列。
-- `latency`：RPC 请求的响应时间。
+- `ts`：数据采集时间（[时间索引](/user-guide/concepts/data-model.md)）。
+- `host` 和 `method_name`：[Tag](/user-guide/concepts/data-model.md) 列，标识时间序列。
+- `latency`：[Field](/user-guide/concepts/data-model.md) 列，存放实际指标值。
 
-此外，还有一个名为 `app_logs` 的表用于存储日志：
+### Logs 表
 
 ```sql
--- Logs: 应用程序日志
+-- Logs：应用错误日志
 CREATE TABLE app_logs (
   ts TIMESTAMP TIME INDEX,
-  host STRING INVERTED INDEX,
+  host STRING,
   api_path STRING,
   log_level STRING,
   log_msg STRING FULLTEXT INDEX WITH('case_sensitive' = 'false'),
   PRIMARY KEY (host, log_level)
-) with('append_mode'='true');
+) WITH ('append_mode'='true');
 ```
 
-- `ts`：日志条目的时间戳，时间索引列。
-- `host`：主机名，设置了倒排索引。
-- `api_path`：API 路径。
-- `log_level`：日志级别，tag 列。
-- `log_msg`：日志消息内容，设置了[全文索引](/user-guide/manage-data/data-index.md#全文索引)。
+- `log_msg` 启用了[全文索引](/user-guide/manage-data/data-index.md#全文索引)，支持关键词搜索。
+- [`append_mode`](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表) 针对日志场景优化（无去重开销）。
 
-通过将 `append_mode` 设置为 true 来启用 [Append Only](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)模式，这通常对性能有帮助。同时也支持其他表选项，如数据保留期等。
+### Traces 表
 
-::::tip
-我们在下面使用 SQL 来导入数据，因此需要手动创建表。但 GreptimeDB 本身是 [schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 的，在使用其他写入方法时可以自动生成 schema。
-::::
+```sql
+-- Traces：请求链路 Span
+CREATE TABLE traces (
+  ts TIMESTAMP TIME INDEX,
+  trace_id STRING,
+  span_id STRING,
+  parent_span_id STRING,
+  service_name STRING,
+  operation STRING,
+  duration DOUBLE,
+  status_code INT,
+  PRIMARY KEY (service_name, trace_id)
+) WITH ('append_mode'='true');
+```
+
+:::tip
+这里用 SQL 写入数据，所以需要手动建表。但 GreptimeDB 支持 [Schemaless](/user-guide/ingest-data/overview.md#自动生成表结构)——通过 OpenTelemetry、Prometheus Remote Write、InfluxDB Line Protocol 等协议写入时，表会自动创建。
+:::
 
 ## 写入数据
 
-让我们插入一些模拟数据来模拟收集的指标和错误日志。
+插入模拟数据。`20:00:10` 之前两台主机都正常，之后 `host1` 开始出现延迟飙升。
 
-假设有两个服务器 `host1` 和 `host2` 记录着 gRPC 延迟。
-从 `2024-07-11 20:00:10` 开始，`host1` 的延迟显著增加。
+<img src="/unstable-latencies.png" alt="不稳定的延迟" width="600"/>
 
-下图显示了 `host1` 的不稳定延迟。
-
-<img src="/unstable-latencies.png" alt="unstable latencies" width="600"/>
-
-使用以下 SQL 语句插入模拟数据。
-
-在 `2024-07-11 20:00:10` 之前，主机正常运行：
+### 正常阶段（20:00:10 之前）
 
 ```sql
 INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
@@ -114,10 +126,14 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:09', 'host2', 'GetUser', 114.0);
 ```
 
-在 `2024-07-11 20:00:10` 之后，`host1` 的响应时间变得不稳定，处理时间大幅波动，偶尔会出现数千毫秒的峰值：
+### 异常阶段（20:00:10 之后）
+
+`host1` 延迟开始剧烈波动，偶尔飙到几千毫秒：
+
+<details>
+<summary>点击展开 INSERT 语句</summary>
 
 ```sql
-
 INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:10', 'host1', 'GetUser', 150.0),
   ('2024-07-11 20:00:10', 'host2', 'GetUser', 110.0),
@@ -143,7 +159,9 @@ INSERT INTO grpc_latencies (ts, host, method_name, latency) VALUES
   ('2024-07-11 20:00:20', 'host2', 'GetUser', 95.0);
 ```
 
-当 `host1` 的 gRPC 请求的响应时间遇到问题时，收集了一些错误日志：
+</details>
+
+### 异常期间的错误日志
 
 ```sql
 INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
@@ -163,16 +181,30 @@ INSERT INTO app_logs (ts, host, api_path, log_level, log_msg) VALUES
   ('2024-07-11 20:00:16', 'host1', '/api/v1/billings', 'ERROR', 'Network issue');
 ```
 
+### 异常期间的 Trace Span
+
+```sql
+INSERT INTO traces (ts, trace_id, span_id, parent_span_id, service_name, operation, duration, status_code) VALUES
+  ('2024-07-11 20:00:12', 'abc123', 'span1', '', 'host1', 'POST /api/v1/resource', 1050.0, 2),
+  ('2024-07-11 20:00:12', 'abc123', 'span2', 'span1', 'host1', 'GetUser', 1000.0, 2),
+  ('2024-07-11 20:00:14', 'def456', 'span3', '', 'host1', 'POST /api/v1/billings', 4250.0, 2),
+  ('2024-07-11 20:00:14', 'def456', 'span4', 'span3', 'host1', 'CreateBilling', 4200.0, 2),
+  ('2024-07-11 20:00:16', 'ghi789', 'span5', '', 'host1', 'POST /api/v1/resource', 3100.0, 2),
+  ('2024-07-11 20:00:16', 'ghi789', 'span6', 'span5', 'host1', 'GetUser', 3000.0, 2),
+  ('2024-07-11 20:00:12', 'jkl012', 'span7', '', 'host2', 'POST /api/v1/resource', 115.0, 0),
+  ('2024-07-11 20:00:12', 'jkl012', 'span8', 'span7', 'host2', 'GetUser', 108.0, 0);
+```
+
 ## 查询数据
 
-### 根据 tag 和时间索引进行过滤
+### 按 Tag 和时间过滤
 
-你可以使用 `WHERE` 子句来过滤数据。例如，要查询 `2024-07-11 20:00:15` 之后 `host1` 的延迟：
+查询 `host1` 在 `2024-07-11 20:00:15` 之后的延迟：
 
 ```sql
 SELECT *
-  FROM grpc_latencies
-  WHERE host = 'host1' AND ts > '2024-07-11 20:00:15';
+FROM grpc_latencies
+WHERE host = 'host1' AND ts > '2024-07-11 20:00:15';
 ```
 
 ```sql
@@ -188,41 +220,37 @@ SELECT *
 5 rows in set (0.14 sec)
 ```
 
-你还可以在过滤数据时使用函数。例如，你可以使用 `approx_percentile_cont` 函数按主机分组计算响应时间的 95 百分位数：
+按 host 计算 p95 延迟：
 
 ```sql
-SELECT 
-  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) AS p95_latency, 
-  host
+SELECT
+  host,
+  approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) AS p95_latency
 FROM grpc_latencies
 WHERE ts >= '2024-07-11 20:00:10'
 GROUP BY host;
 ```
 
 ```sql
-+-------------------+-------+
-| p95_latency       | host  |
-+-------------------+-------+
-| 4164.999999999999 | host1 |
-|               115 | host2 |
-+-------------------+-------+
++-------+-------------------+
+| host  | p95_latency       |
++-------+-------------------+
+| host1 | 4164.999999999999 |
+| host2 |               115 |
++-------+-------------------+
 2 rows in set (0.11 sec)
 ```
 
+### 全文搜索日志
 
-### 通过关键词搜索日志
+`@@` 操作符用于[全文搜索](/user-guide/logs/fulltext-search.md)：
 
-通过关键词  `timeout`  过滤日志消息：
 ```sql
-SELECT
-  *
-FROM
-  app_logs
-WHERE
-  lower(log_msg) @@ 'timeout'
+SELECT *
+FROM app_logs
+WHERE lower(log_msg) @@ 'timeout'
   AND ts > '2024-07-11 20:00:00'
-ORDER BY
-  ts;
+ORDER BY ts;
 ```
 
 ```sql
@@ -236,11 +264,9 @@ ORDER BY
 +---------------------+-------+------------------+-----------+--------------------+
 ```
 
-`@@` 操作符用于[短语搜索](/user-guide/logs/fulltext-search.md)。
+### Range Query
 
-### Range query
-
-你可以使用 [range query](/reference/sql/range.md#range-query)来实时监控延迟。例如，按 5 秒窗口计算请求的 p95 延迟：
+用 [Range Query](/reference/sql/range.md) 计算 5 秒窗口内的 p95 延迟：
 
 ```sql
 SELECT
@@ -248,11 +274,9 @@ SELECT
   host,
   approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency)
     RANGE '5s' AS p95_latency
-FROM
-  grpc_latencies
+FROM grpc_latencies
 ALIGN '5s' FILL PREV
-ORDER BY
-  host,ts;
+ORDER BY host, ts;
 ```
 
 ```sql
@@ -271,73 +295,84 @@ ORDER BY
 8 rows in set (0.06 sec)
 ```
 
-Range query 是一个非常强大的功能，用于基于时间窗口查询和聚合数据，请阅读[手册](/reference/sql/range.md#range-query)以了解更多。
+Range Query 是 GreptimeDB 做时间窗口聚合的利器，详见[文档](/reference/sql/range.md)。
 
-### 指标和日志的关联查询
+### 关联 Metrics、Logs 和 Traces
 
-通过组合两个表的数据，你可以快速地确定故障时间和相应的日志。以下 SQL 查询使用 `JOIN` 操作关联指标和日志：
+统一数据库的真正威力在这里。一条查询同时关联 p95 延迟、错误日志数和慢 Trace Span——跨三种信号类型：
 
 ```sql
--- 将指标和日志对齐到 5 秒时间桶，然后关联
 WITH
-  -- 指标: 每个主机在 5 秒时间桶内的 p95 延迟
+  -- Metrics：按 host 计算 5 秒窗口的 p95 延迟
   metrics AS (
     SELECT
-      ts,
-      host,
-      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency) RANGE '5s' AS p95_latency
+      ts, host,
+      approx_percentile_cont(0.95) WITHIN GROUP (ORDER BY latency)
+        RANGE '5s' AS p95_latency
     FROM grpc_latencies
     ALIGN '5s' FILL PREV
   ),
-  -- 日志: 相同 5 秒时间桶内每个主机的 ERROR 计数
+  -- Logs：按 host 统计 5 秒窗口的 ERROR 数
   logs AS (
     SELECT
-      ts,
-      host,
+      ts, host,
       count(log_msg) RANGE '5s' AS num_errors
     FROM app_logs
     WHERE log_level = 'ERROR'
     ALIGN '5s'
+  ),
+  -- Traces：按 host 统计 5 秒窗口的慢 Span
+  slow_traces AS (
+    SELECT
+      date_bin(INTERVAL 5 seconds, ts) AS ts,
+      service_name AS host,
+      COUNT(*) AS slow_spans,
+      MAX(duration) AS max_span_duration
+    FROM traces
+    WHERE duration > 500
+    GROUP BY date_bin(INTERVAL 5 seconds, ts), service_name
   )
 SELECT
   m.ts,
+  m.host,
   m.p95_latency,
   COALESCE(l.num_errors, 0) AS num_errors,
-  m.host
+  COALESCE(t.slow_spans, 0) AS slow_spans,
+  t.max_span_duration
 FROM metrics m
-LEFT JOIN logs l
-  ON m.host = l.host AND m.ts = l.ts
+LEFT JOIN logs l ON m.host = l.host AND m.ts = l.ts
+LEFT JOIN slow_traces t ON m.host = t.host AND m.ts = t.ts
 ORDER BY m.ts, m.host;
 ```
 
-
 ```sql
-+---------------------+-------------+------------+-------+
-| ts                  | p95_latency | num_errors | host  |
-+---------------------+-------------+------------+-------+
-| 2024-07-11 20:00:05 |       104.5 |          0 | host1 |
-| 2024-07-11 20:00:05 |         114 |          0 | host2 |
-| 2024-07-11 20:00:10 |        4200 |         10 | host1 |
-| 2024-07-11 20:00:10 |         111 |          0 | host2 |
-| 2024-07-11 20:00:15 |        3500 |          4 | host1 |
-| 2024-07-11 20:00:15 |         115 |          0 | host2 |
-| 2024-07-11 20:00:20 |        2500 |          0 | host1 |
-| 2024-07-11 20:00:20 |          95 |          0 | host2 |
-+---------------------+-------------+------------+-------+
++---------------------+-------+-------------+------------+------------+-------------------+
+| ts                  | host  | p95_latency | num_errors | slow_spans | max_span_duration |
++---------------------+-------+-------------+------------+------------+-------------------+
+| 2024-07-11 20:00:05 | host1 |       104.5 |          0 |          0 |              NULL |
+| 2024-07-11 20:00:05 | host2 |         114 |          0 |          0 |              NULL |
+| 2024-07-11 20:00:10 | host1 |        4200 |         10 |          4 |              4250 |
+| 2024-07-11 20:00:10 | host2 |         111 |          0 |          0 |              NULL |
+| 2024-07-11 20:00:15 | host1 |        3500 |          4 |          2 |              3100 |
+| 2024-07-11 20:00:15 | host2 |         115 |          0 |          0 |              NULL |
+| 2024-07-11 20:00:20 | host1 |        2500 |          0 |          0 |              NULL |
+| 2024-07-11 20:00:20 | host2 |          95 |          0 |          0 |              NULL |
++---------------------+-------+-------------+------------+------------+-------------------+
 8 rows in set (0.02 sec)
 ```
 
-我们可以看到当 gRPC 响应时间增大的时间窗口内（`2024-07-11 20:00:10` ~ `2024-07-11 20:00:15`），错误日志也显著增多（从 0 增长到 10 个错误），并且确定问题在 `host1`。
+结论很清晰：**`20:00:10` – `20:00:15` 窗口内，`host1` 的 p95 延迟飙到 4200ms，出现 10 条错误日志，4 个慢 Span（最慢 4250ms）。`host2` 全程正常。** 在传统三支柱架构下，这个关联分析需要在 Prometheus、Loki、Jaeger 之间来回切换。用 GreptimeDB，一条查询搞定。
 
-### 通过 PromQL 查询数据
+### 用 PromQL 查询
 
-GreptimeDB 支持 [Prometheus 查询语言及其 API](/user-guide/query-data/promql.md)，允许你使用 PromQL 查询指标。例如，你可以使用以下查询获取每个主机在过去 5 秒内的 p95 响应时间：
+GreptimeDB 原生支持 [PromQL](/user-guide/query-data/promql.md)。在 Dashboard 切到 PromQL tab，运行：
 
 ```promql
 quantile_over_time(0.95, grpc_latencies{host!=""}[5s])
 ```
 
-要测试这个查询，使用以下 curl 命令：
+也可以通过 Prometheus 兼容的 HTTP API 查询：
+
 ```bash
 curl -X POST \
   -H 'Authorization: Basic {{authorization if exists}}' \
@@ -348,9 +383,9 @@ curl -X POST \
   'http://localhost:4000/v1/prometheus/api/v1/query_range'
 ```
 
-这里我们设置 `step` 为 15 秒。
+<details>
+<summary>返回结果</summary>
 
-输出：
 ```json
 {
   "status": "success",
@@ -388,13 +423,17 @@ curl -X POST \
 }
 ```
 
-更强大的是，你可以使用 SQL 来执行 PromQL 并混合使用两者，例如：
+</details>
+
+### SQL + PromQL 混合查询
+
+用 [TQL](/reference/sql/tql.md) 在 SQL 里嵌入 PromQL：
+
 ```sql
-TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','15s')
+TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z', '15s')
     quantile_over_time(0.95, grpc_latencies{host!=""}[5s]);
 ```
 
-这个 SQL 查询将输出：
 ```sql
 +---------------------+---------------------------------------------------------+-------+-------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
@@ -404,7 +443,8 @@ TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z','15s')
 +---------------------+---------------------------------------------------------+-------+-------------+
 ```
 
-重写上面的关联示例：
+还可以把 PromQL 作为 CTE 用在关联查询里：
+
 ```sql
 WITH
   metrics AS (
@@ -413,8 +453,7 @@ WITH
   ),
   logs AS (
     SELECT
-      ts,
-      host,
+      ts, host,
       COUNT(log_msg) RANGE '5s' AS num_errors
     FROM app_logs
     WHERE log_level = 'ERROR'
@@ -424,12 +463,8 @@ SELECT
   m.*,
   COALESCE(l.num_errors, 0) AS num_errors
 FROM metrics AS m
-LEFT JOIN logs AS l
-  ON m.host = l.host
- AND m.ts = l.ts
-ORDER BY
-  m.ts,
-  m.host;
+LEFT JOIN logs AS l ON m.host = l.host AND m.ts = l.ts
+ORDER BY m.ts, m.host;
 ```
 
 ```sql
@@ -445,80 +480,47 @@ ORDER BY
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
 ```
 
-通过使用 [TQL](/reference/sql/tql.md) 命令，你可以结合 SQL 和 PromQL 的强大功能，使关联分析和复杂查询不再困难。
+## GreptimeDB Dashboard
 
-<!-- TODO need to fix bug
-
-### 持续聚合
-
-为了进一步分析或在频繁聚合数据时减少扫描成本，你可以将聚合结果保存到另一个表中。这可以通过使用 GreptimeDB 的 [持续聚合](/user-guide/flow-computation/overview.md) 功能来实现。
-
-例如，按照 5 秒钟的时间窗口聚合 API 错误数量，并将数据保存到 `api_error_count` 表中。
-
-创建 `api_error_count` 表：
-
-```sql
-CREATE TABLE api_error_count (
-  ts TIMESTAMP TIME INDEX,
-  host STRING,
-  num_errors int, 
-  PRIMARY KEY(host)
-);
-```
-
-然后，创建一个 Flow 来按照 5 秒钟的时间窗口聚合错误数量：
-
-```sql
-CREATE FLOW flow_api_error_count 
-SINK TO api_error_count
-AS
-SELECT 
-  date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond) AS ts,
-  host,
-  count(error) RANGE '5s' AS num_errors
-FROM 
-  app_logs 
-GROUP BY date_bin(INTERVAL '5 seconds', ts, '1970-01-01 00:00:00'::TimestampNanosecond);
-``` -->
-
-## GreptimeDB 控制台
-
-GreptimeDB 提供了一个[仪表板](./installation/greptimedb-dashboard.md)用于数据探索和管理。
+GreptimeDB 内置了 [Dashboard](./installation/greptimedb-dashboard.md)，用于数据探索和管理。
 
 ### 数据探索
 
-按照[安装部分](./installation/overview.md)中的说明启动 GreptimeDB 后，你可以通过 HTTP 地址 `http://localhost:4000/dashboard` 访问控制台。
-
-点击 `+` 按钮添加一个新的查询，在命令文本中编写你的 SQL 命令，然后点击 `Run All`。
-下方的 SQL 会查询 `grpc_latencies` 表中的所有数据。
+打开 `http://localhost:4000/dashboard`，点 `+` 新建查询，输入 SQL，点 `Run All` 执行。点结果面板的 `Chart` 按钮可以可视化数据。
 
 ```sql
 SELECT * FROM grpc_latencies;
 ```
 
-然后点击结果面板中的 `Chart` 按钮来可视化数据。
+![查询 gRPC 延迟](/select-grpc-latencies.png)
 
-![select gRPC latencies](/select-grpc-latencies.png)
+### 用 InfluxDB Line Protocol 写入
 
-### 使用 InfluxDB Line Protocol 导入数据
-
-除了 SQL，GreptimeDB 还支持多种协议，其中最常用之一是 InfluxDB Line Protocol。
-在仪表板中点击 `Ingest` 图标，你可以以 InfluxDB Line Protocol 格式上传数据。
-
-例如，将以下数据粘贴到输入框中：
+点 Dashboard 的 `Ingest` 图标，可以用 [InfluxDB Line Protocol](/user-guide/ingest-data/for-observability/influxdb-line-protocol.md) 格式写入数据：
 
 ```txt
 grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
 grpc_metrics,host=host2,method_name=GetUser latency=110,code=1 1720728021000000000
 ```
 
-然后点击 `Write` 按钮来导入数据到 `grpc_metrics` 表。如果该表不存在，将会自动创建该表。
+点 `Write` 写入。`grpc_metrics` 表不存在会自动创建——这就是 GreptimeDB 的 [Schemaless](/user-guide/ingest-data/overview.md#自动生成表结构) 能力。
+
 ## 下一步
 
-你现在已经体验了 GreptimeDB 的核心功能。
-要进一步探索和利用 GreptimeDB：
+**接入现有栈：**
+- [Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md) — 把 Prometheus 指向 GreptimeDB
+- [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) — 配置 OTel Collector 发送 metrics、logs、traces
+- [Jaeger](/user-guide/query-data/jaeger.md) — 用 GreptimeDB 作为 Jaeger 的存储后端
+- [Loki](/user-guide/ingest-data/for-observability/loki.md) — 用 Loki 协议发送日志
+- [Elasticsearch](/user-guide/ingest-data/for-observability/elasticsearch/) — 用 Elasticsearch `_bulk` API 发送日志、traces 和事件
+- 查看[所有写入方式](/user-guide/ingest-data/overview/#推荐的数据写入方法)
 
-- [使用 Grafana 可视化数据](/user-guide/integrations/grafana.md)
-- [探索更多 GreptimeDB 的 Demo](https://github.com/GreptimeTeam/demo-scene/)
-- [阅读用户指南学习 GreptimeDB](/user-guide/overview.md)
+**可视化和监控：**
+- [Grafana 集成](/user-guide/integrations/grafana.md) — 用 SQL 或 PromQL 数据源连接 Grafana
+- [内置 Dashboard](/getting-started/installation/greptimedb-dashboard.md) — `http://localhost:4000/dashboard`
 
+**深入了解：**
+- [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md) — 架构、成本对比、竞品比较
+- [Observability 2.0](/user-guide/concepts/observability-2.md) — 宽事件和统一数据模型
+- [Demo 场景](https://github.com/GreptimeTeam/demo-scene/) — 更多动手示例
+- [用户指南](/user-guide/overview.md) — 完整参考
