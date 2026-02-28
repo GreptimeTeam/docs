@@ -1,6 +1,6 @@
 ---
 keywords: [observability database, open source observability database, observability data, observability tools, cloud native database, data observability, observability platform, edge database, IoT edge computing, edge cloud computing, log management, log aggregation, high cardinality, sql query examples, opentelemetry collector, GreptimeDB]
-description: Introduction to GreptimeDB, an open-source unified observability database for metrics, logs, and events, with links to getting started, user guide, contributor guide, and more.
+description: Introduction to GreptimeDB, an open-source observability database for metrics, logs, and traces, with links to getting started, user guide, contributor guide, and more.
 ---
 # Introduction
 
@@ -8,16 +8,17 @@ description: Introduction to GreptimeDB, an open-source unified observability da
     <img src="/logo-greptimedb.png" alt="GreptimeDB Logo" width="400"/>
 </p>
 
-**GreptimeDB** is an open-source, cloud-native, unified observability database for metrics, logs and traces. You can gain real-time insights from edge to cloud—at any scale.
+**GreptimeDB** is an open-source observability database that handles metrics, logs, and traces in one engine. Use it as the single OpenTelemetry backend — replacing Prometheus, Loki, and Elasticsearch with one database built on object storage. Query with [SQL](/user-guide/query-data/sql.md) and [PromQL](/user-guide/query-data/promql.md), scale without pain, cut costs up to 50x.
 
-Our core developers have been building observability data platforms for years. Based on their best-practices, GreptimeDB is born to give you:
+## Why GreptimeDB
 
-- **All-in-One Observability Database**: Process metrics, logs, and traces in real-time through a unified database with native [SQL](/user-guide/query-data/sql.md), [PromQL](/user-guide/query-data/promql.md), and [streaming processing](/user-guide/flow-computation/overview.md) support. It replaces complex legacy data stacks with a high-performance single solution.
-- **High-Performance Engine**: Built with Rust for high performance and reliability. Rich [indexing options](/user-guide/manage-data/data-index.md) (inverted, full-text, skip list, and vector indexing) accelerate queries, enabling sub-second responses on petabyte-scale datasets and handling hundreds of thousands of concurrent requests.
-- **Significant Cost Reduction**: Achieve up to 50x lower operational and storage costs through a compute-storage separation [architecture](/user-guide/concepts/architecture.md). Scale flexibly across cloud storage systems (e.g., S3, Azure Blob Storage) for simplified management, dramatic cost efficiency, and no vendor lock-in.
-- **Infinity Scalability**: Purpose-built for [Kubernetes](/user-guide/deployments-administration/deploy-on-kubernetes/greptimedb-operator-management.md) and cloud environments with industry-leading compute-storage separation. Enables unlimited scaling across cloud environments while efficiently managing cardinality explosion at a massive scale.
-- **Developer-Friendly**: Features standardized SQL and PromQL interfaces, a built-in web dashboard, REST API, and support for MySQL/PostgreSQL protocols. Widely compatible with popular data [ingestion protocols](/user-guide/protocols/overview.md) for seamless migration and integration.
-- **Flexible Deployment Options**: Deploy anywhere, from ARM-based edge devices to cloud environments, with unified APIs and bandwidth-efficient data synchronization. Query edge and cloud data seamlessly using identical APIs.
+**Replace three systems with one.** Most teams run Prometheus for metrics, Loki or ELK for logs, and Elasticsearch or Tempo for traces — three systems, three query languages, three sets of operational overhead. GreptimeDB unifies all three in a single engine with native OpenTelemetry support.
+
+**Cut costs up to 50x.** Object storage (S3, Azure Blob, GCS) as primary data store with compute-storage separation. Compute nodes scale independently. Written in Rust with columnar storage and advanced compression for maximum efficiency.
+
+**Drop-in compatible.** [PromQL](/user-guide/query-data/promql.md), [Prometheus remote write](/user-guide/ingest-data/for-observability/prometheus.md), [Jaeger](/user-guide/query-data/jaeger.md), [MySQL](/user-guide/protocols/mysql.md), [PostgreSQL](/user-guide/protocols/postgresql.md) protocols — migrate without rewriting queries. [SQL](/user-guide/query-data/sql.md) + [PromQL](/user-guide/query-data/promql.md) dual query capability means one database replaces your metrics store + data warehouse combo.
+
+Learn more in [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) and [Observability 2.0](/user-guide/concepts/observability-2.md).
 
 Before getting started, please read the following documents that include instructions for setting up, fundamental concepts, architectural designs, and tutorials:
 
@@ -35,4 +36,4 @@ Before getting started, please read the following documents that include instruc
 [4]: /release-notes
 [5]: ./faq-and-others/faq.md
 [6]: ./greptimecloud/overview.md
-[7]: https://greptime.com/blogs/2025-02-06-greptimedb-roadmap2025
+[7]: https://greptime.com/blogs/2026-02-11-greptimedb-roadmap-2026
