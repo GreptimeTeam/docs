@@ -1,23 +1,25 @@
 ---
-keywords: [特点, 优势, 数据模型, 基础架构, 存储位置, 核心概念, 关键特性]
-description: 概述 GreptimeDB 的特点和优势，并提供相关文档链接，帮助用户了解 GreptimeDB 的设计和功能。
+keywords: [GreptimeDB, 特性, 数据模型, 架构, 存储位置, 核心概念]
+description: GreptimeDB 概念概览，包括为什么选择 GreptimeDB、数据模型、架构、存储位置、核心概念和常见问题。
 ---
 
 # 概念
 
-- [Why GreptimeDB](./why-greptimedb.md)：介绍了 GreptimeDB 的特点和优势，包括其对指标、日志和链路追踪数据的统一处理，云原生和灵活架构允许在各种环境中部署，从嵌入式到云平台等。GreptimeDB 还具有成本优势、高性能和开发者友好等特点。
-- [数据模型](./data-model.md)：介绍了 GreptimeDB 的数据模型，包括表的模式、索引列等。
-- [基础架构](./architecture.md)：获取 GreptimeDB 的云原生架构。
-- [存储位置](./storage-location.md)：介绍了 GreptimeDB 的存储位置，包括本地磁盘、HDFS、AWS S3 和阿里云 OSS 等云对象存储。
-- [核心概念](./key-concepts.md)：介绍了 GreptimeDB 的核心概念，包括表、时间索引约束、表 Region 和数据类型等。
-- [关键特性](./features-that-you-concern.md): 介绍了 TSDB 用户较为关心的指标（metrics）、日志（logs）和事件（events）数据库的特性。
-- [常见问题](/faq-and-others/faq.md): 全面的 FAQ，涵盖关于 GreptimeDB 能力、部署和使用的常见问题。
+GreptimeDB 是一个可观测性数据库，在单一引擎中统一处理 metrics、logs 和 traces。这里介绍理解 GreptimeDB 所需的核心概念。
 
-## 阅读更多
+**从这里开始：**
+- [为什么选择 GreptimeDB](./why-greptimedb.md) — 三支柱架构的问题，GreptimeDB 怎么解决
+- [数据模型](./data-model.md) — Metrics、logs、traces 如何用 Tag + Timestamp + Field 统一表示
+- [架构](./architecture.md) — 计算存储分离、无状态 Frontend、GreptimeDB 如何扩展
 
-从我们的博客文章中获取 GreptimeDB 路线图和架构设计：
+**深入了解：**
+- [Observability 2.0](./observability-2.md) — 宽事件、统一数据模型，超越三支柱的演进
+- [存储位置](./storage-location.md) — 对象存储、本地盘、多引擎存储
+- [核心概念](./key-concepts.md) — 表、Region、时间索引、数据类型、视图、Flow
+- [常见问题](./features-that-you-concern.md) — 更新、删除、TTL、压缩、高基数等 FAQ
 
-- [专为实时而生 — GreptimeDB 现已在 GitHub 正式开源](https://greptime.com/blogs/2022-11-15-this-time-for-real)
-- [事件管理革命：监控系统中统一日志和指标](https://greptime.com/blogs/2024-06-25-logs-and-metrics)
-- [GreptimeDB 架构内幕：基于分布式、云原生原则设计，实现时序处理及分析融合](https://greptime.com/blogs/2022-12-08-GreptimeDB-internal-design)
-- [GreptimeDB 存储引擎设计内幕：针对时序场景，检索压缩更智能](https://greptime.com/blogs/2022-12-21-storage-engine-design)
+## 延伸阅读
+
+- [什么是可观测性 2.0？什么是可观测性 2.0 原生数据库？](https://greptime.cn/blogs/2025-04-24-observability2.0-greptimedb.html) — 下一代可观测性的愿景
+- [事件管理革命：监控系统中统一日志和指标](https://greptime.cn/blogs/2024-06-25-logs-and-metrics)
+- [GreptimeDB 存储引擎设计内幕](https://greptime.cn/blogs/2022-12-21-storage-engine-design)
