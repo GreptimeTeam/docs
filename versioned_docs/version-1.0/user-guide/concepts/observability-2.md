@@ -60,7 +60,7 @@ Instead of precomputing metrics or structuring logs upfront, wide events preserv
 
 Wide events fundamentally change how we think about observability data. Metrics, logs, and traces are not separate data types—they are different projections of the same underlying events:
 
-- **Metrics**: `SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1 minute', timestamp)` — aggregated projection
+- **Metrics**: `SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1' minute, timestamp)` — aggregated projection
 - **Logs**: `SELECT message, timestamp WHERE message @@ 'error'` — text projection
 - **Traces**: `SELECT span_id, duration WHERE trace_id = '...'` — relational projection
 
@@ -91,13 +91,13 @@ Use one [SQL query](/user-guide/query-data/sql.md) to correlate metrics spikes, 
 
 ```sql
 SELECT
-  date_bin(INTERVAL '1 minute', timestamp) AS minute,
+  date_bin(INTERVAL '1' minute, timestamp) AS minute,
   COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
-WHERE timestamp >= NOW() - INTERVAL '1 hour'
+WHERE timestamp >= NOW() - INTERVAL '1' hour
   AND message @@ 'timeout'
-GROUP BY date_bin(INTERVAL '1 minute', timestamp);
+GROUP BY date_bin(INTERVAL '1' minute, timestamp);
 ```
 
 No context-switching between systems—all signals in one database. GreptimeDB also supports [PromQL](/user-guide/query-data/promql.md) for metrics queries, maintaining compatibility with existing dashboards.

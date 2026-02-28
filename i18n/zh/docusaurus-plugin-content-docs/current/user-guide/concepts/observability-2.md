@@ -60,7 +60,7 @@ Observability 2.0 用**宽事件（wide events）** 来解决这些问题。宽�
 
 宽事件的关键洞察：metrics、logs、traces 不是三种独立的数据类型，而是同一组底层事件的不同投影：
 
-- **Metrics**：`SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1 minute', timestamp)` — 聚合投影
+- **Metrics**：`SELECT COUNT(*) GROUP BY status, date_bin(INTERVAL '1' minute, timestamp)` — 聚合投影
 - **Logs**：`SELECT message, timestamp WHERE message @@ 'error'` — 文本投影
 - **Traces**：`SELECT span_id, duration WHERE trace_id = '...'` — 关系投影
 
@@ -93,13 +93,13 @@ GreptimeDB 的[架构](/user-guide/concepts/architecture.md)天然适配 Observa
 
 ```sql
 SELECT
-  date_bin(INTERVAL '1 minute', timestamp) AS minute,
+  date_bin(INTERVAL '1' minute, timestamp) AS minute,
   COUNT(CASE WHEN status >= 500 THEN 1 END) AS errors,
   AVG(duration) AS avg_latency
 FROM access_logs
-WHERE timestamp >= NOW() - INTERVAL '1 hour'
+WHERE timestamp >= NOW() - INTERVAL '1' hour
   AND message @@ 'timeout'
-GROUP BY date_bin(INTERVAL '1 minute', timestamp);
+GROUP BY date_bin(INTERVAL '1' minute, timestamp);
 ```
 
 不用在系统间切换，所有信号在同一个数据库里。同时支持 [PromQL](/user-guide/query-data/promql.md)，现有 Grafana 仪表板可以直接复用。

@@ -38,7 +38,7 @@ ETCD_REGISTRY=greptime-registry.cn-hangzhou.cr.aliyuncs.com \
   docker compose -f ./cluster-with-etcd.yaml up 
 ```
 
-如果集群成功启动，它将监听 4000-4003 端口。你可以通过参考 [快速开始](../quick-start.md#连接到-greptimedb) 访问集群。
+如果集群成功启动，它将监听 4000-4003 端口。你可以通过参考 [快速开始](../quick-start.md#连接-greptimedb) 访问集群。
 
 ### 清理
 
@@ -52,4 +52,4 @@ docker compose -f ./cluster-with-etcd.yaml down
 
 ## 下一步
 
-学习如何使用 GreptimeDB：[快速开始](../quick-start.md#连接到-greptimedb)。
+学习如何使用 GreptimeDB：[快速开始](../quick-start.md#连接-greptimedb)。
