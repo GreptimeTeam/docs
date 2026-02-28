@@ -9,7 +9,7 @@ description: 10 分钟上手 GreptimeDB——从数据写入到 metrics、logs�
 
 本指南用 SQL 带你体验 GreptimeDB 的核心能力——从数据写入到 metrics、logs、traces 跨信号关联查询。SQL 同时也是 GreptimeDB 的管理入口，用于建表、设置 TTL 策略、配置索引等。
 
-:::tip 已经在用 Prometheus、OpenTelemetry 或 Loki？
+:::tip 已经在用 Prometheus、OpenTelemetry、Loki 或 ES？
 可以直接用现有工具写入数据，不需要手动建表（GreptimeDB 会[自动建表](/user-guide/ingest-data/overview.md#自动生成表结构)）：
 - [Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md)
 - [OpenTelemetry (OTLP)](/user-guide/ingest-data/for-observability/opentelemetry.md)
@@ -91,16 +91,18 @@ CREATE TABLE app_logs (
 -- Traces：请求链路 Span
 CREATE TABLE traces (
   ts TIMESTAMP TIME INDEX,
-  trace_id STRING,
+  trace_id STRING SKIPPING INDEX,
   span_id STRING,
   parent_span_id STRING,
   service_name STRING,
   operation STRING,
   duration DOUBLE,
   status_code INT,
-  PRIMARY KEY (service_name, trace_id)
+  PRIMARY KEY (service_name)
 ) WITH ('append_mode'='true');
 ```
+
+对于高基数的 `trace_id`  我们启用了[跳数索引](/user-guide/manage-data/data-index.md#跳数索引)。
 
 :::tip
 这里用 SQL 写入数据，所以需要手动建表。但 GreptimeDB 支持 [Schemaless](/user-guide/ingest-data/overview.md#自动生成表结构)——通过 OpenTelemetry、Prometheus Remote Write、InfluxDB Line Protocol 等协议写入时，表会自动创建。
@@ -324,13 +326,13 @@ WITH
   -- Traces：按 host 统计 5 秒窗口的慢 Span
   slow_traces AS (
     SELECT
-      date_bin(INTERVAL 5 seconds, ts) AS ts,
+      date_bin(INTERVAL '5' seconds, ts) AS ts,
       service_name AS host,
       COUNT(*) AS slow_spans,
       MAX(duration) AS max_span_duration
     FROM traces
     WHERE duration > 500
-    GROUP BY date_bin(INTERVAL 5 seconds, ts), service_name
+    GROUP BY date_bin(INTERVAL '5' seconds, ts), service_name
   )
 SELECT
   m.ts,

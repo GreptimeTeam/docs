@@ -9,8 +9,8 @@ Before proceeding, please ensure you have [installed GreptimeDB](./installation/
 
 This guide uses SQL to walk you through GreptimeDB's core capabilities — from ingestion to cross-signal correlation across metrics, logs, and traces. SQL is also GreptimeDB's management interface for creating tables, setting TTL policies, and configuring indexes.
 
-:::tip Already running Prometheus, OpenTelemetry, or Loki?
-You can start ingesting data immediately using your existing tools — no schema creation needed (GreptimeDB creates tables automatically):
+:::tip Already running Prometheus, OpenTelemetry,  Loki or ES?
+You can start ingesting data immediately using your existing tools — no schema creation needed (GreptimeDB [creates tables automatically](/user-guide/ingest-data/overview.md#automatic-schema-generation)):
 - [Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md)
 - [OpenTelemetry (OTLP)](/user-guide/ingest-data/for-observability/opentelemetry.md)
 - [Loki Protocol](/user-guide/ingest-data/for-observability/loki.md)
@@ -91,16 +91,18 @@ CREATE TABLE app_logs (
 -- Traces: request spans
 CREATE TABLE traces (
   ts TIMESTAMP TIME INDEX,
-  trace_id STRING,
+  trace_id STRING SKIPPING INDEX,
   span_id STRING,
   parent_span_id STRING,
   service_name STRING,
   operation STRING,
   duration DOUBLE,
   status_code INT,
-  PRIMARY KEY (service_name, trace_id)
+  PRIMARY KEY (service_name)
 ) WITH ('append_mode'='true');
 ```
+
+For high-cardinality `trace_id`s, we have enabled the [skip index](/user-guide/manage-data/data-index.md#skipping-index).
 
 :::tip
 We use SQL to ingest data below, so we create the tables manually. However, GreptimeDB is [schemaless](/user-guide/ingest-data/overview.md#automatic-schema-generation) — when using protocols like OpenTelemetry, Prometheus Remote Write, or InfluxDB Line Protocol, tables are created automatically.
@@ -324,13 +326,13 @@ WITH
   -- Traces: per-host slow span count in 5s windows
   slow_traces AS (
     SELECT
-      date_bin(INTERVAL 5 seconds, ts) AS ts,
+      date_bin(INTERVAL '5' seconds, ts) AS ts,
       service_name AS host,
       COUNT(*) AS slow_spans,
       MAX(duration) AS max_span_duration
     FROM traces
     WHERE duration > 500
-    GROUP BY date_bin(INTERVAL 5 seconds, ts), service_name
+    GROUP BY date_bin(INTERVAL '5' seconds, ts), service_name
   )
 SELECT
   m.ts,
