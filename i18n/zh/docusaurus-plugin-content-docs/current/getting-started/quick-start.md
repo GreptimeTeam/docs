@@ -498,7 +498,7 @@ SELECT * FROM grpc_latencies;
 
 ### 用 InfluxDB Line Protocol 写入
 
-点 Dashboard 的 `Ingest` 图标，可以用 [InfluxDB Line Protocol](/user-guide/ingest-data/for-observability/influxdb-line-protocol.md) 格式写入数据：
+点 Dashboard 的 `Ingest` 图标，可以用 [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) 格式写入数据：
 
 ```txt
 grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000
