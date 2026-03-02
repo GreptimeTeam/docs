@@ -178,7 +178,7 @@ WAL 配置参见[配置指南](/user-guide/deployments-administration/configurat
 ### GreptimeDB 的扩展能力如何？
 
 - 表和列的数量没有严格限制，性能主要取决于主键设计而非表数量。
-- Region 内数据自动按时间组织数据。
+- Region 内数据自动按时间组织。
 - 通过 `PARTITION` 子句手动分片——参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)。
 - 多层缓存（写入缓存 + LRU 读缓存）优化性能。
 - 对象存储后端（S3/GCS/Azure Blob）提供几乎无限的存储容量。
