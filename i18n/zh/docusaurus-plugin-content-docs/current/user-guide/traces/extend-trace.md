@@ -46,6 +46,8 @@ CREATE TABLE "django_http_request_latency" (
 下一步我们创建用于计算 uddsketch 数据的 Flow 任务。该任务以 30s 为时间窗口。这里
 例子里我们过滤了 `scope_name` 字段，在实际的场景里这是可选的。
 
+注意：在此示例中，我们使用 `web_trace_demo` 作为源 Trace 表名。你应该将其替换为你自己的 Trace 表名（默认为 `opentelemetry_traces`）。
+
 ```sql
 CREATE FLOW django_http_request_latency_flow
 SINK TO django_http_request_latency

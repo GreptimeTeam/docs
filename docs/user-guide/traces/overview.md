@@ -3,7 +3,7 @@ keywords: [trace, distributed tracing, opentelemetry, jaeger, wide events, obser
 description: Introducing GreptimeDB's built-in support for managing tracing data at scale
 ---
 
-# Trace
+# Traces
 
 :::warning
 
@@ -15,6 +15,7 @@ Native support for Trace data is introduced since GreptimeDB v0.14. In this
 section we will cover from basic ingestion and query steps, to advanced
 internals of data modeling.
 
-- [How to ingest/query trace data](./read-write.md)
-- [Trace data modeling in GreptimeDB](./data-model.md)
-- [Extending trace data](./extend-trace.md)
+- [Ingestion and Query](./read-write.md)
+- [Trace Data Modeling in GreptimeDB](./data-model.md)
+- [Extending Trace Data](./extend-trace.md)
+

@@ -31,19 +31,20 @@ greptime_trace_v1`.
 
 ## 数据模型
 
-`greptime_trace_v1` 数据模型是非常直观的：
+`greptime_trace_v1` 数据模型是非常直观的。默认情况下，Trace 数据存储在名为 `opentelemetry_traces` 的表中。你可以通过在 OTLP/HTTP 请求中指定 `x-greptime-trace-table-name` 请求头来自定义表名。
 
 - 所有常见的 [OpenTelemetry
-  Trace](https://opentelemetry.io/docs/concepts/signals/traces/) 数据字段都被映
-  射为 GreptimeDB 的列。
+  Trace](https://opentelemetry.io/docs/concepts/signals/traces/) 数据字段都被映射为 GreptimeDB 的列。
+- `service_name` 从 `resource_attributes["service.name"]` 中提取，并用作 **Tag**（**主键**的一部分）。
+- `timestamp` 是 Span 的开始时间，用作 **时间索引**（Time Index）。
 - `duration_nano` 列由 `end_time - start_time` 生成。
 - 所有的属性字段被打平为列，按照 `[span|resource|scope]_attributes.[attribute_key]`
-  的命名方式生成名称。如果属性的值是复合类型，如 `Array` 或 `Kvlist`，它将被存储
-  为 GreptimeDB 的 JSON 类型。
-- 其他复合类型字段 `span_links` 和 `span_events` 将被存储为 JSON 类型。
+  的命名方式生成名称。
+  - 注意：`resource_attributes.service.name` 被排除在打平之外，因为它已经存储在 `service_name` 列中。
+  - 如果属性的值是复合类型，如 `Array` 或 `Kvlist`，它将被存储为 GreptimeDB 的 `JSON` 类型。
+- 其他复合类型字段 `span_links` 和 `span_events` 将被存储为 `JSON` 类型。
 
-在插入第一条数据时，表将被创建。并且当数据中涉及新的字段时，表的结构会自动变更增
-加列。
+在插入第一条数据时，表将被创建。并且当数据中涉及新的字段时，表的结构会自动变更增加列。
 
 以下是一个使用 OpenTelemetry Django 埋点生成的表结构：
 
@@ -175,11 +176,33 @@ Trace 表包含了默认的 [分区规
 table](/reference/sql/alter.md#create-an-index-for-a-column)语句来实现。不同于分
 区规则，索引可以增量添加而不用重新建表。
 
-### Append 模式
+### Append-only 模式
 
-通过此接口创建的表，默认为[Append 模
+通过此接口创建的表，默认为[Append-only 模
 式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
 
 ### TTL
 
 可以对 Trace 表应用 [过期时间规则](/reference/sql/alter.md#alter-table-options)。
+
+## 辅助表
+
+当你写入 Trace 数据时，GreptimeDB 会自动创建两个辅助表，以便于搜索服务和操作。这些表通过在主 Trace 表名后追加 `_services` 和 `_operations` 来命名（例如 `opentelemetry_traces_services` 和 `opentelemetry_traces_operations`）。
+
+### 服务表 (`<table_name>_services`)
+
+该表存储 Trace 数据中发现的唯一服务名称列表。
+
+- **列**:
+  - `timestamp`: 所有条目都使用一个固定的时间戳 (2100-01-01 00:00:00)。
+  - `service_name`: 服务名称 (Tag)。
+
+### 操作表 (`<table_name>_operations`)
+
+该表存储 Trace 数据中发现的唯一操作（服务、Span 名称和 Span 类型）列表。
+
+- **列**:
+  - `timestamp`: 所有条目都使用一个固定的时间戳 (2100-01-01 00:00:00)。
+  - `service_name`: 服务名称 (Tag)。
+  - `span_name`: Span 名称 (Tag)。
+  - `span_kind`: Span 类型 (Tag)。

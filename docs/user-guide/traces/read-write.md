@@ -79,7 +79,7 @@ service:
       exporters: [otlphttp]
 ```
 
-#### Write traces data to OpenTelemetry Collector
+#### Write Trace Data to OpenTelemetry Collector
 
 You can configure the corresponding exporter to write traces data to the
 OpenTelemetry Collector. For example, you can use the environment variable
@@ -123,7 +123,7 @@ data. Here we reuse the Pipeline concept of GreptimeDB for data
 transformation. However, note that we only support built-in `greptime_trace_v1`
 as the pipeline for tracing. No custom pipeline is allowed for the moment.
 
-### Append Only
+### Append-only Mode
 
 By default, trace table created by OpenTelemetry API are in [append only
 mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
@@ -159,26 +159,26 @@ An example output is like
 
 ```
 *************************** 1. row ***************************
-                         timestamp: 2025-04-02 09:58:43.822229
-                     timestamp_end: 2025-04-02 09:58:43.822352
-                     duration_nano: 123000
-                    parent_span_id: NULL
-                          trace_id: 1948380e459f4ca69bb4f4274b5db7ba
-                           span_id: f179c8dc2171a0a0
-                         span_kind: SPAN_KIND_CLIENT
-                         span_name: lets-go
+                         timestamp: 2025-05-07 10:03:29.657544
+                     timestamp_end: 2025-05-07 10:03:29.661714
+                     duration_nano: 4169970
+                    parent_span_id: eccc18b6fc210f31
+                          trace_id: fb60d19aa36fdcb7d14a71ca0b9b42ae
+                           span_id: 49806a2671f2ddcb
+                         span_kind: SPAN_KIND_SERVER
+                         span_name: POST todos/
                   span_status_code: STATUS_CODE_UNSET
                span_status_message:
                        trace_state:
-                        scope_name: telemetrygen
-                     scope_version:
-                      service_name: telemetrygen
-span_attributes.net.sock.peer.addr: 1.2.3.4
-      span_attributes.peer.service: telemetrygen-server
+                        scope_name: opentelemetry.instrumentation.django
+                     scope_version: 0.51b0
+                      service_name: myproject
+span_attributes.http.request.method: POST
+             span_attributes.url.full:
                        span_events: []
                         span_links: []
 ...
 ```
 
-We will cover more information about the table structure in [data
-model](./data-model.md) section.
+We will cover more information about the table structure in [Data
+Model](./data-model.md) section.
