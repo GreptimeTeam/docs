@@ -619,6 +619,7 @@ const sidebars: SidebarsConfig = {
                 'reference/command-lines/utilities/metadata',
                 'reference/command-lines/utilities/metadata-interaction',
                 'reference/command-lines/utilities/repair-logical-tables',
+                'reference/command-lines/utilities/repair-partition-columns',
               ],
             },
           ],
