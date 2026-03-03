@@ -99,12 +99,12 @@ span_attributes.user_agent.original        | python-requests/2.32.3
 span_attributes.http.route                 | todos/
 ```
 
-To check the table definition, you can use `show create table <table>`
+To check the table definition, you can use `show create table opentelemetry_traces`
 statement. An output like this is expected:
 
 ```
-Table        | web_trace_demo
-Create Table | CREATE TABLE IF NOT EXISTS "web_trace_demo" (                                           +
+Table        | opentelemetry_traces
+Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
              |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
              |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
@@ -209,10 +209,15 @@ You can apply [TTL on trace table](/reference/sql/alter.md#alter-table-options).
 
 When you ingest trace data, GreptimeDB automatically creates two auxiliary
 tables to facilitate searching for services and operations. These tables are
-named by appending `_services` and `_operations` to your main trace table name
-(e.g., `opentelemetry_traces_services` and `opentelemetry_traces_operations`).
+named by appending `_services` and `_operations` to your main trace table name.
 
-### Services Table (`<table_name>_services`)
+By default, these are named `opentelemetry_traces_services` and
+`opentelemetry_traces_operations`. If you customize the main trace table name
+using the `x-greptime-trace-table-name` HTTP header, the auxiliary tables will
+be named accordingly (e.g., `<custom_table_name>_services` and
+`<custom_table_name>_operations`).
+
+### Services Table (`opentelemetry_traces_services`)
 
 This table stores the list of unique service names found in the trace data.
 
@@ -220,7 +225,7 @@ This table stores the list of unique service names found in the trace data.
   - `timestamp`: A constant timestamp (2100-01-01 00:00:00) used for all entries.
   - `service_name`: The name of the service (Tag).
 
-### Operations Table (`<table_name>_operations`)
+### Operations Table (`opentelemetry_traces_operations`)
 
 This table stores the list of unique operations (service, span name, and span
 kind) found in the trace data.

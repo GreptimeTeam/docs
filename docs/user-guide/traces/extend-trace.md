@@ -51,7 +51,7 @@ Next we create a flow task to generate uddsketch data for every 30s time
 window. The example filters spans by the scope name, which is optional depends
 on your data. 
 
-Note: In this example, we use `web_trace_demo` as the source trace table name. You should replace it with your own trace table name (the default is `opentelemetry_traces`).
+Note: In this example, we use the default table name `opentelemetry_traces` as the source trace table. You should replace it with your own trace table name if it's customized.
 
 ```sql
 CREATE FLOW django_http_request_latency_flow
@@ -63,7 +63,7 @@ SELECT
     span_name,
     uddsketch_state(128, 0.01, "duration_nano") AS "latency_sketch",
     date_bin('30 seconds'::INTERVAL, "timestamp") as "time_window",
-FROM web_trace_demo
+FROM opentelemetry_traces
 WHERE
     scope_name = 'opentelemetry.instrumentation.django'
 GROUP BY
