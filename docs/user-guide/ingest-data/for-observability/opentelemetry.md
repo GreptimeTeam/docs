@@ -234,15 +234,13 @@ To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK librar
 
 - URL: `http{s}://<host>/v1/otlp/v1/traces`
 - Headers:
-  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Content-Type`: `application/x-protobuf`
   - `Authorization`: `Basic` authentication.
+  - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
   - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` (required) - The pipeline name to process the traces.
 
-GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol** and the following headers are required:
-
-- `Content-Type` should be configured as `application/x-protobuf`;
-- `X-Greptime-Pipeline-Name` should be configured as `greptime_trace_v1`;
+GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
 ### Example Code
 

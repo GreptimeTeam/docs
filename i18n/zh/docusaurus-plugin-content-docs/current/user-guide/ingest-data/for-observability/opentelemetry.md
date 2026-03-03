@@ -235,15 +235,13 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
 
 - URL: `http{s}://<host>/v1/otlp/v1/traces`
 - Headers:
-  - `X-Greptime-DB-Name`: `<dbname>`
+  - `Content-Type`: 应配置为 `application/x-protobuf`
   - `Authorization`: `Basic` 认证。
+  - `X-Greptime-DB-Name`: `<dbname>`
   - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
   - `X-Greptime-Pipeline-Name`: `greptime_trace_v1`（必选）- 处理 traces 的 pipeline 名称。
 
-GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议** 发送，其中对 HTTP header 有如下要求：
-
-- `Content-Type` 应配置为 `application/x-protobuf`；
-- `X-Greptime-Pipeline-Name` 应配置为 `greptime_trace_v1`；
+GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
 ### 示例代码
 
