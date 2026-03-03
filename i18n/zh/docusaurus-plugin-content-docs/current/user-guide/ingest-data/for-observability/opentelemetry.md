@@ -234,14 +234,14 @@ GreptimeDB 支持直接写入 OpenTelemetry 协议的 traces 数据，并内置 
 要通过 OpenTelemetry SDK 库将 OpenTelemetry 的 traces 数据发送到 GreptimeDB，请使用以下信息：
 
 - URL: `http{s}://<host>/v1/otlp/v1/traces`
-- Headers: headers 与 [Logs](#Logs) 部分相同，你可以参考 [Logs](#Logs) 部分获取更多信息。
+- Headers:
+  - `Content-Type`: 应配置为 `application/x-protobuf`
+  - `Authorization`: `Basic` 认证。
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `X-Greptime-Trace-Table-Name`: `<table_name>`（可选）- 存储 traces 的表名。如果未提供，默认表名为 `opentelemetry_traces`。
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1`（必选）- 处理 traces 的 pipeline 名称。
 
-默认地，GreptimeDB 会将 traces 数据写入到 `public` 数据库中的 `opentelemetry_traces` 表中。如果想要将 traces 数据写入到不同的表中，你可以使用 `X-Greptime-DB-Name` 和 `X-Greptime-Log-Table-Name` 头部信息来指定数据库和表名。
-
-GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议** 发送，其中对 HTTP header 有如下要求：
-
-- `content-type` 应配置为 `application/x-protobuf`；
-- `x-greptime-pipeline-name` 应配置为 `greptime_trace_v1`；
+GreptimeDB 会通过 **HTTP 协议** 接受 **protobuf 编码的 traces 数据**。
 
 ### 示例代码
 
@@ -249,9 +249,7 @@ GreptimeDB 会接受 **protobuf 编码的 traces 数据** 通过 **HTTP 协议**
 
 ### 数据模型
 
-OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
-
-默认表结构：
+GreptimeDB 将 OTLP traces 数据模型映射到表结构。默认情况下，Trace 数据存储在 `opentelemetry_traces` 表中。
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+
@@ -278,15 +276,23 @@ OTLP traces 数据模型根据以下规则映射到 GreptimeDB 数据模型：
 +------------------------------------+---------------------+------+------+---------+---------------+
 ```
 
-- 每一行代表一个单一的 span；
-- 核心的 OpenTelemetry 字段，如 `trace_id`, `span_id`, 和 `service_name` 等将被单独作为表的列；
-- Resource Attributes 和 Span Attributes 将被自动展平为单独的列，列名为其 JSON 格式表示时的 key（多层嵌套时将用 `.` 连接）；
-- `span_events` 和 `span_links` 默认存储为 JSON 数据类型；
+- 每一行代表一个单一的 span。
+- `service_name` 用作 **Tag**（**主键**的一部分）。
+- `timestamp` 用作 **时间索引**（Time Index）。
+- Resource Attributes 和 Span Attributes 将被自动展平为单独的列。
+  - 注意：`resource_attributes.service.name` 被排除在打平之外，因为它已经存储在 `service_name` 列中。
+- `span_events` 和 `span_links` 默认存储为 `JSON` 数据类型。
+
+有关数据模型和辅助表的更多详细信息，请参阅 [Trace 数据模型](/user-guide/traces/data-model.md)。
 
 注意: 
 1. `greptime_trace_v1` 处理方式默认通过 `trace_id` 字段将数据切分成不同的分区以提升性能。**请确保 `trace_id` 的第一个字符是分布均匀的**。
 2. 在非测试的场合下，可以通过设置 `ttl` 以避免持久化数据量过大。通过设置 `x-greptime-hints: ttl=7d` HTTP 请求头，在创建 trace 表时会添加一个 7 天的 `ttl` 表选项。见[此文档](/reference/sql/create.md#表选项)了解更多关于表选项 `ttl` 的信息。
 
-### Append 模式
+### 辅助表
 
-通过此接口创建的表，默认为[Append 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
+GreptimeDB 会自动创建辅助表（例如 `opentelemetry_traces_services` 和 `opentelemetry_traces_operations`），以便于搜索服务和操作。详情请参阅[辅助表](/user-guide/traces/data-model.md#辅助表)。
+
+### Append-only 模式
+
+通过此接口创建的表，默认为[Append-only 模式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表)。
