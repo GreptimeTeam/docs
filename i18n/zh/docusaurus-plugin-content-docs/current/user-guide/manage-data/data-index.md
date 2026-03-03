@@ -52,7 +52,7 @@ CREATE TABLE monitoring_data (
 示例：
 ```sql
 CREATE TABLE sensor_data (
-    domain STRING PRIMARY KEY,
+    `domain` STRING PRIMARY KEY,
     device_id STRING SKIPPING INDEX,
     temperature DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
@@ -68,7 +68,7 @@ CREATE TABLE sensor_data (
 
 ```sql
 CREATE TABLE sensor_data (
-    domain STRING PRIMARY KEY,
+    `domain` STRING PRIMARY KEY,
     device_id STRING SKIPPING INDEX WITH(type='BLOOM', granularity=1024, false_positive_rate=0.01),
     temperature DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
