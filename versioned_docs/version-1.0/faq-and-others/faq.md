@@ -1,431 +1,232 @@
 ---
-keywords: [unified observability, metrics, logs, traces, performance, OpenTelemetry, Prometheus, Grafana, cloud-native, SQL, PromQL]
-description: Frequently Asked Questions about GreptimeDB - the unified observability database for metrics, logs, and traces.
+keywords: [FAQ, frequently asked questions, troubleshooting, deployment, migration, data model, integration]
+description: Frequently Asked Questions about GreptimeDB — covering data model, integration, deployment, operations, and versioning.
 ---
 
 # Frequently Asked Questions
 
-## Core Capabilities
+:::tip Looking for introductory information?
+- What is GreptimeDB / Use cases → [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md)
+- Performance benchmarks → [Key Features](/user-guide/concepts/features-that-you-concern.md#how-is-greptimedbs-performance-compared-to-other-solutions)
+- Metrics, logs, and traces → [Key Features](/user-guide/concepts/features-that-you-concern.md#how-does-greptimedb-handle-metrics-logs-and-traces)
+- High cardinality → [Key Features](/user-guide/concepts/features-that-you-concern.md#how-does-greptimedb-address-the-high-cardinality-issue)
+- Data model → [Data Model](/user-guide/concepts/data-model.md)
+:::
 
-### What is GreptimeDB?
-
-GreptimeDB is an open-source, cloud-native unified observability database designed to store and analyze metrics, logs, and traces in a single system. Built with Rust for high performance, it offers:
-- Up to 50x lower operational and storage costs
-- Sub-second query responses on petabyte-scale datasets  
-- Native OpenTelemetry support
-- SQL, PromQL, and stream processing capabilities
-- Compute-storage separation for flexible scaling
+## General
 
 ### How is GreptimeDB's performance compared to other solutions?
 
-GreptimeDB delivers superior performance across observability workloads:
+GreptimeDB is designed for high-throughput write, low-latency query, and cost-efficient storage across metrics, logs, and traces workloads. Benchmark results are available in the following reports:
 
-**Write Performance**:
-- **2-4.7x faster** than Elasticsearch (up to 470% throughput)
-- **1.5x faster** than Loki (121k vs 78k rows/s)
-- **2x faster** than InfluxDB (250k-360k rows/s)
-- **Matches ClickHouse** performance (111% throughput)
+- [GreptimeDB vs. InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
+- [GreptimeDB vs. TimescaleDB](https://greptime.com/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
+- [GreptimeDB vs. Grafana Mimir](https://greptime.com/blogs/2024-08-02-datanode-benchmark)
+- [GreptimeDB vs. ClickHouse vs. Elasticsearch (Log Benchmark)](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
+- [GreptimeDB vs. SQLite](https://greptime.com/blogs/2024-08-30-sqlite)
+- [GreptimeDB vs. Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
+- [JSONBench #1 (1 Billion Cold Run)](https://greptime.com/blogs/2025-03-18-jsonbench-greptimedb-performance)
 
-**Query Performance**:
-- **40-80x faster** than Loki for log queries
-- **500x faster** for repeated queries (with caching)
-- **2-11x faster** than InfluxDB for complex time-series queries
-- Competitive with ClickHouse across different query patterns
-
-**Storage & Cost Efficiency**:
-- **87% less storage** than Elasticsearch (12.7% footprint)
-- **50% less storage** than ClickHouse
-- **50% less storage** than Loki (3.03GB vs 6.59GB compressed)
-- **Up to 50x lower** operational costs vs traditional stacks
-
-**Resource Optimization**:
-- **40% less CPU** usage compared to previous versions
-- **Lowest memory consumption** among tested databases
-- Consistent performance on object storage (S3/GCS)
-- Superior high-cardinality data handling
-
-**Unique Advantages**:
-- Single database for metrics, logs, and traces
-- Native cloud-native architecture
-- Horizontal scalability (handles 1.15B+ rows)
-- Full-text search with native indexing
-
-Benchmark reports: [vs InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark) | [vs Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report) | [Log Benchmark](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
-
-### How does GreptimeDB handle metrics, logs, and traces?
-
-GreptimeDB is designed as a unified observability database that natively supports all three telemetry types:
-- **Metrics**: Full Prometheus compatibility with PromQL support
-- **Logs**: Full-text indexing, Loki protocol support, and efficient compression
-- **Traces**: Experimental OpenTelemetry trace storage with scalable querying
-
-This unified approach eliminates data silos and enables cross-signal correlation without complex data pipelines.
-
-For detailed documentation:
-- [Log Overview](/user-guide/logs/overview.md)
-- [Trace Overview](/user-guide/traces/overview.md)
-- [OpenTelemetry compatibility](/user-guide/ingest-data/for-observability/opentelemetry.md)
-- [Prometheus compatibility](/user-guide/ingest-data/for-observability/prometheus.md)
-- [Loki protocol compatibility](/user-guide/ingest-data/for-observability/loki.md)
-- [Elasticsearch compatibility](/user-guide/ingest-data/for-observability/elasticsearch.md)
-- [Vector compatibility](/user-guide/ingest-data/for-observability/vector.md)
-
-### What are the main use cases for GreptimeDB?
-
-GreptimeDB excels in:
-- **Unified Observability**: Replace complex monitoring stacks with a single database
-- **Edge and Cloud Data Management**: Seamless data synchronization across environments
-- **IoT and Automotive**: Process high-volume sensor data efficiently
-- **AI/LLM Monitoring**: Track model performance and behavior
-- **Real-time Analytics**: Sub-second queries on petabyte-scale datasets
-
-## Architecture & Performance
-
-### Can GreptimeDB replace my Prometheus setup?
-
-Yes, GreptimeDB provides:
-- Native PromQL support with near 100% compatibility
-- Prometheus remote write protocol support
-- Efficient handling of high-cardinality metrics
-- Long-term storage without downsampling
-- Better resource efficiency than traditional Prometheus+Thanos stacks
-
-### What indexing capabilities does GreptimeDB offer?
-
-GreptimeDB provides rich indexing options:
-- **Inverted indexes**: Fast lookups on tag columns
-- **Full-text indexes**: Efficient log searching
-- **Skipping indexes**: Accelerate range queries
-- **Vector indexes**: Support for AI/ML workloads
-
-These indexes enable sub-second queries even on petabyte-scale datasets.
-
-For configuration details, see [Index Management](/user-guide/manage-data/data-index.md).
-
-### How does GreptimeDB achieve cost efficiency?
-
-GreptimeDB reduces costs through:
-- **Columnar storage**: Superior compression ratios
-- **Compute-storage separation**: Independent scaling of resources
-- **Efficient cardinality management**: Handles high-cardinality data without explosion
-- **Unified platform**: Eliminates need for multiple specialized databases
-
-Result: Up to 50x lower operational and storage costs compared to traditional stacks.
-
-### What makes GreptimeDB cloud-native?
-
-GreptimeDB is purpose-built for Kubernetes with:
-- **Disaggregated architecture**: Separate compute and storage layers
-- **Elastic scaling**: Add/remove nodes based on workload
-- **Multi-cloud support**: Run across AWS, GCP, Azure seamlessly
-- **Kubernetes operators**: Simplified deployment and management
-- **Object storage backend**: Use S3, GCS, or Azure Blob for data persistence
-
-For Kubernetes deployment details, see the [Kubernetes Deployment Guide](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md).
-
-### Does GreptimeDB support schemaless data ingestion?
-
-Yes, GreptimeDB supports automatic schema creation when using:
-- gRPC protocol
-- InfluxDB Line Protocol
-- OpenTSDB protocol
-- Prometheus Remote Write
-- OpenTelemetry protocol
-- Loki protocol (for log data)
-- Elasticsearch-compatible APIs (for log data)
-
-Tables and columns are created automatically on first write, eliminating manual schema management.
-
-## Integration & Compatibility
-
-### What protocols and tools does GreptimeDB support?
-
-GreptimeDB provides extensive compatibility:
-- **Protocols**: OpenTelemetry, Prometheus Remote Write, InfluxDB Line, Loki, Elasticsearch, MySQL, PostgreSQL (see [Protocols Overview](/user-guide/protocols/overview.md))
-- **Query Languages**: SQL, PromQL
-- **Visualization**: [Grafana integration](/user-guide/integrations/grafana.md), any MySQL/PostgreSQL compatible tool
-- **Data Pipeline**: Vector, Fluent Bit, Telegraf, Kafka
-- **SDKs**: Go, Java, Rust, Erlang, Python
-
-### Is GreptimeDB compatible with Grafana?
-
-Yes, GreptimeDB offers:
-- [Grafana integration](/user-guide/integrations/grafana.md) with official plugin
-- [MySQL/PostgreSQL protocol support](/user-guide/integrations/grafana.md#mysql-data-source) for standard Grafana data sources
-- [Native PromQL](/user-guide/query-data/promql.md) for Prometheus-style queries
-- SQL support for complex analytics
-
-### How does GreptimeDB integrate with OpenTelemetry?
-
-GreptimeDB is OpenTelemetry-native:
-- Direct OTLP ingestion for metrics, logs, and traces
-- No translation layer or data loss
-- Supports OpenTelemetry Collector and SDKs
-- Preserves semantic conventions and resource attributes
-
-### What SDKs are available for GreptimeDB?
-
-- **Go**: [greptimedb-ingester-go](https://github.com/GreptimeTeam/greptimedb-ingester-go)
-- **Java**: [greptimedb-ingester-java](https://github.com/GreptimeTeam/greptimedb-ingester-java)
-- **Rust**: [greptimedb-ingester-rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
-- **Erlang**: [greptimedb-ingester-erl](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
-- **Python**: Via SQL drivers (MySQL/PostgreSQL compatible)
-
-### How can I migrate from other databases to GreptimeDB?
-
-GreptimeDB provides migration guides for popular databases:
-- **From ClickHouse**: Table schema and data migration
-- **From InfluxDB**: Line protocol and data migration  
-- **From Prometheus**: Remote write and historical data migration
-- **From MySQL/PostgreSQL**: SQL-based migration
-
-For detailed migration instructions, see [Migration Overview](/user-guide/migrate-to-greptimedb/overview.md).
-
-### What disaster recovery options does GreptimeDB provide?
-
-GreptimeDB offers multiple disaster recovery strategies to meet different availability requirements:
-
-- **Standalone DR Solution**: Uses remote WAL and object storage, achieving RPO=0 and RTO in minutes for small-scale scenarios
-- **Region Failover**: Automatic failover for individual regions with minimal downtime
-- **Active-Active Failover** (Enterprise): Synchronous request replication between nodes for high availability
-- **Cross-Region Single Cluster**: Spans three regions with zero RPO and region-level error tolerance
-- **Backup and Restore**: Periodic data backups with configurable RPO based on backup frequency
-
-Choose the appropriate solution based on your availability requirements, deployment scale, and cost considerations. For detailed guidance, see [Disaster Recovery Overview](/user-guide/deployments-administration/disaster-recovery/overview.md).
-
-## Data Management & Processing
-
-### How does GreptimeDB handle data lifecycle?
-
-**Retention Policies**:
-- Database-level and table-level TTL settings
-- Automatic data expiration without manual cleanup
-- Configurable via [TTL Documentation](/reference/sql/create.md#table-options)
-
-**Data Export**:
-- [`COPY TO` command](/reference/sql/copy.md#connect-to-s3) for S3, local files
-- Standard SQL queries via any compatible client
-- Export functionality for backup and disaster recovery: [Back up & Restore Data](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)
-
-### How does GreptimeDB handle high-cardinality and real-time processing?
-
-**High-Cardinality Management**:
-- Advanced indexing strategies prevent cardinality explosion
-- Columnar storage with intelligent compression
-- Distributed query execution with data pruning
-- Handles millions of unique time series efficiently
-
-Learn more about indexing: [Index Management](/user-guide/manage-data/data-index.md)
-
-**Real-Time Processing**:
-- **[Flow Engine](/user-guide/flow-computation/overview.md)**: Real-time stream processing system that enables continuous, incremental computation on streaming data with automatic result table updates
-- **[Pipeline](/reference/pipeline/pipeline-config.md)**: Data parsing and transformation mechanism for processing incoming data in real-time, with configurable processors for field extraction and data type conversion across multiple data formats
-- **Output Tables**: Persist processed results for analysis
-
-
-### What are GreptimeDB's scalability characteristics?
-
-**Scale Limits**:
-- No strict limitations on table or column count
-- Hundreds of tables with minimal performance impact
-- Performance scales with primary key design, not table count
-- Column-oriented storage ensures efficient partial reads
-
-**Partitioning & Distribution**:
-- Automatic time-based organization within regions
-- Manual distributed sharding via PARTITION clause (see [Table Sharding Guide](/user-guide/deployments-administration/manage-data/table-sharding.md))
-- Automatic region splitting planned for future releases
-- **Dynamic partitioning without configuration** (Enterprise feature)
-
-**Core Scalability Features**:
-- **Multi-tiered caching**: Write cache (disk-backed) and read cache (LRU policy) for optimal performance
-- **Object storage backend**: Virtually unlimited storage via S3/GCS/Azure Blob
-- **Asynchronous WAL**: Efficient write-ahead logging with optional per-table controls
-- **Distributed query execution**: Multi-node coordination for large datasets
-- **Manual Compaction**: Available via [admin commands](/reference/sql/admin.md)
-
-**Enterprise Scale Features**:
-- Advanced partitioning and automatic rebalancing
-- Enhanced multi-tenancy and isolation
-- Enterprise-grade monitoring and management tools
-
-For architecture details, see the [storage architecture blog](https://greptime.com/blogs/2025-03-26-greptimedb-storage-architecture).
+For a summary of how GreptimeDB compares architecturally, see the [comparison table](/user-guide/concepts/why-greptimedb.md#how-greptimedb-compares).
 
 ### What are GreptimeDB's design trade-offs?
 
-GreptimeDB is optimized for observability workloads with intentional limitations:
-- **No ACID transactions**: Prioritizes high-throughput writes over transactional consistency
-- **Limited delete operations**: Designed for append-heavy observability data
-- **Time-series focused**: Optimized for IoT, metrics, logs, and traces rather than general OLTP
-- **Simplified joins**: Optimized for time-series queries over complex relational operations
+GreptimeDB is optimized for observability and time-series workloads, which means it makes different trade-offs than a general-purpose OLTP database:
+
+- **No ACID transactions**: Prioritizes high-throughput writes over transactional consistency.
+- **Delete is supported but not optimized for high-frequency use**: GreptimeDB supports [row deletion](/user-guide/manage-data/overview.md#delete-data) and [TTL-based expiration](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), but it is not designed for workloads that require frequent, fine-grained deletes — as is typical for append-heavy observability data.
+- **Joins are functional but currently not the primary focus**: GreptimeDB supports SQL joins, but the query engine is optimized for time-series filter-aggregate patterns rather than complex multi-way relational joins. Simple joins (e.g., enrichment lookups, correlating metrics with logs) work well.
+- **Time-series focused**: Optimized for IoT, metrics, logs, and traces rather than general OLTP.
+
+### What's the difference between GreptimeDB and InfluxDB?
+
+Key differences:
+
+- **Open Source**: GreptimeDB's entire distributed system is fully open source.
+- **Architecture**: Region-based sharding design optimized for observability workloads.
+- **Query Languages**: SQL + PromQL vs. InfluxQL + SQL.
+- **Unified Model**: Native support for metrics, logs, and traces in one system.
+- **Storage**: Pluggable engines with dedicated optimizations.
+- **Cloud-Native**: Built for Kubernetes with disaggregated compute/storage (see [Kubernetes Deployment Guide](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)).
+
+For a detailed comparison, see [GreptimeDB vs InfluxDB](https://greptime.com/compare/influxdb). Additional product comparisons (vs. ClickHouse, Loki, etc.) are available in the Compare menu on the [website](https://greptime.com).
+
+## Data Model & Schema
+
+### What's the difference between Tag and Field columns?
+
+GreptimeDB uses three semantic column types: **Tag**, **Timestamp**, and **Field**.
+
+- **Tag** columns identify a time-series. Rows with the same tag values belong to the same series. Tags are indexed by default for fast filtering. In SQL, tag columns are declared via `PRIMARY KEY`.
+- **Field** columns contain the measured values (numbers, strings, etc.). Fields are not indexed by default, but you can add [indexes](/user-guide/manage-data/data-index.md) as needed.
+- **Timestamp** is the time index — every table must have exactly one.
+
+For example, in a `system_metrics` table, `host` and `idc` are tags, `cpu_util` and `memory_util` are fields, and `ts` is the timestamp.
+
+For full details and examples, see [Data Model](/user-guide/concepts/data-model.md) and the [schema design guide](/user-guide/deployments-administration/performance-tuning/design-table.md).
+
+### Does GreptimeDB support schemaless data ingestion?
+
+Yes. When writing via gRPC, InfluxDB Line Protocol, OpenTSDB, Prometheus Remote Write, OpenTelemetry, Loki, or Elasticsearch-compatible APIs, GreptimeDB creates tables and columns automatically on first write. No manual schema definition is needed.
+
+For details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
+
+### Can I change a column's type after table creation?
+
+Yes. Use `ALTER TABLE ... MODIFY COLUMN` to change a field column's data type:
+
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
+```
+
+The column must be a field (not a tag or time index) and must be nullable, so that values that cannot be cast return `NULL` instead of failing.
+
+For the full `ALTER TABLE` syntax, see the [SQL reference](/reference/sql/alter.md).
+
+### How does GreptimeDB handle late-arriving or out-of-order data?
+
+GreptimeDB accepts writes with any timestamp — there is no ingestion-time window or ordering requirement. Late-arriving and out-of-order data is written normally and becomes queryable immediately. The storage engine's [compaction](/user-guide/deployments-administration/manage-data/compaction.md) process merges and sorts data in the background.
+
+For append-only tables (commonly used for logs), rows are never deduplicated, so late-arriving data simply adds new rows. For tables with a primary key, rows with the same tag + timestamp combination follow the [update semantics](/user-guide/manage-data/overview.md#update-data).
+
+## Integration & Migration
+
+### What protocols, tools, and SDKs does GreptimeDB support?
+
+**Write protocols**: [OpenTelemetry (OTLP)](/user-guide/ingest-data/for-observability/opentelemetry.md), [Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md), [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md), [Loki](/user-guide/ingest-data/for-observability/loki.md), [Elasticsearch](/user-guide/ingest-data/for-observability/elasticsearch.md), [MySQL](/user-guide/protocols/mysql.md), [PostgreSQL](/user-guide/protocols/postgresql.md), [gRPC](/user-guide/protocols/grpc.md) — see [Protocols Overview](/user-guide/protocols/overview.md).
+
+**Query languages**: [SQL](/user-guide/query-data/sql.md), [PromQL](/user-guide/query-data/promql.md).
+
+**Visualization**: [Grafana](/user-guide/integrations/grafana.md) (official plugin + MySQL/PostgreSQL data sources), and any tool that speaks MySQL or PostgreSQL wire protocol.
+
+**Data pipeline**: Vector, Fluent Bit, Telegraf, Kafka — see [Integrations Overview](/user-guide/integrations/overview.md).
+
+**SDKs**:
+- [Go](https://github.com/GreptimeTeam/greptimedb-ingester-go)
+- [Java](https://github.com/GreptimeTeam/greptimedb-ingester-java)
+- [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
+- [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
+- [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
+- Python: via standard MySQL/PostgreSQL drivers
+
+### How do I connect Grafana to GreptimeDB?
+
+GreptimeDB works with Grafana through three data source options:
+
+- **[GreptimeDB plugin](/user-guide/integrations/grafana.md#greptimedb-data-source-plugin)**: Official plugin with full SQL and PromQL support.
+- **[Prometheus data source](/user-guide/integrations/grafana.md#prometheus-data-source)**: Use GreptimeDB's Prometheus-compatible endpoint for PromQL dashboards.
+- **[MySQL data source](/user-guide/integrations/grafana.md#mysql-data-source)**: Use the built-in MySQL data source with GreptimeDB's MySQL protocol endpoint.
+
+See [Grafana Integration](/user-guide/integrations/grafana.md) for setup instructions.
+
+### How can I migrate from other databases?
+
+GreptimeDB provides migration guides for:
+
+- **From InfluxDB**: Line protocol and data migration
+- **From Prometheus**: Remote write and historical data migration
+- **From ClickHouse**: Table schema and data migration
+- **From MySQL/PostgreSQL**: SQL-based migration
+
+For detailed instructions, see [Migration Overview](/user-guide/migrate-to-greptimedb/overview.md).
 
 ## Deployment & Operations
 
-### What are the deployment options for GreptimeDB?
+### What are the deployment options?
 
-**Cluster Deployment** (Production):
+**Cluster deployment** (production):
 - Minimum 3 nodes for high availability
-- Services: metasrv, frontend, and datanode on each node
-- Can separate services for larger scale deployments
+- Three components: metasrv, frontend, and datanode
+- Components can be co-located or separated depending on scale
 - See [Capacity Planning Guide](/user-guide/deployments-administration/capacity-plan.md)
 
-**Edge & Standalone**:
-- Android ARM64 platforms (prebuilt binaries available)
-- Raspberry Pi and constrained environments
-- Single-node mode for development/testing
-- Efficient resource usage for IoT scenarios
+**Standalone** (development / edge / IoT):
+- Single binary, all components in one process
+- Runs on Linux, macOS, Android ARM64, Raspberry Pi
+- See [Installation Guide](/getting-started/installation/overview.md)
 
-**Storage Backends**:
-- **Production**: S3, GCS, Azure Blob for data persistence
-- **Development**: Local storage for testing
-- **Metadata**: MySQL/PostgreSQL backend support for metasrv
+**Storage backends**: S3, GCS, Azure Blob (recommended for production); local disk (development, testing, or small-scale). Metadata: RDS or etcd (cluster), local storage (standalone).
 
-For deployment and administration details: [Deployments & Administration Overview](/user-guide/deployments-administration/overview.md)
+For a full overview, see [Deployments & Administration](/user-guide/deployments-administration/overview.md).
+
+### How do I manage GreptimeDB?
+
+GreptimeDB uses **standard SQL as its management interface**. You can [create tables](/user-guide/deployments-administration/manage-data/basic-table-operations.md), [alter schemas](/reference/sql/alter.md), set [TTL policies](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies), and configure [indexes](/user-guide/manage-data/data-index.md) — all through SQL. No config files to write, no proprietary APIs to call.
+
+For configuration beyond SQL (e.g., node-level settings), see the [Configuration Guide](/user-guide/deployments-administration/configuration.md).
+
+### How do I upgrade GreptimeDB?
+
+See the [Upgrade Guide](/user-guide/deployments-administration/upgrade.md) for version-specific instructions, compatibility notes, and breaking changes.
+
+### How do I back up and restore data?
+
+GreptimeDB provides export and import tools for full database backup and restoration, including schema-only operations and S3 export support.
+
+See [Data Export & Import](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md).
+
+### Can I migrate data between standalone and cluster mode?
+
+Yes. Use [`COPY TO`](/reference/sql/copy.md) to export tables from standalone mode, then [`COPY FROM`](/reference/sql/copy.md) to import them into a cluster (or vice versa). Data is exported in Parquet format and can be staged locally or in object storage (S3, GCS).
+
+### My WAL directory is growing large. Is this normal?
+
+WAL (Write-Ahead Log) space is cyclically reused after data is flushed to persistent storage. If the WAL directory appears large, it usually means data has not been flushed yet, or the WAL retention settings need tuning. WAL space is temporary — when measuring storage consumption, measure only the data directory (`data`).
+
+For WAL configuration options, see the [Configuration Guide](/user-guide/deployments-administration/configuration.md).
+
+### What are GreptimeDB's scalability characteristics?
+
+- No strict limitations on table or column count; performance scales with primary key design rather than table count.
+- Automatic time-based organization within regions.
+- Manual distributed sharding via `PARTITION` clause — see [Table Sharding Guide](/user-guide/deployments-administration/manage-data/table-sharding.md).
+- Multi-tiered caching (write cache + LRU read cache) for optimal performance.
+- Object storage backend (S3/GCS/Azure Blob) provides virtually unlimited storage capacity.
+- Distributed query execution with MPP for large datasets.
 
 ### How does data distribution work?
 
-**Current State**:
-- Manual partitioning via PARTITION clause during table creation (see [Table Sharding Guide](/user-guide/deployments-administration/manage-data/table-sharding.md))
-- Time-based automatic organization within regions
-- Manual region migration support for load balancing (see [Region Migration Guide](/user-guide/deployments-administration/manage-data/region-migration.md))
-- Automatic region failover for disaster recovery (see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md))
+- Manual partitioning via `PARTITION` clause during table creation — see [Table Sharding Guide](/user-guide/deployments-administration/manage-data/table-sharding.md).
+- Time-based automatic organization within regions.
+- Manual region migration for load balancing — see [Region Migration Guide](/user-guide/deployments-administration/manage-data/region-migration.md).
+- Automatic region failover for disaster recovery — see [Region Failover](/user-guide/deployments-administration/manage-data/region-failover.md).
 
-**Roadmap**:
-- Automatic region splitting and rebalancing
-- Dynamic workload distribution across nodes
+### What disaster recovery options are available?
+
+GreptimeDB offers multiple disaster recovery strategies:
+
+- **Standalone DR**: Remote WAL + object storage, RPO=0, RTO in minutes.
+- **Region Failover**: Automatic failover for individual regions with minimal downtime.
+- **Active-Active Failover** (Enterprise): Synchronous request replication between two nodes.
+- **Cross-Region Single Cluster**: Spans three regions with zero RPO and region-level fault tolerance.
+- **Backup and Restore**: Periodic data backups with RPO depending on backup frequency.
+
+See [Disaster Recovery Overview](/user-guide/deployments-administration/disaster-recovery/overview.md).
 
 ### How do I monitor and troubleshoot GreptimeDB?
 
-GreptimeDB provides comprehensive monitoring capabilities including metrics collection, health checks, and observability integrations. For detailed monitoring setup and troubleshooting guides, see the [Monitoring Overview](/user-guide/deployments-administration/monitoring/overview.md).
+GreptimeDB exposes Prometheus-compatible metrics and provides health check endpoints. For monitoring setup and troubleshooting guides, see [Monitoring Overview](/user-guide/deployments-administration/monitoring/overview.md).
 
 ## Open Source vs Enterprise vs Cloud
 
 ### What are the differences between GreptimeDB versions?
 
-**Open Source Version**:
-- High-performance ingestion and query capabilities
-- Cluster deployment with basic read-write separation
-- Multiple protocol support (OpenTelemetry, Prometheus, InfluxDB, etc.)
-- Basic authentication and access control
-- Basic data encryption
-- Community support
+- **Open Source**: Full distributed system, multiple protocol support, basic authentication.
+- **Enterprise**: Adds cost-based query optimizer, active-active failover, automatic scaling/indexing, RBAC/LDAP, and 24/7 support.
+- **GreptimeCloud**: Fully managed with resource and performance guarantees for production workloads, predictable pricing, and SLA guarantees.
 
-**Enterprise Version** (all Open Source features plus):
-- Cost-based query optimizer for better performance
-- Advanced read-write separation and active-active failover (see [Active-Active Failover](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md))
-- Automatic scaling, indexing, and load balancing
-- Layered caching and enterprise-level web console
-- Enterprise authorization (RBAC/LDAP integration)
-- Enhanced security and audit features
-- One-on-one technical support with 24/7 service response
-- Professional customization services
-
-**GreptimeCloud** (fully managed, all Enterprise features plus):
-- Serverless autoscaling with pay-as-you-go pricing
-- Fully managed deployment with seamless upgrades
-- Independent resource pools with isolated networks
-- Configurable read/write capacity and unlimited storage
-- Advanced dashboard with Prometheus workbench
-- SLA guarantees and automated disaster recovery
-
-For detailed comparison, see [Pricing & Features](https://greptime.com/pricing#differences).
+For a detailed feature comparison, see [Pricing & Features](https://greptime.com/pricing#differences).
 
 ### What security features are available?
 
 **Open Source**:
 - Basic username/password authentication
+- User-level read/write access control
 - TLS/SSL support for connections
 
-**Enterprise/Cloud**:
+**Enterprise / Cloud**:
 - Role-based access control (RBAC)
+- LDAP support
 - Team management and API keys
 - Data encryption at rest
 - Audit logging for compliance
-
-## Technical Details
-
-### How does GreptimeDB extend Apache DataFusion?
-
-GreptimeDB builds on DataFusion with:
-- **Query Languages**: Native PromQL alongside SQL
-- **Distributed Execution**: Multi-node query coordination
-- **Custom Functions**: Time-series specific UDFs/UDAFs
-- **Optimizations**: Rules tailored for observability workloads
-- **Counter Handling**: Automatic reset detection in `rate()` and `delta()` functions
-
-For custom function development: [Function Documentation](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md)
-
-### What's the difference between GreptimeDB and InfluxDB?
-
-Key differences:
-- **Open Source**: GreptimeDB's entire distributed system is fully open source
-- **Architecture**: Region-based design optimized for observability workloads
-- **Query Languages**: SQL + PromQL vs InfluxQL + SQL
-- **Unified Model**: Native support for metrics, logs, and traces in one system
-- **Storage**: Pluggable engines with dedicated optimizations
-- **Cloud-Native**: Built for Kubernetes with disaggregated compute/storage (see [Kubernetes Deployment Guide](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md))
-
-For detailed comparisons, see [GreptimeDB vs InfluxDB](https://greptime.com/compare/influxdb). Additional product comparisons (vs. ClickHouse, Loki, etc.) are available in the Resources menu on our website.
-
-### How does GreptimeDB's storage engine work?
-
-**LSM-Tree Architecture**:
-- Based on Log-Structured Merge Tree (LSMT) design
-- WAL can use local disk or distributed services (e.g., Kafka) via Log Store API
-- SST files are flushed to object storage (S3/GCS) or local disk
-- Designed for cloud-native environments with object storage as primary backend
-- Optimized for time-series workloads with TWCS (Time-Window Compaction Strategy)
-
-**Performance Considerations**:
-- **Timestamps**: Datetime formats (yyyy-MM-dd HH:mm:ss) have no performance impact
-- **Compression**: Measure only data directory; WAL is cyclically reused
-- **Append-only tables**: Recommended for better write and query performance, especially for log scenarios
-- **Flow Engine**: Currently SQL-based; PromQL support under evaluation
-
-### What are best practices for specific use cases?
-
-**Network Monitoring** (e.g., thousands of NICs):
-- Use Flow tables for continuous aggregation
-- Manual downsampling via Flow Engine for data reduction
-- Output to regular tables for long-term storage
-
-**Log Analytics**:
-- Use append-only tables for better write and query performance
-- Create indexes on frequently queried fields ([Index Management](/user-guide/manage-data/data-index.md))
-- Storage efficiency: 50% of ClickHouse, 12.7% of Elasticsearch
-
-**Table Design & Performance**:
-- For table modeling guidance: [Design Table](/user-guide/deployments-administration/performance-tuning/design-table.md)
-- For performance optimization: [Performance Tuning Tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)
-
-
-## Getting Started
-
-### Where can I find documentation and benchmarks?
-
-**Performance & Benchmarks**:
-- [TSBS Benchmarks](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)
-- [Performance Comparisons](/user-guide/concepts/features-that-you-concern.md#how-is-greptimedbs-performance-compared-to-other-solutions)
-- [vs InfluxDB](https://greptime.com/blogs/2024-08-07-performance-benchmark)
-- [vs Loki](https://greptime.com/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report)
-- [Log Benchmark](https://greptime.com/blogs/2025-03-10-log-benchmark-greptimedb)
-
-**Installation & Deployment**:
-- [Installation Guide](/getting-started/installation/overview.md)
-- [Capacity Planning](/user-guide/deployments-administration/capacity-plan.md)
-- [Configuration Guide](/user-guide/deployments-administration/configuration.md)
-
-### How can I contribute to GreptimeDB?
-
-Welcome to the community! Get started:
-- **Code**: [Contribution Guide](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md)
-- **First Issues**: [Good First Issues](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22)
-- **Community**: [Slack Channel](https://greptime.com/slack)
-- **Documentation**: [Help improve these docs!](https://github.com/GreptimeTeam/docs)
-
-### What's next?
-
-1. **Try GreptimeCloud**: [Free serverless tier](https://greptime.com/product/cloud)
-2. **Self-host**: Follow the [installation guide](/getting-started/installation/overview.md)
-3. **Explore Integrations**: GreptimeDB supports extensive integrations with Prometheus, Vector, Kafka, Telegraf, EMQX, Metabase, and many more. See [Integrations Overview](/user-guide/integrations/overview.md) for the complete list, or start with [OpenTelemetry](/user-guide/ingest-data/for-observability/opentelemetry.md) or [Prometheus](/user-guide/ingest-data/for-observability/prometheus.md)
-4. **Join Community**: Connect with users and maintainers on [Slack](https://greptime.com/slack)

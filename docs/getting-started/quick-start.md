@@ -498,7 +498,7 @@ SELECT * FROM grpc_latencies;
 
 ### Ingest data by InfluxDB Line Protocol
 
-Click the `Ingest` icon in the Dashboard to write data in [InfluxDB Line Protocol](/user-guide/ingest-data/for-observability/influxdb-line-protocol.md) format. For example:
+Click the `Ingest` icon in the Dashboard to write data in [InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md) format. For example:
 
 ```txt
 grpc_metrics,host=host1,method_name=GetUser latency=100,code=0 1720728021000000000

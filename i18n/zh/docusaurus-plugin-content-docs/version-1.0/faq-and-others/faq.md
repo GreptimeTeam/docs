@@ -1,418 +1,232 @@
 ---
-keywords: [统一可观测性, metrics, logs, traces, 性能, OpenTelemetry, Prometheus, Grafana, 云原生, SQL, PromQL]
-description: 关于 GreptimeDB 的常见问题解答 - 统一可观测性数据库，支持 metrics、logs 和 traces。
+keywords: [FAQ, 常见问题, 故障排查, 部署, 迁移, 数据模型, 集成]
+description: GreptimeDB 常见问题解答，涵盖数据模型、集成、部署运维和版本差异。
 ---
 
 # 常见问题
 
-## 核心能力
+:::tip 想了解基础信息？
+- GreptimeDB 是什么 / 适用场景 → [为什么选择 GreptimeDB](/user-guide/concepts/why-greptimedb.md)
+- 性能基准测试 → [功能特性](/user-guide/concepts/features-that-you-concern.md#性能对比其他方案怎么样)
+- Metrics、Logs、Traces 支持 → [功能特性](/user-guide/concepts/features-that-you-concern.md#greptimedb-如何处理-metricslogs-和-traces)
+- 高基数处理 → [功能特性](/user-guide/concepts/features-that-you-concern.md#如何解决高基数问题)
+- 数据模型 → [数据模型](/user-guide/concepts/data-model.md)
+:::
 
-### 什么是 GreptimeDB？
+## 通用问题
 
-GreptimeDB 是一个开源、云原生的统一可观测性数据库，旨在通过单一系统存储和分析 metrics、logs 和 traces。基于 Rust 构建以实现高性能，它提供：
-- 高达 50 倍的运营和存储成本降低
-- 在 PB 级数据集上实现亚秒级查询响应
-- 原生 OpenTelemetry 支持
-- SQL、PromQL 和流处理能力
-- 计算存储分离，实现灵活扩展
+### GreptimeDB 的性能表现如何？
 
-### GreptimeDB 的性能与其他解决方案相比如何？
+GreptimeDB 针对 metrics、logs、traces 场景优化，写入吞吐高、查询延迟低、存储成本低。以下是已发布的基准测试报告：
 
-GreptimeDB 在可观测性工作负载中提供卓越性能：
+- [GreptimeDB vs. InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
+- [GreptimeDB vs. TimescaleDB](https://greptime.cn/blogs/2025-12-09-greptimedb-vs-timescaledb-benchmark)
+- [GreptimeDB vs. Grafana Mimir](https://greptime.cn/blogs/2024-08-01-grafana)
+- [GreptimeDB vs. ClickHouse vs. Elasticsearch（日志基准测试）](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
+- [GreptimeDB vs. SQLite](https://greptime.cn/blogs/2024-08-30-sqlite)
+- [GreptimeDB vs. Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html)
+- [JSONBench 10 亿条冷查询 #1](https://greptime.cn/blogs/2025-03-18-json-benchmark-greptimedb)
 
-**写入性能**：
-- 比 Elasticsearch **快 2-4.7倍**（高达 470% 吞吐量）
-- 比 Loki **快 1.5倍**（121k vs 78k rows/s）
-- 比 InfluxDB **快 2倍**（250k-360k rows/s）
-- **媲美 ClickHouse**（达到 111% 吞吐量）
+架构层面的对比参见[对比表格](/user-guide/concepts/why-greptimedb.md#greptimedb-对比)。
 
-**查询性能**：
-- 日志查询比 Loki **快 40-80倍**
-- 重复查询**快 500倍**（缓存优化）
-- 复杂时序查询比 InfluxDB **快 2-11倍**
-- 与 ClickHouse 在不同查询模式下性能相当
+### GreptimeDB 的设计权衡有哪些？
 
-**存储与成本效率**：
-- 存储占用比 Elasticsearch **少 87%**（仅需 12.7%）
-- 比 ClickHouse **节省 50%** 存储
-- 比 Loki **节省 50%** 存储（3.03GB vs 6.59GB 压缩后）
-- 运营成本比传统架构**降低 50倍**
+GreptimeDB 针对可观测性和时序工作负载做了专门优化，与通用 OLTP 数据库有不同的取舍：
 
-**资源优化**：
-- CPU 使用率**减少 40%**
-- 在测试数据库中**内存消耗最低**
-- 对象存储（S3/GCS）上性能一致
-- 卓越的高基数数据处理
+- **不支持 ACID 事务**：优先保证高吞吐写入，而非事务一致性。
+- **支持删除，但不适合高频删除场景**：GreptimeDB 支持[数据删除](/user-guide/manage-data/overview.md#删除数据)和[基于 TTL 的自动过期](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)，但不适合需要频繁细粒度删除的场景——可观测性数据本身就是追加为主的。
+- **支持 Join，但暂时不是优化重点**：GreptimeDB 支持 SQL Join，但查询引擎主要针对时序数据的过滤-聚合模式优化。简单 Join（如关联查询、metrics 与 logs 的交叉分析）可以正常使用。
+- **面向时序数据**：针对 IoT、metrics、logs、traces 优化，而非通用 OLTP。
 
-**独特优势**：
-- 单一数据库处理 metrics、logs 和 traces
-- 原生云原生架构
-- 水平扩展能力（处理 11.5亿+ 行数据）
-- 原生全文搜索和索引
+### GreptimeDB 和 InfluxDB 有什么区别？
 
-基准测试报告：[vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report) | [vs Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html) | [日志基准测试](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
+主要区别：
 
-### GreptimeDB 如何处理 metrics、logs 和 traces？
+- **开源策略**：GreptimeDB 的整个分布式系统完全开源。
+- **架构**：基于 Region 的分片设计，针对可观测性工作负载优化。
+- **查询语言**：SQL + PromQL vs. InfluxQL + SQL。
+- **统一模型**：在一个系统中原生支持 metrics、logs 和 traces。
+- **存储**：可插拔引擎，针对不同场景做专项优化。
+- **云原生**：原生支持 Kubernetes，计算存储分离（参见 [Kubernetes 部署指南](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)）。
 
-GreptimeDB 设计为统一可观测性数据库，原生支持三种遥测数据类型：
-- **Metrics**：完全兼容 Prometheus，支持 PromQL
-- **Logs**：全文索引、Loki 协议支持和高效压缩
-- **Traces**：实验性 OpenTelemetry trace 存储，支持可扩展查询
+详细对比参见 [GreptimeDB vs InfluxDB](https://greptime.cn/compare/influxdb)。更多产品对比（如 vs. ClickHouse、Loki 等）可在[官网](https://greptime.cn)的对比菜单中找到。
 
-这种统一方法消除了数据孤岛，无需复杂的数据管道即可实现跨信号关联。
+## 数据模型与 Schema
 
-详细文档：
-- [日志概述](/user-guide/logs/overview.md)
-- [链路追踪概述](/user-guide/traces/overview.md)
-- [OpenTelemetry 兼容性](/user-guide/ingest-data/for-observability/opentelemetry.md)
-- [Prometheus 兼容性](/user-guide/ingest-data/for-observability/prometheus.md)
-- [Loki 协议兼容性](/user-guide/ingest-data/for-observability/loki.md)
-- [Elasticsearch 兼容性](/user-guide/ingest-data/for-observability/elasticsearch.md)
-- [Vector 兼容性](/user-guide/ingest-data/for-observability/vector.md)
+### Tag 列和 Field 列有什么区别？
 
-### GreptimeDB 的主要应用场景是什么？
+GreptimeDB 使用三种语义列类型：**Tag**、**Timestamp** 和 **Field**。
 
-GreptimeDB 擅长于：
-- **统一可观测性**：用单一数据库替代复杂的监控堆栈
-- **边缘和云数据管理**：跨环境无缝数据同步
-- **IoT 和汽车**：高效处理大量传感器数据
-- **AI/LLM 监控**：跟踪模型性能和行为
-- **实时分析**：在 PB 级数据集上实现亚秒级查询
+- **Tag** 列用于标识时间序列。具有相同 Tag 值的行属于同一条时间序列。Tag 列默认加入主键索引，查询过滤快。在 SQL 中通过 `PRIMARY KEY` 声明。
+- **Field** 列存储实际测量值（数值、字符串等）。Field 列默认不建索引，但可以按需添加[索引](/user-guide/manage-data/data-index.md)。
+- **Timestamp** 是时间索引，每张表必须有且仅有一个。
 
-## 架构与性能
+例如，在 `system_metrics` 表中，`host` 和 `idc` 是 Tag，`cpu_util` 和 `memory_util` 是 Field，`ts` 是 Timestamp。
 
-### GreptimeDB 能否替代我的 Prometheus 设置？
+详细说明和示例参见[数据模型](/user-guide/concepts/data-model.md)和[表设计指南](/user-guide/deployments-administration/performance-tuning/design-table.md)。
 
-是的，GreptimeDB 提供：
-- 原生 PromQL 支持，兼容性接近 100%
-- Prometheus remote write 协议支持
-- 高效处理高基数 metrics
-- 无需降采样的长期存储
-- 比传统 Prometheus+Thanos 堆栈更高的资源效率
+### GreptimeDB 支持无 Schema 写入吗？
 
-### GreptimeDB 提供哪些索引能力？
+支持。通过 gRPC、InfluxDB Line Protocol、OpenTSDB、Prometheus Remote Write、OpenTelemetry、Loki 或 Elasticsearch 兼容 API 写入时，GreptimeDB 会在首次写入时自动创建表和列，无需手动定义 Schema。
 
-GreptimeDB 提供丰富的索引选项：
-- **倒排索引**：标签列的快速查找
-- **全文索引**：高效日志搜索
-- **跳跃索引**：加速范围查询
-- **向量索引**：支持 AI/ML 工作负载
+详见[自动 Schema 生成](/user-guide/ingest-data/overview.md#自动生成表结构)。
 
-这些索引即使在 PB 级数据集上也能实现亚秒级查询。
+### 建表后能修改列的数据类型吗？
 
-配置详情请参见[索引管理](/user-guide/manage-data/data-index.md)。
+可以。使用 `ALTER TABLE ... MODIFY COLUMN` 修改 Field 列的数据类型：
 
-### GreptimeDB 如何实现成本效益？
+```sql
+ALTER TABLE monitor MODIFY COLUMN load_15 STRING;
+```
 
-GreptimeDB 通过以下方式降低成本：
-- **列式存储**：卓越的压缩比
-- **计算存储分离**：独立扩展资源
-- **高效基数管理**：处理高基数数据而不发生爆炸
-- **统一平台**：消除对多个专用数据库的需求
+目标列必须是 Field 列（不能是 Tag 或时间索引），且必须可为空（nullable），这样类型转换失败时返回 `NULL` 而非报错。
 
-结果：比传统堆栈降低高达 50 倍的运营和存储成本。
+完整的 `ALTER TABLE` 语法参见 [SQL 参考](/reference/sql/alter.md)。
 
-### 什么使 GreptimeDB 成为云原生？
+### GreptimeDB 如何处理迟到数据和乱序数据？
 
-GreptimeDB 专为 Kubernetes 构建：
-- **分解架构**：分离计算和存储层
-- **弹性扩展**：根据工作负载添加/删除节点
-- **多云支持**：无缝运行在 AWS、GCP、Azure
-- **Kubernetes operators**：简化部署和管理
-- **对象存储后端**：使用 S3、GCS 或 Azure Blob 进行数据持久化
+GreptimeDB 接受任意时间戳的写入，没有写入时间窗口或顺序要求。迟到和乱序数据正常写入后立即可查。存储引擎的 [Compaction](/user-guide/deployments-administration/manage-data/compaction.md)会在后台自动排序和合并数据。
 
-Kubernetes 部署详情请参见 [Kubernetes 部署指南](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)。
+对于 Append Only 表（常用于日志），行不会被去重，迟到数据只是新增行。对于有主键的表，Tag + Timestamp 组合相同的行遵循[更新语义](/user-guide/manage-data/overview.md#更新数据)。
 
-### GreptimeDB 支持无 schema 数据摄入吗？
+## 集成与迁移
 
-是的，GreptimeDB 在使用以下协议时支持自动 schema 创建：
-- gRPC 协议
-- InfluxDB Line Protocol
-- OpenTSDB 协议
-- Prometheus Remote Write
-- OpenTelemetry 协议
-- Loki 协议（日志数据）
-- Elasticsearch 兼容 API（日志数据）
+### GreptimeDB 支持哪些协议、工具和 SDK？
 
-表和列在首次写入时自动创建，无需手动 schema 管理。
+**写入协议**：[OpenTelemetry (OTLP)](/user-guide/ingest-data/for-observability/opentelemetry.md)、[Prometheus Remote Write](/user-guide/ingest-data/for-observability/prometheus.md)、[InfluxDB Line Protocol](/user-guide/ingest-data/for-iot/influxdb-line-protocol.md)、[Loki](/user-guide/ingest-data/for-observability/loki.md)、[Elasticsearch](/user-guide/ingest-data/for-observability/elasticsearch.md)、[MySQL](/user-guide/protocols/mysql.md)、[PostgreSQL](/user-guide/protocols/postgresql.md)、[gRPC](/user-guide/protocols/grpc.md)——参见[协议概述](/user-guide/protocols/overview.md)。
 
-## 集成与兼容性
+**查询语言**：[SQL](/user-guide/query-data/sql.md)、[PromQL](/user-guide/query-data/promql.md)。
 
-### GreptimeDB 如何与现有工具和系统集成？
+**可视化**：[Grafana](/user-guide/integrations/grafana.md)（官方插件 + MySQL/PostgreSQL 数据源），以及任何支持 MySQL 或 PostgreSQL 协议的工具。
 
-**协议支持**：
-- **数据写入**：OpenTelemetry、Prometheus Remote Write、InfluxDB Line、Loki、Elasticsearch、gRPC（参见[协议概述](/user-guide/protocols/overview.md)）
-- **数据查询**：MySQL、PostgreSQL 协议兼容
-- **查询语言**：SQL、PromQL
+**数据管道**：Vector、Fluent Bit、Telegraf、Kafka——参见[集成概述](/user-guide/integrations/overview.md)。
 
-**可视化与监控**：
-- **Grafana**：[Grafana 集成](/user-guide/integrations/grafana.md)（含官方插件）+ [MySQL/PostgreSQL 数据源支持](/user-guide/integrations/grafana.md#mysql-数据源)
-- **原生 PromQL**：[直接支持](/user-guide/query-data/promql.md) Prometheus 风格查询和仪表板
-- **任何 SQL 工具**：通过 MySQL/PostgreSQL 协议兼容
+**SDK**：
+- [Go](https://github.com/GreptimeTeam/greptimedb-ingester-go)
+- [Java](https://github.com/GreptimeTeam/greptimedb-ingester-java)
+- [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
+- [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
+- [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
+- Python：通过标准 MySQL/PostgreSQL 驱动
 
-**数据管道集成**：
-- **OpenTelemetry**：原生 OTLP 摄入，无转换层，保留所有语义约定
-- **数据收集**：Vector、Fluent Bit、Telegraf、Kafka
-- **实时流处理**：直接从 Kafka、Vector 等系统接收数据
+### 如何将 Grafana 连接到 GreptimeDB？
 
-**SDK 和客户端库**：
-- **Go**：[greptimedb-ingester-go](https://github.com/GreptimeTeam/greptimedb-ingester-go)
-- **Java**：[greptimedb-ingester-java](https://github.com/GreptimeTeam/greptimedb-ingester-java)
-- **Rust**：[greptimedb-ingester-rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
-- **Erlang**：[greptimedb-ingester-erl](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
-- **Python**：通过标准 SQL 驱动程序（MySQL/PostgreSQL 兼容）
+GreptimeDB 支持三种 Grafana 数据源接入方式：
+
+- **[GreptimeDB 插件](/user-guide/integrations/grafana.md#greptimedb-数据源插件)**：官方插件，支持 SQL 和 PromQL 查询。
+- **[Prometheus 数据源](/user-guide/integrations/grafana.md#prometheus-数据源)**：通过 GreptimeDB 的 Prometheus 兼容端点使用 PromQL 仪表板。
+- **[MySQL 数据源](/user-guide/integrations/grafana.md#mysql-数据源)**：通过 GreptimeDB 的 MySQL 协议端点接入。
+
+详细配置参见 [Grafana 集成指南](/user-guide/integrations/grafana.md)。
 
 ### 如何从其他数据库迁移到 GreptimeDB？
 
-GreptimeDB 为流行数据库提供迁移指南：
-- **从 ClickHouse**：表结构和数据迁移
-- **从 InfluxDB**：Line protocol 和数据迁移
-- **从 Prometheus**：Remote write 和历史数据迁移
-- **从 MySQL/PostgreSQL**：基于 SQL 的迁移
+GreptimeDB 提供以下迁移指南：
 
-详细迁移说明请参见[迁移概述](/user-guide/migrate-to-greptimedb/overview.md)。
+- **从 InfluxDB 迁移**：Line Protocol 和数据迁移
+- **从 Prometheus 迁移**：Remote Write 和历史数据迁移
+- **从 ClickHouse 迁移**：表结构和数据迁移
+- **从 MySQL/PostgreSQL 迁移**：基于 SQL 的迁移
 
-### GreptimeDB 提供哪些灾备选项？
-
-GreptimeDB 提供多种灾备策略以满足不同的可用性需求：
-
-- **单机灾备方案**：使用远程 WAL 和对象存储，可实现 RPO=0 和分钟级 RTO，适合小规模场景
-- **Region 故障转移**：个别区域的自动故障转移，停机时间最短
-- **双机热备**（企业版）：节点间同步请求复制，提供高可用性
-- **跨区域单集群**：跨越三个区域，实现零 RPO 和区域级容错
-- **备份与恢复**：定期数据备份，可根据备份频率配置 RPO
-
-根据您的可用性需求、部署规模和成本考虑选择合适的解决方案。详细指导请参见[灾难恢复概述](/user-guide/deployments-administration/disaster-recovery/overview.md)。
-
-## 数据管理与处理
-
-### GreptimeDB 如何处理数据生命周期？
-
-**保留策略**：
-- 数据库级和表级 TTL 设置
-- 无需手动清理的自动数据过期
-- 通过 [TTL 文档](/reference/sql/create.md#表选项)配置
-
-**数据导出**：
-- 用于 S3、本地文件的 [`COPY TO` 命令](/reference/sql/copy.md#连接-s3)
-- 通过任何兼容客户端的标准 SQL 查询
-- 备份和灾难恢复的导出功能：[备份与恢复数据](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)
-
-### GreptimeDB 如何处理高基数和实时处理？
-
-**高基数管理**：
-- 高级索引策略防止基数爆炸
-- 具有智能压缩的列式存储
-- 带数据修剪的分布式查询执行
-- 高效处理数百万唯一时间序列
-
-了解更多索引信息：[索引管理](/user-guide/manage-data/data-index.md)
-
-**实时处理**：
-- **[Flow Engine](/user-guide/flow-computation/overview.md)**：实时流数据处理系统，对流式数据进行连续增量计算，自动更新结果表
-- **[Pipeline](/user-guide/logs/use-custom-pipelines.md)**：实时数据解析转换机制，通过可配置处理器对各种入库数据进行字段提取和数据类型转换
-- **输出表**：持久化处理结果用于分析
-
-### GreptimeDB 的可扩展性特征是什么？
-
-**扩展限制**：
-- 表或列数量无严格限制
-- 数百个表的性能影响最小
-- 性能随主键设计而非表数量扩展
-- 列式存储确保高效的部分读取
-
-**分区与分布**：
-- region 内基于时间的自动组织
-- 通过 PARTITION 子句进行手动分布式分片（参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)）
-- 计划未来版本的自动 region 拆分
-- **无需配置的动态分区**（企业版功能）
-
-**核心扩展性功能**：
-- **多层缓存**：写入缓存（磁盘支持）和读取缓存（LRU 策略）优化性能
-- **对象存储后端**：通过 S3/GCS/Azure Blob 实现几乎无限存储
-- **异步 WAL**：高效的预写日志，支持可选的按表控制
-- **分布式查询执行**：多节点协调处理大型数据集
-- **手动压缩**：通过[管理命令](/reference/sql/admin.md)提供
-
-**企业级扩展功能**：
-- 高级分区和自动重新平衡
-- 增强的多租户和隔离功能
-- 企业级监控和管理工具
-
-架构详情请参见[存储架构博客](https://greptime.cn/blogs/2024-12-24-observability)。
-
-### GreptimeDB 的设计权衡是什么？
-
-GreptimeDB 针对可观测性工作负载进行了优化，具有以下设计限制：
-- **无 ACID 事务**：优先考虑高吞吐量写入而非事务一致性
-- **有限删除操作**：为追加重的可观测性数据设计
-- **时序数据专注**：针对 IoT、metrics、logs 和 traces 而非通用 OLTP 进行优化
-- **简化连接**：针对时序查询而非复杂关系操作进行优化
+详细说明参见[迁移概述](/user-guide/migrate-to-greptimedb/overview.md)。
 
 ## 部署与运维
 
-### GreptimeDB 部署和运维指南
+### 有哪些部署方式？
 
-**部署选项**：
-
-*集群部署（生产环境）*：
-- 最少 3 个节点实现高可用性
-- 服务架构：metasrv、frontend、datanode（可同节点或分离部署）
-- 存储后端：S3、GCS、Azure Blob（生产）或本地存储（测试）
-- 元数据存储：MySQL/PostgreSQL 后端支持 metasrv
+**集群部署**（生产环境）：
+- 至少 3 个节点保证高可用
+- 三个组件：metasrv、frontend、datanode
+- 组件可以合并部署或独立部署
 - 参见[容量规划指南](/user-guide/deployments-administration/capacity-plan.md)
 
-*边缘与单机部署*：
-- Android ARM64、Raspberry Pi 等受限环境
-- 单节点模式适用于开发测试和 IoT 场景
-- 高效资源使用，支持边缘计算
+**单机部署**（开发 / 边缘 / IoT）：
+- 单个二进制文件，所有组件集成在一个进程中
+- 支持 Linux、macOS、Android ARM64、Raspberry Pi
+- 参见[安装指南](/getting-started/installation/overview.md)
 
-**数据分布策略**：
-- **当前**：通过 PARTITION 子句手动分区（参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)），region 内自动时间组织，支持手动 region 迁移进行负载均衡（参见[Region 迁移指南](/user-guide/deployments-administration/manage-data/region-migration.md)）
-- 自动 region 故障转移容灾（参见[Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover.md)）
-- **路线图**：自动 region 拆分、动态负载均衡
+**存储后端**：S3、GCS、Azure Blob（推荐生产）；本地磁盘（开发测试或者中小规模）。元数据：集群模式使用推荐 RDS 或 etcd，单机模式本地存储。
 
-**监控与运维**：
+完整介绍参见[部署与管理概述](/user-guide/deployments-administration/overview.md)。
 
-GreptimeDB 提供全面的监控能力，包括指标收集、健康检查和可观测性集成。详细的监控设置和故障排除指南请参见[监控概述](/user-guide/deployments-administration/monitoring/overview.md)。
+### 如何管理 GreptimeDB？
 
-部署和管理详情：[部署与管理概述](/user-guide/deployments-administration/overview.md)
+GreptimeDB 使用**标准 SQL 作为管理接口**。你可以通过 SQL 完成[表的基本操作如建表删表](/user-guide/deployments-administration/manage-data/basic-table-operations.md)、[修改 Schema](/reference/sql/alter.md)、设置 [TTL 策略](/user-guide/manage-data/overview.md#使用-ttl-策略保留数据)、配置[索引](/user-guide/manage-data/data-index.md)等操作，不用写配置文件，也不用调专有 API。
 
-## 开源版 vs 企业版 vs 云版本
+节点级别的配置参见[配置指南](/user-guide/deployments-administration/configuration.md)。
 
-### GreptimeDB 各版本的区别是什么？
+### 如何升级 GreptimeDB？
 
-**开源版本**：
-- 高性能写入和查询能力
-- 集群部署和基础读写分离
-- 多协议支持（OpenTelemetry、Prometheus、InfluxDB 等）
-- 基础访问控制和加密
-- 基础性能诊断
-- 社区支持
+参见[升级指南](/user-guide/deployments-administration/upgrade.md)，包含升级步骤、兼容性说明和不兼容变更。
 
-**企业版本**（包含所有开源版功能，另增加）：
-- 基于成本的查询优化器，提升性能
-- 高级读写分离和双活灾备（参见[双机热备灾备方案](/enterprise/deployments-administration/disaster-recovery/dr-solution-based-on-active-active-failover.md)）
-- 自动扩展、索引和负载均衡
-- 分层缓存和企业级管理控制台
-- 企业授权（RBAC/LDAP 集成）
-- 增强的安全和审计功能
-- 一对一技术支持和 7x24 服务响应
-- 专业定制服务
+### 如何备份和恢复数据？
 
-**GreptimeCloud**（全托管，包含所有企业版功能，另增加）：
-- Serverless 自动扩展，按用量付费
-- 全托管部署，无缝升级
-- 独立资源池和网络隔离
-- 可配置读写容量和无限存储
-- 具有 Prometheus 工作台的高级仪表板
-- SLA 保证和自动灾难恢复
+GreptimeDB 提供数据导出和导入工具，支持全库备份与恢复，包括仅导出 Schema 和 S3 导出。
 
-详细对比请参见[价格与功能](https://greptime.cn/pricing#differences)。
+参见[数据导出与导入](/user-guide/deployments-administration/disaster-recovery/back-up-&-restore-data.md)。
 
-### 有哪些安全功能可用？
+### 能否在单机模式和集群模式之间迁移数据？
 
-**开源版本**：
-- 基本用户名/密码身份验证
-- 连接的 TLS/SSL 支持
+可以。使用 [`COPY TO`](/reference/sql/copy.md) 从单机模式导出表数据，再用 [`COPY FROM`](/reference/sql/copy.md) 导入到集群（反过来也一样）。数据以 Parquet 格式导出，可以存放在本地或对象存储（S3、GCS）中。
 
-**企业版/云版本**：
+### WAL 目录越来越大，正常吗？
+
+WAL（Write-Ahead Log）空间在数据刷写到持久存储后会循环复用。如果 WAL 目录看起来很大，通常是因为数据尚未刷写，或者 WAL 保留设置需要调整。WAL 是临时空间，评估存储用量时只看数据目录（`data`）就行。
+
+WAL 配置参见[配置指南](/user-guide/deployments-administration/configuration.md)。
+
+### GreptimeDB 的扩展能力如何？
+
+- 表和列的数量没有严格限制，性能主要取决于主键设计而非表数量。
+- Region 内数据自动按时间组织。
+- 通过 `PARTITION` 子句手动分片——参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)。
+- 多层缓存（写入缓存 + LRU 读缓存）优化性能。
+- 对象存储后端（S3/GCS/Azure Blob）提供几乎无限的存储容量。
+- 分布式查询执行，支持 MPP 处理大规模数据集。
+
+### 数据如何分布？
+
+- 建表时通过 `PARTITION` 子句手动分区——参见[表分片指南](/user-guide/deployments-administration/manage-data/table-sharding.md)。
+- Region 内按时间自动组织。
+- 支持手动 Region 迁移进行负载均衡——参见 [Region 迁移指南](/user-guide/deployments-administration/manage-data/region-migration.md)。
+- 自动 Region 故障转移保障容灾——参见 [Region 故障转移](/user-guide/deployments-administration/manage-data/region-failover.md)。
+
+### 有哪些灾备方案？
+
+GreptimeDB 提供多种灾备策略：
+
+- **单机灾备**：远程 WAL + 对象存储，RPO=0，RTO 分钟级。
+- **Region 故障转移**：单个 Region 自动切换，停机时间极短。
+- **双活容灾**（企业版）：双节点间同步复制请求。
+- **跨区域单集群**：横跨三个区域，零 RPO，区域级容错。
+- **备份与恢复**：定期数据备份，RPO 取决于备份频率。
+
+参见[灾备方案概述](/user-guide/deployments-administration/disaster-recovery/overview.md)。
+
+### 如何监控和排查问题？
+
+GreptimeDB 暴露 Prometheus 兼容的监控指标，并提供健康检查端点。监控配置和故障排查指南参见[监控概述](/user-guide/deployments-administration/monitoring/overview.md)。
+
+## 开源版 vs 企业版 vs 云服务
+
+### 各版本有什么区别？
+
+- **开源版**：完整的分布式系统、多协议支持、基础认证。
+- **企业版**：在开源版基础上增加 CBO 查询优化、双活容灾、自动扩缩容和索引、RBAC/LDAP 集成、7×24 技术支持。
+- **GreptimeCloud**：全托管方案，为生产工作负载提供资源和性能保障、可预测的定价、SLA 保障。
+
+详细功能对比参见[价格与功能](https://greptime.cn/pricing#differences)。
+
+### 有哪些安全功能？
+
+**开源版**：
+- 用户名/密码认证
+- 用户读写权限控制
+- TLS/SSL 连接加密
+
+**企业版 / 云服务**：
 - 基于角色的访问控制（RBAC）
+- LDAP 支持
 - 团队管理和 API 密钥
 - 静态数据加密
 - 合规审计日志
-
-## 技术细节
-
-### GreptimeDB 如何扩展 Apache DataFusion？
-
-GreptimeDB 基于 DataFusion 构建：
-- **查询语言**：原生 PromQL 与 SQL 并存
-- **分布式执行**：多节点查询协调
-- **自定义函数**：时序特定的 UDF/UDAF
-- **优化**：针对可观测性工作负载的规则
-- **计数器处理**：在 `rate()` 和 `delta()` 函数中自动重置检测
-
-自定义函数开发：[函数文档](https://github.com/GreptimeTeam/greptimedb/blob/main/docs/how-to/how-to-write-aggregate-function.md)
-
-### GreptimeDB 和 InfluxDB 的区别是什么？
-
-主要区别：
-- **开源策略**：GreptimeDB 的整个分布式系统完全开源
-- **架构**：针对可观测性工作负载优化的基于 region 的设计
-- **查询语言**：SQL + PromQL vs InfluxQL + SQL
-- **统一模型**：在一个系统中原生支持 metrics、logs 和 traces
-- **存储**：具有专用优化的可插拔引擎
-- **云原生**：为 Kubernetes 构建，具有分解的计算/存储（参见 [Kubernetes 部署指南](/user-guide/deployments-administration/deploy-on-kubernetes/overview.md)）
-
-详细比较请参见 [GreptimeDB vs InfluxDB](https://greptime.cn/compare/influxdb)。更多产品比较（如 vs. ClickHouse、Loki 等）可在官网的资源菜单中找到。
-
-### GreptimeDB 的存储引擎如何工作？
-
-**LSM-Tree 架构**：
-- 基于日志结构合并树（LSMT）设计
-- WAL 可以使用本地磁盘或分布式服务（如 Kafka）通过 Log Store API
-- SST 文件刷写到对象存储（S3/GCS）或本地磁盘
-- 面向云原生环境设计，以对象存储为主要后端
-- 使用 TWCS（时间窗口压缩策略）优化时序工作负载
-
-**性能考量**：
-- **时间戳**：日期时间格式（yyyy-MM-dd HH:mm:ss）无性能影响
-- **压缩**：仅测量数据目录；WAL 循环重用
-- **Append Only 表**：建议使用，对写入和查询性能更友好，尤其适合日志场景
-- **Flow Engine**：目前基于 SQL；PromQL 支持正在评估中
-
-### 特定用例的最佳实践是什么？
-
-**网络监控**（如数千个网卡）：
-- 使用 Flow 表进行连续聚合
-- 通过 Flow Engine 手动降采样进行数据缩减
-- 输出到常规表进行长期存储
-
-**日志分析**：
-- 使用 Append Only 表获得更好的写入和查询性能
-- 在频繁查询的字段上创建索引（[索引管理](/user-guide/manage-data/data-index.md)）
-- 存储效率：ClickHouse 的 50%，Elasticsearch 的 12.7%
-
-**表设计与性能**：
-- 表建模指导：[设计表](/user-guide/deployments-administration/performance-tuning/design-table.md)
-- 性能优化：[性能调优提示](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md)
-
-
-## 入门指南
-
-### 如何开始使用 GreptimeDB？
-
-**📚 学习资源**：
-
-*文档与指南*：
-- [安装指南](/getting-started/installation/overview.md) - 快速开始部署
-- [容量规划](/user-guide/deployments-administration/capacity-plan.md) - 生产环境规划
-- [配置指南](/user-guide/deployments-administration/configuration.md) - 详细配置说明
-
-*性能基准*：
-- [TSBS 基准测试](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)
-- [性能对比分析](/user-guide/concepts/features-that-you-concern.md#性能对比其他方案怎么样)
-- [vs InfluxDB](https://greptime.cn/blogs/2024-08-08-report)
-- [vs Loki](https://greptime.cn/blogs/2025-08-07-beyond-loki-greptimedb-log-scenario-performance-report.html)
-- [日志基准测试](https://greptime.cn/blogs/2025-03-07-greptimedb-log-benchmark)
-
-**🚀 快速上手路径**：
-
-1. **云端体验**：[GreptimeCloud 免费版](https://greptime.cn/product/cloud) - 无需安装即可试用
-2. **本地部署**：按照[安装指南](/getting-started/installation/overview.md)自托管部署
-3. **集成现有系统**：GreptimeDB 支持与 Prometheus、Vector、Kafka、Telegraf、EMQX、Metabase 等众多系统的广泛集成。完整列表请参见[集成概述](/user-guide/integrations/overview.md)，或从以下开始：
-   - [OpenTelemetry 集成](/user-guide/ingest-data/for-observability/opentelemetry.md)
-   - [Prometheus 迁移](/user-guide/ingest-data/for-observability/prometheus.md)
-   - Grafana 仪表板配置
-
-**🤝 社区与贡献**：
-
-*参与社区*：
-- [Slack 频道](https://greptime.com/slack) - 与用户和开发者交流
-- [GitHub Discussions](https://github.com/GreptimeTeam/greptimedb/discussions) - 技术讨论
-
-*贡献代码*：
-- [贡献指南](https://github.com/GreptimeTeam/greptimedb/blob/main/CONTRIBUTING.md) - 开发环境搭建
-- [适合新手的 Issue](https://github.com/GreptimeTeam/greptimedb/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) - 第一次贡献
-- [文档改进](https://github.com/GreptimeTeam/docs) - 帮助完善中英文文档
