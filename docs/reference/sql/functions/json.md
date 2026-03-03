@@ -135,3 +135,35 @@ SELECT json_path_exists(parse_json('{"a": 1, "b": 2}'), NULL);
 |                                                        NULL |
 +-------------------------------------------------------------+
 ```
+
+* `json_path_match(json, path)` to check whether a JSON value matches the predicate in the specified JSON path expression. Only predicate expressions are supported.
+
+If the path is invalid or does not evaluate to a predicate, the function will return a `NULL` value.
+
+If the JSON value is `NULL`, the function will return a `NULL` value.
+
+```sql
+SELECT json_path_match(parse_json('{"a": 1, "b": 2}'), '$.a == 1');
+
++------------------------------------------------------------------------+
+| json_path_match(parse_json(Utf8("{"a": 1, "b": 2}")),Utf8("$.a == 1")) |
++------------------------------------------------------------------------+
+| true                                                                   |
++------------------------------------------------------------------------+
+
+SELECT json_path_match(parse_json('{"a":1,"b":[1,2,3]}'), '$.b[1 to last] >= 2');
+
++--------------------------------------------------------------------------------------+
+| json_path_match(parse_json(Utf8("{"a":1,"b":[1,2,3]}")),Utf8("$.b[1 to last] >= 2")) |
++--------------------------------------------------------------------------------------+
+| true                                                                                 |
++--------------------------------------------------------------------------------------+
+
+SELECT json_path_match(parse_json('{"a":1,"b":[1,2,3]}'), '$.b[0] > 1');
+
++-----------------------------------------------------------------------------+
+| json_path_match(parse_json(Utf8("{"a":1,"b":[1,2,3]}")),Utf8("$.b[0] > 1")) |
++-----------------------------------------------------------------------------+
+| false                                                                       |
++-----------------------------------------------------------------------------+
+```
