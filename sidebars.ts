@@ -687,6 +687,7 @@ const sidebars: SidebarsConfig = {
                     'reference/sql/functions/json',
                     'reference/sql/functions/vector',
                     'reference/sql/functions/approximate',
+                    'reference/sql/functions/anomaly',
                   ],
                 },
                 'reference/sql/functions/df-functions',
