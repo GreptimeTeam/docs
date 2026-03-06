@@ -1,5 +1,5 @@
 ---
-keywords: [architecture, metasrv, frontend, datanode, flownode, object storage, WAL, database cluster]
+keywords: [architecture, compute-storage separation, Metasrv, Frontend, Datanodes, Flownode, object storage, WAL, database cluster]
 description: Overview of GreptimeDB architecture, including core components, optional Flownode for flow computation, and request/data paths in distributed deployments.
 ---
 
