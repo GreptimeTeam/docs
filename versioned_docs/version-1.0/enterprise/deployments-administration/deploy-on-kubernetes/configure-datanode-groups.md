@@ -5,7 +5,11 @@ description: Step-by-step guide to deploying a GreptimeDB cluster with datanode 
 
 # Deploy a GreptimeDB Cluster with Datanode Groups
 
-In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes with a datanode group consisting of multiple datanode instances.
+In this guide, you will learn how to deploy a GreptimeDB cluster on Kubernetes with a datanode groups consisting of multiple datanode instances.
+
+:::tip NOTE
+This feature is for the Enterprise Edition only. Please do not use open-source image to enable this feature. Please [contact us](https://greptime.com/contactus) if you want to use it.
+:::
 
 ## Prerequisites
 
@@ -34,7 +38,7 @@ When configuring datanode groups, ensure that each group includes a `name` field
 
 ```yaml
 danodata:
-    enabled: false
+  enabled: false
 
 datanodeGroups:
   - name: write
@@ -85,12 +89,12 @@ helm upgrade --install ${release-name} greptime/greptimedb-cluster --namespace $
 Check the status of the pods:
 
 ```bash
-kubectl get pods -n default
+kubectl get pods -n ${namespace}
 NAME                                         READY   STATUS    RESTARTS   AGE
-weny-cluster-datanode-read-0                 1/1     Running   0          30s
-weny-cluster-datanode-write-0                1/1     Running   0          30s
-weny-cluster-frontend-774c76cffc-znvrw       1/1     Running   0          30s
-weny-cluster-meta-58977b7897-8k2sf           1/1     Running   0          90s
+${release-name}-datanode-read-0                 1/1     Running   0          30s
+${release-name}-datanode-write-0                1/1     Running   0          30s
+${release-name}-frontend-774c76cffc-znvrw       1/1     Running   0          30s
+${release-name}-meta-58977b7897-8k2sf           1/1     Running   0          90s
 ```
 
 ## Next steps
