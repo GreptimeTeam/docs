@@ -1,56 +1,47 @@
 ---
-keywords: [architecture, Metasrv, Frontend, Datanodes, database cluster]
-description: Outlines the architecture of GreptimeDB, including its main components Metasrv, Frontend, and Datanodes. It explains how these components work together to form a robust database cluster and provides links to detailed documentation for each component.
+keywords: [architecture, compute-storage separation, Metasrv, Frontend, Datanodes, Flownode, object storage, WAL, database cluster]
+description: Overview of GreptimeDB architecture, including core components, optional Flownode for flow computation, and request/data paths in distributed deployments.
 ---
 
 # Architecture
 
-GreptimeDB uses a compute-storage separation architecture where data persists in object storage (S3, Azure Blob, etc.) and compute nodes can be scaled independently. This enables elastic scaling and significant cost reduction compared to architectures that depend on local disk for primary storage.
+GreptimeDB uses a compute-storage separation architecture where durable data persists in object storage and compute nodes scale independently.
+This model supports elastic scaling and lower operational cost compared to architectures that rely on local disks as primary storage.
 
-![architecture](/architecture-3.png)
+## High-level Architecture
+
+![GreptimeDB high-level architecture](/architecture-4.png)
 
 ## Components
 
-In order to form a robust database cluster and keep complexity at an acceptable
-level, there are three main components in GreptimeDB architecture: Datanode,
-Frontend and Metasrv.
+GreptimeDB has three core components in distributed mode, and one optional component for flow computation:
 
-- [**Metasrv**](/contributor-guide/metasrv/overview.md) is the central command of
-  GreptimeDB cluster. In a typical cluster deployment, at least three nodes is required to
-  setup a reliable Metasrv mini-cluster. Metasrv manages database and table
-  information, including how data spread across the cluster and where to route
-  requests to. It also keeps monitoring availability and performance of Datanodes,
-  to ensure its routing table is valid and up-to-date.
-- [**Frontend**](/contributor-guide/frontend/overview.md) is a stateless
-  component that can scale to as many as needed. It accepts incoming requests,
-  authenticates them, translates them from various protocols into GreptimeDB
-  internal gRPC, and forwards to certain Datanodes under guidance from Metasrv by table sharding.
-- [**Datanodes**](/contributor-guide/datanode/overview.md) hold Regions of
-  tables in GreptimeDB cluster. It accepts read and write requests sent
-  from Frontend, executes them against its data, and returns the handle results.
+- [**Metasrv**](/contributor-guide/metasrv/overview.md): Metadata and routing control plane. It manages catalogs/schemas/tables/regions, coordinates scheduling, and serves routing data to other nodes.
+- [**Frontend**](/contributor-guide/frontend/overview.md): Stateless access layer. It accepts client protocols, authenticates requests, plans/distributes queries, and routes writes/reads using metadata from Metasrv.
+- [**Datanode**](/contributor-guide/datanode/overview.md): Storage and execution layer. It stores table regions, handles reads/writes, persists WAL, and flushes data files to object storage.
+- [**Flownode (optional)**](/contributor-guide/flownode/overview.md): Streaming/continuous computation runtime for [Flow Computation](/user-guide/flow-computation/overview.md). It is used when flow workloads run as a separate service in distributed deployments.
 
-These three components will be combined in a single binary as GreptimeDB standalone mode, for local or embedded development.
-
-You can refer to [architecture](/contributor-guide/overview.md) in contributor guide to learn more details about how components work together.
+In standalone mode, you run one GreptimeDB process instead of managing these services separately.
 
 ## How it works
 
-![Interactions between components](/how-it-works.png)
+### Write path
 
-- You can interact with the database via various protocols, such as ingesting data using
-  InfluxDB line protocol, then exploring the data using SQL or PromQL. The Frontend is the
-  component that clients connect to and operate, thus hide Datanode and Metasrv behind it.
-- Assumes a user uses the HTTP API to insert data into the database, by sending a HTTP request to a
-  Frontend instance. When the Frontend receives the request, it then parses the request body using
-  corresponding protocol parser, and finds the table to write to from a catalog manager based on
-  Metasrv.
-- The Frontend relies on a push-pull strategy to cache metadata from Metasrv, thus it knows which
-  Datanode, or more precisely, the Region a request should be sent to. A request may be split and
-  sent to multiple Regions, if its contents need to be stored in different Regions.
-- When Datanode receives the request, it writes the data to the Region, and then sends response
-  back to the Frontend. Writing to the Region will then write to the underlying storage engine,
-  which will eventually put the data to persistent device.
-- Once Frontend has received all responses from the target Datanodes, it then sends the result
-  back to the user.
+1. A client sends write requests to Frontend via supported protocols.
+2. Frontend resolves table and region routes from Metasrv metadata (with cache refresh when needed).
+3. Frontend splits and forwards requests to target Datanodes.
+4. Datanode writes data to memory and [WAL](/user-guide/deployments-administration/wal/overview.md), then eventually flushes immutable data files to [object storage](./storage-location.md).
 
+### Query path
 
+1. A client sends SQL, PromQL, log, or trace queries to Frontend.
+2. Frontend creates a distributed plan and dispatches sub-queries to relevant Datanodes.
+3. Datanodes execute sub-queries on regions and return partial results.
+4. Frontend merges the results and returns the final response.
+
+### Flow path (optional)
+
+When flow computation is enabled, Flownode runs continuous tasks that read source table changes and write computed results to sink tables.
+For details, see [Flow Computation](/user-guide/flow-computation/overview.md).
+
+For implementation details, see [Contributor Guide](/contributor-guide/overview.md).
