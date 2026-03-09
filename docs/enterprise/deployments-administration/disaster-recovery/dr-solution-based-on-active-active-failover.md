@@ -1,47 +1,50 @@
 ---
 keywords: [disaster recovery, active-active failover, RPO, RTO, read/write modes, configuration]
-description: Detailed explanation of the active-active failover disaster recovery solution in GreptimeDB Enterprise, including read/write modes, RPO, and RTO configurations.
+description: Introduces the DR solution in GreptimeDB active-active failover architecture, focusing on bidirectional replicated writes, local query execution, and failover mechanisms.
 ---
 
 # DR Solution Based on Active-Active Failover
 
-## RPO
+In GreptimeDB's "Active-Active Failover" architecture, two nodes are typically deployed (for example, node A and node B):
 
-In GreptimeDB's "Active-Active Failover" architecture, there are two nodes. Both nodes can provide the ability to execute reads and writes from clients. However, to achieve the goals of the RTO and RPO, we need to do some configurations about them. First of all, let me introduce the modes to reads and writes.
+- Both nodes provide full service capabilities to clients.
+- The two nodes are peers. Neither node is a long-term fixed single primary.
+- Writes use bidirectional asynchronous replication. A write accepted by either node is replicated to the peer node.
+  - GreptimeDB avoids circular replication through its internal code architecture.
+- Queries are executed locally on each node. No cross-node query result merge is required.
 
-For reads:
+The goal of this model is to provide cross-node disaster recovery with relatively low architecture complexity, without introducing a third compute node.
 
-- `SingleRead`: a read operation is executed in one node only, and the results are returned to the client directly.
-- `DualRead`: a read operation is executed in both nodes. The results are merged and deduplicated before returning to the client.
+## Architecture and Read/Write Paths
 
-The following picture illustrates the difference between the two read modes:
+### Write path
 
-![disaster-recovery-read-mode](/disaster-recovery-read-mode.png)
+1. The client sends a write request to node A (or node B).
+2. The receiving node persists the write locally, then returns success to the client.
+3. The receiving node asynchronously replicates the write request to the peer node.
+  - If too many write requests remain unreplicated (threshold is configurable), the node can pause client writes to help meet RPO and RTO targets.
 
-For writes:
+### Query path
 
-- `SyncWrite`: a write operation is executed in both nodes, and is considered success only if it is succeeded in both nodes before returning to the clients.
-- `AsyncWrite`: a write operation is still executed in both nodes, but the result is returned to the clients when it is done on the issued node. The other node will receive a copy of the write operation from the issued node, asynchronously.
+- Queries run locally on the node that the client connects to.
+- The model does not depend on real-time query merge across two nodes.
+- As long as either node is available, the query path can continue serving traffic.
 
-The following picture illustrates the difference between the two write modes:
+## RPO and RTO
 
-![disaster-recovery-write-mode](/disaster-recovery-write-mode.png)
+### RPO
 
-So there are four combinations on reads and writes, and their RPOs are:
+Different configurations can achieve different RPO targets.
+The key configuration is the amount of reserved space for write requests pending replication.
+If this space is set to `0`, asynchronous replication effectively becomes synchronous replication, and RPO is `0`.
+For other values, RPO can be calculated dynamically based on write size and write throughput.
 
-| RPO | `SingleRead` | `DualRead` |
-| - | - | - |
-| `SyncWrite` | 0 | 0 |
-| `AsyncWrite` | network latency between two nodes | 0 |
+### RTO
 
-Since the writes are synchronized between the two nodes in `SyncWrite` mode, the RPO is always zero regardless what read mode is. However, `SyncWrite` requires both nodes functioned well simultaneously to handle writes. If your workload is write-light-read-heavy, and can tolerate some system unavailable time to bring back the healthiness of both nodes when the disaster happened, we recommend the `SyncWrite + SingleRead` combination.
+RTO depends on your node failover strategy. Different failover methods and configurations can achieve different RTO targets.
+See "Failover Implementation Methods" below.
 
-Another combination that can achieve 0 RPO is `AsyncWrite + DualRead`. It's the opposite of the said above, suitable for the workload of write-heavy-read-light, and the restriction of the system availability can be relaxed.
-
-The final combination is `AsyncWrite + SingleRead`. This is the most relaxed setup. If the network between the nodes is good, and the nodes are hosted reliably, for example, the two nodes are hosted in a virtual machine system inside one AZ (Available Zone, or "Data Center"), you may prefer this combination. Of course, just remember that the RPO is not zero.
-
-## RTO
-
+## Failover Implementation Methods
 To retain the minimality of requirements of our active-active architecture, we don't have a third node or a third service to handle the failover of GreptimeDB. Generally speaking, there are several ways to handle the failover:
 
 - Through a LoadBalancer. If you can spare another node for deploying a LoadBalancer like the [Nginx](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/), or if you have your own LoadBalance service can be used, we recommend this way.
@@ -56,4 +59,10 @@ To compare the RPO and RTO across different disaster recovery solutions, please 
 
 ## Summary
 
-You can choose different read/write modes combination to achieve your goal for RPO. This is inherent to GreptimeDB active-active architecture. As to RTO, we rely on external efforts to handle the failover. A LoadBalancer is best suited for this job.
+The core of GreptimeDB's active-active failover DR solution is:
+
+- Two peer nodes with bidirectional asynchronous write replication.
+- Local query execution on each node.
+- Fast recovery from single-node failures through external failover mechanisms.
+
+Under this model, the architecture remains simple, and both RPO and RTO targets are explicit and configurable.
