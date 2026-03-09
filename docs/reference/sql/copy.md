@@ -22,7 +22,7 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 data (`/xxx/xxx/output.parquet` in this case).
 
 :::tip NOTE
-The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3 or other supported cloud storage services via `CONNECTION`.
+The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3, GCS, Azure Blob Storage, or other supported cloud storage services via `CONNECTION`.
 :::
 
 For example, to export data to CSV with custom timestamp and date formats:
@@ -63,7 +63,7 @@ When using compression, ensure the file extension matches the compression type: 
 
 #### `CONNECTION` Option
 
-`COPY TO` supports exporting data to cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY TO` supports exporting data to cloud storage services. See [connect-to-s3](#connect-to-s3), [connect-to-gcs](#connect-to-gcs), or [connect-to-azure-blob-storage](#connect-to-azure-blob-storage) for more details.
 
 ### COPY FROM
 
@@ -124,7 +124,7 @@ The CSV file must have a header row to be imported correctly. The header row sho
 
 #### `CONNECTION` Option
 
-`COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY FROM` also supports importing data from cloud storage services. See [connect-to-s3](#connect-to-s3), [connect-to-gcs](#connect-to-gcs), or [connect-to-azure-blob-storage](#connect-to-azure-blob-storage) for more details.
 
 ### Connect to S3
 
@@ -172,6 +172,63 @@ You can set the following **CONNECTION** options:
 #### LIMIT
 
 You can use `LIMIT` to restrict maximum number of rows inserted at once.
+
+### Connect to GCS
+
+You can copy data from/to Google Cloud Storage (GCS).
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+
+-- COPY TO
+COPY tbl TO 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+```
+
+#### URL
+
+Specify the file or directory using `gcs://bucket/path`. For example:
+
+```
+gcs://my-bucket/data.parquet
+```
+
+#### Options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `SCOPE` | The scope for GCS access, e.g., `https://www.googleapis.com/auth/devstorage.read_write` | Optional |
+| `CREDENTIAL` | The service account credential content in JSON format. | Optional |
+| `ENDPOINT` | The endpoint of the GCS service. | Optional |
+
+### Connect to Azure Blob Storage
+
+You can copy data from/to Azure Blob Storage.
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+
+-- COPY TO
+COPY tbl TO 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+```
+
+#### URL
+
+Specify the file or directory using `azblob://container/path`. For example:
+
+```
+azblob://my-container/data.parquet
+```
+
+#### Options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `ACCOUNT_NAME` | Azure storage account name. | Optional |
+| `ACCOUNT_KEY` | Azure storage account key. | Optional |
+| `ENDPOINT` | The endpoint of the Azure Blob Storage service. | Optional |
+| `SAS_TOKEN` | Shared access signature (SAS) token for Azure Blob Storage. | Optional |
 
 ## COPY Query Results
 
@@ -245,7 +302,7 @@ COPY DATABASE <db_name>
 | `PARALLELISM` | Number of tables to process in parallel. For example, if a database contains 30 tables and `PARALLELISM` is set to 8, then 8 tables will be processed concurrently. Defaults to the total number of CPU cores, with a minimum value of 1. | Optional |
 
 > - When copying databases, `<PATH>` must end with `/`.
-> - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
+> - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3, GCS, and Azure Blob Storage.
 
 ### Examples
 

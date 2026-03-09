@@ -70,7 +70,6 @@ To use object storage for storing exported metadata, enable one of the following
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
-| --gcs-credential-path | No       | -       | Path to GCS credential file           |
 | --gcs-credential      | No       | -       | GCS credential content                |
 | --gcs-endpoint        | No       | -       | GCS endpoint URL                      |
 
@@ -152,7 +151,6 @@ To use object storage for importing metadata, enable one of the following provid
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
-| --gcs-credential-path | No       | -       | Path to GCS credential file           |
 | --gcs-credential      | No       | -       | GCS credential content                |
 | --gcs-endpoint        | No       | -       | GCS endpoint URL                      |
 
@@ -225,7 +223,6 @@ To inspect snapshots stored in object storage, enable one of the following provi
 | --gcs-bucket          | No       | -       | GCS bucket name                       |
 | --gcs-root            | No       | -       | Root path in GCS bucket               |
 | --gcs-scope           | No       | -       | GCS service scope                     |
-| --gcs-credential-path | No       | -       | Path to GCS credential file           |
 | --gcs-credential      | No       | -       | GCS credential content                |
 | --gcs-endpoint        | No       | -       | GCS endpoint URL                      |
 

@@ -18,7 +18,7 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
 :::tip NOTE
-导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3。
+导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3、GCS、Azure Blob Storage 等云存储服务。
 :::
 
 例如，可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
@@ -59,7 +59,7 @@ COPY tbl TO '/path/to/file.csv.gz' WITH (
 
 #### `CONNECTION` 选项
 
-`COPY TO` 支持导出数据到云存储上，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+`COPY TO` 支持导出数据到云存储上。详情请参考 [连接 S3](#连接-s3)、[连接 GCS](#连接-gcs) 或 [连接 Azure Blob Storage](#连接-azure-blob-storage)。
 
 
 ### COPY FROM
@@ -117,7 +117,7 @@ CSV 文件必须带有 header，包含表的列名。
 
 #### Connection 选项
 
-`COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+`COPY FROM` 同样支持从云存储上导入数据。详情请参考 [连接 S3](#连接-s3)、[连接 GCS](#连接-gcs) 或 [连接 Azure Blob Storage](#连接-azure-blob-storage)。
 
 #### LIMIT 选项
 
@@ -165,6 +165,63 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 | `SECRET_ACCESS_KEY` | 用于连接 AWS S3 兼容的对象存储的秘密访问密钥  | 可选 |
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
 | `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。 | 可选 |
+
+### 连接 GCS
+
+你可以从 Google Cloud Storage (GCS) 导入/导出数据：
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+
+-- COPY TO
+COPY tbl TO 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+```
+
+#### URL
+
+使用 `gcs://bucket/path` 指定文件或目录，例如：
+
+```
+gcs://my-bucket/data.parquet
+```
+
+#### 选项
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `SCOPE` | GCS 访问范围，例如 `https://www.googleapis.com/auth/devstorage.read_write` | 可选 |
+| `CREDENTIAL` | JSON 格式的服务账号凭证内容 | 可选 |
+| `ENDPOINT` | GCS 服务的 Endpoint | 可选 |
+
+### 连接 Azure Blob Storage
+
+你可以从 Azure Blob Storage 导入/导出数据：
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+
+-- COPY TO
+COPY tbl TO 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+```
+
+#### URL
+
+使用 `azblob://container/path` 指定文件或目录，例如：
+
+```
+azblob://my-container/data.parquet
+```
+
+#### 选项
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `ACCOUNT_NAME` | Azure 存储账号名称 | 可选 |
+| `ACCOUNT_KEY` | Azure 存储账号密钥 | 可选 |
+| `ENDPOINT` | Azure Blob Storage 服务的 Endpoint | 可选 |
+| `SAS_TOKEN` | Azure Blob Storage 的共享访问签名（SAS）令牌 | 可选 |
 
 ## COPY 查询结果
 
@@ -238,7 +295,7 @@ COPY DATABASE <db_name>
 | `PARALLELISM` | 并行处理的表数量。例如，数据库包含 30 个表且 `PARALLELISM` 设置为 8 时，将同时处理 8 个表。默认值为 CPU 核心总数，最小值为 1。 | 可选 |
 
 > - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
-> - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+> - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3、GCS、Azure Blob Storage 等对象存储
 
 
 ### 示例
