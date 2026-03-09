@@ -21,7 +21,7 @@ greptime datanode start --help
 
 | 选项                                  | 描述                                                                                                                                            |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-c`/`--config-file`                  | Datanode 的配置文件                                                                                                                    |
+| `-c`/`--config-file`                  | Datanode 的配置文件                                                                                                                             |
 | `--data-home`                         | 数据库存储 home 目录                                                                                                                            |
 | `--env-prefix <ENV_PREFIX>`           | 配置的环境变量前缀，默认为`GREPTIMEDB_DATANODE`                                                                                                 |
 | `--http-addr <HTTP_ADDR>`             | HTTP 服务器地址                                                                                                                                 |
@@ -58,12 +58,12 @@ greptime datanode start --rpc-bind-addr=0.0.0.0:4001 --mysql-addr=0.0.0.0:4002 -
 
 ### 选项
 
-| 选项                           | 描述                                                                                                 |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `--config <FILE>`              | datanode 配置文件路径（TOML 格式）                                                                   |
-| `--source <PATH>`              | 对象存储中的源 SST 文件路径（例如 `data/greptime/public/1024/1024_0000000000/metadata/<uuid>.parquet`）|
-| `-v`/`--verbose`               | 启用详细输出                                                                                         |
-| `--pprof-file <FILE>`          | pprof 火焰图的输出文件路径（启用性能分析）。生成 SVG 格式的火焰图文件                                |
+| 选项                  | 描述                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `--config <FILE>`     | datanode 配置文件路径（TOML 格式）                                                                      |
+| `--source <PATH>`     | 对象存储中的源 SST 文件路径（例如 `data/greptime/public/1024/1024_0000000000/metadata/<uuid>.parquet`） |
+| `-v`/`--verbose`      | 启用详细输出                                                                                            |
+| `--pprof-file <FILE>` | pprof 火焰图的输出文件路径（启用性能分析）。生成 SVG 格式的火焰图文件                                   |
 
 ### 示例
 
@@ -84,3 +84,85 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 ```
 
 这将生成一个 SVG 格式的火焰图，可以在 Web 浏览器中打开进行性能分析。
+
+## scanbench
+
+`scanbench` 子命令用于直接从存储层对 region 扫描进行基准测试。
+
+### 选项
+
+| 选项                                 | 描述                                                                                                      |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `--config <FILE>`                    | datanode/standalone 配置文件路径（TOML 格式）。                                                           |
+| `--region-id <REGION_ID>`            | Region ID 支持两种格式：`<u64>`（例如 `4398046511104`）或 `<table_id>:<region_number>`（例如 `1024:0`）。 |
+| `--table-dir <TABLE_DIR>`            | 打开 region 时使用的表目录（例如 `greptime/public/1024`）。                                               |
+| `--scanner <seq\|unordered\|series>` | 扫描策略，默认 `seq`。                                                                                    |
+| `--scan-config <FILE>`               | 用于微调扫描请求的 JSON 文件。                                                                            |
+| `--parallelism <N>`                  | 模拟扫描并行度，默认 `1`。                                                                                |
+| `--iterations <N>`                   | 基准测试迭代次数，默认 `1`。                                                                              |
+| `--path-type <bare\|data\|metadata>` | Region 路径类型，默认 `bare`。                                                                            |
+| `--force-flat-format`                | 强制以 flat format 读取 region，默认关闭。                                                                |
+| `--enable-wal`                       | 打开 region 时启用 WAL 回放，默认关闭。                                                                   |
+| `--pprof-file <FILE>`                | pprof 火焰图输出路径（仅 Unix）。                                                                         |
+| `--pprof-after-warmup`               | 在首轮迭代（warmup）后再开始 pprof。需要与 `--pprof-file` 一起使用，默认关闭。                            |
+| `-v`/`--verbose`                     | 启用详细输出。                                                                                            |
+
+### `scan-config` JSON
+
+```json
+{
+  "projection": [0, 1, 2],
+  "projection_names": ["host", "cpu"],
+  "filters": ["host = 'web-1'", "cpu > 80"],
+  "series_row_selector": "last_row"
+}
+```
+
+说明：
+
+- 所有字段均为可选。
+- `projection`（列索引）与 `projection_names`（列名）二选一。
+- `projection_names` 采用精确匹配（区分大小写）。
+- `filters` 应为 SQL 表达式（而非完整 SQL 语句）。
+- `series_row_selector` 当前仅支持 `last_row`。
+
+### 示例
+
+#### 默认顺序扫描
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024
+```
+
+#### 使用并行度的无序扫描
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --scanner unordered --parallelism 8 --iterations 5
+```
+
+#### 扫描 metric engine 数据目录的 series 扫描
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024/ --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
+```
+
+`scanconfig.json` 示例：
+
+```json
+{
+  "projection_names": ["greptime_timestamp", "greptime_value", "az", "hostname", "region", "__tsid"],
+  "filters": [
+    "mode = 'idle'",
+    "region = 'us-west-2'",
+    "greptime_timestamp >= 1742550540001",
+    "greptime_timestamp <= 1742552400000",
+    "__table_id = 1182"
+  ]
+}
+```
+
+#### warmup 后开始性能分析
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --iterations 5 --pprof-file ./scanbench.svg --pprof-after-warmup
+```
