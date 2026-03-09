@@ -142,7 +142,7 @@ greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-
 #### 扫描 metric engine 数据目录的 series 扫描
 
 ```sh
-greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024/ --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024 --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
 ```
 
 `scanconfig.json` 示例：

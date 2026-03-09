@@ -142,7 +142,7 @@ greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-
 #### Series scan on metric engine data directory
 
 ```sh
-greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024/ --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024 --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
 ```
 
 Example `scanconfig.json`:
