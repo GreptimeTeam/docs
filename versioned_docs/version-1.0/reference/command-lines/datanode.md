@@ -111,7 +111,6 @@ The `scanbench` subcommand benchmarks region scans directly from storage.
 
 ```json
 {
-  "projection": [0, 1, 2],
   "projection_names": ["host", "cpu"],
   "filters": ["host = 'web-1'", "cpu > 80"],
   "series_row_selector": "last_row"
