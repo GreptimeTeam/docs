@@ -47,7 +47,7 @@ See "Failover Implementation Methods" below.
 ## Failover Implementation Methods
 To retain the minimality of requirements of our active-active architecture, we don't have a third node or a third service to handle the failover of GreptimeDB. Generally speaking, there are several ways to handle the failover:
 
-- Through a LoadBalancer. If you can spare another node for deploying a LoadBalancer like the [Nginx](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/), or if you have your own LoadBalance service can be used, we recommend this way.
+- Through a LoadBalancer. If you can spare another node for deploying a LoadBalancer like the [Nginx](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/), or if you have your own LoadBalancer service can be used, we recommend this way.
   <img src="/DR-LoadBalancer.png" alt="DR-LoadBalancer" width="600"/>
 - By client SDK's failover mechanism. For example, if you are using MySQL Connector/j, you can configure the failover by setting multiple hosts and ports in the connection URL (see its document [here](https://dev.mysql.com/doc/connector-j/en/connector-j-config-failover.html)). PostgreSQL's driver [has the same mechanism](https://jdbc.postgresql.org/documentation/use/#connection-fail-over). This is the most easy way to handle the failover, but not every client SDK supports this failover mechanism.
   <img src="/DR-SDK.png" alt="DR-SDK" width="600"/>
