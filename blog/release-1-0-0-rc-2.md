@@ -8,6 +8,38 @@ date: 2026-03-11
 
 Release date: March 11, 2026
 
+This release also includes several important bug fixes for repartition:
+- Reject writes to deallocating regions during region merge
+- Ensure entering the staging phase waits for compaction to complete
+
+Upgrading to this version is recommended.
+
+### 👍 Highlights
+
+**Performance Improvements**
+
+- **Dynamic filter pushdown for TopK:** Runtime dynamic filters are propagated from DataFusion into Mito region scans to reduce unnecessary IO/CPU; in [#7545](https://github.com/GreptimeTeam/greptimedb/pull/7545), `ORDER BY end_time DESC LIMIT 10` improved from ~28.86s to ~0.21s on non-indexed timestamps.
+- **Pruning improvements:** Shared partition pruning and extension-range filter improvements improve scan selectivity by [#7635](https://github.com/GreptimeTeam/greptimedb/pull/7635) and [#7693](https://github.com/GreptimeTeam/greptimedb/pull/7693).
+- **Ingestion and scan path optimization:** Prometheus decode and remote-write decode are optimized by [#7737](https://github.com/GreptimeTeam/greptimedb/pull/7737) and [#7761](https://github.com/GreptimeTeam/greptimedb/pull/7761), and Mito2 Parquet scan is accelerated via min-max caches by [#7708](https://github.com/GreptimeTeam/greptimedb/pull/7708).
+
+**Key New Features**
+
+- **PostgreSQL COPY support for ADBC-postgres path:** GreptimeDB supports `COPY (query) TO STDOUT WITH (format binary)` on the PostgreSQL interface, enabling the ADBC-postgres COPY-optimized query path by [#7709](https://github.com/GreptimeTeam/greptimedb/pull/7709).
+- **Flow TQL CTE support:** `CREATE FLOW` supports simple TQL CTE patterns, improving flow authoring while preserving predictable execution semantics by [#7702](https://github.com/GreptimeTeam/greptimedb/pull/7702).
+- **Prometheus 3.x behavior alignment:** Selector, lookback, and matrix-selector behavior are aligned for more predictable upgrades and query compatibility by [#7671](https://github.com/GreptimeTeam/greptimedb/pull/7671) and [#7688](https://github.com/GreptimeTeam/greptimedb/pull/7688).
+
+**Notable Bug Fixes**
+
+- **Repartition safety during region merge:** Reject writes to deallocating regions during region merge by [#7694](https://github.com/GreptimeTeam/greptimedb/pull/7694).
+- **Staging transition correctness:** Ensure entering the staging phase waits for compaction to complete by [#7776](https://github.com/GreptimeTeam/greptimedb/pull/7776).
+
+**Dashboard Updates**
+
+- **Query experience:** Added table query sidebar and toolbar/editor UI, with refined pagination.
+- **SQL and table-name handling:** Improved SQL quoting and parsing for quoted/prefixed table names.
+- **Usability and stability:** Added database selector support, log export limits, and bigint handling fixes.
+
+
 ### 🚀 Features
 
 * feat: reduce unit test suite wall time by [@waynexia](https://github.com/waynexia) in [#7657](https://github.com/GreptimeTeam/greptimedb/pull/7657)

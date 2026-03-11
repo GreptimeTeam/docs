@@ -8,6 +8,8 @@ date: 2026-02-02
 
 Release date: February 02, 2026
 
+It's recommended to upgrade to v1.0.0-rc.2.
+
 ### 👍 Highlights
 
 **Region Repartition**
