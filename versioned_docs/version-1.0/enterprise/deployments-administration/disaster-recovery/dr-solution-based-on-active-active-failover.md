@@ -67,3 +67,4 @@ The core of GreptimeDB's active-active failover DR solution is:
 - Fast recovery from single-node failures through external failover mechanisms.
 
 Under this model, the architecture remains simple, and both RPO and RTO targets are explicit and configurable.
+This disaster recovery solution could be best suited for small-to-medium size business scenarios.
