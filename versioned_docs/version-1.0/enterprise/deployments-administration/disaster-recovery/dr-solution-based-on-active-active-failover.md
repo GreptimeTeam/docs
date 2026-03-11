@@ -10,10 +10,10 @@ In GreptimeDB's "Active-Active Failover" architecture, two nodes are typically d
 - Both nodes provide full service capabilities to clients.
 - The two nodes are peers. Neither node is a long-term fixed single primary.
 - Writes use bidirectional asynchronous replication. A write accepted by either node is replicated to the peer node.
-  - GreptimeDB avoids circular replication through its internal code architecture.
+  - GreptimeDB's architecture prevents circular replication.
 - Queries are executed locally on each node. No cross-node query result merge is required.
 
-The goal of this model is to provide cross-node disaster recovery with relatively low architecture complexity, without introducing a third compute node.
+The goal of this model is to provide cross-node disaster recovery with relatively low architecture complexity, without introducing a third compute node or metadata node.
 
 ## Architecture and Read/Write Paths
 
