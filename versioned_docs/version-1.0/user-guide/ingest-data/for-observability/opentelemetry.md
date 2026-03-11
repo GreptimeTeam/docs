@@ -129,6 +129,21 @@ Otherwise, it will remain the old data format with the existing table, but use t
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
 1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
+
+   Here are some examples of the conversion:
+
+   | OTLP Metric / Attribute | OTLP Type / Unit | Prometheus Equivalent |
+   | :--- | :--- | :--- |
+   | `cache.hit_ratio` | Gauge / `1` | `cache_hit_ratio` |
+   | `memory.usage` | Gauge / `By` | `memory_usage_bytes` |
+   | `queue.length` | Gauge / `{item}` | `queue_length` |
+   | `http.server.request.duration` | Histogram / `s` | `http_server_request_duration_seconds` |
+   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_seconds` |
+   | `http.client.request.size` | Sum (Monotonic) / `By` | `http_client_request_size_bytes_total` |
+   | `system.network.io` | Sum (Monotonic) / `By` | `system_network_io_bytes_total` |
+   | `http.status_code` (Attribute) | - | `http_status_code` |
+   | `service.name` (Attribute) | - | `service_name` |
+
 2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
 
 Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
