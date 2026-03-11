@@ -130,6 +130,21 @@ exporter = OTLPMetricExporter(
 
 GreptimeDB 会首先对数据进行预处理，包括：
 1. 将指标名（表名）和标签名转换成 Prometheus 风格的命名（例如：将 `.` 替换为 `_`）。具体信息请参考[这里](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1)
+
+   以下是一些转换示例：
+
+   | OTLP 指标 / 属性 | OTLP 类型 / 单位 | Prometheus 等效名称 |
+   | :--- | :--- | :--- |
+   | `cache.hit_ratio` | Gauge / `1` | `cache_hit_ratio` |
+   | `memory.usage` | Gauge / `By` | `memory_usage_bytes` |
+   | `queue.length` | Gauge / `{item}` | `queue_length` |
+   | `http.server.request.duration` | Histogram / `s` | `http_server_request_duration_seconds` |
+   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_seconds` |
+   | `http.client.request.size` | Sum (Monotonic) / `By` | `http_client_request_size_bytes_total` |
+   | `system.network.io` | Sum (Monotonic) / `By` | `system_network_io_bytes_total` |
+   | `http.status_code` (属性) | - | `http_status_code` |
+   | `service.name` (属性) | - | `service_name` |
+
 2. 默认丢弃一些 resource 属性和全部的 scope 属性。默认保存的 resource 属性列表可以参考[这里](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes)。你可以通过配置项对这个行为进行调整
 
 注意： OTLP 的 `Sum` 和 `Histogram` 指标的数据可能是增量时序（delta temporality）类型的。
