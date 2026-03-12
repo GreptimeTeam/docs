@@ -58,12 +58,12 @@ The `objbench` subcommand is a benchmarking tool for measuring read/write perfor
 
 ### Options
 
-| Option                         | Description                                                                                      |
-| ------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `--config <FILE>`              | Path to the datanode configuration file (TOML format)                                            |
-| `--source <PATH>`              | Source SST file path in object storage (e.g., `data/greptime/public/1024/1024_0000000000/metadata/<uuid>.parquet`) |
-| `-v`/`--verbose`               | Enable verbose output                                                                            |
-| `--pprof-file <FILE>`          | Output file path for pprof flamegraph (enables profiling). Generates an SVG flamegraph file     |
+| Option                | Description                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `--config <FILE>`     | Path to the datanode configuration file (TOML format)                                                              |
+| `--source <PATH>`     | Source SST file path in object storage (e.g., `data/greptime/public/1024/1024_0000000000/metadata/<uuid>.parquet`) |
+| `-v`/`--verbose`      | Enable verbose output                                                                                              |
+| `--pprof-file <FILE>` | Output file path for pprof flamegraph (enables profiling). Generates an SVG flamegraph file                        |
 
 ### Examples
 
@@ -84,3 +84,84 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 ```
 
 This will generate a flamegraph in SVG format that can be opened in a web browser for performance analysis.
+
+## scanbench
+
+The `scanbench` subcommand benchmarks region scans directly from storage.
+
+### Options
+
+| Option                               | Description                                                                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `--config <FILE>`                    | Path to the datanode/standalone configuration file (TOML format).                                                        |
+| `--region-id <REGION_ID>`            | Region ID in one of: `<u64>` (for example, `4398046511104`) or `<table_id>:<region_number>` (for example, `1024:0`).     |
+| `--table-dir <TABLE_DIR>`            | Table directory used in open request (for example, `greptime/public/1024`).                                              |
+| `--scanner <seq\|unordered\|series>` | Scan strategy. Defaults to `seq`.                                                                                        |
+| `--scan-config <FILE>`               | JSON file used to tune the scan request.                                                                                 |
+| `--parallelism <N>`                  | Simulated scan parallelism. Defaults to `1`.                                                                             |
+| `--iterations <N>`                   | Benchmark iterations. Defaults to `1`.                                                                                   |
+| `--path-type <bare\|data\|metadata>` | Region path type. Defaults to `bare`.                                                                                    |
+| `--force-flat-format`                | Force reading the region in flat format. Disabled by default.                                                            |
+| `--enable-wal`                       | Enable WAL replay when opening the region. Disabled by default.                                                          |
+| `--pprof-file <FILE>`                | Output file path for pprof flamegraph (Unix only).                                                                       |
+| `--pprof-after-warmup`               | Start pprof after the first iteration (use the first iteration as warmup). Requires `--pprof-file`. Disabled by default. |
+| `-v`/`--verbose`                     | Enable verbose output.                                                                                                   |
+
+### `scan-config` JSON
+
+```json
+{
+  "projection_names": ["host", "cpu"],
+  "filters": ["host = 'web-1'", "cpu > 80"],
+  "series_row_selector": "last_row"
+}
+```
+
+Notes:
+
+- All fields are optional.
+- Use either `projection` (indexes) or `projection_names` (column names), not both.
+- `projection_names` uses exact (case-sensitive) column name matching.
+- `filters` should be SQL expressions (not full SQL statements).
+- `series_row_selector` currently supports only `last_row`.
+
+### Examples
+
+#### Default sequential scan
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024
+```
+
+#### Unordered scan with parallelism
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --scanner unordered --parallelism 8 --iterations 5
+```
+
+#### Series scan on metric engine data directory
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir data/greptime/public/1024 --parallelism 16 --scan-config ./scanconfig.json --scanner series --path-type data --iterations 10
+```
+
+Example `scanconfig.json`:
+
+```json
+{
+  "projection_names": ["greptime_timestamp", "greptime_value", "az", "hostname", "region", "__tsid"],
+  "filters": [
+    "mode = 'idle'",
+    "region = 'us-west-2'",
+    "greptime_timestamp >= 1742550540001",
+    "greptime_timestamp <= 1742552400000",
+    "__table_id = 1182"
+  ]
+}
+```
+
+#### Profile after warmup iteration
+
+```sh
+greptime datanode scanbench --config ./datanode.toml --region-id 1024:0 --table-dir greptime/public/1024 --iterations 5 --pprof-file ./scanbench.svg --pprof-after-warmup
+```
