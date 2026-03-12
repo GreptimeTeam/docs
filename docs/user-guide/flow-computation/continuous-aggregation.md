@@ -459,6 +459,31 @@ This Flow definition includes several key components:
 - **rate()**: TQL function that calculates the rate of change
 - **[1m]**: Defines a 1-minute lookback window for the rate calculation
 
+### Wrapping TQL with a CTE
+
+If you want a cleaner flow definition or need stable output column names, you can wrap `TQL EVAL` in a simple CTE inside `CREATE FLOW`:
+
+```sql
+CREATE FLOW calc_rate_cte
+SINK TO rate_reqs_cte
+EVAL INTERVAL '1m' AS
+WITH rate_data (ts, req_rate, host, job, instance) AS (
+    TQL EVAL (now() - '1m'::interval, now(), '30s')
+    rate(http_requests_total{job="my_service"}[1m])
+    AS req_rate
+)
+SELECT * FROM rate_data;
+```
+
+This pattern is useful when you want to rename columns before GreptimeDB infers the sink table schema. It is especially handy for TQL expressions whose generated value column names are verbose.
+
+The supported shape is intentionally limited:
+
+- Use exactly one TQL CTE.
+- End the flow query with `SELECT * FROM <cte-name>`.
+- Do not add `WHERE`, joins, extra projections, or additional CTEs around it.
+- If you quote the CTE name, keep the same quoted form in the outer query.
+
 ### Examining the Generated Sink Table
 
 You can inspect the automatically created sink table structure:
