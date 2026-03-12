@@ -70,7 +70,6 @@ greptime cli meta snapshot save [OPTIONS]
 | --gcs-bucket          | 否       | -      | GCS 桶名                           |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径                   |
 | --gcs-scope           | 否       | -      | GCS 服务范围                       |
-| --gcs-credential-path | 否       | -      | GCS 凭证文件路径                   |
 | --gcs-credential      | 否       | -      | GCS 凭证内容                       |
 | --gcs-endpoint        | 否       | -      | GCS 端点 URL                       |
 
@@ -150,7 +149,6 @@ greptime cli meta snapshot restore [OPTIONS]
 | --gcs-bucket          | 否       | -      | GCS 桶名                           |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径                   |
 | --gcs-scope           | 否       | -      | GCS 服务范围                       |
-| --gcs-credential-path | 否       | -      | GCS 凭证文件路径                   |
 | --gcs-credential      | 否       | -      | GCS 凭证内容                       |
 | --gcs-endpoint        | 否       | -      | GCS 端点 URL                       |
 
@@ -223,7 +221,6 @@ greptime cli meta snapshot info [OPTIONS]
 | --gcs-bucket          | 否       | -      | GCS 桶名                       |
 | --gcs-root            | 否       | -      | GCS 桶中的根路径               |
 | --gcs-scope           | 否       | -      | GCS 服务范围                   |
-| --gcs-credential-path | 否       | -      | GCS 凭证文件路径               |
 | --gcs-credential      | 否       | -      | GCS 凭证内容                   |
 | --gcs-endpoint        | 否       | -      | GCS 端点 URL                   |
 
