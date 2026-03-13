@@ -17,6 +17,11 @@ Example:
 
 ```bash
 curl -i -X GET http://127.0.0.1:4000/health
+```
+
+Output:
+
+```text
 HTTP/1.1 200 OK
 content-type: application/json
 content-length: 2
@@ -33,7 +38,11 @@ You can use the `/status` endpoint to check the deployment status of GreptimeDB.
 
 ```bash
 curl -X GET http://127.0.0.1:4000/status | jq
+```
 
+Output:
+
+```json
 {
   "source_time": "2024-12-27T07:57:47Z",
   "commit": "b4bd34c530d62b95346a26a9470c03b9f6fb15c8",
@@ -45,4 +54,3 @@ curl -X GET http://127.0.0.1:4000/status | jq
 ```
 
 Please refer to [the Status endpoint](/reference/http-endpoints.md#status) for more details.
-

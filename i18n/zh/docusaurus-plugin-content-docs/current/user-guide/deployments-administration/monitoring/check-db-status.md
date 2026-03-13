@@ -17,6 +17,11 @@ HTTP 状态码 `200 OK` 表示 GreptimeDB 运行正常。
 
 ```bash
 curl -i -X GET http://127.0.0.1:4000/health
+```
+
+输出：
+
+```text
 HTTP/1.1 200 OK
 content-type: application/json
 content-length: 2
@@ -33,7 +38,11 @@ date: Tue, 31 Dec 2024 02:15:22 GMT
 
 ```bash
 curl -X GET http://127.0.0.1:4000/status | jq
+```
 
+输出：
+
+```json
 {
   "source_time": "2024-12-27T07:57:47Z",
   "commit": "b4bd34c530d62b95346a26a9470c03b9f6fb15c8",
@@ -45,5 +54,4 @@ curl -X GET http://127.0.0.1:4000/status | jq
 ```
 
 有关状态接口的更多信息，请参考[状态接口](/reference/http-endpoints.md#状态)。
-
 
