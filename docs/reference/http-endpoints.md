@@ -40,7 +40,11 @@ Example:
 
 ```bash
 curl -X GET http://127.0.0.1:4000/metrics
+```
 
+Output:
+
+```text
 # HELP greptime_app_version app version
 # TYPE greptime_app_version gauge
 greptime_app_version{app="greptime-edge",short_version="main-b4bd34c5",version="0.12.0"} 1

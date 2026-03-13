@@ -88,10 +88,12 @@ curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.
 }
 ```
 
-In the output above, the `pipeline` field is a YAML-formatted string. Since the JSON format does not display YAML strings well, the `echo` command can be used to present it in a more human-readable way:
+In the output above, the `pipeline` field is a YAML-formatted string. You can use [`jq -r`](https://jqlang.org/) to print it in a more human-readable way:
 
 ```shell
-echo -e "version: 2\nprocessors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n  - select:\n      type: exclude\n      fields:\n        - message\n\ntransform:\n  - fields:\n      - ip_address\n    type: string\n    index: inverted\n    tag: true\n  - fields:\n      - status_code\n    type: int32\n    index: inverted\n    tag: true\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
+  -H "Authorization: Basic {{authentication}}" \
+  | jq -r '.pipelines[0].pipeline'
 ```
 
 ```yml
@@ -286,7 +288,11 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
+```
 
+Output:
+
+```json
 {"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
 ```
 
