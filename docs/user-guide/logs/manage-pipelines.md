@@ -286,7 +286,11 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
      -H "Content-Type: application/json" \
      -H "Authorization: Basic {{authentication}}" \
      -d $'{"message": 1998.08,"time":"2024-05-25 20:16:37.217"}'
+```
 
+Output:
+
+```json
 {"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
 ```
 
