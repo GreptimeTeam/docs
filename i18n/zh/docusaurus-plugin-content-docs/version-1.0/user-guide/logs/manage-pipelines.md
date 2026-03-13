@@ -88,11 +88,13 @@ curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.
 }
 ```
 
-在上面的输出中，pipeline 字段是 YAML 格式的字符串。
-JSON 格式无法很好地展示 YMAL 字符串，使用 echo 命令可以将其以阅读友好的方式展示出来：
+在上面的输出中，`pipeline` 字段是 YAML 格式的字符串。
+你可以使用 [`jq -r`](https://jqlang.org/) 以更易读的方式展示它：
 
 ```shell
-echo -e "version: 2\nprocessors:\n  - dissect:\n      fields:\n        - message\n      patterns:\n        - '%{ip_address} - - [%{timestamp}] \"%{http_method} %{request_line}\" %{status_code} %{response_size} \"-\" \"%{user_agent}\"'\n      ignore_missing: true\n  - date:\n      fields:\n        - timestamp\n      formats:\n        - \"%d/%b/%Y:%H:%M:%S %z\"\n  - select:\n      type: exclude\n      fields:\n        - message\n\ntransform:\n  - fields:\n      - ip_address\n    type: string\n    index: inverted\n    tag: true\n  - fields:\n      - status_code\n    type: int32\n    index: inverted\n    tag: true\n  - fields:\n      - request_line\n      - user_agent\n    type: string\n    index: fulltext\n  - fields:\n      - response_size\n    type: int32\n  - fields:\n      - timestamp\n    type: time\n    index: timestamp\n"
+curl "http://localhost:4000/v1/pipelines/test?version=2025-04-01%2006%3A58%3A31.335251882%2B0000" \
+  -H "Authorization: Basic {{authentication}}" \
+  | jq -r '.pipelines[0].pipeline'
 ```
 
 ```yml
