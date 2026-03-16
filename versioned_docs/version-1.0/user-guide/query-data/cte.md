@@ -181,11 +181,13 @@ SELECT * FROM cte_name;
 1. **Column naming**:
    - The time index column name varies depending on your table schema (e.g., `ts` for custom tables, `greptime_timestamp` for Prometheus remote write)
    - The value column name depends on the PromQL expression and may be unpredictable, so it's better to use value aliasing with `AS` in TQL to ensure predictable column names: `TQL EVAL (...) expression AS my_value`
-   - **Important**: Avoid using column aliases in CTE definition (e.g., `WITH cte_name (ts, val) AS (...)`) because TQL EVAL results can have variable column count and order, especially in Prometheus scenarios where tags can be dynamically added or removed
+   - **Important**: In general, avoid using column aliases in CTE definitions (for example, `WITH cte_name (ts, val) AS (...)`) because TQL EVAL results can have variable column count and order, especially in Prometheus scenarios where tags can be dynamically added or removed. They are best reserved for cases where the result shape is stable, such as a simple `CREATE FLOW` TQL CTE.
 
 2. **Supported commands**: Only `TQL EVAL` is supported within CTEs. `TQL ANALYZE` and `TQL EXPLAIN` cannot be used in CTEs.
 
 3. **Lookback parameter**: The optional fourth parameter controls the lookback duration (default: 5 minutes).
+
+4. **Using TQL CTEs in `CREATE FLOW`**: GreptimeDB supports `WITH ... AS (TQL EVAL ...)` in `CREATE FLOW`, but only in the simplest form: a single TQL CTE followed by `SELECT * FROM <cte-name>`. Extra SQL CTEs, filters, joins, or custom projections are not supported in flow definitions.
 
 ### Examples
 

@@ -490,6 +490,27 @@ AS
 <SQL>;
 ```
 
+对于 `CREATE FLOW`，`AS` 后面的查询既可以是常规 Flow 查询，也可以是 TQL 查询。GreptimeDB 现在还支持一种严格受限的 TQL CTE 写法，用来让 Flow 定义更清晰：
+
+```sql
+CREATE FLOW calc_rate_cte
+SINK TO rate_reqs
+EVAL INTERVAL '1m' AS
+WITH rate_data (ts, req_rate, host, job, instance) AS (
+    TQL EVAL (now() - '1m'::interval, now(), '30s')
+    rate(http_requests_total{job="my_service"}[1m])
+    AS req_rate
+)
+SELECT * FROM rate_data;
+```
+
+在 `CREATE FLOW` 中使用 `WITH` 时，当前仅支持一种刻意保持简单的形式：
+
+- 只能有一个 CTE，并且该 CTE 必须包含 `TQL EVAL`。
+- 外层查询必须严格是 `SELECT * FROM <cte-name>`。
+- 不支持额外的列投影、过滤、JOIN、排序，也不支持再混入其他 SQL CTE。
+- 如果 CTE 名称使用了引号，那么外层 `SELECT` 里也要用相同的带引号名称引用它。
+
 用于创建或更新 Flow 任务，请阅读[Flow 管理文档](/user-guide/flow-computation/manage-flow.md#创建-flow)。
 
 ## 创建 View
