@@ -180,11 +180,13 @@ SELECT * FROM cte_name;
 1. **列名**：
    - 时间索引列名取决于表结构（例如，自定义表使用 `ts`，Prometheus 远程写入的默认使用 `greptime_timestamp`）
    - 值的列名取决于 PromQL 表达式，可能无法预测，因此更推荐使用 TQL 中的 `AS` 进行值别名以确保可预测的值列名：`TQL EVAL (...) expression AS my_value`
-   - **重要**：避免在 CTE 定义中使用列别名（如 `WITH cte_name (ts, val) AS (...)`），因为 TQL EVAL 结果的列数量和顺序可能变化，特别是在 Prometheus 场景中标签可能动态添加或删除
+   - **重要**：一般情况下不建议在 CTE 定义中使用列别名（如 `WITH cte_name (ts, val) AS (...)`），因为 TQL EVAL 结果的列数量和顺序可能变化，特别是在 Prometheus 场景中标签可能动态添加或删除。更适合在结果列稳定的场景使用，例如简单的 `CREATE FLOW` TQL CTE。
 
 2. **支持的命令**：CTE 中仅支持 `TQL EVAL`。不能在 CTE 中使用 `TQL ANALYZE` 和 `TQL EXPLAIN`。
 
 3. **回溯参数**：可选的第四个参数控制回溯持续时间（默认：5 分钟）。
+
+4. **在 `CREATE FLOW` 中使用 TQL CTE**：GreptimeDB 支持在 `CREATE FLOW` 中写 `WITH ... AS (TQL EVAL ...)`，但只支持最简单的形式：单个 TQL CTE，后面紧跟 `SELECT * FROM <cte-name>`。Flow 定义里不支持额外 SQL CTE、过滤、JOIN 或自定义列投影。
 
 ### 示例
 
