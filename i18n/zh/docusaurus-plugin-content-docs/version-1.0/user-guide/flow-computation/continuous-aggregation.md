@@ -254,8 +254,8 @@ CREATE TABLE temp_alerts (
 );
 
 CREATE FLOW temp_monitoring
-EXPIRE AFTER '1h'
 SINK TO temp_alerts
+EXPIRE AFTER '1h'
 AS
 SELECT
     sensor_id,
