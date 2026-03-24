@@ -30,6 +30,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 - `append_mode` - 数据库中的表是否为仅追加模式（`true`/`false`）
 - `merge_mode` - 合并重复行的策略（`last_row`、`last_non_null`）
 - `skip_wal` - 是否为数据库中的表禁用预写日志（`'true'`/`'false'`）
+- `sst_format` - 数据库中表的 SST（Sorted String Table）文件格式（`flat`、`primary_key`）
 - `compaction.*` - 压缩相关设置（如 `compaction.type`、`compaction.twcs.time_window`）
 
 阅读更多关于[表选项](#表选项)的信息。
@@ -39,7 +40,7 @@ CREATE DATABASE [IF NOT EXISTS] db_name [WITH <options>]
 
 - **TTL 和 Compaction 选项**（`ttl`、`compaction.*`）：这些选项具有**持续影响**。没有指定这些值的表会持续继承数据库级别的值。更改数据库 TTL 或 compaction 选项会立即影响所有没有明确自行设置这些选项的表。
 
-- **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
+- **其他选项**（`memtable.type`、`append_mode`、`merge_mode`、`skip_wal`、`sst_format`）：这些选项充当**模板变量**，仅在创建新表时应用。更改这些数据库级别的选项不会影响已存在的表——它们仅作为新创建表的默认值。
 :::
 
 在创建表时，如果未提供相应的表选项，将使用在数据库级别配置的选项或者默认值。
@@ -87,6 +88,11 @@ CREATE DATABASE test WITH (
 );
 ```
 
+创建一个指定 SST 文件格式的数据库：
+
+```sql
+CREATE DATABASE test WITH ('sst_format'='flat');
+```
 
 ## CREATE TABLE
 

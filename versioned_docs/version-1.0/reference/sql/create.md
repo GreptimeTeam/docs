@@ -30,6 +30,7 @@ The database can also carry options similar to the `CREATE TABLE` statement by u
 - `append_mode` - Whether tables in the database should be append-only (`true`/`false`)
 - `merge_mode` - Strategy for merging duplicate rows (`last_row`, `last_non_null`)
 - `skip_wal` - Whether to disable Write-Ahead-Log for tables in the database (`'true'`/`'false'`)
+- `sst_format` - SST (Sorted String Table) file format for tables in the database (`flat`, `primary_key`)
 - `compaction.*` - Compaction-related settings (e.g., `compaction.type`, `compaction.twcs.time_window`)
 
 Read more about [table options](#table-options).
@@ -39,7 +40,7 @@ Database options behave differently:
 
 - **TTL and Compaction options** (`ttl`, `compaction.*`): These options have ongoing effect. Tables without specified values will continuously inherit database-level values. Changing the database TTL or compaction options will immediately impact all tables that don't have their own settings.
 
-- **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
+- **Other options** (`memtable.type`, `append_mode`, `merge_mode`, `skip_wal`, `sst_format`): These act as template variables that are only applied when creating new tables. Changing these database-level options will NOT affect existing tables - they only serve as defaults for newly created tables.
 :::
 
 When creating a table, if the corresponding table options are not provided, the options configured at the database level will be applied.
@@ -85,6 +86,12 @@ CREATE DATABASE test WITH (
   'skip_wal'='true',
   'merge_mode'='last_non_null'
 );
+```
+
+Create a database with a specific SST file format:
+
+```sql
+CREATE DATABASE test WITH ('sst_format'='flat');
 ```
 
 ## CREATE TABLE
