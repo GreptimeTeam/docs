@@ -81,11 +81,12 @@ Supported hints:
 | Hint | Type | Default | Description |
 | --- | --- | --- | --- |
 | `auto_create_table` | Boolean | `true` | Whether to automatically create the table if it does not exist when inserting data. |
-| `ttl` | Duration string | None | Sets the [time-to-live](/user-guide/administration/manage-data/data-expiration.md) for the table, e.g. `7d`, `24h`. Expired data will be automatically purged. |
+| `ttl` | Duration string | None | Sets the [time-to-live](/user-guide/manage-data/overview.md#manage-data-retention-with-ttl-policies) for the table, e.g. `7d`, `24h`. Expired data will be automatically purged. |
 | `append_mode` | Boolean | `false` | Enables [append-only mode](/reference/sql/create.md#create-an-append-only-table) for the table, which disables deduplication by primary key and supports duplicate rows. |
 | `merge_mode` | String | None | Sets the [merge mode](/reference/sql/create.md#create-a-table-with-merge-mode) for the table, e.g. `last_non_null`, `last_row`. |
 | `physical_table` | String | None | Specifies the physical table name for the [metric engine](/contributor-guide/datanode/metric-engine.md). |
 | `skip_wal` | Boolean | `false` | Skips WAL (Write-Ahead Log) writes for the table. |
+| `sst_format` | String | None | Sets the SST (Sorted String Table) file format for the table. Valid values: `flat`, `primary_key`. |
 
 For example, the following request sets TTL and append mode for auto-created tables:
 
