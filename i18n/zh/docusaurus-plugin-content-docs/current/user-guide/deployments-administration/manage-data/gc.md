@@ -2,9 +2,9 @@
 keywords: [GC, 垃圾回收, Mito, Repartition, GreptimeDB]
 description: GC 会在所有引用释放后才删除 SST/索引文件，以保护长查询和重分区流程。
 ---
-# 配置
+# 垃圾回收（GC）
 
-GreptimeDB GC 会延迟删除 SST/索引文件，直到所有引用（运行中的查询、[repartition](../manage-data/table-sharding.md#Repartition) 的跨 region 文件引用）释放。配置包含两部分：
+GreptimeDB GC 会延迟删除 SST/索引文件，直到所有引用（运行中的查询、[repartition](./table-sharding.md#Repartition) 的跨 region 文件引用）释放。配置包含两部分：
 
 - Metasrv 配置
 - Datanode 配置
