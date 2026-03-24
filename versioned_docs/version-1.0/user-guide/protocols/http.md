@@ -99,10 +99,6 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
-:::tip NOTE
-You can also use individual headers with the `x-greptime-hint-` prefix, e.g. `x-greptime-hint-ttl: 7d`.
-However, this format is deprecated. If the unified `x-greptime-hints` header is present, individual headers will be ignored.
-:::
 
 ## Admin APIs
 

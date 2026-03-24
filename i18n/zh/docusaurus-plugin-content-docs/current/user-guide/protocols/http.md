@@ -93,10 +93,6 @@ curl -X POST \
 http://localhost:4000/v1/sql
 ```
 
-:::tip 注意
-你也可以使用带 `x-greptime-hint-` 前缀的独立请求头，例如 `x-greptime-hint-ttl: 7d`。
-但该格式已被弃用。如果同时存在统一的 `x-greptime-hints` 请求头，独立请求头将被忽略。
-:::
 
 ## Admin APIs
 
