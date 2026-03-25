@@ -558,6 +558,29 @@ meta:
   enableRegionFailover: true
 ```
 
+### Enable GC
+
+Repartitioning depends on shared object storage and GC. You can enable GC on both metasrv and datanode with the following example:
+
+```yaml
+meta:
+  configData: |
+    [gc]
+    enable = true
+    gc_cooldown_period = "5m"
+
+datanode:
+  configData: |
+    [[region_engine]]
+    [region_engine.mito]
+    [region_engine.mito.gc]
+    enable = true
+    lingering_time = "10m"
+    unknown_file_lingering_time = "1h"
+```
+
+Make sure the datanode `lingering_time` is longer than the metasrv `gc_cooldown_period` to avoid deleting files that may still be in use.
+
 #### Enable Region Failover on Local WAL
 
 To enable Region Failover on local WAL, you need to set both `meta.enableRegionFailover: true` and add `allow_region_failover_on_local_wal = true` in the `meta.configData` field.
