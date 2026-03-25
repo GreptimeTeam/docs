@@ -82,7 +82,7 @@ If the nodes are healthy and the hotspot signal persists, you can move on to des
 This feature is only available in distributed clusters and requires:
 
 - Using [shared storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3)
-- Using [GC](/user-guide/deployments-administration/maintenance/gc.md) on both metasrv and all datanodes
+- Using [GC](/user-guide/deployments-administration/manage-data/gc.md) on both metasrv and all datanodes
 
 Otherwise, you can't perform repartitioning.
 :::

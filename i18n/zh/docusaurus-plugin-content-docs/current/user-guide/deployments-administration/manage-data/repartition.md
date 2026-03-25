@@ -81,7 +81,7 @@ ORDER BY p.region_id, p.peer_addr;
 该功能仅在 GreptimeDB 的分布式集群中可用，并且
 
 - 使用[共享存储](/user-guide/deployments-administration/configuration.md#storage-options)（例如 AWS S3）
-- 在 metasrv 和所有 datanode 上启用 [GC](/user-guide/deployments-administration/maintenance/gc.md)
+- 在 metasrv 和所有 datanode 上启用 [GC](/user-guide/deployments-administration/manage-data/gc.md)
 
 否则你无法执行重分区。
 :::
@@ -92,7 +92,7 @@ ORDER BY p.region_id, p.peer_addr;
 
 如需了解详细配置，请参考：
 
-- [GC](/user-guide/deployments-administration/maintenance/gc.md)
+- [GC](/user-guide/deployments-administration/manage-data/gc.md)
 - [对象存储配置](/user-guide/deployments-administration/configuration.md#storage-options)
 
 ### 通过 GreptimeDB Operator
