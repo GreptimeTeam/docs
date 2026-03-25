@@ -3,7 +3,7 @@ keywords: [重分区, repartition, GC, 对象存储, GreptimeDB, Helm Chart]
 description: 介绍 GreptimeDB 的重分区流程，以及在执行前需要准备的 GC 和对象存储配置，并提供 Helm Chart 的常见配置示例。
 ---
 
-# Repartition（重分区）
+# 重分区
 
 重分区可以在表创建后调整分区规则。GreptimeDB 通过 `ALTER TABLE` 的分区拆分与合并能力来完成重分区，详细语法请参考 [ALTER TABLE](/reference/sql/alter.md#分区拆分与合并)。
 

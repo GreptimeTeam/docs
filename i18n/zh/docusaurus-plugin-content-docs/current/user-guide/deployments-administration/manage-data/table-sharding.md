@@ -110,9 +110,9 @@ PARTITION ON COLUMNS (device_id, area) (
 
 以下内容以具有两个分区列的 `sensor_readings` 表为例。
 
-## 重分区（Repartition）
+## 重分区
 
-如果你需要修改已创建表的分区规则，请参考单独的 [重分区（Repartition）](/user-guide/deployments-administration/manage-data/repartition.md) 页面。
+如果你需要修改已创建表的分区规则，请参考单独的 [重分区](/user-guide/deployments-administration/manage-data/repartition.md) 页面。
 
 ## 向表中插入数据
 
