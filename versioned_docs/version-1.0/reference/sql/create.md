@@ -492,6 +492,27 @@ AS
 <SQL>;
 ```
 
+For `CREATE FLOW`, the query after `AS` can be a regular flow query or a TQL query. GreptimeDB also supports a strict TQL CTE form for cleaner flow definitions:
+
+```sql
+CREATE FLOW calc_rate_cte
+SINK TO rate_reqs
+EVAL INTERVAL '1m' AS
+WITH rate_data (ts, req_rate, host, job, instance) AS (
+    TQL EVAL (now() - '1m'::interval, now(), '30s')
+    rate(http_requests_total{job="my_service"}[1m])
+    AS req_rate
+)
+SELECT * FROM rate_data;
+```
+
+When using `WITH` in `CREATE FLOW`, the accepted shape is intentionally strict:
+
+- Only one CTE is allowed, and it must contain `TQL EVAL`.
+- The outer query must be exactly `SELECT * FROM <cte-name>`.
+- Additional projection, filtering, joins, ordering, or extra SQL CTEs are not supported.
+- If the CTE name is quoted, reference it with the same quoted name in the outer `SELECT`.
+
 For the statement to create or update a flow, please read the [flow management documents](/user-guide/flow-computation/manage-flow.md#create-a-flow).
 
 ## CREATE VIEW

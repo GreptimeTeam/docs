@@ -450,6 +450,31 @@ TQL EVAL (now() - '1m'::interval, now(), '30s') rate(http_requests_total{job="my
 - **rate()**：计算变化率的 TQL 函数。
 - **[1m]**：定义速率计算的 1 分钟回溯窗口。
 
+### 用 CTE 包装 TQL
+
+如果你想让 Flow 定义更清晰，或者希望提前固定输出列名，可以在 `CREATE FLOW` 中用一个简单的 CTE 包装 `TQL EVAL`：
+
+```sql
+CREATE FLOW calc_rate_cte
+SINK TO rate_reqs_cte
+EVAL INTERVAL '1m' AS
+WITH rate_data (ts, req_rate, host, job, instance) AS (
+    TQL EVAL (now() - '1m'::interval, now(), '30s')
+    rate(http_requests_total{job="my_service"}[1m])
+    AS req_rate
+)
+SELECT * FROM rate_data;
+```
+
+当你希望在 GreptimeDB 推断 sink 表 schema 之前先重命名列时，这种写法会很有用，尤其适合值列名较长的 TQL 表达式。
+
+这个能力目前是刻意限制范围的：
+
+- 只能使用一个 TQL CTE。
+- Flow 查询必须以 `SELECT * FROM <cte-name>` 结束。
+- 不能再增加 `WHERE`、JOIN、额外投影或其他 CTE。
+- 如果 CTE 名称使用了引号，外层查询也要保持同样的带引号写法。
+
 ### 检查生成的 Sink 表
 
 你可以检查自动创建的 Sink 表结构：
