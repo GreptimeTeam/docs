@@ -119,7 +119,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
 
 ## 延伸阅读
 
-如果你希望查看包含更多背景说明和完整示例的教程，请参考博客文章：[How to Split and Merge Partitions Online in GreptimeDB](https://greptime.cn/blogs/2026-03-19-greptimedb-repartition-guide)。
+如果你希望查看包含更多背景说明和完整示例的教程，请参考博客文章：[如何在 GreptimeDB 中在线拆分与合并分区](https://greptime.cn/blogs/2026-03-19-greptimedb-repartition-guide)。
 
 :::caution 注意
 重分区仅支持在分布式集群中执行。请确认 GC 与对象存储已正确配置后，再运行相关操作。
