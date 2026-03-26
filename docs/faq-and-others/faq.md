@@ -15,6 +15,10 @@ description: Frequently Asked Questions about GreptimeDB — covering data model
 
 ## General
 
+### Where can I find ready-to-run demos?
+
+Check out the [demo-scene](https://github.com/GreptimeTeam/demo-scene) repository. It contains end-to-end examples covering common use cases (metrics, logs, IoT, etc.) that you can run locally with Docker Compose.
+
 ### How is GreptimeDB's performance compared to other solutions?
 
 GreptimeDB is designed for high-throughput write, low-latency query, and cost-efficient storage across metrics, logs, and traces workloads. Benchmark results are available in the following reports:
