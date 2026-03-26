@@ -81,12 +81,12 @@ There are three ways to control table options such as `ttl`, `append_mode`, `mer
 
 1. **Set options at ingestion time via HTTP header**: Use the `x-greptime-hints` header to pass table options when writing data. For example, `x-greptime-hints: ttl=7d, append_mode=true`. These options apply when the table is auto-created. See [HTTP Hints](/user-guide/protocols/http.md#hints) for all supported hints.
 
-2. **Modify options after table creation**: Use `ALTER TABLE` to change options on an existing table:
+2. **Modify options after table creation**: Some options can be changed on an existing table via `ALTER TABLE`. For example, `ttl`, `append_mode`, `compaction.*`, and `sst_format` are supported:
    ```sql
    ALTER TABLE my_table SET 'ttl' = '7d';
    ALTER TABLE my_table SET 'append_mode' = 'true';
    ```
-   See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for the full syntax.
+   Note that `merge_mode` and `skip_wal` cannot be altered after creation — they must be set at table creation time. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
 
 3. **Set database-level defaults**: Create or alter the database with default options. New auto-created tables will inherit these values:
    ```sql
