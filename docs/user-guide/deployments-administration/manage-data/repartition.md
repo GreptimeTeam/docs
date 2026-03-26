@@ -12,8 +12,8 @@ Repartition is only supported in distributed clusters.
 
 ## How it works
 
-The core idea is to change partition boundaries instead of manually moving data into a new table.
-GreptimeDB first merges existing partitions and then splits them with new rules, so the region layout can better match the current data distribution.
+The core idea is to adjust partition rules and Region routing online instead of manually moving data into a new table.
+GreptimeDB switches to the new partition layout by updating manifest file references for each Region, so the rules can better match the current data distribution.
 
 This approach is useful when traffic patterns change over time and you want to keep partition rules aligned with the workload without rebuilding the table.
 
@@ -81,7 +81,7 @@ If the nodes are healthy and the hotspot signal persists, you can move on to des
 :::warning Warning
 This feature is only available in distributed clusters and requires:
 
-- Using [shared storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3)
+- Using [shared object storage](/user-guide/deployments-administration/configuration.md#storage-options) (e.g., AWS S3)
 - Using [GC](/user-guide/deployments-administration/manage-data/gc.md) on both metasrv and all datanodes
 
 Otherwise, you can't perform repartitioning.
@@ -116,3 +116,7 @@ ALTER TABLE sensor_readings SPLIT PARTITION (
   device_id < 100 AND area >= 'North'
 );
 ```
+
+## Further reading
+
+For a step-by-step tutorial with more background and examples, see [How to Split and Merge Partitions Online in GreptimeDB](https://greptime.com/blogs/2026-03-19-greptimedb-repartition-guide).
