@@ -361,6 +361,7 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/manage-data/table-sharding',
                 'user-guide/deployments-administration/manage-data/region-migration',
                 'user-guide/deployments-administration/manage-data/region-failover',
+                'user-guide/deployments-administration/manage-data/repartition',
                 'user-guide/deployments-administration/manage-data/compaction',
                 'user-guide/deployments-administration/manage-data/gc',
               ],
