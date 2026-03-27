@@ -110,28 +110,9 @@ PARTITION ON COLUMNS (device_id, area) (
 
 以下内容以具有两个分区列的 `sensor_readings` 表为例。
 
-## 重分区（Repartition）
+## 重分区
 
-你可以通过先合并现有分区，然后用新规则拆分它们来修改分区规则。下面的示例展示了如何将 `device_id < 100` 的设备的分区键 `area` 从 `South` 更改为 `North`：
-
-```sql
-ALTER TABLE sensor_readings MERGE PARTITION (
-  device_id < 100 AND area < 'South',
-  device_id < 100 AND area >= 'South'
-);
-
-ALTER TABLE sensor_readings SPLIT PARTITION (
-  device_id < 100
-) INTO (
-  device_id < 100 AND area < 'North',
-  device_id < 100 AND area >= 'North'
-);
-```
-
-:::caution 注意
-重分区仅支持在分布式集群中执行。
-必须开启共享对象存储和 GC，并确保所有 datanode 都能访问同一对象存储后再执行重分区相关操作。
-:::
+如果你需要修改已创建表的分区规则，请参考单独的 [重分区](/user-guide/deployments-administration/manage-data/repartition.md) 页面。
 
 ## 向表中插入数据
 

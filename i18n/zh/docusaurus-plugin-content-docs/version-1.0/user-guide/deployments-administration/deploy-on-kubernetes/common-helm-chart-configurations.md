@@ -558,6 +558,29 @@ meta:
   enableRegionFailover: true
 ```
 
+### 启用 GC
+
+重分区依赖共享对象存储和 GC。你可以通过下面的示例同时开启 metasrv 和 datanode 的 GC：
+
+```yaml
+meta:
+  configData: |
+    [gc]
+    enable = true
+    gc_cooldown_period = "5m"
+
+datanode:
+  configData: |
+    [[region_engine]]
+    [region_engine.mito]
+    [region_engine.mito.gc]
+    enable = true
+    lingering_time = "10m"
+    unknown_file_lingering_time = "1h"
+```
+
+请确保 `datanode` 的 `lingering_time` 大于 `meta` 的 `gc_cooldown_period`，以避免正在使用的文件过早被删除。
+
 #### 启用 Region Failover 在本地 WAL
 
 在本地 WAL 上启用 Region Failover，你需要设置 `meta.enableRegionFailover: true` 和在 `meta.configData` 字段中添加 `allow_region_failover_on_local_wal = true`。
