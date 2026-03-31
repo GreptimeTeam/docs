@@ -15,6 +15,10 @@ description: Frequently Asked Questions about GreptimeDB — covering data model
 
 ## General
 
+### Where can I find ready-to-run demos?
+
+Check out the [demo-scene](https://github.com/GreptimeTeam/demo-scene) repository. It contains end-to-end examples covering common use cases (metrics, logs, IoT, etc.) that you can run locally with Docker Compose.
+
 ### How is GreptimeDB's performance compared to other solutions?
 
 GreptimeDB is designed for high-throughput write, low-latency query, and cost-efficient storage across metrics, logs, and traces workloads. Benchmark results are available in the following reports:
@@ -71,6 +75,43 @@ Yes. When writing via gRPC, InfluxDB Line Protocol, OpenTSDB, Prometheus Remote 
 
 For details, see [Automatic Schema Generation](/user-guide/ingest-data/overview.md#automatic-schema-generation).
 
+### How do I set default table options (TTL, append mode, etc.) for auto-created tables?
+
+There are three ways to control table options such as `ttl`, `append_mode`, `merge_mode`, `skip_wal`, and `sst_format` for tables created via [automatic schema generation](/user-guide/ingest-data/overview.md#automatic-schema-generation):
+
+1. **Set options at ingestion time via HTTP header**: Use the `x-greptime-hints` header to pass table options when writing data. For example, `x-greptime-hints: ttl=7d, append_mode=true`. These options apply when the table is auto-created. See [HTTP Hints](/user-guide/protocols/http.md#hints) for all supported hints.
+
+2. **Modify options after table creation**: Some options can be changed on an existing table via `ALTER TABLE`. For example, `ttl`, `append_mode`, `compaction.*`, and `sst_format` are supported:
+   ```sql
+   ALTER TABLE my_table SET 'ttl' = '7d';
+   ALTER TABLE my_table SET 'append_mode' = 'true';
+   ```
+   Note that `merge_mode` and `skip_wal` cannot be altered after creation — they must be set at table creation time. See [ALTER TABLE](/reference/sql/alter.md#alter-table-options) for all supported options and constraints.
+
+3. **Set database-level defaults**: Create or alter the database with default options. New auto-created tables will inherit these values:
+   ```sql
+   CREATE DATABASE my_db WITH (ttl = '7d', append_mode = 'true');
+   -- or
+   ALTER DATABASE my_db SET 'ttl' = '7d';
+   ```
+   Note that `ttl` and `compaction.*` options have ongoing effect — tables without their own settings continuously inherit the database value. Other options (`append_mode`, `merge_mode`, `skip_wal`, `sst_format`) only serve as defaults for newly created tables. See [CREATE DATABASE](/reference/sql/create.md#create-database) for all available options.
+
+### How do I customize the default column names for InfluxDB / Prometheus protocols?
+
+When writing via certain protocols, GreptimeDB generates default column names with a `greptime_` prefix. The timestamp column is named `greptime_timestamp` for all schemaless protocols. The value column `greptime_value` is used by single-value protocols such as Prometheus Remote Write and OpenTelemetry Metrics, where each time series carries only one numeric value. Multi-field protocols like InfluxDB Line Protocol use the field names from the input data directly — only the timestamp column gets the default prefix.
+
+To change the prefix, set the `default_column_prefix` option in your `standalone.toml` or `frontend.toml`:
+
+```toml
+# Remove the "greptime_" prefix — columns become "value" and "timestamp"
+default_column_prefix = ""
+
+# Or use a custom prefix — columns become "my_value" and "my_timestamp"
+# default_column_prefix = "my"
+```
+
+If unset, the default `greptime_` prefix is used. This is a top-level configuration option and requires a restart to take effect.
+
 ### Can I change a column's type after table creation?
 
 Yes. Use `ALTER TABLE ... MODIFY COLUMN` to change a field column's data type:
@@ -107,7 +148,31 @@ For append-only tables (commonly used for logs), rows are never deduplicated, so
 - [Rust](https://github.com/GreptimeTeam/greptimedb-ingester-rust)
 - [Erlang](https://github.com/GreptimeTeam/greptimedb-ingester-erl)
 - [.NET](https://github.com/GreptimeTeam/greptimedb-ingester-dotnet)
-- Python: via standard MySQL/PostgreSQL drivers
+- For other languages (Python, Ruby, Node.js, etc.): use any OpenTelemetry SDK, InfluxDB client library, or MySQL/PostgreSQL driver — GreptimeDB is compatible with all of them.
+
+### How do I choose the right ingestion protocol?
+
+GreptimeDB supports multiple ingestion protocols with very different throughput characteristics. The following results are from a local benchmark at 1 million time series (batch size 1,000) — **focus on the relative ratios rather than absolute numbers**, as actual throughput varies by hardware and workload:
+
+| Protocol | Relative throughput |
+| --- | --- |
+| gRPC Bulk (Arrow Flight) | Highest (~55x SQL) |
+| gRPC Stream | ~40x SQL |
+| gRPC SDK (Unary) | ~33x SQL |
+| OTLP Logs | ~29x SQL |
+| InfluxDB Line Protocol | ~27x SQL |
+| MySQL INSERT | ~2x PostgreSQL |
+| PostgreSQL INSERT | Baseline |
+
+**How to choose:**
+
+- **General workloads**: gRPC SDK — best balance of simplicity and performance, with schemaless support.
+- **Bulk operations** (migrations, backfills): gRPC Bulk — maximum throughput, requires pre-created tables.
+- **Continuous streams** (IoT, monitoring collectors): gRPC Stream — sustained high throughput over persistent connections.
+- **Ecosystem integration**: InfluxDB Line Protocol (Telegraf-compatible) or OTLP (OpenTelemetry-compatible) — good throughput with broad tool support.
+- **Development / debugging**: SQL protocols (MySQL / PostgreSQL) — lower throughput but easier to inspect and debug.
+
+For the full benchmark details and methodology, see the [Ingestion Protocol Benchmark](https://greptime.com/blogs/2026-03-24-ingestion-protocol-benchmark) blog post.
 
 ### How do I connect Grafana to GreptimeDB?
 
@@ -148,6 +213,16 @@ For detailed instructions, see [Migration Overview](/user-guide/migrate-to-grept
 **Storage backends**: S3, GCS, Azure Blob (recommended for production); local disk (development, testing, or small-scale). Metadata: RDS or etcd (cluster), local storage (standalone).
 
 For a full overview, see [Deployments & Administration](/user-guide/deployments-administration/overview.md).
+
+### Which metadata storage backend should I use for metasrv?
+
+GreptimeDB supports etcd, MySQL, and PostgreSQL as metadata storage backends for the metasrv component.
+
+For production deployments, **PostgreSQL or MySQL (including cloud RDS services) is generally recommended** — most teams already have operational experience, monitoring, backup, and disaster recovery strategies for relational databases.
+
+That said, **etcd remains fully supported and actively maintained**. It is not deprecated. If your team has strong etcd expertise and operational tooling, it is a perfectly valid choice.
+
+The decision ultimately comes down to your team's skill set and existing infrastructure. See [Metadata Storage Configuration](/user-guide/deployments-administration/manage-metadata/configuration.md) for setup instructions for each backend.
 
 ### How do I manage GreptimeDB?
 
@@ -216,6 +291,15 @@ GreptimeDB exposes Prometheus-compatible metrics and provides health check endpo
 - **GreptimeCloud**: Fully managed with resource and performance guarantees for production workloads, predictable pricing, and SLA guarantees.
 
 For a detailed feature comparison, see [Pricing & Features](https://greptime.com/pricing#differences).
+
+### Does the GreptimeDB Dashboard have authentication?
+
+The open-source [GreptimeDB Dashboard](/getting-started/installation/greptimedb-dashboard.md) does not include built-in authentication. To restrict access, you can:
+
+- Place a reverse proxy (e.g., Nginx, Caddy) in front of the dashboard and configure HTTP Basic Auth or other authentication mechanisms.
+- Host the dashboard behind your organization's internal authentication system.
+
+**GreptimeDB Enterprise** provides a management console with built-in authentication and access control.
 
 ### What security features are available?
 
