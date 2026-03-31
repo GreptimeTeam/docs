@@ -98,7 +98,7 @@ There are three ways to control table options such as `ttl`, `append_mode`, `mer
 
 ### How do I customize the default column names for InfluxDB / Prometheus protocols?
 
-When writing via InfluxDB Line Protocol, Prometheus Remote Write, and similar protocols, GreptimeDB uses `greptime_value` and `greptime_timestamp` as the default field and timestamp column names.
+When writing via certain protocols, GreptimeDB generates default column names with a `greptime_` prefix. The timestamp column is named `greptime_timestamp` for all schemaless protocols. The value column `greptime_value` is used by single-value protocols such as Prometheus Remote Write and OpenTelemetry Metrics, where each time series carries only one numeric value. Multi-field protocols like InfluxDB Line Protocol use the field names from the input data directly — only the timestamp column gets the default prefix.
 
 To change the prefix, set the `default_column_prefix` option in your `standalone.toml` or `frontend.toml`:
 
