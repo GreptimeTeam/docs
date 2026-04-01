@@ -327,7 +327,7 @@ cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
 cpuMetric.AddRow("127.0.0.2", time.Now(), 0.2, 0.15)
 ```
 
-### 执行批量写入
+### 执行 bulk 写入
 
 ```go
 resp, err := cli.BulkWrite(context.TODO(), cpuMetric)
@@ -337,7 +337,7 @@ if err != nil {
 log.Printf("Bulk write affected rows: %d\n", resp.GetAffectedRows().GetValue())
 ```
 
-请参考 SDK 仓库中的 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/bulkwrite) 获取批量写入的可执行代码。
+请参考 SDK 仓库中的 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/bulkwrite) 获取 bulk 写入的可执行代码。
 
 ## Ingester 库参考
 
