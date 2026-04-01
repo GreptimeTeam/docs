@@ -303,6 +303,42 @@ sensor := SensorReadings{
 
 请参考 SDK 仓库中的 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) 获取插入 JSON 数据的可执行代码。
 
+## Bulk 写入
+
+当需要一次性写入大量数据，且希望获得比普通 Write 更高的吞吐量时，可以使用批量写入（Bulk Write）API。它采用 Arrow IPC 的编码，将多个数据表或对象在客户端聚合，然后通过单次 gRPC 请求发送至服务端，从而减少网络开销。
+
+### 添加数据
+
+您可以构建的数据对象添加到批量写入器中。
+
+```go
+// 构建 CPU 指标表
+cpuMetric, err := table.New("cpu_metric")
+if err != nil {
+    // 处理错误
+}
+cpuMetric.AddTagColumn("host", types.STRING)
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT64)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT64)
+
+// 添加多行数据
+cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+cpuMetric.AddRow("127.0.0.2", time.Now(), 0.2, 0.15)
+```
+
+### 执行批量写入
+
+```go
+resp, err := cli.BulkWrite(context.TODO(), cpuMetric)
+if err != nil {
+    // 处理错误
+}
+log.Printf("Bulk write affected rows: %d\n", resp.GetAffectedRows().GetValue())
+```
+
+请参考 SDK 仓库中的 [示例](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/bulkwrite) 获取批量写入的可执行代码。
+
 ## Ingester 库参考
 
 - [API 文档](https://pkg.go.dev/github.com/GreptimeTeam/greptimedb-ingester-go)
