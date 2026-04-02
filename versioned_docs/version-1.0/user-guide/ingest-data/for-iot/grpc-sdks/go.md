@@ -310,7 +310,8 @@ For the executable code for inserting JSON data, please refer to the [example](h
 
 ## Bulk Write
 
-When you need to write a large amount of data at once and want higher throughput than the regular Write API, you can use the Bulk Write API. It uses Arrow IPC encoding to aggregate multiple tables or objects on the client side and sends them to the server in a single gRPC request, reducing network overhead.
+When you need to import data in bulk and require high ingestion throughput, you can use the Bulk Write API. It is designed for batch loading scenarios, where large volumes of data are written efficiently. 
+By using Arrow IPC encoding to aggregate multiple tables or objects on the client side and sending them in a single gRPC request, it significantly reduces network overhead and improves overall write performance compared to the regular Write API.
 
 ### Adding Data
 
