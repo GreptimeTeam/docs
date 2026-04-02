@@ -308,6 +308,42 @@ sensor := SensorReadings{
 
 For the executable code for inserting JSON data, please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/jsondata) in the SDK repository.
 
+## Bulk Write
+
+When you need to import data in bulk and require high ingestion throughput, you can use the Bulk Write API. It is designed for batch loading scenarios, where large volumes of data are written efficiently. 
+By using Arrow IPC encoding to aggregate multiple tables or objects on the client side and sending them in a single gRPC request, it significantly reduces network overhead and improves overall write performance compared to the regular Write API.
+
+### Adding Data
+
+You can build data objects and add them to the bulk writer.
+
+```go
+// Build the CPU metrics table
+cpuMetric, err := table.New("cpu_metric")
+if err != nil {
+    // Handle error appropriately
+}
+cpuMetric.AddTagColumn("host", types.STRING)
+cpuMetric.AddTimestampColumn("ts", types.TIMESTAMP_MILLISECOND)
+cpuMetric.AddFieldColumn("cpu_user", types.FLOAT64)
+cpuMetric.AddFieldColumn("cpu_sys", types.FLOAT64)
+
+// Add multiple rows of data
+cpuMetric.AddRow("127.0.0.1", time.Now(), 0.1, 0.12)
+cpuMetric.AddRow("127.0.0.2", time.Now(), 0.2, 0.15)
+```
+
+### Insert data
+
+```go
+resp, err := cli.BulkWrite(context.TODO(), cpuMetric)
+if err != nil {
+    // Handle error appropriately
+}
+log.Printf("Bulk write affected rows: %d\n", resp.GetAffectedRows().GetValue())
+```
+
+Please refer to the [example](https://github.com/GreptimeTeam/greptimedb-ingester-go/tree/main/examples/bulkwrite) in the SDK repository for runnable code demonstrating bulk write.
 
 ## Ingester library reference
 
