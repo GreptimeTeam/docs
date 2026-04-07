@@ -288,7 +288,7 @@ const config: Config = {
     navbar: {
       logo: {
         alt: 'Greptime logo',
-        src: 'img/logo-text.png',
+        src: 'img/logo-text.svg',
       },
       items: [
         {
