@@ -184,7 +184,7 @@ transform:
 ```
 
 pipeline 的配置相对直观: 使用 `vrl` 处理器将日志行解析为 JSON 对象，然后将其中的字段提取到根目录。
-`log_time` 在 transform 部分中被指定为时间索引，其他字段将由 pipeline 引擎自动推导，详见 [pipeline version 2](/user-guide/logs/pipeline-config.md#版本-2-中的-transform)。
+`log_time` 在 transform 部分中被指定为时间索引，其他字段将由 pipeline 引擎自动推导，详见 [pipeline version 2](/reference/pipeline/pipeline-config.md#版本-2-中的-transform)。
 
 请注意，输入字段名为 `loki_line`，它包含来自 Loki 的原始日志行。
 
@@ -264,4 +264,4 @@ log_source: application
 
 此输出演示了 pipeline 引擎已成功解析原始 JSON 日志行，并将结构化数据提取到单独的列中。
 
-有关 pipeline 配置和功能的更多详细信息，请参考[pipeline 文档](/user-guide/logs/pipeline-config.md)。
+有关 pipeline 配置和功能的更多详细信息，请参考[pipeline 文档](/reference/pipeline/pipeline-config.md)。

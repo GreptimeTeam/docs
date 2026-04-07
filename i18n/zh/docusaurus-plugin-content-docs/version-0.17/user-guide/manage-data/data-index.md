@@ -120,7 +120,7 @@ CREATE TABLE logs (
 
 建议仅在需要高级文本搜索功能和灵活查询模式时使用全文索引。
 
-有关全文索引配置和后端选择的更多详细信息，请参考[全文索引配置](/user-guide/logs/fulltext-index-config)指南。
+有关全文索引配置和后端选择的更多详细信息，请参考[全文索引配置](/user-guide/manage-data/data-index.md#全文索引)指南。
 
 ## 修改索引
 

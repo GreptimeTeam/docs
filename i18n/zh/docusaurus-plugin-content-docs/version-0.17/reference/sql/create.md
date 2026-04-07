@@ -265,7 +265,7 @@ create table if not exists metrics(
 with('merge_mode'='last_non_null');
 ```
 
-在 `last_non_null` 模式下，表会通过保留每个字段的最新值来合并具有相同主键和时间戳的行。
+在 `last_non_null` 模式下，表会通过保留每个字段的最新非 NULL 值来合并具有相同主键和时间戳的行。
 
 ```sql
 INSERT INTO metrics VALUES ('host1', 0, 0, NULL), ('host2', 1, NULL, 1);

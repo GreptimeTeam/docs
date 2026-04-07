@@ -224,7 +224,7 @@ is_strict_mode = false
 - **路径**:
   - `/v1/ingest`
   - `/v1/pipelines/{pipeline_name}`
-  - `/v1/pipelines/dryrun`
+  - `/v1/pipelines/_dryrun`
 - **方法**:
   - `POST` 写入日志和添加 Pipeline。
   - `DELETE` 用于删除 Pipeline。

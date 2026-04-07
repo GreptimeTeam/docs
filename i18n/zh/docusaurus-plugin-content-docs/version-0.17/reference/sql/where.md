@@ -75,4 +75,4 @@ SELECT * FROM go_info
 WHERE instance LIKE 'localhost:____';
 ```
 
-有关在日志中搜索关键字，请阅读[查询日志](/user-guide/logs/query-logs.md)。
+有关在日志中搜索关键字，请阅读[查询日志](/user-guide/logs/fulltext-search.md)。

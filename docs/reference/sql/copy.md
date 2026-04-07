@@ -21,6 +21,33 @@ The command starts with the keyword `COPY`, followed by the name of the table yo
 `TO` specifies the file path and name to save the exported
 data (`/xxx/xxx/output.parquet` in this case).
 
+:::tip NOTE
+The output file is created on the GreptimeDB server node that executes the query, not on the client machine that issues the SQL. Make sure the path is accessible and writable on that server, or export to S3, GCS, Azure Blob Storage, or other supported cloud storage services via `CONNECTION`.
+:::
+
+For example, to export data to CSV with custom timestamp and date formats:
+
+```sql
+COPY tbl TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
+  DATE_FORMAT = '%Y-%m-%d'
+);
+```
+
+You can also export data to a compressed CSV or JSON file:
+
+```sql
+COPY tbl TO '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
+:::tip NOTE
+When using compression, ensure the file extension matches the compression type: `.gz` for gzip, `.zst` for zstd, `.bz2` for bzip2, and `.xz` for xz.
+:::
+
 #### `WITH` Option
 
 `WITH` adds options such as the file `FORMAT` which specifies the format of the exported file. In this example, the format is Parquet; it is a columnar storage format used for big data processing. Parquet efficiently compresses and encodes columnar data for big data analytics.
@@ -29,10 +56,14 @@ data (`/xxx/xxx/output.parquet` in this case).
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
+| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d %H:%M:%S'`). Only supported for CSV format. | Optional |
+| `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%Y-%m-%d'`). Only supported for CSV format. | Optional |
+| `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers (e.g., `'%H:%M:%S'`). Only supported for CSV format. | Optional |
 
 #### `CONNECTION` Option
 
-`COPY TO` supports exporting data to cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY TO` supports exporting data to cloud storage services. See [connect-to-s3](#connect-to-s3), [connect-to-gcs](#connect-to-gcs), or [connect-to-azure-blob-storage](#connect-to-azure-blob-storage) for more details.
 
 ### COPY FROM
 
@@ -72,10 +103,20 @@ Specifically, if you only have one file to import, you can use the following syn
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
+You can also import data from a compressed CSV or JSON file:
+
+```sql
+COPY tbl FROM '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
 | Option  | Description  | Required |
 |---|---|---|
 | `FORMAT` | Target file(s) format, e.g., JSON, CSV, Parquet, ORC  | **Required** |
 | `PATTERN` | Use regex to match files. e.g., `*_today.parquet` | Optional |
+| `compression_type` | Compression algorithm for the imported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
 
 :::tip NOTE
 The CSV file must have a header row to be imported correctly. The header row should contain the column names of the table.
@@ -83,7 +124,7 @@ The CSV file must have a header row to be imported correctly. The header row sho
 
 #### `CONNECTION` Option
 
-`COPY FROM` also supports importing data from cloud storage services like S3. See [connect-to-s3](#connect-to-s3) for more detail.
+`COPY FROM` also supports importing data from cloud storage services. See [connect-to-s3](#connect-to-s3), [connect-to-gcs](#connect-to-gcs), or [connect-to-azure-blob-storage](#connect-to-azure-blob-storage) for more details.
 
 ### Connect to S3
 
@@ -132,6 +173,63 @@ You can set the following **CONNECTION** options:
 
 You can use `LIMIT` to restrict maximum number of rows inserted at once.
 
+### Connect to GCS
+
+You can copy data from/to Google Cloud Storage (GCS).
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+
+-- COPY TO
+COPY tbl TO 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+```
+
+#### URL
+
+Specify the file or directory using `gcs://bucket/path`. For example:
+
+```
+gcs://my-bucket/data.parquet
+```
+
+#### Options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `SCOPE` | The scope for GCS access, e.g., `https://www.googleapis.com/auth/devstorage.read_write` | Optional |
+| `CREDENTIAL` | The service account credential content in JSON format. | Optional |
+| `ENDPOINT` | The endpoint of the GCS service. | Optional |
+
+### Connect to Azure Blob Storage
+
+You can copy data from/to Azure Blob Storage.
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+
+-- COPY TO
+COPY tbl TO 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+```
+
+#### URL
+
+Specify the file or directory using `azblob://container/path`. For example:
+
+```
+azblob://my-container/data.parquet
+```
+
+#### Options
+
+| Option  | Description  | Required |
+|---|---|---|
+| `ACCOUNT_NAME` | Azure storage account name. | Optional |
+| `ACCOUNT_KEY` | Azure storage account key. | Optional |
+| `ENDPOINT` | The endpoint of the Azure Blob Storage service. | Optional |
+| `SAS_TOKEN` | Shared access signature (SAS) token for Azure Blob Storage. | Optional |
+
 ## COPY Query Results
 
 You can use the `COPY` statement to export the results of a query to a file. The syntax is as follows:
@@ -145,11 +243,34 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | The SQL SELECT statement to execute | **Required** |
 | `PATH` | The file path where the output will be written | **Required** |
 | `FORMAT` | The output file format: 'CSV', 'JSON', or 'PARQUET' | **Required** |
+| `compression_type` | Compression algorithm for the exported file. Supported values: `gzip`, `zstd`, `bzip2`, `xz`. Only supported for CSV and JSON formats. | Optional |
+| `TIMESTAMP_FORMAT` | Custom format for timestamp columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
+| `DATE_FORMAT` | Custom format for date columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
+| `TIME_FORMAT` | Custom format for time columns when exporting to CSV format. Uses [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) format specifiers. Only supported for CSV format. | Optional |
 
 For example, the following statement exports query results to a CSV file:
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
+You can also export query results to a compressed file:
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
+  FORMAT = 'json',
+  compression_type = 'gzip'
+);
+```
+
+You can also specify custom date and time formats when exporting to CSV:
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
+  DATE_FORMAT = '%Y/%m/%d'
+);
 ```
 
 ## COPY DATABASE
@@ -162,7 +283,8 @@ COPY DATABASE <db_name>
   WITH (
     FORMAT = { 'CSV' | 'JSON' | 'PARQUET' },
     START_TIME = "<START TIMESTAMP>",
-    END_TIME = "<END TIMESTAMP>"
+    END_TIME = "<END TIMESTAMP>",
+    PARALLELISM = <number>
   ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
@@ -177,9 +299,10 @@ COPY DATABASE <db_name>
 |---|---|---|
 | `FORMAT` | Export file format, available options: JSON, CSV, Parquet  | **Required** |
 | `START_TIME`/`END_TIME`| The time range within which data should be exported. `START_TIME` is inclusive and `END_TIME` is exclusive. | Optional |
+| `PARALLELISM` | Number of tables to process in parallel. For example, if a database contains 30 tables and `PARALLELISM` is set to 8, then 8 tables will be processed concurrently. Defaults to the total number of CPU cores, with a minimum value of 1. | Optional |
 
 > - When copying databases, `<PATH>` must end with `/`.
-> - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3.
+> - `CONNECTION` parameters can also be used to copying databases to/from object storage services like AWS S3, GCS, and Azure Blob Storage.
 
 ### Examples
 
@@ -187,11 +310,17 @@ COPY DATABASE <db_name>
 -- Export all tables' data to /tmp/export/
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
+-- Export all table data using 4 parallel operations
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=4);
+
 -- Export all tables' data within time range 2022-04-11 08:00:00~2022-04-11 09:00:00 to /tmp/export/
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- Import files under /tmp/export/ directory to database named public.
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
+
+-- Import files using 8 parallel operations
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=8);
 ```
 
 ## Special reminder for Windows platforms

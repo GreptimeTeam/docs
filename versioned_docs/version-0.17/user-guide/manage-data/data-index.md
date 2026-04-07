@@ -1,6 +1,6 @@
 ---
-keywords: [index, inverted index, skipping index, fulltext index, query performance]
-description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and fulltext index, and how to use them effectively to optimize query performance.
+keywords: [index, inverted index, skipping index, full-text index, query performance]
+description: Learn about different types of indexes in GreptimeDB, including inverted index, skipping index, and full-text index, and how to use them effectively to optimize query performance.
 ---
 
 # Data Index
@@ -75,11 +75,11 @@ CREATE TABLE sensor_data (
 );
 ```
 
-Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or fulltext index.
+Skipping index can't handle complex filter conditions, and usually has a lower filtering performance compared to inverted index or full-text index.
 
-### Fulltext Index
+### Full-Text Index
 
-Fulltext index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
+Full-text index is designed for text search operations on string columns. It enables efficient searching of text content using word-based matching and text search capabilities. You can query text data with flexible keywords, phrases, or pattern matching queries.
 
 **Use Cases:**
 - Text search operations
@@ -95,20 +95,120 @@ CREATE TABLE logs (
 );
 ```
 
-Fulltext index supports options by `WITH`:
-* `analyzer`: Sets the language analyzer for the fulltext index. Supported values are `English` and `Chinese`. Default to `English`.
-* `case_sensitive`: Determines whether the fulltext index is case-sensitive. Supported values are `true` and `false`. Default to `false`.
-* `backend`: Sets the backend for the fulltext index. Supported values are `bloom` and `tantivy`. Default to `bloom`.
-* `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
-* `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
+#### Configuration Options
 
-For example:
+When creating or modifying a full-text index, you can specify the following options using `FULLTEXT INDEX WITH`:
+
+- `analyzer`: Sets the language analyzer for the full-text index
+  - Supported values: `English`, `Chinese`
+  - Default: `English`
+  - Note: The Chinese analyzer requires significantly more time to build the index due to the complexity of Chinese text segmentation. Consider using it only when Chinese text search is a primary requirement.
+
+- `case_sensitive`: Determines whether the full-text index is case-sensitive
+  - Supported values: `true`, `false`
+  - Default: `false`
+  - Note: Setting to `true` may slightly improve performance for case-sensitive queries, but will degrade performance for case-insensitive queries. This setting does not affect the results of `matches_term` queries.
+
+- `backend`: Sets the backend for the full-text index
+  - Supported values: `bloom`, `tantivy`
+  - Default: `bloom`
+
+- `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size.
+  - Supported values: positive integer
+  - Default: `10240`
+
+- `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size.
+  - Supported values: float between `0` and `1`
+  - Default: `0.01`
+
+#### Backend Selection
+
+GreptimeDB provides two full-text index backends for efficient log searching:
+
+1. **Bloom Backend**
+   - Best for: General-purpose log searching
+   - Features:
+     - Uses Bloom filter for efficient filtering
+     - Lower storage overhead
+     - Consistent performance across different query patterns
+   - Limitations:
+     - Slightly slower for high-selectivity queries
+   - Storage Cost Example:
+     - Original data: ~10GB
+     - Bloom index: ~1GB
+
+2. **Tantivy Backend**
+   - Best for: High-selectivity queries (e.g., unique values like TraceID)
+   - Features:
+     - Uses inverted index for fast exact matching
+     - Excellent performance for high-selectivity queries
+   - Limitations:
+     - Higher storage overhead (close to original data size)
+     - Slower performance for low-selectivity queries
+   - Storage Cost Example:
+     - Original data: ~10GB
+     - Tantivy index: ~10GB
+
+#### Performance Comparison
+
+The following table shows the performance comparison between different query methods (using Bloom as baseline):
+
+| Query Type | High Selectivity (e.g., TraceID) | Low Selectivity (e.g., "HTTP") |
+|------------|----------------------------------|--------------------------------|
+| LIKE       | 50x slower                      | 1x                            |
+| Tantivy    | 5x faster                       | 5x slower                     |
+| Bloom      | 1x (baseline)                   | 1x (baseline)                 |
+
+Key observations:
+- For high-selectivity queries (e.g., unique values), Tantivy provides the best performance
+- For low-selectivity queries, Bloom offers more consistent performance
+- Bloom has significant storage advantage over Tantivy (1GB vs 10GB in test case)
+
+#### Examples
+
+**Creating a Table with Full-Text Index**
 
 ```sql
+-- Using Bloom backend (recommended for most cases)
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX WITH(analyzer='English', case_sensitive='true', backend='bloom', granularity=1024, false_positive_rate=0.01),
-    `level` STRING PRIMARY KEY,
-    `timestamp` TIMESTAMP TIME INDEX,
+    timestamp TIMESTAMP(9) TIME INDEX,
+    message STRING FULLTEXT INDEX WITH (
+        backend = 'bloom',
+        analyzer = 'English',
+        case_sensitive = 'false'
+    )
+);
+
+-- Using Tantivy backend (for high-selectivity queries)
+CREATE TABLE logs (
+    timestamp TIMESTAMP(9) TIME INDEX,
+    message STRING FULLTEXT INDEX WITH (
+        backend = 'tantivy',
+        analyzer = 'English',
+        case_sensitive = 'false'
+    )
+);
+```
+
+**Modifying an Existing Table**
+
+```sql
+-- Enable full-text index on an existing column
+ALTER TABLE monitor 
+MODIFY COLUMN load_15 
+SET FULLTEXT INDEX WITH (
+    analyzer = 'English',
+    case_sensitive = 'false',
+    backend = 'bloom'
+);
+
+-- Change full-text index configuration
+ALTER TABLE logs
+MODIFY COLUMN message
+SET FULLTEXT INDEX WITH (
+    analyzer = 'English',
+    case_sensitive = 'false',
+    backend = 'tantivy'
 );
 ```
 
@@ -118,9 +218,7 @@ Fulltext index usually comes with following drawbacks:
 - Increased flush and compaction latency as each text document needs to be tokenized and indexed
 - May not be optimal for simple prefix or suffix matching operations
 
-Consider using fulltext index only when you need advanced text search capabilities and flexible query patterns.
-
-For more detailed information about fulltext index configuration and backend selection, please refer to the [Full-Text Index Configuration](/user-guide/logs/fulltext-index-config) guide.
+Consider using full-text index only when you need advanced text search capabilities and flexible query patterns.
 
 ## Modify indexes
 

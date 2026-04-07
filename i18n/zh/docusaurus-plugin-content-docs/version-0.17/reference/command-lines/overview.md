@@ -10,11 +10,18 @@ description: 介绍 Greptime 命令行工具的安装、使用方法，包括全
 ## 安装命令行工具
 
 Greptime 命令行工具与 GreptimeDB 二进制文件捆绑在一起。
-在[安装 GreptimeDB](/getting-started/installation/overview.md)之后，
-你可以在 GreptimeDB 的当前目录中执行 `./greptime` 命令。
 
+如果你按照[快速安装 GreptimeDB](/getting-started/installation/overview.md)文档中所述使用二进制文件启动的  GreptimeDB，可以在 GreptimeDB 的当前目录中执行 `./greptime` 命令。
 为了方便起见，如果你希望使用 `greptime` 而不是 `./greptime` 来运行命令，
 可以将命令行工具的二进制文件移动到系统的 `bin` 目录，或者将二进制文件的路径添加到 `PATH` 环境变量中。
+
+如果你是在 Kubernetes 中部署的 GreptimeDB，可以通过 frontend pod 访问 greptime 命令行工具。使用以下命令进入 pod：
+
+```sh
+kubectl exec -it <greptimedb-frontend-pod> -n <namespace> -- /bin/bash
+```
+
+进入 pod 后，可以运行 `greptime help` 查看所有可用命令。
 
 ## 选项
 

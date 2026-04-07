@@ -81,7 +81,7 @@ Release date: August 06, 2025
 ### 🐛 Bug Fixes
 
 * fix: aggr group by all partition cols use partial commutative by [@discord9](https://github.com/discord9) in [#6534](https://github.com/GreptimeTeam/greptimedb/pull/6534)
-* fix: closee issue #6555 return empty result by [@yihong0618](https://github.com/yihong0618) in [#6569](https://github.com/GreptimeTeam/greptimedb/pull/6569)
+* fix: close issue #6555 return empty result by [@yihong0618](https://github.com/yihong0618) in [#6569](https://github.com/GreptimeTeam/greptimedb/pull/6569)
 * fix: ignore target files in make fmt-check by [@yihong0618](https://github.com/yihong0618) in [#6560](https://github.com/GreptimeTeam/greptimedb/pull/6560)
 * fix: close issue #6586 make pg also show error as mysql by [@yihong0618](https://github.com/yihong0618) in [#6587](https://github.com/GreptimeTeam/greptimedb/pull/6587)
 * fix: add map datatype conversion in copy_table_from (#6185) by [@Arshdeep54](https://github.com/Arshdeep54) in [#6422](https://github.com/GreptimeTeam/greptimedb/pull/6422)

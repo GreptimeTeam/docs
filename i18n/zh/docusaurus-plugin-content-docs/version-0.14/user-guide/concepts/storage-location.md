@@ -34,7 +34,7 @@ GreptimeDB 的存储文件结构包括以下内容：
 - `cache`: 内部的数据缓存目录，比如对象存储的本地缓存等。
 - `logs`: GreptimeDB 日志文件目录。
 - `wal`:  预写日志文件目录。
-- `index_intermediate`: 索引构建和查询相关的的临时中间数据目录。
+- `index_intermediate`: 索引构建和查询相关的临时中间数据目录。
 
 ## 云存储
 

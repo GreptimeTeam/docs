@@ -7,12 +7,12 @@ description: Describes the `ALTER` statement used to modify database options, ta
 
 `ALTER` can be used to modify any database options, table options or metadata of the table, including:
 
-* Modify database options
-* Add/Drop/Modify a column
-* Set/Drop column default values
-* Drop column default values
-* Rename a table
-* Modify table options
+- Modify database options
+- Add/Drop/Modify a column
+- Set/Drop column default values
+- Drop column default values
+- Rename a table
+- Modify table options
 
 ## ALTER DATABASE
 
@@ -28,10 +28,14 @@ ALTER DATABASE db
 ```
 
 Currently following options are supported:
+
 - `ttl`: Specifies the default retention time for data in the database. Data exceeding this retention period will be deleted asynchronously.
-   - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
-   - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
-   - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
+  - If `ttl` was not previously set, defining a new `ttl` using `ALTER` will result in the deletion of data that exceeds the specified retention time.
+  - If `ttl` was already set, modifying it via `ALTER` will enforce the updated retention time immediately, removing data that exceeds the new retention threshold.
+  - If `ttl` was previously set and is unset using `ALTER`, new data will no longer be deleted. However, data that was previously deleted due to the retention policy cannot be restored.
+- `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md). Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
+- `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction. Changes to this option will immediately affect all tables that don't have their own explicit compaction settings.
 
 ### Examples
 
@@ -49,6 +53,34 @@ Remove the default retention time of data in the database:
 ALTER DATABASE db UNSET 'ttl';
 ```
 
+#### Modify compaction options of database
+
+Database-level compaction options are dynamically resolved at compaction scheduling time. When you modify these options, the changes will immediately affect all tables in the database that don't have their own explicit compaction settings, similar to how TTL works.
+
+Change the compaction time window for the database:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.time_window'='2h';
+```
+
+Change the maximum output file size for compaction:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.max_output_file_size'='500MB';
+```
+
+Change the trigger file number for compaction:
+
+```sql
+ALTER DATABASE db SET 'compaction.twcs.trigger_file_num'='8';
+```
+
+Remove compaction options:
+
+```sql
+ALTER DATABASE db UNSET 'compaction.twcs.time_window';
+```
+
 ## ALTER TABLE
 
 ### Syntax
@@ -62,12 +94,13 @@ ALTER TABLE [db.]table
     | MODIFY COLUMN name DROP DEFAULT
     | MODIFY COLUMN name SET FULLTEXT INDEX [WITH <options>]
     | MODIFY COLUMN name UNSET FULLTEXT INDEX
+    | SPLIT PARTITION (<expr>) INTO (<expr_list>)
+    | MERGE PARTITION (<expr_list>)
     | RENAME name
     | SET <option_name>=<option_value> [, ...]
     | UNSET <option_name>[, ...]
-   ]
+    ]
 ```
-
 
 ### Add column
 
@@ -98,6 +131,7 @@ ALTER TABLE monitor ADD COLUMN load_15 double AFTER memory;
 ```
 
 Adds a new column as a tag(primary key) with a default value:
+
 ```sql
 ALTER TABLE monitor ADD COLUMN app STRING DEFAULT 'shop' PRIMARY KEY;
 ```
@@ -148,22 +182,29 @@ After dropping the default value, the column will use `NULL` as the default. The
 
 ### Alter table options
 
-`ALTER TABLE` statements can also be used to change the options of tables. 
+`ALTER TABLE` statements can also be used to change the options of tables.
 
 Currently following options are supported:
+
 - `ttl`: the retention time of data in table.
+- `append_mode`: whether the table is append-only. You can change it from `false` to `true`, but not from `true` to `false`.
 - `compaction.twcs.time_window`: the time window parameter of TWCS compaction strategy. The value should be a [time duration string](/reference/time-durations.md).
 - `compaction.twcs.max_output_file_size`: the maximum allowed output file size of TWCS compaction strategy.
 - `compaction.twcs.trigger_file_num`: the number of files in a specific time window to trigger a compaction.
+- `sst_format`: the SST format of the table. The value should be `flat`. A table only supports changing the format from `primary_key` to `flat`.
 
 ```sql
 ALTER TABLE monitor SET 'ttl'='1d';
+
+ALTER TABLE monitor SET 'append_mode'='true';
 
 ALTER TABLE monitor SET 'compaction.twcs.time_window'='2h';
 
 ALTER TABLE monitor SET 'compaction.twcs.max_output_file_size'='500MB';
 
 ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
+
+ALTER TABLE monitor SET 'sst_format'='flat';
 ```
 
 ### Unset table options
@@ -171,6 +212,50 @@ ALTER TABLE monitor SET 'compaction.twcs.trigger_file_num'='8';
 ```sql
 ALTER TABLE monitor UNSET 'ttl';
 ```
+
+### Split or merge partitions
+
+Use `SPLIT PARTITION` to split a partition into multiple partitions:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+Use `MERGE PARTITION` to merge multiple partitions into one. The following example merges two partitions into a single partition covering `device_id < 100`:
+
+```sql
+ALTER TABLE sensor_readings MERGE PARTITION (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+);
+```
+
+You can provide DDL options after the statement to control execution behavior:
+
+```sql
+ALTER TABLE sensor_readings SPLIT PARTITION (
+  device_id < 100
+) INTO (
+  device_id < 100 AND area < 'South',
+  device_id < 100 AND area >= 'South'
+) WITH (
+  TIMEOUT = '5m',
+  WAIT = false
+);
+```
+
+When `WAIT = false`, the statement returns a `procedure_id`. You can check the status with `ADMIN procedure_state(procedure_id)` (see [ADMIN](/reference/sql/admin.md)).
+`TIMEOUT` controls the overall time limit for the operation, and it is enforced regardless of whether `WAIT` is `true` or `false`.
+
+:::caution Note
+Repartitioning operations are only supported in distributed clusters.
+You must enable shared object storage and GC, and ensure all datanodes can access the same object store before running these statements.
+:::
 
 ### Create an index for a column
 
@@ -194,7 +279,7 @@ You can specify the following options using `FULLTEXT INDEX WITH` when enabling 
 - `granularity`: (For `bloom` backend) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
 - `false_positive_rate`: (For `bloom` backend) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
-For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/logs/fulltext-index-config.md).
+For more information on full-text index configuration and performance comparison, refer to the [Full-Text Index Configuration Guide](/user-guide/manage-data/data-index.md#fulltext-index).
 
 If `WITH <options>` is not specified, `FULLTEXT INDEX` will use the default values.
 
@@ -205,28 +290,33 @@ ALTER TABLE monitor MODIFY COLUMN host SET SKIPPING INDEX WITH(granularity = 102
 ```
 
 The valid options for the skipping index include:
-* `type`: The index type, only supports `BLOOM` type right now.
-* `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
-* `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
+
+- `type`: The index type, only supports `BLOOM` type right now.
+- `granularity`: (For `BLOOM` type) The size of data chunks covered by each filter. A smaller granularity improves filtering but increases index size. Default is `10240`.
+- `false_positive_rate`: (For `BLOOM` type) The probability of misidentifying a block. A lower rate improves accuracy (better filtering) but increases index size. Value is a float between `0` and `1`. Default is `0.01`.
 
 ### Remove index on a column
 
 The syntax is:
+
 ```sql
 ALTER TABLE [table] MODIFY COLUMN [column] UNSET [INVERTED | SKIPPING | FULLTEXT] INDEX;
 ```
 
 For example, remove the inverted index:
+
 ```sql
 ALTER TABLE monitor_pk MODIFY COLUMN host UNSET INVERTED INDEX;
 ```
 
 Remove the skipping index:
+
 ```sql
 ALTER TABLE monitor_pk MODIFY COLUMN host UNSET SKIPPING INDEX;
 ```
 
 Remove the fulltext index:
+
 ```sql
 ALTER TABLE monitor MODIFY COLUMN load_15 UNSET FULLTEXT INDEX;
 ```

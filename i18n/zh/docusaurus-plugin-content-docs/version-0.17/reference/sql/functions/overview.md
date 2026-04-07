@@ -49,7 +49,7 @@ DataFusion [字符串函数](./df-functions.md#string-functions)。
 GreptimeDB 提供：
 * `matches_term(expression, term)` 用于全文检索。
 
-阅读[查询日志](/user-guide/logs/query-logs.md)文档获取更多详情。
+阅读[查询日志](/user-guide/logs/fulltext-search.md)文档获取更多详情。
 
 ### 数学函数
 

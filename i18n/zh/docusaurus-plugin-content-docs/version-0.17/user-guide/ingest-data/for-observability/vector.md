@@ -87,7 +87,7 @@ org = ""
 token = ""
 ```
 
-上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
 
 - `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
 - `bucket`: GreptimeDB 中的 database 名称。
@@ -149,7 +149,7 @@ password = "<password>"
 
 [sinks.my_sink_id.extra_params]
 source = "vector"
-x-greptime-pipeline-params = "flatten_json_object=true"
+x-greptime-pipeline-params = "max_nested_levels=10"
 ```
 
 此示例展示了如何使用 `greptimedb_logs` sink 将生成的 demo 日志数据写入 GreptimeDB。更多信息请参考 [Vector greptimedb_logs sink](https://vector.dev/docs/reference/configuration/sinks/greptimedb_logs/) 文档。

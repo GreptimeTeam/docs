@@ -95,7 +95,7 @@ Start Alertmanager once the configuration is ready.
 
 ### Create Trigger
 
-Connect to GreptimeDB with MySql client and run the following SQL:
+Connect to GreptimeDB with MySQL client and run the following SQL:
 
 ```sql
 CREATE TRIGGER IF NOT EXISTS load1_monitor

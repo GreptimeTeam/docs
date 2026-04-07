@@ -34,9 +34,9 @@ The output is as follows:
 | table_rows       | UInt64   |      | YES  |         | FIELD         |
 | data_free        | UInt64   |      | YES  |         | FIELD         |
 | auto_increment   | UInt64   |      | YES  |         | FIELD         |
-| create_time      | DateTime |      | YES  |         | FIELD         |
-| update_time      | DateTime |      | YES  |         | FIELD         |
-| check_time       | DateTime |      | YES  |         | FIELD         |
+| create_time      | TimestampSecond |      | YES  |         | FIELD         |
+| update_time      | TimestampSecond |      | YES  |         | FIELD         |
+| check_time       | TimestampSecond |      | YES  |         | FIELD         |
 | table_collation  | String   |      | YES  |         | FIELD         |
 | checksum         | UInt64   |      | YES  |         | FIELD         |
 | create_options   | String   |      | YES  |         | FIELD         |

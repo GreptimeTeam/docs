@@ -183,8 +183,15 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/GreptimeTeam/docs/blob/main',
+          editUrl: ({ locale, version, versionDocsDirPath, docPath }) => {
+            if (locale === 'zh') {
+              // Chinese locale: i18n folder, versioned by current|version-<x>
+              const versionDir = version === 'current' ? 'current' : `version-${version}`;
+              return `https://github.com/GreptimeTeam/docs/edit/main/i18n/zh/docusaurus-plugin-content-docs/${versionDir}/${docPath}`;
+            }
+            // English locale: use Docusaurus-provided versionDocsDirPath
+            return `https://github.com/GreptimeTeam/docs/edit/main/${versionDocsDirPath}/${docPath}`;
+          },
           routeBasePath: '/',
           exclude: [
             'db-cloud-shared/**',
@@ -256,9 +263,23 @@ const config: Config = {
   ],
   trailingSlash: true,
   plugins: [
-    ...(biel_project_id
-      ? [['docusaurus-biel', bielMetaMap[locale as keyof typeof bielMetaMap]]]
-      : []),
+    // Only load docusaurus-biel plugin if biel_project_id is defined
+    ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
+    function injectLocaleSwitchScript() {
+      return {
+        name: 'inject-locale-switch-script',
+        injectHtmlTags() {
+          return {
+            headTags: [
+              {
+                tagName: 'script',
+                attributes: { src: '/js/locale-switch.js' }
+              }
+            ]
+          };
+        }
+      };
+    }
   ],
 
   themeConfig: {
@@ -293,7 +314,7 @@ const config: Config = {
             {
               label: locale === 'en' ? '中文' : 'English',
               to: locale === 'en' ? 'https://docs.greptime.cn' : 'https://docs.greptime.com',
-              className: 'dropdown__link',
+              className: 'dropdown__link locale-switch-link',
             },
           ],
         },

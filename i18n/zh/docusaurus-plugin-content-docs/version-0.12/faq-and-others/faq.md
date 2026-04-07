@@ -16,7 +16,7 @@ GreptimeDB 现在仅支持日志（Log）数据类型，在 v0.10 版本中引�
 我们计划进一步优化日志引擎，着重提升查询性能和用户体验。未来的增强功能将包括（但不限于）扩展 GreptimeDB 日志查询 DSL 的功能，并实现与部分 Elasticsearch/Loki API 的兼容，为用户提供更高效、灵活的日志查询能力。
 
 关于如何使用 GreptimeDB 处理日志的更多信息，您可以参考以下文档：
-- [日志概述](https://docs.greptime.com/user-guide/logs/overview)
+- [日志概述](https://docs.greptime.cn/user-guide/logs/overview)
 - [OpenTelemetry 兼容性](https://docs.greptime.com/user-guide/ingest-data/for-observability/opentelemetry)
 - [Loki 协议兼容性](/user-guide/ingest-data/for-observability/loki.md)
 - [Vector 兼容性](https://docs.greptime.com/user-guide/ingest-data/for-observability/vector)
@@ -163,7 +163,7 @@ GreptimeDB 是一个快速发展的开源项目，欢迎社区的反馈和贡献
 
 ### GreptimeDB 是否可以用于存储日志？
 
-可以，详细信息请参考[这里](https://docs.greptime.com/user-guide/logs/overview)。
+可以，详细信息请参考[这里](https://docs.greptime.cn/user-guide/logs/overview)。
 
 ### 非主键字段的查询性能如何？是否可以设置倒排索引？与 Elasticsearch 相比，存储成本是否更低？
 

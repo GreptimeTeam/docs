@@ -158,7 +158,7 @@ SHOW CREATE TABLE grpc_latencies FOR postgres_foreign_table;
 
 ### 执行查询
 
-至此你可以通过 Postgres 发起查询。并且可以使用一些同时存在在 GreptimeDB 和
+至此你可以通过 Postgres 发起查询。并且可以使用一些同时存在于 GreptimeDB 和
 Postgres 上的函数，如 `date_trunc` 等。
 
 ```sql

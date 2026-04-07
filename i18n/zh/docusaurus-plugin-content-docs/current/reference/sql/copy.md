@@ -17,6 +17,33 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 命令以 `COPY` 关键字开始，后面跟着要导出数据的表名（本例中为 `tbl`）。
 `TO` 指定导出数据的文件路径和名称（本例中为 `/xxx/xxx/output.parquet`）。
 
+:::tip NOTE
+导出的文件会生成在执行该查询的 GreptimeDB 服务端节点上，而不是发起 SQL 的客户端机器上。请确保路径在服务端可访问且可写，或使用 `CONNECTION` 导出到 S3、GCS、Azure Blob Storage 等云存储服务。
+:::
+
+例如，可以使用自定义时间戳和日期格式导出数据到 CSV 文件：
+
+```sql
+COPY tbl TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%Y/%m/%d %H:%M:%S',
+  DATE_FORMAT = '%Y-%m-%d'
+);
+```
+
+也可以将数据导出为压缩的 CSV 或 JSON 文件：
+
+```sql
+COPY tbl TO '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
+:::tip NOTE
+使用压缩时，请确保文件扩展名与压缩类型匹配：gzip 使用 `.gz`，zstd 使用 `.zst`，bzip2 使用 `.bz2`，xz 使用 `.xz`。
+:::
+
 #### `WITH` 选项
 
 `WITH` 可以添加一些选项，比如文件的 `FORMAT` 用来指定导出文件的格式。本例中的格式为 Parquet，它是一种用于大数据处理的列式存储格式。Parquet 为大数据分析高效地压缩和编码列式数据。
@@ -25,10 +52,14 @@ COPY tbl TO '/xxx/xxx/output.parquet' WITH (FORMAT = 'parquet');
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d %H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%Y-%m-%d'`）。仅支持 CSV 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符（例如 `'%H:%M:%S'`）。仅支持 CSV 格式。 | 可选 |
 
 #### `CONNECTION` 选项
 
-`COPY TO` 支持导出数据到云存储上，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+`COPY TO` 支持导出数据到云存储上。详情请参考 [连接 S3](#连接-s3)、[连接 GCS](#连接-gcs) 或 [连接 Azure Blob Storage](#连接-azure-blob-storage)。
 
 
 ### COPY FROM
@@ -65,10 +96,20 @@ COPY tbl FROM '/path/to/folder/' WITH (FORMAT = 'parquet', PATTERN = '.*parquet.
 COPY tbl FROM '/path/to/folder/xxx.parquet' WITH (FORMAT = 'parquet');
 ```
 
+也可以从压缩的 CSV 或 JSON 文件导入数据：
+
+```sql
+COPY tbl FROM '/path/to/file.csv.gz' WITH (
+  FORMAT = 'csv',
+  compression_type = 'gzip'
+);
+```
+
 | 选项  | 描述  | 是否必需 |
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet, ORC  | **是** |
 | `PATTERN` | 使用正则匹配文件，例如 `*_today.parquet` | 可选 |
+| `compression_type` | 导入文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
 
 :::tip NOTE
 CSV 文件必须带有 header，包含表的列名。
@@ -76,7 +117,7 @@ CSV 文件必须带有 header，包含表的列名。
 
 #### Connection 选项
 
-`COPY FROM` 同样支持从云存储上导入数据，比如 S3。详情请参考 [连接 S3](#连接-s3)。
+`COPY FROM` 同样支持从云存储上导入数据。详情请参考 [连接 S3](#连接-s3)、[连接 GCS](#连接-gcs) 或 [连接 Azure Blob Storage](#连接-azure-blob-storage)。
 
 #### LIMIT 选项
 
@@ -125,6 +166,63 @@ https://bucket-name.s3.region-code.amazonaws.com/key-name
 | `ENABLE_VIRTUAL_HOST_STYLE` | 如果你使用 virtual hosting 的方式来定位 bucket，将该选项设置为 "true" | 可选 |
 | `SESSION_TOKEN` | 用于连接 AWS S3 服务的临时凭证。 | 可选 |
 
+### 连接 GCS
+
+你可以从 Google Cloud Storage (GCS) 导入/导出数据：
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+
+-- COPY TO
+COPY tbl TO 'gcs://<bucket>/<path>' WITH (FORMAT = 'parquet') CONNECTION(SCOPE = 'https://www.googleapis.com/auth/devstorage.read_write');
+```
+
+#### URL
+
+使用 `gcs://bucket/path` 指定文件或目录，例如：
+
+```
+gcs://my-bucket/data.parquet
+```
+
+#### 选项
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `SCOPE` | GCS 访问范围，例如 `https://www.googleapis.com/auth/devstorage.read_write` | 可选 |
+| `CREDENTIAL` | JSON 格式的服务账号凭证内容 | 可选 |
+| `ENDPOINT` | GCS 服务的 Endpoint | 可选 |
+
+### 连接 Azure Blob Storage
+
+你可以从 Azure Blob Storage 导入/导出数据：
+
+```sql
+-- COPY FROM
+COPY tbl FROM 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+
+-- COPY TO
+COPY tbl TO 'azblob://<container>/<path>' WITH (FORMAT = 'parquet') CONNECTION(ACCOUNT_NAME = 'my-account', ACCOUNT_KEY = 'my-key');
+```
+
+#### URL
+
+使用 `azblob://container/path` 指定文件或目录，例如：
+
+```
+azblob://my-container/data.parquet
+```
+
+#### 选项
+
+| 选项  | 描述  | 是否必需 |
+|---|---|---|
+| `ACCOUNT_NAME` | Azure 存储账号名称 | 可选 |
+| `ACCOUNT_KEY` | Azure 存储账号密钥 | 可选 |
+| `ENDPOINT` | Azure Blob Storage 服务的 Endpoint | 可选 |
+| `SAS_TOKEN` | Azure Blob Storage 的共享访问签名（SAS）令牌 | 可选 |
+
 ## COPY 查询结果
 
 你可以使用 `COPY` 语句将查询结果导出到文件中。语法如下：
@@ -138,11 +236,34 @@ COPY (<QUERY>) TO '<PATH>' WITH (FORMAT = { 'CSV' | 'JSON' | 'PARQUET' });
 | `QUERY` | 要执行的 SQL SELECT 语句 | **是** |
 | `PATH` | 输出文件的路径 | **是** |
 | `FORMAT` | 输出文件格式：'CSV'、'JSON' 或 'PARQUET' | **是** |
+| `compression_type` | 导出文件的压缩算法。支持的值：`gzip`、`zstd`、`bzip2`、`xz`。仅支持 CSV 和 JSON 格式。 | 可选 |
+| `TIMESTAMP_FORMAT` | 导出 CSV 格式时自定义时间戳列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
+| `DATE_FORMAT` | 导出 CSV 格式时自定义日期列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
+| `TIME_FORMAT` | 导出 CSV 格式时自定义时间列的格式。使用 [strftime](https://docs.rs/chrono/latest/chrono/format/strftime/index.html) 格式说明符。仅支持 CSV 格式。 | 可选 |
 
 例如，以下语句将查询结果导出到 CSV 文件中：
 
 ```sql
 COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (FORMAT = 'csv');
+```
+
+也可以将查询结果导出为压缩文件：
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.json.gz' WITH (
+  FORMAT = 'json',
+  compression_type = 'gzip'
+);
+```
+
+也可以在导出到 CSV 时指定自定义日期和时间格式：
+
+```sql
+COPY (SELECT * FROM tbl WHERE host = 'host1') TO '/path/to/file.csv' WITH (
+  FORMAT = 'csv',
+  TIMESTAMP_FORMAT = '%m-%d-%Y %H:%M:%S',
+  DATE_FORMAT = '%Y/%m/%d'
+);
 ```
 
 ## COPY DATABASE
@@ -155,7 +276,8 @@ COPY DATABASE <db_name>
   WITH (
     FORMAT =  { 'CSV' | 'JSON' | 'PARQUET' } 
     START_TIME = "<START TIMESTAMP>",
-    END_TIME = "<END TIMESTAMP>"
+    END_TIME = "<END TIMESTAMP>",
+    PARALLELISM = <number>
   ) 
   [CONNECTION(
     REGION = "<REGION NAME>",
@@ -170,9 +292,10 @@ COPY DATABASE <db_name>
 |---|---|---|
 | `FORMAT` | 目标文件格式，例如 JSON, CSV, Parquet  | **是** |
 | `START_TIME`/`END_TIME`| 需要导出数据的时间范围，时间范围为左闭右开 | 可选 |
+| `PARALLELISM` | 并行处理的表数量。例如，数据库包含 30 个表且 `PARALLELISM` 设置为 8 时，将同时处理 8 个表。默认值为 CPU 核心总数，最小值为 1。 | 可选 |
 
 > - 当导入/导出表时，`<PATH>` 参数必须以 `/` 结尾；
-> - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3 等对象存储
+> - COPY DATABASE 同样可以通过 `CONNECTION` 参数将数据导入/导出的路径指向 S3、GCS、Azure Blob Storage 等对象存储
 
 
 ### 示例
@@ -181,11 +304,17 @@ COPY DATABASE <db_name>
 -- 将 public 数据库中所有数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet');
 
+-- 使用 4 个并行操作导出所有表数据
+COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=4);
+
 -- 将 public 数据库中时间范围在 2022-04-11 08:00:00 到 2022-04-11 09:00:00 之间的数据导出到 /tmp/export/ 目录下
 COPY DATABASE public TO '/tmp/export/' WITH (FORMAT='parquet', START_TIME='2022-04-11 08:00:00', END_TIME='2022-04-11 09:00:00');
 
 -- 从 /tmp/export/ 目录恢复 public 数据库的数据
 COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet');
+
+-- 使用 8 个并行操作导入数据
+COPY DATABASE public FROM '/tmp/export/' WITH (FORMAT='parquet', PARALLELISM=8);
 ```
 
 ## Windows 平台上的路径

@@ -303,13 +303,13 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/dryrun?pipeline_name=test" \
     ],
     "schema": [
         {
-            "colume_type": "FIELD",
+            "column_type": "FIELD",
             "data_type": "STRING",
             "fulltext": false,
             "name": "message"
         },
         {
-            "colume_type": "TIMESTAMP",
+            "column_type": "TIMESTAMP",
             "data_type": "TIMESTAMP_NANOSECOND",
             "fulltext": false,
             "name": "time"

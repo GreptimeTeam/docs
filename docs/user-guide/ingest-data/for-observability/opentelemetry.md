@@ -129,6 +129,21 @@ Otherwise, it will remain the old data format with the existing table, but use t
 
 GreptimeDB pre-processes the incoming data before persisting them, including:
 1. Converting the metric names(table names) and the label names to the Prometheus style(e.g: replace `.` with `_`). See [here](https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#metric-metadata-1) for details.
+
+   Here are some examples of the conversion:
+
+   | OTLP Metric / Attribute | OTLP Type / Unit | Prometheus Equivalent |
+   | :--- | :--- | :--- |
+   | `cache.hit_ratio` | Gauge / `1` | `cache_hit_ratio` |
+   | `memory.usage` | Gauge / `By` | `memory_usage_bytes` |
+   | `queue.length` | Gauge / `{item}` | `queue_length` |
+   | `http.server.request.duration` | Histogram / `s` | `http_server_request_duration_seconds` |
+   | `rpc.server.duration` | Histogram / `ms` | `rpc_server_duration_seconds` |
+   | `http.client.request.size` | Sum (Monotonic) / `By` | `http_client_request_size_bytes_total` |
+   | `system.network.io` | Sum (Monotonic) / `By` | `system_network_io_bytes_total` |
+   | `http.status_code` (Attribute) | - | `http_status_code` |
+   | `service.name` (Attribute) | - | `service_name` |
+
 2. Discarding some resource attributes and all scope attributes by default. The kept resource attributes name list can be found [here](https://prometheus.io/docs/guides/opentelemetry/#promoting-resource-attributes). This behavior is configurable.
 
 Note, `Sum` and `Histogram` data in OTLP can have delta temporality.
@@ -233,14 +248,14 @@ You can use [OpenTelemetry SDK](https://opentelemetry.io/docs/languages/) or oth
 To send OpenTelemetry traces data to GreptimeDB through OpenTelemetry SDK libraries, please use the following information:
 
 - URL: `http{s}://<host>/v1/otlp/v1/traces`
-- Headers: The headers section is the same as the [Logs](#Logs) section, you can refer to the [Logs](#Logs) section for more information.
+- Headers:
+  - `Content-Type`: `application/x-protobuf`
+  - `Authorization`: `Basic` authentication.
+  - `X-Greptime-DB-Name`: `<dbname>`
+  - `X-Greptime-Trace-Table-Name`: `<table_name>` (optional) - The table name to store the traces. If not provided, the default table name is `opentelemetry_traces`.
+  - `X-Greptime-Pipeline-Name`: `greptime_trace_v1` (required) - The pipeline name to process the traces.
 
-By default, GreptimeDB will write traces data to the `opentelemetry_traces` table in the `public` database. If you want to write traces data to a different table, you can use the `X-Greptime-DB-Name` and `X-Greptime-Trace-Table-Name` headers to specify the database and table name.
-
-GreptimeDB will accept **protobuf encoded traces data** via **HTTP protocol** and the following headers are required:
-
-- `content-type` should be configured as `application/x-protobuf`;
-- `x-greptime-pipeline-name` should be configured as `greptime_trace_v1`;
+GreptimeDB accepts **protobuf encoded traces data** via **HTTP protocol**.
 
 ### Example Code
 
@@ -248,7 +263,7 @@ You can directly send OpenTelemetry traces data to GreptimeDB, or use OpenTeleme
 
 ### Data Model
 
-GreptimeDB will map the OTLP traces data model to the following table schema:
+GreptimeDB maps the OTLP traces data model to a table schema. By default, trace data is stored in the `opentelemetry_traces` table.
 
 ```sql
 +------------------------------------+---------------------+------+------+---------+---------------+
@@ -275,14 +290,23 @@ GreptimeDB will map the OTLP traces data model to the following table schema:
 +------------------------------------+---------------------+------+------+---------+---------------+
 ```
 
-- Each row represents a single span
-- The core OpenTelemetry fields such as `trace_id`, `span_id`, and `service_name` are promoted as dedicated table columns
-- Resource attributes and span attributes are automatically flattened into separate columns, with column names being their JSON keys (using `.` to connect multiple levels of nesting)
-- `span_events` and `span_links` are stored as JSON data types by default
+- Each row represents a single span.
+- `service_name` is used as a **Tag** (part of the **Primary Key**).
+- `timestamp` is used as the **Time Index**.
+- Resource attributes and span attributes are automatically flattened into separate columns.
+  - Note: `resource_attributes.service.name` is excluded from flattening as it is already stored in the `service_name` column.
+- `span_events` and `span_links` are stored as `JSON` data types by default.
 
-By default, the table is partitioned into 16 uniform regions based on the `trace_id` to efficiently store and query all trace data.
+For more details on the data model and auxiliary tables, please refer to [Trace Data Modeling](/user-guide/traces/data-model.md).
 
-### Append Only
+Note: 
+1. The `greptime_trace_v1` process uses the `trace_id` field to divide data into partitions for better performance. **Please make sure the first letter of the `trace_id` is evenly distributed**.
+2. For non-test scenarios, you might want to set a `ttl` to the trace table to avoid data overload. Set the HTTP header `x-greptime-hints: ttl=7d` would set a `ttl` of 7 days during the table creation, see [here](/reference/sql/create.md#table-options) for more details about `ttl` in table option.
 
-By default, log table created by OpenTelemetry API are in [append only
-mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
+### Auxiliary Tables
+
+GreptimeDB automatically creates auxiliary tables (e.g., `opentelemetry_traces_services` and `opentelemetry_traces_operations`) to facilitate searching for services and operations. See [Auxiliary Tables](/user-guide/traces/data-model.md#auxiliary-tables) for details.
+
+### Append-only Mode
+
+By default, trace tables created by the OpenTelemetry API are in [append-only mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).

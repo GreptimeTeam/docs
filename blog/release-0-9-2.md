@@ -28,7 +28,7 @@ Release date: August 19, 2024
 ### 🐛 Bug Fixes
 
 * fix(tql): avoid unwrap on parsing tql query  by [@waynexia](https://github.com/waynexia) in [#4502](https://github.com/GreptimeTeam/greptimedb/pull/4502)
-* fix: too large shadow-rs consts by [@MichaelScofield](https://github.com/MichaelScofield) in [#4506](https://github.com/GreptimeTeam/greptimedb/pull/4506)
+* fix: too large shadow-rs constants by [@MichaelScofield](https://github.com/MichaelScofield) in [#4506](https://github.com/GreptimeTeam/greptimedb/pull/4506)
 * fix: fix incorrect result of topk with cte  by [@waynexia](https://github.com/waynexia) in [#4523](https://github.com/GreptimeTeam/greptimedb/pull/4523)
 * fix: install script by [@v0y4g3r](https://github.com/v0y4g3r) in [#4527](https://github.com/GreptimeTeam/greptimedb/pull/4527)
 * fix: larger stack size in debug mode by [@discord9](https://github.com/discord9) in [#4521](https://github.com/GreptimeTeam/greptimedb/pull/4521)

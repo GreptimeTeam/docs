@@ -7,11 +7,12 @@ description: Instructions on integrating GreptimeDB with Fluent bit for Promethe
 
 [Fluent Bit](http://fluentbit.io/) is a fast and lightweight telemetry agent for logs, metrics, and traces for Linux, macOS, Windows, and BSD family operating systems. Fluent Bit has been made with a strong focus on performance to allow the collection and processing of telemetry data from different sources without complexity.
 
-You can integrate GreptimeDB as an OUTPUT for Fluent Bit.
+You can forward Fluent Bit data to GreptimeDB. This document describes how to configure Fluent Bit to send logs, metrics, and traces to GreptimeDB.
 
 ## Http
 
 Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipeline/outputs/http), you can send logs to GreptimeDB.
+Before configuring Fluent Bit, ensure that you understand the [log ingestion flow](/user-guide/logs/overview.md) and [how to use pipelines](/user-guide/logs/use-custom-pipelines.md).
 
 ```conf
 [OUTPUT]
@@ -19,7 +20,7 @@ Using Fluent Bit's [HTTP Output Plugin](https://docs.fluentbit.io/manual/pipelin
     Match            *
     Host             greptimedb
     Port             4000
-    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=pipeline_if_any
+    Uri              /v1/ingest?db=public&table=your_table&pipeline_name=greptime_identity
     Format           json
     Json_date_key    scrape_timestamp
     Json_date_format iso8601
@@ -42,8 +43,6 @@ In params Uri,
 - `db` is the database name you want to write logs to.
 - `table` is the table name you want to write logs to.
 - `pipeline_name` is the pipeline name you want to use for processing logs.
-
-In this example, the [Logs Http API](/user-guide/logs/write-logs.md#http-api) interface is used. For more information, refer to the [Write Logs](/user-guide/logs/write-logs.md) guide.
 
 ## OpenTelemetry
 

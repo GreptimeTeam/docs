@@ -170,7 +170,7 @@ enable = true
 |            | addr               | 字符串 | 服务器地址，默认为 "127.0.0.1:4000"                          |
 |            | timeout            | 字符串 | HTTP 请求超时时间，默认为 "30s"                              |
 |            | body_limit         | 字符串 | HTTP 最大体积大小，默认为 "64MB"                             |
-|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
+|            | prom_validation_mode     | 字符串 | 在 Prometheus Remote Write 协议中是否检查字符串是否为有效的 UTF-8 字符串。可用选项：`strict`（拒绝任何包含无效 UTF-8 字符串的请求），`lossy`（用 [UTF-8 REPLACEMENT CHARACTER](https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-23/#G24272)（即 `�` ） 替换无效字符），`unchecked`（不验证字符串有效性）。 |
 | grpc       |                    |        | gRPC 服务器选项                                              |
 |            | bind_addr               | 字符串 | gRPC 服务绑定地址，默认为 "127.0.0.1:4001"                          |
 |            | runtime_size       | 整数   | 服务器工作线程数量，默认为 8                                 |
@@ -630,19 +630,20 @@ max_running_procedures = 128
 
 
 # Failure detector 选项
+# GreptimeDB 使用 Phi 累积故障检测器算法来检测数据节点故障。
 [failure_detector]
 
-## Failure detector 检测阈值
+## 判定节点故障前可接受的最大 φ 值。
+## 较低的值反应更快但会产生更多误报。
 threshold = 8.0
 
-## 心跳间隔的最小标准差，用于计算可接受的变化。
+## 心跳间隔的最小标准差。
+## 防止微小变化导致 φ 值激增。在心跳间隔变化很小时防止过度敏感。
 min_std_deviation = "100ms"
 
-## 心跳之间可接受的暂停时间长度。
+## 心跳之间可接受的暂停时长。
+## 在 φ 值上升前为学习到的平均间隔提供额外的宽限期，吸收临时网络故障或GC暂停。
 acceptable_heartbeat_pause = "10000ms"
-
-## 首次心跳间隔的估计值。
-first_heartbeat_estimate = "1000ms"
 
 ## Datanode 选项。
 [datanode]
@@ -698,7 +699,7 @@ create_topic_timeout = "30s"
 | `data_home`                                   | String  | `./greptimedb_data/metasrv/`      | 工作目录。                                                                                                                           |
 | `bind_addr`                                   | String  | `127.0.0.1:3002`     | Metasrv 的绑定地址。                                                                                                                 |
 | `server_addr`                                 | String  | `127.0.0.1:3002`     | 前端和 datanode 连接到 Metasrv 的通信服务器地址，默认为本地主机的 `127.0.0.1:3002`。                                                 |
-| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 做为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
+| `store_addrs`                                 | Array   | `["127.0.0.1:2379"]`     | 元数据服务地址，默认值为 `["127.0.0.1:2379"]`。支持配置多个服务地址，格式为 `["ip1:port1","ip2:port2",...]`。默认使用 Etcd 作为元数据后端。<br/>根据你的存储服务器类型配置地址，例如：<br/>- 使用 `"127.0.0.1:2379"` 连接到 etcd<br/>- 使用 `"password=password dbname=postgres user=postgres host=localhost port=5432"` 连接到 postgres<br/>- 使用 `"mysql://user:password@ip:port/dbname"` 连接到 mysql |
 | `selector`                                    | String  | `lease_based`        | 创建新表时选择 datanode 的负载均衡策略，详见 [选择器](/contributor-guide/metasrv/selector.md)。                                      |
 | `use_memory_store`                            | Boolean | `false`              | 仅用于在没有 etcd 集群时的测试，将数据存储在内存中，默认值为 `false`。                                                               |
 | `enable_region_failover`                      | Bool    | `false`                      | 是否启用 region failover。<br/>该功能仅在以集群模式运行的 GreptimeDB 上可用，并且<br/>- 使用远程 WAL<br/>- 使用共享存储（如 s3）。   |
@@ -712,10 +713,9 @@ create_topic_timeout = "30s"
 | `procedure.retry_delay`                       | 字符串  | `500ms`              | Procedure 初始重试延迟，延迟会指数增长。                                                                                             |
 | `procedure.max_running_procedures`            | Integer | `128`                  | 同一时间可以运行的程序最大数量。如果运行的程序数量超过此限制，程序将被拒绝。 |
 | `failure_detector`                            | --      | --                   | 故障检测选项。                                                                                                                       |
-| `failure_detector.threshold`                  | 浮点数  | `8.0`                | Failure detector 用来判断故障条件的阈值。                                                                                            |
-| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差，用于计算可接受的变动范围。                                                                                     |
-| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 允许的最大心跳暂停时间，用于确定心跳间隔是否可接受。                                                                                 |
-| `failure_detector.first_heartbeat_estimate`   | 字符串  | `1000ms`             | 初始心跳间隔估算值。                                                                                                                 |
+| `failure_detector.threshold`                  | 浮点数  | `8.0`                | 判定节点故障前可接受的最大 φ 值。<br/>较低的值反应更快但会产生更多误报。                                                            |
+| `failure_detector.min_std_deviation`          | 字符串  | `100ms`              | 心跳间隔的最小标准差。<br/>防止微小变化导致 φ 值激增。在心跳间隔变化很小时防止过度敏感。                                            |
+| `failure_detector.acceptable_heartbeat_pause` | 字符串  | `10000ms`            | 心跳之间可接受的暂停时长。<br/>在 φ 值上升前为学习到的平均间隔提供额外的宽限期，吸收临时网络故障或GC暂停。                       |
 | `datanode`                                    | --      | --                   |                                                                                                                                      |
 | `datanode.client`                             | --      | --                   | Datanode 客户端选项。                                                                                                                |
 | `datanode.client.timeout`                     | 字符串  | `10s`                | 操作超时。                                                                                                                           |

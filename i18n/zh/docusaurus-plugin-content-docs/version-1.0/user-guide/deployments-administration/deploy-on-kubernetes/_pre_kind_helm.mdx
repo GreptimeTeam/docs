@@ -1,0 +1,92 @@
+## 前置条件
+
+- [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
+- [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) >= v0.20.0
+
+## 创建一个测试 Kubernetes 集群
+
+:::warning
+不建议在生产环境或性能测试中使用 `kind`。如有这类需求建议使用公有云托管的 Kubernetes 服务，如 [Amazon EKS](https://aws.amazon.com/eks/)、[Google GKE](https://cloud.google.com/kubernetes-engine/) 或 [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/)，或者自行搭建生产级 Kubernetes 集群。
+:::
+
+目前有很多方法可以创建一个用于测试的 Kubernetes 集群。在本指南中，我们将使用 [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 来创建一个本地 Kubernetes 集群。如果你想使用已有的 Kubernetes 集群，可以跳过这一步。
+
+这里是一个使用 `kind` v0.20.0 的示例：
+
+```bash
+kind create cluster
+```
+
+<details>
+  <summary>预期输出</summary>
+```bash
+Creating cluster "kind" ...
+ ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Thanks for using kind! 😊
+```
+</details>
+
+使用以下命令检查集群的状态：
+
+```bash
+kubectl cluster-info
+```
+
+<details>
+  <summary>预期输出</summary>
+```bash
+Kubernetes control plane is running at https://127.0.0.1:60495
+CoreDNS is running at https://127.0.0.1:60495/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+</details>
+
+:::note
+中国大陆用户如有网络访问问题，可使用 Greptime 提供的位于阿里云镜像仓库的 `kindest/node:v1.27.3` 镜像：
+
+```bash
+kind create cluster --image greptime-registry.cn-hangzhou.cr.aliyuncs.com/kindest/node:v1.27.3
+```
+:::
+
+## 添加 Greptime Helm 仓库
+
+:::note
+中国大陆用户如有网络访问问题，可跳过这一步骤并直接参考下一步中使用阿里云 OCI 镜像仓库的方式。采用这一方式将无需手动添加 Helm 仓库。
+:::
+
+我们提供了 GreptimeDB Operator 和 GreptimeDB 集群的[官方 Helm 仓库](https://github.com/GreptimeTeam/helm-charts)。你可以通过运行以下命令来添加仓库：
+
+```bash
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
+helm repo update
+```
+
+检查 Greptime Helm 仓库中的 charts：
+
+```bash
+helm search repo greptime
+```
+
+<details>
+  <summary>预期输出</summary>
+```bash
+NAME                          	CHART VERSION	APP VERSION  	DESCRIPTION
+greptime/greptimedb-cluster   	0.2.25       	0.9.5        	A Helm chart for deploying GreptimeDB cluster i...
+greptime/greptimedb-operator  	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
+greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for deploying standalone greptimedb
+```
+</details>

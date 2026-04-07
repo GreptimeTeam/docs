@@ -54,6 +54,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/concepts/why-greptimedb',
             'user-guide/concepts/data-model',
             'user-guide/concepts/architecture',
+            'user-guide/concepts/observability-2',
             'user-guide/concepts/storage-location',
             'user-guide/concepts/key-concepts',
             'user-guide/concepts/features-that-you-concern',
@@ -234,11 +235,9 @@ const sidebars: SidebarsConfig = {
               label: 'Overview',
             },
             'user-guide/logs/quick-start',
-            'user-guide/logs/pipeline-config',
+            'user-guide/logs/use-custom-pipelines',
+            'user-guide/logs/fulltext-search',
             'user-guide/logs/manage-pipelines',
-            'user-guide/logs/write-logs',
-            'user-guide/logs/query-logs',
-            'user-guide/logs/fulltext-index-config',
           ],
         },
         {
@@ -313,6 +312,7 @@ const sidebars: SidebarsConfig = {
                     'user-guide/deployments-administration/wal/remote-wal/manage-kafka',
                   ]
                 },
+                'user-guide/deployments-administration/wal/noop-wal',
               ],
             },
             'user-guide/deployments-administration/configuration',
@@ -338,8 +338,9 @@ const sidebars: SidebarsConfig = {
                   label: 'Overview',
                 },
                 'user-guide/deployments-administration/monitoring/check-db-status',
-                'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
                 'user-guide/deployments-administration/monitoring/standalone-monitoring',
+                'user-guide/deployments-administration/monitoring/cluster-monitoring-deployment',
+                'user-guide/deployments-administration/monitoring/monitor-cluster-with-prometheus',
                 'user-guide/deployments-administration/monitoring/key-logs',
                 'user-guide/deployments-administration/monitoring/tracing',
                 'user-guide/deployments-administration/monitoring/slow-query',
@@ -360,7 +361,9 @@ const sidebars: SidebarsConfig = {
                 'user-guide/deployments-administration/manage-data/table-sharding',
                 'user-guide/deployments-administration/manage-data/region-migration',
                 'user-guide/deployments-administration/manage-data/region-failover',
+                'user-guide/deployments-administration/manage-data/repartition',
                 'user-guide/deployments-administration/manage-data/compaction',
+                'user-guide/deployments-administration/manage-data/gc',
               ],
             },
             {
@@ -402,6 +405,13 @@ const sidebars: SidebarsConfig = {
           ],
         },
       ],
+    },
+    {
+      type: 'category',
+      label: 'Tutorials',
+      items:[
+        'tutorials/k8s-metrics-monitor'
+      ]
     },
     {
       type: 'category',
@@ -529,6 +539,7 @@ const sidebars: SidebarsConfig = {
                   id: 'enterprise/deployments-administration/monitoring/overview',
                   label: 'Overview',
                 },
+                'enterprise/deployments-administration/monitoring/self-monitor-cluster',
                 'enterprise/deployments-administration/monitoring/check-db-status',
                 'enterprise/deployments-administration/monitoring/key-metrics',
                 'enterprise/deployments-administration/monitoring/key-logs',
@@ -565,12 +576,21 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'enterprise/console-ui',
-        'enterprise/read-replica',
+        {
+          type: 'category',
+          label: 'Read Replicas',
+          items: [
+            'enterprise/read-replicas/overview',
+            'enterprise/read-replicas/manage-read-replicas',
+            'enterprise/read-replicas/query-read-replicas',
+          ],
+        },
         'enterprise/trigger',
         {
           type: 'category',
           label: 'Releases',
           items: [
+            'enterprise/release-notes/release-25_11',
             'enterprise/release-notes/release-25_05',
             'enterprise/release-notes/release-24_11',
           ]
@@ -600,6 +620,7 @@ const sidebars: SidebarsConfig = {
                 'reference/command-lines/utilities/metadata',
                 'reference/command-lines/utilities/metadata-interaction',
                 'reference/command-lines/utilities/repair-logical-tables',
+                'reference/command-lines/utilities/repair-partition-columns',
               ],
             },
           ],
@@ -620,6 +641,7 @@ const sidebars: SidebarsConfig = {
             'reference/sql/alter',
             'reference/sql/case',
             'reference/sql/cast',
+            'reference/sql/comment',
             'reference/sql/copy',
             'reference/sql/create',
             'reference/sql/delete',
@@ -652,12 +674,24 @@ const sidebars: SidebarsConfig = {
                   id: 'reference/sql/functions/overview',
                   label: 'Overview',
                 },
+                {
+                  type: 'category',
+                  label: 'GreptimeDB Functions',
+                  items: [
+                    {
+                      type: 'doc',
+                      id: 'reference/sql/functions/greptimedb',
+                      label: 'Core Functions',
+                    },
+                    'reference/sql/functions/geo',
+                    'reference/sql/functions/ip',
+                    'reference/sql/functions/json',
+                    'reference/sql/functions/vector',
+                    'reference/sql/functions/approximate',
+                    'reference/sql/functions/anomaly',
+                  ],
+                },
                 'reference/sql/functions/df-functions',
-                'reference/sql/functions/geo',
-                'reference/sql/functions/ip',
-                'reference/sql/functions/json',
-                'reference/sql/functions/vector',
-                'reference/sql/functions/approximate',
               ]
             },
             'reference/sql/admin',
@@ -703,8 +737,22 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/runtime-metrics',
                 'reference/sql/information-schema/cluster-info',
                 'reference/sql/information-schema/process-list',
+                'reference/sql/information-schema/ssts-index-meta',
+                'reference/sql/information-schema/ssts-manifest',
+                'reference/sql/information-schema/ssts-storage',
+                'reference/sql/information-schema/triggers',
+                'reference/sql/information-schema/alerts',
               ],
             },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Pipeline',
+          items: [
+            'reference/pipeline/built-in-pipelines',
+            'reference/pipeline/write-log-api',
+            'reference/pipeline/pipeline-config',
           ],
         },
         'reference/http-endpoints',
@@ -774,6 +822,7 @@ const sidebars: SidebarsConfig = {
               id: 'contributor-guide/flownode/overview',
               label: 'Overview',
             },
+            'contributor-guide/flownode/batching_mode',
             'contributor-guide/flownode/dataflow',
             'contributor-guide/flownode/arrangement'
           ],
@@ -824,6 +873,7 @@ const sidebars: SidebarsConfig = {
           id: 'faq-and-others/overview',
           label: 'Overview',
         },
+        'faq-and-others/vibecoding',
         'faq-and-others/faq'
       ]
     },

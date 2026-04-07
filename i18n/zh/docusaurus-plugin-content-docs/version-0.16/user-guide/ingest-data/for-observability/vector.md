@@ -87,7 +87,7 @@ org = ""
 token = ""
 ```
 
-上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
+上述配置使用的是 InfluxDB 行协议的 v2 版本。Vector 会根据 TOML 配置中的字段来判断 InfluxDB 协议的版本，所以请务必确保配置中存在 `bucket`、`org` 和 `token` 字段。具体字段的解释如下：
 
 - `type`: InfluxDB 行协议的值为 `influxdb_metrics`.
 - `bucket`: GreptimeDB 中的 database 名称。

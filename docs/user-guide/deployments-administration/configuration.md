@@ -74,7 +74,6 @@ Please refer to the [Helm configuration documentation](/user-guide/deployments-a
 For configurations that are available only in the [options](#options) section of this document,
 you can [inject complete TOML configuration files](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#injecting-configuration-files) into your deployment.
 
-
 ### Environment variable
 
 Every item in the configuration file can be mapped to environment variables.
@@ -96,7 +95,6 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
 #### Environment Variable Rules
 
 - Each environment variable should have the component prefix, for example:
-
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`
@@ -114,6 +112,26 @@ GREPTIMEDB_METASRV__META_CLIENT__METASRV_ADDRS=127.0.0.1:3001,127.0.0.1:3002,127
 
 In this section, we will introduce some main configuration options.
 For all options, refer to the [Configuration Reference](https://github.com/GreptimeTeam/greptimedb/blob/VAR::greptimedbVersion/config/config.md) on Github.
+
+### Write memory limiter options
+
+Memory limiter options control the total memory used by concurrent write requests across all protocols (HTTP, gRPC, and Arrow Flight).
+These options are valid in `frontend` and `standalone` subcommands.
+
+```toml
+# Maximum total memory for all concurrent write request bodies and messages
+# Set to 0 to disable the limit (unlimited by default)
+max_in_flight_write_bytes = "1GB"
+
+# Policy when write bytes quota is exhausted
+# Options: "wait" (default, 10s timeout), "wait(<duration>)" (e.g., "wait(30s)"), "fail"
+write_bytes_exhausted_policy = "wait"
+```
+
+| Option                          | Type   | Default | Description                                                                                                                                                                                                                                           |
+| ------------------------------- | ------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_in_flight_write_bytes`     | String | `"0"`   | Maximum total memory for all concurrent write request bodies and messages (HTTP, gRPC, Flight). Set to `"0"` to disable the limit (unlimited). Supports units: `B`, `KB`, `MB`, `GB`, etc. Example: `"1GB"` limits total concurrent writes to 1GB. |
+| `write_bytes_exhausted_policy`  | String | `"wait"`| Policy when write bytes quota is exhausted. Options: `"wait"` (default, waits up to 10 seconds), `"wait(<duration>)"` (custom timeout, e.g., `"wait(30s)"`), `"fail"` (immediately reject the request).                                             |
 
 ### Protocol options
 
@@ -184,7 +202,8 @@ The following table describes the options in detail:
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.|
+|            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
+|            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                        |
 | mysql      |                      |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
 |            | enable               | Boolean | Whether to enable MySQL protocol, true by default                                                                                                                                                                                                                                                                                                                                          |
 |            | addr                 | String  | Server address, "127.0.0.1:4002" by default                                                                                                                                                                                                                                                                                                                                                |
@@ -205,7 +224,7 @@ For MySQL, Postgres and gRPC interface, TLS can be configured to enable transpor
 layer security.
 
 | Option                                    | Key         | Type    | Description                                                   |
-| ------------------------------------------| ----------- | ------- | ------------------------------------------------------------- |
+| ----------------------------------------- | ----------- | ------- | ------------------------------------------------------------- |
 | `mysql.tls`, `postgres.tls` or `grpc.tls` |             |         | TLS configuration for MySQL and Postgres                      |
 |                                           | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
 |                                           | `cert_path` | String  | File path for TLS certificate                                 |
@@ -242,7 +261,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 | File    |                           |         | Local file storage options, valid when type="File"                               |
 |         | data_home                 | String  | Database storage root directory, "./greptimedb_data" by default                  |
 | S3      |                           |         | AWS S3 storage options, valid when type="S3"                                     |
-|         | name                      | String  | The  storage provider name, default is `S3`                                      |
+|         | name                      | String  | The storage provider name, default is `S3`                                       |
 |         | bucket                    | String  | The S3 bucket name                                                               |
 |         | root                      | String  | The root path in S3 bucket                                                       |
 |         | endpoint                  | String  | The API endpoint of S3                                                           |
@@ -251,14 +270,14 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | secret_access_key         | String  | The S3 secret access key                                                         |
 |         | enable_virtual_host_style | Boolean | Send API requests in virtual host style instead of path style. Default is false. |
 | Oss     |                           |         | Aliyun OSS storage options, valid when type="Oss"                                |
-|         | name                      | String  | The  storage provider name, default is `Oss`                                     |
+|         | name                      | String  | The storage provider name, default is `Oss`                                      |
 |         | bucket                    | String  | The OSS bucket name                                                              |
 |         | root                      | String  | The root path in OSS bucket                                                      |
 |         | endpoint                  | String  | The API endpoint of OSS                                                          |
 |         | access_key_id             | String  | The OSS AccessKey ID                                                             |
 |         | access_key_secret         | String  | The OSS AccessKey Secret                                                         |
 | Azblob  |                           |         | Azure Blob Storage options, valid when type="Azblob"                             |
-|         | name                      | String  | The  storage provider name, default is `Azblob`                                  |
+|         | name                      | String  | The storage provider name, default is `Azblob`                                   |
 |         | container                 | String  | The container name                                                               |
 |         | root                      | String  | The root path in container                                                       |
 |         | endpoint                  | String  | The API endpoint of Azure Blob Storage                                           |
@@ -266,7 +285,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_key               | String  | The access key                                                                   |
 |         | sas_token                 | String  | The shared access signature                                                      |
 | Gsc     |                           |         | Google Cloud Storage options, valid when type="Gsc"                              |
-|         | name                      | String  | The  storage provider name, default is `Gsc`                                     |
+|         | name                      | String  | The storage provider name, default is `Gsc`                                      |
 |         | root                      | String  | The root path in Gsc bucket                                                      |
 |         | bucket                    | String  | The Gsc bucket name                                                              |
 |         | scope                     | String  | The Gsc service scope                                                            |
@@ -333,38 +352,26 @@ For storage from the same provider, if you want to use different S3 buckets as s
 
 ### Object storage cache
 
-When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a local cache mechanism to speed up repeated data access.
+When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a write cache mechanism to speed up repeated data access.
 
-GreptimeDB enables local file caching for remote object storage by default, with both read and write cache capacity set to `5GiB`.
+You can configure the cache size and behavior in the mito config if you don't want to use the default values.
 
-
-Usually you don't have to configure the cache unless you want to specify the cache capacity.
-```toml
-[storage]
-type = "S3"
-bucket = "test_greptimedb"
-root = "/greptimedb"
-access_key_id = "<access key id>"
-secret_access_key = "<secret access key>"
-cache_capacity = "10GiB"
-# cache_path = "/path/to/cache/home"
-```
-
-The `cache_path` specifies the home directory for storing cache files, while `cache_capacity` determines the maximum total file size allowed in the cache directory in bytes. You can disable the read cache by setting `cache_path` to an empty string. The default cache path is under the `{data_home}`. We recommend that you don't set the `cache_path` because the database can choose it automatically.
-
-The write cache is no more experimental since `v0.12`. You can configure the cache size in the mito config if you don't want to use the default value.
 ```toml
 [[region_engine]]
 [region_engine.mito]
 
 write_cache_size = "10GiB"
+# Download files from object storage to fill the cache on write cache miss
+enable_refill_cache_on_read = true
 ```
+
+By default, GreptimeDB automatically downloads files from object storage to fill the write cache when there's a cache miss during queries (`enable_refill_cache_on_read = true`). This improves subsequent query performance by keeping frequently accessed data in the write cache. You can disable this behavior by setting `enable_refill_cache_on_read = false` if you want to minimize network traffic or storage costs.
 
 Read [Performance Tuning Tips](/user-guide/deployments-administration/performance-tuning/performance-tuning-tips.md) for more detailed info.
 
 ### WAL options
 
-GreptimeDB supports two WAL storage options—Local WAL and Remote WAL. See the [WAL Overview](/user-guide/deployments-administration/wal/overview.md) for a comparison of the two. For detailed configurations, refer to the [Local WAL](/user-guide/deployments-administration/wal/local-wal.md) and [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md) documentation.
+GreptimeDB supports three WAL storage options—Local WAL, Remote WAL, and Noop WAL. See the [WAL Overview](/user-guide/deployments-administration/wal/overview.md) for a comparison of the options. For detailed configurations, refer to the [Local WAL](/user-guide/deployments-administration/wal/local-wal.md), [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md), and [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) documentation.
 
 ### Logging options
 
@@ -392,7 +399,7 @@ How to use distributed tracing, please reference [Tracing](/user-guide/deploymen
 
 ### Region engine options
 
-The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, only options for `mito` region engine is available.
+The parameters corresponding to different storage engines can be configured for `datanode` and `standalone` in the `[region_engine]` section. Currently, options for `mito` and `metric` region engines are available.
 
 Frequently used options:
 
@@ -408,6 +415,7 @@ global_write_buffer_reject_size = "2GB"
 sst_meta_cache_size = "128MB"
 vector_cache_size = "512MB"
 page_cache_size = "512MB"
+write_cache_size = "5GB"
 sst_write_buffer_size = "8MB"
 scan_parallelism = 0
 
@@ -452,6 +460,12 @@ Available options:
 | `sst_meta_cache_size`                    | String  | `128MB`       | Cache size for SST metadata. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/32 of OS memory with a max limitation of 128MB.                                                                                                                                                                                                                                                                                                                                               |
 | `vector_cache_size`                      | String  | `512MB`       | Cache size for vectors and arrow arrays. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/16 of OS memory with a max limitation of 512MB.                                                                                                                                                                                                                                                                                                                                   |
 | `page_cache_size`                        | String  | `512MB`       | Cache size for pages of SST row groups. Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                                    |
+| `write_cache_size`                       | String  | `5GiB`        | Capacity for write cache. If your disk space is sufficient, it is recommended to set it larger.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `write_cache_ttl`                        | String  | Unset         | TTL for write cache.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `preload_index_cache`                    | Bool    | `true`        | Preload index (puffin) files into cache on region open (default: true).<br/>When enabled, index files are loaded into the write cache during region initialization,<br/>which can improve query performance at the cost of longer startup times.                                                                                                                                                                                                                                                   |
+| `index_cache_percent`                    | Integer | `20`          | Percentage of write cache capacity allocated for index (puffin) files (default: 20).<br/>The remaining capacity is used for data (parquet) files.<br/>Must be between 0 and 100 (exclusive). For example, with a 5GiB write cache and 20% allocation,<br/>1GiB is reserved for index files and 4GiB for data files.                                                                                                                                                                                |
+| `enable_refill_cache_on_read`            | Bool    | `true`        | Enable refilling cache on read operations (default: true).<br/>When disabled, cache refilling on read won't happen.                                                                                                                                                                                                                                                                                                                                                                                |
+| `manifest_cache_size`                    | String  | `256MB`       | Capacity for manifest cache (default: 256MB).                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `selector_result_cache_size`             | String  | `512MB`       | Cache size for time series selector (e.g. `last_value()`). Setting it to 0 to disable the cache.<br/>If not set, it's default to 1/8 of OS memory.                                                                                                                                                                                                                                                                                                                                                 |
 | `sst_write_buffer_size`                  | String  | `8MB`         | Buffer size for SST writing.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `scan_parallelism`                       | Integer | `0`           | Parallelism to scan a region (default: 1/4 of cpu cores).<br/>- `0`: using the default value (1/4 of cpu cores).<br/>- `1`: scan in current thread.<br/>- `n`: scan in parallelism n.                                                                                                                                                                                                                                                                                                              |
@@ -471,6 +485,20 @@ Available options:
 | `memtable.index_max_keys_per_shard`      | Integer | `8192`        | The max number of keys in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `memtable.data_freeze_threshold`         | Integer | `32768`       | The max rows of data inside the actively writing buffer in one shard.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                            |
 | `memtable.fork_dictionary_bytes`         | String  | `1GiB`        | Max dictionary bytes.<br/>Only available for `partition_tree` memtable.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+The `metric` engine is optimized for handling metrics data with a large number of small tables:
+
+```toml
+[[region_engine]]
+[region_engine.metric]
+sparse_primary_key_encoding = true
+```
+
+Available options:
+
+| Key                           | Type    | Default | Descriptions                                                                                                                                      |
+| ----------------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sparse_primary_key_encoding` | Boolean | `true`  | Whether to use sparse primary key encoding. This optimization improves write and query performance by encoding only non-null primary key columns. |
 
 ### Specify meta client
 
@@ -492,61 +520,10 @@ The `meta_client` configures the Metasrv client, including:
 - `ddl_timeout`, DDL execution timeout, `10s` by default.
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
-### Monitor metrics options
-
-These options are used to save system metrics to GreptimeDB itself.
-For instructions on how to use this feature, please refer to the [Monitoring](/user-guide/deployments-administration/monitoring/overview.md) guide.
-
-```toml
-[export_metrics]
-# Whether to enable export_metrics
-enable=true
-# Export time interval
-write_interval = "30s"
-```
-
-- `enable`: Whether to enable export_metrics, `false` by default.
-- `write_interval`: Export time interval.
-
-#### `self_import` method
-
-If you are using `standalone`, you can use the `self_import` method to export metrics to GreptimeDB itself.
-
-```toml
-[export_metrics]
-# Whether to enable export_metrics
-enable=true
-# Export time interval
-write_interval = "30s"
-[export_metrics.self_import]
-db = "information_schema"
-```
-
-- `db`: The default database used by `self_import` is `information_schema`. You can also create another database for saving system metrics.
-
-#### `remote_write` method
-
-The `remote_write` method is supported by `datanode`, `frontend`, `metasrv`, and `standalone`.
-It sends metrics to a receiver compatible with the [Prometheus Remote-Write protocol](https://prometheus.io/docs/concepts/remote_write_spec/).
-
-```toml
-[export_metrics]
-# Whether to enable export_metrics
-enable=true
-# Export time interval
-write_interval = "30s"
-[export_metrics.remote_write]
-# URL specified by Prometheus Remote-Write protocol
-url = "http://127.0.0.1:4000/v1/prometheus/write?db=information_schema"
-# Some optional HTTP parameters, such as authentication information
-headers = { Authorization = "Basic Z3JlcHRpbWVfdXNlcjpncmVwdGltZV9wd2Q=" }
-```
-
-- `url`: URL specified by Prometheus Remote-Write protocol.
-- `headers`: Some optional HTTP parameters, such as authentication information.
-
 ### Heartbeat configuration
+
 Heartbeat configuration is available in `frontend` and `datanode`.
+
 ```toml
 [heartbeat]
 interval = "3s"
@@ -623,6 +600,29 @@ region_failure_detector_initialization_delay = "10m"
 # because it may lead to data loss during failover.**
 allow_region_failover_on_local_wal = false
 
+## Max allowed idle time before removing node info from metasrv memory.
+node_max_idle_time = "24hours"
+
+## The backend client options.
+## Currently, only applicable when using etcd as the metadata store.
+[backend_client]
+## The keep alive timeout for backend client.
+keep_alive_timeout = "3s"
+## The keep alive interval for backend client.
+keep_alive_interval = "10s"
+## The connect timeout for backend client.
+connect_timeout = "3s"
+
+## The gRPC server options.
+[grpc]
+bind_addr = "127.0.0.1:3002"
+server_addr = "127.0.0.1:3002"
+runtime_size = 8
+## The server side HTTP/2 keep-alive interval
+http2_keep_alive_interval = "10s"
+## The server side HTTP/2 keep-alive timeout.
+http2_keep_alive_timeout = "3s"
+
 ## Procedure storage options.
 [procedure]
 
@@ -638,19 +638,20 @@ retry_delay = "500ms"
 max_running_procedures = 128
 
 # Failure detectors options.
+# GreptimeDB uses the Phi Accrual Failure Detector algorithm to detect datanode failures.
 [failure_detector]
 
-## The threshold value used by the failure detector to determine failure conditions.
+## Maximum acceptable φ before the peer is treated as failed.
+## Lower values react faster but yield more false positives.
 threshold = 8.0
 
-## The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.
+## The minimum standard deviation of the heartbeat intervals.
+## So tiny variations don't make φ explode. Prevents hypersensitivity when heartbeat intervals barely vary.
 min_std_deviation = "100ms"
 
-## The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.
+## The acceptable pause duration between heartbeats.
+## Additional extra grace period to the learned mean interval before φ rises, absorbing temporary network hiccups or GC pauses.
 acceptable_heartbeat_pause = "10000ms"
-
-## The initial estimate of the heartbeat interval used by the failure detector.
-first_heartbeat_estimate = "1000ms"
 
 ## Datanode options.
 [datanode]
@@ -700,6 +701,14 @@ replication_factor = 1
 ## Above which a topic creation operation will be cancelled.
 create_topic_timeout = "30s"
 
+## The connect timeout for kafka client.
+## **It's only used when the provider is `kafka`**.
+connect_timeout = "3s"
+
+## The timeout for kafka client.
+## **It's only used when the provider is `kafka`**.
+timeout = "3s"
+
 # The Kafka SASL configuration.
 # **It's only used when the provider is `kafka`**.
 # Available SASL mechanisms:
@@ -731,18 +740,30 @@ create_topic_timeout = "30s"
 | `enable_region_failover`                      | Bool    | `false`                      | Whether to enable region failover.<br/>This feature is only available on GreptimeDB running on cluster mode and<br/>- Using Remote WAL<br/>- Using shared storage (e.g., s3).                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `region_failure_detector_initialization_delay` | String  | `10m`                        | The delay before starting region failure detection. This delay helps prevent Metasrv from triggering unnecessary region failovers before all Datanodes are fully started. Especially useful when the cluster is not deployed with GreptimeDB Operator and maintenance mode is not enabled. |
 | `allow_region_failover_on_local_wal`          | Bool    | `false`                      | Whether to allow region failover on local WAL.<br/>**This option is not recommended to be set to true, because it may lead to data loss during failover.**                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `node_max_idle_time`                          | String  | `24hours`                    | Max allowed idle time before removing node info from metasrv memory. Nodes that haven't sent heartbeats for this duration will be considered inactive and removed.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `backend_client`                              | --      | --                           | The backend client options.<br/>Currently, only applicable when using etcd as the metadata store.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `backend_client.keep_alive_timeout`           | String  | `3s`                         | The keep alive timeout for backend client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `backend_client.keep_alive_interval`          | String  | `10s`                        | The keep alive interval for backend client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `backend_client.connect_timeout`              | String  | `3s`                         | The connect timeout for backend client.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `grpc`                                        | --      | --                           | The gRPC server options.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `grpc.bind_addr`                              | String  | `127.0.0.1:3002`             | The address to bind the gRPC server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `grpc.server_addr`                            | String  | `127.0.0.1:3002`             | The communication server address for frontend and datanode to connect to metasrv.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `grpc.runtime_size`                           | Integer | `8`                          | The number of server worker threads.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `grpc.http2_keep_alive_interval`              | String  | `10s`                        | The server side HTTP/2 keep-alive interval.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `grpc.http2_keep_alive_timeout`               | String  | `3s`                         | The server side HTTP/2 keep-alive timeout.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `backend`                                     | String  | `etcd_store`                 | The datastore for metasrv.<br/>- `etcd_store` (default)<br/>- `memory_store` (In memory metadata storage - only used for testing.)<br/>- `postgres_store`<br/>- `mysql_store`                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `meta_table_name`                             | String  | `greptime_metakv`            | Table name in RDS to store metadata. Effect when using a RDS kvbackend.<br/>**Only used when backend is `postgres_store` or `mysql_store`.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `meta_schema_name`                            | String  | --                           | Optional PostgreSQL schema for metadata table and election table name qualification. When PostgreSQL public schema is not writable (e.g., PostgreSQL 15+ with restricted public), set this to a writable schema. GreptimeDB will use `meta_schema_name.meta_table_name`.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                           |
+| `auto_create_schema`                          | Bool    | `true`                       | Automatically create PostgreSQL schema if it doesn't exist. When enabled, the system will execute `CREATE SCHEMA IF NOT EXISTS <schema_name>` before creating metadata tables. This is useful in production environments where manual schema creation may be restricted. Note: The PostgreSQL user must have CREATE SCHEMA permission for this to work.<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                           |
 | `meta_election_lock_id`                       | Integer | `1`                          | Advisory lock id in PostgreSQL for election. Effect when using PostgreSQL as kvbackend<br/>**Only used when backend is `postgres_store`.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `procedure`                                   | --      | --                           | Procedure storage options.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `procedure.max_retry_times`                   | Integer | `12`                         | Procedure max retry time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `procedure.retry_delay`                       | String  | `500ms`                      | Initial retry delay of procedures, increases exponentially                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `procedure.max_running_procedures`            | Integer | `128`                        | The maximum number of procedures that can be running at the same time. If the number of running procedures exceeds this limit, the procedure will be rejected.                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `failure_detector`                            | --      | --                           | --                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `failure_detector.threshold`                  | Float   | `8.0`                        | The threshold value used by the failure detector to determine failure conditions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `failure_detector.min_std_deviation`          | String  | `100ms`                      | The minimum standard deviation of the heartbeat intervals, used to calculate acceptable variations.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `failure_detector.acceptable_heartbeat_pause` | String  | `10000ms`                    | The acceptable pause duration between heartbeats, used to determine if a heartbeat interval is acceptable.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `failure_detector.first_heartbeat_estimate`   | String  | `1000ms`                     | The initial estimate of the heartbeat interval used by the failure detector.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `failure_detector.threshold`                  | Float   | `8.0`                        | Maximum acceptable φ before the peer is treated as failed.<br/>Lower values react faster but yield more false positives.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `failure_detector.min_std_deviation`          | String  | `100ms`                      | The minimum standard deviation of the heartbeat intervals.<br/>So tiny variations don't make φ explode. Prevents hypersensitivity when heartbeat intervals barely vary.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `failure_detector.acceptable_heartbeat_pause` | String  | `10000ms`                    | The acceptable pause duration between heartbeats.<br/>Additional extra grace period to the learned mean interval before φ rises, absorbing temporary network hiccups or GC pauses.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `datanode`                                    | --      | --                           | Datanode options.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `datanode.client`                             | --      | --                           | Datanode client options.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `datanode.client.timeout`                     | String  | `10s`                        | Operation timeout.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -759,6 +780,8 @@ create_topic_timeout = "30s"
 | `wal.topic_name_prefix`                       | String  | `greptimedb_wal_topic`       | A Kafka topic is constructed by concatenating `topic_name_prefix` and `topic_id`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `wal.replication_factor`                      | Integer | `1`                          | Expected number of replicas of each partition.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `wal.create_topic_timeout`                    | String  | `30s`                        | Above which a topic creation operation will be cancelled.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `wal.connect_timeout`                         | String  | `3s`                         | The connect timeout for kafka client.<br/>**It's only used when the provider is `kafka`**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `wal.timeout`                                 | String  | `3s`                         | The timeout for kafka client.<br/>**It's only used when the provider is `kafka`**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `wal.sasl`                                    | String  | --                           | The Kafka SASL configuration.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `wal.sasl.type`                               | String  | --                           | The SASL mechanisms, available values: `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `wal.sasl.username`                           | String  | --                           | The SASL username.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |

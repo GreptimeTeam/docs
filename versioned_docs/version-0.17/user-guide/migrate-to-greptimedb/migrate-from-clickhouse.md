@@ -117,7 +117,7 @@ CREATE TABLE logs (
 
 **Notes:**
 - `host` and `service` serve as common query filters and are included in the primary key to optimize filtering. If there are very many hosts, you might not want to include `host` in the primary key but instead create a skip index.
-- `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/query-logs.md) for details
+- `log_message` is treated as raw content with a full-text index created. If you want the full-text index to take effect during queries, you also need to adjust your SQL query syntax. Please refer to [the log query documentation](/user-guide/logs/fulltext-search.md) for details
 - Since `trace_id` and `span_id` are mostly high-cardinality fields, it is not recommended to use them in the primary key, but skip indexes have been added.
 
 ---
@@ -228,7 +228,7 @@ Alternatively, you can convert the CSV to standard INSERT statements for batch i
 ## Frequently Asked Questions and Optimization Tips
 
 ### What if SQL/types are incompatible?
-  Before migration, audit all query SQL and rewrite or translate as necessary, referring to the [official documentation](/user-guide/query-data/sql.md) (especially for [log query](/user-guide/logs/query-logs.md)) for any incompatible syntax or data types.
+  Before migration, audit all query SQL and rewrite or translate as necessary, referring to the [official documentation](/user-guide/query-data/sql.md) (especially for [log query](/user-guide/logs/fulltext-search.md)) for any incompatible syntax or data types.
 
 ### How do I efficiently import very large datasets in batches?
   For large tables or full historical data, export and import by partition or shard as appropriate. Monitor write speed and import progress closely.

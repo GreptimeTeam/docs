@@ -118,7 +118,7 @@ CREATE TABLE logs (
 **说明：**
 
 -   `host` 和 `service` 作为常用过滤项列入主键，如主机数量非常多，可移出主键，改为跳数索引。
--   `log_message` 作为原始文本内容建立全文索引。**若要全文索引生效，查询时 SQL 语法也需调整，详见[日志检索文档](/user-guide/logs/query-logs.md)**。
+-   `log_message` 作为原始文本内容建立全文索引。**若要全文索引生效，查询时 SQL 语法也需调整，详见[日志检索文档](/user-guide/logs/fulltext-search.md)**。
 -   `trace_id` 和 `span_id` 通常为高基数字段，建议仅做跳数索引。
 
 
@@ -227,7 +227,7 @@ clickhouse client --query="SELECT * FROM example INTO OUTFILE 'example.csv' FORM
 
 ### SQL/类型不兼容怎么办？
 
-迁移前需梳理所有查询 SQL 并按官方文档 ([SQL 查询](/user-guide/query-data/sql.md)、[日志检索](/user-guide/logs/query-logs.md)) 重写或翻译不兼容语法和类型。
+迁移前需梳理所有查询 SQL 并按官方文档 ([SQL 查询](/user-guide/query-data/sql.md)、[日志检索](/user-guide/logs/fulltext-search.md)) 重写或翻译不兼容语法和类型。
 
 ### 如何高效批量导入大规模数据？
 

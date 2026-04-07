@@ -11,9 +11,11 @@ AKS = "AKS"
 # tech terms
 excluder = "excluder"
 flate = "flate"
+consts = "consts"
 
 [files]
 extend-exclude = [
   "pnpm-lock.yaml",
-  "*/**/df-functions.md"
+  "*/**/df-functions.md",
+  "**/*.svg"
 ]

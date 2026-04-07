@@ -1,0 +1,80 @@
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-started/get-docker/) >= v23.0.0
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) >= v1.18.0
+- [Helm](https://helm.sh/docs/intro/install/) >= v3.0.0
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) >= v0.20.0
+
+## Create a test Kubernetes cluster
+
+:::warning
+Using `kind` is not recommended for production environments or performance testing. For such use cases, we recommend using cloud-managed Kubernetes services such as [Amazon EKS](https://aws.amazon.com/eks/), [Google GKE](https://cloud.google.com/kubernetes-engine/), or [Azure AKS](https://azure.microsoft.com/en-us/services/kubernetes-service/), or deploying your own production-grade Kubernetes cluster.
+:::
+
+There are many ways to create a Kubernetes cluster for testing purposes. In this guide, we will use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local Kubernetes cluster. You can skip this step if you want to use the existing Kubernetes cluster.
+
+Here is an example using `kind` v0.20.0:
+
+```bash
+kind create cluster
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+Creating cluster "kind" ...
+ ✓ Ensuring node image (kindest/node:v1.27.3) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Thanks for using kind! 😊
+```
+</details>
+
+Check the status of the cluster:
+
+```bash
+kubectl cluster-info
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+Kubernetes control plane is running at https://127.0.0.1:60495
+CoreDNS is running at https://127.0.0.1:60495/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+</details>
+
+## Add the Greptime Helm repository
+
+We provide the [official Helm repository](https://github.com/GreptimeTeam/helm-charts) for the GreptimeDB Operator and GreptimeDB cluster. You can add the repository by running the following command:
+
+```bash
+helm repo add greptime https://greptimeteam.github.io/helm-charts/
+helm repo update
+```
+
+Check the charts in the Greptime Helm repository:
+
+```
+helm search repo greptime
+```
+
+<details>
+  <summary>Expected Output</summary>
+```bash
+NAME                          	CHART VERSION	APP VERSION  	DESCRIPTION
+greptime/greptimedb-cluster   	0.2.25       	0.9.5        	A Helm chart for deploying GreptimeDB cluster i...
+greptime/greptimedb-operator  	0.2.9        	0.1.3-alpha.1	The greptimedb-operator Helm chart for Kubernetes.
+greptime/greptimedb-standalone	0.1.27       	0.9.5        	A Helm chart for deploying standalone greptimedb
+```
+</details>

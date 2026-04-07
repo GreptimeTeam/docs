@@ -344,7 +344,7 @@ GreptimeDB 支持对数据表进行分区，以分散读写热点并实现水平
 
 GreptimeDB 在每次主要版本更新时都会发布[benchmark report](https://github.com/GreptimeTeam/greptimedb/tree/main/docs/benchmarks/tsbs)，
 里面提供了单个分区的写入吞吐量作为参考。
-你可以在你的的目标场景根据该报告来估计写入量是否接近单个分区的限制。
+你可以在你的目标场景根据该报告来估计写入量是否接近单个分区的限制。
 
 估计分区总数时，可以考虑写入吞吐量并额外预留 50% 的 CPU 资源，以确保查询性能和稳定性。也可以根据需要调整此比例。例如，如果查询较多，那么可以预留更多 CPU 资源。
 

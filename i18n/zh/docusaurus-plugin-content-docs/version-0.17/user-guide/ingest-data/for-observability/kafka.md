@@ -127,7 +127,7 @@ pipeline_name = "greptime_identity"
 #### 创建 pipeline
 
 要创建自定义 pipeline，
-请参阅[创建 pipeline](/user-guide/logs/quick-start.md#创建-pipeline) 和 [pipeline 配置](/user-guide/logs/pipeline-config.md)文档获取详细说明。
+请参阅[使用自定义 pipeline](/user-guide/logs/use-custom-pipelines.md)文档获取详细说明。
 
 #### 写入数据
 

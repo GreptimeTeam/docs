@@ -18,3 +18,11 @@ build
 .temp_patch
 
 Claude.md
+
+# Transpiled JavaScript files (TypeScript sources are tracked)
+docusaurus.config.js
+sidebars.js
+src/**/*.js
+# Exception: CodeBlock component is intentionally JavaScript
+!src/theme/CodeBlock/index.js
+variables/*.js
