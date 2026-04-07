@@ -22,6 +22,8 @@
     "@actions/github": "^6.0.0",
     "@docusaurus/core": "3.4.0",
     "@docusaurus/preset-classic": "3.4.0",
+    "@fontsource/geist": "^5.2.8",
+    "@fontsource/geist-mono": "^5.2.7",
     "@mdx-js/react": "^3.0.0",
     "@octokit/rest": "^21.0.2",
     "axios": "^1.12.0",

@@ -1,41 +1,69 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Site-specific overrides on top of Greptime tokens (greptime-tokens.css).
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #8322ff;
-  --ifm-color-primary-dark: #7305ff;
-  --ifm-color-primary-darker: #6c00f6;
-  --ifm-color-primary-darkest: #5900ca;
-  --ifm-color-primary-light: #933fff;
-  --ifm-color-primary-lighter: #9b4dff;
-  --ifm-color-primary-lightest: #b479ff;
   --ifm-footer-padding-vertical: 6px;
   --biel-primary-color: #000000;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #ae6fff;
-  --ifm-color-primary-dark: #994aff;
-  --ifm-color-primary-darker: #8f38ff;
-  --ifm-color-primary-darkest: #7001ff;
-  --ifm-color-primary-light: #c394ff;
-  --ifm-color-primary-lighter: #cda6ff;
-  --ifm-color-primary-lightest: #ecddff;
+  --biel-primary-color: #e6e2ee;
 }
 
-.footer__copyright {
-  color: #aaa6b2;
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Inline code — match website chips; keep pre/code blocks untouched */
+:not(pre) > code {
+  padding: 2px 6px;
+  margin: 0 2px;
+  border-radius: var(--ifm-code-border-radius, 4px);
+  background-color: var(--gt-inline-code-bg);
+  color: var(--gt-inline-code-color);
+  font-family: var(--gt-font-mono);
+  font-size: var(--ifm-code-font-size);
+}
+
+pre code {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  color: inherit;
+  border: none;
+}
+
+/* Docs sidebar: match website aside-container feel (sticky + clean scrollbar) */
+.theme-doc-sidebar-container {
+  background: var(--ifm-background-color);
+  border-right: 1px solid var(--gt-border-primary);
+}
+
+.theme-doc-sidebar-menu,
+.theme-doc-sidebar-menu.thin-scrollbar,
+.theme-doc-sidebar-container .menu.thin-scrollbar {
+  scrollbar-width: none;
+  font-family: var(--gt-font-sans);
+}
+
+.theme-doc-sidebar-menu::-webkit-scrollbar,
+.theme-doc-sidebar-container .menu.thin-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.theme-doc-sidebar-container .menu__link {
+  border-radius: 4px;
 }
 
 
 
-.dropdown__link[href^="http"]::after {
-  content: " ↗";
+.dropdown__link[href^='http']::after {
+  content: ' ↗';
   font-size: 0.8em;
   opacity: 0.7;
+}
+.menu__list-item:not(:first-child){
+  margin-top: 0.3rem;
 }
