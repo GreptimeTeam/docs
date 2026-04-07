@@ -307,6 +307,39 @@ You can refer to the [pipeline's documentation](/user-guide/logs/use-custom-pipe
 
 ## Performance tuning
 
+### Batching mode
+
+When the metric engine is enabled, GreptimeDB supports a batching mode for Prometheus Remote Write
+that reduces per-request overhead and improves ingestion throughput.
+In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches,
+which can yield up to **2x throughput improvement** in clustered deployments with multiple regions.
+
+Batching mode is **disabled by default**.
+To enable it, set `pending_rows_flush_interval` to a non-zero duration in the `[prom_store]` section of the configuration file:
+
+```toml
+[prom_store]
+enable = true
+with_metric_engine = true
+pending_rows_flush_interval = "500ms"
+```
+
+The following table describes the batching-related options:
+
+| Key                          | Type    | Default  | Description                                                                 |
+| ---------------------------- | ------- | -------- | --------------------------------------------------------------------------- |
+| pending_rows_flush_interval  | String  | `"0s"`   | Interval between batch flushes. `"0s"` disables batching.                   |
+| max_batch_rows               | Integer | `100000` | Maximum number of rows per batch before a flush is triggered.               |
+| max_concurrent_flushes       | Integer | `256`    | Maximum number of flush operations that can run concurrently.               |
+| worker_channel_capacity      | Integer | `65536`  | Capacity of the internal worker channel for receiving rows.                 |
+| max_inflight_requests        | Integer | `3000`   | Maximum number of inflight write requests waiting for batch completion.     |
+
+:::tip
+Batching mode only takes effect when both `with_metric_engine` is `true` and `pending_rows_flush_interval` is set to a non-zero duration.
+:::
+
+### Customized physical table
+
 By default, the metric engine will automatically create a physical table named `greptime_physical_table` if it does not already exist. For performance optimization, you may choose to create a physical table with customized configurations.
 
 ### Enable skipping index

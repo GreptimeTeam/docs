@@ -293,6 +293,39 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 
 ## 性能优化
 
+### 批量写入模式
+
+当 metric engine 启用时，GreptimeDB 支持 Prometheus Remote Write 的批量写入模式，
+通过减少单次请求的开销来提高写入吞吐量。
+在批量写入模式下，传入的行数据会被累积并以更大的批次刷写到 metric engine 中，
+在多 region 的集群部署中可以带来最高 **2 倍的吞吐量提升**。
+
+批量写入模式**默认关闭**。
+要启用它，请在配置文件的 `[prom_store]` 部分将 `pending_rows_flush_interval` 设置为非零时间间隔：
+
+```toml
+[prom_store]
+enable = true
+with_metric_engine = true
+pending_rows_flush_interval = "500ms"
+```
+
+下表描述了批量写入相关的配置选项：
+
+| 键                           | 类型   | 默认值    | 描述                                                                 |
+| ---------------------------- | ------ | --------- | -------------------------------------------------------------------- |
+| pending_rows_flush_interval  | 字符串 | `"0s"`    | 批量刷写的时间间隔。`"0s"` 表示禁用批量写入模式。                   |
+| max_batch_rows               | 整数   | `100000`  | 触发刷写的最大批量行数。                                             |
+| max_concurrent_flushes       | 整数   | `256`     | 同时执行的最大刷写操作数量。                                         |
+| worker_channel_capacity      | 整数   | `65536`   | 内部接收行数据的 worker 通道容量。                                   |
+| max_inflight_requests        | 整数   | `3000`    | 等待批量完成的最大请求数。                                           |
+
+:::tip
+批量写入模式仅在 `with_metric_engine` 为 `true` 且 `pending_rows_flush_interval` 设置为非零时间间隔时生效。
+:::
+
+### 自定义物理表
+
 默认情况下，metric engine 会自动创建一个名为 `greptime_physical_table` 的物理表。
 为了优化性能，你可以选择创建一个具有自定义配置的物理表。
 
