@@ -265,10 +265,9 @@ const config: Config = {
     // Replace with your project's social card
     metadata: metaMap[locale],
     navbar: {
-      title: 'GreptimeDB',
       logo: {
-        alt: 'GreptimeDB Logo',
-        src: 'img/logo-routine.svg',
+        alt: 'Greptime logo',
+        src: 'img/logo-text.png',
       },
       items: [
         {

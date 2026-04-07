@@ -33,7 +33,7 @@ html:not([data-theme='dark']) {
   --gt-footer-copyright: #6b5b7a;
 
   --ifm-font-family-base: var(--gt-font-sans);
-  --ifm-heading-font-family: var(--gt-font-mono);
+  --ifm-heading-font-family: var(--gt-font-sans);
   --ifm-font-color-base: var(--gt-purple);
   --ifm-heading-color: var(--gt-purple);
   --ifm-background-color: var(--gt-bg-primary);
@@ -83,7 +83,7 @@ html:not([data-theme='dark']) {
   --gt-footer-copyright: #9d96a8;
 
   --ifm-font-family-base: var(--gt-font-sans);
-  --ifm-heading-font-family: var(--gt-font-mono);
+  --ifm-heading-font-family: var(--gt-font-sans);
   --ifm-font-color-base: var(--gt-purple);
   --ifm-heading-color: var(--gt-purple);
   --ifm-background-color: var(--gt-bg-primary);
