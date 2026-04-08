@@ -6,7 +6,6 @@ description: Generated from the Apache DataFusion project's documents, this page
 
 This page is generated from the Apache DataFusion project's documents:
   * [DataFusion Scalar Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions.md)
-  * [DataFusion Scalar Functions (NEW)](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/scalar_functions_new.md)
   * [DataFusion Aggregate Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/aggregate_functions.md)
   * [DataFusion Window Functions](https://raw.githubusercontent.com/apache/datafusion/main/docs/source/user-guide/sql/window_functions.md)
 
@@ -4736,7 +4735,7 @@ _Alias of [make_array](#make_array)._
 
 ##### `range`
 
-Returns an Arrow array between start and stop with step. The range start..end contains all values with `start <= x < end`. It is empty if `start >= end`. Step cannot be 0.
+Returns an Arrow array between start and stop with step. The range start..end contains all values with start &lt;= x &lt; end. It is empty if start >= end. Step cannot be 0.
 
 ```sql
 range(stop)
@@ -4816,7 +4815,7 @@ _Alias of [string_to_array](#string_to_array)._
 
 Returns an Arrow struct using the specified name and input expressions pairs.
 For information on comparing and ordering struct values (including `NULL` handling),
-see [Comparison and Ordering](struct_coercion.md#comparison-and-ordering).
+see [Comparison and Ordering](df-functions/struct_coercion.md#comparison-and-ordering).
 
 ```sql
 named_struct(expression1_name, expression1_input[, ..., expression_n_name, expression_n_input])
@@ -4859,7 +4858,7 @@ Returns an Arrow struct using the specified input expressions optionally named.
 Fields in the returned struct use the optional name or the `cN` naming convention.
 For example: `c0`, `c1`, `c2`, etc.
 For information on comparing and ordering struct values (including `NULL` handling),
-see [Comparison and Ordering](struct_coercion.md#comparison-and-ordering).
+see [Comparison and Ordering](df-functions/struct_coercion.md#comparison-and-ordering).
 
 ```sql
 struct(expression1[, ..., expression_n])
@@ -5487,7 +5486,6 @@ version()
 | Apache DataFusion 42.0.0, aarch64 on macos |
 +--------------------------------------------+
 ```
-404: Not Found
 <!---
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
