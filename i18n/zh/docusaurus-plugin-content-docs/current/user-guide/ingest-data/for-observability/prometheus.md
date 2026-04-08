@@ -298,7 +298,7 @@ mysql> select * from `go_memstats_mcache_inuse_bytes`;
 当 metric engine 启用时，GreptimeDB 支持 Prometheus Remote Write 的批量写入模式，
 通过减少单次请求的开销来提高写入吞吐量。
 在批量写入模式下，传入的行数据会被累积并以更大的批次刷写到 metric engine 中，
-在多 region 的集群部署中可以带来最高 **2 倍的吞吐量提升**。
+在多 region 的集群部署中可以带来最高 **2 倍的吞吐量提升**，但是需要仔细调整攒批相关的参数以避免写入延迟增加。
 
 批量写入模式**默认关闭**。
 要启用它，请在配置文件的 `[prom_store]` 部分将 `pending_rows_flush_interval` 设置为非零时间间隔：

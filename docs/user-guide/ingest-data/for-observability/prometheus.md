@@ -312,7 +312,9 @@ You can refer to the [pipeline's documentation](/user-guide/logs/use-custom-pipe
 When the metric engine is enabled, GreptimeDB supports a batching mode for Prometheus Remote Write
 that reduces per-request overhead and improves ingestion throughput.
 In batching mode, incoming rows are accumulated and flushed to the metric engine in larger batches,
-which can yield up to **2x throughput improvement** in clustered deployments with multiple regions.
+which can yield up to **2x throughput improvement** in clustered deployments with multiple regions,
+but requires careful tuning of batch parameters to match the ingestion workload and prevent increased 
+latency.
 
 Batching mode is **disabled by default**.
 To enable it, set `pending_rows_flush_interval` to a non-zero duration in the `[prom_store]` section of the configuration file:
@@ -331,7 +333,7 @@ The following table describes the batching-related options:
 | pending_rows_flush_interval  | String  | `"0s"`   | Interval between batch flushes. `"0s"` disables batching.                   |
 | max_batch_rows               | Integer | `100000` | Maximum number of rows per batch before a flush is triggered.               |
 | max_concurrent_flushes       | Integer | `256`    | Maximum number of flush operations that can run concurrently.               |
-| worker_channel_capacity      | Integer | `65536`  | Capacity of the internal worker channel for receiving rows.                 |
+| max_inflight_requests        | Integer | `3000`   | Maximum number of in-flight write requests waiting for batch completion.    |
 | max_inflight_requests        | Integer | `3000`   | Maximum number of inflight write requests waiting for batch completion.     |
 
 :::tip
