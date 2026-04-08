@@ -145,7 +145,8 @@ http://{{API-host}}/v1/sql
   - `csvWithNames`: outputs as comma-separated values with a column names header
   - `csvWithNamesAndTypes`: outputs as comma-separated values with column names and data types headers
   - `arrow`: [Arrow IPC
-    format](https://arrow.apache.org/docs/python/feather.html). Additional
+    format](https://arrow.apache.org/docs/python/feather.html). We use stream
+    format for this API. Additional
     parameters:
     - `compression`: `zstd` or `lz4`, default: no compression
   - `table`: ASCII table format for console output

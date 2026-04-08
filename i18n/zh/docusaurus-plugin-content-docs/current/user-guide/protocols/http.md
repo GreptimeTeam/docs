@@ -135,7 +135,7 @@ http://{{API-host}}/v1/sql
   - `csvWithNames`: 以逗号分隔值格式输出，包含列名标题
   - `csvWithNamesAndTypes`: 以逗号分隔值格式输出，包含列名和数据类型标题
   - `arrow`: [Arrow IPC
-    格式](https://arrow.apache.org/docs/python/feather.html)。附加参数：
+    格式](https://arrow.apache.org/docs/python/feather.html)。此接口输出流式格式。附加参数：
     - `compression`: `zstd` 或 `lz4`，默认：无压缩
   - `table`: 控制台输出的 ASCII 表格格式
   - `null`: 简洁的纯文本输出，仅显示行数和执行时间，用于评估查询性能。
