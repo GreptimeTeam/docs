@@ -125,13 +125,57 @@ def process_lines(lines)
 end
 
 ## Scan content for relative .md references not in the merged set
+## Returns a Hash: { "filename.md" => Set["anchor1", "anchor2", ...] }
+## Files referenced without anchor get an empty set (include entire file)
 def find_referenced_files(content)
-  refs = Set.new
-  content.scan(/\]\(([a-zA-Z0-9_]+\.md)(?:#[a-zA-Z0-9_-]*)?\)/) do |match|
+  refs = {}
+  content.scan(/\]\(([a-zA-Z0-9_]+\.md)(?:#([a-zA-Z0-9_-]*))?\)/) do |match|
     filename = match[0]
-    refs.add(filename) unless MERGED_FILENAMES.include?(filename)
+    anchor = match[1]
+    next if MERGED_FILENAMES.include?(filename)
+    refs[filename] ||= Set.new
+    refs[filename].add(anchor) if anchor && !anchor.empty?
   end
   refs
+end
+
+## Extract only the sections matching the given anchors from processed lines.
+## A section starts at a heading whose anchor matches, and ends at the next
+## heading of equal or higher level.
+def extract_sections(lines, anchors)
+  return lines if anchors.empty?
+
+  ## Build anchor from heading text (same logic as Docusaurus/GitHub)
+  def heading_to_anchor(text)
+    text.downcase.gsub(/[^a-z0-9\s-]/, "").strip.gsub(/\s+/, "-")
+  end
+
+  result = []
+  capturing = false
+  capture_level = nil
+
+  lines.each do |line|
+    if line =~ /^(#+)\s+(.*)/
+      level = $1.length
+      text = $2.strip
+      anchor = heading_to_anchor(text)
+
+      if anchors.include?(anchor)
+        capturing = true
+        capture_level = level
+        result << line
+      elsif capturing && level <= capture_level
+        capturing = false
+        capture_level = nil
+      elsif capturing
+        result << line
+      end
+    elsif capturing
+      result << line
+    end
+  end
+
+  result
 end
 
 ## --- Main ---
@@ -186,14 +230,14 @@ sub_dir_path = "#{OUTPUT_DIR}/#{SUB_DIR}"
 FileUtils.mkdir_p(sub_dir_path)
 
 while !pending.empty? && depth < max_depth
-  new_pending = Set.new
+  new_pending = {}
 
-  pending.each do |filename|
+  pending.each do |filename, anchors|
     next if fetched.include?(filename)
     fetched.add(filename)
 
     url = BASE_URL + filename
-    puts "Fetching referenced doc: #{filename}"
+    puts "Fetching referenced doc: #{filename} (sections: #{anchors.to_a.join(', ')})"
 
     begin
       markdown = fetch_markdown(url)
@@ -205,9 +249,16 @@ while !pending.empty? && depth < max_depth
     lines = markdown.split(/\n/)
     lines = process_lines(lines)
 
-    ## Find further references from this file
+    ## Extract only referenced sections
+    lines = extract_sections(lines, anchors)
+
+    ## Find further references from extracted content
     new_refs = find_referenced_files(lines.join("\n"))
-    new_pending.merge(new_refs - fetched)
+    new_refs.each do |f, a|
+      next if fetched.include?(f)
+      new_pending[f] ||= Set.new
+      new_pending[f].merge(a)
+    end
 
     ## Write as standalone file with frontmatter
     title = filename.gsub("_", " ").gsub(".md", "").split.map(&:capitalize).join(" ")
