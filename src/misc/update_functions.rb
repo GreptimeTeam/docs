@@ -22,9 +22,13 @@ window_functions = {
   :name => "DataFusion Window Functions",
   :url => BASE_URL + "window_functions.md"
 }
+special_functions = {
+  :name => "DataFusion Special Functions",
+  :url => BASE_URL + "special_functions.md"
+}
 
 ## Apache DataFusion functions (merged into df-functions.md)
-datafusion_functions = [scalar_functions, agg_functions, window_functions]
+datafusion_functions = [scalar_functions, agg_functions, window_functions, special_functions]
 
 ## Filenames of merged docs (used to distinguish internal vs external links)
 MERGED_FILENAMES = datafusion_functions.map { |doc| File.basename(URI(doc[:url]).path) }
@@ -146,12 +150,13 @@ description: Generated from the Apache DataFusion project's documents, this page
 EOF
 
   f.puts("# DataFusion Functions\n\n")
-  f.puts("This page is generated from the Apache DataFusion project's documents:")
+  f.puts("This page is generated from the [Apache DataFusion](https://datafusion.apache.org/user-guide/sql/) project's documents:")
 
   for doc in datafusion_functions
     name = doc[:name]
-    url = doc[:url]
-    markdown = "  * [#{name}](#{url})"
+    ## Generate anchor from name: "DataFusion Scalar Functions" -> "#scalar-functions"
+    anchor = name.sub("DataFusion ", "").downcase.gsub(" ", "-")
+    markdown = "  * [#{name}](##{anchor})"
     f.puts markdown
   end
 
