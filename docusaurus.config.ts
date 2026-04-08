@@ -4,6 +4,26 @@ import type * as Preset from '@docusaurus/preset-classic';
 import variablePlaceholder from './src/plugins/variable-placeholder';
 import versions from './versions.json';
 
+// Prism theme: our light mode uses a dark code-block background.
+// Use a dark token palette (dracula) to keep contrast, and only override plain bg/fg.
+const greptimePrismLightTheme = {
+  ...prismThemes.dracula,
+  plain: {
+    ...prismThemes.dracula.plain,
+    backgroundColor: '#473460',
+    color: '#ffffff',
+  },
+};
+
+const greptimePrismDarkTheme = {
+  ...prismThemes.dracula,
+  plain: {
+    ...prismThemes.dracula.plain,
+    backgroundColor: '#2d1f3a',
+    color: '#ffffff',
+  },
+};
+
 const locale = process.env.DOC_LANG || 'en';
 const biel_project_id = process.env.BIEL_PROJECT_ID;
 
@@ -45,12 +65,15 @@ const metaMap = {
   ]
 };
 
+/** Pin biel-search CDN — @latest can introduce WS protocol regressions (e.g. isPartial on undefined). */
+const BIEL_SEARCH_VERSION = '0.1.65';
+
 const bielMetaMap = {
   'en': {
     project: biel_project_id,
     headerTitle: 'Greptime AI',
     bielButtonText: "Ask AI",
-    version: 'latest',
+    version: BIEL_SEARCH_VERSION,
     buttonStyle: 'dark',
     sourcesText: 'Related Documents',
     inputPlaceholderText: 'Ask a question about Greptime...',
@@ -61,7 +84,7 @@ const bielMetaMap = {
     project: biel_project_id,
     headerTitle: 'Greptime AI',
     bielButtonText: "向 AI 提问",
-    version: 'latest',
+    version: BIEL_SEARCH_VERSION,
     buttonStyle: 'dark',
     sourcesText: '相关文档',
     inputPlaceholderText: '请输入和 Greptime 相关的问题...',
@@ -200,7 +223,10 @@ const config: Config = {
           blogSidebarTitle: 'Release Notes'
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: [
+            './src/css/greptime-tokens.css',
+            './src/css/custom.css',
+          ],
         },
         gtag: {
           trackingID: 'G-BYNN8J57JZ',
@@ -260,10 +286,9 @@ const config: Config = {
     // Replace with your project's social card
     metadata: metaMap[locale],
     navbar: {
-      title: 'GreptimeDB',
       logo: {
-        alt: 'GreptimeDB Logo',
-        src: 'img/logo-routine.svg',
+        alt: 'Greptime logo',
+        src: 'img/logo-text.svg',
       },
       items: [
         {
@@ -305,8 +330,8 @@ const config: Config = {
       copyright: `©Copyright ${new Date().getFullYear()} Greptime Inc.`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: greptimePrismLightTheme,
+      darkTheme: greptimePrismDarkTheme,
       additionalLanguages: ['java', 'toml'],
     },
     algolia: algoliaMap[locale]

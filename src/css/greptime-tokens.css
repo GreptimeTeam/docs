@@ -1,0 +1,120 @@
+/**
+ * Greptime design tokens (aligned with website new-theme-vars.css).
+ * Maps semantic colors into Infima / Prism. No layout dimensions.
+ */
+
+@import '@fontsource/geist/400.css';
+@import '@fontsource/geist/500.css';
+@import '@fontsource/geist/600.css';
+@import '@fontsource/geist/700.css';
+@import '@fontsource/geist-mono/400.css';
+@import '@fontsource/geist-mono/500.css';
+@import '@fontsource/geist-mono/600.css';
+@import '@fontsource/geist-mono/700.css';
+
+:root {
+  --gt-font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --gt-font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+}
+
+/* Light theme */
+html:not([data-theme='dark']) {
+  --gt-purple: #473460;
+  --gt-accent: #792af6;
+  --gt-accent-hover: #8b3dff;
+  --gt-bg-primary: #f9f8f7;
+  --gt-bg-surface: #ffffff;
+  --gt-border-primary: #e6e3dd;
+  --gt-purple-bg: #e5d5f7;
+  --gt-inline-code-bg: var(--gt-purple-bg);
+  --gt-inline-code-color: var(--gt-accent);
+  --gt-footer-copyright: #6b5b7a;
+
+  --ifm-font-family-base: var(--gt-font-sans);
+  --ifm-heading-font-family: var(--gt-font-sans);
+  --ifm-font-color-base: var(--gt-purple);
+  --ifm-heading-color: var(--gt-purple);
+  --ifm-background-color: var(--gt-bg-primary);
+  --ifm-navbar-background-color: var(--gt-bg-primary) ;
+  --ifm-footer-background-color: var(--gt-bg-primary);
+  --ifm-hr-background-color: var(--gt-border-primary);
+  --ifm-toc-border-color: var(--gt-border-primary);
+  --ifm-link-color: var(--gt-accent);
+  --ifm-link-hover-color: var(--gt-accent-hover);
+  --ifm-menu-color: var(--gt-purple);
+  --ifm-menu-color-background-hover: var(--ifm-color-emphasis-200);
+  --ifm-menu-color-background-active: var(--ifm-color-emphasis-200);
+  --ifm-menu-color-background-selected: var(--ifm-color-emphasis-200);
+  --ifm-navbar-link-color: var(--gt-purple);
+  --ifm-navbar-link-hover-color: var(--gt-accent);
+
+  --ifm-color-primary: #792af6;
+  --ifm-color-primary-dark: #6b22d9;
+  --ifm-color-primary-darker: #5c1db8;
+  --ifm-color-primary-darkest: #4a1896;
+  --ifm-color-primary-light: #8b3dff;
+  --ifm-color-primary-lighter: #9d5eff;
+  --ifm-color-primary-lightest: #c9a6ff;
+
+  --ifm-code-background: var(--gt-inline-code-bg);
+  --ifm-code-color: var(--gt-inline-code-color);
+  --ifm-code-border-radius: 4px;
+
+  --prism-background-color: #473460;
+  --prism-color: #f5f0ff;
+
+  --ifm-color-emphasis-200: rgba(71, 52, 96, 0.08);
+  --ifm-color-emphasis-300: rgba(71, 52, 96, 0.22);
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+  --gt-purple: #e6e2ee;
+  --gt-accent: #c9a6ff;
+  --gt-accent-hover: #d4b8ff;
+  --gt-bg-primary: #1a1a1d;
+  --gt-bg-surface: #242526;
+  --gt-border-primary: rgba(230, 226, 238, 0.14);
+  --gt-purple-bg: rgba(174, 111, 255, 0.22);
+  --gt-inline-code-bg: var(--gt-purple-bg);
+  --gt-inline-code-color: #e0ccff;
+  --gt-footer-copyright: #9d96a8;
+
+  --ifm-font-family-base: var(--gt-font-sans);
+  --ifm-heading-font-family: var(--gt-font-sans);
+  --ifm-font-color-base: var(--gt-purple);
+  --ifm-heading-color: var(--gt-purple);
+  --ifm-background-color: var(--gt-bg-primary);
+  --ifm-navbar-background-color: var(--gt-bg-surface);
+  --ifm-footer-background-color: var(--gt-bg-primary);
+  --ifm-hr-background-color: var(--gt-border-primary);
+  --ifm-toc-border-color: var(--gt-border-primary);
+  --ifm-link-color: var(--gt-accent);
+  --ifm-link-hover-color: var(--gt-accent-hover);
+  --ifm-menu-color: var(--gt-purple);
+  --ifm-menu-color-background-hover: var(--ifm-color-emphasis-200);
+  --ifm-menu-color-background-active: var(--ifm-color-emphasis-200);
+  --ifm-menu-color-background-selected: var(--ifm-color-emphasis-200);
+  --ifm-navbar-link-color: #e8e4f0;
+  --ifm-navbar-link-hover-color: var(--gt-accent-hover);
+
+  --ifm-color-primary: #ae6fff;
+  --ifm-color-primary-dark: #994aff;
+  --ifm-color-primary-darker: #8f38ff;
+  --ifm-color-primary-darkest: #7001ff;
+  --ifm-color-primary-light: #c394ff;
+  --ifm-color-primary-lighter: #cda6ff;
+  --ifm-color-primary-lightest: #ecddff;
+
+  --ifm-code-background: var(--gt-inline-code-bg);
+  --ifm-code-color: var(--gt-inline-code-color);
+  --ifm-code-border-radius: 4px;
+
+  --prism-background-color: #2d2640;
+  --prism-color: #f0ebf8;
+
+  --ifm-color-emphasis-200: rgba(255, 255, 255, 0.08);
+  --ifm-color-emphasis-300: rgba(255, 255, 255, 0.18);
+}
