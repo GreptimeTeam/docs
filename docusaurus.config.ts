@@ -275,7 +275,6 @@ const config: Config = {
         'index.md',
         'getting-started/**',
         'user-guide/**',
-        'greptimecloud/**',
         'enterprise/**',
         'reference/**',
         'faq-and-others/**',
