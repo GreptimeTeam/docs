@@ -1,5 +1,7 @@
 ---
 title: "Struct Coercion"
+description: "Struct Coercion - generated from Apache DataFusion documentation."
+keywords: [DataFusion, struct coercion]
 unlisted: true
 ---
 

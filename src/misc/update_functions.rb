@@ -214,6 +214,8 @@ while !pending.empty? && depth < max_depth
     File.open("#{sub_dir_path}/#{filename}", "w") do |f|
       f.puts "---"
       f.puts "title: \"#{title}\""
+      f.puts "description: \"#{title} - generated from Apache DataFusion documentation.\""
+      f.puts "keywords: [DataFusion, #{title.downcase}]"
       f.puts "unlisted: true"
       f.puts "---"
       f.puts
