@@ -116,7 +116,7 @@ export default function llmsTxtGenerator(
         ...movedFiles,
       ];
 
-      let varResolvedCount = 0;
+      let postProcessedCount = 0;
       for (const filePath of allFiles) {
         const content = fs.readFileSync(filePath, 'utf-8');
         let processed = resolveVariables(content, variables);
@@ -126,13 +126,13 @@ export default function llmsTxtGenerator(
         }
         if (processed !== content) {
           fs.writeFileSync(filePath, processed, 'utf-8');
-          varResolvedCount++;
+          postProcessedCount++;
         }
       }
 
       console.log(
         `[llms-txt-generator] v${latestVersion}: llms.txt + llms-full.txt + ${movedFiles.length} .md files. ` +
-        `VAR:: resolved in ${varResolvedCount} files.`
+        `Post-processed ${postProcessedCount} files.`
       );
     },
   };
