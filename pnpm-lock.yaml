@@ -78,6 +78,9 @@ importers:
       '@mdx-js/mdx':
         specifier: ^3.1.0
         version: 3.1.1
+      docusaurus-plugin-llms:
+        specifier: ^0.3.0
+        version: 0.3.0(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2))
       eslint:
         specifier: 8.56.0
         version: 8.56.0
@@ -2397,6 +2400,12 @@ packages:
     resolution: {integrity: sha512-/0Di34OijQWfU8JO+lGud4GmOtja21EEEGjg4r1BjxVwBykewV6NN/fvwuT/4Y7b1KM2Zzuyd3s1oGg1Il55rA==}
     peerDependencies:
       '@docusaurus/core': 3.x
+
+  docusaurus-plugin-llms@0.3.0:
+    resolution: {integrity: sha512-JuADAJA2fjTv1U4XQUoIu1LyjISDzxFhRK5HbCZiHum4HlmdPwyx8NBXsi+LfdUyjK9acbZgazGsHPhdwEZs0g==}
+    engines: {node: '>=18.0'}
+    peerDependencies:
+      '@docusaurus/core': ^3.0.0
 
   dom-converter@0.2.0:
     resolution: {integrity: sha512-gd3ypIPfOMr9h5jIKq8E3sHOTCjeirnl0WK5ZdS1AW0Odt0b1PaWaHdJ4Qk4klv+YB9aJBS7mESXjFoDQPu6DA==}
@@ -8770,6 +8779,13 @@ snapshots:
   docusaurus-biel@1.0.8(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)):
     dependencies:
       '@docusaurus/core': 3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
+
+  docusaurus-plugin-llms@0.3.0(@docusaurus/core@3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)):
+    dependencies:
+      '@docusaurus/core': 3.4.0(@docusaurus/types@3.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(eslint@8.56.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
+      gray-matter: 4.0.3
+      minimatch: 9.0.5
+      yaml: 2.8.1
 
   dom-converter@0.2.0:
     dependencies:
