@@ -2,6 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import variablePlaceholder from './src/plugins/variable-placeholder';
+import llmsTxtGenerator from './src/plugins/llms-txt-generator';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -26,6 +27,17 @@ const greptimePrismDarkTheme = {
 
 const locale = process.env.DOC_LANG || 'en';
 const biel_project_id = process.env.BIEL_PROJECT_ID;
+
+// Shared between docs preset and llms plugin to keep exclusions in sync
+const docsExcludePatterns = [
+  'db-cloud-shared/**',
+  'user-guide/client-libraries/template.md',
+  'getting-started/quick-start/quick-start-template.md',
+  '**/template.md',
+  'user-guide/python-scripts/**',
+  'user-guide/ingest-data/for-iot/grpc-sdks/template.md',
+  'contributor-guide/datanode/python-scripts.md',
+];
 
 // For versioning commands, we need all locales available
 // For building, we only need the current locale
@@ -150,7 +162,7 @@ const algoliaMap = {
 
 const config: Config = {
   title: 'GreptimeDB Documentation',
-  tagline: 'Open-source unified time-series database for Metrics, Logs, and Traces.',
+  tagline: 'The open-source observability database for metrics, logs, traces, and wide events.',
   favicon: '/favicon.ico',
 
   // Set the production url of your site here
@@ -193,15 +205,7 @@ const config: Config = {
             return `https://github.com/GreptimeTeam/docs/edit/main/${versionDocsDirPath}/${docPath}`;
           },
           routeBasePath: '/',
-          exclude: [
-            'db-cloud-shared/**',
-            'user-guide/client-libraries/template.md',
-            'getting-started/quick-start/quick-start-template.md',
-            '**/template.md',
-            'user-guide/python-scripts/**',
-            'user-guide/ingest-data/for-iot/grpc-sdks/template.md',
-            'contributor-guide/datanode/python-scripts.md',
-          ],
+          exclude: docsExcludePatterns,
           versions: {
             current: {
               label: 'Nightly',
@@ -265,6 +269,19 @@ const config: Config = {
   plugins: [
     // Only load docusaurus-biel plugin if biel_project_id is defined
     ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
+    [llmsTxtGenerator, {
+      ignoreFiles: docsExcludePatterns,
+      includeOrder: [
+        'index.md',
+        'getting-started/**',
+        'user-guide/**',
+        'greptimecloud/**',
+        'enterprise/**',
+        'reference/**',
+        'faq-and-others/**',
+        'contributor-guide/**',
+      ],
+    }],
     function injectLocaleSwitchScript() {
       return {
         name: 'inject-locale-switch-script',
