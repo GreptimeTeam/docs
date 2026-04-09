@@ -8,7 +8,9 @@ date: 2026-04-08
 
 Release date: April 08, 2026
 
-GreptimeDB v1.0.0 switches the default SST format to flat for better performance under high-cardinality workloads, improves metric engine ingestion with bulk inserts, adds partial success support for trace ingestion, and includes several PostgreSQL compatibility fixes.
+This is GreptimeDB v1.0.0 — our first GA release! We couldn't have gotten here without the community. Thank you to everyone who filed issues, submitted PRs, and ran GreptimeDB in your environments. Your feedback helped us improve every step of the way. This is a big milestone, and we'll continue making GreptimeDB better.
+
+GreptimeDB v1.0.0 switches the default SST format to flat for better performance under high-cardinality workloads, improves metric engine ingestion with bulk inserts, adds partial success support for trace ingestion, introduces built-in Perses dashboard support, and includes several PostgreSQL compatibility fixes.
 
 ### 👍 Highlights
 
@@ -26,6 +28,11 @@ GreptimeDB v1.0.0 switches the default SST format to flat for better performance
 - **Partial success in trace ingestion** so partial errors no longer fail the entire batch.
 - **Auto alter table during trace ingestion** from int to float types.
 
+
+**Dashboard**
+
+- **Built-in Perses dashboard support.** GreptimeDB now ships with built-in visualization powered by [Perses](https://perses.dev/).
+- **Dashboard updated to v0.12.0.**
 
 **PostgreSQL Compatibility**
 
