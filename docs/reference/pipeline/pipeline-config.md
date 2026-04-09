@@ -823,11 +823,83 @@ The configuration uses a `|` to start a multi-line content in the YAML file.
 The whole script is then written below.
 
 Some notes regarding the `vrl` processor:
-1. The script have to end with a newline of `.`, indicating returning the whole context as the returning value of the script.
+1. The script must end with either a single `.` (returning the whole context as one row) or an array of objects (one-to-many expansion, where each element becomes a separate row).
 2. The returning value of the vrl script should not contain any regex-type variables. They can be used in the script, but have to be `del`ed before returning.
 3. Due to type conversion between pipeline's value type and vrl's, the value type that comes out of the vrl script will be the ones with max capacity, meaning `i64`, `f64`, and `Timestamp::nanoseconds`.
 
 You can use `vrl` processor to set [table options](./write-log-api.md#set-table-options) while writing logs.
+
+#### One-to-Many Expansion
+
+The `vrl` processor supports **one-to-many** expansion: when the script returns an array, each element of the array is written as a separate row. This is useful when a single incoming log record contains multiple events that should be stored as individual rows.
+
+Each element in the returned array must be an object. Returning an empty array produces zero rows (the record is dropped).
+
+Example: expand a log record containing multiple events into individual rows:
+
+```YAML
+processors:
+  - epoch:
+      field: timestamp
+      resolution: ms
+  - vrl:
+      source: |
+        events = del(.events)
+        base_host = del(.host)
+        base_ts = del(.timestamp)
+        map_values(array!(events)) -> |event| {
+            {
+                "host": base_host,
+                "event_type": event.type,
+                "event_value": event.value,
+                "timestamp": base_ts
+            }
+        }
+
+transform:
+  - field: host
+    type: string
+  - field: event_type
+    type: string
+  - field: event_value
+    type: int32
+  - field: timestamp
+    type: timestamp, ms
+    index: time
+```
+
+Given the input:
+```json
+{
+    "host": "server1",
+    "timestamp": 1716668197217,
+    "events": [
+        {"type": "cpu", "value": 80},
+        {"type": "memory", "value": 60},
+        {"type": "disk", "value": 45}
+    ]
+}
+```
+
+The pipeline produces three rows, one for each event in the array.
+
+You can also set a per-row table suffix by including a `greptime_table_suffix` field in each array element. This routes different rows to different tables:
+
+```YAML
+  - vrl:
+      source: |
+        events = del(.events)
+        base_ts = del(.timestamp)
+        map_values(array!(events)) -> |event| {
+            suffix = "_" + string!(event.category)
+            {
+                "name": event.name,
+                "value": event.value,
+                "timestamp": base_ts,
+                "greptime_table_suffix": suffix
+            }
+        }
+```
 
 ### `filter`
 
