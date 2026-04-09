@@ -69,7 +69,7 @@ Some tips:
 
 ### Using flat format table for high cardinality primary keys
 
-Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance under the default format. Instead, consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) and setting the SST format to [`flat` format](/reference/sql/create.md#create-a-table-with-sst-format).
+Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance with the `primary_key` format. The [`flat` format](/reference/sql/create.md#create-a-table-with-sst-format) is the default SST format and is optimized for high cardinality primary keys. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
 
 ### Using append-only table if possible
 

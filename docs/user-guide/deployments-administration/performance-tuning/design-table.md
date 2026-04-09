@@ -154,7 +154,7 @@ Recommendations for tags:
   For example, `namespace`, `cluster`, or an AWS `region`.
 - No need to set all low cardinality columns as tags since this may impact the performance of ingestion and querying.
 - Typically use short strings and integers for tags, avoiding `FLOAT`, `DOUBLE`, `TIMESTAMP`.
-- Set `sst_format` to `flat` if tags change frequently.
+- The default `sst_format` is `flat`, which is optimized for high cardinality primary keys.
   For example, when tags contain columns like `trace_id`, `span_id`, and `user_id`.
 
 
