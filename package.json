@@ -73,5 +73,10 @@
   "packageManager": "pnpm@8.6.0",
   "resolutions": {
     "@jridgewell/gen-mapping": "0.3.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "webpack": "~5.97.0"
+    }
   }
 }

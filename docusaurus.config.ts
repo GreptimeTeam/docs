@@ -270,7 +270,10 @@ const config: Config = {
     // Only load docusaurus-biel plugin if biel_project_id is defined
     ...(biel_project_id ? [['docusaurus-biel', bielMetaMap[locale]]] : []),
     [llmsTxtGenerator, {
-      ignoreFiles: docsExcludePatterns,
+      ignoreFiles: [
+        ...docsExcludePatterns,
+        '**/df-functions/*.md',
+      ],
       includeOrder: [
         'index.md',
         'getting-started/**',
