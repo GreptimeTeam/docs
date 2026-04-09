@@ -75,7 +75,7 @@ service:
       exporters: [otlphttp]
 ```
 
-#### 将 traces 数据写入到 OpenTelemetry Collector
+#### 将 Trace 数据写入到 OpenTelemetry Collector
 
 你可以给应用配置相应的 exporter 来将 traces 数据写入到 OpenTelemetry Collector。
 比如你可以使用环境变量 `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` 来配置 exporter 的
@@ -116,14 +116,14 @@ GreptimeDB 的 OTEL 端点支持 Basic 认证。详情请参考 [鉴权](/user-g
 我们复用了日志接口中 Pipeline 的概念作为数据转化的机制。但是注意在 Trace 接口中
 我们目前仅支持内置的 `greptime_trace_v1`，自定义的 Pipeline 暂不支持。
 
-### Append 模式
+### Append-only 模式
 
-通过此接口创建的表，默认为[Append 模
+通过此接口创建的表，默认为[Append-only 模
 式](/user-guide/deployments-administration/performance-tuning/design-table.md#何时使用-append-only-表).
 
 ## 查询
 
-GreptimeDB 提供了两种 Trace 数据的查询接口，分别是 Jarger API 兼容接口和
+GreptimeDB 提供了两种 Trace 数据的查询接口，分别是 Jaeger API 兼容接口和
 GreptimeDB 原生的 SQL 查询接口，后者可以运行在 HTTP, MySQL 或者 Postgres 等协议
 上。
 
@@ -147,22 +147,22 @@ SELECT * FROM public.opentelemetry_traces \G
 
 ```
 *************************** 1. row ***************************
-                         timestamp: 2025-04-02 09:58:43.822229
-                     timestamp_end: 2025-04-02 09:58:43.822352
-                     duration_nano: 123000
-                    parent_span_id: NULL
-                          trace_id: 1948380e459f4ca69bb4f4274b5db7ba
-                           span_id: f179c8dc2171a0a0
-                         span_kind: SPAN_KIND_CLIENT
-                         span_name: lets-go
+                         timestamp: 2025-05-07 10:03:29.657544
+                     timestamp_end: 2025-05-07 10:03:29.661714
+                     duration_nano: 4169970
+                    parent_span_id: eccc18b6fc210f31
+                          trace_id: fb60d19aa36fdcb7d14a71ca0b9b42ae
+                           span_id: 49806a2671f2ddcb
+                         span_kind: SPAN_KIND_SERVER
+                         span_name: POST todos/
                   span_status_code: STATUS_CODE_UNSET
                span_status_message:
                        trace_state:
-                        scope_name: telemetrygen
-                     scope_version:
-                      service_name: telemetrygen
-span_attributes.net.sock.peer.addr: 1.2.3.4
-      span_attributes.peer.service: telemetrygen-server
+                        scope_name: opentelemetry.instrumentation.django
+                     scope_version: 0.51b0
+                      service_name: myproject
+span_attributes.http.request.method: POST
+             span_attributes.url.full:
                        span_events: []
                         span_links: []
 ...

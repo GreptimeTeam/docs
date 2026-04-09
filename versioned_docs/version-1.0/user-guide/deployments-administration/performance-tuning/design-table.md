@@ -147,7 +147,6 @@ CREATE TABLE http_logs_flat (
 ) with ('append_mode'='true', 'sst_format'='flat');
 ```
 
-
 Recommendations for tags:
 
 - Low cardinality columns that occur in `WHERE`/`GROUP BY`/`ORDER BY` frequently.

@@ -33,7 +33,7 @@ flowchart LR
 
 ```toml
 [gc]
-enable = true              # 开启 meta GC 调度器；必须与 datanode 一致。
+enable = true              # 开启 meta GC 调度器，默认值为 false；必须与 datanode 一致。
 gc_cooldown_period = "5m"   # 同一 region 再次 GC 的最小间隔。
 ```
 
