@@ -85,7 +85,7 @@ GreptimeDB v1.0.0 switches the default SST format to flat for better performance
 * fix: update 8-bit int to smallint in postgres by [@sunng87](https://github.com/sunng87) in [#7854](https://github.com/GreptimeTeam/greptimedb/pull/7854)
 * fix(mito2): accept post-truncate flush for skip-wal tables by [@v0y4g3r](https://github.com/v0y4g3r) in [#7858](https://github.com/GreptimeTeam/greptimedb/pull/7858)
 * fix: nested views not working by [@Boudewijn26](https://github.com/Boudewijn26) in [#7857](https://github.com/GreptimeTeam/greptimedb/pull/7857)
-* fix: fix SeriesScan verbose mode mising metrics by [@evenyag](https://github.com/evenyag) in [#7872](https://github.com/GreptimeTeam/greptimedb/pull/7872)
+* fix: fix SeriesScan verbose mode missing metrics by [@evenyag](https://github.com/evenyag) in [#7872](https://github.com/GreptimeTeam/greptimedb/pull/7872)
 * fix(datatypes): correct ConstantVector rhs comparison in vector equality by [@cuiweixie](https://github.com/cuiweixie) in [#7866](https://github.com/GreptimeTeam/greptimedb/pull/7866)
 * fix: correct app-name for dashboard by [@sunng87](https://github.com/sunng87) in [#7884](https://github.com/GreptimeTeam/greptimedb/pull/7884)
 * fix: allow auto type upscale conversion in trace ingestion by [@shuiyisong](https://github.com/shuiyisong) in [#7870](https://github.com/GreptimeTeam/greptimedb/pull/7870)
