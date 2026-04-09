@@ -101,7 +101,6 @@ greptime datanode objbench --config ./datanode.toml --source data/greptime/publi
 | `--parallelism <N>`                  | 模拟扫描并行度，默认 `1`。                                                                                |
 | `--iterations <N>`                   | 基准测试迭代次数，默认 `1`。                                                                              |
 | `--path-type <bare\|data\|metadata>` | Region 路径类型，默认 `bare`。                                                                            |
-| `--force-flat-format`                | 强制以 flat format 读取 region，默认关闭。                                                                |
 | `--enable-wal`                       | 打开 region 时启用 WAL 回放，默认关闭。                                                                   |
 | `--pprof-file <FILE>`                | pprof 火焰图输出路径（仅 Unix）。                                                                         |
 | `--pprof-after-warmup`               | 在首轮迭代（warmup）后再开始 pprof。需要与 `--pprof-file` 一起使用，默认关闭。                            |

@@ -101,7 +101,6 @@ The `scanbench` subcommand benchmarks region scans directly from storage.
 | `--parallelism <N>`                  | Simulated scan parallelism. Defaults to `1`.                                                                             |
 | `--iterations <N>`                   | Benchmark iterations. Defaults to `1`.                                                                                   |
 | `--path-type <bare\|data\|metadata>` | Region path type. Defaults to `bare`.                                                                                    |
-| `--force-flat-format`                | Force reading the region in flat format. Disabled by default.                                                            |
 | `--enable-wal`                       | Enable WAL replay when opening the region. Disabled by default.                                                          |
 | `--pprof-file <FILE>`                | Output file path for pprof flamegraph (Unix only).                                                                       |
 | `--pprof-after-warmup`               | Start pprof after the first iteration (use the first iteration as warmup). Requires `--pprof-file`. Disabled by default. |
