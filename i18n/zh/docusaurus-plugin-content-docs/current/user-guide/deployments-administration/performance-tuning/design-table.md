@@ -152,7 +152,7 @@ CREATE TABLE http_logs_flat (
   例如，`namespace`、`cluster` 或 AWS `region`。
 - 无需将所有低基数列设为 tag，因为这可能影响写入和查询性能。
 - 通常对 tag 使用短字符串和整数，避免 `FLOAT`、`DOUBLE`、`TIMESTAMP`。
-- 如果 tag 经常变化，请将 `sst_format` 设置为 `flat`。
+- 默认的 `sst_format` 为 `flat`，针对高基数主键进行了优化。
   例如，当 tag 包含 `trace_id`、`span_id` 和 `user_id` 等列时。
 
 
