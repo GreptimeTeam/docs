@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Elasticsearch 兼容性概述"
 keywords: [ES, Elasticsearch, GreptimeDB]
 description: GreptimeDB 企业版与 Elasticsearch 的兼容性概述，包括数据模型、查询语法和 API 接口等方面的对比。
 ---

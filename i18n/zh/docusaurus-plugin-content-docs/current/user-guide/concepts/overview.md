@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB 概念概述"
 keywords: [GreptimeDB, 特性, 数据模型, 架构, 存储位置, 核心概念]
 description: GreptimeDB 概念概览，包括为什么选择 GreptimeDB、数据模型、架构、存储位置、核心概念和常见问题。
 ---

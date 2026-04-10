@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB 只读副本概述"
 keywords: [企业版, 集群, 读副本, leader region, follower region]
 description: GreptimeDB 企业版读副本功能的概述与原理。
 ---

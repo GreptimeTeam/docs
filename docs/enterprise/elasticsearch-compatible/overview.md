@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Elasticsearch Compatible Overview"
 keywords: [ES, Elasticsearch, GreptimeDB]
 description: Overview of GreptimeDB Enterprise Edition's compatibility with Elasticsearch, including comparisons of data models, query syntax, and API interfaces.
 ---
