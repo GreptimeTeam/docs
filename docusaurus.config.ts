@@ -5,6 +5,7 @@ import variablePlaceholder from './src/plugins/variable-placeholder';
 import llmsTxtGenerator from './src/plugins/llms-txt-generator';
 import versionNoindex from './src/plugins/version-noindex';
 import robotsTxtGenerator from './src/plugins/robots-txt-generator';
+import faqSchema from './src/plugins/faq-schema';
 import { resolveLastmod } from './src/plugins/sitemap-lastmod';
 import versions from './versions.json';
 
@@ -322,6 +323,7 @@ const config: Config = {
     }],
     versionNoindex,
     robotsTxtGenerator,
+    faqSchema,
     function injectLocaleSwitchScript() {
       return {
         name: 'inject-locale-switch-script',
