@@ -5,6 +5,7 @@ import variablePlaceholder from './src/plugins/variable-placeholder';
 import llmsTxtGenerator from './src/plugins/llms-txt-generator';
 import versionNoindex from './src/plugins/version-noindex';
 import robotsTxtGenerator from './src/plugins/robots-txt-generator';
+import { resolveLastmod } from './src/plugins/sitemap-lastmod';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -208,6 +209,7 @@ const config: Config = {
           },
           routeBasePath: '/',
           exclude: docsExcludePatterns,
+          showLastUpdateTime: true,
           versions: {
             current: {
               label: 'Nightly',
@@ -250,15 +252,21 @@ const config: Config = {
 
             const historicalPrefixes = versions.slice(1).map(v => `/${v}/`);
             const excludedPrefixes = ['/nightly/', ...historicalPrefixes];
+            const sitemapLocale = (locale === 'zh' ? 'zh' : 'en') as 'en' | 'zh';
 
-            return items.filter((item) => {
-              const url = new URL(item.url);
-              const pathname = url.pathname;
-              if (pathname === '/markdown-page/' || pathname.startsWith('/markdown-page/')) {
-                return false;
-              }
-              return !excludedPrefixes.some(prefix => pathname.startsWith(prefix));
-            });
+            return items
+              .filter((item) => {
+                const pathname = new URL(item.url).pathname;
+                if (pathname.startsWith('/markdown-page/')) return false;
+                return !excludedPrefixes.some(prefix => pathname.startsWith(prefix));
+              })
+              .map((item) => {
+                // Attach git mtime as <lastmod> so Google gets a real
+                // freshness signal. Release-notes and other non-doc URLs
+                // that can't be mapped keep the default (no lastmod).
+                const lastmod = resolveLastmod(item.url, sitemapLocale, latestVersion);
+                return lastmod ? { ...item, lastmod } : item;
+              });
           },
         },
       } satisfies Preset.Options,
