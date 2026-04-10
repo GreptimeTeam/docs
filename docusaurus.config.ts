@@ -69,12 +69,13 @@ const metaMap = {
     { name: 'keywords', content: '时序数据库, 开源时序数据库, 时序数据, 可观测数据，可观测性数据库，可观测性工具, 云原生数据库, 数据可观测性, 可观测性平台, 边缘数据库, 物联网边缘计算, 边缘云计算, 日志管理, 日志聚合, 日志存储, 链路存储, PromQL 存储, 高基数, SQL查询示例, OpenTelemetry, OpenTelemetry 收集器, GreptimeDB, Greptime, Rust 数据库, 开源数据库, OpenTelemetry 数据库' },
     { name: 'description', content: 'GreptimeDB 是一款云原生的实时可观测性数据库，统一处理指标、日志和链路追踪数据。通过 GreptimeDB 和 GreptimeCloud，您可以在从边缘到云的任意规模下，实现快速且高性价比的数据洞察。' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://docs.greptime.com/' },
-    { property: 'og:image', content: 'https://greptime.com/logo/img/logo-routine-level.png' },
+    // og:url and twitter:url are intentionally omitted so Docusaurus
+    // infers the correct per-page absolute URL from siteConfig.url
+    // (i.e. https://docs.greptime.cn/... when building zh locale).
+    { property: 'og:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { property: 'og:title', content: 'GreptimeDB 文档 | 可观测性数据库' },
     { property: 'og:description', content: '了解 GreptimeDB 如何通过 SQL 和 PromQL 统一处理指标、日志和链路追踪。快速、高效、实时。' },
     { property: 'twitter:card', content: 'summary_large_image' },
-    { property: 'twitter:url', content: 'https://greptime.com/' },
     { property: 'twitter:image', content: 'https://greptime.com/resource/greptime_home_thumbnail.png' },
     { name: 'msvalidate.01', content: 'BD813946F80D5B50E162932BF3FD0D49' }
   ]
@@ -106,6 +107,32 @@ const bielMetaMap = {
     footerText: 'AI 生成的答案可能包含错误。<br> 你还可以通过 <b><a href="https://github.com/orgs/GreptimeTeam/discussions">Github Discussions</a></b> 或加入 <a href="https://greptime.com/slack">Slack 社区</a>与工程师沟通。',
     welcomeMessage: '你好，我是 Greptime AI。你可以问我关于 GreptimeDB 的问题，例如我可以帮助你编写 SQL、Pipeline 或其他与 GreptimeDB 相关的代码。',
   }
+};
+
+const titleMap = {
+  'en': 'GreptimeDB Documentation',
+  'zh': 'GreptimeDB 文档'
+};
+
+// Preconnect / dns-prefetch hints: give the browser a head start on the
+// handful of cross-origin domains every page hits. Algolia DocSearch
+// registers its own preconnect automatically, so we don't duplicate it.
+const preconnectHintsMap = {
+  'en': [
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://www.googletagmanager.com', crossorigin: 'anonymous' } },
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: 'anonymous' } },
+    { tagName: 'link', attributes: { rel: 'dns-prefetch', href: 'https://greptime.com' } },
+  ],
+  'zh': [
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://hm.baidu.com', crossorigin: 'anonymous' } },
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: 'anonymous' } },
+    { tagName: 'link', attributes: { rel: 'dns-prefetch', href: 'https://greptime.cn' } },
+  ],
+};
+
+const taglineMap = {
+  'en': 'The open-source observability database for metrics, logs, traces, and wide events.',
+  'zh': '为指标、日志、链路和宽事件打造的开源可观测性数据库。'
 };
 
 const hostMap = {
@@ -164,9 +191,11 @@ const algoliaMap = {
 };
 
 const config: Config = {
-  title: 'GreptimeDB Documentation',
-  tagline: 'The open-source observability database for metrics, logs, traces, and wide events.',
+  title: titleMap[locale],
+  tagline: taglineMap[locale],
   favicon: '/favicon.ico',
+
+  headTags: preconnectHintsMap[locale],
 
   // Set the production url of your site here
   url: urlMap[locale],

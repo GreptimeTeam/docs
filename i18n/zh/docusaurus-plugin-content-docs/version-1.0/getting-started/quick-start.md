@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB 快速开始"
 keywords: [快速开始, SQL, PromQL, 建表, 写入数据, 查询数据, metrics, logs, traces, 关联查询, GreptimeDB Dashboard]
 description: 10 分钟上手 GreptimeDB——从数据写入到 metrics、logs、traces 跨信号关联查询。
 ---

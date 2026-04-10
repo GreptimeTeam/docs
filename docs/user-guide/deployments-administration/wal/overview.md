@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB WAL Overview"
 keywords: [WAL, Write-Ahead Logging, Local WAL, Remote WAL, GreptimeDB]
 description: This section describes the WAL (Write-Ahead Logging) in GreptimeDB, including the advantages and disadvantages of Local WAL and Remote WAL.
 ---

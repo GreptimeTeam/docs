@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB 常见问题"
 keywords: [FAQ, 常见问题, 故障排查, 部署, 迁移, 数据模型, 集成]
 description: GreptimeDB 常见问题解答，涵盖数据模型、集成、部署运维和版本差异。
 ---

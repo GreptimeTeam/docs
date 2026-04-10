@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB FAQ"
 keywords: [FAQ, frequently asked questions, troubleshooting, deployment, migration, data model, integration]
 description: Frequently Asked Questions about GreptimeDB — covering data model, integration, deployment, operations, and versioning.
 ---

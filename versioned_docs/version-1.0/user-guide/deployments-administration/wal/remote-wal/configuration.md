@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Remote WAL Configuration"
 keywords: [GreptimeDB Remote WAL, configuration, Kafka, Metasrv, Datanode, GreptimeDB]
 description: This section describes how to configure the Remote WAL for GreptimeDB Cluster.
 ---
