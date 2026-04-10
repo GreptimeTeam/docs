@@ -334,7 +334,6 @@ The following table describes the batching-related options:
 | max_batch_rows               | Integer | `100000` | Maximum number of rows per batch before a flush is triggered.               |
 | max_concurrent_flushes       | Integer | `256`    | Maximum number of flush operations that can run concurrently.               |
 | max_inflight_requests        | Integer | `3000`   | Maximum number of in-flight write requests waiting for batch completion.    |
-| max_inflight_requests        | Integer | `3000`   | Maximum number of inflight write requests waiting for batch completion.     |
 
 :::tip
 Batching mode only takes effect when both `with_metric_engine` is `true` and `pending_rows_flush_interval` is set to a non-zero duration.
