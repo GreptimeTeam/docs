@@ -3,6 +3,8 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import variablePlaceholder from './src/plugins/variable-placeholder';
 import llmsTxtGenerator from './src/plugins/llms-txt-generator';
+import versionNoindex from './src/plugins/version-noindex';
+import robotsTxtGenerator from './src/plugins/robots-txt-generator';
 import versions from './versions.json';
 
 // Prism theme: our light mode uses a dark code-block background.
@@ -237,28 +239,25 @@ const config: Config = {
           anonymizeIP: false,
         },
         sitemap: {
-          priority: 0.8, // Default priority
+          priority: 0.8,
+          // Only index the latest stable version. Nightly and historical
+          // versions are noindex'd by src/plugins/version-noindex.ts and
+          // must also be excluded from the sitemap to avoid sending Google
+          // contradictory signals (sitemap "please index" vs meta "noindex").
           createSitemapItems: async (params) => {
             const { defaultCreateSitemapItems, ...rest } = params;
             const items = await defaultCreateSitemapItems(rest);
-            
-            return items.map((item) => {
-              // Check for historical version patterns in URL
-              const isHistoricalVersion = versions.slice(1).some(version => 
-                item.url.includes(`/${version}/`)
-              );
-              
-              if (isHistoricalVersion) {
-                return {
-                  ...item,
-                  priority: 0.1, // Low priority for historical versions
-                };
+
+            const historicalPrefixes = versions.slice(1).map(v => `/${v}/`);
+            const excludedPrefixes = ['/nightly/', ...historicalPrefixes];
+
+            return items.filter((item) => {
+              const url = new URL(item.url);
+              const pathname = url.pathname;
+              if (pathname === '/markdown-page/' || pathname.startsWith('/markdown-page/')) {
+                return false;
               }
-              
-              return {
-                ...item,
-                priority: 0.8, // Normal priority for current version and nightly
-              };
+              return !excludedPrefixes.some(prefix => pathname.startsWith(prefix));
             });
           },
         },
@@ -284,6 +283,8 @@ const config: Config = {
         'contributor-guide/**',
       ],
     }],
+    versionNoindex,
+    robotsTxtGenerator,
     function injectLocaleSwitchScript() {
       return {
         name: 'inject-locale-switch-script',
