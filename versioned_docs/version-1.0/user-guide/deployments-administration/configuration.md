@@ -74,7 +74,6 @@ Please refer to the [Helm configuration documentation](/user-guide/deployments-a
 For configurations that are available only in the [options](#options) section of this document,
 you can [inject complete TOML configuration files](/user-guide/deployments-administration/deploy-on-kubernetes/common-helm-chart-configurations.md#injecting-configuration-files) into your deployment.
 
-
 ### Environment variable
 
 Every item in the configuration file can be mapped to environment variables.
@@ -96,7 +95,6 @@ export GREPTIMEDB_DATANODE__STORAGE__DATA_HOME=/data/greptimedb
 #### Environment Variable Rules
 
 - Each environment variable should have the component prefix, for example:
-
   - `GREPTIMEDB_FRONTEND`
   - `GREPTIMEDB_METASRV`
   - `GREPTIMEDB_DATANODE`
@@ -204,8 +202,8 @@ The following table describes the options in detail:
 | grpc       |                      |         | gRPC server options                                                                                                                                                                                                                                                                                                                                                                        |
 |            | bind_addr            | String  | The address to bind the gRPC server, "127.0.0.1:4001" by default                                                                                                                                                                                                                                                                                                                           |
 |            | runtime_size         | Integer | The number of server worker threads, 8 by default                                                                                                                                                                                                                                                                                                                                          |
-|            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes |
-|            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.|
+|            | max_connection_age   | String  | Maximum lifetime of a gRPC connection that the server keeps it. Refer to ["MAX_CONNECTION_AGE"](https://grpc.io/docs/guides/keepalive/) for details. Defaults to not set. Example: "1h" for 1 hour, "30m" for 30 minutes                                                                                                                                                                   |
+|            | flight_compression   | String  | Compression mode for frontend side Arrow IPC service. Available options: `none`: disable all compression, `transport`: only enable gRPC transport compression (zstd), `arrow_ipc`: only enable Arrow IPC compression (lz4), `all`: enable all compression. Default value is `none`.                                                                                                        |
 | mysql      |                      |         | MySQL server options                                                                                                                                                                                                                                                                                                                                                                       |
 |            | enable               | Boolean | Whether to enable MySQL protocol, true by default                                                                                                                                                                                                                                                                                                                                          |
 |            | addr                 | String  | Server address, "127.0.0.1:4002" by default                                                                                                                                                                                                                                                                                                                                                |
@@ -226,7 +224,7 @@ For MySQL, Postgres and gRPC interface, TLS can be configured to enable transpor
 layer security.
 
 | Option                                    | Key         | Type    | Description                                                   |
-| ------------------------------------------| ----------- | ------- | ------------------------------------------------------------- |
+| ----------------------------------------- | ----------- | ------- | ------------------------------------------------------------- |
 | `mysql.tls`, `postgres.tls` or `grpc.tls` |             |         | TLS configuration for MySQL and Postgres                      |
 |                                           | `mode`      | String  | TLS mode, options are `disable`, `prefer` and `require`       |
 |                                           | `cert_path` | String  | File path for TLS certificate                                 |
@@ -263,7 +261,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 | File    |                           |         | Local file storage options, valid when type="File"                               |
 |         | data_home                 | String  | Database storage root directory, "./greptimedb_data" by default                  |
 | S3      |                           |         | AWS S3 storage options, valid when type="S3"                                     |
-|         | name                      | String  | The  storage provider name, default is `S3`                                      |
+|         | name                      | String  | The storage provider name, default is `S3`                                       |
 |         | bucket                    | String  | The S3 bucket name                                                               |
 |         | root                      | String  | The root path in S3 bucket                                                       |
 |         | endpoint                  | String  | The API endpoint of S3                                                           |
@@ -272,14 +270,14 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | secret_access_key         | String  | The S3 secret access key                                                         |
 |         | enable_virtual_host_style | Boolean | Send API requests in virtual host style instead of path style. Default is false. |
 | Oss     |                           |         | Aliyun OSS storage options, valid when type="Oss"                                |
-|         | name                      | String  | The  storage provider name, default is `Oss`                                     |
+|         | name                      | String  | The storage provider name, default is `Oss`                                      |
 |         | bucket                    | String  | The OSS bucket name                                                              |
 |         | root                      | String  | The root path in OSS bucket                                                      |
 |         | endpoint                  | String  | The API endpoint of OSS                                                          |
 |         | access_key_id             | String  | The OSS AccessKey ID                                                             |
 |         | access_key_secret         | String  | The OSS AccessKey Secret                                                         |
 | Azblob  |                           |         | Azure Blob Storage options, valid when type="Azblob"                             |
-|         | name                      | String  | The  storage provider name, default is `Azblob`                                  |
+|         | name                      | String  | The storage provider name, default is `Azblob`                                   |
 |         | container                 | String  | The container name                                                               |
 |         | root                      | String  | The root path in container                                                       |
 |         | endpoint                  | String  | The API endpoint of Azure Blob Storage                                           |
@@ -287,7 +285,7 @@ GreptimeDB supports storing data in local file system, AWS S3 and compatible ser
 |         | account_key               | String  | The access key                                                                   |
 |         | sas_token                 | String  | The shared access signature                                                      |
 | Gsc     |                           |         | Google Cloud Storage options, valid when type="Gsc"                              |
-|         | name                      | String  | The  storage provider name, default is `Gsc`                                     |
+|         | name                      | String  | The storage provider name, default is `Gsc`                                      |
 |         | root                      | String  | The root path in Gsc bucket                                                      |
 |         | bucket                    | String  | The Gsc bucket name                                                              |
 |         | scope                     | String  | The Gsc service scope                                                            |
@@ -357,6 +355,7 @@ For storage from the same provider, if you want to use different S3 buckets as s
 When using remote storage services like AWS S3, Alibaba Cloud OSS, or Azure Blob Storage, fetching data during queries can be time-consuming. To address this, GreptimeDB provides a write cache mechanism to speed up repeated data access.
 
 You can configure the cache size and behavior in the mito config if you don't want to use the default values.
+
 ```toml
 [[region_engine]]
 [region_engine.mito]
@@ -373,7 +372,6 @@ Read [Performance Tuning Tips](/user-guide/deployments-administration/performanc
 ### WAL options
 
 GreptimeDB supports three WAL storage options—Local WAL, Remote WAL, and Noop WAL. See the [WAL Overview](/user-guide/deployments-administration/wal/overview.md) for a comparison of the options. For detailed configurations, refer to the [Local WAL](/user-guide/deployments-administration/wal/local-wal.md), [Remote WAL](/user-guide/deployments-administration/wal/remote-wal/configuration.md), and [Noop WAL](/user-guide/deployments-administration/wal/noop-wal.md) documentation.
-
 
 ### Logging options
 
@@ -498,9 +496,9 @@ sparse_primary_key_encoding = true
 
 Available options:
 
-| Key                            | Type    | Default | Descriptions                                                                                                                                                 |
-| ------------------------------ | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `sparse_primary_key_encoding`  | Boolean | `true`  | Whether to use sparse primary key encoding. This optimization improves write and query performance by encoding only non-null primary key columns.            |
+| Key                           | Type    | Default | Descriptions                                                                                                                                      |
+| ----------------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sparse_primary_key_encoding` | Boolean | `true`  | Whether to use sparse primary key encoding. This optimization improves write and query performance by encoding only non-null primary key columns. |
 
 ### Specify meta client
 
@@ -523,7 +521,9 @@ The `meta_client` configures the Metasrv client, including:
 - `tcp_nodelay`, `TCP_NODELAY` option for accepted connections, true by default.
 
 ### Heartbeat configuration
+
 Heartbeat configuration is available in `frontend` and `datanode`.
+
 ```toml
 [heartbeat]
 interval = "3s"

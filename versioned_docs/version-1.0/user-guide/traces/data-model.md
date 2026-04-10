@@ -17,7 +17,7 @@ tables.
 We reuse the concept of Pipeline for trace data modeling. However, note that at
 the moment, only built-in pipelines are supported.
 
-## Data model versioning
+## Data Model Versioning
 
 First, the data types and features in GreptimeDB are evolving. For
 forward-compatibility, we use the pipeline name for data model
@@ -32,19 +32,27 @@ We may introduce new data model by adding new available pipeline names. And we
 will keep previous pipeline supported. Note that new pipeline may not be
 compatible with previous ones so you are recommended to use it in new table.
 
-## Data model
+## Data Model
 
-The `greptime_trace_v1` data model is pretty straight-forward.
+The `greptime_trace_v1` data model is pretty straight-forward. By default,
+trace data is stored in a table named `opentelemetry_traces`. You can customize
+the table name by specifying the `x-greptime-trace-table-name` header in your
+OTLP/HTTP requests.
 
 - It maps most common data fields from [OpenTelemetry
   Trace](https://opentelemetry.io/docs/concepts/signals/traces/) data model to
   GreptimeDB's table columns.
+- `service_name` is extracted from `resource_attributes["service.name"]` and
+  used as a **Tag** (part of the **Primary Key**).
+- `timestamp` is the start time of the span and is used as the **Time Index**.
 - A new `duration_nano` column is generated using `end_time - start_time`.
-- All attributes fields are flatten into columns using the name pattern:
-  `[span|resource|scope]_attributes.[attribute_key]`. If the attribute value is
-  a compound type like `Array` or `Kvlist`, it is serialized to json type of
-  GreptimeDB.
-- Compound fields, `span_links` and `span_events` are stored as json type.
+- All attributes fields are flattened into columns using the name pattern:
+  `[span|resource|scope]_attributes.[attribute_key]`. 
+  - Note: `resource_attributes.service.name` is excluded from flattening as it
+    is already stored in the `service_name` column.
+  - If the attribute value is a compound type like `Array` or `Kvlist`, it is
+    serialized to `JSON` type of GreptimeDB.
+- Compound fields, `span_links` and `span_events` are stored as `JSON` type.
 
 The table will be automatically generated when your first data item arrived. It
 also follows our schema-less principle to update the table schema automatically
@@ -91,12 +99,12 @@ span_attributes.user_agent.original        | python-requests/2.32.3
 span_attributes.http.route                 | todos/
 ```
 
-To check the table definition, you can use `show create table <table>`
+To check the table definition, you can use `show create table opentelemetry_traces`
 statement. An output like this is expected:
 
 ```
-Table        | web_trace_demo
-Create Table | CREATE TABLE IF NOT EXISTS "web_trace_demo" (                                           +
+Table        | opentelemetry_traces
+Create Table | CREATE TABLE IF NOT EXISTS "opentelemetry_traces" (                                           +
              |   "timestamp" TIMESTAMP(9) NOT NULL,                                                    +
              |   "timestamp_end" TIMESTAMP(9) NULL,                                                    +
              |   "duration_nano" BIGINT UNSIGNED NULL,                                                 +
@@ -188,7 +196,7 @@ table](/reference/sql/alter.md#create-an-index-for-a-column) statement.
 Unlike partition rules, index can be created on existing table and be affective
 on new data.
 
-### Append Only
+### Append-only Mode
 
 By default, trace table created by OpenTelemetry API are in [append only
 mode](/user-guide/deployments-administration/performance-tuning/design-table.md#when-to-use-append-only-tables).
@@ -196,3 +204,34 @@ mode](/user-guide/deployments-administration/performance-tuning/design-table.md#
 ### TTL
 
 You can apply [TTL on trace table](/reference/sql/alter.md#alter-table-options).
+
+## Auxiliary Tables
+
+When you ingest trace data, GreptimeDB automatically creates two auxiliary
+tables to facilitate searching for services and operations. These tables are
+named by appending `_services` and `_operations` to your main trace table name.
+
+By default, these are named `opentelemetry_traces_services` and
+`opentelemetry_traces_operations`. If you customize the main trace table name
+using the `x-greptime-trace-table-name` HTTP header, the auxiliary tables will
+be named accordingly (e.g., `<custom_table_name>_services` and
+`<custom_table_name>_operations`).
+
+### Services Table (`opentelemetry_traces_services`)
+
+This table stores the list of unique service names found in the trace data.
+
+- **Columns**:
+  - `timestamp`: A constant timestamp (2100-01-01 00:00:00) used for all entries.
+  - `service_name`: The name of the service (Tag).
+
+### Operations Table (`opentelemetry_traces_operations`)
+
+This table stores the list of unique operations (service, span name, and span
+kind) found in the trace data.
+
+- **Columns**:
+  - `timestamp`: A constant timestamp (2100-01-01 00:00:00) used for all entries.
+  - `service_name`: The name of the service (Tag).
+  - `span_name`: The name of the span (Tag).
+  - `span_kind`: The kind of the span (Tag).

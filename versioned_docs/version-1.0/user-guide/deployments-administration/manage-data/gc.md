@@ -33,7 +33,7 @@ On the Metasrv side, GC schedules cleanup tasks for regions and coordinates when
 
 ```toml
 [gc]
-enable = true              # Turn on meta GC scheduler; must match datanode.
+enable = true              # Enable meta GC scheduler. default to be false; must match datanode.
 gc_cooldown_period = "5m"   # Minimum gap before the same region is GCed again.
 ```
 

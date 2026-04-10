@@ -166,6 +166,9 @@ An enterprise feature in GreptimeDB that creates additional read-only instances 
 ### Region
 A fundamental unit of data distribution in GreptimeDB's architecture. Regions contain a subset of table data and can be distributed across different nodes in a cluster. Each region manages its own storage, indexing, and query processing, enabling horizontal scalability and fault tolerance.
 
+### Repartition
+The process of adjusting table partition boundaries after creation by merging existing partitions and splitting them with new rules. Repartition is used to better match current data distribution, relieve hotspots, and reduce small cold regions.
+
 ### Rust
 A modern programming language known for its performance and safety features, particularly in system-level programming. GreptimeDB is built with Rust, contributing to its superior performance and reliability.
 
@@ -194,6 +197,9 @@ A special timestamp column in GreptimeDB tables that serves as the primary time 
 
 ### Time Series Database
 A specialized database designed to handle time-series data, which consists of sequences of data points indexed by timestamps. GreptimeDB is a cloud-native time-series database optimized for analyzing and querying metrics, logs, and events.
+
+### Table Sharding
+The technique of splitting a large table into multiple smaller partitions. In GreptimeDB, table sharding helps distribute load across regions and improve throughput for hot or large tables.
 
 ---
 
