@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { describe, it, expect } from 'vitest';
 import { parseFaqMarkdown, markdownToPlainText } from '../faq-schema';
 
@@ -57,8 +59,6 @@ More answer text.
   });
 
   it('parses the real FAQ file with at least 20 Q&A pairs', () => {
-    const fs = require('fs');
-    const path = require('path');
     const faqPath = path.resolve(
       process.cwd(),
       'versioned_docs/version-1.0/faq-and-others/faq.md',
