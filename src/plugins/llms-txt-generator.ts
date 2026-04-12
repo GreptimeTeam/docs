@@ -43,7 +43,7 @@ function walkIndexHtml(dir: string, results: string[] = []): string[] {
  *   build/index.html
  *     -> /index.md
  */
-function deriveMdUrlPath(htmlPath: string, outDir: string): { absolute: string; urlPath: string } {
+export function deriveMdUrlPath(htmlPath: string, outDir: string): { absolute: string; urlPath: string } {
   const rel = path.relative(outDir, htmlPath);
   const dirName = path.dirname(rel);
   if (dirName === '.') {
@@ -181,11 +181,9 @@ export default function llmsTxtGenerator(
       for (const filePath of allFiles) {
         const content = fs.readFileSync(filePath, 'utf-8');
         let processed = resolveVariables(content, variables);
-        // Rewrite URLs and inject the "About GreptimeDB" block only in
-        // the two index files, not in per-page markdown.
+        // Rewrite URLs only in the two index files, not in per-page markdown.
         if (filePath === llmsTxtPath || filePath === llmsFullTxtPath) {
           processed = processed.replace(docsUrlPattern, `${siteOrigin}/`);
-
         }
         if (processed !== content) {
           fs.writeFileSync(filePath, processed, 'utf-8');

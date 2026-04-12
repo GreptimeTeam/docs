@@ -13,6 +13,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
+    "test": "vitest run",
     "typecheck": "tsc",
     "backport": "node scripts/backport-docs.js",
     "backport:dry": "node scripts/backport-docs.js --dry-run --verbose",
@@ -52,7 +53,8 @@
     "puppeteer": "^24.10.2",
     "remark": "^15.0.1",
     "strip-markdown": "^6.0.0",
-    "typescript": "~5.2.2"
+    "typescript": "~5.2.2",
+    "vitest": "^4.1.4"
   },
   "browserslist": {
     "production": [

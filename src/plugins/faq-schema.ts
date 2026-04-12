@@ -25,7 +25,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { LoadContext, Plugin } from '@docusaurus/types';
 
-interface QA {
+export interface QA {
   question: string;
   answer: string;
 }
@@ -34,7 +34,7 @@ interface QA {
  * Parse the FAQ markdown into a flat list of Q&A pairs, skipping any
  * content that precedes the first H3 (e.g. the intro admonition block).
  */
-function parseFaqMarkdown(content: string): QA[] {
+export function parseFaqMarkdown(content: string): QA[] {
   // Strip frontmatter.
   const withoutFm = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   // Strip Docusaurus admonitions (`:::tip ... :::`, `:::note ... :::`, etc.)
@@ -98,7 +98,7 @@ function parseFaqMarkdown(content: string): QA[] {
  * more portable across consumers (Bing, AI crawlers, SGE) and avoids
  * the need to whitelist a subset of tags.
  */
-function markdownToPlainText(md: string): string {
+export function markdownToPlainText(md: string): string {
   return md
     // Fenced code blocks: drop entirely (too noisy for a Q&A answer).
     .replace(/```[\s\S]*?```/g, '')
@@ -190,8 +190,12 @@ export default function faqSchema(context: LoadContext): Plugin {
         const source = fs.readFileSync(srcPath, 'utf-8');
         const qas = parseFaqMarkdown(source);
         if (qas.length === 0) {
-          console.warn(`[faq-schema] no Q&A parsed from ${target.srcRelPath}`);
-          continue;
+          throw new Error(
+            `[faq-schema] parsed 0 Q&A pairs from ${target.srcRelPath}. ` +
+            `The FAQ markdown format may have changed — check that questions ` +
+            `use ### headings. See src/plugins/__tests__/faq-schema.test.ts ` +
+            `for the expected format.`,
+          );
         }
 
         const html = fs.readFileSync(htmlPath, 'utf-8');

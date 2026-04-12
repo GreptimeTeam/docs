@@ -1,5 +1,5 @@
 ---
-title: "GreptimeDB Metadata Management Overview"
+title: "GreptimeDB Metasrv Metadata Management Overview"
 keywords: [GreptimeDB, metadata storage, etcd, MySQL, PostgreSQL, configuration]
 description: Overview of metadata storage options in GreptimeDB, including etcd, MySQL, and PostgreSQL, with recommendations for production deployments.
 ---

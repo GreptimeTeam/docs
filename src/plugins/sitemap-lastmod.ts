@@ -41,7 +41,7 @@ function gitMtime(relativePath: string): string | null {
  * repo root. Returns null if the URL does not correspond to a doc page we
  * can map (e.g. release-notes, search, 404).
  */
-function urlToSourceFile(
+export function urlToSourceFile(
   urlString: string,
   locale: 'en' | 'zh',
   latestVersion: string,

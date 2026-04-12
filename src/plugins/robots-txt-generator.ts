@@ -13,14 +13,41 @@
  *
  * Policy:
  *   - Only the latest stable version (served at /) is indexed.
- *   - Nightly is disallowed for general crawlers (but still crawlable by
- *     Algolia for search indexing), and also carries noindex at the meta
- *     level for belt-and-suspenders.
- *   - Historical versions: crawlable (no Disallow), but noindex'd via meta.
+ *   - Nightly and historical versions are NOT disallowed — they carry
+ *     <meta name="robots" content="noindex,follow"> so crawlers must be
+ *     able to fetch the page, see the tag, and de-index it. Sitemap
+ *     exclusion (see docusaurus.config.ts) prevents them from being
+ *     discovered via sitemap; the meta tag handles de-indexing for any
+ *     URLs already known to search engines via external links.
  */
 import * as fs from 'fs';
 import * as path from 'path';
 import type { LoadContext, Plugin } from '@docusaurus/types';
+
+export function generateRobotsTxtContent(siteUrl: string): string {
+  const sitemapUrl = `${siteUrl}/sitemap.xml`;
+
+  const lines = [
+    '# Allow Algolia to crawl everything so DocSearch can index all',
+    '# versions (including nightly) regardless of meta robots tags.',
+    'User-agent: Algolia Crawler',
+    'Allow: /',
+    '',
+    '# General crawlers: only the latest stable (served at /) is indexable.',
+    '# Nightly and historical versions are intentionally NOT disallowed.',
+    '# They carry <meta name="robots" content="noindex,follow"> — crawlers',
+    '# must be able to fetch the page and see that tag to de-index it.',
+    '# Disallow would block crawlers from seeing noindex, leaving stale',
+    '# index entries forever.',
+    'User-agent: *',
+    'Allow: /',
+    '',
+    `Sitemap: ${sitemapUrl}`,
+    '',
+  ];
+
+  return lines.join('\n');
+}
 
 export default function robotsTxtGenerator(context: LoadContext): Plugin {
   return {
@@ -28,28 +55,9 @@ export default function robotsTxtGenerator(context: LoadContext): Plugin {
 
     async postBuild({ outDir, siteConfig }) {
       const siteUrl = siteConfig.url.replace(/\/$/, '');
-      const sitemapUrl = `${siteUrl}/sitemap.xml`;
-
-      const lines = [
-        '# Allow Algolia to crawl everything so DocSearch can index all',
-        '# versions (including nightly) regardless of meta robots tags.',
-        'User-agent: Algolia Crawler',
-        'Allow: /',
-        '',
-        '# General crawlers: only the latest stable (served at /) is indexable.',
-        '# Nightly is disallowed here. Historical versions are NOT disallowed —',
-        '# they carry <meta name="robots" content="noindex,follow"> so Google',
-        '# can crawl them, see the noindex, and remove them from the index.',
-        'User-agent: *',
-        'Allow: /',
-        'Disallow: /nightly/',
-        '',
-        `Sitemap: ${sitemapUrl}`,
-        '',
-      ];
-
-      fs.writeFileSync(path.join(outDir, 'robots.txt'), lines.join('\n'));
-      console.log(`[robots-txt-generator] wrote robots.txt with Sitemap: ${sitemapUrl}`);
+      const content = generateRobotsTxtContent(siteUrl);
+      fs.writeFileSync(path.join(outDir, 'robots.txt'), content);
+      console.log(`[robots-txt-generator] wrote robots.txt with Sitemap: ${siteUrl}/sitemap.xml`);
     },
   };
 }

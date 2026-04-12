@@ -1,5 +1,5 @@
 ---
-title: "GreptimeDB 元数据管理概述"
+title: "GreptimeDB Metasrv 元数据管理概述"
 keywords: [GreptimeDB, 元数据存储, etcd, MySQL, PostgreSQL, 配置]
 description: GreptimeDB 元数据存储选项概述，包括 etcd、MySQL 和 PostgreSQL，以及生产环境部署建议。
 ---
