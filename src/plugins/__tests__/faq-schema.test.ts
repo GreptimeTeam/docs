@@ -74,8 +74,24 @@ More answer text.
 });
 
 describe('markdownToPlainText', () => {
-  it('strips links and keeps visible text', () => {
+  it('strips links without siteUrl, keeps text only', () => {
     expect(markdownToPlainText('[GreptimeDB](https://greptime.com)')).toBe('GreptimeDB');
+  });
+
+  it('converts external links to <a> tags when siteUrl is provided', () => {
+    const result = markdownToPlainText(
+      'See [benchmarks](https://greptime.com/blogs/bench).',
+      'https://docs.greptime.com',
+    );
+    expect(result).toBe('See <a href="https://greptime.com/blogs/bench">benchmarks</a>.');
+  });
+
+  it('converts internal .md links to absolute URLs with trailing slash', () => {
+    const result = markdownToPlainText(
+      'See [Data Model](/user-guide/concepts/data-model.md).',
+      'https://docs.greptime.com',
+    );
+    expect(result).toBe('See <a href="https://docs.greptime.com/user-guide/concepts/data-model/">Data Model</a>.');
   });
 
   it('removes fenced code blocks entirely', () => {

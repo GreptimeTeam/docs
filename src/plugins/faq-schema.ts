@@ -34,7 +34,7 @@ export interface QA {
  * Parse the FAQ markdown into a flat list of Q&A pairs, skipping any
  * content that precedes the first H3 (e.g. the intro admonition block).
  */
-export function parseFaqMarkdown(content: string): QA[] {
+export function parseFaqMarkdown(content: string, siteUrl?: string): QA[] {
   // Strip frontmatter.
   const withoutFm = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   // Strip Docusaurus admonitions (`:::tip ... :::`, `:::note ... :::`, etc.)
@@ -49,7 +49,7 @@ export function parseFaqMarkdown(content: string): QA[] {
 
   const flush = () => {
     if (currentQ) {
-      const answer = markdownToPlainText(currentAnswer.join('\n'));
+      const answer = markdownToPlainText(currentAnswer.join('\n'), siteUrl);
       if (answer) {
         qas.push({ question: currentQ.trim(), answer });
       }
@@ -93,12 +93,28 @@ export function parseFaqMarkdown(content: string): QA[] {
 }
 
 /**
- * Convert markdown answer body to plain text suitable for JSON-LD.
- * Schema.org's acceptedAnswer.text accepts HTML, but plain text is
- * more portable across consumers (Bing, AI crawlers, SGE) and avoids
- * the need to whitelist a subset of tags.
+ * Convert a Docusaurus-style internal link to an absolute URL.
+ *   /user-guide/concepts/data-model.md → https://docs.greptime.com/user-guide/concepts/data-model/
+ * External URLs pass through unchanged.
  */
-export function markdownToPlainText(md: string): string {
+function resolveUrl(rawUrl: string, siteUrl: string): string {
+  if (!rawUrl.startsWith('/')) return rawUrl;
+  const stripped = rawUrl.replace(/\.mdx?$/, '').replace(/\/+$/, '');
+  return `${siteUrl}${stripped}/`;
+}
+
+/**
+ * Convert markdown answer body to lightly formatted text for JSON-LD.
+ *
+ * Google's FAQ structured data spec explicitly supports HTML in
+ * acceptedAnswer.text — including <a> links, which Bing renders as
+ * clickable links in SERP rich results, and AI tools can use for
+ * deeper context.
+ *
+ * When siteUrl is provided, markdown links are converted to <a> tags
+ * with absolute URLs. Other markdown syntax is stripped to plain text.
+ */
+export function markdownToPlainText(md: string, siteUrl?: string): string {
   return md
     // Fenced code blocks: drop entirely (too noisy for a Q&A answer).
     .replace(/```[\s\S]*?```/g, '')
@@ -106,8 +122,14 @@ export function markdownToPlainText(md: string): string {
     .replace(/`([^`]+)`/g, '$1')
     // Images: keep alt text only.
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-    // Links: keep visible text, drop URL.
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Links: convert to <a> tags if siteUrl is available, otherwise keep text only.
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+      if (siteUrl) {
+        const href = resolveUrl(url, siteUrl);
+        return `<a href="${href}">${text}</a>`;
+      }
+      return text;
+    })
     // Bold / italic / strike markers.
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/\*([^*]+)\*/g, '$1')
@@ -121,8 +143,6 @@ export function markdownToPlainText(md: string): string {
     .replace(/^\s*\d+\.\s+/gm, '')
     // Blockquote markers.
     .replace(/^\s*>\s?/gm, '')
-    // Inline HTML.
-    .replace(/<[^>]+>/g, '')
     // Collapse whitespace.
     .replace(/\n{3,}/g, '\n\n')
     .replace(/[ \t]+/g, ' ')
@@ -188,7 +208,7 @@ export default function faqSchema(context: LoadContext): Plugin {
         }
 
         const source = fs.readFileSync(srcPath, 'utf-8');
-        const qas = parseFaqMarkdown(source);
+        const qas = parseFaqMarkdown(source, siteUrl);
         if (qas.length === 0) {
           throw new Error(
             `[faq-schema] parsed 0 Q&A pairs from ${target.srcRelPath}. ` +
