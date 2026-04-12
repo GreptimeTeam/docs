@@ -287,7 +287,6 @@ const config: Config = {
             return items
               .filter((item) => {
                 const pathname = new URL(item.url).pathname;
-                if (pathname.startsWith('/markdown-page/')) return false;
                 return !excludedPrefixes.some(prefix => pathname.startsWith(prefix));
               })
               .map((item) => {

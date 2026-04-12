@@ -4,17 +4,19 @@
  * Replaces the static file because:
  *   1. The Sitemap directive must point to the current site's absolute URL
  *      (.com or .cn), which is only known at build time via siteConfig.url.
- *   2. The Disallow list for historical versions should be derived from
- *      versions.json so new releases auto-update without manual edits.
+ *   2. Crawl policy is environment-aware and intentionally does NOT
+ *      disallow historical versions — they carry a <meta name="robots"
+ *      content="noindex,follow"> tag (see src/plugins/version-noindex.ts)
+ *      so crawlers can visit, see the noindex, and de-index them. Using
+ *      robots.txt Disallow would block crawlers from seeing the meta tag,
+ *      leaving stale index entries forever.
  *
  * Policy:
  *   - Only the latest stable version (served at /) is indexed.
- *   - Nightly is crawlable by Algolia for search indexing but disallowed
- *     for general crawlers and noindex'd at the meta level.
- *   - Historical versions are NOT disallowed here — they are noindex'd via
- *     <meta name="robots"> (see src/plugins/version-noindex.ts). Using
- *     robots.txt Disallow would prevent Google from seeing the noindex tag
- *     and leave stale index entries forever.
+ *   - Nightly is disallowed for general crawlers (but still crawlable by
+ *     Algolia for search indexing), and also carries noindex at the meta
+ *     level for belt-and-suspenders.
+ *   - Historical versions: crawlable (no Disallow), but noindex'd via meta.
  */
 import * as fs from 'fs';
 import * as path from 'path';
@@ -41,7 +43,6 @@ export default function robotsTxtGenerator(context: LoadContext): Plugin {
         'User-agent: *',
         'Allow: /',
         'Disallow: /nightly/',
-        'Disallow: /markdown-page/',
         '',
         `Sitemap: ${sitemapUrl}`,
         '',

@@ -202,7 +202,10 @@ export default function faqSchema(context: LoadContext): Plugin {
         }
 
         const jsonLd = buildFaqPageJsonLd(qas, siteUrl, target.pageUrl, locale);
-        const scriptTag = `<script type="application/ld+json">${jsonLd}</script>`;
+        // Escape "</script>" inside JSON-LD to prevent premature script tag
+        // termination if any FAQ answer happens to contain that literal.
+        const safeJsonLd = jsonLd.replace(/<\//g, '<\\/');
+        const scriptTag = `<script type="application/ld+json">${safeJsonLd}</script>`;
         const patched = html.replace('</head>', `${scriptTag}</head>`);
         if (patched === html) {
           console.warn(`[faq-schema] could not find </head> in ${target.htmlRelPath}`);

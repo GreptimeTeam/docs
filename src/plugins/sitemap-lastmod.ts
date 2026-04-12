@@ -11,7 +11,7 @@
  * git subtree and have their own `date` frontmatter that Docusaurus already
  * exposes differently.
  */
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -22,8 +22,9 @@ function gitMtime(relativePath: string): string | null {
     return mtimeCache.get(relativePath)!;
   }
   try {
-    const out = execSync(
-      `git log -1 --format=%cI -- "${relativePath}"`,
+    const out = execFileSync(
+      'git',
+      ['log', '-1', '--format=%cI', '--', relativePath],
       { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] },
     ).trim();
     const result = out || null;
