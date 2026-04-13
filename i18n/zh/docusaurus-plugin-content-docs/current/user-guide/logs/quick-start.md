@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Logs 快速上手"
 keywords: [logs, log service, pipeline, greptime_identity, quick start, JSON logs]
 description: GreptimeDB 日志服务快速入门指南，包括使用内置 greptime_identity pipeline 的基本日志写入和与日志收集器的集成。
 ---

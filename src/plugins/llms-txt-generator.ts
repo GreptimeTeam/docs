@@ -7,12 +7,73 @@
  * 2. Relocating generated .md files to match the site's URL structure
  * 3. Resolving VAR:: placeholders using version-specific variables
  * 4. Rewriting URLs from source paths to actual site paths
+ * 5. Injecting <link rel="alternate" type="text/markdown"> into every HTML
+ *    page that has a .md counterpart, so AI crawlers can discover the
+ *    clean markdown version directly
+ *
+ * Step 5 lives here (rather than as a separate plugin) because
+ * Docusaurus runs postBuild hooks in parallel via Promise.all — there is
+ * no ordering guarantee across plugins, so any work that must happen
+ * *after* the .md files are written must be inside this plugin's own
+ * postBuild.
  */
 import * as fs from 'fs';
 import * as path from 'path';
 import type { LoadContext, Plugin } from '@docusaurus/types';
 
 const DESCRIPTION = 'GreptimeDB is an open-source observability database for metrics, logs, traces, and wide events. Drop-in replacement for Prometheus, Loki & Elasticsearch, or the single backend for OpenTelemetry.';
+
+function walkIndexHtml(dir: string, results: string[] = []): string[] {
+  if (!fs.existsSync(dir)) return results;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkIndexHtml(full, results);
+    } else if (entry.name === 'index.html') {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
+/**
+ * Derive the .md sibling URL for an index.html file.
+ *   build/user-guide/concepts/architecture/index.html
+ *     -> /user-guide/concepts/architecture.md
+ *   build/index.html
+ *     -> /index.md
+ */
+export function deriveMdUrlPath(htmlPath: string, outDir: string): { absolute: string; urlPath: string } {
+  const rel = path.relative(outDir, htmlPath);
+  const dirName = path.dirname(rel);
+  if (dirName === '.') {
+    return { absolute: path.join(outDir, 'index.md'), urlPath: '/index.md' };
+  }
+  const mdRel = `${dirName}.md`;
+  return {
+    absolute: path.join(outDir, mdRel),
+    urlPath: '/' + mdRel.split(path.sep).join('/'),
+  };
+}
+
+function injectMarkdownAlternateLinks(outDir: string): number {
+  let injected = 0;
+  for (const htmlPath of walkIndexHtml(outDir)) {
+    const md = deriveMdUrlPath(htmlPath, outDir);
+    if (!fs.existsSync(md.absolute)) continue;
+
+    const html = fs.readFileSync(htmlPath, 'utf-8');
+    if (/rel="alternate"[^>]*type="text\/markdown"/i.test(html)) continue;
+
+    const linkTag = `<link rel="alternate" type="text/markdown" href="${md.urlPath}">`;
+    const patched = html.replace('</head>', `${linkTag}</head>`);
+    if (patched === html) continue;
+    fs.writeFileSync(htmlPath, patched);
+    injected++;
+  }
+  return injected;
+}
+
 
 function loadVariables(version: string): Record<string, string> {
   const filePath = path.resolve(process.cwd(), 'variables', `variables-${version}.ts`);
@@ -120,7 +181,7 @@ export default function llmsTxtGenerator(
       for (const filePath of allFiles) {
         const content = fs.readFileSync(filePath, 'utf-8');
         let processed = resolveVariables(content, variables);
-        // Rewrite URLs only in index files, not in per-page markdown
+        // Rewrite URLs only in the two index files, not in per-page markdown.
         if (filePath === llmsTxtPath || filePath === llmsFullTxtPath) {
           processed = processed.replace(docsUrlPattern, `${siteOrigin}/`);
         }
@@ -133,6 +194,16 @@ export default function llmsTxtGenerator(
       console.log(
         `[llms-txt-generator] v${latestVersion}: llms.txt + llms-full.txt + ${movedFiles.length} .md files. ` +
         `Post-processed ${postProcessedCount} files.`
+      );
+
+      // Must be the final step: inject <link rel="alternate" type="text/markdown">
+      // into every HTML page whose .md sibling we just wrote. Living here
+      // (instead of in a separate plugin) guarantees the .md files exist
+      // by the time we look for them, since Docusaurus runs plugin
+      // postBuild hooks in parallel.
+      const altLinksInjected = injectMarkdownAlternateLinks(outDir);
+      console.log(
+        `[llms-txt-generator] injected rel=alternate type=text/markdown into ${altLinksInjected} HTML pages`,
       );
     },
   };

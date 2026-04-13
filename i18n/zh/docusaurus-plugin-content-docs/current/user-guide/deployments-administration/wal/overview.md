@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB WAL 概述"
 keywords: [WAL, 预写日志, 本地 WAL, Remote WAL, GreptimeDB]
 description: 介绍 GreptimeDB 中的 WAL（预写日志），包括本地 WAL 和远程 WAL 的优缺点。
 ---

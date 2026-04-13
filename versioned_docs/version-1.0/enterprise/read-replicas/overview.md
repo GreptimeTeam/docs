@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Read Replicas Overview"
 keywords: [enterprise, cluster, read replica, leader region, follower region]
 description: Overview, principles, and how-tos of read replica feature in GreptimeDB Enterprise.
 ---

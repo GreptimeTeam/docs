@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Remote WAL 配置"
 keywords: [GreptimeDB Remote WAL, 配置, Kafka, Metasrv, Datanode, GreptimeDB]
 description: 本节介绍如何配置 GreptimeDB 集群的 Remote WAL。
 ---

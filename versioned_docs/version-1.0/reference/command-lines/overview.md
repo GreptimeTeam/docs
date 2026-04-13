@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Command Line Overview"
 keywords: [GreptimeDB CLI, command-line interface, installation, starting services, upgrading versions, command line tools, CLI reference]
 description: Comprehensive overview of the GreptimeDB command-line interface, including installation instructions, available commands, global options, and practical examples for starting services and managing GreptimeDB instances.
 ---

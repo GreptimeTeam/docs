@@ -1,4 +1,5 @@
 ---
+title: "GreptimeDB Getting Started Quick Start"
 keywords: [quick start, SQL, PromQL, create tables, insert data, query data, metrics, logs, traces, correlation, GreptimeDB dashboard]
 description: A 10-minute guide to GreptimeDB's core capabilities — from ingestion to cross-signal correlation across metrics, logs, and traces.
 ---
