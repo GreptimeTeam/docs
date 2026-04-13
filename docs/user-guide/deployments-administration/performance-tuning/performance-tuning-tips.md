@@ -67,9 +67,12 @@ Some tips:
 - Double the cache size if the cache hit ratio is less than 50%
 - If using full-text index, leave 1/10 of disk space for the `staging_size` at least
 
-### Using flat format table for high cardinality primary keys
+### Choosing the right SST format
 
-Putting high cardinality columns, such as `trace_id` or `uuid`, into the primary key can negatively impact both write and query performance with the `primary_key` format. The [`flat` format](/reference/sql/create.md#create-a-table-with-sst-format) is the default SST format and is optimized for high cardinality primary keys. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
+GreptimeDB supports two [SST formats](/reference/sql/create.md#create-a-table-with-sst-format): `flat` and `primary_key`. Choosing the right one based on the cardinality of your primary key can significantly improve performance.
+
+- **`flat` format (default)**: Optimized for high cardinality primary keys. If your primary key contains columns like `trace_id` or `uuid`, the `flat` format delivers better write and query performance. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
+- **`primary_key` format**: May offer better performance when the primary key cardinality is not high.
 
 ### Using append-only table if possible
 

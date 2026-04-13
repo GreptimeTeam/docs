@@ -65,9 +65,12 @@ staging_size = "10GB"
 - 如果使用全文索引，至少将 `staging_size` 设置为磁盘空间的 1/10
 
 
-### 使用 flat 格式表处理高基数主键
+### 选择合适的 SST 格式
 
-使用 `primary_key` 格式时，将高基数的列（如 `trace_id` 和 `uuid`）设置为主键会降低写入和查询的性能。[`flat` 格式](/reference/sql/create.md#创建指定-sst-格式的表)是默认的 SST 格式，针对高基数主键进行了优化。对于具有高基数主键的表，还可以考虑使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表来进一步提升性能。
+GreptimeDB 支持两种 [SST 格式](/reference/sql/create.md#创建指定-sst-格式的表)：`flat` 和 `primary_key`。根据主键的基数选择合适的格式可以显著提升性能。
+
+- **`flat` 格式（默认）**：针对高基数主键进行了优化。如果主键包含 `trace_id` 或 `uuid` 等列，`flat` 格式可以提供更好的写入和查询性能。对于具有高基数主键的表，还可以考虑使用 [append-only](/reference/sql/create.md#创建-append-only-表) 表来进一步提升性能。
+- **`primary_key` 格式**：当主键基数不高时，可能会提供更好的性能。
 
 
 ### 尽可能使用 append-only 表
