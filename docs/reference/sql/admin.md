@@ -1,6 +1,6 @@
 ---
-keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, migrate region]
-description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, migrating regions, and querying procedure states.
+keywords: [ADMIN statement, SQL, administration functions, flush table, compact table, migrate region, gc table, gc regions]
+description: Describes the `ADMIN` statement used to run administration functions, including examples for flushing tables, scheduling compactions, migrating regions, querying procedure states, and garbage collecting orphaned files.
 ---
 
 # ADMIN
@@ -26,6 +26,8 @@ GreptimeDB provides some administration functions to manage the database and dat
 * `reconcile_table(table_name)` to reconcile the metadata inconsistency of a table, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
 * `reconcile_database(database_name)` to reconcile the metadata inconsistency of all tables in a database, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
 * `reconcile_catalog()` to reconcile the metadata inconsistency of all tables in the entire cluster, read [table reconciliation](/user-guide/deployments-administration/maintenance/table-reconciliation.md) for more details.
+* `gc_table(table_name, [full_file_listing])` to garbage collect orphaned SST files in object storage for a dropped table. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
+* `gc_regions(region_id1, ..., region_idN, [full_file_listing])` to garbage collect orphaned SST files in object storage for one or more specific regions by their region ids. Returns the number of processed regions. The optional `full_file_listing` boolean (default `false`) enables a thorough scan of all files when set to `true`.
 
 For example:
 ```sql
@@ -43,4 +45,16 @@ admin compact_table("test", "swcs", "parallelism=2");
 
 -- Schedule an SWCS compaction with custom time window and parallelism --
 admin compact_table("test", "swcs", "window=1800,parallelism=2");
+
+-- Garbage collect orphaned SST files for a dropped table --
+admin gc_table("test");
+
+-- Garbage collect orphaned SST files for a dropped table with full file listing --
+admin gc_table("test", true);
+
+-- Garbage collect orphaned SST files for specific regions --
+admin gc_regions(1, 2, 3);
+
+-- Garbage collect orphaned SST files for specific regions with full file listing --
+admin gc_regions(1, 2, 3, true);
 ```
