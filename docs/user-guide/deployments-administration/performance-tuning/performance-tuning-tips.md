@@ -74,6 +74,8 @@ GreptimeDB supports two [SST formats](/reference/sql/create.md#create-a-table-wi
 - **`flat` format (default)**: Optimized for high cardinality primary keys. If your primary key contains columns like `trace_id` or `uuid`, the `flat` format delivers better write and query performance. For tables with high cardinality primary keys, also consider using an [append-only table](/reference/sql/create.md#create-an-append-only-table) to further improve performance.
 - **`primary_key` format**: May offer better performance when the primary key cardinality is not high.
 
+See [Choosing the SST format](/user-guide/deployments-administration/performance-tuning/design-table.md#choosing-the-sst-format) for more details, including how to switch the format on existing tables.
+
 ### Using append-only table if possible
 
 In general, append-only tables have a higher scan performance as the storage engine can skip merging and deduplication. What's more, the query engine can use statistics to speed up some queries if the table is append-only.
