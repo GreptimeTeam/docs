@@ -47,7 +47,7 @@ OTLP/HTTP requests.
 - `timestamp` is the start time of the span and is used as the **Time Index**.
 - A new `duration_nano` column is generated using `end_time - start_time`.
 - All attributes fields are flattened into columns using the name pattern:
-  `[span|resource|scope]_attributes.[attribute_key]`. 
+  `[span|resource|scope]_attributes.[attribute_key]`.
   - Note: `resource_attributes.service.name` is excluded from flattening as it
     is already stored in the `service_name` column.
   - If the attribute value is a compound type like `Array` or `Kvlist`, it is
@@ -179,9 +179,14 @@ optimised for retrieve trace spans by the trace id.
 The partition rule introduces 16 partitions for the table. It is suitable for a
 3-5 datanode setup.
 
-To customize the partition rule, you can create a new table ahead-of-time by
-copying the DDL output by `show create table` on original table, update the
-`PARTITION ON` section to include your own rules.
+To customize the partition rule, you can:
+
+1. Create a new table ahead-of-time by copying the DDL output by `show create
+   table` on original table, update the `PARTITION ON` section to include your
+   own rules.
+2. Use `x-greptime-hints` [HTTP header](/user-guide/protocols/http#hints) in
+   your OTLP ingestion request, include a hint `trace_table_partitions=n` where
+   `n` is the partition number. Set `n` to `1` to disable partitioning.
 
 ### Index
 
