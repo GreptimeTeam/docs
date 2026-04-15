@@ -44,7 +44,7 @@ Or
 psql -h 127.0.0.1 -p 4003 -d public
 ```
 
-You can also use the built-in Dashboard at `http://127.0.0.1:4000/dashboard` to run all the SQL queries in this guide.
+You can also use the built-in Dashboard at `http://127.0.0.1:4000/dashboard/` to run all the SQL queries in this guide.
 
 By default, GreptimeDB does not have [authentication](/user-guide/deployments-administration/authentication/overview.md) enabled. You can connect without providing a username and password.
 
@@ -404,7 +404,7 @@ curl -X POST \
         "values": [
           [
             1720728015.0,
-            "3400"
+            "3559.999999999999"
           ]
         ]
       },
@@ -417,7 +417,7 @@ curl -X POST \
         "values": [
           [
             1720728015.0,
-            "114"
+            "114.2"
           ]
         ]
       }
@@ -441,8 +441,8 @@ TQL EVAL ('2024-07-11 20:00:00Z', '2024-07-11 20:00:20Z', '15s')
 +---------------------+---------------------------------------------------------+-------+-------------+
 | ts                  | prom_quantile_over_time(ts_range,latency,Float64(0.95)) | host  | method_name |
 +---------------------+---------------------------------------------------------+-------+-------------+
-| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |
-| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |
+| 2024-07-11 20:00:15 |                                       3559.999999999999 | host1 | GetUser     |
+| 2024-07-11 20:00:15 |                                                   114.2 | host2 | GetUser     |
 +---------------------+---------------------------------------------------------+-------+-------------+
 ```
 
@@ -476,9 +476,9 @@ ORDER BY m.ts, m.host;
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
 | 2024-07-11 20:00:10 |                                      140.89999999999998 | host1 | GetUser     |         10 |
 | 2024-07-11 20:00:10 |                                                   113.8 | host2 | GetUser     |          0 |
-| 2024-07-11 20:00:15 |                                                    3400 | host1 | GetUser     |          4 |
-| 2024-07-11 20:00:15 |                                                     114 | host2 | GetUser     |          0 |
-| 2024-07-11 20:00:20 |                                                    3375 | host1 | GetUser     |          0 |
+| 2024-07-11 20:00:15 |                                       3559.999999999999 | host1 | GetUser     |          4 |
+| 2024-07-11 20:00:15 |                                                   114.2 | host2 | GetUser     |          0 |
+| 2024-07-11 20:00:20 |                                                    3400 | host1 | GetUser     |          0 |
 | 2024-07-11 20:00:20 |                                                     115 | host2 | GetUser     |          0 |
 +---------------------+---------------------------------------------------------+-------+-------------+------------+
 ```
@@ -489,7 +489,7 @@ GreptimeDB offers a [Dashboard](./installation/greptimedb-dashboard.md) for data
 
 ### Explore data
 
-Access the Dashboard at `http://localhost:4000/dashboard`. Click the `+` button to add a query, write SQL, and click `Run All`. Click the `Chart` button in the result panel to visualize the data.
+Access the Dashboard at `http://localhost:4000/dashboard/`. Click the `+` button to add a query, write SQL, and click `Run All`. Click the `Chart` button in the result panel to visualize the data.
 
 ```sql
 SELECT * FROM grpc_latencies;
@@ -520,7 +520,7 @@ Click `Write` to ingest the data. The `grpc_metrics` table is created automatica
 
 **Visualize and monitor:**
 - [Grafana integration](/user-guide/integrations/grafana.md) — connect Grafana with SQL or PromQL datasource
-- [Official Dashboard](/getting-started/installation/greptimedb-dashboard.md) — the embedded dashboard at `http://localhost:4000/dashboard`
+- [Official Dashboard](/getting-started/installation/greptimedb-dashboard.md) — the embedded dashboard at `http://localhost:4000/dashboard/`
 
 **Go deeper:**
 - [Why GreptimeDB](/user-guide/concepts/why-greptimedb.md) — architecture, cost comparison, and how GreptimeDB compares
