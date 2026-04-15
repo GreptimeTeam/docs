@@ -272,9 +272,10 @@ DESC custom_pipeline_logs;
 | user_agent    | String              |      | YES  |         | FIELD         |
 | response_size | Int32               |      | YES  |         | FIELD         |
 | timestamp     | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| greptime_table_ttl | String         |      | YES  |         | FIELD         |
 | http_method   | String              |      | YES  |         | FIELD         |
 +---------------+---------------------+------+------+---------+---------------+
-7 rows in set (0.00 sec)
+8 rows in set (0.00 sec)
 ```
 
 ```sql

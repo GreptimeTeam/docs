@@ -92,7 +92,7 @@ CREATE TABLE test(b BLOB, ts TIMESTAMP TIME INDEX);
 ```sql
 INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1687867163);
 -- or --
-INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1687867163);
+INSERT INTO test VALUES(0x9fad5e9eefdfb449, 1687867163);
 ```
 
 #### 插入特殊数字值

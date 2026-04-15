@@ -33,7 +33,7 @@ Example:
 ```sql
 CREATE TABLE monitoring_data (
     host STRING INVERTED INDEX,
-    region STRING PRIMARY KEY INVERTED INDEX,
+    `region` STRING PRIMARY KEY INVERTED INDEX,
     cpu_usage DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -89,7 +89,7 @@ Full-text index is designed for text search operations on string columns. It ena
 Example:
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX,
+    `message` STRING FULLTEXT INDEX,
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -172,7 +172,7 @@ Key observations:
 -- Using Bloom backend (recommended for most cases)
 CREATE TABLE logs (
     timestamp TIMESTAMP(9) TIME INDEX,
-    message STRING FULLTEXT INDEX WITH (
+    `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
         analyzer = 'English',
         case_sensitive = 'false'
@@ -182,7 +182,7 @@ CREATE TABLE logs (
 -- Using Tantivy backend (for high-selectivity queries)
 CREATE TABLE logs (
     timestamp TIMESTAMP(9) TIME INDEX,
-    message STRING FULLTEXT INDEX WITH (
+    `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
         analyzer = 'English',
         case_sensitive = 'false'

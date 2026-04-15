@@ -7,6 +7,10 @@ description: The slow queries table in the `greptime_private` database.
 
 The `slow_queries` table contains the slow queries of GreptimeDB:
 
+:::tip NOTE
+The `slow_queries` table requires slow query logging to be enabled. See [Slow Query](/user-guide/deployments-administration/monitoring/slow-query.md) for configuration details.
+:::
+
 ```sql
 USE greptime_private;
 

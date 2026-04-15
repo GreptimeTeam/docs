@@ -16,11 +16,11 @@ SHOW [FULL] DATABASES;
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| public  |
-+---------+
++----------+
+| Database |
++----------+
+| public   |
++----------+
 1 row in set (0.01 sec)
 ```
 
@@ -33,7 +33,7 @@ SHOW DATABASES LIKE 'p%';
 根据 `where` 表达式展示数据库：
 
 ```sql
-SHOW DATABASES WHERE Schemas='test_public_schema';
+SHOW DATABASES WHERE Database='test_public_schema';
 ```
 
 展示所有数据库，包括它们的选项：

@@ -198,7 +198,7 @@ CREATE TABLE app_logs (
     host STRING,
     api_path STRING FULLTEXT INDEX,
     log_level STRING,
-    log STRING FULLTEXT INDEX,
+    `log` STRING FULLTEXT INDEX,
     PRIMARY KEY (host, log_level)
 ) WITH ('append_mode'='true');
 ```
@@ -206,7 +206,7 @@ CREATE TABLE app_logs (
 Insert a new row into the `app_logs` table:
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log)
+INSERT INTO app_logs (ts, host, api_path, log_level, `log`)
 VALUES ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection timeout');
 ```
 
@@ -230,7 +230,7 @@ The output will be:
 You can insert new data with the same tag and time index:
 
 ```sql
-INSERT INTO app_logs (ts, host, api_path, log_level, log)
+INSERT INTO app_logs (ts, host, api_path, log_level, `log`)
 -- The same tag `host1` and `ERROR`, the same time index 2024-07-11 20:00:10
 VALUES ('2024-07-11 20:00:10', 'host1', '/api/v1/resource', 'ERROR', 'Connection reset');
 ```

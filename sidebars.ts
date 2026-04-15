@@ -734,7 +734,6 @@ const sidebars: SidebarsConfig = {
                 'reference/sql/information-schema/flows',
                 'reference/sql/information-schema/region-peers',
                 'reference/sql/information-schema/region-statistics',
-                'reference/sql/information-schema/runtime-metrics',
                 'reference/sql/information-schema/cluster-info',
                 'reference/sql/information-schema/process-list',
                 'reference/sql/information-schema/ssts-index-meta',

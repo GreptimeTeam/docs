@@ -299,7 +299,7 @@ CREATE TABLE bools(
 ```
   
 ```sql
-INSERT INTO bools(b) VALUES (TRUE), (FALSE);
+INSERT INTO bools(b, ts) VALUES (TRUE, '2024-01-01 00:00:00'), (FALSE, '2024-01-01 00:00:01');
 ```
 
 ## 与 MySQL 和 PostgreSQL 兼容的数据类型

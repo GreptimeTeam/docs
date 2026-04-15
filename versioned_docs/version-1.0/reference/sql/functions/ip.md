@@ -97,13 +97,13 @@ String - The IPv4 address in dot-decimal notation (e.g., '192.168.0.1').
 **Examples:**
 
 ```sql
-SELECT ipv4_num_to_string(3232235521); -- 0xC0A80001
+SELECT ipv4_num_to_string(3232235521::uint32); -- 0xC0A80001
 -- Output: '192.168.0.1'
 
-SELECT ipv4_num_to_string(167772161); -- 0x0A000001
+SELECT ipv4_num_to_string(167772161::uint32); -- 0x0A000001
 -- Output: '10.0.0.1'
 
-SELECT ipv4_num_to_string(0);
+SELECT ipv4_num_to_string(0::uint32);
 -- Output: '0.0.0.0'
 ```
 

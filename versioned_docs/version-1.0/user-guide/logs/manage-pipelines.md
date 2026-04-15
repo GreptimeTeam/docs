@@ -293,7 +293,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
 Output:
 
 ```json
-{"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
+{"error":"Processor gsub: expect string value, but got Float(1998.08)"}
 ```
 
 The output indicates that the pipeline processing failed because the `gsub` Processor expects a string type rather than a floating-point number type. We need to adjust the format of the log data to ensure the pipeline can process it correctly.
@@ -309,38 +309,41 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
 At this point, the Pipeline processing is successful, and the output is as follows:
 
 ```json
-{
-    "rows": [
-        [
+[
+    {
+        "rows": [
+            [
+                {
+                    "data_type": "STRING",
+                    "key": "message",
+                    "semantic_type": "FIELD",
+                    "value": "1998-08"
+                },
+                {
+                    "data_type": "TIMESTAMP_NANOSECOND",
+                    "key": "time",
+                    "semantic_type": "TIMESTAMP",
+                    "value": 1716668197217000000
+                }
+            ]
+        ],
+        "schema": [
             {
+                "column_type": "FIELD",
                 "data_type": "STRING",
-                "key": "message",
-                "semantic_type": "FIELD",
-                "value": "1998-08"
+                "fulltext": false,
+                "name": "message"
             },
             {
+                "column_type": "TIMESTAMP",
                 "data_type": "TIMESTAMP_NANOSECOND",
-                "key": "time",
-                "semantic_type": "TIMESTAMP",
-                "value": "2024-05-25 20:16:37.217+0000"
+                "fulltext": false,
+                "name": "time"
             }
-        ]
-    ],
-    "schema": [
-        {
-            "column_type": "FIELD",
-            "data_type": "STRING",
-            "fulltext": false,
-            "name": "message"
-        },
-        {
-            "column_type": "TIMESTAMP",
-            "data_type": "TIMESTAMP_NANOSECOND",
-            "fulltext": false,
-            "name": "time"
-        }
-    ]
-}
+        ],
+        "table_name": "dry_run"
+    }
+]
 ```
 
 It can be seen that the `.` in the string `1998.08` has been replaced with `-`, indicating a successful processing of the Pipeline.
