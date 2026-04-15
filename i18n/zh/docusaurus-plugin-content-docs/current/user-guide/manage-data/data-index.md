@@ -33,7 +33,7 @@ Tag 列不会被自动建立倒排索引，
 ```sql
 CREATE TABLE monitoring_data (
     host STRING INVERTED INDEX,
-    region STRING PRIMARY KEY INVERTED INDEX,
+    `region` STRING PRIMARY KEY INVERTED INDEX,
     cpu_usage DOUBLE,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -89,7 +89,7 @@ CREATE TABLE sensor_data (
 示例：
 ```sql
 CREATE TABLE logs (
-    message STRING FULLTEXT INDEX,
+    `message` STRING FULLTEXT INDEX,
     `level` STRING PRIMARY KEY,
     `timestamp` TIMESTAMP TIME INDEX,
 );
@@ -172,7 +172,7 @@ GreptimeDB 提供两种全文索引后端用于高效日志搜索：
 -- 使用 Bloom 后端（大多数情况推荐）
 CREATE TABLE logs (
     timestamp TIMESTAMP(9) TIME INDEX,
-    message STRING FULLTEXT INDEX WITH (
+    `message` STRING FULLTEXT INDEX WITH (
         backend = 'bloom',
         analyzer = 'English',
         case_sensitive = 'false'
@@ -182,7 +182,7 @@ CREATE TABLE logs (
 -- 使用 Tantivy 后端（用于高选择性查询）
 CREATE TABLE logs (
     timestamp TIMESTAMP(9) TIME INDEX,
-    message STRING FULLTEXT INDEX WITH (
+    `message` STRING FULLTEXT INDEX WITH (
         backend = 'tantivy',
         analyzer = 'English',
         case_sensitive = 'false'

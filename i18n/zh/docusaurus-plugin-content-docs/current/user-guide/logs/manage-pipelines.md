@@ -292,7 +292,7 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
 输出：
 
 ```json
-{"error":"Failed to execute pipeline, reason: gsub processor: expect string or array string, but got Float64(1998.08)"}
+{"error":"Processor gsub: expect string value, but got Float(1998.08)"}
 ```
 
 输出显示 Pipeline 处理失败，因为 `gsub` Processor 期望的是字符串类型，而不是浮点数类型。我们需要修改日志数据的格式，确保 Pipeline 能够正确处理。
@@ -308,38 +308,41 @@ curl -X "POST" "http://localhost:4000/v1/pipelines/_dryrun?pipeline_name=test" \
 此时 Pipeline 处理成功，输出如下：
 
 ```json
-{
-    "rows": [
-        [
+[
+    {
+        "rows": [
+            [
+                {
+                    "data_type": "STRING",
+                    "key": "message",
+                    "semantic_type": "FIELD",
+                    "value": "1998-08"
+                },
+                {
+                    "data_type": "TIMESTAMP_NANOSECOND",
+                    "key": "time",
+                    "semantic_type": "TIMESTAMP",
+                    "value": 1716668197217000000
+                }
+            ]
+        ],
+        "schema": [
             {
+                "column_type": "FIELD",
                 "data_type": "STRING",
-                "key": "message",
-                "semantic_type": "FIELD",
-                "value": "1998-08"
+                "fulltext": false,
+                "name": "message"
             },
             {
+                "column_type": "TIMESTAMP",
                 "data_type": "TIMESTAMP_NANOSECOND",
-                "key": "time",
-                "semantic_type": "TIMESTAMP",
-                "value": "2024-05-25 20:16:37.217+0000"
+                "fulltext": false,
+                "name": "time"
             }
-        ]
-    ],
-    "schema": [
-        {
-            "column_type": "FIELD",
-            "data_type": "STRING",
-            "fulltext": false,
-            "name": "message"
-        },
-        {
-            "column_type": "TIMESTAMP",
-            "data_type": "TIMESTAMP_NANOSECOND",
-            "fulltext": false,
-            "name": "time"
-        }
-    ]
-}
+        ],
+        "table_name": "dry_run"
+    }
+]
 ```
 
 可以看到，`1998.08` 字符串中的 `.` 已经被替换为 `-`，Pipeline 处理成功。
