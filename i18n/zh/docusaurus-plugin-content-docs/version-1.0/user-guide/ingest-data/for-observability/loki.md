@@ -84,6 +84,7 @@ DESC loki_demo_logs;
 
 - `greptime_timestamp`: 日志条目的时间戳
 - `line`: 日志消息内容
+- `structured_metadata`: 日志条目的结构化元数据，JSON 格式
 
 如果 Loki 请求数据中含有 label，它们将作为 tag 添加到表结构中（如上例中的 `job` 和 `from`）。
 

@@ -84,6 +84,7 @@ DESC loki_demo_logs;
 
 - `greptime_timestamp`: The timestamp of the log entry
 - `line`: The log message content
+- `structured_metadata`: The structured metadata of the log entry in JSON format
 
 If the Loki Push request contains labels, they will be added as tags to the table schema (like `job` and `from` in the above example).
 
