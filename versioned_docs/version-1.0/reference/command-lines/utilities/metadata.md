@@ -21,8 +21,8 @@ greptime cli meta snapshot save [OPTIONS]
 
 | Option             | Required | Default           | Description                                                                                                                                        |
 | ------------------ | -------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Yes      | -                 | Metadata storage service addresses to connect to (only supports etcd MySQL PostgreSQL) format consistent with store-addrs in metasrv configuration |
-| --backend          | Yes      | -                 | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`                                                             |
+| --store-addrs      | Yes      | -                 | Metadata storage service addresses to connect to (supports etcd, MySQL, PostgreSQL, and RaftEngine). Format consistent with store-addrs in metasrv configuration. For RaftEngine, use `raftengine:///path/to/metadata` |
+| --backend          | Yes      | -                 | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                        |
 | --store-key-prefix | No       | ""                | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                 |
 | --meta-table-name  | No       | greptime_metakv   | When backend is one of `postgres-store`, `mysql-store`, the table name storing metadata                                                            |
 | --max-txn-ops      | No       | 128               | Maximum number of txn operations                                                                                                                   |
@@ -101,8 +101,8 @@ greptime cli meta snapshot restore [OPTIONS]
 
 | Option             | Required | Default         | Description                                                                                                                                          |
 | ------------------ | -------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --store-addrs      | Yes      | -               | Metadata storage service addresses to connect to (only supports etcd MySQL PostgreSQL) format consistent with store-addrs in metasrv configuration   |
-| --backend          | Yes      | -               | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`                                                               |
+| --store-addrs      | Yes      | -               | Metadata storage service addresses to connect to (supports etcd, MySQL, PostgreSQL, and RaftEngine). Format consistent with store-addrs in metasrv configuration. For RaftEngine, use `raftengine:///path/to/metadata` |
+| --backend          | Yes      | -               | Type of metadata storage backend, one of `etcd-store`, `postgres-store`, `mysql-store`, `raft-engine-store`                                         |
 | --store-key-prefix | No       | ""              | Unified prefix for data in metasrv, refer to metasrv configuration                                                                                   |
 | --meta-table-name  | No       | greptime_metakv | When backend is `postgres-store`, `mysql-store`, the table name storing metadata                                                                     |
 | --max-txn-ops      | No       | 128             | Maximum number of txn operations                                                                                                                     |
