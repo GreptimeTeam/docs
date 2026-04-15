@@ -72,13 +72,14 @@ The Loki logs data model is mapped to the GreptimeDB data model according to the
 
 ```sql
 DESC loki_demo_logs;
-+--------------------+---------------------+------+------+---------+---------------+
-| Column             | Type                | Key  | Null | Default | Semantic Type |
-+--------------------+---------------------+------+------+---------+---------------+
-| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| line               | String              |      | YES  |         | FIELD         |
-+--------------------+---------------------+------+------+---------+---------------+
-5 rows in set (0.00 sec)
++---------------------+---------------------+------+------+---------+---------------+
+| Column              | Type                | Key  | Null | Default | Semantic Type |
++---------------------+---------------------+------+------+---------+---------------+
+| greptime_timestamp  | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| line                | String              |      | YES  |         | FIELD         |
+| structured_metadata | Json                |      | YES  |         | FIELD         |
++---------------------+---------------------+------+------+---------+---------------+
+3 rows in set (0.00 sec)
 ```
 
 - `greptime_timestamp`: The timestamp of the log entry
@@ -96,16 +97,17 @@ The following is an example of the table schema with external labels:
 
 ```sql
 DESC loki_demo_logs;
-+--------------------+---------------------+------+------+---------+---------------+
-| Column             | Type                | Key  | Null | Default | Semantic Type |
-+--------------------+---------------------+------+------+---------+---------------+
-| greptime_timestamp | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
-| line               | String              |      | YES  |         | FIELD         |
-| filename           | String              | PRI  | YES  |         | TAG           |
-| from               | String              | PRI  | YES  |         | TAG           |
-| job                | String              | PRI  | YES  |         | TAG           |
-+--------------------+---------------------+------+------+---------+---------------+
-5 rows in set (0.00 sec)
++---------------------+---------------------+------+------+---------+---------------+
+| Column              | Type                | Key  | Null | Default | Semantic Type |
++---------------------+---------------------+------+------+---------+---------------+
+| greptime_timestamp  | TimestampNanosecond | PRI  | NO   |         | TIMESTAMP     |
+| line                | String              |      | YES  |         | FIELD         |
+| structured_metadata | Json                |      | YES  |         | FIELD         |
+| filename            | String              | PRI  | YES  |         | TAG           |
+| from                | String              | PRI  | YES  |         | TAG           |
+| job                 | String              | PRI  | YES  |         | TAG           |
++---------------------+---------------------+------+------+---------+---------------+
+6 rows in set (0.00 sec)
 ```
 
 ```sql

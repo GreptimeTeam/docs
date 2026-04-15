@@ -10,7 +10,7 @@ You have the option to connect GreptimeDB with Grafana using one of three data s
 
 ## GreptimeDB data source plugin
 
-The [GreptimeDB data source plugin (v2.0)](https://github.com/GreptimeTeam/greptimedb-grafana-datasource) is based on the ClickHouse data source and adds GreptimeDB-specific features.
+The [GreptimeDB data source plugin](https://github.com/GreptimeTeam/greptimedb-grafana-datasource) is based on the ClickHouse data source and adds GreptimeDB-specific features.
 The plugin adapts perfectly to the GreptimeDB data model,
 thus providing a better user experience.
 In addition, it also solves some compatibility issues compared to using the Prometheus data source directly.
