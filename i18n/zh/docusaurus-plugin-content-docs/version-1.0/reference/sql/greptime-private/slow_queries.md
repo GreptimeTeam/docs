@@ -7,6 +7,10 @@ description: greptime_private 数据库中的慢查询表。
 
 `slow_queries` 表包含 GreptimeDB 的慢查询信息：
 
+:::tip 注意
+`slow_queries` 表需要开启慢查询日志功能。详见[慢查询](/user-guide/deployments-administration/monitoring/slow-query.md)配置说明。
+:::
+
 ```sql
 USE greptime_private;
 

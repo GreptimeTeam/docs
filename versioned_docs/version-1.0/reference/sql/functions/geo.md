@@ -67,7 +67,7 @@ SELECT h3_latlng_to_cell(37.76938, -122.3889, 1);
 Similar to `h3_latlng_to_cell` but returns hex encoding of the cell.
 
 ```sql
-h3_latlng_to_cell_string(37.76938, -122.3889, 1);
+SELECT h3_latlng_to_cell_string(37.76938, -122.3889, 1);
 ```
 
 ### `h3_cell_to_string`
@@ -83,7 +83,7 @@ SELECT h3_cell_to_string(h3_latlng_to_cell(37.76938, -122.3889, 8));
 Convert hex-encoded cell ID to its UInt64 form
 
 ```sql
-h3_string_to_cell(h3_latlng_to_cell_string(37.76938, -122.3889, 8::UInt64));
+SELECT h3_string_to_cell(h3_latlng_to_cell_string(37.76938, -122.3889, 8::UInt64));
 ```
 
 ### `h3_cell_center_latlng`
@@ -126,7 +126,7 @@ SELECT h3_cell_is_pentagon(h3_latlng_to_cell(37.76938, -122.3889, 8));
 Returns parent cell at given resolution.
 
 ```sql
-h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
+SELECT h3_cell_parent(h3_latlng_to_cell(37.76938, -122.3889, 8), 6);
 ```
 
 ### `h3_cell_to_children`
@@ -137,7 +137,7 @@ Note that this function returns a UInt64 array and it only works on our HTTP
 Query API and Postgres channel.
 
 ```sql
-h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+SELECT h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 ```
 
 ### `h3_cell_to_children_size`
@@ -145,7 +145,7 @@ h3_cell_to_children(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 Returns cell children count at given resolution.
 
 ```sql
-h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
+SELECT h3_cell_to_children_size(h3_latlng_to_cell(37.76938, -122.3889, 8), 10);
 ```
 
 ### `h3_cell_to_child_pos`
@@ -154,7 +154,7 @@ Return the child position for its parent at given resolution. Position is the
 index of child in its children.
 
 ```sql
-h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
+SELECT h3_cell_to_child_pos(h3_latlng_to_cell(37.76938, -122.3889, 8), 6)
 ```
 
 ### `h3_child_pos_to_cell`
@@ -168,7 +168,7 @@ Arguments:
 - resolution
 
 ```sql
-h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
+SELECT h3_child_pos_to_cell(25, h3_latlng_to_cell(37.76938, -122.3889, 8), 11);
 ```
 
 ### `h3_cells_contains`
@@ -196,7 +196,7 @@ Note that this function returns a UInt64 array and it only works on our HTTP
 Query API and Postgres channel.
 
 ```sql
-h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_disk_distances`
@@ -207,7 +207,7 @@ Note that this function returns a UInt64 array and it only works on our HTTP
 Query API and Postgres channel.
 
 ```sql
-h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
+SELECT h3_grid_disk_distance(h3_latlng_to_cell(37.76938, -122.3889, 8), 3);
 ```
 
 ### `h3_grid_distance`
@@ -365,7 +365,7 @@ Arguments: two spatial objects encoded with WKT.
 SELECT
     st_within(p1, polygon1),
     st_within(p1, polygon2),
- ROM
+FROM
     (
         SELECT
             wkt_point_from_latlng(37.383287, -122.01325) AS p1,

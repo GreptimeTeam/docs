@@ -96,7 +96,7 @@ If we want to insert a literal binary, we can insert a hexadecimal literal:
 ```sql
 INSERT INTO test VALUES(X'9fad5e9eefdfb449', 1687867163);
 -- or --
-INSERT INTO test VALUES(0x9fad5e9eefdfb449', 1687867163);
+INSERT INTO test VALUES(0x9fad5e9eefdfb449, 1687867163);
 ```
 
 #### Insert Special Numeric Values

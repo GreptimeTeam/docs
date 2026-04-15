@@ -16,11 +16,11 @@ SHOW [FULL] DATABASES;
 ```
 
 ```sql
-+---------+
-| Schemas |
-+---------+
-| public  |
-+---------+
++----------+
+| Database |
++----------+
+| public   |
++----------+
 1 row in set (0.01 sec)
 ```
 
@@ -33,7 +33,7 @@ SHOW DATABASES LIKE 'p%';
 Show databases by `where` expr:
 
 ```sql
-SHOW DATABASES WHERE Schemas='test_public_schema';
+SHOW DATABASES WHERE Database='test_public_schema';
 ```
 
 Show all databases with options:
