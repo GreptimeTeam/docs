@@ -3,17 +3,16 @@ keywords: [User, Permission, GreptimeDB Enterprise, RBAC, ACL, Authentication]
 description: The overview of GreptimeDB User and Permission mechanism.
 ---
 
-# User and Permission System
+# Built-in User Management
 
-GreptimeDB Enterprise provides a persistent user and permission system based on
-a persistent metadata backend (Meta Server). It supports Role-Based Access
-Control (RBAC) and fine-grained Access Control Lists (ACLs) to ensure data
-security and isolation.
+GreptimeDB Enterprise provides a built-in user and permission system backed by
+the Meta Server. It supports Role-Based Access Control (RBAC) and fine-grained
+Access Control Lists (ACLs) to ensure data security and isolation.
 
 ## Key Features
 
-- **Persistent Management**: User accounts and permissions are stored in the
-  Meta Server, ensuring consistency across the cluster.
+- **Built-in User Management**: User accounts and permissions are stored in the
+  Meta Server, ensuring consistent management across the cluster.
 - **Role-Based Access Control (RBAC)**: Assign global privileges to users,
   controlling operations like `SELECT`, `INSERT`, `CREATE TABLE`, and more.
 - **Fine-grained ACLs**: Control table-level access within specific schemas
