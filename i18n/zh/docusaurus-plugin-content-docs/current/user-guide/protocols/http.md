@@ -81,6 +81,7 @@ x-greptime-hints: key1=value1, key2=value2
 | `physical_table` | String | 无 | 指定 [metric 引擎](/contributor-guide/datanode/metric-engine.md)的物理表名。 |
 | `skip_wal` | Boolean | `false` | 跳过表的 WAL（Write-Ahead Log）写入。 |
 | `sst_format` | String | 无 | 设置表的 SST（Sorted String Table）文件格式。可选值：`flat`、`primary_key`。 |
+| `trace_table_partitions` | Int | None | 自定义 Trace 表的默认分区数（16）。设置为 `1` 时禁用分区。 |
 
 例如，以下请求为自动创建的表设置 TTL 和 append 模式：
 
