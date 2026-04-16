@@ -39,6 +39,8 @@ which are described in detail in the documentation in this section:
   analytical queries.
 - [Triggers](./trigger.md): Periodically evaluate your rules and trigger external
   webhook. Compatible with Prometheus AlterManager.
+- [User and Permission System](./user.md): Persistent RBAC and fine-grained ACLs
+  for data security and isolation.
 - Reliability features for Flow.
 
 ## Release Notes
