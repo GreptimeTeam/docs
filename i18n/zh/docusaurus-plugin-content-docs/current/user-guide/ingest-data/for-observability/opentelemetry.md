@@ -198,7 +198,7 @@ GreptimeDB 是能够通过 [OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/
 
 ### 示例代码
 
-请参考 [opentelemetry-collector](#opentelemetry-collector) 中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
+请参考 [OpenTelemetry Collector 文档](otel-collector.md)中的示例代码，里面包含了如何将 OpenTelemetry 日志发送到 GreptimeDB。
 也可参考 [Alloy 文档](alloy.md#日志)中的示例代码，了解如何将 OpenTelemetry 日志发送到 GreptimeDB。
 
 ### 数据模型
@@ -226,7 +226,7 @@ OTLP 日志数据模型根据以下规则映射到 GreptimeDB 数据模型：
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-17 rows in set (0.00 sec)
+14 rows in set (0.00 sec)
 ```
 
 - 您可以使用 `X-Greptime-Log-Table-Name` 指定存储日志的表名。如果未提供，默认表名为 `opentelemetry_logs`。

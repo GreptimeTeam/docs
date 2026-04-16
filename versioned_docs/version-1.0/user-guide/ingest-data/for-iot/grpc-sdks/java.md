@@ -83,7 +83,7 @@ This client offers multiple ingestion methods optimized for various performance 
 Make sure that your system has JDK 8 or later installed. For more information on how to
 check your version of Java and install the JDK, see the [Oracle Overview of JDK Installation documentation](https://www.oracle.com/java/technologies/javase-downloads.html)
 
-2. Add GreptiemDB Java SDK as a Dependency
+2. Add GreptimeDB Java SDK as a Dependency
 
 If you are using [Maven](https://maven.apache.org/), add the following to your pom.xml
 dependencies list:
@@ -168,7 +168,7 @@ table.complete();
 CompletableFuture<Result<WriteOk, Err>> future = client.write(table);
 ```
 
-GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type). You can define JSON columns in your table schema and insert data using Map objects:
+GreptimeDB supports storing complex data structures using [JSON type data](/reference/sql/data-types.md#json-type-experimental). You can define JSON columns in your table schema and insert data using Map objects:
 
 ```java
 // Construct the table schema for sensor_readings
@@ -183,7 +183,8 @@ TableSchema sensorReadings = TableSchema.newBuilder("sensor_readings")
 // Use map to insert JSON data
 Map<String, Object> attr = new HashMap<>();
 attr.put("location", "factory-1");
-sensorReadings.addRow(<other-column-values>... , attr);
+Table table = Table.from(sensorReadings);
+table.addRow(<other-column-values>... , attr);
 ```
 
 ##### TableSchema
@@ -341,7 +342,7 @@ BulkWrite.Config cfg = BulkWrite.Config.newBuilder()
         .allocatorInitReservation(64 * 1024 * 1024L) // Customize memory allocation: 64MB initial reservation
         .allocatorMaxAllocation(4 * 1024 * 1024 * 1024L) // Customize memory allocation: 4GB max allocation
         .timeoutMsPerMessage(60 * 1000) // 60 seconds timeout per request
-        .maxRequestsInFlight(8) // Concurrency Control: Configure with 10 maximum in-flight requests
+        .maxRequestsInFlight(8) // Concurrency Control: Configure with 8 maximum in-flight requests
         .build();
 // Enable Zstd compression
 Context ctx = Context.newDefault().withCompression(Compression.Zstd);

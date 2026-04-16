@@ -197,7 +197,7 @@ For more information about the OpenTelemetry SDK, please refer to the official d
 
 ### Example Code
 
-Please refer to the sample code in [opentelemetry-collector](#opentelemetry-collector), which includes how to send OpenTelemetry logs to GreptimeDB.  
+Please refer to the sample code in the [OpenTelemetry Collector documentation](otel-collector.md), which includes how to send OpenTelemetry logs to GreptimeDB.  
 You can also refer to the sample code in the [Alloy documentation](alloy.md#logs) to learn how to send OpenTelemetry logs to GreptimeDB.
 
 ### Data Model
@@ -225,7 +225,7 @@ Default table schema:
 | resource_attributes   | Json                |      | YES  |         | FIELD         |
 | resource_schema_url   | String              |      | YES  |         | FIELD         |
 +-----------------------+---------------------+------+------+---------+---------------+
-17 rows in set (0.00 sec)
+14 rows in set (0.00 sec)
 ```
 
 - You can use `X-Greptime-Log-Table-Name` to specify the table name for storing the logs. If not provided, the default table name is `opentelemetry_logs`.
