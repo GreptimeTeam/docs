@@ -11,7 +11,7 @@ Enterprise 版还提供更多增强功能，帮助企业优化数据效率并显
 
 解决方案包括：
 
-- **将数据库部署在你的云中 - Bring Your Own Cloud（BYOC**: 利用你自己的云基础设施来托管 GreptimeDB，提供广泛的定制和灵活性以满足你的业务需求。此服务包括对你的云资源的全面管理和强大的安全措施，以保护你的基础设施。
+- **将数据库部署在你的云中 - Bring Your Own Cloud（BYOC**: 利用你自己的云基础设施来托管 GreptimeDB，提供广泛的定制和灵活性以满足你的业务需求。此服务包括对你的云 资源的全面管理和强大的安全措施，以保护你的基础设施。
 - **全托管的独立云**: Greptime 团队提供完全托管的专用云环境，确保最佳性能、增强的安全性和卓越的可靠性，以满足你的企业需求。
 - **[边云一体解决方案](https://greptime.com/product/carcloud)**: 用于管理从边缘设备到云的时序数据，实现整个基础设施的实时分析和洞察的全面解决方案。
 - 针对物联网 (IoT)、可观测等行业的特定解决方案。
@@ -33,6 +33,7 @@ GreptimeDB Enterprise 包括以下高级功能，
 - [Greptime 企业版管理控制台](./console-ui.md)：加强版本的管理界面，提供更多的集群管理和监控功能。
 - [读副本](./read-replicas/overview.md)：专门运行复杂的查询操作的 datanode，避免影响实时写入。
 - [Trigger](./trigger.md)：定时查询和检测预配置的规则，可触发外部 webhook，兼容 Prometheus AlertManager。
+- [内置用户管理](./user.md)：内置 RBAC 和细粒度 ACL，确保数据安全和隔离。
 - Flow 的可靠性功能。
 
 ## 发布说明
