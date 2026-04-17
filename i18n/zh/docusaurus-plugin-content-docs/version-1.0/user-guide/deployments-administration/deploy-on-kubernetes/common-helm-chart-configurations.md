@@ -324,6 +324,37 @@ objectStorage:
     endpoint: ""
 ```
 
+#### 使用 AWS EKS Pod Identity 访问 S3
+
+除了提供静态访问密钥外，你还可以使用 [AWS EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)（IAM Roles for Service Accounts）来授予 GreptimeDB 访问 S3 的权限。这种方式更加安全，因为无需管理长期有效的凭证。
+
+首先，为 datanode 的 Service Account 配置 IAM 角色注解。只有 datanode 会读写 S3：
+
+```yaml
+datanode:
+  podTemplate:
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: ${YOUR_IAM_ROLE_ARN}
+```
+
+请确保 IAM 角色具有对目标 S3 存储桶的读写权限。
+
+然后，配置对象存储时无需填写凭证：
+
+```yaml
+objectStorage:
+  s3:
+    bucket: "${YOUR_S3_BUCKET}"
+    region: "${YOUR_S3_REGION}"
+    root: "greptimedb"
+```
+
+:::note
+使用 EKS Pod Identity 时，请完全省略 `objectStorage.credentials` 部分。datanode Pod 将通过与 Service Account 关联的 IAM 角色自动获取临时凭证。
+:::
+
 #### Google Cloud Storage
 
 ```yaml
