@@ -339,7 +339,11 @@ datanode:
         eks.amazonaws.com/role-arn: ${YOUR_IAM_ROLE_ARN}
 ```
 
-Make sure the IAM role has permissions to read and write to the target S3 bucket.
+Make sure the IAM role has permissions to read and write to the target S3 bucket:
+- `s3:PutObject`
+- `s3:ListBucket`
+- `s3:GetObject`
+- `s3:DeleteObject`
 
 Then, configure the object storage without credentials:
 

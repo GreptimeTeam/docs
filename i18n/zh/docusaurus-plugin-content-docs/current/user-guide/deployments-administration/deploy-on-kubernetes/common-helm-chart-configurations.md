@@ -339,7 +339,11 @@ datanode:
         eks.amazonaws.com/role-arn: ${YOUR_IAM_ROLE_ARN}
 ```
 
-请确保 IAM 角色具有对目标 S3 存储桶的读写权限。
+请确保 IAM 角色具有对目标 S3 存储桶的读写权限：
+- `s3:PutObject`
+- `s3:ListBucket`
+- `s3:GetObject`
+- `s3:DeleteObject`
 
 然后，配置对象存储时无需填写凭证：
 
