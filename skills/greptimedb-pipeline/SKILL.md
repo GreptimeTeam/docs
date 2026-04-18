@@ -61,15 +61,22 @@ for all other fields.
 
 #### Auto-transform vs explicit transform (v0.15+)
 
-Since v0.15, the `transform` block is optional in a version-2 pipeline. If at
-least one `date` or `epoch` processor produces a timestamp field, the engine
-will infer column types from the processor output and use that timestamp as
-the time index automatically.
+Since v0.15, the `transform` block is optional in a version-2 pipeline. The
+engine will infer column types from the pipeline context and use the produced
+timestamp as the time index automatically, **if and only if**:
+
+- **Exactly one** timestamp field is produced by `date` / `epoch` processors
+  (multiple timestamp fields raise an ambiguity error).
+- The `date` / `epoch` processor producing that timestamp does **not** have
+  `ignore_missing: true`.
+
+Guidance:
 
 - Use **auto-transform** (omit `transform`) for simple flat shapes where
-  default inferred types are acceptable.
+  default inferred types are acceptable and a single time column is obvious.
 - Write an explicit `transform` block when you need specific types, index
-  configurations (inverted / fulltext / skipping), or renames.
+  configurations (inverted / fulltext / skipping), renames, or when you have
+  multiple candidate time fields.
 
 Provide user a sample of how the initial pipeline definition will look like, as
 well as how the parsed data to be like. We can use a markdown table to show each
